@@ -58,17 +58,17 @@ export const ActivityList = () => {
   }, [evmAddress]);
 
   // EVM transactions - from API
+  const queryOptions = useMemo(
+    () => queries.transactions(evmAddress, { enabled: useExternalServices }),
+    [evmAddress, useExternalServices],
+  );
   const {
     data,
     isInitialLoading,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery(
-    queries.transactions(evmAddress, {
-      enabled: useExternalServices,
-    }),
-  );
+  } = useInfiniteQuery(queryOptions);
 
   // Local transactions - may not be in API yet
   const localTransactions = useSelector(selectLocalTransactions);
