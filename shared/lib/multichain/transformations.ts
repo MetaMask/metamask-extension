@@ -8,8 +8,8 @@ import {
   TransactionStatus,
 } from '@metamask/transaction-controller';
 import { V1TransactionByHashResponse } from '@metamask/core-backend';
-import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../constants/network';
-import { TransactionGroupCategory } from '../constants/transaction';
+import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../constants/network';
+import { TransactionGroupCategory } from '../../constants/transaction';
 import type { NormalizedV4MultiAccountTransactionsResponse } from './types';
 
 export function mapTransactionToCategory(transactionType?: string) {

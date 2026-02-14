@@ -5,7 +5,7 @@ import { toHex } from '@metamask/controller-utils';
 import type {
   TransactionViewModel,
   TransactionGroup,
-} from '../../../../shared/acme-controller/types';
+} from '../../../../shared/lib/multichain/types';
 import { TransactionDetailsModal as LegacyTransactionDetailsModal } from '../../../pages/confirmations/components/activity';
 import { PAY_TRANSACTION_TYPES } from '../../../pages/confirmations/constants/pay';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';

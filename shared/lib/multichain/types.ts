@@ -1,7 +1,7 @@
 import type { Hex } from 'viem';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { V4MultiAccountTransactionsResponse } from '@metamask/core-backend';
-import type { TransactionGroupCategory } from '../constants/transaction';
+import type { TransactionGroupCategory } from '../../constants/transaction';
 
 export type NormalizedV4MultiAccountTransactionsResponse = Omit<
   V4MultiAccountTransactionsResponse,

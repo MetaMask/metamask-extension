@@ -5,7 +5,7 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
 import { useFormatters } from '../../../hooks/useFormatters';
-import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
+import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { selectMarketRates } from '../../../selectors/activity';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';

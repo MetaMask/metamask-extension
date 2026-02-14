@@ -3,7 +3,7 @@ import type {
   TokenAmount,
   TransactionGroup,
   TransactionViewModel,
-} from '../../../../shared/acme-controller/types';
+} from '../../../../shared/lib/multichain/types';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 
 export type FlattenedItem =

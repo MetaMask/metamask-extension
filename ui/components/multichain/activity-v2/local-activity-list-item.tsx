@@ -1,7 +1,7 @@
 import React from 'react';
 import LegacyTransactionListItem from '../../app/transaction-list-item';
 import { isTransactionEarliestNonce } from '../../../hooks/useEarliestNonceByChain';
-import type { TransactionGroup } from '../../../../shared/acme-controller/types';
+import type { TransactionGroup } from '../../../../shared/lib/multichain/types';
 
 type Props = {
   transactionGroup: TransactionGroup;

@@ -7,7 +7,7 @@ import {
   getTokenList,
   selectERC20TokensByChain,
 } from '../../../selectors';
-import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
+import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 
 const ETH_ICON =
