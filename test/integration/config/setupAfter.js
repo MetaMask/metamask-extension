@@ -5,10 +5,8 @@ import { ACCOUNTS_API_BASE_URL } from '../../../shared/constants/accounts';
 import '../config/assets/index.css';
 import '../../helpers/setup-after-helper';
 
-// Mock the v4 transactions because the default active tab is "activity"
 beforeEach(() => {
   nock(ACCOUNTS_API_BASE_URL)
-    .persist()
     .get('/v4/multiaccount/transactions')
     .query(true)
     .reply(200, { data: [], pageInfo: { hasNextPage: false, count: 0 } });
