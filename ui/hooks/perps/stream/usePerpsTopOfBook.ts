@@ -96,6 +96,8 @@ export function usePerpsTopOfBook(
     const unsubscribe = controller.subscribeToOrderBook({
       symbol,
       levels: 1, // Only need top level
+      nSigFigs: 5,
+      mantissa: 2,
       callback: (orderBook) => {
         if (!hasReceivedFirstUpdate.current) {
           hasReceivedFirstUpdate.current = true;

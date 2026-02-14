@@ -1702,6 +1702,83 @@ export type AggregationMode = 'all' | 'active' | 'specific';
 export type RoutingStrategy = 'default_provider';
 
 /**
+ * Rewards controller operations required by Perps (optional).
+ * Provides fee discount capabilities for MetaMask rewards program.
+ */
+export type PerpsRewardsOperations = {
+  /**
+   * Get fee discount for an account.
+   * Returns discount in basis points (e.g., 6500 = 65% discount)
+   */
+  getFeeDiscount(
+    caipAccountId: `${string}:${string}:${string}`,
+  ): Promise<number>;
+};
+
+/**
+ * Authentication controller operations required by Perps (optional).
+ * Provides bearer token access for authenticated API calls.
+ */
+export type PerpsAuthenticationOperations = {
+  /**
+   * Get a bearer token for authenticated API requests.
+   */
+  getBearerToken(): Promise<string>;
+};
+
+/**
+ * Consolidated controller access interface.
+ * Groups ALL controller dependencies in one place for clarity.
+ *
+ * Benefits:
+ * 1. Clear separation: observability utilities vs controller access
+ * 2. Consistent pattern: all controllers accessed via deps.controllers.*
+ * 3. Mockable: test can mock entire controllers object
+ * 4. Future-proof: add new controller access without bloating top-level
+ */
+export type PerpsControllerAccess = {
+  /** Account utilities - wraps AccountsController access */
+  accounts: PerpsAccountUtils;
+  /** Keyring operations - wraps KeyringController for signing */
+  keyring: PerpsKeyringController;
+  /** Network operations - wraps NetworkController for chain lookups */
+  network: PerpsNetworkOperations;
+  /** Transaction operations - wraps TransactionController for TX submission */
+  transaction: PerpsTransactionOperations;
+  /** Rewards operations - wraps RewardsController for fee discounts */
+  rewards: PerpsRewardsOperations;
+  /** Authentication operations - wraps AuthenticationController for bearer tokens */
+  authentication: PerpsAuthenticationOperations;
+};
+
+/**
+ * Combined platform dependencies for PerpsController and services.
+ * All platform-specific dependencies are bundled here for easy injection.
+ *
+ * Architecture:
+ * - Observability: logger, debugLogger, metrics, performance, tracer (stateless utilities)
+ * - Platform: streamManager (mobile/extension specific capabilities)
+ * - Controllers: consolidated access to all external controllers
+ *
+ * This interface enables dependency injection for platform-specific services,
+ * allowing PerpsController to be moved to core without mobile-specific imports.
+ */
+export type PerpsPlatformDependencies = {
+  // === Observability (stateless utilities) ===
+  logger: PerpsLogger;
+  debugLogger: PerpsDebugLogger;
+  metrics: PerpsMetrics;
+  performance: PerpsPerformance;
+  tracer: PerpsTracer;
+
+  // === Platform Services (mobile/extension specific) ===
+  streamManager: PerpsStreamManager;
+
+  // === Controller Access (ALL controllers consolidated) ===
+  controllers: PerpsControllerAccess;
+};
+
+/**
  * Configuration for AggregatedPerpsProvider
  */
 export type AggregatedProviderConfig = {

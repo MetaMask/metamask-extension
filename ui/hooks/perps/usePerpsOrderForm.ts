@@ -58,8 +58,8 @@ export type UsePerpsOrderFormReturn = {
   handleStopLossPriceChange: (stopLossPrice: string) => void;
   /** Handler for close percent changes (close mode only) */
   handleClosePercentChange: (percent: number) => void;
-  /** Handler for limitPrice changes (close mode only) */
-  handleLimitPriceChange: () => void;
+  /** Handler for limitPrice changes */
+  handleLimitPriceChange: (limitPrice: string) => void;
   /** Handler for form submission */
   handleSubmit: () => void;
 };
@@ -260,6 +260,10 @@ export function usePerpsOrderForm({
     setClosePercent(percent);
   }, []);
 
+  const handleLimitPriceChange = useCallback((limitPrice: string) => {
+    setFormState((prev) => ({ ...prev, limitPrice }));
+  }, []);
+
   // Submit handler
   const handleSubmit = useCallback(() => {
     onSubmit?.(formState);
@@ -276,6 +280,7 @@ export function usePerpsOrderForm({
     handleTakeProfitPriceChange,
     handleStopLossPriceChange,
     handleClosePercentChange,
+    handleLimitPriceChange,
     handleSubmit,
   };
 }
