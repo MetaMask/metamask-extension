@@ -20,6 +20,8 @@ type Props = {
   onClick: () => void;
 };
 
+// Wrapper around TransactionListItem for non-EVM transactions
+// until we properly map values to the new ActivityListItem
 export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
   const networkConfig = useSelector(getSelectedMultichainNetworkConfiguration);
   const { from, to, type, timestamp, isRedeposit, title } =
