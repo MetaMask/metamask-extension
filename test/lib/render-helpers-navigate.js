@@ -31,14 +31,6 @@ const createMockMetaMetricsContext = (
   onboardingParentContext: { current: null },
 });
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-    },
-  },
-});
-
 export const I18nProvider = (props) => {
   const { currentLocale, current, en: eng } = props;
 
@@ -71,6 +63,10 @@ function createProviderWrapper(
 ) {
   const mockMetaMetricsContext =
     createMockMetaMetricsContext(getMockTrackEvent);
+
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
 
   const Wrapper = ({ children }) => {
     const container = (
