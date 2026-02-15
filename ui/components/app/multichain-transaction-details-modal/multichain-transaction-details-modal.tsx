@@ -45,6 +45,7 @@ import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
 import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
 import {
   getAccountName,
+  getSelectedAccount,
   getSelectedMultichainNetworkConfiguration,
 } from '../../../selectors';
 import {
@@ -66,7 +67,6 @@ import {
 export type MultichainTransactionDetailsModalProps = {
   transaction: Transaction;
   onClose: () => void;
-  userAddress: string;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -74,10 +74,10 @@ export type MultichainTransactionDetailsModalProps = {
 export function MultichainTransactionDetailsModal({
   transaction,
   onClose,
-  userAddress,
 }: MultichainTransactionDetailsModalProps) {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
+  const userAddress = useSelector(getSelectedAccount)?.address;
   const networkConfig = useSelector(getSelectedMultichainNetworkConfiguration);
   const {
     from,
