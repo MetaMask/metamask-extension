@@ -4,7 +4,7 @@ import type { NormalizedV4MultiAccountTransactionsResponse } from './types';
 import {
   normalizeTransaction,
   filterTransactions,
-  getTransferAmounts,
+  parseValueTransfers,
   mapTransactionToCategory,
 } from './transformations';
 
@@ -26,19 +26,16 @@ export const queries = {
       });
 
       // We should do this server-side
-      const normalizedData = await Promise.all(
-        response.data.map(async (transaction) => ({
-          // Ported over
-          ...(await normalizeTransaction(accountAddress, transaction)),
+      const normalizedData = response.data.map((transaction) => ({
+        ...normalizeTransaction(accountAddress, transaction),
 
-          // Goal is to return only usable information for the UI
-          // @ts-expect-error Add missing readable field to core-backend
-          readable: transaction.readable,
-          category: mapTransactionToCategory(transaction.transactionType),
-          amounts: getTransferAmounts(accountAddress, transaction),
-          transactionType: transaction.transactionType || '',
-        })),
-      );
+        // The goal here is to return only usable information for the UI
+        // @ts-expect-error Add missing readable field
+        readable: transaction.readable,
+        category: mapTransactionToCategory(transaction.transactionType),
+        amounts: parseValueTransfers(accountAddress, transaction),
+        transactionType: transaction.transactionType || '',
+      }));
 
       return {
         unprocessedNetworks: response.unprocessedNetworks,
@@ -49,6 +46,7 @@ export const queries = {
     select: filterTransactions(accountAddress), // We should do this server-side
     getNextPageParam: ({ pageInfo }) =>
       pageInfo.hasNextPage ? pageInfo.endCursor : undefined,
+    refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchInterval: 15 * 1000,
     ...options,

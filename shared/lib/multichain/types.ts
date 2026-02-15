@@ -19,10 +19,16 @@ export type TransactionGroup = {
   transactions: TransactionMeta[];
 };
 
+export type Token = {
+  address: string;
+  symbol: string;
+  decimals: number;
+  chainId: Hex;
+};
+
 export type TokenAmount = {
+  token: Token;
   amount: bigint;
-  decimal: number;
-  symbol?: string;
 };
 
 export type TransactionViewModel = TransactionMeta & {

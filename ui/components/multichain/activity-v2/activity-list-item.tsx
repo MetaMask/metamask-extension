@@ -7,10 +7,9 @@ import TransactionStatusLabel from '../../app/transaction-status-label/transacti
 import { useFormatters } from '../../../hooks/useFormatters';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { selectMarketRates } from '../../../selectors/activity';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';
-import { calculateFiatFromMarketRates, getTransferAmount } from './helpers';
-import { useGetTitle } from './hooks';
+import { getPrimaryAmount } from './helpers';
+import { useGetTitle, useFiatAmount } from './hooks';
 
 type Props = {
   transaction: TransactionViewModel;
@@ -18,14 +17,13 @@ type Props = {
 };
 
 export const ActivityListItem = ({ transaction, onClick }: Props) => {
-  const currentCurrency = useSelector(getCurrentCurrency);
-  const marketRates = useSelector(selectMarketRates);
   const { formatTokenAmount, formatCurrencyWithMinThreshold } = useFormatters();
-  const { chainId, category, status } = transaction;
-
+  const currentCurrency = useSelector(getCurrentCurrency);
   const title = useGetTitle(transaction);
-  const { amount, symbol } = getTransferAmount(transaction.amounts ?? {});
-  const fiatAmount = calculateFiatFromMarketRates(transaction, marketRates);
+  const { amount, token } = getPrimaryAmount(transaction.amounts ?? {});
+  const fiatAmount = useFiatAmount(amount, token);
+
+  const { chainId, category, status } = transaction;
 
   const transactionStatus =
     status === TransactionStatus.failed
@@ -60,12 +58,12 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
 
         {/* Right side - Value */}
         <div className="flex flex-col items-end">
-          {amount && symbol && (
+          {amount && token && (
             <Text
               className="font-medium"
               data-testid="transaction-list-item-primary-currency"
             >
-              {formatTokenAmount(amount, symbol)}
+              {formatTokenAmount(amount, token.symbol)}
             </Text>
           )}
           {fiatAmount !== null && (

@@ -1,33 +1,30 @@
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
+import type {
+  Token,
+  TransactionViewModel,
+} from '../../../../shared/lib/multichain/types';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
-
-const nonEvmTypeMap: Record<string, string> = {
-  send: 'sent',
-  receive: 'received',
-  swap: 'swap',
-  'stake:deposit': 'stakingDeposit',
-  'stake:withdraw': 'stakingWithdrawal',
-  unknown: 'interaction',
-};
+import { selectMarketRates } from '../../../selectors/activity';
+import { calculateFiatFromMarketRates } from './helpers';
 
 export function useGetTitle(transaction: TransactionViewModel): string {
   const t = useI18nContext();
 
   // This should be server-side
   if (transaction.category === TransactionGroupCategory.swap) {
-    const fromSymbol = transaction.amounts?.from?.symbol;
-    const toSymbol = transaction.amounts?.to?.symbol;
+    const fromSymbol = transaction.amounts?.from?.token.symbol;
+    const toSymbol = transaction.amounts?.to?.token.symbol;
 
     if (fromSymbol && toSymbol) {
       return t('swapTokenToToken', [fromSymbol, toSymbol]);
     }
   }
 
-  if (transaction.readable) {
-    return transaction.readable;
-  }
+  return transaction.readable ?? '';
+}
 
-  const key = nonEvmTypeMap[transaction.transactionType];
-  return key ? t(key) : '';
+export function useFiatAmount(amount?: string, token?: Token) {
+  const marketRates = useSelector(selectMarketRates);
+  return calculateFiatFromMarketRates(amount, token, marketRates);
 }
