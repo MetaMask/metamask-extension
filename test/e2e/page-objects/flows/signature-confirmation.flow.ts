@@ -5,6 +5,8 @@ import AccountDetailsModal from '../pages/confirmations/accountDetailsModal';
 import { SignatureType } from '../../tests/confirmations/signatures/signature-helpers';
 import { loginWithBalanceValidation } from './login.flow';
 
+const MODAL_CLOSE_DELAY_MS = 500; // avoid "Element is not clickable" when closing account details modal
+
 /**
  * Opens test dapp, triggers a signature by type, and switches to the confirmation dialog.
  *
@@ -19,7 +21,7 @@ export async function openDappAndTriggerSignature(
   const testDapp = new TestDapp(driver);
   await testDapp.openTestDappPage({ url: DAPP_URL });
   await testDapp.checkPageIsLoaded();
-  await triggerSignatureInFlow(testDapp, type);
+  await triggerSignature(driver, type);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }
 
@@ -34,7 +36,7 @@ export async function copyAddressAndPasteWalletAddress(
   const accountDetailsModal = new AccountDetailsModal(driver);
   const testDapp = new TestDapp(driver);
   await accountDetailsModal.clickAddressCopyButton();
-  await driver.delay(500); // Avoid "Element is not clickable" when closing modal
+  await driver.delay(MODAL_CLOSE_DELAY_MS);
   await accountDetailsModal.clickAccountDetailsModalCloseButton();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await testDapp.pasteIntoEip747ContractAddressInput();
@@ -81,13 +83,6 @@ export async function triggerSignature(
   type: SignatureType,
 ): Promise<void> {
   const testDapp = new TestDapp(driver);
-  await triggerSignatureInFlow(testDapp, type);
-}
-
-async function triggerSignatureInFlow(
-  testDapp: TestDapp,
-  type: SignatureType,
-): Promise<void> {
   switch (type) {
     case SignatureType.PersonalSign:
       await testDapp.clickPersonalSign();
