@@ -124,10 +124,12 @@ export const ActivityList = () => {
       const item = flattenedItems[index];
       return item && item.type === 'date-header' ? HEADER_HEIGHT : ITEM_HEIGHT;
     },
-    overscan: 10,
+    overscan: 5,
   });
 
   const virtualItems = virtualizer.getVirtualItems();
+  const lastVirtualItemIndex =
+    virtualItems.length > 0 ? virtualItems[virtualItems.length - 1].index : -1;
 
   useEffect(() => {
     if (scrollContainerRef?.current) {
@@ -137,21 +139,16 @@ export const ActivityList = () => {
 
   // Fetch more items when scrolling near the end
   useEffect(() => {
-    const [lastItem] = [...virtualItems].reverse();
-
-    if (!lastItem) {
-      return;
-    }
-
     if (
-      lastItem.index >= flattenedItems.length - 10 &&
+      lastVirtualItemIndex >= 0 &&
+      lastVirtualItemIndex >= flattenedItems.length - 5 &&
       hasNextPage &&
       !isFetchingNextPage
     ) {
       fetchNextPage();
     }
   }, [
-    virtualItems,
+    lastVirtualItemIndex,
     hasNextPage,
     fetchNextPage,
     flattenedItems.length,

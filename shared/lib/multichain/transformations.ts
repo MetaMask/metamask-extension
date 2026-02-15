@@ -8,8 +8,14 @@ import {
 } from '@metamask/transaction-controller';
 import { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../constants/network';
-import { TransactionGroupCategory } from '../../constants/transaction';
-import type { NormalizedV4MultiAccountTransactionsResponse } from './types';
+import {
+  TransactionGroupCategory,
+  NATIVE_TOKEN_ADDRESS,
+} from '../../constants/transaction';
+import type {
+  NormalizedV4MultiAccountTransactionsResponse,
+  TokenAmount,
+} from './types';
 
 export function mapTransactionToCategory(transactionType?: string) {
   switch (transactionType) {
@@ -35,7 +41,7 @@ export function mapTransactionToCategory(transactionType?: string) {
   }
 }
 
-export function getTransferAmounts(
+export function parseValueTransfers(
   accountAddress: string,
   transaction: V1TransactionByHashResponse,
 ) {
@@ -45,25 +51,25 @@ export function getTransferAmounts(
     chainId,
   ) as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP;
   const nativeSymbol = CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[hexChainId] || '';
-  const result: Record<string, unknown> = {};
+  const result: { from?: TokenAmount; to?: TokenAmount } = {};
 
   for (const transfer of valueTransfers) {
-    const { amount, decimal, symbol, from, to } = transfer;
+    const { amount, decimal, symbol, from, to, contractAddress } = transfer;
+    const tokenAddress = contractAddress?.toLowerCase() ?? NATIVE_TOKEN_ADDRESS;
 
-    if (!result.from && from?.toLowerCase() === address) {
-      result.from = {
-        amount: amount ? -BigInt(amount) : undefined,
-        decimal,
-        symbol: symbol || nativeSymbol,
-      };
+    const token = {
+      chainId: hexChainId,
+      address: tokenAddress,
+      decimals: decimal,
+      symbol: symbol || nativeSymbol,
+    };
+
+    if (!result.from && from?.toLowerCase() === address && amount) {
+      result.from = { token, amount: -BigInt(amount) };
     }
 
-    if (!result.to && to?.toLowerCase() === address) {
-      result.to = {
-        amount: amount ? BigInt(amount) : undefined,
-        decimal,
-        symbol: symbol || nativeSymbol,
-      };
+    if (!result.to && to?.toLowerCase() === address && amount) {
+      result.to = { token, amount: BigInt(amount) };
     }
 
     if (result.to && result.from) {
@@ -75,10 +81,10 @@ export function getTransferAmounts(
 }
 
 // Ported from transaction-controller normalizeTransaction
-export async function normalizeTransaction(
+export function normalizeTransaction(
   address: string,
   transaction: V1TransactionByHashResponse,
-): Promise<TransactionMeta> {
+): TransactionMeta {
   const { from, to, hash, methodId, isError } = transaction;
 
   const type = TransactionType.incoming;

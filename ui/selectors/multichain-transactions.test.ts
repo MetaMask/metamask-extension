@@ -1,19 +1,23 @@
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type { Transaction } from '@metamask/keyring-api';
-import type { MetaMaskReduxState } from '../store/store';
+import type { MetaMaskReduxState as _MetaMaskReduxState } from '../store/store';
+import type { AccountTreeState } from './multichain-accounts/account-tree.types';
 import {
   getSelectedAccountGroupMultichainTransactions,
   selectCurrentAccountNonEvmTransactions,
 } from './multichain-transactions';
 
 // Mock account-tree selectors used by the selectors under test
-jest.mock('./multichain-accounts/account-tree', () => ({
-  getSelectedAccountGroup: jest.fn(() => 'group-1'),
-  getAccountGroupWithInternalAccounts: jest.fn(() => [
+jest.mock('./multichain-accounts/account-tree', () => {
+  const groups = [
     { id: 'group-1', accounts: [{ id: 'acc-1' }, { id: 'acc-2' }] },
     { id: 'group-2', accounts: [{ id: 'acc-x' }] },
-  ]),
-}));
+  ];
+  return {
+    getSelectedAccountGroup: jest.fn(() => 'group-1'),
+    getAccountGroupWithInternalAccounts: jest.fn(() => groups),
+  };
+});
 
 const SOLANA_MAINNET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 const SOLANA_DEVNET = 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1';
@@ -21,6 +25,10 @@ const BTC_MAINNET = 'bip122:000000000019d6689c085ae165831e93';
 
 type NonEvmTransactionsMap =
   MultichainTransactionsControllerState['nonEvmTransactions'];
+
+type MetaMaskReduxState = _MetaMaskReduxState & {
+  metamask: { accountTree: AccountTreeState };
+};
 
 function buildState(
   nonEvmTransactions: unknown,

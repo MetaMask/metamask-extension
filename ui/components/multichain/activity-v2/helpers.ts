@@ -1,10 +1,10 @@
 import type { Transaction } from '@metamask/keyring-api';
 import type {
+  Token,
   TokenAmount,
   TransactionGroup,
   TransactionViewModel,
 } from '../../../../shared/lib/multichain/types';
-import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 
 export type FlattenedItem =
   | { type: 'date-header'; date: number }
@@ -39,32 +39,27 @@ export function formatUnits(value: bigint, decimals: number) {
 // - For swaps (has both from and to): returns the "from" amount (negative)
 // - For sends: returns the "from" amount
 // - For receives: returns the "to" amount
-export function getTransferAmount(amounts: {
+export function getPrimaryAmount(amounts: {
   from?: TokenAmount;
   to?: TokenAmount;
 }): {
   amount?: `${number}`;
-  symbol?: string;
+  token?: Token;
 } {
   const { from, to } = amounts;
-  const hasFrom = from?.amount !== undefined && from?.decimal !== undefined;
-  const hasTo = to?.amount !== undefined && to?.decimal !== undefined;
 
   // For swaps or outgoing transactions, show the sent amount (from) as negative
-  if (hasFrom) {
-    const formatted = formatUnits(from.amount, from.decimal);
+  if (from) {
+    const formatted = formatUnits(from.amount, from.token.decimals);
     const amount = formatted.startsWith('-') ? formatted : `-${formatted}`;
-    return {
-      amount: amount as `${number}`,
-      symbol: from.symbol,
-    };
+    return { amount: amount as `${number}`, token: from.token };
   }
 
   // For incoming transactions, use to
-  if (hasTo) {
+  if (to) {
     return {
-      amount: formatUnits(to.amount, to.decimal) as `${number}`,
-      symbol: to.symbol,
+      amount: formatUnits(to.amount, to.token.decimals) as `${number}`,
+      token: to.token,
     };
   }
 
@@ -178,35 +173,19 @@ export function groupAndFlattenMergedTransactions(
 }
 
 export function calculateFiatFromMarketRates(
-  transaction: TransactionViewModel,
+  amount: string | undefined,
+  token: Token | undefined,
   marketRates: Record<number, Record<string, number>>,
 ) {
-  const { chainId, transferInformation, txParams } = transaction;
-  const { value } = txParams;
-
-  // Get token address - either from transferInformation or native token
-  const tokenAddress =
-    transferInformation?.contractAddress?.toLowerCase() ??
-    (value && value !== '0' && value !== '0x0'
-      ? NATIVE_TOKEN_ADDRESS
-      : undefined);
-
-  if (!tokenAddress || !marketRates[parseInt(chainId, 16)]?.[tokenAddress]) {
+  if (!amount || !token) {
     return null;
   }
 
-  // Extract amount to calculate fiat value
-  let amount = 0;
-  if (transferInformation) {
-    const raw = BigInt(transferInformation.amount ?? '0');
-    amount = parseFloat(formatUnits(raw, transferInformation.decimals ?? 18));
-  } else if (value && value !== '0' && value !== '0x0') {
-    amount = parseFloat(formatUnits(BigInt(value), 18));
-  }
-
-  if (amount === 0) {
+  const parsed = parseFloat(amount);
+  if (parsed === 0) {
     return null;
   }
 
-  return Math.abs(amount) * marketRates[parseInt(chainId, 16)][tokenAddress];
+  const rate = marketRates[parseInt(token.chainId, 16)]?.[token.address];
+  return rate ? Math.abs(parsed) * rate : null;
 }
