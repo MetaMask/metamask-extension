@@ -44,6 +44,8 @@ type MenuItemProps = {
   fontWeight?: FontWeight;
   textColor?: TextColor;
   to?: string;
+  /** React Router location state (e.g. { prevPath } for back navigation) */
+  state?: object;
   onClick?: () => void;
   subtitle?: string;
   disabled?: boolean;
@@ -74,6 +76,7 @@ const MenuItem = React.forwardRef<
       disabled,
       showInfoDot,
       to,
+      state,
     }: MenuItemProps,
     ref,
   ) => {
@@ -188,6 +191,7 @@ const MenuItem = React.forwardRef<
       ) : (
         <Link
           to={to}
+          state={state}
           className={baseClasses}
           data-testid={dataTestId}
           ref={ref as React.Ref<HTMLAnchorElement>}

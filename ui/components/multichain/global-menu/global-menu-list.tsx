@@ -111,6 +111,7 @@ export const GlobalMenuList = ({
                 fontWeight={FontWeight.Medium}
                 textColor={item.textColor}
                 to={isRouteItem(item) ? item.to : undefined}
+                state={isRouteItem(item) ? item.state : undefined}
                 onClick={item.onClick}
                 disabled={item.disabled}
                 showInfoDot={item.showInfoDot}

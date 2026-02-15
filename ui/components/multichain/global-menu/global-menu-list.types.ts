@@ -72,6 +72,10 @@ export type GlobalMenuRouteItem = GlobalMenuItemBase & {
    */
   to: string;
   /**
+   * Optional React Router location state (e.g. { prevPath } for back navigation)
+   */
+  state?: object;
+  /**
    * Optional onClick handler for side effects (e.g., closing menu, analytics)
    * Navigation happens automatically via the `to` prop
    */

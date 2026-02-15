@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import {
@@ -100,6 +100,7 @@ export function useGlobalMenuSections(
   const { trackEvent } = useContext(MetaMetricsContext);
   const { captureCommonExistingShieldSubscriptionEvents } =
     useSubscriptionMetrics();
+  const location = useLocation();
   const navigate = useNavigate();
 
   const basicFunctionality = useSelector(getUseExternalServices);
@@ -186,7 +187,9 @@ export function useGlobalMenuSections(
         read_count: notificationsReadCount,
       },
     });
-    navigate(NOTIFICATIONS_ROUTE);
+    navigate(
+      `${NOTIFICATIONS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
+    );
   }, [
     hasThirdPartyNotifySnaps,
     isMetamaskNotificationsEnabled,
@@ -197,6 +200,7 @@ export function useGlobalMenuSections(
     navigate,
     notificationsUnreadCount,
     notificationsReadCount,
+    location.pathname,
   ]);
 
   const handleSupportMenuClick = useCallback(() => {
@@ -401,8 +405,8 @@ export function useGlobalMenuSections(
           iconName: IconName.SecurityTick,
           label: t('allPermissions'),
           to: isGatorPermissionsRevocationFeatureEnabled()
-            ? GATOR_PERMISSIONS
-            : PERMISSIONS,
+            ? `${GATOR_PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`
+            : `${PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`,
           onClick: () => {
             trackEvent({
               event: MetaMetricsEventName.NavPermissionsOpened,
@@ -425,7 +429,7 @@ export function useGlobalMenuSections(
           id: 'global-menu-snaps',
           iconName: IconName.Snaps,
           label: t('snaps'),
-          to: SNAPS_ROUTE,
+          to: `${SNAPS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
           showInfoDot: snapsUpdatesAvailable,
         },
       ],
@@ -517,6 +521,7 @@ export function useGlobalMenuSections(
     return sections;
   }, [
     t,
+    location.pathname,
     basicFunctionality,
     isPopup,
     isSidepanel,
