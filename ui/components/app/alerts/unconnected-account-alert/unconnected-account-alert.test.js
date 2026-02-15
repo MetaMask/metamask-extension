@@ -219,4 +219,50 @@ describe('Unconnected Account Alert', () => {
       'unconnectedAccount/disableAlertSucceeded',
     );
   });
+
+  it('renders the checkbox as unchecked by default', () => {
+    const store = configureMockStore()(mockState);
+
+    const { getByRole } = renderWithProvider(
+      <UnconnectedAccountAlert />,
+      store,
+    );
+
+    const checkbox = getByRole('checkbox');
+    expect(checkbox.checked).toBe(false);
+  });
+
+  it('toggles checkbox checked state on multiple clicks', () => {
+    const store = configureMockStore()(mockState);
+
+    const { getByRole } = renderWithProvider(
+      <UnconnectedAccountAlert />,
+      store,
+    );
+
+    const checkbox = getByRole('checkbox');
+
+    expect(checkbox.checked).toBe(false);
+    fireEvent.click(checkbox);
+    expect(checkbox.checked).toBe(true);
+    fireEvent.click(checkbox);
+    expect(checkbox.checked).toBe(false);
+  });
+
+  it('dismisses without disabling when checkbox is not checked', () => {
+    const store = configureMockStore()(mockState);
+
+    const { getByText } = renderWithProvider(
+      <UnconnectedAccountAlert />,
+      store,
+    );
+
+    const dismissButton = getByText(/Dismiss/u);
+    fireEvent.click(dismissButton);
+
+    const dispatchedActions = store.getActions();
+    expect(dispatchedActions[0].type).toStrictEqual(
+      'unconnectedAccount/dismissAlert',
+    );
+  });
 });
