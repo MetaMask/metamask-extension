@@ -181,7 +181,7 @@ module.exports = {
           'error',
           {
             selector: 'default',
-            format: ['camelCase'],
+            format: ['camelCase', 'PascalCase'],
             leadingUnderscore: 'allow',
             trailingUnderscore: 'forbid',
           },
