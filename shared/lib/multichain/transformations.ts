@@ -17,6 +17,14 @@ import type {
   TokenAmount,
 } from './types';
 
+function safeBigInt(value: string) {
+  try {
+    return BigInt(value);
+  } catch {
+    return undefined;
+  }
+}
+
 export function mapTransactionToCategory(transactionType?: string) {
   switch (transactionType) {
     case 'ERC_20_APPROVE':
@@ -65,11 +73,17 @@ export function parseValueTransfers(
     };
 
     if (!result.from && from?.toLowerCase() === address && amount) {
-      result.from = { token, amount: -BigInt(amount) };
+      const parsed = safeBigInt(amount);
+      if (parsed !== undefined) {
+        result.from = { token, amount: -parsed };
+      }
     }
 
     if (!result.to && to?.toLowerCase() === address && amount) {
-      result.to = { token, amount: BigInt(amount) };
+      const parsed = safeBigInt(amount);
+      if (parsed !== undefined) {
+        result.to = { token, amount: parsed };
+      }
     }
 
     if (result.to && result.from) {
