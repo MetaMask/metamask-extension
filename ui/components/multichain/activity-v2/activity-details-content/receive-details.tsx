@@ -1,7 +1,7 @@
 import React from 'react';
-import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
+import type { TransactionViewModel } from '../../../../../shared/lib/multichain/types';
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { getTransferAmount } from '../helpers';
+import { getPrimaryAmount } from '../helpers';
 import { useEvmTokenIconUrl } from '../hooks';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -19,13 +19,13 @@ type Props = {
 
 export const ReceiveDetails = ({ transaction }: Props) => {
   const t = useI18nContext();
-  const { amount, symbol } = getTransferAmount(transaction.amounts ?? {});
+  const { amount, token } = getPrimaryAmount(transaction.amounts ?? {});
   const displayAmount = amount ? Number.parseFloat(amount) : 0;
 
   const tokenIconUrl = useEvmTokenIconUrl(
     transaction.chainId,
-    symbol,
-    transaction.transferInformation?.symbol === symbol
+    token?.symbol,
+    transaction.transferInformation?.symbol === token?.symbol
       ? transaction.transferInformation?.contractAddress
       : undefined,
   );
@@ -37,7 +37,7 @@ export const ReceiveDetails = ({ transaction }: Props) => {
       <TokenAmountBlock
         label={t('youReceived')}
         iconSrc={tokenIconUrl}
-        symbol={symbol ?? ''}
+        symbol={token?.symbol ?? ''}
         amount={Math.abs(displayAmount)}
         variant="received"
       />

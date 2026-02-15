@@ -1,7 +1,7 @@
 import React from 'react';
-import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
+import type { TransactionViewModel } from '../../../../../shared/lib/multichain/types';
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { getTransferAmount } from '../helpers';
+import { getPrimaryAmount } from '../helpers';
 import { useEvmTokenIconUrl } from '../hooks';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -21,14 +21,14 @@ type Props = {
 export const TransferDetails = ({ transaction }: Props) => {
   const { formatToken } = useFormatters();
   const t = useI18nContext();
-  const { amount, symbol } = getTransferAmount(transaction.amounts ?? {});
+  const { amount, token } = getPrimaryAmount(transaction.amounts ?? {});
   const displayAmount = amount ? Number.parseFloat(amount) : 0;
 
   const { chainId, hash, time, txParams } = transaction;
   const tokenIconUrl = useEvmTokenIconUrl(
     chainId,
-    symbol,
-    transaction.transferInformation?.symbol === symbol
+    token?.symbol,
+    transaction.transferInformation?.symbol === token?.symbol
       ? transaction.transferInformation?.contractAddress
       : undefined,
   );
@@ -44,7 +44,7 @@ export const TransferDetails = ({ transaction }: Props) => {
       <TokenAmountBlock
         label={t('youSent')}
         iconSrc={tokenIconUrl}
-        symbol={symbol ?? ''}
+        symbol={token?.symbol ?? ''}
         amount={Math.abs(displayAmount)}
         variant="sent"
       />

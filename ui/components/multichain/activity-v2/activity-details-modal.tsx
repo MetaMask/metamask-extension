@@ -11,7 +11,7 @@ import {
   getSelectedAddress,
   selectNetworkConfigurationByChainId,
 } from '../../../selectors/selectors';
-import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
+import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import { ApprovalDetails } from './activity-details-content/approval-details';
 import { ReceiveDetails } from './activity-details-content/receive-details';

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
+import type { TransactionViewModel } from '../../../../../shared/lib/multichain/types';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { formatUnits } from '../helpers';
 import { useFormatters } from '../../../../hooks/useFormatters';
@@ -35,16 +35,18 @@ export const SwapDetails = ({ transaction }: Props) => {
   const toData = transaction.amounts?.to;
 
   const fromAmount =
-    fromData?.amount && fromData?.decimal !== undefined
-      ? parseFloat(formatUnits(BigInt(fromData.amount), fromData.decimal))
+    fromData?.amount && fromData?.token.decimals !== undefined
+      ? parseFloat(
+          formatUnits(BigInt(fromData.amount), fromData.token.decimals),
+        )
       : 0;
-  const fromSymbol = fromData?.symbol || '';
+  const fromSymbol = fromData?.token.symbol || '';
 
   const toAmount =
-    toData?.amount && toData?.decimal !== undefined
-      ? parseFloat(formatUnits(BigInt(toData.amount), toData.decimal))
+    toData?.amount && toData?.token.decimals !== undefined
+      ? parseFloat(formatUnits(BigInt(toData.amount), toData.token.decimals))
       : 0;
-  const toSymbol = toData?.symbol || '';
+  const toSymbol = toData?.token.symbol || '';
 
   const fromIcon = useEvmTokenIconUrl(chainId, fromSymbol);
   const toIcon = useEvmTokenIconUrl(chainId, toSymbol);

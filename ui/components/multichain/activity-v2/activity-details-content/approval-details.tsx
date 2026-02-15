@@ -7,7 +7,7 @@ import {
   TextVariant,
   Text,
 } from '@metamask/design-system-react';
-import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
+import type { TransactionViewModel } from '../../../../../shared/lib/multichain/types';
 import { hexWEIToDecETH } from '../../../../../shared/modules/conversion.utils';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { useEvmTokenInfo } from '../hooks';
