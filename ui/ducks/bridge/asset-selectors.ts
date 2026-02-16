@@ -25,6 +25,7 @@ import {
   getAssetsRates,
 } from '../../selectors/assets';
 import { getInternalAccountByGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import { getAccountsByChainId } from '../../selectors/assets-migration';
 import { type BridgeAppState, getFromChains } from './selectors';
 import { type BridgeToken } from './types';
 import { getMaybeHexChainId, isTronEnergyOrBandwidthResource } from './utils';
@@ -127,11 +128,7 @@ const getERC20AssetsWithBalance = createSelector(
 );
 
 const getNativeAssetsWithBalance = createSelector(
-  [
-    getEvmAccountAddress,
-    getAllowedHexChainIds,
-    ({ metamask }) => metamask.accountsByChainId,
-  ],
+  [getEvmAccountAddress, getAllowedHexChainIds, getAccountsByChainId],
   (accountAddress, hexChainIds, balanceByChainIdByAccountAddress) => {
     const assetsWithBalance: BridgeToken[] = [];
     if (!accountAddress || !isStrictHexString(accountAddress)) {

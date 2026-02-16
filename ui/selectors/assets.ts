@@ -67,6 +67,7 @@ import {
   getSelectedMultichainNetworkConfiguration,
 } from './multichain/networks';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
+import { getAccountsByChainId } from './assets-migration';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -1294,7 +1295,7 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     currencyRates: metamask.currencyRates,
     currentCurrency: metamask.currentCurrency,
     networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
-    accountsByChainId: metamask.accountsByChainId,
+    accountsByChainId: getAccountsByChainId({ metamask }),
   };
 
   let multichainState = {
@@ -1314,6 +1315,14 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     conversionRates: metamask.conversionRates,
   };
   ///: END:ONLY_INCLUDE_IF
+
+  console.log('DEBUG XXXXX', {
+    ...initialState,
+    ...multichainState,
+    assetsInfo: metamask.assetsInfo,
+    assetsBalance: metamask.assetsBalance,
+    assetsPrice: metamask.assetsPrice,
+  });
 
   return {
     ...initialState,

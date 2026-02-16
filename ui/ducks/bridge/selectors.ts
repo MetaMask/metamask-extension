@@ -44,6 +44,7 @@ import {
   type AccountGroupObject,
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
+import { AssetsControllerState } from '@metamask/assets-controller';
 import { getHardwareWalletType } from '../../selectors/selectors';
 import {
   ALL_ALLOWED_BRIDGE_CHAIN_IDS,
@@ -116,7 +117,8 @@ export type BridgeAppState = {
     MultichainNetworkControllerState &
     TokenListState &
     RemoteFeatureFlagControllerState &
-    CurrencyRateState & {
+    CurrencyRateState &
+    AssetsControllerState & {
       useExternalServices: boolean;
     };
   bridge: BridgeState;
