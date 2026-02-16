@@ -39,7 +39,9 @@ describe(`migration #${VERSION}`, () => {
         },
       },
     });
-    expect(changedControllers).toStrictEqual(new Set(['PreferencesController']));
+    expect(changedControllers).toStrictEqual(
+      new Set(['PreferencesController']),
+    );
   });
 
   it('handles state when smartAccountOptIn is false', async () => {
@@ -69,7 +71,9 @@ describe(`migration #${VERSION}`, () => {
           }
         ).preferences,
     ).toBe(false);
-    expect(changedControllers).toStrictEqual(new Set(['PreferencesController']));
+    expect(changedControllers).toStrictEqual(
+      new Set(['PreferencesController']),
+    );
   });
 
   it('handles state when smartAccountOptIn does not exist', async () => {
