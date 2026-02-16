@@ -4357,6 +4357,14 @@ export function setUseSidePanelAsDefault(value: boolean) {
   return setPreference('useSidePanelAsDefault', value);
 }
 
+export function setShowDefaultAddress(value: boolean) {
+  return setPreference('showDefaultAddress', value);
+}
+
+export function setDefaultAddressScope(value: string) {
+  return setPreference('defaultAddressScope', value);
+}
+
 export function setAutoLockTimeLimit(value: number | null) {
   return setPreference('autoLockTimeLimit', value);
 }

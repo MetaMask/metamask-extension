@@ -97,12 +97,14 @@ type PreferencesControllerOptions = {
 export type Preferences = {
   autoLockTimeLimit?: number;
   avatarType?: 'maskicon' | 'jazzicon' | 'blockies';
+  defaultAddressScope: string;
   dismissSmartAccountSuggestionEnabled: boolean;
   featureNotificationsEnabled: boolean;
   hideZeroBalanceTokens: boolean;
   petnamesEnabled: boolean;
   privacyMode: boolean;
   showConfirmationAdvancedDetails: boolean;
+  showDefaultAddress: boolean;
   showExtensionInFullSizeView: boolean;
   showFiatInTestnets: boolean;
   showMultiRpcModal: boolean;
@@ -208,6 +210,8 @@ export const getDefaultPreferencesControllerState =
       petnamesEnabled: true,
       privacyMode: false,
       showConfirmationAdvancedDetails: false,
+      showDefaultAddress: false,
+      defaultAddressScope: 'eip155',
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
       showMultiRpcModal: false,
@@ -1023,6 +1027,18 @@ export class PreferencesController extends BaseController<
   setUseSidePanelAsDefault(value: boolean): void {
     this.update((state) => {
       state.preferences.useSidePanelAsDefault = value;
+    });
+  }
+
+  setShowDefaultAddress(value: boolean): void {
+    this.update((state) => {
+      state.preferences.showDefaultAddress = value;
+    });
+  }
+
+  setDefaultAddressScope(value: string): void {
+    this.update((state) => {
+      state.preferences.defaultAddressScope = value;
     });
   }
 
