@@ -67,6 +67,7 @@ class SnapInstall {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.connectButton,
         this.pageFooter,
         this.permissionConnect,
       ]);
