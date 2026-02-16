@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import isEqual from 'lodash/isEqual';
 import { isCrossChain } from '@metamask/bridge-controller';
@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import {
   isHardwareWallet,
   getHardwareWalletType,
+  getActiveQrCodeScanRequest,
 } from '../../../selectors/selectors';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import {
@@ -52,8 +53,10 @@ export default function AwaitingSignatures() {
   const bridgeHistory = useSelector(selectBridgeHistoryForAccountGroup);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
+  const activeQrCodeScanRequest = useSelector(getActiveQrCodeScanRequest);
   const needsTwoConfirmations = Boolean(activeQuote?.approval);
   const { trackEvent } = useContext(MetaMetricsContext);
+  const prevQrScanRequestRef = useRef<typeof activeQrCodeScanRequest>(null);
 
   // Use requestId from URL when popup state is lost (QR fullscreen flow).
   const requestIdFromLocation = useMemo(() => {
@@ -73,16 +76,40 @@ export default function AwaitingSignatures() {
     );
   }, [activeQuote?.quote?.requestId, bridgeHistory, requestIdFromLocation]);
 
+  // Navigate away when transaction completes (success or cancellation)
   useEffect(() => {
-    if (!hasSubmittedBridgeTx) {
+    // Success: Transaction is in bridge history
+    if (hasSubmittedBridgeTx) {
+      navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+        replace: true,
+        state: { stayOnHomePage: true },
+      });
       return;
     }
 
-    navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-      replace: true,
-      state: { stayOnHomePage: true },
-    });
-  }, [hasSubmittedBridgeTx, navigate]);
+    // Cancellation: QR scan was active, then cleared (fallback if error handler doesn't fire)
+    const prevQrScanRequest = prevQrScanRequestRef.current;
+    prevQrScanRequestRef.current = activeQrCodeScanRequest;
+
+    const qrScanWasCancelled =
+      prevQrScanRequest !== null &&
+      activeQrCodeScanRequest === null &&
+      requestIdFromLocation &&
+      !activeQuote;
+
+    if (qrScanWasCancelled) {
+      navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+        replace: true,
+        state: { stayOnHomePage: true },
+      });
+    }
+  }, [
+    hasSubmittedBridgeTx,
+    activeQrCodeScanRequest,
+    requestIdFromLocation,
+    activeQuote,
+    navigate,
+  ]);
 
   useEffect(() => {
     trackEvent({

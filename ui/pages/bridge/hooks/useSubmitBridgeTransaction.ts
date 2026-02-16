@@ -153,10 +153,12 @@ export default function useSubmitBridgeTransaction() {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
-        navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
+        navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`, {
+          replace: true,
+        });
       } else {
         navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-          state: { stayOnHomePage: true },
+          replace: true,
         });
       }
       return;
