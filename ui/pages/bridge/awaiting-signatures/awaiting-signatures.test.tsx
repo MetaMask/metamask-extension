@@ -3,7 +3,7 @@ import { act, waitFor } from '@testing-library/react';
 import { Reducer, AnyAction } from 'redux';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import configureStore from '../../../store/store';
+import configureStore, { MetaMaskReduxState } from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   createBridgeMockStore,
@@ -136,17 +136,19 @@ describe('AwaitingSignatures', () => {
 
       // Create real store with custom reducer to allow state updates
       const store = configureStore(initialBridgeMockStore);
-      const originalReducer = store.replaceReducer;
 
       // Custom reducer to handle state updates
-      const reducer: Reducer = (reduxState, action: AnyAction) => {
+      const reducer: Reducer<MetaMaskReduxState, AnyAction> = (
+        reduxState,
+        action,
+      ) => {
         const storeState = reduxState ?? store.getState();
 
         if (action.type === 'TEST_UPDATE_QR_SCAN_REQUEST') {
           return {
             ...storeState,
             metamask: {
-              ...(storeState as any).metamask,
+              ...storeState.metamask,
               activeQrCodeScanRequest: action.payload,
             },
           };
@@ -160,11 +162,7 @@ describe('AwaitingSignatures', () => {
       store.replaceReducer(reducer);
 
       // Render with initial state (QR scan active)
-      renderWithProvider(
-        <AwaitingSignatures />,
-        store,
-        pathname,
-      );
+      renderWithProvider(<AwaitingSignatures />, store, pathname);
 
       // Wait for initial render to complete and ref to be set
       await act(async () => {
@@ -248,6 +246,43 @@ describe('AwaitingSignatures', () => {
         `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(requestId)}`,
       );
 
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+    });
+
+    it('does not navigate when between approval and bridge steps in two-step flow', () => {
+      const requestId = 'test-request-id-two-step';
+      const bridgeMockStore = createBridgeMockStore({
+        bridgeStatusStateOverrides: {
+          txHistory: {
+            'tx-meta-id-approval': {
+              quote: {
+                requestId,
+              },
+              approvalTxId: 'approval-tx-id-123',
+              account: MOCK_EVM_ACCOUNT.address,
+            },
+          },
+        },
+        metamaskStateOverrides: {
+          activeQrCodeScanRequest: null,
+        },
+      });
+      const store = configureMockStore(middleware)(bridgeMockStore);
+
+      mockUseLocation.mockReturnValue({
+        pathname: `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
+        search: `?requestId=${encodeURIComponent(requestId)}`,
+        hash: '',
+        state: null,
+      });
+
+      renderWithProvider(
+        <AwaitingSignatures />,
+        store,
+        `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(requestId)}`,
+      );
+
+      // Should not navigate because we're between approval and bridge steps
       expect(mockUseNavigate).not.toHaveBeenCalled();
     });
 

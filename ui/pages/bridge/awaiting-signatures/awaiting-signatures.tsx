@@ -35,11 +35,7 @@ import {
   getToChain,
 } from '../../../ducks/bridge/selectors';
 import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
-import {
-  DEFAULT_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -75,9 +71,25 @@ export default function AwaitingSignatures() {
       return false;
     }
 
-    return Object.values(bridgeHistory).some(
-      (historyItem) => historyItem?.quote?.requestId === requestId,
+    // Find bridge history item for this requestId
+    const historyItem = Object.values(bridgeHistory).find(
+      (item) => item?.quote?.requestId === requestId,
     );
+
+    if (!historyItem) {
+      return false;
+    }
+
+    // In a two-step flow, a history item is created after approval with approvalTxId.
+    // If the history item has approvalTxId, it means approval is done but the bridge
+    // transaction hasn't been submitted yet (we're between steps).
+    // In that case, hasSubmittedBridgeTx should be false.
+    if (historyItem.approvalTxId !== undefined) {
+      return false;
+    }
+
+    // If no approvalTxId, the history item represents a submitted bridge transaction
+    return true;
   }, [activeQuote?.quote?.requestId, bridgeHistory, requestIdFromLocation]);
 
   // Check if we're between approval and bridge steps in a two-step flow
@@ -172,7 +184,16 @@ export default function AwaitingSignatures() {
         token_to_amount: activeQuote?.quote?.destTokenAmount ?? '',
       },
     });
-  }, []);
+  }, [
+    activeQuote?.quote?.destTokenAmount,
+    activeQuote?.quote?.srcTokenAmount,
+    fromToken?.symbol,
+    hardwareWalletType,
+    hardwareWalletUsed,
+    needsTwoConfirmations,
+    toToken?.symbol,
+    trackEvent,
+  ]);
 
   const isSwap =
     fromChain && !isCrossChain(fromChain.chainId, toChain?.chainId);
