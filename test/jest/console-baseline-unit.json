@@ -24,12 +24,21 @@
     "app/scripts/lib/createRPCMethodTrackingMiddleware.test.js": {
       "MetaMask: RPC middleware errors": 10
     },
+    "app/scripts/lib/dapp-swap/dapp-swap-middleware.test.ts": {
+      "error: Error: Error fetching dapp swap": 1,
+      "error: TypeError: fetchQuotes(...).then is not a": 1
+    },
     "app/scripts/lib/forwardRequestToSnap.test.ts": {
       "error: Error from onAfterRequest hook: Error:": 2
     },
     "app/scripts/lib/migrator/index.test.js": {
       "MetaMask: Migration skipped warnings": 2,
       "MetaMask: Migration state warnings": 1,
+      "error: Error: Migration #157: No INFURA_PROJECT_ID": 1,
+      "error: Error: Migration 184: NetworkController missing": 1,
+      "error: Error: Migration 186: Invalid NetworkController": 1,
+      "error: Error: Migration 189: Invalid NetworkController": 1,
+      "error: Error: Migration 193: SnapController not": 1,
       "error: Error: No INFURA_PROJECT_ID set!": 1,
       "warn: Migration 139: typeof state.SelectedNetworkController is": 1,
       "warn: Migration 183.1: currencyRates not found": 1,
@@ -78,7 +87,17 @@
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
     },
+    "app/scripts/migrations/092.2.test.ts": {
+      "error: Migration 92.2: Invalid NetworkController state:": 2
+    },
+    "app/scripts/migrations/113.test.ts": {
+      "error: Migration 113: Invalid PreferencesController state:": 1
+    },
+    "app/scripts/migrations/120.1.test.ts": {
+      "error: Migration 120.1: Invalid UserStorageController state:": 2
+    },
     "app/scripts/migrations/120.2.test.ts": {
+      "error: Error: Migration 120.2: Invalid PhishingController": 1,
       "error: Migration 120.2: Invalid SelectedNetworkController state": 4
     },
     "app/scripts/migrations/120.5.test.ts": {
@@ -100,6 +119,11 @@
     "app/scripts/migrations/157.test.ts": {
       "error: Error: Expected state.NetworkController to be": 1,
       "error: Error: Expected state.NetworkController.networkConfiguration...": 1,
+      "error: Error: Migration #157: Expected state.NetworkController": 1,
+      "error: Error: Migration #157: Expected state.NetworkController.netw...": 1,
+      "error: Error: Migration #157: Missing NetworkController": 1,
+      "error: Error: Migration #157: Missing state.NetworkController.netwo...": 1,
+      "error: Error: Migration #157: No INFURA_PROJECT_ID": 1,
       "error: Error: Missing NetworkController state": 1,
       "error: Error: Missing state.NetworkController.networkConfigurations...": 1,
       "error: Error: No INFURA_PROJECT_ID set!": 1
@@ -113,17 +137,48 @@
     "app/scripts/migrations/167.test.ts": {
       "MetaMask: Migration state warnings": 2
     },
+    "app/scripts/migrations/174.test.ts": {
+      "error: Error: Migration 174: Failed to": 1
+    },
     "app/scripts/migrations/176.test.ts": {
       "MetaMask: Migration skipped warnings": 3
+    },
+    "app/scripts/migrations/183.1.test.ts": {
+      "error: Error: Migration 183.1: CurrencyController is": 1,
+      "error: Error: Migration 183.1: currencyRates is": 1
+    },
+    "app/scripts/migrations/184.test.ts": {
+      "error: Error: Migration 184: NetworkController is": 1,
+      "error: Error: Migration 184: NetworkController missing": 1,
+      "error: Error: Migration 184: NetworkController not": 1,
+      "error: Error: Migration 184: NetworkController.networkConfiguration...": 1,
+      "error: Error: Migration 184: NetworkEnablementController is": 1,
+      "error: Error: Migration 184: NetworkEnablementController not": 2,
+      "error: Error: Migration 184: NetworkEnablementController.enabledNet...": 3
     },
     "app/scripts/migrations/185.test.ts": {
       "warn: Migration #185: Could not access": 2
     },
     "app/scripts/migrations/186.test.ts": {
+      "error: Error: Migration 186: Invalid NetworkController": 6,
+      "error: Error: Migration 186: Invalid NetworkEnablementController": 5,
       "warn: Migration 186: Missing or invalid": 13
+    },
+    "app/scripts/migrations/189.test.ts": {
+      "error: Error: Migration 189: Infura project": 1,
+      "error: Error: Migration 189: Invalid NetworkController": 6
+    },
+    "app/scripts/migrations/193.test.ts": {
+      "error: Error: Migration 193: SnapController is": 1,
+      "error: Error: Migration 193: SnapController missing": 1,
+      "error: Error: Migration 193: SnapController not": 1,
+      "error: Error: Migration 193: SnapController.snaps is": 1
     },
     "app/scripts/services/subscription/subscription-service.test.ts": {
       "Reselect: Identity function warnings": 1
+    },
+    "shared/lib/sentry.test.ts": {
+      "error: Error: Test error": 2
     },
     "shared/modules/bridge-utils/security-alerts-api.util.test.ts": {
       "warn: Missing token alert translation for": 1
@@ -327,11 +382,13 @@
     },
     "ui/components/app/identity/backup-and-sync-features-toggles/backup-and-sync-features-toggles.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
+      "error: Error: MetaMetrics context trackEvent was": 4,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 1,
+      "error: Error: MetaMetrics context trackEvent was": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/import-token/network-filter-import-token/index.test.tsx": {
@@ -362,6 +419,7 @@
     },
     "ui/components/app/modals/confirm-delete-network/confirm-delete-network.test.js": {
       "React: PropTypes validation failures": 1,
+      "error: Error: Insufficient number of substitutions": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/modals/confirm-remove-account/confirm-remove-account.test.js": {
@@ -382,6 +440,9 @@
     },
     "ui/components/app/modals/hold-to-reveal-modal/hold-to-reveal-modal.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/modals/identity/turn-on-backup-and-sync-modal/turn-on-backup-and-sync-modal.test.tsx": {
+      "error: Error: MetaMetrics context trackEvent was": 2
     },
     "ui/components/app/modals/keyring-snap-removal-modal/keyring-snap-removal-result-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
@@ -613,6 +674,7 @@
     },
     "ui/components/app/transaction-list-item/transaction-list-item.component.unified-swap-bridge.test.tsx": {
       "Reselect: Identity function warnings": 1,
+      "error: Error: Insufficient number of substitutions": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/transaction-list/transaction-list.test.js": {
@@ -631,10 +693,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/user-preferenced-currency-input/user-preferenced-currency-input.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/user-preferenced-token-input/user-preferenced-token-input.test.js": {
-      "MetaMask: Background connection not initialized": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/wallet-overview/eth-overview.test.js": {
@@ -704,8 +762,8 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain-accounts/multichain-account-list/multichain-account-list.test.tsx": {
-      "MetaMask: Background connection not initialized": 66,
-      "Reselect: Identity function warnings": 2,
+      "MetaMask: Background connection not initialized": 73,
+      "Reselect: Identity function warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain-accounts/multichain-account-menu-items/multichain-account-menu-items.test.tsx": {
@@ -1094,6 +1152,9 @@
       "React: Act warnings (component updates not wrapped)": 9,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/multichain/pages/review-permissions-page/site-cell/site-cell.test.tsx": {
+      "error: Error: MetaMetrics context trackEvent was": 4
+    },
     "ui/components/multichain/product-tour-popover/product-tour-popover.test.js": {
       "React: Act warnings (component updates not wrapped)": 3,
       "React: PropTypes validation failures": 2
@@ -1177,9 +1238,6 @@
       "MetaMask: Background connection not initialized": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/ui/token-input/token-input.component.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/ui/unit-input/unit-input.component.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1190,6 +1248,12 @@
     },
     "ui/contexts/hardware-wallets/HardwareWalletContext.test.tsx": {
       "Test errors: Uncaught Errors": 4
+    },
+    "ui/contexts/hardware-wallets/HardwareWalletErrorProvider.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/contexts/hardware-wallets/useHardwareWalletAutoConnect.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/contexts/metamask-notifications/metamask-notifications.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
@@ -1333,6 +1397,9 @@
     "ui/hooks/subscription/useAddFundTrigger.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/hooks/subscription/useSubscription.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/hooks/subscription/useSubscriptionPricing.test.ts": {
       "React: Act warnings (component updates not wrapped)": 1,
       "warn: ⚠️ React Router Future Flag": 2
@@ -1370,6 +1437,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/hooks/useMultiPolling.test.ts": {
+      "error: Error: Network error": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/hooks/useMultichainAccountTotalFiatBalance.test.tsx": {
@@ -1465,6 +1533,7 @@
       "React: Act warnings (component updates not wrapped)": 4,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
+      "Test errors: Uncaught Errors": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/prepare/bridge-cta-button.test.tsx": {
@@ -1472,7 +1541,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 3,
+      "React: Act warnings (component updates not wrapped)": 6,
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1493,6 +1562,7 @@
     "ui/pages/bridge/prepare/prepare-bridge-page.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
+      "Test errors: Uncaught Errors": 3,
       "Test errors: Uncaught TypeErrors": 1,
       "Third-party: Bindings failed, using pure JS": 1,
       "error: Warning: A component is changing": 2,
@@ -1945,7 +2015,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/shared/selected-gas-fee-token/selected-gas-fee-token.test.tsx": {
-      "MetaMask: Background connection not initialized": 66,
+      "MetaMask: Background connection not initialized": 78,
       "Reselect: Identity function warnings": 6,
       "Reselect: Input stability warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
@@ -2304,9 +2374,16 @@
     "ui/pages/confirmations/components/rows/pay-with-row/pay-with-row.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/components/rows/required-tokens-row/required-tokens-row.test.tsx": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/components/rows/total-row/total-row.test.tsx": {
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 2,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/rows/transaction-pay-section/transaction-pay-section.test.tsx": {
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/send/amount-recipient/amount-recipient.test.tsx": {
@@ -2399,6 +2476,7 @@
       "React: Act warnings (component updates not wrapped)": 19,
       "Reselect: Identity function warnings": 9,
       "Reselect: Input stability warnings": 3,
+      "Test errors: Uncaught Errors": 8,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/confirmation/alerts/useAlertActions.test.ts": {
@@ -2584,6 +2662,10 @@
     "ui/pages/confirmations/hooks/alerts/useTokenTrustSignalAlerts.test.ts": {
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 2,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/gas/useEstimationFailed.test.ts": {
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/gas/useGaslessSupportedSmartTransactions.test.ts": {
@@ -3168,7 +3250,8 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings/security-tab/metametrics-toggle/metametrics-toggle.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1
+      "React: componentWill* lifecycle deprecations": 1,
+      "error: Error: MetaMetrics context trackEvent was": 3
     },
     "ui/pages/settings/security-tab/reveal-srp-list/reveal-srp-list.test.tsx": {
       "Reselect: Identity function warnings": 2,
@@ -3294,6 +3377,7 @@
     },
     "ui/pages/swaps/list-with-search/list-with-search.test.js": {
       "React: PropTypes validation failures": 2,
+      "error: Error: Insufficient number of substitutions": 1,
       "error: Warning: React.createElement: type is invalid": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -3370,6 +3454,7 @@
     },
     "ui/pages/unlock-page/unlock-page.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
+      "error: Error: SeedlessOnboardingController - Authentication error": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/selectors/accounts.test.ts": {

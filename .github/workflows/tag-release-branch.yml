@@ -58,7 +58,7 @@ jobs:
           echo "Using version: ${VERSION}"
 
       - name: Checkout release branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ steps.determine-branch.outputs.branch }}
           fetch-depth: 0
