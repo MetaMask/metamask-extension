@@ -164,7 +164,7 @@ export const fetchMerklRewards = async ({
 /**
  * Simple in-memory cache for Merkl reward data.
  * Avoids redundant API calls when the same data is requested within a short
- * window (e.g. useMerklRewards fetches it, then claimRewards needs it again).
+ * window.
  */
 const rewardCache = new Map<
   string,
@@ -181,7 +181,7 @@ export const clearRewardCache = () => rewardCache.clear();
  * Fetch Merkl rewards for a specific asset.
  * For mUSD tokens, always fetches from Linea and looks for Linea mUSD rewards.
  * Results are cached for 30 seconds to speed up the claim flow when data was
- * recently fetched by useMerklRewards.
+ * recently fetched.
  *
  * @param tokenAddress - The token's contract address
  * @param chainId - The chain where the token is held

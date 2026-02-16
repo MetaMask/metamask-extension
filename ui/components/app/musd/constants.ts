@@ -44,6 +44,3 @@ export const ELIGIBLE_TOKENS: Record<string, string[]> = {
 
 /** Remote feature flag key for Merkl campaign claiming */
 export const MERKL_FEATURE_FLAG_KEY = 'earnMerklCampaignClaiming';
-
-/** mUSD conversion bonus terms of use URL */
-export const MUSD_BONUS_TERMS_URL = 'https://consensys.io/terms-of-use';
