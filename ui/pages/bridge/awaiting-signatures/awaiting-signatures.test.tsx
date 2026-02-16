@@ -1,7 +1,9 @@
 import React from 'react';
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
+import { Reducer, AnyAction } from 'redux';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   createBridgeMockStore,
@@ -106,11 +108,87 @@ describe('AwaitingSignatures', () => {
   });
 
   describe('navigation on QR scan cancellation', () => {
-    // Note: Testing QR scan cancellation state transition requires complex store updates.
-    // The cancellation logic is covered by:
-    // 1. Integration/E2E tests (fullscreen QR flow)
-    // 2. Manual testing
-    // The negative cases below ensure we don't navigate prematurely
+    it('navigates to activity when QR scan is cancelled', async () => {
+      const requestId = 'test-request-id-789';
+      const pathname = `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(requestId)}`;
+
+      mockUseLocation.mockReturnValue({
+        pathname: `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
+        search: `?requestId=${encodeURIComponent(requestId)}`,
+        hash: '',
+        state: null,
+      });
+
+      // Create initial state with QR scan active
+      const initialBridgeMockStore = createBridgeMockStore({
+        bridgeStatusStateOverrides: {
+          txHistory: {},
+        },
+        metamaskStateOverrides: {
+          activeQrCodeScanRequest: {
+            type: 'sign',
+            request: {
+              requestId: 'qr-request-id',
+            },
+          },
+        },
+      });
+
+      // Create real store with custom reducer to allow state updates
+      const store = configureStore(initialBridgeMockStore);
+      const originalReducer = store.replaceReducer;
+
+      // Custom reducer to handle state updates
+      const reducer: Reducer = (reduxState, action: AnyAction) => {
+        const storeState = reduxState ?? store.getState();
+
+        if (action.type === 'TEST_UPDATE_QR_SCAN_REQUEST') {
+          return {
+            ...storeState,
+            metamask: {
+              ...(storeState as any).metamask,
+              activeQrCodeScanRequest: action.payload,
+            },
+          };
+        }
+        // For other actions, use the original reducer logic
+        // Since we can't easily access the original reducer, we'll just return current state
+        // This is acceptable for this test since we only need to test the QR scan cancellation
+        return storeState;
+      };
+
+      store.replaceReducer(reducer);
+
+      // Render with initial state (QR scan active)
+      renderWithProvider(
+        <AwaitingSignatures />,
+        store,
+        pathname,
+      );
+
+      // Wait for initial render to complete and ref to be set
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      // Update store to clear QR scan request (simulating cancellation)
+      await act(async () => {
+        store.dispatch({
+          type: 'TEST_UPDATE_QR_SCAN_REQUEST',
+          payload: null,
+        });
+      });
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          `${DEFAULT_ROUTE}?tab=activity`,
+          {
+            replace: true,
+            state: { stayOnHomePage: true },
+          },
+        );
+      });
+    });
 
     it('does not navigate when QR scan is still active', () => {
       const requestId = 'test-request-id-abc';

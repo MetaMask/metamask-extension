@@ -165,6 +165,7 @@ export default function useSubmitBridgeTransaction() {
     }
 
     navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+      replace: true,
       state: { stayOnHomePage: true },
     });
   };
