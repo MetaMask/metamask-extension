@@ -13,6 +13,10 @@ import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import {
+  getTestSpecificMock,
+  shouldUseMockedRequests,
+} from '../../utils/mock-config';
 import { BENCHMARK_PERSONA, WITH_STATE_POWER_USER } from '../../utils';
 import { BENCHMARK_TYPE } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
@@ -35,9 +39,10 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
-        useMockingPassThrough: true,
+        useMockingPassThrough: !shouldUseMockedRequests(),
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
+        testSpecificMock: getTestSpecificMock(),
       },
       async ({ driver }: { driver: Driver }) => {
         const timer = new TimerHelper('assetClickToPriceChart');
@@ -64,11 +69,11 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         // Switch to Ethereum Mainnet network
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
 
-        // Wait for token list to update after network switch
-        // Power user state has ETH + ERC20 tokens on Ethereum
+        // Wait for token list to refresh after network switch
         await assetListPage.checkTokenListIsDisplayed();
 
         await assetListPage.clickOnAsset('Ethereum');
+
         // Measure: Asset click to price chart loaded
         await timer.measure(async () => {
           await assetListPage.checkPriceChartIsShown();
