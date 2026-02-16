@@ -4,7 +4,11 @@ import { Driver } from '../../webdriver/driver';
 import DeepLink from '../../page-objects/pages/deep-link-page';
 import LoginPage from '../../page-objects/pages/login-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { bytesToB64, generateECDSAKeyPair, generateScenariosForRoutes } from './helpers';
+import {
+  bytesToB64,
+  generateECDSAKeyPair,
+  generateScenariosForRoutes
+} from './helpers';
 import {
   getConfig,
   prepareDeepLinkUrl,
