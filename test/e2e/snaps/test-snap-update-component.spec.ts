@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import {
   mockWebpackPluginOldSnap,
   mockWebpackPluginSnap,
@@ -28,7 +28,7 @@ describe('Test Snap update via snaps component', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: mockSnaps,
         title: this.test?.fullTitle(),
       },

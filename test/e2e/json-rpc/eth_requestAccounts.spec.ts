@@ -3,6 +3,7 @@ import { WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
 import LoginPage from '../page-objects/pages/login-page';
 import ConnectAccountConfirmation from '../page-objects/pages/confirmations/connect-account-confirmation';
@@ -77,7 +78,7 @@ describe('eth_requestAccounts', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

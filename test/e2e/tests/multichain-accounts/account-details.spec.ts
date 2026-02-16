@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import { WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
@@ -123,7 +123,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
     it('should show the correct private key from global menu', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {

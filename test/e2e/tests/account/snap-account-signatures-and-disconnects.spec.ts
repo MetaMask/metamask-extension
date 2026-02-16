@@ -3,7 +3,7 @@ import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -24,7 +24,7 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
           numberOfTestDapps: 1,
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: async (mockServer: Mockttp) => {
           const snapMocks = await mockSnapSimpleKeyringAndSite(
             mockServer,

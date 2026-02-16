@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import MultichainAccountDetailsPage from '../page-objects/pages/multichain/multichain-account-details-page';
@@ -278,7 +279,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
     it("will show the 'Watch an Ethereum account (Beta)' option when setting is enabled", async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
@@ -318,7 +319,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
     it('enables and then disables the toggle and the option to add a watch-only account behaves as expected', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
