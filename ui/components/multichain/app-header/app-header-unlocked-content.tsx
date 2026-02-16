@@ -212,9 +212,6 @@ export const AppHeaderUnlockedContent = ({
           <Box
             marginTop={1}
             marginLeft={2}
-            padding={1}
-            borderRadius={BorderRadius.LG}
-            backgroundColor={BackgroundColor.backgroundMuted}
             style={{ width: 'fit-content' }}
             data-testid="networks-subtitle-test-id"
           >

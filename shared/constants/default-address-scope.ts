@@ -14,15 +14,12 @@ export const DEFAULT_ADDRESS_SCOPE_OPTIONS = [
 export type DefaultAddressScopeValue =
   (typeof DEFAULT_ADDRESS_SCOPE_OPTIONS)[number]['value'];
 
-/** Message key for the "Default: X" label in the hover popover (short label per scope) */
-export const DEFAULT_ADDRESS_SCOPE_DISPLAY_KEY: Record<
-  string,
-  string
-> = {
-  eip155: 'networkNameEthereum',
-  solana: 'networkNameSolana',
-  bip122: 'networkNameBitcoin',
-  tron: 'networkNameTron',
-};
-
-export const DEFAULT_ADDRESS_SCOPE_FALLBACK_LABEL = 'networkNameEthereum';
+/**
+ * Message key for the "Default: X" label in the hover popover.
+ * Derived from options so scope values (eip155, bip122, etc.) always use
+ * the same i18n keys as the Settings dropdown.
+ */
+export const DEFAULT_ADDRESS_SCOPE_DISPLAY_KEY: Record<string, string> =
+  Object.fromEntries(
+    DEFAULT_ADDRESS_SCOPE_OPTIONS.map((opt) => [opt.value, opt.messageKey]),
+  );

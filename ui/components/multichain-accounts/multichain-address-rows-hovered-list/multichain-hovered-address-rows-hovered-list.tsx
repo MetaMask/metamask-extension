@@ -5,37 +5,56 @@ import React, {
   useState,
   useEffect,
 } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   Box,
   BoxAlignItems,
+  BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
-  Button,
-  ButtonSize,
-  ButtonVariant,
   FontWeight,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
-import { Popover, PopoverPosition } from '../../component-library';
+import { shortenAddress } from '../../../helpers/utils/util';
+import {
+  Popover,
+  PopoverPosition,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '../../component-library';
+import ToggleButton from '../../ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import {
   getAllAccountGroups,
   getInternalAccountListSpreadByScopesByGroupId,
 } from '../../../selectors/multichain-accounts/account-tree';
-import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  GENERAL_ROUTE,
+  MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
+} from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ADDRESS_SCOPE_DISPLAY_KEY,
+} from '../../../../shared/constants/default-address-scope';
+import { getPreferences } from '../../../selectors';
+import { setShowDefaultAddress } from '../../../store/actions';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { useFormatters } from '../../../hooks/useFormatters';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
 import { MultichainAggregatedAddressListRow } from './multichain-aggregated-list-row';
 
 // Priority networks that should appear first (using CAIP chain IDs)
@@ -80,20 +99,35 @@ export const MultichainHoveredAddressRowsList = ({
   onViewAllClick,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
 
   // useCopyToClipboard analysis: Copies one of your public addresses
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const navigate = useNavigate();
+  const { showDefaultAddress, defaultAddressScope } = useSelector((state) => {
+    const prefs = getPreferences(state as { metamask: any });
+    return {
+      showDefaultAddress: prefs.showDefaultAddress,
+      defaultAddressScope: prefs.defaultAddressScope,
+    };
+  });
+  const defaultScopeDisplayLabel = t(
+    DEFAULT_ADDRESS_SCOPE_DISPLAY_KEY[defaultAddressScope],
+  );
   const [isHoverOpen, setIsHoverOpen] = useState(false);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const [defaultAddressCopied, setDefaultAddressCopied] = useState(false);
+  const defaultAddressCopiedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
     null,
   );
   const [dynamicPosition, setDynamicPosition] = useState<PopoverPosition>(
     PopoverPosition.BottomStart,
   );
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const allAccountGroups = useSelector(getAllAccountGroups);
 
+  const allAccountGroups = useSelector(getAllAccountGroups);
   const allBalances = useSelector(selectBalanceForAllWallets);
   const { balance, currency, accountGroup } = useMemo(() => {
     const group = allAccountGroups.find((g) => g.id === groupId);
@@ -240,6 +274,42 @@ export const MultichainHoveredAddressRowsList = ({
     [],
   );
 
+  const sortedAccountsByNetworkByGroupId = useMemo(
+    () => sortByPriorityNetworks(getAccountsSpreadByNetworkByGroupId),
+    [getAccountsSpreadByNetworkByGroupId, sortByPriorityNetworks],
+  );
+
+  const defaultAccount = useMemo(
+    () =>
+      sortedAccountsByNetworkByGroupId.find((item) =>
+        item.scopes.some((s) => String(s).startsWith(defaultAddressScope)),
+      ),
+    [sortedAccountsByNetworkByGroupId, defaultAddressScope],
+  );
+
+  const handleDefaultAddressClick = useCallback(() => {
+    if (!defaultAccount) {
+      return;
+    }
+    if (defaultAddressCopiedTimeoutRef.current) {
+      clearTimeout(defaultAddressCopiedTimeoutRef.current);
+    }
+    handleCopy(normalizeSafeAddress(defaultAccount.account.address));
+    setDefaultAddressCopied(true);
+    defaultAddressCopiedTimeoutRef.current = setTimeout(() => {
+      setDefaultAddressCopied(false);
+      defaultAddressCopiedTimeoutRef.current = null;
+    }, 2000);
+  }, [defaultAccount, handleCopy]);
+
+  useEffect(() => {
+    return () => {
+      if (defaultAddressCopiedTimeoutRef.current) {
+        clearTimeout(defaultAddressCopiedTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const renderAddressItem = useCallback(
     (
       item: {
@@ -278,27 +348,76 @@ export const MultichainHoveredAddressRowsList = ({
     [groupId, navigate, onViewAllClick],
   );
 
-  const renderedRows = useMemo(() => {
-    const rows = sortByPriorityNetworks(getAccountsSpreadByNetworkByGroupId);
-    return rows.map((item, index) => renderAddressItem(item, index));
-  }, [
-    getAccountsSpreadByNetworkByGroupId,
-    renderAddressItem,
-    sortByPriorityNetworks,
-  ]);
+  const renderedRows = useMemo(
+    () =>
+      sortedAccountsByNetworkByGroupId.map((item, index) => renderAddressItem(item, index)),
+    [sortedAccountsByNetworkByGroupId, renderAddressItem],
+  );
 
-  return (
-    <>
+  const triggerContent =
+    showDefaultAddress && defaultAccount ? (
+      <Box
+        ref={setReferenceElement}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleDefaultAddressClick}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        backgroundColor={
+          defaultAddressCopied
+          ? BoxBackgroundColor.SuccessMuted
+          : BoxBackgroundColor.BackgroundMuted
+        }
+        padding={1}
+        gap={1}
+        className="cursor-pointer rounded-lg"
+        data-testid="default-address-trigger"
+      >
+        <MultichainAccountNetworkGroup
+          groupId={groupId}
+          chainIds={defaultAccount.scopes.slice(0, MAX_NETWORK_AVATARS)}
+          limit={MAX_NETWORK_AVATARS}
+        />
+        <Text
+          variant={TextVariant.BodyXs}
+          color={
+            defaultAddressCopied ? TextColor.SuccessDefault : TextColor.TextAlternative
+          }
+        >
+          {defaultAddressCopied
+            ? t('addressCopied')
+            : shortenAddress(
+                normalizeSafeAddress(defaultAccount.account.address),
+              )}
+        </Text>
+        <Icon
+          name={defaultAddressCopied ? IconName.CopySuccess : IconName.Copy}
+          size={IconSize.Sm}
+          color={
+            defaultAddressCopied ? IconColor.SuccessDefault : IconColor.IconAlternative
+          }
+          aria-label={t('copyAddressShort')}
+        />
+      </Box>
+    ) : (
       <Box
         ref={setReferenceElement}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
+        backgroundColor={BoxBackgroundColor.BackgroundMuted}
+        padding={1}
         gap={1}
+        className="rounded-lg"
       >
         {children}
       </Box>
+    );
+
+  return (
+    <>
+      {triggerContent}
       <Popover
         referenceElement={referenceElement}
         isOpen={isHoverOpen}
@@ -342,25 +461,76 @@ export const MultichainHoveredAddressRowsList = ({
             </Box>
           )}
           <Box marginBottom={2}>{renderedRows}</Box>
+          <Button
+            size={ButtonSize.Sm}
+            variant={ButtonVariant.Secondary}
+            onClick={handleViewAllClick}
+            style={{ width: '100%' }}
+            className="multichain-address-rows-view-all-button"
+            data-testid="multichain-address-rows-view-all-button"
+          >
+            <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+              {t('multichainAddressViewAll')}
+            </Text>
+          </Button>
           <Box
-            paddingBottom={1}
+            marginBottom={3}
+            marginTop={3}
             className="multichain-address-rows-border"
             style={{
               borderTop: '1px solid var(--color-border-muted)',
             }}
-          />
-          <Box>
-            <Button
-              size={ButtonSize.Sm}
-              variant={ButtonVariant.Tertiary}
-              onClick={handleViewAllClick}
-              style={{ width: '100%' }}
-              className="multichain-address-rows-view-all-button"
+          >
+            <Box paddingVertical={3} paddingHorizontal={4}>
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              alignItems={BoxAlignItems.Center}
+              marginBottom={2}
             >
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {t('multichainAddressViewAll')}
-              </Text>
-            </Button>
+              <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.TextDefault}
+                >
+                  {t('showDefaultAddress')}
+                </Text>
+                <Box flexDirection={BoxFlexDirection.Row} gap={1}>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
+                  >
+                    {t('default')}: {defaultScopeDisplayLabel}
+                  </Text>
+                  <Button
+                    size={ButtonSize.Sm}
+                    variant={ButtonVariant.Link}
+                    onClick={(e: React.MouseEvent) => {
+                      e.stopPropagation();
+                      navigate(`${GENERAL_ROUTE}#show-default-address`);
+                    }}
+                    style={{ padding: 0, minWidth: 0 }}
+                    data-testid="change-in-settings-link"
+                  >
+                    <Text
+                      variant={TextVariant.BodySm}
+                      fontWeight={FontWeight.Medium}
+                    >
+                      {t('changeInSettings')}
+                    </Text>
+                  </Button>
+                </Box>
+              </Box>
+              <ToggleButton
+                value={showDefaultAddress}
+                onToggle={(value: boolean) =>
+                  dispatch(setShowDefaultAddress(!value))
+                }
+                dataTestId="show-default-address-toggle"
+              />
+            </Box>
+            </Box>
           </Box>
         </Box>
       </Popover>

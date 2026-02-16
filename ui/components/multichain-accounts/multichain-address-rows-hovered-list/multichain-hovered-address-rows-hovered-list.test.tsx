@@ -683,9 +683,9 @@ describe('MultichainHoveredAddressRowsList', () => {
         ).toBeInTheDocument();
       });
 
-      const buttons = screen.getAllByRole('button');
-      expect(buttons.length).toBeGreaterThan(0);
-      const viewAllButton = buttons[buttons.length - 1];
+      const viewAllButton = screen.getByTestId(
+        'multichain-address-rows-view-all-button',
+      );
       expect(viewAllButton).toBeInTheDocument();
     });
 
@@ -700,8 +700,9 @@ describe('MultichainHoveredAddressRowsList', () => {
         ).toBeInTheDocument();
       });
 
-      const buttons = screen.getAllByRole('button');
-      const viewAllButton = buttons[buttons.length - 1];
+      const viewAllButton = screen.getByTestId(
+        'multichain-address-rows-view-all-button',
+      );
 
       fireEvent.click(viewAllButton);
 
@@ -740,8 +741,9 @@ describe('MultichainHoveredAddressRowsList', () => {
         ).toBeInTheDocument();
       });
 
-      const buttons = screen.getAllByRole('button');
-      const viewAllButton = buttons[buttons.length - 1];
+      const viewAllButton = screen.getByTestId(
+        'multichain-address-rows-view-all-button',
+      );
 
       fireEvent.click(viewAllButton);
 
@@ -762,8 +764,9 @@ describe('MultichainHoveredAddressRowsList', () => {
         ).toBeInTheDocument();
       });
 
-      const buttons = screen.getAllByRole('button');
-      const viewAllButton = buttons[buttons.length - 1];
+      const viewAllButton = screen.getByTestId(
+        'multichain-address-rows-view-all-button',
+      );
 
       fireEvent.click(viewAllButton);
 
