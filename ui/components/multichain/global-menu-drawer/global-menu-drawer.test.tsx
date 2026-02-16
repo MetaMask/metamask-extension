@@ -62,7 +62,11 @@ describe('GlobalMenuDrawer', () => {
   it('renders children when open', async () => {
     const onClose = jest.fn();
     const { getByText, getByTestId } = renderWithProvider(
-      <GlobalMenuDrawer isOpen onClose={onClose} data-testid="global-menu-drawer">
+      <GlobalMenuDrawer
+        isOpen
+        onClose={onClose}
+        data-testid="global-menu-drawer"
+      >
         <span>Drawer content</span>
       </GlobalMenuDrawer>,
       configureStore(mockState),
@@ -79,7 +83,11 @@ describe('GlobalMenuDrawer', () => {
   it('calls onClose when close button is clicked', async () => {
     const onClose = jest.fn();
     const { getByTestId } = renderWithProvider(
-      <GlobalMenuDrawer isOpen onClose={onClose} data-testid="global-menu-drawer">
+      <GlobalMenuDrawer
+        isOpen
+        onClose={onClose}
+        data-testid="global-menu-drawer"
+      >
         <span>Content</span>
       </GlobalMenuDrawer>,
       configureStore(mockState),
@@ -97,7 +105,11 @@ describe('GlobalMenuDrawer', () => {
   it('calls onClose when Escape key is pressed', async () => {
     const onClose = jest.fn();
     renderWithProvider(
-      <GlobalMenuDrawer isOpen onClose={onClose} data-testid="global-menu-drawer">
+      <GlobalMenuDrawer
+        isOpen
+        onClose={onClose}
+        data-testid="global-menu-drawer"
+      >
         <span>Content</span>
       </GlobalMenuDrawer>,
       configureStore(mockState),
@@ -105,7 +117,9 @@ describe('GlobalMenuDrawer', () => {
     );
 
     await waitFor(() => {
-      expect(document.querySelector('[data-testid="global-menu-drawer"]')).toBeInTheDocument();
+      expect(
+        document.querySelector('[data-testid="global-menu-drawer"]'),
+      ).toBeInTheDocument();
     });
 
     fireEvent.keyDown(document, { key: 'Escape' });
