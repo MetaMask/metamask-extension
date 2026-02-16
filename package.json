@@ -147,6 +147,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@unrs/resolver-binding-wasm32-wasi": "file:./development/empty-package",
     "jest-clean-console-reporter/chalk": "^4.1.2",
     "chokidar": "^3.6.0",
     "@types/react": "^17.0.11",
