@@ -207,6 +207,7 @@
     "@json-schema-tools/reference-resolver@npm:1.2.4": "patch:@json-schema-tools/reference-resolver@npm%3A1.2.6#~/.yarn/patches/@json-schema-tools-reference-resolver-npm-1.2.6-4e1497c16d.patch",
     "@json-schema-tools/reference-resolver@npm:^1.2.4": "patch:@json-schema-tools/reference-resolver@npm%3A1.2.6#~/.yarn/patches/@json-schema-tools-reference-resolver-npm-1.2.6-4e1497c16d.patch",
     "@json-schema-tools/reference-resolver@npm:^1.2.1": "patch:@json-schema-tools/reference-resolver@npm%3A1.2.6#~/.yarn/patches/@json-schema-tools-reference-resolver-npm-1.2.6-4e1497c16d.patch",
+    "@metamask/assets-controller@^1.0.0": "npm:@metamask-previews/assets-controller@1.0.0-preview-1ad6631",
     "path-to-regexp": "1.9.0",
     "@ledgerhq/cryptoassets-evm-signatures/axios": "patch:axios@npm%3A1.13.5#~/.yarn/patches/axios-npm-1.13.5-ed8865f696.patch",
     "@ledgerhq/domain-service/axios": "patch:axios@npm%3A1.13.5#~/.yarn/patches/axios-npm-1.13.5-ed8865f696.patch",
@@ -251,6 +252,12 @@
     "@ledgerhq/hw-transport-webhid@npm:^6.31.0": "patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch",
     "fast-xml-parser": "^5.3.4",
     "@metamask/snaps-controllers": "^18.0.0"
+  },
+  "previewBuilds": {
+    "@metamask/assets-controller": {
+      "type": "non-breaking",
+      "previewVersion": "1.0.0-preview-1ad6631"
+    }
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",

@@ -649,15 +649,16 @@ export default class MetamaskController extends EventEmitter {
       // because TokenRatesController depends on NetworkEnablementController:getState during construction.
       MultichainNetworkController: MultichainNetworkControllerInit,
       NetworkEnablementController: NetworkEnablementControllerInit,
+      // Must be init before `AccountTreeController` to migrate existing pinned and hidden state to the new account tree controller.
+      AccountOrderController: AccountOrderControllerInit,
+      // Must be init before `AssetsController` so that AccountTreeController:getAccountsFromSelectedAccountGroup is registered
+      // before AssetsController constructor calls it. FIXME: Must be init before `MultichainAccountService` to make sure
+      // account-tree is updated before reacting to any `:multichainAccountGroup*` events.
+      AccountTreeController: AccountTreeControllerInit,
       ...(shouldInitAssetsController
         ? { AssetsController: AssetsControllerInit }
         : {}),
       TokenRatesController: TokenRatesControllerInit,
-      // Must be init before `AccountTreeController` to migrate existing pinned and hidden state to the new account tree controller.
-      AccountOrderController: AccountOrderControllerInit,
-      // FIXME: Must be init before `MultichainAccountService` to make sure account-tree is updated before
-      // reacting to any `:multichainAccountGroup*` events.
-      AccountTreeController: AccountTreeControllerInit,
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,

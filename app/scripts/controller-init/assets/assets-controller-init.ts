@@ -121,7 +121,21 @@ export const AssetsControllerInit: ControllerInitFunction<
     state: persistedState.AssetsController,
     isEnabled,
     queryApiClient: getApiClient(initMessenger),
-    rpcDataSourceConfig: { tokenDetectionEnabled },
+    rpcDataSourceConfig: {
+      tokenDetectionEnabled: () => tokenDetectionEnabled,
+      balanceInterval: 10000,
+      detectionInterval: 10000,
+    },
+    priceDataSourceConfig: {
+      pollInterval: 180_000,
+    },
+    isBasicFunctionality: () =>
+      initMessenger.call('PreferencesController:getState')
+        .useExternalServices as boolean,
+    stakedBalanceDataSourceConfig: {
+      pollInterval: 30_000,
+      enabled: true,
+    },
   });
 
   return { controller };

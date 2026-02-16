@@ -24,6 +24,7 @@ export const AssetsContractControllerInit: ControllerInitFunction<
   const controller = new AssetsContractController({
     messenger: controllerMessenger,
     chainId: getGlobalChainId(initMessenger),
+
   });
 
   return {
