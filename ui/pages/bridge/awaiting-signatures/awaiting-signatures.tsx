@@ -88,6 +88,7 @@ export default function AwaitingSignatures() {
     }
 
     // Cancellation: QR scan was active, then cleared (fallback if error handler doesn't fire)
+    // Only navigate if we're not in the middle of a two-step approval flow
     const prevQrScanRequest = prevQrScanRequestRef.current;
     prevQrScanRequestRef.current = activeQrCodeScanRequest;
 
@@ -95,7 +96,9 @@ export default function AwaitingSignatures() {
       prevQrScanRequest !== null &&
       activeQrCodeScanRequest === null &&
       requestIdFromLocation &&
-      !activeQuote;
+      !activeQuote &&
+      // Don't navigate if we're between approval and bridge steps in two-step flow
+      (!needsTwoConfirmations || hasSubmittedBridgeTx);
 
     if (qrScanWasCancelled) {
       navigate(`${DEFAULT_ROUTE}?tab=activity`, {
@@ -108,6 +111,7 @@ export default function AwaitingSignatures() {
     activeQrCodeScanRequest,
     requestIdFromLocation,
     activeQuote,
+    needsTwoConfirmations,
     navigate,
   ]);
 
