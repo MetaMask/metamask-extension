@@ -5,6 +5,11 @@ import { regularDelayMs } from '../../helpers';
 class SnapSimpleKeyringPage {
   private readonly driver: Driver;
 
+  private readonly acceptThirdPartyNotice = {
+    tag: 'button',
+    text: 'Accept',
+  };
+
   private readonly accountCreatedMessage = {
     text: 'Account created',
     tag: 'h3',
@@ -126,6 +131,10 @@ class SnapSimpleKeyringPage {
 
   private readonly snapInstallScrollButton =
     '[data-testid="snap-install-scroll"]';
+
+  private readonly thirdPartyNoticeScrollButton = {
+    testId: 'snap-privacy-warning-scroll',
+  };
 
   private readonly useSyncApprovalToggle =
     '[data-testid="use-sync-flow-toggle"]';
@@ -287,6 +296,9 @@ class SnapSimpleKeyringPage {
     await this.driver.clickElement(this.connectButton);
 
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    // once all specs use FixtureBuilderV2, we can switch this method for clickElementAndWaitToDisappear (MMQA-1386)
+    await this.driver.clickElementSafe(this.thirdPartyNoticeScrollButton);
+    await this.driver.clickElementSafe(this.acceptThirdPartyNotice);
     await this.driver.clickElement(this.confirmConnectionButton);
 
     // set a bigger timeout to wait for element as a temporary fix to reduce flakiness
