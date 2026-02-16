@@ -94,7 +94,9 @@ export default function OnboardingFlowSwitch() {
         />
       );
     } else {
-      redirect = <Navigate to={ONBOARDING_WELCOME_ROUTE} replace />;
+      throw new Error(
+        'This should be unreachable code, so something is wrong with the build type',
+      );
     }
 
     return redirect;
