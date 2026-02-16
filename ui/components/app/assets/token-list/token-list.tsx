@@ -6,7 +6,6 @@ import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import {
   getPreferences,
-  getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
   getUseExternalServices,
@@ -47,7 +46,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const { privacyMode } = useSelector(getPreferences);
   const tokenSortConfig = useSelector(getTokenSortConfig);
-  const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
