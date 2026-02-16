@@ -181,11 +181,16 @@ module.exports = {
           'error',
           {
             selector: 'default',
-            format: ['camelCase', 'PascalCase'],
+            format: ['camelCase'],
             leadingUnderscore: 'allow',
             trailingUnderscore: 'forbid',
           },
           { selector: 'enumMember', format: ['PascalCase'] },
+          {
+            selector: 'function',
+            modifiers: ['exported'],
+            format: ['camelCase', 'PascalCase'],
+          },
           {
             selector: 'import',
             format: ['camelCase', 'PascalCase', 'snake_case', 'UPPER_CASE'],

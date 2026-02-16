@@ -94,7 +94,6 @@ import {
   getSubscriptionPaymentData,
 } from '../../../../shared/lib/shield';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
-import { isDefaultMetaMaskChain } from '../../../helpers/utils/util';
 import { isBeta, isFlask } from '../../../helpers/utils/build-types';
 
 const METRICS_LOCATION = 'Global Menu';
