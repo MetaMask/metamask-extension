@@ -111,8 +111,6 @@ const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
 /**
  * Preset definitions mapping preset names to benchmark files.
  * Preset names come from shared constants in ./utils/constants.ts.
- * The YAML workflow (.github/workflows/run-benchmarks.yml) must be
- * updated manually when presets change.
  */
 const PRESETS: Record<string, string[]> = {
   // Performance benchmarks - Onboarding

@@ -16,8 +16,8 @@ import type {
  * Shared across user action and performance benchmark results.
  */
 export type BenchmarkEntryResult = {
-  testTitle?: string;
-  persona?: Persona;
+  testTitle: string;
+  persona: Persona;
   benchmarkType?: BenchmarkType;
   mean: Record<string, number>;
   min: Record<string, number>;

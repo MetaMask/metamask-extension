@@ -95,7 +95,7 @@ Thresholds are validated by the benchmark runner after collecting statistics fro
 
 ### 3. Add to a preset (optional)
 
-If your benchmark should run in CI, add its file path to an existing preset in `run-benchmark.ts`.
+If your benchmark should run in CI, add its file path to the appropriate preset in `run-benchmark.ts`.
 
 To create a **new** preset, update these locations:
 
