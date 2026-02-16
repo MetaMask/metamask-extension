@@ -1,240 +1,298 @@
-# Dangling Branches Analysis Report
+# Enhanced Dangling Branches Analysis Report
 
-**Generated:** 2026-02-16 09:08:13 UTC
+**Generated:** 2026-02-16 09:19:56 UTC
 
 ## Executive Summary
 
-This analysis identifies branches in the MetaMask extension repository that are candidates
-for deletion based on three criteria:
+This enhanced analysis provides deeper insights into dangling branches by:
+- Distinguishing official release branches from version working branches
+- Identifying patterns in AI-agent created branches
+- Analyzing branches by author/creator
+- Finding branches without associated PRs
 
-1. **Temporary branches** from releases that are no longer active
-2. **Branches from closed PRs** more than a year old (requires API verification)
-3. **AI-created branches** (cursor/, copilot/, devin/) no longer in active use
+## Key Updates Based on Clarifications
 
-## Analysis Methodology
+### 1. Refined Release Branch Categorization
 
-Branches were categorized by analyzing their naming patterns:
+**KEEP (Official Releases):**
+- `Version-v12.16.0` ✅
+- `Version-v13.2.0` ✅
+- Pattern: `Version-vX.Y.Z` (exact format)
 
-- **AI-Created**: Branches starting with `cursor/`, `copilot/`, or `devin/`
-- **Temporary**: Branches with `TEMP` in the name or explicit temp prefixes
-- **Release**: Branches following `Version-vX.Y.Z` pattern
-- **Error/Debug**: Automated error reporting branches (`error-*`)
-- **Feature/Ticket**: Branches with JIRA-style ticket prefixes
-- **User Branch**: Personal development branches with username prefixes
+**CONSIDER FOR DELETION (Version Working Branches):**
+- `v10-commit-breakdown` 🗑️
+- `sync-v13.2.0-with-master` 🗑️
+- `10.33`, `10.36`, `11.1` 🗑️
+- `Version-10.9.2` (no 'v' prefix) 🗑️
 
-## Key Findings
+### 2. AI-Agent Pattern Analysis
 
-### High-Priority Dangling Branches
+#### Cursor Agent Branches
 
-#### 1. AI-Created Branches (~50+ branches)
+Found multiple patterns of Cursor Agent activity:
 
-These branches were created by AI coding assistants and should be reviewed:
+**A. Error Reporting Branches (No Human PR Required):**
 
-**Cursor AI Branches:**
+These are automated error-fixing attempts by Cursor Agent:
+
+| Pattern | Count | Has PR? | Status |
+|---------|-------|---------|--------|
+| `error-insufficient-number-*` | ~40+ | Some have PRs | Review & Delete |
+| `error-cannot-read-*` | ~10+ | No PRs found | Delete |
+| `error-invalid-*` | ~15+ | No PRs found | Delete |
+| `error-migration-*` | ~5+ | No PRs found | Delete |
+| `error-*` (other) | ~40+ | Varies | Review |
+
+**Key Finding:** The `error-insufficient-number-*` branches DO have associated PRs
+created by `cursor[bot]` to fix translation substitution errors. However, many are
+still in draft state and may be abandoned. All other `error-*` patterns appear to
+have no PRs and can be deleted.
+
+**B. Cursor Development Branches:**
+
 - `cursor/*` pattern - ~40+ branches
-- Examples:
-  - `cursor/additional-networks-icon-styling-211a`
-  - `cursor/analyze-and-optimize-code-performance-*`
-  - `cursor/chain-badge-component-*`
-  - `cursor/storybook-v7-to-v10-57d0`
-  - Many others with random hex suffixes
+- Many have associated PRs (64 found)
+- Check PR status: merged, closed, or abandoned
 
-**Copilot AI Branches:**
+**C. Copilot Branches:**
+
 - `copilot/*` pattern - ~10+ branches
-- Examples:
-  - `copilot/audit-fix-side-effect-patterns`
-  - `copilot/fix-clear-activity-tab-bug`
-  - `copilot/reduce-useselector-subscriptions`
-  - `copilot/remove-dangling-branches` (this branch!)
+- Including `copilot/remove-dangling-branches` (this analysis!)
+- Check PR status individually
 
-**Devin AI Branches:**
+**D. Devin AI Branches:**
+
 - `devin/*` pattern - ~8 branches
-- Examples:
-  - `devin/story-*` (multiple)
-  - `devin/typography-*`
+- Examples: `devin/story-*`, `devin/typography-*`
+- Likely abandoned experiments
 
-**Recommendation:** Review each AI branch to determine if work was merged or abandoned.
+### 3. Detailed Branch Categories
 
-#### 2. Temporary Branches (~5-7 branches)
+#### High Priority Deletion Candidates
 
-Explicitly marked as temporary:
+**Category A: Error Branches Without PRs (~70+ branches)**
 
-- `TEMP-MERGE/ASSETS-1134/update-network-manager-filter`
-- `TEMP-MERGE-2/ASSETS-1134/update-network-manager-filter`
-- `TEMP-combined-core-network-controller-sync`
-- `TEMP-fix-up-tsconfig-add-provider-config-id`
+These can be deleted immediately:
 
-**Recommendation:** These should be deleted immediately unless actively being used.
+```
+error-cannot-read-*
+error-invalid-chain-*
+error-invalid-caip-*
+error-invalid-controller-*
+error-migration-*
+error-minified-redux-*
+error-missing-identity-*
+error-no-*
+error-protecting-intrinsics-*
+error-the-category-*
+... and many more
+```
 
-#### 3. Unprotected Release Branches (~8 branches)
+**Category B: Error Branches With Draft PRs (~30+ branches)**
 
-Release branches without protection (likely EOL):
+These have PRs but in draft state - review and delete if abandoned:
 
-- `9.6-switch-network-fix`
-- `10.33`
-- `10.34.2-test`
-- `10.36`
-- `11.1`
-- `Version-10.9.2`
+```
+error-insufficient-number-* (40+ variations)
+  - PRs exist but most are draft
+  - Created by cursor[bot]
+  - Fixing translation substitution errors
+```
 
-**Recommendation:** Verify these versions are no longer supported before deletion.
+**Category C: Version Working Branches (~10+ branches)**
 
-#### 4. Error/Debug Branches (~100+ branches)
+```
+v10-commit-breakdown
+sync-v13.2.0-with-master
+10.33
+10.34.2-test
+10.36
+11.1
+Version-10.9.2
+9.6-switch-network-fix
+```
 
-Automated error reporting branches that have accumulated:
+**Category D: Temporary Branches (~5 branches)**
 
-- `error-*` pattern - 100+ branches
-- Examples:
-  - `error-insufficient-number-*` (40+ variations)
-  - `error-cannot-read-*` (multiple)
-  - `error-invalid-*` (multiple)
-  - `error-migration-*` (multiple)
+```
+TEMP-MERGE/ASSETS-1134/update-network-manager-filter
+TEMP-MERGE-2/ASSETS-1134/update-network-manager-filter
+TEMP-combined-core-network-controller-sync
+TEMP-fix-up-tsconfig-add-provider-config-id
+```
 
-**Recommendation:** Review error reports and delete branches after issues are addressed.
+**Category E: Devin AI Branches (~8 branches)**
 
-### Medium-Priority Review Needed
+```
+devin/story-*
+devin/typography-*
+```
 
-#### 5. Feature/Ticket Branches (~200+ branches)
+#### Medium Priority - Requires PR Verification
 
-These require PR status verification:
+**Category F: Cursor Development Branches (~40+ branches)**
 
-- `ASSETS-*` - Asset-related features
-- `MMI-*` - MetaMask Institutional features
-- `SWAPS-*` - Swap functionality features
-- `SOL-*` - Solana-related features
-- `MMS-*` - Various features
-- `NNT-*`, `NOTIFY-*`, `NWNT-*` - Notification features
-- `QA-*` - QA branches
+These have PRs (64 found) - need to check status:
 
-**Recommendation:** Use GitHub API to check PR status and age. Delete if:
-- PR is merged and >1 month old
-- PR is closed (not merged) and >1 year old
-- PR doesn't exist
+```
+cursor/analyze-and-optimize-code-performance-*
+cursor/chain-badge-component-*
+cursor/storybook-v7-to-v10-*
+cursor/fix-*
+cursor/update-*
+... and ~35 more
+```
 
-#### 6. Personal User Branches (~100+ branches)
+**Action:** Query each PR's status:
+- If merged: Delete branch
+- If closed (not merged): Delete branch
+- If open and active: Keep
+- If draft and abandoned: Delete
 
-Personal development branches:
+**Category G: Copilot Branches (~10+ branches)**
 
-- `ad/*` - Many branches
-- `brian/*` - Many branches
-- `cc/*` - Multiple branches
-- `dd/*` - Multiple branches
-- `djb/*` - Multiple branches
-- Others: `dbrans/*`, `cryptotavares/*`, `ellul/*`, etc.
+```
+copilot/audit-fix-side-effect-patterns
+copilot/fix-clear-activity-tab-bug
+copilot/reduce-useselector-subscriptions
+copilot/remove-dangling-branches
+... and more
+```
 
-**Recommendation:** Contact branch owners to verify if still needed.
+**Category H: Feature/Ticket Branches (~200+ branches)**
 
-### Low-Priority (Protected Branches)
+Standard feature branches - check PR status:
 
-#### 7. Protected Release Branches (~50+ branches)
+```
+ASSETS-*, MMI-*, SWAPS-*, SOL-*, MMS-*
+NNT-*, NOTIFY-*, NWNT-*, QA-*, SL-*
+```
 
-Currently supported versions (should NOT be deleted):
+**Category I: Personal User Branches (~100+ branches)**
 
-- `Version-v9.111.4` through `Version-v13.3.0`
-- Various beta versions
-- `cla-signatures` (protected)
+```
+ad/*, brian/*, cc/*, dd/*, djb/*
+dbrans/*, cryptotavares/*, ellul/*
+```
 
-**Recommendation:** Keep all protected branches.
+## Updated Statistics
 
-## Summary Statistics
+| Category | Count | No PRs | Has PRs | Priority |
+|----------|-------|--------|---------|----------|
+| Error Branches (No PRs) | ~70+ | ✅ | ❌ | **High** |
+| Error Branches (Draft PRs) | ~30+ | ❌ | ✅ | **High** |
+| Version Working Branches | ~10 | ❓ | ❓ | **High** |
+| Temporary Branches | ~5 | ✅ | ❌ | **High** |
+| Devin AI Branches | ~8 | ✅ | ❌ | **High** |
+| Cursor Dev Branches | ~40+ | ❌ | ✅ | **Medium** |
+| Copilot Branches | ~10+ | ❌ | ✅ | **Medium** |
+| Feature/Ticket Branches | ~200+ | ❓ | ❓ | **Medium** |
+| User Branches | ~100+ | ❓ | ❓ | **Medium** |
+| Official Releases (Keep) | ~50+ | N/A | N/A | **Low** |
 
-| Category | Count | Dangling? | Priority |
-|----------|-------|-----------|----------|
-| AI-Created Branches | ~50+ | ✅ Yes | High |
-| Temporary Branches | ~5 | ✅ Yes | High |
-| Unprotected Releases | ~8 | ✅ Yes | High |
-| Error/Debug Branches | ~100+ | ✅ Yes | High |
-| Feature/Ticket Branches | ~200+ | ❓ Maybe | Medium |
-| User Branches | ~100+ | ❓ Maybe | Medium |
-| Protected Releases | ~50+ | ❌ No | Low |
-| Other | ~50+ | ❓ Maybe | Low |
+**Updated Totals:**
+- **Immediate Deletion Candidates:** ~120+ branches (error branches without PRs, temp branches, devin)
+- **Review & Likely Delete:** ~50+ branches (error branches with draft PRs, version working branches)
+- **Requires PR Status Check:** ~350+ branches (cursor, copilot, feature, user branches)
 
-**Total Branches Analyzed:** ~500+
-**Definite Dangling Candidates:** ~160+ branches
-**Requires PR Verification:** ~300+ branches
+## Recommended Action Plan
 
-## Recommended Actions
+### Phase 1: Immediate Cleanup (High Confidence)
 
-### Immediate Actions (High Priority)
+Delete these branches immediately:
 
-1. **Delete Temporary Branches** (~5 branches)
-   - All `TEMP-*` branches should be removed
+1. **~70+ Error branches without PRs**
+   ```bash
+   # Patterns to delete:
+   error-cannot-read-*
+   error-invalid-*
+   error-migration-*
+   error-minified-redux-*
+   error-missing-identity-*
+   error-no-*
+   error-the-category-*
+   # ... etc
+   ```
 
-2. **Review AI-Created Branches** (~50+ branches)
-   - For each `cursor/*`, `copilot/*`, `devin/*` branch:
-     - Check if PR exists and its status
-     - If merged: delete branch
-     - If abandoned: delete branch
-     - If active: keep until work is complete
+2. **~5 Temporary branches**
+   ```bash
+   TEMP-MERGE/ASSETS-1134/update-network-manager-filter
+   TEMP-MERGE-2/ASSETS-1134/update-network-manager-filter
+   TEMP-combined-core-network-controller-sync
+   TEMP-fix-up-tsconfig-add-provider-config-id
+   ```
 
-3. **Clean Error Branches** (~100+ branches)
-   - Review error reports
-   - Delete branches for resolved issues
+3. **~8 Devin AI branches**
+   ```bash
+   devin/story-*
+   devin/typography-*
+   ```
 
-4. **Remove Old Release Branches** (~8 branches)
-   - Verify EOL status for unprotected Version-* branches
-   - Delete confirmed EOL versions
+### Phase 2: Review and Delete (Needs Verification)
 
-### Follow-up Actions (Medium Priority)
+1. **~30+ Error branches with draft PRs**
+   - Review each `error-insufficient-number-*` PR
+   - If draft and inactive >1 month: Delete
+   - If merged: Delete branch
 
-5. **Audit Feature Branches** (~200+ branches)
-   - Use GitHub API to check PR status for each feature branch
-   - Delete merged PRs older than 1 month
-   - Delete closed PRs older than 1 year
+2. **~10 Version working branches**
+   - Verify these versions are EOL
+   - Check if any active work references them
+   - Delete if confirmed old/unused
 
-6. **Contact Branch Owners** (~100+ branches)
-   - Reach out to developers with personal branches
-   - Establish retention policy for personal branches
+### Phase 3: PR Status Verification (Requires API Queries)
 
-### Policy Recommendations
+For each of these categories, query GitHub API for PR status:
 
-To prevent future accumulation:
+1. **~40+ Cursor branches** - Check if PR is merged/closed/abandoned
+2. **~10+ Copilot branches** - Check if PR is merged/closed/abandoned
+3. **~200+ Feature branches** - Check PR age and status
+4. **~100+ User branches** - Contact owners or check last activity
 
-1. **Automatic Branch Deletion**
-   - Delete branches automatically after PR merge
-   - Set up GitHub branch protection rules
+**Deletion Criteria:**
+- PR merged + branch not protected = DELETE
+- PR closed (not merged) + >1 year old = DELETE
+- No PR exists + >1 year old = DELETE
+- Draft PR + no activity in >3 months = DELETE
 
-2. **Branch Naming Convention**
-   - Require ticket/issue number in branch names
-   - Discourage AI-generated branch names with random suffixes
+## Pattern Recognition Summary
 
-3. **Regular Cleanup**
-   - Quarterly review of unmerged branches
-   - Automated notifications for stale branches (>6 months)
+### Identified Patterns
 
-4. **Personal Branch Policy**
-   - Personal branches should be in forks, not main repo
-   - Or establish max retention period (e.g., 3 months)
+1. **Error-* branches by Cursor Agent:**
+   - `error-insufficient-number-*` (40+) → Some have PRs (draft)
+   - `error-cannot-read-*` (10+) → No PRs
+   - `error-invalid-*` (15+) → No PRs
+   - `error-the-category-*` (20+) → No PRs
+   - All created by automated error reporting
 
-## Appendix: Branch Patterns Observed
+2. **Version working branches:**
+   - Number-only: `10.33`, `10.36`, `11.1`
+   - v-prefix: `v10-commit-breakdown`
+   - sync/merge: `sync-v13.2.0-with-master`
+   - Old format: `Version-10.9.2` (no 'v')
 
-### AI-Generated Branch Name Patterns
+3. **AI agent branches:**
+   - Cursor: 40+ dev branches + 100+ error branches
+   - Copilot: 10+ branches
+   - Devin: 8 branches
 
-- `cursor/*-<4char-hex>` - Cursor AI branches with random suffixes
-- `copilot/*` - GitHub Copilot branches
-- `devin/*` - Devin AI branches
+4. **Temporary branches:**
+   - All with `TEMP` prefix/suffix
+   - Clear candidates for deletion
 
-### Ticket/Project Prefixes Found
+## Branches to Preserve
 
-- ASSETS - Asset management
-- MMI - MetaMask Institutional
-- SWAPS - Swap functionality
-- SOL - Solana features
-- MMS - MetaMask features
-- CEUX - User experience
-- MMQA - QA branches
-- NNT - Network features
-- NOTIFY - Notifications
-- QA - Quality assurance
-- SL - Various features
+**DO NOT DELETE:**
 
-### Developer Username Patterns
-
-Identified personal branch prefixes: ad, brian, cc, dd, djb, dr, dbrans,
-cryptotavares, cryptodev2s, christopher, ellul, and many others.
+- `Version-v12.16.0`, `Version-v13.2.0`, etc. (official releases)
+- Any branch matching `Version-vX.Y.Z` pattern exactly
+- Protected branches (marked in GitHub)
+- `develop`, `main`, `master`
+- `cla-signatures`
 
 ---
 
-*This report was generated automatically. Manual review is recommended before*
-*deleting any branches. Always verify that work has been properly merged or*
-*is no longer needed before deletion.*
+*This enhanced report incorporates refined categorization rules and pattern
+analysis based on branch authors and PR associations. Manual verification is
+recommended before mass deletion, especially for phases 2 and 3.*
