@@ -131,40 +131,6 @@ export const PerpsTabView: React.FC = () => {
     navigate(PERPS_MARKET_LIST_ROUTE);
   }, [navigate]);
 
-  // Handle canceling a single open order
-  const handleCancelOrder = useCallback(
-    async (order: Order) => {
-      if (!selectedAddress) {
-        return;
-      }
-      try {
-        const controller = await getPerpsController(selectedAddress);
-        await controller.cancelOrder({
-          orderId: order.orderId,
-          symbol: order.symbol,
-        });
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Error canceling order:', error);
-      }
-    },
-    [selectedAddress],
-  );
-
-  // Handle canceling all open orders
-  const handleCancelAllOrders = useCallback(async () => {
-    if (!selectedAddress) {
-      return;
-    }
-    try {
-      const controller = await getPerpsController(selectedAddress);
-      await controller.cancelOrders({ cancelAll: true });
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error canceling all orders:', error);
-    }
-  }, [selectedAddress]);
-
   // Show loading state while initial data is being fetched
   if (isLoading) {
     return (
