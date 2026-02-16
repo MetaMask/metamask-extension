@@ -585,14 +585,19 @@ const handleOnConnect = async (port) => {
     // we assume something is wrong with the state (e.g., corrupted data causing
     // processing to hang) and trigger the recovery flow.
     const initializationTimeoutError = Symbol('initializationTimeout');
+    let initTimeoutId;
     const initializationTimeout = new Promise((_, reject) => {
-      setTimeout(() => {
+      initTimeoutId = setTimeout(() => {
         reject(initializationTimeoutError);
       }, INITIALIZATION_TIMEOUT);
     });
 
-    await Promise.race([isInitialized, initializationTimeout]).catch(
-      async (error) => {
+    await Promise.race([isInitialized, initializationTimeout])
+      .finally(() => {
+        // Clean up the timeout to avoid orphaned timers on every connection
+        clearTimeout(initTimeoutId);
+      })
+      .catch(async (error) => {
         // Check if this is our timeout sentinel
         if (error === initializationTimeoutError) {
           log.error(
@@ -642,8 +647,7 @@ const handleOnConnect = async (port) => {
         }
         // Re-throw other errors
         throw error;
-      },
-    );
+      });
 
     // This is set in `setupController`, which is called as part of initialization
     connectWindowPostMessage(port);
