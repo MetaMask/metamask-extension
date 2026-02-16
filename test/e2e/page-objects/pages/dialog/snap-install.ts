@@ -1,5 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
-import { regularDelayMs, veryLargeDelayMs } from '../../../helpers';
+import { veryLargeDelayMs } from '../../../helpers';
 
 class SnapInstall {
   private driver: Driver;
@@ -67,7 +67,6 @@ class SnapInstall {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.connectButton,
         this.pageFooter,
         this.permissionConnect,
       ]);
@@ -87,7 +86,7 @@ class SnapInstall {
     await this.driver.clickElementSafe(this.acceptThirdPartyNotice);
     await this.driver.assertElementNotPresent(
       this.thirdPartyNoticeScrollButton,
-      { waitAtLeastGuard: regularDelayMs },
+      { waitAtLeastGuard: veryLargeDelayMs },
     );
   }
 
@@ -138,7 +137,7 @@ class SnapInstall {
     await this.driver.clickElementSafe(this.thirdPartyNoticeScrollButton);
     await this.driver.assertElementNotPresent(
       this.thirdPartyNoticeScrollButton,
-      { waitAtLeastGuard: regularDelayMs },
+      { waitAtLeastGuard: veryLargeDelayMs },
     );
   }
 

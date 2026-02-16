@@ -1,6 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../constants';
-import { regularDelayMs } from '../../helpers';
+import { regularDelayMs, veryLargeDelayMs } from '../../helpers';
 
 class SnapSimpleKeyringPage {
   private readonly driver: Driver;
@@ -300,11 +300,11 @@ class SnapSimpleKeyringPage {
     await this.driver.clickElementSafe(this.thirdPartyNoticeScrollButton);
     await this.driver.assertElementNotPresent(
       this.thirdPartyNoticeScrollButton,
-      { waitAtLeastGuard: regularDelayMs },
+      { waitAtLeastGuard: veryLargeDelayMs },
     );
     await this.driver.clickElementSafe(this.acceptThirdPartyNotice);
     await this.driver.assertElementNotPresent(this.acceptThirdPartyNotice, {
-      waitAtLeastGuard: regularDelayMs,
+      waitAtLeastGuard: veryLargeDelayMs,
     });
     await this.driver.clickElement(this.confirmConnectionButton);
 
