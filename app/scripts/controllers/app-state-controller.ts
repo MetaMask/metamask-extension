@@ -62,7 +62,7 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../../shared/types';
-import { PendingRedirectRoute } from '../../../shared/lib/app-state';
+import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state';
 import { ShieldSubscriptionError } from '../../../shared/modules/shield';
 import type {
   Preferences,
