@@ -1,0 +1,141 @@
+/**
+ * AccountCountDisplay Styles
+ * Feature: account-count-display
+ *
+ * Compact styling designed to fit in the MetaMask header bar.
+ */
+
+.account-count-display {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+
+  &--loading {
+    opacity: 0.7;
+  }
+
+  &__button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background-color: var(--color-background-alternative, #f5f5f5);
+    border: 1px solid var(--color-border-muted, #e0e0e0);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: var(--color-background-hover, #e8e8e8);
+      border-color: var(--color-border-default, #d0d0d0);
+    }
+
+    &:focus {
+      outline: 2px solid var(--color-primary-default, #037dd6);
+      outline-offset: 2px;
+    }
+
+    &:active {
+      background-color: var(--color-background-pressed, #ddd);
+    }
+  }
+
+  &__label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text-default, #24272a);
+  }
+
+  &__count {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-text-default, #24272a);
+  }
+
+  &__loading-text {
+    font-size: 11px;
+    color: var(--color-text-muted, #6a737d);
+    padding: 4px 8px;
+  }
+}
+
+.account-count-breakdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  min-width: 180px;
+  margin-top: 4px;
+  padding: 6px 0;
+  background-color: var(--color-background-default, #ffffff);
+  border: 1px solid var(--color-border-muted, #e0e0e0);
+  border-radius: 8px;
+  box-shadow: var(--shadow-size-md, 0 4px 16px rgba(0, 0, 0, 0.1));
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__item {
+    &--hidden {
+      border-top: 1px solid var(--color-border-muted, #e0e0e0);
+      margin-top: 4px;
+      padding-top: 4px;
+    }
+  }
+
+  &__wallet-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 6px 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.15s;
+
+    &:hover {
+      background-color: var(--color-background-hover, #f5f5f5);
+    }
+
+    &:focus {
+      outline: 2px solid var(--color-primary-default, #037dd6);
+      outline-offset: -2px;
+      background-color: var(--color-primary-muted, #f0f7ff);
+    }
+  }
+
+  &__wallet-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-default, #24272a);
+  }
+
+  &__wallet-count {
+    font-size: 12px;
+    color: var(--color-text-alternative, #6a737d);
+  }
+
+  &__hidden {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 12px;
+  }
+
+  &__hidden-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-muted, #6a737d);
+  }
+
+  &__hidden-count {
+    font-size: 12px;
+    color: var(--color-text-muted, #6a737d);
+  }
+}
