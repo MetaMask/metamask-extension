@@ -9,7 +9,6 @@ import {
 } from '../../../../store/actions';
 import {
   HYPERLIQUID_APPROVAL_TYPE,
-  MPC_PASSKEY_ASSERTION_APPROVAL_TYPE,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
@@ -30,7 +29,6 @@ import snapConfirmation from './snaps/snap-confirmation/snap-confirmation';
 import snapPrompt from './snaps/snap-prompt/snap-prompt';
 import snapDefault from './snaps/snap-default/snap-default';
 import hyperliquidReferralConsent from './hyperliquid-referral-consent';
-import mpcPasskeyAssertion from './mpc-passkey-assertion';
 
 const APPROVAL_TEMPLATES = {
   [ApprovalType.SwitchEthereumChain]: switchEthereumChain,
@@ -54,7 +52,6 @@ const APPROVAL_TEMPLATES = {
     snapAccountRedirect,
   ///: END:ONLY_INCLUDE_IF
   [HYPERLIQUID_APPROVAL_TYPE]: hyperliquidReferralConsent,
-  [MPC_PASSKEY_ASSERTION_APPROVAL_TYPE]: mpcPasskeyAssertion,
 };
 
 export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES =

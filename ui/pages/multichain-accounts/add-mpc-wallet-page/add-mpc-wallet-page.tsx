@@ -26,7 +26,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { createMpcKeyring } from '../../../store/controller-actions/mpc-controller';
 import { MetaMaskReduxDispatch } from '../../../store/store';
-import { createPasskey } from '../../../../shared/lib/passkeys';
+import { PasskeyOffscreenBridge } from '../../../../shared/lib/passkey-offscreen-bridge';
 
 export const AddMpcWalletPage = () => {
   const t = useI18nContext();
@@ -34,11 +34,11 @@ export const AddMpcWalletPage = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
 
   const handleCreate = useCallback(async () => {
-    // Create a new passkey — the public key becomes the verifier ID.
-    // The credential ID is persisted so the approval flow can look it up
-    // when the keyring later calls getVerifierToken.
-    const { credentialId, publicKey } = await createPasskey();
-    localStorage.setItem(`mpc-passkey:${publicKey}`, credentialId);
+    // Create a new passkey via the offscreen document. The offscreen handler
+    // calls navigator.credentials.create() (which works regardless of
+    // whether the UI is in a popup, tab, or side panel) and persists the
+    // credential ID in localStorage for later sign operations.
+    const { publicKey } = await PasskeyOffscreenBridge.create();
 
     await dispatch(createMpcKeyring(publicKey));
     navigate(DEFAULT_ROUTE);

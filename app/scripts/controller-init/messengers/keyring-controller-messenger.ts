@@ -1,5 +1,4 @@
 import { Messenger } from '@metamask/messenger';
-import type { AddApprovalRequest } from '@metamask/approval-controller';
 import { AppStateControllerRequestQrCodeScanAction } from '../../controllers/app-state-controller';
 import { RootMessenger } from '../../lib/messenger';
 
@@ -24,8 +23,7 @@ export function getKeyringControllerMessenger(
 }
 
 type AllowedInitializationActions =
-  | AppStateControllerRequestQrCodeScanAction
-  | AddApprovalRequest;
+  AppStateControllerRequestQrCodeScanAction;
 
 export type KeyringControllerInitMessenger = ReturnType<
   typeof getKeyringControllerInitMessenger
@@ -54,7 +52,6 @@ export function getKeyringControllerInitMessenger(
     messenger: controllerInitMessenger,
     actions: [
       'AppStateController:requestQrCodeScan',
-      'ApprovalController:addRequest',
     ],
     events: [],
   });

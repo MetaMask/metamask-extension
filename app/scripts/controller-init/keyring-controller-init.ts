@@ -31,7 +31,7 @@ import {
   getMfaRelayerUrl,
   getMfaCloudSignerUrl,
 } from '../../../shared/modules/environment';
-import { MPC_PASSKEY_ASSERTION_APPROVAL_TYPE } from '../../../shared/constants/app';
+import { PasskeyOffscreenBridge } from '../../../shared/lib/passkey-offscreen-bridge';
 import { ControllerInitFunction } from './types';
 import {
   KeyringControllerMessenger,
@@ -249,19 +249,10 @@ export const KeyringControllerInit: ControllerInitFunction<
         ? () => Promise.resolve(generateToken(jwtSecretKey, 'MetaMask Client'))
         : undefined,
       getVerifierToken: async (verifierId: string) => {
-        // Request a passkey assertion from the UI via the approval flow.
-        // The popup will call navigator.credentials.get() and resolve the
-        // approval with the serialised assertion JSON.
-        const assertion = await initMessenger.call(
-          'ApprovalController:addRequest',
-          {
-            origin: 'metamask',
-            type: MPC_PASSKEY_ASSERTION_APPROVAL_TYPE,
-            requestData: { verifierId },
-          },
-          true, // show the approval request in the UI
-        );
-        return assertion as string;
+        // Request a passkey assertion via the offscreen document.
+        // The offscreen document has full WebAuthn access, unlike service
+        // workers or extension side panels.
+        return PasskeyOffscreenBridge.sign(verifierId);
       },
     };
     additionalKeyrings.push(
