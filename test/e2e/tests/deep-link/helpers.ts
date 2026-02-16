@@ -93,6 +93,43 @@ export function cartesianProduct<T extends unknown[][]>(...sets: T) {
   }[];
 }
 
+export type DeepLinkScenario = {
+  locked: 'locked' | 'unlocked';
+  signed: 'signed with sig_params' | 'signed without sig_params' | 'unsigned';
+  route: string;
+  action: 'continue';
+};
+
+/**
+ * Generates test scenarios for the given routes by creating a cartesian product
+ * of lock states, signing methods, routes, and actions.
+ *
+ * @param routes - The routes to generate scenarios for.
+ * @returns An array of scenario objects with `locked`, `signed`, `route`, and
+ * `action` properties.
+ */
+export function generateScenariosForRoutes(
+  routes: readonly string[],
+): DeepLinkScenario[] {
+  return cartesianProduct(
+    ['locked', 'unlocked'] as const,
+    [
+      'signed with sig_params',
+      'signed without sig_params',
+      'unsigned',
+    ] as const,
+    [...routes],
+    ['continue'] as const,
+  ).map(([locked, signed, route, action]) => {
+    return {
+      locked,
+      signed,
+      route,
+      action,
+    } as DeepLinkScenario;
+  });
+}
+
 export function getHashParams(url: URL) {
   const hash = url.hash.slice(1); // remove leading '#'
   const hashQuery = hash.split('?')[1] ?? '';

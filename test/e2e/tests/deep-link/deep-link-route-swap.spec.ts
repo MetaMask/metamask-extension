@@ -4,7 +4,7 @@ import LoginPage from '../../page-objects/pages/login-page';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { navigateDeepLinkToDestination } from '../../page-objects/flows/deep-link.flow';
-import { bytesToB64, cartesianProduct, generateECDSAKeyPair } from './helpers';
+import { bytesToB64, generateECDSAKeyPair, generateScenariosForRoutes } from './helpers';
 import {
   getConfig,
   prepareDeepLinkUrl,
@@ -12,18 +12,7 @@ import {
 } from './deep-link-helpers';
 
 describe('Deep Link - /swap Route', function () {
-  const scenarios = cartesianProduct(
-    ['locked', 'unlocked'] as const,
-    [
-      'signed with sig_params',
-      'signed without sig_params',
-      'unsigned',
-    ] as const,
-    ['/swap'] as const,
-    ['continue'] as const,
-  ).map(([locked, signed, route, action]) => {
-    return { locked, signed, route, action };
-  });
+  const scenarios = generateScenariosForRoutes(['/swap']);
 
   scenarios.forEach(({ locked, signed, route, action }) => {
     it(`handles ${locked} and ${signed} ${route} deep link with ${action} action`, async function () {

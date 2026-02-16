@@ -4,7 +4,7 @@ import { Driver } from '../../webdriver/driver';
 import DeepLink from '../../page-objects/pages/deep-link-page';
 import LoginPage from '../../page-objects/pages/login-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { bytesToB64, cartesianProduct, generateECDSAKeyPair } from './helpers';
+import { bytesToB64, generateECDSAKeyPair, generateScenariosForRoutes } from './helpers';
 import {
   getConfig,
   prepareDeepLinkUrl,
@@ -12,18 +12,7 @@ import {
 } from './deep-link-helpers';
 
 describe('Deep Link - Invalid Route', function () {
-  const scenarios = cartesianProduct(
-    ['locked', 'unlocked'] as const,
-    [
-      'signed with sig_params',
-      'signed without sig_params',
-      'unsigned',
-    ] as const,
-    ['/INVALID'] as const,
-    ['continue'] as const,
-  ).map(([locked, signed, route, action]) => {
-    return { locked, signed, route, action };
-  });
+  const scenarios = generateScenariosForRoutes(['/INVALID']);
 
   scenarios.forEach(({ locked, signed, route, action }) => {
     it(`handles ${locked} and ${signed} ${route} deep link with ${action} action`, async function () {
