@@ -151,7 +151,7 @@ describe('revokePermissionsHandler', () => {
       ...baseRequest,
       params: [
         {
-          "eth_accounts": {},
+          [RestrictedMethods.eth_accounts]: {},
           otherPermission: {},
         },
       ],
