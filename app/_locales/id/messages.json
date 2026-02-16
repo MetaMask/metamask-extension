@@ -8604,12 +8604,6 @@
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
-  "useSmartAccountDescription": {
-    "message": "Aktifkan ini untuk secara otomatis mengalihkan akun yang dibuat dalam MetaMask ke akun cerdas setiap kali fitur relevan tersedia, seperti transaksi yang lebih cepat, biaya jaringan yang lebih rendah, dan fleksibilitas pembayaran untuk transaksi tersebut."
-  },
-  "useSmartAccountTitle": {
-    "message": "Gunakan akun cerdas"
-  },
   "useTokenDetectionPrivacyDesc": {
     "message": "Menampilkan token yang dikirim ke akun Anda secara otomatis yang melibatkan komunikasi dengan server pihak ketiga untuk mengambil gambar token. Server tersebut akan memiliki akses ke alamat IP Anda."
   },

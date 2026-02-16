@@ -8628,12 +8628,6 @@
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
-  "useSmartAccountDescription": {
-    "message": "Bu hesaplar için daha hızlı işlemler, daha düşük ağ ücretleri ve ödeme esnekliği gibi ilgili özellikler mevcut olduğunda MetaMask dahilinde oluşturulan hesapları otomatik olarak akıllı hesaplara döndürmek için bunu açık tutun."
-  },
-  "useSmartAccountTitle": {
-    "message": "Akıllı hesap kullanın"
-  },
   "useTokenDetectionPrivacyDesc": {
     "message": "Hesabına gönderilen token'ların otomatik olarak görüntülenmesi, token'ın görüntülerini almak için üçüncü parti sunucularla iletişimi içerir. Bu servislerin IP adresine erişimi olacaktır."
   },
