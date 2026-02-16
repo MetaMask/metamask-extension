@@ -1167,6 +1167,11 @@
     "web3ShimUsageOrigins": {},
     "verifiedSnaps": {}
   },
+  "perpsTutorial": {
+    "tutorialModalOpen": "boolean",
+    "activeStep": "string",
+    "tutorialCompleted": "boolean"
+  },
   "platform": {
     "arch": "string",
     "os": "string"

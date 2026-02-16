@@ -439,6 +439,7 @@
     "watchEthereumAccountEnabled": "boolean",
     "web3ShimUsageOrigins": "object"
   },
+  "perpsTutorial": "object",
   "ramps": "object",
   "rewards": "object",
   "smartAccounts": "object",
