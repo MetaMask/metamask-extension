@@ -1883,7 +1883,6 @@
     },
     "ui/pages/confirmations/components/info/musd-claim-info/musd-claim-info.test.tsx": {
       "MetaMask: Background connection not initialized": 16,
-      "React: Act warnings (component updates not wrapped)": 11,
       "Reselect: Identity function warnings": 5,
       "warn: ⚠️ React Router Future Flag": 2
     },

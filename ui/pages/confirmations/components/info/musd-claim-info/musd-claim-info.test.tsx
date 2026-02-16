@@ -1,4 +1,5 @@
 import React from 'react';
+import { act } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import {
   TransactionMeta,
@@ -94,7 +95,7 @@ const buildMusdClaimTransaction = (): TransactionMeta =>
   }) as unknown as TransactionMeta;
 
 describe('MusdClaimInfo', () => {
-  it('renders the musd claim heading, details section, and gas fees', () => {
+  it('renders the musd claim heading, details section, and gas fees', async () => {
     const transaction = buildMusdClaimTransaction();
     const state = getMockConfirmState({
       metamask: {
@@ -109,18 +110,21 @@ describe('MusdClaimInfo', () => {
     });
     const mockStore = configureMockStore()(state);
 
-    const { getByTestId } = renderWithConfirmContextProvider(
-      <MusdClaimInfo />,
-      mockStore,
-    );
+    let result: ReturnType<typeof renderWithConfirmContextProvider>;
+    await act(async () => {
+      result = renderWithConfirmContextProvider(
+        <MusdClaimInfo />,
+        mockStore,
+      );
+    });
 
     // Hero heading is rendered
-    expect(getByTestId('musd-claim-heading')).toBeDefined();
+    expect(result!.getByTestId('musd-claim-heading')).toBeDefined();
 
     // Details section is rendered
-    expect(getByTestId('musd-claim-details-section')).toBeDefined();
+    expect(result!.getByTestId('musd-claim-details-section')).toBeDefined();
 
     // Gas fee section is rendered
-    expect(getByTestId('gas-fee-section')).toBeDefined();
+    expect(result!.getByTestId('gas-fee-section')).toBeDefined();
   });
 });
