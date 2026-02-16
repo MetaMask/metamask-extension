@@ -23,6 +23,7 @@ export { TransactionCard } from './transaction-card';
 export type { TransactionCardProps } from './transaction-card';
 export { PerpsRecentActivity } from './perps-recent-activity';
 export type { PerpsRecentActivityProps } from './perps-recent-activity';
+export { PerpsTutorialModal } from './perps-tutorial-modal';
 export {
   getDisplayName,
   getPositionDirection,

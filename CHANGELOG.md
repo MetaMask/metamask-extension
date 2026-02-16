@@ -100,8 +100,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Purge profile service on resetting wallet (#39665)
 - Prevented Snap crashing when clicking buttons without names (#39727)
 - Fixed details of the gas fee token (#39706)
-- Fixed error when sending native tokens on EVM networks when chainId is provided as decimal string (#39806)
 - Removed petname modal from appearing when clicking recipient addresses in activity list (#39816)
+
+## [13.16.4]
+
+### Fixed
+
+- Fixed error when sending native tokens on EVM networks when chainId is provided as decimal string (#39806)
+- Fixed issue for users with a lot of state on recent chromium-based browsers (#40101)
 
 ## [13.16.3]
 
@@ -1759,7 +1765,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.18.0...HEAD
 [13.18.0]: https://github.com/MetaMask/metamask-extension/compare/v13.17.0...v13.18.0
-[13.17.0]: https://github.com/MetaMask/metamask-extension/compare/v13.16.3...v13.17.0
+[13.17.0]: https://github.com/MetaMask/metamask-extension/compare/v13.16.4...v13.17.0
+[13.16.4]: https://github.com/MetaMask/metamask-extension/compare/v13.16.3...v13.16.4
 [13.16.3]: https://github.com/MetaMask/metamask-extension/compare/v13.16.2...v13.16.3
 [13.16.2]: https://github.com/MetaMask/metamask-extension/compare/v13.16.1...v13.16.2
 [13.16.1]: https://github.com/MetaMask/metamask-extension/compare/v13.16.0...v13.16.1
