@@ -31,6 +31,7 @@ import {
   getMfaRelayerUrl,
   getMfaCloudSignerUrl,
 } from '../../../shared/modules/environment';
+import { consumeVerifierToken } from '../controllers/mpc-verifier-token-cache';
 import { ControllerInitFunction } from './types';
 import {
   KeyringControllerMessenger,
@@ -248,13 +249,17 @@ export const KeyringControllerInit: ControllerInitFunction<
         ? () => Promise.resolve(generateToken(jwtSecretKey, 'MetaMask Client'))
         : undefined,
       getVerifierToken: (verifierId: string) => {
-        // Mock JWT token for verifier
-        const token = JSON.stringify({
-          sub: verifierId,
-          iat: Math.floor(Date.now() / 1000),
-          exp: Math.floor(Date.now() / 1000) + 3600,
-          channels: ['*'],
-        });
+        // Return a passkey assertion that the UI pre-cached before
+        // triggering the MPC operation.
+        const token = consumeVerifierToken(verifierId);
+        if (!token) {
+          return Promise.reject(
+            new Error(
+              `No passkey assertion cached for verifier ${verifierId}. ` +
+                'The UI must call setMpcVerifierToken before this operation.',
+            ),
+          );
+        }
         return Promise.resolve(token);
       },
     };

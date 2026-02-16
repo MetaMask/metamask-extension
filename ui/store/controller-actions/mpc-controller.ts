@@ -16,8 +16,28 @@ export type Custodian = {
   type: 'cloud' | 'user';
 };
 
+/**
+ * Cache a passkey assertion in the background so the next MPC keyring
+ * operation that calls `getVerifierToken` can return it.
+ *
+ * @param verifierId - The verifier identifier (passkey public key).
+ * @param token - Serialised passkey assertion JSON.
+ */
+export function setMpcVerifierToken(
+  verifierId: string,
+  token: string,
+): ThunkAction<Promise<void>, MetaMaskReduxState, undefined, AnyAction> {
+  return async () => {
+    await submitRequestToBackground<void>('setMpcVerifierToken', [
+      verifierId,
+      token,
+    ]);
+  };
+}
+
 export function createMpcKeyring(
   verifierId: string,
+  verifierToken: string,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, undefined, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
@@ -25,7 +45,7 @@ export function createMpcKeyring(
 
     const keyringId = await submitRequestToBackground<string>(
       'createMpcKeyring',
-      [verifierId],
+      [verifierId, verifierToken],
     )
       .then(async (result) => {
         dispatch(hideLoadingIndication());
@@ -94,6 +114,7 @@ export function addMpcCustodian(
 export function joinMpcWallet(
   verifierId: string,
   joinData: string,
+  verifierToken: string,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, undefined, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
@@ -102,6 +123,7 @@ export function joinMpcWallet(
     const keyringId = await submitRequestToBackground<string>('joinMpcWallet', [
       verifierId,
       joinData,
+      verifierToken,
     ])
       .then((result) => {
         dispatch(hideLoadingIndication());

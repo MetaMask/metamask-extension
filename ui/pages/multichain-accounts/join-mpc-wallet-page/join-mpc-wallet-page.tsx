@@ -31,6 +31,10 @@ import {
 } from '../../../helpers/constants/routes';
 import { joinMpcWallet } from '../../../store/controller-actions/mpc-controller';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
+import {
+  createPasskey,
+  signWithPasskey,
+} from '../../../../shared/lib/passkeys';
 
 export const JoinMpcWalletPage = () => {
   const t = useI18nContext();
@@ -48,7 +52,18 @@ export const JoinMpcWalletPage = () => {
     setIsJoining(true);
     setError(null);
     try {
-      await dispatch(joinMpcWallet('verifier', joinData.trim()));
+      // 1. Create a new passkey — the public key becomes the verifier ID
+      const { credentialId, publicKey } = await createPasskey();
+
+      // 2. Sign an assertion to use as the verifier token
+      const assertion = await signWithPasskey(credentialId);
+      const verifierToken = JSON.stringify(assertion);
+
+      // Persist the credential ID for future assertion requests
+      localStorage.setItem(`mpc-passkey:${publicKey}`, credentialId);
+
+      // 3. Join with passkey-based verification
+      await dispatch(joinMpcWallet(publicKey, joinData.trim(), verifierToken));
       navigate(DEFAULT_ROUTE);
     } catch (err) {
       setError(
