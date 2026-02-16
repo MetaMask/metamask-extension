@@ -993,10 +993,8 @@
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/multichain/global-menu/global-menu.test.tsx": {
-      "Reselect: Identity function warnings": 2,
+    "ui/components/multichain/global-menu-drawer/global-menu-drawer.test.tsx": {
       "Reselect: Input stability warnings": 4,
-      "error: Warning: Function components cannot be": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain/import-account/import-account.test.tsx": {
@@ -1249,6 +1247,12 @@
     "ui/contexts/hardware-wallets/HardwareWalletContext.test.tsx": {
       "Test errors: Uncaught Errors": 4
     },
+    "ui/contexts/hardware-wallets/HardwareWalletErrorProvider.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/contexts/hardware-wallets/useHardwareWalletAutoConnect.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/contexts/metamask-notifications/metamask-notifications.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1391,6 +1395,9 @@
     "ui/hooks/subscription/useAddFundTrigger.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/hooks/subscription/useSubscription.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/hooks/subscription/useSubscriptionPricing.test.ts": {
       "React: Act warnings (component updates not wrapped)": 1,
       "warn: ⚠️ React Router Future Flag": 2
@@ -1524,6 +1531,7 @@
       "React: Act warnings (component updates not wrapped)": 4,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
+      "Test errors: Uncaught Errors": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/prepare/bridge-cta-button.test.tsx": {
@@ -1552,6 +1560,7 @@
     "ui/pages/bridge/prepare/prepare-bridge-page.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
+      "Test errors: Uncaught Errors": 3,
       "Test errors: Uncaught TypeErrors": 1,
       "Third-party: Bindings failed, using pure JS": 1,
       "error: Warning: A component is changing": 2,
@@ -2004,7 +2013,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/shared/selected-gas-fee-token/selected-gas-fee-token.test.tsx": {
-      "MetaMask: Background connection not initialized": 66,
+      "MetaMask: Background connection not initialized": 78,
       "Reselect: Identity function warnings": 6,
       "Reselect: Input stability warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
@@ -2361,9 +2370,16 @@
     "ui/pages/confirmations/components/rows/pay-with-row/pay-with-row.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/components/rows/required-tokens-row/required-tokens-row.test.tsx": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/components/rows/total-row/total-row.test.tsx": {
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 2,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/rows/transaction-pay-section/transaction-pay-section.test.tsx": {
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/send/amount-recipient/amount-recipient.test.tsx": {
@@ -2456,6 +2472,7 @@
       "React: Act warnings (component updates not wrapped)": 19,
       "Reselect: Identity function warnings": 9,
       "Reselect: Input stability warnings": 3,
+      "Test errors: Uncaught Errors": 8,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/confirmation/alerts/useAlertActions.test.ts": {
@@ -2641,6 +2658,10 @@
     "ui/pages/confirmations/hooks/alerts/useTokenTrustSignalAlerts.test.ts": {
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 2,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/gas/useEstimationFailed.test.ts": {
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/gas/useGaslessSupportedSmartTransactions.test.ts": {

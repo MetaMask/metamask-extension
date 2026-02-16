@@ -3,8 +3,6 @@
  * Measures time for swap flow including quote fetching
  */
 
-import { Readable } from 'stream';
-import { ReadableStream as ReadableStreamWeb } from 'stream/web';
 import type { Mockttp } from 'mockttp';
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
@@ -14,54 +12,25 @@ import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SwapPage from '../../../page-objects/pages/swap/swap-page';
-import { SSE_RESPONSE_HEADER } from '../../../tests/bridge/constants';
 import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import {
+  getTestSpecificMock,
+  shouldUseMockedRequests,
+} from '../../utils/mock-config';
 import { BENCHMARK_PERSONA, WITH_STATE_POWER_USER } from '../../utils';
 import { BENCHMARK_TYPE } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
-import swapQuoteSolUsdc from './mocks/swap-quote-sol-usdc.json';
+import { registerSwapInterceptor } from '../../mocks/swap-mocks';
 
 export const testTitle = 'benchmark-swap-power-user';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
 
-/**
- * Builds an SSE stream for getQuoteStream with the given quote payloads.
- *
- * @param events
- * @param delayMs
- */
-function mockSseQuoteStream(
-  events: unknown[],
-  delayMs = 500,
-): ReturnType<typeof Readable.fromWeb> {
-  let index = 0;
-  const getEventId = (i: number) => `${Date.now().toString()}-${i}`;
-  const emitLine = (
-    c: ReadableStreamDefaultController<Uint8Array>,
-    line: string,
-  ) => c.enqueue(new TextEncoder().encode(line));
-  return Readable.fromWeb(
-    new ReadableStreamWeb<Uint8Array>({
-      async pull(controller) {
-        if (index >= events.length) {
-          controller.close();
-          return;
-        }
-        const quote = events[index];
-        emitLine(controller, `event: quote\n`);
-        emitLine(controller, `id: ${getEventId(index + 1)}\n`);
-        emitLine(controller, `data: ${JSON.stringify(quote)}\n\n`);
-        await new Promise((r) => setTimeout(r, delayMs));
-        index += 1;
-      },
-    }),
-  );
-}
-
 export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
   try {
+    const branchMock = getTestSpecificMock();
+
     await withFixtures(
       {
         title: testTitle,
@@ -74,28 +43,23 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
-        useMockingPassThrough: true,
+        useMockingPassThrough: !shouldUseMockedRequests(),
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
         testSpecificMock: async (
           mockServer: Mockttp,
         ): Promise<MockedEndpoint[]> => {
-          // Mockttp streams are single-use; register multiple rules so every
-          // getQuoteStream request gets a fresh SSE stream.
-          const REPEAT_GET_QUOTE_STREAM = 20;
-          const getQuoteStreamMocks: MockedEndpoint[] = [];
-          for (let i = 0; i < REPEAT_GET_QUOTE_STREAM; i += 1) {
-            const mock = await mockServer
-              .forGet(/getQuoteStream/u)
-              .once()
-              .thenStream(
-                200,
-                mockSseQuoteStream([swapQuoteSolUsdc]),
-                SSE_RESPONSE_HEADER,
-              );
-            getQuoteStreamMocks.push(mock);
+          // In pass-through mode (main/release branches), register
+          // interceptors inside the single thenPassThrough handler.
+          if (!shouldUseMockedRequests()) {
+            registerSwapInterceptor(mockServer);
           }
-          return getQuoteStreamMocks;
+
+          // On PR branches, register the full mock suite
+          const branchEndpoints = branchMock
+            ? await branchMock(mockServer)
+            : [];
+          return [...branchEndpoints];
         },
       },
       async ({ driver }: { driver: Driver }) => {
@@ -108,7 +72,13 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.waitForTokenToBeDisplayed('Ethereum');
-        await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
+
+        // Wait for Solana balance to load before starting the swap flow
+        if (shouldUseMockedRequests()) {
+          await assetListPage.checkTokenAmountIsDisplayed('50 SOL');
+        } else {
+          await assetListPage.waitForTokenToBeDisplayed('SOL');
+        }
 
         // Measure: Open swap page
         await homePage.startSwapFlow();
@@ -117,10 +87,11 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
           await swapPage.checkPageIsLoaded();
         });
         performanceTracker.addTimer(timerOpenSwapPage);
-        // Measure: Fetch quotes (longer timeout in CI where quote fetching can be slow)
+
+        // Measure: Fetch quotes
         const swapPage = new SwapPage(driver);
         await swapPage.createSolanaSwap({
-          amount: 1,
+          amount: 0.01,
           swapTo: 'USDC',
           swapFrom: 'SOL',
         });

@@ -125,6 +125,16 @@ export const SATS_IN_1_BTC = 100000000; // sats
 export const DEFAULT_SOLANA_ACCOUNT =
   'E6Aa9DDv7zsePJHosoqiNb3cFuup3fkXTyRH2pZ1nVzP';
 
+/* Default fixture SOLANA address */
+export const DEFAULT_FIXTURE_SOLANA_ACCOUNT =
+  '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
+
+/* Solana Mainnet chain ID (genesis hash) */
+export const SOLANA_MAINNET_CHAIN_ID = '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+
+/* Solana Mainnet scope in CAIP-2 format */
+export const SOLANA_MAINNET_SCOPE = `solana:${SOLANA_MAINNET_CHAIN_ID}`;
+
 /* Default (mocked) SOLANA balance used by the Solana RPC provider */
 export const DEFAULT_SOLANA_BALANCE = 1; // SOL
 

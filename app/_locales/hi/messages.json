@@ -8604,12 +8604,6 @@
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
-  "useSmartAccountDescription": {
-    "message": "जब भी प्रासंगिक फीचर्स उपलब्ध हों, जैसे कि तेज ट्रांसेक्शन, कम नेटवर्क शुल्क और उनके लिए भुगतान पर भुगतान लचीलापन, तो MetaMask के भीतर बनाए गए एकाउंट्स को स्वचालित रूप से स्मार्ट एकाउंट्स में बदलने के लिए इसे चालू रखें।"
-  },
-  "useSmartAccountTitle": {
-    "message": "स्मार्ट अकाउंट का प्रयोग करें"
-  },
   "useTokenDetectionPrivacyDesc": {
     "message": "आपके खाते में भेजे गए टोकन को स्वतः प्रदर्शित करने में टोकन की इमेज के लिए तीसरे पक्ष के सर्वर के साथ संचार करना शामिल है। उन सेवाओं की पहुंच आपके आईपी पते तक होगी।"
   },

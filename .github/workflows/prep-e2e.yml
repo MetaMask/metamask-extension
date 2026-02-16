@@ -5,9 +5,6 @@ on:
 
 jobs:
   prep-e2e:
-    # For a `pull_request` event, the branch is `github.head_ref``.
-    # For a `push` event, the branch is `github.ref_name`.
-    if: ${{ (github.head_ref || github.ref_name) != 'stable' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -25,9 +22,13 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Get changed files with git diff
+        # On branch `stable`, there's no reason to do a diff
+        if: ${{ (github.head_ref || github.ref_name) != 'stable' }}
         run: yarn tsx .github/scripts/git-diff-default-branch.ts
 
       - name: Upload changed files artifact
+        # On branch `stable`, there's no reason to do a diff
+        if: ${{ (github.head_ref || github.ref_name) != 'stable' }}
         uses: actions/upload-artifact@v6
         with:
           name: changed-files

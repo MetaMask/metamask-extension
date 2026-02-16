@@ -144,6 +144,7 @@ export async function runBenchmarkWithIterations(
     ? validateThresholds(timerStats, thresholdConfig)
     : undefined;
 
+  // Extract benchmarkType from the first result (same across all iterations)
   const benchmarkType = allResults.find((r) => r.benchmarkType)?.benchmarkType;
 
   return {
