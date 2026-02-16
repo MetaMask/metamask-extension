@@ -298,7 +298,14 @@ class SnapSimpleKeyringPage {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     // once all specs use FixtureBuilderV2, we can switch this method for clickElementAndWaitToDisappear (MMQA-1386)
     await this.driver.clickElementSafe(this.thirdPartyNoticeScrollButton);
+    await this.driver.assertElementNotPresent(
+      this.thirdPartyNoticeScrollButton,
+      { waitAtLeastGuard: regularDelayMs },
+    );
     await this.driver.clickElementSafe(this.acceptThirdPartyNotice);
+    await this.driver.assertElementNotPresent(this.acceptThirdPartyNotice, {
+      waitAtLeastGuard: regularDelayMs,
+    });
     await this.driver.clickElement(this.confirmConnectionButton);
 
     // set a bigger timeout to wait for element as a temporary fix to reduce flakiness

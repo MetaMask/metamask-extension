@@ -6,7 +6,7 @@ import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockClientStatusSnap } from '../mock-response-data/snaps/snap-binary-mocks';
@@ -23,7 +23,7 @@ describe('Test Snap Client Status', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
         const headerNavbar = new HeaderNavbar(driver);

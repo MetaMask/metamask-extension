@@ -5,7 +5,7 @@ import FixtureBuilder from '../fixtures/fixture-builder';
 import { mockNetworkSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { DAPP_PATH } from '../constants';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockTestSnapsSite } from '../mock-response-data/snaps/snap-local-sites/test-snaps-site-mocks';
 import { TEST_SNAPS_WEBSITE_URL } from './enums';
@@ -28,7 +28,7 @@ describe('Test Snap networkAccess', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
 

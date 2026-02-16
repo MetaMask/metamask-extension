@@ -4,7 +4,7 @@ import FixtureBuilder from '../fixtures/fixture-builder';
 import { mockJsxSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 
 describe('Test Snap JSX', function () {
@@ -19,7 +19,7 @@ describe('Test Snap JSX', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
         const testSnaps = new TestSnaps(driver);
 
         // Open the test snaps page

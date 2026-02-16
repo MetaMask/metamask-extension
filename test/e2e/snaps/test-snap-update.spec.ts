@@ -5,7 +5,7 @@ import { Driver } from '../webdriver/driver';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import {
   mockWebpackPluginOldSnap,
@@ -31,7 +31,7 @@ describe('Test Snap update', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);

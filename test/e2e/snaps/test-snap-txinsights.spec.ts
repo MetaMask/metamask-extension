@@ -1,6 +1,6 @@
 import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixtures/fixture-builder';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { DAPP_ONE_URL, DAPP_PATH, DAPP_URL, WINDOW_TITLES } from '../constants';
 import { withFixtures, veryLargeDelayMs } from '../helpers';
@@ -27,7 +27,7 @@ describe('Test Snap TxInsights', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         const snapTxInsights = new SnapTxInsights(driver);
 
@@ -66,7 +66,7 @@ describe('Test Snap TxInsights', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, contractRegistry }: TestSuiteArguments) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         const snapTxInsights = new SnapTxInsights(driver);
         const contractAddress = await (
@@ -115,7 +115,7 @@ describe('Test Snap TxInsights', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, contractRegistry }: TestSuiteArguments) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         const snapTxInsights = new SnapTxInsights(driver);
         const contractAddress = await (
