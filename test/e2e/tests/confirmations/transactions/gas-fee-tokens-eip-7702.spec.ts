@@ -8,7 +8,6 @@ import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
-import { mockTransactions } from '../../../helpers/mock-server';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import GasFeeTokenModal from '../../../page-objects/pages/confirmations/gas-fee-token-modal';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
@@ -47,7 +46,6 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
           mockTransactionRelaySubmit(mockServer);
           mockTransactionRelayStatus(mockServer);
           mockSmartTransactionFeatureFlags(mockServer);
-          mockTransactions(mockServer);
           mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
               price: 1700,
@@ -118,7 +116,6 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
           mockTransactionRelaySubmit(mockServer);
           mockTransactionRelayStatus(mockServer, { success: false });
           mockSmartTransactionFeatureFlags(mockServer);
-          mockTransactions(mockServer);
           mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
               price: 1700,
