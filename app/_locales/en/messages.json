@@ -304,6 +304,21 @@
   "mpcWalletDescription": {
     "message": "The MPC wallet will be setup between your device and the cloud. It is super secure because the private key does not exist in one place."
   },
+  "mpcPasskeyAssertionTitle": {
+    "message": "Authorize MPC Wallet Operation"
+  },
+  "mpcPasskeyAssertionDescription": {
+    "message": "Use your passkey to authorize this MPC wallet operation. Your browser will prompt you for biometric verification."
+  },
+  "mpcPasskeyAssertionSubmit": {
+    "message": "Authorize with Passkey"
+  },
+  "mpcPasskeyAssertionNotFound": {
+    "message": "No passkey found for this MPC wallet. You may need to re-create the wallet."
+  },
+  "mpcPasskeyAssertionFailed": {
+    "message": "Passkey authentication failed. Please try again."
+  },
   "addNewEthereumAccountLabel": {
     "message": "Ethereum account"
   },

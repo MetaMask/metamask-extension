@@ -26,10 +26,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { createMpcKeyring } from '../../../store/controller-actions/mpc-controller';
 import { MetaMaskReduxDispatch } from '../../../store/store';
-import {
-  createPasskey,
-  signWithPasskey,
-} from '../../../../shared/lib/passkeys';
+import { createPasskey } from '../../../../shared/lib/passkeys';
 
 export const AddMpcWalletPage = () => {
   const t = useI18nContext();
@@ -37,18 +34,13 @@ export const AddMpcWalletPage = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
 
   const handleCreate = useCallback(async () => {
-    // 1. Create a new passkey — the public key becomes the verifier ID
+    // Create a new passkey — the public key becomes the verifier ID.
+    // The credential ID is persisted so the approval flow can look it up
+    // when the keyring later calls getVerifierToken.
     const { credentialId, publicKey } = await createPasskey();
-
-    // 2. Immediately sign an assertion to use as the initial verifier token
-    const assertion = await signWithPasskey(credentialId);
-    const verifierToken = JSON.stringify(assertion);
-
-    // Persist the credential ID so future operations can create fresh assertions
     localStorage.setItem(`mpc-passkey:${publicKey}`, credentialId);
 
-    // 3. Create the MPC keyring with passkey-based verification
-    await dispatch(createMpcKeyring(publicKey, verifierToken));
+    await dispatch(createMpcKeyring(publicKey));
     navigate(DEFAULT_ROUTE);
   }, [dispatch, navigate]);
 

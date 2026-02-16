@@ -71,6 +71,10 @@ export type MessageType = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE];
 export const HYPERLIQUID_APPROVAL_TYPE =
   MESSAGE_TYPE.HYPERLIQUID_REFERRAL_CONSENT;
 
+// Custom ApprovalType for MPC passkey assertion (WebAuthn)
+export const MPC_PASSKEY_ASSERTION_APPROVAL_TYPE =
+  'mpc_passkey_assertion' as const;
+
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
   confirmAccountCreation: 'snap_manageAccounts:confirmAccountCreation',

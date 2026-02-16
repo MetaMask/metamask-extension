@@ -31,7 +31,7 @@ import {
   getMfaRelayerUrl,
   getMfaCloudSignerUrl,
 } from '../../../shared/modules/environment';
-import { consumeVerifierToken } from '../controllers/mpc-verifier-token-cache';
+import { MPC_PASSKEY_ASSERTION_APPROVAL_TYPE } from '../../../shared/constants/app';
 import { ControllerInitFunction } from './types';
 import {
   KeyringControllerMessenger,
@@ -248,19 +248,20 @@ export const KeyringControllerInit: ControllerInitFunction<
       getTransportToken: jwtSecretKey
         ? () => Promise.resolve(generateToken(jwtSecretKey, 'MetaMask Client'))
         : undefined,
-      getVerifierToken: (verifierId: string) => {
-        // Return a passkey assertion that the UI pre-cached before
-        // triggering the MPC operation.
-        const token = consumeVerifierToken(verifierId);
-        if (!token) {
-          return Promise.reject(
-            new Error(
-              `No passkey assertion cached for verifier ${verifierId}. ` +
-                'The UI must call setMpcVerifierToken before this operation.',
-            ),
-          );
-        }
-        return Promise.resolve(token);
+      getVerifierToken: async (verifierId: string) => {
+        // Request a passkey assertion from the UI via the approval flow.
+        // The popup will call navigator.credentials.get() and resolve the
+        // approval with the serialised assertion JSON.
+        const assertion = await initMessenger.call(
+          'ApprovalController:addRequest',
+          {
+            origin: 'metamask',
+            type: MPC_PASSKEY_ASSERTION_APPROVAL_TYPE,
+            requestData: { verifierId },
+          },
+          true, // show the approval request in the UI
+        );
+        return assertion as string;
       },
     };
     additionalKeyrings.push(
