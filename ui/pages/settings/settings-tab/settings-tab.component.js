@@ -29,6 +29,9 @@ import {
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import { ThemeType } from '../../../../shared/constants/preferences';
+import {
+  DEFAULT_ADDRESS_SCOPE_OPTIONS,
+} from '../../../../shared/constants/default-address-scope';
 import { Text, Box } from '../../../components/component-library';
 
 const sortedCurrencies = availableCurrencies.sort((a, b) => {
@@ -68,6 +71,10 @@ export default class SettingsTab extends PureComponent {
     setShowNativeTokenAsMainBalancePreference: PropTypes.func,
     hideZeroBalanceTokens: PropTypes.bool,
     setHideZeroBalanceTokens: PropTypes.func,
+    showDefaultAddress: PropTypes.bool,
+    setShowDefaultAddress: PropTypes.func,
+    defaultAddressScope: PropTypes.string,
+    setDefaultAddressScope: PropTypes.func,
     selectedAddress: PropTypes.string,
     theme: PropTypes.string,
     setTheme: PropTypes.func,
@@ -201,6 +208,83 @@ export default class SettingsTab extends PureComponent {
             value={hideZeroBalanceTokens}
             onToggle={(value) => setHideZeroBalanceTokens(!value)}
             data-testid="toggle-zero-balance-button"
+          />
+        </div>
+      </Box>
+    );
+  }
+
+  renderShowDefaultAddressOptIn() {
+    const { t } = this.context;
+    const {
+      showDefaultAddress,
+      setShowDefaultAddress,
+      defaultAddressScope,
+      setDefaultAddressScope,
+    } = this.props;
+
+    const defaultAddressScopeOptions = DEFAULT_ADDRESS_SCOPE_OPTIONS.map(
+      (opt) => ({
+        name: t(opt.messageKey),
+        value: opt.value,
+      }),
+    );
+
+    return (
+      <Box
+        ref={this.settingsRefs[6]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        id="show-default-address"
+      >
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+          alignItems={AlignItems.center}
+        >
+          <div className="settings-page__content-item">
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textDefault}
+              className="settings-page__content-item__title"
+            >
+              {t('showDefaultAddress')}
+            </Text>
+          </div>
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={showDefaultAddress}
+              onToggle={(value) => setShowDefaultAddress(!value)}
+              dataTestId="show-default-address-toggle"
+            />
+          </div>
+        </Box>
+        <Text
+          variant={TextVariant.bodyMd}
+          color={TextColor.textAlternative}
+          marginBottom={3}
+          className="settings-page__content-item__description"
+        >
+          {t('showDefaultAddressDescription')}
+        </Text>
+        <div className="settings-page__content-item">
+          <Dropdown
+            id="default-address-scope-select"
+            options={defaultAddressScopeOptions}
+            selectedOption={
+              defaultAddressScope ||
+              defaultAddressScopeOptions[0]?.value
+            }
+            onChange={(value) => {
+              setDefaultAddressScope(value);
+              if (!showDefaultAddress) {
+                setShowDefaultAddress(true);
+              }
+            }}
+            className="settings-page__content-item__dropdown"
+            data-testid="default-address-scope-dropdown"
           />
         </div>
       </Box>
@@ -440,6 +524,7 @@ export default class SettingsTab extends PureComponent {
         {this.renderTheme()}
         {this.renderBlockieOptIn()}
         {this.renderHideZeroBalanceTokensOptIn()}
+        {this.renderShowDefaultAddressOptIn()}
       </div>
     );
   }
