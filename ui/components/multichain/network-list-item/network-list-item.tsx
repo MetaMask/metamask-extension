@@ -22,6 +22,8 @@ import {
   BorderColor,
 } from '../../../helpers/constants/design-system';
 import {
+  AvatarIcon,
+  AvatarIconSize,
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
@@ -49,7 +51,8 @@ const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 export const NetworkListItem = ({
   name,
   iconSrc,
-  iconSize = AvatarNetworkSize.Md,
+  iconSize = AvatarIconSize.Md,
+  iconColor,
   rpcEndpoint,
   chainId,
   selected = false,
@@ -68,7 +71,8 @@ export const NetworkListItem = ({
 }: {
   name: string;
   iconSrc?: string;
-  iconSize?: AvatarNetworkSize | IconSize;
+  iconSize?: AvatarNetworkSize | IconSize | AvatarIconSize;
+  iconColor?: IconColor | TextColor;
   rpcEndpoint?: { name?: string; url: string };
   chainId?: string;
   selected?: boolean;
@@ -239,7 +243,12 @@ export const NetworkListItem = ({
     >
       {startAccessory ? <Box marginTop={1}>{startAccessory}</Box> : null}
       {isIconSrc(iconSrc) ? (
-        <Icon name={iconSrc} size={iconSize as IconSize} />
+        <AvatarIcon
+          iconName={iconSrc}
+          size={iconSize as AvatarIconSize}
+          color={iconColor ?? TextColor.primaryDefault}
+          backgroundColor={BackgroundColor.primaryMuted}
+        />
       ) : (
         <AvatarNetwork
           borderColor={BorderColor.backgroundDefault}
