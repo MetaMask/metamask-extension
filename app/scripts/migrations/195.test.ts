@@ -19,9 +19,9 @@ describe(`migration #${VERSION}`, () => {
     };
 
     const versionedData = cloneDeep(oldStorage);
-    const changedKeys = new Set<string>();
+    const changedControllers = new Set<string>();
 
-    await migrate(versionedData, changedKeys);
+    await migrate(versionedData, changedControllers);
 
     expect(versionedData.meta.version).toBe(VERSION);
     expect(
@@ -39,7 +39,7 @@ describe(`migration #${VERSION}`, () => {
         },
       },
     });
-    expect(changedKeys).toStrictEqual(new Set(['PreferencesController']));
+    expect(changedControllers).toStrictEqual(new Set(['PreferencesController']));
   });
 
   it('handles state when smartAccountOptIn is false', async () => {
@@ -56,9 +56,9 @@ describe(`migration #${VERSION}`, () => {
     };
 
     const versionedData = cloneDeep(oldStorage);
-    const changedKeys = new Set<string>();
+    const changedControllers = new Set<string>();
 
-    await migrate(versionedData, changedKeys);
+    await migrate(versionedData, changedControllers);
 
     expect(versionedData.meta.version).toBe(VERSION);
     expect(
@@ -69,7 +69,7 @@ describe(`migration #${VERSION}`, () => {
           }
         ).preferences,
     ).toBe(false);
-    expect(changedKeys).toStrictEqual(new Set(['PreferencesController']));
+    expect(changedControllers).toStrictEqual(new Set(['PreferencesController']));
   });
 
   it('handles state when smartAccountOptIn does not exist', async () => {
@@ -85,13 +85,13 @@ describe(`migration #${VERSION}`, () => {
     };
 
     const versionedData = cloneDeep(oldStorage);
-    const changedKeys = new Set<string>();
+    const changedControllers = new Set<string>();
 
-    await migrate(versionedData, changedKeys);
+    await migrate(versionedData, changedControllers);
 
     expect(versionedData.meta.version).toBe(VERSION);
     expect(versionedData.data).toStrictEqual(oldStorage.data);
-    expect(changedKeys.size).toBe(0);
+    expect(changedControllers.size).toBe(0);
   });
 
   it('handles state when PreferencesController does not exist', async () => {
@@ -103,13 +103,13 @@ describe(`migration #${VERSION}`, () => {
     };
 
     const versionedData = cloneDeep(oldStorage);
-    const changedKeys = new Set<string>();
+    const changedControllers = new Set<string>();
 
-    await migrate(versionedData, changedKeys);
+    await migrate(versionedData, changedControllers);
 
     expect(versionedData.meta.version).toBe(VERSION);
     expect(versionedData.data).toStrictEqual(oldStorage.data);
-    expect(changedKeys.size).toBe(0);
+    expect(changedControllers.size).toBe(0);
   });
 
   it('handles state when preferences does not exist', async () => {
@@ -123,12 +123,12 @@ describe(`migration #${VERSION}`, () => {
     };
 
     const versionedData = cloneDeep(oldStorage);
-    const changedKeys = new Set<string>();
+    const changedControllers = new Set<string>();
 
-    await migrate(versionedData, changedKeys);
+    await migrate(versionedData, changedControllers);
 
     expect(versionedData.meta.version).toBe(VERSION);
     expect(versionedData.data).toStrictEqual(oldStorage.data);
-    expect(changedKeys.size).toBe(0);
+    expect(changedControllers.size).toBe(0);
   });
 });

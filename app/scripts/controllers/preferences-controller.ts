@@ -132,6 +132,7 @@ export type PreferencesControllerState = Omit<
   | 'tokenSortConfig'
   | 'showMultiRpcModal'
   | 'dismissSmartAccountSuggestionEnabled'
+  | 'smartAccountOptIn'
   | 'smartAccountOptInForAccounts'
   | 'showIncomingTransactions'
   | 'tokenNetworkFilter'

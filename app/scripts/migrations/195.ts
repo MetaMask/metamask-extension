@@ -8,16 +8,16 @@ export const version = 195;
  * PreferencesController state as this preference is no longer used.
  *
  * @param versionedData - The versioned data object to migrate.
- * @param changedKeys - A set used to record keys that were modified.
+ * @param changedControllers - A set used to record controllers that were modified.
  */
-export const migrate = (async (versionedData, changedKeys) => {
+export const migrate = (async (versionedData, changedControllers) => {
   versionedData.meta.version = version;
-  transformState(versionedData.data, changedKeys);
+  transformState(versionedData.data, changedControllers);
 }) satisfies Migrate;
 
 function transformState(
   state: Record<string, unknown>,
-  changedKeys: Set<string>,
+  changedControllers: Set<string>,
 ): void {
   if (
     hasProperty(state, 'PreferencesController') &&
@@ -27,6 +27,6 @@ function transformState(
     hasProperty(state.PreferencesController.preferences, 'smartAccountOptIn')
   ) {
     delete state.PreferencesController.preferences.smartAccountOptIn;
-    changedKeys.add('PreferencesController');
+    changedControllers.add('PreferencesController');
   }
 }
