@@ -5250,14 +5250,8 @@
   "perpsBid": {
     "message": "Bid"
   },
-  "perpsBuy": {
-    "message": "buy"
-  },
   "perpsCancelAllOrders": {
     "message": "Cancel all"
-  },
-  "perpsCancelOrder": {
-    "message": "Cancel Order"
   },
   "perpsClose": {
     "message": "Close"
@@ -5500,26 +5494,17 @@
   "perpsSeeAllPerps": {
     "message": "See all Perps"
   },
-  "perpsSell": {
-    "message": "sell"
-  },
   "perpsShort": {
     "message": "Short"
   },
   "perpsSize": {
     "message": "Size"
   },
-  "perpsSortFundingRate": {
-    "message": "Funding rate"
-  },
   "perpsSortFundingRateHighToLow": {
     "message": "Funding rate: high to low"
   },
   "perpsSortFundingRateLowToHigh": {
     "message": "Funding rate: low to high"
-  },
-  "perpsSortOpenInterest": {
-    "message": "Open interest"
   },
   "perpsSortOpenInterestHighToLow": {
     "message": "Open interest: high to low"
@@ -5532,9 +5517,6 @@
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "Price change: low to high"
-  },
-  "perpsSortVolume": {
-    "message": "Volume"
   },
   "perpsSortVolumeHighToLow": {
     "message": "Volume: high to low"

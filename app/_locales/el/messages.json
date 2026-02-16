@@ -5083,9 +5083,6 @@
   "perpsAutoClose": {
     "message": "Αυτόματο κλείσιμο"
   },
-  "perpsBuy": {
-    "message": "αγορά"
-  },
   "perpsCloseAll": {
     "message": "Κλείσιμο όλων"
   },
@@ -5132,9 +5129,6 @@
     "message": "Κρύπτο"
   },
   "perpsFilterStocks": {
-    "message": "Μετοχές"
-  },
-  "perpsFilterStocksOnly": {
     "message": "Μετοχές"
   },
   "perpsFundingPayments": {
@@ -5213,29 +5207,17 @@
   "perpsSearchMarkets": {
     "message": "Αναζήτηση αγορών"
   },
-  "perpsSell": {
-    "message": "πώληση"
-  },
   "perpsShort": {
     "message": "Πώληση (Short)"
   },
   "perpsSize": {
     "message": "Μέγεθος"
   },
-  "perpsSortFundingRate": {
-    "message": "Χρέωση χρηματοδότησης"
-  },
-  "perpsSortOpenInterest": {
-    "message": "Ανοιχτό ενδιαφέρον"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "Μεταβολή τιμής: από υψηλή προς χαμηλή"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "Μεταβολή τιμής: από χαμηλή προς υψηλή"
-  },
-  "perpsSortVolume": {
-    "message": "Όγκος"
   },
   "perpsStartNewTrade": {
     "message": "Ξεκινήστε μια νέα συναλλαγή"

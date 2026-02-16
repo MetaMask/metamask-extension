@@ -5234,6 +5234,9 @@
   "perpsAddToFavorites": {
     "message": "Add to favorites"
   },
+  "perpsAsk": {
+    "message": "Ask"
+  },
   "perpsAutoClose": {
     "message": "Auto close"
   },
@@ -5244,8 +5247,11 @@
   "perpsAvailableBalance": {
     "message": "Available balance"
   },
-  "perpsBuy": {
-    "message": "buy"
+  "perpsBid": {
+    "message": "Bid"
+  },
+  "perpsCancelAllOrders": {
+    "message": "Cancel all"
   },
   "perpsClose": {
     "message": "Close"
@@ -5340,6 +5346,12 @@
   "perpsFundingRate": {
     "message": "Funding Rate"
   },
+  "perpsFundingRateTooltip": {
+    "message": "An hourly fee paid between traders to keep prices in line with the market. If the rate is positive, longs pay shorts. If negative, shorts pay longs."
+  },
+  "perpsGeoBlockedTooltip": {
+    "message": "Perpetual trading is not available in your region"
+  },
   "perpsGiveFeedback": {
     "message": "Give us feedback"
   },
@@ -5357,6 +5369,9 @@
   },
   "perpsLimit": {
     "message": "Limit"
+  },
+  "perpsLimitPrice": {
+    "message": "Limit Price"
   },
   "perpsLiquidationDistance": {
     "message": "Liq. distance"
@@ -5395,6 +5410,9 @@
   "perpsMaxRemovable": {
     "message": "Max removable"
   },
+  "perpsMid": {
+    "message": "Mid"
+  },
   "perpsModify": {
     "message": "Modify"
   },
@@ -5413,6 +5431,9 @@
   "perpsOpenInterest": {
     "message": "Open Interest"
   },
+  "perpsOpenInterestTooltip": {
+    "message": "The combined value of all open positions for this perp"
+  },
   "perpsOpenLong": {
     "message": "Open Long $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
@@ -5426,6 +5447,12 @@
   },
   "perpsOpenedLong": {
     "message": "Opened long"
+  },
+  "perpsOraclePrice": {
+    "message": "Oracle Price"
+  },
+  "perpsOraclePriceTooltip": {
+    "message": "The median of external prices reported by validators, used for computing funding rate"
   },
   "perpsOrderAmount": {
     "message": "Order Amount"
@@ -5467,26 +5494,17 @@
   "perpsSeeAllPerps": {
     "message": "See all Perps"
   },
-  "perpsSell": {
-    "message": "sell"
-  },
   "perpsShort": {
     "message": "Short"
   },
   "perpsSize": {
     "message": "Size"
   },
-  "perpsSortFundingRate": {
-    "message": "Funding rate"
-  },
   "perpsSortFundingRateHighToLow": {
     "message": "Funding rate: high to low"
   },
   "perpsSortFundingRateLowToHigh": {
     "message": "Funding rate: low to high"
-  },
-  "perpsSortOpenInterest": {
-    "message": "Open interest"
   },
   "perpsSortOpenInterestHighToLow": {
     "message": "Open interest: high to low"
@@ -5499,9 +5517,6 @@
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "Price change: low to high"
-  },
-  "perpsSortVolume": {
-    "message": "Volume"
   },
   "perpsSortVolumeHighToLow": {
     "message": "Volume: high to low"
@@ -6066,8 +6081,8 @@
     "message": "Required"
   },
   "requiredToken": {
-    "description": "Label for the required token row showing the token and amount needed by the transaction",
-    "message": "Required token"
+    "message": "Required token",
+    "description": "Label for the required token row showing the token and amount needed by the transaction"
   },
   "reset": {
     "message": "Reset"
