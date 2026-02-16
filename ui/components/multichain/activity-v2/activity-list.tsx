@@ -4,6 +4,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { Box, Text } from '@metamask/design-system-react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import type { Transaction } from '@metamask/keyring-api';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useScrollContainer } from '../../../contexts/scroll-container';
 import { TransactionActivityEmptyState } from '../../app/transaction-activity-empty-state';
@@ -11,7 +12,7 @@ import { PENDING_STATUS_HASH } from '../../../helpers/constants/transactions';
 import { selectLocalTransactions } from '../../../selectors/activity';
 import { selectEvmAddress } from '../../../selectors/accounts';
 import { selectCurrentAccountNonEvmTransactions } from '../../../selectors/multichain-transactions';
-import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
+import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
 import { queries } from '../../../../shared/lib/multichain/queries';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
@@ -43,8 +44,8 @@ export const ActivityList = () => {
   const [selectedNonEvmTransaction, setSelectedNonEvmTransaction] =
     useState<Transaction | null>(null);
 
-  const evmAddress = useSelector(selectEvmAddress) || '';
-  const enabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
+  const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
+  const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
   const useExternalServices = useSelector(getUseExternalServices);
 
   // Clear modal state on account switch
@@ -56,8 +57,18 @@ export const ActivityList = () => {
 
   // EVM transactions - from API
   const queryOptions = useMemo(
-    () => queries.transactions(evmAddress, { enabled: useExternalServices }),
-    [evmAddress, useExternalServices],
+    () =>
+      queries.transactions(
+        {
+          accountAddresses: evmAddress ? [evmAddress] : [],
+          networks: enabledNetworks,
+        },
+        {
+          enabled: useExternalServices,
+          keepPreviousData: true,
+        },
+      ),
+    [evmAddress, enabledNetworks, useExternalServices],
   );
   const {
     data,
@@ -77,33 +88,26 @@ export const ActivityList = () => {
 
   // Merge and flatten for virtualization
   const flattenedItems = useMemo(() => {
-    const selectedChain =
-      enabledNetworks.length === 1 ? enabledNetworks[0] : null;
+    const evmTransactions =
+      data?.pages?.flatMap((page) => page.data ?? []) ?? [];
 
-    const evmTransactions = (
-      data?.pages?.flatMap((page) => page.data ?? []) ?? []
-    ).filter((tx) => !selectedChain || tx.chainId === selectedChain);
-
-    // Filter local transactions: keep pending + completed-not-in-API
-    const localTransactionsNotInApi = filterLocalNotInApi(
+    // Filter local transactions by converting hex chainId to CAIP-2
+    const filteredLocalTransactions = filterLocalNotInApi(
       localTransactions,
       evmTransactions,
       PENDING_STATUS_HASH,
-    ).filter(
-      (group) =>
-        !selectedChain || group.initialTransaction?.chainId === selectedChain,
+    ).filter((group) => {
+      const chainId = group.initialTransaction?.chainId;
+      return !chainId || enabledNetworks.includes(toEvmCaipChainId(chainId));
+    });
+
+    const filteredNonEvmTransactions = nonEvmTransactions.filter((tx) =>
+      enabledNetworks.includes(tx.chain),
     );
 
-    const filteredNonEvmTransactions = nonEvmTransactions.filter(
-      (tx) => !selectedChain || tx.chain === selectedChain,
-    );
-
-    // Merge all three types by time:
-    // - local (TransactionGroup) → rendered by LocalActivityItem
-    // - completed (TransactionViewModel) → rendered by ActivityListItem
-    // - non-evm (Transaction) → rendered by NonEvmActivityListItem
+    // Merge all three types by time
     const mergedByTime = mergeAllTransactionsByTime(
-      localTransactionsNotInApi,
+      filteredLocalTransactions,
       evmTransactions,
       filteredNonEvmTransactions,
     );
