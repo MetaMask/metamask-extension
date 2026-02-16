@@ -97,5 +97,8 @@ html-report-multichain/
 # UI Integration tests
 test/integration/config/assets
 
+# Feature flag coverage report (generated)
+test/e2e/scripts/feature-flag-coverage-report.json
+
 # webpack
 development/.webpack
