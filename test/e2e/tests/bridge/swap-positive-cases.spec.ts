@@ -8,7 +8,7 @@ import { bridgeTransaction, getBridgeFixtures } from './bridge-test-utils';
 
 describe('Swap tests', function (this: Suite) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
-  it.only('updates recommended swap quote incrementally when SSE events are received', async function () {
+  it('updates recommended swap quote incrementally when SSE events are received', async function () {
     await withFixtures(
       {
         ...getBridgeFixtures(
