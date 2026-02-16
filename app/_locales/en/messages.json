@@ -4221,6 +4221,9 @@
   "networkNameEthereum": {
     "message": "Ethereum"
   },
+  "networkNameSepolia": {
+    "message": "Sepolia"
+  },
   "networkNameGoerli": {
     "message": "Goerli"
   },
