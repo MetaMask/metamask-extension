@@ -288,7 +288,8 @@ describe('useSubscriptionCryptoApprovalTransaction', () => {
   });
 });
 
-const mockGetRewardsSeasonMetadata = actions.getRewardsSeasonMetadata as jest.Mock;
+const mockGetRewardsSeasonMetadata =
+  actions.getRewardsSeasonMetadata as jest.Mock;
 const mockEstimateRewardsPoints = actions.estimateRewardsPoints as jest.Mock;
 
 describe('useShieldRewards', () => {
@@ -302,13 +303,11 @@ describe('useShieldRewards', () => {
   });
 
   it('returns isRewardsSeason false when getRewardsSeasonMetadata throws "No valid season metadata" error', async () => {
-    mockGetRewardsSeasonMetadata.mockImplementation(
-      () => async () => {
-        throw new Error(
-          'No valid season metadata could be found for type: current',
-        );
-      },
-    );
+    mockGetRewardsSeasonMetadata.mockImplementation(() => async () => {
+      throw new Error(
+        'No valid season metadata could be found for type: current',
+      );
+    });
 
     const { result, waitForNextUpdate } = renderHookWithProvider(
       () => useShieldRewards(),
@@ -326,11 +325,9 @@ describe('useShieldRewards', () => {
       .spyOn(console, 'error')
       .mockImplementation(() => undefined);
 
-    mockGetRewardsSeasonMetadata.mockImplementation(
-      () => async () => {
-        throw new Error('Network error');
-      },
-    );
+    mockGetRewardsSeasonMetadata.mockImplementation(() => async () => {
+      throw new Error('Network error');
+    });
 
     const { result, waitForNextUpdate } = renderHookWithProvider(
       () => useShieldRewards(),
@@ -355,15 +352,13 @@ describe('useShieldRewards', () => {
   });
 
   it('returns isRewardsSeason true when season metadata is valid and current time is within range', async () => {
-    mockGetRewardsSeasonMetadata.mockImplementation(
-      () => async () => ({
-        id: 'season-1',
-        name: 'Season 1',
-        startDate: Date.now() - 1000,
-        endDate: Date.now() + 100000,
-        tiers: [],
-      }),
-    );
+    mockGetRewardsSeasonMetadata.mockImplementation(() => async () => ({
+      id: 'season-1',
+      name: 'Season 1',
+      startDate: Date.now() - 1000,
+      endDate: Date.now() + 100000,
+      tiers: [],
+    }));
 
     const { result, waitForNextUpdate } = renderHookWithProvider(
       () => useShieldRewards(),
@@ -382,11 +377,9 @@ describe('useShieldRewards', () => {
       mockState,
     ) as unknown as MetaMaskReduxState;
 
-    mockEstimateRewardsPoints.mockImplementation(
-      () => async () => {
-        throw new Error('Points estimation failed: 500');
-      },
-    );
+    mockEstimateRewardsPoints.mockImplementation(() => async () => {
+      throw new Error('Points estimation failed: 500');
+    });
 
     const { result, waitForNextUpdate } = renderHookWithProvider(
       () => useShieldRewards(),
