@@ -126,9 +126,7 @@ const PRESETS: Record<string, string[]> = {
     `${BENCHMARK_DIR}/performance/solana-asset-details.ts`,
   ],
   // Performance benchmarks - Accounts
-  [PERFORMANCE_PRESETS[3]]: [
-    `${BENCHMARK_DIR}/performance/import-srp-home.ts`,
-  ],
+  [PERFORMANCE_PRESETS[3]]: [`${BENCHMARK_DIR}/performance/import-srp-home.ts`],
   // Performance benchmarks - Transactions
   [PERFORMANCE_PRESETS[4]]: [
     `${BENCHMARK_DIR}/performance/send-transactions.ts`,
