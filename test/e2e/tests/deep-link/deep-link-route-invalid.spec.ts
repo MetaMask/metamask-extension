@@ -7,7 +7,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import {
   bytesToB64,
   generateECDSAKeyPair,
-  generateScenariosForRoutes
+  generateScenariosForRoutes,
 } from './helpers';
 import {
   getConfig,

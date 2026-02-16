@@ -7,7 +7,7 @@ import { navigateDeepLinkToDestination } from '../../page-objects/flows/deep-lin
 import {
   bytesToB64,
   generateECDSAKeyPair,
-  generateScenariosForRoutes
+  generateScenariosForRoutes,
 } from './helpers';
 import {
   getConfig,
