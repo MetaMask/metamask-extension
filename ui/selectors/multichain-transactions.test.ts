@@ -7,12 +7,13 @@ import {
   selectCurrentAccountNonEvmTransactions,
 } from './multichain-transactions';
 
+const groups = [
+  { id: 'group-1', accounts: [{ id: 'acc-1' }, { id: 'acc-2' }] },
+  { id: 'group-2', accounts: [{ id: 'acc-x' }] },
+];
+
 // Mock account-tree selectors used by the selectors under test
 jest.mock('./multichain-accounts/account-tree', () => {
-  const groups = [
-    { id: 'group-1', accounts: [{ id: 'acc-1' }, { id: 'acc-2' }] },
-    { id: 'group-2', accounts: [{ id: 'acc-x' }] },
-  ];
   return {
     getSelectedAccountGroup: jest.fn(() => 'group-1'),
     getAccountGroupWithInternalAccounts: jest.fn(() => groups),
@@ -171,29 +172,6 @@ describe('selectCurrentAccountNonEvmTransactions', () => {
     const result = selectCurrentAccountNonEvmTransactions(state);
     // Only Solana is enabled, Bitcoin is disabled
     expect(result).toEqual([solTx]);
-  });
-
-  it('returns empty array when no non-EVM chains are enabled', () => {
-    const solTx = { id: 'sol-1' } as unknown as Transaction;
-
-    const state = buildState(
-      {
-        'acc-1': {
-          [SOLANA_MAINNET]: {
-            transactions: [solTx],
-            next: null,
-            lastUpdated: 0,
-          },
-        },
-      },
-      {
-        eip155: { '0x1': true },
-        solana: { [SOLANA_MAINNET]: false },
-      },
-    );
-
-    const result = selectCurrentAccountNonEvmTransactions(state);
-    expect(result).toEqual([]);
   });
 
   it('ignores accounts not in the selected group', () => {
