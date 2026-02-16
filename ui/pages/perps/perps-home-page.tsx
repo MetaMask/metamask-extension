@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import {
   AvatarTokenSize,
@@ -35,6 +35,8 @@ import {
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import { PerpsMarketBalanceActions } from '../../components/app/perps/perps-market-balance-actions';
 import { getDisplayName } from '../../components/app/perps/utils';
+import { PerpsTutorialModal } from '../../components/app/perps/perps-tutorial-modal';
+import { setTutorialModalOpen } from '../../ducks/perps';
 
 // Tailwind classes for list item styling
 const LIST_ITEM_BASE =
@@ -51,6 +53,7 @@ const PerpsHomePage: React.FC = () => {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
 
   // Filter positions (only crypto for now, limit to 3)
@@ -95,6 +98,10 @@ const PerpsHomePage: React.FC = () => {
     },
     [navigate],
   );
+
+  const handleLearnPerps = useCallback(() => {
+    dispatch(setTutorialModalOpen(true));
+  }, [dispatch]);
 
   // Guard: redirect if perps feature is disabled
   if (!isPerpsEnabled) {
@@ -607,6 +614,7 @@ const PerpsHomePage: React.FC = () => {
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
                 // TODO: Navigate to support
               }
             }}
@@ -627,12 +635,11 @@ const PerpsHomePage: React.FC = () => {
             className={`${LIST_ITEM_BASE} rounded-b-xl`}
             role="button"
             tabIndex={0}
-            onClick={() => {
-              // TODO: Navigate to learn page
-            }}
+            onClick={handleLearnPerps}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
-                // TODO: Navigate to learn page
+                e.preventDefault();
+                handleLearnPerps();
               }
             }}
             justifyContent={BoxJustifyContent.Between}
@@ -648,6 +655,9 @@ const PerpsHomePage: React.FC = () => {
           </Box>
         </Box>
       </Box>
+
+      {/* Tutorial Modal */}
+      <PerpsTutorialModal />
     </Box>
   );
 };

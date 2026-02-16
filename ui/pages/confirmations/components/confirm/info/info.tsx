@@ -65,8 +65,19 @@ const Info = () => {
           return TypedSignV1Info;
         }
         if (signatureRequest?.decodedPermission) {
-          if (getEnabledAdvancedPermissions().length === 0) {
-            throw new Error('Gator permissions feature is not enabled');
+          const requestedPermissionType =
+            signatureRequest.decodedPermission.permission.type;
+
+          const enabledPermissions = getEnabledAdvancedPermissions();
+
+          if (!enabledPermissions.includes(requestedPermissionType)) {
+            // This should never happen, as `wallet_requestExecutionPermissions`
+            // only accepts permissions of enabled types. This is here as a
+            // security precaution, to ensure that permission types that are not
+            // yet enabled are never available to sign.
+            throw new Error(
+              `Invalid eth_signTypedData_v4 request - Advanced Permission type: ${requestedPermissionType} not enabled`,
+            );
           }
 
           return TypedSignPermissionInfo;

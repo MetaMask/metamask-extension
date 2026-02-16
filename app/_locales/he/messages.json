@@ -410,9 +410,6 @@
   "next": {
     "message": "הבא"
   },
-  "noConversionRateAvailable": {
-    "message": "אין שער המרה זמין"
-  },
   "noWebcamFound": {
     "message": "מצלמת הרשת של מחשבך לא נמצאה. נא לנסות שוב."
   },
