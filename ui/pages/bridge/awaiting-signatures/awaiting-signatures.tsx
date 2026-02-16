@@ -57,6 +57,7 @@ export default function AwaitingSignatures() {
   const needsTwoConfirmations = Boolean(activeQuote?.approval);
   const { trackEvent } = useContext(MetaMetricsContext);
   const prevQrScanRequestRef = useRef<typeof activeQrCodeScanRequest>(null);
+  const hasTrackedEventRef = useRef(false);
 
   // Use requestId from URL when popup state is lost (QR fullscreen flow).
   const requestIdFromLocation = useMemo(() => {
@@ -155,6 +156,18 @@ export default function AwaitingSignatures() {
   ]);
 
   useEffect(() => {
+    // Only track the event once on mount to avoid duplicate events when dependencies change
+    // (e.g., when activeQuote becomes null during popup-to-fullscreen transition)
+    if (hasTrackedEventRef.current) {
+      return;
+    }
+
+    // Only fire if we have valid quote data to avoid sending empty values
+    if (!activeQuote) {
+      return;
+    }
+
+    hasTrackedEventRef.current = true;
     trackEvent({
       event: 'Awaiting Signature(s) on a HW wallet',
       category: MetaMetricsEventCategory.Swaps,
@@ -185,6 +198,7 @@ export default function AwaitingSignatures() {
       },
     });
   }, [
+    activeQuote,
     activeQuote?.quote?.destTokenAmount,
     activeQuote?.quote?.srcTokenAmount,
     fromToken?.symbol,
