@@ -80,18 +80,10 @@ class SnapInstall {
     console.log('Snap install dialog is loaded');
   }
 
-  async clickScrollBottomThirdPartyNotice() {
-    console.log('Clicking on the scroll bottom third party notice');
-    await this.driver.clickElementAndWaitToDisappear(
-      this.thirdPartyNoticeScrollButton,
-    );
-  }
-
   async clickAcceptThirdPartyNotice() {
+    // once all specs use FixtureBuilderV2, we can switch this method for clickElementAndWaitToDisappear (MMQA-1386)
     console.log('Clicking on the accept third party notice');
-    await this.driver.clickElementAndWaitToDisappear(
-      this.acceptThirdPartyNotice,
-    );
+    await this.driver.clickElementSafe(this.acceptThirdPartyNotice);
   }
 
   async clickApproveButton() {
@@ -133,6 +125,12 @@ class SnapInstall {
   async clickFooterConfirmButton() {
     console.log('Clicking Confirm button');
     await this.driver.clickElement(this.nextPageButton);
+  }
+
+  async clickScrollBottomThirdPartyNotice() {
+    console.log('Clicking on the scroll bottom third party notice');
+    // once all specs use FixtureBuilderV2, we can switch this method for clickElementAndWaitToDisappear (MMQA-1386)
+    await this.driver.clickElementSafe(this.thirdPartyNoticeScrollButton);
   }
 
   async updateScrollAndClickConfirmButton() {
