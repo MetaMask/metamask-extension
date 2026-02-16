@@ -425,23 +425,16 @@ const ShieldPlan = () => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showRewardsModal, setShowRewardsModal] = useState(false);
 
-  useEffect(() => {
-    return () => {
-      (async () => {
-        // Clear pending redirect if it points to this page, so the user
-        // won't be redirected back here on next extension open
-        if (pendingRedirectRoute?.path.includes(SHIELD_PLAN_ROUTE)) {
-          try {
-            await dispatch(setPendingRedirectRoute(null));
-          } catch (error) {
-            log.error('[shield plan] clear pending redirect error', error);
-          }
-        }
-      })();
-    };
-  }, [dispatch, pendingRedirectRoute?.path]);
+  const handleBack = async () => {
+    // Clear pending redirect when user intentionally leaves this page.
+    if (pendingRedirectRoute?.path.includes(SHIELD_PLAN_ROUTE)) {
+      try {
+        await dispatch(setPendingRedirectRoute(null));
+      } catch (error) {
+        log.error('[shield plan] clear pending redirect error', error);
+      }
+    }
 
-  const handleBack = () => {
     const source = new URLSearchParams(search).get('source');
     if (source === ShieldMetricsSourceEnum.Settings) {
       // this happens when user is from settings or transaction shield page
