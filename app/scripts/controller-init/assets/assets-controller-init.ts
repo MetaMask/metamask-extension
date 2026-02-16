@@ -123,8 +123,8 @@ export const AssetsControllerInit: ControllerInitFunction<
     queryApiClient: getApiClient(initMessenger),
     rpcDataSourceConfig: {
       tokenDetectionEnabled: () => tokenDetectionEnabled,
-      balanceInterval: 10000,
-      detectionInterval: 10000,
+      balanceInterval: 30_000,
+      detectionInterval: 180_000,
     },
     priceDataSourceConfig: {
       pollInterval: 180_000,
