@@ -32,10 +32,42 @@ import TypedSignPermissionInfo from './typed-sign/typed-sign-permission';
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const InfoSkeleton = () => (
-  <ConfirmInfoSection data-testid="confirmation__info_skeleton">
-    <Skeleton height="16px" width="30%" marginBottom={2} />
-    <Skeleton height="48px" width="100%" />
-  </ConfirmInfoSection>
+  <>
+    <Skeleton
+      height="60px"
+      width="60px"
+      style={{
+        marginTop: 32,
+        marginBottom: 10,
+        borderRadius: '50%',
+        justifySelf: 'center',
+        alignSelf: 'center',
+      }}
+    />
+    <Skeleton
+      height="32px"
+      width="200px"
+      style={{ marginBottom: 20, justifySelf: 'center', alignSelf: 'center' }}
+    />
+    <ConfirmInfoSection
+      data-testid="confirmation__info_skeleton"
+      style={{ marginBottom: 12 }}
+    >
+      <Skeleton height="72px" width="100%" />
+    </ConfirmInfoSection>
+    <ConfirmInfoSection
+      data-testid="confirmation__info_skeleton"
+      style={{ marginBottom: 12 }}
+    >
+      <Skeleton height="72px" width="100%" />
+    </ConfirmInfoSection>
+    <ConfirmInfoSection
+      data-testid="confirmation__info_skeleton"
+      style={{ marginBottom: 12 }}
+    >
+      <Skeleton height="72px" width="100%" />
+    </ConfirmInfoSection>
+  </>
 );
 
 const Info = () => {
