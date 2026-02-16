@@ -341,6 +341,15 @@ async function withFixtures(options, testSuite) {
       );
     }
     await mockServer.start(8000);
+
+    // Log every request hitting the mock server
+    const requestLogLabel = useMockingPassThrough
+      ? 'Request going to a live server ============'
+      : 'Request sent to mock server ============';
+    mockServer.on('request', (req) => {
+      console.log(`\x1b[32m${requestLogLabel} ${req.url}\x1b[0m`);
+    });
+
     await setManifestFlags(manifestFlags);
 
     const wd = await buildWebDriver({
@@ -372,6 +381,7 @@ async function withFixtures(options, testSuite) {
                 `${new Date().toISOString()} [driver] Called '${prop}' with arguments ${JSON.stringify(
                   args,
                 ).slice(0, 224)}`, // limit the length of the log entry to 224 characters
+                false,
               );
               return originalProperty.bind(target)(...args);
             };

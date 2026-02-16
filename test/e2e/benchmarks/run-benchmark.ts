@@ -30,6 +30,7 @@ import {
 import type {
   BenchmarkResults,
   BenchmarkSummary,
+  BenchmarkType,
   Persona,
   StatisticalResult,
   ThresholdConfig,
@@ -42,11 +43,13 @@ import type {
  * @param summary
  * @param testTitle
  * @param persona
+ * @param benchmarkType
  */
 function convertSummaryToResults(
   summary: BenchmarkSummary,
   testTitle: string,
-  persona: Persona,
+  persona?: Persona,
+  benchmarkType?: BenchmarkType,
 ): BenchmarkResults {
   const mean: StatisticalResult = {};
   const min: StatisticalResult = {};
@@ -67,6 +70,7 @@ function convertSummaryToResults(
   return {
     testTitle,
     persona,
+    benchmarkType,
     mean,
     min,
     max,
@@ -111,34 +115,36 @@ const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
  * updated manually when presets change.
  */
 const PRESETS: Record<string, string[]> = {
-  // Performance benchmarks (from PERFORMANCE_PRESETS)
+  // Performance benchmarks - Onboarding
   [PERFORMANCE_PRESETS[0]]: [
     `${BENCHMARK_DIR}/performance/onboarding-import-wallet.ts`,
   ],
   [PERFORMANCE_PRESETS[1]]: [
     `${BENCHMARK_DIR}/performance/onboarding-new-wallet.ts`,
   ],
+  // Performance benchmarks - Assets
   [PERFORMANCE_PRESETS[2]]: [
     `${BENCHMARK_DIR}/performance/asset-details.ts`,
     `${BENCHMARK_DIR}/performance/solana-asset-details.ts`,
   ],
-  [PERFORMANCE_PRESETS[3]]: [`${BENCHMARK_DIR}/performance/import-srp-home.ts`],
+  // Performance benchmarks - Accounts
+  [PERFORMANCE_PRESETS[3]]: [
+    `${BENCHMARK_DIR}/performance/import-srp-home.ts`,
+  ],
+  // Performance benchmarks - Transactions
   [PERFORMANCE_PRESETS[4]]: [
     `${BENCHMARK_DIR}/performance/send-transactions.ts`,
     `${BENCHMARK_DIR}/performance/swap.ts`,
   ],
-
-  // Page load benchmarks (from PAGE_LOAD_PRESETS)
+  // Page load benchmarks
   [PAGE_LOAD_PRESETS[0]]: [`${BENCHMARK_DIR}/page-load/standard-home.ts`],
   [PAGE_LOAD_PRESETS[1]]: [`${BENCHMARK_DIR}/page-load/power-user-home.ts`],
-
-  // User action benchmarks (from USER_ACTION_PRESETS)
+  // User action benchmarks
   [USER_ACTION_PRESETS[0]]: [
     `${BENCHMARK_DIR}/user-actions/load-new-account.ts`,
     `${BENCHMARK_DIR}/user-actions/confirm-tx.ts`,
     `${BENCHMARK_DIR}/user-actions/bridge-user-actions.ts`,
   ],
-
   // Playwright page-load benchmark (for local use; CI runs this separately)
   pageLoadBenchmark: [
     'test/e2e/playwright/benchmark/page-load-benchmark.spec.ts',
@@ -207,7 +213,12 @@ async function runBenchmarkFile(
       console.log('✅ All thresholds passed');
     }
 
-    return convertSummaryToResults(summary, testTitle, persona);
+    return convertSummaryToResults(
+      summary,
+      testTitle,
+      persona,
+      summary.benchmarkType,
+    );
   }
 
   // For other benchmarks (page-load), run once with options

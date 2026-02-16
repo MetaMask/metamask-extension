@@ -14,6 +14,7 @@ import {
   calculateTimerStatistics,
   checkExclusionRate,
   MAX_EXCLUSION_RATE,
+  MAX_TOTAL_DURATION_MS,
   validateThresholds,
 } from './statistics';
 import type {
@@ -21,6 +22,7 @@ import type {
   BenchmarkResults,
   BenchmarkRunResult,
   BenchmarkSummary,
+  BenchmarkType,
   Metrics,
   Persona,
   ThresholdConfig,
@@ -132,6 +134,22 @@ export async function runBenchmarkWithIterations(
     }
   }
 
+  // Compute per-run total durations and derive total statistics from them
+  // (min/max/percentiles are not additive across timers from different runs)
+  const perRunTotalDurations: number[] = [];
+  for (const result of allResults) {
+    if (result.success && result.timers.length > 0) {
+      const runTotal = result.timers.reduce((acc, t) => acc + t.duration, 0);
+      perRunTotalDurations.push(runTotal);
+    }
+  }
+  if (perRunTotalDurations.length > 0) {
+    const totalStats = calculateTimerStatistics('total', perRunTotalDurations, {
+      maxDurationMs: MAX_TOTAL_DURATION_MS,
+    });
+    timerStats.push(totalStats);
+  }
+
   // Check overall run exclusion rate
   const overallExclusionCheck = checkExclusionRate(
     iterations,
@@ -143,6 +161,9 @@ export async function runBenchmarkWithIterations(
   const thresholdResult = thresholdConfig
     ? validateThresholds(timerStats, thresholdConfig)
     : undefined;
+
+  // Extract benchmarkType from the first result (same across all iterations)
+  const benchmarkType = allResults.find((r) => r.benchmarkType)?.benchmarkType;
 
   return {
     name,
@@ -158,6 +179,7 @@ export async function runBenchmarkWithIterations(
       thresholdViolations: thresholdResult.violations,
       thresholdsPassed: thresholdResult.passed,
     }),
+    benchmarkType,
   };
 }
 
@@ -233,15 +255,17 @@ export async function runPageLoadBenchmark(
 
 export async function runUserActionBenchmark(
   measureFn: () => Promise<TimerResult[]>,
+  benchmarkType?: BenchmarkType,
 ): Promise<BenchmarkRunResult> {
   try {
     const timers = await measureFn();
-    return { timers, success: true };
+    return { timers, success: true, benchmarkType };
   } catch (error) {
     return {
       timers: [],
       success: false,
       error: error instanceof Error ? error.message : String(error),
+      benchmarkType,
     };
   }
 }

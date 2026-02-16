@@ -32,9 +32,14 @@ export type StatisticalResult = {
   [key: string]: number;
 };
 
+export type Persona = 'standard' | 'powerUser';
+
+export type BenchmarkType = 'benchmark' | 'performance' | 'userAction';
+
 export type BenchmarkResults = {
-  testTitle: string;
-  persona: Persona;
+  testTitle?: string;
+  persona?: Persona;
+  benchmarkType?: BenchmarkType;
   mean: StatisticalResult;
   min: StatisticalResult;
   max: StatisticalResult;
@@ -46,11 +51,10 @@ export type BenchmarkResults = {
 /** User action result with testTitle, persona and numeric timing metrics. */
 export type UserActionResult = {
   testTitle: string;
-  persona: Persona;
+  persona?: Persona;
+  benchmarkType?: BenchmarkType;
   [key: string]: string | number | undefined;
 };
-
-export type Persona = 'standard' | 'powerUser';
 
 export type BenchmarkArguments = {
   pages: string[];
@@ -69,6 +73,7 @@ export type BenchmarkRunResult = {
   timers: TimerResult[];
   success: boolean;
   error?: string;
+  benchmarkType?: BenchmarkType;
 };
 
 export type TimerStatistics = {
@@ -136,6 +141,8 @@ export type BenchmarkSummary = {
   thresholdViolations?: ThresholdViolation[];
   /** Whether all thresholds passed (no 'fail' violations) */
   thresholdsPassed?: boolean;
+  /** Benchmark type extracted from the first successful run */
+  benchmarkType?: BenchmarkType;
 };
 
 export type PerformanceBenchmarkResults = {

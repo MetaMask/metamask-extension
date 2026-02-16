@@ -6,15 +6,19 @@ import {
   BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
 } from '../../test/e2e/benchmarks/utils/constants';
-import type { Persona } from '../../test/e2e/benchmarks/utils/types';
+import type {
+  BenchmarkType,
+  Persona,
+} from '../../test/e2e/benchmarks/utils/types';
 
 /**
  * A single benchmark entry from a JSON artifact.
  * Shared across user action and performance benchmark results.
  */
 export type BenchmarkEntryResult = {
-  testTitle: string;
-  persona: Persona;
+  testTitle?: string;
+  persona?: Persona;
+  benchmarkType?: BenchmarkType;
   mean: Record<string, number>;
   min: Record<string, number>;
   max: Record<string, number>;
