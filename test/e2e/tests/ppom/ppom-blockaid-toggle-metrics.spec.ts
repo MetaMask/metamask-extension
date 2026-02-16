@@ -1,12 +1,14 @@
-const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixtures/fixture-builder');
-const {
-  loginWithBalanceValidation,
-} = require('../../page-objects/flows/login.flow');
-const { withFixtures, getEventPayloads } = require('../../helpers');
-const { MOCK_META_METRICS_ID } = require('../../constants');
+import { strict as assert } from 'assert';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { withFixtures, getEventPayloads } from '../../helpers';
+import { MOCK_META_METRICS_ID } from '../../constants';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { Mockttp } from 'mockttp';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 
-async function mockServerCalls(mockServer) {
+async function mockServerCalls(mockServer: Mockttp) {
   return [
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
@@ -50,8 +52,7 @@ async function mockServerCalls(mockServer) {
 }
 
 describe('PPOM Blockaid Alert - Metrics', function () {
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('Successfully track button toggle on/off', async function () {
+  it('Successfully track button toggle on/off', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -63,33 +64,33 @@ describe('PPOM Blockaid Alert - Metrics', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockServerCalls,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await loginWithBalanceValidation(driver);
 
         // toggle on
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
-        await driver.clickElement(
-          '[data-testid="settings-toggle-security-alert-blockaid"] .toggle-button > div',
-        );
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openSettingsPage();
 
-        await driver.delay(1000);
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.goToPrivacySettings();
+
+        const privacySettings = new PrivacySettings(driver);
+        await privacySettings.checkPageIsLoaded();
 
         // toggle off
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
-        await driver.clickElement(
-          '[data-testid="settings-toggle-security-alert-blockaid"] .toggle-button > div',
-        );
+        await privacySettings.toggleBlockaidAlerts();
+
+        // wait for state to update
+        await driver.delay(1000);
+
+        // toggle back ON
+        await privacySettings.toggleBlockaidAlerts();
+
+        await driver.delay(1000);
 
         const events = await getEventPayloads(driver, mockedEndpoints);
 

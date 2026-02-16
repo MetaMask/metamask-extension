@@ -129,6 +129,9 @@ class PrivacySettings {
 
   private readonly revealSrpWrongPasswordMessage = '.mm-help-text';
 
+  private readonly blockaidAlertsToggle =
+    '[data-testid="securityAlert"] .toggle-button';
+
   private readonly participateInMetaMetricsToggle =
     '[data-testid="participate-in-meta-metrics-toggle"] .toggle-button';
 
@@ -289,6 +292,11 @@ class PrivacySettings {
   async toggleAutodetectNft(): Promise<void> {
     console.log('Toggle autodetect NFT on privacy settings page');
     await this.driver.clickElement(this.autodetectNftToggleButton);
+  }
+
+  async toggleBlockaidAlerts(): Promise<void> {
+    console.log('Toggle blockaid alerts on privacy settings page');
+    await this.driver.clickElement(this.blockaidAlertsToggle);
   }
 
   async toggleEnsDomainResolution(): Promise<void> {
