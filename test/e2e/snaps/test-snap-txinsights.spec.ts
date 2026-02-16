@@ -65,8 +65,8 @@ describe('Test Snap TxInsights', function () {
         testSpecificMock: mockInsightsSnap,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, contractRegistry }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
+        await loginWithBalanceValidation(driver, localNodes?.[0]);
         const testDapp = new TestDapp(driver);
         const snapTxInsights = new SnapTxInsights(driver);
         const contractAddress = await (
@@ -114,8 +114,8 @@ describe('Test Snap TxInsights', function () {
         testSpecificMock: mockInsightsSnap,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, contractRegistry }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
+        await loginWithBalanceValidation(driver, localNodes?.[0]);
         const testDapp = new TestDapp(driver);
         const snapTxInsights = new SnapTxInsights(driver);
         const contractAddress = await (
