@@ -25,6 +25,7 @@ import {
 } from '../../../shared/constants/musd';
 import type { WildcardTokenList } from '../../pages/musd-conversion/types';
 import { useMusdGeoBlocking } from './useMusdGeoBlocking';
+import { useMusdConversionTokens } from './useMusdConversionTokens';
 
 // ============================================================================
 // Types
@@ -201,6 +202,43 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
 
   // Dismissed CTAs
   const dismissedCtaKeys = useSelector(selectDismissedCtaKeys);
+
+  // Get conversion tokens filtered by allowlist/blocklist AND minimum balance
+  // This is the source of truth for which tokens are eligible for conversion
+  const { isConversionToken, tokens: conversionTokens } =
+    useMusdConversionTokens();
+
+  /**
+   * Get tokens that are both:
+   * 1. Eligible for conversion (pass allowlist/blocklist + min balance)
+   * 2. In the CTA tokens list (which tokens should show CTAs)
+   */
+  const tokensWithCTAs = useMemo(() => {
+    return conversionTokens.filter((token) =>
+      isTokenInWildcardList(token.symbol, ctaTokens, token.chainId),
+    );
+  }, [conversionTokens, ctaTokens]);
+
+  /**
+   * Check if a specific token should show a CTA
+   * This ensures the token:
+   * 1. Passes allowlist/blocklist + minimum balance (via conversionTokens)
+   * 2. Is in the CTA tokens list
+   */
+  const isTokenEligibleForCta = useCallback(
+    (token: TokenForCta): boolean => {
+      if (!token.address || !token.chainId) {
+        return false;
+      }
+
+      return tokensWithCTAs.some(
+        (ctaToken) =>
+          token.address.toLowerCase() === ctaToken.address.toLowerCase() &&
+          token.chainId.toLowerCase() === ctaToken.chainId.toLowerCase(),
+      );
+    },
+    [tokensWithCTAs],
+  );
 
   /**
    * Generate CTA dismissal key from chainId and address
@@ -382,10 +420,11 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
         return false;
       }
 
-      // Token must be in CTA allowlist
-      if (!isTokenWithCta(token.symbol, token.chainId)) {
+      // Token must be eligible for CTA (in CTA allowlist AND passes min balance + conversion allowlist)
+      // This is the key check that ensures tokens below minimum balance don't show CTAs
+      if (!isTokenEligibleForCta(token)) {
         console.log(
-          '[MUSD CTA Debug] BLOCKED: Token not in CTA allowlist',
+          '[MUSD CTA Debug] BLOCKED: Token not eligible for CTA (failed allowlist/min balance check)',
           token.symbol,
         );
         return false;
@@ -403,7 +442,7 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
       isMusdConversionFlowEnabled,
       isMusdTokenListItemCtaEnabled,
       isGeoBlocked,
-      isTokenWithCta,
+      isTokenEligibleForCta,
     ],
   );
 
@@ -437,15 +476,15 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
         return false;
       }
 
-      // Token must be in CTA allowlist
-      return isTokenWithCta(token.symbol, token.chainId);
+      // Token must be eligible for CTA (in CTA allowlist AND passes min balance + conversion allowlist)
+      return isTokenEligibleForCta(token);
     },
     [
       isMusdConversionFlowEnabled,
       isMusdAssetOverviewCtaEnabled,
       isGeoBlocked,
       isCtaDismissed,
-      isTokenWithCta,
+      isTokenEligibleForCta,
     ],
   );
 

@@ -17,10 +17,9 @@ import {
   useMusdCtaVisibility,
   useMusdBalance,
   useMusdNetworkFilter,
+  useMusdConversionTokens,
 } from '../../../../hooks/musd';
 import { selectAccountGroupBalanceForEmptyState } from '../../../../selectors/assets';
-import { selectMusdCtaTokens } from '../../../../selectors/musd';
-import { isTokenInWildcardList } from '../../../../hooks/musd/useMusdCtaVisibility';
 ///: END:ONLY_INCLUDE_IF
 import AssetListControlBar from './asset-list-control-bar';
 
@@ -65,6 +64,7 @@ const AssetList = ({
   showTokensLinks,
   safeChains,
 }: AssetListProps) => {
+  console.log('AssetList');
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const isEvm = useSelector(getMultichainIsEvm);
   // NOTE: Since we can parametrize it now, we keep the original behavior
@@ -74,27 +74,41 @@ const AssetList = ({
   ///: BEGIN:ONLY_INCLUDE_IF(musd-conversion)
   // mUSD CTA visibility logic
   const { shouldShowBuyGetMusdCta } = useMusdCtaVisibility();
+  console.log('shouldShowBuyGetMusdCta', shouldShowBuyGetMusdCta);
   const { hasMusdBalance } = useMusdBalance();
   const { isPopularNetworksFilterActive, selectedChainId } =
     useMusdNetworkFilter();
+  console.log('selectedChainId', selectedChainId);
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
-  const ctaTokens = useSelector(selectMusdCtaTokens);
 
-  // Determine if user has convertible tokens
-  // This is a simplified check - in production, would check actual token balances
+  console.log('hasBalance', hasBalance);
+  // Use the centralized token filter that includes min balance check
+  // This is the source of truth for which tokens are eligible for mUSD conversion
+  const { tokens: conversionTokens, hasConvertibleTokensByChainId } =
+    useMusdConversionTokens();
+
+  console.log('conversionTokens', conversionTokens);
+  console.log('hasConvertibleTokensByChainId', hasConvertibleTokensByChainId);
+  // Determine if user has convertible tokens based on the centralized filter
+  // This properly checks allowlist/blocklist AND minimum fiat balance
   const hasConvertibleTokens = useMemo(() => {
-    // If user has balance, they might have convertible tokens
-    // The actual check would need to look at their token list
-    // For now, we check if they have any balance and the CTA tokens are configured
-    if (!hasBalance || !ctaTokens) {
+    if (!hasBalance) {
       return false;
     }
-    // Check if any common stablecoins are in the CTA list
-    const commonStablecoins = ['USDC', 'USDT', 'DAI'];
-    return commonStablecoins.some((symbol) =>
-      isTokenInWildcardList(symbol, ctaTokens, selectedChainId ?? undefined),
-    );
-  }, [hasBalance, ctaTokens, selectedChainId]);
+    // If a specific chain is selected, check for convertible tokens on that chain
+    if (selectedChainId) {
+      return hasConvertibleTokensByChainId(selectedChainId);
+    }
+    // Otherwise, check if there are any convertible tokens at all
+    return conversionTokens.length > 0;
+  }, [
+    hasBalance,
+    selectedChainId,
+    hasConvertibleTokensByChainId,
+    conversionTokens,
+  ]);
+
+  console.log('hasConvertibleTokens', hasConvertibleTokens);
 
   // Get CTA state
   const buyGetCtaState = shouldShowBuyGetMusdCta({

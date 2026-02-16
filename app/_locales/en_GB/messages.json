@@ -4034,6 +4034,16 @@
   "musdConversionTitle": {
     "message": "mUSD Conversion"
   },
+  "musdConversionToastInProgress": {
+    "message": "Converting $1 → mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
+  },
+  "musdConversionToastSuccess": {
+    "message": "Your mUSD is here!"
+  },
+  "musdConversionToastFailed": {
+    "message": "mUSD conversion failed"
+  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },

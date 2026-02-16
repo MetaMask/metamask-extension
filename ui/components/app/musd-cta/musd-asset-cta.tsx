@@ -5,7 +5,10 @@
  * A dismissible card CTA that appears on eligible token detail pages.
  * Shows information about mUSD conversion bonus and provides a convert action.
  *
- * Based on mobile's MusdConversionAssetOverviewCta component.
+ * Design ported from mobile's MusdConversionAssetOverviewCta component:
+ * - Horizontal row layout with mUSD icon, text content, and dismiss button
+ * - Entire card is clickable to trigger conversion
+ * - Dismiss button aligned to top-right
  */
 
 import React, { useCallback, useContext } from 'react';
@@ -26,7 +29,6 @@ import {
   Box,
   ButtonIcon,
   ButtonIconSize,
-  ButtonPrimary,
   IconName,
   Text,
 } from '../../component-library';
@@ -40,6 +42,9 @@ import {
   MUSD_EVENT_NAMES,
   MUSD_EVENTS_CONSTANTS,
 } from '../../../helpers/constants/musd-events';
+
+// Runtime path: app/images/ is copied to images/ in the build (see development/build/static.js)
+const MUSD_EDUCATION_COIN_IMAGE = './images/musd-icon-no-background-2x.png';
 
 // ============================================================================
 // Types
@@ -167,55 +172,89 @@ export const MusdAssetCta: React.FC<MusdAssetCtaProps> = ({
     );
   }
 
-  // Card variant - full featured version
+  // Card variant - horizontal layout matching mobile design
   return (
     <Box
       data-testid="musd-asset-cta"
       display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      padding={4}
+      flexDirection={FlexDirection.Row}
+      alignItems={AlignItems.center}
       borderRadius={BorderRadius.LG}
       borderColor={BorderColor.borderMuted}
       backgroundColor={BackgroundColor.backgroundDefault}
       className="musd-asset-cta"
-      style={{ borderWidth: '1px', borderStyle: 'solid' }}
+      onClick={handleConvert}
+      onKeyPress={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          handleConvert();
+        }
+      }}
+      tabIndex={0}
+      style={{
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        paddingLeft: '16px',
+        paddingRight: '12px',
+        gap: '16px',
+        cursor: 'pointer',
+      }}
     >
-      {/* Header with title and dismiss button */}
+      {/* mUSD Icon Container - Left section */}
       <Box
         display={Display.Flex}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.flexStart}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
+        backgroundColor={BackgroundColor.backgroundMuted}
+        borderRadius={BorderRadius.LG}
+        style={{
+          width: '60px',
+          height: '60px',
+          minWidth: '60px',
+          overflow: 'hidden',
+        }}
       >
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          gap={1}
-        >
-          <Text variant={TextVariant.bodyMdMedium}>
-            {t('musdBoostTitle', [String(MUSD_CONVERSION_APY)])}
-          </Text>
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-            {t('musdBoostDescription', [String(MUSD_CONVERSION_APY)])}
-          </Text>
-        </Box>
+        <img
+          src={MUSD_EDUCATION_COIN_IMAGE}
+          alt="mUSD"
+          style={{
+            width: '60px',
+            height: '60px',
+            objectFit: 'cover',
+          }}
+        />
+      </Box>
+
+      {/* Text Content - Center section */}
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        style={{
+          flex: 1,
+          gap: '4px',
+          paddingTop: '16px',
+          paddingBottom: '16px',
+        }}
+      >
+        <Text variant={TextVariant.bodyMdMedium}>
+          {t('musdBoostTitle', [String(MUSD_CONVERSION_APY)])}
+        </Text>
+        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+          {t('musdBoostDescription', [String(MUSD_CONVERSION_APY)])}
+        </Text>
+      </Box>
+
+      {/* Dismiss Button - Right section (aligned to top) */}
+      <Box style={{ alignSelf: 'flex-start', marginTop: '16px' }}>
         <ButtonIcon
           data-testid="musd-asset-cta-dismiss"
           iconName={IconName.Close}
           size={ButtonIconSize.Sm}
-          onClick={handleDismiss}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDismiss();
+          }}
           ariaLabel={t('dismiss')}
         />
-      </Box>
-
-      {/* Convert button */}
-      <Box marginTop={3}>
-        <ButtonPrimary
-          block
-          onClick={handleConvert}
-          data-testid="musd-asset-cta-convert"
-        >
-          {t('musdConvert')}
-        </ButtonPrimary>
       </Box>
     </Box>
   );

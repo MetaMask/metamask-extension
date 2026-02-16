@@ -57,6 +57,10 @@ export function useInsufficientPayTokenBalanceAlert({
   const nativeTokenAddress = getNativeTokenAddress(sourceChainId);
   const { assetsWithBalance } = useMultichainBalances();
 
+  // console.log('assetsWithBalance', assetsWithBalance);
+  // console.log('nativeTokenAddress', nativeTokenAddress);
+  // console.log('selectedAddress', selectedAddress);
+  // console.log('sourceChainId', sourceChainId);
   const nativeToken = useMemo(() => {
     if (!selectedAddress || !sourceChainId) {
       return undefined;
@@ -135,7 +139,24 @@ export function useInsufficientPayTokenBalanceAlert({
       totalSourceNetworkFeeRaw,
     ],
   );
-
+  console.log(
+    'isInsufficientForSourceNetwork without totalSourceNetworkFeeRaw',
+    payToken && !isPayTokenNative && !isPendingAlert && !isSourceGasFeeToken,
+  );
+  console.log(payToken, 'payToken');
+  console.log(isPayTokenNative, 'isPayTokenNative');
+  console.log(isPendingAlert, 'isPendingAlert');
+  console.log(isSourceGasFeeToken, 'isSourceGasFeeToken');
+  console.log('totalAmountUsd', totalAmountUsd);
+  console.log('totalSourceAmountRaw', totalSourceAmountRaw);
+  console.log(
+    'totalSourceNetworkFeeRaw',
+    totalSourceNetworkFeeRaw.toString(),
+    nativeBalanceRaw.toString(),
+  );
+  console.log('isInsufficientForInput', isInsufficientForInput);
+  console.log('isInsufficientForFees', isInsufficientForFees);
+  console.log('isInsufficientForSourceNetwork', isInsufficientForSourceNetwork);
   return useMemo(() => {
     const baseAlert = {
       field: RowAlertKey.EstimatedFee,
@@ -164,16 +185,16 @@ export function useInsufficientPayTokenBalanceAlert({
       ];
     }
 
-    if (isInsufficientForSourceNetwork) {
-      return [
-        {
-          ...baseAlert,
-          key: AlertsName.InsufficientPayTokenNative,
-          reason: t('alertInsufficientPayTokenBalance'),
-          message: t('alertInsufficientPayTokenNative', [ticker]),
-        },
-      ];
-    }
+    // if (isInsufficientForSourceNetwork) {
+    //   return [
+    //     {
+    //       ...baseAlert,
+    //       key: AlertsName.InsufficientPayTokenNative,
+    //       reason: t('alertInsufficientPayTokenBalance'),
+    //       message: t('alertInsufficientPayTokenNative', [ticker]),
+    //     },
+    //   ];
+    // }
 
     return [];
   }, [

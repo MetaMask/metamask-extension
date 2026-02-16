@@ -63,6 +63,7 @@ import {
   StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
 import { useMerklClaimStatus } from '../../../hooks/musd/useMerklClaimStatus';
+import { useMusdConversionToastStatus } from '../../../hooks/musd/useMusdConversionToastStatus';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   getAccountGroupWithInternalAccounts,
@@ -162,6 +163,7 @@ export function ToastMaster() {
         <InfuraSwitchToast />
         <CopyAddressToast />
         <MerklClaimToast />
+        <MusdConversionToast />
         <ShieldPausedToast />
         <ShieldEndingToast />
       </ToastContainer>
@@ -815,6 +817,79 @@ function MerklClaimToast() {
       startAdornment={startAdornment}
       onClose={dismissToast}
       // In-progress toast stays until transaction completes; success/failed auto-hide
+      {...(!isInProgress && {
+        autoHideTime: autoHideDelay,
+        onAutoHideToast: dismissToast,
+      })}
+    />
+  );
+}
+
+function MusdConversionToast() {
+  const t = useI18nContext();
+  const { toastState, sourceTokenSymbol, dismissToast } =
+    useMusdConversionToastStatus();
+
+  const autoHideDelay = 5 * SECOND;
+
+  if (!toastState) {
+    return null;
+  }
+
+  const isInProgress = toastState === 'in-progress';
+  const isSuccess = toastState === 'success';
+
+  const toastText = (() => {
+    switch (toastState) {
+      case 'in-progress':
+        return t('musdConversionToastInProgress', [
+          sourceTokenSymbol ?? 'Token',
+        ]);
+      case 'success':
+        return t('musdConversionToastSuccess');
+      case 'failed':
+        return t('musdConversionToastFailed');
+      default:
+        return '';
+    }
+  })();
+
+  const startAdornment = (() => {
+    if (isInProgress) {
+      return (
+        <DsIcon
+          name={DsIconName.Loading}
+          color={DsIconColor.IconDefault}
+          size={DsIconSize.Lg}
+          style={{ animation: 'spin 1.2s linear infinite' }}
+        />
+      );
+    }
+    if (isSuccess) {
+      return (
+        <DsIcon
+          name={DsIconName.Confirmation}
+          color={DsIconColor.SuccessDefault}
+          size={DsIconSize.Lg}
+        />
+      );
+    }
+    return (
+      <DsIcon
+        name={DsIconName.CircleX}
+        color={DsIconColor.ErrorDefault}
+        size={DsIconSize.Lg}
+      />
+    );
+  })();
+
+  return (
+    <Toast
+      key="musd-conversion-toast"
+      dataTestId="musd-conversion-toast"
+      text={toastText}
+      startAdornment={startAdornment}
+      onClose={dismissToast}
       {...(!isInProgress && {
         autoHideTime: autoHideDelay,
         onAutoHideToast: dismissToast,

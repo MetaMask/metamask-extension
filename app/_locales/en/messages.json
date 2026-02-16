@@ -4034,6 +4034,16 @@
   "musdConversionTitle": {
     "message": "mUSD Conversion"
   },
+  "musdConversionToastInProgress": {
+    "message": "Converting $1 → mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
+  },
+  "musdConversionToastSuccess": {
+    "message": "Your mUSD is here!"
+  },
+  "musdConversionToastFailed": {
+    "message": "mUSD conversion failed"
+  },
   "musdGetBonusPercentage": {
     "message": "Get $1% bonus",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -4058,6 +4068,28 @@
   },
   "musdConvert": {
     "message": "Convert"
+  },
+  "musdConvertAndGetBonus": {
+    "message": "Convert and get 3%",
+    "description": "Header text for mUSD conversion confirmation showing the 3% bonus"
+  },
+  "musdBonusExplanation": {
+    "message": "Convert your stablecoins to mUSD, MetaMask's US dollar-backed stablecoin, and receive up to a $1% bonus. $2",
+    "description": "Tooltip explaining the mUSD conversion bonus. $1 is the bonus percentage (e.g., 3). $2 is a 'Terms apply' link"
+  },
+  "musdTermsApply": {
+    "message": "Terms apply.",
+    "description": "Link text for the mUSD bonus terms of use"
+  },
+  "musdEducationHeadline": {
+    "message": "GET $1% ON STABLECOINS",
+    "description": "Education screen headline. $1 is the bonus percentage (e.g., 3)"
+  },
+  "musdEducationGetStarted": {
+    "message": "Get started"
+  },
+  "musdEducationNotNow": {
+    "message": "Not now"
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."

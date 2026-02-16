@@ -204,6 +204,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
       ([stringChainKey, tokens]) => {
         const chainId = stringChainKey as Hex;
         const tokenList = tokens as Token[];
+        console.log('tokenList', tokenList);
         tokenList.forEach((token: Token) => {
           const { isNative, address, decimals } = token;
 

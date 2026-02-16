@@ -113,25 +113,26 @@ describe('MusdAssetCta', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders convert button', () => {
+    it('renders mUSD icon image', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdAssetCta token={mockToken} variant="card" />,
         store,
       );
 
-      expect(screen.getByText('Convert')).toBeInTheDocument();
+      const musdIcon = screen.getByAltText('mUSD');
+      expect(musdIcon).toBeInTheDocument();
     });
 
-    it('calls startConversionFlow when convert button is clicked', () => {
+    it('calls startConversionFlow when card is clicked', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdAssetCta token={mockToken} variant="card" />,
         store,
       );
 
-      const convertButton = screen.getByText('Convert');
-      fireEvent.click(convertButton);
+      const ctaCard = screen.getByTestId('musd-asset-cta');
+      fireEvent.click(ctaCard);
 
       expect(mockStartConversionFlow).toHaveBeenCalledWith({
         preferredToken: expect.objectContaining({
@@ -143,15 +144,15 @@ describe('MusdAssetCta', () => {
       });
     });
 
-    it('tracks analytics event when convert button is clicked', () => {
+    it('tracks analytics event when card is clicked', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdAssetCta token={mockToken} variant="card" />,
         store,
       );
 
-      const convertButton = screen.getByText('Convert');
-      fireEvent.click(convertButton);
+      const ctaCard = screen.getByTestId('musd-asset-cta');
+      fireEvent.click(ctaCard);
 
       expect(mockTrackEvent).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -260,6 +261,21 @@ describe('MusdAssetCta', () => {
 
       const dismissButton = screen.getByTestId('musd-asset-cta-dismiss');
       expect(dismissButton).toHaveAttribute('aria-label', 'Dismiss');
+    });
+
+    it('card is keyboard accessible and triggers conversion on Enter', () => {
+      const store = createMockStore();
+      renderWithProvider(
+        <MusdAssetCta token={mockToken} variant="card" />,
+        store,
+      );
+
+      const ctaCard = screen.getByTestId('musd-asset-cta');
+      expect(ctaCard).toHaveAttribute('tabIndex', '0');
+
+      fireEvent.keyPress(ctaCard, { key: 'Enter', code: 'Enter' });
+
+      expect(mockStartConversionFlow).toHaveBeenCalled();
     });
   });
 });

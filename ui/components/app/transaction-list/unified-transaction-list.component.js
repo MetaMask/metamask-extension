@@ -19,6 +19,7 @@ import {
   getTransactions,
   groupAndSortTransactionsByNonce,
   smartTransactionsListSelector,
+  mainActivityListHiddenIdsSelector,
 } from '../../../selectors/transactions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import {
@@ -485,6 +486,9 @@ export default function UnifiedTransactionList({
   const groupEvmAddress = accountGroupEvmAccount?.address?.toLowerCase();
 
   const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
+  const mainActivityListHiddenIds = useSelector(
+    mainActivityListHiddenIdsSelector,
+  );
 
   const pendingFromSelectedAccount = useSelector(
     nonceSortedPendingTransactionsSelectorAllChains,
@@ -649,9 +653,27 @@ export default function UnifiedTransactionList({
   }, [nonEvmChainIds, enabledNetworksForAllNamespaces]);
 
   const unifiedActivityItems = useMemo(() => {
+    const isMainActivityList = !tokenAddress;
+    const { ids: hiddenIds, hashes: hiddenHashes } = mainActivityListHiddenIds;
+
+    const excludeFromList = (group) => {
+      const tx = group.primaryTransaction;
+      return (
+        !hiddenIds.has(String(tx?.id)) && !hiddenHashes.has(tx?.hash ?? '')
+      );
+    };
+
+    const pendingTransactions = isMainActivityList
+      ? enabledNetworksFilteredPendingTransactions.filter(excludeFromList)
+      : enabledNetworksFilteredPendingTransactions;
+
+    const completedTransactions = isMainActivityList
+      ? enabledNetworksFilteredCompletedTransactions.filter(excludeFromList)
+      : enabledNetworksFilteredCompletedTransactions;
+
     const allItems = buildUnifiedActivityItems(
-      enabledNetworksFilteredPendingTransactions,
-      enabledNetworksFilteredCompletedTransactions,
+      pendingTransactions,
+      completedTransactions,
       nonEvmTransactionsForToken,
       {
         hideTokenTransactions,
@@ -708,6 +730,7 @@ export default function UnifiedTransactionList({
   }, [
     enabledNetworksFilteredPendingTransactions,
     enabledNetworksFilteredCompletedTransactions,
+    mainActivityListHiddenIds,
     nonEvmTransactionsForToken,
     hideTokenTransactions,
     tokenAddress,

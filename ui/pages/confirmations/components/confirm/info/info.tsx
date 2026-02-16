@@ -15,7 +15,9 @@ import {
   useConfirmationNavigationOptions,
 } from '../../../hooks/useConfirmationNavigation';
 import { CustomAmountInfoSkeleton } from '../../info/custom-amount-info';
-import { MusdConversionInfo } from './musd-conversion-info';
+///: BEGIN:ONLY_INCLUDE_IF(musd-conversion)
+import { MusdConversionInfo } from '../../info/musd-conversion-info';
+///: END:ONLY_INCLUDE_IF
 import { PerpsDepositInfo } from './perps-deposit-info';
 import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
@@ -95,7 +97,9 @@ const Info = () => {
       [ApprovalType.AddEthereumChain]: () => AddEthereumChain,
 
       [TransactionType.perpsDeposit]: () => PerpsDepositInfo,
+      ///: BEGIN:ONLY_INCLUDE_IF(musd-conversion)
       [TransactionType.musdConversion]: () => MusdConversionInfo,
+      ///: END:ONLY_INCLUDE_IF
     }),
     [currentConfirmation],
   );

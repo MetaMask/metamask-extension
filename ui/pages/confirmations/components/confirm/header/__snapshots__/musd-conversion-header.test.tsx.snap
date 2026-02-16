@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<MusdConversionHeader /> should match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box mm-header-base mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center mm-box--background-color-background-default"
+    data-testid="musd-conversion-header"
+    style="z-index: 2;"
+  >
+    <div
+      class="mm-box"
+      style="min-width: 0px;"
+    >
+      <button
+        aria-label="Back"
+        class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+        data-testid="musd-conversion-header-back-button"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/arrow-left.svg');"
+        />
+      </button>
+    </div>
+    <div
+      class="mm-box mm-box--padding-0 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+    >
+      <h4
+        class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+        data-testid="musd-conversion-header-title"
+      >
+        Convert and get 3%
+      </h4>
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+      style="min-width: 0px;"
+    >
+      <div
+        class="mm-box"
+      >
+        <button
+          aria-label="info"
+          class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+          data-testid="musd-conversion-header-info-button"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/info.svg');"
+          />
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
