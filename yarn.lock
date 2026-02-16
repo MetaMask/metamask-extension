@@ -6667,7 +6667,7 @@ __metadata:
 
 "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz#./metamask-eth-mpc-keyring-0.0.0.tgz::hash=29922b&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz#./metamask-eth-mpc-keyring-0.0.0.tgz::hash=13a57b&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
@@ -6676,7 +6676,7 @@ __metadata:
     "@metamask/mfa-wallet-e2ee": "npm:^0.0.0"
     "@metamask/mfa-wallet-network": "npm:^0.0.0"
     "@metamask/mfa-wallet-util": "npm:^0.0.0"
-  checksum: 10/e4aa5f2371c71aa2004635beda80a1a7a3d835de004f0e48c637b0d42379dc7ac184604265600e158de53d62a8fbaeb56aab946fe9725441e03d011a1dde27ce
+  checksum: 10/eb58283602db6086c2bc0b461e50105c6c7b342f424cdaece3ae606cfd562a367ff462248ee08b4f6b36a6ee58460ee38ab9681a14cd291fe94ac6b20c406b50
   languageName: node
   linkType: hard
 
