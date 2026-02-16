@@ -5,7 +5,7 @@ import {
 import { ACCOUNTS_API_BASE_URL } from '../constants/accounts';
 import { getCurrentLocale } from './translate';
 
-type Params = {
+export type Params = {
   accountAddresses: string[];
   networks?: string[];
   cursor?: string;
