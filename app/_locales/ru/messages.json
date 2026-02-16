@@ -8628,12 +8628,6 @@
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
-  "useSmartAccountDescription": {
-    "message": "Включите этот параметр, чтобы автоматически менять счета, созданные в MetaMask, на смарт-счета, когда для них доступны соответствующие функции, такие как более быстрые транзакции, более низкие комиссии сети и гибкость при оплате."
-  },
-  "useSmartAccountTitle": {
-    "message": "Использовать смарт-счет"
-  },
   "useTokenDetectionPrivacyDesc": {
     "message": "Автоматическое отображение токенов, отправленных на ваш счет, включает коммуникацию со сторонними серверами для получения изображений токенов. Эти сервера получают доступ к вашему IP-адресу."
   },

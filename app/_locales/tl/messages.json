@@ -8604,12 +8604,6 @@
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
-  "useSmartAccountDescription": {
-    "message": "Hayaan itong naka-on para awtomatikong lumipat sa mga account na nilikha sa loob ng MetaMask patungo sa mga smart account sa tuwing available ang mga kaugnay na feature, gaya ng mas mabilis na mga transaksyon, mas mababang bayad sa network at flexibility sa pagbabayad para sa mga iyon."
-  },
-  "useSmartAccountTitle": {
-    "message": "Gumamit ng smart account"
-  },
   "useTokenDetectionPrivacyDesc": {
     "message": "Awtomatikong ipinapakita ang mga token na ipinadala sa iyong account na nakapaloob sa komunikasyon ng mga server ng third party para makuha ang mga larawan ng token. Ang mga server na iyon ay magkakaroon ng access sa iyong IP address."
   },
