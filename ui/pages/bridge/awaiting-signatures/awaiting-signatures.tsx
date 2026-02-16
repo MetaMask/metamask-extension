@@ -65,18 +65,25 @@ export default function AwaitingSignatures() {
     return params.get('requestId') || undefined;
   }, [location.search]);
 
-  const hasSubmittedBridgeTx = useMemo(() => {
-    const requestId =
-      activeQuote?.quote?.requestId ?? requestIdFromLocation ?? undefined;
+  // Resolve requestId from activeQuote or URL params
+  const requestId = useMemo(
+    () => activeQuote?.quote?.requestId ?? requestIdFromLocation ?? undefined,
+    [activeQuote?.quote?.requestId, requestIdFromLocation],
+  );
+
+  // Find bridge history item for this requestId (shared lookup for both booleans)
+  const historyItem = useMemo(() => {
     if (!requestId) {
-      return false;
+      return undefined;
     }
 
-    // Find bridge history item for this requestId
-    const historyItem = Object.values(bridgeHistory).find(
+    return Object.values(bridgeHistory).find(
       (item) => item?.quote?.requestId === requestId,
     );
+  }, [bridgeHistory, requestId]);
 
+  // Check if the bridge transaction has been submitted
+  const hasSubmittedBridgeTx = useMemo(() => {
     if (!historyItem) {
       return false;
     }
@@ -91,30 +98,14 @@ export default function AwaitingSignatures() {
 
     // If no approvalTxId, the history item represents a submitted bridge transaction
     return true;
-  }, [activeQuote?.quote?.requestId, bridgeHistory, requestIdFromLocation]);
+  }, [historyItem]);
 
   // Check if we're between approval and bridge steps in a two-step flow
   const isBetweenApprovalAndBridgeSteps = useMemo(() => {
-    const requestId =
-      activeQuote?.quote?.requestId ?? requestIdFromLocation ?? undefined;
-    if (!requestId) {
-      return false;
-    }
-
-    // Find bridge history item for this requestId
-    const historyItem = Object.values(bridgeHistory).find(
-      (item) => item?.quote?.requestId === requestId,
-    );
-
     // If history item exists with approvalTxId but bridge hasn't been submitted,
     // we're between the approval and bridge steps
     return historyItem?.approvalTxId !== undefined && !hasSubmittedBridgeTx;
-  }, [
-    bridgeHistory,
-    activeQuote?.quote?.requestId,
-    requestIdFromLocation,
-    hasSubmittedBridgeTx,
-  ]);
+  }, [historyItem, hasSubmittedBridgeTx]);
 
   // Navigate away when transaction completes (success or cancellation)
   useEffect(() => {
