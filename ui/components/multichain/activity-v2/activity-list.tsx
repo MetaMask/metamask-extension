@@ -48,6 +48,11 @@ export const ActivityList = () => {
   const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
   const useExternalServices = useSelector(getUseExternalServices);
 
+  const evmNetworks = useMemo(
+    () => enabledNetworks.filter((id) => id.startsWith('eip155:')),
+    [enabledNetworks],
+  );
+
   // Clear modal state on account switch
   useEffect(() => {
     setIsModalOpen(false);
@@ -61,14 +66,14 @@ export const ActivityList = () => {
       queries.transactions(
         {
           accountAddresses: evmAddress ? [evmAddress] : [],
-          networks: enabledNetworks,
+          networks: evmNetworks,
         },
         {
           enabled: useExternalServices,
           keepPreviousData: true,
         },
       ),
-    [evmAddress, enabledNetworks, useExternalServices],
+    [evmAddress, evmNetworks, useExternalServices],
   );
   const {
     data,
