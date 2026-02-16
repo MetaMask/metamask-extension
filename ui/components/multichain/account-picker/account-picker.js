@@ -52,8 +52,6 @@ export const AccountPicker = ({
     [labelProps.style],
   );
 
-  const accountNameFontVariant = useMemo(() => TextVariant.bodyMdMedium, []);
-
   return (
     <Box
       display={Display.Flex}
@@ -106,7 +104,7 @@ export const AccountPicker = ({
           <Text
             as="span"
             ellipsis
-            variant={accountNameFontVariant}
+            variant={TextVariant.bodyMdMedium}
             {...labelProps}
             className={classnames(
               'multichain-account-picker__label w-full',
