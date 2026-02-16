@@ -6667,7 +6667,7 @@ __metadata:
 
 "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz#./metamask-eth-mpc-keyring-0.0.0.tgz::hash=d63ce5&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz#./metamask-eth-mpc-keyring-0.0.0.tgz::hash=29922b&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
@@ -6676,7 +6676,7 @@ __metadata:
     "@metamask/mfa-wallet-e2ee": "npm:^0.0.0"
     "@metamask/mfa-wallet-network": "npm:^0.0.0"
     "@metamask/mfa-wallet-util": "npm:^0.0.0"
-  checksum: 10/3144191ae8903ed61a1d823575f6775d6634afea9968790bc9d316eba9598ea881a38d350f7854670d4341c26b5ad4ee353d8bf5ede5de4f124f1b733c531e2c
+  checksum: 10/e4aa5f2371c71aa2004635beda80a1a7a3d835de004f0e48c637b0d42379dc7ac184604265600e158de53d62a8fbaeb56aab946fe9725441e03d011a1dde27ce
   languageName: node
   linkType: hard
 
@@ -7405,22 +7405,22 @@ __metadata:
 
 "@metamask/mfa-wallet-cl24-lib@file:./metamask-mfa-wallet-cl24-lib-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/mfa-wallet-cl24-lib@file:./metamask-mfa-wallet-cl24-lib-0.0.0.tgz#./metamask-mfa-wallet-cl24-lib-0.0.0.tgz::hash=6f19f0&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/mfa-wallet-cl24-lib@file:./metamask-mfa-wallet-cl24-lib-0.0.0.tgz#./metamask-mfa-wallet-cl24-lib-0.0.0.tgz::hash=c5dc05&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@msgpack/msgpack": "npm:^3.1.2"
     "@noble/curves": "npm:^1.9.2"
     "@noble/hashes": "npm:^1.8.0"
-  checksum: 10/3779f3d5d370082ea2dd27163670f6085f9863049a35f605019d4fc8883c7101f92726c37a5b12b2d6ab62e768b0f8cd297cd5076a9864a608c24c739cb132d1
+  checksum: 10/7b6e99196366ef2dabc3ce1db8ee91467bc2ba0b1eab5965a7044f9dafb687433d586bf4ecd84f287849183583f1999d848c52a95e972cfc17cf89a86f0c7c2e
   languageName: node
   linkType: hard
 
 "@metamask/mfa-wallet-dkls19-lib@file:./metamask-mfa-wallet-dkls19-lib-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/mfa-wallet-dkls19-lib@file:./metamask-mfa-wallet-dkls19-lib-0.0.0.tgz#./metamask-mfa-wallet-dkls19-lib-0.0.0.tgz::hash=aef3b3&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/mfa-wallet-dkls19-lib@file:./metamask-mfa-wallet-dkls19-lib-0.0.0.tgz#./metamask-mfa-wallet-dkls19-lib-0.0.0.tgz::hash=4b0e4f&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/mfa-wallet-util": "npm:^0.0.0"
     "@noble/curves": "npm:^1.9.2"
-  checksum: 10/bd9c8f0fd1ff8afe8595c93859a298545a2625065229d693794f0f6bf2b1852816353027b899a88082032ffc6e09e435620b0c3c68ad74ae7e517e3f01a15489
+  checksum: 10/c6171512e90737102f190c152ae636ad5fade75ea0225eb0d008e19dd108e5b0cc0b2348a7301df6b0ef0df7661f2664662a4b947d2f06d865bf6535d8a60619
   languageName: node
   linkType: hard
 
@@ -8907,8 +8907,8 @@ __metadata:
 
 "@metamask/tss-dkls19-lib@file:./metamask-tss-dkls19-lib-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/tss-dkls19-lib@file:./metamask-tss-dkls19-lib-0.0.0.tgz#./metamask-tss-dkls19-lib-0.0.0.tgz::hash=96ff64&locator=metamask-crx%40workspace%3A."
-  checksum: 10/4af48363cc19ec6a8f1055a86b79d853ebdb7e57c71f5505562679ac6193c7bf7ae16c9de26d13adf2c87953db79d2d0c10664321046fbfb18a6cb5ad60e61c2
+  resolution: "@metamask/tss-dkls19-lib@file:./metamask-tss-dkls19-lib-0.0.0.tgz#./metamask-tss-dkls19-lib-0.0.0.tgz::hash=01b37b&locator=metamask-crx%40workspace%3A."
+  checksum: 10/ebf6c3db34ddfc75536402d1b3a70ac029db20cc6ebde95678a161b21158673120502a306e8081962d7e0fe358a5d9464d1c21fbd5bd6ad2fe8b7d855cb9de50
   languageName: node
   linkType: hard
 

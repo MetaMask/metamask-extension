@@ -107,9 +107,7 @@ export const MpcWalletManagementPage = () => {
       setNewPeerId('');
       await fetchCustodians();
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Failed to add custodian',
-      );
+      setError(err instanceof Error ? err.message : 'Failed to add custodian');
     } finally {
       setIsAdding(false);
     }
@@ -255,10 +253,7 @@ export const MpcWalletManagementPage = () => {
             gap={2}
             marginTop={2}
           >
-            <Text
-              variant={TextVariant.headingSm}
-              color={TextColor.textDefault}
-            >
+            <Text variant={TextVariant.headingSm} color={TextColor.textDefault}>
               {t('addCustodian')}
             </Text>
             <TextField

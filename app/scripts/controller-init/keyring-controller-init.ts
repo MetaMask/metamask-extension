@@ -1,5 +1,5 @@
 import { MPCKeyringOpts, MPCKeyring } from '@metamask/eth-mpc-keyring';
-import { tssLib as Dkls19TssLib } from '@metamask/tss-dkls19-lib';
+import { loadSync as loadDkls19Lib } from '@metamask/tss-dkls19-lib';
 import {
   keyringBuilderFactory,
   KeyringController,
@@ -235,7 +235,7 @@ export const KeyringControllerInit: ControllerInitFunction<
     if (!cloudURL || !relayerURL) {
       throw new Error('MFA cloud signer or relayer URL is not set');
     }
-    const dkls19Lib = Dkls19TssLib.loadSync();
+    const dkls19Lib = loadDkls19Lib();
     const jwtSecretKey = getJwtSecretKey();
     const opts: MPCKeyringOpts = {
       getRandomBytes: (length: number) =>
