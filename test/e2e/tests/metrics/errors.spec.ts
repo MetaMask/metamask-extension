@@ -8,7 +8,6 @@ import { isObject, Json, JsonRpcResponse } from '@metamask/utils';
 import { Mockttp, MockttpServer } from 'mockttp';
 import { SENTRY_UI_STATE } from '../../../../app/scripts/constants/sentry-state';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, sentryRegEx } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
 import { MOCK_META_METRICS_ID } from '../../constants';
@@ -1420,7 +1419,7 @@ describe('Sentry errors', function () {
     };
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         manifestFlags: {
           sentry: { forceEnable: false },

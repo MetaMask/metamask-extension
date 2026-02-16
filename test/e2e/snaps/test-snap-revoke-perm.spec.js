@@ -3,7 +3,7 @@ const {
   loginWithBalanceValidation,
 } = require('../page-objects/flows/login.flow');
 const { DAPP_PATH, DAPP_URL, WINDOW_TITLES } = require('../constants');
-const FixtureBuilderV2 = require('../fixtures/fixture-builder-v2');
+const { default: FixtureBuilderV2 } = require('../fixtures/fixture-builder-v2');
 const {
   mockEthereumProviderSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
@@ -47,10 +47,15 @@ describe('Test Snap revoke permission', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.waitForSelector({
-          text: 'Connect',
-          tag: 'button',
+        await driver.clickElementAndWaitToDisappear({
+          testId: 'snap-privacy-warning-scroll',
         });
+
+        await driver.clickElementAndWaitToDisappear({
+          tag: 'button',
+          text: 'Accept',
+        });
+
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',

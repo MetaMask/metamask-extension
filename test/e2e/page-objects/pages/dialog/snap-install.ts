@@ -1,5 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
-import { veryLargeDelayMs } from '../../../helpers';
+import { regularDelayMs, veryLargeDelayMs } from '../../../helpers';
 
 class SnapInstall {
   private driver: Driver;
@@ -84,6 +84,10 @@ class SnapInstall {
     // once all specs use FixtureBuilderV2, we can switch this method for clickElementAndWaitToDisappear (MMQA-1386)
     console.log('Clicking on the accept third party notice');
     await this.driver.clickElementSafe(this.acceptThirdPartyNotice);
+    await this.driver.assertElementNotPresent(
+      this.thirdPartyNoticeScrollButton,
+      { waitAtLeastGuard: regularDelayMs },
+    );
   }
 
   async clickApproveButton() {
@@ -131,6 +135,10 @@ class SnapInstall {
     console.log('Clicking on the scroll bottom third party notice');
     // once all specs use FixtureBuilderV2, we can switch this method for clickElementAndWaitToDisappear (MMQA-1386)
     await this.driver.clickElementSafe(this.thirdPartyNoticeScrollButton);
+    await this.driver.assertElementNotPresent(
+      this.thirdPartyNoticeScrollButton,
+      { waitAtLeastGuard: regularDelayMs },
+    );
   }
 
   async updateScrollAndClickConfirmButton() {
