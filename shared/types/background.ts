@@ -126,9 +126,10 @@ export type ControllerStatePropertiesEnumerated = {
   activeQrCodeScanRequest: AppStateControllerState['activeQrCodeScanRequest'];
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
   surveyLinkLastClickedOrClosed: AppStateControllerState['surveyLinkLastClickedOrClosed'];
+  shieldSubscriptionError: AppStateControllerState['shieldSubscriptionError'];
   shieldEndingToastLastClickedOrClosed: AppStateControllerState['shieldEndingToastLastClickedOrClosed'];
   shieldPausedToastLastClickedOrClosed: AppStateControllerState['shieldPausedToastLastClickedOrClosed'];
-  showStorageErrorToast: AppStateControllerState['showStorageErrorToast'];
+  storageWriteErrorType: AppStateControllerState['storageWriteErrorType'];
   signatureSecurityAlertResponses: AppStateControllerState['signatureSecurityAlertResponses'];
   addressSecurityAlertResponses: AppStateControllerState['addressSecurityAlertResponses'];
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];

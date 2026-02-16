@@ -5,6 +5,7 @@ import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
 } from '../../../constants';
+import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
 import { withFixtures } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
@@ -25,7 +26,10 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
   const REMOVED_SCOPE = INITIAL_SCOPES[0];
   const UPDATED_SCOPE = INITIAL_SCOPES[1];
 
-  const CAIP_ACCOUNT_IDS = [`eip155:0:${ACCOUNT_1}`, `eip155:0:${ACCOUNT_2}`];
+  const CAIP_ACCOUNT_IDS = [
+    toEvmCaipAccountId(ACCOUNT_1),
+    toEvmCaipAccountId(ACCOUNT_2),
+  ];
   const UPDATED_ACCOUNT = ACCOUNT_2;
   it('should receive a `wallet_sessionChanged` event with the full new session scopes', async function () {
     await withFixtures(

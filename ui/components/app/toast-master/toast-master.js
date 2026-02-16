@@ -5,7 +5,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
-import { AvatarAccountSize } from '@metamask/design-system-react';
+import {
+  AvatarAccountSize,
+  Icon as DsIcon,
+  IconColor as DsIconColor,
+  IconName as DsIconName,
+  IconSize as DsIconSize,
+} from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
@@ -54,7 +60,9 @@ import { SurveyToast } from '../../ui/survey-toast';
 import {
   PasswordChangeToastType,
   ClaimSubmitToastType,
+  StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
+import { useMerklClaimStatus } from '../../../hooks/musd/useMerklClaimStatus';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   getAccountGroupWithInternalAccounts,
@@ -101,6 +109,7 @@ import {
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
   selectShowStorageErrorToast,
+  selectStorageWriteErrorType,
   selectShowInfuraSwitchToast,
 } from './selectors';
 import {
@@ -152,6 +161,7 @@ export function ToastMaster() {
         <NewSrpAddedToast />
         <InfuraSwitchToast />
         <CopyAddressToast />
+        <MerklClaimToast />
         <ShieldPausedToast />
         <ShieldEndingToast />
       </ToastContainer>
@@ -742,6 +752,77 @@ const ClaimSubmitToast = () => {
   );
 };
 
+function MerklClaimToast() {
+  const t = useI18nContext();
+  const { toastState, dismissToast } = useMerklClaimStatus();
+
+  const autoHideDelay = 5 * SECOND;
+
+  if (!toastState) {
+    return null;
+  }
+
+  const isInProgress = toastState === 'in-progress';
+  const isSuccess = toastState === 'success';
+
+  const toastText = (() => {
+    switch (toastState) {
+      case 'in-progress':
+        return t('merklRewardsToastInProgress');
+      case 'success':
+        return t('merklRewardsToastSuccess');
+      case 'failed':
+        return t('merklRewardsToastFailed');
+      default:
+        return '';
+    }
+  })();
+
+  const startAdornment = (() => {
+    if (isInProgress) {
+      return (
+        <DsIcon
+          name={DsIconName.Loading}
+          color={DsIconColor.IconDefault}
+          size={DsIconSize.Lg}
+          style={{ animation: 'spin 1.2s linear infinite' }}
+        />
+      );
+    }
+    if (isSuccess) {
+      return (
+        <DsIcon
+          name={DsIconName.Confirmation}
+          color={DsIconColor.SuccessDefault}
+          size={DsIconSize.Lg}
+        />
+      );
+    }
+    return (
+      <DsIcon
+        name={DsIconName.CircleX}
+        color={DsIconColor.ErrorDefault}
+        size={DsIconSize.Lg}
+      />
+    );
+  })();
+
+  return (
+    <Toast
+      key="merkl-claim-toast"
+      dataTestId="merkl-claim-toast"
+      text={toastText}
+      startAdornment={startAdornment}
+      onClose={dismissToast}
+      // In-progress toast stays until transaction completes; success/failed auto-hide
+      {...(!isInProgress && {
+        autoHideTime: autoHideDelay,
+        onAutoHideToast: dismissToast,
+      })}
+    />
+  );
+}
+
 function ShieldPausedToast() {
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -883,9 +964,17 @@ function StorageErrorToast() {
 
   // Selector includes all conditions: flag is true, onboarding complete, and unlocked
   const showStorageErrorToast = useSelector(selectShowStorageErrorToast);
+  const storageWriteErrorType = useSelector(selectStorageWriteErrorType);
 
   // Only show toast if selector returns true and user hasn't dismissed it
   const shouldShow = showStorageErrorToast && !isDismissed;
+
+  // Show disk space-specific message when error is due to no space
+  const isNoSpaceError =
+    storageWriteErrorType === StorageWriteErrorType.FileErrorNoSpace;
+  const description = isNoSpaceError
+    ? t('storageErrorDescriptionNoSpace')
+    : t('storageErrorDescriptionDefault');
 
   // Track "Viewed" event when toast becomes visible
   useEffect(() => {
@@ -915,6 +1004,14 @@ function StorageErrorToast() {
     setIsDismissed(true);
   };
 
+  // Only show action button for default errors (not for no-space errors)
+  const actionProps = isNoSpaceError
+    ? {}
+    : {
+        actionText: t('storageErrorAction'),
+        onActionClick: handleRevealSrpClick,
+      };
+
   return (
     shouldShow && (
       <Toast
@@ -928,9 +1025,8 @@ function StorageErrorToast() {
           />
         }
         text={t('storageErrorTitle')}
-        description={t('storageErrorDescription')}
-        actionText={t('storageErrorAction')}
-        onActionClick={handleRevealSrpClick}
+        description={description}
+        {...actionProps}
         borderRadius={BorderRadius.LG}
         textVariant={TextVariant.bodyMd}
         onClose={handleClose}

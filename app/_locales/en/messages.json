@@ -169,6 +169,9 @@
   "accountsSmallCase": {
     "message": "accounts"
   },
+  "actionUnavailable": {
+    "message": "Action unavailable"
+  },
   "active": {
     "message": "Active"
   },
@@ -1622,6 +1625,10 @@
   "connectAnAccountHeader": {
     "message": "Connect an account"
   },
+  "connectHardwareDevice": {
+    "message": "Connect $1",
+    "description": "$1 is the hardware wallet device name"
+  },
   "connectManually": {
     "message": "Manually connect to current site"
   },
@@ -2068,6 +2075,9 @@
   "deepLink_ThirdPartyDescription": {
     "message": "You were sent here by a third party, not MetaMask. $1",
     "description": "$1 is the message 'deepLink_ContinueDescription'"
+  },
+  "deepLink_theAssetPage": {
+    "message": "the asset page"
   },
   "deepLink_theBuyPage": {
     "message": "the buy page"
@@ -3026,6 +3036,10 @@
     "message": "Get your wallet ready to use web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralSubtitle": {
+    "message": "Save up to 10% on trades with a MetaMask referral code.",
+    "description": "The subtitle of the GMX referral confirmation screen"
+  },
   "goToSite": {
     "message": "Go to site"
   },
@@ -3066,21 +3080,15 @@
     "message": "Continue to make sure:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "To continue, make sure:"
-  },
-  "hardwareWalletErrorRecoveryUnlock2": {
     "message": "Your Ledger is unlocked"
   },
-  "hardwareWalletErrorRecoveryUnlock3": {
+  "hardwareWalletErrorRecoveryUnlock2": {
     "message": "The Ethereum app is open"
   },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
-    "message": "To continue, make sure:"
-  },
-  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction2": {
     "message": "The Ethereum app is open on your Ledger"
   },
-  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction3": {
+  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction2": {
     "message": "You’ve turned on Blind Signing in Settings"
   },
   "hardwareWalletErrorTitleConnectYourDevice": {
@@ -3129,6 +3137,9 @@
   },
   "hardwareWalletsMsg": {
     "message": "Select a hardware wallet you would like to use with MetaMask."
+  },
+  "helpAndSettings": {
+    "message": "Help and settings"
   },
   "here": {
     "message": "here",
@@ -3715,6 +3726,9 @@
   "lockTimeInvalid": {
     "message": "Lock time must be a number between 0 and 10080"
   },
+  "logOut": {
+    "message": "Log out"
+  },
   "loginErrorConnectButton": {
     "message": "Try again"
   },
@@ -3777,6 +3791,9 @@
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
+  "manage": {
+    "message": "Manage"
+  },
   "manageDefaultSettings": {
     "message": "Manage default settings"
   },
@@ -3834,6 +3851,18 @@
   },
   "memo": {
     "message": "memo"
+  },
+  "merklRewardsToastFailed": {
+    "message": "Your mUSD bonus claim failed",
+    "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
+  },
+  "merklRewardsToastInProgress": {
+    "message": "Your mUSD bonus is processing",
+    "description": "Toast message shown when a Merkl reward claim transaction is being processed"
+  },
+  "merklRewardsToastSuccess": {
+    "message": "Your mUSD bonus is here!",
+    "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
   },
   "message": {
     "message": "Message"
@@ -4372,9 +4401,6 @@
   },
   "noConnectionDescription": {
     "message": "MetaMask isn't connected to this site. To get started, select the site's Connect button."
-  },
-  "noConversionRateAvailable": {
-    "message": "No conversion rate available"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
@@ -5470,6 +5496,57 @@
   "perpsTrades": {
     "message": "Trades"
   },
+  "perpsTutorialChooseLeverageDescription": {
+    "message": "Leverage amplifies both gains and losses. With 40x leverage, a 1% price move equals a 40% gain or loss on your margin."
+  },
+  "perpsTutorialChooseLeverageTitle": {
+    "message": "Choose your leverage"
+  },
+  "perpsTutorialCloseAnytimeDescription": {
+    "message": "Exit whenever you want. You'll get back your margin, plus profits or minus losses."
+  },
+  "perpsTutorialCloseAnytimeTitle": {
+    "message": "Close any time"
+  },
+  "perpsTutorialContinue": {
+    "message": "Continue"
+  },
+  "perpsTutorialGoLongShortDescription": {
+    "message": "Pick a token to long or short, then set your order size."
+  },
+  "perpsTutorialGoLongShortSubtitle": {
+    "message": "Go long to profit if the price goes up. Go short to profit if the price goes down."
+  },
+  "perpsTutorialGoLongShortTitle": {
+    "message": "Go long or short on a token"
+  },
+  "perpsTutorialLetsGo": {
+    "message": "Let's go"
+  },
+  "perpsTutorialReadyToTradeDescription": {
+    "message": "Fund your perps account with any token and make your first trade in seconds."
+  },
+  "perpsTutorialReadyToTradeTitle": {
+    "message": "Ready to trade?"
+  },
+  "perpsTutorialSkip": {
+    "message": "Skip"
+  },
+  "perpsTutorialWatchLiquidationDescription": {
+    "message": "You'll lose your entire margin if the token hits your liquidation price. Higher leverage means less room to liquidation."
+  },
+  "perpsTutorialWatchLiquidationTitle": {
+    "message": "Watch out for liquidation"
+  },
+  "perpsTutorialWhatArePerpsDescription": {
+    "message": "MetaMask now supports perpetual futures-aka perps-letting you trade on a token's price movement without buying it."
+  },
+  "perpsTutorialWhatArePerpsSubtitle": {
+    "message": "Here's how it works."
+  },
+  "perpsTutorialWhatArePerpsTitle": {
+    "message": "What are perps?"
+  },
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
   },
@@ -5923,6 +6000,10 @@
   },
   "required": {
     "message": "Required"
+  },
+  "requiredToken": {
+    "message": "Required token",
+    "description": "Label for the required token row showing the token and amount needed by the transaction"
   },
   "reset": {
     "message": "Reset"
@@ -6791,6 +6872,9 @@
   "shieldEntryModalTitleB": {
     "message": "Introducing Transaction Shield"
   },
+  "shieldErrorPayerAddressAlreadyUsed": {
+    "message": "This address is already linked to another account. Use a different address to subscribe."
+  },
   "shieldEstimatedChangesMonthlyTooltipText": {
     "message": "Authorize $1/month for 12 months ($2 total). You'll be billed monthly, not the full amount now."
   },
@@ -6926,6 +7010,15 @@
   "shieldTxCancelDetails": {
     "message": "If you cancel, your wallet and transactions will not be covered starting $1.",
     "description": "The $1 is the date subscription ends"
+  },
+  "shieldTxCancelImmediateDetails": {
+    "message": "If you cancel, your wallet and transactions will not be covered."
+  },
+  "shieldTxCancelNotAllowed": {
+    "message": "Your subscription cannot be cancelled at the moment."
+  },
+  "shieldTxCancelNotAllowedPendingVerification": {
+    "message": "Your subscription cannot be cancelled due to pending verification."
   },
   "shieldTxCancelWhenPausedDetails": {
     "message": "Your plan isn't active while paused. If you cancel, your plan will immediately end."
@@ -7888,8 +7981,11 @@
   "storageErrorAction": {
     "message": "Back up Secret Recovery Phrase"
   },
-  "storageErrorDescription": {
+  "storageErrorDescriptionDefault": {
     "message": "Back up your Secret Recovery Phrase and reinstall MetaMask if the problem continues."
+  },
+  "storageErrorDescriptionNoSpace": {
+    "message": "Your device is out of storage. Free up space now or unsaved wallet changes may be lost."
   },
   "storageErrorTitle": {
     "message": "We couldn't save your data"
@@ -8684,6 +8780,9 @@
   },
   "unapproved": {
     "message": "Unapproved"
+  },
+  "unavailable": {
+    "message": "Unavailable"
   },
   "unexpectedBehavior": {
     "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."

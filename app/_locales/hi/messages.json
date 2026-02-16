@@ -4262,9 +4262,6 @@
   "noConnectionDescription": {
     "message": "MetaMask इस साइट से कनेक्ट नहीं है। शुरू करने के लिए, साइट का कनेक्ट बटन चुनें।"
   },
-  "noConversionRateAvailable": {
-    "message": "कोई भी कन्वर्शन दर उपलब्ध नहीं है"
-  },
   "noDomainResolution": {
     "message": "डोमेन के लिए कोई रिज़ॉल्यूशन प्रदान नहीं किया गया।"
   },
@@ -7669,7 +7666,7 @@
   "storageErrorAction": {
     "message": "सीक्रेट रिकवरी फ्रेज़ का बैकअप लें"
   },
-  "storageErrorDescription": {
+  "storageErrorDescriptionDefault": {
     "message": "अपने सीक्रेट रिकवरी फ्रेज़ का बैकअप लें और अगर समस्या बनी रहती है तो MetaMask को फिर से इनस्टॉल करें।"
   },
   "storageErrorTitle": {

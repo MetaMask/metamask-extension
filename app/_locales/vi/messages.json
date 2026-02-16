@@ -4262,9 +4262,6 @@
   "noConnectionDescription": {
     "message": "MetaMask chưa được kết nối với trang web này. Để bắt đầu, hãy chọn nút Kết nối của trang web."
   },
-  "noConversionRateAvailable": {
-    "message": "Không có sẵn tỷ lệ quy đổi nào"
-  },
   "noDomainResolution": {
     "message": "Không có nội dung phân giải cho tên miền được cung cấp."
   },
@@ -7669,7 +7666,7 @@
   "storageErrorAction": {
     "message": "Sao lưu Cụm từ khôi phục bí mật"
   },
-  "storageErrorDescription": {
+  "storageErrorDescriptionDefault": {
     "message": "Sao lưu Cụm từ khôi phục bí mật của bạn và cài đặt lại MetaMask nếu sự cố tiếp diễn."
   },
   "storageErrorTitle": {

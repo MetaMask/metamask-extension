@@ -4262,9 +4262,6 @@
   "noConnectionDescription": {
     "message": "사이트에 연결하려면 \"연결\" 버튼을 찾아 클릭하세요. MetaMask는 웹3의 사이트에만 연결할 수 있습니다."
   },
-  "noConversionRateAvailable": {
-    "message": "사용 가능한 환율 없음"
-  },
   "noDomainResolution": {
     "message": "도메인에 대한 해결 방법이 제공되지 않았습니다."
   },
@@ -7669,7 +7666,7 @@
   "storageErrorAction": {
     "message": "비밀복구구문 백업"
   },
-  "storageErrorDescription": {
+  "storageErrorDescriptionDefault": {
     "message": "비밀복구구문을 백업하고 문제가 발생할 경우 MetaMask를 다시 설치하세요."
   },
   "storageErrorTitle": {

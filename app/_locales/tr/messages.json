@@ -4279,9 +4279,6 @@
   "noConnectionDescription": {
     "message": "MetaMask bu siteye bağlı değil. Başlamak için sitenin Bağla düğmesini seçin."
   },
-  "noConversionRateAvailable": {
-    "message": "Dönüşüm oranı mevcut değil"
-  },
   "noDomainResolution": {
     "message": "Alan adı için çözümleme sunulmamış."
   },
@@ -7693,7 +7690,7 @@
   "storageErrorAction": {
     "message": "Gizli Kurtarma İfadesini yedekle"
   },
-  "storageErrorDescription": {
+  "storageErrorDescriptionDefault": {
     "message": "Gizli Kurtarma İfadenizi yedekleyin ve sorun devam ederse MetaMask'i tekrar yükleyin."
   },
   "storageErrorTitle": {
