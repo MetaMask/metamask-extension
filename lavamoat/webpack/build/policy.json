@@ -315,7 +315,7 @@
         "node:path.sep": true
       },
       "packages": {
-        "depcheck>resolve": true
+        "lavamoat>@lavamoat/aa>resolve": true
       }
     },
     "@lavamoat/webpack": {
@@ -2561,6 +2561,36 @@
         "module._resolveFilename": true,
         "path.join": true,
         "path.resolve": true
+      }
+    },
+    "lavamoat>@lavamoat/aa>resolve": {
+      "builtin": {
+        "fs.readFileSync": true,
+        "fs.realpathSync": true,
+        "fs.statSync": true,
+        "os.homedir": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.parse": true,
+        "path.relative": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "process.env.HOME": true,
+        "process.env.HOMEDRIVE": true,
+        "process.env.HOMEPATH": true,
+        "process.env.LNAME": true,
+        "process.env.LOGNAME": true,
+        "process.env.USER": true,
+        "process.env.USERNAME": true,
+        "process.env.USERPROFILE": true,
+        "process.getuid": true,
+        "process.platform": true,
+        "process.versions.pnp": true
+      },
+      "packages": {
+        "depcheck>is-core-module": true,
+        "depcheck>resolve>path-parse": true
       }
     },
     "depcheck>resolve": {

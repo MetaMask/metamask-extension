@@ -20,7 +20,6 @@ import { useSafeChains } from '../../../pages/settings/networks-tab/networks-for
 import {
   getDefaultHomeActiveTabName,
   getEnabledChainIds,
-  getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
 import { getIsPerpsEnabled } from '../../../selectors/perps';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
@@ -31,7 +30,6 @@ import {
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
-import TransactionList from '../../app/transaction-list';
 import UnifiedTransactionList from '../../app/transaction-list/unified-transaction-list.component';
 import { PerpsTabView } from '../../app/perps';
 import { Tab, Tabs } from '../../ui/tabs';
@@ -142,11 +140,6 @@ export const AccountOverviewTabs = ({
 
   const { safeChains } = useSafeChains();
 
-  const isBIP44FeatureFlagEnabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-  const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
-
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
 
   return (
@@ -223,11 +216,7 @@ export const AccountOverviewTabs = ({
             data-testid="account-overview__activity-tab"
           >
             <ErrorBoundary key="activity">
-              {showUnifiedTransactionList ? (
-                <UnifiedTransactionList />
-              ) : (
-                <TransactionList />
-              )}
+              <UnifiedTransactionList />
             </ErrorBoundary>
           </Tab>
         )}

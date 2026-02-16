@@ -7167,12 +7167,6 @@
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
-  "useSmartAccountDescription": {
-    "message": "Coinnigh seo ar siúl chun cuntais a cruthaíodh laistigh de MetaMask a athrú go huathoibríoch go cuntais chliste aon uair a bhíonn gnéithe ábhartha ar fáil, amhail idirbhearta níos tapúla, táillí líonra níos ísle agus solúbthacht íocaíochta dóibh sin."
-  },
-  "useSmartAccountTitle": {
-    "message": "Úsáid cuntas cliste"
-  },
   "useTokenDetectionPrivacyDesc": {
     "message": "Baineann cumarsáid le freastalaithe tríú páirtí chun íomhánna na gcomharthaí a aisghabháil le taispeáint uathoibríoch comharthaí a sheoltar chuig do chuntas. Beidh rochtain ag na freastalaithe sin ar do sheoladh IP."
   },
