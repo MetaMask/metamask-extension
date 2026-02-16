@@ -151,7 +151,7 @@ describe('revokePermissionsHandler', () => {
       ...baseRequest,
       params: [
         {
-          [Caip25EndowmentPermissionName]: {},
+          "eth_accounts": {},
           otherPermission: {},
         },
       ],
