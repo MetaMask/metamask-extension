@@ -46,6 +46,7 @@ export function getSubscriptionServiceMessenger(
       'AppStateController:getState',
       'AppStateController:setPendingShieldCohort',
       'AppStateController:setPendingRedirectRoute',
+      'AppStateController:setShieldSubscriptionError',
       'AuthenticationController:getBearerToken',
       'TransactionController:getTransactions',
       'AccountsController:getState',

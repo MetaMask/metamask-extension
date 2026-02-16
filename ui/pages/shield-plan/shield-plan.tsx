@@ -75,6 +75,7 @@ import {
 import {
   useHandleSubscription,
   useShieldRewards,
+  useSubscriptionError,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
@@ -115,9 +116,13 @@ const ShieldPlan = () => {
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
+
   const pendingRedirectRoute = useSelector(
     getPendingRedirectRoute,
   ) as PendingRedirectRoute | null;
+
+  const { shieldSubscriptionApiError, getSubscriptionErrorMessage } =
+    useSubscriptionError();
 
   const {
     isRewardsSeason,
@@ -359,7 +364,10 @@ const ShieldPlan = () => {
     subscriptionsError ||
     subscriptionPricingError ||
     availableTokenBalancesError ||
-    subscriptionResult.error;
+    subscriptionResult.error ||
+    shieldSubscriptionApiError;
+
+  const apiErrorMessage = getSubscriptionErrorMessage(hasApiError);
 
   const plans: Plan[] = useMemo(
     () =>
@@ -477,6 +485,7 @@ const ShieldPlan = () => {
             className="shield-plan-page__error-content"
             error={hasApiError}
             location={ShieldUnexpectedErrorEventLocationEnum.ShieldPlanPage}
+            message={apiErrorMessage} // show the subscription error message if available
           />
         </Content>
       ) : (

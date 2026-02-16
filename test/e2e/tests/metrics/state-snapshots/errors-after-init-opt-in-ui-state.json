@@ -336,6 +336,7 @@
     "selectedNetworkClientId": "string",
     "shieldEndingToastLastClickedOrClosed": "object",
     "shieldPausedToastLastClickedOrClosed": "object",
+    "shieldSubscriptionError": "object",
     "showAccountBanner": true,
     "showBetaHeader": false,
     "showDownloadMobileAppSlide": "boolean",
@@ -439,6 +440,7 @@
     "watchEthereumAccountEnabled": "boolean",
     "web3ShimUsageOrigins": "object"
   },
+  "perpsTutorial": "object",
   "ramps": "object",
   "rewards": "object",
   "smartAccounts": "object",

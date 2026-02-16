@@ -97,6 +97,7 @@ const mockLinkRewards = jest.fn();
 const mockSubmitShieldSubscriptionCryptoApproval = jest.fn();
 const mockClearLastSelectedPaymentMethod = jest.fn();
 const mockSetPendingRedirectRoute = jest.fn();
+const mockSetShieldSubscriptionError = jest.fn();
 
 const rootMessenger: RootMessenger = new Messenger({
   namespace: MOCK_ANY_NAMESPACE,
@@ -181,6 +182,10 @@ rootMessenger.registerActionHandler(
   'AppStateController:setPendingRedirectRoute',
   mockSetPendingRedirectRoute,
 );
+rootMessenger.registerActionHandler(
+  'AppStateController:setShieldSubscriptionError',
+  mockSetShieldSubscriptionError,
+);
 
 const messenger: SubscriptionServiceMessenger = new Messenger({
   namespace: 'SubscriptionService',
@@ -204,6 +209,7 @@ rootMessenger.delegate({
     'RemoteFeatureFlagController:getState',
     'AppStateController:getState',
     'AppStateController:setPendingRedirectRoute',
+    'AppStateController:setShieldSubscriptionError',
     'MetaMetricsController:trackEvent',
     'SubscriptionController:getState',
     'KeyringController:getState',
@@ -589,6 +595,32 @@ describe('SubscriptionService - handlePostTransaction', () => {
       txMeta,
       false,
       MOCK_REWARD_ACCOUNT_ID,
+    );
+  });
+
+  it('should set shield API error when payerAddressAlreadyUsed error occurs', async () => {
+    mockSubmitShieldSubscriptionCryptoApproval.mockRejectedValueOnce(
+      new Error(SHIELD_ERROR.payerAddressAlreadyUsed),
+    );
+
+    const txMeta = {
+      ...MOCK_TX_META,
+      isGasFeeSponsored: false,
+      txParams: {
+        from: '0xdeadbeef1234567890abcdef',
+      },
+    };
+
+    await expect(
+      // @ts-expect-error mock tx meta
+      subscriptionService.handlePostTransaction(txMeta),
+    ).rejects.toThrow(SHIELD_ERROR.payerAddressAlreadyUsed);
+
+    expect(mockSetShieldSubscriptionError).toHaveBeenCalledWith({
+      message: SHIELD_ERROR.payerAddressAlreadyUsed,
+    });
+    expect(mockClearLastSelectedPaymentMethod).toHaveBeenCalledWith(
+      PRODUCT_TYPES.SHIELD,
     );
   });
 });
