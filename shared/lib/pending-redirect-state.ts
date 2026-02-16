@@ -11,17 +11,17 @@ import { EnvironmentType } from '../constants/app';
  * ### Flow
  *
  * 1. **Set** — A background service or UI component calls
- *    `setPendingRedirectRoute({ path, search?, environmentType? })` before
- *    an action that may close the popup.
+ * `setPendingRedirectRoute({ path, search?, environmentType? })` before
+ * an action that may close the extension popup.
  *
  * 2. **Redirect** — When the home page mounts, `checkPendingRedirectRoute()`
- *    reads the persisted value. If the optional `environmentType` matches the
- *    current environment (or is omitted), it hydrates the Redux-only
- *    `redirectAfterDefaultPage` in the history duck, which triggers navigation.
+ * reads the persisted value. If the optional `environmentType` matches the
+ * current environment (or is omitted), it hydrates the Redux-only
+ * `redirectAfterDefaultPage` in the history duck, which triggers navigation.
  *
  * 3. **Clear** — The home page always clears `pendingRedirectRoute` after
- *    reading it, regardless of whether the redirect fired. This prevents stale
- *    redirects from accumulating.
+ * reading it, regardless of whether the redirect fired. This prevents stale
+ * redirects from accumulating.
  *
  * ### Clearing on success or intentional navigation
  *
