@@ -194,9 +194,10 @@ describe('MetaMask onboarding', function () {
             continue;
           }
 
-          assert.equal(
-            requests.length,
-            1,
+          // There could be more than 1 requests since we're dealing with multichain
+          // accounts (e.g 1 request per supported chains).
+          assert.ok(
+            requests.length >= 1,
             `${mockedEndpoint} should make requests after onboarding`,
           );
         }

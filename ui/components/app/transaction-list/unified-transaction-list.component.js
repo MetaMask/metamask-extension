@@ -21,7 +21,11 @@ import {
   smartTransactionsListSelector,
 } from '../../../selectors/transactions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
-import { getSelectedAccount, getEnabledNetworks } from '../../../selectors';
+import {
+  getSelectedAccount,
+  getSelectedMultichainNetworkChainId,
+  getEnabledNetworks,
+} from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import MultichainBridgeTransactionListItem from '../multichain-bridge-transaction-list-item/multichain-bridge-transaction-list-item';
 import MultichainBridgeTransactionDetailsModal from '../multichain-bridge-transaction-details-modal/multichain-bridge-transaction-details-modal';
@@ -35,6 +39,7 @@ import {
   PENDING_STATUS_HASH,
   EXCLUDED_TRANSACTION_TYPES,
 } from '../../../helpers/constants/transactions';
+import { filterTransactionByChain } from '../../../helpers/utils/activity';
 import {
   SmartTransactionStatus,
   TransactionGroupCategory,
@@ -47,9 +52,12 @@ import {
   useEarliestNonceByChain,
   isTransactionEarliestNonce,
 } from '../../../hooks/useEarliestNonceByChain';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
-///: END:ONLY_INCLUDE_IF
+import {
+  getAllEnabledNetworksForAllNamespaces,
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  getSelectedMultichainNetworkConfiguration,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../selectors/multichain/networks';
 
 import {
   Box,
@@ -87,6 +95,8 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
+// eslint-disable-next-line import/no-restricted-paths
+import AssetListControlBar from '../assets/asset-list/asset-list-control-bar';
 import {
   startIncomingTransactionPolling,
   stopIncomingTransactionPolling,
@@ -336,7 +346,7 @@ function filterNonEvmTxByChainIds(nonEvmTransactions, chainIds) {
 
 export const buildUnifiedActivityItems = (
   unfilteredPendingTransactions = [],
-  completedTransactions = [],
+  enabledNetworksFilteredCompletedTransactions = [],
   nonEvmTransactions,
   { hideTokenTransactions, tokenAddress, evmChainIds, nonEvmChainIds },
 ) => {
@@ -349,7 +359,7 @@ export const buildUnifiedActivityItems = (
   );
 
   const filteredCompleted = getFilteredTransactionGroupsAllChains(
-    completedTransactions,
+    enabledNetworksFilteredCompletedTransactions,
     hideTokenTransactions,
     tokenAddress,
     evmChainIds,
@@ -444,6 +454,7 @@ export default function UnifiedTransactionList({
   hideTokenTransactions,
   tokenAddress,
   boxProps,
+  hideNetworkFilter,
   tokenChainIdOverride,
 }) {
   const scrollContainerRef = useScrollContainer();
@@ -530,7 +541,7 @@ export default function UnifiedTransactionList({
     groupEvmAddress,
   ]);
 
-  const pendingTransactions = useMemo(() => {
+  const unfilteredPendingTransactions = useMemo(() => {
     if (needsGroupEvmTransactions) {
       const evmTxs = [...allTransactions, ...(smartTransactions ?? [])]
         .filter((tx) => tx.txParams?.from?.toLowerCase() === groupEvmAddress)
@@ -549,7 +560,7 @@ export default function UnifiedTransactionList({
     groupEvmAddress,
   ]);
 
-  const completedTransactions = useMemo(() => {
+  const unfilteredCompletedTransactionsAllChains = useMemo(() => {
     if (needsGroupEvmTransactions) {
       const smartTxs = smartTransactions ?? [];
       const smartTxNonces = new Set(
@@ -577,16 +588,76 @@ export default function UnifiedTransactionList({
     groupEvmAddress,
   ]);
 
+  const enabledNetworksForAllNamespaces = useSelector(
+    getAllEnabledNetworksForAllNamespaces,
+  );
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
+  );
+
+  const enabledNetworksFilteredPendingTransactions = useMemo(() => {
+    if (!currentMultichainChainId) {
+      return unfilteredPendingTransactions;
+    }
+
+    // If no networks are enabled for this namespace, return empty array
+    if (enabledNetworksForAllNamespaces.length === 0) {
+      return [];
+    }
+
+    // Filter transactions to only include those from enabled networks
+    return unfilteredPendingTransactions.filter((transactionGroup) => {
+      const transactionChainId = transactionGroup.initialTransaction?.chainId;
+      return enabledNetworksForAllNamespaces.includes(transactionChainId);
+    });
+  }, [
+    enabledNetworksForAllNamespaces,
+    currentMultichainChainId,
+    unfilteredPendingTransactions,
+  ]);
+
+  const enabledNetworksFilteredCompletedTransactions = useMemo(() => {
+    if (!currentMultichainChainId) {
+      return unfilteredCompletedTransactionsAllChains;
+    }
+
+    if (enabledNetworksForAllNamespaces.length === 0) {
+      return [];
+    }
+
+    const transactionsToFilter = unfilteredCompletedTransactionsAllChains;
+
+    const filteredTransactions = transactionsToFilter.filter(
+      (transactionGroup) =>
+        filterTransactionByChain(
+          transactionGroup,
+          enabledNetworksForAllNamespaces,
+        ),
+    );
+
+    return filteredTransactions;
+  }, [
+    enabledNetworksForAllNamespaces,
+    currentMultichainChainId,
+    unfilteredCompletedTransactionsAllChains,
+  ]);
+
+  const enabledNonEvmChainIds = useMemo(() => {
+    return nonEvmChainIds.filter((chainId) =>
+      enabledNetworksForAllNamespaces.includes(chainId),
+    );
+  }, [nonEvmChainIds, enabledNetworksForAllNamespaces]);
+
   const unifiedActivityItems = useMemo(() => {
     const allItems = buildUnifiedActivityItems(
-      pendingTransactions,
-      completedTransactions,
+      enabledNetworksFilteredPendingTransactions,
+      enabledNetworksFilteredCompletedTransactions,
       nonEvmTransactionsForToken,
       {
         hideTokenTransactions,
         tokenAddress,
         evmChainIds,
-        nonEvmChainIds,
+        nonEvmChainIds: enabledNonEvmChainIds,
       },
     );
 
@@ -635,13 +706,13 @@ export default function UnifiedTransactionList({
       return false;
     });
   }, [
-    pendingTransactions,
-    completedTransactions,
+    enabledNetworksFilteredPendingTransactions,
+    enabledNetworksFilteredCompletedTransactions,
     nonEvmTransactionsForToken,
     hideTokenTransactions,
     tokenAddress,
     evmChainIds,
-    nonEvmChainIds,
+    enabledNonEvmChainIds,
     bridgeHistoryItems,
   ]);
   const groupedUnifiedActivityItems =
@@ -864,12 +935,17 @@ export default function UnifiedTransactionList({
           <MultichainTransactionDetailsModal
             transaction={selectedTransaction}
             onClose={() => toggleShowDetails(null)}
-            userAddress={selectedAccount.address}
-            networkConfig={multichainNetworkConfig}
           />
         ))}
 
       <Box className="transaction-list" {...boxProps}>
+        {!hideNetworkFilter && (
+          <AssetListControlBar
+            showSortControl={false}
+            showTokenFiatBalance={false}
+            showImportTokenButton={false}
+          />
+        )}
         {processedUnifiedActivityItems.length === 0 ? (
           <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
         ) : (
@@ -1053,6 +1129,7 @@ UnifiedTransactionList.propTypes = {
   tokenAddress: PropTypes.string,
   boxProps: PropTypes.object,
   tokenChainIdOverride: PropTypes.string,
+  hideNetworkFilter: PropTypes.bool,
 };
 
 UnifiedTransactionList.defaultProps = {
