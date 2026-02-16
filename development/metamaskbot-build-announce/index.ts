@@ -183,58 +183,71 @@ async function buildUiStartupSection(
   benchmarkResults: BenchmarkResults,
   hostUrl: string,
 ): Promise<string> {
-  const summaryPlatform = BENCHMARK_PLATFORMS[0];
-  const summaryBuildType = BENCHMARK_BUILD_TYPES[0];
-  const summaryPage = PAGE_LOAD_PRESETS[0];
-
-  if (!benchmarkResults[summaryPlatform]?.[summaryBuildType]) {
-    console.log(`No results for ${summaryPlatform} found; skipping benchmark`);
-    return '';
+  let benchmarkSummary = 'UI Startup Metrics';
+  try {
+    const summaryPlatform = BENCHMARK_PLATFORMS[0];
+    const summaryBuildType = BENCHMARK_BUILD_TYPES[0];
+    const summaryPage = PAGE_LOAD_PRESETS[0];
+    const pageData =
+      benchmarkResults[summaryPlatform]?.[summaryBuildType]?.[summaryPage];
+    if (pageData) {
+      const mean = Math.round(parseFloat(pageData.mean.uiStartup));
+      const stdDev = Math.round(parseFloat(pageData.stdDev.uiStartup));
+      benchmarkSummary = `UI Startup Metrics (${mean} ± ${stdDev} ms)`;
+    }
+  } catch (error) {
+    console.error(`Error computing UI startup summary: '${String(error)}'`);
   }
 
+  let userActionsHtml = '';
   try {
-    const summaryPageStartup = Math.round(
-      parseFloat(
-        benchmarkResults[summaryPlatform][summaryBuildType][summaryPage].mean
-          .uiStartup,
-      ),
-    );
-    const summaryPageStartupStdDev = Math.round(
-      parseFloat(
-        benchmarkResults[summaryPlatform][summaryBuildType][summaryPage].stdDev
-          .uiStartup,
-      ),
-    );
-    const benchmarkSummary = `UI Startup Metrics (${summaryPageStartup} ± ${summaryPageStartupStdDev} ms)`;
-
-    const pageLoadTable = buildPageLoadTable(benchmarkResults);
-    const pageLoadSection = `<details><summary>📊 Page Load</summary>${pageLoadTable}</details>\n\n`;
-
-    const benchmarkGateUrl = `${process.env.CLOUDFRONT_REPO_URL}/benchmark-gate/benchmark-gate.json`;
-    const benchmarkWarnings = await runBenchmarkGate(
-      benchmarkResults,
-      benchmarkGateUrl,
-    );
-
-    const userActionsHtml = await buildBenchmarkSectionComment(
+    userActionsHtml = await buildBenchmarkSectionComment(
       hostUrl,
       USER_ACTION_PRESETS,
       '🏃 User Actions Benchmark',
       'Action',
     );
+  } catch (error) {
+    console.error(`Error building user actions section: '${String(error)}'`);
+  }
 
-    const performanceHtml = await buildBenchmarkSectionComment(
+  let pageLoadSection = '';
+  try {
+    const pageLoadTable = buildPageLoadTable(benchmarkResults);
+    pageLoadSection = `<details><summary>📊 Page Load</summary>${pageLoadTable}</details>\n\n`;
+  } catch (error) {
+    console.error(`Error building page load section: '${String(error)}'`);
+  }
+
+  let performanceHtml = '';
+  try {
+    performanceHtml = await buildBenchmarkSectionComment(
       hostUrl,
       PERFORMANCE_PRESETS,
       '⚡ Performance Benchmarks',
       'Benchmark',
     );
-
-    return `<details><summary>${benchmarkSummary}</summary>${userActionsHtml}${pageLoadSection}${performanceHtml}${benchmarkWarnings}</details>\n\n`;
   } catch (error) {
-    console.error(`Error constructing benchmark results: '${String(error)}'`);
+    console.error(`Error building performance section: '${String(error)}'`);
+  }
+
+  let benchmarkWarnings = '';
+  try {
+    const benchmarkGateUrl = `${process.env.CLOUDFRONT_REPO_URL}/benchmark-gate/benchmark-gate.json`;
+    benchmarkWarnings = await runBenchmarkGate(
+      benchmarkResults,
+      benchmarkGateUrl,
+    );
+  } catch (error) {
+    console.error(`Error running benchmark gate: '${String(error)}'`);
+  }
+
+  const content = `${userActionsHtml}${pageLoadSection}${performanceHtml}${benchmarkWarnings}`;
+  if (!content) {
     return '';
   }
+
+  return `<details><summary>${benchmarkSummary}</summary>\n<blockquote>\n${content}</blockquote>\n</details>\n\n`;
 }
 
 /**

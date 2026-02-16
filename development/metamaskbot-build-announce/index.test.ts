@@ -207,7 +207,7 @@ describe('buildTableRows', () => {
     const rows = buildTableRows([
       {
         benchmarkName: 'noStats',
-        entry: { mean: { myMetric: 100 } } as BenchmarkEntryResult,
+        entry: { mean: { myMetric: 100 } },
       },
     ]);
 

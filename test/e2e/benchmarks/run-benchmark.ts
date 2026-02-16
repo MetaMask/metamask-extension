@@ -48,7 +48,7 @@ import type {
 function convertSummaryToResults(
   summary: BenchmarkSummary,
   testTitle: string,
-  persona?: Persona,
+  persona: Persona = 'standard',
   benchmarkType?: BenchmarkType,
 ): BenchmarkResults {
   const mean: StatisticalResult = {};

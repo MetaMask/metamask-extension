@@ -29,10 +29,12 @@ export type BenchmarkEntryResult = {
 
 /**
  * A parsed benchmark entry with its name and result data.
+ * Only `mean` is guaranteed after filtering; statistical fields may be absent.
  */
 export type BenchmarkEntry = {
   benchmarkName: string;
-  entry: BenchmarkEntryResult;
+  entry: Pick<BenchmarkEntryResult, 'mean'> &
+    Partial<Omit<BenchmarkEntryResult, 'mean'>>;
 };
 
 /**
@@ -255,7 +257,7 @@ export async function discoverBundleArtifacts(
  * @returns Rounded string or '-'.
  */
 function formatCellValue(
-  stats: Record<string, number>,
+  stats: Record<string, number> | undefined,
   metric: string,
 ): string {
   const value = stats?.[metric];
@@ -380,10 +382,13 @@ export async function fetchBenchmarkJson(
  * @returns Array of name/entry pairs.
  */
 export function extractEntries(
-  data: Record<string, BenchmarkEntryResult>,
+  data: Record<string, Partial<BenchmarkEntryResult>>,
 ): BenchmarkEntry[] {
   return Object.entries(data)
-    .filter(([, entry]) => entry.mean && typeof entry.mean === 'object')
+    .filter(
+      (pair): pair is [string, BenchmarkEntry['entry']] =>
+        pair[1].mean !== undefined && typeof pair[1].mean === 'object',
+    )
     .map(([name, entry]) => ({ benchmarkName: name, entry }));
 }
 
