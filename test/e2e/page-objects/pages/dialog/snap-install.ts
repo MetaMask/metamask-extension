@@ -4,6 +4,11 @@ import { veryLargeDelayMs } from '../../../helpers';
 class SnapInstall {
   private driver: Driver;
 
+  private readonly acceptThirdPartyNotice = {
+    tag: 'button',
+    text: 'Accept',
+  };
+
   private readonly addToMetaMaskHeader = {
     tag: 'h3',
     text: 'Add to MetaMask',
@@ -33,6 +38,10 @@ class SnapInstall {
 
   private readonly snapInstallScrollArea =
     '[data-testid="snap-install-scroll"]';
+
+  private readonly thirdPartyNoticeScrollButton = {
+    testId: 'snap-privacy-warning-scroll',
+  };
 
   private readonly snapUpdateScrollArea = '[data-testid="snap-update-scroll"]';
 
@@ -69,6 +78,20 @@ class SnapInstall {
       throw e;
     }
     console.log('Snap install dialog is loaded');
+  }
+
+  async clickScrollBottomThirdPartyNotice() {
+    console.log('Clicking on the scroll bottom third party notice');
+    await this.driver.clickElementAndWaitToDisappear(
+      this.thirdPartyNoticeScrollButton,
+    );
+  }
+
+  async clickAcceptThirdPartyNotice() {
+    console.log('Clicking on the accept third party notice');
+    await this.driver.clickElementAndWaitToDisappear(
+      this.acceptThirdPartyNotice,
+    );
   }
 
   async clickApproveButton() {

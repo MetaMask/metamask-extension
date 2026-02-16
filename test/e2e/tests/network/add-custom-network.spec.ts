@@ -29,7 +29,7 @@ describe('Add Custom network', function (this: Suite) {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilder2().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },
@@ -84,7 +84,7 @@ describe('Add Custom network', function (this: Suite) {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilder2().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },

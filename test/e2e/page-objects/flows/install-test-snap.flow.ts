@@ -33,6 +33,8 @@ export async function openTestSnapClickButtonAndInstall(
   await testSnaps.scrollAndClickButton(buttonName);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await snapInstall.checkPageIsLoaded();
+  await snapInstall.clickScrollBottomThirdPartyNotice();
+  await snapInstall.clickAcceptThirdPartyNotice();
   await snapInstall.clickConnectButton();
   await snapInstall.clickConfirmButton();
   if (withWarning) {
