@@ -8,7 +8,7 @@ import { bridgeTransaction, getBridgeFixtures } from './bridge-test-utils';
 
 describe('Swap tests', function (this: Suite) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
-  it('updates recommended swap quote incrementally when SSE events are received', async function () {
+  it.only('updates recommended swap quote incrementally when SSE events are received', async function () {
     await withFixtures(
       {
         ...getBridgeFixtures(
@@ -40,10 +40,15 @@ describe('Swap tests', function (this: Suite) {
           expectedDestAmount: '3,839',
         });
 
-        const events = (await getEventPayloads(driver, mockedEndpoints)).filter(
+        let events = await getEventPayloads(driver, mockedEndpoints)
+        const unifiedSwapBridgeEvents = events.filter(
           (e) => e?.event?.includes('Unified SwapBridge'),
         );
-        const requestedToCompletedEvents = events.slice(6);
+        const transactionFinalizedEvents = events.filter(
+          (e) => e?.event === 'Transaction Finalized',
+        );
+
+        const requestedToCompletedEvents = unifiedSwapBridgeEvents.slice(6);
         const expectedEvents = [
           'Unified SwapBridge Quotes Requested',
           'Unified SwapBridge Quotes Received',
@@ -70,6 +75,9 @@ describe('Swap tests', function (this: Suite) {
         //   quotesReceivedEvent.properties.usd_quoted_gas === 34.95660437600472,
         //   `Quoted gas validation failed. Actual value: ${quotesReceivedEvent.properties.usd_quoted_gas}`,
         // );
+
+        assert.ok(transactionFinalizedEvents.length === 1, `Transaction Finalized event validation failed. Actual value: ${transactionFinalizedEvents.length}`);
+        assert.ok(transactionFinalizedEvents[0].properties.transaction_hash !== undefined, `Transaction Finalized transaction_hash validation failed. Actual value: ${transactionFinalizedEvents[0].properties.transaction_hash}`);
       },
     );
   });

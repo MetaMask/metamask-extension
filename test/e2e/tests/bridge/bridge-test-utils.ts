@@ -469,7 +469,7 @@ async function mockFeatureFlags(
       return {
         ok: true,
         statusCode: 200,
-        json: [{ bridgeConfig: featureFlags }],
+        json: [{ bridgeConfig: featureFlags, extensionUxPna25: true }],
       };
     });
 }
@@ -886,6 +886,9 @@ export const getBridgeFixtures = (
     .withMetaMetricsController({
       metaMetricsId: MOCK_META_METRICS_ID,
       participateInMetaMetrics: true,
+    })
+    .withAppStateController({
+      pna25Acknowledged: true,
     })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
