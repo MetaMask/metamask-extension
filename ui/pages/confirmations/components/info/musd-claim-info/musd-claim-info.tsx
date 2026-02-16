@@ -1,15 +1,10 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowAddress,
-} from '../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
-import { useConfirmContext } from '../../../context/confirm';
 import { GasFeesSection } from '../../confirm/info/shared/gas-fees-section/gas-fees-section';
 import { AdvancedDetails } from '../../confirm/info/shared/advanced-details/advanced-details';
 import { NetworkRow } from '../../confirm/info/shared/network-row/network-row';
+import { AccountRow } from '../../rows/account-row';
 import MusdClaimHeading from './musd-claim-heading';
 
 /**
@@ -25,19 +20,12 @@ import MusdClaimHeading from './musd-claim-heading';
  */
 export const MusdClaimInfo = () => {
   const t = useI18nContext();
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
 
   return (
     <>
       <MusdClaimHeading />
       <ConfirmInfoSection data-testid="musd-claim-details-section">
-        <ConfirmInfoRow label={t('musdClaimClaimingTo')}>
-          <ConfirmInfoRowAddress
-            address={transactionMeta.txParams.from}
-            chainId={transactionMeta.chainId}
-          />
-        </ConfirmInfoRow>
+        <AccountRow label={t('musdClaimClaimingTo')} />
         <NetworkRow />
       </ConfirmInfoSection>
       <GasFeesSection />
