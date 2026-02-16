@@ -42,63 +42,79 @@ export function createMpcKeyring(
   };
 }
 
-export type SetupMpcIdentityResult = {
-  keyringId: string;
-  partyId: string;
-};
-
-export function setupMpcIdentity(): ThunkAction<
-  Promise<SetupMpcIdentityResult>,
-  MetaMaskReduxState,
-  undefined,
-  AnyAction
-> {
+export function createMpcJoinData(
+  keyringId: string,
+): ThunkAction<Promise<string>, MetaMaskReduxState, undefined, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`actions.setupMpcIdentity`);
+    log.debug(`actions.createMpcJoinData`);
 
-    const result = await submitRequestToBackground<SetupMpcIdentityResult>(
-      'setupMpcIdentity',
-      [],
+    const joinData = await submitRequestToBackground<string>(
+      'createMpcJoinData',
+      [keyringId],
     )
-      .then((res) => {
+      .then((result) => {
         dispatch(hideLoadingIndication());
         dispatch(hideWarning());
-        return res;
+        return result;
       })
       .catch((err) => {
         dispatch(displayWarning(err));
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
       });
-    return result;
+    return joinData;
   };
 }
 
-export function joinMpcWallet(
+export function addMpcCustodian(
   keyringId: string,
-  verifierId: string,
-  initiator: string,
+  joinData: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, undefined, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`actions.joinMpcWallet`);
+    log.debug(`actions.addMpcCustodian`);
 
-    await submitRequestToBackground<void>('joinMpcWallet', [
+    await submitRequestToBackground<void>('addMpcCustodian', [
       keyringId,
-      verifierId,
-      initiator,
+      joinData,
     ])
       .then(() => {
         dispatch(hideLoadingIndication());
         dispatch(hideWarning());
-        dispatch(setShowNewSrpAddedToast(true));
       })
       .catch((err) => {
         dispatch(displayWarning(err));
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
       });
+  };
+}
+
+export function joinMpcWallet(
+  verifierId: string,
+  joinData: string,
+): ThunkAction<Promise<string>, MetaMaskReduxState, undefined, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`actions.joinMpcWallet`);
+
+    const keyringId = await submitRequestToBackground<string>('joinMpcWallet', [
+      verifierId,
+      joinData,
+    ])
+      .then((result) => {
+        dispatch(hideLoadingIndication());
+        dispatch(hideWarning());
+        dispatch(setShowNewSrpAddedToast(true));
+        return result;
+      })
+      .catch((err) => {
+        dispatch(displayWarning(err));
+        dispatch(hideLoadingIndication());
+        return Promise.reject(err);
+      });
+    return keyringId;
   };
 }
 
@@ -133,29 +149,5 @@ export function getMpcCustodianId(
       return Promise.reject(err);
     });
     return custodianId;
-  };
-}
-
-export function addMpcCustodian(
-  keyringId: string,
-  custodianId: string,
-): ThunkAction<Promise<void>, MetaMaskReduxState, undefined, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`actions.addMpcCustodian`);
-
-    await submitRequestToBackground<void>('addMpcCustodian', [
-      keyringId,
-      custodianId,
-    ])
-      .then(() => {
-        dispatch(hideLoadingIndication());
-        dispatch(hideWarning());
-      })
-      .catch((err) => {
-        dispatch(displayWarning(err));
-        dispatch(hideLoadingIndication());
-        return Promise.reject(err);
-      });
   };
 }

@@ -14,8 +14,6 @@ import {
   IconName,
   IconSize,
   Text,
-  TextField,
-  TextFieldType,
 } from '../../../components/component-library';
 import {
   Content,
@@ -41,6 +39,7 @@ import {
 import {
   getMpcCustodians,
   getMpcCustodianId,
+  createMpcJoinData,
   addMpcCustodian,
 } from '../../../store/controller-actions/mpc-controller';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
@@ -58,10 +57,12 @@ export const MpcWalletManagementPage = () => {
   const [selfCustodianId, setSelfCustodianId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [newPeerId, setNewPeerId] = useState('');
-  const [isAdding, setIsAdding] = useState(false);
 
-  // Extract keyring ID from wallet metadata (available on AccountWalletKeyringObject)
+  // Add custodian flow state
+  const [joinData, setJoinData] = useState<string | null>(null);
+  const [isGeneratingJoinData, setIsGeneratingJoinData] = useState(false);
+  const [isAddingCustodian, setIsAddingCustodian] = useState(false);
+
   const keyringId =
     wallet?.type === AccountWalletType.Keyring
       ? wallet.metadata.keyring.id
@@ -97,21 +98,40 @@ export const MpcWalletManagementPage = () => {
     fetchCustodians();
   }, [wallet, navigate, fetchCustodians]);
 
-  const handleAddCustodian = useCallback(async () => {
-    if (!keyringId || !newPeerId.trim()) {
+  const handleGenerateJoinData = useCallback(async () => {
+    if (!keyringId) {
       return;
     }
-    setIsAdding(true);
+    setIsGeneratingJoinData(true);
+    setError(null);
     try {
-      await dispatch(addMpcCustodian(keyringId, newPeerId.trim()));
-      setNewPeerId('');
+      const data = await dispatch(createMpcJoinData(keyringId));
+      setJoinData(data);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'Failed to generate join data',
+      );
+    } finally {
+      setIsGeneratingJoinData(false);
+    }
+  }, [dispatch, keyringId]);
+
+  const handleAddCustodian = useCallback(async () => {
+    if (!keyringId || !joinData) {
+      return;
+    }
+    setIsAddingCustodian(true);
+    setError(null);
+    try {
+      await dispatch(addMpcCustodian(keyringId, joinData));
+      setJoinData(null);
       await fetchCustodians();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to add custodian');
     } finally {
-      setIsAdding(false);
+      setIsAddingCustodian(false);
     }
-  }, [dispatch, keyringId, newPeerId, fetchCustodians]);
+  }, [dispatch, keyringId, joinData, fetchCustodians]);
 
   const getCustodianIcon = (type: 'cloud' | 'user') => {
     return type === 'cloud' ? IconName.Cloud : IconName.User;
@@ -140,7 +160,6 @@ export const MpcWalletManagementPage = () => {
         {wallet?.metadata.name ?? t('manageMpcWallet')}
       </Header>
       <Content paddingTop={3}>
-        {/* Custodians section */}
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -256,25 +275,55 @@ export const MpcWalletManagementPage = () => {
             <Text variant={TextVariant.headingSm} color={TextColor.textDefault}>
               {t('addCustodian')}
             </Text>
-            <TextField
-              type={TextFieldType.Text}
-              placeholder={t('enterPeerId')}
-              value={newPeerId}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setNewPeerId(e.target.value)
-              }
-              data-testid="add-custodian-input"
-            />
-            <Button
-              size={ButtonSize.Md}
-              variant={ButtonVariant.Primary}
-              onClick={handleAddCustodian}
-              disabled={isAdding || !newPeerId.trim()}
-              data-testid="add-custodian-button"
-              block
-            >
-              {isAdding ? t('adding') : t('add')}
-            </Button>
+
+            {joinData ? (
+              <>
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  {t('joinDataDescription')}
+                </Text>
+                <Box
+                  backgroundColor={BackgroundColor.backgroundMuted}
+                  borderRadius={BorderRadius.LG}
+                  padding={4}
+                >
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={TextColor.textDefault}
+                    style={{ wordBreak: 'break-all' }}
+                  >
+                    {joinData}
+                  </Text>
+                </Box>
+                <Button
+                  size={ButtonSize.Md}
+                  variant={ButtonVariant.Primary}
+                  onClick={handleAddCustodian}
+                  disabled={isAddingCustodian}
+                  data-testid="add-custodian-button"
+                  block
+                >
+                  {isAddingCustodian
+                    ? t('waitingForCustodian')
+                    : t('addCustodian')}
+                </Button>
+              </>
+            ) : (
+              <Button
+                size={ButtonSize.Md}
+                variant={ButtonVariant.Primary}
+                onClick={handleGenerateJoinData}
+                disabled={isGeneratingJoinData}
+                data-testid="generate-join-data-button"
+                block
+              >
+                {isGeneratingJoinData
+                  ? t('generatingJoinData')
+                  : t('generateJoinData')}
+              </Button>
+            )}
           </Box>
         </Box>
       </Content>

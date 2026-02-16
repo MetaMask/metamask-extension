@@ -8667,25 +8667,13 @@
     "message": "Join MPC Wallet"
   },
   "joinMpcWalletDescription": {
-    "message": "Join an existing MPC wallet by creating a device identity and connecting to the wallet initiator."
+    "message": "Paste the join data provided by the wallet initiator to join an existing MPC wallet."
   },
-  "createDeviceIdentity": {
-    "message": "Create Device Identity"
+  "joinDataLabel": {
+    "message": "Join Data"
   },
-  "creatingIdentity": {
-    "message": "Creating identity..."
-  },
-  "yourDeviceIdentity": {
-    "message": "Your Device Identity"
-  },
-  "shareIdentityWithInitiator": {
-    "message": "Share this identity with the wallet initiator, then enter their custodian ID below to complete the join."
-  },
-  "peerCustodian": {
-    "message": "Peer Custodian"
-  },
-  "enterPeerCustodianId": {
-    "message": "Enter peer custodian ID"
+  "enterJoinData": {
+    "message": "Paste join data from initiator"
   },
   "joiningMpcWallet": {
     "message": "Joining..."
@@ -8705,8 +8693,17 @@
   "addCustodian": {
     "message": "Add custodian"
   },
-  "enterPeerId": {
-    "message": "Enter peer ID"
+  "generateJoinData": {
+    "message": "Generate Join Data"
+  },
+  "generatingJoinData": {
+    "message": "Generating..."
+  },
+  "joinDataDescription": {
+    "message": "Share this join data with the new custodian. They will use it to join the wallet."
+  },
+  "waitingForCustodian": {
+    "message": "Waiting for custodian..."
   },
   "adding": {
     "message": "Adding..."
