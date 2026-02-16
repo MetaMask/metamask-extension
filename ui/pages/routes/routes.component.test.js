@@ -464,15 +464,17 @@ describe('toast display', () => {
     expect(toastContainer).toBeInTheDocument();
   });
 
-  // Probably not applicable anymore since BIP-44 account groups?
-  it('does render toastContainer if the unconnected selected account is Solana', () => {
+  // With multichain accounts feature disabled, connect-account toast still uses
+  // account-group logic: it only shows when the group supports the dapp's chain.
+  // A Solana-only group does not support eip155:1, so the toast is not shown.
+  it('does not render connect-account toast when selected account is Solana (group does not support dapp chain)', () => {
     mockIsMultichainAccountsFeatureEnabled.mockReturnValue(false);
 
-    const { getByTestId } = render(
+    const { queryByTestId } = render(
       DEFAULT_ROUTE,
       getToastConnectAccountDisplayTestState(mockSolanaAccount.id),
     );
-    const toastContainer = getByTestId('connect-account-toast');
-    expect(toastContainer).toBeInTheDocument();
+    const toastContainer = queryByTestId('connect-account-toast');
+    expect(toastContainer).not.toBeInTheDocument();
   });
 });

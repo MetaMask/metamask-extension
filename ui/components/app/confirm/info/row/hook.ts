@@ -25,7 +25,7 @@ export const useFallbackDisplayName = function (address: string): {
     ? accountGroups[0]
     : undefined;
 
-  const accountName = accountGroup?.metadata?.name
+  const accountName = accountGroup?.metadata?.name;
   const addressBookContact = useSelector((state) =>
     getAddressBookEntry(state, hexAddress),
   );
