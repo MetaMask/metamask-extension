@@ -461,6 +461,13 @@ module.exports = {
 
         // Static hex values are only discouraged in application code, using them in tests is OK.
         '@metamask/design-tokens/color-no-hex': 'off',
+
+        // These rule modifications are removing changes to our shared ESLint config made after
+        // version v9. This is a temporary measure to get us to ESLint v9 compatible versions,
+        // at which point we can restore the intended rules and use error suppression instead.
+        //
+        // TODO: Remove these modifications after the ESLint v9 update
+        'mocha/consistent-spacing-between-blocks': 'off',
       },
     },
     /**
