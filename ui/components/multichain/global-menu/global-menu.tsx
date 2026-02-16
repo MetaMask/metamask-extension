@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import {
@@ -83,12 +83,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  AccountDetailsMenuItem,
-  DiscoverMenuItem,
-  ViewExplorerMenuItem,
-} from '../menu-items';
-import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
+import { AccountDetailsMenuItem, DiscoverMenuItem } from '../menu-items';
 import { useUserSubscriptions } from '../../../hooks/subscription/useSubscription';
 import {
   getIsShieldSubscriptionActive,
@@ -118,6 +113,7 @@ export const GlobalMenu = ({
     useSubscriptionMetrics();
   const basicFunctionality = useSelector(getUseExternalServices);
 
+  const location = useLocation();
   const navigate = useNavigate();
 
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
@@ -130,10 +126,6 @@ export const GlobalMenu = ({
     getIsShieldSubscriptionPaused(subscriptions);
 
   const account = useSelector(getSelectedInternalAccount);
-
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
 
@@ -321,7 +313,9 @@ export const GlobalMenu = ({
         read_count: notificationsReadCount,
       },
     });
-    navigate(NOTIFICATIONS_ROUTE);
+    navigate(
+      `${NOTIFICATIONS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
+    );
     closeMenu();
   };
 
@@ -434,13 +428,6 @@ export const GlobalMenu = ({
             closeMenu={closeMenu}
             address={account.address}
           />
-          {isMultichainAccountsState2Enabled ? null : (
-            <ViewExplorerMenuItem
-              metricsLocation={METRICS_LOCATION}
-              closeMenu={closeMenu}
-              account={account}
-            />
-          )}
         </>
       )}
       <Box
@@ -477,8 +464,8 @@ export const GlobalMenu = ({
       <MenuItem
         to={
           isGatorPermissionsRevocationFeatureEnabled()
-            ? GATOR_PERMISSIONS
-            : PERMISSIONS
+            ? `${GATOR_PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`
+            : `${PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`
         }
         iconNameLegacy={IconName.SecurityTick}
         onClick={() => {
@@ -507,7 +494,7 @@ export const GlobalMenu = ({
         {t('networks')}
       </MenuItem>
       <MenuItem
-        to={SNAPS_ROUTE}
+        to={`${SNAPS_ROUTE}?from=${encodeURIComponent(location.pathname)}`}
         iconNameLegacy={IconName.Snaps}
         onClick={closeMenu}
         showInfoDot={snapsUpdatesAvailable}

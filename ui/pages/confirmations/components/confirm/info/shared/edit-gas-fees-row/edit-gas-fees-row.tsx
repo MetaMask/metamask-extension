@@ -21,6 +21,7 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
+import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
@@ -52,6 +53,8 @@ export const EditGasFeesRow = ({
     isGasFeeSponsored: doesSentinelAllowSponsorship,
     simulationData,
   } = transactionMeta;
+
+  const estimationFailed = useEstimationFailed();
   const gasFeeToken = useSelectedGasFeeToken();
   const showFiat = useShowFiat(chainId);
   const fiatValue = gasFeeToken?.amountFiat || fiatFee;
@@ -110,14 +113,21 @@ export const EditGasFeesRow = ({
               </Text>
             )}
             {isGasFeeEditable && <EditGasIconButton />}
-            {shouldShowPrimaryFiatValue && (
-              <FiatValue
-                fullValue={fiatFeeWith18SignificantDigits}
-                roundedValue={fiatValue}
-              />
+            {estimationFailed && !isGasFeeSponsored && (
+              <Text color={TextColor.textDefault}>{t('unavailable')}</Text>
             )}
-            {!shouldShowPrimaryFiatValue && !isGasFeeSponsored && (
-              <TokenValue roundedValue={tokenValue} />
+            {!estimationFailed && (
+              <>
+                {shouldShowPrimaryFiatValue && (
+                  <FiatValue
+                    fullValue={fiatFeeWith18SignificantDigits}
+                    roundedValue={fiatValue}
+                  />
+                )}
+                {!shouldShowPrimaryFiatValue && !isGasFeeSponsored && (
+                  <TokenValue roundedValue={tokenValue} />
+                )}
+              </>
             )}
             {!isGasFeeSponsored && <SelectedGasFeeToken />}
           </Box>
@@ -141,7 +151,7 @@ export const EditGasFeesRow = ({
                 : ' '}
             </Text>
           </Box>
-          {showAdvancedDetails && hasFiatValue && (
+          {showAdvancedDetails && !estimationFailed && hasFiatValue && (
             <FiatValue
               fullValue={fiatFeeWith18SignificantDigits}
               roundedValue={fiatValue}

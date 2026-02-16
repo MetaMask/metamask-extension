@@ -8604,12 +8604,6 @@
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
-  "useSmartAccountDescription": {
-    "message": "启用此功能后，当相关功能（如更快的交易速度、更低的网络费用及灵活的支付方式）可用时，系统将自动把 MetaMask 内创建的账户切换为智能账户。"
-  },
-  "useSmartAccountTitle": {
-    "message": "使用智能账户"
-  },
   "useTokenDetectionPrivacyDesc": {
     "message": "要自动显示发送到您账户的代币，需要与第三方服务器通信以获取代币的图像。这些服务器将拥有您的IP地址的访问权限。"
   },
