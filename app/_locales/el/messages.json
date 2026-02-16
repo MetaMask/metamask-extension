@@ -4262,9 +4262,6 @@
   "noConnectionDescription": {
     "message": "Το MetaMask δεν είναι συνδεδεμένο με αυτόν τον ιστότοπο. Για να ξεκινήσετε, επιλέξτε το κουμπί Σύνδεση του ιστότοπου."
   },
-  "noConversionRateAvailable": {
-    "message": "Δεν υπάρχει διαθέσιμη ισοτιμία μετατροπής"
-  },
   "noDomainResolution": {
     "message": "Δεν παρέχεται ανάλυση για τον τομέα."
   },
@@ -8606,12 +8603,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useSmartAccountDescription": {
-    "message": "Ενεργοποιήστε αυτή τη ρύθμιση για να μετατρέπονται αυτόματα οι λογαριασμοί που δημιουργούνται μέσα στο MetaMask σε έξυπνους λογαριασμούς όταν είναι διαθέσιμες σχετικές λειτουργίες, όπως ταχύτερες συναλλαγές, χαμηλότερα τέλη δικτύου και ευελιξία πληρωμών."
-  },
-  "useSmartAccountTitle": {
-    "message": "Χρησιμοποιήστε έξυπνο λογαριασμό"
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Η αυτόματη εμφάνιση tokens που έχουν σταλεί στον λογαριασμό σας περιλαμβάνει επικοινωνία με εξυπηρετητές τρίτων για την εμφάνιση των εικόνων των token. Αυτοί οι εξυπηρετητές θα έχουν πρόσβαση στη διεύθυνσή IP σας."

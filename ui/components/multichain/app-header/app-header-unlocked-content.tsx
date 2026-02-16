@@ -4,12 +4,11 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState,
 } from 'react';
 import browser from 'webextension-polyfill';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Icon,
   IconName,
@@ -47,7 +46,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setShowSupportDataConsentModal } from '../../../store/actions';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { AccountPicker } from '../account-picker';
-import { GlobalMenu } from '../global-menu';
+import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
 import {
   getSelectedInternalAccount,
   getOriginOfCurrentTab,
@@ -99,8 +98,10 @@ export const AppHeaderUnlockedContent = ({
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
   const origin = useSelector(getOriginOfCurrentTab);
-  const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
+  // Derive from URL so drawer state survives route changes (e.g. homepage mount) without render>close>render flash
+  const accountOptionsMenuOpen = searchParams.get('drawerOpen') === 'true';
   const tourAnchorRef = useRef<HTMLDivElement>(null);
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
@@ -135,6 +136,13 @@ export const AppHeaderUnlockedContent = ({
     getShowSupportDataConsentModal,
   );
 
+  const closeAccountOptionsMenu = useCallback(() => {
+    setSearchParams((prev) => {
+      prev.delete('drawerOpen');
+      return prev;
+    });
+  }, [setSearchParams]);
+
   // Reset copy state when a switching accounts
   useEffect(() => {
     if (normalizedCurrentAddress) {
@@ -155,22 +163,27 @@ export const AppHeaderUnlockedContent = ({
       getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) &&
     origin !== browser.runtime.id;
 
-  const handleMainMenuToggle = () => {
-    setAccountOptionsMenuOpen((previous) => {
-      const isMenuOpen = !previous;
-      if (isMenuOpen) {
-        trackEvent({
-          event: MetaMetricsEventName.NavMainMenuOpened,
-          category: MetaMetricsEventCategory.Navigation,
-          properties: {
-            location: 'Home',
-          },
-        });
-      }
+  const handleMainMenuToggle = useCallback(() => {
+    const isMenuOpen = !accountOptionsMenuOpen;
+    if (isMenuOpen) {
+      trackEvent({
+        event: MetaMetricsEventName.NavMainMenuOpened,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          location: 'Home',
+        },
+      });
+    }
 
-      return isMenuOpen;
+    setSearchParams((prev) => {
+      if (isMenuOpen) {
+        prev.set('drawerOpen', 'true');
+      } else {
+        prev.delete('drawerOpen');
+      }
+      return prev;
     });
-  };
+  }, [accountOptionsMenuOpen, trackEvent, setSearchParams]);
 
   const handleConnectionsRoute = () => {
     navigate(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
@@ -398,14 +411,13 @@ export const AppHeaderUnlockedContent = ({
       >
         <Box display={Display.Flex} gap={2}>
           {showConnectedStatus && (
-            <Box ref={menuRef} data-testid="connection-menu" margin="auto">
+            <Box data-testid="connection-menu" margin="auto">
               <ConnectedStatusIndicator
                 onClick={() => handleConnectionsRoute()}
               />
             </Box>
           )}{' '}
           <Box
-            ref={menuRef}
             display={Display.Flex}
             justifyContent={JustifyContent.flexEnd}
             width={BlockSize.Full}
@@ -417,6 +429,7 @@ export const AppHeaderUnlockedContent = ({
               </Box>
             )}
             <ButtonIcon
+              ref={menuRef}
               iconName={IconNameDeprecated.Menu}
               data-testid="account-options-menu-button"
               ariaLabel={t('accountOptions')}
@@ -425,12 +438,10 @@ export const AppHeaderUnlockedContent = ({
             />
           </Box>
         </Box>
-        <GlobalMenu
+        <GlobalMenuDrawerWithList
           anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
-          closeMenu={() => {
-            setAccountOptionsMenuOpen(false);
-          }}
+          onClose={closeAccountOptionsMenu}
         />
         <VisitSupportDataConsentModal
           isOpen={showSupportDataConsentModal}

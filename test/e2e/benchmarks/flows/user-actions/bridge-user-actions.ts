@@ -14,12 +14,13 @@ import {
   MOCK_TOKENS_ETHEREUM,
 } from '../../../tests/bridge/constants';
 import { Driver } from '../../../webdriver/driver';
+import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
 import { runUserActionBenchmark } from '../../utils/runner';
 import { collectWebVitals } from '../../utils/web-vitals-collector';
 
 export const testTitle = 'benchmark-user-actions-bridge-user-actions';
-export const persona = 'standard';
+export const persona = BENCHMARK_PERSONA.STANDARD;
 
 async function mockTokensEthereum(mockServer: Mockttp) {
   return await mockServer.forPost(/getTokens\/search/u).thenCallback(() => {
@@ -108,5 +109,5 @@ export async function run(): Promise<BenchmarkRunResult> {
       ],
       webVitals,
     };
-  });
+  }, BENCHMARK_TYPE.USER_ACTION);
 }

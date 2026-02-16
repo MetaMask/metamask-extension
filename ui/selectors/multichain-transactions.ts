@@ -1,5 +1,4 @@
 import { Transaction } from '@metamask/keyring-api';
-import type { DefaultRootState } from 'react-redux';
 import type { MultichainState } from './multichain';
 import {
   getAccountGroupWithInternalAccounts,
@@ -9,6 +8,7 @@ import type {
   MultichainAccountsState,
   AccountGroupWithInternalAccounts,
 } from './multichain-accounts/account-tree.types';
+import { MetaMaskReduxState } from '.';
 
 // Lightweight shape for nonEvmTransactions state map
 // accountId -> chainId -> TransactionStateEntry
@@ -20,10 +20,8 @@ type NonEvmTransactionsMap = Record<
   >
 >;
 
-type RootState = MultichainState & MultichainAccountsState & DefaultRootState;
-
 export function getSelectedAccountGroupMultichainTransactions(
-  state: RootState,
+  state: MetaMaskReduxState,
   nonEvmChainIds?: string[],
 ): { transactions: Transaction[] } {
   const nonEvmTransactionsByAccount = (state as MultichainState).metamask

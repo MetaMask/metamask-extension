@@ -3,7 +3,6 @@
  * Measures time for importing an existing wallet during onboarding
  */
 
-import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
@@ -26,11 +25,15 @@ import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-on
 import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
-import { getCommonMocks } from '../../utils/common-mocks';
+import {
+  getTestSpecificMock,
+  shouldUseMockedRequests,
+} from '../../utils/mock-config';
+import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 export const testTitle = 'benchmark-onboarding-import-wallet';
-export const persona = 'standard';
+export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRunResult> {
   try {
@@ -43,15 +46,13 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
-        useMockingPassThrough: true,
+        useMockingPassThrough: !shouldUseMockedRequests(),
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
         fixtures: new FixtureBuilder({ onboarding: true })
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
-        testSpecificMock: async (server: Mockttp) => {
-          return [...getCommonMocks(server)];
-        },
+        testSpecificMock: getTestSpecificMock(),
       },
       async ({ driver }: { driver: Driver }) => {
         const srp = process.env.E2E_POWER_USER_SRP || E2E_SRP;
@@ -60,12 +61,8 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           'importWalletToSocialScreen',
         );
         const timerSrpButtonToForm = new TimerHelper('srpButtonToSrpForm');
-        const timerConfirmToPassword = new TimerHelper(
-          'confirmSrpToPasswordForm',
-        );
-        const timerPasswordToMetrics = new TimerHelper(
-          'passwordFormToMetricsScreen',
-        );
+        const timerConfirmToPassword = new TimerHelper('confirmSrpToPwForm');
+        const timerPasswordToMetrics = new TimerHelper('pwFormToMetricsScreen');
         const timerMetricsToComplete = new TimerHelper(
           'metricsToWalletReadyScreen',
         );
@@ -142,7 +139,7 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           const assetListPage = new AssetListPage(driver);
           await assetListPage.checkTokenListIsDisplayed();
           await assetListPage.checkTokenExistsInList('Ethereum');
-          await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
+          await assetListPage.waitForTokenToBeDisplayed('Solana', 120000);
         });
         performanceTracker.addTimer(timerDoneToHome);
 
@@ -151,18 +148,23 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
         await headerNavbar.openAccountMenu();
         await timerAccountListLoad.measure(async () => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded(50000);
+          await accountListPage.checkPageIsLoaded(120000);
         });
         performanceTracker.addTimer(timerAccountListLoad);
       },
     );
 
-    return { timers: collectTimerResults(), success: true };
+    return {
+      timers: collectTimerResults(),
+      success: true,
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
+    };
   } catch (error) {
     return {
       timers: collectTimerResults(),
       success: false,
       error: error instanceof Error ? error.message : String(error),
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   }
 }
