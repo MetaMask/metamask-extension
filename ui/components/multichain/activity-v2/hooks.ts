@@ -21,6 +21,18 @@ export function useGetTitle(transaction: TransactionViewModel): string {
     }
   }
 
+  if (transaction.category === TransactionGroupCategory.send) {
+    const symbol = transaction.amounts?.from?.token.symbol;
+    if (symbol) {
+      return t('sentSpecifiedTokens', [symbol]);
+    }
+    return t('sent');
+  }
+
+  if (transaction.category === TransactionGroupCategory.receive) {
+    return t('received');
+  }
+
   return transaction.readable ?? '';
 }
 
