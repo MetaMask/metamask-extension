@@ -7722,8 +7722,8 @@
     },
     "eslint-import-resolver-typescript>unrs-resolver": {
       "builtin": {
-        "child_process.execSync": true,
-        "node:fs.readFileSync": true,
+        "child_process": false,
+        "node:fs": false,
         "node:module.createRequire": true
       },
       "globals": {
