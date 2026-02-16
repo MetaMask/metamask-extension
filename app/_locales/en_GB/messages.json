@@ -2118,6 +2118,9 @@
   "deepLink_theTransactionShieldPage": {
     "message": "the transaction shield page"
   },
+  "default": {
+    "message": "Default"
+  },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
   },
@@ -2699,6 +2702,9 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
+  },
+  "ethereumAndEvms": {
+    "message": "Ethereum and EVMs"
   },
   "ethereumProviderAccess": {
     "message": "Grant Ethereum provider access to $1",
