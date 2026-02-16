@@ -746,7 +746,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   deferredDeepLink: {
-    includeInStateLogs: true,
+    includeInStateLogs: false,
     persist: true,
     includeInDebugSnapshot: false,
     usedInUi: true,
