@@ -9,7 +9,6 @@ import type {
 import { TextVariant } from '../constants/design-system';
 import {
   CHAIN_IDS,
-  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
   FEATURED_RPCS,

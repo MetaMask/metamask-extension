@@ -115,7 +115,9 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
           />
         ),
         Asset: ({ notification }) => {
-          const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(notification.payload.chain_id);
+          const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
+            notification.payload.chain_id,
+          );
           return (
             <NotificationDetailAsset
               icon={{
@@ -139,7 +141,9 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
           );
         },
         AssetReceived: ({ notification }) => {
-          const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(notification.payload.chain_id);
+          const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
+            notification.payload.chain_id,
+          );
           return (
             <NotificationDetailAsset
               icon={{
