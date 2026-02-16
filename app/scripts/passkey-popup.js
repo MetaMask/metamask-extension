@@ -164,3 +164,11 @@ document.getElementById('retryBtn').addEventListener('click', function () {
   document.getElementById('error').textContent = '';
   execute();
 });
+
+// Auto-trigger: try without user activation first.
+// If Chrome blocks it (NotAllowedError), the button becomes visible.
+document.getElementById('retryBtn').style.display = 'none';
+document.getElementById('spinner').style.display = 'block';
+document.getElementById('status').textContent =
+  'Complete the biometric prompt\u2026';
+execute();
