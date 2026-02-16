@@ -8604,12 +8604,6 @@
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
-  "useSmartAccountDescription": {
-    "message": "Lassen Sie diese Option aktiviert, um in MetaMask erstellte Konten automatisch auf Smart-Konten umzustellen, wenn relevante Funktionen verfügbar sind, wie etwa schnellere Transaktionen, niedrigere Netzwerkgebühren und Zahlungsflexibilität bei der Zahlung dieser."
-  },
-  "useSmartAccountTitle": {
-    "message": "Smart-Konto verwenden"
-  },
   "useTokenDetectionPrivacyDesc": {
     "message": "Die automatische Anzeige von Token, die an Ihr Konto gesendet werden, beinhaltet die Kommunikation mit Servern von Drittanbietern, um die Bilder der Token abzurufen. Diese Server haben Zugriff auf Ihre IP-Adresse."
   },

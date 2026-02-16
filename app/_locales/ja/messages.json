@@ -8628,12 +8628,6 @@
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
-  "useSmartAccountDescription": {
-    "message": "これをオンにしておくと、より高速なトランザクション、より有利なネットワーク手数料、柔軟な支払方法など、該当する機能が利用可能な場合に必ず、MetaMask内で作成されたアカウントが自動的にスマートアカウントに切り替わります。"
-  },
-  "useSmartAccountTitle": {
-    "message": "スマートアカウントを使用する"
-  },
   "useTokenDetectionPrivacyDesc": {
     "message": "アカウントに送信されたトークンを自動的に表示するには、サードパーティサーバーと通信してトークンの画像を取得する必要があります。これらのサーバーは、あなたのIPアドレスにアクセスすることになります。"
   },

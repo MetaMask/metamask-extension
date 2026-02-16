@@ -8604,12 +8604,6 @@
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
-  "useSmartAccountDescription": {
-    "message": "Luôn bật tính năng này để tự động chuyển các tài khoản được tạo trong MetaMask sang tài khoản thông minh bất cứ khi nào các tính năng liên quan khả dụng, chẳng hạn như giao dịch nhanh hơn, phí mạng thấp hơn và linh hoạt trong thanh toán."
-  },
-  "useSmartAccountTitle": {
-    "message": "Sử dụng tài khoản thông minh"
-  },
   "useTokenDetectionPrivacyDesc": {
     "message": "Tự động hiển thị các token được gửi vào tài khoản của bạn có liên quan đến hoạt động trao đổi thông tin với các máy chủ bên thứ ba để tìm nạp hình ảnh của token. Các máy chủ đó sẽ có quyền truy cập vào địa chỉ IP của bạn."
   },
