@@ -96,7 +96,10 @@
     "ClaimsController": {
       "claims": [],
       "claimsConfigurations": {
-        "supportedNetworks": ["0x1", "0xe708"],
+        "supportedNetworks": [
+          "0x1",
+          "0xe708"
+        ],
         "validSubmissionWindowDays": 21
       },
       "drafts": []
@@ -295,7 +298,10 @@
       "selectedMultichainNetworkChainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
     },
     "MultichainRatesController": {
-      "cryptocurrencies": ["btc", "sol"],
+      "cryptocurrencies": [
+        "btc",
+        "sol"
+      ],
       "fiatCurrency": "usd",
       "rates": {
         "btc": {
@@ -320,7 +326,9 @@
     "NetworkController": {
       "networkConfigurationsByChainId": {
         "0x1": {
-          "blockExplorerUrls": ["https://etherscan.io"],
+          "blockExplorerUrls": [
+            "https://etherscan.io"
+          ],
           "chainId": "0x1",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -328,9 +336,7 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://dimensional-special-breeze.quiknode.pro/d5e2d185c1561ef5ecb9aadf1ae7cc58863f4fa4/"
-              ],
+              "failoverUrls": [],
               "networkClientId": "mainnet",
               "type": "infura",
               "url": "https://mainnet.infura.io/v3/{infuraProjectId}"
@@ -338,7 +344,9 @@
           ]
         },
         "0x18c7": {
-          "blockExplorerUrls": ["https://megaeth-testnet-v2.blockscout.com"],
+          "blockExplorerUrls": [
+            "https://megaeth-testnet-v2.blockscout.com"
+          ],
           "chainId": "0x18c7",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -354,7 +362,9 @@
           ]
         },
         "0x2105": {
-          "blockExplorerUrls": ["https://basescan.org"],
+          "blockExplorerUrls": [
+            "https://basescan.org"
+          ],
           "chainId": "0x2105",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -362,9 +372,7 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://ancient-quaint-water.base-mainnet.quiknode.pro/a2cb04635063b578dba24f656fe376a55e8d9939/"
-              ],
+              "failoverUrls": [],
               "networkClientId": "base-mainnet",
               "type": "infura",
               "url": "https://base-mainnet.infura.io/v3/{infuraProjectId}"
@@ -372,7 +380,9 @@
           ]
         },
         "0x279f": {
-          "blockExplorerUrls": ["https://testnet.monadexplorer.com"],
+          "blockExplorerUrls": [
+            "https://testnet.monadexplorer.com"
+          ],
           "chainId": "0x279f",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -388,7 +398,9 @@
           ]
         },
         "0x38": {
-          "blockExplorerUrls": ["https://bscscan.com"],
+          "blockExplorerUrls": [
+            "https://bscscan.com"
+          ],
           "chainId": "0x38",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -404,7 +416,9 @@
           ]
         },
         "0x89": {
-          "blockExplorerUrls": ["https://polygonscan.com"],
+          "blockExplorerUrls": [
+            "https://polygonscan.com"
+          ],
           "chainId": "0x89",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -412,9 +426,7 @@
           "nativeCurrency": "POL",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://powerful-radial-aura.matic.quiknode.pro/edaa1cc73ef2a19230e2e715e766b6783ad8126a/"
-              ],
+              "failoverUrls": [],
               "networkClientId": "polygon-mainnet",
               "type": "infura",
               "url": "https://polygon-mainnet.infura.io/v3/{infuraProjectId}"
@@ -422,7 +434,9 @@
           ]
         },
         "0xa": {
-          "blockExplorerUrls": ["https://optimistic.etherscan.io"],
+          "blockExplorerUrls": [
+            "https://optimistic.etherscan.io"
+          ],
           "chainId": "0xa",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -430,9 +444,7 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://holy-convincing-diagram.optimism.quiknode.pro/4804f72f80b7566982ad24a7a1d8e1ae48bca208/"
-              ],
+              "failoverUrls": [],
               "networkClientId": "optimism-mainnet",
               "type": "infura",
               "url": "https://optimism-mainnet.infura.io/v3/{infuraProjectId}"
@@ -440,7 +452,9 @@
           ]
         },
         "0xa4b1": {
-          "blockExplorerUrls": ["https://arbiscan.io"],
+          "blockExplorerUrls": [
+            "https://arbiscan.io"
+          ],
           "chainId": "0xa4b1",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -448,9 +462,7 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://purple-young-mansion.arbitrum-mainnet.quiknode.pro/f48c5cbfd1f5b39f0e5542d3b23c181b4085a2b5/"
-              ],
+              "failoverUrls": [],
               "networkClientId": "arbitrum-mainnet",
               "type": "infura",
               "url": "https://arbitrum-mainnet.infura.io/v3/{infuraProjectId}"
@@ -458,7 +470,9 @@
           ]
         },
         "0xaa36a7": {
-          "blockExplorerUrls": ["https://sepolia.etherscan.io"],
+          "blockExplorerUrls": [
+            "https://sepolia.etherscan.io"
+          ],
           "chainId": "0xaa36a7",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -474,7 +488,9 @@
           ]
         },
         "0xe705": {
-          "blockExplorerUrls": ["https://sepolia.lineascan.build"],
+          "blockExplorerUrls": [
+            "https://sepolia.lineascan.build"
+          ],
           "chainId": "0xe705",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -490,7 +506,9 @@
           ]
         },
         "0xe708": {
-          "blockExplorerUrls": ["https://lineascan.build"],
+          "blockExplorerUrls": [
+            "https://lineascan.build"
+          ],
           "chainId": "0xe708",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -498,9 +516,7 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://patient-sleek-daylight.linea-mainnet.quiknode.pro/d0e608bf5f231ef9ae6756de4d7876cb0f5ece55/"
-              ],
+              "failoverUrls": [],
               "networkClientId": "linea-mainnet",
               "type": "infura",
               "url": "https://linea-mainnet.infura.io/v3/{infuraProjectId}"
@@ -1327,35 +1343,67 @@
                   "value": [
                     {
                       "curve": "secp256k1",
-                      "path": ["m", "44'", "0'"]
+                      "path": [
+                        "m",
+                        "44'",
+                        "0'"
+                      ]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": ["m", "44'", "1'"]
+                      "path": [
+                        "m",
+                        "44'",
+                        "1'"
+                      ]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": ["m", "49'", "0'"]
+                      "path": [
+                        "m",
+                        "49'",
+                        "0'"
+                      ]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": ["m", "49'", "1'"]
+                      "path": [
+                        "m",
+                        "49'",
+                        "1'"
+                      ]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": ["m", "84'", "0'"]
+                      "path": [
+                        "m",
+                        "84'",
+                        "0'"
+                      ]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": ["m", "84'", "1'"]
+                      "path": [
+                        "m",
+                        "84'",
+                        "1'"
+                      ]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": ["m", "86'", "0'"]
+                      "path": [
+                        "m",
+                        "86'",
+                        "0'"
+                      ]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": ["m", "86'", "1'"]
+                      "path": [
+                        "m",
+                        "86'",
+                        "1'"
+                      ]
                     }
                   ]
                 }
@@ -1647,7 +1695,9 @@
                 {
                   "type": "keyringOrigin",
                   "value": {
-                    "allowedOrigins": ["https://portfolio.metamask.io"]
+                    "allowedOrigins": [
+                      "https://portfolio.metamask.io"
+                    ]
                   }
                 }
               ],
@@ -1741,7 +1791,11 @@
                   "value": [
                     {
                       "curve": "ed25519",
-                      "path": ["m", "44'", "501'"]
+                      "path": [
+                        "m",
+                        "44'",
+                        "501'"
+                      ]
                     }
                   ]
                 }
@@ -1781,7 +1835,9 @@
               "caveats": [
                 {
                   "type": "chainIds",
-                  "value": ["tron:728126428"]
+                  "value": [
+                    "tron:728126428"
+                  ]
                 }
               ],
               "date": 1764061389898,
@@ -1801,7 +1857,9 @@
                 {
                   "type": "keyringOrigin",
                   "value": {
-                    "allowedOrigins": ["https://portfolio.metamask.io"]
+                    "allowedOrigins": [
+                      "https://portfolio.metamask.io"
+                    ]
                   }
                 }
               ],
@@ -1846,7 +1904,11 @@
                   "value": [
                     {
                       "curve": "secp256k1",
-                      "path": ["m", "44'", "195'"]
+                      "path": [
+                        "m",
+                        "44'",
+                        "195'"
+                      ]
                     }
                   ]
                 }
