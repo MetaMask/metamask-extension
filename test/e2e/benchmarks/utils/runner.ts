@@ -14,6 +14,7 @@ import {
   calculateTimerStatistics,
   checkExclusionRate,
   MAX_EXCLUSION_RATE,
+  MAX_TOTAL_DURATION_MS,
   validateThresholds,
 } from './statistics';
 import type {
@@ -142,7 +143,9 @@ export async function runBenchmarkWithIterations(
     }
   }
   if (perRunTotalDurations.length > 0) {
-    const totalStats = calculateTimerStatistics('total', perRunTotalDurations);
+    const totalStats = calculateTimerStatistics('total', perRunTotalDurations, {
+      maxDurationMs: MAX_TOTAL_DURATION_MS,
+    });
     timerStats.push(totalStats);
   }
 
