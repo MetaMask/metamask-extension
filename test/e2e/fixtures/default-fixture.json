@@ -833,12 +833,31 @@
       "ignoredNfts": []
     },
     "NotificationServicesController": {
-      "isFeatureAnnouncementsEnabled": false,
-      "isMetamaskNotificationsFeatureSeen": false,
-      "isNotificationServicesEnabled": false,
-      "metamaskNotificationsList": [],
+      "isFeatureAnnouncementsEnabled": true,
+      "isMetamaskNotificationsFeatureSeen": true,
+      "isNotificationServicesEnabled": true,
+      "metamaskNotificationsList": [
+        {
+          "createdAt": "2026-01-16T15:08:09.000Z",
+          "data": {
+            "category": "ANNOUNCEMENT",
+            "id": "dont-miss-out-on-airdrops-and-new-nft-mints",
+            "image": {
+              "description": "",
+              "title": "PDAPP notification image Airdrops & NFT mints",
+              "url": "//images.ctfassets.net/jdkgyfmyd9sw/5jqq8sFeLc6XEoeWlpI3aB/73ee0f1afa9916c3a7538b0bbee09c26/PDAPP_notification_image_Airdrops___NFT_mints.png"
+            },
+            "longDescription": "<p>You can now verify if any of your connected addresses are eligible for airdrops and other ERC-20 claims in a secure and convenient way. We’ve also added trending NFT mints based on creators you’ve minted from before or other tokens you hold. Head over to the Explore tab to get started. \n</p>",
+            "shortDescription": "Check your airdrop eligibility and see trending NFT drops. Head over to the Explore tab to get started. ",
+            "title": "Don’t miss out on airdrops and new NFT mints!"
+          },
+          "id": "dont-miss-out-on-airdrops-and-new-nft-mints",
+          "isRead": true,
+          "type": "features_announcement"
+        }
+      ],
       "metamaskNotificationsReadList": [],
-      "subscriptionAccountsSeen": []
+      "subscriptionAccountsSeen": ["0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"]
     },
     "NotificationServicesPushController": {
       "fcmToken": "",
@@ -884,7 +903,17 @@
         "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
           "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
           "lastSelected": 0,
+          "name": "Snap Account 3"
+        },
+        "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3": {
+          "address": "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3",
+          "lastSelected": 0,
           "name": "Snap Account 1"
+        },
+        "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252": {
+          "address": "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252",
+          "lastSelected": 0,
+          "name": "Snap Account 2"
         }
       },
       "ipfsGateway": "dweb.link",
@@ -901,7 +930,17 @@
         "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
           "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
           "lastSelected": 0,
+          "name": "Snap Account 3"
+        },
+        "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3": {
+          "address": "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3",
+          "lastSelected": 0,
           "name": "Snap Account 1"
+        },
+        "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252": {
+          "address": "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252",
+          "lastSelected": 0,
+          "name": "Snap Account 2"
         }
       },
       "manageInstitutionalWallets": false,
