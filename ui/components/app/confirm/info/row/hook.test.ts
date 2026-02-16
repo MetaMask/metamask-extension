@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { shortenAddress } from '../../../../../helpers/utils/util';
-import { getAccountName, getInternalAccounts } from '../../../../../selectors';
 import { useFallbackDisplayName } from './hook';
 
 jest.mock('react-redux', () => ({
@@ -12,11 +11,8 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('../../../../../selectors', () => ({
-  getAccountName: jest.fn(),
   getAddressBookEntry: jest.fn(),
   getEnsResolutionByAddress: jest.fn(),
-  getInternalAccounts: jest.fn(),
-  getIsMultichainAccountsState2Enabled: jest.fn(),
   getMetadataContractName: jest.fn(),
 }));
 
@@ -29,10 +25,6 @@ type MockSelector = <TSelected = unknown>(
 ) => TSelected;
 
 const mockUseSelector = useSelector as jest.MockedFunction<MockSelector>;
-
-const mockGetAccountName = getAccountName as jest.MockedFunction<
-  typeof getAccountName
->;
 
 describe('hook.ts', () => {
   beforeEach(() => {
@@ -47,9 +39,6 @@ describe('hook.ts', () => {
     const setupMocks = (overrides: Record<string, unknown> = {}) => {
       // Setup useSelector mock
       mockUseSelector.mockImplementation((selector) => {
-        if (selector === getInternalAccounts) {
-          return overrides.getInternalAccounts ?? [];
-        }
         // Handle function selectors that take arguments
         if (typeof selector === 'function') {
           // This is for inline arrow functions like (state) => getAccountGroupsByAddress(state, [hexAddress])
@@ -68,9 +57,6 @@ describe('hook.ts', () => {
         }
         return null;
       });
-
-      // Setup direct function mocks
-      mockGetAccountName.mockReturnValue(overrides.accountName || '');
     };
 
     beforeEach(() => {
