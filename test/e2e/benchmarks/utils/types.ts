@@ -33,8 +33,8 @@ export type StatisticalResult = {
 };
 
 export type BenchmarkResults = {
-  testTitle?: string;
-  persona?: string;
+  testTitle: string;
+  persona: Persona;
   mean: StatisticalResult;
   min: StatisticalResult;
   max: StatisticalResult;
@@ -46,9 +46,11 @@ export type BenchmarkResults = {
 /** User action result with testTitle, persona and numeric timing metrics. */
 export type UserActionResult = {
   testTitle: string;
-  persona?: string;
+  persona: Persona;
   [key: string]: string | number | undefined;
 };
+
+export type Persona = 'standard' | 'powerUser';
 
 export type BenchmarkArguments = {
   pages: string[];
@@ -56,7 +58,7 @@ export type BenchmarkArguments = {
   pageLoads: number;
   out?: string;
   retries: number;
-  persona: 'standard' | 'powerUser';
+  persona: Persona;
 };
 
 export type NetworkReport = {

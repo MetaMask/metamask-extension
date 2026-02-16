@@ -23,10 +23,14 @@ import {
   SEND_TRANSACTIONS_THRESHOLDS,
   ASSET_DETAILS_THRESHOLDS,
   SOLANA_ASSET_DETAILS_THRESHOLDS,
+  PAGE_LOAD_PRESETS,
+  USER_ACTION_PRESETS,
+  PERFORMANCE_PRESETS,
 } from './utils/constants';
 import type {
   BenchmarkResults,
   BenchmarkSummary,
+  Persona,
   StatisticalResult,
   ThresholdConfig,
 } from './utils/types';
@@ -42,7 +46,7 @@ import type {
 function convertSummaryToResults(
   summary: BenchmarkSummary,
   testTitle: string,
-  persona?: string,
+  persona: Persona,
 ): BenchmarkResults {
   const mean: StatisticalResult = {};
   const min: StatisticalResult = {};
@@ -100,30 +104,36 @@ function getThresholdConfig(filePath: string): ThresholdConfig | undefined {
 
 const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
 
+/**
+ * Preset definitions mapping preset names to benchmark files.
+ * Preset names come from shared constants in ./utils/constants.ts.
+ * The YAML workflow (.github/workflows/run-benchmarks.yml) must be
+ * updated manually when presets change.
+ */
 const PRESETS: Record<string, string[]> = {
-  // Performance benchmarks
-  performanceOnboardingImport: [
+  // Performance benchmarks (from PERFORMANCE_PRESETS)
+  [PERFORMANCE_PRESETS[0]]: [
     `${BENCHMARK_DIR}/performance/onboarding-import-wallet.ts`,
   ],
-  performanceOnboardingNew: [
+  [PERFORMANCE_PRESETS[1]]: [
     `${BENCHMARK_DIR}/performance/onboarding-new-wallet.ts`,
   ],
-  performanceAssets: [
+  [PERFORMANCE_PRESETS[2]]: [
     `${BENCHMARK_DIR}/performance/asset-details.ts`,
     `${BENCHMARK_DIR}/performance/solana-asset-details.ts`,
   ],
-  performanceLogin: [
-    `${BENCHMARK_DIR}/performance/import-srp-home.ts`,
+  [PERFORMANCE_PRESETS[3]]: [`${BENCHMARK_DIR}/performance/import-srp-home.ts`],
+  [PERFORMANCE_PRESETS[4]]: [
     `${BENCHMARK_DIR}/performance/send-transactions.ts`,
     `${BENCHMARK_DIR}/performance/swap.ts`,
   ],
 
-  // Page load benchmarks
-  standardHome: [`${BENCHMARK_DIR}/page-load/standard-home.ts`],
-  powerUserHome: [`${BENCHMARK_DIR}/page-load/power-user-home.ts`],
+  // Page load benchmarks (from PAGE_LOAD_PRESETS)
+  [PAGE_LOAD_PRESETS[0]]: [`${BENCHMARK_DIR}/page-load/standard-home.ts`],
+  [PAGE_LOAD_PRESETS[1]]: [`${BENCHMARK_DIR}/page-load/power-user-home.ts`],
 
-  // User action benchmarks
-  userActions: [
+  // User action benchmarks (from USER_ACTION_PRESETS)
+  [USER_ACTION_PRESETS[0]]: [
     `${BENCHMARK_DIR}/user-actions/load-new-account.ts`,
     `${BENCHMARK_DIR}/user-actions/confirm-tx.ts`,
     `${BENCHMARK_DIR}/user-actions/bridge-user-actions.ts`,

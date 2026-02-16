@@ -22,6 +22,7 @@ import type {
   BenchmarkRunResult,
   BenchmarkSummary,
   Metrics,
+  Persona,
   ThresholdConfig,
   TimerResult,
   TimerStatistics,
@@ -163,7 +164,7 @@ export async function runBenchmarkWithIterations(
 export type MeasurePageResult = {
   metrics: Metrics[];
   title: string;
-  persona: string;
+  persona: Persona;
 };
 
 export async function runPageLoadBenchmark(

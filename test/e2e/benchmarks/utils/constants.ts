@@ -1,5 +1,24 @@
 import type { ThresholdConfig } from './types';
 
+/**
+ * Shared benchmark configuration.
+ * These are the single source of truth consumed by:
+ * - test/e2e/benchmarks/run-benchmark.ts  (PRESETS map)
+ * - development/metamaskbot-build-announce/index.ts  (PR comment builder)
+ * - .github/workflows/run-benchmarks.yml  (CI matrix — must be updated manually)
+ */
+export const BENCHMARK_PLATFORMS = ['chrome', 'firefox'];
+export const BENCHMARK_BUILD_TYPES = ['browserify', 'webpack'];
+export const PAGE_LOAD_PRESETS = ['standardHome', 'powerUserHome'];
+export const USER_ACTION_PRESETS = ['userActions'];
+export const PERFORMANCE_PRESETS = [
+  'performanceOnboardingImport',
+  'performanceOnboardingNew',
+  'performanceAssets',
+  'performanceLogin',
+  'performanceTransaction',
+];
+
 export const DEFAULT_NUM_BROWSER_LOADS = 10;
 export const DEFAULT_NUM_PAGE_LOADS = 10;
 

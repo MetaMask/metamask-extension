@@ -21,7 +21,8 @@ env:
       "performanceOnboardingImport": "yarn test:e2e:benchmark --preset performanceOnboardingImport --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboardingImport.json --retries 2",
       "performanceOnboardingNew": "yarn test:e2e:benchmark --preset performanceOnboardingNew --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboardingNew.json --retries 2",
       "performanceAssets": "yarn test:e2e:benchmark --preset performanceAssets --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceAssets.json --retries 2",
-      "performanceLogin": "yarn test:e2e:benchmark --preset performanceLogin --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceLogin.json --retries 2"
+      "performanceLogin": "yarn test:e2e:benchmark --preset performanceLogin --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceLogin.json --retries 2",
+      "performanceTransaction": "yarn test:e2e:benchmark --preset performanceTransaction --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceTransaction.json --retries 2"
     }
 
 jobs:
@@ -37,6 +38,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # Preset names are defined in test/e2e/benchmarks/utils/constants.ts
+        # and must be kept in sync here manually.
+        #
         # PowerUser + UserActions benchmarks run on all 4 browser/buildType combinations
         browser: [chrome, firefox]
         buildType: [browserify, webpack]
@@ -55,6 +59,9 @@ jobs:
           - browser: chrome
             buildType: browserify
             pageType: performanceLogin
+          - browser: chrome
+            buildType: browserify
+            pageType: performanceTransaction
     name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}

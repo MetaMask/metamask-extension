@@ -31,7 +31,8 @@ yarn test:e2e:benchmark --preset performanceOnboardingImport --out results.json
 | `performanceOnboardingImport` | Import wallet onboarding  | `onboarding-import-wallet.ts`                                    |
 | `performanceOnboardingNew`    | New wallet onboarding     | `onboarding-new-wallet.ts`                                       |
 | `performanceAssets`           | Asset detail page loads   | `asset-details.ts`, `solana-asset-details.ts`                    |
-| `performanceLogin`            | Login & transaction flows | `import-srp-home.ts`, `send-transactions.ts`, `swap.ts`          |
+| `performanceLogin`            | Login & SRP import flow   | `import-srp-home.ts`                                             |
+| `performanceTransaction`      | Send & swap flows         | `send-transactions.ts`, `swap.ts`                                |
 | `pageLoadBenchmark`           | Playwright benchmarks     | `page-load-benchmark.spec.ts`                                    |
 | `all`                         | All benchmarks            | Everything above                                                 |
 
@@ -83,14 +84,13 @@ Thresholds are validated by the benchmark runner after collecting statistics fro
 
 ### 3. Add to a preset (optional)
 
-If your benchmark should run in CI, add its file path to the appropriate preset in `run-benchmark.ts`:
+If your benchmark should run in CI, add its file path to an existing preset in `run-benchmark.ts`.
 
-```typescript
-const CI_PRESETS: Record<string, string[]> = {
-  'my-preset': ['test/e2e/benchmarks/flows/category/my-benchmark.ts'],
-  // ...
-};
-```
+To create a **new** preset, update these locations:
+
+1. `test/e2e/benchmarks/utils/constants.ts` — add the preset name to an existing array (`PERFORMANCE_PRESETS`, `USER_ACTION_PRESETS`, `PAGE_LOAD_PRESETS`) or create a new one
+2. `test/e2e/benchmarks/run-benchmark.ts` — add a `PRESETS` entry mapping the name to benchmark file paths
+3. `.github/workflows/run-benchmarks.yml` — add the preset to the CI matrix
 
 ## Output Format
 
