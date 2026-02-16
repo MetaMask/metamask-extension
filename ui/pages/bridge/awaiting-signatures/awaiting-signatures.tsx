@@ -35,7 +35,11 @@ import {
   getToChain,
 } from '../../../ducks/bridge/selectors';
 import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
+  PREPARE_SWAP_ROUTE,
+} from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -76,6 +80,29 @@ export default function AwaitingSignatures() {
     );
   }, [activeQuote?.quote?.requestId, bridgeHistory, requestIdFromLocation]);
 
+  // Check if we're between approval and bridge steps in a two-step flow
+  const isBetweenApprovalAndBridgeSteps = useMemo(() => {
+    const requestId =
+      activeQuote?.quote?.requestId ?? requestIdFromLocation ?? undefined;
+    if (!requestId) {
+      return false;
+    }
+
+    // Find bridge history item for this requestId
+    const historyItem = Object.values(bridgeHistory).find(
+      (item) => item?.quote?.requestId === requestId,
+    );
+
+    // If history item exists with approvalTxId but bridge hasn't been submitted,
+    // we're between the approval and bridge steps
+    return historyItem?.approvalTxId !== undefined && !hasSubmittedBridgeTx;
+  }, [
+    bridgeHistory,
+    activeQuote?.quote?.requestId,
+    requestIdFromLocation,
+    hasSubmittedBridgeTx,
+  ]);
+
   // Navigate away when transaction completes (success or cancellation)
   useEffect(() => {
     // Success: Transaction is in bridge history
@@ -98,7 +125,7 @@ export default function AwaitingSignatures() {
       requestIdFromLocation &&
       !activeQuote &&
       // Don't navigate if we're between approval and bridge steps in two-step flow
-      (!needsTwoConfirmations || hasSubmittedBridgeTx);
+      !isBetweenApprovalAndBridgeSteps;
 
     if (qrScanWasCancelled) {
       navigate(`${DEFAULT_ROUTE}?tab=activity`, {
@@ -111,7 +138,7 @@ export default function AwaitingSignatures() {
     activeQrCodeScanRequest,
     requestIdFromLocation,
     activeQuote,
-    needsTwoConfirmations,
+    isBetweenApprovalAndBridgeSteps,
     navigate,
   ]);
 
