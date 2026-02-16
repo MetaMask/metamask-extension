@@ -599,14 +599,14 @@ export default function Routes() {
         component: SnapList,
         layout: RootLayout,
         authenticated: true,
-        basicFunctionalityRequired: false,
+        basicFunctionalityFeatureName: 'Snaps',
       }),
       createRouteWithLayout({
         path: `${SNAPS_VIEW_ROUTE}/*`,
         component: SnapView,
         layout: RootLayout,
         authenticated: true,
-        basicFunctionalityRequired: false,
+        basicFunctionalityFeatureName: 'Snaps',
       }),
       createRouteWithLayout({
         path: `${SEND_ROUTE}/:page?`,
