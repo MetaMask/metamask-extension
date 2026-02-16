@@ -8,7 +8,9 @@ import { SnapId } from '@metamask/snaps-sdk';
  * are normally reserved for preinstalled Snaps.
  */
 const FORCE_PREINSTALLED_SNAPS =
-  process.env.FORCE_PREINSTALLED_SNAPS === 'true';
+  process.env.FORCE_PREINSTALLED_SNAPS === 'true' ||
+  // @ts-expect-error: Environment variables are always strings, but this allows for more flexible usage in development environments.
+  process.env.FORCE_PREINSTALLED_SNAPS === true;
 ///: END:ONLY_INCLUDE_IF
 
 export const PREINSTALLED_SNAPS = [
@@ -36,6 +38,7 @@ export function isSnapPreinstalled(snapId: SnapId) {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // For development purposes, allow local Snaps to be treated as preinstalled
   // Snaps if the `FORCE_PREINSTALLED_SNAPS` environment variable is enabled.
+  console.log('yyyy', snapId, FORCE_PREINSTALLED_SNAPS);
   if (FORCE_PREINSTALLED_SNAPS && snapId.startsWith('local:')) {
     return true;
   }
