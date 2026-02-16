@@ -231,7 +231,7 @@ async function main() {
       }
 
       // Timer data: structured logs (existing path, unchanged)
-      Sentry.logger.info(`benchmark.${name}`, {
+      Sentry.logger.info(`{type}.${name}`, {
         ...baseCiAttributes,
         'ci.persona': benchmark.persona || BENCHMARK_PERSONA.STANDARD,
         'ci.testTitle': benchmark.testTitle,
