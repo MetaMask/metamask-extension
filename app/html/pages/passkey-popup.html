@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>MetaMask – Passkey</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        display: flex; align-items: center; justify-content: center;
+        min-height: 100vh; background: #f2f4f6; color: #24272a;
+      }
+      .container { text-align: center; padding: 32px 24px; max-width: 360px; }
+      h2 { font-size: 18px; margin-bottom: 8px; }
+      p  { font-size: 14px; color: #6a737d; margin-bottom: 20px; }
+      button {
+        background: #037dd6; color: #fff; border: none;
+        padding: 12px 32px; border-radius: 8px; font-size: 15px;
+        cursor: pointer;
+      }
+      button:hover { background: #025ea1; }
+      .error { color: #d73a49; font-size: 13px; margin-top: 12px; }
+      .spinner {
+        width: 32px; height: 32px; border: 3px solid #ddd;
+        border-top-color: #037dd6; border-radius: 50%;
+        animation: spin .8s linear infinite; margin: 0 auto 16px;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="spinner" class="spinner" style="display:none"></div>
+      <h2 id="title">Passkey Authentication</h2>
+      <p id="status">Tap the button to continue with your passkey.</p>
+      <button id="retryBtn">Authenticate with Passkey</button>
+      <p id="error" class="error"></p>
+    </div>
+    <script src="./scripts/passkey-popup.js" defer></script>
+  </body>
+</html>

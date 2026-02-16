@@ -15,8 +15,6 @@ export enum OffscreenCommunicationTarget {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   latticeOffscreen = 'lattice-offscreen',
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  passkeyOffscreen = 'passkey-offscreen',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   extension = 'extension-offscreen',
@@ -90,16 +88,6 @@ export enum LedgerAction {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   signTypedData = 'ledger-sign-typed-data',
-}
-
-/**
- * Defines actions intended to be sent to the Passkey Offscreen handler.
- */
-export enum PasskeyAction {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  create = 'passkey-create',
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  sign = 'passkey-sign',
 }
 
 /**

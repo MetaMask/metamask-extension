@@ -221,6 +221,16 @@ function getCopyTargets(
           },
         ]
       : []),
+    {
+      src: `./app/html/pages/passkey-popup.html`,
+      dest: `passkey-popup.html`,
+      pattern: '',
+    },
+    {
+      src: `./app/scripts/passkey-popup.js`,
+      dest: `scripts/passkey-popup.js`,
+      pattern: '',
+    },
     ...(shouldIncludeOcapKernel
       ? [
           {
