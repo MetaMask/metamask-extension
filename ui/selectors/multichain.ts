@@ -21,6 +21,7 @@ import {
   KnownCaipNamespace,
 } from '@metamask/utils';
 import PropTypes from 'prop-types';
+import { createSelector } from 'reselect';
 import {
   MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET,
   MULTICHAIN_PROVIDER_CONFIGS,
