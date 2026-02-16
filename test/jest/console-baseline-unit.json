@@ -993,10 +993,8 @@
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/multichain/global-menu/global-menu.test.tsx": {
-      "Reselect: Identity function warnings": 2,
+    "ui/components/multichain/global-menu-drawer/global-menu-drawer.test.tsx": {
       "Reselect: Input stability warnings": 4,
-      "error: Warning: Function components cannot be": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain/import-account/import-account.test.tsx": {
