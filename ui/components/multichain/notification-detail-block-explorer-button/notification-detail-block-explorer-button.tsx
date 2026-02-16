@@ -49,7 +49,6 @@ export const NotificationDetailBlockExplorerButton = ({
     if (configuredBlockExplorer) {
       return t('notificationItemCheckBlockExplorer');
     }
-    // TODO:: Fix risk of non-matching block explorer name
     if (notificationBlockExplorerName) {
       return t('notificationTransactionSuccessView', [
         notificationBlockExplorerName,
