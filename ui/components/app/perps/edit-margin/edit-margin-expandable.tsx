@@ -461,7 +461,7 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
               size={ButtonSize.Md}
               onClick={handleSaveMargin}
               disabled={confirmDisabled}
-              title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
+              title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
               className={twMerge(
                 'w-full',
                 confirmDisabled && 'opacity-70 cursor-not-allowed',

@@ -210,6 +210,17 @@ describe('TransactionList', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('renders TransactionList component with props hideNetworkFilter correctly', () => {
+    const store = configureStore(defaultState);
+    const { container } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <TransactionList hideNetworkFilter />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
   it('renders TransactionList component with props hideTokenTransactions correctly', () => {
     const defaultState2 = {
       ...defaultState,

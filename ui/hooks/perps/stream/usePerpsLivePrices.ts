@@ -83,10 +83,17 @@ export function usePerpsLivePrices(
           setIsInitialLoading(false);
         }
 
-        // Convert array to record for backward compatibility
+        // Convert array to record; normalize to PriceUpdate (add timestamp/markPrice when missing, e.g. from mock PerpsMarketData)
         const priceRecord: Record<string, PriceUpdate> = {};
         priceUpdates.forEach((update) => {
-          priceRecord[update.symbol] = update;
+          const ts = (update as { timestamp?: number }).timestamp;
+          const mark = (update as { markPrice?: string }).markPrice;
+          priceRecord[update.symbol] = {
+            symbol: update.symbol,
+            price: update.price,
+            timestamp: ts ?? Date.now(),
+            markPrice: mark ?? update.price,
+          };
         });
         setPrices(priceRecord);
       },

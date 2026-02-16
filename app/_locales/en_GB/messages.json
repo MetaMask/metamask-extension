@@ -3852,6 +3852,18 @@
   "memo": {
     "message": "memo"
   },
+  "merklRewardsToastFailed": {
+    "message": "Your mUSD bonus claim failed",
+    "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
+  },
+  "merklRewardsToastInProgress": {
+    "message": "Your mUSD bonus is processing",
+    "description": "Toast message shown when a Merkl reward claim transaction is being processed"
+  },
+  "merklRewardsToastSuccess": {
+    "message": "Your mUSD bonus is here!",
+    "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
+  },
   "message": {
     "message": "Message"
   },
@@ -5222,6 +5234,9 @@
   "perpsAddToFavorites": {
     "message": "Add to favorites"
   },
+  "perpsAsk": {
+    "message": "Ask"
+  },
   "perpsAutoClose": {
     "message": "Auto close"
   },
@@ -5232,8 +5247,11 @@
   "perpsAvailableBalance": {
     "message": "Available balance"
   },
-  "perpsBuy": {
-    "message": "buy"
+  "perpsBid": {
+    "message": "Bid"
+  },
+  "perpsCancelAllOrders": {
+    "message": "Cancel all"
   },
   "perpsClose": {
     "message": "Close"
@@ -5328,6 +5346,12 @@
   "perpsFundingRate": {
     "message": "Funding Rate"
   },
+  "perpsFundingRateTooltip": {
+    "message": "An hourly fee paid between traders to keep prices in line with the market. If the rate is positive, longs pay shorts. If negative, shorts pay longs."
+  },
+  "perpsGeoBlockedTooltip": {
+    "message": "Perpetual trading is not available in your region"
+  },
   "perpsGiveFeedback": {
     "message": "Give us feedback"
   },
@@ -5345,6 +5369,9 @@
   },
   "perpsLimit": {
     "message": "Limit"
+  },
+  "perpsLimitPrice": {
+    "message": "Limit Price"
   },
   "perpsLiquidationDistance": {
     "message": "Liq. distance"
@@ -5383,6 +5410,9 @@
   "perpsMaxRemovable": {
     "message": "Max removable"
   },
+  "perpsMid": {
+    "message": "Mid"
+  },
   "perpsModify": {
     "message": "Modify"
   },
@@ -5401,6 +5431,9 @@
   "perpsOpenInterest": {
     "message": "Open Interest"
   },
+  "perpsOpenInterestTooltip": {
+    "message": "The combined value of all open positions for this perp"
+  },
   "perpsOpenLong": {
     "message": "Open Long $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
@@ -5414,6 +5447,12 @@
   },
   "perpsOpenedLong": {
     "message": "Opened long"
+  },
+  "perpsOraclePrice": {
+    "message": "Oracle Price"
+  },
+  "perpsOraclePriceTooltip": {
+    "message": "The median of external prices reported by validators, used for computing funding rate"
   },
   "perpsOrderAmount": {
     "message": "Order Amount"
@@ -5455,26 +5494,17 @@
   "perpsSeeAllPerps": {
     "message": "See all Perps"
   },
-  "perpsSell": {
-    "message": "sell"
-  },
   "perpsShort": {
     "message": "Short"
   },
   "perpsSize": {
     "message": "Size"
   },
-  "perpsSortFundingRate": {
-    "message": "Funding rate"
-  },
   "perpsSortFundingRateHighToLow": {
     "message": "Funding rate: high to low"
   },
   "perpsSortFundingRateLowToHigh": {
     "message": "Funding rate: low to high"
-  },
-  "perpsSortOpenInterest": {
-    "message": "Open interest"
   },
   "perpsSortOpenInterestHighToLow": {
     "message": "Open interest: high to low"
@@ -5487,9 +5517,6 @@
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "Price change: low to high"
-  },
-  "perpsSortVolume": {
-    "message": "Volume"
   },
   "perpsSortVolumeHighToLow": {
     "message": "Volume: high to low"
@@ -5547,6 +5574,57 @@
   },
   "perpsTrades": {
     "message": "Trades"
+  },
+  "perpsTutorialChooseLeverageDescription": {
+    "message": "Leverage amplifies both gains and losses. With 40x leverage, a 1% price move equals a 40% gain or loss on your margin."
+  },
+  "perpsTutorialChooseLeverageTitle": {
+    "message": "Choose your leverage"
+  },
+  "perpsTutorialCloseAnytimeDescription": {
+    "message": "Exit whenever you want. You'll get back your margin, plus profits or minus losses."
+  },
+  "perpsTutorialCloseAnytimeTitle": {
+    "message": "Close any time"
+  },
+  "perpsTutorialContinue": {
+    "message": "Continue"
+  },
+  "perpsTutorialGoLongShortDescription": {
+    "message": "Pick a token to long or short, then set your order size."
+  },
+  "perpsTutorialGoLongShortSubtitle": {
+    "message": "Go long to profit if the price goes up. Go short to profit if the price goes down."
+  },
+  "perpsTutorialGoLongShortTitle": {
+    "message": "Go long or short on a token"
+  },
+  "perpsTutorialLetsGo": {
+    "message": "Let's go"
+  },
+  "perpsTutorialReadyToTradeDescription": {
+    "message": "Fund your perps account with any token and make your first trade in seconds."
+  },
+  "perpsTutorialReadyToTradeTitle": {
+    "message": "Ready to trade?"
+  },
+  "perpsTutorialSkip": {
+    "message": "Skip"
+  },
+  "perpsTutorialWatchLiquidationDescription": {
+    "message": "You'll lose your entire margin if the token hits your liquidation price. Higher leverage means less room to liquidation."
+  },
+  "perpsTutorialWatchLiquidationTitle": {
+    "message": "Watch out for liquidation"
+  },
+  "perpsTutorialWhatArePerpsDescription": {
+    "message": "MetaMask now supports perpetual futures-aka perps-letting you trade on a token's price movement without buying it."
+  },
+  "perpsTutorialWhatArePerpsSubtitle": {
+    "message": "Here's how it works."
+  },
+  "perpsTutorialWhatArePerpsTitle": {
+    "message": "What are perps?"
   },
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
@@ -6003,8 +6081,8 @@
     "message": "Required"
   },
   "requiredToken": {
-    "description": "Label for the required token row showing the token and amount needed by the transaction",
-    "message": "Required token"
+    "message": "Required token",
+    "description": "Label for the required token row showing the token and amount needed by the transaction"
   },
   "reset": {
     "message": "Reset"

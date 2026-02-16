@@ -24,6 +24,7 @@ import type {
   Order,
   AccountState,
   PerpsMarketData,
+  CandleData,
 } from '@metamask/perps-controller';
 
 /**
@@ -133,6 +134,53 @@ class MockCandleStreamChannel {
 
   clearAll(): void {
     console.log('[MockCandleStreamChannel] Cleared all (no-op in mock)');
+  }
+
+  /**
+   * Subscribe to candle updates.
+   * In mock, no live data is pushed; returns an unsubscribe function.
+   *
+   * @param _params
+   * @param _params.symbol
+   * @param _params.interval
+   * @param _params.duration
+   * @param _params.throttleMs
+   * @param _params.callback
+   * @param _params.onError
+   */
+  subscribe(_params: {
+    symbol: string;
+    interval: string;
+    duration?: string;
+    throttleMs?: number;
+    callback: (data: CandleData) => void;
+    onError?: (err: Error) => void;
+  }): () => void {
+    console.log(
+      '[MockCandleStreamChannel] Subscribed to candles (no-op in mock)',
+    );
+    return () => {
+      console.log('[MockCandleStreamChannel] Unsubscribed from candles');
+    };
+  }
+
+  /**
+   * Fetch historical candles.
+   * In mock, resolves with no data (hook handles empty state).
+   *
+   * @param _symbol
+   * @param _interval
+   * @param _duration
+   */
+  fetchHistoricalCandles(
+    _symbol: string,
+    _interval: string,
+    _duration: string,
+  ): Promise<void> {
+    console.log(
+      '[MockCandleStreamChannel] fetchHistoricalCandles (no-op in mock)',
+    );
+    return Promise.resolve();
   }
 }
 

@@ -20,10 +20,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  getPerpsStreamManager,
-  getPerpsController,
-} from '../../../providers/perps';
+import { getPerpsStreamManager } from '../../../providers/perps';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   usePerpsLivePositions,
@@ -32,7 +29,6 @@ import {
 } from '../../../hooks/perps/stream';
 import { PositionCard } from './position-card';
 import { OrderCard } from './order-card';
-import type { Order } from './types';
 import { PerpsTabControlBar } from './perps-tab-control-bar';
 import { StartTradeCta } from './start-trade-cta';
 import { PerpsRecentActivity } from './perps-recent-activity';
@@ -130,40 +126,6 @@ export const PerpsTabView: React.FC = () => {
   const handleSeeAllPerps = useCallback(() => {
     navigate(PERPS_MARKET_LIST_ROUTE);
   }, [navigate]);
-
-  // Handle canceling a single open order
-  const handleCancelOrder = useCallback(
-    async (order: Order) => {
-      if (!selectedAddress) {
-        return;
-      }
-      try {
-        const controller = await getPerpsController(selectedAddress);
-        await controller.cancelOrder({
-          orderId: order.orderId,
-          symbol: order.symbol,
-        });
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Error canceling order:', error);
-      }
-    },
-    [selectedAddress],
-  );
-
-  // Handle canceling all open orders
-  const handleCancelAllOrders = useCallback(async () => {
-    if (!selectedAddress) {
-      return;
-    }
-    try {
-      const controller = await getPerpsController(selectedAddress);
-      await controller.cancelOrders({ cancelAll: true });
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error canceling all orders:', error);
-    }
-  }, [selectedAddress]);
 
   // Show loading state while initial data is being fetched
   if (isLoading) {

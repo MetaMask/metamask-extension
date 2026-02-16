@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * Mock implementation of PerpsController for UI development
@@ -14,6 +15,14 @@
 import type { Store } from 'redux';
 import type { MetaMaskReduxState } from '../../store/store';
 import { mockPositions } from '../../components/app/perps/mocks';
+import type { OrderParams } from '@metamask/perps-controller';
+import {
+  AccountState,
+  Order,
+  OrderFill,
+  PerpsMarketData,
+  Position,
+} from '@metamask/perps-controller';
 
 /**
  * Mock PerpsController class
@@ -50,13 +59,14 @@ class MockPerpsController {
   }: {
     orderId: string;
     symbol: string;
-  }): Promise<void> {
+  }): Promise<{ success: true } | { success: false; error: string }> {
     console.log(
       `[MockPerpsController] Canceling order ${orderId} for ${symbol}`,
     );
     // In a real implementation, this would call the API
     // For now, we just log it
     await new Promise((resolve) => setTimeout(resolve, 100));
+    return { success: true };
   }
 
   /**
@@ -80,7 +90,7 @@ class MockPerpsController {
   subscribeToPositions({
     callback,
   }: {
-    callback: (positions: unknown[]) => void;
+    callback: (positions: Position[]) => void;
   }) {
     // In the mock, we don't actually subscribe to anything
     // The stream manager will handle providing mock data
@@ -99,10 +109,28 @@ class MockPerpsController {
    * @param options0
    * @param options0.callback
    */
-  subscribeToOrders({ callback }: { callback: (orders: unknown[]) => void }) {
+  subscribeToOrders({ callback }: { callback: (orders: Order[]) => void }) {
     console.log('[MockPerpsController] Subscribed to orders');
     return () => {
       console.log('[MockPerpsController] Unsubscribed from orders');
+    };
+  }
+
+  /**
+   * Subscribe to order fill updates
+   * Returns an unsubscribe function
+   *
+   * @param options0
+   * @param options0.callback
+   */
+  subscribeToOrderFills({
+    callback,
+  }: {
+    callback: (fills: OrderFill[], isSnapshot?: boolean) => void;
+  }) {
+    console.log('[MockPerpsController] Subscribed to order fills');
+    return () => {
+      console.log('[MockPerpsController] Unsubscribed from order fills');
     };
   }
 
@@ -114,7 +142,11 @@ class MockPerpsController {
    * @param options0.callback
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  subscribeToAccount({ callback }: { callback: (account: unknown) => void }) {
+  subscribeToAccount({
+    callback,
+  }: {
+    callback: (account: AccountState) => void;
+  }) {
     console.log('[MockPerpsController] Subscribed to account');
     return () => {
       console.log('[MockPerpsController] Unsubscribed from account');
@@ -139,7 +171,7 @@ class MockPerpsController {
   }: {
     symbols: string[];
     includeMarketData?: boolean;
-    callback: (prices: unknown[]) => void;
+    callback: (prices: PerpsMarketData[]) => void;
     throttleMs?: number;
   }) {
     console.log(
@@ -162,21 +194,27 @@ class MockPerpsController {
    * @param options0.levels
    * @param options0.callback
    * @param options0.throttleMs
+   * @param options0.nSigFigs
+   * @param options0.mantissa
    */
   subscribeToOrderBook({
     symbol,
     levels,
+    nSigFigs,
+    mantissa,
     callback,
     throttleMs,
   }: {
     symbol: string;
     levels: number;
-    callback: (orderBook: unknown) => void;
+    nSigFigs: any;
+    mantissa: any;
+    callback: (orderBook: any) => void;
     throttleMs?: number;
   }) {
     console.log(
       `[MockPerpsController] Subscribed to order book for ${symbol}`,
-      { throttleMs },
+      { levels, nSigFigs, mantissa, throttleMs },
     );
     return () => {
       console.log(
@@ -188,30 +226,11 @@ class MockPerpsController {
   /**
    * Place a new order
    *
-   * @param params
-   * @param params.symbol
-   * @param params.side
-   * @param params.orderType
-   * @param params.size
-   * @param params.price
-   * @param params.reduceOnly
-   * @param params.leverage
-   * @param params.marginMode
-   * @param params.takeProfitPrice
-   * @param params.stopLossPrice
+   * @param params - OrderParams from PerpsController (symbol, isBuy, size, orderType, etc.)
    */
-  async placeOrder(params: {
-    symbol: string;
-    side: 'buy' | 'sell';
-    orderType: 'market' | 'limit';
-    size: string;
-    price?: string;
-    reduceOnly?: boolean;
-    leverage?: number;
-    marginMode?: 'isolated' | 'cross';
-    takeProfitPrice?: string;
-    stopLossPrice?: string;
-  }): Promise<
+  async placeOrder(
+    params: OrderParams,
+  ): Promise<
     { success: true; orderId: string } | { success: false; error: string }
   > {
     console.log('[MockPerpsController] Placing order:', params);
@@ -241,6 +260,26 @@ class MockPerpsController {
   }
 
   /**
+   * Update position margin (add or remove)
+   *
+   * @param params
+   * @param params.symbol - Asset symbol
+   * @param params.amount - Amount to add (positive) or remove (negative)
+   */
+  async updateMargin(params: {
+    symbol: string;
+    amount: string;
+  }): Promise<{ success: true } | { success: false; error: string }> {
+    console.log('[MockPerpsController] Updating margin:', params);
+
+    // Simulate API delay
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Mock success response
+    return { success: true };
+  }
+
+  /**
    * Update position TP/SL (take profit / stop loss)
    *
    * @param params
@@ -262,8 +301,14 @@ class MockPerpsController {
    * Get all positions
    * Returns mock positions from mocks.ts
    *
+   * @param params
+   * @param params.skipCache
    */
-  async getPositions(): Promise<unknown[]> {
+  async getPositions({
+    skipCache,
+  }: {
+    skipCache?: boolean;
+  }): Promise<Position[]> {
     console.log('[MockPerpsController] Getting positions');
     await new Promise((resolve) => setTimeout(resolve, 100));
     return mockPositions;
@@ -286,22 +331,22 @@ class MockPerpsController {
    */
   getActiveProvider() {
     return {
-      async getOrderFills(_params: unknown) {
+      async getOrderFills(_params: any) {
         console.log('[MockPerpsController] Getting order fills');
         // Return empty array - real implementation would fetch from API
         return [];
       },
-      async getOrders(_params: unknown) {
+      async getOrders(_params: any): Promise<Order[]> {
         console.log('[MockPerpsController] Getting orders');
         // Return empty array - real implementation would fetch from API
         return [];
       },
-      async getFunding(_params: unknown) {
+      async getFunding(_params: any) {
         console.log('[MockPerpsController] Getting funding');
         // Return empty array - real implementation would fetch from API
         return [];
       },
-      async getUserHistory(_params: unknown) {
+      async getUserHistory(_params: any) {
         console.log('[MockPerpsController] Getting user history');
         // Return empty array - real implementation would fetch from API
         return [];

@@ -79,7 +79,6 @@ import type {
   CandleStick,
   OrderType,
   OrderParams,
-  Order,
   PriceUpdate,
 } from '@metamask/perps-controller';
 
@@ -268,7 +267,14 @@ const PerpsMarketDetailPage: React.FC = () => {
           callback: (priceUpdates) => {
             const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
             if (update) {
-              setLivePrice(update);
+              const ts = (update as { timestamp?: number }).timestamp;
+              const mark = (update as { markPrice?: string }).markPrice;
+              setLivePrice({
+                symbol: update.symbol,
+                price: update.price,
+                timestamp: ts ?? Date.now(),
+                markPrice: mark ?? update.price,
+              });
             }
           },
           throttleMs: 1000,
@@ -311,6 +317,8 @@ const PerpsMarketDetailPage: React.FC = () => {
         unsubscribe = controller.subscribeToOrderBook({
           symbol: decodedSymbol,
           levels: 1,
+          nSigFigs: 5,
+          mantissa: 2,
           callback: (orderBook) => {
             if (
               orderBook.bids.length > 0 &&
@@ -1131,30 +1139,6 @@ const PerpsMarketDetailPage: React.FC = () => {
   // No-op handler for order cards - orders on detail page are already
   // filtered to current market, so clicking should not navigate anywhere
   const handleOrderClick = useCallback(() => undefined, []);
-
-  // Handle canceling a single open order
-  const handleCancelOrder = useCallback(
-    async (order: Order) => {
-      if (!isEligible || !selectedAddress) {
-        return;
-      }
-      try {
-        const controller = await getPerpsController(selectedAddress);
-        const result = await controller.cancelOrder({
-          orderId: order.orderId,
-          symbol: order.symbol,
-        });
-        if (!result.success) {
-          // eslint-disable-next-line no-console
-          console.error('Failed to cancel order:', result.error);
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Error canceling order:', error);
-      }
-    },
-    [isEligible, selectedAddress],
-  );
 
   // Guard: redirect if perps feature is disabled
   if (!isPerpsEnabled) {
@@ -2059,9 +2043,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                           onClick={handleSaveTPSL}
                           disabled={!isEligible || isTPSLPending}
                           title={
-                            isEligible
-                              ? undefined
-                              : t('perpsGeoBlockedTooltip')
+                            isEligible ? undefined : t('perpsGeoBlockedTooltip')
                           }
                           className={twMerge(
                             'w-full',
@@ -2206,7 +2188,6 @@ const PerpsMarketDetailPage: React.FC = () => {
                     order={order}
                     variant="muted"
                     onClick={handleOrderClick}
-                    onCancel={handleCancelOrder}
                   />
                 ))}
               </Box>

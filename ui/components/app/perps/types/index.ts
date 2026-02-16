@@ -12,3 +12,12 @@ export {
   type PerpsTransactionFilter,
   type TransactionSection,
 } from './transactionHistory';
+
+export type {
+  Order,
+  Position,
+  AccountState,
+  PerpsMarketData,
+  OrderFill,
+  OrderType,
+} from '@metamask/perps-controller';

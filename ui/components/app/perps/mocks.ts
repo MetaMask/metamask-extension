@@ -12,11 +12,11 @@ import {
   PerpsOrderTransactionStatus,
   PerpsOrderTransactionStatusType,
 } from './types/transactionHistory';
+import type { PerpsTransaction } from './types';
 import {
   AccountState,
   Order,
   PerpsMarketData,
-  PerpsTransaction,
   Position,
 } from '@metamask/perps-controller';
 

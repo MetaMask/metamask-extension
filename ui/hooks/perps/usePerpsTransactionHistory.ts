@@ -1,12 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CaipAccountId } from '@metamask/utils';
-import type { PerpsTransaction } from '../../components/app/perps/types';
 import {
   transformFillsToTransactions,
   transformOrdersToTransactions,
   transformFundingToTransactions,
   transformUserHistoryToTransactions,
 } from '../../components/app/perps/utils/transactionTransforms';
+import type {
+  Order,
+  OrderFill,
+  PerpsTransaction,
+} from '../../components/app/perps/types';
 import { usePerpsController } from '../../providers/perps';
 import { useUserHistory } from './useUserHistory';
 import { usePerpsLiveFills } from './stream';
@@ -115,7 +119,7 @@ export function usePerpsTransactionHistory({
       }
 
       // Fetch all transaction data in parallel
-      const [fills, orders, funding] = await Promise.all([
+      const [fillsResult, ordersResult, funding] = await Promise.all([
         provider.getOrderFills({
           accountId,
           aggregateByTime: false,
@@ -128,6 +132,8 @@ export function usePerpsTransactionHistory({
         }),
       ]);
 
+      const fills: OrderFill[] = Array.isArray(fillsResult) ? fillsResult : [];
+      const orders: Order[] = Array.isArray(ordersResult) ? ordersResult : [];
       const orderMap = new Map(orders.map((order) => [order.orderId, order]));
 
       // Attaching detailedOrderType allows us to display the TP/SL pill in the trades history list.

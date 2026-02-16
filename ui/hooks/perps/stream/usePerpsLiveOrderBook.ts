@@ -59,7 +59,7 @@ export type UsePerpsLiveOrderBookReturn = {
 export function usePerpsLiveOrderBook(
   options: UsePerpsLiveOrderBookOptions,
 ): UsePerpsLiveOrderBookReturn {
-  const { symbol, levels, nSigFigs, mantissa, onError } = options;
+  const { symbol, levels, nSigFigs, mantissa } = options;
   const controller = usePerpsController();
   const [orderBook, setOrderBook] = useState<OrderBookData | null>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -79,7 +79,7 @@ export function usePerpsLiveOrderBook(
 
     const unsubscribe = controller.subscribeToOrderBook({
       symbol,
-      levels,
+      levels: levels ?? 10,
       nSigFigs,
       mantissa,
       callback: (data) => {
@@ -89,13 +89,12 @@ export function usePerpsLiveOrderBook(
         }
         setOrderBook(data);
       },
-      onError,
     });
 
     return () => {
       unsubscribe();
     };
-  }, [controller, symbol, levels, nSigFigs, mantissa, onError]);
+  }, [controller, symbol, levels, nSigFigs, mantissa]);
 
   return { orderBook, isInitialLoading };
 }

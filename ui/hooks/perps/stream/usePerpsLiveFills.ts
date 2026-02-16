@@ -65,7 +65,7 @@ export function usePerpsLiveFills(
     hasReceivedFirstUpdate.current = false;
 
     const unsubscribe = controller.subscribeToOrderFills({
-      callback: (newFills) => {
+      callback: (newFills: OrderFill[]) => {
         if (!hasReceivedFirstUpdate.current) {
           hasReceivedFirstUpdate.current = true;
           setIsInitialLoading(false);
