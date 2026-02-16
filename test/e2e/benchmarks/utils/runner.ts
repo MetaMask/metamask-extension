@@ -22,6 +22,7 @@ import type {
   BenchmarkResults,
   BenchmarkRunResult,
   BenchmarkSummary,
+  BenchmarkType,
   Metrics,
   ThresholdConfig,
   TimerStatistics,
@@ -161,6 +162,8 @@ export async function runBenchmarkWithIterations(
       aggregated: aggregateWebVitals(webVitalsRuns),
     };
   }
+  // Extract benchmarkType from the first result (same across all iterations)
+  const benchmarkType = allResults.find((r) => r.benchmarkType)?.benchmarkType;
 
   return {
     name,
@@ -177,6 +180,7 @@ export async function runBenchmarkWithIterations(
       thresholdsPassed: thresholdResult.passed,
     }),
     ...(webVitalsSummary && { webVitals: webVitalsSummary }),
+    benchmarkType,
   };
 }
 
@@ -252,15 +256,17 @@ export async function runPageLoadBenchmark(
 
 export async function runUserActionBenchmark(
   measureFn: () => Promise<UserActionMeasurement>,
+  benchmarkType?: BenchmarkType,
 ): Promise<BenchmarkRunResult> {
   try {
     const { timers, webVitals } = await measureFn();
-    return { timers, webVitals, success: true };
+    return { timers, webVitals, success: true, benchmarkType };
   } catch (error) {
     return {
       timers: [],
       success: false,
       error: error instanceof Error ? error.message : String(error),
+      benchmarkType,
     };
   }
 }

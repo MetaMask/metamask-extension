@@ -32,9 +32,12 @@ export type StatisticalResult = {
   [key: string]: number;
 };
 
+export type BenchmarkType = 'benchmark' | 'performance' | 'userAction';
+
 export type BenchmarkResults = {
   testTitle?: string;
   persona?: string;
+  benchmarkType?: BenchmarkType;
   mean: StatisticalResult;
   min: StatisticalResult;
   max: StatisticalResult;
@@ -105,6 +108,7 @@ export type UserActionResult = {
   testTitle: string;
   persona?: string;
   webVitals?: WebVitalsMetrics;
+  benchmarkType?: BenchmarkType;
   [key: string]: string | number | WebVitalsMetrics | undefined;
 };
 
@@ -127,6 +131,7 @@ export type BenchmarkRunResult = {
   webVitals?: WebVitalsMetrics;
   success: boolean;
   error?: string;
+  benchmarkType?: BenchmarkType;
 };
 
 export type TimerStatistics = {
@@ -196,6 +201,8 @@ export type BenchmarkSummary = {
   thresholdsPassed?: boolean;
   /** Web vitals per-run data and aggregated statistics */
   webVitals?: WebVitalsSummary;
+  /** Benchmark type extracted from the first successful run */
+  benchmarkType?: BenchmarkType;
 };
 
 export type PerformanceBenchmarkResults = {

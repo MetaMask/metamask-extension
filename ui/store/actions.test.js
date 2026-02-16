@@ -35,6 +35,11 @@ const mockUlid = '01JMPHQSH1A4DQAAS6ES7NDJ38';
 
 const middleware = [thunk];
 const defaultState = {
+  appState: {
+    modal: {
+      modalState: {},
+    },
+  },
   metamask: {
     currentLocale: 'test',
     networkConfigurationsByChainId: {
@@ -707,6 +712,74 @@ describe('Actions', () => {
       ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#getLedgerAppConfiguration', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getLedgerAppConfiguration in background', async () => {
+      const mockConfiguration = {
+        arbitraryDataEnabled: 1,
+        erc20ProvisioningNecessary: 0,
+        starkEnabled: 0,
+        starkv2Supported: 0,
+        version: '1.0.0',
+      };
+
+      background.getLedgerAppConfiguration.resolves(mockConfiguration);
+
+      setBackgroundConnection(background);
+
+      const result = await actions.getLedgerAppConfiguration();
+
+      expect(background.getLedgerAppConfiguration.callCount).toStrictEqual(1);
+      expect(result).toStrictEqual(mockConfiguration);
+    });
+  });
+
+  describe('#getAppNameAndVersion', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getAppNameAndVersion in background', async () => {
+      const mockResponse = { appName: 'Ethereum', version: '1.10.4' };
+
+      background.getAppNameAndVersion.resolves(mockResponse);
+
+      setBackgroundConnection(background);
+
+      const result = await actions.getAppNameAndVersion();
+
+      expect(background.getAppNameAndVersion.callCount).toStrictEqual(1);
+      expect(result).toStrictEqual(mockResponse);
+    });
+  });
+
+  describe('#getLedgerPublicKey', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getLedgerPublicKey in background with hdPath', async () => {
+      const mockResponse = {
+        publicKey: '0x1234',
+        address: '0xabcd',
+        chainCode: '0x5678',
+      };
+      const hdPath = "m/44'/60'/0'/0/0";
+
+      background.getLedgerPublicKey.resolves(mockResponse);
+
+      setBackgroundConnection(background);
+
+      const result = await actions.getLedgerPublicKey(hdPath);
+
+      expect(background.getLedgerPublicKey.callCount).toStrictEqual(1);
+      expect(result).toStrictEqual(mockResponse);
     });
   });
 
@@ -3938,27 +4011,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('generateNewMnemonicAndAddToVault', () => {
-    it('calls generateNewMnemonicAndAddToVault in the background', async () => {
-      const store = mockStore();
-      const generateNewMnemonicAndAddToVaultStub = sinon.stub().resolves({});
-      background.getApi.returns({
-        generateNewMnemonicAndAddToVault: generateNewMnemonicAndAddToVaultStub,
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await store.dispatch(actions.generateNewMnemonicAndAddToVault());
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-      expect(generateNewMnemonicAndAddToVaultStub.calledOnceWith()).toBe(true);
-    });
-  });
   describe('importMnemonicToVault', () => {
     it('calls importMnemonicToVault in the background', async () => {
       const store = mockStore();
