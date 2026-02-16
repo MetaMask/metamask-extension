@@ -1,6 +1,6 @@
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures, largeDelayMs } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { mockCronjobSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { Driver } from '../webdriver/driver';
@@ -15,7 +15,7 @@ describe('Test Snap Cronjob', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: mockCronjobSnap,
         title: this.test?.fullTitle(),
       },
