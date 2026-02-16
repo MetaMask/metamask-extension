@@ -35058,12 +35058,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"napi-postinstall@npm:^0.3.0":
-  version: 0.3.4
-  resolution: "napi-postinstall@npm:0.3.4"
-  bin:
-    napi-postinstall: lib/cli.js
-  checksum: 10/5541381508f9e1051ff3518701c7130ebac779abb3a1ffe9391fcc3cab4cc0569b0ba0952357db3f6b12909c3bb508359a7a60261ffd795feebbdab967175832
+"napi-postinstall@file:./development/empty-package::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0
+  resolution: "napi-postinstall@file:./development/empty-package#./development/empty-package::hash=8b3bfb&locator=metamask-crx%40workspace%3A."
+  checksum: 10/97c60a8643083500e539d9423b5725892bf4d48ad48af9ad2ddf6eaf18f3c624bcb8d771b3e1a7d37ffb929b142a17d012c5948e33e954e1ddec3fe10b68a04d
   languageName: node
   linkType: hard
 
