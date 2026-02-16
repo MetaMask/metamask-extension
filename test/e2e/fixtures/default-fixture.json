@@ -205,6 +205,7 @@
       "newPrivacyPolicyToastClickedOrClosed": null,
       "nftsDetectionNoticeDismissed": false,
       "outdatedBrowserWarningLastShown": null,
+      "pendingRedirectRoute": null,
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": true,
