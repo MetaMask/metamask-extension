@@ -434,14 +434,7 @@ import {
 } from './controller-init/claims';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
-import {
-  createMpcKeyring,
-  createMpcJoinData,
-  addMpcCustodian,
-  joinMpcWallet,
-  getMpcCustodians,
-  getMpcCustodianId,
-} from './controllers/mpc';
+import { getMpcApi } from './controllers/mpc';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2687,12 +2680,7 @@ export default class MetamaskController extends EventEmitter {
         appStateController.cancelQrCodeScan.bind(appStateController),
 
       // mpc wallets
-      createMpcKeyring: this.createMpcKeyring.bind(this),
-      createMpcJoinData: this.createMpcJoinData.bind(this),
-      addMpcCustodian: this.addMpcCustodian.bind(this),
-      joinMpcWallet: this.joinMpcWallet.bind(this),
-      getMpcCustodians: this.getMpcCustodians.bind(this),
-      getMpcCustodianId: this.getMpcCustodianId.bind(this),
+      ...getMpcApi(this.keyringController),
 
       // vault management
       submitPassword: this.submitPassword.bind(this),
@@ -5651,71 +5639,6 @@ export default class MetamaskController extends EventEmitter {
 
     const { identities } = this.preferencesController.state;
     return { unlockedAccount, identities, accounts };
-  }
-
-  //
-  // MPC Wallet Management
-  //
-
-  /**
-   * Creates a new MPC keyring.
-   *
-   * @param {string} verifierId - The ID of the verifier.
-   * @returns {Promise<string>} The ID of the newly created keyring.
-   */
-  async createMpcKeyring(verifierId) {
-    return await createMpcKeyring(this.keyringController, verifierId);
-  }
-
-  /**
-   * Generates join data for a new custodian to join an existing MPC wallet.
-   *
-   * @param {string} keyringId - The ID of the MPC keyring.
-   * @returns {Promise<string>} The serialized join data.
-   */
-  async createMpcJoinData(keyringId) {
-    return await createMpcJoinData(this.keyringController, keyringId);
-  }
-
-  /**
-   * Adds a new custodian to an MPC keyring using join data.
-   *
-   * @param {string} keyringId - The ID of the MPC keyring.
-   * @param {string} joinData - The serialized join data from createMpcJoinData.
-   */
-  async addMpcCustodian(keyringId, joinData) {
-    await addMpcCustodian(this.keyringController, keyringId, joinData);
-  }
-
-  /**
-   * Joins an existing MPC wallet using join data from the initiator.
-   *
-   * @param {string} verifierId - The ID of the verifier.
-   * @param {string} joinData - The serialized join data from the initiator.
-   * @returns {Promise<string>} The keyring ID.
-   */
-  async joinMpcWallet(verifierId, joinData) {
-    return await joinMpcWallet(this.keyringController, verifierId, joinData);
-  }
-
-  /**
-   * Gets the list of custodians for an MPC keyring.
-   *
-   * @param {string} keyringId - The ID of the MPC keyring.
-   * @returns {Promise<import('@metamask/eth-mpc-keyring').Custodian[]>} The list of custodians.
-   */
-  async getMpcCustodians(keyringId) {
-    return await getMpcCustodians(this.keyringController, keyringId);
-  }
-
-  /**
-   * Gets the custodian ID for the current user on an MPC keyring.
-   *
-   * @param {string} keyringId - The ID of the MPC keyring.
-   * @returns {Promise<string>} The custodian ID.
-   */
-  async getMpcCustodianId(keyringId) {
-    return await getMpcCustodianId(this.keyringController, keyringId);
   }
 
   //
