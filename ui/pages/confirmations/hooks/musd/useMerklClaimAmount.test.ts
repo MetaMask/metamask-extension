@@ -5,8 +5,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Interface } from '@ethersproject/abi';
-import { DISTRIBUTOR_CLAIM_ABI } from '../../../../../../../components/app/musd/constants';
-import * as merklClient from '../../../../../../../components/app/musd/merkl-client';
+import { DISTRIBUTOR_CLAIM_ABI } from '../../../../components/app/musd/constants';
+import * as merklClient from '../../../../components/app/musd/merkl-client';
 import { useMerklClaimAmount } from './useMerklClaimAmount';
 
 // Mock dependencies
@@ -14,15 +14,15 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(() => 'en-US'),
 }));
 
-jest.mock('../../../../../../../hooks/useFiatFormatter', () => ({
+jest.mock('../../../../hooks/useFiatFormatter', () => ({
   useFiatFormatter: () => (value: number) => `$${value.toFixed(2)}`,
 }));
 
-jest.mock('../../../../../hooks/tokens/useTokenFiatRates', () => ({
+jest.mock('../../hooks/tokens/useTokenFiatRates', () => ({
   useTokenFiatRate: () => 1.0,
 }));
 
-jest.mock('../../../../../../../components/app/musd/merkl-client');
+jest.mock('../../../../components/app/musd/merkl-client');
 
 const MOCK_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 const MOCK_TOKEN_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';

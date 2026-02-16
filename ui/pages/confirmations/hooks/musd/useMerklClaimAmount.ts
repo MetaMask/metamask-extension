@@ -7,17 +7,17 @@ import {
 import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { Interface } from '@ethersproject/abi';
-import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
-import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
-import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
-import { formatAmount } from '../../../../simulation-details/formatAmount';
+import { calcTokenAmount } from '../../../../../shared/lib/transactions-controller-utils';
+import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { formatAmount } from '../../components/simulation-details/formatAmount';
 import {
   DISTRIBUTOR_CLAIM_ABI,
   MERKL_CLAIM_CHAIN_ID,
   MUSD_TOKEN_ADDRESS,
-} from '../../../../../../../components/app/musd/constants';
-import { getClaimedAmountFromContract } from '../../../../../../../components/app/musd/merkl-client';
-import { useTokenFiatRate } from '../../../../../hooks/tokens/useTokenFiatRates';
+} from '../../../../components/app/musd/constants';
+import { getClaimedAmountFromContract } from '../../../../components/app/musd/merkl-client';
+import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 
 /** mUSD has 6 decimals */
 const MUSD_DECIMALS = 6;

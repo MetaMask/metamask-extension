@@ -7,12 +7,12 @@ import {
 } from '@metamask/transaction-controller';
 import { Interface } from '@ethersproject/abi';
 import { ApprovalType } from '@metamask/controller-utils';
-import { getMockConfirmState } from '../../../../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
+import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import {
   DISTRIBUTOR_CLAIM_ABI,
   MERKL_DISTRIBUTOR_ADDRESS,
-} from '../../../../../../components/app/musd/constants';
+} from '../../../../../components/app/musd/constants';
 import { MusdClaimInfo } from './musd-claim-info';
 
 const MOCK_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -29,7 +29,7 @@ function encodeClaimData(amount: string): string {
 }
 
 jest.mock(
-  '../../../../../../components/app/confirm/info/row/alert-row/alert-row',
+  '../../../../../components/app/confirm/info/row/alert-row/alert-row',
   () => ({
     ConfirmInfoAlertRow: ({
       children,
@@ -46,19 +46,19 @@ jest.mock(
   }),
 );
 
-jest.mock('../../../../../../store/actions', () => ({
-  ...jest.requireActual('../../../../../../store/actions'),
+jest.mock('../../../../../store/actions', () => ({
+  ...jest.requireActual('../../../../../store/actions'),
   getGasFeeTimeEstimate: jest.fn().mockResolvedValue({
     lowerTimeBound: 0,
     upperTimeBound: 60000,
   }),
 }));
 
-jest.mock('../../../../../../components/app/musd/merkl-client', () => ({
+jest.mock('../../../../../components/app/musd/merkl-client', () => ({
   getClaimedAmountFromContract: jest.fn().mockResolvedValue(null),
 }));
 
-jest.mock('../../../../hooks/tokens/useTokenFiatRates', () => ({
+jest.mock('../../../hooks/tokens/useTokenFiatRates', () => ({
   useTokenFiatRate: () => 1.0,
   useTokenFiatRates: () => [1.0],
 }));

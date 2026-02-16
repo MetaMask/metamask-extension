@@ -1,15 +1,15 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
-import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
-} from '../../../../../../components/app/confirm/info/row';
-import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
-import { useConfirmContext } from '../../../../context/confirm';
-import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
-import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
-import { NetworkRow } from '../shared/network-row/network-row';
+} from '../../../../../components/app/confirm/info/row';
+import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
+import { useConfirmContext } from '../../../context/confirm';
+import { GasFeesSection } from '../../confirm/info/shared/gas-fees-section/gas-fees-section';
+import { AdvancedDetails } from '../../confirm/info/shared/advanced-details/advanced-details';
+import { NetworkRow } from '../../confirm/info/shared/network-row/network-row';
 import MusdClaimHeading from './musd-claim-heading';
 
 /**

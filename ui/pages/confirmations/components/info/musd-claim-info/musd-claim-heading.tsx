@@ -11,9 +11,9 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { Skeleton } from '../../../../../../components/component-library/skeleton';
-import { useConfirmContext } from '../../../../context/confirm';
-import { useMerklClaimAmount } from './hooks/useMerklClaimAmount';
+import { Skeleton } from '../../../../../components/component-library/skeleton';
+import { useConfirmContext } from '../../../context/confirm';
+import { useMerklClaimAmount } from '../../../hooks/musd/useMerklClaimAmount';
 
 const MUSD_ICON_SRC = './images/musd-icon-no-background-2x.png';
 const MUSD_SYMBOL = 'MUSD';
