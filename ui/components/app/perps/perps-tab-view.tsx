@@ -20,10 +20,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  getPerpsStreamManager,
-  getPerpsController,
-} from '../../../providers/perps';
+import { getPerpsStreamManager } from '../../../providers/perps';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   usePerpsLivePositions,
@@ -32,7 +29,6 @@ import {
 } from '../../../hooks/perps/stream';
 import { PositionCard } from './position-card';
 import { OrderCard } from './order-card';
-import type { Order } from './types';
 import { PerpsTabControlBar } from './perps-tab-control-bar';
 import { StartTradeCta } from './start-trade-cta';
 import { PerpsRecentActivity } from './perps-recent-activity';
