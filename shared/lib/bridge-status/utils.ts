@@ -13,10 +13,10 @@ const isTronSameChainSwap = ({
   return !isCrossChain(srcChainId, destChainId) && isTronChainId(srcChainId);
 };
 
-export function isBridgeLikeSwap(
-  bridgeHistoryItem: BridgeHistoryItem,
-): boolean {
+export function isAsyncSwap(bridgeHistoryItem: BridgeHistoryItem): boolean {
   const { quote } = bridgeHistoryItem;
+  // Async swaps include classic cross-chain bridge swaps and same-chain Tron swaps
+  // that still complete in multiple lifecycle steps.
   return (
     isCrossChain(quote.srcChainId, quote.destChainId) ||
     isTronSameChainSwap(quote)
@@ -28,7 +28,7 @@ export function isBridgeComplete(
 ): boolean {
   const { status } = bridgeHistoryItem;
   return Boolean(
-    isBridgeLikeSwap(bridgeHistoryItem) &&
+    isAsyncSwap(bridgeHistoryItem) &&
       status.srcChain.txHash &&
       status.status === StatusTypes.COMPLETE,
   );
@@ -40,7 +40,7 @@ export function isBridgeFailed(
 ) {
   const { status } = bridgeHistoryItem;
   const bridgeFailed = Boolean(
-    isBridgeLikeSwap(bridgeHistoryItem) && status.status === StatusTypes.FAILED,
+    isAsyncSwap(bridgeHistoryItem) && status.status === StatusTypes.FAILED,
   );
 
   return bridgeFailed || transaction.status === TransactionStatus.Failed;

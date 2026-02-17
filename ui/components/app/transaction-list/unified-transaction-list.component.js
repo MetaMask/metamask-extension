@@ -12,7 +12,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
-import { isBridgeLikeSwap } from '../../../../shared/lib/bridge-status/utils';
+import { isAsyncSwap } from '../../../../shared/lib/bridge-status/utils';
 import {
   nonceSortedCompletedTransactionsSelectorAllChains,
   nonceSortedPendingTransactionsSelectorAllChains,
@@ -792,10 +792,7 @@ export default function UnifiedTransactionList({
     (item, index) => {
       if (item.kind === TransactionKind.NON_EVM) {
         const matchedBridgeHistoryItem = bridgeHistoryItems[item.id];
-        if (
-          matchedBridgeHistoryItem &&
-          isBridgeLikeSwap(matchedBridgeHistoryItem)
-        ) {
+        if (matchedBridgeHistoryItem && isAsyncSwap(matchedBridgeHistoryItem)) {
           return (
             <MultichainBridgeTransactionListItem
               key={`bridge-${item.id}`}
@@ -938,8 +935,7 @@ export default function UnifiedTransactionList({
   return (
     <>
       {selectedTransaction &&
-        (selectedBridgeHistoryItem &&
-        isBridgeLikeSwap(selectedBridgeHistoryItem) ? (
+        (selectedBridgeHistoryItem && isAsyncSwap(selectedBridgeHistoryItem) ? (
           <MultichainBridgeTransactionDetailsModal
             transaction={selectedTransaction}
             bridgeHistoryItem={selectedBridgeHistoryItem}

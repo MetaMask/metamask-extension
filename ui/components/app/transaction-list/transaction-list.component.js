@@ -18,7 +18,7 @@ import {
 } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
-import { isBridgeLikeSwap } from '../../../../shared/lib/bridge-status/utils';
+import { isAsyncSwap } from '../../../../shared/lib/bridge-status/utils';
 import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedCompletedTransactionsSelectorAllChains,
@@ -548,7 +548,7 @@ export default function TransactionList({
       <>
         {selectedTransaction &&
           (selectedBridgeHistoryItem &&
-          isBridgeLikeSwap(selectedBridgeHistoryItem) ? (
+          isAsyncSwap(selectedBridgeHistoryItem) ? (
             <MultichainBridgeTransactionDetailsModal
               transaction={selectedTransaction}
               bridgeHistoryItem={selectedBridgeHistoryItem}
@@ -584,7 +584,7 @@ export default function TransactionList({
 
                         if (
                           matchedBridgeHistoryItem &&
-                          isBridgeLikeSwap(matchedBridgeHistoryItem)
+                          isAsyncSwap(matchedBridgeHistoryItem)
                         ) {
                           return (
                             <MultichainBridgeTransactionListItem

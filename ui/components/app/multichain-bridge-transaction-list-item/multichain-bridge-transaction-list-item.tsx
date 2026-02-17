@@ -6,7 +6,7 @@ import { type Transaction, TransactionStatus } from '@metamask/keyring-api';
 import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
 import {
-  isBridgeLikeSwap,
+  isAsyncSwap,
   isBridgeComplete,
   isBridgeFailed,
 } from '../../../../shared/lib/bridge-status/utils';
@@ -71,11 +71,11 @@ const MultichainBridgeTransactionListItem: React.FC<
 
   const { type, from } = transaction;
   const sourceAsset = from?.[0]?.asset;
-  const isTronSameChainSwap =
+  const isAsyncTronSwap =
     !isCrossChain(
       bridgeHistoryItem.quote.srcChainId,
       bridgeHistoryItem.quote.destChainId,
-    ) && isBridgeLikeSwap(bridgeHistoryItem);
+    ) && isAsyncSwap(bridgeHistoryItem);
 
   const isBridgeFullyComplete = isBridgeComplete(bridgeHistoryItem);
   const isBridgeFailedOrSourceFailed = isBridgeFailed(
@@ -124,7 +124,7 @@ const MultichainBridgeTransactionListItem: React.FC<
     return t('swap');
   })();
   const title = (() => {
-    if (isTronSameChainSwap) {
+    if (isAsyncTronSwap) {
       return swapTitle;
     }
     if (displayChainName) {
@@ -157,7 +157,7 @@ const MultichainBridgeTransactionListItem: React.FC<
         >
           <TransactionIcon
             category={
-              isTronSameChainSwap
+              isAsyncTronSwap
                 ? TransactionGroupCategory.swap
                 : TransactionGroupCategory.bridge
             }
