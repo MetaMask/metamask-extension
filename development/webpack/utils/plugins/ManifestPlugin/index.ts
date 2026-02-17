@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync } from 'node:fs';
-import { extname, join, parse } from 'node:path/posix';
+import { extname, join } from 'node:path/posix';
+import path from 'node:path';
 import {
   sources,
   ProgressPlugin,
@@ -128,6 +129,9 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   apply(compiler: Compiler) {
+    compiler.hooks.entryOption.tap(NAME, () => {
+      this.collectEntrypoints(compiler);
+    });
     compiler.hooks.compilation.tap(NAME, this.hookIntoPipelines.bind(this));
   }
 
@@ -371,59 +375,41 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   private addManifestScript = ({
-    compilation,
+    compiler,
     filename,
     opts,
   }: {
-    compilation: Compilation;
+    compiler: Compiler;
     filename: string;
     opts?: EntryOptions;
   }) => {
     this.selfContainedScripts.add(filename);
-    const options: EntryOptions = {
-      name: filename,
-      chunkLoading: false,
-      filename: extensionToJs(filename),
-      ...opts,
-    };
-    compilation.addEntry(
-      compilation.options.context,
-      EntryPlugin.createDependency(filename, options),
-      options,
-      () => {
-        console.log('Added script entry for', filename);
+    new EntryPlugin(
+      compiler.context,
+      path.resolve(compiler.context, filename),
+      {
+        name: filename,
+        chunkLoading: false,
+        filename: extensionToJs(filename),
+        ...opts,
       },
-    );
+    ).apply(compiler);
   };
 
   private addHtml = ({
-    compilation,
+    compiler,
     filename,
   }: {
-    compilation: Compilation;
+    compiler: Compiler;
     filename: string;
   }) => {
-    const parsedFileName = parse(filename).name;
-    const filePath = join(
-      compilation.options.context,
-      'html',
-      'pages',
-      filename,
-    );
-    compilation.addEntry(
-      compilation.options.context,
-      EntryPlugin.createDependency(parsedFileName, filePath),
-      filePath,
-      () => {
-        console.log('Added html entry for', filename);
-      },
-    );
+    const filePath = join(compiler.context, 'html', 'pages', filename);
+    new EntryPlugin(compiler.context, filePath, filePath).apply(compiler);
   };
 
-  private collectEntrypoints(compilation: Compilation): void {
-    const context = compilation.options.context as string;
+  private collectEntrypoints(compiler: Compiler): void {
     const manifestPath = join(
-      context,
+      compiler.context,
       `manifest/v${this.options.manifest_version}`,
     );
     // Load the base manifest
@@ -433,26 +419,26 @@ export class ManifestPlugin<Z extends boolean> {
     // collect content_scripts (MV2 + MV3)
     for (const contentScript of baseManifest.content_scripts ?? []) {
       for (const script of contentScript.js ?? []) {
-        this.addManifestScript({ compilation, filename: script });
+        this.addManifestScript({ compiler, filename: script });
       }
     }
 
     if (baseManifest.manifest_version === 2) {
       // collect MV2 background scripts
       for (const script of baseManifest.background?.scripts ?? []) {
-        this.addManifestScript({ compilation, filename: script });
+        this.addManifestScript({ compiler, filename: script });
       }
       // collect MV2 web accessible resources
       for (const resource of baseManifest.web_accessible_resources ?? []) {
         if (resource.endsWith('.js')) {
-          this.addManifestScript({ compilation, filename: resource });
+          this.addManifestScript({ compiler, filename: resource });
         }
       }
     } else if (baseManifest.manifest_version === 3) {
       // collect MV3 service worker
       if (baseManifest.background?.service_worker) {
         this.addManifestScript({
-          compilation,
+          compiler,
           filename: baseManifest.background.service_worker,
           opts: { chunkLoading: 'import-scripts' },
         });
@@ -461,13 +447,13 @@ export class ManifestPlugin<Z extends boolean> {
       for (const resource of baseManifest.web_accessible_resources ?? []) {
         for (const filename of resource.resources) {
           if (filename.endsWith('.js')) {
-            this.addManifestScript({ compilation, filename });
+            this.addManifestScript({ compiler, filename });
           }
         }
       }
     }
 
-    const htmlPages = join(context, 'html', 'pages');
+    const htmlPages = join(compiler.context, 'html', 'pages');
 
     for (const filename of readdirSync(htmlPages)) {
       // ignore non-htm/html files
@@ -486,7 +472,7 @@ export class ManifestPlugin<Z extends boolean> {
         ) {
           continue;
         }
-        this.addHtml({ compilation, filename });
+        this.addHtml({ compiler, filename });
       }
     }
   }
@@ -572,7 +558,6 @@ export class ManifestPlugin<Z extends boolean> {
         tapOptions,
         async (assets: Assets) => {
           this.prepareManifests(compilation);
-          this.collectEntrypoints(compilation);
           this.resolveEntrypoints(compilation);
           await this.zipAssets(compilation, assets, options);
           this.moveAssets(
@@ -586,7 +571,6 @@ export class ManifestPlugin<Z extends boolean> {
       const options = this.options as ManifestPluginOptions<false>;
       compilation.hooks.processAssets.tap(tapOptions, (assets: Assets) => {
         this.prepareManifests(compilation);
-        this.collectEntrypoints(compilation);
         this.resolveEntrypoints(compilation);
         this.moveAssets(compilation, assets, options);
       });
