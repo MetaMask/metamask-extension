@@ -6101,7 +6101,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^66.1.1":
+"@metamask/bridge-controller@npm:^66.1.1, @metamask/bridge-controller@npm:^66.2.0":
   version: 66.2.0
   resolution: "@metamask/bridge-controller@npm:66.2.0"
   dependencies:
@@ -6132,13 +6132,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:66.0.2":
-  version: 66.0.2
-  resolution: "@metamask/bridge-status-controller@npm:66.0.2"
+"@metamask/bridge-status-controller@npm:^66.0.0, @metamask/bridge-status-controller@npm:^66.0.2":
+  version: 66.1.0
+  resolution: "@metamask/bridge-status-controller@npm:66.1.0"
   dependencies:
     "@metamask/accounts-controller": "npm:^36.0.0"
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/bridge-controller": "npm:^66.1.1"
+    "@metamask/bridge-controller": "npm:^66.2.0"
     "@metamask/controller-utils": "npm:^11.18.0"
     "@metamask/gas-fee-controller": "npm:^26.0.2"
     "@metamask/network-controller": "npm:^29.0.0"
@@ -6149,7 +6149,7 @@ __metadata:
     "@metamask/utils": "npm:^11.9.0"
     bignumber.js: "npm:^9.1.2"
     uuid: "npm:^8.3.2"
-  checksum: 10/4a1c63fcc0676068e1bc06d4c77a6bf22699663b8dd7dd133e83d98b221e804af1ecc8ef2dad36283f155b0b83d0c24165be37ad0fab750a7ce23cf54bf5417b
+  checksum: 10/05f0cbe787ed0ab0e6b3bd75224a5b8bc15a01a422f4a43a5c1235ffbfaeac05b52cb44d7c2735e750a91ba4757f8c3905af7a7cb1e7c76e30632dc2170c8959
   languageName: node
   linkType: hard
 
