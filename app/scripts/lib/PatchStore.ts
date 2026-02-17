@@ -1,155 +1,68 @@
-import { Json, createProjectLogger } from '@metamask/utils';
-import { Patch } from 'immer';
-import { v4 as uuid } from 'uuid';
-import { uniq } from 'lodash';
-import ComposableObservableStore from './ComposableObservableStore';
-import { sanitizePatches, sanitizeUIState } from './state-utils';
+import type { Patch } from 'immer';
 
-const log = createProjectLogger('patch-store');
-
+/**
+ * Accumulates Immer patches keyed by controller name.
+ *
+ * Designed for microtask-batched state sync: callers add patches as
+ * controller `stateChange` events fire within a synchronous cascade,
+ * then flush once per microtask to produce a single keyed-patch message.
+ *
+ * This class only accumulates — scheduling and transport are the caller's
+ * responsibility.
+ */
 export class PatchStore {
-  private id: string;
-
-  private observableStore: ComposableObservableStore;
-
-  private pendingPatches: Patch[] = [];
-
-  private listener: (request: {
-    controllerKey: string;
-    oldState: Record<string, Json>;
-    newState: Record<string, Json>;
-  }) => void;
-
-  constructor(observableStore: ComposableObservableStore) {
-    this.id = uuid();
-    this.observableStore = observableStore;
-    this.listener = this._onStateChange.bind(this);
-
-    log('Created', this.id);
-  }
+  #pending: Map<string, Patch[]> = new Map();
 
   /**
-   * Start listening for state changes and generating patches.
+   * Add patches for a controller key. If patches already exist for
+   * this key in the current batch, the new patches are appended.
+   *
+   * @param controllerKey - The controller config key (e.g. 'TokensController').
+   * @param patches - Immer patches from a single `stateChange` event.
    */
-  init() {
-    this.observableStore.on('stateChange', this.listener);
-  }
-
-  flushPendingPatches(): Patch[] {
-    const patches = this.pendingPatches;
-
-    this.pendingPatches = [];
-
-    for (const patch of patches) {
-      log('Flushed', patch.path.join('.'), this.id, patch);
-    }
-
-    return patches;
-  }
-
-  destroy() {
-    this.observableStore.removeListener('stateChange', this.listener);
-    log('Destroyed', this.id);
-  }
-
-  private _onStateChange({
-    newState,
-    oldState,
-    patches: eventPatches,
-  }: {
-    controllerKey: string;
-    oldState: Record<string, Json>;
-    newState: Record<string, Json>;
-    patches?: Patch[];
-  }) {
-    let patches = [];
-
-    if (eventPatches) {
-      const normalizedPatches = this._normalizeEventPatches(
-        eventPatches,
-        oldState,
-      );
-
-      patches = sanitizePatches(normalizedPatches ?? []);
-    } else {
-      const sanitizedNewState = sanitizeUIState(newState);
-
-      patches = this._generatePatches(oldState, sanitizedNewState);
-    }
-
-    const isInitialized = Boolean(newState.vault);
-
-    if (isInitialized) {
-      patches.push({
-        op: 'replace',
-        path: ['isInitialized'],
-        value: isInitialized,
-      });
-    }
-
-    if (!patches.length) {
+  add(controllerKey: string, patches: Patch[]): void {
+    if (patches.length === 0) {
       return;
     }
 
-    for (const patch of patches) {
-      const path = patch.path.join('.');
-
-      this.pendingPatches.push(patch);
-
-      log('Added', path, this.id, patch);
+    const existing = this.#pending.get(controllerKey);
+    if (existing) {
+      existing.push(...patches);
+    } else {
+      this.#pending.set(controllerKey, [...patches]);
     }
   }
 
-  private _generatePatches(
-    oldState: Record<string, Json>,
-    newState: Record<string, Json>,
-  ): Patch[] {
-    return Object.keys(newState)
-      .map((key) => {
-        const oldData = oldState[key];
-        const newData = newState[key];
+  /**
+   * Drain all accumulated patches and return them as a keyed record.
+   * Returns `null` if nothing has been accumulated since the last flush.
+   *
+   * @returns Keyed patches or `null` if empty.
+   */
+  flush(): Record<string, Patch[]> | null {
+    if (this.#pending.size === 0) {
+      return null;
+    }
 
-        if (oldData === newData) {
-          return null;
-        }
-
-        return {
-          op: 'replace',
-          path: [key],
-          value: newData,
-        };
-      })
-      .filter(Boolean) as Patch[];
+    const result: Record<string, Patch[]> = {};
+    for (const [key, patches] of this.#pending) {
+      result[key] = patches;
+    }
+    this.#pending.clear();
+    return result;
   }
 
   /**
-   * Normalize patches from a controller.
-   * Converts any root-level patches into multiple property patches
-   * to prevent removing state from other controllers.
-   *
-   * @param eventPatches - Patches from the controller.
-   * @param oldState - The previous state of the controller.
-   * @returns
+   * Whether the accumulator has pending patches.
    */
-  private _normalizeEventPatches(
-    eventPatches: Patch[] | undefined,
-    oldState: Record<string, Json>,
-  ): Patch[] | undefined {
-    return eventPatches?.flatMap((patch) => {
-      if (patch.path.length > 0) {
-        return [patch];
-      }
+  get hasPending(): boolean {
+    return this.#pending.size > 0;
+  }
 
-      const stateProperties = uniq([
-        ...Object.keys(oldState),
-        ...Object.keys(patch.value),
-      ]);
-
-      return stateProperties.map((key) => ({
-        op: key in patch.value ? 'replace' : 'remove',
-        path: [key],
-        ...(key in patch.value ? { value: patch.value[key] } : {}),
-      }));
-    });
+  /**
+   * Discard all accumulated patches without returning them.
+   */
+  destroy(): void {
+    this.#pending.clear();
   }
 }
