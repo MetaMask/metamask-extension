@@ -2550,6 +2550,14 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setWatchEthereumAccountEnabled.bind(
           preferencesController,
         ),
+      setAgentAccountSettings:
+        preferencesController.setAgentAccountSettings.bind(
+          preferencesController,
+        ),
+      getAgentAccountSettings:
+        preferencesController.getAgentAccountSettings.bind(
+          preferencesController,
+        ),
       ///: END:ONLY_INCLUDE_IF
       setUseExternalNameSources:
         preferencesController.setUseExternalNameSources.bind(

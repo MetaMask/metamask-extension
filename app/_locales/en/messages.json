@@ -404,7 +404,163 @@
     "message": "Gas price"
   },
   "advancedPriorityFeeToolTip": {
-    "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
+    "message": "Priority fee (aka "miner tip") goes directly to miners and incentivizes them to prioritize your transaction."
+  },
+  "agentAccount": {
+    "message": "Agent account"
+  },
+  "agentAccountApiKey": {
+    "message": "API Key"
+  },
+  "agentAccountApiKeyPlaceholder": {
+    "message": "Enter your API key"
+  },
+  "agentAccountCopyOutput": {
+    "message": "Copy to clipboard"
+  },
+  "agentAccountCreated": {
+    "message": "Agent account created"
+  },
+  "agentAccountCreatedDescription": {
+    "message": "Your agent delegation has been created. Copy or download the output below to share with your agent."
+  },
+  "agentAccountDescription": {
+    "message": "Create a delegated account for AI agents with restricted permissions"
+  },
+  "agentAccountDownloadOutput": {
+    "message": "Download as .txt"
+  },
+  "agentAccountGeneratePermissions": {
+    "message": "Generate permissions"
+  },
+  "agentAccountGeneratingPermissions": {
+    "message": "Generating permissions..."
+  },
+  "agentAccountLlmModel": {
+    "message": "Model"
+  },
+  "agentAccountLlmProvider": {
+    "message": "LLM Provider"
+  },
+  "agentAccountOutputCopied": {
+    "message": "Agent output copied to clipboard"
+  },
+  "agentAccountPermissionPreview": {
+    "message": "Permission preview"
+  },
+  "agentAccountPermissionPreviewDescription": {
+    "message": "The AI has interpreted your request as the following permissions:"
+  },
+  "agentAccountPermissionPromptLabel": {
+    "message": "Describe what this agent should be able to do"
+  },
+  "agentAccountPermissionPromptPlaceholder": {
+    "message": "e.g., 'Allow spending up to 100 USDC per day on Uniswap'"
+  },
+  "agentAccountPermissionRequestApprove": {
+    "message": "Approve request"
+  },
+  "agentAccountPermissionRequestDeny": {
+    "message": "Deny request"
+  },
+  "agentAccountPermissionRequestModify": {
+    "message": "Modify request"
+  },
+  "agentAccountPermissionRequestPending": {
+    "message": "Pending permission request"
+  },
+  "agentAccountPermissionRequestTitle": {
+    "message": "Agent permission request"
+  },
+  "agentAccountPermissionWarning": {
+    "message": "AI-generated permissions may not perfectly match your intent. Review carefully before signing."
+  },
+  "agentAccountSettings": {
+    "message": "Agent account settings"
+  },
+  "agentAccountSettingsDescription": {
+    "message": "Configure the LLM provider used for generating agent permissions"
+  },
+  "agentAccountSignDelegation": {
+    "message": "Sign delegation"
+  },
+  "agentAccountSignDelegationDescription": {
+    "message": "Sign this delegation to grant the agent the permissions shown above."
+  },
+  "agentAccountPromptRequired": {
+    "message": "Please enter a description of the permissions you want to grant."
+  },
+  "agentAccountConfigureSettings": {
+    "message": "Please configure your LLM settings to use this feature."
+  },
+  "agentAccountLLMError": {
+    "message": "Error calling AI service"
+  },
+  "agentAccountUnexpectedError": {
+    "message": "An unexpected error occurred. Please try again."
+  },
+  "agentAccountNoAccountSelected": {
+    "message": "No account selected. Please select an account first."
+  },
+  "agentAccountCaveatError": {
+    "message": "Error parsing permissions"
+  },
+  "agentAccountPromptDescription": {
+    "message": "Describe what permissions you want to grant to the agent account. Our AI will interpret your request and create appropriate restrictions."
+  },
+  "agentAccountAIWarning": {
+    "message": "Permissions are AI-generated. Always review carefully before signing. The AI may make mistakes in interpretation."
+  },
+  "agentAccountPromptPlaceholder": {
+    "message": "e.g., Allow sending up to 100 USDC to any address, or Allow interacting with Uniswap V3 router only"
+  },
+  "agentAccountGoToSettings": {
+    "message": "Go to Settings"
+  },
+  "agentAccountProcessing": {
+    "message": "Analyzing Permissions..."
+  },
+  "agentAccountProcessingDescription": {
+    "message": "Our AI is interpreting your permission request and determining the appropriate restrictions."
+  },
+  "agentAccountExplanation": {
+    "message": "Permission Summary"
+  },
+  "agentAccountWarnings": {
+    "message": "Warnings"
+  },
+  "agentAccountCaveats": {
+    "message": "Restrictions"
+  },
+  "agentAccountNoCaveats": {
+    "message": "WARNING: No restrictions were generated. This delegation will grant FULL access to your account. Proceed with extreme caution."
+  },
+  "agentAccountEditPrompt": {
+    "message": "Edit Prompt"
+  },
+  "agentAccountConfirmAndSign": {
+    "message": "Confirm & Sign"
+  },
+  "agentAccountSigning": {
+    "message": "Creating Delegation..."
+  },
+  "agentAccountSigningDescription": {
+    "message": "Preparing your delegation. You will be asked to sign shortly."
+  },
+  "agentAccountDelegateAddress": {
+    "message": "Agent Address"
+  },
+  "agentAccountCopyDelegation": {
+    "message": "Copy Delegation"
+  },
+  "agentAccountCopyMarkdown": {
+    "message": "Copy Full Doc"
+  },
+  "agentAccountDownload": {
+    "message": "Download Package"
+  },
+  "agentAccountError": {
+    "message": "Something went wrong"
   },
   "airDropPatternDescription": {
     "message": "The token's on-chain history reveals prior instances of suspicious airdrop activities."
@@ -1599,6 +1755,10 @@
   },
   "create": {
     "message": "Create"
+  },
+  "createAgentAccount": {
+    "message": "Create agent account",
+    "description": "Menu item to create a new delegated account for AI agents with restricted permissions"
   },
   "createMultichainAccountButton": {
     "message": "Create account",

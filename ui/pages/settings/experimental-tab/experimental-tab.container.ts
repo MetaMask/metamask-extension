@@ -5,12 +5,18 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   setAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  setAgentAccountSettings,
+  ///: END:ONLY_INCLUDE_IF
   setFeatureNotificationsEnabled,
   setWatchEthereumAccountEnabled,
 } from '../../../store/actions';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  getAgentAccountSettings,
   ///: END:ONLY_INCLUDE_IF
   getFeatureNotificationsEnabled,
   getIsWatchEthereumAccountEnabled,
@@ -19,6 +25,9 @@ import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
 } from '../../../store/store';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import type { AgentAccountSettings } from '../../../../shared/types/agent-account';
+///: END:ONLY_INCLUDE_IF
 import ExperimentalTab from './experimental-tab.component';
 
 const mapStateToProps = (state: MetaMaskReduxState) => {
@@ -27,6 +36,9 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
     watchAccountEnabled: getIsWatchEthereumAccountEnabled(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: getIsAddSnapAccountEnabled(state),
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    agentAccountSettings: getAgentAccountSettings(state),
     ///: END:ONLY_INCLUDE_IF
     featureNotificationsEnabled,
   };
@@ -39,6 +51,10 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     setAddSnapAccountEnabled: (value: boolean) =>
       setAddSnapAccountEnabled(value),
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    setAgentAccountSettings: (settings: Partial<AgentAccountSettings>) =>
+      setAgentAccountSettings(settings),
     ///: END:ONLY_INCLUDE_IF
     setFeatureNotificationsEnabled: (value: boolean) => {
       return dispatch(setFeatureNotificationsEnabled(value));

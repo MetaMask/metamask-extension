@@ -109,6 +109,8 @@ buildTypes:
       - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
       - GATOR_PERMISSIONS_ENABLED: true
+      # Agent Account feature (LLM-powered delegation creation)
+      - AGENT_ACCOUNT_ENABLED: true
 
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
@@ -417,3 +419,12 @@ env:
 
   # Enable new send implementation
   - SEND_REDESIGN_ENABLED: false
+
+  ###
+  # Agent Account Feature (LLM-powered delegation creation)
+  ###
+  - AGENT_ACCOUNT_ENABLED: false
+  # Default LLM provider API base URL (Anthropic)
+  - ANTHROPIC_API_BASE_URL: 'https://api.anthropic.com'
+  # Default LLM model for permission generation
+  - DEFAULT_AGENT_LLM_MODEL: 'claude-opus-4-5-20250114'

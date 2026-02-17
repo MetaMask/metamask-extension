@@ -164,6 +164,12 @@ export type PreferencesControllerState = Omit<
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
+  agentAccountSettings?: {
+    llmProvider: 'anthropic' | 'openai' | 'custom';
+    apiKey: string;
+    model: string;
+    customBaseUrl?: string;
+  };
   ///: END:ONLY_INCLUDE_IF
 };
 
@@ -271,7 +277,10 @@ export const getDefaultPreferencesControllerState =
     // set to false will be using the static list from contract-metadata
     useTokenDetection: true,
     useTransactionSimulations: true,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     watchEthereumAccountEnabled: false,
+    agentAccountSettings: undefined,
+    ///: END:ONLY_INCLUDE_IF
     referrals: {
       hyperliquid: {},
     },
@@ -514,6 +523,12 @@ const controllerMetadata = {
     anonymous: false,
     usedInUi: true,
   },
+  agentAccountSettings: {
+    includeInStateLogs: false, // Contains API key - do not log
+    persist: true,
+    anonymous: true, // Do not send to Sentry
+    usedInUi: true,
+  },
   referrals: {
     includeInStateLogs: true,
     persist: true,
@@ -715,6 +730,55 @@ export class PreferencesController extends BaseController<
     this.update((state) => {
       state.watchEthereumAccountEnabled = watchEthereumAccountEnabled;
     });
+  }
+
+  /**
+   * Setter for the agent account LLM settings.
+   *
+   * @param settings - Partial settings to update
+   */
+  setAgentAccountSettings(settings: {
+    llmProvider?: 'anthropic' | 'openai' | 'custom';
+    apiKey?: string;
+    model?: string;
+    customBaseUrl?: string;
+  }): void {
+    this.update((state) => {
+      if (!state.agentAccountSettings) {
+        state.agentAccountSettings = {
+          llmProvider: 'anthropic',
+          apiKey: '',
+          model: 'claude-opus-4-5-20250114',
+          customBaseUrl: undefined,
+        };
+      }
+      if (settings.llmProvider !== undefined) {
+        state.agentAccountSettings.llmProvider = settings.llmProvider;
+      }
+      if (settings.apiKey !== undefined) {
+        state.agentAccountSettings.apiKey = settings.apiKey;
+      }
+      if (settings.model !== undefined) {
+        state.agentAccountSettings.model = settings.model;
+      }
+      if (settings.customBaseUrl !== undefined) {
+        state.agentAccountSettings.customBaseUrl = settings.customBaseUrl;
+      }
+    });
+  }
+
+  /**
+   * Getter for the agent account LLM settings.
+   *
+   * @returns The agent account settings or null if not configured
+   */
+  getAgentAccountSettings(): {
+    llmProvider: 'anthropic' | 'openai' | 'custom';
+    apiKey: string;
+    model: string;
+    customBaseUrl?: string;
+  } | null {
+    return this.state.agentAccountSettings || null;
   }
   ///: END:ONLY_INCLUDE_IF
 

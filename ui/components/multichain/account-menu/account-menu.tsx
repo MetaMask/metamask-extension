@@ -71,6 +71,7 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
+import { CreateAgentAccount } from '../agent-account';
 ///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -103,6 +104,8 @@ export const ACTION_MODES = {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // Displays the add account form controls (for watch-only account)
   ADD_WATCH_ONLY: 'add-watch-only',
+  // Displays the create agent account form controls
+  ADD_AGENT: 'add-agent',
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   // Displays the add account form controls (for bitcoin account)
@@ -155,6 +158,8 @@ export const getActionTitle = (
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     case ACTION_MODES.ADD_WATCH_ONLY:
       return t('addAccountFromNetwork', [t('networkNameEthereum')]);
+    case ACTION_MODES.ADD_AGENT:
+      return t('createAgentAccount');
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     case ACTION_MODES.ADD_BITCOIN:
@@ -371,6 +376,15 @@ export const AccountMenu = ({
             />
           </Box>
         ) : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          actionMode === ACTION_MODES.ADD_AGENT ? (
+            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+              <CreateAgentAccount onActionComplete={onActionComplete} />
+            </Box>
+          ) : null
+          ///: END:ONLY_INCLUDE_IF
+        }
         {
           ///: BEGIN:ONLY_INCLUDE_IF(multichain)
           clientType && chainId ? (
@@ -642,6 +656,36 @@ export const AccountMenu = ({
                   </ButtonLink>
                 </Box>
               )
+              ///: END:ONLY_INCLUDE_IF
+            }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              <Box marginTop={4}>
+                <ButtonLink
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.UserCircleAdd}
+                  startIconProps={{ size: IconSize.Md }}
+                  onClick={() => {
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Navigation,
+                      event: MetaMetricsEventName.AccountAddSelected,
+                      properties: {
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        account_type: 'agent',
+                        location: 'Main Menu',
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        hd_entropy_index: hdEntropyIndex,
+                      },
+                    });
+                    setActionMode(ACTION_MODES.ADD_AGENT);
+                  }}
+                  data-testid="multichain-account-menu-popover-add-agent-account"
+                >
+                  {t('createAgentAccount')}
+                </ButtonLink>
+              </Box>
               ///: END:ONLY_INCLUDE_IF
             }
             {manageInstitutionalWallets && (

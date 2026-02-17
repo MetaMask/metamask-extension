@@ -6341,6 +6341,45 @@ export async function setWatchEthereumAccountEnabled(value: boolean) {
   }
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+/**
+ * Sets the agent account LLM settings
+ *
+ * @param settings - Partial settings to update
+ */
+export async function setAgentAccountSettings(settings: {
+  llmProvider?: 'anthropic' | 'openai' | 'custom';
+  apiKey?: string;
+  model?: string;
+  customBaseUrl?: string;
+}): Promise<void> {
+  try {
+    await submitRequestToBackground('setAgentAccountSettings', [settings]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+
+/**
+ * Gets the agent account LLM settings
+ *
+ * @returns The agent account settings
+ */
+export async function getAgentAccountSettings(): Promise<{
+  llmProvider: 'anthropic' | 'openai' | 'custom';
+  apiKey: string;
+  model: string;
+  customBaseUrl?: string;
+} | null> {
+  try {
+    return await submitRequestToBackground('getAgentAccountSettings');
+  } catch (error) {
+    logErrorWithMessage(error);
+    return null;
+  }
+}
+///: END:ONLY_INCLUDE_IF
+
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
   try {

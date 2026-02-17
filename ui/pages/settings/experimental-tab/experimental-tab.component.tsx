@@ -16,8 +16,16 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   Text,
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  Text as FlaskText,
+  TextField,
+  ///: END:ONLY_INCLUDE_IF
   Box,
 } from '../../../components/component-library';
+
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import Dropdown from '../../../components/ui/dropdown';
+///: END:ONLY_INCLUDE_IF
 
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -27,7 +35,18 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   FontWeight,
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  TextColor as FlaskTextColor,
+  TextVariant as FlaskTextVariant,
+  FontWeight as FlaskFontWeight,
+  Display,
+  FlexDirection,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
+
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import type { AgentAccountSettings } from '../../../../shared/types/agent-account';
+///: END:ONLY_INCLUDE_IF
 
 type ExperimentalTabProps = {
   watchAccountEnabled: boolean;
@@ -35,6 +54,10 @@ type ExperimentalTabProps = {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   addSnapAccountEnabled: boolean;
   setAddSnapAccountEnabled: (value: boolean) => void;
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  agentAccountSettings: AgentAccountSettings | null;
+  setAgentAccountSettings: (settings: Partial<AgentAccountSettings>) => void;
   ///: END:ONLY_INCLUDE_IF
   petnamesEnabled: boolean;
   featureNotificationsEnabled: boolean;
@@ -217,6 +240,107 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
       toggleOnLabel: t('on'),
     });
   }
+
+  renderAgentAccountSettings() {
+    const { t } = this.context;
+    const { agentAccountSettings, setAgentAccountSettings } = this.props;
+
+    const currentSettings = agentAccountSettings || {
+      llmProvider: 'anthropic',
+      apiKey: '',
+      model: 'claude-opus-4-5-20250114',
+      customBaseUrl: '',
+    };
+
+    const providerOptions = [
+      { value: 'anthropic', name: 'Anthropic Claude' },
+      { value: 'openai', name: 'OpenAI' },
+      { value: 'custom', name: 'Custom (OpenAI-compatible)' },
+    ];
+
+    return (
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        className="settings-page__content-row"
+      >
+        <FlaskText
+          variant={FlaskTextVariant.headingSm}
+          as="h4"
+          color={FlaskTextColor.textAlternative}
+          marginBottom={2}
+          fontWeight={FlaskFontWeight.Bold}
+        >
+          {t('agentAccountSettings')}
+        </FlaskText>
+        <FlaskText
+          variant={FlaskTextVariant.bodySm}
+          color={FlaskTextColor.textAlternative}
+          marginBottom={4}
+        >
+          {t('agentAccountSettingsDescription')}
+        </FlaskText>
+
+        <div className="settings-page__content-item">
+          <span>{t('agentAccountLlmProvider')}</span>
+        </div>
+        <Dropdown
+          options={providerOptions}
+          selectedOption={currentSettings.llmProvider}
+          onChange={(value: string) =>
+            setAgentAccountSettings({
+              llmProvider: value as 'anthropic' | 'openai' | 'custom',
+            })
+          }
+          data-testid="agent-account-llm-provider"
+        />
+
+        <div className="settings-page__content-item" style={{ marginTop: '16px' }}>
+          <span>{t('agentAccountApiKey')}</span>
+          <div className="settings-page__content-description">
+            {t('agentAccountApiKeyPlaceholder')}
+          </div>
+        </div>
+        <TextField
+          type="password"
+          value={currentSettings.apiKey}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setAgentAccountSettings({ apiKey: e.target.value })
+          }
+          placeholder={t('agentAccountApiKeyPlaceholder')}
+          data-testid="agent-account-api-key"
+        />
+
+        <div className="settings-page__content-item" style={{ marginTop: '16px' }}>
+          <span>{t('agentAccountLlmModel')}</span>
+        </div>
+        <TextField
+          value={currentSettings.model}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setAgentAccountSettings({ model: e.target.value })
+          }
+          placeholder="claude-opus-4-5-20250114"
+          data-testid="agent-account-model"
+        />
+
+        {currentSettings.llmProvider === 'custom' && (
+          <>
+            <div className="settings-page__content-item" style={{ marginTop: '16px' }}>
+              <span>Custom Base URL</span>
+            </div>
+            <TextField
+              value={currentSettings.customBaseUrl || ''}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setAgentAccountSettings({ customBaseUrl: e.target.value })
+              }
+              placeholder="https://api.example.com/v1"
+              data-testid="agent-account-custom-url"
+            />
+          </>
+        )}
+      </Box>
+    );
+  }
   ///: END:ONLY_INCLUDE_IF
 
   render() {
@@ -232,6 +356,11 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
           this.renderWatchAccountToggle()
+          ///: END:ONLY_INCLUDE_IF
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          this.renderAgentAccountSettings()
           ///: END:ONLY_INCLUDE_IF
         }
       </div>

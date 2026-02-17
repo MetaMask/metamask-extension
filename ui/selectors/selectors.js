@@ -3126,6 +3126,18 @@ export function getIsWatchEthereumAccountEnabled(state) {
   return state.metamask.watchEthereumAccountEnabled;
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+/**
+ * Get the agent account LLM settings
+ *
+ * @param {object} state - The Redux state
+ * @returns {object|null} The agent account settings or null
+ */
+export function getAgentAccountSettings(state) {
+  return state.metamask.agentAccountSettings || null;
+}
+///: END:ONLY_INCLUDE_IF
+
 /**
  * Get the state of the `bitcoinSupportEnabled` flag.
  *
