@@ -14,12 +14,15 @@ import {
 } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { AssetsControllerInit } from './assets-controller-init';
 
-jest.mock('../../../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
-  ...jest.requireActual(
-    '../../../../shared/lib/assets-unify-state/remote-feature-flag',
-  ),
-  isAssetsUnifyStateFeatureEnabled: jest.fn(),
-}));
+jest.mock(
+  '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+    ),
+    isAssetsUnifyStateFeatureEnabled: jest.fn(),
+  }),
+);
 
 jest.mock('@metamask/assets-controller', () => ({
   ...jest.requireActual('@metamask/assets-controller'),

@@ -20,26 +20,26 @@ export const isAssetsUnifyStateFeatureEnabled = (
   featureFlag: AssetsUnifyStateFeatureFlag | undefined | null,
   featureVersion: string,
 ): boolean => {
-  if (!featureFlag) {
-    return false;
-  }
+  // if (!featureFlag) {
+  //   return false;
+  // }
 
-  if (!featureFlag.enabled) {
-    return false;
-  }
+  // if (!featureFlag.enabled) {
+  //   return false;
+  // }
 
-  // Check if the feature version matches
-  if (featureFlag.featureVersion !== featureVersion) {
-    return false;
-  }
+  // // Check if the feature version matches
+  // if (featureFlag.featureVersion !== featureVersion) {
+  //   return false;
+  // }
 
-  // Check if the app version meets the minimum required version
-  if (
-    featureFlag.minimumVersion &&
-    !hasMinimumRequiredVersion(featureFlag.minimumVersion)
-  ) {
-    return false;
-  }
+  // // Check if the app version meets the minimum required version
+  // if (
+  //   featureFlag.minimumVersion &&
+  //   !hasMinimumRequiredVersion(featureFlag.minimumVersion)
+  // ) {
+  //   return false;
+  // }
 
   return true;
 };
