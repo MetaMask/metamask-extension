@@ -84,14 +84,6 @@ const postWithCache = async (
   return response;
 };
 
-const getHeaders = (clientId: string, clientVersion?: string) => {
-  return {
-    'X-Client-Id': clientId,
-    ...(clientVersion ? { 'Client-Version': clientVersion } : {}),
-    'Content-Type': 'application/json',
-  };
-};
-
 /**
  * Fetches a list of tokens sorted by balance, popularity and other criteria from the bridge-api
  *
@@ -105,6 +97,7 @@ const getHeaders = (clientId: string, clientVersion?: string) => {
  * @returns A list of sorted tokens
  */
 export const fetchPopularTokens = async ({
+  jwt,
   signal,
   chainIds,
   clientId,
@@ -112,6 +105,7 @@ export const fetchPopularTokens = async ({
   clientVersion,
   assetsWithBalances,
 }: {
+  jwt: string;
   signal: AbortSignal;
   chainIds: CaipChainId[];
   clientId: string;
@@ -140,7 +134,7 @@ export const fetchPopularTokens = async ({
         chainIds,
         includeAssets,
       }),
-      headers: getHeaders(clientId, clientVersion),
+      headers: getClientHeaders(clientId, clientVersion, jwt),
     },
     cacheKey,
   );
@@ -165,6 +159,7 @@ export const fetchPopularTokens = async ({
  * @returns A list of sorted tokens
  */
 export const fetchTokensBySearchQuery = async ({
+  jwt,
   signal,
   chainIds,
   query,
@@ -174,6 +169,7 @@ export const fetchTokensBySearchQuery = async ({
   assetsWithBalances,
   after,
 }: {
+  jwt: string;
   signal: AbortSignal;
   chainIds: CaipChainId[];
   query: string;
@@ -212,7 +208,7 @@ export const fetchTokensBySearchQuery = async ({
         query,
       }),
       signal,
-      headers: getHeaders(clientId, clientVersion),
+      headers: getClientHeaders(clientId, clientVersion, jwt),
     },
     cacheKey,
     after,

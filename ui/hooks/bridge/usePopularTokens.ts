@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { type CaipChainId } from '@metamask/utils';
 import { BridgeClientId } from '@metamask/bridge-controller';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useAsyncResult } from '../useAsync';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { BridgeToken } from '../../ducks/bridge/types';
@@ -10,6 +10,7 @@ import { type BridgeAppState } from '../../ducks/bridge/selectors';
 import { getBridgeAssetsByAssetId } from '../../ducks/bridge/asset-selectors';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 import { fetchPopularTokens } from '../../pages/bridge/utils/tokens';
+import { getBearerToken } from 'ui/store/actions';
 
 /**
  * Returns a sorted token list from the bridge api
@@ -32,6 +33,7 @@ export const usePopularTokens = ({
   assetsToInclude: BridgeToken[];
   accountAddress: string;
 }) => {
+  const dispatch = useDispatch();
   const [accountGroup] = useSelector((state: BridgeAppState) =>
     getAccountGroupsByAddress(state, [accountAddress]),
   );
@@ -45,6 +47,7 @@ export const usePopularTokens = ({
     useAsyncResult(async () => {
       abortControllerRef.current?.abort('Asset balances changed');
       abortControllerRef.current = new AbortController();
+      const jwt = await dispatch(getBearerToken());
       const response = await fetchPopularTokens({
         chainIds: Array.from(chainIds),
         assetsWithBalances: assetsToInclude,
