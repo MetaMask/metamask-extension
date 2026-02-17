@@ -1431,11 +1431,8 @@ export function setupController(
     controller.appStateController.setStorageWriteErrorType(errorType);
   });
 
-  /**
-   * @type {Array<string>} List of controller store keys that have changed since initialization.
-   */
+  const currentState = controller.registry.getPersistedState();
   const changedControllerKeys = [];
-  const currentState = controller.store.getState();
   for (const key of Object.keys(currentState)) {
     const initialControllerState = initState[key] || {};
     const newControllerState = currentState[key];
@@ -1449,13 +1446,10 @@ export function setupController(
     }
     const newControllerStateKeys = Object.keys(newControllerState);
 
-    // if the number of keys has changed, we need to persist the new state
     if (
       newControllerStateKeys.length ===
       Object.keys(initialControllerState).length
     ) {
-      // if any of the controller's own top-level keys have changed
-      // (via reference comparison) we need to persist the new state.
       for (const subKey of newControllerStateKeys) {
         if (newControllerState[subKey] !== initialControllerState[subKey]) {
           changedControllerKeys.push(key);
@@ -1472,38 +1466,46 @@ export function setupController(
       log.info(
         `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
       );
-      // update the new state
       changedControllerKeys.forEach((key) => {
         persistenceManager.update(key, currentState[key]);
       });
-      // then persist it
       safePersist().catch((error) => {
         log.error('Error persisting updated state:', error);
         sentry?.captureException(error);
       });
     }
 
-    controller.store.on(
-      'stateChange',
-      async ({ controllerKey, newState, _oldState, _patches }) => {
-        persistenceManager.update(controllerKey, newState);
+    controller.registry.subscribeAll(
+      'persist',
+      async (controllerKey, state, patches) => {
+        const ctrl = controller.registry.persistConfig[controllerKey];
+        const filteredState = ctrl?.metadata
+          ? deriveStateFromMetadata(state, ctrl.metadata, 'persist')
+          : state;
 
-        // if this key is one of the `backedUpStateKeys` we must always
-        // re-persist all of the other `backedUpStateKeys`, as they must always
-        // stored in the backup DB together.
+        // Only persist if a persisted property actually changed
+        const hasPersistedChange =
+          !ctrl?.metadata ||
+          patches.some((patch) => {
+            if (patch.path.length === 0) {
+              return true;
+            }
+            const prop = patch.path[0];
+            return !ctrl.metadata[prop] || ctrl.metadata[prop].persist;
+          });
+        if (!hasPersistedChange) {
+          return;
+        }
+
+        persistenceManager.update(controllerKey, filteredState);
+
         if (backedUpStateKeys.includes(controllerKey)) {
           backedUpStateKeys.forEach((key) => {
             if (key === controllerKey) {
-              // already updated this one
               return;
             }
-            // Get the state for this backed-up key using messenger.
-            // We filter to only persistent properties using deriveStateFromMetadata
-            // to match what ComposableObservableStore does in stateChange events.
-            // This ensures non-persistent properties (e.g., KeyringController's
-            // isUnlocked, keyrings, encryptionKey) are not written to storage.
-            const controllerConfig = controller.store.config[key];
-            if (!controllerConfig?.metadata) {
+            const backupCtrl = controller.registry.persistConfig[key];
+            if (!backupCtrl?.metadata) {
               throw new Error(
                 `Cannot backup ${key}: controller metadata is required but not found. ` +
                   `All controllers in backedUpStateKeys must extend BaseController and define metadata.`,
@@ -1512,12 +1514,12 @@ export function setupController(
             const fullState = controller.controllerMessenger.call(
               `${key}:getState`,
             );
-            const state = deriveStateFromMetadata(
+            const backupState = deriveStateFromMetadata(
               fullState,
-              controllerConfig.metadata,
+              backupCtrl.metadata,
               'persist',
             );
-            persistenceManager.update(key, state);
+            persistenceManager.update(key, backupState);
           });
         }
         try {
@@ -1533,18 +1535,14 @@ export function setupController(
       log.info(
         `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
       );
-      // persist the new state
       safePersist(currentState).catch((error) => {
         log.error('Error persisting updated controller state:', error);
         sentry?.captureException(error);
       });
     }
-    controller.store.on('update', safePersist);
+    // Legacy non-split persistence
+    controller.registry.subscribeAll('persist', () => safePersist());
   }
-  controller.store.on('error', (error) => {
-    log.error('MetaMask controller.store error:', error);
-    sentry?.captureException(error);
-  });
 
   setupEnsIpfsResolver({
     getCurrentChainId: () =>
@@ -2289,8 +2287,7 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryAppState = function () {
-    const backgroundState = store.memStore.getState();
-    return maskObject(backgroundState, SENTRY_BACKGROUND_STATE);
+    return maskObject(store.registry.getKeyedState('ui'), SENTRY_BACKGROUND_STATE);
   };
 }
 
