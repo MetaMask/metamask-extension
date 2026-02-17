@@ -122,7 +122,7 @@ export const useTokenDisplayInfo = ({
 
   // TODO BIP44 Refactor: type for secondary is wrongly set as number | null, when it is a string | null
   // Just changing it causes a number of errors all over the codebase
-  // When BIP44 flag is enabled and stable, this can be refactored to use the type from the new selector
+  // The BIP44 flag is enabled and stable, so this can be refactored to use the type from the new selector
   const nonEvmSecondary = secondary as unknown as number;
 
   // TODO non-evm assets. this is only the native token

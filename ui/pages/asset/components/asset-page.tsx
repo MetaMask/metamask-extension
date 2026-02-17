@@ -83,8 +83,7 @@ import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 import { TronDailyResources } from './tron-daily-resources';
 
-// TODO BIP44 Refactor: This page needs a significant refactor after BIP44 is enabled to remove confusing branching logic
-// A page representing a native or token asset
+// TODO BIP44 Refactor: BIP-44 has been enabled and is stable, this page needs a significant refactor to remove confusing branching logic
 const AssetPage = ({
   asset,
   optionsButton,
