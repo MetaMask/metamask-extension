@@ -103,6 +103,8 @@ export class ManifestPlugin<Z extends boolean> {
 
   manifests: Map<Browser, Manifest> = new Map();
 
+  private addedScripts: Set<string> = new Set();
+
   private selfContainedScripts: Set<string> = new Set([
     'snow.prod',
     'use-snow',
@@ -386,6 +388,8 @@ export class ManifestPlugin<Z extends boolean> {
     filename: string;
     opts?: EntryOptions;
   }) => {
+    if (this.addedScripts.has(filename)) return;
+    this.addedScripts.add(filename);
     this.selfContainedScripts.add(filename);
     new EntryPlugin(
       compiler.context,
@@ -411,46 +415,40 @@ export class ManifestPlugin<Z extends boolean> {
   };
 
   private collectEntrypoints(compiler: Compiler): void {
-    const manifestPath = join(
-      compiler.context,
-      `manifest/v${this.options.manifest_version}`,
-    );
-    // Load the base manifest
-    const basePath = join(manifestPath, `_base.json`);
-    const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
-
-    // collect content_scripts (MV2 + MV3)
-    for (const contentScript of baseManifest.content_scripts ?? []) {
-      for (const script of contentScript.js ?? []) {
-        this.addManifestScript({ compiler, filename: script });
-      }
-    }
-
-    if (baseManifest.manifest_version === 2) {
-      // collect MV2 background scripts
-      for (const script of baseManifest.background?.scripts ?? []) {
-        this.addManifestScript({ compiler, filename: script });
-      }
-      // collect MV2 web accessible resources
-      for (const resource of baseManifest.web_accessible_resources ?? []) {
-        if (resource.endsWith('.js')) {
-          this.addManifestScript({ compiler, filename: resource });
+    for (const manifest of this.manifests.values()) {
+      // collect content_scripts (MV2 + MV3)
+      for (const contentScript of manifest.content_scripts ?? []) {
+        for (const script of contentScript.js ?? []) {
+          this.addManifestScript({ compiler, filename: script });
         }
       }
-    } else if (baseManifest.manifest_version === 3) {
-      // collect MV3 service worker
-      if (baseManifest.background?.service_worker) {
-        this.addManifestScript({
-          compiler,
-          filename: baseManifest.background.service_worker,
-          opts: { chunkLoading: 'import-scripts' },
-        });
-      }
-      // collect MV3 web accessible resources
-      for (const resource of baseManifest.web_accessible_resources ?? []) {
-        for (const filename of resource.resources) {
-          if (filename.endsWith('.js')) {
-            this.addManifestScript({ compiler, filename });
+
+      if (manifest.manifest_version === 2) {
+        // collect MV2 background scripts
+        for (const script of manifest.background?.scripts ?? []) {
+          this.addManifestScript({ compiler, filename: script });
+        }
+        // collect MV2 web accessible resources
+        for (const resource of manifest.web_accessible_resources ?? []) {
+          if (resource.endsWith('.js')) {
+            this.addManifestScript({ compiler, filename: resource });
+          }
+        }
+      } else if (manifest.manifest_version === 3) {
+        // collect MV3 service worker
+        if (manifest.background?.service_worker) {
+          this.addManifestScript({
+            compiler,
+            filename: manifest.background.service_worker,
+            opts: { chunkLoading: 'import-scripts' },
+          });
+        }
+        // collect MV3 web accessible resources
+        for (const resource of manifest.web_accessible_resources ?? []) {
+          for (const filename of resource.resources) {
+            if (filename.endsWith('.js')) {
+              this.addManifestScript({ compiler, filename });
+            }
           }
         }
       }
@@ -463,14 +461,14 @@ export class ManifestPlugin<Z extends boolean> {
       if (/\.html?$/iu.test(filename)) {
         // ignore background.html for MV3 extensions.
         if (
-          baseManifest.manifest_version === 3 &&
+          this.options.manifest_version === 3 &&
           filename === 'background.html'
         ) {
           continue;
         }
         // ignore offscreen.html for MV2 extensions.
         if (
-          baseManifest.manifest_version === 2 &&
+          this.options.manifest_version === 2 &&
           filename === 'offscreen.html'
         ) {
           continue;
@@ -481,72 +479,65 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   private resolveEntrypoints(compilation: Compilation): void {
-    const context = compilation.options.context as string;
-    const manifestPath = join(
-      context,
-      `manifest/v${this.options.manifest_version}`,
-    );
-    // Load the base manifest
-    const basePath = join(manifestPath, `_base.json`);
-    const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
-
-    // resolve content_scripts (MV2 + MV3)
-    for (const contentScript of baseManifest.content_scripts ?? []) {
-      contentScript.js = contentScript.js?.map((contentScriptPath) => {
-        const contentScriptEntrypoint =
-          compilation.entrypoints.get(contentScriptPath);
-        const contentScriptFile = contentScriptEntrypoint?.getFiles().at(0);
-        return contentScriptFile ?? contentScriptPath;
-      });
-    }
-
-    if (baseManifest.manifest_version === 2) {
-      // resolve MV2 background scripts
-      if (baseManifest.background?.scripts) {
-        baseManifest.background.scripts = baseManifest.background.scripts.map(
-          (scriptPath) => {
-            const scriptEntrypoint = compilation.entrypoints.get(scriptPath);
-            const scriptFile = scriptEntrypoint?.getFiles().at(0);
-            return scriptFile ?? scriptPath;
-          },
-        );
+    for (const manifest of this.manifests.values()) {
+      // resolve content_scripts (MV2 + MV3)
+      for (const contentScript of manifest.content_scripts ?? []) {
+        contentScript.js = contentScript.js?.map((contentScriptPath) => {
+          const contentScriptEntrypoint =
+            compilation.entrypoints.get(contentScriptPath);
+          const contentScriptFile = contentScriptEntrypoint?.getFiles().at(0);
+          return contentScriptFile ?? contentScriptPath;
+        });
       }
-      // resolve MV2 web accessible resources
-      if (baseManifest.web_accessible_resources) {
-        baseManifest.web_accessible_resources =
-          baseManifest.web_accessible_resources.map((resourcePath) => {
-            if (resourcePath.endsWith('.js')) {
-              const resourceEntrypoint =
-                compilation.entrypoints.get(resourcePath);
-              const resourceFile = resourceEntrypoint?.getFiles().at(0);
-              return resourceFile ?? resourcePath;
-            }
-            return resourcePath;
-          });
-      }
-    } else if (baseManifest.manifest_version === 3) {
-      // resolve MV3 service worker
-      if (baseManifest.background?.service_worker) {
-        const serviceWorkerEntrypoint = compilation.entrypoints.get(
-          baseManifest.background.service_worker,
-        );
-        const serviceWorkerFile = serviceWorkerEntrypoint?.getFiles().at(0);
-        if (serviceWorkerFile) {
-          baseManifest.background.service_worker = serviceWorkerFile;
+
+      if (manifest.manifest_version === 2) {
+        // resolve MV2 background scripts
+        if (manifest.background?.scripts) {
+          manifest.background.scripts = manifest.background.scripts.map(
+            (scriptPath) => {
+              const scriptEntrypoint = compilation.entrypoints.get(scriptPath);
+              const scriptFile = scriptEntrypoint?.getFiles().at(0);
+              return scriptFile ?? scriptPath;
+            },
+          );
         }
-      }
-      // resolve MV3 web accessible resources
-      if (baseManifest.web_accessible_resources) {
-        for (const resource of baseManifest.web_accessible_resources) {
-          resource.resources = resource.resources.map((resourcePath) => {
-            if (resourcePath.endsWith('.js')) {
-              const resourceEntrypoint =
-                compilation.entrypoints.get(resourcePath);
-              const resourceFile = resourceEntrypoint?.getFiles().at(0);
-              return resourceFile ?? resourcePath;
-            }
-            return resourcePath;
-          });
+        // resolve MV2 web accessible resources
+        if (manifest.web_accessible_resources) {
+          manifest.web_accessible_resources =
+            manifest.web_accessible_resources.map((resourcePath) => {
+              if (resourcePath.endsWith('.js')) {
+                const resourceEntrypoint =
+                  compilation.entrypoints.get(resourcePath);
+                const resourceFile = resourceEntrypoint?.getFiles().at(0);
+                return resourceFile ?? resourcePath;
+              }
+              return resourcePath;
+            });
+        }
+      } else if (manifest.manifest_version === 3) {
+        // resolve MV3 service worker
+        if (manifest.background?.service_worker) {
+          const serviceWorkerEntrypoint = compilation.entrypoints.get(
+            manifest.background.service_worker,
+          );
+          const serviceWorkerFile = serviceWorkerEntrypoint?.getFiles().at(0);
+          if (serviceWorkerFile) {
+            manifest.background.service_worker = serviceWorkerFile;
+          }
+        }
+        // resolve MV3 web accessible resources
+        if (manifest.web_accessible_resources) {
+          for (const resource of manifest.web_accessible_resources) {
+            resource.resources = resource.resources.map((resourcePath) => {
+              if (resourcePath.endsWith('.js')) {
+                const resourceEntrypoint =
+                  compilation.entrypoints.get(resourcePath);
+                const resourceFile = resourceEntrypoint?.getFiles().at(0);
+                return resourceFile ?? resourcePath;
+              }
+              return resourcePath;
+            });
+          }
         }
       }
     }
