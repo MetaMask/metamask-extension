@@ -127,12 +127,26 @@ describe('Info', () => {
   });
 
   it('throws an error if gator permissions feature is not enabled', () => {
+    // the requested permission type is `native-token-stream`
     jest.mocked(getEnabledAdvancedPermissions).mockReturnValue([]);
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
     expect(() => renderWithConfirmContextProvider(<Info />, mockStore)).toThrow(
-      'Gator permissions feature is not enabled',
+      'Invalid eth_signTypedData_v4 request - Advanced Permission type: native-token-stream not enabled',
+    );
+  });
+
+  it('throws an error if the specific permission type is not enabled', () => {
+    // the requested permission type is `native-token-stream`
+    jest
+      .mocked(getEnabledAdvancedPermissions)
+      .mockReturnValue(['erc20-token-stream']);
+
+    const state = getMockTypedSignPermissionConfirmState();
+    const mockStore = configureMockStore([])(state);
+    expect(() => renderWithConfirmContextProvider(<Info />, mockStore)).toThrow(
+      'Invalid eth_signTypedData_v4 request - Advanced Permission type: native-token-stream not enabled',
     );
   });
 

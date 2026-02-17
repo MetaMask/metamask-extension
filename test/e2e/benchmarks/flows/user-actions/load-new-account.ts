@@ -3,17 +3,18 @@
  * Measures time to create and load a new account
  */
 
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { Driver } from '../../../webdriver/driver';
+import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
 import { runUserActionBenchmark } from '../../utils/runner';
 
 export const testTitle = 'benchmark-user-actions-load-new-account';
-export const persona = 'standard';
+export const persona = BENCHMARK_PERSONA.STANDARD;
 
 export async function run(): Promise<BenchmarkRunResult> {
   return runUserActionBenchmark(async () => {
@@ -21,7 +22,7 @@ export async function run(): Promise<BenchmarkRunResult> {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         disableServerMochaToBackground: true,
         localNodeOptions: {
           accounts: 1,
@@ -45,5 +46,5 @@ export async function run(): Promise<BenchmarkRunResult> {
     );
 
     return [{ id: 'load_new_account', duration: loadingTimes }];
-  });
+  }, BENCHMARK_TYPE.USER_ACTION);
 }

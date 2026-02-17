@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   CANCEL_TYPES,
   PAYMENT_TYPES,
@@ -19,7 +19,12 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { getUserSubscriptions } from '../../selectors/subscription';
+import { addHexPrefix } from 'ethereumjs-util';
+import { type GasFeeEstimates } from '@metamask/gas-fee-controller';
+import {
+  getShieldSubscriptionError,
+  getUserSubscriptions,
+} from '../../selectors/subscription';
 import {
   addTransaction,
   cancelSubscription,
@@ -32,6 +37,7 @@ import {
   getSubscriptionsEligibilities,
   setDefaultSubscriptionPaymentOptions,
   setLastUsedSubscriptionPaymentDetails,
+  setShieldSubscriptionError,
   startSubscriptionWithCard,
   unCancelSubscription,
   updateSubscriptionCardPaymentMethod,
@@ -49,7 +55,12 @@ import {
   getSubscriptionPaymentData,
 } from '../../../shared/lib/shield';
 import { generateERC20ApprovalData } from '../../pages/confirmations/send-utils/send.utils';
-import { decimalToHex } from '../../../shared/modules/conversion.utils';
+import {
+  decimalToHex,
+  decGWEIToHexWEI,
+} from '../../../shared/modules/conversion.utils';
+import { GasEstimateTypes } from '../../../shared/constants/gas';
+import { useGasFeeEstimates } from '../useGasFeeEstimates';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
@@ -72,7 +83,9 @@ import {
   getShieldMarketingUtmParamsForMetrics,
   getUserBalanceCategory,
   isNonUISubscriptionError,
+  SHIELD_ERROR,
 } from '../../../shared/modules/shield';
+import { useI18nContext } from '../useI18nContext';
 import { openWindow } from '../../helpers/utils/window';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
@@ -365,6 +378,37 @@ export const useSubscriptionCryptoApprovalTransaction = (
     getNetworkConfigurationsByChainId,
   );
 
+  // Get networkClientId for the selected token's chain
+  const networkClientId = useMemo(() => {
+    if (!selectedToken?.chainId) {
+      return undefined;
+    }
+    const networkConfiguration =
+      networkConfigurationsByChainId[selectedToken.chainId as Hex];
+    return networkConfiguration?.rpcEndpoints[
+      networkConfiguration.defaultRpcEndpointIndex ?? 0
+    ]?.networkClientId;
+  }, [networkConfigurationsByChainId, selectedToken?.chainId]);
+
+  // Get gas fee estimates for optimized gas sponsorship
+  // Use ref to avoid recreating handler callback on every gas estimate poll (~12s)
+  const { gasFeeEstimates, gasEstimateType } = useGasFeeEstimates(
+    networkClientId,
+    Boolean(networkClientId),
+  ) as unknown as { gasFeeEstimates: GasFeeEstimates; gasEstimateType: string };
+
+  const gasFeeEstimatesRef = useRef<{
+    estimates: GasFeeEstimates | undefined;
+    type: string | undefined;
+  }>({ estimates: gasFeeEstimates, type: gasEstimateType });
+
+  useEffect(() => {
+    gasFeeEstimatesRef.current = {
+      estimates: gasFeeEstimates,
+      type: gasEstimateType,
+    };
+  }, [gasFeeEstimates, gasEstimateType]);
+
   const hasPendingApprovals =
     useSelector(getUnapprovedConfirmations).length > 0;
   const [shieldTransactionDispatched, setShieldTransactionDispatched] =
@@ -387,12 +431,9 @@ export const useSubscriptionCryptoApprovalTransaction = (
       throw new Error('No token selected');
     }
 
-    const networkConfiguration =
-      networkConfigurationsByChainId[selectedToken.chainId as Hex];
-    const networkClientId =
-      networkConfiguration?.rpcEndpoints[
-        networkConfiguration.defaultRpcEndpointIndex ?? 0
-      ]?.networkClientId;
+    if (!networkClientId) {
+      throw new Error('Network client ID not found');
+    }
 
     const spenderAddress = subscriptionPricing?.paymentMethods
       ?.find((method) => method.type === PAYMENT_TYPES.byCrypto)
@@ -410,9 +451,36 @@ export const useSubscriptionCryptoApprovalTransaction = (
       data: approvalData,
     };
     transactionParams.gas = await estimateGas(transactionParams);
+
+    // By default the transaction controller uses suggestedGasFees.medium.
+    // Subscription approvals may be gas-sponsored, so we optimize with
+    // min(2 × low, medium) to reduce the cost of sponsorship.
+    const currentGasFeeEstimates = gasFeeEstimatesRef.current.estimates;
+    const currentGasEstimateType = gasFeeEstimatesRef.current.type;
+
+    if (
+      currentGasEstimateType === GasEstimateTypes.feeMarket &&
+      currentGasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas &&
+      currentGasFeeEstimates?.medium?.suggestedMaxPriorityFeePerGas
+    ) {
+      const lowPriority = Number(
+        currentGasFeeEstimates.low.suggestedMaxPriorityFeePerGas,
+      );
+      const mediumPriority = Number(
+        currentGasFeeEstimates.medium.suggestedMaxPriorityFeePerGas,
+      );
+
+      if (!Number.isNaN(lowPriority) && !Number.isNaN(mediumPriority)) {
+        const priorityFee = Math.min(lowPriority * 2, mediumPriority);
+        transactionParams.maxPriorityFeePerGas = addHexPrefix(
+          decGWEIToHexWEI(priorityFee),
+        ) as Hex;
+      }
+    }
+
     const transactionOptions = {
       type: TransactionType.shieldSubscriptionApprove,
-      networkClientId: networkClientId as string,
+      networkClientId,
     };
     await addTransaction(transactionParams, transactionOptions);
     setShieldTransactionDispatched(true);
@@ -420,7 +488,7 @@ export const useSubscriptionCryptoApprovalTransaction = (
     setShieldTransactionDispatched,
     subscriptionPricing,
     evmInternalAccount,
-    networkConfigurationsByChainId,
+    networkClientId,
     selectedToken,
   ]);
 
@@ -830,7 +898,7 @@ export const useShieldRewards = (): {
       getRewardsHasAccountOptedIn(caipAccountId),
     );
     return optinStatus;
-  }, [caipAccountId]);
+  }, [caipAccountId, dispatch]);
 
   const {
     value: pointsValue,
@@ -844,35 +912,40 @@ export const useShieldRewards = (): {
       return { monthly: null, yearly: null };
     }
 
-    const [monthlyPointsData, yearlyPointsData] = await Promise.all([
-      dispatch(
-        estimateRewardsPoints({
-          activityType: 'SHIELD',
-          account: caipAccountId,
-          activityContext: {
-            shieldContext: {
-              recurringInterval: 'month',
+    try {
+      const [monthlyPointsData, yearlyPointsData] = await Promise.all([
+        dispatch(
+          estimateRewardsPoints({
+            activityType: 'SHIELD',
+            account: caipAccountId,
+            activityContext: {
+              shieldContext: {
+                recurringInterval: 'month',
+              },
             },
-          },
-        }),
-      ),
-      dispatch(
-        estimateRewardsPoints({
-          activityType: 'SHIELD',
-          account: caipAccountId,
-          activityContext: {
-            shieldContext: {
-              recurringInterval: 'year',
+          }),
+        ),
+        dispatch(
+          estimateRewardsPoints({
+            activityType: 'SHIELD',
+            account: caipAccountId,
+            activityContext: {
+              shieldContext: {
+                recurringInterval: 'year',
+              },
             },
-          },
-        }),
-      ),
-    ]);
+          }),
+        ),
+      ]);
 
-    return {
-      monthly: monthlyPointsData?.pointsEstimate ?? null,
-      yearly: yearlyPointsData?.pointsEstimate ?? null,
-    };
+      return {
+        monthly: monthlyPointsData?.pointsEstimate ?? null,
+        yearly: yearlyPointsData?.pointsEstimate ?? null,
+      };
+    } catch {
+      // Points estimation may fail if no active rewards season - return null values gracefully
+      return { monthly: null, yearly: null };
+    }
   }, [dispatch, caipAccountId]);
 
   const {
@@ -880,17 +953,32 @@ export const useShieldRewards = (): {
     pending: seasonPending,
     error: seasonError,
   } = useAsyncResult<boolean>(async () => {
-    const seasonMetadata = await dispatch(getRewardsSeasonMetadata('current'));
+    try {
+      const seasonMetadata = await dispatch(
+        getRewardsSeasonMetadata('current'),
+      );
 
-    if (!seasonMetadata) {
-      return false;
+      if (!seasonMetadata) {
+        return false;
+      }
+
+      const currentTimestamp = Date.now();
+      return (
+        currentTimestamp >= seasonMetadata.startDate &&
+        currentTimestamp <= seasonMetadata.endDate
+      );
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        // if the error is because the current season metadata is not found, return false
+        error.message.includes(
+          'No valid season metadata could be found for type',
+        )
+      ) {
+        return false;
+      }
+      throw error;
     }
-
-    const currentTimestamp = Date.now();
-    return (
-      currentTimestamp >= seasonMetadata.startDate &&
-      currentTimestamp <= seasonMetadata.endDate
-    );
   }, [dispatch]);
 
   // if there is an error, return null values for points and season so it will not block the UI
@@ -920,5 +1008,63 @@ export const useShieldRewards = (): {
     pointsYearly: pointsValue?.yearly ?? null,
     isRewardsSeason: isRewardsSeason ?? false,
     hasAccountOptedIn: hasAccountOptedInResultValue ?? false,
+  };
+};
+
+/**
+ * Hook to manage shield subscription errors from background processing.
+ * Reads the error from Redux state, converts it to an Error object for use in
+ * API error handling, provides a translated error message for known errors,
+ * and clears the error on unmount.
+ *
+ * @returns An object with `shieldSubscriptionApiError` (Error or null) and
+ * `getSubscriptionErrorMessage` (returns translated message for known errors).
+ */
+export const useSubscriptionError = (): {
+  shieldSubscriptionApiError: Error | null;
+  getSubscriptionErrorMessage: (
+    error: Error | null | undefined,
+  ) => string | undefined;
+} => {
+  const t = useI18nContext();
+  const shieldSubscriptionError = useSelector(getShieldSubscriptionError);
+
+  // Keep a ref so the unmount-only cleanup can read the latest value
+  const shieldSubscriptionErrorRef = useRef(shieldSubscriptionError);
+  shieldSubscriptionErrorRef.current = shieldSubscriptionError;
+
+  // Clear shield subscription error when unmounting
+  useEffect(() => {
+    return () => {
+      if (shieldSubscriptionErrorRef.current) {
+        setShieldSubscriptionError(null);
+      }
+    };
+  }, []);
+
+  const shieldSubscriptionApiError = useMemo(() => {
+    if (shieldSubscriptionError) {
+      return new Error(shieldSubscriptionError.message);
+    }
+    return null;
+  }, [shieldSubscriptionError]);
+
+  const getSubscriptionErrorMessage = useCallback(
+    (error: Error | null | undefined): string | undefined => {
+      if (
+        error?.message
+          .toLowerCase()
+          .includes(SHIELD_ERROR.payerAddressAlreadyUsed)
+      ) {
+        return t('shieldErrorPayerAddressAlreadyUsed');
+      }
+      return undefined;
+    },
+    [t],
+  );
+
+  return {
+    shieldSubscriptionApiError,
+    getSubscriptionErrorMessage,
   };
 };
