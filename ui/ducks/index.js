@@ -16,7 +16,6 @@ import smartAccountsReducer from './smart-accounts/smart-accounts';
 import rewardsReducer from './rewards';
 import { musdReducer } from './musd';
 import { perpsTutorialReducer } from './perps';
-import { musdReducer } from './musd';
 
 export default combineReducers({
   [AlertTypes.invalidCustomNetwork]: invalidCustomNetwork,
@@ -37,5 +36,4 @@ export default combineReducers({
   rewards: rewardsReducer,
   musd: musdReducer,
   perpsTutorial: perpsTutorialReducer,
-  musd: musdReducer,
 });
