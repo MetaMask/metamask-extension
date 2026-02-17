@@ -38,7 +38,7 @@ export function getSwcLoader(
             refresh:
               __HMR_READY__ &&
               swcConfig.isDevelopment &&
-              Boolean(swcConfig.args.watch),
+              swcConfig.args.watch,
           },
           optimizer: {
             globals: {
