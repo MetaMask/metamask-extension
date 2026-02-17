@@ -53,5 +53,5 @@ export async function run(): Promise<BenchmarkRunResult> {
       timers: [{ id: 'load_new_account', duration: loadingTimes }],
       webVitals,
     };
-  }, BENCHMARK_TYPE.USER_ACTION));
+  }, BENCHMARK_TYPE.USER_ACTION);
 }
