@@ -4215,3 +4215,134 @@ describe('getIsDefiPositionsEnabled', () => {
     );
   });
 });
+
+describe('getShowUpdateModal', () => {
+  const now = 1000000000000;
+  const twentyFiveHoursMs = 25 * 60 * 60 * 1000;
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(now);
+    global.platform = {
+      getVersion: jest.fn().mockReturnValue('9.0.0'),
+    };
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    delete global.platform;
+  });
+
+  it('returns false when there is no pending extension version', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: null,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+
+  it('returns false when pending version is not greater than current version', () => {
+    global.platform.getVersion.mockReturnValue('11.0.0');
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '11.0.0',
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+
+  it('returns false when current version is not below minimum (no modal even with newer update)', () => {
+    global.platform.getVersion.mockReturnValue('11.0.0');
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '12.0.0',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+
+  it('returns false when not enough time passed since last dismissal', () => {
+    const oneHourAgo = now - 60 * 60 * 1000;
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '12.0.0',
+        updateModalLastDismissedAt: oneHourAgo,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+
+  it('returns false when not enough time passed since last update', () => {
+    const oneHourAgo = now - 60 * 60 * 1000;
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '12.0.0',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: oneHourAgo,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+
+  it('returns true when newer update exists, current version is below minimum, and cooldowns have passed', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '12.0.0',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(true);
+  });
+
+  it('returns true when cooldowns are exceeded (dismissed and updated more than 24h ago)', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '12.0.0',
+        updateModalLastDismissedAt: now - twentyFiveHoursMs,
+        lastUpdatedAt: now - twentyFiveHoursMs,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(true);
+  });
+
+  it('returns false when platform getVersion is missing (no current version)', () => {
+    global.platform.getVersion.mockReturnValue(undefined);
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '12.0.0',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+});
