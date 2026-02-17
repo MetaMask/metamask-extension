@@ -1,5 +1,6 @@
 import { Hex } from '@metamask/utils';
 import { IsAtomicBatchSupportedResultEntry } from '@metamask/transaction-controller';
+import { FeatureFlags, RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 
 /**
  * Checks if EIP-7702 is supported for a specific chain based on atomic batch support results.
@@ -50,4 +51,37 @@ export function checkEip7702Support(
       ? (atomicBatchChainSupport?.delegationAddress ?? null)
       : null,
   };
+}
+
+// Feature flag definitions from @metamask/transaction-controller
+const EIP7702_FEATURE_FLAG = 'confirmations_eip_7702';
+
+type TransactionControllerPartialFeatureFlags = {
+  /** Feature flags to support EIP-7702 / type-4 transactions. */
+  [EIP7702_FEATURE_FLAG]?: {
+    /**
+     * All contracts that support EIP-7702 batch transactions.
+     * Keyed by chain ID.
+     * First entry in each array is the contract that standard EOAs will be upgraded to.
+     */
+    contracts?: Record<
+      Hex,
+      {
+        /** Address of the smart contract. */
+        address: Hex;
+
+        /** Signature to verify the contract is authentic. */
+        signature: Hex;
+      }[]
+    >;
+
+    /** Chains enabled for EIP-7702 batch transactions. */
+    supportedChains?: Hex[];
+  };
+};
+
+export function getEip7702SupportedChains({remoteFeatureFlags}: RemoteFeatureFlagControllerState): Hex[] {
+  const eip7702FeatureFlags = remoteFeatureFlags as TransactionControllerPartialFeatureFlags | undefined;
+
+  return eip7702FeatureFlags?.[EIP7702_FEATURE_FLAG]?.supportedChains ?? [];
 }
