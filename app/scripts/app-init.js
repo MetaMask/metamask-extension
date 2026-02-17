@@ -3,11 +3,11 @@
 // We don't usually `import` files into `app-init.js` because we need to load
 // "chunks" via `importScripts`; but in this case `ExtensionLazyListener` is so
 // small we won't ever have a problem with these two files being "split".
-import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
 import {
   APP_INIT_LIVENESS_METHOD,
   APP_INIT_LIVENESS_PING_METHOD,
-} from '../../shared/constants/background-liveness-check';
+} from '../../shared/constants/ui-initialization';
+import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
 
 const { chrome } = globalThis;
 

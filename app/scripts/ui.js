@@ -29,11 +29,12 @@ import { StreamProvider } from '@metamask/providers';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
 import { ExtensionPortStream } from 'extension-port-stream';
-import launchMetaMaskUi, {
+import {
+  launchMetamaskUi,
   CriticalStartupErrorHandler,
   EXTENDED_BACKGROUND_CONNECTION_TIMEOUT,
   connectToBackground,
-  displayCriticalError,
+  displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
@@ -47,7 +48,7 @@ import {
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
-import { APP_INIT_LIVENESS_PING_METHOD } from '../../shared/constants/background-liveness-check';
+import { APP_INIT_LIVENESS_PING_METHOD } from '../../shared/constants/ui-initialization';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -168,11 +169,12 @@ async function start() {
     }
   }
 
-  async function handleStartUISync() {
+  async function handleStartUISync(initialState) {
     endBackgroundConnectTrace({
       backgroundConnectTimedOut: false,
       startUiSyncMs: performance.now() - uiStartupStartTime,
     });
+    criticalErrorHandler.startUiSyncReceived();
 
     // this means we've received a message from the background, and so
     // background startup has succeed, so we don't need to listen for error
@@ -191,6 +193,7 @@ async function start() {
       backgroundConnection,
       windowType,
       traceContext,
+      initialState,
     );
 
     if (isManifestV3) {
@@ -289,13 +292,20 @@ async function loadPhishingWarningPage() {
 }
 
 async function initializeUiWithTab(
-  tab,
-  connectionStream,
+  activeTab,
+  backgroundConnection,
   windowType,
   traceContext,
+  initialState,
 ) {
   try {
-    const store = await initializeUi(tab, connectionStream, traceContext);
+    const store = await launchMetamaskUi({
+      activeTab,
+      container,
+      backgroundConnection,
+      traceContext,
+      initialState,
+    });
 
     endTrace({ name: TraceName.UIStartup });
 
@@ -310,7 +320,7 @@ async function initializeUiWithTab(
       global.platform.openExtensionInBrowser();
     }
   } catch (error) {
-    await displayCriticalError(
+    await displayCriticalErrorMessage(
       container,
       CriticalErrorTranslationKey.TroubleStarting,
       error,
@@ -361,15 +371,6 @@ async function queryCurrentActiveTab(windowType) {
   }
 
   return { id, title, origin, protocol, url };
-}
-
-async function initializeUi(activeTab, backgroundConnection, traceContext) {
-  return await launchMetaMaskUi({
-    activeTab,
-    container,
-    backgroundConnection,
-    traceContext,
-  });
 }
 
 /**

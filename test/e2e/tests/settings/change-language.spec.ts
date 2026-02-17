@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import GeneralSettings from '../../page-objects/pages/settings/general-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -29,7 +29,7 @@ const selectors = {
   waterTextDansk: `[placeholder="${da.search.message}"]`,
   headerTextDansk: { text: da.settings.message, tag: 'h3' },
   buttonTextDansk: {
-    css: '[data-testid="auto-lockout-button"]',
+    testId: 'auto-lockout-button',
     text: da.save.message,
   },
   dialogTextDeutsch: { text: de.invalidAddress.message, tag: 'p' },
@@ -41,7 +41,7 @@ describe('Settings - general tab', function (this: Suite) {
   it('validate the change language functionality', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -79,7 +79,7 @@ describe('Settings - general tab', function (this: Suite) {
   it('validate "Dansk" language on page navigation', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -135,7 +135,7 @@ describe('Settings - general tab', function (this: Suite) {
   it('validate "Deutsch" language on error messages', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -179,7 +179,7 @@ describe('Settings - general tab', function (this: Suite) {
   it('validate "मानक हिन्दी" language on tooltips', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -215,7 +215,7 @@ describe('Settings - general tab', function (this: Suite) {
   it('validate "العربية" language change on page indent', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

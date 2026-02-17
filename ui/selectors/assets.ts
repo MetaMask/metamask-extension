@@ -254,6 +254,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
             tokensWithBalance.push({
               ...token,
               address: token.address as CaipAssetType,
+              assetId: token.assetId as CaipAssetType | undefined,
               balance,
               tokenFiatAmount,
               chainId: chainId as CaipChainId,

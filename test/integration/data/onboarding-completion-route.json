@@ -293,7 +293,6 @@
       "sortCallback": "stringNumeric"
     }
   },
-  "preventPollingOnNetworkRestart": false,
   "previousAppVersion": "",
   "previousMigrationVersion": 0,
   "providerConfig": {
@@ -325,11 +324,11 @@
   "selectedNetworkClientId": "sepolia",
   "shieldEndingToastLastClickedOrClosed": null,
   "shieldPausedToastLastClickedOrClosed": null,
+  "shieldSubscriptionError": null,
   "showAccountBanner": true,
   "showBetaHeader": false,
   "showNetworkBanner": true,
   "showPermissionsTour": true,
-  "showStorageErrorToast": false,
   "showTestnetMessageInDropdown": true,
   "signatureSecurityAlertResponses": {},
   "slides": [],
@@ -388,6 +387,7 @@
   },
   "snapsAddSnapAccountModalDismissed": false,
   "storageMetadata": [],
+  "storageWriteErrorType": null,
   "subjectMetadata": {
     "npm:@metamask/message-signing-snap": {
       "subjectType": "snap",

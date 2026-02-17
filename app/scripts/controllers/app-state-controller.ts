@@ -46,6 +46,7 @@ import {
   AccountOverviewTabKey,
   CarouselSlide,
   NetworkConnectionBanner,
+  StorageWriteErrorType,
 } from '../../../shared/constants/app-state';
 import type {
   ThrottledOrigins,
@@ -61,6 +62,8 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../../shared/types';
+import { ShieldSubscriptionError } from '../../../shared/modules/shield';
+import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -141,6 +144,7 @@ export type AppStateControllerState = {
   slides: CarouselSlide[];
   snapsInstallPrivacyWarningShown?: boolean;
   surveyLinkLastClickedOrClosed: number | null;
+  shieldSubscriptionError: ShieldSubscriptionError | null;
   shieldEndingToastLastClickedOrClosed: number | null;
   shieldPausedToastLastClickedOrClosed: number | null;
   termsOfUseLastAgreed?: number;
@@ -156,6 +160,7 @@ export type AppStateControllerState = {
   dappSwapComparisonData?: {
     [uniqueId: string]: DappSwapComparisonData;
   };
+  deferredDeepLink?: DeferredDeepLink;
 
   /**
    * The properties for the Shield subscription metrics.
@@ -169,10 +174,11 @@ export type AppStateControllerState = {
   isWalletResetInProgress: boolean;
 
   /**
-   * Whether to show the storage error toast.
-   * This is set to true when set operations fail (storage.local or IndexedDB).
+   * The type of storage write error that occurred, or null if no error.
+   * When not null, indicates the storage error toast should be shown.
+   * Used to show specific error messages (e.g., disk space vs general error).
    */
-  showStorageErrorToast: boolean;
+  storageWriteErrorType: StorageWriteErrorType | null;
 };
 
 const controllerName = 'AppStateController';
@@ -205,6 +211,11 @@ export type AppStateControllerSetPendingShieldCohortAction = {
   handler: AppStateController['setPendingShieldCohort'];
 };
 
+export type AppStateControllerSetShieldSubscriptionErrorAction = {
+  type: 'AppStateController:setShieldSubscriptionError';
+  handler: AppStateController['setShieldSubscriptionError'];
+};
+
 /**
  * Actions exposed by the {@link AppStateController}.
  */
@@ -213,7 +224,8 @@ export type AppStateControllerActions =
   | AppStateControllerGetUnlockPromiseAction
   | AppStateControllerRequestQrCodeScanAction
   | AppStateControllerSetCanTrackWalletFundsObtainedAction
-  | AppStateControllerSetPendingShieldCohortAction;
+  | AppStateControllerSetPendingShieldCohortAction
+  | AppStateControllerSetShieldSubscriptionErrorAction;
 
 /**
  * Actions that this controller is allowed to call.
@@ -322,6 +334,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   showTestnetMessageInDropdown: true,
   slides: [],
   surveyLinkLastClickedOrClosed: null,
+  shieldSubscriptionError: null,
   shieldEndingToastLastClickedOrClosed: null,
   shieldPausedToastLastClickedOrClosed: null,
   throttledOrigins: {},
@@ -334,7 +347,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
   dappSwapComparisonData: {},
-  showStorageErrorToast: false,
+  storageWriteErrorType: null,
   ...getInitialStateOverrides(),
 });
 
@@ -630,6 +643,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  shieldSubscriptionError: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   shieldEndingToastLastClickedOrClosed: {
     includeInStateLogs: true,
     persist: true,
@@ -686,7 +705,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   },
   pendingShieldCohort: {
     includeInStateLogs: true,
-    persist: false,
+    persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
@@ -720,10 +739,16 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
-  showStorageErrorToast: {
+  storageWriteErrorType: {
     includeInStateLogs: true,
     persist: false,
     includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  deferredDeepLink: {
+    includeInStateLogs: false,
+    persist: true,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
 };
@@ -811,6 +836,11 @@ export class AppStateController extends BaseController<
     this.messenger.registerActionHandler(
       'AppStateController:setPendingShieldCohort',
       this.setPendingShieldCohort.bind(this),
+    );
+
+    this.messenger.registerActionHandler(
+      'AppStateController:setShieldSubscriptionError',
+      this.setShieldSubscriptionError.bind(this),
     );
 
     this.#approvalRequestId = null;
@@ -957,14 +987,28 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Sets whether to show the storage error toast.
+   * Sets a generic shield API error.
+   * When set to a non-null object, a toast is shown on the homepage with the error.
+   * Setting to null clears/dismisses the error.
+   *
+   * @param error - The error object with message and optional code, or null to clear
+   */
+  setShieldSubscriptionError(error: ShieldSubscriptionError | null): void {
+    this.update((state) => {
+      state.shieldSubscriptionError = error;
+    });
+  }
+
+  /**
+   * Sets the storage write error type, which controls whether to show the storage error toast.
+   * When errorType is not null, the toast will be shown with the appropriate message.
    * This is called when set operations fail (storage.local or IndexedDB).
    *
-   * @param show - Whether to show the toast
+   * @param errorType - The type of storage write error, or null to hide the toast
    */
-  setShowStorageErrorToast(show: boolean): void {
+  setStorageWriteErrorType(errorType: StorageWriteErrorType | null): void {
     this.update((state) => {
-      state.showStorageErrorToast = show;
+      state.storageWriteErrorType = errorType;
     });
   }
 
@@ -1746,5 +1790,25 @@ export class AppStateController extends BaseController<
     uniqueId: string,
   ): DappSwapComparisonData | undefined {
     return this.state.dappSwapComparisonData?.[uniqueId] ?? undefined;
+  }
+
+  /**
+   * Updates state with deferred deep link data.
+   *
+   * @param deferredDeepLink - Deferred deep link data.
+   */
+  setDeferredDeepLink(deferredDeepLink: DeferredDeepLink): void {
+    this.update((state) => {
+      state.deferredDeepLink = deferredDeepLink;
+    });
+  }
+
+  /**
+   * Removes deferred deep link data.
+   */
+  removeDeferredDeepLink(): void {
+    this.update((state) => {
+      state.deferredDeepLink = undefined;
+    });
   }
 }

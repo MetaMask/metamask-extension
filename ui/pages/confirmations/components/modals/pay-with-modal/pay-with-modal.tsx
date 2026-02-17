@@ -7,6 +7,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../../../components/component-library';
+import { ScrollContainer } from '../../../../../contexts/scroll-container';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { getAvailableTokens } from '../../../utils/transaction-pay';
@@ -55,18 +56,25 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose}>
+    <Modal isOpen={isOpen} onClose={handleClose} isClosedOnOutsideClick={false}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={handleClose}>
           {t('payWithModalTitle')}
         </ModalHeader>
-        <Asset
-          includeNoBalance
-          hideNfts
-          tokenFilter={tokenFilter}
-          onAssetSelect={handleTokenSelect}
-        />
+        <ScrollContainer
+          style={{
+            flex: 1,
+            overflow: 'auto',
+          }}
+        >
+          <Asset
+            includeNoBalance
+            hideNfts
+            tokenFilter={tokenFilter}
+            onAssetSelect={handleTokenSelect}
+          />
+        </ScrollContainer>
       </ModalContent>
     </Modal>
   );

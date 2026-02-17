@@ -1,10 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
+  formatChainIdToCaip,
   getQuotesReceivedProperties,
+  isCrossChain,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import { isHardwareWallet } from '../../../../shared/modules/selectors';
+import { captureException } from '../../../../shared/lib/sentry';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -13,14 +17,15 @@ import {
 } from '../../../helpers/constants/routes';
 import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
-import { isHardwareWallet } from '../../../../shared/modules/selectors';
 import {
   getBridgeQuotes,
   getFromAccount,
+  getFromTokenBalanceInUsd,
   getIsStxEnabled,
   getWarningLabels,
 } from '../../../ducks/bridge/selectors';
-import { captureException } from '../../../../shared/lib/sentry';
+import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
+import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
 const APPROVAL_TX_ERROR = 'Approve transaction failed';
@@ -36,13 +41,14 @@ export const isApprovalTxError = (error: unknown): boolean => {
 };
 
 const isHardwareWalletUserRejection = (error: unknown): boolean => {
+  if (isUserRejectedHardwareWalletError(error)) {
+    return true;
+  }
+
   const errorMessage = (error as Error).message?.toLowerCase() ?? '';
+
   return (
-    // Ledger rejection
-    (errorMessage.includes('ledger') &&
-      (errorMessage.includes('rejected') ||
-        errorMessage.includes('denied') ||
-        errorMessage.includes('error while signing'))) ||
+    // These will be removed when adapters are made for the hardware wallets error management.
     // Trezor rejection
     (errorMessage.includes('trezor') &&
       (errorMessage.includes('cancelled') ||
@@ -65,6 +71,8 @@ export default function useSubmitBridgeTransaction() {
   const fromAccount = useSelector(getFromAccount);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
   const warnings = useSelector(getWarningLabels);
+  const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
+  const enableMissingNetwork = useEnableMissingNetwork();
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
@@ -74,6 +82,19 @@ export default function useSubmitBridgeTransaction() {
         'Failed to submit bridge transaction: No selected account',
       );
     }
+
+    // If bridging, enable All Networks view so the user can see their bridging activity
+    if (
+      isCrossChain(
+        quoteResponse.quote.srcChainId,
+        quoteResponse.quote.destChainId,
+      )
+    ) {
+      enableMissingNetwork(
+        formatChainIdToCaip(quoteResponse.quote.destChainId),
+      );
+    }
+
     if (hardwareWalletUsed) {
       navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
     }
@@ -95,6 +116,7 @@ export default function useSubmitBridgeTransaction() {
               warnings,
               true,
               recommendedQuote,
+              fromTokenBalanceInUsd,
             ),
           ),
         );
@@ -114,6 +136,7 @@ export default function useSubmitBridgeTransaction() {
             warnings,
             true,
             recommendedQuote,
+            fromTokenBalanceInUsd,
           ),
         ),
       );

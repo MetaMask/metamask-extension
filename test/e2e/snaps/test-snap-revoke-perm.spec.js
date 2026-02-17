@@ -47,10 +47,6 @@ describe('Test Snap revoke permission', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.waitForSelector({
-          text: 'Connect',
-          tag: 'button',
-        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -103,10 +99,6 @@ describe('Test Snap revoke permission', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // wait for and click Connect
-        await driver.clickElement({
-          text: 'Account 1',
-        });
-
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -189,12 +181,6 @@ describe('Test Snap revoke permission', function () {
 
         // switch to metamask dialog
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // BUG #38447 - When connecting account with Snap on BIP44 no account is preselected in the UI
-        // This click should be removed after the fix.
-        await driver.clickElement({
-          text: 'Account 1',
-        });
 
         await driver.clickElement({
           text: 'Connect',

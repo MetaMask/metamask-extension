@@ -210,7 +210,6 @@ describe('metaRPCClientFactory', () => {
     await expect(requestPromise).resolves.toStrictEqual('ok');
     jest.useRealTimers();
   });
-
   it('should fail all pending actions with a DisconnectError when the stream ends', (done) => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);

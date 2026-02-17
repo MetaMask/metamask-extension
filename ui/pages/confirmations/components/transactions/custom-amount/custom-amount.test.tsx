@@ -36,7 +36,7 @@ describe('CustomAmount', () => {
 
     renderWithProvider(<CustomAmount amountFiat="123.45" />, store);
 
-    expect(screen.getByText('123.45')).toBeInTheDocument();
+    expect(screen.getByTestId('custom-amount-input')).toHaveValue('123.45');
   });
 
   it('renders fiat symbol for specified currency', () => {
@@ -85,7 +85,7 @@ describe('CustomAmount', () => {
 
     renderWithProvider(<CustomAmount amountFiat="123.45" />, store);
 
-    expect(screen.getByText('123.45')).toBeInTheDocument();
+    expect(screen.getByTestId('custom-amount-input')).toHaveValue('123.45');
   });
 
   it('renders amount when quotes are loading but not max amount', () => {
@@ -96,7 +96,7 @@ describe('CustomAmount', () => {
 
     renderWithProvider(<CustomAmount amountFiat="123.45" />, store);
 
-    expect(screen.getByText('123.45')).toBeInTheDocument();
+    expect(screen.getByTestId('custom-amount-input')).toHaveValue('123.45');
   });
 
   it('renders with error color when hasAlert is true', () => {

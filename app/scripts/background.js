@@ -28,7 +28,7 @@ import {
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
-import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/background-liveness-check';
+import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/ui-initialization';
 import {
   REJECT_NOTIFICATION_CLOSE,
   REJECT_NOTIFICATION_CLOSE_SIG,
@@ -43,6 +43,7 @@ import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
 } from '../../shared/constants/offscreen-communication';
+import { captureException } from '../../shared/lib/sentry';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
@@ -51,6 +52,7 @@ import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
+import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
 import {
   CorruptionHandler,
   hasVault,
@@ -78,6 +80,7 @@ import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
   getPlatform,
+  initInstallType,
   isWebOrigin,
   shouldEmitDappViewedEvent,
 } from './lib/util';
@@ -159,6 +162,29 @@ log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
 const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+
+/**
+ * Parses port connection info for routing decisions.
+ * Determines if the port is from the MetaMask UI (popup, notification, fullscreen)
+ * vs a contentscript injected into a regular web page.
+ *
+ * @param {browser.Runtime.Port} port - The port to parse.
+ * @returns {{ processName: string, senderUrl: URL | null, isMetaMaskUIPort: boolean }} Parsed port info.
+ */
+function parsePortInfo(port) {
+  const processName = port.name;
+  const senderUrl = port.sender?.url ? new URL(port.sender.url) : null;
+
+  let isMetaMaskUIPort;
+  if (isFirefox) {
+    isMetaMaskUIPort = Boolean(metamaskInternalProcessHash[processName]);
+  } else {
+    isMetaMaskUIPort =
+      senderUrl?.origin === `chrome-extension://${browser.runtime.id}`;
+  }
+
+  return { processName, senderUrl, isMetaMaskUIPort };
+}
 
 let openPopupCount = 0;
 let notificationIsOpen = false;
@@ -510,11 +536,18 @@ const corruptionHandler = new CorruptionHandler();
  * @param {browser.Runtime.Port} port - The port provided by a new context.
  */
 const handleOnConnect = async (port) => {
-  if (
-    inTest &&
-    getManifestFlags().testing?.simulateUnresponsiveBackground === true
-  ) {
-    return;
+  if (inTest) {
+    const simulatedDelay =
+      getManifestFlags().testing?.simulateDelayedBackgroundResponse;
+    if (simulatedDelay === true) {
+      return;
+    } else if (typeof simulatedDelay === 'number') {
+      await new Promise((resolve) => setTimeout(resolve, simulatedDelay));
+    } else if (simulatedDelay !== undefined) {
+      log.error(
+        `Unrecognized value for 'simulateDelayedBackgroundResponse': '${simulatedDelay}'`,
+      );
+    }
   }
 
   try {
@@ -545,52 +578,60 @@ const handleOnConnect = async (port) => {
   } catch (error) {
     sentry?.captureException(error);
 
-    // if we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
-    // restore from a backup, if we have one.
-    if (isStateCorruptionError(error)) {
-      await corruptionHandler.handleStateCorruptionError({
-        port,
-        error,
-        database: persistenceManager,
-        repairCallback: async (backup) => {
-          // we are going to reinitialize the background script, so we need to
-          // reset the initialization promises. this is gross since it is
-          // possible the original references could have been passed to other
-          // functions, and we can't update those references from here.
-          // right now, that isn't the case though.
-          setGlobalInitializers();
+    // Only handle errors for MetaMask UI connections (popup, notification, fullscreen),
+    // not for contentscripts injected into regular web pages.
+    // Contentscripts can't display error screens and would create hanging promises.
+    if (parsePortInfo(port).isMetaMaskUIPort) {
+      // If we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
+      // restore from a backup, if we have one.
+      if (isStateCorruptionError(error)) {
+        await corruptionHandler.handleStateCorruptionError({
+          port,
+          error,
+          database: persistenceManager,
+          repairCallback: async (backup) => {
+            // we are going to reinitialize the background script, so we need to
+            // reset the initialization promises. this is gross since it is
+            // possible the original references could have been passed to other
+            // functions, and we can't update those references from here.
+            // right now, that isn't the case though.
+            setGlobalInitializers();
 
-          if (hasVault(backup)) {
-            await initBackground(backup);
-            controller.onboardingController.setFirstTimeFlowType(
-              FirstTimeFlowType.restore,
-            );
-          } else {
-            // if we don't have a backup we need to make sure we clear the state
-            // from the database, and then reinitialize the background script
-            // with the first time state.
-            await persistenceManager.reset();
-            await initBackground(null);
-          }
-        },
-      });
-    } else {
-      const errorLike = isObject(error)
-        ? {
-            message: error.message ?? 'Unknown error',
-            name: error.name ?? 'UnknownError',
-            stack: error.stack,
-          }
-        : {
-            message: String(error),
-            name: 'UnknownError',
-            stack: '',
-          };
-      // general errors
-      tryPostMessage(port, DISPLAY_GENERAL_STARTUP_ERROR, {
-        error: errorLike,
-        currentLocale: controller?.preferencesController?.state?.currentLocale,
-      });
+            if (hasVault(backup)) {
+              await initBackground(backup);
+              controller.onboardingController.setFirstTimeFlowType(
+                FirstTimeFlowType.restore,
+              );
+            } else {
+              // if we don't have a backup we need to make sure we clear the state
+              // from the database, and then reinitialize the background script
+              // with the first time state.
+              await persistenceManager.reset();
+              await initBackground(null);
+            }
+          },
+        });
+      } else {
+        // General errors
+        const errorLike = isObject(error)
+          ? {
+              message: error.message ?? 'Unknown error',
+              name: error.name ?? 'UnknownError',
+              stack: error.stack,
+              // Preserve sentryTags for searchable/filterable fields in Sentry UI
+              ...(error.sentryTags && { sentryTags: error.sentryTags }),
+            }
+          : {
+              message: String(error),
+              name: 'UnknownError',
+              stack: '',
+            };
+        tryPostMessage(port, DISPLAY_GENERAL_STARTUP_ERROR, {
+          error: errorLike,
+          currentLocale:
+            controller?.preferencesController?.state?.currentLocale,
+        });
+      }
     }
   }
 };
@@ -672,6 +713,10 @@ function saveTimestamp() {
  * @returns {Promise} Setup complete.
  */
 async function initialize(backup) {
+  // Initialize install type early so it's cached for MetaMetrics user traits
+  // This is fire-and-forget - we don't await it to avoid blocking initialization
+  initInstallType();
+
   const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
   // Set up connectivity listener IMMEDIATELY for MV3 (before any awaits)
@@ -998,25 +1043,78 @@ export async function loadStateFromPersistence(backup) {
   const { state: versionedData, changedKeys } = await migrator.migrateData(
     preMigrationVersionedData,
   );
+
+  /**
+   * Creates an Error with sentryTags for migration failures.
+   * Tags help identify if user should have had a backup (v12.20.0+, migration 157+),
+   * and include installation info for diagnostics.
+   * These are captured via the critical error page's "Send error report" checkbox
+   * flow (see ui/helpers/utils/display-critical-error.ts).
+   *
+   * @param {string} message - The error message
+   * @returns {Promise<Error>} Error object with sentryTags property
+   */
+  const createMigrationError = async (message) => {
+    const preMigrationVersion = preMigrationVersionedData?.meta?.version;
+    const backupShouldExist =
+      typeof preMigrationVersion === 'number' && preMigrationVersion >= 157;
+
+    // Try to get firstTimeInfo for Sentry tags (installation version and date)
+    // Check in-memory sources first (fast, synchronous checks)
+    // Check both new location (AppMetadataController) and old location (top-level)
+    // for compatibility with pre-migration-190 state
+    let firstTimeInfo =
+      backup?.AppMetadataController?.firstTimeInfo ??
+      versionedData?.data?.AppMetadataController?.firstTimeInfo ??
+      versionedData?.data?.firstTimeInfo ??
+      preMigrationVersionedData?.data?.AppMetadataController?.firstTimeInfo ??
+      preMigrationVersionedData?.data?.firstTimeInfo;
+
+    // Fallback to IndexedDB backup if in-memory sources don't have it
+    // (handles corruption scenarios where storage.local is damaged)
+    if (!firstTimeInfo) {
+      try {
+        const indexedDbBackup = await persistenceManager.getBackup();
+        firstTimeInfo = indexedDbBackup?.AppMetadataController?.firstTimeInfo;
+      } catch {
+        // Ignore backup fetch errors - we still want to report the migration error
+      }
+    }
+
+    const error = new Error(message);
+
+    // Add sentryTags for searchable/filterable fields in Sentry UI
+    // These are extracted by sendErrorToSentry in display-critical-error.ts
+    error.sentryTags = {
+      'corruption.preMigrationVersion': String(
+        preMigrationVersion ?? 'unknown',
+      ),
+      'corruption.backupShouldExist': String(backupShouldExist),
+      'corruption.installVersion': String(firstTimeInfo?.version ?? 'unknown'),
+      'corruption.installDate': String(firstTimeInfo?.date ?? 'unknown'),
+    };
+
+    return error;
+  };
+
   if (!versionedData) {
-    throw new Error('MetaMask - migrator returned undefined');
+    throw await createMigrationError('MetaMask - migrator returned undefined');
   } else if (!isObject(versionedData.meta)) {
-    throw new Error(
+    throw await createMigrationError(
       `MetaMask - migrator metadata has invalid type '${typeof versionedData.meta}'`,
     );
   } else if (typeof versionedData.meta.version !== 'number') {
-    throw new Error(
-      `MetaMask - migrator metadata version has invalid type '${typeof versionedData
-        .meta.version}'`,
+    throw await createMigrationError(
+      `MetaMask - migrator metadata version has invalid type '${typeof versionedData.meta.version}'`,
     );
   } else if (
     !['data', 'split', undefined].includes(versionedData.meta.storageKind)
   ) {
-    throw new Error(
+    throw await createMigrationError(
       `MetaMask - migrator metadata storageKind has invalid value '${versionedData.meta.storageKind}'`,
     );
   } else if (!isObject(versionedData.data)) {
-    throw new Error(
+    throw await createMigrationError(
       `MetaMask - migrator data has invalid type '${typeof versionedData.data}'`,
     );
   }
@@ -1329,8 +1427,8 @@ export function setupController(
   });
 
   // Wire up the callback to notify the UI when set operations fail
-  persistenceManager.setOnSetFailed(() => {
-    controller.appStateController.setShowStorageErrorToast(true);
+  persistenceManager.setOnSetFailed((errorType) => {
+    controller.appStateController.setStorageWriteErrorType(errorType);
   });
 
   /**
@@ -1341,6 +1439,14 @@ export function setupController(
   for (const key of Object.keys(currentState)) {
     const initialControllerState = initState[key] || {};
     const newControllerState = currentState[key];
+    if (newControllerState === null || typeof newControllerState !== 'object') {
+      captureException(
+        new Error(
+          `Invalid controller state for '${key}' of type '${newControllerState === null ? 'null' : typeof newControllerState}'`,
+        ),
+      );
+      continue;
+    }
     const newControllerStateKeys = Object.keys(newControllerState);
 
     // if the number of keys has changed, we need to persist the new state
@@ -1482,25 +1588,14 @@ export function setupController(
   };
 
   connectWindowPostMessage = (remotePort) => {
-    const processName = remotePort.name;
-
     if (metamaskBlockedPorts.includes(remotePort.name)) {
       return;
     }
 
-    let isMetaMaskInternalProcess = false;
-    const senderUrl = remotePort.sender?.url
-      ? new URL(remotePort.sender.url)
-      : null;
+    const { processName, senderUrl, isMetaMaskUIPort } =
+      parsePortInfo(remotePort);
 
-    if (isFirefox) {
-      isMetaMaskInternalProcess = metamaskInternalProcessHash[processName];
-    } else {
-      isMetaMaskInternalProcess =
-        senderUrl?.origin === `chrome-extension://${browser.runtime.id}`;
-    }
-
-    if (isMetaMaskInternalProcess) {
+    if (isMetaMaskUIPort) {
       /**
        * @type {ExtensionPortStream}
        */
@@ -1853,23 +1948,33 @@ async function triggerUi() {
 }
 
 // It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
-const addAppInstalledEvent = () => {
+const addAppInstalledEvent = async () => {
   if (controller) {
     controller.metaMetricsController.updateTraits({
       [MetaMetricsUserTrait.InstallDateExt]: new Date()
         .toISOString()
         .split('T')[0], // yyyy-mm-dd
     });
+
+    const deferredDeepLink = await getDeferredDeepLinkFromCookie();
+    const eventProperties = {};
+
+    if (deferredDeepLink) {
+      controller.appStateController.setDeferredDeepLink(deferredDeepLink);
+      eventProperties.install_source = 'deeplink';
+      eventProperties.deeplink_path = deferredDeepLink.referringLink;
+    }
+
     controller.metaMetricsController.addEventBeforeMetricsOptIn({
       category: MetaMetricsEventCategory.App,
       event: MetaMetricsEventName.AppInstalled,
-      properties: {},
+      properties: eventProperties,
     });
     return;
   }
-  setTimeout(() => {
+  setTimeout(async () => {
     // If the controller is not set yet, we wait and try to add the "App Installed" event again.
-    addAppInstalledEvent();
+    await addAppInstalledEvent();
   }, 500);
 };
 
@@ -1880,7 +1985,7 @@ const addAppInstalledEvent = () => {
  */
 async function handleOnInstalled([details]) {
   if (details.reason === 'install') {
-    onInstall();
+    await onInstall();
   } else if (details.reason === 'update') {
     const { previousVersion } = details;
     if (!previousVersion || previousVersion === platform.getVersion()) {
@@ -1894,12 +1999,12 @@ async function handleOnInstalled([details]) {
 /**
  * Trigger actions that should happen only upon initial install (e.g. open tab for onboarding).
  */
-function onInstall() {
+async function onInstall() {
   log.debug('First install detected');
-  addAppInstalledEvent();
   if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
     platform.openExtensionInBrowser();
   }
+  await addAppInstalledEvent();
 }
 
 /**

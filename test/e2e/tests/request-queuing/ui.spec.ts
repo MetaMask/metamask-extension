@@ -15,6 +15,7 @@ import NetworkManager, {
 } from '../../page-objects/pages/network-manager';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, veryLargeDelayMs } from '../../helpers';
 import { Driver, PAGES } from '../../webdriver/driver';
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
@@ -135,6 +136,7 @@ async function selectDappClickPersonalSign(
 
   const testDapp = new TestDapp(driver);
   await testDapp.clickPersonalSign();
+  await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
 }
 
 async function switchToDialogPopoverValidateDetailsRedesign(
@@ -470,7 +472,7 @@ describe('Request-queue UI changes', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         driverOptions: { constrainWindowSize: true },
       },
@@ -559,7 +561,6 @@ describe('Request-queue UI changes', function () {
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
-        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
         await networkManager.closeNetworkManager();
 
         // Kill local node servers

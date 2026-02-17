@@ -6,6 +6,7 @@ import {
 } from '../../../../ui/helpers/constants/routes';
 
 export {
+  ASSET_ROUTE,
   DEFAULT_ROUTE,
   DEEP_LINK_ROUTE,
   NOTIFICATIONS_ROUTE,

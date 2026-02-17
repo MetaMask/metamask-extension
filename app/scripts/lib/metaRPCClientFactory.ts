@@ -34,7 +34,6 @@ type PendingRequest<Api extends FunctionRegistry<Api>> = {
   method: Extract<keyof Api, string>;
   startTimeMs?: number;
 };
-
 /**
  * A JSON-RPC 2.0 request object, types with our request types.
  */
@@ -188,13 +187,13 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
    *
    * @param timeoutMs - The timeout in milliseconds.
    */
-  setGetStateTimeout(timeoutMs: number) {
+  setGetStateTimeout = (timeoutMs: number) => {
     if (!Number.isInteger(timeoutMs) || timeoutMs < 1) {
       throw new Error('Must specify positive integer timeout.');
     }
     this.#getStateTimeoutMs = timeoutMs;
     this.#updatePendingGetStateTimeouts(timeoutMs);
-  }
+  };
 
   #setGetStateTimeoutForRequest(
     id: number,

@@ -1,15 +1,33 @@
 import React from 'react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import type { NetworkConfiguration } from '@metamask/network-controller';
 import { fireEvent } from '../../../../../../test/jest';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
 import * as actions from '../../../../../store/actions';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
-import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
 import AssetListControlBar from './asset-list-control-bar';
+
+type TooltipProps = {
+  children: React.ReactNode;
+  disabled?: boolean;
+  title?: string;
+};
+
+jest.mock('../../../../ui/tooltip', () => {
+  const MockTooltip = ({ children, disabled, title }: TooltipProps) => (
+    <div data-testid="tooltip" data-disabled={disabled} data-title={title}>
+      {children}
+    </div>
+  );
+
+  return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: MockTooltip,
+  };
+});
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -24,11 +42,6 @@ const createMockState = () => ({
   metamask: {
     ...mockState.metamask,
     selectedNetworkClientId: 'selectedNetworkClientId',
-    enabledNetworkMap: {
-      eip155: {
-        '0x1': true,
-      },
-    },
     networkConfigurationsByChainId: {
       '0x1': {
         chainId: '0x1',
@@ -40,17 +53,7 @@ const createMockState = () => ({
         ],
       },
     } as unknown as Record<string, NetworkConfiguration>,
-    multichainNetworkConfigurationsByChainId:
-      AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-    selectedMultichainNetworkChainId: 'eip155:1',
-    isEvmSelected: true,
     useNftDetection: true,
-    internalAccounts: {
-      selectedAccount: 'selectedAccount',
-      accounts: {
-        selectedAccount: createMockInternalAccount(),
-      },
-    },
   },
 });
 
@@ -71,10 +74,19 @@ describe('NFTs options', () => {
 
     const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
 
+    const sortButton = await findByTestId('sort-by-popover-toggle');
+    let tooltipWrapper = sortButton.closest('[data-testid="tooltip"]');
+    expect(tooltipWrapper).toHaveAttribute('data-disabled', 'false');
+
+    fireEvent.click(sortButton);
+
+    tooltipWrapper = sortButton.closest('[data-testid="tooltip"]');
+    expect(tooltipWrapper).toHaveAttribute('data-disabled', 'true');
+
     const actionButton = await findByTestId(
       'asset-list-control-bar-action-button',
     );
-    actionButton.click();
+    fireEvent.click(actionButton);
 
     const refreshButton = await findByTestId('refresh-list-button__button');
 
@@ -114,7 +126,7 @@ describe('NFTs options', () => {
     const actionButton = await findByTestId(
       'asset-list-control-bar-action-button',
     );
-    actionButton.click();
+    fireEvent.click(actionButton);
 
     const refreshButton = await findByTestId('refresh-list-button__button');
 
@@ -156,7 +168,7 @@ describe('NFTs options', () => {
     const actionButton = await findByTestId(
       'asset-list-control-bar-action-button',
     );
-    actionButton.click();
+    fireEvent.click(actionButton);
 
     const autodetectButton = await findByTestId(
       'enable-autodetect-button__button',

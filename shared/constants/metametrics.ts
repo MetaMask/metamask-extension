@@ -1,5 +1,5 @@
 import { Json } from '@metamask/utils';
-import type { EnvironmentType } from './app';
+import type { EnvironmentType, InstallType, Platform } from './app';
 import { LedgerTransportTypes } from './hardware-wallets';
 
 type JsonWithUndefined =
@@ -565,6 +565,16 @@ export type MetaMetricsUserTraits = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   rewards_referral_code_used?: string;
+  /**
+   * The platform (browser) where the extension is running.
+   */
+  platform?: Platform;
+  /**
+   * The installation type of the extension.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  install_type?: InstallType;
 };
 
 export enum MetaMetricsUserTrait {
@@ -681,6 +691,14 @@ export enum MetaMetricsUserTrait {
   HasRewardsOptedIn = 'has_rewards_opted_in',
   RewardsReferred = 'rewards_referred',
   RewardsReferralCodeUsed = 'rewards_referral_code_used',
+  /**
+   * The platform (browser) where the extension is running.
+   */
+  Platform = 'platform',
+  /**
+   * The installation type of the extension.
+   */
+  InstallType = 'install_type',
 }
 
 /**
@@ -779,9 +797,18 @@ export enum MetaMetricsEventName {
   NavPermissionsOpened = 'Permissions Opened',
   NetworkConnectionBannerShown = 'Network Connection Banner Shown',
   NetworkConnectionBannerUpdateRpcClicked = 'Network Connection Banner Update RPC Clicked',
+  NetworkConnectionBannerSwitchToMetaMaskDefaultRpcClicked = 'Network Connection Banner Switch To MetaMask Default RPC Clicked',
   NetworkConnectionBannerRpcUpdated = 'Network Connection Banner RPC Updated',
   UpdatePermissionedNetworks = 'Update Permissioned Networks',
   UpdatePermissionedAccounts = 'Update Permissioned Accounts',
+  StorageErrorToastViewed = 'Storage Error Toast Viewed',
+  StorageErrorToastDismissed = 'Storage Error Toast Dismissed',
+  StorageErrorToastBackupSrpButtonPressed = 'Storage Error Toast Backup SRP Button Pressed',
+  StateMigrationSucceeded = 'State Migration Succeeded',
+  StateMigrationFailed = 'State Migration Failed',
+  VaultCorruptionDetected = 'Vault Corruption Detected',
+  VaultCorruptionRestoreWalletScreenViewed = 'Vault Corruption Restore Wallet Screen Viewed',
+  VaultCorruptionRestoreWalletButtonPressed = 'Vault Corruption Restore Wallet Button Pressed',
   ViewPermissionedNetworks = 'View Permissioned Networks',
   ViewPermissionedAccounts = 'View Permissioned Accounts',
   NavNetworkMenuOpened = 'Network Menu Opened',
@@ -1048,6 +1075,7 @@ export enum MetaMetricsEventCategory {
   App = 'App',
   Auth = 'Auth',
   Background = 'Background',
+  StateMigration = 'State Migration',
   Banner = 'Banner',
   // The TypeScript ESLint rule is incorrectly marking this line.
   /* eslint-disable-next-line @typescript-eslint/no-shadow */

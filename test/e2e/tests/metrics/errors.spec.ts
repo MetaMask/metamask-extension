@@ -40,6 +40,7 @@ const maskedBackgroundFields = [
   'AppStateController.surveyLinkLastClickedOrClosed',
   'AppStateController.recoveryPhraseReminderLastShown',
   'AppStateController.termsOfUseLastAgreed',
+  'AppStateController.shieldSubscriptionError',
   'AppStateController.shieldEndingToastLastClickedOrClosed',
   'AppStateController.shieldPausedToastLastClickedOrClosed',
   // The value in these properties may change each run
@@ -1138,7 +1139,8 @@ describe('Sentry errors', function () {
         async ({ driver, mockedEndpoint }) => {
           await loginWithBalanceValidation(driver);
 
-          await driver.delay(3000);
+          // Wait for state to settle
+          await driver.delay(5_000);
           // Trigger error
           await driver.executeScript(
             'window.stateHooks.throwTestBackgroundError()',
@@ -1318,7 +1320,8 @@ describe('Sentry errors', function () {
         async ({ driver, mockedEndpoint }) => {
           await loginWithBalanceValidation(driver);
 
-          await driver.delay(3000);
+          // Wait for state to settle
+          await driver.delay(5_000);
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');

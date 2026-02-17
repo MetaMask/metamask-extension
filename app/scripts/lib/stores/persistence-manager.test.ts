@@ -37,6 +37,11 @@ jest.mock('../../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
   captureMessage: jest.fn(),
 }));
+jest.mock('../../../../shared/lib/trace', () => ({
+  trace: jest.fn(),
+  endTrace: jest.fn(),
+  TraceName: {},
+}));
 const mockedCaptureException = jest.mocked(captureException);
 const mockedCaptureMessage = jest.mocked(captureMessage);
 
@@ -67,13 +72,15 @@ describe('PersistenceManager', () => {
     it('calls localStore.set with the correct arguments once metadata is set', async () => {
       manager.setMetadata({ version: 10 });
 
-      await manager.set({ appState: { test: true } });
+      const [result, error] = await manager.set({ appState: { test: true } });
 
       expect(mockStoreSet).toHaveBeenCalledTimes(1);
       expect(mockStoreSet).toHaveBeenCalledWith({
         data: { appState: { test: true } },
         meta: { version: 10 },
       });
+      expect(result).toBe(true);
+      expect(error).toBeUndefined();
     });
 
     it('logs error and captures exception if store.set throws', async () => {
@@ -82,11 +89,15 @@ describe('PersistenceManager', () => {
       const error = new Error('store.set error');
       mockStoreSet.mockRejectedValueOnce(error);
 
-      await manager.set({ appState: { broken: true } });
+      const [result, persistError] = await manager.set({
+        appState: { broken: true },
+      });
       expect(mockedCaptureException).toHaveBeenCalledWith(error, {
         tags: { 'persistence.error': 'set-failed' },
         fingerprint: ['persistence-error', 'set-failed'],
       });
+      expect(result).toBe(false);
+      expect(persistError).toBe(error);
       expect(log.error).toHaveBeenCalledWith(
         'error setting state in local store:',
         error,
@@ -284,9 +295,11 @@ describe('PersistenceManager', () => {
       manager.update('FooController', { foo: 'bar' });
       manager.update('BarController', undefined);
 
-      await manager.persist();
+      const [result, error] = await manager.persist();
 
       expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(1);
+      expect(result).toBe(true);
+      expect(error).toBeUndefined();
       const passedMap = mockStoreSetKeyValues.mock.calls[0][0] as Map<
         string,
         unknown
@@ -307,12 +320,14 @@ describe('PersistenceManager', () => {
       const error = new Error('store.setKeyValues error');
       mockStoreSetKeyValues.mockRejectedValueOnce(error);
 
-      await manager.persist();
+      const [result, persistError] = await manager.persist();
 
       expect(mockedCaptureException).toHaveBeenCalledWith(error, {
         tags: { 'persistence.error': 'persist-failed' },
         fingerprint: ['persistence-error', 'persist-failed'],
       });
+      expect(result).toBe(false);
+      expect(persistError).toBe(error);
       expect(log.error).toHaveBeenCalledWith(
         'error setting state in local store:',
         error,
@@ -326,13 +341,17 @@ describe('PersistenceManager', () => {
       const error = new Error('store.setKeyValues error');
       mockStoreSetKeyValues.mockRejectedValueOnce(error);
 
-      await manager.persist();
+      const [firstResult, firstError] = await manager.persist();
 
       mockStoreSetKeyValues.mockResolvedValueOnce(undefined);
 
-      await manager.persist();
+      const [secondResult, secondError] = await manager.persist();
 
       expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(2);
+      expect(firstResult).toBe(false);
+      expect(firstError).toBe(error);
+      expect(secondResult).toBe(true);
+      expect(secondError).toBeUndefined();
       const retryMap = mockStoreSetKeyValues.mock.calls[1][0] as Map<
         string,
         unknown
@@ -454,7 +473,6 @@ describe('PersistenceManager', () => {
 
     it('Handles DOMException InvalidStateError: A mutation operation was attempted on a database that did not allow mutations.', async () => {
       const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
       const domException = new DOMException(
         'A mutation operation was attempted on a database that did not allow mutations.',
@@ -478,7 +496,6 @@ describe('PersistenceManager', () => {
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         'Could not open backup database; automatic vault recovery will not be available.',
       );
-      expect(consoleErrorSpy).toHaveBeenCalledWith(domException);
     });
 
     it('Bubbles up IndexedDB error on initialization', async () => {

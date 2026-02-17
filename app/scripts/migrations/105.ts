@@ -68,12 +68,18 @@ function findInternalAccountByAddress(
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createDefaultAccountsController(state: Record<string, any>) {
-  state.AccountsController = {
-    internalAccounts: {
-      accounts: {},
-      selectedAccount: '',
-    },
-  };
+  // FIXME: Our e2e tests are always going through this migration, which makes it
+  // impossible to define default accounts in our fixtures as they are getting
+  // overwritten here.
+  // So we check for existing state before creating a default one.
+  if (!state.AccountsController) {
+    state.AccountsController = {
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
+    };
+  }
 }
 
 function createInternalAccountsForAccountsController(
@@ -89,34 +95,36 @@ function createInternalAccountsForAccountsController(
     return;
   }
 
-  const accounts: Record<string, InternalAccountV1> = {};
-
   Object.values(identities).forEach((identity) => {
     const expectedId = uuid({
       random: sha256(hexToBytes(identity.address)).slice(0, 16),
     });
 
-    accounts[expectedId] = {
-      address: identity.address,
-      id: expectedId,
-      options: {},
-      metadata: {
-        name: identity.name,
-        lastSelected: identity.lastSelected ?? undefined,
-        importTime: 0,
-        keyring: {
-          // This is default HD Key Tree type because the keyring is encrypted
-          // during migration, the type will get updated when the during the
-          // initial updateAccounts call.
-          type: 'HD Key Tree',
+    // FIXME: Our e2e tests are always going through this migration, which makes it
+    // impossible to define default accounts in our fixtures as they are getting
+    // overwritten here.
+    // So we check for existing state before creating a default one.
+    if (!state.AccountsController.internalAccounts.accounts[expectedId]) {
+      state.AccountsController.internalAccounts.accounts[expectedId] = {
+        address: identity.address,
+        id: expectedId,
+        options: {},
+        metadata: {
+          name: identity.name,
+          lastSelected: identity.lastSelected ?? undefined,
+          importTime: 0,
+          keyring: {
+            // This is default HD Key Tree type because the keyring is encrypted
+            // during migration, the type will get updated when the during the
+            // initial updateAccounts call.
+            type: 'HD Key Tree',
+          },
         },
-      },
-      methods: ETH_EOA_METHODS,
-      type: EthAccountType.Eoa,
-    };
+        methods: ETH_EOA_METHODS,
+        type: EthAccountType.Eoa,
+      };
+    }
   });
-
-  state.AccountsController.internalAccounts.accounts = accounts;
 }
 
 function getFirstAddress(
@@ -135,26 +143,38 @@ function createSelectedAccountForAccountsController(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: Record<string, any>,
 ) {
-  let selectedAddress = state.PreferencesController?.selectedAddress;
+  // FIXME: Our e2e tests are always going through this migration, which makes it
+  // impossible to define default accounts in our fixtures as they are getting
+  // overwritten here.
+  // So we check for existing state before creating a default one.
+  if (
+    !state.AccountsController.internalAccounts.selectedAccount ||
+    !state.PreferencesController?.selectedAddress
+  ) {
+    let selectedAddress = state.PreferencesController?.selectedAddress;
 
-  if (typeof selectedAddress !== 'string') {
-    global.sentry?.captureException?.(
-      new Error(
-        `state.PreferencesController?.selectedAddress is ${selectedAddress}`,
-      ),
+    if (typeof selectedAddress !== 'string') {
+      global.sentry?.captureException?.(
+        new Error(
+          `state.PreferencesController?.selectedAddress is ${selectedAddress}`,
+        ),
+      );
+
+      // Get the first account if selectedAddress is not a string
+      selectedAddress = getFirstAddress(state);
+    }
+
+    const selectedAccount = findInternalAccountByAddress(
+      state,
+      selectedAddress,
     );
-
-    // Get the first account if selectedAddress is not a string
-    selectedAddress = getFirstAddress(state);
-  }
-
-  const selectedAccount = findInternalAccountByAddress(state, selectedAddress);
-  if (selectedAccount) {
-    // Required in case there was no address selected
-    state.PreferencesController.selectedAddress = selectedAccount.address;
-    state.AccountsController.internalAccounts = {
-      ...state.AccountsController.internalAccounts,
-      selectedAccount: selectedAccount.id,
-    };
+    if (selectedAccount) {
+      // Required in case there was no address selected
+      state.PreferencesController.selectedAddress = selectedAccount.address;
+      state.AccountsController.internalAccounts = {
+        ...state.AccountsController.internalAccounts,
+        selectedAccount: selectedAccount.id,
+      };
+    }
   }
 }

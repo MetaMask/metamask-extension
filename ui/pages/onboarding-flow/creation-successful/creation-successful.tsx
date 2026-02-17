@@ -38,13 +38,16 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
   DEFAULT_ROUTE,
   SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getExternalServicesOnboardingToggleState,
   getFirstTimeFlowType,
+  getParticipateInMetaMetrics,
   getPreferences,
+  getDeferredDeepLink,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -54,6 +57,7 @@ import {
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   getCompletedOnboarding,
+  getIsInitialized,
   getIsPrimarySeedPhraseBackedUp,
 } from '../../../ducks/metamask/metamask';
 import {
@@ -61,10 +65,20 @@ import {
   setCompletedOnboarding,
   setCompletedOnboardingWithSidepanel,
   setUseSidePanelAsDefault,
+  removeDeferredDeepLink,
 } from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import type { BrowserWithSidePanel } from '../../../../shared/types';
+import {
+  getDeferredDeepLinkRoute,
+  buildInterstitialRoute,
+} from '../../../../shared/lib/deep-links/utils';
+import {
+  DeferredDeepLink,
+  DeferredDeepLinkRoute,
+  DeferredDeepLinkRouteType,
+} from '../../../../shared/lib/deep-links/types';
 import WalletReadyAnimation from './wallet-ready-animation';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -78,12 +92,17 @@ export default function CreationSuccessful() {
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
   );
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSidePanelEnabled = useSidePanelEnabled();
   const preferences = useSelector(getPreferences);
   const isSidePanelSetAsDefault = preferences?.useSidePanelAsDefault ?? false;
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
+  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const deferredDeepLink: DeferredDeepLink | null =
+    useSelector(getDeferredDeepLink);
+
+  const isInitialized = useSelector(getIsInitialized);
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
@@ -94,6 +113,17 @@ export default function CreationSuccessful() {
   const isFromSettingsSRPBackup = isWalletReady && isFromReminder;
 
   const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(false);
+
+  // Guard: redirect if wallet is not properly set up.
+  // Prevents users from skipping onboarding steps by navigating directly to the completion route.
+  useEffect(() => {
+    if (isFromReminder) {
+      return;
+    }
+    if (!isInitialized) {
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    }
+  }, [isInitialized, isFromReminder, navigate]);
 
   useEffect(() => {
     const browserWithSidePanel = browser as BrowserWithSidePanel;
@@ -181,11 +211,61 @@ export default function CreationSuccessful() {
     );
   }, [navigate, t]);
 
+  const handleOnDoneNavigation = useCallback(
+    (
+      deferredDeepLinkResult: DeferredDeepLinkRoute,
+      hasDeferredDeepLink: boolean,
+      completedWithSidePanelFlow: boolean,
+    ) => {
+      // Clean up deferred deep link from the state (both: expired or active)
+      if (hasDeferredDeepLink) {
+        dispatch(removeDeferredDeepLink());
+      }
+
+      if (deferredDeepLinkResult) {
+        if (
+          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Redirect
+        ) {
+          if (completedWithSidePanelFlow) {
+            // User completed onboarding with the side panel opened: navigate directly to the external URL
+            window.location.assign(deferredDeepLinkResult.url);
+          } else {
+            // User completed onboarding without the side panel: opening the external URL in a new tab
+            // prevents them from finishing their setup on an external website. Instead, we keep them
+            // in the onboarding flow by navigating to the home page while opening the link separately.
+            window.open(deferredDeepLinkResult.url, '_blank');
+            navigate(DEFAULT_ROUTE);
+          }
+        } else if (
+          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
+        ) {
+          navigate(deferredDeepLinkResult.route);
+        } else if (
+          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Interstitial
+        ) {
+          const interstitialRoute = buildInterstitialRoute(
+            deferredDeepLinkResult.urlPathAndQuery,
+          );
+          navigate(interstitialRoute);
+        }
+      } else if (!completedWithSidePanelFlow) {
+        navigate(DEFAULT_ROUTE);
+      }
+    },
+    [dispatch, navigate],
+  );
+
   const onDone = useCallback(async () => {
     if (isFromReminder) {
       navigate(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
       return;
     }
+
+    const deferredDeepLinkResult =
+      await getDeferredDeepLinkRoute(deferredDeepLink);
+    const shouldOpenSidePanel =
+      deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Navigate &&
+      deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Interstitial;
 
     // Track onboarding completion event
     if (!isOnboardingCompleted) {
@@ -211,6 +291,26 @@ export default function CreationSuccessful() {
       toggleExternalServices(externalServicesOnboardingToggleState),
     );
 
+    // NOTE: Metametrics Opt In/Out event tracking should be done after `toggleExternalServices` dispatch.
+    // Since we will track the `Metrics Opt In/Out` event even when participateInMetaMetrics is false,
+    // this is to ensure that the `Metrics Opt In/Out` event will not be tracked if basic functionality is disabled.
+    if (!isOnboardingCompleted) {
+      // before onboarding completion, we track the MetricsOptIn/Out event
+
+      trackEvent(
+        {
+          category: MetaMetricsEventCategory.Onboarding,
+          event: participateInMetaMetrics
+            ? MetaMetricsEventName.MetricsOptIn
+            : MetaMetricsEventName.MetricsOptOut,
+          properties: {},
+        },
+        {
+          isOptIn: !participateInMetaMetrics, // Force the event to be tracked even if participateInMetaMetrics is false
+        },
+      );
+    }
+
     // Side Panel - only if feature flag is enabled
     if (isSidePanelEnabled) {
       // If useSidePanelAsDefault is already true, side panel is already set up
@@ -230,13 +330,24 @@ export default function CreationSuccessful() {
             currentWindow: true,
           });
           if (tabs && tabs.length > 0) {
-            await browserWithSidePanel.sidePanel.open({
-              windowId: tabs[0].windowId,
-            });
+            // We deliberately skip the opening of the side panel
+            // if a user is coming from a deep link
+            if (shouldOpenSidePanel) {
+              await browserWithSidePanel.sidePanel.open({
+                windowId: tabs[0].windowId,
+              });
+              setIsSidePanelOpen(true);
+            }
             await dispatch(setUseSidePanelAsDefault(true));
             // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
             await dispatch(setCompletedOnboardingWithSidepanel());
-            setIsSidePanelOpen(true);
+
+            handleOnDoneNavigation(
+              deferredDeepLinkResult,
+              Boolean(deferredDeepLink),
+              true,
+            );
+
             return;
           }
         }
@@ -247,18 +358,26 @@ export default function CreationSuccessful() {
     }
     // Fallback to regular onboarding completion
     await dispatch(setCompletedOnboarding());
-    navigate(DEFAULT_ROUTE);
+
+    handleOnDoneNavigation(
+      deferredDeepLinkResult,
+      Boolean(deferredDeepLink),
+      false,
+    );
   }, [
-    isOnboardingCompleted,
     isFromReminder,
+    deferredDeepLink,
+    isOnboardingCompleted,
     dispatch,
     externalServicesOnboardingToggleState,
-    navigate,
-    trackEvent,
-    firstTimeFlowType,
-    isFromSettingsSecurity,
     isSidePanelEnabled,
+    navigate,
+    isFromSettingsSecurity,
+    firstTimeFlowType,
+    trackEvent,
     isSidePanelSetAsDefault,
+    participateInMetaMetrics,
+    handleOnDoneNavigation,
   ]);
 
   const renderDoneButton = () => {

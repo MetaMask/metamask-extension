@@ -3,6 +3,7 @@ const consoleReporterRules = require('./test/jest/console-reporter-rules-unit');
 module.exports = {
   collectCoverageFrom: [
     '<rootDir>/app/scripts/**/*.(js|ts|tsx)',
+    '<rootDir>/app/offscreen/**/*.(js|ts|tsx)',
     '<rootDir>/shared/**/*.(js|ts|tsx)',
     '<rootDir>/ui/**/*.(js|ts|tsx)',
     '<rootDir>/development/build/transforms/**/*.js',
@@ -11,6 +12,13 @@ module.exports = {
   coverageDirectory: './coverage/unit',
   coveragePathIgnorePatterns: ['.stories.*', '.snap$'],
   coverageReporters: ['html', 'json'],
+  moduleNameMapper: {
+    // Mock lightweight-charts since it requires browser/canvas APIs not available in Jest
+    '^lightweight-charts$': '<rootDir>/test/mocks/lightweight-charts.js',
+    // Map @metamask/perps-controller to local mock
+    '^@metamask/perps-controller$':
+      '<rootDir>/ui/__mocks__/perps/perps-controller/index.ts',
+  },
   // The path to the Prettier executable used to format snapshots
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
   prettierPath: require.resolve('prettier-2'),
@@ -49,6 +57,7 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
   testMatch: [
     '<rootDir>/app/scripts/**/*.test.(js|ts|tsx)',
+    '<rootDir>/app/offscreen/**/*.test.(js|ts|tsx)',
     '<rootDir>/shared/**/*.test.(js|ts|tsx)',
     '<rootDir>/ui/**/*.test.(js|ts|tsx)',
     '<rootDir>/development/**/*.test.(js|ts|tsx)',

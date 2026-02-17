@@ -1,20 +1,31 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import CriticalErrorPage from '../../page-objects/pages/critical-error-page';
 import { PAGES } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
 import { getManifestVersion } from '../../set-manifest-flags';
 
+const BACKGROUND_CONNECTION_TIMEOUT = 15_000;
+const EXTENDED_BACKGROUND_CONNECTION_TIMEOUT = 30_000;
+
+const getBackgroundConnectionTimeout = () =>
+  getManifestVersion() === 3
+    ? EXTENDED_BACKGROUND_CONNECTION_TIMEOUT
+    : BACKGROUND_CONNECTION_TIMEOUT;
+
 describe('Critical errors', function (this: Suite) {
   it('shows critical error screen when background is unresponsive', async function () {
+    const timeoutMs = getBackgroundConnectionTimeout();
+
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         ignoredConsoleErrors: ['Background connection unresponsive'],
         manifestFlags: {
           testing: {
-            simulateUnresponsiveBackground: true,
+            // Simulate completely unresponsive background
+            simulateDelayedBackgroundResponse: true,
           },
         },
         title: this.test?.fullTitle(),
@@ -22,9 +33,41 @@ describe('Critical errors', function (this: Suite) {
       async ({ driver }) => {
         await driver.navigate(PAGES.HOME, { waitForControllers: false });
 
-        const timeoutMs = getManifestVersion() === 3 ? 30_000 : 15_000;
-        // Wait until liveness timer expires
+        // Wait until timeout expires
         await driver.delay(timeoutMs);
+
+        const criticalErrorPage = new CriticalErrorPage(driver);
+        await criticalErrorPage.checkPageIsLoaded();
+        await criticalErrorPage.validateTroubleStartingDescription();
+        await criticalErrorPage.validateErrorMessage(
+          'Background connection unresponsive',
+        );
+      },
+    );
+  });
+
+  it('shows critical error screen when background takes longer than the liveness timeout to respond', async function () {
+    const timeoutMs = getBackgroundConnectionTimeout();
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        ignoredConsoleErrors: ['Background connection unresponsive'],
+        manifestFlags: {
+          testing: {
+            // Delay for 100ms longer than timeout, simulating a very slow background response
+            simulateDelayedBackgroundResponse: timeoutMs + 100,
+          },
+        },
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        await driver.navigate(PAGES.HOME, { waitForControllers: false });
+
+        // Wait one additional second after timeout to ensure background has had time to respond,
+        // and ensure that the critical error screen remains in place even after the background
+        // eventually responds.
+        await driver.delay(timeoutMs + 1_000);
 
         const criticalErrorPage = new CriticalErrorPage(driver);
         await criticalErrorPage.checkPageIsLoaded();
@@ -45,7 +88,7 @@ describe('Critical errors', function (this: Suite) {
     const timeoutValue = 5000;
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         ignoredConsoleErrors: ['Background connection unresponsive'],
         manifestFlags: {
           testing: {

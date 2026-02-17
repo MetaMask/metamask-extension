@@ -6,14 +6,14 @@ import type { ErrorLike } from '../../../shared/constants/errors';
 import {
   APP_INIT_LIVENESS_METHOD,
   BACKGROUND_LIVENESS_METHOD,
-} from '../../../shared/constants/background-liveness-check';
+} from '../../../shared/constants/ui-initialization';
 import {
   DISPLAY_GENERAL_STARTUP_ERROR,
   RELOAD_WINDOW,
 } from '../../../shared/constants/start-up-errors';
 import { displayStateCorruptionError } from './state-corruption-html';
 import {
-  displayCriticalError,
+  displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
 } from './display-critical-error';
 
@@ -24,6 +24,9 @@ export const DEFAULT_BACKGROUND_CONNECTION_TIMEOUT = 15_000; // 15 Seconds
 export const EXTENDED_BACKGROUND_CONNECTION_TIMEOUT = 30_000; // 30 Seconds
 const BACKGROUND_CONNECTION_TIMEOUT_ERROR_MESSAGE =
   'Background connection unresponsive';
+
+// This is fairly long to allow time to serialize and send all wallet state, which can be large.
+const UI_SYNC_TIMEOUT = 16_000; // 16 seconds
 
 type CriticalStartupErrorHandlerOptions = {
   onAppInitAlive?: () => void;
@@ -57,6 +60,12 @@ export class CriticalStartupErrorHandler {
 
   #onLivenessCheckCompleted?: () => void;
 
+  #startUiSyncTimeoutId?: NodeJS.Timeout;
+
+  #onStartUiSyncCompleted?: () => void;
+
+  #startUiSyncCompleted = false;
+
   #onAppInitAlive?: () => void;
 
   #onBackgroundAlive?: () => void;
@@ -85,12 +94,22 @@ export class CriticalStartupErrorHandler {
   }
 
   /**
+   * Declare that the start UI sync message has been received.
+   */
+  startUiSyncReceived() {
+    this.#startUiSyncCompleted = true;
+    if (this.#onStartUiSyncCompleted) {
+      this.#onStartUiSyncCompleted();
+    }
+  }
+
+  /**
    * Verify that the background connection is operational.
    */
   async #startLivenessCheck() {
     const { promise: livenessCheck, resolve: onLivenessCheckCompleted } =
       createDeferredPromise<void>();
-    const { promise: timeoutPromise, reject: onLivenessTimeout } =
+    const { promise: livenessCheckTimeoutPromise, reject: onLivenessTimeout } =
       createDeferredPromise<never>();
     // This is called later in `#handle` when the response is received.
     this.#onLivenessCheckCompleted = onLivenessCheckCompleted;
@@ -104,14 +123,24 @@ export class CriticalStartupErrorHandler {
     }
 
     try {
-      await Promise.race([livenessCheck, timeoutPromise]);
+      await Promise.race([livenessCheck, livenessCheckTimeoutPromise]);
+      if (!this.#startUiSyncCompleted) {
+        await this.#startSyncUICheck();
+      }
     } catch (error) {
-      this.#onLivenessTimeout?.(error as ErrorLike);
-      await displayCriticalError(
+      if (
+        isObject(error) &&
+        hasProperty(error, 'message') &&
+        error.message === BACKGROUND_CONNECTION_TIMEOUT_ERROR_MESSAGE
+      ) {
+        this.#onLivenessTimeout?.(error as ErrorLike);
+      }
+
+      await displayCriticalErrorMessage(
         this.#container,
         CriticalErrorTranslationKey.TroubleStarting,
-        // This cast is safe because `livenessCheck` can't throw, and `timeoutPromise` only throws an
-        // error.
+        // This cast is safe because `livenessCheck` and `startSyncUICheck` can't throw,
+        // and our timeout promises only throw errors.
         error as ErrorLike,
       );
     } finally {
@@ -143,6 +172,7 @@ export class CriticalStartupErrorHandler {
 
     const elapsedMs = performance.now() - this.#livenessCheckStartTimeMs;
     const remainingMs = EXTENDED_BACKGROUND_CONNECTION_TIMEOUT - elapsedMs;
+
     if (remainingMs <= 0) {
       this.#livenessTimeoutReject?.(
         new Error(BACKGROUND_CONNECTION_TIMEOUT_ERROR_MESSAGE),
@@ -151,6 +181,34 @@ export class CriticalStartupErrorHandler {
     }
 
     this.#setLivenessTimeout(remainingMs);
+  }
+
+  async #startSyncUICheck() {
+    const { promise: startSyncUi, resolve: onStartSyncUiCompleted } =
+      createDeferredPromise<void>();
+    // This is called later in `#handle` when the response is received.
+    this.#onStartUiSyncCompleted = onStartSyncUiCompleted;
+
+    const syncUiTimeoutPromise = new Promise((_resolve, reject) => {
+      this.#startUiSyncTimeoutId = setTimeout(
+        () => reject(new Error('UI initialization timeout')),
+        UI_SYNC_TIMEOUT,
+      );
+    });
+
+    try {
+      await Promise.race([startSyncUi, syncUiTimeoutPromise]);
+    } catch (error) {
+      await displayCriticalErrorMessage(
+        this.#container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        // This cast is safe because `startSyncUi` can't throw, and `syncUiTimeoutPromise` only
+        // throws an error.
+        error as ErrorLike,
+      );
+    } finally {
+      clearTimeout(this.#startUiSyncTimeoutId);
+    }
   }
 
   /**
@@ -164,12 +222,14 @@ export class CriticalStartupErrorHandler {
       // they're likely for some other purpose
       return;
     }
+
     const { data } = message;
     if (!isObject(data) || !hasProperty(data, 'method')) {
       // Ignore the data property if it not an object or does not have a
       // 'method' property, they're likely for some other purpose
       return;
     }
+
     const { method } = data;
     // Currently, we handle app-init liveness, background liveness, RELOAD_WINDOW, and the state
     // corruption error message, but we will be adding more in the future.
@@ -183,7 +243,7 @@ export class CriticalStartupErrorHandler {
       if (this.#onLivenessCheckCompleted) {
         this.#onLivenessCheckCompleted();
       } else {
-        await displayCriticalError(
+        await displayCriticalErrorMessage(
           this.#container,
           CriticalErrorTranslationKey.TroubleStarting,
           new Error('Unreachable error, liveness check not initialized'),
@@ -226,7 +286,7 @@ export class CriticalStartupErrorHandler {
         error: ErrorLike;
         currentLocale?: string;
       };
-      await displayCriticalError(
+      await displayCriticalErrorMessage(
         this.#container,
         CriticalErrorTranslationKey.TroubleStarting,
         error as ErrorLike,
@@ -264,8 +324,17 @@ export class CriticalStartupErrorHandler {
     this.#port.onMessage.removeListener(this.#handler);
 
     clearTimeout(this.#livenessCheckTimeoutId);
+    clearTimeout(this.#startUiSyncTimeoutId);
+
+    // This may be called before the `START_UI_SYNC` message is received.
+    // If so, we can resolve the promise here. This also ensures it doesn't leak memory.
+    if (this.#onStartUiSyncCompleted) {
+      this.#onStartUiSyncCompleted();
+      this.#onStartUiSyncCompleted = undefined;
+    }
+
+    // Resolve just to allow any unresolved Promise to be garbage collected.
     if (this.#onLivenessCheckCompleted) {
-      // Resolve just to allow any unresolved Promise to be garbage collected.
       this.#onLivenessCheckCompleted();
       this.#onLivenessCheckCompleted = undefined;
     }

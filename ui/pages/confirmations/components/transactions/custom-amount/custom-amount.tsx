@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Display,
@@ -24,7 +24,7 @@ export type CustomAmountProps = {
   disabled?: boolean;
   hasAlert?: boolean;
   isLoading?: boolean;
-  onClick?: () => void;
+  onChange?: (value: string) => void;
 };
 
 function getFontSize(length: number): string {
@@ -86,7 +86,7 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
     disabled = false,
     hasAlert = false,
     isLoading,
-    onClick,
+    onChange,
   }) => {
     const isMaxAmount = useTransactionPayIsMaxAmount();
     const isQuotesLoading = useIsTransactionPayLoading();
@@ -96,6 +96,16 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
     const amountLength = amountFiat.length;
 
     const showLoader = isLoading || (isMaxAmount && isQuotesLoading);
+
+    const handleChange = useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+        if (/^[0-9]*[.,]?[0-9]*$/u.test(value)) {
+          onChange?.(value);
+        }
+      },
+      [onChange],
+    );
 
     if (showLoader) {
       return <CustomAmountSkeleton />;
@@ -111,32 +121,40 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
-        gap={1}
         style={{ minHeight: '70px' }}
       >
         <Text
           data-testid="custom-amount-symbol"
-          textAlign={TextAlign.Center}
+          textAlign={TextAlign.Right}
           fontWeight={FontWeight.Medium}
           color={textColor}
           style={{ fontSize, lineHeight }}
         >
           {fiatSymbol}
         </Text>
-        <Text
+        <input
           data-testid="custom-amount-input"
-          textAlign={TextAlign.Center}
-          fontWeight={FontWeight.Medium}
-          color={textColor}
-          style={{
-            fontSize,
-            lineHeight,
-            cursor: disabled ? 'default' : 'pointer',
-          }}
-          onClick={disabled ? undefined : onClick}
-        >
-          {amountFiat}
-        </Text>
+          type="text"
+          inputMode="decimal"
+          value={amountFiat}
+          onChange={handleChange}
+          disabled={disabled}
+          style={
+            {
+              fontSize,
+              lineHeight,
+              fontWeight: 500,
+              color: textColor ? `var(--color-${textColor})` : 'inherit',
+              textAlign: 'left',
+              border: 'none',
+              background: 'transparent',
+              outline: 'none',
+              fieldSizing: 'content',
+              minWidth: '1ch',
+              cursor: disabled ? 'default' : 'text',
+            } as React.CSSProperties
+          }
+        />
       </Box>
     );
   },

@@ -7,6 +7,7 @@ import { Button, ButtonSize } from '@metamask/design-system-react';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import Disclosure from '../../ui/disclosure';
+import { DisclosureVariant } from '../../ui/disclosure/disclosure.constants';
 import TransactionActivityLog from '../transaction-activity-log';
 import TransactionBreakdown from '../transaction-breakdown';
 import Tooltip from '../../ui/tooltip';
@@ -276,6 +277,7 @@ export default class TransactionListItemDetails extends PureComponent {
                   <Disclosure
                     title={t('activityLog')}
                     size="small"
+                    variant={DisclosureVariant.Arrow}
                     isScrollToBottomOnOpen
                   >
                     <TransactionActivityLog

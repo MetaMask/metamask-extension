@@ -112,15 +112,8 @@ export const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH =
   '/encryption-public-key-request';
 export const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
 export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
-export const SWAPS_ROUTE = '/swaps';
-export const PREPARE_SWAP_ROUTE = '/swaps/prepare-swap-page';
-export const SWAPS_NOTIFICATION_ROUTE = '/swaps/notification-page';
-export const LOADING_QUOTES_ROUTE = '/swaps/loading-quotes';
+export const PREPARE_SWAP_ROUTE = '/swaps/prepare-bridge-page';
 export const AWAITING_SIGNATURES_ROUTE = '/swaps/awaiting-signatures';
-export const SMART_TRANSACTION_STATUS_ROUTE = '/swaps/smart-transaction-status';
-export const AWAITING_SWAP_ROUTE = '/swaps/awaiting-swap';
-export const SWAPS_ERROR_ROUTE = '/swaps/swaps-error';
-export const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
 export const ONBOARDING_ROUTE = '/onboarding';
 export const ONBOARDING_REVEAL_SRP_ROUTE = '/onboarding/reveal-recovery-phrase';
 export const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
@@ -150,7 +143,10 @@ export const DEFI_ROUTE = '/defi';
 
 // Perps routes
 export const PERPS_ROUTE = '/perps';
+export const PERPS_HOME_ROUTE = '/perps/home';
 export const PERPS_MARKET_DETAIL_ROUTE = '/perps/market';
+export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
+export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
 export const REWARDS_ROUTE = '/rewards';
@@ -161,6 +157,23 @@ export const ROUTES = [
   { path: UNLOCK_ROUTE, label: 'Unlock Page', trackInAnalytics: true },
   { path: LOCK_ROUTE, label: 'Lock Page', trackInAnalytics: true },
   { path: REWARDS_ROUTE, label: 'Rewards Page', trackInAnalytics: true },
+  { path: PERPS_ROUTE, label: 'Perps Tab', trackInAnalytics: true },
+  { path: PERPS_HOME_ROUTE, label: 'Perps Home', trackInAnalytics: true },
+  {
+    path: PERPS_MARKET_LIST_ROUTE,
+    label: 'Perps Market List',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
+    label: 'Perps Market Detail',
+    trackInAnalytics: true,
+  },
+  {
+    path: PERPS_ACTIVITY_ROUTE,
+    label: 'Perps Activity',
+    trackInAnalytics: true,
+  },
   {
     path: ACCOUNT_LIST_PAGE_ROUTE,
     label: 'Account List Page',
@@ -453,34 +466,8 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: CROSS_CHAIN_SWAP_ROUTE,
-    label: 'Prepare Cross Chain Swap Page',
-    trackInAnalytics: true,
-  },
-  { path: SWAPS_ROUTE, label: 'Swaps', trackInAnalytics: false },
-  {
-    path: PREPARE_SWAP_ROUTE,
-    label: 'Prepare Swap Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: SWAPS_NOTIFICATION_ROUTE,
-    label: 'Swaps Notification Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: LOADING_QUOTES_ROUTE,
-    label: 'Swaps Loading Quotes Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: AWAITING_SWAP_ROUTE,
-    label: 'Swaps Awaiting Swaps Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: SWAPS_ERROR_ROUTE,
-    label: 'Swaps Error Page',
+    path: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
+    label: 'Prepare Bridge Page',
     trackInAnalytics: true,
   },
   {
@@ -557,13 +544,6 @@ export const ROUTES = [
   },
   // Additional routes
   { path: DEFI_ROUTE, label: 'DeFi', trackInAnalytics: false },
-  // Perps routes
-  { path: PERPS_ROUTE, label: 'Perps Home', trackInAnalytics: true },
-  {
-    path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
-    label: 'Perps Market Detail',
-    trackInAnalytics: true,
-  },
   {
     path: REVIEW_PERMISSIONS,
     label: 'Review Permissions',
@@ -577,16 +557,6 @@ export const ROUTES = [
   {
     path: AWAITING_SIGNATURES_ROUTE,
     label: 'Swaps Awaiting Signatures',
-    trackInAnalytics: false,
-  },
-  {
-    path: SMART_TRANSACTION_STATUS_ROUTE,
-    label: 'Swaps Smart Transaction Status',
-    trackInAnalytics: false,
-  },
-  {
-    path: SWAPS_MAINTENANCE_ROUTE,
-    label: 'Swaps Maintenance',
     trackInAnalytics: false,
   },
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)

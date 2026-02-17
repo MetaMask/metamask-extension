@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   PAYMENT_TYPES,
   PaymentType,
@@ -67,6 +73,7 @@ import {
 import {
   useHandleSubscription,
   useShieldRewards,
+  useSubscriptionError,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
@@ -102,6 +109,8 @@ const ShieldPlan = () => {
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
+  const { shieldSubscriptionApiError, getSubscriptionErrorMessage } =
+    useSubscriptionError();
 
   const {
     isRewardsSeason,
@@ -251,9 +260,23 @@ const ShieldPlan = () => {
   }, [selectedPlan, setSelectedToken]);
 
   const selectedTokenAddress = selectedToken?.address;
+
+  // Track if initial payment method selection has been done
+  // This prevents auto-switching after payment cancel/failure when cache is cleared
+  const hasInitializedPaymentMethod = useRef(false);
+
   // set default selected payment method to crypto if selected token available
   // should only trigger if selectedTokenAddress change (shouldn't trigger again if selected token object updated but still same token)
   useEffect(() => {
+    // Skip auto-selection after initial setup to prevent switching after payment cancel
+    if (hasInitializedPaymentMethod.current) {
+      // Only handle the case when selectedTokenAddress becomes undefined (no tokens available)
+      if (!selectedTokenAddress) {
+        setSelectedPaymentMethod(PAYMENT_TYPES.byCard);
+      }
+      return;
+    }
+
     const lastUsedPaymentMethod = lastUsedPaymentDetails?.type;
     if (
       selectedTokenAddress &&
@@ -295,6 +318,13 @@ const ShieldPlan = () => {
     rewardPoints: claimedRewardsPoints ?? undefined,
   });
 
+  const onStartSubscription = useCallback(() => {
+    // set flag to prevent auto-switching payment method after payment cancel/failure
+    hasInitializedPaymentMethod.current = true;
+
+    handleSubscription();
+  }, [handleSubscription]);
+
   const handleUserChangeToken = useCallback(
     async (token: TokenWithApprovalAmount) => {
       setSelectedToken(token);
@@ -322,7 +352,10 @@ const ShieldPlan = () => {
     subscriptionsError ||
     subscriptionPricingError ||
     availableTokenBalancesError ||
-    subscriptionResult.error;
+    subscriptionResult.error ||
+    shieldSubscriptionApiError;
+
+  const apiErrorMessage = getSubscriptionErrorMessage(hasApiError);
 
   const plans: Plan[] = useMemo(
     () =>
@@ -424,6 +457,7 @@ const ShieldPlan = () => {
             className="shield-plan-page__error-content"
             error={hasApiError}
             location={ShieldUnexpectedErrorEventLocationEnum.ShieldPlanPage}
+            message={apiErrorMessage} // show the subscription error message if available
           />
         </Content>
       ) : (
@@ -628,7 +662,7 @@ const ShieldPlan = () => {
                 size={ButtonSize.Lg}
                 variant={ButtonVariant.Primary}
                 isFullWidth
-                onClick={handleSubscription}
+                onClick={onStartSubscription}
                 data-testid="shield-plan-continue-button"
               >
                 {t('continue')}

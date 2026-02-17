@@ -1,17 +1,19 @@
 import { strict as assert } from 'assert';
 import { PermissionConstraint } from '@metamask/permission-controller';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { Driver } from '../webdriver/driver';
+import { WINDOW_TITLES } from '../constants';
+import ConnectAccountConfirmation from '../page-objects/pages/confirmations/connect-account-confirmation';
 
 describe('wallet_requestPermissions', function () {
   it('executes a request permissions on eth_accounts event', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.title,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -33,7 +35,15 @@ describe('wallet_requestPermissions', function () {
         );
 
         // confirm connect account
-        await testDapp.confirmConnectAccountModal();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation.checkPageIsLoaded();
+        await connectAccountConfirmation.confirmConnect();
+
+        // Switch back to TestDApp window before executing scripts
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         const getPermissionsRequest = JSON.stringify({
           method: 'wallet_getPermissions',

@@ -9,7 +9,7 @@ export const selectTransactionDataByTransactionId = createSelector(
   (state: TransactionPayState) => state,
   (_state: TransactionPayState, transactionId: string) => transactionId,
   (state: TransactionPayState, transactionId: string) =>
-    state.metamask.transactionData[transactionId],
+    state.metamask.transactionData?.[transactionId],
 );
 
 export const selectTransactionPayTotalsByTransactionId = createSelector(

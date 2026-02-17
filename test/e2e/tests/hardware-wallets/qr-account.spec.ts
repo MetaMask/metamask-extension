@@ -1,4 +1,4 @@
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { KNOWN_QR_ACCOUNTS } from '../../../stub/keyring-bridge';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -8,7 +8,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SelectHardwareWalletAccountPage from '../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { checkAccountAddressDisplayedInAccountList } from './common';
+import { checkAccountAddressDisplayedInAccountList } from '../../page-objects/flows/account-list.flow';
 
 // BUG: Add funds banner doesn't clear
 // eslint-disable-next-line
@@ -16,7 +16,7 @@ describe.skip('QR Hardware', function () {
   it('derives the correct accounts and unlocks the first account', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -59,7 +59,7 @@ describe.skip('QR Hardware', function () {
   it('unlocks multiple accounts at once and removes one', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

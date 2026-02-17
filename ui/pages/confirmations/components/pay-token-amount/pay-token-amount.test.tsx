@@ -4,7 +4,10 @@ import { renderWithConfirmContextProvider } from '../../../../../test/lib/confir
 import { getMockPersonalSignConfirmState } from '../../../../../test/data/confirmations/helper';
 import { useTokenFiatRates } from '../../hooks/tokens/useTokenFiatRates';
 import { useTransactionPayToken } from '../../hooks/pay/useTransactionPayToken';
-import { useIsTransactionPayLoading } from '../../hooks/pay/useTransactionPayData';
+import {
+  useIsTransactionPayLoading,
+  useTransactionPayIsMaxAmount,
+} from '../../hooks/pay/useTransactionPayData';
 import { PayTokenAmount } from './pay-token-amount';
 
 jest.mock('../../hooks/tokens/useTokenFiatRates');
@@ -35,6 +38,9 @@ describe('PayTokenAmount', () => {
   const useIsTransactionPayLoadingMock = jest.mocked(
     useIsTransactionPayLoading,
   );
+  const useTransactionPayIsMaxAmountMock = jest.mocked(
+    useTransactionPayIsMaxAmount,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -60,6 +66,7 @@ describe('PayTokenAmount', () => {
     } as ReturnType<typeof useTransactionPayToken>);
 
     useIsTransactionPayLoadingMock.mockReturnValue(false);
+    useTransactionPayIsMaxAmountMock.mockReturnValue(false);
   });
 
   it('renders equivalent pay token value', () => {
@@ -87,11 +94,21 @@ describe('PayTokenAmount', () => {
     expect(getByText('0 ETH')).toBeInTheDocument();
   });
 
-  it('renders skeleton if quotes loading', () => {
+  it('renders skeleton if quotes loading and max amount selected', () => {
     useIsTransactionPayLoadingMock.mockReturnValue(true);
+    useTransactionPayIsMaxAmountMock.mockReturnValue(true);
 
     const { getByTestId } = render();
 
     expect(getByTestId('pay-token-amount-skeleton')).toBeInTheDocument();
+  });
+
+  it('renders value if quotes loading but max amount not selected', () => {
+    useIsTransactionPayLoadingMock.mockReturnValue(true);
+    useTransactionPayIsMaxAmountMock.mockReturnValue(false);
+
+    const { getByText } = render();
+
+    expect(getByText('500', { exact: false })).toBeInTheDocument();
   });
 });

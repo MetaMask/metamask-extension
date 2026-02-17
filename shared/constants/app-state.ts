@@ -57,6 +57,17 @@ export enum ClaimSubmitToastType {
   DraftDeleteFailed = 'draft-delete-failed',
 }
 
+/**
+ * Type of storage write error that occurred.
+ * Used to show specific error messages in the storage error toast.
+ */
+export enum StorageWriteErrorType {
+  /** A general storage write error */
+  Default = 'default',
+  /** Device is out of disk space */
+  FileErrorNoSpace = 'file-error-no-space',
+}
+
 export type NetworkConnectionBanner =
   | { status: 'unknown' | 'available' }
   | {
@@ -65,4 +76,10 @@ export type NetworkConnectionBanner =
       networkClientId: NetworkClientId;
       chainId: Hex;
       isInfuraEndpoint: boolean;
+      /**
+       * The index of an available Infura RPC endpoint in the network's
+       * rpcEndpoints array. Only set for custom networks that have an
+       * Infura endpoint available to switch to.
+       */
+      infuraEndpointIndex?: number;
     };

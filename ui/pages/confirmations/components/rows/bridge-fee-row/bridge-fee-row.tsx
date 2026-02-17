@@ -1,16 +1,17 @@
 import React, { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
-import { Box, Text } from '../../../../../components/component-library';
-import { Skeleton } from '../../../../../components/component-library/skeleton';
+import { Text } from '../../../../../components/component-library';
 import {
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row/row';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowSize,
+  ConfirmInfoRowSkeleton,
+} from '../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoRowText } from '../../../../../components/app/confirm/info/row/text';
 import {
   useIsTransactionPayLoading,
   useTransactionPayQuotes,
@@ -19,8 +20,14 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 
+export type BridgeFeeRowProps = {
+  variant?: ConfirmInfoRowSize;
+};
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export function BridgeFeeRow() {
+export function BridgeFeeRow({
+  variant = ConfirmInfoRowSize.Default,
+}: BridgeFeeRowProps) {
   const t = useI18nContext();
   const formatFiat = useFiatFormatter();
   const isLoading = useIsTransactionPayLoading();
@@ -41,11 +48,24 @@ export function BridgeFeeRow() {
 
   const metamaskFeeUsd = useMemo(() => formatFiat(0), [formatFiat]);
 
+  const isSmall = variant === ConfirmInfoRowSize.Small;
+  const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;
+
   if (isLoading) {
     return (
       <>
-        <BridgeFeeRowSkeleton testId="bridge-fee-row-skeleton" />
-        <BridgeFeeRowSkeleton testId="metamask-fee-row-skeleton" />
+        <ConfirmInfoRowSkeleton
+          data-testid="bridge-fee-row-skeleton"
+          label={t('transactionFee')}
+          rowVariant={variant}
+        />
+        {isSmall && (
+          <ConfirmInfoRowSkeleton
+            data-testid="metamask-fee-row-skeleton"
+            label={t('metamaskFee')}
+            rowVariant={variant}
+          />
+        )}
       </>
     );
   }
@@ -57,43 +77,40 @@ export function BridgeFeeRow() {
       <ConfirmInfoRow
         data-testid="bridge-fee-row"
         label={t('transactionFee')}
+        rowVariant={variant}
         tooltip={
           hasQuotes && totals
             ? renderTooltipContent(t, totals, formatFiat)
             : undefined
         }
       >
-        <Text
-          variant={TextVariant.bodyMd}
-          color={TextColor.textAlternative}
-          data-testid="transaction-fee-value"
-        >
-          {feeTotalUsd}
-        </Text>
+        {isSmall ? (
+          <Text
+            variant={textVariant}
+            color={TextColor.textAlternative}
+            data-testid="transaction-fee-value"
+          >
+            {feeTotalUsd}
+          </Text>
+        ) : (
+          <ConfirmInfoRowText
+            text={feeTotalUsd}
+            data-testid="transaction-fee-value"
+          />
+        )}
       </ConfirmInfoRow>
-      {hasQuotes && (
-        <ConfirmInfoRow data-testid="metamask-fee-row" label={t('metamaskFee')}>
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+      {hasQuotes && isSmall && (
+        <ConfirmInfoRow
+          data-testid="metamask-fee-row"
+          label={t('metamaskFee')}
+          rowVariant={variant}
+        >
+          <Text variant={textVariant} color={TextColor.textAlternative}>
             {metamaskFeeUsd}
           </Text>
         </ConfirmInfoRow>
       )}
     </>
-  );
-}
-
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function BridgeFeeRowSkeleton({ testId }: { testId: string }) {
-  return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
-      data-testid={testId}
-    >
-      <Skeleton width={100} height={20} />
-      <Skeleton width={80} height={20} />
-    </Box>
   );
 }
 
