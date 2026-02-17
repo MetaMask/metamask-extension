@@ -29,9 +29,7 @@ import {
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import {
-  DEFAULT_ADDRESS_SCOPE_OPTIONS,
-} from '../../../../shared/constants/default-address-scope';
+import { DEFAULT_ADDRESS_OPTIONS } from '../../../../shared/constants/default-address';
 import { Text, Box } from '../../../components/component-library';
 
 const sortedCurrencies = availableCurrencies.sort((a, b) => {
@@ -202,14 +200,11 @@ export default class SettingsTab extends PureComponent {
             {t('hideZeroBalanceTokens')}
           </Text>
         </div>
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            value={hideZeroBalanceTokens}
-            onToggle={(value) => setHideZeroBalanceTokens(!value)}
-            data-testid="toggle-zero-balance-button"
-          />
-        </div>
+        <ToggleButton
+          value={hideZeroBalanceTokens}
+          onToggle={(value) => setHideZeroBalanceTokens(!value)}
+          data-testid="toggle-zero-balance-button"
+        />
       </Box>
     );
   }
@@ -223,12 +218,10 @@ export default class SettingsTab extends PureComponent {
       setDefaultAddressScope,
     } = this.props;
 
-    const defaultAddressScopeOptions = DEFAULT_ADDRESS_SCOPE_OPTIONS.map(
-      (opt) => ({
-        name: t(opt.messageKey),
-        value: opt.value,
-      }),
-    );
+    const defaultAddressDropdownOptions = DEFAULT_ADDRESS_OPTIONS.map((opt) => ({
+      name: t(opt.messageKey),
+      value: opt.value,
+    }));
 
     return (
       <Box
@@ -253,13 +246,11 @@ export default class SettingsTab extends PureComponent {
               {t('showDefaultAddress')}
             </Text>
           </div>
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={showDefaultAddress}
-              onToggle={(value) => setShowDefaultAddress(!value)}
-              dataTestId="show-default-address-toggle"
-            />
-          </div>
+          <ToggleButton
+            value={showDefaultAddress}
+            onToggle={(value) => setShowDefaultAddress(!value)}
+            dataTestId="show-default-address-toggle"
+          />
         </Box>
         <Text
           variant={TextVariant.bodyMd}
@@ -271,12 +262,9 @@ export default class SettingsTab extends PureComponent {
         </Text>
         <div className="settings-page__content-item">
           <Dropdown
-            id="default-address-scope-select"
-            options={defaultAddressScopeOptions}
-            selectedOption={
-              defaultAddressScope ||
-              defaultAddressScopeOptions[0]?.value
-            }
+            id="default-address-scope-dropdown"
+            options={defaultAddressDropdownOptions}
+            selectedOption={defaultAddressScope}
             onChange={(value) => {
               setDefaultAddressScope(value);
               if (!showDefaultAddress) {
@@ -436,17 +424,14 @@ export default class SettingsTab extends PureComponent {
             {t('showNativeTokenAsMainBalance')}
           </Text>
         </div>
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            className="show-native-token-as-main-balance"
-            value={showNativeTokenAsMainBalance}
-            onToggle={(value) => {
-              setShowNativeTokenAsMainBalancePreference(!value);
-              geShowNativeTokenAsMainBalanceForMetrics(!value);
-            }}
-          />
-        </div>
+        <ToggleButton
+          className="show-native-token-as-main-balance"
+          value={showNativeTokenAsMainBalance}
+          onToggle={(value) => {
+            setShowNativeTokenAsMainBalancePreference(!value);
+            geShowNativeTokenAsMainBalanceForMetrics(!value);
+          }}
+        />
       </Box>
     );
   }
