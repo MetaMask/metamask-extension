@@ -1,5 +1,5 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
@@ -16,7 +16,7 @@ describe('Send Tron', function () {
   it('it should be possible to send TRX', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronApis,
         manifestFlags: {

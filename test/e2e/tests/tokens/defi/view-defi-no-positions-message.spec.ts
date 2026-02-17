@@ -1,6 +1,6 @@
 import { withFixtures } from '../../../helpers';
 
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import HomePage from '../../../page-objects/pages/home/homepage';
 
 import DeFiTab from '../../../page-objects/pages/defi-tab';
