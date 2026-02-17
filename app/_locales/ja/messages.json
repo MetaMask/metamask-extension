@@ -336,10 +336,6 @@
   "addToken": {
     "message": "トークンを追加"
   },
-  "addTokenByContractAddress": {
-    "message": "トークンが見つからない場合、アドレスを貼り付けて手動でトークンを追加できます。トークンコントラクトアドレスは$1にあります",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "URLを追加"
   },
@@ -731,9 +727,6 @@
   "assetsDescription": {
     "message": "ウォレットのトークンを自動検出し、NFTを表示して、アカウント残高の最新情報を一括で取得します"
   },
-  "attemptToCancelSwapForFree": {
-    "message": "無料でスワップのキャンセルを試行"
-  },
   "attributes": {
     "message": "属性"
   },
@@ -888,10 +881,6 @@
   "blockExplorerAssetAction": {
     "message": "アセット",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Asset in Explorer"
-  },
-  "blockExplorerSwapAction": {
-    "message": "スワップ",
-    "description": "This is used with viewOnEtherscan e.g View Swap on Etherscan"
   },
   "blockExplorerUrl": {
     "message": "ブロックエクスプローラーURL"
@@ -1908,9 +1897,6 @@
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "手動でトークンをインポートする前に、信頼できることを確認してください。$1の詳細をご覧ください。"
   },
-  "customerSupport": {
-    "message": "カスタマーサポート"
-  },
   "customizeYourNotifications": {
     "message": "通知のカスタマイズ"
   },
@@ -2488,10 +2474,6 @@
   },
   "enableSnap": {
     "message": "有効にする"
-  },
-  "enableToken": {
-    "message": "$1を有効にする",
-    "description": "$1 is a token symbol, e.g. ETH"
   },
   "enabled": {
     "message": "有効にしました"
@@ -3234,12 +3216,6 @@
   "importSelectedTokensDescription": {
     "message": "選択したトークンだけがウォレットに表示されます。非表示のトークンは後でいつでも検索してインポートできます。"
   },
-  "importTokenQuestion": {
-    "message": "トークンをインポートしますか？"
-  },
-  "importTokenWarning": {
-    "message": "誰でも既存のトークンの偽バージョンを含めて、任意の名前でトークンを作成することができます。追加および取引は自己責任となります！"
-  },
   "importTokensCamelCase": {
     "message": "トークンをインポート"
   },
@@ -3676,9 +3652,6 @@
   "mainnetToken": {
     "message": "このアドレスは、既知のEthereum Mainnetトークンアドレスと一致しています。追加しようとしているトークンのコントラクトアドレスとネットワークを再度確認してください。"
   },
-  "makeAnotherSwap": {
-    "message": "新しいスワップの作成"
-  },
   "makeSureNoOneWatching": {
     "message": "誰にも見られていないことを確認してください",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
@@ -3768,9 +3741,6 @@
   },
   "metamaskSwap": {
     "message": "MetaMaskスワップ"
-  },
-  "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swapsはメンテナンス中です。後ほどご確認ください。"
   },
   "metamaskVersion": {
     "message": "MetaMaskのバージョン"
@@ -4514,9 +4484,6 @@
   },
   "off": {
     "message": "オフ"
-  },
-  "offlineForMaintenance": {
-    "message": "メンテナンスのためにオフラインです"
   },
   "ok": {
     "message": "OK"
@@ -7681,56 +7648,8 @@
   "strong": {
     "message": "強"
   },
-  "stxCancelled": {
-    "message": "スワップは失敗していたと思われます"
-  },
-  "stxCancelledDescription": {
-    "message": "トランザクションが失敗しそうになり、不要なガス代の支払いを避けるためにキャンセルされました。"
-  },
-  "stxCancelledSubDescription": {
-    "message": "もう一度スワップをお試しください。次回も同様のリスクを防ぐために監視を行います。"
-  },
-  "stxFailure": {
-    "message": "スワップに失敗しました"
-  },
-  "stxFailureDescription": {
-    "message": "急激な市場の変化により、障害が発生することがあります。問題が解決しない場合は$1にご連絡ください。",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
   "stxOptInSupportedNetworksDescription": {
     "message": "スマートトランザクションをオンにして、サポートされているネットワーク上でのトランザクションの信頼性と安全性を高めましょう。$1"
-  },
-  "stxPendingPrivatelySubmittingSwap": {
-    "message": "スワップを非公開で送信中..."
-  },
-  "stxPendingPubliclySubmittingSwap": {
-    "message": "スワップを公開で送信中..."
-  },
-  "stxSuccess": {
-    "message": "スワップ完了！"
-  },
-  "stxSuccessDescription": {
-    "message": "$1が利用可能になりました。",
-    "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "stxSwapCompleteIn": {
-    "message": "スワップ完了まで残り <",
-    "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
-  },
-  "stxTryingToCancel": {
-    "message": "トランザクションのキャンセルを試みています…"
-  },
-  "stxUnknown": {
-    "message": "ステータス不明"
-  },
-  "stxUnknownDescription": {
-    "message": "トランザクションは成功しましたが、その内容が不明です。これは、このスワップの処理中に別のトランザクションを送信したことが原因である可能性があります。"
-  },
-  "stxUserCancelled": {
-    "message": "スワップがキャンセルされました"
-  },
-  "stxUserCancelledDescription": {
-    "message": "不要なガス代を支払うことなくトランザクションがキャンセルされました。"
   },
   "submit": {
     "message": "送信"
@@ -7772,21 +7691,8 @@
   "swap": {
     "message": "スワップ"
   },
-  "swapAdjustSlippage": {
-    "message": "スリッページの調整"
-  },
   "swapAggregator": {
     "message": "アグリゲーター"
-  },
-  "swapAllowSwappingOf": {
-    "message": "$1のスワップを許可",
-    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "保証額"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "これは受け取る最低額です。スリッページによりそれ以上の額を受け取ることもあります。"
   },
   "swapAndSend": {
     "message": "スワップして送金"
@@ -7795,23 +7701,8 @@
     "message": "$1のスワップを承認",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
   },
-  "swapAreYouStillThere": {
-    "message": "まだご利用中ですか？"
-  },
-  "swapAreYouStillThereDescription": {
-    "message": "続ける際には、最新のクォートを表示する準備ができています"
-  },
   "swapConfirmWithHwWallet": {
     "message": "ハードウェアウォレットで確定"
-  },
-  "swapContractDataDisabledErrorDescription": {
-    "message": "Ledgerのイーサリアムアプリで「設定」に移動し、コントラクトデータを許可します。次に、スワップを再度試します。"
-  },
-  "swapContractDataDisabledErrorTitle": {
-    "message": "コントラクトデータがLedgerで無効です"
-  },
-  "swapCustom": {
-    "message": "カスタム"
   },
   "swapDecentralizedExchange": {
     "message": "分散型取引所"
@@ -7823,60 +7714,14 @@
   "swapDirectContract": {
     "message": "ダイレクトコントラクト"
   },
-  "swapEditLimit": {
-    "message": "限度額を編集"
-  },
-  "swapEnableDescription": {
-    "message": "これは必須であり、MetaMaskに$1をスワップする許可を付与します。",
-    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEnableTokenForSwapping": {
-    "message": "これはスワップ用に$1",
-    "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "推定ネットワーク手数料"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "これは、スワップを完了させるために使用されるネットワーク手数料の見積もりです。実際の額はネットワークの状態によって変化する可能性があります。"
-  },
-  "swapFailedErrorDescriptionWithSupportLink": {
-    "message": "トランザクション障害が発生した場合は、いつでもお手伝いいたします。この問題が解決しない場合は、$1でカスタマーサポートにお問い合わせください。",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "swapFailedErrorTitle": {
-    "message": "スワップに失敗しました"
-  },
-  "swapFetchingQuoteNofN": {
-    "message": "見積りを取得中 $1/$2",
-    "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
-  },
   "swapFetchingQuotes": {
     "message": "クォートを取得中..."
-  },
-  "swapFetchingQuotesErrorDescription": {
-    "message": "問題が発生しました。もう一度実行してください。エラーが解消されない場合は、カスタマサポートにお問い合わせください。"
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "見積もり取得エラー"
   },
-  "swapFromTo": {
-    "message": "$1から$2へのスワップ",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "swapGasFeesExplanation": {
-    "message": "MetaMaskはガス代から収益を得ません。これらの手数料は見積もりであり、ネットワークの混雑状況やトランザクションの複雑さによって変わる可能性があります。詳細は$1をご覧ください。",
-    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
-  },
-  "swapGasFeesExplanationLinkText": {
-    "message": "こちら",
-    "description": "Text for link in swapGasFeesExplanation"
-  },
   "swapGasFeesIncluded": {
     "message": " 込み"
-  },
-  "swapGasFeesSplit": {
-    "message": "前の画面のガス代は、この2つのトランザクションに分けられています。"
   },
   "swapGasFeesSponsored": {
     "message": "MetaMaskが負担"
@@ -7884,101 +7729,23 @@
   "swapGasFeesSponsoredExplanation": {
     "message": "このネットワーク手数料はMetaMaskが負担するため、アカウントに$1がなくても取引できます。"
   },
-  "swapIncludesMMFee": {
-    "message": "$1%のMetaMask手数料が含まれています.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapLearnMore": {
-    "message": "Swapsの詳細"
-  },
-  "swapLiquiditySourceInfo": {
-    "message": "弊社は、為替レートとネットワーク手数料を比較するために、複数の流動性供給源 (取引所、アグリゲーター、専門のマーケットメーカー) を検索します。"
-  },
-  "swapMaxSlippage": {
-    "message": "最大スリッページ"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMaskの手数料"
-  },
-  "swapMetaMaskFeeDescription": {
-    "message": "このクォートには、$1%の手数料が自動的に含まれています。この手数料は、MetaMaskの流動性プロバイダーの情報集積ソフトウェアの使用ライセンスの代金として支払うものです。",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotesWithDot": {
-    "message": "$1 の見積もり.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNoTokensAvailable": {
-    "message": "$1と一致するトークンがありません",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapOnceTransactionHasProcess": {
-    "message": "このトランザクションの処理が完了すると、$1がアカウントに追加されます。",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "処理中"
-  },
-  "swapQuoteDetails": {
-    "message": "クォートの詳細"
-  },
-  "swapQuoteSource": {
-    "message": "見積もり提供元"
-  },
-  "swapQuotesExpiredErrorDescription": {
-    "message": "最新のレートを取得するには、新しい見積もりをリクエストしてください。"
-  },
-  "swapQuotesExpiredErrorTitle": {
-    "message": "クォートのタイムアウト"
-  },
-  "swapQuotesNotAvailableDescription": {
-    "message": "トレードのサイズを減らすか、別のトークンを使用してください。"
-  },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "額の調整またはスリッページの設定を試してから、もう一度実行してください。"
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "見積もりを取得できません"
   },
   "swapRate": {
     "message": "レート"
   },
-  "swapReceiving": {
-    "message": "受信中"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "これは推定値です。正確な額はスリッページによって異なります。"
-  },
   "swapRequestForQuotation": {
     "message": "見積もりのリクエスト"
-  },
-  "swapSelect": {
-    "message": "選択"
   },
   "swapSelectAQuote": {
     "message": "見積もりを選択"
   },
-  "swapSelectAToken": {
-    "message": "トークンを選択"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "以下は複数の流動性供給源から収集したすべての見積もりです。"
-  },
   "swapSelectToken": {
     "message": "トークンを選択"
   },
-  "swapShowLatestQuotes": {
-    "message": "最新のクォートを表示"
-  },
   "swapSlippageAutoDescription": {
     "message": "自動"
-  },
-  "swapSlippageHighDescription": {
-    "message": "入力されたスリッページ ($1%) は非常に高いもののため、不利なレートに繋がる可能性があります",
-    "description": "$1 is the amount of % for slippage"
-  },
-  "swapSlippageHighTitle": {
-    "message": "高スリッページ"
   },
   "swapSlippageLowDescription": {
     "message": "値がこのように低い ($1%) と、スワップの失敗に繋がります",
@@ -7987,46 +7754,14 @@
   "swapSlippageLowTitle": {
     "message": "低スリッページ"
   },
-  "swapSlippageNegativeDescription": {
-    "message": "スリッページは0以上でなければなりません。"
-  },
-  "swapSlippageNegativeTitle": {
-    "message": "続けるにはスリッページを増やしてください"
-  },
-  "swapSlippageOverLimitDescription": {
-    "message": "スリッページの許容範囲は15%以下でなければなりません。それを超えると不利なレートになります。"
-  },
-  "swapSlippageOverLimitTitle": {
-    "message": "非常に高いスリッページ"
-  },
-  "swapSlippagePercent": {
-    "message": "$1%",
-    "description": "$1 is the amount of % for slippage"
-  },
   "swapSlippageTooltip": {
     "message": "注文から確定までの間に価格が変動することを「スリッページ」といいます。スリッページが「スリッページ許容範囲」の設定を超えた場合、スワップは自動的にキャンセルされます。"
-  },
-  "swapSlippageZeroDescription": {
-    "message": "スリッページがゼロのプロバイダーは少ないため、不利なクォートになる可能性があります。"
-  },
-  "swapSlippageZeroTitle": {
-    "message": "スリッページがゼロのプロバイダーを使用中"
-  },
-  "swapSource": {
-    "message": "流動性の供給源"
   },
   "swapSuggested": {
     "message": "スワップが提案されました"
   },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "スワップは複雑で急を要するトランザクションです。コストとスワップの確実な成功のバランスが取れたこのガス代をお勧めします。"
-  },
-  "swapToConfirmWithHwWallet": {
-    "message": "ハードウェアウォレットで確定"
-  },
-  "swapTokenAvailable": {
-    "message": "$1がアカウントに追加されました。",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
   },
   "swapTokenNotAvailable": {
     "message": "この地域ではトークンのスワップが行えません"
@@ -8038,26 +7773,14 @@
   "swapTokens": {
     "message": "トークンをスワップ"
   },
-  "swapTransactionComplete": {
-    "message": "トランザクションが完了しました"
-  },
-  "swapTwoTransactions": {
-    "message": "2つのトランザクション"
-  },
   "swapUnknown": {
     "message": "不明"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "このスワップのガス代を支払うのに十分な$1がありません。金額を下げるか、$1を買い足してください。"
   },
-  "swapZeroSlippage": {
-    "message": "0%スリッページ"
-  },
   "swapsMaxSlippage": {
     "message": "最大スリッページ"
-  },
-  "swapsViewInActivity": {
-    "message": "アクティビティに表示"
   },
   "switch": {
     "message": "切り替える"
@@ -8110,9 +7833,6 @@
   },
   "terms": {
     "message": "利用規約"
-  },
-  "termsOfService": {
-    "message": "サービス規約"
   },
   "termsOfUseAgree": {
     "message": "同意"
@@ -8263,9 +7983,6 @@
   },
   "transactionDataFunction": {
     "message": "関数"
-  },
-  "transactionDetailGasHeading": {
-    "message": "ガス代見積もり"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "金額 + 手数料"
@@ -8649,10 +8366,6 @@
   },
   "viewOnBlockExplorer": {
     "message": "ブロックエクスプローラーで表示"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "$1を$2で表示",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "$1をEtherscanで表示",

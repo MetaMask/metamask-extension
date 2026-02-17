@@ -115,10 +115,6 @@
   "addToken": {
     "message": "Agregar token"
   },
-  "addTokenByContractAddress": {
-    "message": "¿No encuentra un token? Para agregar un token, copie su dirección. Puede encontrar la dirección de contrato del token en $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "address": {
     "message": "Dirección"
   },
@@ -230,10 +226,6 @@
   "blockExplorerAssetAction": {
     "message": "Activo",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Asset in Explorer"
-  },
-  "blockExplorerSwapAction": {
-    "message": "Canjear",
-    "description": "This is used with viewOnEtherscan e.g View Swap on Etherscan"
   },
   "blockExplorerUrl": {
     "message": "Dirección URL del explorador de bloques"
@@ -638,10 +630,6 @@
   "enableFromSettings": {
     "message": " Actívela en Configuración."
   },
-  "enableToken": {
-    "message": "activar $1",
-    "description": "$1 is a token symbol, e.g. ETH"
-  },
   "encryptionPublicKeyNotice": {
     "message": "$1 quisiera su clave pública de cifrado. Al aceptar, este sitio podrá redactar mensajes cifrados para usted.",
     "description": "$1 is the web3 site name"
@@ -855,12 +843,6 @@
   "importAccountMsg": {
     "message": "Las cuentas importadas no se asociarán con la frase secreta de recuperación de la cuenta original de MetaMask. Aprenda más sobre las cuentas importadas"
   },
-  "importTokenQuestion": {
-    "message": "¿Desea importar el token?"
-  },
-  "importTokenWarning": {
-    "message": "Toda persona puede crear un token con cualquier nombre, incluso versiones falsas de tokens existentes. ¡Agréguelo y realice transacciones bajo su propio riesgo!"
-  },
   "importTokensCamelCase": {
     "message": "Importar tokens"
   },
@@ -1025,9 +1007,6 @@
   "mainnet": {
     "message": "Red principal de Ethereum"
   },
-  "makeAnotherSwap": {
-    "message": "Crear un nuevo swap"
-  },
   "makeSureNoOneWatching": {
     "message": "Asegúrese de que nadie está viendo su pantalla",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
@@ -1065,9 +1044,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "El botón de estado de la conexión muestra si el sitio web que visita está conectado a la cuenta seleccionada actualmente."
-  },
-  "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swaps está en mantenimiento. Vuelva a comprobarlo más tarde."
   },
   "metamaskVersion": {
     "message": "Versión de MetaMask"
@@ -1200,9 +1176,6 @@
   },
   "off": {
     "message": "Desactivado"
-  },
-  "offlineForMaintenance": {
-    "message": "Sin conexión por mantenimiento"
   },
   "ok": {
     "message": "Aceptar"
@@ -1589,16 +1562,6 @@
   "swapAggregator": {
     "message": "Agregador"
   },
-  "swapAllowSwappingOf": {
-    "message": "Permitir canje de $1",
-    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "Monto garantizado"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Se refiere al monto mínimo que recibirá. Puede recibir más en función del desfase."
-  },
   "swapApproval": {
     "message": "Aprobar $1 para canjes",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
@@ -1606,100 +1569,17 @@
   "swapConfirmWithHwWallet": {
     "message": "Confirmar con la cartera de hardware"
   },
-  "swapContractDataDisabledErrorDescription": {
-    "message": "En la aplicación de Ethereum en su Ledger, diríjase a \"Configuración\" y habilite los datos de contrato. Luego intente canjear de nuevo."
-  },
-  "swapContractDataDisabledErrorTitle": {
-    "message": "Los datos de contrato no se habilitaron en su Ledger"
-  },
-  "swapCustom": {
-    "message": "personalizado"
-  },
   "swapDecentralizedExchange": {
     "message": "Intercambio descentralizado"
   },
   "swapDirectContract": {
     "message": "Contrato directo"
   },
-  "swapEditLimit": {
-    "message": "Editar límite"
-  },
-  "swapEnableDescription": {
-    "message": "Esta acción es obligatoria y le da permiso a MetaMask para canjear su $1.",
-    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEnableTokenForSwapping": {
-    "message": "Esto será $1 por intercambiar",
-    "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "Tarifas de red estimadas"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Un estimado de la tarifa de red que se usará para realizar el intercambio. El monto real puede cambiar según las condiciones de la red."
-  },
-  "swapFailedErrorDescriptionWithSupportLink": {
-    "message": "Pueden ocurrir fallas en las transacciones, por lo que estamos aquí para ayudarlo. Si el problema persiste, comuníquese con nuestro soporte al cliente al $1 para recibir ayuda adicional.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "swapFailedErrorTitle": {
-    "message": "Error al canjear"
-  },
   "swapFetchingQuotes": {
     "message": "Recuperando cotizaciones"
   },
-  "swapFetchingQuotesErrorDescription": {
-    "message": "Se produjo un error. Vuelva a intentarlo o, si el error persiste, póngase en contacto con el soporte al cliente."
-  },
   "swapFetchingQuotesErrorTitle": {
     "message": "Error al capturar cotizaciones"
-  },
-  "swapFromTo": {
-    "message": "El canje de $1 por $2",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "swapGasFeesSplit": {
-    "message": "Las tarifas de gas de la pantalla anterior se dividen entre estas dos transacciones."
-  },
-  "swapIncludesMMFee": {
-    "message": "Incluye una tasa de MetaMask del $1%.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapMaxSlippage": {
-    "message": "Desfase máximo"
-  },
-  "swapMetaMaskFee": {
-    "message": "Tarifa de MetaMask"
-  },
-  "swapMetaMaskFeeDescription": {
-    "message": "Buscamos el mejor precio en las fuentes de liquidez más importantes, todo el tiempo. Se incorpora de manera automática a esta cotización una cuota del $1 %.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotesWithDot": {
-    "message": "$1 cotizaciones.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapOnceTransactionHasProcess": {
-    "message": "Su $1 se agregará a la cuenta una vez que se procese esta transacción.",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "Procesamiento"
-  },
-  "swapQuoteDetails": {
-    "message": "Detalles de cotización"
-  },
-  "swapQuoteSource": {
-    "message": "Fuente de la cotización"
-  },
-  "swapQuotesExpiredErrorDescription": {
-    "message": "Solicite cotizaciones nuevas para tener los costos más recientes."
-  },
-  "swapQuotesExpiredErrorTitle": {
-    "message": "Tiempo de espera de cotizaciones"
-  },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "Intente ajustar la configuración de monto o desfase y vuelva a intentarlo."
   },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "No hay cotizaciones disponibles"
@@ -1707,29 +1587,11 @@
   "swapRate": {
     "message": "Tarifa"
   },
-  "swapReceiving": {
-    "message": "Recibiendo"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Este es un valor estimado. El monto exacto depende del desfase."
-  },
   "swapRequestForQuotation": {
     "message": "Solicitud de cotización"
   },
-  "swapSelect": {
-    "message": "Seleccionar"
-  },
   "swapSelectAQuote": {
     "message": "Seleccionar una cotización"
-  },
-  "swapSelectAToken": {
-    "message": "Seleccionar un token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "A continuación se muestran todas las cotizaciones recopiladas de diversas fuentes de liquidez."
-  },
-  "swapSource": {
-    "message": "Fuente de liquidez"
   },
   "swapSuggested": {
     "message": "Swap sugerido"
@@ -1737,34 +1599,15 @@
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Los swaps son transacciones complejas y urgentes. Recomendamos esta tarifa de gas para lograr un buen equilibrio entre el costo y la garantía de un swap exitoso."
   },
-  "swapToConfirmWithHwWallet": {
-    "message": "para confirmar con la cartera de hardware"
-  },
-  "swapTokenAvailable": {
-    "message": "Su $1 se agregó a la cuenta.",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
-  },
   "swapTokenToToken": {
     "message": "Canjear $1 por $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTransactionComplete": {
-    "message": "Transacción completa"
-  },
-  "swapTwoTransactions": {
-    "message": "2 transacciones"
-  },
   "swapUnknown": {
     "message": "Desconocido"
   },
-  "swapZeroSlippage": {
-    "message": "0 % de desfase"
-  },
   "swapsMaxSlippage": {
     "message": "Tolerancia de desfase"
-  },
-  "swapsViewInActivity": {
-    "message": "Ver en actividad"
   },
   "switchEthereumChainConfirmationDescription": {
     "message": "Esto cambiará la red seleccionada en MetaMask por una red agregada con anterioridad:"
@@ -1792,9 +1635,6 @@
   },
   "terms": {
     "message": "Términos de uso"
-  },
-  "termsOfService": {
-    "message": "Términos de servicio"
   },
   "time": {
     "message": "Tiempo"
@@ -1837,9 +1677,6 @@
   },
   "transactionCreated": {
     "message": "La transacción se creó con un valor de $1 en $2."
-  },
-  "transactionDetailGasHeading": {
-    "message": "Tarifa estimada de gas"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Monto + cargos"
@@ -1961,10 +1798,6 @@
   },
   "viewOnBlockExplorer": {
     "message": "Ver en el explorador de bloques"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Ver $1 en $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Ver $1 en Etherscan",

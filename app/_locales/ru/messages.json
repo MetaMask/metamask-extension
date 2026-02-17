@@ -336,10 +336,6 @@
   "addToken": {
     "message": "Добавить токен"
   },
-  "addTokenByContractAddress": {
-    "message": "Не можете найти токен? Можно вручную добавить любой токен, вставив его адрес. Адреса контракта токена можно найти на $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "Добавить URL-адрес"
   },
@@ -731,9 +727,6 @@
   "assetsDescription": {
     "message": "Автоматически обнаруживайте токены в своем кошельке, отображайте NFT и получайте пакетные обновления баланса счета"
   },
-  "attemptToCancelSwapForFree": {
-    "message": "Бесплатная попытка отменить своп"
-  },
   "attributes": {
     "message": "Атрибуты"
   },
@@ -888,10 +881,6 @@
   "blockExplorerAssetAction": {
     "message": "Актив",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Asset in Explorer"
-  },
-  "blockExplorerSwapAction": {
-    "message": "Своп",
-    "description": "This is used with viewOnEtherscan e.g View Swap on Etherscan"
   },
   "blockExplorerUrl": {
     "message": "URL обозревателя блоков"
@@ -1908,9 +1897,6 @@
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Кто угодно может создать токен, в том числе поддельные версии существующих токенов. Узнайте подробнее о $1"
   },
-  "customerSupport": {
-    "message": "поддержка пользователя"
-  },
   "customizeYourNotifications": {
     "message": "Настройте свои уведомления"
   },
@@ -2488,10 +2474,6 @@
   },
   "enableSnap": {
     "message": "Включить"
-  },
-  "enableToken": {
-    "message": "активирует для $1",
-    "description": "$1 is a token symbol, e.g. ETH"
   },
   "enabled": {
     "message": "Включено"
@@ -3234,12 +3216,6 @@
   "importSelectedTokensDescription": {
     "message": "В вашем кошельке появятся только те токены, которые вы выбрали. Вы всегда можете импортировать скрытые токены позже, выполнив их поиск."
   },
-  "importTokenQuestion": {
-    "message": "Импортировать токен?"
-  },
-  "importTokenWarning": {
-    "message": "Кто угодно может создать токен с любым именем, включая поддельные версии существующих токенов. Добавляйте и торгуйте на свой страх и риск!"
-  },
   "importTokensCamelCase": {
     "message": "Импорт токенов"
   },
@@ -3676,9 +3652,6 @@
   "mainnetToken": {
     "message": "Этот адрес соответствует известному адресу токена основной сети Ethereum. Перепроверьте адрес контракта и сеть токена, который вы пытаетесь добавить."
   },
-  "makeAnotherSwap": {
-    "message": "Создать новый своп"
-  },
   "makeSureNoOneWatching": {
     "message": "Убедитесь, что никто не смотрит",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
@@ -3768,9 +3741,6 @@
   },
   "metamaskSwap": {
     "message": "Своп MetaMask"
-  },
-  "metamaskSwapsOfflineDescription": {
-    "message": "Проводится техобслуживание службы свопов MetaMask. Зайдите позже."
   },
   "metamaskVersion": {
     "message": "Версия MetaMask"
@@ -4514,9 +4484,6 @@
   },
   "off": {
     "message": "Выкл."
-  },
-  "offlineForMaintenance": {
-    "message": "Отключено для обслуживания"
   },
   "ok": {
     "message": "ОК"
@@ -7681,56 +7648,8 @@
   "strong": {
     "message": "Надежный"
   },
-  "stxCancelled": {
-    "message": "Потенциально неуспешный обмен"
-  },
-  "stxCancelledDescription": {
-    "message": "Ваша транзакция завершилась неудачно и была бы отменена, чтобы избежать ненужной платы за газ."
-  },
-  "stxCancelledSubDescription": {
-    "message": "Попробуйте обменять снова. В следующий раз мы сможем защитить вас от подобного риска."
-  },
-  "stxFailure": {
-    "message": "Своп не удался"
-  },
-  "stxFailureDescription": {
-    "message": "Внезапные изменения на рынке могут привести к сбою транзакции. Если проблема не исчезает, обратитесь в $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
   "stxOptInSupportedNetworksDescription": {
     "message": "Включите функцию «Смарт-транзакции» для более надежных и безопасных транзакций в поддерживаемых сетях. $1"
-  },
-  "stxPendingPrivatelySubmittingSwap": {
-    "message": "Приватная отправка вашего свопа..."
-  },
-  "stxPendingPubliclySubmittingSwap": {
-    "message": "Публичная отправка вашего свопа..."
-  },
-  "stxSuccess": {
-    "message": "Обмен выполнен!"
-  },
-  "stxSuccessDescription": {
-    "message": "$1 теперь доступны.",
-    "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "stxSwapCompleteIn": {
-    "message": "Своп завершится через <",
-    "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
-  },
-  "stxTryingToCancel": {
-    "message": "Попытка отмены транзакции..."
-  },
-  "stxUnknown": {
-    "message": "Статус неизвестен"
-  },
-  "stxUnknownDescription": {
-    "message": "Транзакция прошла успешно, но мы не понимаем, что это такое. Возможно, это связано с тем, что во время обмена обрабатывалась другая транзакция."
-  },
-  "stxUserCancelled": {
-    "message": "Своп отменен"
-  },
-  "stxUserCancelledDescription": {
-    "message": "Ваша транзакция была отменена, и вы не вносили никакой ненужной платы за газ."
   },
   "submit": {
     "message": "Отправить"
@@ -7772,21 +7691,8 @@
   "swap": {
     "message": "Обменять"
   },
-  "swapAdjustSlippage": {
-    "message": "Откорректировать проскальзывание"
-  },
   "swapAggregator": {
     "message": "Агрегатор"
-  },
-  "swapAllowSwappingOf": {
-    "message": "Разрешите своп $1",
-    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "Гарантированная сумма"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Это минимальная сумма, которую вы получите. Вы можете получить больше в зависимости от проскальзывания."
   },
   "swapAndSend": {
     "message": "Обменять и отправить"
@@ -7795,23 +7701,8 @@
     "message": "Одобрить использование $1 для свопа",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
   },
-  "swapAreYouStillThere": {
-    "message": "Вы все еще там?"
-  },
-  "swapAreYouStillThereDescription": {
-    "message": "Мы готовы показать вам последние котировки, когда вы захотите продолжить"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Подтвердите с помощью аппаратного кошелька"
-  },
-  "swapContractDataDisabledErrorDescription": {
-    "message": "В приложении Ethereum на Ledger перейдите в раздел «Настройки» и разрешите использование данных о контракте. Затем попробуйте повторить своп."
-  },
-  "swapContractDataDisabledErrorTitle": {
-    "message": "На Ledger не включены данные о контракте"
-  },
-  "swapCustom": {
-    "message": "пользовательские"
   },
   "swapDecentralizedExchange": {
     "message": "Децентрализованная биржа"
@@ -7823,60 +7714,14 @@
   "swapDirectContract": {
     "message": "Прямой контракт"
   },
-  "swapEditLimit": {
-    "message": "Изменить лимит"
-  },
-  "swapEnableDescription": {
-    "message": "Это необходимо и дает MetaMask разрешение на своп вашего $1.",
-    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEnableTokenForSwapping": {
-    "message": "Это $1 возможность свопа",
-    "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "Примерные комиссии сети"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Это оценочная сетевая комиссия, которая будет использована для завершения вашего свопа. Фактическая сумма может меняться в зависимости от условий сети."
-  },
-  "swapFailedErrorDescriptionWithSupportLink": {
-    "message": "Иногда транзакции не удается выполнить. Мы рады помочь вам в таких случаях. Если проблема не исчезнет, обратитесь в нашу поддержку клентов на сайте $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "swapFailedErrorTitle": {
-    "message": "Своп не удался"
-  },
-  "swapFetchingQuoteNofN": {
-    "message": "Получение котировки $1 из $2",
-    "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
-  },
   "swapFetchingQuotes": {
     "message": "Получение котировок..."
-  },
-  "swapFetchingQuotesErrorDescription": {
-    "message": "Хмм... Что-то пошло не так. Повторите попытку или, если ошибка не исчезнет, обратитесь в поддержку."
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "Ошибка при получении котировок"
   },
-  "swapFromTo": {
-    "message": "Своп $1 на $2",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "swapGasFeesExplanation": {
-    "message": "MetaMask не получает плату за газ. Сумма этой платы являются приблизительной и может меняться в зависимости от загруженности сети и сложности транзакции. Узнайте подробнее $1.",
-    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
-  },
-  "swapGasFeesExplanationLinkText": {
-    "message": "здесь",
-    "description": "Text for link in swapGasFeesExplanation"
-  },
   "swapGasFeesIncluded": {
     "message": " Включен"
-  },
-  "swapGasFeesSplit": {
-    "message": "Плата за газ, указанная на предыдущем экране, распределяется между этими двумя транзакциями."
   },
   "swapGasFeesSponsored": {
     "message": "Оплачено MetaMask"
@@ -7884,101 +7729,23 @@
   "swapGasFeesSponsoredExplanation": {
     "message": "Эту комиссию сети оплачивает MetaMask, поэтому вы можете выполнять транзакции, не имея на счету $1."
   },
-  "swapIncludesMMFee": {
-    "message": "Включает комиссию MetaMask в размере $1%.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapLearnMore": {
-    "message": "Узнайте больше о свопах"
-  },
-  "swapLiquiditySourceInfo": {
-    "message": "Мы ищем по разным источникам ликвидности (биржи, агрегаторы и профессиональные маркет-мейкеры), чтобы сравнивать обменные курсы и комиссии сети."
-  },
-  "swapMaxSlippage": {
-    "message": "Максимальное проскальзывание"
-  },
-  "swapMetaMaskFee": {
-    "message": "Комиссия MetaMask"
-  },
-  "swapMetaMaskFeeDescription": {
-    "message": "В этой котировке автоматически учитывается комиссия в размере $1%. Вы платите ее в обмен на лицензию на использование программного обеспечения MetaMask для сбора информации о поставщиках ликвидности.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotesWithDot": {
-    "message": "Котировок: $1.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNoTokensAvailable": {
-    "message": "Нет доступных токенов, соответствующих $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapOnceTransactionHasProcess": {
-    "message": "Ваш $1 будет зачислен на ваш счет после обработки этой транзакции.",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "Обработка..."
-  },
-  "swapQuoteDetails": {
-    "message": "Сведения о котировке"
-  },
-  "swapQuoteSource": {
-    "message": "Источник котировки"
-  },
-  "swapQuotesExpiredErrorDescription": {
-    "message": "Запрашивайте новые котировки, чтобы узнать последние курсы."
-  },
-  "swapQuotesExpiredErrorTitle": {
-    "message": "Таймаут котировок"
-  },
-  "swapQuotesNotAvailableDescription": {
-    "message": "Уменьшите размер своей сделки или используйте другой токен."
-  },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "Попробуйте изменить настройки суммы или проскальзывания и повторить попытку."
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Нет доступных котировок"
   },
   "swapRate": {
     "message": "Курс"
   },
-  "swapReceiving": {
-    "message": "Получено"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Это примерное значение. Точная сумма зависит от проскальзывания."
-  },
   "swapRequestForQuotation": {
     "message": "Запрос котировки"
-  },
-  "swapSelect": {
-    "message": "Выбрать"
   },
   "swapSelectAQuote": {
     "message": "Выбрать котировку"
   },
-  "swapSelectAToken": {
-    "message": "Выбрать токен"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Ниже приведены все котировки, собранные из нескольких источников ликвидности."
-  },
   "swapSelectToken": {
     "message": "Выбрать токен"
   },
-  "swapShowLatestQuotes": {
-    "message": "Показать последние котировки"
-  },
   "swapSlippageAutoDescription": {
     "message": "Авто"
-  },
-  "swapSlippageHighDescription": {
-    "message": "Введенное проскальзывание ($1%) считается очень высоким и может привести к использованию плохого курса",
-    "description": "$1 is the amount of % for slippage"
-  },
-  "swapSlippageHighTitle": {
-    "message": "Высокое проскальзывание"
   },
   "swapSlippageLowDescription": {
     "message": "Такое низкое значение ($1%) может привести к неудачному свопу",
@@ -7987,46 +7754,14 @@
   "swapSlippageLowTitle": {
     "message": "Низкое проскальзывание"
   },
-  "swapSlippageNegativeDescription": {
-    "message": "Проскальзывание должно быть больше нуля или равно нулю"
-  },
-  "swapSlippageNegativeTitle": {
-    "message": "Увеличьте проскальзывание, чтобы продолжить"
-  },
-  "swapSlippageOverLimitDescription": {
-    "message": "Допуск на проскальзывание должен составлять 15% или менее. Все, что выше, приведет к неудачной ставке."
-  },
-  "swapSlippageOverLimitTitle": {
-    "message": "Очень высокое проскальзывание"
-  },
-  "swapSlippagePercent": {
-    "message": "$1%",
-    "description": "$1 is the amount of % for slippage"
-  },
   "swapSlippageTooltip": {
     "message": "Изменение цены в период между размещением заказа и подтверждением называется «проскальзыванием». Своп будет автоматически отменен, если фактическое проскальзывание превысит установленный «допуск проскальзывания»."
-  },
-  "swapSlippageZeroDescription": {
-    "message": "Существует меньше поставщиков котировок с нулевым проскальзыванием, что приводит к менее конкурентоспособным котировкам."
-  },
-  "swapSlippageZeroTitle": {
-    "message": "Поиск поставщиков с нулевым проскальзыванием"
-  },
-  "swapSource": {
-    "message": "Источник ликвидности"
   },
   "swapSuggested": {
     "message": "Рекомендуется своп"
   },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Своп — это сложная транзакция, выполнение которой зависят от имеющегося времени. Мы рекомендуем эту плату за газ для хорошего баланса между стоимостью и уверенностью в успехе свопа."
-  },
-  "swapToConfirmWithHwWallet": {
-    "message": "чтобы подтвердить с помощью аппаратного кошелька"
-  },
-  "swapTokenAvailable": {
-    "message": "Ваши $1 зачислены на ваш счет.",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
   },
   "swapTokenNotAvailable": {
     "message": "Своп токена в этом регионе недоступен"
@@ -8038,26 +7773,14 @@
   "swapTokens": {
     "message": "Обменять токены"
   },
-  "swapTransactionComplete": {
-    "message": "Транзакция завершена"
-  },
-  "swapTwoTransactions": {
-    "message": "2 транзакции"
-  },
   "swapUnknown": {
     "message": "Неизвестно"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "У вас недостаточно $1 для покрытия платы за газ для этого свопа. Введите меньшую сумму или купите больше $1."
   },
-  "swapZeroSlippage": {
-    "message": "0% проскальзывания"
-  },
   "swapsMaxSlippage": {
     "message": "Допуск проскальзывания"
-  },
-  "swapsViewInActivity": {
-    "message": "Посмотреть в журнале активности"
   },
   "switch": {
     "message": "Сменить"
@@ -8110,9 +7833,6 @@
   },
   "terms": {
     "message": "Условия использования"
-  },
-  "termsOfService": {
-    "message": "Условия обслуживания"
   },
   "termsOfUseAgree": {
     "message": "Согласиться"
@@ -8263,9 +7983,6 @@
   },
   "transactionDataFunction": {
     "message": "Функция"
-  },
-  "transactionDetailGasHeading": {
-    "message": "Примерная плата за газ"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Сумма + комиссии"
@@ -8649,10 +8366,6 @@
   },
   "viewOnBlockExplorer": {
     "message": "Просмотр в проводнике блоков"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Смотреть $1 в $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Смотреть 1$ на Etherscan",

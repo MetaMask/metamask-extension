@@ -336,10 +336,6 @@
   "addToken": {
     "message": "Token ekle"
   },
-  "addTokenByContractAddress": {
-    "message": "Bir tokeni bulamadınız mı? Adresini yapıştırarak dilediğiniz tokeni manuel olarak ekleyebilirsiniz. Token sözleşme adreslerini $1 alanında bulabilirsiniz",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "URL ekle"
   },
@@ -731,9 +727,6 @@
   "assetsDescription": {
     "message": "Cüzdanınızdaki token'ler otomatik algılansın, NFT'ler gösterilsin ve toplu hesap bakiye güncellemeleri alınsın"
   },
-  "attemptToCancelSwapForFree": {
-    "message": "Swap işlemini ücretsiz iptal etme girişimi"
-  },
   "attributes": {
     "message": "Özellikler"
   },
@@ -888,10 +881,6 @@
   "blockExplorerAssetAction": {
     "message": "Varlık",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Asset in Explorer"
-  },
-  "blockExplorerSwapAction": {
-    "message": "Takas",
-    "description": "This is used with viewOnEtherscan e.g View Swap on Etherscan"
   },
   "blockExplorerUrl": {
     "message": "Blok Gezgini URL adresi"
@@ -1908,9 +1897,6 @@
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Mevcut tokenlerin sahteleri de dahil olmak üzere herkes bir token oluşturabilir. $1 hakkında bilgi edinin"
   },
-  "customerSupport": {
-    "message": "müşteri hizmetleri"
-  },
   "customizeYourNotifications": {
     "message": "Bildirimlerinizi özelleştirin"
   },
@@ -2488,10 +2474,6 @@
   },
   "enableSnap": {
     "message": "Etkinleştir"
-  },
-  "enableToken": {
-    "message": "şunu etkinleştir: $1",
-    "description": "$1 is a token symbol, e.g. ETH"
   },
   "enabled": {
     "message": "Etkinleştirildi"
@@ -3234,12 +3216,6 @@
   "importSelectedTokensDescription": {
     "message": "Sadece seçtiğiniz tokenler cüzdanınızda gösterilecek. Dilediğiniz zaman onları arayarak gizli tokenleri içe aktarabilirsiniz."
   },
-  "importTokenQuestion": {
-    "message": "Tokeni içe aktar?"
-  },
-  "importTokenWarning": {
-    "message": "Herkes, mevcut tokenlerin sahte sürümleri de dahil olmak üzere herhangi bir ada sahip bir token oluşturabilir. Riski tamamen size ait olacak şekikde token ekleyin ve işlem yapın!"
-  },
   "importTokensCamelCase": {
     "message": "Tokenleri içe aktar"
   },
@@ -3676,9 +3652,6 @@
   "mainnetToken": {
     "message": "Bu adres bilinen bir Ethereum Mainnet token adresi ile eşleşiyor. Eklemek istediğiniz token için sözleşme adresini ve ağı tekrar kontrol edin."
   },
-  "makeAnotherSwap": {
-    "message": "Yeni bir swap oluştur"
-  },
   "makeSureNoOneWatching": {
     "message": "Hiç kimsenin bakmadığından emin olun",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
@@ -3768,9 +3741,6 @@
   },
   "metamaskSwap": {
     "message": "MetaMask Takas"
-  },
-  "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Takas İşlemleri bakımda. Lütfen daha sonra tekrar kontrol edin."
   },
   "metamaskVersion": {
     "message": "MetaMask Sürümü"
@@ -4514,9 +4484,6 @@
   },
   "off": {
     "message": "Kapalı"
-  },
-  "offlineForMaintenance": {
-    "message": "Bakım için çevrimdışı"
   },
   "ok": {
     "message": "Tamam"
@@ -7681,56 +7648,8 @@
   "strong": {
     "message": "Güçlü"
   },
-  "stxCancelled": {
-    "message": "Takas başarısız olurdu"
-  },
-  "stxCancelledDescription": {
-    "message": "İşleminiz başarısız oldu ve gereksiz gaz ücreti ödemenizi önlemek amacıyla iptal edildi."
-  },
-  "stxCancelledSubDescription": {
-    "message": "Swap işlemini tekrar dene. Bir dahaki sefere seni benzer risklere karşı korumak için burada olacağız."
-  },
-  "stxFailure": {
-    "message": "Takas başarısız oldu"
-  },
-  "stxFailureDescription": {
-    "message": "Ani piyasa değişiklikleri başarısızlıklara neden olabilir. Sorun devam ederse lütfen $1 ile iletişime geç.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
   "stxOptInSupportedNetworksDescription": {
     "message": "Desteklenen ağlarda daha güvenilir ve güvenli işlemler için Akıllı İşlemleri açın. $1"
-  },
-  "stxPendingPrivatelySubmittingSwap": {
-    "message": "Swap işlemin özel olarak gönderiliyor..."
-  },
-  "stxPendingPubliclySubmittingSwap": {
-    "message": "Swap işlemin herkese açık olarak gönderiliyor..."
-  },
-  "stxSuccess": {
-    "message": "Takas tamamlandı!"
-  },
-  "stxSuccessDescription": {
-    "message": "$1 şimdi kullanılabilir.",
-    "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "stxSwapCompleteIn": {
-    "message": "Swap işleminin tamamlanmasına kalan süre <",
-    "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
-  },
-  "stxTryingToCancel": {
-    "message": "İşlemin iptal edilmeye çalışılıyor..."
-  },
-  "stxUnknown": {
-    "message": "Durum bilinmiyor"
-  },
-  "stxUnknownDescription": {
-    "message": "Bir işlem başarılı oldu ama ne olduğundan emin değiliz. Bunun nedeni, bu swap işlenirken başka bir işlemin gönderilmesi olabilir."
-  },
-  "stxUserCancelled": {
-    "message": "Takas iptal edildi"
-  },
-  "stxUserCancelledDescription": {
-    "message": "İşleminiz iptal edildi ve gereksiz gaz ücreti ödemediniz."
   },
   "submit": {
     "message": "Gönder"
@@ -7772,21 +7691,8 @@
   "swap": {
     "message": "Takas Yap"
   },
-  "swapAdjustSlippage": {
-    "message": "Kaymayı ayarla"
-  },
   "swapAggregator": {
     "message": "Toplayıcı"
-  },
-  "swapAllowSwappingOf": {
-    "message": "$1 takasına izin verin",
-    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "Garantili tutar"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Bu, alacağınız minimum tutardır. Kaymaya bağlı olarak daha fazla alabilirsiniz."
   },
   "swapAndSend": {
     "message": "Swap Gerçekleştir ve Gönder"
@@ -7795,23 +7701,8 @@
     "message": "Takas işlemleri için $1 onayla",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
   },
-  "swapAreYouStillThere": {
-    "message": "Hala orada mısınız?"
-  },
-  "swapAreYouStillThereDescription": {
-    "message": "Devam etmek istediğinizde size en yeni kotaları göstermeye hazırız"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Donanım cüzdanınızla onaylayın"
-  },
-  "swapContractDataDisabledErrorDescription": {
-    "message": "Ledger'ınızdaki Ethereum uygulamasında \"Ayarlar\" öğesine gidin ve sözleşme verilerine izin verin. Ardından takas işleminizi tekrar deneyin."
-  },
-  "swapContractDataDisabledErrorTitle": {
-    "message": "Sözleşme verileriniz Ledger'ınızda etkinleştirilmemiş"
-  },
-  "swapCustom": {
-    "message": "özel"
   },
   "swapDecentralizedExchange": {
     "message": "Merkeziyetsiz borsa"
@@ -7823,60 +7714,14 @@
   "swapDirectContract": {
     "message": "Doğrudan sözleşme"
   },
-  "swapEditLimit": {
-    "message": "Limiti düzenle"
-  },
-  "swapEnableDescription": {
-    "message": "Bu gereklidir ve MetaMask’e $1’inizi takas yapma izni verir.",
-    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEnableTokenForSwapping": {
-    "message": "Bu, takas için $1 kullanacak",
-    "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "Tahmini ağ ücretleri"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Bu, takas işleminizi tamamlamak için kullanılacak ağ ücretinin bir tahminidir. Gerçek miktar ağ koşullarına göre değişebilir."
-  },
-  "swapFailedErrorDescriptionWithSupportLink": {
-    "message": "İşlemler başarısız olabilir ve size yardımcı olmak için buradayız. Bu sorun devam ederse daha fazla destek için $1 adresinden müşteri hizmetleri destek bölümü ile iletişime geçebilirsiniz.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "swapFailedErrorTitle": {
-    "message": "Takas başarısız oldu"
-  },
-  "swapFetchingQuoteNofN": {
-    "message": "$1 / $2 teklif alınıyor",
-    "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
-  },
   "swapFetchingQuotes": {
     "message": "Teklifler alınıyor..."
-  },
-  "swapFetchingQuotesErrorDescription": {
-    "message": "Hımmm... bir hata oluştu. Tekrar deneyin veya sorun devam ederse müşteri hizmetleri destek bölümüyle iletişime geçin."
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "Teklifler alınırken hata"
   },
-  "swapFromTo": {
-    "message": "$1 ile $2 takası",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "swapGasFeesExplanation": {
-    "message": "MetaMask, gaz ücretlerinden para kazanmaz. Bu ücretler tahminlerdir ve ağın yoğunluğuna ve işlemin karmaşıklığına göre değişebilir. $1 daha fazla bilgi edinin.",
-    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
-  },
-  "swapGasFeesExplanationLinkText": {
-    "message": "Buradan",
-    "description": "Text for link in swapGasFeesExplanation"
-  },
   "swapGasFeesIncluded": {
     "message": " Dahil"
-  },
-  "swapGasFeesSplit": {
-    "message": "Önceki ekrandaki gaz ücretleri bu iki işlem arasında bölünmüştür."
   },
   "swapGasFeesSponsored": {
     "message": "MetaMask tarafından ödenir"
@@ -7884,101 +7729,23 @@
   "swapGasFeesSponsoredExplanation": {
     "message": "Bu ağ ücreti MetaMask tarafından ödenir, bu sayede hesabınızda $1 olmadan işlem yapabilirsiniz."
   },
-  "swapIncludesMMFee": {
-    "message": "%$1 MetaMask ücreti dahildir.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapLearnMore": {
-    "message": "Swap işlemleri hakkında daha fazla bilgi edinin"
-  },
-  "swapLiquiditySourceInfo": {
-    "message": "Dönüştürme oranlarını ve ağ ücretlerini karşılaştırmak için birden fazla likidite kaynağında (borsalar, toplayıcılar ve profesyonel piyasa yapıcıları) arama yaparız."
-  },
-  "swapMaxSlippage": {
-    "message": "Maks. kayma"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMask ücreti"
-  },
-  "swapMetaMaskFeeDescription": {
-    "message": "%$1 oranında bir ücret otomatik olarak bu teklife dahil edilmiştir. MetaMask'in likidite sağlayıcı bilgilerinin toplandığı yazılımı kullanma lisansı karşılığında ödersiniz.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotesWithDot": {
-    "message": "$1 teklif.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNoTokensAvailable": {
-    "message": "$1 ile eşleşen token yok",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapOnceTransactionHasProcess": {
-    "message": "Bu işlem gerçekleştikten sonra $1 hesabınıza eklenecek.",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "Gerçekleştiriliyor"
-  },
-  "swapQuoteDetails": {
-    "message": "Teklif ayrıntıları"
-  },
-  "swapQuoteSource": {
-    "message": "Teklif kaynağı"
-  },
-  "swapQuotesExpiredErrorDescription": {
-    "message": "En son oranları almak için lütfen yeni teklifler isteyin."
-  },
-  "swapQuotesExpiredErrorTitle": {
-    "message": "Teklifler için zaman aşımı"
-  },
-  "swapQuotesNotAvailableDescription": {
-    "message": "Bu işlem yolu şu anda mevcut değil. Tutarı, ağı veya token'ı değiştirmeyi deneyin ve en iyi seçeneği bulalım."
-  },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "Lütfen tutarı veya kayma ayarlarını düzenlemeyi deneyin ve tekrar deneyin."
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Teklif mevcut değil"
   },
   "swapRate": {
     "message": "Oran"
   },
-  "swapReceiving": {
-    "message": "Alınıyor"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Bu bir tahmindir. Gerçek miktar kaymaya göre belirlenecektir."
-  },
   "swapRequestForQuotation": {
     "message": "Teklif talebi"
-  },
-  "swapSelect": {
-    "message": "Seç"
   },
   "swapSelectAQuote": {
     "message": "Teklif seç"
   },
-  "swapSelectAToken": {
-    "message": "Token seç"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Birden fazla likidite kaynağından alınmış tüm teklifler aşağıdadır."
-  },
   "swapSelectToken": {
     "message": "Token seçin"
   },
-  "swapShowLatestQuotes": {
-    "message": "En yeni kotaları göster"
-  },
   "swapSlippageAutoDescription": {
     "message": "Otomatik"
-  },
-  "swapSlippageHighDescription": {
-    "message": "Girilen kayma ($1%) çok yüksek kabul edilir ve kötü bir oranla sonuçlanabilir",
-    "description": "$1 is the amount of % for slippage"
-  },
-  "swapSlippageHighTitle": {
-    "message": "Yüksek kayma"
   },
   "swapSlippageLowDescription": {
     "message": "Bu kadar düşük bir değer ($1%) başarısız bir swap ile sonuçlanabilir",
@@ -7987,46 +7754,14 @@
   "swapSlippageLowTitle": {
     "message": "Düşük kayma"
   },
-  "swapSlippageNegativeDescription": {
-    "message": "Kayma en az sıfır olmalıdır"
-  },
-  "swapSlippageNegativeTitle": {
-    "message": "Devam etmek için kaymayı artırın"
-  },
-  "swapSlippageOverLimitDescription": {
-    "message": "Kayma toleransı en fazla %15 olmalıdır. Daha yüksek olması kötü bir oranla sonuçlanır."
-  },
-  "swapSlippageOverLimitTitle": {
-    "message": "Kayma çok yüksek"
-  },
-  "swapSlippagePercent": {
-    "message": "%$1",
-    "description": "$1 is the amount of % for slippage"
-  },
   "swapSlippageTooltip": {
     "message": "Emrinizi verdiğiniz zaman ile emrinizin onaylandığı zaman arasında geçen sürede fiyat değişirse buna \"kayma\" denir. Kayma, \"kayma toleransı\" ayarınızı aşarsa takas işleminiz otomatik olarak iptal edilir."
-  },
-  "swapSlippageZeroDescription": {
-    "message": "Daha az rekabetçi bir kota ile sonuçlanacak olan az sayıda sıfır kayma kotalı sağlayıcı var."
-  },
-  "swapSlippageZeroTitle": {
-    "message": "Sıfır kayma sunan sağlayıcılar getiriliyor"
-  },
-  "swapSource": {
-    "message": "Likidite kaynağı"
   },
   "swapSuggested": {
     "message": "Takas önerildi"
   },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Takas işlemleri karmaşık ve zaman hassasiyeti yüksek işlemlerdir. Başarılı bir Takas için maliyet ve güven arasında iyi bir denge için bu gaz ücretini öneririz."
-  },
-  "swapToConfirmWithHwWallet": {
-    "message": "donanım cüzdanınızla onaylamak için"
-  },
-  "swapTokenAvailable": {
-    "message": "$1 hesabınıza eklendi.",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
   },
   "swapTokenNotAvailable": {
     "message": "Token bu bölgede swap işlemine uygun değildir"
@@ -8038,26 +7773,14 @@
   "swapTokens": {
     "message": "Token swap işlemi yapın"
   },
-  "swapTransactionComplete": {
-    "message": "İşlem tamamlandı"
-  },
-  "swapTwoTransactions": {
-    "message": "2 işlem"
-  },
   "swapUnknown": {
     "message": "Bilinmeyen"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Bu takas işlemi için gaz ücretini ödemeye yetecek $1 yok. Daha küçük bir tutar girin veya daha fazla $1 satın alın."
   },
-  "swapZeroSlippage": {
-    "message": "%0 Kayma"
-  },
   "swapsMaxSlippage": {
     "message": "Kayma toleransı"
-  },
-  "swapsViewInActivity": {
-    "message": "Aktivitede görüntüle"
   },
   "switch": {
     "message": "Değiştir"
@@ -8110,9 +7833,6 @@
   },
   "terms": {
     "message": "Kullanım Şartları"
-  },
-  "termsOfService": {
-    "message": "Hizmet şartları"
   },
   "termsOfUseAgree": {
     "message": "Kabul Ediyorum"
@@ -8263,9 +7983,6 @@
   },
   "transactionDataFunction": {
     "message": "Fonksiyon"
-  },
-  "transactionDetailGasHeading": {
-    "message": "Tahmini gaz ücreti"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Tutar + ücretler"
@@ -8649,10 +8366,6 @@
   },
   "viewOnBlockExplorer": {
     "message": "Blok gezgininde görüntüle"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "$1 ögesini $2 üzerinde görüntüle",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Etherscan'de $1 görüntüle",

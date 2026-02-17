@@ -1216,7 +1216,6 @@
     "toggleStates": {}
   },
   "swaps": {
-    "aggregatorMetadata": "null",
     "approveTxId": "null",
     "balanceError": "boolean",
     "currentSmartTransactionsError": "string",
@@ -1237,7 +1236,6 @@
     "quotesFetchStartTime": "null",
     "reviewSwapClickedTimestamp": "null",
     "swapsSTXLoading": "boolean",
-    "topAssets": {},
     "toToken": "null",
     "tradeTxId": "null",
     "transactionSettingsOpened": "boolean"
