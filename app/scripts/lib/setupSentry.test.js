@@ -155,6 +155,139 @@ describe('Setup Sentry', () => {
     });
   });
 
+  describe('MetaMetrics state and report.user', () => {
+    let originalStateHooks;
+
+    beforeEach(() => {
+      originalStateHooks = globalThis.stateHooks;
+    });
+
+    afterEach(() => {
+      globalThis.stateHooks = originalStateHooks;
+    });
+
+    it('sets report.user.id from MetaMetrics state when user has opted in (background state)', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({
+          state: {
+            MetaMetricsController: {
+              participateInMetaMetrics: true,
+              metaMetricsId: 'test-metrics-id-123',
+            },
+          },
+        }),
+      };
+
+      const testReport = { message: 'test', request: {} };
+      const rewrittenReport = await rewriteReport(testReport);
+
+      expect(rewrittenReport.user).toStrictEqual({
+        id: 'test-metrics-id-123',
+      });
+    });
+
+    it('sets report.user.id from MetaMetrics state when user has opted in (UI state)', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({
+          state: {
+            metamask: {
+              participateInMetaMetrics: true,
+              metaMetricsId: 'ui-metrics-id',
+            },
+          },
+        }),
+      };
+
+      const testReport = { message: 'test', request: {} };
+      const rewrittenReport = await rewriteReport(testReport);
+
+      expect(rewrittenReport.user).toStrictEqual({ id: 'ui-metrics-id' });
+    });
+
+    it('does not set report.user when user has not opted in', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({
+          state: {
+            MetaMetricsController: {
+              participateInMetaMetrics: false,
+              metaMetricsId: 'some-id',
+            },
+          },
+        }),
+      };
+
+      const testReport = { message: 'test', request: {} };
+      const rewrittenReport = await rewriteReport(testReport);
+
+      expect(rewrittenReport.user).toBeUndefined();
+    });
+
+    it('does not set report.user when MetaMetrics state is missing', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({ state: {} }),
+      };
+
+      const testReport = { message: 'test', request: {} };
+      const rewrittenReport = await rewriteReport(testReport);
+
+      expect(rewrittenReport.user).toBeUndefined();
+    });
+
+    it('does not set report.user when app state is empty', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({}),
+      };
+
+      const testReport = { message: 'test', request: {} };
+      const rewrittenReport = await rewriteReport(testReport);
+
+      expect(rewrittenReport.user).toBeUndefined();
+    });
+
+    it('sets report.user.id from persisted state when app state is empty', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({}),
+        getPersistedState: () =>
+          Promise.resolve({
+            data: {
+              MetaMetricsController: {
+                participateInMetaMetrics: true,
+                metaMetricsId: 'persisted-metrics-id',
+              },
+            },
+          }),
+      };
+
+      const testReport = { message: 'test', request: {} };
+      const rewrittenReport = await rewriteReport(testReport);
+
+      expect(rewrittenReport.user).toStrictEqual({
+        id: 'persisted-metrics-id',
+      });
+    });
+
+    it('sets report.user.id from backup state when persisted state fails', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({}),
+        getPersistedState: () => Promise.reject(new Error('storage failed')),
+        getBackupState: () =>
+          Promise.resolve({
+            MetaMetricsController: {
+              participateInMetaMetrics: true,
+              metaMetricsId: 'backup-metrics-id',
+            },
+          }),
+      };
+
+      const testReport = { message: 'test', request: {} };
+      const rewrittenReport = await rewriteReport(testReport);
+
+      expect(rewrittenReport.user).toStrictEqual({
+        id: 'backup-metrics-id',
+      });
+    });
+  });
+
   describe('removeUrlsFromBreadCrumb', () => {
     it('should hide the breadcrumb data url', () => {
       const testBreadcrumb = {
