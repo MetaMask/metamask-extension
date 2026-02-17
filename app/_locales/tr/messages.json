@@ -5107,9 +5107,6 @@
   "perpsAutoClose": {
     "message": "Otomatik kapat"
   },
-  "perpsBuy": {
-    "message": "al"
-  },
   "perpsCloseAll": {
     "message": "Tümünü kapat"
   },
@@ -5156,9 +5153,6 @@
     "message": "Kripto"
   },
   "perpsFilterStocks": {
-    "message": "Hisse Senetleri"
-  },
-  "perpsFilterStocksOnly": {
     "message": "Hisse Senetleri"
   },
   "perpsFundingPayments": {
@@ -5237,29 +5231,17 @@
   "perpsSearchMarkets": {
     "message": "Piyasa ara"
   },
-  "perpsSell": {
-    "message": "sat"
-  },
   "perpsShort": {
     "message": "Kısa"
   },
   "perpsSize": {
     "message": "Boyut"
   },
-  "perpsSortFundingRate": {
-    "message": "Fonlama oranı"
-  },
-  "perpsSortOpenInterest": {
-    "message": "Açık faiz"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "Fiyat değişikliği: yüksekten düşüğe"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "Fiyat değişikliği: düşükten yükseğe"
-  },
-  "perpsSortVolume": {
-    "message": "Hacim"
   },
   "perpsStartNewTrade": {
     "message": "Yeni bir işlem başlat"
