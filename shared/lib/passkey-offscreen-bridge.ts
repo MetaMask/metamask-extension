@@ -1,7 +1,7 @@
 import type { PasskeyCredential } from './passkeys';
 
-const POPUP_WIDTH = 420;
-const POPUP_HEIGHT = 340;
+const POPUP_WIDTH = 360;
+const POPUP_HEIGHT = 420;
 
 type PasskeyResultMessage = {
   type: 'passkey-result';

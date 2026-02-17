@@ -37,6 +37,70 @@ function tsChallenge(ms) {
   return new Uint8Array(buf);
 }
 
+/* ── DOM refs ────────────────────────────────────────────── */
+
+var iconRing = document.getElementById('iconRing');
+var iconFingerprint = document.getElementById('iconFingerprint');
+var iconSpinner = document.getElementById('iconSpinner');
+var iconSuccess = document.getElementById('iconSuccess');
+var iconError = document.getElementById('iconError');
+var titleEl = document.getElementById('title');
+var subtitleEl = document.getElementById('subtitle');
+var authBtn = document.getElementById('authBtn');
+var errorEl = document.getElementById('error');
+
+/* ── UI state management ─────────────────────────────────── */
+
+function showState(state, opts) {
+  opts = opts || {};
+
+  // Reset all icons
+  iconFingerprint.classList.add('hidden');
+  iconSpinner.classList.add('hidden');
+  iconSuccess.classList.add('hidden');
+  iconError.classList.add('hidden');
+
+  // Reset ring color
+  iconRing.className = 'icon-ring';
+
+  // Reset button
+  authBtn.classList.remove('hidden');
+
+  switch (state) {
+    case 'ready':
+      iconFingerprint.classList.remove('hidden');
+      titleEl.textContent = 'Verify your identity';
+      subtitleEl.textContent =
+        'MetaMask needs to confirm it\u2019s you before continuing.';
+      authBtn.classList.remove('hidden');
+      break;
+
+    case 'authenticating':
+      iconRing.classList.add('active');
+      iconSpinner.classList.remove('hidden');
+      titleEl.textContent = 'Authenticating\u2026';
+      subtitleEl.textContent = 'Complete the prompt from your device.';
+      authBtn.classList.add('hidden');
+      break;
+
+    case 'success':
+      iconRing.classList.add('success');
+      iconSuccess.classList.remove('hidden');
+      titleEl.textContent = 'Verified';
+      subtitleEl.textContent = opts.message || 'You\u2019re all set. This window will close.';
+      authBtn.classList.add('hidden');
+      break;
+
+    case 'error':
+      iconRing.classList.add('error');
+      iconError.classList.remove('hidden');
+      titleEl.textContent = 'Authentication failed';
+      subtitleEl.textContent = 'Something went wrong. You can try again.';
+      errorEl.textContent = opts.message || '';
+      break;
+  }
+}
+
 /* ── webauthn operations ─────────────────────────────────── */
 
 async function doCreate(rpName) {
@@ -124,6 +188,9 @@ function sendResult(success, payload, errorMsg) {
 }
 
 async function execute() {
+  showState('authenticating');
+  errorEl.textContent = '';
+
   try {
     var result;
     if (action === 'create') {
@@ -133,21 +200,24 @@ async function execute() {
     } else {
       throw new Error('Unknown passkey action: ' + action);
     }
+
+    showState('success');
     sendResult(true, result, null);
-    window.close();
+    setTimeout(function () {
+      window.close();
+    }, 800);
   } catch (err) {
     console.error('[passkey-popup] WebAuthn error:', err);
-    document.getElementById('spinner').style.display = 'none';
-    document.getElementById('status').textContent = 'Authentication failed.';
-    document.getElementById('error').textContent =
-      (err.name ? err.name + ': ' : '') + (err.message || String(err));
+
+    var message = (err.name ? err.name + ': ' : '') + (err.message || String(err));
 
     // Let the user retry for transient errors (e.g. cancelled prompt).
     if (err && err.name === 'NotAllowedError') {
-      document.getElementById('retryBtn').style.display = 'inline-block';
+      showState('error', { message: 'Cancelled or not allowed. Tap to retry.' });
       return;
     }
 
+    showState('error', { message: message });
     sendResult(false, null, err.message || String(err));
     setTimeout(function () {
       window.close();
@@ -156,19 +226,11 @@ async function execute() {
 }
 
 // Button click provides user activation required by WebAuthn.
-document.getElementById('retryBtn').addEventListener('click', function () {
-  document.getElementById('retryBtn').style.display = 'none';
-  document.getElementById('spinner').style.display = 'block';
-  document.getElementById('status').textContent =
-    'Complete the biometric prompt\u2026';
-  document.getElementById('error').textContent = '';
+authBtn.addEventListener('click', function () {
   execute();
 });
 
 // Auto-trigger: try without user activation first.
 // If Chrome blocks it (NotAllowedError), the button becomes visible.
-document.getElementById('retryBtn').style.display = 'none';
-document.getElementById('spinner').style.display = 'block';
-document.getElementById('status').textContent =
-  'Complete the biometric prompt\u2026';
+showState('authenticating');
 execute();

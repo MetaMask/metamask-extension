@@ -4,38 +4,144 @@
     <meta charset="utf-8" />
     <title>MetaMask – Passkey</title>
     <style>
+      :root {
+        --blue-500: #037dd6;
+        --blue-600: #025ea1;
+        --green-500: #28a745;
+        --red-500: #d73a49;
+        --gray-50: #f7f8fa;
+        --gray-100: #edf0f4;
+        --gray-400: #9fa6ae;
+        --gray-600: #6a737d;
+        --gray-900: #24272a;
+      }
       * { box-sizing: border-box; margin: 0; padding: 0; }
       body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        min-height: 100vh; background: #fff; color: var(--gray-900);
+      }
+
+      .card {
+        padding: 36px 32px 28px;
+        width: 100%;
+        text-align: center;
+      }
+
+      /* ── logo ──────────────────────────────────── */
+      .logo { margin-bottom: 20px; }
+      .logo img { width: 40px; height: 40px; }
+
+      /* ── icon ring ─────────────────────────────── */
+      .icon-ring {
+        width: 64px; height: 64px;
+        border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
-        min-height: 100vh; background: #f2f4f6; color: #24272a;
+        margin: 0 auto 20px;
+        background: var(--gray-100);
+        transition: background .3s;
       }
-      .container { text-align: center; padding: 32px 24px; max-width: 360px; }
-      h2 { font-size: 18px; margin-bottom: 8px; }
-      p  { font-size: 14px; color: #6a737d; margin-bottom: 20px; }
-      button {
-        background: #037dd6; color: #fff; border: none;
-        padding: 12px 32px; border-radius: 8px; font-size: 15px;
-        cursor: pointer;
+      .icon-ring.active { background: #e8f4fd; }
+      .icon-ring.success { background: #e6f9ec; }
+      .icon-ring.error { background: #fce8ea; }
+      .icon-ring svg { width: 28px; height: 28px; }
+
+      /* ── text ───────────────────────────────────── */
+      h2 { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+      .subtitle {
+        font-size: 13px; color: var(--gray-600);
+        line-height: 1.45; margin-bottom: 24px;
       }
-      button:hover { background: #025ea1; }
-      .error { color: #d73a49; font-size: 13px; margin-top: 12px; }
+
+      /* ── button ─────────────────────────────────── */
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        background: var(--blue-500); color: #fff; border: none;
+        padding: 12px 28px; border-radius: 999px; font-size: 14px; font-weight: 500;
+        cursor: pointer; transition: background .15s, transform .1s;
+        min-width: 200px;
+      }
+      .btn:hover { background: var(--blue-600); }
+      .btn:active { transform: scale(.97); }
+      .btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+      /* ── spinner ────────────────────────────────── */
       .spinner {
-        width: 32px; height: 32px; border: 3px solid #ddd;
-        border-top-color: #037dd6; border-radius: 50%;
-        animation: spin .8s linear infinite; margin: 0 auto 16px;
+        width: 28px; height: 28px;
+        border: 3px solid var(--gray-100);
+        border-top-color: var(--blue-500);
+        border-radius: 50%;
+        animation: spin .7s linear infinite;
       }
       @keyframes spin { to { transform: rotate(360deg); } }
+
+      /* ── error text ─────────────────────────────── */
+      .error-text {
+        color: var(--red-500); font-size: 12px;
+        margin-top: 12px; line-height: 1.4;
+        min-height: 16px;
+      }
+
+      /* ── footer ─────────────────────────────────── */
+      .footer {
+        margin-top: 16px; padding-top: 16px;
+        border-top: 1px solid var(--gray-100);
+        font-size: 11px; color: var(--gray-400);
+      }
+
+      /* ── utility ────────────────────────────────── */
+      .hidden { display: none !important; }
+
+      /* success check animation */
+      .checkmark { stroke-dasharray: 30; stroke-dashoffset: 30; animation: draw .4s ease forwards; }
+      @keyframes draw { to { stroke-dashoffset: 0; } }
     </style>
   </head>
   <body>
-    <div class="container">
-      <div id="spinner" class="spinner"></div>
-      <h2 id="title">Passkey Authentication</h2>
-      <p id="status">Complete the biometric prompt&hellip;</p>
-      <button id="retryBtn" style="display:none">Authenticate with Passkey</button>
-      <p id="error" class="error"></p>
+    <div class="card">
+      <div class="logo">
+        <img src="./images/logo/metamask-fox.svg" alt="MetaMask" />
+      </div>
+
+      <div id="iconRing" class="icon-ring">
+        <!-- fingerprint icon (default state) -->
+        <svg id="iconFingerprint" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M12 2a10 10 0 0 1 10 10c0 2.5-.5 4.5-1.5 6"/>
+          <path d="M2 12a10 10 0 0 1 5-8.66"/>
+          <path d="M7 3.34A10 10 0 0 1 12 2"/>
+          <path d="M12 6a6 6 0 0 1 6 6c0 1.5-.3 3-.8 4.2"/>
+          <path d="M6 12a6 6 0 0 1 3.5-5.46"/>
+          <path d="M12 10a2 2 0 0 1 2 2c0 2-1 4-2 5.5"/>
+          <path d="M10 12a2 2 0 0 1 .27-1"/>
+          <path d="M8.5 16.5A8 8 0 0 0 12 10"/>
+        </svg>
+        <!-- spinner (authenticating) -->
+        <div id="iconSpinner" class="spinner hidden"></div>
+        <!-- success check -->
+        <svg id="iconSuccess" class="hidden" viewBox="0 0 24 24" fill="none" stroke="var(--green-500)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline class="checkmark" points="4 12 9 17 20 6"/>
+        </svg>
+        <!-- error X -->
+        <svg id="iconError" class="hidden" viewBox="0 0 24 24" fill="none" stroke="var(--red-500)" stroke-width="2.5" stroke-linecap="round">
+          <line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>
+        </svg>
+      </div>
+
+      <h2 id="title">Verify your identity</h2>
+      <p id="subtitle" class="subtitle">
+        MetaMask needs to confirm it's you before continuing.
+      </p>
+
+      <button id="authBtn" class="btn">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 1 10 10c0 2.5-.5 4.5-1.5 6M2 12a10 10 0 0 1 5-8.66M12 6a6 6 0 0 1 6 6c0 1.5-.3 3-.8 4.2M12 10a2 2 0 0 1 2 2c0 2-1 4-2 5.5"/></svg>
+        Use Passkey
+      </button>
+
+      <p id="error" class="error-text"></p>
+
+      <div class="footer">Secured by your device's biometrics</div>
     </div>
+
     <script src="./scripts/passkey-popup.js" defer></script>
   </body>
 </html>
