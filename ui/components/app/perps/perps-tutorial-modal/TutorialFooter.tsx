@@ -38,7 +38,7 @@ const TutorialFooter: React.FC<TutorialFooterProps> = ({
       {!isLastStep && (
         <Button
           variant={ButtonVariant.Tertiary}
-          size={ButtonSize.Lg}
+          size={ButtonSize.Sm}
           onClick={onSkip}
           className="w-full text-default"
           data-testid="perps-tutorial-skip-button"
