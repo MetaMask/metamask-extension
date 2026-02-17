@@ -1,11 +1,10 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import TutorialFooter from './TutorialFooter';
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
-
-import TutorialFooter from './TutorialFooter';
 
 describe('TutorialFooter', () => {
   const defaultProps = {
@@ -32,7 +31,9 @@ describe('TutorialFooter', () => {
     it('renders the continue button with "Let\'s Go" text when last step', () => {
       render(<TutorialFooter {...defaultProps} isLastStep />);
 
-      const continueButton = screen.getByTestId('perps-tutorial-lets-go-button');
+      const continueButton = screen.getByTestId(
+        'perps-tutorial-lets-go-button',
+      );
       expect(continueButton).toBeInTheDocument();
       expect(continueButton).toHaveTextContent('perpsTutorialLetsGo');
     });
