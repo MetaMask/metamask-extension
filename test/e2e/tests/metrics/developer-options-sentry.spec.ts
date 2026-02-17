@@ -83,9 +83,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
   it('gives option to cause a page crash and offer contact support option with rejecting to share data', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesController()
-          .build(),
+        fixtures: new FixtureBuilder().withPreferencesController().build(),
 
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [

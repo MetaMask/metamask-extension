@@ -4,21 +4,25 @@ import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
-const NON_EVM_ACCOUNT_FLAG_OVERRIDES = {
-  bitcoinAccounts: { enabled: false, minimumVersion: '0.0.0' },
-  solanaAccounts: { enabled: false, minimumVersion: '0.0.0' },
-  tronAccounts: { enabled: false, minimumVersion: '0.0.0' },
-  enableMultichainAccounts: {
-    enabled: false,
-    featureVersion: null,
-    minimumVersion: null,
+const NON_EVM_ACCOUNT_FLAG_OVERRIDES = [
+  { bitcoinAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+  { solanaAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+  { tronAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+  {
+    enableMultichainAccounts: {
+      enabled: false,
+      featureVersion: null,
+      minimumVersion: null,
+    },
   },
-  enableMultichainAccountsState2: {
-    enabled: false,
-    featureVersion: null,
-    minimumVersion: null,
+  {
+    enableMultichainAccountsState2: {
+      enabled: false,
+      featureVersion: null,
+      minimumVersion: null,
+    },
   },
-};
+];
 
 // Remove when the bug is fixed: https://github.com/MetaMask/metamask-extension/issues/39068
 export async function mockFeatureFlagsWithoutNonEvmAccounts(
@@ -36,7 +40,7 @@ export async function mockFeatureFlagsWithoutNonEvmAccounts(
       .always()
       .thenCallback(() => ({
         statusCode: 200,
-        json: [...prodFlags, NON_EVM_ACCOUNT_FLAG_OVERRIDES],
+        json: [...prodFlags, ...NON_EVM_ACCOUNT_FLAG_OVERRIDES],
       })),
   ];
 }
