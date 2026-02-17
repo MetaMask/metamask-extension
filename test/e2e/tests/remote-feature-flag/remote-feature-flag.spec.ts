@@ -14,16 +14,43 @@ import {
 } from '../../constants';
 import { Mockttp } from '../../mock-e2e';
 
+const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
+
 async function mockRemoteFeatureFlags(mockServer: Mockttp) {
   return [
     await mockServer
-      .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: [MOCK_REMOTE_FEATURE_FLAGS_RESPONSE],
-        };
-      }),
+      .forGet(FEATURE_FLAGS_URL)
+      .withQuery({
+        client: 'extension',
+        distribution: 'main',
+        environment: 'dev',
+      })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [
+          { feature1: true },
+          { feature2: false },
+          {
+            feature3: [
+              {
+                value: 'valueA',
+                name: 'groupA',
+                scope: { type: 'threshold', value: 0.3 },
+              },
+              {
+                value: 'valueB',
+                name: 'groupB',
+                scope: { type: 'threshold', value: 0.5 },
+              },
+              {
+                scope: { type: 'threshold', value: 1 },
+                value: 'valueC',
+                name: 'groupC',
+              },
+            ],
+          },
+        ],
+      })),
   ];
 }
 
