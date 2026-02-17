@@ -18,7 +18,7 @@ import ExtensionPlatform from '../platforms/extension';
 // This import is only used for the type.
 // eslint-disable-next-line import/no-restricted-paths
 import type { MetaMaskReduxState } from '../../../ui/store/store';
-import { Controller, ControllerFlatState } from './controller-list';
+import { Controller } from './controller-list';
 
 /** The supported controller names. */
 export type ControllerName = Controller['name'];
@@ -104,14 +104,6 @@ export type ControllerInitRequest<
   getController<Name extends ControllerName>(
     name: Name,
   ): ControllerByName[Name];
-
-  /**
-   * Retrieve the flat state for all controllers.
-   * For example: `{ transactions: [] }`.
-   *
-   * @deprecated Subscribe to other controller state via the messenger.
-   */
-  getFlatState: () => ControllerFlatState;
 
   /**
    * Retrieve the permitted accounts for a given origin.

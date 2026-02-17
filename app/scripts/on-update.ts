@@ -1,7 +1,6 @@
 import log from 'loglevel';
 import { PLATFORM_FIREFOX } from '../../shared/constants/app';
 import { getPlatform } from './lib/util';
-import type MetaMaskController from './metamask-controller';
 import type ExtensionPlatform from './platforms/extension';
 import { AppStateController } from './controllers/app-state-controller';
 /**
@@ -9,7 +8,6 @@ import { AppStateController } from './controllers/app-state-controller';
  * this might result in the extension restarting on Chromium-based browsers.
  *
  * @param controller - The MetaMask controller instance.
- * @param controller.store - The MetaMask store.
  * @param controller.appStateController - The app state controller.
  * @param platform - The ExtensionPlatform API.
  * @param previousVersion - The previous version string.
@@ -17,10 +15,8 @@ import { AppStateController } from './controllers/app-state-controller';
  * extension background process.
  */
 export function onUpdate(
-  // we use a custom type here because the `MetaMaskController` type doesn't
-  // include the actual controllers as properties.
+  // Custom type narrowing for the controller parameter.
   controller: {
-    store: MetaMaskController['store'];
     appStateController: AppStateController;
   },
   platform: ExtensionPlatform,

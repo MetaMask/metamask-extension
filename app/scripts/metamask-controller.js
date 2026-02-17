@@ -8,10 +8,9 @@ import {
 } from '@metamask/json-rpc-engine';
 import { asLegacyMiddleware } from '@metamask/json-rpc-engine/v2';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
-import { ObservableStore } from '@metamask/obs-store';
-import { storeAsStream } from '@metamask/obs-store/dist/asStream';
+// obs-store removed -- no longer using ObservableStore or storeAsStream
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, uniq } from 'lodash';
+import { uniq } from 'lodash';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
@@ -157,7 +156,7 @@ import {
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { RestrictedMethods } from '../../shared/constants/permissions';
-import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
+import { MINUTE, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
@@ -249,7 +248,7 @@ import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
 } from './detect-multiple-instances';
-import ComposableObservableStore from './lib/ComposableObservableStore';
+import { ControllerRegistry } from './lib/ControllerRegistry';
 import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
@@ -318,7 +317,7 @@ import { decodeTransactionData } from './lib/transaction/decode/util';
 import createTracingMiddleware from './lib/createTracingMiddleware';
 import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
 import { PatchStore } from './lib/PatchStore';
-import { sanitizeUIState } from './lib/state-utils';
+import { sanitizePatches } from './lib/state-utils';
 import {
   rejectAllApprovals,
   rejectOriginApprovals,
@@ -490,10 +489,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.defaultMaxListeners = 20;
 
-    this.sendUpdate = debounce(
-      this.privateSendUpdate.bind(this),
-      MILLISECOND * 200,
-    );
     this.opts = opts;
     this.requestSafeReload =
       opts.requestSafeReload ?? (() => Promise.resolve());
@@ -525,12 +520,8 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger = controllerMessenger;
     this.currentMigrationVersion = opts.currentMigrationVersion;
 
-    // observable state store
-    this.store = new ComposableObservableStore({
-      state: initState,
-      controllerMessenger: this.controllerMessenger,
-      persist: true,
-    });
+    // Controller registries are initialized after controller construction.
+    // See controllerPersistConfig and controllerUIConfig below.
 
     // external connections by origin
     // Do not modify directly. Use the associated methods.
@@ -828,10 +819,6 @@ export default class MetamaskController extends EventEmitter {
       this.networkController.getProviderAndBlockTracker().provider;
     this.blockTracker =
       this.networkController.getProviderAndBlockTracker().blockTracker;
-
-    this.on('update', (update) => {
-      this.metaMetricsController.handleMetaMaskStateUpdate(update);
-    });
 
     this.controllerMessenger.subscribe('KeyringController:unlock', () =>
       this._onUnlock(),
@@ -1252,8 +1239,19 @@ export default class MetamaskController extends EventEmitter {
       },
     });
 
-    // ensure isClientOpenAndUnlocked is updated when memState updates
-    this.on('update', (memState) => this._onStateUpdate(memState));
+    // Update isClientOpenAndUnlocked when keyring lock state changes
+    this.controllerMessenger.subscribe(
+      'KeyringController:stateChange',
+      (keyringState) => {
+        this.isClientOpenAndUnlocked =
+          keyringState.isUnlocked && this._isClientOpen;
+      },
+    );
+    // Notify chain changes when network state changes
+    this.controllerMessenger.subscribe(
+      'NetworkController:stateChange',
+      () => this._notifyChainChange(),
+    );
 
     /**
      * All controllers in Memstore but not in store. They are not persisted.
@@ -1272,7 +1270,7 @@ export default class MetamaskController extends EventEmitter {
       ApprovalController: this.approvalController,
     };
 
-    this.store.updateStructure({
+    this.controllerPersistConfig = {
       AccountsController: this.accountsController,
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
@@ -1311,7 +1309,6 @@ export default class MetamaskController extends EventEmitter {
       MultichainRatesController: this.multichainRatesController,
       NameController: this.nameController,
       UserOperationController: this.userOperationController,
-      // Notification Controllers
       AuthenticationController: this.authenticationController,
       UserStorageController: this.userStorageController,
       NotificationServicesController: this.notificationServicesController,
@@ -1322,78 +1319,80 @@ export default class MetamaskController extends EventEmitter {
       ProfileMetricsController: this.profileMetricsController,
       ...resetOnRestartStore,
       ...controllerPersistedState,
-    });
+    };
 
-    this.memStore = new ComposableObservableStore({
-      config: {
-        AccountsController: this.accountsController,
-        AppStateController: this.appStateController,
-        AppMetadataController: this.appMetadataController,
-        ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-        MultichainAssetsController: this.multichainAssetsController,
-        MultichainBalancesController: this.multichainBalancesController,
-        MultichainTransactionsController: this.multichainTransactionsController,
-        MultichainAssetsRatesController: this.multichainAssetsRatesController,
-        ///: END:ONLY_INCLUDE_IF
-        TokenRatesController: this.tokenRatesController,
-        MultichainNetworkController: this.multichainNetworkController,
-        NetworkController: this.networkController,
-        KeyringController: this.keyringController,
-        PreferencesController: this.preferencesController,
-        MetaMetricsController: this.metaMetricsController,
-        MetaMetricsDataDeletionController:
-          this.metaMetricsDataDeletionController,
-        AddressBookController: this.addressBookController,
-        CurrencyController: this.currencyRateController,
-        AlertController: this.alertController,
-        OnboardingController: this.onboardingController,
-        SeedlessOnboardingController: this.seedlessOnboardingController,
-        SubscriptionController: this.subscriptionController,
-        PermissionController: this.permissionController,
-        PermissionLogController: this.permissionLogController,
-        SubjectMetadataController: this.subjectMetadataController,
-        AnnouncementController: this.announcementController,
-        NetworkOrderController: this.networkOrderController,
-        NetworkEnablementController: this.networkEnablementController,
-        AccountOrderController: this.accountOrderController,
-        GasFeeController: this.gasFeeController,
-        TokenListController: this.tokenListController,
-        TokensController: this.tokensController,
-        TokenBalancesController: this.tokenBalancesController,
-        StaticAssetsController: this.staticAssetsController,
-        SmartTransactionsController: this.smartTransactionsController,
-        NftController: this.nftController,
-        ...(this.assetsController
-          ? { AssetsController: this.assetsController }
-          : {}),
-        SelectedNetworkController: this.selectedNetworkController,
-        LoggingController: this.loggingController,
-        MultichainRatesController: this.multichainRatesController,
-        SnapController: this.snapController,
-        CronjobController: this.cronjobController,
-        SnapsRegistry: this.snapsRegistry,
-        SnapInterfaceController: this.snapInterfaceController,
-        SnapInsightsController: this.snapInsightsController,
-        NameController: this.nameController,
-        UserOperationController: this.userOperationController,
-        // Notification Controllers
-        AuthenticationController: this.authenticationController,
-        UserStorageController: this.userStorageController,
-        NotificationServicesController: this.notificationServicesController,
-        NotificationServicesPushController:
-          this.notificationServicesPushController,
-        RemoteFeatureFlagController: this.remoteFeatureFlagController,
-        DeFiPositionsController: this.deFiPositionsController,
-        PhishingController: this.phishingController,
-        ShieldController: this.shieldController,
-        ClaimsController: this.claimsController,
-        ClaimsService: this.claimsService,
-        ProfileMetricsController: this.profileMetricsController,
-        ...resetOnRestartStore,
-        ...controllerMemState,
-      },
-      controllerMessenger: this.controllerMessenger,
-    });
+    this.controllerUIConfig = {
+      AccountsController: this.accountsController,
+      AppStateController: this.appStateController,
+      AppMetadataController: this.appMetadataController,
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+      MultichainAssetsController: this.multichainAssetsController,
+      MultichainBalancesController: this.multichainBalancesController,
+      MultichainTransactionsController: this.multichainTransactionsController,
+      MultichainAssetsRatesController: this.multichainAssetsRatesController,
+      ///: END:ONLY_INCLUDE_IF
+      TokenRatesController: this.tokenRatesController,
+      MultichainNetworkController: this.multichainNetworkController,
+      NetworkController: this.networkController,
+      KeyringController: this.keyringController,
+      PreferencesController: this.preferencesController,
+      MetaMetricsController: this.metaMetricsController,
+      MetaMetricsDataDeletionController:
+        this.metaMetricsDataDeletionController,
+      AddressBookController: this.addressBookController,
+      CurrencyController: this.currencyRateController,
+      AlertController: this.alertController,
+      OnboardingController: this.onboardingController,
+      SeedlessOnboardingController: this.seedlessOnboardingController,
+      SubscriptionController: this.subscriptionController,
+      PermissionController: this.permissionController,
+      PermissionLogController: this.permissionLogController,
+      SubjectMetadataController: this.subjectMetadataController,
+      AnnouncementController: this.announcementController,
+      NetworkOrderController: this.networkOrderController,
+      NetworkEnablementController: this.networkEnablementController,
+      AccountOrderController: this.accountOrderController,
+      GasFeeController: this.gasFeeController,
+      TokenListController: this.tokenListController,
+      TokensController: this.tokensController,
+      TokenBalancesController: this.tokenBalancesController,
+      StaticAssetsController: this.staticAssetsController,
+      SmartTransactionsController: this.smartTransactionsController,
+      NftController: this.nftController,
+      ...(this.assetsController
+        ? { AssetsController: this.assetsController }
+        : {}),
+      SelectedNetworkController: this.selectedNetworkController,
+      LoggingController: this.loggingController,
+      MultichainRatesController: this.multichainRatesController,
+      SnapController: this.snapController,
+      CronjobController: this.cronjobController,
+      SnapsRegistry: this.snapsRegistry,
+      SnapInterfaceController: this.snapInterfaceController,
+      SnapInsightsController: this.snapInsightsController,
+      NameController: this.nameController,
+      UserOperationController: this.userOperationController,
+      AuthenticationController: this.authenticationController,
+      UserStorageController: this.userStorageController,
+      NotificationServicesController: this.notificationServicesController,
+      NotificationServicesPushController:
+        this.notificationServicesPushController,
+      RemoteFeatureFlagController: this.remoteFeatureFlagController,
+      DeFiPositionsController: this.deFiPositionsController,
+      PhishingController: this.phishingController,
+      ShieldController: this.shieldController,
+      ClaimsController: this.claimsController,
+      // ClaimsService omitted — not a BaseController (no state to sync).
+      ProfileMetricsController: this.profileMetricsController,
+      ...resetOnRestartStore,
+      ...controllerMemState,
+    };
+
+    this.registry = new ControllerRegistry(
+      this.controllerMessenger,
+      this.controllerUIConfig,
+      this.controllerPersistConfig,
+    );
 
     // if this is the first time, clear the state of by calling these methods
     const resetMethods = [
@@ -1449,11 +1448,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.setupControllerEventSubscriptions();
     this.setupMultichainDataAndSubscriptions();
-
-    // For more information about these legacy streams, see here:
-    // https://github.com/MetaMask/metamask-extension/issues/15491
-    // TODO:LegacyProvider: Delete
-    this.publicConfigStore = this.createPublicConfigStore();
 
     // Multiple MetaMask instances launched warning
     this.extension.runtime.onMessageExternal.addListener(onMessageReceived);
@@ -2292,41 +2286,7 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  /**
-   * TODO:LegacyProvider: Delete
-   * Constructor helper: initialize a public config store.
-   * This store is used to make some config info available to Dapps synchronously.
-   */
-  createPublicConfigStore() {
-    // subset of state for metamask inpage provider
-    const publicConfigStore = new ObservableStore();
-
-    const selectPublicState = async ({ isUnlocked }) => {
-      const { chainId, networkVersion, isConnected } =
-        await this.getProviderNetworkState();
-
-      return {
-        isUnlocked,
-        chainId,
-        networkVersion: isConnected ? networkVersion : 'loading',
-      };
-    };
-
-    const updatePublicConfigStore = async (memState) => {
-      const networkStatus =
-        memState.networksMetadata[memState.selectedNetworkClientId]?.status;
-      if (networkStatus === NetworkStatus.Available) {
-        publicConfigStore.putState(await selectPublicState(memState));
-      }
-    };
-
-    // setup memStore subscription hooks
-    this.on('update', updatePublicConfigStore);
-    // Update the store asynchronously, out-of-band
-    updatePublicConfigStore(this.getState());
-
-    return publicConfigStore;
-  }
+  // createPublicConfigStore() removed -- legacy provider streams eliminated
 
   /**
    * Gets relevant state for the provider of an external origin.
@@ -2432,18 +2392,17 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
 
   /**
-   * The metamask-state of the various controllers, made available to the UI
+   * Keyed UI state for all registered controllers.
+   * Each key is the controller config key, each value is the controller's
+   * full state object. Sanitization happens per-controller at the patch
+   * level — this method returns raw keyed state.
    *
-   * @returns {MetaMaskReduxState["metamask"]} status
+   * @returns {Record<string, object>} Keyed controller state.
    */
   getState() {
-    const { vault } = this.keyringController.state;
-    const isInitialized = Boolean(vault);
-    const flatState = this.memStore.getFlatState();
-
     return {
-      isInitialized,
-      ...sanitizeUIState(flatState),
+      isInitialized: Boolean(this.keyringController.state.vault),
+      ...this.registry.getKeyedState('ui'),
     };
   }
 
@@ -5429,12 +5388,15 @@ export default class MetamaskController extends EventEmitter {
   }
 
   _startUISync() {
-    // Message startUISync is used to start syncing state with UI
-    // Sending this message after login is completed helps to ensure that incomplete state without
-    // account details are not flushed to UI.
+    // Sending this message after login ensures incomplete state without
+    // account details is not flushed to UI.
     this.emit('startUISync');
     this.startUISync = true;
-    this.memStore.subscribe(this.sendUpdate.bind(this));
+
+    // TODO: MetaMetrics should subscribe to the specific controllers it
+    // needs (AccountsController, NetworkController, etc.) rather than
+    // consuming the full aggregated state. handleMetaMaskStateUpdate and
+    // _buildUserTraitsObject need to be refactored to accept keyed state.
   }
 
   /**
@@ -6562,8 +6524,6 @@ export default class MetamaskController extends EventEmitter {
       customGasSettings,
       options,
     );
-    const state = this.getState();
-    return state;
   }
 
   /**
@@ -6585,8 +6545,6 @@ export default class MetamaskController extends EventEmitter {
       customGasSettings,
       options,
     );
-    const state = this.getState();
-    return state;
   }
 
   async estimateGas(estimateGasParams) {
@@ -6664,7 +6622,6 @@ export default class MetamaskController extends EventEmitter {
    */
   markPasswordForgotten() {
     this.preferencesController.setPasswordForgotten(true);
-    this.sendUpdate();
   }
 
   /**
@@ -6672,7 +6629,6 @@ export default class MetamaskController extends EventEmitter {
    */
   unMarkPasswordForgotten() {
     this.preferencesController.setPasswordForgotten(false);
-    this.sendUpdate();
   }
 
   //=============================================================================
@@ -6750,11 +6706,6 @@ export default class MetamaskController extends EventEmitter {
       inputSubjectType,
     );
 
-    // TODO:LegacyProvider: Delete
-    if (sender.url) {
-      // legacy streams
-      this.setupPublicConfig(mux.createStream('publicConfig'));
-    }
   }
 
   /**
@@ -6889,24 +6840,57 @@ export default class MetamaskController extends EventEmitter {
   /**
    * A method for providing our API over a stream using JSON-RPC.
    *
+   * Subscribes directly to each controller's `stateChange` messenger event,
+   * accumulates keyed patches via {@link PatchStore}, and flushes them to the
+   * UI in a single port write per microtask.
+   *
    * @param {*} outStream - The stream to provide our API over.
    */
   setupControllerConnection(outStream) {
-    const patchStore = new PatchStore(this.memStore);
+    const patchStore = new PatchStore();
     let uiReady = false;
+    let flushScheduled = false;
+    const messengerUnsubscribers = [];
 
-    const handleUpdate = () => {
-      if (!isStreamWritable(outStream) || !uiReady) {
+    const sendPendingPatches = () => {
+      if (!uiReady || !isStreamWritable(outStream)) {
         return;
       }
 
-      const patches = patchStore.flushPendingPatches();
+      const keyedPatches = patchStore.flush();
+      if (!keyedPatches) {
+        return;
+      }
 
       outStream.write({
         jsonrpc: '2.0',
         method: 'sendUpdate',
-        params: [patches],
+        params: [keyedPatches],
       });
+    };
+
+    const scheduleFlush = () => {
+      if (!flushScheduled) {
+        flushScheduled = true;
+        queueMicrotask(() => {
+          flushScheduled = false;
+          sendPendingPatches();
+        });
+      }
+    };
+
+    const subscribeToControllers = () => {
+      const unsubs = this.registry.subscribeAll(
+        'ui',
+        (controllerKey, _state, patches) => {
+          const sanitized = sanitizePatches(patches);
+          if (sanitized.length > 0) {
+            patchStore.add(controllerKey, sanitized);
+            scheduleFlush();
+          }
+        },
+      );
+      messengerUnsubscribers.push(...unsubs);
     };
 
     const api = {
@@ -6914,12 +6898,9 @@ export default class MetamaskController extends EventEmitter {
       ...this.controllerApi,
       startSendingPatches: () => {
         uiReady = true;
-        handleUpdate();
+        sendPendingPatches();
       },
-      getStatePatches: () => patchStore.flushPendingPatches(),
     };
-
-    this.on('update', handleUpdate);
 
     // report new active controller connection
     this.activeControllerConnections += 1;
@@ -6932,10 +6913,10 @@ export default class MetamaskController extends EventEmitter {
       if (!isStreamWritable(outStream)) {
         return;
       }
-      // Start tracking patches immediately after retrieving initial state for this UI connection
-      // to ensure we don't miss any patches, or include extra patches.
+      // Subscribe to per-controller stateChange events before retrieving
+      // initial state to ensure we don't miss any patches.
+      subscribeToControllers();
       const initialState = this.getState();
-      patchStore.init();
 
       // send notification to client-side
       outStream.write({
@@ -6959,7 +6940,10 @@ export default class MetamaskController extends EventEmitter {
           this.activeControllerConnections,
         );
         outStream.mmFinished = true;
-        this.removeListener('update', handleUpdate);
+        for (const unsubscribe of messengerUnsubscribers) {
+          unsubscribe();
+        }
+        messengerUnsubscribers.length = 0;
         patchStore.destroy();
       }
     };
@@ -7468,7 +7452,8 @@ export default class MetamaskController extends EventEmitter {
       createEip1193MethodMiddleware({
         ...this.setupCommonMiddlewareHooks(origin),
 
-        // Miscellaneous
+        // TODO: createEip1193MethodMiddleware needs refactoring to accept
+        // keyed state or read from controllers directly.
         metamaskState: this.getState(),
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
@@ -7967,28 +7952,7 @@ export default class MetamaskController extends EventEmitter {
     return engine;
   }
 
-  /**
-   * TODO:LegacyProvider: Delete
-   * A method for providing our public config info over a stream.
-   * This includes info we like to be synchronous if possible, like
-   * the current selected account, and network ID.
-   *
-   * Since synchronous methods have been deprecated in web3,
-   * this is a good candidate for deprecation.
-   *
-   * @param {*} outStream - The stream to provide public config over.
-   */
-  setupPublicConfig(outStream) {
-    const configStream = storeAsStream(this.publicConfigStore);
-
-    pipeline(configStream, outStream, (err) => {
-      configStream.destroy();
-      // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
-      if (err && !err.message?.match('Premature close')) {
-        log.error(err);
-      }
-    });
-  }
+  // setupPublicConfig() removed -- legacy provider streams eliminated
 
   /**
    * Adds a reference to a connection by origin. Ignores the 'metamask' origin.
@@ -8146,18 +8110,7 @@ export default class MetamaskController extends EventEmitter {
     this.emit('lock');
   }
 
-  /**
-   * Handle memory state updates.
-   * - Ensure isClientOpenAndUnlocked is updated
-   * - Notifies all connections with the new provider network state
-   *   - The external providers handle diffing the state
-   *
-   * @param newState
-   */
-  _onStateUpdate(newState) {
-    this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen;
-    this._notifyChainChange();
-  }
+  // _onStateUpdate removed -- replaced by targeted KeyringController and NetworkController subscriptions
 
   /**
    * Execute side effects of a removed account.
@@ -8167,17 +8120,6 @@ export default class MetamaskController extends EventEmitter {
   _onAccountRemoved(address) {
     // Remove all associated permissions
     this.removeAllAccountPermissions(address);
-  }
-
-  // misc
-
-  /**
-   * A method for emitting the full MetaMask state to all registered listeners.
-   *
-   * @private
-   */
-  privateSendUpdate() {
-    this.emit('update', this.getState());
   }
 
   /**
@@ -9211,7 +9153,6 @@ export default class MetamaskController extends EventEmitter {
 
   _trackTransactionFailure(transactionMeta) {
     const { txReceipt } = transactionMeta;
-    const metamaskState = this.getState();
     const { allTokens } = this.tokensController.state;
     const selectedAccount = this.accountsController.getSelectedAccount();
     const tokens =
@@ -9221,6 +9162,8 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
+    const { accounts } = this.accountTrackerController.state;
+
     this.metaMetricsController.trackEvent(
       {
         event: 'Tx Status Update: On-Chain Failure',
@@ -9229,8 +9172,7 @@ export default class MetamaskController extends EventEmitter {
           action: 'Transactions',
           errorMessage: transactionMeta.simulationFails?.reason,
           numberOfTokens: tokens.length,
-          // TODO: remove this once we have migrated to the new account balances state
-          numberOfAccounts: Object.keys(metamaskState.accounts).length,
+          numberOfAccounts: Object.keys(accounts).length,
         },
       },
       {
@@ -9239,6 +9181,9 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
+  // TODO: Selectors consuming this (getIsSmartTransaction,
+  // selectAllEnabledNetworkClientIds) need refactoring to accept
+  // keyed state or read directly from controllers.
   _getMetaMaskState() {
     return {
       metamask: this.getState(),
@@ -9393,7 +9338,6 @@ export default class MetamaskController extends EventEmitter {
       platform: this.platform,
       getCronjobControllerStorageManager: () =>
         this.opts.cronjobControllerStorageManager,
-      getFlatState: this.getState.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
