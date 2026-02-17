@@ -328,11 +328,14 @@ describe('AwaitingSignatures', () => {
 
       // Create initial state with QR scan active and activeQuote present (fullscreen mode)
       // In fullscreen mode, activeQuote doesn't get cleared when transaction fails
+      // Note: activeQuote is computed by selector from bridge controller state
       const initialBridgeMockStore = createBridgeMockStore({
         bridgeStatusStateOverrides: {
           txHistory: {},
         },
         bridgeStateOverrides: {
+          // activeQuote is a computed property from the bridge controller selector
+          // We need to set it for the test, using Record to allow the property
           activeQuote: {
             quote: {
               requestId,
@@ -341,7 +344,7 @@ describe('AwaitingSignatures', () => {
               amount: '100',
             },
           },
-        },
+        } as Record<string, unknown>,
         metamaskStateOverrides: {
           activeQrCodeScanRequest: {
             type: 'sign',
