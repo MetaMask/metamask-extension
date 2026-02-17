@@ -56,7 +56,9 @@ describe('LimitPriceInput', () => {
     it('displays the Limit Price label', () => {
       renderWithProvider(<LimitPriceInput {...defaultProps} />, mockStore);
 
-      expect(screen.getByText(messages.perpsLimitPrice.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLimitPrice.message),
+      ).toBeInTheDocument();
     });
 
     it('displays long presets (Mid, Bid, -1%, -2%)', () => {

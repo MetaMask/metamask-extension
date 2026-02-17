@@ -391,9 +391,13 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByText(messages.perpsMargin.message));
 
       // After expanding, both the mode toggle and confirm button show 'Add Margin'
-      const addMarginElements = screen.getAllByText(messages.perpsAddMargin.message);
+      const addMarginElements = screen.getAllByText(
+        messages.perpsAddMargin.message,
+      );
       expect(addMarginElements.length).toBeGreaterThanOrEqual(2);
-      expect(screen.getByText(messages.perpsRemoveMargin.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsRemoveMargin.message),
+      ).toBeInTheDocument();
     });
 
     it('collapses margin section when auto close is opened (mutual exclusion)', () => {
@@ -402,12 +406,18 @@ describe('PerpsMarketDetailPage', () => {
       renderWithProvider(<PerpsMarketDetailPage />, store);
 
       fireEvent.click(screen.getByText(messages.perpsMargin.message));
-      const addMarginElements = screen.getAllByText(messages.perpsAddMargin.message);
+      const addMarginElements = screen.getAllByText(
+        messages.perpsAddMargin.message,
+      );
       expect(addMarginElements.length).toBeGreaterThanOrEqual(1);
 
       fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
-      expect(screen.getByText(messages.perpsTakeProfit.message)).toBeInTheDocument();
-      expect(screen.getByText(messages.perpsStopLoss.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsTakeProfit.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsStopLoss.message),
+      ).toBeInTheDocument();
     });
   });
 

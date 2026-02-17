@@ -56,10 +56,14 @@ describe('EditMarginExpandable', () => {
         mockStore,
       );
 
-      const addMarginElements = screen.getAllByText(messages.perpsAddMargin.message);
+      const addMarginElements = screen.getAllByText(
+        messages.perpsAddMargin.message,
+      );
       // Mode toggle tab + confirm button both show 'Add Margin'
       expect(addMarginElements.length).toBeGreaterThanOrEqual(2);
-      expect(screen.getByText(messages.perpsRemoveMargin.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsRemoveMargin.message),
+      ).toBeInTheDocument();
     });
 
     it('renders amount input and preset buttons when expanded', () => {
@@ -90,7 +94,9 @@ describe('EditMarginExpandable', () => {
         mockStore,
       );
 
-      expect(screen.getByText(messages.perpsAvailableBalance.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsAvailableBalance.message),
+      ).toBeInTheDocument();
     });
 
     it('shows Max removable when Remove is selected', () => {
@@ -101,7 +107,9 @@ describe('EditMarginExpandable', () => {
 
       fireEvent.click(screen.getByText(messages.perpsRemoveMargin.message));
 
-      expect(screen.getByText(messages.perpsMaxRemovable.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsMaxRemovable.message),
+      ).toBeInTheDocument();
     });
   });
 
@@ -114,7 +122,9 @@ describe('EditMarginExpandable', () => {
 
       fireEvent.click(screen.getByText(messages.perpsRemoveMargin.message));
 
-      expect(screen.getByText(messages.perpsMaxRemovable.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsMaxRemovable.message),
+      ).toBeInTheDocument();
     });
 
     it('switches back to Add mode when Add Margin is clicked', () => {
@@ -126,7 +136,9 @@ describe('EditMarginExpandable', () => {
       fireEvent.click(screen.getByText(messages.perpsRemoveMargin.message));
       fireEvent.click(screen.getByText(messages.perpsAddMargin.message));
 
-      expect(screen.getByText(messages.perpsAvailableBalance.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsAvailableBalance.message),
+      ).toBeInTheDocument();
     });
   });
 

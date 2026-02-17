@@ -413,7 +413,9 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.getByTestId('limit-price-input')).toBeInTheDocument();
-      expect(screen.getByText(messages.perpsLimitPrice.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLimitPrice.message),
+      ).toBeInTheDocument();
     });
 
     it('hides limit price input when orderType is market', () => {
