@@ -23,6 +23,7 @@ buildTypes:
       - bitcoin
       - bitcoin-swaps
       - tron
+      - musd-conversion
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -56,6 +57,7 @@ buildTypes:
       - bitcoin-swaps
       - multi-srp
       - tron
+      - musd-conversion
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
@@ -92,6 +94,7 @@ buildTypes:
       - bitcoin
       - bitcoin-swaps
       - tron
+      - musd-conversion
     env:
       - INFURA_EXPERIMENTAL_PROJECT_ID
       - SEGMENT_EXPERIMENTAL_WRITE_KEY
@@ -124,6 +127,7 @@ buildTypes:
       - tron
       - multi-srp
       - multichain
+      - musd-conversion
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -205,6 +209,11 @@ features:
       - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
   bitcoin-swaps:
   multichain:
+  musd-conversion:
+    # mUSD stablecoin conversion feature
+    # Code fences: ///: BEGIN:ONLY_INCLUDE_IF(musd-conversion)
+    assets:
+      - ./{app,shared,ui}/**/musd/**
   ocap-kernel:
     assets:
       - ./{app,shared,ui}/**/ocap-kernel/**

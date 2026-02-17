@@ -14,6 +14,7 @@ import rampsReducer from './ramps/ramps';
 import confirmAlertsReducer from './confirm-alerts/confirm-alerts';
 import smartAccountsReducer from './smart-accounts/smart-accounts';
 import rewardsReducer from './rewards';
+import { musdReducer } from './musd';
 import { perpsTutorialReducer } from './perps';
 
 export default combineReducers({
@@ -33,5 +34,6 @@ export default combineReducers({
   localeMessages: localeMessagesReducer,
   smartAccounts: smartAccountsReducer,
   rewards: rewardsReducer,
+  musd: musdReducer,
   perpsTutorial: perpsTutorialReducer,
 });

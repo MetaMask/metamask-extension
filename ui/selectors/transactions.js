@@ -208,6 +208,58 @@ export const smartTransactionsListSelector = createSelector(
   },
 );
 
+/**
+ * IDs and hashes of transactions that appear in requiredTransactionIds of any
+ * musdConversion transaction. Used to hide those "required" txs from the activity list.
+ * Matching by both id and hash covers cases where the link is by hash.
+ *
+ * @param {object} state - Root state
+ * @returns {{ ids: Set<string>, hashes: Set<string> }} Sets of ids and hashes to hide
+ */
+export const musdConversionRequiredTransactionIdsSetSelector = createSelector(
+  getTransactions,
+  (transactions) => {
+    const ids = new Set();
+    const hashes = new Set();
+    const txById = new Map();
+    // Build id->tx map first so we can resolve requiredTransactionIds to hashes
+    // regardless of array order (required tx may appear after musdConversion tx).
+    for (const tx of transactions) {
+      txById.set(String(tx.id), tx);
+    }
+    for (const tx of transactions) {
+      if (
+        tx.type === TransactionType.musdConversion &&
+        Array.isArray(tx.requiredTransactionIds) &&
+        tx.requiredTransactionIds.length > 0
+      ) {
+        for (const id of tx.requiredTransactionIds) {
+          const idStr = String(id);
+          ids.add(idStr);
+          const requiredTx = txById.get(idStr);
+          if (requiredTx?.hash) {
+            hashes.add(requiredTx.hash);
+          }
+        }
+      }
+    }
+    return { ids, hashes };
+  },
+);
+
+/**
+ * Transaction ids and hashes to hide from the main activity list (not from token
+ * detail pages). Aggregates rules such as "sub-operations of composite flows".
+ * Component code should depend only on this selector, not on specific features.
+ *
+ * @param {object} state - Root state
+ * @returns {{ ids: Set<string>, hashes: Set<string> }}
+ */
+export const mainActivityListHiddenIdsSelector = createSelector(
+  musdConversionRequiredTransactionIdsSetSelector,
+  (musdConversionHidden) => musdConversionHidden,
+);
+
 export const selectedAddressTxListSelectorAllChain = createSelector(
   getSelectedInternalAccount,
   getTransactions,

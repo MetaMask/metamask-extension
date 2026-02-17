@@ -53,6 +53,23 @@ export function TransactionDetailsSummary() {
     return [...requiredTransactions, transactionMeta];
   }, [requiredTransactions, transactionMeta]);
 
+  // For atomic mUSD conversions (relay + receive share the same hash),
+  // only show the relayDeposit line. Non-atomic shows both relay and receive.
+  const transactionsToShow = useMemo(() => {
+    if (
+      transactionMeta.type === TransactionType.musdConversion &&
+      requiredTransactions.length > 0
+    ) {
+      return [
+        ...requiredTransactions.filter(
+          (tx) => tx.type !== TransactionType.tokenMethodApprove,
+        ),
+        transactionMeta,
+      ];
+    }
+    return transactions;
+  }, [transactions, transactionMeta, requiredTransactions]);
+
   const payTokenAddress = metamaskPay?.tokenAddress as Hex | undefined;
 
   return (
@@ -68,12 +85,12 @@ export function TransactionDetailsSummary() {
         flexDirection={FlexDirection.Column}
         paddingLeft={2}
       >
-        {transactions.map((tx, index) => (
+        {transactionsToShow.map((tx, index) => (
           <TransactionSummaryLine
             key={tx.id}
             transactionMeta={tx}
             payTokenAddress={payTokenAddress}
-            isLast={index === transactions.length - 1}
+            isLast={index === transactionsToShow.length - 1}
           />
         ))}
       </Box>
@@ -204,10 +221,13 @@ function ReceiveSummaryLine({
       ? t('bridgeReceive', [tokenSymbol, networkName])
       : t('bridgeReceiveLoading');
 
+  const hash =
+    transactionMeta?.hash === '0x0' ? undefined : transactionMeta?.hash;
+
   return (
     <SummaryLine
       chainId={chainId}
-      hash={transactionMeta.hash}
+      hash={hash}
       isHyperliquid={isPerpsDeposit}
       status={transactionMeta.status}
       time={transactionMeta.submittedTime ?? transactionMeta.time}
