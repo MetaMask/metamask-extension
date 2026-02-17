@@ -31,7 +31,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
-          .withPreferencesController({ pna25Acknowledged: true })
+          .withPreferencesController()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentryError,
@@ -59,7 +59,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
-          .withPreferencesController({ pna25Acknowledged: true })
+          .withPreferencesController()
           .build(),
 
         title: this.test?.fullTitle(),
@@ -84,7 +84,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withPreferencesController({ pna25Acknowledged: true })
+          .withPreferencesController()
           .build(),
 
         title: this.test?.fullTitle(),

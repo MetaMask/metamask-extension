@@ -82,7 +82,7 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
-          .withPreferencesController({ pna25Acknowledged: true })
+          .withPreferencesController()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
