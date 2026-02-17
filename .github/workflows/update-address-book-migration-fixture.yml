@@ -1,0 +1,10 @@
+name: deprecated — Update AddressBook Migration Fixture
+on:
+  workflow_dispatch: {}
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This workflow is deprecated. Use 'Update E2E fixtures' instead."
+
+

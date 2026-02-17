@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "version": 36
+  },
+  "data": {
+    "AddressBookController": {
+      "addressBook": {
+        "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
+          "chainId": "1",
+          "name": "alice.eth"
+        },
+        "0x09781764c08de8ca82e156bbf156a3ca217c7950": {
+          "chainId": "0x2",
+          "name": "Bob"
+        }
+      }
+    }
+  }
+}
+
+

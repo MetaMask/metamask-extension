@@ -171,6 +171,7 @@ jobs:
         run: |
           Xvfb -ac :99 -screen 0 1280x1024x16 &
           yarn test:e2e:single test/e2e/dist/wallet-fixture-export.spec.ts --browser chrome --retries 1
+          yarn test:e2e:single test/e2e/dist/address-book-migration-export.spec.ts --browser chrome --retries 1
           yarn lint:prettier:fix
 
       - name: Upload test artifacts
@@ -188,6 +189,7 @@ jobs:
           path: |
             test/e2e/fixtures/onboarding-fixture.json
             test/e2e/fixtures/default-fixture.json
+            test/e2e/fixtures/address-book-post-migration.json
           key: fixtures-${{ needs.prepare.outputs.COMMIT_SHA }}
 
   commit-updated-fixtures:
@@ -218,13 +220,14 @@ jobs:
           path: |
             test/e2e/fixtures/onboarding-fixture.json
             test/e2e/fixtures/default-fixture.json
+            test/e2e/fixtures/address-book-post-migration.json
           key: fixtures-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
 
       - name: Check whether there are fixture changes
         id: fixture-changes
         run: |
-          if git diff --exit-code test/e2e/fixtures/onboarding-fixture.json test/e2e/fixtures/default-fixture.json
+          if git diff --exit-code test/e2e/fixtures/onboarding-fixture.json test/e2e/fixtures/default-fixture.json test/e2e/fixtures/address-book-post-migration.json
           then
             echo "HAS_CHANGES=false" >> "$GITHUB_OUTPUT"
           else
