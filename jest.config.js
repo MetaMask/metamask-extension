@@ -15,6 +15,9 @@ module.exports = {
   moduleNameMapper: {
     // Mock lightweight-charts since it requires browser/canvas APIs not available in Jest
     '^lightweight-charts$': '<rootDir>/test/mocks/lightweight-charts.js',
+    // Map @metamask/perps-controller to local mock
+    '^@metamask/perps-controller$':
+      '<rootDir>/ui/__mocks__/perps/perps-controller/index.ts',
   },
   // The path to the Prettier executable used to format snapshots
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
