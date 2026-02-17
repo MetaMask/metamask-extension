@@ -43,6 +43,16 @@ class SnapInstall {
     testId: 'snap-privacy-warning-scroll',
   };
 
+  private readonly thirdPartyNoticeHeader = {
+    tag: 'h3',
+    text: 'Third-party software notice',
+  };
+
+  private readonly thirdPartyNoticeText = {
+    tag: 'p',
+    text: 'Consensys has no access to information you share with third-party services.',
+  };
+
   private readonly snapUpdateScrollArea = '[data-testid="snap-update-scroll"]';
 
   private readonly approveButton = '[data-testid="confirmation-submit-button"]';
@@ -133,6 +143,8 @@ class SnapInstall {
 
   async clickScrollBottomThirdPartyNotice() {
     console.log('Clicking on the scroll bottom third party notice');
+    await this.driver.waitForSelector(this.thirdPartyNoticeHeader);
+    await this.driver.waitForSelector(this.thirdPartyNoticeText);
     // once all specs use FixtureBuilderV2, we can switch this method for clickElementAndWaitToDisappear (MMQA-1386)
     await this.driver.clickElementSafe(this.thirdPartyNoticeScrollButton);
     await this.driver.assertElementNotPresent(
