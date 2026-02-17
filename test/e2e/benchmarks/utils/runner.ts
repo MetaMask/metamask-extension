@@ -14,6 +14,7 @@ import {
   calculateTimerStatistics,
   checkExclusionRate,
   MAX_EXCLUSION_RATE,
+  MAX_TOTAL_DURATION_MS,
   validateThresholds,
 } from './statistics';
 import type {
@@ -130,6 +131,22 @@ export async function runBenchmarkWithIterations(
       stats.dataQuality = 'unreliable';
       excludedDueToQuality += 1;
     }
+  }
+
+  // Compute per-run total durations and derive total statistics from them
+  // (min/max/percentiles are not additive across timers from different runs)
+  const perRunTotalDurations: number[] = [];
+  for (const result of allResults) {
+    if (result.success && result.timers.length > 0) {
+      const runTotal = result.timers.reduce((acc, t) => acc + t.duration, 0);
+      perRunTotalDurations.push(runTotal);
+    }
+  }
+  if (perRunTotalDurations.length > 0) {
+    const totalStats = calculateTimerStatistics('total', perRunTotalDurations, {
+      maxDurationMs: MAX_TOTAL_DURATION_MS,
+    });
+    timerStats.push(totalStats);
   }
 
   // Check overall run exclusion rate

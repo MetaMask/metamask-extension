@@ -500,6 +500,9 @@
     "ui/components/app/permission-connect-header/permission-connect-header.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/perps/edit-margin/edit-margin-expandable.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/perps/order-card/order-card.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -515,6 +518,9 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/perps/order-entry/components/leverage-slider/leverage-slider.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/order-entry/components/limit-price-input/limit-price-input.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/perps/order-entry/components/order-summary/order-summary.test.tsx": {
@@ -993,10 +999,8 @@
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/multichain/global-menu/global-menu.test.tsx": {
-      "Reselect: Identity function warnings": 2,
+    "ui/components/multichain/global-menu-drawer/global-menu-drawer.test.tsx": {
       "Reselect: Input stability warnings": 4,
-      "error: Warning: Function components cannot be": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain/import-account/import-account.test.tsx": {

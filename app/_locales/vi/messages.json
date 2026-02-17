@@ -5083,9 +5083,6 @@
   "perpsAutoClose": {
     "message": "Tự động đóng"
   },
-  "perpsBuy": {
-    "message": "mua"
-  },
   "perpsCloseAll": {
     "message": "Đóng tất cả"
   },
@@ -5132,9 +5129,6 @@
     "message": "Crypto"
   },
   "perpsFilterStocks": {
-    "message": "Cổ phiếu"
-  },
-  "perpsFilterStocksOnly": {
     "message": "Cổ phiếu"
   },
   "perpsFundingPayments": {
@@ -5213,29 +5207,17 @@
   "perpsSearchMarkets": {
     "message": "Tìm kiếm thị trường"
   },
-  "perpsSell": {
-    "message": "bán"
-  },
   "perpsShort": {
     "message": "Bán khống"
   },
   "perpsSize": {
     "message": "Kích thước"
   },
-  "perpsSortFundingRate": {
-    "message": "Tỷ lệ tài trợ"
-  },
-  "perpsSortOpenInterest": {
-    "message": "Lãi suất mở"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "Biến động giá: cao đến thấp"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "Biến động giá: thấp đến cao"
-  },
-  "perpsSortVolume": {
-    "message": "Khối lượng"
   },
   "perpsStartNewTrade": {
     "message": "Bắt đầu giao dịch mới"

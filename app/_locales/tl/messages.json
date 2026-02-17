@@ -5083,9 +5083,6 @@
   "perpsAutoClose": {
     "message": "Awtomatikong nagsasara"
   },
-  "perpsBuy": {
-    "message": "bumili"
-  },
   "perpsCloseAll": {
     "message": "Isara lahat"
   },
@@ -5132,9 +5129,6 @@
     "message": "Crypto"
   },
   "perpsFilterStocks": {
-    "message": "Stocks"
-  },
-  "perpsFilterStocksOnly": {
     "message": "Stocks"
   },
   "perpsFundingPayments": {
@@ -5213,29 +5207,17 @@
   "perpsSearchMarkets": {
     "message": "Maghanap ng mga market"
   },
-  "perpsSell": {
-    "message": "magbenta"
-  },
   "perpsShort": {
     "message": "Short"
   },
   "perpsSize": {
     "message": "Laki"
   },
-  "perpsSortFundingRate": {
-    "message": "Rate ng pagpopondo"
-  },
-  "perpsSortOpenInterest": {
-    "message": "Bukas na interes"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "Pagbabago ng presyo: mataas pababa"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "Pagbabago ng presyo: mababa pataas"
-  },
-  "perpsSortVolume": {
-    "message": "Volume"
   },
   "perpsStartNewTrade": {
     "message": "Magsimula ng bagong trade"

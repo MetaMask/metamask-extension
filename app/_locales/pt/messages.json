@@ -5083,9 +5083,6 @@
   "perpsAutoClose": {
     "message": "Encerramento automático"
   },
-  "perpsBuy": {
-    "message": "comprar"
-  },
   "perpsCloseAll": {
     "message": "Encerrar tudo"
   },
@@ -5132,9 +5129,6 @@
     "message": "Cripto"
   },
   "perpsFilterStocks": {
-    "message": "Ações"
-  },
-  "perpsFilterStocksOnly": {
     "message": "Ações"
   },
   "perpsFundingPayments": {
@@ -5213,29 +5207,17 @@
   "perpsSearchMarkets": {
     "message": "Pesquisar mercados"
   },
-  "perpsSell": {
-    "message": "vender"
-  },
   "perpsShort": {
     "message": "Short"
   },
   "perpsSize": {
     "message": "Tamanho"
   },
-  "perpsSortFundingRate": {
-    "message": "Taxa de depósito de fundos"
-  },
-  "perpsSortOpenInterest": {
-    "message": "Contrato em aberto"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "Variação de preço: maior para menor"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "Variação de preço: menor para maior"
-  },
-  "perpsSortVolume": {
-    "message": "Volume"
   },
   "perpsStartNewTrade": {
     "message": "Iniciar uma nova negociação"

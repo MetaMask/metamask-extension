@@ -266,7 +266,6 @@
     "@ethersproject/providers": "^5.7.2",
     "@ethersproject/transactions": "^5.7.0",
     "@fortawesome/fontawesome-free": "^5.13.0",
-    "@headlessui/react": "^1.7.17",
     "@keystonehq/bc-ur-registry-eth": "^0.22.1",
     "@lavamoat/lavadome-react": "0.0.20",
     "@lavamoat/snow": "^2.0.4",
