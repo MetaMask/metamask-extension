@@ -9,7 +9,7 @@ import { SnapId } from '@metamask/snaps-sdk';
  */
 const FORCE_PREINSTALLED_SNAPS =
   process.env.FORCE_PREINSTALLED_SNAPS === 'true' ||
-  // @ts-expect-error: Environment variables are always strings, but this allows for more flexible usage in development environments.
+  // @ts-expect-error: Environment variables aren’t always strings, sometimes they’re booleans, allowing more flexible use in development.
   process.env.FORCE_PREINSTALLED_SNAPS === true;
 ///: END:ONLY_INCLUDE_IF
 
