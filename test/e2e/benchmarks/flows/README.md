@@ -36,6 +36,17 @@ yarn test:e2e:benchmark --preset performanceOnboardingNew --out results.json
 | `pageLoadBenchmark`            | Playwright benchmarks           | `page-load-benchmark.spec.ts`                                    |
 | `all`                          | All benchmarks                  | Everything above                                                 |
 
+### Performance benchmarks: browserify vs webpack
+
+- **PRs:** Performance benchmarks run on **Chrome + Browserify** only.
+- **Push to main/release:** Performance benchmarks also run on **Chrome + Webpack** (separate `benchmarks-webpack-perf` job) so we can compare build systems before releasing webpack to production.
+
+### Special CI Requirements
+
+| Preset                         | Requirement                                                                       |
+| ------------------------------ | --------------------------------------------------------------------------------- |
+| `performanceAccountManagement` | Requires `TEST_SRP_2` secret (12-word seed phrase). Set as a CI secret in GitHub. |
+
 ### 1. Create a new file in the appropriate subdirectory
 
 Choose the category that best fits your benchmark:
