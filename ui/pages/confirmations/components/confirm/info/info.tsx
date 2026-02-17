@@ -55,16 +55,10 @@ export const InfoSkeleton = () => (
     >
       <Skeleton height="72px" width="100%" />
     </ConfirmInfoSection>
-    <ConfirmInfoSection
-      data-testid="confirmation__info_skeleton"
-      style={{ marginBottom: 12 }}
-    >
+    <ConfirmInfoSection style={{ marginBottom: 12 }}>
       <Skeleton height="72px" width="100%" />
     </ConfirmInfoSection>
-    <ConfirmInfoSection
-      data-testid="confirmation__info_skeleton"
-      style={{ marginBottom: 12 }}
-    >
+    <ConfirmInfoSection style={{ marginBottom: 12 }}>
       <Skeleton height="72px" width="100%" />
     </ConfirmInfoSection>
   </>
