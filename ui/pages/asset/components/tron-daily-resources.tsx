@@ -17,12 +17,14 @@ import {
   IconColor,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTronResources, TronResource } from '../hooks/useTronResources';
+
+type TranslateFunction = (key: string, substitutions?: string[]) => string;
 
 type TronDailyResourcesProps = {
   account: InternalAccount;
   chainId: string;
+  t: TranslateFunction;
 };
 
 type ResourceCircleProps = {
@@ -171,12 +173,13 @@ const ResourceRow = ({
  * @param options0
  * @param options0.account
  * @param options0.chainId
+ * @param options0.t
  */
 export const TronDailyResources = ({
   account,
   chainId,
+  t,
 }: TronDailyResourcesProps) => {
-  const t = useI18nContext();
   const { energy, bandwidth } = useTronResources(account, chainId);
 
   // Constants for resource calculations

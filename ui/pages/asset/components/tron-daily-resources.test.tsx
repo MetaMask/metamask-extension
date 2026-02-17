@@ -1,14 +1,15 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
 import * as useTronResourcesHook from '../hooks/useTronResources';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { TronDailyResources } from './tron-daily-resources';
 
 // Mock the hooks
 jest.mock('../hooks/useTronResources');
+
+const mockT = tEn as (key: string, substitutions?: string[]) => string;
 
 describe('TronDailyResources', () => {
   const mockAccount: InternalAccount = {
@@ -49,8 +50,12 @@ describe('TronDailyResources', () => {
         },
       });
 
-      renderWithProvider(
-        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
       );
 
       expect(
@@ -83,8 +88,12 @@ describe('TronDailyResources', () => {
         },
       });
 
-      renderWithProvider(
-        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
       );
 
       // Check that values are formatted with locale
@@ -108,8 +117,12 @@ describe('TronDailyResources', () => {
         },
       });
 
-      renderWithProvider(
-        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
       );
 
       // Should show singular message for 1 USDT transfer covered
@@ -136,8 +149,12 @@ describe('TronDailyResources', () => {
         },
       });
 
-      renderWithProvider(
-        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
       );
 
       // Should show "3" USDT transfers covered
@@ -167,8 +184,12 @@ describe('TronDailyResources', () => {
         },
       });
 
-      renderWithProvider(
-        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
       );
 
       // Should show "0" USDT transfers covered
@@ -198,8 +219,12 @@ describe('TronDailyResources', () => {
         },
       });
 
-      renderWithProvider(
-        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
       );
 
       // Should show singular message for 1 TRX transfer covered
@@ -226,8 +251,12 @@ describe('TronDailyResources', () => {
         },
       });
 
-      renderWithProvider(
-        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
       );
 
       // Should show "4" TRX transfers covered
@@ -257,8 +286,12 @@ describe('TronDailyResources', () => {
         },
       });
 
-      renderWithProvider(
-        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
       );
 
       // Should show "0" TRX transfers covered
@@ -288,8 +321,12 @@ describe('TronDailyResources', () => {
         },
       });
 
-      renderWithProvider(
-        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
       );
 
       // Both energy and bandwidth show "0", so we expect 2 instances
@@ -329,8 +366,12 @@ describe('TronDailyResources', () => {
         },
       });
 
-      renderWithProvider(
-        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
       );
 
       // Check formatted large numbers
@@ -374,8 +415,12 @@ describe('TronDailyResources', () => {
         },
       });
 
-      const { container } = renderWithProvider(
-        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      const { container } = render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
       );
 
       // Component should still render without errors
@@ -400,8 +445,12 @@ describe('TronDailyResources', () => {
         },
       });
 
-      const { container } = renderWithProvider(
-        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      const { container } = render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
       );
 
       // Check that SVG circles are rendered (2 circles per resource: background + progress)
@@ -429,8 +478,12 @@ describe('TronDailyResources', () => {
         },
       });
 
-      renderWithProvider(
-        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
       );
 
       expect(mockUseTronResources).toHaveBeenCalledWith(mockAccount, chainId);
@@ -453,8 +506,12 @@ describe('TronDailyResources', () => {
         },
       });
 
-      renderWithProvider(
-        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
       );
 
       // Should floor fractional transfers to 1, using singular message
@@ -488,10 +545,11 @@ describe('TronDailyResources', () => {
         },
       });
 
-      const { container } = renderWithProvider(
+      const { container } = render(
         <TronDailyResources
           account={undefined as unknown as InternalAccount}
           chainId={chainId}
+          t={mockT}
         />,
       );
 
@@ -515,8 +573,8 @@ describe('TronDailyResources', () => {
         },
       });
 
-      const { container } = renderWithProvider(
-        <TronDailyResources account={mockAccount} chainId="" />,
+      const { container } = render(
+        <TronDailyResources account={mockAccount} chainId="" t={mockT} />,
       );
 
       // Should still render without crashing
