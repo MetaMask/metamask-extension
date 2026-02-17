@@ -76,12 +76,14 @@ export const getReactCompilerLoader = (
 
   const numCores = availableParallelism();
   // Add thread-loader for parallelization when enabled
+  // Add thread-loader for parallelization when enabled
   if (!disableThreadLoader) {
+    const numCores = availableParallelism();
     loaders.push({
       loader: 'thread-loader',
       options: {
-        workers:
-          numCores < 8 ? Math.max(1, numCores - 2) : Math.floor(0.9 * numCores),
+        // Leave reserve for `swc-loader` etc
+        workers: Math.max(1, numCores - 2),
         workerParallelJobs: 50,
         poolTimeout: watch ? Number(Infinity) : 500,
       },
