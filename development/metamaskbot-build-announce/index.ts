@@ -9,6 +9,7 @@ import {
   PERFORMANCE_PRESETS,
 } from '../../test/e2e/benchmarks/utils/constants';
 import {
+  type ArtifactLinks,
   type BenchmarkResults,
   type PageLoadEntry,
   getHumanReadableSize,
@@ -39,11 +40,27 @@ async function start(): Promise<void> {
     HOST_URL,
     LAVAMOAT_POLICY_CHANGED,
     POST_NEW_BUILDS,
-  } = process.env as Record<string, string>;
+  } = process.env;
 
   if (!PR_NUMBER) {
-    console.warn(`No pull request detected for commit "${HEAD_COMMIT_HASH}"`);
+    console.warn(
+      `No pull request detected for commit "${HEAD_COMMIT_HASH ?? 'unknown'}"`,
+    );
     return;
+  }
+
+  if (
+    !PR_COMMENT_TOKEN ||
+    !OWNER ||
+    !REPOSITORY ||
+    !RUN_ID ||
+    !HEAD_COMMIT_HASH ||
+    !MERGE_BASE_COMMIT_HASH ||
+    !HOST_URL
+  ) {
+    throw new Error(
+      'Missing required environment variables: PR_COMMENT_TOKEN, OWNER, REPOSITORY, RUN_ID, HEAD_COMMIT_HASH, MERGE_BASE_COMMIT_HASH, HOST_URL',
+    );
   }
 
   const artifacts = getArtifactLinks(HOST_URL, OWNER, REPOSITORY, RUN_ID);
@@ -103,7 +120,7 @@ async function buildArtifactsBody({
 }: {
   hostUrl: string;
   shortSha: string;
-  artifacts: ReturnType<typeof getArtifactLinks>;
+  artifacts: ArtifactLinks;
   postNewBuilds: boolean;
   lavamoatPolicyChanged: boolean;
 }): Promise<string> {
@@ -154,16 +171,14 @@ async function fetchPageLoadResults(
     for (const buildType of BENCHMARK_BUILD_TYPES) {
       results[platform][buildType] = {};
       for (const page of PAGE_LOAD_PRESETS) {
-        const data = await fetchBenchmarkJson(
+        const data = await fetchBenchmarkJson<Record<string, PageLoadEntry>>(
           hostUrl,
           platform,
           buildType,
           page,
         );
         if (data?.[page]) {
-          results[platform][buildType][page] = data[
-            page
-          ] as unknown as PageLoadEntry;
+          results[platform][buildType][page] = data[page];
         }
       }
     }
@@ -184,21 +199,17 @@ async function buildUiStartupSection(
   benchmarkResults: BenchmarkResults,
   hostUrl: string,
 ): Promise<string> {
-  let benchmarkSummary = 'UI Startup Metrics';
-  const summaryPlatform = BENCHMARK_PLATFORMS[0];
-  const summaryBuildType = BENCHMARK_BUILD_TYPES[0];
-  const summaryPage = PAGE_LOAD_PRESETS[0];
+  const sectionTitle = 'UI Startup Metrics';
   const pageData =
-    benchmarkResults[summaryPlatform]?.[summaryBuildType]?.[summaryPage];
+    benchmarkResults[BENCHMARK_PLATFORMS[0]]?.[BENCHMARK_BUILD_TYPES[0]]?.[
+      PAGE_LOAD_PRESETS[0]
+    ];
   const meanStartup = pageData?.mean?.uiStartup;
   const stdDevStartup = pageData?.stdDev?.uiStartup;
-  if (meanStartup && stdDevStartup) {
-    const mean = Math.round(parseFloat(meanStartup));
-    const stdDev = Math.round(parseFloat(stdDevStartup));
-    benchmarkSummary = `UI Startup Metrics (${mean} ± ${stdDev} ms)`;
-  } else {
-    console.log('No page load summary data available; using default heading');
-  }
+  const benchmarkSummary =
+    meanStartup && stdDevStartup
+      ? `${sectionTitle} (${Math.round(parseFloat(meanStartup))} ± ${Math.round(parseFloat(stdDevStartup))} ms)`
+      : sectionTitle;
 
   const userActionsHtml = await safeBuildSection('user actions', () =>
     buildBenchmarkSectionComment(
@@ -246,7 +257,7 @@ async function buildUiStartupSection(
  * @returns HTML string for the bundle size diff section, or empty string on error.
  */
 async function buildBundleSizeDiffSection(
-  artifacts: ReturnType<typeof getArtifactLinks>,
+  artifacts: ArtifactLinks,
   mergeBaseCommitHash: string,
 ): Promise<string> {
   const prBundleSizeStatsResponse = await fetch(artifacts.bundleSizeStats.url);
@@ -255,7 +266,9 @@ async function buildBundleSizeDiffSection(
       `Failed to fetch prBundleSizeStats, status ${prBundleSizeStatsResponse.statusText}`,
     );
   }
-  const prBundleSizeStats = await prBundleSizeStatsResponse.json();
+  // This annotation narrows the untyped json() result to the known schema of the bundle size stats artifact.
+  const prBundleSizeStats: Record<string, { size: number }> =
+    await prBundleSizeStatsResponse.json();
 
   const devBundleSizeStatsResponse = await fetch(artifacts.bundleSizeData.url);
   if (!devBundleSizeStatsResponse.ok) {
@@ -263,38 +276,44 @@ async function buildBundleSizeDiffSection(
       `Failed to fetch devBundleSizeStats, status ${devBundleSizeStatsResponse.statusText}`,
     );
   }
-  const devBundleSizeStats = await devBundleSizeStatsResponse.json();
+  // This annotation narrows the untyped json() result to the known schema of the dev bundle size data.
+  const devBundleSizeStats: Record<
+    string,
+    Record<string, number>
+  > = await devBundleSizeStatsResponse.json();
 
-  const prSizes = {
+  const bundleParts = ['background', 'ui', 'common'] as const;
+  type BundlePart = (typeof bundleParts)[number];
+
+  const prSizes: Record<BundlePart, number> = {
     background: prBundleSizeStats.background.size,
     ui: prBundleSizeStats.ui.size,
     common: prBundleSizeStats.common.size,
   };
 
-  const devSizes = Object.keys(prSizes).reduce(
-    (sizes, part) => {
-      sizes[part as keyof typeof prSizes] =
-        devBundleSizeStats[mergeBaseCommitHash][part] || 0;
-      return sizes;
-    },
-    {} as Record<keyof typeof prSizes, number>,
-  );
+  const devSizes: Record<BundlePart, number> = {
+    background: 0,
+    ui: 0,
+    common: 0,
+  };
+  for (const part of bundleParts) {
+    devSizes[part] = devBundleSizeStats[mergeBaseCommitHash]?.[part] ?? 0;
+  }
 
-  const diffs = Object.keys(prSizes).reduce(
-    (output, part) => {
-      output[part] =
-        prSizes[part as keyof typeof prSizes] -
-        devSizes[part as keyof typeof prSizes];
-      return output;
-    },
-    {} as Record<string, number>,
-  );
+  const diffs: Record<BundlePart, number> = {
+    background: 0,
+    ui: 0,
+    common: 0,
+  };
+  for (const part of bundleParts) {
+    diffs[part] = prSizes[part] - devSizes[part];
+  }
 
-  const sizeDiffRows = Object.keys(diffs).map(
+  const sizeDiffRows = bundleParts.map(
     (part) =>
       `${part}: ${getHumanReadableSize(diffs[part])} (${getPercentageChange(
-        devSizes[part as keyof typeof prSizes],
-        prSizes[part as keyof typeof prSizes],
+        devSizes[part],
+        prSizes[part],
       )}%)`,
   );
 
@@ -305,7 +324,7 @@ async function buildBundleSizeDiffSection(
   const sizeDiffBackground = diffs.background + diffs.common;
   const sizeDiffUi = diffs.ui + diffs.common;
 
-  let sizeDiffWarning;
+  let sizeDiffWarning: string | undefined;
   if (
     sizeDiffBackground > BUNDLE_SIZE_THRESHOLD ||
     sizeDiffUi > BUNDLE_SIZE_THRESHOLD

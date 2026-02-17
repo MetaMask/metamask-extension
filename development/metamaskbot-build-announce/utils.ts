@@ -123,6 +123,22 @@ export async function artifactExists(url: string): Promise<boolean> {
   return response.ok;
 }
 
+type ArtifactLink = { url: string; label: string };
+
+type ArtifactLinkMap = {
+  bundleSizeData: ArtifactLink;
+  bundleSizeStats: ArtifactLink;
+  userActionsStats: ArtifactLink;
+  storybook: ArtifactLink;
+  tsMigrationDashboard: ArtifactLink;
+  depViz: ArtifactLink;
+  allArtifacts: ArtifactLink;
+};
+
+export type ArtifactLinks = ArtifactLinkMap & {
+  link: (key: keyof ArtifactLinkMap) => string;
+};
+
 /**
  * Builds a map of CI artifact URLs and a helper to render HTML links.
  *
@@ -137,8 +153,8 @@ export function getArtifactLinks(
   owner: string,
   repository: string,
   runId: string,
-) {
-  const ARTIFACT_LINK_MAP = {
+): ArtifactLinks {
+  const ARTIFACT_LINK_MAP: ArtifactLinkMap = {
     bundleSizeData: {
       url: 'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.json',
       label: 'Bundle Size Data',
@@ -169,7 +185,7 @@ export function getArtifactLinks(
     },
   };
 
-  const link = (key: keyof typeof ARTIFACT_LINK_MAP) =>
+  const link = (key: keyof ArtifactLinkMap) =>
     `<a href="${ARTIFACT_LINK_MAP[key].url}">${ARTIFACT_LINK_MAP[key].label}</a>`;
 
   return { ...ARTIFACT_LINK_MAP, link };
@@ -375,18 +391,21 @@ export function buildBenchmarkSection(
  * @param preset - Benchmark preset name.
  * @returns Parsed JSON or null.
  */
-export async function fetchBenchmarkJson(
+export async function fetchBenchmarkJson<
+  Result = Record<string, BenchmarkEntryResult>,
+>(
   hostUrl: string,
   platform: string,
   buildType: string,
   preset: string,
-): Promise<Record<string, BenchmarkEntryResult> | null> {
+): Promise<Result | null> {
   const url = `${hostUrl}/benchmarks/benchmark-${platform}-${buildType}-${preset}.json`;
   const response = await fetch(url);
   if (!response.ok) {
     return null;
   }
-  return await response.json();
+  const data: Result = await response.json();
+  return data;
 }
 
 /**
@@ -446,7 +465,17 @@ export async function buildBenchmarkSectionComment(
  * @param benchmarkResults - The page load benchmark results.
  * @returns Sets of all discovered dimension values.
  */
-function discoverDimensions(benchmarkResults: BenchmarkResults) {
+type BenchmarkDimensions = {
+  platforms: Set<string>;
+  buildTypes: Set<string>;
+  pages: Set<string>;
+  metrics: Set<string>;
+  measures: Set<string>;
+};
+
+function discoverDimensions(
+  benchmarkResults: BenchmarkResults,
+): BenchmarkDimensions {
   const platforms = new Set<string>();
   const buildTypes = new Set<string>();
   const pages = new Set<string>();
@@ -485,7 +514,7 @@ function discoverDimensions(benchmarkResults: BenchmarkResults) {
  * @returns HTML table string.
  */
 export function buildPageLoadTable(benchmarkResults: BenchmarkResults): string {
-  const { platforms, buildTypes, pages, metrics, measures } =
+  const { platforms, pages, metrics, measures } =
     discoverDimensions(benchmarkResults);
 
   if (platforms.size === 0 || metrics.size === 0) {
@@ -545,6 +574,15 @@ export function buildPageLoadTable(benchmarkResults: BenchmarkResults): string {
   return `<table>${tableHeader}${tableBody}</table>`;
 }
 
+/** Shape of the benchmark-gate.json configuration. */
+type BenchmarkGateConfig = {
+  gates: Record<
+    string,
+    Record<string, Record<string, Record<string, Record<string, number>>>>
+  >;
+  pingThresholds: { mean: number; p95: number };
+};
+
 /**
  * Compares benchmark results against gate thresholds and returns
  * an HTML warning string for any exceeded gates.
@@ -566,7 +604,9 @@ export async function runBenchmarkGate(
     );
   }
 
-  const { gates, pingThresholds } = await benchmarkResponse.json();
+  // This annotation narrows the untyped json() result to the known schema of the benchmark-gate.json config.
+  const { gates, pingThresholds }: BenchmarkGateConfig =
+    await benchmarkResponse.json();
 
   const exceededSums = { mean: 0, p95: 0 };
   let benchmarkGateBody = '';
@@ -581,8 +621,7 @@ export async function runBenchmarkGate(
             const benchmarkValue =
               benchmarkResults[platform][buildType][page][measure][metric];
 
-            const gateValue =
-              gates[platform][buildType][page][measure][metric];
+            const gateValue = gates[platform][buildType][page][measure][metric];
 
             if (benchmarkValue > gateValue) {
               const ceiledValue = Math.ceil(parseFloat(benchmarkValue));

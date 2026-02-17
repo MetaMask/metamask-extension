@@ -299,7 +299,7 @@ async function main(): Promise<void> {
     .parseAsync();
 
   let filesToRun: string[] = [];
-  const fileArg = argv.file as string | undefined;
+  const fileArg = argv.file;
 
   if (fileArg) {
     filesToRun = [fileArg];
