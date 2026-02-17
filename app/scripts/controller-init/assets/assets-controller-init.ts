@@ -172,15 +172,19 @@ export const AssetsControllerInit: ControllerInitFunction<
     payload: AssetsControllerFirstInitFetchMetaMetricsPayload,
   ): void => {
     try {
-      initMessenger.call('MetaMetricsController:trackEvent', {
-        event: MetaMetricsEventName.AssetsFirstInitFetchCompleted,
-        category: MetaMetricsEventCategory.Background,
-        properties: {
-          duration_ms: payload.durationMs,
-          chain_ids: payload.chainIds,
-          duration_by_data_source: payload.durationByDataSource,
+      initMessenger.call(
+        'MetaMetricsController:trackEvent',
+        {
+          event: MetaMetricsEventName.AssetsFirstInitFetchCompleted,
+          category: MetaMetricsEventCategory.Background,
+          properties: {
+            durationMs: payload.durationMs,
+            chainIds: payload.chainIds,
+            durationByDataSource: payload.durationByDataSource,
+          },
         },
-      }, { isOptIn: true });
+        { isOptIn: true },
+      );
     } catch {
       // MetaMetricsController may not be available (e.g. init order); skip tracking.
     }
@@ -194,11 +198,19 @@ export const AssetsControllerInit: ControllerInitFunction<
     isEnabled,
     isBasicFunctionality,
     subscribeToBasicFunctionalityChange,
-    queryApiClient: createApiPlatformClient({
-      clientProduct: 'metamask-extension',
-      getBearerToken: () => safeGetBearerToken(initMessenger),
-    }) as unknown as AssetsControllerOptions['queryApiClient'],
-    rpcDataSourceConfig: { tokenDetectionEnabled },
+    queryApiClient: getApiClient(initMessenger),
+    rpcDataSourceConfig: {
+      tokenDetectionEnabled: () => tokenDetectionEnabled,
+      balanceInterval: 30_000,
+      detectionInterval: 180_000,
+    },
+    priceDataSourceConfig: {
+      pollInterval: 180_000,
+    },
+    stakedBalanceDataSourceConfig: {
+      pollInterval: 30_000,
+      enabled: true,
+    },
     trackMetaMetricsEvent,
   };
   const controller = new AssetsController(options);
