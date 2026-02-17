@@ -5107,9 +5107,6 @@
   "perpsAutoClose": {
     "message": "自動クローズ"
   },
-  "perpsBuy": {
-    "message": "購入"
-  },
   "perpsCloseAll": {
     "message": "すべてクローズ"
   },
@@ -5156,9 +5153,6 @@
     "message": "仮想通貨"
   },
   "perpsFilterStocks": {
-    "message": "株式"
-  },
-  "perpsFilterStocksOnly": {
     "message": "株式"
   },
   "perpsFundingPayments": {
@@ -5237,29 +5231,17 @@
   "perpsSearchMarkets": {
     "message": "市場を検索"
   },
-  "perpsSell": {
-    "message": "売却"
-  },
   "perpsShort": {
     "message": "ショート"
   },
   "perpsSize": {
     "message": "サイズ"
   },
-  "perpsSortFundingRate": {
-    "message": "資金調達率"
-  },
-  "perpsSortOpenInterest": {
-    "message": "取組高"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "価格変動: 大きい順"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "価格変動: 小さい順"
-  },
-  "perpsSortVolume": {
-    "message": "取引量"
   },
   "perpsStartNewTrade": {
     "message": "新規取引を開始"
