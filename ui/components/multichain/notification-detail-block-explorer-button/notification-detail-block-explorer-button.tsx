@@ -1,6 +1,9 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import type {
+  INotification,
+  OnChainRawNotification,
+} from '@metamask/notification-services-controller/notification-services';
 import { toHex } from '@metamask/controller-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { ButtonVariant } from '../../component-library';
@@ -13,10 +16,8 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getNetworkDetailsFromNotifPayload } from '../../../helpers/utils/notification.util';
 
-type Notification = NotificationServicesController.Types.INotification;
-
 type NotificationDetailBlockExplorerButtonProps = {
-  notification: Notification;
+  notification: OnChainRawNotification;
   chainId: number;
   txHash: string;
 };
@@ -30,8 +31,7 @@ export const NotificationDetailBlockExplorerButton = ({
   const { trackEvent } = useContext(MetaMetricsContext);
 
   const chainIdHex = toHex(chainId);
-  const network =
-    'payload' in notification ? notification.payload?.network : undefined;
+  const { network } = notification.payload;
   const {
     blockExplorerUrl: notificationBlockExplorer,
     blockExplorerName: notificationBlockExplorerName,
