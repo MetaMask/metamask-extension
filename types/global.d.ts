@@ -243,7 +243,6 @@ declare class Chrome {
 
 type SentryObject = Sentry & {
   getMetaMetricsEnabled: () => Promise<boolean>;
-  getMetaMetricsId: () => Promise<string | null>;
 };
 
 type StateHooks = {

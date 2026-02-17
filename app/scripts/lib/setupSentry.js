@@ -59,7 +59,6 @@ export default function setupSentry() {
   return {
     ...Sentry,
     getMetaMetricsEnabled,
-    getMetaMetricsId,
   };
 }
 
@@ -69,13 +68,7 @@ function getClientOptions() {
 
   return {
     beforeBreadcrumb: beforeBreadcrumb(),
-    beforeSend: async (report) => {
-      const metaMetricsId = await getMetaMetricsId();
-      if (metaMetricsId) {
-        report.user = { id: metaMetricsId };
-      }
-      return rewriteReport(report);
-    },
+    beforeSend: (report) => rewriteReport(report),
     debug: METAMASK_DEBUG,
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
@@ -405,10 +398,15 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
  * return value of the second parameter passed to the function.
  *
  * @param {object} report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
- * @returns {object} A modified Sentry event object.
+ * @returns {Promise<object>} A modified Sentry event object.
  */
-export function rewriteReport(report) {
+export async function rewriteReport(report) {
   try {
+    const metaMetricsId = await getMetaMetricsId();
+    if (metaMetricsId) {
+      report.user = { id: metaMetricsId };
+    }
+
     // simplify certain complex error messages (e.g. Ethjs)
     simplifyErrorMessages(report);
     // remove urls from error message

@@ -2,18 +2,18 @@ import { rewriteReport, removeUrlsFromBreadCrumb } from './setupSentry';
 
 describe('Setup Sentry', () => {
   describe('rewriteReport', () => {
-    it('should remove urls from error messages', () => {
+    it('removes urls from error messages', async () => {
       const testReport = {
         message: 'This report has a test url: http://example.com',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report has a test url: **',
       );
     });
 
-    it('should remove urls from error reports that have an exception with an array of values', () => {
+    it('removes urls from error reports that have an exception with an array of values', async () => {
       const testReport = {
         exception: {
           values: [
@@ -27,7 +27,7 @@ describe('Setup Sentry', () => {
         },
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.exception.values).toStrictEqual([
         {
           value: 'This report has a test url: **',
@@ -38,119 +38,119 @@ describe('Setup Sentry', () => {
       ]);
     });
 
-    it('should remove ethereum addresses from error messages', () => {
+    it('removes ethereum addresses from error messages', async () => {
       const testReport = {
         message:
           'There is an ethereum address 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235 in this message',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'There is an ethereum address 0x** in this message',
       );
     });
 
-    it('should not remove urls from our allow list', () => {
+    it('does not remove urls from our allow list', async () => {
       const testReport = {
         message: 'This report has an allowed url: https://codefi.network/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report has an allowed url: https://codefi.network/',
       );
     });
 
-    it('should not remove urls at subdomains of the urls in the allow list', () => {
+    it('does not remove urls at subdomains of the urls in the allow list', async () => {
       const testReport = {
         message:
           'This report has an allowed url: https://subdomain.codefi.network/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report has an allowed url: https://subdomain.codefi.network/',
       );
     });
 
-    it('should remove urls very similar to, but different from, those in our allow list', () => {
+    it('removes urls very similar to, but different from, those in our allow list', async () => {
       const testReport = {
         message:
           'This report does not have an allowed url: https://nodefi.network/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
     });
 
-    it('should remove urls with allow list urls in their domain path', () => {
+    it('removes urls with allow list urls in their domain path', async () => {
       const testReport = {
         message:
           'This report does not have an allowed url: https://codefi.network.another.domain.com/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
     });
 
-    it('should remove urls have allowed urls in their URL path', () => {
+    it('removes urls that have allowed urls in their URL path', async () => {
       const testReport = {
         message:
           'This report does not have an allowed url: https://example.com/test?redirect=http://codefi.network',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
     });
 
-    it('should remove urls with subdomains', () => {
+    it('removes urls with subdomains', async () => {
       const testReport = {
         message:
           'This report does not have an allowed url: https://subdomain.example.com/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
     });
 
-    it('should remove invalid urls', () => {
+    it('removes invalid urls', async () => {
       const testReport = {
         message:
           'This report does not have an allowed url: https://example.%%%/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
     });
 
-    it('should remove urls and ethereum addresses from error messages', () => {
+    it('removes urls and ethereum addresses from error messages', async () => {
       const testReport = {
         message:
           'This 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235 address used http://example.com on Saturday',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This 0x** address used ** on Saturday',
       );
     });
 
-    it('should not modify an error message with no urls or addresses', () => {
+    it('does not modify an error message with no urls or addresses', async () => {
       const testReport = {
         message: 'This is a simple report',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = await rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual('This is a simple report');
     });
   });
