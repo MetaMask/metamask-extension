@@ -107,7 +107,7 @@ export default function useSubmitBridgeTransaction() {
       if (isNonEvmSource) {
         // Submit the transaction first, THEN navigate
         await dispatch(
-          submitBridgeTx(
+          await submitBridgeTx(
             fromAccount.address,
             quoteResponse,
             false,
@@ -127,7 +127,7 @@ export default function useSubmitBridgeTransaction() {
       }
 
       await dispatch(
-        submitBridgeTx(
+        await submitBridgeTx(
           fromAccount.address,
           quoteResponse,
           smartTransactionsEnabled,
