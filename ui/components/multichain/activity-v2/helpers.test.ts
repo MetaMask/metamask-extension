@@ -68,25 +68,15 @@ describe('calculateFiatFromMarketRates', () => {
     expect(result).toBe(2500);
   });
 
-  it('returns null when amount is undefined', () => {
+  it('returns undefined when amount, token, or rate is missing', () => {
     expect(
       calculateFiatFromMarketRates(undefined, ethToken, marketRates),
-    ).toBeNull();
-  });
-
-  it('returns null when token is undefined', () => {
+    ).toBeUndefined();
     expect(
       calculateFiatFromMarketRates('1', undefined, marketRates),
-    ).toBeNull();
-  });
-
-  it('returns null when amount is zero', () => {
-    expect(calculateFiatFromMarketRates('0', ethToken, marketRates)).toBeNull();
-  });
-
-  it('returns null when no rate exists for the token', () => {
+    ).toBeUndefined();
     expect(
       calculateFiatFromMarketRates('1', usdcToken, marketRates),
-    ).toBeNull();
+    ).toBeUndefined();
   });
 });

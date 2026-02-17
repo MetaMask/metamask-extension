@@ -182,10 +182,10 @@ export function calculateFiatFromMarketRates(
   marketRates: Record<number, Record<string, number>>,
 ) {
   if (amount === undefined || !token) {
-    return null;
+    return undefined;
   }
 
   const parsed = parseFloat(amount);
   const rate = marketRates[parseInt(token.chainId, 16)]?.[token.address];
-  return rate === undefined ? null : Math.abs(parsed) * rate;
+  return rate === undefined ? undefined : Math.abs(parsed) * rate;
 }

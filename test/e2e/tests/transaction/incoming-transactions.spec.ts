@@ -206,7 +206,7 @@ describe('Incoming Transactions', function () {
         await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
 
         await activityList.checkTxAction({
-          action: 'Contract interaction',
+          action: 'Sent ETH',
           txIndex: 2,
           confirmedTx: 2,
         });

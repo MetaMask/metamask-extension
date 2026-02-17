@@ -65,7 +65,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
               {formatTokenAmount(amount, token.symbol)}
             </Text>
           )}
-          {fiatAmount !== null && (
+          {fiatAmount !== undefined && (
             <Text
               variant={TextVariant.BodySm}
               className="text-text-alternative"
