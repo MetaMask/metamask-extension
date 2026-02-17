@@ -64,5 +64,9 @@ class SnapTransactionConfirmation {
   async clickFooterConfirmButton() {
     await this.driver.clickElementAndWaitToDisappear(this.confirmButton);
   }
+
+  async clickFooterConfirmButtonAndWaitForWindowToClose() {
+    await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
+  }
 }
 export default SnapTransactionConfirmation;
