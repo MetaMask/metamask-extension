@@ -90,10 +90,9 @@ describe('AccountRow', () => {
         <AccountRow label="Claiming to" />,
         mockStore,
       );
+      expect(result.getByText('Claiming to')).toBeDefined();
+      expect(result.container.querySelector('.confirm-info-row')).toBeDefined();
     });
-
-    expect(result!.getByText('Claiming to')).toBeDefined();
-    expect(result!.container.querySelector('.confirm-info-row')).toBeDefined();
   });
 
   it('renders with a custom label', async () => {
@@ -117,8 +116,7 @@ describe('AccountRow', () => {
         <AccountRow label="Sending from" />,
         mockStore,
       );
+      expect(result.getByText('Sending from')).toBeDefined();
     });
-
-    expect(result!.getByText('Sending from')).toBeDefined();
   });
 });

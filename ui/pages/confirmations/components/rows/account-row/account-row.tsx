@@ -6,9 +6,9 @@ import {
   ConfirmInfoRowAddress,
 } from '../../../../../components/app/confirm/info/row';
 
-interface AccountRowProps {
+type AccountRowProps = {
   label: string;
-}
+};
 
 export const AccountRow = ({ label }: AccountRowProps) => {
   const { currentConfirmation: transactionMeta } =
