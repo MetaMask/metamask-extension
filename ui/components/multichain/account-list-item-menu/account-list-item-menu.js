@@ -191,7 +191,7 @@ export const AccountListItemMenu = ({
                   : handlePinning(account.address);
                 onClose();
               }}
-              iconName={isPinned ? IconName.Unpin : IconName.Pin}
+              iconNameLegacy={isPinned ? IconName.Unpin : IconName.Pin}
             >
               <Text variant={TextVariant.bodySm}>
                 {isPinned ? t('unpin') : t('pinToTop')}
@@ -206,7 +206,7 @@ export const AccountListItemMenu = ({
                 : handleHidding(account.address);
               onClose();
             }}
-            iconName={isHidden ? IconName.Eye : IconName.EyeSlash}
+            iconNameLegacy={isHidden ? IconName.Eye : IconName.EyeSlash}
           >
             <Text variant={TextVariant.bodySm}>
               {isHidden ? t('showAccount') : t('hideAccount')}
@@ -237,7 +237,7 @@ export const AccountListItemMenu = ({
                 onClose();
                 closeMenu?.();
               }}
-              iconName={IconName.Trash}
+              iconNameLegacy={IconName.Trash}
             >
               <Text variant={TextVariant.bodySm}>{t('removeAccount')}</Text>
             </MenuItem>

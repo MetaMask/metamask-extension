@@ -42,7 +42,6 @@ export const dismissAndDisableAlert = () => {
       await setAlertEnabledness(name, false);
       await dispatch(disableAlertSucceeded());
     } catch (error) {
-      console.error(error);
       captureException(error);
       await dispatch(disableAlertFailed());
     }
@@ -59,7 +58,6 @@ export const switchToAccount = (accountId) => {
       await dispatch(setSelectedAccount(internalAccount.address));
       await dispatch(switchAccountSucceeded());
     } catch (error) {
-      console.error(error);
       captureException(error);
       await dispatch(switchAccountFailed());
     }
@@ -76,7 +74,6 @@ export const connectAccount = () => {
       await dispatch(addPermittedAccount(origin, selectedAddress));
       await dispatch(connectAccountSucceeded());
     } catch (error) {
-      console.error(error);
       captureException(error);
       await dispatch(connectAccountFailed());
     }

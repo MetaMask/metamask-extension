@@ -214,3 +214,4 @@ app/scripts/lib/createTracingMiddleware.ts                            @MetaMask/
 
 # mUSD / Earn
 ui/components/app/musd                              @MetaMask/metamask-earn
+ui/hooks/musd                                       @MetaMask/metamask-earn

@@ -28,6 +28,7 @@ import {
   ModalHeader,
   ModalFooter,
 } from '../../component-library';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 const CancelSpeedupPopoverWrapped = () => {
   const {
@@ -95,6 +96,7 @@ const CancelSpeedupPopoverWrapped = () => {
       isOpen
       onClose={() => closeModal(['cancelSpeedUpTransaction'])}
       className="cancel-speedup-popover"
+      isClosedOnOutsideClick={false}
     >
       <ModalOverlay />
       <ModalContent>
@@ -125,7 +127,7 @@ const CancelSpeedupPopoverWrapped = () => {
                   </Text>
                   <TextButton asChild className="inline">
                     <a
-                      href="https://community.metamask.io/t/how-to-speed-up-or-cancel-transactions-on-metamask/3296"
+                      href={ZENDESK_URLS.SPEEDUP_CANCEL}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

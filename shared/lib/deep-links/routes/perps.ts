@@ -1,7 +1,7 @@
 import { BaseUrl } from '../../../constants/urls';
 import { Route } from './route';
 
-export default new Route({
+export const perps = new Route({
   pathname: '/perps',
   getTitle: (_: URLSearchParams) => 'deepLink_thePerpsPage',
   handler: function handler(params: URLSearchParams) {

@@ -67,7 +67,6 @@
     "nextNonce": "null",
     "onboardedInThisUISession": "boolean",
     "openMetaMaskTabs": {},
-    "pendingHardwareWalletSigning": "boolean",
     "pendingTokens": {},
     "qrCodeData": "null",
     "removeNftMessage": "string",
@@ -827,7 +826,7 @@
     "pendingApprovalCount": "number",
     "pendingApprovals": {},
     "pendingRevocations": [],
-    "pendingShieldCohort": "null",
+    "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": "null",
     "pna25Acknowledged": "boolean",
     "permissionActivityLog": [
@@ -897,6 +896,7 @@
     "recoveryPhraseReminderHasBeenShown": "boolean",
     "recoveryPhraseReminderLastShown": "number",
     "referrals": {
+      "gmx": {},
       "hyperliquid": {}
     },
     "remoteFeatureFlags": {
@@ -920,6 +920,7 @@
     "selectedAddress": "string",
     "selectedMultichainNetworkChainId": "string",
     "selectedNetworkClientId": "string",
+    "shieldSubscriptionError": "null",
     "shieldEndingToastLastClickedOrClosed": "null",
     "shieldPausedToastLastClickedOrClosed": "null",
     "showAccountBanner": "boolean",
@@ -928,7 +929,7 @@
     "showNetworkBanner": "boolean",
     "showPermissionsTour": "boolean",
     "showShieldEntryModalOnce": "boolean",
-    "showStorageErrorToast": "boolean",
+    "storageWriteErrorType": "null",
     "showTestnetMessageInDropdown": "boolean",
     "sidePanelGasPollTokens": [],
     "signature": "string",
@@ -1165,6 +1166,11 @@
     "watchEthereumAccountEnabled": "boolean",
     "web3ShimUsageOrigins": {},
     "verifiedSnaps": {}
+  },
+  "perpsTutorial": {
+    "tutorialModalOpen": "boolean",
+    "activeStep": "string",
+    "tutorialCompleted": "boolean"
   },
   "platform": {
     "arch": "string",

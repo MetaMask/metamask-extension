@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import {
@@ -83,12 +83,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  AccountDetailsMenuItem,
-  DiscoverMenuItem,
-  ViewExplorerMenuItem,
-} from '../menu-items';
-import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
+import { AccountDetailsMenuItem, DiscoverMenuItem } from '../menu-items';
 import { useUserSubscriptions } from '../../../hooks/subscription/useSubscription';
 import {
   getIsShieldSubscriptionActive,
@@ -96,7 +91,6 @@ import {
   getShieldSubscription,
   getSubscriptionPaymentData,
 } from '../../../../shared/lib/shield';
-import { selectRewardsEnabled } from '../../../ducks/rewards/selectors';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 
 const METRICS_LOCATION = 'Global Menu';
@@ -118,8 +112,8 @@ export const GlobalMenu = ({
   const { captureCommonExistingShieldSubscriptionEvents } =
     useSubscriptionMetrics();
   const basicFunctionality = useSelector(getUseExternalServices);
-  const rewardsEnabled = useSelector(selectRewardsEnabled);
 
+  const location = useLocation();
   const navigate = useNavigate();
 
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
@@ -132,10 +126,6 @@ export const GlobalMenu = ({
     getIsShieldSubscriptionPaused(subscriptions);
 
   const account = useSelector(getSelectedInternalAccount);
-
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
 
@@ -323,7 +313,9 @@ export const GlobalMenu = ({
         read_count: notificationsReadCount,
       },
     });
-    navigate(NOTIFICATIONS_ROUTE);
+    navigate(
+      `${NOTIFICATIONS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
+    );
     closeMenu();
   };
 
@@ -382,7 +374,7 @@ export const GlobalMenu = ({
       {basicFunctionality && (
         <>
           <MenuItem
-            iconName={IconName.Notification}
+            iconNameLegacy={IconName.Notification}
             onClick={() => handleNotificationsClick()}
             data-testid="notifications-menu-item"
           >
@@ -405,16 +397,14 @@ export const GlobalMenu = ({
           ></Box>
         </>
       )}
-      {rewardsEnabled && (
-        <DiscoverMenuItem
-          metricsLocation={METRICS_LOCATION}
-          closeMenu={closeMenu}
-        />
-      )}
+      <DiscoverMenuItem
+        metricsLocation={METRICS_LOCATION}
+        closeMenu={closeMenu}
+      />
 
       {(isPopup || isSidepanel) && (
         <MenuItem
-          iconName={IconName.Export}
+          iconNameLegacy={IconName.Export}
           onClick={() => {
             global?.platform?.openExtensionInBrowser?.();
             trackEvent({
@@ -438,13 +428,6 @@ export const GlobalMenu = ({
             closeMenu={closeMenu}
             address={account.address}
           />
-          {isMultichainAccountsState2Enabled ? null : (
-            <ViewExplorerMenuItem
-              metricsLocation={METRICS_LOCATION}
-              closeMenu={closeMenu}
-              account={account}
-            />
-          )}
         </>
       )}
       <Box
@@ -458,7 +441,7 @@ export const GlobalMenu = ({
         isSidePanelEnabled &&
         (isPopup || isSidepanel) && (
           <MenuItem
-            iconName={isSidepanel ? IconName.Popup : IconName.Sidepanel}
+            iconNameLegacy={isSidepanel ? IconName.Popup : IconName.Sidepanel}
             onClick={async () => {
               await toggleDefaultView();
               trackEvent({
@@ -481,10 +464,10 @@ export const GlobalMenu = ({
       <MenuItem
         to={
           isGatorPermissionsRevocationFeatureEnabled()
-            ? GATOR_PERMISSIONS
-            : PERMISSIONS
+            ? `${GATOR_PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`
+            : `${PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`
         }
-        iconName={IconName.SecurityTick}
+        iconNameLegacy={IconName.SecurityTick}
         onClick={() => {
           trackEvent({
             event: MetaMetricsEventName.NavPermissionsOpened,
@@ -502,7 +485,7 @@ export const GlobalMenu = ({
       </MenuItem>
       <MenuItem
         data-testid="global-menu-networks"
-        iconName={IconName.Hierarchy}
+        iconNameLegacy={IconName.Hierarchy}
         onClick={() => {
           dispatch(toggleNetworkMenu());
           closeMenu();
@@ -511,15 +494,15 @@ export const GlobalMenu = ({
         {t('networks')}
       </MenuItem>
       <MenuItem
-        to={SNAPS_ROUTE}
-        iconName={IconName.Snaps}
+        to={`${SNAPS_ROUTE}?from=${encodeURIComponent(location.pathname)}`}
+        iconNameLegacy={IconName.Snaps}
         onClick={closeMenu}
         showInfoDot={snapsUpdatesAvailable}
       >
         {t('snaps')}
       </MenuItem>
       <MenuItem
-        iconName={IconName.MessageQuestion}
+        iconNameLegacy={IconName.MessageQuestion}
         onClick={handleSupportMenuClick}
         data-testid="global-menu-support"
       >
@@ -549,7 +532,7 @@ export const GlobalMenu = ({
       </MenuItem>
       <MenuItem
         to={SETTINGS_ROUTE}
-        iconName={IconName.Setting}
+        iconNameLegacy={IconName.Setting}
         disabled={hasUnapprovedTransactions}
         onClick={() => {
           trackEvent({
@@ -568,7 +551,7 @@ export const GlobalMenu = ({
       <MenuItem
         to={DEFAULT_ROUTE}
         ref={lastItemRef} // ref for last item in GlobalMenu
-        iconName={IconName.Lock}
+        iconNameLegacy={IconName.Lock}
         onClick={() => {
           dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
           trackEvent({

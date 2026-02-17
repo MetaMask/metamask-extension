@@ -1,26 +1,29 @@
 /**
- * Benchmark: Asset details page load for power user (USDC on Ethereum)
- * Measures time to load price chart for USDC token
+ * Benchmark: Asset details page load for power user (Eth on Ethereum)
+ * Measures time to load price chart for Eth token
  */
 
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { withFixtures } from '../../../helpers';
+import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
-import HomePage from '../../../page-objects/pages/home/homepage';
-import LoginPage from '../../../page-objects/pages/login-page';
-import NetworkManager from '../../../page-objects/pages/network-manager';
 import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
-import { WITH_STATE_POWER_USER } from '../../utils';
+import {
+  getTestSpecificMock,
+  shouldUseMockedRequests,
+} from '../../utils/mock-config';
+import { BENCHMARK_PERSONA, WITH_STATE_POWER_USER } from '../../utils';
+import { BENCHMARK_TYPE } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
 
-const USDC_TOKEN_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
-
+const ETH_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const testTitle = 'benchmark-asset-details-power-user';
-export const persona = 'powerUser';
+export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
   try {
@@ -36,21 +39,16 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
-        useMockingPassThrough: true,
+        useMockingPassThrough: !shouldUseMockedRequests(),
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
+        testSpecificMock: getTestSpecificMock(),
       },
       async ({ driver }: { driver: Driver }) => {
         const timer = new TimerHelper('assetClickToPriceChart');
 
         // Login flow
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
-
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
+        await loginWithoutBalanceValidation(driver);
 
         // Verify power user accounts are loaded correctly
         const headerNavbar = new HeaderNavbar(driver);
@@ -68,29 +66,34 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
 
-        // Filter to Ethereum network
-        await assetListPage.openNetworksFilter();
-        const networkManager = new NetworkManager(driver);
-        await networkManager.selectNetworkByNameWithWait('Ethereum');
-        await homePage.checkPageIsLoaded();
+        // Switch to Ethereum Mainnet network
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
+
+        // Wait for token list to refresh after network switch
         await assetListPage.checkTokenListIsDisplayed();
+
+        await assetListPage.clickOnAsset('Ethereum');
 
         // Measure: Asset click to price chart loaded
         await timer.measure(async () => {
-          await assetListPage.clickOnAsset('USDC');
           await assetListPage.checkPriceChartIsShown();
-          await assetListPage.checkPriceChartLoaded(USDC_TOKEN_ADDRESS);
+          await assetListPage.checkPriceChartLoaded(ETH_TOKEN_ADDRESS);
         });
         performanceTracker.addTimer(timer);
       },
     );
 
-    return { timers: collectTimerResults(), success: true };
+    return {
+      timers: collectTimerResults(),
+      success: true,
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
+    };
   } catch (error) {
     return {
       timers: collectTimerResults(),
       success: false,
       error: error instanceof Error ? error.message : String(error),
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   }
 }
