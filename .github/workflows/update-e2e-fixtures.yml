@@ -182,12 +182,13 @@ jobs:
             ./test-artifacts
             ./test/test-results/e2e
 
-      - name: Cache updated fixture
+      - name: Cache updated fixtures
         uses: actions/cache/save@v5
         with:
           path: |
             test/e2e/fixtures/onboarding-fixture.json
             test/e2e/fixtures/default-fixture.json
+            test/e2e/fixtures/address-book-fixture.json
           key: fixtures-${{ needs.prepare.outputs.COMMIT_SHA }}
 
   commit-updated-fixtures:
@@ -218,13 +219,14 @@ jobs:
           path: |
             test/e2e/fixtures/onboarding-fixture.json
             test/e2e/fixtures/default-fixture.json
+            test/e2e/fixtures/address-book-fixture.json
           key: fixtures-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
 
       - name: Check whether there are fixture changes
         id: fixture-changes
         run: |
-          if git diff --exit-code test/e2e/fixtures/onboarding-fixture.json test/e2e/fixtures/default-fixture.json
+          if git diff --exit-code test/e2e/fixtures/onboarding-fixture.json test/e2e/fixtures/default-fixture.json test/e2e/fixtures/address-book-fixture.json
           then
             echo "HAS_CHANGES=false" >> "$GITHUB_OUTPUT"
           else

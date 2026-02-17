@@ -18,6 +18,7 @@ import {
   importSRPOnboardingFlow,
 } from '../page-objects/flows/onboarding.flow';
 import {
+  addAddressBookContact,
   enableNativeTokenAsMainBalance,
   enableTestNetworks,
 } from '../page-objects/flows/settings.flow';
@@ -34,6 +35,12 @@ const DEFAULT_FIXTURE_PATH = path.resolve(
   __dirname,
   '../fixtures',
   'default-fixture.json',
+);
+
+const ADDRESS_BOOK_FIXTURE_PATH = path.resolve(
+  __dirname,
+  '../fixtures',
+  'address-book-fixture.json',
 );
 
 describe('Wallet State', function () {
@@ -200,6 +207,126 @@ describe('Wallet State', function () {
             '\n=============================================================================\n',
           );
           console.log('⚠️  WALLET FIXTURE STATE VALIDATION FAILED');
+          console.log(
+            '=============================================================================\n',
+          );
+          console.log(
+            '🤖 Automatic update: comment @metamaskbot update-e2e-fixture',
+          );
+          console.log(
+            '\n🛠️  Manual update steps:\n  yarn dist\n  yarn test:e2e:single test/e2e/dist/wallet-fixture-export.spec.ts --browser chrome',
+          );
+          console.log(
+            '\n=============================================================================\n',
+          );
+          throw new Error(message);
+        }
+      },
+    );
+  });
+
+  it('matches the committed address book fixture schema', async function () {
+    if (process.env.SELENIUM_BROWSER === 'firefox') {
+      this.skip();
+    }
+
+    const networkName = 'Localhost 8545';
+    const networkUrl = 'http://127.0.0.1:8545';
+    const currencySymbol = 'ETH';
+    const chainId = 1337;
+    const addressBookContactName = 'Address Book Contact';
+    const addressBookContactAddress =
+      '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
+
+    await withFixtures(
+      {
+        disableServerMochaToBackground: true,
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        await driver.waitAndSwitchToWindowWithTitle(
+          2,
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        await importSRPOnboardingFlow({
+          driver,
+          seedPhrase: LOCAL_NODE_MNEMONIC,
+          password: WALLET_PASSWORD,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: true,
+          needNavigateToNewPage: false,
+        });
+
+        await addCustomNetworkInOnboardingPrivacySettings({
+          driver,
+          networkName,
+          chainId,
+          currencySymbol,
+          networkUrl,
+        });
+
+        await handleSidepanelPostOnboarding(driver);
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        await enableNativeTokenAsMainBalance(driver);
+        await enableTestNetworks(driver);
+
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Popular',
+          'All popular networks',
+        );
+
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Custom',
+          'Localhost 8545',
+        );
+
+        await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
+
+        await driver.delay(10000);
+
+        await addAddressBookContact(
+          driver,
+          addressBookContactName,
+          addressBookContactAddress,
+        );
+
+        await driver.delay(2000);
+
+        const persistedState = await driver.executeScript(
+          'return window.stateHooks.getPersistedState()',
+        );
+
+        if (
+          persistedState === null ||
+          persistedState === undefined ||
+          typeof persistedState !== 'object'
+        ) {
+          throw new Error(
+            `Expected getPersistedState() to return an object, but got: ${typeof persistedState}`,
+          );
+        }
+
+        const validatedState = persistedState as Record<string, unknown>;
+
+        const existingFixture = await readFixtureFile(
+          ADDRESS_BOOK_FIXTURE_PATH,
+        );
+        const schemaDiff = computeSchemaDiff(existingFixture, validatedState);
+
+        if (hasSchemaDifferences(schemaDiff)) {
+          const message = formatSchemaDiff(schemaDiff);
+          console.log(
+            '\n=============================================================================\n',
+          );
+          console.log(
+            '⚠️  WALLET FIXTURE STATE VALIDATION FAILED (Address Book)',
+          );
           console.log(
             '=============================================================================\n',
           );

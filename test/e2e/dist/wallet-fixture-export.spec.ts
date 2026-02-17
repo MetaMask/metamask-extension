@@ -19,6 +19,7 @@ import {
   importSRPOnboardingFlow,
 } from '../page-objects/flows/onboarding.flow';
 import {
+  addAddressBookContact,
   enableNativeTokenAsMainBalance,
   enableTestNetworks,
 } from '../page-objects/flows/settings.flow';
@@ -270,6 +271,167 @@ describe('Wallet State', function () {
             }
 
             // Merge only the changes into the existing fixture
+            finalState = mergeFixtureChanges(
+              existingFixture,
+              validatedState,
+              schemaDiff,
+            );
+            console.log(
+              '\n✅ Merged changes into existing fixture (preserving ignored keys)',
+            );
+          } else {
+            console.log(
+              '✅ No schema differences detected - fixture is up to date',
+            );
+            finalState = existingFixture;
+          }
+        } catch (error) {
+          console.error('❌ Failed to read existing fixture file:', error);
+          throw error;
+        }
+
+        console.log(`\n📂 Output: ${outPath}`);
+        console.log(
+          '\n=============================================================================\n',
+        );
+
+        await fs.writeJson(outPath, finalState, { spaces: 2 });
+      },
+    );
+  });
+
+  it('export address book fixture', async function () {
+    const networkName = 'Localhost 8545';
+    const networkUrl = 'http://127.0.0.1:8545';
+    const currencySymbol = 'ETH';
+    const chainId = 1337;
+    const addressBookContactName = 'Address Book Contact';
+    const addressBookContactAddress =
+      '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
+
+    await withFixtures(
+      {
+        disableServerMochaToBackground: true,
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        await driver.waitAndSwitchToWindowWithTitle(
+          2,
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        await importSRPOnboardingFlow({
+          driver,
+          seedPhrase: LOCAL_NODE_MNEMONIC,
+          password: WALLET_PASSWORD,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: true,
+          needNavigateToNewPage: false,
+        });
+
+        await addCustomNetworkInOnboardingPrivacySettings({
+          driver,
+          networkName,
+          chainId,
+          currencySymbol,
+          networkUrl,
+        });
+
+        await handleSidepanelPostOnboarding(driver);
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        await enableNativeTokenAsMainBalance(driver);
+        await enableTestNetworks(driver);
+
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Popular',
+          'All popular networks',
+        );
+
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Custom',
+          'Localhost 8545',
+        );
+
+        await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
+
+        await driver.delay(10000);
+
+        await addAddressBookContact(
+          driver,
+          addressBookContactName,
+          addressBookContactAddress,
+        );
+
+        await driver.delay(2000);
+
+        const persistedState = await driver.executeScript(
+          'return window.stateHooks.getPersistedState()',
+        );
+
+        if (
+          persistedState === null ||
+          persistedState === undefined ||
+          typeof persistedState !== 'object'
+        ) {
+          throw new Error(
+            `Expected getPersistedState() to return an object, but got: ${typeof persistedState}`,
+          );
+        }
+
+        const validatedState = persistedState as JsonLike;
+
+        const outDir = path.resolve(process.cwd(), 'test', 'e2e', 'fixtures');
+        await fs.ensureDir(outDir);
+        const outPath = path.join(outDir, 'address-book-fixture.json');
+        console.log(
+          '\n=============================================================================\n',
+        );
+        console.log('📁 WALLET FIXTURE STATE EXPORT (Address Book)');
+        console.log(
+          '=============================================================================\n',
+        );
+
+        let finalState: JsonLike;
+        try {
+          const existingFixture = await readFixtureFile(outPath);
+          const schemaDiff = computeSchemaDiff(existingFixture, validatedState);
+
+          if (hasSchemaDifferences(schemaDiff)) {
+            console.log('📊 Schema differences detected:');
+            if (schemaDiff.newKeys.length > 0) {
+              console.log(`  ✨ New keys: ${schemaDiff.newKeys.length}`);
+              schemaDiff.newKeys.forEach((key) => console.log(`     + ${key}`));
+            }
+            if (schemaDiff.missingKeys.length > 0) {
+              console.log(
+                `  🗑️  Missing keys: ${schemaDiff.missingKeys.length}`,
+              );
+              schemaDiff.missingKeys.forEach((key) =>
+                console.log(`     - ${key}`),
+              );
+            }
+            if (schemaDiff.typeMismatches.length > 0) {
+              console.log(
+                `  🔄 Type mismatches: ${schemaDiff.typeMismatches.length}`,
+              );
+              schemaDiff.typeMismatches.forEach((entry) =>
+                console.log(`     ~ ${entry}`),
+              );
+            }
+            if (schemaDiff.valueMismatches.length > 0) {
+              console.log(
+                `  📝 Value changes: ${schemaDiff.valueMismatches.length}`,
+              );
+              schemaDiff.valueMismatches.forEach((entry) =>
+                console.log(`     ↔ ${entry}`),
+              );
+            }
+
             finalState = mergeFixtureChanges(
               existingFixture,
               validatedState,

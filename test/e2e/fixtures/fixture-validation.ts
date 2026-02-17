@@ -38,6 +38,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   // Permissions
   'data.PermissionController.subjectMetadata',
   'data.PermissionController.subjects',
+  'data.PermissionLogController.permissionHistory',
   // Snap-related keys (source code)
   'data.SnapController.snaps',
   'data.SnapController.snapStates',
@@ -49,6 +50,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'localeMessages',
   // Timestamps and dates that change on every run
   'data.AddressBookController.addressBook.*.0x5CfE73b6021E818B776b421B1c4Db2474086a7e1.lastUpdatedAt',
+  'data.AddressBookController.addressBook.0x539.0x2f318C334780961FB129D2a6c30D0763d9a5C970.lastUpdatedAt',
   'data.AppMetadataController.firstTimeInfo.date',
   'data.AppMetadataController.firstTimeInfo.version',
   'data.AppStateController.lastUpdatedAt',
