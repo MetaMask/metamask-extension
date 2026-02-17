@@ -824,26 +824,7 @@
       "isFeatureAnnouncementsEnabled": true,
       "isMetamaskNotificationsFeatureSeen": true,
       "isNotificationServicesEnabled": true,
-      "metamaskNotificationsList": [
-        {
-          "createdAt": "2026-01-17T13:23:37.000Z",
-          "data": {
-            "category": "ANNOUNCEMENT",
-            "id": "dont-miss-out-on-airdrops-and-new-nft-mints",
-            "image": {
-              "description": "",
-              "title": "PDAPP notification image Airdrops & NFT mints",
-              "url": "//images.ctfassets.net/jdkgyfmyd9sw/5jqq8sFeLc6XEoeWlpI3aB/73ee0f1afa9916c3a7538b0bbee09c26/PDAPP_notification_image_Airdrops___NFT_mints.png"
-            },
-            "longDescription": "<p>You can now verify if any of your connected addresses are eligible for airdrops and other ERC-20 claims in a secure and convenient way. We’ve also added trending NFT mints based on creators you’ve minted from before or other tokens you hold. Head over to the Explore tab to get started. \n</p>",
-            "shortDescription": "Check your airdrop eligibility and see trending NFT drops. Head over to the Explore tab to get started. ",
-            "title": "Don’t miss out on airdrops and new NFT mints!"
-          },
-          "id": "dont-miss-out-on-airdrops-and-new-nft-mints",
-          "isRead": true,
-          "type": "features_announcement"
-        }
-      ],
+      "metamaskNotificationsList": [],
       "metamaskNotificationsReadList": [],
       "subscriptionAccountsSeen": ["0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"]
     },
