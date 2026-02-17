@@ -1,5 +1,5 @@
 import namehash from 'eth-ens-namehash';
-import contentHash from '@ensdomains/content-hash';
+import { decode, getCodec, helpers } from '@ensdomains/content-hash';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import registryAbi from './contracts/registry';
@@ -42,12 +42,12 @@ export default async function resolveEnsToIpfsContentId({ provider, name }) {
     await resolverContract.supportsInterface('0xd8389dc5');
   if (isEIP1577Compliant) {
     const rawContentHash = await resolverContract.contenthash(hash);
-    let decodedContentHash = contentHash.decode(rawContentHash);
-    const type = contentHash.getCodec(rawContentHash);
+    let decodedContentHash = decode(rawContentHash);
+    const type = getCodec(rawContentHash);
 
     if (type === 'ipfs-ns' || type === 'ipns-ns') {
       decodedContentHash =
-        contentHash.helpers.cidV0ToV1Base32(decodedContentHash);
+        helpers.cidV0ToV1Base32(decodedContentHash);
     }
 
     return { type, hash: decodedContentHash };
