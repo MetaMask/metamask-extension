@@ -82,12 +82,6 @@
         "assert": true
       }
     },
-    "eslint-import-resolver-typescript>unrs-resolver": {
-      "builtin": {
-        "child_process": false,
-        "node:fs": false
-      }
-    },
     "eslint-plugin-jest": {
       "packages": {
         "eslint-plugin-jest>@typescript-eslint/utils": true,
