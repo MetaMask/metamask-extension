@@ -1,5 +1,3 @@
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   getAllScopesFromCaip25CaveatValue,
   isInternalAccountInPermittedAccountIds,
@@ -15,7 +13,6 @@ import {
   getAllPermittedAccountsForCurrentTab,
   getOriginOfCurrentTab,
   getPermissions,
-  isSolanaAccount,
 } from '../../../selectors';
 import { MetaMaskReduxState } from '../../../store/store';
 import {
