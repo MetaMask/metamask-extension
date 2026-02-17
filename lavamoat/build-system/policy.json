@@ -806,7 +806,7 @@
         "@babel/core>@babel/template": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
         "nock>debug": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>globals": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
       }
     },
     "@babel/core>@babel/types": {
@@ -905,7 +905,7 @@
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
-        "eslint>@eslint/eslintrc>globals": true,
+        "eslint>globals": true,
         "eslint>ignore": true,
         "eslint>minimatch": true,
         "mocha>strip-json-comments": true
@@ -1417,6 +1417,17 @@
     "eslint-plugin-react>array.prototype.findlast": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true,
+        "string.prototype.matchall>es-abstract": true,
+        "string.prototype.matchall>es-errors": true,
+        "string.prototype.matchall>es-object-atoms": true,
+        "eslint-plugin-react>array.prototype.flatmap>es-shim-unscopables": true
+      }
+    },
+    "eslint-plugin-import>array.prototype.findlastindex": {
+      "packages": {
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>call-bound": true,
         "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>es-abstract": true,
         "string.prototype.matchall>es-errors": true,
@@ -2194,14 +2205,10 @@
     },
     "eslint-plugin-import>debug": {
       "builtin": {
-        "fs.SyncWriteStream": true,
-        "net.Socket": true,
-        "tty.WriteStream": true,
         "tty.isatty": true,
         "util": true
       },
       "globals": {
-        "chrome": true,
         "console": true,
         "document": true,
         "localStorage": true,
@@ -2209,7 +2216,8 @@
         "process": true
       },
       "packages": {
-        "eslint-plugin-import>debug>ms": true
+        "mocha>ms": true,
+        "mocha>supports-color": true
       }
     },
     "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets>debug": {
@@ -2730,7 +2738,7 @@
         "nyc>glob": true,
         "del>is-glob": true,
         "depcheck>resolve": true,
-        "eslint-import-resolver-typescript>tsconfig-paths": true
+        "eslint-plugin-import>tsconfig-paths": true
       }
     },
     "eslint-plugin-import>eslint-module-utils": {
@@ -2755,8 +2763,7 @@
       "packages": {
         "@babel/eslint-parser": true,
         "eslint-plugin-import>eslint-module-utils>debug": true,
-        "eslint-import-resolver-node": true,
-        "eslint-plugin-import>eslint-module-utils>find-up": true
+        "eslint-import-resolver-node": true
       }
     },
     "eslint-plugin-n>eslint-plugin-es": {
@@ -2775,21 +2782,30 @@
         "vm": true
       },
       "globals": {
+        "console.error": true,
+        "console.log": true,
         "process.cwd": true,
         "process.env": true
       },
       "packages": {
+        "eslint-plugin-import>@rtsao/scc": true,
         "eslint-plugin-react>array-includes": true,
+        "eslint-plugin-import>array.prototype.findlastindex": true,
         "eslint-plugin-import>array.prototype.flat": true,
+        "eslint-plugin-react>array.prototype.flatmap": true,
         "eslint-plugin-import>debug": true,
         "eslint-plugin-import>doctrine": true,
         "eslint": true,
         "eslint-plugin-import>eslint-module-utils": true,
-        "browserify>has": true,
+        "eslint-plugin-react>hasown": true,
         "depcheck>is-core-module": true,
         "del>is-glob": true,
         "eslint>minimatch": true,
-        "eslint-plugin-import>object.values": true,
+        "eslint-plugin-react>object.fromentries": true,
+        "eslint-plugin-import>object.groupby": true,
+        "eslint-plugin-react>object.values": true,
+        "eslint-plugin-import>semver": true,
+        "eslint-plugin-import>string.prototype.trimend": true,
         "eslint-plugin-import>tsconfig-paths": true,
         "typescript": true
       }
@@ -3203,17 +3219,6 @@
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>repeat-string": true
       }
     },
-    "eslint-plugin-import>eslint-module-utils>find-up": {
-      "builtin": {
-        "path.dirname": true,
-        "path.join": true,
-        "path.parse": true,
-        "path.resolve": true
-      },
-      "packages": {
-        "eslint-plugin-import>eslint-module-utils>find-up>locate-path": true
-      }
-    },
     "mocha>find-up": {
       "builtin": {
         "path.dirname": true,
@@ -3222,7 +3227,7 @@
       },
       "packages": {
         "mocha>find-up>locate-path": true,
-        "mocha>find-up>path-exists": true
+        "nyc>find-up>path-exists": true
       }
     },
     "gulp-watch>vinyl-file>strip-bom-stream>first-chunk-stream": {
@@ -4169,11 +4174,6 @@
         "console.warn": true
       }
     },
-    "eslint-import-resolver-typescript>tsconfig-paths>json5": {
-      "globals": {
-        "console.warn": true
-      }
-    },
     "eslint-plugin-import>tsconfig-paths>json5": {
       "globals": {
         "console.warn": true
@@ -4395,18 +4395,6 @@
       },
       "globals": {
         "process.cwd": true
-      }
-    },
-    "eslint-plugin-import>eslint-module-utils>find-up>locate-path": {
-      "builtin": {
-        "path.resolve": true
-      },
-      "globals": {
-        "process.cwd": true
-      },
-      "packages": {
-        "eslint-plugin-import>eslint-module-utils>find-up>locate-path>p-locate": true,
-        "eslint-plugin-import>eslint-module-utils>find-up>locate-path>path-exists": true
       }
     },
     "mocha>find-up>locate-path": {
@@ -4818,6 +4806,13 @@
         "string.prototype.matchall>es-object-atoms": true
       }
     },
+    "eslint-plugin-import>object.groupby": {
+      "packages": {
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true,
+        "string.prototype.matchall>es-abstract": true
+      }
+    },
     "gulp-watch>anymatch>micromatch>object.omit": {
       "packages": {
         "gulp-watch>anymatch>micromatch>object.omit>for-own": true,
@@ -4909,16 +4904,6 @@
         "@storybook/test-runner>jest-circus>p-limit>yocto-queue": true
       }
     },
-    "eslint-plugin-import>eslint-module-utils>find-up>locate-path>p-locate>p-limit": {
-      "packages": {
-        "eslint-plugin-import>eslint-module-utils>find-up>locate-path>p-locate>p-limit>p-try": true
-      }
-    },
-    "eslint-plugin-import>eslint-module-utils>find-up>locate-path>p-locate": {
-      "packages": {
-        "eslint-plugin-import>eslint-module-utils>find-up>locate-path>p-locate>p-limit": true
-      }
-    },
     "mocha>find-up>locate-path>p-locate": {
       "packages": {
         "@storybook/test-runner>jest-circus>p-limit": true
@@ -4946,17 +4931,11 @@
         "gulp-watch>anymatch>micromatch>parse-glob>is-glob": true
       }
     },
-    "mocha>find-up>path-exists": {
+    "nyc>find-up>path-exists": {
       "builtin": {
         "fs.access": true,
         "fs.accessSync": true,
         "util.promisify": true
-      }
-    },
-    "eslint-plugin-import>eslint-module-utils>find-up>locate-path>path-exists": {
-      "builtin": {
-        "fs.access": true,
-        "fs.accessSync": true
       }
     },
     "gulp-watch>path-is-absolute": {
@@ -6621,6 +6600,12 @@
         "process": true
       }
     },
+    "eslint-plugin-import>semver": {
+      "globals": {
+        "console": true,
+        "process": true
+      }
+    },
     "eslint-plugin-react>semver": {
       "globals": {
         "console": true,
@@ -6913,6 +6898,14 @@
         "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": true
       }
     },
+    "eslint-plugin-import>string.prototype.trimend": {
+      "packages": {
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>call-bound": true,
+        "string.prototype.matchall>define-properties": true,
+        "string.prototype.matchall>es-object-atoms": true
+      }
+    },
     "browserify>string_decoder": {
       "packages": {
         "koa>content-disposition>safe-buffer": true
@@ -7155,7 +7148,6 @@
       "builtin": {
         "node:crypto": true,
         "node:fs": true,
-        "node:module": true,
         "node:path": true,
         "node:url": true,
         "node:worker_threads": true,
@@ -7587,7 +7579,7 @@
         "ts-node>yn": true
       }
     },
-    "eslint-import-resolver-typescript>tsconfig-paths": {
+    "eslint-plugin-import>tsconfig-paths": {
       "builtin": {
         "fs.existsSync": true,
         "fs.lstatSync": true,
@@ -7609,23 +7601,8 @@
         "process.env": true
       },
       "packages": {
-        "eslint-import-resolver-typescript>tsconfig-paths>json5": true,
-        "wait-on>minimist": true,
-        "eslint-plugin-import>tsconfig-paths>strip-bom": true
-      }
-    },
-    "eslint-plugin-import>tsconfig-paths": {
-      "builtin": {
-        "fs.existsSync": true,
-        "fs.lstatSync": true,
-        "fs.readFileSync": true,
-        "fs.statSync": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.resolve": true
-      },
-      "packages": {
         "eslint-plugin-import>tsconfig-paths>json5": true,
+        "wait-on>minimist": true,
         "eslint-plugin-import>tsconfig-paths>strip-bom": true
       }
     },

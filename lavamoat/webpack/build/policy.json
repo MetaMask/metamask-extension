@@ -236,7 +236,7 @@
         "@babel/core>@babel/template": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
         "nock>debug": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>globals": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
       }
     },
     "@babel/core>@babel/types": {
@@ -1579,15 +1579,9 @@
     "copy-webpack-plugin>tinyglobby>fdir": {
       "builtin": {
         "fs": true,
-        "path.basename": true,
-        "path.dirname": true,
-        "path.normalize": true,
-        "path.relative": true,
-        "path.resolve": true,
-        "path.sep": true
+        "path": true
       },
       "globals": {
-        "AbortController": true,
         "process.platform": true
       },
       "packages": {
@@ -1633,7 +1627,7 @@
         "mockttp>body-parser>unpipe": true
       }
     },
-    "wait-on>axios>follow-redirects": {
+    "axios>follow-redirects": {
       "builtin": {
         "assert": true,
         "http": true,
@@ -1797,7 +1791,7 @@
         "html-bundler-webpack-plugin>html-minifier-terser>clean-css": true,
         "html-bundler-webpack-plugin>html-minifier-terser>entities": true,
         "html-bundler-webpack-plugin>html-minifier-terser>relateurl": true,
-        "html-bundler-webpack-plugin>html-minifier-terser>terser": true
+        "terser": true
       }
     },
     "mockttp>express>http-errors": {
@@ -1861,7 +1855,7 @@
       },
       "packages": {
         "@viem/anvil>http-proxy>eventemitter3": true,
-        "wait-on>axios>follow-redirects": true,
+        "axios>follow-redirects": true,
         "@viem/anvil>http-proxy>requires-port": true
       }
     },
@@ -3027,6 +3021,21 @@
         "util.deprecate": true
       }
     },
+    "terser": {
+      "globals": {
+        "Buffer": true,
+        "atob": true,
+        "btoa": true,
+        "console.log": true,
+        "console.warn": true,
+        "define": true,
+        "process": true
+      },
+      "packages": {
+        "terser>@jridgewell/source-map": true,
+        "jsdom>acorn": true
+      }
+    },
     "terser-webpack-plugin": {
       "builtin": {
         "os.availableParallelism": true,
@@ -3048,38 +3057,8 @@
         "terser-webpack-plugin>jest-worker": true,
         "schema-utils": true,
         "copy-webpack-plugin>serialize-javascript": true,
-        "terser-webpack-plugin>terser": true,
+        "terser": true,
         "html-bundler-webpack-plugin>handlebars>uglify-js": true
-      }
-    },
-    "html-bundler-webpack-plugin>html-minifier-terser>terser": {
-      "globals": {
-        "Buffer": true,
-        "atob": true,
-        "btoa": true,
-        "console.log": true,
-        "console.warn": true,
-        "define": true,
-        "process": true
-      },
-      "packages": {
-        "terser>@jridgewell/source-map": true,
-        "jsdom>acorn": true
-      }
-    },
-    "terser-webpack-plugin>terser": {
-      "globals": {
-        "Buffer": true,
-        "atob": true,
-        "btoa": true,
-        "console.log": true,
-        "console.warn": true,
-        "define": true,
-        "process": true
-      },
-      "packages": {
-        "terser>@jridgewell/source-map": true,
-        "jsdom>acorn": true
       }
     },
     "webpack-dev-server>bonjour-service>multicast-dns>thunky": {
@@ -3089,9 +3068,12 @@
     },
     "copy-webpack-plugin>tinyglobby": {
       "builtin": {
-        "path": true
+        "fs": true,
+        "path": true,
+        "url": true
       },
       "globals": {
+        "URL": true,
         "console.log": true,
         "process.cwd": true,
         "process.env.TINYGLOBBY_DEBUG": true,
