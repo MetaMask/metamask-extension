@@ -178,7 +178,7 @@ import {
   getCurrentNetworkTransactions,
 } from './transactions';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
-import { getAccountsByChainId } from './assets-migration';
+import { getAccountsByChainId, getAllTokens } from './assets-migration';
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
@@ -962,7 +962,7 @@ export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
  */
 export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
   [
-    (state) => state.metamask.allTokens,
+    (state) => getAllTokens(state),
     (state) => state.metamask.networkConfigurationsByChainId,
     (state, accountAddress) =>
       getNativeTokenCachedBalanceByChainIdSelector(state, accountAddress),
@@ -1136,9 +1136,7 @@ export function getSelectedAccountCachedBalance(state) {
 // ui/pages/confirmations/components/confirm/info/hooks/useTokenDetails.ts (1)
 // ui/hooks/useAccountTotalFiatBalance.js (1)
 // ui/hooks/useGetFormattedTokensPerChain.ts (1)
-export function getAllTokens(state) {
-  return state.metamask.allTokens;
-}
+export { getAllTokens } from './assets-migration';
 
 // TODO Unified Assets Controller State Access (2)
 // Uses: getAllTokens

@@ -67,7 +67,7 @@ import {
   getSelectedMultichainNetworkConfiguration,
 } from './multichain/networks';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
-import { getAccountsByChainId } from './assets-migration';
+import { getAccountsByChainId, getAllTokens } from './assets-migration';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -1288,7 +1288,7 @@ const getStateForAssetSelector = ({ metamask }: any) => {
   const initialState = {
     accountTree: metamask.accountTree,
     internalAccounts: metamask.internalAccounts,
-    allTokens: metamask.allTokens,
+    allTokens: getAllTokens({ metamask }),
     allIgnoredTokens: metamask.allIgnoredTokens,
     tokenBalances: metamask.tokenBalances,
     marketData: metamask.marketData,
@@ -1315,14 +1315,6 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     conversionRates: metamask.conversionRates,
   };
   ///: END:ONLY_INCLUDE_IF
-
-  console.log('DEBUG XXXXX', {
-    ...initialState,
-    ...multichainState,
-    assetsInfo: metamask.assetsInfo,
-    assetsBalance: metamask.assetsBalance,
-    assetsPrice: metamask.assetsPrice,
-  });
 
   return {
     ...initialState,
