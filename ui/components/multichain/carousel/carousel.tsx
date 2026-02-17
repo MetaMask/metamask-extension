@@ -20,7 +20,7 @@ export const Carousel = React.forwardRef(
       isLoading = false,
       onSlideClose,
       onSlideClick,
-      onRenderSlides,
+      onActiveSlideChange,
       onEmptyState,
       className = '',
       ...props
@@ -113,17 +113,12 @@ export const Carousel = React.forwardRef(
       state.hasTriggeredEmptyState,
     ]);
 
-    // Render slides callback
+    // Notify parent when the active slide changes
     useEffect(() => {
-      if (
-        visibleSlides &&
-        visibleSlides.length > 0 &&
-        onRenderSlides &&
-        !isLoading
-      ) {
-        onRenderSlides(visibleSlides);
+      if (currentSlide && onActiveSlideChange && !isLoading) {
+        onActiveSlideChange(currentSlide);
       }
-    }, [visibleSlides, onRenderSlides, isLoading]);
+    }, [currentSlide, onActiveSlideChange, isLoading]);
 
     const handleSlideClose = (slideId: string, isLastSlide: boolean) => {
       transitionToNextCard(slideId, isLastSlide);
