@@ -42,14 +42,8 @@ function codeFenceLoader(this: Context, content: string, map?: string) {
 
   // Reconstruct Sets if they were serialized to arrays by thread-loader
   const features: FeatureLabels = {
-    active:
-      options.features.active instanceof Set
-        ? options.features.active
-        : new Set(options.features.active),
-    all:
-      options.features.all instanceof Set
-        ? options.features.all
-        : new Set(options.features.all),
+    active: new Set(options.features.active),
+    all: new Set(options.features.all),
   };
 
   try {
