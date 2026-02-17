@@ -1618,6 +1618,10 @@ Performance Checks (React Components):
 - **General Coding:** [.cursor/rules/coding-guidelines/RULE.md](./.cursor/rules/coding-guidelines/RULE.md)
 - **Official Guidelines:** [.github/guidelines/CODING_GUIDELINES.md](./.github/guidelines/CODING_GUIDELINES.md)
 
+### Cursor Skills
+
+- **Add Non-EVM Swaps/Bridge Network:** [`.cursor/skills/add-non-evm-swaps-bridge-network/SKILL.md`](./.cursor/skills/add-non-evm-swaps-bridge-network/SKILL.md) - Checklist for adding non-EVM network support to Swaps/Bridge, including code-gated constants, UI updates, and LaunchDarkly rollout controls.
+
 ### External Resources
 
 - **MetaMask Contributor Docs:** https://github.com/MetaMask/contributor-docs
