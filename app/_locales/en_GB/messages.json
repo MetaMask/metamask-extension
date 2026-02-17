@@ -4227,6 +4227,9 @@
   "networkNamePolygon": {
     "message": "Polygon"
   },
+  "networkNameSepolia": {
+    "message": "Sepolia"
+  },
   "networkNameSolana": {
     "message": "Solana"
   },
@@ -6002,8 +6005,8 @@
     "message": "Required"
   },
   "requiredToken": {
-    "description": "Label for the required token row showing the token and amount needed by the transaction",
-    "message": "Required token"
+    "message": "Required token",
+    "description": "Label for the required token row showing the token and amount needed by the transaction"
   },
   "reset": {
     "message": "Reset"
