@@ -411,7 +411,8 @@ export class ManifestPlugin<Z extends boolean> {
     filename: string;
   }) => {
     const filePath = join(compiler.context, 'html', 'pages', filename);
-    new EntryPlugin(compiler.context, filePath, filename).apply(compiler);
+    const parsedFileName = path.parse(filename).name;
+    new EntryPlugin(compiler.context, filePath, parsedFileName).apply(compiler);
   };
 
   private collectEntrypoints(compiler: Compiler): void {
