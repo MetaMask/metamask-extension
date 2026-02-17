@@ -794,7 +794,15 @@ export async function mockSendSolanaFailedTransaction(mockServer: Mockttp) {
     });
 }
 
-export async function mockGetSignaturesSuccessSwap(mockServer: Mockttp) {
+const SOL_TO_USDC_SWAP_SIGNATURE =
+  '2m8z8uPZyoZwQpissDbhSfW5XDTFmpc7cSFithc5e1w8iCwFcvVkxHeaVhgFSdgUPb5cebbKGjuu48JMLPjfEATr';
+const USDC_TO_SOL_SWAP_SIGNATURE =
+  '28rWme56aMyaP8oX18unFeZg65iyDEhjLhvMBpxyFgKcn38P37ZRsssSZoHDCCr5xUfwfpqsVSSBoShLitHQLdrr';
+
+export async function mockGetSignaturesSuccessSwap(
+  mockServer: Mockttp,
+  signature = SOL_TO_USDC_SWAP_SIGNATURE,
+) {
   const response = {
     statusCode: 200,
     json: {
@@ -804,8 +812,7 @@ export async function mockGetSignaturesSuccessSwap(mockServer: Mockttp) {
           confirmationStatus: 'finalized',
           err: null,
           memo: null,
-          signature:
-            '2m8z8uPZyoZwQpissDbhSfW5XDTFmpc7cSFithc5e1w8iCwFcvVkxHeaVhgFSdgUPb5cebbKGjuu48JMLPjfEATr',
+          signature,
           slot: 342840492,
         },
       ],
@@ -824,8 +831,7 @@ export async function mockSendSwapSolanaTransaction(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
     json: {
-      result:
-        '28rWme56aMyaP8oX18unFeZg65iyDEhjLhvMBpxyFgKcn38P37ZRsssSZoHDCCr5xUfwfpqsVSSBoShLitHQLdrr',
+      result: USDC_TO_SOL_SWAP_SIGNATURE,
       id: '1337',
       jsonrpc: '2.0',
     },
@@ -844,8 +850,7 @@ export async function mockSwapSolToUsdcTransaction(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
     json: {
-      result:
-        '2m8z8uPZyoZwQpissDbhSfW5XDTFmpc7cSFithc5e1w8iCwFcvVkxHeaVhgFSdgUPb5cebbKGjuu48JMLPjfEATr',
+      result: SOL_TO_USDC_SWAP_SIGNATURE,
       id: '1337',
       jsonrpc: '2.0',
     },
@@ -1481,10 +1486,12 @@ export async function mockPriceApiSpotPriceSwap(mockServer: Mockttp) {
       json: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
           {
-            usd: 0.999761,
+            id: 'usd-coin',
+            price: 0.999761,
           },
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-          usd: 168.88,
+          id: 'solana',
+          price: 168.88,
         },
       },
     };
@@ -1674,6 +1681,12 @@ export async function withSolanaAccountSnap(
       },
       testSpecificMock: async (mockServer: Mockttp) => {
         const mockList: MockedEndpoint[] = [];
+        const isExecutedSwapScenario = Boolean(
+          mockSwapUSDtoSOL || mockSwapSOLtoUSDC,
+        );
+        const isSwapScenario = Boolean(
+          isExecutedSwapScenario || mockSwapWithNoQuotes,
+        );
         mockList.push(await simulateSolanaTransaction(mockServer));
         if (walletConnect) {
           mockList.push(await mockGetTokenAccountsByOwnerDevnet(mockServer));
@@ -1701,7 +1714,9 @@ export async function withSolanaAccountSnap(
           mockList.push(await mockGetFailedTransaction(mockServer));
         }
 
-        mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
+        if (!isExecutedSwapScenario) {
+          mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
+        }
         mockList.push(
           await mockSolanaBalanceQuote(mockServer, mockZeroBalance),
         );
@@ -1711,7 +1726,9 @@ export async function withSolanaAccountSnap(
           await mockMultiCoinPrice(mockServer),
           await mockGetLatestBlockhash(mockServer),
           await mockGetFeeForMessage(mockServer),
-          await mockPriceApiSpotPrice(mockServer),
+          isSwapScenario
+            ? await mockPriceApiSpotPriceSwap(mockServer)
+            : await mockPriceApiSpotPrice(mockServer),
           await mockPriceApiExchangeRates(mockServer),
           await mockClientSideDetectionApi(mockServer),
           await mockPhishingDetectionApi(mockServer),
@@ -1739,9 +1756,11 @@ export async function withSolanaAccountSnap(
               await mockSendSwapSolanaTransaction(mockServer),
               await mockGetUSDCSOLTransaction(mockServer),
               await mockSecurityAlertSwap(mockServer),
-              await mockGetSignaturesSuccessSwap(mockServer),
+              await mockGetSignaturesSuccessSwap(
+                mockServer,
+                USDC_TO_SOL_SWAP_SIGNATURE,
+              ),
               await mockBridgeGetTokens(mockServer),
-              await mockPriceApiSpotPriceSwap(mockServer),
               // await mockTopAssetsSolana(mockServer),
             ],
           );
@@ -1753,9 +1772,11 @@ export async function withSolanaAccountSnap(
               await mockSwapSolToUsdcTransaction(mockServer),
               await mockGetSOLUSDCTransaction(mockServer),
               await mockSecurityAlertSwap(mockServer),
-              await mockGetSignaturesSuccessSwap(mockServer),
+              await mockGetSignaturesSuccessSwap(
+                mockServer,
+                SOL_TO_USDC_SWAP_SIGNATURE,
+              ),
               await mockBridgeGetTokens(mockServer),
-              await mockPriceApiSpotPriceSwap(mockServer),
               // await mockTopAssetsSolana(mockServer),
             ],
           );
