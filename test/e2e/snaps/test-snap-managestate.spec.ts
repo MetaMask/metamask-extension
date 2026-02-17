@@ -1,10 +1,10 @@
 import { Driver } from '../webdriver/driver';
 import { withFixtures } from '../helpers';
-import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { mockManageStateSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { DAPP_PATH } from '../constants';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 
 describe('Test Snap manageState', function () {
@@ -14,12 +14,12 @@ describe('Test Snap manageState', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockManageStateSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page and connect manage state and validate installation
@@ -78,7 +78,7 @@ describe('Test Snap manageState', function () {
   it('can use the legacy state API', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockManageStateSnap,
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
@@ -86,7 +86,7 @@ describe('Test Snap manageState', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page and connect manage state and validate installation

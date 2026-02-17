@@ -5,7 +5,7 @@ import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import SnapListPage from '../page-objects/pages/snap-list-page';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockHomePageSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 
@@ -21,7 +21,7 @@ describe('Test Snap Homepage', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         const headerNavbar = new HeaderNavbar(driver);
         const snapListPage = new SnapListPage(driver);

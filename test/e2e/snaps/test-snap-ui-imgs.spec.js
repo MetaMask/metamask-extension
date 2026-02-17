@@ -3,7 +3,7 @@ const {
   loginWithBalanceValidation,
 } = require('../page-objects/flows/login.flow');
 const { DAPP_PATH, DAPP_URL, WINDOW_TITLES } = require('../constants');
-const { default: FixtureBuilderV2 } = require('../fixtures/fixture-builder-v2');
+const FixtureBuilder = require('../fixtures/fixture-builder');
 const {
   mockImagesSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
@@ -15,7 +15,7 @@ describe('Test Snap Images', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockImagesSnap,
         title: this.test.fullTitle(),
       },
@@ -44,15 +44,6 @@ describe('Test Snap Images', function () {
 
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.clickElementAndWaitToDisappear({
-          testId: 'snap-privacy-warning-scroll',
-        });
-
-        await driver.clickElementAndWaitToDisappear({
-          tag: 'button',
-          text: 'Accept',
-        });
 
         // wait for and click connect
         await driver.waitForSelector({

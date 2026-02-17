@@ -4,11 +4,6 @@ import { veryLargeDelayMs } from '../../../helpers';
 class SnapInstall {
   private driver: Driver;
 
-  private readonly acceptThirdPartyNotice = {
-    tag: 'button',
-    text: 'Accept',
-  };
-
   private readonly addToMetaMaskHeader = {
     tag: 'h3',
     text: 'Add to MetaMask',
@@ -38,20 +33,6 @@ class SnapInstall {
 
   private readonly snapInstallScrollArea =
     '[data-testid="snap-install-scroll"]';
-
-  private readonly thirdPartyNoticeScrollButton = {
-    testId: 'snap-privacy-warning-scroll',
-  };
-
-  private readonly thirdPartyNoticeHeader = {
-    tag: 'h3',
-    text: 'Third-party software notice',
-  };
-
-  private readonly thirdPartyNoticeText = {
-    tag: 'p',
-    text: 'Consensys has no access to information you share with third-party services.',
-  };
 
   private readonly snapUpdateScrollArea = '[data-testid="snap-update-scroll"]';
 
@@ -88,16 +69,6 @@ class SnapInstall {
       throw e;
     }
     console.log('Snap install dialog is loaded');
-  }
-
-  async clickAcceptThirdPartyNotice() {
-    // once all specs use FixtureBuilderV2, we can switch this method for clickElementAndWaitToDisappear (MMQA-1386)
-    console.log('Clicking on the accept third party notice');
-    await this.driver.clickElementSafe(this.acceptThirdPartyNotice);
-    await this.driver.assertElementNotPresent(
-      this.thirdPartyNoticeScrollButton,
-      { waitAtLeastGuard: veryLargeDelayMs },
-    );
   }
 
   async clickApproveButton() {
@@ -139,18 +110,6 @@ class SnapInstall {
   async clickFooterConfirmButton() {
     console.log('Clicking Confirm button');
     await this.driver.clickElement(this.nextPageButton);
-  }
-
-  async clickScrollBottomThirdPartyNotice() {
-    console.log('Clicking on the scroll bottom third party notice');
-    await this.driver.waitForSelector(this.thirdPartyNoticeHeader);
-    await this.driver.waitForSelector(this.thirdPartyNoticeText);
-    // once all specs use FixtureBuilderV2, we can switch this method for clickElementAndWaitToDisappear (MMQA-1386)
-    await this.driver.clickElementSafe(this.thirdPartyNoticeScrollButton);
-    await this.driver.assertElementNotPresent(
-      this.thirdPartyNoticeScrollButton,
-      { waitAtLeastGuard: veryLargeDelayMs },
-    );
   }
 
   async updateScrollAndClickConfirmButton() {

@@ -1,13 +1,13 @@
 import { Mockttp } from 'mockttp';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
-import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import {
   mockBip32Snap,
   mockJsonRpcSnap,
 } from '../mock-response-data/snaps/snap-binary-mocks';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { Driver } from '../webdriver/driver';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
@@ -23,12 +23,12 @@ describe('Test Snap RPC', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapBinaries,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);

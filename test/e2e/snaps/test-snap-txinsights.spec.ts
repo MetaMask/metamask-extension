@@ -1,6 +1,6 @@
 import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { DAPP_ONE_URL, DAPP_PATH, DAPP_URL, WINDOW_TITLES } from '../constants';
 import { withFixtures, veryLargeDelayMs } from '../helpers';
@@ -27,7 +27,7 @@ describe('Test Snap TxInsights', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         const snapTxInsights = new SnapTxInsights(driver);
 
@@ -65,8 +65,8 @@ describe('Test Snap TxInsights', function () {
         testSpecificMock: mockInsightsSnap,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver, localNodes?.[0]);
+      async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        await loginWithoutBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         const snapTxInsights = new SnapTxInsights(driver);
         const contractAddress = await (
@@ -114,8 +114,8 @@ describe('Test Snap TxInsights', function () {
         testSpecificMock: mockInsightsSnap,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver, localNodes?.[0]);
+      async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        await loginWithoutBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         const snapTxInsights = new SnapTxInsights(driver);
         const contractAddress = await (

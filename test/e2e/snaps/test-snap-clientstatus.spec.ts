@@ -5,8 +5,8 @@ import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
-import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import FixtureBuilder from '../fixtures/fixture-builder';
+import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockClientStatusSnap } from '../mock-response-data/snaps/snap-binary-mocks';
@@ -18,12 +18,12 @@ describe('Test Snap Client Status', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockClientStatusSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
         const headerNavbar = new HeaderNavbar(driver);

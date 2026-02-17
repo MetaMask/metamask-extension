@@ -4,7 +4,7 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { Driver } from '../webdriver/driver';
 import HomePage from '../page-objects/pages/home/homepage';
 import FixtureBuilder from '../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
@@ -27,7 +27,7 @@ describe('Name lookup', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
