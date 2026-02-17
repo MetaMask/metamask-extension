@@ -29,10 +29,8 @@ async function mockFeatureFlagsWithoutAutoEnableNotifications(server: Mockttp) {
       statusCode: 200,
       json: [
         ...prodFlags,
-        {
-          assetsEnableNotificationsByDefault: false,
-          assetsEnableNotificationsByDefaultV2: { value: false },
-        },
+        { assetsEnableNotificationsByDefault: false },
+        { assetsEnableNotificationsByDefaultV2: { value: false } },
       ],
     }));
 }
