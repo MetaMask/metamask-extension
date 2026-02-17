@@ -1481,7 +1481,7 @@ export async function mockPriceApiSpotPriceSwap(mockServer: Mockttp) {
       json: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
           {
-            usd: 0.999761,
+            usd: 1.0,
           },
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
           usd: 168.88,
@@ -1679,13 +1679,12 @@ export async function withSolanaAccountSnap(
           mockList.push(await mockGetTokenAccountsByOwnerDevnet(mockServer));
           mockList.push(await mockGetAccountInfoDevnet(mockServer));
         } else {
-          console.log('Entra aqui no?');
-          /* mockList.push(
+          mockList.push(
             await mockGetTokenAccountsTokenProgramSwaps(mockServer),
           );
           mockList.push(
             await mockGetTokenAccountsTokenProgram2022Swaps(mockServer),
-          );*/
+          );
         }
         mockList.push(await mockGetMultipleAccounts(mockServer));
         if (mockGetTransactionSuccess) {
