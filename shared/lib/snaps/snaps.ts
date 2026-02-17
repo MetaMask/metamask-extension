@@ -38,7 +38,6 @@ export function isSnapPreinstalled(snapId: SnapId) {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // For development purposes, allow local Snaps to be treated as preinstalled
   // Snaps if the `FORCE_PREINSTALLED_SNAPS` environment variable is enabled.
-  console.log('yyyy', snapId, FORCE_PREINSTALLED_SNAPS);
   if (FORCE_PREINSTALLED_SNAPS && snapId.startsWith('local:')) {
     return true;
   }
