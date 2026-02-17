@@ -268,12 +268,13 @@ export const NetworkControllerInit: ControllerInitFunction<
 
   initMessenger.subscribe(
     'NetworkController:rpcEndpointUnavailable',
-    async ({ chainId, endpointUrl, error }) => {
+    async ({ chainId, endpointUrl, error, rpcMethodName }) => {
       onRpcEndpointUnavailable({
         chainId,
         endpointUrl,
         error,
         infuraProjectId,
+        rpcMethodName,
         trackEvent: initMessenger.call.bind(
           initMessenger,
           'MetaMetricsController:trackEvent',
@@ -287,12 +288,13 @@ export const NetworkControllerInit: ControllerInitFunction<
 
   initMessenger.subscribe(
     'NetworkController:rpcEndpointDegraded',
-    async ({ chainId, endpointUrl, error }) => {
+    async ({ chainId, endpointUrl, error, rpcMethodName }) => {
       onRpcEndpointDegraded({
         chainId,
         endpointUrl,
         error,
         infuraProjectId,
+        rpcMethodName,
         trackEvent: initMessenger.call.bind(
           initMessenger,
           'MetaMetricsController:trackEvent',
