@@ -65,10 +65,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.PreferencesController.identities.0x5cfe73b6021e818b776b421b1c4db2474086a7e1.lastSelected',
   'data.PreferencesController.identities.4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer.lastSelected',
   'data.PreferencesController.lostIdentities.0x5cfe73b6021e818b776b421b1c4db2474086a7e1.lastSelected',
-  // non-EVM snap account names are non-deterministic (ordering of "Snap Account 1" vs "Snap Account 2" varies)
-  'data.PreferencesController.identities.*.name',
-  'data.PreferencesController.lostIdentities.*.name',
-  // Notification timestamps change on every run
   'data.NotificationServicesController.metamaskNotificationsList',
   'data.ProfileMetricsController.initialDelayEndTimestamp',
   'data.RemoteFeatureFlagController.cacheTimestamp',
