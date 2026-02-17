@@ -59,6 +59,7 @@ export default function setupSentry() {
   return {
     ...Sentry,
     getMetaMetricsEnabled,
+    getMetaMetricsId,
   };
 }
 
@@ -68,7 +69,13 @@ function getClientOptions() {
 
   return {
     beforeBreadcrumb: beforeBreadcrumb(),
-    beforeSend: (report) => rewriteReport(report),
+    beforeSend: async (report) => {
+      const metaMetricsId = await getMetaMetricsId();
+      if (metaMetricsId) {
+        report.user = { id: metaMetricsId };
+      }
+      return rewriteReport(report);
+    },
     debug: METAMASK_DEBUG,
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
@@ -158,52 +165,47 @@ function setCITags() {
 }
 
 /**
- * Returns whether MetaMetrics is enabled, given the application state.
+ * Returns the MetaMetrics controller state from the application state.
  *
  * @param {{ state: unknown} | { persistedState: unknown }} appState - Application state
- * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
- * is enabled, `false` otherwise.
+ * @returns {object | null} The MetaMetrics controller state when available, null otherwise.
  */
-function getMetaMetricsEnabledFromAppState(appState) {
+function getMetaMetricsFromAppState(appState) {
   // during initialization after loading persisted state
   if (appState.persistedState) {
-    return getMetaMetricsEnabledFromPersistedState(appState.persistedState);
-    // After initialization
-  } else if (appState.state) {
+    return getMetaMetricsFromPersistedState(appState.persistedState);
+  }
+  // After initialization
+  if (appState.state) {
     // UI
     if (appState.state.metamask) {
-      return Boolean(appState.state.metamask.participateInMetaMetrics);
+      return appState.state.metamask;
     }
     // background
-    return Boolean(
-      appState.state.MetaMetricsController?.participateInMetaMetrics,
-    );
+    return appState.state.MetaMetricsController ?? null;
   }
   // during initialization, before first persisted state is read
-  return false;
+  return null;
 }
 
 /**
- * Returns whether MetaMetrics is enabled, given the persisted state.
+ * Returns the MetaMetrics controller state from the persisted state.
  *
  * @param {unknown} persistedState - Application state
- * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
- * is enabled, `false` otherwise.
+ * @returns {object | null} The MetaMetrics controller state when available, null otherwise.
  */
-function getMetaMetricsEnabledFromPersistedState(persistedState) {
-  return Boolean(
-    persistedState?.data?.MetaMetricsController?.participateInMetaMetrics,
-  );
+function getMetaMetricsFromPersistedState(persistedState) {
+  return persistedState?.data?.MetaMetricsController ?? null;
 }
 
 /**
- * Returns whether MetaMetrics is enabled, given the backup state.
+ * Returns the MetaMetrics controller state from the backup state.
  *
  * @param {unknown} backupState - Backup state from IndexedDB
- * @returns `true` if MetaMetrics is enabled in the backup, `false` otherwise.
+ * @returns {object | null} The MetaMetrics controller state when available, null otherwise.
  */
-function getMetaMetricsEnabledFromBackupState(backupState) {
-  return Boolean(backupState?.MetaMetricsController?.participateInMetaMetrics);
+function getMetaMetricsFromBackupState(backupState) {
+  return backupState?.MetaMetricsController ?? null;
 }
 
 function getSentryEnvironment() {
@@ -242,6 +244,37 @@ function getSentryTarget() {
 }
 
 /**
+ * Returns the MetaMetrics controller state. If the application hasn't yet
+ * been initialized, the persisted state will be used (if any).
+ *
+ * @returns The MetaMetrics state from app state, persisted state, or backup state; null if unavailable.
+ */
+async function getMetaMetrics() {
+  const appState = getState();
+
+  if (appState.state || appState.persistedState) {
+    return getMetaMetricsFromAppState(appState);
+  }
+
+  // If we reach here, it means the error was thrown before initialization
+  // completed, and before we loaded the persisted state for the first time.
+  try {
+    const persistedState = await globalThis.stateHooks.getPersistedState();
+    return getMetaMetricsFromPersistedState(persistedState);
+  } catch (error) {
+    log('Error retrieving persisted state, falling back to backup', error);
+    // Primary storage failed (e.g., database corruption) - check the backup
+    try {
+      const backupState = await globalThis.stateHooks.getBackupState();
+      return getMetaMetricsFromBackupState(backupState);
+    } catch (backupError) {
+      log('Error retrieving backup state', backupError);
+      return null;
+    }
+  }
+}
+
+/**
  * Returns whether MetaMetrics is enabled. If the application hasn't yet
  * been initialized, the persisted state will be used (if any).
  *
@@ -254,28 +287,21 @@ async function getMetaMetricsEnabled() {
     return true;
   }
 
-  const appState = getState();
+  return Boolean((await getMetaMetrics())?.participateInMetaMetrics);
+}
 
-  if (appState.state || appState.persistedState) {
-    return getMetaMetricsEnabledFromAppState(appState);
+/**
+ * Returns the MetaMetrics ID from state only when the user has opted in.
+ * If the application hasn't yet been initialized, the persisted state will be used (if any).
+ *
+ * @returns The metaMetricsId string when participateInMetaMetrics is true, otherwise null.
+ */
+async function getMetaMetricsId() {
+  const metaMetrics = await getMetaMetrics();
+  if (!metaMetrics?.participateInMetaMetrics) {
+    return null;
   }
-
-  // If we reach here, it means the error was thrown before initialization
-  // completed, and before we loaded the persisted state for the first time.
-  try {
-    const persistedState = await globalThis.stateHooks.getPersistedState();
-    return getMetaMetricsEnabledFromPersistedState(persistedState);
-  } catch (error) {
-    log('Error retrieving persisted state, falling back to backup', error);
-    // Primary storage failed (e.g., database corruption) - check the backup
-    try {
-      const backupState = await globalThis.stateHooks.getBackupState();
-      return getMetaMetricsEnabledFromBackupState(backupState);
-    } catch (backupError) {
-      log('Error retrieving backup state', backupError);
-      return false;
-    }
-  }
+  return metaMetrics?.metaMetricsId ?? null;
 }
 
 function setSentryClient() {
@@ -341,7 +367,7 @@ export function beforeBreadcrumb() {
     }
     const appState = getState();
     if (
-      !getMetaMetricsEnabledFromAppState(appState) ||
+      !getMetaMetricsFromAppState(appState)?.participateInMetaMetrics ||
       breadcrumb?.category === 'ui.input'
     ) {
       return null;
