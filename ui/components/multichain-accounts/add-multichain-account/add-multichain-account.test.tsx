@@ -46,8 +46,9 @@ describe('AddMultichainAccount', () => {
     metamask: {
       localeMessages: {
         current: {
-          createMultichainAccountButton: 'Add account',
-          createMultichainAccountButtonLoading: 'Adding account...',
+          createMultichainAccountButton: messages.createMultichainAccountButton,
+          createMultichainAccountButtonLoading:
+            messages.createMultichainAccountButtonLoading,
         },
         currentLocale: 'en',
       },
@@ -201,7 +202,7 @@ describe('AddMultichainAccount', () => {
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
         isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
-        loadingMessage: 'Syncing...',
+        loadingMessage: messages.syncing.message,
       });
 
       const { getByText } = renderWithProvider(
@@ -241,7 +242,7 @@ describe('AddMultichainAccount', () => {
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
         isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
-        loadingMessage: 'Syncing...',
+        loadingMessage: messages.syncing.message,
       });
 
       const { getByText } = renderWithProvider(
@@ -260,7 +261,7 @@ describe('AddMultichainAccount', () => {
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
         isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
-        loadingMessage: 'Syncing...',
+        loadingMessage: messages.syncing.message,
       });
 
       const { getByText } = renderWithProvider(
@@ -311,7 +312,7 @@ describe('AddMultichainAccount', () => {
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
         isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
-        loadingMessage: 'Syncing...',
+        loadingMessage: messages.syncing.message,
       });
 
       rerender(<AddMultichainAccount walletId={mockWalletId} />);

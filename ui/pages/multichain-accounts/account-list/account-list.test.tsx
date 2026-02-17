@@ -183,7 +183,7 @@ describe('AccountList', () => {
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
         isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
-        loadingMessage: 'Syncing...',
+        loadingMessage: messages.syncing.message,
       });
 
       const { getAllByText } = renderComponent();
@@ -195,7 +195,7 @@ describe('AccountList', () => {
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
         isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
-        loadingMessage: 'Syncing...',
+        loadingMessage: messages.syncing.message,
       });
 
       const { getAllByText } = renderComponent();
@@ -210,7 +210,7 @@ describe('AccountList', () => {
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
         isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
-        loadingMessage: 'Syncing...',
+        loadingMessage: messages.syncing.message,
       });
 
       const { getAllByText } = renderComponent();
@@ -252,7 +252,7 @@ describe('AccountList', () => {
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
         isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
-        loadingMessage: 'Syncing...',
+        loadingMessage: messages.syncing.message,
       });
 
       rerender(<AccountList />);

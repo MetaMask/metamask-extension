@@ -31,9 +31,9 @@ describe('EditAccountNameModal', () => {
     metamask: {
       localeMessages: {
         current: {
-          editAccountName: 'Edit account name',
-          name: 'Name',
-          save: 'Save',
+          editAccountName: messages.editAccountName,
+          name: messages.name,
+          save: messages.save,
         },
         currentLocale: 'en',
       },
