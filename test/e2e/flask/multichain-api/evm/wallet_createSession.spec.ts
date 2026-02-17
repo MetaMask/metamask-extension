@@ -3,7 +3,6 @@ import { isObject } from 'lodash';
 import { ACCOUNT_1, ACCOUNT_2, WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
-import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
@@ -264,7 +263,7 @@ describe('Multichain API', function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
-          fixtures: new FixtureBuilderV2().build(),
+          fixtures: new FixtureBuilder().build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {

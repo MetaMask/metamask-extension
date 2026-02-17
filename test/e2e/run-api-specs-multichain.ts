@@ -27,6 +27,7 @@ import { MultichainAuthorizationConfirmationErrors } from './api-specs/Multichai
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
 import HomePage from './page-objects/pages/home/homepage';
 import { loginWithoutBalanceValidation } from './page-objects/flows/login.flow';
+import FixtureBuilderV2 from './fixtures/fixture-builder-v2';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -101,7 +102,7 @@ async function main() {
   await withFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
-      fixtures: new FixtureBuilder().build(),
+      fixtures: new FixtureBuilderV2().build(),
       localNodeOptions: 'none',
       title: 'api-specs-multichain coverage',
     },
