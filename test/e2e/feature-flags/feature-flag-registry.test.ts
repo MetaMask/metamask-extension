@@ -150,7 +150,7 @@ describe('Feature Flag Registry', () => {
       const deprecated = getRegistryEntriesByStatus(
         FeatureFlagStatus.Deprecated,
       );
-      expect(Array.isArray(deprecated)).toBe(true);
+      expect(deprecated).toHaveLength(0);
     });
   });
 
