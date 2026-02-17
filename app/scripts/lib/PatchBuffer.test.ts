@@ -1,10 +1,10 @@
 import type { Patch } from 'immer';
-import { PatchStore } from './PatchStore';
+import { PatchBuffer } from './PatchBuffer';
 
-describe('PatchStore', () => {
+describe('PatchBuffer', () => {
   describe('add', () => {
     it('accumulates patches under a controller key', () => {
-      const store = new PatchStore();
+      const store = new PatchBuffer();
       store.add('TokensController', [
         { op: 'replace', path: ['tokens'], value: ['0xabc'] },
       ]);
@@ -18,7 +18,7 @@ describe('PatchStore', () => {
     });
 
     it('appends patches for the same controller key', () => {
-      const store = new PatchStore();
+      const store = new PatchBuffer();
       store.add('TokensController', [
         { op: 'replace', path: ['tokens'], value: ['0xabc'] },
       ]);
@@ -36,7 +36,7 @@ describe('PatchStore', () => {
     });
 
     it('accumulates patches from multiple controllers', () => {
-      const store = new PatchStore();
+      const store = new PatchBuffer();
       store.add('TokensController', [
         { op: 'replace', path: ['tokens'], value: [] },
       ]);
@@ -56,7 +56,7 @@ describe('PatchStore', () => {
     });
 
     it('ignores empty patch arrays', () => {
-      const store = new PatchStore();
+      const store = new PatchBuffer();
       store.add('TokensController', []);
 
       expect(store.hasPending).toBe(false);
@@ -66,12 +66,12 @@ describe('PatchStore', () => {
 
   describe('flush', () => {
     it('returns null when nothing has been accumulated', () => {
-      const store = new PatchStore();
+      const store = new PatchBuffer();
       expect(store.flush()).toBeNull();
     });
 
     it('clears pending patches after flush', () => {
-      const store = new PatchStore();
+      const store = new PatchBuffer();
       store.add('TokensController', [
         { op: 'replace', path: ['tokens'], value: [] },
       ]);
@@ -84,7 +84,7 @@ describe('PatchStore', () => {
     });
 
     it('does not share references with internal state', () => {
-      const store = new PatchStore();
+      const store = new PatchBuffer();
       const patches: Patch[] = [
         { op: 'replace', path: ['tokens'], value: [] },
       ];
@@ -99,12 +99,12 @@ describe('PatchStore', () => {
 
   describe('hasPending', () => {
     it('returns false initially', () => {
-      const store = new PatchStore();
+      const store = new PatchBuffer();
       expect(store.hasPending).toBe(false);
     });
 
     it('returns true after adding patches', () => {
-      const store = new PatchStore();
+      const store = new PatchBuffer();
       store.add('TokensController', [
         { op: 'replace', path: ['tokens'], value: [] },
       ]);
@@ -112,7 +112,7 @@ describe('PatchStore', () => {
     });
 
     it('returns false after flush', () => {
-      const store = new PatchStore();
+      const store = new PatchBuffer();
       store.add('TokensController', [
         { op: 'replace', path: ['tokens'], value: [] },
       ]);
@@ -123,7 +123,7 @@ describe('PatchStore', () => {
 
   describe('destroy', () => {
     it('discards all accumulated patches', () => {
-      const store = new PatchStore();
+      const store = new PatchBuffer();
       store.add('TokensController', [
         { op: 'replace', path: ['tokens'], value: [] },
       ]);

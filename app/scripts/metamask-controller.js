@@ -316,7 +316,7 @@ import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmM
 import { decodeTransactionData } from './lib/transaction/decode/util';
 import createTracingMiddleware from './lib/createTracingMiddleware';
 import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
-import { PatchStore } from './lib/PatchStore';
+import { PatchBuffer } from './lib/PatchBuffer';
 import { sanitizePatches } from './lib/state-utils';
 import {
   rejectAllApprovals,
@@ -6841,13 +6841,13 @@ export default class MetamaskController extends EventEmitter {
    * A method for providing our API over a stream using JSON-RPC.
    *
    * Subscribes directly to each controller's `stateChange` messenger event,
-   * accumulates keyed patches via {@link PatchStore}, and flushes them to the
+   * buffers keyed patches via {@link PatchBuffer}, and flushes them to the
    * UI in a single port write per microtask.
    *
    * @param {*} outStream - The stream to provide our API over.
    */
   setupControllerConnection(outStream) {
-    const patchStore = new PatchStore();
+    const patchBuffer = new PatchBuffer();
     let uiReady = false;
     let flushScheduled = false;
     const messengerUnsubscribers = [];
@@ -6857,7 +6857,7 @@ export default class MetamaskController extends EventEmitter {
         return;
       }
 
-      const keyedPatches = patchStore.flush();
+      const keyedPatches = patchBuffer.flush();
       if (!keyedPatches) {
         return;
       }
@@ -6885,7 +6885,7 @@ export default class MetamaskController extends EventEmitter {
         (controllerKey, _state, patches) => {
           const sanitized = sanitizePatches(patches);
           if (sanitized.length > 0) {
-            patchStore.add(controllerKey, sanitized);
+            patchBuffer.add(controllerKey, sanitized);
             scheduleFlush();
           }
         },
@@ -6944,7 +6944,7 @@ export default class MetamaskController extends EventEmitter {
           unsubscribe();
         }
         messengerUnsubscribers.length = 0;
-        patchStore.destroy();
+        patchBuffer.destroy();
       }
     };
 
