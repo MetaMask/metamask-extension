@@ -131,9 +131,9 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   apply(compiler: Compiler) {
-    compiler.hooks.entryOption.tap(NAME, () => {
+    compiler.hooks.entryOption.tap(NAME, (_context, entries) => {
       this.prepareManifests(compiler);
-      this.collectEntrypoints(compiler);
+      this.collectEntrypoints(compiler, entries);
     });
     compiler.hooks.compilation.tap(NAME, this.hookIntoPipelines.bind(this));
   }
@@ -405,17 +405,22 @@ export class ManifestPlugin<Z extends boolean> {
 
   private addHtml = ({
     compiler,
+    entries,
     filename,
   }: {
     compiler: Compiler;
+    entries: Record<string, { import: string[] }>;
     filename: string;
   }) => {
-    const filePath = join(compiler.context, 'html', 'pages', filename);
     const parsedFileName = path.parse(filename).name;
-    new EntryPlugin(compiler.context, filePath, parsedFileName).apply(compiler);
+    const filePath = join(compiler.context, 'html', 'pages', filename);
+    entries[parsedFileName] = { import: [filePath] };
   };
 
-  private collectEntrypoints(compiler: Compiler): void {
+  private collectEntrypoints(
+    compiler: Compiler,
+    entries: Record<string, { import: string[] }>,
+  ): void {
     for (const manifest of this.manifests.values()) {
       // collect content_scripts (MV2 + MV3)
       for (const contentScript of manifest.content_scripts ?? []) {
@@ -474,7 +479,7 @@ export class ManifestPlugin<Z extends boolean> {
         ) {
           continue;
         }
-        this.addHtml({ compiler, filename });
+        this.addHtml({ compiler, entries, filename });
       }
     }
   }

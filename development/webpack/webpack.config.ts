@@ -127,6 +127,7 @@ const manifestPlugin = new ManifestPlugin({
 });
 
 const plugins: WebpackPluginInstance[] = [
+  manifestPlugin,
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({
     preprocessorOptions: { useWith: false },
@@ -142,7 +143,6 @@ const plugins: WebpackPluginInstance[] = [
       },
     ],
   }),
-  manifestPlugin,
   // use ProvidePlugin to polyfill *global* node variables
   new ProvidePlugin({
     // Make a global `Buffer` variable that points to the `buffer` package.
@@ -241,6 +241,9 @@ const envValidationLoader = args.validateEnv
   : null;
 
 const config = {
+  // All entries are added dynamically by ManifestPlugin
+  // an empty entry object prevents webpack's default entry.
+  entry: {},
   cache,
   plugins,
   context,
