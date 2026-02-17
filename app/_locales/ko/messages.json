@@ -5083,9 +5083,6 @@
   "perpsAutoClose": {
     "message": "자동 종료"
   },
-  "perpsBuy": {
-    "message": "매수"
-  },
   "perpsCloseAll": {
     "message": "모두 종료"
   },
@@ -5132,9 +5129,6 @@
     "message": "암호화폐"
   },
   "perpsFilterStocks": {
-    "message": "주식"
-  },
-  "perpsFilterStocksOnly": {
     "message": "주식"
   },
   "perpsFundingPayments": {
@@ -5213,29 +5207,17 @@
   "perpsSearchMarkets": {
     "message": "시장 검색"
   },
-  "perpsSell": {
-    "message": "매도"
-  },
   "perpsShort": {
     "message": "숏"
   },
   "perpsSize": {
     "message": "규모"
   },
-  "perpsSortFundingRate": {
-    "message": "펀딩 비율"
-  },
-  "perpsSortOpenInterest": {
-    "message": "미결제 약정"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "가격 변동: 내림차순"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "가격 변동: 올림차순"
-  },
-  "perpsSortVolume": {
-    "message": "거래량"
   },
   "perpsStartNewTrade": {
     "message": "새 거래 시작"
