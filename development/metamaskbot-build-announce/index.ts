@@ -21,6 +21,7 @@ import {
   buildBenchmarkSectionComment,
   buildPageLoadTable,
   runBenchmarkGate,
+  safeBuildSection,
   BUNDLE_SIZE_THRESHOLD,
 } from './utils';
 
@@ -60,16 +61,16 @@ async function start(): Promise<void> {
   // Assemble comment body
   let commentBody = artifactsBody;
 
-  commentBody += await buildUiStartupSection(benchmarkResults, HOST_URL);
+  commentBody += await safeBuildSection('UI startup metrics', () =>
+    buildUiStartupSection(benchmarkResults, HOST_URL),
+  );
 
-  const pageLoadBenchmarkComment = await getPageLoadBenchmarkComment();
-  if (pageLoadBenchmarkComment) {
-    commentBody += pageLoadBenchmarkComment;
-  }
+  commentBody += await safeBuildSection('page load benchmarks', () =>
+    getPageLoadBenchmarkComment(),
+  );
 
-  commentBody += await buildBundleSizeDiffSection(
-    artifacts,
-    MERGE_BASE_COMMIT_HASH,
+  commentBody += await safeBuildSection('bundle size diffs', () =>
+    buildBundleSizeDiffSection(artifacts, MERGE_BASE_COMMIT_HASH),
   );
 
   await postCommentWithMetamaskBot({
@@ -184,63 +185,50 @@ async function buildUiStartupSection(
   hostUrl: string,
 ): Promise<string> {
   let benchmarkSummary = 'UI Startup Metrics';
-  try {
-    const summaryPlatform = BENCHMARK_PLATFORMS[0];
-    const summaryBuildType = BENCHMARK_BUILD_TYPES[0];
-    const summaryPage = PAGE_LOAD_PRESETS[0];
-    const pageData =
-      benchmarkResults[summaryPlatform]?.[summaryBuildType]?.[summaryPage];
-    if (pageData) {
-      const mean = Math.round(parseFloat(pageData.mean.uiStartup));
-      const stdDev = Math.round(parseFloat(pageData.stdDev.uiStartup));
-      benchmarkSummary = `UI Startup Metrics (${mean} ± ${stdDev} ms)`;
-    }
-  } catch (error) {
-    console.error(`Error computing UI startup summary: '${String(error)}'`);
+  const summaryPlatform = BENCHMARK_PLATFORMS[0];
+  const summaryBuildType = BENCHMARK_BUILD_TYPES[0];
+  const summaryPage = PAGE_LOAD_PRESETS[0];
+  const pageData =
+    benchmarkResults[summaryPlatform]?.[summaryBuildType]?.[summaryPage];
+  const meanStartup = pageData?.mean?.uiStartup;
+  const stdDevStartup = pageData?.stdDev?.uiStartup;
+  if (meanStartup && stdDevStartup) {
+    const mean = Math.round(parseFloat(meanStartup));
+    const stdDev = Math.round(parseFloat(stdDevStartup));
+    benchmarkSummary = `UI Startup Metrics (${mean} ± ${stdDev} ms)`;
+  } else {
+    console.log('No page load summary data available; using default heading');
   }
 
-  let userActionsHtml = '';
-  try {
-    userActionsHtml = await buildBenchmarkSectionComment(
+  const userActionsHtml = await safeBuildSection('user actions', () =>
+    buildBenchmarkSectionComment(
       hostUrl,
       USER_ACTION_PRESETS,
       '🏃 User Actions Benchmark',
       'Action',
-    );
-  } catch (error) {
-    console.error(`Error building user actions section: '${String(error)}'`);
-  }
+    ),
+  );
 
-  let pageLoadSection = '';
-  try {
-    const pageLoadTable = buildPageLoadTable(benchmarkResults);
-    pageLoadSection = `<details><summary>📊 Page Load</summary>${pageLoadTable}</details>\n\n`;
-  } catch (error) {
-    console.error(`Error building page load section: '${String(error)}'`);
-  }
+  const pageLoadSection = await safeBuildSection('page load', () => {
+    const table = buildPageLoadTable(benchmarkResults);
+    return table
+      ? `<details><summary>📊 Page Load</summary>${table}</details>\n\n`
+      : '';
+  });
 
-  let performanceHtml = '';
-  try {
-    performanceHtml = await buildBenchmarkSectionComment(
+  const performanceHtml = await safeBuildSection('performance benchmarks', () =>
+    buildBenchmarkSectionComment(
       hostUrl,
       PERFORMANCE_PRESETS,
       '⚡ Performance Benchmarks',
       'Benchmark',
-    );
-  } catch (error) {
-    console.error(`Error building performance section: '${String(error)}'`);
-  }
+    ),
+  );
 
-  let benchmarkWarnings = '';
-  try {
-    const benchmarkGateUrl = `${process.env.CLOUDFRONT_REPO_URL}/benchmark-gate/benchmark-gate.json`;
-    benchmarkWarnings = await runBenchmarkGate(
-      benchmarkResults,
-      benchmarkGateUrl,
-    );
-  } catch (error) {
-    console.error(`Error running benchmark gate: '${String(error)}'`);
-  }
+  const benchmarkGateUrl = `${process.env.CLOUDFRONT_REPO_URL}/benchmark-gate/benchmark-gate.json`;
+  const benchmarkWarnings = await safeBuildSection('benchmark gate', () =>
+    runBenchmarkGate(benchmarkResults, benchmarkGateUrl),
+  );
 
   const content = `${userActionsHtml}${pageLoadSection}${performanceHtml}${benchmarkWarnings}`;
   if (!content) {
@@ -261,89 +249,78 @@ async function buildBundleSizeDiffSection(
   artifacts: ReturnType<typeof getArtifactLinks>,
   mergeBaseCommitHash: string,
 ): Promise<string> {
-  try {
-    const prBundleSizeStatsResponse = await fetch(
-      artifacts.bundleSizeStats.url,
+  const prBundleSizeStatsResponse = await fetch(artifacts.bundleSizeStats.url);
+  if (!prBundleSizeStatsResponse.ok) {
+    throw new Error(
+      `Failed to fetch prBundleSizeStats, status ${prBundleSizeStatsResponse.statusText}`,
     );
-    if (!prBundleSizeStatsResponse.ok) {
-      throw new Error(
-        `Failed to fetch prBundleSizeStats, status ${prBundleSizeStatsResponse.statusText}`,
-      );
-    }
-    const prBundleSizeStats = await prBundleSizeStatsResponse.json();
-
-    const devBundleSizeStatsResponse = await fetch(
-      artifacts.bundleSizeData.url,
-    );
-    if (!devBundleSizeStatsResponse.ok) {
-      throw new Error(
-        `Failed to fetch devBundleSizeStats, status ${devBundleSizeStatsResponse.statusText}`,
-      );
-    }
-    const devBundleSizeStats = await devBundleSizeStatsResponse.json();
-
-    const prSizes = {
-      background: prBundleSizeStats.background.size,
-      ui: prBundleSizeStats.ui.size,
-      common: prBundleSizeStats.common.size,
-    };
-
-    const devSizes = Object.keys(prSizes).reduce(
-      (sizes, part) => {
-        sizes[part as keyof typeof prSizes] =
-          devBundleSizeStats[mergeBaseCommitHash][part] || 0;
-        return sizes;
-      },
-      {} as Record<keyof typeof prSizes, number>,
-    );
-
-    const diffs = Object.keys(prSizes).reduce(
-      (output, part) => {
-        output[part] =
-          prSizes[part as keyof typeof prSizes] -
-          devSizes[part as keyof typeof prSizes];
-        return output;
-      },
-      {} as Record<string, number>,
-    );
-
-    const sizeDiffRows = Object.keys(diffs).map(
-      (part) =>
-        `${part}: ${getHumanReadableSize(diffs[part])} (${getPercentageChange(
-          devSizes[part as keyof typeof prSizes],
-          prSizes[part as keyof typeof prSizes],
-        )}%)`,
-    );
-
-    const sizeDiffHiddenContent = `<ul>${sizeDiffRows
-      .map((row) => `<li>${row}</li>`)
-      .join('\n')}</ul>`;
-
-    const sizeDiffBackground = diffs.background + diffs.common;
-    const sizeDiffUi = diffs.ui + diffs.common;
-
-    let sizeDiffWarning;
-    if (
-      sizeDiffBackground > BUNDLE_SIZE_THRESHOLD ||
-      sizeDiffUi > BUNDLE_SIZE_THRESHOLD
-    ) {
-      sizeDiffWarning = `🚨 Warning! Bundle size has increased!`;
-    } else if (
-      sizeDiffBackground < -BUNDLE_SIZE_THRESHOLD ||
-      sizeDiffUi < -BUNDLE_SIZE_THRESHOLD
-    ) {
-      sizeDiffWarning = `🚀 Bundle size reduced!`;
-    }
-
-    const sizeDiffExposedContent = sizeDiffWarning
-      ? `Bundle size diffs [${sizeDiffWarning}]`
-      : `Bundle size diffs`;
-
-    return `<details><summary>${sizeDiffExposedContent}</summary>${sizeDiffHiddenContent}</details>\n\n`;
-  } catch (error) {
-    console.error(
-      `Error constructing bundle size diffs results: '${String(error)}'`,
-    );
-    return '';
   }
+  const prBundleSizeStats = await prBundleSizeStatsResponse.json();
+
+  const devBundleSizeStatsResponse = await fetch(artifacts.bundleSizeData.url);
+  if (!devBundleSizeStatsResponse.ok) {
+    throw new Error(
+      `Failed to fetch devBundleSizeStats, status ${devBundleSizeStatsResponse.statusText}`,
+    );
+  }
+  const devBundleSizeStats = await devBundleSizeStatsResponse.json();
+
+  const prSizes = {
+    background: prBundleSizeStats.background.size,
+    ui: prBundleSizeStats.ui.size,
+    common: prBundleSizeStats.common.size,
+  };
+
+  const devSizes = Object.keys(prSizes).reduce(
+    (sizes, part) => {
+      sizes[part as keyof typeof prSizes] =
+        devBundleSizeStats[mergeBaseCommitHash][part] || 0;
+      return sizes;
+    },
+    {} as Record<keyof typeof prSizes, number>,
+  );
+
+  const diffs = Object.keys(prSizes).reduce(
+    (output, part) => {
+      output[part] =
+        prSizes[part as keyof typeof prSizes] -
+        devSizes[part as keyof typeof prSizes];
+      return output;
+    },
+    {} as Record<string, number>,
+  );
+
+  const sizeDiffRows = Object.keys(diffs).map(
+    (part) =>
+      `${part}: ${getHumanReadableSize(diffs[part])} (${getPercentageChange(
+        devSizes[part as keyof typeof prSizes],
+        prSizes[part as keyof typeof prSizes],
+      )}%)`,
+  );
+
+  const sizeDiffHiddenContent = `<ul>${sizeDiffRows
+    .map((row) => `<li>${row}</li>`)
+    .join('\n')}</ul>`;
+
+  const sizeDiffBackground = diffs.background + diffs.common;
+  const sizeDiffUi = diffs.ui + diffs.common;
+
+  let sizeDiffWarning;
+  if (
+    sizeDiffBackground > BUNDLE_SIZE_THRESHOLD ||
+    sizeDiffUi > BUNDLE_SIZE_THRESHOLD
+  ) {
+    sizeDiffWarning = `🚨 Warning! Bundle size has increased!`;
+  } else if (
+    sizeDiffBackground < -BUNDLE_SIZE_THRESHOLD ||
+    sizeDiffUi < -BUNDLE_SIZE_THRESHOLD
+  ) {
+    sizeDiffWarning = `🚀 Bundle size reduced!`;
+  }
+
+  const sizeDiffExposedContent = sizeDiffWarning
+    ? `Bundle size diffs [${sizeDiffWarning}]`
+    : `Bundle size diffs`;
+
+  return `<details><summary>${sizeDiffExposedContent}</summary>${sizeDiffHiddenContent}</details>\n\n`;
 }

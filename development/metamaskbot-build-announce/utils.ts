@@ -12,6 +12,28 @@ import type {
 } from '../../test/e2e/benchmarks/utils/types';
 
 /**
+ * Wraps a section builder so that any missing-data error is caught,
+ * logged, and returns an empty string instead of crashing the comment.
+ *
+ * @param sectionName - Human-readable name for the log message.
+ * @param fn - The builder function to execute.
+ * @returns The section HTML, or empty string on failure.
+ */
+export async function safeBuildSection(
+  sectionName: string,
+  fn: () => Promise<string | null> | string | null,
+): Promise<string> {
+  try {
+    return (await fn()) ?? '';
+  } catch (error) {
+    console.log(
+      `No data available for ${sectionName}; skipping (${String(error)})`,
+    );
+    return `<p><i>${sectionName}: data not available.</i></p>\n\n`;
+  }
+}
+
+/**
  * A single benchmark entry from a JSON artifact.
  * Shared across user action and performance benchmark results.
  */
@@ -360,18 +382,11 @@ export async function fetchBenchmarkJson(
   preset: string,
 ): Promise<Record<string, BenchmarkEntryResult> | null> {
   const url = `${hostUrl}/benchmarks/benchmark-${platform}-${buildType}-${preset}.json`;
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      return null;
-    }
-    return await response.json();
-  } catch {
-    console.log(
-      `No benchmark data found for ${platform}-${buildType}-${preset}`,
-    );
+  const response = await fetch(url);
+  if (!response.ok) {
     return null;
   }
+  return await response.json();
 }
 
 /**
@@ -473,13 +488,16 @@ export function buildPageLoadTable(benchmarkResults: BenchmarkResults): string {
   const { platforms, buildTypes, pages, metrics, measures } =
     discoverDimensions(benchmarkResults);
 
+  if (platforms.size === 0 || metrics.size === 0) {
+    return '';
+  }
+
   const tableRows: string[] = [];
   for (const platform of platforms) {
-    const pageRows: string[] = [];
-
     const buildTypesInPlatform = Object.keys(benchmarkResults[platform]);
     for (const buildType of buildTypesInPlatform) {
       for (const page of pages) {
+        const buildLabel = `${startCase(platform)} ${startCase(buildType)} ${startCase(page)}`;
         const metricRows: string[] = [];
         for (const metric of metrics) {
           let metricData = `<td>${metric}</td>`;
@@ -502,23 +520,21 @@ export function buildPageLoadTable(benchmarkResults: BenchmarkResults): string {
           }
           metricRows.push(metricData);
         }
-        metricRows[0] = `<td rowspan="${metrics.size}">${startCase(
-          buildType,
-        )}</td><td rowspan="${metrics.size}">${startCase(page)}</td>${
-          metricRows[0]
-        }`;
-        pageRows.push(...metricRows);
+        if (metricRows.length > 0) {
+          metricRows[0] = `<td rowspan="${metrics.size}">${buildLabel}</td>${metricRows[0]}`;
+          for (const row of metricRows) {
+            tableRows.push(`<tr>${row}</tr>`);
+          }
+        }
       }
-    }
-    pageRows[0] = `<td rowspan="${
-      pages.size * buildTypes.size * metrics.size
-    }">${startCase(platform)}</td>${pageRows[0]}`;
-    for (const row of pageRows) {
-      tableRows.push(`<tr>${row}</tr>`);
     }
   }
 
-  const headers = ['Platform', 'BuildType', 'Page', 'Metric'];
+  if (tableRows.length === 0) {
+    return '';
+  }
+
+  const headers = ['Build', 'Metric'];
   for (const measure of measures) {
     headers.push(`${startCase(measure)} (ms)`);
   }
@@ -541,72 +557,67 @@ export async function runBenchmarkGate(
   benchmarkResults: BenchmarkResults,
   benchmarkGateUrl: string,
 ): Promise<string> {
+  console.log(`Fetching benchmark gate from ${benchmarkGateUrl}`);
+
+  const benchmarkResponse = await fetch(benchmarkGateUrl);
+  if (!benchmarkResponse.ok) {
+    throw new Error(
+      `Failed to fetch benchmark gate data, status ${benchmarkResponse.statusText}`,
+    );
+  }
+
+  const { gates, pingThresholds } = await benchmarkResponse.json();
+
   const exceededSums = { mean: 0, p95: 0 };
   let benchmarkGateBody = '';
 
-  console.log(`Fetching benchmark gate from ${benchmarkGateUrl}`);
-  try {
-    const benchmarkResponse = await fetch(benchmarkGateUrl);
-    if (!benchmarkResponse.ok) {
-      throw new Error(
-        `Failed to fetch benchmark gate data, status ${benchmarkResponse.statusText}`,
-      );
-    }
+  for (const platform of Object.keys(gates)) {
+    for (const buildType of Object.keys(gates[platform])) {
+      for (const page of Object.keys(gates[platform][buildType])) {
+        for (const measure of Object.keys(gates[platform][buildType][page])) {
+          for (const metric of Object.keys(
+            gates[platform][buildType][page][measure],
+          )) {
+            const benchmarkValue =
+              benchmarkResults[platform][buildType][page][measure][metric];
 
-    const { gates, pingThresholds } = await benchmarkResponse.json();
+            const gateValue =
+              gates[platform][buildType][page][measure][metric];
 
-    for (const platform of Object.keys(gates)) {
-      for (const buildType of Object.keys(gates[platform])) {
-        for (const page of Object.keys(gates[platform][buildType])) {
-          for (const measure of Object.keys(gates[platform][buildType][page])) {
-            for (const metric of Object.keys(
-              gates[platform][buildType][page][measure],
-            )) {
-              const benchmarkValue =
-                benchmarkResults[platform][buildType][page][measure][metric];
+            if (benchmarkValue > gateValue) {
+              const ceiledValue = Math.ceil(parseFloat(benchmarkValue));
 
-              const gateValue =
-                gates[platform][buildType][page][measure][metric];
-
-              if (benchmarkValue > gateValue) {
-                const ceiledValue = Math.ceil(parseFloat(benchmarkValue));
-
-                if (measure === 'mean') {
-                  exceededSums.mean += ceiledValue - gateValue;
-                } else if (measure === 'p95') {
-                  exceededSums.p95 += ceiledValue - gateValue;
-                }
-
-                benchmarkGateBody += `Benchmark value ${ceiledValue} exceeds gate value ${gateValue} for ${platform} ${buildType} ${page} ${measure} ${metric}<br>\n`;
+              if (measure === 'mean') {
+                exceededSums.mean += ceiledValue - gateValue;
+              } else if (measure === 'p95') {
+                exceededSums.p95 += ceiledValue - gateValue;
               }
+
+              benchmarkGateBody += `Benchmark value ${ceiledValue} exceeds gate value ${gateValue} for ${platform} ${buildType} ${page} ${measure} ${metric}<br>\n`;
             }
           }
         }
       }
     }
+  }
 
-    if (benchmarkGateBody) {
-      benchmarkGateBody += `<b>Sum of mean exceeds: ${
-        exceededSums.mean
-      }ms | Sum of p95 exceeds: ${
-        exceededSums.p95
-      }ms<br>\nSum of all benchmark exceeds: ${
-        exceededSums.mean + exceededSums.p95
-      }ms</b><br>\n`;
+  if (benchmarkGateBody) {
+    benchmarkGateBody += `<b>Sum of mean exceeds: ${
+      exceededSums.mean
+    }ms | Sum of p95 exceeds: ${
+      exceededSums.p95
+    }ms<br>\nSum of all benchmark exceeds: ${
+      exceededSums.mean + exceededSums.p95
+    }ms</b><br>\n`;
 
-      if (
-        exceededSums.mean > pingThresholds.mean ||
-        exceededSums.p95 > pingThresholds.p95 ||
-        exceededSums.mean + exceededSums.p95 >
-          pingThresholds.mean + pingThresholds.p95
-      ) {
-        benchmarkGateBody = `cc: @HowardBraham<br>\n${benchmarkGateBody}`;
-      }
+    if (
+      exceededSums.mean > pingThresholds.mean ||
+      exceededSums.p95 > pingThresholds.p95 ||
+      exceededSums.mean + exceededSums.p95 >
+        pingThresholds.mean + pingThresholds.p95
+    ) {
+      benchmarkGateBody = `cc: @HowardBraham<br>\n${benchmarkGateBody}`;
     }
-  } catch (error) {
-    console.error(
-      `Error encountered fetching benchmark gate data: '${String(error)}'`,
-    );
   }
 
   return benchmarkGateBody;
