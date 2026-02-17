@@ -151,11 +151,26 @@ describe('PerpsTutorialModal', () => {
 
     it('advances through all steps in correct order', () => {
       const steps = [
-        { current: PerpsTutorialStep.WhatArePerps, next: PerpsTutorialStep.GoLongOrShort },
-        { current: PerpsTutorialStep.GoLongOrShort, next: PerpsTutorialStep.ChooseLeverage },
-        { current: PerpsTutorialStep.ChooseLeverage, next: PerpsTutorialStep.WatchLiquidation },
-        { current: PerpsTutorialStep.WatchLiquidation, next: PerpsTutorialStep.CloseAnytime },
-        { current: PerpsTutorialStep.CloseAnytime, next: PerpsTutorialStep.ReadyToTrade },
+        {
+          current: PerpsTutorialStep.WhatArePerps,
+          next: PerpsTutorialStep.GoLongOrShort,
+        },
+        {
+          current: PerpsTutorialStep.GoLongOrShort,
+          next: PerpsTutorialStep.ChooseLeverage,
+        },
+        {
+          current: PerpsTutorialStep.ChooseLeverage,
+          next: PerpsTutorialStep.WatchLiquidation,
+        },
+        {
+          current: PerpsTutorialStep.WatchLiquidation,
+          next: PerpsTutorialStep.CloseAnytime,
+        },
+        {
+          current: PerpsTutorialStep.CloseAnytime,
+          next: PerpsTutorialStep.ReadyToTrade,
+        },
       ];
 
       steps.forEach(({ current, next }) => {
@@ -262,11 +277,12 @@ describe('PerpsTutorialModal', () => {
       );
 
       // Find and click the close button in the modal header
-      const closeButton = screen.getByTestId('perps-tutorial-modal-header').querySelector('button');
-      if (closeButton) {
-        fireEvent.click(closeButton);
-        expect(onClose).toHaveBeenCalled();
-      }
+      const closeButton = screen
+        .getByTestId('perps-tutorial-modal-header')
+        .querySelector('button');
+      expect(closeButton).toBeInTheDocument();
+      fireEvent.click(closeButton as HTMLElement);
+      expect(onClose).toHaveBeenCalled();
     });
 
     it('resets to first step when modal is closed', () => {
@@ -277,15 +293,16 @@ describe('PerpsTutorialModal', () => {
         </Provider>,
       );
 
-      const closeButton = screen.getByTestId('perps-tutorial-modal-header').querySelector('button');
-      if (closeButton) {
-        fireEvent.click(closeButton);
+      const closeButton = screen
+        .getByTestId('perps-tutorial-modal-header')
+        .querySelector('button');
+      expect(closeButton).toBeInTheDocument();
+      fireEvent.click(closeButton as HTMLElement);
 
-        expect(mockDispatch).toHaveBeenCalledWith({
-          type: 'perpsTutorial/setTutorialActiveStep',
-          payload: PerpsTutorialStep.WhatArePerps,
-        });
-      }
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: 'perpsTutorial/setTutorialActiveStep',
+        payload: PerpsTutorialStep.WhatArePerps,
+      });
     });
   });
 });

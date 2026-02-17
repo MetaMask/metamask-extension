@@ -20,6 +20,7 @@ import {
   setTutorialActiveStep,
   markTutorialCompleted,
   PerpsTutorialStep,
+  TUTORIAL_STEPS_ORDER,
 } from '../../../../ducks/perps';
 import { useTheme } from '../../../../hooks/useTheme';
 // eslint-disable-next-line import/no-restricted-paths
@@ -33,17 +34,6 @@ import CloseAnytimeStep from './steps/CloseAnytimeStep';
 import ReadyToTradeStep from './steps/ReadyToTradeStep';
 import TutorialFooter from './TutorialFooter';
 import ProgressIndicator from './ProgressIndicator';
-
-const TOTAL_STEPS = 6;
-
-const STEP_ORDER = [
-  PerpsTutorialStep.WhatArePerps,
-  PerpsTutorialStep.GoLongOrShort,
-  PerpsTutorialStep.ChooseLeverage,
-  PerpsTutorialStep.WatchLiquidation,
-  PerpsTutorialStep.CloseAnytime,
-  PerpsTutorialStep.ReadyToTrade,
-];
 
 type PerpsTutorialModalProps = {
   onClose?: () => void;
@@ -60,12 +50,12 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
   const modalHeight = useMemo(() => (isPopup ? '580px' : '675px'), [isPopup]);
 
   const currentStepIndex = useMemo(
-    () => STEP_ORDER.indexOf(activeStep),
+    () => TUTORIAL_STEPS_ORDER.indexOf(activeStep),
     [activeStep],
   );
 
   const isLastStep = useMemo(
-    () => currentStepIndex === TOTAL_STEPS - 1,
+    () => currentStepIndex === TUTORIAL_STEPS_ORDER.length - 1,
     [currentStepIndex],
   );
 
@@ -79,7 +69,7 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
     if (isLastStep) {
       dispatch(markTutorialCompleted());
     } else {
-      const nextStep = STEP_ORDER[currentStepIndex + 1];
+      const nextStep = TUTORIAL_STEPS_ORDER[currentStepIndex + 1];
       dispatch(setTutorialActiveStep(nextStep));
     }
   }, [dispatch, isLastStep, currentStepIndex]);
@@ -143,7 +133,7 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
         />
         <ModalBody className="w-full h-full pt-6 pb-4 flex flex-col">
           <ProgressIndicator
-            totalSteps={TOTAL_STEPS}
+            totalSteps={TUTORIAL_STEPS_ORDER.length}
             currentStep={currentStepIndex + 1}
           />
           {renderContent()}
