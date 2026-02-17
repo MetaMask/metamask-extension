@@ -250,7 +250,8 @@
     "@metamask/bridge-status-controller": "64.3.0",
     "@ledgerhq/hw-transport-webhid@npm:^6.31.0": "patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch",
     "fast-xml-parser": "^5.3.6",
-    "@metamask/snaps-controllers": "^18.0.0"
+    "@metamask/snaps-controllers": "^18.0.0",
+    "@metamask/network-controller": "npm:@metamask-previews/network-controller@29.0.0-preview-33dbba4f3"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -813,11 +814,5 @@
       }
     },
     "version": "v0.3.0"
-  },
-  "previewBuilds": {
-    "@metamask/network-controller": {
-      "type": "non-breaking",
-      "previewVersion": "29.0.0-preview-33dbba4f3"
-    }
   }
 }
