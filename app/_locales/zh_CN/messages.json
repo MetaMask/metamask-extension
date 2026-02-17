@@ -5083,9 +5083,6 @@
   "perpsAutoClose": {
     "message": "自动平仓"
   },
-  "perpsBuy": {
-    "message": "买入"
-  },
   "perpsCloseAll": {
     "message": "全部平仓"
   },
@@ -5132,9 +5129,6 @@
     "message": "加密货币"
   },
   "perpsFilterStocks": {
-    "message": "股票"
-  },
-  "perpsFilterStocksOnly": {
     "message": "股票"
   },
   "perpsFundingPayments": {
@@ -5213,29 +5207,17 @@
   "perpsSearchMarkets": {
     "message": "搜索市场"
   },
-  "perpsSell": {
-    "message": "卖出"
-  },
   "perpsShort": {
     "message": "做空"
   },
   "perpsSize": {
     "message": "规模"
   },
-  "perpsSortFundingRate": {
-    "message": "资金费率"
-  },
-  "perpsSortOpenInterest": {
-    "message": "未平仓合约量"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "价格变化：从高到低"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "价格变化：从低到高"
-  },
-  "perpsSortVolume": {
-    "message": "交易量"
   },
   "perpsStartNewTrade": {
     "message": "开始新交易"

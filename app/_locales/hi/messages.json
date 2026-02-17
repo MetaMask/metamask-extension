@@ -5083,9 +5083,6 @@
   "perpsAutoClose": {
     "message": "ऑटो क्लोज़"
   },
-  "perpsBuy": {
-    "message": "खरीदें"
-  },
   "perpsCloseAll": {
     "message": "सब बंद करें"
   },
@@ -5132,9 +5129,6 @@
     "message": "क्रिप्टो"
   },
   "perpsFilterStocks": {
-    "message": "स्टॉक्स"
-  },
-  "perpsFilterStocksOnly": {
     "message": "स्टॉक्स"
   },
   "perpsFundingPayments": {
@@ -5213,29 +5207,17 @@
   "perpsSearchMarkets": {
     "message": "मार्केट्स खोजें"
   },
-  "perpsSell": {
-    "message": "बेचें"
-  },
   "perpsShort": {
     "message": "शॉर्ट"
   },
   "perpsSize": {
     "message": "आकार"
   },
-  "perpsSortFundingRate": {
-    "message": "फंडिंग रेट"
-  },
-  "perpsSortOpenInterest": {
-    "message": "ओपन इंटरेस्ट"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "प्राइस परिवर्तन: ज़्यादा से कम"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "प्राइस परिवर्तन: कम से ज़्यादा"
-  },
-  "perpsSortVolume": {
-    "message": "वॉल्यूम"
   },
   "perpsStartNewTrade": {
     "message": "एक नया ट्रेड शुरू करें"
