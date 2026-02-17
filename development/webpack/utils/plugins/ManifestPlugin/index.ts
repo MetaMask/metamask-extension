@@ -1,11 +1,13 @@
-import { readFileSync } from 'node:fs';
-import { extname, join } from 'node:path/posix';
+import { readFileSync, readdirSync } from 'node:fs';
+import { extname, join, parse } from 'node:path/posix';
 import {
   sources,
   ProgressPlugin,
+  EntryPlugin,
   type Compilation,
   type Compiler,
   type Asset,
+  type EntryOptions,
 } from 'webpack';
 import { validate } from 'schema-utils';
 import {
@@ -14,7 +16,7 @@ import {
   AsyncZipDeflate,
   ZipPassThrough,
 } from 'fflate';
-import { noop, type Manifest, Browser } from '../../helpers';
+import { noop, extensionToJs, type Manifest, Browser } from '../../helpers';
 import { schema } from './schema';
 import type { ManifestPluginOptions } from './types';
 
@@ -67,10 +69,6 @@ function addAssetToZip(
  * A webpack plugin that generates extension manifests for browsers and organizes
  * assets into browser-specific directories and optionally zips them.
  *
- * TODO: it'd be great if the logic to find entry points was also in this plugin
- * instead of in helpers.ts. Moving that here would allow us to utilize the
- * this.options.transform function to modify the manifest before collecting the
- * entry points.
  */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -103,6 +101,25 @@ export class ManifestPlugin<Z extends boolean> {
   options: ManifestPluginOptions<Z>;
 
   manifests: Map<Browser, sources.Source> = new Map();
+
+  private selfContainedScripts: Set<string> = new Set([
+    'snow.prod',
+    'use-snow',
+    'bootstrap',
+  ]);
+
+  /**
+   * Returns `true` if the given entrypoint can be split into chunks.
+   * Scripts found in the extension manifest must be self-contained and cannot
+   * be chunked.
+   *
+   * @param entrypoint - The entrypoint to check.
+   * @param entrypoint.name - The name of the entrypoint.
+   * @returns `true` if the entrypoint can be split into chunks.
+   */
+  canBeChunked = ({ name }: { name?: string | null }): boolean => {
+    return !name || !this.selfContainedScripts.has(name);
+  };
 
   constructor(options: ManifestPluginOptions<Z>) {
     validate(schema, options, { name: NAME });
@@ -342,20 +359,6 @@ export class ManifestPlugin<Z extends boolean> {
         }
       }
 
-      // handle manifest v3 service worker logic
-      if (
-        manifest.manifest_version === 3 &&
-        manifest.background?.service_worker
-      ) {
-        const serviceWorkerEntrypoint = compilation.entrypoints.get(
-          manifest.background.service_worker,
-        );
-        if (serviceWorkerEntrypoint) {
-          const serviceWorkerFiles = serviceWorkerEntrypoint.getFiles();
-          manifest.background.service_worker = serviceWorkerFiles[0];
-        }
-      }
-
       // allow the user to `transform` the manifest
       if (transform) {
         manifest = transform(manifest, browser);
@@ -367,6 +370,199 @@ export class ManifestPlugin<Z extends boolean> {
     });
   }
 
+  private addManifestScript = ({
+    compilation,
+    filename,
+    opts,
+  }: {
+    compilation: Compilation;
+    filename: string;
+    opts?: EntryOptions;
+  }) => {
+    this.selfContainedScripts.add(filename);
+    const options: EntryOptions = {
+      name: filename,
+      chunkLoading: false,
+      filename: extensionToJs(filename),
+      ...opts,
+    };
+    compilation.addEntry(
+      compilation.options.context,
+      EntryPlugin.createDependency(filename, options),
+      options,
+      () => {
+        console.log('Added script entry for', filename);
+      },
+    );
+  };
+
+  private addHtml = ({
+    compilation,
+    filename,
+  }: {
+    compilation: Compilation;
+    filename: string;
+  }) => {
+    const parsedFileName = parse(filename).name;
+    const filePath = join(
+      compilation.options.context,
+      'html',
+      'pages',
+      filename,
+    );
+    compilation.addEntry(
+      compilation.options.context,
+      EntryPlugin.createDependency(parsedFileName, filePath),
+      filePath,
+      () => {
+        console.log('Added html entry for', filename);
+      },
+    );
+  };
+
+  private collectEntrypoints(compilation: Compilation): void {
+    const context = compilation.options.context as string;
+    const manifestPath = join(
+      context,
+      `manifest/v${this.options.manifest_version}`,
+    );
+    // Load the base manifest
+    const basePath = join(manifestPath, `_base.json`);
+    const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
+
+    // collect content_scripts (MV2 + MV3)
+    for (const contentScript of baseManifest.content_scripts ?? []) {
+      for (const script of contentScript.js ?? []) {
+        this.addManifestScript({ compilation, filename: script });
+      }
+    }
+
+    if (baseManifest.manifest_version === 2) {
+      // collect MV2 background scripts
+      for (const script of baseManifest.background?.scripts ?? []) {
+        this.addManifestScript({ compilation, filename: script });
+      }
+      // collect MV2 web accessible resources
+      for (const resource of baseManifest.web_accessible_resources ?? []) {
+        if (resource.endsWith('.js')) {
+          this.addManifestScript({ compilation, filename: resource });
+        }
+      }
+    } else if (baseManifest.manifest_version === 3) {
+      // collect MV3 service worker
+      if (baseManifest.background?.service_worker) {
+        this.addManifestScript({
+          compilation,
+          filename: baseManifest.background.service_worker,
+          opts: { chunkLoading: 'import-scripts' },
+        });
+      }
+      // collect MV3 web accessible resources
+      for (const resource of baseManifest.web_accessible_resources ?? []) {
+        for (const filename of resource.resources) {
+          if (filename.endsWith('.js')) {
+            this.addManifestScript({ compilation, filename });
+          }
+        }
+      }
+    }
+
+    const htmlPages = join(context, 'html', 'pages');
+
+    for (const filename of readdirSync(htmlPages)) {
+      // ignore non-htm/html files
+      if (/\.html?$/iu.test(filename)) {
+        // ignore background.html for MV3 extensions.
+        if (
+          baseManifest.manifest_version === 3 &&
+          filename === 'background.html'
+        ) {
+          continue;
+        }
+        // ignore offscreen.html for MV2 extensions.
+        if (
+          baseManifest.manifest_version === 2 &&
+          filename === 'offscreen.html'
+        ) {
+          continue;
+        }
+        this.addHtml({ compilation, filename });
+      }
+    }
+  }
+
+  private resolveEntrypoints(compilation: Compilation): void {
+    const context = compilation.options.context as string;
+    const manifestPath = join(
+      context,
+      `manifest/v${this.options.manifest_version}`,
+    );
+    // Load the base manifest
+    const basePath = join(manifestPath, `_base.json`);
+    const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
+
+    // resolve content_scripts (MV2 + MV3)
+    for (const contentScript of baseManifest.content_scripts ?? []) {
+      contentScript.js = contentScript.js?.map((contentScriptPath) => {
+        const contentScriptEntrypoint =
+          compilation.entrypoints.get(contentScriptPath);
+        const contentScriptFile = contentScriptEntrypoint?.getFiles().at(0);
+        return contentScriptFile ?? contentScriptPath;
+      });
+    }
+
+    if (baseManifest.manifest_version === 2) {
+      // resolve MV2 background scripts
+      if (baseManifest.background?.scripts) {
+        baseManifest.background.scripts = baseManifest.background.scripts.map(
+          (scriptPath) => {
+            const scriptEntrypoint = compilation.entrypoints.get(scriptPath);
+            const scriptFile = scriptEntrypoint?.getFiles().at(0);
+            return scriptFile ?? scriptPath;
+          },
+        );
+      }
+      // resolve MV2 web accessible resources
+      if (baseManifest.web_accessible_resources) {
+        baseManifest.web_accessible_resources =
+          baseManifest.web_accessible_resources.map((resourcePath) => {
+            if (resourcePath.endsWith('.js')) {
+              const resourceEntrypoint =
+                compilation.entrypoints.get(resourcePath);
+              const resourceFile = resourceEntrypoint?.getFiles().at(0);
+              return resourceFile ?? resourcePath;
+            }
+            return resourcePath;
+          });
+      }
+    } else if (baseManifest.manifest_version === 3) {
+      // resolve MV3 service worker
+      if (baseManifest.background?.service_worker) {
+        const serviceWorkerEntrypoint = compilation.entrypoints.get(
+          baseManifest.background.service_worker,
+        );
+        const serviceWorkerFile = serviceWorkerEntrypoint?.getFiles().at(0);
+        if (serviceWorkerFile) {
+          baseManifest.background.service_worker = serviceWorkerFile;
+        }
+      }
+      // resolve MV3 web accessible resources
+      if (baseManifest.web_accessible_resources) {
+        for (const resource of baseManifest.web_accessible_resources) {
+          resource.resources = resource.resources.map((resourcePath) => {
+            if (resourcePath.endsWith('.js')) {
+              const resourceEntrypoint =
+                compilation.entrypoints.get(resourcePath);
+              const resourceFile = resourceEntrypoint?.getFiles().at(0);
+              return resourceFile ?? resourcePath;
+            }
+            return resourcePath;
+          });
+        }
+      }
+    }
+  }
+
   private hookIntoPipelines(compilation: Compilation): void {
     // hook into the processAssets hook to move/zip assets
     const tapOptions = { name: NAME, stage: Infinity };
@@ -376,6 +572,8 @@ export class ManifestPlugin<Z extends boolean> {
         tapOptions,
         async (assets: Assets) => {
           this.prepareManifests(compilation);
+          this.collectEntrypoints(compilation);
+          this.resolveEntrypoints(compilation);
           await this.zipAssets(compilation, assets, options);
           this.moveAssets(
             compilation,
@@ -388,6 +586,8 @@ export class ManifestPlugin<Z extends boolean> {
       const options = this.options as ManifestPluginOptions<false>;
       compilation.hooks.processAssets.tap(tapOptions, (assets: Assets) => {
         this.prepareManifests(compilation);
+        this.collectEntrypoints(compilation);
+        this.resolveEntrypoints(compilation);
         this.moveAssets(compilation, assets, options);
       });
     }

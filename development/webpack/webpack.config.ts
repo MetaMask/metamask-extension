@@ -21,8 +21,6 @@ import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import tailwindcss from 'tailwindcss';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import {
-  type Manifest,
-  collectEntries,
   getMinimizers,
   NODE_MODULES_RE,
   __HMR_READY__,
@@ -51,9 +49,6 @@ const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
 const isDevelopment = args.env === 'development';
 const MANIFEST_VERSION = args.manifest_version;
-const manifestPath = join(context, `manifest/v${MANIFEST_VERSION}/_base.json`);
-const manifest: Manifest = require(manifestPath);
-const { entry, canBeChunked } = collectEntries(manifest, context);
 const codeFenceLoader = getCodeFenceLoader(features);
 const browsersListPath = join(context, '../.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
@@ -97,6 +92,40 @@ const cache = args.cache
 
 // #region plugins
 const commitHash = isDevelopment ? getLatestCommit().hash() : null;
+
+const manifestPlugin = new ManifestPlugin({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  web_accessible_resources: webAccessibleResources,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  manifest_version: MANIFEST_VERSION,
+  description: commitHash
+    ? `${args.type} build for ${args.env} from git id: ${commitHash.substring(0, 8)}`
+    : null,
+  version: version.version,
+  versionName: version.versionName,
+  browsers: args.browser,
+  transform: transformManifest(
+    args,
+    isDevelopment,
+    variables.get('MANIFEST_OVERRIDES') as string | undefined,
+  ),
+  zip: args.zip,
+  ...(args.zip
+    ? {
+        zipOptions: {
+          outFilePath: `../../builds/metamask-[browser]-${version.versionName}.zip`, // relative to output.path
+          mtime: getLatestCommit().timestamp(),
+          excludeExtensions: ['.map'],
+          // `level: 9` is the highest; it may increase build time by ~5% over level 1
+          level: 9,
+        },
+      }
+    : {}),
+  buildType: args.type,
+});
+
 const plugins: WebpackPluginInstance[] = [
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({
@@ -113,38 +142,7 @@ const plugins: WebpackPluginInstance[] = [
       },
     ],
   }),
-  new ManifestPlugin({
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    web_accessible_resources: webAccessibleResources,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    manifest_version: MANIFEST_VERSION,
-    description: commitHash
-      ? `${args.type} build for ${args.env} from git id: ${commitHash.substring(0, 8)}`
-      : null,
-    version: version.version,
-    versionName: version.versionName,
-    browsers: args.browser,
-    transform: transformManifest(
-      args,
-      isDevelopment,
-      variables.get('MANIFEST_OVERRIDES') as string | undefined,
-    ),
-    zip: args.zip,
-    ...(args.zip
-      ? {
-          zipOptions: {
-            outFilePath: `../../builds/metamask-[browser]-${version.versionName}.zip`, // relative to output.path
-            mtime: getLatestCommit().timestamp(),
-            excludeExtensions: ['.map'],
-            // `level: 9` is the highest; it may increase build time by ~5% over level 1
-            level: 9,
-          },
-        }
-      : {}),
-    buildType: args.type,
-  }),
+  manifestPlugin,
   // use ProvidePlugin to polyfill *global* node variables
   new ProvidePlugin({
     // Make a global `Buffer` variable that points to the `buffer` package.
@@ -243,7 +241,6 @@ const envValidationLoader = args.validateEnv
   : null;
 
 const config = {
-  entry,
   cache,
   plugins,
   context,
@@ -485,7 +482,8 @@ const config = {
     runtimeChunk: {
       // casting to string as webpack's types are wrong, `false` is allowed, and
       // is actually the default value.
-      name: (chunk) => (canBeChunked(chunk) ? 'runtime' : false) as string,
+      name: (chunk) =>
+        (manifestPlugin.canBeChunked(chunk) ? 'runtime' : false) as string,
     },
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations
@@ -499,13 +497,13 @@ const config = {
           // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
           test: /(?!.*\/node_modules\/).+\.(?:m?[tj]s|[tj]sx?)?$/u,
           name: 'js',
-          chunks: canBeChunked,
+          chunks: manifestPlugin.canBeChunked,
         },
         vendor: {
           // js/mjs files in node_modules or subdirectories of node_modules
           test: /[\\/]node_modules[\\/].*?\.m?js$/u,
           name: 'vendor',
-          chunks: canBeChunked,
+          chunks: manifestPlugin.canBeChunked,
         },
       },
     },
