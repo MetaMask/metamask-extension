@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
-
-import { SUPPORT_LINK } from '../../helpers/constants/common';
-import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import { SUPPORT_LINK } from '../../helpers/constants/common';
+import { isFlask } from '../../helpers/utils/build-types';
+import { useI18nContext } from '../../hooks/useI18nContext';
 
 export default function BetaAndFlaskHomeFooter() {
   const t = useI18nContext();
@@ -38,7 +38,7 @@ export default function BetaAndFlaskHomeFooter() {
       >
         {t('needHelpSubmitTicket')}
       </a>
-      {process.env.METAMASK_BUILD_TYPE === 'flask' && (
+      {isFlask() && (
         <>
           {' | '}
           <a
