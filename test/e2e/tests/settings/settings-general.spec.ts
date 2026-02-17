@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import GeneralSettings from '../../page-objects/pages/settings/general-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -10,7 +10,7 @@ describe('Settings', function () {
   it('checks jazzicon and blockies icons', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
       },
       async ({ driver }: { driver: Driver }) => {
         // Initialize page objects
