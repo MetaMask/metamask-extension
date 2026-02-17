@@ -1,14 +1,9 @@
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../constants';
-import { regularDelayMs, veryLargeDelayMs } from '../../helpers';
+import { regularDelayMs } from '../../helpers';
 
 class SnapSimpleKeyringPage {
   private readonly driver: Driver;
-
-  private readonly acceptThirdPartyNotice = {
-    tag: 'button',
-    text: 'Accept',
-  };
 
   private readonly accountCreatedMessage = {
     text: 'Account created',
@@ -131,10 +126,6 @@ class SnapSimpleKeyringPage {
 
   private readonly snapInstallScrollButton =
     '[data-testid="snap-install-scroll"]';
-
-  private readonly thirdPartyNoticeScrollButton = {
-    testId: 'snap-privacy-warning-scroll',
-  };
 
   private readonly useSyncApprovalToggle =
     '[data-testid="use-sync-flow-toggle"]';
