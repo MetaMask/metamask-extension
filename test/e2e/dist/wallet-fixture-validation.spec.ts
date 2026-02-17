@@ -296,7 +296,25 @@ describe('Wallet State', function () {
           addressBookContactAddress,
         );
 
-        await driver.delay(2000);
+        await driver.wait(
+          async () => {
+            const state = await driver.executeScript(
+              'return window.stateHooks.getPersistedState()',
+            );
+            const addressBook =
+              (state?.data as Record<string, unknown>)
+                ?.AddressBookController as Record<string, unknown> | undefined;
+            const byChainId = addressBook?.addressBook as
+              | Record<string, Record<string, unknown>>
+              | undefined;
+            const chain = byChainId?.['0x539'];
+            const contact = chain?.[addressBookContactAddress] as
+              | { address?: string; name?: string }
+              | undefined;
+            return Boolean(contact?.address && contact?.name);
+          },
+          15000,
+        );
 
         const persistedState = await driver.executeScript(
           'return window.stateHooks.getPersistedState()',
