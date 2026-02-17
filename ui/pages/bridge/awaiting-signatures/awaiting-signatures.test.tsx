@@ -313,4 +313,95 @@ describe('AwaitingSignatures', () => {
       expect(mockUseNavigate).not.toHaveBeenCalled();
     });
   });
+
+  describe('navigation on fullscreen-initiated failure', () => {
+    it('navigates to activity when QR scan is cleared in fullscreen mode (activeQuote still present)', async () => {
+      const requestId = 'test-request-id-fullscreen';
+      const pathname = `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(requestId)}`;
+
+      mockUseLocation.mockReturnValue({
+        pathname: `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
+        search: `?requestId=${encodeURIComponent(requestId)}`,
+        hash: '',
+        state: null,
+      });
+
+      // Create initial state with QR scan active and activeQuote present (fullscreen mode)
+      // In fullscreen mode, activeQuote doesn't get cleared when transaction fails
+      const initialBridgeMockStore = createBridgeMockStore({
+        bridgeStatusStateOverrides: {
+          txHistory: {},
+        },
+        bridgeStateOverrides: {
+          activeQuote: {
+            quote: {
+              requestId,
+            },
+            sentAmount: {
+              amount: '100',
+            },
+          },
+        },
+        metamaskStateOverrides: {
+          activeQrCodeScanRequest: {
+            type: 'sign',
+            request: {
+              requestId: 'qr-request-id',
+            },
+          },
+        },
+      });
+
+      // Create real store with custom reducer to allow state updates
+      const store = configureStore(initialBridgeMockStore);
+
+      // Custom reducer to handle state updates
+      const reducer: Reducer<MetaMaskReduxState, AnyAction> = (
+        reduxState,
+        action,
+      ) => {
+        const storeState = reduxState ?? store.getState();
+
+        if (action.type === 'TEST_UPDATE_QR_SCAN_REQUEST') {
+          return {
+            ...storeState,
+            metamask: {
+              ...storeState.metamask,
+              activeQrCodeScanRequest: action.payload,
+            },
+          };
+        }
+        return storeState;
+      };
+
+      store.replaceReducer(reducer);
+
+      // Render with initial state (QR scan active, activeQuote present)
+      renderWithProvider(<AwaitingSignatures />, store, pathname);
+
+      // Wait for initial render to complete and refs to be set
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      // Update store to clear QR scan request (simulating failure in fullscreen)
+      // Note: activeQuote remains present in fullscreen mode (unlike popup mode)
+      await act(async () => {
+        store.dispatch({
+          type: 'TEST_UPDATE_QR_SCAN_REQUEST',
+          payload: null,
+        });
+      });
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          `${DEFAULT_ROUTE}?tab=activity`,
+          {
+            replace: true,
+            state: { stayOnHomePage: true },
+          },
+        );
+      });
+    });
+  });
 });

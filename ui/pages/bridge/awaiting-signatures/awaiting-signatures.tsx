@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import isEqual from 'lodash/isEqual';
 import { isCrossChain } from '@metamask/bridge-controller';
@@ -56,22 +62,26 @@ export default function AwaitingSignatures() {
   const activeQrCodeScanRequest = useSelector(getActiveQrCodeScanRequest);
   const needsTwoConfirmations = Boolean(activeQuote?.approval);
   const { trackEvent } = useContext(MetaMetricsContext);
+  // Refs to track state transitions for navigation logic
   const prevQrScanRequestRef = useRef<typeof activeQrCodeScanRequest>(null);
   const hasTrackedEventRef = useRef(false);
+  const hasSeenQrScanActiveRef = useRef<boolean>(false);
+  const hasSeenRequestIdRef = useRef<boolean>(false);
+  const hasSeenActiveQuoteRef = useRef<boolean>(false);
 
-  // Use requestId from URL when popup state is lost (QR fullscreen flow).
+  // Extract requestId from URL params (used when popup state is lost in QR fullscreen flow)
   const requestIdFromLocation = useMemo(() => {
     const params = new URLSearchParams(location.search);
     return params.get('requestId') || undefined;
   }, [location.search]);
 
-  // Resolve requestId from activeQuote or URL params
+  // Resolve requestId from activeQuote (popup mode) or URL params (fullscreen mode)
   const requestId = useMemo(
     () => activeQuote?.quote?.requestId ?? requestIdFromLocation ?? undefined,
     [activeQuote?.quote?.requestId, requestIdFromLocation],
   );
 
-  // Find bridge history item for this requestId (shared lookup for both booleans)
+  // Find bridge history item for this requestId
   const historyItem = useMemo(() => {
     if (!requestId) {
       return undefined;
@@ -82,68 +92,111 @@ export default function AwaitingSignatures() {
     );
   }, [bridgeHistory, requestId]);
 
-  // Check if the bridge transaction has been submitted
+  // Check if the bridge transaction has been submitted to the network
+  // In two-step flows, a history item with approvalTxId means we're between steps
   const hasSubmittedBridgeTx = useMemo(() => {
     if (!historyItem) {
       return false;
     }
 
-    // In a two-step flow, a history item is created after approval with approvalTxId.
-    // If the history item has approvalTxId, it means approval is done but the bridge
-    // transaction hasn't been submitted yet (we're between steps).
-    // In that case, hasSubmittedBridgeTx should be false.
+    // History item with approvalTxId means approval is done but bridge tx not submitted yet
     if (historyItem.approvalTxId !== undefined) {
       return false;
     }
 
-    // If no approvalTxId, the history item represents a submitted bridge transaction
+    // No approvalTxId means this is the final bridge transaction
     return true;
   }, [historyItem]);
 
   // Check if we're between approval and bridge steps in a two-step flow
   const isBetweenApprovalAndBridgeSteps = useMemo(() => {
-    // If history item exists with approvalTxId but bridge hasn't been submitted,
-    // we're between the approval and bridge steps
     return historyItem?.approvalTxId !== undefined && !hasSubmittedBridgeTx;
   }, [historyItem, hasSubmittedBridgeTx]);
 
-  // Navigate away when transaction completes (success or cancellation)
+  // Navigate to activity tab with consistent options
+  const navigateToActivity = useCallback(() => {
+    navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+      replace: true,
+      state: { stayOnHomePage: true },
+    });
+  }, [navigate]);
+
+  // Navigate away when transaction completes (success or cancellation/failure)
   useEffect(() => {
     // Success: Transaction is in bridge history
     if (hasSubmittedBridgeTx) {
-      navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-        replace: true,
-        state: { stayOnHomePage: true },
-      });
+      navigateToActivity();
       return;
     }
 
-    // Cancellation: QR scan was active, then cleared (fallback if error handler doesn't fire)
-    // Only navigate if we're not in the middle of a two-step approval flow
+    // Don't navigate if we're between approval and bridge steps in two-step flow
+    if (isBetweenApprovalAndBridgeSteps) {
+      return;
+    }
+
+    // Track if we've seen a requestId (indicates transaction was initiated)
+    if (requestId) {
+      hasSeenRequestIdRef.current = true;
+    }
+
+    // Track if we've seen activeQuote (indicates transaction was actually started)
+    if (activeQuote !== null && activeQuote !== undefined) {
+      hasSeenActiveQuoteRef.current = true;
+    }
+
+    // Track QR scan state transitions
     const prevQrScanRequest = prevQrScanRequestRef.current;
+
+    // Mark QR scan as seen when it becomes active (truthy object)
+    if (activeQrCodeScanRequest !== null && activeQrCodeScanRequest !== false) {
+      hasSeenQrScanActiveRef.current = true;
+    }
+
     prevQrScanRequestRef.current = activeQrCodeScanRequest;
 
+    // Detect cancellation/failure scenarios:
+    // 1. QR scan cancellation: QR scan was active, then cleared, and no activeQuote
+    //    (handles popup-initiated cancellations where activeQuote gets cleared)
     const qrScanWasCancelled =
       prevQrScanRequest !== null &&
       activeQrCodeScanRequest === null &&
-      requestIdFromLocation &&
-      !activeQuote &&
-      // Don't navigate if we're between approval and bridge steps in two-step flow
+      requestId &&
+      !activeQuote;
+
+    // 2. Fullscreen-initiated failure: QR scan was active then cleared, but activeQuote
+    //    doesn't get cleared in fullscreen mode (fallback when error handler doesn't fire)
+    const qrScanWasActiveThenCleared =
+      hasSeenQrScanActiveRef.current && activeQrCodeScanRequest === null;
+    const fullscreenInitiatedFailure =
+      requestIdFromLocation !== undefined &&
+      hasSeenRequestIdRef.current &&
+      !hasSubmittedBridgeTx &&
+      qrScanWasActiveThenCleared &&
       !isBetweenApprovalAndBridgeSteps;
 
-    if (qrScanWasCancelled) {
-      navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-        replace: true,
-        state: { stayOnHomePage: true },
-      });
+    // 3. Popup-initiated failure: Transaction was initiated (we saw activeQuote) but now cleared
+    //    (activeQuote gets cleared in popup mode when transaction fails)
+    //    Only trigger if we've actually seen the transaction start (activeQuote was present)
+    const transactionFailed =
+      hasSeenActiveQuoteRef.current &&
+      requestId &&
+      !activeQuote &&
+      !historyItem &&
+      !activeQrCodeScanRequest;
+
+    // Navigate on any failure/cancellation scenario
+    if (qrScanWasCancelled || fullscreenInitiatedFailure || transactionFailed) {
+      navigateToActivity();
     }
   }, [
     hasSubmittedBridgeTx,
     activeQrCodeScanRequest,
+    requestId,
     requestIdFromLocation,
     activeQuote,
+    historyItem,
     isBetweenApprovalAndBridgeSteps,
-    navigate,
+    navigateToActivity,
   ]);
 
   useEffect(() => {
