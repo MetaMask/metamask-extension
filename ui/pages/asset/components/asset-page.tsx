@@ -149,7 +149,11 @@ const AssetPage = ({
     getSelectedAccountNativeTokenCachedBalanceByChainId,
   ) as Record<Hex, Hex>;
 
-  const { tokenBalances } = useTokenBalances({ chainIds: [chainId] });
+  // Only poll token balances when not using BIP44 state (isMultichainAccountsState2Enabled)
+  // to avoid unnecessary polling when balance data comes from accountGroupIdAssets
+  const { tokenBalances } = useTokenBalances({
+    chainIds: isMultichainAccountsState2Enabled ? [] : [chainId],
+  });
 
   const selectedAccountTokenBalancesAcrossChains =
     tokenBalances[selectedAccount.address as Hex];

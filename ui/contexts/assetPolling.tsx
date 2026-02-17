@@ -19,5 +19,6 @@ export const AssetPollingProvider = ({ children }: { children: ReactNode }) => {
   useMultichainAssetsRatesPolling();
   useStaticTokensPollingHook();
 
-  return <>{children}</>;
+  // Return children directly to avoid creating unnecessary wrapper elements
+  return children;
 };
