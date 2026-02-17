@@ -3,7 +3,7 @@ import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notifi
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   enableNotificationsThroughGlobalMenu,
   clickNotificationItemAndDetailsPage,
@@ -24,7 +24,7 @@ describe('Notification List - View Items and Details', function () {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
           await mockNotificationServices(

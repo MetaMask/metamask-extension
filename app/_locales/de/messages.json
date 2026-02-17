@@ -5083,9 +5083,6 @@
   "perpsAutoClose": {
     "message": "Automatische Schließung"
   },
-  "perpsBuy": {
-    "message": "kaufen"
-  },
   "perpsCloseAll": {
     "message": "Alle schließen"
   },
@@ -5132,9 +5129,6 @@
     "message": "Krypto"
   },
   "perpsFilterStocks": {
-    "message": "Aktien"
-  },
-  "perpsFilterStocksOnly": {
     "message": "Aktien"
   },
   "perpsFundingPayments": {
@@ -5213,29 +5207,17 @@
   "perpsSearchMarkets": {
     "message": "Märkte durchsuchen"
   },
-  "perpsSell": {
-    "message": "verkaufen"
-  },
   "perpsShort": {
     "message": "Short"
   },
   "perpsSize": {
     "message": "Größe"
   },
-  "perpsSortFundingRate": {
-    "message": "Finanzierungsrate"
-  },
-  "perpsSortOpenInterest": {
-    "message": "Open Interest"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "Preisänderung: hoch zu niedrig"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "Preisänderung: niedrig zu hoch"
-  },
-  "perpsSortVolume": {
-    "message": "Volumen"
   },
   "perpsStartNewTrade": {
     "message": "Einen neuen Trade starten"

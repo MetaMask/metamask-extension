@@ -34,7 +34,7 @@ export default class ConfirmDeleteNetwork extends PureComponent {
 
     // NOTE: ensure that we are not deleting a selected evm chain
     if (isChainToDeleteSelected) {
-      await switchToEthereumNetwork?.(true);
+      await switchToEthereumNetwork?.();
     }
 
     await removeNetwork(caipChainId);
