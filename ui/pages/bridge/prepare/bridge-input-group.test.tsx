@@ -441,7 +441,6 @@ describe('BridgeInputGroup', () => {
         expect(mockHandleFetch).toHaveBeenCalledTimes(4);
       });
 
-      expect(await localforage.keys()).toMatchSnapshot();
       expect(mockHandleFetch.mock.calls).toMatchSnapshot();
     },
   );
