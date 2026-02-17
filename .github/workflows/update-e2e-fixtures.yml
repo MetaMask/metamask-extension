@@ -87,8 +87,10 @@ jobs:
 
       - name: Find and download dist artifact
         run: |
+          COMMIT_SHA_FULL=$(git rev-parse HEAD)
+
           # Get the most recent run for the Main workflow on this branch
-          RUN_INFO=$(gh run list --workflow "Main" --branch "${BRANCH}" --json databaseId,status,conclusion --limit 1 --jq 'first')
+          RUN_INFO=$(gh run list --workflow "Main" --branch "${BRANCH}" --json databaseId,status,conclusion,headSha --limit 1 --jq 'first')
 
           if [ -z "$RUN_INFO" ] || [ "$RUN_INFO" = "null" ]; then
             echo "::error::No 'Main' workflow run found for branch ${BRANCH}"
@@ -98,12 +100,29 @@ jobs:
           RUN_ID=$(echo "$RUN_INFO" | jq -r '.databaseId')
           RUN_STATUS=$(echo "$RUN_INFO" | jq -r '.status')
           RUN_CONCLUSION=$(echo "$RUN_INFO" | jq -r '.conclusion')
+          RUN_HEAD_SHA=$(echo "$RUN_INFO" | jq -r '.headSha')
 
-          echo "Found run ${RUN_ID} with status: ${RUN_STATUS}, conclusion: ${RUN_CONCLUSION}"
-          echo "Attempting to download latest dist artifact..."
+          echo "Found run ${RUN_ID} with status: ${RUN_STATUS}, conclusion: ${RUN_CONCLUSION}, headSha: ${RUN_HEAD_SHA}"
+          echo "Current PR HEAD commit: ${COMMIT_SHA_FULL}"
+
+          if [ "${RUN_HEAD_SHA}" != "${COMMIT_SHA_FULL}" ]; then
+            echo "::error::The latest 'Main' workflow run (commit ${RUN_HEAD_SHA}) does not match the current PR HEAD (commit ${COMMIT_SHA_FULL}). Please ensure the Main workflow has run for the latest commit on this branch."
+            exit 1
+          fi
+
+          if [ "${RUN_STATUS}" != "completed" ]; then
+            echo "::error::The latest 'Main' workflow run is still in progress (status: ${RUN_STATUS}). Please wait for it to complete before updating fixtures."
+            exit 1
+          fi
+
+          if [ "${RUN_CONCLUSION}" != "success" ]; then
+            echo "::warning::The latest 'Main' workflow run concluded with '${RUN_CONCLUSION}'. The build artifact may still be available, proceeding with download attempt."
+          fi
+
+          echo "Attempting to download dist artifact..."
 
           if ! gh run download "${RUN_ID}" -n build-dist-browserify -D build-dist-browserify; then
-            echo "::error::Failed to download the 'build-dist-browserify' artifact. The build job may not have completed yet, may have failed. Please ensure the build-dist-browserify job has completed successfully."
+            echo "::error::Failed to download the 'build-dist-browserify' artifact. The build job may not have completed yet, or may have failed. Please ensure the build-dist-browserify job has completed successfully."
             exit 1
           fi
 
