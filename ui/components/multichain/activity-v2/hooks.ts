@@ -4,36 +4,57 @@ import type {
   Token,
   TransactionViewModel,
 } from '../../../../shared/lib/multichain/types';
-import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
+import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { selectMarketRates } from '../../../selectors/activity';
 import { calculateFiatFromMarketRates } from './helpers';
 
 export function useGetTitle(transaction: TransactionViewModel): string {
   const t = useI18nContext();
+  const { transactionCategory } = transaction;
 
   // This should be server-side
-  if (transaction.category === TransactionGroupCategory.swap) {
+  if (transactionCategory === 'APPROVE') {
+    const symbol = transaction.amounts?.from?.token?.symbol;
+    return symbol ? t('approveSpendingCap', [symbol]) : t('approve');
+  }
+
+  // This should be server-side
+  if (transactionCategory === 'BRIDGE_OUT') {
+    const chainName =
+      NETWORK_TO_NAME_MAP[
+        transaction.chainId as keyof typeof NETWORK_TO_NAME_MAP
+      ];
+    return chainName ? t('bridgedToChain', [chainName]) : t('bridged');
+  }
+
+  if (transactionCategory === 'BRIDGE_IN') {
+    return t('bridge');
+  }
+
+  // This should be server-side
+  if (
+    transactionCategory === 'SWAP' ||
+    (transaction.amounts?.from && transaction.amounts?.to)
+  ) {
     const fromSymbol = transaction.amounts?.from?.token.symbol;
     const toSymbol = transaction.amounts?.to?.token.symbol;
-
-    if (fromSymbol && toSymbol) {
+    if (fromSymbol && toSymbol && fromSymbol !== toSymbol) {
       return t('swapTokenToToken', [fromSymbol, toSymbol]);
     }
+    return t('swap');
   }
 
-  if (transaction.category === TransactionGroupCategory.send) {
-    const symbol = transaction.amounts?.from?.token.symbol;
-    if (symbol) {
-      return t('sentSpecifiedTokens', [symbol]);
-    }
-    return t('sent');
+  // Direction from parsed amounts
+  if (transaction.amounts?.from) {
+    const { symbol } = transaction.amounts.from.token;
+    return symbol ? t('sentSpecifiedTokens', [symbol]) : t('sent');
   }
-
-  if (transaction.category === TransactionGroupCategory.receive) {
+  if (transaction.amounts?.to) {
     return t('received');
   }
 
-  return transaction.readable ?? '';
+  // TODO: Use enriched .readable field once ready
+  return t('contractInteraction');
 }
 
 export function useFiatAmount(amount?: string, token?: Token) {

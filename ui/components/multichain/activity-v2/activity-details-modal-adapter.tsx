@@ -20,34 +20,49 @@ import { getSelectedAddress } from '../../../selectors/selectors';
 // eslint-disable-next-line no-empty-function
 const noop = () => {};
 
-// Map API transactionType to TransactionType for modal title
-function apiTransactionTypeToTransactionType(
-  transactionType?: string,
-): TransactionType {
-  switch (transactionType) {
-    case 'INCOMING':
-      return TransactionType.incoming;
-    case 'ERC_20_APPROVE':
-    case 'ERC_721_APPROVE':
-    case 'ERC_1155_APPROVE':
-      return TransactionType.tokenMethodApprove;
-    case 'ERC_20_TRANSFER':
-      return TransactionType.tokenMethodTransfer;
-    case 'ERC_721_TRANSFER':
-    case 'ERC_1155_TRANSFER':
-      return TransactionType.tokenMethodTransferFrom;
-    case 'METAMASK_V1_EXCHANGE':
-      return TransactionType.swap;
-    case 'METAMASK_BRIDGE_V2_BRIDGE_OUT':
-    case 'METAMASK_BRIDGE_V2_BRIDGE_IN':
-      return TransactionType.bridge;
-    case 'CONTRACT_INTERACTION':
-      return TransactionType.contractInteraction;
-    case 'DEPLOY_CONTRACT':
-      return TransactionType.deployContract;
-    default:
-      return TransactionType.simpleSend;
+// Map API transactionCategory to TransactionType for legacy modal
+function resolveTransactionType(tx: TransactionViewModel): TransactionType {
+  const { transactionCategory, transactionType } = tx;
+
+  if (transactionCategory === 'APPROVE') {
+    return TransactionType.tokenMethodApprove;
   }
+  if (
+    transactionCategory === 'BRIDGE_OUT' ||
+    transactionCategory === 'BRIDGE_IN'
+  ) {
+    return TransactionType.bridge;
+  }
+
+  if (transactionCategory === 'SWAP' || (tx.amounts?.from && tx.amounts?.to)) {
+    return TransactionType.swap;
+  }
+
+  // Specifics from transactionType
+  if (transactionType === 'DEPLOY_CONTRACT') {
+    return TransactionType.deployContract;
+  }
+
+  if (transactionType === 'ERC_20_TRANSFER') {
+    return TransactionType.tokenMethodTransfer;
+  }
+
+  if (
+    transactionType === 'ERC_721_TRANSFER' ||
+    transactionType === 'ERC_1155_TRANSFER'
+  ) {
+    return TransactionType.tokenMethodTransferFrom;
+  }
+
+  // Direction from amounts
+  if (tx.amounts?.to && !tx.amounts?.from) {
+    return TransactionType.incoming;
+  }
+  if (tx.amounts?.from) {
+    return TransactionType.simpleSend;
+  }
+
+  return TransactionType.contractInteraction;
 }
 
 // Build synthetic transaction group for legacy modal
@@ -66,7 +81,7 @@ function buildSyntheticTransactionGroup(
   const isIncoming = user && to === user && from !== user;
   const effectiveType = isIncoming
     ? TransactionType.incoming
-    : apiTransactionTypeToTransactionType(transaction.transactionType);
+    : resolveTransactionType(transaction);
   const txWithType = { ...transaction, type: effectiveType };
 
   return {
@@ -106,7 +121,7 @@ const TransactionDetailsWrapper = ({
   const isIncoming = Boolean(user && to === user && from !== user);
   const effectiveType = isIncoming
     ? TransactionType.incoming
-    : apiTransactionTypeToTransactionType(transaction.transactionType);
+    : resolveTransactionType(transaction);
 
   // Ported from transaction-list-item.component
   if (PAY_TRANSACTION_TYPES.includes(effectiveType)) {

@@ -6,6 +6,7 @@ import {
 } from '../helpers/constants/transactions';
 import type { TransactionGroup } from '../../shared/lib/multichain/types';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
+import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
 import {
   getTransactions,
   groupAndSortTransactionsByNonce,
@@ -96,6 +97,10 @@ export const selectMarketRates = createSelector(
           rates[chainId][tokenAddress.toLowerCase()] =
             tokenData.price * conversionRate;
         }
+      }
+
+      if (conversionRate) {
+        rates[chainId][NATIVE_TOKEN_ADDRESS] = conversionRate;
       }
     }
 

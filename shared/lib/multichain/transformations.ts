@@ -6,15 +6,16 @@ import {
   TransactionType,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import { V1TransactionByHashResponse } from '@metamask/core-backend';
-import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../constants/network';
 import {
-  TransactionGroupCategory,
-  NATIVE_TOKEN_ADDRESS,
-} from '../../constants/transaction';
+  V1TransactionByHashResponse,
+  type V4MultiAccountTransactionsResponse,
+} from '@metamask/core-backend';
+import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../constants/network';
+import { NATIVE_TOKEN_ADDRESS } from '../../constants/transaction';
 import type {
   NormalizedV4MultiAccountTransactionsResponse,
   TokenAmount,
+  TransactionViewModel,
 } from './types';
 
 function safeBigInt(value: string) {
@@ -22,30 +23,6 @@ function safeBigInt(value: string) {
     return BigInt(value);
   } catch {
     return undefined;
-  }
-}
-
-export function mapTransactionToCategory(transactionType?: string) {
-  switch (transactionType) {
-    case 'ERC_20_APPROVE':
-    case 'ERC_721_APPROVE':
-    case 'ERC_1155_APPROVE':
-      return TransactionGroupCategory.approval;
-    case 'ERC_20_TRANSFER':
-    case 'ERC_721_TRANSFER':
-    case 'ERC_1155_TRANSFER':
-      return TransactionGroupCategory.send;
-    case 'INCOMING':
-      return TransactionGroupCategory.receive;
-    case 'METAMASK_V1_EXCHANGE':
-      return TransactionGroupCategory.swap;
-    case 'METAMASK_BRIDGE_V2_BRIDGE_OUT':
-    case 'METAMASK_BRIDGE_V2_BRIDGE_IN':
-      return TransactionGroupCategory.bridge;
-    case 'CONTRACT_INTERACTION':
-    case 'DEPLOY_CONTRACT':
-    default:
-      return TransactionGroupCategory.interaction;
   }
 }
 
@@ -89,6 +66,21 @@ export function parseValueTransfers(
     if (result.to && result.from) {
       break;
     }
+  }
+
+  if (
+    valueTransfers.length === 0 &&
+    transaction.transactionType === 'STANDARD'
+  ) {
+    result.from = {
+      token: {
+        address: NATIVE_TOKEN_ADDRESS,
+        symbol: nativeSymbol,
+        decimals: 18,
+        chainId: hexChainId,
+      },
+      amount: -(safeBigInt(transaction.value) ?? BigInt(0)),
+    };
   }
 
   return result;
@@ -177,34 +169,51 @@ export function normalizeTransaction(
 const INCLUDE_TOKEN_TRANSFERS = false;
 const EXCLUDED_TRANSACTION_TYPES = ['SPAM_TOKEN_TRANSFER'];
 
-// Ported from transaction-controller filterTransactions
-export function filterTransactions(address: string) {
+// Transform and filter raw API response
+export function selectTransactions(address: string) {
   const addr = address.toLowerCase();
 
   return (
-    data: InfiniteData<NormalizedV4MultiAccountTransactionsResponse>,
+    data: InfiniteData<V4MultiAccountTransactionsResponse>,
   ): InfiniteData<NormalizedV4MultiAccountTransactionsResponse> => ({
     ...data,
     pages: data.pages.map((page) => ({
       ...page,
-      data: page.data.filter((tx) => {
-        // Ported from transaction-list.component isIncomingTxsButToAnotherAddress
-        const from = tx.txParams?.from?.toLowerCase();
-        const to = tx.txParams?.to?.toLowerCase();
-        if (from !== addr && to !== addr) {
-          return false;
+      data: page.data.reduce<TransactionViewModel[]>((result, raw) => {
+        // Filter out transactions not involving the current address
+        const rawFrom = raw.from?.toLowerCase();
+        const rawTo = raw.to?.toLowerCase();
+        if (rawFrom !== addr && rawTo !== addr) {
+          return result;
         }
 
-        if (EXCLUDED_TRANSACTION_TYPES.includes(tx.transactionType)) {
-          return false;
+        // Filter out excluded transaction types
+        if (EXCLUDED_TRANSACTION_TYPES.includes(raw.transactionType ?? '')) {
+          return result;
         }
 
-        if (!INCLUDE_TOKEN_TRANSFERS && tx.isTransfer) {
-          return false;
+        const meta = normalizeTransaction(addr, raw);
+
+        // Filter out token transfers
+        if (!INCLUDE_TOKEN_TRANSFERS && meta.isTransfer) {
+          return result;
         }
 
-        return true;
-      }),
+        // Enrich with amounts and raw API classification
+        const amounts = parseValueTransfers(addr, raw);
+
+        result.push({
+          ...meta,
+          // @ts-expect-error readable not in V1TransactionByHashResponse type yet
+          readable: raw.readable,
+          nonce: raw.nonce,
+          amounts,
+          transactionType: raw.transactionType || '',
+          transactionCategory: raw.transactionCategory || '',
+        });
+
+        return result;
+      }, []),
     })),
   });
 }

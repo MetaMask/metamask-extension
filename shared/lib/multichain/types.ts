@@ -1,7 +1,9 @@
 import type { Hex } from 'viem';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import type { V4MultiAccountTransactionsResponse } from '@metamask/core-backend';
-import type { TransactionGroupCategory } from '../../constants/transaction';
+import type {
+  V1TransactionByHashResponse,
+  V4MultiAccountTransactionsResponse,
+} from '@metamask/core-backend';
 
 export type NormalizedV4MultiAccountTransactionsResponse = Omit<
   V4MultiAccountTransactionsResponse,
@@ -33,10 +35,11 @@ export type TokenAmount = {
 
 export type TransactionViewModel = TransactionMeta & {
   readable?: string;
+  nonce: number;
   amounts?: {
     from?: TokenAmount;
     to?: TokenAmount;
   };
-  transactionType: string;
-  category: TransactionGroupCategory;
+  transactionType: V1TransactionByHashResponse['transactionType'];
+  transactionCategory: V1TransactionByHashResponse['transactionCategory'];
 };

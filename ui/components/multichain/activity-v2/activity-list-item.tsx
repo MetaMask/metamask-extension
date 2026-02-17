@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Box, Text, TextVariant } from '@metamask/design-system-react';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import TransactionIcon from '../../app/transaction-icon/transaction-icon';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
 import { useFormatters } from '../../../hooks/useFormatters';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
@@ -10,6 +9,7 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';
 import { getPrimaryAmount } from './helpers';
 import { useGetTitle, useFiatAmount } from './hooks';
+import { ActivityTxIcon } from './activity-tx-icon';
 
 type Props = {
   transaction: TransactionViewModel;
@@ -22,8 +22,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
   const title = useGetTitle(transaction);
   const { amount, token } = getPrimaryAmount(transaction.amounts ?? {});
   const fiatAmount = useFiatAmount(amount, token);
-
-  const { chainId, category, status } = transaction;
+  const { chainId, status } = transaction;
 
   const transactionStatus =
     status === TransactionStatus.failed
@@ -39,7 +38,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
       <div className="flex gap-4 items-center">
         <div className="flex-shrink-0">
           <ChainBadge chainId={chainId}>
-            <TransactionIcon category={category} status={transactionStatus} />
+            <ActivityTxIcon transaction={transaction} />
           </ChainBadge>
         </div>
 
@@ -51,7 +50,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
           >
             {title}
           </Text>
-          <div>
+          <div className="text-s-body-sm">
             <TransactionStatusLabel status={transactionStatus} statusOnly />
           </div>
         </div>

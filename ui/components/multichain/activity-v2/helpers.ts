@@ -66,7 +66,6 @@ export function getPrimaryAmount(amounts: {
   return {};
 }
 
-// NOTE
 export function filterLocalNotInApi(
   localGroups: TransactionGroup[],
   apiTransactions: TransactionViewModel[],
@@ -95,9 +94,9 @@ export function filterLocalNotInApi(
 }
 
 type MergedItem =
-  | { type: 'local'; group: TransactionGroup; time: number }
-  | { type: 'completed'; tx: TransactionViewModel; time: number }
-  | { type: 'non-evm'; transaction: Transaction; time: number };
+  | { type: 'local'; group: TransactionGroup; time: number; nonce: number }
+  | { type: 'completed'; tx: TransactionViewModel; time: number; nonce: number }
+  | { type: 'non-evm'; transaction: Transaction; time: number; nonce: number };
 
 export function mergeAllTransactionsByTime(
   localTransactionGroups: TransactionGroup[],
@@ -108,23 +107,28 @@ export function mergeAllTransactionsByTime(
     type: 'local' as const,
     group,
     time: group.primaryTransaction.time ?? 0,
+    nonce: group.primaryTransaction.txParams?.nonce
+      ? parseInt(group.primaryTransaction.txParams.nonce, 16) || 0
+      : 0,
   }));
 
   const completedItems = apiTransactions.map((tx) => ({
     type: 'completed' as const,
     tx,
     time: tx.time ?? 0,
+    nonce: tx.nonce,
   }));
 
   const nonEvmItems = nonEvmTransactions.map((transaction) => ({
     type: 'non-evm' as const,
     transaction,
     time: (transaction.timestamp ?? 0) * 1000,
+    nonce: 0,
   }));
 
-  // Sort all by time (newest first)
+  // Sort by time (newest first), then by nonce (highest first) for same-block txs
   return [...localItems, ...completedItems, ...nonEvmItems].sort(
-    (a, b) => b.time - a.time,
+    (a, b) => b.time - a.time || b.nonce - a.nonce,
   );
 }
 
@@ -177,15 +181,11 @@ export function calculateFiatFromMarketRates(
   token: Token | undefined,
   marketRates: Record<number, Record<string, number>>,
 ) {
-  if (!amount || !token) {
+  if (amount === undefined || !token) {
     return null;
   }
 
   const parsed = parseFloat(amount);
-  if (parsed === 0) {
-    return null;
-  }
-
   const rate = marketRates[parseInt(token.chainId, 16)]?.[token.address];
-  return rate ? Math.abs(parsed) * rate : null;
+  return rate === undefined ? null : Math.abs(parsed) * rate;
 }
