@@ -101,7 +101,7 @@ export class ManifestPlugin<Z extends boolean> {
 
   options: ManifestPluginOptions<Z>;
 
-  manifests: Map<Browser, sources.Source> = new Map();
+  manifests: Map<Browser, Manifest> = new Map();
 
   private selfContainedScripts: Set<string> = new Set([
     'snow.prod',
@@ -130,6 +130,7 @@ export class ManifestPlugin<Z extends boolean> {
 
   apply(compiler: Compiler) {
     compiler.hooks.entryOption.tap(NAME, () => {
+      this.prepareManifests(compiler);
       this.collectEntrypoints(compiler);
     });
     compiler.hooks.compilation.tap(NAME, this.hookIntoPipelines.bind(this));
@@ -157,7 +158,9 @@ export class ManifestPlugin<Z extends boolean> {
     // TODO(perf): run this in parallel. If you try without carefully optimizing the
     // process will run out of memory pretty quickly, and crash. Fun!
     for (const browser of browsers) {
-      const manifest = this.manifests.get(browser) as sources.Source;
+      const manifest = new RawSource(
+        JSON.stringify(this.manifests.get(browser), null, 2),
+      );
       const source = await new Promise<sources.Source>((resolve, reject) => {
         // since Zipping is async, a past chunk could cause an error after we've
         // started processing additional chunks. We'll use this errored flag to
@@ -243,7 +246,9 @@ export class ManifestPlugin<Z extends boolean> {
     const { browsers } = options;
     const assetEntries = Object.entries(assets);
     browsers.forEach((browser) => {
-      const manifest = this.manifests.get(browser) as sources.Source;
+      const manifest = new RawSource(
+        JSON.stringify(this.manifests.get(browser), null, 2),
+      );
       compilation.emitAsset(join(browser, 'manifest.json'), manifest, {
         javascriptModule: false,
         contentType: 'application/json',
@@ -259,10 +264,9 @@ export class ManifestPlugin<Z extends boolean> {
     assetDeletions.forEach((assetName) => compilation.deleteAsset(assetName));
   }
 
-  private prepareManifests(compilation: Compilation): void {
-    const context = compilation.options.context as string;
+  private prepareManifests(compiler: Compiler): void {
     const manifestPath = join(
-      context,
+      compiler.context,
       `manifest/v${this.options.manifest_version}`,
     );
     // Load the base manifest
@@ -270,7 +274,7 @@ export class ManifestPlugin<Z extends boolean> {
     const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
 
     const buildTypeManifestPath = join(
-      context,
+      compiler.context,
       'build-types',
       this.options.buildType,
       'manifest',
@@ -368,9 +372,8 @@ export class ManifestPlugin<Z extends boolean> {
         manifest = transform(manifest, browser);
       }
 
-      // Add the manifest file to the assets
-      const source = new RawSource(JSON.stringify(manifest, null, 2));
-      this.manifests.set(browser, source);
+      // Add the manifest file to manifests
+      this.manifests.set(browser, manifest);
     });
   }
 
@@ -557,7 +560,6 @@ export class ManifestPlugin<Z extends boolean> {
       compilation.hooks.processAssets.tapPromise(
         tapOptions,
         async (assets: Assets) => {
-          this.prepareManifests(compilation);
           this.resolveEntrypoints(compilation);
           await this.zipAssets(compilation, assets, options);
           this.moveAssets(
@@ -570,7 +572,6 @@ export class ManifestPlugin<Z extends boolean> {
     } else {
       const options = this.options as ManifestPluginOptions<false>;
       compilation.hooks.processAssets.tap(tapOptions, (assets: Assets) => {
-        this.prepareManifests(compilation);
         this.resolveEntrypoints(compilation);
         this.moveAssets(compilation, assets, options);
       });
