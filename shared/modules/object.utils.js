@@ -18,7 +18,7 @@ export const AllProperties = Symbol('*');
  * If a property is excluded, its type is included instead.
  *
  * @param {object} object - The object to mask
- * @param {{[key: string]: object | boolean}} mask - The mask to apply to the object
+ * @param {{[key: string]: object | boolean} & { [AllProperties]?: boolean }} mask - The mask to apply to the object
  */
 export function maskObject(object, mask) {
   // make sure the object is actually an object, if not, just return its type
