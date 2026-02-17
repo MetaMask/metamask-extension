@@ -1,6 +1,6 @@
 import urlLib from 'url';
 import ipRegex from 'ip-regex';
-import { AccessList } from '@ethereumjs/tx';
+import { AccessList } from '@ethereumjs/common';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
 import {

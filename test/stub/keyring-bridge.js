@@ -154,7 +154,7 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
 
     const signedTransaction = TransactionFactory.fromTxData(transaction, {
       common,
-    }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
+    }).sign(Uint8Array.from(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex')));
 
     return {
       id: 1,
