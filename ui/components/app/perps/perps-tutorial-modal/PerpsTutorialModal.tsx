@@ -6,6 +6,7 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalContentSize,
+  ModalBody,
 } from '../../../component-library';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import {
@@ -17,6 +18,7 @@ import {
   selectTutorialActiveStep,
   setTutorialModalOpen,
   setTutorialActiveStep,
+  markTutorialCompleted,
   PerpsTutorialStep,
 } from '../../../../ducks/perps';
 import { useTheme } from '../../../../hooks/useTheme';
@@ -29,6 +31,19 @@ import ChooseLeverageStep from './steps/ChooseLeverageStep';
 import WatchLiquidationStep from './steps/WatchLiquidationStep';
 import CloseAnytimeStep from './steps/CloseAnytimeStep';
 import ReadyToTradeStep from './steps/ReadyToTradeStep';
+import TutorialFooter from './TutorialFooter';
+import ProgressIndicator from './ProgressIndicator';
+
+const TOTAL_STEPS = 6;
+
+const STEP_ORDER = [
+  PerpsTutorialStep.WhatArePerps,
+  PerpsTutorialStep.GoLongOrShort,
+  PerpsTutorialStep.ChooseLeverage,
+  PerpsTutorialStep.WatchLiquidation,
+  PerpsTutorialStep.CloseAnytime,
+  PerpsTutorialStep.ReadyToTrade,
+];
 
 type PerpsTutorialModalProps = {
   onClose?: () => void;
@@ -44,11 +59,34 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
   // Use a shorter height for popup to avoid scroll
   const modalHeight = useMemo(() => (isPopup ? '580px' : '675px'), [isPopup]);
 
+  const currentStepIndex = useMemo(
+    () => STEP_ORDER.indexOf(activeStep),
+    [activeStep],
+  );
+
+  const isLastStep = useMemo(
+    () => currentStepIndex === TOTAL_STEPS - 1,
+    [currentStepIndex],
+  );
+
   const handleClose = useCallback(() => {
     dispatch(setTutorialModalOpen(false));
     dispatch(setTutorialActiveStep(PerpsTutorialStep.WhatArePerps));
     onClose?.();
   }, [dispatch, onClose]);
+
+  const handleContinue = useCallback(() => {
+    if (isLastStep) {
+      dispatch(markTutorialCompleted());
+    } else {
+      const nextStep = STEP_ORDER[currentStepIndex + 1];
+      dispatch(setTutorialActiveStep(nextStep));
+    }
+  }, [dispatch, isLastStep, currentStepIndex]);
+
+  const handleSkip = useCallback(() => {
+    dispatch(setTutorialModalOpen(false));
+  }, [dispatch]);
 
   const renderContent = useCallback(() => {
     switch (activeStep) {
@@ -103,7 +141,18 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
           paddingBottom={0}
           onClose={handleClose}
         />
-        {renderContent()}
+        <ModalBody className="w-full h-full pt-6 pb-4 flex flex-col">
+          <ProgressIndicator
+            totalSteps={TOTAL_STEPS}
+            currentStep={currentStepIndex + 1}
+          />
+          {renderContent()}
+          <TutorialFooter
+            onContinue={handleContinue}
+            onSkip={handleSkip}
+            isLastStep={isLastStep}
+          />
+        </ModalBody>
       </ModalContent>
     </Modal>
   );
