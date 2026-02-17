@@ -4346,3 +4346,29 @@ describe('getShowUpdateModal', () => {
     expect(selectors.getShowUpdateModal(state)).toBe(false);
   });
 });
+
+describe('getDeferredDeepLink', () => {
+  it('returns the deferredDeepLink value when it exists', () => {
+    const mockDeepLink = {
+      createdAt: 1765465337256,
+      referringLink: 'https://link.metamask.io/deep-link',
+    };
+    const state = {
+      metamask: {
+        deferredDeepLink: mockDeepLink,
+      },
+    };
+
+    expect(selectors.getDeferredDeepLink(state)).toStrictEqual(mockDeepLink);
+  });
+
+  it('returns null when deferredDeepLink is undefined', () => {
+    const state = {
+      metamask: {
+        deferredDeepLink: undefined,
+      },
+    };
+
+    expect(selectors.getDeferredDeepLink(state)).toBeNull();
+  });
+});
