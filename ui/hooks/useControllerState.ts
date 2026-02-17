@@ -79,9 +79,5 @@ export function useControllerState<S extends StateConstraint, R>(
 export function useControllerFullState<S extends StateConstraint>(
   controllerName: string,
 ): S {
-  return useControllerState<S, S>(controllerName, identity as (s: S) => S);
-}
-
-function identity<T>(x: T): T {
-  return x;
+  return useControllerState<S, S>(controllerName, (s) => s);
 }
