@@ -10,6 +10,9 @@ class PrivacySettings {
   private readonly autoDetectToken =
     '[data-testid="autoDetectTokens"] .toggle-button';
 
+  private readonly blockaidAlertsToggle =
+    '[data-testid="securityAlert"] .toggle-button';
+
   private readonly closeRevealSrpDialogButton = {
     text: tEn('close'),
     tag: 'button',
@@ -128,9 +131,6 @@ class PrivacySettings {
   };
 
   private readonly revealSrpWrongPasswordMessage = '.mm-help-text';
-
-  private readonly blockaidAlertsToggle =
-    '[data-testid="securityAlert"] .toggle-button';
 
   private readonly participateInMetaMetricsToggle =
     '[data-testid="participate-in-meta-metrics-toggle"] .toggle-button';
