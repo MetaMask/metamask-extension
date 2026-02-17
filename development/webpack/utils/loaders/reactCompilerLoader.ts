@@ -74,8 +74,6 @@ export const getReactCompilerLoader = (
 
   const loaders: RuleSetUseItem[] = [];
 
-  const numCores = availableParallelism();
-  // Add thread-loader for parallelization when enabled
   // Add thread-loader for parallelization when enabled
   if (!disableThreadLoader) {
     const numCores = availableParallelism();
