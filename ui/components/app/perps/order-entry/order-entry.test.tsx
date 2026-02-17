@@ -6,6 +6,25 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { OrderEntry } from './order-entry';
 
+// Mock hooks that depend on @metamask/perps-controller to avoid ESM transform issues
+jest.mock('../../../../hooks/perps/useUserHistory', () => ({
+  useUserHistory: () => ({
+    userHistory: [],
+    isLoading: false,
+    error: null,
+    refetch: jest.fn(),
+  }),
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsTransactionHistory', () => ({
+  usePerpsTransactionHistory: () => ({
+    transactions: [],
+    isLoading: false,
+    error: null,
+    refetch: jest.fn(),
+  }),
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
@@ -383,6 +402,95 @@ describe('OrderEntry', () => {
       expect(
         screen.getByTestId('close-percent-preset-100'),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('limit order mode', () => {
+    it('shows limit price input when orderType is limit', () => {
+      renderWithProvider(
+        <OrderEntry {...defaultProps} orderType="limit" />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('limit-price-input')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsLimitPrice.message)).toBeInTheDocument();
+    });
+
+    it('hides limit price input when orderType is market', () => {
+      renderWithProvider(
+        <OrderEntry {...defaultProps} orderType="market" />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
+    });
+
+    it('hides limit price input in close mode even when orderType is limit', () => {
+      const existingPosition = {
+        size: '2.5',
+        leverage: 3,
+        entryPrice: '2850.00',
+      };
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          mode="close"
+          orderType="limit"
+          existingPosition={existingPosition}
+        />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
+    });
+
+    it('shows direction-aware presets for long orders', () => {
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          orderType="limit"
+          initialDirection="long"
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByText(messages.perpsMid.message)).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsBid.message)).toBeInTheDocument();
+      expect(screen.getByText('-1%')).toBeInTheDocument();
+      expect(screen.getByText('-2%')).toBeInTheDocument();
+    });
+
+    it('shows direction-aware presets for short orders', () => {
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          orderType="limit"
+          initialDirection="short"
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByText(messages.perpsMid.message)).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsAsk.message)).toBeInTheDocument();
+      expect(screen.getByText('+1%')).toBeInTheDocument();
+      expect(screen.getByText('+2%')).toBeInTheDocument();
+    });
+
+    it('submits form with limit type when orderType is limit', () => {
+      const onSubmit = jest.fn();
+      renderWithProvider(
+        <OrderEntry {...defaultProps} orderType="limit" onSubmit={onSubmit} />,
+        mockStore,
+      );
+
+      const submitButton = screen.getByTestId('order-entry-submit-button');
+      fireEvent.click(submitButton);
+
+      expect(onSubmit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'limit',
+        }),
+      );
     });
   });
 });

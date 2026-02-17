@@ -6,6 +6,7 @@ import mockState from '../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { mockTransactions } from '../../components/app/perps/mocks';
 import PerpsActivityPage from './perps-activity-page';
 
 const mockNavigate = jest.fn();
@@ -21,6 +22,16 @@ jest.mock('react-router-dom', () => ({
 // Mock the perps feature flag selector
 jest.mock('../../selectors/perps/feature-flags', () => ({
   getIsPerpsEnabled: jest.fn(),
+}));
+
+// Mock usePerpsTransactionHistory hook to avoid controller dependency
+jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
+  usePerpsTransactionHistory: () => ({
+    transactions: mockTransactions,
+    isLoading: false,
+    error: null,
+    refetch: jest.fn(),
+  }),
 }));
 
 const mockGetIsPerpsEnabled = getIsPerpsEnabled as jest.MockedFunction<
