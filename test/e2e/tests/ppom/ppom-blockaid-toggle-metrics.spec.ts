@@ -1,10 +1,10 @@
 import { strict as assert } from 'assert';
+import { Mockttp } from 'mockttp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { withFixtures, getEventPayloads } from '../../helpers';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { Mockttp } from 'mockttp';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 
@@ -18,6 +18,7 @@ async function mockServerCalls(mockServer: Mockttp) {
             type: 'track',
             event: 'Settings Updated',
             properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               blockaid_alerts_enabled: true,
               category: 'Settings',
             },
@@ -37,6 +38,7 @@ async function mockServerCalls(mockServer: Mockttp) {
             type: 'track',
             event: 'Settings Updated',
             properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               blockaid_alerts_enabled: false,
               category: 'Settings',
             },
@@ -97,6 +99,7 @@ describe('PPOM Blockaid Alert - Metrics', function () {
         const toggleOnEvent = {
           event: 'Settings Updated',
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             blockaid_alerts_enabled: true,
             category: 'Settings',
           },
@@ -106,6 +109,7 @@ describe('PPOM Blockaid Alert - Metrics', function () {
         const matchToggleOnEvent = {
           event: events[0].event,
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             blockaid_alerts_enabled:
               events[0].properties.blockaid_alerts_enabled,
             category: events[0].properties.category,
@@ -117,6 +121,7 @@ describe('PPOM Blockaid Alert - Metrics', function () {
         const toggleOffEvent = {
           event: 'Settings Updated',
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             blockaid_alerts_enabled: false,
             category: 'Settings',
           },
@@ -126,6 +131,7 @@ describe('PPOM Blockaid Alert - Metrics', function () {
         const matchToggleOffEvent = {
           event: events[1].event,
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             blockaid_alerts_enabled:
               events[1].properties.blockaid_alerts_enabled,
             category: events[1].properties.category,

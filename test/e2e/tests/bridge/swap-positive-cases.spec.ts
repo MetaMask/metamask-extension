@@ -40,9 +40,9 @@ describe('Swap tests', function (this: Suite) {
           expectedDestAmount: '3,839',
         });
 
-        let events = await getEventPayloads(driver, mockedEndpoints)
-        const unifiedSwapBridgeEvents = events.filter(
-          (e) => e?.event?.includes('Unified SwapBridge'),
+        const events = await getEventPayloads(driver, mockedEndpoints);
+        const unifiedSwapBridgeEvents = events.filter((e) =>
+          e?.event?.includes('Unified SwapBridge'),
         );
         const transactionFinalizedEvents = events.filter(
           (e) => e?.event === 'Transaction Finalized',
@@ -76,8 +76,15 @@ describe('Swap tests', function (this: Suite) {
         //   `Quoted gas validation failed. Actual value: ${quotesReceivedEvent.properties.usd_quoted_gas}`,
         // );
 
-        assert.ok(transactionFinalizedEvents.length === 1, `Transaction Finalized event validation failed. Actual value: ${transactionFinalizedEvents.length}`);
-        assert.ok(transactionFinalizedEvents[0].properties.transaction_hash !== undefined, `Transaction Finalized transaction_hash validation failed. Actual value: ${transactionFinalizedEvents[0].properties.transaction_hash}`);
+        assert.ok(
+          transactionFinalizedEvents.length === 1,
+          `Transaction Finalized event validation failed. Actual value: ${transactionFinalizedEvents.length}`,
+        );
+        assert.ok(
+          transactionFinalizedEvents[0].properties.transaction_hash !==
+            undefined,
+          `Transaction Finalized transaction_hash validation failed. Actual value: ${transactionFinalizedEvents[0].properties.transaction_hash}`,
+        );
       },
     );
   });

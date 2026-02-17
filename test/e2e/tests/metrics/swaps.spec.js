@@ -110,31 +110,31 @@ describe.skip('Swap Eth for another Token', function () {
         title: this.test.fullTitle(),
         testSpecificMock: mockSegmentAndMetaswapRequests,
       },
-      async ({ driver }) => {
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await loginWithBalanceValidation(driver);
 
         await getQuoteAndSwapTokens(driver);
 
-        // const metricsReqs = await assertReqsNumAndFilterMetrics(
-        //   driver,
-        //   mockedEndpoints,
-        // );
+        const metricsReqs = await assertReqsNumAndFilterMetrics(
+          driver,
+          mockedEndpoints,
+        );
 
-        // await assertNavSwapButtonClickedEvent(metricsReqs);
+        await assertNavSwapButtonClickedEvent(metricsReqs);
 
-        // await assertPrepareSwapPageLoadedEvents(metricsReqs);
+        await assertPrepareSwapPageLoadedEvents(metricsReqs);
 
-        // await assertQuotesRequestedEvents(metricsReqs);
+        await assertQuotesRequestedEvents(metricsReqs);
 
-        // await assertQuotesReceivedAndBestQuoteReviewedEvents(metricsReqs);
+        await assertQuotesReceivedAndBestQuoteReviewedEvents(metricsReqs);
 
-        // await assertAllAvailableQuotesOpenedEvents(metricsReqs);
+        await assertAllAvailableQuotesOpenedEvents(metricsReqs);
 
-        // await assertSwapStartedEvents(metricsReqs);
+        await assertSwapStartedEvents(metricsReqs);
 
-        // await assertSwapCompletedEvents(metricsReqs);
+        await assertSwapCompletedEvents(metricsReqs);
 
-        // await assertExitedSwapsEvents(metricsReqs);
+        await assertExitedSwapsEvents(metricsReqs);
       },
     );
   });
