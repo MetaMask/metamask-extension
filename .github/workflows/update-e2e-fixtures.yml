@@ -111,11 +111,8 @@ jobs:
           fi
 
           if [ "${RUN_STATUS}" != "completed" ]; then
-            echo "::error::The latest 'Main' workflow run is still in progress (status: ${RUN_STATUS}). Please wait for it to complete before updating fixtures."
-            exit 1
-          fi
-
-          if [ "${RUN_CONCLUSION}" != "success" ]; then
+            echo "::notice::The latest 'Main' workflow run is still in progress (status: ${RUN_STATUS}). Attempting to download the dist artifact anyway."
+          elif [ "${RUN_CONCLUSION}" != "success" ]; then
             echo "::warning::The latest 'Main' workflow run concluded with '${RUN_CONCLUSION}'. The build artifact may still be available, proceeding with download attempt."
           fi
 
