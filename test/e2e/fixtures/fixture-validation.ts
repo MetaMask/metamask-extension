@@ -69,7 +69,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.PreferencesController.identities.*.name',
   'data.PreferencesController.lostIdentities.*.name',
   // Notification timestamps change on every run
-  'data.NotificationServicesController.metamaskNotificationsList.*.createdAt',
+  'data.NotificationServicesController.metamaskNotificationsList',
   'data.ProfileMetricsController.initialDelayEndTimestamp',
   'data.RemoteFeatureFlagController.cacheTimestamp',
   'data.RemoteFeatureFlagController.remoteFeatureFlags',
