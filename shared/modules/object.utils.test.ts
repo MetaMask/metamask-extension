@@ -46,6 +46,17 @@ describe('object.utils', () => {
       expect(result).toStrictEqual({ a: 1, b: 'hello' });
     });
 
+    it('supports the AllProperties mask set to false', () => {
+      const obj = { a: 1, b: 'hello', c: { nested: true } };
+      const result = maskObject(obj, { [AllProperties]: false });
+
+      expect(result).toStrictEqual({
+        a: 'number',
+        b: 'string',
+        c: 'object',
+      });
+    });
+
     it('throws for AllProperties masks with sibling keys', () => {
       const obj = { a: 1 };
 
