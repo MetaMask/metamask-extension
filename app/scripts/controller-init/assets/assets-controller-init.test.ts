@@ -170,8 +170,11 @@ describe('AssetsControllerInit', () => {
     AssetsControllerInit(requestMock);
 
     const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
-    const tokenDetectionEnabledGetter =
-      constructorCall.rpcDataSourceConfig.tokenDetectionEnabled;
+    const config = constructorCall.rpcDataSourceConfig;
+    if (!config?.tokenDetectionEnabled) {
+      throw new Error('Expected rpcDataSourceConfig.tokenDetectionEnabled');
+    }
+    const tokenDetectionEnabledGetter = config.tokenDetectionEnabled;
 
     expect(typeof tokenDetectionEnabledGetter).toBe('function');
     expect(tokenDetectionEnabledGetter()).toBe(false);
@@ -192,8 +195,11 @@ describe('AssetsControllerInit', () => {
     AssetsControllerInit(requestMock);
 
     const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
-    const tokenDetectionEnabledGetter =
-      constructorCall.rpcDataSourceConfig.tokenDetectionEnabled;
+    const config = constructorCall.rpcDataSourceConfig;
+    if (!config?.tokenDetectionEnabled) {
+      throw new Error('Expected rpcDataSourceConfig.tokenDetectionEnabled');
+    }
+    const tokenDetectionEnabledGetter = config.tokenDetectionEnabled;
 
     expect(typeof tokenDetectionEnabledGetter).toBe('function');
     expect(tokenDetectionEnabledGetter()).toBe(true);
