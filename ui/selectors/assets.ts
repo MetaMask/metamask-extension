@@ -77,6 +77,7 @@ import {
   getMultiChainAssetsControllerAssetsMetadata,
   getMultiChainBalancesControllerBalances,
   getTokenBalancesControllerTokenBalances,
+  getTokensControllerAllIgnoredTokens,
   getTokensControllerAllTokens,
 } from './assets-migration';
 
@@ -1300,7 +1301,7 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     accountTree: metamask.accountTree,
     internalAccounts: metamask.internalAccounts,
     allTokens: getTokensControllerAllTokens({ metamask }),
-    allIgnoredTokens: metamask.allIgnoredTokens,
+    allIgnoredTokens: getTokensControllerAllIgnoredTokens({ metamask }),
     tokenBalances: getTokenBalancesControllerTokenBalances({ metamask }),
     marketData: metamask.marketData,
     currencyRates: metamask.currencyRates,
@@ -1330,16 +1331,6 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     conversionRates: metamask.conversionRates,
   };
   ///: END:ONLY_INCLUDE_IF
-
-  console.log('DEBUG', {
-    ...initialState,
-    ...multichainState,
-    assetPreferences: metamask.assetPreferences,
-    assetsInfo: metamask.assetsInfo,
-    assetsBalance: metamask.assetsBalance,
-    assetsPrice: metamask.assetsPrice,
-    networks: getNetworkConfigurationsByChainId({ metamask }),
-  });
 
   return {
     ...initialState,

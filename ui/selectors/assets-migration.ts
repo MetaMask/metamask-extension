@@ -8,7 +8,6 @@ import {
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { AssetsControllerState } from '@metamask/assets-controller';
-import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import {
   Token,
   TokenBalancesControllerState,
@@ -20,7 +19,6 @@ import {
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { decimalToPrefixedHex } from '../../shared/modules/conversion.utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/selector-creators';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import { getIsAssetsUnifyStateEnabled } from './assets-unify-state/feature-flags';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
@@ -64,57 +62,6 @@ import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 type MetaMaskAssetsControllerState = {
   metamask: AssetsControllerState;
 };
-
-// const selectedEvmAccount = createDeepEqualSelector(
-//   [
-//     (state: { metamask: AccountTreeControllerState }) =>
-//       state.metamask.accountTree ?? {},
-//     (state: { metamask: AccountsControllerState }) =>
-//       state.metamask.internalAccounts?.accounts ?? {},
-//   ],
-//   (accountTree, internalAccountsById) => {
-//     if (!accountTree.selectedAccountGroup || !accountTree.wallets) {
-//       return undefined;
-//     }
-
-//     for (const treeWallet of Object.values(accountTree.wallets)) {
-//       const group = treeWallet.groups?.[accountTree.selectedAccountGroup];
-//       if (!group?.accounts?.length) {
-//         continue;
-//       }
-
-//       const evmAccountId = group.accounts.find((accountId: string) => {
-//         const account = internalAccountsById[accountId];
-//         return account && isEvmAccountType(account.type);
-//       });
-
-//       if (evmAccountId) {
-//         return internalAccountsById[evmAccountId];
-//       }
-//     }
-
-//     return undefined;
-//   },
-// );
-
-// const getEvmAccounts = createDeepEqualSelector(
-//   [
-//     (state: { metamask: AccountsControllerState }) =>
-//       state.metamask.internalAccounts?.accounts ?? {},
-//   ],
-//   (internalAccountsById) =>
-//     Object.values(internalAccountsById)
-//       .filter((account) => isEvmAccountType(account.type))
-//       .map((account) => {
-//         return { address: account.address as Hex, accountId: account.id };
-//       }),
-// );
-
-// const getEvmChainIds = createDeepEqualSelector(
-//   [getNetworkConfigurationsByChainId],
-//   (networkConfigurationsByChainId): Hex[] =>
-//     Object.keys(networkConfigurationsByChainId ?? {}) as Hex[],
-// );
 
 // ChainId (hex) -> AccountAddress (hex checksummed) -> Balance (hex)
 export const getAccountTrackerControllerAccountsByChainId =
@@ -503,11 +450,6 @@ export const getMultiChainBalancesControllerBalances = createDeepEqualSelector(
         };
       }
     }
-
-    console.log('DEBUG DLKHJKAD', {
-      balances,
-      result,
-    });
 
     return result;
   },
