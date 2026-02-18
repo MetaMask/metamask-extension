@@ -178,7 +178,6 @@ export class CriticalStartupErrorHandler {
     // Currently, we only handle BACKGROUND_LIVENESS_METHOD, RELOAD_WINDOW, and the state
     // corruption error message, but we will be adding more in the future.
     if (method === APP_INIT_LIVENESS_METHOD) {
-      //
       this.#receivedAppInitPing = true;
     } else if (method === BACKGROUND_LIVENESS_METHOD) {
       if (this.#onLivenessCheckCompleted) {
