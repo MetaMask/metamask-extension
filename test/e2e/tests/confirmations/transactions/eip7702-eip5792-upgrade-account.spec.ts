@@ -58,9 +58,6 @@ describe.skip('Upgrade Account', function (this: Suite) {
 
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
 
-        // acknowledge splash page
-        await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
-
         await upgradeAndBatchTxConfirmation.checkExpectedTxTypeIsDisplayed(
           'Smart account',
         );
@@ -141,7 +138,6 @@ describe.skip('Upgrade Account', function (this: Suite) {
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
 
         // Reject batch tx
-        await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
         await upgradeAndBatchTxConfirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
         // We check that we continue to have an EOA account
