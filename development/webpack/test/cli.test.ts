@@ -1,4 +1,4 @@
-import { describe, it } from 'node:test';
+import { describe, it, afterEach } from 'node:test';
 import assert from 'node:assert';
 import { loadBuildTypesConfig } from '../../lib/build-type';
 import { getDryRunMessage, parseArgv } from '../utils/cli';
@@ -6,6 +6,7 @@ import { Browsers } from '../utils/helpers';
 
 describe('./utils/cli.ts', () => {
   const defaultArgs = {
+    mode: 'development',
     env: 'development',
     watch: false,
     cache: true,
@@ -49,7 +50,7 @@ describe('./utils/cli.ts', () => {
 
   it('getDryRunMessage', () => {
     const { args, features } = parseArgv([], loadBuildTypesConfig());
-    const message = getDryRunMessage(args, features, 'development');
+    const message = getDryRunMessage(args, features);
     // testing the exact message could be nice, but verbose and maybe a bit
     // brittle, so we just check that it returns a string
     assert.strictEqual(
@@ -85,5 +86,108 @@ describe('./utils/cli.ts', () => {
   it('should return all browsers when `--browser all` is specified', () => {
     const { args } = parseArgv(['--browser', 'all'], loadBuildTypesConfig());
     assert.deepStrictEqual(args.browser, Browsers);
+  });
+
+  describe('build environment defaulting', () => {
+    const originalEnv = process.env;
+
+    function setGitHubContext(
+      context: Partial<
+        Pick<
+          NodeJS.ProcessEnv,
+          'GITHUB_HEAD_REF' | 'GITHUB_REF_NAME' | 'GITHUB_EVENT_NAME'
+        >
+      >,
+    ) {
+      process.env = { ...originalEnv };
+      delete process.env.GITHUB_HEAD_REF;
+      delete process.env.GITHUB_REF_NAME;
+      delete process.env.GITHUB_EVENT_NAME;
+      Object.assign(process.env, context);
+    }
+
+    afterEach(() => {
+      process.env = originalEnv;
+    });
+
+    it('defaults to testing when --test is specified', () => {
+      setGitHubContext({
+        GITHUB_HEAD_REF: 'release/13.0.0',
+        GITHUB_REF_NAME: 'main',
+        GITHUB_EVENT_NAME: 'pull_request',
+      });
+      const { args } = parseArgv(
+        ['--mode', 'production', '--test'],
+        loadBuildTypesConfig(),
+      );
+      assert.strictEqual(args.env, 'testing');
+    });
+
+    it('defaults to development in development mode', () => {
+      setGitHubContext({
+        GITHUB_REF_NAME: 'main',
+        GITHUB_EVENT_NAME: 'pull_request',
+      });
+      const { args } = parseArgv(
+        ['--mode', 'development'],
+        loadBuildTypesConfig(),
+      );
+      assert.strictEqual(args.env, 'development');
+    });
+
+    it('defaults to release-candidate on release branches', () => {
+      setGitHubContext({
+        GITHUB_HEAD_REF: 'release/13.0.0',
+        GITHUB_REF_NAME: 'main',
+        GITHUB_EVENT_NAME: 'pull_request',
+      });
+      const { args } = parseArgv(
+        ['--mode', 'production'],
+        loadBuildTypesConfig(),
+      );
+      assert.strictEqual(args.env, 'release-candidate');
+    });
+
+    it('defaults to staging on main branch', () => {
+      setGitHubContext({ GITHUB_REF_NAME: 'main' });
+      const { args } = parseArgv(
+        ['--mode', 'production'],
+        loadBuildTypesConfig(),
+      );
+      assert.strictEqual(args.env, 'staging');
+    });
+
+    it('defaults to pull-request on pull_request events', () => {
+      setGitHubContext({
+        GITHUB_REF_NAME: 'feature/my-branch',
+        GITHUB_EVENT_NAME: 'pull_request',
+      });
+      const { args } = parseArgv(
+        ['--mode', 'production'],
+        loadBuildTypesConfig(),
+      );
+      assert.strictEqual(args.env, 'pull-request');
+    });
+
+    it('defaults to other when CI context does not match known environments', () => {
+      setGitHubContext({
+        GITHUB_REF_NAME: 'feature/my-branch',
+        GITHUB_EVENT_NAME: 'push',
+      });
+      const { args } = parseArgv(
+        ['--mode', 'production'],
+        loadBuildTypesConfig(),
+      );
+      assert.strictEqual(args.env, 'other');
+    });
+
+    it('allows explicit --env values from cli options', () => {
+      setGitHubContext({ GITHUB_REF_NAME: 'main' });
+      const { args } = parseArgv(
+        ['--mode', 'production', '--env', 'production'],
+        loadBuildTypesConfig(),
+      );
+      assert.strictEqual(args.env, 'production');
+    });
   });
 });

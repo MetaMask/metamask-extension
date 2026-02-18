@@ -186,7 +186,7 @@ ${Object.entries(env)
     const removeUnsupportedFeatures = ['--no-lavamoat'];
     const config: Configuration = getWebpackConfig(
       [
-        '--env',
+        '--mode',
         'production',
         '--watch',
         '--stats',

@@ -1,7 +1,12 @@
+export const MODES = {
+  PRODUCTION: 'production',
+  DEVELOPMENT: 'development',
+} as const;
+
 /**
  * The build environment. This describes the environment this build was produced in.
  */
-export const BUILD_ENVIRONMENTS = {
+export const ENVIRONMENTS = {
   DEVELOPMENT: 'development',
   OTHER: 'other',
   PRODUCTION: 'production',

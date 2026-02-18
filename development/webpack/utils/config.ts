@@ -8,7 +8,8 @@ import type { BuildTypesConfig, BuildType } from '../../lib/build-type';
 import { type Args } from './cli';
 import { getExtensionVersion } from './version';
 import {
-  BUILD_ENVIRONMENTS,
+  ENVIRONMENTS,
+  MODES,
   VARIABLES_REQUIRED_IN_PRODUCTION,
 } from './constants';
 
@@ -84,66 +85,12 @@ export function getBuildName(
 }
 
 /**
- * Resolves the MetaMask build environment.
- *
- * The environment determines which Sentry project events are sent to,
- * feature flag detection, and other build-specific behaviors.
- *
- * Resolution order:
- * 1. If `--test` is set, returns 'testing'
- * 2. If `--env development`, returns 'development'
- * 3. Otherwise, auto-detects from git context (release branch, main, PR, or other)
- *
- * NOTE: 'production' environment is NEVER auto-detected. It must be explicitly
- * set via --buildEnvironment to prevent accidental pollution of production
- * Sentry with events from local or CI test builds.
- *
- * @param args - The parsed CLI arguments
- * @param args.test - Whether this is a test build
- * @param args.env - The build environment ('development' or 'production')
- * @returns The resolved environment string
- */
-export function resolveDefaultBuildEnvironment(args: {
-  test: boolean;
-  env: 'development' | 'production';
-}): (typeof BUILD_ENVIRONMENTS)[keyof typeof BUILD_ENVIRONMENTS] {
-  // Test builds always use 'testing' environment unless `buildEnvironment`
-  // was already set
-  if (args.test) {
-    return BUILD_ENVIRONMENTS.TESTING;
-  }
-
-  // Development builds use 'development' environment
-  if (args.env === 'development') {
-    return BUILD_ENVIRONMENTS.DEVELOPMENT;
-  }
-
-  // For production-like builds (--env production), auto-detect from git context
-  // We intentionally do NOT return PRODUCTION here - that requires an explicit
-  // CLI flag
-  const branch =
-    process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME || '';
-  const eventName = process.env.GITHUB_EVENT_NAME || '';
-
-  // Check git context to determine the appropriate non-production environment
-  if (/^release\/(\d+)[.](\d+)[.](\d+)/u.test(branch)) {
-    return BUILD_ENVIRONMENTS.RELEASE_CANDIDATE;
-  } else if (branch === 'main') {
-    return BUILD_ENVIRONMENTS.STAGING;
-  } else if (eventName === 'pull_request') {
-    return BUILD_ENVIRONMENTS.PULL_REQUEST;
-  }
-
-  // Default: local builds or any other source
-  return BUILD_ENVIRONMENTS.OTHER;
-}
-
-/**
  * Computes the `variables` (extension runtime's `process.env.*`).
  *
  * @param args
  * @param args.type
  * @param args.test
+ * @param args.mode
  * @param args.env
  * @param buildConfig
  */
@@ -154,8 +101,8 @@ export function getVariables(
   const activeBuild = buildConfig.buildTypes[type];
   const { required, variables } = loadConfigVars(activeBuild, buildConfig);
   const version = getExtensionVersion(type, activeBuild, args.releaseVersion);
-  const { env, buildEnvironment } = args;
-  const isDevBuild = env === 'development';
+  const { mode, env } = args;
+  const isDevBuild = mode === MODES.DEVELOPMENT;
 
   function set(key: string, value: unknown): void;
   function set(key: Record<string, unknown>): void;
@@ -171,7 +118,7 @@ export function getVariables(
   setEnvironmentVariables({
     buildName: getBuildName(type, activeBuild, isDevBuild, args),
     buildType: type,
-    environment: buildEnvironment,
+    environment: env,
     isDevBuild,
     isTestBuild: args.test,
     version: version.versionName,
@@ -196,7 +143,7 @@ export function getVariables(
   variables.set('ENABLE_LAVAMOAT', args.lavamoat.toString());
 
   // Validate required production variables
-  if (args.validateEnv && buildEnvironment === BUILD_ENVIRONMENTS.PRODUCTION) {
+  if (args.validateEnv && env === ENVIRONMENTS.PRODUCTION) {
     const requiredVars =
       VARIABLES_REQUIRED_IN_PRODUCTION[
         type as keyof typeof VARIABLES_REQUIRED_IN_PRODUCTION
@@ -236,7 +183,7 @@ export function getVariables(
     variables,
     safeVariables,
     version,
-    environment: buildEnvironment,
+    environment: env,
     buildEnvVarDeclarations: required,
   };
 }
