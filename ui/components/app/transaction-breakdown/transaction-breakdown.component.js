@@ -15,9 +15,6 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { RecipientWithAddress } from '../../ui/sender-to-recipient/sender-to-recipient.component';
 import TransactionBreakdownRow from './transaction-breakdown-row';
 
-// TODO remove - testing Paid by MetaMask on all networks
-const __FORCE_SHOW_SPONSORED = true;
-
 export default class TransactionBreakdown extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -121,7 +118,7 @@ export default class TransactionBreakdown extends PureComponent {
           </TransactionBreakdownRow>
         )}
 
-        {(isGasFeeSponsored || __FORCE_SHOW_SPONSORED) && (
+        {isGasFeeSponsored && (
           <TransactionBreakdownRow title={t('networkFee')}>
             <Box
               backgroundColor={BackgroundColor.successMuted}
@@ -139,7 +136,7 @@ export default class TransactionBreakdown extends PureComponent {
             </Box>
           </TransactionBreakdownRow>
         )}
-        {!(isGasFeeSponsored || __FORCE_SHOW_SPONSORED) && (
+        {!isGasFeeSponsored && (
           <>
             {gasPaidByAddress && (
               // TODO: Use i18n
