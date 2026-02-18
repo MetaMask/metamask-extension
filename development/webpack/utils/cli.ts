@@ -16,7 +16,7 @@ import {
   toOrange,
 } from './helpers';
 import { BUILD_ENVIRONMENTS } from './constants';
-import { resolveDefaultBuildEnvironment as resolveDefaultBuildEnvironment } from './config';
+import { resolveDefaultBuildEnvironment } from './config';
 
 const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature' as const;
