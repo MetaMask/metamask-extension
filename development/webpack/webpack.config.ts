@@ -34,7 +34,7 @@ import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
-import { getVariables, resolveEnvironment } from './utils/config';
+import { getVariables } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
@@ -42,8 +42,7 @@ import { getLatestCommit } from './utils/git';
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
 if (args.dryRun) {
-  const resolvedEnv = resolveEnvironment(args);
-  console.error(getDryRunMessage(args, features, resolvedEnv));
+  console.error(getDryRunMessage(args, features));
   exit(0);
 }
 

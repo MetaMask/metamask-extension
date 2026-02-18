@@ -67,7 +67,7 @@ Note: multiple array options cannot be set this way, due to this bug in yargs: h
 
 ## CLI Arguments
 
-### `--targetEnvironment`
+### `--buildEnvironment`
 
 Explicitly sets the build environment for Sentry reporting and feature flags. If not specified, it is auto-detected from git.
 
@@ -88,7 +88,7 @@ Explicitly sets the build environment for Sentry reporting and feature flags. If
 yarn webpack --env production
 
 # Explicit production (for actual releases only)
-yarn webpack --env production --targetEnvironment production
+yarn webpack --env production --buildEnvironment production
 
 # Check what environment will be used
 yarn webpack --env production --dry-run

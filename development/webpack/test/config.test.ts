@@ -160,7 +160,7 @@ describe('./utils/config.ts', () => {
 
       const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv(
-        ['--targetEnvironment', 'production', '--validateEnv'],
+        ['--buildEnvironment', 'production', '--validateEnv'],
         buildTypes,
       );
 
@@ -190,7 +190,7 @@ describe('./utils/config.ts', () => {
 
       const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv(
-        ['--targetEnvironment', 'production', '--validateEnv', 'false'],
+        ['--buildEnvironment', 'production', '--validateEnv', 'false'],
         buildTypes,
       );
 
@@ -209,7 +209,7 @@ describe('./utils/config.ts', () => {
       mockRc(rcVars);
 
       const { args } = parseArgv(
-        ['--targetEnvironment', 'production', '--validateEnv'],
+        ['--buildEnvironment', 'production', '--validateEnv'],
         buildTypes,
       );
 
@@ -224,7 +224,7 @@ describe('./utils/config.ts', () => {
       assert.doesNotThrow(() => config.getVariables(devArgs, buildTypes));
 
       const { args: stagingArgs } = parseArgv(
-        ['--targetEnvironment', 'staging'],
+        ['--buildEnvironment', 'staging'],
         buildTypes,
       );
       assert.doesNotThrow(() => config.getVariables(stagingArgs, buildTypes));

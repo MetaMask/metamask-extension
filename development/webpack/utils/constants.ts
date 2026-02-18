@@ -1,15 +1,15 @@
 /**
  * The build environment. This describes the environment this build was produced in.
  */
-export const ENVIRONMENT = {
+export const BUILD_ENVIRONMENTS = {
   DEVELOPMENT: 'development',
-  PRODUCTION: 'production',
   OTHER: 'other',
+  PRODUCTION: 'production',
   PULL_REQUEST: 'pull-request',
   RELEASE_CANDIDATE: 'release-candidate',
   STAGING: 'staging',
   TESTING: 'testing',
-};
+} as const;
 
 /**
  * Collection of variable declarations required for the production build.

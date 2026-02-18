@@ -15,9 +15,9 @@ import {
   uniqueSort,
   toOrange,
 } from './helpers';
-import { ENVIRONMENT } from './constants';
+import { BUILD_ENVIRONMENTS } from './constants';
+import { resolveDefaultBuildEnvironment as resolveDefaultBuildEnvironment } from './config';
 
-const environmentOptions = Object.values(ENVIRONMENT);
 const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature' as const;
 const omitFeat = 'omitFeature' as const;
@@ -36,6 +36,13 @@ const prerequisites = {
     choices: ['development', 'production'] as const,
     group: toOrange('Build options:'),
     type: 'string',
+  },
+  test: {
+    array: false,
+    default: false,
+    description: 'Enables/disables testing mode',
+    group: toOrange('Developer assistance:'),
+    type: 'boolean',
   },
   // `as const` makes it easier for developers to see the values of the type
   // when hovering over it in their IDE. `satisfies Options` enables type
@@ -186,6 +193,7 @@ function getOptions(
   buildTypes: string[],
   allFeatures: string[],
 ) {
+  const test = true;
   const isProduction = env === 'production';
   const prodDefaultDesc = "If `env` is 'production', `true`, otherwise `false`";
   return {
@@ -229,13 +237,6 @@ function getOptions(
       default: isProduction,
       defaultDescription: prodDefaultDesc,
       description: 'Enables/disables Sentry Application Monitoring',
-      group: toOrange('Developer assistance:'),
-      type: 'boolean',
-    },
-    test: {
-      array: false,
-      default: false,
-      description: 'Enables/disables testing mode',
       group: toOrange('Developer assistance:'),
       type: 'boolean',
     },
@@ -339,6 +340,19 @@ function getOptions(
       group: toOrange('Build options:'),
       type: 'string',
     },
+    buildEnvironment: {
+      array: false,
+      choices: Object.values(BUILD_ENVIRONMENTS),
+      default: resolveDefaultBuildEnvironment({ env, test }),
+      defaultDescription:
+        'Auto-detected from git context (branch name, CI environment)',
+      description:
+        'The build environment (production, staging, release-candidate, pull-request, other). ' +
+        'Controls Sentry project targeting and feature flag detection. ' +
+        'If not specified, auto-detected from git context.',
+      group: toOrange('Build options:'),
+      type: 'string',
+    },
     validateEnv: {
       array: false,
       default: isProduction,
@@ -385,19 +399,6 @@ function getOptions(
       type: 'boolean',
     },
 
-    targetEnvironment: {
-      array: false,
-      choices: environmentOptions,
-      defaultDescription:
-        'Auto-detected from git context (branch name, CI environment)',
-      description:
-        'The build environment (production, staging, release-candidate, pull-request, other). ' +
-        'Controls Sentry project targeting and feature flag detection. ' +
-        'If not specified, auto-detected from git context.',
-      group: toOrange('Build options:'),
-      type: 'string',
-    },
-
     dryRun: {
       array: false,
       default: false,
@@ -420,17 +421,12 @@ function getOptions(
  *
  * @param args - The parsed CLI arguments
  * @param features - The active and available features
- * @param resolvedEnvironment - The resolved MetaMask environment
  */
-export function getDryRunMessage(
-  args: Args,
-  features: Features,
-  resolvedEnvironment: string,
-) {
+export function getDryRunMessage(args: Args, features: Features) {
   return `🦊 Build Config 🦊
 
 Environment (--env): ${args.env}
-Target Environment: ${resolvedEnvironment}${resolvedEnvironment === args.targetEnvironment ? '' : ' (auto-detected)'}
+Build Environment: ${args.buildEnvironment}
 Minify: ${args.minify}
 Watch: ${args.watch}
 Cache: ${args.cache}
