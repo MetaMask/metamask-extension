@@ -1,10 +1,15 @@
 import { merge, cloneDeep } from 'lodash';
+import type { AddressBookControllerState } from '@metamask/address-book-controller';
+import type { CurrencyRateState } from '@metamask/assets-controllers';
 import type {
   PermissionConstraint,
   PermissionControllerState,
 } from '@metamask/permission-controller';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
-import type { PreferencesControllerState } from '../../../app/scripts/controllers/preferences-controller';
+import type {
+  Preferences,
+  PreferencesControllerState,
+} from '../../../app/scripts/controllers/preferences-controller';
 import {
   DAPP_URL,
   DAPP_URL_LOCALHOST,
@@ -49,15 +54,7 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  /**
-   * Merges partial AddressBookController state into the fixture.
-   *
-   * @param data - Partial AddressBookController state.
-   * @param data.addressBook - Map of chainId to address-to-entry map (address, chainId, isEns, memo, name).
-   */
-  withAddressBookController(data: {
-    addressBook?: Record<string, Record<string, Record<string, unknown>>>;
-  }): this {
+  withAddressBookController(data: Partial<AddressBookControllerState>): this {
     if (!this.fixture.data.AddressBookController) {
       (this.fixture.data as Record<string, unknown>).AddressBookController = {
         addressBook: {},
@@ -67,22 +64,16 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  /**
-   * Merges partial CurrencyController state into the fixture.
-   *
-   * @param data - Partial CurrencyController state.
-   * @param data.currentCurrency - Currency code (e.g. 'usd', 'php').
-   * @param data.currencyRates - Map of ticker to rate info (conversionRate, etc.).
-   */
-  withCurrencyController(data: {
-    currentCurrency?: string;
-    currencyRates?: Record<string, unknown>;
-  }): this {
+  withCurrencyController(data: Partial<CurrencyRateState>): this {
     merge(this.fixture.data.CurrencyController, data);
     return this;
   }
 
-  withPreferencesController(data: Partial<PreferencesControllerState>): this {
+  withPreferencesController(
+    data: Omit<Partial<PreferencesControllerState>, 'preferences'> & {
+      preferences?: Partial<Preferences>;
+    },
+  ): this {
     merge(this.fixture.data.PreferencesController, data);
     return this;
   }
