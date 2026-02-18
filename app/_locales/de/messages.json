@@ -7058,44 +7058,8 @@
   "smartAccount": {
     "message": "Smart-Konto"
   },
-  "smartAccountAccept": {
-    "message": "Smart-Konto verwenden"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Schnellere Transaktionen, niedrigere Gebühren"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "Sparen Sie Zeit und Geld, indem Sie Transaktionen gemeinsam abwickeln."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Behalten Sie die gleiche Kontoadresse. Sie können jederzeit zurückwechseln."
-  },
   "smartAccountLabel": {
     "message": "Smart-Konto"
-  },
-  "smartAccountPayToken": {
-    "message": "Bezahlen Sie jederzeit mit jedem Token"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Verwenden Sie die Tokens, die Sie bereits haben, um Netzwerkgebühren zu begleichen."
-  },
-  "smartAccountReject": {
-    "message": "Smart-Konto nicht verwenden"
-  },
-  "smartAccountSameAccount": {
-    "message": "Dasselbe Konto, intelligentere Funktionen."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Smart-Konten"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Smart-Konto verwenden?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Ihr Konto wird bei Ihrer nächsten Transaktion auf ein Smart-Konto aktualisiert."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Erfolg!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Dieselbe Adresse. Intelligentere Funktionen."
