@@ -16,7 +16,6 @@ import {
   AccountTrackerControllerState,
 } from '@metamask/assets-controllers';
 import { AccountsControllerState } from '@metamask/accounts-controller';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { decimalToPrefixedHex } from '../../shared/modules/conversion.utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/selector-creators';
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
@@ -69,13 +68,6 @@ type MetaMaskAssetsControllerState = {
   };
 };
 
-/**
- * Returns the EVM account in the currently selected account group (from accountTree).
- * Uses accountTree.selectedAccountGroup to find the group, then picks the first EVM account in that group.
- *
- * @param state
- * @param state.metamask
- */
 // const selectedEvmAccount = createDeepEqualSelector(
 //   [
 //     (state: { metamask: AccountTreeControllerState }) =>
@@ -83,7 +75,7 @@ type MetaMaskAssetsControllerState = {
 //     (state: { metamask: AccountsControllerState }) =>
 //       state.metamask.internalAccounts?.accounts ?? {},
 //   ],
-//   (accountTree, internalAccountsById): InternalAccount | undefined => {
+//   (accountTree, internalAccountsById) => {
 //     if (!accountTree.selectedAccountGroup || !accountTree.wallets) {
 //       return undefined;
 //     }
@@ -108,40 +100,26 @@ type MetaMaskAssetsControllerState = {
 //   },
 // );
 
-/**
- * Returns all existing EVM account addresses from state (AccountController's internalAccounts.accounts).
- */
-export const getEvmAccounts = createDeepEqualSelector(
-  [
-    (state: { metamask: AccountsControllerState }) =>
-      state.metamask.internalAccounts?.accounts ?? {},
-  ],
-  (internalAccountsById) =>
-    Object.values(internalAccountsById)
-      .filter((account) => isEvmAccountType(account.type))
-      .map((account) => {
-        return { address: account.address as Hex, accountId: account.id };
-      }),
-);
+// const getEvmAccounts = createDeepEqualSelector(
+//   [
+//     (state: { metamask: AccountsControllerState }) =>
+//       state.metamask.internalAccounts?.accounts ?? {},
+//   ],
+//   (internalAccountsById) =>
+//     Object.values(internalAccountsById)
+//       .filter((account) => isEvmAccountType(account.type))
+//       .map((account) => {
+//         return { address: account.address as Hex, accountId: account.id };
+//       }),
+// );
 
-/**
- * Returns all existing EVM chain IDs from state (NetworkController's networkConfigurationsByChainId keys).
- */
-export const getEvmChainIds = createDeepEqualSelector(
-  [getNetworkConfigurationsByChainId],
-  (networkConfigurationsByChainId): Hex[] =>
-    Object.keys(networkConfigurationsByChainId ?? {}) as Hex[],
-);
+// const getEvmChainIds = createDeepEqualSelector(
+//   [getNetworkConfigurationsByChainId],
+//   (networkConfigurationsByChainId): Hex[] =>
+//     Object.keys(networkConfigurationsByChainId ?? {}) as Hex[],
+// );
 
-// TODO: Missing entries with zero balance
-/**
- * Builds accountsByChainId from Assets Controller state (assetsInfo, assetsBalance).
- * Returns EVM native asset balances per chain per account (same shape as AccountTrackerController's accountsByChainId).
- * Staked balances are ignored for now.
- *
- * @param state
- * @param state.metamask
- */
+// ChainId (hex) -> AccountAddress (hex checksummed) -> Balance (hex)
 export const getAccountTrackerControllerAccountsByChainId =
   createDeepEqualSelector(
     [
@@ -206,15 +184,7 @@ export const getAccountTrackerControllerAccountsByChainId =
     },
   );
 
-// TODO: Missing entries with zero balance
-/**
- * Builds allTokens (TokensController shape) from Assets Controller state for the
- * currently selected EVM account in the account group only.
- * Returns chainId -> address -> Token[] (ERC20 tokens only, EVM chains only).
- *
- * @param state
- * @param state.metamask
- */
+// ChainId (hex) -> AccountAddress (hex lowercase) -> Array of Tokens
 export const getTokensControllerAllTokens = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
@@ -278,6 +248,7 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
   },
 );
 
+// ChainId (hex) -> AccountAddress (hex lowercase) -> Array of TokenAddress (hex lowercase)
 export const getTokensControllerAllIgnoredTokens = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
@@ -319,7 +290,7 @@ export const getTokensControllerAllIgnoredTokens = createDeepEqualSelector(
   },
 );
 
-// AcountAddress (lowercase) -> chainId (hex) -> tokenAddress (checksummed) -> balance (hex)
+// AcountAddress (hex lowercase) -> ChainId (hex) -> TokenAddress (hex checksummed) -> Balance (hex)
 export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
@@ -330,8 +301,6 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
       state.metamask.assetsBalance ?? {},
     (state: { metamask: AccountsControllerState }) =>
       state.metamask.internalAccounts?.accounts ?? {},
-    getEvmAccounts,
-    getEvmChainIds,
   ],
   (
     isAssetsUnifyStateEnabled,
@@ -339,8 +308,6 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
     assetsInfo,
     assetsBalance,
     internalAccountsById,
-    evmAccounts,
-    evmChainIds,
   ) => {
     if (!isAssetsUnifyStateEnabled) {
       return tokenBalances;
@@ -372,7 +339,8 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
             : toChecksumHexAddress(assetType.assetReference)
         ) as Hex;
 
-        result[accountAddress][hexChainId][assetAddress] =
+        // TODO: Use raw value from state when available
+        ((result[accountAddress] ??= {})[hexChainId] ??= {})[assetAddress] =
           parseBalanceWithDecimals(
             assetBalance.amount,
             metadata.decimals,
