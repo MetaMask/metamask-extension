@@ -5,7 +5,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { MetamaskIdentityProvider } from '../../../contexts/identity';
 import { backupAndSyncFeaturesTogglesTestIds } from '../../../components/app/identity/backup-and-sync-features-toggles/backup-and-sync-features-toggles';
 import { backupAndSyncToggleTestIds } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
-import BackupAndSyncTab from './backup-and-sync-tab.component';
+import BackupAndSyncTab from './backup-and-sync-tab';
 
 const render = () => {
   const store = configureStore({
@@ -21,23 +21,29 @@ const render = () => {
 };
 
 describe('BackupAndSyncTab', () => {
-  it('renders BackupAndSyncTab component without error', () => {
+  it('renders without error', () => {
     expect(() => {
       render();
     }).not.toThrow();
   });
 
-  it('contains the main setting section', () => {
+  it('renders the main backup and sync toggle section', () => {
     const { getByTestId } = render();
     expect(
       getByTestId(backupAndSyncToggleTestIds.container),
     ).toBeInTheDocument();
   });
 
-  it('contains the features toggles section', () => {
+  it('renders the features toggles section', () => {
     const { getByTestId } = render();
     expect(
       getByTestId(backupAndSyncFeaturesTogglesTestIds.container),
     ).toBeInTheDocument();
+  });
+
+  it('renders layout with settings-page__body class', () => {
+    const { container } = render();
+    const body = container.querySelector('.settings-page__body');
+    expect(body).toBeInTheDocument();
   });
 });
