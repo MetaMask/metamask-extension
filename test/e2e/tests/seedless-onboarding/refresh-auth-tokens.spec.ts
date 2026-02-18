@@ -46,6 +46,11 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        // to avoid a race condition where some authentication requests are triggered once the wallet is locked
+        ignoredConsoleErrors: [
+          'unable to proceed, wallet is locked',
+          'The operation cannot be completed while the controller is locked.',
+        ],
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
@@ -136,6 +141,11 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        // to avoid a race condition where some authentication requests are triggered once the wallet is locked
+        ignoredConsoleErrors: [
+          'unable to proceed, wallet is locked',
+          'The operation cannot be completed while the controller is locked.',
+        ],
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
           const oAuthMockttpService = new OAuthMockttpService();
