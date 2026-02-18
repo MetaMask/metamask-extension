@@ -624,6 +624,15 @@ export class SubscriptionService {
       );
       return hasAccountOptedIn ? primaryCaipAccountId : undefined;
     } catch (error) {
+      if (
+        error instanceof Error &&
+        // if the error is because the current season metadata is not found, return undefined
+        error.message.includes(
+          'No valid season metadata could be found for type',
+        )
+      ) {
+        return undefined;
+      }
       log.warn('Failed to get reward season metadata', error);
       return undefined;
     }
