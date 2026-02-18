@@ -19,7 +19,9 @@ import { AccountsControllerState } from '@metamask/accounts-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { decimalToPrefixedHex } from '../../shared/modules/conversion.utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/selector-creators';
+import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import { getIsAssetsUnifyStateEnabled } from './assets-unify-state/feature-flags';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
 // TODO Old state
 // AccountTrackerController
@@ -27,11 +29,11 @@ import { getIsAssetsUnifyStateEnabled } from './assets-unify-state/feature-flags
 //
 // TokensController
 // allTokens: DONE
-// allIgnoredTokens: DONE *Not yet plugged in actions*
+// allIgnoredTokens: DONE *Alays empty because not yet plugged in client*
 // allDetectedTokens: TODO
 //
 // TokenBalancesController
-// tokenBalances: TODO
+// tokenBalances: DONE
 //
 // TokenRatesController
 // marketData: TODO
@@ -105,6 +107,31 @@ type MetaMaskAssetsControllerState = {
 //     return undefined;
 //   },
 // );
+
+/**
+ * Returns all existing EVM account addresses from state (AccountController's internalAccounts.accounts).
+ */
+export const getEvmAccounts = createDeepEqualSelector(
+  [
+    (state: { metamask: AccountsControllerState }) =>
+      state.metamask.internalAccounts?.accounts ?? {},
+  ],
+  (internalAccountsById) =>
+    Object.values(internalAccountsById)
+      .filter((account) => isEvmAccountType(account.type))
+      .map((account) => {
+        return { address: account.address as Hex, accountId: account.id };
+      }),
+);
+
+/**
+ * Returns all existing EVM chain IDs from state (NetworkController's networkConfigurationsByChainId keys).
+ */
+export const getEvmChainIds = createDeepEqualSelector(
+  [getNetworkConfigurationsByChainId],
+  (networkConfigurationsByChainId): Hex[] =>
+    Object.keys(networkConfigurationsByChainId ?? {}) as Hex[],
+);
 
 // TODO: Missing entries with zero balance
 /**
@@ -292,6 +319,7 @@ export const getTokensControllerAllIgnoredTokens = createDeepEqualSelector(
   },
 );
 
+// AcountAddress (lowercase) -> chainId (hex) -> tokenAddress (checksummed) -> balance (hex)
 export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
@@ -302,6 +330,8 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
       state.metamask.assetsBalance ?? {},
     (state: { metamask: AccountsControllerState }) =>
       state.metamask.internalAccounts?.accounts ?? {},
+    getEvmAccounts,
+    getEvmChainIds,
   ],
   (
     isAssetsUnifyStateEnabled,
@@ -309,6 +339,8 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
     assetsInfo,
     assetsBalance,
     internalAccountsById,
+    evmAccounts,
+    evmChainIds,
   ) => {
     if (!isAssetsUnifyStateEnabled) {
       return tokenBalances;
@@ -316,13 +348,36 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
 
     const result: TokenBalancesControllerState['tokenBalances'] = {};
 
-    for (const [accountId, account] of Object.entries(internalAccountsById)) {
-      if (!isEvmAccountType(account.type)) {
+    for (const [accountId, chainIdBalances] of Object.entries(assetsBalance)) {
+      const accountAddress = internalAccountsById[accountId]?.address as Hex;
+      if (!accountAddress) {
         continue;
       }
 
-      const checksummedAddress = toChecksumHexAddress(account.address) as Hex;
-      result[checksummedAddress] = {};
+      for (const [assetId, assetBalance] of Object.entries(chainIdBalances)) {
+        const assetType = parseCaipAssetType(assetId as CaipAssetType);
+        const metadata = assetsInfo[assetId];
+
+        if (
+          !metadata ||
+          assetType.chain.namespace !== KnownCaipNamespace.Eip155
+        ) {
+          continue;
+        }
+
+        const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
+        const assetAddress = (
+          metadata.type === 'native'
+            ? getNativeAssetForChainId(hexChainId).address
+            : toChecksumHexAddress(assetType.assetReference)
+        ) as Hex;
+
+        result[accountAddress][hexChainId][assetAddress] =
+          parseBalanceWithDecimals(
+            assetBalance.amount,
+            metadata.decimals,
+          ) as Hex;
+      }
     }
 
     return result;

@@ -428,9 +428,7 @@ export const getGasEstimateTypeByChainId = createSelector(
  * @param {*} state
  * @returns { import('@metamask/assets-controllers').TokenBalancesControllerState['tokenBalances']}
  */
-export function getTokenBalances(state) {
-  return state.metamask.tokenBalances;
-}
+export { getTokenBalancesControllerTokenBalances as getTokenBalances } from '../../selectors/assets-migration';
 
 export const getGasFeeEstimatesByChainId = createSelector(
   getGasFeeControllerEstimatesByChainId,

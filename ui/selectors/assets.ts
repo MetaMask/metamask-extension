@@ -47,7 +47,10 @@ import { findAssetByAddress } from '../pages/asset/util';
 import { isEvmChainId } from '../../shared/lib/asset-utils';
 import { isEmptyHexString } from '../../shared/modules/hexstring-utils';
 import { isZeroAmount } from '../helpers/utils/number-utils';
-import { getNonTestNetworks } from '../../shared/modules/selectors/networks';
+import {
+  getNetworkConfigurationsByChainId,
+  getNonTestNetworks,
+} from '../../shared/modules/selectors/networks';
 import { getSelectedInternalAccount } from './accounts';
 import { getMultichainBalances } from './multichain';
 import { EMPTY_OBJECT } from './shared';
@@ -69,6 +72,7 @@ import {
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 import {
   getAccountTrackerControllerAccountsByChainId,
+  getTokenBalancesControllerTokenBalances,
   getTokensControllerAllTokens,
 } from './assets-migration';
 
@@ -1293,7 +1297,7 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     internalAccounts: metamask.internalAccounts,
     allTokens: getTokensControllerAllTokens({ metamask }),
     allIgnoredTokens: metamask.allIgnoredTokens,
-    tokenBalances: metamask.tokenBalances,
+    tokenBalances: getTokenBalancesControllerTokenBalances({ metamask }),
     marketData: metamask.marketData,
     currencyRates: metamask.currencyRates,
     currentCurrency: metamask.currentCurrency,
@@ -1320,6 +1324,16 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     conversionRates: metamask.conversionRates,
   };
   ///: END:ONLY_INCLUDE_IF
+
+  console.log('DEBUG', {
+    ...initialState,
+    ...multichainState,
+    assetPreferences: metamask.assetPreferences,
+    assetsInfo: metamask.assetsInfo,
+    assetsBalance: metamask.assetsBalance,
+    assetsPrice: metamask.assetsPrice,
+    networks: getNetworkConfigurationsByChainId({ metamask }),
+  });
 
   return {
     ...initialState,
