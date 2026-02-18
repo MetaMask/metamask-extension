@@ -57,7 +57,6 @@ chrome.runtime.onConnect.addListener((port) => {
     // might not be able to send this message if the window has already closed.
     port.postMessage({
       data: {
-        // matches
         method: APP_INIT_LIVENESS_METHOD,
       },
       name: 'app-init-liveness',
