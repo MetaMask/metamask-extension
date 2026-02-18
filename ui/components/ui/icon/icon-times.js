@@ -8,7 +8,8 @@ const IconTimes = ({
   className,
   onClick,
 }) => (
-  // This SVG copied from `@fortawesome/fontawesome-free@5.13.0/regular/times.svg`.
+  // This SVG copied from `@fortawesome/fontawesome-free@7.2.0/svgs/regular/xmark.svg`.
+  // Note: The icon was renamed from 'times' to 'xmark' in Font Awesome v6.
   <svg
     width={size}
     height={size}

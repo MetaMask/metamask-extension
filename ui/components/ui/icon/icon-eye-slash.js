@@ -12,7 +12,7 @@ const IconEyeSlash = ({
   ariaLabel,
   className,
 }) => (
-  // This SVG is copied from `@fortawesome/fontawesome-free@5.13.0/regular/eye-slash.svg`.
+  // This SVG is copied from `@fortawesome/fontawesome-free@7.2.0/svgs/regular/eye-slash.svg`.
   <svg
     width={size}
     height={size}

@@ -145,6 +145,7 @@ function getCopyTargets(
         'webfonts/',
       ),
       // update this location in styles.js if it changes
+      // Font Awesome v6+ keeps webfonts in the same 'webfonts/' directory
       dest: `fonts/fontawesome`,
     },
     {

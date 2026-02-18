@@ -103,7 +103,7 @@ export const DefaultStory = (args) => (
     </Text>
     <Text variant={TextVariant.bodyMd} marginBottom={4}>
       To ensure correct licensing we suggest you use an icon from the
-      @fortawesome/fontawesome-free: ^5.13.0 package. If there is no icon to
+      @fortawesome/fontawesome-free: ^7.2.0 package. If there is no icon to
       suit your needs and you need to create a new one. Ensure that it has the
       correct licensing or has been created in house from scratch. Please use
       the ./icon-caret-left.js as the template.
