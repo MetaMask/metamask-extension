@@ -136,7 +136,7 @@ export class CriticalStartupErrorHandler {
         // since it won't be providing any useful information anymore. However,
         // if we find that some errors are happening with receiving the app-init
         // ping (`uiStartup.receivedAppInitPing` is true), then we know that the
-        // _can_ working, but something is going wrong somewhere else, probably
+        // connection _can be_ working, but something is going wrong somewhere else, probably
         // related to the background.js startup process, and in that case, we
         // can remove the app-init ping logic since it will have served its
         // purpose of helping us.
