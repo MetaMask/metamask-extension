@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
 import { WINDOW_TITLES } from '../../../constants';
+import { withFixtures } from '../../../helpers';
+import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -12,10 +15,6 @@ import {
   TestSuiteArguments,
 } from './shared';
 
-const { withFixtures } = require('../../../helpers');
-const FixtureBuilder = require('../../../fixtures/fixture-builder');
-const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
-
 describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
@@ -24,7 +23,7 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           smartContract,
