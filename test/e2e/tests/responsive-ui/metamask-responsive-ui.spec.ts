@@ -12,7 +12,7 @@ import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { PAGES } from 'test/e2e/webdriver/driver';
+import { PAGES } from '../../webdriver/driver';
 
 describe('MetaMask Responsive UI', function (this: Suite) {
   const driverOptions = { constrainWindowSize: true };
@@ -42,7 +42,9 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate(PAGES.HOME, {waitForControllersTimeout: 30000});
+        await driver.navigate(PAGES.HOME, {
+          waitForControllersTimeout: 30000,
+        });
 
         // Click forgot password button and reset password
         const loginPage = new LoginPage(driver);
