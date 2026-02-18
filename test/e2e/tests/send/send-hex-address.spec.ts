@@ -142,7 +142,7 @@ describe('Send - Hex Address Normalization', function () {
 
           // Verify address in activity log
           await transactionDetailsPage.checkAddressInActivityLog(
-            hexAbbreviatedAddress,
+            hexPrefixedAddress,
           );
         },
       );
