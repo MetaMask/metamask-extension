@@ -813,12 +813,12 @@
       "ignoredNfts": []
     },
     "NotificationServicesController": {
-      "isFeatureAnnouncementsEnabled": false,
-      "isMetamaskNotificationsFeatureSeen": false,
-      "isNotificationServicesEnabled": false,
+      "isFeatureAnnouncementsEnabled": true,
+      "isMetamaskNotificationsFeatureSeen": true,
+      "isNotificationServicesEnabled": true,
       "metamaskNotificationsList": [],
       "metamaskNotificationsReadList": [],
-      "subscriptionAccountsSeen": []
+      "subscriptionAccountsSeen": ["0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"]
     },
     "NotificationServicesPushController": {
       "fcmToken": "",
@@ -865,6 +865,16 @@
           "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
           "lastSelected": 0,
           "name": ""
+        },
+        "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3": {
+          "address": "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3",
+          "lastSelected": 0,
+          "name": ""
+        },
+        "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252": {
+          "address": "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252",
+          "lastSelected": 0,
+          "name": ""
         }
       },
       "ipfsGateway": "dweb.link",
@@ -880,6 +890,16 @@
         },
         "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
           "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
+          "lastSelected": 0,
+          "name": ""
+        },
+        "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3": {
+          "address": "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3",
+          "lastSelected": 0,
+          "name": ""
+        },
+        "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252": {
+          "address": "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252",
           "lastSelected": 0,
           "name": ""
         }
