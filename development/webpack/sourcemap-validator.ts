@@ -273,7 +273,7 @@ export async function validateBundle({
         valid = false;
         const location = {
           start: {
-            line: (result.line ?? 0) + 1,
+            line: result.line ?? 1,
             column: column + 1,
           },
         };
