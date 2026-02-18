@@ -6,6 +6,7 @@ import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { SourceMapGenerator } from 'source-map';
 import {
   isLikelyCommentLine,
+  isLikelyMinifiedLine,
   indicesOf,
   discoverWebpackBundles,
   validateBundle,
@@ -47,6 +48,17 @@ describe('sourcemap-validator', () => {
       assert.strictEqual(isLikelyCommentLine('throw new Error("x");'), false);
       assert.strictEqual(isLikelyCommentLine('const x = 1;'), false);
       assert.strictEqual(isLikelyCommentLine('  return new Error();'), false);
+    });
+  });
+
+  describe('isLikelyMinifiedLine', () => {
+    it('returns false for short lines', () => {
+      assert.strictEqual(isLikelyMinifiedLine('throw new Error("x");'), false);
+      assert.strictEqual(isLikelyMinifiedLine('a'.repeat(500)), false);
+    });
+
+    it('returns true for lines longer than threshold', () => {
+      assert.strictEqual(isLikelyMinifiedLine('x'.repeat(1001)), true);
     });
   });
 
@@ -266,6 +278,26 @@ describe('sourcemap-validator', () => {
         label: 'missing-source.js',
       });
       assert.strictEqual(ok, false);
+    });
+
+    it('skips long (minified) lines when result.source is null (no false failure)', async () => {
+      const padding = 'x'.repeat(992);
+      const bundle = padding + 'new Error("minified");';
+      const gen = new SourceMapGenerator({ file: 'out.js' });
+      // No mapping for position of "new Error" so result.source is null; long line is skipped
+      const mapJson = JSON.stringify(gen.toJSON());
+      const jsPath = join(tmpDir, 'minified-skip.js');
+      const mapPath = join(tmpDir, 'minified-skip.js.map');
+      await writeFile(jsPath, bundle);
+      await writeFile(mapPath, mapJson);
+      mock.method(console, 'log', noop);
+      mock.method(console, 'warn', noop);
+      const ok = await validateBundle({
+        jsPath,
+        mapPath,
+        label: 'minified-skip.js',
+      });
+      assert.strictEqual(ok, true);
     });
 
     it('skips comment lines when result.source is null (no false failure)', async () => {
