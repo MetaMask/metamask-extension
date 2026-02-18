@@ -1,7 +1,7 @@
 import { BaseUrl } from '../../../constants/urls';
 import { Route } from './route';
 
-export default new Route({
+export const card = new Route({
   pathname: '/card-onboarding',
   getTitle: (_: URLSearchParams) => 'deepLink_theCardOnboardingPage',
   handler: function handler(params: URLSearchParams) {
