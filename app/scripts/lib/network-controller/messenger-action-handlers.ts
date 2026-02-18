@@ -26,7 +26,6 @@ import { shouldCreateRpcServiceEvents } from './utils';
  * a request to the RPC endpoint.
  * @param args.infuraProjectId - Our Infura project ID.
  * @param args.metaMetricsId - The MetaMetrics ID of the user.
- * @param args.rpcMethodName - The JSON-RPC method that was being executed.
  * @param args.trackEvent - The function that will create the Segment event.
  */
 export function onRpcEndpointUnavailable({
@@ -35,7 +34,6 @@ export function onRpcEndpointUnavailable({
   error,
   infuraProjectId,
   metaMetricsId,
-  rpcMethodName,
   trackEvent,
 }: {
   chainId: Hex;
@@ -43,7 +41,6 @@ export function onRpcEndpointUnavailable({
   error: unknown;
   infuraProjectId: string;
   metaMetricsId: string | null | undefined;
-  rpcMethodName: string;
   trackEvent: MetaMetricsController['trackEvent'];
 }): void {
   trackRpcEndpointEvent(MetaMetricsEventName.RpcServiceUnavailable, {
@@ -52,7 +49,6 @@ export function onRpcEndpointUnavailable({
     error,
     infuraProjectId,
     metaMetricsId,
-    rpcMethodName,
     trackEvent,
   });
 }
@@ -116,7 +112,8 @@ export function onRpcEndpointDegraded({
  * a request to the RPC endpoint.
  * @param args.infuraProjectId - Our Infura project ID.
  * @param args.metaMetricsId - The MetaMetrics ID of the user.
- * @param args.rpcMethodName - The JSON-RPC method that was being executed.
+ * @param args.rpcMethodName - The JSON-RPC method that was being executed
+ * (only present for degraded events).
  * @param args.trackEvent - The function that will create the Segment event.
  */
 export function trackRpcEndpointEvent(
@@ -134,7 +131,7 @@ export function trackRpcEndpointEvent(
     endpointUrl: string;
     error: unknown;
     infuraProjectId: string;
-    rpcMethodName: string;
+    rpcMethodName?: string;
     trackEvent: MetaMetricsController['trackEvent'];
     metaMetricsId: string | null | undefined;
   },
@@ -158,7 +155,7 @@ export function trackRpcEndpointEvent(
     chain_id_caip: `eip155:${hexToNumber(chainId)}`,
     rpc_domain: sanitizedUrl,
     rpc_endpoint_url: sanitizedUrl, // @deprecated - Will be removed in a future release.
-    rpc_method_name: rpcMethodName,
+    ...(rpcMethodName ? { rpc_method_name: rpcMethodName } : {}),
     ...(isObject(error) &&
     'httpStatus' in error &&
     isValidJson(error.httpStatus)
