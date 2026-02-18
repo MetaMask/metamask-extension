@@ -14,8 +14,8 @@ import {
   signDeepLink,
   generateECDSAKeyPair,
   getHashParams,
+  getConfig,
 } from './helpers';
-import { getConfig } from './helpers';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
@@ -300,7 +300,9 @@ describe('Deep Link - Parameter Handling & Security', function () {
         const deepLink = new DeepLink(driver);
 
         // 1. signed with sig_params only exposes foo (both) and bar, not baz
-        console.log('Testing: signed with sig_params filters out unsigned params');
+        console.log(
+          'Testing: signed with sig_params filters out unsigned params',
+        );
         const url1 = 'https://link.metamask.io/test?foo=0&foo=1&bar=2';
         const signedUrl1 = `${await signDeepLink(keyPair.privateKey, url1)}&baz=3`;
         await driver.openNewURL(signedUrl1);
@@ -312,7 +314,9 @@ describe('Deep Link - Parameter Handling & Security', function () {
         assert.equal(params1.has('baz'), false);
 
         // 2. signed with empty sig_params + extra params appended: exposes nothing
-        console.log('Testing: signed with empty sig_params does not expose extra params');
+        console.log(
+          'Testing: signed with empty sig_params does not expose extra params',
+        );
         const url2 = 'https://link.metamask.io/test';
         const signedUrl2 = `${await signDeepLink(keyPair.privateKey, url2)}&foo=0&foo=1&bar=2&baz=3`;
         await driver.openNewURL(signedUrl2);
@@ -344,7 +348,9 @@ describe('Deep Link - Parameter Handling & Security', function () {
         assert.deepStrictEqual(params4.getAll('baz'), ['3']);
 
         // 5. unsigned flow exposes all params including duplicate values
-        console.log('Testing: unsigned flow exposes all params including duplicates');
+        console.log(
+          'Testing: unsigned flow exposes all params including duplicates',
+        );
         const url5 = 'https://link.metamask.io/test?foo=1&foo=2&bar=3';
         await driver.openNewURL(url5);
         await deepLink.checkPageIsLoaded();
