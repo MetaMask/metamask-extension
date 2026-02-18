@@ -3,7 +3,7 @@ import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
-import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -59,7 +59,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new V2()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         testSpecificMock: mockedSourcifyResponse,

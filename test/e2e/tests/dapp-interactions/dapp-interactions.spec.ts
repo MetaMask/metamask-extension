@@ -65,6 +65,8 @@ describe('Dapp interactions', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
 
         // Connect to 2nd dapp => DAPP_ONE
         const testDapp = new TestDapp(driver);
@@ -73,7 +75,6 @@ describe('Dapp interactions', function () {
         await testDapp.clickConnectAccountButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
         const connectAccountConfirmation = new ConnectAccountConfirmation(

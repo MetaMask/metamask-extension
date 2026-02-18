@@ -106,7 +106,7 @@ describe('Switch ethereum chain', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilderV2()
+        fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp() // Connected to Localhost
           .build(),
         title: this.test?.fullTitle(),
