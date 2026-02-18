@@ -239,6 +239,47 @@ describe('transaction metrics handlers', () => {
     expect(payload.event).toBe(MetaMetricsEventName.SwapCompleted);
   });
 
+  it('preserves batch arrays without index-based merge corruption', async () => {
+    const request = createRequest();
+    (request.getMethodData as jest.Mock)
+      .mockResolvedValueOnce({ name: 'approve' })
+      .mockResolvedValueOnce({ name: 'transfer' });
+
+    await handleTransactionAdded(request, {
+      transactionMeta: createTxMeta({
+        txParams: {
+          ...createTxMeta().txParams,
+          to: '0x9999999999999999999999999999999999999999',
+          data: undefined,
+        },
+        nestedTransactions: [
+          {
+            type: TransactionType.tokenMethodApprove,
+            to: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+            data: '0x095ea7b3',
+          },
+          {
+            type: TransactionType.tokenMethodTransfer,
+            to: '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+            data: '0xa9059cbb',
+          },
+        ],
+      }),
+    });
+
+    const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
+    expect(
+      payload.sensitiveProperties.transaction_contract_address,
+    ).toStrictEqual([
+      '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+    ]);
+    expect(payload.properties.transaction_contract_method).toStrictEqual([
+      'approve',
+      'transfer',
+    ]);
+  });
+
   it('does not track post transaction balance update when metrics opted out', async () => {
     const request = createRequest();
     (request.getParticipateInMetrics as jest.Mock).mockReturnValue(false);

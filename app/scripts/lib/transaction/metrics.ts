@@ -130,7 +130,7 @@ export const handlePostTransactionBalanceUpdate = async (
     approvalTransactionMeta?: TransactionMeta;
   },
 ) => {
-  handleSwapPostTransactionMetricHandler(transactionMetricsRequest, {
+  await handleSwapPostTransactionMetricHandler(transactionMetricsRequest, {
     transactionMeta,
     approvalTransactionMeta,
   });

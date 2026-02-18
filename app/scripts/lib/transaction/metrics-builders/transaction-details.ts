@@ -96,6 +96,10 @@ export const getTransactionDetailsMetricsProperties: TransactionMetricsBuilder =
           }
         : {};
 
+    const hasBatchTransactions = Boolean(
+      transactionMeta.nestedTransactions?.length,
+    );
+
     return {
       properties: {},
       sensitiveProperties: {
@@ -104,9 +108,13 @@ export const getTransactionDetailsMetricsProperties: TransactionMetricsBuilder =
           : TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
         first_seen: transactionMeta.time,
         transaction_replaced: transactionReplaced,
-        transaction_contract_address: transactionMeta.txParams?.to
-          ? [transactionMeta.txParams.to]
-          : [],
+        ...(hasBatchTransactions
+          ? {}
+          : {
+              transaction_contract_address: transactionMeta.txParams?.to
+                ? [transactionMeta.txParams.to]
+                : [],
+            }),
         transaction_contract_method_4byte: context.contractMethod4Byte,
         ...finalizedExtras,
         ...(context.isApproveMethod

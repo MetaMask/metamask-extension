@@ -1,4 +1,4 @@
-import { merge } from 'lodash';
+import { mergeWith } from 'lodash';
 import { createProjectLogger } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
@@ -83,10 +83,19 @@ export async function getBuilderMetrics({
     }),
   );
 
-  return results.reduce((acc, current) => merge(acc, current), {
-    properties: {},
-    sensitiveProperties: {},
-  } as TransactionMetrics);
+  return results.reduce(
+    (acc, current) =>
+      mergeWith(acc, current, (objValue, srcValue) => {
+        if (Array.isArray(objValue) && Array.isArray(srcValue)) {
+          return srcValue;
+        }
+        return undefined;
+      }),
+    {
+      properties: {},
+      sensitiveProperties: {},
+    } as TransactionMetrics,
+  );
 }
 
 async function buildBuilderContext({
