@@ -1,7 +1,7 @@
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { lookupDomainName } from '../../../../ducks/domains';
-// eslint-disable-next-line import/no-namespace
+// eslint-disable-next-line import-x/no-namespace
 import * as SendValidationUtils from '../../utils/sendValidations';
 import { useNameValidation } from './useNameValidation';
 

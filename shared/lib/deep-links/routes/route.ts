@@ -1,5 +1,5 @@
 // TODO: Remove restricted import
-/* eslint-disable import/no-restricted-paths */
+/* eslint-disable import-x/no-restricted-paths */
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,

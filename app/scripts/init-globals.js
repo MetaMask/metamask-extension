@@ -4,7 +4,7 @@
  * these dependencies are not available to service worker in MV3.
  */
 
-// eslint-disable-next-line import/unambiguous
+// eslint-disable-next-line import-x/unambiguous
 const keys = ['XMLHttpRequest'];
 
 keys.forEach((key) => {

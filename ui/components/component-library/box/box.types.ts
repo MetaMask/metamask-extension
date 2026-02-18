@@ -219,7 +219,6 @@ type PolymorphicComponentProp<
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   C extends React.ElementType,
-  // eslint-disable-next-line @typescript-eslint/ban-types
   Props = {},
 > = React.PropsWithChildren<Props & AsProp<C>> &
   Omit<React.ComponentPropsWithoutRef<C>, PropsToOmit<C, Props>>;
@@ -228,7 +227,6 @@ export type PolymorphicComponentPropWithRef<
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   C extends React.ElementType,
-  // eslint-disable-next-line @typescript-eslint/ban-types
   Props = {},
 > = PolymorphicComponentProp<C, Props> & { ref?: PolymorphicRef<C> };
 

@@ -28,7 +28,7 @@ let scriptsLoadInitiated = false;
 const testMode = process.env.IN_TEST;
 
 const loadTimeLogs = [];
-// eslint-disable-next-line import/unambiguous
+// eslint-disable-next-line import-x/unambiguous
 function tryImport(...fileNames) {
   try {
     const startTime = new Date().getTime();

@@ -1,6 +1,6 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-// eslint-disable-next-line import/no-named-as-default
+// eslint-disable-next-line import-x/no-named-as-default
 import DOMPurify from 'dompurify';
 import { isOfTypeNodeGuard } from '../node-guard';
 import {

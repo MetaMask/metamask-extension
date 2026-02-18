@@ -1,7 +1,7 @@
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
 
-/* eslint-disable import/unambiguous */
+/* eslint-disable import-x/unambiguous */
 let mapStateToProps;
 
 jest.mock('react-redux', () => ({

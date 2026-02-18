@@ -37,7 +37,7 @@ import { getAccountLabels } from '../../helpers/utils/accounts';
 import { useFormatters } from '../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../ducks/metamask/metamask';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 
 // Component to display snap account information (avatar, address, account group name, balance, network indicator, and snap name)

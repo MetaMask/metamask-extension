@@ -7,7 +7,7 @@ import mockStore from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
 import KeyringSnapRemovalWarning from './keyring-snap-removal-warning';
 

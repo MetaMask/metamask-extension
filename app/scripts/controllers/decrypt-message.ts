@@ -27,7 +27,7 @@ import { Eip1024EncryptedData, hasProperty, isObject } from '@metamask/utils';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 // This import is only used for the type.
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import type { MetaMaskReduxState } from '../../../ui/store/store';
 
 const controllerName = 'DecryptMessageController';

@@ -37,7 +37,7 @@ import {
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -50,7 +50,7 @@ import {
   getProviderConfig,
   NetworkState,
 } from '../../shared/modules/selectors/networks';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import {

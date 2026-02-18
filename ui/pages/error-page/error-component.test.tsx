@@ -10,7 +10,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getParticipateInMetaMetrics } from '../../selectors';
 import { getMessage } from '../../helpers/utils/i18n-helper';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../app/_locales/en/messages.json';
 import { getUserSubscriptions } from '../../selectors/subscription';
 import mockState from '../../../test/data/mock-state.json';

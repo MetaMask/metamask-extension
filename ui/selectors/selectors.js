@@ -45,12 +45,12 @@ import { getEnabledNetworks } from '../../shared/modules/selectors/multichain';
 // TODO: Fix circular dependency
 // To avoid import evaluating as `undefined` due to circular dependency,
 // this needs to be imported before `'../pages/confirmations/confirmation/templates'`
-// eslint-disable-next-line import/order
+// eslint-disable-next-line import-x/order
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 // TODO: Fix circular dependency
 // To avoid import evaluating as `undefined` due to circular dependency,
 // this needs to be imported before `'../pages/confirmations/confirmation/templates'`
-// eslint-disable-next-line import/order
+// eslint-disable-next-line import-x/order
 import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
@@ -61,7 +61,7 @@ import {
 } from './multichain/feature-flags';
 
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -159,7 +159,7 @@ import {
   FeatureFlagNames,
   DEFAULT_FEATURE_FLAG_VALUES,
 } from '../../shared/modules/feature-flags';
-// eslint-disable-next-line import/order
+// eslint-disable-next-line import-x/order
 import {
   getSelectedInternalAccount,
   getInternalAccounts,

@@ -16,7 +16,7 @@ import type {
 import type { TokenStandard } from '../constants/transaction';
 import type { HardwareKeyringType } from '../constants/hardware-wallets';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import type { SnapAndHardwareMessenger } from '../../app/scripts/lib/snap-keyring/metrics';
 import { ShieldMetricsSourceEnum } from '../constants/subscriptions';
 import type { ScanAddressResponse } from '../lib/trust-signals';
