@@ -1,7 +1,6 @@
 /**
  * Perps Stream Hooks
  *
-<<<<<<< HEAD
  * Real-time data subscription hooks for Perps UI components.
  * These hooks use the PerpsStreamManager for cached, BehaviorSubject-like access.
  *
@@ -106,11 +105,3 @@ export type {
   TimeDuration,
   PerpsMarketData,
 } from '@metamask/perps-controller';
-=======
- * Currently using mock implementations for development.
- * This file will be updated to use real stream when integration is complete.
- */
-
-// Re-export everything from the mock implementation
-export * from './index.mock';
->>>>>>> main

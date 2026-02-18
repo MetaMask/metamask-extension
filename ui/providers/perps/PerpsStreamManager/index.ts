@@ -6,4 +6,12 @@
  */
 
 // Re-export everything from the mock implementation
-export * from './index.mock';
+// export * from './index.mock';
+
+// Re-exports the real PerpsStreamManager (uses @metamask/perps-controller and getPerpsController).
+
+export {
+  getPerpsStreamManager,
+  resetPerpsStreamManager,
+  PerpsStreamManager,
+} from '../PerpsStreamManager';
