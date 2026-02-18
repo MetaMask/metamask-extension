@@ -3193,6 +3193,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
           />
           <div
             class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            data-testid="confirmation__info_skeleton"
             style="margin-bottom: 12px; height: 72px; width: 100%;"
           />
           <div
