@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { BigNumber } from 'bignumber.js';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { MetaMetricsEventCategory, MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import type { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
   calcGasTotal,

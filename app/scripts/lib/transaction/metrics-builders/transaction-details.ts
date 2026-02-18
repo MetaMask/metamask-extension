@@ -3,11 +3,13 @@ import { BigNumber } from 'bignumber.js';
 import { TransactionType } from '@metamask/transaction-controller';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../../shared/lib/transactions-controller-utils';
 import {
-  TokenStandard,
   TransactionApprovalAmountType,
   TransactionMetaMetricsEvent,
 } from '../../../../../shared/constants/transaction';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import {
+  hexToDecimal,
+  hexWEIToDecGWEI,
+} from '../../../../../shared/modules/conversion.utils';
 import { isEIP1559Transaction } from '../../../../../shared/modules/transaction.utils';
 import type { TransactionMetricsBuilder } from './types';
 
@@ -36,28 +38,6 @@ export const getTransactionDetailsMetricsProperties: TransactionMetricsBuilder =
       }
     }
 
-    let transactionApprovalAmountType;
-    if (
-      context.isApproveMethod &&
-      context.tokenStandard === TokenStandard.ERC20
-    ) {
-      if (
-        transactionMeta.dappProposedTokenAmount === '0' ||
-        transactionMeta.customTokenAmount === '0'
-      ) {
-        transactionApprovalAmountType = TransactionApprovalAmountType.revoke;
-      } else if (
-        transactionMeta.customTokenAmount &&
-        transactionMeta.customTokenAmount !==
-          transactionMeta.dappProposedTokenAmount
-      ) {
-        transactionApprovalAmountType = TransactionApprovalAmountType.custom;
-      } else if (transactionMeta.dappProposedTokenAmount) {
-        transactionApprovalAmountType =
-          TransactionApprovalAmountType.dappProposed;
-      }
-    }
-
     const finalizedExtras =
       eventName === TransactionMetaMetricsEvent.finalized
         ? {
@@ -65,7 +45,7 @@ export const getTransactionDetailsMetricsProperties: TransactionMetricsBuilder =
               ? { error: transactionEventPayload.error }
               : {}),
             ...(transactionMeta.txReceipt?.gasUsed
-              ? { gas_used: transactionMeta.txReceipt.gasUsed }
+              ? { gas_used: hexWEIToDecGWEI(transactionMeta.txReceipt.gasUsed) }
               : {}),
             ...(transactionMeta.txReceipt?.blockNumber
               ? {
@@ -111,23 +91,28 @@ export const getTransactionDetailsMetricsProperties: TransactionMetricsBuilder =
         ...(hasBatchTransactions
           ? {}
           : {
-              transaction_contract_address: transactionMeta.txParams?.to
-                ? [transactionMeta.txParams.to]
-                : [],
+              transaction_contract_address:
+                context.isContractInteraction && transactionMeta.txParams?.to
+                  ? [transactionMeta.txParams.to]
+                  : [],
             }),
-        transaction_contract_method_4byte: context.contractMethod4Byte,
+        ...(context.isContractInteraction
+          ? {
+              transaction_contract_method_4byte: context.contractMethod4Byte,
+            }
+          : {}),
         ...finalizedExtras,
         ...(context.isApproveMethod
           ? {
               transaction_approval_amount_vs_balance_ratio:
                 allowanceAmountInRelationToTokenBalance(
-                  transactionApprovalAmountType,
+                  context.transactionApprovalAmountType,
                   transactionMeta.dappProposedTokenAmount,
                   transactionMeta.currentTokenBalance,
                 ),
               transaction_approval_amount_vs_proposed_ratio:
                 allowanceAmountInRelationToDappProposedValue(
-                  transactionApprovalAmountType,
+                  context.transactionApprovalAmountType,
                   transactionMeta.originalApprovalAmount,
                   transactionMeta.finalApprovalAmount,
                 ),

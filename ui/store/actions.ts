@@ -6450,18 +6450,6 @@ export function createEventFragment(
   ]);
 }
 
-export function createTransactionEventFragment(
-  transactionId: string,
-): Promise<string> {
-  const actionId = generateActionId();
-  return submitRequestToBackground('createTransactionEventFragment', [
-    {
-      transactionId,
-      actionId,
-    },
-  ]);
-}
-
 export function upsertTransactionUIMetricsFragment(
   transactionId: string,
   payload: Partial<MetaMetricsEventFragment>,

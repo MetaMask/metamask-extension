@@ -8,6 +8,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { hexWEIToDecGWEI } from '../../../../shared/modules/conversion.utils';
 import { TransactionMetaMetricsEvent } from '../../../../shared/constants/transaction';
 import type { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
@@ -19,7 +20,6 @@ import {
   handlePostTransactionBalanceUpdate,
   handleTransactionRejected,
   handleTransactionSubmitted,
-  METRICS_STATUS_FAILED,
 } from './metrics';
 
 jest.mock('../../../../shared/modules/transaction.utils', () => ({
@@ -173,8 +173,10 @@ describe('transaction metrics handlers', () => {
 
     const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
     expect(payload.event).toBe(TransactionMetaMetricsEvent.finalized);
-    expect(payload.sensitiveProperties.status).toBe(METRICS_STATUS_FAILED);
-    expect(payload.sensitiveProperties.gas_used).toBe('0x5208');
+    expect(payload.sensitiveProperties.status).toBe('failed on-chain');
+    expect(payload.sensitiveProperties.gas_used).toBe(
+      hexWEIToDecGWEI('0x5208'),
+    );
     expect(payload.sensitiveProperties.block_number).toBe('16');
   });
 
@@ -203,6 +205,20 @@ describe('transaction metrics handlers', () => {
     const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
     expect(payload.properties.gas_edit_attempted).toBe('basic');
     expect(payload.sensitiveProperties.custom_sensitive).toBe('x');
+  });
+
+  it('does not include contract-specific fields for simple send transactions', async () => {
+    const request = createRequest();
+
+    await handleTransactionAdded(request, { transactionMeta: createTxMeta() });
+
+    const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
+    expect(
+      payload.sensitiveProperties.transaction_contract_address,
+    ).toStrictEqual([]);
+    expect(payload.sensitiveProperties.transaction_contract_method_4byte).toBe(
+      undefined,
+    );
   });
 
   it('tracks SwapFailed in post transaction balance update', async () => {

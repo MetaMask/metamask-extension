@@ -22,9 +22,10 @@ export const getBaseMetricsProperties: TransactionMetricsBuilder = async ({
       transaction_type: context.transactionTypeForMetrics,
       transaction_speed_up: transactionMeta.type === 'retry',
       transaction_internal_id: transactionMeta.id,
-      transaction_contract_method: context.contractMethodName
-        ? [context.contractMethodName]
-        : [],
+      transaction_contract_method:
+        context.isContractInteraction && context.contractMethodName
+          ? [context.contractMethodName]
+          : [],
     },
     sensitiveProperties: {},
   };

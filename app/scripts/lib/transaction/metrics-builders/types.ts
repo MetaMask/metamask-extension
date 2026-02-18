@@ -3,7 +3,10 @@ import type {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { Json } from '@metamask/utils';
-import type { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
+import type {
+  TransactionApprovalAmountType,
+  TransactionMetaMetricsEvent,
+} from '../../../../../shared/constants/transaction';
 import type {
   TransactionEventPayload,
   TransactionMetricsRequest,
@@ -29,6 +32,7 @@ export type TransactionMetricsBuilderRequest = {
     isApproveMethod: boolean;
     assetType?: string;
     tokenStandard?: string;
+    transactionApprovalAmountType?: TransactionApprovalAmountType;
   };
 };
 

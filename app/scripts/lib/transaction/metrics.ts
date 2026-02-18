@@ -9,8 +9,6 @@ import type {
 import { getBuilderMetrics } from './metrics-builders';
 import { handleSwapPostTransactionMetricHandler } from './swap-post-transaction-metric-handler';
 
-export const METRICS_STATUS_FAILED = 'failed on-chain';
-
 export const handleTransactionAdded = async (
   transactionMetricsRequest: TransactionMetricsRequest,
   transactionEventPayload: TransactionEventPayload,
