@@ -1,4 +1,7 @@
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import {
   TokenStandard,
   TransactionApprovalAmountType,
@@ -7,19 +10,19 @@ import { determineTransactionAssetType } from '../../../../shared/modules/transa
 import type { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import type { TransactionMetricsBuilderRequest } from './metrics-builders/types';
 
-const CONTRACT_INTERACTION_TYPES = [
-  'bridge',
-  'bridgeApproval',
-  'contractInteraction',
-  'tokenMethodApprove',
-  'tokenMethodIncreaseAllowance',
-  'tokenMethodSafeTransferFrom',
-  'tokenMethodSetApprovalForAll',
-  'tokenMethodTransfer',
-  'tokenMethodTransferFrom',
-  'swap',
-  'swapAndSend',
-  'swapApproval',
+export const CONTRACT_INTERACTION_TYPES = [
+  TransactionType.bridge,
+  TransactionType.bridgeApproval,
+  TransactionType.contractInteraction,
+  TransactionType.tokenMethodApprove,
+  TransactionType.tokenMethodIncreaseAllowance,
+  TransactionType.tokenMethodSafeTransferFrom,
+  TransactionType.tokenMethodSetApprovalForAll,
+  TransactionType.tokenMethodTransfer,
+  TransactionType.tokenMethodTransferFrom,
+  TransactionType.swap,
+  TransactionType.swapAndSend,
+  TransactionType.swapApproval,
 ];
 
 /**
@@ -90,7 +93,9 @@ function determineTransactionTypeAndContractInteraction(
   transactionType: string;
   isContractInteraction: boolean;
 } {
-  const isContractInteraction = CONTRACT_INTERACTION_TYPES.includes(type);
+  const isContractInteraction = CONTRACT_INTERACTION_TYPES.includes(
+    type as TransactionType,
+  );
 
   const directTypeMappings = [
     'swapAndSend',

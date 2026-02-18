@@ -8,6 +8,7 @@ import {
   ORIGIN_METAMASK,
 } from '../../../../../shared/constants/app';
 import { EIP5792ErrorCode } from '../../../../../shared/constants/transaction';
+import { CONTRACT_INTERACTION_TYPES } from '../metrics-context';
 import type { MetricsProperties, TransactionMetricsBuilder } from './types';
 
 export const getBatchMetricsProperties: TransactionMetricsBuilder = async ({
@@ -16,21 +17,6 @@ export const getBatchMetricsProperties: TransactionMetricsBuilder = async ({
 }) => {
   const properties: MetricsProperties = {};
   const sensitiveProperties: MetricsProperties = {};
-
-  const contractInteractionTypes = [
-    TransactionType.bridge,
-    TransactionType.bridgeApproval,
-    TransactionType.contractInteraction,
-    TransactionType.tokenMethodApprove,
-    TransactionType.tokenMethodIncreaseAllowance,
-    TransactionType.tokenMethodSafeTransferFrom,
-    TransactionType.tokenMethodSetApprovalForAll,
-    TransactionType.tokenMethodTransfer,
-    TransactionType.tokenMethodTransferFrom,
-    TransactionType.swap,
-    TransactionType.swapAndSend,
-    TransactionType.swapApproval,
-  ];
 
   const isExternal =
     transactionMeta.origin && transactionMeta.origin !== ORIGIN_METAMASK;
@@ -52,7 +38,7 @@ export const getBatchMetricsProperties: TransactionMetricsBuilder = async ({
     const allData = (nestedTransactions ?? [])
       .filter(
         (tx) =>
-          contractInteractionTypes.includes(tx.type as TransactionType) &&
+          CONTRACT_INTERACTION_TYPES.includes(tx.type as TransactionType) &&
           tx.data,
       )
       .map((tx) => tx.data as string);
@@ -68,7 +54,7 @@ export const getBatchMetricsProperties: TransactionMetricsBuilder = async ({
     sensitiveProperties.transaction_contract_address = nestedTransactions
       ?.filter(
         (tx) =>
-          contractInteractionTypes.includes(tx.type as TransactionType) &&
+          CONTRACT_INTERACTION_TYPES.includes(tx.type as TransactionType) &&
           tx.to?.length,
       )
       .map((tx) => tx.to as string);

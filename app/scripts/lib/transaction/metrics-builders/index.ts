@@ -1,4 +1,4 @@
-import { mergeWith } from 'lodash';
+import { mergeWith, uniq } from 'lodash';
 import { createProjectLogger } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
@@ -78,9 +78,11 @@ export async function getBuilderMetrics({
 
   return results.reduce(
     (acc, current) =>
-      mergeWith(acc, current, (objValue, srcValue) => {
+      mergeWith(acc, current, (objValue, srcValue, key) => {
         if (Array.isArray(objValue) && Array.isArray(srcValue)) {
-          return srcValue;
+          return key === 'ui_customizations'
+            ? uniq([...objValue, ...srcValue])
+            : srcValue;
         }
         return undefined;
       }),

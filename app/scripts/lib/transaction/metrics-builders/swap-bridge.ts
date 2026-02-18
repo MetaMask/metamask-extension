@@ -11,7 +11,7 @@ export const getSwapBridgeMetricsProperties: TransactionMetricsBuilder = ({
   };
 
   if (
-    context.isApproveMethod ||
+    context.contractMethodName === 'Approve' ||
     context.transactionTypeForMetrics === 'mm_swap' ||
     context.transactionTypeForMetrics === 'mm_bridge'
   ) {

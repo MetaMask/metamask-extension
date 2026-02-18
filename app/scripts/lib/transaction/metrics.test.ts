@@ -7,6 +7,7 @@ import {
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsEventUiCustomization,
 } from '../../../../shared/constants/metametrics';
 import { hexWEIToDecGWEI } from '../../../../shared/modules/conversion.utils';
 import { TransactionMetaMetricsEvent } from '../../../../shared/constants/transaction';
@@ -218,6 +219,31 @@ describe('transaction metrics handlers', () => {
     ).toStrictEqual([]);
     expect(payload.sensitiveProperties.transaction_contract_method_4byte).toBe(
       undefined,
+    );
+  });
+
+  it('appends ui_customizations from fragment without dropping security flags', async () => {
+    const request = createRequest();
+    (request.getTransactionUIMetricsFragment as jest.Mock).mockReturnValue({
+      properties: {
+        ui_customizations: ['custom_ui'],
+      },
+    });
+
+    await handleTransactionAdded(request, {
+      transactionMeta: createTxMeta({
+        securityProviderResponse: {
+          flagAsDangerous: 1,
+        },
+      }),
+    });
+
+    const payload = (request.trackEvent as jest.Mock).mock.calls[0][0];
+    expect(payload.properties.ui_customizations).toEqual(
+      expect.arrayContaining([
+        MetaMetricsEventUiCustomization.FlaggedAsMalicious,
+        'custom_ui',
+      ]),
     );
   });
 
