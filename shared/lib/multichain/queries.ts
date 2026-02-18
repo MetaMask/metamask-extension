@@ -6,17 +6,26 @@ import { selectTransactions } from './transformations';
 
 export const transactionsQueryKey = ['multiaccount', 'transactions'];
 
+type TransactionsReactQueryOptions = Partial<
+  UseInfiniteQueryOptions<
+    V4MultiAccountTransactionsResponse,
+    unknown,
+    NormalizedV4MultiAccountTransactionsResponse
+  >
+>;
+
+type TransactionsQueryConfig = {
+  params: Params;
+  options?: TransactionsReactQueryOptions;
+  getBearerToken?: () => Promise<string | undefined>;
+};
+
 export const queries = {
-  transactions: (
-    params: Params,
-    options?: Partial<
-      UseInfiniteQueryOptions<
-        V4MultiAccountTransactionsResponse,
-        unknown,
-        NormalizedV4MultiAccountTransactionsResponse
-      >
-    >,
-  ): UseInfiniteQueryOptions<
+  transactions: ({
+    params,
+    options,
+    getBearerToken,
+  }: TransactionsQueryConfig): UseInfiniteQueryOptions<
     V4MultiAccountTransactionsResponse,
     unknown,
     NormalizedV4MultiAccountTransactionsResponse
@@ -25,11 +34,19 @@ export const queries = {
 
     return {
       queryKey: [...transactionsQueryKey, params],
-      queryFn: async ({ pageParam }) =>
-        fetchV4MultiAccountTransactions({
-          ...params,
-          cursor: pageParam,
-        }),
+      queryFn: async ({ pageParam, signal }) => {
+        const bearerToken = await getBearerToken?.();
+        return fetchV4MultiAccountTransactions(
+          {
+            ...params,
+            cursor: pageParam,
+          },
+          {
+            bearerToken,
+            signal,
+          },
+        );
+      },
       select: selectTransactions(accountAddress),
       getNextPageParam: ({ pageInfo }) =>
         pageInfo.hasNextPage ? pageInfo.endCursor : undefined,

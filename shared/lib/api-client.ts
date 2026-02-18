@@ -12,8 +12,14 @@ export type Params = {
   limit?: number;
 };
 
+export type RequestOptions = {
+  bearerToken?: string;
+  signal?: AbortSignal;
+};
+
 export async function fetchV4MultiAccountTransactions(
   params: Params,
+  requestOptions: RequestOptions = {},
 ): Promise<V4MultiAccountTransactionsResponse> {
   const { accountAddresses = [], networks = [], cursor, limit = 50 } = params;
 
@@ -36,7 +42,19 @@ export async function fetchV4MultiAccountTransactions(
     url.searchParams.set('cursor', cursor);
   }
 
-  const response = await fetch(url);
+  const { bearerToken, signal } = requestOptions;
+  const headers = new Headers();
+  if (bearerToken) {
+    const authorization = bearerToken.startsWith('Bearer ')
+      ? bearerToken
+      : `Bearer ${bearerToken}`;
+    headers.set('Authorization', authorization);
+  }
+
+  const response = await fetch(url, {
+    headers,
+    signal,
+  });
 
   if (!response.ok) {
     let body: unknown;

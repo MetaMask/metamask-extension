@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type {
@@ -7,9 +8,29 @@ import type {
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { selectMarketRates } from '../../../selectors/activity';
 import { selectEvmAddress } from '../../../selectors/accounts';
+import { getUseExternalServices } from '../../../selectors';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import { parseApprovalTransactionData } from '../../../../shared/modules/transaction.utils';
 import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
+import { queries } from '../../../../shared/lib/multichain/queries';
+import type { Params } from '../../../../shared/lib/api-client';
 import { calculateFiatFromMarketRates } from './helpers';
+
+export function useTransactionsQueryOptions({ params }: { params: Params }) {
+  const useExternalServices = useSelector(getUseExternalServices);
+  const enabled = Boolean(useExternalServices);
+
+  return useMemo(() => {
+    return queries.transactions({
+      params,
+      options: {
+        enabled,
+        keepPreviousData: true,
+      },
+      getBearerToken: () => submitRequestToBackground('getBearerToken'),
+    });
+  }, [enabled, params]);
+}
 
 export function useGetTitle(transaction: TransactionViewModel): string {
   const t = useI18nContext();
@@ -50,7 +71,7 @@ export function useGetTitle(transaction: TransactionViewModel): string {
 
     // Revoke token/NFT approval (approve(..., 0x0) or approve(..., 0))
     if (parsedApprovalData?.name === 'approve') {
-      const spender = parsedApprovalData.spender;
+      const { spender } = parsedApprovalData;
       const isZeroSpender =
         typeof spender === 'string' &&
         spender.toLowerCase() === '0x0000000000000000000000000000000000000000';

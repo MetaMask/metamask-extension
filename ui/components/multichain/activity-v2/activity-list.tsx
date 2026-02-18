@@ -14,12 +14,10 @@ import { selectEvmAddress } from '../../../selectors/accounts';
 import { selectCurrentAccountNonEvmTransactions } from '../../../selectors/multichain-transactions';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
-import { queries } from '../../../../shared/lib/multichain/queries';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { MultichainTransactionDetailsModal as LegacyMultichainTransactionDetailsModal } from '../../app/multichain-transaction-details-modal';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import AssetListControlBar from '../../app/assets/asset-list/asset-list-control-bar';
-import { getUseExternalServices } from '../../../selectors';
 import {
   mergeAllTransactionsByTime,
   groupAndFlattenMergedTransactions,
@@ -30,6 +28,7 @@ import { ActivityListItem } from './activity-list-item';
 import { ActivityDetailsModalAdapter } from './activity-details-modal-adapter';
 import { LocalActivityListItem } from './local-activity-list-item';
 import { NonEvmActivityListItem } from './non-evm-activity-list-item';
+import { useTransactionsQueryOptions } from './hooks';
 
 const ITEM_HEIGHT = 70;
 const HEADER_HEIGHT = 36;
@@ -46,7 +45,6 @@ export const ActivityList = () => {
 
   const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
   const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
-  const useExternalServices = useSelector(getUseExternalServices);
 
   const evmNetworks = useMemo(
     () => enabledNetworks.filter((id) => id.startsWith('eip155:')),
@@ -61,20 +59,13 @@ export const ActivityList = () => {
   }, [evmAddress]);
 
   // EVM transactions - from API
-  const queryOptions = useMemo(
-    () =>
-      queries.transactions(
-        {
-          accountAddresses: evmAddress ? [evmAddress] : [],
-          networks: evmNetworks,
-        },
-        {
-          enabled: useExternalServices,
-          keepPreviousData: true,
-        },
-      ),
-    [evmAddress, evmNetworks, useExternalServices],
-  );
+  const queryOptions = useTransactionsQueryOptions({
+    params: {
+      accountAddresses: evmAddress ? [evmAddress] : [],
+      networks: evmNetworks,
+    },
+  });
+
   const {
     data,
     isInitialLoading,
@@ -248,24 +239,24 @@ export const ActivityList = () => {
               <Text className="text-alternative">{t('loading')}</Text>
             </Box>
           )}
-
-          <ActivityDetailsModalAdapter
-            isOpen={isModalOpen}
-            onClose={handleModalClose}
-            transaction={selectedItem}
-          />
-
-          {selectedNonEvmTransaction && (
-            <LegacyMultichainTransactionDetailsModal
-              transaction={selectedNonEvmTransaction}
-              onClose={handleNonEvmModalClose}
-            />
-          )}
         </>
       )}
 
       {!isInitialLoading && flattenedItems.length === 0 && (
         <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
+      )}
+
+      <ActivityDetailsModalAdapter
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        transaction={selectedItem}
+      />
+
+      {selectedNonEvmTransaction && (
+        <LegacyMultichainTransactionDetailsModal
+          transaction={selectedNonEvmTransaction}
+          onClose={handleNonEvmModalClose}
+        />
       )}
     </Box>
   );
