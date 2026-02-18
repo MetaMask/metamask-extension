@@ -7,6 +7,7 @@ import {
 } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import Homepage from '../../page-objects/pages/home/homepage';
@@ -20,7 +21,7 @@ describe('Dapp interactions', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         localNodeOptions: [
           {
             type: 'anvil',
