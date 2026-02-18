@@ -165,6 +165,7 @@ import {
   logErrorWithMessage,
   createSentryError,
 } from '../../shared/modules/error';
+import type { DefaultAddressScope } from '../../shared/constants/default-address';
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
@@ -4361,7 +4362,7 @@ export function setShowDefaultAddress(value: boolean) {
   return setPreference('showDefaultAddress', value);
 }
 
-export function setDefaultAddressScope(value: string) {
+export function setDefaultAddressScope(value: DefaultAddressScope) {
   return setPreference('defaultAddressScope', value);
 }
 

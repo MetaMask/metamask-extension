@@ -22,6 +22,7 @@ import {
   DEFAULT_AUTO_LOCK_TIME_LIMIT,
   ThemeType,
 } from '../../../shared/constants/preferences';
+import { type DefaultAddressScope } from '../../../shared/constants/default-address';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import { FALLBACK_LOCALE } from '../../../shared/modules/i18n';
 
@@ -97,7 +98,7 @@ type PreferencesControllerOptions = {
 export type Preferences = {
   autoLockTimeLimit?: number;
   avatarType?: 'maskicon' | 'jazzicon' | 'blockies';
-  defaultAddressScope: string;
+  defaultAddressScope: DefaultAddressScope;
   dismissSmartAccountSuggestionEnabled: boolean;
   featureNotificationsEnabled: boolean;
   hideZeroBalanceTokens: boolean;
@@ -1036,7 +1037,7 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  setDefaultAddressScope(value: string): void {
+  setDefaultAddressScope(value: DefaultAddressScope): void {
     this.update((state) => {
       state.preferences.defaultAddressScope = value;
     });
