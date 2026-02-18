@@ -5083,9 +5083,6 @@
   "perpsAutoClose": {
     "message": "Αυτόματο κλείσιμο"
   },
-  "perpsBuy": {
-    "message": "αγορά"
-  },
   "perpsCloseAll": {
     "message": "Κλείσιμο όλων"
   },
@@ -5132,9 +5129,6 @@
     "message": "Κρύπτο"
   },
   "perpsFilterStocks": {
-    "message": "Μετοχές"
-  },
-  "perpsFilterStocksOnly": {
     "message": "Μετοχές"
   },
   "perpsFundingPayments": {
@@ -5213,29 +5207,17 @@
   "perpsSearchMarkets": {
     "message": "Αναζήτηση αγορών"
   },
-  "perpsSell": {
-    "message": "πώληση"
-  },
   "perpsShort": {
     "message": "Πώληση (Short)"
   },
   "perpsSize": {
     "message": "Μέγεθος"
   },
-  "perpsSortFundingRate": {
-    "message": "Χρέωση χρηματοδότησης"
-  },
-  "perpsSortOpenInterest": {
-    "message": "Ανοιχτό ενδιαφέρον"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "Μεταβολή τιμής: από υψηλή προς χαμηλή"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "Μεταβολή τιμής: από χαμηλή προς υψηλή"
-  },
-  "perpsSortVolume": {
-    "message": "Όγκος"
   },
   "perpsStartNewTrade": {
     "message": "Ξεκινήστε μια νέα συναλλαγή"
@@ -7076,44 +7058,8 @@
   "smartAccount": {
     "message": "Έξυπνος λογαριασμός"
   },
-  "smartAccountAccept": {
-    "message": "Χρήση έξυπνου λογαριασμού"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Ταχύτερες συναλλαγές, χαμηλότερα τέλη"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "Εξοικονομήστε χρόνο και χρήματα με την ενιαία επεξεργασία των συναλλαγών."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Διατηρήστε την ίδια διεύθυνση λογαριασμού και μπορείτε να επιστρέψετε ανά πάσα στιγμή."
-  },
   "smartAccountLabel": {
     "message": "Έξυπνος λογαριασμός"
-  },
-  "smartAccountPayToken": {
-    "message": "Πληρώστε με οποιοδήποτε token, ανά πάσα στιγμή"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Χρησιμοποιήστε τα tokens που έχετε ήδη για να καλύψετε τα τέλη δικτύου."
-  },
-  "smartAccountReject": {
-    "message": "Μην χρησιμοποιείτε έξυπνο λογαριασμό"
-  },
-  "smartAccountSameAccount": {
-    "message": "Ίδιος λογαριασμός, πιο έξυπνες λειτουργίες."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Έξυπνοι λογαριασμοί"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Χρήση έξυπνου λογαριασμού;"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Ο λογαριασμός σας θα αναβαθμιστεί σε έξυπνο λογαριασμό με την επόμενη συναλλαγή."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Επιτυχία!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Ίδια διεύθυνση. Πιο έξυπνες λειτουργίες."
@@ -8603,12 +8549,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useSmartAccountDescription": {
-    "message": "Ενεργοποιήστε αυτή τη ρύθμιση για να μετατρέπονται αυτόματα οι λογαριασμοί που δημιουργούνται μέσα στο MetaMask σε έξυπνους λογαριασμούς όταν είναι διαθέσιμες σχετικές λειτουργίες, όπως ταχύτερες συναλλαγές, χαμηλότερα τέλη δικτύου και ευελιξία πληρωμών."
-  },
-  "useSmartAccountTitle": {
-    "message": "Χρησιμοποιήστε έξυπνο λογαριασμό"
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Η αυτόματη εμφάνιση tokens που έχουν σταλεί στον λογαριασμό σας περιλαμβάνει επικοινωνία με εξυπηρετητές τρίτων για την εμφάνιση των εικόνων των token. Αυτοί οι εξυπηρετητές θα έχουν πρόσβαση στη διεύθυνσή IP σας."

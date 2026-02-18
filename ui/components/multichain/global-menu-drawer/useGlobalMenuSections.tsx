@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import {
@@ -98,6 +98,7 @@ export function useGlobalMenuSections(
   const { trackEvent } = useContext(MetaMetricsContext);
   const { captureCommonExistingShieldSubscriptionEvents } =
     useSubscriptionMetrics();
+  const location = useLocation();
   const navigate = useNavigate();
 
   const basicFunctionality = useSelector(getUseExternalServices);
@@ -181,8 +182,9 @@ export function useGlobalMenuSections(
         read_count: notificationsReadCount,
       },
     });
-    navigate(NOTIFICATIONS_ROUTE);
-    onClose();
+    navigate(
+      `${NOTIFICATIONS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
+    );
   }, [
     hasThirdPartyNotifySnaps,
     isMetamaskNotificationsEnabled,
@@ -193,6 +195,7 @@ export function useGlobalMenuSections(
     navigate,
     notificationsUnreadCount,
     notificationsReadCount,
+    location.pathname,
   ]);
 
   const handleSupportMenuClick = useCallback(() => {
@@ -299,6 +302,7 @@ export function useGlobalMenuSections(
       section1.items.push({
         id: 'notifications-menu-item',
         iconName: IconName.Notification,
+        showChevron: true,
         label: (
           <Box
             flexDirection={BoxFlexDirection.Row}
@@ -317,6 +321,7 @@ export function useGlobalMenuSections(
 
     const section2: GlobalMenuSection = {
       id: 'global-menu-section-2',
+      hideDividerAbove: true, // No divider between notifications and this section
       items: [],
     };
 
@@ -395,15 +400,14 @@ export function useGlobalMenuSections(
           iconName: IconName.SecurityTick,
           label: t('allPermissions'),
           to: isGatorPermissionsRevocationFeatureEnabled()
-            ? GATOR_PERMISSIONS
-            : PERMISSIONS,
+            ? `${GATOR_PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`
+            : `${PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`,
           onClick: () => {
             trackEvent({
               event: MetaMetricsEventName.NavPermissionsOpened,
               category: MetaMetricsEventCategory.Navigation,
               properties: { location: METRICS_LOCATION },
             });
-            onClose();
           },
           disabled: hasUnapprovedTransactions,
         },
@@ -420,8 +424,7 @@ export function useGlobalMenuSections(
           id: 'global-menu-snaps',
           iconName: IconName.Snaps,
           label: t('snaps'),
-          to: SNAPS_ROUTE,
-          onClick: onClose,
+          to: `${SNAPS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
           showInfoDot: snapsUpdatesAvailable,
         },
       ],
@@ -442,7 +445,6 @@ export function useGlobalMenuSections(
               event: MetaMetricsEventName.NavSettingsOpened,
               properties: { location: METRICS_LOCATION },
             });
-            onClose();
           },
           disabled: hasUnapprovedTransactions,
         },
@@ -514,6 +516,7 @@ export function useGlobalMenuSections(
     return sections;
   }, [
     t,
+    location.pathname,
     basicFunctionality,
     isPopup,
     isSidepanel,
