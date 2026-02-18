@@ -42,6 +42,7 @@ export function configureFixtureSession(
     before('Set up shared fixture session', async function () {
       const options = {
         ...fixtureOptions,
+        // @ts-expect-error - fixtureOptions isn't actually typed correctly yet, we are just pretending it is in this file
         title: fixtureOptions.title ?? suiteTitle,
       };
 
