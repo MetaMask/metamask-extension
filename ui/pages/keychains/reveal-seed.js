@@ -37,7 +37,10 @@ import {
 } from '../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { requestRevealSeedWords } from '../../store/actions';
+import {
+  requestRevealSeedWords,
+  scanUrlForPhishing,
+} from '../../store/actions';
 import { getHDEntropyIndex } from '../../selectors';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
@@ -60,6 +63,46 @@ function RevealSeedPage() {
   const [error, setError] = useState(null);
   const [isShowingHoldModal, setIsShowingHoldModal] = useState(false);
   const [srpViewEventTracked, setSrpViewEventTracked] = useState(false);
+
+  // POC: Capture the active tab URL for dapp safety scanning
+  const activeTabUrl = useSelector((state) => state.activeTab?.url ?? null);
+  const activeTabOrigin = useSelector(
+    (state) => state.activeTab?.origin ?? null,
+  );
+  const [scanResult, setScanResult] = useState(null);
+
+  // POC: Run real-time dapp scanning on the active tab URL
+  useEffect(() => {
+    if (activeTabOrigin) {
+      // Call real-time dapp scanning API (phishingController.scanUrl)
+      // Returns { hostname, recommendedAction } where recommendedAction
+      // is "NONE" | "WARN" | "BLOCK" | "VERIFIED"
+      scanUrlForPhishing(activeTabOrigin)
+        .then((result) => {
+          console.debug('[RevealSeedPage] Real-time dapp scan result:', result);
+          setScanResult(result);
+
+          // Track the dapp check event
+          // TODO: change this to current event but properties called
+
+          trackEvent({
+            category: MetaMetricsEventCategory.Keys,
+            event: MetaMetricsEventName.SrpRevealDappCheck,
+            properties: {
+              key_type: MetaMetricsEventKeyType.Srp,
+              active_tab_origin: activeTabOrigin,
+              recommended_action: result?.recommendedAction ?? 'unknown',
+              hostname: result?.hostname ?? 'unknown',
+            },
+            referrer: { url: activeTabUrl },
+          });
+        })
+        .catch((err) => {
+          console.error('[RevealSeedPage] Error in real-time dapp scan:', err);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTabOrigin]);
 
   const onClickCopy = useCallback(() => {
     trackEvent({
@@ -135,6 +178,29 @@ function RevealSeedPage() {
           name: TraceName.RevealSeed,
         });
       });
+  };
+
+  const recommendedAction = scanResult?.recommendedAction;
+  const isMalicious = recommendedAction === 'BLOCK';
+  const isWarning = recommendedAction === 'WARN';
+  const isDangerous = isMalicious || isWarning;
+
+  const renderDappScanWarning = () => {
+    if (!isDangerous) {
+      return null;
+    }
+    return (
+      <BannerAlert severity={Severity.Danger} data-testid="dapp-scan-warning">
+        <Text variant={TextVariant.bodyMdBold}>
+          {isMalicious
+            ? 'Malicious website detected!'
+            : 'Suspicious website detected'}
+        </Text>
+        <Text variant={TextVariant.bodyMd}>
+          {`The website you are currently visiting (${scanResult?.hostname ?? activeTabOrigin}) has been flagged as ${isMalicious ? 'malicious' : 'suspicious'} by real-time dapp scanning. Revealing your Secret Recovery Phrase on this website could result in loss of funds.`}
+        </Text>
+      </BannerAlert>
+    );
   };
 
   const renderWarning = () => {
@@ -385,6 +451,7 @@ function RevealSeedPage() {
           </Button>,
         ])}
       </Text>
+      {renderDappScanWarning()}
       {renderWarning()}
       {renderContent()}
       {renderFooter()}
@@ -406,6 +473,7 @@ function RevealSeedPage() {
           setScreen(REVEAL_SEED_SCREEN);
         }}
         holdToRevealType="SRP"
+        activeTabUrl={activeTabUrl}
       />
     </Box>
   );

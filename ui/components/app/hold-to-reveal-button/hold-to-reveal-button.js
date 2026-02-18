@@ -20,7 +20,11 @@ const radius = 14;
 const strokeWidth = 2;
 const radiusWithStroke = radius - strokeWidth / 2;
 
-export default function HoldToRevealButton({ buttonText, onLongPressed }) {
+export default function HoldToRevealButton({
+  buttonText,
+  onLongPressed,
+  activeTabUrl,
+}) {
   const t = useContext(I18nContext);
   const isLongPressing = useRef(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
@@ -71,12 +75,14 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
    */
   const triggerOnLongPressed = useCallback(
     (e) => {
+      const referrer = activeTabUrl ? { url: activeTabUrl } : undefined;
       trackEvent({
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpHoldToRevealCompleted,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
         },
+        referrer,
       });
       trackEvent({
         category: MetaMetricsEventCategory.Keys,
@@ -84,12 +90,13 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
         },
+        referrer,
       });
       onLongPressed();
       setHasTriggeredUnlock(true);
       preventPropogation(e);
     },
-    [onLongPressed, trackEvent],
+    [onLongPressed, trackEvent, activeTabUrl],
   );
 
   /**
@@ -221,4 +228,9 @@ HoldToRevealButton.propTypes = {
    * Function to be called after the animation is finished
    */
   onLongPressed: PropTypes.func.isRequired,
+  /**
+   * The URL of the active tab when the user is revealing the SRP.
+   * Included as a referrer in metric events for dapp safety analysis.
+   */
+  activeTabUrl: PropTypes.string,
 };

@@ -2119,6 +2119,10 @@ export async function getPhishingResult(website: string) {
   return await submitRequestToBackground('getPhishingResult', [website]);
 }
 
+export async function scanUrlForPhishing(origin: string) {
+  return await submitRequestToBackground('scanUrlForPhishing', [origin]);
+}
+
 // TODO: Clean this up.
 export function removeSnap(
   snapId: string,

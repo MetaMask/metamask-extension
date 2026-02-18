@@ -3236,6 +3236,9 @@ export default class MetamaskController extends EventEmitter {
 
         return phishingController.test(website);
       },
+      scanUrlForPhishing: async (origin) => {
+        return phishingController.scanUrl(origin);
+      },
       deleteInterface: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapInterfaceController:deleteInterface',

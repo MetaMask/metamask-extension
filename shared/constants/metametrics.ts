@@ -876,6 +876,7 @@ export enum MetaMetricsEventName {
   SrpHoldToRevealClickStarted = 'Reveal SRP Click Started',
   SrpHoldToRevealCloseClicked = 'Closes Hold To Reveal SRP',
   SrpHoldToRevealCompleted = 'Reveal SRP Completed',
+  SrpRevealDappCheck = 'Reveal SRP Active Dapp Check',
   SrpViewsSrpQR = 'Views SRP QR Code',
   SrpViewSrpText = 'Views SRP',
   SrpCopiedToClipboard = 'Copies SRP to clipboard',
