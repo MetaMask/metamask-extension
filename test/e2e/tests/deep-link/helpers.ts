@@ -6,6 +6,7 @@ import {
 } from '../../../../shared/lib/deep-links/constants';
 import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import { BaseUrl } from '../../../../shared/constants/urls';
 
 /**
  * Generates an ECDSA key pair for signing deep links for testing purposes.
@@ -307,6 +308,16 @@ export const mockRewardsApi = async (server: Mockttp): Promise<void> => {
       },
     });
 };
+
+export const REDIRECT_ROUTES = [
+  { route: '/buy', expectedUrl: `${BaseUrl.Portfolio}/buy` },
+  { route: '/card-onboarding', expectedUrl: `${BaseUrl.MetaMask}/card` },
+  { route: '/perps', expectedUrl: `${BaseUrl.MetaMask}/perps` },
+  {
+    route: '/predict',
+    expectedUrl: `${BaseUrl.MetaMask}/prediction-markets`,
+  },
+] as const;
 
 export function getHashParams(url: URL) {
   const hash = url.hash.slice(1); // remove leading '#'

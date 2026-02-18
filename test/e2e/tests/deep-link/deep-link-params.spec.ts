@@ -283,7 +283,7 @@ describe('Deep Link - Parameter Handling & Security', function () {
     );
   });
 
-  it('signed with sig_params only exposes foo (both) and bar, not baz', async function () {
+  it('correctly exposes or filters params based on signing method', async function () {
     await withFixtures(
       await getConfig({
         title: this.test?.fullTitle(),
@@ -297,132 +297,61 @@ describe('Deep Link - Parameter Handling & Security', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const rawUrl = 'https://link.metamask.io/test?foo=0&foo=1&bar=2';
-        const signedUrl = `${await signDeepLink(keyPair.privateKey, rawUrl)}&baz=3`;
-
-        await driver.openNewURL(signedUrl);
         const deepLink = new DeepLink(driver);
+
+        // 1. signed with sig_params only exposes foo (both) and bar, not baz
+        console.log('Testing: signed with sig_params filters out unsigned params');
+        const url1 = 'https://link.metamask.io/test?foo=0&foo=1&bar=2';
+        const signedUrl1 = `${await signDeepLink(keyPair.privateKey, url1)}&baz=3`;
+        await driver.openNewURL(signedUrl1);
         await deepLink.checkPageIsLoaded();
         await deepLink.clickContinueButton();
-        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
+        const params1 = getHashParams(new URL(await driver.getCurrentUrl()));
+        assert.deepStrictEqual(params1.getAll('foo'), ['0', '1']);
+        assert.deepStrictEqual(params1.getAll('bar'), ['2']);
+        assert.equal(params1.has('baz'), false);
 
-        assert.deepStrictEqual(hashParams.getAll('foo'), ['0', '1']);
-        assert.deepStrictEqual(hashParams.getAll('bar'), ['2']);
-        assert.equal(hashParams.has('baz'), false);
-      },
-    );
-  });
-
-  it('signed with empty sig_params, but url has extra params added, does not expose extra params', async function () {
-    await withFixtures(
-      await getConfig({
-        title: this.test?.fullTitle(),
-        deepLinkPublicKey,
-      }),
-      async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        const rawUrl = 'https://link.metamask.io/test';
-        const signedUrl = `${await signDeepLink(keyPair.privateKey, rawUrl)}&foo=0&foo=1&bar=2&baz=3`;
-
-        await driver.openNewURL(signedUrl);
-        const deepLink = new DeepLink(driver);
+        // 2. signed with empty sig_params + extra params appended: exposes nothing
+        console.log('Testing: signed with empty sig_params does not expose extra params');
+        const url2 = 'https://link.metamask.io/test';
+        const signedUrl2 = `${await signDeepLink(keyPair.privateKey, url2)}&foo=0&foo=1&bar=2&baz=3`;
+        await driver.openNewURL(signedUrl2);
         await deepLink.checkPageIsLoaded();
         await deepLink.clickContinueButton();
-        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
+        const params2 = getHashParams(new URL(await driver.getCurrentUrl()));
+        assert.deepStrictEqual(params2.size, 0);
 
-        assert.deepStrictEqual(hashParams.size, 0);
-      },
-    );
-  });
-
-  it('signed with sig_params, url has no extra params added, works', async function () {
-    await withFixtures(
-      await getConfig({
-        title: this.test?.fullTitle(),
-        deepLinkPublicKey,
-      }),
-      async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        const rawUrl = 'https://link.metamask.io/test';
-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
-
-        await driver.openNewURL(signedUrl);
-        const deepLink = new DeepLink(driver);
+        // 3. signed with sig_params, no extra params: exposes nothing (no params to forward)
+        console.log('Testing: signed with sig_params and no params works');
+        const url3 = 'https://link.metamask.io/test';
+        const signedUrl3 = await signDeepLink(keyPair.privateKey, url3);
+        await driver.openNewURL(signedUrl3);
         await deepLink.checkPageIsLoaded();
         await deepLink.clickContinueButton();
-        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
+        const params3 = getHashParams(new URL(await driver.getCurrentUrl()));
+        assert.deepStrictEqual(params3.size, 0);
 
-        assert.deepStrictEqual(hashParams.size, 0);
-      },
-    );
-  });
-
-  it('signed without sig_params exposes all params (foo, bar, baz)', async function () {
-    await withFixtures(
-      await getConfig({
-        title: this.test?.fullTitle(),
-        deepLinkPublicKey,
-      }),
-      async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        const rawUrl = 'https://link.metamask.io/test?foo=1&bar=2&baz=3';
-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl, false);
-
-        await driver.openNewURL(signedUrl);
-        const deepLink = new DeepLink(driver);
+        // 4. signed without sig_params exposes all params (foo, bar, baz)
+        console.log('Testing: signed without sig_params exposes all params');
+        const url4 = 'https://link.metamask.io/test?foo=1&bar=2&baz=3';
+        const signedUrl4 = await signDeepLink(keyPair.privateKey, url4, false);
+        await driver.openNewURL(signedUrl4);
         await deepLink.checkPageIsLoaded();
         await deepLink.clickContinueButton();
-        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
+        const params4 = getHashParams(new URL(await driver.getCurrentUrl()));
+        assert.deepStrictEqual(params4.getAll('foo'), ['1']);
+        assert.deepStrictEqual(params4.getAll('bar'), ['2']);
+        assert.deepStrictEqual(params4.getAll('baz'), ['3']);
 
-        assert.deepStrictEqual(hashParams.getAll('foo'), ['1']);
-        assert.deepStrictEqual(hashParams.getAll('bar'), ['2']);
-        assert.deepStrictEqual(hashParams.getAll('baz'), ['3']);
-      },
-    );
-  });
-
-  it('unsigned flow exposes all params including duplicate values', async function () {
-    await withFixtures(
-      await getConfig({
-        title: this.test?.fullTitle(),
-        deepLinkPublicKey,
-      }),
-      async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        const rawUrl = 'https://link.metamask.io/test?foo=1&foo=2&bar=3';
-
-        await driver.openNewURL(rawUrl);
-        const deepLink = new DeepLink(driver);
+        // 5. unsigned flow exposes all params including duplicate values
+        console.log('Testing: unsigned flow exposes all params including duplicates');
+        const url5 = 'https://link.metamask.io/test?foo=1&foo=2&bar=3';
+        await driver.openNewURL(url5);
         await deepLink.checkPageIsLoaded();
         await deepLink.clickContinueButton();
-        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
-
-        assert.deepStrictEqual(hashParams.getAll('foo'), ['1', '2']);
-        assert.deepStrictEqual(hashParams.getAll('bar'), ['3']);
+        const params5 = getHashParams(new URL(await driver.getCurrentUrl()));
+        assert.deepStrictEqual(params5.getAll('foo'), ['1', '2']);
+        assert.deepStrictEqual(params5.getAll('bar'), ['3']);
       },
     );
   });
