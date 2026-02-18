@@ -5730,44 +5730,8 @@
   "smartAccount": {
     "message": "Cuntas cliste"
   },
-  "smartAccountAccept": {
-    "message": "Úsáid cuntas cliste"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Idirbhearta níos tapúla, táillí níos ísle"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "Sábháil am agus airgead trí idirbhearta a phróiseáil le chéile."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Coinnigh an seoladh cuntais céanna, agus is féidir leat aistriú ar ais am ar bith."
-  },
   "smartAccountLabel": {
     "message": "Cuntas Cliste"
-  },
-  "smartAccountPayToken": {
-    "message": "Íoc le haon chomhartha, am ar bith"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Bain úsáid as na comharthaí atá agat cheana féin chun táillí líonra a chlúdach."
-  },
-  "smartAccountReject": {
-    "message": "Ná húsáid cuntas cliste"
-  },
-  "smartAccountSameAccount": {
-    "message": "An cuntas céanna, gnéithe níos cliste."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Cuntais chliste"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Úsáid cuntas cliste?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Déanfar do chuntas a nuashonrú go cuntas cliste le do chéad idirbheart eile."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Rathúil!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "An seoladh céanna. Gnéithe níos cliste."
@@ -7166,12 +7130,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useSmartAccountDescription": {
-    "message": "Coinnigh seo ar siúl chun cuntais a cruthaíodh laistigh de MetaMask a athrú go huathoibríoch go cuntais chliste aon uair a bhíonn gnéithe ábhartha ar fáil, amhail idirbhearta níos tapúla, táillí líonra níos ísle agus solúbthacht íocaíochta dóibh sin."
-  },
-  "useSmartAccountTitle": {
-    "message": "Úsáid cuntas cliste"
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Baineann cumarsáid le freastalaithe tríú páirtí chun íomhánna na gcomharthaí a aisghabháil le taispeáint uathoibríoch comharthaí a sheoltar chuig do chuntas. Beidh rochtain ag na freastalaithe sin ar do sheoladh IP."

@@ -857,7 +857,6 @@
       "showNativeTokenAsMainBalance": "boolean",
       "showTestNetworks": "boolean",
       "skipDeepLinkInterstitial": "boolean",
-      "smartAccountOptIn": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": "boolean",
       "tokenNetworkFilter": {
@@ -1166,6 +1165,11 @@
     "watchEthereumAccountEnabled": "boolean",
     "web3ShimUsageOrigins": {},
     "verifiedSnaps": {}
+  },
+  "perpsTutorial": {
+    "tutorialModalOpen": "boolean",
+    "activeStep": "string",
+    "tutorialCompleted": "boolean"
   },
   "platform": {
     "arch": "string",
