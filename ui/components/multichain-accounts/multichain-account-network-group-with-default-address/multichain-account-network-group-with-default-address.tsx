@@ -44,7 +44,7 @@ export const MultichainAccountNetworkGroupWithDefaultAddress = ({
   const { defaultAddress, defaultScopes } = useSelector((state) =>
     getDefaultScopeAndAddressByAccountGroupId(state, groupId),
   );
-  const [_, handleCopy] = useCopyToClipboard({
+  const [, handleCopy] = useCopyToClipboard({
     clearDelayMs: null,
   });
 

@@ -36,6 +36,7 @@ import {
 
 import { getMultichainNetworkConfigurationsByChainId } from '../multichain/networks';
 import { isTestNetwork } from '../../helpers/utils/network-helper';
+import { DefaultAddressScope } from '../../../shared/constants/default-address';
 import {
   AccountGroupWithInternalAccounts,
   AccountListStats,
@@ -48,7 +49,6 @@ import {
   NormalizedGroupMetadata,
 } from './account-tree.types';
 import { getSanitizedChainId, extractWalletIdFromGroupId } from './utils';
-import { DefaultAddressScope } from '../../../shared/constants/default-address';
 
 /**
  * Retrieve account tree state.
@@ -786,8 +786,6 @@ export const getIconSeedAddressByAccountGroupId = createDeepEqualSelector(
  * Get the address and scopes for the account group that matches the user's default address scope
  * (e.g. eip155, bip122). Used when showing the "default address" in the UI.
  *
- * @param state - Redux state.
- * @param groupId - The account group ID.
  * @returns Object with address (or null if none) and scopes (list of matching scope IDs).
  */
 export const getDefaultScopeAndAddressByAccountGroupId =
