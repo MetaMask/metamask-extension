@@ -7082,44 +7082,8 @@
   "smartAccount": {
     "message": "スマートアカウント"
   },
-  "smartAccountAccept": {
-    "message": "スマートアカウントを使用"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "より高速なトランザクション、低い手数料"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "トランザクションをまとめて処理して時間とお金を節約します"
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "アカウントアドレスはそのままで、いつでも元に戻せます。"
-  },
   "smartAccountLabel": {
     "message": "スマートアカウント"
-  },
-  "smartAccountPayToken": {
-    "message": "いつでもどのトークンでも支払い可能"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "すでに持っているトークンを使ってネットワーク手数料を支払えます。"
-  },
-  "smartAccountReject": {
-    "message": "スマートアカウントを使用しない"
-  },
-  "smartAccountSameAccount": {
-    "message": "同じアカウントでよりスマートな機能。"
-  },
-  "smartAccountSplashInfo": {
-    "message": "スマートアカウント"
-  },
-  "smartAccountSplashTitle": {
-    "message": "スマートアカウントを使用しますか？"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "次回のトランザクションの際に、アカウントがスマートアカウントにアップデートされます。"
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "成功！"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "同じアドレスでよりスマートな機能。"
