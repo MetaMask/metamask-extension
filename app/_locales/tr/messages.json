@@ -7082,44 +7082,8 @@
   "smartAccount": {
     "message": "Akıllı hesap"
   },
-  "smartAccountAccept": {
-    "message": "Akıllı hesap kullanın"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Daha hızlı işlemler, daha düşük ücretler"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "İşlemleri birlikte gerçekleştirerek vakitten ve nakitten tasarruf edin."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Aynı hesap adresini koruyun; dilediğiniz zaman tekrar geçebilirsiniz."
-  },
   "smartAccountLabel": {
     "message": "Akıllı Hesap"
-  },
-  "smartAccountPayToken": {
-    "message": "Dilediğiniz token ile dilediğiniz zaman ödeyin"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Ağ ücretlerini karşılamak için zaten sahip olduğunuz token'ları kullanın."
-  },
-  "smartAccountReject": {
-    "message": "Akıllı hesap kullanma"
-  },
-  "smartAccountSameAccount": {
-    "message": "Aynı hesap, daha akıllı özellikler."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Akıllı hesaplar"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Akıllı hesap kullanılsın mı?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Hesabınız bir sonraki işleminizle akıllı hesaba güncellenecektir."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Başarılı!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Aynı adres. Daha akıllı özellikler."
