@@ -15,6 +15,9 @@ const { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 
 const { ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
+const {
+  getProductionRemoteFlagApiResponse,
+} = require('./feature-flags/feature-flag-registry');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -183,6 +186,22 @@ async function setupMocking(
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
 
+  // remote feature flags — production-accurate defaults from the registry
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: getProductionRemoteFlagApiResponse(),
+      };
+    });
+
   // Subscriptions Polling Get Subscriptions
   await server
     .forGet('https://subscription.api.cx.metamask.io/v1/subscriptions')
@@ -214,6 +233,38 @@ async function setupMocking(
             cohorts: [],
             assignedCohort: null,
             hasAssignedCohortExpired: null,
+          },
+        ],
+      };
+    });
+
+  await server
+    .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          subscriptions: [],
+          trialedProducts: [],
+        },
+      };
+    });
+
+  await server
+    .forGet(
+      'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            canSubscribe: false,
+            canViewEntryModal: false,
+            minBalanceUSD: 1000,
+            product: 'shield',
+            modalType: 'A',
+            cohorts: [],
           },
         ],
       };
@@ -1049,6 +1100,12 @@ async function setupMocking(
   // Notification APIs
   await mockNotificationServices(server);
 
+  // Override notification list with empty response to prevent unread dot
+  // Notification-specific tests re-register this endpoint via testSpecificMock
+  await server
+    .forPost('https://notification.api.cx.metamask.io/api/v3/notifications')
+    .thenCallback(() => ({ statusCode: 200, json: [] }));
+
   // Identity APIs
   await mockIdentityServices(server);
 
@@ -1057,44 +1114,6 @@ async function setupMocking(
       statusCode: 404,
     };
   });
-
-  // remote feature flags
-  await server
-    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-    .withQuery({
-      client: 'extension',
-      distribution: 'main',
-      environment: 'dev',
-    })
-    .thenCallback(() => {
-      return {
-        ok: true,
-        statusCode: 200,
-        json: [
-          { feature1: true },
-          { feature2: false },
-          {
-            feature3: [
-              {
-                value: 'valueA',
-                name: 'groupA',
-                scope: { type: 'threshold', value: 0.3 },
-              },
-              {
-                value: 'valueB',
-                name: 'groupB',
-                scope: { type: 'threshold', value: 0.5 },
-              },
-              {
-                scope: { type: 'threshold', value: 1 },
-                value: 'valueC',
-                name: 'groupC',
-              },
-            ],
-          },
-        ],
-      };
-    });
 
   // On Ramp Content
   const ON_RAMP_CONTENT = fs.readFileSync(ON_RAMP_CONTENT_PATH);
