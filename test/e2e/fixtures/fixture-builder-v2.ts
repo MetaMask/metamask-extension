@@ -3,6 +3,8 @@ import type {
   PermissionConstraint,
   PermissionControllerState,
 } from '@metamask/permission-controller';
+import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
+import type { PreferencesControllerState } from '../../../app/scripts/controllers/preferences-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   DAPP_URL,
@@ -52,6 +54,19 @@ class FixtureBuilderV2 {
     const tc = this.fixture.data.TransactionController ?? {};
     merge(this.fixture.data, { TransactionController: tc });
     merge(this.fixture.data.TransactionController, data);
+    return this;
+  }
+
+  withPreferencesController(data: Partial<PreferencesControllerState>): this {
+    merge(this.fixture.data.PreferencesController, data);
+    return this;
+  }
+
+  withEnabledNetworks(
+    data: NetworkEnablementControllerState['enabledNetworkMap'],
+  ): this {
+    this.fixture.data.NetworkEnablementController.enabledNetworkMap =
+      data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
     return this;
   }
 
@@ -315,6 +330,12 @@ class FixtureBuilderV2 {
 
   withTransactionControllerCompletedAndIncomingTransaction(): this {
     return this.withTransactionControllerCompletedTransaction().withTransactionControllerIncomingTransaction();
+  }
+
+  withConversionRateDisabled(): this {
+    return this.withPreferencesController({
+      useCurrencyRateCheck: false,
+    });
   }
 
   withPermissionControllerConnectedToTestDapp({
