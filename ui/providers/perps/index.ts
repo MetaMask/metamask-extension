@@ -1,6 +1,7 @@
 /**
  * Perps Providers
  *
+<<<<<<< HEAD
  * This module exports providers and utilities for Perps UI.
  *
  * Key components:
@@ -67,3 +68,11 @@ export type {
   SubscribeCandlesParams,
   SubscribeOrderBookParams,
 } from '@metamask/perps-controller';
+=======
+ * Currently using mock implementations for development.
+ * This file will be updated to use real controller when integration is complete.
+ */
+
+// Re-export everything from the mock implementation
+export * from './index.mock';
+>>>>>>> main

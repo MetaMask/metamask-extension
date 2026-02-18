@@ -58,7 +58,7 @@ export type UsePerpsOrderFormReturn = {
   handleStopLossPriceChange: (stopLossPrice: string) => void;
   /** Handler for close percent changes (close mode only) */
   handleClosePercentChange: (percent: number) => void;
-  /** Handler for limit price changes (limit order mode) */
+  /** Handler for limitPrice changes */
   handleLimitPriceChange: (limitPrice: string) => void;
   /** Handler for form submission */
   handleSubmit: () => void;
