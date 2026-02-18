@@ -48,7 +48,7 @@ export const InfoSkeleton = () => (
       width="200px"
       style={{ marginBottom: 20, justifySelf: 'center', alignSelf: 'center' }}
     />
-    <Skeleton height="72px" width="100%" style={{ marginBottom: 12 }} />
+    <Skeleton height="72px" width="100%" style={{ marginBottom: 12 }} data-testid="confirmation__info_skeleton"/>
     <Skeleton height="72px" width="100%" style={{ marginBottom: 12 }} />
     <Skeleton height="72px" width="100%" style={{ marginBottom: 12 }} />
   </>
