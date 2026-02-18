@@ -7470,44 +7470,8 @@
   "smartAccount": {
     "message": "Smart account"
   },
-  "smartAccountAccept": {
-    "message": "Use smart account"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Faster transactions, lower fees"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "Save time and money by processing transactions together."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Keep the same account address, and you can switch back anytime."
-  },
   "smartAccountLabel": {
     "message": "Smart Account"
-  },
-  "smartAccountPayToken": {
-    "message": "Pay with any token, any time"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Use the tokens you already have to cover network fees."
-  },
-  "smartAccountReject": {
-    "message": "Don’t use smart account"
-  },
-  "smartAccountSameAccount": {
-    "message": "Same account, smarter features."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Smart accounts"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Use smart account?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Your account will be updated to smart account with your next transaction."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Successful!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."
