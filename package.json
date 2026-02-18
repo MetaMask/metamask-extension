@@ -249,7 +249,7 @@
     "qs@npm:6.13.0": "^6.14.1",
     "@metamask/bridge-status-controller": "64.3.0",
     "@ledgerhq/hw-transport-webhid@npm:^6.31.0": "patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch",
-    "fast-xml-parser": "^5.3.4",
+    "fast-xml-parser": "^5.3.6",
     "@metamask/snaps-controllers": "^18.0.0"
   },
   "dependencies": {
