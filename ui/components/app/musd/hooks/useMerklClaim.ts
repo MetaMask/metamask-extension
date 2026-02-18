@@ -124,7 +124,6 @@ export const useMerklClaim = ({
 
       setError(err.message);
       setIsClaiming(false);
-      throw e;
     }
   }, [selectedAddress, tokenAddress, chainId, claimChainId, dispatch]);
 

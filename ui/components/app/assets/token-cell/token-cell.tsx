@@ -72,9 +72,7 @@ function ClaimBonusBadge({
   const handleBadgeClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      claimRewards().catch(() => {
-        // Error state is managed by useMerklClaim
-      });
+      claimRewards();
     },
     [claimRewards],
   );

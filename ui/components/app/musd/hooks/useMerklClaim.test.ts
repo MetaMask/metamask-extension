@@ -154,11 +154,9 @@ describe('useMerklClaim', () => {
       }),
     );
 
-    await expect(
-      act(async () => {
-        await result.current.claimRewards();
-      }),
-    ).rejects.toThrow('No claimable rewards found');
+    await act(async () => {
+      await result.current.claimRewards();
+    });
 
     expect(result.current.error).toBe('No claimable rewards found');
     expect(result.current.isClaiming).toBe(false);
