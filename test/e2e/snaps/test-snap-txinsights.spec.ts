@@ -1,5 +1,5 @@
 import { Driver } from '../webdriver/driver';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { DAPP_ONE_URL, DAPP_PATH, DAPP_URL, WINDOW_TITLES } from '../constants';
@@ -20,7 +20,7 @@ describe('Test Snap TxInsights', function () {
           numberOfTestDapps: 1,
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         testSpecificMock: mockInsightsSnap,
@@ -58,7 +58,7 @@ describe('Test Snap TxInsights', function () {
           numberOfTestDapps: 1,
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
@@ -107,7 +107,7 @@ describe('Test Snap TxInsights', function () {
           numberOfTestDapps: 1,
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,

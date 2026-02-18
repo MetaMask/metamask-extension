@@ -8,7 +8,7 @@ const {
   DAPP_URL,
   WINDOW_TITLES,
 } = require('../constants');
-const FixtureBuilder = require('../fixtures/fixture-builder');
+const { default: FixtureBuilderV2 } = require('../fixtures/fixture-builder-v2');
 const {
   mockSignatureInsightsSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
@@ -22,7 +22,7 @@ describe('Test Snap Signature Insights', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         failOnConsoleError: false,
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         testSpecificMock: mockSignatureInsightsSnap,
