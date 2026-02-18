@@ -6462,6 +6462,16 @@ export function createTransactionEventFragment(
   ]);
 }
 
+export function upsertTransactionUIMetricsFragment(
+  transactionId: string,
+  payload: Partial<MetaMetricsEventFragment>,
+) {
+  return submitRequestToBackground('upsertTransactionUIMetricsFragment', [
+    transactionId,
+    payload,
+  ]);
+}
+
 export function updateEventFragment(
   id: string,
   payload: Partial<MetaMetricsEventFragment>,
