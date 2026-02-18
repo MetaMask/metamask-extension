@@ -1,5 +1,9 @@
 import { Hex } from '@metamask/utils';
-import { TransactionMeta, CHAIN_IDS } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  CHAIN_IDS,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import {
   TransactionPayRequiredToken,
   TransactionPayTotals,
@@ -58,10 +62,19 @@ const NATIVE_TOKEN_MOCK = {
 
 function runHook(
   props: Parameters<typeof useInsufficientPayTokenBalanceAlert>[0] = {},
+  transactionOverrides: Partial<TransactionMeta> = {},
 ) {
-  const contractInteraction = genUnapprovedContractInteractionConfirmation({
+  const baseTransaction = genUnapprovedContractInteractionConfirmation({
     chainId: CHAIN_IDS.MAINNET,
   }) as TransactionMeta;
+  const contractInteraction = {
+    ...baseTransaction,
+    ...transactionOverrides,
+    txParams: {
+      ...baseTransaction.txParams,
+      ...(transactionOverrides.txParams ?? {}),
+    },
+  } as TransactionMeta;
 
   const state = getMockConfirmStateForTransaction(contractInteraction);
 
@@ -213,6 +226,54 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
 
       expect(result.current).toStrictEqual([]);
     });
+
+    it('does not show pay-token-fee alert for perps deposit when pay token covers source amount', () => {
+      useMultichainBalancesMock.mockReturnValue({
+        assetsWithBalance: [
+          {
+            ...NATIVE_TOKEN_MOCK,
+            chainId: '0xa4b1',
+            balance: '100000000000000',
+          },
+        ],
+        isLoading: false,
+        balanceByChainId: {},
+      } as unknown as ReturnType<typeof useMultichainBalances>);
+
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          address: '0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          chainId: '0xa4b1' as Hex,
+          // Enough for sourceAmount.raw (5e18), not enough for sourceAmount+sourceFee
+          balanceRaw: '5000000000000000000',
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      useTransactionPayTotalsMock.mockReturnValue({
+        ...TOTALS_MOCK,
+        sourceAmount: { raw: '5000000000000000000', usd: '5.00' },
+        fees: {
+          ...TOTALS_MOCK.fees,
+          sourceNetwork: {
+            max: { raw: '1000000000000000', usd: '0.01' },
+          },
+          isSourceGasFeeToken: false,
+        },
+      });
+
+      const { result } = runHook(
+        {},
+        {
+          type: TransactionType.perpsDeposit,
+          chainId: '0xa4b1' as Hex,
+        },
+      );
+
+      expect(result.current).toStrictEqual([]);
+    });
   });
 
   describe('for source network fee', () => {
@@ -290,6 +351,179 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       });
 
       const { result } = runHook();
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    it('does not show native fee alert for perps deposit when pay token matches required token across chain-id formats', () => {
+      useMultichainBalancesMock.mockReturnValue({
+        assetsWithBalance: [
+          {
+            ...NATIVE_TOKEN_MOCK,
+            chainId: '0xa4b1',
+            balance: '100000000000000',
+          },
+        ],
+        isLoading: false,
+        balanceByChainId: {},
+      } as unknown as ReturnType<typeof useMultichainBalances>);
+
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          address: '0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          chainId: '0xa4b1' as Hex,
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      useTransactionPayRequiredTokensMock.mockReturnValue([
+        {
+          ...REQUIRED_TOKEN_MOCK,
+          address: '0xa0B86991C6218B36C1D19D4A2E9Eb0cE3606eb48',
+          chainId: '42161' as unknown as Hex,
+        } as TransactionPayRequiredToken,
+      ]);
+
+      const { result } = runHook(
+        {},
+        {
+          type: TransactionType.perpsDeposit,
+          chainId: '0xa4b1' as Hex,
+        },
+      );
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    it('does not show native fee alert for perps deposit when pay token and required token do not match', () => {
+      useMultichainBalancesMock.mockReturnValue({
+        assetsWithBalance: [
+          {
+            ...NATIVE_TOKEN_MOCK,
+            chainId: '0xa4b1',
+            balance: '100000000000000',
+          },
+        ],
+        isLoading: false,
+        balanceByChainId: {},
+      } as unknown as ReturnType<typeof useMultichainBalances>);
+
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          address: '0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          chainId: '0xa4b1' as Hex,
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      useTransactionPayRequiredTokensMock.mockReturnValue([
+        {
+          ...REQUIRED_TOKEN_MOCK,
+          address: '0x0000000000000000000000000000000000000001',
+          chainId: '42161' as unknown as Hex,
+        } as TransactionPayRequiredToken,
+      ]);
+
+      const { result } = runHook(
+        {},
+        {
+          type: TransactionType.perpsDeposit,
+          chainId: '0xa4b1' as Hex,
+        },
+      );
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    it('does not show native fee alert for perps deposit when matching required token is not first', () => {
+      useMultichainBalancesMock.mockReturnValue({
+        assetsWithBalance: [
+          {
+            ...NATIVE_TOKEN_MOCK,
+            chainId: '0xa4b1',
+            balance: '100000000000000',
+          },
+        ],
+        isLoading: false,
+        balanceByChainId: {},
+      } as unknown as ReturnType<typeof useMultichainBalances>);
+
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          address: '0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          chainId: '0xa4b1' as Hex,
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      useTransactionPayRequiredTokensMock.mockReturnValue([
+        {
+          ...REQUIRED_TOKEN_MOCK,
+          address: '0x0000000000000000000000000000000000000001',
+          chainId: '42161' as unknown as Hex,
+        } as TransactionPayRequiredToken,
+        {
+          ...REQUIRED_TOKEN_MOCK,
+          address: '0xa0B86991C6218B36C1D19D4A2E9Eb0cE3606eb48',
+          chainId: 'eip155:42161' as unknown as Hex,
+        } as TransactionPayRequiredToken,
+      ]);
+
+      const { result } = runHook(
+        {},
+        {
+          type: TransactionType.perpsDeposit,
+          chainId: '0xa4b1' as Hex,
+        },
+      );
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    it('does not show native fee alert for perps deposit when required token chain id is missing', () => {
+      useMultichainBalancesMock.mockReturnValue({
+        assetsWithBalance: [
+          {
+            ...NATIVE_TOKEN_MOCK,
+            chainId: '0xa4b1',
+            balance: '100000000000000',
+          },
+        ],
+        isLoading: false,
+        balanceByChainId: {},
+      } as unknown as ReturnType<typeof useMultichainBalances>);
+
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          address: '0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          chainId: '0xa4b1' as Hex,
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      useTransactionPayRequiredTokensMock.mockReturnValue([
+        {
+          ...REQUIRED_TOKEN_MOCK,
+          address: '0xa0B86991C6218B36C1D19D4A2E9Eb0cE3606eb48',
+          chainId: undefined,
+        } as unknown as TransactionPayRequiredToken,
+      ]);
+
+      const { result } = runHook(
+        {},
+        {
+          type: TransactionType.perpsDeposit,
+          chainId: '0xa4b1' as Hex,
+        },
+      );
 
       expect(result.current).toStrictEqual([]);
     });

@@ -55,6 +55,16 @@ let currentAddress: string | null = null;
 let initPromise: Promise<PerpsController> | null = null;
 
 /**
+ * Address currently being initialized by the in-flight initPromise.
+ */
+let initializingAddress: string | null = null;
+
+/**
+ * Monotonic init generation used to invalidate stale async initializations.
+ */
+let initGeneration = 0;
+
+/**
  * Create the RemoteFeatureFlagController-namespaced messenger and (when store is
  * available) register getState and subscribe to Redux to publish stateChange.
  * Then create the PerpsController messenger and delegate getState/stateChange to it.
@@ -134,6 +144,82 @@ export function getFallbackBlockedRegions(): string[] {
     .filter(Boolean);
 }
 
+function startControllerInitialization(
+  selectedAddress: string,
+  store?: Store<MetaMaskReduxState>,
+): Promise<PerpsController> {
+  initGeneration += 1;
+  const generation = initGeneration;
+  initializingAddress = selectedAddress;
+
+  const task = (async () => {
+    let storeToUse = store;
+    if (!storeToUse) {
+      try {
+        storeToUse = await getReduxStorePromise();
+      } catch {
+        // Store not ready (e.g. in tests)
+      }
+    }
+
+    const messenger = createPerpsMessenger(storeToUse ?? null);
+    const infrastructure = createPerpsInfrastructure({
+      selectedAddress,
+      signTypedMessage: (msgParams) =>
+        submitRequestToBackground<string>('perpsSignTypedData', [msgParams]),
+    });
+    const fallbackBlockedRegions = getFallbackBlockedRegions();
+
+    const controller = new PerpsController({
+      messenger,
+      state: getDefaultPerpsControllerState(),
+      infrastructure,
+      clientConfig: {
+        fallbackHip3Enabled: true,
+        fallbackHip3AllowlistMarkets: [], // Empty = allow all HIP-3 markets
+        fallbackBlockedRegions,
+      },
+    });
+
+    // Initialize the controller (connects to Hyperliquid)
+    await controller.init();
+
+    const isStale =
+      generation !== initGeneration || initializingAddress !== selectedAddress;
+
+    if (isStale) {
+      await controller.disconnect();
+
+      if (initPromise) {
+        return initPromise;
+      }
+
+      if (controllerInstance) {
+        return controllerInstance;
+      }
+
+      throw new Error(
+        'Perps controller initialization superseded without replacement',
+      );
+    }
+
+    controllerInstance = controller;
+    currentAddress = selectedAddress;
+    return controller;
+  })();
+
+  initPromise = task;
+
+  task.finally(() => {
+    if (initPromise === task) {
+      initPromise = null;
+      initializingAddress = null;
+    }
+  });
+
+  return task;
+}
+
 /**
  * Get the PerpsController instance.
  * Returns a singleton PerpsController that is initialized on first access.
@@ -169,7 +255,7 @@ export async function getPerpsController(
     }
     await controllerInstance.disconnect();
     controllerInstance = null;
-    initPromise = null;
+    currentAddress = null;
   }
 
   // Return existing controller if address hasn't changed
@@ -177,61 +263,33 @@ export async function getPerpsController(
     return controllerInstance;
   }
 
-  // Prevent race conditions during initialization
-  if (!initPromise) {
-    initPromise = (async () => {
-      let storeToUse = store;
-      if (!storeToUse) {
-        try {
-          storeToUse = await getReduxStorePromise();
-        } catch {
-          // Store not ready (e.g. in tests)
-        }
-      }
-      const messenger = createPerpsMessenger(storeToUse ?? null);
-      const infrastructure = createPerpsInfrastructure({
-        selectedAddress,
-        signTypedMessage: (msgParams) =>
-          submitRequestToBackground<string>('perpsSignTypedData', [msgParams]),
-      });
-      const fallbackBlockedRegions = getFallbackBlockedRegions();
-
-      const controller = new PerpsController({
-        messenger,
-        state: getDefaultPerpsControllerState(),
-        infrastructure,
-        clientConfig: {
-          fallbackHip3Enabled: true,
-          fallbackHip3AllowlistMarkets: [], // Empty = allow all HIP-3 markets
-          fallbackBlockedRegions,
-        },
-      });
-
-      await controller.init();
-
-      controllerInstance = controller;
-      currentAddress = selectedAddress;
-      return controller;
-    })();
+  // Reuse matching in-flight initialization.
+  if (initPromise && initializingAddress === selectedAddress) {
+    return initPromise;
   }
 
-  return initPromise;
+  // Start or supersede initialization when there is no in-flight init for the
+  // requested address.
+  return startControllerInitialization(selectedAddress, store);
 }
 
 /**
  * Reset the controller instance (useful for testing or account switch).
  */
 export async function resetPerpsController(): Promise<void> {
+  initGeneration += 1;
   if (unsubscribeRemoteFeatureFlags) {
     unsubscribeRemoteFeatureFlags();
     unsubscribeRemoteFeatureFlags = null;
   }
   if (controllerInstance) {
     await controllerInstance.disconnect();
-    controllerInstance = null;
-    initPromise = null;
-    currentAddress = null;
   }
+
+  controllerInstance = null;
+  initPromise = null;
+  currentAddress = null;
+  initializingAddress = null;
 }
 
 /**

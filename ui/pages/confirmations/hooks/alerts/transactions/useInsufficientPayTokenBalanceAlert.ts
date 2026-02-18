@@ -43,6 +43,8 @@ export function useInsufficientPayTokenBalanceAlert({
   const sourceChainId = (payToken?.chainId ?? '0x0') as Hex;
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const isPerpsDeposit =
+    currentConfirmation?.type === TransactionType.perpsDeposit;
   const selectedAddress = currentConfirmation?.txParams?.from as
     | Hex
     | undefined;
@@ -74,28 +76,19 @@ export function useInsufficientPayTokenBalanceAlert({
 
   const { balanceUsd } = payToken ?? {};
   const payTokenBalanceRaw =
-    ((payToken as { balanceRaw?: string; balance?: string } | undefined)
+    (payToken as { balanceRaw?: string; balance?: string } | undefined)
       ?.balanceRaw ??
-      (payToken as { balanceRaw?: string; balance?: string } | undefined)
-        ?.balance ??
-      '0');
+    (payToken as { balanceRaw?: string; balance?: string } | undefined)
+      ?.balance ??
+    '0';
   const nativeBalanceRaw = nativeToken?.balance ?? '0';
-  const primaryRequiredToken = useMemo(
-    () => requiredTokens?.find((token) => !token.skipIfBalance),
-    [requiredTokens],
+
+  const isPerpsRelaySourceGasFeeToken = Boolean(
+    isPerpsDeposit && payToken && !isPayTokenNative,
   );
 
-  const isPerpsPayTokenRequiredToken = Boolean(
-    currentConfirmation?.type === TransactionType.perpsDeposit &&
-      payToken &&
-      primaryRequiredToken &&
-      payToken.chainId === primaryRequiredToken.chainId &&
-      payToken.address.toLowerCase() ===
-        primaryRequiredToken.address.toLowerCase(),
-  );
-
-  const isEffectiveSourceGasFeeToken =
-    isSourceGasFeeToken || isPerpsPayTokenRequiredToken;
+  const isSourceNetworkFeeBypassed =
+    isSourceGasFeeToken || isPerpsRelaySourceGasFeeToken;
 
   const totalAmountUsd = useMemo(() => {
     if (isMax) {
@@ -155,10 +148,10 @@ export function useInsufficientPayTokenBalanceAlert({
       payToken &&
       !isPayTokenNative &&
       !isPendingAlert &&
-      !isEffectiveSourceGasFeeToken &&
+      !isSourceNetworkFeeBypassed &&
       totalSourceNetworkFeeRaw.gt(nativeBalanceRaw),
     [
-      isEffectiveSourceGasFeeToken,
+      isSourceNetworkFeeBypassed,
       isPayTokenNative,
       isPendingAlert,
       nativeBalanceRaw,
