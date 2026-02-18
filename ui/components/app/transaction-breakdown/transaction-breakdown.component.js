@@ -1,11 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { Text, TextVariant } from '@metamask/design-system-react';
+import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
 import {
   BackgroundColor,
   BorderRadius,
-  TextColor,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
 import CurrencyDisplay from '../../ui/currency-display';
@@ -15,6 +14,9 @@ import { EtherDenomination } from '../../../../shared/constants/common';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { RecipientWithAddress } from '../../ui/sender-to-recipient/sender-to-recipient.component';
 import TransactionBreakdownRow from './transaction-breakdown-row';
+
+// TODO remove - testing Paid by MetaMask on all networks
+const __FORCE_SHOW_SPONSORED = true;
 
 export default class TransactionBreakdown extends PureComponent {
   static contextTypes = {
@@ -119,7 +121,7 @@ export default class TransactionBreakdown extends PureComponent {
           </TransactionBreakdownRow>
         )}
 
-        {isGasFeeSponsored && (
+        {(isGasFeeSponsored || __FORCE_SHOW_SPONSORED) && (
           <TransactionBreakdownRow title={t('networkFee')}>
             <Box
               backgroundColor={BackgroundColor.successMuted}
@@ -129,7 +131,7 @@ export default class TransactionBreakdown extends PureComponent {
             >
               <Text
                 variant={TextVariant.BodyXs}
-                color={TextColor.successDefault}
+                color={TextColor.SuccessDefault}
                 className="transaction-breakdown__value"
               >
                 {t('paidByMetaMask')}
@@ -137,7 +139,7 @@ export default class TransactionBreakdown extends PureComponent {
             </Box>
           </TransactionBreakdownRow>
         )}
-        {!isGasFeeSponsored && (
+        {!(isGasFeeSponsored || __FORCE_SHOW_SPONSORED) && (
           <>
             {gasPaidByAddress && (
               // TODO: Use i18n
