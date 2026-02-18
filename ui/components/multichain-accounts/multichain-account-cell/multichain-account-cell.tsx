@@ -72,7 +72,7 @@ const AccountCellAvatar = ({
       />
     </Box>
   );
-}
+};
 
 export type MultichainAccountCellProps = {
   accountId: AccountGroupId;

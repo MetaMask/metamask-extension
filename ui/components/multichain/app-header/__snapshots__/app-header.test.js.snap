@@ -135,11 +135,11 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-top-1 mm-box--margin-left-2 mm-box--padding-1 mm-box--background-color-background-muted mm-box--rounded-lg"
+            class="mm-box mm-box--margin-top-1 mm-box--margin-left-2"
             data-testid="networks-subtitle-test-id"
           >
             <div
-              class="flex flex-row gap-1 items-center"
+              class="flex flex-row gap-1 items-center p-1 bg-muted rounded-lg"
             >
               <div
                 class="flex flex-row items-center"

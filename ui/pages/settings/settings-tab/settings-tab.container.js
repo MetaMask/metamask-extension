@@ -63,8 +63,7 @@ const mapDispatchToProps = (dispatch) => {
     setHideZeroBalanceTokens: (value) =>
       dispatch(setHideZeroBalanceTokens(value)),
     setShowDefaultAddress: (value) => dispatch(setShowDefaultAddress(value)),
-    setDefaultAddressScope: (value) =>
-      dispatch(setDefaultAddressScope(value)),
+    setDefaultAddressScope: (value) => dispatch(setDefaultAddressScope(value)),
     setTheme: (val) => dispatch(setTheme(val)),
   };
 };

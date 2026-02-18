@@ -276,9 +276,7 @@ describe('MultichainAccountCell', () => {
       expect(badgeStatus).toBeInTheDocument();
 
       // Avatar container should still be present
-      const avatarContainer = screen.getByTestId(
-        'account-cell-avatar',
-      );
+      const avatarContainer = screen.getByTestId('account-cell-avatar');
       expect(avatarContainer).toBeInTheDocument();
     });
   });

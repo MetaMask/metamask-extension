@@ -218,10 +218,12 @@ export default class SettingsTab extends PureComponent {
       setDefaultAddressScope,
     } = this.props;
 
-    const defaultAddressDropdownOptions = DEFAULT_ADDRESS_OPTIONS.map((opt) => ({
-      name: t(opt.messageKey),
-      value: opt.value,
-    }));
+    const defaultAddressDropdownOptions = DEFAULT_ADDRESS_OPTIONS.map(
+      (opt) => ({
+        name: t(opt.messageKey),
+        value: opt.value,
+      }),
+    );
 
     return (
       <Box
