@@ -17,14 +17,13 @@ import {
   IconColor,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTronResources, TronResource } from '../hooks/useTronResources';
-
-type TranslateFunction = (key: string, substitutions?: string[]) => string;
 
 type TronDailyResourcesProps = {
   account: InternalAccount;
   chainId: string;
-  t: TranslateFunction;
+  t: ReturnType<typeof useI18nContext>;
 };
 
 type ResourceCircleProps = {
