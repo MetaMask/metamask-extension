@@ -1,4 +1,4 @@
-import type { Hex } from '@metamask/utils';
+import { type Hex, hexToNumber } from '@metamask/utils';
 import { Interface } from '@ethersproject/abi';
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import {
@@ -67,9 +67,7 @@ const buildRewardsUrl = (
 ): string => {
   // Merkl API expects decimal chain IDs
   const toDecimal = (id: Hex): number => {
-    const num = Number(id);
-    // Correct Linea testnet chain ID if needed (59145 → 59144)
-    return num === 59145 ? 59144 : num;
+    return hexToNumber(id);
   };
   const chainIdParam = Array.isArray(chainIds)
     ? chainIds.map(toDecimal).join(',')
