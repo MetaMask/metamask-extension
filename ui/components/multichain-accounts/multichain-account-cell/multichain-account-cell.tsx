@@ -77,6 +77,66 @@ const AccountCellAvatar = ({
   );
 };
 
+/**
+ * Renders default address + copy only when needed
+ * @param options0
+ * @param options0.accountId
+ */
+const AccountCellDefaultAddress = ({
+  accountId,
+}: {
+  accountId: AccountGroupId;
+}) => {
+  const t = useI18nContext();
+  const { defaultAddress } = useSelector((state) =>
+    getDefaultScopeAndAddressByAccountGroupId(state, accountId),
+  );
+  const [addressCopied, handleCopy] = useCopyToClipboard({
+    clearDelayMs: null,
+  });
+  const handleAddressCopy = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (defaultAddress) {
+        handleCopy(normalizeSafeAddress(defaultAddress));
+      }
+    },
+    [defaultAddress, handleCopy],
+  );
+
+  if (!defaultAddress) {
+    return null;
+  }
+
+  return (
+    <Box
+      alignItems={BoxAlignItems.Center}
+      flexDirection={BoxFlexDirection.Row}
+      gap={1}
+      marginLeft={3}
+      onClick={handleAddressCopy}
+      data-testid="multichain-account-cell-address"
+      aria-label={t('copyAddressShort')}
+    >
+      <Text
+        variant={TextVariant.BodyXs}
+        color={
+          addressCopied ? TextColor.SuccessDefault : TextColor.TextAlternative
+        }
+      >
+        {shortenAddress(normalizeSafeAddress(defaultAddress))}
+      </Text>
+      <Icon
+        name={addressCopied ? IconName.CopySuccess : IconName.Copy}
+        size={IconSize.Xs}
+        color={
+          addressCopied ? IconColor.SuccessDefault : IconColor.IconAlternative
+        }
+      />
+    </Box>
+  );
+};
+
 export type MultichainAccountCellProps = {
   accountId: AccountGroupId;
   accountName: string | React.ReactNode;
@@ -112,10 +172,6 @@ export const MultichainAccountCell = ({
   showDefaultAddress = false,
   avatarWrapper,
 }: MultichainAccountCellProps) => {
-  const t = useI18nContext();
-  const [addressCopied, handleCopy] = useCopyToClipboard({
-    clearDelayMs: null,
-  });
   const handleClick = () => onClick?.(accountId);
 
   // Use accountNameString for aria-label, or fallback to accountName if it's a string
@@ -124,19 +180,6 @@ export const MultichainAccountCell = ({
     (typeof accountName === 'string' ? accountName : 'Account');
   const seedAddressIcon = useSelector((state) =>
     getIconSeedAddressByAccountGroupId(state, accountId),
-  );
-  const { defaultAddress } = useSelector((state) =>
-    getDefaultScopeAndAddressByAccountGroupId(state, accountId),
-  );
-
-  const handleAddressCopy = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      if (defaultAddress) {
-        handleCopy(normalizeSafeAddress(defaultAddress));
-      }
-    },
-    [defaultAddress, handleCopy],
   );
 
   return (
@@ -202,36 +245,8 @@ export const MultichainAccountCell = ({
               {walletName}
             </TextDeprecated>
           )}
-          {showDefaultAddress && defaultAddress && (
-            <Box
-              alignItems={BoxAlignItems.Center}
-              flexDirection={BoxFlexDirection.Row}
-              gap={1}
-              marginLeft={3}
-              onClick={handleAddressCopy}
-              data-testid="multichain-account-cell-address"
-              aria-label={t('copyAddressShort')}
-            >
-              <Text
-                variant={TextVariant.BodyXs}
-                color={
-                  addressCopied
-                    ? TextColor.SuccessDefault
-                    : TextColor.TextAlternative
-                }
-              >
-                {shortenAddress(normalizeSafeAddress(defaultAddress))}
-              </Text>
-              <Icon
-                name={addressCopied ? IconName.CopySuccess : IconName.Copy}
-                size={IconSize.Xs}
-                color={
-                  addressCopied
-                    ? IconColor.SuccessDefault
-                    : IconColor.IconAlternative
-                }
-              />
-            </Box>
+          {showDefaultAddress && (
+            <AccountCellDefaultAddress accountId={accountId} />
           )}
         </BoxDeprecated>
       </BoxDeprecated>
