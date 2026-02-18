@@ -465,3 +465,6 @@ env:
 
   # Authentication (Backup & Sync, Profile metrics...)
   - FORCE_AUTH_MATCH_BUILD: false
+
+  # Enable MetaMask Pay in dApp transaction confirmations
+  - MM_PAY_DAPPS_ENABLED: false

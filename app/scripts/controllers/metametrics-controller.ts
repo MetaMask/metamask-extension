@@ -14,7 +14,6 @@ import { NameType } from '@metamask/name-controller';
 import {
   bytesToHex,
   getErrorMessage,
-  type Hex,
   isErrorWithMessage,
   isErrorWithStack,
 } from '@metamask/utils';
@@ -33,7 +32,7 @@ import {
   type StateMetadata,
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
-import type { Json } from '@metamask/utils';
+import type { Json, Hex } from '@metamask/utils';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   PLATFORM_FIREFOX,
