@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { E2E_SRP } from '../../fixtures/default-fixture';
 import { WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
@@ -13,6 +14,46 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { PAGES } from '../../webdriver/driver';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+
+const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
+
+const NON_EVM_ACCOUNT_FLAG_OVERRIDES = [
+  { bitcoinAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+  { solanaAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+  { tronAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+  {
+    enableMultichainAccounts: {
+      enabled: false,
+      featureVersion: null,
+      minimumVersion: null,
+    },
+  },
+  {
+    enableMultichainAccountsState2: {
+      enabled: false,
+      featureVersion: null,
+      minimumVersion: null,
+    },
+  },
+];
+
+async function mockFeatureFlagsWithoutNonEvmAccounts(mockServer: Mockttp) {
+  const prodFlags = getProductionRemoteFlagApiResponse();
+  return [
+    await mockServer
+      .forGet(FEATURE_FLAGS_URL)
+      .withQuery({
+        client: 'extension',
+        distribution: 'main',
+        environment: 'dev',
+      })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [...prodFlags, ...NON_EVM_ACCOUNT_FLAG_OVERRIDES],
+      })),
+  ];
+}
 
 describe('MetaMask Responsive UI', function (this: Suite) {
   const driverOptions = { constrainWindowSize: true };
@@ -39,11 +80,7 @@ describe('MetaMask Responsive UI', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         driverOptions,
-        ignoredConsoleErrors: [
-          'unable to proceed, wallet is locked',
-          'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
-          'Unable to enable notifications',
-        ],
+        testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
