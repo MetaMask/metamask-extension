@@ -39,6 +39,11 @@ describe('MetaMask Responsive UI', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         driverOptions,
+        ignoredConsoleErrors: [
+          'unable to proceed, wallet is locked',
+          'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
+          'Unable to enable notifications',
+        ],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
