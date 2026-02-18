@@ -6,13 +6,14 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import RewardsPage from '../../page-objects/pages/rewards/rewards-page';
 import { REWARDS_ROUTE } from '../../../../ui/helpers/constants/routes';
 import { navigateDeepLinkToDestination } from '../../page-objects/flows/deep-link.flow';
-import { bytesToB64, generateECDSAKeyPair } from './helpers';
 import {
+  bytesToB64,
+  generateECDSAKeyPair,
   getConfig,
   prepareDeepLinkUrl,
   shouldRenderCheckbox,
   mockRewardsApi,
-} from './deep-link-helpers';
+} from './helpers';
 
 describe('Deep Link - Rewards Route', function () {
   it('handles rewards deep link route', async function () {

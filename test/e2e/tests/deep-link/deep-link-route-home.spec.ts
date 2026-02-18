@@ -7,12 +7,10 @@ import {
   bytesToB64,
   generateECDSAKeyPair,
   generateScenariosForRoutes,
-} from './helpers';
-import {
   getConfig,
   prepareDeepLinkUrl,
   shouldRenderCheckbox,
-} from './deep-link-helpers';
+} from './helpers';
 
 describe('Deep Link - /home Route', function () {
   const scenarios = generateScenariosForRoutes(['/home']);

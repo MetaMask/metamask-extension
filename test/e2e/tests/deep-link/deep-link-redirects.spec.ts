@@ -3,8 +3,12 @@ import { Driver } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { BaseUrl } from '../../../../shared/constants/urls';
-import { bytesToB64, generateECDSAKeyPair } from './helpers';
-import { getConfig, prepareDeepLinkUrl } from './deep-link-helpers';
+import {
+  bytesToB64,
+  generateECDSAKeyPair,
+  getConfig,
+  prepareDeepLinkUrl,
+} from './helpers';
 
 describe('Deep Link - External Redirects', function () {
   it('handles /buy route redirect', async function () {

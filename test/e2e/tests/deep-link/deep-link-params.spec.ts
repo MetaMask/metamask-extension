@@ -15,7 +15,7 @@ import {
   generateECDSAKeyPair,
   getHashParams,
 } from './helpers';
-import { getConfig } from './deep-link-helpers';
+import { getConfig } from './helpers';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 

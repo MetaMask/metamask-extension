@@ -8,12 +8,10 @@ import {
   bytesToB64,
   generateECDSAKeyPair,
   generateScenariosForRoutes,
-} from './helpers';
-import {
   getConfig,
   prepareDeepLinkUrl,
   shouldRenderCheckbox,
-} from './deep-link-helpers';
+} from './helpers';
 
 describe('Deep Link - Invalid Route', function () {
   const scenarios = generateScenariosForRoutes(['/INVALID']);
