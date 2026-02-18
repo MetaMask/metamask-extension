@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import {
@@ -39,12 +39,10 @@ export const MultichainAccountNetworkGroupWithDefaultAddress = ({
   groupId,
 }: MultichainAccountNetworkGroupWithDefaultAddressProps) => {
   const t = useI18nContext();
-  const [defaultAddressCopied, setDefaultAddressCopied] = useState(false);
-  const defaultAddressCopiedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { defaultAddress, defaultScopes } = useSelector((state) =>
     getDefaultScopeAndAddressByAccountGroupId(state, groupId),
   );
-  const [, handleCopy] = useCopyToClipboard({
+  const [addressCopied, handleCopy] = useCopyToClipboard({
     clearDelayMs: null,
   });
 
@@ -52,24 +50,8 @@ export const MultichainAccountNetworkGroupWithDefaultAddress = ({
     if (!defaultAddress) {
       return;
     }
-    if (defaultAddressCopiedTimeoutRef.current) {
-      clearTimeout(defaultAddressCopiedTimeoutRef.current);
-    }
     handleCopy(normalizeSafeAddress(defaultAddress));
-    setDefaultAddressCopied(true);
-    defaultAddressCopiedTimeoutRef.current = setTimeout(() => {
-      setDefaultAddressCopied(false);
-      defaultAddressCopiedTimeoutRef.current = null;
-    }, 2000);
   }, [defaultAddress, handleCopy]);
-
-  useEffect(() => {
-    return () => {
-      if (defaultAddressCopiedTimeoutRef.current) {
-        clearTimeout(defaultAddressCopiedTimeoutRef.current);
-      }
-    };
-  }, []);
 
   if (!defaultAddress) {
     return null;
@@ -81,7 +63,7 @@ export const MultichainAccountNetworkGroupWithDefaultAddress = ({
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       backgroundColor={
-        defaultAddressCopied
+        addressCopied
           ? BoxBackgroundColor.SuccessMuted
           : BoxBackgroundColor.BackgroundMuted
       }
@@ -98,21 +80,21 @@ export const MultichainAccountNetworkGroupWithDefaultAddress = ({
       <Text
         variant={TextVariant.BodyXs}
         color={
-          defaultAddressCopied
+          addressCopied
             ? TextColor.SuccessDefault
             : TextColor.TextAlternative
         }
         style={{ lineHeight: 0 }}
       >
-        {defaultAddressCopied
+        {addressCopied
           ? t('addressCopied')
           : shortenAddress(normalizeSafeAddress(defaultAddress))}
       </Text>
       <Icon
-        name={defaultAddressCopied ? IconName.CopySuccess : IconName.Copy}
+        name={addressCopied ? IconName.CopySuccess : IconName.Copy}
         size={IconSize.Sm}
         color={
-          defaultAddressCopied
+          addressCopied
             ? IconColor.SuccessDefault
             : IconColor.IconAlternative
         }
