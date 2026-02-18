@@ -32,11 +32,7 @@ export function useGetTitle(transaction: TransactionViewModel): string {
   }
 
   // This should be server-side
-  if (
-    transactionCategory === 'SWAP' ||
-    transactionCategory === 'EXCHANGE' ||
-    (transaction.amounts?.from && transaction.amounts?.to)
-  ) {
+  if (transactionCategory === 'SWAP' || transactionCategory === 'EXCHANGE') {
     const fromSymbol = transaction.amounts?.from?.token.symbol;
     const toSymbol = transaction.amounts?.to?.token.symbol;
     if (fromSymbol && toSymbol && fromSymbol !== toSymbol) {
@@ -45,13 +41,14 @@ export function useGetTitle(transaction: TransactionViewModel): string {
     return t('swap');
   }
 
-  // Direction from parsed amounts
-  if (transaction.amounts?.from) {
-    const { symbol } = transaction.amounts.from.token;
-    return symbol ? t('sentSpecifiedTokens', [symbol]) : t('sent');
-  }
-  if (transaction.amounts?.to) {
-    return t('received');
+  if (transactionCategory === 'TRANSFER') {
+    if (transaction.amounts?.to && !transaction.amounts?.from) {
+      return t('received');
+    }
+    if (transaction.amounts?.from) {
+      const { symbol } = transaction.amounts.from.token;
+      return symbol ? t('sentSpecifiedTokens', [symbol]) : t('sent');
+    }
   }
 
   // TODO: Use enriched .readable field once ready

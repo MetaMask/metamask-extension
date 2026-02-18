@@ -18,16 +18,17 @@ function getIconCategory(tx: TransactionViewModel) {
     return TransactionGroupCategory.bridge;
   }
 
-  if (transactionCategory === 'SWAP' || (tx.amounts?.from && tx.amounts?.to)) {
+  if (transactionCategory === 'SWAP' || transactionCategory === 'EXCHANGE') {
     return TransactionGroupCategory.swap;
   }
 
-  if (tx.amounts?.from) {
-    return TransactionGroupCategory.send;
-  }
-
-  if (tx.amounts?.to) {
-    return TransactionGroupCategory.receive;
+  if (transactionCategory === 'TRANSFER') {
+    if (tx.amounts?.to && !tx.amounts?.from) {
+      return TransactionGroupCategory.receive;
+    }
+    if (tx.amounts?.from) {
+      return TransactionGroupCategory.send;
+    }
   }
 
   return TransactionGroupCategory.interaction;

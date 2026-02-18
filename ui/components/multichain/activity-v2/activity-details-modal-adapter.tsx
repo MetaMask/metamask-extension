@@ -35,11 +35,7 @@ function resolveTransactionType(tx: TransactionViewModel): TransactionType {
     return TransactionType.bridge;
   }
 
-  if (
-    transactionCategory === 'SWAP' ||
-    transactionCategory === 'EXCHANGE' ||
-    (tx.amounts?.from && tx.amounts?.to)
-  ) {
+  if (transactionCategory === 'SWAP' || transactionCategory === 'EXCHANGE') {
     return TransactionType.swap;
   }
 
@@ -59,12 +55,13 @@ function resolveTransactionType(tx: TransactionViewModel): TransactionType {
     return TransactionType.tokenMethodTransferFrom;
   }
 
-  // Direction from amounts
-  if (tx.amounts?.to && !tx.amounts?.from) {
-    return TransactionType.incoming;
-  }
-  if (tx.amounts?.from) {
-    return TransactionType.simpleSend;
+  if (transactionCategory === 'TRANSFER') {
+    if (tx.amounts?.to && !tx.amounts?.from) {
+      return TransactionType.incoming;
+    }
+    if (tx.amounts?.from) {
+      return TransactionType.simpleSend;
+    }
   }
 
   return TransactionType.contractInteraction;
