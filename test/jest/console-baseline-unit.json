@@ -785,6 +785,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain-accounts/multichain-address-rows-hovered-list/multichain-hovered-address-rows-hovered-list.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain-accounts/multichain-address-rows-list/multichain-address-rows-list.test.tsx": {
@@ -912,6 +913,7 @@
     },
     "ui/components/multichain/app-header/app-header-unlocked-content.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2,
+      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 5,
       "warn: ⚠️ React Router Future Flag": 2
@@ -3156,6 +3158,7 @@
       "React: PropTypes validation failures": 2,
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 4,
+      "error: Error: Unable to find value": 1,
       "warn: Could not find asset type": 9,
       "warn: ⚠️ React Router Future Flag": 2
     },
