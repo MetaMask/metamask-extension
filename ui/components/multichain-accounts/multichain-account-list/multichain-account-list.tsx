@@ -496,6 +496,7 @@ export const MultichainAccountList = ({
     displayWalletHeader,
     isHiddenAccountsExpanded,
     collapsedSectionKeys,
+    showDefaultAddress,
     t,
   ]);
 

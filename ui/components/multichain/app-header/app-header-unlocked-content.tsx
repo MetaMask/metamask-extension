@@ -265,6 +265,7 @@ export const AppHeaderUnlockedContent = ({
     );
   }, [
     accountName,
+    defaultAddress,
     disableAccountPicker,
     selectedMultichainAccountId,
     showDefaultAddress,
