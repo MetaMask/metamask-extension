@@ -15,6 +15,7 @@ import {
 } from '../../../../../../shared/modules/network.utils';
 import {
   AlignItems,
+  BackgroundColor,
   BlockSize,
   BorderRadius,
   Display,
@@ -371,7 +372,12 @@ const DefaultNetworks = memo(() => {
             src={networkImageUrl}
             borderRadius={BorderRadius.LG}
           />
-          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            alignItems={AlignItems.center}
+            gap={2}
+          >
             <Text
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textDefault}
@@ -379,12 +385,20 @@ const DefaultNetworks = memo(() => {
               {network.name}
             </Text>
             {isNetworkGasSponsored(network.chainId) && (
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
+              <Box
+                backgroundColor={BackgroundColor.successMuted}
+                paddingLeft={2}
+                paddingRight={2}
+                borderRadius={BorderRadius.SM}
+                display={Display.InlineFlex}
               >
-                {t('noNetworkFee')}
-              </Text>
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.successDefault}
+                >
+                  {t('noNetworkFee')}
+                </Text>
+              </Box>
             )}
           </Box>
           <ButtonIcon

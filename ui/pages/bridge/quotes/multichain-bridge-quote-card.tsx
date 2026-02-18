@@ -8,6 +8,7 @@ import {
 } from '@metamask/bridge-controller';
 import { bpsToPercentage } from '../../../ducks/bridge/utils';
 import {
+  Box,
   Text,
   PopoverPosition,
   IconName,
@@ -31,6 +32,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatNetworkFee, formatTokenAmount } from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
+  BackgroundColor,
+  BorderRadius,
   IconColor,
   JustifyContent,
   TextColor,
@@ -313,12 +316,19 @@ export const MultichainBridgeQuoteCard = ({
             </Row>
             {shouldShowGasSponsored && (
               <Row gap={1} data-testid="network-fees-sponsored">
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.textDefault}
+                <Box
+                  backgroundColor={BackgroundColor.successMuted}
+                  paddingLeft={2}
+                  paddingRight={2}
+                  borderRadius={BorderRadius.SM}
                 >
-                  {t('swapGasFeesSponsored')}
-                </Text>
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={TextColor.successDefault}
+                  >
+                    {t('swapGasFeesSponsored')}
+                  </Text>
+                </Box>
               </Row>
             )}
             {!shouldShowGasSponsored && activeQuote.quote.gasIncluded && (

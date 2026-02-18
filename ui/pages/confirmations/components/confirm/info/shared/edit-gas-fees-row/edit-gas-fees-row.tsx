@@ -10,6 +10,8 @@ import { Skeleton } from '../../../../../../../components/component-library/skel
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
   AlignItems,
+  BackgroundColor,
+  BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
@@ -105,12 +107,20 @@ export const EditGasFeesRow = ({
             gap={1}
           >
             {isGasFeeSponsored && (
-              <Text
-                color={TextColor.textDefault}
-                data-testid="paid-by-meta-mask"
+              <Box
+                backgroundColor={BackgroundColor.successMuted}
+                paddingLeft={2}
+                paddingRight={2}
+                borderRadius={BorderRadius.SM}
               >
-                {t('paidByMetaMask')}
-              </Text>
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.successDefault}
+                  data-testid="paid-by-meta-mask"
+                >
+                  {t('paidByMetaMask')}
+                </Text>
+              </Box>
             )}
             {isGasFeeEditable && <EditGasIconButton />}
             {estimationFailed && !isGasFeeSponsored && (
