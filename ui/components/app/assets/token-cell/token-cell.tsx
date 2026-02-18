@@ -29,13 +29,12 @@ import {
 } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../../store/actions';
-import { getRemoteFeatureFlags } from '../../../../selectors/remote-feature-flags';
 import { type TokenWithFiatAmount } from '../types';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { useMerklClaim, isEligibleForMerklRewards } from '../../musd';
-import { MERKL_FEATURE_FLAG_KEY } from '../../musd/constants';
+import { getMerklRewardsEnabled } from '../../musd/selectors';
 import {
   TokenCellTitle,
   TokenCellPercentChange,
@@ -135,13 +134,14 @@ export default function TokenCell({
   );
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
-  const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
+  const merklRewardsEnabled = useSelector(getMerklRewardsEnabled);
+
   const showClaimBonusBadge = useMemo(
     () =>
       !hideMerklBadge &&
-      Boolean(remoteFeatureFlags?.[MERKL_FEATURE_FLAG_KEY]) &&
+      merklRewardsEnabled &&
       isEligibleForMerklRewards(token.chainId, token.address),
-    [hideMerklBadge, remoteFeatureFlags, token.chainId, token.address],
+    [hideMerklBadge, merklRewardsEnabled, token.chainId, token.address],
   );
 
   const tokenDisplayInfo = useTokenDisplayInfo({
