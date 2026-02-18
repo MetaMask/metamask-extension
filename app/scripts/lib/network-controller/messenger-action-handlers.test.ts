@@ -192,6 +192,8 @@ describe('onRpcEndpointDegraded', () => {
       infuraProjectId: 'the-infura-project-id',
       rpcMethodName: 'eth_blockNumber',
       trackEvent,
+      type: 'retries_exhausted',
+      retryReason: 'non_successful_response',
       metaMetricsId:
         '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
     });
@@ -216,6 +218,7 @@ describe('onRpcEndpointDegraded', () => {
         infuraProjectId: 'the-infura-project-id',
         rpcMethodName: 'eth_blockNumber',
         trackEvent,
+        type: 'slow_success',
         metaMetricsId:
           '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
       });
@@ -227,6 +230,7 @@ describe('onRpcEndpointDegraded', () => {
         event: 'RPC Service Degraded',
         properties: {
           chain_id_caip: 'eip155:11155111',
+          degraded_event_type: 'slow_success',
           rpc_domain: 'example.com',
           rpc_endpoint_url: 'example.com',
           rpc_method_name: 'eth_blockNumber',
@@ -247,6 +251,8 @@ describe('onRpcEndpointDegraded', () => {
         infuraProjectId: 'the-infura-project-id',
         rpcMethodName: 'eth_blockNumber',
         trackEvent,
+        type: 'retries_exhausted',
+        retryReason: 'non_successful_response',
         metaMetricsId:
           '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
       });
@@ -258,7 +264,9 @@ describe('onRpcEndpointDegraded', () => {
         event: 'RPC Service Degraded',
         properties: {
           chain_id_caip: 'eip155:11155111',
+          degraded_event_type: 'retries_exhausted',
           http_status: 420,
+          retry_reason: 'non_successful_response',
           rpc_domain: 'example.com',
           rpc_endpoint_url: 'example.com',
           rpc_method_name: 'eth_blockNumber',
@@ -279,6 +287,7 @@ describe('onRpcEndpointDegraded', () => {
         infuraProjectId: 'the-infura-project-id',
         rpcMethodName: 'eth_blockNumber',
         trackEvent,
+        type: 'slow_success',
         metaMetricsId:
           '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
       });
@@ -290,6 +299,7 @@ describe('onRpcEndpointDegraded', () => {
         event: 'RPC Service Degraded',
         properties: {
           chain_id_caip: 'eip155:11155111',
+          degraded_event_type: 'slow_success',
           rpc_domain: 'custom',
           rpc_endpoint_url: 'custom',
           rpc_method_name: 'eth_blockNumber',
@@ -311,6 +321,7 @@ describe('onRpcEndpointDegraded', () => {
         infuraProjectId: 'the-infura-project-id',
         rpcMethodName: 'eth_blockNumber',
         trackEvent,
+        type: 'retries_exhausted',
         metaMetricsId:
           '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
       });
