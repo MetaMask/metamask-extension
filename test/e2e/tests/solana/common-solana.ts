@@ -1817,8 +1817,7 @@ export async function mockGetTokenAccountsUSDCOnly(
     .thenCallback(async (req) => {
       const body = (await req.body.getText()) ?? '';
       const isSplToken = body.includes(SOLANA_TOKEN_PROGRAM);
-      const shouldReturn =
-        !signatureHolder || signatureHolder.value !== '';
+      const shouldReturn = !signatureHolder || signatureHolder.value !== '';
       return {
         statusCode: 200,
         json: {
