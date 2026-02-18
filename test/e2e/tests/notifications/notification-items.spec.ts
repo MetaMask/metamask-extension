@@ -3,6 +3,7 @@ import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notifi
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   enableNotificationsThroughGlobalMenu,
@@ -16,6 +17,27 @@ import {
   getMockWalletNotificationItemId,
   mockNotificationServices,
 } from './mocks';
+
+const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
+
+async function mockFeatureFlagsWithoutAutoEnableNotifications(server: Mockttp) {
+  const prodFlags = getProductionRemoteFlagApiResponse();
+  return await server
+    .forGet(FEATURE_FLAGS_URL)
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [
+        ...prodFlags,
+        { assetsEnableNotificationsByDefault: false },
+        { assetsEnableNotificationsByDefaultV2: { value: false } },
+      ],
+    }));
+}
 
 describe('Notification List - View Items and Details', function () {
   it('find each notification type we support, and navigates to their details page', async function () {
@@ -31,6 +53,7 @@ describe('Notification List - View Items and Details', function () {
             server,
             new MockttpNotificationTriggerServer(),
           );
+          await mockFeatureFlagsWithoutAutoEnableNotifications(server);
         },
       },
       async ({ driver }) => {
