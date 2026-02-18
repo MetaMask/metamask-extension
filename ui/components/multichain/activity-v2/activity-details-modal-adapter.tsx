@@ -12,11 +12,11 @@ import { PAY_TRANSACTION_TYPES } from '../../../pages/confirmations/constants/pa
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { getStatusKey } from '../../../helpers/utils/transactions.util';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import LegacyTransactionListItemDetails from '../../app/transaction-list-item-details';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
 import { getSelectedAddress } from '../../../selectors/selectors';
 import { formatUnits } from '../../../../shared/lib/unit';
+import { useGetTitle } from './hooks';
 
 // eslint-disable-next-line no-empty-function
 const noop = () => {};
@@ -135,13 +135,13 @@ const TransactionDetailsWrapper = ({
   transaction: TransactionViewModel;
   onClose: () => void;
 }) => {
-  const t = useI18nContext();
   const selectedAddress = useSelector(getSelectedAddress);
   const syntheticGroup = useMemo(
     () => buildSyntheticTransactionGroup(transaction, selectedAddress),
     [transaction, selectedAddress],
   );
   const displayData = useTransactionDisplayData(syntheticGroup);
+  const title = useGetTitle(transaction);
 
   const from = transaction.txParams?.from?.toLowerCase();
   const to = transaction.txParams?.to?.toLowerCase();
@@ -161,7 +161,7 @@ const TransactionDetailsWrapper = ({
     );
   }
 
-  const { title, primaryCurrency, recipientAddress } = displayData;
+  const { primaryCurrency, recipientAddress } = displayData;
 
   let resolvedPrimaryCurrency = primaryCurrency;
   if (effectiveType === TransactionType.swap && transaction.amounts?.from) {
@@ -171,12 +171,6 @@ const TransactionDetailsWrapper = ({
     resolvedPrimaryCurrency = `-${formatted} ${token.symbol}`;
   }
 
-  let resolvedTitle = title;
-  if (effectiveType === TransactionType.swap && !transaction.amounts?.to) {
-    resolvedTitle = t('swap');
-  } else if (effectiveType === TransactionType.contractInteraction) {
-    resolvedTitle = t('contractInteraction');
-  }
   const senderAddress = transaction.txParams?.from ?? '';
   const displayedStatusKey = getStatusKey(
     transaction as Parameters<typeof getStatusKey>[0],
@@ -193,7 +187,7 @@ const TransactionDetailsWrapper = ({
 
   return (
     <LegacyTransactionListItemDetails
-      title={resolvedTitle}
+      title={title}
       onClose={onClose}
       transactionGroup={syntheticGroup}
       primaryCurrency={resolvedPrimaryCurrency}

@@ -12,7 +12,26 @@ import { calculateFiatFromMarketRates } from './helpers';
 export function useGetTitle(transaction: TransactionViewModel): string {
   const t = useI18nContext();
   const evmAddress = useSelector(selectEvmAddress)?.toLowerCase();
-  const { transactionCategory } = transaction;
+  const { transactionCategory, transactionType, transactionProtocol } =
+    transaction;
+
+  const isNftTransfer =
+    transactionType === 'ERC_721_TRANSFER' ||
+    transactionType === 'ERC_1155_TRANSFER' ||
+    transactionProtocol === 'ERC_721' ||
+    transactionProtocol === 'erc721' ||
+    transactionProtocol === 'erc1155';
+
+  if (isNftTransfer) {
+    const from = transaction.txParams?.from?.toLowerCase();
+    const to = transaction.txParams?.to?.toLowerCase();
+    const isIncoming = evmAddress && to === evmAddress && from !== evmAddress;
+    return isIncoming ? t('received') : t('sentSpecifiedTokens', ['NFT']);
+  }
+
+  if (transactionType === 'DEPLOY_CONTRACT') {
+    return t('contractDeployment');
+  }
 
   // This should be server-side
   if (transactionCategory === 'APPROVE') {
@@ -53,10 +72,29 @@ export function useGetTitle(transaction: TransactionViewModel): string {
     }
   }
 
+  // API can classify native sends/receives as STANDARD
+  if (transactionCategory === 'STANDARD') {
+    if (transaction.amounts?.to && !transaction.amounts?.from) {
+      return t('received');
+    }
+    if (transaction.amounts?.from) {
+      const { symbol } = transaction.amounts.from.token;
+      return symbol ? t('sentSpecifiedTokens', [symbol]) : t('sent');
+    }
+  }
+
   if (transactionCategory === 'CONTRACT_CALL') {
     const from = transaction.txParams?.from?.toLowerCase();
     const to = transaction.txParams?.to?.toLowerCase();
     const isIncoming = evmAddress && to === evmAddress && from !== evmAddress;
+
+    // Fallback: some swap-like transactions are currently classified as CONTRACT_CALL.
+    // If we have both a token outflow and inflow, prefer a swap title.
+    const fromSymbol = transaction.amounts?.from?.token.symbol;
+    const toSymbol = transaction.amounts?.to?.token.symbol;
+    if (fromSymbol && toSymbol && fromSymbol !== toSymbol) {
+      return t('swapTokenToToken', [fromSymbol, toSymbol]);
+    }
 
     if (isIncoming && transaction.amounts?.to) {
       return t('received');

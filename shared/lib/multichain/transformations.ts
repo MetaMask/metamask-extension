@@ -39,6 +39,10 @@ export function parseValueTransfers(
   const result: { from?: TokenAmount; to?: TokenAmount } = {};
 
   for (const transfer of valueTransfers) {
+    if (transfer.transferType === 'erc721' || transfer.transferType === 'erc1155') {
+      continue;
+    }
+
     const { amount, decimal, symbol, from, to, contractAddress } = transfer;
     const tokenAddress = contractAddress?.toLowerCase() ?? NATIVE_TOKEN_ADDRESS;
 
@@ -212,6 +216,14 @@ export function selectTransactions(address: string) {
         // Enrich with amounts and raw API classification
         const amounts = parseValueTransfers(addr, raw);
 
+        const transactionProtocol =
+          raw.transactionProtocol ||
+          raw.valueTransfers?.find(
+            (vt) =>
+              vt.transferType === 'erc721' || vt.transferType === 'erc1155',
+          )?.transferType ||
+          '';
+
         result.push({
           ...meta,
           // @ts-expect-error readable not in V1TransactionByHashResponse type yet
@@ -220,6 +232,7 @@ export function selectTransactions(address: string) {
           amounts,
           transactionType: raw.transactionType || '',
           transactionCategory: raw.transactionCategory || '',
+          transactionProtocol,
         });
 
         return result;
