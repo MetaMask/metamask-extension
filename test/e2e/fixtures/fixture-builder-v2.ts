@@ -47,6 +47,58 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  /**
+   * Merges partial AddressBookController state into the fixture.
+   *
+   * @param data - Partial AddressBookController state (e.g. addressBook: { [chainId]: { [address]: { address, chainId, isEns, memo, name } } }).
+   */
+  withAddressBookController(data: {
+    addressBook?: Record<string, Record<string, Record<string, unknown>>>;
+  }): this {
+    if (!this.fixture.data.AddressBookController) {
+      (this.fixture.data as Record<string, unknown>).AddressBookController = {
+        addressBook: {},
+      };
+    }
+    merge(this.fixture.data.AddressBookController, data);
+    return this;
+  }
+
+  /**
+   * Merges partial CurrencyController state into the fixture.
+   *
+   * @param data - Partial CurrencyController state (e.g. currentCurrency, currencyRates).
+   */
+  withCurrencyController(data: {
+    currentCurrency?: string;
+    currencyRates?: Record<string, unknown>;
+  }): this {
+    merge(this.fixture.data.CurrencyController, data);
+    return this;
+  }
+
+  /**
+   * Merges partial PreferencesController state into the fixture.
+   *
+   * @param data - Partial PreferencesController state (e.g. preferences, identities).
+   */
+  withPreferencesController(data: Record<string, unknown>): this {
+    merge(this.fixture.data.PreferencesController, data);
+    return this;
+  }
+
+  /**
+   * Sets which networks are enabled (replaces enabledNetworkMap in NetworkEnablementController).
+   *
+   * @param data - Map of chainId (e.g. eip155:0x1) or similar to enabled state.
+   */
+  withEnabledNetworks(data: Record<string, unknown>): this {
+    (
+      this.fixture.data.NetworkEnablementController as Record<string, unknown>
+    ).enabledNetworkMap = data;
+    return this;
+  }
+
   /* ==================================================================
                               CUSTOM METHODS
      ==================================================================
