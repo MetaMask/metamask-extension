@@ -984,7 +984,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1006,7 +1006,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/bridge-status-controller>@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "buffer": true
@@ -1719,21 +1719,6 @@
         "lodash": true
       }
     },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "packages": {
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/bridge-status-controller>@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "packages": {
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/network-enablement-controller>@metamask/multichain-network-controller": {
-      "packages": {
-        "@metamask/utils": true
-      }
-    },
     "@metamask/multichain-transactions-controller": {
       "globals": {
         "console.error": true
@@ -1795,7 +1780,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
-        "@metamask/network-enablement-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/utils": true
       }

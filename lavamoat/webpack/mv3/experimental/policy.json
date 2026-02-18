@@ -697,7 +697,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/bridge-controller>bignumber.js": true,
@@ -1109,11 +1109,6 @@
       "packages": {
         "@metamask/keyring-api": true,
         "@metamask/network-controller": true,
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "packages": {
         "@metamask/utils": true
       }
     },
