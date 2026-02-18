@@ -18,8 +18,12 @@ import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import { type PreferencesState } from '@metamask/preferences-controller';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
-import { ThemeType } from '../../../shared/constants/preferences';
+import {
+  DEFAULT_AUTO_LOCK_TIME_LIMIT,
+  ThemeType,
+} from '../../../shared/constants/preferences';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
+import { FALLBACK_LOCALE } from '../../../shared/modules/i18n';
 
 /**
  * Referral status for an account
@@ -105,7 +109,6 @@ export type Preferences = {
   showNativeTokenAsMainBalance: boolean;
   showTestNetworks: boolean;
   skipDeepLinkInterstitial: boolean;
-  smartAccountOptIn: boolean;
   smartTransactionsOptInStatus: boolean;
   smartTransactionsMigrationApplied: boolean;
   tokenNetworkFilter: Record<string, boolean>;
@@ -211,7 +214,6 @@ export const getDefaultPreferencesControllerState =
       showNativeTokenAsMainBalance: false,
       showTestNetworks: false,
       skipDeepLinkInterstitial: false,
-      smartAccountOptIn: true,
       smartTransactionsOptInStatus: true,
       smartTransactionsMigrationApplied: false,
       tokenNetworkFilter: {},
@@ -251,6 +253,7 @@ export const getDefaultPreferencesControllerState =
     useTransactionSimulations: true,
     watchEthereumAccountEnabled: false,
     referrals: {
+      [DefiReferralPartner.GMX]: {},
       [DefiReferralPartner.Hyperliquid]: {},
     },
   });
@@ -1030,6 +1033,24 @@ export class PreferencesController extends BaseController<
     });
   }
   ///: END:ONLY_INCLUDE_IF
+
+  /**
+   * Resets the preferences state to the default values.
+   * This is used when the wallet is reset during the "Forgot Password" flow.
+   */
+  resetState(): void {
+    const defaultState = getDefaultPreferencesControllerState();
+    const resetState = {
+      ...defaultState,
+      currentLocale: FALLBACK_LOCALE,
+      preferences: {
+        ...defaultState.preferences,
+        autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
+        showNativeTokenAsMainBalance: true,
+      },
+    };
+    this.update(() => resetState);
+  }
 
   #handleAccountsControllerSync(
     newAccountsControllerState: AccountsControllerState,

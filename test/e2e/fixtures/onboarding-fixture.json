@@ -36,7 +36,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 193,
+      "currentMigrationVersion": 195,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -66,6 +66,7 @@
       "nftsDetectionNoticeDismissed": false,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
+      "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": false,
       "productTour": "accountIcon",
@@ -1925,7 +1926,6 @@
         "showNativeTokenAsMainBalance": false,
         "showTestNetworks": false,
         "skipDeepLinkInterstitial": false,
-        "smartAccountOptIn": true,
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
         "tokenNetworkFilter": {},
@@ -1938,6 +1938,7 @@
         "useSidePanelAsDefault": false
       },
       "referrals": {
+        "gmx": {},
         "hyperliquid": {}
       },
       "securityAlertsEnabled": true,
@@ -2149,6 +2150,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 193
+    "version": 195
   }
 }

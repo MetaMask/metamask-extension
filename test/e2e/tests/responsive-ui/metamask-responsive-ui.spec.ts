@@ -3,6 +3,7 @@ import { E2E_SRP } from '../../fixtures/default-fixture';
 import { WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
@@ -35,7 +36,7 @@ describe('MetaMask Responsive UI', function (this: Suite) {
   it('Importing existing wallet from lock page', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         driverOptions,
         title: this.test?.fullTitle(),
       },
@@ -86,9 +87,7 @@ describe('MetaMask Responsive UI', function (this: Suite) {
           recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
           amount: '1',
         });
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.goToTokensTab();
+        await new HomePage(driver).checkPageIsLoaded();
 
         // Network Selector
         await driver.clickElement('[data-testid="sort-by-networks"]');
@@ -100,7 +99,6 @@ describe('MetaMask Responsive UI', function (this: Suite) {
 
         // check confirmed transaction is displayed in activity list
         const activityList = new ActivityListPage(driver);
-        await activityList.openActivityTab();
         await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityList.checkTxAmountInActivity('-1 ETH');
       },
