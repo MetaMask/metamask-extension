@@ -4,7 +4,6 @@ import path from 'node:path';
 import {
   sources,
   ProgressPlugin,
-  EntryPlugin,
   type Compilation,
   type Compiler,
   type Asset,
@@ -24,6 +23,11 @@ import type { ManifestPluginOptions } from './types';
 const { RawSource, ConcatSource } = sources;
 
 type Assets = Compilation['assets'];
+
+type EntryDescriptionNormalized = { import?: string[] } & Omit<
+  EntryOptions,
+  'name'
+>;
 
 const NAME = 'ManifestPlugin';
 const BROWSER_TEMPLATE_RE = /\[browser\]/gu;
@@ -133,7 +137,10 @@ export class ManifestPlugin<Z extends boolean> {
   apply(compiler: Compiler) {
     compiler.hooks.entryOption.tap(NAME, (_context, entries) => {
       this.prepareManifests(compiler);
-      this.collectEntrypoints(compiler, entries);
+      this.collectEntrypoints(
+        compiler,
+        entries as Record<string, EntryDescriptionNormalized>,
+      );
     });
     compiler.hooks.compilation.tap(NAME, this.hookIntoPipelines.bind(this));
   }
@@ -381,63 +388,64 @@ export class ManifestPlugin<Z extends boolean> {
 
   private addManifestScript = ({
     compiler,
+    entries,
     filename,
     opts,
   }: {
     compiler: Compiler;
+    entries: Record<string, EntryDescriptionNormalized>;
     filename: string;
-    opts?: EntryOptions;
+    opts?: EntryDescriptionNormalized;
   }) => {
     if (this.addedScripts.has(filename)) return;
     this.addedScripts.add(filename);
     this.selfContainedScripts.add(filename);
-    new EntryPlugin(
-      compiler.context,
-      path.resolve(compiler.context, filename),
-      {
-        name: filename,
-        chunkLoading: false,
-        filename: extensionToJs(filename),
-        ...opts,
-      },
-    ).apply(compiler);
+    const filePath = path.resolve(compiler.context, filename);
+    entries[filename] = {
+      import: [filePath],
+      chunkLoading: false,
+      filename: extensionToJs(filename),
+      ...opts,
+    };
   };
 
   private addHtml = ({
     compiler,
     entries,
     filename,
+    opts,
   }: {
     compiler: Compiler;
-    entries: Record<string, { import: string[] }>;
+    entries: Record<string, EntryDescriptionNormalized>;
     filename: string;
+    opts?: EntryDescriptionNormalized;
   }) => {
     const parsedFileName = path.parse(filename).name;
     const filePath = join(compiler.context, 'html', 'pages', filename);
-    entries[parsedFileName] = { import: [filePath] };
+    entries[parsedFileName] = { import: [filePath], ...opts };
   };
 
   private collectEntrypoints(
     compiler: Compiler,
-    entries: Record<string, { import: string[] }>,
+    entries: Record<string, EntryDescriptionNormalized>,
   ): void {
     for (const manifest of this.manifests.values()) {
       // collect content_scripts (MV2 + MV3)
       for (const contentScript of manifest.content_scripts ?? []) {
         for (const script of contentScript.js ?? []) {
-          this.addManifestScript({ compiler, filename: script });
+          this.addManifestScript({ compiler, entries, filename: script });
         }
       }
 
       if (manifest.manifest_version === 2) {
         // collect MV2 background scripts
         for (const script of manifest.background?.scripts ?? []) {
-          this.addManifestScript({ compiler, filename: script });
+          this.addManifestScript({ compiler, entries, filename: script });
         }
         // collect MV2 web accessible resources
         for (const resource of manifest.web_accessible_resources ?? []) {
           if (resource.endsWith('.js')) {
-            this.addManifestScript({ compiler, filename: resource });
+            this.addManifestScript({ compiler, entries, filename: resource });
           }
         }
       } else if (manifest.manifest_version === 3) {
@@ -445,6 +453,7 @@ export class ManifestPlugin<Z extends boolean> {
         if (manifest.background?.service_worker) {
           this.addManifestScript({
             compiler,
+            entries,
             filename: manifest.background.service_worker,
             opts: { chunkLoading: 'import-scripts' },
           });
@@ -453,7 +462,7 @@ export class ManifestPlugin<Z extends boolean> {
         for (const resource of manifest.web_accessible_resources ?? []) {
           for (const filename of resource.resources) {
             if (filename.endsWith('.js')) {
-              this.addManifestScript({ compiler, filename });
+              this.addManifestScript({ compiler, entries, filename });
             }
           }
         }
