@@ -66,3 +66,7 @@ export const getIsSidePanelFeatureEnabled = (): boolean => {
 
   return true;
 };
+
+export const getIsForcePreinstalledSnapsEnabled = (): boolean => {
+  return process.env.FORCE_PREINSTALLED_SNAPS?.toString() === 'true';
+};

@@ -1,4 +1,5 @@
 import { SnapId } from '@metamask/snaps-sdk';
+import { getIsForcePreinstalledSnapsEnabled } from 'shared/modules/environment';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 /**
@@ -7,10 +8,7 @@ import { SnapId } from '@metamask/snaps-sdk';
  * This is used in development environments to allow Snaps to use features that
  * are normally reserved for preinstalled Snaps.
  */
-const FORCE_PREINSTALLED_SNAPS =
-  process.env.FORCE_PREINSTALLED_SNAPS === 'true' ||
-  // @ts-expect-error: Environment variables aren’t always strings, sometimes they’re booleans, allowing more flexible use in development.
-  process.env.FORCE_PREINSTALLED_SNAPS === true;
+const FORCE_PREINSTALLED_SNAPS = getIsForcePreinstalledSnapsEnabled();
 ///: END:ONLY_INCLUDE_IF
 
 export const PREINSTALLED_SNAPS = [
