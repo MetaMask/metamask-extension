@@ -3192,33 +3192,17 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
             style="margin-bottom: 20px; justify-self: center; align-self: center; height: 32px; width: 200px;"
           />
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-            data-testid="confirmation__info_skeleton"
-            style="margin-bottom: 12px;"
-          >
-            <div
-              class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-              style="height: 72px; width: 100%;"
-            />
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="margin-bottom: 12px; height: 72px; width: 100%;"
+          />
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-            style="margin-bottom: 12px;"
-          >
-            <div
-              class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-              style="height: 72px; width: 100%;"
-            />
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="margin-bottom: 12px; height: 72px; width: 100%;"
+          />
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-            style="margin-bottom: 12px;"
-          >
-            <div
-              class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-              style="height: 72px; width: 100%;"
-            />
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="margin-bottom: 12px; height: 72px; width: 100%;"
+          />
         </div>
       </div>
     </div>

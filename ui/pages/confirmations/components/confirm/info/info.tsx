@@ -8,7 +8,6 @@ import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransact
 import { useTransactionFocusEffect } from '../../../hooks/useTransactionFocusEffect';
 import { SignatureRequestType } from '../../../types/confirm';
 import { AddEthereumChain } from '../../../external/add-ethereum-chain/add-ethereum-chain';
-import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
 import { Skeleton } from '../../../../../components/component-library/skeleton';
 import {
   ConfirmationLoader,
@@ -49,18 +48,9 @@ export const InfoSkeleton = () => (
       width="200px"
       style={{ marginBottom: 20, justifySelf: 'center', alignSelf: 'center' }}
     />
-    <ConfirmInfoSection
-      data-testid="confirmation__info_skeleton"
-      style={{ marginBottom: 12 }}
-    >
-      <Skeleton height="72px" width="100%" />
-    </ConfirmInfoSection>
-    <ConfirmInfoSection style={{ marginBottom: 12 }}>
-      <Skeleton height="72px" width="100%" />
-    </ConfirmInfoSection>
-    <ConfirmInfoSection style={{ marginBottom: 12 }}>
-      <Skeleton height="72px" width="100%" />
-    </ConfirmInfoSection>
+    <Skeleton height="72px" width="100%" style={{ marginBottom: 12 }} />
+    <Skeleton height="72px" width="100%" style={{ marginBottom: 12 }} />
+    <Skeleton height="72px" width="100%" style={{ marginBottom: 12 }} />
   </>
 );
 
