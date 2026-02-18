@@ -1,17 +1,7 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
-import {
-  Text,
-  TextVariant,
-  TextColor,
-  FontWeight,
-  Icon,
-  IconName,
-  IconSize,
-  IconColor,
-} from '@metamask/design-system-react';
 import { useTokenDisplayInfo } from '../hooks';
 import {
   ButtonSecondary,
@@ -33,7 +23,7 @@ import { type TokenWithFiatAmount } from '../types';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
-import { useMerklClaim, isEligibleForMerklRewards } from '../../musd';
+import { ClaimBonusBadge, isEligibleForMerklRewards } from '../../musd';
 import { getMerklRewardsEnabled } from '../../musd/selectors';
 import {
   TokenCellTitle,
@@ -51,68 +41,6 @@ export type TokenCellProps = {
   /** When true, hides the Merkl "Claim bonus" badge (e.g. on asset detail page). */
   hideMerklBadge?: boolean;
 };
-
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function ClaimBonusBadge({
-  label,
-  tokenAddress,
-  chainId,
-}: {
-  label: string;
-  tokenAddress: string;
-  chainId: Hex;
-}) {
-  const t = useI18nContext();
-  const { claimRewards, isClaiming, error } = useMerklClaim({
-    tokenAddress,
-    chainId,
-  });
-  // Trigger the claim transaction directly, routing to the confirmation page.
-  const handleBadgeClick = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      claimRewards();
-    },
-    [claimRewards],
-  );
-
-  if (isClaiming) {
-    return (
-      <Icon
-        name={IconName.Loading}
-        size={IconSize.Sm}
-        color={IconColor.PrimaryDefault}
-        style={{ animation: 'spin 1.2s linear infinite' }}
-        data-testid="claim-bonus-spinner"
-      />
-    );
-  }
-
-  if (error) {
-    return (
-      <Text
-        variant={TextVariant.BodySm}
-        color={TextColor.ErrorDefault}
-        data-testid="claim-bonus-error"
-      >
-        {t('merklRewardsUnexpectedError')}
-      </Text>
-    );
-  }
-
-  return (
-    <span onClick={handleBadgeClick} style={{ cursor: 'pointer' }}>
-      <Text
-        variant={TextVariant.BodySm}
-        fontWeight={FontWeight.Medium}
-        color={TextColor.PrimaryDefault}
-        data-testid="claim-bonus-badge"
-      >
-        {label}
-      </Text>
-    </span>
-  );
-}
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
