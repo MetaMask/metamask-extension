@@ -2,7 +2,7 @@
  * This is the method name used for an app-init liveness check. This is sent from app-init to the UI
  * as soon as a port is connected to prove that the message pipeline is working.
  *
- * Matches the value in `app-init.js`
+ * Used in `app-init.js` and `service-worker.ts`.
  */
 export const APP_INIT_LIVENESS_METHOD = 'APP_INIT_ALIVE';
 
