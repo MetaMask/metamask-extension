@@ -3,12 +3,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
 import {
-  formatChainIdToCaip,
   isValidQuoteRequest,
   isNativeAddress,
   UnifiedSwapBridgeEventName,
   type BridgeController,
   formatAddressToCaipReference,
+  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
 import {
@@ -78,11 +78,6 @@ import { getCurrentKeyring } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import {
-  getMultichainNativeCurrency,
-  getMultichainProviderConfig,
-} from '../../../selectors/multichain';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
 import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
@@ -130,7 +125,6 @@ const PrepareBridgePage = ({
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
 
-  const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
 
   const quoteRequest = useSelector(getQuoteRequest);
@@ -176,7 +170,7 @@ const PrepareBridgePage = ({
   const isTxSubmittable = useIsTxSubmittable();
   const locale = useSelector(getIntlLocale);
 
-  const ticker = useMultichainSelector(getMultichainNativeCurrency);
+  const ticker = getNativeAssetForChainId(fromToken.chainId)?.symbol;
   const {
     isNoQuotesAvailable,
     isInsufficientGasForQuote,
@@ -270,12 +264,7 @@ const PrepareBridgePage = ({
       srcTokenAmount: validatedFromValue,
       srcChainId: fromToken?.chainId,
       destChainId: toToken?.chainId,
-      // This override allows quotes to be returned when the rpcUrl is a forked network
-      // Otherwise quotes get filtered out by the bridge-api when the wallet's real
-      // balance is less than the tenderly balance
-      insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
-        ? true
-        : isInsufficientBalance,
+      insufficientBal: isInsufficientBalance,
       slippage,
       walletAddress: selectedAccount.address,
       destWalletAddress: selectedDestinationAccount?.address,
@@ -291,7 +280,6 @@ const PrepareBridgePage = ({
     slippage,
     selectedAccount?.address,
     selectedDestinationAccount?.address,
-    providerConfig?.rpcUrl,
     gasIncluded,
     gasIncluded7702,
     isInsufficientBalance,
@@ -501,12 +489,11 @@ const PrepareBridgePage = ({
                       token_address_destination: fromToken.assetId,
                       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                       // eslint-disable-next-line @typescript-eslint/naming-convention
-                      chain_id_source: formatChainIdToCaip(toChain.chainId),
+                      chain_id_source: toChain.chainId,
                       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                       // eslint-disable-next-line @typescript-eslint/naming-convention
-                      chain_id_destination: fromChain?.chainId
-                        ? formatChainIdToCaip(fromChain?.chainId)
-                        : null,
+                      chain_id_destination: fromChain.chainId,
+
                       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                       // eslint-disable-next-line @typescript-eslint/naming-convention
                       security_warnings: securityWarnings,

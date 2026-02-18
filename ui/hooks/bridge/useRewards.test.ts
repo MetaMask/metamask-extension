@@ -12,7 +12,6 @@ import {
   rewardsIsOptInSupported,
 } from '../../store/actions';
 import { usePrevious } from '../usePrevious';
-import { useMultichainSelector } from '../useMultichainSelector';
 import {
   getFromToken,
   getToToken,
@@ -37,10 +36,6 @@ jest.mock('../../store/actions', () => ({
 
 jest.mock('../usePrevious', () => ({
   usePrevious: jest.fn(),
-}));
-
-jest.mock('../useMultichainSelector', () => ({
-  useMultichainSelector: jest.fn(),
 }));
 
 jest.mock('../../ducks/bridge/selectors', () => ({
@@ -86,9 +81,6 @@ const mockRewardsIsOptInSupported =
     typeof rewardsIsOptInSupported
   >;
 const mockUsePrevious = usePrevious as jest.MockedFunction<typeof usePrevious>;
-const mockUseMultichainSelector = useMultichainSelector as jest.MockedFunction<
-  typeof useMultichainSelector
->;
 const mockLogError = log.error as jest.MockedFunction<typeof log.error>;
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
 
@@ -114,12 +106,14 @@ const mockSelectRewardsAccountLinkedTimestamp =
 describe('useRewards', () => {
   const mockAddress = '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6';
   const mockCaipAccount = 'eip155:1:0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6';
-  const mockChainId = '1';
+  const mockChainId = 'eip155:1';
   const mockQuoteRequestId = 'quote-123';
   const mockSrcTokenAmount = '1000000000000000000'; // 1 ETH
 
   const mockFromToken = {
+    chainId: mockChainId,
     address: '0x0000000000000000000000000000000000000000',
+    assetId: 'eip155:1/slip44:60',
     symbol: 'ETH',
     decimals: 18,
   } as unknown as ReturnType<typeof getFromToken>;
@@ -172,7 +166,6 @@ describe('useRewards', () => {
     jest.useFakeTimers();
 
     mockUsePrevious.mockReturnValue(undefined);
-    mockUseMultichainSelector.mockReturnValue(mockChainId);
     mockGetFromToken.mockReturnValue(mockFromToken);
     mockGetToToken.mockReturnValue(mockToToken);
     mockGetQuoteRequest.mockReturnValue(mockQuoteRequest);
@@ -282,67 +275,6 @@ describe('useRewards', () => {
       expect(mockEstimateRewardsPoints).not.toHaveBeenCalled();
     });
 
-    // it('should not estimate points when fromToken is missing', async () => {
-    //   mockGetFromToken.mockReturnValue(null);
-    //   mockUseSelector.mockImplementation(((selector: unknown) => {
-    //     if (selector === mockGetFromToken) {
-    //       return null;
-    //     }
-    //     if (selector === mockGetToToken) {
-    //       return mockGetToToken({} as never);
-    //     }
-    //     if (selector === mockGetQuoteRequest) {
-    //       return mockGetQuoteRequest({} as never);
-    //     }
-    //     if (typeof selector === 'function') {
-    //       try {
-    //         return selector({} as never);
-    //       } catch {
-    //         // Not the account selector
-    //       }
-    //     }
-    //     return null;
-    //   }) as never);
-
-    //   const { result } = renderHookWithProvider(
-    //     () => useRewards({ activeQuote: mockActiveQuote }),
-    //     {},
-    //   );
-
-    //   await waitFor(() => {
-    //     expect(result.current.shouldShowRewardsRow).toBe(false);
-    //   });
-
-    //   expect(mockGetRewardsHasAccountOptedIn).not.toHaveBeenCalled();
-    // });
-
-    // it('should not estimate points when toToken is missing', async () => {
-    //   mockGetToToken.mockReturnValue(null);
-    //   mockUseSelector.mockImplementation(((selector: unknown) => {
-    //     if (selector === mockGetFromToken) {
-    //       return mockGetFromToken({} as never);
-    //     }
-    //     if (selector === mockGetToToken) {
-    //       return null;
-    //     }
-    //     if (selector === mockGetQuoteRequest) {
-    //       return mockGetQuoteRequest({} as never);
-    //     }
-    //     return null;
-    //   }) as never);
-
-    //   const { result } = renderHookWithProvider(
-    //     () => useRewards({ activeQuote: mockActiveQuote }),
-    //     {},
-    //   );
-
-    //   await waitFor(() => {
-    //     expect(result.current.shouldShowRewardsRow).toBe(false);
-    //   });
-
-    //   expect(mockGetRewardsHasAccountOptedIn).not.toHaveBeenCalled();
-    // });
-
     it('should not estimate points when quoteRequest.srcTokenAmount is missing', async () => {
       mockGetQuoteRequest.mockReturnValue({
         srcTokenAmount: undefined,
@@ -397,21 +329,6 @@ describe('useRewards', () => {
         }
         return null;
       }) as never);
-
-      const { result } = renderHookWithProvider(
-        () => useRewards({ activeQuote: mockActiveQuote }),
-        {},
-      );
-
-      await waitFor(() => {
-        expect(result.current.shouldShowRewardsRow).toBe(false);
-      });
-
-      expect(mockGetRewardsHasAccountOptedIn).not.toHaveBeenCalled();
-    });
-
-    it('should not estimate points when currentChainId is missing', async () => {
-      mockUseMultichainSelector.mockReturnValue(null as never);
 
       const { result } = renderHookWithProvider(
         () => useRewards({ activeQuote: mockActiveQuote }),

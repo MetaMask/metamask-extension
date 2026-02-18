@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
-  formatChainIdToCaip,
+  formatAddressToCaipReference,
   formatChainIdToHex,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
@@ -33,8 +33,6 @@ import {
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getChainIdsToPoll,
 } from '../../../../selectors';
-// eslint-disable-next-line import/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { useGetFormattedTokensPerChain } from '../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
@@ -100,16 +98,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   if (isEvmNetwork) {
     balanceToTranslate = totalFiatBalance;
   } else {
-    const chainIdInHexOrCaip =
-      toChain?.chainId &&
-      (isNonEvmChainId(toChain?.chainId)
-        ? toChain.chainId
-        : formatChainIdToHex(toChain?.chainId));
-    balanceToTranslate = chainIdInHexOrCaip
-      ? (balanceByChainId[
-          formatChainIdToCaip(chainIdInHexOrCaip)
-        ]?.toString() ?? '0')
-      : '0';
+    balanceToTranslate = balanceByChainId[toChain.chainId]?.toString() ?? '0';
   }
 
   const t = useI18nContext();
@@ -175,7 +164,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
           color={TextColor.textAlternative}
           data-testid="account-list-address"
         >
-          {shortenAddress(normalizeSafeAddress(account.address))}
+          {shortenAddress(formatAddressToCaipReference(account.address))}
         </Text>
       </Column>
       {isExternal ? (

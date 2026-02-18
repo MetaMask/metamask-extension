@@ -813,7 +813,7 @@
       },
       "packages": {
         "@metamask/account-api": true,
-        "@metamask/accounts-controller": true,
+        "@metamask/account-tree-controller>@metamask/accounts-controller": true,
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
@@ -838,6 +838,18 @@
         "@metamask/utils": true,
         "@metamask/accounts-controller>ethereum-cryptography": true,
         "lodash": true,
+        "uuid": true
+      }
+    },
+    "@metamask/account-tree-controller>@metamask/accounts-controller": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/keyring-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography": true,
         "uuid": true
       }
     },
@@ -995,31 +1007,22 @@
         "uuid": true
       }
     },
-    "@metamask/bridge-status-controller>@metamask/bridge-controller": {
-      "globals": {
-        "Buffer.from": true
-      },
+    "@metamask/transaction-pay-controller>@metamask/bridge-controller": {
       "packages": {
-        "ethers>@ethersproject/address": true,
-        "ethers>@ethersproject/constants": true,
-        "@ethersproject/contracts": true,
         "@metamask/controller-utils": true,
-        "@metamask/keyring-api": true,
-        "@metamask/metamask-eth-abis": true,
-        "@metamask/bridge-status-controller>@metamask/bridge-controller>@metamask/multichain-network-controller": true,
         "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "buffer": true
+        "@metamask/utils": true
       }
     },
     "@metamask/bridge-status-controller": {
       "globals": {
         "URLSearchParams": true,
+        "console.error": true,
         "console.warn": true,
         "setTimeout": true
       },
       "packages": {
-        "@metamask/bridge-status-controller>@metamask/bridge-controller": true,
+        "@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
@@ -1708,11 +1711,6 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/bridge-status-controller>@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "packages": {
-        "@metamask/utils": true
-      }
-    },
     "@metamask/network-enablement-controller>@metamask/multichain-network-controller": {
       "packages": {
         "@metamask/utils": true
@@ -2331,7 +2329,7 @@
       "packages": {
         "@ethersproject/abi": true,
         "@metamask/base-controller": true,
-        "@metamask/bridge-controller": true,
+        "@metamask/transaction-pay-controller>@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/transaction-controller": true,
@@ -2517,6 +2515,11 @@
       }
     },
     "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
+    "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true
       }
@@ -4158,6 +4161,16 @@
       },
       "packages": {
         "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true,
+        "module": true
+      },
+      "packages": {
+        "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography": {

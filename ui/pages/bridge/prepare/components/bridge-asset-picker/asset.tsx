@@ -11,7 +11,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   PolymorphicRef,
   Tag,
@@ -88,16 +87,8 @@ export const BridgeAsset = React.forwardRef(
           }}
           badge={
             <AvatarNetwork
-              name={
-                NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                  formatChainIdToCaip(asset.chainId)
-                ]
-              }
-              src={
-                BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[
-                  formatChainIdToCaip(asset.chainId)
-                ]
-              }
+              name={NETWORK_TO_SHORT_NETWORK_NAME_MAP[asset.chainId]}
+              src={BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[asset.chainId]}
               style={{ width: 20, height: 20, borderWidth: 2, borderRadius: 4 }}
               hasBorder
             />

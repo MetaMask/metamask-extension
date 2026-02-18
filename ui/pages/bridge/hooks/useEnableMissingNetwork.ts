@@ -6,7 +6,7 @@ import {
 } from '@metamask/bridge-controller';
 import { type CaipChainId, type Hex, parseCaipChainId } from '@metamask/utils';
 import { useSelector, useDispatch } from 'react-redux';
-import { getEnabledNetworksByNamespace } from '../../../selectors';
+import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import { setEnabledAllPopularNetworks } from '../../../store/actions';
 
@@ -16,7 +16,9 @@ import { setEnabledAllPopularNetworks } from '../../../store/actions';
  * @returns callback to enable a network config.
  */
 export const useEnableMissingNetwork = () => {
-  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const enabledNetworksByNamespace = useSelector(
+    getAllEnabledNetworksForAllNamespaces,
+  );
   const dispatch = useDispatch();
 
   const enableMissingNetwork = useCallback(
@@ -24,8 +26,6 @@ export const useEnableMissingNetwork = () => {
       if (isNonEvmChainId(chainId)) {
         return;
       }
-
-      const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
 
       const caipChainId = formatChainIdToCaip(chainId);
       const { namespace } = parseCaipChainId(caipChainId);
@@ -37,7 +37,8 @@ export const useEnableMissingNetwork = () => {
 
         // This causes selected network filter to be deselected after a src token is selected
         if (isPopularNetwork) {
-          const isNetworkEnabled = enabledNetworkKeys.includes(hexChainId);
+          const isNetworkEnabled =
+            enabledNetworksByNamespace.includes(hexChainId);
           if (!isNetworkEnabled) {
             // Bridging between popular networks indicates we want the 'select all' enabled
             // This way users can see their full bridging tx activity

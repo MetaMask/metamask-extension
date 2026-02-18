@@ -64,16 +64,9 @@ describe('Bridge selectors', () => {
         blockExplorerUrls: ['https://localhost/blockExplorer/0xa4b1'],
         chainId: 'eip155:42161',
         defaultBlockExplorerUrlIndex: 0,
-        defaultRpcEndpointIndex: 0,
         name: 'Arbitrum',
+        isEvm: true,
         nativeCurrency: 'ETH',
-        rpcEndpoints: [
-          {
-            networkClientId: expect.any(String),
-            type: 'custom',
-            url: 'https://localhost/rpc/0xa4b1',
-          },
-        ],
       });
     });
 
@@ -147,16 +140,9 @@ describe('Bridge selectors', () => {
         blockExplorerUrls: ['https://localhost/blockExplorer/0x1'],
         chainId: 'eip155:1',
         defaultBlockExplorerUrlIndex: 0,
-        defaultRpcEndpointIndex: 0,
+        isEvm: true,
         name: 'Test',
         nativeCurrency: 'ETH',
-        rpcEndpoints: [
-          {
-            networkClientId: expect.any(String),
-            type: 'custom',
-            url: 'https://localhost/rpc/0x1',
-          },
-        ],
       });
     });
   });
@@ -1157,8 +1143,8 @@ describe('Bridge selectors', () => {
             srcChainId: CHAIN_IDS.MAINNET,
             destChainId: CHAIN_IDS.MAINNET,
             srcTokenAddress: zeroAddress(),
-            walletAddress: '0x1234',
-            destTokenAddress: '0x1234',
+            walletAddress: MOCK_EVM_ACCOUNT.address,
+            destTokenAddress: '0x1234567890abcdef1234567890abcdef12345678',
           },
           quotes: [],
           quotesLastFetched: Date.now(),

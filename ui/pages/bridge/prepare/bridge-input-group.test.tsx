@@ -328,7 +328,7 @@ describe('BridgeInputGroup', () => {
       undefined,
       getFromChains,
       false,
-      { expectedDefaultToken: 'ETH', expectedNetworkCount: 5 },
+      { expectedDefaultToken: 'SOL', expectedNetworkCount: 5 },
     ],
     [
       'destination',
@@ -362,9 +362,13 @@ describe('BridgeInputGroup', () => {
       );
 
       const stateOverrides = {
-        metamaskStateOverrides: {
-          enabledNetworkMap,
-        },
+        ...(enabledNetworkMap
+          ? {
+              metamaskStateOverrides: {
+                enabledNetworkMap,
+              },
+            }
+          : {}),
         featureFlagOverrides: {
           bridgeConfig: {
             chainRanking: [

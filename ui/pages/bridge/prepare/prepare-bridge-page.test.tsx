@@ -1,5 +1,4 @@
 import React from 'react';
-import type { Provider } from '@metamask/network-controller';
 import { act } from '@testing-library/react';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import * as reactRouterUtils from 'react-router-dom';
@@ -9,7 +8,6 @@ import { toAssetId } from '../../../../shared/lib/asset-utils';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { createTestProviderTools } from '../../../../test/stub/provider';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   ConnectionStatus,
@@ -41,18 +39,10 @@ setBackgroundConnection({
   resetState: async () => jest.fn(),
   getStatePatches: async () => jest.fn(),
   updateBridgeQuoteRequestParams: async () => jest.fn(),
+  getLatestBalance: jest.fn().mockResolvedValue('10000'),
 } as never);
 
 describe('PrepareBridgePage', () => {
-  beforeAll(() => {
-    const { provider } = createTestProviderTools({
-      networkId: 'Ethereum',
-      chainId: CHAIN_IDS.MAINNET,
-    });
-
-    global.ethereumProvider = provider as unknown as Provider;
-  });
-
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseHardwareWalletConfig.mockReturnValue({
@@ -262,18 +252,7 @@ describe('PrepareBridgePage', () => {
     jest
       .spyOn(reactRouterUtils, 'useSearchParams')
       .mockReturnValue([{ get: () => null }] as never);
-    const mockStore = createBridgeMockStore({
-      featureFlagOverrides: {
-        bridgeConfig: {
-          chains: {
-            [CHAIN_IDS.MAINNET]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-          },
-        },
-      },
-    });
+    const mockStore = createBridgeMockStore();
     const { getByTestId } = renderWithProvider(
       <PrepareBridgePage onOpenSettings={jest.fn()} />,
       configureStore(mockStore),

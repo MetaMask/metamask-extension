@@ -29,8 +29,6 @@ jest.mock('../../../contexts/hardware-wallets', () => ({
 }));
 
 setBackgroundConnection({
-  // @ts-expect-error - setSlippage is valid
-  setSlippage,
   setSwapsLiveness: jest.fn(),
   getStatePatches: jest.fn(),
   isSendBundleSupported: jest.fn(),
@@ -41,7 +39,8 @@ setBackgroundConnection({
   addPollingTokenToAppState: jest.fn(),
   trackUnifiedSwapBridgeEvent: jest.fn(),
   updateBridgeQuoteRequestParams: jest.fn(),
-});
+  getLatestBalance: jest.fn(),
+} as never);
 
 const TX_MODAL = {
   refElement: 'bridge__header-settings-button',

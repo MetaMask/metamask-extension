@@ -5,6 +5,8 @@ import {
   UnifiedSwapBridgeEventName,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
+import { selectDefaultNetworkClientIdsByChainId } from '../../../shared/modules/selectors/networks';
+import { getMaybeHexChainId } from '../../ducks/bridge/utils';
 import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
@@ -20,7 +22,6 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../components/component-library';
-import { getSelectedNetworkClientId } from '../../../shared/modules/selectors/networks';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
@@ -28,7 +29,6 @@ import {
   Header,
   Page,
 } from '../../components/multichain/pages/page';
-import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
 import {
   resetBridgeState,
   restoreQuoteRequestFromState,
@@ -40,6 +40,7 @@ import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
 import { getFromChain, getBridgeQuotes } from '../../ducks/bridge/selectors';
+import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
@@ -60,8 +61,6 @@ const CrossChainSwap = () => {
     'isFromTransactionShield',
   );
 
-  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
-
   const resetControllerAndInputStates = async () => {
     await dispatch(resetBridgeState());
   };
@@ -70,13 +69,19 @@ const CrossChainSwap = () => {
 
   // Get chain information to determine if we need gas estimates
   const fromChain = useSelector(getFromChain);
+  const networkClientByChainId = useSelector(
+    selectDefaultNetworkClientIdsByChainId,
+  );
+  const hexChainId = getMaybeHexChainId(fromChain.chainId);
+  const selectedNetworkClientId = hexChainId
+    ? networkClientByChainId[hexChainId]
+    : undefined;
 
   // Refresh smart transactions liveness for the source chain
-  useRefreshSmartTransactionsLiveness(fromChain?.chainId);
+  useRefreshSmartTransactionsLiveness(fromChain.chainId);
 
   // Only fetch gas estimates if the source chain is EVM (not Solana, Bitcoin, or Tron)
-  const shouldFetchGasEstimates =
-    fromChain?.chainId && !isNonEvmChainId(fromChain.chainId);
+  const shouldFetchGasEstimates = !isNonEvmChainId(fromChain.chainId);
 
   useEffect(() => {
     dispatch(

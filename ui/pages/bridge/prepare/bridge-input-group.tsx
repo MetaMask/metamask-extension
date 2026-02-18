@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  formatChainIdToCaip,
   formatChainIdToHex,
   isNativeAddress,
   isNonEvmChainId,
@@ -118,12 +117,10 @@ export const BridgeInputGroup = ({
 
   const handleAddressClick = () => {
     if (token && selectedChainId && assetReference) {
-      const caipChainId = formatChainIdToCaip(selectedChainId);
-
       let blockExplorerUrl = '';
       if (isNonEvmChainId(selectedChainId)) {
         const blockExplorerUrls =
-          MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[caipChainId];
+          MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[selectedChainId];
         if (blockExplorerUrls) {
           blockExplorerUrl = formatBlockExplorerAddressUrl(
             blockExplorerUrls,
@@ -132,9 +129,7 @@ export const BridgeInputGroup = ({
         }
       } else {
         const explorerUrl =
-          CAIP_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[
-            formatChainIdToCaip(token.chainId)
-          ];
+          CAIP_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[selectedChainId];
         if (explorerUrl) {
           blockExplorerUrl = getAccountLink(
             assetReference,
