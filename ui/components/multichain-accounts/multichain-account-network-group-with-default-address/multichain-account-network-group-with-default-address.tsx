@@ -20,7 +20,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { getDefaultScopeAndAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
 import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
-import { useCopyToClipboard } from 'ui/hooks/useCopyToClipboard';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
 const MAX_NETWORK_AVATARS = 4;
 
