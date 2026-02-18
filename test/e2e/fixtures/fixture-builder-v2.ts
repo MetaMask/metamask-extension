@@ -50,7 +50,8 @@ class FixtureBuilderV2 {
   /**
    * Merges partial AddressBookController state into the fixture.
    *
-   * @param data - Partial AddressBookController state (e.g. addressBook: { [chainId]: { [address]: { address, chainId, isEns, memo, name } } }).
+   * @param data - Partial AddressBookController state.
+   * @param data.addressBook - Map of chainId to address-to-entry map (address, chainId, isEns, memo, name).
    */
   withAddressBookController(data: {
     addressBook?: Record<string, Record<string, Record<string, unknown>>>;
@@ -67,7 +68,9 @@ class FixtureBuilderV2 {
   /**
    * Merges partial CurrencyController state into the fixture.
    *
-   * @param data - Partial CurrencyController state (e.g. currentCurrency, currencyRates).
+   * @param data - Partial CurrencyController state.
+   * @param data.currentCurrency - Currency code (e.g. 'usd', 'php').
+   * @param data.currencyRates - Map of ticker to rate info (conversionRate, etc.).
    */
   withCurrencyController(data: {
     currentCurrency?: string;
