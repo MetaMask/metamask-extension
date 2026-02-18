@@ -50,7 +50,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
           >
             {title}
           </Text>
-          <div className="text-s-body-sm">
+          <div className="text-s-body-sm font-medium">
             <TransactionStatusLabel status={transactionStatus} statusOnly />
           </div>
         </div>

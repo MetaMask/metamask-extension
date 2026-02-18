@@ -34,6 +34,7 @@ export function useGetTitle(transaction: TransactionViewModel): string {
   // This should be server-side
   if (
     transactionCategory === 'SWAP' ||
+    transactionCategory === 'EXCHANGE' ||
     (transaction.amounts?.from && transaction.amounts?.to)
   ) {
     const fromSymbol = transaction.amounts?.from?.token.symbol;

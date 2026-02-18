@@ -63,9 +63,9 @@ describe('calculateFiatFromMarketRates', () => {
     expect(result).toBe(3750);
   });
 
-  it('uses absolute value of negative amounts', () => {
+  it('preserves sign for negative amounts', () => {
     const result = calculateFiatFromMarketRates('-1', ethToken, marketRates);
-    expect(result).toBe(2500);
+    expect(result).toBe(-2500);
   });
 
   it('returns undefined when amount, token, or rate is missing', () => {

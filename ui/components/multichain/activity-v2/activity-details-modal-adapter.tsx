@@ -16,6 +16,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import LegacyTransactionListItemDetails from '../../app/transaction-list-item-details';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
 import { getSelectedAddress } from '../../../selectors/selectors';
+import { formatUnits } from './helpers';
 
 // eslint-disable-next-line no-empty-function
 const noop = () => {};
@@ -34,7 +35,11 @@ function resolveTransactionType(tx: TransactionViewModel): TransactionType {
     return TransactionType.bridge;
   }
 
-  if (transactionCategory === 'SWAP' || (tx.amounts?.from && tx.amounts?.to)) {
+  if (
+    transactionCategory === 'SWAP' ||
+    transactionCategory === 'EXCHANGE' ||
+    (tx.amounts?.from && tx.amounts?.to)
+  ) {
     return TransactionType.swap;
   }
 
@@ -82,7 +87,28 @@ function buildSyntheticTransactionGroup(
   const effectiveType = isIncoming
     ? TransactionType.incoming
     : resolveTransactionType(transaction);
-  const txWithType = { ...transaction, type: effectiveType };
+  // Enrich with sourceToken fields for the legacy bridge/swap display
+  const fromAmount = transaction.amounts?.from;
+  const sourceTokenSymbol =
+    transaction.sourceTokenSymbol ?? fromAmount?.token.symbol;
+  const sourceTokenAddress =
+    transaction.sourceTokenAddress ?? fromAmount?.token.address;
+  const sourceTokenAmount =
+    transaction.sourceTokenAmount ??
+    (fromAmount
+      ? formatUnits(
+          fromAmount.amount < 0n ? -fromAmount.amount : fromAmount.amount,
+          fromAmount.token.decimals,
+        )
+      : undefined);
+
+  const txWithType = {
+    ...transaction,
+    type: effectiveType,
+    sourceTokenSymbol,
+    sourceTokenAddress,
+    sourceTokenAmount,
+  };
 
   return {
     initialTransaction: txWithType,

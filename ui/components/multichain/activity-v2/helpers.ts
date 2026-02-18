@@ -187,5 +187,5 @@ export function calculateFiatFromMarketRates(
 
   const parsed = parseFloat(amount);
   const rate = marketRates[parseInt(token.chainId, 16)]?.[token.address];
-  return rate === undefined ? undefined : Math.abs(parsed) * rate;
+  return rate === undefined ? undefined : parsed * rate;
 }
