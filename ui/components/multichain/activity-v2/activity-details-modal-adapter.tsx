@@ -16,7 +16,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import LegacyTransactionListItemDetails from '../../app/transaction-list-item-details';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
 import { getSelectedAddress } from '../../../selectors/selectors';
-import { formatUnits } from './helpers';
+import { formatUnits } from '../../../../shared/lib/unit';
 
 // eslint-disable-next-line no-empty-function
 const noop = () => {};
