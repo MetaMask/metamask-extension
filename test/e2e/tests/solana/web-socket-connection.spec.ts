@@ -6,7 +6,7 @@ import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import LocalWebSocketServer from '../../websocket-server';
 
 // These tests fails with BIP44 as it's no longer possible to add a Solana account
@@ -15,7 +15,7 @@ describe.skip('Solana Web Socket', function (this: Suite) {
   it('a websocket connection is open when MetaMask full view is open', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
@@ -49,7 +49,7 @@ describe.skip('Solana Web Socket', function (this: Suite) {
   it('the websocket connection is maintained for a grace period when MetaMask window is closed', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
@@ -93,7 +93,7 @@ describe.skip('Solana Web Socket', function (this: Suite) {
   it('websocket connection is shared between multiple MetaMask windows', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {

@@ -45,7 +45,7 @@ describe('Test Snap Cronjob Duration', function () {
         await headerNavbar.checkNotificationCountInMenuOption(1);
 
         // This click will close the menu.
-        await headerNavbar.mouseClickOnThreeDotMenu();
+        await headerNavbar.clickDrawerBackButton();
 
         // Click the notification options and validate the message in the
         // notification list.

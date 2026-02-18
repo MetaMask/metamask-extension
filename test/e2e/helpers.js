@@ -197,7 +197,7 @@ async function withFixtures(options, testSuite) {
 
       switch (nodeType) {
         case 'anvil':
-          // eslint-disable-next-line node/global-require, no-case-declarations -- load this module conditionally
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
           const { Anvil } = require('./seeder/anvil');
           localNode = new Anvil();
           await localNode.start(nodeOptions);
@@ -205,7 +205,7 @@ async function withFixtures(options, testSuite) {
           break;
 
         case 'ganache':
-          // eslint-disable-next-line node/global-require, no-case-declarations -- load this module conditionally
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
           const { Ganache } = require('./seeder/ganache');
           localNode = new Ganache();
           await localNode.start(nodeOptions);
@@ -231,13 +231,13 @@ async function withFixtures(options, testSuite) {
     if (smartContract) {
       switch (localNodeOptsNormalized[0].type) {
         case 'anvil':
-          // eslint-disable-next-line node/global-require, no-case-declarations -- load this module conditionally
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
           const AnvilSeeder = require('./seeder/anvil-seeder');
           seeder = new AnvilSeeder(localNodes[0].getProvider());
           break;
 
         case 'ganache':
-          // eslint-disable-next-line node/global-require, no-case-declarations -- load this module conditionally
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
           const GanacheSeeder = require('./seeder/ganache-seeder');
           seeder = new GanacheSeeder(localNodes[0].getProvider());
           break;
@@ -341,6 +341,15 @@ async function withFixtures(options, testSuite) {
       );
     }
     await mockServer.start(8000);
+
+    // Log every request hitting the mock server
+    const requestLogLabel = useMockingPassThrough
+      ? 'Request going to a live server ============'
+      : 'Request sent to mock server ============';
+    mockServer.on('request', (req) => {
+      console.log(`\x1b[32m${requestLogLabel} ${req.url}\x1b[0m`);
+    });
+
     await setManifestFlags(manifestFlags);
 
     const wd = await buildWebDriver({
@@ -695,11 +704,11 @@ async function initBundler(
     let seeder;
 
     if (nodeType === 'ganache') {
-      // eslint-disable-next-line node/global-require -- load this module conditionally
+      // eslint-disable-next-line n/global-require -- load this module conditionally
       const GanacheSeeder = require('./seeder/ganache-seeder');
       seeder = new GanacheSeeder(localNodeServer.getProvider());
     } else {
-      // eslint-disable-next-line node/global-require -- load this module conditionally
+      // eslint-disable-next-line n/global-require -- load this module conditionally
       const AnvilSeeder = require('./seeder/anvil-seeder');
       seeder = new AnvilSeeder(localNodeServer.getProvider());
     }
