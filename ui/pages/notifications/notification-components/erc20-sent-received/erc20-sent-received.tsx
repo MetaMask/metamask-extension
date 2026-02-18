@@ -14,7 +14,8 @@ import {
   getAmount,
   getUsdAmount,
   formatIsoDateString,
-  getNetworkDetailsByChainId,
+  getNativeCurrencyLogoByChainId,
+  getNetworkDetailsFromNotifPayload,
 } from '../../../../helpers/utils/notification.util';
 
 import {
@@ -147,7 +148,7 @@ export const components: NotificationComponent<ERC20Notification> = {
         />
       ),
       Asset: ({ notification }) => {
-        const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
+        const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
           notification.payload.chain_id,
         );
         return (
@@ -177,8 +178,12 @@ export const components: NotificationComponent<ERC20Notification> = {
         );
       },
       Network: ({ notification }) => {
-        const { nativeCurrencyLogo, nativeCurrencyName } =
-          getNetworkDetailsByChainId(notification.payload.chain_id);
+        const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
+          notification.payload.chain_id,
+        );
+        const { networkName } = getNetworkDetailsFromNotifPayload(
+          notification.payload.network,
+        );
 
         return (
           <NotificationDetailAsset
@@ -186,7 +191,7 @@ export const components: NotificationComponent<ERC20Notification> = {
               src: nativeCurrencyLogo,
             }}
             label={t('notificationDetailNetwork') ?? ''}
-            detail={nativeCurrencyName}
+            detail={networkName}
           />
         );
       },
