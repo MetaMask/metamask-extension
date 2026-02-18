@@ -8,7 +8,6 @@ import { Driver } from '../../webdriver/driver';
 import { createInternalTransaction } from '../../page-objects/flows/transaction';
 
 const ADDRESS_MOCK = '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb';
-const ABBREVIATED_ADDRESS_MOCK = '0x0c54F...7AaFb';
 const CUSTOM_NAME_MOCK = 'Custom Name';
 const PROPOSED_NAME_MOCK = 'test4.lens';
 
@@ -31,13 +30,13 @@ describe('Petnames - Transactions', function () {
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await confirmation.checkNameIsDisplayed(
-          ABBREVIATED_ADDRESS_MOCK,
+          ADDRESS_MOCK,
           false,
         );
 
         // Test custom name.
         await confirmation.saveName({
-          value: ABBREVIATED_ADDRESS_MOCK,
+          value: ADDRESS_MOCK,
           name: CUSTOM_NAME_MOCK,
         });
         await confirmation.checkPageIsLoaded();
@@ -80,13 +79,13 @@ describe('Petnames - Transactions', function () {
         await loginWithBalanceValidation(driver);
         await createWalletSendTransaction(ADDRESS_MOCK, driver);
         await confirmation.checkNameIsDisplayed(
-          ABBREVIATED_ADDRESS_MOCK,
+          ADDRESS_MOCK,
           false,
         );
 
         // Test custom name.
         await confirmation.saveName({
-          value: ABBREVIATED_ADDRESS_MOCK,
+          value: ADDRESS_MOCK,
           name: CUSTOM_NAME_MOCK,
         });
 
