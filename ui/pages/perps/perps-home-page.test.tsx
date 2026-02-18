@@ -18,12 +18,16 @@ jest.mock('loglevel', () => ({
     error: jest.fn(),
     debug: jest.fn(),
     trace: jest.fn(),
+    setLevel: jest.fn(),
+    setDefaultLevel: jest.fn(),
   },
   info: jest.fn(),
   warn: jest.fn(),
   error: jest.fn(),
   debug: jest.fn(),
   trace: jest.fn(),
+  setLevel: jest.fn(),
+  setDefaultLevel: jest.fn(),
 }));
 
 const mockTriggerPerpsDeposit = jest.fn().mockResolvedValue(true);
@@ -33,6 +37,10 @@ jest.mock('../confirmations/hooks/perps/usePerpsDepositTrigger', () => ({
     trigger: mockTriggerPerpsDeposit,
     isLoading: false,
   })),
+}));
+
+jest.mock('../../hooks/perps', () => ({
+  usePerpsEligibility: jest.fn(() => ({ isEligible: true })),
 }));
 
 jest.mock('../../hooks/perps/stream', () => ({
@@ -71,6 +79,11 @@ describe('PerpsHomePage', () => {
           ? { enabled: true, minimumVersion: '0.0.0' }
           : { enabled: false, minimumVersion: '99.99.99' },
       },
+    },
+    perpsTutorial: {
+      tutorialModalOpen: false,
+      activeStep: 'WhatArePerps',
+      tutorialCompleted: false,
     },
   });
 
