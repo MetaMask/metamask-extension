@@ -125,7 +125,7 @@ export class CriticalStartupErrorHandler {
       // add sentryTags to the error for better debugging in Sentry.
       const sentryTags = {
         // we want to know if a problem happens between app-init's onConnect and
-        // this background's onConnect. if we receive the ap- init liveness
+        // this background's onConnect. if we receive the app-init liveness
         // ping, then we can be pretty confident that the connection was working
         // but something went wrong between app-init and background.js.
         // If after a few months, we find that most of the errors are happening
