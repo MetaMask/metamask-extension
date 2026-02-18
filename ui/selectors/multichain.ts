@@ -22,6 +22,7 @@ import {
 } from '@metamask/utils';
 import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
+import { AssetsControllerState } from '@metamask/assets-controller';
 import {
   MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET,
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -72,6 +73,7 @@ import {
   getSelectedMultichainNetworkConfiguration,
   type MultichainNetworkConfigState,
 } from './multichain/networks';
+import { getMultiChainBalancesControllerBalances } from './assets-migration';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -496,11 +498,12 @@ export function getMultichainIsTestnet(
 // ui/components/multichain/account-list-item/account-list-item.js (1)
 // ui/pages/asset/hooks/useTronResources.ts (1)
 // ui/hooks/useMultichainAccountTotalFiatBalance.ts (1)
-export function getMultichainBalances(
-  state: MultichainState,
-): BalancesState['metamask']['balances'] {
-  return state.metamask.balances;
-}
+export { getMultiChainBalancesControllerBalances as getMultichainBalances } from './assets-migration';
+// export function getMultichainBalances(
+//   state: MultichainState,
+// ): BalancesState['metamask']['balances'] {
+//   return state.metamask.balances;
+// }
 
 export function getMultichainTransactions(
   state: MultichainState,
@@ -544,7 +547,9 @@ function getNonEvmCachedBalance(
   state: MultichainState,
   account?: InternalAccount,
 ) {
-  const balances = getMultichainBalances(state);
+  const balances = getMultiChainBalancesControllerBalances(
+    state as MultichainState & { metamask: AssetsControllerState },
+  );
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const selectedNetworkConfig =
     getSelectedMultichainNetworkConfiguration(state);

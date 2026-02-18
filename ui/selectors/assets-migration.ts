@@ -15,6 +15,7 @@ import {
   TokensControllerState,
   AccountTrackerControllerState,
   MultichainAssetsControllerState,
+  MultichainBalancesControllerState,
 } from '@metamask/assets-controllers';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { decimalToPrefixedHex } from '../../shared/modules/conversion.utils';
@@ -45,7 +46,7 @@ import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 // MultichainAssetsController
 // accountsAssets: DONE
 // assetsMetadata: DONE
-// allIgnoredAssets: TODO
+// allIgnoredAssets: DONE
 //
 // MultichainBalancesController
 // balances: TODO
@@ -61,12 +62,7 @@ import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 // rates: TODO
 
 type MetaMaskAssetsControllerState = {
-  metamask: {
-    assetsInfo: AssetsControllerState['assetsInfo'];
-    assetsBalance: AssetsControllerState['assetsBalance'];
-    assetsPrice: AssetsControllerState['assetsPrice'];
-    assetPreferences: AssetsControllerState['assetPreferences'];
-  };
+  metamask: AssetsControllerState;
 };
 
 // const selectedEvmAccount = createDeepEqualSelector(
@@ -472,6 +468,50 @@ export const getMultiChainAssetsControllerAllIgnoredAssets =
       return result;
     },
   );
+
+export const getMultiChainBalancesControllerBalances = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: { metamask: MultichainBalancesControllerState }) =>
+      state.metamask.balances ?? {},
+    (state: MetaMaskAssetsControllerState) =>
+      state.metamask.assetsBalance ?? {},
+    (state: MetaMaskAssetsControllerState) => state.metamask.assetsInfo ?? {},
+  ],
+  (isAssetsUnifyStateEnabled, balances, assetsBalance, assetsInfo) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return balances;
+    }
+
+    const result: MultichainBalancesControllerState['balances'] = {};
+
+    for (const [accountId, chainIdBalances] of Object.entries(assetsBalance)) {
+      for (const [assetId, balance] of Object.entries(chainIdBalances)) {
+        const assetType = parseCaipAssetType(assetId as CaipAssetType);
+        const metadata = assetsInfo[assetId];
+
+        if (
+          !metadata ||
+          assetType.chain.namespace === KnownCaipNamespace.Eip155
+        ) {
+          continue;
+        }
+
+        (result[accountId] ??= {})[assetId] = {
+          amount: balance.amount,
+          unit: metadata.symbol,
+        };
+      }
+    }
+
+    console.log('DEBUG DLKHJKAD', {
+      balances,
+      result,
+    });
+
+    return result;
+  },
+);
 
 function parseBalanceWithDecimals(
   balanceString: string,

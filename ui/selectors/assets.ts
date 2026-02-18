@@ -75,6 +75,7 @@ import {
   getMultiChainAssetsControllerAccountsAssets,
   getMultiChainAssetsControllerAllIgnoredAssets,
   getMultiChainAssetsControllerAssetsMetadata,
+  getMultiChainBalancesControllerBalances,
   getTokenBalancesControllerTokenBalances,
   getTokensControllerAllTokens,
 } from './assets-migration';
@@ -1325,7 +1326,7 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     allIgnoredAssets: getMultiChainAssetsControllerAllIgnoredAssets({
       metamask,
     }),
-    balances: metamask.balances,
+    balances: getMultiChainBalancesControllerBalances({ metamask }),
     conversionRates: metamask.conversionRates,
   };
   ///: END:ONLY_INCLUDE_IF
