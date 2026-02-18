@@ -81,6 +81,15 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         fixtures: new FixtureBuilderV2().build(),
         driverOptions,
         testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
+        // The password reset flow calls createNewVaultAndRestore which
+        // clears snap state while preinstalled snaps (e.g. message-signing-snap)
+        // may still have in-flight requests, causing them to be terminated.
+        // See issues #37342 and #37498.
+        ignoredConsoleErrors: [
+          'unable to proceed, wallet is locked',
+          'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
+          'Unable to enable notifications',
+        ],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
