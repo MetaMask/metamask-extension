@@ -60,9 +60,9 @@ export async function setupSolanaWebsocketMocks(
           const delay = mock.delay || 500;
           setTimeout(() => {
             const response =
-              requestId !== null
-                ? { ...mock.response, id: requestId }
-                : mock.response;
+              requestId === null
+                ? mock.response
+                : { ...mock.response, id: requestId };
             socket.send(JSON.stringify(response));
             console.log(
               `Simulated message sent to the client for: ${includes.join(' + ')}`,

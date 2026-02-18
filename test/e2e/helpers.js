@@ -348,16 +348,6 @@ async function withFixtures(options, testSuite) {
       : 'Request sent to mock server ============';
     mockServer.on('request', (req) => {
       console.log(`\x1b[32m${requestLogLabel} ${req.url}\x1b[0m`);
-      if (req.url.includes('solana')) {
-        try {
-          const text = req.body?.buffer
-            ? Buffer.from(req.body.buffer).toString('utf-8')
-            : JSON.stringify(req.body);
-          console.log('Request body solana:', text);
-        } catch (e) {
-          console.log('Request body solana: (unreadable)');
-        }
-      }
     });
 
     await setManifestFlags(manifestFlags);
