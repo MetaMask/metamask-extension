@@ -3647,7 +3647,7 @@
         "buffer>ieee754": true
       }
     },
-    "@metamask/snaps-utils>validate-npm-package-name>builtins": {
+    "eslint-plugin-n>builtins": {
       "globals": {
         "process.version": true
       },
@@ -6362,7 +6362,7 @@
     },
     "@metamask/snaps-utils>validate-npm-package-name": {
       "packages": {
-        "@metamask/snaps-utils>validate-npm-package-name>builtins": true
+        "eslint-plugin-n>builtins": true
       }
     },
     "react-markdown>vfile>vfile-message": {
