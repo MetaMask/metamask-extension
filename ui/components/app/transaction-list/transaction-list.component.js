@@ -8,7 +8,6 @@ import React, {
   ///: END:ONLY_INCLUDE_IF
   useEffect,
 } from 'react';
-import { isCrossChain } from '@metamask/bridge-controller';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -19,6 +18,7 @@ import {
 } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { isAsyncSwap } from '../../../../shared/lib/bridge-status/utils';
 import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedCompletedTransactionsSelectorAllChains,
@@ -548,10 +548,7 @@ export default function TransactionList({
       <>
         {selectedTransaction &&
           (selectedBridgeHistoryItem &&
-          isCrossChain(
-            selectedBridgeHistoryItem.quote.srcChainId,
-            selectedBridgeHistoryItem.quote.destChainId,
-          ) ? (
+          isAsyncSwap(selectedBridgeHistoryItem) ? (
             <MultichainBridgeTransactionDetailsModal
               transaction={selectedTransaction}
               bridgeHistoryItem={selectedBridgeHistoryItem}
@@ -587,10 +584,7 @@ export default function TransactionList({
 
                         if (
                           matchedBridgeHistoryItem &&
-                          isCrossChain(
-                            matchedBridgeHistoryItem.quote?.srcChainId,
-                            matchedBridgeHistoryItem.quote?.destChainId,
-                          )
+                          isAsyncSwap(matchedBridgeHistoryItem)
                         ) {
                           return (
                             <MultichainBridgeTransactionListItem
