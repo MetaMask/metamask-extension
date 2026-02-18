@@ -3,6 +3,8 @@ import type {
   PermissionConstraint,
   PermissionControllerState,
 } from '@metamask/permission-controller';
+import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
+import type { PreferencesControllerState } from '../../../app/scripts/controllers/preferences-controller';
 import {
   DAPP_URL,
   DAPP_URL_LOCALHOST,
@@ -47,10 +49,29 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withPreferencesController(data: Partial<PreferencesControllerState>): this {
+    merge(this.fixture.data.PreferencesController, data);
+    return this;
+  }
+
+  withEnabledNetworks(
+    data: NetworkEnablementControllerState['enabledNetworkMap'],
+  ): this {
+    this.fixture.data.NetworkEnablementController.enabledNetworkMap =
+      data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
+    return this;
+  }
+
   /* ==================================================================
                               CUSTOM METHODS
      ==================================================================
   */
+  withConversionRateDisabled(): this {
+    return this.withPreferencesController({
+      useCurrencyRateCheck: false,
+    });
+  }
+
   withPermissionControllerConnectedToTestDapp({
     account = '',
     useLocalhostHostname = false,
