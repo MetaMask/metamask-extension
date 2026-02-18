@@ -12,17 +12,12 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   Box,
   BoxAlignItems,
-  BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
   Button,
   ButtonSize,
   ButtonVariant,
   FontWeight,
-  Icon,
-  IconName,
-  IconSize,
-  IconColor,
   Text,
   TextButton,
   TextButtonSize,
@@ -31,21 +26,22 @@ import {
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
-import { shortenAddress } from '../../../helpers/utils/util';
 import { Popover, PopoverPosition } from '../../component-library';
 import ToggleButton from '../../ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import {
   getAllAccountGroups,
-  getDefaultScopeAddressByAccountGroupId,
   getInternalAccountListSpreadByScopesByGroupId,
 } from '../../../selectors/multichain-accounts/account-tree';
 import {
   GENERAL_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
-import { DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE, DefaultAddressScope } from '../../../../shared/constants/default-address';
+import {
+  DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE,
+  DefaultAddressScope,
+} from '../../../../shared/constants/default-address';
 import {
   getDefaultAddressScope,
   getShowDefaultAddress,
@@ -55,7 +51,6 @@ import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { useFormatters } from '../../../hooks/useFormatters';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
-import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
 import { MultichainAggregatedAddressListRow } from './multichain-aggregated-list-row';
 
 // Priority networks that should appear first (using CAIP chain IDs)
@@ -100,130 +95,12 @@ export type MultichainAddressRowsListProps = {
    * Used e.g. on the account list page.
    */
   showDefaultAddressSection?: boolean;
-  /**
-   * When true, the trigger is in the account list context.
-   */
-  isAccountListContext?: boolean;
-};
-
-type HoveredListTriggerProps = {
-  children: React.ReactNode;
-  groupId: AccountGroupId;
-  handleCopy: (text: string) => void;
-  handleMouseEnter: () => void;
-  handleMouseLeave: () => void;
-  isAccountListContext: boolean;
-  setReferenceElement: (el: HTMLElement | null) => void;
-  showDefaultAddress: boolean;
-};
-
-const HoveredListTrigger = ({
-  children,
-  groupId,
-  handleCopy,
-  handleMouseEnter,
-  handleMouseLeave,
-  isAccountListContext,
-  setReferenceElement,
-  showDefaultAddress,
-}: HoveredListTriggerProps) => {
-  const t = useI18nContext();
-  const [defaultAddressCopied, setDefaultAddressCopied] = useState(false);
-  const defaultAddressCopiedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const { defaultAddress, defaultScopes } = useSelector((state) =>
-    getDefaultScopeAddressByAccountGroupId(state, groupId),
-  );
-
-  const handleDefaultAddressClick = useCallback(() => {
-    if (!defaultAddress) {
-      return;
-    }
-    if (defaultAddressCopiedTimeoutRef.current) {
-      clearTimeout(defaultAddressCopiedTimeoutRef.current);
-    }
-    handleCopy(normalizeSafeAddress(defaultAddress));
-    setDefaultAddressCopied(true);
-    defaultAddressCopiedTimeoutRef.current = setTimeout(() => {
-      setDefaultAddressCopied(false);
-      defaultAddressCopiedTimeoutRef.current = null;
-    }, 2000);
-  }, [defaultAddress, handleCopy]);
-
-  useEffect(() => {
-    return () => {
-      if (defaultAddressCopiedTimeoutRef.current) {
-        clearTimeout(defaultAddressCopiedTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  if (showDefaultAddress && defaultAddress && !isAccountListContext) {
-    return (
-      <Box
-        ref={setReferenceElement}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onClick={handleDefaultAddressClick}
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        backgroundColor={
-          defaultAddressCopied
-            ? BoxBackgroundColor.SuccessMuted
-            : BoxBackgroundColor.BackgroundMuted
-        }
-        padding={1}
-        gap={1}
-        className="cursor-pointer rounded-lg"
-        data-testid="default-address-trigger"
-      >
-        <MultichainAccountNetworkGroup
-          groupId={groupId}
-          chainIds={defaultScopes.slice(0, MAX_NETWORK_AVATARS)}
-          limit={MAX_NETWORK_AVATARS}
-        />
-        <Text
-          variant={TextVariant.BodyXs}
-          color={
-            defaultAddressCopied
-              ? TextColor.SuccessDefault
-              : TextColor.TextAlternative
-          }
-          style={{ lineHeight: 0 }} // Required to override default line height styles
-        >
-          {defaultAddressCopied
-            ? t('addressCopied')
-            : shortenAddress(normalizeSafeAddress(defaultAddress))}
-        </Text>
-        <Icon
-          name={defaultAddressCopied ? IconName.CopySuccess : IconName.Copy}
-          size={IconSize.Sm}
-          color={
-            defaultAddressCopied
-              ? IconColor.SuccessDefault
-              : IconColor.IconAlternative
-          }
-          aria-label={t('copyAddressShort')}
-        />
-      </Box>
-    );
-  } else {
-    return (
-      <Box
-        ref={setReferenceElement}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        {children}
-      </Box>
-    );
-  }
 };
 
 export const MultichainHoveredAddressRowsList = ({
   children,
   groupId,
   hoverCloseDelay = 50,
-  isAccountListContext = false,
   showAccountHeaderAndBalance = true,
   onViewAllClick,
   showViewAllButton = true,
@@ -236,7 +113,9 @@ export const MultichainHoveredAddressRowsList = ({
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const navigate = useNavigate();
   const showDefaultAddress = useSelector(getShowDefaultAddress);
-  const defaultAddressScope = useSelector(getDefaultAddressScope) as DefaultAddressScope;
+  const defaultAddressScope = useSelector(
+    getDefaultAddressScope,
+  ) as DefaultAddressScope;
   const defaultScopeDisplayLabel = t(
     DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE[defaultAddressScope],
   );
@@ -446,17 +325,13 @@ export const MultichainHoveredAddressRowsList = ({
 
   return (
     <>
-      <HoveredListTrigger
-        groupId={groupId}
-        handleCopy={handleCopy}
-        handleMouseEnter={handleMouseEnter}
-        handleMouseLeave={handleMouseLeave}
-        isAccountListContext={isAccountListContext}
-        setReferenceElement={setReferenceElement}
-        showDefaultAddress={showDefaultAddress}
+      <Box
+        ref={setReferenceElement}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         {children}
-      </HoveredListTrigger>
+      </Box>
       <Popover
         referenceElement={referenceElement}
         isOpen={isHoverOpen}

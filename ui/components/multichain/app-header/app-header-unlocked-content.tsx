@@ -40,6 +40,7 @@ import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
 import {
   getSelectedInternalAccount,
   getOriginOfCurrentTab,
+  getShowDefaultAddress,
 } from '../../../selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -69,6 +70,7 @@ import {
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import { MultichainAccountNetworkGroupWithDefaultAddress } from '../../multichain-accounts/multichain-account-network-group-with-default-address';
 import { MultichainAccountNetworkGroup } from '../../multichain-accounts/multichain-account-network-group';
 
 type AppHeaderUnlockedContentProps = {
@@ -93,6 +95,7 @@ export const AppHeaderUnlockedContent = ({
     getMultichainAccountGroupById(state, selectedMultichainAccountId),
   );
   const accountListStats = useSelector(getAccountListStats);
+  const showDefaultAddress = useSelector(getShowDefaultAddress);
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
@@ -227,24 +230,30 @@ export const AppHeaderUnlockedContent = ({
                 });
               }}
             >
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                backgroundColor={BoxBackgroundColor.BackgroundMuted}
-                padding={1}
-                gap={1}
-                className="rounded-lg"
-              >
-                <MultichainAccountNetworkGroup
+              {showDefaultAddress ? (
+                <MultichainAccountNetworkGroupWithDefaultAddress
                   groupId={selectedMultichainAccountId}
-                  limit={4}
+                />
+              ) : (
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  backgroundColor={BoxBackgroundColor.BackgroundMuted}
+                  padding={1}
+                  gap={1}
+                  className="rounded-lg"
+                >
+                  <MultichainAccountNetworkGroup
+                    groupId={selectedMultichainAccountId}
+                    limit={4}
                   />
-                <Icon
-                  name={IconName.Copy}
-                  size={IconSize.Sm}
-                  color={IconColor.IconAlternative}
+                  <Icon
+                    name={IconName.Copy}
+                    size={IconSize.Sm}
+                    color={IconColor.IconAlternative}
                   />
-              </Box>
+                </Box>
+              )}
             </MultichainHoveredAddressRowsList>
           </BoxDeprecated>
         )}
@@ -254,6 +263,7 @@ export const AppHeaderUnlockedContent = ({
     accountName,
     disableAccountPicker,
     selectedMultichainAccountId,
+    showDefaultAddress,
     navigate,
     trackEvent,
     accountListStats,

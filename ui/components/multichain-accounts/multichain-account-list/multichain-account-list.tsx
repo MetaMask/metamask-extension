@@ -343,7 +343,6 @@ export const MultichainAccountList = ({
             avatarWrapper={(avatar) => (
               <MultichainHoveredAddressRowsList
                 groupId={groupId as AccountGroupId}
-                isAccountListContext
                 showAccountHeaderAndBalance={false}
                 showViewAllButton={false}
                 showDefaultAddressSection={false}

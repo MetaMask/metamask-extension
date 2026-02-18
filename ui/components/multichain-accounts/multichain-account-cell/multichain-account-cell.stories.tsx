@@ -210,7 +210,7 @@ const HoverableAvatarWrapper = ({
 };
 
 export const WithAvatarWrapper = Template.bind({});
-WithAvatarWrapper.storyName = 'With avatar wrapper';
+WithAvatarWrapper.storyName = 'With Avatar Wrapper';
 WithAvatarWrapper.args = {
   accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
   accountName: 'Account with wrapped avatar',
