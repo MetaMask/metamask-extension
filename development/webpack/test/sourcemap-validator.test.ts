@@ -282,7 +282,7 @@ describe('sourcemap-validator', () => {
 
     it('skips long (minified) lines when result.source is null (no false failure)', async () => {
       const padding = 'x'.repeat(992);
-      const bundle = padding + 'new Error("minified");';
+      const bundle = `${padding}new Error("minified");`;
       const gen = new SourceMapGenerator({ file: 'out.js' });
       // No mapping for position of "new Error" so result.source is null; long line is skipped
       const mapJson = JSON.stringify(gen.toJSON());
