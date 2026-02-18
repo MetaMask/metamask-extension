@@ -36,6 +36,16 @@ From the root of the project, you can use the following scripts to run the tests
 yarn test:e2e:swap
 ```
 
+### Running in Firefox
+
+Swap tests can run in Firefox using the enterprise policies workaround for loading extensions:
+
+```
+yarn playwright test test/e2e/playwright/swap/specs/swap.spec.ts --project=swap-firefox
+```
+
+Ensure the Firefox extension is built (`dist/firefox` exists). The test uses `PLAYWRIGHT_FIREFOX_POLICIES_JSON` so Playwright's patched Firefox force-installs the extension. See [playwright#7297](https://github.com/microsoft/playwright/issues/7297#issuecomment-3333317209).
+
 ### Debug test
 
 If you're interested in [debugging tests](https://playwright.dev/docs/debug), we suggest installing the Visual Studio plugin. This will allow you to run each test individually, providing a more streamlined debugging process.

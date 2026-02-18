@@ -56,6 +56,15 @@ const config: PlaywrightTestConfig = {
       },
       fullyParallel: false,
     },
+    {
+      name: 'swap-firefox',
+      testMatch: '/swap/specs/*swap.spec.ts',
+      use: {
+        ...devices['Desktop Firefox'],
+        headless: true,
+      },
+      fullyParallel: false,
+    },
     // Global: universal, common, shared, and non feature related tests
     {
       name: 'global',

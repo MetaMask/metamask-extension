@@ -6,7 +6,10 @@ import { ethers } from 'ethers';
 import { test, expect } from '@playwright/test';
 import log from 'loglevel';
 
-import { ChromeExtensionPage } from '../../shared/pageObjects/extension-page';
+import {
+  ChromeExtensionPage,
+  FirefoxExtensionPage,
+} from '../../shared/pageObjects/extension-page';
 import { SignUpPage } from '../../shared/pageObjects/signup-page';
 import { NetworkController } from '../../shared/pageObjects/network-controller-page';
 import { SwapPage } from '../pageObjects/swap-page';
@@ -77,8 +80,11 @@ const testSet = [
 
 test.beforeAll(
   'Initialize extension, import wallet and add custom networks',
-  async () => {
-    const extension = new ChromeExtensionPage();
+  async ({ browserName }) => {
+    const extension =
+      browserName === 'firefox'
+        ? new FirefoxExtensionPage()
+        : new ChromeExtensionPage();
     const page = await extension.initExtension();
     page.setDefaultTimeout(15000);
 
