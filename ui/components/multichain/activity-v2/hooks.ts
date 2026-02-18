@@ -83,9 +83,7 @@ export function usePrefetchTransactions() {
     }
 
     queryClient
-      .prefetchInfiniteQuery(
-        queries.transactions({ params, getBearerToken }),
-      )
+      .prefetchInfiniteQuery(queries.transactions({ params, getBearerToken }))
       .catch(() => {
         // Prefetch is opportunistic
       });
