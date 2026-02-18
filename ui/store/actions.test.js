@@ -1670,6 +1670,56 @@ describe('Actions', () => {
     });
   });
 
+  describe('#hideAsset', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls hideAsset in background with the assetId', async () => {
+      const store = mockStore();
+      // eslint-disable-next-line prettier/prettier
+      const assetId = 'eip155:1:erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+      const hideAssetStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        hideAsset: hideAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.hideAsset(assetId));
+
+      expect(hideAssetStub.calledOnceWith(assetId)).toBe(true);
+      const actionTypes = store.getActions().map((action) => action.type);
+      expect(actionTypes).toContain('HIDE_LOADING_INDICATION');
+    });
+
+    it('displays warning when hideAsset in background fails', async () => {
+      const store = mockStore();
+      const assetId =
+        'eip155:1:erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+      const error = new Error('Failed to hide asset');
+
+      background.getApi.returns({
+        hideAsset: sinon.stub().rejects(error),
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.hideAsset(assetId));
+
+      const dispatchedActions = store.getActions();
+      expect(dispatchedActions.map((a) => a.type)).toContain('DISPLAY_WARNING');
+      expect(dispatchedActions.map((a) => a.type)).toContain(
+        'HIDE_LOADING_INDICATION',
+      );
+      const displayWarningAction = dispatchedActions.find(
+        (a) => a.type === 'DISPLAY_WARNING',
+      );
+      expect(displayWarningAction.payload).toBe('Failed to hide asset');
+    });
+  });
+
   describe('#setActiveNetwork', () => {
     afterEach(() => {
       sinon.restore();

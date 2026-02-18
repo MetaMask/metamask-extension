@@ -3601,6 +3601,12 @@ export default class MetamaskController extends EventEmitter {
       getBalancesInSingleCall: (...args) =>
         this.assetsContractController.getBalancesInSingleCall(...args),
 
+      // New Assets Controller
+      hideAsset: (assetId) => this.assetsController.hideAsset(assetId),
+      addCustomAsset: (accountId, assetId) =>
+        this.assetsController.addCustomAsset(accountId, assetId),
+      getAssets: (accounts, options) =>
+        this.assetsController.getAssets(accounts, options),
       // Authentication Controller
       performSignIn: authenticationController.performSignIn.bind(
         authenticationController,

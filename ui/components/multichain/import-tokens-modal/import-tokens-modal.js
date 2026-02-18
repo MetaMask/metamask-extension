@@ -38,6 +38,8 @@ import {
 } from '../../../selectors';
 import {
   addImportedTokens,
+  addCustomAsset,
+  getAssets,
   multichainAddAssets,
   clearPendingTokens,
   setPendingTokens,
@@ -117,6 +119,7 @@ import { NetworkListItem } from '../network-list-item';
 import TokenListPlaceholder from '../../app/import-token/token-list/token-list-placeholder';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
+import { isAssetsUnifyStateFeatureEnabled } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 const ACTION_MODES = {
@@ -145,6 +148,9 @@ export const ImportTokensModal = ({ onClose }) => {
   const chainId = useSelector(getCurrentChainId);
   const currentMultichainChainId = useSelector(
     getSelectedMultichainNetworkChainId,
+  );
+  const assetsUnifyStateFeatureEnabled = useSelector(
+    isAssetsUnifyStateFeatureEnabled,
   );
 
   const [selectedNetwork, setSelectedNetwork] = useState(chainId);
@@ -300,6 +306,21 @@ export const ImportTokensModal = ({ onClose }) => {
 
   const handleAddTokens = useCallback(async () => {
     try {
+      console.log(
+        'assetsUnifyStateFeatureEnabled +++++++++++++++++++++++',
+        pendingTokens,
+      );
+
+      const assetsIds = Object.keys(pendingTokens).map((tokenAddress) => {
+        return toAssetId(tokenAddress, selectedNetwork);
+      });
+
+      console.log(
+        'assetsIds +++++++++++++++++++++++',
+        assetsIds,
+        selectedAccount.id,
+      );
+
       const addedTokenValues = Object.values(pendingTokens);
 
       if (addedTokenValues.length === 0) {
@@ -358,6 +379,19 @@ export const ImportTokensModal = ({ onClose }) => {
         }
 
         await dispatch(addImportedTokens(addedTokenValues, clientId));
+      }
+
+      if (assetsUnifyStateFeatureEnabled) {
+        for (const assetId of assetsIds) {
+          await dispatch(addCustomAsset(selectedAccount.id, assetId));
+        }
+        // Force AssetsController to refresh so UI receives updated state
+        await dispatch(
+          getAssets({
+            chainIds: [tokenChainId],
+            assetTypes: ['token'],
+          }),
+        );
       }
 
       addedTokenValues.forEach((pendingToken) => {

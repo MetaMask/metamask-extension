@@ -17,6 +17,8 @@ import {
   getNetworkConfigurationsByChainId,
 } from '../../../../../shared/modules/selectors/networks';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
+import { toAssetId } from '../../../../../shared/lib/asset-utils';
+import { isAssetsUnifyStateFeatureEnabled } from '../../../../../shared/lib/assets-unify-state/remote-feature-flag';
 
 function mapStateToProps(state) {
   return {
@@ -26,6 +28,7 @@ function mapStateToProps(state) {
     networkConfigurationsByChainId: getNetworkConfigurationsByChainId(state),
     getAccountForChain: (caipChainId) =>
       getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
+    assetsUnifyStateFeatureEnabled: isAssetsUnifyStateFeatureEnabled(state),
   };
 }
 
@@ -37,8 +40,26 @@ function mapDispatchToProps(dispatch) {
       networkClientId,
       chainId,
       getAccountForChain,
+      assetsUnifyStateFeatureEnabled,
     ) => {
       const isNonEvm = isNonEvmChainId(chainId);
+
+      console.log(
+        'isAssetsUnifyStateFeatureEnabled +++++++++++++++++++++++',
+        assetsUnifyStateFeatureEnabled,
+      );
+
+      if (assetsUnifyStateFeatureEnabled) {
+        const assetId = toAssetId(address, chainId);
+        console.log('assetId +++++++++++++++++++++++', assetId);
+
+        try {
+          await dispatch(actions.hideAsset(assetId));
+        } catch (error) {
+          console.log('error +++++++++++++++++++++++', error);
+          return;
+        }
+      }
 
       if (isNonEvm) {
         // Handle non-EVM tokens
@@ -79,6 +100,7 @@ class HideTokenConfirmationModal extends Component {
     chainId: PropTypes.string.isRequired,
     networkConfigurationsByChainId: PropTypes.object.isRequired,
     getAccountForChain: PropTypes.func.isRequired,
+    assetsUnifyStateFeatureEnabled: PropTypes.bool.isRequired,
     token: PropTypes.shape({
       symbol: PropTypes.string,
       address: PropTypes.string,
@@ -99,6 +121,7 @@ class HideTokenConfirmationModal extends Component {
       navigate,
       networkConfigurationsByChainId,
       getAccountForChain,
+      assetsUnifyStateFeatureEnabled,
     } = this.props;
     const { symbol, address, image, chainId: tokenChainId } = token;
     const chainIdToUse = tokenChainId || chainId;
@@ -140,7 +163,13 @@ class HideTokenConfirmationModal extends Component {
             data-testid="hide-token-confirmation__hide"
             onClick={() => {
               if (isNonEvmChainId(chainIdToUse)) {
-                hideToken(address, undefined, chainIdToUse, getAccountForChain);
+                hideToken(
+                  address,
+                  undefined,
+                  chainIdToUse,
+                  getAccountForChain,
+                  isAssetsUnifyStateFeatureEnabled,
+                );
               } else {
                 const chainConfig =
                   networkConfigurationsByChainId[chainIdToUse];
@@ -152,6 +181,7 @@ class HideTokenConfirmationModal extends Component {
                   networkInstanceId,
                   chainIdToUse,
                   getAccountForChain,
+                  assetsUnifyStateFeatureEnabled,
                 );
               }
               navigate(DEFAULT_ROUTE);
