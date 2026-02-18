@@ -248,24 +248,24 @@ export const ActivityList = () => {
               <Text className="text-alternative">{t('loading')}</Text>
             </Box>
           )}
-
-          <ActivityDetailsModalAdapter
-            isOpen={isModalOpen}
-            onClose={handleModalClose}
-            transaction={selectedItem}
-          />
-
-          {selectedNonEvmTransaction && (
-            <LegacyMultichainTransactionDetailsModal
-              transaction={selectedNonEvmTransaction}
-              onClose={handleNonEvmModalClose}
-            />
-          )}
         </>
       )}
 
       {!isInitialLoading && flattenedItems.length === 0 && (
         <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
+      )}
+
+      <ActivityDetailsModalAdapter
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        transaction={selectedItem}
+      />
+
+      {selectedNonEvmTransaction && (
+        <LegacyMultichainTransactionDetailsModal
+          transaction={selectedNonEvmTransaction}
+          onClose={handleNonEvmModalClose}
+        />
       )}
     </Box>
   );
