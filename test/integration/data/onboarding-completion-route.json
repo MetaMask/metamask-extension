@@ -277,6 +277,7 @@
   "pinnedAccountList": [],
   "popupGasPollTokens": [],
   "preferences": {
+    "defaultAddressScope": "eip155",
     "hideZeroBalanceTokens": false,
     "showExtensionInFullSizeView": false,
     "showFiatInTestnets": false,

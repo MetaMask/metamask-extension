@@ -170,6 +170,7 @@ describe('Routes Component', () => {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           newPrivacyPolicyToastShownDate: new Date('0'),
           preferences: {
+            defaultAddressScope: 'eip155',
             tokenSortConfig: {
               key: 'token-sort-key',
               order: 'dsc',
