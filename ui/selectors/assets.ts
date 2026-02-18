@@ -72,6 +72,7 @@ import {
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 import {
   getAccountTrackerControllerAccountsByChainId,
+  getMultiChainAssetsControllerAccountsAssets,
   getTokenBalancesControllerTokenBalances,
   getTokensControllerAllTokens,
 } from './assets-migration';
@@ -119,9 +120,7 @@ export type BalanceCalculationState = {
  * @param state - Redux state object.
  * @returns An object containing non-EVM assets per accounts.
  */
-export function getAccountAssets(state: AssetsState) {
-  return state.metamask.accountsAssets;
-}
+export { getMultiChainAssetsControllerAccountsAssets as getAccountAssets } from './assets-migration';
 
 // TODO Unified Assets Controller State Access (1)
 // MultichainAssetsController: assetsMetadata
@@ -329,7 +328,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
 export const getMultiChainAssets = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
   getMultichainBalances,
-  getAccountAssets,
+  getMultiChainAssetsControllerAccountsAssets,
   getAssetsMetadata,
   getAssetsRates,
   getPreferences,
@@ -462,7 +461,7 @@ const zeroBalanceAssetFallback = { amount: 0, unit: '' };
 export const getMultichainAggregatedBalance = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
   getMultichainBalances,
-  getAccountAssets,
+  getMultiChainAssetsControllerAccountsAssets,
   getAssetsRates,
   (selectedAccountAddress, multichainBalances, accountAssets, assetRates) => {
     const { id } = selectedAccountAddress ?? {};
@@ -520,7 +519,7 @@ export type HistoricalBalances = {
 export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
   (_state, selectedAccount: { id: string }) => selectedAccount,
   getMultichainBalances,
-  getAccountAssets,
+  getMultiChainAssetsControllerAccountsAssets,
   getAssetsRates,
   (
     selectedAccountAddress: { id: string },
@@ -619,11 +618,13 @@ export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
  */
 export const getMultichainNativeAssetType = createDeepEqualSelector(
   getSelectedInternalAccount,
-  getAccountAssets,
+  getMultiChainAssetsControllerAccountsAssets,
   getSelectedMultichainNetworkConfiguration,
   (
     selectedAccount: ReturnType<typeof getSelectedInternalAccount>,
-    accountAssets: ReturnType<typeof getAccountAssets>,
+    accountAssets: ReturnType<
+      typeof getMultiChainAssetsControllerAccountsAssets
+    >,
     currentNetwork: ReturnType<
       typeof getSelectedMultichainNetworkConfiguration
     >,
@@ -785,7 +786,11 @@ const selectMultichainBalancesStateForBalances = createSelector(
  * Wraps multichain assets for core balance computations.
  */
 const selectMultichainAssetsStateForBalances = createSelector(
-  [getAccountAssets, getAssetsMetadata, getAllIgnoredAssets],
+  [
+    getMultiChainAssetsControllerAccountsAssets,
+    getAssetsMetadata,
+    getAllIgnoredAssets,
+  ],
   (accountsAssets, assetsMetadata, allIgnoredAssets) => ({
     accountsAssets,
     assetsMetadata,
@@ -1317,7 +1322,7 @@ const getStateForAssetSelector = ({ metamask }: any) => {
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   multichainState = {
-    accountsAssets: metamask.accountsAssets,
+    accountsAssets: getMultiChainAssetsControllerAccountsAssets({ metamask }),
     assetsMetadata: metamask.assetsMetadata,
     allIgnoredAssets: metamask.allIgnoredAssets,
     balances: metamask.balances,

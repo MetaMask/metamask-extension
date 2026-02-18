@@ -14,6 +14,7 @@ import {
   TokenBalancesControllerState,
   TokensControllerState,
   AccountTrackerControllerState,
+  MultichainAssetsControllerState,
 } from '@metamask/assets-controllers';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { decimalToPrefixedHex } from '../../shared/modules/conversion.utils';
@@ -351,6 +352,35 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
     return result;
   },
 );
+
+// AccountId (string) -> Array of AssetIds (string)
+export const getMultiChainAssetsControllerAccountsAssets =
+  createDeepEqualSelector(
+    [
+      getIsAssetsUnifyStateEnabled,
+      (state: { metamask: MultichainAssetsControllerState }) =>
+        state.metamask.accountsAssets ?? {},
+      (state: MetaMaskAssetsControllerState) =>
+        state.metamask.assetsBalance ?? {},
+    ],
+    (isAssetsUnifyStateEnabled, accountsAssets, assetsBalance) => {
+      if (!isAssetsUnifyStateEnabled) {
+        return accountsAssets;
+      }
+
+      const result: MultichainAssetsControllerState['accountsAssets'] = {};
+
+      for (const [accountId, accountBalances] of Object.entries(
+        assetsBalance,
+      )) {
+        for (const assetId of Object.keys(accountBalances)) {
+          (result[accountId] ??= []).push(assetId as CaipAssetType);
+        }
+      }
+
+      return result;
+    },
+  );
 
 function parseBalanceWithDecimals(
   balanceString: string,
