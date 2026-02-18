@@ -22,13 +22,12 @@ fi
 
 echo "Verifying CI checks on SHA: ${RELEASE_SHA}"
 
-# Fetch all check runs for the commit (30s timeout per request)
+# Fetch all check runs for the commit
 CHECK_RUNS=$(
   gh api \
     -H "Accept: application/vnd.github+json" \
     "/repos/${GITHUB_REPOSITORY}/commits/${RELEASE_SHA}/check-runs" \
-    --paginate \
-    --timeout 30s |
+    --paginate |
     jq -s '{check_runs: [.[].check_runs[]]}'
 )
 
