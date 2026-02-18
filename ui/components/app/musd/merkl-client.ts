@@ -180,7 +180,7 @@ export const clearRewardCache = () => rewardCache.clear();
 /**
  * Fetch Merkl rewards for a specific asset.
  * For mUSD tokens, always fetches from Linea and looks for Linea mUSD rewards.
- * Results are cached for 30 seconds to speed up the claim flow when data was
+ * Results are cached for 5 minutes to speed up the claim flow when data was
  * recently fetched.
  *
  * @param tokenAddress - The token's contract address
