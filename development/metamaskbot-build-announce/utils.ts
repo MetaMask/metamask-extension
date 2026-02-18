@@ -424,7 +424,9 @@ export function extractEntries(
   return Object.entries(data)
     .filter(
       (pair): pair is [string, BenchmarkEntry['entry']] =>
-        pair[1].mean != null && typeof pair[1].mean === 'object',
+          pair[1].mean !== null &&
+        pair[1].mean !== undefined &&
+        typeof pair[1].mean === 'object',
     )
     .map(([name, entry]) => ({ benchmarkName: name, entry }));
 }
@@ -447,14 +449,18 @@ export async function buildBenchmarkSectionComment(
   const allEntries: BenchmarkEntry[] = [];
 
   for (const preset of presets) {
-    const data = await fetchBenchmarkJson(
-      hostUrl,
-      'chrome',
-      'browserify',
-      preset,
-    );
-    if (data) {
-      allEntries.push(...extractEntries(data));
+    try {
+      const data = await fetchBenchmarkJson(
+        hostUrl,
+        'chrome',
+        'browserify',
+        preset,
+      );
+      if (data) {
+        allEntries.push(...extractEntries(data));
+      }
+    } catch (error) {
+      console.error(`Failed to fetch benchmark preset "${preset}": ${String(error)}`);
     }
   }
 
@@ -617,8 +623,7 @@ export async function runBenchmarkGate(
   for (const platform of Object.keys(gates)) {
     for (const buildType of Object.keys(gates[platform])) {
       for (const page of Object.keys(gates[platform][buildType])) {
-        const pageData =
-          benchmarkResults[platform]?.[buildType]?.[page];
+        const pageData = benchmarkResults[platform]?.[buildType]?.[page];
         if (!pageData) {
           continue;
         }
