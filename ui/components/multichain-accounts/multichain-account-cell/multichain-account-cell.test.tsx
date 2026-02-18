@@ -276,8 +276,8 @@ describe('MultichainAccountCell', () => {
       expect(badgeStatus).toBeInTheDocument();
 
       // Avatar container should still be present
-      const avatarContainer = document.querySelector(
-        '.multichain-account-cell__account-avatar',
+      const avatarContainer = screen.getByTestId(
+        'account-cell-avatar',
       );
       expect(avatarContainer).toBeInTheDocument();
     });
