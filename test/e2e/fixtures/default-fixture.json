@@ -181,7 +181,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 194,
+      "currentMigrationVersion": 195,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -921,7 +921,6 @@
         "showNativeTokenAsMainBalance": true,
         "showTestNetworks": true,
         "skipDeepLinkInterstitial": false,
-        "smartAccountOptIn": true,
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
         "tokenNetworkFilter": {
@@ -1119,6 +1118,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 194
+    "version": 195
   }
 }
