@@ -32,6 +32,7 @@ jest.mock('./extension-store', () => {
 jest.mock('loglevel', () => ({
   error: jest.fn(),
   info: jest.fn(),
+  debug: jest.fn(),
 }));
 jest.mock('../../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
@@ -172,6 +173,37 @@ describe('PersistenceManager', () => {
 
       expect(mockedCaptureMessage).not.toHaveBeenCalled();
     });
+
+    it('does not log to Sentry when browser shutdown error occurs during set', async () => {
+      manager.setMetadata({ version: 10 });
+
+      const shutdownError = new Error('The browser is shutting down.');
+      mockStoreSet.mockRejectedValueOnce(shutdownError);
+
+      const [result, error] = await manager.set({ appState: { test: true } });
+
+      expect(result).toBe(false);
+      expect(error).toBe(shutdownError);
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+      expect(log.error).not.toHaveBeenCalled();
+    });
+
+    it('logs to Sentry for non-shutdown errors during set', async () => {
+      manager.setMetadata({ version: 10 });
+
+      const storageError = new Error('An unexpected error occurred');
+      mockStoreSet.mockRejectedValueOnce(storageError);
+
+      const [result, error] = await manager.set({ appState: { test: true } });
+
+      expect(result).toBe(false);
+      expect(error).toBe(storageError);
+      expect(mockedCaptureException).toHaveBeenCalledWith(storageError, {
+        tags: { 'persistence.error': 'set-failed' },
+        fingerprint: ['persistence-error', 'set-failed'],
+      });
+      expect(log.error).toHaveBeenCalled();
+    });
   });
 
   describe('get', () => {
@@ -273,6 +305,42 @@ describe('PersistenceManager', () => {
       await expect(manager.get({ validateVault: true })).rejects.toThrow(
         MISSING_VAULT_ERROR,
       );
+    });
+
+    it('does not log to Sentry when browser shutdown error occurs', async () => {
+      const shutdownError = new Error('The browser is shutting down.');
+      mockStoreGet.mockRejectedValueOnce(shutdownError);
+
+      await expect(manager.get({ validateVault: false })).rejects.toThrow(
+        'The browser is shutting down.',
+      );
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+      expect(log.error).not.toHaveBeenCalled();
+    });
+
+    it('does not log to Sentry when extension context invalidated error occurs', async () => {
+      const contextError = new Error('Extension context invalidated.');
+      mockStoreGet.mockRejectedValueOnce(contextError);
+
+      await expect(manager.get({ validateVault: false })).rejects.toThrow(
+        'Extension context invalidated.',
+      );
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+      expect(log.error).not.toHaveBeenCalled();
+    });
+
+    it('logs to Sentry for non-shutdown errors', async () => {
+      const storageError = new Error('An unexpected error occurred');
+      mockStoreGet.mockRejectedValueOnce(storageError);
+
+      await expect(manager.get({ validateVault: false })).rejects.toThrow(
+        'An unexpected error occurred',
+      );
+      expect(mockedCaptureException).toHaveBeenCalledWith(storageError, {
+        tags: { 'persistence.error': 'get-failed' },
+        fingerprint: ['persistence-error', 'get-failed'],
+      });
+      expect(log.error).toHaveBeenCalled();
     });
   });
   describe('persist', () => {
@@ -390,6 +458,39 @@ describe('PersistenceManager', () => {
       await manager.persist();
 
       expect(mockedCaptureException).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not log to Sentry when browser shutdown error occurs during persist', async () => {
+      manager.setMetadata({ version: 10 });
+      manager.update('FooController', { foo: 'bar' });
+
+      const shutdownError = new Error('The browser is shutting down.');
+      mockStoreSetKeyValues.mockRejectedValueOnce(shutdownError);
+
+      const [result, error] = await manager.persist();
+
+      expect(result).toBe(false);
+      expect(error).toBe(shutdownError);
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+      expect(log.error).not.toHaveBeenCalled();
+    });
+
+    it('logs to Sentry for non-shutdown errors during persist', async () => {
+      manager.setMetadata({ version: 10 });
+      manager.update('FooController', { foo: 'bar' });
+
+      const storageError = new Error('An unexpected error occurred');
+      mockStoreSetKeyValues.mockRejectedValueOnce(storageError);
+
+      const [result, error] = await manager.persist();
+
+      expect(result).toBe(false);
+      expect(error).toBe(storageError);
+      expect(mockedCaptureException).toHaveBeenCalledWith(storageError, {
+        tags: { 'persistence.error': 'persist-failed' },
+        fingerprint: ['persistence-error', 'persist-failed'],
+      });
+      expect(log.error).toHaveBeenCalled();
     });
   });
 

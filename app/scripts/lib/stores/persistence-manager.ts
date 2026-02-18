@@ -131,6 +131,24 @@ function hasVault(
 const STATE_LOCK = 'state-lock';
 
 /**
+ * Checks if an error is due to browser shutdown/termination.
+ * These errors are normal browser events and should not be logged to Sentry.
+ *
+ * @param error - The error to check
+ * @returns True if the error is a browser shutdown error
+ */
+function isBrowserShutdownError(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+  const message = error.message.toLowerCase();
+  return (
+    message.includes('browser is shutting down') ||
+    message.includes('extension context invalidated')
+  );
+}
+
+/**
  * The PersistenceManager class serves as a high-level manager for handling
  * storage-related operations using a local storage system. It provides methods to read
  * and write state, manage metadata, and handle errors or corruption in the
@@ -489,22 +507,31 @@ export class PersistenceManager {
 
           return [true, undefined];
         } catch (err) {
-          if (!this.#dataPersistenceFailing) {
-            this.#dataPersistenceFailing = true;
-            // Use different tags to differentiate storage.local vs IndexedDB backup failures.
-            const tag = backupFailed ? 'set-backup-failed' : 'set-failed';
+          // Don't log browser shutdown errors to Sentry - these are normal events
+          if (isBrowserShutdownError(err)) {
+            log.debug(
+              'Browser shutdown detected during storage write (normal event):',
+              err,
+            );
+          } else {
+            if (!this.#dataPersistenceFailing) {
+              this.#dataPersistenceFailing = true;
+              // Use different tags to differentiate storage.local vs IndexedDB backup failures.
+              const tag = backupFailed ? 'set-backup-failed' : 'set-failed';
 
-            // Custom fingerprint prevents Sentry's deduplication from dropping
-            // this event when other persistence errors with the same underlying
-            // error message (e.g., "An unexpected error occurred") are reported.
-            captureException(err, {
-              tags: { 'persistence.error': tag },
-              fingerprint: ['persistence-error', tag],
-            });
+              // Custom fingerprint prevents Sentry's deduplication from dropping
+              // this event when other persistence errors with the same underlying
+              // error message (e.g., "An unexpected error occurred") are reported.
+              captureException(err, {
+                tags: { 'persistence.error': tag },
+                fingerprint: ['persistence-error', tag],
+              });
+            }
+            const normalizedError = this.#normalizePersistError(err);
+            this.#notifySetFailed(normalizedError.message);
+            log.error('error setting state in local store:', err);
           }
           const normalizedError = this.#normalizePersistError(err);
-          this.#notifySetFailed(normalizedError.message);
-          log.error('error setting state in local store:', err);
           return [false, normalizedError];
         } finally {
           this.#isExtensionInitialized = true;
@@ -620,24 +647,33 @@ export class PersistenceManager {
 
           return [true, undefined];
         } catch (err) {
-          if (!this.#dataPersistenceFailing) {
-            this.#dataPersistenceFailing = true;
-            // Use different tags to differentiate storage.local vs IndexedDB backup failures.
-            const tag = backupFailed
-              ? 'persist-backup-failed'
-              : 'persist-failed';
+          // Don't log browser shutdown errors to Sentry - these are normal events
+          if (isBrowserShutdownError(err)) {
+            log.debug(
+              'Browser shutdown detected during storage persist (normal event):',
+              err,
+            );
+          } else {
+            if (!this.#dataPersistenceFailing) {
+              this.#dataPersistenceFailing = true;
+              // Use different tags to differentiate storage.local vs IndexedDB backup failures.
+              const tag = backupFailed
+                ? 'persist-backup-failed'
+                : 'persist-failed';
 
-            // Custom fingerprint prevents Sentry's deduplication from dropping
-            // this event when other persistence errors with the same underlying
-            // error message (e.g., "An unexpected error occurred") are reported.
-            captureException(err, {
-              tags: { 'persistence.error': tag },
-              fingerprint: ['persistence-error', tag],
-            });
+              // Custom fingerprint prevents Sentry's deduplication from dropping
+              // this event when other persistence errors with the same underlying
+              // error message (e.g., "An unexpected error occurred") are reported.
+              captureException(err, {
+                tags: { 'persistence.error': tag },
+                fingerprint: ['persistence-error', tag],
+              });
+            }
+            const normalizedError = this.#normalizePersistError(err);
+            this.#notifySetFailed(normalizedError.message);
+            log.error('error setting state in local store:', err);
           }
           const normalizedError = this.#normalizePersistError(err);
-          this.#notifySetFailed(normalizedError.message);
-          log.error('error setting state in local store:', err);
           return [false, normalizedError];
         } finally {
           this.#isExtensionInitialized = true;
@@ -678,17 +714,26 @@ export class PersistenceManager {
 
         // Log and capture the error if one occurred, but don't throw yet
         if (localStoreError) {
-          log.error(
-            'Error retrieving the current state of the local store:',
-            localStoreError,
-          );
-          // Custom fingerprint prevents Sentry's deduplication from dropping
-          // this event when other persistence errors with the same underlying
-          // error message (e.g., "An unexpected error occurred") are reported.
-          captureException(localStoreError, {
-            tags: { 'persistence.error': 'get-failed' },
-            fingerprint: ['persistence-error', 'get-failed'],
-          });
+          // Don't log browser shutdown errors to Sentry - these are normal events
+          // that occur when the service worker is being terminated by the browser
+          if (isBrowserShutdownError(localStoreError)) {
+            log.debug(
+              'Browser shutdown detected during storage read (normal event):',
+              localStoreError.message,
+            );
+          } else {
+            log.error(
+              'Error retrieving the current state of the local store:',
+              localStoreError,
+            );
+            // Custom fingerprint prevents Sentry's deduplication from dropping
+            // this event when other persistence errors with the same underlying
+            // error message (e.g., "An unexpected error occurred") are reported.
+            captureException(localStoreError, {
+              tags: { 'persistence.error': 'get-failed' },
+              fingerprint: ['persistence-error', 'get-failed'],
+            });
+          }
         }
 
         if (validateVault) {
