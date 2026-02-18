@@ -308,7 +308,7 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
       // we should pass the first 6 elements, and `common` will handle EIP-155.
       const signedTx = LegacyTransaction.fromValuesArray(rlpTx.slice(0, 6), {
         common,
-      }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
+      }).sign(Uint8Array.from(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex')));
       return {
         v: bigIntToHex(signedTx.v),
         r: bigIntToHex(signedTx.r),
@@ -322,7 +322,7 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
       // or with v, r, s. Our rlpTx matches the unsigned form.
       const signedTx = FeeMarketEIP1559Transaction.fromValuesArray(rlpTx, {
         common,
-      }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
+      }).sign(Uint8Array.from(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex')));
       return {
         v: bigIntToHex(signedTx.v),
         r: bigIntToHex(signedTx.r),
