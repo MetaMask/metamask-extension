@@ -7,6 +7,8 @@ import type {
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { selectMarketRates } from '../../../selectors/activity';
 import { selectEvmAddress } from '../../../selectors/accounts';
+import { parseApprovalTransactionData } from '../../../../shared/modules/transaction.utils';
+import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
 import { calculateFiatFromMarketRates } from './helpers';
 
 export function useGetTitle(transaction: TransactionViewModel): string {
@@ -15,12 +17,12 @@ export function useGetTitle(transaction: TransactionViewModel): string {
   const { transactionCategory, transactionType, transactionProtocol } =
     transaction;
 
+  const rawMethodId = (transaction as unknown as { methodId?: string })
+    .methodId;
+
   const isNftTransfer =
     transactionType === 'ERC_721_TRANSFER' ||
-    transactionType === 'ERC_1155_TRANSFER' ||
-    transactionProtocol === 'ERC_721' ||
-    transactionProtocol === 'erc721' ||
-    transactionProtocol === 'erc1155';
+    transactionType === 'ERC_1155_TRANSFER';
 
   if (isNftTransfer) {
     const from = transaction.txParams?.from?.toLowerCase();
@@ -35,6 +37,53 @@ export function useGetTitle(transaction: TransactionViewModel): string {
 
   // This should be server-side
   if (transactionCategory === 'APPROVE') {
+    const data = transaction.txParams?.data;
+    const selectorFromData =
+      typeof data === 'string' ? data.slice(0, 10) : undefined;
+    const selector = rawMethodId ?? selectorFromData;
+    const isSetApprovalForAll = selector === SET_APPROVAL_FOR_ALL;
+
+    const parsedApprovalData =
+      typeof data === 'string'
+        ? parseApprovalTransactionData(data as `0x${string}`)
+        : undefined;
+
+    // Revoke token/NFT approval (approve(..., 0x0) or approve(..., 0))
+    if (parsedApprovalData?.name === 'approve') {
+      const spender = parsedApprovalData.spender;
+      const isZeroSpender =
+        typeof spender === 'string' &&
+        spender.toLowerCase() === '0x0000000000000000000000000000000000000000';
+      const isZeroAmount = Boolean(
+        parsedApprovalData.amountOrTokenId?.isZero?.(),
+      );
+
+      if (isZeroSpender || isZeroAmount) {
+        return t('confirmTitleRevokeApproveTransaction');
+      }
+    }
+
+    // setApprovalForAll for ERC-721 / ERC-1155
+    if (isSetApprovalForAll) {
+      // If the API doesn't provide calldata, we can't distinguish approve vs revoke.
+      // Default to the safer "remove permission" title.
+      if (!parsedApprovalData) {
+        return t('revokePermissionTitle', [t('token')]);
+      }
+
+      if (parsedApprovalData?.isRevokeAll) {
+        return t('revokePermissionTitle', [t('token')]);
+      }
+      return t('setApprovalForAllRedesignedTitle');
+    }
+
+    // Single NFT approval (approve(tokenId))
+    const isNftProtocol =
+      transactionProtocol === 'ERC_721' || transactionProtocol === 'ERC_1155';
+    if (isNftProtocol && transactionType?.includes('APPROVE')) {
+      return t('confirmTitleApproveTransactionNFT');
+    }
+
     const symbol = transaction.amounts?.from?.token?.symbol;
     return symbol ? t('approveSpendingCap', [symbol]) : t('approve');
   }

@@ -109,4 +109,127 @@ describe('useGetTitle', () => {
 
     expect(result.current).toBe('received');
   });
+
+  it('returns NFT approval title for ERC_721_APPROVE', () => {
+    const selectedAddress = '0x4f5243ceea96cee1da0fdb89c756d0e999439424';
+
+    const store = configureMockStore()({
+      metamask: {
+        internalAccounts: {
+          selectedAccount: '1',
+          accounts: {
+            '1': {
+              address: selectedAddress,
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
+    });
+
+    const tx = {
+      transactionCategory: 'APPROVE',
+      transactionType: 'ERC_721_APPROVE',
+      transactionProtocol: 'ERC_721',
+      txParams: {
+        from: selectedAddress,
+        to: '0x3bb093106b26ff4afcf608249f0ddc72a73dcc6a',
+      },
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHook(() => useGetTitle(tx), {
+      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+    });
+
+    expect(result.current).toBe('confirmTitleApproveTransactionNFT');
+  });
+
+  it('returns setApprovalForAll titles based on approve/revoke', () => {
+    const selectedAddress = '0x4f5243ceea96cee1da0fdb89c756d0e999439424';
+
+    const store = configureMockStore()({
+      metamask: {
+        internalAccounts: {
+          selectedAccount: '1',
+          accounts: {
+            '1': {
+              address: selectedAddress,
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
+    });
+
+    const approveAllTx = {
+      transactionCategory: 'APPROVE',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      transactionProtocol: 'erc721',
+      txParams: {
+        from: selectedAddress,
+        data: '0xa22cb4650000000000000000000000002e0d7e8c45221fca00d74a3609a0f7097035d09b0000000000000000000000000000000000000000000000000000000000000001',
+      },
+    } as unknown as TransactionViewModel;
+
+    const revokeAllTx = {
+      transactionCategory: 'APPROVE',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      transactionProtocol: 'erc1155',
+      txParams: {
+        from: selectedAddress,
+        data: '0xa22cb4650000000000000000000000002e0d7e8c45221fca00d74a3609a0f7097035d09b0000000000000000000000000000000000000000000000000000000000000000',
+      },
+    } as unknown as TransactionViewModel;
+
+    const { result: approveAllResult } = renderHook(
+      () => useGetTitle(approveAllTx),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      },
+    );
+    expect(approveAllResult.current).toBe('setApprovalForAllRedesignedTitle');
+
+    const { result: revokeAllResult } = renderHook(
+      () => useGetTitle(revokeAllTx),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      },
+    );
+    expect(revokeAllResult.current).toBe('revokePermissionTitle:token');
+  });
+
+  it('returns revoke title for selector-only setApprovalForAll payload', () => {
+    const selectedAddress = '0x4f5243ceea96cee1da0fdb89c756d0e999439424';
+
+    const store = configureMockStore()({
+      metamask: {
+        internalAccounts: {
+          selectedAccount: '1',
+          accounts: {
+            '1': {
+              address: selectedAddress,
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
+    });
+
+    const tx = {
+      transactionCategory: 'APPROVE',
+      transactionType: 'ERC_721_APPROVE',
+      transactionProtocol: 'ERC_721',
+      methodId: '0xa22cb465',
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHook(() => useGetTitle(tx), {
+      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+    });
+
+    expect(result.current).toBe('revokePermissionTitle:token');
+  });
 });
