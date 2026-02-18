@@ -552,6 +552,9 @@
     "ui/components/app/perps/perps-tab-view.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/perps/perps-toast/perps-toast-provider.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/perps/perps-token-logo/perps-token-logo.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },

@@ -181,7 +181,6 @@ const PerpsMarketDetailPage: React.FC = () => {
     formatPercentWithMinThreshold,
   } = useFormatters();
   const fundingCountdown = useFundingCountdown();
-
   // Use stream hooks for real-time data
   const { positions: allPositions } = usePerpsLivePositions();
   const { orders: allOrders } = usePerpsLiveOrders();
