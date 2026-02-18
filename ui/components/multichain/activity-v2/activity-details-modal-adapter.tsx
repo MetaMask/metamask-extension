@@ -84,8 +84,10 @@ function buildSyntheticTransactionGroup(
   const effectiveType = isIncoming
     ? TransactionType.incoming
     : resolveTransactionType(transaction);
-  // Enrich with sourceToken fields for the legacy bridge/swap display
+  // Enrich with sourceToken/destinationToken fields that the legacy
+  // bridge/swap display code reads from initialTransaction
   const fromAmount = transaction.amounts?.from;
+  const toAmount = transaction.amounts?.to;
   const sourceTokenSymbol =
     transaction.sourceTokenSymbol ?? fromAmount?.token.symbol;
   const sourceTokenAddress =
@@ -98,6 +100,8 @@ function buildSyntheticTransactionGroup(
           fromAmount.token.decimals,
         )
       : undefined);
+  const destinationTokenSymbol =
+    transaction.destinationTokenSymbol ?? toAmount?.token.symbol;
 
   const txWithType = {
     ...transaction,
@@ -105,6 +109,7 @@ function buildSyntheticTransactionGroup(
     sourceTokenSymbol,
     sourceTokenAddress,
     sourceTokenAmount,
+    destinationTokenSymbol,
   };
 
   return {
@@ -157,7 +162,21 @@ const TransactionDetailsWrapper = ({
   }
 
   const { title, primaryCurrency, recipientAddress } = displayData;
-  const modalTitle = effectiveType === TransactionType.swap ? t('swap') : title;
+
+  let resolvedPrimaryCurrency = primaryCurrency;
+  if (effectiveType === TransactionType.swap && transaction.amounts?.from) {
+    const { token, amount } = transaction.amounts.from;
+    const abs = amount < 0n ? -amount : amount;
+    const formatted = formatUnits(abs, token.decimals);
+    resolvedPrimaryCurrency = `-${formatted} ${token.symbol}`;
+  }
+
+  let resolvedTitle = title;
+  if (effectiveType === TransactionType.swap && !transaction.amounts?.to) {
+    resolvedTitle = t('swap');
+  } else if (effectiveType === TransactionType.contractInteraction) {
+    resolvedTitle = t('contractInteraction');
+  }
   const senderAddress = transaction.txParams?.from ?? '';
   const displayedStatusKey = getStatusKey(
     transaction as Parameters<typeof getStatusKey>[0],
@@ -174,10 +193,10 @@ const TransactionDetailsWrapper = ({
 
   return (
     <LegacyTransactionListItemDetails
-      title={modalTitle}
+      title={resolvedTitle}
       onClose={onClose}
       transactionGroup={syntheticGroup}
-      primaryCurrency={primaryCurrency}
+      primaryCurrency={resolvedPrimaryCurrency}
       senderAddress={senderAddress}
       recipientAddress={recipientAddress}
       onRetry={noop}

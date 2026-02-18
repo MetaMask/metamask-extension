@@ -218,7 +218,7 @@ export const ActivityList = () => {
         showImportTokenButton={false}
       />
 
-      {flattenedItems.length > 0 && (
+      {!isInitialLoading && flattenedItems.length > 0 && (
         <>
           <div
             className="relative w-full"
@@ -262,12 +262,6 @@ export const ActivityList = () => {
             />
           )}
         </>
-      )}
-
-      {isInitialLoading && flattenedItems.length === 0 && (
-        <Box className="p-4 flex justify-center">
-          <Text>{t('loading')}</Text>
-        </Box>
       )}
 
       {!isInitialLoading && flattenedItems.length === 0 && (

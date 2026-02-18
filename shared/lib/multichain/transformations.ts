@@ -192,6 +192,16 @@ export function selectTransactions(address: string) {
           return result;
         }
 
+        // Filter out zero-value outgoing transactions with no transfers
+        if (
+          rawFrom === addr &&
+          raw.value === '0' &&
+          !raw.valueTransfers?.length &&
+          raw.transactionCategory === 'STANDARD'
+        ) {
+          return result;
+        }
+
         const meta = normalizeTransaction(addr, raw);
 
         // Filter out token transfers

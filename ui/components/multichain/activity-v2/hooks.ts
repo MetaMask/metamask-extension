@@ -6,10 +6,12 @@ import type {
 } from '../../../../shared/lib/multichain/types';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { selectMarketRates } from '../../../selectors/activity';
+import { selectEvmAddress } from '../../../selectors/accounts';
 import { calculateFiatFromMarketRates } from './helpers';
 
 export function useGetTitle(transaction: TransactionViewModel): string {
   const t = useI18nContext();
+  const evmAddress = useSelector(selectEvmAddress)?.toLowerCase();
   const { transactionCategory } = transaction;
 
   // This should be server-side
@@ -48,6 +50,19 @@ export function useGetTitle(transaction: TransactionViewModel): string {
     if (transaction.amounts?.from) {
       const { symbol } = transaction.amounts.from.token;
       return symbol ? t('sentSpecifiedTokens', [symbol]) : t('sent');
+    }
+  }
+
+  if (transactionCategory === 'CONTRACT_CALL') {
+    const from = transaction.txParams?.from?.toLowerCase();
+    const to = transaction.txParams?.to?.toLowerCase();
+    const isIncoming = evmAddress && to === evmAddress && from !== evmAddress;
+
+    if (isIncoming && transaction.amounts?.to) {
+      return t('received');
+    }
+    if (transaction.amounts?.from?.token.symbol) {
+      return t('sentSpecifiedTokens', [transaction.amounts.from.token.symbol]);
     }
   }
 
