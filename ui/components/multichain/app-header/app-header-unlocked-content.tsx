@@ -98,7 +98,10 @@ export const AppHeaderUnlockedContent = ({
   const accountListStats = useSelector(getAccountListStats);
   const showDefaultAddress = useSelector(getShowDefaultAddress);
   const { defaultAddress } = useSelector((state) =>
-    getDefaultScopeAndAddressByAccountGroupId(state, selectedMultichainAccountId),
+    getDefaultScopeAndAddressByAccountGroupId(
+      state,
+      selectedMultichainAccountId,
+    ),
   );
 
   // Used for account picker

@@ -80,9 +80,7 @@ export const MultichainAccountNetworkGroupWithDefaultAddress = ({
       <Text
         variant={TextVariant.BodyXs}
         color={
-          addressCopied
-            ? TextColor.SuccessDefault
-            : TextColor.TextAlternative
+          addressCopied ? TextColor.SuccessDefault : TextColor.TextAlternative
         }
         style={{ lineHeight: 0 }}
       >
@@ -94,9 +92,7 @@ export const MultichainAccountNetworkGroupWithDefaultAddress = ({
         name={addressCopied ? IconName.CopySuccess : IconName.Copy}
         size={IconSize.Sm}
         color={
-          addressCopied
-            ? IconColor.SuccessDefault
-            : IconColor.IconAlternative
+          addressCopied ? IconColor.SuccessDefault : IconColor.IconAlternative
         }
       />
     </Box>
