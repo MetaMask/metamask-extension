@@ -25,9 +25,6 @@ import { useCopyToClipboard } from 'ui/hooks/useCopyToClipboard';
 const MAX_NETWORK_AVATARS = 4;
 
 export type MultichainAccountNetworkGroupWithDefaultAddressProps = {
-  /**
-   * The account group ID to show the default address for.
-   */
   groupId: AccountGroupId;
 };
 
@@ -37,7 +34,6 @@ export type MultichainAccountNetworkGroupWithDefaultAddressProps = {
  *
  * @param options0
  * @param options0.groupId
- * @param options0.onCopy
  */
 export const MultichainAccountNetworkGroupWithDefaultAddress = ({
   groupId,
