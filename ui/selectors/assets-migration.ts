@@ -31,17 +31,17 @@ import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 // TokensController
 // allTokens: DONE
 // allIgnoredTokens: DONE *Alays empty because not yet plugged in client*
-// allDetectedTokens: TODO
+// allDetectedTokens: TODO (is this even used? Can it be removed?)
 //
 // TokenBalancesController
 // tokenBalances: DONE
 //
 // TokenRatesController
-// marketData: TODO
+// marketData: TODO (requires, for each evm asset, the price in the native currency asset for that chain)
 //
 // CurrencyRateController
-// currencyRates: TODO
-// currentCurrency: TODO
+// currencyRates: TODO (requires, for each different native ticker, the conversion rate to the current currency and to dollars)
+// currentCurrency: TODO (this should come from preferences)
 //
 // MultichainAssetsController
 // accountsAssets: DONE
@@ -49,17 +49,17 @@ import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 // allIgnoredAssets: DONE
 //
 // MultichainBalancesController
-// balances: TODO
+// balances: DONE
 //
 // MultichainAssetsRatesController
-// conversionRates: TODO
-// historicalPrices: TODO
+// conversionRates: TODO (requires, for each non-evm asset, the conversion rate to the current currency)
+// historicalPrices: TODO (we should probably stop using this as state and fetch it whenever is needed)
 //
 // TokenListController
-// tokensChainsCache: TODO
+// tokensChainsCache: TODO (there are no plans to port this state)
 //
 // RatesController
-// rates: TODO
+// rates: TODO (is this even used? Can it be removed?)
 
 type MetaMaskAssetsControllerState = {
   metamask: AssetsControllerState;
