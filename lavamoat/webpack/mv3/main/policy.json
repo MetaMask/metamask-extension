@@ -453,7 +453,7 @@
       "packages": {
         "@ledgerhq/errors": true,
         "buffer": true,
-        "semver": true
+        "@ledgerhq/hw-transport>@ledgerhq/devices>semver": true
       }
     },
     "@ledgerhq/hw-app-eth>@ledgerhq/domain-service": {
@@ -2330,7 +2330,7 @@
         "buffer>ieee754": true
       }
     },
-    "@metamask/snaps-utils>validate-npm-package-name>builtins": {
+    "eslint-plugin-n>builtins": {
       "globals": {
         "process.version": true
       },
@@ -4352,6 +4352,15 @@
         "process": true
       }
     },
+    "@ledgerhq/hw-transport>@ledgerhq/devices>semver": {
+      "globals": {
+        "console.error": true,
+        "process": true
+      },
+      "packages": {
+        "process": true
+      }
+    },
     "string.prototype.matchall>call-bind>set-function-length": {
       "packages": {
         "string.prototype.matchall>define-properties>define-data-property": true,
@@ -4658,7 +4667,7 @@
     },
     "@metamask/snaps-utils>validate-npm-package-name": {
       "packages": {
-        "@metamask/snaps-utils>validate-npm-package-name>builtins": true
+        "eslint-plugin-n>builtins": true
       }
     },
     "react-markdown>vfile>vfile-message": {

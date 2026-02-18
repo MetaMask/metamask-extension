@@ -5,6 +5,7 @@ import { WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { mockTransactions } from '../../helpers/mock-server';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
@@ -37,7 +38,7 @@ describe('MetaMask Responsive UI', function (this: Suite) {
   it('Importing existing wallet from lock page', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         driverOptions,
         title: this.test?.fullTitle(),
       },
