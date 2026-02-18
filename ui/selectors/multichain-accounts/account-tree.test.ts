@@ -1398,7 +1398,7 @@ describe('Multichain Accounts Selectors', () => {
       expect(result.defaultScopes).toEqual([]);
     });
 
-    it('uses preferences.defaultAddressScope when set', () => {
+    it('returns null defaultAddress and empty defaultScopes when defaultAddressScope does not match groupId scopes', () => {
       const stateWithBip122 = {
         ...typedMockState,
         metamask: {
