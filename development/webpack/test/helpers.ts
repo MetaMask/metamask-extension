@@ -89,6 +89,7 @@ export function mockWebpack(
     deleteAsset: mock.fn((name: string) => {
       delete assets[name];
     }),
+    entrypoints: new Map(),
     hooks: {
       processAssets: {
         async tapPromise(_: unknown, fn: (assets: Assets) => Promise<void>) {
@@ -103,7 +104,16 @@ export function mockWebpack(
     },
   };
   const compiler = {
+    context: '',
     hooks: {
+      entryOption: {
+        tap(
+          _: unknown,
+          fn: (context: string, entries: Record<string, unknown>) => void,
+        ) {
+          fn(compiler.context, {});
+        },
+      },
       compilation: {
         tap(_: unknown, fn: (compilation: Compilation) => void) {
           fn(compilation as unknown as Compilation);

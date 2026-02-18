@@ -88,7 +88,7 @@ describe('ManifestPlugin', () => {
           files.map(({ source }) => source),
           files.map(() => null),
         );
-        compilation.options.context = context;
+        compiler.context = context;
         const manifestPlugin = new ManifestPlugin({
           browsers,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -417,7 +417,7 @@ describe('ManifestPlugin', () => {
 
     it('should apply build type base manifest overrides', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compilation.options.context = context;
+      compiler.context = context;
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
@@ -455,7 +455,7 @@ describe('ManifestPlugin', () => {
 
     it('should apply build type browser manifest overrides on top of all previous layers', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compilation.options.context = context;
+      compiler.context = context;
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
@@ -493,7 +493,7 @@ describe('ManifestPlugin', () => {
 
     it('should gracefully skip non-existent build type manifests', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compilation.options.context = context;
+      compiler.context = context;
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
@@ -532,7 +532,7 @@ describe('ManifestPlugin', () => {
 
     it('should use build type base when build type browser manifest does not exist', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compilation.options.context = context;
+      compiler.context = context;
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
@@ -575,7 +575,7 @@ describe('ManifestPlugin', () => {
 
     it('should prioritize build type base description over base description', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compilation.options.context = context;
+      compiler.context = context;
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
@@ -603,7 +603,7 @@ describe('ManifestPlugin', () => {
 
     it('should apply different build type overrides for different browsers', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compilation.options.context = context;
+      compiler.context = context;
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome', 'firefox'],
@@ -651,7 +651,7 @@ describe('ManifestPlugin', () => {
 
     it('should work with manifest v2 and build type overrides', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compilation.options.context = context;
+      compiler.context = context;
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
@@ -685,7 +685,7 @@ describe('ManifestPlugin', () => {
 
     it('should append additional description suffix to build type description', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compilation.options.context = context;
+      compiler.context = context;
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
