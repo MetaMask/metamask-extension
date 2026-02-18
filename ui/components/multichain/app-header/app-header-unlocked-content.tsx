@@ -66,6 +66,7 @@ import {
 } from '../../../ducks/app/app';
 import {
   getAccountListStats,
+  getDefaultScopeAndAddressByAccountGroupId,
   getMultichainAccountGroupById,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
@@ -96,6 +97,9 @@ export const AppHeaderUnlockedContent = ({
   );
   const accountListStats = useSelector(getAccountListStats);
   const showDefaultAddress = useSelector(getShowDefaultAddress);
+  const { defaultAddress } = useSelector((state) =>
+    getDefaultScopeAndAddressByAccountGroupId(state, selectedMultichainAccountId),
+  );
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
@@ -230,7 +234,7 @@ export const AppHeaderUnlockedContent = ({
                 });
               }}
             >
-              {showDefaultAddress ? (
+              {showDefaultAddress && defaultAddress ? (
                 <MultichainAccountNetworkGroupWithDefaultAddress
                   groupId={selectedMultichainAccountId}
                 />
