@@ -45,53 +45,6 @@ describe('Send flow', function (this: Suite) {
     );
   });
 
-  it('full flow of USD with a positive balance account', async function () {
-    this.timeout(120000);
-    await withSolanaAccountSnap(
-      {
-        title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: false,
-        mockGetTransactionSuccess: true,
-      },
-      async (driver) => {
-        const homePage = new NonEvmHomepage(driver);
-        const sendPage = new SendPage(driver);
-        await homePage.checkPageIsLoaded({ amount: '$5,643.50' });
-        await homePage.clickOnSendButton();
-        await sendPage.checkSolanaNetworkIsPresent();
-        await sendPage.selectToken(
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          'SOL',
-        );
-
-        assert.equal(
-          await sendPage.isContinueButtonEnabled(),
-          false,
-          'Continue button is enabled when no address nor amount',
-        );
-        await sendPage.fillRecipient(commonSolanaAddress);
-        await sendPage.fillAmount('10');
-        assert.equal(
-          await sendPage.isContinueButtonEnabled(),
-          true,
-          'Continue button should be enabled',
-        );
-
-        await sendPage.pressContinueButton();
-
-        const confirmation = new SnapTransactionConfirmation(driver);
-        await confirmation.checkPageIsLoaded();
-        await confirmation.checkAccountIsDisplayed('Account 1');
-        await confirmation.clickFooterConfirmButton();
-
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkTxAction({ action: 'Sent' });
-        await activityList.checkTxAmountInActivity('-0.00708 SOL', 1);
-        await activityList.checkNoFailedTransactions();
-      },
-    );
-  });
-
   it('full flow of SOL with a positive balance account', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(

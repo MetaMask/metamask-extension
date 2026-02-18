@@ -927,19 +927,25 @@ export async function mockSwapSolToUsdcTransaction(
     });
 }
 
-export async function mockGetUSDCSOLTransaction(mockServer: Mockttp) {
+export async function mockGetUSDCSOLTransaction(
+  mockServer: Mockttp,
+  signatureHolder?: SignatureHolder,
+) {
   const resp = await readResponseJsonFile('usdcSolTransaction.json');
-  const response = {
-    statusCode: 200,
-    json: resp,
-  };
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
       method: 'getTransaction',
     })
     .thenCallback(() => {
-      return response;
+      const json = JSON.parse(JSON.stringify(resp));
+      if (signatureHolder?.value) {
+        json.result.transaction.signatures = [signatureHolder.value];
+      }
+      return {
+        statusCode: 200,
+        json,
+      };
     });
 }
 
@@ -1757,17 +1763,23 @@ const WALLET_ADDRESS = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
 const USDC_CAIP19 =
   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
+const USDC_TOKEN_ACCOUNT_PUBKEY =
+  'F77xG4vz2CJeMxxAmFW8pvPx2c5Uk75pksr6Wwx6HFhV';
+
+const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+
+const USDC_BALANCE_AMOUNT = '8908267';
+
 /**
- * Returns the USDC token account for SPL Token program queries only after
- * the swap has been submitted (signatureHolder is populated). Returns empty
- * during initial page load so the balance is not disrupted.
+ * Returns the USDC token account for SPL Token program queries.
+ * For Token2022 program queries, returns empty.
  *
  * @param mockServer - The mockttp server instance.
- * @param signatureHolder - Shared holder; USDC is only returned after swap submission.
+ * @param signatureHolder - Optional. When provided, USDC is only returned after swap submission.
  */
 export async function mockGetTokenAccountsUSDCOnly(
   mockServer: Mockttp,
-  signatureHolder: SignatureHolder,
+  signatureHolder?: SignatureHolder,
 ) {
   const usdcAccount = {
     account: {
@@ -1775,11 +1787,11 @@ export async function mockGetTokenAccountsUSDCOnly(
         parsed: {
           info: {
             isNative: false,
-            mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            mint: USDC_MINT,
             owner: WALLET_ADDRESS,
             state: 'initialized',
             tokenAmount: {
-              amount: '8908267',
+              amount: USDC_BALANCE_AMOUNT,
               decimals: 6,
               uiAmount: 8.908267,
               uiAmountString: '8.908267',
@@ -1796,7 +1808,7 @@ export async function mockGetTokenAccountsUSDCOnly(
       rentEpoch: 18446744073709552000,
       space: 165,
     },
-    pubkey: 'F77xG4vz2CJeMxxAmFW8pvPx2c5Uk75pksr6Wwx6HFhV',
+    pubkey: USDC_TOKEN_ACCOUNT_PUBKEY,
   };
 
   return await mockServer
@@ -1805,7 +1817,8 @@ export async function mockGetTokenAccountsUSDCOnly(
     .thenCallback(async (req) => {
       const body = (await req.body.getText()) ?? '';
       const isSplToken = body.includes(SOLANA_TOKEN_PROGRAM);
-      const swapSubmitted = signatureHolder.value !== '';
+      const shouldReturn =
+        !signatureHolder || signatureHolder.value !== '';
       return {
         statusCode: 200,
         json: {
@@ -1813,11 +1826,39 @@ export async function mockGetTokenAccountsUSDCOnly(
           jsonrpc: '2.0',
           result: {
             context: { apiVersion: '2.2.14', slot: 343229969 },
-            value: isSplToken && swapSubmitted ? [usdcAccount] : [],
+            value: isSplToken && shouldReturn ? [usdcAccount] : [],
           },
         },
       };
     });
+}
+
+/**
+ * Mocks getTokenAccountBalance for the USDC token account.
+ * The snap calls this to get the exact balance of a discovered SPL token account.
+ *
+ * @param mockServer - The mockttp server instance.
+ */
+export async function mockGetTokenAccountBalance(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX_MAINNET)
+    .withJsonBodyIncluding({ method: 'getTokenAccountBalance' })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        id: '1337',
+        jsonrpc: '2.0',
+        result: {
+          context: { apiVersion: '2.2.14', slot: 343229969 },
+          value: {
+            amount: USDC_BALANCE_AMOUNT,
+            decimals: 6,
+            uiAmount: 8.908267,
+            uiAmountString: '8.908267',
+          },
+        },
+      },
+    }));
 }
 
 /**
