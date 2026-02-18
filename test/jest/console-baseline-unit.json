@@ -2211,33 +2211,10 @@
     "ui/pages/confirmations/components/confirm/smart-account-tab/smart-account-tab.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/confirmations/components/confirm/smart-account-update/smart-account-update-success.test.tsx": {
-      "Reselect: Identity function warnings": 4,
-      "Reselect: Input stability warnings": 2,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/confirm/smart-account-update/smart-account-update.test.tsx": {
-      "React: DOM nesting violations": 1,
-      "Reselect: Identity function warnings": 4,
-      "Reselect: Input stability warnings": 2,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/confirmations/components/confirm/snaps/snaps-section/snaps-section.test.tsx": {
       "React: Missing key props in lists": 1,
       "Reselect: Identity function warnings": 6,
       "Reselect: Input stability warnings": 2,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/confirm/splash/smart-account-update-splash/smart-account-update-splash.test.tsx": {
-      "React: DOM nesting violations": 1,
-      "Reselect: Identity function warnings": 5,
-      "Reselect: Input stability warnings": 3,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/confirm/splash/splash.test.tsx": {
-      "React: DOM nesting violations": 1,
-      "Reselect: Identity function warnings": 5,
-      "Reselect: Input stability warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/title/hooks/useCurrentSpendingCap.test.ts": {
@@ -2935,11 +2912,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/useSignatureEventFragment.test.tsx": {
-      "Reselect: Identity function warnings": 4,
-      "Reselect: Input stability warnings": 2,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/hooks/useSmartAccountActions.test.ts": {
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 2,
       "warn: ⚠️ React Router Future Flag": 2

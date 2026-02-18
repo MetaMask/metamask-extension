@@ -3,6 +3,8 @@ import type {
   PermissionConstraint,
   PermissionControllerState,
 } from '@metamask/permission-controller';
+import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
+import type { PreferencesControllerState } from '../../../app/scripts/controllers/preferences-controller';
 import {
   DAPP_URL,
   DAPP_URL_LOCALHOST,
@@ -80,12 +82,7 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  /**
-   * Merges partial PreferencesController state into the fixture.
-   *
-   * @param data - Partial PreferencesController state (e.g. preferences, identities).
-   */
-  withPreferencesController(data: Record<string, unknown>): this {
+  withPreferencesController(data: Partial<PreferencesControllerState>): this {
     merge(this.fixture.data.PreferencesController, data);
     return this;
   }
@@ -95,10 +92,11 @@ class FixtureBuilderV2 {
    *
    * @param data - Map of chainId (e.g. eip155:0x1) or similar to enabled state.
    */
-  withEnabledNetworks(data: Record<string, unknown>): this {
-    (
-      this.fixture.data.NetworkEnablementController as Record<string, unknown>
-    ).enabledNetworkMap = data;
+  withEnabledNetworks(
+    data: NetworkEnablementControllerState['enabledNetworkMap'],
+  ): this {
+    this.fixture.data.NetworkEnablementController.enabledNetworkMap =
+      data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
     return this;
   }
 
@@ -106,6 +104,12 @@ class FixtureBuilderV2 {
                               CUSTOM METHODS
      ==================================================================
   */
+  withConversionRateDisabled(): this {
+    return this.withPreferencesController({
+      useCurrencyRateCheck: false,
+    });
+  }
+
   withPermissionControllerConnectedToTestDapp({
     account = '',
     useLocalhostHostname = false,
