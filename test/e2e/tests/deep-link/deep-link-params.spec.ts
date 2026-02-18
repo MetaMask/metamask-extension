@@ -239,7 +239,7 @@ describe('Deep Link - Parameter Handling & Security', function () {
         );
         assert.strictEqual(windowOpened, true, 'window.open failed');
 
-        driver.delay(1000); // give the window a second to open
+        await driver.delay(1000); // give the window a second to open
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
