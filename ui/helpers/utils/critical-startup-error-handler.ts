@@ -132,7 +132,7 @@ export class CriticalStartupErrorHandler {
         // without receiving the app-init ping (`uiStartup.receivedAppInitPing`
         // is false), then we can be pretty confident that the port connection
         // itself just isn't working, and we can remove the
-        // `uiStartup.receivedAppInitPing` tag and all logic related to itm
+        // `uiStartup.receivedAppInitPing` tag and all logic related to it
         // since it won't be providing any useful information anymore. However,
         // if we find that some errors are happening with receiving the app-init
         // ping (`uiStartup.receivedAppInitPing` is true), then we know that the
