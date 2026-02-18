@@ -407,7 +407,7 @@ export const MultichainAccountList = ({
             groupId,
             groupData,
             walletId,
-            showWalletName: false,
+            showWalletName: !showDefaultAddress,
           });
         });
       }
