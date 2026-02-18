@@ -1050,6 +1050,7 @@ export const getQuoteNegativeCasesFixtures = (
         await mockTokensLinea(mockServer),
         await mockGetPopularTokens(mockServer),
         await mockPriceSpotPrices(mockServer),
+        await mockFeatureFlags(mockServer, featureFlags),
       ].concat(...(await mockSearchTokens(mockServer))),
     manifestFlags: {
       remoteFeatureFlags: {
@@ -1099,6 +1100,7 @@ export const getBridgeNegativeCasesFixtures = (
         await mockETHtoETH(mockServer),
         await mockGetTxStatusInvalid(mockServer, options),
         await mockPriceSpotPrices(mockServer),
+        await mockFeatureFlags(mockServer, featureFlags),
       ].concat(...(await mockSearchTokens(mockServer))),
     manifestFlags: {
       remoteFeatureFlags: {
@@ -1146,6 +1148,7 @@ export const getInsufficientFundsFixtures = (
         await mockGetPopularTokens(mockServer),
         await mockETHtoWETH(mockServer),
         await mockPriceSpotPrices(mockServer),
+        await mockFeatureFlags(mockServer, featureFlags),
       ].concat(...(await mockSearchTokens(mockServer))),
     manifestFlags: {
       remoteFeatureFlags: {
