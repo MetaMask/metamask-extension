@@ -421,7 +421,7 @@ export function extractEntries(
   return Object.entries(data)
     .filter(
       (pair): pair is [string, BenchmarkEntry['entry']] =>
-        pair[1].mean !== undefined && typeof pair[1].mean === 'object',
+        pair[1].mean != null && typeof pair[1].mean === 'object',
     )
     .map(([name, entry]) => ({ benchmarkName: name, entry }));
 }
@@ -437,7 +437,7 @@ export function extractEntries(
  */
 export async function buildBenchmarkSectionComment(
   hostUrl: string,
-  presets: string[],
+  presets: readonly string[],
   summary: string,
   firstColumn: string,
 ): Promise<string> {
@@ -618,13 +618,14 @@ export async function runBenchmarkGate(
           for (const metric of Object.keys(
             gates[platform][buildType][page][measure],
           )) {
-            const benchmarkValue =
-              benchmarkResults[platform][buildType][page][measure][metric];
+            const benchmarkValue = parseFloat(
+              benchmarkResults[platform][buildType][page][measure][metric],
+            );
 
             const gateValue = gates[platform][buildType][page][measure][metric];
 
             if (benchmarkValue > gateValue) {
-              const ceiledValue = Math.ceil(parseFloat(benchmarkValue));
+              const ceiledValue = Math.ceil(benchmarkValue);
 
               if (measure === 'mean') {
                 exceededSums.mean += ceiledValue - gateValue;

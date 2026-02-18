@@ -9,15 +9,22 @@ import type { ThresholdConfig } from './types';
  */
 export const BENCHMARK_PLATFORMS = ['chrome', 'firefox'];
 export const BENCHMARK_BUILD_TYPES = ['browserify', 'webpack'];
-export const PAGE_LOAD_PRESETS = ['standardHome', 'powerUserHome'];
-export const USER_ACTION_PRESETS = ['userActions'];
-export const PERFORMANCE_PRESETS = [
-  'performanceOnboardingImport',
-  'performanceOnboardingNew',
-  'performanceAssets',
-  'performanceAccountManagement',
-  'performanceTransactions',
-];
+export const PAGE_LOAD_PRESETS = {
+  STANDARD_HOME: 'standardHome',
+  POWER_USER_HOME: 'powerUserHome',
+};
+
+export const USER_ACTION_PRESETS = {
+  USER_ACTIONS: 'userActions',
+};
+
+export const PERFORMANCE_PRESETS = {
+  ONBOARDING_IMPORT: 'performanceOnboardingImport',
+  ONBOARDING_NEW: 'performanceOnboardingNew',
+  ASSETS: 'performanceAssets',
+  ACCOUNT_MANAGEMENT: 'performanceAccountManagement',
+  TRANSACTIONS: 'performanceTransactions',
+};
 
 export const DEFAULT_NUM_BROWSER_LOADS = 10;
 export const DEFAULT_NUM_PAGE_LOADS = 10;

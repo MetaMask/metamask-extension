@@ -110,33 +110,39 @@ const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
 
 /**
  * Preset definitions mapping preset names to benchmark files.
- * Preset names come from shared constants in ./utils/constants.ts.
+ * Keys reference the shared constants from ./utils/constants.ts.
  */
 const PRESETS: Record<string, string[]> = {
   // Performance benchmarks - Onboarding
-  [PERFORMANCE_PRESETS[0]]: [
+  [PERFORMANCE_PRESETS.ONBOARDING_IMPORT]: [
     `${BENCHMARK_DIR}/performance/onboarding-import-wallet.ts`,
   ],
-  [PERFORMANCE_PRESETS[1]]: [
+  [PERFORMANCE_PRESETS.ONBOARDING_NEW]: [
     `${BENCHMARK_DIR}/performance/onboarding-new-wallet.ts`,
   ],
   // Performance benchmarks - Assets
-  [PERFORMANCE_PRESETS[2]]: [
+  [PERFORMANCE_PRESETS.ASSETS]: [
     `${BENCHMARK_DIR}/performance/asset-details.ts`,
     `${BENCHMARK_DIR}/performance/solana-asset-details.ts`,
   ],
   // Performance benchmarks - Accounts
-  [PERFORMANCE_PRESETS[3]]: [`${BENCHMARK_DIR}/performance/import-srp-home.ts`],
+  [PERFORMANCE_PRESETS.ACCOUNT_MANAGEMENT]: [
+    `${BENCHMARK_DIR}/performance/import-srp-home.ts`,
+  ],
   // Performance benchmarks - Transactions
-  [PERFORMANCE_PRESETS[4]]: [
+  [PERFORMANCE_PRESETS.TRANSACTIONS]: [
     `${BENCHMARK_DIR}/performance/send-transactions.ts`,
     `${BENCHMARK_DIR}/performance/swap.ts`,
   ],
   // Page load benchmarks
-  [PAGE_LOAD_PRESETS[0]]: [`${BENCHMARK_DIR}/page-load/standard-home.ts`],
-  [PAGE_LOAD_PRESETS[1]]: [`${BENCHMARK_DIR}/page-load/power-user-home.ts`],
+  [PAGE_LOAD_PRESETS.STANDARD_HOME]: [
+    `${BENCHMARK_DIR}/page-load/standard-home.ts`,
+  ],
+  [PAGE_LOAD_PRESETS.POWER_USER_HOME]: [
+    `${BENCHMARK_DIR}/page-load/power-user-home.ts`,
+  ],
   // User action benchmarks
-  [USER_ACTION_PRESETS[0]]: [
+  [USER_ACTION_PRESETS.USER_ACTIONS]: [
     `${BENCHMARK_DIR}/user-actions/load-new-account.ts`,
     `${BENCHMARK_DIR}/user-actions/confirm-tx.ts`,
     `${BENCHMARK_DIR}/user-actions/bridge-user-actions.ts`,

@@ -170,15 +170,21 @@ async function fetchPageLoadResults(
     results[platform] = {};
     for (const buildType of BENCHMARK_BUILD_TYPES) {
       results[platform][buildType] = {};
-      for (const page of PAGE_LOAD_PRESETS) {
-        const data = await fetchBenchmarkJson<Record<string, PageLoadEntry>>(
-          hostUrl,
-          platform,
-          buildType,
-          page,
-        );
-        if (data?.[page]) {
-          results[platform][buildType][page] = data[page];
+      for (const page of Object.values(PAGE_LOAD_PRESETS)) {
+        try {
+          const data = await fetchBenchmarkJson<Record<string, PageLoadEntry>>(
+            hostUrl,
+            platform,
+            buildType,
+            page,
+          );
+          if (data?.[page]) {
+            results[platform][buildType][page] = data[page];
+          }
+        } catch (error) {
+          console.log(
+            `Failed to fetch page load data for ${platform}/${buildType}/${page}: ${String(error)}`,
+          );
         }
       }
     }
@@ -202,7 +208,7 @@ async function buildUiStartupSection(
   const sectionTitle = 'UI Startup Metrics';
   const pageData =
     benchmarkResults[BENCHMARK_PLATFORMS[0]]?.[BENCHMARK_BUILD_TYPES[0]]?.[
-      PAGE_LOAD_PRESETS[0]
+      PAGE_LOAD_PRESETS.STANDARD_HOME
     ];
   const meanStartup = pageData?.mean?.uiStartup;
   const stdDevStartup = pageData?.stdDev?.uiStartup;
@@ -214,7 +220,7 @@ async function buildUiStartupSection(
   const userActionsHtml = await safeBuildSection('user actions', () =>
     buildBenchmarkSectionComment(
       hostUrl,
-      USER_ACTION_PRESETS,
+      Object.values(USER_ACTION_PRESETS),
       '🏃 User Actions Benchmark',
       'Action',
     ),
@@ -230,7 +236,7 @@ async function buildUiStartupSection(
   const performanceHtml = await safeBuildSection('performance benchmarks', () =>
     buildBenchmarkSectionComment(
       hostUrl,
-      PERFORMANCE_PRESETS,
+      Object.values(PERFORMANCE_PRESETS),
       '⚡ Performance Benchmarks',
       'Benchmark',
     ),

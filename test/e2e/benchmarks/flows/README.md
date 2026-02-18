@@ -99,8 +99,8 @@ If your benchmark should run in CI, add its file path to the appropriate preset 
 
 To create a **new** preset, update these locations:
 
-1. `test/e2e/benchmarks/utils/constants.ts` — add the preset name to an existing array (`PERFORMANCE_PRESETS`, `USER_ACTION_PRESETS`, `PAGE_LOAD_PRESETS`) or create a new one
-2. `test/e2e/benchmarks/run-benchmark.ts` — add a `PRESETS` entry mapping the name to benchmark file paths
+1. `test/e2e/benchmarks/utils/constants.ts` — add a key to the relevant preset object (`PERFORMANCE_PRESETS`, `USER_ACTION_PRESETS`, `PAGE_LOAD_PRESETS`) or create a new one
+2. `test/e2e/benchmarks/run-benchmark.ts` — add a `PRESETS` entry (using the constant key) mapping to benchmark file paths
 3. `.github/workflows/run-benchmarks.yml` — add the preset to the CI matrix
 
 ## Output Format
