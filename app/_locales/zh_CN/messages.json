@@ -7058,44 +7058,8 @@
   "smartAccount": {
     "message": "智能账户"
   },
-  "smartAccountAccept": {
-    "message": "使用智能账户"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "交易更快速、费用更低"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "批量处理交易，省时省钱。"
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "保留原账户地址，随时可切换回原账户。"
-  },
   "smartAccountLabel": {
     "message": "智能账户"
-  },
-  "smartAccountPayToken": {
-    "message": "随时使用任何代币支付"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "使用您已经拥有的代币支付网络费用。"
-  },
-  "smartAccountReject": {
-    "message": "不使用智能账户"
-  },
-  "smartAccountSameAccount": {
-    "message": "账户相同，功能更加智能化。"
-  },
-  "smartAccountSplashInfo": {
-    "message": "智能账户"
-  },
-  "smartAccountSplashTitle": {
-    "message": "使用智能账户？"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "您的账户将在下次交易时更新为智能账户。"
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "成功！"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "地址相同。功能更加智能化。"
