@@ -43,8 +43,8 @@ import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 // currentCurrency: TODO
 //
 // MultichainAssetsController
-// accountsAssets: TODO
-// assetsMetadata: TODO
+// accountsAssets: DONE
+// assetsMetadata: DONE
 // allIgnoredAssets: TODO
 //
 // MultichainBalancesController
@@ -278,6 +278,11 @@ export const getTokensControllerAllIgnoredTokens = createDeepEqualSelector(
       }
 
       const assetType = parseCaipAssetType(assetId as CaipAssetType);
+
+      if (assetType.chain.namespace !== KnownCaipNamespace.Eip155) {
+        continue;
+      }
+
       const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
 
       for (const accountId of Object.keys(internalAccountsById)) {
@@ -374,6 +379,92 @@ export const getMultiChainAssetsControllerAccountsAssets =
         assetsBalance,
       )) {
         for (const assetId of Object.keys(accountBalances)) {
+          (result[accountId] ??= []).push(assetId as CaipAssetType);
+        }
+      }
+
+      return result;
+    },
+  );
+
+// TODO There are issues with the new image url not matching the one in assetsMetadata iconUrl
+// AssetId (string) -> AssetMetadata
+export const getMultiChainAssetsControllerAssetsMetadata =
+  createDeepEqualSelector(
+    [
+      getIsAssetsUnifyStateEnabled,
+      (state: { metamask: MultichainAssetsControllerState }) =>
+        state.metamask.assetsMetadata ?? {},
+      (state: MetaMaskAssetsControllerState) => state.metamask.assetsInfo ?? {},
+    ],
+    (isAssetsUnifyStateEnabled, assetsMetadata, assetsInfo) => {
+      if (!isAssetsUnifyStateEnabled) {
+        return assetsMetadata;
+      }
+
+      const result: MultichainAssetsControllerState['assetsMetadata'] = {};
+
+      for (const [assetId, metadata] of Object.entries(assetsInfo)) {
+        const assetType = parseCaipAssetType(assetId as CaipAssetType);
+        if (assetType.chain.namespace === KnownCaipNamespace.Eip155) {
+          continue;
+        }
+
+        result[assetId as CaipAssetType] = {
+          fungible: true,
+          iconUrl: metadata.image ?? '',
+          units: [
+            {
+              decimals: metadata.decimals,
+              symbol: metadata.symbol,
+              name: metadata.name,
+            },
+          ],
+          symbol: metadata.symbol,
+          name: metadata.name,
+        };
+      }
+
+      return result;
+    },
+  );
+
+// AccountId -> Array of AssetIds
+export const getMultiChainAssetsControllerAllIgnoredAssets =
+  createDeepEqualSelector(
+    [
+      getIsAssetsUnifyStateEnabled,
+      (state: { metamask: MultichainAssetsControllerState }) =>
+        state.metamask.allIgnoredAssets ?? {},
+      (state: MetaMaskAssetsControllerState) =>
+        state.metamask.assetPreferences ?? {},
+      (state: { metamask: AccountsControllerState }) =>
+        state.metamask.internalAccounts?.accounts ?? {},
+    ],
+    (
+      isAssetsUnifyStateEnabled,
+      allIgnoredAssets,
+      assetPreferences,
+      internalAccountsById,
+    ) => {
+      if (!isAssetsUnifyStateEnabled) {
+        return allIgnoredAssets;
+      }
+
+      const result: MultichainAssetsControllerState['allIgnoredAssets'] = {};
+
+      for (const [assetId, { hidden }] of Object.entries(assetPreferences)) {
+        if (!hidden) {
+          continue;
+        }
+
+        const assetType = parseCaipAssetType(assetId as CaipAssetType);
+
+        if (assetType.chain.namespace === KnownCaipNamespace.Eip155) {
+          continue;
+        }
+
+        for (const accountId of Object.keys(internalAccountsById)) {
           (result[accountId] ??= []).push(assetId as CaipAssetType);
         }
       }

@@ -73,6 +73,8 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-ac
 import {
   getAccountTrackerControllerAccountsByChainId,
   getMultiChainAssetsControllerAccountsAssets,
+  getMultiChainAssetsControllerAllIgnoredAssets,
+  getMultiChainAssetsControllerAssetsMetadata,
   getTokenBalancesControllerTokenBalances,
   getTokensControllerAllTokens,
 } from './assets-migration';
@@ -133,9 +135,7 @@ export { getMultiChainAssetsControllerAccountsAssets as getAccountAssets } from 
  * @param state - Redux state object.
  * @returns An object containing non-EVM assets metadata per asset types (CAIP-19).
  */
-export function getAssetsMetadata(state: AssetsState) {
-  return state.metamask.assetsMetadata;
-}
+export { getMultiChainAssetsControllerAssetsMetadata as getAssetsMetadata } from './assets-migration';
 
 // TODO Unified Assets Controller State Access (1)
 // MultichainAssetsController: allIgnoredAssets
@@ -147,9 +147,7 @@ export function getAssetsMetadata(state: AssetsState) {
  * @param state - Redux state object.
  * @returns An object containing all ignored assets.
  */
-export function getAllIgnoredAssets(state: AssetsState) {
-  return state.metamask.allIgnoredAssets ?? EMPTY_OBJECT;
-}
+export { getMultiChainAssetsControllerAllIgnoredAssets as getAllIgnoredAssets } from './assets-migration';
 
 // TODO Unified Assets Controller State Access (1)
 // MultichainAssetsRatesController: conversionRates
@@ -329,7 +327,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
   getMultichainBalances,
   getMultiChainAssetsControllerAccountsAssets,
-  getAssetsMetadata,
+  getMultiChainAssetsControllerAssetsMetadata,
   getAssetsRates,
   getPreferences,
   (
@@ -788,8 +786,8 @@ const selectMultichainBalancesStateForBalances = createSelector(
 const selectMultichainAssetsStateForBalances = createSelector(
   [
     getMultiChainAssetsControllerAccountsAssets,
-    getAssetsMetadata,
-    getAllIgnoredAssets,
+    getMultiChainAssetsControllerAssetsMetadata,
+    getMultiChainAssetsControllerAllIgnoredAssets,
   ],
   (accountsAssets, assetsMetadata, allIgnoredAssets) => ({
     accountsAssets,
@@ -1323,8 +1321,10 @@ const getStateForAssetSelector = ({ metamask }: any) => {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   multichainState = {
     accountsAssets: getMultiChainAssetsControllerAccountsAssets({ metamask }),
-    assetsMetadata: metamask.assetsMetadata,
-    allIgnoredAssets: metamask.allIgnoredAssets,
+    assetsMetadata: getMultiChainAssetsControllerAssetsMetadata({ metamask }),
+    allIgnoredAssets: getMultiChainAssetsControllerAllIgnoredAssets({
+      metamask,
+    }),
     balances: metamask.balances,
     conversionRates: metamask.conversionRates,
   };
