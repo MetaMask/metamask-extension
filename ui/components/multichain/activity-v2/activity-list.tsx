@@ -2,7 +2,6 @@ import React, { useMemo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Box, Text } from '@metamask/design-system-react';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import type { Transaction } from '@metamask/keyring-api';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -28,7 +27,7 @@ import { ActivityListItem } from './activity-list-item';
 import { ActivityDetailsModalAdapter } from './activity-details-modal-adapter';
 import { LocalActivityListItem } from './local-activity-list-item';
 import { NonEvmActivityListItem } from './non-evm-activity-list-item';
-import { useTransactionsQueryOptions } from './hooks';
+import { useTransactionsQuery } from './hooks';
 
 const ITEM_HEIGHT = 70;
 const HEADER_HEIGHT = 36;
@@ -46,11 +45,6 @@ export const ActivityList = () => {
   const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
   const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
 
-  const evmNetworks = useMemo(
-    () => enabledNetworks.filter((id) => id.startsWith('eip155:')),
-    [enabledNetworks],
-  );
-
   // Clear modal state on account switch
   useEffect(() => {
     setIsModalOpen(false);
@@ -59,20 +53,13 @@ export const ActivityList = () => {
   }, [evmAddress]);
 
   // EVM transactions - from API
-  const queryOptions = useTransactionsQueryOptions({
-    params: {
-      accountAddresses: evmAddress ? [evmAddress] : [],
-      networks: evmNetworks,
-    },
-  });
-
   const {
     data,
     isInitialLoading,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery(queryOptions);
+  } = useTransactionsQuery();
 
   // Local transactions - may not be in API yet
   const localTransactions = useSelector(selectLocalTransactions);

@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type {
   Token,
@@ -12,24 +13,83 @@ import { getUseExternalServices } from '../../../selectors';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { parseApprovalTransactionData } from '../../../../shared/modules/transaction.utils';
 import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
-import { queries } from '../../../../shared/lib/multichain/queries';
+import {
+  queries,
+  transactionsQueryKey,
+} from '../../../../shared/lib/multichain/queries';
 import type { Params } from '../../../../shared/lib/api-client';
+import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { calculateFiatFromMarketRates } from './helpers';
 
-export function useTransactionsQueryOptions({ params }: { params: Params }) {
-  const useExternalServices = useSelector(getUseExternalServices);
-  const enabled = Boolean(useExternalServices);
+const getBearerToken = () =>
+  submitRequestToBackground<string | undefined>('getBearerToken');
 
-  return useMemo(() => {
-    return queries.transactions({
-      params,
-      options: {
-        enabled,
-        keepPreviousData: true,
-      },
-      getBearerToken: () => submitRequestToBackground('getBearerToken'),
-    });
-  }, [enabled, params]);
+function useTransactionParams(): Params {
+  const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
+  const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
+
+  const evmNetworks = useMemo(
+    () => enabledNetworks.filter((id: string) => id.startsWith('eip155:')),
+    [enabledNetworks],
+  );
+
+  return useMemo(
+    () => ({
+      accountAddresses: evmAddress ? [evmAddress] : [],
+      networks: evmNetworks,
+    }),
+    [evmAddress, evmNetworks],
+  );
+}
+
+export function useTransactionsQuery() {
+  const useExternalServices = useSelector(getUseExternalServices);
+  const params = useTransactionParams();
+
+  const queryOptions = useMemo(
+    () =>
+      queries.transactions({
+        params,
+        options: {
+          enabled: Boolean(useExternalServices),
+          keepPreviousData: true,
+        },
+        getBearerToken,
+      }),
+    [params, useExternalServices],
+  );
+
+  return useInfiniteQuery(queryOptions);
+}
+
+export function usePrefetchTransactions() {
+  const queryClient = useQueryClient();
+  const useExternalServices = useSelector(getUseExternalServices);
+  const params = useTransactionParams();
+  const evmAddress = params.accountAddresses[0] ?? '';
+
+  return useCallback(() => {
+    if (!useExternalServices || !evmAddress) {
+      return;
+    }
+
+    const queryKey = [...transactionsQueryKey, params];
+    if (queryClient.getQueryData(queryKey)) {
+      return;
+    }
+
+    if (queryClient.isFetching({ queryKey }) > 0) {
+      return;
+    }
+
+    queryClient
+      .prefetchInfiniteQuery(
+        queries.transactions({ params, getBearerToken }),
+      )
+      .catch(() => {
+        // Prefetch is opportunistic
+      });
+  }, [evmAddress, params, queryClient, useExternalServices]);
 }
 
 export function useGetTitle(transaction: TransactionViewModel): string {

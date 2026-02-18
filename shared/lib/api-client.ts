@@ -45,10 +45,7 @@ export async function fetchV4MultiAccountTransactions(
   const { bearerToken, signal } = requestOptions;
   const headers = new Headers();
   if (bearerToken) {
-    const authorization = bearerToken.startsWith('Bearer ')
-      ? bearerToken
-      : `Bearer ${bearerToken}`;
-    headers.set('Authorization', authorization);
+    headers.set('Authorization', `Bearer ${bearerToken}`);
   }
 
   const response = await fetch(url, {
