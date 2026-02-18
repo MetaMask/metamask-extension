@@ -16,7 +16,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import {
-  getDefaultScopeAddressByAccountGroupId,
+  getDefaultScopeAndAddressByAccountGroupId,
   getIconSeedAddressByAccountGroupId,
 } from '../../../selectors/multichain-accounts/account-tree';
 import {
@@ -49,11 +49,13 @@ type AccountCellAvatarProps = {
   connectionStatus?:
     | typeof STATUS_CONNECTED
     | typeof STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
+  hideTooltip?: boolean;
 };
 
 const AccountCellAvatar = ({
   seedAddress,
   connectionStatus,
+  hideTooltip = false,
 }: AccountCellAvatarProps) => {
   return (
     <Box
@@ -69,6 +71,7 @@ const AccountCellAvatar = ({
         address={seedAddress}
         isActive={connectionStatus === STATUS_CONNECTED}
         showConnectedStatus={Boolean(connectionStatus)}
+        hideTooltip={hideTooltip}
       />
     </Box>
   );
@@ -123,7 +126,7 @@ export const MultichainAccountCell = ({
     getIconSeedAddressByAccountGroupId(state, accountId),
   );
   const { defaultAddress } = useSelector((state) =>
-    getDefaultScopeAddressByAccountGroupId(state, accountId),
+    getDefaultScopeAndAddressByAccountGroupId(state, accountId),
   );
 
   const handleAddressCopy = useCallback(
@@ -169,6 +172,7 @@ export const MultichainAccountCell = ({
             <AccountCellAvatar
               seedAddress={seedAddressIcon}
               connectionStatus={connectionStatus}
+              hideTooltip
             />,
           )
         ) : (

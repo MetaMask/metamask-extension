@@ -33,7 +33,7 @@ import {
   getAccountGroupsByAddress,
   getInternalAccountListSpreadByScopesByGroupId,
   getIconSeedAddressByAccountGroupId,
-  getDefaultScopeAddressByAccountGroupId,
+  getDefaultScopeAndAddressByAccountGroupId,
   getIconSeedAddressesByAccountGroups,
   getNormalizedGroupsMetadata,
 } from './account-tree';
@@ -1373,9 +1373,9 @@ describe('Multichain Accounts Selectors', () => {
     });
   });
 
-  describe('getDefaultScopeAddressByAccountGroupId', () => {
+  describe('getDefaultScopeAndAddressByAccountGroupId', () => {
     it('returns defaultAddress and defaultScopes for default scope (eip155) when group has eip155 scope', () => {
-      const result = getDefaultScopeAddressByAccountGroupId(
+      const result = getDefaultScopeAndAddressByAccountGroupId(
         typedMockState,
         ENTROPY_GROUP_1_ID,
       );
@@ -1389,7 +1389,7 @@ describe('Multichain Accounts Selectors', () => {
     });
 
     it('returns null defaultAddress and empty defaultScopes when group ID does not exist', () => {
-      const result = getDefaultScopeAddressByAccountGroupId(
+      const result = getDefaultScopeAndAddressByAccountGroupId(
         typedMockState,
         'nonExistentGroupId' as AccountGroupId,
       );
@@ -1414,7 +1414,7 @@ describe('Multichain Accounts Selectors', () => {
         },
       } as MultichainAccountsState;
 
-      const result = getDefaultScopeAddressByAccountGroupId(
+      const result = getDefaultScopeAndAddressByAccountGroupId(
         stateWithBip122,
         ENTROPY_GROUP_1_ID,
       );

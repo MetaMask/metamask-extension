@@ -48,6 +48,7 @@ import {
   NormalizedGroupMetadata,
 } from './account-tree.types';
 import { getSanitizedChainId, extractWalletIdFromGroupId } from './utils';
+import { DefaultAddressScope } from '../../../shared/constants/default-address';
 
 /**
  * Retrieve account tree state.
@@ -781,48 +782,42 @@ export const getIconSeedAddressByAccountGroupId = createDeepEqualSelector(
   },
 );
 
-type SpreadListByGroupId = (
-  state: MultichainAccountsState,
-  groupId: AccountGroupId,
-) => {
-  account: InternalAccount;
-  scope: CaipChainId;
-  networkName: string;
-}[];
-
 /**
  * Get the address and scopes for the account group that matches the user's default address scope
  * (e.g. eip155, bip122). Used when showing the "default address" in the UI.
  *
  * @param state - Redux state.
  * @param groupId - The account group ID.
- * @param getSpreadList - Optional selector to resolve spread list (defaults to getInternalAccountListSpreadByScopesByGroupId). Pass in for tests or alternate data source.
  * @returns Object with address (or null if none) and scopes (list of matching scope IDs).
  */
-export function getDefaultScopeAddressByAccountGroupId(
-  state: MultichainAccountsState,
-  groupId: AccountGroupId,
-  getSpreadList: SpreadListByGroupId = getInternalAccountListSpreadByScopesByGroupId,
-): { defaultAddress: string | null; defaultScopes: CaipChainId[] } {
-  const spreadList = getSpreadList(state, groupId);
-  const preferences = getPreferences(state);
-  const defaultScope = preferences?.defaultAddressScope ?? 'eip155';
-  if (!spreadList?.length) {
-    return { defaultAddress: null, defaultScopes: [] };
-  }
-  const item = spreadList.find((x) => String(x.scope).startsWith(defaultScope));
-  if (!item) {
-    return { defaultAddress: null, defaultScopes: [] };
-  }
-  const scopes = spreadList
-    .filter(
-      (x) =>
-        x.account.address === item.account.address &&
-        String(x.scope).startsWith(defaultScope),
-    )
-    .map((x) => x.scope);
-  return { defaultAddress: item.account.address, defaultScopes: scopes };
-}
+export const getDefaultScopeAndAddressByAccountGroupId =
+  createDeepEqualSelector(
+    [
+      getInternalAccountListSpreadByScopesByGroupId,
+      (state: MultichainAccountsState) =>
+        getPreferences(state).defaultAddressScope,
+    ],
+    (
+      spreadList: {
+        account: InternalAccount;
+        scope: CaipChainId;
+        networkName: string;
+      }[],
+      defaultScope: DefaultAddressScope,
+    ): { defaultAddress: string | null; defaultScopes: CaipChainId[] } => {
+      const matching =
+        spreadList.filter((x) => String(x.scope).startsWith(defaultScope)) ??
+        [];
+      if (matching.length === 0) {
+        return { defaultAddress: null, defaultScopes: [] };
+      }
+      const { address } = matching[0].account;
+      const defaultScopes = matching
+        .filter((x) => x.account.address === address)
+        .map((x) => x.scope);
+      return { defaultAddress: address, defaultScopes };
+    },
+  );
 
 /**
  * Get the seed addresses for multiple account groups at once.

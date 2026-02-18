@@ -18,7 +18,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
-import { getDefaultScopeAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
+import { getDefaultScopeAndAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
 import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
 import { useCopyToClipboard } from 'ui/hooks/useCopyToClipboard';
 
@@ -46,7 +46,7 @@ export const MultichainAccountNetworkGroupWithDefaultAddress = ({
   const [defaultAddressCopied, setDefaultAddressCopied] = useState(false);
   const defaultAddressCopiedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { defaultAddress, defaultScopes } = useSelector((state) =>
-    getDefaultScopeAddressByAccountGroupId(state, groupId),
+    getDefaultScopeAndAddressByAccountGroupId(state, groupId),
   );
   const [_, handleCopy] = useCopyToClipboard({
     clearDelayMs: null,
