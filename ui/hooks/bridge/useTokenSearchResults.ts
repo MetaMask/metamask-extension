@@ -10,6 +10,8 @@ import { type BridgeAppState } from '../../ducks/bridge/selectors';
 import { getBridgeAssetsByAssetId } from '../../ducks/bridge/asset-selectors';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 import { fetchTokensBySearchQuery } from '../../pages/bridge/utils/tokens';
+import { getBearerToken } from '../../store/actions';
+import { useAsyncResult } from '../useAsync';
 
 /**
  * Returns a list of tokens from the bridge api that match the search query
@@ -54,6 +56,10 @@ export const useTokenSearchResults = ({
     string | undefined
   >(undefined);
 
+  const { value: jwt } = useAsyncResult(async () => {
+    return await getBearerToken();
+  }, []);
+
   const fetchSearchResults = useCallback(
     (
       query: string,
@@ -68,6 +74,7 @@ export const useTokenSearchResults = ({
         chainIds: Array.from(chainIds),
         assetsWithBalances: filteredAssetsToInclude,
         query,
+        jwt,
         clientId: BridgeClientId.EXTENSION,
         signal: abortControllerRef.current?.signal,
         bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
@@ -97,15 +104,16 @@ export const useTokenSearchResults = ({
           setIsSearchResultsLoading(false);
         });
     },
-    [ownedAssetsByAssetId, chainIds, abortControllerRef],
+    [ownedAssetsByAssetId, chainIds, abortControllerRef, jwt],
   );
 
-  const debouncedFetchSearchResults = useRef(
+  const debouncedFetchSearchResults = useCallback(
     debounce(
       (query: string, assets: BridgeToken[]) =>
         fetchSearchResults(query, assets),
       300,
     ),
+    [fetchSearchResults],
   );
 
   const filteredAssetsToInclude = useMemo(() => {
@@ -128,12 +136,12 @@ export const useTokenSearchResults = ({
       setIsSearchResultsLoading(true);
       setSearchResultsWithBalance(filteredAssetsToInclude);
       // Debounce the initial fetch until the user stops typing
-      debouncedFetchSearchResults.current(searchQuery, filteredAssetsToInclude);
+      debouncedFetchSearchResults(searchQuery, filteredAssetsToInclude);
     }
   }, [searchQuery, filteredAssetsToInclude]);
 
   useEffect(() => {
-    const debouncedFn = debouncedFetchSearchResults.current;
+    const debouncedFn = debouncedFetchSearchResults;
     return () => {
       abortControllerRef.current.abort('Page unmounted');
       debouncedFn.cancel();

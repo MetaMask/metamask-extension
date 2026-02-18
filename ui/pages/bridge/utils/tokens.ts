@@ -11,6 +11,7 @@ import {
   intersection,
 } from '@metamask/superstruct';
 import { CaipAssetTypeStruct, type CaipChainId } from '@metamask/utils';
+import { getClientHeaders } from '@metamask/bridge-controller';
 import { getCacheKey, updateCache, retrieveCachedResponse } from './cache';
 
 const MinimalAssetSchema = type({
@@ -105,7 +106,7 @@ export const fetchPopularTokens = async ({
   clientVersion,
   assetsWithBalances,
 }: {
-  jwt: string;
+  jwt?: string;
   signal: AbortSignal;
   chainIds: CaipChainId[];
   clientId: string;
@@ -134,7 +135,10 @@ export const fetchPopularTokens = async ({
         chainIds,
         includeAssets,
       }),
-      headers: getClientHeaders(clientId, clientVersion, jwt),
+      headers: {
+        ...getClientHeaders({ clientId, clientVersion, jwt }),
+        'Content-Type': 'application/json',
+      },
     },
     cacheKey,
   );
@@ -169,7 +173,7 @@ export const fetchTokensBySearchQuery = async ({
   assetsWithBalances,
   after,
 }: {
-  jwt: string;
+  jwt?: string;
   signal: AbortSignal;
   chainIds: CaipChainId[];
   query: string;
@@ -208,7 +212,10 @@ export const fetchTokensBySearchQuery = async ({
         query,
       }),
       signal,
-      headers: getClientHeaders(clientId, clientVersion, jwt),
+      headers: {
+        ...getClientHeaders({ clientId, clientVersion, jwt }),
+        'Content-Type': 'application/json',
+      },
     },
     cacheKey,
     after,
