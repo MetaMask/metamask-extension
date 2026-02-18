@@ -109,6 +109,9 @@ export function getHumanReadableSize(bytes: number): string {
  * @returns Percentage change rounded to 2 decimal places.
  */
 export function getPercentageChange(from: number, to: number): number {
+  if (from === 0) {
+    return to === 0 ? 0 : 100;
+  }
   return parseFloat((((to - from) / Math.abs(from)) * 100).toFixed(2));
 }
 
@@ -533,7 +536,7 @@ export function buildPageLoadTable(benchmarkResults: BenchmarkResults): string {
           for (const measure of measures) {
             let output = '-';
 
-            if (benchmarkResults[platform][buildType][page]) {
+            if (benchmarkResults[platform][buildType][page]?.[measure]) {
               const individualMetricString =
                 benchmarkResults[platform][buildType][page][measure][metric];
 
@@ -614,14 +617,24 @@ export async function runBenchmarkGate(
   for (const platform of Object.keys(gates)) {
     for (const buildType of Object.keys(gates[platform])) {
       for (const page of Object.keys(gates[platform][buildType])) {
+        const pageData =
+          benchmarkResults[platform]?.[buildType]?.[page];
+        if (!pageData) {
+          continue;
+        }
         for (const measure of Object.keys(gates[platform][buildType][page])) {
+          const measureData = pageData[measure];
+          if (!measureData) {
+            continue;
+          }
           for (const metric of Object.keys(
             gates[platform][buildType][page][measure],
           )) {
-            const benchmarkValue = parseFloat(
-              benchmarkResults[platform][buildType][page][measure][metric],
-            );
-
+            const raw = measureData[metric];
+            if (raw === undefined || raw === null) {
+              continue;
+            }
+            const benchmarkValue = parseFloat(raw);
             const gateValue = gates[platform][buildType][page][measure][metric];
 
             if (benchmarkValue > gateValue) {

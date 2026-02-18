@@ -242,10 +242,16 @@ async function buildUiStartupSection(
     ),
   );
 
-  const benchmarkGateUrl = `${process.env.CLOUDFRONT_REPO_URL}/benchmark-gate/benchmark-gate.json`;
-  const benchmarkWarnings = await safeBuildSection('benchmark gate', () =>
-    runBenchmarkGate(benchmarkResults, benchmarkGateUrl),
-  );
+  let benchmarkWarnings = '';
+  const cloudfrontUrl = process.env.CLOUDFRONT_REPO_URL;
+  if (cloudfrontUrl) {
+    const benchmarkGateUrl = `${cloudfrontUrl}/benchmark-gate/benchmark-gate.json`;
+    benchmarkWarnings = await safeBuildSection('benchmark gate', () =>
+      runBenchmarkGate(benchmarkResults, benchmarkGateUrl),
+    );
+  } else {
+    console.log('CLOUDFRONT_REPO_URL not set, skipping benchmark gate');
+  }
 
   const content = `${userActionsHtml}${pageLoadSection}${performanceHtml}${benchmarkWarnings}`;
   if (!content) {
