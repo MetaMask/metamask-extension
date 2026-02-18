@@ -469,9 +469,14 @@ export class ManifestPlugin<Z extends boolean> {
       }
     }
 
-    const htmlPages = join(compiler.context, 'html', 'pages');
+    let htmlFiles: string[] = [];
+    try {
+      htmlFiles = readdirSync(join(compiler.context, 'html', 'pages'));
+    } catch {
+      // directory doesn't exist, no HTML pages to add
+    }
 
-    for (const filename of readdirSync(htmlPages)) {
+    for (const filename of htmlFiles) {
       // ignore non-htm/html files
       if (/\.html?$/iu.test(filename)) {
         // ignore background.html for MV3 extensions.
