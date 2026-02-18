@@ -29,6 +29,8 @@ import {
   type SignatureHolder,
   mockQuoteFromUSDCtoSOL,
   mockNoQuotesAvailable,
+  mockGetFailedSignaturesForAddress,
+  mockGetFailedTransaction,
 } from './common-solana';
 
 async function mockSwapUSDCtoSOL(
@@ -73,6 +75,31 @@ async function mockSwapNoQuotes(
     await mockPriceApiSpotPriceSwap(mockServer),
     await mockPriceApiExchangeRates(mockServer),
     await mockGetMultipleAccounts(mockServer),
+    await mockTokenApiAssets(mockServer),
+  ];
+}
+
+async function mockSwapSOLtoUSDCFailed(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> {
+  const signatureHolder: SignatureHolder = { value: '' };
+
+  return [
+    await mockGetTokenAccountsUSDCOnly(mockServer, signatureHolder),
+    await simulateSolanaTransaction(mockServer),
+    await mockSolanaBalanceQuote(mockServer, false),
+    await mockGetFeeForMessage(mockServer),
+    await mockGetLatestBlockhash(mockServer),
+    await mockGetMinimumBalanceForRentExemption(mockServer),
+    await mockQuoteFromSoltoUSDC(mockServer),
+    await mockMultiCoinPrice(mockServer),
+    await mockPriceApiSpotPriceSwap(mockServer),
+    await mockPriceApiExchangeRates(mockServer),
+    await mockGetMultipleAccounts(mockServer),
+    await mockSendSwapSolanaTransaction(mockServer, signatureHolder),
+    await mockGetFailedSignaturesForAddress(mockServer),
+    await mockGetFailedTransaction(mockServer),
+    await mockGetMintAccountInfo(mockServer),
     await mockTokenApiAssets(mockServer),
   ];
 }
@@ -243,6 +270,49 @@ describe('Swap on Solana', function () {
         });
 
         await swapPage.checkNoQuotesAvailable();
+      },
+    );
+  });
+
+  it('Swap transaction fails gracefully', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockSwapSOLtoUSDCFailed,
+      },
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
+
+        // Switch to Solana network
+        const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Popular');
+        await networkManager.selectNetworkByNameWithWait('Solana');
+
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.checkPageIsLoaded({ amount: '50' });
+
+        // Create swap SOL → USDC
+        const swapPage = new SwapPage(driver);
+        await homePage.clickOnSwapButton();
+        await swapPage.createSolanaSwap({
+          amount: 1,
+          swapTo: 'USDC',
+          swapFrom: 'SOL',
+        });
+
+        // Submit the swap (will fail)
+        await swapPage.reviewQuote({
+          swapToAmount: '136.9',
+          swapFrom: 'SOL',
+          swapTo: 'USDC',
+          swapFromAmount: '1',
+        });
+
+        // After failure, the bridge navigates to home/activity with the failed tx
+        const activityListPage = new ActivityListPage(driver);
+        await activityListPage.checkFailedTxNumberDisplayedInActivity(1);
       },
     );
   });
