@@ -13,7 +13,6 @@ export default class ConfirmDeleteNetwork extends PureComponent {
     chainId: PropTypes.string.isRequired,
     isChainToDeleteSelected: PropTypes.bool,
     switchToEthereumNetwork: PropTypes.func,
-    isMultichainAccountsFeatureEnabled: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -28,7 +27,6 @@ export default class ConfirmDeleteNetwork extends PureComponent {
       removeNetwork,
       isChainToDeleteSelected,
       switchToEthereumNetwork,
-      isMultichainAccountsFeatureEnabled,
     } = this.props;
 
     // NOTE: We only support EVM networks removal, so the conversion is safe here.
@@ -36,7 +34,7 @@ export default class ConfirmDeleteNetwork extends PureComponent {
 
     // NOTE: ensure that we are not deleting a selected evm chain
     if (isChainToDeleteSelected) {
-      await switchToEthereumNetwork?.(isMultichainAccountsFeatureEnabled);
+      await switchToEthereumNetwork?.();
     }
 
     await removeNetwork(caipChainId);
