@@ -82,7 +82,10 @@ function revokePermissionsImplementation(
   }
 
   revokePermissionsForOrigin(relevantPermissionKeys);
-  rejectApprovalRequestsForOrigin();
+
+  if (relevantPermissionKeys.includes(Caip25EndowmentPermissionName)) {
+    rejectApprovalRequestsForOrigin();
+  }
 
   res.result = null;
 
