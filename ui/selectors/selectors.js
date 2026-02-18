@@ -178,7 +178,10 @@ import {
   getCurrentNetworkTransactions,
 } from './transactions';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
-import { getAccountsByChainId, getAllTokens } from './assets-migration';
+import {
+  getAccountTrackerControllerAccountsByChainId,
+  getTokensControllerAllTokens,
+} from './assets-migration';
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
@@ -505,7 +508,7 @@ export function getAccountTypeForKeyring(keyring) {
  * @returns {object} A map of account addresses to account objects (which includes the account balance)
  */
 export const getMetaMaskAccountBalances = createSelector(
-  getAccountsByChainId,
+  getAccountTrackerControllerAccountsByChainId,
   getCurrentChainId,
   (accountsByChainId, currentChainId) => {
     const balancesForCurrentChain = accountsByChainId?.[currentChainId] ?? {};
@@ -531,7 +534,7 @@ export const getMetaMaskAccountBalances = createSelector(
 // ui/hooks/useAccountTotalFiatBalance.js (1)
 // ui/selectors/multi-srp/multi-srp.ts (1)
 export const getMetaMaskCachedBalances = createSelector(
-  getAccountsByChainId,
+  getAccountTrackerControllerAccountsByChainId,
   getEnabledNetworks,
   getCurrentChainId,
   (_, networkChainId) => networkChainId,
@@ -809,7 +812,8 @@ export function getHDEntropyIndex(state) {
 // References
 // ui/hooks/useAccountTotalCrossChainFiatBalance.ts (1)
 export function getCrossChainMetaMaskCachedBalances(state) {
-  const allAccountsByChainId = getAccountsByChainId(state);
+  const allAccountsByChainId =
+    getAccountTrackerControllerAccountsByChainId(state);
   return Object.keys(allAccountsByChainId).reduce((acc, chainId) => {
     acc[chainId] = Object.keys(allAccountsByChainId[chainId]).reduce(
       (innerAcc, address) => {
@@ -934,7 +938,7 @@ export function getSelectedAccountTokensAcrossChains(state) {
  * @param {string} chainId - The chainId of the account
  */
 export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
-  getAccountsByChainId,
+  getAccountTrackerControllerAccountsByChainId,
   (_state, accountAddress) => accountAddress,
   (accountsByChainId, selectedAddress) => {
     const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
@@ -962,7 +966,7 @@ export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
  */
 export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
   [
-    (state) => getAllTokens(state),
+    (state) => getTokensControllerAllTokens(state),
     (state) => state.metamask.networkConfigurationsByChainId,
     (state, accountAddress) =>
       getNativeTokenCachedBalanceByChainIdSelector(state, accountAddress),
@@ -1136,7 +1140,7 @@ export function getSelectedAccountCachedBalance(state) {
 // ui/pages/confirmations/components/confirm/info/hooks/useTokenDetails.ts (1)
 // ui/hooks/useAccountTotalFiatBalance.js (1)
 // ui/hooks/useGetFormattedTokensPerChain.ts (1)
-export { getAllTokens } from './assets-migration';
+export { getTokensControllerAllTokens as getAllTokens } from './assets-migration';
 
 // TODO Unified Assets Controller State Access (2)
 // Uses: getAllTokens
@@ -1149,7 +1153,7 @@ export { getAllTokens } from './assets-migration';
  * @returns {object[]} All ERC-20 tokens owned by the user in a flat array.
  */
 export const selectAllTokensFlat = createSelector(
-  getAllTokens,
+  getTokensControllerAllTokens,
   (tokensByAccountByChain) => {
     const tokensByAccountArray = Object.values(tokensByAccountByChain);
 
