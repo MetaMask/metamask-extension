@@ -39,7 +39,10 @@ export function parseValueTransfers(
   const result: { from?: TokenAmount; to?: TokenAmount } = {};
 
   for (const transfer of valueTransfers) {
-    if (transfer.transferType === 'erc721' || transfer.transferType === 'erc1155') {
+    if (
+      transfer.transferType === 'erc721' ||
+      transfer.transferType === 'erc1155'
+    ) {
       continue;
     }
 
@@ -74,7 +77,8 @@ export function parseValueTransfers(
 
   if (
     valueTransfers.length === 0 &&
-    transaction.transactionType === 'STANDARD'
+    (transaction.transactionCategory === 'STANDARD' ||
+      transaction.transactionType === 'STANDARD')
   ) {
     result.from = {
       token: {
