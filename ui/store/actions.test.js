@@ -1865,6 +1865,91 @@ describe('Actions', () => {
     });
   });
 
+  describe('#importCustomAssetsBatch', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('sends all background requests then performs a single state refresh', async () => {
+      const store = mockStore();
+      const accountId = '11e8977e-3dcd-4751-871f-2b438c839179';
+      const unhideAssetStub = sinon.stub().resolves();
+      const addCustomAssetStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        unhideAsset: unhideAssetStub,
+        addCustomAsset: addCustomAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.importCustomAssetsBatch(accountId, [
+          {
+            assetId: 'eip155:1/erc20:0xaaa',
+            isHidden: true,
+          },
+          {
+            assetId: 'eip155:1/erc20:0xbbb',
+            isHidden: false,
+          },
+          {
+            assetId: 'eip155:1/erc20:0xccc',
+            isHidden: true,
+          },
+        ]),
+      );
+
+      expect(unhideAssetStub.calledTwice).toBe(true);
+      expect(unhideAssetStub.firstCall.args[0]).toBe('eip155:1/erc20:0xaaa');
+      expect(unhideAssetStub.secondCall.args[0]).toBe('eip155:1/erc20:0xccc');
+      expect(addCustomAssetStub.calledOnce).toBe(true);
+      expect(addCustomAssetStub.firstCall.args).toStrictEqual([
+        accountId,
+        'eip155:1/erc20:0xbbb',
+      ]);
+
+      const actionTypes = store.getActions().map((a) => a.type);
+      const hideCount = actionTypes.filter(
+        (t) => t === 'HIDE_LOADING_INDICATION',
+      ).length;
+      expect(hideCount).toBe(1);
+    });
+
+    it('displays warning when a background call fails but continues processing', async () => {
+      const store = mockStore();
+      const accountId = '11e8977e-3dcd-4751-871f-2b438c839179';
+      const addCustomAssetStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        unhideAsset: sinon.stub().rejects(new Error('unhide failed')),
+        addCustomAsset: addCustomAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.importCustomAssetsBatch(accountId, [
+          {
+            assetId: 'eip155:1/erc20:0xaaa',
+            isHidden: true,
+          },
+          {
+            assetId: 'eip155:1/erc20:0xbbb',
+            isHidden: false,
+          },
+        ]),
+      );
+
+      expect(addCustomAssetStub.calledOnce).toBe(true);
+      const dispatchedActions = store.getActions();
+      expect(dispatchedActions.map((a) => a.type)).toContain('DISPLAY_WARNING');
+      expect(dispatchedActions.map((a) => a.type)).toContain(
+        'HIDE_LOADING_INDICATION',
+      );
+    });
+  });
+
   describe('#setActiveNetwork', () => {
     afterEach(() => {
       sinon.restore();

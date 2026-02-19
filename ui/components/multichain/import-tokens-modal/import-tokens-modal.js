@@ -38,8 +38,7 @@ import {
 } from '../../../selectors';
 import {
   addImportedTokens,
-  addCustomAsset,
-  unhideAsset,
+  importCustomAssetsBatch,
   multichainAddAssets,
   clearPendingTokens,
   setPendingTokens,
@@ -376,17 +375,11 @@ export const ImportTokensModal = ({ onClose }) => {
       }
 
       if (assetsUnifyStateFeatureEnabled) {
-        for (const assetId of assetsIds) {
-          const isHidden = isAssetIdHiddenInPreferencesMap(
-            assetPreferences,
-            assetId,
-          );
-          if (isHidden) {
-            await dispatch(unhideAsset(assetId));
-          } else {
-            await dispatch(addCustomAsset(selectedAccount.id, assetId));
-          }
-        }
+        const assets = assetsIds.map((assetId) => ({
+          assetId,
+          isHidden: isAssetIdHiddenInPreferencesMap(assetPreferences, assetId),
+        }));
+        await dispatch(importCustomAssetsBatch(selectedAccount.id, assets));
       }
 
       addedTokenValues.forEach((pendingToken) => {
