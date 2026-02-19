@@ -9,7 +9,12 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../test/l
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import * as DappSwapContext from '../../../../../context/dapp-swap';
+import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
+import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { EditGasFeesRow } from './edit-gas-fees-row';
+
+jest.mock('../../../../../hooks/gas/useEstimationFailed');
+jest.mock('../../../../../hooks/gas/useIsGaslessSupported');
 
 jest.mock('../../../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
@@ -24,24 +29,39 @@ jest.mock(
   }),
 );
 
+const mockUseEstimationFailed = jest.mocked(useEstimationFailed);
+const mockUseIsGaslessSupported = jest.mocked(useIsGaslessSupported);
+
 function render({
   chainId = CHAIN_IDS.GOERLI,
   gasFeeTokens,
   selectedGasFeeToken,
   fiatFee = '$1',
   nativeFee = '0.001 ETH',
+  estimationFailed = false,
+  isGaslessSupported = false,
 }: {
   chainId?: Hex;
   gasFeeTokens?: GasFeeToken[];
   selectedGasFeeToken?: Hex;
   fiatFee?: string;
   nativeFee?: string;
+  estimationFailed?: boolean;
+  isGaslessSupported?: boolean;
 } = {}) {
+  mockUseEstimationFailed.mockReturnValue(estimationFailed);
+  mockUseIsGaslessSupported.mockReturnValue({
+    isSupported: isGaslessSupported,
+    isSmartTransaction: false,
+    pending: false,
+  });
+
   const state = getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
       chainId,
       gasFeeTokens,
       selectedGasFeeToken,
+      isGasFeeSponsored: isGaslessSupported,
     }),
   );
 
@@ -101,5 +121,35 @@ describe('<EditGasFeesRow />', () => {
     });
 
     expect(queryByTestId('edit-gas-fee-icon')).toBeNull();
+  });
+
+  describe('estimationFailed', () => {
+    it('renders "Unavailable" when estimation failed', () => {
+      const { getByText, queryByTestId } = render({
+        estimationFailed: true,
+      });
+
+      expect(getByText('Unavailable')).toBeInTheDocument();
+      expect(queryByTestId('native-currency')).toBeNull();
+      expect(queryByTestId('first-gas-field')).toBeNull();
+    });
+
+    it('does not render "Unavailable" when estimation has not failed', () => {
+      const { queryByText } = render({
+        estimationFailed: false,
+      });
+
+      expect(queryByText('Unavailable')).toBeNull();
+    });
+
+    it('does not render "Unavailable" when gas fee is sponsored even if estimation failed', () => {
+      const { queryByText, getByTestId } = render({
+        estimationFailed: true,
+        isGaslessSupported: true,
+      });
+
+      expect(queryByText('Unavailable')).toBeNull();
+      expect(getByTestId('paid-by-meta-mask')).toBeInTheDocument();
+    });
   });
 });

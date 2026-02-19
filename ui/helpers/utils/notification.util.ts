@@ -3,18 +3,12 @@ import { JsonRpcProvider } from '@ethersproject/providers';
 import type {
   OnChainRawNotification,
   OnChainRawNotificationsWithNetworkFields,
+  NetworkMetadata,
+  BlockExplorer,
 } from '@metamask/notification-services-controller/notification-services';
-import {
-  NOTIFICATION_CHAINS_ID,
-  NOTIFICATION_NETWORK_CURRENCY_NAME,
-  NOTIFICATION_NETWORK_CURRENCY_SYMBOL,
-  SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS,
-  type BlockExplorerConfig,
-} from '@metamask/notification-services-controller/notification-services/ui';
 import { TextVariant } from '../constants/design-system';
 import {
   CHAIN_IDS,
-  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
   FEATURED_RPCS,
@@ -293,51 +287,35 @@ export const getNetworkNameByChainId = (
 };
 
 /**
- * Retrieves detailed information about a network based on its chain ID.
- * This includes the native currency's name, symbol, logo, a default address, and optionally a block explorer URL.
+ * Retrieves the native currency logo URL for a given chain ID.
  *
- * @param chainId - The chain ID of the network for which details are required.
- * @returns An object containing details about the network:
- * - nativeCurrencyName: The name of the native currency.
- * - nativeCurrencySymbol: The symbol of the native currency.
- * - nativeCurrencyLogo: The logo URL of the native currency.
- * - nativeBlockExplorerUrl: The URL of the block explorer associated with the network, if available.
+ * @param chainId - The chain ID of the network.
+ * @returns The logo URL of the native currency, or an empty string if not found.
  */
-export function getNetworkDetailsByChainId(chainId: number): {
-  nativeCurrencyName: string;
-  nativeCurrencySymbol: string;
-  nativeCurrencyLogo: string;
-  blockExplorerConfig?: BlockExplorerConfig;
-} {
-  const chainIdStr = chainId.toString();
+export function getNativeCurrencyLogoByChainId(chainId: number): string {
   const hexChainId = `0x${decimalToHex(chainId)}`;
+  return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[hexChainId] ?? '';
+}
 
-  type KnownChainIds =
-    (typeof NOTIFICATION_CHAINS_ID)[keyof typeof NOTIFICATION_CHAINS_ID];
-  if (
-    Object.values(NOTIFICATION_CHAINS_ID).includes(chainIdStr as KnownChainIds)
-  ) {
-    const knownChainId = chainIdStr as KnownChainIds;
-    return {
-      nativeCurrencyName:
-        NOTIFICATION_NETWORK_CURRENCY_NAME[knownChainId] ?? '',
-      nativeCurrencySymbol:
-        NOTIFICATION_NETWORK_CURRENCY_SYMBOL[knownChainId] ?? '',
-      nativeCurrencyLogo: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[hexChainId],
-      blockExplorerConfig: SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS[knownChainId],
-    };
-  }
-
+/**
+ * Extracts network details from a notification payload's network metadata.
+ *
+ * @param network - The network metadata from the notification payload.
+ * @returns An object containing the network name, native currency symbol, and block explorer config.
+ */
+export function getNetworkDetailsFromNotifPayload(
+  network: NetworkMetadata | undefined,
+): {
+  networkName: NetworkMetadata['name'];
+  nativeCurrencySymbol: NetworkMetadata['native_symbol'];
+  blockExplorerUrl: BlockExplorer['url'];
+  blockExplorerName: BlockExplorer['name'];
+} {
   return {
-    nativeCurrencyName:
-      NETWORK_TO_NAME_MAP[hexChainId as keyof typeof NETWORK_TO_NAME_MAP] ?? '',
-    nativeCurrencySymbol:
-      CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
-        hexChainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
-      ] ?? '',
-    nativeCurrencyLogo: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[hexChainId],
-    blockExplorerConfig:
-      SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS[chainIdStr as KnownChainIds],
+    networkName: network?.name ?? '',
+    nativeCurrencySymbol: network?.native_symbol ?? '',
+    blockExplorerUrl: network?.block_explorer?.url ?? '',
+    blockExplorerName: network?.block_explorer?.name ?? '',
   };
 }
 
