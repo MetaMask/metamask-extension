@@ -1854,11 +1854,11 @@
     "@tanstack/react-query>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
-        "addEventListener": true,
+        "addEventListener": false,
         "clearInterval": true,
         "clearTimeout": true,
         "console": true,
-        "document": true,
+        "document": false,
         "navigator": true,
         "removeEventListener": true,
         "setInterval": true,
@@ -4608,7 +4608,9 @@
     },
     "@tanstack/react-query>use-sync-external-store": {
       "globals": {
-        "document": true
+        "__REACT_DEVTOOLS_GLOBAL_HOOK__": false,
+        "document": false,
+        "document.createElement": true
       },
       "packages": {
         "react": true
