@@ -21,6 +21,9 @@ const {
 } = require('./background-socket/server-mocha-to-background');
 const LocalWebSocketServer = require('./websocket-server').default;
 const { setupSolanaWebsocketMocks } = require('./websocket-solana-mocks');
+const {
+  setupHyperliquidWebsocketMocks,
+} = require('./websocket-hyperliquid-mocks');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -150,6 +153,7 @@ async function withFixtures(options, testSuite) {
     monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
+    hyperliquidWebSocketSpecificMocks = [],
     extendedTimeoutMultiplier = 1,
   } = options;
 
@@ -317,6 +321,7 @@ async function withFixtures(options, testSuite) {
     webSocketServer = LocalWebSocketServer.getServerInstance();
     webSocketServer.start();
     await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
+    await setupHyperliquidWebsocketMocks(hyperliquidWebSocketSpecificMocks);
 
     // Decide between the regular setupMocking and the passThrough version
     const mockingSetupFunction = useMockingPassThrough

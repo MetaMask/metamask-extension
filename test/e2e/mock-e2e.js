@@ -1215,6 +1215,15 @@ async function setupMocking(
     )
     .thenForwardTo('ws://localhost:8088');
 
+  /**
+   * Perps (Hyperliquid) Websocket
+   * Setup HTTP intercept for WebSocket handshake requests
+   */
+  await server
+    .forAnyWebSocket()
+    .matching((req) => /^wss:\/\/api\.hyperliquid\.xyz\/ws/u.test(req.url))
+    .thenForwardTo('ws://localhost:8088');
+
   // Test Dapp Styles
   const TEST_DAPP_STYLES_1 = fs.readFileSync(TEST_DAPP_STYLES_1_PATH);
   const TEST_DAPP_STYLES_2 = fs.readFileSync(TEST_DAPP_STYLES_2_PATH);
