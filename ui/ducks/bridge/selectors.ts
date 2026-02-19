@@ -44,7 +44,6 @@ import {
   type AccountGroupObject,
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
-import { AssetsControllerState } from '@metamask/assets-controller';
 import {
   getCurrencyRateControllerCurrencyRates,
   getTokenRatesControllerMarketData,
@@ -121,8 +120,7 @@ export type BridgeAppState = {
     MultichainNetworkControllerState &
     TokenListState &
     RemoteFeatureFlagControllerState &
-    CurrencyRateState &
-    AssetsControllerState & {
+    CurrencyRateState & {
       useExternalServices: boolean;
     };
   bridge: BridgeState;

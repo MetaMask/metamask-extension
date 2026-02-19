@@ -34,7 +34,6 @@ import type {
   BalanceChangePeriod,
   BalanceChangeResult,
 } from '@metamask/assets-controllers';
-import { AssetsControllerState } from '@metamask/assets-controller';
 import { TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
@@ -82,12 +81,9 @@ import {
   getTokensControllerAllIgnoredTokens,
   getTokensControllerAllTokens,
 } from './assets-migration';
-import { RemoteFeatureFlagsState } from './remote-feature-flags';
 
 export type AssetsState = {
-  metamask: MultichainAssetsControllerState &
-    AssetsControllerState &
-    RemoteFeatureFlagsState['metamask'];
+  metamask: MultichainAssetsControllerState;
 };
 
 export type AssetsRatesState = {
@@ -106,9 +102,7 @@ export type BalanceCalculationState = {
     Partial<TokenRatesControllerState> &
     Partial<MultichainBalancesControllerState> &
     Partial<TokensControllerState> &
-    Partial<CurrencyRateState> &
-    Partial<AssetsControllerState> &
-    Partial<RemoteFeatureFlagsState['metamask']> & {
+    Partial<CurrencyRateState> & {
       conversionRates?: Record<string, unknown>;
       historicalPrices?: Record<string, unknown>;
       networkConfigurationsByChainId?: Record<string, unknown>;
