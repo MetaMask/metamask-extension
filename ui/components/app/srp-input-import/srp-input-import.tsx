@@ -30,6 +30,10 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
 } from '../../../../shared/constants/app';
+import {
+  ClipboardAction,
+  OffscreenCommunicationTarget,
+} from '../../../../shared/constants/offscreen-communication';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -69,11 +73,27 @@ export default function SrpInputImport({
   const srpRefs = useRef<ListOfTextFieldRefs>({});
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const onChangeRef = useRef(onChange);
+  const hasClipboardPermissionRef = useRef(false);
 
   // Keep the ref updated with the latest onChange callback
   useEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
+
+  // Pre-check clipboardRead permission on mount so the paste handler can skip
+  // the async browser.permissions.request() call when permission is already
+  // granted. This preserves the transient user activation from the click event,
+  // which navigator.clipboard.readText() requires in Chrome's side panel.
+  useEffect(() => {
+    const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+    if (getBrowserName() === PLATFORM_FIREFOX || isSidePanel) {
+      browser.permissions
+        .contains({ permissions: ['clipboardRead'] })
+        .then((result) => {
+          hasClipboardPermissionRef.current = result;
+        });
+    }
+  }, []);
 
   const checkForInvalidWords = useCallback(
     (srp?: DraftSrp[]) => {
@@ -261,22 +281,23 @@ export default function SrpInputImport({
     [draftSrp],
   );
 
-  // Request clipboardRead extension permission explicitly and then read clipboard.
-  // This is needed for Firefox (always) and Chrome side panel (where the web
-  // Clipboard API permission prompt is not displayed to the user, causing
-  // navigator.clipboard.readText() to throw "permission denied").
-  //
-  // In Chrome's side panel, document.hasFocus() may return false when the main
-  // browser view was last focused, causing navigator.clipboard.readText() to
-  // throw "Document is not focused". Focusing the textarea (via textareaRef)
-  // before reading ensures the side panel document has focus.
+  // Read clipboard via the extension's clipboardRead permission.
+  // Used for Firefox (always) and Chrome side panel (web permission prompt
+  // is never shown). Skips permissions.request() when already granted to
+  // preserve transient activation (https://issues.chromium.org/issues/381823726).
+  // If readText() still fails ("Document is not focused" — happens on the
+  // first-ever paste when the permission dialog steals focus), falls back to
+  // the offscreen document which is exempt from focus/activation requirements.
   const requestPermissionAndReadClipboard = async () => {
     try {
-      const permissionGranted = await browser.permissions.request({
-        permissions: ['clipboardRead'],
-      });
-      if (!permissionGranted) {
-        throw new Error('`ClipboardRead` permission not granted');
+      if (!hasClipboardPermissionRef.current) {
+        const permissionGranted = await browser.permissions.request({
+          permissions: ['clipboardRead'],
+        });
+        if (!permissionGranted) {
+          throw new Error('`ClipboardRead` permission not granted');
+        }
+        hasClipboardPermissionRef.current = true;
       }
 
       window.focus();
@@ -286,6 +307,28 @@ export default function SrpInputImport({
         onSrpPaste(newSrp);
       }
     } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message.includes('Document is not focused')
+      ) {
+        // Permission dialog stole focus — fall back to offscreen document.
+        // Only available in Chrome side panel; Firefox has no offscreen API.
+        const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+        if (isSidePanel) {
+          try {
+            const response = await chrome.runtime.sendMessage({
+              target: OffscreenCommunicationTarget.clipboardOffscreen,
+              action: ClipboardAction.readClipboard,
+            });
+            if (response?.success && response.text?.trim().match(/\s/u)) {
+              onSrpPaste(response.text);
+            }
+          } catch (offscreenError) {
+            console.error('Offscreen clipboard read failed', offscreenError);
+          }
+        }
+        return;
+      }
       console.error('Error requesting clipboard permission', error);
     }
   };

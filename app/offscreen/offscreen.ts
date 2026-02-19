@@ -14,6 +14,7 @@ import initLedger from './ledger';
 import initTrezor from './trezor';
 import initLattice from './lattice';
 import initConnectivityDetection from './connectivity';
+import initClipboard from './clipboard';
 
 /**
  * Initialize a post message stream with the parent window that is initialized
@@ -38,6 +39,7 @@ async function init(): Promise<void> {
   initializePostMessageStream();
   initTrezor();
   initLattice();
+  initClipboard();
   ///: BEGIN:ONLY_INCLUDE_IF(ocap-kernel)
   runKernel().catch((error) => {
     console.error('Ocap Kernel fatal error:', error);

@@ -21,6 +21,9 @@ export enum OffscreenCommunicationTarget {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   extensionMain = 'extension',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  clipboardOffscreen = 'clipboard-offscreen',
 }
 
 /**
@@ -94,6 +97,15 @@ export enum LedgerAction {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   getAppConfiguration = 'ledger-get-app-configuration',
+}
+
+/**
+ * Defines actions intended to be sent to the Clipboard Offscreen handler.
+ */
+export enum ClipboardAction {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readClipboard = 'clipboard-read',
 }
 
 /**

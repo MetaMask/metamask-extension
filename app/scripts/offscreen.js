@@ -76,9 +76,9 @@ export async function createOffscreen() {
 
     await chrome.offscreen.createDocument({
       url: './offscreen.html',
-      reasons: ['IFRAME_SCRIPTING'],
+      reasons: ['IFRAME_SCRIPTING', 'CLIPBOARD'],
       justification:
-        'Used for Hardware Wallet and Snaps scripts to communicate with the extension.',
+        'Used for Hardware Wallet and Snaps scripts to communicate with the extension, and for clipboard access in the side panel.',
     });
   } catch (error) {
     if (offscreenDocumentLoadedListener) {
