@@ -5494,7 +5494,7 @@ export default class MetamaskController extends EventEmitter {
     const [keyring] = this.keyringController.getKeyringsByType(
       KeyringType.hdKeyTree,
     );
-    if (!keyring.mnemonic) {
+    if (!keyring?.mnemonic) {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
 
@@ -5508,7 +5508,7 @@ export default class MetamaskController extends EventEmitter {
     const [keyring] = this.keyringController.getKeyringsByType(
       KeyringType.hdKeyTree,
     );
-    if (!keyring.seed) {
+    if (!keyring?.seed) {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
 
