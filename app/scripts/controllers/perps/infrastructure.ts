@@ -201,33 +201,33 @@ function createControllerAccess(
     },
     transaction: {
       submit: async (txParams, txOptions) => {
-        const networkClientId = await Promise.resolve(
-          txOptions.networkClientId,
-        );
+        const {
+          networkClientId: rawNetworkClientId,
+          origin,
+          type,
+          gasFeeToken,
+        } = txOptions;
+
+        const networkClientId = await Promise.resolve(rawNetworkClientId);
 
         if (!networkClientId) {
           throw new Error('No network client found for Perps transaction');
         }
 
-        const {
-          // Extension confirmations rely on initial estimation to populate
-          // Transaction Pay source-fee state used by custom-amount validation.
-          skipInitialGasEstimate: _skipInitialGasEstimate,
-          ...forwardOptions
-        } = txOptions;
+        // Intentionally do not forward skipInitialGasEstimate.
+        // Confirmations rely on initial gas estimation for pay validation state.
+        const addTransactionOptions = {
+          networkClientId,
+          origin: origin ?? 'metamask',
+          actionId: generateActionId(),
+          ...(type === undefined ? {} : { type }),
+          ...(gasFeeToken === undefined ? {} : { gasFeeToken }),
+        };
 
         const transactionMeta = await submitRequestToBackground<{
           id: string;
           hash?: string;
-        }>('addTransaction', [
-          txParams,
-          {
-            ...forwardOptions,
-            networkClientId,
-            origin: txOptions.origin ?? 'metamask',
-            actionId: generateActionId(),
-          },
-        ]);
+        }>('addTransaction', [txParams, addTransactionOptions]);
 
         return {
           // PoC behavior: creation happens immediately so confirmations route can render.
