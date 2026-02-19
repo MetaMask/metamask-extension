@@ -92,9 +92,7 @@ describe('Send - Hex Address Normalization', function () {
 
           // Verify address on confirmation screen
           const transactionConfirmation = new TransactionConfirmation(driver);
-          await transactionConfirmation.checkAddressIsDisplayed(
-            '0x2f318C',
-          );
+          await transactionConfirmation.checkAddressIsDisplayed('0x2f318C');
         },
       );
     });

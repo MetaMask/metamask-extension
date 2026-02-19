@@ -184,9 +184,7 @@ class Confirmation {
     });
   }
 
-  async checkAddressIsDisplayed(
-    address: string,
-  ): Promise<void> {
+  async checkAddressIsDisplayed(address: string): Promise<void> {
     await this.driver.findElement({
       css: '[data-testid="confirm-info-row-display-name"]',
       text: address,
