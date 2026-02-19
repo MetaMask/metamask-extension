@@ -12,20 +12,18 @@ import type {
  * Used for "Paid by MetaMask", "No network fee", and similar labels.
  */
 export const SuccessPill: SuccessPillComponent = React.forwardRef(
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  function SuccessPill<C extends React.ElementType = 'div'>(
-    { label, ...props }: SuccessPillProps<C>,
-    ref: React.Ref<Element>,
+  function SuccessPill(
+    { label, ...props }: SuccessPillProps,
+    ref: React.Ref<HTMLDivElement>,
   ) {
     return (
       <Tag
-        ref={ref as React.Ref<HTMLDivElement>}
+        ref={ref}
         label={label}
         backgroundColor={BackgroundColor.successMuted}
         labelProps={{ color: TextColor.SuccessDefault as never }}
         textVariant={TextVariant.BodySm}
-        {...(props as React.ComponentProps<typeof Tag>)}
+        {...props}
       />
     );
   },
