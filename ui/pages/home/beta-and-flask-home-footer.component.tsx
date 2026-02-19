@@ -1,18 +1,15 @@
 import React, { useContext } from 'react';
-
-import {
-  SUPPORT_LINK,
-  SUPPORT_REQUEST_LINK,
-} from '../../../helpers/constants/common';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+} from '../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import { SUPPORT_LINK } from '../../helpers/constants/common';
+import { isFlask } from '../../helpers/utils/build-types';
+import { useI18nContext } from '../../hooks/useI18nContext';
 
-const BetaHomeFooter = () => {
+export default function BetaAndFlaskHomeFooter() {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
 
@@ -28,7 +25,7 @@ const BetaHomeFooter = () => {
               category: MetaMetricsEventCategory.Footer,
               event: MetaMetricsEventName.SupportLinkClicked,
               properties: {
-                url: SUPPORT_REQUEST_LINK,
+                url: SUPPORT_LINK,
               },
             },
             {
@@ -41,8 +38,18 @@ const BetaHomeFooter = () => {
       >
         {t('needHelpSubmitTicket')}
       </a>
+      {isFlask() && (
+        <>
+          {' | '}
+          <a
+            href="https://community.metamask.io/c/developer-discussion/11"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('needHelpFeedback')}
+          </a>
+        </>
+      )}
     </>
   );
-};
-
-export default BetaHomeFooter;
+}

@@ -18,6 +18,7 @@ import {
   MultichainAccountServiceCreateMultichainAccountGroupAction,
   MultichainAccountServiceWalletStatusChangeEvent,
 } from '@metamask/multichain-account-service';
+import type { AccountTreeControllerMessenger as AccountTreeControllerMessengerType } from '@metamask/account-tree-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
 import { RootMessenger } from '../../../lib/messenger';
 import { AccountOrderControllerGetStateAction } from '../../../controllers/account-order';
@@ -44,9 +45,7 @@ type Events =
   | UserStorageController.UserStorageControllerStateChangeEvent
   | MultichainAccountServiceWalletStatusChangeEvent;
 
-export type AccountTreeControllerMessenger = ReturnType<
-  typeof getAccountTreeControllerMessenger
->;
+export type AccountTreeControllerMessenger = AccountTreeControllerMessengerType;
 
 /**
  * Get a restricted messenger for the account tree controller. This is scoped to the
@@ -92,7 +91,7 @@ export function getAccountTreeControllerMessenger(
       'KeyringController:getState',
     ],
   });
-  return accountTreeControllerMessenger;
+  return accountTreeControllerMessenger as unknown as AccountTreeControllerMessengerType;
 }
 
 export type AllowedInitializationActions =
