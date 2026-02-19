@@ -10,7 +10,6 @@ import {
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { Modal } from '../../components/app/modals';
 import configureStore from '../../store/store';
 import RevealSeedPage from './reveal-seed';
 
@@ -35,7 +34,6 @@ const mockUnsuccessfulSrpReveal = () => {
 const mockRequestRevealSeedWords = jest
   .fn()
   .mockImplementation(mockSuccessfulSrpReveal);
-const mockShowModal = jest.fn();
 const password = 'password';
 
 jest.mock('../../store/actions.ts', () => ({
@@ -44,24 +42,36 @@ jest.mock('../../store/actions.ts', () => ({
     mockRequestRevealSeedWords(userPassword, keyringId),
 }));
 
-const mockStateWithModal = {
-  ...mockState,
-  appState: {
-    ...mockState.appState,
-    modal: {
-      open: true,
-      modalState: {
-        name: 'HOLD_TO_REVEAL_SRP',
-        props: {
-          onLongPressed: jest.fn(),
-        },
-      },
-    },
-  },
-};
+// Quiz answers may use curly apostrophe (') in locale output
+const Q1_CORRECT = /Can['\u2019]t help you/u;
+const Q2_CORRECT = /You['\u2019]re being scammed/u;
+
+async function navigateQuizToPasswordScreen({
+  getByText,
+  queryByTestId,
+  fireEvent: fireEventFn,
+}) {
+  fireEventFn.click(getByText('Get started'));
+
+  await waitFor(() => {
+    expect(getByText(Q1_CORRECT)).toBeInTheDocument();
+  });
+  fireEventFn.click(getByText(Q1_CORRECT));
+  fireEventFn.click(getByText('Continue'));
+
+  await waitFor(() => {
+    expect(getByText(Q2_CORRECT)).toBeInTheDocument();
+  });
+  fireEventFn.click(getByText(Q2_CORRECT));
+  fireEventFn.click(getByText('Continue'));
+
+  await waitFor(() => {
+    expect(queryByTestId('input-password')).toBeInTheDocument();
+  });
+}
 
 describe('Reveal Seed Page', () => {
-  const mockStore = configureMockStore([thunk])(mockStateWithModal);
+  const mockStore = configureMockStore([thunk])(mockState);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -78,83 +88,100 @@ describe('Reveal Seed Page', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('shows quiz introduction first', () => {
+    const { getByText } = renderWithProvider(<RevealSeedPage />, mockStore);
+
+    expect(getByText('Get started')).toBeInTheDocument();
+  });
+
+  it('navigates to password screen after completing quiz', async () => {
+    const { getByText, queryByTestId } = renderWithProvider(
+      <RevealSeedPage />,
+      mockStore,
+    );
+
+    await navigateQuizToPasswordScreen({
+      getByText,
+      queryByTestId,
+      fireEvent,
+    });
+
+    expect(queryByTestId('input-password')).toBeInTheDocument();
+  });
+
   it('form submit', async () => {
-    const { queryByTestId, queryByText } = renderWithProvider(
+    const { queryByTestId, getByText } = renderWithProvider(
       <RevealSeedPage />,
       mockStore,
     );
+
+    await navigateQuizToPasswordScreen({
+      getByText,
+      queryByTestId,
+      fireEvent,
+    });
 
     fireEvent.change(queryByTestId('input-password'), {
       target: { value: password },
     });
 
-    fireEvent.click(queryByText('Next'));
+    fireEvent.click(getByText('Continue'));
 
     await waitFor(() => {
       expect(mockRequestRevealSeedWords).toHaveBeenCalled();
     });
   });
 
-  it('shows hold to reveal', async () => {
-    const { queryByTestId, queryByText } = renderWithProvider(
-      <RevealSeedPage />,
-      mockStore,
-    );
-
-    fireEvent.change(queryByTestId('input-password'), {
-      target: { value: password },
-    });
-
-    fireEvent.click(queryByText('Next'));
-
-    await waitFor(() => {
-      expect(mockRequestRevealSeedWords).toHaveBeenCalled();
-    });
-  });
-
-  it('does not show modal on bad password', async () => {
+  it('shows error when password is wrong', async () => {
     mockRequestRevealSeedWords.mockImplementation(mockUnsuccessfulSrpReveal);
 
-    const { queryByTestId, queryByText } = renderWithProvider(
+    const { queryByTestId, getByText, queryByText } = renderWithProvider(
       <RevealSeedPage />,
       mockStore,
     );
+
+    await navigateQuizToPasswordScreen({
+      getByText,
+      queryByTestId,
+      fireEvent,
+    });
 
     fireEvent.change(queryByTestId('input-password'), {
       target: { value: 'bad password' },
     });
 
-    fireEvent.click(queryByText('Next'));
+    fireEvent.click(getByText('Continue'));
 
     await waitFor(() => {
-      expect(mockShowModal).not.toHaveBeenCalled();
+      expect(queryByText('bad password')).toBeInTheDocument();
     });
   });
 
-  it('should show srp after hold to reveal', async () => {
+  it('should show srp after completing quiz and entering password', async () => {
     mockRequestRevealSeedWords.mockImplementationOnce(mockSuccessfulSrpReveal);
-    // need to use actual store because redux-mock-store does not execute actions
     const store = configureStore(mockState);
-    const { queryByTestId, queryByText } = renderWithProvider(
-      <div>
-        <Modal />
-        <RevealSeedPage />
-      </div>,
+    const { queryByTestId, getByText } = renderWithProvider(
+      <RevealSeedPage />,
       store,
     );
 
-    const nextButton = queryByText('Next');
+    await navigateQuizToPasswordScreen({
+      getByText,
+      queryByTestId,
+      fireEvent,
+    });
 
     fireEvent.change(queryByTestId('input-password'), {
       target: { value: password },
     });
 
-    fireEvent.click(nextButton);
+    fireEvent.click(getByText('Continue'));
 
     await waitFor(() => {
       expect(mockRequestRevealSeedWords).toHaveBeenCalled();
-      expect(queryByText('Keep your SRP safe')).toBeInTheDocument();
+      expect(getByText('Copy to clipboard')).toBeInTheDocument();
     });
+    expect(queryByTestId('recovery-phrase-chips')).toBeInTheDocument();
   });
 
   it('emits events when correct password is entered', async () => {
@@ -170,24 +197,36 @@ describe('Reveal Seed Page', () => {
       bufferedEndTrace: jest.fn(),
       onboardingParentContext: { current: null },
     };
-    const { queryByTestId, queryByText, getByText, queryByLabelText } =
-      renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-          <Modal />
-          <RevealSeedPage />
-        </MetaMetricsContext.Provider>,
-        store,
-      );
+    const { queryByTestId, getByText } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <RevealSeedPage />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+
+    await navigateQuizToPasswordScreen({
+      getByText,
+      queryByTestId,
+      fireEvent,
+    });
 
     fireEvent.change(queryByTestId('input-password'), {
       target: { value: 'bad-password' },
     });
 
-    fireEvent.click(queryByText('Next'));
+    fireEvent.click(getByText('Continue'));
 
     await waitFor(() => {
       expect(mockRequestRevealSeedWords).toHaveBeenCalled();
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.SrpRevealStarted,
+        properties: {
+          key_type: MetaMetricsEventKeyType.Srp,
+          hd_entropy_index: 0,
+        },
+      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportRequested,
         properties: {
@@ -195,7 +234,7 @@ describe('Reveal Seed Page', () => {
           hd_entropy_index: 0,
         },
       });
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(3, {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpRevealNextClicked,
         properties: {
@@ -219,7 +258,7 @@ describe('Reveal Seed Page', () => {
       target: { value: password },
     });
 
-    fireEvent.click(queryByText('Next'));
+    fireEvent.click(getByText('Continue'));
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
@@ -237,7 +276,7 @@ describe('Reveal Seed Page', () => {
           key_type: MetaMetricsEventKeyType.Srp,
         },
       });
-      expect(mockTrackEvent).toHaveBeenLastCalledWith({
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(3, {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportRevealed,
         properties: {
@@ -245,25 +284,11 @@ describe('Reveal Seed Page', () => {
           hd_entropy_index: 0,
         },
       });
-      expect(queryByText('Keep your SRP safe')).toBeInTheDocument();
+      expect(getByText('Copy to clipboard')).toBeInTheDocument();
     });
 
-    const holdButton = getByText('Hold to reveal SRP');
-    const circleLocked = queryByLabelText('hold to reveal circle locked');
-
-    fireEvent.pointerDown(holdButton);
-    fireEvent.transitionEnd(circleLocked);
-
-    const circleUnlocked = queryByLabelText('hold to reveal circle unlocked');
-    fireEvent.animationEnd(circleUnlocked);
-
     await waitFor(() => {
-      expect(holdButton.firstChild).toHaveClass(
-        'hold-to-reveal-button__icon-container',
-      );
-      // tests that the mock srp is now shown.
-      expect(getByText('test srp')).toBeInTheDocument();
-      expect(mockTrackEvent).toHaveBeenLastCalledWith({
+      expect(mockTrackEvent).toHaveBeenCalledWith({
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpViewSrpText,
         properties: {
@@ -274,7 +299,6 @@ describe('Reveal Seed Page', () => {
 
     mockTrackEvent.mockClear();
 
-    // completed hold click
     const qrTab = getByText('QR');
     const textTab = getByText('Text');
 
@@ -328,25 +352,9 @@ describe('Reveal Seed Page', () => {
         },
       });
     });
-
-    const doneButton = getByText('Close');
-    fireEvent.click(doneButton);
-
-    await waitFor(() => {
-      expect(mockTrackEvent).toHaveBeenLastCalledWith({
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpRevealCloseClicked,
-        properties: {
-          key_type: MetaMetricsEventKeyType.Srp,
-        },
-      });
-    });
   });
 
-  it('should emit event when cancel is clicked', async () => {
-    mockRequestRevealSeedWords
-      .mockImplementationOnce(mockUnsuccessfulSrpReveal)
-      .mockImplementationOnce(mockSuccessfulSrpReveal);
+  it('should emit event when back button is clicked', async () => {
     const mockTrackEvent = jest.fn();
     const mockMetaMetricsContext = {
       trackEvent: mockTrackEvent,
@@ -354,30 +362,23 @@ describe('Reveal Seed Page', () => {
       bufferedEndTrace: jest.fn(),
       onboardingParentContext: { current: null },
     };
-    const { queryByText } = renderWithProvider(
+    const { getByLabelText } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <RevealSeedPage />
       </MetaMetricsContext.Provider>,
       mockStore,
     );
 
-    const cancelButton = queryByText('Cancel');
-    fireEvent.click(cancelButton);
+    const backButton = getByLabelText('Back');
+    fireEvent.click(backButton);
 
     await waitFor(() => {
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
+      expect(mockTrackEvent).toHaveBeenCalledWith({
         category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.KeyExportCanceled,
+        event: MetaMetricsEventName.SrpRevealBackButtonClicked,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
-          hd_entropy_index: 0,
-        },
-      });
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpRevealCancelled,
-        properties: {
-          key_type: MetaMetricsEventKeyType.Srp,
+          screen: 'QUIZ_INTRODUCTION_SCREEN',
           hd_entropy_index: 0,
         },
       });
@@ -389,16 +390,22 @@ describe('Reveal Seed Page', () => {
       const keyringId = 'ULID01234567890ABCDEFGHIJKLMN';
       mockUseParams.mockReturnValue({ keyringId });
 
-      const { queryByTestId, queryByText } = renderWithProvider(
+      const { queryByTestId, getByText } = renderWithProvider(
         <RevealSeedPage />,
         mockStore,
       );
+
+      await navigateQuizToPasswordScreen({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
 
       fireEvent.change(queryByTestId('input-password'), {
         target: { value: password },
       });
 
-      fireEvent.click(queryByText('Next'));
+      fireEvent.click(getByText('Continue'));
 
       await waitFor(() => {
         expect(mockRequestRevealSeedWords).toHaveBeenCalledWith(
@@ -411,16 +418,22 @@ describe('Reveal Seed Page', () => {
     it('passes undefined for keyringId if there is no param', async () => {
       mockUseParams.mockReturnValue({});
 
-      const { queryByTestId, queryByText } = renderWithProvider(
+      const { queryByTestId, getByText } = renderWithProvider(
         <RevealSeedPage />,
         mockStore,
       );
+
+      await navigateQuizToPasswordScreen({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
 
       fireEvent.change(queryByTestId('input-password'), {
         target: { value: password },
       });
 
-      fireEvent.click(queryByText('Next'));
+      fireEvent.click(getByText('Continue'));
 
       await waitFor(() => {
         expect(mockRequestRevealSeedWords).toHaveBeenCalledWith(
