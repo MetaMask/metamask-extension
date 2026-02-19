@@ -103,7 +103,10 @@ describe('Swaps - notifications', function () {
 
   it('shows insufficient funds state', async function () {
     await withFixtures(
-      getInsufficientFundsFixtures({}, this.test?.fullTitle()),
+      getInsufficientFundsFixtures(
+        DEFAULT_BRIDGE_FEATURE_FLAGS,
+        this.test?.fullTitle(),
+      ),
       async ({ driver, localNodes }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
         const homePage = new HomePage(driver);
