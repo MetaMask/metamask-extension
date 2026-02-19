@@ -1,7 +1,7 @@
 import { SnapId } from '@metamask/snaps-sdk';
-import { getIsForcePreinstalledSnapsEnabled } from '../../modules/environment';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { getIsForcePreinstalledSnapsEnabled } from '../../modules/environment';
 /**
  * Whether to force local Snaps to be treated as preinstalled Snaps.
  *
