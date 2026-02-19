@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -36,6 +37,7 @@ const getBridgeFixturesWithTokenAlertWarning = (title?: string) => {
         ...baseMocks,
         await mockServer
           .forPost('https://security-alerts.api.cx.metamask.io/token/scan')
+          .always()
           .thenJson(200, {
             features: [
               {
@@ -56,7 +58,7 @@ describe('Swaps - notifications', function () {
   it('shows token risk warning banner for unstable token price', async function () {
     await withFixtures(
       getBridgeFixturesWithTokenAlertWarning(this.test?.fullTitle()),
-      async ({ driver }) => {
+      async ({ driver, mockedEndpoint }) => {
         await loginWithBalanceValidation(driver, undefined, undefined, '$0');
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
@@ -67,7 +69,23 @@ describe('Swaps - notifications', function () {
         });
         await bridgeQuotePage.waitForQuote();
 
-        await driver.waitForSelector({ text: UNSTABLE_TOKEN_PRICE_TITLE });
+        const allSeenRequests = (
+          await Promise.all(
+            mockedEndpoint.map((endpoint) => endpoint.getSeenRequests()),
+          )
+        ).flat();
+        const tokenScanRequests = allSeenRequests.filter((request) =>
+          request.url.includes('security-alerts.api.cx.metamask.io/token/scan'),
+        );
+        assert.ok(
+          tokenScanRequests.length > 0,
+          'Security alerts token/scan endpoint was not called',
+        );
+
+        await driver.waitForSelector(
+          { text: UNSTABLE_TOKEN_PRICE_TITLE },
+          { timeout: 30000 },
+        );
         await driver.waitForSelector({
           text: UNSTABLE_TOKEN_PRICE_DESCRIPTION,
         });
