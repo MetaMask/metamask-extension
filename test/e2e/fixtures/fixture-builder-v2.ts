@@ -73,7 +73,10 @@ class FixtureBuilderV2 {
   withTransactionController(data: Record<string, unknown>): this {
     const tc = this.fixture.data.TransactionController ?? {};
     merge(this.fixture.data, { TransactionController: tc });
-    const target = this.fixture.data.TransactionController as Record<string, unknown>;
+    const target = this.fixture.data.TransactionController as Record<
+      string,
+      unknown
+    >;
     const isTransactionsObject =
       data.transactions &&
       typeof data.transactions === 'object' &&
