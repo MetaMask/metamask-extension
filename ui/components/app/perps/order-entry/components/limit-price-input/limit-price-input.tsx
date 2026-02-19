@@ -91,9 +91,7 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
         justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
       >
-        <Text variant={TextVariant.BodyMd}>
-          {t('perpsLimitPrice')}
-        </Text>
+        <Text variant={TextVariant.BodySm}>{t('perpsLimitPrice')}</Text>
       </Box>
 
       <TextField

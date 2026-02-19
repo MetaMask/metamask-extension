@@ -19,7 +19,8 @@ import InfoTooltip from '../../../ui/info-tooltip/info-tooltip';
 const sliderStyles = {
   root: {
     height: 6,
-    padding: '6px 0',
+    padding: 0,
+    overflow: 'visible',
   },
   rail: {
     borderRadius: 50,

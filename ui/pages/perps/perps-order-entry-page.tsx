@@ -1,20 +1,20 @@
-import React, {
-  useMemo,
-  useCallback,
-  useState,
-  useEffect,
-} from 'react';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import {
+  Navigate,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import {
   twMerge,
   Box,
   BoxFlexDirection,
   BoxAlignItems,
+  BoxJustifyContent,
   Text,
   TextVariant,
   TextColor,
-  FontWeight,
   Icon,
   IconName,
   IconSize,
@@ -26,7 +26,10 @@ import {
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { DEFAULT_ROUTE, PERPS_MARKET_DETAIL_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+} from '../../helpers/constants/routes';
 import {
   usePerpsLivePositions,
   usePerpsLiveAccount,
@@ -39,7 +42,6 @@ import {
   safeDecodeURIComponent,
 } from '../../components/app/perps/utils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
-import { useFormatters } from '../../hooks/useFormatters';
 import {
   OrderEntry,
   DirectionTabs,
@@ -47,7 +49,11 @@ import {
   type OrderFormState,
   type OrderMode,
 } from '../../components/app/perps/order-entry';
-import type { OrderType, OrderParams, PriceUpdate } from '@metamask/perps-controller';
+import type {
+  OrderType,
+  OrderParams,
+  PriceUpdate,
+} from '@metamask/perps-controller';
 
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
@@ -107,7 +113,6 @@ const PerpsOrderEntryPage: React.FC = () => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
-  const { formatNumber } = useFormatters();
 
   const { positions: allPositions } = usePerpsLivePositions();
   const { account } = usePerpsLiveAccount();
@@ -130,12 +135,18 @@ const PerpsOrderEntryPage: React.FC = () => {
     (orderTypeParam === 'limit' ? 'limit' : 'market') as OrderType,
   );
   const [orderMode, setOrderMode] = useState<OrderMode>(
-    (modeParam === 'modify' || modeParam === 'close' ? modeParam : 'new') as OrderMode,
+    (modeParam === 'modify' || modeParam === 'close'
+      ? modeParam
+      : 'new') as OrderMode,
   );
-  const [orderFormState, setOrderFormState] = useState<OrderFormState | null>(null);
+  const [orderFormState, setOrderFormState] = useState<OrderFormState | null>(
+    null,
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [pendingOrderSymbol, setPendingOrderSymbol] = useState<string | null>(null);
+  const [pendingOrderSymbol, setPendingOrderSymbol] = useState<string | null>(
+    null,
+  );
 
   const isOrderPending = isSubmitting || pendingOrderSymbol !== null;
 
@@ -162,7 +173,9 @@ const PerpsOrderEntryPage: React.FC = () => {
     );
   }, [decodedSymbol, allPositions]);
 
-  const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(undefined);
+  const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(
+    undefined,
+  );
   useEffect(() => {
     if (!decodedSymbol || !selectedAddress) {
       setLivePrice(undefined);
@@ -260,7 +273,10 @@ const PerpsOrderEntryPage: React.FC = () => {
       if (!Number.isNaN(p) && p > 0) return p;
     }
     if (livePrice?.price) {
-      const p = typeof livePrice.price === 'string' ? parseFloat(livePrice.price) : livePrice.price;
+      const p =
+        typeof livePrice.price === 'string'
+          ? parseFloat(livePrice.price)
+          : livePrice.price;
       if (!Number.isNaN(p) && p > 0) return p;
     }
     return marketPrice;
@@ -285,7 +301,9 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const handleBackClick = useCallback(() => {
     if (!decodedSymbol) return;
-    navigate(`${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(decodedSymbol)}`);
+    navigate(
+      `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(decodedSymbol)}`,
+    );
   }, [navigate, decodedSymbol]);
 
   const handleFormStateChange = useCallback((formState: OrderFormState) => {
@@ -308,7 +326,8 @@ const PerpsOrderEntryPage: React.FC = () => {
           currentPrice,
         };
         const result = await controller.closePosition(closeParams);
-        if (!result.success) throw new Error(result.error || 'Failed to close position');
+        if (!result.success)
+          throw new Error(result.error || 'Failed to close position');
       } else if (orderMode === 'modify' && position) {
         const cleanTp =
           orderFormState.autoCloseEnabled && orderFormState.takeProfitPrice
@@ -323,7 +342,8 @@ const PerpsOrderEntryPage: React.FC = () => {
           takeProfitPrice: cleanTp || undefined,
           stopLossPrice: cleanSl || undefined,
         });
-        if (!result.success) throw new Error(result.error || 'Failed to update TP/SL');
+        if (!result.success)
+          throw new Error(result.error || 'Failed to update TP/SL');
       } else {
         const orderParams = formStateToOrderParams(
           orderFormState,
@@ -332,7 +352,8 @@ const PerpsOrderEntryPage: React.FC = () => {
           position?.size,
         );
         const result = await controller.placeOrder(orderParams);
-        if (!result.success) throw new Error(result.error || 'Failed to place order');
+        if (!result.success)
+          throw new Error(result.error || 'Failed to place order');
 
         if (orderFormState.type === 'limit') {
           handleBackClick();
@@ -361,7 +382,9 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   useEffect(() => {
     if (!pendingOrderSymbol) return;
-    const hasPosition = allPositions.some((p) => p.symbol === pendingOrderSymbol);
+    const hasPosition = allPositions.some(
+      (p) => p.symbol === pendingOrderSymbol,
+    );
     if (hasPosition) {
       setPendingOrderSymbol(null);
       setIsSubmitting(false);
@@ -408,7 +431,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         <Box
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
-          justifyContent="center"
+          justifyContent={BoxJustifyContent.Center}
           padding={4}
         >
           <Text variant={TextVariant.HeadingMd} color={TextColor.TextDefault}>
@@ -436,17 +459,12 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
   })();
 
-  const displayPrice =
-    currentPrice > 0
-      ? `$${formatNumber(currentPrice, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-      : market?.price ?? '$0.00';
-
   return (
     <Box
       className="main-container asset__container"
       data-testid="perps-order-entry-page"
     >
-      {/* Header: Back + Long/Short toggle + price */}
+      {/* Header: Back (left) + Long/Short toggle (centered) */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
@@ -454,7 +472,6 @@ const PerpsOrderEntryPage: React.FC = () => {
         paddingRight={4}
         paddingTop={4}
         paddingBottom={4}
-        gap={2}
       >
         <Box
           data-testid="perps-order-entry-back-button"
@@ -468,19 +485,19 @@ const PerpsOrderEntryPage: React.FC = () => {
             color={IconColor.IconAlternative}
           />
         </Box>
-        <Box className="flex-1 min-w-0" flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center}>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
+          className="flex-1 min-w-0"
+        >
           <DirectionTabs
             direction={orderDirection}
             onDirectionChange={setOrderDirection}
           />
         </Box>
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.TextAlternative}
-          className="shrink-0"
-        >
-          {displayPrice}
-        </Text>
+        {/* Spacer matching back button width (icon Md + p-2) so Long/Short stays centered */}
+        <Box className="shrink-0 w-10" aria-hidden="true" />
       </Box>
 
       {/* Scrollable form with submit at bottom (not sticky) */}

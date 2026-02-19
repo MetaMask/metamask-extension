@@ -4,7 +4,6 @@ import {
   Text,
   TextVariant,
   BoxFlexDirection,
-  BoxJustifyContent,
   BoxAlignItems,
 } from '@metamask/design-system-react';
 import { PerpsSlider } from '../../../perps-slider';
@@ -38,29 +37,25 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+      <Text variant={TextVariant.BodySm}>{t('perpsLeverage')}</Text>
+
       <Box
         flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
+        gap={2}
       >
-        <Text variant={TextVariant.BodyMd}>
-          {t('perpsLeverage')}
-        </Text>
-        <Box className="bg-muted px-3 py-1 rounded-lg">
-          <Text variant={TextVariant.BodyMd}>
-            {leverage}x
-          </Text>
+        <Box className="flex-1 px-3" data-testid="leverage-slider">
+          <PerpsSlider
+            min={minLeverage}
+            max={maxLeverage}
+            step={1}
+            value={leverage}
+            onChange={handleSliderChange}
+          />
         </Box>
-      </Box>
-
-      <Box className="px-3" data-testid="leverage-slider">
-        <PerpsSlider
-          min={minLeverage}
-          max={maxLeverage}
-          step={1}
-          value={leverage}
-          onChange={handleSliderChange}
-        />
+        <Box className="bg-muted py-1 rounded-lg shrink-0 w-14 text-center">
+          <Text variant={TextVariant.BodySm}>{leverage}x</Text>
+        </Box>
       </Box>
     </Box>
   );

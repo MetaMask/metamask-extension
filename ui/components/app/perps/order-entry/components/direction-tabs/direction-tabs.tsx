@@ -5,6 +5,7 @@ import {
   Text,
   TextVariant,
   FontWeight,
+  BoxAlignItems,
   BoxFlexDirection,
   ButtonBase,
 } from '@metamask/design-system-react';
@@ -33,27 +34,27 @@ export const DirectionTabs: React.FC<DirectionTabsProps> = ({
     }
   };
 
-  const tabBaseStyles =
-    'flex-1 py-2 rounded-lg transition-colors text-center';
+  const tabBaseStyles = 'flex-1 py-0 rounded-lg transition-colors text-center';
 
   const longTabStyles = twMerge(
     tabBaseStyles,
     direction === 'long'
-      ? 'bg-success-muted'
-      : 'bg-transparent hover:bg-muted-hover active:bg-muted-pressed',
+      ? 'bg-success-muted h-8'
+      : 'bg-transparent hover:bg-muted-hover active:bg-muted-pressed h-8',
   );
 
   const shortTabStyles = twMerge(
     tabBaseStyles,
     direction === 'short'
-      ? 'bg-error-muted'
-      : 'bg-transparent hover:bg-muted-hover active:bg-muted-pressed',
+      ? 'bg-error-muted h-8'
+      : 'bg-transparent hover:bg-muted-hover active:bg-muted-pressed h-8',
   );
 
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
-      className="flex-1 min-w-0 bg-muted rounded-lg p-1 gap-1"
+      alignItems={BoxAlignItems.Center}
+      className="flex-1 min-w-0 h-10 bg-muted rounded-lg py-0 px-1 gap-1"
       data-testid="direction-tabs"
     >
       <ButtonBase

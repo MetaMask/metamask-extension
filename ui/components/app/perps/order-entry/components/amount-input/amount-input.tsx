@@ -4,10 +4,9 @@ import {
   Text,
   TextVariant,
   TextColor,
-  FontWeight,
   BoxFlexDirection,
-  BoxJustifyContent,
   BoxAlignItems,
+  BoxJustifyContent,
 } from '@metamask/design-system-react';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import {
@@ -43,13 +42,17 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   const tokenAmount = useMemo(() => {
     const cleanAmount = amount.replace(/,/gu, '');
     const numAmount = parseFloat(cleanAmount) || 0;
-    if (numAmount === 0 || currentPrice === 0) return null;
+    if (numAmount === 0 || currentPrice === 0) {
+      return null;
+    }
     const positionValue = numAmount * leverage;
     return calculatePositionSize(positionValue, currentPrice);
   }, [amount, currentPrice, leverage]);
 
   const tokenDisplayValue = useMemo(() => {
-    if (tokenAmount === null || tokenAmount === 0) return '';
+    if (tokenAmount === null || tokenAmount === 0) {
+      return '';
+    }
     return formatTokenQuantity(tokenAmount, asset);
   }, [tokenAmount, asset, formatTokenQuantity]);
 
@@ -103,7 +106,12 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           return;
         }
         const numToken = parseFloat(value);
-        if (isNaN(numToken) || numToken <= 0 || currentPrice === 0 || leverage === 0) {
+        if (
+          isNaN(numToken) ||
+          numToken <= 0 ||
+          currentPrice === 0 ||
+          leverage === 0
+        ) {
           return;
         }
         const usdMargin = (numToken * currentPrice) / leverage;
@@ -146,18 +154,21 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
-      {/* Header: Size (left) + Available to trade XX USDC (right) */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
-        alignItems={BoxAlignItems.Center}
-      >
-        <Text variant={TextVariant.BodyMd}>
-          {t('perpsSize')}
-        </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {`Available to trade ${formatCurrencyWithMinThreshold(availableBalance, 'USD')} USDC`}
-        </Text>
+      {/* Header: Size, then Available to trade below (both left-aligned) */}
+      <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+        <Text variant={TextVariant.BodySm}>{t('perpsSize')}</Text>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          gap={2}
+        >
+          <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
+            Available to trade
+          </Text>
+          <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
+            {`${formatCurrencyWithMinThreshold(availableBalance, 'USD')} USDC`}
+          </Text>
+        </Box>
       </Box>
 
       {/* Two side-by-side inputs: USD (left), Token (right) */}
@@ -205,13 +216,12 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         </Box>
       </Box>
 
-      {/* Slider with percentage pill on the right */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         gap={2}
       >
-        <Box className="flex-1 px-1" data-testid="amount-slider">
+        <Box className="flex-1 px-3" data-testid="amount-slider">
           <PerpsSlider
             min={0}
             max={100}
@@ -220,14 +230,8 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             onChange={handleSliderChange}
           />
         </Box>
-        <Box className="bg-muted px-2 py-1 rounded-md min-w-[3rem]">
-          <Text
-            variant={TextVariant.BodySm}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.TextAlternative}
-          >
-            {balancePercent} %
-          </Text>
+        <Box className="bg-muted py-1 rounded-lg shrink-0 w-14 text-center">
+          <Text variant={TextVariant.BodySm}>{balancePercent}%</Text>
         </Box>
       </Box>
     </Box>
