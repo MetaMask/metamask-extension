@@ -154,11 +154,6 @@ import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { createParameterizedShallowEqualSelector } from '../../shared/modules/selectors/selector-creators';
-import {
-  getCurrentKeyring as getSharedCurrentKeyring,
-  getHardwareWalletType as getSharedHardwareWalletType,
-  isHardwareWallet as isSharedHardwareWallet,
-} from '../../shared/modules/selectors/hardware-wallet';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   FeatureFlagNames,
@@ -399,10 +394,6 @@ export function getIsSigningQRHardwareTransaction(state) {
   );
 }
 
-export function getCurrentKeyring(state) {
-  return getSharedCurrentKeyring(state);
-}
-
 /**
  * The function returns true if network and account details are fetched and
  * both of them support EIP-1559.
@@ -427,16 +418,6 @@ export function checkNetworkOrAccountNotSupports1559(state) {
 }
 
 /**
- * Checks if the current wallet is a hardware wallet.
- *
- * @param {object} state
- * @returns {boolean}
- */
-export function isHardwareWallet(state) {
-  return isSharedHardwareWallet(state);
-}
-
-/**
  * Checks if the account supports smart transactions.
  *
  * @param {object} state - The state object.
@@ -447,18 +428,9 @@ export function accountSupportsSmartTx(state) {
   return Boolean(accountType !== 'snap');
 }
 
-/**
- * Get a HW wallet type, e.g. "Ledger Hardware"
- *
- * @param {object} state
- * @returns {string | undefined}
- */
-export function getHardwareWalletType(state) {
-  return getSharedHardwareWalletType(state);
-}
-
 export function getAccountType(state) {
-  const currentKeyring = getCurrentKeyring(state);
+  const internalAccount = getSelectedInternalAccount(state);
+  const currentKeyring = internalAccount?.metadata?.keyring ?? null;
   return getAccountTypeForKeyring(currentKeyring);
 }
 
