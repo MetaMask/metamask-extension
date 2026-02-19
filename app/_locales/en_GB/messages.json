@@ -2082,9 +2082,6 @@
   "deepLink_theBuyPage": {
     "message": "the buy page"
   },
-  "deepLink_theSellPage": {
-    "message": "the sell page"
-  },
   "deepLink_theCardOnboardingPage": {
     "message": "the MetaMask Card onboarding page"
   },
@@ -2108,6 +2105,9 @@
   },
   "deepLink_theRewardsPage": {
     "message": "the MetaMask Rewards page"
+  },
+  "deepLink_theSellPage": {
+    "message": "the sell page"
   },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
