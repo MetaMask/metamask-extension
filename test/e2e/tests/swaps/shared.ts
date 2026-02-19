@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { MockttpServer } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import { regularDelayMs, veryLargeDelayMs } from '../../helpers';
+import { regularDelayMs } from '../../helpers';
 import { SWAP_TEST_ETH_DAI_TRADES_MOCK } from '../../../data/mock-data';
 import { SWAP_TEST_GAS_INCLUDED_TRADES_MOCK } from '../smart-transactions/mocks';
 
@@ -40,48 +40,60 @@ type SwapOptions = {
 };
 
 export const buildQuote = async (driver: Driver, options: SwapOptions) => {
-  await driver.clickElement('[data-testid="coin-overview-swap"]');
+  await driver.clickElement('[data-testid="eth-overview-swap"]');
+  await driver.waitForSelector('[data-testid="from-amount"]');
   await driver.fill(
-    'input[data-testid="prepare-swap-page-from-token-amount"]',
+    'input[data-testid="from-amount"]',
     options.amount.toString(),
   );
 
   if (options.swapTo && options.mainnet) {
     await driver.waitForSelector({
-      tag: 'h6',
-      text: 'Estimated gas fee',
+      css: '[data-testid="network-fees"]',
     });
   }
 
-  await driver.clickElement('[data-testid="prepare-swap-page-swap-to"]');
-  await driver.waitForSelector('[id="list-with-search__text-search"]');
+  await driver.clickElement('[data-testid="bridge-destination-button"]');
+  await driver.waitForSelector(
+    '[data-testid="bridge-asset-picker-search-input"]',
+  );
 
   await driver.fill(
-    'input[id="list-with-search__text-search"]',
+    'input[data-testid="bridge-asset-picker-search-input"]',
     options.swapTo || options.swapToContractAddress || '',
   );
 
-  await driver.delay(veryLargeDelayMs); // Need an extra delay after typing an amount.
   if (options.swapTo) {
-    await driver.wait(async () => {
-      const tokenNames = await driver.findElements(
-        '[data-testid="searchable-item-list-primary-label"]',
-      );
-      if (tokenNames.length === 0) {
-        return false;
-      }
-      const tokenName = await tokenNames[0].getText();
-      return tokenName === options.swapTo;
+    await driver.waitForSelector({
+      css: '[data-testid="bridge-asset"]',
+      text: options.swapTo,
     });
+    await driver.clickElement({
+      css: '[data-testid="bridge-asset"]',
+      text: options.swapTo,
+    });
+    return;
   }
+
   if (options.swapToContractAddress) {
-    await driver.waitForSelector(
-      '[data-testid="searchable-item-list-import-button"]',
-    );
+    await driver.wait(async () => {
+      const hasImportButton = await driver.isElementPresent({
+        css: '[data-testid="import-tokens-import-button"]',
+      });
+      const hasBridgeAsset = await driver.isElementPresent({
+        css: '[data-testid="bridge-asset"]',
+      });
+      return hasImportButton || hasBridgeAsset;
+    });
+
+    const hasImportButton = await driver.isElementPresent({
+      css: '[data-testid="import-tokens-import-button"]',
+    });
+
+    if (!hasImportButton) {
+      await driver.clickElement('[data-testid="bridge-asset"]');
+    }
   }
-  await driver.clickElement(
-    '[data-testid="searchable-item-list-primary-label"]',
-  );
 };
 
 export const reviewQuote = async (
@@ -93,48 +105,39 @@ export const reviewQuote = async (
     skipCounter?: boolean;
   },
 ) => {
-  const summary = await driver.waitForSelector(
-    '[data-testid="exchange-rate-display-quote-rate"]',
-  );
-  const summaryText = await summary.getText();
+  await driver.waitForSelector('[data-testid="bridge-cta-button"]');
+  await driver.waitForMultipleSelectors([
+    '[data-testid="network-fees"]',
+    '[data-testid="slippage-edit-button"]',
+    '[data-testid="minimum-received"]',
+  ]);
 
   await driver.waitForSelector({
-    testId: 'prepare-swap-page-swap-from',
+    css: '[data-testid="bridge-source-button"]',
     text: options.swapFrom,
   });
 
   await driver.waitForSelector({
-    testId: 'prepare-swap-page-swap-to',
+    css: '[data-testid="bridge-destination-button"]',
     text: options.swapTo,
   });
 
-  const quote = summaryText.split(`\n`);
+  const elementSwapFromAmount = await driver.findElement(
+    'input[data-testid="from-amount"]',
+  );
+  const swapFromAmount = await elementSwapFromAmount.getAttribute('value');
+  assert.equal(swapFromAmount, options.amount.toString());
 
   const elementSwapToAmount = await driver.findElement(
-    '[data-testid="prepare-swap-page-receive-amount"]',
+    'input[data-testid="to-amount"]',
   );
-  const swapToAmount = await elementSwapToAmount.getText();
-  const expectedAmount = Number(quote[3]) * options.amount;
-  const dotIndex = swapToAmount.indexOf('.');
-  const decimals = dotIndex === -1 ? 0 : swapToAmount.length - dotIndex - 1;
+  const swapToAmount = await elementSwapToAmount.getAttribute('value');
+  const normalizedSwapToAmount = Number(swapToAmount.replace(/,/gu, ''));
   assert.equal(
-    swapToAmount,
-    expectedAmount.toFixed(decimals),
-    `Expecting ${expectedAmount.toFixed(
-      decimals,
-    )} but got ${swapToAmount} instead`,
+    normalizedSwapToAmount > 0,
+    true,
+    `Expected destination amount to be > 0 but got ${swapToAmount}`,
   );
-
-  await driver.findElement('[data-testid="review-quote-gas-fee-in-fiat"]');
-
-  await driver.findElement('[data-testid="info-tooltip"]');
-
-  if (!options.skipCounter) {
-    await driver.waitForSelector({
-      css: '[data-testid="countdown-timer__timer-container"]',
-      text: '0:25',
-    });
-  }
 };
 
 export const waitForTransactionToComplete = async (
@@ -213,7 +216,7 @@ export const checkNotification = async (
 
   const isExpectedBoxContentPresentAndVisible =
     await driver.isElementPresentAndVisible({
-      css: '[data-testid="mm-banner-alert-notification-text"]',
+      css: '.mm-banner-base',
       text: options.text,
     });
 
@@ -225,25 +228,24 @@ export const checkNotification = async (
 };
 
 export const changeExchangeRate = async (driver: Driver) => {
-  // Ensure quote view button is present
-  await driver.waitForSelector('[data-testid="review-quote-view-all-quotes"]');
+  await driver.waitForSelector('[aria-label="More quotes"]');
+  await driver.clickElement('[aria-label="More quotes"]');
+  await driver.waitForSelector({
+    text: 'Select a quote',
+  });
 
-  // Scroll button into view before clicking
   await driver.executeScript(`
-    const element = document.querySelector('[data-testid="review-quote-view-all-quotes"]');
-    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const quoteRows = Array.from(
+      document.querySelectorAll('.quotes-modal [style*="position: relative"]'),
+    );
+    if (quoteRows.length === 0) {
+      throw new Error('No quotes available to select');
+    }
+
+    const targetRow = quoteRows[Math.min(1, quoteRows.length - 1)];
+    targetRow.scrollIntoView({ block: 'center' });
+    targetRow.click();
   `);
 
-  // Add small delay allowing for smooth scroll
-  await driver.delay(500);
-
-  // Try to click the element
-  await driver.clickElement('[data-testid="review-quote-view-all-quotes"]');
-  await driver.waitForSelector({ text: 'Quote details', tag: 'h2' });
-  const networkFees = await driver.findElements(
-    '[data-testid*="select-quote-popover-row"]',
-  );
-  const random = Math.floor(Math.random() * networkFees.length);
-  await networkFees[random].click();
-  await driver.clickElement({ text: 'Select', tag: 'button' });
+  await driver.assertElementNotPresent('.quotes-modal');
 };

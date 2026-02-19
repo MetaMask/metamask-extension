@@ -36,7 +36,7 @@ class SwapPage {
   private readonly bridgeSourceButton = '[data-testid="bridge-source-button"]';
 
   private readonly bridgeSourceTokenButton =
-    '[data-testid="prepare-swap-page-swap-from"]';
+    '[data-testid="bridge-source-button"]';
 
   private readonly bridgeDestinationButton =
     '[data-testid="bridge-destination-button"]';
@@ -157,13 +157,19 @@ class SwapPage {
   async selectSourceToken(sourceToken: string): Promise<void> {
     console.log('Click source token button');
     await this.driver.clickElement(this.bridgeSourceTokenButton);
-    // click element wth test-id searchable-item-list-primary-label and text sourceToken
+    await this.driver.waitForSelector(
+      '[data-testid="bridge-asset-picker-search-input"]',
+    );
+    await this.driver.fill(
+      '[data-testid="bridge-asset-picker-search-input"]',
+      sourceToken,
+    );
     await this.driver.waitForSelector({
-      css: '[data-testid="searchable-item-list-primary-label"]',
+      css: '[data-testid="bridge-asset"]',
       text: sourceToken,
     });
     await this.driver.clickElement({
-      css: '[data-testid="searchable-item-list-primary-label"]',
+      css: '[data-testid="bridge-asset"]',
       text: sourceToken,
     });
   }
@@ -171,8 +177,19 @@ class SwapPage {
   async selectDestinationToken(destinationToken: string): Promise<void> {
     console.log('Entering swap amount');
     await this.driver.clickElement(this.destinationTokenButton);
+    await this.driver.waitForSelector(
+      '[data-testid="bridge-asset-picker-search-input"]',
+    );
+    await this.driver.fill(
+      '[data-testid="bridge-asset-picker-search-input"]',
+      destinationToken,
+    );
+    await this.driver.waitForSelector({
+      css: '[data-testid="bridge-asset"]',
+      text: destinationToken,
+    });
     await this.driver.clickElement({
-      tag: 'span',
+      css: '[data-testid="bridge-asset"]',
       text: destinationToken,
     });
   }
