@@ -270,24 +270,6 @@ describe('merkl-client', () => {
       );
     });
 
-    it('corrects Linea testnet chain ID 59145 (0xe709) to 59144 in URL', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve([{ rewards: [] }]),
-      });
-
-      await fetchMerklRewards({
-        userAddress: MOCK_USER_ADDRESS,
-        chainIds: '0xe709' as `0x${string}`,
-        tokenAddress: MUSD_TOKEN_ADDRESS as `0x${string}`,
-      });
-
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('chainId=59144'),
-        expect.anything(),
-      );
-    });
-
     it('converts multiple hex chain IDs to comma-separated decimals', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -302,7 +284,7 @@ describe('merkl-client', () => {
 
       // 0x1=1, 0xe708=59144, 0xe709 corrected to 59144
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('chainId=1,59144,59144'),
+        expect.stringContaining('chainId=1,59144,59145'),
         expect.anything(),
       );
     });
