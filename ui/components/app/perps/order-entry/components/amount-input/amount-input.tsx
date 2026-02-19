@@ -36,8 +36,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   currentPrice,
 }) => {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold, formatTokenQuantity, formatNumber } =
-    useFormatters();
+  const { formatCurrencyWithMinThreshold, formatNumber } = useFormatters();
 
   const tokenAmount = useMemo(() => {
     const cleanAmount = amount.replace(/,/gu, '');
@@ -53,8 +52,11 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     if (tokenAmount === null || tokenAmount === 0) {
       return '';
     }
-    return formatTokenQuantity(tokenAmount, asset);
-  }, [tokenAmount, asset, formatTokenQuantity]);
+    return formatNumber(tokenAmount, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 6,
+    });
+  }, [tokenAmount, formatNumber]);
 
   const handleAmountChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -163,7 +165,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           gap={2}
         >
           <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
-            Available to trade
+            {t('perpsAvailableToTrade')}
           </Text>
           <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
             {`${formatCurrencyWithMinThreshold(availableBalance, 'USD')} USDC`}
@@ -205,13 +207,21 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             value={tokenDisplayValue}
             onChange={handleTokenAmountChange}
             onBlur={handleTokenBlur}
-            placeholder={`0 ${asset}`}
+            placeholder="0"
             borderRadius={BorderRadius.MD}
             borderWidth={0}
             backgroundColor={BackgroundColor.backgroundMuted}
             className="w-full"
             data-testid="amount-input-token-field"
             inputProps={{ inputMode: 'decimal' }}
+            endAccessory={
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
+                {asset}
+              </Text>
+            }
           />
         </Box>
       </Box>

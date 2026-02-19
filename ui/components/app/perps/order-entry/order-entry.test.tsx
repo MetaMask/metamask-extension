@@ -112,7 +112,7 @@ describe('OrderEntry', () => {
 
       const tokenContainer = screen.getByTestId('amount-input-token-field');
       const tokenInput = tokenContainer.querySelector('input');
-      expect(tokenInput).toHaveValue('1 BTC');
+      expect(tokenInput).toHaveValue('1');
     });
   });
 

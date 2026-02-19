@@ -568,9 +568,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           )}
           data-testid="submit-order-button"
         >
-          {isOrderPending
-            ? t('perpsSubmitting')
-            : `${isLong ? t('perpsLong') : t('perpsShort')} ${displayName}`}
+          {isOrderPending ? t('perpsSubmitting') : submitButtonText}
         </Button>
       </Box>
     </Box>
