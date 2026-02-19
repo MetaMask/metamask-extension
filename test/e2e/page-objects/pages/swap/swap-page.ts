@@ -35,9 +35,6 @@ class SwapPage {
 
   private readonly bridgeSourceButton = '[data-testid="bridge-source-button"]';
 
-  private readonly bridgeSourceTokenButton =
-    '[data-testid="bridge-source-button"]';
-
   private readonly bridgeDestinationButton =
     '[data-testid="bridge-destination-button"]';
 
@@ -47,9 +44,6 @@ class SwapPage {
   };
 
   private readonly closeQuotesButton = 'header button';
-
-  private readonly destinationTokenButton =
-    '[data-testid="bridge-destination-button"]';
 
   private readonly fromToText = '[data-testid="bridge-asset"] p';
 
@@ -112,7 +106,7 @@ class SwapPage {
     try {
       await this.driver.waitForMultipleSelectors([
         this.reviewFromAmount,
-        this.destinationTokenButton,
+        this.bridgeDestinationButton,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for Swap page to be loaded', e);
@@ -156,7 +150,7 @@ class SwapPage {
 
   async selectSourceToken(sourceToken: string): Promise<void> {
     console.log('Click source token button');
-    await this.driver.clickElement(this.bridgeSourceTokenButton);
+    await this.driver.clickElement(this.bridgeSourceButton);
     await this.driver.waitForSelector(
       '[data-testid="bridge-asset-picker-search-input"]',
     );
@@ -176,7 +170,7 @@ class SwapPage {
 
   async selectDestinationToken(destinationToken: string): Promise<void> {
     console.log('Entering swap amount');
-    await this.driver.clickElement(this.destinationTokenButton);
+    await this.driver.clickElement(this.bridgeDestinationButton);
     await this.driver.waitForSelector(
       '[data-testid="bridge-asset-picker-search-input"]',
     );

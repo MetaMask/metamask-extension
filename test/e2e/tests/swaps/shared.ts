@@ -90,9 +90,13 @@ export const buildQuote = async (driver: Driver, options: SwapOptions) => {
       css: '[data-testid="import-tokens-import-button"]',
     });
 
-    if (!hasImportButton) {
-      await driver.clickElement('[data-testid="bridge-asset"]');
+    if (hasImportButton) {
+      await driver.clickElement('[data-testid="import-tokens-import-button"]');
+      await driver.waitForSelector({
+        css: '[data-testid="bridge-asset"]',
+      });
     }
+    await driver.clickElement('[data-testid="bridge-asset"]');
   }
 };
 

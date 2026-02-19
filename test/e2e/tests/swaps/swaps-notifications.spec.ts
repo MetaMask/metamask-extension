@@ -170,20 +170,7 @@ describe('Swaps - notifications', function () {
         });
         await bridgeQuotePage.waitForQuote();
 
-        await driver.clickElement('[data-testid="slippage-edit-button"]');
-        await driver.clickElement(
-          '[data-testid="bridge__tx-settings-modal-custom-button"]',
-        );
-        await driver.fill(
-          'input[data-testid="bridge__tx-settings-modal-custom-input"]',
-          '0.1',
-        );
-        await driver.executeScript(`
-          const input = document.querySelector('input[data-testid="bridge__tx-settings-modal-custom-input"]');
-          if (input) {
-            input.blur();
-          }
-        `);
+        await bridgeQuotePage.setCustomSlippage('0.1');
 
         await checkNotification(driver, {
           title: 'Low slippage',
