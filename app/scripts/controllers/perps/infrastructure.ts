@@ -29,11 +29,11 @@ import type {
   PerpsTraceName,
   PerpsTraceValue,
 } from '@metamask/perps-controller';
-// eslint-disable-next-line import/no-restricted-paths
-import {
-  submitRequestToBackground,
-  generateActionId,
-} from '../../../../ui/store/background-connection';
+
+type SubmitRequestToBackground = <Result>(
+  method: string,
+  args?: unknown[],
+) => Promise<Result>;
 
 /**
  * Options for creating perps infrastructure.
@@ -46,8 +46,11 @@ export type CreatePerpsInfrastructureOptions = {
     msgParams: { from: string; data: unknown },
     version: unknown,
   ) => Promise<string>;
+  /** Function to submit RPC-style requests to the background process */
+  submitRequestToBackground: SubmitRequestToBackground;
+  /** Function to create a unique action id for background actions */
+  generateActionId: () => number;
 };
-
 
 /**
  * Create a stubbed logger for error reporting.
@@ -159,7 +162,12 @@ function createStreamManager(): PerpsStreamManager {
 function createControllerAccess(
   options: CreatePerpsInfrastructureOptions,
 ): PerpsControllerAccess {
-  const { selectedAddress, signTypedMessage } = options;
+  const {
+    selectedAddress,
+    signTypedMessage,
+    submitRequestToBackground,
+    generateActionId,
+  } = options;
   return {
     accounts: {
       getSelectedEvmAccount: () => {
@@ -193,8 +201,10 @@ function createControllerAccess(
       },
     },
     transaction: {
-      submit: async (txParams, options) => {
-        const networkClientId = await Promise.resolve(options.networkClientId);
+      submit: async (txParams, txOptions) => {
+        const networkClientId = await Promise.resolve(
+          txOptions.networkClientId,
+        );
 
         if (!networkClientId) {
           throw new Error('No network client found for Perps transaction');
@@ -205,7 +215,7 @@ function createControllerAccess(
           // Transaction Pay source-fee state used by custom-amount validation.
           skipInitialGasEstimate: _skipInitialGasEstimate,
           ...forwardOptions
-        } = options;
+        } = txOptions;
 
         const transactionMeta = await submitRequestToBackground<{
           id: string;
@@ -215,7 +225,7 @@ function createControllerAccess(
           {
             ...forwardOptions,
             networkClientId,
-            origin: options.origin ?? 'metamask',
+            origin: txOptions.origin ?? 'metamask',
             actionId: generateActionId(),
           },
         ]);

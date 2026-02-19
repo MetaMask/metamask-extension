@@ -9,7 +9,10 @@ import {
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/perps';
 import type { MetaMaskReduxState } from '../../store/store';
-import { submitRequestToBackground } from '../../store/background-connection';
+import {
+  submitRequestToBackground,
+  generateActionId,
+} from '../../store/background-connection';
 import { getReduxStorePromise } from '../..';
 
 const REMOTE_FEATURE_FLAG_GET_STATE = 'RemoteFeatureFlagController:getState';
@@ -167,6 +170,8 @@ function startControllerInitialization(
       selectedAddress,
       signTypedMessage: (msgParams) =>
         submitRequestToBackground<string>('perpsSignTypedData', [msgParams]),
+      submitRequestToBackground,
+      generateActionId,
     });
     const fallbackBlockedRegions = getFallbackBlockedRegions();
 
