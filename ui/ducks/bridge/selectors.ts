@@ -64,10 +64,10 @@ import {
 import { Numeric } from '../../../shared/modules/Numeric';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
-  getHardwareWalletType,
   getIsSmartTransaction,
   type SmartTransactionsMetaMaskState,
 } from '../../../shared/modules/selectors';
+import { getHardwareWalletType } from '../../../shared/modules/selectors/hardware-wallet';
 import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import { safeAmountForCalc } from '../../pages/bridge/utils/quote';
 import {

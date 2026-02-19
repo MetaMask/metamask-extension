@@ -22,7 +22,7 @@ import {
   ButtonVariant,
   Text,
 } from '../../../components/component-library';
-import { getCurrentKeyring } from '../../../selectors';
+import { getCurrentKeyring } from '../../../../shared/modules/selectors/hardware-wallet';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

@@ -18,7 +18,7 @@ import { isCorrectDeveloperTransactionType } from '../../../../../shared/lib/con
 import {
   getSmartTransactionsOptInStatusInternal,
   getSmartTransactionsMigrationAppliedInternal,
-} from '../../../../../shared/modules/selectors/smart-transactions';
+} from '../../../../../shared/modules/selectors/smart-transactions-preferences';
 import {
   getChainSupportsSmartTransactions,
   getSmartTransactionsPreferenceEnabled,

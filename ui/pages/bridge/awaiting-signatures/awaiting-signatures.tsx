@@ -6,7 +6,7 @@ import { isCrossChain } from '@metamask/bridge-controller';
 import {
   getHardwareWalletType,
   isHardwareWallet,
-} from '../../../../shared/modules/selectors';
+} from '../../../../shared/modules/selectors/hardware-wallet';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import {
   TextVariant,

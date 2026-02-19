@@ -64,13 +64,15 @@ import {
   getHDEntropyIndex,
 } from '../../selectors';
 import {
-  getHardwareWalletType,
-  isHardwareWallet,
   getSmartTransactionsEnabled,
   getSmartTransactionsFeatureFlagsForChain,
   getSmartTransactionsOptInStatusForMetrics,
   getSmartTransactionsPreferenceEnabled,
 } from '../../../shared/modules/selectors';
+import {
+  getHardwareWalletType,
+  isHardwareWallet,
+} from '../../../shared/modules/selectors/hardware-wallet';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

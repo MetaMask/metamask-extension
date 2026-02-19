@@ -6,7 +6,7 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import EditableLabel from '../../ui/editable-label/editable-label';
 
 import { setAccountLabel } from '../../../store/actions';
-import { getHardwareWalletType } from '../../../../shared/modules/selectors';
+import { getHardwareWalletType } from '../../../../shared/modules/selectors/hardware-wallet';
 import { shortenString } from '../../../helpers/utils/util';
 import {
   Box,

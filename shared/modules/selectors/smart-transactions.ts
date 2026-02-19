@@ -22,16 +22,8 @@ import {
 } from '../../../ui/selectors/remote-feature-flags';
 import { isProduction } from '../environment';
 import { getCurrentChainId, type NetworkState } from './networks';
-import {
-  getSmartTransactionsMigrationAppliedInternal,
-  getSmartTransactionsOptInStatusInternal,
-} from './smart-transactions-preferences';
+import { getSmartTransactionsOptInStatusInternal } from './smart-transactions-preferences';
 import { createDeepEqualSelector } from './util';
-
-export {
-  getSmartTransactionsMigrationAppliedInternal,
-  getSmartTransactionsOptInStatusInternal,
-};
 
 export type SmartTransactionsMetaMaskState = {
   metamask: {

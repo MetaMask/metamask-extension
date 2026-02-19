@@ -1,3 +1,3 @@
 export * from './smart-transactions';
-export * from './account';
+export * from './hardware-wallet';
 export * from './accounts';
