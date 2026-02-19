@@ -11,7 +11,6 @@ import {
   Text,
 } from '../../component-library';
 import { MenuItem } from '../../ui/menu';
-import { IconColor, TextColor } from '../../../helpers/constants/design-system';
 
 export const NetworkListItemMenu = ({
   anchorElement,
