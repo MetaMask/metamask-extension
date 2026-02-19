@@ -7058,44 +7058,8 @@
   "smartAccount": {
     "message": "स्मार्ट अकाउंट"
   },
-  "smartAccountAccept": {
-    "message": "स्मार्ट अकाउंट का प्रयोग करें"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "तेज़ ट्रांसेक्शन, कम शुल्क"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "एक साथ ट्रांसेक्शन प्रोसेस करके समय और धन की बचत करें।"
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "अपना अकाउंट एड्रेस वही रखें और आप किसी भी समय वापस स्विच कर सकते हैं।"
-  },
   "smartAccountLabel": {
     "message": "स्मार्ट अकाउंट"
-  },
-  "smartAccountPayToken": {
-    "message": "किसी भी टोकन से, किसी भी समय भुगतान करें"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "नेटवर्क शुल्क को कवर करने के लिए आपके पास पहले से मौजूद टोकन का उपयोग करें।"
-  },
-  "smartAccountReject": {
-    "message": "स्मार्ट अकाउंट का उपयोग न करें"
-  },
-  "smartAccountSameAccount": {
-    "message": "वही अकाउंट, और स्मार्ट फीचर्स।"
-  },
-  "smartAccountSplashInfo": {
-    "message": "स्मार्ट एकाउंट्स"
-  },
-  "smartAccountSplashTitle": {
-    "message": "स्मार्ट अकाउंट का प्रयोग करना है?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "आपके अगले ट्रांसेक्शन के साथ आपका अकाउंट स्मार्ट अकाउंट में अपडेट हो जाएगा।"
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "सफल!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "वही एड्रेस। और स्मार्ट फीचर्स।"
