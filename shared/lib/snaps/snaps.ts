@@ -1,5 +1,5 @@
 import { SnapId } from '@metamask/snaps-sdk';
-import { getIsForcePreinstalledSnapsEnabled } from 'shared/modules/environment';
+import { getIsForcePreinstalledSnapsEnabled } from '../../modules/environment';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 /**
