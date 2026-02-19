@@ -1,12 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
-import {
-  BackgroundColor,
-  BorderRadius,
-} from '../../../helpers/constants/design-system';
-import { Box } from '../../component-library';
+import { SuccessPill } from '../../component-library';
 import CurrencyDisplay from '../../ui/currency-display';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import HexToDecimal from '../../ui/hex-to-decimal';
@@ -120,20 +115,10 @@ export default class TransactionBreakdown extends PureComponent {
 
         {isGasFeeSponsored && (
           <TransactionBreakdownRow title={t('networkFee')}>
-            <Box
-              backgroundColor={BackgroundColor.successMuted}
-              paddingLeft={2}
-              paddingRight={2}
-              borderRadius={BorderRadius.SM}
-            >
-              <Text
-                variant={TextVariant.BodyXs}
-                color={TextColor.SuccessDefault}
-                className="transaction-breakdown__value"
-              >
-                {t('paidByMetaMask')}
-              </Text>
-            </Box>
+            <SuccessPill
+              label={t('paidByMetaMask')}
+              className="transaction-breakdown__value"
+            />
           </TransactionBreakdownRow>
         )}
         {!isGasFeeSponsored && (

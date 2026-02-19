@@ -15,7 +15,6 @@ import {
 } from '../../../../../../shared/modules/network.utils';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
   BorderRadius,
   Display,
@@ -38,6 +37,7 @@ import {
   ButtonIconSize,
   IconName,
   IconSize,
+  SuccessPill,
   Text,
 } from '../../../../component-library';
 import { NetworkListItem } from '../../../network-list-item';
@@ -385,20 +385,10 @@ const DefaultNetworks = memo(() => {
               {network.name}
             </Text>
             {isNetworkGasSponsored(network.chainId) && (
-              <Box
-                backgroundColor={BackgroundColor.successMuted}
-                paddingLeft={2}
-                paddingRight={2}
-                borderRadius={BorderRadius.SM}
+              <SuccessPill
+                label={t('noNetworkFee')}
                 display={Display.InlineFlex}
-              >
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.successDefault}
-                >
-                  {t('noNetworkFee')}
-                </Text>
-              </Box>
+              />
             )}
           </Box>
           <ButtonIcon
