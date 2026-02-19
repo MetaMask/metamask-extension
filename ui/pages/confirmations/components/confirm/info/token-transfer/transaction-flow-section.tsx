@@ -49,9 +49,7 @@ export const TransactionFlowSection = () => {
               data-testid="recipient-address"
               className="w-full"
             >
-              <ConfirmInfoRowAddressDisplay
-                address={recipientAddress ?? ''}
-              />
+              <ConfirmInfoRowAddressDisplay address={recipientAddress ?? ''} />
             </Box>
           </ConfirmInfoAlertRow>
         </Box>
