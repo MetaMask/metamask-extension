@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
+import BridgeQuotePage from '../bridge/quote-page';
 
 export type SwapSolanaOptions = {
   amount: number;
@@ -251,13 +252,15 @@ class SwapPage {
 
   async createSolanaSwap(options: SwapSolanaOptions) {
     await this.driver.clickElement(this.bridgeSourceButton);
+    const bridgeQuotePage = new BridgeQuotePage(this.driver);
+    await bridgeQuotePage.selectNetwork('Solana');
     await this.driver.clickElement({
       text: options.swapFrom,
       css: this.fromToText,
     });
 
     await this.driver.clickElement(this.bridgeDestinationButton);
-
+    await bridgeQuotePage.selectNetwork('Solana');
     await this.driver.clickElement({
       text: options.swapTo,
       css: this.fromToText,

@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-loss-of-precision */
+import { ReadableStream as ReadableStreamWeb } from 'stream/web';
+import { Readable } from 'stream';
 import * as fs from 'fs/promises';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures } from '../../helpers';
@@ -64,6 +66,35 @@ export const BRIDGED_TOKEN_LIST_API =
 
 export const BRIDGE_GET_QUOTE_API =
   /^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getQuote/u;
+
+export const BRIDGE_GET_QUOTE_STREAM_API =
+  /^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getQuoteStream/u;
+
+const SSE_RESPONSE_HEADER = { 'Content-Type': 'text/event-stream' };
+
+const getEventId = (index: number) => `${Date.now().toString()}-${index}`;
+const emitLine = (controller: ReadableStreamDefaultController, line: string) =>
+  controller.enqueue(Buffer.from(line));
+
+const mockSseEventSource = (mockQuotes: unknown[], delay: number = 500) => {
+  let index = 0;
+  return Readable.fromWeb(
+    new ReadableStreamWeb({
+      async pull(controller) {
+        if (index === mockQuotes.length) {
+          controller.close();
+          return;
+        }
+        const quote = mockQuotes[index];
+        emitLine(controller, `event: quote\n`);
+        emitLine(controller, `id: ${getEventId(index + 1)}\n`);
+        emitLine(controller, `data: ${JSON.stringify(quote)}\n\n`);
+        index += 1;
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      },
+    }),
+  );
+};
 
 export const SECURITY_ALERT_BRIDGE_URL_REGEX =
   /^https:\/\/security-alerts\.api\.cx\.metamask\.io\/solana\/message\/scan/u;
@@ -1521,41 +1552,30 @@ export async function mockGetAccountInfoDevnet(mockServer: Mockttp) {
 
 export async function mockNoQuotesAvailable(mockServer: Mockttp) {
   return await mockServer
-    .forGet(BRIDGE_GET_QUOTE_API)
-    .thenCallback(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // just to see fetching quotes
-      return {
-        statusCode: 200,
-        json: [],
-      };
-    });
+    .forGet(BRIDGE_GET_QUOTE_STREAM_API)
+    .thenStream(200, mockSseEventSource([]), SSE_RESPONSE_HEADER);
 }
+
 export async function mockQuoteFromUSDCtoSOL(mockServer: Mockttp) {
   const quoteUsdcToSol = await readResponseJsonFile('quoteUsdcToSol.json');
-  const quotesResponse = {
-    statusCode: 200,
-    json: quoteUsdcToSol,
-  };
   return await mockServer
-    .forGet(BRIDGE_GET_QUOTE_API)
-    .thenCallback(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // just to see fetching quotes
-      return quotesResponse;
-    });
+    .forGet(BRIDGE_GET_QUOTE_STREAM_API)
+    .thenStream(
+      200,
+      mockSseEventSource(quoteUsdcToSol as unknown[]),
+      SSE_RESPONSE_HEADER,
+    );
 }
 
 export async function mockQuoteFromSoltoUSDC(mockServer: Mockttp) {
   const quoteSolToUsdc = await readResponseJsonFile('quoteSolToUsdc.json');
-  const quotesResponse = {
-    statusCode: 200,
-    json: quoteSolToUsdc,
-  };
   return await mockServer
-    .forGet(BRIDGE_GET_QUOTE_API)
-    .thenCallback(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // just to see fetching quotes
-      return quotesResponse;
-    });
+    .forGet(BRIDGE_GET_QUOTE_STREAM_API)
+    .thenStream(
+      200,
+      mockSseEventSource(quoteSolToUsdc as unknown[]),
+      SSE_RESPONSE_HEADER,
+    );
 }
 
 export async function mockGetMultipleAccounts(mockServer: Mockttp) {
@@ -1657,53 +1677,57 @@ export async function mockPriceApiSpotPriceSwap(mockServer: Mockttp) {
   });
 }
 
+const SOLANA_BRIDGE_TOKENS = [
+  {
+    address: '0x0000000000000000000000000000000000000000',
+    chainId: 1151111081099710,
+    assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+    symbol: 'SOL',
+    decimals: 9,
+    name: 'SOL',
+    aggregators: [],
+    occurrences: 100,
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
+    metadata: {},
+  },
+  {
+    address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    chainId: 1151111081099710,
+    assetId:
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USD Coin',
+    coingeckoId: 'usd-coin',
+    aggregators: ['orca', 'jupiter', 'coinGecko', 'lifi'],
+    occurrences: 4,
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+    metadata: {},
+  },
+];
+
 export async function mockBridgeGetTokens(mockServer: Mockttp) {
-  return await mockServer.forGet(BRIDGED_TOKEN_LIST_API).thenCallback(() => {
+  return await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => {
     return {
       statusCode: 200,
-      json: [
-        {
-          address: '0x0000000000000000000000000000000000000000',
-          chainId: 1151111081099710,
-          assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-          symbol: 'SOL',
-          decimals: 9,
-          name: 'SOL',
-          aggregators: [],
-          occurrences: 100,
-          iconUrl:
-            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
-          metadata: {},
+      json: SOLANA_BRIDGE_TOKENS,
+    };
+  });
+}
+
+export async function mockBridgeSearchTokens(mockServer: Mockttp) {
+  return await mockServer.forPost(/getTokens\/search/u).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: {
+        data: SOLANA_BRIDGE_TOKENS,
+        pageInfo: {
+          hasNextPage: false,
+          endCursor: null,
         },
-        {
-          address: '0x0000000000000000000000000000000000000000',
-          chainId: 1151111081099710,
-          assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-          symbol: 'SOL',
-          decimals: 9,
-          name: 'SOL',
-          aggregators: [],
-          occurrences: 100,
-          iconUrl:
-            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
-          metadata: {},
-        },
-        {
-          address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-          chainId: 1151111081099710,
-          assetId:
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-          symbol: 'USDC',
-          decimals: 6,
-          name: 'USD Coin',
-          coingeckoId: 'usd-coin',
-          aggregators: ['orca', 'jupiter', 'coinGecko', 'lifi'],
-          occurrences: 4,
-          iconUrl:
-            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
-          metadata: {},
-        },
-      ],
+      },
     };
   });
 }
@@ -2119,6 +2143,7 @@ export async function withSolanaAccountSnap(
 
         if (mockSwapWithNoQuotes) {
           mockList.push(await mockBridgeGetTokens(mockServer));
+          mockList.push(await mockBridgeSearchTokens(mockServer));
           mockList.push(await mockNoQuotesAvailable(mockServer));
         }
         if (mockSwapUSDtoSOL) {
@@ -2133,7 +2158,7 @@ export async function withSolanaAccountSnap(
                 USDC_TO_SOL_SWAP_SIGNATURE,
               ),
               await mockBridgeGetTokens(mockServer),
-              // await mockTopAssetsSolana(mockServer),
+              await mockBridgeSearchTokens(mockServer),
             ],
           );
         }
@@ -2149,7 +2174,7 @@ export async function withSolanaAccountSnap(
                 SOL_TO_USDC_SWAP_SIGNATURE,
               ),
               await mockBridgeGetTokens(mockServer),
-              // await mockTopAssetsSolana(mockServer),
+              await mockBridgeSearchTokens(mockServer),
             ],
           );
         }

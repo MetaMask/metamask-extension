@@ -31,6 +31,8 @@ import {
   mockNoQuotesAvailable,
   mockGetFailedSignaturesForAddress,
   mockGetFailedTransaction,
+  mockBridgeGetTokens,
+  mockBridgeSearchTokens,
 } from './common-solana';
 
 async function mockSwapUSDCtoSOL(
@@ -57,6 +59,8 @@ async function mockSwapUSDCtoSOL(
     await mockGetSignaturesForWalletOnly(mockServer, signatureHolder),
     await mockBridgeTxStatus(mockServer),
     await mockTokenApiAssets(mockServer),
+    await mockBridgeGetTokens(mockServer),
+    await mockBridgeSearchTokens(mockServer),
   ];
 }
 
@@ -76,6 +80,8 @@ async function mockSwapNoQuotes(
     await mockPriceApiExchangeRates(mockServer),
     await mockGetMultipleAccounts(mockServer),
     await mockTokenApiAssets(mockServer),
+    await mockBridgeGetTokens(mockServer),
+    await mockBridgeSearchTokens(mockServer),
   ];
 }
 
@@ -101,6 +107,8 @@ async function mockSwapSOLtoUSDCFailed(
     await mockGetFailedTransaction(mockServer),
     await mockGetMintAccountInfo(mockServer),
     await mockTokenApiAssets(mockServer),
+    await mockBridgeGetTokens(mockServer),
+    await mockBridgeSearchTokens(mockServer),
   ];
 }
 
@@ -127,6 +135,8 @@ async function mockSwapSOLtoUSDC(
     await mockGetSignaturesForWalletOnly(mockServer, signatureHolder),
     await mockBridgeTxStatus(mockServer),
     await mockTokenApiAssets(mockServer),
+    await mockBridgeGetTokens(mockServer),
+    await mockBridgeSearchTokens(mockServer),
   ];
 }
 
