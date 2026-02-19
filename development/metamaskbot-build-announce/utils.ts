@@ -442,7 +442,7 @@ export function extractEntries(
  */
 export async function buildBenchmarkSectionComment(
   hostUrl: string,
-  presets: readonly string[],
+  presets: string[],
   summary: string,
   firstColumn: string,
 ): Promise<string> {

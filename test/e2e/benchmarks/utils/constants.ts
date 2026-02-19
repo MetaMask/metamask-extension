@@ -7,16 +7,16 @@ import type { ThresholdConfig } from './types';
  * - development/metamaskbot-build-announce/index.ts  (PR comment builder)
  * - .github/workflows/run-benchmarks.yml  (CI matrix — must be updated manually)
  */
-export const BENCHMARK_PLATFORMS = ['chrome', 'firefox'];
-export const BENCHMARK_BUILD_TYPES = ['browserify', 'webpack'];
+export const BENCHMARK_PLATFORMS = ['chrome', 'firefox'] as const;
+export const BENCHMARK_BUILD_TYPES = ['browserify', 'webpack'] as const;
 export const PAGE_LOAD_PRESETS = {
   STANDARD_HOME: 'standardHome',
   POWER_USER_HOME: 'powerUserHome',
-};
+} as const;
 
 export const USER_ACTION_PRESETS = {
   USER_ACTIONS: 'userActions',
-};
+} as const;
 
 export const PERFORMANCE_PRESETS = {
   ONBOARDING_IMPORT: 'performanceOnboardingImport',
@@ -24,7 +24,7 @@ export const PERFORMANCE_PRESETS = {
   ASSETS: 'performanceAssets',
   ACCOUNT_MANAGEMENT: 'performanceAccountManagement',
   TRANSACTIONS: 'performanceTransactions',
-};
+} as const;
 
 export const DEFAULT_NUM_BROWSER_LOADS = 10;
 export const DEFAULT_NUM_PAGE_LOADS = 10;
