@@ -46,6 +46,8 @@ export type CreatePerpsInfrastructureOptions = {
     msgParams: { from: string; data: unknown },
     version: unknown,
   ) => Promise<string>;
+  /** Synchronous resolver for mapping chain ID to network client ID */
+  findNetworkClientIdForChain: (chainId: string) => string | undefined;
   /** Function to submit RPC-style requests to the background process */
   submitRequestToBackground: SubmitRequestToBackground;
   /** Function to create a unique action id for background actions */
@@ -165,6 +167,7 @@ function createControllerAccess(
   const {
     selectedAddress,
     signTypedMessage,
+    findNetworkClientIdForChain,
     submitRequestToBackground,
     generateActionId,
   } = options;
@@ -189,12 +192,8 @@ function createControllerAccess(
         // Return Arbitrum mainnet as default for Hyperliquid
         return '0xa4b1' as `0x${string}`;
       },
-      findNetworkClientIdForChain: async (chainId) => {
-        return await submitRequestToBackground<string>(
-          'findNetworkClientIdByChainId',
-          [chainId],
-        );
-      },
+      findNetworkClientIdForChain: (chainId) =>
+        findNetworkClientIdForChain(chainId),
       getSelectedNetworkClientId: () => {
         // TODO: Wire to NetworkController
         return 'mainnet';

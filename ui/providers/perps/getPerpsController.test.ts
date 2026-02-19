@@ -49,7 +49,7 @@ type Deferred = {
 };
 
 function createDeferred(): Deferred {
-  let resolve = () => undefined;
+  let resolve: () => void = () => undefined;
   const promise = new Promise<void>((promiseResolve) => {
     resolve = promiseResolve;
   });
@@ -64,14 +64,40 @@ const mockCreatedControllers: {
   disconnect: jest.Mock<Promise<void>, []>;
 }[] = [];
 
-const mockCreatePerpsInfrastructure = jest.fn((selectedAddress: string) => ({
-  selectedAddress,
-}));
+const mockCreatePerpsInfrastructure = jest.fn(
+  ({
+    selectedAddress,
+    findNetworkClientIdForChain,
+  }: {
+    selectedAddress: string;
+    findNetworkClientIdForChain?: (chainId: string) => string | undefined;
+  }) => ({
+    selectedAddress,
+    findNetworkClientIdForChain,
+  }),
+);
 
 const mockGetDefaultPerpsControllerState = jest.fn(() => ({}));
 
 let getPerpsController: typeof import('./getPerpsController').getPerpsController;
 let resetPerpsController: typeof import('./getPerpsController').resetPerpsController;
+
+function createMockStore() {
+  return {
+    getState: () => ({
+      metamask: {
+        remoteFeatureFlags: {},
+        networkConfigurationsByChainId: {
+          '0xa4b1': {
+            defaultRpcEndpointIndex: 0,
+            rpcEndpoints: [{ networkClientId: 'arbitrum-mainnet' }],
+          },
+        },
+      },
+    }),
+    subscribe: () => () => undefined,
+  } as unknown as Parameters<typeof getPerpsController>[1];
+}
 
 describe('getPerpsController', () => {
   beforeAll(async () => {
@@ -141,9 +167,10 @@ describe('getPerpsController', () => {
   it('reuses the same in-flight initialization for concurrent same-address requests', async () => {
     const deferred = createDeferred();
     mockInitDeferreds.set('0xaaa', deferred);
+    const mockStore = createMockStore();
 
-    const firstRequest = getPerpsController('0xaaa');
-    const secondRequest = getPerpsController('0xaaa');
+    const firstRequest = getPerpsController('0xaaa', mockStore);
+    const secondRequest = getPerpsController('0xaaa', mockStore);
 
     expect(mockCreatePerpsInfrastructure).toHaveBeenCalledTimes(1);
 
@@ -162,9 +189,10 @@ describe('getPerpsController', () => {
     const deferredB = createDeferred();
     mockInitDeferreds.set('0xaaa', deferredA);
     mockInitDeferreds.set('0xbbb', deferredB);
+    const mockStore = createMockStore();
 
-    const requestA = getPerpsController('0xaaa');
-    const requestB = getPerpsController('0xbbb');
+    const requestA = getPerpsController('0xaaa', mockStore);
+    const requestB = getPerpsController('0xbbb', mockStore);
 
     deferredB.resolve();
     const controllerB = await requestB;
@@ -180,15 +208,16 @@ describe('getPerpsController', () => {
     );
     expect(staleController?.disconnect).toHaveBeenCalledTimes(1);
 
-    const activeController = await getPerpsController('0xbbb');
+    const activeController = await getPerpsController('0xbbb', mockStore);
     expect(activeController).toBe(controllerB);
   });
 
   it('disconnects initialized controller when switching to a different address', async () => {
     const deferredA = createDeferred();
     mockInitDeferreds.set('0xaaa', deferredA);
+    const mockStore = createMockStore();
 
-    const controllerARequest = getPerpsController('0xaaa');
+    const controllerARequest = getPerpsController('0xaaa', mockStore);
     deferredA.resolve();
     const controllerA = await controllerARequest;
 
@@ -199,7 +228,7 @@ describe('getPerpsController', () => {
 
     const deferredB = createDeferred();
     mockInitDeferreds.set('0xbbb', deferredB);
-    const controllerBRequest = getPerpsController('0xbbb');
+    const controllerBRequest = getPerpsController('0xbbb', mockStore);
 
     expect(createdA?.disconnect).toHaveBeenCalledTimes(1);
 
@@ -207,5 +236,46 @@ describe('getPerpsController', () => {
     const controllerB = await controllerBRequest;
 
     expect(controllerB).not.toBe(controllerA);
+  });
+
+  it('injects a synchronous network-client resolver from Redux state', async () => {
+    const deferred = createDeferred();
+    mockInitDeferreds.set('0xaaa', deferred);
+
+    const mockStore = {
+      getState: () => ({
+        metamask: {
+          remoteFeatureFlags: {},
+          networkConfigurationsByChainId: {
+            '0xa4b1': {
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [{ networkClientId: 'arbitrum-mainnet' }],
+            },
+          },
+        },
+      }),
+      subscribe: () => () => undefined,
+    };
+
+    const request = getPerpsController(
+      '0xaaa',
+      mockStore as unknown as Parameters<typeof getPerpsController>[1],
+    );
+
+    expect(mockCreatePerpsInfrastructure).toHaveBeenCalledTimes(1);
+    const [infrastructureOptions] = mockCreatePerpsInfrastructure.mock
+      .calls[0] as [
+      {
+        findNetworkClientIdForChain: (chainId: string) => string | undefined;
+      },
+    ];
+    const { findNetworkClientIdForChain } = infrastructureOptions;
+
+    expect(findNetworkClientIdForChain('0xa4b1')).toBe('arbitrum-mainnet');
+    expect(findNetworkClientIdForChain('0xA4B1')).toBe('arbitrum-mainnet');
+    expect(findNetworkClientIdForChain('0xdead')).toBeUndefined();
+
+    deferred.resolve();
+    await request;
   });
 });

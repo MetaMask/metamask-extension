@@ -25,6 +25,58 @@ type RemoteFeatureFlagState = {
   cacheTimestamp: number;
 };
 
+type EvmRpcEndpoint = {
+  networkClientId?: string;
+};
+
+type EvmNetworkConfiguration = {
+  defaultRpcEndpointIndex?: number;
+  rpcEndpoints?: EvmRpcEndpoint[];
+};
+
+function getNetworkClientIdForChain(
+  store: Store<MetaMaskReduxState> | null,
+  chainId: string,
+): string | undefined {
+  if (!store || !chainId) {
+    return undefined;
+  }
+
+  const networkConfigurationsByChainId = store.getState().metamask
+    ?.networkConfigurationsByChainId as
+    | Record<string, EvmNetworkConfiguration>
+    | undefined;
+
+  if (!networkConfigurationsByChainId) {
+    return undefined;
+  }
+
+  const normalizedChainId = chainId.toLowerCase();
+
+  const networkConfiguration =
+    networkConfigurationsByChainId[chainId] ??
+    networkConfigurationsByChainId[normalizedChainId] ??
+    Object.entries(networkConfigurationsByChainId).find(
+      ([candidateChainId]) =>
+        candidateChainId.toLowerCase() === normalizedChainId,
+    )?.[1];
+
+  if (!networkConfiguration?.rpcEndpoints?.length) {
+    return undefined;
+  }
+
+  const defaultRpcEndpointIndex = Number.isInteger(
+    networkConfiguration.defaultRpcEndpointIndex,
+  )
+    ? Number(networkConfiguration.defaultRpcEndpointIndex)
+    : 0;
+
+  return (
+    networkConfiguration.rpcEndpoints[defaultRpcEndpointIndex]
+      ?.networkClientId ?? networkConfiguration.rpcEndpoints[0]?.networkClientId
+  );
+}
+
 function getRemoteFeatureFlagState(
   store: Store<MetaMaskReduxState>,
 ): RemoteFeatureFlagState {
@@ -170,6 +222,8 @@ function startControllerInitialization(
       selectedAddress,
       signTypedMessage: (msgParams) =>
         submitRequestToBackground<string>('perpsSignTypedData', [msgParams]),
+      findNetworkClientIdForChain: (chainId) =>
+        getNetworkClientIdForChain(storeToUse ?? null, chainId),
       submitRequestToBackground,
       generateActionId,
     });
