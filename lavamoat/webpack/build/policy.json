@@ -1336,9 +1336,7 @@
       "builtin": {
         "module.findPnpApi": true,
         "path.basename": true,
-        "path.posix.dirname": true,
         "path.posix.normalize": true,
-        "path.win32.dirname": true,
         "path.win32.normalize": true,
         "process.nextTick": true,
         "process.versions.pnp": true,
@@ -1348,7 +1346,6 @@
         "Buffer.isBuffer": true,
         "URL": true,
         "clearTimeout": true,
-        "process.cwd": true,
         "setTimeout": true
       },
       "packages": {
@@ -1582,15 +1579,9 @@
     "copy-webpack-plugin>tinyglobby>fdir": {
       "builtin": {
         "fs": true,
-        "path.basename": true,
-        "path.dirname": true,
-        "path.normalize": true,
-        "path.relative": true,
-        "path.resolve": true,
-        "path.sep": true
+        "path": true
       },
       "globals": {
-        "AbortController": true,
         "process.platform": true
       },
       "packages": {
@@ -3077,9 +3068,12 @@
     },
     "copy-webpack-plugin>tinyglobby": {
       "builtin": {
-        "path": true
+        "fs": true,
+        "path": true,
+        "url": true
       },
       "globals": {
+        "URL": true,
         "console.log": true,
         "process.cwd": true,
         "process.env.TINYGLOBBY_DEBUG": true,
