@@ -18,16 +18,13 @@ import * as path from 'path';
 
 import type { Json } from '@metamask/utils';
 
-import {
-  FEATURE_FLAG_REGISTRY,
-  FeatureFlagStatus,
-} from '../feature-flags';
+import { FEATURE_FLAG_REGISTRY, FeatureFlagStatus } from '../feature-flags';
 
 // ============================================================================
 // Types
 // ============================================================================
 
-type CoverageLevel = 'explicit' | 'default-only';
+type CoverageLevel = 'full' | 'partial' | 'default-only';
 
 type FlagReference = {
   file: string;
@@ -41,6 +38,7 @@ type FlagCoverageEntry = {
   inProd: boolean;
   productionDefault: string;
   coverage: CoverageLevel;
+  testedStates: { true: boolean; false: boolean };
   references: FlagReference[];
 };
 
@@ -49,7 +47,8 @@ type CoverageReport = {
   summary: {
     totalFlags: number;
     activeFlags: number;
-    explicitCoverage: number;
+    fullCoverage: number;
+    partialCoverage: number;
     defaultOnlyCoverage: number;
     coveragePercentage: number;
   };
@@ -86,7 +85,10 @@ function collectTestFiles(dir: string): string[] {
 
     if (entry.isDirectory()) {
       files.push(...collectTestFiles(fullPath));
-    } else if (entry.isFile() && SCAN_EXTENSIONS.has(path.extname(entry.name))) {
+    } else if (
+      entry.isFile() &&
+      SCAN_EXTENSIONS.has(path.extname(entry.name))
+    ) {
       files.push(fullPath);
     }
   }
@@ -147,7 +149,10 @@ function extractBalanced(str: string): string {
     if (str[i] === open) depth++;
     else if (str[i] === close) depth--;
     if (depth === 0) {
-      const value = str.slice(0, i + 1).replace(/\s+/g, ' ').trim();
+      const value = str
+        .slice(0, i + 1)
+        .replace(/\s+/g, ' ')
+        .trim();
       return truncate(value);
     }
   }
@@ -165,6 +170,55 @@ function summarizeDefault(value: Json): string {
     return str;
   }
   return str.slice(0, 47) + '...';
+}
+
+// ============================================================================
+// State Detection
+// ============================================================================
+
+function resolveEnabledState(value: Json): boolean | null {
+  if (typeof value === 'boolean') {
+    return value;
+  }
+  if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+    const obj = value as Record<string, Json>;
+    if (typeof obj.enabled === 'boolean') {
+      return obj.enabled;
+    }
+  }
+  return null;
+}
+
+const TRUTHY_PATTERNS = [/\btrue\b/, /enabled:\s*true/];
+const FALSY_PATTERNS = [/\bfalse\b/, /enabled:\s*false/];
+
+function extractTestedStates(
+  references: FlagReference[],
+  productionDefault: Json,
+): { true: boolean; false: boolean } {
+  const states = { true: false, false: false };
+
+  const defaultState = resolveEnabledState(productionDefault);
+  if (defaultState === true) states.true = true;
+  if (defaultState === false) states.false = true;
+
+  for (const ref of references) {
+    for (const val of ref.values) {
+      if (TRUTHY_PATTERNS.some((p) => p.test(val))) states.true = true;
+      if (FALSY_PATTERNS.some((p) => p.test(val))) states.false = true;
+    }
+  }
+
+  return states;
+}
+
+function determineCoverage(
+  references: FlagReference[],
+  testedStates: { true: boolean; false: boolean },
+): CoverageLevel {
+  if (references.length === 0) return 'default-only';
+  if (testedStates.true && testedStates.false) return 'full';
+  return 'partial';
 }
 
 // ============================================================================
@@ -200,36 +254,58 @@ function generateReport(repoRoot: string): CoverageReport {
       }
     }
 
+    const testedStates = extractTestedStates(
+      references,
+      entry.productionDefault,
+    );
+
     flagResults.push({
       flag: entry.name,
       type: entry.type,
       status: entry.status,
       inProd: entry.inProd,
       productionDefault: summarizeDefault(entry.productionDefault),
-      coverage: references.length > 0 ? 'explicit' : 'default-only',
+      coverage: determineCoverage(references, testedStates),
+      testedStates,
       references,
     });
   }
 
+  const coverageOrder: Record<CoverageLevel, number> = {
+    full: 0,
+    partial: 1,
+    'default-only': 2,
+  };
+
   flagResults.sort((a, b) => {
     if (a.coverage !== b.coverage) {
-      return a.coverage === 'explicit' ? -1 : 1;
+      return coverageOrder[a.coverage] - coverageOrder[b.coverage];
     }
     return a.flag.localeCompare(b.flag);
   });
 
-  const activeFlags = flagResults.filter((f) => f.status === FeatureFlagStatus.Active);
-  const explicitCount = flagResults.filter((f) => f.coverage === 'explicit').length;
-  const defaultOnlyCount = flagResults.filter((f) => f.coverage === 'default-only').length;
+  const activeFlags = flagResults.filter(
+    (f) => f.status === FeatureFlagStatus.Active,
+  );
+  const fullCount = flagResults.filter((f) => f.coverage === 'full').length;
+  const partialCount = flagResults.filter(
+    (f) => f.coverage === 'partial',
+  ).length;
+  const defaultOnlyCount = flagResults.filter(
+    (f) => f.coverage === 'default-only',
+  ).length;
 
   return {
     generatedAt: new Date().toISOString(),
     summary: {
       totalFlags: flagResults.length,
       activeFlags: activeFlags.length,
-      explicitCoverage: explicitCount,
+      fullCoverage: fullCount,
+      partialCoverage: partialCount,
       defaultOnlyCoverage: defaultOnlyCount,
-      coveragePercentage: Math.round((explicitCount / flagResults.length) * 100),
+      coveragePercentage: Math.round(
+        ((fullCount + partialCount) / flagResults.length) * 100,
+      ),
     },
     flags: flagResults,
   };
@@ -252,18 +328,24 @@ function printReport(report: CoverageReport): void {
   console.log('  ' + '-'.repeat(40));
   console.log(`  Total flags:       ${summary.totalFlags}`);
   console.log(`  Active flags:      ${summary.activeFlags}`);
-  console.log(`  Explicit coverage: ${summary.explicitCoverage} (${summary.coveragePercentage}%)`);
+  console.log(`  Full coverage:     ${summary.fullCoverage}`);
+  console.log(`  Partial coverage:  ${summary.partialCoverage}`);
   console.log(`  Default-only:      ${summary.defaultOnlyCoverage}`);
+  console.log(
+    `  Coverage:          ${summary.coveragePercentage}% of flags have explicit tests`,
+  );
   console.log('');
 
   const flagCol = 45;
   const coverageCol = 14;
+  const statesCol = 12;
   const filesCol = 6;
   const defaultCol = 50;
 
   const header = [
     'Flag'.padEnd(flagCol),
     'Coverage'.padEnd(coverageCol),
+    'States'.padEnd(statesCol),
     'Files'.padEnd(filesCol),
     'Prod Default'.padEnd(defaultCol),
   ].join(' | ');
@@ -272,10 +354,15 @@ function printReport(report: CoverageReport): void {
   console.log('  ' + '-'.repeat(header.length));
 
   for (const entry of flags) {
-    const coverageLabel = entry.coverage === 'explicit' ? 'EXPLICIT' : 'default-only';
+    const coverageLabel = entry.coverage.toUpperCase();
+    const statesLabel =
+      entry.coverage === 'default-only'
+        ? '-'
+        : `T:${entry.testedStates.true ? '✓' : '✗'} F:${entry.testedStates.false ? '✓' : '✗'}`;
     const row = [
       entry.flag.padEnd(flagCol),
       coverageLabel.padEnd(coverageCol),
+      statesLabel.padEnd(statesCol),
       String(entry.references.length).padEnd(filesCol),
       entry.productionDefault.padEnd(defaultCol),
     ].join(' | ');
@@ -285,14 +372,33 @@ function printReport(report: CoverageReport): void {
 
   console.log('');
 
-  const explicitFlags = flags.filter((f) => f.coverage === 'explicit');
-  if (explicitFlags.length > 0) {
-    console.log('  EXPLICIT COVERAGE DETAILS');
+  const fullFlags = flags.filter((f) => f.coverage === 'full');
+  if (fullFlags.length > 0) {
+    console.log('  FULL COVERAGE (both true and false states tested)');
     console.log('  ' + '-'.repeat(40));
-    for (const entry of explicitFlags) {
-      console.log(`  ${entry.flag}  (prod default: ${entry.productionDefault})`);
+    for (const entry of fullFlags) {
+      console.log(
+        `  ${entry.flag}  (prod default: ${entry.productionDefault})`,
+      );
       for (const ref of entry.references) {
-        const valueStr = ref.values.length > 0 ? ref.values.join(', ') : '(reference only)';
+        const valueStr =
+          ref.values.length > 0 ? ref.values.join(', ') : '(reference only)';
+        console.log(`    ${ref.file}: ${valueStr}`);
+      }
+    }
+    console.log('');
+  }
+
+  const partialFlags = flags.filter((f) => f.coverage === 'partial');
+  if (partialFlags.length > 0) {
+    console.log('  PARTIAL COVERAGE (only one state tested)');
+    console.log('  ' + '-'.repeat(40));
+    for (const entry of partialFlags) {
+      const missing = !entry.testedStates.true ? 'true' : 'false';
+      console.log(`  ${entry.flag}  (missing: ${missing} state)`);
+      for (const ref of entry.references) {
+        const valueStr =
+          ref.values.length > 0 ? ref.values.join(', ') : '(reference only)';
         console.log(`    ${ref.file}: ${valueStr}`);
       }
     }
@@ -301,7 +407,7 @@ function printReport(report: CoverageReport): void {
 
   const defaultOnly = flags.filter((f) => f.coverage === 'default-only');
   if (defaultOnly.length > 0) {
-    console.log('  FLAGS WITH DEFAULT-ONLY COVERAGE (no explicit test references)');
+    console.log('  DEFAULT-ONLY (no explicit test references)');
     console.log('  ' + '-'.repeat(40));
     for (const entry of defaultOnly) {
       console.log(`  - ${entry.flag}`);
@@ -332,14 +438,19 @@ function main(): void {
   const pkgPath = path.join(repoRoot, 'package.json');
   if (!fs.existsSync(pkgPath)) {
     console.error(`Error: Could not find package.json at ${pkgPath}`);
-    console.error('Make sure you are running this from the metamask-extension repo root.');
+    console.error(
+      'Make sure you are running this from the metamask-extension repo root.',
+    );
     process.exit(1);
   }
 
   const report = generateReport(repoRoot);
   printReport(report);
 
-  const jsonOutputPath = path.join(scriptDir, 'feature-flag-coverage-report.json');
+  const jsonOutputPath = path.join(
+    scriptDir,
+    'feature-flag-coverage-report.json',
+  );
   writeJsonReport(report, jsonOutputPath);
 }
 
