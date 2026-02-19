@@ -125,7 +125,7 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
   const mockPermission1: PermissionInfoWithMetadata = {
     permissionResponse: {
       permission: {
-        type: 'custom' as const,
+        type: 'erc20-token-revocation' as const,
         data: {},
         isAdjustmentAllowed: false,
       },
@@ -140,7 +140,7 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
   const mockPermission2: PermissionInfoWithMetadata = {
     permissionResponse: {
       permission: {
-        type: 'custom' as const,
+        type: 'erc20-token-revocation' as const,
         data: {},
         isAdjustmentAllowed: false,
       },

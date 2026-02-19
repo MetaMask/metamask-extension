@@ -49,10 +49,8 @@ describe('DisconnectPermissionsModal', () => {
         permission: {
           permissionResponse: {
             permission: {
-              type: 'custom' as const,
-              data: {
-                amountPerSecond: '0xde0b6b3a7640000', // 1 ETH in hex
-              },
+              type: 'erc20-token-revocation' as const,
+              data: {},
               isAdjustmentAllowed: false,
             },
             chainId: '0x1' as Hex,

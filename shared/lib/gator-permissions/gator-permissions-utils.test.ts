@@ -442,17 +442,5 @@ describe('gator-permissions-utils', () => {
         frequencyKey: '',
       });
     });
-
-    it('should return default metadata for custom permission type', () => {
-      const result = getGatorPermissionDisplayMetadata('custom', {
-        someData: 'value',
-      });
-
-      expect(result).toStrictEqual({
-        displayNameKey: 'permission',
-        amount: '',
-        frequencyKey: '',
-      });
-    });
   });
 });
