@@ -255,7 +255,7 @@ async function main(): Promise<void> {
       //   remoteFeatureFlags
       //     .myFlag
       for (let i = 0; i < chunk.length - 1; i++) {
-        const joined = `${chunk[i].trimEnd()} ${chunk[i + 1].trimStart()}`;
+        const joined = `${chunk[i].trimEnd()}${chunk[i + 1].trimStart()}`;
         allReferences.push(...extractFlagReferences(joined, filePath));
       }
     }
