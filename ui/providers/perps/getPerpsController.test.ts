@@ -81,6 +81,7 @@ const mockGetDefaultPerpsControllerState = jest.fn(() => ({}));
 
 let getPerpsController: typeof import('./getPerpsController').getPerpsController;
 let resetPerpsController: typeof import('./getPerpsController').resetPerpsController;
+let isPerpsControllerInitializationCancelledError: typeof import('./getPerpsController').isPerpsControllerInitializationCancelledError;
 
 function createMockStore() {
   return {
@@ -145,6 +146,8 @@ describe('getPerpsController', () => {
     const module = await import('./getPerpsController');
     getPerpsController = module.getPerpsController;
     resetPerpsController = module.resetPerpsController;
+    isPerpsControllerInitializationCancelledError =
+      module.isPerpsControllerInitializationCancelledError;
   });
 
   beforeEach(async () => {
@@ -277,5 +280,27 @@ describe('getPerpsController', () => {
 
     deferred.resolve();
     await request;
+  });
+
+  it('rejects stale initialization with a cancellation error when reset without replacement', async () => {
+    const deferred = createDeferred();
+    mockInitDeferreds.set('0xaaa', deferred);
+    const mockStore = createMockStore();
+
+    const request = getPerpsController('0xaaa', mockStore);
+
+    await resetPerpsController();
+    deferred.resolve();
+
+    let caughtError: unknown;
+    try {
+      await request;
+    } catch (error) {
+      caughtError = error;
+    }
+
+    expect(isPerpsControllerInitializationCancelledError(caughtError)).toBe(
+      true,
+    );
   });
 });

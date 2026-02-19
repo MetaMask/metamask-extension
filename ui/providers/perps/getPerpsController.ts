@@ -34,6 +34,23 @@ type EvmNetworkConfiguration = {
   rpcEndpoints?: EvmRpcEndpoint[];
 };
 
+export class PerpsControllerInitializationCancelledError extends Error {
+  constructor() {
+    super('Perps controller initialization was superseded');
+    this.name = 'PerpsControllerInitializationCancelledError';
+  }
+}
+
+export function isPerpsControllerInitializationCancelledError(
+  error: unknown,
+): error is PerpsControllerInitializationCancelledError {
+  return (
+    error instanceof PerpsControllerInitializationCancelledError ||
+    (error instanceof Error &&
+      error.name === 'PerpsControllerInitializationCancelledError')
+  );
+}
+
 function getNetworkClientIdForChain(
   store: Store<MetaMaskReduxState> | null,
   chainId: string,
@@ -257,9 +274,7 @@ function startControllerInitialization(
         return controllerInstance;
       }
 
-      throw new Error(
-        'Perps controller initialization superseded without replacement',
-      );
+      throw new PerpsControllerInitializationCancelledError();
     }
 
     controllerInstance = controller;
@@ -269,12 +284,20 @@ function startControllerInitialization(
 
   initPromise = task;
 
-  task.finally(() => {
-    if (initPromise === task) {
-      initPromise = null;
-      initializingAddress = null;
-    }
-  });
+  task.then(
+    () => {
+      if (initPromise === task) {
+        initPromise = null;
+        initializingAddress = null;
+      }
+    },
+    () => {
+      if (initPromise === task) {
+        initPromise = null;
+        initializingAddress = null;
+      }
+    },
+  );
 
   return task;
 }

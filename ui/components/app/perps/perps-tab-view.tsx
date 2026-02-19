@@ -20,6 +20,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
 } from '../../../helpers/constants/routes';
+import { isPerpsControllerInitializationCancelledError } from '../../../providers/perps/getPerpsController';
 import { getPerpsStreamManager } from '../../../providers/perps';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
@@ -67,9 +68,21 @@ export const PerpsTabView: React.FC = () => {
     const streamManager = getPerpsStreamManager();
 
     // Initialize and prewarm
-    streamManager.init(selectedAddress).then(() => {
-      streamManager.prewarm();
-    });
+    streamManager
+      .init(selectedAddress)
+      .then(() => {
+        streamManager.prewarm();
+      })
+      .catch((error: unknown) => {
+        if (isPerpsControllerInitializationCancelledError(error)) {
+          return;
+        }
+
+        console.error(
+          '[PerpsTabView] Failed to initialize Perps stream:',
+          error,
+        );
+      });
 
     // Cleanup prewarm on unmount (cache persists!)
     return () => {

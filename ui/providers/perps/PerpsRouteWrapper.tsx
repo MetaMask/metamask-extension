@@ -2,6 +2,7 @@ import React, { type ReactNode, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { getPerpsStreamManager } from './PerpsStreamManager';
+import { isPerpsControllerInitializationCancelledError } from './getPerpsController';
 
 /**
  * Props for PerpsRouteWrapper
@@ -73,6 +74,10 @@ export const PerpsRouteWrapper: React.FC<PerpsRouteWrapperProps> = ({
         streamManager.prewarm();
       })
       .catch((err: unknown) => {
+        if (isPerpsControllerInitializationCancelledError(err)) {
+          return;
+        }
+
         console.error('[PerpsRouteWrapper] Init failed:', err);
         setError(err instanceof Error ? err : new Error(String(err)));
       });
