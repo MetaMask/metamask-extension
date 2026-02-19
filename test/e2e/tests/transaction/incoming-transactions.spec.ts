@@ -76,7 +76,6 @@ const RESPONSE_OUTGOING_MOCK = {
   ...RESPONSE_STANDARD_MOCK,
   from: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
   to: '0x2',
-  methodId: '0x12345678',
   value: '4560000000000000000',
   valueTransfers: [
     {
@@ -87,9 +86,9 @@ const RESPONSE_OUTGOING_MOCK = {
       symbol: 'ETH',
     },
   ],
-  transactionCategory: 'CONTRACT_CALL',
-  transactionType: 'CONTRACT_INTERACTION',
-  readable: 'Contract interaction',
+  transactionCategory: 'STANDARD',
+  transactionType: 'STANDARD',
+  readable: 'Send',
 };
 
 async function mockAccountsApi(
@@ -103,6 +102,7 @@ async function mockAccountsApi(
       .forGet(
         `https://accounts.api.cx.metamask.io/v4/multiaccount/transactions`,
       )
+      .always()
       .thenCallback(() => ({
         statusCode: 200,
         json: {
