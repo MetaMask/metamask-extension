@@ -178,7 +178,7 @@ export function trackRpcEndpointEvent(
     rpc_domain: sanitizedUrl,
     rpc_endpoint_url: sanitizedUrl, // @deprecated - Will be removed in a future release.
     ...(rpcMethodName ? { rpc_method_name: rpcMethodName } : {}),
-    ...(type ? { degraded_event_type: type } : {}),
+    ...(type ? { type } : {}),
     ...(retryReason ? { retry_reason: retryReason } : {}),
     ...(isObject(error) &&
     'httpStatus' in error &&
