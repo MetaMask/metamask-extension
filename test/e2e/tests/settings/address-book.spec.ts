@@ -32,7 +32,7 @@ describe('Address Book', function (this: Suite) {
   it('Sends to an address book entry', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAddressBookController({
             addressBook: {
               '0x539': {
@@ -181,7 +181,7 @@ describe('Address Book', function (this: Suite) {
   it('Edit entry in address book', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAddressBookController({
             addressBook: {
               '0x539': {
@@ -224,7 +224,7 @@ describe('Address Book', function (this: Suite) {
   it('Deletes existing entry from address book', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAddressBookController({
             addressBook: {
               '0x539': {
