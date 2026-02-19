@@ -1,10 +1,10 @@
 import { createSelector } from 'reselect';
-import { getRemoteFeatureFlags } from 'ui/selectors';
 import { MERKL_FEATURE_FLAG_KEY } from '../constants';
+import { getRemoteFeatureFlags } from '../../../../selectors';
 import {
   validatedVersionGatedFeatureFlag,
   VersionGatedFeatureFlag,
-} from 'shared/lib/feature-flags/version-gating';
+} from '../../../../../shared/lib/feature-flags/version-gating';
 
 export const getMerklRewardsEnabled = createSelector(
   getRemoteFeatureFlags,
