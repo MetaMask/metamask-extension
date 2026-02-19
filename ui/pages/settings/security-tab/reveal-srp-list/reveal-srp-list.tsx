@@ -25,7 +25,10 @@ import {
   BlockSize,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  ONBOARDING_REVIEW_SRP_ROUTE,
+  REVEAL_SEED_ROUTE,
+} from '../../../../helpers/constants/routes';
 import {
   getIsSocialLoginFlow,
   getSocialLoginEmail,
@@ -52,7 +55,7 @@ export const RevealSrpList = () => {
       navigate(backUpSRPRoute);
     } else {
       setSelectedKeyringId(keyringId);
-      setSrpQuizModalVisible(true);
+      navigate(`${REVEAL_SEED_ROUTE}/${keyringId}`);
     }
   };
 

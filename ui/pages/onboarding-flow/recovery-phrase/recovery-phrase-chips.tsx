@@ -36,6 +36,7 @@ type RecoveryPhraseChipsProps = {
   confirmPhase?: boolean;
   quizWords?: { index: number; word: string }[];
   setInputValue?: (inputValue: { index: number; word: string }[]) => void;
+  recoveryPhraseChipsContainerClassName?: string;
 };
 // this was Truffle's original dev recovery phrase from ~2017
 export const fakeSeedPhraseWords = [
@@ -62,6 +63,7 @@ export default function RecoveryPhraseChips({
   confirmPhase,
   quizWords = [],
   setInputValue,
+  recoveryPhraseChipsContainerClassName = '',
 }: RecoveryPhraseChipsProps) {
   const t = useI18nContext();
   const indicesToCheck = useMemo(
@@ -152,8 +154,8 @@ export default function RecoveryPhraseChips({
   const phrasesToDisplay = phraseRevealed
     ? secretRecoveryPhrase
     : secretRecoveryPhrase.map((_word, index) => {
-        return fakeSeedPhraseWords[index % fakeSeedPhraseWords.length];
-      });
+      return fakeSeedPhraseWords[index % fakeSeedPhraseWords.length];
+    });
 
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
@@ -162,7 +164,10 @@ export default function RecoveryPhraseChips({
         display={Display.Grid}
         width={BlockSize.Full}
         backgroundColor={BackgroundColor.backgroundSection}
-        className="recovery-phrase__secret"
+        className={classnames(
+          'recovery-phrase__secret',
+          recoveryPhraseChipsContainerClassName,
+        )}
       >
         <Box
           key="recovery-phrase-chips"

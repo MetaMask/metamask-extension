@@ -2,13 +2,21 @@ import qrCode from 'qrcode-generator';
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
+import {
+  ButtonIcon,
+  IconName,
+  IconColor,
+  ButtonIconSize,
+  Icon,
+  IconSize,
+} from '@metamask/design-system-react';
+import copyToClipboard from 'copy-to-clipboard';
 import { getErrorMessage } from '../../../shared/modules/error';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import HoldToRevealModal from '../../components/app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import {
   BUTTON_SIZES,
   BUTTON_VARIANT,
@@ -23,7 +31,6 @@ import {
   TextFieldType,
 } from '../../components/component-library';
 import Box from '../../components/ui/box';
-import ExportTextContainer from '../../components/ui/export-text-container';
 import { Tab, Tabs } from '../../components/ui/tabs';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -34,6 +41,10 @@ import {
   Severity,
   Size,
   TextVariant,
+  TextColor,
+  FlexDirection,
+  TextAlign,
+  FontWeight,
 } from '../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -41,7 +52,11 @@ import { requestRevealSeedWords } from '../../store/actions';
 import { getHDEntropyIndex } from '../../selectors';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
+import RecoveryPhraseChips from '../onboarding-flow/recovery-phrase/recovery-phrase-chips';
+import { Toast, ToastContainer } from '../../components/multichain/toast';
 
+const QUIZ_INTRODUCTION_SCREEN = 'QUIZ_INTRODUCTION_SCREEN';
+const QUIZ_QUESTIONS_SCREEN = 'QUIZ_QUESTIONS_SCREEN';
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN';
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
 
@@ -53,15 +68,23 @@ function RevealSeedPage() {
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const { keyringId } = useParams();
 
-  const [screen, setScreen] = useState(PASSWORD_PROMPT_SCREEN);
+  const [screen, setScreen] = useState(QUIZ_INTRODUCTION_SCREEN);
   const [password, setPassword] = useState('');
   const [seedWords, setSeedWords] = useState(null);
-  const [completedLongPress, setCompletedLongPress] = useState(false);
   const [error, setError] = useState(null);
-  const [isShowingHoldModal, setIsShowingHoldModal] = useState(false);
   const [srpViewEventTracked, setSrpViewEventTracked] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [phraseRevealed, setPhraseRevealed] = useState(false);
+
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [questionAnswered, setQuestionAnswered] = useState(false);
+  const [correctAnswer, setCorrectAnswer] = useState(false);
+
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   const onClickCopy = useCallback(() => {
+    copyToClipboard(seedWords);
+    setShowSuccessToast(true);
     trackEvent({
       category: MetaMetricsEventCategory.Keys,
       event: MetaMetricsEventName.KeyExportCopied,
@@ -80,7 +103,7 @@ function RevealSeedPage() {
         hd_entropy_index: hdEntropyIndex,
       },
     });
-  }, [trackEvent, hdEntropyIndex]);
+  }, [seedWords, trackEvent, hdEntropyIndex]);
 
   useEffect(() => {
     const passwordBox = document.getElementById('password-box');
@@ -102,7 +125,6 @@ function RevealSeedPage() {
       name: TraceName.RevealSeed,
     });
     setSeedWords(null);
-    setCompletedLongPress(false);
     setError(null);
     dispatch(requestRevealSeedWords(password, keyringId))
       .then((revealedSeedWords) => {
@@ -115,8 +137,7 @@ function RevealSeedPage() {
           },
         });
         setSeedWords(revealedSeedWords);
-
-        setIsShowingHoldModal(true);
+        setScreen(REVEAL_SEED_SCREEN);
       })
       .catch((e) => {
         trackEvent({
@@ -140,18 +161,299 @@ function RevealSeedPage() {
   const renderWarning = () => {
     return (
       <BannerAlert severity={Severity.Danger}>
-        <Text variant={TextVariant.bodyMd}>
-          {t('revealSeedWordsWarning', [
-            <Text
-              key="reveal-seed-words-warning-2"
-              variant={TextVariant.bodyMdBold}
-              as="strong"
-            >
-              {t('revealSeedWordsWarning2')}
-            </Text>,
-          ])}
+        <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
+          {t('revealSeedWordsWarning')}
         </Text>
       </BannerAlert>
+    );
+  };
+
+  const togglePasswordVisibility = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    setShowPassword(!showPassword);
+  };
+
+  const openSupportArticle = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.SupportLinkClicked,
+      properties: {
+        url: `${ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}#metamask-secret-recovery-phrase-dos-and-donts`,
+        location: 'reveal_srp',
+      },
+    });
+    global.platform.openTab({
+      url: `${ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}#metamask-secret-recovery-phrase-dos-and-donts`,
+    });
+  }, [trackEvent]);
+
+  const renderQuizIntroductionContent = () => {
+    return (
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
+        gap={6}
+        paddingTop={6}
+      >
+        <img
+          src="images/reveal_srp.png"
+          alt="Reveal SRP"
+          className="w-[190px] h-[220px] object-contain"
+        />
+        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+          {t('quizIntroduction')}
+        </Text>
+      </Box>
+    );
+  };
+
+  const renderQuizIntroductionFooter = () => {
+    return (
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
+        marginTop="auto"
+        gap={4}
+      >
+        <Button
+          variant={BUTTON_VARIANT.PRIMARY}
+          width={BlockSize.Full}
+          size={Size.LG}
+          onClick={() => {
+            trackEvent({
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.SrpRevealStarted,
+              properties: {
+                key_type: MetaMetricsEventKeyType.Srp,
+                hd_entropy_index: hdEntropyIndex,
+              },
+            });
+            setScreen(QUIZ_QUESTIONS_SCREEN);
+          }}
+        >
+          {t('srpSecurityQuizGetStarted')}
+        </Button>
+        <Button
+          variant={BUTTON_VARIANT.LINK}
+          width={BlockSize.Full}
+          size={Size.LG}
+          onClick={openSupportArticle}
+        >
+          {t('learnMoreUpperCase')}
+        </Button>
+      </Box>
+    );
+  };
+
+  const quizQuestionAnswers = [
+    {
+      question: t('srpSecurityQuizQuestionOneQuestion'),
+      buttonLabelOne: t('srpSecurityQuizQuestionOneWrongAnswer'),
+      buttonLabelTwo: t('srpSecurityQuizQuestionOneRightAnswer'),
+    },
+    {
+      question: t('srpSecurityQuizQuestionTwoQuestion'),
+      buttonLabelOne: t('srpSecurityQuizQuestionTwoRightAnswer'),
+      buttonLabelTwo: t('srpSecurityQuizQuestionTwoWrongAnswer'),
+    },
+  ];
+
+  const answeredQuizQuestions = [
+    {
+      correct: {
+        title: t('srpSecurityQuizQuestionOneRightAnswerTitle'),
+        description: t('srpSecurityQuizQuestionOneRightAnswerDescription'),
+      },
+      wrong: {
+        title: t('srpSecurityQuizQuestionOneWrongAnswerTitle'),
+        description: t('srpSecurityQuizQuestionOneWrongAnswerDescription'),
+      },
+    },
+    {
+      correct: {
+        title: t('srpSecurityQuizQuestionTwoRightAnswerTitle'),
+        description: t('srpSecurityQuizQuestionTwoRightAnswerDescription'),
+      },
+      wrong: {
+        title: t('srpSecurityQuizQuestionTwoWrongAnswerTitle'),
+        description: t('srpSecurityQuizQuestionTwoWrongAnswerDescription'),
+      },
+    },
+  ];
+
+  const renderQuizQuestionContent = () => {
+    const { question, buttonLabelOne, buttonLabelTwo } =
+      quizQuestionAnswers[currentQuestionIndex];
+
+    const { correct, wrong } = answeredQuizQuestions[currentQuestionIndex];
+
+    const correctAnswerTitle = correctAnswer ? correct.title : wrong.title;
+
+    const title = questionAnswered ? correctAnswerTitle : question;
+
+    return (
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.flexStart}
+        justifyContent={JustifyContent.center}
+      >
+        <Text
+          variant={TextVariant.bodySm}
+          color={TextColor.textAlternative}
+          paddingBottom={2}
+        >
+          {t('currentQuestion', [currentQuestionIndex + 1])}
+        </Text>
+
+        {questionAnswered && (
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+            gap={2}
+            paddingBottom={4}
+          >
+            <Icon
+              key={correctAnswer ? 'correct' : 'incorrect'}
+              name={correctAnswer ? IconName.Confirmation : IconName.CircleX}
+              color={
+                correctAnswer
+                  ? IconColor.SuccessDefault
+                  : IconColor.ErrorDefault
+              }
+              size={IconSize.Lg}
+            />
+            <Text
+              variant={TextVariant.headingMd}
+              fontWeight={FontWeight.Medium}
+              color={
+                correctAnswer
+                  ? TextColor.successDefault
+                  : TextColor.errorDefault
+              }
+            >
+              {correctAnswer ? t('correct') : t('incorrect')}
+            </Text>
+          </Box>
+        )}
+
+        <Text
+          variant={TextVariant.headingLg}
+          color={TextColor.textDefault}
+          textAlign={TextAlign.Start}
+          fontWeight={FontWeight.Medium}
+          paddingBottom={questionAnswered ? 4 : 6}
+        >
+          {title}
+        </Text>
+
+        {questionAnswered && (
+          <Text
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+            textAlign={TextAlign.Start}
+          >
+            {correctAnswer ? correct.description : wrong.description}
+          </Text>
+        )}
+
+        {!questionAnswered && (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+            gap={4}
+            width={BlockSize.Full}
+          >
+            <Button
+              variant={BUTTON_VARIANT.SECONDARY}
+              width={BlockSize.Full}
+              size={Size.LG}
+              onClick={() => {
+                setQuestionAnswered(true);
+                setCorrectAnswer(currentQuestionIndex === 1);
+              }}
+            >
+              {buttonLabelOne}
+            </Button>
+            <Button
+              variant={BUTTON_VARIANT.SECONDARY}
+              width={BlockSize.Full}
+              size={Size.LG}
+              onClick={() => {
+                setQuestionAnswered(true);
+                setCorrectAnswer(currentQuestionIndex === 0);
+              }}
+            >
+              {buttonLabelTwo}
+            </Button>
+            <Button
+              variant={BUTTON_VARIANT.LINK}
+              width={BlockSize.Full}
+              size={Size.LG}
+              onClick={openSupportArticle}
+            >
+              {t('learnMoreUpperCase')}
+            </Button>
+          </Box>
+        )}
+      </Box>
+    );
+  };
+
+  const renderQuizQuestionFooter = () => {
+    const handleButtonClick = () => {
+      if (currentQuestionIndex === 0) {
+        setCurrentQuestionIndex(
+          correctAnswer ? currentQuestionIndex + 1 : currentQuestionIndex,
+        );
+        setQuestionAnswered(false);
+        setCorrectAnswer(false);
+      }
+
+      if (currentQuestionIndex === 1) {
+        if (correctAnswer) {
+          setScreen(PASSWORD_PROMPT_SCREEN);
+        } else {
+          setCurrentQuestionIndex(1);
+          setQuestionAnswered(false);
+          setCorrectAnswer(false);
+        }
+      }
+    };
+    return (
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
+        gap={4}
+        marginTop="auto"
+      >
+        <Button
+          variant={BUTTON_VARIANT.PRIMARY}
+          width={BlockSize.Full}
+          size={Size.LG}
+          onClick={handleButtonClick}
+        >
+          {correctAnswer ? t('continue') : t('tryAgain')}
+        </Button>
+        <Button
+          variant={BUTTON_VARIANT.LINK}
+          width={BlockSize.Full}
+          size={Size.LG}
+          onClick={openSupportArticle}
+        >
+          {t('learnMoreUpperCase')}
+        </Button>
+      </Box>
     );
   };
 
@@ -163,14 +465,22 @@ function RevealSeedPage() {
           inputProps={{
             'data-testid': 'input-password',
           }}
-          type={TextFieldType.Password}
-          placeholder={t('makeSureNoOneWatching')}
+          type={showPassword ? TextFieldType.Text : TextFieldType.Password}
           id="password-box"
           size={TextFieldSize.Large}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           error={Boolean(error)}
           width={BlockSize.Full}
+          endAccessory={
+            <ButtonIcon
+              onClick={togglePasswordVisibility}
+              iconProps={{
+                name: showPassword ? IconName.EyeSlash : IconName.Eye,
+                color: IconColor.IconAlternative,
+              }}
+            />
+          }
         />
         {error && (
           <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>
@@ -221,15 +531,42 @@ function RevealSeedPage() {
             tabKey="text-seed"
             className="flex-1"
           >
-            <Label marginTop={4}>{t('yourPrivateSeedPhrase')}</Label>
-            <ExportTextContainer text={seedWords} onClickCopy={onClickCopy} />
+            <RecoveryPhraseChips
+              secretRecoveryPhrase={seedWords.split(' ')}
+              phraseRevealed={phraseRevealed}
+              revealPhrase={() => {
+                trackEvent({
+                  category: MetaMetricsEventCategory.Onboarding,
+                  event:
+                    MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
+                  properties: {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    hd_entropy_index: hdEntropyIndex,
+                  },
+                });
+                setPhraseRevealed(true);
+              }}
+              recoveryPhraseChipsContainerClassName="recovery-phrase-chips-container"
+            />
+            <Button
+              variant={BUTTON_VARIANT.LINK}
+              width={BlockSize.Full}
+              size={Size.LG}
+              onClick={onClickCopy}
+            >
+              <Icon
+                name={IconName.Copy}
+                color={IconColor.PrimaryDefault}
+                className="mr-2"
+              />
+              {t('copyToClipboard')}
+            </Button>
           </Tab>
           <Tab name={t('revealSeedWordsQR')} tabKey="qr-srp" className="flex-1">
             <Box
               display={Display.Flex}
               justifyContent={JustifyContent.center}
               alignItems={AlignItems.center}
-              paddingTop={4}
               data-testid="qr-srp"
             >
               <div
@@ -247,32 +584,6 @@ function RevealSeedPage() {
   const renderPasswordPromptFooter = () => {
     return (
       <Box display={Display.Flex} marginTop="auto" gap={4}>
-        <Button
-          width={BlockSize.Full}
-          size={Size.LG}
-          variant={BUTTON_VARIANT.SECONDARY}
-          onClick={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Keys,
-              event: MetaMetricsEventName.KeyExportCanceled,
-              properties: {
-                key_type: MetaMetricsEventKeyType.Srp,
-                hd_entropy_index: hdEntropyIndex,
-              },
-            });
-            trackEvent({
-              category: MetaMetricsEventCategory.Keys,
-              event: MetaMetricsEventName.SrpRevealCancelled,
-              properties: {
-                key_type: MetaMetricsEventKeyType.Srp,
-                hd_entropy_index: hdEntropyIndex,
-              },
-            });
-            navigate(PREVIOUS_ROUTE);
-          }}
-        >
-          {t('cancel')}
-        </Button>
         <Button
           width={BlockSize.Full}
           size={Size.LG}
@@ -296,46 +607,37 @@ function RevealSeedPage() {
           }}
           disabled={password === ''}
         >
-          {t('next')}
-        </Button>
-      </Box>
-    );
-  };
-
-  const renderRevealSeedFooter = () => {
-    return (
-      <Box marginTop="auto">
-        <Button
-          variant={BUTTON_VARIANT.SECONDARY}
-          width={BlockSize.Full}
-          size={Size.LG}
-          onClick={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Keys,
-              event: MetaMetricsEventName.SrpRevealCloseClicked,
-              properties: {
-                key_type: MetaMetricsEventKeyType.Srp,
-              },
-            });
-            navigate(PREVIOUS_ROUTE);
-          }}
-        >
-          {t('close')}
+          {t('continue')}
         </Button>
       </Box>
     );
   };
 
   const renderContent = () => {
-    return screen === PASSWORD_PROMPT_SCREEN || !completedLongPress
-      ? renderPasswordPromptContent()
-      : renderRevealSeedContent();
+    if (screen === QUIZ_INTRODUCTION_SCREEN) {
+      return renderQuizIntroductionContent();
+    }
+    if (screen === QUIZ_QUESTIONS_SCREEN) {
+      return renderQuizQuestionContent();
+    }
+    if (screen === PASSWORD_PROMPT_SCREEN) {
+      return renderPasswordPromptContent();
+    }
+    return renderRevealSeedContent();
   };
 
   const renderFooter = () => {
-    return screen === PASSWORD_PROMPT_SCREEN || !completedLongPress
-      ? renderPasswordPromptFooter()
-      : renderRevealSeedFooter();
+    if (screen === QUIZ_INTRODUCTION_SCREEN) {
+      return renderQuizIntroductionFooter();
+    }
+    if (screen === QUIZ_QUESTIONS_SCREEN && questionAnswered) {
+      return renderQuizQuestionFooter();
+    }
+    if (screen === PASSWORD_PROMPT_SCREEN) {
+      return renderPasswordPromptFooter();
+    }
+
+    return null;
   };
 
   return (
@@ -347,66 +649,69 @@ function RevealSeedPage() {
       paddingRight={4}
       gap={4}
     >
-      <Text variant={TextVariant.headingLg}>{t('secretRecoveryPhrase')}</Text>
-      <Text variant={TextVariant.bodyMd}>
-        {t('revealSeedWordsDescription1', [
-          <Button
-            key="srp-learn-srp"
-            variant={BUTTON_VARIANT.LINK}
-            size={BUTTON_SIZES.INHERIT}
-            as="a"
-            href={ZENDESK_URLS.SECRET_RECOVERY_PHRASE}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t('revealSeedWordsSRPName')}
-          </Button>,
-          <Text
-            key="reveal-seed-word-part-3"
-            variant={TextVariant.bodyMdBold}
-            as="strong"
-          >
-            {t('revealSeedWordsDescription3')}
-          </Text>,
-        ])}
-      </Text>
-      <Text variant={TextVariant.bodyMd}>
-        {t('revealSeedWordsDescription2', [
-          <Button
-            key="srp-learn-more-non-custodial"
-            variant={BUTTON_VARIANT.LINK}
-            size={BUTTON_SIZES.INHERIT}
-            as="a"
-            href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t('revealSeedWordsNonCustodialWallet')}
-          </Button>,
-        ])}
-      </Text>
-      {renderWarning()}
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={2}
+      >
+        <ButtonIcon
+          iconName={IconName.ArrowLeft}
+          color={IconColor.iconDefault}
+          size={ButtonIconSize.Md}
+          data-testid="reveal-recovery-phrase-back-button"
+          onClick={() => {
+            trackEvent({
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.SrpRevealBackButtonClicked,
+              properties: {
+                key_type: MetaMetricsEventKeyType.Srp,
+                screen,
+                hd_entropy_index: hdEntropyIndex,
+              },
+            });
+            navigate(PREVIOUS_ROUTE);
+          }}
+          ariaLabel={t('back')}
+        />
+        <Text variant={TextVariant.headingSm} color={TextColor.textDefault}>
+          {t('secretRecoveryPhrase')}
+        </Text>
+        <Box />
+      </Box>
+      {screen === PASSWORD_PROMPT_SCREEN && (
+        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+          {screen === PASSWORD_PROMPT_SCREEN
+            ? t('revealSeedWordsDescription1', [
+                <Button
+                  key="srp-learn-srp"
+                  variant={BUTTON_VARIANT.LINK}
+                  size={BUTTON_SIZES.INHERIT}
+                  as="a"
+                  href={ZENDESK_URLS.SECRET_RECOVERY_PHRASE}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('revealSeedWordsSRPName')}
+                </Button>,
+              ])
+            : t('revealSeedWordsDescription')}
+        </Text>
+      )}
+      {screen === PASSWORD_PROMPT_SCREEN && renderWarning()}
       {renderContent()}
       {renderFooter()}
-      <HoldToRevealModal
-        isOpen={isShowingHoldModal}
-        onClose={() => {
-          trackEvent({
-            category: MetaMetricsEventCategory.Keys,
-            event: MetaMetricsEventName.SrpHoldToRevealCloseClicked,
-            properties: {
-              key_type: MetaMetricsEventKeyType.Srp,
-            },
-          });
-          setIsShowingHoldModal(false);
-        }}
-        onLongPressed={() => {
-          setCompletedLongPress(true);
-          setIsShowingHoldModal(false);
-          setScreen(REVEAL_SEED_SCREEN);
-        }}
-        holdToRevealType="SRP"
-      />
+      {showSuccessToast && (
+        <ToastContainer>
+          <Toast
+            text={t('copiedToClipboard')}
+            onClose={() => setShowSuccessToast(false)}
+            autoHideTime={5000}
+            onAutoHideToast={() => setShowSuccessToast(false)}
+            dataTestId="disconnect-all-success-toast"
+          />
+        </ToastContainer>
+      )}
     </Box>
   );
 }

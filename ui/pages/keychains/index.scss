@@ -95,3 +95,11 @@
     height: 100%;
   }
 }
+
+.recovery-phrase-chips-container {
+  background-color: transparent;
+  & > :first-child {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+}
