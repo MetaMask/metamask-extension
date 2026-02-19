@@ -1,4 +1,3 @@
-/* eslint-disable mocha/no-skipped-tests */
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -17,8 +16,7 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   ];
 }
 
-// Skipped as this will be supported in the new swap flow in the future
-describe.skip('Swaps - notifications', function () {
+describe('Swaps - notifications', function () {
   async function mockTradesApiPriceSlippageError(mockServer: Mockttp) {
     await mockServer
       .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
