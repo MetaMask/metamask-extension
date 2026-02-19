@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { WINDOW_TITLES } from '../constants';
@@ -12,7 +12,7 @@ describe('wallet_requestExecutionPermissions', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -67,7 +67,7 @@ describe('wallet_requestExecutionPermissions', function () {
           ),
           {
             message:
-              'Cannot process requests while a wallet_requestExecutionPermissions request is in process',
+              /Cannot process requests while a wallet_requestExecutionPermissions request is in process/u,
           },
         );
 
