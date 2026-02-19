@@ -12,7 +12,7 @@ import { toHex } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { MUSD_TOKEN_ADDRESS_BY_CHAIN } from '../../components/app/musd/constants';
+import { isMusdSupportedChain } from '../../components/app/musd/constants';
 import type { TokenWithFiatAmount } from '../../components/app/assets/types';
 import {
   type Asset,
@@ -266,14 +266,15 @@ export function useMusdConversionTokens(): UseMusdConversionTokensResult {
   );
 
   /**
-   * Check if mUSD is supported on a given chain
+   * Check if mUSD is supported on a given chain.
+   * Delegates to isMusdSupportedChain from constants after normalizing chainId to hex.
    */
   const isMusdSupportedOnChain = useCallback((chainId?: string): boolean => {
     if (!chainId) {
       return false;
     }
-    const hexChainId = toHex(chainId);
-    return Object.keys(MUSD_TOKEN_ADDRESS_BY_CHAIN).includes(hexChainId);
+    const hexChainId = safeFormatChainIdToHex(chainId);
+    return isMusdSupportedChain(hexChainId);
   }, []);
 
   /**

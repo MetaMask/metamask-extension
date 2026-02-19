@@ -404,6 +404,15 @@ describe('useMusdConversionTokens', () => {
       expect(result.current.isMusdSupportedOnChain('0xe708')).toBe(true);
     });
 
+    it('returns true for supported chain when chain ID has uppercase hex digits', () => {
+      const { result } = renderHook(() => useMusdConversionTokens(), {
+        wrapper: createWrapper(),
+      });
+
+      expect(result.current.isMusdSupportedOnChain('0xE708')).toBe(true);
+      expect(result.current.isMusdSupportedOnChain('0x1')).toBe(true);
+    });
+
     it('returns false for unsupported chain', () => {
       const { result } = renderHook(() => useMusdConversionTokens(), {
         wrapper: createWrapper(),
