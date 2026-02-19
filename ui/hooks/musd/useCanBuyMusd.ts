@@ -2,18 +2,27 @@
  * useCanBuyMusd Hook
  *
  * Single source of truth for whether the user can buy mUSD in their region.
- * Composes geo-blocking, network buyability, and ramp region availability
- * checks so callers don't need to assemble these conditions themselves.
+ * Composes geo-blocking and ramp token availability (per-chain) so callers
+ * don't need to assemble these conditions themselves.
  */
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import type { Hex } from '@metamask/utils';
 import { useMusdGeoBlocking } from './useMusdGeoBlocking';
 import { useMusdNetworkFilter } from './useMusdNetworkFilter';
-import { MUSD_BUYABLE_CHAIN_IDS } from '../../components/app/musd/constants';
+import {
+  MUSD_BUYABLE_CHAIN_IDS,
+  MUSD_TOKEN_ASSET_ID_BY_CHAIN,
+} from '../../components/app/musd/constants';
 
 // ============================================================================
 // Token Cache API
 // ============================================================================
+
+export type RampToken = {
+  assetId?: string;
+  tokenSupported?: boolean;
+};
 
 const isProdEnv = process.env.NODE_ENV === 'production';
 const PROD_TOKEN_CACHE_BASE_URL = 'https://on-ramp-cache.api.cx.metamask.io';
@@ -28,25 +37,25 @@ const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes
 
 export const regionTokenCache = {
   country: null as string | null,
-  hasTokens: false,
+  tokens: [] as RampToken[],
   timestamp: null as number | null,
 };
 
 /**
- * Checks the on-ramp token cache API to determine whether ramp buying
- * is available in the given country. Results are cached for 5 minutes.
+ * Fetches the token list from the on-ramp token cache API for a given country.
+ * Results are cached for 5 minutes.
  *
- * Fail closed: returns false on any error or empty response.
+ * Fail closed: returns [] on any error or empty response.
  */
-export async function fetchRegionBuySupport(
+export async function fetchRegionTokens(
   country: string,
-): Promise<boolean> {
+): Promise<RampToken[]> {
   if (
     regionTokenCache.country === country &&
     regionTokenCache.timestamp &&
     Date.now() - regionTokenCache.timestamp < CACHE_DURATION_MS
   ) {
-    return regionTokenCache.hasTokens;
+    return regionTokenCache.tokens;
   }
 
   try {
@@ -63,30 +72,27 @@ export async function fetchRegionBuySupport(
     }
 
     const data = (await response.json()) as {
-      topTokens?: unknown[];
-      allTokens?: unknown[];
+      allTokens?: RampToken[];
     };
 
-    const hasTokens =
-      (data.topTokens?.length ?? 0) > 0 ||
-      (data.allTokens?.length ?? 0) > 0;
+    const tokens: RampToken[] = data.allTokens ?? [];
 
     regionTokenCache.country = country;
-    regionTokenCache.hasTokens = hasTokens;
+    regionTokenCache.tokens = tokens;
     regionTokenCache.timestamp = Date.now();
 
-    return hasTokens;
+    return tokens;
   } catch {
     regionTokenCache.country = country;
-    regionTokenCache.hasTokens = false;
+    regionTokenCache.tokens = [];
     regionTokenCache.timestamp = Date.now();
-    return false;
+    return [];
   }
 }
 
 export function clearRegionTokenCache(): void {
   regionTokenCache.country = null;
-  regionTokenCache.hasTokens = false;
+  regionTokenCache.tokens = [];
   regionTokenCache.timestamp = null;
 }
 
@@ -95,8 +101,14 @@ export function clearRegionTokenCache(): void {
 // ============================================================================
 
 export type UseCanBuyMusdResult = {
-  /** Whether the user can buy mUSD (not geo-blocked, buyable chain enabled, and ramps available in region) */
+  /** Whether the user can buy mUSD given geo-blocking and current network selection */
   canBuyMusdInRegion: boolean;
+  /** Per-chain mUSD buyability based on ramp token list */
+  isMusdBuyableOnChain: Record<Hex, boolean>;
+  /** Whether mUSD is buyable on any supported chain */
+  isMusdBuyableOnAnyChain: boolean;
+  /** Whether mUSD is buyable given the current network filter (selected chain or popular networks) */
+  isMusdBuyable: boolean;
   /** Whether any async check is still in progress */
   isLoading: boolean;
 };
@@ -104,46 +116,82 @@ export type UseCanBuyMusdResult = {
 /**
  * Determines whether the current user can buy mUSD.
  *
- * The user can buy when all conditions are met:
+ * The user can buy when both conditions are met:
  * 1. They are not in a geo-blocked region.
- * 2. At least one of their enabled chains supports mUSD buy routes.
- * 3. The ramps aggregator serves their country (token cache API returns tokens).
+ * 2. mUSD is available via ramp on at least one supported chain
+ *    (verified against the token cache API using CAIP-19 asset IDs).
  */
 export function useCanBuyMusd(): UseCanBuyMusdResult {
   const { isBlocked, isLoading: geoIsLoading, userCountry } =
     useMusdGeoBlocking();
-  const { enabledChainIds } = useMusdNetworkFilter();
+  const { selectedChainId, isPopularNetworksFilterActive } =
+    useMusdNetworkFilter();
 
-  const [isRampBuyAvailable, setIsRampBuyAvailable] = useState(false);
+  const [rampTokens, setRampTokens] = useState<RampToken[]>([]);
   const [rampIsLoading, setRampIsLoading] = useState(true);
 
-  const checkRampRegion = useCallback(async (country: string) => {
+  const loadRegionTokens = useCallback(async (country: string) => {
     setRampIsLoading(true);
-    const available = await fetchRegionBuySupport(country);
-    setIsRampBuyAvailable(available);
+    const tokens = await fetchRegionTokens(country);
+    setRampTokens(tokens);
     setRampIsLoading(false);
   }, []);
 
   useEffect(() => {
     if (!userCountry) {
-      setIsRampBuyAvailable(false);
+      setRampTokens([]);
       setRampIsLoading(false);
       return;
     }
-    checkRampRegion(userCountry);
-  }, [userCountry, checkRampRegion]);
+    loadRegionTokens(userCountry);
+  }, [userCountry, loadRegionTokens]);
 
-  const isMusdBuyableOnAnyEnabledChain = useMemo(
-    () =>
-      enabledChainIds.some((chainId) =>
-        MUSD_BUYABLE_CHAIN_IDS.includes(chainId),
-      ),
-    [enabledChainIds],
+  const isMusdBuyableOnChain = useMemo(() => {
+    const buyableByChain: Record<Hex, boolean> = {};
+
+    for (const chainId of MUSD_BUYABLE_CHAIN_IDS) {
+      const musdAssetId = MUSD_TOKEN_ASSET_ID_BY_CHAIN[chainId];
+      if (!musdAssetId) {
+        buyableByChain[chainId] = false;
+        continue;
+      }
+
+      buyableByChain[chainId] = rampTokens.some(
+        (token) =>
+          token.assetId?.toLowerCase() === musdAssetId.toLowerCase() &&
+          token.tokenSupported === true,
+      );
+    }
+
+    return buyableByChain;
+  }, [rampTokens]);
+
+  const isMusdBuyableOnAnyChain = useMemo(
+    () => Object.values(isMusdBuyableOnChain).some(Boolean),
+    [isMusdBuyableOnChain],
   );
 
+  // Resolve buyability against the current network filter state
+  const isMusdBuyable = useMemo(() => {
+    if (isPopularNetworksFilterActive) {
+      return isMusdBuyableOnAnyChain;
+    }
+    if (selectedChainId) {
+      return isMusdBuyableOnChain[selectedChainId] ?? false;
+    }
+    return false;
+  }, [
+    isPopularNetworksFilterActive,
+    selectedChainId,
+    isMusdBuyableOnChain,
+    isMusdBuyableOnAnyChain,
+  ]);
+
   return {
-    canBuyMusdInRegion:
-      !isBlocked && isMusdBuyableOnAnyEnabledChain && isRampBuyAvailable,
+    canBuyMusdInRegion: !isBlocked && isMusdBuyable,
+    isMusdBuyableOnChain,
+    isMusdBuyableOnAnyChain,
+    isMusdBuyable,
     isLoading: geoIsLoading || rampIsLoading,
   };
 }
