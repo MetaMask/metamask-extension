@@ -7,10 +7,23 @@ import { backupAndSyncFeaturesTogglesTestIds } from '../../../components/app/ide
 import { backupAndSyncToggleTestIds } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
 import BackupAndSyncTab from './backup-and-sync-tab';
 
-const render = () => {
+const defaultState = {
+  metamask: {
+    ...mockState.metamask,
+  },
+};
+
+type StateOverrides = {
+  metamask?: Record<string, unknown>;
+};
+
+const render = (stateOverrides: StateOverrides = {}) => {
   const store = configureStore({
+    ...defaultState,
+    ...stateOverrides,
     metamask: {
-      ...mockState.metamask,
+      ...defaultState.metamask,
+      ...(stateOverrides.metamask ?? {}),
     },
   });
   const comp = <BackupAndSyncTab />;
@@ -34,11 +47,22 @@ describe('BackupAndSyncTab', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders the features toggles section', () => {
-    const { getByTestId } = render();
+  it('renders the features toggles section when backup and sync is enabled', () => {
+    const { getByTestId } = render({
+      metamask: { isBackupAndSyncEnabled: true },
+    });
     expect(
       getByTestId(backupAndSyncFeaturesTogglesTestIds.container),
     ).toBeInTheDocument();
+  });
+
+  it('does not render the features toggles section when backup and sync is disabled', () => {
+    const { queryByTestId } = render({
+      metamask: { isBackupAndSyncEnabled: false },
+    });
+    expect(
+      queryByTestId(backupAndSyncFeaturesTogglesTestIds.container),
+    ).not.toBeInTheDocument();
   });
 
   it('renders layout with settings-page__body class', () => {

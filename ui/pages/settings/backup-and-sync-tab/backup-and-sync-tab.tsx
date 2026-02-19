@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
   Box,
   BoxBorderColor,
@@ -11,15 +11,19 @@ import {
 import { BackupAndSyncFeaturesToggles } from '../../../components/app/identity/backup-and-sync-features-toggles/backup-and-sync-features-toggles';
 import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useSelector } from 'react-redux';
+import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 
 const BackupAndSyncTab = () => {
   const t = useI18nContext();
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
-  const settingsRefs = Array(
-    getNumberOfSettingRoutesInTab(t, t('backupAndSync')),
-  )
-    .fill(undefined)
-    .map(() => React.createRef<HTMLSpanElement>());
+  const settingsRefs = useMemo(() => {
+    const count = getNumberOfSettingRoutesInTab(t, t('backupAndSync'));
+    return Array(count)
+      .fill(undefined)
+      .map(() => React.createRef<HTMLSpanElement>());
+  }, [t]);
 
   useEffect(() => {
     handleSettingsRefs(t, t('backupAndSync'), settingsRefs);
@@ -40,7 +44,9 @@ const BackupAndSyncTab = () => {
         borderWidth={1}
         className="w-full h-px border-b-0"
       />
-      <BackupAndSyncFeaturesToggles />
+      {isBackupAndSyncEnabled && (
+        <BackupAndSyncFeaturesToggles />
+      )}
     </Box>
   );
 };
