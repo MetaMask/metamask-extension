@@ -285,7 +285,7 @@
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^8.0.0",
     "@metamask/assets-controller": "patch:@metamask/assets-controller@npm%3A2.0.0#~/.yarn/patches/@metamask-assets-controller-npm-2.0.0-b7d63f0148.patch",
-    "@metamask/assets-controllers": "^99.3.1",
+    "@metamask/assets-controllers": "^99.4.0",
     "@metamask/base-controller": "^9.0.0",
     "@metamask/bitcoin-wallet-snap": "^1.10.0",
     "@metamask/bridge-controller": "^65.3.0",
