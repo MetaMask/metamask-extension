@@ -54,9 +54,9 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
 
+        await assetListPage.clickOnAsset('Solana');
         // Measure: Asset click to price chart loaded
         await timer.measure(async () => {
-          await assetListPage.clickOnAsset('Solana');
           await assetListPage.checkPriceChartIsShown();
           await assetListPage.checkPriceChartLoaded(SOL_TOKEN_ADDRESS);
         });

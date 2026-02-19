@@ -4,10 +4,12 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import {
+  DEVICE_TYPE,
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
+  OS,
   PLATFORM_BRAVE,
   PLATFORM_CHROME,
   PLATFORM_CHROMIUM,
@@ -37,7 +39,9 @@ import {
   shouldEmitDappViewedEvent,
   addUrlProtocolPrefix,
   formatTxMetaForRpcResult,
+  getDeviceType,
   getEnvironmentType,
+  getOs,
   getPlatform,
   getValidUrl,
   isWebUrl,
@@ -490,6 +494,122 @@ describe('app utils', () => {
         // Should return the brand name as-is for analytics discovery
         expect(getPlatform()).toStrictEqual('DiscoveredBrowser');
       });
+    });
+  });
+
+  describe('getDeviceType', () => {
+    const setNavigator = ({ userAgentData, userAgent }) => {
+      Object.defineProperty(window.navigator, 'userAgentData', {
+        value: userAgentData,
+        writable: true,
+        configurable: true,
+      });
+      if (userAgent !== undefined) {
+        jest
+          .spyOn(window.navigator, 'userAgent', 'get')
+          .mockReturnValue(userAgent);
+      }
+    };
+
+    it.each([
+      [true, DEVICE_TYPE.MOBILE],
+      [false, DEVICE_TYPE.DESKTOP],
+    ])('when userAgentData.mobile is %s, returns %s', (mobile, expected) => {
+      setNavigator({ userAgentData: { mobile } });
+      expect(getDeviceType()).toStrictEqual(expected);
+    });
+
+    it.each([
+      [
+        'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/91.0 Mobile Safari/537.36',
+        DEVICE_TYPE.MOBILE,
+      ],
+      [
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15',
+        DEVICE_TYPE.MOBILE,
+      ],
+      [
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/94.0.4606.81 Safari/537.36',
+        DEVICE_TYPE.DESKTOP,
+      ],
+    ])(
+      'falls back to UA when userAgentData is missing',
+      (userAgent, expected) => {
+        setNavigator({ userAgentData: undefined, userAgent });
+        expect(getDeviceType()).toStrictEqual(expected);
+      },
+    );
+  });
+
+  describe('getOs', () => {
+    const setNavigator = ({ userAgentData, userAgent, platform }) => {
+      Object.defineProperty(window.navigator, 'userAgentData', {
+        value: userAgentData,
+        writable: true,
+        configurable: true,
+      });
+      if (userAgent !== undefined) {
+        jest
+          .spyOn(window.navigator, 'userAgent', 'get')
+          .mockReturnValue(userAgent);
+      }
+      if (platform !== undefined) {
+        jest
+          .spyOn(window.navigator, 'platform', 'get')
+          .mockReturnValue(platform);
+      }
+    };
+
+    it.each([
+      ['Windows', OS.WINDOWS],
+      ['macOS', OS.MACOS],
+      ['Linux', OS.LINUX],
+      ['Android', OS.ANDROID],
+    ])(
+      'returns %s when userAgentData.platform is "%s"',
+      (platform, expected) => {
+        setNavigator({ userAgentData: { platform } });
+        expect(getOs()).toStrictEqual(expected);
+      },
+    );
+
+    it('returns Other for unknown userAgentData.platform string', () => {
+      setNavigator({ userAgentData: { platform: 'UnknownOS' } });
+      expect(getOs()).toStrictEqual(OS.OTHER);
+    });
+
+    it.each([
+      [
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/94.0.4606.81',
+        OS.WINDOWS,
+      ],
+      [
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/94.0.4606.81 Safari/537.36',
+        OS.MACOS,
+      ],
+      [
+        'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/91.0 Mobile Safari/537.36',
+        OS.ANDROID,
+      ],
+      [
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15',
+        OS.IOS,
+      ],
+    ])(
+      'falls back to UA when userAgentData is missing',
+      (userAgent, expected) => {
+        setNavigator({ userAgentData: undefined, userAgent });
+        expect(getOs()).toStrictEqual(expected);
+      },
+    );
+
+    it('returns unknown when userAgentData is missing and UA cannot be parsed', () => {
+      setNavigator({
+        userAgentData: undefined,
+        userAgent: '',
+        platform: '',
+      });
+      expect(getOs()).toStrictEqual(OS.UNKNOWN);
     });
   });
 
