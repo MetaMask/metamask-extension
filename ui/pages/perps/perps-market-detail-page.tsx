@@ -27,6 +27,12 @@ import {
   ButtonSize,
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
+import type {
+  CandleStick,
+  OrderType,
+  OrderParams,
+  PriceUpdate,
+} from '@metamask/perps-controller';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -75,12 +81,6 @@ import {
   BorderRadius,
   BackgroundColor,
 } from '../../helpers/constants/design-system';
-import type {
-  CandleStick,
-  OrderType,
-  OrderParams,
-  PriceUpdate,
-} from '@metamask/perps-controller';
 
 /**
  * Calculate the funding countdown string (time until next UTC hour).
