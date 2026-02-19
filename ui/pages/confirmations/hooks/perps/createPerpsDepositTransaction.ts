@@ -15,7 +15,7 @@ export async function createPerpsDepositTransaction({
 }: CreatePerpsDepositTransactionParams): Promise<CreatedPerpsDepositTransaction> {
   const controller = await getPerpsController(fromAddress);
 
-  await controller.depositWithConfirmation({ amount });
+  await controller.depositWithConfirmation(amount);
 
   const transactionId = controller.state.lastDepositTransactionId;
 

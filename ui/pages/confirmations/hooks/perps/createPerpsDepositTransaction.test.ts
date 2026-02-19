@@ -27,7 +27,7 @@ describe('createPerpsDepositTransaction', () => {
     });
 
     expect(mockGetPerpsController).toHaveBeenCalledWith('0xabc123');
-    expect(depositWithConfirmation).toHaveBeenCalledWith({ amount: '0.5' });
+    expect(depositWithConfirmation).toHaveBeenCalledWith('0.5');
     expect(result).toStrictEqual({ transactionId: 'tx-123' });
   });
 
@@ -45,6 +45,6 @@ describe('createPerpsDepositTransaction', () => {
     ).rejects.toThrow(
       'Perps deposit transaction was not created by controller deposit flow',
     );
-    expect(depositWithConfirmation).toHaveBeenCalledWith({ amount: undefined });
+    expect(depositWithConfirmation).toHaveBeenCalledWith(undefined);
   });
 });
