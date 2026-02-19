@@ -39,6 +39,10 @@ import {
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
 } from './transactions';
+import {
+  getCurrencyRateControllerCurrencyRates,
+  getCurrencyRateControllerCurrentCurrency,
+} from './assets-migration';
 
 const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
 
@@ -107,9 +111,10 @@ export const unconfirmedMessagesHashSelector = createSelector(
 export const getUse4ByteResolution = (state) =>
   state.metamask.use4ByteResolution;
 export const currentCurrencySelector = (state) =>
-  state.metamask.currentCurrency;
+  getCurrencyRateControllerCurrentCurrency(state);
 export const conversionRateSelector = (state) =>
-  state.metamask.currencyRates[getProviderConfig(state).ticker]?.conversionRate;
+  getCurrencyRateControllerCurrencyRates(state)[getProviderConfig(state).ticker]
+    ?.conversionRate;
 export const txDataSelector = (state) => state.confirmTransaction.txData;
 
 const txParamsSelector = createSelector(

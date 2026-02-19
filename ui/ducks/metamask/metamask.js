@@ -25,6 +25,7 @@ import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { getCurrencyRateControllerCurrentCurrency } from '../../selectors/assets-migration';
 
 const initialState = {
   isInitialized: false,
@@ -312,18 +313,63 @@ export function getNativeCurrency(state) {
   return getProviderConfig(state).ticker;
 }
 
+// TODO: UPDATE
 export function getConversionRate(state) {
   return state.metamask.currencyRates[getProviderConfig(state).ticker]
     ?.conversionRate;
 }
 
+// TODO: UPDATE
 export function getConversionRateByTicker(state, ticker) {
   return state.metamask.currencyRates[ticker]?.conversionRate;
 }
 
+// TODO: UPDATE
 export function getCurrencyRates(state) {
   return state.metamask.currencyRates;
 }
+
+// function getCurrencyRateControllerCurrencyRates({ metamask }) {
+//   if (!isAssetsUnifyStateEnabled) {
+//     return currencyRates;
+//   }
+
+//   const result = {};
+
+//   const allNativeAssets = Object.entries(assetsInfo)
+//     .filter(([assetId, metadata]) => {
+//       const assetType = parseCaipAssetType(assetId);
+
+//       return (
+//         metadata.type === 'native' &&
+//         assetType.chain.namespace === KnownCaipNamespace.Eip155 &&
+//         // This is a hack to handle the fact that ETH is the native asset for many chains, but the one from mainnet is used as reference here
+//         (!['ETH'].includes(metadata.symbol) ||
+//           (metadata.symbol === 'ETH' && assetType.chain.reference === '1'))
+//       );
+//     })
+//     .map(([assetId, metadata]) => {
+//       return {
+//         assetId,
+//         symbol: metadata.symbol,
+//       };
+//     });
+
+//   for (const { assetId, symbol } of allNativeAssets) {
+//     const price = assetsPrice[assetId];
+//     if (!price) {
+//       continue;
+//     }
+
+//     result[symbol] = {
+//       conversionDate: price.lastUpdated / 1000,
+//       conversionRate: price.price,
+//       usdConversionRate: null,
+//     };
+//   }
+
+//   return result;
+// }
 
 export function getSendHexDataFeatureFlagState(state) {
   return state.metamask.featureFlags.sendHexData;
@@ -633,9 +679,7 @@ export function doesUserHaveALedgerAccount(state) {
  * @param {object} state - Redux state
  * @returns {string} The current fiat currency code
  */
-export function getCurrentCurrency(state) {
-  return state.metamask.currentCurrency;
-}
+export { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency };
 
 /**
  * Returns a boolean indicating whether the user opened the extension with the sidepanel.

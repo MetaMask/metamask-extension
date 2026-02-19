@@ -179,8 +179,10 @@ import {
 } from './transactions';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 import {
-  getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
+  getAccountTrackerControllerAccountsByChainId,
+  getCurrencyRateControllerCurrencyRates,
+  getTokenRatesControllerMarketData,
 } from './assets-migration';
 
 /**
@@ -1141,7 +1143,7 @@ export function getSelectedAccountCachedBalance(state) {
 // ui/pages/confirmations/components/confirm/info/hooks/useTokenDetails.ts (1)
 // ui/hooks/useAccountTotalFiatBalance.js (1)
 // ui/hooks/useGetFormattedTokensPerChain.ts (1)
-export { getTokensControllerAllTokens as getAllTokens } from './assets-migration';
+export { getTokensControllerAllTokens as getAllTokens };
 
 // TODO Unified Assets Controller State Access (2)
 // Uses: getAllTokens
@@ -1208,7 +1210,7 @@ export function getTargetAccount(state, targetAddress) {
 // ui/components/ui/token-input/token-input.container.js (1)
 export const getTokenExchangeRates = createSelector(
   (state) => getCurrentChainId(state),
-  (state) => state.metamask.marketData,
+  getTokenRatesControllerMarketData,
   (chainId, marketData) => {
     const contractMarketData = marketData?.[chainId] ?? {};
     return Object.entries(contractMarketData).reduce(
@@ -1226,7 +1228,7 @@ export const getTokenExchangeRates = createSelector(
 // References
 // ui/hooks/useAccountTotalCrossChainFiatBalance.ts (1)
 export const getCrossChainTokenExchangeRates = (state) => {
-  const contractMarketData = state.metamask.marketData ?? {};
+  const contractMarketData = getTokenRatesControllerMarketData(state) ?? {};
 
   return Object.keys(contractMarketData).reduce((acc, topLevelKey) => {
     acc[topLevelKey] = Object.keys(contractMarketData[topLevelKey]).reduce(
@@ -1254,7 +1256,7 @@ export const getCrossChainTokenExchangeRates = (state) => {
  */
 export const getTokensMarketData = (state) => {
   const chainId = getCurrentChainId(state);
-  return state.metamask.marketData?.[chainId];
+  return getTokenRatesControllerMarketData(state)?.[chainId];
 };
 
 // TODO Unified Assets Controller State Access (1)
@@ -1270,9 +1272,7 @@ export const getTokensMarketData = (state) => {
 // ui/pages/asset/components/asset-market-details.tsx (1)
 // ui/pages/asset/hooks/useCurrentPrice.ts (1)
 // ui/hooks/useTokenFiatAmount.js (1)
-export const getMarketData = (state) => {
-  return state.metamask.marketData;
-};
+export { getTokenRatesControllerMarketData as getMarketData };
 
 export function getAddressBook(state) {
   const chainId = getCurrentChainId(state);
@@ -1464,7 +1464,8 @@ export const selectConversionRateByChainId = createSelector(
     }
 
     const { nativeCurrency } = networkConfiguration;
-    return state.metamask.currencyRates[nativeCurrency]?.conversionRate;
+    return getCurrencyRateControllerCurrencyRates(state)[nativeCurrency]
+      ?.conversionRate;
   },
 );
 
@@ -1722,7 +1723,8 @@ export function getShouldShowFiat(state, chainId) {
       CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId] ??
       CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION[chainId] ??
       selectNetworkConfigurationByChainId(state, chainId)?.nativeCurrency;
-    conversionRate = getCurrencyRates(state)?.[ticker]?.conversionRate;
+    conversionRate =
+      getCurrencyRateControllerCurrencyRates(state)?.[ticker]?.conversionRate;
   } else {
     currentChainId = getCurrentChainId(state);
     conversionRate = getConversionRate(state);
@@ -2074,8 +2076,9 @@ export function getUseExternalServices(state) {
 // ui/pages/confirmations/components/simulation-details/useBalanceChanges.ts (1)
 // ui/hooks/useAccountTotalFiatBalance.js (1)
 export function getUSDConversionRate(state) {
-  return state.metamask.currencyRates[getProviderConfig(state).ticker]
-    ?.usdConversionRate;
+  return getCurrencyRateControllerCurrencyRates(state)[
+    getProviderConfig(state).ticker
+  ]?.usdConversionRate;
 }
 
 // TODO Unified Assets Controller State Access (2)
@@ -2084,7 +2087,7 @@ export function getUSDConversionRate(state) {
 // ui/pages/confirmations/components/simulation-details/useBalanceChanges.ts (1)
 export const getUSDConversionRateByChainId = (chainId) =>
   createSelector(
-    getCurrencyRates,
+    getCurrencyRateControllerCurrencyRates,
     (state) => selectNetworkConfigurationByChainId(state, chainId),
     (currencyRates, networkConfiguration) => {
       if (!networkConfiguration) {
@@ -2110,9 +2113,7 @@ export const getUSDConversionRateByChainId = (chainId) =>
 // ui/pages/asset/hooks/useCurrentPrice.ts (1)
 // ui/hooks/useAccountTotalCrossChainFiatBalance.ts (1)
 // ui/hooks/useTokenFiatAmount.js (1)
-export function getCurrencyRates(state) {
-  return state.metamask.currencyRates;
-}
+export { getCurrencyRateControllerCurrencyRates as getCurrencyRates };
 
 export function getWeb3ShimUsageStateForOrigin(state, origin) {
   return state.metamask.web3ShimUsageOrigins[origin];

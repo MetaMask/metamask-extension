@@ -7,7 +7,10 @@ import {
 } from '@metamask/utils';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { AssetsControllerState } from '@metamask/assets-controller';
+import {
+  AssetsControllerState,
+  FungibleAssetPrice,
+} from '@metamask/assets-controller';
 import {
   Token,
   TokenBalancesControllerState,
@@ -16,6 +19,9 @@ import {
   MultichainAssetsControllerState,
   MultichainBalancesControllerState,
   CurrencyRateState,
+  TokenRatesControllerState,
+  MarketDataDetails,
+  MultichainAssetsRatesControllerState,
 } from '@metamask/assets-controllers';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
@@ -29,18 +35,18 @@ import { getIsAssetsUnifyStateEnabled } from './assets-unify-state/feature-flags
 //
 // TokensController
 // allTokens: DONE
-// allIgnoredTokens: DONE *Alays empty because not yet plugged in client*
+// allIgnoredTokens: DONE
 // allDetectedTokens: TODO (is this even used? Can it be removed?)
 //
 // TokenBalancesController
 // tokenBalances: DONE
 //
-// TokenRatesController
-// marketData: TODO (requires, for each evm asset, the price in the native currency asset for that chain)
-//
 // CurrencyRateController
-// currencyRates: DONE *Wrong implementation for usdConversionRate
+// currencyRates: DONE
 // currentCurrency: DONE
+//
+// TokenRatesController
+// marketData: DONE
 //
 // MultichainAssetsController
 // accountsAssets: DONE
@@ -51,7 +57,7 @@ import { getIsAssetsUnifyStateEnabled } from './assets-unify-state/feature-flags
 // balances: DONE
 //
 // MultichainAssetsRatesController
-// conversionRates: TODO (requires, for each non-evm asset, the conversion rate to the current currency)
+// conversionRates: DONE
 // historicalPrices: TODO (we should probably stop using this as state and fetch it whenever is needed)
 //
 // TokenListController
@@ -489,6 +495,7 @@ export const getCurrencyRateControllerCurrentCurrency = createDeepEqualSelector(
   },
 );
 
+// Native Symbol -> Rates (conversionRate, usdConversionRate, conversionDate)
 export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
@@ -525,8 +532,6 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
         };
       });
 
-    console.log('DEBUG ALL NATIVE ASSETS', { allNativeAssets });
-
     for (const { assetId, symbol } of allNativeAssets) {
       const price = assetsPrice[assetId];
       if (!price) {
@@ -536,15 +541,155 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
       result[symbol] = {
         conversionDate: price.lastUpdated / 1000,
         conversionRate: price.price,
-        usdConversionRate: price.price,
+        usdConversionRate: null,
       };
     }
-
-    console.log('DEBUG CURRENCY RATES', { result });
 
     return result;
   },
 );
+
+// ChainId (hex) -> TokenAddress (hex checksummed) -> MarketData
+export const getTokenRatesControllerMarketData = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: { metamask: TokenRatesControllerState }) =>
+      state.metamask.marketData ?? {},
+    (state: MetaMaskAssetsControllerState) => state.metamask.assetsPrice ?? {},
+    (state: MetaMaskAssetsControllerState) => state.metamask.assetsInfo ?? {},
+    getCurrencyRateControllerCurrencyRates,
+  ],
+  (
+    isAssetsUnifyStateEnabled,
+    marketData,
+    assetsPrice,
+    assetsInfo,
+    currencyRates,
+  ) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return marketData;
+    }
+
+    const result: TokenRatesControllerState['marketData'] = {};
+
+    for (const [assetId, price] of Object.entries(assetsPrice) as [
+      CaipAssetType,
+      FungibleAssetPrice,
+    ][]) {
+      const assetType = parseCaipAssetType(assetId as CaipAssetType);
+      const metadata = assetsInfo[assetId];
+      if (
+        !metadata ||
+        assetType.chain.namespace !== KnownCaipNamespace.Eip155
+      ) {
+        continue;
+      }
+
+      const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
+      const nativeAsset = getNativeAssetForChainId(hexChainId);
+
+      const assetAddress = (
+        metadata.type === 'native'
+          ? nativeAsset.address
+          : toChecksumHexAddress(assetType.assetReference)
+      ) as Hex;
+
+      const nativeCurrencyRate =
+        currencyRates[nativeAsset.symbol]?.conversionRate;
+      if (!nativeCurrencyRate) {
+        continue;
+      }
+
+      const convertToNativeCurrency = (amount: number | undefined) => {
+        return amount ? amount / nativeCurrencyRate : undefined;
+      };
+
+      (result[hexChainId] ??= {})[assetAddress] = {
+        id: price.id,
+        price: convertToNativeCurrency(price.price),
+        marketCap: convertToNativeCurrency(price.marketCap),
+        allTimeHigh: convertToNativeCurrency(price.allTimeHigh),
+        allTimeLow: convertToNativeCurrency(price.allTimeLow),
+        totalVolume: convertToNativeCurrency(price.totalVolume),
+        high1d: convertToNativeCurrency(price.high1d),
+        low1d: convertToNativeCurrency(price.low1d),
+        circulatingSupply: price.circulatingSupply,
+        dilutedMarketCap: convertToNativeCurrency(price.dilutedMarketCap),
+        marketCapPercentChange1d: price.marketCapPercentChange1d,
+        priceChange1d: price.priceChange1d,
+        pricePercentChange1h: price.pricePercentChange1h,
+        pricePercentChange1d: price.pricePercentChange1d,
+        pricePercentChange7d: price.pricePercentChange7d,
+        pricePercentChange14d: price.pricePercentChange14d,
+        pricePercentChange30d: price.pricePercentChange30d,
+        pricePercentChange200d: price.pricePercentChange200d,
+        pricePercentChange1y: price.pricePercentChange1y,
+        chainId: hexChainId,
+        tokenAddress: assetAddress,
+        assetId,
+        currency: nativeAsset.symbol,
+      } as MarketDataDetails;
+    }
+
+    return result;
+  },
+);
+
+export const getMultichainAssetsRatesControllerConversionRates =
+  createDeepEqualSelector(
+    [
+      getIsAssetsUnifyStateEnabled,
+      (state: { metamask: MultichainAssetsRatesControllerState }) =>
+        state.metamask.conversionRates ?? {},
+      (state: MetaMaskAssetsControllerState) =>
+        state.metamask.assetsPrice ?? {},
+    ],
+    (isAssetsUnifyStateEnabled, conversionRates, assetsPrice) => {
+      if (!isAssetsUnifyStateEnabled) {
+        return conversionRates;
+      }
+
+      const result: MultichainAssetsRatesControllerState['conversionRates'] =
+        {};
+
+      for (const [assetId, price] of Object.entries(assetsPrice) as [
+        CaipAssetType,
+        FungibleAssetPrice,
+      ][]) {
+        const assetType = parseCaipAssetType(assetId as CaipAssetType);
+        if (assetType.chain.namespace === KnownCaipNamespace.Eip155) {
+          continue;
+        }
+
+        result[assetId] = {
+          rate: `${price.price}`,
+          conversionTime: price.lastUpdated,
+          expirationTime: undefined,
+          marketData: {
+            fungible: true,
+            allTimeHigh: `${price.allTimeHigh}`,
+            allTimeLow: `${price.allTimeLow}`,
+            circulatingSupply: `${price.circulatingSupply}`,
+            marketCap: `${price.marketCap}`,
+            totalVolume: `${price.totalVolume}`,
+            pricePercentChange: {
+              PT1H: price.pricePercentChange1h as number,
+              P1D: price.pricePercentChange1d as number,
+              P7D: price.pricePercentChange7d as number,
+              P14D: price.pricePercentChange14d as number,
+              P30D: price.pricePercentChange30d as number,
+              P200D: price.pricePercentChange200d as number,
+              P1Y: price.pricePercentChange1y as number,
+            },
+          },
+        };
+      }
+
+      console.log('DEBUG CONVERSION RATES', { result, conversionRates });
+
+      return result;
+    },
+  );
 
 function parseBalanceWithDecimals(
   balanceString: string,
