@@ -237,6 +237,11 @@
         "document.visibilityState": true,
         "addEventListener": false
       }
+    },
+    "@tanstack/react-query>@tanstack/query-core": {
+      "globals": {
+        "document": false
+      }
     }
   }
 }
