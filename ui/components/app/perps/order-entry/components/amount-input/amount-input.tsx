@@ -24,6 +24,15 @@ import { calculatePositionSize } from '../../order-entry.mocks';
  *
  * Compact layout: "Size" label + "Available to trade XX USDC", two side-by-side
  * inputs (USD and token), slider with percentage pill. No preset buttons.
+ * @param options0
+ * @param options0.amount
+ * @param options0.onAmountChange
+ * @param options0.balancePercent
+ * @param options0.onBalancePercentChange
+ * @param options0.availableBalance
+ * @param options0.leverage
+ * @param options0.asset
+ * @param options0.currentPrice
  */
 export const AmountInput: React.FC<AmountInputProps> = ({
   amount,

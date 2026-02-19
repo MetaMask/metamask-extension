@@ -45,7 +45,9 @@ describe('AmountInput', () => {
     it('renders the token amount input field', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 
-      expect(screen.getByTestId('amount-input-token-field')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('amount-input-token-field'),
+      ).toBeInTheDocument();
     });
 
     it('renders the slider', () => {

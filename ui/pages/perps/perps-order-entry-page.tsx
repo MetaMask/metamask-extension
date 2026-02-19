@@ -57,6 +57,11 @@ import type {
 
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
+ *
+ * @param formState - Current order form state
+ * @param currentPrice - Current asset price in USD
+ * @param mode - Order mode (new, modify, close)
+ * @param existingPositionSize - Size of existing position when closing
  */
 function formStateToOrderParams(
   formState: OrderFormState,
@@ -120,7 +125,9 @@ const PerpsOrderEntryPage: React.FC = () => {
     usePerpsLiveMarketData();
 
   const decodedSymbol = useMemo(() => {
-    if (!symbol) return undefined;
+    if (!symbol) {
+      return undefined;
+    }
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
 
@@ -134,7 +141,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   const [orderType, setOrderType] = useState<OrderType>(
     (orderTypeParam === 'limit' ? 'limit' : 'market') as OrderType,
   );
-  const [orderMode, setOrderMode] = useState<OrderMode>(
+  const [orderMode] = useState<OrderMode>(
     (modeParam === 'modify' || modeParam === 'close'
       ? modeParam
       : 'new') as OrderMode,
@@ -151,7 +158,9 @@ const PerpsOrderEntryPage: React.FC = () => {
   const isOrderPending = isSubmitting || pendingOrderSymbol !== null;
 
   const isLimitPriceInvalid = useMemo(() => {
-    if (orderType !== 'limit' || !orderFormState) return false;
+    if (orderType !== 'limit' || !orderFormState) {
+      return false;
+    }
     const cleaned = orderFormState.limitPrice?.replace(/,/gu, '') ?? '';
     const parsed = parseFloat(cleaned);
     return !cleaned || isNaN(parsed) || parsed <= 0;
@@ -160,14 +169,18 @@ const PerpsOrderEntryPage: React.FC = () => {
   const isSubmitDisabled = !isEligible || isOrderPending || isLimitPriceInvalid;
 
   const market = useMemo(() => {
-    if (!decodedSymbol) return undefined;
+    if (!decodedSymbol) {
+      return undefined;
+    }
     return allMarkets.find(
       (m) => m.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
     );
   }, [decodedSymbol, allMarkets]);
 
   const position = useMemo(() => {
-    if (!decodedSymbol) return undefined;
+    if (!decodedSymbol) {
+      return undefined;
+    }
     return allPositions.find(
       (pos) => pos.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
     );
@@ -186,7 +199,9 @@ const PerpsOrderEntryPage: React.FC = () => {
     const subscribe = async () => {
       try {
         const controller = await getPerpsController(selectedAddress);
-        if (cancelled) return;
+        if (cancelled) {
+          return;
+        }
         unsubscribe = controller.subscribeToPrices({
           symbols: [decodedSymbol],
           includeMarketData: true,
@@ -231,7 +246,9 @@ const PerpsOrderEntryPage: React.FC = () => {
     const subscribe = async () => {
       try {
         const controller = await getPerpsController(selectedAddress);
-        if (cancelled) return;
+        if (cancelled) {
+          return;
+        }
         unsubscribe = controller.subscribeToOrderBook({
           symbol: decodedSymbol,
           levels: 1,
@@ -263,33 +280,43 @@ const PerpsOrderEntryPage: React.FC = () => {
   }, [decodedSymbol, selectedAddress]);
 
   const marketPrice = useMemo(() => {
-    if (!market) return 0;
+    if (!market) {
+      return 0;
+    }
     return parseFloat(market.price.replace(/[$,]/gu, ''));
   }, [market]);
 
   const currentPrice = useMemo(() => {
     if (livePrice?.markPrice) {
       const p = parseFloat(livePrice.markPrice);
-      if (!Number.isNaN(p) && p > 0) return p;
+      if (!Number.isNaN(p) && p > 0) {
+        return p;
+      }
     }
     if (livePrice?.price) {
       const p =
         typeof livePrice.price === 'string'
           ? parseFloat(livePrice.price)
           : livePrice.price;
-      if (!Number.isNaN(p) && p > 0) return p;
+      if (!Number.isNaN(p) && p > 0) {
+        return p;
+      }
     }
     return marketPrice;
   }, [livePrice, marketPrice]);
 
   const availableBalance = account ? parseFloat(account.availableBalance) : 0;
   const maxLeverage = useMemo(() => {
-    if (!market) return 50;
+    if (!market) {
+      return 50;
+    }
     return parseInt(market.maxLeverage.replace('x', ''), 10);
   }, [market]);
 
   const existingPositionForOrder = useMemo(() => {
-    if (!position) return undefined;
+    if (!position) {
+      return undefined;
+    }
     return {
       size: position.size,
       leverage: position.leverage.value,
@@ -300,7 +327,9 @@ const PerpsOrderEntryPage: React.FC = () => {
   }, [position]);
 
   const handleBackClick = useCallback(() => {
-    if (!decodedSymbol) return;
+    if (!decodedSymbol) {
+      return;
+    }
     navigate(
       `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(decodedSymbol)}`,
     );
@@ -311,7 +340,9 @@ const PerpsOrderEntryPage: React.FC = () => {
   }, []);
 
   const handleOrderSubmit = useCallback(async () => {
-    if (!isEligible || !orderFormState || !selectedAddress) return;
+    if (!isEligible || !orderFormState || !selectedAddress) {
+      return;
+    }
 
     setIsSubmitting(true);
     setSubmitError(null);
@@ -326,8 +357,9 @@ const PerpsOrderEntryPage: React.FC = () => {
           currentPrice,
         };
         const result = await controller.closePosition(closeParams);
-        if (!result.success)
+        if (!result.success) {
           throw new Error(result.error || 'Failed to close position');
+        }
       } else if (orderMode === 'modify' && position) {
         const cleanTp =
           orderFormState.autoCloseEnabled && orderFormState.takeProfitPrice
@@ -342,8 +374,9 @@ const PerpsOrderEntryPage: React.FC = () => {
           takeProfitPrice: cleanTp || undefined,
           stopLossPrice: cleanSl || undefined,
         });
-        if (!result.success)
+        if (!result.success) {
           throw new Error(result.error || 'Failed to update TP/SL');
+        }
       } else {
         const orderParams = formStateToOrderParams(
           orderFormState,
@@ -352,8 +385,9 @@ const PerpsOrderEntryPage: React.FC = () => {
           position?.size,
         );
         const result = await controller.placeOrder(orderParams);
-        if (!result.success)
+        if (!result.success) {
           throw new Error(result.error || 'Failed to place order');
+        }
 
         if (orderFormState.type === 'limit') {
           handleBackClick();
@@ -381,7 +415,9 @@ const PerpsOrderEntryPage: React.FC = () => {
   ]);
 
   useEffect(() => {
-    if (!pendingOrderSymbol) return;
+    if (!pendingOrderSymbol) {
+      return;
+    }
     const hasPosition = allPositions.some(
       (p) => p.symbol === pendingOrderSymbol,
     );
@@ -393,7 +429,9 @@ const PerpsOrderEntryPage: React.FC = () => {
   }, [pendingOrderSymbol, allPositions, handleBackClick]);
 
   useEffect(() => {
-    if (!pendingOrderSymbol) return undefined;
+    if (!pendingOrderSymbol) {
+      return undefined;
+    }
     const timeout = setTimeout(() => {
       setPendingOrderSymbol(null);
       setIsSubmitting(false);

@@ -332,9 +332,6 @@ const PerpsMarketDetailPage: React.FC = () => {
     [formatNumber],
   );
 
-  // Get available balance from account state
-  const availableBalance = account ? parseFloat(account.availableBalance) : 0;
-
   // Parse fallback price from market data (used before candle stream is ready)
   const marketPrice = useMemo(() => {
     if (!market) {
@@ -371,14 +368,6 @@ const PerpsMarketDetailPage: React.FC = () => {
   // TODO: When PerpsControllerProvider is available in the route tree,
   // subscribe to usePerpsLivePrices for live 24h change updates.
   const displayChange = market?.change24hPercent ?? '';
-
-  // Parse max leverage from market data (remove 'x')
-  const maxLeverage = useMemo(() => {
-    if (!market) {
-      return 50;
-    }
-    return parseInt(market.maxLeverage.replace('x', ''), 10);
-  }, [market]);
 
   // Get position direction for TP/SL calculations (default to long if no position)
   const positionDirection = useMemo(() => {
@@ -641,7 +630,9 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   const buildOrderEntryUrl = useCallback(
     (direction: 'long' | 'short', mode: 'new' | 'modify' | 'close') => {
-      if (!decodedSymbol) return '#';
+      if (!decodedSymbol) {
+        return '#';
+      }
       const params = new URLSearchParams({ direction, mode });
       return `${PERPS_ORDER_ENTRY_ROUTE}/${encodeURIComponent(decodedSymbol)}?${params.toString()}`;
     },
@@ -650,20 +641,26 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   const handleOpenOrder = useCallback(
     (direction: 'long' | 'short') => {
-      if (!isEligible || !decodedSymbol) return;
+      if (!isEligible || !decodedSymbol) {
+        return;
+      }
       navigate(buildOrderEntryUrl(direction, 'new'));
     },
     [isEligible, decodedSymbol, navigate, buildOrderEntryUrl],
   );
 
   const handleModifyPosition = useCallback(() => {
-    if (!isEligible || !position || !decodedSymbol) return;
+    if (!isEligible || !position || !decodedSymbol) {
+      return;
+    }
     const isLong = parseFloat(position.size) >= 0;
     navigate(buildOrderEntryUrl(isLong ? 'long' : 'short', 'modify'));
   }, [isEligible, position, decodedSymbol, navigate, buildOrderEntryUrl]);
 
   const handleClosePosition = useCallback(() => {
-    if (!isEligible || !position || !decodedSymbol) return;
+    if (!isEligible || !position || !decodedSymbol) {
+      return;
+    }
     const isLong = parseFloat(position.size) >= 0;
     navigate(buildOrderEntryUrl(isLong ? 'long' : 'short', 'close'));
   }, [isEligible, position, decodedSymbol, navigate, buildOrderEntryUrl]);
@@ -1052,644 +1049,523 @@ const PerpsMarketDetailPage: React.FC = () => {
 
       {/* Detail View Content */}
       <>
-          {/* Position Section */}
-          {position && (
-            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-              <Box paddingBottom={2}>
-                <Text
-                  variant={TextVariant.HeadingSm}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {t('perpsPosition')}
-                </Text>
-              </Box>
-
-              {/* Position Details Cards */}
-              <Box
-                flexDirection={BoxFlexDirection.Column}
-                gap={2}
-                paddingTop={2}
+        {/* Position Section */}
+        {position && (
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+            <Box paddingBottom={2}>
+              <Text
+                variant={TextVariant.HeadingSm}
+                fontWeight={FontWeight.Medium}
               >
-                {/* First Row: P&L and Return */}
-                <Box flexDirection={BoxFlexDirection.Row} gap={2}>
-                  {/* P&L Card */}
-                  <Box className="flex-1 rounded-xl bg-muted px-4 py-3">
-                    <Box paddingBottom={1}>
-                      <Text
-                        variant={TextVariant.BodySm}
-                        color={TextColor.TextAlternative}
-                      >
-                        {t('perpsPnl')}
-                      </Text>
-                    </Box>
+                {t('perpsPosition')}
+              </Text>
+            </Box>
+
+            {/* Position Details Cards */}
+            <Box flexDirection={BoxFlexDirection.Column} gap={2} paddingTop={2}>
+              {/* First Row: P&L and Return */}
+              <Box flexDirection={BoxFlexDirection.Row} gap={2}>
+                {/* P&L Card */}
+                <Box className="flex-1 rounded-xl bg-muted px-4 py-3">
+                  <Box paddingBottom={1}>
                     <Text
-                      variant={TextVariant.BodyMd}
-                      fontWeight={FontWeight.Medium}
-                      color={
-                        parseFloat(position.unrealizedPnl) >= 0
-                          ? TextColor.SuccessDefault
-                          : TextColor.ErrorDefault
-                      }
+                      variant={TextVariant.BodySm}
+                      color={TextColor.TextAlternative}
                     >
-                      {parseFloat(position.unrealizedPnl) >= 0 ? '+' : '-'}
-                      {formatCurrencyWithMinThreshold(
-                        Math.abs(parseFloat(position.unrealizedPnl)),
-                        'USD',
-                      )}
+                      {t('perpsPnl')}
                     </Text>
                   </Box>
-
-                  {/* Return Card */}
-                  <Box className="flex-1 rounded-xl bg-muted px-4 py-3">
-                    <Box paddingBottom={1}>
-                      <Text
-                        variant={TextVariant.BodySm}
-                        color={TextColor.TextAlternative}
-                      >
-                        {t('perpsReturn')}
-                      </Text>
-                    </Box>
-                    <Text
-                      variant={TextVariant.BodyMd}
-                      fontWeight={FontWeight.Medium}
-                      color={
-                        parseFloat(position.returnOnEquity) >= 0
-                          ? TextColor.SuccessDefault
-                          : TextColor.ErrorDefault
-                      }
-                    >
-                      {formatPercentWithMinThreshold(
-                        parseFloat(position.returnOnEquity),
-                      )}
-                    </Text>
-                  </Box>
-                </Box>
-
-                {/* Second Row: Size and Margin */}
-                <Box flexDirection={BoxFlexDirection.Row} gap={2}>
-                  {/* Size Card */}
-                  <Box
-                    className="flex-1 cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
-                    flexDirection={BoxFlexDirection.Column}
-                    onClick={() => {
-                      // TODO: Handle size card press
-                    }}
-                  >
-                    <Box paddingBottom={1}>
-                      <Text
-                        variant={TextVariant.BodySm}
-                        color={TextColor.TextAlternative}
-                      >
-                        {t('perpsSize')}
-                      </Text>
-                    </Box>
-                    <Text
-                      variant={TextVariant.BodyMd}
-                      fontWeight={FontWeight.Medium}
-                    >
-                      {`${formatNumber(Math.abs(parseFloat(position.size)), { maximumSignificantDigits: 4 })} ${getDisplayName(position.symbol)}`}
-                    </Text>
-                  </Box>
-
-                  {/* Margin Card */}
-                  <Box
-                    className="flex-1 cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
-                    flexDirection={BoxFlexDirection.Column}
-                    onClick={handleMarginToggle}
-                  >
-                    <Box paddingBottom={1}>
-                      <Text
-                        variant={TextVariant.BodySm}
-                        color={TextColor.TextAlternative}
-                      >
-                        {t('perpsMargin')}
-                      </Text>
-                    </Box>
-                    <Text
-                      variant={TextVariant.BodyMd}
-                      fontWeight={FontWeight.Medium}
-                    >
-                      {formatCurrencyWithMinThreshold(
-                        parseFloat(position.marginUsed),
-                        'USD',
-                      )}
-                    </Text>
-                  </Box>
-                </Box>
-
-                {/* Edit Margin - Expandable (full width) */}
-                {position && selectedAddress && (
-                  <EditMarginExpandable
-                    position={position}
-                    account={account}
-                    currentPrice={currentPrice}
-                    selectedAddress={selectedAddress}
-                    isExpanded={isMarginExpanded}
-                    onToggle={handleMarginToggle}
-                  />
-                )}
-
-                {/* Third Row: Auto Close (Full Width) - Expandable */}
-                <Box
-                  className="rounded-xl bg-muted overflow-hidden"
-                  flexDirection={BoxFlexDirection.Column}
-                >
-                  {/* Header - Always visible, click to toggle */}
-                  <Box
-                    className={twMerge(
-                      'cursor-pointer px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed transition-all duration-200',
-                      isAutoCloseExpanded ? 'rounded-t-xl' : 'rounded-xl',
-                    )}
-                    flexDirection={BoxFlexDirection.Row}
-                    justifyContent={BoxJustifyContent.Between}
-                    alignItems={BoxAlignItems.Center}
-                    onClick={handleAutoCloseToggle}
-                  >
-                    <Box flexDirection={BoxFlexDirection.Column}>
-                      <Box paddingBottom={1}>
-                        <Text
-                          variant={TextVariant.BodySm}
-                          color={TextColor.TextAlternative}
-                        >
-                          {t('perpsAutoClose')}
-                        </Text>
-                      </Box>
-                      <Box
-                        flexDirection={BoxFlexDirection.Row}
-                        alignItems={BoxAlignItems.Center}
-                        gap={1}
-                      >
-                        <Text
-                          variant={TextVariant.BodyMd}
-                          fontWeight={FontWeight.Medium}
-                        >
-                          TP{' '}
-                        </Text>
-                        <Text
-                          variant={TextVariant.BodyMd}
-                          fontWeight={FontWeight.Medium}
-                        >
-                          {position.takeProfitPrice
-                            ? `$${position.takeProfitPrice}`
-                            : '-'}
-                        </Text>
-                        <Text
-                          variant={TextVariant.BodyMd}
-                          fontWeight={FontWeight.Medium}
-                        >
-                          , SL{' '}
-                        </Text>
-                        <Text
-                          variant={TextVariant.BodyMd}
-                          fontWeight={FontWeight.Medium}
-                        >
-                          {position.stopLossPrice
-                            ? `$${position.stopLossPrice}`
-                            : '-'}
-                        </Text>
-                      </Box>
-                    </Box>
-                    <Icon
-                      name={IconName.ArrowDown}
-                      size={IconSize.Sm}
-                      color={IconColor.IconAlternative}
-                      className={twMerge(
-                        'transition-transform duration-300 ease-in-out',
-                        isAutoCloseExpanded && 'rotate-180',
-                      )}
-                    />
-                  </Box>
-
-                  {/* Expanded content - TP/SL inputs */}
-                  <Box
-                    className={twMerge(
-                      'grid transition-all duration-300 ease-in-out',
-                      isAutoCloseExpanded
-                        ? 'grid-rows-[1fr] opacity-100'
-                        : 'grid-rows-[0fr] opacity-0',
-                    )}
-                  >
-                    <Box
-                      className="overflow-hidden border-t border-muted"
-                      flexDirection={BoxFlexDirection.Column}
-                    >
-                      <Box
-                        className="px-4 py-3"
-                        flexDirection={BoxFlexDirection.Column}
-                        gap={4}
-                      >
-                        {/* Take Profit Section */}
-                        <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-                          <Text
-                            variant={TextVariant.BodySm}
-                            color={TextColor.TextAlternative}
-                            fontWeight={FontWeight.Medium}
-                          >
-                            {t('perpsTakeProfit')}
-                          </Text>
-
-                          {/* TP Preset Buttons */}
-                          <Box flexDirection={BoxFlexDirection.Row} gap={2}>
-                            {TP_PRESETS.map((preset) => (
-                              <Box
-                                key={`tp-edit-${preset}`}
-                                onClick={
-                                  isTPSLPending
-                                    ? undefined
-                                    : () => handleTpPresetClick(preset)
-                                }
-                                className={twMerge(
-                                  'flex-1 py-1.5 rounded-lg bg-muted cursor-pointer',
-                                  'hover:bg-hover active:bg-pressed',
-                                  'border-0 transition-colors duration-150',
-                                  'text-center',
-                                  isTPSLPending &&
-                                    'opacity-50 cursor-not-allowed pointer-events-none',
-                                )}
-                              >
-                                <Text
-                                  variant={TextVariant.BodySm}
-                                  color={TextColor.TextAlternative}
-                                >
-                                  +{preset}%
-                                </Text>
-                              </Box>
-                            ))}
-                          </Box>
-
-                          {/* TP Input Row: Price ($) left, Percent (%) right */}
-                          <Box
-                            flexDirection={BoxFlexDirection.Row}
-                            gap={2}
-                            alignItems={BoxAlignItems.Center}
-                          >
-                            {/* TP Price Input */}
-                            <Box className="flex-1">
-                              <TextField
-                                size={TextFieldSize.Md}
-                                value={editingTpPrice}
-                                onChange={(
-                                  e: React.ChangeEvent<HTMLInputElement>,
-                                ) => {
-                                  const { value } = e.target;
-                                  if (
-                                    value === '' ||
-                                    /^[\d,]*\.?\d*$/u.test(value)
-                                  ) {
-                                    setEditingTpPrice(value);
-                                  }
-                                }}
-                                onBlur={handleTpPriceBlur}
-                                placeholder="0.00"
-                                borderRadius={BorderRadius.MD}
-                                borderWidth={0}
-                                backgroundColor={
-                                  BackgroundColor.backgroundMuted
-                                }
-                                className="w-full"
-                                disabled={isTPSLPending}
-                                startAccessory={
-                                  <Text
-                                    variant={TextVariant.BodyMd}
-                                    color={TextColor.TextAlternative}
-                                  >
-                                    $
-                                  </Text>
-                                }
-                              />
-                            </Box>
-
-                            {/* TP Percent Input */}
-                            <Box className="flex-1">
-                              <TextField
-                                size={TextFieldSize.Md}
-                                value={editingTpPercent}
-                                onChange={handleTpPercentInputChange}
-                                placeholder="0.0"
-                                borderRadius={BorderRadius.MD}
-                                borderWidth={0}
-                                backgroundColor={
-                                  BackgroundColor.backgroundMuted
-                                }
-                                className="w-full"
-                                disabled={isTPSLPending}
-                                endAccessory={
-                                  <Text
-                                    variant={TextVariant.BodyMd}
-                                    color={TextColor.TextAlternative}
-                                  >
-                                    %
-                                  </Text>
-                                }
-                              />
-                            </Box>
-                          </Box>
-                        </Box>
-
-                        {/* Stop Loss Section */}
-                        <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-                          <Text
-                            variant={TextVariant.BodySm}
-                            color={TextColor.TextAlternative}
-                            fontWeight={FontWeight.Medium}
-                          >
-                            {t('perpsStopLoss')}
-                          </Text>
-
-                          {/* SL Preset Buttons */}
-                          <Box flexDirection={BoxFlexDirection.Row} gap={2}>
-                            {SL_PRESETS.map((preset) => (
-                              <Box
-                                key={`sl-edit-${preset}`}
-                                onClick={
-                                  isTPSLPending
-                                    ? undefined
-                                    : () => handleSlPresetClick(preset)
-                                }
-                                className={twMerge(
-                                  'flex-1 py-1.5 rounded-lg bg-muted cursor-pointer',
-                                  'hover:bg-hover active:bg-pressed',
-                                  'border-0 transition-colors duration-150',
-                                  'text-center',
-                                  isTPSLPending &&
-                                    'opacity-50 cursor-not-allowed pointer-events-none',
-                                )}
-                              >
-                                <Text
-                                  variant={TextVariant.BodySm}
-                                  color={TextColor.TextAlternative}
-                                >
-                                  -{preset}%
-                                </Text>
-                              </Box>
-                            ))}
-                          </Box>
-
-                          {/* SL Input Row: Price ($) left, Percent (%) right */}
-                          <Box
-                            flexDirection={BoxFlexDirection.Row}
-                            gap={2}
-                            alignItems={BoxAlignItems.Center}
-                          >
-                            {/* SL Price Input */}
-                            <Box className="flex-1">
-                              <TextField
-                                size={TextFieldSize.Md}
-                                value={editingSlPrice}
-                                onChange={(
-                                  e: React.ChangeEvent<HTMLInputElement>,
-                                ) => {
-                                  const { value } = e.target;
-                                  if (
-                                    value === '' ||
-                                    /^[\d,]*\.?\d*$/u.test(value)
-                                  ) {
-                                    setEditingSlPrice(value);
-                                  }
-                                }}
-                                onBlur={handleSlPriceBlur}
-                                placeholder="0.00"
-                                borderRadius={BorderRadius.MD}
-                                borderWidth={0}
-                                backgroundColor={
-                                  BackgroundColor.backgroundMuted
-                                }
-                                className="w-full"
-                                disabled={isTPSLPending}
-                                startAccessory={
-                                  <Text
-                                    variant={TextVariant.BodyMd}
-                                    color={TextColor.TextAlternative}
-                                  >
-                                    $
-                                  </Text>
-                                }
-                              />
-                            </Box>
-
-                            {/* SL Percent Input */}
-                            <Box className="flex-1">
-                              <TextField
-                                size={TextFieldSize.Md}
-                                value={editingSlPercent}
-                                onChange={handleSlPercentInputChange}
-                                placeholder="0.0"
-                                borderRadius={BorderRadius.MD}
-                                borderWidth={0}
-                                backgroundColor={
-                                  BackgroundColor.backgroundMuted
-                                }
-                                className="w-full"
-                                disabled={isTPSLPending}
-                                endAccessory={
-                                  <Text
-                                    variant={TextVariant.BodyMd}
-                                    color={TextColor.TextAlternative}
-                                  >
-                                    %
-                                  </Text>
-                                }
-                              />
-                            </Box>
-                          </Box>
-                        </Box>
-
-                        {/* Error message */}
-                        {tpslError && (
-                          <Box
-                            className="bg-error-muted rounded-lg"
-                            padding={2}
-                            flexDirection={BoxFlexDirection.Row}
-                            alignItems={BoxAlignItems.Center}
-                            gap={2}
-                          >
-                            <Icon
-                              name={IconName.Warning}
-                              size={IconSize.Sm}
-                              color={IconColor.ErrorDefault}
-                            />
-                            <Text
-                              variant={TextVariant.BodySm}
-                              color={TextColor.ErrorDefault}
-                            >
-                              {tpslError}
-                            </Text>
-                          </Box>
-                        )}
-
-                        {/* Save Button */}
-                        <Button
-                          variant={ButtonVariant.Primary}
-                          size={ButtonSize.Md}
-                          onClick={handleSaveTPSL}
-                          disabled={!isEligible || isTPSLPending}
-                          title={
-                            isEligible ? undefined : t('perpsGeoBlockedTooltip')
-                          }
-                          className={twMerge(
-                            'w-full',
-                            (isTPSLPending || !isEligible) &&
-                              'opacity-70 cursor-not-allowed',
-                          )}
-                        >
-                          {isTPSLPending
-                            ? t('perpsSubmitting')
-                            : t('perpsSaveChanges')}
-                        </Button>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
-              </Box>
-
-              {/* Details Section */}
-              <Box paddingTop={4} paddingBottom={2}>
-                <Text
-                  variant={TextVariant.HeadingSm}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {t('perpsDetails')}
-                </Text>
-              </Box>
-              <Box flexDirection={BoxFlexDirection.Column}>
-                {/* Direction Row */}
-                <Box
-                  className="rounded-t-xl bg-muted px-4 py-3"
-                  flexDirection={BoxFlexDirection.Row}
-                  justifyContent={BoxJustifyContent.Between}
-                  alignItems={BoxAlignItems.Center}
-                >
                   <Text
-                    variant={TextVariant.BodySm}
-                    color={TextColor.TextAlternative}
-                  >
-                    {t('perpsDirection')}
-                  </Text>
-                  <Text
-                    variant={TextVariant.BodySm}
+                    variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
                     color={
-                      parseFloat(position.size) >= 0
+                      parseFloat(position.unrealizedPnl) >= 0
                         ? TextColor.SuccessDefault
                         : TextColor.ErrorDefault
                     }
                   >
-                    {parseFloat(position.size) >= 0
-                      ? t('perpsLong')
-                      : t('perpsShort')}
+                    {parseFloat(position.unrealizedPnl) >= 0 ? '+' : '-'}
+                    {formatCurrencyWithMinThreshold(
+                      Math.abs(parseFloat(position.unrealizedPnl)),
+                      'USD',
+                    )}
                   </Text>
                 </Box>
 
-                {/* Entry Price Row */}
-                <Box
-                  className="bg-muted px-4 py-3"
-                  flexDirection={BoxFlexDirection.Row}
-                  justifyContent={BoxJustifyContent.Between}
-                  alignItems={BoxAlignItems.Center}
-                >
+                {/* Return Card */}
+                <Box className="flex-1 rounded-xl bg-muted px-4 py-3">
+                  <Box paddingBottom={1}>
+                    <Text
+                      variant={TextVariant.BodySm}
+                      color={TextColor.TextAlternative}
+                    >
+                      {t('perpsReturn')}
+                    </Text>
+                  </Box>
                   <Text
-                    variant={TextVariant.BodySm}
-                    color={TextColor.TextAlternative}
-                  >
-                    {t('perpsEntryPrice')}
-                  </Text>
-                  <Text
-                    variant={TextVariant.BodySm}
+                    variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
+                    color={
+                      parseFloat(position.returnOnEquity) >= 0
+                        ? TextColor.SuccessDefault
+                        : TextColor.ErrorDefault
+                    }
                   >
-                    ${position.entryPrice}
-                  </Text>
-                </Box>
-
-                {/* Liquidation Price Row */}
-                <Box
-                  className="bg-muted px-4 py-3"
-                  flexDirection={BoxFlexDirection.Row}
-                  justifyContent={BoxJustifyContent.Between}
-                  alignItems={BoxAlignItems.Center}
-                >
-                  <Text
-                    variant={TextVariant.BodySm}
-                    color={TextColor.TextAlternative}
-                  >
-                    {t('perpsLiquidationPrice')}
-                  </Text>
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                  >
-                    {position.liquidationPrice
-                      ? `$${position.liquidationPrice}`
-                      : '-'}
-                  </Text>
-                </Box>
-
-                {/* Funding Payments Row */}
-                <Box
-                  className="rounded-b-xl bg-muted px-4 py-3"
-                  flexDirection={BoxFlexDirection.Row}
-                  justifyContent={BoxJustifyContent.Between}
-                  alignItems={BoxAlignItems.Center}
-                >
-                  <Text
-                    variant={TextVariant.BodySm}
-                    color={TextColor.TextAlternative}
-                  >
-                    {t('perpsFundingPayments')}
-                  </Text>
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                  >
-                    ${position.cumulativeFunding.sinceOpen}
+                    {formatPercentWithMinThreshold(
+                      parseFloat(position.returnOnEquity),
+                    )}
                   </Text>
                 </Box>
               </Box>
-            </Box>
-          )}
 
-          {/* Orders Section - shown regardless of position, but only if there are orders */}
-          {orders.length > 0 && (
-            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-              <Box paddingBottom={2}>
-                <Text
-                  variant={TextVariant.HeadingSm}
-                  fontWeight={FontWeight.Medium}
+              {/* Second Row: Size and Margin */}
+              <Box flexDirection={BoxFlexDirection.Row} gap={2}>
+                {/* Size Card */}
+                <Box
+                  className="flex-1 cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
+                  flexDirection={BoxFlexDirection.Column}
+                  onClick={() => {
+                    // TODO: Handle size card press
+                  }}
                 >
-                  {t('perpsOrders')}
-                </Text>
+                  <Box paddingBottom={1}>
+                    <Text
+                      variant={TextVariant.BodySm}
+                      color={TextColor.TextAlternative}
+                    >
+                      {t('perpsSize')}
+                    </Text>
+                  </Box>
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {`${formatNumber(Math.abs(parseFloat(position.size)), { maximumSignificantDigits: 4 })} ${getDisplayName(position.symbol)}`}
+                  </Text>
+                </Box>
+
+                {/* Margin Card */}
+                <Box
+                  className="flex-1 cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
+                  flexDirection={BoxFlexDirection.Column}
+                  onClick={handleMarginToggle}
+                >
+                  <Box paddingBottom={1}>
+                    <Text
+                      variant={TextVariant.BodySm}
+                      color={TextColor.TextAlternative}
+                    >
+                      {t('perpsMargin')}
+                    </Text>
+                  </Box>
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {formatCurrencyWithMinThreshold(
+                      parseFloat(position.marginUsed),
+                      'USD',
+                    )}
+                  </Text>
+                </Box>
               </Box>
+
+              {/* Edit Margin - Expandable (full width) */}
+              {position && selectedAddress && (
+                <EditMarginExpandable
+                  position={position}
+                  account={account}
+                  currentPrice={currentPrice}
+                  selectedAddress={selectedAddress}
+                  isExpanded={isMarginExpanded}
+                  onToggle={handleMarginToggle}
+                />
+              )}
+
+              {/* Third Row: Auto Close (Full Width) - Expandable */}
               <Box
+                className="rounded-xl bg-muted overflow-hidden"
                 flexDirection={BoxFlexDirection.Column}
-                className="overflow-hidden rounded-xl"
               >
-                {orders.map((order) => (
-                  <OrderCard
-                    key={order.orderId}
-                    order={order}
-                    variant="muted"
-                    onClick={handleOrderClick}
+                {/* Header - Always visible, click to toggle */}
+                <Box
+                  className={twMerge(
+                    'cursor-pointer px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed transition-all duration-200',
+                    isAutoCloseExpanded ? 'rounded-t-xl' : 'rounded-xl',
+                  )}
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.Between}
+                  alignItems={BoxAlignItems.Center}
+                  onClick={handleAutoCloseToggle}
+                >
+                  <Box flexDirection={BoxFlexDirection.Column}>
+                    <Box paddingBottom={1}>
+                      <Text
+                        variant={TextVariant.BodySm}
+                        color={TextColor.TextAlternative}
+                      >
+                        {t('perpsAutoClose')}
+                      </Text>
+                    </Box>
+                    <Box
+                      flexDirection={BoxFlexDirection.Row}
+                      alignItems={BoxAlignItems.Center}
+                      gap={1}
+                    >
+                      <Text
+                        variant={TextVariant.BodyMd}
+                        fontWeight={FontWeight.Medium}
+                      >
+                        TP{' '}
+                      </Text>
+                      <Text
+                        variant={TextVariant.BodyMd}
+                        fontWeight={FontWeight.Medium}
+                      >
+                        {position.takeProfitPrice
+                          ? `$${position.takeProfitPrice}`
+                          : '-'}
+                      </Text>
+                      <Text
+                        variant={TextVariant.BodyMd}
+                        fontWeight={FontWeight.Medium}
+                      >
+                        , SL{' '}
+                      </Text>
+                      <Text
+                        variant={TextVariant.BodyMd}
+                        fontWeight={FontWeight.Medium}
+                      >
+                        {position.stopLossPrice
+                          ? `$${position.stopLossPrice}`
+                          : '-'}
+                      </Text>
+                    </Box>
+                  </Box>
+                  <Icon
+                    name={IconName.ArrowDown}
+                    size={IconSize.Sm}
+                    color={IconColor.IconAlternative}
+                    className={twMerge(
+                      'transition-transform duration-300 ease-in-out',
+                      isAutoCloseExpanded && 'rotate-180',
+                    )}
                   />
-                ))}
+                </Box>
+
+                {/* Expanded content - TP/SL inputs */}
+                <Box
+                  className={twMerge(
+                    'grid transition-all duration-300 ease-in-out',
+                    isAutoCloseExpanded
+                      ? 'grid-rows-[1fr] opacity-100'
+                      : 'grid-rows-[0fr] opacity-0',
+                  )}
+                >
+                  <Box
+                    className="overflow-hidden border-t border-muted"
+                    flexDirection={BoxFlexDirection.Column}
+                  >
+                    <Box
+                      className="px-4 py-3"
+                      flexDirection={BoxFlexDirection.Column}
+                      gap={4}
+                    >
+                      {/* Take Profit Section */}
+                      <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+                        <Text
+                          variant={TextVariant.BodySm}
+                          color={TextColor.TextAlternative}
+                          fontWeight={FontWeight.Medium}
+                        >
+                          {t('perpsTakeProfit')}
+                        </Text>
+
+                        {/* TP Preset Buttons */}
+                        <Box flexDirection={BoxFlexDirection.Row} gap={2}>
+                          {TP_PRESETS.map((preset) => (
+                            <Box
+                              key={`tp-edit-${preset}`}
+                              onClick={
+                                isTPSLPending
+                                  ? undefined
+                                  : () => handleTpPresetClick(preset)
+                              }
+                              className={twMerge(
+                                'flex-1 py-1.5 rounded-lg bg-muted cursor-pointer',
+                                'hover:bg-hover active:bg-pressed',
+                                'border-0 transition-colors duration-150',
+                                'text-center',
+                                isTPSLPending &&
+                                  'opacity-50 cursor-not-allowed pointer-events-none',
+                              )}
+                            >
+                              <Text
+                                variant={TextVariant.BodySm}
+                                color={TextColor.TextAlternative}
+                              >
+                                +{preset}%
+                              </Text>
+                            </Box>
+                          ))}
+                        </Box>
+
+                        {/* TP Input Row: Price ($) left, Percent (%) right */}
+                        <Box
+                          flexDirection={BoxFlexDirection.Row}
+                          gap={2}
+                          alignItems={BoxAlignItems.Center}
+                        >
+                          {/* TP Price Input */}
+                          <Box className="flex-1">
+                            <TextField
+                              size={TextFieldSize.Md}
+                              value={editingTpPrice}
+                              onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>,
+                              ) => {
+                                const { value } = e.target;
+                                if (
+                                  value === '' ||
+                                  /^[\d,]*\.?\d*$/u.test(value)
+                                ) {
+                                  setEditingTpPrice(value);
+                                }
+                              }}
+                              onBlur={handleTpPriceBlur}
+                              placeholder="0.00"
+                              borderRadius={BorderRadius.MD}
+                              borderWidth={0}
+                              backgroundColor={BackgroundColor.backgroundMuted}
+                              className="w-full"
+                              disabled={isTPSLPending}
+                              startAccessory={
+                                <Text
+                                  variant={TextVariant.BodyMd}
+                                  color={TextColor.TextAlternative}
+                                >
+                                  $
+                                </Text>
+                              }
+                            />
+                          </Box>
+
+                          {/* TP Percent Input */}
+                          <Box className="flex-1">
+                            <TextField
+                              size={TextFieldSize.Md}
+                              value={editingTpPercent}
+                              onChange={handleTpPercentInputChange}
+                              placeholder="0.0"
+                              borderRadius={BorderRadius.MD}
+                              borderWidth={0}
+                              backgroundColor={BackgroundColor.backgroundMuted}
+                              className="w-full"
+                              disabled={isTPSLPending}
+                              endAccessory={
+                                <Text
+                                  variant={TextVariant.BodyMd}
+                                  color={TextColor.TextAlternative}
+                                >
+                                  %
+                                </Text>
+                              }
+                            />
+                          </Box>
+                        </Box>
+                      </Box>
+
+                      {/* Stop Loss Section */}
+                      <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+                        <Text
+                          variant={TextVariant.BodySm}
+                          color={TextColor.TextAlternative}
+                          fontWeight={FontWeight.Medium}
+                        >
+                          {t('perpsStopLoss')}
+                        </Text>
+
+                        {/* SL Preset Buttons */}
+                        <Box flexDirection={BoxFlexDirection.Row} gap={2}>
+                          {SL_PRESETS.map((preset) => (
+                            <Box
+                              key={`sl-edit-${preset}`}
+                              onClick={
+                                isTPSLPending
+                                  ? undefined
+                                  : () => handleSlPresetClick(preset)
+                              }
+                              className={twMerge(
+                                'flex-1 py-1.5 rounded-lg bg-muted cursor-pointer',
+                                'hover:bg-hover active:bg-pressed',
+                                'border-0 transition-colors duration-150',
+                                'text-center',
+                                isTPSLPending &&
+                                  'opacity-50 cursor-not-allowed pointer-events-none',
+                              )}
+                            >
+                              <Text
+                                variant={TextVariant.BodySm}
+                                color={TextColor.TextAlternative}
+                              >
+                                -{preset}%
+                              </Text>
+                            </Box>
+                          ))}
+                        </Box>
+
+                        {/* SL Input Row: Price ($) left, Percent (%) right */}
+                        <Box
+                          flexDirection={BoxFlexDirection.Row}
+                          gap={2}
+                          alignItems={BoxAlignItems.Center}
+                        >
+                          {/* SL Price Input */}
+                          <Box className="flex-1">
+                            <TextField
+                              size={TextFieldSize.Md}
+                              value={editingSlPrice}
+                              onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>,
+                              ) => {
+                                const { value } = e.target;
+                                if (
+                                  value === '' ||
+                                  /^[\d,]*\.?\d*$/u.test(value)
+                                ) {
+                                  setEditingSlPrice(value);
+                                }
+                              }}
+                              onBlur={handleSlPriceBlur}
+                              placeholder="0.00"
+                              borderRadius={BorderRadius.MD}
+                              borderWidth={0}
+                              backgroundColor={BackgroundColor.backgroundMuted}
+                              className="w-full"
+                              disabled={isTPSLPending}
+                              startAccessory={
+                                <Text
+                                  variant={TextVariant.BodyMd}
+                                  color={TextColor.TextAlternative}
+                                >
+                                  $
+                                </Text>
+                              }
+                            />
+                          </Box>
+
+                          {/* SL Percent Input */}
+                          <Box className="flex-1">
+                            <TextField
+                              size={TextFieldSize.Md}
+                              value={editingSlPercent}
+                              onChange={handleSlPercentInputChange}
+                              placeholder="0.0"
+                              borderRadius={BorderRadius.MD}
+                              borderWidth={0}
+                              backgroundColor={BackgroundColor.backgroundMuted}
+                              className="w-full"
+                              disabled={isTPSLPending}
+                              endAccessory={
+                                <Text
+                                  variant={TextVariant.BodyMd}
+                                  color={TextColor.TextAlternative}
+                                >
+                                  %
+                                </Text>
+                              }
+                            />
+                          </Box>
+                        </Box>
+                      </Box>
+
+                      {/* Error message */}
+                      {tpslError && (
+                        <Box
+                          className="bg-error-muted rounded-lg"
+                          padding={2}
+                          flexDirection={BoxFlexDirection.Row}
+                          alignItems={BoxAlignItems.Center}
+                          gap={2}
+                        >
+                          <Icon
+                            name={IconName.Warning}
+                            size={IconSize.Sm}
+                            color={IconColor.ErrorDefault}
+                          />
+                          <Text
+                            variant={TextVariant.BodySm}
+                            color={TextColor.ErrorDefault}
+                          >
+                            {tpslError}
+                          </Text>
+                        </Box>
+                      )}
+
+                      {/* Save Button */}
+                      <Button
+                        variant={ButtonVariant.Primary}
+                        size={ButtonSize.Md}
+                        onClick={handleSaveTPSL}
+                        disabled={!isEligible || isTPSLPending}
+                        title={
+                          isEligible ? undefined : t('perpsGeoBlockedTooltip')
+                        }
+                        className={twMerge(
+                          'w-full',
+                          (isTPSLPending || !isEligible) &&
+                            'opacity-70 cursor-not-allowed',
+                        )}
+                      >
+                        {isTPSLPending
+                          ? t('perpsSubmitting')
+                          : t('perpsSaveChanges')}
+                      </Button>
+                    </Box>
+                  </Box>
+                </Box>
               </Box>
             </Box>
-          )}
 
-          {/* Stats Section - always visible */}
-          <Box paddingLeft={4} paddingRight={4}>
+            {/* Details Section */}
             <Box paddingTop={4} paddingBottom={2}>
               <Text
                 variant={TextVariant.HeadingSm}
                 fontWeight={FontWeight.Medium}
               >
-                {t('perpsStats')}
+                {t('perpsDetails')}
               </Text>
             </Box>
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              className="overflow-hidden rounded-xl"
-            >
-              {/* 24h Volume Row */}
+            <Box flexDirection={BoxFlexDirection.Column}>
+              {/* Direction Row */}
+              <Box
+                className="rounded-t-xl bg-muted px-4 py-3"
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
+              >
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('perpsDirection')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                  color={
+                    parseFloat(position.size) >= 0
+                      ? TextColor.SuccessDefault
+                      : TextColor.ErrorDefault
+                  }
+                >
+                  {parseFloat(position.size) >= 0
+                    ? t('perpsLong')
+                    : t('perpsShort')}
+                </Text>
+              </Box>
+
+              {/* Entry Price Row */}
               <Box
                 className="bg-muted px-4 py-3"
                 flexDirection={BoxFlexDirection.Row}
@@ -1700,105 +1576,124 @@ const PerpsMarketDetailPage: React.FC = () => {
                   variant={TextVariant.BodySm}
                   color={TextColor.TextAlternative}
                 >
-                  {t('perps24hVolume')}
+                  {t('perpsEntryPrice')}
                 </Text>
                 <Text
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
                 >
-                  {market.volume}
+                  ${position.entryPrice}
                 </Text>
               </Box>
 
-              {/* Open Interest Row */}
-              {market.openInterest && (
-                <Box
-                  className="bg-muted px-4 py-3"
-                  flexDirection={BoxFlexDirection.Row}
-                  justifyContent={BoxJustifyContent.Between}
-                  alignItems={BoxAlignItems.Center}
+              {/* Liquidation Price Row */}
+              <Box
+                className="bg-muted px-4 py-3"
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
+              >
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextAlternative}
                 >
-                  <Box
-                    flexDirection={BoxFlexDirection.Row}
-                    alignItems={BoxAlignItems.Center}
-                    gap={1}
-                  >
-                    <Text
-                      variant={TextVariant.BodySm}
-                      color={TextColor.TextAlternative}
-                    >
-                      {t('perpsOpenInterest')}
-                    </Text>
-                    <InfoTooltip
-                      position="top"
-                      contentText={t('perpsOpenInterestTooltip')}
-                    />
-                  </Box>
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                  >
-                    {market.openInterest}
-                  </Text>
-                </Box>
-              )}
-
-              {/* Funding Rate Row */}
-              {market.fundingRate !== undefined && (
-                <Box
-                  className="bg-muted px-4 py-3"
-                  flexDirection={BoxFlexDirection.Row}
-                  justifyContent={BoxJustifyContent.Between}
-                  alignItems={BoxAlignItems.Center}
+                  {t('perpsLiquidationPrice')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
                 >
-                  <Box
-                    flexDirection={BoxFlexDirection.Row}
-                    alignItems={BoxAlignItems.Center}
-                    gap={1}
-                  >
-                    <Text
-                      variant={TextVariant.BodySm}
-                      color={TextColor.TextAlternative}
-                    >
-                      {t('perpsFundingRate')}
-                    </Text>
-                    <InfoTooltip
-                      position="top"
-                      contentText={t('perpsFundingRateTooltip')}
-                    />
-                  </Box>
-                  <Box
-                    flexDirection={BoxFlexDirection.Row}
-                    alignItems={BoxAlignItems.Center}
-                    gap={1}
-                  >
-                    <Text
-                      variant={TextVariant.BodySm}
-                      fontWeight={FontWeight.Medium}
-                      color={
-                        market.fundingRate >= 0
-                          ? TextColor.SuccessDefault
-                          : TextColor.ErrorDefault
-                      }
-                    >
-                      {market.fundingRate >= 0 ? '+' : ''}
-                      {formatNumber(market.fundingRate * 100, {
-                        minimumFractionDigits: 4,
-                        maximumFractionDigits: 4,
-                      })}
-                      %
-                    </Text>
-                    <Text
-                      variant={TextVariant.BodySm}
-                      color={TextColor.TextAlternative}
-                    >
-                      ({fundingCountdown})
-                    </Text>
-                  </Box>
-                </Box>
-              )}
+                  {position.liquidationPrice
+                    ? `$${position.liquidationPrice}`
+                    : '-'}
+                </Text>
+              </Box>
 
-              {/* Oracle Price Row */}
+              {/* Funding Payments Row */}
+              <Box
+                className="rounded-b-xl bg-muted px-4 py-3"
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
+              >
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('perpsFundingPayments')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  ${position.cumulativeFunding.sinceOpen}
+                </Text>
+              </Box>
+            </Box>
+          </Box>
+        )}
+
+        {/* Orders Section - shown regardless of position, but only if there are orders */}
+        {orders.length > 0 && (
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+            <Box paddingBottom={2}>
+              <Text
+                variant={TextVariant.HeadingSm}
+                fontWeight={FontWeight.Medium}
+              >
+                {t('perpsOrders')}
+              </Text>
+            </Box>
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              className="overflow-hidden rounded-xl"
+            >
+              {orders.map((order) => (
+                <OrderCard
+                  key={order.orderId}
+                  order={order}
+                  variant="muted"
+                  onClick={handleOrderClick}
+                />
+              ))}
+            </Box>
+          </Box>
+        )}
+
+        {/* Stats Section - always visible */}
+        <Box paddingLeft={4} paddingRight={4}>
+          <Box paddingTop={4} paddingBottom={2}>
+            <Text
+              variant={TextVariant.HeadingSm}
+              fontWeight={FontWeight.Medium}
+            >
+              {t('perpsStats')}
+            </Text>
+          </Box>
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            className="overflow-hidden rounded-xl"
+          >
+            {/* 24h Volume Row */}
+            <Box
+              className="bg-muted px-4 py-3"
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              alignItems={BoxAlignItems.Center}
+            >
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+              >
+                {t('perps24hVolume')}
+              </Text>
+              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+                {market.volume}
+              </Text>
+            </Box>
+
+            {/* Open Interest Row */}
+            {market.openInterest && (
               <Box
                 className="bg-muted px-4 py-3"
                 flexDirection={BoxFlexDirection.Row}
@@ -1814,190 +1709,274 @@ const PerpsMarketDetailPage: React.FC = () => {
                     variant={TextVariant.BodySm}
                     color={TextColor.TextAlternative}
                   >
-                    {t('perpsOraclePrice')}
+                    {t('perpsOpenInterest')}
                   </Text>
                   <InfoTooltip
                     position="top"
-                    contentText={t('perpsOraclePriceTooltip')}
+                    contentText={t('perpsOpenInterestTooltip')}
                   />
                 </Box>
                 <Text
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
                 >
-                  {livePrice?.markPrice
-                    ? formatCurrencyWithMinThreshold(
-                        parseFloat(livePrice.markPrice),
-                        'USD',
-                      )
-                    : '—'}
+                  {market.openInterest}
                 </Text>
               </Box>
-            </Box>
-          </Box>
+            )}
 
-          {/* Recent Activity Section - always visible */}
-          <Box paddingLeft={4} paddingRight={4}>
-            <Box paddingTop={4} paddingBottom={2}>
-              <Text
-                variant={TextVariant.HeadingSm}
-                fontWeight={FontWeight.Medium}
+            {/* Funding Rate Row */}
+            {market.fundingRate !== undefined && (
+              <Box
+                className="bg-muted px-4 py-3"
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
               >
-                {t('perpsRecentActivity')}
-              </Text>
-            </Box>
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  gap={1}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
+                  >
+                    {t('perpsFundingRate')}
+                  </Text>
+                  <InfoTooltip
+                    position="top"
+                    contentText={t('perpsFundingRateTooltip')}
+                  />
+                </Box>
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  gap={1}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                    color={
+                      market.fundingRate >= 0
+                        ? TextColor.SuccessDefault
+                        : TextColor.ErrorDefault
+                    }
+                  >
+                    {market.fundingRate >= 0 ? '+' : ''}
+                    {formatNumber(market.fundingRate * 100, {
+                      minimumFractionDigits: 4,
+                      maximumFractionDigits: 4,
+                    })}
+                    %
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
+                  >
+                    ({fundingCountdown})
+                  </Text>
+                </Box>
+              </Box>
+            )}
+
+            {/* Oracle Price Row */}
             <Box
-              flexDirection={BoxFlexDirection.Column}
-              className="overflow-hidden rounded-xl"
-            >
-              {/* Activity Item 1 - Opened long */}
-              <Box
-                className="w-full bg-muted px-4 py-3"
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={3}
-              >
-                <PerpsTokenLogo
-                  symbol={market.symbol}
-                  size={AvatarTokenSize.Md}
-                />
-                <Box
-                  flexDirection={BoxFlexDirection.Column}
-                  alignItems={BoxAlignItems.Start}
-                  className="min-w-0 flex-1"
-                  gap={1}
-                >
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                  >
-                    {t('perpsOpenedLong')}
-                  </Text>
-                  <Text
-                    variant={TextVariant.BodyXs}
-                    color={TextColor.TextAlternative}
-                  >
-                    2.50000 {displayName}
-                  </Text>
-                </Box>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                  color={TextColor.SuccessDefault}
-                >
-                  +$125.00
-                </Text>
-              </Box>
-
-              {/* Activity Item 2 - Increased position */}
-              <Box
-                className="w-full bg-muted px-4 py-3"
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={3}
-              >
-                <PerpsTokenLogo
-                  symbol={market.symbol}
-                  size={AvatarTokenSize.Md}
-                />
-                <Box
-                  flexDirection={BoxFlexDirection.Column}
-                  alignItems={BoxAlignItems.Start}
-                  className="min-w-0 flex-1"
-                  gap={1}
-                >
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                  >
-                    {t('perpsIncreasedPosition')}
-                  </Text>
-                  <Text
-                    variant={TextVariant.BodyXs}
-                    color={TextColor.TextAlternative}
-                  >
-                    0.50000 {displayName}
-                  </Text>
-                </Box>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                  color={TextColor.SuccessDefault}
-                >
-                  +$45.20
-                </Text>
-              </Box>
-
-              {/* Activity Item 3 - Closed short */}
-              <Box
-                className="w-full bg-muted px-4 py-3"
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={3}
-              >
-                <PerpsTokenLogo
-                  symbol={market.symbol}
-                  size={AvatarTokenSize.Md}
-                />
-                <Box
-                  flexDirection={BoxFlexDirection.Column}
-                  alignItems={BoxAlignItems.Start}
-                  className="min-w-0 flex-1"
-                  gap={1}
-                >
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                  >
-                    {t('perpsClosedShort')}
-                  </Text>
-                  <Text
-                    variant={TextVariant.BodyXs}
-                    color={TextColor.TextAlternative}
-                  >
-                    1.25000 {displayName}
-                  </Text>
-                </Box>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                  color={TextColor.ErrorDefault}
-                >
-                  -$32.50
-                </Text>
-              </Box>
-            </Box>
-
-            {/* Learn Section */}
-            <Box
-              className="mt-4 w-full cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
+              className="bg-muted px-4 py-3"
               flexDirection={BoxFlexDirection.Row}
               justifyContent={BoxJustifyContent.Between}
               alignItems={BoxAlignItems.Center}
-              onClick={() => {
-                // TODO: Navigate to learn page
-              }}
             >
-              <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-                {t('perpsLearnBasics')}
-              </Text>
-              <Icon
-                name={IconName.ArrowRight}
-                size={IconSize.Sm}
-                color={IconColor.IconAlternative}
-              />
-            </Box>
-
-            {/* Disclaimer */}
-            <Box paddingTop={4} paddingBottom={4}>
-              <Text
-                variant={TextVariant.BodyXs}
-                color={TextColor.TextAlternative}
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                gap={1}
               >
-                {t('perpsDisclaimer')}
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('perpsOraclePrice')}
+                </Text>
+                <InfoTooltip
+                  position="top"
+                  contentText={t('perpsOraclePriceTooltip')}
+                />
+              </Box>
+              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+                {livePrice?.markPrice
+                  ? formatCurrencyWithMinThreshold(
+                      parseFloat(livePrice.markPrice),
+                      'USD',
+                    )
+                  : '—'}
               </Text>
             </Box>
           </Box>
+        </Box>
+
+        {/* Recent Activity Section - always visible */}
+        <Box paddingLeft={4} paddingRight={4}>
+          <Box paddingTop={4} paddingBottom={2}>
+            <Text
+              variant={TextVariant.HeadingSm}
+              fontWeight={FontWeight.Medium}
+            >
+              {t('perpsRecentActivity')}
+            </Text>
+          </Box>
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            className="overflow-hidden rounded-xl"
+          >
+            {/* Activity Item 1 - Opened long */}
+            <Box
+              className="w-full bg-muted px-4 py-3"
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={3}
+            >
+              <PerpsTokenLogo
+                symbol={market.symbol}
+                size={AvatarTokenSize.Md}
+              />
+              <Box
+                flexDirection={BoxFlexDirection.Column}
+                alignItems={BoxAlignItems.Start}
+                className="min-w-0 flex-1"
+                gap={1}
+              >
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {t('perpsOpenedLong')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodyXs}
+                  color={TextColor.TextAlternative}
+                >
+                  2.50000 {displayName}
+                </Text>
+              </Box>
+              <Text
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.SuccessDefault}
+              >
+                +$125.00
+              </Text>
+            </Box>
+
+            {/* Activity Item 2 - Increased position */}
+            <Box
+              className="w-full bg-muted px-4 py-3"
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={3}
+            >
+              <PerpsTokenLogo
+                symbol={market.symbol}
+                size={AvatarTokenSize.Md}
+              />
+              <Box
+                flexDirection={BoxFlexDirection.Column}
+                alignItems={BoxAlignItems.Start}
+                className="min-w-0 flex-1"
+                gap={1}
+              >
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {t('perpsIncreasedPosition')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodyXs}
+                  color={TextColor.TextAlternative}
+                >
+                  0.50000 {displayName}
+                </Text>
+              </Box>
+              <Text
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.SuccessDefault}
+              >
+                +$45.20
+              </Text>
+            </Box>
+
+            {/* Activity Item 3 - Closed short */}
+            <Box
+              className="w-full bg-muted px-4 py-3"
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={3}
+            >
+              <PerpsTokenLogo
+                symbol={market.symbol}
+                size={AvatarTokenSize.Md}
+              />
+              <Box
+                flexDirection={BoxFlexDirection.Column}
+                alignItems={BoxAlignItems.Start}
+                className="min-w-0 flex-1"
+                gap={1}
+              >
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {t('perpsClosedShort')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodyXs}
+                  color={TextColor.TextAlternative}
+                >
+                  1.25000 {displayName}
+                </Text>
+              </Box>
+              <Text
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.ErrorDefault}
+              >
+                -$32.50
+              </Text>
+            </Box>
+          </Box>
+
+          {/* Learn Section */}
+          <Box
+            className="mt-4 w-full cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Between}
+            alignItems={BoxAlignItems.Center}
+            onClick={() => {
+              // TODO: Navigate to learn page
+            }}
+          >
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+              {t('perpsLearnBasics')}
+            </Text>
+            <Icon
+              name={IconName.ArrowRight}
+              size={IconSize.Sm}
+              color={IconColor.IconAlternative}
+            />
+          </Box>
+
+          {/* Disclaimer */}
+          <Box paddingTop={4} paddingBottom={4}>
+            <Text
+              variant={TextVariant.BodyXs}
+              color={TextColor.TextAlternative}
+            >
+              {t('perpsDisclaimer')}
+            </Text>
+          </Box>
+        </Box>
       </>
 
       {/* Sticky Footer */}
