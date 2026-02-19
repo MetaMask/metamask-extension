@@ -7,6 +7,7 @@ import {
   type Asset,
   type Compilation,
 } from 'webpack';
+import type { EntryDescriptionNormalized } from '../utils/plugins/ManifestPlugin';
 
 const { SourceMapSource, RawSource } = sources;
 
@@ -103,6 +104,7 @@ export function mockWebpack(
       },
     },
   };
+  const entries: Record<string, EntryDescriptionNormalized> = {};
   const compiler = {
     context: '',
     hooks: {
@@ -111,7 +113,7 @@ export function mockWebpack(
           _: unknown,
           fn: (context: string, entries: Record<string, unknown>) => void,
         ) {
-          fn(compiler.context, {});
+          fn(compiler.context, entries);
         },
       },
       compilation: {
@@ -127,6 +129,7 @@ export function mockWebpack(
   return {
     compiler,
     compilation: compilation as Compilation & typeof compilation,
+    entries,
     promise,
   };
 }

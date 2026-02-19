@@ -24,7 +24,7 @@ const { RawSource, ConcatSource } = sources;
 
 type Assets = Compilation['assets'];
 
-type EntryDescriptionNormalized = { import?: string[] } & Omit<
+export type EntryDescriptionNormalized = { import?: string[] } & Omit<
   EntryOptions,
   'name'
 >;
