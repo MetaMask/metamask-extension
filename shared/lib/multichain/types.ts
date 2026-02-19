@@ -43,5 +43,4 @@ export type TransactionViewModel = TransactionMeta & {
   transactionType: V1TransactionByHashResponse['transactionType'];
   transactionCategory: V1TransactionByHashResponse['transactionCategory'];
   transactionProtocol: V1TransactionByHashResponse['transactionProtocol'];
-  valueTransfers?: V1TransactionByHashResponse['valueTransfers'];
 };

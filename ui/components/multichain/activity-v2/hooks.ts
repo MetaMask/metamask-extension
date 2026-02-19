@@ -101,10 +101,7 @@ export function useGetTitle(transaction: TransactionViewModel): string {
 
   const isNftTransfer =
     transactionType === 'ERC_721_TRANSFER' ||
-    transactionType === 'ERC_1155_TRANSFER' ||
-    transaction.valueTransfers?.some(
-      (vt) => vt.transferType === 'erc1155' || vt.transferType === 'erc721',
-    );
+    transactionType === 'ERC_1155_TRANSFER';
 
   if (isNftTransfer) {
     const from = transaction.txParams?.from?.toLowerCase();
