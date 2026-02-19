@@ -61,7 +61,18 @@ export const ClaimBonusBadge = ({
   }
 
   return (
-    <span onClick={handleBadgeClick} style={{ cursor: 'pointer' }}>
+    <button
+      type="button"
+      onClick={handleBadgeClick}
+      style={{
+        cursor: 'pointer',
+        background: 'none',
+        border: 'none',
+        padding: 0,
+        margin: 0,
+        font: 'inherit',
+      }}
+    >
       <Text
         variant={TextVariant.BodySm}
         fontWeight={FontWeight.Medium}
@@ -70,6 +81,6 @@ export const ClaimBonusBadge = ({
       >
         {label}
       </Text>
-    </span>
+    </button>
   );
 };
