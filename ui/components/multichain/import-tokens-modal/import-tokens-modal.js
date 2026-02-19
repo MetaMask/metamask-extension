@@ -418,7 +418,6 @@ export const ImportTokensModal = ({ onClose }) => {
       dispatch(hideImportTokensModal());
       navigate(DEFAULT_ROUTE);
     } catch (err) {
-      console.log('error +++++++++++++++++++++++', err);
       dispatch(setNewTokensImportedError('error'));
       dispatch(clearPendingTokens());
       navigate(DEFAULT_ROUTE);

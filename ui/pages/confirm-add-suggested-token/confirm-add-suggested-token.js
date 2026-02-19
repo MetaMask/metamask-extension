@@ -38,7 +38,6 @@ import { AssetType } from '../../../shared/constants/transaction';
 import { getSuggestedTokens } from '../../selectors';
 import { Nav } from '../confirmations/components/confirm/nav';
 import { hideAppHeader } from '../routes/utils';
-import { isAssetsUnifyStateFeatureEnabled } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 
 function getTokenName(name, symbol) {
   return name === undefined ? symbol : `${name} (${symbol})`;
@@ -87,9 +86,6 @@ const ConfirmAddSuggestedToken = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const assetsUnifyStateFeatureEnabled = useSelector(
-    isAssetsUnifyStateFeatureEnabled,
-  );
 
   const hasAppHeader = location?.pathname ? !hideAppHeader({ location }) : true;
 
@@ -140,11 +136,6 @@ const ConfirmAddSuggestedToken = () => {
   }, [suggestedTokens, tokens, t]);
 
   const handleAddTokensClick = useCallback(async () => {
-    console.log(
-      'assetsUnifyStateFeatureEnabled +++++++++++++++++++++++ 111',
-      assetsUnifyStateFeatureEnabled,
-    );
-    // return;
     await Promise.all(
       suggestedTokens.map(async ({ requestData: { asset }, id }) => {
         await dispatch(resolvePendingApproval(id, null));
