@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.18.1]
+
+### Added
+
+- Nothing truly new, but a synthesis of 13.6.4, plus the unreleased 13.17.0 and 13.18.0
+
 ## [13.18.0]
 
 ### Added
@@ -102,6 +108,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed details of the gas fee token (#39706)
 - Fixed error when sending native tokens on EVM networks when chainId is provided as decimal string (#39806)
 - Removed petname modal from appearing when clicking recipient addresses in activity list (#39816)
+
+## [13.16.4]
+
+### Fixed
+
+- Fixed error when sending native tokens on EVM networks when chainId is provided as decimal string (#39806)
+- Fixed issue for users with a lot of state on recent chromium-based browsers (#40101)
 
 ## [13.16.3]
 
@@ -1757,9 +1770,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.18.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.18.1...HEAD
+[13.18.1]: https://github.com/MetaMask/metamask-extension/compare/v13.18.0...v13.18.1
 [13.18.0]: https://github.com/MetaMask/metamask-extension/compare/v13.17.0...v13.18.0
-[13.17.0]: https://github.com/MetaMask/metamask-extension/compare/v13.16.3...v13.17.0
+[13.17.0]: https://github.com/MetaMask/metamask-extension/compare/v13.16.4...v13.17.0
+[13.16.4]: https://github.com/MetaMask/metamask-extension/compare/v13.16.3...v13.16.4
 [13.16.3]: https://github.com/MetaMask/metamask-extension/compare/v13.16.2...v13.16.3
 [13.16.2]: https://github.com/MetaMask/metamask-extension/compare/v13.16.1...v13.16.2
 [13.16.1]: https://github.com/MetaMask/metamask-extension/compare/v13.16.0...v13.16.1

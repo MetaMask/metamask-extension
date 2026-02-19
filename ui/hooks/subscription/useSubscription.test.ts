@@ -10,7 +10,10 @@ import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import * as actions from '../../store/actions';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 import type { MetaMaskReduxState } from '../../store/store';
-import { useSubscriptionCryptoApprovalTransaction } from './useSubscription';
+import {
+  useSubscriptionCryptoApprovalTransaction,
+  useShieldRewards,
+} from './useSubscription';
 import * as subscriptionPricingHooks from './useSubscriptionPricing';
 import type { TokenWithApprovalAmount } from './useSubscriptionPricing';
 
@@ -21,6 +24,9 @@ jest.mock('../../store/actions', () => ({
   estimateGas: jest.fn().mockResolvedValue('0x5208'),
   addTransaction: jest.fn().mockResolvedValue({}),
   getSubscriptionPricing: jest.fn().mockResolvedValue({}),
+  getRewardsSeasonMetadata: jest.fn(() => async () => null),
+  estimateRewardsPoints: jest.fn(() => async () => null),
+  getRewardsHasAccountOptedIn: jest.fn(() => async () => false),
 }));
 
 const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
@@ -279,5 +285,112 @@ describe('useSubscriptionCryptoApprovalTransaction', () => {
       expect(txParams.maxPriorityFeePerGas).toBeUndefined();
       expect(txParams.maxFeePerGas).toBeUndefined();
     });
+  });
+});
+
+const mockGetRewardsSeasonMetadata =
+  actions.getRewardsSeasonMetadata as jest.Mock;
+const mockEstimateRewardsPoints = actions.estimateRewardsPoints as jest.Mock;
+
+describe('useShieldRewards', () => {
+  let shieldState: MetaMaskReduxState;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    shieldState = cloneDeep(mockState) as unknown as MetaMaskReduxState;
+    // Remove keyrings so caipAccountId is null (simplifies season-only tests)
+    (shieldState.metamask as Record<string, unknown>).keyrings = [];
+  });
+
+  it('returns isRewardsSeason false when getRewardsSeasonMetadata throws "No valid season metadata" error', async () => {
+    mockGetRewardsSeasonMetadata.mockImplementation(() => async () => {
+      throw new Error(
+        'No valid season metadata could be found for type: current',
+      );
+    });
+
+    const { result, waitForNextUpdate } = renderHookWithProvider(
+      () => useShieldRewards(),
+      shieldState,
+    );
+
+    await waitForNextUpdate();
+
+    expect(result.current.isRewardsSeason).toBe(false);
+    expect(result.current.pending).toBe(false);
+  });
+
+  it('surfaces seasonError when getRewardsSeasonMetadata throws a non-season-metadata error', async () => {
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    mockGetRewardsSeasonMetadata.mockImplementation(() => async () => {
+      throw new Error('Network error');
+    });
+
+    const { result, waitForNextUpdate } = renderHookWithProvider(
+      () => useShieldRewards(),
+      shieldState,
+    );
+
+    await waitForNextUpdate();
+
+    // seasonError triggers the error fallback, returning default values
+    expect(result.current.isRewardsSeason).toBe(false);
+    expect(result.current.pointsMonthly).toBeNull();
+    expect(result.current.pointsYearly).toBeNull();
+    expect(result.current.hasAccountOptedIn).toBe(false);
+    expect(result.current.pending).toBe(false);
+
+    // Verify the error was logged
+    expect(consoleSpy).toHaveBeenCalledWith(
+      '[useShieldRewards error]:',
+      expect.any(Error),
+    );
+    consoleSpy.mockRestore();
+  });
+
+  it('returns isRewardsSeason true when season metadata is valid and current time is within range', async () => {
+    mockGetRewardsSeasonMetadata.mockImplementation(() => async () => ({
+      id: 'season-1',
+      name: 'Season 1',
+      startDate: Date.now() - 1000,
+      endDate: Date.now() + 100000,
+      tiers: [],
+    }));
+
+    const { result, waitForNextUpdate } = renderHookWithProvider(
+      () => useShieldRewards(),
+      shieldState,
+    );
+
+    await waitForNextUpdate();
+
+    expect(result.current.isRewardsSeason).toBe(true);
+    expect(result.current.pending).toBe(false);
+  });
+
+  it('returns null points when estimateRewardsPoints throws', async () => {
+    // Set up keyrings and accounts so caipAccountId is non-null and estimateRewardsPoints runs
+    const stateWithKeyrings = cloneDeep(
+      mockState,
+    ) as unknown as MetaMaskReduxState;
+
+    mockEstimateRewardsPoints.mockImplementation(() => async () => {
+      throw new Error('Points estimation failed: 500');
+    });
+
+    const { result, waitForNextUpdate } = renderHookWithProvider(
+      () => useShieldRewards(),
+      stateWithKeyrings,
+    );
+
+    await waitForNextUpdate();
+
+    // Points estimation error is caught gracefully, returning null values
+    expect(result.current.pointsMonthly).toBeNull();
+    expect(result.current.pointsYearly).toBeNull();
+    expect(result.current.pending).toBe(false);
   });
 });

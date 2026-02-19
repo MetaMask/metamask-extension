@@ -5083,9 +5083,6 @@
   "perpsAutoClose": {
     "message": "自动平仓"
   },
-  "perpsBuy": {
-    "message": "买入"
-  },
   "perpsCloseAll": {
     "message": "全部平仓"
   },
@@ -5132,9 +5129,6 @@
     "message": "加密货币"
   },
   "perpsFilterStocks": {
-    "message": "股票"
-  },
-  "perpsFilterStocksOnly": {
     "message": "股票"
   },
   "perpsFundingPayments": {
@@ -5213,29 +5207,17 @@
   "perpsSearchMarkets": {
     "message": "搜索市场"
   },
-  "perpsSell": {
-    "message": "卖出"
-  },
   "perpsShort": {
     "message": "做空"
   },
   "perpsSize": {
     "message": "规模"
   },
-  "perpsSortFundingRate": {
-    "message": "资金费率"
-  },
-  "perpsSortOpenInterest": {
-    "message": "未平仓合约量"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "价格变化：从高到低"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "价格变化：从低到高"
-  },
-  "perpsSortVolume": {
-    "message": "交易量"
   },
   "perpsStartNewTrade": {
     "message": "开始新交易"
@@ -7076,44 +7058,8 @@
   "smartAccount": {
     "message": "智能账户"
   },
-  "smartAccountAccept": {
-    "message": "使用智能账户"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "交易更快速、费用更低"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "批量处理交易，省时省钱。"
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "保留原账户地址，随时可切换回原账户。"
-  },
   "smartAccountLabel": {
     "message": "智能账户"
-  },
-  "smartAccountPayToken": {
-    "message": "随时使用任何代币支付"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "使用您已经拥有的代币支付网络费用。"
-  },
-  "smartAccountReject": {
-    "message": "不使用智能账户"
-  },
-  "smartAccountSameAccount": {
-    "message": "账户相同，功能更加智能化。"
-  },
-  "smartAccountSplashInfo": {
-    "message": "智能账户"
-  },
-  "smartAccountSplashTitle": {
-    "message": "使用智能账户？"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "您的账户将在下次交易时更新为智能账户。"
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "成功！"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "地址相同。功能更加智能化。"
@@ -8603,12 +8549,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useSmartAccountDescription": {
-    "message": "启用此功能后，当相关功能（如更快的交易速度、更低的网络费用及灵活的支付方式）可用时，系统将自动把 MetaMask 内创建的账户切换为智能账户。"
-  },
-  "useSmartAccountTitle": {
-    "message": "使用智能账户"
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "要自动显示发送到您账户的代币，需要与第三方服务器通信以获取代币的图像。这些服务器将拥有您的IP地址的访问权限。"
