@@ -77,6 +77,7 @@ const TEST_IDS = {
   HOVER_TRIGGER: 'hover-trigger',
   CHANGE_IN_SETTINGS_LINK: 'change-in-settings-link',
   SHOW_DEFAULT_ADDRESS_TOGGLE: 'show-default-address-toggle',
+  VIEW_ALL_BUTTON: 'multichain-address-rows-view-all-button',
 } as const;
 
 const mockWalletEntropySource = '01K437Z7EJ0VCMFDE9TQKRV60A';
@@ -319,12 +320,16 @@ const createMockBalance = (
 const renderComponent = (
   groupId: AccountGroupId = GROUP_ID_MOCK,
   onViewAllClick?: () => void,
+  showViewAllButton?: boolean,
+  showDefaultAddressSection?: boolean,
 ) => {
   const store = mockStore(createMockState());
   return renderWithProvider(
     <MultichainHoveredAddressRowsList
       groupId={groupId}
       onViewAllClick={onViewAllClick}
+      showViewAllButton={showViewAllButton}
+      showDefaultAddressSection={showDefaultAddressSection}
     >
       <div data-testid="hover-trigger">Hover Me</div>
     </MultichainHoveredAddressRowsList>,
@@ -781,6 +786,22 @@ describe('MultichainHoveredAddressRowsList', () => {
         `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(GROUP_ID_MOCK)}`,
       );
     });
+
+    it('does not render the button when showViewAllButton is false', async () => {
+      renderComponent(GROUP_ID_MOCK, undefined, false);
+
+      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
+      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+        ).toBeInTheDocument();
+      });
+
+      expect(
+        screen.queryByTestId(TEST_IDS.VIEW_ALL_BUTTON),
+      ).not.toBeInTheDocument();
+    });
   });
 
   describe('Hover Functionality', () => {
@@ -971,6 +992,25 @@ describe('MultichainHoveredAddressRowsList', () => {
       expect(
         screen.getByTestId(TEST_IDS.SHOW_DEFAULT_ADDRESS_TOGGLE),
       ).toBeInTheDocument();
+    });
+
+    it('does not render the default address section when showDefaultAddressSection is false', async () => {
+      renderComponent(GROUP_ID_MOCK, undefined, undefined, false);
+
+      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
+      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+        ).toBeInTheDocument();
+      });
+
+      expect(
+        screen.queryByTestId(TEST_IDS.CHANGE_IN_SETTINGS_LINK),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId(TEST_IDS.SHOW_DEFAULT_ADDRESS_TOGGLE),
+      ).not.toBeInTheDocument();
     });
   });
 });
