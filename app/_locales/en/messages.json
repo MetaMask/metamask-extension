@@ -3355,6 +3355,9 @@
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "iUnderstand": {
+    "message": "I understand"
+  },
   "includesXTransactions": {
     "message": "Includes $1 transactions"
   },

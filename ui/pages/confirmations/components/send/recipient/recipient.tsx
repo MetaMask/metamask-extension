@@ -11,6 +11,8 @@ import {
   IconName,
   ButtonIcon,
   ButtonIconSize,
+  ButtonLink,
+  ButtonLinkSize,
   HelpText,
   HelpTextSeverity,
 } from '../../../../../components/component-library';
@@ -33,6 +35,9 @@ export const Recipient = ({
 }) => {
   const {
     recipientError,
+    recipientErrorLearnMoreLink,
+    recipientErrorAllowAcknowledge,
+    acknowledgeError,
     recipientWarning,
     recipientResolvedLookup,
     toAddressValidated,
@@ -96,7 +101,33 @@ export const Recipient = ({
       {to === toAddressValidated && recipientError && (
         <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
           {recipientError}
+          {recipientErrorLearnMoreLink && (
+            <>
+              {' '}
+              <ButtonLink
+                size={ButtonLinkSize.Inherit}
+                href={recipientErrorLearnMoreLink}
+                externalLink
+                data-testid="recipient-error-learn-more-link"
+              >
+                {t('learnMore')}
+              </ButtonLink>
+            </>
+          )}
         </HelpText>
+      )}
+      {to === toAddressValidated && recipientErrorAllowAcknowledge && (
+        <Text
+          as="a"
+          color={TextColor.primaryDefault}
+          variant={TextVariant.bodyXs}
+          marginTop={1}
+          onClick={acknowledgeError}
+          style={{ cursor: 'pointer' }}
+          data-testid="recipient-error-acknowledge"
+        >
+          {t('iUnderstand')}
+        </Text>
       )}
       {to === toAddressValidated && recipientWarning && (
         <HelpText severity={HelpTextSeverity.Warning} marginTop={1}>
