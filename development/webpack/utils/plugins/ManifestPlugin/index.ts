@@ -1,5 +1,4 @@
 import { readFileSync, readdirSync } from 'node:fs';
-import { extname, join } from 'node:path/posix';
 import path from 'node:path';
 import {
   sources,
@@ -205,7 +204,7 @@ export class ManifestPlugin<Z extends boolean> {
         for (const [assetName, asset] of assetsArray) {
           if (errored) return;
 
-          const extName = extname(assetName);
+          const extName = path.extname(assetName);
           if (excludeExtensions.includes(extName)) continue;
 
           addAssetToZip(
@@ -258,14 +257,18 @@ export class ManifestPlugin<Z extends boolean> {
       const manifest = new RawSource(
         JSON.stringify(this.manifests.get(browser), null, 2),
       );
-      compilation.emitAsset(join(browser, 'manifest.json'), manifest, {
+      compilation.emitAsset(path.join(browser, 'manifest.json'), manifest, {
         javascriptModule: false,
         contentType: 'application/json',
       });
       for (const [name, asset] of assetEntries) {
         // move the assets to their final browser-relative locations
         const assetDetails = compilation.getAsset(name) as Readonly<Asset>;
-        compilation.emitAsset(join(browser, name), asset, assetDetails.info);
+        compilation.emitAsset(
+          path.join(browser, name),
+          asset,
+          assetDetails.info,
+        );
         assetDeletions.add(name);
       }
     });
@@ -274,22 +277,22 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   private prepareManifests(compiler: Compiler): void {
-    const manifestPath = join(
+    const manifestPath = path.join(
       compiler.context,
       `manifest/v${this.options.manifest_version}`,
     );
     // Load the base manifest
-    const basePath = join(manifestPath, `_base.json`);
+    const basePath = path.join(manifestPath, `_base.json`);
     const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
 
-    const buildTypeManifestPath = join(
+    const buildTypeManifestPath = path.join(
       compiler.context,
       'build-types',
       this.options.buildType,
       'manifest',
     );
     // Load the build type base manifest if it exists for the specific build type
-    const buildTypeBasePath = join(buildTypeManifestPath, `_base.json`);
+    const buildTypeBasePath = path.join(buildTypeManifestPath, `_base.json`);
     let buildTypeBaseManifest: Partial<Manifest> = {};
     try {
       buildTypeBaseManifest = JSON.parse(
@@ -321,7 +324,7 @@ export class ManifestPlugin<Z extends boolean> {
         manifest.version_name = this.options.versionName;
       }
 
-      const browserManifestPath = join(manifestPath, `${browser}.json`);
+      const browserManifestPath = path.join(manifestPath, `${browser}.json`);
       try {
         // merge browser-specific overrides into the browser manifest
         manifest = {
@@ -332,7 +335,7 @@ export class ManifestPlugin<Z extends boolean> {
         // File doesn't exist or is invalid, skip merging
       }
 
-      const buildTypeBrowserManifestPath = join(
+      const buildTypeBrowserManifestPath = path.join(
         buildTypeManifestPath,
         `${browser}.json`,
       );
@@ -421,7 +424,7 @@ export class ManifestPlugin<Z extends boolean> {
     opts?: EntryDescriptionNormalized;
   }) => {
     const parsedFileName = path.parse(filename).name;
-    const filePath = join(compiler.context, 'html', 'pages', filename);
+    const filePath = path.join(compiler.context, 'html', 'pages', filename);
     entries[parsedFileName] = { import: [filePath], ...opts };
   };
 
@@ -471,7 +474,7 @@ export class ManifestPlugin<Z extends boolean> {
 
     let htmlFiles: string[] = [];
     try {
-      htmlFiles = readdirSync(join(compiler.context, 'html', 'pages'));
+      htmlFiles = readdirSync(path.join(compiler.context, 'html', 'pages'));
     } catch {
       // directory doesn't exist, no HTML pages to add
     }
