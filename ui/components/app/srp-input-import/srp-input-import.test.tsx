@@ -8,6 +8,14 @@ import {
 } from '../../../../shared/constants/app';
 import SrpInputImport from './srp-input-import';
 
+const mockPermissionsRequest = jest.fn().mockResolvedValue(true);
+
+jest.mock('webextension-polyfill', () => ({
+  permissions: {
+    request: (...args: unknown[]) => mockPermissionsRequest(...args),
+  },
+}));
+
 const mockGetEnvironmentType = jest.fn().mockReturnValue('popup');
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
@@ -48,7 +56,7 @@ describe('SrpInputImport', () => {
     fireEvent.click(pasteButton);
 
     await waitFor(() => {
-      expect(browser.permissions.request).toHaveBeenCalledWith({
+      expect(mockPermissionsRequest).toHaveBeenCalledWith({
         permissions: ['clipboardRead'],
       });
       expect(mockClipboardReadText).toHaveBeenCalled();
@@ -65,7 +73,7 @@ describe('SrpInputImport', () => {
     fireEvent.click(pasteButton);
 
     await waitFor(() => {
-      expect(browser.permissions.request).toHaveBeenCalledWith({
+      expect(mockPermissionsRequest).toHaveBeenCalledWith({
         permissions: ['clipboardRead'],
       });
       expect(mockClipboardReadText).toHaveBeenCalled();
