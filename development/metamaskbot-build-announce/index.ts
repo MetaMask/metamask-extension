@@ -78,16 +78,22 @@ async function start(): Promise<void> {
   // Assemble comment body
   let commentBody = artifactsBody;
 
-  commentBody += await safeBuildSection('UI startup metrics', () =>
-    buildUiStartupSection(benchmarkResults, HOST_URL),
+  commentBody += await safeBuildSection(
+    'UI startup metrics',
+    () => buildUiStartupSection(benchmarkResults, HOST_URL),
+    '<p><i>UI startup metrics: data not available.</i></p>\n\n',
   );
 
-  commentBody += await safeBuildSection('page load benchmarks', () =>
-    getPageLoadBenchmarkComment(),
+  commentBody += await safeBuildSection(
+    'page load benchmarks',
+    () => getPageLoadBenchmarkComment(),
+    '<p><i>Page load benchmarks: data not available.</i></p>\n\n',
   );
 
-  commentBody += await safeBuildSection('bundle size diffs', () =>
-    buildBundleSizeDiffSection(artifacts, MERGE_BASE_COMMIT_HASH),
+  commentBody += await safeBuildSection(
+    'bundle size diffs',
+    () => buildBundleSizeDiffSection(artifacts, MERGE_BASE_COMMIT_HASH),
+    '<p><i>Bundle size diffs: data not available.</i></p>\n\n',
   );
 
   await postCommentWithMetamaskBot({
@@ -221,7 +227,7 @@ async function buildUiStartupSection(
     buildBenchmarkSectionComment(
       hostUrl,
       Object.values(USER_ACTION_PRESETS),
-      '🏃 User Actions Benchmark',
+      '🏃 User Actions Benchmarks',
       'Action',
     ),
   );
@@ -229,7 +235,7 @@ async function buildUiStartupSection(
   const pageLoadSection = await safeBuildSection('page load', () => {
     const table = buildPageLoadTable(benchmarkResults);
     return table
-      ? `<details><summary>📊 Page Load</summary>${table}</details>\n\n`
+      ? `<details><summary>📊 Page Load Benchmarks</summary>${table}</details>\n\n`
       : '';
   });
 

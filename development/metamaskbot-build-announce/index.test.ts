@@ -221,12 +221,12 @@ describe('buildBenchmarkSection', () => {
     it('wraps rows in a collapsible details section', () => {
       const html = buildBenchmarkSection(
         entries,
-        '🏃 User Actions Benchmark',
+        '🏃 User Actions Benchmarks',
         'Action',
       );
 
       expect(html).toContain('<details>');
-      expect(html).toContain('🏃 User Actions Benchmark');
+      expect(html).toContain('🏃 User Actions Benchmarks');
       expect(html).toContain('<table>');
       expect(html).toContain('</details>');
     });
@@ -234,7 +234,7 @@ describe('buildBenchmarkSection', () => {
     it('includes correct column headers', () => {
       const html = buildBenchmarkSection(
         entries,
-        '🏃 User Actions Benchmark',
+        '🏃 User Actions Benchmarks',
         'Action',
       );
 
@@ -248,7 +248,7 @@ describe('buildBenchmarkSection', () => {
 
     it('returns empty string when no data', () => {
       expect(
-        buildBenchmarkSection([], '🏃 User Actions Benchmark', 'Action'),
+        buildBenchmarkSection([], '🏃 User Actions Benchmarks', 'Action'),
       ).toBe('');
     });
   });

@@ -10,15 +10,22 @@ import type { BenchmarkResults } from '../../test/e2e/benchmarks/utils/types';
 
 /**
  * Wraps a section builder so that any missing-data error is caught,
- * logged, and returns an empty string instead of crashing the comment.
+ * logged, and returns a fallback string instead of crashing the comment.
+ *
+ * Pass a non-empty `fallback` only for top-level sections where a visible
+ * "data not available" message is acceptable. For subsections whose parent
+ * uses an empty-content guard (e.g. buildUiStartupSection), omit `fallback`
+ * (defaults to '') so the guard can fire correctly when all subsections fail.
  *
  * @param sectionName - Human-readable name for the log message.
  * @param fn - The builder function to execute.
- * @returns The section HTML, or empty string on failure.
+ * @param fallback - String to return on error. Defaults to ''.
+ * @returns The section HTML, the fallback string on error, or '' if the builder returns null.
  */
 export async function safeBuildSection(
   sectionName: string,
   fn: () => Promise<string | null> | string | null,
+  fallback: string = '',
 ): Promise<string> {
   try {
     return (await fn()) ?? '';
@@ -26,7 +33,7 @@ export async function safeBuildSection(
     console.log(
       `No data available for ${sectionName}; skipping (${String(error)})`,
     );
-    return `<p><i>${sectionName}: data not available.</i></p>\n\n`;
+    return fallback;
   }
 }
 
@@ -338,7 +345,7 @@ function wrapInDetailsTable(
  * Builds a benchmark HTML section with a collapsible table.
  *
  * @param entries - Parsed benchmark entries.
- * @param summary - The collapsible header text (e.g. '🏃 User Actions Benchmark').
+ * @param summary - The collapsible header text (e.g. '🏃 User Actions Benchmarks').
  * @param firstColumn - Label for the first column (e.g. 'Action', 'Benchmark').
  * @returns HTML string or empty string if no data.
  */
@@ -417,7 +424,7 @@ export function extractEntries(
  *
  * @param hostUrl - Base URL for CI artifacts.
  * @param presets - Preset names to fetch (e.g. USER_ACTION_PRESETS, PERFORMANCE_PRESETS).
- * @param summary - Collapsible header text (e.g. '🏃 User Actions Benchmark').
+ * @param summary - Collapsible header text (e.g. '🏃 User Actions Benchmarks').
  * @param firstColumn - Label for the first table column (e.g. 'Action', 'Benchmark').
  * @returns HTML string for the collapsible section, or empty string if no data.
  */
@@ -433,8 +440,8 @@ export async function buildBenchmarkSectionComment(
     try {
       const data = await fetchBenchmarkJson(
         hostUrl,
-        'chrome',
-        'browserify',
+        BENCHMARK_PLATFORMS[0],
+        BENCHMARK_BUILD_TYPES[0],
         preset,
       );
       if (data) {
