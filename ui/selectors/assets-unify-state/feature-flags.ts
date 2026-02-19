@@ -6,10 +6,8 @@ import {
   string,
   assert,
 } from '@metamask/superstruct';
-import {
-  getRemoteFeatureFlags,
-  type RemoteFeatureFlagsState,
-} from '../remote-feature-flags';
+import { createSelector } from 'reselect';
+import { getRemoteFeatureFlags } from '../remote-feature-flags';
 import {
   ASSETS_UNIFY_STATE_VERSION_1,
   isAssetsUnifyStateFeatureEnabled,
@@ -29,7 +27,7 @@ const AssetsUnifyStateFeatureFlag = object({
 /**
  * Feature flag type for assets-unify-state feature
  */
-export type AssetsUnifyStateFeatureFlagType = Infer<
+export type AssetsUnifyStateFeatureFlag = Infer<
   typeof AssetsUnifyStateFeatureFlag
 >;
 
@@ -37,22 +35,23 @@ export type AssetsUnifyStateFeatureFlagType = Infer<
  * Selector to get the assets-unify-state remote feature flag.
  *
  * @param state - The MetaMask state object
- * @returns AssetsUnifyStateFeatureFlagType - The feature flag for assets-unify-state, or undefined if not set.
+ * @returns AssetsUnifyStateFeatureFlag - The feature flag for assets-unify-state, or undefined if not set.
  */
-export const getAssetsUnifyStateRemoteFeatureFlag = (
-  state: RemoteFeatureFlagsState,
-): AssetsUnifyStateFeatureFlagType | undefined => {
-  try {
-    const assetsUnifyStateFeatureFlag =
-      getRemoteFeatureFlags(state)[ASSETS_UNIFY_STATE_FLAG];
+export const getAssetsUnifyStateRemoteFeatureFlag = createSelector(
+  [getRemoteFeatureFlags],
+  (remoteFeatureFlags) => {
+    try {
+      const assetsUnifyStateFeatureFlag =
+        remoteFeatureFlags[ASSETS_UNIFY_STATE_FLAG];
 
-    assert(assetsUnifyStateFeatureFlag, AssetsUnifyStateFeatureFlag);
+      assert(assetsUnifyStateFeatureFlag, AssetsUnifyStateFeatureFlag);
 
-    return assetsUnifyStateFeatureFlag;
-  } catch (error) {
-    return undefined;
-  }
-};
+      return assetsUnifyStateFeatureFlag;
+    } catch (error) {
+      return undefined;
+    }
+  },
+);
 
 /**
  * Selector to check if the assets-unify-state feature is enabled.
@@ -62,12 +61,12 @@ export const getAssetsUnifyStateRemoteFeatureFlag = (
  * @param state - The MetaMask state object
  * @returns boolean - True if the feature is enabled, false otherwise.
  */
-export const getIsAssetsUnifyStateEnabled = (
-  state: RemoteFeatureFlagsState,
-): boolean => {
-  const remoteFlag = getAssetsUnifyStateRemoteFeatureFlag(state);
-  return isAssetsUnifyStateFeatureEnabled(
-    remoteFlag,
-    ASSETS_UNIFY_STATE_VERSION_1,
-  );
-};
+export const getIsAssetsUnifyStateEnabled = createSelector(
+  [getAssetsUnifyStateRemoteFeatureFlag],
+  (assetsUnifyStateFeatureFlag) => {
+    return isAssetsUnifyStateFeatureEnabled(
+      assetsUnifyStateFeatureFlag,
+      ASSETS_UNIFY_STATE_VERSION_1,
+    );
+  },
+);

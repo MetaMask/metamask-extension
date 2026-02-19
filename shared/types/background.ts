@@ -60,6 +60,7 @@ import type { SmartTransactionsControllerState } from '@metamask/smart-transacti
 import type { ConnectivityControllerState } from '@metamask/connectivity-controller';
 
 import type { ClaimsControllerState } from '@metamask/claims-controller';
+import { AssetsControllerState } from '@metamask/assets-controller';
 import type { NetworkOrderControllerState } from '../../app/scripts/controllers/network-order';
 import type { AccountOrderControllerState } from '../../app/scripts/controllers/account-order';
 import type { PreferencesControllerState } from '../../app/scripts/controllers/preferences-controller';
@@ -334,6 +335,12 @@ export type ControllerStatePropertiesEnumerated = {
   claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
   drafts: ClaimsControllerState['drafts'];
   connectivityStatus: ConnectivityControllerState['connectivityStatus'];
+  assetsInfo: AssetsControllerState['assetsInfo'];
+  assetsPrice: AssetsControllerState['assetsPrice'];
+  assetsBalance: AssetsControllerState['assetsBalance'];
+  customAssets: AssetsControllerState['customAssets'];
+  assetPreferences: AssetsControllerState['assetPreferences'];
+  selectedCurrency: AssetsControllerState['selectedCurrency'];
 };
 
 type ControllerStateTypesMerged = AccountsControllerState &
@@ -397,7 +404,8 @@ type ControllerStateTypesMerged = AccountsControllerState &
   UserOperationControllerState &
   UserStorageController.UserStorageControllerState &
   RewardsControllerState &
-  ConnectivityControllerState;
+  ConnectivityControllerState &
+  AssetsControllerState;
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

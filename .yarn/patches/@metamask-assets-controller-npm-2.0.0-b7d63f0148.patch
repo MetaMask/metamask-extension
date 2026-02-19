@@ -1,0 +1,164 @@
+diff --git a/dist/AssetsController.cjs b/dist/AssetsController.cjs
+index 60ebb3df734e7b1ba06373b1884b15e9330dd224..b29cf14e3c6dd20a7a422f494dcacd1bc1145975 100644
+--- a/dist/AssetsController.cjs
++++ b/dist/AssetsController.cjs
+@@ -62,6 +62,7 @@ function getDefaultAssetsControllerState() {
+         assetsPrice: {},
+         customAssets: {},
+         assetPreferences: {},
++        selectedCurrency: 'usd',
+     };
+ }
+ exports.getDefaultAssetsControllerState = getDefaultAssetsControllerState;
+@@ -99,6 +100,12 @@ const stateMetadata = {
+         includeInDebugSnapshot: false,
+         usedInUi: true,
+     },
++    selectedCurrency: {
++        persist: true,
++        includeInStateLogs: false,
++        includeInDebugSnapshot: false,
++        usedInUi: true,
++    },
+ };
+ // ============================================================================
+ // HELPER FUNCTIONS
+@@ -260,6 +267,7 @@ class AssetsController extends base_controller_1.BaseController {
+         }), "f");
+         __classPrivateFieldSet(this, _AssetsController_priceDataSource, new PriceDataSource_1.PriceDataSource({
+             queryApiClient,
++            getSelectedCurrency: () => this.state.selectedCurrency,
+             ...priceDataSourceConfig,
+         }), "f");
+         __classPrivateFieldSet(this, _AssetsController_detectionMiddleware, new DetectionMiddleware_1.DetectionMiddleware(), "f");
+@@ -530,6 +538,33 @@ class AssetsController extends base_controller_1.BaseController {
+         });
+     }
+     // ============================================================================
++    // CURRENT CURRENCY MANAGEMENT
++    // ============================================================================
++    /**
++     * Set the current currency.
++     *
++     * @param selectedCurrency - The ISO 4217 currency code to set.
++     */
++    setSelectedCurrency(selectedCurrency) {
++        const previousCurrency = this.state.selectedCurrency;
++        if (previousCurrency === selectedCurrency) {
++            return;
++        }
++        this.update((state) => {
++            state.selectedCurrency = selectedCurrency;
++        });
++        log('Current currency changed', {
++            previousCurrency,
++            selectedCurrency,
++        });
++        this.getAssets(__classPrivateFieldGet(this, _AssetsController_instances, "a", _AssetsController_selectedAccounts_get), {
++            forceUpdate: true,
++            dataTypes: ['price'],
++        }).catch((error) => {
++            log('Failed to fetch asset prices after current currency change', error);
++        });
++    }
++    // ============================================================================
+     // SUBSCRIPTIONS
+     // ============================================================================
+     /**
+diff --git a/dist/AssetsController.d.cts b/dist/AssetsController.d.cts
+index 1ac4e6e4256843fb66c0c61dd9d6a4c041dfacb8..955404885461636ee40b7127080dff4b32a9bdc4 100644
+--- a/dist/AssetsController.d.cts
++++ b/dist/AssetsController.d.cts
+@@ -2,7 +2,7 @@ import type { AccountTreeControllerGetAccountsFromSelectedAccountGroupAction, Ac
+ import type { GetTokenListState } from "@metamask/assets-controllers";
+ import { BaseController } from "@metamask/base-controller";
+ import type { ControllerGetStateAction, ControllerStateChangeEvent } from "@metamask/base-controller";
+-import type { ApiPlatformClient, BackendWebSocketServiceActions, BackendWebSocketServiceEvents } from "@metamask/core-backend";
++import type { ApiPlatformClient, BackendWebSocketServiceActions, BackendWebSocketServiceEvents, SupportedCurrency } from "@metamask/core-backend";
+ import type { KeyringControllerLockEvent, KeyringControllerUnlockEvent } from "@metamask/keyring-controller";
+ import type { InternalAccount } from "@metamask/keyring-internal-api";
+ import type { Messenger } from "@metamask/messenger";
+@@ -51,6 +51,8 @@ export type AssetsControllerState = {
+     assetPreferences: {
+         [assetId: string]: AssetPreferences;
+     };
++    /** Currently-active ISO 4217 currency code */
++    selectedCurrency: SupportedCurrency;
+ };
+ /**
+  * Returns the default state for AssetsController.
+@@ -244,6 +246,12 @@ export declare class AssetsController extends BaseController<typeof CONTROLLER_N
+      * @param assetId - The CAIP-19 asset ID to unhide.
+      */
+     unhideAsset(assetId: Caip19AssetId): void;
++    /**
++     * Set the current currency.
++     *
++     * @param selectedCurrency - The ISO 4217 currency code to set.
++     */
++    setSelectedCurrency(selectedCurrency: SupportedCurrency): void;
+     /**
+      * Subscribe to price updates for all assets held by the given accounts.
+      * Polls PriceDataSource which fetches prices from balance state.
+diff --git a/dist/data-sources/PriceDataSource.cjs b/dist/data-sources/PriceDataSource.cjs
+index eb5e4b82c37e41fe94786024a36158bf42f97a99..478a6ad7f7ca0d3296faa9c1e1bc271e7a61fde7 100644
+--- a/dist/data-sources/PriceDataSource.cjs
++++ b/dist/data-sources/PriceDataSource.cjs
+@@ -10,7 +10,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+ };
+-var _PriceDataSource_instances, _PriceDataSource_currency, _PriceDataSource_pollInterval, _PriceDataSource_apiClient, _PriceDataSource_activeSubscriptions, _PriceDataSource_fetchSpotPrices, _PriceDataSource_getAssetIdsFromBalanceState;
++var _PriceDataSource_instances, _PriceDataSource_getSelectedCurrency, _PriceDataSource_pollInterval, _PriceDataSource_apiClient, _PriceDataSource_activeSubscriptions, _PriceDataSource_fetchSpotPrices, _PriceDataSource_getAssetIdsFromBalanceState;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.PriceDataSource = void 0;
+ const core_backend_1 = require("@metamask/core-backend");
+@@ -79,13 +79,13 @@ class PriceDataSource {
+     }
+     constructor(options) {
+         _PriceDataSource_instances.add(this);
+-        _PriceDataSource_currency.set(this, void 0);
++        _PriceDataSource_getSelectedCurrency.set(this, void 0);
+         _PriceDataSource_pollInterval.set(this, void 0);
+         /** ApiPlatformClient for cached API calls */
+         _PriceDataSource_apiClient.set(this, void 0);
+         /** Active subscriptions by ID */
+         _PriceDataSource_activeSubscriptions.set(this, new Map());
+-        __classPrivateFieldSet(this, _PriceDataSource_currency, options.currency ?? 'usd', "f");
++        __classPrivateFieldSet(this, _PriceDataSource_getSelectedCurrency, options.getSelectedCurrency, "f");
+         __classPrivateFieldSet(this, _PriceDataSource_pollInterval, options.pollInterval ?? DEFAULT_POLL_INTERVAL, "f");
+         __classPrivateFieldSet(this, _PriceDataSource_apiClient, options.queryApiClient, "f");
+     }
+@@ -271,7 +271,7 @@ class PriceDataSource {
+     }
+ }
+ exports.PriceDataSource = PriceDataSource;
+-_PriceDataSource_currency = new WeakMap(), _PriceDataSource_pollInterval = new WeakMap(), _PriceDataSource_apiClient = new WeakMap(), _PriceDataSource_activeSubscriptions = new WeakMap(), _PriceDataSource_instances = new WeakSet(), _PriceDataSource_fetchSpotPrices = 
++_PriceDataSource_getSelectedCurrency = new WeakMap(), _PriceDataSource_pollInterval = new WeakMap(), _PriceDataSource_apiClient = new WeakMap(), _PriceDataSource_activeSubscriptions = new WeakMap(), _PriceDataSource_instances = new WeakSet(), _PriceDataSource_fetchSpotPrices = 
+ // ============================================================================
+ // HELPERS
+ // ============================================================================
+@@ -283,7 +283,7 @@ _PriceDataSource_currency = new WeakMap(), _PriceDataSource_pollInterval = new W
+  */
+ async function _PriceDataSource_fetchSpotPrices(assetIds) {
+     return __classPrivateFieldGet(this, _PriceDataSource_apiClient, "f").prices.fetchV3SpotPrices(assetIds, {
+-        currency: __classPrivateFieldGet(this, _PriceDataSource_currency, "f"),
++        currency: __classPrivateFieldGet(this, _PriceDataSource_getSelectedCurrency, "f").call(this),
+         includeMarketData: true,
+     });
+ }, _PriceDataSource_getAssetIdsFromBalanceState = function _PriceDataSource_getAssetIdsFromBalanceState(request, getAssetsState) {
+diff --git a/dist/data-sources/PriceDataSource.d.cts b/dist/data-sources/PriceDataSource.d.cts
+index 5269f7cfd0c638a7401d20e035bf97c47993bb90..e4e574b2cf927dda7d4a3ea48f27756f861bbb9e 100644
+--- a/dist/data-sources/PriceDataSource.d.cts
++++ b/dist/data-sources/PriceDataSource.d.cts
+@@ -10,8 +10,8 @@ export type PriceDataSourceConfig = {
+ export type PriceDataSourceOptions = PriceDataSourceConfig & {
+     /** ApiPlatformClient for API calls with caching */
+     queryApiClient: ApiPlatformClient;
+-    /** Currency to fetch prices in (default: 'usd') */
+-    currency?: SupportedCurrency;
++    /** Function returning the currently-active ISO 4217 currency code */
++    getSelectedCurrency: () => SupportedCurrency;
+ };
+ /**
+  * PriceDataSource fetches asset prices from the Price API.

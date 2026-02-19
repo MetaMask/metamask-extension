@@ -44,6 +44,11 @@ import {
   type AccountGroupObject,
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
+import { AssetsControllerState } from '@metamask/assets-controller';
+import {
+  getCurrencyRateControllerCurrencyRates,
+  getTokenRatesControllerMarketData,
+} from '../../selectors/assets-migration';
 import { getHardwareWalletType } from '../../selectors/selectors';
 import {
   ALL_ALLOWED_BRIDGE_CHAIN_IDS,
@@ -116,7 +121,8 @@ export type BridgeAppState = {
     MultichainNetworkControllerState &
     TokenListState &
     RemoteFeatureFlagControllerState &
-    CurrencyRateState & {
+    CurrencyRateState &
+    AssetsControllerState & {
       useExternalServices: boolean;
     };
   bridge: BridgeState;
@@ -492,8 +498,8 @@ export const getFromTokenConversionRate = createSelector(
     (state: BridgeAppState) => state.bridge.fromTokenExchangeRate,
     getAssetsRates, // non-evm conversion rates multichain equivalent of getMarketData
     getMultichainCoinRates,
-    (state: BridgeAppState) => state.metamask.marketData, // rates for non-native evm tokens
-    (state: BridgeAppState) => state.metamask.currencyRates, // EVM only
+    getTokenRatesControllerMarketData, // rates for non-native evm tokens
+    getCurrencyRateControllerCurrencyRates, // EVM only
   ],
   (
     fromToken,

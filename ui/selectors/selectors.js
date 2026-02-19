@@ -178,6 +178,12 @@ import {
   getCurrentNetworkTransactions,
 } from './transactions';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+import {
+  getTokensControllerAllTokens,
+  getAccountTrackerControllerAccountsByChainId,
+  getCurrencyRateControllerCurrencyRates,
+  getTokenRatesControllerMarketData,
+} from './assets-migration';
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
@@ -497,7 +503,7 @@ export function getAccountTypeForKeyring(keyring) {
  * @returns {object} A map of account addresses to account objects (which includes the account balance)
  */
 export const getMetaMaskAccountBalances = createSelector(
-  (state) => state.metamask.accountsByChainId,
+  getAccountTrackerControllerAccountsByChainId,
   getCurrentChainId,
   (accountsByChainId, currentChainId) => {
     const balancesForCurrentChain = accountsByChainId?.[currentChainId] ?? {};
@@ -515,7 +521,7 @@ export const getMetaMaskAccountBalances = createSelector(
 );
 
 export const getMetaMaskCachedBalances = createSelector(
-  (state) => state.metamask.accountsByChainId,
+  getAccountTrackerControllerAccountsByChainId,
   getEnabledNetworks,
   getCurrentChainId,
   (_, networkChainId) => networkChainId,
@@ -785,7 +791,8 @@ export function getHDEntropyIndex(state) {
 }
 
 export function getCrossChainMetaMaskCachedBalances(state) {
-  const allAccountsByChainId = state.metamask.accountsByChainId;
+  const allAccountsByChainId =
+    getAccountTrackerControllerAccountsByChainId(state);
   return Object.keys(allAccountsByChainId).reduce((acc, chainId) => {
     acc[chainId] = Object.keys(allAccountsByChainId[chainId]).reduce(
       (innerAcc, address) => {
@@ -894,7 +901,7 @@ export function getSelectedAccountTokensAcrossChains(state) {
  * @param {string} chainId - The chainId of the account
  */
 export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
-  (state) => state.metamask.accountsByChainId,
+  getAccountTrackerControllerAccountsByChainId,
   (_state, accountAddress) => accountAddress,
   (accountsByChainId, selectedAddress) => {
     const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
@@ -918,7 +925,7 @@ export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
  */
 export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
   [
-    (state) => state.metamask.allTokens,
+    getTokensControllerAllTokens,
     (state) => state.metamask.networkConfigurationsByChainId,
     (state, accountAddress) =>
       getNativeTokenCachedBalanceByChainIdSelector(state, accountAddress),
@@ -1048,9 +1055,7 @@ export function getSelectedAccountCachedBalance(state) {
   return cachedBalances?.[selectedAddress];
 }
 
-export function getAllTokens(state) {
-  return state.metamask.allTokens;
-}
+export { getTokensControllerAllTokens as getAllTokens };
 
 /**
  * Get a flattened list of all ERC-20 tokens owned by the user.
@@ -1059,7 +1064,7 @@ export function getAllTokens(state) {
  * @returns {object[]} All ERC-20 tokens owned by the user in a flat array.
  */
 export const selectAllTokensFlat = createSelector(
-  getAllTokens,
+  getTokensControllerAllTokens,
   (tokensByAccountByChain) => {
     const tokensByAccountArray = Object.values(tokensByAccountByChain);
 
@@ -1095,24 +1100,6 @@ export const getSelectedAccount = createSelector(
   },
 );
 
-export const getWatchedToken = (transactionMeta) =>
-  createSelector(
-    [getSelectedAccount, getAllTokens],
-    (selectedAccount, detectedTokens) => {
-      const { chainId } = transactionMeta;
-
-      const selectedToken = detectedTokens?.[chainId]?.[
-        selectedAccount.address
-      ]?.find(
-        (token) =>
-          toChecksumHexAddress(token.address) ===
-          toChecksumHexAddress(transactionMeta.txParams.to),
-      );
-
-      return selectedToken;
-    },
-  );
-
 export function getTargetAccount(state, targetAddress) {
   const accounts = getMetaMaskAccounts(state);
   return accounts[targetAddress];
@@ -1120,7 +1107,7 @@ export function getTargetAccount(state, targetAddress) {
 
 export const getTokenExchangeRates = createSelector(
   (state) => getCurrentChainId(state),
-  (state) => state.metamask.marketData,
+  getTokenRatesControllerMarketData,
   (chainId, marketData) => {
     const contractMarketData = marketData?.[chainId] ?? {};
     return Object.entries(contractMarketData).reduce(
@@ -1134,7 +1121,7 @@ export const getTokenExchangeRates = createSelector(
 );
 
 export const getCrossChainTokenExchangeRates = (state) => {
-  const contractMarketData = state.metamask.marketData ?? {};
+  const contractMarketData = getTokenRatesControllerMarketData(state) ?? {};
 
   return Object.keys(contractMarketData).reduce((acc, topLevelKey) => {
     acc[topLevelKey] = Object.keys(contractMarketData[topLevelKey]).reduce(
@@ -1155,14 +1142,15 @@ export const getCrossChainTokenExchangeRates = (state) => {
  * @param state
  * @returns {Record<Hex, import('@metamask/assets-controllers').MarketDataDetails>}
  */
-export const getTokensMarketData = (state) => {
-  const chainId = getCurrentChainId(state);
-  return state.metamask.marketData?.[chainId];
-};
+export const getTokensMarketData = createSelector(
+  getCurrentChainId,
+  getTokenRatesControllerMarketData,
+  (chainId, marketData) => {
+    return marketData?.[chainId];
+  },
+);
 
-export const getMarketData = (state) => {
-  return state.metamask.marketData;
-};
+export { getTokenRatesControllerMarketData as getMarketData };
 
 export function getAddressBook(state) {
   const chainId = getCurrentChainId(state);
@@ -1334,14 +1322,14 @@ export const getIsRpcFailoverEnabled = createSelector(
  */
 export const selectConversionRateByChainId = createSelector(
   selectNetworkConfigurationByChainId,
-  (state) => state,
-  (networkConfiguration, state) => {
+  getCurrencyRateControllerCurrencyRates,
+  (networkConfiguration, currencyRates) => {
     if (!networkConfiguration) {
       return undefined;
     }
 
     const { nativeCurrency } = networkConfiguration;
-    return state.metamask.currencyRates[nativeCurrency]?.conversionRate;
+    return currencyRates[nativeCurrency]?.conversionRate;
   },
 );
 
@@ -1581,7 +1569,8 @@ export function getShouldShowFiat(state, chainId) {
       CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId] ??
       CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION[chainId] ??
       selectNetworkConfigurationByChainId(state, chainId)?.nativeCurrency;
-    conversionRate = getCurrencyRates(state)?.[ticker]?.conversionRate;
+    conversionRate =
+      getCurrencyRateControllerCurrencyRates(state)?.[ticker]?.conversionRate;
   } else {
     currentChainId = getCurrentChainId(state);
     conversionRate = getConversionRate(state);
@@ -1924,14 +1913,15 @@ export function getUseExternalServices(state) {
   return state.metamask.useExternalServices;
 }
 
-export function getUSDConversionRate(state) {
-  return state.metamask.currencyRates[getProviderConfig(state).ticker]
-    ?.usdConversionRate;
-}
+export const getUSDConversionRate = createSelector(
+  [getCurrencyRateControllerCurrencyRates, getProviderConfig],
+  (currencyRates, providerConfig) =>
+    currencyRates[providerConfig.ticker]?.usdConversionRate,
+);
 
 export const getUSDConversionRateByChainId = (chainId) =>
   createSelector(
-    getCurrencyRates,
+    getCurrencyRateControllerCurrencyRates,
     (state) => selectNetworkConfigurationByChainId(state, chainId),
     (currencyRates, networkConfiguration) => {
       if (!networkConfiguration) {
@@ -1943,9 +1933,7 @@ export const getUSDConversionRateByChainId = (chainId) =>
     },
   );
 
-export function getCurrencyRates(state) {
-  return state.metamask.currencyRates;
-}
+export { getCurrencyRateControllerCurrencyRates as getCurrencyRates };
 
 export function getWeb3ShimUsageStateForOrigin(state, origin) {
   return state.metamask.web3ShimUsageOrigins[origin];
@@ -2084,7 +2072,7 @@ export const selectERC20TokensByChain = createDeepEqualSelector(
   (erc20TokensByChain) => erc20TokensByChain,
 );
 
-export const selectERC20Tokens = createDeepEqualSelector(
+const selectERC20Tokens = createDeepEqualSelector(
   getCurrentChainId,
   (state) => state.metamask.tokensChainsCache,
   (chainId, erc20Tokens) => erc20Tokens?.[chainId]?.data || {},
@@ -3292,16 +3280,6 @@ export function getBlockExplorerLinkText(
   }
 
   return blockExplorerLinkText;
-}
-
-export function getAllAccountsOnNetworkAreEmpty(state) {
-  const balances = getMetaMaskCachedBalances(state) ?? {};
-  const hasNoNativeFundsOnAnyAccounts = Object.values(balances).every(
-    (balance) => balance === '0x0' || balance === '0x00',
-  );
-  const hasNoTokens = getNumberOfTokens(state) === 0;
-
-  return hasNoNativeFundsOnAnyAccounts && hasNoTokens;
 }
 
 export function getUnconnectedAccounts(state, activeTab) {

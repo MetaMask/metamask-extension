@@ -22,6 +22,7 @@ import {
 } from '@metamask/utils';
 import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
+import { AssetsControllerState } from '@metamask/assets-controller';
 import {
   MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET,
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -29,7 +30,6 @@ import {
   MultichainNetworks,
   MultichainProviderConfig,
 } from '../../shared/constants/multichain/networks';
-import { Numeric } from '../../shared/modules/Numeric';
 import {
   getCompletedOnboarding,
   getConversionRate,
@@ -73,6 +73,7 @@ import {
   getSelectedMultichainNetworkConfiguration,
   type MultichainNetworkConfigState,
 } from './multichain/networks';
+import { getMultiChainBalancesControllerBalances } from './assets-migration';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -101,7 +102,8 @@ export type MultichainState = AccountsState &
   NetworkState &
   AssetsRatesState &
   AssetsState &
-  MultichainNetworkConfigState;
+  MultichainNetworkConfigState &
+  AssetsControllerState;
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
 export type ProviderConfigWithImageUrlAndExplorerUrl = {
@@ -473,11 +475,7 @@ export function getMultichainIsTestnet(
   ].includes(providerConfig.chainId as MultichainNetworks);
 }
 
-export function getMultichainBalances(
-  state: MultichainState,
-): BalancesState['metamask']['balances'] {
-  return state.metamask.balances;
-}
+export { getMultiChainBalancesControllerBalances as getMultichainBalances };
 
 export function getMultichainTransactions(
   state: MultichainState,
@@ -517,7 +515,7 @@ function getNonEvmCachedBalance(
   state: MultichainState,
   account?: InternalAccount,
 ) {
-  const balances = getMultichainBalances(state);
+  const balances = getMultiChainBalancesControllerBalances(state);
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const selectedNetworkConfig =
     getSelectedMultichainNetworkConfiguration(state);
@@ -565,15 +563,6 @@ export function getMultichainSelectedAccountCachedBalance(
     ? getSelectedAccountCachedBalance(state)
     : getNonEvmCachedBalance(state);
 }
-
-export const getMultichainSelectedAccountCachedBalanceIsZero = createSelector(
-  [getMultichainIsEvm, getMultichainSelectedAccountCachedBalance],
-  (isEvm, balance) => {
-    const base = isEvm ? 16 : 10;
-    const numericBalance = new Numeric(balance, base);
-    return numericBalance.isZero();
-  },
-);
 
 export function getMultichainConversionRate(
   state: MultichainState,
