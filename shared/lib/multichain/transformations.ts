@@ -237,6 +237,7 @@ export function selectTransactions(address: string) {
           transactionType: raw.transactionType || '',
           transactionCategory: raw.transactionCategory || '',
           transactionProtocol,
+          valueTransfers: raw.valueTransfers,
         });
 
         return result;

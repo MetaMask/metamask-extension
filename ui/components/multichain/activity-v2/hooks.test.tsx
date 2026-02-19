@@ -232,4 +232,50 @@ describe('useGetTitle', () => {
 
     expect(result.current).toBe('revokePermissionTitle:token');
   });
+
+  it('returns sent NFT for ERC-1155 safeTransferFrom classified as GENERIC_CONTRACT_CALL', () => {
+    const selectedAddress = '0xd5018bd3d94e23e71a2575206a1176d5c8637bec';
+
+    const store = configureMockStore()({
+      metamask: {
+        internalAccounts: {
+          selectedAccount: '1',
+          accounts: {
+            '1': {
+              address: selectedAddress,
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
+    });
+
+    const tx = {
+      transactionCategory: 'CONTRACT_CALL',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      transactionProtocol: '',
+      txParams: {
+        from: selectedAddress,
+        to: '0x72cb271ea6a5e0101cfc5db86b98a9ce292dbb34',
+      },
+      valueTransfers: [
+        {
+          from: '0xd5018bd3d94e23e71a2575206a1176d5c8637bec',
+          to: '0x44027dd2370a868ce827da45a415c36f85e47a96',
+          amount: '1',
+          decimal: 0,
+          contractAddress: '0x72cb271ea6a5e0101cfc5db86b98a9ce292dbb34',
+          symbol: '',
+          name: '',
+          transferType: 'erc1155',
+        },
+      ],
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHook(() => useGetTitle(tx), {
+      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+    });
+
+    expect(result.current).toBe('sentSpecifiedTokens:NFT');
+  });
 });
