@@ -11,16 +11,13 @@ import * as riveWasmContext from '../../../../contexts/rive-wasm';
 import * as useThemeHook from '../../../../hooks/useTheme';
 import PerpsTutorialAnimation from './PerpsTutorialAnimation';
 
-// Mock the Rive hooks
+const createMockRive = () =>
+  ({
+    play: jest.fn(),
+  }) as unknown as riveReactCanvas.Rive;
+
+// Mock the Rive library exports used by the component
 jest.mock('@rive-app/react-canvas', () => ({
-  useRive: jest.fn(() => ({
-    rive: { play: jest.fn(), cleanup: jest.fn() },
-    RiveComponent: () => <div data-testid="rive-component">Rive Animation</div>,
-  })),
-  useRiveFile: jest.fn(() => ({
-    riveFile: { name: 'mock-rive-file' },
-    status: 'success',
-  })),
   Layout: jest.fn(),
   Fit: {
     Cover: 'cover',
@@ -35,21 +32,13 @@ jest.mock('@rive-app/react-canvas', () => ({
   },
 }));
 
-// Mock Rive WASM context
+// Mock Rive WASM hook
 jest.mock('../../../../contexts/rive-wasm', () => ({
-  useRiveWasmContext: jest.fn(() => ({
-    isWasmReady: true,
-    loading: false,
+  useRiveWasmAnimation: jest.fn(() => ({
+    rive: createMockRive(),
+    RiveComponent: () => <div data-testid="rive-component">Rive Animation</div>,
+    status: 'ready',
     error: undefined,
-    urlBufferMap: {},
-    setUrlBufferCache: jest.fn(),
-    animationCompleted: {},
-    setIsAnimationCompleted: jest.fn(),
-  })),
-  useRiveWasmFile: jest.fn(() => ({
-    buffer: new ArrayBuffer(8),
-    error: undefined,
-    loading: false,
   })),
 }));
 
@@ -74,25 +63,13 @@ describe('PerpsTutorialAnimation', () => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
 
     // Reset to default mocks
-    mockedRiveWasmContext.useRiveWasmContext.mockReturnValue({
-      isWasmReady: true,
-      loading: false,
+    mockedRiveWasmContext.useRiveWasmAnimation.mockReturnValue({
+      rive: createMockRive(),
+      RiveComponent: () => (
+        <div data-testid="rive-component">Rive Animation</div>
+      ),
+      status: 'ready',
       error: undefined,
-      urlBufferMap: {},
-      setUrlBufferCache: jest.fn(),
-      animationCompleted: {},
-      setIsAnimationCompleted: jest.fn(),
-    });
-    mockedRiveWasmContext.useRiveWasmFile.mockReturnValue({
-      buffer: new ArrayBuffer(8),
-      error: undefined,
-      loading: false,
-    });
-    mockedRiveReactCanvas.useRiveFile.mockReturnValue({
-      riveFile: {
-        name: 'mock-rive-file',
-      } as unknown as riveReactCanvas.RiveFile,
-      status: 'success',
     });
     mockedUseTheme.useTheme.mockReturnValue(ThemeType.light);
   });
@@ -112,27 +89,28 @@ describe('PerpsTutorialAnimation', () => {
       expect(screen.getByTestId('rive-component')).toBeInTheDocument();
     });
 
-    it('passes the correct artboard name to useRive', () => {
+    it('passes the correct artboard name to useRiveWasmAnimation', () => {
       render(<PerpsTutorialAnimation artboardName="02_Leverage" />);
 
-      expect(mockedRiveReactCanvas.useRive).toHaveBeenCalledWith(
+      expect(mockedRiveWasmContext.useRiveWasmAnimation).toHaveBeenCalledWith(
         expect.objectContaining({
-          artboard: '02_Leverage',
+          riveParams: expect.objectContaining({
+            artboard: '02_Leverage',
+          }),
         }),
       );
     });
   });
 
   describe('loading state', () => {
-    it('renders loading placeholder when WASM is not ready', () => {
-      mockedRiveWasmContext.useRiveWasmContext.mockReturnValue({
-        isWasmReady: false,
-        loading: true,
+    it('renders loading placeholder when animation status is loading', () => {
+      mockedRiveWasmContext.useRiveWasmAnimation.mockReturnValue({
+        rive: null,
+        RiveComponent: () => (
+          <div data-testid="rive-component">Rive Animation</div>
+        ),
+        status: 'loading',
         error: undefined,
-        urlBufferMap: {},
-        setUrlBufferCache: jest.fn(),
-        animationCompleted: {},
-        setIsAnimationCompleted: jest.fn(),
       });
 
       render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
@@ -142,24 +120,14 @@ describe('PerpsTutorialAnimation', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders loading placeholder when buffer is loading', () => {
-      mockedRiveWasmContext.useRiveWasmFile.mockReturnValue({
-        buffer: undefined,
+    it('renders loading placeholder when animation status is failed', () => {
+      mockedRiveWasmContext.useRiveWasmAnimation.mockReturnValue({
+        rive: null,
+        RiveComponent: () => (
+          <div data-testid="rive-component">Rive Animation</div>
+        ),
+        status: 'failed',
         error: undefined,
-        loading: true,
-      });
-
-      render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
-
-      expect(
-        screen.getByTestId('perps-tutorial-animation-loading'),
-      ).toBeInTheDocument();
-    });
-
-    it('renders loading placeholder when riveFile status is loading', () => {
-      mockedRiveReactCanvas.useRiveFile.mockReturnValue({
-        riveFile: null,
-        status: 'loading' as const,
       });
 
       render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
@@ -214,8 +182,10 @@ describe('PerpsTutorialAnimation', () => {
 
       render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
 
-      expect(mockedRiveWasmContext.useRiveWasmFile).toHaveBeenCalledWith(
-        './images/riv_animations/perps-onboarding-carousel-light.riv',
+      expect(mockedRiveWasmContext.useRiveWasmAnimation).toHaveBeenCalledWith(
+        expect.objectContaining({
+          url: './images/riv_animations/perps-onboarding-carousel-light.riv',
+        }),
       );
     });
 
@@ -224,8 +194,10 @@ describe('PerpsTutorialAnimation', () => {
 
       render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
 
-      expect(mockedRiveWasmContext.useRiveWasmFile).toHaveBeenCalledWith(
-        './images/riv_animations/perps-onboarding-carousel-dark.riv',
+      expect(mockedRiveWasmContext.useRiveWasmAnimation).toHaveBeenCalledWith(
+        expect.objectContaining({
+          url: './images/riv_animations/perps-onboarding-carousel-dark.riv',
+        }),
       );
     });
   });
