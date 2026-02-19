@@ -318,6 +318,7 @@ describe('useMusdCtaVisibility', () => {
           <TToken extends ConversionToken>(tokens: TToken[]) => tokens,
         ),
         filterTokens: jest.fn((assets: Asset[]) => assets),
+        defaultPaymentToken: null,
       });
 
       const store = createMockStore();
@@ -424,6 +425,7 @@ describe('useMusdCtaVisibility', () => {
           <TToken extends ConversionToken>(tokens: TToken[]) => tokens,
         ),
         filterTokens: jest.fn((assets: Asset[]) => assets),
+        defaultPaymentToken: null,
       });
 
       const store = createMockStore();

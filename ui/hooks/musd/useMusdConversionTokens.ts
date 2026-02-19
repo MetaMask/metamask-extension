@@ -13,6 +13,7 @@ import type { Hex } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { isMusdSupportedChain } from '../../components/app/musd/constants';
+import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import type { TokenWithFiatAmount } from '../../components/app/assets/types';
 import {
   type Asset,
@@ -32,6 +33,7 @@ import {
   selectMusdMinAssetBalanceRequired,
 } from '../../selectors/musd';
 import { checkTokenAllowed } from './useMusdCtaVisibility';
+import { useMusdNetworkFilter } from './useMusdNetworkFilter';
 
 // ============================================================================
 // Types
@@ -71,6 +73,8 @@ export type UseMusdConversionTokensResult = {
   hasConvertibleTokensByChainId: (chainId: Hex) => boolean;
   /** The tokens that are eligible for mUSD conversion */
   tokens: TokenWithFiatAmount[];
+  /** The best default payment token for the current network selection */
+  defaultPaymentToken: { address: string; chainId: Hex } | null;
 };
 
 // ============================================================================
@@ -124,6 +128,8 @@ function getTokenFiatBalance(token: ConversionToken): number | null {
  * - tokens: The tokens that are eligible for mUSD conversion.
  */
 export function useMusdConversionTokens(): UseMusdConversionTokensResult {
+  const { selectedChainId } = useMusdNetworkFilter();
+
   // Get feature flag values
   const allowlist = useSelector(selectMusdConvertibleTokensAllowlist);
   const blocklist = useSelector(selectMusdConvertibleTokensBlocklist);
@@ -226,6 +232,34 @@ export function useMusdConversionTokens(): UseMusdConversionTokensResult {
     }
   }, [allTokens, filterAllowedTokens]);
 
+  const defaultPaymentToken = useMemo(() => {
+    if (conversionTokens.length === 0) {
+      return null;
+    }
+
+    const paymentToken = selectedChainId
+      ? conversionTokens.find(
+          (token) =>
+            token.chainId &&
+            safeFormatChainIdToHex(token.chainId) === selectedChainId,
+        )
+      : conversionTokens[0];
+
+    if (!paymentToken?.chainId || !paymentToken?.address) {
+      return null;
+    }
+
+    const chainIdHex = safeFormatChainIdToHex(paymentToken.chainId);
+    if (!chainIdHex.startsWith('0x')) {
+      return null;
+    }
+
+    return {
+      address: toChecksumHexAddress(paymentToken.address),
+      chainId: chainIdHex as Hex,
+    };
+  }, [conversionTokens, selectedChainId]);
+
   /**
    * Check if there are convertible tokens on a specific chain
    */
@@ -315,6 +349,7 @@ export function useMusdConversionTokens(): UseMusdConversionTokensResult {
       isMusdSupportedOnChain,
       hasConvertibleTokensByChainId,
       tokens: conversionTokens,
+      defaultPaymentToken,
     }),
     [
       filterAllowedTokens,
@@ -323,6 +358,7 @@ export function useMusdConversionTokens(): UseMusdConversionTokensResult {
       isMusdSupportedOnChain,
       hasConvertibleTokensByChainId,
       conversionTokens,
+      defaultPaymentToken,
     ],
   );
 }

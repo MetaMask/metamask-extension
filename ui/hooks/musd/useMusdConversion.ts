@@ -28,7 +28,6 @@ import {
   findNetworkClientIdByChainId,
   setMusdConversionEducationSeen,
 } from '../../store/actions';
-import type { ConvertibleToken } from '../../pages/musd/types';
 import {
   buildMusdConversionTx,
   isMatchingMusdConversion,
@@ -59,7 +58,7 @@ export type UseMusdConversionResult = {
 
 export type StartConversionOptions = {
   /** Preferred payment token to pre-select */
-  preferredToken?: ConvertibleToken;
+  preferredToken?: { address: string; chainId: Hex };
   /** Skip education screen even if not seen */
   skipEducation?: boolean;
   /** Entry point for analytics */
@@ -254,7 +253,7 @@ export function useMusdConversion(): UseMusdConversionResult {
         if (preferredToken?.address) {
           await updateTransactionPaymentToken({
             transactionId: txId,
-            tokenAddress: preferredToken.address,
+            tokenAddress: preferredToken.address as `0x${string}`,
             chainId,
           });
         }

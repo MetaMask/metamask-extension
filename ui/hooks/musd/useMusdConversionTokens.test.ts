@@ -20,6 +20,14 @@ import {
   getIsMultichainAccountsState2Enabled,
 } from '../../selectors';
 import { useMusdConversionTokens } from './useMusdConversionTokens';
+import { useMusdNetworkFilter } from './useMusdNetworkFilter';
+
+// Mock hooks
+jest.mock('./useMusdNetworkFilter', () => ({
+  useMusdNetworkFilter: jest.fn(),
+}));
+
+const mockUseMusdNetworkFilter = useMusdNetworkFilter as jest.Mock;
 
 // Mock selectors
 jest.mock('../../selectors/musd', () => ({
@@ -38,18 +46,23 @@ jest.mock('../../selectors', () => ({
   getIsMultichainAccountsState2Enabled: jest.fn(),
 }));
 
-const mockSelectMusdConvertibleTokensAllowlist =
-  selectMusdConvertibleTokensAllowlist as jest.Mock;
-const mockSelectMusdConvertibleTokensBlocklist =
-  selectMusdConvertibleTokensBlocklist as jest.Mock;
-const mockSelectMusdMinAssetBalanceRequired =
-  selectMusdMinAssetBalanceRequired as jest.Mock;
-const mockGetTokenBalancesEvm = getTokenBalancesEvm as jest.Mock;
-const mockGetAssetsBySelectedAccountGroup =
-  getAssetsBySelectedAccountGroup as jest.Mock;
-const mockGetSelectedAccount = getSelectedAccount as jest.Mock;
-const mockGetIsMultichainAccountsState2Enabled =
-  getIsMultichainAccountsState2Enabled as jest.Mock;
+const mockSelectMusdConvertibleTokensAllowlist = jest.mocked(
+  selectMusdConvertibleTokensAllowlist,
+);
+const mockSelectMusdConvertibleTokensBlocklist = jest.mocked(
+  selectMusdConvertibleTokensBlocklist,
+);
+const mockSelectMusdMinAssetBalanceRequired = jest.mocked(
+  selectMusdMinAssetBalanceRequired,
+);
+const mockGetTokenBalancesEvm = jest.mocked(getTokenBalancesEvm);
+const mockGetAssetsBySelectedAccountGroup = jest.mocked(
+  getAssetsBySelectedAccountGroup,
+);
+const mockGetSelectedAccount = jest.mocked(getSelectedAccount);
+const mockGetIsMultichainAccountsState2Enabled = jest.mocked(
+  getIsMultichainAccountsState2Enabled,
+);
 
 // Test data
 const mockUsdcMainnet: TokenWithFiatAmount = {
@@ -130,6 +143,11 @@ describe('useMusdConversionTokens', () => {
     jest.clearAllMocks();
 
     // Default mock implementations
+    mockUseMusdNetworkFilter.mockReturnValue({
+      isPopularNetworksFilterActive: true,
+      selectedChainId: null,
+      enabledChainIds: ['0x1', '0xe708'],
+    });
     mockSelectMusdConvertibleTokensAllowlist.mockReturnValue(mockAllowlist);
     mockSelectMusdConvertibleTokensBlocklist.mockReturnValue(mockBlocklist);
     mockSelectMusdMinAssetBalanceRequired.mockReturnValue(0.01);
@@ -563,6 +581,77 @@ describe('useMusdConversionTokens', () => {
 
       expect(result.current.tokens).toHaveLength(1);
       expect(result.current.tokens[0].symbol).toBe('USDC');
+    });
+  });
+
+  describe('defaultPaymentToken', () => {
+    it('returns first conversion token when no specific chain is selected (popular networks)', () => {
+      mockUseMusdNetworkFilter.mockReturnValue({
+        isPopularNetworksFilterActive: true,
+        selectedChainId: null,
+        enabledChainIds: ['0x1', '0xe708'],
+      });
+      mockGetTokenBalancesEvm.mockReturnValue([mockUsdcMainnet, mockUsdcLinea]);
+
+      const { result } = renderHook(() => useMusdConversionTokens(), {
+        wrapper: createWrapper(),
+      });
+
+      expect(result.current.defaultPaymentToken).not.toBeNull();
+      expect(result.current.defaultPaymentToken?.chainId).toBe('0x1');
+    });
+
+    it('returns matching token when a single chain is selected', () => {
+      mockUseMusdNetworkFilter.mockReturnValue({
+        isPopularNetworksFilterActive: false,
+        selectedChainId: '0xe708',
+        enabledChainIds: ['0xe708'],
+      });
+      mockGetTokenBalancesEvm.mockReturnValue([mockUsdcMainnet, mockUsdcLinea]);
+
+      const { result } = renderHook(() => useMusdConversionTokens(), {
+        wrapper: createWrapper(),
+      });
+
+      expect(result.current.defaultPaymentToken).not.toBeNull();
+      expect(result.current.defaultPaymentToken?.chainId).toBe('0xe708');
+    });
+
+    it('returns null when no conversion tokens exist', () => {
+      mockGetTokenBalancesEvm.mockReturnValue([]);
+
+      const { result } = renderHook(() => useMusdConversionTokens(), {
+        wrapper: createWrapper(),
+      });
+
+      expect(result.current.defaultPaymentToken).toBeNull();
+    });
+
+    it('returns null when selected chain has no matching token', () => {
+      mockUseMusdNetworkFilter.mockReturnValue({
+        isPopularNetworksFilterActive: false,
+        selectedChainId: '0x89',
+        enabledChainIds: ['0x89'],
+      });
+      mockGetTokenBalancesEvm.mockReturnValue([mockUsdcMainnet]);
+
+      const { result } = renderHook(() => useMusdConversionTokens(), {
+        wrapper: createWrapper(),
+      });
+
+      expect(result.current.defaultPaymentToken).toBeNull();
+    });
+
+    it('checksums the token address', () => {
+      mockGetTokenBalancesEvm.mockReturnValue([mockUsdcMainnet]);
+
+      const { result } = renderHook(() => useMusdConversionTokens(), {
+        wrapper: createWrapper(),
+      });
+
+      expect(result.current.defaultPaymentToken?.address).toBe(
+        '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      );
     });
   });
 });
