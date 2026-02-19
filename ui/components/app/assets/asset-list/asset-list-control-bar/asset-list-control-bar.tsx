@@ -260,7 +260,7 @@ const AssetListControlBar = ({
       dispatch(
         refreshAssetsForSelectedAccount([selectedInternalAccount], {
           chainIds: allEnabledNetworksForAllNamespaces,
-          assetTypes: ['token'],
+          assetTypes: ['token', 'price', 'metadata'],
         }),
       );
     }

@@ -46,10 +46,7 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
-import {
-  KeyringObject,
-  KeyringTypes,
-} from '@metamask/keyring-controller';
+import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
@@ -3155,7 +3152,9 @@ export function multichainIgnoreAssets(
  * is enabled (e.g. refresh in asset list control bar).
  *
  * @param accounts - Accounts to refresh assets for (e.g. selected account)
- * @param options - Options for fetching assets (chainIds, assetTypes)
+ * @param options - Options for fetching assets
+ * @param options.chainIds - Optional chain IDs to fetch
+ * @param options.assetTypes - Optional asset types to fetch
  * @returns void
  */
 export function refreshAssetsForSelectedAccount(
