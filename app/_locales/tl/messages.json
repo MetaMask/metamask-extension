@@ -7058,44 +7058,8 @@
   "smartAccount": {
     "message": "Smart account"
   },
-  "smartAccountAccept": {
-    "message": "Gumamit ng smart account"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Mas mabibilis na transaksyon, mas mabababang bayarin"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "Makatipid ng oras at pera sa pagproseso ng mga transaksyon nang sabay-sabay."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Panatilihin ang parehong address ng account, at puwede kang lumipat anumang oras."
-  },
   "smartAccountLabel": {
     "message": "Smart Account"
-  },
-  "smartAccountPayToken": {
-    "message": "Magbayad gamit ang anumang token anumang oras"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Gamitin ang mga token na mayroon ka na para sa mga bayarin sa network."
-  },
-  "smartAccountReject": {
-    "message": "Huwag gumamit ng smart account"
-  },
-  "smartAccountSameAccount": {
-    "message": "Parehong account, mas mahuhusay na feature."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Mga smart account"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Gumamit ng smart account?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Ang iyong account ay ia-update sa smart account sa susunod mong transaksyon."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Matagumpay!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Parehong address. Mas mahuhusay na feature."
