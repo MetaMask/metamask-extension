@@ -61,7 +61,7 @@ describe('wallet_requestExecutionPermissions', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        assert.rejects(
+        await assert.rejects(
           driver.executeScript(
             `return window.ethereum.request(${chainIdRequest})`,
           ),
