@@ -97,6 +97,10 @@ export type MultichainAddressRowsListProps = {
   showDefaultAddressSection?: boolean;
 };
 
+const Divider = () => (
+  <div className="my-3 mx-4 border-t border-border-muted" />
+);
+
 export const MultichainHoveredAddressRowsList = ({
   children,
   groupId,
@@ -388,11 +392,7 @@ export const MultichainHoveredAddressRowsList = ({
           )}
           {showDefaultAddressSection && (
             <>
-              <Box
-                marginHorizontal={4}
-                marginVertical={3}
-                className="border-t border-border-muted"
-              />
+              <Divider />
               <Box paddingLeft={4} paddingBottom={2}>
                 <Box
                   flexDirection={BoxFlexDirection.Row}
