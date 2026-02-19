@@ -22,6 +22,8 @@ import { getDefaultScopeAndAddressByAccountGroupId } from '../../../selectors/mu
 import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
+const MAX_NETWORK_AVATARS = 4;
+
 export type MultichainAccountNetworkGroupWithDefaultAddressProps = {
   groupId: AccountGroupId;
 };
@@ -72,7 +74,8 @@ export const MultichainAccountNetworkGroupWithDefaultAddress = ({
     >
       <MultichainAccountNetworkGroup
         groupId={groupId}
-        chainIds={defaultScopes}
+        chainIds={defaultScopes.slice(0, MAX_NETWORK_AVATARS)}
+        limit={MAX_NETWORK_AVATARS}
       />
       <Text
         variant={TextVariant.BodyXs}
