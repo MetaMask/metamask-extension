@@ -1,7 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { isNonEvmChainId } from '@metamask/bridge-controller';
+import {
+  formatChainIdToCaip,
+  isNonEvmChainId,
+} from '@metamask/bridge-controller';
 import * as actions from '../../../../store/actions';
 import Identicon from '../../../ui/identicon';
 import { Button, ButtonVariant, Box } from '../../../component-library';
@@ -19,6 +22,10 @@ import {
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
 import { isAssetsUnifyStateFeatureEnabled } from '../../../../../shared/lib/assets-unify-state/remote-feature-flag';
+import {
+  getAssetsControllerCustomAssets,
+  isAssetInAccountCustomAssets,
+} from '../../../../selectors/assets-unify-state/asset-preferences';
 
 function mapStateToProps(state) {
   return {
@@ -29,6 +36,7 @@ function mapStateToProps(state) {
     getAccountForChain: (caipChainId) =>
       getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
     assetsUnifyStateFeatureEnabled: isAssetsUnifyStateFeatureEnabled(state),
+    customAssets: getAssetsControllerCustomAssets(state),
   };
 }
 
@@ -41,22 +49,44 @@ function mapDispatchToProps(dispatch) {
       chainId,
       getAccountForChain,
       assetsUnifyStateFeatureEnabled,
+      customAssets,
     ) => {
       const isNonEvm = isNonEvmChainId(chainId);
 
-      console.log(
-        'isAssetsUnifyStateFeatureEnabled +++++++++++++++++++++++',
-        assetsUnifyStateFeatureEnabled,
-      );
-
       if (assetsUnifyStateFeatureEnabled) {
         const assetId = toAssetId(address, chainId);
+        const caipChainId = isNonEvmChainId(chainId)
+          ? chainId
+          : formatChainIdToCaip(chainId);
+        const accountForChain = getAccountForChain(caipChainId);
+        const isInCustomAssets =
+          accountForChain &&
+          isAssetInAccountCustomAssets(
+            customAssets,
+            accountForChain.id,
+            assetId,
+          );
+
+        console.log(
+          'isInCustomAssets +++++++++++++++++++++++',
+          isInCustomAssets,
+        );
+        console.log(
+          'accountForChain.id +++++++++++++++++++++++',
+          accountForChain.id,
+        );
         console.log('assetId +++++++++++++++++++++++', assetId);
 
         try {
-          await dispatch(actions.hideAsset(assetId));
+          if (isInCustomAssets) {
+            await dispatch(
+              actions.removeCustomAsset(accountForChain.id, assetId),
+            );
+          } else {
+            await dispatch(actions.hideAsset(assetId));
+          }
         } catch (error) {
-          console.log('error +++++++++++++++++++++++', error);
+          console.error('Error hiding/removing asset:', error);
           return;
         }
       }
@@ -101,6 +131,7 @@ class HideTokenConfirmationModal extends Component {
     networkConfigurationsByChainId: PropTypes.object.isRequired,
     getAccountForChain: PropTypes.func.isRequired,
     assetsUnifyStateFeatureEnabled: PropTypes.bool.isRequired,
+    customAssets: PropTypes.object,
     token: PropTypes.shape({
       symbol: PropTypes.string,
       address: PropTypes.string,
@@ -122,6 +153,7 @@ class HideTokenConfirmationModal extends Component {
       networkConfigurationsByChainId,
       getAccountForChain,
       assetsUnifyStateFeatureEnabled,
+      customAssets,
     } = this.props;
     const { symbol, address, image, chainId: tokenChainId } = token;
     const chainIdToUse = tokenChainId || chainId;
@@ -168,7 +200,8 @@ class HideTokenConfirmationModal extends Component {
                   undefined,
                   chainIdToUse,
                   getAccountForChain,
-                  isAssetsUnifyStateFeatureEnabled,
+                  assetsUnifyStateFeatureEnabled,
+                  customAssets,
                 );
               } else {
                 const chainConfig =
@@ -182,6 +215,7 @@ class HideTokenConfirmationModal extends Component {
                   chainIdToUse,
                   getAccountForChain,
                   assetsUnifyStateFeatureEnabled,
+                  customAssets,
                 );
               }
               navigate(DEFAULT_ROUTE);

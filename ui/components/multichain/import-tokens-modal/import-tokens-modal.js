@@ -40,6 +40,7 @@ import {
   addImportedTokens,
   addCustomAsset,
   getAssets,
+  unhideAsset,
   multichainAddAssets,
   clearPendingTokens,
   setPendingTokens,
@@ -120,6 +121,10 @@ import TokenListPlaceholder from '../../app/import-token/token-list/token-list-p
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import { isAssetsUnifyStateFeatureEnabled } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
+import {
+  getAssetsControllerAssetPreferences,
+  isAssetIdHiddenInPreferencesMap,
+} from '../../../selectors/assets-unify-state/asset-preferences';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 const ACTION_MODES = {
@@ -152,6 +157,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const assetsUnifyStateFeatureEnabled = useSelector(
     isAssetsUnifyStateFeatureEnabled,
   );
+  const assetPreferences = useSelector(getAssetsControllerAssetPreferences);
 
   const [selectedNetwork, setSelectedNetwork] = useState(chainId);
 
@@ -383,7 +389,15 @@ export const ImportTokensModal = ({ onClose }) => {
 
       if (assetsUnifyStateFeatureEnabled) {
         for (const assetId of assetsIds) {
-          await dispatch(addCustomAsset(selectedAccount.id, assetId));
+          const isHidden = isAssetIdHiddenInPreferencesMap(
+            assetPreferences,
+            assetId,
+          );
+          if (isHidden) {
+            await dispatch(unhideAsset(assetId));
+          } else {
+            await dispatch(addCustomAsset(selectedAccount.id, assetId));
+          }
         }
         // Force AssetsController to refresh so UI receives updated state
         await dispatch(
@@ -434,6 +448,10 @@ export const ImportTokensModal = ({ onClose }) => {
     trackEvent,
     networkConfigurations,
     getAccountForChain,
+    assetsUnifyStateFeatureEnabled,
+    assetPreferences,
+    selectedAccount?.id,
+    selectedNetwork,
   ]);
 
   useEffect(() => {
