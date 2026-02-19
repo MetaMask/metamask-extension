@@ -284,7 +284,7 @@
     "@metamask/address-book-controller": "^7.0.1",
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^8.0.0",
-    "@metamask/assets-controller": "^1.0.0",
+    "@metamask/assets-controller": "^2.0.0",
     "@metamask/assets-controllers": "^99.3.1",
     "@metamask/base-controller": "^9.0.0",
     "@metamask/bitcoin-wallet-snap": "^1.10.0",
