@@ -4,7 +4,10 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import type { Hex } from '@metamask/utils';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
@@ -42,6 +45,8 @@ export function useInsufficientPayTokenBalanceAlert({
   const sourceChainId = (payToken?.chainId ?? '0x0') as Hex;
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const isPerpsDeposit =
+    currentConfirmation?.type === TransactionType.perpsDeposit;
   const selectedAddress = currentConfirmation?.txParams?.from as
     | Hex
     | undefined;
@@ -60,7 +65,7 @@ export function useInsufficientPayTokenBalanceAlert({
     getNativeTokenCachedBalanceByChainIdSelector(state, selectedAddress ?? ''),
   ) as Record<Hex, Hex>;
 
-  const { balanceUsd } = payToken ?? {};
+  const { balanceUsd, balanceRaw } = payToken ?? {};
   const payTokenBalanceRaw = payToken?.balanceRaw;
   const nativeBalanceRaw = useMemo(() => {
     const nativeBalanceHex = nativeBalancesByChainId?.[sourceChainId] ?? '0x0';
@@ -112,14 +117,27 @@ export function useInsufficientPayTokenBalanceAlert({
     [balanceUsd, payToken, totalAmountUsd],
   );
 
-  const isInsufficientForFees = useMemo(
-    () =>
-      !isPendingAlert &&
-      payToken &&
-      payTokenBalanceRaw !== undefined &&
-      totalSourceAmountRaw.gt(payTokenBalanceRaw),
-    [isPendingAlert, payToken, payTokenBalanceRaw, totalSourceAmountRaw],
-  );
+  const isInsufficientForFees = useMemo(() => {
+    if (isPendingAlert || !payToken) {
+      return false;
+    }
+
+    if (isPerpsDeposit) {
+      return (
+        payTokenBalanceRaw !== undefined &&
+        totalSourceAmountRaw.gt(payTokenBalanceRaw)
+      );
+    }
+
+    return totalSourceAmountRaw.gt(balanceRaw ?? '0');
+  }, [
+    balanceRaw,
+    isPendingAlert,
+    isPerpsDeposit,
+    payToken,
+    payTokenBalanceRaw,
+    totalSourceAmountRaw,
+  ]);
 
   const isInsufficientForSourceNetwork = useMemo(
     () =>

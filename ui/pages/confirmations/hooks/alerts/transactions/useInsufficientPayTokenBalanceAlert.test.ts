@@ -276,7 +276,7 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       ]);
     });
 
-    it('returns no pay-token-fee alert when payToken.balanceRaw is unavailable', () => {
+    it('returns pay-token-fee alert for non-perps when payToken.balanceRaw is unavailable', () => {
       useTransactionPayTokenMock.mockReturnValue({
         payToken: {
           ...PAY_TOKEN_MOCK,
@@ -289,6 +289,42 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       });
 
       const { result } = runHook();
+
+      expect(result.current).toStrictEqual([
+        {
+          key: AlertsName.InsufficientPayTokenFees,
+          field: RowAlertKey.EstimatedFee,
+          isBlocking: true,
+          reason: 'Insufficient funds',
+          message: 'Add less or use a different token.',
+          severity: Severity.Danger,
+        },
+      ]);
+    });
+
+    it('returns no pay-token-fee alert for perps when payToken.balanceRaw is unavailable', () => {
+      getNativeTokenCachedBalanceByChainIdSelectorMock.mockReturnValue({
+        '0xa4b1': '0x1bc16d674ec80000', // 2 ETH in raw hex
+      } as Record<Hex, Hex>);
+
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          chainId: '0xa4b1' as Hex,
+          balanceRaw: undefined,
+          balance: '10.0',
+        } as unknown as TransactionPaymentToken,
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      const { result } = runHook(
+        {},
+        {
+          type: TransactionType.perpsDeposit,
+          chainId: '0xa4b1' as Hex,
+        },
+      );
 
       expect(result.current).toStrictEqual([]);
     });
