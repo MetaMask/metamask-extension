@@ -1268,7 +1268,7 @@
     "description": "$1 is string 'cancel' or 'speed up'"
   },
   "cancelled": {
-    "message": "Cancelled"
+    "message": "Canceled"
   },
   "carouselAllCaughtUp": {
     "message": "You're all caught up!",
@@ -3469,7 +3469,7 @@
     "message": "Invalid Secret Recovery Phrase"
   },
   "invalidSeedPhraseCaseSensitive": {
-    "message": "Invalid input! Secret Recovery Phrase is case sensitive."
+    "message": "Invalid input. Secret Recovery Phrase is case sensitive."
   },
   "invalidSeedPhraseNotFound": {
     "message": "Secret Recovery Phrase not found."
@@ -4568,7 +4568,7 @@
     "message": "Unstaking requested"
   },
   "notificationTransactionFailedMessage": {
-    "message": "Transaction $1 failed! $2",
+    "message": "Transaction $1 failed. $2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
   "notificationTransactionFailedTitle": {
@@ -6454,7 +6454,7 @@
     "description": "Link to learn more about security alerts"
   },
   "securityAndPrivacy": {
-    "message": "Security & privacy"
+    "message": "Security and privacy"
   },
   "securityChangePassword": {
     "message": "Change password"
@@ -6472,7 +6472,7 @@
     "message": "New password saved"
   },
   "securityDefaultSettingsSocialLogin": {
-    "message": "Security & privacy"
+    "message": "Security and privacy"
   },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
@@ -6512,7 +6512,7 @@
     "message": "Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
   },
   "securitySrpLabel": {
-    "message": "SECRET RECOVERY PHRASES"
+    "message": "Secret Recovery Phrases"
   },
   "securitySrpWalletRecovery": {
     "message": "Manage recovery methods"
@@ -7094,10 +7094,10 @@
     "message": "If you cancel, your wallet and transactions will not be covered."
   },
   "shieldTxCancelNotAllowed": {
-    "message": "Your subscription cannot be cancelled at the moment."
+    "message": "Your subscription cannot be canceled at the moment."
   },
   "shieldTxCancelNotAllowedPendingVerification": {
-    "message": "Your subscription cannot be cancelled due to pending verification."
+    "message": "Your subscription cannot be canceled due to pending verification."
   },
   "shieldTxCancelWhenPausedDetails": {
     "message": "Your plan isn't active while paused. If you cancel, your plan will immediately end."
@@ -7182,11 +7182,11 @@
     "message": "Cancel plan"
   },
   "shieldTxMembershipCancelNotification": {
-    "message": "Your plan will be cancelled on $1.",
+    "message": "Your plan will be canceled on $1.",
     "description": "The $1 is the date"
   },
   "shieldTxMembershipCancelledDate": {
-    "message": "You cancelled your plan on $1",
+    "message": "You canceled your plan on $1",
     "description": "The $1 is the date"
   },
   "shieldTxMembershipErrorInsufficientFunds": {
@@ -8040,7 +8040,7 @@
     "message": "Swap would have failed"
   },
   "stxCancelledDescription": {
-    "message": "Your transaction would have failed and was cancelled to protect you from paying unnecessary gas fees."
+    "message": "Your transaction would have failed and was canceled to protect you from paying unnecessary gas fees."
   },
   "stxCancelledSubDescription": {
     "message": "Try your swap again. We’ll be here to protect you against similar risks next time."
@@ -8082,10 +8082,10 @@
     "message": "A transaction has been successful but we’re unsure what it is. This may be due to submitting another transaction while this swap was processing."
   },
   "stxUserCancelled": {
-    "message": "Swap cancelled"
+    "message": "Swap canceled"
   },
   "stxUserCancelledDescription": {
-    "message": "Your transaction has been cancelled and you did not pay any unnecessary gas fees."
+    "message": "Your transaction has been canceled and you did not pay any unnecessary gas fees."
   },
   "submit": {
     "message": "Submit"
@@ -8144,7 +8144,7 @@
     "message": "This is the minimum amount you will receive. You may receive more depending on slippage."
   },
   "swapAndSend": {
-    "message": "Swap & Send"
+    "message": "Swap and send"
   },
   "swapApproval": {
     "message": "Approve $1 for swaps",
@@ -8608,7 +8608,7 @@
     "message": "Transaction cancel attempted with estimated gas fee of $1 at $2"
   },
   "transactionCancelSuccess": {
-    "message": "Transaction successfully cancelled at $2"
+    "message": "Transaction successfully canceled at $2"
   },
   "transactionConfirmed": {
     "message": "Transaction confirmed at $2."
