@@ -8,6 +8,7 @@ import {
   NetworkEnablementControllerGetStateAction,
   NetworkEnablementControllerEvents,
 } from '@metamask/network-enablement-controller';
+import type { ClientControllerStateChangeEvent } from '@metamask/client-controller';
 import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
@@ -49,6 +50,7 @@ type CoreAssetsControllerActions =
  */
 type CoreAssetsControllerEvents =
   | AccountTreeControllerSelectedAccountGroupChangeEvent
+  | ClientControllerStateChangeEvent
   | NetworkEnablementControllerEvents
   | KeyringControllerLockEvent
   | KeyringControllerUnlockEvent;
@@ -233,6 +235,7 @@ export function getAssetsControllerMessenger(
     ],
     events: [
       'AccountTreeController:selectedAccountGroupChange',
+      'ClientController:stateChange',
       'NetworkEnablementController:stateChange',
       'KeyringController:lock',
       'KeyringController:unlock',
