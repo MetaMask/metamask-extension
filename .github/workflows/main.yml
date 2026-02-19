@@ -726,9 +726,8 @@ jobs:
 
   publish-release:
     name: Publish release
-    if: ${{ github.event_name == 'push' && github.ref_name == 'stable' && needs.get-requirements.outputs.needs-releases == 'true' }}
+    if: ${{ github.event_name == 'push' && github.ref_name == 'stable' }}
     needs:
-      - get-requirements
       - all-jobs-pass
     uses: ./.github/workflows/publish-release.yml
     secrets: inherit
