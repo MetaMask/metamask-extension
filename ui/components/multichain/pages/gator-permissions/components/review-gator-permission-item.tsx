@@ -387,7 +387,7 @@ export const ReviewGatorPermissionItem = ({
       case 'erc20-token-revocation':
         return getTokenRevocationPermissionDetails();
       default:
-        throw new Error(`Invalid permission type: ${permissionType}`);
+        throw new Error(`Invalid permission type: ${permissionType as string}`);
     }
   }, [
     permissionType,

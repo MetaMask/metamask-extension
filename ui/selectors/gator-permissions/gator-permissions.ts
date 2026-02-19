@@ -314,11 +314,13 @@ export const getTotalUniqueSitesCount = createSelector(
 );
 
 /**
- * Merged connections list: traditional connections plus sites with only gator permissions,
- * with advancedPermissionsCount set where applicable.
+ * Returns a merged record of connected sites and sites with only gator permissions for a given group.
+ * Each entry combines site metadata and includes advancedPermissionsCount where applicable.
+ *
+ * Call as: selector(state, group) where group is a permission type array (e.g. TOKEN_TRANSFER_GROUP).
  *
  * @param state - App state
- * @param group - Permission type group (e.g. TOKEN_TRANSFER_GROUP)
+ * @returns Record of site origins mapping to their ConnectionInfo
  */
 export const getMergedConnectionsListWithGatorPermissions = createSelector(
   [

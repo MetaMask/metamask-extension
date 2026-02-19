@@ -5,9 +5,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import {
-  PermissionInfoWithMetadata,
-} from '@metamask/gator-permissions-controller';
+import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
 import { getInternalAccountByAddress } from '../../selectors';
 import {
   addTransaction,
@@ -50,42 +48,35 @@ export function useRevokeGatorPermissions({
   const store = useStore();
 
   /**
+   * Asserts that the gator permission is defined.
+   *
+   * @param dataToAssert - The gator permission to assert.
+   * @throws An error if the gator permission is empty.
+   */
+  const assertNotEmptyGatorPermission = useCallback(
+    (dataToAssert: PermissionInfoWithMetadata) => {
+      if (!dataToAssert) {
+        throw new Error('No gator permission provided');
+      }
+    },
+    [],
+  );
+
+  /**
    * Asserts that the gator permissions array is not empty.
    *
    * @param gatorPermissions - The gator permissions array to assert.
    * @throws An error if the gator permissions array is empty, or if any of the gator permissions are undefined.
    */
   const assertNotEmptyGatorPermissionArray = useCallback(
-    (
-      gatorPermissions: PermissionInfoWithMetadata[],
-    ) => {
-
-      if(!gatorPermissions || gatorPermissions.length === 0 ) {
+    (gatorPermissions: PermissionInfoWithMetadata[]) => {
+      if (!gatorPermissions || gatorPermissions.length === 0) {
         throw new Error('No gator permissions provided');
       }
 
       gatorPermissions.forEach(assertNotEmptyGatorPermission);
     },
-    [],
-  );
-
-  /**
-   * Asserts that the gator permission is defined.
-  *
-   * @param dataToAssert - The gator permission to assert.
-   * @throws An error if the gator permission is empty.
-   */
-  const assertNotEmptyGatorPermission = useCallback(
-    (
-      dataToAssert:
-      PermissionInfoWithMetadata,
-    ) => {
-
-      if(!dataToAssert) {
-        throw new Error('No gator permission provided');
-      }
-    },
-    [],
+    [assertNotEmptyGatorPermission],
   );
 
   /**
@@ -95,9 +86,7 @@ export function useRevokeGatorPermissions({
    * @throws An error if the chain ID does not match.
    */
   const assertCorrectChainId = useCallback(
-    (
-      gatorPermission: PermissionInfoWithMetadata,
-    ) => {
+    (gatorPermission: PermissionInfoWithMetadata) => {
       if (gatorPermission.permissionResponse.chainId !== chainId) {
         throw new Error('Chain ID does not match');
       }
@@ -281,7 +270,7 @@ export function useRevokeGatorPermissions({
     [
       addRevokeGatorPermissionTransaction,
       assertCorrectChainId,
-      assertNotEmptyGatorPermission,
+      assertNotEmptyGatorPermissionArray,
       setTransactionId,
     ],
   );
