@@ -5,6 +5,35 @@ import { regularDelayMs } from '../../helpers';
 import { SWAP_TEST_ETH_DAI_TRADES_MOCK } from '../../../data/mock-data';
 import { SWAP_TEST_GAS_INCLUDED_TRADES_MOCK } from '../smart-transactions/mocks';
 
+const swapButton = '[data-testid="eth-overview-swap"]';
+const fromAmount = '[data-testid="from-amount"]';
+const fromAmountInput = 'input[data-testid="from-amount"]';
+const toAmountInput = 'input[data-testid="to-amount"]';
+const networkFees = '[data-testid="network-fees"]';
+const bridgeDestinationButton = '[data-testid="bridge-destination-button"]';
+const bridgeSourceButton = '[data-testid="bridge-source-button"]';
+const assetPickerSearchInput =
+  '[data-testid="bridge-asset-picker-search-input"]';
+const assetPickerSearchInputField =
+  'input[data-testid="bridge-asset-picker-search-input"]';
+const bridgeAsset = '[data-testid="bridge-asset"]';
+const importTokensButton = '[data-testid="import-tokens-import-button"]';
+const bridgeCtaButton = '[data-testid="bridge-cta-button"]';
+const slippageEditButton = '[data-testid="slippage-edit-button"]';
+const minimumReceived = '[data-testid="minimum-received"]';
+const awaitingSwapHeader = '[data-testid="awaiting-swap-header"]';
+const awaitingSwapDescription =
+  '[data-testid="awaiting-swap-main-description"]';
+const assetTab = '[data-testid="account-overview__asset-tab"]';
+const activityTab = '[data-testid="account-overview__activity-tab"]';
+const primaryCurrency =
+  '[data-testid="transaction-list-item-primary-currency"]';
+const transactionBreakdownAmount =
+  '[data-testid="transaction-breakdown-value-amount"]';
+const popoverClose = '[data-testid="popover-close"]';
+const swapsBannerTitle = '[data-testid="swaps-banner-title"]';
+const moreQuotesButton = '[aria-label="More quotes"]';
+
 export async function mockEthDaiTrade(mockServer: MockttpServer) {
   return [
     await mockServer
@@ -40,36 +69,29 @@ type SwapOptions = {
 };
 
 export const buildQuote = async (driver: Driver, options: SwapOptions) => {
-  await driver.clickElement('[data-testid="eth-overview-swap"]');
-  await driver.waitForSelector('[data-testid="from-amount"]');
-  await driver.fill(
-    'input[data-testid="from-amount"]',
-    options.amount.toString(),
-  );
+  await driver.clickElement(swapButton);
+  await driver.waitForSelector(fromAmount);
+  await driver.fill(fromAmountInput, options.amount.toString());
 
   if (options.swapTo && options.mainnet) {
-    await driver.waitForSelector({
-      css: '[data-testid="network-fees"]',
-    });
+    await driver.waitForSelector({ css: networkFees });
   }
 
-  await driver.clickElement('[data-testid="bridge-destination-button"]');
-  await driver.waitForSelector(
-    '[data-testid="bridge-asset-picker-search-input"]',
-  );
+  await driver.clickElement(bridgeDestinationButton);
+  await driver.waitForSelector(assetPickerSearchInput);
 
   await driver.fill(
-    'input[data-testid="bridge-asset-picker-search-input"]',
+    assetPickerSearchInputField,
     options.swapTo || options.swapToContractAddress || '',
   );
 
   if (options.swapTo) {
     await driver.waitForSelector({
-      css: '[data-testid="bridge-asset"]',
+      css: bridgeAsset,
       text: options.swapTo,
     });
     await driver.clickElement({
-      css: '[data-testid="bridge-asset"]',
+      css: bridgeAsset,
       text: options.swapTo,
     });
     return;
@@ -77,26 +99,24 @@ export const buildQuote = async (driver: Driver, options: SwapOptions) => {
 
   if (options.swapToContractAddress) {
     await driver.wait(async () => {
-      const hasImportButton = await driver.isElementPresent({
-        css: '[data-testid="import-tokens-import-button"]',
+      const hasImport = await driver.isElementPresent({
+        css: importTokensButton,
       });
-      const hasBridgeAsset = await driver.isElementPresent({
-        css: '[data-testid="bridge-asset"]',
+      const hasAsset = await driver.isElementPresent({
+        css: bridgeAsset,
       });
-      return hasImportButton || hasBridgeAsset;
+      return hasImport || hasAsset;
     });
 
-    const hasImportButton = await driver.isElementPresent({
-      css: '[data-testid="import-tokens-import-button"]',
+    const hasImport = await driver.isElementPresent({
+      css: importTokensButton,
     });
 
-    if (hasImportButton) {
-      await driver.clickElement('[data-testid="import-tokens-import-button"]');
-      await driver.waitForSelector({
-        css: '[data-testid="bridge-asset"]',
-      });
+    if (hasImport) {
+      await driver.clickElement(importTokensButton);
+      await driver.waitForSelector({ css: bridgeAsset });
     }
-    await driver.clickElement('[data-testid="bridge-asset"]');
+    await driver.clickElement(bridgeAsset);
   }
 };
 
@@ -109,32 +129,28 @@ export const reviewQuote = async (
     skipCounter?: boolean;
   },
 ) => {
-  await driver.waitForSelector('[data-testid="bridge-cta-button"]');
+  await driver.waitForSelector(bridgeCtaButton);
   await driver.waitForMultipleSelectors([
-    '[data-testid="network-fees"]',
-    '[data-testid="slippage-edit-button"]',
-    '[data-testid="minimum-received"]',
+    networkFees,
+    slippageEditButton,
+    minimumReceived,
   ]);
 
   await driver.waitForSelector({
-    css: '[data-testid="bridge-source-button"]',
+    css: bridgeSourceButton,
     text: options.swapFrom,
   });
 
   await driver.waitForSelector({
-    css: '[data-testid="bridge-destination-button"]',
+    css: bridgeDestinationButton,
     text: options.swapTo,
   });
 
-  const elementSwapFromAmount = await driver.findElement(
-    'input[data-testid="from-amount"]',
-  );
+  const elementSwapFromAmount = await driver.findElement(fromAmountInput);
   const swapFromAmount = await elementSwapFromAmount.getAttribute('value');
   assert.equal(swapFromAmount, options.amount.toString());
 
-  const elementSwapToAmount = await driver.findElement(
-    'input[data-testid="to-amount"]',
-  );
+  const elementSwapToAmount = await driver.findElement(toAmountInput);
   const swapToAmount = await elementSwapToAmount.getAttribute('value');
   const normalizedSwapToAmount = Number(swapToAmount.replace(/,/gu, ''));
   assert.equal(
@@ -149,32 +165,32 @@ export const waitForTransactionToComplete = async (
   options: { tokenName: string },
 ) => {
   await driver.waitForSelector({
-    css: '[data-testid="awaiting-swap-header"]',
+    css: awaitingSwapHeader,
     text: 'Processing',
   });
 
   await driver.waitForSelector(
     {
-      css: '[data-testid="awaiting-swap-header"]',
+      css: awaitingSwapHeader,
       text: 'Transaction complete',
     },
     { timeout: 30000 },
   );
 
   await driver.findElement({
-    css: '[data-testid="awaiting-swap-main-description"]',
+    css: awaitingSwapDescription,
     text: `${options.tokenName}`,
   });
 
   await driver.clickElement({ text: 'Close', tag: 'button' });
-  await driver.waitForSelector('[data-testid="account-overview__asset-tab"]');
+  await driver.waitForSelector(assetTab);
 };
 
 export const checkActivityTransaction = async (
   driver: Driver,
   options: { index: number; swapFrom: string; swapTo: string; amount: string },
 ) => {
-  await driver.clickElement('[data-testid="account-overview__activity-tab"]');
+  await driver.clickElement(activityTab);
   await driver.waitForSelector('.activity-list-item');
 
   await driver.waitForSelector({
@@ -183,7 +199,7 @@ export const checkActivityTransaction = async (
   });
 
   await driver.findElement({
-    css: '[data-testid="transaction-list-item-primary-currency"]',
+    css: primaryCurrency,
     text: `-${options.amount} ${options.swapFrom}`,
   });
 
@@ -199,11 +215,11 @@ export const checkActivityTransaction = async (
   });
 
   await driver.findElement({
-    css: '[data-testid="transaction-breakdown-value-amount"]',
+    css: transactionBreakdownAmount,
     text: `-${options.amount} ${options.swapFrom}`,
   });
 
-  await driver.clickElement('[data-testid="popover-close"]');
+  await driver.clickElement(popoverClose);
 };
 
 export const checkNotification = async (
@@ -212,7 +228,7 @@ export const checkNotification = async (
 ) => {
   const isExpectedBoxTitlePresentAndVisible =
     await driver.isElementPresentAndVisible({
-      css: '[data-testid="swaps-banner-title"]',
+      css: swapsBannerTitle,
       text: options.title,
     });
 
@@ -232,8 +248,8 @@ export const checkNotification = async (
 };
 
 export const changeExchangeRate = async (driver: Driver) => {
-  await driver.waitForSelector('[aria-label="More quotes"]');
-  await driver.clickElement('[aria-label="More quotes"]');
+  await driver.waitForSelector(moreQuotesButton);
+  await driver.clickElement(moreQuotesButton);
   await driver.waitForSelector({
     text: 'Select a quote',
   });
