@@ -57,7 +57,7 @@ async function mockSwapUSDCtoSOL(
     await mockGetUSDCSOLTransaction(mockServer, signatureHolder),
     await mockGetMintAccountInfo(mockServer),
     await mockGetSignaturesForWalletOnly(mockServer, signatureHolder),
-    await mockBridgeTxStatus(mockServer),
+    await mockBridgeTxStatus(mockServer, 'USDC_TO_SOL'),
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),

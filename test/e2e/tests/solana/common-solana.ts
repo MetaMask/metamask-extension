@@ -1718,9 +1718,35 @@ export async function mockBridgeSearchTokens(mockServer: Mockttp) {
  *
  * @param mockServer - The mockttp server instance.
  */
-export async function mockBridgeTxStatus(mockServer: Mockttp) {
+const SOL_TOKEN_INFO = {
+  address: '0x0000000000000000000000000000000000000000',
+  chainId: 1151111081099710,
+  symbol: 'SOL',
+  decimals: 9,
+  name: 'SOL',
+  coinKey: 'SOL',
+  logoURI: '',
+  priceUSD: '168.88',
+};
+
+const USDC_TOKEN_INFO = {
+  address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  chainId: 1151111081099710,
+  symbol: 'USDC',
+  decimals: 6,
+  name: 'USD Coin',
+  coinKey: 'USDC',
+  logoURI: '',
+  priceUSD: '1.0',
+};
+
+export async function mockBridgeTxStatus(
+  mockServer: Mockttp,
+  direction: 'SOL_TO_USDC' | 'USDC_TO_SOL' = 'SOL_TO_USDC',
+) {
+  const isSolToUsdc = direction === 'SOL_TO_USDC';
   return await mockServer.forGet(BRIDGE_TX_STATUS).thenCallback(() => {
-    console.log('mockBridgeTxStatus');
+    console.log('mockBridgeTxStatus', direction);
     return {
       statusCode: 200,
       json: {
@@ -1729,34 +1755,17 @@ export async function mockBridgeTxStatus(mockServer: Mockttp) {
         bridge: 'lifi',
         srcChain: {
           chainId: 1151111081099710,
-          txHash:
-            '2m8z8uPZyoZwQpissDbhSfW5XDTFmpc7cSFithc5e1w8iCwFcvVkxHeaVhgFSdgUPb5cebbKGjuu48JMLPjfEATr',
-          amount: '1000000000',
-          token: {
-            address: '0x0000000000000000000000000000000000000000',
-            chainId: 1151111081099710,
-            symbol: 'SOL',
-            decimals: 9,
-            name: 'SOL',
-            coinKey: 'SOL',
-            logoURI: '',
-            priceUSD: '168.88',
-          },
+          txHash: isSolToUsdc
+            ? SOL_TO_USDC_SWAP_SIGNATURE
+            : USDC_TO_SOL_SWAP_SIGNATURE,
+          amount: isSolToUsdc ? '1000000000' : '991250',
+          token: isSolToUsdc ? SOL_TOKEN_INFO : USDC_TOKEN_INFO,
         },
         destChain: {
           chainId: 1151111081099710,
           txHash: '',
-          amount: '136900000',
-          token: {
-            address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-            chainId: 1151111081099710,
-            symbol: 'USDC',
-            decimals: 6,
-            name: 'USD Coin',
-            coinKey: 'USDC',
-            logoURI: '',
-            priceUSD: '1.0',
-          },
+          amount: isSolToUsdc ? '136900000' : '5836864',
+          token: isSolToUsdc ? USDC_TOKEN_INFO : SOL_TOKEN_INFO,
         },
       },
     };
