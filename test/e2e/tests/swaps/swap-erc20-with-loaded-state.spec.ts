@@ -1,26 +1,37 @@
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import HomePage from '../../page-objects/pages/home/homepage';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
-import { getBridgeFixtures } from '../bridge/bridge-test-utils';
+import {
+  bridgeTransaction,
+  getBridgeFixtures,
+} from '../bridge/bridge-test-utils';
 
 describe('Swap', function () {
   const swapTestCases = [
     {
       name: 'should swap DAI to ETH',
       quote: {
-        amount: '1',
+        amount: '25',
         tokenFrom: 'DAI',
         tokenTo: 'ETH',
+        fromChain: 'Ethereum',
+        toChain: 'Linea',
+        unapproved: true,
       },
+      expectedTransactionsCount: 2,
+      expectedDestAmount: '0.0157',
     },
     {
       name: 'should swap USDC to DAI',
       quote: {
-        amount: '1',
+        amount: '10',
         tokenFrom: 'USDC',
         tokenTo: 'DAI',
+        fromChain: 'Ethereum',
+        toChain: 'Linea',
+        unapproved: true,
       },
+      expectedTransactionsCount: 2,
+      expectedDestAmount: '9.9',
     },
   ];
 
@@ -31,13 +42,12 @@ describe('Swap', function () {
         async ({ driver }) => {
           await loginWithBalanceValidation(driver, undefined, undefined, '$0');
 
-          const homePage = new HomePage(driver);
-          await homePage.startSwapFlow();
-
-          const bridgeQuotePage = new BridgeQuotePage(driver);
-          await bridgeQuotePage.enterBridgeQuote(testCase.quote);
-          await bridgeQuotePage.waitForQuote();
-          await bridgeQuotePage.checkExpectedNetworkFeeIsDisplayed();
+          await bridgeTransaction({
+            driver,
+            quote: testCase.quote,
+            expectedTransactionsCount: testCase.expectedTransactionsCount,
+            expectedDestAmount: testCase.expectedDestAmount,
+          });
         },
       );
     });
