@@ -71,6 +71,7 @@ export type SRPQuizProps = {
     ): void;
     (delta: number): void;
   };
+  skipQuiz?: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -243,7 +244,7 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
                 route = `${REVEAL_SEED_ROUTE}/${props.keyringId}`;
               }
 
-              props.navigate(route);
+              props.navigate(route, { state: { skipQuiz: props.skipQuiz } });
               if (props.closeAfterCompleting) {
                 props.onClose();
               }

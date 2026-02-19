@@ -1,7 +1,7 @@
 import qrCode from 'qrcode-generator';
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import {
   ButtonIcon,
   IconName,
@@ -67,8 +67,11 @@ function RevealSeedPage() {
   const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const { keyringId } = useParams();
+  const { skipQuiz } = useLocation()?.state || { skipQuiz: false };
 
-  const [screen, setScreen] = useState(QUIZ_INTRODUCTION_SCREEN);
+  const [screen, setScreen] = useState(
+    skipQuiz ? PASSWORD_PROMPT_SCREEN : QUIZ_INTRODUCTION_SCREEN,
+  );
   const [password, setPassword] = useState('');
   const [seedWords, setSeedWords] = useState(null);
   const [error, setError] = useState(null);
@@ -160,7 +163,7 @@ function RevealSeedPage() {
 
   const renderWarning = () => {
     return (
-      <BannerAlert severity={Severity.Danger}>
+      <BannerAlert severity={Severity.Danger} data-testid="reveal-seed-warning">
         <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
           {t('revealSeedWordsWarning')}
         </Text>
@@ -197,6 +200,7 @@ function RevealSeedPage() {
         justifyContent={JustifyContent.center}
         gap={6}
         paddingTop={6}
+        data-testid="reveal-seed-quiz-introduction"
       >
         <img
           src="images/reveal_srp.png"
@@ -235,6 +239,7 @@ function RevealSeedPage() {
             });
             setScreen(QUIZ_QUESTIONS_SCREEN);
           }}
+          data-testid="reveal-seed-quiz-get-started"
         >
           {t('srpSecurityQuizGetStarted')}
         </Button>
@@ -243,6 +248,7 @@ function RevealSeedPage() {
           width={BlockSize.Full}
           size={Size.LG}
           onClick={openSupportArticle}
+          data-testid="reveal-seed-quiz-intro-learn-more"
         >
           {t('learnMoreUpperCase')}
         </Button>
@@ -302,6 +308,7 @@ function RevealSeedPage() {
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.flexStart}
         justifyContent={JustifyContent.center}
+        data-testid="reveal-seed-quiz-question"
       >
         <Text
           variant={TextVariant.bodySm}
@@ -380,6 +387,7 @@ function RevealSeedPage() {
                 setQuestionAnswered(true);
                 setCorrectAnswer(currentQuestionIndex === 1);
               }}
+              data-testid="reveal-seed-quiz-answer-1"
             >
               {buttonLabelOne}
             </Button>
@@ -391,6 +399,7 @@ function RevealSeedPage() {
                 setQuestionAnswered(true);
                 setCorrectAnswer(currentQuestionIndex === 0);
               }}
+              data-testid="reveal-seed-quiz-answer-2"
             >
               {buttonLabelTwo}
             </Button>
@@ -399,6 +408,7 @@ function RevealSeedPage() {
               width={BlockSize.Full}
               size={Size.LG}
               onClick={openSupportArticle}
+              data-testid="reveal-seed-quiz-learn-more"
             >
               {t('learnMoreUpperCase')}
             </Button>
@@ -442,6 +452,7 @@ function RevealSeedPage() {
           width={BlockSize.Full}
           size={Size.LG}
           onClick={handleButtonClick}
+          data-testid="reveal-seed-quiz-continue-or-try-again"
         >
           {correctAnswer ? t('continue') : t('tryAgain')}
         </Button>
@@ -450,6 +461,7 @@ function RevealSeedPage() {
           width={BlockSize.Full}
           size={Size.LG}
           onClick={openSupportArticle}
+          data-testid="reveal-seed-quiz-footer-learn-more"
         >
           {t('learnMoreUpperCase')}
         </Button>
@@ -459,7 +471,7 @@ function RevealSeedPage() {
 
   const renderPasswordPromptContent = () => {
     return (
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} data-testid="reveal-seed-password-form">
         <Label htmlFor="password-box">{t('enterPasswordContinue')}</Label>
         <TextField
           inputProps={{
@@ -483,7 +495,12 @@ function RevealSeedPage() {
           }
         />
         {error && (
-          <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>
+          <HelpText
+            severity={HelpTextSeverity.Danger}
+            data-testid="reveal-seed-password-error"
+          >
+            {error}
+          </HelpText>
         )}
       </form>
     );
@@ -503,7 +520,7 @@ function RevealSeedPage() {
     }
 
     return (
-      <div>
+      <div data-testid="reveal-seed-tabs-container">
         <Tabs
           defaultActiveTabName={t('revealSeedWordsText')}
           onTabClick={(tabName) => {
@@ -553,6 +570,7 @@ function RevealSeedPage() {
               width={BlockSize.Full}
               size={Size.LG}
               onClick={onClickCopy}
+              data-testid="reveal-seed-copy-button"
             >
               <Icon
                 name={IconName.Copy}
@@ -583,7 +601,12 @@ function RevealSeedPage() {
 
   const renderPasswordPromptFooter = () => {
     return (
-      <Box display={Display.Flex} marginTop="auto" gap={4}>
+      <Box
+        display={Display.Flex}
+        marginTop="auto"
+        gap={4}
+        data-testid="reveal-seed-password-footer"
+      >
         <Button
           width={BlockSize.Full}
           size={Size.LG}
@@ -606,6 +629,7 @@ function RevealSeedPage() {
             handleSubmit(event);
           }}
           disabled={password === ''}
+          data-testid="reveal-seed-password-continue"
         >
           {t('continue')}
         </Button>
@@ -648,6 +672,7 @@ function RevealSeedPage() {
       paddingLeft={4}
       paddingRight={4}
       gap={4}
+      data-testid="reveal-seed-page"
     >
       <Box
         display={Display.Flex}
@@ -708,7 +733,7 @@ function RevealSeedPage() {
             onClose={() => setShowSuccessToast(false)}
             autoHideTime={5000}
             onAutoHideToast={() => setShowSuccessToast(false)}
-            dataTestId="disconnect-all-success-toast"
+            dataTestId="reveal-seed-copy-success-toast"
           />
         </ToastContainer>
       )}

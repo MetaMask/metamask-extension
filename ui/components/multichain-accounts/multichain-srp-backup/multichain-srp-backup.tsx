@@ -93,6 +93,7 @@ export const MultichainSrpBackup: React.FC<MultichainSrpBackupProps> = ({
           onClose={handleQuizModalClose}
           closeAfterCompleting
           navigate={navigate}
+          skipQuiz={true}
         />
       )}
     </>

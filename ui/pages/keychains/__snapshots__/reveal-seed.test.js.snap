@@ -4,6 +4,7 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
 <div>
   <div
     class="box page-container box--padding-top-8 box--padding-right-4 box--padding-bottom-8 box--padding-left-4 box--gap-4 box--flex-direction-row"
+    data-testid="reveal-seed-page"
   >
     <div
       class="box box--display-flex box--gap-2 box--flex-direction-row box--justify-content-space-between box--align-items-center"
@@ -35,6 +36,7 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
     </div>
     <div
       class="box box--padding-top-6 box--display-flex box--gap-6 box--flex-direction-column box--justify-content-center box--align-items-center"
+      data-testid="reveal-seed-quiz-introduction"
     >
       <img
         alt="Reveal SRP"
@@ -52,11 +54,13 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
     >
       <button
         class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+        data-testid="reveal-seed-quiz-get-started"
       >
         Get started
       </button>
       <button
         class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent"
+        data-testid="reveal-seed-quiz-intro-learn-more"
       >
         Learn more
       </button>
