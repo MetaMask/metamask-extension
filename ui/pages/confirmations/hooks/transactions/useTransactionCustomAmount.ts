@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { debounce, type DebouncedFunc } from 'lodash';
 import { BigNumber } from 'bignumber.js';
-import {
-  type TransactionMeta,
-} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { setIsMaxAmount } from '../../../../store/controller-actions/transaction-pay-controller';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
