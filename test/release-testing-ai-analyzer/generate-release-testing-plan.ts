@@ -24,6 +24,7 @@ import { OutputValidator } from './utils/output-validator';
 import { getApiKeyForProvider, LLM_CONFIG } from './llm_providers/config';
 import type {
   TestingPlan,
+  TestingScenario,
   PullRequestInfo,
   LLMAnalysisResponse,
 } from './types';
@@ -158,7 +159,9 @@ async function main(): Promise<void> {
 
         try {
           console.log(`   🔄 Trying ${providerNames[fallbackProvider]}...`);
-          analyzer = createAnalyzer(fallbackProvider, options.model);
+          // Use provider default model - options.model is for the original provider (e.g. gpt-5)
+          // and is incompatible with fallback providers (Claude, Gemini)
+          analyzer = createAnalyzer(fallbackProvider, undefined);
           analysis = await analyzer.analyzePR(prInfo, fileCategories);
           providerUsed = fallbackProvider;
           modelUsed = analyzer.getModelName();
@@ -404,13 +407,13 @@ function computeRiskScore(
 function buildTestingPlan(
   prInfo: PullRequestInfo,
   analysis: {
-    scenarios: TestingPlan['scenarios'];
-    cherryPickScenarios?: TestingPlan['scenarios'];
+    scenarios: TestingScenario[];
+    cherryPickScenarios?: TestingScenario[];
     summary: string;
   },
   modelUsed: string,
 ): TestingPlan {
-  type Scenario = TestingPlan['testScenarios']['initialScenarios'][0];
+  type Scenario = TestingScenario;
   const sortByRisk = (a: Scenario, b: Scenario) => {
     if (a.riskLevel === 'high' && b.riskLevel === 'medium') {
       return -1;
@@ -543,10 +546,7 @@ function formatTestingPlan(plan: TestingPlan): string {
  * @param scenario
  * @param index
  */
-function formatScenario(
-  scenario: TestingPlan['testScenarios']['initialScenarios'][0],
-  index: number,
-): string {
+function formatScenario(scenario: TestingScenario, index: number): string {
   let output = `${index}. ${scenario.area} [${scenario.riskLevel.toUpperCase()}]\n\n`;
   output += `   Why This Matters: ${scenario.whyThisMatters}\n\n`;
   output += `   Test Steps:\n`;

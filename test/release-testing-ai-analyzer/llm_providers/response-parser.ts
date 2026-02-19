@@ -5,26 +5,28 @@
 import type { LLMAnalysisResponse, TestingScenario } from '../types';
 
 /**
- * Keywords that indicate build/configuration scenarios that should be excluded
+ * Phrases that indicate build/infrastructure-only scenarios that should be excluded.
+ * Uses specific phrases to avoid false positives (e.g. "config" would incorrectly
+ * exclude "Network Configuration", "workflow" would exclude "Onboarding Workflow").
  */
-const EXCLUDE_KEYWORDS = [
-  'build',
-  'configuration',
-  'config',
-  'prettier',
+const EXCLUDE_PHRASES = [
+  'build system',
+  'build script',
+  'build configuration',
+  'webpack',
+  'browserify',
   'eslint',
-  'linting',
-  'formatting',
+  'prettier',
   'changelog',
   'storybook',
   'ci/cd',
   'github actions',
-  'workflow',
+  'github workflow',
   'package.json',
   'yarn.lock',
   'tsconfig',
-  'webpack',
-  'browserify',
+  'linting',
+  'code formatting',
 ] as const;
 
 /**
@@ -56,9 +58,9 @@ function shouldExcludeScenario(scenario: TestingScenario): boolean {
     return true;
   }
 
-  // Filter out build/configuration scenarios
+  // Filter out build/infrastructure-only scenarios (avoid broad terms like "config" or "workflow")
   const areaLower = scenario.area.toLowerCase();
-  if (EXCLUDE_KEYWORDS.some((keyword) => areaLower.includes(keyword))) {
+  if (EXCLUDE_PHRASES.some((phrase) => areaLower.includes(phrase))) {
     return true;
   }
 
