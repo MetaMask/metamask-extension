@@ -3599,9 +3599,6 @@
   "lock": {
     "message": "I-lock"
   },
-  "lockMetaMask": {
-    "message": "I-lock ang MetaMask"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "Nila-lock ang MetaMask..."
   },
