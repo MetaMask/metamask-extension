@@ -71,8 +71,9 @@ class FixtureBuilderV2 {
   }
 
   withTransactionController(data: Record<string, unknown>): this {
-    const tc = this.fixture.data.TransactionController ?? {};
-    merge(this.fixture.data, { TransactionController: tc });
+    const transactionController =
+      this.fixture.data.TransactionController ?? {};
+    merge(this.fixture.data, { TransactionController: transactionController });
     const target = this.fixture.data.TransactionController as Record<
       string,
       unknown
@@ -84,14 +85,17 @@ class FixtureBuilderV2 {
 
     if (isTransactionsObject) {
       const txRecord = data.transactions as Record<string, { time?: number }>;
-      const newTxs = Object.values(txRecord)
-        .filter((tx) => tx && typeof tx === 'object')
-        .sort((a, b) => (b.time ?? 0) - (a.time ?? 0));
+      const newTxs = Object.values(txRecord).filter(
+        (tx) => tx && typeof tx === 'object',
+      );
       const existing = Array.isArray(target.transactions)
         ? target.transactions
         : [];
       const combined = [...existing, ...newTxs];
-      combined.sort((a, b) => (b?.time ?? 0) - (a?.time ?? 0));
+      combined.sort(
+        (transactionA, transactionB) =>
+          (transactionB?.time ?? 0) - (transactionA?.time ?? 0),
+      );
       target.transactions = combined;
     } else {
       merge(target, data);
