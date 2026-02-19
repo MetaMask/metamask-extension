@@ -102,15 +102,29 @@ function normalizeTestSteps(steps: string[]): string[] {
 }
 
 /**
- * Validates and normalizes an LLM analysis response
- * - Validates structure
- * - Filters out invalid, low-risk, and build/config scenarios
- * - Sorts by risk level
- * - Normalizes test step numbering
+ * Filters, validates, and normalizes a list of scenarios
  *
- * @param parsed
- * @returns validated and normalized response
- * @throws Error if response structure is invalid
+ * @param scenarios - Raw scenarios from LLM response
+ * @returns Filtered and normalized scenarios
+ */
+function processScenarios(scenarios: TestingScenario[]): TestingScenario[] {
+  return scenarios
+    .filter((scenario: TestingScenario) => {
+      validateScenario(scenario);
+      return !shouldExcludeScenario(scenario);
+    })
+    .sort(sortByRiskLevel)
+    .map((scenario) => ({
+      ...scenario,
+      testSteps: normalizeTestSteps(scenario.testSteps),
+    }));
+}
+
+/**
+ * Validates and normalizes an LLM analysis response
+ *
+ * @param parsed - Raw LLM response to validate
+ * @returns Validated and normalized response
  */
 export function validateAndNormalizeResponse(
   parsed: LLMAnalysisResponse,
@@ -124,18 +138,13 @@ export function validateAndNormalizeResponse(
     throw new Error('Invalid response: missing summary');
   }
 
-  // Validate each scenario, filter out low risk and build/config changes, and sort by risk level
-  parsed.scenarios = parsed.scenarios
-    .filter((scenario: TestingScenario) => {
-      validateScenario(scenario);
-      return !shouldExcludeScenario(scenario);
-    })
-    .sort(sortByRiskLevel);
+  parsed.scenarios = processScenarios(parsed.scenarios);
 
-  // Ensure test steps are numbered correctly (1., 2., 3., etc.)
-  parsed.scenarios.forEach((scenario: TestingScenario) => {
-    scenario.testSteps = normalizeTestSteps(scenario.testSteps);
-  });
+  if (parsed.cherryPickScenarios && Array.isArray(parsed.cherryPickScenarios)) {
+    parsed.cherryPickScenarios = processScenarios(parsed.cherryPickScenarios);
+  } else {
+    parsed.cherryPickScenarios = [];
+  }
 
   return parsed;
 }

@@ -123,8 +123,11 @@ async function main(): Promise<void> {
       analysis = await analyzer.analyzePR(prInfo, fileCategories);
       modelUsed = analyzer.getModelName();
       if (analysis) {
+        const totalScenarios =
+          analysis.scenarios.length +
+          (analysis.cherryPickScenarios?.length ?? 0);
         console.log(
-          `   ✓ Generated ${analysis.scenarios.length} testing scenarios\n`,
+          `   ✓ Generated ${totalScenarios} testing scenarios (${analysis.scenarios.length} general, ${analysis.cherryPickScenarios?.length ?? 0} cherry-pick)\n`,
         );
       }
     } catch (error) {
@@ -160,8 +163,11 @@ async function main(): Promise<void> {
           providerUsed = fallbackProvider;
           modelUsed = analyzer.getModelName();
           if (analysis) {
+            const totalScenarios =
+              analysis.scenarios.length +
+              (analysis.cherryPickScenarios?.length ?? 0);
             console.log(
-              `   ✓ Generated ${analysis.scenarios.length} testing scenarios with ${providerNames[fallbackProvider]}\n`,
+              `   ✓ Generated ${totalScenarios} testing scenarios with ${providerNames[fallbackProvider]}\n`,
             );
           }
           success = true;
@@ -372,21 +378,40 @@ function createAnalyzer(provider: LLMProvider, model?: string): LLMAnalyzer {
 }
 
 /**
+ * Computes risk score (0-100) for the release based on scenario counts.
+ * Higher score = riskier release.
+ *
+ * @param highRiskCount
+ * @param mediumRiskCount
+ */
+function computeRiskScore(
+  highRiskCount: number,
+  mediumRiskCount: number,
+): number {
+  return Math.min(100, highRiskCount * 6 + mediumRiskCount * 2);
+}
+
+/**
  * Builds the complete testing plan from analysis results
  *
  * @param prInfo
  * @param analysis
  * @param analysis.scenarios
+ * @param analysis.cherryPickScenarios
  * @param analysis.summary
  * @param modelUsed
  */
 function buildTestingPlan(
   prInfo: PullRequestInfo,
-  analysis: { scenarios: TestingPlan['scenarios']; summary: string },
+  analysis: {
+    scenarios: TestingPlan['scenarios'];
+    cherryPickScenarios?: TestingPlan['scenarios'];
+    summary: string;
+  },
   modelUsed: string,
 ): TestingPlan {
-  // Ensure scenarios are sorted: high risk first, then medium risk
-  const sortedScenarios = [...analysis.scenarios].sort((a, b) => {
+  type Scenario = TestingPlan['testScenarios']['initialScenarios'][0];
+  const sortByRisk = (a: Scenario, b: Scenario) => {
     if (a.riskLevel === 'high' && b.riskLevel === 'medium') {
       return -1;
     }
@@ -394,17 +419,27 @@ function buildTestingPlan(
       return 1;
     }
     return 0;
-  });
+  };
 
-  const highRiskScenarios = sortedScenarios.filter(
+  const initialScenarios = [...analysis.scenarios].sort(sortByRisk);
+  const cherryPickScenarios = [...(analysis.cherryPickScenarios ?? [])].sort(
+    sortByRisk,
+  );
+
+  const allScenarios = [...cherryPickScenarios, ...initialScenarios];
+  const highRiskScenarios = allScenarios.filter(
     (s) => s.riskLevel === 'high',
   ).length;
-  const mediumRiskScenarios = sortedScenarios.filter(
+  const mediumRiskScenarios = allScenarios.filter(
     (s) => s.riskLevel === 'medium',
   ).length;
 
-  const totalAdditions = prInfo.files.reduce((sum, f) => sum + f.additions, 0);
-  const totalDeletions = prInfo.files.reduce((sum, f) => sum + f.deletions, 0);
+  const riskScore = computeRiskScore(
+    initialScenarios.filter((s) => s.riskLevel === 'high').length +
+      cherryPickScenarios.filter((s) => s.riskLevel === 'high').length,
+    initialScenarios.filter((s) => s.riskLevel === 'medium').length +
+      cherryPickScenarios.filter((s) => s.riskLevel === 'medium').length,
+  );
 
   return {
     prNumber: prInfo.number,
@@ -413,12 +448,15 @@ function buildTestingPlan(
     modelUsed,
     summary: {
       totalFilesChanged: prInfo.files.length,
-      totalAdditions,
-      totalDeletions,
+      totalCommits: prInfo.commitCount,
+      riskScore,
       highRiskScenarios,
       mediumRiskScenarios,
     },
-    scenarios: sortedScenarios,
+    testScenarios: {
+      cherryPickScenarios,
+      initialScenarios,
+    },
   };
 }
 
@@ -439,28 +477,57 @@ function formatTestingPlan(plan: TestingPlan): string {
   output += 'SUMMARY\n';
   output += `${'─'.repeat(80)}\n\n`;
   output += `Files Changed: ${plan.summary.totalFilesChanged}\n`;
-  output += `Code Changes: +${plan.summary.totalAdditions} -${plan.summary.totalDeletions}\n`;
+  output += `Total Commits: ${plan.summary.totalCommits}\n`;
+  output += `Risk Score: ${plan.summary.riskScore}/100\n`;
   output += `High Risk Scenarios: ${plan.summary.highRiskScenarios}\n`;
   output += `Medium Risk Scenarios: ${plan.summary.mediumRiskScenarios}\n\n`;
 
-  // Group scenarios by risk level (only high and medium)
-  const highRisk = plan.scenarios.filter((s) => s.riskLevel === 'high');
-  const mediumRisk = plan.scenarios.filter((s) => s.riskLevel === 'medium');
+  const { cherryPickScenarios, initialScenarios } = plan.testScenarios;
 
-  if (highRisk.length > 0) {
+  // Cherry-pick scenarios (first)
+  if (cherryPickScenarios.length > 0) {
+    const cpHigh = cherryPickScenarios.filter((s) => s.riskLevel === 'high');
+    const cpMedium = cherryPickScenarios.filter(
+      (s) => s.riskLevel === 'medium',
+    );
+
     output += `${'─'.repeat(80)}\n`;
-    output += '🔴 HIGH RISK SCENARIOS\n';
+    output += '🍒 CHERRY-PICK SCENARIOS (from cherry-picked commits)\n';
     output += `${'─'.repeat(80)}\n\n`;
-    highRisk.forEach((scenario, index) => {
+
+    if (cpHigh.length > 0) {
+      output += '🔴 HIGH RISK\n\n';
+      cpHigh.forEach((scenario, index) => {
+        output += formatScenario(scenario, index + 1);
+      });
+    }
+    if (cpMedium.length > 0) {
+      output += '🟡 MEDIUM RISK\n\n';
+      cpMedium.forEach((scenario, index) => {
+        output += formatScenario(scenario, index + 1);
+      });
+    }
+  }
+
+  // Initial scenarios (from release branch)
+  const initialHigh = initialScenarios.filter((s) => s.riskLevel === 'high');
+  const initialMedium = initialScenarios.filter(
+    (s) => s.riskLevel === 'medium',
+  );
+
+  output += `${'─'.repeat(80)}\n`;
+  output += '📋 INITIAL SCENARIOS (from initial release branch commits)\n';
+  output += `${'─'.repeat(80)}\n\n`;
+
+  if (initialHigh.length > 0) {
+    output += '🔴 HIGH RISK\n\n';
+    initialHigh.forEach((scenario, index) => {
       output += formatScenario(scenario, index + 1);
     });
   }
-
-  if (mediumRisk.length > 0) {
-    output += `${'─'.repeat(80)}\n`;
-    output += '🟡 MEDIUM RISK SCENARIOS\n';
-    output += `${'─'.repeat(80)}\n\n`;
-    mediumRisk.forEach((scenario, index) => {
+  if (initialMedium.length > 0) {
+    output += '🟡 MEDIUM RISK\n\n';
+    initialMedium.forEach((scenario, index) => {
       output += formatScenario(scenario, index + 1);
     });
   }
@@ -477,7 +544,7 @@ function formatTestingPlan(plan: TestingPlan): string {
  * @param index
  */
 function formatScenario(
-  scenario: TestingPlan['scenarios'][0],
+  scenario: TestingPlan['testScenarios']['initialScenarios'][0],
   index: number,
 ): string {
   let output = `${index}. ${scenario.area} [${scenario.riskLevel.toUpperCase()}]\n\n`;

@@ -22,9 +22,14 @@ export class OutputValidator {
     const strengths: string[] = [];
     let score = 100;
 
+    const allScenarios = [
+      ...plan.testScenarios.cherryPickScenarios,
+      ...plan.testScenarios.initialScenarios,
+    ];
+
     // Check basic structure
-    if (plan.scenarios && plan.scenarios.length > 0) {
-      strengths.push(`Generated ${plan.scenarios.length} testing scenarios`);
+    if (allScenarios.length > 0) {
+      strengths.push(`Generated ${allScenarios.length} testing scenarios`);
     } else {
       issues.push('No testing scenarios generated');
       score -= 50;
@@ -32,17 +37,18 @@ export class OutputValidator {
 
     // Check summary statistics
     if (plan.summary) {
-      const { highRiskScenarios, mediumRiskScenarios } = plan.summary;
+      const { highRiskScenarios, mediumRiskScenarios, riskScore } =
+        plan.summary;
       const totalScenarios = highRiskScenarios + mediumRiskScenarios;
 
-      if (totalScenarios !== plan.scenarios.length) {
+      if (totalScenarios !== allScenarios.length) {
         issues.push(
-          `Summary counts (${totalScenarios}) don't match scenario count (${plan.scenarios.length})`,
+          `Summary counts (${totalScenarios}) don't match scenario count (${allScenarios.length})`,
         );
         score -= 5;
       }
 
-      if (highRiskScenarios === 0 && plan.scenarios.length > 5) {
+      if (highRiskScenarios === 0 && allScenarios.length > 5) {
         issues.push(
           'No high-risk scenarios identified despite significant changes',
         );
@@ -50,13 +56,17 @@ export class OutputValidator {
       } else if (highRiskScenarios > 0) {
         strengths.push(`Identified ${highRiskScenarios} high-risk scenarios`);
       }
+
+      if (typeof riskScore === 'number') {
+        strengths.push(`Risk score: ${riskScore}/100`);
+      }
     } else {
       issues.push('Missing summary statistics');
       score -= 10;
     }
 
     // Validate each scenario
-    plan.scenarios.forEach((scenario, index) => {
+    allScenarios.forEach((scenario, index) => {
       const scenarioIssues = this.validateScenario(scenario, index);
       issues.push(...scenarioIssues);
       if (scenarioIssues.length > 0) {
@@ -65,7 +75,7 @@ export class OutputValidator {
     });
 
     // Check for coverage of critical areas
-    const criticalAreas = this.checkCriticalAreaCoverage(plan.scenarios);
+    const criticalAreas = this.checkCriticalAreaCoverage(allScenarios);
     if (criticalAreas.missing.length > 0) {
       issues.push(
         `Missing coverage for critical areas: ${criticalAreas.missing.join(', ')}`,
@@ -76,7 +86,7 @@ export class OutputValidator {
     }
 
     // Check scenario quality
-    const qualityMetrics = this.assessScenarioQuality(plan.scenarios);
+    const qualityMetrics = this.assessScenarioQuality(allScenarios);
     if (qualityMetrics.averageSteps < 2) {
       issues.push('Scenarios have insufficient test steps (average < 2)');
       score -= 10;
@@ -87,8 +97,8 @@ export class OutputValidator {
     }
 
     // Check for diversity in risk levels
-    const riskDistribution = this.checkRiskDistribution(plan.scenarios);
-    if (riskDistribution.allSame && plan.scenarios.length > 3) {
+    const riskDistribution = this.checkRiskDistribution(allScenarios);
+    if (riskDistribution.allSame && allScenarios.length > 3) {
       issues.push(
         'All scenarios have the same risk level - may need more nuanced analysis',
       );
@@ -101,7 +111,7 @@ export class OutputValidator {
     score = Math.max(0, score);
 
     return {
-      isValid: score >= 70 && issues.length < plan.scenarios.length,
+      isValid: score >= 70 && issues.length < allScenarios.length,
       score,
       issues,
       strengths,

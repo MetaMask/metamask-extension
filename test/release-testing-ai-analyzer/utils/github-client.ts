@@ -2,7 +2,11 @@
  * GitHub API client for retrieving PR information
  */
 
-import type { PullRequestFile, PullRequestInfo } from '../types';
+import type {
+  PullRequestFile,
+  PullRequestInfo,
+  PullRequestCommit,
+} from '../types';
 
 type GitHubFile = {
   filename: string;
@@ -44,7 +48,9 @@ type Octokit = {
         pull_number: number;
         // eslint-disable-next-line @typescript-eslint/naming-convention
         per_page: number;
-      }) => Promise<{ data: unknown[] }>;
+      }) => Promise<{
+        data: { sha: string; commit?: { message?: string } }[];
+      }>;
     };
   };
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -120,7 +126,10 @@ export class GitHubClient {
       );
 
       // Get all commits with pagination
-      const allCommits = await octokit.paginate<unknown>(
+      const allCommits = await octokit.paginate<{
+        sha: string;
+        commit?: { message?: string };
+      }>(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         octokit.rest.pulls.listCommits as any,
         {
@@ -132,6 +141,11 @@ export class GitHubClient {
           per_page: 100,
         },
       );
+
+      const prCommits: PullRequestCommit[] = allCommits.map((c) => ({
+        sha: c.sha,
+        message: c.commit?.message ?? '',
+      }));
 
       const prFiles: PullRequestFile[] = allFiles.map((file: GitHubFile) => ({
         filename: file.filename,
@@ -150,6 +164,7 @@ export class GitHubClient {
         headBranch: pr.head.ref,
         files: prFiles,
         commitCount: allCommits.length,
+        commits: prCommits,
       };
     } catch (error: unknown) {
       const githubError = error as { status?: number; message?: string };

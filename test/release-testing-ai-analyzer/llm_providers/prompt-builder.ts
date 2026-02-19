@@ -5,9 +5,18 @@
 
 import type {
   PullRequestInfo,
+  PullRequestCommit,
   FileCategories,
   PullRequestFile,
 } from '../types';
+
+/** Regex to detect cherry-pick commits (release(cp):, cherry-pick, cp-X.Y.Z, release(runway):) */
+const CHERRY_PICK_PATTERN =
+  /release\s*\(\s*cp\s*\)|cherry-pick|release\s*\(\s*runway\s*\)|cp-\d+\.\d+/iu;
+
+function isCherryPickCommit(commit: PullRequestCommit): boolean {
+  return CHERRY_PICK_PATTERN.test(commit.message);
+}
 
 export class PromptBuilder {
   /**
@@ -22,6 +31,18 @@ export class PromptBuilder {
   ): string {
     const highRiskAreas = this.identifyHighRiskAreas(fileCategories);
     const fileSummary = this.buildFileSummary(prInfo.files, fileCategories);
+    const cherryPickCommits = (prInfo.commits ?? []).filter(isCherryPickCommit);
+    const hasCherryPicks = cherryPickCommits.length > 0;
+
+    const cherryPickSection = hasCherryPicks
+      ? `
+## Cherry-Pick Commits (${cherryPickCommits.length} commits)
+
+This release includes cherry-picked fixes. Generate additional scenarios in \`cherryPickScenarios\` for testing these specific changes:
+
+${cherryPickCommits.map((c) => `- ${c.message.split('\n')[0]}`).join('\n')}
+`
+      : '';
 
     return `You are a QA automation engineer specializing in browser extension testing, specifically for MetaMask extension releases.
 
@@ -30,10 +51,9 @@ Your task is to analyze a release PR and identify risky areas that need focused 
 ## PR Information
 - PR #${prInfo.number}: ${prInfo.title}
 - Author: ${prInfo.author}
-- Commits: ${prInfo.commitCount}
+- Total Commits: ${prInfo.commitCount}
 - Files Changed: ${prInfo.files.length}
-- Total Changes: +${prInfo.files.reduce((sum: number, f: PullRequestFile) => sum + f.additions, 0)} -${prInfo.files.reduce((sum: number, f: PullRequestFile) => sum + f.deletions, 0)}
-
+${cherryPickSection}
 ## Changed Files Summary
 
 ${fileSummary}
@@ -43,38 +63,24 @@ ${highRiskAreas.map((area) => `- ${area}`).join('\n')}
 
 ## Your Task
 
-Analyze the changes and generate a comprehensive testing plan with specific testing scenarios. For each scenario, provide:
+Analyze the changes and generate a comprehensive testing plan. Split scenarios into TWO sections:
 
-1. **Area**: The functional area affected (e.g., "Token Management", "Transaction Signing", "Network Configuration")
-2. **Risk Level**: high or medium only (exclude low risk scenarios)
-3. **Test Steps**: Specific, actionable test steps (3-5 steps per scenario)
-4. **Why This Matters**: Concise explanation of why this area needs testing focus based on the changes
+1. **scenarios** (initialScenarios): Scenarios from analyzing ALL initial commits on the release branch - the overall release changes that need testing.
+2. **cherryPickScenarios**: ONLY if cherry-pick commits exist above - scenarios specifically for testing the cherry-picked fixes. Each scenario should target a specific cherry-pick's change. If no cherry-picks, use empty array [].
+
+For each scenario, provide:
+- **Area**: The functional area affected (e.g., "Token Management", "Transaction Signing")
+- **Risk Level**: high or medium only (exclude low risk scenarios)
+- **Test Steps**: Specific, actionable test steps (3-5 steps per scenario)
+- **Why This Matters**: Concise explanation of why this area needs testing focus
 
 ## Focus Areas for MetaMask Extension Testing
 
 Focus ONLY on user-facing and functional changes. EXCLUDE build/configuration changes.
 
-Consider these critical areas when analyzing:
-- **Wallet Operations**: Account creation, import, backup, restore
-- **Transaction Signing**: ERC20, ERC721, ERC1155, contract interactions
-- **Token Management**: Adding, removing, detecting tokens/NFTs
-- **Network Management**: Adding custom networks, switching networks
-- **State Migrations**: Data format changes, backward compatibility
-- **Security**: Permission changes, encryption, key management
-- **UI/UX**: Component changes, user flows, accessibility (PRIORITY)
-- **Performance**: Large data sets, rendering optimizations
-- **Cross-browser**: Chrome MV3 vs Firefox MV2 differences
-- **State Management**: Redux state changes, controller updates
+Consider: Wallet Operations, Transaction Signing, Token Management, Network Management, State Migrations, Security, UI/UX, Performance, State Management.
 
-**EXCLUDE these areas** (do not create scenarios for):
-- Build system changes (webpack, browserify, build scripts)
-- Configuration files (package.json, yarn.lock, tsconfig.json)
-- Linting/formatting changes (Prettier, ESLint configs)
-- CI/CD changes (.github/workflows, GitHub Actions)
-- Documentation-only changes
-- Test infrastructure changes (unless they affect test behavior)
-- Storybook configuration
-- Changelog updates
+**EXCLUDE**: Build system, config files, linting, CI/CD, documentation, Storybook, Changelog.
 
 ## Output Format
 
@@ -85,32 +91,26 @@ Return a JSON object with this exact structure:
       "area": "string",
       "riskLevel": "high" | "medium",
       "testSteps": ["1. first step", "2. second step", "3. third step"],
-      "whyThisMatters": "concise explanation of why this needs testing focus"
+      "whyThisMatters": "concise explanation"
+    }
+  ],
+  "cherryPickScenarios": [
+    {
+      "area": "string",
+      "riskLevel": "high" | "medium",
+      "testSteps": ["1. step", "2. step"],
+      "whyThisMatters": "explanation - reference the cherry-pick this tests"
     }
   ],
   "summary": "Brief 2-3 sentence summary of the overall risk profile"
 }
 
 **IMPORTANT**:
-- Always order scenarios with HIGH risk scenarios FIRST, followed by MEDIUM risk scenarios
-- Number each test step starting with "1. ", "2. ", "3. ", etc. (include the number and period in each step string)
-- Focus on UI/UX and user-facing functionality changes
-- Exclude build, configuration, and infrastructure-only changes
-
-Focus on areas with:
-- State migrations or data format changes
-- Controller logic changes (business logic)
-- Security-sensitive code (encryption, key management)
-- User-facing flows (onboarding, transactions, settings)
-- Cross-component dependencies
-- Performance-critical paths
-
-Prioritize scenarios that could cause:
-- Data loss or corruption
-- Security vulnerabilities
-- User-facing bugs
-- State inconsistencies
-- Performance regressions
+- \`scenarios\` = initial release testing (all initial commits)
+- \`cherryPickScenarios\` = ONLY scenarios for cherry-pick changes (empty [] if no cherry-picks)
+- Order HIGH risk first, then MEDIUM
+- Number each test step: "1. ", "2. ", "3. "
+- Focus on UI/UX and user-facing functionality
 
 Return ONLY valid JSON, no markdown formatting or code blocks.`;
   }

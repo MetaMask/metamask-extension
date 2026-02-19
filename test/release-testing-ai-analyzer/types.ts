@@ -10,6 +10,11 @@ export type PullRequestFile = {
   patch?: string;
 };
 
+export type PullRequestCommit = {
+  sha: string;
+  message: string;
+};
+
 export type PullRequestInfo = {
   number: number;
   title: string;
@@ -19,6 +24,7 @@ export type PullRequestInfo = {
   headBranch: string;
   files: PullRequestFile[];
   commitCount: number;
+  commits: PullRequestCommit[];
 };
 
 export type TestingScenario = {
@@ -37,6 +43,13 @@ export type FileCategories = {
   other: string[];
 };
 
+export type ScenariosBySource = {
+  /** Scenarios that should be tested due to cherry-picks */
+  cherryPickScenarios: TestingScenario[];
+  /** Scenarios from analyzing all initial commits on the release branch */
+  initialScenarios: TestingScenario[];
+};
+
 export type TestingPlan = {
   prNumber: number;
   prTitle: string;
@@ -44,12 +57,13 @@ export type TestingPlan = {
   modelUsed: string;
   summary: {
     totalFilesChanged: number;
-    totalAdditions: number;
-    totalDeletions: number;
+    totalCommits: number;
+    /** Risk score 0-100 (higher = riskier) */
+    riskScore: number;
     highRiskScenarios: number;
     mediumRiskScenarios: number;
   };
-  scenarios: TestingScenario[];
+  testScenarios: ScenariosBySource;
 };
 
 export type LLMAnalysisRequest = {
@@ -58,6 +72,9 @@ export type LLMAnalysisRequest = {
 };
 
 export type LLMAnalysisResponse = {
+  /** General release scenarios (from initial commits). Use when LLM returns flat structure. */
   scenarios: TestingScenario[];
+  /** Scenarios specifically for cherry-pick changes. Optional - empty if no cherry-picks. */
+  cherryPickScenarios?: TestingScenario[];
   summary: string;
 };
