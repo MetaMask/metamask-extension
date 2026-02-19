@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Box,
@@ -35,6 +35,9 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { CreateAgentAccount } from '../../multichain/agent-account';
+///: END:ONLY_INCLUDE_IF
 
 export type AddWalletModalProps = Omit<
   ModalProps,
@@ -58,6 +61,10 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
 }) => {
   const t = useI18nContext();
   const history = useHistory();
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const [showAgentAccountCreation, setShowAgentAccountCreation] =
+    useState(false);
+  ///: END:ONLY_INCLUDE_IF
 
   const walletOptions: WalletOption[] = [
     {
@@ -78,9 +85,25 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       iconName: IconName.Hardware,
       route: CONNECT_HARDWARE_ROUTE,
     },
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    {
+      id: 'agent-account',
+      titleKey: 'createAgentAccount',
+      iconName: IconName.UserCircleAdd,
+      route: '', // Handled specially
+    },
+    ///: END:ONLY_INCLUDE_IF
   ];
 
   const handleOptionClick = (option: WalletOption) => {
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    // Agent account creation is handled inline
+    if (option.id === 'agent-account') {
+      setShowAgentAccountCreation(true);
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IF
+
     onClose?.();
 
     // Hardware wallet connections require expanded view
@@ -94,6 +117,36 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       history.push(option.route);
     }
   };
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const handleAgentAccountComplete = () => {
+    setShowAgentAccountCreation(false);
+    onClose?.();
+  };
+
+  if (showAgentAccountCreation) {
+    return (
+      <Modal isOpen={isOpen} onClose={onClose} {...props}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader
+            onClose={() => {
+              setShowAgentAccountCreation(false);
+            }}
+            onBack={() => {
+              setShowAgentAccountCreation(false);
+            }}
+          >
+            {t('createAgentAccount')}
+          </ModalHeader>
+          <ModalBody paddingLeft={4} paddingRight={4}>
+            <CreateAgentAccount onActionComplete={handleAgentAccountComplete} />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    );
+  }
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} {...props}>

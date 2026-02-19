@@ -1,6 +1,6 @@
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import React, { useState, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import {
@@ -38,6 +38,7 @@ import type {
   AgentAccountSettings,
   CaveatConfig,
   AgentOutputDocument,
+  LLMChatTrace,
 } from '../../../../shared/types/agent-account';
 import {
   callLLM,
@@ -124,6 +125,7 @@ const MOCK_DELEGATOR_ENVIRONMENT: DeleGatorEnvironment = {
     NativeBalanceChangeEnforcer: '0x0000000000000000000000000000000000000104' as Hex,
     LimitedCallsEnforcer: '0x0000000000000000000000000000000000000105' as Hex,
     RedeemerEnforcer: '0x0000000000000000000000000000000000000106' as Hex,
+    TimestampEnforcer: '0x0000000000000000000000000000000000000107' as Hex,
   },
 };
 
@@ -146,7 +148,7 @@ export function CreateAgentAccount({
   const settings: AgentAccountSettings = storedSettings || {
     llmProvider: 'anthropic',
     apiKey: '',
-    model: LLM_DEFAULTS.model,
+    model: LLM_DEFAULTS.defaultModel,
     customBaseUrl: undefined,
   };
 
@@ -159,6 +161,8 @@ export function CreateAgentAccount({
   // LLM response data
   const [explanation, setExplanation] = useState('');
   const [caveatConfigs, setCaveatConfigs] = useState<CaveatConfig[]>([]);
+  const [chatTrace, setChatTrace] = useState<LLMChatTrace | null>(null);
+  const [showChatTrace, setShowChatTrace] = useState(false);
 
   // Delegation data
   const [delegation, setDelegation] = useState<Delegation | null>(null);
@@ -187,18 +191,24 @@ export function CreateAgentAccount({
 
     try {
       // Call LLM to interpret permissions
-      const llmResponse = await callLLM(userPrompt, settings);
+      const llmResult = await callLLM(userPrompt, settings);
 
-      setCaveatConfigs(llmResponse.caveats);
-      setExplanation(llmResponse.explanation);
-      setWarnings(llmResponse.warnings);
+      setCaveatConfigs(llmResult.response.caveats);
+      setExplanation(llmResult.response.explanation);
+      setWarnings(llmResult.response.warnings);
+      setChatTrace(llmResult.trace);
 
       setStep(CreationStep.PREVIEW);
     } catch (err) {
-      const errorMessage =
-        err instanceof LLMServiceError
-          ? `${t('agentAccountLLMError')}: ${err.message}`
-          : t('agentAccountUnexpectedError');
+      console.error('Agent account LLM error:', err);
+      let errorMessage: string;
+      if (err instanceof LLMServiceError) {
+        errorMessage = `${t('agentAccountLLMError')}: ${err.message}`;
+      } else if (err instanceof Error) {
+        errorMessage = `${t('agentAccountUnexpectedError')}: ${err.message}`;
+      } else {
+        errorMessage = `${t('agentAccountUnexpectedError')}: ${String(err)}`;
+      }
       setError(errorMessage);
       setStep(CreationStep.ERROR);
     }
@@ -231,11 +241,9 @@ export function CreateAgentAccount({
 
       // Create the delegation
       const newDelegation = createDelegation({
-        delegate: address,
-        delegator: selectedAccount.address as Hex,
+        to: address,
+        from: selectedAccount.address as Hex,
         caveats,
-        salt: generateRandomSalt(),
-        authority: ROOT_AUTHORITY,
       });
 
       // TODO: Sign the delegation via delegation controller
@@ -261,10 +269,15 @@ export function CreateAgentAccount({
       setOutputDocument(output);
       setStep(CreationStep.OUTPUT);
     } catch (err) {
-      const errorMessage =
-        err instanceof CaveatParserError
-          ? `${t('agentAccountCaveatError')}: ${err.message}`
-          : t('agentAccountUnexpectedError');
+      console.error('Agent account creation error:', err);
+      let errorMessage: string;
+      if (err instanceof CaveatParserError) {
+        errorMessage = `${t('agentAccountCaveatError')}: ${err.message}`;
+      } else if (err instanceof Error) {
+        errorMessage = `${t('agentAccountUnexpectedError')}: ${err.message}`;
+      } else {
+        errorMessage = `${t('agentAccountUnexpectedError')}: ${String(err)}`;
+      }
       setError(errorMessage);
       setStep(CreationStep.ERROR);
     }
@@ -315,6 +328,8 @@ export function CreateAgentAccount({
     setWarnings([]);
     setCaveatConfigs([]);
     setExplanation('');
+    setChatTrace(null);
+    setShowChatTrace(false);
     setDelegation(null);
     setDelegatePrivateKey(null);
     setDelegateAddress(null);
@@ -500,6 +515,85 @@ export function CreateAgentAccount({
             </Box>
           )}
         </Box>
+
+        {/* Chat Trace Viewer for debugging */}
+        {chatTrace && (
+          <Box>
+            <Button
+              variant={ButtonVariant.Link}
+              size={ButtonSize.Sm}
+              onClick={() => setShowChatTrace(!showChatTrace)}
+              startIconName={showChatTrace ? IconName.ArrowUp : IconName.ArrowDown}
+            >
+              {showChatTrace ? t('agentAccountHideChatTrace') : t('agentAccountViewChatTrace')}
+            </Button>
+
+            {showChatTrace && (
+              <Box
+                backgroundColor={BackgroundColor.backgroundAlternative}
+                borderRadius={BorderRadius.MD}
+                padding={3}
+                marginTop={2}
+                style={{ maxHeight: '400px', overflow: 'auto' }}
+              >
+                <Text variant={TextVariant.bodySmBold} marginBottom={2}>
+                  {t('agentAccountChatTraceModel')}: {chatTrace.model} ({chatTrace.provider})
+                </Text>
+
+                <Text variant={TextVariant.bodySmBold} marginTop={3} marginBottom={1}>
+                  {t('agentAccountChatTraceSystemPrompt')}:
+                </Text>
+                <Box
+                  backgroundColor={BackgroundColor.backgroundDefault}
+                  borderRadius={BorderRadius.SM}
+                  padding={2}
+                  marginBottom={2}
+                  style={{ maxHeight: '150px', overflow: 'auto' }}
+                >
+                  <Text
+                    variant={TextVariant.bodySm}
+                    style={{ fontFamily: 'monospace', whiteSpace: 'pre-wrap', fontSize: '11px' }}
+                  >
+                    {chatTrace.systemPrompt}
+                  </Text>
+                </Box>
+
+                <Text variant={TextVariant.bodySmBold} marginTop={2} marginBottom={1}>
+                  {t('agentAccountChatTraceUserPrompt')}:
+                </Text>
+                <Box
+                  backgroundColor={BackgroundColor.backgroundDefault}
+                  borderRadius={BorderRadius.SM}
+                  padding={2}
+                  marginBottom={2}
+                >
+                  <Text
+                    variant={TextVariant.bodySm}
+                    style={{ fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}
+                  >
+                    {chatTrace.userPrompt}
+                  </Text>
+                </Box>
+
+                <Text variant={TextVariant.bodySmBold} marginTop={2} marginBottom={1}>
+                  {t('agentAccountChatTraceResponse')}:
+                </Text>
+                <Box
+                  backgroundColor={BackgroundColor.backgroundDefault}
+                  borderRadius={BorderRadius.SM}
+                  padding={2}
+                >
+                  <Text
+                    variant={TextVariant.bodySm}
+                    style={{ fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}
+                  >
+                    {chatTrace.rawResponse}
+                  </Text>
+                </Box>
+              </Box>
+            )}
+          </Box>
+        )}
 
         <Box display={Display.Flex} gap={2}>
           <Button

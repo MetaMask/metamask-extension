@@ -29,6 +29,7 @@ import {
   specificActionERC20TransferBatch,
   specificActionERC20TransferBatchBuilder,
 } from './specificActionERC20TransferBatchBuilder';
+import { timestamp, timestampBuilder } from './timestampBuilder';
 
 export { CaveatBuilder, resolveCaveats } from './caveatBuilder';
 export type { CaveatBuilderConfig, Caveats } from './caveatBuilder';
@@ -51,7 +52,8 @@ export const createCaveatBuilder = (
       specificActionERC20TransferBatch,
       specificActionERC20TransferBatchBuilder,
     )
-    .extend(redeemer, redeemerBuilder);
+    .extend(redeemer, redeemerBuilder)
+    .extend(timestamp, timestampBuilder);
   return caveatBuilder;
 };
 

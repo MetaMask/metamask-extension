@@ -59,6 +59,34 @@ export interface LLMPermissionResponse {
 }
 
 /**
+ * Full trace of the LLM conversation for debugging
+ */
+export interface LLMChatTrace {
+  /** The system prompt sent to the LLM */
+  systemPrompt: string;
+  /** The user prompt sent to the LLM */
+  userPrompt: string;
+  /** The raw response text from the LLM (before parsing) */
+  rawResponse: string;
+  /** Timestamp when the request was made */
+  timestamp: number;
+  /** Model used for the request */
+  model: string;
+  /** Provider used for the request */
+  provider: LLMProvider;
+}
+
+/**
+ * Response from callLLM including both parsed response and debug trace
+ */
+export interface LLMCallResult {
+  /** The parsed permission response */
+  response: LLMPermissionResponse;
+  /** Full conversation trace for debugging */
+  trace: LLMChatTrace;
+}
+
+/**
  * Request structure for calling the LLM
  */
 export interface LLMRequest {

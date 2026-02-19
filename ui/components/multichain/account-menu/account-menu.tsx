@@ -660,32 +660,34 @@ export const AccountMenu = ({
             }
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-              <Box marginTop={4}>
-                <ButtonLink
-                  size={ButtonLinkSize.Sm}
-                  startIconName={IconName.UserCircleAdd}
-                  startIconProps={{ size: IconSize.Md }}
-                  onClick={() => {
-                    trackEvent({
-                      category: MetaMetricsEventCategory.Navigation,
-                      event: MetaMetricsEventName.AccountAddSelected,
-                      properties: {
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        account_type: 'agent',
-                        location: 'Main Menu',
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        hd_entropy_index: hdEntropyIndex,
-                      },
-                    });
-                    setActionMode(ACTION_MODES.ADD_AGENT);
-                  }}
-                  data-testid="multichain-account-menu-popover-add-agent-account"
-                >
-                  {t('createAgentAccount')}
-                </ButtonLink>
-              </Box>
+              true && (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    size={ButtonLinkSize.Sm}
+                    startIconName={IconName.UserCircleAdd}
+                    startIconProps={{ size: IconSize.Md }}
+                    onClick={() => {
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.AccountAddSelected,
+                        properties: {
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          account_type: 'agent',
+                          location: 'Main Menu',
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          hd_entropy_index: hdEntropyIndex,
+                        },
+                      });
+                      setActionMode(ACTION_MODES.ADD_AGENT);
+                    }}
+                    data-testid="multichain-account-menu-popover-add-agent-account"
+                  >
+                    {t('createAgentAccount')}
+                  </ButtonLink>
+                </Box>
+              )
               ///: END:ONLY_INCLUDE_IF
             }
             {manageInstitutionalWallets && (

@@ -404,7 +404,7 @@
     "message": "Gas price"
   },
   "advancedPriorityFeeToolTip": {
-    "message": "Priority fee (aka "miner tip") goes directly to miners and incentivizes them to prioritize your transaction."
+    "message": "Priority fee (aka \"miner tip\") goes directly to miners and incentivizes them to prioritize your transaction."
   },
   "agentAccount": {
     "message": "Agent account"
@@ -561,6 +561,24 @@
   },
   "agentAccountError": {
     "message": "Something went wrong"
+  },
+  "agentAccountViewChatTrace": {
+    "message": "View Chat Trace (Debug)"
+  },
+  "agentAccountHideChatTrace": {
+    "message": "Hide Chat Trace"
+  },
+  "agentAccountChatTraceModel": {
+    "message": "Model"
+  },
+  "agentAccountChatTraceSystemPrompt": {
+    "message": "System Prompt"
+  },
+  "agentAccountChatTraceUserPrompt": {
+    "message": "User Prompt"
+  },
+  "agentAccountChatTraceResponse": {
+    "message": "LLM Response"
   },
   "airDropPatternDescription": {
     "message": "The token's on-chain history reveals prior instances of suspicious airdrop activities."

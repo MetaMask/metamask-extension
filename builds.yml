@@ -427,4 +427,4 @@ env:
   # Default LLM provider API base URL (Anthropic)
   - ANTHROPIC_API_BASE_URL: 'https://api.anthropic.com'
   # Default LLM model for permission generation
-  - DEFAULT_AGENT_LLM_MODEL: 'claude-opus-4-5-20250114'
+  - DEFAULT_AGENT_LLM_MODEL: 'claude-opus-4-6'

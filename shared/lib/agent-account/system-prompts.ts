@@ -128,11 +128,46 @@ Restricts who can redeem (use) the delegation. Without this, anyone holding the 
 }
 \`\`\`
 
+### 7. timestamp
+Restricts when the delegation can be used based on block timestamp. Can set a start time (not before) and/or end time (not after).
+
+**Parameters:**
+- \`notBefore\`: Unix timestamp (seconds) - delegation cannot be used before this time. Use 0 for no start restriction.
+- \`notAfter\`: Unix timestamp (seconds) - delegation cannot be used after this time. Use 0 for no end restriction.
+
+**Example (expires in 3 days):**
+\`\`\`json
+{
+  "type": "timestamp",
+  "params": {
+    "notBefore": 0,
+    "notAfter": 1709251200
+  }
+}
+\`\`\`
+
+**Example (valid from Jan 1 to Jan 31, 2025):**
+\`\`\`json
+{
+  "type": "timestamp",
+  "params": {
+    "notBefore": 1704067200,
+    "notAfter": 1706745600
+  }
+}
+\`\`\`
+
+**Note:** To calculate the timestamp, use the current time plus the desired duration in seconds:
+- 1 hour = 3600 seconds
+- 1 day = 86400 seconds
+- 1 week = 604800 seconds
+- 30 days = 2592000 seconds
+
 ## Common Token Addresses (Ethereum Mainnet)
 
 - USDC: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 (6 decimals)
 - USDT: 0xdAC17F958D2ee523a2206206994597C13D831ec7 (6 decimals)
-- DAI: 0x6B175474E89094C44Da98b954EescdeCB5 (18 decimals)
+- DAI: 0x6B175474E89094C44Da98b954EedeAC495271d0F (18 decimals)
 - WETH: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 (18 decimals)
 
 ## Common Protocol Addresses (Ethereum Mainnet)
@@ -289,5 +324,13 @@ export const CAVEAT_ENFORCER_DOCS: Record<
       redeemers: 'Array of allowed redeemer addresses',
     },
     example: '{"redeemers": ["0x1234..."]}',
+  },
+  timestamp: {
+    description: 'Restricts when the delegation can be used based on time',
+    parameters: {
+      notBefore: 'Unix timestamp (seconds) - cannot use before this time (0 for no restriction)',
+      notAfter: 'Unix timestamp (seconds) - cannot use after this time (0 for no restriction)',
+    },
+    example: '{"notBefore": 0, "notAfter": 1709251200}',
   },
 };

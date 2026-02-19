@@ -242,6 +242,70 @@ function parseRedeemer(
 }
 
 /**
+ * Validates that a value is a valid timestamp (non-negative integer)
+ *
+ * @param value - The value to validate
+ * @param fieldName - Name of the field for error messages
+ * @returns The validated timestamp as bigint
+ */
+function validateTimestamp(value: unknown, fieldName: string): bigint {
+  if (typeof value === 'bigint') {
+    if (value < 0n) {
+      throw new CaveatParserError(`${fieldName} must be non-negative`);
+    }
+    return value;
+  }
+
+  if (typeof value === 'number') {
+    if (!Number.isInteger(value) || value < 0) {
+      throw new CaveatParserError(
+        `${fieldName} must be a non-negative integer`,
+      );
+    }
+    return BigInt(value);
+  }
+
+  if (typeof value === 'string') {
+    try {
+      const timestamp = BigInt(value);
+      if (timestamp < 0n) {
+        throw new CaveatParserError(`${fieldName} must be non-negative`);
+      }
+      return timestamp;
+    } catch {
+      throw new CaveatParserError(
+        `${fieldName} must be a valid integer string`,
+      );
+    }
+  }
+
+  throw new CaveatParserError(
+    `${fieldName} must be a string, number, or bigint`,
+  );
+}
+
+/**
+ * Parses a timestamp caveat config
+ */
+function parseTimestamp(
+  builder: CoreCaveatBuilder,
+  params: Record<string, unknown>,
+): CoreCaveatBuilder {
+  const notBefore = validateTimestamp(params.notBefore, 'notBefore');
+  const notAfter = validateTimestamp(params.notAfter, 'notAfter');
+
+  // Validate that notAfter is after notBefore if both are non-zero
+  if (notBefore > 0n && notAfter > 0n && notAfter <= notBefore) {
+    throw new CaveatParserError(
+      'notAfter must be greater than notBefore when both are specified',
+      'timestamp',
+    );
+  }
+
+  return builder.addCaveat('timestamp', notBefore, notAfter);
+}
+
+/**
  * Supported caveat type parsers
  */
 const CAVEAT_PARSERS: Record<
@@ -274,12 +338,7 @@ const CAVEAT_PARSERS: Record<
       'erc1155BalanceChange',
     );
   },
-  timestamp: () => {
-    throw new CaveatParserError(
-      'timestamp caveat is not yet supported by the parser',
-      'timestamp',
-    );
-  },
+  timestamp: parseTimestamp,
   exactExecution: () => {
     throw new CaveatParserError(
       'exactExecution caveat is not yet supported by the parser',
@@ -331,6 +390,8 @@ export function parseLLMResponseToCaveats(
   configs: CaveatConfig[],
   environment: DeleGatorEnvironment,
 ): Caveat[] {
+  console.log('parseLLMResponseToCaveats - configs:', JSON.stringify(configs, null, 2));
+
   // Handle empty caveats array (full authority)
   if (configs.length === 0) {
     return [];
@@ -347,10 +408,13 @@ export function parseLLMResponseToCaveats(
 
   // Parse each config and add to builder
   for (const config of configs) {
+    console.log(`Parsing caveat type: ${config.type}`, JSON.stringify(config.params, null, 2));
     const parser = CAVEAT_PARSERS[config.type];
     try {
       builder = parser(builder, config.params) as CoreCaveatBuilder;
+      console.log(`Successfully parsed caveat: ${config.type}`);
     } catch (error) {
+      console.error(`Error parsing caveat ${config.type}:`, error);
       if (error instanceof CaveatParserError) {
         throw error;
       }

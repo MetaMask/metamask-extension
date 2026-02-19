@@ -1,5 +1,7 @@
 import type {
   AgentAccountSettings,
+  LLMCallResult,
+  LLMChatTrace,
   LLMPermissionResponse,
   LLMRequest,
 } from '../../types/agent-account';
@@ -26,7 +28,7 @@ export const LLM_DEFAULTS = {
   anthropicBaseUrl:
     process.env.ANTHROPIC_API_BASE_URL || 'https://api.anthropic.com',
   openaiBaseUrl: 'https://api.openai.com',
-  defaultModel: process.env.DEFAULT_AGENT_LLM_MODEL || 'claude-opus-4-5-20250114',
+  defaultModel: process.env.DEFAULT_AGENT_LLM_MODEL || 'claude-opus-4-6',
   maxTokens: 4096,
   temperature: 0.3, // Lower temperature for more deterministic outputs
 };
@@ -130,6 +132,8 @@ async function callAnthropic(request: LLMRequest): Promise<string> {
       'Content-Type': 'application/json',
       'x-api-key': request.config.apiKey,
       'anthropic-version': '2023-06-01',
+      // Required for direct browser requests to Anthropic API
+      'anthropic-dangerous-direct-browser-access': 'true',
     },
     body: JSON.stringify(body),
   });
@@ -288,12 +292,12 @@ export function parseLLMResponse(responseText: string): LLMPermissionResponse {
  *
  * @param userPrompt - Natural language description of desired permissions
  * @param config - LLM provider configuration
- * @returns Parsed permission response with caveats, explanation, and warnings
+ * @returns Parsed permission response with caveats, explanation, warnings, and full trace
  */
 export async function callLLM(
   userPrompt: string,
   config: AgentAccountSettings,
-): Promise<LLMPermissionResponse> {
+): Promise<LLMCallResult> {
   const request: LLMRequest = {
     systemPrompt: DELEGATION_FRAMEWORK_SYSTEM_PROMPT,
     userPrompt,
@@ -318,7 +322,22 @@ export async function callLLM(
       );
   }
 
-  return parseLLMResponse(responseText);
+  const parsedResponse = parseLLMResponse(responseText);
+
+  // Build the trace for debugging
+  const trace: LLMChatTrace = {
+    systemPrompt: DELEGATION_FRAMEWORK_SYSTEM_PROMPT,
+    userPrompt,
+    rawResponse: responseText,
+    timestamp: Date.now(),
+    model: config.model || LLM_DEFAULTS.defaultModel,
+    provider: config.llmProvider,
+  };
+
+  return {
+    response: parsedResponse,
+    trace,
+  };
 }
 
 /**
