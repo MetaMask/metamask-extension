@@ -45,6 +45,11 @@ class SwapPage {
 
   private readonly closeQuotesButton = 'header button';
 
+  private readonly assetPickerSearchInput =
+    '[data-testid="bridge-asset-picker-search-input"]';
+
+  private readonly bridgeAsset = '[data-testid="bridge-asset"]';
+
   private readonly fromToText = '[data-testid="bridge-asset"] p';
 
   private readonly moreQuotesButton = '[aria-label="More quotes"]';
@@ -151,39 +156,29 @@ class SwapPage {
   async selectSourceToken(sourceToken: string): Promise<void> {
     console.log('Click source token button');
     await this.driver.clickElement(this.bridgeSourceButton);
-    await this.driver.waitForSelector(
-      '[data-testid="bridge-asset-picker-search-input"]',
-    );
-    await this.driver.fill(
-      '[data-testid="bridge-asset-picker-search-input"]',
-      sourceToken,
-    );
+    await this.driver.waitForSelector(this.assetPickerSearchInput);
+    await this.driver.fill(this.assetPickerSearchInput, sourceToken);
     await this.driver.waitForSelector({
-      css: '[data-testid="bridge-asset"]',
+      css: this.bridgeAsset,
       text: sourceToken,
     });
     await this.driver.clickElement({
-      css: '[data-testid="bridge-asset"]',
+      css: this.bridgeAsset,
       text: sourceToken,
     });
   }
 
   async selectDestinationToken(destinationToken: string): Promise<void> {
-    console.log('Entering swap amount');
+    console.log('Click destination token button');
     await this.driver.clickElement(this.bridgeDestinationButton);
-    await this.driver.waitForSelector(
-      '[data-testid="bridge-asset-picker-search-input"]',
-    );
-    await this.driver.fill(
-      '[data-testid="bridge-asset-picker-search-input"]',
-      destinationToken,
-    );
+    await this.driver.waitForSelector(this.assetPickerSearchInput);
+    await this.driver.fill(this.assetPickerSearchInput, destinationToken);
     await this.driver.waitForSelector({
-      css: '[data-testid="bridge-asset"]',
+      css: this.bridgeAsset,
       text: destinationToken,
     });
     await this.driver.clickElement({
-      css: '[data-testid="bridge-asset"]',
+      css: this.bridgeAsset,
       text: destinationToken,
     });
   }
