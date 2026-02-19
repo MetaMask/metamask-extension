@@ -133,13 +133,12 @@ describe('useMerklClaim', () => {
       }),
     );
 
-    await expect(
-      act(async () => {
-        await result.current.claimRewards();
-      }),
-    ).rejects.toThrow('No account selected');
+    await act(async () => {
+      await result.current.claimRewards();
+    });
 
     expect(result.current.error).toBe('No account selected');
+    expect(result.current.isClaiming).toBe(false);
   });
 
   it('sets error when no claimable rewards found', async () => {

@@ -58,7 +58,8 @@ export const useMerklClaim = ({
     if (!selectedAddress) {
       const errorMessage = 'No account selected';
       setError(errorMessage);
-      throw new Error(errorMessage);
+      setIsClaiming(false);
+      return;
     }
 
     // Abort any previous in-flight request
