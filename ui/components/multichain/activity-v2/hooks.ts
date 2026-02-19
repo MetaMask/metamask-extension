@@ -104,10 +104,25 @@ export function useGetTitle(transaction: TransactionViewModel): string {
     transactionType === 'ERC_1155_TRANSFER';
 
   if (isNftTransfer) {
-    const from = transaction.txParams?.from?.toLowerCase();
-    const to = transaction.txParams?.to?.toLowerCase();
-    const isIncoming = evmAddress && to === evmAddress && from !== evmAddress;
-    return isIncoming ? t('received') : t('sentSpecifiedTokens', ['NFT']);
+    const nftTransfer = transaction.valueTransfers?.find(
+      (vt) => vt.transferType === 'erc721' || vt.transferType === 'erc1155',
+    );
+
+    if (nftTransfer) {
+      const nftFrom = nftTransfer.from?.toLowerCase();
+      const isMint = nftFrom === '0x0000000000000000000000000000000000000000';
+      const isIncoming =
+        nftTransfer.to?.toLowerCase() === evmAddress &&
+        nftFrom !== evmAddress &&
+        !isMint;
+      const isOutgoing = nftFrom === evmAddress;
+      if (isIncoming) {
+        return t('received');
+      }
+      if (isOutgoing) {
+        return t('sentSpecifiedTokens', ['NFT']);
+      }
+    }
   }
 
   if (transactionType === 'DEPLOY_CONTRACT') {
@@ -222,8 +237,7 @@ export function useGetTitle(transaction: TransactionViewModel): string {
     const to = transaction.txParams?.to?.toLowerCase();
     const isIncoming = evmAddress && to === evmAddress && from !== evmAddress;
 
-    // Fallback: some swap-like transactions are currently classified as CONTRACT_CALL.
-    // If we have both a token outflow and inflow, prefer a swap title.
+    // Swap-like transactions currently classified as CONTRACT_CALL
     const fromSymbol = transaction.amounts?.from?.token.symbol;
     const toSymbol = transaction.amounts?.to?.token.symbol;
     if (fromSymbol && toSymbol && fromSymbol !== toSymbol) {
@@ -232,9 +246,6 @@ export function useGetTitle(transaction: TransactionViewModel): string {
 
     if (isIncoming && transaction.amounts?.to) {
       return t('received');
-    }
-    if (transaction.amounts?.from?.token.symbol) {
-      return t('sentSpecifiedTokens', [transaction.amounts.from.token.symbol]);
     }
   }
 
