@@ -1,33 +1,34 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { KnownCaipNamespace } from '@metamask/utils';
 import {
   BtcAccountType,
   EthAccountType,
   EthMethod,
   SolAccountType,
 } from '@metamask/keyring-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { deepClone } from '@metamask/snaps-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { KeyringTypes } from '@metamask/keyring-controller';
-import { KeyringType } from '../../shared/constants/keyring';
-import mockState from '../../test/data/mock-state.json';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
-import { createMockInternalAccount } from '../../test/jest/mocks';
-import { mockNetworkState } from '../../test/stub/networks';
-import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
-import * as networkSelectors from '../../shared/modules/selectors/networks';
-import { MultichainNetworks } from '../../shared/constants/multichain/networks';
-import {
-  DEFAULT_FEATURE_FLAG_VALUES,
-  FeatureFlagNames,
-} from '../../shared/modules/feature-flags';
+import { KnownCaipNamespace } from '@metamask/utils';
 
+import * as selectors from './selectors';
+import { KeyringType } from '../../shared/constants/keyring';
+import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
+import { MultichainNetworks } from '../../shared/constants/multichain/networks';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
+import { DAY } from '../../shared/constants/time';
 import {
   SOLANA_WALLET_NAME,
   SOLANA_WALLET_SNAP_ID,
 } from '../../shared/lib/accounts';
-import * as selectors from './selectors';
+import {
+  DEFAULT_FEATURE_FLAG_VALUES,
+  FeatureFlagNames,
+} from '../../shared/modules/feature-flags';
+import * as networkSelectors from '../../shared/modules/selectors/networks';
+import mockState from '../../test/data/mock-state.json';
+import { createMockInternalAccount } from '../../test/jest/mocks';
+import { mockNetworkState } from '../../test/stub/networks';
 
 jest.mock('../../shared/modules/selectors/networks', () => ({
   ...jest.requireActual('../../shared/modules/selectors/networks'),
@@ -4172,6 +4173,117 @@ describe('getPermissionsForActiveTab', () => {
     );
 
     expect(result).toStrictEqual([]);
+  });
+});
+
+describe('getShowUpdateModal', () => {
+  const originalGetVersion = global.platform.getVersion;
+  let getVersionSpy;
+
+  beforeEach(() => {
+    getVersionSpy = jest.fn().mockReturnValue('13.20.0.112');
+    global.platform.getVersion = getVersionSpy;
+  });
+
+  afterEach(() => {
+    global.platform.getVersion = originalGetVersion;
+  });
+
+  it('returns false without reading current version when pending extension version is null', () => {
+    const state = {
+      metamask: {
+        pendingExtensionVersion: null,
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: {
+          extensionUpdatePromptMinimumVersion: '13.20.0.120',
+        },
+      },
+    };
+
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+    expect(getVersionSpy).not.toHaveBeenCalled();
+  });
+
+  it('returns false without reading current version when modal cooldown has not elapsed since dismissal', () => {
+    const state = {
+      metamask: {
+        pendingExtensionVersion: '13.20.0.113',
+        updateModalLastDismissedAt: Date.now(),
+        lastUpdatedAt: null,
+        remoteFeatureFlags: {
+          extensionUpdatePromptMinimumVersion: '13.20.0.120',
+        },
+      },
+    };
+
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+    expect(getVersionSpy).not.toHaveBeenCalled();
+  });
+
+  it('returns false without reading current version when modal cooldown has not elapsed since update', () => {
+    const state = {
+      metamask: {
+        pendingExtensionVersion: '13.20.0.113',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: Date.now(),
+        remoteFeatureFlags: {
+          extensionUpdatePromptMinimumVersion: '13.20.0.120',
+        },
+      },
+    };
+
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+    expect(getVersionSpy).not.toHaveBeenCalled();
+  });
+
+  it('returns true when update is newer and current version is below minimum', () => {
+    const state = {
+      metamask: {
+        pendingExtensionVersion: '13.20.0.113',
+        updateModalLastDismissedAt: Date.now() - DAY - 1,
+        lastUpdatedAt: Date.now() - DAY - 1,
+        remoteFeatureFlags: {
+          extensionUpdatePromptMinimumVersion: '13.20.0.120',
+        },
+      },
+    };
+
+    expect(selectors.getShowUpdateModal(state)).toBe(true);
+  });
+
+  it('supports three-part versions by treating missing build number as zero', () => {
+    getVersionSpy.mockReturnValue('13.19.0');
+
+    const state = {
+      metamask: {
+        pendingExtensionVersion: '13.20.0',
+        updateModalLastDismissedAt: Date.now() - DAY - 1,
+        lastUpdatedAt: Date.now() - DAY - 1,
+        remoteFeatureFlags: {
+          extensionUpdatePromptMinimumVersion: '13.19.1',
+        },
+      },
+    };
+
+    expect(selectors.getShowUpdateModal(state)).toBe(true);
+  });
+
+  it('caches the current extension version while getVersion function is unchanged', () => {
+    const state = {
+      metamask: {
+        pendingExtensionVersion: '13.20.0.113',
+        updateModalLastDismissedAt: Date.now() - DAY - 1,
+        lastUpdatedAt: Date.now() - DAY - 1,
+        remoteFeatureFlags: {
+          extensionUpdatePromptMinimumVersion: '13.20.0.120',
+        },
+      },
+    };
+
+    expect(selectors.getShowUpdateModal(state)).toBe(true);
+    expect(selectors.getShowUpdateModal(state)).toBe(true);
+    expect(getVersionSpy).toHaveBeenCalledTimes(1);
   });
 });
 

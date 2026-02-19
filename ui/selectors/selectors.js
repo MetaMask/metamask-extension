@@ -1,22 +1,4 @@
-import { toUnicode } from 'punycode/punycode.js';
-import { SubjectType } from '@metamask/permission-controller';
-import { ApprovalType } from '@metamask/controller-utils';
-import {
-  stripSnapPrefix,
-  getLocalizedSnapManifest,
-  SnapStatus,
-} from '@metamask/snaps-utils';
-import { memoize } from 'lodash';
-import semver from 'semver';
-import { createSelector } from 'reselect';
-import { NameType } from '@metamask/name-controller';
-import { TransactionStatus } from '@metamask/transaction-controller';
-import { isEvmAccountType } from '@metamask/keyring-api';
-import { RpcEndpointType } from '@metamask/network-controller';
-import {
-  SnapEndowments,
-  WALLET_SNAP_PERMISSION_KEY,
-} from '@metamask/snaps-rpc-methods';
+import { selectBridgeFeatureFlags } from '@metamask/bridge-controller';
 import {
   Caip25EndowmentPermissionName,
   getEthAccounts,
@@ -25,43 +7,45 @@ import {
   getCaipAccountIdsFromCaip25CaveatValue,
   getCaip25CaveatFromPermission,
 } from '@metamask/chain-agnostic-permission';
+import { ApprovalType } from '@metamask/controller-utils';
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { selectBridgeFeatureFlags } from '@metamask/bridge-controller';
+import { NameType } from '@metamask/name-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
+import { SubjectType } from '@metamask/permission-controller';
+import {
+  stripSnapPrefix,
+  getLocalizedSnapManifest,
+  SnapStatus,
+} from '@metamask/snaps-utils';
+import { toUnicode } from 'punycode/punycode.js';
+import { memoize } from 'lodash';
+import { createSelector } from 'reselect';
+import semver from 'semver';
+import { TransactionStatus } from '@metamask/transaction-controller';
+import {
+  SnapEndowments,
+  WALLET_SNAP_PERMISSION_KEY,
+} from '@metamask/snaps-rpc-methods';
 import {
   KnownCaipNamespace,
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
-import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
-import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
+import { getApprovalRequestsByType } from './approvals';
+import { getMultichainBalances, getMultichainNetwork } from './multichain';
 import {
-  getCurrentChainId,
-  getProviderConfig,
-  getSelectedNetworkClientId,
-  getNetworkConfigurationsByChainId,
-} from '../../shared/modules/selectors/networks';
-import { getEnabledNetworks } from '../../shared/modules/selectors/multichain';
-// TODO: Fix circular dependency
-// To avoid import evaluating as `undefined` due to circular dependency,
-// this needs to be imported before `'../pages/confirmations/confirmation/templates'`
-// eslint-disable-next-line import/order
-import { getRemoteFeatureFlags } from './remote-feature-flags';
-// TODO: Fix circular dependency
-// To avoid import evaluating as `undefined` due to circular dependency,
-// this needs to be imported before `'../pages/confirmations/confirmation/templates'`
-// eslint-disable-next-line import/order
+  getSelectedMultichainNetworkChainId,
+  getIsEvmMultichainNetworkSelected,
+} from './multichain/networks';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+import { getHasShieldEntryModalShownOnce } from './subscription';
 import {
-  getIsBitcoinSupportEnabled,
-  getIsSolanaSupportEnabled,
-  getIsTronSupportEnabled,
-  getIsSolanaTestnetSupportEnabled,
-  getIsBitcoinTestnetSupportEnabled,
-  getIsTronTestnetSupportEnabled,
-} from './multichain/feature-flags';
-
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+  getUnapprovedTransactions,
+  getCurrentNetworkTransactions,
+} from './transactions';
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -96,31 +80,55 @@ import {
   NETWORK_TO_NAME_MAP,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION,
 } from '../../shared/constants/network';
+import { getEnabledNetworks } from '../../shared/modules/selectors/multichain';
+import {
+  getCurrentChainId,
+  getProviderConfig,
+  getSelectedNetworkClientId,
+  getNetworkConfigurationsByChainId,
+} from '../../shared/modules/selectors/networks';
+import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
+// TODO: Fix circular dependency
+// To avoid import evaluating as `undefined` due to circular dependency,
+// this needs to be imported before `'../pages/confirmations/confirmation/templates'`
+// eslint-disable-next-line import/order
+import { getRemoteFeatureFlags } from './remote-feature-flags';
+// TODO: Fix circular dependency
+// To avoid import evaluating as `undefined` due to circular dependency,
+// this needs to be imported before `'../pages/confirmations/confirmation/templates'`
+// eslint-disable-next-line import/order
+import {
+  getIsBitcoinSupportEnabled,
+  getIsSolanaSupportEnabled,
+  getIsTronSupportEnabled,
+  getIsSolanaTestnetSupportEnabled,
+  getIsBitcoinTestnetSupportEnabled,
+  getIsTronTestnetSupportEnabled,
+} from './multichain/feature-flags';
+
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import {
   WebHIDConnectedStatuses,
   LedgerTransportTypes,
   HardwareTransportStates,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
-
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
-
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   ALLOWED_PROD_SWAPS_CHAIN_IDS,
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
-
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import { AssetType } from '../../shared/constants/transaction';
-
 import {
   shortenAddress,
   getAccountByAddress,
   getURLHostName,
   sortSelectedInternalAccounts,
 } from '../helpers/utils/util';
-
+import { isDottedNumericVersionLowerThanBoth } from '../helpers/utils/version';
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
@@ -166,18 +174,6 @@ import {
   getInternalAccountByAddress,
 } from './accounts';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../contexts/hardware-wallets/constants';
-import { getHasShieldEntryModalShownOnce } from './subscription';
-import { getApprovalRequestsByType } from './approvals';
-import {
-  getSelectedMultichainNetworkChainId,
-  getIsEvmMultichainNetworkSelected,
-} from './multichain/networks';
-import { getMultichainBalances, getMultichainNetwork } from './multichain';
-import {
-  getUnapprovedTransactions,
-  getCurrentNetworkTransactions,
-} from './transactions';
-import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
@@ -4057,11 +4053,32 @@ export function getRequestType(state, id) {
 
 // #endregion permissions selectors
 
+let cachedExtensionCurrentVersion;
+let cachedPlatformGetVersionFunction;
+
+function getCachedExtensionCurrentVersion() {
+  const platformGetVersionFunction = global.platform.getVersion;
+
+  if (
+    cachedExtensionCurrentVersion === undefined ||
+    cachedPlatformGetVersionFunction !== platformGetVersionFunction
+  ) {
+    cachedExtensionCurrentVersion = platformGetVersionFunction.call(
+      global.platform,
+    );
+    cachedPlatformGetVersionFunction = platformGetVersionFunction;
+  }
+
+  return cachedExtensionCurrentVersion;
+}
+
 /**
  * Determines whether the update modal should be shown.
  *
  * Logic:
- * - If !pendingVersion || pendingVersion <= version → do not show
+ * - If !pendingVersion → do not show
+ * - Else if update modal cooldown has not elapsed since dismissal/update → do not show
+ * - Else if pendingVersion <= version → do not show
  * - Else if version < minimumVersion → show
  * - Else → do not show
  *
@@ -4076,45 +4093,39 @@ export function getShowUpdateModal(state) {
       lastUpdatedAt,
     },
   } = state;
-  const remoteFeatureFlags = getRemoteFeatureFlags(state);
 
-  const extensionCurrentVersion = semver.valid(
-    semver.coerce(global.platform?.getVersion()),
-  );
-  const extensionUpdatePromptMinimumVersion = semver.valid(
-    semver.coerce(remoteFeatureFlags.extensionUpdatePromptMinimumVersion),
-  );
-
-  const pendingVersionValid = pendingExtensionVersion
-    ? semver.valid(semver.coerce(pendingExtensionVersion))
-    : null;
-
-  const hasNewerUpdate =
-    Boolean(pendingVersionValid && extensionCurrentVersion) &&
-    semver.gt(pendingVersionValid, extensionCurrentVersion);
-
-  if (!hasNewerUpdate) {
+  if (!pendingExtensionVersion) {
     return false;
   }
 
-  const isBelowMinimum =
-    extensionCurrentVersion && extensionUpdatePromptMinimumVersion
-      ? semver.lt(extensionCurrentVersion, extensionUpdatePromptMinimumVersion)
-      : false;
+  const updateModalCooldown = DAY;
+  let currentTime;
 
-  const currentTime = Date.now();
-  const updateModalCooldown = 24 * 60 * 60 * 1000; // 24 hours
-  const enoughTimePassedSinceLastDismissal = updateModalLastDismissedAt
-    ? currentTime - updateModalLastDismissedAt > updateModalCooldown
-    : true;
-  const enoughTimePassedSinceLastUpdate = lastUpdatedAt
-    ? currentTime - lastUpdatedAt > updateModalCooldown
-    : true;
+  if (updateModalLastDismissedAt) {
+    currentTime = Date.now();
+    if (currentTime - updateModalLastDismissedAt <= updateModalCooldown) {
+      return false;
+    }
+  }
 
-  return (
-    isBelowMinimum &&
-    enoughTimePassedSinceLastDismissal &&
-    enoughTimePassedSinceLastUpdate
+  if (lastUpdatedAt) {
+    currentTime = currentTime ?? Date.now();
+    if (currentTime - lastUpdatedAt <= updateModalCooldown) {
+      return false;
+    }
+  }
+
+  const extensionCurrentVersion = getCachedExtensionCurrentVersion();
+  const { extensionUpdatePromptMinimumVersion } = getRemoteFeatureFlags(state);
+
+  if (typeof extensionUpdatePromptMinimumVersion !== 'string') {
+    return false;
+  }
+
+  return isDottedNumericVersionLowerThanBoth(
+    extensionCurrentVersion,
+    pendingExtensionVersion,
+    extensionUpdatePromptMinimumVersion,
   );
 }
 
