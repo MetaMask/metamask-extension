@@ -209,86 +209,95 @@ export async function validateBundle({
   }
 
   const consumer = await new SourceMapConsumer(rawSourceMap);
+  try {
+    if (!consumer.hasContentsOfAllSources()) {
+      console.warn(
+        'SourcemapValidator (webpack) - missing content of some sources...',
+      );
+    }
 
-  if (!consumer.hasContentsOfAllSources()) {
-    console.warn(
-      'SourcemapValidator (webpack) - missing content of some sources...',
-    );
-  }
+    console.log(`  sampling from ${consumer.sources.length} files`);
+    let sampleCount = 0;
+    let valid = true;
 
-  console.log(`  sampling from ${consumer.sources.length} files`);
-  let sampleCount = 0;
-  let valid = true;
+    const buildLines = rawBuild.split('\n');
+    for (let lineIndex = 0; lineIndex < buildLines.length; lineIndex++) {
+      const line = buildLines[lineIndex];
+      const matchIndices = indicesOf(TARGET_STRING, line);
+      for (const matchColumn of matchIndices) {
+        const position = { line: lineIndex + 1, column: matchColumn };
+        const result = consumer.originalPositionFor(position);
 
-  const buildLines = rawBuild.split('\n');
-  for (let lineIndex = 0; lineIndex < buildLines.length; lineIndex++) {
-    const line = buildLines[lineIndex];
-    const matchIndices = indicesOf(TARGET_STRING, line);
-    for (const matchColumn of matchIndices) {
-      const position = { line: lineIndex + 1, column: matchColumn };
-      const result = consumer.originalPositionFor(position);
-
-      if (!result.source) {
-        if (isLikelyCommentLine(line)) {
+        if (!result.source) {
+          if (isLikelyCommentLine(line)) {
+            continue;
+          }
+          if (isLikelyMinifiedLine(line)) {
+            continue;
+          }
+          sampleCount += 1;
+          valid = false;
+          const location = {
+            start: { line: position.line, column: position.column + 1 },
+          };
+          const codeSample = codeFrameColumns(rawBuild, location, {
+            message: 'missing source for position',
+            highlightCode: true,
+          });
+          console.error(
+            `missing source for position, in bundle "${label}"\n${codeSample}`,
+          );
           continue;
         }
-        if (isLikelyMinifiedLine(line)) {
-          continue;
-        }
+
         sampleCount += 1;
-        valid = false;
-        const location = {
-          start: { line: position.line, column: position.column + 1 },
-        };
-        const codeSample = codeFrameColumns(rawBuild, location, {
-          message: 'missing source for position',
-          highlightCode: true,
-        });
-        console.error(
-          `missing source for position, in bundle "${label}"\n${codeSample}`,
-        );
-        continue;
-      }
 
-      sampleCount += 1;
+        const sourceContent = consumer.sourceContentFor(result.source);
+        if (sourceContent === null) {
+          valid = false;
+          console.error(
+            `SourcemapValidator (webpack) - no source content for "${result.source}", in bundle "${label}"`,
+          );
+          continue;
+        }
 
-      const sourceContent = consumer.sourceContentFor(result.source);
-      if (sourceContent === null) {
-        valid = false;
-        console.error(
-          `SourcemapValidator (webpack) - no source content for "${result.source}", in bundle "${label}"`,
-        );
-        continue;
-      }
+        const sourceLines = sourceContent.split('\n');
+        const sourceLineIndex = (result.line ?? 1) - 1;
+        const sourceLine = sourceLines[sourceLineIndex];
+        const column = result.column ?? 0;
+        const portion = sourceLine ? sourceLine.slice(column) : '';
+        const foundValidSource = portion.includes(TARGET_STRING);
 
-      const sourceLines = sourceContent.split('\n');
-      const sourceLineIndex = (result.line ?? 1) - 1;
-      const sourceLine = sourceLines[sourceLineIndex];
-      const column = result.column ?? 0;
-      const portion = sourceLine ? sourceLine.slice(column) : '';
-      const foundValidSource = portion.includes(TARGET_STRING);
-
-      if (!foundValidSource) {
-        valid = false;
-        const location = {
-          start: {
-            line: result.line ?? 1,
-            column: column + 1,
-          },
-        };
-        const codeSample = codeFrameColumns(sourceContent, location, {
-          message: `expected to see ${JSON.stringify(TARGET_STRING)}`,
-          highlightCode: true,
-        });
-        console.error(
-          `Sourcemap seems invalid, ${result.source}\n${codeSample}`,
-        );
+        if (!foundValidSource) {
+          valid = false;
+          const location = {
+            start: {
+              line: result.line ?? 1,
+              column: column + 1,
+            },
+          };
+          const codeSample = codeFrameColumns(sourceContent, location, {
+            message: `expected to see ${JSON.stringify(TARGET_STRING)}`,
+            highlightCode: true,
+          });
+          console.error(
+            `Sourcemap seems invalid, ${result.source}\n${codeSample}`,
+          );
+        }
       }
     }
-  }
 
-  console.log(`  checked ${sampleCount} samples`);
-  return valid;
+    console.log(`  checked ${sampleCount} samples`);
+    return valid;
+  } catch (error) {
+    console.error(
+      `SourcemapValidator (webpack) - error validating bundle "${label}":`,
+      error,
+    );
+    return false;
+  } finally {
+    consumer.destroy();
+  }
 }
 
 /**

@@ -255,6 +255,45 @@ describe('sourcemap-validator', () => {
       assert.strictEqual(ok, false);
     });
 
+    it('returns false and logs when validation throws (catch block)', async () => {
+      const bundle = 'throw new Error("x");';
+      const mapJson = makeSourceMap('throw new Error("x");', 1, 6, 1, 6);
+      const jsPath = join(tmpDir, 'throw-during-validate.js');
+      const mapPath = join(tmpDir, 'throw-during-validate.js.map');
+      await writeFile(jsPath, bundle);
+      await writeFile(mapPath, mapJson);
+      mock.method(console, 'log', noop);
+      mock.method(console, 'warn', noop);
+      const errors: string[] = [];
+      mock.method(console, 'error', (...args: unknown[]) => {
+        errors.push(args.map((a) => String(a)).join(' '));
+      });
+      const { SourceMapConsumer } = await import('source-map');
+      const tempConsumer = await new SourceMapConsumer(
+        '{"version":3,"file":"","sources":[],"mappings":""}',
+      );
+      const consumerProto = Object.getPrototypeOf(tempConsumer);
+      tempConsumer.destroy();
+      mock.method(consumerProto, 'originalPositionFor', () => {
+        throw new Error('mock validation error');
+      });
+      const ok = await validateBundle({
+        jsPath,
+        mapPath,
+        label: 'throw-during-validate.js',
+      });
+      assert.strictEqual(ok, false);
+      const out = errors.join('\n');
+      assert.ok(
+        out.includes('error validating bundle "throw-during-validate.js"'),
+        'should log bundle label in error',
+      );
+      assert.ok(
+        out.includes('mock validation error'),
+        'should log thrown error',
+      );
+    });
+
     it('returns false and logs when result.source is null for a code line (missing source for position)', async () => {
       const bundle = 'line1\n  throw new Error("x");\nline3';
       const gen = new SourceMapGenerator({ file: 'out.js' });
