@@ -133,64 +133,66 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
         gap={4}
         className="flex-1 overflow-y-auto overflow-x-hidden pb-4"
       >
-        {/* Order Type: Market and Limit as separate pills (Tag component) */}
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={2}
-          className="w-full"
-        >
-          <Tag
-            as="button"
-            type="button"
-            label={t('perpsMarket')}
-            onClick={() => handleOrderTypeClick('market')}
-            backgroundColor={
-              orderType === 'market'
-                ? BackgroundColor.backgroundMuted
-                : BackgroundColor.backgroundDefault
-            }
-            borderWidth={0}
-            className={twMerge(
-              'cursor-pointer transition-colors',
-              orderType !== 'market' && 'hover:opacity-80',
-            )}
-            borderRadius={BorderRadius.pill}
-            labelProps={{
-              color:
+        {/* Order Type: Market and Limit as separate pills (Tag component) — hidden in close mode */}
+        {mode !== 'close' && (
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={2}
+            className="w-full"
+          >
+            <Tag
+              as="button"
+              type="button"
+              label={t('perpsMarket')}
+              onClick={() => handleOrderTypeClick('market')}
+              backgroundColor={
                 orderType === 'market'
-                  ? TextColor.textDefault
-                  : TextColor.textAlternative,
-            }}
-            padding={3}
-            data-testid="order-type-market"
-          />
-          <Tag
-            as="button"
-            type="button"
-            label={t('perpsLimit')}
-            onClick={() => handleOrderTypeClick('limit')}
-            backgroundColor={
-              orderType === 'limit'
-                ? BackgroundColor.backgroundMuted
-                : BackgroundColor.backgroundDefault
-            }
-            borderWidth={0}
-            borderRadius={BorderRadius.pill}
-            className={twMerge(
-              'cursor-pointer transition-colors',
-              orderType !== 'limit' && 'hover:opacity-80',
-            )}
-            labelProps={{
-              color:
+                  ? BackgroundColor.backgroundMuted
+                  : BackgroundColor.backgroundDefault
+              }
+              borderWidth={0}
+              className={twMerge(
+                'cursor-pointer transition-colors',
+                orderType !== 'market' && 'hover:opacity-80',
+              )}
+              borderRadius={BorderRadius.pill}
+              labelProps={{
+                color:
+                  orderType === 'market'
+                    ? TextColor.textDefault
+                    : TextColor.textAlternative,
+              }}
+              padding={3}
+              data-testid="order-type-market"
+            />
+            <Tag
+              as="button"
+              type="button"
+              label={t('perpsLimit')}
+              onClick={() => handleOrderTypeClick('limit')}
+              backgroundColor={
                 orderType === 'limit'
-                  ? TextColor.textDefault
-                  : TextColor.textAlternative,
-            }}
-            padding={3}
-            data-testid="order-type-limit"
-          />
-        </Box>
+                  ? BackgroundColor.backgroundMuted
+                  : BackgroundColor.backgroundDefault
+              }
+              borderWidth={0}
+              borderRadius={BorderRadius.pill}
+              className={twMerge(
+                'cursor-pointer transition-colors',
+                orderType !== 'limit' && 'hover:opacity-80',
+              )}
+              labelProps={{
+                color:
+                  orderType === 'limit'
+                    ? TextColor.textDefault
+                    : TextColor.textAlternative,
+              }}
+              padding={3}
+              data-testid="order-type-limit"
+            />
+          </Box>
+        )}
 
         {/* Close Mode: Show CloseAmountSection */}
         {mode === 'close' && existingPosition && (

@@ -110,7 +110,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   const handleTokenAmountChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^[\d.]*$/u.test(value)) {
+      if (value === '' || /^\d*\.?\d*$/u.test(value)) {
         if (value === '' || value === '.') {
           onAmountChange('');
           onBalancePercentChange(0);

@@ -233,8 +233,6 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const [topOfBook, setTopOfBook] = useState<{
     midPrice: number;
-    bidPrice: number;
-    askPrice: number;
   } | null>(null);
   useEffect(() => {
     if (!decodedSymbol || !selectedAddress) {
@@ -262,8 +260,6 @@ const PerpsOrderEntryPage: React.FC = () => {
             ) {
               setTopOfBook({
                 midPrice: parseFloat(orderBook.midPrice),
-                bidPrice: parseFloat(orderBook.bids[0].price),
-                askPrice: parseFloat(orderBook.asks[0].price),
               });
             }
           },
@@ -560,8 +556,6 @@ const PerpsOrderEntryPage: React.FC = () => {
           orderType={orderType}
           existingPosition={existingPositionForOrder}
           midPrice={topOfBook?.midPrice}
-          direction={orderDirection}
-          onDirectionChange={setOrderDirection}
           onOrderTypeChange={setOrderType}
         />
       </Box>
