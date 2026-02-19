@@ -138,10 +138,6 @@ import {
   checkEip7702Support,
 } from '../../shared/lib/eip7702-support-utils';
 import { createEIP7702UpgradeTransaction } from '../../shared/lib/eip7702-utils';
-import {
-  FEATURE_VERSION_2,
-  isMultichainAccountsFeatureEnabled,
-} from '../../shared/lib/multichain-accounts/remote-feature-flag';
 import { captureException } from '../../shared/lib/sentry';
 import {
   CHAIN_IDS,
@@ -974,21 +970,17 @@ export default class MetamaskController extends EventEmitter {
           // If not, discovery will fallback to the primary keyring ID anyway.
           const id = selected?.options?.entropy?.id;
 
-          if (this.isMultichainAccountsFeatureState2Enabled()) {
-            ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-            await this.getSnapKeyring();
-            ///: END:ONLY_INCLUDE_IF
+          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+          await this.getSnapKeyring();
+          ///: END:ONLY_INCLUDE_IF
 
-            await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-          }
+          await this.accountTreeController.syncWithUserStorageAtLeastOnce();
 
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
             // importing multiple SRPs on social login rehydration
             await this._importAccountsWithBalances();
-          } else if (this.isMultichainAccountsFeatureState2Enabled()) {
-            await this.discoverAndCreateAccounts(id);
           } else {
-            await this._addAccountsWithBalance();
+            await this.discoverAndCreateAccounts(id);
           }
 
           this.postOnboardingInitialization();
@@ -1537,13 +1529,6 @@ export default class MetamaskController extends EventEmitter {
     if (pollInterval > 0) {
       this.tokenBalancesController.setIntervalLength(pollInterval * SECOND);
     }
-  }
-
-  isMultichainAccountsFeatureState2Enabled() {
-    const featureFlag =
-      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-        ?.enableMultichainAccountsState2;
-    return isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2);
   }
 
   postOnboardingInitialization() {
@@ -4748,27 +4733,13 @@ export default class MetamaskController extends EventEmitter {
       }
 
       const syncAndDiscoverAccounts = async () => {
-        if (this.isMultichainAccountsFeatureState2Enabled()) {
-          // We want to trigger a full sync of the account tree after importing a new SRP
-          // because `hasAccountTreeSyncingSyncedAtLeastOnce` is already true
-          await this.accountTreeController.syncWithUserStorage();
-        }
+        // We want to trigger a full sync of the account tree after importing a new SRP
+        // because `hasAccountTreeSyncingSyncedAtLeastOnce` is already true
+        await this.accountTreeController.syncWithUserStorage();
 
         let discoveredAccounts;
 
-        if (
-          this.isMultichainAccountsFeatureState2Enabled() &&
-          shouldImportSolanaAccount
-        ) {
-          // We check if shouldImportSolanaAccount is true, because if it's false, we are in the middle of the onboarding flow.
-          // We just create the accounts at the end of the onboarding flow (including EVM).
-          discoveredAccounts = await this.discoverAndCreateAccounts(id);
-        } else {
-          discoveredAccounts = await this._addAccountsWithBalance(
-            id,
-            shouldImportSolanaAccount,
-          );
-        }
+        discoveredAccounts = await this.discoverAndCreateAccounts(id);
 
         const newHdEntropyIndex = this.getHDEntropyIndex();
 
@@ -4987,18 +4958,11 @@ export default class MetamaskController extends EventEmitter {
       if (completedOnboarding) {
         // check if external services are enabled
         const { useExternalServices } = this.preferencesController.state;
-        if (
-          this.isMultichainAccountsFeatureState2Enabled() &&
-          useExternalServices // skip the account sync if external services are disabled
-        ) {
-          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-          await this.getSnapKeyring();
-          ///: END:ONLY_INCLUDE_IF
-          await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-          await this.discoverAndCreateAccounts(id);
-        } else {
-          await this._addAccountsWithBalance();
-        }
+        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+        await this.getSnapKeyring();
+        ///: END:ONLY_INCLUDE_IF
+        await this.accountTreeController.syncWithUserStorageAtLeastOnce();
+        await this.discoverAndCreateAccounts(id);
       }
 
       if (getIsSeedlessOnboardingFeatureEnabled()) {
@@ -5213,18 +5177,11 @@ export default class MetamaskController extends EventEmitter {
         },
       );
       if (isHdKeyring) {
-        if (this.isMultichainAccountsFeatureState2Enabled()) {
-          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-          await this.getSnapKeyring();
-          ///: END:ONLY_INCLUDE_IF
-          await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-          await this.discoverAndCreateAccounts(metadata.id);
-        } else {
-          await this._addAccountsWithBalance(
-            metadata.id,
-            shouldImportSolanaAccount,
-          );
-        }
+        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+        await this.getSnapKeyring();
+        ///: END:ONLY_INCLUDE_IF
+        await this.accountTreeController.syncWithUserStorageAtLeastOnce();
+        await this.discoverAndCreateAccounts(metadata.id);
       }
     }
   }
@@ -5398,25 +5355,23 @@ export default class MetamaskController extends EventEmitter {
       this.accountTreeController.getSelectedAccountGroup(),
     );
 
-    if (this.isMultichainAccountsFeatureState2Enabled()) {
-      const resyncAndAlignAccounts = async () => {
-        // READ THIS CAREFULLY:
-        // There is/was a bug with Snap accounts that can be desynchronized (Solana). To
-        // automatically "fix" this corrupted state, we run this method which will re-sync
-        // MetaMask accounts and Snap accounts upon login.
-        // BUG: https://github.com/MetaMask/metamask-extension/issues/37228
-        await this.multichainAccountService.resyncAccounts();
+    const resyncAndAlignAccounts = async () => {
+      // READ THIS CAREFULLY:
+      // There is/was a bug with Snap accounts that can be desynchronized (Solana). To
+      // automatically "fix" this corrupted state, we run this method which will re-sync
+      // MetaMask accounts and Snap accounts upon login.
+      // BUG: https://github.com/MetaMask/metamask-extension/issues/37228
+      await this.multichainAccountService.resyncAccounts();
 
-        // This allows to create missing accounts if new account providers have been added.
-        await this.multichainAccountService.alignWallets();
-      };
+      // This allows to create missing accounts if new account providers have been added.
+      await this.multichainAccountService.alignWallets();
+    };
 
-      // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
-      // for mobile.
-      // NOTE: We run this asynchronously on purpose, see FIXME^.
-      // eslint-disable-next-line no-void
-      void resyncAndAlignAccounts();
-    }
+    // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
+    // for mobile.
+    // NOTE: We run this asynchronously on purpose, see FIXME^.
+    // eslint-disable-next-line no-void
+    void resyncAndAlignAccounts();
   }
 
   async _loginUser(password) {
