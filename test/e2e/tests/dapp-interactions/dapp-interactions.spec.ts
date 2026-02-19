@@ -13,7 +13,7 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Dapp interactions', function () {
   it('should trigger the add chain confirmation despite MetaMask being locked', async function () {
@@ -121,7 +121,7 @@ describe('Dapp interactions', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 
@@ -132,12 +132,14 @@ describe('Dapp interactions', function () {
         const homepage = new Homepage(driver);
         await homepage.headerNavbar.lockMetaMask();
 
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+
         // Attempt interaction with DApp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickCreateToken();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
         console.log('Prompted to unlock the wallet');
         await loginPage.loginToHomepage('123456');
