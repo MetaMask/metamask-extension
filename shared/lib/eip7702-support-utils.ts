@@ -1,6 +1,6 @@
-import { Hex } from '@metamask/utils';
-import { IsAtomicBatchSupportedResultEntry } from '@metamask/transaction-controller';
-import { FeatureFlags, RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+import type { Hex } from '@metamask/utils';
+import type { IsAtomicBatchSupportedResultEntry } from '@metamask/transaction-controller';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 
 /**
  * Checks if EIP-7702 is supported for a specific chain based on atomic batch support results.
@@ -80,8 +80,12 @@ type TransactionControllerPartialFeatureFlags = {
   };
 };
 
-export function getEip7702SupportedChains({remoteFeatureFlags}: RemoteFeatureFlagControllerState): Hex[] {
-  const eip7702FeatureFlags = remoteFeatureFlags as TransactionControllerPartialFeatureFlags | undefined;
+export function getEip7702SupportedChains({
+  remoteFeatureFlags,
+}: RemoteFeatureFlagControllerState): Hex[] {
+  const eip7702FeatureFlags = remoteFeatureFlags as
+    | TransactionControllerPartialFeatureFlags
+    | undefined;
 
   return eip7702FeatureFlags?.[EIP7702_FEATURE_FLAG]?.supportedChains ?? [];
 }
