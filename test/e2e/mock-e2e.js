@@ -1215,6 +1215,60 @@ async function setupMocking(
     )
     .thenForwardTo('ws://localhost:8088');
 
+  /**
+   * Hyperliquid Perps Websocket
+   * Redirect Hyperliquid API WebSocket calls to local mock server for E2E tests.
+   * Used when PerpsController makes real Hyperliquid calls (e.g. from background).
+   */
+  await server
+    .forAnyWebSocket()
+    .matching((req) =>
+      /^wss:\/\/api\.hyperliquid\.xyz\/ws/u.test(req.url),
+    )
+    .thenForwardTo('ws://localhost:8088');
+
+  /**
+   * Hyperliquid REST API mocks for Perps E2E tests.
+   * When PerpsController makes REST calls to api.hyperliquid.xyz, return mock data.
+   */
+  await server
+    .forPost(/^https:\/\/api\.hyperliquid\.xyz\/info$/u)
+    .thenCallback((req) => {
+      let type;
+      if (req.body?.text) {
+        const body = JSON.parse(req.body.text);
+        type = body?.type ?? body?.method;
+      }
+      if (type === 'meta') {
+        return {
+          statusCode: 200,
+          json: {
+            universe: [
+              {
+                name: 'BTC',
+                szDecimals: 5,
+                maxLeverage: 50,
+              },
+            ],
+          },
+        };
+      }
+      if (type === 'allMids') {
+        return {
+          statusCode: 200,
+          json: { mids: { BTC: '50000', ETH: '3000' } },
+        };
+      }
+      return { statusCode: 200, json: {} };
+    });
+
+  await server
+    .forPost(/^https:\/\/api\.hyperliquid\.xyz\/exchange$/u)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { status: 'ok', response: { type: 'order', data: {} } },
+    }));
+
   // Test Dapp Styles
   const TEST_DAPP_STYLES_1 = fs.readFileSync(TEST_DAPP_STYLES_1_PATH);
   const TEST_DAPP_STYLES_2 = fs.readFileSync(TEST_DAPP_STYLES_2_PATH);
