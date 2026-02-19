@@ -6,11 +6,11 @@
  * coverage vs. which are only tested via default mock values.
  *
  * Usage:
- *   yarn feature-flag:coverage
+ * yarn feature-flag:coverage
  *
  * Output:
- *   - Console table with per-flag coverage details
- *   - JSON report at test/e2e/scripts/feature-flag-coverage-report.json
+ * - Console table with per-flag coverage details
+ * - JSON report at test/e2e/scripts/feature-flag-coverage-report.json
  */
 
 import * as fs from 'fs';
@@ -105,19 +105,21 @@ function collectTestFiles(dir: string): string[] {
  * (e.g. "addBitcoinAccount" matching inside "addBitcoinAccountDummyFlag").
  * \b treats underscores as word chars, which works because flag names in
  * test files appear as object keys where word boundaries naturally occur.
+ * @param content
+ * @param flagName
  */
 function fileContainsFlag(content: string, flagName: string): boolean {
-  const regex = new RegExp(`\\b${escapeRegex(flagName)}\\b`);
+  const regex = new RegExp(`\\b${escapeRegex(flagName)}\\b`, 'u');
   return regex.test(content);
 }
 
 function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return str.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
 }
 
 function extractFlagValues(content: string, flagName: string): string[] {
   const escapedName = escapeRegex(flagName);
-  const regex = new RegExp(`\\b${escapedName}\\b\\s*[:=]\\s*`, 'g');
+  const regex = new RegExp(`\\b${escapedName}\\b\\s*[:=]\\s*`, 'gu');
   const values = new Set<string>();
   let match;
 
@@ -136,7 +138,7 @@ function extractValueSnippet(after: string): string {
     return extractBalanced(trimmed);
   }
 
-  const untilEnd = trimmed.match(/^[^,\n}]+/);
+  const untilEnd = trimmed.match(/^[^,\n}]+/u);
   const raw = untilEnd ? untilEnd[0].trim() : trimmed.split('\n')[0].trim();
   return truncate(raw);
 }
@@ -145,13 +147,16 @@ function extractBalanced(str: string): string {
   const open = str[0];
   const close = open === '{' ? '}' : ']';
   let depth = 0;
-  for (let i = 0; i < str.length; i++) {
-    if (str[i] === open) depth++;
-    else if (str[i] === close) depth--;
+  for (let i = 0; i < str.length; i += 1) {
+    if (str[i] === open) {
+      depth += 1;
+    } else if (str[i] === close) {
+      depth -= 1;
+    }
     if (depth === 0) {
       const value = str
         .slice(0, i + 1)
-        .replace(/\s+/g, ' ')
+        .replace(/\s+/gu, ' ')
         .trim();
       return truncate(value);
     }
@@ -160,8 +165,10 @@ function extractBalanced(str: string): string {
 }
 
 function truncate(str: string, max = 80): string {
-  if (str.length <= max) return str;
-  return str.slice(0, max - 3) + '...';
+  if (str.length <= max) {
+    return str;
+  }
+  return `${str.slice(0, max - 3)}...`;
 }
 
 function summarizeDefault(value: Json): string {
@@ -169,7 +176,7 @@ function summarizeDefault(value: Json): string {
   if (str.length <= 50) {
     return str;
   }
-  return str.slice(0, 47) + '...';
+  return `${str.slice(0, 47)}...`;
 }
 
 // ============================================================================
@@ -189,8 +196,8 @@ function resolveEnabledState(value: Json): boolean | null {
   return null;
 }
 
-const TRUTHY_PATTERNS = [/\btrue\b/, /enabled:\s*true/];
-const FALSY_PATTERNS = [/\bfalse\b/, /enabled:\s*false/];
+const TRUTHY_PATTERNS = [/\btrue\b/u, /enabled:\s*true/u];
+const FALSY_PATTERNS = [/\bfalse\b/u, /enabled:\s*false/u];
 
 function extractTestedStates(
   references: FlagReference[],
@@ -199,13 +206,21 @@ function extractTestedStates(
   const states = { true: false, false: false };
 
   const defaultState = resolveEnabledState(productionDefault);
-  if (defaultState === true) states.true = true;
-  if (defaultState === false) states.false = true;
+  if (defaultState === true) {
+    states.true = true;
+  }
+  if (defaultState === false) {
+    states.false = true;
+  }
 
   for (const ref of references) {
     for (const val of ref.values) {
-      if (TRUTHY_PATTERNS.some((p) => p.test(val))) states.true = true;
-      if (FALSY_PATTERNS.some((p) => p.test(val))) states.false = true;
+      if (TRUTHY_PATTERNS.some((p) => p.test(val))) {
+        states.true = true;
+      }
+      if (FALSY_PATTERNS.some((p) => p.test(val))) {
+        states.false = true;
+      }
     }
   }
 
@@ -216,8 +231,12 @@ function determineCoverage(
   references: FlagReference[],
   testedStates: { true: boolean; false: boolean },
 ): CoverageLevel {
-  if (references.length === 0) return 'default-only';
-  if (testedStates.true && testedStates.false) return 'full';
+  if (references.length === 0) {
+    return 'default-only';
+  }
+  if (testedStates.true && testedStates.false) {
+    return 'full';
+  }
   return 'partial';
 }
 
@@ -303,9 +322,10 @@ function generateReport(repoRoot: string): CoverageReport {
       fullCoverage: fullCount,
       partialCoverage: partialCount,
       defaultOnlyCoverage: defaultOnlyCount,
-      coveragePercentage: Math.round(
-        ((fullCount + partialCount) / flagResults.length) * 100,
-      ),
+      coveragePercentage:
+        flagResults.length > 0
+          ? Math.round(((fullCount + partialCount) / flagResults.length) * 100)
+          : 0,
     },
     flags: flagResults,
   };
@@ -324,7 +344,7 @@ function printReport(report: CoverageReport): void {
   console.log(`  Generated: ${report.generatedAt}`);
   console.log('');
   console.log('  LEGEND');
-  console.log('  ' + '-'.repeat(40));
+  console.log(`  ${'-'.repeat(40)}`);
   console.log('  Coverage levels:');
   console.log('    FULL         Both true and false states are tested');
   console.log('    PARTIAL      Only one state (true or false) is tested');
@@ -343,7 +363,7 @@ function printReport(report: CoverageReport): void {
   console.log('');
 
   console.log('  SUMMARY');
-  console.log('  ' + '-'.repeat(40));
+  console.log(`  ${'-'.repeat(40)}`);
   console.log(`  Total flags:       ${summary.totalFlags}`);
   console.log(`  Active flags:      ${summary.activeFlags}`);
   console.log(`  Full coverage:     ${summary.fullCoverage}`);
@@ -368,8 +388,8 @@ function printReport(report: CoverageReport): void {
     'Prod Default'.padEnd(defaultCol),
   ].join(' | ');
 
-  console.log('  ' + header);
-  console.log('  ' + '-'.repeat(header.length));
+  console.log(`  ${header}`);
+  console.log(`  ${'-'.repeat(header.length)}`);
 
   for (const entry of flags) {
     const coverageLabel = entry.coverage.toUpperCase();
@@ -385,7 +405,7 @@ function printReport(report: CoverageReport): void {
       entry.productionDefault.padEnd(defaultCol),
     ].join(' | ');
 
-    console.log('  ' + row);
+    console.log(`  ${row}`);
   }
 
   console.log('');
@@ -393,7 +413,7 @@ function printReport(report: CoverageReport): void {
   const fullFlags = flags.filter((f) => f.coverage === 'full');
   if (fullFlags.length > 0) {
     console.log('  FULL COVERAGE (both true and false states tested)');
-    console.log('  ' + '-'.repeat(40));
+    console.log(`  ${'-'.repeat(40)}`);
     for (const entry of fullFlags) {
       console.log(
         `  ${entry.flag}  (prod default: ${entry.productionDefault})`,
@@ -410,9 +430,9 @@ function printReport(report: CoverageReport): void {
   const partialFlags = flags.filter((f) => f.coverage === 'partial');
   if (partialFlags.length > 0) {
     console.log('  PARTIAL COVERAGE (only one state tested)');
-    console.log('  ' + '-'.repeat(40));
+    console.log(`  ${'-'.repeat(40)}`);
     for (const entry of partialFlags) {
-      const missing = !entry.testedStates.true ? 'true' : 'false';
+      const missing = entry.testedStates.true ? 'false' : 'true';
       console.log(`  ${entry.flag}  (missing: ${missing} state)`);
       for (const ref of entry.references) {
         const valueStr =
@@ -426,7 +446,7 @@ function printReport(report: CoverageReport): void {
   const defaultOnly = flags.filter((f) => f.coverage === 'default-only');
   if (defaultOnly.length > 0) {
     console.log('  DEFAULT-ONLY (no explicit test references)');
-    console.log('  ' + '-'.repeat(40));
+    console.log(`  ${'-'.repeat(40)}`);
     for (const entry of defaultOnly) {
       console.log(`  - ${entry.flag}`);
     }
@@ -441,7 +461,7 @@ function printReport(report: CoverageReport): void {
 // ============================================================================
 
 function writeJsonReport(report: CoverageReport, outputPath: string): void {
-  fs.writeFileSync(outputPath, JSON.stringify(report, null, 2) + '\n', 'utf-8');
+  fs.writeFileSync(outputPath, `${JSON.stringify(report, null, 2)}\n`, 'utf-8');
   console.log(`JSON report written to: ${outputPath}`);
 }
 
