@@ -20,6 +20,10 @@ export type ConfirmContextType = {
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
 };
 
+type ConfirmLocationState = {
+  returnTo?: string;
+};
+
 export const ConfirmContext = createContext<ConfirmContextType | undefined>(
   undefined,
 );
@@ -42,9 +46,9 @@ export const ConfirmContextProvider: React.FC<{
    */
   useEffect(() => {
     if (previousConfirmation && !currentConfirmation) {
-      const returnTo = (location.state as { returnTo?: string } | null)
-        ?.returnTo;
-      navigate(returnTo ?? `${DEFAULT_ROUTE}?tab=activity`, { replace: true });
+      const locationState = location.state as ConfirmLocationState | null;
+      const fallbackRoute = `${DEFAULT_ROUTE}?tab=activity`;
+      navigate(locationState?.returnTo ?? fallbackRoute, { replace: true });
     }
   }, [previousConfirmation, currentConfirmation, navigate, location.state]);
 
