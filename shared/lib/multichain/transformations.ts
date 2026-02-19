@@ -200,12 +200,13 @@ export function selectTransactions(address: string) {
           return result;
         }
 
-        // Filter out zero-value outgoing transactions with no transfers
+        // Filter out zero-value self-sends with no calldata and no transfers
         if (
           rawFrom === addr &&
+          rawTo === addr &&
           raw.value === '0' &&
           !raw.valueTransfers?.length &&
-          raw.transactionCategory === 'STANDARD'
+          (!raw.methodId || raw.methodId === '0x')
         ) {
           return result;
         }
@@ -237,6 +238,7 @@ export function selectTransactions(address: string) {
           transactionType: raw.transactionType || '',
           transactionCategory: raw.transactionCategory || '',
           transactionProtocol,
+          valueTransfers: raw.valueTransfers,
         });
 
         return result;

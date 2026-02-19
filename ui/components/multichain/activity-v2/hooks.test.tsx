@@ -89,6 +89,7 @@ describe('useGetTitle', () => {
       txParams: {
         from: '0x316bde155acd07609872a56bc32ccfb0b13201fa',
         to: selectedAddress,
+        value: '0x9184e72a000',
       },
       amounts: {
         to: {
@@ -108,6 +109,100 @@ describe('useGetTitle', () => {
     });
 
     expect(result.current).toBe('received');
+  });
+
+  it('returns sent for STANDARD outgoing native transfer with non-zero value', () => {
+    const selectedAddress = '0x4f5243ceea96cee1da0fdb89c756d0e999439424';
+
+    const store = configureMockStore()({
+      metamask: {
+        internalAccounts: {
+          selectedAccount: '1',
+          accounts: {
+            '1': {
+              address: selectedAddress,
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
+    });
+
+    const tx = {
+      transactionCategory: 'STANDARD',
+      transactionType: 'STANDARD',
+      transactionProtocol: '',
+      txParams: {
+        from: selectedAddress,
+        to: '0x316bde155acd07609872a56bc32ccfb0b13201fa',
+        value: '0x6f05b59d3b20000',
+      },
+      amounts: {
+        from: {
+          token: {
+            symbol: 'ETH',
+            address: '0x0000000000000000000000000000000000000000',
+            decimals: 18,
+            chainId: '0x1',
+          },
+          amount: -500000000000000000n,
+        },
+      },
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHook(() => useGetTitle(tx), {
+      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+    });
+
+    expect(result.current).toBe('sentSpecifiedTokens:ETH');
+  });
+
+  it('returns contractInteraction for zero-value STANDARD tx with no transfers', () => {
+    const selectedAddress = '0x4f5243ceea96cee1da0fdb89c756d0e999439424';
+
+    const store = configureMockStore()({
+      metamask: {
+        internalAccounts: {
+          selectedAccount: '1',
+          accounts: {
+            '1': {
+              address: selectedAddress,
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
+    });
+
+    const tx = {
+      transactionCategory: 'STANDARD',
+      transactionType: 'STANDARD',
+      transactionProtocol: '',
+      valueTransfers: [],
+      txParams: {
+        from: selectedAddress,
+        to: null,
+        value: '0x0',
+        data: '0x608060405234801561001057600080fd5b50',
+      },
+      amounts: {
+        from: {
+          token: {
+            symbol: 'ETH',
+            address: '0x0000000000000000000000000000000000000000',
+            decimals: 18,
+            chainId: '0x1',
+          },
+          amount: 0n,
+        },
+      },
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHook(() => useGetTitle(tx), {
+      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+    });
+
+    expect(result.current).toBe('contractInteraction');
   });
 
   it('returns NFT approval title for ERC_721_APPROVE', () => {

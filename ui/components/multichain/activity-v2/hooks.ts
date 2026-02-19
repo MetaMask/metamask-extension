@@ -202,12 +202,18 @@ export function useGetTitle(transaction: TransactionViewModel): string {
 
   // API can classify native sends/receives as STANDARD
   if (transactionCategory === 'STANDARD') {
-    if (transaction.amounts?.to && !transaction.amounts?.from) {
-      return t('received');
-    }
-    if (transaction.amounts?.from) {
-      const { symbol } = transaction.amounts.from.token;
-      return symbol ? t('sentSpecifiedTokens', [symbol]) : t('sent');
+    const hasValueTransfers = (transaction.valueTransfers?.length ?? 0) > 0;
+    const value = transaction.txParams?.value;
+    const hasNativeValue = value && value !== '0x0' && value !== '0x';
+
+    if (hasValueTransfers || hasNativeValue) {
+      if (transaction.amounts?.to && !transaction.amounts?.from) {
+        return t('received');
+      }
+      if (transaction.amounts?.from) {
+        const { symbol } = transaction.amounts.from.token;
+        return symbol ? t('sentSpecifiedTokens', [symbol]) : t('sent');
+      }
     }
   }
 
