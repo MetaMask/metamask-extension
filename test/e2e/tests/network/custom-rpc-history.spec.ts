@@ -2,6 +2,7 @@ import { Suite } from 'mocha';
 import { mockNetworkStateOld } from '../../../stub/networks';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
 import Homepage from '../../page-objects/pages/home/homepage';
@@ -17,7 +18,7 @@ describe('Custom RPC history', function (this: Suite) {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         localNodeOptions: [
           {
             type: 'anvil',
@@ -71,7 +72,7 @@ describe('Custom RPC history', function (this: Suite) {
   it('warns user when they enter url for an already configured network', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -107,7 +108,7 @@ describe('Custom RPC history', function (this: Suite) {
   it('warns user when they enter chainId for an already configured network', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

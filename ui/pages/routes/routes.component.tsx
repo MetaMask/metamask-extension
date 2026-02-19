@@ -47,7 +47,6 @@ import {
   BASIC_FUNCTIONALITY_OFF_ROUTE,
   DEFI_ROUTE,
   DEEP_LINK_ROUTE,
-  SMART_ACCOUNT_UPDATE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
@@ -125,13 +124,13 @@ import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/Dep
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { type DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
+import { PerpsControllerProvider } from '../../providers/perps';
 import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
 import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
 } from '../../../shared/lib/confirmation.utils';
 import { type Confirmation } from '../confirmations/types/confirm';
-import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
@@ -349,6 +348,32 @@ const PerpsActivityPage = mmLazy(
   (() =>
     import('../perps/perps-activity-page.tsx')) as unknown as DynamicImportType,
 );
+
+// Perps pages wrapped with PerpsControllerProvider
+const WrappedPerpsHomePage = () => (
+  <PerpsControllerProvider>
+    <PerpsHomePage />
+  </PerpsControllerProvider>
+);
+
+const WrappedPerpsMarketDetailPage = () => (
+  <PerpsControllerProvider>
+    <PerpsMarketDetailPage />
+  </PerpsControllerProvider>
+);
+
+const WrappedMarketListView = () => (
+  <PerpsControllerProvider>
+    <MarketListView />
+  </PerpsControllerProvider>
+);
+
+const WrappedPerpsActivityPage = () => (
+  <PerpsControllerProvider>
+    <PerpsActivityPage />
+  </PerpsControllerProvider>
+);
+
 // End Lazy Routes
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -543,13 +568,6 @@ export default function Routes() {
         path: RESTORE_VAULT_ROUTE,
         component: RestoreVaultPage,
         layout: LegacyLayout,
-        basicFunctionalityRequired: false,
-      }),
-      createRouteWithLayout({
-        path: SMART_ACCOUNT_UPDATE,
-        component: SmartAccountUpdate,
-        layout: LegacyLayout,
-        authenticated: true,
         basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
@@ -841,28 +859,28 @@ export default function Routes() {
       }),
       createRouteWithLayout({
         path: PERPS_HOME_ROUTE,
-        component: PerpsHomePage,
+        component: WrappedPerpsHomePage,
         layout: RootLayout,
         authenticated: true,
         basicFunctionalityFeatureName: 'Perps',
       }),
       createRouteWithLayout({
         path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
-        component: PerpsMarketDetailPage,
+        component: WrappedPerpsMarketDetailPage,
         layout: RootLayout,
         authenticated: true,
         basicFunctionalityFeatureName: 'Perps',
       }),
       createRouteWithLayout({
         path: PERPS_ACTIVITY_ROUTE,
-        component: PerpsActivityPage,
+        component: WrappedPerpsActivityPage,
         layout: RootLayout,
         authenticated: true,
         basicFunctionalityFeatureName: 'Perps',
       }),
       createRouteWithLayout({
         path: PERPS_MARKET_LIST_ROUTE,
-        component: MarketListView,
+        component: WrappedMarketListView,
         layout: RootLayout,
         authenticated: true,
         basicFunctionalityFeatureName: 'Perps',
