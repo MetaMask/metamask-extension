@@ -163,10 +163,11 @@ describe('Swap on Solana', function () {
         // Create swap
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSolanaSwap({
+        await swapPage.createSwap({
           amount: 1,
           swapTo: 'USDC',
           swapFrom: 'SOL',
+          network: 'Solana',
         });
 
         // Check quotes
@@ -227,10 +228,11 @@ describe('Swap on Solana', function () {
         // Create swap USDC → SOL
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSolanaSwap({
+        await swapPage.createSwap({
           amount: 1,
           swapTo: 'SOL',
           swapFrom: 'USDC',
+          network: 'Solana',
         });
 
         // Review and submit
@@ -273,10 +275,11 @@ describe('Swap on Solana', function () {
         // Create swap and verify no quotes message
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSolanaSwap({
+        await swapPage.createSwap({
           amount: 1,
           swapTo: 'USDC',
           swapFrom: 'SOL',
+          network: 'Solana',
         });
 
         await swapPage.checkNoQuotesAvailable();
@@ -306,10 +309,11 @@ describe('Swap on Solana', function () {
         // Create swap SOL → USDC
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSolanaSwap({
+        await swapPage.createSwap({
           amount: 1,
           swapTo: 'USDC',
           swapFrom: 'SOL',
+          network: 'Solana',
         });
 
         // Submit the swap (will fail)
