@@ -37,7 +37,7 @@ export class OutputValidator {
 
     // Check summary statistics
     if (plan.summary) {
-      const { highRiskScenarios, mediumRiskScenarios, riskScore } =
+      const { highRiskScenarios, mediumRiskScenarios, releaseRiskScore } =
         plan.summary;
       const totalScenarios = highRiskScenarios + mediumRiskScenarios;
 
@@ -57,8 +57,8 @@ export class OutputValidator {
         strengths.push(`Identified ${highRiskScenarios} high-risk scenarios`);
       }
 
-      if (typeof riskScore === 'number') {
-        strengths.push(`Risk score: ${riskScore}/100`);
+      if (releaseRiskScore) {
+        strengths.push(`Release risk score: ${releaseRiskScore}`);
       }
     } else {
       issues.push('Missing summary statistics');

@@ -57,9 +57,9 @@ export type TestingPlan = {
   modelUsed: string;
   summary: {
     totalFilesChanged: number;
-    totalCommits: number;
-    /** Risk score 0-100 (higher = riskier) */
-    riskScore: number;
+    totalCommitsInRelease: number;
+    /** Risk score displayed as "X/100" (higher = riskier) */
+    releaseRiskScore: string;
     highRiskScenarios: number;
     mediumRiskScenarios: number;
   };

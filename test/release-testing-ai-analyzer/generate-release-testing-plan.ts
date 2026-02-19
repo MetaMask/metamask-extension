@@ -439,7 +439,7 @@ function buildTestingPlan(
     (s) => s.riskLevel === 'medium',
   ).length;
 
-  const riskScore = computeRiskScore(
+  const score = computeRiskScore(
     initialScenarios.filter((s) => s.riskLevel === 'high').length +
       cherryPickScenarios.filter((s) => s.riskLevel === 'high').length,
     initialScenarios.filter((s) => s.riskLevel === 'medium').length +
@@ -453,8 +453,8 @@ function buildTestingPlan(
     modelUsed,
     summary: {
       totalFilesChanged: prInfo.files.length,
-      totalCommits: prInfo.commitCount,
-      riskScore,
+      totalCommitsInRelease: prInfo.commitCount,
+      releaseRiskScore: `${score}/100`,
       highRiskScenarios,
       mediumRiskScenarios,
     },
@@ -482,8 +482,8 @@ function formatTestingPlan(plan: TestingPlan): string {
   output += 'SUMMARY\n';
   output += `${'─'.repeat(80)}\n\n`;
   output += `Files Changed: ${plan.summary.totalFilesChanged}\n`;
-  output += `Total Commits: ${plan.summary.totalCommits}\n`;
-  output += `Risk Score: ${plan.summary.riskScore}/100\n`;
+  output += `Total Commits in Release: ${plan.summary.totalCommitsInRelease}\n`;
+  output += `Release Risk Score: ${plan.summary.releaseRiskScore}\n`;
   output += `High Risk Scenarios: ${plan.summary.highRiskScenarios}\n`;
   output += `Medium Risk Scenarios: ${plan.summary.mediumRiskScenarios}\n\n`;
 
