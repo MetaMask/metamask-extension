@@ -67,6 +67,7 @@ export default function SrpInputImport({
   const [hasInvalidChecksum, setHasInvalidChecksum] = useState(false);
 
   const srpRefs = useRef<ListOfTextFieldRefs>({});
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const onChangeRef = useRef(onChange);
 
   // Keep the ref updated with the latest onChange callback
@@ -264,16 +265,25 @@ export default function SrpInputImport({
   // This is needed for Firefox (always) and Chrome side panel (where the web
   // Clipboard API permission prompt is not displayed to the user, causing
   // navigator.clipboard.readText() to throw "permission denied").
+  //
+  // In Chrome's side panel, document.hasFocus() may return false when the main
+  // browser view was last focused, causing navigator.clipboard.readText() to
+  // throw "Document is not focused". Focusing the textarea (via textareaRef)
+  // before reading ensures the side panel document has focus.
   const requestPermissionAndReadClipboard = async () => {
     try {
       const permissionGranted = await browser.permissions.request({
         permissions: ['clipboardRead'],
       });
-      if (permissionGranted) {
-        const newSrp = await navigator.clipboard.readText();
-        if (newSrp.trim().match(/\s/u)) {
-          onSrpPaste(newSrp);
-        }
+      if (!permissionGranted) {
+        throw new Error('`ClipboardRead` permission not granted');
+      }
+
+      window.focus();
+      textareaRef.current?.focus();
+      const newSrp = await navigator.clipboard.readText();
+      if (newSrp.trim().match(/\s/u)) {
+        onSrpPaste(newSrp);
       }
     } catch (error) {
       console.error('Error requesting clipboard permission', error);
@@ -439,6 +449,7 @@ export default function SrpInputImport({
               borderRadius={BorderRadius.LG}
             >
               <Textarea
+                ref={textareaRef}
                 data-testid="srp-input-import__srp-note"
                 borderColor={BorderColor.transparent}
                 backgroundColor={BackgroundColor.transparent}

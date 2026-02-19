@@ -35,6 +35,7 @@ describe('SrpInputImport', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetEnvironmentType.mockReturnValue('popup');
+    jest.spyOn(window, 'focus').mockImplementation(() => undefined);
   });
 
   it('should render', () => {
@@ -63,12 +64,15 @@ describe('SrpInputImport', () => {
     });
   });
 
-  it('should ask for explicit permission to read the clipboard in Chrome side panel', async () => {
+  it('should ask for explicit permission and focus textarea before reading clipboard in Chrome side panel', async () => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
 
     const { getByTestId } = renderWithProvider(
       <SrpInputImport onChange={jest.fn()} />,
     );
+    const textarea = getByTestId('srp-input-import__srp-note');
+    const focusSpy = jest.spyOn(textarea, 'focus');
+
     const pasteButton = getByTestId('srp-input-import__paste-button');
     fireEvent.click(pasteButton);
 
@@ -76,6 +80,7 @@ describe('SrpInputImport', () => {
       expect(mockPermissionsRequest).toHaveBeenCalledWith({
         permissions: ['clipboardRead'],
       });
+      expect(focusSpy).toHaveBeenCalled();
       expect(mockClipboardReadText).toHaveBeenCalled();
     });
   });
