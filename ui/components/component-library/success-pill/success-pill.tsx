@@ -20,11 +20,11 @@ export const SuccessPill: SuccessPillComponent = React.forwardRef(
     return (
       <Tag
         ref={ref}
+        {...props}
         label={label}
         backgroundColor={BackgroundColor.successMuted}
         labelProps={{ color: TextColor.SuccessDefault as never }}
         textVariant={TextVariant.BodySm}
-        {...props}
       />
     );
   },
