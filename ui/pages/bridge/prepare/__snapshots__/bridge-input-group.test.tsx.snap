@@ -43,7 +43,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="All networks"
       >
         <div
@@ -84,7 +84,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="Solana"
       >
         <div
@@ -125,7 +125,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="Bitcoin"
       >
         <div
@@ -166,7 +166,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="Ethereum"
       >
         <div
@@ -207,7 +207,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="OP"
       >
         <div
@@ -248,7 +248,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="Polygon"
       >
         <div
@@ -289,7 +289,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="BNB Chain"
       >
         <div
@@ -330,7 +330,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="Tron"
       >
         <div
@@ -452,7 +452,7 @@ exports[`BridgeInputGroup should render source networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="All networks"
       >
         <div
@@ -493,7 +493,7 @@ exports[`BridgeInputGroup should render source networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="Solana"
       >
         <div
@@ -534,7 +534,7 @@ exports[`BridgeInputGroup should render source networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="Bitcoin"
       >
         <div
@@ -575,7 +575,7 @@ exports[`BridgeInputGroup should render source networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="Ethereum"
       >
         <div
@@ -616,7 +616,7 @@ exports[`BridgeInputGroup should render source networks 2`] = `
       style="overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
         data-testid="OP"
       >
         <div

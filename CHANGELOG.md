@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.19.0]
+
+### Added
+
+- Icon update (#40008)
+- Added asset overview deeplinks (#39675)
+- Aligned extension swaps UI with metamask mobile UI for consistency (#39928)
+- Enabled hardware wallet error management for the swaps flow (#39985)
+- Updated network and account list item active state styling to match mobile design (#39761)
+- Added error display on Shield Plan and Transaction Shield pages when a subscription payment fails in the background (#39938)
+- Added Bridge and Swap feature to MegaETH (#39927)
+- Init the new assets controller under a feature flag (#39917)
+- Added GMX defi referral support (#39701)
+- Fixed a bug where user preferences and saved contacts were not cleared when resetting the wallet (#39973)
+- Added ability to collapse wallet sections in the Accounts page (#39645)
+- Added Bridge and Swap feature to HyperEVM (#39819)
+- Updated Shield subscription cancellation modal to display appropriate messaging based on cancellation type and prevent cancellation when not allowed (#39625)
+- Added disk space-specific error message to storage error toast when device is out of space (#39746)
+- Validation errors from non-EVM transaction snaps will now be displayed to users during send flow (#39667)
+- Standardized display of unavailable data in tokens list (#39912)
+
+### Changed
+
+- Refactored account creation logic to use the `MultichainAccountService` for creating wallets (#38265)
+- Show "<" for MegaETH chain if the gas speed is bellow 1 second (#39824)
+
+### Fixed
+
+- Discover menu button always rendered (#40023)
+- Fixed a bug where users assigned to the post-transaction Shield cohort would never see the Shield announcement modal (#39898)
+- Fixed broken "Learn more" link in cancel/speedup transaction modal tooltip (#39964)
+- Fixed Network Manager modal not closing when navigating to dapp confirmation screens in side panel view (#39908)
+- Capture Asset image URL fallback errors (#39742)
+
 ## [13.18.1]
 
 ### Added
@@ -106,7 +140,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Purge profile service on resetting wallet (#39665)
 - Prevented Snap crashing when clicking buttons without names (#39727)
 - Fixed details of the gas fee token (#39706)
-- Fixed error when sending native tokens on EVM networks when chainId is provided as decimal string (#39806)
 - Removed petname modal from appearing when clicking recipient addresses in activity list (#39816)
 
 ## [13.16.4]
@@ -1770,7 +1803,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.18.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.19.0...HEAD
+[13.19.0]: https://github.com/MetaMask/metamask-extension/compare/v13.18.1...v13.19.0
 [13.18.1]: https://github.com/MetaMask/metamask-extension/compare/v13.18.0...v13.18.1
 [13.18.0]: https://github.com/MetaMask/metamask-extension/compare/v13.17.0...v13.18.0
 [13.17.0]: https://github.com/MetaMask/metamask-extension/compare/v13.16.4...v13.17.0
