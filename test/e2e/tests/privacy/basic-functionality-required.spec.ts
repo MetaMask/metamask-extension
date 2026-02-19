@@ -5,7 +5,6 @@
  * toggle, "Open the [feature] page" (when coming from a protected route), and
  * "Go to the home page".
  */
-import { strict as assert } from 'assert';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -36,15 +35,10 @@ describe('Basic functionality off', function () {
         const basicFunctionalityOffPage = new BasicFunctionalityOffPage(driver);
         await basicFunctionalityOffPage.checkPageIsLoaded();
 
-        const descriptionText =
-          await basicFunctionalityOffPage.getDescriptionText();
-        const normalizedDescription = descriptionText
-          .replace(/\s+/gu, ' ')
-          .trim();
-        assert.strictEqual(
-          normalizedDescription,
-          "This feature isn't available while basic functionality is turned off. Use the toggle below to turn it on.",
-          'Description should match the expected copy',
+        const expectedDescription =
+          "This feature isn't available while basic functionality is turned off. Use the toggle below to turn it on.";
+        await basicFunctionalityOffPage.waitForDescriptionWithText(
+          expectedDescription,
         );
       },
     );

@@ -38,13 +38,15 @@ export default class BasicFunctionalityOffPage {
     console.log('Basic Functionality Off page is loaded');
   }
 
-  async getDescriptionText(): Promise<string> {
+  async waitForDescriptionWithText(expectedText: string): Promise<void> {
     try {
-      const el = await this.driver.findElement(this.descriptionBox);
-      return await el.getText();
+      await this.driver.waitForSelector({
+        css: this.descriptionBox,
+        text: expectedText,
+      });
     } catch (e) {
       console.log(
-        'Error getting description text on Basic Functionality Off page',
+        'Error waiting for description text on Basic Functionality Off page',
         e,
       );
       throw e;
