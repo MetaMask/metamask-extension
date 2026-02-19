@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 
 export default class BasicFunctionalityOffPage {
@@ -89,27 +88,23 @@ export default class BasicFunctionalityOffPage {
     }
   }
 
-  async isOpenFeaturePageButtonDisabled(): Promise<boolean> {
-    const el = await this.driver.findElement(this.openFeatureButton);
-    const disabled = await el.getAttribute('disabled');
-    return disabled !== null;
-  }
-
   async checkOpenFeaturePageButtonIsDisabled(): Promise<void> {
-    const isDisabled = await this.isOpenFeaturePageButtonDisabled();
-    assert.ok(
-      isDisabled,
-      'Open the feature page button should be disabled when Basic functionality is off',
-    );
+    try {
+      await this.driver.waitForSelector(this.openFeatureButton, {
+        state: 'disabled',
+      });
+    } catch (e) {
+      console.log(
+        'Open the feature page button should be disabled when Basic functionality is off',
+        e,
+      );
+      throw e;
+    }
   }
 
   async waitForOpenFeaturePageButtonEnabled(): Promise<void> {
     await this.driver.waitForSelector(this.openFeatureButton, {
-      state: 'visible',
+      state: 'enabled',
     });
-    await this.driver.waitUntil(
-      async () => !(await this.isOpenFeaturePageButtonDisabled()),
-      { interval: 200, timeout: 5000 },
-    );
   }
 }
