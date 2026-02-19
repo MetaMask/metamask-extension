@@ -331,7 +331,9 @@ function getDiff(baseBranch: string): string {
   const paths = SCAN_DIRECTORIES.join(' ');
   const candidates = [
     `git diff origin/${baseBranch}...HEAD -- ${paths}`,
+    `git diff origin/${baseBranch}..HEAD -- ${paths}`,
     `git diff ${baseBranch}...HEAD -- ${paths}`,
+    `git diff ${baseBranch}..HEAD -- ${paths}`,
   ];
 
   for (const cmd of candidates) {
