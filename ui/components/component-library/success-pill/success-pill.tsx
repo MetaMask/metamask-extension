@@ -12,6 +12,7 @@ import type {
  * Used for "Paid by MetaMask", "No network fee", and similar labels.
  */
 export const SuccessPill: SuccessPillComponent = React.forwardRef(
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   function SuccessPill(
     { label, ...props }: SuccessPillProps,
     ref: React.Ref<HTMLDivElement>,
