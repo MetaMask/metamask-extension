@@ -35,8 +35,7 @@ export function isLikelyCommentLine(line: string): boolean {
     trimmed.startsWith('//') ||
     trimmed.startsWith('/*') ||
     trimmed.startsWith('*/') ||
-    trimmed === '' ||
-    /^\s*$/u.test(line)
+    trimmed === ''
   );
 }
 
