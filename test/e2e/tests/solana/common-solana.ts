@@ -698,6 +698,23 @@ export async function mockGetSuccessTransaction(mockServer: Mockttp) {
     });
 }
 
+export async function mockGetSuccessSplTokenTransaction(mockServer: Mockttp) {
+  const succeededSplTransaction = await readResponseJsonFile(
+    'succeededSplTokenTransaction.json',
+  );
+  const response = {
+    statusCode: 200,
+    json: succeededSplTransaction,
+  };
+
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX_MAINNET)
+    .withBodyIncluding('getTransaction')
+    .thenCallback(() => {
+      return response;
+    });
+}
+
 export async function mockGetLatestBlockhash(mockServer: Mockttp) {
   const response = {
     statusCode: 200,

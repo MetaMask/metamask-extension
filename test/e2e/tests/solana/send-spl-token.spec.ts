@@ -17,7 +17,7 @@ import {
   mockGetMintAccountInfo,
   mockGetMultipleAccounts,
   mockGetSuccessSignaturesForAddress,
-  mockGetSuccessTransaction,
+  mockGetSuccessSplTokenTransaction,
   mockGetFailedSignaturesForAddress,
   mockGetFailedTransaction,
   mockGetTokenAccountsUSDCOnly,
@@ -48,7 +48,7 @@ async function mockSendWithUSDCVisible(
     await mockGetMultipleAccounts(mockServer),
     await mockSendSolanaTransaction(mockServer),
     await mockGetSuccessSignaturesForAddress(mockServer),
-    await mockGetSuccessTransaction(mockServer),
+    await mockGetSuccessSplTokenTransaction(mockServer),
     await mockGetMintAccountInfo(mockServer),
     await mockTokenApiAssets(mockServer),
   ];
@@ -101,7 +101,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await sendPage.checkSolanaNetworkIsPresent();
         await sendPage.selectToken(
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          'SOL',
+          'USDC',
         );
 
         assert.equal(
@@ -126,7 +126,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkTxAction({ action: 'Sent' });
-        await activityList.checkTxAmountInActivity('-0.00708 SOL', 1);
+        await activityList.checkTxAmountInActivity('-0.1 USDC', 1);
         await activityList.checkNoFailedTransactions();
       },
     );
