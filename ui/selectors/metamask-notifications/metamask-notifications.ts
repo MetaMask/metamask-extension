@@ -5,12 +5,112 @@ import {
   INotification as Notification,
   TRIGGER_TYPES,
   defaultState,
+  processNotification,
 } from '@metamask/notification-services-controller/notification-services';
+import {
+  // Marketing
+  createMockFeatureAnnouncementRaw,
+
+  // Wallet
+  createMockNotificationEthSent,
+  createMockNotificationEthReceived,
+  createMockNotificationERC20Sent,
+  createMockNotificationERC20Received,
+  createMockNotificationMetaMaskSwapsCompleted,
+  createMockNotificationERC721Sent,
+  createMockNotificationERC721Received,
+  createMockNotificationERC1155Sent,
+  createMockNotificationERC1155Received,
+  createMockNotificationLidoReadyToBeWithdrawn,
+  createMockNotificationLidoStakeCompleted,
+  createMockNotificationLidoWithdrawalCompleted,
+  createMockNotificationLidoWithdrawalRequested,
+  createMockNotificationRocketPoolStakeCompleted,
+  createMockNotificationRocketPoolUnStakeCompleted,
+
+  // Snap
+  createMockSnapNotification,
+
+  // Platform
+  createMockPlatformNotification,
+} from '@metamask/notification-services-controller/notification-services/mocks';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
 } from '../remote-feature-flags';
+
+// Modify Snap Notif
+const snapNotif = createMockSnapNotification();
+snapNotif.data.origin = 'npm:@metamask/example-snap';
+
+// Modify NFT Notifs
+const erc721SentNotif = createMockNotificationERC721Sent();
+if (erc721SentNotif.type === TRIGGER_TYPES.ERC721_SENT) {
+  erc721SentNotif.payload.data.nft.image =
+    'https://storage.googleapis.com/nftimagebucket/tokens/0x769272677fab02575e84945f03eca517acc544cc/preview/8680.gif';
+}
+const erc721ReceivedNotif = createMockNotificationERC721Received();
+if (erc721ReceivedNotif.type === TRIGGER_TYPES.ERC721_RECEIVED) {
+  erc721ReceivedNotif.payload.data.nft.image =
+    'https://static.looksnice.org/0xC379e535CaFf250a01CAa6C3724Ed1359Fe5c29B/0x48c15915855e3d02e80f9d6934cd280076b23373d091870b956b35f428c4864f';
+}
+const erc1155SentNotif = createMockNotificationERC1155Sent();
+if (erc1155SentNotif.type === TRIGGER_TYPES.ERC1155_SENT) {
+  if (erc1155SentNotif.payload.data.nft) {
+    erc1155SentNotif.payload.data.nft.image =
+      'https://lh3.googleusercontent.com/W77_LXFiV8D5uhi_IgN0TxmrB_vTCQf1xOcZxPzQgY6GBP1Wkc4g19pEbc0rYpVIQSGreYt3x3YGn84bB-UBWopU5GEV0LZo2hq920o=w650';
+  }
+}
+const erc1155ReceivedNotif = createMockNotificationERC1155Received();
+if (erc1155ReceivedNotif.type === TRIGGER_TYPES.ERC1155_RECEIVED) {
+  if (erc1155ReceivedNotif.payload.data.nft) {
+    erc1155ReceivedNotif.payload.data.nft.image =
+      'https://lh3.googleusercontent.com/W77_LXFiV8D5uhi_IgN0TxmrB_vTCQf1xOcZxPzQgY6GBP1Wkc4g19pEbc0rYpVIQSGreYt3x3YGn84bB-UBWopU5GEV0LZo2hq920o=w650';
+  }
+}
+
+const mockNotifications = [
+  // Marketing
+  processNotification(createMockFeatureAnnouncementRaw()),
+
+  // Wallet
+  processNotification(createMockNotificationEthSent()),
+  processNotification(createMockNotificationEthReceived()),
+  processNotification(createMockNotificationERC20Sent()),
+  processNotification(createMockNotificationERC20Received()),
+  processNotification(createMockNotificationMetaMaskSwapsCompleted()),
+  processNotification(erc721SentNotif),
+  processNotification(erc721ReceivedNotif),
+  processNotification(erc1155SentNotif),
+  processNotification(erc1155ReceivedNotif),
+  processNotification(createMockNotificationLidoReadyToBeWithdrawn()),
+  processNotification(createMockNotificationLidoStakeCompleted()),
+  processNotification(createMockNotificationLidoWithdrawalCompleted()),
+  processNotification(createMockNotificationLidoWithdrawalRequested()),
+  processNotification(createMockNotificationRocketPoolStakeCompleted()),
+  processNotification(createMockNotificationRocketPoolUnStakeCompleted()),
+
+  // Snap
+  processNotification(snapNotif),
+
+  // Platform
+  processNotification(createMockPlatformNotification()),
+].map((notif, index) => {
+  // modify date so notifications are in descending order
+  const date = new Date();
+  date.setDate(date.getDate() - index);
+  notif.createdAt = date.toISOString();
+  notif.isRead = false;
+  notif.id = `${notif.id}-${index}`;
+
+  return notif;
+});
+
+console.log('TESTING', {
+  x: processNotification(createMockNotificationEthSent()),
+  y: mockNotifications[0],
+});
 
 export type NotificationAppState = RemoteFeatureFlagsState & {
   metamask: Partial<NotificationServicesControllerState>;
@@ -48,8 +148,8 @@ export function getIsNotificationEnabledByDefaultFeatureFlag(
  */
 export const getMetamaskNotifications = createSelector(
   [getMetamask],
-  (metamask): Notification[] => {
-    return metamask.metamaskNotificationsList;
+  (_metamask): Notification[] => {
+    return mockNotifications;
   },
 );
 
