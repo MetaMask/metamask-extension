@@ -395,6 +395,30 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
     expect(mockGetHasAccountOptedIn).not.toHaveBeenCalled();
   });
 
+  it('should not include the reward account id when getSeasonMetadata throws season not found error', async () => {
+    mockGetRewardSeasonMetadata.mockRestore();
+    mockGetRewardSeasonMetadata.mockRejectedValueOnce(
+      new Error('No valid season metadata could be found for type: current'),
+    );
+
+    await subscriptionService.startSubscriptionWithCard({
+      products: [PRODUCT_TYPES.SHIELD],
+      isTrialRequested: false,
+      recurringInterval: RECURRING_INTERVALS.month,
+    });
+
+    expect(mockStartShieldSubscriptionWithCard).toHaveBeenCalledWith({
+      products: [PRODUCT_TYPES.SHIELD],
+      isTrialRequested: false,
+      recurringInterval: RECURRING_INTERVALS.month,
+      successUrl: MOCK_REDIRECT_URI,
+      cancelUrl: `${MOCK_REDIRECT_URI}?cancel=true`,
+    });
+
+    expect(mockGetRewardSeasonMetadata).toHaveBeenCalledWith('current');
+    expect(mockGetHasAccountOptedIn).not.toHaveBeenCalled();
+  });
+
   it('should poll until paused subscription is found', async () => {
     mockGetSubscriptions.mockRestore();
     const pausedSubscription = {
@@ -685,6 +709,21 @@ describe('SubscriptionService - linkRewardToExistingSubscription', () => {
     );
 
     expect(mockLinkRewards).not.toHaveBeenCalled();
+  });
+
+  it('should not link the reward when getSeasonMetadata throws season not found error', async () => {
+    mockGetRewardSeasonMetadata.mockRestore();
+    mockGetRewardSeasonMetadata.mockRejectedValueOnce(
+      new Error('No valid season metadata could be found for type: current'),
+    );
+
+    await subscriptionService.linkRewardToExistingSubscription(
+      MOCK_SHIELD_SUBSCRIPTION_ID,
+      MOCK_REWARD_POINTS,
+    );
+
+    expect(mockLinkRewards).not.toHaveBeenCalled();
+    expect(mockGetHasAccountOptedIn).not.toHaveBeenCalled();
   });
 
   it('should not link the reward to the existing subscription if user is not opted in to rewards', async () => {

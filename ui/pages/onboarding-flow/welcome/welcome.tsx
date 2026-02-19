@@ -283,10 +283,7 @@ export default function OnboardingWelcome() {
         return;
       }
 
-      if (
-        errorMessage === OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR ||
-        errorMessage === OAuthErrorMessages.NO_AUTH_CODE_FOUND_ERROR
-      ) {
+      if (errorMessage === OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR) {
         setLoginError(LOGIN_ERROR.UNABLE_TO_CONNECT);
         return;
       }

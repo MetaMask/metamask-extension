@@ -225,7 +225,6 @@
         "showNativeTokenAsMainBalance": true,
         "showTestNetworks": false,
         "skipDeepLinkInterstitial": "boolean",
-        "smartAccountOptIn": "boolean",
         "smartTransactionsMigrationApplied": "boolean",
         "smartTransactionsOptInStatus": true,
         "tokenNetworkFilter": {},
@@ -317,5 +316,5 @@
     },
     "config": "object"
   },
-  "meta": { "version": 193 }
+  "meta": { "version": 195 }
 }

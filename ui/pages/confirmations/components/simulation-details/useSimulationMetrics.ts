@@ -120,7 +120,12 @@ export function useSimulationMetrics({
     ),
   };
 
-  const sensitiveProperties = {};
+  const sensitiveProperties = {
+    simulation_receiving_assets_contract_address:
+      getContractAddresses(receivingAssets),
+    simulation_sending_assets_contract_address:
+      getContractAddresses(sendingAssets),
+  };
 
   const params = { properties, sensitiveProperties };
 
@@ -187,6 +192,27 @@ function useIncompleteAssetEvent(
 
     setProcessedAssets([...processedAssets, assetAddress]);
   }
+}
+
+/** Placeholder used in metrics when asset has no contract address (e.g. native). */
+export const NATIVE_OR_MISSING_CONTRACT_PLACEHOLDER =
+  '0x0000000000000000000000000000000000000000';
+
+/**
+ * Returns contract addresses from balance changes as an array of hex strings.
+ * One entry per change: token assets use their contract address; native or
+ * missing addresses use the zero-address placeholder so indices align with
+ * other simulation_*_assets_* arrays.
+ *
+ * @param changes - Balance changes from simulation
+ * @returns Array of contract addresses (hex with 0x prefix), or placeholder
+ */
+function getContractAddresses(changes: BalanceChange[]): string[] {
+  return changes.map((change) =>
+    change.asset.address
+      ? (change.asset.address as string)
+      : NATIVE_OR_MISSING_CONTRACT_PLACEHOLDER,
+  );
 }
 
 function getProperties(

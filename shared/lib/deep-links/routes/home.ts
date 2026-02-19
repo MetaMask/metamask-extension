@@ -4,7 +4,7 @@ export enum HomeQueryParams {
   OpenNetworkSelector = 'openNetworkSelector',
 }
 
-export default new Route({
+export const home = new Route({
   pathname: '/home',
   getTitle: (_: URLSearchParams) => 'deepLink_theHomePage',
   handler: function handler(params: URLSearchParams) {
