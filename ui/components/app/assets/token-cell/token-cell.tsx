@@ -38,8 +38,8 @@ export type TokenCellProps = {
   onClick?: () => void;
   fixCurrencyToUSD?: boolean;
   safeChains?: SafeChain[];
-  /** When true, hides the Merkl "Claim bonus" badge (e.g. on asset detail page). */
-  hideMerklBadge?: boolean;
+  /** When true, shows the Merkl "Claim bonus" badge (e.g. on asset detail page). */
+  showMerklBadge?: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -50,7 +50,7 @@ export default function TokenCell({
   onClick,
   fixCurrencyToUSD = false,
   safeChains,
-  hideMerklBadge = false,
+  showMerklBadge = false,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -66,10 +66,10 @@ export default function TokenCell({
 
   const showClaimBonusBadge = useMemo(
     () =>
-      !hideMerklBadge &&
+      showMerklBadge &&
       merklRewardsEnabled &&
       isEligibleForMerklRewards(token.chainId, token.address),
-    [hideMerklBadge, merklRewardsEnabled, token.chainId, token.address],
+    [showMerklBadge, merklRewardsEnabled, token.chainId, token.address],
   );
 
   const tokenDisplayInfo = useTokenDisplayInfo({
