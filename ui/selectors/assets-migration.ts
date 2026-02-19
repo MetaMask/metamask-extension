@@ -66,9 +66,10 @@ import { getIsAssetsUnifyStateEnabled } from './assets-unify-state/feature-flags
 // RatesController
 // rates: TODO (is this even used? Can it be removed?)
 
-type MetaMaskAssetsControllerState = {
-  metamask: AssetsControllerState;
-};
+type ControllerStateSelector<
+  InputState extends Record<string, unknown>,
+  ResultField extends keyof InputState,
+> = (state: { metamask: InputState }) => InputState[ResultField];
 
 // ChainId (hex) -> AccountAddress (hex checksummed) -> Balance (hex)
 export const getAccountTrackerControllerAccountsByChainId =
@@ -77,8 +78,9 @@ export const getAccountTrackerControllerAccountsByChainId =
       getIsAssetsUnifyStateEnabled,
       (state: { metamask: AccountTrackerControllerState }) =>
         state.metamask.accountsByChainId ?? {},
-      (state: MetaMaskAssetsControllerState) => state.metamask.assetsInfo ?? {},
-      (state: MetaMaskAssetsControllerState) =>
+      (state: { metamask: AssetsControllerState }) =>
+        state.metamask.assetsInfo ?? {},
+      (state: { metamask: AssetsControllerState }) =>
         state.metamask.assetsBalance ?? {},
       (state: { metamask: AccountsControllerState }) =>
         state.metamask.internalAccounts?.accounts ?? {},
@@ -133,7 +135,10 @@ export const getAccountTrackerControllerAccountsByChainId =
 
       return result;
     },
-  );
+  ) as unknown as ControllerStateSelector<
+    AccountTrackerControllerState,
+    'accountsByChainId'
+  >;
 
 // ChainId (hex) -> AccountAddress (hex lowercase) -> Array of Tokens
 export const getTokensControllerAllTokens = createDeepEqualSelector(
@@ -141,10 +146,12 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
     getIsAssetsUnifyStateEnabled,
     (state: { metamask: TokensControllerState }) =>
       state.metamask.allTokens ?? {},
-    (state: MetaMaskAssetsControllerState) => state.metamask.assetsInfo ?? {},
-    (state: MetaMaskAssetsControllerState) =>
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask.assetsInfo ?? {},
+    (state: { metamask: AssetsControllerState }) =>
       state.metamask.assetsBalance ?? {},
-    (state: MetaMaskAssetsControllerState) => state.metamask.customAssets ?? {},
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask.customAssets ?? {},
     (state: { metamask: AccountsControllerState }) =>
       state.metamask.internalAccounts?.accounts ?? {},
   ],
@@ -213,7 +220,7 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
 
     return result;
   },
-);
+) as unknown as ControllerStateSelector<TokensControllerState, 'allTokens'>;
 
 // ChainId (hex) -> AccountAddress (hex lowercase) -> Array of TokenAddress (hex lowercase)
 export const getTokensControllerAllIgnoredTokens = createDeepEqualSelector(
@@ -221,7 +228,7 @@ export const getTokensControllerAllIgnoredTokens = createDeepEqualSelector(
     getIsAssetsUnifyStateEnabled,
     (state: { metamask: TokensControllerState }) =>
       state.metamask.allIgnoredTokens ?? {},
-    (state: MetaMaskAssetsControllerState) =>
+    (state: { metamask: AssetsControllerState }) =>
       state.metamask.assetPreferences ?? {},
     (state: { metamask: AccountsControllerState }) =>
       state.metamask.internalAccounts?.accounts ?? {},
@@ -260,7 +267,10 @@ export const getTokensControllerAllIgnoredTokens = createDeepEqualSelector(
 
     return result;
   },
-);
+) as unknown as ControllerStateSelector<
+  TokensControllerState,
+  'allIgnoredTokens'
+>;
 
 // AcountAddress (hex lowercase) -> ChainId (hex) -> TokenAddress (hex checksummed) -> Balance (hex)
 export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
@@ -268,8 +278,9 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
     getIsAssetsUnifyStateEnabled,
     (state: { metamask: TokenBalancesControllerState }) =>
       state.metamask.tokenBalances ?? {},
-    (state: MetaMaskAssetsControllerState) => state.metamask.assetsInfo ?? {},
-    (state: MetaMaskAssetsControllerState) =>
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask.assetsInfo ?? {},
+    (state: { metamask: AssetsControllerState }) =>
       state.metamask.assetsBalance ?? {},
     (state: { metamask: AccountsControllerState }) =>
       state.metamask.internalAccounts?.accounts ?? {},
@@ -322,7 +333,10 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
 
     return result;
   },
-);
+) as unknown as ControllerStateSelector<
+  TokenBalancesControllerState,
+  'tokenBalances'
+>;
 
 // AccountId (string) -> Array of AssetIds (string)
 export const getMultiChainAssetsControllerAccountsAssets =
@@ -331,7 +345,7 @@ export const getMultiChainAssetsControllerAccountsAssets =
       getIsAssetsUnifyStateEnabled,
       (state: { metamask: MultichainAssetsControllerState }) =>
         state.metamask.accountsAssets ?? {},
-      (state: MetaMaskAssetsControllerState) =>
+      (state: { metamask: AssetsControllerState }) =>
         state.metamask.assetsBalance ?? {},
     ],
     (isAssetsUnifyStateEnabled, accountsAssets, assetsBalance) => {
@@ -351,7 +365,10 @@ export const getMultiChainAssetsControllerAccountsAssets =
 
       return result;
     },
-  );
+  ) as unknown as ControllerStateSelector<
+    MultichainAssetsControllerState,
+    'accountsAssets'
+  >;
 
 // TODO There are issues with the new image url not matching the one in assetsMetadata iconUrl
 // AssetId (string) -> AssetMetadata
@@ -361,7 +378,8 @@ export const getMultiChainAssetsControllerAssetsMetadata =
       getIsAssetsUnifyStateEnabled,
       (state: { metamask: MultichainAssetsControllerState }) =>
         state.metamask.assetsMetadata ?? {},
-      (state: MetaMaskAssetsControllerState) => state.metamask.assetsInfo ?? {},
+      (state: { metamask: AssetsControllerState }) =>
+        state.metamask.assetsInfo ?? {},
     ],
     (isAssetsUnifyStateEnabled, assetsMetadata, assetsInfo) => {
       if (!isAssetsUnifyStateEnabled) {
@@ -393,7 +411,10 @@ export const getMultiChainAssetsControllerAssetsMetadata =
 
       return result;
     },
-  );
+  ) as unknown as ControllerStateSelector<
+    MultichainAssetsControllerState,
+    'assetsMetadata'
+  >;
 
 // AccountId -> Array of AssetIds
 export const getMultiChainAssetsControllerAllIgnoredAssets =
@@ -402,7 +423,7 @@ export const getMultiChainAssetsControllerAllIgnoredAssets =
       getIsAssetsUnifyStateEnabled,
       (state: { metamask: MultichainAssetsControllerState }) =>
         state.metamask.allIgnoredAssets ?? {},
-      (state: MetaMaskAssetsControllerState) =>
+      (state: { metamask: AssetsControllerState }) =>
         state.metamask.assetPreferences ?? {},
       (state: { metamask: AccountsControllerState }) =>
         state.metamask.internalAccounts?.accounts ?? {},
@@ -437,16 +458,20 @@ export const getMultiChainAssetsControllerAllIgnoredAssets =
 
       return result;
     },
-  );
+  ) as unknown as ControllerStateSelector<
+    MultichainAssetsControllerState,
+    'allIgnoredAssets'
+  >;
 
 export const getMultiChainBalancesControllerBalances = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
     (state: { metamask: MultichainBalancesControllerState }) =>
       state.metamask.balances ?? {},
-    (state: MetaMaskAssetsControllerState) =>
+    (state: { metamask: AssetsControllerState }) =>
       state.metamask.assetsBalance ?? {},
-    (state: MetaMaskAssetsControllerState) => state.metamask.assetsInfo ?? {},
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask.assetsInfo ?? {},
   ],
   (isAssetsUnifyStateEnabled, balances, assetsBalance, assetsInfo) => {
     if (!isAssetsUnifyStateEnabled) {
@@ -476,7 +501,10 @@ export const getMultiChainBalancesControllerBalances = createDeepEqualSelector(
 
     return result;
   },
-);
+) as unknown as ControllerStateSelector<
+  MultichainBalancesControllerState,
+  'balances'
+>;
 
 export const getCurrencyRateControllerCurrentCurrency = createDeepEqualSelector(
   [
@@ -493,7 +521,7 @@ export const getCurrencyRateControllerCurrentCurrency = createDeepEqualSelector(
 
     return selectedCurrency;
   },
-);
+) as unknown as ControllerStateSelector<CurrencyRateState, 'currentCurrency'>;
 
 // Native Symbol -> Rates (conversionRate, usdConversionRate, conversionDate)
 export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
@@ -547,7 +575,7 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
 
     return result;
   },
-);
+) as unknown as ControllerStateSelector<CurrencyRateState, 'currencyRates'>;
 
 // ChainId (hex) -> TokenAddress (hex checksummed) -> MarketData
 export const getTokenRatesControllerMarketData = createDeepEqualSelector(
@@ -555,8 +583,10 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
     getIsAssetsUnifyStateEnabled,
     (state: { metamask: TokenRatesControllerState }) =>
       state.metamask.marketData ?? {},
-    (state: MetaMaskAssetsControllerState) => state.metamask.assetsPrice ?? {},
-    (state: MetaMaskAssetsControllerState) => state.metamask.assetsInfo ?? {},
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask.assetsPrice ?? {},
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask.assetsInfo ?? {},
     getCurrencyRateControllerCurrencyRates,
   ],
   (
@@ -633,7 +663,10 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
 
     return result;
   },
-);
+) as unknown as ControllerStateSelector<
+  TokenRatesControllerState,
+  'marketData'
+>;
 
 export const getMultichainAssetsRatesControllerConversionRates =
   createDeepEqualSelector(
@@ -641,7 +674,7 @@ export const getMultichainAssetsRatesControllerConversionRates =
       getIsAssetsUnifyStateEnabled,
       (state: { metamask: MultichainAssetsRatesControllerState }) =>
         state.metamask.conversionRates ?? {},
-      (state: MetaMaskAssetsControllerState) =>
+      (state: { metamask: AssetsControllerState }) =>
         state.metamask.assetsPrice ?? {},
     ],
     (isAssetsUnifyStateEnabled, conversionRates, assetsPrice) => {
@@ -687,7 +720,10 @@ export const getMultichainAssetsRatesControllerConversionRates =
 
       return result;
     },
-  );
+  ) as unknown as ControllerStateSelector<
+    MultichainAssetsRatesControllerState,
+    'conversionRates'
+  >;
 
 function parseBalanceWithDecimals(
   balanceString: string,
