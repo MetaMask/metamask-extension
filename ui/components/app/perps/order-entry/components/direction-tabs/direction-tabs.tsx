@@ -54,7 +54,7 @@ export const DirectionTabs: React.FC<DirectionTabsProps> = ({
     <Box
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
-      className="flex-1 min-w-0 h-10 bg-muted rounded-lg py-0 px-1 gap-1"
+      className="flex-1 min-w-0 h-10 bg-transparent border border-border-muted rounded-lg py-0 px-1 gap-1"
       data-testid="direction-tabs"
     >
       <ButtonBase

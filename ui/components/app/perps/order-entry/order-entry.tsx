@@ -90,6 +90,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     initialDirection,
     mode,
     existingPosition,
+    availableBalance,
     onFormStateChange,
     onSubmit,
     orderType,

@@ -500,7 +500,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         <Box className="shrink-0 w-10" aria-hidden="true" />
       </Box>
 
-      {/* Scrollable form with submit at bottom (not sticky) */}
+      {/* Scrollable form */}
       <Box
         paddingLeft={4}
         paddingRight={4}
@@ -526,40 +526,52 @@ const PerpsOrderEntryPage: React.FC = () => {
           onDirectionChange={setOrderDirection}
           onOrderTypeChange={setOrderType}
         />
-        <Box flexDirection={BoxFlexDirection.Column} gap={2} paddingTop={4}>
-          {submitError && (
-            <Box
-              className="bg-error-muted rounded-lg"
-              padding={3}
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
-              gap={2}
-            >
-              <Icon
-                name={IconName.Warning}
-                size={IconSize.Sm}
-                color={IconColor.ErrorDefault}
-              />
-              <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-                {submitError}
-              </Text>
-            </Box>
-          )}
-          <Button
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            onClick={handleOrderSubmit}
-            disabled={isSubmitDisabled}
-            title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
-            className={twMerge(
-              'w-full',
-              isSubmitDisabled && 'opacity-70 cursor-not-allowed',
-            )}
-            data-testid="submit-order-button"
+      </Box>
+
+      {/* Sticky bottom button */}
+      <Box
+        paddingLeft={4}
+        paddingRight={4}
+        paddingBottom={4}
+        paddingTop={2}
+        flexDirection={BoxFlexDirection.Column}
+        gap={2}
+        className="shrink-0"
+      >
+        {submitError && (
+          <Box
+            className="bg-error-muted rounded-lg"
+            padding={3}
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={2}
           >
-            {isOrderPending ? t('perpsSubmitting') : submitButtonText}
-          </Button>
-        </Box>
+            <Icon
+              name={IconName.Warning}
+              size={IconSize.Sm}
+              color={IconColor.ErrorDefault}
+            />
+            <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
+              {submitError}
+            </Text>
+          </Box>
+        )}
+        <Button
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
+          onClick={handleOrderSubmit}
+          disabled={isSubmitDisabled}
+          title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+          className={twMerge(
+            'w-full',
+            isSubmitDisabled && 'opacity-70 cursor-not-allowed',
+          )}
+          data-testid="submit-order-button"
+        >
+          {isOrderPending
+            ? t('perpsSubmitting')
+            : `${isLong ? t('perpsLong') : t('perpsShort')} ${displayName}`}
+        </Button>
       </Box>
     </Box>
   );
