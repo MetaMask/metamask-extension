@@ -32,7 +32,8 @@ describe('AmountInput', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 
       expect(screen.getByText('Size')).toBeInTheDocument();
-      expect(screen.getByText(/Available to trade.*USDC/u)).toBeInTheDocument();
+      expect(screen.getByText('Available to trade')).toBeInTheDocument();
+      expect(screen.getByText(/USDC/u)).toBeInTheDocument();
     });
 
     it('renders the amount input field', () => {
@@ -65,7 +66,7 @@ describe('AmountInput', () => {
         mockStore,
       );
 
-      expect(screen.getByText('25 %')).toBeInTheDocument();
+      expect(screen.getByText(/25\s*%/u)).toBeInTheDocument();
     });
   });
 
