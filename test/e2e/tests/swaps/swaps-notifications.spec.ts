@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { Mockttp } from 'mockttp';
+import { MockedEndpoint, Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -77,10 +77,12 @@ describe('Swaps - notifications', function () {
 
         const allSeenRequests = (
           await Promise.all(
-            mockedEndpoint.map((endpoint) => endpoint.getSeenRequests()),
+            mockedEndpoint.map((endpoint: MockedEndpoint) =>
+              endpoint.getSeenRequests(),
+            ),
           )
         ).flat();
-        const tokenScanRequests = allSeenRequests.filter((request) =>
+        const tokenScanRequests = allSeenRequests.filter((request: Request) =>
           request.url.includes('security-alerts.api.cx.metamask.io/token/scan'),
         );
         assert.ok(
