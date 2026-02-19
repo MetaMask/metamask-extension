@@ -1,9 +1,15 @@
 import type { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
 import type { Json, JsonRpcParams } from '@metamask/utils';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { InternalError, type SnapId } from '@metamask/snaps-sdk';
+import { type SnapId } from '@metamask/snaps-sdk';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 
+/**
+ * State of the RPC blocking middleware.
+ * Uses a Set of symbols: when non-empty, requests are blocked.
+ * Use createRpcBlockingCallbacks to obtain onBeforeRequest/onAfterRequest for each operation.
+ * The middleware stays blocked until all blocking operations complete.
+ */
 export type RpcBlockingMiddlewareState = {
   blockingSymbols: Set<symbol>;
 };
@@ -68,7 +74,7 @@ export default function createRpcBlockingMiddleware({
 
     if (!origin) {
       return end(
-        new InternalError(
+        rpcErrors.internal(
           `No origin specified for request with method ${req.method}`,
         ),
       );
