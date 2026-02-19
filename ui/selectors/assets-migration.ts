@@ -258,8 +258,12 @@ export const getTokensControllerAllIgnoredTokens = createDeepEqualSelector(
 
       const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
 
-      for (const accountId of Object.keys(internalAccountsById)) {
-        ((result[hexChainId] ??= {})[accountId] ??= []).push(
+      for (const account of Object.values(internalAccountsById)) {
+        if (!isEvmAccountType(account.type)) {
+          continue;
+        }
+
+        ((result[hexChainId] ??= {})[account.address] ??= []).push(
           assetType.assetReference,
         );
       }
@@ -631,7 +635,7 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
       }
 
       const convertToNativeCurrency = (amount: number | undefined) => {
-        return amount ? amount / nativeCurrencyRate : undefined;
+        return amount === undefined ? undefined : amount / nativeCurrencyRate;
       };
 
       (result[hexChainId] ??= {})[assetAddress] = {
