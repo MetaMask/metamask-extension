@@ -4345,6 +4345,36 @@ describe('getShowUpdateModal', () => {
     };
     expect(selectors.getShowUpdateModal(state)).toBe(false);
   });
+
+  it('treats four-segment pending as newer than four-segment current (e.g. beta builds)', () => {
+    global.platform.getVersion.mockReturnValue('10.2.3.111');
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '10.2.3.112',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.2.3.113' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(true);
+  });
+
+  it('returns false when four-segment pending is not greater than four-segment current', () => {
+    global.platform.getVersion.mockReturnValue('10.2.3.112');
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '10.2.3.111',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.2.3.113' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
 });
 
 describe('getDeferredDeepLink', () => {
