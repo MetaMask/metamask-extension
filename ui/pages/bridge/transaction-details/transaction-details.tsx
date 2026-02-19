@@ -32,7 +32,7 @@ import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
 import { getTransactionBreakdownData } from '../../../components/app/transaction-breakdown/transaction-breakdown-utils';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
-import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
+import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import {
   AlignItems,
@@ -246,14 +246,14 @@ const CrossChainSwapTxDetails = () => {
                 {t('bridgeTxDetailsDelayedDescription')}&nbsp;
                 <ButtonLink
                   externalLink
-                  href={SUPPORT_REQUEST_LINK}
+                  href={SUPPORT_LINK}
                   onClick={() => {
                     trackEvent(
                       {
                         category: MetaMetricsEventCategory.Home,
                         event: MetaMetricsEventName.SupportLinkClicked,
                         properties: {
-                          url: SUPPORT_REQUEST_LINK,
+                          url: SUPPORT_LINK,
                           location: 'Bridge Tx Details',
                         },
                       },

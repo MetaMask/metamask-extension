@@ -38,7 +38,7 @@ const {
 } = require('./utils');
 const { getConfig } = require('./config');
 
-/* eslint-disable no-constant-condition, node/global-require */
+/* eslint-disable no-constant-condition, n/global-require */
 if (false) {
   // Packages required dynamically via browserify/eslint configuration in
   // dependencies. This is a workaround for LavaMoat's static analyzer used in
@@ -63,13 +63,13 @@ if (false) {
   require('eslint-import-resolver-typescript');
   require('eslint-plugin-import');
   require('eslint-plugin-jsdoc');
-  require('eslint-plugin-node');
+  require('eslint-plugin-n');
   require('eslint-plugin-prettier');
   require('eslint-plugin-react');
   require('eslint-plugin-react-hooks');
   require('eslint-plugin-jest');
 }
-/* eslint-enable no-constant-condition, node/global-require */
+/* eslint-enable no-constant-condition, n/global-require */
 
 defineAndRunBuildTasks().catch((error) => {
   console.error(error.stack || error);
