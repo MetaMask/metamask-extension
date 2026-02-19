@@ -46,6 +46,8 @@ export function getAssetsControllerAssetPreferences(
 
 /**
  * Returns the customAssets from AssetsController state.
+ *
+ * @param state - Redux state (root or metamask slice)
  */
 export function getAssetsControllerCustomAssets(
   state: AssetsControllerRootState,

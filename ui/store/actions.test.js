@@ -1678,7 +1678,8 @@ describe('Actions', () => {
     it('calls hideAsset in background with the assetId', async () => {
       const store = mockStore();
       // eslint-disable-next-line prettier/prettier
-      const assetId = 'eip155:1:erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+      const assetId =
+        'eip155:1:erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
       const hideAssetStub = sinon.stub().resolves();
 
       background.getApi.returns({
@@ -1834,9 +1835,9 @@ describe('Actions', () => {
 
       await store.dispatch(actions.removeCustomAsset(accountId, assetId));
 
-      expect(
-        removeCustomAssetStub.calledOnceWith(accountId, assetId),
-      ).toBe(true);
+      expect(removeCustomAssetStub.calledOnceWith(accountId, assetId)).toBe(
+        true,
+      );
       const actionTypes = store.getActions().map((action) => action.type);
       expect(actionTypes).toContain('HIDE_LOADING_INDICATION');
     });

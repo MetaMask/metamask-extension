@@ -87,7 +87,9 @@ describe('Assets Unify State Asset Preferences', () => {
 
     it('returns true when assetId matches case-insensitively', () => {
       const customAssets = {
-        [accountId]: ['eip155:5/erc20:0x617B3F8050A0BD94B6B1DA02B4384EE5B4DF13F4'],
+        [accountId]: [
+          'eip155:5/erc20:0x617B3F8050A0BD94B6B1DA02B4384EE5B4DF13F4',
+        ],
       };
 
       expect(
@@ -96,9 +98,9 @@ describe('Assets Unify State Asset Preferences', () => {
     });
 
     it('returns false when customAssets is undefined', () => {
-      expect(
-        isAssetInAccountCustomAssets(undefined, accountId, assetId),
-      ).toBe(false);
+      expect(isAssetInAccountCustomAssets(undefined, accountId, assetId)).toBe(
+        false,
+      );
     });
 
     it('returns false when account has no list', () => {
@@ -135,9 +137,9 @@ describe('Assets Unify State Asset Preferences', () => {
         [assetId]: { hidden: true },
       };
 
-      expect(
-        isAssetIdHiddenInPreferencesMap(assetPreferences, assetId),
-      ).toBe(true);
+      expect(isAssetIdHiddenInPreferencesMap(assetPreferences, assetId)).toBe(
+        true,
+      );
     });
 
     it('returns true when assetId matches case-insensitively and hidden: true', () => {
@@ -159,9 +161,9 @@ describe('Assets Unify State Asset Preferences', () => {
         [assetId]: { hidden: false },
       };
 
-      expect(
-        isAssetIdHiddenInPreferencesMap(assetPreferences, assetId),
-      ).toBe(false);
+      expect(isAssetIdHiddenInPreferencesMap(assetPreferences, assetId)).toBe(
+        false,
+      );
     });
 
     it('returns false when assetId is not in preferences', () => {
@@ -183,9 +185,9 @@ describe('Assets Unify State Asset Preferences', () => {
         [assetId]: {},
       };
 
-      expect(
-        isAssetIdHiddenInPreferencesMap(assetPreferences, assetId),
-      ).toBe(false);
+      expect(isAssetIdHiddenInPreferencesMap(assetPreferences, assetId)).toBe(
+        false,
+      );
     });
   });
 
