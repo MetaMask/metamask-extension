@@ -30,7 +30,11 @@ import { brandColor } from '@metamask/design-tokens';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PERPS_HOME_ROUTE,
+  PERPS_ORDER_ENTRY_ROUTE,
+} from '../../helpers/constants/routes';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -62,12 +66,6 @@ import {
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import { Skeleton } from '../../components/component-library/skeleton';
 import { useFormatters } from '../../hooks/useFormatters';
-import {
-  OrderEntry,
-  type OrderDirection,
-  type OrderFormState,
-  type OrderMode,
-} from '../../components/app/perps/order-entry';
 import { EditMarginExpandable } from '../../components/app/perps/edit-margin';
 import { TextField, TextFieldSize } from '../../components/component-library';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
@@ -75,12 +73,7 @@ import {
   BorderRadius,
   BackgroundColor,
 } from '../../helpers/constants/design-system';
-import type {
-  CandleStick,
-  OrderType,
-  OrderParams,
-  PriceUpdate,
-} from '@metamask/perps-controller';
+import type { CandleStick, PriceUpdate } from '@metamask/perps-controller';
 
 /**
  * Calculate the funding countdown string (time until next UTC hour).
@@ -131,80 +124,6 @@ function useFundingCountdown(): string {
 // Preset percentage options for quick selection (matching AutoCloseSection)
 const TP_PRESETS = [10, 25, 50, 100];
 const SL_PRESETS = [10, 25, 50, 75];
-
-/**
- * Convert UI OrderFormState to PerpsController OrderParams
- *
- * @param formState - The form state from OrderEntry component
- * @param currentPrice - Current market price
- * @param mode - Order mode ('new', 'modify', 'close')
- * @param existingPositionSize - Size of existing position (for close/modify modes)
- * @returns OrderParams for the PerpsController
- */
-function formStateToOrderParams(
-  formState: OrderFormState,
-  currentPrice: number,
-  mode: OrderMode,
-  existingPositionSize?: string,
-): OrderParams {
-  const isBuy = formState.direction === 'long';
-
-  // Calculate position size from margin and leverage
-  // Position size = (margin * leverage) / price
-  const marginAmount = parseFloat(formState.amount) || 0;
-  const positionSize = (marginAmount * formState.leverage) / currentPrice;
-
-  // For close mode, use the existing position size
-  const size =
-    mode === 'close' && existingPositionSize
-      ? Math.abs(parseFloat(existingPositionSize)).toString()
-      : positionSize.toString();
-
-  // Clean commas from formatted values before sending to API
-  const cleanAmount = formState.amount.replace(/,/gu, '');
-
-  const params: OrderParams = {
-    symbol: formState.asset,
-    isBuy,
-    size,
-    orderType: formState.type,
-    leverage: formState.leverage,
-    currentPrice,
-    usdAmount: cleanAmount,
-  };
-
-  // Add limit price for limit orders
-  if (formState.type === 'limit' && formState.limitPrice) {
-    params.price = formState.limitPrice.replace(/,/gu, '');
-  }
-
-  // Add take profit if set and auto-close is enabled
-  // Clean commas from formatted price values before sending to API
-  if (formState.autoCloseEnabled && formState.takeProfitPrice) {
-    params.takeProfitPrice = formState.takeProfitPrice.replace(/,/gu, '');
-  }
-
-  // Add stop loss if set and auto-close is enabled
-  // Clean commas from formatted price values before sending to API
-  if (formState.autoCloseEnabled && formState.stopLossPrice) {
-    params.stopLossPrice = formState.stopLossPrice.replace(/,/gu, '');
-  }
-
-  // Mark as reduce only for close mode
-  if (mode === 'close') {
-    params.reduceOnly = true;
-    params.isFullClose = true;
-  }
-
-  return params;
-}
-
-/**
- * View state for the market detail page
- * - 'detail': Shows market info, position, stats
- * - 'order': Shows the order entry form
- */
-type MarketDetailView = 'detail' | 'order';
 
 /**
  * PerpsMarketDetailPage component
@@ -278,60 +197,6 @@ const PerpsMarketDetailPage: React.FC = () => {
             }
           },
           throttleMs: 1000,
-        });
-      } catch {
-        // Controller not ready yet, skip silently
-      }
-    };
-
-    subscribe();
-
-    return () => {
-      cancelled = true;
-      unsubscribe?.();
-    };
-  }, [decodedSymbol, selectedAddress]);
-
-  // Subscribe to top-of-book data for limit price presets (bid, ask, mid)
-  // Uses the same getPerpsController async pattern as live price subscription
-  const [topOfBook, setTopOfBook] = useState<{
-    midPrice: number;
-    bidPrice: number;
-    askPrice: number;
-  } | null>(null);
-  useEffect(() => {
-    if (!decodedSymbol || !selectedAddress) {
-      setTopOfBook(null);
-      return undefined;
-    }
-
-    let unsubscribe: (() => void) | undefined;
-    let cancelled = false;
-
-    const subscribe = async () => {
-      try {
-        const controller = await getPerpsController(selectedAddress);
-        if (cancelled) {
-          return;
-        }
-        unsubscribe = controller.subscribeToOrderBook({
-          symbol: decodedSymbol,
-          levels: 1,
-          nSigFigs: 5,
-          mantissa: 2,
-          callback: (orderBook) => {
-            if (
-              orderBook.bids.length > 0 &&
-              orderBook.asks.length > 0 &&
-              orderBook.midPrice
-            ) {
-              setTopOfBook({
-                midPrice: parseFloat(orderBook.midPrice),
-                bidPrice: parseFloat(orderBook.bids[0].price),
-                askPrice: parseFloat(orderBook.asks[0].price),
-              });
-            }
-          },
         });
       } catch {
         // Controller not ready yet, skip silently
@@ -431,41 +296,6 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   // OHLCV bar state: the candle currently hovered by crosshair (null = no hover)
   const [hoveredCandle, setHoveredCandle] = useState<CandleStick | null>(null);
-
-  // View state: 'detail' or 'order'
-  const [currentView, setCurrentView] = useState<MarketDetailView>('detail');
-  const [orderDirection, setOrderDirection] = useState<OrderDirection>('long');
-  const [orderType, setOrderType] = useState<OrderType>('market');
-  const [isOrderTypeDropdownOpen, setIsOrderTypeDropdownOpen] = useState(false);
-  const [orderFormState, setOrderFormState] = useState<OrderFormState | null>(
-    null,
-  );
-  // Order mode: 'new' for opening, 'modify' for adjusting, 'close' for closing
-  const [orderMode, setOrderMode] = useState<OrderMode>('new');
-
-  // Order submission states
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  // Track pending order waiting for position to appear in stream
-  const [pendingOrderSymbol, setPendingOrderSymbol] = useState<string | null>(
-    null,
-  );
-
-  // Derived state: true when submitting OR waiting for position confirmation
-  const isOrderPending = isSubmitting || pendingOrderSymbol !== null;
-
-  // Limit order validation: submit is disabled when limit price is empty or invalid
-  const isLimitPriceInvalid = useMemo(() => {
-    if (orderType !== 'limit' || !orderFormState) {
-      return false;
-    }
-    const cleaned = orderFormState.limitPrice?.replace(/,/gu, '') ?? '';
-    const parsed = parseFloat(cleaned);
-    return !cleaned || isNaN(parsed) || parsed <= 0;
-  }, [orderType, orderFormState]);
-
-  // Combined submit disabled state
-  const isSubmitDisabled = !isEligible || isOrderPending || isLimitPriceInvalid;
 
   // Auto close card expansion state
   const [isAutoCloseExpanded, setIsAutoCloseExpanded] = useState(false);
@@ -805,165 +635,38 @@ const PerpsMarketDetailPage: React.FC = () => {
     }
   }, []);
 
-  // Navigation handlers - use history back to return to wherever user came from
-  // (perps home page or perps tab)
   const handleBackClick = useCallback(() => {
-    // If in order view, go back to detail view and reset mode
-    if (currentView === 'order') {
-      setCurrentView('detail');
-      setOrderMode('new'); // Reset mode when leaving order view
-      return;
-    }
-    navigate(-1);
-  }, [navigate, currentView]);
+    navigate(PERPS_HOME_ROUTE);
+  }, [navigate]);
 
-  // Handle opening order entry with a specific direction (new order)
-  const handleOpenOrder = useCallback(
-    (direction: OrderDirection) => {
-      if (!isEligible) {
-        return;
-      }
-      setOrderDirection(direction);
-      setOrderMode('new');
-      setCurrentView('order');
+  const buildOrderEntryUrl = useCallback(
+    (direction: 'long' | 'short', mode: 'new' | 'modify' | 'close') => {
+      if (!decodedSymbol) return '#';
+      const params = new URLSearchParams({ direction, mode });
+      return `${PERPS_ORDER_ENTRY_ROUTE}/${encodeURIComponent(decodedSymbol)}?${params.toString()}`;
     },
-    [isEligible],
+    [decodedSymbol],
   );
 
-  // Handle modifying an existing position
+  const handleOpenOrder = useCallback(
+    (direction: 'long' | 'short') => {
+      if (!isEligible || !decodedSymbol) return;
+      navigate(buildOrderEntryUrl(direction, 'new'));
+    },
+    [isEligible, decodedSymbol, navigate, buildOrderEntryUrl],
+  );
+
   const handleModifyPosition = useCallback(() => {
-    if (!isEligible || !position) {
-      return;
-    }
+    if (!isEligible || !position || !decodedSymbol) return;
     const isLong = parseFloat(position.size) >= 0;
-    setOrderDirection(isLong ? 'long' : 'short');
-    setOrderMode('modify');
-    setCurrentView('order');
-  }, [isEligible, position]);
+    navigate(buildOrderEntryUrl(isLong ? 'long' : 'short', 'modify'));
+  }, [isEligible, position, decodedSymbol, navigate, buildOrderEntryUrl]);
 
-  // Handle closing an existing position
   const handleClosePosition = useCallback(() => {
-    if (!isEligible || !position) {
-      return;
-    }
+    if (!isEligible || !position || !decodedSymbol) return;
     const isLong = parseFloat(position.size) >= 0;
-    setOrderDirection(isLong ? 'long' : 'short');
-    setOrderMode('close');
-    setCurrentView('order');
-  }, [isEligible, position]);
-
-  // Handle form state changes from OrderEntry
-  const handleFormStateChange = useCallback((formState: OrderFormState) => {
-    setOrderFormState(formState);
-  }, []);
-
-  // Memoize existingPosition so it only changes when position data actually changes.
-  // Without this, a new object is created on every render, causing usePerpsOrderForm
-  // to reset form state (including TP/SL inputs) and overwriting user edits.
-  const existingPositionForOrder = useMemo(() => {
-    if (!position) {
-      return undefined;
-    }
-    return {
-      size: position.size,
-      leverage: position.leverage.value,
-      entryPrice: position.entryPrice,
-      takeProfitPrice: position.takeProfitPrice,
-      stopLossPrice: position.stopLossPrice,
-    };
-  }, [position]);
-
-  // Handle order submission
-  const handleOrderSubmit = useCallback(async () => {
-    if (!isEligible || !orderFormState || !selectedAddress) {
-      return;
-    }
-
-    setIsSubmitting(true);
-    setSubmitError(null);
-
-    try {
-      // Get the controller lazily when submitting (avoids hook initialization issues)
-      const controller = await getPerpsController(selectedAddress);
-
-      if (orderMode === 'close' && position) {
-        // Close position mode - don't pass size to close full position
-        // The controller will automatically close the entire position when size is omitted
-        const closeParams = {
-          symbol: orderFormState.asset,
-          // Market order type for immediate execution
-          orderType: 'market' as const,
-          // Current price is required for slippage calculation
-          currentPrice,
-        };
-        const result = await controller.closePosition(closeParams);
-        if (!result.success) {
-          throw new Error(result.error || 'Failed to close position');
-        }
-      } else if (orderMode === 'modify' && position) {
-        // Modify position mode - always update TP/SL (pass undefined to clear when disabled)
-        // Strip commas from formatted price strings before sending to API
-        const cleanTp =
-          orderFormState.autoCloseEnabled && orderFormState.takeProfitPrice
-            ? orderFormState.takeProfitPrice.replace(/,/gu, '')
-            : undefined;
-        const cleanSl =
-          orderFormState.autoCloseEnabled && orderFormState.stopLossPrice
-            ? orderFormState.stopLossPrice.replace(/,/gu, '')
-            : undefined;
-        const tpslParams = {
-          symbol: orderFormState.asset,
-          takeProfitPrice: cleanTp || undefined,
-          stopLossPrice: cleanSl || undefined,
-        };
-        const result = await controller.updatePositionTPSL(tpslParams);
-        if (!result.success) {
-          throw new Error(result.error || 'Failed to update TP/SL');
-        }
-      } else {
-        // New order mode
-        const orderParams = formStateToOrderParams(
-          orderFormState,
-          currentPrice,
-          orderMode,
-          position?.size,
-        );
-        const result = await controller.placeOrder(orderParams);
-        if (!result.success) {
-          throw new Error(result.error || 'Failed to place order');
-        }
-
-        if (orderFormState.type === 'limit') {
-          // Limit orders rest on the orderbook — return to detail view immediately.
-          // The resting order will appear in the orders section via usePerpsLiveOrders stream.
-          setCurrentView('detail');
-          setOrderMode('new');
-          return;
-        }
-
-        // Market orders — wait for position to appear in stream before navigating
-        setPendingOrderSymbol(orderFormState.asset);
-        return; // Don't navigate yet, wait for stream confirmation
-      }
-
-      // Success for close/modify - return to detail view immediately
-      setCurrentView('detail');
-      setOrderMode('new');
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'An unknown error occurred';
-      setSubmitError(errorMessage);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [
-    isEligible,
-    orderFormState,
-    selectedAddress,
-    orderMode,
-    position,
-    currentPrice,
-  ]);
+    navigate(buildOrderEntryUrl(isLong ? 'long' : 'short', 'close'));
+  }, [isEligible, position, decodedSymbol, navigate, buildOrderEntryUrl]);
 
   // Initialize TP/SL editing values only when the card is first expanded
   // We use a ref to track if we've already initialized to prevent stream updates
@@ -1100,42 +803,6 @@ const PerpsMarketDetailPage: React.FC = () => {
       document.removeEventListener('visibilitychange', handleVisibility);
   }, [selectedAddress]);
 
-  // Watch for new position to appear in stream after order placement
-  useEffect(() => {
-    if (!pendingOrderSymbol) {
-      return;
-    }
-
-    // Check if position for this symbol now exists
-    const hasPosition = allPositions.some(
-      (p) => p.symbol === pendingOrderSymbol,
-    );
-
-    if (hasPosition) {
-      // Position confirmed - clear pending and navigate to detail view
-      setPendingOrderSymbol(null);
-      setIsSubmitting(false);
-      setCurrentView('detail');
-      setOrderMode('new');
-    }
-  }, [pendingOrderSymbol, allPositions]);
-
-  // Fallback timeout: if position doesn't appear within 15 seconds, navigate anyway
-  useEffect(() => {
-    if (!pendingOrderSymbol) {
-      return undefined;
-    }
-
-    const timeout = setTimeout(() => {
-      setPendingOrderSymbol(null);
-      setIsSubmitting(false);
-      setCurrentView('detail');
-      setOrderMode('new');
-    }, 15000);
-
-    return () => clearTimeout(timeout);
-  }, [pendingOrderSymbol]);
-
   // No-op handler for order cards - orders on detail page are already
   // filtered to current market, so clicking should not navigate anywhere
   const handleOrderClick = useCallback(() => undefined, []);
@@ -1198,37 +865,6 @@ const PerpsMarketDetailPage: React.FC = () => {
   }
 
   const displayName = getDisplayName(market.symbol);
-
-  // Determine submit button text based on order mode
-  const isLong = orderDirection === 'long';
-  const getSubmitButtonText = () => {
-    switch (orderMode) {
-      case 'modify':
-        return t('perpsModifyPosition');
-      case 'close':
-        return isLong
-          ? t('perpsConfirmCloseLong')
-          : t('perpsConfirmCloseShort');
-      default:
-        return isLong
-          ? t('perpsOpenLong', [displayName])
-          : t('perpsOpenShort', [displayName]);
-    }
-  };
-  const submitButtonText = getSubmitButtonText();
-
-  // Determine header text based on order mode
-  const getHeaderText = () => {
-    const directionText = isLong ? t('perpsLong') : t('perpsShort');
-    switch (orderMode) {
-      case 'modify':
-        return `${t('perpsModify')} ${directionText} ${displayName}`;
-      case 'close':
-        return `${t('perpsClose')} ${directionText} ${displayName}`;
-      default:
-        return `${directionText} ${displayName}`;
-    }
-  };
 
   // Render the chart area: skeleton during initial load, error state on failure,
   // or the live chart once data is available.
@@ -1305,174 +941,49 @@ const PerpsMarketDetailPage: React.FC = () => {
         {/* Token Logo */}
         <PerpsTokenLogo symbol={market.symbol} size={AvatarTokenSize.Md} />
 
-        {/* Header Content - Different for detail vs order view */}
-        {currentView === 'order' ? (
-          /* Order View: Show mode + direction + asset name, price + change */
-          <Box flexDirection={BoxFlexDirection.Column}>
-            {/* Mode + Direction + Asset */}
+        {/* Header Content: symbol-USD, price + change */}
+        <Box flexDirection={BoxFlexDirection.Column}>
+          <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+            {displayName}-USD
+          </Text>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Baseline}
+            gap={1}
+          >
             <Text
-              variant={TextVariant.BodyMd}
+              variant={TextVariant.BodySm}
               fontWeight={FontWeight.Medium}
-              color={TextColor.TextDefault}
+              data-testid="perps-market-detail-price"
             >
-              {getHeaderText()}
+              {displayPrice}
             </Text>
-
-            {/* Price and Change Row */}
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Baseline}
-              gap={1}
+            <Text
+              variant={TextVariant.BodyXs}
+              color={getChangeColor(displayChange)}
+              data-testid="perps-market-detail-change"
             >
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-                data-testid="perps-order-price"
-              >
-                {displayPrice}
-              </Text>
-              <Text
-                variant={TextVariant.BodyXs}
-                color={getChangeColor(displayChange)}
-                data-testid="perps-order-change"
-              >
-                {displayChange}
-              </Text>
-            </Box>
-          </Box>
-        ) : (
-          /* Detail View: Show symbol-USD, price + change */
-          <Box flexDirection={BoxFlexDirection.Column}>
-            {/* Symbol */}
-            <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-              {displayName}-USD
+              {displayChange}
             </Text>
-
-            {/* Price and Change Row */}
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Baseline}
-              gap={1}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                fontWeight={FontWeight.Medium}
-                data-testid="perps-market-detail-price"
-              >
-                {displayPrice}
-              </Text>
-              <Text
-                variant={TextVariant.BodyXs}
-                color={getChangeColor(displayChange)}
-                data-testid="perps-market-detail-change"
-              >
-                {displayChange}
-              </Text>
-            </Box>
           </Box>
-        )}
+        </Box>
 
-        {/* Spacer */}
         <Box className="flex-1" />
 
-        {/* Right Side Action - Different for detail vs order view */}
-        {currentView === 'order' ? (
-          /* Order View: Market/Limit Dropdown */
-          <Box className="relative">
-            <Box
-              data-testid="perps-order-type-dropdown"
-              onClick={() =>
-                setIsOrderTypeDropdownOpen(!isOrderTypeDropdownOpen)
-              }
-              className={twMerge(
-                'flex items-center gap-1 px-3 py-2 rounded-lg cursor-pointer',
-                'bg-muted hover:bg-muted-hover',
-              )}
-            >
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {orderType === 'market' ? t('perpsMarket') : t('perpsLimit')}
-              </Text>
-              <Icon
-                name={IconName.ArrowDown}
-                size={IconSize.Xs}
-                color={IconColor.IconAlternative}
-              />
-            </Box>
-
-            {/* Dropdown Menu */}
-            {isOrderTypeDropdownOpen && (
-              <Box
-                className="absolute right-0 top-full mt-1 bg-default border border-muted rounded-lg shadow-lg z-10 min-w-[100px]"
-                data-testid="perps-order-type-dropdown-menu"
-              >
-                <Box
-                  onClick={() => {
-                    setOrderType('market');
-                    setIsOrderTypeDropdownOpen(false);
-                  }}
-                  className={twMerge(
-                    'px-3 py-2 cursor-pointer rounded-t-lg',
-                    orderType === 'market'
-                      ? 'bg-primary-muted'
-                      : 'hover:bg-muted-hover',
-                  )}
-                  data-testid="perps-order-type-market"
-                >
-                  <Text
-                    variant={TextVariant.BodySm}
-                    color={
-                      orderType === 'market'
-                        ? TextColor.PrimaryDefault
-                        : TextColor.TextDefault
-                    }
-                  >
-                    {t('perpsMarket')}
-                  </Text>
-                </Box>
-                <Box
-                  onClick={() => {
-                    setOrderType('limit');
-                    setIsOrderTypeDropdownOpen(false);
-                  }}
-                  className={twMerge(
-                    'px-3 py-2 cursor-pointer rounded-b-lg',
-                    orderType === 'limit'
-                      ? 'bg-primary-muted'
-                      : 'hover:bg-muted-hover',
-                  )}
-                  data-testid="perps-order-type-limit"
-                >
-                  <Text
-                    variant={TextVariant.BodySm}
-                    color={
-                      orderType === 'limit'
-                        ? TextColor.PrimaryDefault
-                        : TextColor.TextDefault
-                    }
-                  >
-                    {t('perpsLimit')}
-                  </Text>
-                </Box>
-              </Box>
-            )}
-          </Box>
-        ) : (
-          /* Detail View: Favorite Star */
-          <Box
-            data-testid="perps-market-detail-favorite-button"
-            aria-label={t('perpsAddToFavorites')}
-            className="p-2 cursor-pointer"
-            onClick={() => {
-              // TODO: Handle favorite toggle
-            }}
-          >
-            <Icon
-              name={IconName.Star}
-              size={IconSize.Md}
-              color={IconColor.IconAlternative}
-            />
-          </Box>
-        )}
+        <Box
+          data-testid="perps-market-detail-favorite-button"
+          aria-label={t('perpsAddToFavorites')}
+          className="p-2 cursor-pointer"
+          onClick={() => {
+            // TODO: Handle favorite toggle
+          }}
+        >
+          <Icon
+            name={IconName.Star}
+            size={IconSize.Md}
+            color={IconColor.IconAlternative}
+          />
+        </Box>
       </Box>
 
       {/* OHLCV Bar — shown when crosshair hovers a candle */}
@@ -1539,38 +1050,8 @@ const PerpsMarketDetailPage: React.FC = () => {
         onPeriodChange={handlePeriodChange}
       />
 
-      {/* Order Entry View - shown when in order mode */}
-      {currentView === 'order' && (
-        <Box
-          paddingLeft={4}
-          paddingRight={4}
-          paddingTop={4}
-          className={twMerge(
-            'flex-1',
-            isOrderPending && 'pointer-events-none opacity-50',
-          )}
-        >
-          <OrderEntry
-            asset={decodedSymbol}
-            currentPrice={currentPrice}
-            maxLeverage={maxLeverage}
-            availableBalance={availableBalance}
-            initialDirection={orderDirection}
-            showSubmitButton={false}
-            onFormStateChange={handleFormStateChange}
-            mode={orderMode}
-            orderType={orderType}
-            existingPosition={existingPositionForOrder}
-            midPrice={topOfBook?.midPrice}
-            bidPrice={topOfBook?.bidPrice}
-            askPrice={topOfBook?.askPrice}
-          />
-        </Box>
-      )}
-
-      {/* Detail View Content - shown when in detail mode */}
-      {currentView === 'detail' && (
-        <>
+      {/* Detail View Content */}
+      <>
           {/* Position Section */}
           {position && (
             <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
@@ -2517,8 +1998,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               </Text>
             </Box>
           </Box>
-        </>
-      )}
+      </>
 
       {/* Sticky Footer */}
       <Box
@@ -2528,50 +2008,8 @@ const PerpsMarketDetailPage: React.FC = () => {
         paddingTop={3}
         paddingBottom={4}
       >
-        {/* Order Mode: Show Submit Order button with error display */}
-        {currentView === 'order' && (
-          <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-            {/* Error message display */}
-            {submitError && (
-              <Box
-                className="bg-error-muted rounded-lg"
-                padding={3}
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={2}
-              >
-                <Icon
-                  name={IconName.Warning}
-                  size={IconSize.Sm}
-                  color={IconColor.ErrorDefault}
-                />
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.ErrorDefault}
-                >
-                  {submitError}
-                </Text>
-              </Box>
-            )}
-            <Button
-              variant={ButtonVariant.Primary}
-              size={ButtonSize.Lg}
-              onClick={handleOrderSubmit}
-              disabled={isSubmitDisabled}
-              title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
-              className={twMerge(
-                'w-full',
-                isSubmitDisabled && 'opacity-70 cursor-not-allowed',
-              )}
-              data-testid="submit-order-button"
-            >
-              {isOrderPending ? t('perpsSubmitting') : submitButtonText}
-            </Button>
-          </Box>
-        )}
-
-        {/* Detail Mode with Position: Show Modify and Close buttons */}
-        {currentView !== 'order' && position && (
+        {/* With Position: Show Modify and Close buttons */}
+        {position && (
           <Box
             flexDirection={BoxFlexDirection.Row}
             gap={3}
@@ -2607,8 +2045,8 @@ const PerpsMarketDetailPage: React.FC = () => {
           </Box>
         )}
 
-        {/* Detail Mode without Position: Show Long and Short buttons */}
-        {currentView !== 'order' && !position && (
+        {/* Without Position: Show Long and Short buttons */}
+        {!position && (
           <Box
             flexDirection={BoxFlexDirection.Row}
             gap={3}

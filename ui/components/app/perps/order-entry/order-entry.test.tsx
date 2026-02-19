@@ -53,7 +53,7 @@ describe('OrderEntry', () => {
       expect(screen.getByTestId('leverage-slider')).toBeInTheDocument();
       expect(screen.getByText('Margin')).toBeInTheDocument();
       expect(screen.getByText('Fees')).toBeInTheDocument();
-      expect(screen.getByText('Liquidation Price Est.')).toBeInTheDocument();
+      expect(screen.getByText('Liquidation price')).toBeInTheDocument();
       expect(screen.getByTestId('auto-close-toggle')).toBeInTheDocument();
       expect(
         screen.getByTestId('order-entry-submit-button'),

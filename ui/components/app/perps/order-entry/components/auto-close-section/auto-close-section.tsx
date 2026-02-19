@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
 import {
-  twMerge,
   Box,
   Text,
   TextVariant,
@@ -9,9 +8,6 @@ import {
   BoxJustifyContent,
   BoxAlignItems,
   FontWeight,
-  Button,
-  ButtonVariant,
-  ButtonSize,
 } from '@metamask/design-system-react';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import {
@@ -22,10 +18,6 @@ import ToggleButton from '../../../../../ui/toggle-button';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
-
-// Preset percentage options for quick selection
-const TP_PRESETS = [10, 25, 50, 100];
-const SL_PRESETS = [10, 25, 50, 75];
 
 /**
  * AutoCloseSection - Collapsible section for Take Profit and Stop Loss configuration
@@ -215,24 +207,6 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     [onStopLossPriceChange, percentToPrice],
   );
 
-  // Handle preset button click for TP
-  const handleTpPreset = useCallback(
-    (percent: number) => {
-      const newPrice = percentToPrice(percent, true);
-      onTakeProfitPriceChange(newPrice);
-    },
-    [percentToPrice, onTakeProfitPriceChange],
-  );
-
-  // Handle preset button click for SL
-  const handleSlPreset = useCallback(
-    (percent: number) => {
-      const newPrice = percentToPrice(percent, false);
-      onStopLossPriceChange(newPrice);
-    },
-    [percentToPrice, onStopLossPriceChange],
-  );
-
   // Calculate current percentages for display
   const tpPercent = useMemo(
     () => priceToPercent(takeProfitPrice, true),
@@ -274,22 +248,6 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
             >
               {t('perpsTakeProfit')}
             </Text>
-
-            {/* Preset Buttons */}
-            <Box flexDirection={BoxFlexDirection.Row} gap={2}>
-              {TP_PRESETS.map((preset) => (
-                <Button
-                  key={`tp-${preset}`}
-                  variant={ButtonVariant.Secondary}
-                  size={ButtonSize.Sm}
-                  onClick={() => handleTpPreset(preset)}
-                  className={twMerge('flex-1', 'rounded-md')}
-                  data-testid={`tp-preset-${preset}`}
-                >
-                  +{preset}%
-                </Button>
-              ))}
-            </Box>
 
             {/* Input Row: Price ($) left, Percent (%) right */}
             <Box
@@ -355,22 +313,6 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
             >
               {t('perpsStopLoss')}
             </Text>
-
-            {/* Preset Buttons */}
-            <Box flexDirection={BoxFlexDirection.Row} gap={2}>
-              {SL_PRESETS.map((preset) => (
-                <Button
-                  key={`sl-${preset}`}
-                  variant={ButtonVariant.Secondary}
-                  size={ButtonSize.Sm}
-                  onClick={() => handleSlPreset(preset)}
-                  className={twMerge('flex-1', 'rounded-md')}
-                  data-testid={`sl-preset-${preset}`}
-                >
-                  -{preset}%
-                </Button>
-              ))}
-            </Box>
 
             {/* Input Row: Price ($) left, Percent (%) right */}
             <Box

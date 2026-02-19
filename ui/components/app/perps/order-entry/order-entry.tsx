@@ -3,9 +3,14 @@ import {
   twMerge,
   Box,
   BoxFlexDirection,
+  BoxAlignItems,
+  Text,
+  TextVariant,
+  FontWeight,
   Button,
   ButtonVariant,
   ButtonSize,
+  ButtonBase,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
@@ -46,8 +51,6 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.existingPosition - Existing position data for pre-population
  * @param props.orderType
  * @param props.midPrice
- * @param props.bidPrice
- * @param props.askPrice
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -62,8 +65,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   existingPosition,
   orderType = 'market',
   midPrice,
-  bidPrice,
-  askPrice,
+  onOrderTypeChange,
 }) => {
   const t = useI18nContext();
 
@@ -93,6 +95,10 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   });
 
   const isLong = formState.direction === 'long';
+
+  const handleOrderTypeClick = (type: 'market' | 'limit') => {
+    onOrderTypeChange?.(type);
+  };
 
   // Determine submit button text based on mode
   const submitButtonText = useMemo(() => {
@@ -125,6 +131,51 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
         gap={4}
         className="flex-1 overflow-y-auto overflow-x-hidden pb-4"
       >
+        {/* Order Type: Market and Limit as separate pills */}
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+          className="w-full"
+        >
+          <ButtonBase
+            onClick={() => handleOrderTypeClick('market')}
+            className={twMerge(
+              'py-2 px-4 rounded-lg transition-colors',
+              orderType === 'market'
+                ? 'bg-background-default border border-default'
+                : 'bg-transparent border border-muted hover:opacity-80',
+            )}
+            data-testid="order-type-market"
+          >
+            <Text
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              className={orderType === 'market' ? '' : 'text-muted'}
+            >
+              {t('perpsMarket')}
+            </Text>
+          </ButtonBase>
+          <ButtonBase
+            onClick={() => handleOrderTypeClick('limit')}
+            className={twMerge(
+              'py-2 px-4 rounded-lg transition-colors',
+              orderType === 'limit'
+                ? 'bg-background-default border border-default'
+                : 'bg-transparent border border-muted hover:opacity-80',
+            )}
+            data-testid="order-type-limit"
+          >
+            <Text
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              className={orderType === 'limit' ? '' : 'text-muted'}
+            >
+              {t('perpsLimit')}
+            </Text>
+          </ButtonBase>
+        </Box>
+
         {/* Close Mode: Show CloseAmountSection */}
         {mode === 'close' && existingPosition && (
           <CloseAmountSection
@@ -136,7 +187,17 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
           />
         )}
 
-        {/* New/Modify Modes: Show Amount Input Section */}
+        {/* Limit Orders: Show Limit Price Input before Size */}
+        {mode !== 'close' && formState.type === 'limit' && (
+          <LimitPriceInput
+            limitPrice={formState.limitPrice}
+            onLimitPriceChange={handleLimitPriceChange}
+            currentPrice={currentPrice}
+            midPrice={midPrice}
+          />
+        )}
+
+        {/* New/Modify Modes: Show Amount Input Section (Size) */}
         {mode !== 'close' && (
           <AmountInput
             amount={formState.amount}
@@ -147,19 +208,6 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             leverage={formState.leverage}
             asset={asset}
             currentPrice={currentPrice}
-          />
-        )}
-
-        {/* Limit Orders: Show Limit Price Input below Order Amount */}
-        {mode !== 'close' && formState.type === 'limit' && (
-          <LimitPriceInput
-            limitPrice={formState.limitPrice}
-            onLimitPriceChange={handleLimitPriceChange}
-            currentPrice={currentPrice}
-            direction={formState.direction}
-            midPrice={midPrice}
-            bidPrice={bidPrice}
-            askPrice={askPrice}
           />
         )}
 
@@ -178,19 +226,11 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
         )}
 
         {/* Order Summary Section - shown in all modes */}
-        <Box
-          className="bg-muted rounded-lg"
-          paddingLeft={3}
-          paddingRight={3}
-          paddingTop={3}
-          paddingBottom={3}
-        >
           <OrderSummary
             marginRequired={calculations.marginRequired}
             estimatedFees={calculations.estimatedFees}
             liquidationPrice={calculations.liquidationPrice}
           />
-        </Box>
 
         {/* New/Modify Modes: Show Auto Close (TP/SL) Section */}
         {mode !== 'close' && (

@@ -33,10 +33,9 @@ export const DirectionTabs: React.FC<DirectionTabsProps> = ({
     }
   };
 
-  // Base styles for both tabs
-  const tabBaseStyles = 'flex-1 py-3 rounded-lg transition-colors';
+  const tabBaseStyles =
+    'flex-1 py-2 rounded-lg transition-colors text-center';
 
-  // Long tab styles
   const longTabStyles = twMerge(
     tabBaseStyles,
     direction === 'long'
@@ -44,7 +43,6 @@ export const DirectionTabs: React.FC<DirectionTabsProps> = ({
       : 'bg-transparent hover:bg-muted-hover active:bg-muted-pressed',
   );
 
-  // Short tab styles
   const shortTabStyles = twMerge(
     tabBaseStyles,
     direction === 'short'
@@ -55,20 +53,19 @@ export const DirectionTabs: React.FC<DirectionTabsProps> = ({
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
-      className="w-full bg-muted rounded-xl p-1 gap-1"
+      className="flex-1 min-w-0 bg-muted rounded-lg p-1 gap-1"
       data-testid="direction-tabs"
     >
-      {/* Long Tab */}
       <ButtonBase
         className={longTabStyles}
         onClick={() => handleDirectionClick('long')}
         data-testid="direction-tab-long"
       >
         <Text
-          variant={TextVariant.BodyMd}
+          variant={TextVariant.BodySm}
           fontWeight={FontWeight.Medium}
           className={twMerge(
-            'text-center w-full',
+            'w-full',
             direction === 'long' ? 'text-success-default' : 'text-muted',
           )}
         >
@@ -76,17 +73,16 @@ export const DirectionTabs: React.FC<DirectionTabsProps> = ({
         </Text>
       </ButtonBase>
 
-      {/* Short Tab */}
       <ButtonBase
         className={shortTabStyles}
         onClick={() => handleDirectionClick('short')}
         data-testid="direction-tab-short"
       >
         <Text
-          variant={TextVariant.BodyMd}
+          variant={TextVariant.BodySm}
           fontWeight={FontWeight.Medium}
           className={twMerge(
-            'text-center w-full',
+            'w-full',
             direction === 'short' ? 'text-error-default' : 'text-muted',
           )}
         >

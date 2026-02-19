@@ -28,7 +28,21 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-      {/* Margin Row */}
+      {/* Liquidation price */}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
+      >
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          {t('perpsLiquidationPrice')}
+        </Text>
+        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
+          {liquidationPrice ?? '-'}
+        </Text>
+      </Box>
+
+      {/* Margin */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Between}
@@ -42,7 +56,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         </Text>
       </Box>
 
-      {/* Fees Row */}
+      {/* Fees */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Between}
@@ -53,20 +67,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         </Text>
         <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
           {estimatedFees ?? '-'}
-        </Text>
-      </Box>
-
-      {/* Liquidation Price Row */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
-        alignItems={BoxAlignItems.Center}
-      >
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('perpsLiquidationPriceEst')}
-        </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
-          {liquidationPrice ?? '-'}
         </Text>
       </Box>
     </Box>

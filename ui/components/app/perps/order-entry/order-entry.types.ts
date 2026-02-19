@@ -111,12 +111,14 @@ export type OrderEntryProps = {
   existingPosition?: ExistingPositionData;
   /** Order type: 'market' or 'limit' (defaults to 'market') */
   orderType?: OrderType;
-  /** Mid price from top-of-book for limit order presets */
+  /** Mid price from top-of-book for limit order Mid button */
   midPrice?: number;
-  /** Best bid price from top-of-book for limit order presets */
-  bidPrice?: number;
-  /** Best ask price from top-of-book for limit order presets */
-  askPrice?: number;
+  /** Controlled direction (when provided with onDirectionChange) */
+  direction?: OrderDirection;
+  /** Callback when user changes direction via DirectionTabs */
+  onDirectionChange?: (direction: OrderDirection) => void;
+  /** Callback when user changes order type (Market/Limit) */
+  onOrderTypeChange?: (orderType: OrderType) => void;
 };
 
 /**
@@ -133,7 +135,7 @@ export type DirectionTabsProps = {
  * Props for AmountInput component
  */
 export type AmountInputProps = {
-  /** Current amount value */
+  /** Current amount value (USD) */
   amount: string;
   /** Callback when amount changes */
   onAmountChange: (amount: string) => void;
@@ -149,6 +151,8 @@ export type AmountInputProps = {
   asset: string;
   /** Current asset price for token conversion */
   currentPrice: number;
+  /** Optional: callback when user edits token amount (bidirectional sync) */
+  onTokenAmountChange?: (tokenAmount: number) => void;
 };
 
 /**
