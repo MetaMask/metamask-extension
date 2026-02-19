@@ -430,21 +430,27 @@ function extractFlagReferences(
   //    "code(); // remoteFeatureFlags.old" don't produce false positives.
   const commentStripped = stripInlineComments(line);
 
-  // 2. Run bracket string-literal patterns on the comment-stripped line
-  //    BEFORE stripping string literals (they need the quoted flag name).
+  // 2. Strip string literal contents for most patterns.
+  const sanitized = stripStringLiterals(commentStripped);
+
+  // 3. Run bracket string-literal patterns.  These need the quoted flag
+  //    name intact, so we run on commentStripped.  To avoid false matches
+  //    inside outer string literals (e.g. "remoteFeatureFlags['flag']" in
+  //    a log message), we verify each match position is not blanked out
+  //    in the sanitized version (blanked regions were string content).
   for (const pattern of BRACKET_STRING_PATTERNS) {
     pattern.lastIndex = 0;
     let match: RegExpExecArray | null;
     while ((match = pattern.exec(commentStripped)) !== null) {
+      const posInSanitized = sanitized.charAt(match.index);
+      if (posInSanitized === "'" || posInSanitized === '"' || posInSanitized === '`') {
+        continue;
+      }
       if (isLikelyFlagName(match[1])) {
         refs.push({ flagName: match[1], filePath });
       }
     }
   }
-
-  // 3. Strip string literal contents so remaining patterns don't match
-  //    flag names inside quoted text (e.g. log messages, error strings).
-  const sanitized = stripStringLiterals(commentStripped);
 
   // 4. Dot-access patterns (run on fully sanitized line)
   for (const pattern of FLAG_ACCESS_PATTERNS) {
@@ -556,27 +562,40 @@ function isLikelyFlagName(name: string): boolean {
 }
 
 /**
- * Strips trailing inline comments from a line of code.
- * Finds `//` that is not inside a string literal and removes everything
- * after it.  This prevents patterns in comments like
- * `code(); // remoteFeatureFlags.oldFlag` from being detected.
+ * Strips inline comments from a line of code:
+ * - `//` line comments: everything from `//` to end of line is removed
+ * - `/* ... *​/` block comments: content between delimiters is replaced with spaces
+ *
+ * Both styles are only stripped when they appear outside string literals.
  */
 function stripInlineComments(line: string): string {
+  let result = '';
   let inSingle = false;
   let inDouble = false;
   let inTemplate = false;
   let escaped = false;
+  let inBlock = false;
 
   for (let i = 0; i < line.length; i++) {
     const ch = line[i];
 
     if (escaped) {
       escaped = false;
+      result += ch;
+      continue;
+    }
+
+    if (inBlock) {
+      if (ch === '*' && line[i + 1] === '/') {
+        inBlock = false;
+        i += 1;
+      }
       continue;
     }
 
     if (ch === '\\' && (inSingle || inDouble || inTemplate)) {
       escaped = true;
+      result += ch;
       continue;
     }
 
@@ -586,17 +605,20 @@ function stripInlineComments(line: string): string {
       inDouble = !inDouble;
     } else if (ch === '`' && !inSingle && !inDouble) {
       inTemplate = !inTemplate;
-    } else if (
-      ch === '/' &&
-      line[i + 1] === '/' &&
-      !inSingle &&
-      !inDouble &&
-      !inTemplate
-    ) {
-      return line.slice(0, i);
+    } else if (!inSingle && !inDouble && !inTemplate && ch === '/') {
+      if (line[i + 1] === '/') {
+        return result;
+      }
+      if (line[i + 1] === '*') {
+        inBlock = true;
+        i += 1;
+        continue;
+      }
     }
+
+    result += ch;
   }
-  return line;
+  return result;
 }
 
 /**
