@@ -10,7 +10,7 @@ import {
 } from '../../test/e2e/benchmarks/utils/constants';
 import {
   type ArtifactLinks,
-  type BenchmarkResults,
+  type PageLoadBenchmarkResults,
   type PageLoadEntry,
   getHumanReadableSize,
   getPercentageChange,
@@ -159,15 +159,15 @@ async function buildArtifactsBody({
  * Fetches page load benchmark JSON data for all platform/buildType/preset combos.
  *
  * @param hostUrl - Base URL for CI artifacts.
- * @returns Populated BenchmarkResults object.
+ * @returns Populated PageLoadBenchmarkResults object.
  */
 async function fetchPageLoadResults(
   hostUrl: string,
-): Promise<BenchmarkResults> {
-  const results: BenchmarkResults = {};
+): Promise<PageLoadBenchmarkResults> {
+  const results = {} as PageLoadBenchmarkResults;
 
   for (const platform of BENCHMARK_PLATFORMS) {
-    results[platform] = {};
+    results[platform] = {} as PageLoadBenchmarkResults[typeof platform];
     for (const buildType of BENCHMARK_BUILD_TYPES) {
       results[platform][buildType] = {};
       for (const page of Object.values(PAGE_LOAD_PRESETS)) {
@@ -202,7 +202,7 @@ async function fetchPageLoadResults(
  * @returns HTML string for the collapsible section, or empty string.
  */
 async function buildUiStartupSection(
-  benchmarkResults: BenchmarkResults,
+  benchmarkResults: PageLoadBenchmarkResults,
   hostUrl: string,
 ): Promise<string> {
   const sectionTitle = 'UI Startup Metrics';

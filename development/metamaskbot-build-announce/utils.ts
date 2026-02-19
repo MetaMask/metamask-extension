@@ -6,10 +6,7 @@ import {
   BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
 } from '../../test/e2e/benchmarks/utils/constants';
-import type {
-  BenchmarkType,
-  Persona,
-} from '../../test/e2e/benchmarks/utils/types';
+import type { BenchmarkResults } from '../../test/e2e/benchmarks/utils/types';
 
 /**
  * Wraps a section builder so that any missing-data error is caught,
@@ -34,29 +31,13 @@ export async function safeBuildSection(
 }
 
 /**
- * A single benchmark entry from a JSON artifact.
- * Shared across user action and performance benchmark results.
- */
-export type BenchmarkEntryResult = {
-  testTitle: string;
-  persona: Persona;
-  benchmarkType?: BenchmarkType;
-  mean: Record<string, number>;
-  min: Record<string, number>;
-  max: Record<string, number>;
-  stdDev: Record<string, number>;
-  p75: Record<string, number>;
-  p95: Record<string, number>;
-};
-
-/**
  * A parsed benchmark entry with its name and result data.
  * Only `mean` is guaranteed after filtering; statistical fields may be absent.
  */
 export type BenchmarkEntry = {
   benchmarkName: string;
-  entry: Pick<BenchmarkEntryResult, 'mean'> &
-    Partial<Omit<BenchmarkEntryResult, 'mean'>>;
+  entry: Pick<BenchmarkResults, 'mean'> &
+    Partial<Omit<BenchmarkResults, 'mean'>>;
 };
 
 /**
@@ -66,7 +47,7 @@ export type BenchmarkEntry = {
  */
 export type PageLoadEntry = Record<string, Record<string, string>>;
 
-export type BenchmarkResults = Record<
+export type PageLoadBenchmarkResults = Record<
   (typeof BENCHMARK_PLATFORMS)[number],
   Record<(typeof BENCHMARK_BUILD_TYPES)[number], Record<string, PageLoadEntry>>
 >;
@@ -395,7 +376,7 @@ export function buildBenchmarkSection(
  * @returns Parsed JSON or null.
  */
 export async function fetchBenchmarkJson<
-  Result = Record<string, BenchmarkEntryResult>,
+  Result = Record<string, BenchmarkResults>,
 >(
   hostUrl: string,
   platform: string,
@@ -419,7 +400,7 @@ export async function fetchBenchmarkJson<
  * @returns Array of name/entry pairs.
  */
 export function extractEntries(
-  data: Record<string, Partial<BenchmarkEntryResult>>,
+  data: Record<string, Partial<BenchmarkResults>>,
 ): BenchmarkEntry[] {
   return Object.entries(data)
     .filter(
@@ -485,7 +466,7 @@ type BenchmarkDimensions = {
 };
 
 function discoverDimensions(
-  benchmarkResults: BenchmarkResults,
+  benchmarkResults: PageLoadBenchmarkResults,
 ): BenchmarkDimensions {
   const platforms = new Set<string>();
   const buildTypes = new Set<string>();
@@ -493,13 +474,17 @@ function discoverDimensions(
   const metrics = new Set<string>();
   const measures = new Set<string>();
 
-  for (const platform of Object.keys(benchmarkResults)) {
+  const data = benchmarkResults as Record<
+    string,
+    Record<string, Record<string, PageLoadEntry>>
+  >;
+  for (const platform of Object.keys(data)) {
     platforms.add(platform);
-    for (const buildType of Object.keys(benchmarkResults[platform])) {
+    for (const buildType of Object.keys(data[platform])) {
       buildTypes.add(buildType);
-      for (const page of Object.keys(benchmarkResults[platform][buildType])) {
+      for (const page of Object.keys(data[platform][buildType])) {
         pages.add(page);
-        const pageBenchmark = benchmarkResults[platform][buildType][page];
+        const pageBenchmark = data[platform][buildType][page];
         const pageLoadMeasures = Object.keys(pageBenchmark).filter(
           (key) =>
             typeof pageBenchmark[key] === 'object' &&
@@ -524,7 +509,9 @@ function discoverDimensions(
  * @param benchmarkResults - The page load benchmark results.
  * @returns HTML table string.
  */
-export function buildPageLoadTable(benchmarkResults: BenchmarkResults): string {
+export function buildPageLoadTable(
+  benchmarkResults: PageLoadBenchmarkResults,
+): string {
   const { platforms, pages, metrics, measures } =
     discoverDimensions(benchmarkResults);
 
@@ -532,9 +519,13 @@ export function buildPageLoadTable(benchmarkResults: BenchmarkResults): string {
     return '';
   }
 
+  const data = benchmarkResults as Record<
+    string,
+    Record<string, Record<string, PageLoadEntry>>
+  >;
   const tableRows: string[] = [];
   for (const platform of platforms) {
-    const buildTypesInPlatform = Object.keys(benchmarkResults[platform]);
+    const buildTypesInPlatform = Object.keys(data[platform]);
     for (const buildType of buildTypesInPlatform) {
       for (const page of pages) {
         const buildLabel = `${startCase(platform)} ${startCase(buildType)} ${startCase(page)}`;
@@ -544,9 +535,9 @@ export function buildPageLoadTable(benchmarkResults: BenchmarkResults): string {
           for (const measure of measures) {
             let output = '-';
 
-            if (benchmarkResults[platform][buildType][page]?.[measure]) {
+            if (data[platform][buildType][page]?.[measure]) {
               const individualMetricString =
-                benchmarkResults[platform][buildType][page][measure][metric];
+                data[platform][buildType][page][measure][metric];
 
               const individualMetricNumber = Math.round(
                 parseFloat(individualMetricString),
@@ -602,7 +593,7 @@ type BenchmarkGateConfig = {
  * @returns HTML string with warnings, or empty string if all gates pass.
  */
 export async function runBenchmarkGate(
-  benchmarkResults: BenchmarkResults,
+  benchmarkResults: PageLoadBenchmarkResults,
   benchmarkGateUrl: string,
 ): Promise<string> {
   console.log(`Fetching benchmark gate from ${benchmarkGateUrl}`);
@@ -620,10 +611,14 @@ export async function runBenchmarkGate(
   const exceededSums = { mean: 0, p95: 0 };
   let benchmarkGateBody = '';
 
+  const data = benchmarkResults as Record<
+    string,
+    Record<string, Record<string, PageLoadEntry>>
+  >;
   for (const platform of Object.keys(gates)) {
     for (const buildType of Object.keys(gates[platform])) {
       for (const page of Object.keys(gates[platform][buildType])) {
-        const pageData = benchmarkResults[platform]?.[buildType]?.[page];
+        const pageData = data[platform]?.[buildType]?.[page];
         if (!pageData) {
           continue;
         }

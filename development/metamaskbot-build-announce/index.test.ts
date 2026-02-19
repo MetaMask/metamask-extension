@@ -1,14 +1,10 @@
 // Timer IDs from benchmark flows use snake_case (e.g. load_new_account, confirm_tx)
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import {
-  buildTableRows,
-  buildBenchmarkSection,
-  extractEntries,
-  type BenchmarkEntryResult,
-} from './utils';
+import type { BenchmarkResults } from '../../test/e2e/benchmarks/utils/types';
+import { buildTableRows, buildBenchmarkSection, extractEntries } from './utils';
 
-const mockUserActionsJson: Record<string, BenchmarkEntryResult> = {
+const mockUserActionsJson: Record<string, BenchmarkResults> = {
   loadNewAccount: {
     testTitle: 'benchmark-user-actions-load-new-account',
     persona: 'standard',
@@ -41,7 +37,7 @@ const mockUserActionsJson: Record<string, BenchmarkEntryResult> = {
   },
 };
 
-const mockPerformanceOnboardingJson: Record<string, BenchmarkEntryResult> = {
+const mockPerformanceOnboardingJson: Record<string, BenchmarkResults> = {
   onboardingImportWallet: {
     testTitle: 'benchmark-onboarding-import-wallet',
     persona: 'standard',
@@ -84,7 +80,7 @@ const mockPerformanceOnboardingJson: Record<string, BenchmarkEntryResult> = {
   },
 };
 
-const mockPerformanceAssetsJson: Record<string, BenchmarkEntryResult> = {
+const mockPerformanceAssetsJson: Record<string, BenchmarkResults> = {
   assetDetails: {
     testTitle: 'benchmark-asset-details',
     persona: 'powerUser',
