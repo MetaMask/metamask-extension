@@ -424,7 +424,7 @@ export function extractEntries(
   return Object.entries(data)
     .filter(
       (pair): pair is [string, BenchmarkEntry['entry']] =>
-          pair[1].mean !== null &&
+        pair[1].mean !== null &&
         pair[1].mean !== undefined &&
         typeof pair[1].mean === 'object',
     )
@@ -460,7 +460,9 @@ export async function buildBenchmarkSectionComment(
         allEntries.push(...extractEntries(data));
       }
     } catch (error) {
-      console.error(`Failed to fetch benchmark preset "${preset}": ${String(error)}`);
+      console.error(
+        `Failed to fetch benchmark preset "${preset}": ${String(error)}`,
+      );
     }
   }
 
@@ -589,7 +591,6 @@ type BenchmarkGateConfig = {
     string,
     Record<string, Record<string, Record<string, Record<string, number>>>>
   >;
-  pingThresholds: { mean: number; p95: number };
 };
 
 /**
@@ -614,8 +615,7 @@ export async function runBenchmarkGate(
   }
 
   // This annotation narrows the untyped json() result to the known schema of the benchmark-gate.json config.
-  const { gates, pingThresholds }: BenchmarkGateConfig =
-    await benchmarkResponse.json();
+  const { gates }: BenchmarkGateConfig = await benchmarkResponse.json();
 
   const exceededSums = { mean: 0, p95: 0 };
   let benchmarkGateBody = '';
@@ -668,14 +668,8 @@ export async function runBenchmarkGate(
       exceededSums.mean + exceededSums.p95
     }ms</b><br>\n`;
 
-    if (
-      exceededSums.mean > pingThresholds.mean ||
-      exceededSums.p95 > pingThresholds.p95 ||
-      exceededSums.mean + exceededSums.p95 >
-        pingThresholds.mean + pingThresholds.p95
-    ) {
-      benchmarkGateBody = `cc: @HowardBraham<br>\n${benchmarkGateBody}`;
-    }
+    // TODO: Send exceeded benchmark gate results to Slack instead of pinging in PR comments
+    // https://github.com/MetaMask/MetaMask-planning/issues/6842
   }
 
   return benchmarkGateBody;
