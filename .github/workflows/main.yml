@@ -320,7 +320,7 @@ jobs:
         !cancelled() &&
         (github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main')) &&
         needs.run-tests.result == 'success' &&
-        !fromJSON(env.IS_FORK)
+        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
       }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
