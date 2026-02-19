@@ -1,9 +1,8 @@
-/**
- * Perps E2E test helpers
- *
- * This directory contains E2E test utilities and helpers for the Perps trading feature.
- *
- * @see {@link https://github.com/MetaMask/metamask-extension} for more info
- */
-
-export {};
+export const DEFAULT_PERPS_REMOTE_FEATURE_FLAGS = {
+  perpsEnabled: true,
+  perpsEnabledVersion: {
+    enabled: true,
+    minimumVersion: '0.0.0',
+  },
+  perpsHip3AllowlistMarkets: 'xyz:*',
+};
