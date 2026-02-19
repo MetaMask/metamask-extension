@@ -318,7 +318,7 @@ jobs:
     if: >-
       ${{
         !cancelled() &&
-        contains(fromJSON('["push", "pull_request"]'), github.event_name) &&
+        (github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main')) &&
         needs.run-tests.result == 'success' &&
         !fromJSON(env.IS_FORK)
       }}
