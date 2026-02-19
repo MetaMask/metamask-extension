@@ -31,11 +31,12 @@ jest.mock('loglevel', () => ({
 }));
 
 const mockTriggerPerpsDeposit = jest.fn().mockResolvedValue(true);
+let mockIsPerpsDepositLoading = false;
 
 jest.mock('../confirmations/hooks/perps/usePerpsDepositTrigger', () => ({
   usePerpsDepositTrigger: jest.fn(() => ({
     trigger: mockTriggerPerpsDeposit,
-    isLoading: false,
+    isLoading: mockIsPerpsDepositLoading,
   })),
 }));
 
@@ -89,6 +90,7 @@ describe('PerpsHomePage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsPerpsDepositLoading = false;
   });
 
   it('calls perps deposit trigger when Add funds is clicked', () => {
@@ -106,5 +108,21 @@ describe('PerpsHomePage', () => {
     fireEvent.click(addFundsButton);
 
     expect(mockTriggerPerpsDeposit).toHaveBeenCalledTimes(1);
+  });
+
+  it('disables Add funds while perps deposit creation is loading', () => {
+    mockIsPerpsDepositLoading = true;
+    const store = mockStore(createMockState(true));
+
+    const { getByTestId, queryByTestId } = renderWithProvider(
+      <PerpsHomePage />,
+      store,
+    );
+
+    const addFundsButton =
+      queryByTestId('perps-balance-actions-add-funds') ??
+      getByTestId('perps-balance-actions-add-funds-empty');
+
+    expect(addFundsButton).toBeDisabled();
   });
 });

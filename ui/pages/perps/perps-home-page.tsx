@@ -61,9 +61,10 @@ const PerpsHomePage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
-  const { trigger: triggerPerpsDeposit } = usePerpsDepositTrigger({
-    returnTo: PERPS_HOME_ROUTE,
-  });
+  const { trigger: triggerPerpsDeposit, isLoading: isPerpsDepositLoading } =
+    usePerpsDepositTrigger({
+      returnTo: PERPS_HOME_ROUTE,
+    });
 
   // Use stream hooks for real-time data
   const { positions: allPositions, isInitialLoading: positionsLoading } =
@@ -183,6 +184,7 @@ const PerpsHomePage: React.FC = () => {
         ) : (
           <PerpsMarketBalanceActions
             onAddFunds={triggerPerpsDeposit}
+            isAddFundsLoading={isPerpsDepositLoading}
             onWithdraw={() => {
               // TODO: Navigate to withdraw flow
             }}
