@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.19.0]
 
+### Uncategorized
+
+- Update `@metamask/subscription-controller` to `6.0.0`. Improve sentry error captures for subscriptions. (#39952)
+- Use `StorageService` in Snap Controller (#39804)
+
 ### Added
 
 - Icon update (#40008)
