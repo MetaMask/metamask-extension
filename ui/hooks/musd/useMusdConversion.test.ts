@@ -3,6 +3,7 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { ConvertibleToken } from '../../pages/musd/types';
 import { useMusdConversion } from './useMusdConversion';
+import { MUSD_CONVERSION_EDUCATION_ROUTE } from 'ui/pages/musd/constants/routes';
 
 const mockNavigate = jest.fn();
 const mockDispatch = jest.fn();
@@ -80,10 +81,8 @@ const { getSelectedInternalAccount } = jest.requireMock('../../selectors');
 const { getUnapprovedTransactions } = jest.requireMock(
   '../../selectors/transactions',
 );
-const {
-  selectMusdConversionEducationSeen,
-  selectIsMusdConversionFlowEnabled,
-} = jest.requireMock('../../selectors/musd');
+const { selectMusdConversionEducationSeen, selectIsMusdConversionFlowEnabled } =
+  jest.requireMock('../../selectors/musd');
 
 const MOCK_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 const MOCK_TX_ID = 'tx-abc-123';
@@ -200,7 +199,9 @@ describe('useMusdConversion', () => {
         await result.current.startConversionFlow();
       });
 
-      expect(mockNavigate).toHaveBeenCalledWith('/musd/education');
+      expect(mockNavigate).toHaveBeenCalledWith(
+        MUSD_CONVERSION_EDUCATION_ROUTE,
+      );
       expect(mockAddTransaction).not.toHaveBeenCalled();
     });
 

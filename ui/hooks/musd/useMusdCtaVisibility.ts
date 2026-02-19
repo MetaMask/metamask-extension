@@ -34,7 +34,7 @@ import { useMusdConversionTokens } from './useMusdConversionTokens';
 /**
  * Variant for the Buy/Get mUSD CTA
  */
-export enum BUY_GET_MUSD_CTA_VARIANT {
+export enum BuyGetMusdCtaVariant {
   BUY = 'buy',
   GET = 'get',
 }
@@ -55,7 +55,7 @@ export type BuyGetMusdCtaState =
       showNetworkIcon: boolean;
       selectedChainId: Hex | null;
       isEmptyWallet: boolean;
-      variant: BUY_GET_MUSD_CTA_VARIANT;
+      variant: BuyGetMusdCtaVariant;
     };
 
 /**
@@ -251,8 +251,7 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
 
   // Get conversion tokens filtered by allowlist/blocklist AND minimum balance
   // This is the source of truth for which tokens are eligible for conversion
-  const { isConversionToken, tokens: conversionTokens } =
-    useMusdConversionTokens();
+  const { tokens: conversionTokens } = useMusdConversionTokens();
 
   /**
    * Get tokens that are both:
@@ -364,7 +363,7 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
           showNetworkIcon,
           selectedChainId,
           isEmptyWallet,
-          variant: BUY_GET_MUSD_CTA_VARIANT.GET,
+          variant: BuyGetMusdCtaVariant.GET,
         };
       }
 
@@ -384,7 +383,7 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
             showNetworkIcon,
             selectedChainId,
             isEmptyWallet: true,
-            variant: BUY_GET_MUSD_CTA_VARIANT.BUY,
+            variant: BuyGetMusdCtaVariant.BUY,
           };
         }
       }

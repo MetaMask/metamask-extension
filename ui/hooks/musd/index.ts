@@ -19,7 +19,7 @@ export {
   useMusdCtaVisibility,
   isTokenInWildcardList,
   checkTokenAllowed,
-  BUY_GET_MUSD_CTA_VARIANT,
+  BuyGetMusdCtaVariant,
   type UseMusdCtaVisibilityResult,
   type BuyGetMusdCtaState,
   type TokenForCta,

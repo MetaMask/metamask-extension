@@ -20,7 +20,6 @@ import {
 import { getSelectedAccount } from '../../selectors';
 import { getIsMultichainAccountsState2Enabled } from '../../selectors/multichain-accounts/feature-flags';
 import {
-  MUSD_TOKEN_ADDRESS,
   isMusdToken,
   isMusdSupportedChain,
 } from '../../components/app/musd/constants';
@@ -105,22 +104,20 @@ export function useMusdBalance(): UseMusdBalanceResult {
             }
           }
         }
-      } else {
+      } else if (evmBalances && Array.isArray(evmBalances)) {
         // Use legacy EVM balances structure
-        if (evmBalances && Array.isArray(evmBalances)) {
-          for (const token of evmBalances) {
-            if (
-              token.address &&
-              isMusdToken(token.address) &&
-              isMusdSupportedChain(token.chainId as Hex)
-            ) {
-              const balance = token.balance || '0';
-              if (balance !== '0') {
-                hasBalance = true;
-                balancesByChain[token.chainId as Hex] = balance;
-                // Add to total using BigNumber for decimal precision
-                total = new BigNumber(total).plus(balance).toString();
-              }
+        for (const token of evmBalances) {
+          if (
+            token.address &&
+            isMusdToken(token.address) &&
+            isMusdSupportedChain(token.chainId as Hex)
+          ) {
+            const balance = token.balance || '0';
+            if (balance !== '0') {
+              hasBalance = true;
+              balancesByChain[token.chainId as Hex] = balance;
+              // Add to total using BigNumber for decimal precision
+              total = new BigNumber(total).plus(balance).toString();
             }
           }
         }

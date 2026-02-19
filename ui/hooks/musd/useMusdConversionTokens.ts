@@ -146,17 +146,29 @@ export function useMusdConversionTokens(): UseMusdConversionTokensResult {
   // Get all account tokens
   const allTokens = useMemo((): TokenWithFiatAmount[] => {
     if (isMultichainAccountsState2Enabled) {
-      // Flatten account group assets into array
-      return Object.entries(accountGroupAssets).flatMap(
+      // Flatten account group assets; only include assets with address (EVM tokens)
+      // so the result satisfies TokenWithFiatAmount (BaseToken requires address)
+      const flattened = Object.entries(accountGroupAssets).flatMap(
         ([chainId, assets]) =>
-          assets.map((asset) => ({
-            ...asset,
-            secondary: 0,
-            title: asset.name ?? asset.symbol,
-            chainId: chainId as Hex,
-            tokenFiatAmount: asset.fiat?.balance ?? 0,
-          })) ?? [],
+          (assets ?? [])
+            .filter(
+              (a) =>
+                'address' in a &&
+                typeof (a as { address: unknown }).address === 'string',
+            )
+            .map((a) => {
+              const asset = a as typeof a & { address: string };
+              return {
+                ...asset,
+                address: asset.address as Hex,
+                secondary: 0,
+                title: asset.name ?? asset.symbol ?? '',
+                chainId: chainId as Hex,
+                tokenFiatAmount: asset.fiat?.balance ?? 0,
+              };
+            }),
       );
+      return flattened as TokenWithFiatAmount[];
     }
     // Use EVM balances for legacy mode
     return evmBalances ?? [];

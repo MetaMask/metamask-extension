@@ -6,10 +6,16 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import React from 'react';
 import type { Hex } from '@metamask/utils';
+import type { TokenWithFiatAmount } from '../../components/app/assets/types';
+import type { Asset } from '../../pages/confirmations/types/send';
 import {
   useMusdCtaVisibility,
-  BUY_GET_MUSD_CTA_VARIANT,
+  BuyGetMusdCtaVariant,
 } from './useMusdCtaVisibility';
+import { useMusdGeoBlocking } from './useMusdGeoBlocking';
+import type { UseMusdGeoBlockingResult } from './useMusdGeoBlocking';
+import { useMusdConversionTokens } from './useMusdConversionTokens';
+import type { ConversionToken } from './useMusdConversionTokens';
 
 // Mock the geo-blocking hook
 jest.mock('./useMusdGeoBlocking', () => ({
@@ -39,7 +45,65 @@ jest.mock('./useMusdConversionTokens', () => ({
   })),
 }));
 
-const createMockStore = (overrides: Record<string, any> = {}) => {
+/** Partial metamask slice used by createMockStore overrides */
+type MockMetamaskOverrides = {
+  remoteFeatureFlags?: {
+    earnMusdConversionFlowEnabled?: boolean;
+    earnMusdCtaEnabled?: boolean;
+    earnMusdConversionTokenListItemCtaEnabled?: boolean;
+    earnMusdConversionAssetOverviewCtaEnabled?: boolean;
+    earnMusdConversionCtaTokens?: Record<string, string[]>;
+  };
+  selectedNetworkClientId?: string;
+  networkConfigurationsByChainId?: Record<
+    string,
+    { chainId: string; name: string }
+  >;
+  internalAccounts?: {
+    selectedAccount?: string;
+    accounts?: Record<string, { id: string; address: string }>;
+  };
+  balances?: Record<string, unknown>;
+  musdConversionEducationSeen?: boolean;
+  musdConversionDismissedCtaKeys?: string[];
+};
+
+type CreateMockStoreOverrides = {
+  metamask?: MockMetamaskOverrides;
+};
+
+const createGeoBlockingMock = (
+  overrides: Partial<
+    Pick<UseMusdGeoBlockingResult, 'isBlocked' | 'userCountry'>
+  >,
+): UseMusdGeoBlockingResult => ({
+  isBlocked: false,
+  userCountry: 'US',
+  isLoading: false,
+  error: null,
+  blockedRegions: [],
+  blockedMessage: null,
+  refreshGeolocation: jest.fn().mockResolvedValue(undefined),
+  ...overrides,
+});
+
+const createMockConversionToken = (
+  overrides: Partial<
+    Pick<TokenWithFiatAmount, 'address' | 'chainId' | 'symbol'>
+  > = {},
+): TokenWithFiatAmount =>
+  ({
+    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    chainId: '0x1',
+    symbol: 'USDC',
+    image: '',
+    decimals: 6,
+    secondary: null,
+    title: 'USDC',
+    ...overrides,
+  }) as TokenWithFiatAmount;
+
+const createMockStore = (overrides: CreateMockStoreOverrides = {}) => {
   const defaultState = {
     metamask: {
       remoteFeatureFlags: {
@@ -117,12 +181,11 @@ describe('useMusdCtaVisibility', () => {
     });
 
     it('returns shouldShowCta: false when user is geo-blocked', () => {
-      const { useMusdGeoBlocking } = require('./useMusdGeoBlocking');
-      useMusdGeoBlocking.mockReturnValue({
-        isBlocked: true,
-        userCountry: 'GB',
-        isLoading: false,
-      });
+      jest
+        .mocked(useMusdGeoBlocking)
+        .mockReturnValue(
+          createGeoBlockingMock({ isBlocked: true, userCountry: 'GB' }),
+        );
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
@@ -134,12 +197,11 @@ describe('useMusdCtaVisibility', () => {
     });
 
     it('returns GET variant when user has convertible tokens', () => {
-      const { useMusdGeoBlocking } = require('./useMusdGeoBlocking');
-      useMusdGeoBlocking.mockReturnValue({
-        isBlocked: false,
-        userCountry: 'US',
-        isLoading: false,
-      });
+      jest
+        .mocked(useMusdGeoBlocking)
+        .mockReturnValue(
+          createGeoBlockingMock({ isBlocked: false, userCountry: 'US' }),
+        );
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
@@ -153,16 +215,15 @@ describe('useMusdCtaVisibility', () => {
       });
 
       expect(ctaState.shouldShowCta).toBe(true);
-      expect(ctaState.variant).toBe(BUY_GET_MUSD_CTA_VARIANT.GET);
+      expect(ctaState.variant).toBe(BuyGetMusdCtaVariant.GET);
     });
 
     it('returns BUY variant when wallet is empty', () => {
-      const { useMusdGeoBlocking } = require('./useMusdGeoBlocking');
-      useMusdGeoBlocking.mockReturnValue({
-        isBlocked: false,
-        userCountry: 'US',
-        isLoading: false,
-      });
+      jest
+        .mocked(useMusdGeoBlocking)
+        .mockReturnValue(
+          createGeoBlockingMock({ isBlocked: false, userCountry: 'US' }),
+        );
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
@@ -177,7 +238,7 @@ describe('useMusdCtaVisibility', () => {
       });
 
       expect(ctaState.shouldShowCta).toBe(true);
-      expect(ctaState.variant).toBe(BUY_GET_MUSD_CTA_VARIANT.BUY);
+      expect(ctaState.variant).toBe(BuyGetMusdCtaVariant.BUY);
     });
 
     it('returns shouldShowCta: false when user already has mUSD balance', () => {
@@ -221,12 +282,11 @@ describe('useMusdCtaVisibility', () => {
     });
 
     it('returns false when user is geo-blocked', () => {
-      const { useMusdGeoBlocking } = require('./useMusdGeoBlocking');
-      useMusdGeoBlocking.mockReturnValue({
-        isBlocked: true,
-        userCountry: 'GB',
-        isLoading: false,
-      });
+      jest
+        .mocked(useMusdGeoBlocking)
+        .mockReturnValue(
+          createGeoBlockingMock({ isBlocked: true, userCountry: 'GB' }),
+        );
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
@@ -243,23 +303,21 @@ describe('useMusdCtaVisibility', () => {
     });
 
     it('returns true for eligible tokens on supported chains when user has mUSD balance', () => {
-      const { useMusdGeoBlocking } = require('./useMusdGeoBlocking');
-      useMusdGeoBlocking.mockReturnValue({
-        isBlocked: false,
-        userCountry: 'US',
-        isLoading: false,
-      });
+      jest
+        .mocked(useMusdGeoBlocking)
+        .mockReturnValue(
+          createGeoBlockingMock({ isBlocked: false, userCountry: 'US' }),
+        );
 
-      const { useMusdConversionTokens } = require('./useMusdConversionTokens');
-      useMusdConversionTokens.mockReturnValue({
-        tokens: [
-          {
-            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            chainId: '0x1',
-            symbol: 'USDC',
-          },
-        ],
+      jest.mocked(useMusdConversionTokens).mockReturnValue({
+        tokens: [createMockConversionToken()],
         isConversionToken: jest.fn(() => true),
+        isMusdSupportedOnChain: jest.fn(() => true),
+        hasConvertibleTokensByChainId: jest.fn(() => false),
+        filterAllowedTokens: jest.fn(
+          <TToken extends ConversionToken>(tokens: TToken[]) => tokens,
+        ),
+        filterTokens: jest.fn((assets: Asset[]) => assets),
       });
 
       const store = createMockStore();
@@ -280,12 +338,11 @@ describe('useMusdCtaVisibility', () => {
     });
 
     it('returns false for non-convertible tokens', () => {
-      const { useMusdGeoBlocking } = require('./useMusdGeoBlocking');
-      useMusdGeoBlocking.mockReturnValue({
-        isBlocked: false,
-        userCountry: 'US',
-        isLoading: false,
-      });
+      jest
+        .mocked(useMusdGeoBlocking)
+        .mockReturnValue(
+          createGeoBlockingMock({ isBlocked: false, userCountry: 'US' }),
+        );
 
       const store = createMockStore();
       const { result } = renderHook(() => useMusdCtaVisibility(), {
@@ -352,23 +409,21 @@ describe('useMusdCtaVisibility', () => {
     });
 
     it('returns true for eligible tokens that have not been dismissed', () => {
-      const { useMusdGeoBlocking } = require('./useMusdGeoBlocking');
-      useMusdGeoBlocking.mockReturnValue({
-        isBlocked: false,
-        userCountry: 'US',
-        isLoading: false,
-      });
+      jest
+        .mocked(useMusdGeoBlocking)
+        .mockReturnValue(
+          createGeoBlockingMock({ isBlocked: false, userCountry: 'US' }),
+        );
 
-      const { useMusdConversionTokens } = require('./useMusdConversionTokens');
-      useMusdConversionTokens.mockReturnValue({
-        tokens: [
-          {
-            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            chainId: '0x1',
-            symbol: 'USDC',
-          },
-        ],
+      jest.mocked(useMusdConversionTokens).mockReturnValue({
+        tokens: [createMockConversionToken()],
         isConversionToken: jest.fn(() => true),
+        isMusdSupportedOnChain: jest.fn(() => true),
+        hasConvertibleTokensByChainId: jest.fn(() => false),
+        filterAllowedTokens: jest.fn(
+          <TToken extends ConversionToken>(tokens: TToken[]) => tokens,
+        ),
+        filterTokens: jest.fn((assets: Asset[]) => assets),
       });
 
       const store = createMockStore();

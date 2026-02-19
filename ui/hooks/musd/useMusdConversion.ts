@@ -33,10 +33,8 @@ import {
   buildMusdConversionTx,
   isMatchingMusdConversion,
 } from '../../components/app/musd/utils';
-import {
-  CONFIRM_TRANSACTION_ROUTE,
-  MUSD_CONVERSION_EDUCATION_ROUTE,
-} from '../../helpers/constants/routes';
+import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
+import { MUSD_CONVERSION_EDUCATION_ROUTE } from '../../pages/musd/constants/routes';
 import { ConfirmationLoader } from '../../pages/confirmations/hooks/useConfirmationNavigation';
 import { MUSD_CONVERSION_DEFAULT_CHAIN_ID } from '../../components/app/musd/constants';
 import { updateTransactionPaymentToken } from '../../store/controller-actions/transaction-pay-controller';

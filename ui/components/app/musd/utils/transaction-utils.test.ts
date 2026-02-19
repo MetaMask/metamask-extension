@@ -8,11 +8,12 @@
 import {
   TransactionType,
   TransactionMeta,
+  TransactionStatus,
 } from '@metamask/transaction-controller';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
 
-import { MUSD_TOKEN_ADDRESS, MUSD_TOKEN_ADDRESS_BY_CHAIN } from '../constants';
+import { MUSD_TOKEN_ADDRESS } from '../constants';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import {
   getMusdTokenAddress,
@@ -34,6 +35,23 @@ const MOCK_ADDRESS = '0x1234567890123456789012345678901234567890' as Hex;
 const MOCK_RECIPIENT = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd' as Hex;
 const MOCK_NETWORK_CLIENT_ID = 'mainnet';
 const MOCK_TX_ID = 'tx-123';
+
+/** Minimal TransactionMeta shape required by type; use with spread in mocks. */
+const MOCK_TX_META_BASE: Pick<
+  TransactionMeta,
+  'networkClientId' | 'status' | 'time' | 'chainId' | 'txParams'
+> = {
+  networkClientId: MOCK_NETWORK_CLIENT_ID,
+  status: TransactionStatus.approved,
+  time: 1700000000000,
+  chainId: CHAIN_IDS.MAINNET,
+  txParams: {
+    from: MOCK_ADDRESS,
+    to: MUSD_TOKEN_ADDRESS,
+    value: '0x0',
+    data: '0x',
+  },
+};
 
 // ============================================================================
 // getMusdTokenAddress Tests
@@ -74,7 +92,7 @@ describe('generateERC20TransferData', () => {
     expect(data.startsWith('0xa9059cbb')).toBe(true);
 
     // Should be a valid hex string
-    expect(data).toMatch(/^0x[0-9a-f]+$/i);
+    expect(data).toMatch(/^0x[0-9a-f]+$/iu);
   });
 
   it('should generate valid transfer data without 0x prefix', () => {
@@ -159,7 +177,8 @@ describe('extractMusdConversionTransferDetails', () => {
   const mockTransferData = generateERC20TransferData(MOCK_RECIPIENT, '0x64');
 
   it('should extract recipient and amount from valid transaction', () => {
-    const mockTx = {
+    const mockTx: TransactionMeta = {
+      ...MOCK_TX_META_BASE,
       id: MOCK_TX_ID,
       type: TransactionType.musdConversion,
       chainId: CHAIN_IDS.MAINNET,
@@ -169,7 +188,7 @@ describe('extractMusdConversionTransferDetails', () => {
         data: mockTransferData,
         value: '0x0',
       },
-    } as TransactionMeta;
+    };
 
     const details = extractMusdConversionTransferDetails(mockTx);
 
@@ -180,7 +199,8 @@ describe('extractMusdConversionTransferDetails', () => {
   });
 
   it('should throw if transaction data is missing', () => {
-    const mockTx = {
+    const mockTx: TransactionMeta = {
+      ...MOCK_TX_META_BASE,
       id: MOCK_TX_ID,
       type: TransactionType.musdConversion,
       txParams: {
@@ -188,7 +208,7 @@ describe('extractMusdConversionTransferDetails', () => {
         to: MUSD_TOKEN_ADDRESS,
         value: '0x0',
       },
-    } as TransactionMeta;
+    };
 
     expect(() => extractMusdConversionTransferDetails(mockTx)).toThrow(
       'Missing transaction data',
@@ -196,7 +216,8 @@ describe('extractMusdConversionTransferDetails', () => {
   });
 
   it('should fallback to from address if recipient not in data', () => {
-    const mockTx = {
+    const mockTx: TransactionMeta = {
+      ...MOCK_TX_META_BASE,
       id: MOCK_TX_ID,
       type: TransactionType.musdConversion,
       txParams: {
@@ -205,7 +226,7 @@ describe('extractMusdConversionTransferDetails', () => {
         data: '0x',
         value: '0x0',
       },
-    } as TransactionMeta;
+    };
 
     const details = extractMusdConversionTransferDetails(mockTx);
 
@@ -220,27 +241,30 @@ describe('extractMusdConversionTransferDetails', () => {
 
 describe('isMusdConversionTransaction', () => {
   it('should return true for mUSD conversion transactions', () => {
-    const mockTx = {
+    const mockTx: TransactionMeta = {
+      ...MOCK_TX_META_BASE,
       id: MOCK_TX_ID,
       type: TransactionType.musdConversion,
-    } as TransactionMeta;
+    };
 
     expect(isMusdConversionTransaction(mockTx)).toBe(true);
   });
 
   it('should return false for other transaction types', () => {
-    const mockTx = {
+    const mockTx: TransactionMeta = {
+      ...MOCK_TX_META_BASE,
       id: MOCK_TX_ID,
       type: TransactionType.tokenMethodTransfer,
-    } as TransactionMeta;
+    };
 
     expect(isMusdConversionTransaction(mockTx)).toBe(false);
   });
 
   it('should return false for undefined type', () => {
-    const mockTx = {
+    const mockTx: TransactionMeta = {
+      ...MOCK_TX_META_BASE,
       id: MOCK_TX_ID,
-    } as TransactionMeta;
+    };
 
     expect(isMusdConversionTransaction(mockTx)).toBe(false);
   });
@@ -251,14 +275,16 @@ describe('isMusdConversionTransaction', () => {
 // ============================================================================
 
 describe('isMatchingMusdConversion', () => {
-  const mockTx = {
+  const mockTx: TransactionMeta = {
+    ...MOCK_TX_META_BASE,
     id: MOCK_TX_ID,
     type: TransactionType.musdConversion,
     chainId: CHAIN_IDS.MAINNET,
     txParams: {
+      ...MOCK_TX_META_BASE.txParams,
       from: MOCK_ADDRESS,
     },
-  } as TransactionMeta;
+  };
 
   it('should return true for matching transaction', () => {
     expect(
@@ -279,10 +305,10 @@ describe('isMatchingMusdConversion', () => {
   });
 
   it('should return false for non-mUSD transactions', () => {
-    const nonMusdTx = {
+    const nonMusdTx: TransactionMeta = {
       ...mockTx,
       type: TransactionType.tokenMethodTransfer,
-    } as TransactionMeta;
+    };
 
     expect(
       isMatchingMusdConversion(nonMusdTx, MOCK_ADDRESS, CHAIN_IDS.MAINNET),
@@ -367,17 +393,19 @@ describe('createMusdConversionTransaction', () => {
 
 describe('replaceMusdConversionTransactionForPayToken', () => {
   const mockTransferData = generateERC20TransferData(MOCK_RECIPIENT, '0x64');
-  const mockTx = {
+  const mockTx: TransactionMeta = {
+    ...MOCK_TX_META_BASE,
     id: MOCK_TX_ID,
     type: TransactionType.musdConversion,
     chainId: CHAIN_IDS.MAINNET,
     txParams: {
+      ...MOCK_TX_META_BASE.txParams,
       from: MOCK_ADDRESS,
       to: MUSD_TOKEN_ADDRESS,
       data: mockTransferData,
       value: '0x0',
     },
-  } as TransactionMeta;
+  };
 
   const mockCallbacks: TransactionControllerCallbacks = {
     addTransaction: jest.fn().mockResolvedValue({ id: 'new-tx-id' }),
@@ -432,7 +460,7 @@ describe('replaceMusdConversionTransactionForPayToken', () => {
   it('should throw if transaction meta is missing', async () => {
     await expect(
       replaceMusdConversionTransactionForPayToken(
-        { txParams: {} } as TransactionMeta,
+        { ...MOCK_TX_META_BASE, txParams: {} } as TransactionMeta,
         { address: '0xusdc' as Hex, chainId: CHAIN_IDS.LINEA_MAINNET },
         mockCallbacks,
       ),
