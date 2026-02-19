@@ -330,6 +330,7 @@ export const getMergedConnectionsListWithGatorPermissions = createSelector(
   ],
   (sitesList, permissionsForGroup, state): Record<string, ConnectionInfo> => {
     const permissionCountByOrigin = new Map<string, number>();
+
     for (const { siteOrigin } of permissionsForGroup) {
       if (siteOrigin) {
         permissionCountByOrigin.set(

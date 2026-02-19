@@ -1,4 +1,5 @@
 import React from 'react';
+import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
 import { Hex } from '@metamask/utils';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -7,7 +8,9 @@ import { GatorPermissionsPage } from './gator-permissions-page';
 
 const MOCK_CHAIN_ID = '0x1' as Hex;
 
-mockState.metamask.grantedPermissions = [
+(
+  mockState.metamask as { grantedPermissions: PermissionInfoWithMetadata[] }
+).grantedPermissions = [
   {
     permissionResponse: {
       chainId: MOCK_CHAIN_ID,
@@ -28,7 +31,7 @@ mockState.metamask.grantedPermissions = [
     },
     siteOrigin: 'http://localhost:8000',
   },
-] as any;
+] as PermissionInfoWithMetadata[];
 
 mockState.metamask.isFetchingGatorPermissions = false;
 

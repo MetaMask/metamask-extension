@@ -5,9 +5,7 @@ import { Content, Header, Page } from '../page';
 import {
   ButtonIcon,
   ButtonIconSize,
-  Icon,
   IconName,
-  IconSize,
   Text,
   Box,
 } from '../../../component-library';
@@ -33,7 +31,6 @@ import {
   PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { useGatorPermissions } from '../../../../hooks/gator-permissions/useGatorPermissions';
 import {
   type AppState,
   TOKEN_TRANSFER_GROUP,
@@ -65,10 +62,6 @@ export const GatorPermissionsPage = () => {
     getTotalUniqueSitesCount(state, TOKEN_TRANSFER_GROUP),
   );
   const totalPermissions = totalGatorPermissions + totalSitesConnections;
-
-  // Hook uses cache-first strategy: returns cached data immediately if available,
-  // then refreshes in background. Loading is only true on initial load with no cache.
-  const { loading: gatorPermissionsLoading } = useGatorPermissions();
 
   const handlePermissionGroupNameClick = async (
     permissionGroupName: string,
@@ -146,27 +139,6 @@ export const GatorPermissionsPage = () => {
   };
 
   const renderPageContent = () => {
-    if (gatorPermissionsLoading) {
-      return (
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
-          height={BlockSize.Full}
-          gap={2}
-          padding={4}
-        >
-          <Icon
-            name={IconName.Loading}
-            color={IconColor.iconMuted}
-            size={IconSize.Lg}
-            style={{ animation: 'spin 1.2s linear infinite' }}
-          />
-        </Box>
-      );
-    }
-
     if (totalPermissions > 0) {
       return renderPermissionsList();
     }

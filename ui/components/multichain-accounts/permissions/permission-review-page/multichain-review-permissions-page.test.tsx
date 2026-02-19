@@ -56,8 +56,8 @@ jest.mock('../../../../store/actions', () => ({
 jest.mock('../../../../../shared/modules/environment');
 
 jest.mock('../../../../selectors/gator-permissions/gator-permissions', () => ({
-  getGatorPermissionSummaryByOrigin: jest.fn(),
-  getGatorPermissionsByOrigin: jest.fn(),
+  getGatorPermissionSummaryByOrigin: jest.fn(() => ({ count: 0, chains: [] })),
+  getGatorPermissionsByOrigin: jest.fn(() => []),
 }));
 
 jest.mock('../../../../../shared/lib/multichain/scope-utils', () => ({
