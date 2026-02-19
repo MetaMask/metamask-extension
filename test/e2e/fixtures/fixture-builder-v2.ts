@@ -47,13 +47,6 @@ class FixtureBuilderV2 {
                           GENERIC  CONTROLLER METHODS
      ==================================================================
   */
-  withPermissionController(
-    data: Partial<PermissionControllerState<PermissionConstraint>>,
-  ): this {
-    merge(this.fixture.data.PermissionController, data);
-    return this;
-  }
-
   withAddressBookController(data: Partial<AddressBookControllerState>): this {
     if (!this.fixture.data.AddressBookController) {
       (this.fixture.data as Record<string, unknown>).AddressBookController = {
@@ -69,25 +62,19 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withPermissionController(
+    data: Partial<PermissionControllerState<PermissionConstraint>>,
+  ): this {
+    merge(this.fixture.data.PermissionController, data);
+    return this;
+  }
+
   withPreferencesController(
     data: Omit<Partial<PreferencesControllerState>, 'preferences'> & {
       preferences?: Partial<Preferences>;
     },
   ): this {
     merge(this.fixture.data.PreferencesController, data);
-    return this;
-  }
-
-  /**
-   * Sets which networks are enabled (replaces enabledNetworkMap in NetworkEnablementController).
-   *
-   * @param data - Map of chainId (e.g. eip155:0x1) or similar to enabled state.
-   */
-  withEnabledNetworks(
-    data: NetworkEnablementControllerState['enabledNetworkMap'],
-  ): this {
-    this.fixture.data.NetworkEnablementController.enabledNetworkMap =
-      data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
     return this;
   }
 
@@ -99,6 +86,14 @@ class FixtureBuilderV2 {
     return this.withPreferencesController({
       useCurrencyRateCheck: false,
     });
+  }
+
+  withEnabledNetworks(
+    data: NetworkEnablementControllerState['enabledNetworkMap'],
+  ): this {
+    this.fixture.data.NetworkEnablementController.enabledNetworkMap =
+      data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
+    return this;
   }
 
   withPermissionControllerConnectedToTestDapp({
