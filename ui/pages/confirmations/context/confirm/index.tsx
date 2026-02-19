@@ -24,6 +24,16 @@ type ConfirmLocationState = {
   returnTo?: string;
 };
 
+const SAFE_RETURN_TO_ROUTE_REGEX = /^\/perps(?:\/|$)/u;
+
+function getSafeReturnToRoute(returnTo?: string): string | undefined {
+  if (typeof returnTo !== 'string') {
+    return undefined;
+  }
+
+  return SAFE_RETURN_TO_ROUTE_REGEX.test(returnTo) ? returnTo : undefined;
+}
+
 export const ConfirmContext = createContext<ConfirmContextType | undefined>(
   undefined,
 );
@@ -48,7 +58,8 @@ export const ConfirmContextProvider: React.FC<{
     if (previousConfirmation && !currentConfirmation) {
       const locationState = location.state as ConfirmLocationState | null;
       const fallbackRoute = `${DEFAULT_ROUTE}?tab=activity`;
-      navigate(locationState?.returnTo ?? fallbackRoute, { replace: true });
+      const safeReturnToRoute = getSafeReturnToRoute(locationState?.returnTo);
+      navigate(safeReturnToRoute ?? fallbackRoute, { replace: true });
     }
   }, [previousConfirmation, currentConfirmation, navigate, location.state]);
 

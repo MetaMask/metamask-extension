@@ -81,4 +81,82 @@ describe('ConfirmContextProvider', () => {
       );
     });
   });
+
+  it('falls back to Activity when returnTo is outside allowed perps routes', async () => {
+    mockLocationState = { returnTo: '/settings' };
+
+    const { rerender } = render(
+      <ConfirmContextProvider>
+        <div />
+      </ConfirmContextProvider>,
+    );
+
+    mockCurrentConfirmation = undefined;
+    rerender(
+      <ConfirmContextProvider>
+        <div />
+      </ConfirmContextProvider>,
+    );
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `${DEFAULT_ROUTE}?tab=activity`,
+        {
+          replace: true,
+        },
+      );
+    });
+  });
+
+  it('falls back to Activity when returnTo is malformed', async () => {
+    mockLocationState = { returnTo: 'https://example.com' };
+
+    const { rerender } = render(
+      <ConfirmContextProvider>
+        <div />
+      </ConfirmContextProvider>,
+    );
+
+    mockCurrentConfirmation = undefined;
+    rerender(
+      <ConfirmContextProvider>
+        <div />
+      </ConfirmContextProvider>,
+    );
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `${DEFAULT_ROUTE}?tab=activity`,
+        {
+          replace: true,
+        },
+      );
+    });
+  });
+
+  it('falls back to Activity when returnTo is not a string', async () => {
+    mockLocationState = { returnTo: 1234 };
+
+    const { rerender } = render(
+      <ConfirmContextProvider>
+        <div />
+      </ConfirmContextProvider>,
+    );
+
+    mockCurrentConfirmation = undefined;
+    rerender(
+      <ConfirmContextProvider>
+        <div />
+      </ConfirmContextProvider>,
+    );
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `${DEFAULT_ROUTE}?tab=activity`,
+        {
+          replace: true,
+        },
+      );
+    });
+  });
 });
