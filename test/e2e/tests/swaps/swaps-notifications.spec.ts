@@ -1,3 +1,4 @@
+import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -5,11 +6,75 @@ import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import {
   getBridgeFixtures,
   getInsufficientFundsFixtures,
+  getQuoteNegativeCasesFixtures,
 } from '../bridge/bridge-test-utils';
-import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from '../bridge/constants';
+import {
+  BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+  DEFAULT_BRIDGE_FEATURE_FLAGS,
+} from '../bridge/constants';
 import { checkNotification } from './shared';
 
+const UNSTABLE_TOKEN_PRICE_TITLE = 'Unstable token price';
+const UNSTABLE_TOKEN_PRICE_DESCRIPTION =
+  'The price of this token in USD is highly volatile, indicating a high risk of losing significant value by interacting with it.';
+
+const getBridgeFixturesWithTokenAlertWarning = (title?: string) => {
+  const fixtures = getBridgeFixtures(
+    title,
+    BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+    false,
+  );
+
+  return {
+    ...fixtures,
+    testSpecificMock: async (mockServer: Mockttp) => {
+      const baseMocks = fixtures.testSpecificMock
+        ? await fixtures.testSpecificMock(mockServer)
+        : [];
+
+      return [
+        ...baseMocks,
+        await mockServer
+          .forPost('https://security-alerts.api.cx.metamask.io/token/scan')
+          .thenJson(200, {
+            features: [
+              {
+                // This maps to "Unstable token price" in i18n.
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                feature_id: 'UNSTABLE_TOKEN_PRICE',
+                type: 'Warning',
+                description: 'Unstable price warning',
+              },
+            ],
+          }),
+      ];
+    },
+  };
+};
+
 describe('Swaps - notifications', function () {
+  it('shows token risk warning banner for unstable token price', async function () {
+    await withFixtures(
+      getBridgeFixturesWithTokenAlertWarning(this.test?.fullTitle()),
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
+        const homePage = new HomePage(driver);
+        await homePage.startSwapFlow();
+
+        const bridgeQuotePage = new BridgeQuotePage(driver);
+        await bridgeQuotePage.enterBridgeQuote({
+          amount: '1',
+        });
+        await bridgeQuotePage.waitForQuote();
+
+        await driver.waitForSelector({ text: UNSTABLE_TOKEN_PRICE_TITLE });
+        await driver.waitForSelector({
+          text: UNSTABLE_TOKEN_PRICE_DESCRIPTION,
+        });
+      },
+    );
+  });
+
   it('shows insufficient funds state', async function () {
     await withFixtures(
       getInsufficientFundsFixtures({}, this.test?.fullTitle()),
@@ -28,6 +93,36 @@ describe('Swaps - notifications', function () {
         });
         await bridgeQuotePage.checkInsufficientFundsButtonIsDisplayed();
         await bridgeQuotePage.checkMoreETHneededIsDisplayed();
+      },
+    );
+  });
+
+  it('shows no trade route available notification', async function () {
+    await withFixtures(
+      {
+        ...getQuoteNegativeCasesFixtures(
+          {
+            statusCode: 500,
+            json: 'Internal server error',
+          },
+          DEFAULT_BRIDGE_FEATURE_FLAGS,
+          this.test?.fullTitle(),
+        ),
+      },
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
+        const homePage = new HomePage(driver);
+        await homePage.startSwapFlow();
+
+        const bridgeQuotePage = new BridgeQuotePage(driver);
+        await bridgeQuotePage.enterBridgeQuote({
+          amount: '1',
+          tokenFrom: 'ETH',
+          tokenTo: 'ETH',
+          fromChain: 'Ethereum',
+          toChain: 'Linea',
+        });
+        await bridgeQuotePage.checkNoTradeRouteMessageIsDisplayed();
       },
     );
   });
