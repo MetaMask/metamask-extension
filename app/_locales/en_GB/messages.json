@@ -5244,12 +5244,12 @@
     "message": "available",
     "description": "is the available balance amount"
   },
+  "perpsAvailableBalance": {
+    "message": "Available balance"
+  },
   "perpsAvailableToTrade": {
     "message": "Available to trade",
     "description": "Label for the available balance that can be used for trading"
-  },
-  "perpsAvailableBalance": {
-    "message": "Available balance"
   },
   "perpsBid": {
     "message": "Bid"
