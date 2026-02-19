@@ -550,8 +550,8 @@
     "gasEstimateType": "string",
     "gasFeeEstimates": {},
     "gasFeeEstimatesByChainId": {},
-    "gatorPermissionsMapSerialized": "string",
-    "gatorPermissionsProviderSnapId": "string",
+    "grantedPermissions": [],
+    "lastSyncedTimestamp": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": "boolean",
     "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
     "hasShownMultichainAccountsIntroModal": "boolean",
@@ -647,7 +647,6 @@
     "isFeatureAnnouncementsEnabled": "boolean",
     "isFetchingGatorPermissions": "boolean",
     "isFetchingMetamaskNotifications": "boolean",
-    "isGatorPermissionsEnabled": "boolean",
     "isInitialized": "boolean",
     "isIpfsGatewayEnabled": "boolean",
     "isMetamaskNotificationsFeatureSeen": "boolean",
@@ -840,7 +839,15 @@
         "success": "boolean"
       }
     ],
-    "permissionHistory": {},
+    "permissionHistory": {
+      "npm:@metamask/gator-permissions-snap": {
+        "eth_accounts": {
+          "accounts": {
+            "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": "number"
+          }
+        }
+      }
+    },
     "pinnedAccountList": [],
     "popupGasPollTokens": [],
     "preferences": {

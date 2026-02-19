@@ -67,6 +67,7 @@
       "MetaMask: Chain processing errors": 2,
       "Test errors: Fetch failures": 4,
       "Third-party: Bindings failed, using pure JS": 1,
+      "error: Error initializing gator permissions controller": 2,
       "error: This browser doesn't support cancelAnimationFrame.": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
@@ -77,6 +78,7 @@
       "MetaMask: Sentry initialization warnings": 1,
       "ObjectMultiplex: Malformed chunk warnings": 1,
       "Third-party: Bindings failed, using pure JS": 1,
+      "error: Error initializing gator permissions controller": 5,
       "error: Error: NetworkController state is invalid:": 1,
       "error: Error: invalid address (argument=\"address\", value=\"\",": 1,
       "error: Error: invalid address (argument=\"address\", value=\"0x\",": 2,
@@ -1316,9 +1318,6 @@
     "ui/hooks/gator-permissions/useGatorPermissionTokenInfo.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 10,
       "Reselect: Identity function warnings": 1
-    },
-    "ui/hooks/gator-permissions/useGatorPermissions.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 8
     },
     "ui/hooks/gator-permissions/useRevokeGatorPermissions.test.tsx": {
       "Reselect: Identity function warnings": 1,

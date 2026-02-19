@@ -316,8 +316,8 @@
       "nonRPCGasFeeApisDisabled": false
     },
     "GatorPermissionsController": {
-      "gatorPermissionsMapSerialized": "{\"erc20-token-revocation\":{},\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
-      "isGatorPermissionsEnabled": true
+      "grantedPermissions": [],
+      "lastSyncedTimestamp": -1
     },
     "KeyringController": {
       "vault": "{\"data\":\"NExj9MOjXXpo3+Vu6YkTqT8gTqlu8OAAUKJQpdWeYXEwDSSRf0itJhwDxECqgm3rE+DEstjsEzsCTH3g1gKp6uzDU4XcE07+XzekuLatveN3R8d95RFh4ECoLDdfbcVfMyOjr3EUrM0dDq1eBJjWQZxbbeCUHh3VnYap0g9uHiIdCmU7PKDL4h8PPmsLS3c2LQ2Boa6q/johhNBxCmiySWgkTv1Pi0iTxhhCO+qwkJxeLf1u8b5TmcpgKGOg+n0phCf3/zrQ7brpEeCA8R3zoFmqMM7xr5xZke3YY4ef6JKoZEU+3lkMCs9IHnvWAUnDaSJmAIzTrfhOe8AmDzXwbooXd24NBXZUyG1G/gZWDlW1Ku4it4GqYj7lF0GH3vXVPHwK+FR3LdjqOtrcPfyJCPdTKyEVzMSttnTyjpIJiWAwY21AQrvKBHMfCfZd2/LzfN0TsxBKDAi/rPsA/On+Ng+ZDcmMlstvALF3LKSWv15OqH7e/xn/IffURGeI2OU73jTjNCbGzW2hqV2VK+6UaQSv93ZH653fmT+1komK3Xitt15+yMYbbSRVubqs5gSwvKs0tiKYn381mmRLHy1dCmj0fjTlM4UDjSCTS9Ce3ioJlKRRw66/FQRxYYA6mQF0vzrbIvVh2x2PHrq8ZgJ4PyWaYdaMUA0bZyzol2hFBNFXcOmfQEzdYul1vGpEHRhwbW2oor2glEh3CAgn9kG3JUHsnHIhyjc7J+jpFd0UBgwS2d8UCABSU0g/YSTwcHHOL+iTRQnr4ytvLBTeJG6lzH2fyhnrBu2/vPWLCQ8XD72fVmhrBz/XGfQtk8trspaTeCM5B8zegUS7sl1IKIw7H5Z7E3eQXH/AwiqmkSt5h9lAo4q5IKJF7uB4q6CFwqfJXoT4lCoqj1uO7bPUwpO7bWUnbbPlUOlU/kpMxHjU1UDMmvN9lG2Qd0KQHKGeFMigjL0t5JYj56r1sEj6bWdjWMrq62edaLGrhzQyXp2UiISwCELlIqy3cz0tollOTPOupkTFK5sHyTKH5PbPJtFYOiAMir4JY39LXYgcorim4hLQwG5ZB1Ew8n9sDA2KfcfI0Bs+tiZOoSGCcycrpfO5J6xP2TsXpAHr8EzRpVCE7OoltaLgP1IZC1zmdfkRXUww9+Gw0Pgwy3cxYljwv5Kg2FCfkb0pKARUck1eNC/4dFIAw0UIC9VzYPNt/t2vJoe+lC4I8UpctCyjYTTq0jfrLVoqFUcHnKAH3ynDmMPhsk+66He966O4OfqhKXJYm3e6weIGZTCGfe8BKmhPNiL5VJ52tsMIwKbXgN+ll8Oi9/a2fzs3wtESKogCJiR7M/nevekDnq/dEL6U6OaArkCK9NiLLevHt5FfDr/Qt3J6lfwdAkzjAhk5oTTWqGhR/4KK4+e0lqgaBPMGVcFs9BAyRlnIPeH24CvvZJ6KAsjMt/FcfnwHqO2mz8N5byAg5bcvc0Zj7w==\",\"iv\":\"dljVsphzXsTe/YGaUn3hGg==\",\"keyMetadata\":{\"algorithm\":\"PBKDF2\",\"params\":{\"iterations\":600000}},\"salt\":\"/zucSs8SpE/7JyE2eklkZ8HvklEWtSGmhBo67Vx5Jfo=\"}"
@@ -855,7 +855,15 @@
     },
     "PermissionController": {},
     "PermissionLogController": {
-      "permissionHistory": {}
+      "permissionHistory": {
+        "npm:@metamask/gator-permissions-snap": {
+          "eth_accounts": {
+            "accounts": {
+              "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": 1771538673546
+            }
+          }
+        }
+      }
     },
     "PhishingController": {
       "c2DomainBlocklistLastFetched": 1770282505,
