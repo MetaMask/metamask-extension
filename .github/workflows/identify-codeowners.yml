@@ -15,7 +15,7 @@ concurrency:
 jobs:
   identify-codeowners:
     # Avoid running on forks since we need to write a PR comment
-    if: ${{ !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
+    if: ${{ !(github.event.pull_request.head.repo.fork || github.event.repository.fork) && github.event.pull_request.user.login != 'metamaskbot' && github.event.pull_request.user.login != 'runway-github[bot]' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: pr-comment
