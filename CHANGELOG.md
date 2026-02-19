@@ -7,6 +7,133 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.18.1]
+
+### Added
+
+- Nothing truly new, but a synthesis of 13.6.4, plus the unreleased 13.17.0 and 13.18.0
+
+## [13.18.0]
+
+### Added
+
+- Add sanitized origin to sentinel metadata (#39765)
+- Fixed Ledger connectivity issues by replacing the iframe bridge with direct WebHID transport (#39537)
+- Shield notification in app navigation (#39788)
+- Add disconnect all button to dapp connections main screen (#39791)
+- Added a static assets polling controller (#39448)
+- Added a warning message when gas sponsorship is unavailable due to reserve balance requirements (#39284)
+- Implements transaction history UI for perps (#39445)
+- Added static perps order entry behind ff (#39659)
+- Added points estimate history tracking to state logs for Customer Support diagnostics (#39641)
+- Reset shield default payment method to most suitable one (crypto) if available after payment flow cancel (#39695)
+- Cache bridge getToken responses (#39541)
+- Added deeplinking to the NFT tab (#39669)
+- Added tempo testnet native and network token IDs and images (#39491)
+- Added Keycard Shell to the list of QR-based hardware wallets (#36911)
+- Added network picker deeplink (#39676)
+
+### Changed
+
+- Check MM feeData amount to determine swap MM fee disclaimer visibility (#39653)
+
+### Fixed
+
+- Updated Activity Log header to use arrow disclosure variant for better UX consistency (#39767)
+- Increased clickable area to close buttons in asset list control bar (#39823)
+- Missing token activity in details page (#39753)
+- Fixed camera permissions issue with Keystone HW wallet in sidebar mode (#39438)
+- Handle subscription reload when user close shield card payment update stripe tab (#39814)
+- Fixed fullscreen rendering of Dapp Connections pages by updating layout from "LegacyLayout" to "DefaultLayout" (#39801)
+- Fixed a bug where EIP-7702 delegation publish transactions are being dropped by removing nonce from txParams (#39516)
+- Fixed cancel and speedup modal UI by removing emojis, standardizing button width, and migrating to current component versions (#39661)
+- Snap account creation now uses account group names instead of old account names (#39488)
+- Wait for input value and fetch calls during unit test execution (swaps) (#39747)
+- Fixed edit gas fee popover UI by removing black backgrounds and migrating to Modal component (#39690)
+- Add SRP validation during import (#39679)
+- Restore swap quote only when using extension in popup mode (#39654)
+- Fixed critical performance issue slowing down all user actions by stabilizing props references used in routes (#39311)
+- Calling the RPC method `metamask_sendDomainMetadata` no longer has any effect (#39642)
+- Fixed MetaMetrics context causing cascade re-renders of 149 subscribers on every navigation (#39310)
+
+## [13.17.0]
+
+### Added
+
+- Improved MetaMetrics opt-out tracking to properly attribute opt-out events and prevent duplicates (#39413)
+- Add Bitcoin and Tron account support for rewards (#39363)
+- Adds the feature flag infrastructure for the unified `AssetsController` state (#39631)
+- Added support for queueing non-EVM confirmations (#39599)
+- Add client to metadata for smartTransactions and relayTransactions (#39612)
+- Exclude `SeedlessOnboardingController.pendingToBeRevokedTokens` from the state logs (#39607)
+- Adds an alert for when the site suggested network fee is much higher than ours (#39245)
+- Update in app navigation for shield carousel slide (#38695)
+- Added support for the multichain API to Snaps (#39071)
+- Fixed focus behavior in network list menu - menu button now properly toggles menu open/closed without focusing menu items (#39279)
+- Implement new bridge asset picker and read token data from new popular and search api endpoints (#37685)
+- Add polygon to the networks supporting smart transactions (#39614)
+- Adds support for ERC-7715 `wallet_requestExecutionPermissions` RPC method, with `erc20-token-revocation` permission type (#39417)
+
+### Changed
+
+- Remove network dropdown from Activity tab (#39565)
+- Removed the divider above the Manage permissions button in the connected app popover (#39505)
+- Updated the disconnect modal button to use the primary button color (#39535)
+- Update swaps QuotesReceived event properties (#39437)
+- Increased network avatars copy icon to size small (#39512)
+- Removed unused "What's New" modal feature, improving Home page performance (#39314)
+- Removed calls to nft collections endpoint (#39456)
+
+### Fixed
+
+- Extension no longer clears the clipboard if it's a hex address (#39209)
+- Show selected swap asset at the top of the list (#39542)
+- Prevent scroll reset on interface update (#39100)
+- Update the icon spacing on NFT and Network notifications (#39556)
+- Fixed an issue where multichain requests would fail when the wallet is locked (#39592)
+- Fixed malicious address alert incorrectly blocking revoke transactions (#38992)
+- Updates the SRP details modal body text color to text-alternative and fixes the description section in the Settings component (#39550)
+- Fixes nonevm account selection in the multichain provider snap flow. (#39365)
+- Removed the outer glow effect from the app icon in connect confirmation pages. (#39530)
+- Updated NFT description styling with improved "Show More" button placement and text sizing (#39504)
+- Optimize initial page load and prevent rare temporary UI state corruption (#39407)
+- Update dependencies for @keystonehq/bc-ur-registry-eth and qrcode-generator to improve QR scan successful rate. (#39414)
+- Missing token activity in details page (#39406)
+- Improve name resolvers in send flow (#39410)
+- Fixed styling in edit accounts during snap requests. (#38357)
+- Fixed critical performance issue slowing down all user actions by fixing confirmations selector memoization (#39313)
+- Fixed an issue where cancelling a Shield subscription payment on Stripe's checkout page was incorrectly treated as an error (#39513)
+- Purge profile service on resetting wallet (#39665)
+- Prevented Snap crashing when clicking buttons without names (#39727)
+- Fixed details of the gas fee token (#39706)
+- Fixed error when sending native tokens on EVM networks when chainId is provided as decimal string (#39806)
+- Removed petname modal from appearing when clicking recipient addresses in activity list (#39816)
+
+## [13.16.4]
+
+### Fixed
+
+- Fixed error when sending native tokens on EVM networks when chainId is provided as decimal string (#39806)
+- Fixed issue for users with a lot of state on recent chromium-based browsers (#40101)
+
+## [13.16.3]
+
+### Fixed
+
+- Enable workaround for "crash after update" Chromium bug on Chromium versions >=143 (#39790)
+
+## [13.16.2]
+
+### Fixed
+
+- Resolved issue where All Permissions page won't load with unmigrated gator permissions controller state (#39766)
+
+## [13.16.1]
+
+### Added
+
+- Track split state migration success/fail events in Segment (#39643)
+
 ## [13.16.0]
 
 ### Added
@@ -1643,7 +1770,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.16.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.18.1...HEAD
+[13.18.1]: https://github.com/MetaMask/metamask-extension/compare/v13.18.0...v13.18.1
+[13.18.0]: https://github.com/MetaMask/metamask-extension/compare/v13.17.0...v13.18.0
+[13.17.0]: https://github.com/MetaMask/metamask-extension/compare/v13.16.4...v13.17.0
+[13.16.4]: https://github.com/MetaMask/metamask-extension/compare/v13.16.3...v13.16.4
+[13.16.3]: https://github.com/MetaMask/metamask-extension/compare/v13.16.2...v13.16.3
+[13.16.2]: https://github.com/MetaMask/metamask-extension/compare/v13.16.1...v13.16.2
+[13.16.1]: https://github.com/MetaMask/metamask-extension/compare/v13.16.0...v13.16.1
 [13.16.0]: https://github.com/MetaMask/metamask-extension/compare/v13.15.0...v13.16.0
 [13.15.0]: https://github.com/MetaMask/metamask-extension/compare/v13.14.2...v13.15.0
 [13.14.2]: https://github.com/MetaMask/metamask-extension/compare/v13.14.1...v13.14.2

@@ -8,7 +8,6 @@ import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransact
 import { useTransactionFocusEffect } from '../../../hooks/useTransactionFocusEffect';
 import { SignatureRequestType } from '../../../types/confirm';
 import { AddEthereumChain } from '../../../external/add-ethereum-chain/add-ethereum-chain';
-import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
 import { Skeleton } from '../../../../../components/component-library/skeleton';
 import {
   ConfirmationLoader,
@@ -32,10 +31,32 @@ import TypedSignPermissionInfo from './typed-sign/typed-sign-permission';
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const InfoSkeleton = () => (
-  <ConfirmInfoSection data-testid="confirmation__info_skeleton">
-    <Skeleton height="16px" width="30%" marginBottom={2} />
-    <Skeleton height="48px" width="100%" />
-  </ConfirmInfoSection>
+  <>
+    <Skeleton
+      height="60px"
+      width="60px"
+      style={{
+        marginTop: 32,
+        marginBottom: 10,
+        borderRadius: '50%',
+        justifySelf: 'center',
+        alignSelf: 'center',
+      }}
+    />
+    <Skeleton
+      height="32px"
+      width="200px"
+      style={{ marginBottom: 20, justifySelf: 'center', alignSelf: 'center' }}
+    />
+    <Skeleton
+      height="72px"
+      width="100%"
+      style={{ marginBottom: 12 }}
+      data-testid="confirmation__info_skeleton"
+    />
+    <Skeleton height="72px" width="100%" style={{ marginBottom: 12 }} />
+    <Skeleton height="72px" width="100%" style={{ marginBottom: 12 }} />
+  </>
 );
 
 const Info = () => {
@@ -65,8 +86,19 @@ const Info = () => {
           return TypedSignV1Info;
         }
         if (signatureRequest?.decodedPermission) {
-          if (getEnabledAdvancedPermissions().length === 0) {
-            throw new Error('Gator permissions feature is not enabled');
+          const requestedPermissionType =
+            signatureRequest.decodedPermission.permission.type;
+
+          const enabledPermissions = getEnabledAdvancedPermissions();
+
+          if (!enabledPermissions.includes(requestedPermissionType)) {
+            // This should never happen, as `wallet_requestExecutionPermissions`
+            // only accepts permissions of enabled types. This is here as a
+            // security precaution, to ensure that permission types that are not
+            // yet enabled are never available to sign.
+            throw new Error(
+              `Invalid eth_signTypedData_v4 request - Advanced Permission type: ${requestedPermissionType} not enabled`,
+            );
           }
 
           return TypedSignPermissionInfo;

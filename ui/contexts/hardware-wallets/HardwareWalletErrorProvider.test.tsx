@@ -2,43 +2,51 @@ import React from 'react';
 import { render, act } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import {
   showModal,
   hideModal,
-  setPendingHardwareWalletSigning,
   closeCurrentNotificationWindow,
 } from '../../store/actions';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
+} from '../../helpers/constants/routes';
 import { createHardwareWalletError } from './errors';
 import {
   HardwareWalletErrorProvider,
   useHardwareWalletError,
 } from './HardwareWalletErrorProvider';
-import { HardwareWalletType } from './types';
+import { HardwareWalletType, ConnectionStatus } from './types';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from './constants';
 
 const mockStore = configureStore([]);
 
 jest.mock('../../store/actions');
+const mockConnectionState: { current: { status: string; error?: unknown } } = {
+  current: { status: 'ready' },
+};
+
+const mockClearError = jest.fn();
+
 jest.mock('./HardwareWalletContext', () => ({
   HardwareWalletProvider: ({ children }: { children: React.ReactNode }) =>
     children,
   useHardwareWalletConfig: () => ({ isHardwareWalletAccount: true }),
   useHardwareWalletState: () => ({
-    connectionState: { status: 'ready' },
+    connectionState: mockConnectionState.current,
   }),
   useHardwareWalletActions: () => ({
     ensureDeviceReady: jest.fn().mockResolvedValue(true),
-    clearError: jest.fn(),
+    clearError: mockClearError,
   }),
 }));
 
 const mockShowModal = showModal as jest.Mock;
 const mockHideModal = hideModal as jest.Mock;
-const mocksetPendingHardwareWalletSigning =
-  setPendingHardwareWalletSigning as jest.Mock;
 const mockCloseCurrentNotificationWindow =
   closeCurrentNotificationWindow as jest.Mock;
 
@@ -51,11 +59,6 @@ mockShowModal.mockImplementation((payload) => ({
 // Mock hideModal to return a proper action object
 mockHideModal.mockImplementation(() => ({
   type: 'MODAL_CLOSE',
-}));
-
-mocksetPendingHardwareWalletSigning.mockImplementation((payload) => ({
-  type: 'SET_PENDING_HARDWARE_WALLET_SIGNING',
-  payload,
 }));
 
 mockCloseCurrentNotificationWindow.mockImplementation(() => ({
@@ -82,24 +85,40 @@ const createMockState = (
       selectedAccount: 'account-1',
     },
   },
+  appState: {
+    modal: {
+      modalState: {
+        name: null,
+      },
+    },
+  },
 });
 
 const createWrapper =
-  (store: ReturnType<typeof mockStore>) =>
+  (
+    store: ReturnType<typeof mockStore>,
+    initialRoute: string = CONFIRM_TRANSACTION_ROUTE,
+  ) =>
   ({ children }: { children: React.ReactNode }) => (
     <Provider store={store}>
-      <HardwareWalletErrorProvider>{children}</HardwareWalletErrorProvider>
+      <MemoryRouter initialEntries={[initialRoute]}>
+        <HardwareWalletErrorProvider>{children}</HardwareWalletErrorProvider>
+      </MemoryRouter>
     </Provider>
   );
 
-const renderHardwareWalletErrorHook = (store: ReturnType<typeof mockStore>) =>
+const renderHardwareWalletErrorHook = (
+  store: ReturnType<typeof mockStore>,
+  initialRoute?: string,
+) =>
   renderHook(() => useHardwareWalletError(), {
-    wrapper: createWrapper(store),
+    wrapper: createWrapper(store, initialRoute),
   });
 
 describe('HardwareWalletErrorProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockConnectionState.current = { status: 'ready' };
   });
 
   describe('useHardwareWalletError', () => {
@@ -215,7 +234,7 @@ describe('HardwareWalletErrorProvider', () => {
         await onRetry();
       });
 
-      expect(hideModal).toHaveBeenCalled();
+      expect(mockHideModal).not.toHaveBeenCalled();
     });
 
     it('calls onCancel callback when cancel is triggered', () => {
@@ -264,7 +283,7 @@ describe('HardwareWalletErrorProvider', () => {
       });
     });
 
-    it('resets pending hardware signing state on unmount when modal is open', () => {
+    it('hides modal on unmount when modal is open', () => {
       const store = mockStore(createMockState());
       const { result, unmount } = renderHardwareWalletErrorHook(store);
 
@@ -283,34 +302,122 @@ describe('HardwareWalletErrorProvider', () => {
 
       // Clear mock calls before unmount
       mockHideModal.mockClear();
-      mocksetPendingHardwareWalletSigning.mockClear();
 
       // Unmount the component
       act(() => {
         unmount();
       });
 
-      // Verify that both hideModal and setPendingHardwareWalletSigning(false) were called
+      // Verify that hideModal was called
       expect(mockHideModal).toHaveBeenCalled();
-      expect(mocksetPendingHardwareWalletSigning).toHaveBeenCalledWith(false);
     });
 
-    it('does not reset pending hardware signing state on unmount when modal is not open', () => {
+    it('does not hide modal on unmount when modal is not open', () => {
       const store = mockStore(createMockState());
       const { unmount } = renderHardwareWalletErrorHook(store);
 
       // Clear mock calls before unmount
       mockHideModal.mockClear();
-      mocksetPendingHardwareWalletSigning.mockClear();
 
       // Unmount the component without showing a modal
       act(() => {
         unmount();
       });
 
-      // Verify that neither hideModal nor setPendingHardwareWalletSigning were called
+      // Verify that hideModal was not called
       expect(mockHideModal).not.toHaveBeenCalled();
-      expect(mocksetPendingHardwareWalletSigning).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('route-based error filtering', () => {
+    it('does not auto-show errors on the home page', () => {
+      const error = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+        'Device is locked',
+      );
+
+      mockConnectionState.current = {
+        status: ConnectionStatus.ErrorState,
+        error,
+      };
+
+      const store = mockStore(createMockState());
+      renderHardwareWalletErrorHook(store, '/');
+
+      // Auto-show should NOT trigger on the home page
+      expect(mockShowModal).not.toHaveBeenCalled();
+    });
+
+    it('auto-shows errors on the confirm-transaction page', () => {
+      const error = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+        'Device is locked',
+      );
+
+      mockConnectionState.current = {
+        status: ConnectionStatus.ErrorState,
+        error,
+      };
+
+      const store = mockStore(createMockState());
+      renderHardwareWalletErrorHook(store, CONFIRM_TRANSACTION_ROUTE);
+
+      expect(mockShowModal).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: HARDWARE_WALLET_ERROR_MODAL_NAME,
+          error,
+        }),
+      );
+    });
+
+    it('auto-shows errors on the bridge page', () => {
+      const error = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+        'Device is locked',
+      );
+
+      mockConnectionState.current = {
+        status: ConnectionStatus.ErrorState,
+        error,
+      };
+
+      const store = mockStore(createMockState());
+      renderHardwareWalletErrorHook(store, CROSS_CHAIN_SWAP_ROUTE);
+
+      expect(mockShowModal).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: HARDWARE_WALLET_ERROR_MODAL_NAME,
+          error,
+        }),
+      );
+    });
+
+    it('still allows manual showErrorModal on any page', () => {
+      mockConnectionState.current = { status: 'ready' };
+
+      const store = mockStore(createMockState());
+      const { result } = renderHardwareWalletErrorHook(store, '/');
+
+      const error = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+        'Device is locked',
+      );
+
+      // Manual showErrorModal should work regardless of route
+      act(() => {
+        result.current.showErrorModal(error);
+      });
+
+      expect(mockShowModal).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: HARDWARE_WALLET_ERROR_MODAL_NAME,
+          error,
+        }),
+      );
     });
   });
 });

@@ -1,15 +1,12 @@
 import React from 'react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import type { NetworkConfiguration } from '@metamask/network-controller';
-import { act } from '@testing-library/react';
 import { fireEvent } from '../../../../../../test/jest';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
 import * as actions from '../../../../../store/actions';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
-import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
 import AssetListControlBar from './asset-list-control-bar';
 
 type TooltipProps = {
@@ -45,11 +42,6 @@ const createMockState = () => ({
   metamask: {
     ...mockState.metamask,
     selectedNetworkClientId: 'selectedNetworkClientId',
-    enabledNetworkMap: {
-      eip155: {
-        '0x1': true,
-      },
-    },
     networkConfigurationsByChainId: {
       '0x1': {
         chainId: '0x1',
@@ -61,17 +53,7 @@ const createMockState = () => ({
         ],
       },
     } as unknown as Record<string, NetworkConfiguration>,
-    multichainNetworkConfigurationsByChainId:
-      AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-    selectedMultichainNetworkChainId: 'eip155:1',
-    isEvmSelected: true,
     useNftDetection: true,
-    internalAccounts: {
-      selectedAccount: 'selectedAccount',
-      accounts: {
-        selectedAccount: createMockInternalAccount(),
-      },
-    },
   },
 });
 
@@ -96,9 +78,7 @@ describe('NFTs options', () => {
     let tooltipWrapper = sortButton.closest('[data-testid="tooltip"]');
     expect(tooltipWrapper).toHaveAttribute('data-disabled', 'false');
 
-    await act(async () => {
-      fireEvent.click(sortButton);
-    });
+    fireEvent.click(sortButton);
 
     tooltipWrapper = sortButton.closest('[data-testid="tooltip"]');
     expect(tooltipWrapper).toHaveAttribute('data-disabled', 'true');
@@ -106,7 +86,7 @@ describe('NFTs options', () => {
     const actionButton = await findByTestId(
       'asset-list-control-bar-action-button',
     );
-    actionButton.click();
+    fireEvent.click(actionButton);
 
     const refreshButton = await findByTestId('refresh-list-button__button');
 
@@ -146,7 +126,7 @@ describe('NFTs options', () => {
     const actionButton = await findByTestId(
       'asset-list-control-bar-action-button',
     );
-    actionButton.click();
+    fireEvent.click(actionButton);
 
     const refreshButton = await findByTestId('refresh-list-button__button');
 
@@ -188,7 +168,7 @@ describe('NFTs options', () => {
     const actionButton = await findByTestId(
       'asset-list-control-bar-action-button',
     );
-    actionButton.click();
+    fireEvent.click(actionButton);
 
     const autodetectButton = await findByTestId(
       'enable-autodetect-button__button',

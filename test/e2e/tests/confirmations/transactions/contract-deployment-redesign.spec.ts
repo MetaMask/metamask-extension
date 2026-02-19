@@ -5,57 +5,16 @@ import ContractDeploymentConfirmation from '../../../page-objects/pages/confirma
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { TestSuiteArguments } from './shared';
 
 describe('Confirmation Redesign Contract Deployment Component', function () {
-  it(`Sends a contract deployment type 0 transaction (Legacy)`, async function () {
+  it('submits a contract deployment transaction', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
-        localNodeOptions: {
-          hardfork: 'muirGlacier',
-        },
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
-
-        const testDapp = new TestDapp(driver);
-        await testDapp.openTestDappPage();
-        // deploy contract
-        await testDapp.clickPiggyBankContract();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const deploymentConfirmation = new ContractDeploymentConfirmation(
-          driver,
-        );
-        await deploymentConfirmation.checkTitle();
-        await deploymentConfirmation.checkDeploymentSiteInfo();
-        await deploymentConfirmation.clickFooterConfirmButton();
-
-        // check activity list
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-        const homePage = new HomePage(driver);
-        await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAction({ action: 'Contract deployment' });
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-      },
-    );
-  });
-
-  it(`Sends a contract deployment type 2 transaction (EIP1559)`, async function () {
-    await withFixtures(
-      {
-        dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.fullTitle(),

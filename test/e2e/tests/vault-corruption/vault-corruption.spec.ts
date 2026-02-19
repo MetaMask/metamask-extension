@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
+import { MockedEndpoint, MockttpServer } from 'mockttp';
+import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { WALLET_PASSWORD } from '../../constants';
-import { withFixtures } from '../../helpers';
+import { sentryRegEx, withFixtures } from '../../helpers';
 import { PAGES, type Driver } from '../../webdriver/driver';
 import {
   completeCreateNewWalletOnboardingFlow,
@@ -11,10 +13,12 @@ import {
   onboardThenTriggerCorruptionFlow,
 } from '../../page-objects/flows/vault-corruption.flow';
 import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
-import { getConfig } from './helpers';
+import { getConfig, mockFeatureFlagsWithoutNonEvmAccounts } from './helpers';
 
 describe('Vault Corruption', function () {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
+
+  const WAIT_FOR_SENTRY_MS = 10000;
 
   /**
    * Script template to simulate a broken database.
@@ -53,6 +57,47 @@ describe('Vault Corruption', function () {
   );
 
   /**
+   * Script to retrieve the encrypted vault from the backup database.
+   */
+  const getBackupVaultScript = `
+    const callback = arguments[arguments.length - 1];
+    const request = globalThis.indexedDB.open('metamask-backup', 1);
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains('store')) {
+        db.createObjectStore('store');
+      }
+    };
+    request.onsuccess = () => {
+      const db = request.result;
+      const transaction = db.transaction('store', 'readonly');
+      const store = transaction.objectStore('store');
+      const getRequest = store.get('KeyringController');
+      getRequest.onsuccess = () => {
+        const keyringController = getRequest.result;
+        callback(keyringController?.vault ?? null);
+      };
+      getRequest.onerror = () => callback(null);
+    };
+    request.onerror = () => callback(null);
+  `;
+
+  async function mockSentryMissingVaultError(
+    mockServer: MockttpServer,
+  ): Promise<MockedEndpoint> {
+    return await mockServer
+      .forPost(sentryRegEx)
+      .withBodyIncluding('{"type":"event"')
+      .withBodyIncluding(MISSING_VAULT_ERROR)
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {},
+        };
+      });
+  }
+
+  /**
    * Script to break both the primary and backup databases.
    *
    * @param backupKeyToDelete - The key to delete from the backup database.
@@ -82,7 +127,10 @@ describe('Vault Corruption', function () {
 
   it('recovers metamask vault when primary database is broken but backup is intact', async function () {
     await withFixtures(
-      getConfig(this.test?.title),
+      {
+        ...getConfig(this.test?.title),
+        testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
+      },
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
@@ -110,9 +158,83 @@ describe('Vault Corruption', function () {
     );
   });
 
+  it('does not serialize backup data in Sentry captureException payload', async function () {
+    const config = getConfig(this.test?.title);
+    await withFixtures(
+      {
+        ...config,
+        manifestFlags: {
+          ...config.manifestFlags,
+          sentry: {
+            ...(config.manifestFlags?.sentry ?? {}),
+            forceEnable: false,
+          },
+        },
+        testSpecificMock: mockSentryMissingVaultError,
+      },
+      async ({
+        driver,
+        mockedEndpoint,
+      }: {
+        driver: Driver;
+        mockedEndpoint: MockedEndpoint;
+      }) => {
+        await onboardThenTriggerCorruptionFlow(
+          driver,
+          breakPrimaryDatabaseOnlyScript,
+          {
+            participateInMetaMetrics: true,
+          },
+        );
+
+        const backupVault =
+          await driver.executeAsyncScript(getBackupVaultScript);
+        assert.ok(backupVault, 'Expected backup vault to exist');
+
+        await driver.wait(async () => {
+          const isPending = await mockedEndpoint.isPending();
+          return isPending === false;
+        }, WAIT_FOR_SENTRY_MS);
+
+        const [mockedRequest] = await mockedEndpoint.getSeenRequests();
+        const mockTextBody = ((await mockedRequest.body.getText()) ?? '').split(
+          '\n',
+        );
+        const mockJsonBody = JSON.parse(mockTextBody[2]);
+        const mockPayload = JSON.stringify(mockJsonBody);
+        const escapedBackupVault = JSON.stringify(backupVault).slice(1, -1);
+
+        // check both escaped and unescaped versions of the vault
+        assert.equal(
+          mockPayload.includes(backupVault) ||
+            mockPayload.includes(escapedBackupVault),
+          false,
+          'Expected Sentry payload to exclude backup vault data',
+        );
+
+        // a smell test for bits of the vault structure:
+        assert.equal(
+          mockPayload.includes('keyMetadata'),
+          false,
+          'Expected Sentry payload to exclude vault property',
+        );
+        // make sure `keyMetadata` is a real property and we aren't using it in
+        // our test for no reason
+        assert.equal(
+          backupVault.includes('keyMetadata'),
+          true,
+          'Expected backup vault to include vault property',
+        );
+      },
+    );
+  });
+
   it('resets metamask state when both primary and backup databases are broken', async function () {
     await withFixtures(
-      getConfig(this.test?.title),
+      {
+        ...getConfig(this.test?.title),
+        testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
+      },
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
@@ -147,7 +269,10 @@ describe('Vault Corruption', function () {
     // test verifies that not recovering, then trying to recovering again later
     // works too.
     await withFixtures(
-      getConfig(this.test?.title),
+      {
+        ...getConfig(this.test?.title),
+        testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
+      },
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
@@ -190,7 +315,10 @@ describe('Vault Corruption', function () {
   it('restores a backup that is missing its `meta` property successfully', async function () {
     // this test will run all migrations
     await withFixtures(
-      getConfig(this.test?.title),
+      {
+        ...getConfig(this.test?.title),
+        testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
+      },
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,

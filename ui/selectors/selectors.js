@@ -181,6 +181,7 @@ import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
+ * @typedef {import('../../shared/lib/deep-links/types').DeferredDeepLink} DeferredDeepLink
  */
 
 // Re-export this file so we don't have to update all references
@@ -206,16 +207,6 @@ export function getAppIsLoading(state) {
 }
 
 /**
- * Used to prevent the popup from closing while a hardware wallet is signing.
- *
- * @param state - Redux state
- * @returns true when hardware wallet signing is pending
- */
-export function getPendingHardwareWalletSigning(state) {
-  return state.appState.pendingHardwareWalletSigning;
-}
-
-/**
  * Check if the hardware wallet error modal is currently visible.
  * Used to prevent auto-closing the notification popup when an error modal is shown.
  *
@@ -224,7 +215,9 @@ export function getPendingHardwareWalletSigning(state) {
  */
 export function getIsHardwareWalletErrorModalVisible(state) {
   return (
-    state.appState.modal?.modalState?.name === HARDWARE_WALLET_ERROR_MODAL_NAME
+    // TODO: Modal is always in the appstate but many tests have not been updated to include it and therefore causing them to fail
+    // this will be fixed in a follow up PR.
+    state.appState?.modal?.modalState?.name === HARDWARE_WALLET_ERROR_MODAL_NAME
   );
 }
 
@@ -2988,6 +2981,8 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.MOONRIVER,
     CHAIN_IDS.SEI,
     CHAIN_IDS.MONAD,
+    CHAIN_IDS.HYPE,
+    CHAIN_IDS.MEGAETH_MAINNET,
   ].includes(chainId);
 }
 
@@ -4142,4 +4137,14 @@ export function getNetworkConnectionBanner(state) {
  */
 export function getIsDeviceOffline(state) {
   return state.metamask.connectivityStatus === 'offline';
+}
+
+/**
+ * Retrieves the deferred deep link from the MetaMask state.
+ *
+ * @param {MetaMaskReduxState} state - The Redux state object.
+ * @returns {DeferredDeepLink | null} The deferred deep link object if available, null otherwise.
+ */
+export function getDeferredDeepLink(state) {
+  return state.metamask?.deferredDeepLink || null;
 }

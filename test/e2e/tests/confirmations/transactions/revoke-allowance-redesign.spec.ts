@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
 import { WINDOW_TITLES } from '../../../constants';
+import { withFixtures } from '../../../helpers';
+import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -12,62 +15,15 @@ import {
   TestSuiteArguments,
 } from './shared';
 
-const { withFixtures } = require('../../../helpers');
-const FixtureBuilder = require('../../../fixtures/fixture-builder');
-const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
-
 describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
   describe('Submit an revoke transaction', function () {
-    it('Sends a type 0 transaction (Legacy)', async function () {
+    it('submits an ERC20 revoke allowance transaction', async function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .build(),
-          localNodeOptions: {
-            hardfork: 'muirGlacier',
-          },
-          smartContract,
-          testSpecificMock: mocks,
-          title: this.test?.fullTitle(),
-        },
-        async ({
-          driver,
-          contractRegistry,
-          localNodes,
-        }: TestSuiteArguments) => {
-          const contractAddress =
-            await contractRegistry?.getContractAddress(smartContract);
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
-          const testDapp = new TestDapp(driver);
-          await testDapp.openTestDappPage({ contractAddress });
-          await testDapp.checkPageIsLoaded();
-
-          await createERC20ApproveTransaction(driver);
-
-          const NEW_SPENDING_CAP = '0';
-          await editSpendingCap(driver, NEW_SPENDING_CAP);
-
-          await driver.waitForSelector({
-            css: 'h2',
-            text: 'Remove permission',
-          });
-
-          await scrollAndConfirmAndAssertConfirm(driver);
-
-          await assertChangedSpendingCap(driver, NEW_SPENDING_CAP);
-        },
-      );
-    });
-
-    it('Sends a type 2 transaction (EIP1559)', async function () {
-      await withFixtures(
-        {
-          dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           smartContract,
