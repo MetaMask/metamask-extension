@@ -3608,8 +3608,6 @@ export default class MetamaskController extends EventEmitter {
         this.assetsController.addCustomAsset(accountId, assetId),
       removeCustomAsset: (accountId, assetId) =>
         this.assetsController.removeCustomAsset(accountId, assetId),
-      getAssets: (accounts, options) =>
-        this.assetsController.getAssets(accounts, options),
       // Authentication Controller
       performSignIn: authenticationController.performSignIn.bind(
         authenticationController,

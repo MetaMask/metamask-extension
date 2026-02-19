@@ -21,7 +21,7 @@ import {
 } from '../../../../../shared/modules/selectors/networks';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
-import { isAssetsUnifyStateFeatureEnabled } from '../../../../../shared/lib/assets-unify-state/remote-feature-flag';
+import { getIsAssetsUnifyStateEnabled } from '../../../../selectors/assets-unify-state/feature-flags';
 import {
   getAssetsControllerCustomAssets,
   isAssetInAccountCustomAssets,
@@ -35,7 +35,7 @@ function mapStateToProps(state) {
     networkConfigurationsByChainId: getNetworkConfigurationsByChainId(state),
     getAccountForChain: (caipChainId) =>
       getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
-    assetsUnifyStateFeatureEnabled: isAssetsUnifyStateFeatureEnabled(state),
+    assetsUnifyStateFeatureEnabled: getIsAssetsUnifyStateEnabled(state),
     customAssets: getAssetsControllerCustomAssets(state),
   };
 }
@@ -66,16 +66,6 @@ function mapDispatchToProps(dispatch) {
             accountForChain.id,
             assetId,
           );
-
-        console.log(
-          'isInCustomAssets +++++++++++++++++++++++',
-          isInCustomAssets,
-        );
-        console.log(
-          'accountForChain.id +++++++++++++++++++++++',
-          accountForChain.id,
-        );
-        console.log('assetId +++++++++++++++++++++++', assetId);
 
         try {
           if (isInCustomAssets) {

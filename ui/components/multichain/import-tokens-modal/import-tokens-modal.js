@@ -120,7 +120,7 @@ import { NetworkListItem } from '../network-list-item';
 import TokenListPlaceholder from '../../app/import-token/token-list/token-list-placeholder';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
-import { isAssetsUnifyStateFeatureEnabled } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
+import { getIsAssetsUnifyStateEnabled } from '../../../selectors/assets-unify-state/feature-flags';
 import {
   getAssetsControllerAssetPreferences,
   isAssetIdHiddenInPreferencesMap,
@@ -155,7 +155,7 @@ export const ImportTokensModal = ({ onClose }) => {
     getSelectedMultichainNetworkChainId,
   );
   const assetsUnifyStateFeatureEnabled = useSelector(
-    isAssetsUnifyStateFeatureEnabled,
+    getIsAssetsUnifyStateEnabled,
   );
   const assetPreferences = useSelector(getAssetsControllerAssetPreferences);
 
@@ -312,20 +312,9 @@ export const ImportTokensModal = ({ onClose }) => {
 
   const handleAddTokens = useCallback(async () => {
     try {
-      console.log(
-        'assetsUnifyStateFeatureEnabled +++++++++++++++++++++++',
-        pendingTokens,
-      );
-
       const assetsIds = Object.keys(pendingTokens).map((tokenAddress) => {
         return toAssetId(tokenAddress, selectedNetwork);
       });
-
-      console.log(
-        'assetsIds +++++++++++++++++++++++',
-        assetsIds,
-        selectedAccount.id,
-      );
 
       const addedTokenValues = Object.values(pendingTokens);
 

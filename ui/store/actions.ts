@@ -3216,31 +3216,6 @@ export function removeCustomAsset(
 }
 
 /**
- * To get the assets using the unified state
- *
- * @param options - Options for fetching assets
- * @param options.chainIds - Optional chain IDs to filter by
- * @param options.assetTypes - Optional asset types to filter by
- * @returns void
- */
-export function getAssets(options: {
-  chainIds?: ChainId[];
-  assetTypes?: AssetType[];
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    try {
-      await submitRequestToBackground('getAssets', [options]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning(error));
-    } finally {
-      await forceUpdateMetamaskState(dispatch);
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
-/**
  * To ignore multichain assets (non-EVM tokens like Solana, Bitcoin)
  *
  * @param assetIds - The CAIP asset IDs (includes chain information)
