@@ -15,6 +15,7 @@ import {
   AccountTrackerControllerState,
   MultichainAssetsControllerState,
   MultichainBalancesControllerState,
+  CurrencyRateState,
 } from '@metamask/assets-controllers';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
@@ -38,8 +39,8 @@ import { getIsAssetsUnifyStateEnabled } from './assets-unify-state/feature-flags
 // marketData: TODO (requires, for each evm asset, the price in the native currency asset for that chain)
 //
 // CurrencyRateController
-// currencyRates: TODO (requires, for each different native ticker, the conversion rate to the current currency and to dollars)
-// currentCurrency: TODO (this should come from preferences)
+// currencyRates: DONE *Wrong implementation for usdConversionRate
+// currentCurrency: DONE
 //
 // MultichainAssetsController
 // accountsAssets: DONE
@@ -466,6 +467,80 @@ export const getMultiChainBalancesControllerBalances = createDeepEqualSelector(
         };
       }
     }
+
+    return result;
+  },
+);
+
+export const getCurrencyRateControllerCurrentCurrency = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: { metamask: CurrencyRateState }) =>
+      state.metamask.currentCurrency ?? {},
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask.currentCurrency ?? {},
+  ],
+  (isAssetsUnifyStateEnabled, currentCurrency, newCurrentCurrency) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return currentCurrency;
+    }
+
+    return newCurrentCurrency;
+  },
+);
+
+export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: { metamask: CurrencyRateState }) =>
+      state.metamask.currencyRates ?? {},
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask.assetsInfo ?? {},
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask.assetsPrice ?? {},
+  ],
+  (isAssetsUnifyStateEnabled, currencyRates, assetsInfo, assetsPrice) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return currencyRates;
+    }
+
+    const result: CurrencyRateState['currencyRates'] = {};
+
+    const allNativeAssets = Object.entries(assetsInfo)
+      .filter(([assetId, metadata]) => {
+        const assetType = parseCaipAssetType(assetId as CaipAssetType);
+
+        return (
+          metadata.type === 'native' &&
+          assetType.chain.namespace === KnownCaipNamespace.Eip155 &&
+          // This is a hack to handle the fact that ETH is the native asset for many chains, but the one from mainnet is used as reference here
+          (!['ETH'].includes(metadata.symbol) ||
+            (metadata.symbol === 'ETH' && assetType.chain.reference === '1'))
+        );
+      })
+      .map(([assetId, metadata]) => {
+        return {
+          assetId,
+          symbol: metadata.symbol,
+        };
+      });
+
+    console.log('DEBUG ALL NATIVE ASSETS', { allNativeAssets });
+
+    for (const { assetId, symbol } of allNativeAssets) {
+      const price = assetsPrice[assetId];
+      if (!price) {
+        continue;
+      }
+
+      result[symbol] = {
+        conversionDate: price.lastUpdated / 1000,
+        conversionRate: price.price,
+        usdConversionRate: price.price,
+      };
+    }
+
+    console.log('DEBUG CURRENCY RATES', { result });
 
     return result;
   },

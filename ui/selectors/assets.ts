@@ -72,6 +72,8 @@ import {
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 import {
   getAccountTrackerControllerAccountsByChainId,
+  getCurrencyRateControllerCurrencyRates,
+  getCurrencyRateControllerCurrentCurrency,
   getMultiChainAssetsControllerAccountsAssets,
   getMultiChainAssetsControllerAllIgnoredAssets,
   getMultiChainAssetsControllerAssetsMetadata,
@@ -1304,8 +1306,8 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     allIgnoredTokens: getTokensControllerAllIgnoredTokens({ metamask }),
     tokenBalances: getTokenBalancesControllerTokenBalances({ metamask }),
     marketData: metamask.marketData,
-    currencyRates: metamask.currencyRates,
-    currentCurrency: metamask.currentCurrency,
+    currencyRates: getCurrencyRateControllerCurrencyRates({ metamask }),
+    currentCurrency: getCurrencyRateControllerCurrentCurrency({ metamask }),
     networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
     accountsByChainId: getAccountTrackerControllerAccountsByChainId({
       metamask,
@@ -1331,6 +1333,15 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     conversionRates: metamask.conversionRates,
   };
   ///: END:ONLY_INCLUDE_IF
+
+  console.log('DEBUG STATE FOR ASSET SELECTOR', {
+    marketData: metamask.marketData,
+    currencyRates: metamask.currencyRates,
+    currentCurrency: metamask.currentCurrency,
+    conversionRates: metamask.conversionRates,
+    assetPrices: metamask.assetsPrice,
+    assetsInfo: metamask.assetsInfo,
+  });
 
   return {
     ...initialState,
