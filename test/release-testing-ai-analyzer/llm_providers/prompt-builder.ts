@@ -38,7 +38,7 @@ export class PromptBuilder {
       ? `
 ## Cherry-Pick Commits (${cherryPickCommits.length} commits)
 
-This release includes cherry-picked fixes. Generate additional scenarios in \`cherryPickScenarios\` for testing these specific changes:
+This release includes cherry-picked fixes. Generate scenarios in \`cherryPickScenarios\` ONLY for cherry-picks that are HIGH or MEDIUM risk (e.g. fix: security, migration, controller, transaction flow). Skip low-risk cherry-picks (chore, bump, minor config). Prioritize initial release scenarios - they are the main focus.
 
 ${cherryPickCommits.map((c) => `- ${c.message.split('\n')[0]}`).join('\n')}
 `
@@ -65,8 +65,8 @@ ${highRiskAreas.map((area) => `- ${area}`).join('\n')}
 
 Analyze the changes and generate a comprehensive testing plan. Split scenarios into TWO sections:
 
-1. **scenarios** (initialScenarios): Scenarios from analyzing ALL initial commits on the release branch - the overall release changes that need testing.
-2. **cherryPickScenarios**: ONLY if cherry-pick commits exist above - scenarios specifically for testing the cherry-picked fixes. Each scenario should target a specific cherry-pick's change. If no cherry-picks, use empty array [].
+1. **scenarios** (initialScenarios): Scenarios from analyzing ALL initial commits on the release branch - PRIORITIZE these; they are the main focus.
+2. **cherryPickScenarios**: ONLY for cherry-picks that are risky (fix: security, migration, controller, transaction flow). Skip low-risk cherry-picks (chore, bump, minor config). If no risky cherry-picks, use empty array [].
 
 For each scenario, provide:
 - **Area**: The functional area affected (e.g., "Token Management", "Transaction Signing")
@@ -106,8 +106,8 @@ Return a JSON object with this exact structure:
 }
 
 **IMPORTANT**:
-- \`scenarios\` = initial release testing (all initial commits)
-- \`cherryPickScenarios\` = ONLY scenarios for cherry-pick changes (empty [] if no cherry-picks)
+- \`scenarios\` = initial release testing (PRIORITY - main focus)
+- \`cherryPickScenarios\` = ONLY for risky cherry-picks (fix: security/migration/controller/transaction). Skip chore/bump/config. Empty [] if none are risky.
 - Order HIGH risk first, then MEDIUM
 - Number each test step: "1. ", "2. ", "3. "
 - Focus on UI/UX and user-facing functionality

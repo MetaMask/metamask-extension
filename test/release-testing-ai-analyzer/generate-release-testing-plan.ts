@@ -382,7 +382,8 @@ function createAnalyzer(provider: LLMProvider, model?: string): LLMAnalyzer {
 
 /**
  * Computes risk score (0-100) for the release based on scenario counts.
- * Higher score = riskier release.
+ * Higher score = riskier release. Uses sqrt scaling to spread scores across
+ * the range (avoids always hitting 100 for typical releases).
  *
  * @param highRiskCount
  * @param mediumRiskCount
@@ -391,7 +392,8 @@ function computeRiskScore(
   highRiskCount: number,
   mediumRiskCount: number,
 ): number {
-  return Math.min(100, highRiskCount * 6 + mediumRiskCount * 2);
+  const raw = highRiskCount * 4 + mediumRiskCount;
+  return Math.min(100, Math.round(10 * Math.sqrt(raw)));
 }
 
 /**
