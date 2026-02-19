@@ -17,10 +17,10 @@ import {
   MultichainBalancesControllerState,
 } from '@metamask/assets-controllers';
 import { AccountsControllerState } from '@metamask/accounts-controller';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { decimalToPrefixedHex } from '../../shared/modules/conversion.utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/selector-creators';
 import { getIsAssetsUnifyStateEnabled } from './assets-unify-state/feature-flags';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
 // TODO Old state
 // AccountTrackerController
@@ -137,6 +137,7 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
     (state: MetaMaskAssetsControllerState) => state.metamask.assetsInfo ?? {},
     (state: MetaMaskAssetsControllerState) =>
       state.metamask.assetsBalance ?? {},
+    (state: MetaMaskAssetsControllerState) => state.metamask.customAssets ?? {},
     (state: { metamask: AccountsControllerState }) =>
       state.metamask.internalAccounts?.accounts ?? {},
   ],
@@ -145,6 +146,7 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
     allTokens,
     assetsInfo,
     assetsBalance,
+    customAssets,
     internalAccountsById,
   ) => {
     if (!isAssetsUnifyStateEnabled) {
@@ -153,13 +155,27 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
 
     const result: TokensControllerState['allTokens'] = {};
 
-    for (const [accountId, accountBalances] of Object.entries(assetsBalance)) {
+    // Merge assetsBalance and customAssets: accountId -> assetId[]
+    const allAssets = Object.fromEntries(
+      [
+        ...new Set([
+          ...Object.keys(assetsBalance),
+          ...Object.keys(customAssets),
+        ]),
+      ].map((accountId) => {
+        const fromBalance = Object.keys(assetsBalance[accountId] ?? {});
+        const fromCustom = customAssets[accountId] ?? [];
+        return [accountId, [...new Set([...fromBalance, ...fromCustom])]];
+      }),
+    );
+
+    for (const [accountId, assetIds] of Object.entries(allAssets)) {
       const internalAccount = internalAccountsById[accountId];
       if (!internalAccount || !isEvmAccountType(internalAccount.type)) {
         continue;
       }
 
-      for (const assetId of Object.keys(accountBalances)) {
+      for (const assetId of assetIds) {
         const assetType = parseCaipAssetType(assetId as CaipAssetType);
         const metadata = assetsInfo[assetId];
 
