@@ -75,12 +75,7 @@ export function useInsufficientPayTokenBalanceAlert({
   }, [assetsWithBalance, nativeTokenAddress, selectedAddress, sourceChainId]);
 
   const { balanceUsd } = payToken ?? {};
-  const payTokenBalanceRaw =
-    (payToken as { balanceRaw?: string; balance?: string } | undefined)
-      ?.balanceRaw ??
-    (payToken as { balanceRaw?: string; balance?: string } | undefined)
-      ?.balance ??
-    '0';
+  const payTokenBalanceRaw = payToken?.balanceRaw;
   const nativeBalanceRaw = nativeToken?.balance ?? '0';
 
   const isPerpsRelaySourceGasFeeToken = Boolean(
@@ -139,6 +134,7 @@ export function useInsufficientPayTokenBalanceAlert({
     () =>
       !isPendingAlert &&
       payToken &&
+      payTokenBalanceRaw !== undefined &&
       totalSourceAmountRaw.gt(payTokenBalanceRaw),
     [isPendingAlert, payToken, payTokenBalanceRaw, totalSourceAmountRaw],
   );

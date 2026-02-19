@@ -274,6 +274,23 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
 
       expect(result.current).toStrictEqual([]);
     });
+
+    it('returns no pay-token-fee alert when payToken.balanceRaw is unavailable', () => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          balanceRaw: undefined,
+          // Legacy/alternate field that may be human-readable.
+          balance: '10.0',
+        } as unknown as TransactionPaymentToken,
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      const { result } = runHook();
+
+      expect(result.current).toStrictEqual([]);
+    });
   });
 
   describe('for source network fee', () => {
