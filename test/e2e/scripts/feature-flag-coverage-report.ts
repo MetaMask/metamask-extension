@@ -323,6 +323,24 @@ function printReport(report: CoverageReport): void {
   console.log('='.repeat(80));
   console.log(`  Generated: ${report.generatedAt}`);
   console.log('');
+  console.log('  LEGEND');
+  console.log('  ' + '-'.repeat(40));
+  console.log('  Coverage levels:');
+  console.log('    FULL         Both true and false states are tested');
+  console.log('    PARTIAL      Only one state (true or false) is tested');
+  console.log(
+    '    DEFAULT-ONLY No explicit test references; tested only via global mock defaults',
+  );
+  console.log('');
+  console.log('  States column:');
+  console.log('    T:✓/✗        True state tested / not tested');
+  console.log('    F:✓/✗        False state tested / not tested');
+  console.log('');
+  console.log(
+    '  State detection considers the production default (served by mock-e2e.js)',
+  );
+  console.log('  plus any explicit overrides found in test files.');
+  console.log('');
 
   console.log('  SUMMARY');
   console.log('  ' + '-'.repeat(40));
