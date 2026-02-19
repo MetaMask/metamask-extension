@@ -90,7 +90,9 @@ class FixtureBuilderV2 {
       const existing = Array.isArray(target.transactions)
         ? target.transactions
         : [];
-      target.transactions = [...existing, ...newTxs];
+      const combined = [...existing, ...newTxs];
+      combined.sort((a, b) => (b?.time ?? 0) - (a?.time ?? 0));
+      target.transactions = combined;
     } else {
       merge(target, data);
     }
