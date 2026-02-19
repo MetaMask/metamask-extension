@@ -1,6 +1,4 @@
 {
-  "manifest_version": 3,
-  "description": "MV3 test manifest",
   "background": {
     "service_worker": "service-worker.js"
   },
@@ -14,6 +12,8 @@
       "js": ["vendor/trezor/content-script.js"]
     }
   ],
+  "description": "MV3 test manifest",
+  "manifest_version": 3,
   "web_accessible_resources": [
     {
       "matches": ["<all_urls>"],
