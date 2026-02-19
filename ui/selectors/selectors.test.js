@@ -4355,7 +4355,9 @@ describe('getShowUpdateModal', () => {
         pendingExtensionVersion: '10.2.3.112',
         updateModalLastDismissedAt: null,
         lastUpdatedAt: null,
-        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.2.3.113' },
+        remoteFeatureFlags: {
+          extensionUpdatePromptMinimumVersion: '10.2.3.113',
+        },
       },
     };
     expect(selectors.getShowUpdateModal(state)).toBe(true);
@@ -4370,7 +4372,9 @@ describe('getShowUpdateModal', () => {
         pendingExtensionVersion: '10.2.3.111',
         updateModalLastDismissedAt: null,
         lastUpdatedAt: null,
-        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.2.3.113' },
+        remoteFeatureFlags: {
+          extensionUpdatePromptMinimumVersion: '10.2.3.113',
+        },
       },
     };
     expect(selectors.getShowUpdateModal(state)).toBe(false);
