@@ -179,16 +179,16 @@ export function getSnapPermissionSpecifications(
          */
         getMnemonicSeed: async (source: string) => {
           if (!source) {
-            const [keyring] = messenger.call(
+            const keyrings = messenger.call(
               'KeyringController:getKeyringsByType',
               KeyringType.hdKeyTree,
             ) as { seed?: Uint8Array }[];
 
-            if (!keyring?.seed) {
+            if (keyrings.length === 0 || !keyrings[0].seed) {
               throw new Error('Primary keyring mnemonic unavailable.');
             }
 
-            return keyring.seed;
+            return keyrings[0].seed;
           }
 
           try {

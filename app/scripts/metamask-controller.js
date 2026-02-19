@@ -5491,28 +5491,28 @@ export default class MetamaskController extends EventEmitter {
    * Gets the mnemonic of the user's primary keyring.
    */
   getPrimaryKeyringMnemonic() {
-    const [keyring] = this.keyringController.getKeyringsByType(
+    const keyrings = this.keyringController.getKeyringsByType(
       KeyringType.hdKeyTree,
     );
-    if (!keyring?.mnemonic) {
+    if (keyrings.length === 0 || !keyrings[0].mnemonic) {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
 
-    return keyring.mnemonic;
+    return keyrings[0].mnemonic;
   }
 
   /**
    * Gets the mnemonic seed of the user's primary keyring.
    */
   getPrimaryKeyringMnemonicSeed() {
-    const [keyring] = this.keyringController.getKeyringsByType(
+    const keyrings = this.keyringController.getKeyringsByType(
       KeyringType.hdKeyTree,
     );
-    if (!keyring?.seed) {
+    if (keyrings.length === 0 || !keyrings[0].seed) {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
 
-    return keyring.seed;
+    return keyrings[0].seed;
   }
 
   //
