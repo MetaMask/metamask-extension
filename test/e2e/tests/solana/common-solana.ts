@@ -904,6 +904,7 @@ export async function mockGetSignaturesSuccessSwap(
 export async function mockSendSwapSolanaTransaction(
   mockServer: Mockttp,
   signatureHolder?: SignatureHolder,
+  defaultSignature: string = USDC_TO_SOL_SWAP_SIGNATURE,
 ) {
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
@@ -911,44 +912,7 @@ export async function mockSendSwapSolanaTransaction(
       method: 'sendTransaction',
     })
     .thenCallback(async (req) => {
-      let signature = USDC_TO_SOL_SWAP_SIGNATURE;
-      try {
-        const body = (await req.body.getJson()) as {
-          params?: [string];
-        };
-        const base64Tx = body?.params?.[0];
-        if (base64Tx) {
-          signature = await extractSignatureFromBase64Tx(base64Tx);
-          console.log('Captured actual swap signature:', signature);
-          if (signatureHolder) {
-            signatureHolder.value = signature;
-          }
-        }
-      } catch (e) {
-        console.log('Failed to extract signature from sendTransaction:', e);
-      }
-      return {
-        statusCode: 200,
-        json: {
-          result: signature,
-          id: '1337',
-          jsonrpc: '2.0',
-        },
-      };
-    });
-}
-
-export async function mockSwapSolToUsdcTransaction(
-  mockServer: Mockttp,
-  signatureHolder?: SignatureHolder,
-) {
-  return await mockServer
-    .forPost(SOLANA_URL_REGEX_MAINNET)
-    .withJsonBodyIncluding({
-      method: 'sendTransaction',
-    })
-    .thenCallback(async (req) => {
-      let signature = SOL_TO_USDC_SWAP_SIGNATURE;
+      let signature = defaultSignature;
       try {
         const body = (await req.body.getJson()) as {
           params?: [string];
@@ -2183,7 +2147,11 @@ export async function withSolanaAccountSnap(
           mockList.push(
             ...[
               await mockQuoteFromSoltoUSDC(mockServer),
-              await mockSwapSolToUsdcTransaction(mockServer),
+              await mockSendSwapSolanaTransaction(
+                mockServer,
+                undefined,
+                SOL_TO_USDC_SWAP_SIGNATURE,
+              ),
               await mockGetSOLUSDCTransaction(mockServer),
               await mockSecurityAlertSwap(mockServer),
               await mockGetSignaturesSuccessSwap(
