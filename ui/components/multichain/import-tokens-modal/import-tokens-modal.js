@@ -39,7 +39,6 @@ import {
 import {
   addImportedTokens,
   addCustomAsset,
-  getAssets,
   unhideAsset,
   multichainAddAssets,
   clearPendingTokens,
@@ -388,13 +387,6 @@ export const ImportTokensModal = ({ onClose }) => {
             await dispatch(addCustomAsset(selectedAccount.id, assetId));
           }
         }
-        // Force AssetsController to refresh so UI receives updated state
-        await dispatch(
-          getAssets({
-            chainIds: [tokenChainId],
-            assetTypes: ['token'],
-          }),
-        );
       }
 
       addedTokenValues.forEach((pendingToken) => {
@@ -426,6 +418,7 @@ export const ImportTokensModal = ({ onClose }) => {
       dispatch(hideImportTokensModal());
       navigate(DEFAULT_ROUTE);
     } catch (err) {
+      console.log('error +++++++++++++++++++++++', err);
       dispatch(setNewTokensImportedError('error'));
       dispatch(clearPendingTokens());
       navigate(DEFAULT_ROUTE);
