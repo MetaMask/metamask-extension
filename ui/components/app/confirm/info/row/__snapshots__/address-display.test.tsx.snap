@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfirmInfoRowAddressDisplay renders correctly 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
+  >
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      data-testid="confirm-info-row-display-name"
+      style="flex: 1; white-space: nowrap; overflow: hidden;"
+    >
+      …
+    </p>
+    <div
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-md h-6 w-6"
+      style="flex-shrink: 0;"
+    >
+      <div
+        class="flex [&>div]:!rounded-none"
+      >
+        <div
+          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(249, 108, 1);"
+        >
+          <svg
+            height="24"
+            width="24"
+            x="0"
+            y="0"
+          >
+            <rect
+              fill="#F2CA02"
+              height="24"
+              transform="translate(1.07348010107791 -0.07116416970827) rotate(529.4 12.00000000000000 12.00000000000000)"
+              width="24"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#FAA200"
+              height="24"
+              transform="translate(8.23114374453644 -9.77991653290357) rotate(336.9 12.00000000000000 12.00000000000000)"
+              width="24"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#C8142C"
+              height="24"
+              transform="translate(-17.22281270679051 -15.16737520159263) rotate(276.6 12.00000000000000 12.00000000000000)"
+              width="24"
+              x="0"
+              y="0"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
