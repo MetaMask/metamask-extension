@@ -193,7 +193,7 @@ describe('onRpcEndpointDegraded', () => {
       rpcMethodName: 'eth_blockNumber',
       trackEvent,
       type: 'retries_exhausted',
-      retryReason: 'non_successful_response',
+      retryReason: 'non_successful_http_status',
       metaMetricsId:
         '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
     });
@@ -252,7 +252,7 @@ describe('onRpcEndpointDegraded', () => {
         rpcMethodName: 'eth_blockNumber',
         trackEvent,
         type: 'retries_exhausted',
-        retryReason: 'non_successful_response',
+        retryReason: 'non_successful_http_status',
         metaMetricsId:
           '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
       });
@@ -266,7 +266,7 @@ describe('onRpcEndpointDegraded', () => {
           chain_id_caip: 'eip155:11155111',
           degraded_event_type: 'retries_exhausted',
           http_status: 420,
-          retry_reason: 'non_successful_response',
+          retry_reason: 'non_successful_http_status',
           rpc_domain: 'example.com',
           rpc_endpoint_url: 'example.com',
           rpc_method_name: 'eth_blockNumber',
