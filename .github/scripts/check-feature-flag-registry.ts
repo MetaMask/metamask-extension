@@ -256,7 +256,9 @@ async function main(): Promise<void> {
       //     .myFlag
       for (let i = 0; i < chunk.length - 1; i++) {
         const joined = `${chunk[i].trimEnd()}${chunk[i + 1].trimStart()}`;
-        allReferences.push(...extractFlagReferences(joined, filePath));
+        allReferences.push(
+          ...extractFlagReferences(joined, filePath, true),
+        );
       }
     }
   }
@@ -402,10 +404,16 @@ function parseDiff(diff: string): Map<string, string[][]> {
  * Extracts feature flag references from a single line (or joined line pair).
  * String literals are stripped before scanning to prevent false positives
  * from flag names that appear inside quoted text.
+ *
+ * @param skipDestructuring - When true, destructuring patterns are not run.
+ *   Used for joined line pairs where brace-matching is unreliable (e.g.
+ *   `) {` joined with `const { flag } = getRemoteFeatureFlags(state);`
+ *   would cause the greedy `[^}]+` to match from the wrong brace).
  */
 function extractFlagReferences(
   line: string,
   filePath: string,
+  skipDestructuring = false,
 ): FlagReference[] {
   const refs: FlagReference[] = [];
   const trimmed = line.trim();
@@ -474,6 +482,10 @@ function extractFlagReferences(
   }
 
   // 6. Destructuring patterns (run on fully sanitized line)
+  //    Skipped for joined line pairs where brace-matching is unreliable.
+  if (skipDestructuring) {
+    return refs;
+  }
   for (const pattern of DESTRUCTURING_PATTERNS) {
     pattern.lastIndex = 0;
     let match: RegExpExecArray | null;
