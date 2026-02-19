@@ -60,12 +60,6 @@ describe('Swaps - notifications', function () {
       getBridgeFixturesWithTokenAlertWarning(this.test?.fullTitle()),
       async ({ driver, mockedEndpoint }) => {
         await loginWithBalanceValidation(driver, undefined, undefined, '$0');
-        await driver.executeScript(`
-          window.process = window.process || {};
-          window.process.env = window.process.env || {};
-          window.process.env.SECURITY_ALERTS_API_ENABLED = 'true';
-          window.process.env.SECURITY_ALERTS_API_URL = 'https://security-alerts.api.cx.metamask.io';
-        `);
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
