@@ -5911,7 +5911,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^99.2.0, @metamask/assets-controllers@npm:^99.3.1, @metamask/assets-controllers@npm:^99.4.0":
+"@metamask/assets-controllers@npm:^99.2.0, @metamask/assets-controllers@npm:^99.4.0":
   version: 99.4.0
   resolution: "@metamask/assets-controllers@npm:99.4.0"
   dependencies:
@@ -33681,7 +33681,7 @@ __metadata:
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^8.0.0"
     "@metamask/assets-controller": "npm:^2.0.0"
-    "@metamask/assets-controllers": "npm:^99.3.1"
+    "@metamask/assets-controllers": "npm:^99.4.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.10.0"
