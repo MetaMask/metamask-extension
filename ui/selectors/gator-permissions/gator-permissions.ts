@@ -218,21 +218,26 @@ export const getGatorPermissionCountByChain = createSelector(
 /**
  * Permissions for a specific chain (and optional origin), sorted by startTime.
  * Parameter is "for chain" (filter by chainId).
+ * @param _state
+ * @param _chainId
+ * @param _group
+ * @param origin
  */
 export const getGatorPermissionsForChain = createSelector(
   [
     // Pass (state, group) to getPermissionsForGroup; args here are (state, chainId, group, origin?).
     (state: AppState, _chainId: Hex, group: PermissionTypeGroup) =>
       getPermissionsForGroup(state, group),
-    // Pluck [chainId, origin] for the combiner.
+    // Pluck chainId and origin separately (primitives are referentially stable).
+    (_state: AppState, chainId: Hex) => chainId,
     (
       _state: AppState,
-      chainId: Hex,
+      _chainId: Hex,
       _group: PermissionTypeGroup,
       origin?: string,
-    ) => [chainId, origin] as const,
+    ) => origin,
   ],
-  (permissionsForGroup, [chainId, origin]): PermissionInfoWithMetadata[] => {
+  (permissionsForGroup, chainId, origin): PermissionInfoWithMetadata[] => {
     const permissionsForChain = filterPermissionsByChain(
       permissionsForGroup,
       chainId,
