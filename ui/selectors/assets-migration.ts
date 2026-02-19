@@ -685,8 +685,6 @@ export const getMultichainAssetsRatesControllerConversionRates =
         };
       }
 
-      console.log('DEBUG CONVERSION RATES', { result, conversionRates });
-
       return result;
     },
   );
