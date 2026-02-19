@@ -858,7 +858,6 @@
       "showNativeTokenAsMainBalance": "boolean",
       "showTestNetworks": "boolean",
       "skipDeepLinkInterstitial": "boolean",
-      "smartAccountOptIn": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": "boolean",
       "tokenNetworkFilter": {

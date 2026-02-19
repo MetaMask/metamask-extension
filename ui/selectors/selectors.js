@@ -181,6 +181,8 @@ import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
+ * @typedef {import('../../shared/lib/pending-redirect-state').PendingRedirectRoute} PendingRedirectRoute
+ * @typedef {import('../../shared/lib/deep-links/types').DeferredDeepLink} DeferredDeepLink
  */
 
 // Re-export this file so we don't have to update all references
@@ -4142,8 +4144,18 @@ export function getIsDeviceOffline(state) {
  * Get the pending redirect route.
  *
  * @param {MetaMaskReduxState} state - The Redux state
- * @returns {object | null} The pending redirect route, or null if not available.
+ * @returns {PendingRedirectRoute | null} The pending redirect route, or null if not available.
  */
 export function getPendingRedirectRoute(state) {
   return state.metamask?.pendingRedirectRoute ?? null;
+}
+
+/**
+ * Retrieves the deferred deep link from the MetaMask state.
+ *
+ * @param {MetaMaskReduxState} state - The Redux state object.
+ * @returns {DeferredDeepLink | null} The deferred deep link object if available, null otherwise.
+ */
+export function getDeferredDeepLink(state) {
+  return state.metamask?.deferredDeepLink || null;
 }
