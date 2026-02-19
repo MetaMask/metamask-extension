@@ -804,9 +804,9 @@ export const getDefaultScopeAndAddressByAccountGroupId =
       }[],
       defaultScope: DefaultAddressScope,
     ): { defaultAddress: string | null; defaultScopes: CaipChainId[] } => {
-      const matching =
-        spreadList.filter((x) => String(x.scope).startsWith(defaultScope)) ??
-        [];
+      const matching = spreadList.filter((x) =>
+        String(x.scope).startsWith(defaultScope),
+      );
       if (matching.length === 0) {
         return { defaultAddress: null, defaultScopes: [] };
       }

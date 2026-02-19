@@ -827,6 +827,7 @@
     "smartTransactionsOptInStatus": true,
     "petnamesEnabled": false,
     "showConfirmationAdvancedDetails": false,
+    "showDefaultAddress": false,
     "featureNotificationsEnabled": false,
     "showMultiRpcModal": false,
     "privacyMode": false,
