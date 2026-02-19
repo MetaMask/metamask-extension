@@ -410,11 +410,11 @@ function getOptions(
       choices: Object.values(ENVIRONMENTS),
       default: resolveDefaultBuildEnvironment({ mode, test }),
       defaultDescription:
-        'Auto-detected from git context (branch name, CI environment)',
+        'Auto-detected from git context (branch name, CI environment), or set to "testing" when --test is used, or "development" when --mode development is used',
       description:
-        'The build environment (production, staging, release-candidate, pull-request, other). ' +
+        'The build environment (production, development, testing, staging, release-candidate, pull-request, other). ' +
         'Controls Sentry project targeting and feature flag detection. ' +
-        'If not specified, auto-detected from git context.',
+        'If not specified, auto-detected from git context or derived from --test / --mode development.',
       group: toOrange('Build options:'),
       type: 'string',
     },
