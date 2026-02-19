@@ -52,14 +52,11 @@ const prerequisites = {
  * Parses the given args from `argv` and returns whether or not the requested
  * build is a production build or not.
  *
- * @param argv
- * @param opts
- * @returns `true` if this is a production build, otherwise `false`
+ * @param argv - The command line arguments to parse, typically `process.argv.slice(2)`
+ * @param opts - The options to parse from the command line arguments
+ * @returns An object containing the parsed `mode` and `test` flag
  */
-function preParse(
-  argv: string[],
-  opts: typeof prerequisites,
-): { mode: 'production' | 'development'; test: boolean } {
+function preParse(argv: string[], opts: typeof prerequisites) {
   const defaults: Record<string, unknown> = {};
   const booleanOptions: string[] = [];
   const stringOptions: string[] = [];
@@ -82,7 +79,7 @@ function preParse(
   });
   const mode = parsed.mode === 'production' ? 'production' : 'development';
   const test = parsed.test === true;
-  return { mode, test };
+  return { mode, test } as const;
 }
 
 /**
