@@ -515,8 +515,10 @@ function extractDestructuredIdentifiers(content: string): string[] {
  */
 function isStaticConstant(expr: string): boolean {
   // Enum.Member pattern (e.g. FeatureFlagNames.AssetsDefiPositionsEnabled)
+  // Both parts must start with an uppercase letter to distinguish from
+  // runtime expressions like options.key or config.flagName.
   if (expr.includes('.')) {
-    return true;
+    return /^[A-Z]\w*\.[A-Z]\w*$/.test(expr);
   }
   // UPPER_CASE_CONSTANT pattern (e.g. ASSETS_UNIFY_STATE_FLAG)
   return /^[A-Z_][A-Z0-9_]*$/.test(expr);
