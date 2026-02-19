@@ -495,7 +495,7 @@ function extractFlagReferences(
  */
 function extractDestructuredIdentifiers(content: string): string[] {
   const ids: string[] = [];
-  for (const part of content.split(',')) {
+  for (const part of content.split(/[,;]/)) {
     const trimmed = part.trim();
     if (!trimmed || trimmed.startsWith('...')) {
       continue;
