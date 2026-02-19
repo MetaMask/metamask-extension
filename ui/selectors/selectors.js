@@ -154,6 +154,11 @@ import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { createParameterizedShallowEqualSelector } from '../../shared/modules/selectors/selector-creators';
+import {
+  getCurrentKeyring as getSharedCurrentKeyring,
+  getHardwareWalletType as getSharedHardwareWalletType,
+  isHardwareWallet as isSharedHardwareWallet,
+} from '../../shared/modules/selectors/hardware-wallet';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   FeatureFlagNames,
@@ -395,13 +400,7 @@ export function getIsSigningQRHardwareTransaction(state) {
 }
 
 export function getCurrentKeyring(state) {
-  const internalAccount = getSelectedInternalAccount(state);
-
-  if (!internalAccount) {
-    return null;
-  }
-
-  return internalAccount.metadata?.keyring;
+  return getSharedCurrentKeyring(state);
 }
 
 /**
@@ -434,8 +433,7 @@ export function checkNetworkOrAccountNotSupports1559(state) {
  * @returns {boolean}
  */
 export function isHardwareWallet(state) {
-  const keyring = getCurrentKeyring(state);
-  return Boolean(keyring?.type?.includes('Hardware'));
+  return isSharedHardwareWallet(state);
 }
 
 /**
@@ -456,8 +454,7 @@ export function accountSupportsSmartTx(state) {
  * @returns {string | undefined}
  */
 export function getHardwareWalletType(state) {
-  const keyring = getCurrentKeyring(state);
-  return isHardwareWallet(state) ? keyring.type : undefined;
+  return getSharedHardwareWalletType(state);
 }
 
 export function getAccountType(state) {

@@ -14,12 +14,10 @@ import {
   getUsedQuote,
 } from '../../../ducks/swaps/swaps';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getRpcPrefsForCurrentProvider } from '../../../selectors';
 import {
-  isHardwareWallet,
   getHardwareWalletType,
-  getRpcPrefsForCurrentProvider,
-} from '../../../selectors';
-import {
+  isHardwareWallet,
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';

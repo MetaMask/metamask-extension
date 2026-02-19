@@ -58,14 +58,14 @@ import {
   getTokenExchangeRates,
   getUSDConversionRate,
   getSwapsDefaultToken,
-  isHardwareWallet,
-  getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getSelectedInternalAccount,
   getSelectedNetwork,
   getHDEntropyIndex,
 } from '../../selectors';
 import {
+  getHardwareWalletType,
+  isHardwareWallet,
   getSmartTransactionsEnabled,
   getSmartTransactionsFeatureFlagsForChain,
   getSmartTransactionsOptInStatusForMetrics,

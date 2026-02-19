@@ -10,10 +10,8 @@ import {
   getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
-  isHardwareWallet,
   getHardwareWalletType,
-} from '../../../selectors/selectors';
-import {
+  isHardwareWallet,
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
-import { getHardwareWalletType } from '../../../../selectors';
+import { getHardwareWalletType } from '../../../../../shared/modules/selectors';
 import { Asset } from '../../types/send';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';

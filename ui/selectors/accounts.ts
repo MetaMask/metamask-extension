@@ -11,6 +11,7 @@ import { AccountsControllerState } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { getSelectedInternalAccount as getSharedSelectedInternalAccount } from '../../shared/modules/selectors/accounts';
 
 export type AccountsState = {
   metamask: AccountsControllerState;
@@ -60,8 +61,7 @@ export const getInternalAccountByAddress = createSelector(
 );
 
 export function getSelectedInternalAccount(state: AccountsState) {
-  const accountId = state.metamask.internalAccounts.selectedAccount;
-  return state.metamask.internalAccounts.accounts[accountId];
+  return getSharedSelectedInternalAccount(state);
 }
 
 export const isSelectedInternalAccountEth = createSelector(

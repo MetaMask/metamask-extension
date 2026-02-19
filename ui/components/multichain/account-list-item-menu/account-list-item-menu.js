@@ -6,8 +6,8 @@ import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getHardwareWalletType } from '../../../../shared/modules/selectors';
 import {
-  getHardwareWalletType,
   getAccountTypeForKeyring,
   getPinnedAccountsList,
   getHiddenAccountsList,

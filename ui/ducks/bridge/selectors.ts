@@ -44,7 +44,6 @@ import {
   type AccountGroupObject,
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
-import { getHardwareWalletType } from '../../selectors/selectors';
 import {
   ALL_ALLOWED_BRIDGE_CHAIN_IDS,
   ALLOWED_BRIDGE_CHAIN_IDS,
@@ -65,6 +64,7 @@ import {
 import { Numeric } from '../../../shared/modules/Numeric';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
+  getHardwareWalletType,
   getIsSmartTransaction,
   type SmartTransactionsMetaMaskState,
 } from '../../../shared/modules/selectors';

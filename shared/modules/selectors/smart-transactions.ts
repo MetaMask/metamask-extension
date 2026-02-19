@@ -11,7 +11,6 @@ import {
 } from '../../constants/smartTransactions';
 import {
   accountSupportsSmartTx,
-  getPreferences,
   selectDefaultRpcEndpointByChainId,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
@@ -23,7 +22,16 @@ import {
 } from '../../../ui/selectors/remote-feature-flags';
 import { isProduction } from '../environment';
 import { getCurrentChainId, type NetworkState } from './networks';
+import {
+  getSmartTransactionsMigrationAppliedInternal,
+  getSmartTransactionsOptInStatusInternal,
+} from './smart-transactions-preferences';
 import { createDeepEqualSelector } from './util';
+
+export {
+  getSmartTransactionsMigrationAppliedInternal,
+  getSmartTransactionsOptInStatusInternal,
+};
 
 export type SmartTransactionsMetaMaskState = {
   metamask: {
@@ -78,44 +86,6 @@ export const getSmartTransactionsFeatureFlagsForChain = createDeepEqualSelector(
 
 /**
  * Returns the user's explicit opt-in status for the smart transactions feature.
- * This should only be used for reading the user's internal opt-in status, and
- * not for determining if the smart transactions user preference is enabled.
- *
- * To determine if the smart transactions user preference is enabled, use
- * getSmartTransactionsPreferenceEnabled instead.
- *
- * @param state - The state object.
- * @returns true if the user has explicitly opted in, false if they have opted out,
- * or null if they have not explicitly opted in or out.
- */
-export const getSmartTransactionsOptInStatusInternal = createSelector(
-  getPreferences,
-  (preferences: { smartTransactionsOptInStatus?: boolean }): boolean => {
-    return preferences?.smartTransactionsOptInStatus ?? true;
-  },
-);
-
-/**
- * Returns whether the smart transactions migration has been applied to the user's settings.
- * This specifically tracks if Migration 135 has been run, which enables Smart Transactions
- * by default for users who have never interacted with the feature or who previously opted out
- * with no STX activity.
- *
- * This should only be used for internal checks of the migration status, and not
- * for determining overall Smart Transactions availability.
- *
- * @param state - The state object.
- * @returns true if the migration has been applied to the user's settings, false if not or if unset.
- */
-export const getSmartTransactionsMigrationAppliedInternal = createSelector(
-  getPreferences,
-  (preferences: { smartTransactionsMigrationApplied?: boolean }): boolean => {
-    return preferences?.smartTransactionsMigrationApplied ?? false;
-  },
-);
-
-/**
- * Returns the user's explicit opt-in status for the smart transactions feature.
  * This should only be used for metrics collection, and not for determining if the
  * smart transactions user preference is enabled.
  *
@@ -126,7 +96,7 @@ export const getSmartTransactionsMigrationAppliedInternal = createSelector(
  * @returns true if the user has explicitly opted in, false if they have opted out,
  * or null if they have not explicitly opted in or out.
  */
-// @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
+// @ts-expect-error TODO: Tighten selector composition state typing.
 export const getSmartTransactionsOptInStatusForMetrics = createSelector(
   getSmartTransactionsOptInStatusInternal,
   (optInStatus: boolean): boolean => optInStatus,
@@ -139,7 +109,7 @@ export const getSmartTransactionsOptInStatusForMetrics = createSelector(
  * @param state
  * @returns
  */
-// @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
+// @ts-expect-error TODO: Tighten selector composition state typing.
 export const getSmartTransactionsPreferenceEnabled = createSelector(
   getSmartTransactionsOptInStatusInternal,
   (optInStatus: boolean): boolean => {

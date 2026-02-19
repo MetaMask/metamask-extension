@@ -152,7 +152,7 @@ import {
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { getSmartTransactionsOptInStatusInternal } from '../../shared/modules/selectors';
+import { getSmartTransactionsOptInStatusInternal } from '../../shared/modules/selectors/smart-transactions-preferences';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,

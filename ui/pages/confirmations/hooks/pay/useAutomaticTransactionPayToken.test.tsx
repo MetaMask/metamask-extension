@@ -15,7 +15,7 @@ import type { SetPayTokenRequest } from './types';
 jest.mock('./useTransactionPayToken');
 jest.mock('./useTransactionPayData');
 jest.mock('./useTransactionPayAvailableTokens');
-jest.mock('../../../../selectors', () => ({
+jest.mock('../../../../../shared/modules/selectors', () => ({
   getHardwareWalletType: jest.fn(() => null),
 }));
 

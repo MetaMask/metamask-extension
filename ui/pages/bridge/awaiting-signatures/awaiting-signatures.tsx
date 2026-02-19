@@ -4,9 +4,9 @@ import isEqual from 'lodash/isEqual';
 import { isCrossChain } from '@metamask/bridge-controller';
 
 import {
-  isHardwareWallet,
   getHardwareWalletType,
-} from '../../../selectors/selectors';
+  isHardwareWallet,
+} from '../../../../shared/modules/selectors';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import {
   TextVariant,
