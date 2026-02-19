@@ -376,10 +376,10 @@ export async function replaceMusdConversionTransactionForPayToken(
     );
   }
 
-  const { recipientAddress, amountHex } =
-    extractMusdConversionTransferDetails(transactionMeta);
-
   try {
+    const { recipientAddress, amountHex } =
+      extractMusdConversionTransferDetails(transactionMeta);
+
     // Find network client for the new chain
     const networkClientId = await callbacks.findNetworkClientIdByChainId(
       newPayToken.chainId,

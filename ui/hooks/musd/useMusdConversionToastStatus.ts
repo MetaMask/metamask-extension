@@ -120,9 +120,11 @@ export const useMusdConversionToastStatus = (): {
       }
     }
 
-    // Reset dismissed flag if a new pending conversion appeared
+    // Reset dismissed and completion state if a new pending conversion appeared
+    // so we show in-progress for the new conversion, not the previous completion toast
     for (const id of currentPendingIds) {
       if (!pendingConversionIdsRef.current.has(id)) {
+        setCompletionState(null);
         setDismissed(false);
         break;
       }

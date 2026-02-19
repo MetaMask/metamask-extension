@@ -1,6 +1,7 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
+import type { ConvertibleToken } from '../../pages/musd/types';
 import { useMusdConversion } from './useMusdConversion';
 
 const mockNavigate = jest.fn();
@@ -75,6 +76,14 @@ jest.mock('./useMusdGeoBlocking', () => ({
 
 const { useSelector } = jest.requireMock('react-redux');
 const { useMusdGeoBlocking } = jest.requireMock('./useMusdGeoBlocking');
+const { getSelectedInternalAccount } = jest.requireMock('../../selectors');
+const { getUnapprovedTransactions } = jest.requireMock(
+  '../../selectors/transactions',
+);
+const {
+  selectMusdConversionEducationSeen,
+  selectIsMusdConversionFlowEnabled,
+} = jest.requireMock('../../selectors/musd');
 
 const MOCK_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 const MOCK_TX_ID = 'tx-abc-123';
@@ -95,22 +104,20 @@ function setupSelectors(overrides: Partial<SelectorMap> = {}) {
     ...overrides,
   };
 
-  let callIndex = 0;
-  useSelector.mockImplementation(() => {
-    const idx = callIndex;
-    callIndex += 1;
-    switch (idx % 4) {
-      case 0:
-        return defaults.selectedAccount;
-      case 1:
-        return defaults.unapprovedTransactions;
-      case 2:
-        return defaults.educationSeen;
-      case 3:
-        return defaults.isFeatureEnabled;
-      default:
-        return undefined;
+  useSelector.mockImplementation((selector: (state: unknown) => unknown) => {
+    if (selector === getSelectedInternalAccount) {
+      return defaults.selectedAccount;
     }
+    if (selector === getUnapprovedTransactions) {
+      return defaults.unapprovedTransactions;
+    }
+    if (selector === selectMusdConversionEducationSeen) {
+      return defaults.educationSeen;
+    }
+    if (selector === selectIsMusdConversionFlowEnabled) {
+      return defaults.isFeatureEnabled;
+    }
+    return undefined;
   });
 }
 
@@ -273,11 +280,14 @@ describe('useMusdConversion', () => {
     });
 
     it('calls updateTransactionPaymentToken when preferredToken has address', async () => {
-      const preferredToken = {
-        address: '0xUSDC',
+      const preferredToken: ConvertibleToken = {
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         chainId: '0x1',
         symbol: 'USDC',
+        name: 'USD Coin',
         decimals: 6,
+        balance: '0x0',
+        fiatBalance: '100',
       };
 
       const { result } = renderHook(() => useMusdConversion());
@@ -288,17 +298,20 @@ describe('useMusdConversion', () => {
 
       expect(mockUpdateTransactionPaymentToken).toHaveBeenCalledWith({
         transactionId: MOCK_TX_ID,
-        tokenAddress: '0xUSDC',
+        tokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         chainId: '0x1',
       });
     });
 
     it('uses preferredToken chainId when provided', async () => {
-      const preferredToken = {
-        address: '0xUSDC',
+      const preferredToken: ConvertibleToken = {
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         chainId: '0xe708',
         symbol: 'USDC',
+        name: 'USD Coin',
         decimals: 6,
+        balance: '0x0',
+        fiatBalance: '100',
       };
 
       const { result } = renderHook(() => useMusdConversion());

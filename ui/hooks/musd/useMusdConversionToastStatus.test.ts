@@ -339,4 +339,66 @@ describe('useMusdConversionToastStatus', () => {
 
     expect(result.current.toastState).toBe('in-progress');
   });
+
+  it('shows in-progress for new pending conversion after previous conversion succeeded', () => {
+    setupMock(
+      [createMusdConversionTx('tx-1', TransactionStatus.submitted)],
+      MOCK_PAYMENT_TOKEN,
+    );
+
+    const { result, rerender } = renderHook(() =>
+      useMusdConversionToastStatus(),
+    );
+
+    expect(result.current.toastState).toBe('in-progress');
+
+    updateMock(
+      [createMusdConversionTx('tx-1', TransactionStatus.confirmed)],
+      undefined,
+    );
+    rerender();
+    expect(result.current.toastState).toBe('success');
+
+    updateMock(
+      [
+        createMusdConversionTx('tx-1', TransactionStatus.confirmed),
+        createMusdConversionTx('tx-2', TransactionStatus.submitted),
+      ],
+      MOCK_PAYMENT_TOKEN,
+    );
+    rerender();
+
+    expect(result.current.toastState).toBe('in-progress');
+  });
+
+  it('shows in-progress for new pending conversion after previous conversion failed', () => {
+    setupMock(
+      [createMusdConversionTx('tx-1', TransactionStatus.submitted)],
+      MOCK_PAYMENT_TOKEN,
+    );
+
+    const { result, rerender } = renderHook(() =>
+      useMusdConversionToastStatus(),
+    );
+
+    expect(result.current.toastState).toBe('in-progress');
+
+    updateMock(
+      [createMusdConversionTx('tx-1', TransactionStatus.failed)],
+      undefined,
+    );
+    rerender();
+    expect(result.current.toastState).toBe('failed');
+
+    updateMock(
+      [
+        createMusdConversionTx('tx-1', TransactionStatus.failed),
+        createMusdConversionTx('tx-2', TransactionStatus.submitted),
+      ],
+      MOCK_PAYMENT_TOKEN,
+    );
+    rerender();
+
+    expect(result.current.toastState).toBe('in-progress');
+  });
 });
