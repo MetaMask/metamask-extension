@@ -10,7 +10,6 @@ import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import { KnownCaipNamespace } from '@metamask/utils';
 import { getEnabledNetworks } from '../../../shared/modules/selectors/multichain';
-import { MUSD_BUYABLE_CHAIN_IDS } from '../../components/app/musd/constants';
 
 export type MusdNetworkFilterResult = {
   /** True if multiple networks are selected (popular networks view) */
@@ -19,8 +18,6 @@ export type MusdNetworkFilterResult = {
   selectedChainId: Hex | null;
   /** All enabled chain IDs */
   enabledChainIds: Hex[];
-  /** Whether mUSD is buyable on any of the enabled chains */
-  isMusdBuyableOnAnyEnabledChain: boolean;
 };
 
 export function useMusdNetworkFilter(): MusdNetworkFilterResult {
@@ -50,20 +47,10 @@ export function useMusdNetworkFilter(): MusdNetworkFilterResult {
     [isPopularNetworksFilterActive, enabledChainIds],
   );
 
-  // Check if mUSD is buyable on any enabled chain
-  const isMusdBuyableOnAnyEnabledChain = useMemo(
-    () =>
-      enabledChainIds.some((chainId) =>
-        MUSD_BUYABLE_CHAIN_IDS.includes(chainId),
-      ),
-    [enabledChainIds],
-  );
-
   return {
     isPopularNetworksFilterActive,
     selectedChainId,
     enabledChainIds,
-    isMusdBuyableOnAnyEnabledChain,
   };
 }
 

@@ -115,38 +115,4 @@ describe('useMusdNetworkFilter', () => {
       expect(result.current.selectedChainId).toBeNull();
     });
   });
-
-  describe('isMusdBuyableOnAnyEnabledChain', () => {
-    it('returns true when at least one enabled chain is in MUSD_BUYABLE_CHAIN_IDS', () => {
-      setupNetworks({ '0x1': true, '0x89': true });
-
-      const { result } = renderHook(() => useMusdNetworkFilter());
-
-      expect(result.current.isMusdBuyableOnAnyEnabledChain).toBe(true);
-    });
-
-    it('returns false when no enabled chain is in MUSD_BUYABLE_CHAIN_IDS', () => {
-      setupNetworks({ '0x89': true, '0xa4b1': true });
-
-      const { result } = renderHook(() => useMusdNetworkFilter());
-
-      expect(result.current.isMusdBuyableOnAnyEnabledChain).toBe(false);
-    });
-
-    it('returns false when no chains are enabled', () => {
-      setupNetworks({});
-
-      const { result } = renderHook(() => useMusdNetworkFilter());
-
-      expect(result.current.isMusdBuyableOnAnyEnabledChain).toBe(false);
-    });
-
-    it('returns true for Linea Mainnet alone', () => {
-      setupNetworks({ '0xe708': true });
-
-      const { result } = renderHook(() => useMusdNetworkFilter());
-
-      expect(result.current.isMusdBuyableOnAnyEnabledChain).toBe(true);
-    });
-  });
 });

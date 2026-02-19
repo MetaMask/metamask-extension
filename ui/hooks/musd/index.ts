@@ -51,3 +51,5 @@ export {
   type UseCustomAmountParams,
   type UseCustomAmountResult,
 } from './useCustomAmount';
+
+export { useCanBuyMusd, type UseCanBuyMusdResult } from './useCanBuyMusd';
