@@ -778,6 +778,9 @@
     "ui/components/multichain-accounts/multichain-account-menu/multichain-account-menu.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/multichain-accounts/multichain-account-network-group-with-default-address/multichain-account-network-group-with-default-address.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/multichain-accounts/multichain-accounts-tree/multichain-accounts-tree.test.tsx": {
       "React: Missing key props in lists": 1,
       "Reselect: Identity function warnings": 1,

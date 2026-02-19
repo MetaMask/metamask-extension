@@ -75,6 +75,8 @@ const TEST_IDS = {
   MULTICHAIN_ADDRESS_ROW: 'multichain-address-row',
   AVATAR_GROUP: 'avatar-group',
   HOVER_TRIGGER: 'hover-trigger',
+  CHANGE_IN_SETTINGS_LINK: 'change-in-settings-link',
+  SHOW_DEFAULT_ADDRESS_TOGGLE: 'show-default-address-toggle',
 } as const;
 
 const mockWalletEntropySource = '01K437Z7EJ0VCMFDE9TQKRV60A';
@@ -179,6 +181,10 @@ const ACCOUNT_TREE_MOCK = {
 const createMockState = () => ({
   metamask: {
     completedOnboarding: true,
+    preferences: {
+      showDefaultAddress: true,
+      defaultAddressScope: 'eip155',
+    },
     internalAccounts: {
       accounts: INTERNAL_ACCOUNTS_MOCK,
       selectedAccount: ACCOUNT_EVM_ID_MOCK,
@@ -931,6 +937,40 @@ describe('MultichainHoveredAddressRowsList', () => {
       ).not.toBeInTheDocument();
 
       jest.useRealTimers();
+    });
+  });
+
+  describe('Default address section', () => {
+    it('renders the change-in-settings link when popover is open', async () => {
+      renderComponent();
+
+      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
+      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+        ).toBeInTheDocument();
+      });
+
+      expect(
+        screen.getByTestId(TEST_IDS.CHANGE_IN_SETTINGS_LINK),
+      ).toBeInTheDocument();
+    });
+
+    it('renders the show-default-address toggle when popover is open', async () => {
+      renderComponent();
+
+      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
+      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+        ).toBeInTheDocument();
+      });
+
+      expect(
+        screen.getByTestId(TEST_IDS.SHOW_DEFAULT_ADDRESS_TOGGLE),
+      ).toBeInTheDocument();
     });
   });
 });

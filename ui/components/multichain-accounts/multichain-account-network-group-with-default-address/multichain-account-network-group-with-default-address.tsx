@@ -29,7 +29,7 @@ export type MultichainAccountNetworkGroupWithDefaultAddressProps = {
 };
 
 /**
- * Displays the default-address trigger: network avatars, shortened address,
+ * Displays the default-address component: includes network avatars, shortened address,
  * and copy icon. Click copies the address and shows "Copied" briefly.
  *
  * @param options0
@@ -70,7 +70,7 @@ export const MultichainAccountNetworkGroupWithDefaultAddress = ({
       padding={1}
       gap={1}
       className="cursor-pointer rounded-lg"
-      data-testid="default-address-trigger"
+      data-testid="default-address-container"
     >
       <MultichainAccountNetworkGroup
         groupId={groupId}
