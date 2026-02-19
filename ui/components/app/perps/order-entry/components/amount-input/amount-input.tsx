@@ -152,7 +152,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
       >
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+        <Text variant={TextVariant.BodyMd}>
           {t('perpsSize')}
         </Text>
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>

@@ -4,17 +4,18 @@ import {
   Box,
   BoxFlexDirection,
   BoxAlignItems,
-  Text,
-  TextVariant,
-  FontWeight,
   Button,
   ButtonVariant,
   ButtonSize,
-  ButtonBase,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-
+import { Tag } from '../../../component-library';
 import { usePerpsOrderForm } from '../../../../hooks/perps';
+import {
+  BackgroundColor,
+  BorderRadius,
+  TextColor,
+} from '../../../../helpers/constants/design-system';
 import type { OrderEntryProps } from './order-entry.types';
 
 import { AmountInput } from './components/amount-input';
@@ -23,7 +24,6 @@ import { LeverageSlider } from './components/leverage-slider';
 import { OrderSummary } from './components/order-summary';
 import { AutoCloseSection } from './components/auto-close-section';
 import { CloseAmountSection } from './components/close-amount-section';
-
 /**
  * OrderEntry - Main component for creating perps orders
  *
@@ -51,6 +51,7 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.existingPosition - Existing position data for pre-population
  * @param props.orderType
  * @param props.midPrice
+ * @param props.onOrderTypeChange
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -131,49 +132,61 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
         gap={4}
         className="flex-1 overflow-y-auto overflow-x-hidden pb-4"
       >
-        {/* Order Type: Market and Limit as separate pills */}
+        {/* Order Type: Market and Limit as separate pills (Tag component) */}
         <Box
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
           gap={2}
           className="w-full"
         >
-          <ButtonBase
+          <Tag
+            as="button"
+            type="button"
+            label={t('perpsMarket')}
             onClick={() => handleOrderTypeClick('market')}
-            className={twMerge(
-              'py-2 px-4 rounded-lg transition-colors',
+            backgroundColor={
               orderType === 'market'
-                ? 'bg-background-default border border-default'
-                : 'bg-transparent border border-muted hover:opacity-80',
-            )}
-            data-testid="order-type-market"
-          >
-            <Text
-              variant={TextVariant.BodySm}
-              fontWeight={FontWeight.Medium}
-              className={orderType === 'market' ? '' : 'text-muted'}
-            >
-              {t('perpsMarket')}
-            </Text>
-          </ButtonBase>
-          <ButtonBase
-            onClick={() => handleOrderTypeClick('limit')}
+                ? BackgroundColor.backgroundMuted
+                : BackgroundColor.backgroundDefault
+            }
+            borderWidth={0}
             className={twMerge(
-              'py-2 px-4 rounded-lg transition-colors',
-              orderType === 'limit'
-                ? 'bg-background-default border border-default'
-                : 'bg-transparent border border-muted hover:opacity-80',
+              'cursor-pointer transition-colors',
+              orderType !== 'market' && 'hover:opacity-80',
             )}
+            borderRadius={BorderRadius.pill}
+            labelProps={{
+              color:
+                orderType === 'market'
+                  ? TextColor.textDefault
+                  : TextColor.textMuted,
+            }}
+            data-testid="order-type-market"
+          />
+          <Tag
+            as="button"
+            type="button"
+            label={t('perpsLimit')}
+            onClick={() => handleOrderTypeClick('limit')}
+            backgroundColor={
+              orderType === 'limit'
+                ? BackgroundColor.backgroundMuted
+                : BackgroundColor.backgroundDefault
+            }
+            borderWidth={0}
+            borderRadius={BorderRadius.pill}
+            className={twMerge(
+              'cursor-pointer transition-colors',
+              orderType !== 'limit' && 'hover:opacity-80',
+            )}
+            labelProps={{
+              color:
+                orderType === 'limit'
+                  ? TextColor.textDefault
+                  : TextColor.textMuted,
+            }}
             data-testid="order-type-limit"
-          >
-            <Text
-              variant={TextVariant.BodySm}
-              fontWeight={FontWeight.Medium}
-              className={orderType === 'limit' ? '' : 'text-muted'}
-            >
-              {t('perpsLimit')}
-            </Text>
-          </ButtonBase>
+          />
         </Box>
 
         {/* Close Mode: Show CloseAmountSection */}
@@ -225,13 +238,6 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
           />
         )}
 
-        {/* Order Summary Section - shown in all modes */}
-          <OrderSummary
-            marginRequired={calculations.marginRequired}
-            estimatedFees={calculations.estimatedFees}
-            liquidationPrice={calculations.liquidationPrice}
-          />
-
         {/* New/Modify Modes: Show Auto Close (TP/SL) Section */}
         {mode !== 'close' && (
           <AutoCloseSection
@@ -255,6 +261,13 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             }
           />
         )}
+
+        {/* Order Summary Section - shown in all modes */}
+        <OrderSummary
+          marginRequired={calculations.marginRequired}
+          estimatedFees={calculations.estimatedFees}
+          liquidationPrice={calculations.liquidationPrice}
+        />
       </Box>
 
       {/* Submit Button - shown only when showSubmitButton is true */}

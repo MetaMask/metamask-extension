@@ -5,6 +5,8 @@ import {
   TextVariant,
   TextColor,
   BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
   FontWeight,
   ButtonBase,
 } from '@metamask/design-system-react';
@@ -84,13 +86,15 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
       gap={2}
       className="min-w-0 w-full"
     >
-      <Text
-        variant={TextVariant.BodySm}
-        color={TextColor.TextAlternative}
-        fontWeight={FontWeight.Medium}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
       >
-        {t('perpsLimitPrice')}
-      </Text>
+        <Text variant={TextVariant.BodyMd}>
+          {t('perpsLimitPrice')}
+        </Text>
+      </Box>
 
       <TextField
         size={TextFieldSize.Md}

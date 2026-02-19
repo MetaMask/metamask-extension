@@ -3,7 +3,6 @@ import {
   Box,
   Text,
   TextVariant,
-  FontWeight,
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
@@ -44,11 +43,11 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
         justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
       >
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+        <Text variant={TextVariant.BodyMd}>
           {t('perpsLeverage')}
         </Text>
         <Box className="bg-muted px-3 py-1 rounded-lg">
-          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+          <Text variant={TextVariant.BodyMd}>
             {leverage}x
           </Text>
         </Box>
