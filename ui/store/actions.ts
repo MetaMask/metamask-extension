@@ -179,10 +179,7 @@ import {
 } from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
-import {
-  getDismissSmartAccountSuggestionEnabled,
-  getUseSmartAccount,
-} from '../pages/confirmations/selectors/preferences';
+import { getDismissSmartAccountSuggestionEnabled } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
 import {
@@ -4319,30 +4316,6 @@ export function setDismissSmartAccountSuggestionEnabled(
   };
 }
 
-export function setSmartAccountOptIn(
-  value: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch, getState) => {
-    const prevUseSmartAccount = getUseSmartAccount(getState());
-    trackMetaMetricsEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.SettingsUpdated,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        use_smart_account: value,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        prev_use_smart_account: prevUseSmartAccount,
-      },
-    });
-    await dispatch(setPreference('smartAccountOptIn', value));
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
 export function setTokenSortConfig(value: SortCriteria) {
   return setPreference('tokenSortConfig', value, false);
 }
@@ -8129,4 +8102,23 @@ export async function saveClaimDraft(
  */
 export async function deleteClaimDraft(draftId: string): Promise<void> {
   return await submitRequestToBackground<void>('deleteClaimDraft', [draftId]);
+}
+
+/**
+ * Removes deferred deep link data.
+ */
+export function removeDeferredDeepLink(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    log.debug(`background.removeDeferredDeepLink`);
+    try {
+      await submitRequestToBackground<void>('removeDeferredDeepLink');
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
 }
