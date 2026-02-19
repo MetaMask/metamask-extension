@@ -4,6 +4,7 @@ import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import browser from 'webextension-polyfill';
 
+import log from 'loglevel';
 import { Textarea, TextareaResize } from '../../component-library/textarea';
 import {
   Box,
@@ -74,6 +75,7 @@ export default function SrpInputImport({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const onChangeRef = useRef(onChange);
   const hasClipboardPermissionRef = useRef(false);
+  const isPastingRef = useRef(false);
 
   // Keep the ref updated with the latest onChange callback
   useEffect(() => {
@@ -254,7 +256,6 @@ export default function SrpInputImport({
     clipBoardEvent.preventDefault();
     const newSrp = clipBoardEvent.clipboardData.getData('text');
     if (newSrp.trim().match(/\s/u)) {
-      clipBoardEvent.preventDefault();
       onSrpPaste(newSrp);
     }
   };
@@ -280,6 +281,24 @@ export default function SrpInputImport({
     },
     [draftSrp],
   );
+
+  // Falls back to the offscreen document to read the clipboard.
+  // The offscreen document is exempt from focus/activation requirements,
+  // so it works even when the permission dialog has stolen focus.
+  // Only available in Chrome (MV3); Firefox has no offscreen API.
+  const readClipboardViaOffscreen = async () => {
+    try {
+      const response = await chrome.runtime.sendMessage({
+        target: OffscreenCommunicationTarget.clipboardOffscreen,
+        action: ClipboardAction.readClipboard,
+      });
+      if (response?.success && response.text?.trim().match(/\s/u)) {
+        onSrpPaste(response.text);
+      }
+    } catch (offscreenError) {
+      log.error('Offscreen clipboard read failed', offscreenError);
+    }
+  };
 
   // Read clipboard via the extension's clipboardRead permission.
   // Used for Firefox (always) and Chrome side panel (web permission prompt
@@ -312,58 +331,57 @@ export default function SrpInputImport({
         error.message.includes('Document is not focused')
       ) {
         // Permission dialog stole focus — fall back to offscreen document.
-        // Only available in Chrome side panel; Firefox has no offscreen API.
         const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
         if (isSidePanel) {
-          try {
-            const response = await chrome.runtime.sendMessage({
-              target: OffscreenCommunicationTarget.clipboardOffscreen,
-              action: ClipboardAction.readClipboard,
-            });
-            if (response?.success && response.text?.trim().match(/\s/u)) {
-              onSrpPaste(response.text);
-            }
-          } catch (offscreenError) {
-            console.error('Offscreen clipboard read failed', offscreenError);
-          }
+          await readClipboardViaOffscreen();
+          return;
         }
-        return;
       }
-      console.error('Error requesting clipboard permission', error);
+      log.error('Error requesting clipboard permission', error);
     }
   };
 
   const onTriggerPaste = async () => {
-    setMisSpelledWords([]);
-
-    // Firefox and Chrome side panel both need to request the clipboardRead
-    // extension permission explicitly before reading the clipboard.
-    // In the side panel, the web Clipboard API permission prompt is never
-    // shown to the user, so navigator.clipboard.readText() fails without
-    // the extension-level permission being granted first.
-    const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
-
-    if (getBrowserName() === PLATFORM_FIREFOX || isSidePanel) {
-      await requestPermissionAndReadClipboard();
+    if (isPastingRef.current) {
       return;
     }
 
-    try {
-      const permissionResult = await navigator.permissions.query({
-        name: 'clipboard-read' as PermissionName,
-      });
+    isPastingRef.current = true;
 
-      if (
-        permissionResult.state === 'granted' ||
-        permissionResult.state === 'prompt'
-      ) {
-        const newSrp = await navigator.clipboard.readText();
-        if (newSrp.trim().match(/\s/u)) {
-          onSrpPaste(newSrp);
-        }
+    try {
+      setMisSpelledWords([]);
+
+      // Firefox and Chrome side panel both need to request the clipboardRead
+      // extension permission explicitly before reading the clipboard.
+      // In the side panel, the web Clipboard API permission prompt is never
+      // shown to the user, so navigator.clipboard.readText() fails without
+      // the extension-level permission being granted first.
+      const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+
+      if (getBrowserName() === PLATFORM_FIREFOX || isSidePanel) {
+        await requestPermissionAndReadClipboard();
+        return;
       }
-    } catch (error) {
-      console.error('Error reading clipboard', error);
+
+      try {
+        const permissionResult = await navigator.permissions.query({
+          name: 'clipboard-read' as PermissionName,
+        });
+
+        if (
+          permissionResult.state === 'granted' ||
+          permissionResult.state === 'prompt'
+        ) {
+          const newSrp = await navigator.clipboard.readText();
+          if (newSrp.trim().match(/\s/u)) {
+            onSrpPaste(newSrp);
+          }
+        }
+      } catch (error) {
+        log.error('Error reading clipboard', error);
+      }
+    } finally {
+      isPastingRef.current = false;
     }
   };
 
