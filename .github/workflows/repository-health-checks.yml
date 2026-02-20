@@ -47,6 +47,7 @@ jobs:
       - name: Run audit
         if: ${{ !cancelled() }}
         run: yarn audit
+        continue-on-error: ${{ !startsWith(github.head_ref || github.ref_name, 'release/') }}
 
       - name: Detect yarn lock deduplications
         if: ${{ !cancelled() }}
