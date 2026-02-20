@@ -55,8 +55,21 @@ const APPROVAL_TEMPLATES = {
   [GMX_APPROVAL_TYPE]: defiReferralConsent,
 };
 
-export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES =
-  Object.keys(APPROVAL_TEMPLATES);
+export { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from './constants';
+
+if (process.env.NODE_ENV === 'development') {
+  import('./constants').then(({ TEMPLATED_CONFIRMATION_APPROVAL_TYPES: types }) => {
+    const templateKeys = Object.keys(APPROVAL_TEMPLATES).sort();
+    const constantKeys = [...types].sort();
+    const match = JSON.stringify(templateKeys) === JSON.stringify(constantKeys);
+    if (!match) {
+      console.error(
+        'APPROVAL_TEMPLATES keys and TEMPLATED_CONFIRMATION_APPROVAL_TYPES are out of sync.',
+        { templateKeys, constantKeys },
+      );
+    }
+  });
+}
 
 const ALLOWED_TEMPLATE_KEYS = [
   'cancelText',
