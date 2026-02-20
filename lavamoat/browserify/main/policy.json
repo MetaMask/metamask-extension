@@ -922,8 +922,8 @@
         "@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/assets-controllers>@metamask/phishing-controller": true,
-        "@metamask/polling-controller": true,
+        "@metamask/phishing-controller": true,
+        "@metamask/assets-controllers>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/assets-controllers>@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -2022,24 +2022,19 @@
         "punycode": true
       }
     },
-    "@metamask/assets-controllers>@metamask/phishing-controller": {
+    "@metamask/polling-controller": {
       "globals": {
-        "TextEncoder": true,
-        "URL": true,
+        "clearTimeout": true,
         "console.error": true,
-        "console.warn": true,
-        "fetch": true
+        "setTimeout": true
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@noble/hashes": true,
-        "@metamask/assets-controllers>@metamask/accounts-controller>ethereum-cryptography": true,
-        "webpack-cli>fastest-levenshtein": true,
-        "punycode": true
+        "fast-json-stable-stringify": true,
+        "uuid": true
       }
     },
-    "@metamask/polling-controller": {
+    "@metamask/assets-controllers>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -2893,12 +2888,6 @@
       }
     },
     "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -4366,15 +4355,6 @@
       },
       "packages": {
         "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/accounts-controller>ethereum-cryptography": {
-      "globals": {
-        "TextDecoder": true,
-        "crypto": true
-      },
-      "packages": {
-        "@metamask/assets-controllers>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography": {
