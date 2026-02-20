@@ -52,6 +52,7 @@ import {
   getNonTestNetworks,
   MultichainNetworkConfigurationsByChainIdState,
 } from '../../shared/modules/selectors/networks';
+import { MetaMaskReduxState } from '../store/store';
 import { getSelectedInternalAccount } from './accounts';
 import { getMultichainBalances } from './multichain';
 import { EMPTY_OBJECT } from './shared';
@@ -85,7 +86,6 @@ import {
   getTokensControllerAllIgnoredTokens,
   getTokensControllerAllTokens,
 } from './assets-migration';
-import { MetaMaskReduxState } from 'ui/store/store';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
