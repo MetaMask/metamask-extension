@@ -88,6 +88,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/confirmations/transactions/set-approval-for-all.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 1,
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "error: Error: AggregateError": 1,

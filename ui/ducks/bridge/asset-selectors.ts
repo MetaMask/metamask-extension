@@ -201,7 +201,6 @@ const getEvmExchangeRates = createSelector(
       )
         // Sometimes marketData has a price for zero address (native) so it needs to be factored in
         .times(
-          // @ts-expect-error - hexChainId is a Hex string
           marketData[formatChainIdToHex(chainId)]?.[
             zeroAddress()
           ]?.price?.toString() ?? '1',
