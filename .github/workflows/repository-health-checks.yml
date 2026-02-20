@@ -43,9 +43,9 @@ jobs:
         if: ${{ !cancelled() }}
         run: yarn --check-resolutions
 
-      - name: Run audit
+      - name: Run audit and triage
         if: ${{ !cancelled() }}
-        run: yarn audit
+        run: node .github/scripts/yarn-audit-and-triage.mts
 
       - name: Detect yarn lock deduplications
         if: ${{ !cancelled() }}
