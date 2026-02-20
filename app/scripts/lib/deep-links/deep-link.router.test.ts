@@ -185,7 +185,10 @@ describe('DeepLinkRouter', () => {
     });
 
     describe('trusted origins', () => {
-      it.each([{ originField: 'initiator' }, { originField: 'originUrl' }])(
+      it.each([
+        { originField: 'initiator' },
+        { originField: 'originUrl' },
+      ] as const)(
         'should skip the interstitial for signed links with trusted %s',
         async ({ originField }: { originField: 'initiator' | 'originUrl' }) => {
           const tabId = 1;
