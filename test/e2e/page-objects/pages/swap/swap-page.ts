@@ -336,17 +336,14 @@ class SwapPage {
   }
 
   async checkNotificationBanner(title: string, text: string): Promise<void> {
-    const isTitleVisible = await this.driver.isElementPresentAndVisible({
+    await this.driver.waitForSelector({
       css: this.swapsBannerTitle,
       text: title,
     });
-    assert.equal(isTitleVisible, true, 'Invalid box title');
-
-    const isContentVisible = await this.driver.isElementPresentAndVisible({
+    await this.driver.waitForSelector({
       css: this.bannerBase,
       text,
     });
-    assert.equal(isContentVisible, true, 'Invalid box text content');
   }
 
   async selectAlternativeQuote(): Promise<void> {
