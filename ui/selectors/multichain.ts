@@ -28,6 +28,14 @@ import {
   MultichainNetworks,
   MultichainProviderConfig,
 } from '../../shared/constants/multichain/networks';
+// TODO: Importing after ducks/metamask/metamask causes circular dependencies in tests
+// eslint-disable-next-line import/order
+import {
+  getCurrencyRateControllerCurrencyRates,
+  getCurrencyRateControllerCurrentCurrency,
+  getMultichainAssetsRatesControllerConversionRates,
+  getMultiChainBalancesControllerBalances,
+} from './assets-migration';
 import {
   getCompletedOnboarding,
   getNativeCurrency,
@@ -69,12 +77,6 @@ import {
   getSelectedMultichainNetworkConfiguration,
   type MultichainNetworkConfigState,
 } from './multichain/networks';
-import {
-  getCurrencyRateControllerCurrencyRates,
-  getCurrencyRateControllerCurrentCurrency,
-  getMultichainAssetsRatesControllerConversionRates,
-  getMultiChainBalancesControllerBalances,
-} from './assets-migration';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
