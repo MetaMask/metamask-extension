@@ -257,6 +257,7 @@
     "permissionHistory": "object"
   },
   "PhishingController": {
+    "addressScanCache": "object",
     "tokenScanCache": "object",
     "urlScanCache": "object"
   },

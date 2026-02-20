@@ -191,6 +191,7 @@
     "PermissionController": { "subjects": "object" },
     "PermissionLogController": { "permissionHistory": "object" },
     "PhishingController": {
+      "addressScanCache": "object",
       "tokenScanCache": "object",
       "urlScanCache": "object"
     },
