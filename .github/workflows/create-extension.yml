@@ -8,7 +8,7 @@ on:
 permissions:
   # 'contents: read' allows the workflow to checkout the repository code
   contents: read
-  # 'id-token: write' is strictly required for the google-github-actions/auth action 
+  # 'id-token: write' is strictly required for the google-github-actions/auth action
   # to request a short-lived OpenID Connect (OIDC) token from GitHub.
   id-token: write
 
@@ -60,17 +60,26 @@ jobs:
           # Zip the contents into extension.zip in the repository root
           zip -r ../../extension.zip .
 
-      # Step 4: Upload the zip file to create a NEW draft extension
+      # Step 4: Verify the zip file is valid before uploading
+      - name: Verify zip contents
+        run: |
+          echo "=== Zip file size ==="
+          ls -lh extension.zip
+          echo ""
+          echo "=== Top-level contents (manifest.json should be here) ==="
+          unzip -l extension.zip | head -20
+
+      # Step 5: Upload the zip file to create a NEW draft extension
       # This uses the Chrome Web Store API v1.1 endpoint for inserting new items.
       # It passes the access token we got from the auth step.
       - name: Create Draft Extension
         run: |
-          # Note: The endpoint version must be v1.1
           RESPONSE=$(curl -s -X POST \
             -H "Authorization: Bearer ${{ steps.auth.outputs.access_token }}" \
             -H "x-goog-api-version: 2" \
+            -H "Content-Type: application/zip" \
             -T extension.zip \
-            "https://www.googleapis.com/upload/chromewebstore/v1.1/items?uploadType=media")
+            "https://www.googleapis.com/upload/chromewebstore/v1.1/items")
 
           # Print the API response so you can see the results
           echo "$RESPONSE"
