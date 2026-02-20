@@ -777,14 +777,6 @@
   "backToHome": {
     "message": "Back to home"
   },
-  "backgroundInitializationTimeout": {
-    "message": "Background initialization timed out",
-    "description": "Error message shown when the background controller takes too long to initialize"
-  },
-  "backgroundStateSyncTimeout": {
-    "message": "Background state sync timed out",
-    "description": "Error message shown when the background takes too long to send its state to the UI after initialization"
-  },
   "backup": {
     "message": "Backup"
   },
