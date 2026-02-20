@@ -47,6 +47,15 @@ jest.mock('../../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(method, args),
 }));
 
+jest.mock('../../../../store/store-instance', () => ({
+  getStoreInstance: () => ({
+    subscribe: (listener: () => void) => {
+      Promise.resolve().then(listener);
+      return () => {};
+    },
+  }),
+}));
+
 const renderModal = (
   props = {
     onCreateNewAccount: mockOnCreateNewAccount,
@@ -82,7 +91,7 @@ const renderModal = (
 };
 
 describe('NewAccountModal', () => {
-  it('calls forceUpdateMetamaskState after adding account', async () => {
+  it('calls addNewAccount via background when adding account', async () => {
     const { render } = renderModal();
     const { getByText } = render;
     const addAccountButton = getByText(messages.save.message);
@@ -91,10 +100,9 @@ describe('NewAccountModal', () => {
     fireEvent.click(addAccountButton);
 
     await waitFor(() => {
-      expect(mockSubmitRequestToBackground).toHaveBeenNthCalledWith(
-        2,
-        'getStatePatches',
-        undefined,
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'addNewAccount',
+        expect.anything(),
       );
     });
   });

@@ -54,7 +54,6 @@ describe('Ducks - Bridge', () => {
       setBackgroundConnection({
         setActiveNetwork: jest.fn(),
         setEnabledAllPopularNetworks: jest.fn(),
-        getStatePatches: jest.fn(),
       } as never);
       const state = store.getState().bridge;
       const actionPayload = {
@@ -157,7 +156,6 @@ describe('Ducks - Bridge', () => {
       const mockUpdateParams = jest.fn();
       setBackgroundConnection({
         [BridgeUserAction.UPDATE_QUOTE_PARAMS]: mockUpdateParams,
-        getStatePatches: jest.fn(),
       } as never);
 
       store.dispatch(
@@ -230,7 +228,6 @@ describe('Ducks - Bridge', () => {
       const mockResetBridgeState = jest.fn();
       setBackgroundConnection({
         [BridgeBackgroundAction.RESET_STATE]: mockResetBridgeState,
-        getStatePatches: jest.fn(),
       } as never);
 
       mockStore.dispatch(resetBridgeState() as never);

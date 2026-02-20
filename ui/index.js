@@ -28,6 +28,7 @@ import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
 import * as actions from './store/actions';
 import configureStore from './store/store';
+import { setStoreInstance } from './store/store-instance';
 import {
   getSelectedInternalAccount,
   getUnapprovedTransactions,
@@ -174,6 +175,7 @@ export async function setupInitialStore(metamaskState, activeTab) {
   }
 
   const store = configureStore(draftInitialState);
+  setStoreInstance(store);
   reduxStore.resolve(store);
 
   const unapprovedTxs = getUnapprovedTransactions(metamaskState);

@@ -29,6 +29,15 @@ import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
 
+jest.mock('./store-instance', () => ({
+  getStoreInstance: () => ({
+    subscribe: (listener) => {
+      Promise.resolve().then(listener);
+      return () => {};
+    },
+  }),
+}));
+
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 const mockUlid = '01JMPHQSH1A4DQAAS6ES7NDJ38';
@@ -110,7 +119,6 @@ describe('Actions', () => {
     background.signTypedMessage = sinon.stub();
     background.abortTransactionSigning = sinon.stub();
     background.toggleExternalServices = sinon.stub();
-    background.getStatePatches = sinon.stub().resolves([]);
     background.removePermittedChain = sinon.stub();
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
     background.grantPermissions = sinon.stub();
@@ -1223,7 +1231,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         updateTransaction: updateTransactionStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1246,7 +1253,6 @@ describe('Actions', () => {
         updateTransaction: () => {
           throw new Error('error');
         },
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1571,7 +1577,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addToken: addTokenStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1600,7 +1605,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addToken: addTokenStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1635,7 +1639,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         ignoreTokens: ignoreTokensStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1651,7 +1654,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         ignoreTokens: sinon.stub().rejects(new Error('error')),
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1929,7 +1931,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         setAddressBook: setAddressBookStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -2533,7 +2534,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         rejectPendingApproval: sinon.stub().resolves(),
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());

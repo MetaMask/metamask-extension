@@ -130,7 +130,6 @@ const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
 
 setBackgroundConnection({
   submitTx: submitTxSpy,
-  getStatePatches: jest.fn(),
   setEnabledAllPopularNetworks: jest.fn(),
 } as never);
 

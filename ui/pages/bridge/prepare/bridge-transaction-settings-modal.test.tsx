@@ -32,7 +32,6 @@ setBackgroundConnection({
   // @ts-expect-error - setSlippage is valid
   setSlippage,
   setSwapsLiveness: jest.fn(),
-  getStatePatches: jest.fn(),
   isSendBundleSupported: jest.fn(),
   isRelaySupported: jest.fn(),
   resetState: jest.fn(),

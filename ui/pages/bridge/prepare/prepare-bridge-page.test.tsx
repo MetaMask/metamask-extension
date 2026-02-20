@@ -39,7 +39,6 @@ jest.mock('../../../contexts/hardware-wallets', () => ({
 
 setBackgroundConnection({
   resetState: async () => jest.fn(),
-  getStatePatches: async () => jest.fn(),
   updateBridgeQuoteRequestParams: async () => jest.fn(),
 } as never);
 

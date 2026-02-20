@@ -26,7 +26,6 @@ jest.mock('../../contexts/hardware-wallets', () => ({
 
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),
-  getStatePatches: jest.fn(),
   addPollingTokenToAppState: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
   resetSwapsState: jest.fn(),
