@@ -3184,18 +3184,26 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
             />
           </div>
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="margin-top: 32px; margin-bottom: 10px; border-radius: 50%; justify-self: center; align-self: center; height: 60px; width: 60px;"
+          />
+          <div
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="margin-bottom: 20px; justify-self: center; align-self: center; height: 32px; width: 200px;"
+          />
+          <div
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
             data-testid="confirmation__info_skeleton"
-          >
-            <div
-              class="mm-box mm-skeleton mm-box--margin-bottom-2 mm-box--background-color-icon-alternative mm-box--rounded-sm"
-              style="height: 16px; width: 30%;"
-            />
-            <div
-              class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-              style="height: 48px; width: 100%;"
-            />
-          </div>
+            style="margin-bottom: 12px; height: 72px; width: 100%;"
+          />
+          <div
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="margin-bottom: 12px; height: 72px; width: 100%;"
+          />
+          <div
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="margin-bottom: 12px; height: 72px; width: 100%;"
+          />
         </div>
       </div>
     </div>

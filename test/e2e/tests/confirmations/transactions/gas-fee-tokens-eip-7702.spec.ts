@@ -267,6 +267,7 @@ async function mockTransactionRelayStatus(
 ) {
   await mockServer
     .forGet(`${TX_SENTINEL_URL}/smart-transactions/${UUID}`)
+    .always()
     .thenCallback(() => {
       return {
         ok: true,
