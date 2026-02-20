@@ -292,7 +292,7 @@ describe('MusdEducationScreen', () => {
       });
     });
 
-    it('shows "Get started" and starts conversion flow when user can buy', async () => {
+    it('shows "Get started" and starts conversion flow', async () => {
       const store = createMockStore();
       renderWithProvider(<MusdEducationScreen />, store);
 
@@ -309,7 +309,7 @@ describe('MusdEducationScreen', () => {
       expect(mockOpenBuyCryptoInPdapp).not.toHaveBeenCalled();
     });
 
-    it('shows "Continue" and navigates home when user cannot buy', () => {
+    it('shows "Get started" and starts conversion flow even when user cannot buy in region', async () => {
       mockUseCanBuyMusd.mockReturnValue({
         canBuyMusdInRegion: false,
         isLoading: false,
@@ -318,11 +318,15 @@ describe('MusdEducationScreen', () => {
       renderWithProvider(<MusdEducationScreen />, store);
 
       const button = screen.getByTestId('musd-education-continue-button');
-      expect(button).toHaveTextContent('Continue');
+      expect(button).toHaveTextContent('Get started');
       fireEvent.click(button);
 
-      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
-      expect(mockStartConversionFlow).not.toHaveBeenCalled();
+      expect(mockDispatch).toHaveBeenCalled();
+      expect(mockStartConversionFlow).toHaveBeenCalledWith({
+        preferredToken: mockDefaultPaymentToken,
+        skipEducation: true,
+        entryPoint: 'deeplink',
+      });
       expect(mockOpenBuyCryptoInPdapp).not.toHaveBeenCalled();
     });
   });

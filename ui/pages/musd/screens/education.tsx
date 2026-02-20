@@ -86,10 +86,10 @@ const MusdEducationScreen: React.FC = () => {
 
   /**
    * Handle primary CTA click.
-   * - Deeplink + can buy + no tokens: open buy flow then go home ("Buy mUSD").
-   * - Deeplink + cannot buy: go home ("Continue").
-   * - Geo-blocked: go home ("Continue").
-   * - Otherwise: start conversion flow ("Get started").
+   * - Deeplink + no tokens + can buy: open buy flow then go home ("Buy mUSD").
+   * - Deeplink + no tokens + cannot buy: go home ("Continue").
+   * - Geo-blocked (non-deeplink): go home ("Continue").
+   * - Otherwise (including deeplink + has tokens): start conversion flow ("Get started").
    */
   const handleContinue = useCallback(async () => {
     dispatch(setMusdConversionEducationSeen(true));
@@ -100,7 +100,7 @@ const MusdEducationScreen: React.FC = () => {
       return;
     }
 
-    if (isDeeplink && !canBuyMusdInRegion) {
+    if (isDeeplinkNoTokensContinueHome) {
       navigate(DEFAULT_ROUTE);
       return;
     }
@@ -129,8 +129,8 @@ const MusdEducationScreen: React.FC = () => {
     dispatch,
     navigate,
     isDeeplinkNoTokensGoToBuy,
+    isDeeplinkNoTokensContinueHome,
     isDeeplink,
-    canBuyMusdInRegion,
     isGeoBlocked,
     openBuyCryptoInPdapp,
     startConversionFlow,
@@ -149,11 +149,7 @@ const MusdEducationScreen: React.FC = () => {
   let primaryButtonLabel = t('musdEducationGetStarted');
   if (isDeeplinkNoTokensGoToBuy) {
     primaryButtonLabel = t('musdBuyMusd');
-  } else if (
-    isDeeplinkNoTokensContinueHome ||
-    isGeoBlocked ||
-    (isDeeplink && !canBuyMusdInRegion)
-  ) {
+  } else if (isDeeplinkNoTokensContinueHome || isGeoBlocked) {
     primaryButtonLabel = t('continue');
   }
 
