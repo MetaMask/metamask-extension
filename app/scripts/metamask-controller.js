@@ -3009,8 +3009,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setOutdatedBrowserWarningLastShown.bind(
           appStateController,
         ),
-      setIsUpdateAvailable:
-        appStateController.setIsUpdateAvailable.bind(appStateController),
+      setPendingExtensionVersion:
+        appStateController.setPendingExtensionVersion.bind(appStateController),
       setUpdateModalLastDismissedAt:
         appStateController.setUpdateModalLastDismissedAt.bind(
           appStateController,
