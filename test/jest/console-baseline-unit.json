@@ -353,6 +353,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/currency-input/currency-input.test.js": {
+      "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/data-deletion-error-modal/data-deletion-error-modal.test.tsx": {
@@ -680,6 +681,7 @@
     },
     "ui/components/app/transaction-list-item/transaction-list-item.component.unified-swap-bridge.test.tsx": {
       "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 1,
       "error: Error: Insufficient number of substitutions": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1050,6 +1052,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain/multichain-accounts/wallet-details-account-item/wallet-details-account-item.test.tsx": {
+      "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain/network-list-item/network-list-item.test.js": {
@@ -1198,6 +1201,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/ui/currency-display/currency-display.component.test.js": {
+      "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/ui/form-combo-field/form-combo-field.test.tsx": {
@@ -1418,6 +1422,9 @@
     "ui/hooks/useAsync.test.ts": {
       "Test errors: Uncaught Errors": 2
     },
+    "ui/hooks/useCurrencyDisplay.test.js": {
+      "Reselect: Input stability warnings": 1
+    },
     "ui/hooks/useCurrencyRatePolling.test.ts": {
       "React: Act warnings (component updates not wrapped)": 7,
       "warn: ⚠️ React Router Future Flag": 2
@@ -1445,7 +1452,8 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/hooks/useMultichainAccountTotalFiatBalance.test.tsx": {
-      "MetaMask: Background connection not initialized": 8
+      "MetaMask: Background connection not initialized": 8,
+      "Reselect: Input stability warnings": 1
     },
     "ui/hooks/useMultichainAccountsIntroModal.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
@@ -1490,6 +1498,7 @@
     "ui/hooks/useTransactionDisplayData.test.js": {
       "MetaMask: XChain Swaps warnings": 4,
       "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/hooks/useTrustSignals.test.ts": {
@@ -1561,7 +1570,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/prepare/components/destination-account-picker-modal.test.tsx": {
-      "Reselect: Input stability warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/prepare/prepare-bridge-page.test.tsx": {
@@ -1593,6 +1602,7 @@
     },
     "ui/pages/confirm-add-suggested-token/confirm-add-suggested-token.test.js": {
       "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirm-decrypt-message/confirm-decrypt-message.component.test.js": {
@@ -2270,6 +2280,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/gas-details-item/gas-details-item.test.js": {
+      "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/gas-estimate-list-item/gas-estimate-list-item.test.tsx": {
@@ -3154,7 +3165,7 @@
       "React: Act warnings (component updates not wrapped)": 22,
       "React: PropTypes validation failures": 2,
       "Reselect: Identity function warnings": 4,
-      "Reselect: Input stability warnings": 4,
+      "Reselect: Input stability warnings": 5,
       "warn: Could not find asset type": 9,
       "warn: ⚠️ React Router Future Flag": 2
     },
