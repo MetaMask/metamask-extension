@@ -253,7 +253,7 @@
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/logger": true,
         "ethers>@ethersproject/properties": true,
-        "ethers>@ethersproject/transactions": true
+        "@ethersproject/transactions": true
       }
     },
     "ethers>@ethersproject/hash": {
@@ -279,7 +279,7 @@
         "ethers>@ethersproject/sha2": true,
         "ethers>@ethersproject/signing-key": true,
         "ethers>@ethersproject/strings": true,
-        "ethers>@ethersproject/transactions": true,
+        "@ethersproject/transactions": true,
         "ethers>@ethersproject/wordlists": true
       }
     },
@@ -294,7 +294,7 @@
         "ethers>@ethersproject/properties": true,
         "ethers>@ethersproject/random": true,
         "ethers>@ethersproject/strings": true,
-        "ethers>@ethersproject/transactions": true,
+        "@ethersproject/transactions": true,
         "ethers>@ethersproject/json-wallets>aes-js": true,
         "ethers>@ethersproject/json-wallets>scrypt-js": true
       }
@@ -352,7 +352,7 @@
         "ethers>@ethersproject/random": true,
         "ethers>@ethersproject/sha2": true,
         "ethers>@ethersproject/strings": true,
-        "ethers>@ethersproject/transactions": true,
+        "@ethersproject/transactions": true,
         "ethers>@ethersproject/web": true,
         "@ethersproject/providers>bech32": true
       }
@@ -402,7 +402,7 @@
         "ethers>@ethersproject/logger": true
       }
     },
-    "ethers>@ethersproject/transactions": {
+    "@ethersproject/transactions": {
       "packages": {
         "ethers>@ethersproject/address": true,
         "@ethersproject/bignumber": true,
@@ -435,7 +435,7 @@
         "ethers>@ethersproject/properties": true,
         "ethers>@ethersproject/random": true,
         "ethers>@ethersproject/signing-key": true,
-        "ethers>@ethersproject/transactions": true
+        "@ethersproject/transactions": true
       }
     },
     "ethers>@ethersproject/web": {
@@ -657,7 +657,7 @@
       "packages": {
         "@ethersproject/abi": true,
         "ethers>@ethersproject/rlp": true,
-        "ethers>@ethersproject/transactions": true,
+        "@ethersproject/transactions": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/domain-service": true,
         "@ledgerhq/errors": true,
@@ -813,7 +813,7 @@
       },
       "packages": {
         "@metamask/account-api": true,
-        "@metamask/accounts-controller": true,
+        "@metamask/account-tree-controller>@metamask/accounts-controller": true,
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
@@ -841,6 +841,18 @@
         "uuid": true
       }
     },
+    "@metamask/account-tree-controller>@metamask/accounts-controller": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/keyring-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography": true,
+        "uuid": true
+      }
+    },
     "@metamask/address-book-controller": {
       "packages": {
         "@metamask/base-controller": true,
@@ -860,6 +872,28 @@
         "@metamask/base-controller": true,
         "@metamask/rpc-errors": true,
         "nanoid": true
+      }
+    },
+    "@metamask/assets-controller": {
+      "globals": {
+        "clearInterval": true,
+        "console.error": true,
+        "setInterval": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethersproject/abi": true,
+        "@ethersproject/providers": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/core-backend": true,
+        "@metamask/keyring-snap-client": true,
+        "@metamask/polling-controller": true,
+        "@metamask/assets-controller>@metamask/snaps-utils": true,
+        "@metamask/utils": true,
+        "@metamask/keyring-api>async-mutex": true,
+        "@metamask/assets-controller>bignumber.js": true,
+        "lodash": true
       }
     },
     "@metamask/assets-controllers": {
@@ -990,13 +1024,6 @@
         "buffer": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/bridge-controller": {
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true
-      }
-    },
     "@metamask/bridge-status-controller": {
       "globals": {
         "URLSearchParams": true,
@@ -1078,6 +1105,7 @@
         "URL": true,
         "WebSocket": true,
         "clearTimeout": true,
+        "fetch": true,
         "setTimeout": true
       },
       "meta": {
@@ -1088,6 +1116,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/utils": true,
+        "@metamask/core-backend>@tanstack/query-core": true,
         "cockatiel": true,
         "uuid": true
       }
@@ -1645,7 +1674,7 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/account-api": true,
-        "@metamask/snaps-sdk>@metamask/key-tree": true,
+        "@metamask/accounts-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/keyring-snap-client": true,
@@ -2091,7 +2120,7 @@
       "packages": {
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/keccak256": true,
-        "ethers>@ethersproject/transactions": true,
+        "@ethersproject/transactions": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/smart-transactions-controller>@metamask/polling-controller": true,
@@ -2292,7 +2321,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/transaction-controller>@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/network-controller": true,
+        "@metamask/transaction-controller>@metamask/network-controller": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
@@ -2314,7 +2343,7 @@
       "packages": {
         "@ethersproject/abi": true,
         "@metamask/base-controller": true,
-        "@metamask/transaction-pay-controller>@metamask/bridge-controller": true,
+        "@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/transaction-controller": true,
@@ -2500,6 +2529,11 @@
       }
     },
     "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
+    "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true
       }
@@ -2959,6 +2993,46 @@
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/wipe": true
       }
     },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "addEventListener": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "document": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@swc/helpers": true
+      }
+    },
+    "@tanstack/react-query>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "addEventListener": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console": true,
+        "document": true,
+        "navigator": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
+      }
+    },
+    "@tanstack/react-query": {
+      "globals": {
+        "ReactQueryClientContext": "write"
+      },
+      "packages": {
+        "@tanstack/react-query>@tanstack/query-core": true,
+        "react": true,
+        "@tanstack/react-query>use-sync-external-store": true
+      }
+    },
     "@tanstack/react-virtual": {
       "globals": {
         "document": true,
@@ -3377,6 +3451,11 @@
         "crypto": true
       }
     },
+    "@metamask/assets-controller>bignumber.js": {
+      "globals": {
+        "crypto": true
+      }
+    },
     "@metamask/bridge-controller>bignumber.js": {
       "globals": {
         "crypto": true
@@ -3609,7 +3688,7 @@
         "buffer>ieee754": true
       }
     },
-    "@metamask/snaps-utils>validate-npm-package-name>builtins": {
+    "eslint-plugin-n>builtins": {
       "globals": {
         "process.version": true
       },
@@ -4122,6 +4201,16 @@
         "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
+    "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true,
+        "module": true
+      },
+      "packages": {
+        "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
+      }
+    },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography": {
       "globals": {
         "TextDecoder": true,
@@ -4261,7 +4350,7 @@
         "ethers>@ethersproject/signing-key": true,
         "ethers>@ethersproject/solidity": true,
         "ethers>@ethersproject/strings": true,
-        "ethers>@ethersproject/transactions": true,
+        "@ethersproject/transactions": true,
         "ethers>@ethersproject/units": true,
         "ethers>@ethersproject/wallet": true,
         "ethers>@ethersproject/web": true,
@@ -6256,6 +6345,14 @@
         "tslib": true
       }
     },
+    "@tanstack/react-query>use-sync-external-store": {
+      "globals": {
+        "document": true
+      },
+      "packages": {
+        "react": true
+      }
+    },
     "@storybook/react>util-deprecate": {
       "globals": {
         "console.trace": true,
@@ -6324,7 +6421,7 @@
     },
     "@metamask/snaps-utils>validate-npm-package-name": {
       "packages": {
-        "@metamask/snaps-utils>validate-npm-package-name>builtins": true
+        "eslint-plugin-n>builtins": true
       }
     },
     "react-markdown>vfile>vfile-message": {

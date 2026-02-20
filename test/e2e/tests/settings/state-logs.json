@@ -67,7 +67,6 @@
     "nextNonce": "null",
     "onboardedInThisUISession": "boolean",
     "openMetaMaskTabs": {},
-    "pendingHardwareWalletSigning": "boolean",
     "pendingTokens": {},
     "qrCodeData": "null",
     "removeNftMessage": "string",
@@ -827,7 +826,7 @@
     "pendingApprovalCount": "number",
     "pendingApprovals": {},
     "pendingRevocations": [],
-    "pendingShieldCohort": "null",
+    "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": "null",
     "pna25Acknowledged": "boolean",
     "permissionActivityLog": [
@@ -858,7 +857,6 @@
       "showNativeTokenAsMainBalance": "boolean",
       "showTestNetworks": "boolean",
       "skipDeepLinkInterstitial": "boolean",
-      "smartAccountOptIn": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": "boolean",
       "tokenNetworkFilter": {
@@ -921,6 +919,7 @@
     "selectedAddress": "string",
     "selectedMultichainNetworkChainId": "string",
     "selectedNetworkClientId": "string",
+    "shieldSubscriptionError": "null",
     "shieldEndingToastLastClickedOrClosed": "null",
     "shieldPausedToastLastClickedOrClosed": "null",
     "showAccountBanner": "boolean",
@@ -1166,6 +1165,11 @@
     "watchEthereumAccountEnabled": "boolean",
     "web3ShimUsageOrigins": {},
     "verifiedSnaps": {}
+  },
+  "perpsTutorial": {
+    "tutorialModalOpen": "boolean",
+    "activeStep": "string",
+    "tutorialCompleted": "boolean"
   },
   "platform": {
     "arch": "string",

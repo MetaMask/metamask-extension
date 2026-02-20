@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import type { Hex } from '@metamask/utils';
 import { useTokenDisplayInfo } from '../hooks';
 import {
   ButtonSecondary,
@@ -22,6 +23,8 @@ import { type TokenWithFiatAmount } from '../types';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+import { ClaimBonusBadge, isEligibleForMerklRewards } from '../../musd';
+import { getMerklRewardsEnabled } from '../../musd/selectors';
 import {
   TokenCellTitle,
   TokenCellPercentChange,
@@ -35,6 +38,8 @@ export type TokenCellProps = {
   onClick?: () => void;
   fixCurrencyToUSD?: boolean;
   safeChains?: SafeChain[];
+  /** When true, shows the Merkl "Claim bonus" badge (e.g. on asset detail page). */
+  showMerklBadge?: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -45,6 +50,7 @@ export default function TokenCell({
   onClick,
   fixCurrencyToUSD = false,
   safeChains,
+  showMerklBadge = false,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -55,6 +61,16 @@ export default function TokenCell({
     [safeChains, token.chainId],
   );
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
+
+  const merklRewardsEnabled = useSelector(getMerklRewardsEnabled);
+
+  const showClaimBonusBadge = useMemo(
+    () =>
+      showMerklBadge &&
+      merklRewardsEnabled &&
+      isEligibleForMerklRewards(token.chainId, token.address),
+    [showMerklBadge, merklRewardsEnabled, token.chainId, token.address],
+  );
 
   const tokenDisplayInfo = useTokenDisplayInfo({
     token,
@@ -98,7 +114,17 @@ export default function TokenCell({
             privacyMode={privacyMode}
           />
         }
-        footerLeftDisplay={<TokenCellPercentChange token={displayToken} />}
+        footerLeftDisplay={
+          showClaimBonusBadge ? (
+            <ClaimBonusBadge
+              tokenAddress={token.address as string}
+              chainId={token.chainId as Hex}
+              label={t('merklRewardsClaimBonus')}
+            />
+          ) : (
+            <TokenCellPercentChange token={displayToken} />
+          )
+        }
         footerRightDisplay={
           <TokenCellPrimaryDisplay
             token={displayToken}

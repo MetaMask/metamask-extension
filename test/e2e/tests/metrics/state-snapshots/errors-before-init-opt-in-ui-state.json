@@ -45,6 +45,7 @@
       "nftsDetectionNoticeDismissed": false,
       "onboardingDate": null,
       "outdatedBrowserWarningLastShown": "object",
+      "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": "boolean",
       "productTour": "accountIcon",
@@ -224,7 +225,6 @@
         "showNativeTokenAsMainBalance": true,
         "showTestNetworks": false,
         "skipDeepLinkInterstitial": "boolean",
-        "smartAccountOptIn": "boolean",
         "smartTransactionsMigrationApplied": "boolean",
         "smartTransactionsOptInStatus": true,
         "tokenNetworkFilter": {},
@@ -316,5 +316,5 @@
     },
     "config": "object"
   },
-  "meta": { "version": 193 }
+  "meta": { "version": 195 }
 }
