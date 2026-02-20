@@ -9,6 +9,7 @@ import { AssetFilterMethod } from '../../../context/send-metrics';
 import { NetworkFilter } from './network-filter';
 
 jest.mock('../../../../../hooks/useI18nContext');
+jest.mock('../../../../../helpers/utils/get-image-for-chain-id');
 jest.mock('../../../hooks/send/metrics/useAssetSelectionMetrics');
 jest.mock('../../../hooks/useChainNetworkNameAndImage');
 jest.mock('../../../../../components/component-library', () => ({

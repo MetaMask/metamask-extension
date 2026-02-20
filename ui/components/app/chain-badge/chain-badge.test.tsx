@@ -6,7 +6,7 @@ import { ChainBadge } from './chain-badge';
 
 const mockGetImage = jest.fn();
 
-jest.mock('../../../selectors/multichain', () => ({
+jest.mock('../../../helpers/utils/get-image-for-chain-id', () => ({
   getImageForChainId: (chainId: string) => mockGetImage(chainId),
 }));
 

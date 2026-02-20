@@ -34,6 +34,7 @@ import type {
   BalanceChangePeriod,
   BalanceChangeResult,
 } from '@metamask/assets-controllers';
+import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import { TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
@@ -47,7 +48,10 @@ import { findAssetByAddress } from '../pages/asset/util';
 import { isEvmChainId } from '../../shared/lib/asset-utils';
 import { isEmptyHexString } from '../../shared/modules/hexstring-utils';
 import { isZeroAmount } from '../helpers/utils/number-utils';
-import { getNonTestNetworks } from '../../shared/modules/selectors/networks';
+import {
+  getNonTestNetworks,
+  MultichainNetworkConfigurationsByChainIdState,
+} from '../../shared/modules/selectors/networks';
 import { getSelectedInternalAccount } from './accounts';
 import { getMultichainBalances } from './multichain';
 import { EMPTY_OBJECT } from './shared';
@@ -96,22 +100,22 @@ export type DefiState = {
 
 // Type for the main Redux state that includes all controller states needed for balance calculations
 export type BalanceCalculationState = {
-  metamask: Partial<AccountTreeControllerState> &
-    Partial<AccountsControllerState> &
-    Partial<TokenBalancesControllerState> &
-    Partial<TokenRatesControllerState> &
-    Partial<MultichainBalancesControllerState> &
-    Partial<TokensControllerState> &
-    Partial<CurrencyRateState> & {
-      conversionRates?: Record<string, unknown>;
-      historicalPrices?: Record<string, unknown>;
-      networkConfigurationsByChainId?: Record<string, unknown>;
-      accountsByChainId?: Record<
+  metamask: AccountTreeControllerState &
+    AccountsControllerState &
+    TokenBalancesControllerState &
+    TokenRatesControllerState &
+    MultichainBalancesControllerState &
+    TokensControllerState &
+    CurrencyRateState &
+    MultichainAssetsRatesControllerState &
+    MultichainAssetsControllerState &
+    NetworkEnablementControllerState & {
+      accountsByChainId: Record<
         string,
         Record<string, { balance: string; address: string }>
       >;
     };
-};
+} & MultichainNetworkConfigurationsByChainIdState;
 
 /**
  * Gets non-EVM accounts assets.
