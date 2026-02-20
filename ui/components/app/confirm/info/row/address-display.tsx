@@ -3,6 +3,10 @@ import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   AvatarAccountSize,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -13,11 +17,13 @@ import {
   FlexDirection,
 } from '../../../../../helpers/constants/design-system';
 import { Box } from '../../../../component-library';
+import Identicon from '../../../../ui/identicon';
 import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { PreferredAvatar } from '../../../preferred-avatar';
 import NameDetails from '../../../name/name-details/name-details';
 import { useConfirmContext } from '../../../../../pages/confirmations/context/confirm';
 import { useDisplayName } from '../../../../../hooks/useDisplayName';
+import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 
 const ELLIPSIS = '\u2026';
 
@@ -75,19 +81,64 @@ function useMiddleTruncation(text: string) {
   return { containerRef, display };
 }
 
+function TrustIcon({
+  displayState,
+  image,
+  address,
+}: {
+  displayState: TrustSignalDisplayState;
+  image?: string;
+  address: string;
+}) {
+  switch (displayState) {
+    case TrustSignalDisplayState.Malicious:
+      return (
+        <Icon
+          name={IconName.Danger}
+          size={IconSize.Sm}
+          color={IconColor.ErrorDefault}
+          style={{ flexShrink: 0 }}
+        />
+      );
+    case TrustSignalDisplayState.Verified:
+      return (
+        <Icon
+          name={IconName.VerifiedFilled}
+          size={IconSize.Sm}
+          color={IconColor.InfoDefault}
+          style={{ flexShrink: 0 }}
+        />
+      );
+    case TrustSignalDisplayState.Unknown:
+      return (
+        <Icon
+          name={IconName.Question}
+          size={IconSize.Sm}
+          style={{ flexShrink: 0 }}
+        />
+      );
+    default:
+      if (image) {
+        return <Identicon address={address} diameter={16} image={image} />;
+      }
+      return null;
+  }
+}
+
 export type ConfirmInfoRowAddressDisplayProps = {
   address: string;
+  showAvatar?: boolean;
 };
 
 export const ConfirmInfoRowAddressDisplay = memo(
-  ({ address }: ConfirmInfoRowAddressDisplayProps) => {
+  ({ address, showAvatar = true }: ConfirmInfoRowAddressDisplayProps) => {
     const { currentConfirmation: transactionMeta } =
       useConfirmContext<TransactionMeta>();
 
     const hexAddress = toChecksumHexAddress(address);
     const chainId = transactionMeta.chainId;
 
-    const { name, isAccount } = useDisplayName({
+    const { name, isAccount, image, displayState } = useDisplayName({
       value: hexAddress,
       type: NameType.ETHEREUM_ADDRESS,
       preferContractSymbol: true,
@@ -125,6 +176,11 @@ export const ConfirmInfoRowAddressDisplay = memo(
             onClose={handleModalClose}
           />
         )}
+        <TrustIcon
+          displayState={displayState}
+          image={image}
+          address={hexAddress}
+        />
         {name ? (
           <Text
             variant={TextVariant.BodyMd}
@@ -165,11 +221,13 @@ export const ConfirmInfoRowAddressDisplay = memo(
             </span>
           </Text>
         )}
-        <PreferredAvatar
-          address={hexAddress}
-          size={AvatarAccountSize.Sm}
-          style={{ flexShrink: 0 }}
-        />
+        {showAvatar && (
+          <PreferredAvatar
+            address={hexAddress}
+            size={AvatarAccountSize.Sm}
+            style={{ flexShrink: 0 }}
+          />
+        )}
       </Box>
     );
   },
