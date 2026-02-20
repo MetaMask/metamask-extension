@@ -61,7 +61,6 @@ export const SECURITY_PASSWORD_CHANGE_ROUTE =
 export const BACKUPANDSYNC_ROUTE =
   '/settings/security-and-privacy/backup-and-sync';
 export const REVEAL_SEED_ROUTE = '/seed';
-export const SMART_ACCOUNT_UPDATE = '/smart-account-update';
 export const IMPORT_SRP_ROUTE = '/import-srp';
 export const RESTORE_VAULT_ROUTE = '/restore-vault';
 export const IMPORT_TOKEN_ROUTE = '/import-token';
@@ -304,11 +303,6 @@ export const ROUTES = [
   {
     path: `${REVEAL_SEED_ROUTE}/:keyringId`,
     label: 'Reveal Secret Recovery Phrase Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: SMART_ACCOUNT_UPDATE,
-    label: 'Smart Account Update Page',
     trackInAnalytics: true,
   },
   {

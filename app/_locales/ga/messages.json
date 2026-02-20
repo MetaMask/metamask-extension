@@ -5730,44 +5730,8 @@
   "smartAccount": {
     "message": "Cuntas cliste"
   },
-  "smartAccountAccept": {
-    "message": "Úsáid cuntas cliste"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Idirbhearta níos tapúla, táillí níos ísle"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "Sábháil am agus airgead trí idirbhearta a phróiseáil le chéile."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Coinnigh an seoladh cuntais céanna, agus is féidir leat aistriú ar ais am ar bith."
-  },
   "smartAccountLabel": {
     "message": "Cuntas Cliste"
-  },
-  "smartAccountPayToken": {
-    "message": "Íoc le haon chomhartha, am ar bith"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Bain úsáid as na comharthaí atá agat cheana féin chun táillí líonra a chlúdach."
-  },
-  "smartAccountReject": {
-    "message": "Ná húsáid cuntas cliste"
-  },
-  "smartAccountSameAccount": {
-    "message": "An cuntas céanna, gnéithe níos cliste."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Cuntais chliste"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Úsáid cuntas cliste?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Déanfar do chuntas a nuashonrú go cuntas cliste le do chéad idirbheart eile."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Rathúil!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "An seoladh céanna. Gnéithe níos cliste."

@@ -56,6 +56,12 @@ class SendPage {
     };
   };
 
+  private readonly networkName = (networkName: string) => {
+    return {
+      testId: networkName,
+    };
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -98,6 +104,12 @@ class SendPage {
       throw e;
     }
     console.log('Send page is loaded');
+  }
+
+  async selectNetworkByName(networkName: string): Promise<void> {
+    console.log(`Selecting network ${networkName}`);
+    await this.driver.clickElement(this.networkPicker);
+    await this.driver.clickElement(this.networkName(networkName));
   }
 
   async checkSolanaNetworkIsPresent(): Promise<void> {

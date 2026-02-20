@@ -46,7 +46,6 @@ import {
   IMPORT_SRP_ROUTE,
   DEFI_ROUTE,
   DEEP_LINK_ROUTE,
-  SMART_ACCOUNT_UPDATE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
@@ -131,7 +130,6 @@ import {
   isCorrectSignatureApprovalType,
 } from '../../../shared/lib/confirmation.utils';
 import { type Confirmation } from '../confirmations/types/confirm';
-import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
@@ -552,12 +550,6 @@ export default function Routes() {
         path: RESTORE_VAULT_ROUTE,
         component: RestoreVaultPage,
         layout: LegacyLayout,
-      }),
-      createRouteWithLayout({
-        path: SMART_ACCOUNT_UPDATE,
-        component: SmartAccountUpdate,
-        layout: LegacyLayout,
-        authenticated: true,
       }),
       createRouteWithLayout({
         path: `${REVEAL_SEED_ROUTE}/:keyringId?`,

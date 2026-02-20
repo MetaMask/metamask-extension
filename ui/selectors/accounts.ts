@@ -5,6 +5,7 @@ import {
   CaipChainId,
   EthScope,
   TrxAccountType,
+  isEvmAccountType,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
@@ -72,6 +73,12 @@ export const isSelectedInternalAccountEth = createSelector(
       account && (account.type === Eoa || account.type === Erc4337),
     );
   },
+);
+
+export const selectEvmAddress = createSelector(
+  getSelectedInternalAccount,
+  (account) =>
+    account && isEvmAccountType(account.type) ? account.address : undefined,
 );
 
 export const isSelectedInternalAccountSolana = createSelector(

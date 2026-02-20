@@ -7058,44 +7058,8 @@
   "smartAccount": {
     "message": "Conta inteligente"
   },
-  "smartAccountAccept": {
-    "message": "Usar conta inteligente"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Transações mais rápidas, taxas mais baixas"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "Economize tempo e dinheiro processando transações em conjunto."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Mantenha o mesmo endereço de conta e mude de volta quando quiser."
-  },
   "smartAccountLabel": {
     "message": "Conta inteligente"
-  },
-  "smartAccountPayToken": {
-    "message": "Pague com qualquer token, a qualquer hora"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Use os tokens que você já possui para cobrir as taxas de rede."
-  },
-  "smartAccountReject": {
-    "message": "Não usar conta inteligente"
-  },
-  "smartAccountSameAccount": {
-    "message": "Mesma conta, recursos mais inteligentes."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Contas inteligentes"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Usar conta inteligente?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Sua conta será atualizada para conta inteligente em sua próxima transação."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Sucesso!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Mesmo endereço. Recursos mais inteligentes."
