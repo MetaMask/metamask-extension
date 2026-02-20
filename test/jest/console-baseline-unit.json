@@ -2666,6 +2666,10 @@
     "ui/pages/confirmations/hooks/perps/usePerpsDepositConfirmation.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/hooks/perps/usePerpsDepositInsufficientPayTokenBalanceAlert.test.ts": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/hooks/perps/usePerpsDepositTrigger.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },

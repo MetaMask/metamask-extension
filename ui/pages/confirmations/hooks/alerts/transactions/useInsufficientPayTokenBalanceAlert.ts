@@ -3,11 +3,9 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import type { Hex } from '@metamask/utils';
-import {
-  TransactionType,
-  type TransactionMeta,
-} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
@@ -19,13 +17,10 @@ import {
   useTransactionPayRequiredTokens,
   useTransactionPayTotals,
 } from '../../pay/useTransactionPayData';
-import { hexToDecimal } from '../../../../../../shared/modules/conversion.utils';
-import {
-  getNativeTokenCachedBalanceByChainIdSelector,
-  getNativeTokenInfo,
-} from '../../../../../selectors';
+import { getNativeTokenInfo } from '../../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { AlertsName } from '../constants';
+import { useMultichainBalances } from '../../../../../hooks/useMultichainBalances';
 import { useConfirmContext } from '../../../context/confirm';
 
 export function useInsufficientPayTokenBalanceAlert({
@@ -45,8 +40,6 @@ export function useInsufficientPayTokenBalanceAlert({
   const sourceChainId = (payToken?.chainId ?? '0x0') as Hex;
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const isPerpsDeposit =
-    currentConfirmation?.type === TransactionType.perpsDeposit;
   const selectedAddress = currentConfirmation?.txParams?.from as
     | Hex
     | undefined;
@@ -61,16 +54,22 @@ export function useInsufficientPayTokenBalanceAlert({
   );
   const ticker = nativeTokenInfo?.symbol ?? 'ETH';
 
-  const nativeBalancesByChainId = useSelector((state) =>
-    getNativeTokenCachedBalanceByChainIdSelector(state, selectedAddress ?? ''),
-  ) as Record<Hex, Hex>;
+  const nativeTokenAddress = getNativeTokenAddress(sourceChainId);
+  const { assetsWithBalance } = useMultichainBalances();
+
+  const nativeToken = useMemo(() => {
+    if (!selectedAddress || !sourceChainId) {
+      return undefined;
+    }
+    return assetsWithBalance.find(
+      (asset) =>
+        asset.chainId === sourceChainId &&
+        asset.address?.toLowerCase() === nativeTokenAddress?.toLowerCase(),
+    );
+  }, [assetsWithBalance, nativeTokenAddress, selectedAddress, sourceChainId]);
 
   const { balanceUsd, balanceRaw } = payToken ?? {};
-  const payTokenBalanceRaw = payToken?.balanceRaw;
-  const nativeBalanceRaw = useMemo(() => {
-    const nativeBalanceHex = nativeBalancesByChainId?.[sourceChainId] ?? '0x0';
-    return hexToDecimal(nativeBalanceHex);
-  }, [nativeBalancesByChainId, sourceChainId]);
+  const nativeBalanceRaw = nativeToken?.balance ?? '0';
 
   const totalAmountUsd = useMemo(() => {
     if (isMax) {
@@ -94,11 +93,8 @@ export function useInsufficientPayTokenBalanceAlert({
       return new BigNumber(0);
     }
 
-    const shouldAddSourceNetworkFeeToSourceAmount =
-      isPayTokenNative || isSourceGasFeeToken;
-
     return new BigNumber(totals?.sourceAmount.raw ?? '0').plus(
-      shouldAddSourceNetworkFeeToSourceAmount
+      isPayTokenNative || isSourceGasFeeToken
         ? new BigNumber(totals?.fees.sourceNetwork.max.raw ?? '0')
         : '0',
     );
@@ -117,27 +113,11 @@ export function useInsufficientPayTokenBalanceAlert({
     [balanceUsd, payToken, totalAmountUsd],
   );
 
-  const isInsufficientForFees = useMemo(() => {
-    if (isPendingAlert || !payToken) {
-      return false;
-    }
-
-    if (isPerpsDeposit) {
-      return (
-        payTokenBalanceRaw !== undefined &&
-        totalSourceAmountRaw.gt(payTokenBalanceRaw)
-      );
-    }
-
-    return totalSourceAmountRaw.gt(balanceRaw ?? '0');
-  }, [
-    balanceRaw,
-    isPendingAlert,
-    isPerpsDeposit,
-    payToken,
-    payTokenBalanceRaw,
-    totalSourceAmountRaw,
-  ]);
+  const isInsufficientForFees = useMemo(
+    () =>
+      !isPendingAlert && payToken && totalSourceAmountRaw.gt(balanceRaw ?? '0'),
+    [balanceRaw, isPendingAlert, payToken, totalSourceAmountRaw],
+  );
 
   const isInsufficientForSourceNetwork = useMemo(
     () =>
