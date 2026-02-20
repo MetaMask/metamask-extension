@@ -84,6 +84,10 @@ jest.mock('../../providers/perps', () => ({
 
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
+  usePerpsOrderForm: jest.fn(),
+  useUserHistory: jest.fn(),
+  usePerpsTransactionHistory: jest.fn(),
+  usePerpsMarginCalculations: jest.fn(),
 }));
 
 jest.mock('../../providers/perps/PerpsStreamManager', () => ({
