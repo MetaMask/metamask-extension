@@ -671,10 +671,9 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
 
     return result;
   },
-) as unknown as ControllerStateSelector<
-  TokenRatesControllerState,
-  'marketData'
->;
+) as unknown as (state: {
+  metamask: TokenRatesControllerState;
+}) => Record<string, Record<string, MarketDataDetails>>;
 
 export const getMultichainAssetsRatesControllerConversionRates =
   createDeepEqualSelector(
