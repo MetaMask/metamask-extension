@@ -512,6 +512,9 @@ describe('requestPermissionsHandler', () => {
             parentCapability: PermissionNames.permittedChains,
           },
         ]);
+
+        // Verify that getAccounts was called with the correct origin
+        expect(getAccounts).toHaveBeenCalledWith('http://test.com');
       });
     });
 
