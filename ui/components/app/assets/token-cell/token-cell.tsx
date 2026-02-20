@@ -120,6 +120,7 @@ export default function TokenCell({
               tokenAddress={token.address as string}
               chainId={token.chainId as Hex}
               label={t('merklRewardsClaimBonus')}
+              fallback={<TokenCellPercentChange token={displayToken} />}
             />
           ) : (
             <TokenCellPercentChange token={displayToken} />

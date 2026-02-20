@@ -19,10 +19,13 @@ export const ClaimBonusBadge = ({
   label,
   tokenAddress,
   chainId,
+  fallback,
 }: {
   label: string;
   tokenAddress: string;
   chainId: Hex;
+  /** A react element that will be shown in the case that there are no bonuses to claim */
+  fallback: React.ReactElement;
 }) => {
   const t = useI18nContext();
 
@@ -49,7 +52,7 @@ export const ClaimBonusBadge = ({
   );
 
   if (!claimableReward) {
-    return null;
+    return fallback;
   }
 
   if (isClaiming) {
