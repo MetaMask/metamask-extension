@@ -4,6 +4,7 @@ import LocalWebSocketServer from './websocket-server';
 import {
   WebSocketMessageMock,
   DEFAULT_HYPERLIQUID_WS_MOCKS,
+  getResponsePayload,
 } from './tests/perps/mocks/websocketDefaultMocks';
 
 /**
@@ -32,12 +33,11 @@ export async function setupPerpsWebsocketMocks(
     socket.on('message', (data) => {
       const message = data.toString();
 
-      // Only handle Hyperliquid-style messages. Hyperliquid uses "subscription"
-      // key in JSON; Solana uses "method" with "signatureSubscribe" etc.
-      // Avoid processing Solana messages (which contain "jsonrpc").
+      // Only handle Hyperliquid-style messages (e.g. "method":"subscribe").
+      // Avoid processing Solana messages (which contain "jsonrpc" and "signatureSubscribe" etc.).
       if (
         message.includes('jsonrpc') ||
-        !message.includes('subscription')
+        !message.includes('subscribe')
       ) {
         return;
       }
@@ -58,7 +58,8 @@ export async function setupPerpsWebsocketMocks(
 
           const delay = mock.delay || 100;
           setTimeout(() => {
-            socket.send(JSON.stringify(mock.response));
+            const payload = getResponsePayload(mock);
+            socket.send(JSON.stringify(payload));
           }, delay);
           break;
         }
