@@ -70,7 +70,7 @@ jobs:
             -H "Authorization: Bearer ${{ steps.auth.outputs.access_token }}" \
             -H "x-goog-api-version: 2" \
             -T extension.zip \
-            "https://www.googleapis.com/upload/chromewebstore/v1.1/items")
+            "https://www.googleapis.com/upload/chromewebstore/v1.1/items?uploadType=media")
 
           # Print the API response so you can see the results
           echo "$RESPONSE"
