@@ -81,19 +81,67 @@ jobs:
       # It passes the access token we got from the auth step.
       - name: Create Draft Extension
         run: |
-          # Note: The endpoint version must be v1.1
-          RESPONSE=$(curl -s -X POST \
+          echo "=== Debug: Zip file size ==="
+          ZIP_SIZE=$(stat --format=%s extension.zip)
+          echo "Size: $ZIP_SIZE bytes"
+          
+          echo ""
+          echo "=== Debug: Verifying manifest.json has no 'key' field ==="
+          unzip -p extension.zip manifest.json | jq '{name, version, manifest_version, has_key: (has("key"))}'
+          
+          echo ""
+          echo "=== Debug: Attempting upload with verbose curl ==="
+          
+          HTTP_CODE=$(curl -s -o /tmp/response.json -w "%{http_code}" \
+            -X POST \
             -H "Authorization: Bearer ${{ steps.auth.outputs.access_token }}" \
             -H "x-goog-api-version: 2" \
-            -H "Content-Type: application/zip" \
-            -H "Expect: " \
-            --data-binary @extension.zip \
+            -T extension.zip \
             "https://www.googleapis.com/upload/chromewebstore/v1.1/items?uploadType=media")
-
-          # Print the API response so you can see the results
-          echo "$RESPONSE"
+          
+          echo "HTTP Status Code: $HTTP_CODE"
+          echo ""
+          echo "=== Response body ==="
+          cat /tmp/response.json
+          echo ""
+          
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo ""
+            echo "=== Retrying without x-goog-api-version header ==="
+            HTTP_CODE2=$(curl -s -o /tmp/response2.json -w "%{http_code}" \
+              -X POST \
+              -H "Authorization: Bearer ${{ steps.auth.outputs.access_token }}" \
+              -T extension.zip \
+              "https://www.googleapis.com/upload/chromewebstore/v1.1/items?uploadType=media")
+            
+            echo "HTTP Status Code: $HTTP_CODE2"
+            echo "Response body:"
+            cat /tmp/response2.json
+            echo ""
+            
+            echo ""
+            echo "=== Retrying with Chrome Web Store API v2 endpoint ==="
+            echo "Fetching tokeninfo to get service account email..."
+            TOKEN_INFO=$(curl -s "https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${{ steps.auth.outputs.access_token }}")
+            echo "$TOKEN_INFO" | jq '{email, scope, expires_in}'
+            
+            echo ""
+            echo "Trying v2 items.insert endpoint..."
+            HTTP_CODE3=$(curl -s -o /tmp/response3.json -w "%{http_code}" \
+              -X POST \
+              -H "Authorization: Bearer ${{ steps.auth.outputs.access_token }}" \
+              -T extension.zip \
+              "https://chromewebstore.googleapis.com/upload/v2/items?uploadType=media")
+            
+            echo "HTTP Status Code: $HTTP_CODE3"
+            echo "Response body:"
+            cat /tmp/response3.json
+            echo ""
+          fi
+          
           echo ""
           echo "========================================"
-          echo "Save the 'id' value from the response above"
+          echo "If one of the attempts above succeeded,"
+          echo "save the 'id' / 'itemId' value from the response"
           echo "as a repository variable named EXTENSION_ID"
           echo "========================================"
