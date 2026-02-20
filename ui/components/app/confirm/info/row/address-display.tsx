@@ -1,15 +1,18 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { AvatarAccountSize } from '@metamask/design-system-react';
+import {
+  AvatarAccountSize,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import {
   AlignItems,
   Display,
   FlexDirection,
-  TextColor,
-  TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../../component-library';
+import { Box } from '../../../../component-library';
 import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { PreferredAvatar } from '../../../preferred-avatar';
 import NameDetails from '../../../name/name-details/name-details';
@@ -124,34 +127,42 @@ export const ConfirmInfoRowAddressDisplay = memo(
         )}
         {name ? (
           <Text
-            variant={TextVariant.bodyMd}
-            color={TextColor.textDefault}
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextDefault}
             data-testid="confirm-info-row-display-name"
             className={
               isClickable
                 ? 'confirm-info-row-address-display__clickable'
                 : undefined
             }
-            style={{ whiteSpace: 'nowrap', flex: 1 }}
-            onClick={handleClick}
+            asChild
           >
-            {name}
+            <span
+              style={{ whiteSpace: 'nowrap', flex: 1 }}
+              onClick={handleClick}
+            >
+              {name}
+            </span>
           </Text>
         ) : (
           <Text
-            ref={containerRef}
-            variant={TextVariant.bodyMd}
-            color={TextColor.textDefault}
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextDefault}
             data-testid="confirm-info-row-display-name"
             className={
               isClickable
                 ? 'confirm-info-row-address-display__clickable'
                 : undefined
             }
-            style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}
-            onClick={handleClick}
+            asChild
           >
-            {display}
+            <span
+              ref={containerRef}
+              style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}
+              onClick={handleClick}
+            >
+              {display}
+            </span>
           </Text>
         )}
         <PreferredAvatar
