@@ -17,8 +17,13 @@ import { setBackgroundConnection } from '../ui/store/background-connection';
 import { metamaskStorybookTheme } from './metamask-storybook-theme';
 import { DocsContainer } from '@storybook/addon-docs';
 import { themes } from '@storybook/theming';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AlertMetricsProvider } from '../ui/components/app/alert-system/contexts/alertMetricsContext';
 import './index.css';
+
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+});
 
 // eslint-disable-next-line
 /* @ts-expect-error: Avoids error from window property not existing */
@@ -152,6 +157,7 @@ const metamaskDecorator = (story, context) => {
 
   return (
     <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
       <MemoryRouter initialEntries={initialEntries}>
         <AlertMetricsProvider
           metrics={{
@@ -173,6 +179,7 @@ const metamaskDecorator = (story, context) => {
           </I18nProvider>
         </AlertMetricsProvider>
       </MemoryRouter>
+      </QueryClientProvider>
     </Provider>
   );
 };
