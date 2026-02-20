@@ -234,7 +234,6 @@ import {
   isAssetsUnifyStateFeatureEnabled,
   ASSETS_UNIFY_STATE_VERSION_1,
 } from '../../shared/lib/assets-unify-state/remote-feature-flag';
-import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
@@ -3008,8 +3007,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setOutdatedBrowserWarningLastShown.bind(
           appStateController,
         ),
-      setIsUpdateAvailable:
-        appStateController.setIsUpdateAvailable.bind(appStateController),
+      setPendingExtensionVersion:
+        appStateController.setPendingExtensionVersion.bind(appStateController),
       setUpdateModalLastDismissedAt:
         appStateController.setUpdateModalLastDismissedAt.bind(
           appStateController,
@@ -3183,11 +3182,8 @@ export default class MetamaskController extends EventEmitter {
             waitForSubmit: true,
           }),
         ),
-      createTransactionEventFragment:
-        createTransactionEventFragmentWithTxId.bind(
-          null,
-          this.getTransactionMetricsRequest(),
-        ),
+      upsertTransactionUIMetricsFragment:
+        this.upsertTransactionUIMetricsFragment.bind(this),
       setTransactionActive:
         txController.setTransactionActive.bind(txController),
       // decryptMessageController
@@ -3591,6 +3587,17 @@ export default class MetamaskController extends EventEmitter {
         nftDetectionController,
       ),
 
+      // Assets Controller - accounts passed from UI; options may include chainIds, assetTypes
+      getAssets: (accounts, options) => {
+        if (!this.assetsController) {
+          return Promise.resolve();
+        }
+        return this.assetsController.getAssets(accounts, {
+          ...options,
+          forceUpdate: true,
+        });
+      },
+
       /** Token Detection V2 */
       addDetectedTokens:
         tokensController.addDetectedTokens.bind(tokensController),
@@ -3599,6 +3606,13 @@ export default class MetamaskController extends EventEmitter {
       getBalancesInSingleCall: (...args) =>
         this.assetsContractController.getBalancesInSingleCall(...args),
 
+      // New Assets Controller
+      hideAsset: (assetId) => this.assetsController.hideAsset(assetId),
+      unhideAsset: (assetId) => this.assetsController.unhideAsset(assetId),
+      addCustomAsset: (accountId, assetId) =>
+        this.assetsController.addCustomAsset(accountId, assetId),
+      removeCustomAsset: (accountId, assetId) =>
+        this.assetsController.removeCustomAsset(accountId, assetId),
       // Authentication Controller
       performSignIn: authenticationController.performSignIn.bind(
         authenticationController,
@@ -8282,31 +8296,62 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  getTransactionUIMetricsFragmentId(transactionId) {
+    return `transaction-ui-${transactionId}`;
+  }
+
+  getTransactionUIMetricsFragment(transactionId) {
+    return this.controllerMessenger.call(
+      'MetaMetricsController:getEventFragmentById',
+      this.getTransactionUIMetricsFragmentId(transactionId),
+    );
+  }
+
+  upsertTransactionUIMetricsFragment(transactionId, payload) {
+    if (!transactionId || !payload) {
+      return;
+    }
+
+    const fragmentId = this.getTransactionUIMetricsFragmentId(transactionId);
+    const existingFragment =
+      this.getTransactionUIMetricsFragment(transactionId);
+
+    if (existingFragment) {
+      this.controllerMessenger.call(
+        'MetaMetricsController:updateEventFragment',
+        fragmentId,
+        payload,
+      );
+      return;
+    }
+
+    this.controllerMessenger.call('MetaMetricsController:createEventFragment', {
+      id: fragmentId,
+      uniqueIdentifier: fragmentId,
+      // Required by createEventFragment, but this fragment is storage-only.
+      // We never finalize this fragment and we do not set initialEvent.
+      successEvent: 'Transaction Fragment Created',
+      category: MetaMetricsEventCategory.Transactions,
+      canDeleteIfAbandoned: true,
+      properties: payload.properties ?? {},
+      sensitiveProperties: payload.sensitiveProperties ?? {},
+    });
+  }
+
   getTransactionMetricsRequest() {
     const controllerActions = {
+      // Transaction metrics state
+      getTransactionUIMetricsFragment:
+        this.getTransactionUIMetricsFragment.bind(this),
+      upsertTransactionUIMetricsFragment:
+        this.upsertTransactionUIMetricsFragment.bind(this),
       // Metametrics Actions
-      createEventFragment: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:createEventFragment',
-      ),
-      finalizeEventFragment: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:finalizeEventFragment',
-      ),
-      getEventFragmentById: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:getEventFragmentById',
-      ),
       getParticipateInMetrics: () =>
         this.controllerMessenger.call('MetaMetricsController:getState')
           .participateInMetaMetrics,
       trackEvent: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'MetaMetricsController:trackEvent',
-      ),
-      updateEventFragment: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:updateEventFragment',
       ),
       // Other dependencies
       getAccountBalance: (account, chainId) =>

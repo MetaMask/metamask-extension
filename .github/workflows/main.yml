@@ -726,7 +726,7 @@ jobs:
 
   publish-release:
     name: Publish release
-    if: ${{ github.event_name == 'push' && github.ref_name == 'stable' && needs.get-requirements.outputs.needs-releases == 'true' }}
+    if: ${{ !cancelled() && needs.all-jobs-pass.result == 'success' && github.event_name == 'push' && github.ref_name == 'stable' && needs.get-requirements.outputs.needs-releases == 'true' }}
     needs:
       - get-requirements
       - all-jobs-pass

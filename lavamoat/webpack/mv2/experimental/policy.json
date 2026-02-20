@@ -2310,7 +2310,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/transaction-controller>@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/network-controller": true,
+        "@metamask/transaction-controller>@metamask/network-controller": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
@@ -2991,6 +2991,30 @@
       },
       "packages": {
         "@swc/helpers": true
+      }
+    },
+    "@tanstack/react-query>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "addEventListener": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console": true,
+        "document": true,
+        "navigator": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
+      }
+    },
+    "@tanstack/react-query": {
+      "globals": {
+        "ReactQueryClientContext": "write"
+      },
+      "packages": {
+        "@tanstack/react-query>@tanstack/query-core": true,
+        "react": true,
+        "@tanstack/react-query>use-sync-external-store": true
       }
     },
     "@tanstack/react-virtual": {
@@ -6293,6 +6317,14 @@
     "react-focus-lock>use-sidecar": {
       "packages": {
         "tslib": true
+      }
+    },
+    "@tanstack/react-query>use-sync-external-store": {
+      "globals": {
+        "document": true
+      },
+      "packages": {
+        "react": true
       }
     },
     "@storybook/react>util-deprecate": {
