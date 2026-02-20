@@ -883,7 +883,7 @@
         "@ethersproject/providers": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/core-backend": true,
+        "@metamask/assets-controller>@metamask/core-backend": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/polling-controller": true,
         "@metamask/assets-controller>@metamask/snaps-utils": true,
@@ -1106,6 +1106,21 @@
       }
     },
     "@metamask/core-backend": {
+      "globals": {
+        "URL": true,
+        "WebSocket": true,
+        "clearTimeout": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils": true,
+        "@metamask/utils": true,
+        "@metamask/core-backend>@tanstack/query-core": true,
+        "uuid": true
+      }
+    },
+    "@metamask/assets-controller>@metamask/core-backend": {
       "globals": {
         "URL": true,
         "WebSocket": true,
