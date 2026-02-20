@@ -39,21 +39,6 @@ export function isLikelyCommentLine(line: string): boolean {
   );
 }
 
-/** Max line length we treat as "normal"; longer lines are assumed minified/vendor. */
-const MINIFIED_LINE_LENGTH_THRESHOLD = 1000;
-
-/**
- * Returns true if the line is likely from minified or vendor code (one very long
- * line). Such code often has sparse source maps, so we skip "missing source"
- * for these to avoid failing on bundled dependencies.
- *
- * @param line - A single line of bundle output.
- * @returns True if the line length exceeds the minified threshold.
- */
-export function isLikelyMinifiedLine(line: string): boolean {
-  return line.length > MINIFIED_LINE_LENGTH_THRESHOLD;
-}
-
 /**
  * A JS bundle and its source map file paths, plus a short label for logging.
  */
@@ -230,9 +215,6 @@ export async function validateBundle({
 
         if (!result.source) {
           if (isLikelyCommentLine(line)) {
-            continue;
-          }
-          if (isLikelyMinifiedLine(line)) {
             continue;
           }
           sampleCount += 1;
