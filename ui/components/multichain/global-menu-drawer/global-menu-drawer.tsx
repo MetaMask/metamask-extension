@@ -193,17 +193,17 @@ export const GlobalMenuDrawer = ({
         height: `${rootLayoutRect.height}px`,
       });
 
-      // Fullscreen: 90px logo above content; sidepanel: no logo, overlay fills container
-      const logoHeight = isFullscreen ? 90 : 0;
-      if (logoHeight > 0) {
+      // Fullscreen: subtract 90px so drawer sits below logo;
+      const fullscreenLogoOffsetPx = 90;
+      if (isFullscreen) {
         setBackdropStyle({
           position: 'absolute',
-          top: `${logoHeight}px`,
+          top: `${fullscreenLogoOffsetPx}px`,
           left: 0,
           right: 0,
           bottom: 0,
         });
-        setContentTopOffset(logoHeight);
+        setContentTopOffset(fullscreenLogoOffsetPx);
       } else {
         setBackdropStyle({});
         setContentTopOffset(0);
@@ -310,31 +310,36 @@ export const GlobalMenuDrawer = ({
         onClick={onClickOutside ? onClose : undefined}
       />
 
-      {/* Drawer panel */}
+      {/* Drawer panel: fullscreen uses top + explicit height so content scrolls below logo */}
       <div
         className={
           isFullscreen
-            ? 'overflow-hidden pointer-events-none absolute right-0 top-0 bottom-0 flex h-full transition-[transform] ease-in-out motion-reduce:transition-none'
+            ? 'overflow-hidden pointer-events-none absolute right-0 flex transition-[transform] ease-in-out motion-reduce:transition-none'
             : 'overflow-hidden pointer-events-none absolute inset-y-0 right-0 flex pl-10 h-full transition-[transform] ease-in-out motion-reduce:transition-none'
         }
         style={{
+          zIndex: 1,
           ...(contentTopOffset
-            ? { zIndex: 1, top: `${contentTopOffset}px` }
-            : { zIndex: 1 }),
+            ? {
+                top: `${contentTopOffset}px`,
+                bottom: 0,
+                height: `calc(100% - ${contentTopOffset}px)`,
+              }
+            : { top: 0, bottom: 0, height: '100%' }),
           transform: panelTransform,
           transitionDuration: `${DRAWER_TRANSITION_MS}ms`,
         }}
       >
         <div
-          className="w-screen max-w-full pointer-events-auto h-full"
-          style={{ maxWidth: width }}
+          className="w-screen max-w-full pointer-events-auto min-h-0 flex flex-col"
+          style={{ maxWidth: width, height: '100%' }}
         >
           <Box
-            className="h-full flex flex-col overflow-hidden bg-[var(--color-background-default)] shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]"
+            className="h-full min-h-0 flex flex-col overflow-hidden bg-[var(--color-background-default)] shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]"
             backgroundColor={BoxBackgroundColor.BackgroundDefault}
           >
             {showCloseButton && (
-              <Box className="flex flex-row items-center justify-start p-4 w-full overflow-hidden">
+              <Box className="flex-shrink-0 flex flex-row items-center justify-start p-4 w-full overflow-hidden">
                 <ButtonIcon
                   iconName={IconName.ArrowLeft}
                   size={ButtonIconSize.Sm}
