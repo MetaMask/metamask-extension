@@ -162,7 +162,7 @@ const AssetPage = ({
       (!address && !isEvm && item.isNative),
   );
 
-  address = assetWithBalance?.assetId || '';
+  address = assetWithBalance?.assetId || address;
   const assetId = assetWithBalance?.assetId || '';
   const balance = assetWithBalance?.balance ?? '0';
   const tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
