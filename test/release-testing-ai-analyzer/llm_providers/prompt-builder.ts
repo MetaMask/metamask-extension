@@ -99,7 +99,7 @@ Return a JSON object with this exact structure:
       "area": "string",
       "riskLevel": "high" | "medium",
       "testSteps": ["1. step", "2. step"],
-      "whyThisMatters": "explanation - reference the cherry-pick this tests"
+      "whyThisMatters": "MUST start with 'Cherry-pick PR_NUMBER' (e.g. 'Cherry-pick 39766 fixes...') - include the PR number from the commit message"
     }
   ],
   "summary": "Brief 2-3 sentence summary of the overall risk profile"
@@ -108,6 +108,7 @@ Return a JSON object with this exact structure:
 **IMPORTANT**:
 - \`scenarios\` = initial release testing (PRIORITY - main focus)
 - \`cherryPickScenarios\` = ONLY for risky cherry-picks (fix: security/migration/controller/transaction). Skip chore/bump/config. Empty [] if none are risky.
+- For cherryPickScenarios: ALWAYS start whyThisMatters with "Cherry-pick" followed by PR number (e.g. "Cherry-pick 39766 fixes..." - extract from commit message which often contains the number in parens).
 - Order HIGH risk first, then MEDIUM
 - Number each test step: "1. ", "2. ", "3. "
 - Focus on UI/UX and user-facing functionality

@@ -105,7 +105,7 @@ jobs:
           # Generate test plan JSON
           OUTPUT_FILE="test-plan-${VERSION}.json"
           # if yarn tsx test/release-testing-ai-analyzer/generate-release-testing-plan.ts "$PR_NUMBER" --output "$OUTPUT_FILE"; then
-          if yarn tsx test/release-testing-ai-analyzer/generate-release-testing-plan.ts 40064 --output "$OUTPUT_FILE"; then
+          if yarn tsx test/release-testing-ai-analyzer/generate-release-testing-plan.ts 40258 --output "$OUTPUT_FILE"; then
             # Export version for use in upload step and bot script
             echo "TEST_PLAN_VERSION=${VERSION}" >> "${GITHUB_ENV}"
             echo "test_plan_generated=true" >> "${GITHUB_OUTPUT}"
