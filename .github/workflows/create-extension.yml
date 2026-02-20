@@ -50,6 +50,8 @@ jobs:
         run: yarn install --immutable
 
       - name: Build Extension
+        env:
+          INFURA_PROJECT_ID: ''
         run: |
           # Build the MetaMask extension
           yarn dist
