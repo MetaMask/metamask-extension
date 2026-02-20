@@ -78,6 +78,8 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../select
 import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { isNativeAsset, type Asset } from '../types/asset';
+import { useMusdCtaVisibility } from '../../../hooks/musd';
+import { MusdAssetCta } from '../../../components/app/musd';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
@@ -129,6 +131,11 @@ const AssetPage = ({
   const isMainnet = !isTestnet;
   // Check if show conversion is enabled
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
+
+  // mUSD CTA visibility check
+  const { shouldShowAssetOverviewCta: checkMusdCtaVisibility } =
+    useMusdCtaVisibility();
+
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
@@ -288,6 +295,28 @@ const AssetPage = ({
           <TokenButtons token={updatedAsset} disableSendForNonEvm />
         )}
       </Box>
+      {/* mUSD Conversion CTA - shows for eligible stablecoins */}
+      {!isNativeAsset(updatedAsset) &&
+        type === AssetType.token &&
+        isEvm &&
+        checkMusdCtaVisibility({
+          address: (asset as { address: Hex }).address,
+          chainId: chainId as Hex,
+          symbol,
+        }) && (
+          <Box marginTop={4} paddingLeft={4} paddingRight={4}>
+            <MusdAssetCta
+              token={{
+                address: (asset as { address: Hex }).address,
+                chainId: chainId as string,
+                symbol,
+                balance: String(balance),
+                fiatBalance: String(tokenFiatAmount),
+              }}
+              variant="card"
+            />
+          </Box>
+        )}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}

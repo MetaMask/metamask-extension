@@ -4071,6 +4071,10 @@
   "musdConversionToastSuccess": {
     "message": "Your mUSD is here!"
   },
+  "musdConvertAndGetBonus": {
+    "message": "Convert and get $1%",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
   "musdEducationGetStarted": {
     "message": "Get started"
   },

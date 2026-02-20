@@ -1,5 +1,9 @@
 import React, { useCallback } from 'react';
 import { Hex } from '@metamask/utils';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   Modal,
@@ -8,11 +12,13 @@ import {
   ModalOverlay,
 } from '../../../../../components/component-library';
 import { ScrollContainer } from '../../../../../contexts/scroll-container';
+import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { getAvailableTokens } from '../../../utils/transaction-pay';
 import { Asset } from '../../send/asset';
 import { type Asset as AssetType } from '../../../types/send';
+import { useMusdConversionTokens } from '../../../../../hooks/musd';
 
 export type PayWithModalProps = {
   isOpen: boolean;
@@ -21,8 +27,13 @@ export type PayWithModalProps = {
 
 export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { payToken, setPayToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
+
+  const { filterTokens: musdTokenFilter } = useMusdConversionTokens();
+  const isMusdConversion =
+    currentConfirmation?.type === TransactionType.musdConversion;
 
   const handleClose = useCallback(() => {
     onClose();
@@ -46,13 +57,20 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
 
   const tokenFilter = useCallback(
     (tokens: AssetType[]) => {
-      return getAvailableTokens({
+      const availableTokens = getAvailableTokens({
         payToken,
         requiredTokens,
         tokens,
       });
+
+      // Apply mUSD-specific filtering for conversion transactions
+      if (isMusdConversion) {
+        return musdTokenFilter(availableTokens);
+      }
+
+      return availableTokens;
     },
-    [payToken, requiredTokens],
+    [payToken, requiredTokens, isMusdConversion, musdTokenFilter],
   );
 
   return (

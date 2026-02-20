@@ -164,16 +164,16 @@ export function useInsufficientPayTokenBalanceAlert({
       ];
     }
 
-    if (isInsufficientForSourceNetwork) {
-      return [
-        {
-          ...baseAlert,
-          key: AlertsName.InsufficientPayTokenNative,
-          reason: t('alertInsufficientPayTokenBalance'),
-          message: t('alertInsufficientPayTokenNative', [ticker]),
-        },
-      ];
-    }
+    // if (isInsufficientForSourceNetwork) {
+    //   return [
+    //     {
+    //       ...baseAlert,
+    //       key: AlertsName.InsufficientPayTokenNative,
+    //       reason: t('alertInsufficientPayTokenBalance'),
+    //       message: t('alertInsufficientPayTokenNative', [ticker]),
+    //     },
+    //   ];
+    // }
 
     return [];
   }, [

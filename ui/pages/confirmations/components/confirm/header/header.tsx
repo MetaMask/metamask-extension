@@ -25,9 +25,11 @@ import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipien
 import { Confirmation } from '../../../types/confirm';
 import { DAppInitiatedHeader } from './dapp-initiated-header';
 import HeaderInfo from './header-info';
+import { MusdConversionHeader } from './musd-conversion-header';
 import { WalletInitiatedHeader } from './wallet-initiated-header';
 
 const CONFIRMATIONS_WITH_ALT_HEADER = [
+  TransactionType.musdConversion,
   TransactionType.simpleSend,
   TransactionType.shieldSubscriptionApprove,
   TransactionType.tokenMethodSafeTransferFrom,
@@ -110,6 +112,13 @@ const Header = () => {
     CONFIRMATIONS_WITH_ALT_HEADER.includes(currentConfirmation.type);
   const isWalletInitiated =
     (currentConfirmation as TransactionMeta)?.origin === ORIGIN_METAMASK;
+
+  if (
+    currentConfirmation?.type === TransactionType.musdConversion &&
+    isWalletInitiated
+  ) {
+    return <MusdConversionHeader />;
+  }
 
   if (isConfirmationWithNewHeader && isWalletInitiated) {
     return <WalletInitiatedHeader />;
