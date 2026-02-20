@@ -1,14 +1,16 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
+import BridgeQuotePage from '../bridge/quote-page';
 
-export type SwapSolanaOptions = {
+export type SwapOptions = {
   amount: number;
   swapFrom: string;
   swapTo: string;
+  network: string;
   swapToContractAddress?: string;
 };
 
-export type SwapSolanaReviewOptions = {
+export type SwapReviewOptions = {
   swapFrom: string;
   swapTo: string;
   swapToAmount: string;
@@ -249,15 +251,17 @@ class SwapPage {
     await this.driver.clickElement(this.closeButton);
   }
 
-  async createSolanaSwap(options: SwapSolanaOptions) {
+  async createSwap(options: SwapOptions) {
     await this.driver.clickElement(this.bridgeSourceButton);
+    const bridgeQuotePage = new BridgeQuotePage(this.driver);
+    await bridgeQuotePage.selectNetwork(options.network);
     await this.driver.clickElement({
       text: options.swapFrom,
       css: this.fromToText,
     });
 
     await this.driver.clickElement(this.bridgeDestinationButton);
-
+    await bridgeQuotePage.selectNetwork(options.network);
     await this.driver.clickElement({
       text: options.swapTo,
       css: this.fromToText,
@@ -267,7 +271,7 @@ class SwapPage {
     await this.driver.fill(this.reviewFromAmount, options.amount.toString());
   }
 
-  async reviewQuote(options: SwapSolanaReviewOptions) {
+  async reviewQuote(options: SwapReviewOptions) {
     await this.driver.waitForSelector(this.submitSwapButton);
     const fromAmount = await this.driver.findElement(this.reviewFromAmount);
     const fromAmountText = await fromAmount.getAttribute('value');
