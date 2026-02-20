@@ -19,10 +19,10 @@ import {
 import { TokenListItem } from '../../token-list-item';
 import LoadingScreen from '../../../ui/loading-screen';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getImageForChainId } from '../../../../helpers/utils/get-image-for-chain-id';
 import {
   getMultichainCurrentCurrency,
   getMultichainCurrentChainId,
-  getImageForChainId,
   getMultichainCurrentNetwork,
   getMultichainNativeCurrency,
   getMultichainSelectedAccountCachedBalance,

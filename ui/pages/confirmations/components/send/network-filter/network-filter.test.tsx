@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getImageForChainId } from '../../../utils/network';
+import { getImageForChainId } from '../../../../../helpers/utils/get-image-for-chain-id';
 import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNameAndImage';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
 import { AssetFilterMethod } from '../../../context/send-metrics';

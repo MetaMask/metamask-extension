@@ -23,7 +23,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import { getAllDomains, getOriginOfCurrentTab } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getURLHost } from '../../../helpers/utils/util';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { getImageForChainId } from '../../../helpers/utils/get-image-for-chain-id';
 import { toggleNetworkMenu } from '../../../store/actions';
 import Tooltip from '../../ui/tooltip';
 

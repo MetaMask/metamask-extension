@@ -363,6 +363,11 @@ export const getMultiChainAssetsControllerAccountsAssets =
         assetsBalance,
       )) {
         for (const assetId of Object.keys(accountBalances)) {
+          const assetType = parseCaipAssetType(assetId as CaipAssetType);
+          if (assetType.chain.namespace === KnownCaipNamespace.Eip155) {
+            continue;
+          }
+
           (result[accountId] ??= []).push(assetId as CaipAssetType);
         }
       }

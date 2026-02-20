@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import { Hex } from '@metamask/utils';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { getImageForChainId } from '../../../helpers/utils/get-image-for-chain-id';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
 
 /**

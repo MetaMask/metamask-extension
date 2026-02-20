@@ -22,18 +22,14 @@ import {
 } from '@metamask/utils';
 import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
-import { AssetsControllerState } from '@metamask/assets-controller';
 import {
   MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET,
   MULTICHAIN_PROVIDER_CONFIGS,
-  MULTICHAIN_TOKEN_IMAGE_MAP,
   MultichainNetworks,
   MultichainProviderConfig,
 } from '../../shared/constants/multichain/networks';
 import {
   getCompletedOnboarding,
-  getConversionRate,
-  getCurrentCurrency,
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
 // TODO: Remove restricted import
@@ -73,7 +69,12 @@ import {
   getSelectedMultichainNetworkConfiguration,
   type MultichainNetworkConfigState,
 } from './multichain/networks';
-import { getMultiChainBalancesControllerBalances } from './assets-migration';
+import {
+  getCurrencyRateControllerCurrencyRates,
+  getCurrencyRateControllerCurrentCurrency,
+  getMultichainAssetsRatesControllerConversionRates,
+  getMultiChainBalancesControllerBalances,
+} from './assets-migration';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -102,8 +103,7 @@ export type MultichainState = AccountsState &
   NetworkState &
   AssetsRatesState &
   AssetsState &
-  MultichainNetworkConfigState &
-  AssetsControllerState;
+  MultichainNetworkConfigState;
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
 export type ProviderConfigWithImageUrlAndExplorerUrl = {
@@ -346,9 +346,7 @@ export function getMultichainNativeCurrency(
     : getMultichainProviderConfig(state, account).ticker;
 }
 
-export function getMultichainCurrentCurrency(state: MultichainState) {
-  return getCurrentCurrency(state);
-}
+export { getCurrencyRateControllerCurrentCurrency as getMultichainCurrentCurrency };
 
 export function getMultichainCurrencyImage(
   state: MultichainState,
@@ -547,13 +545,6 @@ function getNonEvmCachedBalance(
   return balanceOfAsset?.amount ?? 0;
 }
 
-export function getImageForChainId(chainId: string): string | undefined {
-  return {
-    ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-    ...MULTICHAIN_TOKEN_IMAGE_MAP,
-  }[chainId];
-}
-
 // This selector is not compatible with `useMultichainSelector` since it uses the selected
 // account implicitly!
 export function getMultichainSelectedAccountCachedBalance(
@@ -564,21 +555,31 @@ export function getMultichainSelectedAccountCachedBalance(
     : getNonEvmCachedBalance(state);
 }
 
-export function getMultichainConversionRate(
-  state: MultichainState,
-  account?: InternalAccount,
-) {
-  const { conversionRates } = state.metamask;
-  const { chainId } = getMultichainNetwork(state, account);
-  const conversionRate = getConversionRatesForNativeAsset({
-    conversionRates,
-    chainId,
-  })?.rate;
-
-  return getMultichainIsEvm(state, account)
-    ? getConversionRate(state)
-    : conversionRate;
-}
+export const getMultichainConversionRate = createSelector(
+  [
+    getMultichainAssetsRatesControllerConversionRates,
+    getCurrencyRateControllerCurrencyRates,
+    getProviderConfig,
+    (state: MultichainState, account?: InternalAccount) =>
+      getMultichainNetwork(state, account),
+    (state: MultichainState, account?: InternalAccount) =>
+      getMultichainIsEvm(state, account),
+  ],
+  (
+    multichainConversionRates,
+    evmCurrencyRates,
+    providerConfig,
+    network,
+    isEvm,
+  ) => {
+    return isEvm
+      ? evmCurrencyRates[providerConfig.ticker]?.conversionRate
+      : getConversionRatesForNativeAsset({
+          conversionRates: multichainConversionRates,
+          chainId: network.chainId,
+        })?.rate;
+  },
+);
 
 // TODO get this from the multichain network controller
 export const getMultichainNetworkConfigurationsByChainId = (

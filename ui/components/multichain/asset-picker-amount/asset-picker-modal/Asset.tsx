@@ -4,10 +4,8 @@ import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../token-list-item';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import {
-  getMultichainNetworkConfigurationsByChainId,
-  getImageForChainId,
-} from '../../../../selectors/multichain';
+import { getImageForChainId } from '../../../../helpers/utils/get-image-for-chain-id';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors/multichain';
 import { selectERC20TokensByChain } from '../../../../selectors/selectors';
 import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 

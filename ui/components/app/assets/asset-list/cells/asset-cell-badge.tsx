@@ -9,7 +9,7 @@ import {
   BadgeWrapper,
 } from '../../../../component-library';
 import { getNativeCurrencyForChain } from '../../../../../selectors';
-import { getImageForChainId } from '../../../../../selectors/multichain';
+import { getImageForChainId } from '../../../../../helpers/utils/get-image-for-chain-id';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   getAssetImageUrl,

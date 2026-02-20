@@ -32,7 +32,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { isDuplicateContact } from '../../../../components/app/contact-list/utils';
-import { getImageForChainId } from '../../../../selectors/multichain';
+import { getImageForChainId } from '../../../../helpers/utils/get-image-for-chain-id';
 import { I18nContext } from '../../../../contexts/i18n';
 import { ContactNetworks } from '../contact-networks';
 

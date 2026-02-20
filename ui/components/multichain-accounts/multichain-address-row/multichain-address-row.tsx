@@ -23,7 +23,7 @@ import {
   Text,
 } from '../../component-library';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { getImageForChainId } from '../../../helpers/utils/get-image-for-chain-id';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 

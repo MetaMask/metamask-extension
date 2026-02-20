@@ -19,7 +19,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getImageForChainId } from '../../../../../selectors/multichain';
+import { getImageForChainId } from '../../../../../helpers/utils/get-image-for-chain-id';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../../../selectors';
 import { extractNetworkName } from '../helper';
 

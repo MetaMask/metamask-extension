@@ -17,7 +17,7 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '../../../component-library';
-import { getImageForChainId } from '../../../../selectors/multichain';
+import { getImageForChainId } from '../../../../helpers/utils/get-image-for-chain-id';
 
 export const NetworkSelectorCustomImport = ({
   title,

@@ -26,7 +26,7 @@ import {
   PermissionTypesWithCustom,
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
-import { getImageForChainId } from '../../../../../selectors/multichain';
+import { getImageForChainId } from '../../../../../helpers/utils/get-image-for-chain-id';
 import { getURLHost, shortenAddress } from '../../../../../helpers/utils/util';
 import Card from '../../../../ui/card';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';

@@ -8,7 +8,7 @@ import {
   CHAIN_IDS,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { getImageForChainId } from '../../../helpers/utils/get-image-for-chain-id';
 
 type ChainBadgeProps = {
   chainId: string;

@@ -9,8 +9,8 @@ import {
   selectERC20TokensByChain,
 } from '../../../../selectors';
 import { TokenDisplayInfo, TokenWithFiatAmount } from '../types';
+import { getImageForChainId } from '../../../../helpers/utils/get-image-for-chain-id';
 import {
-  getImageForChainId,
   isChainIdMainnet,
   makeGetMultichainShouldShowFiatByChainId,
 } from '../../../../selectors/multichain';

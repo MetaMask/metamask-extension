@@ -35,7 +35,7 @@ import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
-import { getImageForChainId } from '../../../../selectors/multichain';
+import { getImageForChainId } from '../../../../helpers/utils/get-image-for-chain-id';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { getShowTestNetworks } from '../../../../selectors/selectors';
 

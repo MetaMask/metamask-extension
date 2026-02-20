@@ -60,10 +60,10 @@ import {
   getNativeTokenName,
   isTronEnergyOrBandwidthResource,
 } from '../../../../ducks/bridge/utils';
+import { getImageForChainId } from '../../../../helpers/utils/get-image-for-chain-id';
 import {
   getMultichainConversionRate,
   getMultichainCurrencyImage,
-  getImageForChainId,
   getMultichainCurrentChainId,
   getMultichainCurrentCurrency,
   getMultichainNativeCurrency,

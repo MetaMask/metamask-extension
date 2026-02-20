@@ -35,7 +35,7 @@ import {
   getSelectedInternalAccount,
   getOpenSeaEnabled,
 } from '../../../selectors';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { getImageForChainId } from '../../../helpers/utils/get-image-for-chain-id';
 import {
   addNftVerifyOwnership,
   getTokenStandardAndDetails,

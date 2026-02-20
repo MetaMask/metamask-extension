@@ -110,7 +110,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { NetworkSelectorCustomImport } from '../../app/import-token/network-selector-custom-import';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { getImageForChainId } from '../../../helpers/utils/get-image-for-chain-id';
 import { getSelectedMultichainNetworkChainId } from '../../../selectors/multichain/networks';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { NetworkListItem } from '../network-list-item';

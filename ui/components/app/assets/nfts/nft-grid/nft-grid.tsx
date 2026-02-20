@@ -15,7 +15,7 @@ import {
   getNftIsStillFetchingIndication,
 } from '../../../../../selectors';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
-import { getImageForChainId } from '../../../../../selectors/multichain';
+import { getImageForChainId } from '../../../../../helpers/utils/get-image-for-chain-id';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 // TODO: Remove restricted import

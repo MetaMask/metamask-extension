@@ -61,7 +61,7 @@ import {
   type AllowedBridgeChainIds,
 } from '../../../../shared/constants/bridge';
 import { Numeric } from '../../../../shared/modules/Numeric';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { getImageForChainId } from '../../../helpers/utils/get-image-for-chain-id';
 import { formatTokenAmount } from '../utils/quote';
 import {
   getBlockExplorerUrl,

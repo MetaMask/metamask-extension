@@ -40,7 +40,7 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
-import { getImageForChainId } from '../../../../selectors/multichain';
+import { getImageForChainId } from '../../../../helpers/utils/get-image-for-chain-id';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,

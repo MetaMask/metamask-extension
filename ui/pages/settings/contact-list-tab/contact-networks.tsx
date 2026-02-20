@@ -23,7 +23,7 @@ import { TEST_CHAINS } from '../../../../shared/constants/network';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { NetworkListItem } from '../../../components/multichain';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { getImageForChainId } from '../../../helpers/utils/get-image-for-chain-id';
 
 export const ContactNetworks = ({
   isOpen,

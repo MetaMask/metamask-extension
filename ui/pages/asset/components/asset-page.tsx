@@ -67,8 +67,8 @@ import {
   getAssetsBySelectedAccountGroup,
   getMultichainNativeAssetType,
 } from '../../../selectors/assets';
+import { getImageForChainId } from '../../../helpers/utils/get-image-for-chain-id';
 import {
-  getImageForChainId,
   getMultichainIsTestnet,
   getMultichainNetworkConfigurationsByChainId,
   getMultichainShouldShowFiat,

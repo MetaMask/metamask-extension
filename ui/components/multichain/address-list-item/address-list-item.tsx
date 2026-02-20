@@ -27,7 +27,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip';
 import { I18nContext } from '../../../contexts/i18n';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { getImageForChainId } from '../../../helpers/utils/get-image-for-chain-id';
 
 type AddressListItemProps = {
   address: string;

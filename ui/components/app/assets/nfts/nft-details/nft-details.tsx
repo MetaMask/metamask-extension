@@ -80,7 +80,7 @@ import {
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../../../app/scripts/lib/util';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
-import { getImageForChainId } from '../../../../../selectors/multichain';
+import { getImageForChainId } from '../../../../../helpers/utils/get-image-for-chain-id';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 import { navigateToSendRoute } from '../../../../../pages/confirmations/utils/send';
 import NftDetailInformationRow from './nft-detail-information-row';

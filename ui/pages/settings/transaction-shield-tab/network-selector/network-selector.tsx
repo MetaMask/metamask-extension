@@ -25,7 +25,7 @@ import {
 } from '../../../../components/component-library';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import { NetworkListItem } from '../../../../components/multichain/network-list-item';
-import { getImageForChainId } from '../../../../selectors/multichain';
+import { getImageForChainId } from '../../../../helpers/utils/get-image-for-chain-id';
 import { TextVariant as DsTextVariant } from '../../../../helpers/constants/design-system';
 import { getSupportedNetworksForClaim } from '../../../../selectors/shield/claims';
 

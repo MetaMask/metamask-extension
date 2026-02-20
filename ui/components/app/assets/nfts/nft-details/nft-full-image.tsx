@@ -29,7 +29,7 @@ import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDeta
 // eslint-disable-next-line import/no-restricted-paths
 import { isWebUrl } from '../../../../../../app/scripts/lib/util';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
-import { getImageForChainId } from '../../../../../selectors/multichain';
+import { getImageForChainId } from '../../../../../helpers/utils/get-image-for-chain-id';
 import {
   ASSET_ROUTE,
   PREVIOUS_ROUTE,

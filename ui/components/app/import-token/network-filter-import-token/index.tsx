@@ -13,7 +13,7 @@ import {
   getIsTokenNetworkFilterEqualCurrentNetwork,
 } from '../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
-import { getImageForChainId } from '../../../../selectors/multichain';
+import { getImageForChainId } from '../../../../helpers/utils/get-image-for-chain-id';
 import { NetworkFilterDropdown } from './network-filter-dropdown';
 
 export const NetworkFilterImportToken = ({

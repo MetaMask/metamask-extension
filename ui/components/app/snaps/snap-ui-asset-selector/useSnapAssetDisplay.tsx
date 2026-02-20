@@ -15,10 +15,8 @@ import { TokenWithFiatAmount } from '../../assets/types';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { formatWithThreshold } from '../../assets/util/formatWithThreshold';
-import {
-  getImageForChainId,
-  getMemoizedMultichainNetworkConfigurationsByChainId,
-} from '../../../../selectors/multichain';
+import { getImageForChainId } from '../../../../helpers/utils/get-image-for-chain-id';
+import { getMemoizedMultichainNetworkConfigurationsByChainId } from '../../../../selectors/multichain';
 import {
   AllowedBridgeChainIds,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
