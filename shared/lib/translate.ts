@@ -25,6 +25,10 @@ export async function updateCurrentLocale(locale: string): Promise<void> {
   currentLocale = locale;
 }
 
+export function getCurrentLocale(): string {
+  return currentLocale;
+}
+
 export function t(key: string, ...substitutions: string[]): string | null {
   return (
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
