@@ -28,7 +28,6 @@ import {
   getIsSocialLoginFlow,
   getFirstTimeFlowType,
 } from './selectors';
-import { getIsUnlocked } from './ducks/metamask/metamask';
 import Root from './pages';
 import { setBackgroundConnection } from './store/background-connection';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
@@ -236,7 +235,9 @@ async function runInitialActions(store) {
 
   try {
     const validateSeedlessPasswordOutdated = async (state) => {
-      const isUnlocked = getIsUnlocked(state);
+      const isUnlocked = stateSubscriptionService
+        .getProxy('KeyringController')
+        .getSnapshot()?.isUnlocked;
       if (isUnlocked) {
         await store.dispatch(actions.checkIsSeedlessPasswordOutdated());
       }
