@@ -53,7 +53,9 @@ describe('ConfirmInfoRowAddressDisplay', () => {
       displayState: TrustSignalDisplayState.Recognized,
     });
 
-    const { getByTestId } = render('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
+    const { getByTestId } = render(
+      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+    );
     expect(getByTestId('confirm-info-row-display-name')).toHaveTextContent(
       'Account 1',
     );
@@ -74,7 +76,9 @@ describe('ConfirmInfoRowAddressDisplay', () => {
       displayState: TrustSignalDisplayState.Recognized,
     });
 
-    const { getByTestId } = render('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
+    const { getByTestId } = render(
+      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+    );
     expect(getByTestId('confirm-info-row-display-name')).not.toHaveClass(
       'confirm-info-row-address-display__clickable',
     );

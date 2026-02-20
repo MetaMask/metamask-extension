@@ -81,7 +81,7 @@ function useMiddleTruncation(text: string) {
   return { containerRef, display };
 }
 
-function TrustIcon({
+const TrustIcon = ({
   displayState,
   image,
   address,
@@ -89,7 +89,7 @@ function TrustIcon({
   displayState: TrustSignalDisplayState;
   image?: string;
   address: string;
-}) {
+}) => {
   switch (displayState) {
     case TrustSignalDisplayState.Malicious:
       return (
@@ -136,7 +136,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
       useConfirmContext<TransactionMeta>();
 
     const hexAddress = toChecksumHexAddress(address);
-    const chainId = transactionMeta.chainId;
+    const {chainId} = transactionMeta;
 
     const { name, isAccount, image, displayState } = useDisplayName({
       value: hexAddress,
