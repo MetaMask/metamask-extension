@@ -131,7 +131,7 @@ async function requestPermissionsImplementation(
     delete grantedPermissions[Caip25EndowmentPermissionName];
     // We cannot derive correct eth_accounts value directly from the CAIP-25 permission
     // because the accounts will not be in order of lastSelected
-    const ethAccounts = getAccounts(origin);
+    const ethAccounts = getAccounts(req.origin);
 
     grantedPermissions[RestrictedMethods.eth_accounts] = {
       ...caip25Endowment,
