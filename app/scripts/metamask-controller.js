@@ -4950,8 +4950,7 @@ export default class MetamaskController extends EventEmitter {
       );
 
       if (completedOnboarding) {
-        // check if external services are enabled
-        shouldImportSolanaAccount        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         await this.getSnapKeyring();
         ///: END:ONLY_INCLUDE_IF
         await this.accountTreeController.syncWithUserStorageAtLeastOnce();
