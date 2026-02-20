@@ -193,7 +193,7 @@ export const GlobalMenuDrawer = ({
         height: `${rootLayoutRect.height}px`,
       });
 
-      // Fullscreen: subtract 90px so drawer sits below logo;
+      // Fullscreen: offset 90px so drawer sits below logo; sidepanel: no offset
       const fullscreenLogoOffsetPx = 90;
       if (isFullscreen) {
         setBackdropStyle({
@@ -310,7 +310,7 @@ export const GlobalMenuDrawer = ({
         onClick={onClickOutside ? onClose : undefined}
       />
 
-      {/* Drawer panel: fullscreen uses top + explicit height so content scrolls below logo */}
+      {/* Drawer panel */}
       <div
         className={
           isFullscreen
@@ -320,19 +320,15 @@ export const GlobalMenuDrawer = ({
         style={{
           zIndex: 1,
           ...(contentTopOffset
-            ? {
-                top: `${contentTopOffset}px`,
-                bottom: 0,
-                height: `calc(100% - ${contentTopOffset}px)`,
-              }
-            : { top: 0, bottom: 0, height: '100%' }),
+            ? { top: `${contentTopOffset}px`, bottom: 0 }
+            : { top: 0, bottom: 0 }),
           transform: panelTransform,
           transitionDuration: `${DRAWER_TRANSITION_MS}ms`,
         }}
       >
         <div
-          className="w-screen max-w-full pointer-events-auto min-h-0 flex flex-col"
-          style={{ maxWidth: width, height: '100%' }}
+          className="w-screen max-w-full pointer-events-auto h-full min-h-0"
+          style={{ maxWidth: width }}
         >
           <Box
             className="h-full min-h-0 flex flex-col overflow-hidden bg-[var(--color-background-default)] shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]"
