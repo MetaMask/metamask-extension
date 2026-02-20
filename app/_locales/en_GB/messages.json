@@ -885,6 +885,9 @@
     "message": "Open the $1 page",
     "description": "$1 is the feature name (e.g. Swap, Rewards)"
   },
+  "basicFunctionalityRequired_reviewInSettings": {
+    "message": "Review in settings"
+  },
   "basicFunctionalityRequired_title": {
     "message": "Basic functionality is off"
   },

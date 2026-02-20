@@ -41,6 +41,7 @@ const I18N_KEYS = {
   description: 'basicFunctionalityRequired_description',
   goToHome: 'basicFunctionalityRequired_goToHome',
   toggleLabel: 'basicFunctionalityRequired_toggleLabel',
+  reviewInSettings: 'basicFunctionalityRequired_reviewInSettings',
   openFeaturePage: 'basicFunctionalityRequired_openFeaturePage',
   off: 'off',
   on: 'on',
@@ -56,6 +57,7 @@ jest.mock('../../hooks/useI18nContext', () => ({
       [I18N_KEYS.description]: DESCRIPTION_TEXT,
       [I18N_KEYS.goToHome]: 'Go to the home page',
       [I18N_KEYS.toggleLabel]: 'Basic functionality',
+      [I18N_KEYS.reviewInSettings]: 'Review in settings',
       [I18N_KEYS.off]: 'Off',
       [I18N_KEYS.on]: 'On',
     };
@@ -108,6 +110,22 @@ describe('BasicFunctionalityOff', () => {
       screen.getByTestId('basic-functionality-off-toggle-row'),
     ).toBeInTheDocument();
     expect(screen.getByText('Basic functionality')).toBeInTheDocument();
+  });
+
+  it('renders Review in settings link', () => {
+    renderWithStore(<BasicFunctionalityOff />);
+
+    const reviewLink = screen.getByTestId(
+      'basic-functionality-off-review-in-settings',
+    );
+    expect(reviewLink).toHaveTextContent('Review in settings');
+  });
+
+  it('navigates to Security settings when Review in settings is clicked', () => {
+    renderWithStore(<BasicFunctionalityOff />);
+    screen.getByTestId('basic-functionality-off-review-in-settings').click();
+
+    expect(mockNavigate).toHaveBeenCalledWith('/settings/security');
   });
 
   it('renders Go to the home page link', () => {

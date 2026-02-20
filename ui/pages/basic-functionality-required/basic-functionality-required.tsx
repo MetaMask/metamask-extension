@@ -25,7 +25,7 @@ import {
 } from '../../helpers/constants/design-system';
 import { Container } from '../../components/component-library/container/container';
 import ToggleButton from '../../components/ui/toggle-button';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { DEFAULT_ROUTE, SECURITY_ROUTE } from '../../helpers/constants/routes';
 import { getUseExternalServices } from '../../selectors';
 import { toggleExternalServices } from '../../store/actions';
 import type { BasicFunctionalityOffState } from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
@@ -109,22 +109,34 @@ export const BasicFunctionalityOff = () => {
         </Box>
 
         <Box
-          flexDirection={BoxFlexDirection.Row}
+          flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
-          justifyContent={BoxJustifyContent.Center}
-          style={{ width: '100%', marginTop: 8, gap: 12, display: 'flex' }}
+          style={{ width: '100%', marginTop: 8, gap: 8 }}
           data-testid="basic-functionality-off-toggle-row"
         >
-          <Text variant={TextVariant.BodyMd}>
-            {t('basicFunctionalityRequired_toggleLabel')}
-          </Text>
-          <ToggleButton
-            value={useExternalServices === true}
-            onToggle={handleToggleBasicFunctionality}
-            offLabel={t('off')}
-            onLabel={t('on')}
-            dataTestId="basic-functionality-off-toggle"
-          />
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
+            style={{ gap: 12, display: 'flex' }}
+          >
+            <Text variant={TextVariant.BodyMd}>
+              {t('basicFunctionalityRequired_toggleLabel')}
+            </Text>
+            <ToggleButton
+              value={useExternalServices === true}
+              onToggle={handleToggleBasicFunctionality}
+              offLabel={t('off')}
+              onLabel={t('on')}
+              dataTestId="basic-functionality-off-toggle"
+            />
+          </Box>
+          <TextButton
+            onClick={() => navigate(SECURITY_ROUTE)}
+            data-testid="basic-functionality-off-review-in-settings"
+          >
+            {t('basicFunctionalityRequired_reviewInSettings')}
+          </TextButton>
         </Box>
 
         <Box style={{ width: '100%', marginTop: 48 }}>
