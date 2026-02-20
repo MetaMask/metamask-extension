@@ -71,7 +71,7 @@ export { getMockPerpsStreamManager as getPerpsStreamManager } from '../../compon
 resolve: {
   alias: {
     // When USE_PERPS_MOCKS=true, replace real implementations with mocks
-    ...(process.env.USE_PERPS_MOCKS === 'true' && {
+    ...(process.env.USE_PERPS_MOCKS?.toString() === 'true' && {
       'ui/providers/perps/getPerpsController': 'ui/providers/perps/index.mock.ts',
       'ui/providers/perps/PerpsStreamManager': 'ui/providers/perps/index.mock.ts',
     }),

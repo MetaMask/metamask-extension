@@ -9,7 +9,7 @@ export class ChromeExtensionPage {
       headless: false,
       args: [`--disable-extensions-except=${extensionPath}`],
     };
-    if (process.env.HEADLESS === 'true') {
+    if (process.env.HEADLESS?.toString() === 'true') {
       launchOptions.args.push('--headless=new');
     }
     const context = await chromium.launchPersistentContext('', launchOptions);

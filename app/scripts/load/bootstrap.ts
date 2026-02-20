@@ -4,7 +4,7 @@
 // The root compartment will populate this with hooks
 global.stateHooks = {} as typeof stateHooks;
 
-if (process.env.ENABLE_SENTRY === 'true') {
+if (process.env.ENABLE_SENTRY?.toString() === 'true') {
   require('../sentry-install');
 }
 

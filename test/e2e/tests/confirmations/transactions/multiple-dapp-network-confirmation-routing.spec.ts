@@ -33,7 +33,7 @@ describe('Routing confirmstions from Multiple Dapps and different networks', fun
       },
 
       async ({ driver }) => {
-        if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
+        if (process.env.EVM_MULTICHAIN_ENABLED?.toString() === 'true') {
           await loginWithBalanceValidation(driver);
 
           // Open Dapp One

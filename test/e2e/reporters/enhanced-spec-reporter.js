@@ -129,11 +129,12 @@ function printSummary(stats, failures, allTests) {
   };
 
   const isCI =
-    process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+    process.env.CI?.toString() === 'true' ||
+    process.env.GITHUB_ACTIONS?.toString() === 'true';
   const useColors =
     !isCI ||
     process.env.FORCE_COLOR === '1' ||
-    process.env.FORCE_COLOR === 'true';
+    process.env.FORCE_COLOR?.toString() === 'true';
 
   const colorize = (text, color) => {
     return useColors && colors[color]
