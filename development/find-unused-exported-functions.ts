@@ -1,5 +1,6 @@
 #!/usr/bin/env -S node --require "./node_modules/tsx/dist/preflight.cjs" --import "./node_modules/tsx/dist/loader.mjs"
 
+import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
@@ -11,6 +12,7 @@ type CliOptions = {
   roots: string[];
   includeTests: boolean;
   includeAllRootFiles: boolean;
+  minAgeDays: number;
   json: boolean;
   reportPath?: string;
 };
@@ -39,6 +41,8 @@ type NamedImportBinding = {
 
 const DEFAULT_ENTRIES = ['app/scripts/load/ui.ts', 'app/service-worker.ts'];
 const DEFAULT_ROOTS = ['app', 'shared', 'ui'];
+const DEFAULT_MIN_AGE_DAYS = 180;
+const ONE_DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
 
 function printUsageAndExit(exitCode = 0): never {
   console.log(`Usage: tsx development/find-unused-exported-functions.ts [options]
@@ -48,6 +52,7 @@ Options:
   --roots <a,b,c>         Comma-separated source roots (default: app,shared,ui)
   --include-tests         Include *.test.*, *.spec.*, and __tests__ files
   --all-root-files        Analyze all files under roots (ignore entry reachability)
+  --min-age-days <days>   Only report unused exports last touched at least this many days ago (default: 180)
   --json                  Output the report as JSON
   --report <path>         Write the report output to a file
   --help                  Show this help message
@@ -90,8 +95,24 @@ function parseCliOptions(argv: string[]): CliOptions {
   let roots = [...DEFAULT_ROOTS];
   let includeTests = false;
   let includeAllRootFiles = false;
+  let minAgeDays = DEFAULT_MIN_AGE_DAYS;
   let json = false;
   let reportPath: string | undefined;
+
+  const parseNonNegativeIntegerOption = (
+    value: string,
+    optionName: string,
+  ): number => {
+    const trimmedValue = value.trim();
+    if (!/^\d+$/.test(trimmedValue)) {
+      console.error(
+        `Invalid value for ${optionName}: "${value}". Expected a non-negative integer.`,
+      );
+      printUsageAndExit(1);
+    }
+    const parsedValue = Number.parseInt(trimmedValue, 10);
+    return parsedValue;
+  };
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
@@ -149,6 +170,28 @@ function parseCliOptions(argv: string[]): CliOptions {
       continue;
     }
 
+    if (arg === '--min-age-days') {
+      const minAgeDaysValue = argv[index + 1];
+      if (!minAgeDaysValue) {
+        console.error('Missing value for --min-age-days');
+        printUsageAndExit(1);
+      }
+      minAgeDays = parseNonNegativeIntegerOption(
+        minAgeDaysValue,
+        '--min-age-days',
+      );
+      index += 1;
+      continue;
+    }
+
+    if (arg.startsWith('--min-age-days=')) {
+      minAgeDays = parseNonNegativeIntegerOption(
+        arg.slice('--min-age-days='.length),
+        '--min-age-days',
+      );
+      continue;
+    }
+
     if (arg === '--json') {
       json = true;
       continue;
@@ -179,6 +222,7 @@ function parseCliOptions(argv: string[]): CliOptions {
     roots,
     includeTests,
     includeAllRootFiles,
+    minAgeDays,
     json,
     reportPath,
   };
@@ -730,11 +774,145 @@ function resolveModuleSpecifier(
   return normalizePath(resolvedFilePath);
 }
 
+function parseGitBlamePorcelainOutput(
+  output: string,
+): Map<number, number | null> {
+  const lineToAuthorTime = new Map<number, number | null>();
+  const lines = output.split('\n');
+  let index = 0;
+
+  while (index < lines.length) {
+    const headerLine = lines[index];
+    const headerMatch = /^(\^?[0-9a-f]{40}|0{40}) \d+ (\d+)(?: (\d+))?$/.exec(
+      headerLine,
+    );
+
+    if (!headerMatch) {
+      index += 1;
+      continue;
+    }
+
+    const finalStartLine = Number.parseInt(headerMatch[2], 10);
+    const lineCount = Number.parseInt(headerMatch[3] ?? '1', 10);
+    let authorTimeSeconds: number | null = null;
+    index += 1;
+
+    while (index < lines.length && !lines[index].startsWith('\t')) {
+      if (lines[index].startsWith('author-time ')) {
+        const timestamp = Number.parseInt(
+          lines[index].slice('author-time '.length),
+          10,
+        );
+        if (Number.isFinite(timestamp) && timestamp >= 0) {
+          authorTimeSeconds = timestamp;
+        }
+      }
+      index += 1;
+    }
+
+    for (let offset = 0; offset < lineCount; offset += 1) {
+      lineToAuthorTime.set(finalStartLine + offset, authorTimeSeconds);
+      if (index < lines.length && lines[index].startsWith('\t')) {
+        index += 1;
+      }
+    }
+  }
+
+  return lineToAuthorTime;
+}
+
+function filterUnusedItemsByAge({
+  minAgeDays,
+  unusedItems,
+}: {
+  minAgeDays: number;
+  unusedItems: UnusedFunctionReportItem[];
+}): {
+  items: UnusedFunctionReportItem[];
+  excludedByRecentBlame: number;
+  excludedByMissingBlame: number;
+} {
+  if (minAgeDays === 0) {
+    return {
+      items: unusedItems,
+      excludedByRecentBlame: 0,
+      excludedByMissingBlame: 0,
+    };
+  }
+
+  const cutoffTimestamp = Date.now() - minAgeDays * ONE_DAY_IN_MILLISECONDS;
+  const blameCache = new Map<string, Map<number, number | null> | null>();
+  let excludedByRecentBlame = 0;
+  let excludedByMissingBlame = 0;
+  const filteredItems: UnusedFunctionReportItem[] = [];
+
+  const getFileLineBlameData = (
+    normalizedAbsoluteFilePath: string,
+  ): Map<number, number | null> | null => {
+    const cachedValue = blameCache.get(normalizedAbsoluteFilePath);
+    if (cachedValue !== undefined) {
+      return cachedValue;
+    }
+
+    const relativeFilePath = toRelativePath(normalizedAbsoluteFilePath);
+    const blameResult = spawnSync(
+      'git',
+      ['blame', '--line-porcelain', '--', relativeFilePath],
+      {
+        cwd: process.cwd(),
+        encoding: 'utf-8',
+        maxBuffer: 100 * 1024 * 1024,
+      },
+    );
+
+    if (blameResult.status !== 0) {
+      blameCache.set(normalizedAbsoluteFilePath, null);
+      return null;
+    }
+
+    const parsedBlame = parseGitBlamePorcelainOutput(blameResult.stdout);
+    blameCache.set(normalizedAbsoluteFilePath, parsedBlame);
+    return parsedBlame;
+  };
+
+  for (const unusedItem of unusedItems) {
+    const absoluteFilePath = normalizePath(unusedItem.file);
+    const lineBlameData = getFileLineBlameData(absoluteFilePath);
+
+    if (!lineBlameData) {
+      excludedByMissingBlame += 1;
+      continue;
+    }
+
+    const authorTimeSeconds = lineBlameData.get(unusedItem.line);
+    if (authorTimeSeconds === undefined || authorTimeSeconds === null) {
+      excludedByMissingBlame += 1;
+      continue;
+    }
+
+    if (authorTimeSeconds * 1000 > cutoffTimestamp) {
+      excludedByRecentBlame += 1;
+      continue;
+    }
+
+    filteredItems.push(unusedItem);
+  }
+
+  return {
+    items: filteredItems,
+    excludedByRecentBlame,
+    excludedByMissingBlame,
+  };
+}
+
 function renderTextReport(
   entries: string[],
   roots: string[],
+  minAgeDays: number,
   analyzedFilesCount: number,
   totalExportedFunctions: number,
+  excludedByRecentBlame: number,
+  excludedByMissingBlame: number,
   unusedItems: UnusedFunctionReportItem[],
 ): string {
   const header = [
@@ -742,8 +920,11 @@ function renderTextReport(
     '',
     `Entries: ${entries.join(', ')}`,
     `Roots: ${roots.join(', ')}`,
+    `Minimum age days (git blame): ${minAgeDays}`,
     `Analyzed files: ${analyzedFilesCount}`,
     `Exported functions analyzed: ${totalExportedFunctions}`,
+    `Excluded by recent blame: ${excludedByRecentBlame}`,
+    `Excluded by missing blame: ${excludedByMissingBlame}`,
     `Unused exported functions: ${unusedItems.length}`,
     '',
   ].join('\n');
@@ -935,17 +1116,29 @@ async function main(): Promise<void> {
       first.exportName.localeCompare(second.exportName),
   );
 
+  const {
+    items: agedUnusedItems,
+    excludedByRecentBlame,
+    excludedByMissingBlame,
+  } = filterUnusedItemsByAge({
+    minAgeDays: options.minAgeDays,
+    unusedItems,
+  });
+
   const reportObject = {
     analyzedEntries: entryPaths.map(toRelativePath),
     analyzedRoots: rootPaths.map(toRelativePath),
     mode: options.includeAllRootFiles ? 'all-root-files' : 'entry-reachable',
     includeTests: options.includeTests,
+    minAgeDays: options.minAgeDays,
     totals: {
       analyzedFiles: filesToAnalyze.length,
       exportedFunctionsAnalyzed: exportedFunctionCandidates.length,
-      unusedExportedFunctions: unusedItems.length,
+      excludedByRecentBlame,
+      excludedByMissingBlame,
+      unusedExportedFunctions: agedUnusedItems.length,
     },
-    unused: unusedItems,
+    unused: agedUnusedItems,
   };
 
   const reportContent = options.json
@@ -953,8 +1146,11 @@ async function main(): Promise<void> {
     : renderTextReport(
         reportObject.analyzedEntries,
         reportObject.analyzedRoots,
+        reportObject.minAgeDays,
         reportObject.totals.analyzedFiles,
         reportObject.totals.exportedFunctionsAnalyzed,
+        reportObject.totals.excludedByRecentBlame,
+        reportObject.totals.excludedByMissingBlame,
         reportObject.unused,
       );
 
