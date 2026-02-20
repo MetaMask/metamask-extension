@@ -712,8 +712,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "עליך לאפשר גישה למצלמה כדי להשתמש בתכונה זו."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "ה-seed phrase הפרטי שלך"
   }
 }

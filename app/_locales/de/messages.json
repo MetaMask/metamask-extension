@@ -3666,10 +3666,6 @@
   "makeAnotherSwap": {
     "message": "Ein neues Wallet erstellen"
   },
-  "makeSureNoOneWatching": {
-    "message": "Stellen Sie sicher, dass niemand zuschaut.",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
   "manageDefaultSettings": {
     "message": "Standardeinstellungen verwalten"
   },
@@ -5778,17 +5774,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "Die $1 bietet $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask ist ein $1. Das bedeutet, dass Sie der Besitzer Ihrer GWP sind.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "vollen Zugriff auf Ihre Wallet und Ihr Guthaben.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "Wallet ohne Vewahrung"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -5802,10 +5788,6 @@
   "revealSeedWordsWarning": {
     "message": "Stellen Sie sicher, dass niemand auf Ihren Bildschirm schaut. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Der MetaMask-Support wird Sie nie danach fragen.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Sensible Inhalte anzeigen"
@@ -8812,9 +8794,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Ihr NFT könnte gefährdet sein"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Ihre geheime Wiederherstellungsphrase"
   },
   "yourTransactionConfirmed": {
     "message": "Transaktion bereits bestätigt"

@@ -716,8 +716,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "أنت بحاجة إلى السماح بالوصول إلى الكاميرا لاستخدام هذه الميزة."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "عبارة الأمان الشخصية الخاصة بك"
   }
 }

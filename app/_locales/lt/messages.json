@@ -715,8 +715,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Norint naudotis šia funkcija, reikia leisti prieigą prie kameros.."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Jūsų asmeninė atkūrimo frazė"
   }
 }

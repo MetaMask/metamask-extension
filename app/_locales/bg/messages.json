@@ -715,8 +715,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Трябва да разрешите достъпа на камерата, за да използвате тази функция."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Вашата лична фраза зародиш"
   }
 }

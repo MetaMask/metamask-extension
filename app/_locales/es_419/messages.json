@@ -1028,10 +1028,6 @@
   "makeAnotherSwap": {
     "message": "Crear un nuevo swap"
   },
-  "makeSureNoOneWatching": {
-    "message": "Asegúrese de que nadie está viendo su pantalla",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
   "max": {
     "message": "Máx."
   },
@@ -1999,8 +1995,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Necesita permitir el acceso a la cámara para usar esta función."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Su frase secreta de recuperación privada"
   }
 }

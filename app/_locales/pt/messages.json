@@ -3666,10 +3666,6 @@
   "makeAnotherSwap": {
     "message": "Criar nova troca"
   },
-  "makeSureNoOneWatching": {
-    "message": "Certifique-se de que ninguém está olhando",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
   "manageDefaultSettings": {
     "message": "Gerenciar configurações de privacidade padrão"
   },
@@ -5778,17 +5774,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "A $1 concede $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "A MetaMask é uma $1. Isso significa que você é o proprietário da sua FRS.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "acesso total à sua carteira e fundos.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "carteira sem custódia"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -5802,10 +5788,6 @@
   "revealSeedWordsWarning": {
     "message": "Certifique-se de que ninguém está olhando a sua tela. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "O suporte da MetaMask nunca solicitará essa informação.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Mostrar conteúdo sensível"
@@ -8812,9 +8794,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Seu NFT pode estar em risco"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Sua Frase de Recuperação Secreta"
   },
   "yourTransactionConfirmed": {
     "message": "Transação já confirmada"

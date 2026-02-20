@@ -3666,10 +3666,6 @@
   "makeAnotherSwap": {
     "message": "Gumawa ng bagong pag-swap"
   },
-  "makeSureNoOneWatching": {
-    "message": "Siguraduhing walang tumitingin",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
   "manageDefaultSettings": {
     "message": "Pamahalaan ang mga default na setting sa pagkapribado"
   },
@@ -5778,17 +5774,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "Ang $1 ay nagbibigay ng $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "Ang MetaMask ay isang $1. Nangangahulugan iyon na ikaw ang may-ari ng iyong SRP.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "buong access sa iyong wallet at pondo.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "non-custodial na wallet"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -5802,10 +5788,6 @@
   "revealSeedWordsWarning": {
     "message": "Tiyaking walang tumitingin sa iyong screen. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Hindi ito kailanman hihilingin ng Suporta sa MetaMask.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Ipakita ang sensitibong nilalaman"
@@ -8812,9 +8794,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Maaaring nasa panganib ang iyong NFT"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Ang Iyong Lihim na Parirala sa Pagbawi"
   },
   "yourTransactionConfirmed": {
     "message": "Nakumpirma na ang transaksyon"

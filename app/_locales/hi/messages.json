@@ -3666,10 +3666,6 @@
   "makeAnotherSwap": {
     "message": "एक नया स्वैप बनाएं"
   },
-  "makeSureNoOneWatching": {
-    "message": "पक्का करें कि इसे कोई भी नहीं देख रहा है",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
   "manageDefaultSettings": {
     "message": "डिफॉल्ट सेटिंग्स मैनेज करें"
   },
@@ -5778,17 +5774,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "$1 प्रदान करता है $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask एक $1 है। इसका मतलब आप आपने SRP के मालिक हैं।",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "आपके वॉलेट और फंड तक पूरी एक्सेस।\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "गैर-अभिरक्षण वॉलेट"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -5802,10 +5788,6 @@
   "revealSeedWordsWarning": {
     "message": "यह पक्का करें कि कोई भी आपकी स्क्रीन ना देख रहा हो। $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "MetaMask सपोर्ट कभी इसका रिक्वेस्ट नहीं करेगा।",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "संवेदनशील कंटेंट दिखाएं"
@@ -8812,9 +8794,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "आपका NFT खतरे में हो सकता है"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "आपका सीक्रेट रिकवरी फ्रेज"
   },
   "yourTransactionConfirmed": {
     "message": "ट्रांसेक्शन पहले ही कन्फर्म हो चुका है"

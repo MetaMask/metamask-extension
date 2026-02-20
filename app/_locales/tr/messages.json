@@ -3679,10 +3679,6 @@
   "makeAnotherSwap": {
     "message": "Yeni bir swap oluştur"
   },
-  "makeSureNoOneWatching": {
-    "message": "Hiç kimsenin bakmadığından emin olun",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
   "manageDefaultSettings": {
     "message": "Varsayılan ayarları yönet"
   },
@@ -5802,17 +5798,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "$1 $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask $1. Yani GKİ'niz size aittir.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "cüzdanınıza ve paranıza tam erişim sağlar.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "emanete dayalı olmayan bir cüzdandır"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -5826,10 +5812,6 @@
   "revealSeedWordsWarning": {
     "message": "Ekranınıza hiç kimsenin bakmadığından emin olun. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "MetaMask Destek bölümü bunu asla talep etmez.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Hassas içeriği göster"
@@ -8836,9 +8818,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT'niz tehlikede olabilir"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Gizli Kurtarma İfadeniz"
   },
   "yourTransactionConfirmed": {
     "message": "İşlem zaten onaylandı"

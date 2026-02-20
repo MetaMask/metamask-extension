@@ -697,8 +697,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du må gi kameratilgang for å bruke denne funksjonen."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Din private frøfrase"
   }
 }

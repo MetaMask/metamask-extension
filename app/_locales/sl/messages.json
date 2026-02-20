@@ -703,8 +703,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Za uporabo te funkcije boste potrebovali dostop do kamere."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Vaš zasebni seed phrase"
   }
 }

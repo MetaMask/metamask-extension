@@ -703,8 +703,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Za upotrebu ove funkcije morate omogućiti pristup kameri."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Vaša privatna šifra za oporavak naloga (seed phrase)"
   }
 }

@@ -154,8 +154,8 @@ export default function RecoveryPhraseChips({
   const phrasesToDisplay = phraseRevealed
     ? secretRecoveryPhrase
     : secretRecoveryPhrase.map((_word, index) => {
-      return fakeSeedPhraseWords[index % fakeSeedPhraseWords.length];
-    });
+        return fakeSeedPhraseWords[index % fakeSeedPhraseWords.length];
+      });
 
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>

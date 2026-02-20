@@ -688,8 +688,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du skal tillade kameraadgang for at bruge denne funktion."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Din private seed-sætning"
   }
 }

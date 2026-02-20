@@ -1028,10 +1028,6 @@
   "makeAnotherSwap": {
     "message": "Criar nova troca"
   },
-  "makeSureNoOneWatching": {
-    "message": "Confirme que não há ninguém observando a sua tela",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
   "max": {
     "message": "Máx"
   },
@@ -1999,8 +1995,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Você precisa permitir o acesso à câmera para usar esse recurso."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Sua Frase de Recuperação Secreta privada"
   }
 }

@@ -715,8 +715,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Lai lietotu šo funkciju, jādod piekļuve kamerai."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Jūsu privātā atkopšanas frāze"
   }
 }

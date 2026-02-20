@@ -1778,6 +1778,9 @@
   "copiedExclamation": {
     "message": "Copied."
   },
+  "copiedToClipboard": {
+    "message": "Copied to clipboard"
+  },
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
@@ -1792,6 +1795,9 @@
   },
   "copyTransactionId": {
     "message": "Copy transaction ID"
+  },
+  "correct": {
+    "message": "Correct"
   },
   "create": {
     "message": "Create"
@@ -1883,6 +1889,9 @@
   "currentNetwork": {
     "message": "Current network",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
+  },
+  "currentQuestion": {
+    "message": "Question $1 of 2"
   },
   "currentTitle": {
     "message": "Current:"
@@ -3358,6 +3367,9 @@
   "includesXTransactions": {
     "message": "Includes $1 transactions"
   },
+  "incorrect": {
+    "message": "Incorrect"
+  },
   "infuraBlockedNotification": {
     "message": "MetaMask is unable to connect to the blockchain host. Review possible reasons $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
@@ -3786,10 +3798,6 @@
   },
   "makeAnotherSwap": {
     "message": "Create a new swap"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Make sure nobody is looking",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "manage": {
     "message": "Manage"
@@ -5832,6 +5840,9 @@
   "queued": {
     "message": "Queued"
   },
+  "quizIntroduction": {
+    "message": "To reveal your Secret Recovery Phrase, you need to correctly answer two questions."
+  },
   "quotedReceiveAmount": {
     "message": "$1 receive amount"
   },
@@ -6079,22 +6090,12 @@
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
   },
-  "revealSeedWordsDescription1": {
-    "message": "Your $1 gives full access to your wallet, funds, and accounts.",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
-  },
   "revealSeedWordsDescription": {
     "message": "Your Secret Recovery Phrase gives full access to your wallet. Do not share it with anyone."
   },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask is a $1. That means you're the owner of your SRP.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "full access to your wallet and funds.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "non-custodial wallet"
+  "revealSeedWordsDescription1": {
+    "message": "Your $1 gives full access to your wallet, funds, and accounts.",
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6107,10 +6108,6 @@
   },
   "revealSeedWordsWarning": {
     "message": "Make sure nobody is looking at your screen. MetaMask Support will never ask for this."
-  },
-  "revealSeedWordsWarning2": {
-    "message": "MetaMask Support will never request this.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Reveal sensitive content"
@@ -7855,12 +7852,6 @@
   "srpSecurityQuizTitle": {
     "message": "Security quiz"
   },
-  "correct": {
-    "message": "Correct"
-  },
-  "incorrect": {
-    "message": "Incorrect"
-  },
   "srpToggleShow": {
     "message": "Show/Hide this word of the secret recovery phrase",
     "description": "Describes a toggle that is used to show or hide a single word of the secret recovery phrase"
@@ -9146,9 +9137,6 @@
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"
   },
-  "yourPrivateSeedPhrase": {
-    "message": "Your Secret Recovery Phrase"
-  },
   "yourTransactionConfirmed": {
     "message": "Transaction already confirmed"
   },
@@ -9160,14 +9148,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Keep your Secret Recovery Phrase safe!"
-  },
-  "quizIntroduction": {
-    "message": "To reveal your Secret Recovery Phrase, you need to correctly answer two questions."
-  },
-  "currentQuestion": {
-    "message": "Question $1 of 2"
-  },
-  "copiedToClipboard": {
-    "message": "Copied to clipboard"
   }
 }

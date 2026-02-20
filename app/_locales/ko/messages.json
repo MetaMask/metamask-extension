@@ -3666,10 +3666,6 @@
   "makeAnotherSwap": {
     "message": "새 스왑 생성"
   },
-  "makeSureNoOneWatching": {
-    "message": "다른 사람이 이 화면을 보고 있지는 않은지 확인하세요.",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
   "manageDefaultSettings": {
     "message": "기본 개인정보 보호 설정 관리"
   },
@@ -5778,17 +5774,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "$1 활용으로 $2 기능을 사용할 수 있습니다",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask는 $1입니다. 이는 회원님이 SRP의 소유자라는 의미입니다.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "지갑과 자금에 모두 액세스하세요.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "비수탁형 지갑입니다"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -5802,10 +5788,6 @@
   "revealSeedWordsWarning": {
     "message": "다른 사람이 보고 있지 않은지 확인하세요. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "MetaMask 지원팀은 절대 개인 키를 알려달라고 요청하지 않습니다.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "민감한 내용 표시"
@@ -8812,9 +8794,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT가 위험할 수 있습니다"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "비밀복구구문"
   },
   "yourTransactionConfirmed": {
     "message": "트랜잭션이 이미 확인되었습니다"

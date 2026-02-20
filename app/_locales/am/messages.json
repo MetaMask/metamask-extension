@@ -700,8 +700,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "ይህን ባህርይ ለመጠቀም የካሜራን መድረስ መፍቀድ አለብዎት።"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "የግል ዘር ሐረግዎ"
   }
 }

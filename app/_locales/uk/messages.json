@@ -715,8 +715,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Вам потрібно дозволити доступ до камери, щоб користуватись цією функцією."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Ваша секретна seed-фраза"
   }
 }

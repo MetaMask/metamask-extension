@@ -3679,10 +3679,6 @@
   "makeAnotherSwap": {
     "message": "Создать новый своп"
   },
-  "makeSureNoOneWatching": {
-    "message": "Убедитесь, что никто не смотрит",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
   "manageDefaultSettings": {
     "message": "Управление настройками конфиденциальности по умолчанию"
   },
@@ -5802,17 +5798,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "$1 дает $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask — $1. Это означает, что вы являетесь владельцем своей СВФ.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "полный доступ к вашему кошельку и средствам.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "некастодиальный кошелек."
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -5826,10 +5812,6 @@
   "revealSeedWordsWarning": {
     "message": "Убедитесь, что никто не смотрит на ваш экран. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Поддержка MetaMask никогда не будет запрашивать этот ключ.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Показать чувствительный контент"
@@ -8836,9 +8818,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Ваш NFT могут быть в опасности"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Ваша секретная фраза для восстановления"
   },
   "yourTransactionConfirmed": {
     "message": "Транзакция уже подтверждена"

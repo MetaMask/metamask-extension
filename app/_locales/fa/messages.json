@@ -715,8 +715,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "لازم است تا شما جهت استفاده از این مشخصه، به کمره اجازه دسترسی بدهید."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "عبارت بازیاب شخصی شما"
   }
 }

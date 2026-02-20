@@ -694,8 +694,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du måste tillåta åtkomst till kameran för att använda den här funktionen."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Din privata seedphrase"
   }
 }

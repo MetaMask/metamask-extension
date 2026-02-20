@@ -1415,8 +1415,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Devi consentire l'accesso alla fotocamera per usare questa funzionalità."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "La tua frase seed privata"
   }
 }

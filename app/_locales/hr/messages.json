@@ -709,8 +709,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Trebate dopustiti pristupanje kameri za korištenje ovom funkcijom."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Vaša privatna početna rečenica"
   }
 }

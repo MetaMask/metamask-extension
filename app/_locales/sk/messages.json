@@ -681,8 +681,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ak chcete používať túto funkciu, musíte povoliť prístup k fotoaparátu."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Vaša súkromná seed fráza"
   }
 }

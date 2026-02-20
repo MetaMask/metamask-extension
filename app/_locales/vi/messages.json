@@ -3666,10 +3666,6 @@
   "makeAnotherSwap": {
     "message": "Tạo một giao dịch hoán đổi mới"
   },
-  "makeSureNoOneWatching": {
-    "message": "Đảm bảo không có ai đang nhìn",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
   "manageDefaultSettings": {
     "message": "Quản lý cài đặt mặc định"
   },
@@ -5778,17 +5774,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "$1 cung cấp $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask là một $1. Có nghĩa bạn là người sở hữu Cụm từ khôi phục bí mật của bạn.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "toàn quyền truy cập vào ví và tiền của bạn.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "ví không lưu ký"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -5802,10 +5788,6 @@
   "revealSeedWordsWarning": {
     "message": "Đảm bảo không có ai đang nhìn vào màn hình của bạn. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Bộ phận Hỗ trợ MetaMask sẽ không bao giờ yêu cầu điều này.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Hiển thị nội dung nhạy cảm"
@@ -8812,9 +8794,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT của bạn có thể gặp rủi ro"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Cụm từ khôi phục bí mật của bạn"
   },
   "yourTransactionConfirmed": {
     "message": "Giao dịch đã được xác nhận"

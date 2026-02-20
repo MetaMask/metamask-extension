@@ -3666,10 +3666,6 @@
   "makeAnotherSwap": {
     "message": "创建新的交换"
   },
-  "makeSureNoOneWatching": {
-    "message": "请确保没有人在看您的屏幕",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
   "manageDefaultSettings": {
     "message": "管理默认隐私设置"
   },
@@ -5778,17 +5774,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "$1 提供 $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask 是$1。这意味着您是自己的 SRP 的所有者。",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "对您的钱包和资金的完整访问权限。"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "非保管钱包"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -5802,10 +5788,6 @@
   "revealSeedWordsWarning": {
     "message": "确保没有人在看您的屏幕。$1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "MetaMask 支持部门绝对不会要求您提供这个。",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "显示敏感内容"
@@ -8812,9 +8794,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "您的 NFT 可能面临风险"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "您的私钥助记词"
   },
   "yourTransactionConfirmed": {
     "message": "交易已确认"

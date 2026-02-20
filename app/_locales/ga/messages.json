@@ -3282,10 +3282,6 @@
   "makeAnotherSwap": {
     "message": "Cruthaigh malartú nua"
   },
-  "makeSureNoOneWatching": {
-    "message": "Bí cinnte nach bhfuil aon duine ag féachaint",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
   "manageDefaultSettings": {
     "message": "Bainistigh socruithe réamhshocraithe"
   },
@@ -5019,17 +5015,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "Tugann an $1 $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "Is $1 é MetaMask. Ciallaíonn sé sin gur leatsa d’SRP.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "rochtain iomlán ar do sparán agus ar do chistí."
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "sparán neamhchoimeádta"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -5043,10 +5029,6 @@
   "revealSeedWordsWarning": {
     "message": "Cinntigh nach bhfuil aon duine ag féachaint ar do scáileán. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Ní iarrfaidh Tacaíocht MetaMask seo choíche.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Nocht ábhar íogair"
@@ -7366,9 +7348,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "D’fhéadfadh do NFT a bheith i mbaol"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Do Rún Aisghabhála Frása"
   },
   "yourTransactionConfirmed": {
     "message": "Idirbheart deimhnithe cheana féin"

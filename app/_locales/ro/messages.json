@@ -700,8 +700,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Trebuie să permiteți accesul la cameră pentru a folosi această funcție."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Expresia dvs. seed privată"
   }
 }

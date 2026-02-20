@@ -3666,10 +3666,6 @@
   "makeAnotherSwap": {
     "message": "Δημιουργία νέας ανταλλαγής"
   },
-  "makeSureNoOneWatching": {
-    "message": "Βεβαιωθείτε ότι κανείς δεν κοιτάει",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
   "manageDefaultSettings": {
     "message": "Διαχείριση προεπιλεγμένων ρυθμίσεων"
   },
@@ -5778,17 +5774,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "Το $1 παρέχει $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "Το MetaMask είναι ένα $1. Αυτό σημαίνει ότι είστε ο κάτοχος της ΜΦΑ σας.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "πλήρη πρόσβαση στο πορτοφόλι και τα κεφάλαιά σας."
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "non-custodial πορτοφόλι"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -5802,10 +5788,6 @@
   "revealSeedWordsWarning": {
     "message": "Σιγουρευτείτε ότι δεν κοιτάζει κανείς την οθόνη σας.$1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Η Υποστήριξη του MetaMask δεν θα σας τη ζητήσει ποτέ.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Αποκάλυψη ευαίσθητου περιεχομένου"
@@ -8812,9 +8794,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Τα NFT μπορεί να κινδυνεύουν"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Η Μυστική σας Φράση Ανάκτησης"
   },
   "yourTransactionConfirmed": {
     "message": "Η συναλλαγή έχει ήδη επιβεβαιωθεί"
