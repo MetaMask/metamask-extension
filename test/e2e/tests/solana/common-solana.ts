@@ -1928,6 +1928,8 @@ export async function mockGetSignaturesForWalletOnly(
       return {
         statusCode: 200,
         json: {
+          id: '1337',
+          jsonrpc: '2.0',
           result: [
             {
               blockTime: 1748363309,
