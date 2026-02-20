@@ -57,6 +57,13 @@ jobs:
           yarn dist
           # The Chrome build output is located in dist/chrome
           cd dist/chrome
+          
+          # Remove the 'key' field from manifest.json to avoid Web Store ID conflicts
+          # The Chrome Web Store API will reject a new draft upload with "Invalid Value"
+          # if the zip contains a key for an extension ID already registered.
+          jq 'del(.key)' manifest.json > manifest-tmp.json
+          mv manifest-tmp.json manifest.json
+          
           # Zip the contents into extension.zip in the repository root
           zip -r ../../extension.zip .
 
@@ -74,12 +81,14 @@ jobs:
       # It passes the access token we got from the auth step.
       - name: Create Draft Extension
         run: |
+          # Note: The endpoint version must be v1.1
           RESPONSE=$(curl -s -X POST \
             -H "Authorization: Bearer ${{ steps.auth.outputs.access_token }}" \
             -H "x-goog-api-version: 2" \
             -H "Content-Type: application/zip" \
-            -T extension.zip \
-            "https://www.googleapis.com/upload/chromewebstore/v1.1/items")
+            -H "Expect: " \
+            --data-binary @extension.zip \
+            "https://www.googleapis.com/upload/chromewebstore/v1.1/items?uploadType=media")
 
           # Print the API response so you can see the results
           echo "$RESPONSE"
