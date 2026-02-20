@@ -6604,7 +6604,8 @@ export default class MetamaskController extends EventEmitter {
   handleWatchAssetRequest = ({ asset, type, origin }) => {
     // watchAsset should always use the wallet's selected network, not the dApp's network
     // This ensures tokens are added to the correct network the user is viewing
-    const networkClientId = this.networkController.state.selectedNetworkClientId;
+    const networkClientId =
+      this.networkController.state.selectedNetworkClientId;
 
     switch (type) {
       case ERC20:
