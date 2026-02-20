@@ -1,5 +1,4 @@
 import { Messenger, MessengerActions } from '@metamask/messenger';
-import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 
 import { RootMessenger } from '../../lib/messenger';
 import { type StaticAssetsServiceMessenger as StaticAssetsServiceMessengerType } from '../../controllers/static-assets-service';
