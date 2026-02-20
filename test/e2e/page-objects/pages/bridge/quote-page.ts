@@ -62,6 +62,9 @@ class BridgeQuotePage {
 
   private switchTokensButton = '[data-testid="switch-tokens"]';
 
+  private networkNameSelector = (network: string) =>
+    `[data-testid="${network}"]`;
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -237,6 +240,11 @@ class BridgeQuotePage {
 
   async switchTokens(): Promise<void> {
     await this.driver.clickElement(this.switchTokensButton);
+  }
+
+  async selectNetwork(network: string): Promise<void> {
+    await this.driver.clickElement(this.networkSelector);
+    await this.driver.clickElement(this.networkNameSelector(network));
   }
 }
 
