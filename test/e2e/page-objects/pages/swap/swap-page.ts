@@ -99,6 +99,21 @@ class SwapPage {
     tag: 'button',
   };
 
+  private readonly awaitingSwapDescription =
+    '[data-testid="awaiting-swap-main-description"]';
+
+  private readonly importTokensButton =
+    '[data-testid="import-tokens-import-button"]';
+
+  private readonly swapsBannerTitle = '[data-testid="swaps-banner-title"]';
+
+  private readonly bannerBase = '.mm-banner-base';
+
+  private readonly quotesModal = '.quotes-modal';
+
+  private readonly quotesModalRow =
+    '.quotes-modal [style*="position: relative"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -253,6 +268,105 @@ class SwapPage {
       text: `${tokenName}`,
     });
     await this.driver.clickElement(this.closeButton);
+  }
+
+  async fillSwapAmount(amount: string): Promise<void> {
+    await this.driver.waitForSelector(this.reviewFromAmount);
+    await this.driver.fill(this.reviewFromAmount, amount);
+  }
+
+  async selectDestinationTokenByContract(
+    contractAddress: string,
+  ): Promise<void> {
+    await this.driver.clickElement(this.bridgeDestinationButton);
+    await this.driver.waitForSelector(this.assetPickerSearchInput);
+    await this.driver.fill(this.assetPickerSearchInput, contractAddress);
+
+    const result = await Promise.any([
+      this.driver
+        .waitForSelector(this.importTokensButton)
+        .then(() => 'import' as const),
+      this.driver
+        .waitForSelector(this.bridgeAsset)
+        .then(() => 'asset' as const),
+    ]);
+
+    if (result === 'import') {
+      await this.driver.clickElement(this.importTokensButton);
+      await this.driver.waitForSelector(this.bridgeAsset);
+    }
+    await this.driver.clickElement(this.bridgeAsset);
+  }
+
+  async checkSourceToken(token: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.bridgeSourceButton,
+      text: token,
+    });
+  }
+
+  async checkDestinationToken(token: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.bridgeDestinationButton,
+      text: token,
+    });
+  }
+
+  async getFromAmountValue(): Promise<string> {
+    const element = await this.driver.waitForSelector(this.reviewFromAmount);
+    return element.getAttribute('value');
+  }
+
+  async getToAmountValue(): Promise<string> {
+    const element = await this.driver.waitForSelector(this.reviewToAmount);
+    return element.getAttribute('value');
+  }
+
+  async waitForTransactionCompleteWithToken(tokenName: string): Promise<void> {
+    await this.swapProcessingMessageCheck('Processing');
+    await this.driver.waitForSelector(
+      { css: this.transactionHeader, text: 'Transaction complete' },
+      { timeout: 30000 },
+    );
+    await this.driver.waitForSelector({
+      css: this.awaitingSwapDescription,
+      text: tokenName,
+    });
+    await this.driver.clickElement(this.closeButton);
+  }
+
+  async checkNotificationBanner(title: string, text: string): Promise<void> {
+    const isTitleVisible = await this.driver.isElementPresentAndVisible({
+      css: this.swapsBannerTitle,
+      text: title,
+    });
+    assert.equal(isTitleVisible, true, 'Invalid box title');
+
+    const isContentVisible = await this.driver.isElementPresentAndVisible({
+      css: this.bannerBase,
+      text,
+    });
+    assert.equal(isContentVisible, true, 'Invalid box text content');
+  }
+
+  async selectAlternativeQuote(): Promise<void> {
+    await this.driver.waitForSelector(this.moreQuotesButton);
+    await this.driver.clickElement(this.moreQuotesButton);
+    await this.driver.waitForSelector({ text: 'Select a quote' });
+
+    await this.driver.executeScript(`
+      const quoteRows = Array.from(
+        document.querySelectorAll('${this.quotesModalRow}'),
+      );
+      if (quoteRows.length === 0) {
+        throw new Error('No quotes available to select');
+      }
+      const targetRow = quoteRows[Math.min(1, quoteRows.length - 1)];
+      targetRow.scrollIntoView({ block: 'center' });
+      targetRow.click();
+    `);
+
+    await this.driver.assertElementNotPresent(this.quotesModal);
   }
 
   async createSolanaSwap(options: SwapSolanaOptions) {
