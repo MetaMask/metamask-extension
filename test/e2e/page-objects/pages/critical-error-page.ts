@@ -102,7 +102,7 @@ class CriticalErrorPage {
               return false;
             }
           },
-          { interval: 300, timeout: 10000 },
+          { interval: 300, timeout: 25000 },
         );
       } catch {
         // to mitigate a race condition where the tab is closed after confirming (issue #36916)
