@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'classnames';
 import { IconSize } from '@metamask/design-system-react';
@@ -15,8 +15,10 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
-import SRPQuiz from '../../app/srp-quiz-modal';
+import {
+  ONBOARDING_REVIEW_SRP_ROUTE,
+  REVEAL_SEED_ROUTE,
+} from '../../../helpers/constants/routes';
 
 export type MultichainSrpBackupProps = {
   shouldShowBackupReminder?: boolean;
@@ -31,20 +33,15 @@ export const MultichainSrpBackup: React.FC<MultichainSrpBackupProps> = ({
 }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
 
   const handleSrpBackupClick = useCallback(() => {
     if (shouldShowBackupReminder) {
       const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
       navigate(backUpSRPRoute);
     } else {
-      setSrpQuizModalVisible(true);
+      navigate(`${REVEAL_SEED_ROUTE}/${keyringId}`);
     }
-  }, [shouldShowBackupReminder, navigate, setSrpQuizModalVisible]);
-
-  const handleQuizModalClose = useCallback(() => {
-    setSrpQuizModalVisible(false);
-  }, [setSrpQuizModalVisible]);
+  }, [shouldShowBackupReminder, navigate, keyringId]);
 
   const finalClassName = classnames('multichain-srp-backup', className);
 
@@ -86,16 +83,6 @@ export const MultichainSrpBackup: React.FC<MultichainSrpBackupProps> = ({
           />
         </Box>
       </Box>
-      {srpQuizModalVisible && keyringId && (
-        <SRPQuiz
-          keyringId={keyringId}
-          isOpen={srpQuizModalVisible}
-          onClose={handleQuizModalClose}
-          closeAfterCompleting
-          navigate={navigate}
-          skipQuiz={true}
-        />
-      )}
     </>
   );
 };
