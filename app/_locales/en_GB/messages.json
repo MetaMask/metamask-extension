@@ -2088,6 +2088,9 @@
   "deepLink_theHomePage": {
     "message": "the home page"
   },
+  "deepLink_theMusdEducationPage": {
+    "message": "the MUSD conversion education page"
+  },
   "deepLink_theNFTsPage": {
     "message": "the NFTs page"
   },
@@ -4036,6 +4039,10 @@
     "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdBonusExplanation": {
+    "message": "Convert your stablecoins to mUSD, MetaMask's US dollar-backed stablecoin, and receive up to a $1% bonus. Terms apply.",
+    "description": "$1 is the bonus APY percentage"
+  },
   "musdClaimClaimingTo": {
     "message": "Claiming to",
     "description": "Label for the account row in the mUSD claim confirmation screen"
@@ -4053,6 +4060,26 @@
   },
   "musdConversionTitle": {
     "message": "mUSD Conversion"
+  },
+  "musdConversionToastFailed": {
+    "message": "mUSD conversion failed"
+  },
+  "musdConversionToastInProgress": {
+    "message": "Converting $1 → mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
+  },
+  "musdConversionToastSuccess": {
+    "message": "Your mUSD is here!"
+  },
+  "musdEducationGetStarted": {
+    "message": "Get started"
+  },
+  "musdEducationHeadline": {
+    "message": "GET $1% ON STABLECOINS",
+    "description": "$1 is the bonus APY percentage"
+  },
+  "musdEducationNotNow": {
+    "message": "Not now"
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
