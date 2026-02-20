@@ -98,6 +98,13 @@ export { Popover, PopoverPosition, PopoverRole } from './popover';
 export type { PopoverProps } from './popover';
 export { ModalHeader } from './modal-header';
 export type { ModalHeaderProps } from './modal-header';
+export { HeaderCompactSearch, HeaderCompactSearchVariant } from './header-compact-search';
+export type {
+  HeaderCompactSearchProps,
+  HeaderCompactSearchTextFieldSearchProps,
+  HeaderCompactSearchScreenProps,
+  HeaderCompactSearchInlineProps,
+} from './header-compact-search';
 export { SelectButton, SelectButtonSize } from './select-button';
 export type { SelectButtonProps } from './select-button';
 export { SelectOption } from './select-option';

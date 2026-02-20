@@ -1,6 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { BorderRadius } from '../../../helpers/constants/design-system';
 import { TextFieldProps, TextFieldType } from '../text-field/text-field.types';
 import { PolymorphicRef } from '../box';
 import { TextField } from '../text-field';
@@ -44,7 +45,7 @@ export const TextFieldSearch: TextFieldSearchComponent = React.forwardRef(
                 className="mm-text-field__button-clear"
                 data-testid="text-field-search-clear-button"
                 ariaLabel={t('clear')}
-                iconName={IconName.Close}
+                iconName={IconName.CircleX}
                 size={ButtonIconSize.Sm}
                 onClick={clearButtonOnClick}
                 {...clearButtonProps}
@@ -61,6 +62,7 @@ export const TextFieldSearch: TextFieldSearchComponent = React.forwardRef(
           ...inputProps,
         }}
         {...(props as TextFieldProps<C>)}
+        borderRadius={BorderRadius.pill}
       />
     );
   },
