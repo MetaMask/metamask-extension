@@ -34,6 +34,14 @@ import {
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
+// Avoids circular dependency nightmare
+// eslint-disable-next-line import/order
+import {
+  getTokensControllerAllTokens,
+  getAccountTrackerControllerAccountsByChainId,
+  getCurrencyRateControllerCurrencyRates,
+  getTokenRatesControllerMarketData,
+} from './assets-migration';
 import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
 import {
   getCurrentChainId,
@@ -178,12 +186,6 @@ import {
   getCurrentNetworkTransactions,
 } from './transactions';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
-import {
-  getTokensControllerAllTokens,
-  getAccountTrackerControllerAccountsByChainId,
-  getCurrencyRateControllerCurrencyRates,
-  getTokenRatesControllerMarketData,
-} from './assets-migration';
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
