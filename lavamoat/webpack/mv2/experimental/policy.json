@@ -926,7 +926,7 @@
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/phishing-controller": true,
-        "@metamask/assets-controllers>@metamask/polling-controller": true,
+        "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/assets-controllers>@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -1896,18 +1896,6 @@
         "uuid": true
       }
     },
-    "@metamask/assets-controllers>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "fast-json-stable-stringify": true,
-        "uuid": true
-      }
-    },
     "@metamask/gas-fee-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
@@ -2333,7 +2321,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/transaction-controller>@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/transaction-controller>@metamask/network-controller": true,
+        "@metamask/network-controller": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
