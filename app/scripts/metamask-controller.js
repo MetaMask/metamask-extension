@@ -4689,11 +4689,7 @@ export default class MetamaskController extends EventEmitter {
       shouldImportSolanaAccount: true,
     },
   ) {
-    const {
-      shouldCreateSocialBackup,
-      shouldSelectAccount,
-      shouldImportSolanaAccount,
-    } = options;
+    const { shouldCreateSocialBackup, shouldSelectAccount } = options;
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       const { entropySource: id } =
@@ -4737,9 +4733,7 @@ export default class MetamaskController extends EventEmitter {
         // because `hasAccountTreeSyncingSyncedAtLeastOnce` is already true
         await this.accountTreeController.syncWithUserStorage();
 
-        let discoveredAccounts;
-
-        discoveredAccounts = await this.discoverAndCreateAccounts(id);
+        const discoveredAccounts = await this.discoverAndCreateAccounts(id);
 
         const newHdEntropyIndex = this.getHDEntropyIndex();
 
@@ -4957,8 +4951,7 @@ export default class MetamaskController extends EventEmitter {
 
       if (completedOnboarding) {
         // check if external services are enabled
-        const { useExternalServices } = this.preferencesController.state;
-        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+        shouldImportSolanaAccount        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         await this.getSnapKeyring();
         ///: END:ONLY_INCLUDE_IF
         await this.accountTreeController.syncWithUserStorageAtLeastOnce();
@@ -5164,7 +5157,6 @@ export default class MetamaskController extends EventEmitter {
    * Imports accounts with balances to the keyring.
    */
   async _importAccountsWithBalances() {
-    const shouldImportSolanaAccount = true;
     const { keyrings } = this.keyringController.state;
 
     // walk through all the keyrings and import the solana accounts for the HD keyrings
