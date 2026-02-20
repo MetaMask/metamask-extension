@@ -119,7 +119,7 @@ type ArtifactLink = { url: string; label: string };
 type ArtifactLinkMap = {
   bundleSizeData: ArtifactLink;
   bundleSizeStats: ArtifactLink;
-  userActionsStats: ArtifactLink;
+  interactionStats: ArtifactLink;
   storybook: ArtifactLink;
   tsMigrationDashboard: ArtifactLink;
   depViz: ArtifactLink;
@@ -154,9 +154,9 @@ export function getArtifactLinks(
       url: `${hostUrl}/bundle-size/bundle_size.json`,
       label: 'Bundle Size Stats',
     },
-    userActionsStats: {
-      url: `${hostUrl}/benchmarks/benchmark-chrome-browserify-userActions.json`,
-      label: 'User Actions Stats',
+    interactionStats: {
+      url: `${hostUrl}/benchmarks/benchmark-chrome-browserify-interactionUserActions.json`,
+      label: 'Interaction Stats',
     },
     storybook: {
       url: `${hostUrl}/storybook-build/index.html`,
@@ -345,7 +345,7 @@ function wrapInDetailsTable(
  * Builds a benchmark HTML section with a collapsible table.
  *
  * @param entries - Parsed benchmark entries.
- * @param summary - The collapsible header text (e.g. '🏃 User Actions Benchmarks').
+ * @param summary - The collapsible header text (e.g. '👆 Interaction Benchmarks').
  * @param firstColumn - Label for the first column (e.g. 'Action', 'Benchmark').
  * @returns HTML string or empty string if no data.
  */
@@ -423,8 +423,8 @@ export function extractEntries(
  * Fetches benchmark data for given presets and renders a collapsible HTML section.
  *
  * @param hostUrl - Base URL for CI artifacts.
- * @param presets - Preset names to fetch (e.g. USER_ACTION_PRESETS, PERFORMANCE_PRESETS).
- * @param summary - Collapsible header text (e.g. '🏃 User Actions Benchmarks').
+ * @param presets - Preset names to fetch (e.g. INTERACTION_PRESETS, USER_JOURNEY_PRESETS).
+ * @param summary - Collapsible header text (e.g. '👆 Interaction Benchmarks').
  * @param firstColumn - Label for the first table column (e.g. 'Action', 'Benchmark').
  * @returns HTML string for the collapsible section, or empty string if no data.
  */

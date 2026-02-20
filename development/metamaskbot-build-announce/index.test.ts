@@ -215,18 +215,18 @@ describe('buildTableRows', () => {
 });
 
 describe('buildBenchmarkSection', () => {
-  describe('user actions', () => {
+  describe('interaction benchmarks', () => {
     const entries = extractEntries(mockUserActionsJson);
 
     it('wraps rows in a collapsible details section', () => {
       const html = buildBenchmarkSection(
         entries,
-        '🏃 User Actions Benchmarks',
+        '👆 Interaction Benchmarks',
         'Action',
       );
 
       expect(html).toContain('<details>');
-      expect(html).toContain('🏃 User Actions Benchmarks');
+      expect(html).toContain('👆 Interaction Benchmarks');
       expect(html).toContain('<table>');
       expect(html).toContain('</details>');
     });
@@ -234,7 +234,7 @@ describe('buildBenchmarkSection', () => {
     it('includes correct column headers', () => {
       const html = buildBenchmarkSection(
         entries,
-        '🏃 User Actions Benchmarks',
+        '👆 Interaction Benchmarks',
         'Action',
       );
 
@@ -248,12 +248,12 @@ describe('buildBenchmarkSection', () => {
 
     it('returns empty string when no data', () => {
       expect(
-        buildBenchmarkSection([], '🏃 User Actions Benchmarks', 'Action'),
+        buildBenchmarkSection([], '👆 Interaction Benchmarks', 'Action'),
       ).toBe('');
     });
   });
 
-  describe('performance benchmarks', () => {
+  describe('user journey benchmarks', () => {
     const entries = [
       ...extractEntries(mockPerformanceOnboardingJson),
       ...extractEntries(mockPerformanceAssetsJson),
@@ -262,12 +262,12 @@ describe('buildBenchmarkSection', () => {
     it('wraps rows in a collapsible details section', () => {
       const html = buildBenchmarkSection(
         entries,
-        '⚡ Performance Benchmarks',
+        '🧭 User Journey Benchmarks',
         'Benchmark',
       );
 
       expect(html).toContain('<details>');
-      expect(html).toContain('⚡ Performance Benchmarks');
+      expect(html).toContain('🧭 User Journey Benchmarks');
       expect(html).toContain('<table>');
       expect(html).toContain('</details>');
     });
@@ -275,7 +275,7 @@ describe('buildBenchmarkSection', () => {
     it('includes correct column headers', () => {
       const html = buildBenchmarkSection(
         entries,
-        '⚡ Performance Benchmarks',
+        '🧭 User Journey Benchmarks',
         'Benchmark',
       );
 
@@ -287,7 +287,7 @@ describe('buildBenchmarkSection', () => {
     it('includes entries from all presets', () => {
       const html = buildBenchmarkSection(
         entries,
-        '⚡ Performance Benchmarks',
+        '🧭 User Journey Benchmarks',
         'Benchmark',
       );
 
@@ -297,7 +297,7 @@ describe('buildBenchmarkSection', () => {
 
     it('returns empty string when no data', () => {
       expect(
-        buildBenchmarkSection([], '⚡ Performance Benchmarks', 'Benchmark'),
+        buildBenchmarkSection([], '🧭 User Journey Benchmarks', 'Benchmark'),
       ).toBe('');
     });
   });

@@ -4,9 +4,9 @@ import { postCommentWithMetamaskBot } from '../utils/benchmark-utils';
 import {
   BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
-  PAGE_LOAD_PRESETS,
-  USER_ACTION_PRESETS,
-  PERFORMANCE_PRESETS,
+  STARTUP_PRESETS,
+  INTERACTION_PRESETS,
+  USER_JOURNEY_PRESETS,
 } from '../../test/e2e/benchmarks/utils/constants';
 import {
   type ArtifactLinks,
@@ -81,13 +81,13 @@ async function start(): Promise<void> {
   commentBody += await safeBuildSection(
     'UI startup metrics',
     () => buildUiStartupSection(benchmarkResults, HOST_URL),
-    '<p><i>UI startup metrics: data not available.</i></p>\n\n',
+    '<p><i>Performance benchmarks: data not available.</i></p>\n\n',
   );
 
   commentBody += await safeBuildSection(
     'page load benchmarks',
     () => getPageLoadBenchmarkComment(),
-    '<p><i>Page load benchmarks: data not available.</i></p>\n\n',
+    '<p><i>Dapp page load benchmarks: data not available.</i></p>\n\n',
   );
 
   commentBody += await safeBuildSection(
@@ -144,7 +144,7 @@ async function buildArtifactsBody({
 
   contentRows.push(
     `bundle size: ${artifacts.link('bundleSizeStats')}`,
-    `user-actions-benchmark: ${artifacts.link('userActionsStats')}`,
+    `interaction-benchmark: ${artifacts.link('interactionStats')}`,
     `storybook: ${artifacts.link('storybook')}`,
     `typescript migration: ${artifacts.link('tsMigrationDashboard')}`,
     artifacts.link('allArtifacts'),
@@ -176,7 +176,7 @@ async function fetchPageLoadResults(
     results[platform] = {} as PageLoadBenchmarkResults[typeof platform];
     for (const buildType of BENCHMARK_BUILD_TYPES) {
       results[platform][buildType] = {};
-      for (const page of Object.values(PAGE_LOAD_PRESETS)) {
+      for (const page of Object.values(STARTUP_PRESETS)) {
         try {
           const data = await fetchBenchmarkJson<Record<string, PageLoadEntry>>(
             hostUrl,
@@ -200,8 +200,8 @@ async function fetchPageLoadResults(
 }
 
 /**
- * Builds the full UI Startup Metrics collapsible section,
- * including user actions, page load, and performance sub-sections.
+ * Builds the full Performance Benchmarks collapsible section,
+ * including interaction, startup, and user journey sub-sections.
  *
  * @param benchmarkResults - The page load benchmark results.
  * @param hostUrl - Base URL for CI artifacts.
@@ -211,10 +211,10 @@ async function buildUiStartupSection(
   benchmarkResults: PageLoadBenchmarkResults,
   hostUrl: string,
 ): Promise<string> {
-  const sectionTitle = 'UI Startup Metrics';
+  const sectionTitle = '⚡ Performance Benchmarks';
   const pageData =
     benchmarkResults[BENCHMARK_PLATFORMS[0]]?.[BENCHMARK_BUILD_TYPES[0]]?.[
-      PAGE_LOAD_PRESETS.STANDARD_HOME
+      STARTUP_PRESETS.STANDARD_HOME
     ];
   const meanStartup = pageData?.mean?.uiStartup;
   const stdDevStartup = pageData?.stdDev?.uiStartup;
@@ -223,11 +223,11 @@ async function buildUiStartupSection(
       ? `${sectionTitle} (${Math.round(parseFloat(meanStartup))} ± ${Math.round(parseFloat(stdDevStartup))} ms)`
       : sectionTitle;
 
-  const userActionsHtml = await safeBuildSection('user actions', () =>
+  const interactionHtml = await safeBuildSection('interaction benchmarks', () =>
     buildBenchmarkSectionComment(
       hostUrl,
-      Object.values(USER_ACTION_PRESETS),
-      '🏃 User Actions Benchmarks',
+      Object.values(INTERACTION_PRESETS),
+      '👆 Interaction Benchmarks',
       'Action',
     ),
   );
@@ -235,17 +235,19 @@ async function buildUiStartupSection(
   const pageLoadSection = await safeBuildSection('page load', () => {
     const table = buildPageLoadTable(benchmarkResults);
     return table
-      ? `<details><summary>📊 Page Load Benchmarks</summary>${table}</details>\n\n`
+      ? `<details><summary>🔌 Startup Benchmarks</summary>${table}</details>\n\n`
       : '';
   });
 
-  const performanceHtml = await safeBuildSection('performance benchmarks', () =>
-    buildBenchmarkSectionComment(
-      hostUrl,
-      Object.values(PERFORMANCE_PRESETS),
-      '⚡ Performance Benchmarks',
-      'Benchmark',
-    ),
+  const userJourneyHtml = await safeBuildSection(
+    'user journey benchmarks',
+    () =>
+      buildBenchmarkSectionComment(
+        hostUrl,
+        Object.values(USER_JOURNEY_PRESETS),
+        '🧭 User Journey Benchmarks',
+        'Benchmark',
+      ),
   );
 
   let benchmarkWarnings = '';
@@ -259,7 +261,7 @@ async function buildUiStartupSection(
     console.log('CLOUDFRONT_REPO_URL not set, skipping benchmark gate');
   }
 
-  const content = `${userActionsHtml}${pageLoadSection}${performanceHtml}${benchmarkWarnings}`;
+  const content = `${interactionHtml}${pageLoadSection}${userJourneyHtml}${benchmarkWarnings}`;
   if (!content) {
     return '';
   }
