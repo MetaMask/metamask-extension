@@ -39,6 +39,7 @@ import { getCurrentCurrency } from '../../ducks/metamask/metamask';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
+import { MetaMaskReduxState } from '../../store/store';
 
 // Component to display snap account information (avatar, address, account group name, balance, network indicator, and snap name)
 export const SnapAccountCard = ({
@@ -66,7 +67,7 @@ export const SnapAccountCard = ({
     getAccountGroupsByAddress(state, [address]),
   );
   const accountGroupId = accountGroups[0]?.id;
-  const accountGroupBalance = useSelector((state) =>
+  const accountGroupBalance = useSelector((state: MetaMaskReduxState) =>
     accountGroupId ? selectBalanceByAccountGroup(accountGroupId)(state) : null,
   );
 

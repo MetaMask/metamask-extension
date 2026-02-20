@@ -24,14 +24,18 @@ export const useCurrentPrice = (asset: Asset): { currentPrice?: number } => {
 
   if (isEvm) {
     if (type === AssetType.native) {
-      return { currentPrice: evmCurrencyRates[asset.symbol]?.conversionRate };
+      return {
+        currentPrice:
+          evmCurrencyRates[asset.symbol]?.conversionRate ?? undefined,
+      };
     }
 
     // Market and conversion rate data
     const address = toChecksumHexAddress(asset.address);
     const tokenMarketPrice = evmMarketData[chainId]?.[address]?.price;
     const baseCurrency = evmMarketData[chainId]?.[address]?.currency;
-    const tokenExchangeRate = evmCurrencyRates[baseCurrency]?.conversionRate;
+    const tokenExchangeRate =
+      evmCurrencyRates[baseCurrency]?.conversionRate ?? undefined;
 
     const currentPrice =
       tokenExchangeRate !== undefined && tokenMarketPrice !== undefined

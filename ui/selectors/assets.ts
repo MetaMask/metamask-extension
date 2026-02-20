@@ -85,6 +85,7 @@ import {
   getTokensControllerAllIgnoredTokens,
   getTokensControllerAllTokens,
 } from './assets-migration';
+import { MetaMaskReduxState } from 'ui/store/store';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -1135,7 +1136,11 @@ export const selectBalanceByAccountGroup = (groupId: string) =>
       };
     }
     return wallet.groups[groupId];
-  });
+  }) as unknown as (
+    state: MetaMaskReduxState,
+  ) => ReturnType<
+    typeof selectBalanceForAllWallets
+  >['wallets'][string]['groups'][string];
 
 /**
  * Returns a summary for a wallet's balance and its groups, with zeroed fallback

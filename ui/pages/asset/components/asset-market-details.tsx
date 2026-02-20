@@ -53,11 +53,13 @@ export const AssetMarketDetails = ({
 
   const evmTokenExchangeRate =
     type === AssetType.native
-      ? currencyRates[symbol]?.conversionRate
+      ? currencyRates[symbol]?.conversionRate || 0
       : currencyRates[nativeCurrency]?.conversionRate || 0;
 
-  const nonEvmExchangeRate =
-    nonEvmConversionRates?.[address as CaipAssetType]?.rate || 0;
+  const nonEvmExchangeRate = nonEvmConversionRates?.[address as CaipAssetType]
+    ?.rate
+    ? Number(nonEvmConversionRates?.[address as CaipAssetType]?.rate)
+    : 0;
 
   const tokenExchangeRate = isEvm ? evmTokenExchangeRate : nonEvmExchangeRate;
 
@@ -76,13 +78,14 @@ export const AssetMarketDetails = ({
     : nonEvmMarketData;
 
   const shouldDisplayMarketData =
-    conversionRate > 0 &&
+    conversionRate &&
+    Number(conversionRate) > 0 &&
     tokenMarketDetails &&
-    (tokenMarketDetails.marketCap > 0 ||
-      tokenMarketDetails.totalVolume > 0 ||
-      tokenMarketDetails.circulatingSupply > 0 ||
-      tokenMarketDetails.allTimeHigh > 0 ||
-      tokenMarketDetails.allTimeLow > 0);
+    ((tokenMarketDetails.marketCap as number) > 0 ||
+      (tokenMarketDetails.totalVolume as number) > 0 ||
+      (tokenMarketDetails.circulatingSupply as number) > 0 ||
+      (tokenMarketDetails.allTimeHigh as number) > 0 ||
+      (tokenMarketDetails.allTimeLow as number) > 0);
 
   if (!shouldDisplayMarketData) {
     return null;

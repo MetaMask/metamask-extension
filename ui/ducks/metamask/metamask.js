@@ -320,7 +320,7 @@ export function getNativeCurrency(state) {
 export const getConversionRate = createSelector(
   [getCurrencyRateControllerCurrencyRates, getProviderConfig],
   (currencyRates, providerConfig) =>
-    currencyRates[providerConfig.ticker]?.conversionRate,
+    currencyRates[providerConfig.ticker]?.conversionRate ?? undefined,
 );
 
 export { getCurrencyRateControllerCurrencyRates as getCurrencyRates };

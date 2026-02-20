@@ -100,7 +100,7 @@ export const useAccountTotalCrossChainFiatBalance = (
               ];
             const totalFiatValue = getTokenFiatAmount(
               tokenExchangeRate,
-              conversionRate,
+              conversionRate ?? 0,
               currentCurrency,
               token.string,
               token.symbol,
@@ -119,7 +119,7 @@ export const useAccountTotalCrossChainFiatBalance = (
         const nativeFiatValue = getValueFromWeiHex({
           value: balanceCached,
           toCurrency: currentCurrency,
-          conversionRate,
+          conversionRate: conversionRate ?? undefined,
           numberOfDecimals: 2,
         });
         return {
