@@ -90,10 +90,11 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
 
         // Measure: Fetch quotes
         const swapPage = new SwapPage(driver);
-        await swapPage.createSolanaSwap({
+        await swapPage.createSwap({
           amount: 0.01,
           swapTo: 'USDC',
           swapFrom: 'SOL',
+          network: 'Solana',
         });
 
         await timerQuoteFetching.measure(async () => {

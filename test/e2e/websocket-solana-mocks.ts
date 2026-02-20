@@ -47,13 +47,39 @@ export async function setupSolanaWebsocketMocks(
             console.log(mock.logMessage, false);
           }
 
+          // Extract the JSON-RPC id from the incoming message so the
+          // response id matches (clients ignore mismatched ids).
+          let requestId: string | number | null = null;
+          try {
+            const parsed = JSON.parse(message);
+            requestId = parsed.id ?? null;
+          } catch {
+            // not valid JSON, leave requestId null
+          }
+
           const delay = mock.delay || 500;
           setTimeout(() => {
-            socket.send(JSON.stringify(mock.response));
+            const response =
+              requestId === null
+                ? mock.response
+                : { ...mock.response, id: requestId };
+            socket.send(JSON.stringify(response));
             console.log(
               `Simulated message sent to the client for: ${includes.join(' + ')}`,
               false,
             );
+
+            // Send follow-up response if configured (e.g. signatureNotification)
+            if (mock.followUpResponse) {
+              const followUpDelay = mock.followUpDelay || 1000;
+              setTimeout(() => {
+                socket.send(JSON.stringify(mock.followUpResponse));
+                console.log(
+                  `Follow-up message sent to the client for: ${includes.join(' + ')}`,
+                  false,
+                );
+              }, followUpDelay);
+            }
           }, delay);
 
           // Break after first match to avoid multiple responses
