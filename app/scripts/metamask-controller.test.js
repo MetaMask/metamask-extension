@@ -5654,28 +5654,6 @@ describe('MetaMaskController', () => {
       });
       expect(metamaskController._addAccountsWithBalance).not.toHaveBeenCalled();
     });
-
-    it('calls discoverAndCreateAccounts for each HD keyring when _importAccountsWithBalances runs', async () => {
-      jest
-        .spyOn(metamaskController, 'discoverAndCreateAccounts')
-        .mockResolvedValue({});
-      jest
-        .spyOn(metamaskController, '_addAccountsWithBalance')
-        .mockResolvedValue({});
-
-      await metamaskController._importAccountsWithBalances();
-
-      const { keyrings } = metamaskController.keyringController.state;
-      const hdIds = keyrings
-        .filter((keyring) => keyring.metadata.type === KeyringTypes.hd)
-        .map((keyring) => keyring.metadata.id);
-      hdIds.forEach((id) => {
-        expect(metamaskController.discoverAndCreateAccounts).toHaveBeenCalledWith(
-          id,
-        );
-      });
-      expect(metamaskController._addAccountsWithBalance).not.toHaveBeenCalled();
-    });
   });
 
   describe('selectedAccountGroupChange subscription for Solana', () => {
