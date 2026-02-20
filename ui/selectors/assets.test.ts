@@ -29,6 +29,7 @@ import {
   getAllIgnoredAssets,
   getAssetsBySelectedAccountGroupWithTronResources,
 } from './assets';
+import { MetaMaskReduxState } from 'ui/store/store';
 
 jest.mock('@metamask/assets-controllers', () => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -757,7 +758,7 @@ describe('Aggregated balance adapters/selectors', () => {
     selectBalanceForAllWallets(nextState);
 
     const groupSel = selectBalanceByAccountGroup('w1/g1');
-    const group = groupSel(nextState);
+    const group = groupSel(nextState as unknown as MetaMaskReduxState);
 
     const walletSel = selectBalanceByWallet('w1');
     const wallet = walletSel(nextState);
