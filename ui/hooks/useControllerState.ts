@@ -1,6 +1,7 @@
-import { createContext, useCallback, useContext } from 'react';
+import { createContext, useContext } from 'react';
 import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/shim/with-selector';
 import type { StateSubscriptionService } from '../store/state-subscription-service';
+import type { StateConstraint } from '@metamask/base-controller';
 
 /**
  * React context that provides the {@link StateSubscriptionService} singleton.
@@ -14,27 +15,38 @@ export const StateSubscriptionServiceContext =
  * Subscribe to a single controller's state via `useSyncExternalStore`.
  *
  * Components using this hook only re-render when the **selected** value from
- * the **specified** controller changes — not on every state dispatch.
+ * the **specified** controller changes (by reference, via `Object.is`) — not
+ * on every state dispatch.
+ *
+ * For selectors that derive new object references (`.filter()`, `.map()`),
+ * wrap them with `createSelector` from reselect to memoize at the input level.
+ * Immer's structural sharing ensures unchanged subtrees keep their references,
+ * so `createSelector` short-circuits without running the transform.
  *
  * @param controllerName - The controller to subscribe to
  *   (e.g., `'PreferencesController'`).
  * @param selector - Extracts the desired slice from the controller's state.
- * @param isEqual - Optional equality function for the selected value.
- *   Defaults to `Object.is` (reference equality). Supply a custom comparator
- *   for selectors that return new object references on every call.
+ *   Use `createSelector` for derived values that produce new references.
  * @returns The selected value from the controller's current state.
  * @example
  * ```ts
+ * // Direct property — reference equality sufficient
  * const currentLocale = useControllerState(
  *   'PreferencesController',
  *   (state) => state.currentLocale,
  * );
+ *
+ * // Derived value — createSelector memoizes at the input level
+ * const selectActiveTokens = createSelector(
+ *   (state: TokensControllerState) => state.tokens,
+ *   (tokens) => tokens.filter(t => t.isActive),
+ * );
+ * const activeTokens = useControllerState('TokensController', selectActiveTokens);
  * ```
  */
-export function useControllerState<S extends Record<string, unknown>, R>(
+export function useControllerState<S extends StateConstraint, R>(
   controllerName: string,
   selector: (state: S) => R,
-  isEqual?: (a: R, b: R) => boolean,
 ): R {
   const service = useContext(StateSubscriptionServiceContext);
   if (!service) {
@@ -54,7 +66,6 @@ export function useControllerState<S extends Record<string, unknown>, R>(
     proxy.getSnapshot,
     proxy.getSnapshot, // getServerSnapshot — same as getSnapshot (no SSR)
     selector,
-    isEqual,
   );
 }
 
@@ -65,7 +76,7 @@ export function useControllerState<S extends Record<string, unknown>, R>(
  * @param controllerName - The controller to subscribe to.
  * @returns The controller's full current state.
  */
-export function useControllerFullState<S extends Record<string, unknown>>(
+export function useControllerFullState<S extends StateConstraint>(
   controllerName: string,
 ): S {
   return useControllerState<S, S>(controllerName, identity as (s: S) => S);
