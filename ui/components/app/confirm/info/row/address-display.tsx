@@ -123,7 +123,7 @@ const TrustIcon = ({
       }
       return null;
   }
-}
+};
 
 export type ConfirmInfoRowAddressDisplayProps = {
   address: string;
@@ -136,7 +136,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
       useConfirmContext<TransactionMeta>();
 
     const hexAddress = toChecksumHexAddress(address);
-    const {chainId} = transactionMeta;
+    const { chainId } = transactionMeta;
 
     const { name, isAccount, image, displayState } = useDisplayName({
       value: hexAddress,
