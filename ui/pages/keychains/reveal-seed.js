@@ -261,11 +261,13 @@ function RevealSeedPage() {
       question: t('srpSecurityQuizQuestionOneQuestion'),
       buttonLabelOne: t('srpSecurityQuizQuestionOneWrongAnswer'),
       buttonLabelTwo: t('srpSecurityQuizQuestionOneRightAnswer'),
+      questionDataTestId: 'srp_stage_question_one',
     },
     {
       question: t('srpSecurityQuizQuestionTwoQuestion'),
       buttonLabelOne: t('srpSecurityQuizQuestionTwoRightAnswer'),
       buttonLabelTwo: t('srpSecurityQuizQuestionTwoWrongAnswer'),
+      questionDataTestId: 'srp_stage_question_two',
     },
   ];
 
@@ -293,7 +295,7 @@ function RevealSeedPage() {
   ];
 
   const renderQuizQuestionContent = () => {
-    const { question, buttonLabelOne, buttonLabelTwo } =
+    const { question, buttonLabelOne, buttonLabelTwo, questionDataTestId } =
       quizQuestionAnswers[currentQuestionIndex];
 
     const { correct, wrong } = answeredQuizQuestions[currentQuestionIndex];
@@ -356,6 +358,7 @@ function RevealSeedPage() {
           textAlign={TextAlign.Start}
           fontWeight={FontWeight.Medium}
           paddingBottom={questionAnswered ? 4 : 6}
+          data-testid={questionDataTestId}
         >
           {title}
         </Text>
@@ -387,7 +390,11 @@ function RevealSeedPage() {
                 setQuestionAnswered(true);
                 setCorrectAnswer(currentQuestionIndex === 1);
               }}
-              data-testid="reveal-seed-quiz-answer-1"
+              data-testid={
+                currentQuestionIndex === 1
+                  ? 'srp-quiz-right-answer'
+                  : 'srp-quiz-wrong-answer'
+              }
             >
               {buttonLabelOne}
             </Button>
@@ -399,7 +406,11 @@ function RevealSeedPage() {
                 setQuestionAnswered(true);
                 setCorrectAnswer(currentQuestionIndex === 0);
               }}
-              data-testid="reveal-seed-quiz-answer-2"
+              data-testid={
+                currentQuestionIndex === 0
+                  ? 'srp-quiz-right-answer'
+                  : 'srp-quiz-wrong-answer'
+              }
             >
               {buttonLabelTwo}
             </Button>
@@ -452,7 +463,9 @@ function RevealSeedPage() {
           width={BlockSize.Full}
           size={Size.LG}
           onClick={handleButtonClick}
-          data-testid="reveal-seed-quiz-continue-or-try-again"
+          data-testid={
+            correctAnswer ? 'srp-quiz-continue' : 'srp-quiz-try-again'
+          }
         >
           {correctAnswer ? t('continue') : t('tryAgain')}
         </Button>

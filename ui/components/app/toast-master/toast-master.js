@@ -993,7 +993,7 @@ function StorageErrorToast() {
       category: MetaMetricsEventCategory.Error,
     });
     setIsDismissed(true);
-    navigate(REVEAL_SEED_ROUTE);
+    navigate(REVEAL_SEED_ROUTE, { state: { skipQuiz: true } });
   };
 
   const handleClose = () => {
