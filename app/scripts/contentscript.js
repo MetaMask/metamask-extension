@@ -1,3 +1,4 @@
+import { getIsBrowserPrerenderBroken } from '../../shared/modules/browser-runtime.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 import {
   destroyStreams,
@@ -24,7 +25,7 @@ const start = () => {
     initializeCookieHandlerSteam();
   }
 
-  if (shouldInjectProvider()) {
+  if (shouldInjectProvider() && getIsBrowserPrerenderBroken()) {
     initStreams();
 
     if (document.prerendering) {
