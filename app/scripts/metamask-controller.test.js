@@ -3920,9 +3920,7 @@ describe('MetaMaskController', () => {
         // Wait for the fire-and-forget sync and discover operation to complete
         await new Promise((resolve) => setImmediate(resolve));
 
-        expect(
-          metamaskController.discoverAndCreateAccounts,
-        ).toHaveBeenCalled();
+        expect(metamaskController.discoverAndCreateAccounts).toHaveBeenCalled();
         expect(
           metamaskController._addAccountsWithBalance,
         ).not.toHaveBeenCalled();
@@ -5381,7 +5379,6 @@ describe('MetaMaskController', () => {
       ).toHaveBeenCalledTimes(1);
       expect(metamaskController._addAccountsWithBalance).not.toHaveBeenCalled();
     });
-
   });
 
   describe('_addAccountsWithBalance', () => {
