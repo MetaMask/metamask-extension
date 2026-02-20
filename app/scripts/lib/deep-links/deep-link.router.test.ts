@@ -5,6 +5,7 @@ import {
   DEEP_LINK_HOST,
   SIG_PARAM,
 } from '../../../../shared/lib/deep-links/constants';
+import { BaseUrl } from '../../../../shared/constants/urls';
 import { ParsedDeepLink, parse } from '../../../../shared/lib/deep-links/parse';
 import ExtensionPlatform from '../../platforms/extension';
 import { DeepLinkRouter } from './deep-link-router';
@@ -183,6 +184,39 @@ describe('DeepLinkRouter', () => {
       });
     });
 
+    describe('trusted origins', () => {
+      it.each([{ originField: 'initiator' }, { originField: 'originUrl' }])(
+        'should skip the interstitial for signed links with trusted %s',
+        async ({ originField }: { originField: 'initiator' | 'originUrl' }) => {
+          const tabId = 1;
+          const url = `https://example.com/test-route?${SIG_PARAM}=12345`;
+          getState.mockReturnValue({
+            preferences: { skipDeepLinkInterstitial: false },
+          } as unknown as ReturnType<MetaMaskController['getState']>);
+          parseMock.mockResolvedValue({
+            destination: {
+              path: 'internal-route',
+              query: new URLSearchParams([['one', 'two']]),
+            },
+            signature: 'valid',
+          } as ParsedDeepLink);
+
+          const requestDetails =
+            originField === 'initiator'
+              ? { tabId, url, initiator: BaseUrl.MetaMask }
+              : { tabId, url, originUrl: `${BaseUrl.MetaMask}/deeplink-test` };
+
+          await onBeforeRequest?.(
+            requestDetails as browser.WebRequest.OnBeforeRequestDetailsType,
+          );
+
+          expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
+            url: 'chrome-extension://extension-id/home.html#internal-route?one=two',
+          });
+        },
+      );
+    });
+
     it('should handle TAB_ID_NONE and not attempt to parse or navigate', async () => {
       const url = `about:blank`;
       const tabId = browser.tabs.TAB_ID_NONE;
@@ -275,6 +309,24 @@ describe('DeepLinkRouter', () => {
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
         url: 'chrome-extension://extension-id/home.html#link?errorCode=404&u=%2Fnonexistent-route',
       });
+    });
+  });
+
+  describe('canSkipInterstitial', () => {
+    it('should emit an error for invalid origin URLs', () => {
+      const logErrorSpy = jest.spyOn(log, 'error');
+      const errorSpy = jest.fn();
+      router.on('error', errorSpy);
+
+      const result = router.canSkipInterstitial('valid', 'not-a-valid-url');
+
+      expect(result).toBe(false);
+      expect(logErrorSpy).toHaveBeenCalledWith(
+        'Error parsing origin URL:',
+        'not-a-valid-url',
+        expect.any(Error),
+      );
+      expect(errorSpy).toHaveBeenCalledTimes(1);
     });
   });
 });
