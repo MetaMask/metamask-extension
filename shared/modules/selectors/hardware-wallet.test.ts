@@ -61,12 +61,13 @@ describe('Hardware Wallet Selectors', () => {
       expect(isHardwareWallet(state)).toBe(false);
     });
 
+    // @ts-expect-error ESLint is misconfigured and not applying Jest types to this file
     it.each([
       KeyringType.ledger,
       KeyringType.trezor,
       KeyringType.lattice,
       KeyringType.qr,
-    ])('returns true for hardware keyring "%s"', (keyringType) => {
+    ])('returns true for hardware keyring "%s"', (keyringType: string) => {
       const state = buildStateWithKeyringType(keyringType);
 
       expect(isHardwareWallet(state)).toBe(true);
@@ -80,9 +81,10 @@ describe('Hardware Wallet Selectors', () => {
       expect(getHardwareWalletType(state)).toBeUndefined();
     });
 
+    // @ts-expect-error ESLint is misconfigured and not applying Jest types to this file
     it.each([KeyringType.ledger, KeyringType.trezor])(
       'returns the keyring type for hardware keyring "%s"',
-      (keyringType) => {
+      (keyringType: string) => {
         const state = buildStateWithKeyringType(keyringType);
 
         expect(getHardwareWalletType(state)).toBe(keyringType);
