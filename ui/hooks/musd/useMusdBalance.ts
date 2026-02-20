@@ -86,8 +86,9 @@ export function useMusdBalance(): UseMusdBalanceResult {
 
       if (isMultichainAccountsState2Enabled) {
         // Use new multichain asset structure
-        for (const [chainId, assets] of Object.entries(accountGroupAssets)) {
-          if (!isMusdSupportedChain(chainId as Hex)) {
+        for (const [rawChainId, assets] of Object.entries(accountGroupAssets)) {
+          const chainId = rawChainId.toLowerCase() as Hex;
+          if (!isMusdSupportedChain(chainId)) {
             continue;
           }
 
@@ -97,8 +98,7 @@ export function useMusdBalance(): UseMusdBalanceResult {
               const balance = asset.balance || '0';
               if (balance !== '0') {
                 hasBalance = true;
-                balancesByChain[chainId as Hex] = balance;
-                // Add to total using BigNumber for decimal precision
+                balancesByChain[chainId] = balance;
                 total = new BigNumber(total).plus(balance).toString();
               }
             }
@@ -107,16 +107,17 @@ export function useMusdBalance(): UseMusdBalanceResult {
       } else if (evmBalances && Array.isArray(evmBalances)) {
         // Use legacy EVM balances structure
         for (const token of evmBalances) {
+          const chainId = (token.chainId as string)?.toLowerCase() as Hex;
           if (
             token.address &&
             isMusdToken(token.address) &&
-            isMusdSupportedChain(token.chainId as Hex)
+            chainId &&
+            isMusdSupportedChain(chainId)
           ) {
             const balance = token.balance || '0';
             if (balance !== '0') {
               hasBalance = true;
-              balancesByChain[token.chainId as Hex] = balance;
-              // Add to total using BigNumber for decimal precision
+              balancesByChain[chainId] = balance;
               total = new BigNumber(total).plus(balance).toString();
             }
           }

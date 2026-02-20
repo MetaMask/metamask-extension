@@ -16,6 +16,8 @@ import {
   isMusdToken,
   getMusdTokenAddressForChain,
   getMusdAssetIdForChain,
+  isMusdSupportedChain,
+  isMusdBuyableOnChain,
 } from './constants';
 
 describe('MUSD Constants', () => {
@@ -208,6 +210,12 @@ describe('MUSD Utility Functions', () => {
       );
     });
 
+    it('should return mUSD address when chain ID has uppercase hex', () => {
+      expect(
+        getMusdTokenAddressForChain('0xE708' as `0x${string}`),
+      ).toBe(MUSD_TOKEN_ADDRESS);
+    });
+
     it('should return undefined for unsupported chain', () => {
       expect(
         getMusdTokenAddressForChain('0x89' as `0x${string}`),
@@ -228,8 +236,42 @@ describe('MUSD Utility Functions', () => {
       );
     });
 
+    it('should return asset ID when chain ID has uppercase hex', () => {
+      expect(getMusdAssetIdForChain('0xE708' as `0x${string}`)).toBe(
+        'eip155:59144/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+      );
+    });
+
     it('should return undefined for unsupported chain', () => {
       expect(getMusdAssetIdForChain('0x89' as `0x${string}`)).toBeUndefined();
+    });
+  });
+
+  describe('isMusdSupportedChain', () => {
+    it('should return true for supported chain (lowercase)', () => {
+      expect(isMusdSupportedChain(CHAIN_IDS.LINEA_MAINNET)).toBe(true);
+    });
+
+    it('should return true for supported chain with uppercase hex', () => {
+      expect(isMusdSupportedChain('0xE708' as `0x${string}`)).toBe(true);
+    });
+
+    it('should return false for unsupported chain', () => {
+      expect(isMusdSupportedChain('0x89' as `0x${string}`)).toBe(false);
+    });
+  });
+
+  describe('isMusdBuyableOnChain', () => {
+    it('should return true for buyable chain (lowercase)', () => {
+      expect(isMusdBuyableOnChain(CHAIN_IDS.MAINNET)).toBe(true);
+    });
+
+    it('should return true for buyable chain with uppercase hex', () => {
+      expect(isMusdBuyableOnChain('0xE708' as `0x${string}`)).toBe(true);
+    });
+
+    it('should return false for non-buyable chain', () => {
+      expect(isMusdBuyableOnChain('0x89' as `0x${string}`)).toBe(false);
     });
   });
 });

@@ -6,7 +6,7 @@
  * don't need to assemble these conditions themselves.
  */
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { Hex } from '@metamask/utils';
 import {
   MUSD_BUYABLE_CHAIN_IDS,
@@ -134,21 +134,27 @@ export function useCanBuyMusd(): UseCanBuyMusdResult {
   const [rampTokens, setRampTokens] = useState<RampToken[]>([]);
   const [rampIsLoading, setRampIsLoading] = useState(true);
 
-  const loadRegionTokens = useCallback(async (country: string) => {
-    setRampIsLoading(true);
-    const tokens = await fetchRegionTokens(country);
-    setRampTokens(tokens);
-    setRampIsLoading(false);
-  }, []);
-
   useEffect(() => {
     if (!userCountry) {
       setRampTokens([]);
       setRampIsLoading(false);
-      return;
+      return undefined;
     }
-    loadRegionTokens(userCountry);
-  }, [userCountry, loadRegionTokens]);
+
+    let cancelled = false;
+    setRampIsLoading(true);
+
+    fetchRegionTokens(userCountry).then((tokens) => {
+      if (!cancelled) {
+        setRampTokens(tokens);
+        setRampIsLoading(false);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [userCountry]);
 
   const isMusdBuyableOnChain = useMemo(() => {
     const buyableByChain: Record<Hex, boolean> = {};

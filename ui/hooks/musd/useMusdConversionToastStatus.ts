@@ -83,7 +83,9 @@ export const useMusdConversionToastStatus = (): {
   const hasPendingConversion = pendingConversions.length > 0;
 
   // Pick the most recent pending conversion to derive the source token symbol
-  const activePendingTxId = pendingConversions[0]?.id;
+  // getTransactions sorts ascending by time, so the last element is the newest
+  const activePendingTxId =
+    pendingConversions[pendingConversions.length - 1]?.id;
 
   // Read the payment token from TransactionPayController for the active tx
   const paymentToken = useSelector((state: TransactionPayState) =>

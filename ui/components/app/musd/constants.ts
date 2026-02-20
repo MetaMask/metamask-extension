@@ -187,7 +187,7 @@ export const isMusdToken = (address?: string | null): boolean => {
  * @returns The mUSD token address for the chain, or undefined if not supported
  */
 export const getMusdTokenAddressForChain = (chainId: Hex): Hex | undefined => {
-  return MUSD_TOKEN_ADDRESS_BY_CHAIN[chainId];
+  return MUSD_TOKEN_ADDRESS_BY_CHAIN[chainId.toLowerCase() as Hex];
 };
 
 /**
@@ -197,7 +197,7 @@ export const getMusdTokenAddressForChain = (chainId: Hex): Hex | undefined => {
  * @returns The CAIP-19 asset ID for mUSD on the chain, or undefined if not supported
  */
 export const getMusdAssetIdForChain = (chainId: Hex): string | undefined => {
-  return MUSD_TOKEN_ASSET_ID_BY_CHAIN[chainId];
+  return MUSD_TOKEN_ASSET_ID_BY_CHAIN[chainId.toLowerCase() as Hex];
 };
 
 /**
@@ -207,7 +207,7 @@ export const getMusdAssetIdForChain = (chainId: Hex): string | undefined => {
  * @returns true if the chain supports mUSD conversions
  */
 export const isMusdSupportedChain = (chainId: Hex): boolean => {
-  return chainId in MUSD_TOKEN_ADDRESS_BY_CHAIN;
+  return chainId.toLowerCase() in MUSD_TOKEN_ADDRESS_BY_CHAIN;
 };
 
 /**
@@ -217,5 +217,7 @@ export const isMusdSupportedChain = (chainId: Hex): boolean => {
  * @returns true if mUSD can be purchased via Ramp on the chain
  */
 export const isMusdBuyableOnChain = (chainId: Hex): boolean => {
-  return MUSD_BUYABLE_CHAIN_IDS.includes(chainId);
+  return MUSD_BUYABLE_CHAIN_IDS.some(
+    (id) => id.toLowerCase() === chainId.toLowerCase(),
+  );
 };

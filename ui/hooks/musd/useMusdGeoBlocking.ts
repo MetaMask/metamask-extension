@@ -61,54 +61,67 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
   const [error, setError] = useState<string | null>(null);
 
   /**
-   * Fetch geolocation from API
+   * Fetch geolocation from API.
+   *
+   * Accepts an optional AbortSignal so the caller (e.g. a useEffect cleanup)
+   * can cancel an in-flight request when the component unmounts.
    */
-  const fetchGeolocation = useCallback(async (): Promise<void> => {
-    // Check cache first
-    if (
-      geoLocationCache.location &&
-      geoLocationCache.timestamp &&
-      Date.now() - geoLocationCache.timestamp < CACHE_DURATION_MS
-    ) {
-      setUserCountry(geoLocationCache.location);
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(GEOLOCATION_API_ENDPOINT, {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Geolocation API error: ${response.status}`);
+  const fetchGeolocation = useCallback(
+    async (signal?: AbortSignal): Promise<void> => {
+      // Check cache first
+      if (
+        geoLocationCache.location &&
+        geoLocationCache.timestamp &&
+        Date.now() - geoLocationCache.timestamp < CACHE_DURATION_MS
+      ) {
+        setUserCountry(geoLocationCache.location);
+        setIsLoading(false);
+        return;
       }
 
-      const data: string = await response.text();
+      setIsLoading(true);
+      setError(null);
 
-      geoLocationCache.location = data;
-      geoLocationCache.timestamp = Date.now();
-      setUserCountry(data);
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to fetch geolocation';
-      console.error('[MUSD Geo] Geolocation error:', errorMessage);
-      setError(errorMessage);
-      // Keep country as null - will result in blocking (fail closed)
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+      try {
+        const response = await fetch(GEOLOCATION_API_ENDPOINT, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+          },
+          signal,
+        });
 
-  // Fetch geolocation on mount
+        if (!response.ok) {
+          throw new Error(`Geolocation API error: ${response.status}`);
+        }
+
+        const data: string = await response.text();
+
+        geoLocationCache.location = data;
+        geoLocationCache.timestamp = Date.now();
+        setUserCountry(data);
+      } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
+        const errorMessage =
+          err instanceof Error ? err.message : 'Failed to fetch geolocation';
+        console.error('[MUSD Geo] Geolocation error:', errorMessage);
+        setError(errorMessage);
+      } finally {
+        if (!signal?.aborted) {
+          setIsLoading(false);
+        }
+      }
+    },
+    [],
+  );
+
+  // Fetch geolocation on mount; abort on unmount
   useEffect(() => {
-    fetchGeolocation();
+    const controller = new AbortController();
+    fetchGeolocation(controller.signal);
+    return () => controller.abort();
   }, [fetchGeolocation]);
 
   /**

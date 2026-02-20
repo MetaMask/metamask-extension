@@ -251,11 +251,18 @@ export function useMusdConversion(): UseMusdConversionResult {
         }
 
         if (preferredToken?.address) {
-          await updateTransactionPaymentToken({
-            transactionId: txId,
-            tokenAddress: preferredToken.address as `0x${string}`,
-            chainId,
-          });
+          try {
+            await updateTransactionPaymentToken({
+              transactionId: txId,
+              tokenAddress: preferredToken.address as `0x${string}`,
+              chainId,
+            });
+          } catch (payTokenError) {
+            console.warn(
+              '[MUSD] Failed to pre-select payment token, proceeding to confirmation:',
+              payTokenError,
+            );
+          }
         }
 
         navigate({
