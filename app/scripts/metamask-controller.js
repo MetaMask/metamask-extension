@@ -4390,7 +4390,6 @@ export default class MetamaskController extends EventEmitter {
           await this.importMnemonicToVault(mnemonicToRestore, {
             shouldCreateSocialBackup: false,
             shouldSelectAccount: false,
-            shouldImportSolanaAccount: true,
           });
         }
       }
@@ -4678,7 +4677,6 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} options - The options for the import.
    * @param {boolean} options.shouldCreateSocialBackup - whether to create a backup for the seedless onboarding flow
    * @param {boolean} options.shouldSelectAccount - whether to select the new account in the wallet
-   * @param {boolean} options.shouldImportSolanaAccount - whether to import a Solana account
    * @returns {Promise<void>}
    */
   async importMnemonicToVault(
@@ -4686,7 +4684,6 @@ export default class MetamaskController extends EventEmitter {
     options = {
       shouldCreateSocialBackup: true,
       shouldSelectAccount: true,
-      shouldImportSolanaAccount: true,
     },
   ) {
     const { shouldCreateSocialBackup, shouldSelectAccount } = options;
@@ -4783,11 +4780,6 @@ export default class MetamaskController extends EventEmitter {
     // Just let the user select the account manually after the restore.
     const shouldSetSelectedAccount = false;
 
-    // This method is called during the social login rehydration.
-    // At that point, we won't import the Solana account yet, since the wallet onboarding is not completed yet.
-    // Solana accounts will be imported after the wallet onboarding is completed.
-    const shouldImportSolanaAccount = false;
-
     for (const secret of secretDatas) {
       // import SRP secret
       // Get the SRP hash, and find the hash in the local state
@@ -4824,7 +4816,6 @@ export default class MetamaskController extends EventEmitter {
       await this.importMnemonicToVault(mnemonicToRestore, {
         shouldCreateSocialBackup,
         shouldSelectAccount: shouldSetSelectedAccount,
-        shouldImportSolanaAccount,
       });
     }
   }

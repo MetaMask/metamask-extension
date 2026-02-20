@@ -5,7 +5,6 @@ import { cloneDeep } from 'lodash';
 import nock from 'nock';
 import { obj as createThroughStream } from 'through2';
 import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import {
   ListNames,
   METAMASK_STALELIST_URL,
@@ -20,7 +19,6 @@ import {
   BtcScope,
   EthAccountType,
   SolAccountType,
-  SolScope,
   TrxAccountType,
 } from '@metamask/keyring-api';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
@@ -43,7 +41,6 @@ import {
   getEthAccounts,
 } from '@metamask/chain-agnostic-permission';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
-import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
 
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
