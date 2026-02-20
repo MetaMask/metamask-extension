@@ -1248,9 +1248,8 @@ export default class MetamaskController extends EventEmitter {
           keyringState.isUnlocked && this._isClientOpen;
       },
     );
-    this.controllerMessenger.subscribe(
-      'NetworkController:stateChange',
-      () => this._notifyChainChange(),
+    this.controllerMessenger.subscribe('NetworkController:stateChange', () =>
+      this._notifyChainChange(),
     );
 
     /**
@@ -1337,8 +1336,7 @@ export default class MetamaskController extends EventEmitter {
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
       MetaMetricsController: this.metaMetricsController,
-      MetaMetricsDataDeletionController:
-        this.metaMetricsDataDeletionController,
+      MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
       AlertController: this.alertController,
@@ -2389,18 +2387,22 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
 
   /**
-   * Flat UI state for all registered controllers.
+   * Keyed UI state for all registered controllers.
    *
-   * Internally uses keyed state from {@link ControllerRegistry}, then
-   * flattens to the format the Redux `metamask` slice expects.
+   * Returns state keyed by controller name from {@link ControllerRegistry},
+   * with per-controller sanitization applied.
    *
    * @returns {MetaMaskReduxState["metamask"]} status
    */
   getState() {
     const keyedState = this.registry.getKeyedState('ui');
+    const sanitized = {};
+    for (const [key, controllerState] of Object.entries(keyedState)) {
+      sanitized[key] = sanitizeUIState(controllerState);
+    }
     return {
       isInitialized: Boolean(this.keyringController.state.vault),
-      ...sanitizeUIState(Object.assign({}, ...Object.values(keyedState))),
+      ...sanitized,
     };
   }
 
@@ -6698,7 +6700,6 @@ export default class MetamaskController extends EventEmitter {
       sender,
       inputSubjectType,
     );
-
   }
 
   /**
@@ -6835,7 +6836,7 @@ export default class MetamaskController extends EventEmitter {
    *
    * Subscribes directly to each controller's `stateChange` messenger event,
    * buffers keyed patches via {@link PatchBuffer}, and flushes them as a
-   * flat `Patch[]` to the UI in a single port write per microtask.
+   * keyed `Record<string, Patch[]>` to the UI in a single port write per microtask.
    *
    * @param {*} outStream - The stream to provide our API over.
    */
@@ -6855,13 +6856,10 @@ export default class MetamaskController extends EventEmitter {
         return;
       }
 
-      // Flatten keyed patches to flat Patch[] for UI compatibility
-      const flatPatches = Object.values(keyedPatches).flat();
-
       outStream.write({
         jsonrpc: '2.0',
         method: 'sendUpdate',
-        params: [flatPatches],
+        params: [keyedPatches],
       });
     };
 

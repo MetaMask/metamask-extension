@@ -14,6 +14,7 @@ import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import RiveWasmProvider from '../contexts/rive-wasm';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
+import { StateSubscriptionServiceContext } from '../hooks/useControllerState';
 import ErrorPage from './error-page/error-page.component';
 
 import Routes from './routes';
@@ -31,49 +32,57 @@ class Index extends PureComponent {
 
   render() {
     const { error } = this.state;
-    const { store } = this.props;
+    const { store, stateSubscriptionService } = this.props;
 
     if (error) {
       return (
         <Provider store={store}>
-          <HashRouter>
-            <MetaMetricsProvider>
-              <I18nProvider>
-                <LegacyI18nProvider>
-                  <ErrorPage error={error} />
-                </LegacyI18nProvider>
-              </I18nProvider>
-            </MetaMetricsProvider>
-          </HashRouter>
+          <StateSubscriptionServiceContext.Provider
+            value={stateSubscriptionService}
+          >
+            <HashRouter>
+              <MetaMetricsProvider>
+                <I18nProvider>
+                  <LegacyI18nProvider>
+                    <ErrorPage error={error} />
+                  </LegacyI18nProvider>
+                </I18nProvider>
+              </MetaMetricsProvider>
+            </HashRouter>
+          </StateSubscriptionServiceContext.Provider>
         </Provider>
       );
     }
 
     return (
       <Provider store={store}>
-        <HashRouter>
-          <MetaMetricsProvider>
-            <LegacyMetaMetricsProvider>
-              <I18nProvider>
-                <LegacyI18nProvider>
-                  <AssetPollingProvider>
-                    <MetamaskIdentityProvider>
-                      <MetamaskNotificationsProvider>
-                        <HardwareWalletErrorProvider>
-                          <ShieldSubscriptionProvider>
-                            <RiveWasmProvider>
-                              <Routes />
-                            </RiveWasmProvider>
-                          </ShieldSubscriptionProvider>
-                        </HardwareWalletErrorProvider>
-                      </MetamaskNotificationsProvider>
-                    </MetamaskIdentityProvider>
-                  </AssetPollingProvider>
-                </LegacyI18nProvider>
-              </I18nProvider>
-            </LegacyMetaMetricsProvider>
-          </MetaMetricsProvider>
-        </HashRouter>
+        <StateSubscriptionServiceContext.Provider
+          value={stateSubscriptionService}
+        >
+          <HashRouter>
+            <MetaMetricsProvider>
+              <LegacyMetaMetricsProvider>
+                <I18nProvider>
+                  <LegacyI18nProvider>
+                    <AssetPollingProvider>
+                      <MetamaskIdentityProvider>
+                        <MetamaskNotificationsProvider>
+                          <HardwareWalletErrorProvider>
+                            <ShieldSubscriptionProvider>
+                              <RiveWasmProvider>
+                                <Routes />
+                              </RiveWasmProvider>
+                            </ShieldSubscriptionProvider>
+                          </HardwareWalletErrorProvider>
+                        </MetamaskNotificationsProvider>
+                      </MetamaskIdentityProvider>
+                    </AssetPollingProvider>
+                  </LegacyI18nProvider>
+                </I18nProvider>
+              </LegacyMetaMetricsProvider>
+            </MetaMetricsProvider>
+          </HashRouter>
+        </StateSubscriptionServiceContext.Provider>
       </Provider>
     );
   }
@@ -81,6 +90,7 @@ class Index extends PureComponent {
 
 Index.propTypes = {
   store: PropTypes.object,
+  stateSubscriptionService: PropTypes.object,
 };
 
 export default Index;
