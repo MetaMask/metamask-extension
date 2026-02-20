@@ -1,18 +1,8 @@
 /* eslint-disable @typescript-eslint/no-loss-of-precision */
 import * as fs from 'fs/promises';
 import { Mockttp, MockedEndpoint } from 'mockttp';
-import { withFixtures } from '../../helpers';
-import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import { DAPP_PATH } from '../../constants';
-import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import Homepage from '../../page-objects/pages/home/homepage';
-import NetworkManager from '../../page-objects/pages/network-manager';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
@@ -1582,13 +1572,52 @@ const featureFlagsWithSnapConfirmation = {
   },
 };
 
-export async function withSolanaAccountSnap(
-  {
-    title,
-    numberOfAccounts = 1,
-    withNetworkOnSolana = true,
-    showNativeTokenAsMainBalance = true,
-    showSnapConfirmation = false,
+export const SOLANA_MANIFEST_FLAGS = {
+  remoteFeatureFlags: {
+    solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
+    bridgeConfig: featureFlags,
+  },
+};
+
+export const SOLANA_MANIFEST_FLAGS_WITH_SNAP_CONFIRMATION = {
+  remoteFeatureFlags: {
+    solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
+    bridgeConfig: featureFlagsWithSnapConfirmation,
+  },
+};
+
+export const SOLANA_DEFAULT_DAPP_OPTIONS = {
+  numberOfTestDapps: 1,
+  customDappPaths: [DAPP_PATH.TEST_SNAPS],
+};
+
+export const SOLANA_IGNORED_CONSOLE_ERRORS = [
+  'SES_UNHANDLED_REJECTION: 0, never, undefined, index, Array(1)',
+  'SES_UNHANDLED_REJECTION: 1, never, undefined, index, Array(1)',
+  'No custom network client was found with the ID',
+  'No Infura network client was found with the ID "linea-mainnet"',
+];
+
+export interface SolanaMockOptions {
+  mockGetTransactionSuccess?: boolean;
+  mockGetTransactionFailed?: boolean;
+  mockTokenAccountAccountInfo?: boolean;
+  mockZeroBalance?: boolean;
+  mockSwapUSDtoSOL?: boolean;
+  mockSwapSOLtoUSDC?: boolean;
+  mockSwapWithNoQuotes?: boolean;
+  walletConnect?: boolean;
+  withProtocolSnap?: boolean;
+  withCustomMocks?: (
+    mockServer: Mockttp,
+  ) =>
+    | Promise<MockedEndpoint[] | MockedEndpoint>
+    | MockedEndpoint[]
+    | MockedEndpoint;
+}
+
+export function buildSolanaTestSpecificMock(options: SolanaMockOptions = {}) {
+  const {
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
     mockTokenAccountAccountInfo = true,
@@ -1597,225 +1626,101 @@ export async function withSolanaAccountSnap(
     mockSwapSOLtoUSDC,
     mockSwapWithNoQuotes,
     walletConnect = false,
-    dappOptions,
     withProtocolSnap,
     withCustomMocks,
-    withFixtureBuilder,
-  }: {
-    title?: string;
-    withNetworkOnSolana?: boolean;
-    showNativeTokenAsMainBalance?: boolean;
-    showSnapConfirmation?: boolean;
-    numberOfAccounts?: number;
-    mockGetTransactionSuccess?: boolean;
-    mockGetTransactionFailed?: boolean;
-    mockTokenAccountAccountInfo?: boolean;
-    mockZeroBalance?: boolean;
-    sendFailedTransaction?: boolean;
-    mockSwapUSDtoSOL?: boolean;
-    mockSwapSOLtoUSDC?: boolean;
-    mockSwapWithNoQuotes?: boolean;
-    walletConnect?: boolean;
-    dappOptions?: {
-      numberOfTestDapps?: number;
-      customDappPaths?: string[];
-    };
-    withProtocolSnap?: boolean;
-    withCustomMocks?: (
-      mockServer: Mockttp,
-    ) =>
-      | Promise<MockedEndpoint[] | MockedEndpoint>
-      | MockedEndpoint[]
-      | MockedEndpoint;
-    withFixtureBuilder?: (builder: FixtureBuilder) => FixtureBuilder;
-  },
-  test: (
-    driver: Driver,
-    mockServer: Mockttp,
-    extensionId: string,
-  ) => Promise<void>,
-) {
-  console.log('Starting withSolanaAccountSnap');
-  let fixtures = new FixtureBuilder();
-  if (!showNativeTokenAsMainBalance) {
-    fixtures =
-      fixtures.withPreferencesControllerShowNativeTokenAsMainBalanceDisabled();
-  }
-  if (withFixtureBuilder) {
-    fixtures = withFixtureBuilder(fixtures).withEnabledNetworks({
-      eip155: {
-        '0x539': true,
-      },
-      solana: {
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
-      },
-    });
-  }
+  } = options;
 
-  await withFixtures(
-    {
-      fixtures: fixtures.build(),
-      title,
-      dappOptions: dappOptions ?? {
-        numberOfTestDapps: 1,
-        customDappPaths: [DAPP_PATH.TEST_SNAPS],
-      },
-      manifestFlags: {
-        // This flag is used to enable/disable the remote mode for the carousel
-        // component, which will impact to the slides count.
-        // - If this flag is not set, the slides count will be 4.
-        // - If this flag is set, the slides count will be 5.
-        remoteFeatureFlags: {
-          solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
-          bridgeConfig: showSnapConfirmation
-            ? featureFlagsWithSnapConfirmation
-            : featureFlags,
-        },
-      },
-      testSpecificMock: async (mockServer: Mockttp) => {
-        const mockList: MockedEndpoint[] = [];
-        mockList.push(await simulateSolanaTransaction(mockServer));
-        if (walletConnect) {
-          mockList.push(await mockGetTokenAccountsByOwnerDevnet(mockServer));
-          mockList.push(await mockGetAccountInfoDevnet(mockServer));
+  return async (mockServer: Mockttp): Promise<MockedEndpoint[]> => {
+    const mockList: MockedEndpoint[] = [];
+    mockList.push(await simulateSolanaTransaction(mockServer));
+    if (walletConnect) {
+      mockList.push(await mockGetTokenAccountsByOwnerDevnet(mockServer));
+      mockList.push(await mockGetAccountInfoDevnet(mockServer));
+    }
+    mockList.push(await mockGetMultipleAccounts(mockServer));
+    if (mockGetTransactionSuccess) {
+      mockList.push(await mockSendSolanaTransaction(mockServer));
+      mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
+      mockList.push(await mockGetSuccessTransaction(mockServer));
+    }
+    if (mockGetTransactionFailed) {
+      mockList.push(await mockSendSolanaFailedTransaction(mockServer));
+      mockList.push(await mockGetFailedSignaturesForAddress(mockServer));
+      mockList.push(await mockGetFailedTransaction(mockServer));
+    }
+
+    mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
+    mockList.push(
+      await mockSolanaBalanceQuote(mockServer, mockZeroBalance),
+    );
+
+    mockList.push(
+      await mockGetMinimumBalanceForRentExemption(mockServer),
+      await mockMultiCoinPrice(mockServer),
+      await mockGetLatestBlockhash(mockServer),
+      await mockGetFeeForMessage(mockServer),
+      await mockPriceApiSpotPrice(mockServer),
+      await mockPriceApiExchangeRates(mockServer),
+      await mockClientSideDetectionApi(mockServer),
+      await mockPhishingDetectionApi(mockServer),
+    );
+
+    if (mockTokenAccountAccountInfo) {
+      await mockGetTokenAccountInfo(mockServer);
+    }
+
+    mockList.push(
+      await mockTokenApiMainnetTest(mockServer),
+      await mockAccountsApi(mockServer),
+      await mockGetMultipleAccounts(mockServer),
+      await mockGetAccountInfoDevnet(mockServer),
+    );
+
+    if (mockSwapWithNoQuotes) {
+      mockList.push(await mockBridgeGetTokens(mockServer));
+      mockList.push(await mockNoQuotesAvailable(mockServer));
+    }
+    if (mockSwapUSDtoSOL) {
+      mockList.push(
+        ...[
+          await mockQuoteFromUSDCtoSOL(mockServer),
+          await mockSendSwapSolanaTransaction(mockServer),
+          await mockGetUSDCSOLTransaction(mockServer),
+          await mockSecurityAlertSwap(mockServer),
+          await mockGetSignaturesSuccessSwap(mockServer),
+          await mockBridgeGetTokens(mockServer),
+          await mockPriceApiSpotPriceSwap(mockServer),
+        ],
+      );
+    }
+    if (mockSwapSOLtoUSDC) {
+      mockList.push(
+        ...[
+          await mockQuoteFromSoltoUSDC(mockServer),
+          await mockSwapSolToUsdcTransaction(mockServer),
+          await mockGetSOLUSDCTransaction(mockServer),
+          await mockSecurityAlertSwap(mockServer),
+          await mockGetSignaturesSuccessSwap(mockServer),
+          await mockBridgeGetTokens(mockServer),
+          await mockPriceApiSpotPriceSwap(mockServer),
+        ],
+      );
+    }
+
+    if (withProtocolSnap) {
+      mockList.push(await mockProtocolSnap(mockServer));
+    }
+    if (withCustomMocks) {
+      const customMocksResult = await withCustomMocks(mockServer);
+      if (customMocksResult) {
+        if (Array.isArray(customMocksResult)) {
+          mockList.push(...customMocksResult.filter((m) => m));
         } else {
-          console.log('Entra aqui no?');
-          /* mockList.push(
-            await mockGetTokenAccountsTokenProgramSwaps(mockServer),
-          );
-          mockList.push(
-            await mockGetTokenAccountsTokenProgram2022Swaps(mockServer),
-          );*/
+          mockList.push(customMocksResult);
         }
-        mockList.push(await mockGetMultipleAccounts(mockServer));
-        if (mockGetTransactionSuccess) {
-          console.log('mockGetTransactionSuccess');
-          mockList.push(await mockSendSolanaTransaction(mockServer));
-          mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
-          mockList.push(await mockGetSuccessTransaction(mockServer));
-        }
-        if (mockGetTransactionFailed) {
-          console.log('mockGetTransactionFailed');
-          mockList.push(await mockSendSolanaFailedTransaction(mockServer));
-          mockList.push(await mockGetFailedSignaturesForAddress(mockServer));
-          mockList.push(await mockGetFailedTransaction(mockServer));
-        }
-
-        mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
-        mockList.push(
-          await mockSolanaBalanceQuote(mockServer, mockZeroBalance),
-        );
-
-        mockList.push(
-          await mockGetMinimumBalanceForRentExemption(mockServer),
-          await mockMultiCoinPrice(mockServer),
-          await mockGetLatestBlockhash(mockServer),
-          await mockGetFeeForMessage(mockServer),
-          await mockPriceApiSpotPrice(mockServer),
-          await mockPriceApiExchangeRates(mockServer),
-          await mockClientSideDetectionApi(mockServer),
-          await mockPhishingDetectionApi(mockServer),
-        );
-
-        if (mockTokenAccountAccountInfo) {
-          await mockGetTokenAccountInfo(mockServer);
-        }
-
-        mockList.push(
-          await mockTokenApiMainnetTest(mockServer),
-          await mockAccountsApi(mockServer),
-          await mockGetMultipleAccounts(mockServer),
-          await mockGetAccountInfoDevnet(mockServer),
-        );
-
-        if (mockSwapWithNoQuotes) {
-          mockList.push(await mockBridgeGetTokens(mockServer));
-          mockList.push(await mockNoQuotesAvailable(mockServer));
-        }
-        if (mockSwapUSDtoSOL) {
-          mockList.push(
-            ...[
-              await mockQuoteFromUSDCtoSOL(mockServer),
-              await mockSendSwapSolanaTransaction(mockServer),
-              await mockGetUSDCSOLTransaction(mockServer),
-              await mockSecurityAlertSwap(mockServer),
-              await mockGetSignaturesSuccessSwap(mockServer),
-              await mockBridgeGetTokens(mockServer),
-              await mockPriceApiSpotPriceSwap(mockServer),
-              // await mockTopAssetsSolana(mockServer),
-            ],
-          );
-        }
-        if (mockSwapSOLtoUSDC) {
-          mockList.push(
-            ...[
-              await mockQuoteFromSoltoUSDC(mockServer),
-              await mockSwapSolToUsdcTransaction(mockServer),
-              await mockGetSOLUSDCTransaction(mockServer),
-              await mockSecurityAlertSwap(mockServer),
-              await mockGetSignaturesSuccessSwap(mockServer),
-              await mockBridgeGetTokens(mockServer),
-              await mockPriceApiSpotPriceSwap(mockServer),
-              // await mockTopAssetsSolana(mockServer),
-            ],
-          );
-        }
-
-        if (withProtocolSnap) {
-          mockList.push(await mockProtocolSnap(mockServer));
-        }
-        if (withCustomMocks) {
-          const customMocksResult = await withCustomMocks(mockServer);
-          if (customMocksResult) {
-            if (Array.isArray(customMocksResult)) {
-              mockList.push(...customMocksResult.filter((m) => m));
-            } else {
-              mockList.push(customMocksResult);
-            }
-          }
-        }
-        return mockList;
-      },
-      ignoredConsoleErrors: [
-        'SES_UNHANDLED_REJECTION: 0, never, undefined, index, Array(1)',
-        'SES_UNHANDLED_REJECTION: 1, never, undefined, index, Array(1)',
-        'No custom network client was found with the ID',
-        'No Infura network client was found with the ID "linea-mainnet"',
-      ],
-    },
-    async ({
-      driver,
-      mockServer,
-      extensionId,
-    }: {
-      driver: Driver;
-      mockServer: Mockttp;
-      extensionId: string;
-    }) => {
-      if (showNativeTokenAsMainBalance) {
-        await loginWithBalanceValidation(driver);
-      } else {
-        await loginWithoutBalanceValidation(driver);
       }
-      if (withNetworkOnSolana) {
-        // Change network to Solana
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Solana');
-      }
-      if (numberOfAccounts === 2) {
-        const homepage = new Homepage(driver);
-        await homepage.checkExpectedBalanceIsDisplayed();
-        // create 2nd account
-        await homepage.headerNavbar.openAccountMenu();
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
-        await accountListPage.addMultichainAccount();
-        await accountListPage.selectAccount('Account 1');
-      }
-
-      await test(driver, mockServer, extensionId);
-    },
-  );
+    }
+    return mockList;
+  };
 }
+

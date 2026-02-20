@@ -1,18 +1,29 @@
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
-import { DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS } from '../../flask/solana-wallet-standard/testHelpers';
-import { withSolanaAccountSnap } from '../solana/common-solana';
+import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  buildSolanaTestSpecificMock,
+  SOLANA_MANIFEST_FLAGS,
+  SOLANA_IGNORED_CONSOLE_ERRORS,
+} from '../solana/common-solana';
 
 describe('Send Solana', function () {
   it('it should be possible to send SOL', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
-        ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        mockGetTransactionSuccess: true,
+        manifestFlags: SOLANA_MANIFEST_FLAGS,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockGetTransactionSuccess: true,
+        }),
+        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         const sendPage = new SendPage(driver);
         const nonEvmHomepage = new NonEvmHomepage(driver);
         const snapTransactionConfirmation = new SnapTransactionConfirmation(

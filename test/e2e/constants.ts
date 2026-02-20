@@ -129,6 +129,10 @@ export const DEFAULT_SOLANA_ACCOUNT =
 export const DEFAULT_FIXTURE_SOLANA_ACCOUNT =
   '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
 
+/* Default fixture SOLANA account UUID (from default-fixture.json) */
+export const DEFAULT_FIXTURE_SOLANA_ACCOUNT_ID =
+  '688e01b8-3134-4ef4-80e6-8772bab38ef7';
+
 /* Solana Mainnet chain ID (genesis hash) */
 export const SOLANA_MAINNET_CHAIN_ID = '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 

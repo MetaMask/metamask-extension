@@ -10,6 +10,7 @@ import {
   DAPP_URL_LOCALHOST,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_FIXTURE_SOLANA_ACCOUNT,
+  DEFAULT_FIXTURE_SOLANA_ACCOUNT_ID,
   SOLANA_MAINNET_SCOPE,
 } from '../constants';
 import defaultFixtureJson from './default-fixture.json';
@@ -60,6 +61,53 @@ class FixtureBuilderV2 {
     this.fixture.data.NetworkEnablementController.enabledNetworkMap =
       data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
     return this;
+  }
+
+  withMultichainNetworkControllerOnSolana(): this {
+    merge(this.fixture.data.MultichainNetworkController, {
+      isEvmSelected: false,
+      selectedMultichainNetworkChainId: SOLANA_MAINNET_SCOPE,
+    });
+
+    // Enable only the Solana mainnet and disable all EVM networks,
+    // matching the state of a wallet that has Solana actively selected.
+    const enabledNetworkMap =
+      this.fixture.data.NetworkEnablementController.enabledNetworkMap;
+    if (enabledNetworkMap.eip155) {
+      for (const key of Object.keys(enabledNetworkMap.eip155)) {
+        (
+          enabledNetworkMap.eip155 as Record<string, boolean>
+        )[key] = false;
+      }
+    }
+    merge(this.fixture.data.NetworkEnablementController, {
+      enabledNetworkMap: {
+        solana: {
+          [SOLANA_MAINNET_SCOPE]: true,
+        },
+      },
+    });
+
+    // Select the Solana account and give it a high lastSelected timestamp
+    // so it wins any re-selection during startup.
+    const accounts = this.fixture.data.AccountsController.internalAccounts
+      .accounts as Record<string, { metadata: { lastSelected: number } }>;
+    const solanaAccount = accounts[DEFAULT_FIXTURE_SOLANA_ACCOUNT_ID];
+    if (solanaAccount) {
+      solanaAccount.metadata.lastSelected = Date.now();
+    }
+    this.fixture.data.AccountsController.internalAccounts.selectedAccount =
+      DEFAULT_FIXTURE_SOLANA_ACCOUNT_ID;
+
+    return this;
+  }
+
+  withShowNativeTokenAsMainBalanceDisabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        showNativeTokenAsMainBalance: false,
+      },
+    } as Partial<PreferencesControllerState>);
   }
 
   /* ==================================================================

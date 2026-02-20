@@ -4,7 +4,15 @@ import SendSolanaPage from '../../page-objects/pages/send/solana-send-page';
 import ConfirmSolanaTxPage from '../../page-objects/pages/send/solana-confirm-tx-page';
 import SolanaTxresultPage from '../../page-objects/pages/send/solana-tx-result-page';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import { commonSolanaAddress, withSolanaAccountSnap } from './common-solana';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { withFixtures } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  commonSolanaAddress,
+  buildSolanaTestSpecificMock,
+  SOLANA_IGNORED_CONSOLE_ERRORS,
+  SOLANA_MANIFEST_FLAGS,
+} from './common-solana';
 
 const splTokenName = 'USDC';
 // Investigate why this test is flaky https://consensyssoftware.atlassian.net/browse/MMQA-549
@@ -12,18 +20,22 @@ const splTokenName = 'USDC';
 describe.skip('Send flow - SPL Token', function (this: Suite) {
   it('user with more than 1 token in the token list', async function () {
     this.timeout(120000);
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockGetTransactionSuccess: true,
+        manifestFlags: SOLANA_MANIFEST_FLAGS,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockGetTransactionSuccess: true,
+        }),
+        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
-        // await sendSolanaPage.checkPageIsLoaded('50 SOL'); // Get price might take a bit to get executed, so to avoid flakiness, wait until the call is made and mocked
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
           false,
@@ -138,25 +150,28 @@ describe.skip('Send flow - SPL Token', function (this: Suite) {
 
   it('and send transaction fails', async function () {
     this.timeout(120000); // there is a bug open for this big timeout https://consensyssoftware.atlassian.net/browse/SOL-90
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockGetTransactionFailed: true,
+        manifestFlags: SOLANA_MANIFEST_FLAGS,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockGetTransactionFailed: true,
+        }),
+        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.clickOnSendButton();
 
         const sendSolanaPage = new SendSolanaPage(driver);
-        // await sendSolanaPage.checkPageIsLoaded('50 SOL');
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.openTokenList();
         await sendSolanaPage.selectTokenFromTokenList(splTokenName);
         await sendSolanaPage.checkAmountCurrencyIsDisplayed(splTokenName);
         await sendSolanaPage.setAmount('0.1');
-        // assert.equal(await sendSolanaPage.isContinueButtonEnabled(), true, "Continue button is not enabled when address and amount are set");
         await sendSolanaPage.clickOnContinue();
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
 

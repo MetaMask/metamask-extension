@@ -78,7 +78,10 @@ class HomePage {
     testId: 'account-value-and-suffix',
   };
 
-  protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
+  protected readonly sendButton = {
+    tag: 'span',
+    text: 'Send',
+  };
 
   protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
 

@@ -1,20 +1,32 @@
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
-import { largeDelayMs } from '../../../helpers';
+import { largeDelayMs, withFixtures } from '../../../helpers';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { addAccount } from '../../../page-objects/flows/add-account.flow';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../testHelpers';
-import { withSolanaAccountSnap } from '../../../tests/solana/common-solana';
+import {
+  buildSolanaTestSpecificMock,
+  SOLANA_MANIFEST_FLAGS,
+  SOLANA_IGNORED_CONSOLE_ERRORS,
+} from '../../../tests/solana/common-solana';
 
 describe('Multichain API - Non EVM', function () {
   const SOLANA_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
   describe("Call `wallet_createSession` with both EVM and Solana scopes that match the user's enabled networks", function () {
     it('should only select the specified scopes requested by the user', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
+          ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+          manifestFlags: SOLANA_MANIFEST_FLAGS,
+          testSpecificMock: buildSolanaTestSpecificMock(),
+          ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
         },
-        async (driver, _, extensionId) => {
+        async ({ driver, extensionId }) => {
+          await loginWithBalanceValidation(driver);
           const requestScopesToNetworkMap = {
             'eip155:1': 'Ethereum',
             [SOLANA_SCOPE]: 'Solana',
@@ -72,13 +84,19 @@ describe('Multichain API - Non EVM', function () {
 
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with Solana scope, without any accounts requested', function () {
     it('should automatically select the current active Solana account', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
-          numberOfAccounts: 2,
+          ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+          manifestFlags: SOLANA_MANIFEST_FLAGS,
+          testSpecificMock: buildSolanaTestSpecificMock(),
+          ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
         },
-        async (driver, _, extensionId) => {
+        async ({ driver, extensionId }) => {
+          await loginWithBalanceValidation(driver);
+          await addAccount({ driver, switchToAccount: 'Account 1' });
+
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
           await testDapp.connectExternallyConnectable(extensionId);

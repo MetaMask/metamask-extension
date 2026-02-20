@@ -3,22 +3,32 @@ import { Suite } from 'mocha';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import TransactionDetailsPage from '../../page-objects/pages/home/transaction-details';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { withFixtures } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   commonSolanaTxConfirmedDetailsFixture,
   commonSolanaTxFailedDetailsFixture,
-  withSolanaAccountSnap,
+  buildSolanaTestSpecificMock,
+  SOLANA_IGNORED_CONSOLE_ERRORS,
+  SOLANA_MANIFEST_FLAGS,
 } from './common-solana';
 
 describe('Transaction activity list', function (this: Suite) {
   it('user can see activity list and a confirmed transaction details', async function () {
     this.timeout(120000);
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockGetTransactionSuccess: true,
+        manifestFlags: SOLANA_MANIFEST_FLAGS,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockGetTransactionSuccess: true,
+        }),
+        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
         await homePage.goToActivityList();
 
@@ -49,13 +59,18 @@ describe('Transaction activity list', function (this: Suite) {
   });
   it('user can see activity list and a failed transaction details', async function () {
     this.timeout(120000);
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockGetTransactionFailed: true,
+        manifestFlags: SOLANA_MANIFEST_FLAGS,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockGetTransactionFailed: true,
+        }),
+        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.goToActivityList();

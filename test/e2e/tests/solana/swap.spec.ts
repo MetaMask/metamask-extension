@@ -2,22 +2,34 @@ import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import ConfirmSolanaTxPage from '../../page-objects/pages/send/solana-confirm-tx-page';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { withFixtures } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
-  withSolanaAccountSnap,
+  buildSolanaTestSpecificMock,
   SHOW_SWAP_SNAP_CONFIRMATION,
+  SOLANA_IGNORED_CONSOLE_ERRORS,
+  SOLANA_MANIFEST_FLAGS,
+  SOLANA_MANIFEST_FLAGS_WITH_SNAP_CONFIRMATION,
 } from './common-solana';
 
 describe('Swap on Solana', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('Completes a Swap between SOL and SPL', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockSwapSOLtoUSDC: true,
-        showSnapConfirmation: SHOW_SWAP_SNAP_CONFIRMATION,
+        manifestFlags: SHOW_SWAP_SNAP_CONFIRMATION
+          ? SOLANA_MANIFEST_FLAGS_WITH_SNAP_CONFIRMATION
+          : SOLANA_MANIFEST_FLAGS,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockSwapSOLtoUSDC: true,
+        }),
+        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
 
         await homePage.checkPageIsLoaded({ amount: '50' });
@@ -69,14 +81,20 @@ describe('Swap on Solana', function () {
   });
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('Completes a Swap between SPL and SOL', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockSwapUSDtoSOL: true,
-        showSnapConfirmation: SHOW_SWAP_SNAP_CONFIRMATION,
+        manifestFlags: SHOW_SWAP_SNAP_CONFIRMATION
+          ? SOLANA_MANIFEST_FLAGS_WITH_SNAP_CONFIRMATION
+          : SOLANA_MANIFEST_FLAGS,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockSwapUSDtoSOL: true,
+        }),
+        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
 
         await homePage.checkPageIsLoaded({ amount: '50' });
@@ -110,13 +128,18 @@ describe('Swap on Solana', function () {
   });
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('Swap has no quotes available', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockSwapWithNoQuotes: true,
+        manifestFlags: SOLANA_MANIFEST_FLAGS,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockSwapWithNoQuotes: true,
+        }),
+        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
 
         await homePage.checkPageIsLoaded({ amount: '50' });

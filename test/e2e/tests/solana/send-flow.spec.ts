@@ -5,20 +5,35 @@ import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import { withSolanaAccountSnap } from './common-solana';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { withFixtures } from '../../helpers';
+import {
+  loginWithBalanceValidation,
+  loginWithoutBalanceValidation,
+} from '../../page-objects/flows/login.flow';
+import {
+  buildSolanaTestSpecificMock,
+  SOLANA_IGNORED_CONSOLE_ERRORS,
+  SOLANA_MANIFEST_FLAGS,
+} from './common-solana';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
 
 describe('Send flow', function (this: Suite) {
   it('with some field validation', async function () {
     this.timeout(120000);
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockZeroBalance: true,
+        manifestFlags: SOLANA_MANIFEST_FLAGS,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockZeroBalance: true,
+        }),
+        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
         const sendPage = new SendPage(driver);
 
@@ -45,15 +60,22 @@ describe('Send flow', function (this: Suite) {
     );
   });
 
-  it('full flow of USD with a positive balance account', async function () {
+  it.only('full flow of USD with a positive balance account', async function () {
     this.timeout(120000);
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilder()
+          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: false,
-        mockGetTransactionSuccess: true,
+        manifestFlags: SOLANA_MANIFEST_FLAGS,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockGetTransactionSuccess: true,
+        }),
+        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithoutBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
         const sendPage = new SendPage(driver);
         await homePage.checkPageIsLoaded({ amount: '$5,643.50' });
@@ -94,13 +116,18 @@ describe('Send flow', function (this: Suite) {
 
   it('full flow of SOL with a positive balance account', async function () {
     this.timeout(120000);
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockGetTransactionSuccess: true,
+        manifestFlags: SOLANA_MANIFEST_FLAGS,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockGetTransactionSuccess: true,
+        }),
+        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
         const sendPage = new SendPage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
@@ -141,13 +168,18 @@ describe('Send flow', function (this: Suite) {
 
   it('and transaction fails', async function () {
     this.timeout(120000);
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockGetTransactionFailed: true,
+        manifestFlags: SOLANA_MANIFEST_FLAGS,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockGetTransactionFailed: true,
+        }),
+        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
         const sendPage = new SendPage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });

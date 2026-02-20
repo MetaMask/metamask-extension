@@ -1,8 +1,14 @@
 import { strict as assert } from 'assert';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { WINDOW_TITLES } from '../../constants';
-import { largeDelayMs } from '../../helpers';
-import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
+import { largeDelayMs, withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  buildSolanaTestSpecificMock,
+  SOLANA_MANIFEST_FLAGS,
+  SOLANA_IGNORED_CONSOLE_ERRORS,
+} from '../../tests/solana/common-solana';
 import {
   clickConfirmButton,
   connectSolanaTestDapp,
@@ -12,17 +18,21 @@ import {
 describe('Solana Wallet Standard - Transfer WSOL', function () {
   describe('Send WSOL transactions', function () {
     it('Should sign and send multiple WSOL transactions', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
-          mockGetTransactionSuccess: true,
-          // FIXME: We have to disable this one, since this mock is too "generic" and would
-          // "mock" the actual `getAccountInfo` request used by the dapp.
-          mockTokenAccountAccountInfo: false,
-          walletConnect: false,
+          dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
+          manifestFlags: SOLANA_MANIFEST_FLAGS,
+          testSpecificMock: buildSolanaTestSpecificMock({
+            mockGetTransactionSuccess: true,
+            mockTokenAccountAccountInfo: false,
+            walletConnect: false,
+          }),
+          ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
