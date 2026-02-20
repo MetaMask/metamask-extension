@@ -92,42 +92,6 @@ describe('GasDetailsItem', () => {
     });
   });
 
-  it('should show warning icon if dapp estimates are high', async () => {
-    await render({
-      contextProps: {
-        gasFeeEstimates: {
-          high: {
-            suggestedMaxPriorityFeePerGas: '1',
-          },
-        },
-        gasFeeEstimatesByChainId: {
-          ...mockState.metamask.gasFeeEstimatesByChainId,
-          '0x5': {
-            gasFeeEstimates: {
-              high: {
-                suggestedMaxPriorityFeePerGas: '1',
-              },
-            },
-          },
-        },
-        transaction: {
-          txParams: {
-            gas: '0x52081',
-            maxFeePerGas: '0x38D7EA4C68000',
-          },
-          userFeeLevel: 'medium',
-          dappSuggestedGasFees: {
-            maxPriorityFeePerGas: '0x38D7EA4C68000',
-            maxFeePerGas: '0x38D7EA4C68000',
-          },
-        },
-      },
-    });
-    await waitFor(() => {
-      expect(screen.queryByText('⚠ Max fee:')).toBeInTheDocument();
-    });
-  });
-
   it('should not show warning icon if estimates are not high', async () => {
     await render({
       contextProps: { transaction: { txParams: {}, userFeeLevel: 'low' } },

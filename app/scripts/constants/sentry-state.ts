@@ -88,7 +88,7 @@ export const SENTRY_BACKGROUND_STATE = {
     throttledOrigins: false,
     timeoutMinutes: true,
     trezorModel: true,
-    isUpdateAvailable: true,
+    pendingExtensionVersion: true,
     updateModalLastDismissedAt: true,
     lastUpdatedAt: true,
     shieldSubscriptionError: true,

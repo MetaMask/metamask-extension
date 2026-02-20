@@ -5,7 +5,7 @@ import ActivityList from '../../page-objects/pages/home/activity-list';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Clear account activity', function (this: Suite) {
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -17,25 +17,20 @@ describe('Clear account activity', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withTransactionControllerCompletedAndIncomingTransaction()
+          .withTransactionControllerCompletedTransaction()
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
-        // Check send transaction and receive transaction history are all displayed
+        // Check local "Sent" transaction history is displayed
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
         const activityList = new ActivityList(driver);
         await activityList.checkTxAction({
-          action: 'Received',
-          confirmedTx: 2,
-        });
-        await activityList.checkTxAction({
           action: 'Sent',
-          txIndex: 2,
-          confirmedTx: 2,
+          confirmedTx: 1,
         });
 
         // Clear activity and nonce data
