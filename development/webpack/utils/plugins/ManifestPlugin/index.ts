@@ -240,6 +240,11 @@ export class ManifestPlugin<Z extends boolean> {
    * Moves the assets to the correct browser locations and adds each browser's
    * extension manifest.json file to the list of assets.
    *
+   * Note: This method uses `path.posix.join` instead of `path.join` because
+   * webpack asset names are expected to use forward slashes. On Windows,
+   * `path.join` would produce backslashes, which can cause mismatches with
+   * webpack internals that normalize asset names to forward slashes.
+   *
    * @param compilation
    * @param assets
    * @param options
@@ -257,15 +262,19 @@ export class ManifestPlugin<Z extends boolean> {
       const manifest = new RawSource(
         JSON.stringify(this.manifests.get(browser), null, 2),
       );
-      compilation.emitAsset(path.join(browser, 'manifest.json'), manifest, {
-        javascriptModule: false,
-        contentType: 'application/json',
-      });
+      compilation.emitAsset(
+        path.posix.join(browser, 'manifest.json'),
+        manifest,
+        {
+          javascriptModule: false,
+          contentType: 'application/json',
+        },
+      );
       for (const [name, asset] of assetEntries) {
         // move the assets to their final browser-relative locations
         const assetDetails = compilation.getAsset(name) as Readonly<Asset>;
         compilation.emitAsset(
-          path.join(browser, name),
+          path.posix.join(browser, name),
           asset,
           assetDetails.info,
         );
