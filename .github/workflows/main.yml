@@ -535,7 +535,33 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
-    if: ${{ needs.get-requirements.outputs.needs-releases == 'true' }}
+    # publish-prerelease when releases are enabled.
+    #
+    # This job is sequenced after *all* jobs in `needs`, including benchmarks.
+    #
+    # Requirements:
+    # - For most jobs: result must be `success` or `skipped` (supports the builds-from-run shortcut).
+    # - For benchmark jobs: result can be anything (failure does not block prerelease),
+    if: >-
+      ${{
+        !cancelled() &&
+        needs.get-requirements.outputs.needs-releases == 'true' &&
+        contains(fromJson('["success","skipped"]'), needs.build-dist-browserify.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-dist-mv2-browserify.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-beta-browserify.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-beta-mv2-browserify.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-flask-browserify.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-flask-mv2-browserify.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-browserify.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-mv2-browserify.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-flask-browserify.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-flask-mv2-browserify.result) &&
+        contains(fromJson('["success","skipped"]'), needs.bundle-size.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-storybook.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-ts-migration-dashboard.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-source-map-explorer.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-lavamoat-viz.result)
+      }}
     needs:
       - get-requirements
       - build-dist-browserify
