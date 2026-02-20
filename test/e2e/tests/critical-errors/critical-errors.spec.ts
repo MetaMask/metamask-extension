@@ -1,11 +1,20 @@
+import assert from 'node:assert/strict';
 import { Suite } from 'mocha';
+import { WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import CriticalErrorPage from '../../page-objects/pages/critical-error-page';
 import { PAGES } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
 import { getManifestVersion } from '../../set-manifest-flags';
+import { completeVaultRecoveryOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import {
+  getFirstAddress,
+  onboardThenTriggerTimeOutFlow,
+} from '../../page-objects/flows/vault-corruption.flow';
+import { getConfig } from '../vault-corruption/helpers';
 
+// Match timeout values in critical-startup-error-handler.ts
 const BACKGROUND_CONNECTION_TIMEOUT = 15_000;
 
 describe('Critical errors', function (this: Suite) {
@@ -69,6 +78,83 @@ describe('Critical errors', function (this: Suite) {
       },
     );
   });
+
+  it('shows critical error screen when background takes over 16 seconds to initialize, and allows user to restore accounts', async function () {
+    this.timeout(120_000);
+    await withFixtures(
+      getConfig(this.test?.fullTitle(), {
+        additionalIgnoredErrors: ['Background initialization timeout'],
+        additionalManifestFlags: {
+          testing: {
+            simulateBackgroundInitializationHang: true,
+          },
+        },
+      }),
+      async ({ driver }) => {
+        const initialFirstAddress = await onboardThenTriggerTimeOutFlow(driver);
+
+        const criticalErrorPage = new CriticalErrorPage(driver);
+        await criticalErrorPage.checkPageIsLoaded();
+        await criticalErrorPage.validateTroubleStartingDescription();
+        await criticalErrorPage.validateErrorMessage(
+          'Background initialization timeout',
+        );
+
+        await criticalErrorPage.clickRestoreAccountsLink({ confirm: true });
+
+        await completeVaultRecoveryOnboardingFlow({
+          driver,
+          password: WALLET_PASSWORD,
+        });
+        const restoredFirstAddress = await getFirstAddress(driver);
+
+        assert.equal(
+          restoredFirstAddress,
+          initialFirstAddress,
+          'Restored address should match the original address',
+        );
+      },
+    );
+  });
+
+  it('shows critical error screen when background takes over 16 seconds to sync state, and allows user to restore accounts', async function () {
+    this.timeout(120_000);
+    await withFixtures(
+      getConfig(this.test?.fullTitle(), {
+        additionalIgnoredErrors: ['Background state sync timeout'],
+        additionalManifestFlags: {
+          testing: {
+            simulateBackgroundStateSyncHang: true,
+          },
+        },
+      }),
+      async ({ driver }) => {
+        const initialFirstAddress = await onboardThenTriggerTimeOutFlow(driver);
+
+        const criticalErrorPage = new CriticalErrorPage(driver);
+        await criticalErrorPage.checkPageIsLoaded();
+        await criticalErrorPage.validateTroubleStartingDescription();
+        await criticalErrorPage.validateErrorMessage(
+          'Background state sync timeout',
+        );
+
+        await criticalErrorPage.clickRestoreAccountsLink({ confirm: true });
+
+        await completeVaultRecoveryOnboardingFlow({
+          driver,
+          password: WALLET_PASSWORD,
+        });
+        const restoredFirstAddress = await getFirstAddress(driver);
+
+        assert.equal(
+          restoredFirstAddress,
+          initialFirstAddress,
+          'Restored address should match the original address',
+        );
+      },
+    );
+  });
+
   it('does NOT show critical error screen when background is a "little" slow to respond', async function () {
     // we can skip this test in MV2, since we don't need lazy listeners there
     // as they are installed synchronously in `background.js` anyway.

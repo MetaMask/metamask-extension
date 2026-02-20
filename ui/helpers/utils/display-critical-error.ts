@@ -7,6 +7,11 @@ import {
   maybeGetLocaleContext,
 } from '../../../shared/lib/error-utils';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
+import {
+  CriticalErrorType,
+  METHOD_REPAIR_DATABASE_TIMEOUT,
+} from '../../../shared/constants/state-corruption';
+import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
 
 /**
  * Extracts the Sentry envelope URL from a Sentry DSN.
@@ -156,6 +161,48 @@ async function handleRestartAction(
 }
 
 /**
+ * Checks if a vault backup exists in IndexedDB.
+ * This is used to determine whether to show the "restore accounts" option
+ * on the critical error screen.
+ *
+ * We access IndexedDB directly here instead of using globalThis.stateHooks.getBackupState()
+ * because this function is called when the UI initialization has timed out, meaning the
+ * PersistenceManager (which powers stateHooks) may not have been initialized yet.
+ *
+ * @returns A promise that resolves to true if a vault backup exists, false otherwise.
+ */
+async function checkVaultBackupExists(): Promise<boolean> {
+  try {
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open('metamask-backup', 1);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+
+    const tx = db.transaction('store', 'readonly');
+    const store = tx.objectStore('store');
+    const keyringRequest = store.get('KeyringController');
+
+    return new Promise((resolve) => {
+      keyringRequest.onsuccess = () => {
+        const keyringController = keyringRequest.result as
+          | { vault?: unknown }
+          | undefined;
+        const hasVault = Boolean(keyringController?.vault);
+        db.close();
+        resolve(hasVault);
+      };
+      keyringRequest.onerror = () => {
+        db.close();
+        resolve(false);
+      };
+    });
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Displays a critical error message in the given container.
  *
  * This function always throws the error after displaying the message.
@@ -164,6 +211,8 @@ async function handleRestartAction(
  * @param errorKey - The key for the error message to display.
  * @param error - The error object to log.
  * @param currentLocale - Optional locale context for translations.
+ * @param port - Optional port for background communication (needed for restore accounts functionality).
+ * @param criticalErrorType - Optional type of critical error (for analytics). Defaults to Other.
  * @throws {ErrorLike} Throws the error after displaying the message.
  * @returns A promise that resolves to never, as it always throws an error.
  */
@@ -172,9 +221,33 @@ export async function displayCriticalErrorMessage(
   errorKey: CriticalErrorTranslationKey,
   error: ErrorLike,
   currentLocale?: string,
+  port?: browser.Runtime.Port,
+  criticalErrorType: CriticalErrorType = CriticalErrorType.Other,
 ): Promise<never> {
+  const canTriggerRestore = Boolean(port) && (await checkVaultBackupExists());
+
+  try {
+    port?.postMessage({
+      data: {
+        method: CRITICAL_ERROR_SCREEN_VIEWED,
+        params: {
+          canTriggerRestore,
+          criticalErrorType,
+        },
+      },
+    });
+  } catch (e) {
+    log.warn('Failed to notify background of critical error screen view', e);
+  }
+
   const localeContext = await maybeGetLocaleContext(currentLocale);
-  const html = getErrorHtml(errorKey, error, localeContext, SUPPORT_LINK);
+  const html = getErrorHtml(
+    errorKey,
+    error,
+    localeContext,
+    SUPPORT_LINK,
+    canTriggerRestore,
+  );
 
   const criticalErrorContainer = displayCriticalErrorPage(container, html);
   if (criticalErrorContainer) {
@@ -192,6 +265,31 @@ export async function displayCriticalErrorMessage(
       const shouldReport = reportCheckbox?.checked ?? false;
       await handleRestartAction(error, shouldReport);
     });
+
+    // Restore accounts link: trigger vault recovery flow.
+    if (canTriggerRestore) {
+      const restoreLink =
+        criticalErrorContainer.querySelector<HTMLAnchorElement>(
+          '#critical-error-restore-link',
+        );
+
+      if (restoreLink) {
+        restoreLink.addEventListener('click', (event: Event) => {
+          event.preventDefault();
+          // eslint-disable-next-line no-alert
+          const confirmed = confirm(
+            localeContext.t('stateCorruptionAreYouSure') ?? '',
+          );
+          if (confirmed) {
+            (port as browser.Runtime.Port).postMessage({
+              data: {
+                method: METHOD_REPAIR_DATABASE_TIMEOUT,
+              },
+            });
+          }
+        });
+      }
+    }
   }
 
   log.error(error.stack);

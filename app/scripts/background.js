@@ -28,7 +28,10 @@ import {
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
-import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/ui-initialization';
+import {
+  BACKGROUND_LIVENESS_METHOD,
+  BACKGROUND_INITIALIZED_METHOD,
+} from '../../shared/constants/ui-initialization';
 import {
   REJECT_NOTIFICATION_CLOSE,
   REJECT_NOTIFICATION_CLOSE_SIG,
@@ -50,13 +53,22 @@ import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
-import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
+import {
+  CRITICAL_ERROR_SCREEN_VIEWED,
+  DISPLAY_GENERAL_STARTUP_ERROR,
+  RELOAD_WINDOW,
+} from '../../shared/constants/start-up-errors';
+import {
+  CriticalErrorType,
+  METHOD_REPAIR_DATABASE_TIMEOUT,
+} from '../../shared/constants/state-corruption';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
 import {
   CorruptionHandler,
   hasVault,
 } from './lib/state-corruption/state-corruption-recovery';
+import { trackCriticalErrorEvent } from './lib/state-corruption/track-critical-error';
 import {
   backedUpStateKeys,
   PersistenceManager,
@@ -120,6 +132,54 @@ const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
+/** Set during repairAndReinitialize so we do not simulate state sync hang on the reconnecting UI. */
+let inTestRestoreFlow = false;
+/** MetaMask UI ports (full page, side panel, etc.) for broadcasting RELOAD_WINDOW on timeout restore. */
+const metamaskUIPorts = new Set();
+/** Session storage key to persist inTestRestoreFlow across service worker restart (e.g. after RELOAD_WINDOW). */
+const SESSION_KEY_TEST_RESTORE_FLOW_PENDING =
+  'METAMASK_TEST_RESTORE_FLOW_PENDING';
+
+/**
+ * Save inTestRestoreFlow to session storage so a restarted service worker can restore it
+ * (e.g. after RELOAD_WINDOW when testing state sync hang recovery). No-op when not in test.
+ */
+async function saveTestRestoreFlowToSession() {
+  if (!inTest) {
+    return;
+  }
+  try {
+    await browser.storage.session.set({
+      [SESSION_KEY_TEST_RESTORE_FLOW_PENDING]: true,
+    });
+  } catch (_) {
+    // Session storage may be unavailable.
+  }
+}
+
+/**
+ * Restore inTestRestoreFlow from session storage (e.g. after service worker restarted).
+ * Clears the key after reading. No-op when not in test.
+ */
+async function restoreTestRestoreFlowFromSession() {
+  if (!inTest) {
+    return;
+  }
+  try {
+    const session = await browser.storage.session.get(
+      SESSION_KEY_TEST_RESTORE_FLOW_PENDING,
+    );
+    if (session[SESSION_KEY_TEST_RESTORE_FLOW_PENDING]) {
+      inTestRestoreFlow = true;
+      await browser.storage.session.remove(
+        SESSION_KEY_TEST_RESTORE_FLOW_PENDING,
+      );
+    }
+  } catch (_) {
+    // Session storage may be unavailable.
+  }
+}
+
 const useFixtureStore =
   inTest && getManifestFlags().testing?.forceExtensionStore !== true;
 const localStore = useFixtureStore
@@ -248,6 +308,41 @@ function setGlobalInitializers() {
   rejectInitialization = deferred.reject;
 }
 setGlobalInitializers();
+
+/**
+ * Resets initialization state, reinitializes the background from the given
+ * backup (or from scratch if no vault exists), and sets the onboarding flow
+ * type to "restore" when a vault is present.
+ *
+ * Used by both the state corruption handler and the general error repair
+ * listener so the repair logic is not duplicated.
+ *
+ * @param {object | null} backup - The backup state from IndexedDB, or null.
+ */
+async function repairAndReinitialize(backup) {
+  // We are going to reinitialize the background script, so we need to
+  // reset the initialization promises. This is gross since it is
+  // possible the original references could have been passed to other
+  // functions, and we can't update those references from here.
+  // Right now, that isn't the case though.
+  setGlobalInitializers();
+
+  if (inTest && hasVault(backup)) {
+    await saveTestRestoreFlowToSession();
+  }
+  if (hasVault(backup)) {
+    await initBackground(backup);
+    controller.onboardingController.setFirstTimeFlowType(
+      FirstTimeFlowType.restore,
+    );
+  } else {
+    // If we don't have a backup we need to make sure we clear the state
+    // from the database, and then reinitialize the background script
+    // with the first time state.
+    await persistenceManager.reset();
+    await initBackground(null);
+  }
+}
 
 /**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
@@ -537,6 +632,7 @@ const corruptionHandler = new CorruptionHandler();
  */
 const handleOnConnect = async (port) => {
   if (inTest) {
+    await restoreTestRestoreFlowFromSession();
     const simulatedDelay =
       getManifestFlags().testing?.simulateDelayedBackgroundResponse;
     if (simulatedDelay === true) {
@@ -569,9 +665,102 @@ const handleOnConnect = async (port) => {
     return;
   }
 
+  // Set up repair listener early so UI's "Restore accounts" button works even when we never
+  // reach the normal flow (e.g. init hang) or the catch block (e.g. state sync hang).
+  // We keep it for the lifetime of the port so "Restore accounts" still works if a
+  // critical error screen is shown later.
+  const { isMetaMaskUIPort } = parsePortInfo(port);
+  const repairListener = async (message) => {
+    if (message?.data?.method === METHOD_REPAIR_DATABASE_TIMEOUT) {
+      port.onMessage.removeListener(repairListener);
+
+      try {
+        const backup = (await persistenceManager.getBackup()) ?? null;
+        trackCriticalErrorEvent(
+          backup,
+          MetaMetricsEventName.CriticalErrorRestoreWalletButtonPressed,
+          CriticalErrorType.Other,
+        );
+        // Snapshot ports before repair; re-init can disconnect them and clear the set.
+        const portsToReload = [...metamaskUIPorts];
+        try {
+          await repairAndReinitialize(backup);
+        } finally {
+          // Same as vault recovery: always reload all UI windows so each shows login
+          // (or a new error if init failed).
+          portsToReload.forEach((p) => tryPostMessage(p, RELOAD_WINDOW));
+        }
+      } catch (repairError) {
+        sentry?.captureException(repairError);
+      }
+    }
+  };
+  const criticalErrorScreenViewedListener = async (message) => {
+    if (message?.data?.method !== CRITICAL_ERROR_SCREEN_VIEWED) {
+      return;
+    }
+    const params = message?.data?.params ?? {};
+    const canTriggerRestore = Boolean(params.canTriggerRestore);
+    const criticalErrorType = Object.values(CriticalErrorType).includes(
+      params.criticalErrorType,
+    )
+      ? params.criticalErrorType
+      : CriticalErrorType.Other;
+    const backup =
+      (await persistenceManager.getBackup().catch(() => null)) ?? null;
+    trackCriticalErrorEvent(
+      backup,
+      MetaMetricsEventName.CriticalErrorScreenViewed,
+      criticalErrorType,
+      { restore_accounts_enabled: canTriggerRestore },
+    );
+  };
+  const removeRepairListener = () => {
+    metamaskUIPorts.delete(port);
+    port.onMessage.removeListener(repairListener);
+    port.onMessage.removeListener(criticalErrorScreenViewedListener);
+  };
+  if (isMetaMaskUIPort) {
+    metamaskUIPorts.add(port);
+    port.onMessage.addListener(repairListener);
+    port.onMessage.addListener(criticalErrorScreenViewedListener);
+    port.onDisconnect.addListener(removeRepairListener);
+  }
+
   // Queue up connection attempts here, waiting until after initialization
   try {
     await isInitialized;
+
+    // Notify UI that background initialization is complete, before sending state.
+    // This is sent on the raw port (like ALIVE) so the UI can distinguish between
+    // "background still initializing" vs "background initialized but state sync failed".
+    try {
+      port.postMessage({
+        data: { method: BACKGROUND_INITIALIZED_METHOD },
+        name: 'background-initialized',
+      });
+    } catch (e) {
+      log.error(
+        'MetaMask - background-initialized: Failed to message to port',
+        e,
+      );
+      return;
+    }
+
+    // For testing: skip connectWindowPostMessage to simulate state sync hang.
+    // Only when backup exists and we're not in the restore flow (so recovery can complete).
+    if (
+      inTest &&
+      getManifestFlags().testing?.simulateBackgroundStateSyncHang &&
+      !inTestRestoreFlow
+    ) {
+      const backupInIndexedDb = await persistenceManager
+        .getBackup()
+        .catch(() => null);
+      if (backupInIndexedDb?.KeyringController) {
+        return;
+      }
+    }
 
     // This is set in `setupController`, which is called as part of initialization
     connectWindowPostMessage(port);
@@ -581,7 +770,7 @@ const handleOnConnect = async (port) => {
     // Only handle errors for MetaMask UI connections (popup, notification, fullscreen),
     // not for contentscripts injected into regular web pages.
     // Contentscripts can't display error screens and would create hanging promises.
-    if (parsePortInfo(port).isMetaMaskUIPort) {
+    if (isMetaMaskUIPort) {
       // If we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
       // restore from a backup, if we have one.
       if (isStateCorruptionError(error)) {
@@ -589,27 +778,7 @@ const handleOnConnect = async (port) => {
           port,
           error,
           database: persistenceManager,
-          repairCallback: async (backup) => {
-            // we are going to reinitialize the background script, so we need to
-            // reset the initialization promises. this is gross since it is
-            // possible the original references could have been passed to other
-            // functions, and we can't update those references from here.
-            // right now, that isn't the case though.
-            setGlobalInitializers();
-
-            if (hasVault(backup)) {
-              await initBackground(backup);
-              controller.onboardingController.setFirstTimeFlowType(
-                FirstTimeFlowType.restore,
-              );
-            } else {
-              // if we don't have a backup we need to make sure we clear the state
-              // from the database, and then reinitialize the background script
-              // with the first time state.
-              await persistenceManager.reset();
-              await initBackground(null);
-            }
-          },
+          repairCallback: (backup) => repairAndReinitialize(backup),
         });
       } else {
         // General errors
@@ -2314,6 +2483,27 @@ async function initBackground(backup) {
       }
     }
     persistenceManager.cleanUpMostRecentRetrievedState();
+
+    // For testing: simulate initialization hang. Only when backup exists in
+    // IndexedDB and we're not already in the restore flow (backup param is
+    // null). Skip when backup param is non-null so vault recovery can complete.
+    if (
+      inTest &&
+      !backup &&
+      getManifestFlags().testing?.simulateBackgroundInitializationHang
+    ) {
+      const backupInIndexedDb = await persistenceManager
+        .getBackup()
+        .catch(() => null);
+      if (backupInIndexedDb?.KeyringController) {
+        log.info(
+          'Simulating initialization hang (simulateBackgroundInitializationHang flag is set, backup exists)',
+        );
+        await new Promise(() => {
+          // Intentionally never resolves to simulate a hang
+        });
+      }
+    }
 
     log.info('MetaMask initialization complete.');
     resolveInitialization();

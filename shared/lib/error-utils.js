@@ -91,9 +91,16 @@ export async function maybeGetLocaleContext(currentLocale) {
  * @param {ErrorLike} error - The error object to log.
  * @param {{preferredLocale: string, t: (string) => string}} localeContext - The MetaMask state containing the current locale and translation function.
  * @param {string} [supportLink] - The support link to include in the footer.
+ * @param {boolean} [hasBackup] - Whether a vault backup exists in IndexedDB.
  * @returns {string} The HTML string for the critical error message.
  */
-export function getErrorHtml(errorKey, error, localeContext, supportLink) {
+export function getErrorHtml(
+  errorKey,
+  error,
+  localeContext,
+  supportLink,
+  hasBackup = false,
+) {
   switchDirectionForPreferredLocale(localeContext.preferredLocale);
   const { t } = localeContext;
 
@@ -103,6 +110,18 @@ export function getErrorHtml(errorKey, error, localeContext, supportLink) {
     <p>• ${lodashEscape(t('errorLegalTextSecondInfo'))}</p>
     <span>${lodashEscape(t('errorLegalTextNoPersonalInfo'))}</span>
 `;
+
+  const restoreAccountsLink = hasBackup
+    ? `
+        <span> ${lodashEscape(t('criticalErrorOr'))} </span>
+        <a
+          id="critical-error-restore-link"
+          class="critical-error__link"
+          href="#">
+            ${lodashEscape(t('stateCorruptionRestoreAccountsFromBackup'))}
+        </a>
+      `
+    : '';
 
   const footer = supportLink
     ? `
@@ -114,7 +133,7 @@ export function getErrorHtml(errorKey, error, localeContext, supportLink) {
           target="_blank"
           rel="noopener noreferrer">
             ${lodashEscape(t('errorPageContactSupport'))}
-        </a>
+        </a>${restoreAccountsLink}
       </p>
     `
     : '';

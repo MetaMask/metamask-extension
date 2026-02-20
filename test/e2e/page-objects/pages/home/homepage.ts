@@ -80,6 +80,10 @@ class HomePage {
 
   protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
 
+  /** EVM or non-EVM send button (home can render either after restore). */
+  private readonly sendButtonEvmOrNonEvm: string =
+    '[data-testid="eth-overview-send"], [data-testid="coin-overview-send"]';
+
   protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
 
   private readonly refreshErc20Tokens = {
@@ -128,7 +132,7 @@ class HomePage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.sendButton,
+        this.sendButtonEvmOrNonEvm,
         this.activityTab,
         this.tokensTab,
       ]);

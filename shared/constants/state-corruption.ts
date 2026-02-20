@@ -1,5 +1,8 @@
 export const METHOD_REPAIR_DATABASE = 'repairDatabase';
 
+/** Used by the critical error screen (init/state-sync timeout). */
+export const METHOD_REPAIR_DATABASE_TIMEOUT = 'repairDatabaseTimeout';
+
 export const METHOD_DISPLAY_STATE_CORRUPTION_ERROR =
   'displayStateCorruptionError';
 
@@ -19,4 +22,14 @@ export enum VaultCorruptionType {
    * Unknown corruption type. Used as a fallback for unexpected error types. (shouldn't happen in practice)
    */
   Unknown = 'unknown',
+}
+
+/**
+ * Type of critical startup error (timeout or other).
+ */
+export enum CriticalErrorType {
+  BackgroundConnectionTimeout = 'background_connection_timeout',
+  BackgroundInitTimeout = 'background_init_timeout',
+  BackgroundStateSyncTimeout = 'background_state_sync_timeout',
+  Other = 'other',
 }
