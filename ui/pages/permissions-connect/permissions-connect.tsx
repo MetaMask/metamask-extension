@@ -84,6 +84,7 @@ import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../shared/lib
 import { MultichainEditAccountsPageWrapper } from '../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-account-wrapper';
 import { SnapsPermissionsRequestType } from '../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { ConnectionTrustSignalGate } from './connection-trust-signal-gate';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
 import SnapInstall from './snaps/snap-install';
@@ -639,14 +640,18 @@ function PermissionsConnect() {
   );
 
   return (
-    <div className="permissions-connect">
-      {!hideTopBar &&
-        permissionsRequestId &&
-        renderTopBar(permissionsRequestId)}
-      {redirecting && permissionsApproved ? (
-        <PermissionsRedirect subjectMetadata={targetSubjectMetadata} />
-      ) : (
-        <Routes>
+    <ConnectionTrustSignalGate
+      origin={origin}
+      onReject={() => cancelPermissionsRequest(permissionsRequestId || '')}
+    >
+      <div className="permissions-connect">
+        {!hideTopBar &&
+          permissionsRequestId &&
+          renderTopBar(permissionsRequestId)}
+        {redirecting && permissionsApproved ? (
+          <PermissionsRedirect subjectMetadata={targetSubjectMetadata} />
+        ) : (
+          <Routes>
           <Route
             path="/"
             element={(() => {
@@ -786,7 +791,8 @@ function PermissionsConnect() {
           />
         </Routes>
       )}
-    </div>
+      </div>
+    </ConnectionTrustSignalGate>
   );
 }
 

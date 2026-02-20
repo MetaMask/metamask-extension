@@ -8705,6 +8705,27 @@
   "transferRequest": {
     "message": "Transfer request"
   },
+  "trustSignalBlockCheckbox": {
+    "message": "I understand the risks and want to proceed"
+  },
+  "trustSignalBlockDescription": {
+    "message": "This site has been flagged as malicious. Connecting your wallet may result in loss of funds."
+  },
+  "trustSignalBlockTitle": {
+    "message": "Dangerous site detected"
+  },
+  "trustSignalContinueAnyway": {
+    "message": "Continue anyway"
+  },
+  "trustSignalGoBack": {
+    "message": "Go back"
+  },
+  "trustSignalWarningDescription": {
+    "message": "This site has been flagged as suspicious. Proceed with caution."
+  },
+  "trustSignalWarningTitle": {
+    "message": "Suspicious site"
+  },
   "trezor": {
     "message": "Trezor",
     "description": "Hardware device name"
