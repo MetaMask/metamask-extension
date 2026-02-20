@@ -7,6 +7,7 @@ import {
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
 import type { AccountGroupAssets } from '@metamask/assets-controllers';
+import { MetaMaskReduxState } from '../store/store';
 import {
   AssetsRatesState,
   AssetsState,
@@ -29,7 +30,6 @@ import {
   getAllIgnoredAssets,
   getAssetsBySelectedAccountGroupWithTronResources,
 } from './assets';
-import { MetaMaskReduxState } from 'ui/store/store';
 
 jest.mock('@metamask/assets-controllers', () => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires

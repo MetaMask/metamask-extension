@@ -29,7 +29,7 @@ import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountT
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
-import { TokenWithBalance } from 'ui/components/multichain/asset-picker-amount';
+import { TokenWithBalance } from '../../multichain/asset-picker-amount/asset-picker-modal/types';
 
 export const AggregatedPercentageOverviewCrossChains = ({
   trailingChild,
