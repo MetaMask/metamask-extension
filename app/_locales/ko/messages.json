@@ -7058,44 +7058,8 @@
   "smartAccount": {
     "message": "스마트 계정"
   },
-  "smartAccountAccept": {
-    "message": "스마트 계정 사용"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "더욱 빠른 트랜잭션, 더욱 낮은 수수료"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "여러 트랜잭션을 한꺼번에 처리하여 비용과 시간을 절약하세요."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "계정 주소는 그대로 유지되며, 언제든지 다시 전환할 수 있습니다"
-  },
   "smartAccountLabel": {
     "message": "스마트 계정"
-  },
-  "smartAccountPayToken": {
-    "message": "언제든지, 원하는 토큰으로 결제하세요"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "보유 중인 토큰으로 네트워크 수수료를 결제하세요."
-  },
-  "smartAccountReject": {
-    "message": "스마트 계정을 사용하지 마세요"
-  },
-  "smartAccountSameAccount": {
-    "message": "같은 계정, 더 스마트한 기능."
-  },
-  "smartAccountSplashInfo": {
-    "message": "스마트 계정"
-  },
-  "smartAccountSplashTitle": {
-    "message": "스마트 계정을 사용하시겠어요?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "다음 트랜잭션부터 계정이 스마트 계정으로 전환됩니다."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "성공!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "같은 주소. 더욱 스마트한 기능."

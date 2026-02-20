@@ -3037,7 +3037,7 @@
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
   "gmxReferralSubtitle": {
-    "message": "Save up to 10% on trades with a MetaMask referral code.",
+    "message": "Save up to 5% on trades with a MetaMask referral code.",
     "description": "The subtitle of the GMX referral confirmation screen"
   },
   "goToSite": {
@@ -3852,6 +3852,10 @@
   "memo": {
     "message": "memo"
   },
+  "merklRewardsClaimBonus": {
+    "message": "Claim bonus",
+    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
+  },
   "merklRewardsToastFailed": {
     "message": "Your mUSD bonus claim failed",
     "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
@@ -3863,6 +3867,10 @@
   "merklRewardsToastSuccess": {
     "message": "Your mUSD bonus is here!",
     "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
+  },
+  "merklRewardsUnexpectedError": {
+    "message": "Unexpected error. Please try again.",
+    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "Message"
@@ -4027,6 +4035,18 @@
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
+  },
+  "musdClaimClaimingTo": {
+    "message": "Claiming to",
+    "description": "Label for the account row in the mUSD claim confirmation screen"
+  },
+  "musdClaimDescription": {
+    "message": "Bonus payout will be on Linea network.",
+    "description": "Subtitle shown on the mUSD claim confirmation screen explaining rewards are on Linea"
+  },
+  "musdClaimTitle": {
+    "message": "Claim bonus",
+    "description": "Title for the mUSD bonus claim confirmation screen"
   },
   "musdConversionActivityTitle": {
     "message": "mUSD Conversion"
@@ -7470,44 +7490,8 @@
   "smartAccount": {
     "message": "Smart account"
   },
-  "smartAccountAccept": {
-    "message": "Use smart account"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Faster transactions, lower fees"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "Save time and money by processing transactions together."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Keep the same account address, and you can switch back anytime."
-  },
   "smartAccountLabel": {
     "message": "Smart Account"
-  },
-  "smartAccountPayToken": {
-    "message": "Pay with any token, any time"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Use the tokens you already have to cover network fees."
-  },
-  "smartAccountReject": {
-    "message": "Don’t use smart account"
-  },
-  "smartAccountSameAccount": {
-    "message": "Same account, smarter features."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Smart accounts"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Use smart account?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Your account will be updated to smart account with your next transaction."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Successful!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."

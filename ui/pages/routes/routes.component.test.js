@@ -32,20 +32,6 @@ jest.mock('webextension-polyfill', () => ({
   },
 }));
 
-// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
-// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
-const mockIsMultichainAccountsFeatureEnabled = jest.fn();
-jest.mock(
-  '../../../shared/lib/multichain-accounts/remote-feature-flag',
-  () => ({
-    ...jest.requireActual(
-      '../../../shared/lib/multichain-accounts/remote-feature-flag',
-    ),
-    isMultichainAccountsFeatureEnabled: () =>
-      mockIsMultichainAccountsFeatureEnabled(),
-  }),
-);
-
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
@@ -127,8 +113,6 @@ describe('Routes Component', () => {
   useIsOriginalNativeTokenSymbol.mockImplementation(() => true);
 
   beforeEach(() => {
-    mockIsMultichainAccountsFeatureEnabled.mockReturnValue(true);
-
     // Clear previous mock implementations
     useMultiPolling.mockClear();
 
@@ -459,18 +443,6 @@ describe('toast display', () => {
     const { getByTestId } = render(
       DEFAULT_ROUTE,
       getToastConnectAccountDisplayTestState(mockAccount2.id),
-    );
-    const toastContainer = getByTestId('connect-account-toast');
-    expect(toastContainer).toBeInTheDocument();
-  });
-
-  // Probably not applicable anymore since BIP-44 account groups?
-  it('does render toastContainer if the unconnected selected account is Solana', () => {
-    mockIsMultichainAccountsFeatureEnabled.mockReturnValue(false);
-
-    const { getByTestId } = render(
-      DEFAULT_ROUTE,
-      getToastConnectAccountDisplayTestState(mockSolanaAccount.id),
     );
     const toastContainer = getByTestId('connect-account-toast');
     expect(toastContainer).toBeInTheDocument();

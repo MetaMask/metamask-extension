@@ -53,9 +53,6 @@ import {
 } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
-///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
-import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
-///: END:ONLY_INCLUDE_IF
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -83,6 +80,7 @@ import {
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import type { GlobalMenuSection } from '../global-menu/global-menu-list.types';
+import { isBeta, isFlask } from '../../../helpers/utils/build-types';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -146,12 +144,9 @@ export function useGlobalMenuSections(
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
-  let supportText = t('support');
-  let supportLink = SUPPORT_LINK || '';
-  ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
-  supportText = t('needHelpSubmitTicket');
-  supportLink = SUPPORT_REQUEST_LINK || '';
-  ///: END:ONLY_INCLUDE_IF
+  const supportText =
+    isBeta() || isFlask() ? t('needHelpSubmitTicket') : t('support');
+  const supportLink = SUPPORT_LINK || '';
 
   const handleNotificationsClick = useCallback(() => {
     const shouldShowEnableModal =

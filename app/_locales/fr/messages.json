@@ -7058,44 +7058,8 @@
   "smartAccount": {
     "message": "Compte intelligent"
   },
-  "smartAccountAccept": {
-    "message": "Utiliser un compte intelligent"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Transactions plus rapides, frais réduits"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "Gagnez du temps et de l’argent en traitant plusieurs transactions en même temps."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Vous conserverez la même adresse de compte et pourrez repasser à un compte standard à tout moment."
-  },
   "smartAccountLabel": {
     "message": "Compte intelligent"
-  },
-  "smartAccountPayToken": {
-    "message": "Payez en utilisant n’importe quel jeton, à tout moment"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Utilisez les jetons que vous possédez déjà pour couvrir les frais de réseau."
-  },
-  "smartAccountReject": {
-    "message": "Ne pas utiliser un compte intelligent"
-  },
-  "smartAccountSameAccount": {
-    "message": "Même compte, mais des fonctionnalités plus intelligentes."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Comptes intelligents"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Voulez-vous utiliser un compte intelligent ?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Votre compte sera converti en compte intelligent lors de votre prochaine transaction."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Mise à jour effectuée avec succès !"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Même adresse. Des fonctionnalités plus intelligentes."

@@ -7058,44 +7058,8 @@
   "smartAccount": {
     "message": "Έξυπνος λογαριασμός"
   },
-  "smartAccountAccept": {
-    "message": "Χρήση έξυπνου λογαριασμού"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Ταχύτερες συναλλαγές, χαμηλότερα τέλη"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "Εξοικονομήστε χρόνο και χρήματα με την ενιαία επεξεργασία των συναλλαγών."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Διατηρήστε την ίδια διεύθυνση λογαριασμού και μπορείτε να επιστρέψετε ανά πάσα στιγμή."
-  },
   "smartAccountLabel": {
     "message": "Έξυπνος λογαριασμός"
-  },
-  "smartAccountPayToken": {
-    "message": "Πληρώστε με οποιοδήποτε token, ανά πάσα στιγμή"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Χρησιμοποιήστε τα tokens που έχετε ήδη για να καλύψετε τα τέλη δικτύου."
-  },
-  "smartAccountReject": {
-    "message": "Μην χρησιμοποιείτε έξυπνο λογαριασμό"
-  },
-  "smartAccountSameAccount": {
-    "message": "Ίδιος λογαριασμός, πιο έξυπνες λειτουργίες."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Έξυπνοι λογαριασμοί"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Χρήση έξυπνου λογαριασμού;"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Ο λογαριασμός σας θα αναβαθμιστεί σε έξυπνο λογαριασμό με την επόμενη συναλλαγή."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Επιτυχία!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Ίδια διεύθυνση. Πιο έξυπνες λειτουργίες."

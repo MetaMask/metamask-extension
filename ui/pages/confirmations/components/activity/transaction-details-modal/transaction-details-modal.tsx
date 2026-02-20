@@ -34,6 +34,8 @@ export function TransactionDetailsModal({
 
   const title = useMemo(() => {
     switch (transactionMeta.type) {
+      case TransactionType.musdClaim:
+        return t('musdClaimTitle');
       case TransactionType.musdConversion:
         return t('musdConversionTitle');
       case TransactionType.perpsDeposit:

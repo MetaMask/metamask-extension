@@ -38,6 +38,7 @@ import {
 } from '../../../selectors';
 import {
   addImportedTokens,
+  importCustomAssetsBatch,
   multichainAddAssets,
   clearPendingTokens,
   setPendingTokens,
@@ -117,6 +118,11 @@ import { NetworkListItem } from '../network-list-item';
 import TokenListPlaceholder from '../../app/import-token/token-list/token-list-placeholder';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
+import { getIsAssetsUnifyStateEnabled } from '../../../selectors/assets-unify-state/feature-flags';
+import {
+  getAssetsControllerAssetPreferences,
+  isAssetIdHiddenInPreferencesMap,
+} from '../../../selectors/assets-unify-state/asset-preferences';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 const ACTION_MODES = {
@@ -146,6 +152,10 @@ export const ImportTokensModal = ({ onClose }) => {
   const currentMultichainChainId = useSelector(
     getSelectedMultichainNetworkChainId,
   );
+  const assetsUnifyStateFeatureEnabled = useSelector(
+    getIsAssetsUnifyStateEnabled,
+  );
+  const assetPreferences = useSelector(getAssetsControllerAssetPreferences);
 
   const [selectedNetwork, setSelectedNetwork] = useState(chainId);
 
@@ -300,6 +310,10 @@ export const ImportTokensModal = ({ onClose }) => {
 
   const handleAddTokens = useCallback(async () => {
     try {
+      const assetsIds = Object.keys(pendingTokens).map((tokenAddress) => {
+        return toAssetId(tokenAddress, selectedNetwork);
+      });
+
       const addedTokenValues = Object.values(pendingTokens);
 
       if (addedTokenValues.length === 0) {
@@ -360,6 +374,14 @@ export const ImportTokensModal = ({ onClose }) => {
         await dispatch(addImportedTokens(addedTokenValues, clientId));
       }
 
+      if (assetsUnifyStateFeatureEnabled) {
+        const assets = assetsIds.map((assetId) => ({
+          assetId,
+          isHidden: isAssetIdHiddenInPreferencesMap(assetPreferences, assetId),
+        }));
+        await dispatch(importCustomAssetsBatch(selectedAccount.id, assets));
+      }
+
       addedTokenValues.forEach((pendingToken) => {
         trackEvent({
           event: MetaMetricsEventName.TokenAdded,
@@ -400,6 +422,10 @@ export const ImportTokensModal = ({ onClose }) => {
     trackEvent,
     networkConfigurations,
     getAccountForChain,
+    assetsUnifyStateFeatureEnabled,
+    assetPreferences,
+    selectedAccount?.id,
+    selectedNetwork,
   ]);
 
   useEffect(() => {
