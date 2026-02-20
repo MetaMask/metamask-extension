@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '../../../../../../../components/component-library';
@@ -58,12 +61,15 @@ export const GasFeesDetails = (): JSX.Element | null => {
     return null;
   }
 
+  const isSimpleGasFee = transactionMeta.type === TransactionType.musdClaim;
+
   return (
     <>
       <EditGasFeesRow
         fiatFee={estimatedFeeFiat}
         fiatFeeWith18SignificantDigits={estimatedFeeFiatWith18SignificantDigits}
         nativeFee={estimatedFeeNative}
+        hideEditIcon={isSimpleGasFee}
       />
       {showAdvancedDetails &&
         hasLayer1GasFee &&
@@ -88,7 +94,8 @@ export const GasFeesDetails = (): JSX.Element | null => {
             />
           </>
         )}
-      {supportsEIP1559 &&
+      {!isSimpleGasFee &&
+        supportsEIP1559 &&
         !transactionMeta.selectedGasFeeToken &&
         !transactionMeta.isGasFeeSponsored && (
           <ConfirmInfoAlertRow
