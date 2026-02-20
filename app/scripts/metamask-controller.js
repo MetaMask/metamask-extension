@@ -6900,10 +6900,6 @@ export default class MetamaskController extends EventEmitter {
         uiReady = true;
         sendPendingPatches();
       },
-      getStatePatches: () => {
-        const keyedPatches = patchBuffer.flush();
-        return keyedPatches ? Object.values(keyedPatches).flat() : [];
-      },
     };
 
     // report new active controller connection

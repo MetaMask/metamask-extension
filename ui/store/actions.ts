@@ -213,10 +213,12 @@ import {
   submitRequestToBackground,
 } from './background-connection';
 import type {
+  MessagesIndexedById,
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { getStoreInstance } from './store-instance';
 
 type CustomGasSettings = {
   gas?: string;
@@ -1272,7 +1274,7 @@ export function importNewAccount(
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch, getState: () => MetaMaskReduxState) => {
     dispatch(showLoadingIndication(loadingMessage));
 
     try {
@@ -1285,7 +1287,8 @@ export function importNewAccount(
       dispatch(hideLoadingIndication());
     }
 
-    return await forceUpdateMetamaskState(dispatch);
+    await forceUpdateMetamaskState();
+    return getState().metamask;
   };
 }
 
@@ -1552,7 +1555,7 @@ export function decryptMsgInline(
   AnyAction
 > {
   log.debug('action - decryptMsgInline');
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch, getState: () => MetaMaskReduxState) => {
     log.debug(`actions calling background.decryptMessageInline`);
 
     try {
@@ -1565,8 +1568,10 @@ export function decryptMsgInline(
       throw error;
     }
 
-    const newState = await forceUpdateMetamaskState(dispatch);
-    return newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId];
+    await forceUpdateMetamaskState();
+    const { metamask } = getState();
+    return (metamask as unknown as Record<string, MessagesIndexedById>)
+      .unapprovedDecryptMsgs[decryptedMsgData.metamaskId];
   };
 }
 
@@ -4498,20 +4503,25 @@ export function setServiceWorkerKeepAlivePreference(
   };
 }
 
+/**
+ * Waits for the next push-dispatched Redux update from the background.
+ * Replaces the previous RPC-based implementation that fetched full state
+ * via `getStatePatches`. With A1's reliable push pipeline (~17ms delivery),
+ * we just wait for the next store subscription notification instead.
+ *
+ * Call sites that previously read the return value should use
+ * `getState()` from the Redux store after awaiting.
+ */
 export async function forceUpdateMetamaskState(
-  dispatch: MetaMaskReduxDispatch,
-) {
-  let pendingPatches: Patch[] | undefined;
-
-  try {
-    pendingPatches =
-      await submitRequestToBackground<Patch[]>('getStatePatches');
-  } catch (error) {
-    dispatch(displayWarning(error));
-    throw error;
-  }
-
-  return dispatch(updateMetamaskState(pendingPatches));
+  _dispatch?: MetaMaskReduxDispatch,
+): Promise<void> {
+  const store = getStoreInstance();
+  return new Promise<void>((resolve) => {
+    const unsubscribe = store.subscribe(() => {
+      unsubscribe();
+      resolve();
+    });
+  });
 }
 
 export function toggleNetworkMenu(payload?: {
@@ -5522,8 +5532,13 @@ async function resolveStandardApproval(
   ]);
   // Before closing the current window, check if any additional confirmations
   // are added as a result of this confirmation being accepted
-  const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
-  if (Object.values(pendingApprovals).length === 0) {
+  await forceUpdateMetamaskState();
+  const { metamask } = getStoreInstance().getState() as MetaMaskReduxState;
+  if (
+    Object.values(
+      (metamask as Record<string, Record<string, unknown>>).pendingApprovals,
+    ).length === 0
+  ) {
     dispatch(closeCurrentNotificationWindow());
   }
 }
@@ -5559,13 +5574,18 @@ async function resolveHardwareWalletApproval(
       requestOptions,
     ]);
 
-    const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
-
-    if (Object.values(pendingApprovals).length === 0) {
+    await forceUpdateMetamaskState();
+    const { metamask: hwState } =
+      getStoreInstance().getState() as MetaMaskReduxState;
+    if (
+      Object.values(
+        (hwState as Record<string, Record<string, unknown>>).pendingApprovals,
+      ).length === 0
+    ) {
       dispatch(closeCurrentNotificationWindow());
     }
   } catch (error) {
-    await forceUpdateMetamaskState(dispatch);
+    await forceUpdateMetamaskState();
     // Reconstruct the error to ensure it's a proper HardwareWalletError instance
     // Errors lose their class type when crossing the RPC boundary from background
     const hwError = toHardwareWalletError(error, walletType);
@@ -5593,8 +5613,14 @@ export function rejectPendingApproval(
     await submitRequestToBackground('rejectPendingApproval', [id, error]);
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being rejected
-    const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
-    if (Object.values(pendingApprovals).length === 0) {
+    await forceUpdateMetamaskState();
+    const { metamask: rejState } =
+      getStoreInstance().getState() as MetaMaskReduxState;
+    if (
+      Object.values(
+        (rejState as Record<string, Record<string, unknown>>).pendingApprovals,
+      ).length === 0
+    ) {
       dispatch(closeCurrentNotificationWindow());
     }
   };
@@ -5623,8 +5649,15 @@ export function rejectAllMessages(
           ]),
       ),
     );
-    const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
-    if (Object.values(pendingApprovals).length === 0) {
+    await forceUpdateMetamaskState();
+    const { metamask: rejAllState } =
+      getStoreInstance().getState() as MetaMaskReduxState;
+    if (
+      Object.values(
+        (rejAllState as Record<string, Record<string, unknown>>)
+          .pendingApprovals,
+      ).length === 0
+    ) {
       dispatch(closeCurrentNotificationWindow());
     }
   };
@@ -7053,9 +7086,15 @@ export function rejectAllApprovals() {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('rejectAllPendingApprovals');
 
-    const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
-
-    if (Object.values(pendingApprovals).length === 0) {
+    await forceUpdateMetamaskState();
+    const { metamask: rejAllAppState } =
+      getStoreInstance().getState() as MetaMaskReduxState;
+    if (
+      Object.values(
+        (rejAllAppState as Record<string, Record<string, unknown>>)
+          .pendingApprovals,
+      ).length === 0
+    ) {
       dispatch(closeCurrentNotificationWindow());
     }
   };
