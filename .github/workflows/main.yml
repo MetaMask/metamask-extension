@@ -728,12 +728,3 @@ jobs:
           google-service-account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           spreadsheet-id: ${{ secrets.GOOGLE_MERGE_QUEUE_SPREADSHEET_ID }}
           sheet-name: ${{ secrets.GOOGLE_MERGE_QUEUE_SHEET_NAME }}
-
-  publish-release:
-    name: Publish release
-    if: ${{ github.event_name == 'push' && github.ref_name == 'stable' && needs.get-requirements.outputs.needs-releases == 'true' }}
-    needs:
-      - get-requirements
-      - all-jobs-pass
-    uses: ./.github/workflows/publish-release.yml
-    secrets: inherit
