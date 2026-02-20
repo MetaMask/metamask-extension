@@ -2882,6 +2882,7 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
 
+        // Enable startUISync so subscriptions happen on connection setup
         metamaskController.startUISync = true;
 
         const mockUnsubscribers = [];
@@ -2913,6 +2914,7 @@ describe('MetaMaskController', () => {
 
         await onStreamEndPromise;
 
+        // subscribeAll was called, creating mock unsubscribers
         expect(mockUnsubscribers).toHaveLength(3);
         mockUnsubscribers.forEach((unsub) =>
           expect(unsub).not.toHaveBeenCalled(),
@@ -2921,12 +2923,13 @@ describe('MetaMaskController', () => {
         testStream.end();
         await onFinishedCallbackPromise;
 
+        // All unsubscribers are called on stream close
         mockUnsubscribers.forEach((unsub) =>
           expect(unsub).toHaveBeenCalledTimes(1),
         );
       });
 
-      it('writes flat patches to outStream when a controller fires stateChange', async () => {
+      it('writes keyed patches to outStream when a controller fires stateChange', async () => {
         metamaskController.startUISync = true;
 
         let capturedHandler;
@@ -2962,9 +2965,7 @@ describe('MetaMaskController', () => {
           (w) => w.jsonrpc === '2.0' && w.method === 'sendUpdate',
         );
         expect(sendUpdateMsg).toBeDefined();
-        // Option F: flat Patch[] (not keyed Record<string, Patch[]>)
-        expect(Array.isArray(sendUpdateMsg.params[0])).toBe(true);
-        expect(sendUpdateMsg.params[0]).toEqual(mockPatches);
+        expect(sendUpdateMsg.params[0]).toHaveProperty('TokensController');
 
         outStream.destroy();
       });
@@ -3015,9 +3016,12 @@ describe('MetaMaskController', () => {
           .slice(writesBeforePatches)
           .filter((w) => w.jsonrpc === '2.0' && w.method === 'sendUpdate');
         expect(sendUpdateMsgs).toHaveLength(1);
-        // Option F: flat Patch[] with patches from both controllers
-        expect(Array.isArray(sendUpdateMsgs[0].params[0])).toBe(true);
-        expect(sendUpdateMsgs[0].params[0]).toHaveLength(2);
+        expect(sendUpdateMsgs[0].params[0]).toHaveProperty(
+          'TokensController',
+        );
+        expect(sendUpdateMsgs[0].params[0]).toHaveProperty(
+          'NetworkController',
+        );
 
         outStream.destroy();
       });
@@ -3042,6 +3046,7 @@ describe('MetaMaskController', () => {
         metamaskController.setupControllerConnection(outStream);
         await flushPromises();
 
+        // Fire stateChange before startSendingPatches
         capturedHandler(
           'TokensController',
           {},
@@ -3054,6 +3059,7 @@ describe('MetaMaskController', () => {
         );
         expect(sendUpdateBeforeReady).toHaveLength(0);
 
+        // Now trigger startSendingPatches — buffered patches should flush
         outStream.emit('data', {
           jsonrpc: '2.0',
           id: 1,
@@ -3066,6 +3072,9 @@ describe('MetaMaskController', () => {
           (w) => w.jsonrpc === '2.0' && w.method === 'sendUpdate',
         );
         expect(sendUpdateAfterReady).toHaveLength(1);
+        expect(sendUpdateAfterReady[0].params[0]).toHaveProperty(
+          'TokensController',
+        );
 
         outStream.destroy();
       });
@@ -3155,7 +3164,9 @@ describe('MetaMaskController', () => {
       it('adds and sets forgottenPassword to config data to true', () => {
         metamaskController.markPasswordForgotten(noop);
         const state = metamaskController.getState();
-        expect(state.forgottenPassword).toStrictEqual(true);
+        expect(state.PreferencesController.forgottenPassword).toStrictEqual(
+          true,
+        );
       });
     });
 
@@ -3163,18 +3174,20 @@ describe('MetaMaskController', () => {
       it('adds and sets forgottenPassword to config data to false', () => {
         metamaskController.unMarkPasswordForgotten(noop);
         const state = metamaskController.getState();
-        expect(state.forgottenPassword).toStrictEqual(false);
+        expect(state.PreferencesController.forgottenPassword).toStrictEqual(
+          false,
+        );
       });
     });
 
     describe('#getState', () => {
-      it('returns flat state with controller properties at top level', () => {
+      it('returns keyed state with controller names as top-level keys', () => {
         const state = metamaskController.getState();
 
         expect(state).toHaveProperty('isInitialized');
-        // Flat state: controller properties merged at top level
-        expect(state).toHaveProperty('forgottenPassword');
-        expect(state).toHaveProperty('selectedNetworkClientId');
+        expect(state).toHaveProperty('PreferencesController');
+        expect(state).toHaveProperty('NetworkController');
+        expect(state).toHaveProperty('KeyringController');
       });
 
       it('returns isInitialized as false when no vault exists', () => {
@@ -3183,11 +3196,19 @@ describe('MetaMaskController', () => {
         expect(state.isInitialized).toBe(false);
       });
 
-      it('applies sanitizeUIState to the flat state', () => {
+      it('nests controller state under controller keys instead of flattening', () => {
         const state = metamaskController.getState();
 
-        // sanitizeUIState removes vault from the returned state
-        expect(state).not.toHaveProperty('vault');
+        expect(state.PreferencesController).toStrictEqual(
+          expect.objectContaining({
+            forgottenPassword: expect.any(Boolean),
+          }),
+        );
+        expect(state.NetworkController).toStrictEqual(
+          expect.objectContaining({
+            selectedNetworkClientId: expect.any(String),
+          }),
+        );
       });
     });
 
