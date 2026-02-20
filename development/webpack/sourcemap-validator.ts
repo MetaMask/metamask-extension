@@ -13,6 +13,10 @@
 
 import { access, readdir, readFile, stat } from 'node:fs/promises';
 import { join, relative } from 'node:path';
+import type {
+  BasicSourceMapConsumer,
+  IndexedSourceMapConsumer,
+} from 'source-map';
 import { SourceMapConsumer } from 'source-map';
 import { codeFrameColumns } from '@babel/code-frame';
 
@@ -193,8 +197,9 @@ export async function validateBundle({
     return false;
   }
 
-  const consumer = await new SourceMapConsumer(rawSourceMap);
+  let consumer: BasicSourceMapConsumer | IndexedSourceMapConsumer | null = null;
   try {
+    consumer = await new SourceMapConsumer(rawSourceMap);
     if (!consumer.hasContentsOfAllSources()) {
       console.warn(
         'SourcemapValidator (webpack) - missing content of some sources...',
@@ -278,7 +283,7 @@ export async function validateBundle({
     );
     return false;
   } finally {
-    consumer.destroy();
+    consumer?.destroy();
   }
 }
 
