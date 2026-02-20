@@ -9,7 +9,10 @@ import {
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/perps';
 import type { MetaMaskReduxState } from '../../store/store';
-import { submitRequestToBackground } from '../../store/background-connection';
+import {
+  submitRequestToBackground,
+  generateActionId,
+} from '../../store/background-connection';
 import { getReduxStorePromise } from '../..';
 
 const REMOTE_FEATURE_FLAG_GET_STATE = 'RemoteFeatureFlagController:getState';
@@ -21,6 +24,75 @@ type RemoteFeatureFlagState = {
   remoteFeatureFlags: Record<string, unknown>;
   cacheTimestamp: number;
 };
+
+type EvmRpcEndpoint = {
+  networkClientId?: string;
+};
+
+type EvmNetworkConfiguration = {
+  defaultRpcEndpointIndex?: number;
+  rpcEndpoints?: EvmRpcEndpoint[];
+};
+
+export class PerpsControllerInitializationCancelledError extends Error {
+  constructor() {
+    super('Perps controller initialization was superseded');
+    this.name = 'PerpsControllerInitializationCancelledError';
+  }
+}
+
+export function isPerpsControllerInitializationCancelledError(
+  error: unknown,
+): error is PerpsControllerInitializationCancelledError {
+  return (
+    error instanceof PerpsControllerInitializationCancelledError ||
+    (error instanceof Error &&
+      error.name === 'PerpsControllerInitializationCancelledError')
+  );
+}
+
+function getNetworkClientIdForChain(
+  store: Store<MetaMaskReduxState> | null,
+  chainId: string,
+): string | undefined {
+  if (!store || !chainId) {
+    return undefined;
+  }
+
+  const networkConfigurationsByChainId = store.getState().metamask
+    ?.networkConfigurationsByChainId as
+    | Record<string, EvmNetworkConfiguration>
+    | undefined;
+
+  if (!networkConfigurationsByChainId) {
+    return undefined;
+  }
+
+  const normalizedChainId = chainId.toLowerCase();
+
+  const networkConfiguration =
+    networkConfigurationsByChainId[chainId] ??
+    networkConfigurationsByChainId[normalizedChainId] ??
+    Object.entries(networkConfigurationsByChainId).find(
+      ([candidateChainId]) =>
+        candidateChainId.toLowerCase() === normalizedChainId,
+    )?.[1];
+
+  if (!networkConfiguration?.rpcEndpoints?.length) {
+    return undefined;
+  }
+
+  const defaultRpcEndpointIndex = Number.isInteger(
+    networkConfiguration.defaultRpcEndpointIndex,
+  )
+    ? Number(networkConfiguration.defaultRpcEndpointIndex)
+    : 0;
+
+  return (
+    networkConfiguration.rpcEndpoints[defaultRpcEndpointIndex]
+      ?.networkClientId ?? networkConfiguration.rpcEndpoints[0]?.networkClientId
+  );
+}
 
 function getRemoteFeatureFlagState(
   store: Store<MetaMaskReduxState>,
@@ -53,6 +125,16 @@ let currentAddress: string | null = null;
  * Promise to track initialization to prevent race conditions.
  */
 let initPromise: Promise<PerpsController> | null = null;
+
+/**
+ * Address currently being initialized by the in-flight initPromise.
+ */
+let initializingAddress: string | null = null;
+
+/**
+ * Monotonic init generation used to invalidate stale async initializations.
+ */
+let initGeneration = 0;
 
 /**
  * Create the RemoteFeatureFlagController-namespaced messenger and (when store is
@@ -134,6 +216,92 @@ export function getFallbackBlockedRegions(): string[] {
     .filter(Boolean);
 }
 
+function startControllerInitialization(
+  selectedAddress: string,
+  store?: Store<MetaMaskReduxState>,
+): Promise<PerpsController> {
+  initGeneration += 1;
+  const generation = initGeneration;
+  initializingAddress = selectedAddress;
+
+  const task = (async () => {
+    let storeToUse = store;
+    if (!storeToUse) {
+      try {
+        storeToUse = await getReduxStorePromise();
+      } catch {
+        // Store not ready (e.g. in tests)
+      }
+    }
+
+    const messenger = createPerpsMessenger(storeToUse ?? null);
+    const infrastructure = createPerpsInfrastructure({
+      selectedAddress,
+      signTypedMessage: (msgParams) =>
+        submitRequestToBackground<string>('perpsSignTypedData', [msgParams]),
+      findNetworkClientIdForChain: (chainId) =>
+        getNetworkClientIdForChain(storeToUse ?? null, chainId),
+      submitRequestToBackground,
+      generateActionId,
+    });
+    const fallbackBlockedRegions = getFallbackBlockedRegions();
+
+    const controller = new PerpsController({
+      messenger,
+      state: getDefaultPerpsControllerState(),
+      infrastructure,
+      clientConfig: {
+        fallbackHip3Enabled: true,
+        fallbackHip3AllowlistMarkets: [], // Empty = allow all HIP-3 markets
+        fallbackBlockedRegions,
+      },
+    });
+
+    // Initialize the controller (connects to Hyperliquid)
+    await controller.init();
+
+    const isStale =
+      generation !== initGeneration || initializingAddress !== selectedAddress;
+
+    if (isStale) {
+      await controller.disconnect();
+
+      if (initPromise) {
+        return initPromise;
+      }
+
+      if (controllerInstance) {
+        return controllerInstance;
+      }
+
+      throw new PerpsControllerInitializationCancelledError();
+    }
+
+    controllerInstance = controller;
+    currentAddress = selectedAddress;
+    return controller;
+  })();
+
+  initPromise = task;
+
+  task.then(
+    () => {
+      if (initPromise === task) {
+        initPromise = null;
+        initializingAddress = null;
+      }
+    },
+    () => {
+      if (initPromise === task) {
+        initPromise = null;
+        initializingAddress = null;
+      }
+    },
+  );
+
+  return task;
+}
+
 /**
  * Get the PerpsController instance.
  * Returns a singleton PerpsController that is initialized on first access.
@@ -169,7 +337,7 @@ export async function getPerpsController(
     }
     await controllerInstance.disconnect();
     controllerInstance = null;
-    initPromise = null;
+    currentAddress = null;
   }
 
   // Return existing controller if address hasn't changed
@@ -177,61 +345,33 @@ export async function getPerpsController(
     return controllerInstance;
   }
 
-  // Prevent race conditions during initialization
-  if (!initPromise) {
-    initPromise = (async () => {
-      let storeToUse = store;
-      if (!storeToUse) {
-        try {
-          storeToUse = await getReduxStorePromise();
-        } catch {
-          // Store not ready (e.g. in tests)
-        }
-      }
-      const messenger = createPerpsMessenger(storeToUse ?? null);
-      const infrastructure = createPerpsInfrastructure({
-        selectedAddress,
-        signTypedMessage: (msgParams) =>
-          submitRequestToBackground<string>('perpsSignTypedData', [msgParams]),
-      });
-      const fallbackBlockedRegions = getFallbackBlockedRegions();
-
-      const controller = new PerpsController({
-        messenger,
-        state: getDefaultPerpsControllerState(),
-        infrastructure,
-        clientConfig: {
-          fallbackHip3Enabled: true,
-          fallbackHip3AllowlistMarkets: [], // Empty = allow all HIP-3 markets
-          fallbackBlockedRegions,
-        },
-      });
-
-      await controller.init();
-
-      controllerInstance = controller;
-      currentAddress = selectedAddress;
-      return controller;
-    })();
+  // Reuse matching in-flight initialization.
+  if (initPromise && initializingAddress === selectedAddress) {
+    return initPromise;
   }
 
-  return initPromise;
+  // Start or supersede initialization when there is no in-flight init for the
+  // requested address.
+  return startControllerInitialization(selectedAddress, store);
 }
 
 /**
  * Reset the controller instance (useful for testing or account switch).
  */
 export async function resetPerpsController(): Promise<void> {
+  initGeneration += 1;
   if (unsubscribeRemoteFeatureFlags) {
     unsubscribeRemoteFeatureFlags();
     unsubscribeRemoteFeatureFlags = null;
   }
   if (controllerInstance) {
     await controllerInstance.disconnect();
-    controllerInstance = null;
-    initPromise = null;
-    currentAddress = null;
   }
+
+  controllerInstance = null;
+  initPromise = null;
+  currentAddress = null;
+  initializingAddress = null;
 }
 
 /**

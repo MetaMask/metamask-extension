@@ -64,12 +64,16 @@ jest.mock('loglevel', () => ({
     error: jest.fn(),
     debug: jest.fn(),
     trace: jest.fn(),
+    setLevel: jest.fn(),
+    setDefaultLevel: jest.fn(),
   },
   info: jest.fn(),
   warn: jest.fn(),
   error: jest.fn(),
   debug: jest.fn(),
   trace: jest.fn(),
+  setLevel: jest.fn(),
+  setDefaultLevel: jest.fn(),
 }));
 
 // Mock the PerpsControllerProvider to render children directly
@@ -78,8 +82,12 @@ jest.mock('../../providers/perps', () => ({
     children,
 }));
 
-jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
+jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
+  usePerpsOrderForm: jest.fn(),
+  useUserHistory: jest.fn(),
+  usePerpsTransactionHistory: jest.fn(),
+  usePerpsMarginCalculations: jest.fn(),
 }));
 
 jest.mock('../../providers/perps/PerpsStreamManager', () => ({

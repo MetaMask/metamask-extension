@@ -8,7 +8,10 @@ import React, {
 import { useSelector, useStore } from 'react-redux';
 import type { PerpsController } from '@metamask/perps-controller';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
-import { getPerpsController } from './getPerpsController';
+import {
+  getPerpsController,
+  isPerpsControllerInitializationCancelledError,
+} from './getPerpsController';
 import { getPerpsStreamManager } from './PerpsStreamManager';
 
 /**
@@ -82,6 +85,10 @@ export function PerpsControllerProvider({
       })
       .catch((err) => {
         if (isMounted) {
+          if (isPerpsControllerInitializationCancelledError(err)) {
+            return;
+          }
+
           console.error(
             '[PerpsControllerProvider] Initialization failed:',
             err,
@@ -93,7 +100,7 @@ export function PerpsControllerProvider({
     return () => {
       isMounted = false;
     };
-  }, [providedController, selectedAddress]);
+  }, [providedController, selectedAddress, store]);
 
   // Show error state
   if (error) {
@@ -186,6 +193,10 @@ export function usePerpsController(): PerpsController {
       })
       .catch((err) => {
         if (isMounted) {
+          if (isPerpsControllerInitializationCancelledError(err)) {
+            return;
+          }
+
           console.error('[usePerpsController] Init failed:', err);
         }
       });

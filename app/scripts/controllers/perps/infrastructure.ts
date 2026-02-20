@@ -30,6 +30,11 @@ import type {
   PerpsTraceValue,
 } from '@metamask/perps-controller';
 
+type SubmitRequestToBackground = <Result>(
+  method: string,
+  args?: unknown[],
+) => Promise<Result>;
+
 /**
  * Options for creating perps infrastructure.
  */
@@ -41,6 +46,12 @@ export type CreatePerpsInfrastructureOptions = {
     msgParams: { from: string; data: unknown },
     version: unknown,
   ) => Promise<string>;
+  /** Synchronous resolver for mapping chain ID to network client ID */
+  findNetworkClientIdForChain: (chainId: string) => string | undefined;
+  /** Function to submit RPC-style requests to the background process */
+  submitRequestToBackground: SubmitRequestToBackground;
+  /** Function to create a unique action id for background actions */
+  generateActionId: () => number;
 };
 
 /**
@@ -153,7 +164,13 @@ function createStreamManager(): PerpsStreamManager {
 function createControllerAccess(
   options: CreatePerpsInfrastructureOptions,
 ): PerpsControllerAccess {
-  const { selectedAddress, signTypedMessage } = options;
+  const {
+    selectedAddress,
+    signTypedMessage,
+    findNetworkClientIdForChain,
+    submitRequestToBackground,
+    generateActionId,
+  } = options;
   return {
     accounts: {
       getSelectedEvmAccount: () => {
@@ -175,19 +192,49 @@ function createControllerAccess(
         // Return Arbitrum mainnet as default for Hyperliquid
         return '0xa4b1' as `0x${string}`;
       },
-      findNetworkClientIdForChain: (_chainId) => {
-        // TODO: Wire to NetworkController
-        return undefined;
-      },
+      findNetworkClientIdForChain: (chainId) =>
+        findNetworkClientIdForChain(chainId),
       getSelectedNetworkClientId: () => {
         // TODO: Wire to NetworkController
         return 'mainnet';
       },
     },
     transaction: {
-      submit: async (_txParams, _options) => {
-        // TODO: Wire to TransactionController for deposit/withdraw
-        throw new Error('Transaction submission not implemented in PoC');
+      submit: async (txParams, txOptions) => {
+        const {
+          networkClientId: rawNetworkClientId,
+          origin,
+          type,
+          gasFeeToken,
+        } = txOptions;
+
+        const networkClientId = await Promise.resolve(rawNetworkClientId);
+
+        if (!networkClientId) {
+          throw new Error('No network client found for Perps transaction');
+        }
+
+        // Intentionally do not forward skipInitialGasEstimate.
+        // Confirmations rely on initial gas estimation for pay validation state.
+        const addTransactionOptions = {
+          networkClientId,
+          origin: origin ?? 'metamask',
+          actionId: generateActionId(),
+          ...(type === undefined ? {} : { type }),
+          ...(gasFeeToken === undefined ? {} : { gasFeeToken }),
+        };
+
+        const transactionMeta = await submitRequestToBackground<{
+          id: string;
+          hash?: string;
+        }>('addTransaction', [txParams, addTransactionOptions]);
+
+        return {
+          // PoC behavior: creation happens immediately so confirmations route can render.
+          // Full transaction lifecycle parity requires background-controller event wiring.
+          result: Promise.resolve(transactionMeta.hash ?? ''),
+          transactionMeta,
+        };
       },
     },
     rewards: {

@@ -30,7 +30,6 @@ import type {
   Order,
   AccountState,
   PerpsMarketData,
-  PerpsController,
 } from '@metamask/perps-controller';
 import { PerpsDataChannel } from './PerpsDataChannel';
 import { CandleStreamChannel } from './CandleStreamChannel';
@@ -38,7 +37,7 @@ import {
   getPerpsController,
   getPerpsControllerCurrentAddress,
   isPerpsControllerInitialized,
-  getPerpsControllerInstance,
+  isPerpsControllerInitializationCancelledError,
 } from './getPerpsController';
 
 // Empty array constants for stable references
@@ -248,12 +247,18 @@ class PerpsStreamManager {
     const currentControllerAddress = getPerpsControllerCurrentAddress();
 
     // If same address and already initialized, nothing to do
-    if (currentControllerAddress === address && isPerpsControllerInitialized(address)) {
+    if (
+      currentControllerAddress === address &&
+      isPerpsControllerInitialized(address)
+    ) {
       return Promise.resolve();
     }
 
     // Address changed - clear caches and reinitialize
-    if (currentControllerAddress !== null && currentControllerAddress !== address) {
+    if (
+      currentControllerAddress !== null &&
+      currentControllerAddress !== address
+    ) {
       this.clearAllCaches();
       this.cleanupPrewarm();
     }
@@ -338,8 +343,11 @@ class PerpsStreamManager {
 
       // Wire candle stream channel to controller
       this.candles.setController(controller);
-
     } catch (error) {
+      if (isPerpsControllerInitializationCancelledError(error)) {
+        throw error;
+      }
+
       console.error('[PerpsStreamManager] Initialization failed:', error);
       throw error;
     }

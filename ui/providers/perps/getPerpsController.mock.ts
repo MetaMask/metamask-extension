@@ -13,8 +13,6 @@
  */
 
 import type { Store } from 'redux';
-import type { MetaMaskReduxState } from '../../store/store';
-import { mockPositions } from '../../components/app/perps/mocks';
 import type { OrderParams } from '@metamask/perps-controller';
 import {
   AccountState,
@@ -23,6 +21,25 @@ import {
   PerpsMarketData,
   Position,
 } from '@metamask/perps-controller';
+import type { MetaMaskReduxState } from '../../store/store';
+import { mockPositions } from '../../components/app/perps/mocks';
+
+export class PerpsControllerInitializationCancelledError extends Error {
+  constructor() {
+    super('Perps controller initialization was superseded');
+    this.name = 'PerpsControllerInitializationCancelledError';
+  }
+}
+
+export function isPerpsControllerInitializationCancelledError(
+  error: unknown,
+): error is PerpsControllerInitializationCancelledError {
+  return (
+    error instanceof PerpsControllerInitializationCancelledError ||
+    (error instanceof Error &&
+      error.name === 'PerpsControllerInitializationCancelledError')
+  );
+}
 
 /**
  * Mock PerpsController class

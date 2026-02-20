@@ -25,7 +25,9 @@ import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
+  PERPS_HOME_ROUTE,
 } from '../../helpers/constants/routes';
+import { usePerpsDepositTrigger } from '../confirmations/hooks/perps/usePerpsDepositTrigger';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -59,6 +61,10 @@ const PerpsHomePage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+  const { trigger: triggerPerpsDeposit, isLoading: isPerpsDepositLoading } =
+    usePerpsDepositTrigger({
+      returnTo: PERPS_HOME_ROUTE,
+    });
 
   // Use stream hooks for real-time data
   const { positions: allPositions, isInitialLoading: positionsLoading } =
@@ -177,9 +183,8 @@ const PerpsHomePage: React.FC = () => {
           <PerpsBalanceActionsSkeleton />
         ) : (
           <PerpsMarketBalanceActions
-            onAddFunds={() => {
-              // TODO: Navigate to add funds flow
-            }}
+            onAddFunds={triggerPerpsDeposit}
+            isAddFundsLoading={isPerpsDepositLoading}
             onWithdraw={() => {
               // TODO: Navigate to withdraw flow
             }}
