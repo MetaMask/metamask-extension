@@ -37,13 +37,27 @@ jobs:
           # Required OAuth scope for the Chrome Web Store API
           access_token_scopes: 'https://www.googleapis.com/auth/chromewebstore'
 
-      # Step 3: Package the extension into a zip file
-      # Note: You'll need to adjust 'extension' to whatever directory 
-      # your build process actually outputs (e.g., 'dist', 'build')
+      # Step 3: Set up Node.js and build the extension
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
       - name: Build Extension
         run: |
-          cd extension
-          zip -r ../extension.zip .
+          # Build the MetaMask extension
+          yarn dist
+          # The Chrome build output is located in dist/chrome
+          cd dist/chrome
+          # Zip the contents into extension.zip in the repository root
+          zip -r ../../extension.zip .
 
       # Step 4: Upload the zip file to create a NEW draft extension
       # This uses the Chrome Web Store API v1.1 endpoint for inserting new items.
