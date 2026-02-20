@@ -25,6 +25,7 @@ import {
   getOrderedConnectedAccountsForActiveTab,
   getPinnedAccountsList,
   getHiddenAccountsList,
+  getPreferences,
 } from '../selectors';
 import { MergedInternalAccount } from '../selectors.types';
 import {
@@ -33,8 +34,10 @@ import {
   getSelectedInternalAccount,
 } from '../accounts';
 
+import type { MetaMaskReduxState } from '../../store/store';
 import { getMultichainNetworkConfigurationsByChainId } from '../multichain/networks';
 import { isTestNetwork } from '../../helpers/utils/network-helper';
+import { DefaultAddressScope } from '../../../shared/constants/default-address';
 import {
   AccountGroupWithInternalAccounts,
   AccountListStats,
@@ -779,6 +782,41 @@ export const getIconSeedAddressByAccountGroupId = createDeepEqualSelector(
     return accounts[0].address;
   },
 );
+
+/**
+ * Get the address and scopes for the account group that matches the user's default address scope
+ * (e.g. eip155, bip122). Used when showing the "default address" in the UI.
+ *
+ * @param state
+ * @returns Object with address (or null if none) and scopes (list of matching scope IDs).
+ */
+export const getDefaultScopeAndAddressByAccountGroupId =
+  createDeepEqualSelector(
+    [
+      getInternalAccountListSpreadByScopesByGroupId,
+      (state: MetaMaskReduxState) => getPreferences(state).defaultAddressScope,
+    ],
+    (
+      spreadList: {
+        account: InternalAccount;
+        scope: CaipChainId;
+        networkName: string;
+      }[],
+      defaultScope: DefaultAddressScope,
+    ): { defaultAddress: string | null; defaultScopes: CaipChainId[] } => {
+      const matching = spreadList.filter((x) =>
+        String(x.scope).startsWith(defaultScope),
+      );
+      if (matching.length === 0) {
+        return { defaultAddress: null, defaultScopes: [] };
+      }
+      const { address } = matching[0].account;
+      const defaultScopes = matching
+        .filter((x) => x.account.address === address)
+        .map((x) => x.scope);
+      return { defaultAddress: address, defaultScopes };
+    },
+  );
 
 /**
  * Get the seed addresses for multiple account groups at once.
