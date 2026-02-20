@@ -7058,44 +7058,8 @@
   "smartAccount": {
     "message": "Tài khoản thông minh"
   },
-  "smartAccountAccept": {
-    "message": "Sử dụng tài khoản thông minh"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Giao dịch nhanh hơn, phí thấp hơn"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "Tiết kiệm thời gian và tiền bạc bằng cách xử lý nhiều giao dịch cùng lúc."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Giữ nguyên địa chỉ tài khoản và bạn có thể chuyển đổi lại bất kỳ lúc nào."
-  },
   "smartAccountLabel": {
     "message": "Tài khoản thông minh"
-  },
-  "smartAccountPayToken": {
-    "message": "Thanh toán bằng bất kỳ token nào, bất kỳ lúc nào"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Sử dụng token bạn đang có để thanh toán phí mạng."
-  },
-  "smartAccountReject": {
-    "message": "Không sử dụng tài khoản thông minh"
-  },
-  "smartAccountSameAccount": {
-    "message": "Tài khoản giữ nguyên, tính năng thông minh hơn."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Tài khoản thông minh"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Sử dụng tài khoản thông minh?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Tài khoản của bạn sẽ được cập nhật thành tài khoản thông minh trong giao dịch tiếp theo."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Thành công!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Cùng địa chỉ. Tính năng thông minh hơn."

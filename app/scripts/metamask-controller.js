@@ -648,9 +648,6 @@ export default class MetamaskController extends EventEmitter {
       // because TokenRatesController depends on NetworkEnablementController:getState during construction.
       MultichainNetworkController: MultichainNetworkControllerInit,
       NetworkEnablementController: NetworkEnablementControllerInit,
-      ...(shouldInitAssetsController
-        ? { AssetsController: AssetsControllerInit }
-        : {}),
       TokenRatesController: TokenRatesControllerInit,
       // Must be init before `AccountTreeController` to migrate existing pinned and hidden state to the new account tree controller.
       AccountOrderController: AccountOrderControllerInit,
@@ -692,6 +689,9 @@ export default class MetamaskController extends EventEmitter {
       RewardsController: RewardsControllerInit,
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
+      ...(shouldInitAssetsController
+        ? { AssetsController: AssetsControllerInit }
+        : {}),
     };
 
     const {

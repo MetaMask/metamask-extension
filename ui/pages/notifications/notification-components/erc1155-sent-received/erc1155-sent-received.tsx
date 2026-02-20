@@ -10,7 +10,8 @@ import { shortenAddress } from '../../../../helpers/utils/util';
 import {
   createTextItems,
   formatIsoDateString,
-  getNetworkDetailsByChainId,
+  getNativeCurrencyLogoByChainId,
+  getNetworkDetailsFromNotifPayload,
 } from '../../../../helpers/utils/notification.util';
 import {
   TextVariant,
@@ -110,15 +111,19 @@ export const components: NotificationComponent<ERC1155Notification> = {
     body: {
       type: NotificationComponentType.OnChainBody,
       Image: ({ notification }) => {
-        const { nativeCurrencyLogo, nativeCurrencyName } =
-          getNetworkDetailsByChainId(notification.payload.chain_id);
+        const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
+          notification.payload.chain_id,
+        );
+        const { networkName } = getNetworkDetailsFromNotifPayload(
+          notification.payload.network,
+        );
         return (
           <NotificationDetailNft
             networkSrc={nativeCurrencyLogo}
             tokenId={notification.payload.data.nft?.token_id ?? ''}
             tokenName={notification.payload.data.nft?.name ?? ''}
             tokenSrc={notification.payload.data.nft?.image ?? ''}
-            networkName={nativeCurrencyName}
+            networkName={networkName}
           />
         );
       },
@@ -150,7 +155,7 @@ export const components: NotificationComponent<ERC1155Notification> = {
         />
       ),
       Asset: ({ notification }) => {
-        const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
+        const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
           notification.payload.chain_id,
         );
         return (
@@ -165,8 +170,12 @@ export const components: NotificationComponent<ERC1155Notification> = {
         );
       },
       Network: ({ notification }) => {
-        const { nativeCurrencyLogo, nativeCurrencyName } =
-          getNetworkDetailsByChainId(notification.payload.chain_id);
+        const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
+          notification.payload.chain_id,
+        );
+        const { networkName } = getNetworkDetailsFromNotifPayload(
+          notification.payload.network,
+        );
 
         return (
           <NotificationDetailAsset
@@ -174,7 +183,7 @@ export const components: NotificationComponent<ERC1155Notification> = {
               src: nativeCurrencyLogo,
             }}
             label={t('notificationDetailNetwork') ?? ''}
-            detail={nativeCurrencyName}
+            detail={networkName}
           />
         );
       },
