@@ -27,9 +27,9 @@ import { Box, SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
-import { TokenWithBalance } from '../assets/types';
 import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
+import { TokenWithBalance } from 'ui/components/multichain/asset-picker-amount';
 
 export const AggregatedPercentageOverviewCrossChains = ({
   trailingChild,

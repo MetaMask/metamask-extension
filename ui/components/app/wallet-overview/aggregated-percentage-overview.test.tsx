@@ -58,7 +58,7 @@ const mockGetSelectedAccount = jest.mocked(getSelectedAccount);
 const mockGetShouldHideZeroBalanceTokens = jest.mocked(
   getShouldHideZeroBalanceTokens,
 );
-const mockGetTokensMarketData = getTokensMarketData as jest.Mock;
+const mockGetTokensMarketData = getTokensMarketData as unknown as jest.Mock;
 const mockGetCurrentChainId = jest.mocked(getCurrentChainId);
 const mockGetHistoricalMultichainAggregatedBalance = jest.mocked(
   getHistoricalMultichainAggregatedBalance,
