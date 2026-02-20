@@ -6,7 +6,7 @@
 import { ReactFragment } from 'react';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
-import { capitalize, isEqual } from 'lodash';
+import { capitalize } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
@@ -49,7 +49,7 @@ import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
-import { Immer, Patch } from 'immer';
+import type { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
@@ -104,7 +104,6 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
-  getMetaMaskAccounts,
   hasTransactionPendingApprovals,
   getApprovalFlows,
   getCurrentNetworkTransactions,
@@ -1274,7 +1273,10 @@ export function importNewAccount(
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch, getState: () => MetaMaskReduxState) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     dispatch(showLoadingIndication(loadingMessage));
 
     try {
@@ -1555,7 +1557,10 @@ export function decryptMsgInline(
   AnyAction
 > {
   log.debug('action - decryptMsgInline');
-  return async (dispatch: MetaMaskReduxDispatch, getState: () => MetaMaskReduxState) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     log.debug(`actions calling background.decryptMessageInline`);
 
     try {
@@ -2512,104 +2517,18 @@ export function unlockSucceeded(message?: string) {
   };
 }
 
+/**
+ * No-op in Pure A2 — controller state is delivered via
+ * {@link StateSubscriptionService} and consumed by `useControllerState`.
+ * Side-effect dispatches (ACCOUNT_CHANGED, SELECTED_ADDRESS_CHANGED, etc.)
+ * will move to SSS listeners in a future phase.
+ * @param _patches
+ */
 export function updateMetamaskState(
-  patches: Patch[],
+  _patches: Patch[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch, getState) => {
-    const state = getState();
-    const providerConfig = getProviderConfig(state);
-    const { metamask: currentState } = state;
-
-    if (!patches?.length) {
-      return currentState;
-    }
-
-    const newState = applyPatches(currentState, patches);
-    const { currentLocale } = currentState;
-    const currentInternalAccount = getSelectedInternalAccount(state);
-    const selectedAddress = currentInternalAccount?.address;
-    const { currentLocale: newLocale } = newState;
-    const newProviderConfig = getProviderConfig({ metamask: newState });
-    const newInternalAccount = getSelectedInternalAccount({
-      metamask: newState,
-    });
-    const newSelectedAddress = newInternalAccount?.address;
-
-    if (currentLocale && newLocale && currentLocale !== newLocale) {
-      dispatch(updateCurrentLocale(newLocale));
-    }
-
-    if (selectedAddress !== newSelectedAddress) {
-      dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED });
-    }
-
-    const newAddressBook =
-      newState.addressBook?.[newProviderConfig?.chainId] ?? {};
-    const oldAddressBook =
-      currentState.addressBook?.[providerConfig?.chainId] ?? {};
-
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const newAccounts: { [address: string]: Record<string, any> } =
-      getMetaMaskAccounts({ metamask: newState });
-
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const oldAccounts: { [address: string]: Record<string, any> } =
-      getMetaMaskAccounts({ metamask: currentState });
-    const newSelectedAccount = newAccounts[newSelectedAddress];
-    const oldSelectedAccount = newAccounts[selectedAddress];
-    // dispatch an ACCOUNT_CHANGED for any account whose balance or other
-    // properties changed in this update
-    Object.entries(oldAccounts).forEach(([address, oldAccount]) => {
-      if (!isEqual(oldAccount, newAccounts[address])) {
-        dispatch({
-          type: actionConstants.ACCOUNT_CHANGED,
-          payload: { account: newAccounts[address] },
-        });
-      }
-    });
-
-    // Also emit an event for the selected account changing, either due to a
-    // property update or if the entire account changes.
-    if (isEqual(oldSelectedAccount, newSelectedAccount) === false) {
-      dispatch({
-        type: actionConstants.SELECTED_ACCOUNT_CHANGED,
-        payload: { account: newSelectedAccount },
-      });
-    }
-    // We need to keep track of changing address book entries
-    if (isEqual(oldAddressBook, newAddressBook) === false) {
-      dispatch({
-        type: actionConstants.ADDRESS_BOOK_UPDATED,
-        payload: { addressBook: newAddressBook },
-      });
-    }
-
-    // track when gasFeeEstimates change
-    if (
-      isEqual(currentState.gasFeeEstimates, newState.gasFeeEstimates) === false
-    ) {
-      dispatch({
-        type: actionConstants.GAS_FEE_ESTIMATES_UPDATED,
-        payload: {
-          gasFeeEstimates: newState.gasFeeEstimates,
-          gasEstimateType: newState.gasEstimateType,
-        },
-      });
-    }
-    dispatch({
-      type: actionConstants.UPDATE_METAMASK_STATE,
-      value: newState,
-    });
-    if (providerConfig.chainId !== newProviderConfig.chainId) {
-      dispatch({
-        type: actionConstants.CHAIN_CHANGED,
-        payload: newProviderConfig.chainId,
-      });
-    }
-
-    return newState;
+  return () => {
+    // no-op: metamask Redux slice removed in A2
   };
 }
 
@@ -4512,16 +4431,17 @@ export function setServiceWorkerKeepAlivePreference(
  * Call sites that previously read the return value should use
  * `getState()` from the Redux store after awaiting.
  */
+/**
+ * No-op in Pure A2 — the push pipeline delivers updates via
+ * {@link StateSubscriptionService} within ~17ms. Components re-render
+ * automatically via `useSyncExternalStore`. Full call-site removal is
+ * tracked in Epic 3.
+ * @param _dispatch
+ */
 export async function forceUpdateMetamaskState(
   _dispatch?: MetaMaskReduxDispatch,
 ): Promise<void> {
-  const store = getStoreInstance();
-  return new Promise<void>((resolve) => {
-    const unsubscribe = store.subscribe(() => {
-      unsubscribe();
-      resolve();
-    });
-  });
+  return Promise.resolve();
 }
 
 export function toggleNetworkMenu(payload?: {
@@ -7851,16 +7771,6 @@ export async function endBackgroundTrace(request: EndTraceRequest) {
   await submitRequestToBackground<void>('endTrace', [
     { ...request, timestamp },
   ]);
-}
-
-function applyPatches(
-  oldState: Record<string, unknown>,
-  patches: Patch[],
-): Record<string, unknown> {
-  const immer = new Immer();
-  immer.setAutoFreeze(false);
-
-  return immer.applyPatches(oldState, patches);
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)

@@ -4,7 +4,6 @@ import { configureStore as baseConfigureStore } from '@reduxjs/toolkit';
 import devtoolsEnhancer from 'remote-redux-devtools';
 import rootReducer from '../ducks';
 import type { AppSliceState } from '../ducks/app/app';
-import type { FlattenedBackgroundStateProxy } from '../../shared/types/background';
 
 /**
  * This interface is temporary and is copied from the message-manager.js file
@@ -33,16 +32,16 @@ type RootReducerReturnType = ReturnType<typeof rootReducer>;
  * `ReduxState` overrides incorrectly typed properties of `RootReducerReturnType`, and is only intended to be used as an input for `configureStore`.
  * The `MetaMaskReduxState` type (derived from the returned output of `configureStore`) is to be used consistently as the single source-of-truth and representation of Redux state shape.
  *
- * Redux slice reducers that are passed an `AnyAction`-type `action` parameter are inferred to have a return type of `never`.
- * TODO: Supply exhaustive action types to all Redux slices (specifically `metamask` and `appState`)
+ * Controller state (formerly the `metamask` slice) is now managed by
+ * {@link StateSubscriptionService} and accessed via `useControllerState`.
+ * Redux retains only client-state slices (`appState`, `gas`, `swaps`, etc.).
  */
 type ReduxState = {
   activeTab: {
     origin: string;
   };
-  metamask: FlattenedBackgroundStateProxy;
   appState: AppSliceState['appState'];
-} & Omit<RootReducerReturnType, 'activeTab' | 'metamask' | 'appState'>;
+} & Omit<RootReducerReturnType, 'activeTab' | 'appState'>;
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
