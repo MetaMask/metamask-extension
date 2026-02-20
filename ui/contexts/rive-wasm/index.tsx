@@ -136,7 +136,9 @@ export default function RiveWasmProvider({
 const useInternalRiveWasmContext = () => {
   const context = useContext(RiveWasmContext);
   if (!context) {
-    throw new Error('useRiveWasm must be used within RiveWasmProvider');
+    throw new Error(
+      'useRiveWasmFile and useRiveWasmAnimation must be used within RiveWasmProvider',
+    );
   }
   return context;
 };
@@ -232,13 +234,14 @@ export const useRiveWasmAnimation = ({
 
   const riveState = useRive(riveInitParams, riveOptions);
   const error = wasmError ?? bufferError ?? riveError;
+  const isRiveReady = Boolean(shouldInitializeRive && riveState.rive);
   let status: RiveWasmAnimationStatus = 'loading';
   if (error) {
     status = 'failed';
-  } else if (shouldInitializeRive) {
+  } else if (isRiveReady) {
     status = 'ready';
   }
-  const rive = status === 'ready' ? riveState.rive : null;
+  const rive = isRiveReady ? riveState.rive : null;
 
   return {
     rive,

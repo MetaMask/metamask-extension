@@ -127,22 +127,25 @@ export default function MetamaskWordMarkAnimation({
       rive.play();
       setIsInitialized(true);
     }
-
-    // Cleanup timeout on unmount
-    return () => {
-      if (animationTimeoutRef.current) {
-        clearTimeout(animationTimeoutRef.current);
-        setIsAnimationCompleted('MetamaskWordMarkAnimation', true);
-      }
-    };
   }, [
     rive,
     skipTransition,
     isInitialized,
     theme,
     cacheInputs,
-    setIsAnimationCompleted,
   ]);
+
+  // Clear timeout on unmount only.
+  useEffect(
+    () => () => {
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current);
+        animationTimeoutRef.current = null;
+        setIsAnimationCompleted('MetamaskWordMarkAnimation', true);
+      }
+    },
+    [setIsAnimationCompleted],
+  );
 
   // Handle theme changes after initialization (update dark toggle without re-triggering animation)
   useEffect(() => {
