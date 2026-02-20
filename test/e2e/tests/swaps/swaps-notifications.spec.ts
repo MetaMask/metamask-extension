@@ -84,13 +84,10 @@ describe('Swaps - notifications', function () {
           'Security alerts token/scan endpoint was not called',
         );
 
-        await driver.waitForSelector(
-          { text: UNSTABLE_TOKEN_PRICE_TITLE },
-          { timeout: 30000 },
+        await bridgeQuotePage.checkTokenRiskWarningIsDisplayed(
+          UNSTABLE_TOKEN_PRICE_TITLE,
+          UNSTABLE_TOKEN_PRICE_DESCRIPTION,
         );
-        await driver.waitForSelector({
-          text: UNSTABLE_TOKEN_PRICE_DESCRIPTION,
-        });
       },
     );
   });

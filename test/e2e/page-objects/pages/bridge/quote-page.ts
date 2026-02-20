@@ -247,6 +247,14 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.switchTokensButton);
   }
 
+  async checkTokenRiskWarningIsDisplayed(
+    title: string,
+    description: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({ text: title }, { timeout: 30000 });
+    await this.driver.waitForSelector({ text: description });
+  }
+
   async setCustomSlippage(value: string): Promise<void> {
     await this.driver.clickElement(this.slippageEditButton);
     await this.driver.clickElement(this.slippageCustomButton);
