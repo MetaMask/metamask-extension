@@ -131,16 +131,24 @@ export function getSnapPermissionSpecifications(
          */
         getMnemonic: async (source: string) => {
           if (!source) {
-            const [keyring] = messenger.call(
-              'KeyringController:getKeyringsByType',
-              KeyringType.hdKeyTree,
-            ) as { mnemonic?: string }[];
+            const { mnemonic } = (await messenger.call(
+              'KeyringController:withKeyring',
+              {
+                type: KeyringType.hdKeyTree,
+                index: 0,
+              },
+              async ({ keyring }) => ({
+                mnemonic: hasProperty(keyring, 'mnemonic')
+                  ? keyring.mnemonic
+                  : undefined,
+              }),
+            )) as { mnemonic?: Uint8Array };
 
-            if (!keyring.mnemonic) {
+            if (!mnemonic) {
               throw new Error('Primary keyring mnemonic unavailable.');
             }
 
-            return keyring.mnemonic;
+            return mnemonic;
           }
 
           try {
@@ -179,16 +187,22 @@ export function getSnapPermissionSpecifications(
          */
         getMnemonicSeed: async (source: string) => {
           if (!source) {
-            const [keyring] = messenger.call(
-              'KeyringController:getKeyringsByType',
-              KeyringType.hdKeyTree,
-            ) as { seed?: Uint8Array }[];
+            const { seed } = (await messenger.call(
+              'KeyringController:withKeyring',
+              {
+                type: KeyringType.hdKeyTree,
+                index: 0,
+              },
+              async ({ keyring }) => ({
+                seed: hasProperty(keyring, 'seed') ? keyring.seed : undefined,
+              }),
+            )) as { seed?: Uint8Array };
 
-            if (!keyring.seed) {
+            if (!seed) {
               throw new Error('Primary keyring mnemonic unavailable.');
             }
 
-            return keyring.seed;
+            return seed;
           }
 
           try {

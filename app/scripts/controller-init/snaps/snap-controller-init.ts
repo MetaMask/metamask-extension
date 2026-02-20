@@ -62,20 +62,22 @@ export const SnapControllerInit: ControllerInitFunction<
   ///: END:ONLY_INCLUDE_IF
 
   async function getMnemonicSeed() {
-    const keyrings = initMessenger.call(
-      'KeyringController:getKeyringsByType',
-      KeyringType.hdKeyTree,
-    );
+    const { seed } = (await initMessenger.call(
+      'KeyringController:withKeyring',
+      {
+        type: KeyringType.hdKeyTree,
+        index: 0,
+      },
+      async ({ keyring }) => ({
+        seed: hasProperty(keyring, 'seed') ? keyring.seed : undefined,
+      }),
+    )) as { seed?: Uint8Array };
 
-    if (
-      !keyrings[0] ||
-      !hasProperty(keyrings[0], 'seed') ||
-      !(keyrings[0].seed instanceof Uint8Array)
-    ) {
+    if (!seed || !(seed instanceof Uint8Array)) {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
 
-    return keyrings[0].seed;
+    return seed;
   }
 
   /**
