@@ -3,7 +3,7 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { ConvertibleToken } from '../../pages/musd/types';
 import { useMusdConversion } from './useMusdConversion';
-import { MUSD_CONVERSION_EDUCATION_ROUTE } from 'ui/pages/musd/constants/routes';
+import { MUSD_CONVERSION_EDUCATION_ROUTE } from '../../pages/musd/constants/routes';
 
 const mockNavigate = jest.fn();
 const mockDispatch = jest.fn();

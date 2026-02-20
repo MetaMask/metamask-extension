@@ -104,9 +104,7 @@ describe('useCanBuyMusd', () => {
 
   it('returns canBuyMusdInRegion false when mUSD is not in the token list', async () => {
     mockGeoResult();
-    mockTokenApi([
-      { assetId: 'eip155:1/erc20:0xOTHER', tokenSupported: true },
-    ]);
+    mockTokenApi([{ assetId: 'eip155:1/erc20:0xOTHER', tokenSupported: true }]);
 
     const { result, waitForNextUpdate } = renderHook(() => useCanBuyMusd());
     await waitForNextUpdate();
@@ -301,7 +299,11 @@ describe('useCanBuyMusd', () => {
   });
 
   it('reports isLoading true while ramp token fetch is in progress', () => {
-    mockFetch.mockReturnValue(new Promise(() => {}));
+    mockFetch.mockReturnValue(
+      new Promise(() => {
+        // no op
+      }),
+    );
     mockGeoResult();
 
     const { result } = renderHook(() => useCanBuyMusd());

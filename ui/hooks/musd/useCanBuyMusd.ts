@@ -8,12 +8,12 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { Hex } from '@metamask/utils';
-import { useMusdGeoBlocking } from './useMusdGeoBlocking';
-import { useMusdNetworkFilter } from './useMusdNetworkFilter';
 import {
   MUSD_BUYABLE_CHAIN_IDS,
   MUSD_TOKEN_ASSET_ID_BY_CHAIN,
 } from '../../components/app/musd/constants';
+import { useMusdGeoBlocking } from './useMusdGeoBlocking';
+import { useMusdNetworkFilter } from './useMusdNetworkFilter';
 
 // ============================================================================
 // Token Cache API
@@ -26,8 +26,7 @@ export type RampToken = {
 
 const isProdEnv = process.env.NODE_ENV === 'production';
 const PROD_TOKEN_CACHE_BASE_URL = 'https://on-ramp-cache.api.cx.metamask.io';
-const UAT_TOKEN_CACHE_BASE_URL =
-  'https://on-ramp-cache.uat-api.cx.metamask.io';
+const UAT_TOKEN_CACHE_BASE_URL = 'https://on-ramp-cache.uat-api.cx.metamask.io';
 
 const tokenCacheBaseUrl = isProdEnv
   ? PROD_TOKEN_CACHE_BASE_URL
@@ -45,11 +44,13 @@ export const regionTokenCache = {
  * Fetches the token list from the on-ramp token cache API for a given country.
  * Results are cached for 5 minutes.
  *
- * Fail closed: returns [] on any error or empty response.
+ * @param {string} country - the country to fetch the token list for
+ *
+ * @returns {RampToken[]} the token list for the given country
+ *
+ * @throws {Error} if fetching the token list from the token cache API returns an error
  */
-export async function fetchRegionTokens(
-  country: string,
-): Promise<RampToken[]> {
+export async function fetchRegionTokens(country: string): Promise<RampToken[]> {
   if (
     regionTokenCache.country === country &&
     regionTokenCache.timestamp &&
@@ -122,8 +123,11 @@ export type UseCanBuyMusdResult = {
  *    (verified against the token cache API using CAIP-19 asset IDs).
  */
 export function useCanBuyMusd(): UseCanBuyMusdResult {
-  const { isBlocked, isLoading: geoIsLoading, userCountry } =
-    useMusdGeoBlocking();
+  const {
+    isBlocked,
+    isLoading: geoIsLoading,
+    userCountry,
+  } = useMusdGeoBlocking();
   const { selectedChainId, isPopularNetworksFilterActive } =
     useMusdNetworkFilter();
 
