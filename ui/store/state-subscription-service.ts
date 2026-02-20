@@ -6,12 +6,11 @@ import { ControllerStateProxy } from './controller-state-proxy';
  * Registry of {@link ControllerStateProxy} instances. Orchestrates
  * initialization, batch updates, and the two-phase apply/notify protocol.
  *
- * **Two-phase apply/notify:**
- *
- * 1. `applyBatch` iterates the keyed update map and calls `applyPatches` or
- *    `setState` on each affected proxy. No subscribers fire.
- * 2. `flush` notifies subscribers of all proxies that changed. A component
- *    reading from ControllerA and ControllerB always sees both updates together.
+ * Two-phase apply/notify:
+ * (1) `applyBatch` iterates the keyed update map and calls `applyPatches` or
+ * `setState` on each affected proxy. No subscribers fire.
+ * (2) `flush` notifies subscribers of all proxies that changed. A component
+ * reading from ControllerA and ControllerB always sees both updates together.
  *
  * This prevents torn reads: without the two-phase protocol, a component could
  * see ControllerA's new state with ControllerB's old state within the same
@@ -19,6 +18,12 @@ import { ControllerStateProxy } from './controller-state-proxy';
  */
 export class StateSubscriptionService {
   #proxies: Map<string, ControllerStateProxy> = new Map();
+
+  #initialized = false;
+
+  get isInitialized(): boolean {
+    return this.#initialized;
+  }
 
   /**
    * Initialize all proxies from keyed initial state.
@@ -31,6 +36,7 @@ export class StateSubscriptionService {
     for (const [name, state] of Object.entries(keyedState)) {
       this.#proxies.set(name, new ControllerStateProxy(state));
     }
+    this.#initialized = true;
   }
 
   /**
@@ -57,14 +63,14 @@ export class StateSubscriptionService {
   /**
    * Get a typed proxy by controller name.
    *
-   * @param controllerName - The controller's registered name (e.g.,
-   *   `'PreferencesController'`).
+   * @param controllerName - The controller's registered name
+   * (e.g., `'PreferencesController'`).
    * @returns The proxy for that controller's state.
    * @throws If no proxy is registered for the given name.
    */
-  getProxy<S extends StateConstraint>(
+  getProxy<State extends StateConstraint>(
     controllerName: string,
-  ): ControllerStateProxy<S> {
+  ): ControllerStateProxy<State> {
     const proxy = this.#proxies.get(controllerName);
     if (!proxy) {
       throw new Error(
@@ -72,7 +78,7 @@ export class StateSubscriptionService {
           `Available controllers: ${[...this.#proxies.keys()].join(', ')}`,
       );
     }
-    return proxy as ControllerStateProxy<S>;
+    return proxy as ControllerStateProxy<State>;
   }
 
   /**
@@ -109,6 +115,8 @@ export class StateSubscriptionService {
     }
   }
 
+  #flushScheduled = false;
+
   /**
    * Phase 2 of the two-phase protocol.
    *
@@ -119,6 +127,24 @@ export class StateSubscriptionService {
     for (const proxy of this.#proxies.values()) {
       proxy.notify();
     }
+  }
+
+  /**
+   * Schedule a flush on the next animation frame.
+   *
+   * Multiple `applyBatch()` calls within the same frame coalesce into a
+   * single `flush()`, matching the ADR's two-layer batching design:
+   * background microtask batching (~0ms) + UI rAF batching (<=16ms).
+   */
+  scheduleFlush(): void {
+    if (this.#flushScheduled) {
+      return;
+    }
+    this.#flushScheduled = true;
+    requestAnimationFrame(() => {
+      this.#flushScheduled = false;
+      this.flush();
+    });
   }
 
   /**

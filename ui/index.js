@@ -3,50 +3,34 @@ import log from 'loglevel';
 import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
-import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
-
 import { captureException } from '../shared/lib/sentry';
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../app/scripts/lib/util';
-import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
-import {
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-} from '../shared/constants/app';
+import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import { getBrowserName } from '../shared/modules/browser-runtime.utils';
 import { COPY_OPTIONS } from '../shared/constants/copy';
 import { START_UI_SYNC } from '../shared/constants/ui-initialization';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
-import { getCurrentChainId } from '../shared/modules/selectors/networks';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import { setStoreInstance } from './store/store-instance';
+import { StateSubscriptionService } from './store/state-subscription-service';
 import {
-  getSelectedInternalAccount,
-  getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
-  getAllPermittedAccountsForCurrentTab,
   getIsSocialLoginFlow,
   getFirstTimeFlowType,
 } from './selectors';
-import { ALERT_STATE } from './ducks/alerts';
-import {
-  getIsUnlocked,
-  getUnconnectedAccountAlertEnabledness,
-  getUnconnectedAccountAlertShown,
-} from './ducks/metamask/metamask';
+import { getIsUnlocked } from './ducks/metamask/metamask';
 import Root from './pages';
-import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
-import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
@@ -63,6 +47,13 @@ log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 const reduxStore = withResolvers();
 
 /**
+ * Singleton that provides keyed per-controller state to components via
+ * {@link useControllerState}. Initialized from `START_UI_SYNC` and updated
+ * incrementally by `sendUpdate`.
+ */
+export const stateSubscriptionService = new StateSubscriptionService();
+
+/**
  * Method to update backgroundConnection object use by UI
  *
  * @param backgroundConnection - connection object to background
@@ -76,8 +67,9 @@ export const connectToBackground = (
   backgroundConnection.onNotification(async (data) => {
     const { method } = data;
     if (method === 'sendUpdate') {
-      const store = await reduxStore.promise;
-      store.dispatch(actions.updateMetamaskState(data.params[0]));
+      const keyedPatches = data.params[0];
+      stateSubscriptionService.applyBatch(keyedPatches);
+      stateSubscriptionService.scheduleFlush();
     } else if (method === START_UI_SYNC) {
       await handleStartUISync(data.params[0]);
     } else {
@@ -93,6 +85,13 @@ export const connectToBackground = (
 export async function launchMetamaskUi(opts) {
   const { backgroundConnection, initialState } = opts;
 
+  const { isInitialized, ...controllers } = initialState;
+  if (stateSubscriptionService.isInitialized) {
+    stateSubscriptionService.reinitialize(controllers);
+  } else {
+    stateSubscriptionService.initialize(controllers);
+  }
+
   const store = await startApp(initialState, opts);
 
   await backgroundConnection.startSendingPatches();
@@ -103,109 +102,61 @@ export async function launchMetamaskUi(opts) {
 }
 
 /**
- * Method to setup initial redux store for the ui application
+ * Method to setup initial redux store for the ui application.
  *
- * @param {*} metamaskState - flatten background state
- * @param {*} activeTab - active browser tab
- * @returns redux store
+ * In Pure A2 the `metamask` Redux slice is removed. Controller state is
+ * read directly from keyed `initialState` for one-time setup (locale,
+ * text direction) and from {@link StateSubscriptionService} at runtime.
+ *
+ * @param {Record<string, unknown>} keyedState - Keyed background state
+ *   (`{ isInitialized, PreferencesController, KeyringController, ... }`).
+ * @param {*} activeTab - Active browser tab.
+ * @returns Redux store (no longer contains a `metamask` slice).
  */
-export async function setupInitialStore(metamaskState, activeTab) {
-  // parse opts
-  if (!metamaskState.featureFlags) {
-    metamaskState.featureFlags = {};
+export async function setupInitialStore(keyedState, activeTab) {
+  const prefs = keyedState.PreferencesController ?? {};
+
+  if (!prefs.featureFlags) {
+    prefs.featureFlags = {};
   }
 
   const { currentLocaleMessages, enLocaleMessages } = await setupLocale(
-    metamaskState.currentLocale,
+    prefs.currentLocale,
   );
 
-  if (metamaskState.textDirection === 'rtl') {
+  if (prefs.textDirection === 'rtl') {
     switchDirection('rtl');
   }
 
   const draftInitialState = {
     activeTab,
 
-    // metamaskState represents the cross-tab state
-    metamask: metamaskState,
-
     // appState represents the current tab's popup state
     appState: {},
 
     localeMessages: {
-      currentLocale: metamaskState.currentLocale,
+      currentLocale: prefs.currentLocale,
       current: currentLocaleMessages,
       en: enLocaleMessages,
     },
   };
-  if (
-    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
-    getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
-  ) {
-    const { origin } = draftInitialState.activeTab;
-    const permittedAccountsForCurrentTab =
-      getAllPermittedAccountsForCurrentTab(draftInitialState);
-
-    const selectedAccount = getSelectedInternalAccount(draftInitialState);
-
-    const currentTabIsConnectedToSelectedAddress =
-      selectedAccount &&
-      isInternalAccountInPermittedAccountIds(
-        selectedAccount,
-        permittedAccountsForCurrentTab,
-      );
-
-    const unconnectedAccountAlertShownOrigins =
-      getUnconnectedAccountAlertShown(draftInitialState);
-    const unconnectedAccountAlertIsEnabled =
-      getUnconnectedAccountAlertEnabledness(draftInitialState);
-
-    if (
-      origin &&
-      unconnectedAccountAlertIsEnabled &&
-      !unconnectedAccountAlertShownOrigins[origin] &&
-      permittedAccountsForCurrentTab.length > 0 &&
-      !currentTabIsConnectedToSelectedAddress
-    ) {
-      draftInitialState[AlertTypes.unconnectedAccount] = {
-        state: ALERT_STATE.OPEN,
-      };
-      actions.setUnconnectedAccountAlertShown(origin);
-    }
-  }
+  // TODO(A2): Unconnected-account alert and unapproved-tx redirect depend on
+  // selectors that read `state.metamask`. These will be migrated to SSS
+  // listeners in Epic 3. For now they are skipped — the runtime paths in
+  // React components will handle them via useControllerState.
 
   const store = configureStore(draftInitialState);
   setStoreInstance(store);
   reduxStore.resolve(store);
 
-  const unapprovedTxs = getUnapprovedTransactions(metamaskState);
-
-  // if unconfirmed txs, start on txConf page
-  const unapprovedTxsAll = txHelper(
-    unapprovedTxs,
-    metamaskState.unapprovedPersonalMsgs,
-    metamaskState.unapprovedDecryptMsgs,
-    metamaskState.unapprovedEncryptionPublicKeyMsgs,
-    metamaskState.unapprovedTypedMessages,
-    metamaskState.networkId,
-    getCurrentChainId({ metamask: metamaskState }),
-  );
-  const numberOfUnapprovedTx = unapprovedTxsAll.length;
-  if (numberOfUnapprovedTx > 0) {
-    store.dispatch(
-      actions.showConfTxPage({
-        id: unapprovedTxsAll[0].id,
-      }),
-    );
-  }
-
   return store;
 }
 
-async function startApp(metamaskState, opts) {
+async function startApp(keyedState, opts) {
   const { traceContext } = opts;
 
-  const tags = getStartupTraceTags({ metamask: metamaskState });
+  // TODO(A2): getStartupTraceTags reads state.metamask — migrate to SSS in Epic 3
+  const tags = {};
 
   const store = await trace(
     {
@@ -213,7 +164,7 @@ async function startApp(metamaskState, opts) {
       parentContext: traceContext,
       tags,
     },
-    () => setupInitialStore(metamaskState, opts.activeTab),
+    () => setupInitialStore(keyedState, opts.activeTab),
   );
 
   // global metamask api - used by tooling
@@ -232,7 +183,13 @@ async function startApp(metamaskState, opts) {
   );
 
   trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
-    render(<Root store={store} />, opts.container),
+    render(
+      <Root
+        store={store}
+        stateSubscriptionService={stateSubscriptionService}
+      />,
+      opts.container,
+    ),
   );
 
   return store;
@@ -388,22 +345,25 @@ function setupStateHooks(store) {
     browser.runtime.reload();
   };
   window.stateHooks.getCleanAppState = async function () {
-    return getCleanAppState(store);
+    const reduxState = store.getState();
+    const controllerSnapshots = stateSubscriptionService.getAllSnapshots();
+    return { ...reduxState, metamask: controllerSnapshots };
   };
   window.stateHooks.getSentryAppState = function () {
     const reduxState = store.getState();
-    return maskObject(reduxState, SENTRY_UI_STATE);
+    const controllerSnapshots = stateSubscriptionService.getAllSnapshots();
+    return maskObject(
+      { ...reduxState, metamask: controllerSnapshots },
+      SENTRY_UI_STATE,
+    );
   };
   window.stateHooks.getLogs = function () {
-    // These logs are logged by LoggingController
-    const reduxState = store.getState();
-    const { logs } = reduxState.metamask;
-
-    const logsArray = Object.values(logs).sort((a, b) => {
-      return a.timestamp - b.timestamp;
-    });
-
-    return logsArray;
+    const controllerSnapshots = stateSubscriptionService.getAllSnapshots();
+    const { logs } = controllerSnapshots.LoggingController ?? {};
+    if (!logs) {
+      return [];
+    }
+    return Object.values(logs).sort((a, b) => a.timestamp - b.timestamp);
   };
 }
 
