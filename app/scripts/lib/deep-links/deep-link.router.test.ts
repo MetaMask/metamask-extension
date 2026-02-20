@@ -324,9 +324,18 @@ describe('DeepLinkRouter', () => {
       expect(logErrorSpy).toHaveBeenCalledWith(
         'Error parsing origin URL:',
         'not-a-valid-url',
-        expect.any(Error),
+        expect.objectContaining({
+          name: 'TypeError',
+          message: 'Invalid URL',
+        }),
       );
       expect(errorSpy).toHaveBeenCalledTimes(1);
+      expect(errorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'TypeError',
+          message: 'Invalid URL',
+        }),
+      );
     });
   });
 });
