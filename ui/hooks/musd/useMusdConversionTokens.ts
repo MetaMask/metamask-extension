@@ -1,0 +1,317 @@
+/**
+ * useMusdConversionTokens Hook
+ *
+ * The source of truth for the tokens that are eligible for mUSD conversion.
+ * Filters tokens based on allowlist/blocklist rules AND minimum balance requirements.
+ *
+ * Ported from metamask-mobile:
+ * app/components/UI/Earn/hooks/useMusdConversionTokens.ts
+ */
+
+import { toHex } from '@metamask/controller-utils';
+import type { Hex } from '@metamask/utils';
+import { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { MUSD_TOKEN_ADDRESS_BY_CHAIN } from '../../components/app/musd/constants';
+import type { TokenWithFiatAmount } from '../../components/app/assets/types';
+import {
+  type Asset,
+  AssetStandard,
+} from '../../pages/confirmations/types/send';
+import {
+  getIsMultichainAccountsState2Enabled,
+  getSelectedAccount,
+} from '../../selectors';
+import {
+  getAssetsBySelectedAccountGroup,
+  getTokenBalancesEvm,
+} from '../../selectors/assets';
+import {
+  selectMusdConvertibleTokensAllowlist,
+  selectMusdConvertibleTokensBlocklist,
+  selectMusdMinAssetBalanceRequired,
+} from '../../selectors/musd';
+import { checkTokenAllowed } from './useMusdCtaVisibility';
+
+// ============================================================================
+// Types
+// ============================================================================
+
+/**
+ * Token type that can be used with this hook
+ */
+export type ConversionToken = {
+  address: string;
+  chainId: string;
+  symbol: string;
+  fiat?: { balance?: number | null };
+  tokenFiatAmount?: number | null;
+};
+
+/**
+ * Type for the token filter function that operates on Asset type
+ */
+export type TokenFilterFn = (tokens: Asset[]) => Asset[];
+
+/**
+ * Return type for useMusdConversionTokens hook
+ */
+export type UseMusdConversionTokensResult = {
+  /** Filter function that filters tokens to only mUSD-eligible ones */
+  filterAllowedTokens: <TToken extends ConversionToken>(
+    tokens: TToken[],
+  ) => TToken[];
+  /** Filter Asset tokens by ERC20 standard + allowlist/blocklist + min balance */
+  filterTokens: TokenFilterFn;
+  /** Check if a specific token is eligible for mUSD conversion */
+  isConversionToken: (token?: ConversionToken) => boolean;
+  /** Check if mUSD is supported on a given chain */
+  isMusdSupportedOnChain: (chainId?: string) => boolean;
+  /** Check if there are convertible tokens on a given chain */
+  hasConvertibleTokensByChainId: (chainId: Hex) => boolean;
+  /** The tokens that are eligible for mUSD conversion */
+  tokens: TokenWithFiatAmount[];
+};
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+/**
+ * Safely format a chain ID to hex format
+ *
+ * @param chainId
+ */
+function safeFormatChainIdToHex(chainId: string | number | undefined): Hex {
+  if (!chainId) {
+    return '0x0' as Hex;
+  }
+  if (typeof chainId === 'string' && chainId.startsWith('0x')) {
+    return chainId.toLowerCase() as Hex;
+  }
+  return toHex(chainId) as Hex;
+}
+
+/**
+ * Get fiat balance from a token, handling different property names
+ *
+ * @param token
+ */
+function getTokenFiatBalance(token: ConversionToken): number | null {
+  // Try tokenFiatAmount first (extension format)
+  if (token.tokenFiatAmount !== undefined && token.tokenFiatAmount !== null) {
+    return token.tokenFiatAmount;
+  }
+  // Try fiat.balance (mobile format)
+  if (token.fiat?.balance !== undefined && token.fiat?.balance !== null) {
+    return token.fiat.balance;
+  }
+  return null;
+}
+
+// ============================================================================
+// Hook Implementation
+// ============================================================================
+
+/**
+ * The source of truth for the tokens that are eligible for mUSD conversion.
+ *
+ * @returns Object containing:
+ * - filterAllowedTokens(tokens): Filters tokens based on allowlist/blocklist and min balance.
+ * - isConversionToken(token): Checks if a token is eligible for mUSD conversion.
+ * - isMusdSupportedOnChain(chainId): Checks if mUSD is supported on a given chain.
+ * - hasConvertibleTokensByChainId(chainId): Checks if there are convertible tokens on a given chain.
+ * - tokens: The tokens that are eligible for mUSD conversion.
+ */
+export function useMusdConversionTokens(): UseMusdConversionTokensResult {
+  // Get feature flag values
+  const allowlist = useSelector(selectMusdConvertibleTokensAllowlist);
+  const blocklist = useSelector(selectMusdConvertibleTokensBlocklist);
+  const minAssetBalanceRequired = useSelector(
+    selectMusdMinAssetBalanceRequired,
+  );
+
+  // Get account tokens
+  const selectedAccount = useSelector(getSelectedAccount);
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+
+  // Get tokens using the appropriate selector
+  const evmBalances = useSelector((state) =>
+    getTokenBalancesEvm(state, selectedAccount?.address ?? ''),
+  );
+  const accountGroupAssets = useSelector(getAssetsBySelectedAccountGroup);
+
+  // Get all account tokens
+  const allTokens = useMemo((): TokenWithFiatAmount[] => {
+    if (isMultichainAccountsState2Enabled) {
+      // Flatten account group assets into array
+      return Object.entries(accountGroupAssets).flatMap(
+        ([chainId, assets]) =>
+          assets.map((asset) => ({
+            ...asset,
+            secondary: 0,
+            title: asset.name ?? asset.symbol,
+            chainId: chainId as Hex,
+            tokenFiatAmount: asset.fiat?.balance ?? 0,
+          })) ?? [],
+      );
+    }
+    // Use EVM balances for legacy mode
+    return evmBalances ?? [];
+  }, [isMultichainAccountsState2Enabled, accountGroupAssets, evmBalances]);
+
+  /**
+   * Filter tokens with minimum balance requirement
+   * Uses plain number comparison.
+   */
+  const filterTokensWithMinBalance = useCallback(
+    <TToken extends ConversionToken>(token: TToken): boolean => {
+      const fiatBalance = getTokenFiatBalance(token);
+
+      // Can't use truthiness checks here, because `0` is valid when threshold is '0'
+      if (fiatBalance === undefined || fiatBalance === null) {
+        return false;
+      }
+
+      const num = Number(fiatBalance);
+      if (!Number.isFinite(num)) {
+        return false;
+      }
+
+      return num >= minAssetBalanceRequired;
+    },
+    [minAssetBalanceRequired],
+  );
+
+  /**
+   * Filter tokens with allowlist and blocklist
+   */
+  const filterTokensWithAllowlistAndBlocklist = useCallback(
+    <TToken extends ConversionToken>(token: TToken): boolean =>
+      checkTokenAllowed(token.symbol, allowlist, blocklist, token.chainId),
+    [allowlist, blocklist],
+  );
+
+  /**
+   * Filter tokens based on allowlist/blocklist and minimum balance
+   */
+  const filterAllowedTokens = useCallback(
+    <TToken extends ConversionToken>(tokens: TToken[]): TToken[] =>
+      tokens
+        .filter(filterTokensWithAllowlistAndBlocklist)
+        .filter(filterTokensWithMinBalance),
+    [filterTokensWithAllowlistAndBlocklist, filterTokensWithMinBalance],
+  );
+
+  // Get the list of eligible conversion tokens
+  const conversionTokens = useMemo(() => {
+    try {
+      return filterAllowedTokens(allTokens);
+    } catch {
+      return [];
+    }
+  }, [allTokens, filterAllowedTokens]);
+
+  /**
+   * Check if there are convertible tokens on a specific chain
+   */
+  const hasConvertibleTokensByChainId = useCallback(
+    (chainId: Hex): boolean =>
+      conversionTokens.some(
+        (token) =>
+          token.chainId &&
+          safeFormatChainIdToHex(token.chainId) ===
+            safeFormatChainIdToHex(chainId),
+      ),
+    [conversionTokens],
+  );
+
+  /**
+   * Check if a specific token is eligible for mUSD conversion
+   */
+  const isConversionToken = useCallback(
+    (token?: ConversionToken): boolean => {
+      if (!token) {
+        return false;
+      }
+
+      if (!token.chainId) {
+        return false;
+      }
+
+      const tokenChainId = safeFormatChainIdToHex(token.chainId);
+
+      return conversionTokens.some(
+        (musdToken) =>
+          token.address.toLowerCase() === musdToken.address.toLowerCase() &&
+          musdToken.chainId &&
+          safeFormatChainIdToHex(musdToken.chainId) === tokenChainId,
+      );
+    },
+    [conversionTokens],
+  );
+
+  /**
+   * Check if mUSD is supported on a given chain
+   */
+  const isMusdSupportedOnChain = useCallback((chainId?: string): boolean => {
+    if (!chainId) {
+      return false;
+    }
+    const hexChainId = toHex(chainId);
+    return Object.keys(MUSD_TOKEN_ADDRESS_BY_CHAIN).includes(hexChainId);
+  }, []);
+
+  /**
+   * Filter Asset tokens by ERC20 standard, allowlist/blocklist, and min balance.
+   * Designed for use in the pay-with modal where tokens are Asset type.
+   */
+  const filterTokens: TokenFilterFn = useCallback(
+    (tokens: Asset[]): Asset[] =>
+      tokens.filter((token) => {
+        if (token.standard && token.standard !== AssetStandard.ERC20) {
+          return false;
+        }
+
+        if (!token.symbol || !token.chainId) {
+          return false;
+        }
+
+        const asConversion: ConversionToken = {
+          address: token.address ?? '',
+          chainId: String(token.chainId),
+          symbol: token.symbol,
+          fiat: token.fiat,
+        };
+
+        return (
+          filterTokensWithAllowlistAndBlocklist(asConversion) &&
+          filterTokensWithMinBalance(asConversion)
+        );
+      }),
+    [filterTokensWithAllowlistAndBlocklist, filterTokensWithMinBalance],
+  );
+
+  return useMemo(
+    () => ({
+      filterAllowedTokens,
+      filterTokens,
+      isConversionToken,
+      isMusdSupportedOnChain,
+      hasConvertibleTokensByChainId,
+      tokens: conversionTokens,
+    }),
+    [
+      filterAllowedTokens,
+      filterTokens,
+      isConversionToken,
+      isMusdSupportedOnChain,
+      hasConvertibleTokensByChainId,
+      conversionTokens,
+    ],
+  );
+}
+
+export default useMusdConversionTokens;
