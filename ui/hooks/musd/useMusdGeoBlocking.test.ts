@@ -68,6 +68,15 @@ describe('useMusdGeoBlocking', () => {
     );
   });
 
+  it('reports isBlocked as false while geolocation is still loading', () => {
+    isGeoBlocked.mockReturnValue(true);
+
+    const { result } = renderHook(() => useMusdGeoBlocking());
+
+    expect(result.current.isLoading).toBe(true);
+    expect(result.current.isBlocked).toBe(false);
+  });
+
   it('fetches geolocation on mount', async () => {
     const { waitForNextUpdate } = renderHook(() => useMusdGeoBlocking());
 
@@ -142,6 +151,21 @@ describe('useMusdGeoBlocking', () => {
     expect(result.current.error).toBe('Network error');
     expect(result.current.userCountry).toBeNull();
     expect(result.current.isLoading).toBe(false);
+  });
+
+  it('fails closed (isBlocked=true) after fetch error with null country', async () => {
+    isGeoBlocked.mockReturnValue(true);
+    fetchSpy.mockRejectedValue(new Error('Network error'));
+
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useMusdGeoBlocking(),
+    );
+
+    await waitForNextUpdate();
+
+    expect(result.current.isLoading).toBe(false);
+    expect(result.current.userCountry).toBeNull();
+    expect(result.current.isBlocked).toBe(true);
   });
 
   it('sets error on non-OK response', async () => {

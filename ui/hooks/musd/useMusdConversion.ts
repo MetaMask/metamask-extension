@@ -48,6 +48,8 @@ export type UseMusdConversionResult = {
 
   isFeatureEnabled: boolean;
   isUserGeoBlocked: boolean;
+  /** Whether the geolocation check is still in progress */
+  isGeoLoading: boolean;
 
   startConversionFlow: (options?: StartConversionOptions) => Promise<void>;
   cancelConversion: () => void;
@@ -132,7 +134,8 @@ export function useMusdConversion(): UseMusdConversionResult {
   const educationSeen = useSelector(selectMusdConversionEducationSeen);
   const isFeatureEnabled = useSelector(selectIsMusdConversionFlowEnabled);
 
-  const { isBlocked: isUserGeoBlocked } = useMusdGeoBlocking();
+  const { isBlocked: isUserGeoBlocked, isLoading: isGeoLoading } =
+    useMusdGeoBlocking();
 
   const createConversionTransaction = useCallback(
     async (params: {
@@ -173,6 +176,11 @@ export function useMusdConversion(): UseMusdConversionResult {
 
       if (!isFeatureEnabled) {
         console.warn('[MUSD] Conversion flow not enabled');
+        return;
+      }
+
+      if (isGeoLoading) {
+        console.warn('[MUSD] Geo-blocking check still in progress');
         return;
       }
 
@@ -282,6 +290,7 @@ export function useMusdConversion(): UseMusdConversionResult {
     },
     [
       isFeatureEnabled,
+      isGeoLoading,
       isUserGeoBlocked,
       educationSeen,
       selectedAddress,
@@ -304,6 +313,7 @@ export function useMusdConversion(): UseMusdConversionResult {
 
     isFeatureEnabled,
     isUserGeoBlocked,
+    isGeoLoading,
 
     startConversionFlow,
     cancelConversion,

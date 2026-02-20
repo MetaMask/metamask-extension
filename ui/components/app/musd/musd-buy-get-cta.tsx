@@ -10,6 +10,7 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
+import type { ChainId } from '../../../../shared/constants/network';
 import {
   AlignItems,
   BackgroundColor,
@@ -41,7 +42,11 @@ import {
 } from '../../../selectors/multichain';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { MUSD_CONVERSION_APY } from './constants';
-import { MUSD_EVENTS_CONSTANTS } from './musd-events';
+import {
+  createMusdCtaClickedEventProperties,
+  MUSD_EVENTS_CONSTANTS,
+  type MusdCtaClickedEventProperties,
+} from './musd-events';
 
 // ============================================================================
 // Types
@@ -83,7 +88,7 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
 }) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const { startConversionFlow } = useMusdConversion();
+  const { startConversionFlow, educationSeen } = useMusdConversion();
   const { openBuyCryptoInPdapp } = useRamps();
 
   // Get network configuration for icon
@@ -124,37 +129,33 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
    * Handle CTA click
    */
   const handleClick = useCallback(() => {
-    // Track analytics event
+    const { REDIRECT_DESTINATIONS } = MUSD_EVENTS_CONSTANTS;
+    let redirectsTo: MusdCtaClickedEventProperties['redirects_to'];
+    if (variant === BuyGetMusdCtaVariant.BUY) {
+      redirectsTo = REDIRECT_DESTINATIONS.BUY_SCREEN;
+    } else if (educationSeen) {
+      redirectsTo = REDIRECT_DESTINATIONS.CUSTOM_AMOUNT_SCREEN;
+    } else {
+      redirectsTo = REDIRECT_DESTINATIONS.CONVERSION_EDUCATION_SCREEN;
+    }
+
     trackEvent({
       event: MetaMetricsEventName.MusdConversionCtaClicked,
       category: MetaMetricsEventCategory.Tokens,
-      properties: {
+      properties: createMusdCtaClickedEventProperties({
         location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.HOME_SCREEN,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        cta_type: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.PRIMARY,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        cta_text: ctaText,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        cta_click_target: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_BUTTON,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: selectedChainId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        network_name: networkName,
-        variant,
-      },
+        redirectsTo,
+        ctaType: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.PRIMARY,
+        ctaText,
+        chainId: selectedChainId,
+        chainName: networkName,
+        clickTarget: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_BUTTON,
+      }),
     });
 
     if (variant === BuyGetMusdCtaVariant.BUY) {
-      // Open buy flow (Ramp) for the selected chain
-      // This will open the Portfolio dApp buy page with the selected chain
-      openBuyCryptoInPdapp(selectedChainId ?? undefined);
+      openBuyCryptoInPdapp((selectedChainId as ChainId) ?? undefined);
     } else if (variant === BuyGetMusdCtaVariant.GET) {
-      // Start conversion flow
       startConversionFlow({
         entryPoint: 'home',
       });
@@ -164,6 +165,7 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
     selectedChainId,
     networkName,
     ctaText,
+    educationSeen,
     trackEvent,
     openBuyCryptoInPdapp,
     startConversionFlow,
@@ -244,7 +246,7 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
       {/* Right side: Action button */}
       <ButtonPrimary
         size={ButtonPrimarySize.Sm}
-        onClick={(e) => {
+        onClick={(e: React.MouseEvent) => {
           e.stopPropagation();
           handleClick();
         }}

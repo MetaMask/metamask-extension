@@ -161,6 +161,7 @@ describe('useMusdConversionToastStatus', () => {
     rerender();
 
     expect(result.current.toastState).toBe('success');
+    expect(result.current.sourceTokenSymbol).toBe('USDC');
   });
 
   it('returns "failed" when a pending mUSD conversion fails', () => {
@@ -183,6 +184,7 @@ describe('useMusdConversionToastStatus', () => {
     rerender();
 
     expect(result.current.toastState).toBe('failed');
+    expect(result.current.sourceTokenSymbol).toBe('USDC');
   });
 
   it('returns "failed" when a pending mUSD conversion is dropped', () => {
@@ -205,6 +207,7 @@ describe('useMusdConversionToastStatus', () => {
     rerender();
 
     expect(result.current.toastState).toBe('failed');
+    expect(result.current.sourceTokenSymbol).toBe('USDC');
   });
 
   it('dismisses the completion toast when dismissToast is called', () => {

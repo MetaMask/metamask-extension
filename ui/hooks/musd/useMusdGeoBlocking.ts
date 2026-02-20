@@ -125,10 +125,14 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
   }, [fetchGeolocation]);
 
   /**
-   * Calculate blocking status
-   * Uses region code if available (e.g., "GB-ENG"), falls back to country
+   * Calculate blocking status.
+   * While the geolocation fetch is still in progress we report `false` so that
+   * consumers don't treat an unknown-yet country as a confirmed block.
+   * The fail-closed semantics are preserved: when the fetch *completes* with an
+   * error (userCountry stays `null`, isLoading becomes `false`), isGeoBlocked
+   * still returns `true`.
    */
-  const isBlocked = isGeoBlocked(userCountry, blockedRegions);
+  const isBlocked = !isLoading && isGeoBlocked(userCountry, blockedRegions);
 
   /**
    * Generate blocked message

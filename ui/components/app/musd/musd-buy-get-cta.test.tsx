@@ -177,7 +177,9 @@ describe('MusdBuyGetCta', () => {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             cta_type: 'musd_conversion_primary_cta',
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: '0x1',
+            network_chain_id: '0x1',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            redirects_to: 'conversion_education_screen',
           }),
         }),
       );

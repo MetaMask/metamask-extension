@@ -144,6 +144,7 @@ describe('useMusdConversion', () => {
           educationSeen: expect.any(Boolean),
           isFeatureEnabled: expect.any(Boolean),
           isUserGeoBlocked: expect.any(Boolean),
+          isGeoLoading: expect.any(Boolean),
           startConversionFlow: expect.any(Function),
           cancelConversion: expect.any(Function),
           markEducationSeen: expect.any(Function),
@@ -165,6 +166,29 @@ describe('useMusdConversion', () => {
 
       expect(mockNavigate).not.toHaveBeenCalled();
       expect(mockAddTransaction).not.toHaveBeenCalled();
+    });
+
+    it('returns early when geo-blocking check is still loading', async () => {
+      useMusdGeoBlocking.mockReturnValue({
+        isBlocked: false,
+        userCountry: null,
+        isLoading: true,
+      });
+
+      const { result } = renderHook(() => useMusdConversion());
+
+      await act(async () => {
+        await result.current.startConversionFlow();
+      });
+
+      expect(mockNavigate).not.toHaveBeenCalled();
+      expect(mockAddTransaction).not.toHaveBeenCalled();
+
+      useMusdGeoBlocking.mockReturnValue({
+        isBlocked: false,
+        userCountry: 'US',
+        isLoading: false,
+      });
     });
 
     it('returns early when user is geo-blocked', async () => {

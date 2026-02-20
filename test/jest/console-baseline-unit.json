@@ -1370,14 +1370,16 @@
     "ui/hooks/musd/useMusdConversion.test.ts": {
       "error: [MUSD] Transaction creation failed: Error:": 1,
       "warn: [MUSD] Conversion flow not enabled": 1,
+      "warn: [MUSD] Geo-blocking check still in": 1,
       "warn: [MUSD] User is geo-blocked": 1
     },
     "ui/hooks/musd/useMusdCtaVisibility.test.ts": {
       "Reselect: Identity function warnings": 1
     },
     "ui/hooks/musd/useMusdGeoBlocking.test.ts": {
+      "React: Act warnings (component updates not wrapped)": 2,
       "error: [MUSD Geo] Geolocation error: Geolocation": 1,
-      "error: [MUSD Geo] Geolocation error: Network": 1
+      "error: [MUSD Geo] Geolocation error: Network": 2
     },
     "ui/hooks/perps/usePerpsOrderForm.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
