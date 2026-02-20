@@ -12,7 +12,6 @@ import {
   DISTRIBUTOR_CLAIM_ABI,
   MERKL_CLAIM_CHAIN_ID,
   MERKL_DISTRIBUTOR_ADDRESS,
-  ELIGIBLE_TOKENS,
 } from '../constants';
 import { fetchMerklRewardsForAsset } from '../merkl-client';
 import type { MetaMaskReduxDispatch } from '../../../../store/store';
@@ -133,30 +132,4 @@ export const useMerklClaim = ({
     isClaiming,
     error,
   };
-};
-
-/**
- * Check if a token is eligible for Merkl rewards.
- * Compares addresses case-insensitively since Ethereum addresses are case-insensitive.
- * Returns false for native tokens (undefined/null address).
- *
- * @param chainId - The chain ID of the token
- * @param address - The token's contract address
- * @returns Whether the token is eligible for Merkl rewards
- */
-export const isEligibleForMerklRewards = (
-  chainId: string,
-  address: string | undefined | null,
-): boolean => {
-  if (!address) {
-    return false;
-  }
-  const eligibleAddresses = ELIGIBLE_TOKENS[chainId];
-  if (!eligibleAddresses) {
-    return false;
-  }
-  const addressLower = address.toLowerCase();
-  return eligibleAddresses.some(
-    (eligibleAddress) => eligibleAddress.toLowerCase() === addressLower,
-  );
 };

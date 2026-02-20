@@ -12,6 +12,8 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMerklClaim } from './hooks/useMerklClaim';
+import { useOnMerklClaimConfirmed } from './hooks/useOnMerklClaimConfirmed';
+import { useMerklRewards } from './hooks/useMerklRewards';
 
 export const ClaimBonusBadge = ({
   label,
@@ -23,6 +25,16 @@ export const ClaimBonusBadge = ({
   chainId: Hex;
 }) => {
   const t = useI18nContext();
+
+  // Check whether there are rewards available for the user
+  const { claimableReward, refetch } = useMerklRewards({
+    tokenAddress,
+    chainId,
+  });
+
+  // Refetch rewards when a pending claim is confirmed
+  useOnMerklClaimConfirmed(refetch);
+
   const { claimRewards, isClaiming, error } = useMerklClaim({
     tokenAddress,
     chainId,
@@ -35,6 +47,10 @@ export const ClaimBonusBadge = ({
     },
     [claimRewards],
   );
+
+  if (!claimableReward) {
+    return null;
+  }
 
   if (isClaiming) {
     return (
