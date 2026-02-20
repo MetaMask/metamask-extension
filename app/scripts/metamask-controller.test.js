@@ -83,6 +83,7 @@ import {
   getPermittedAccountsForScopesByOrigin,
 } from './controllers/permissions';
 import MetaMaskController from './metamask-controller';
+import * as stateUtils from './lib/state-utils';
 
 jest.mock('webextension-polyfill', () => ({
   runtime: {
@@ -2514,6 +2515,30 @@ describe('MetaMaskController', () => {
         });
         streamTest.end();
       });
+
+      it('does not create a publicConfig stream on the multiplex', () => {
+        const createStreamSpy = jest.spyOn(
+          ObjectMultiplex.prototype,
+          'createStream',
+        );
+
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          cb();
+        });
+
+        metamaskController.setupUntrustedCommunicationEip1193({
+          connectionStream: streamTest,
+          sender: { url: 'http://mycrypto.com', tab: { id: 456 } },
+        });
+
+        const publicConfigCalls = createStreamSpy.mock.calls.filter(
+          ([name]) => name === 'publicConfig',
+        );
+        expect(publicConfigCalls).toHaveLength(0);
+
+        createStreamSpy.mockRestore();
+        streamTest.end();
+      });
     });
 
     describe('#setupUntrustedCommunicationCaip', () => {
@@ -2849,103 +2874,280 @@ describe('MetaMaskController', () => {
         expect(metamaskController.activeControllerConnections).toBe(0);
       });
 
-      // this test could be improved by testing for actual behavior of handlers,
-      // without touching rawListeners from test
-      it('attaches listeners for trusted communication streams and removes them as streams close', async () => {
+      it('unsubscribes from controller stateChange events when streams close', async () => {
         jest
           .spyOn(metamaskController, 'triggerNetworkrequests')
           .mockImplementation();
         jest
           .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
-        const mockControllerConnectionChangedHandler = jest.fn();
 
-        const testStreams = [
-          createTestStream(),
-          createTestStream(2),
-          createTestStream(3),
-          createTestStream(4),
-          createTestStream(5),
-        ];
-        const baseUpdateListenerCount =
-          metamaskController.rawListeners('update').length;
+        metamaskController.startUISync = true;
+
+        const mockUnsubscribers = [];
+        jest
+          .spyOn(metamaskController.registry, 'subscribeAll')
+          .mockImplementation(() => {
+            const unsubs = Array.from({ length: 3 }, () => jest.fn());
+            mockUnsubscribers.push(...unsubs);
+            return unsubs;
+          });
+
+        const {
+          testStream,
+          onStreamEndPromise,
+          onFinishedCallbackPromise,
+          onFinishedCallbackResolve,
+        } = createTestStream();
 
         metamaskController.on(
           'controllerConnectionChanged',
           (activeControllerConnections) => {
-            const initialChangeHandlerCallCount =
-              mockControllerConnectionChangedHandler.mock.calls.length;
-            mockControllerConnectionChangedHandler(activeControllerConnections);
-            if (
-              initialChangeHandlerCallCount === 8 &&
-              activeControllerConnections === 1
-            ) {
-              testStreams[1].onFinishedCallbackResolve();
-              testStreams[3].onFinishedCallbackResolve();
-              testStreams[4].onFinishedCallbackResolve();
-              testStreams[2].onFinishedCallbackResolve();
-            }
-            if (
-              initialChangeHandlerCallCount === 9 &&
-              activeControllerConnections === 0
-            ) {
-              testStreams[0].onFinishedCallbackResolve();
+            if (activeControllerConnections === 0) {
+              onFinishedCallbackResolve();
             }
           },
         );
 
-        metamaskController.setupTrustedCommunication(
-          testStreams[0].testStream,
+        metamaskController.setupTrustedCommunication(testStream, {});
+
+        await onStreamEndPromise;
+
+        expect(mockUnsubscribers).toHaveLength(3);
+        mockUnsubscribers.forEach((unsub) =>
+          expect(unsub).not.toHaveBeenCalled(),
+        );
+
+        testStream.end();
+        await onFinishedCallbackPromise;
+
+        mockUnsubscribers.forEach((unsub) =>
+          expect(unsub).toHaveBeenCalledTimes(1),
+        );
+      });
+
+      it('writes flat patches to outStream when a controller fires stateChange', async () => {
+        metamaskController.startUISync = true;
+
+        let capturedHandler;
+        jest
+          .spyOn(metamaskController.registry, 'subscribeAll')
+          .mockImplementation((_config, handler) => {
+            capturedHandler = handler;
+            return [jest.fn()];
+          });
+
+        const writes = [];
+        const outStream = createThroughStream((chunk, _, cb) => {
+          writes.push(chunk);
+          cb();
+        });
+
+        metamaskController.setupControllerConnection(outStream);
+        await flushPromises();
+
+        outStream.emit('data', {
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'startSendingPatches',
+          params: [],
+        });
+        await flushPromises();
+
+        const mockPatches = [{ op: 'replace', path: ['tokens'], value: [] }];
+        capturedHandler('TokensController', {}, mockPatches);
+        await flushPromises();
+
+        const sendUpdateMsg = writes.find(
+          (w) => w.jsonrpc === '2.0' && w.method === 'sendUpdate',
+        );
+        expect(sendUpdateMsg).toBeDefined();
+        // Option F: flat Patch[] (not keyed Record<string, Patch[]>)
+        expect(Array.isArray(sendUpdateMsg.params[0])).toBe(true);
+        expect(sendUpdateMsg.params[0]).toEqual(mockPatches);
+
+        outStream.destroy();
+      });
+
+      it('batches multiple stateChange events into a single outStream write per microtask', async () => {
+        metamaskController.startUISync = true;
+
+        let capturedHandler;
+        jest
+          .spyOn(metamaskController.registry, 'subscribeAll')
+          .mockImplementation((_config, handler) => {
+            capturedHandler = handler;
+            return [jest.fn()];
+          });
+
+        const writes = [];
+        const outStream = createThroughStream((chunk, _, cb) => {
+          writes.push(chunk);
+          cb();
+        });
+
+        metamaskController.setupControllerConnection(outStream);
+        await flushPromises();
+
+        outStream.emit('data', {
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'startSendingPatches',
+          params: [],
+        });
+        await flushPromises();
+
+        const writesBeforePatches = writes.length;
+
+        capturedHandler(
+          'TokensController',
           {},
+          [{ op: 'replace', path: ['tokens'], value: [] }],
         );
-        metamaskController.setupTrustedCommunication(
-          testStreams[1].testStream,
+        capturedHandler(
+          'NetworkController',
           {},
+          [{ op: 'replace', path: ['selectedNetworkClientId'], value: 'x' }],
         );
-        metamaskController.setupTrustedCommunication(
-          testStreams[2].testStream,
+        await flushPromises();
+
+        const sendUpdateMsgs = writes
+          .slice(writesBeforePatches)
+          .filter((w) => w.jsonrpc === '2.0' && w.method === 'sendUpdate');
+        expect(sendUpdateMsgs).toHaveLength(1);
+        // Option F: flat Patch[] with patches from both controllers
+        expect(Array.isArray(sendUpdateMsgs[0].params[0])).toBe(true);
+        expect(sendUpdateMsgs[0].params[0]).toHaveLength(2);
+
+        outStream.destroy();
+      });
+
+      it('does not write patches before startSendingPatches is called', async () => {
+        metamaskController.startUISync = true;
+
+        let capturedHandler;
+        jest
+          .spyOn(metamaskController.registry, 'subscribeAll')
+          .mockImplementation((_config, handler) => {
+            capturedHandler = handler;
+            return [jest.fn()];
+          });
+
+        const writes = [];
+        const outStream = createThroughStream((chunk, _, cb) => {
+          writes.push(chunk);
+          cb();
+        });
+
+        metamaskController.setupControllerConnection(outStream);
+        await flushPromises();
+
+        capturedHandler(
+          'TokensController',
           {},
+          [{ op: 'replace', path: ['tokens'], value: [] }],
         );
-        metamaskController.setupTrustedCommunication(
-          testStreams[3].testStream,
+        await flushPromises();
+
+        const sendUpdateBeforeReady = writes.filter(
+          (w) => w.jsonrpc === '2.0' && w.method === 'sendUpdate',
+        );
+        expect(sendUpdateBeforeReady).toHaveLength(0);
+
+        outStream.emit('data', {
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'startSendingPatches',
+          params: [],
+        });
+        await flushPromises();
+
+        const sendUpdateAfterReady = writes.filter(
+          (w) => w.jsonrpc === '2.0' && w.method === 'sendUpdate',
+        );
+        expect(sendUpdateAfterReady).toHaveLength(1);
+
+        outStream.destroy();
+      });
+
+      it('drops patches when sanitizePatches returns empty array', async () => {
+        metamaskController.startUISync = true;
+
+        let capturedHandler;
+        jest
+          .spyOn(metamaskController.registry, 'subscribeAll')
+          .mockImplementation((_config, handler) => {
+            capturedHandler = handler;
+            return [jest.fn()];
+          });
+
+        jest.spyOn(stateUtils, 'sanitizePatches').mockReturnValue([]);
+
+        const writes = [];
+        const outStream = createThroughStream((chunk, _, cb) => {
+          writes.push(chunk);
+          cb();
+        });
+
+        metamaskController.setupControllerConnection(outStream);
+        await flushPromises();
+
+        outStream.emit('data', {
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'startSendingPatches',
+          params: [],
+        });
+        await flushPromises();
+
+        const writesBeforePatches = writes.length;
+
+        capturedHandler(
+          'TokensController',
           {},
+          [{ op: 'replace', path: ['vault'], value: 'secret' }],
         );
-        metamaskController.setupTrustedCommunication(
-          testStreams[4].testStream,
-          {},
+        await flushPromises();
+
+        const sendUpdateMsgs = writes
+          .slice(writesBeforePatches)
+          .filter((w) => w.jsonrpc === '2.0' && w.method === 'sendUpdate');
+        expect(sendUpdateMsgs).toHaveLength(0);
+
+        stateUtils.sanitizePatches.mockRestore();
+        outStream.destroy();
+      });
+
+      it('subscribes to controllers before retrieving initial state', async () => {
+        metamaskController.startUISync = true;
+
+        const callOrder = [];
+        jest
+          .spyOn(metamaskController.registry, 'subscribeAll')
+          .mockImplementation(() => {
+            callOrder.push('subscribeAll');
+            return [jest.fn()];
+          });
+        const originalGetState = metamaskController.getState.bind(
+          metamaskController,
+        );
+        jest.spyOn(metamaskController, 'getState').mockImplementation(() => {
+          callOrder.push('getState');
+          return originalGetState();
+        });
+
+        const outStream = createThroughStream((chunk, _, cb) => {
+          cb();
+        });
+
+        metamaskController.setupControllerConnection(outStream);
+        await flushPromises();
+
+        expect(callOrder.indexOf('subscribeAll')).toBeLessThan(
+          callOrder.indexOf('getState'),
         );
 
-        await testStreams[1].promise;
-
-        expect(metamaskController.rawListeners('update')).toHaveLength(
-          baseUpdateListenerCount + 5,
-        );
-
-        testStreams[1].testStream.end();
-        await testStreams[3].promise;
-        testStreams[3].testStream.end();
-        testStreams[3].testStream.end();
-
-        await testStreams[4].promise;
-        testStreams[4].testStream.end();
-        await testStreams[2].promise;
-        testStreams[2].testStream.end();
-        await testStreams[1].onFinishedCallbackPromise;
-        await testStreams[3].onFinishedCallbackPromise;
-        await testStreams[4].onFinishedCallbackPromise;
-        await testStreams[2].onFinishedCallbackPromise;
-        expect(metamaskController.rawListeners('update')).toHaveLength(
-          baseUpdateListenerCount + 1,
-        );
-
-        await testStreams[0].promise;
-        testStreams[0].testStream.end();
-
-        await testStreams[0].onFinishedCallbackPromise;
-
-        expect(metamaskController.rawListeners('update')).toHaveLength(
-          baseUpdateListenerCount,
-        );
+        outStream.destroy();
       });
     });
 
@@ -2962,6 +3164,215 @@ describe('MetaMaskController', () => {
         metamaskController.unMarkPasswordForgotten(noop);
         const state = metamaskController.getState();
         expect(state.forgottenPassword).toStrictEqual(false);
+      });
+    });
+
+    describe('#getState', () => {
+      it('returns flat state with controller properties at top level', () => {
+        const state = metamaskController.getState();
+
+        expect(state).toHaveProperty('isInitialized');
+        // Flat state: controller properties merged at top level
+        expect(state).toHaveProperty('forgottenPassword');
+        expect(state).toHaveProperty('selectedNetworkClientId');
+      });
+
+      it('returns isInitialized as false when no vault exists', () => {
+        const state = metamaskController.getState();
+
+        expect(state.isInitialized).toBe(false);
+      });
+
+      it('applies sanitizeUIState to the flat state', () => {
+        const state = metamaskController.getState();
+
+        // sanitizeUIState removes vault from the returned state
+        expect(state).not.toHaveProperty('vault');
+      });
+    });
+
+    describe('registry', () => {
+      it('exposes a ControllerRegistry instance', () => {
+        expect(metamaskController.registry).toBeDefined();
+        expect(typeof metamaskController.registry.getKeyedState).toBe(
+          'function',
+        );
+        expect(typeof metamaskController.registry.subscribeAll).toBe(
+          'function',
+        );
+        expect(typeof metamaskController.registry.getPersistedState).toBe(
+          'function',
+        );
+      });
+
+      it('has uiConfig and persistConfig populated', () => {
+        expect(
+          Object.keys(metamaskController.registry.uiConfig).length,
+        ).toBeGreaterThan(0);
+        expect(
+          Object.keys(metamaskController.registry.persistConfig).length,
+        ).toBeGreaterThan(0);
+      });
+    });
+
+    describe('removed legacy APIs', () => {
+      it('does not have memStore property', () => {
+        expect(metamaskController.memStore).toBeUndefined();
+      });
+
+      it('does not have publicConfigStore property', () => {
+        expect(metamaskController.publicConfigStore).toBeUndefined();
+      });
+
+      it('does not have privateSendUpdate method', () => {
+        expect(metamaskController.privateSendUpdate).toBeUndefined();
+      });
+
+      it('does not have sendUpdate method', () => {
+        expect(metamaskController.sendUpdate).toBeUndefined();
+      });
+
+      it('does not have store property (ComposableObservableStore)', () => {
+        expect(metamaskController.store).toBeUndefined();
+      });
+    });
+
+    describe('targeted controller subscriptions', () => {
+      it('updates isClientOpenAndUnlocked when KeyringController:stateChange fires', () => {
+        metamaskController._isClientOpen = true;
+
+        const keyringState = {
+          ...metamaskController.keyringController.state,
+          isUnlocked: true,
+        };
+        metamaskController.controllerMessenger.publish(
+          'KeyringController:stateChange',
+          keyringState,
+          getMockPatches(),
+        );
+        expect(metamaskController.isClientOpenAndUnlocked).toBe(true);
+
+        metamaskController.controllerMessenger.publish(
+          'KeyringController:stateChange',
+          { ...keyringState, isUnlocked: false },
+          getMockPatches(),
+        );
+        expect(metamaskController.isClientOpenAndUnlocked).toBe(false);
+      });
+
+      it('sets isClientOpenAndUnlocked to false when client is not open', () => {
+        metamaskController._isClientOpen = false;
+
+        metamaskController.controllerMessenger.publish(
+          'KeyringController:stateChange',
+          {
+            ...metamaskController.keyringController.state,
+            isUnlocked: true,
+          },
+          getMockPatches(),
+        );
+        expect(metamaskController.isClientOpenAndUnlocked).toBe(false);
+      });
+
+      it('calls _notifyChainChange when NetworkController:stateChange fires', () => {
+        jest
+          .spyOn(metamaskController, 'notifyAllConnections')
+          .mockImplementation();
+
+        metamaskController.controllerMessenger.publish(
+          'NetworkController:stateChange',
+          metamaskController.networkController.state,
+          getMockPatches(),
+        );
+
+        expect(metamaskController.notifyAllConnections).toHaveBeenCalled();
+      });
+    });
+
+    describe('#_startUISync', () => {
+      it('emits startUISync event and sets startUISync flag', () => {
+        const emitSpy = jest.spyOn(metamaskController, 'emit');
+        metamaskController.startUISync = false;
+
+        metamaskController._startUISync();
+
+        expect(emitSpy).toHaveBeenCalledWith('startUISync');
+        expect(metamaskController.startUISync).toBe(true);
+      });
+    });
+
+    describe('#_trackTransactionFailure', () => {
+      it('reads account count from accountTrackerController.state', () => {
+        const mockAccounts = {
+          '0x1111111111111111111111111111111111111111': {},
+          '0x2222222222222222222222222222222222222222': {},
+        };
+        jest
+          .spyOn(
+            metamaskController.accountTrackerController,
+            'state',
+            'get',
+          )
+          .mockReturnValue({ accounts: mockAccounts });
+
+        const selectedAddress =
+          '0x1111111111111111111111111111111111111111';
+        jest
+          .spyOn(metamaskController.accountsController, 'getSelectedAccount')
+          .mockReturnValue({ address: selectedAddress });
+
+        jest
+          .spyOn(metamaskController.tokensController, 'state', 'get')
+          .mockReturnValue({
+            allTokens: {
+              '0x1': {
+                [selectedAddress]: [{ symbol: 'DAI', address: '0xdai' }],
+              },
+            },
+          });
+
+        const trackEventSpy = jest
+          .spyOn(metamaskController.metaMetricsController, 'trackEvent')
+          .mockImplementation();
+
+        metamaskController._trackTransactionFailure({
+          chainId: '0x1',
+          txReceipt: { status: '0x0' },
+          simulationFails: { reason: 'out of gas' },
+        });
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              numberOfAccounts: 2,
+            }),
+          }),
+          expect.anything(),
+        );
+      });
+    });
+
+    describe('#createCancelTransaction', () => {
+      it('does not return state', async () => {
+        jest
+          .spyOn(metamaskController.txController, 'stopTransaction')
+          .mockResolvedValue();
+
+        const result =
+          await metamaskController.createCancelTransaction('txId');
+        expect(result).toBeUndefined();
+      });
+    });
+
+    describe('#createSpeedUpTransaction', () => {
+      it('does not return state', async () => {
+        jest
+          .spyOn(metamaskController.txController, 'speedUpTransaction')
+          .mockResolvedValue();
+
+        const result =
+          await metamaskController.createSpeedUpTransaction('txId');
+        expect(result).toBeUndefined();
       });
     });
 

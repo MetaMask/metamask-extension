@@ -6517,8 +6517,6 @@ export default class MetamaskController extends EventEmitter {
       customGasSettings,
       options,
     );
-    const state = this.getState();
-    return state;
   }
 
   /**
@@ -6540,8 +6538,6 @@ export default class MetamaskController extends EventEmitter {
       customGasSettings,
       options,
     );
-    const state = this.getState();
-    return state;
   }
 
   async estimateGas(estimateGasParams) {

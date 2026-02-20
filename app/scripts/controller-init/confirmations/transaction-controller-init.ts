@@ -132,6 +132,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       // getIsSmartTransaction selector needs refactoring to accept keyed state.
       const uiState = getUIState({} as ControllerFlatState);
 
+      // @ts-expect-error Smart transaction selector types does not match controller state
       const isSmartTransactionEnabled = getIsSmartTransaction(uiState, chainId);
 
       const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
@@ -209,6 +210,7 @@ export const TransactionControllerInit: ControllerInitFunction<
           transactions: _request.transactions as PublishBatchHookTransaction[],
         }),
     },
+    // @ts-expect-error Keyring controller expects TxData returned but TransactionController expects TypedTransaction
     sign: (...args) => keyringController().signTransaction(...args),
     state: persistedState.TransactionController,
   });
