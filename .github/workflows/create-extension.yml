@@ -57,91 +57,49 @@ jobs:
           yarn dist
           # The Chrome build output is located in dist/chrome
           cd dist/chrome
-          
-          # Remove the 'key' field from manifest.json to avoid Web Store ID conflicts
-          # The Chrome Web Store API will reject a new draft upload with "Invalid Value"
-          # if the zip contains a key for an extension ID already registered.
+
+          # Remove the 'key' field from manifest.json to avoid Web Store ID conflicts.
+          # MetaMask's build injects a hardcoded dev key; the Chrome Web Store rejects
+          # uploads containing a key registered to another developer.
           jq 'del(.key)' manifest.json > manifest-tmp.json
           mv manifest-tmp.json manifest.json
-          
+
           # Zip the contents into extension.zip in the repository root
           zip -r ../../extension.zip .
 
-      # Step 4: Verify the zip file is valid before uploading
-      - name: Verify zip contents
-        run: |
-          echo "=== Zip file size ==="
-          ls -lh extension.zip
-          echo ""
-          echo "=== Top-level contents (manifest.json should be here) ==="
-          unzip -l extension.zip | head -20
-
-      # Step 5: Upload the zip file to create a NEW draft extension
-      # This uses the Chrome Web Store API v1.1 endpoint for inserting new items.
-      # It passes the access token we got from the auth step.
+      # Step 4: Upload the zip file to create a NEW draft extension.
+      # The Chrome Web Store v1.1 "insert" API requires knowing which developer
+      # account to create the item under. WIF service account tokens have no
+      # associated email identity (tokeninfo returns email: null), so we must
+      # explicitly pass publisherEmail to tell the API which account to use.
+      #
+      # REQUIRED: Set the PUBLISHER_EMAIL repository variable to the email
+      # address of the registered Chrome Web Store developer account.
       - name: Create Draft Extension
         run: |
-          echo "=== Debug: Zip file size ==="
-          ZIP_SIZE=$(stat --format=%s extension.zip)
-          echo "Size: $ZIP_SIZE bytes"
-          
+          echo "Publishing as: ${{ vars.PUBLISHER_EMAIL }}"
+          echo "Zip size: $(stat --format=%s extension.zip) bytes"
           echo ""
-          echo "=== Debug: Verifying manifest.json has no 'key' field ==="
-          unzip -p extension.zip manifest.json | jq '{name, version, manifest_version, has_key: (has("key"))}'
-          
-          echo ""
-          echo "=== Debug: Attempting upload with verbose curl ==="
-          
+
           HTTP_CODE=$(curl -s -o /tmp/response.json -w "%{http_code}" \
             -X POST \
             -H "Authorization: Bearer ${{ steps.auth.outputs.access_token }}" \
             -H "x-goog-api-version: 2" \
             -T extension.zip \
-            "https://www.googleapis.com/upload/chromewebstore/v1.1/items?uploadType=media")
-          
-          echo "HTTP Status Code: $HTTP_CODE"
+            "https://www.googleapis.com/upload/chromewebstore/v1.1/items?uploadType=media&publisherEmail=${{ vars.PUBLISHER_EMAIL }}")
+
+          echo "HTTP Status: $HTTP_CODE"
           echo ""
-          echo "=== Response body ==="
           cat /tmp/response.json
           echo ""
-          
+
           if [ "$HTTP_CODE" != "200" ]; then
-            echo ""
-            echo "=== Retrying without x-goog-api-version header ==="
-            HTTP_CODE2=$(curl -s -o /tmp/response2.json -w "%{http_code}" \
-              -X POST \
-              -H "Authorization: Bearer ${{ steps.auth.outputs.access_token }}" \
-              -T extension.zip \
-              "https://www.googleapis.com/upload/chromewebstore/v1.1/items?uploadType=media")
-            
-            echo "HTTP Status Code: $HTTP_CODE2"
-            echo "Response body:"
-            cat /tmp/response2.json
-            echo ""
-            
-            echo ""
-            echo "=== Retrying with Chrome Web Store API v2 endpoint ==="
-            echo "Fetching tokeninfo to get service account email..."
-            TOKEN_INFO=$(curl -s "https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${{ steps.auth.outputs.access_token }}")
-            echo "$TOKEN_INFO" | jq '{email, scope, expires_in}'
-            
-            echo ""
-            echo "Trying v2 items.insert endpoint..."
-            HTTP_CODE3=$(curl -s -o /tmp/response3.json -w "%{http_code}" \
-              -X POST \
-              -H "Authorization: Bearer ${{ steps.auth.outputs.access_token }}" \
-              -T extension.zip \
-              "https://chromewebstore.googleapis.com/upload/v2/items?uploadType=media")
-            
-            echo "HTTP Status Code: $HTTP_CODE3"
-            echo "Response body:"
-            cat /tmp/response3.json
-            echo ""
+            echo "::error::Upload failed with HTTP $HTTP_CODE"
+            exit 1
           fi
-          
+
           echo ""
           echo "========================================"
-          echo "If one of the attempts above succeeded,"
-          echo "save the 'id' / 'itemId' value from the response"
+          echo "Save the 'id' value from the response above"
           echo "as a repository variable named EXTENSION_ID"
           echo "========================================"
