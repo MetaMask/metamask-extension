@@ -71,8 +71,7 @@ class FixtureBuilderV2 {
   }
 
   withTransactionController(data: Record<string, unknown>): this {
-    const transactionController = this.fixture.data
-      .TransactionController ?? {};
+    const transactionController = this.fixture.data.TransactionController ?? {};
     merge(this.fixture.data, { TransactionController: transactionController });
     const target = this.fixture.data.TransactionController as Record<
       string,
