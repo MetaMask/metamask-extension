@@ -36,7 +36,6 @@ describe('watchAssetHandler', () => {
       asset: req.params.options,
       type: req.params.type,
       origin: req.origin,
-      networkClientId: req.networkClientId,
     });
     expect(res.result).toStrictEqual(true);
     expect(mockEnd).toHaveBeenCalledWith();
@@ -68,7 +67,6 @@ describe('watchAssetHandler', () => {
       asset: req.params.options,
       type: req.params.type,
       origin: req.origin,
-      networkClientId: req.networkClientId,
     });
     expect(res.result).toStrictEqual(true);
     expect(mockEnd).toHaveBeenCalledWith();
