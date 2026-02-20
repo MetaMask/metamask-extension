@@ -1,11 +1,20 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { getSwapBridgeMetricsProperties } from './swap-bridge';
 import { createBuilderRequest } from './test-utils';
 
 describe('swap-bridge builder', () => {
-  it('returns metrics shape', async () => {
-    const result = await getSwapBridgeMetricsProperties(createBuilderRequest());
-    expect(result.properties).toBeDefined();
-    expect(result.sensitiveProperties).toBeDefined();
+  it('adds transaction_approval_amount_type when present in context', async () => {
+    const result = await getSwapBridgeMetricsProperties(
+      createBuilderRequest({
+        context: {
+          ...createBuilderRequest().context,
+          contractMethodName: 'Approve',
+          transactionApprovalAmountType: 'custom',
+        } as never,
+      }),
+    );
+    expect(result.properties.transaction_approval_amount_type).toBe('custom');
+    expect(result.sensitiveProperties).toStrictEqual({});
   });
 
   it('includes simulation values for approve method name even when not ERC20 approve', async () => {
