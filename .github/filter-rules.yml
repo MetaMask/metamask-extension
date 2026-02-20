@@ -56,3 +56,7 @@ all_changes:
 # To inform needs-locales
 locales:
   - 'app/_locales/**'
+
+# To inform needs-repository-health-checks
+repository_health_checks_related:
+  - 'CHANGELOG.md'

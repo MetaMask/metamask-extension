@@ -125,7 +125,7 @@ jobs:
     needs:
       - get-requirements
       - prep-deps
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' || (!cancelled() && needs.get-requirements.outputs.needs-only-repository-health-checks == 'true') }}
     uses: ./.github/workflows/repository-health-checks.yml
 
   test-storybook:

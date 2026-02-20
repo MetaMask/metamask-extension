@@ -27,6 +27,9 @@ on:
       needs-e2e:
         description: Whether E2E tests are needed
         value: ${{ jobs.detect-changes.outputs.needs-e2e }}
+      needs-only-repository-health-checks:
+        description: Whether repository health checks are needed
+        value: ${{ jobs.detect-changes.outputs.needs-only-repository-health-checks }}
 
 env:
   # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
@@ -52,6 +55,7 @@ jobs:
       needs-releases: ${{ steps.set-needs-releases.outputs.needs-releases || 'false'}}
       needs-benchmarks: ${{ steps.set-needs-benchmarks.outputs.needs-benchmarks || 'false'}}
       needs-e2e: ${{ steps.set-needs-e2e.outputs.needs-e2e || 'false'}}
+      needs-only-repository-health-checks: ${{ steps.set-needs-only-repository-health-checks.outputs.needs-only-repository-health-checks || 'false'}}
     steps:
       - name: Check pull request merge queue status
         id: check-skip-merge-queue
@@ -116,10 +120,20 @@ jobs:
             echo "needs-locales=false" >> "$GITHUB_OUTPUT"
           fi
 
-      # skip-everything is a shortcut for up-to-date == 'true' || needs-locales == 'true'
+      - name: Compute needs-only-repository-health-checks flag
+        id: set-needs-only-repository-health-checks
+        # if: ${{ steps.filter.outputs.repository_health_checks_related_count != '0' && steps.filter.outputs.all_changes_count == steps.filter.outputs.repository_health_checks_related_count }}
+        run: echo "needs-only-repository-health-checks=true" >> "$GITHUB_OUTPUT"
+
+      # skip-everything is a shortcut for up-to-date == 'true' || needs-locales == 'true' || needs-only-repository-health-checks = 'true'
       - name: Compute skip-everything flag
         id: set-skip-everything
-        if: ${{ env.IS_RUN_EVERYTHING_BRANCH == 'false' && (steps.check-skip-merge-queue.outputs.up-to-date == 'true' || steps.set-needs-locales.outputs.needs-locales == 'true') }}
+        if: |
+          ${{ env.IS_RUN_EVERYTHING_BRANCH == 'false' && (
+            steps.check-skip-merge-queue.outputs.up-to-date == 'true' ||
+            steps.set-needs-locales.outputs.needs-locales == 'true' ||
+            steps.set-needs-only-repository-health-checks.outputs.needs-only-repository-health-checks == 'true'
+          ) }}
         run: echo "skip-everything=true" >> "$GITHUB_OUTPUT"
 
       # This is very simple right now (and equivalent to !skip-everything)
