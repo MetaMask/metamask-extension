@@ -1,0 +1,66 @@
+name: Create Chrome Extension Draft
+
+on:
+  # This workflow can only be triggered manually from the GitHub Actions UI
+  # It will not run automatically on push or pull requests
+  workflow_dispatch:
+
+permissions:
+  # 'contents: read' allows the workflow to checkout the repository code
+  contents: read
+  # 'id-token: write' is strictly required for the google-github-actions/auth action 
+  # to request a short-lived OpenID Connect (OIDC) token from GitHub.
+  id-token: write
+
+jobs:
+  create:
+    # Runs the job on the latest Ubuntu runner provided by GitHub
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out the repository code so the workflow can access it
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Step 2: Authenticate to Google Cloud using Workload Identity Federation (WIF)
+      # This is the recommended, keyless authentication method for GCP.
+      # It trades the GitHub OIDC token for a Google Cloud access token.
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          # The WIF provider configured in GCP that trusts this GitHub repo
+          workload_identity_provider: ${{ vars.WIF_PROVIDER }}
+          # The GCP service account that has permissions to publish to the Web Store
+          service_account: ${{ vars.WIF_SERVICE_ACCOUNT }}
+          # We request an OAuth 2.0 access token (instead of credentials file)
+          token_format: 'access_token'
+          # Required OAuth scope for the Chrome Web Store API
+          access_token_scopes: 'https://www.googleapis.com/auth/chromewebstore'
+
+      # Step 3: Package the extension into a zip file
+      # Note: You'll need to adjust 'extension' to whatever directory 
+      # your build process actually outputs (e.g., 'dist', 'build')
+      - name: Build Extension
+        run: |
+          cd extension
+          zip -r ../extension.zip .
+
+      # Step 4: Upload the zip file to create a NEW draft extension
+      # This uses the Chrome Web Store API v1.1 endpoint for inserting new items.
+      # It passes the access token we got from the auth step.
+      - name: Create Draft Extension
+        run: |
+          # Note: The endpoint version must be v1.1
+          RESPONSE=$(curl -s -X POST \
+            -H "Authorization: Bearer ${{ steps.auth.outputs.access_token }}" \
+            -H "x-goog-api-version: 2" \
+            -T extension.zip \
+            "https://www.googleapis.com/upload/chromewebstore/v1.1/items")
+
+          # Print the API response so you can see the results
+          echo "$RESPONSE"
+          echo ""
+          echo "========================================"
+          echo "Save the 'id' value from the response above"
+          echo "as a repository variable named EXTENSION_ID"
+          echo "========================================"
