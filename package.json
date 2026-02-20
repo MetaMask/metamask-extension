@@ -159,6 +159,7 @@
     "acorn@^7.0.0": "patch:acorn@npm:7.4.1#.yarn/patches/acorn-npm-7.4.1-f450b4646c.patch",
     "acorn@^7.4.1": "patch:acorn@npm:7.4.1#.yarn/patches/acorn-npm-7.4.1-f450b4646c.patch",
     "acorn@^7.1.1": "patch:acorn@npm:7.4.1#.yarn/patches/acorn-npm-7.4.1-f450b4646c.patch",
+    "ajv": "^8.18.0",
     "object.values@^1.1.5": "patch:object.values@npm%3A1.1.5#./.yarn/patches/object.values-npm-1.1.5-f1de7f3742.patch",
     "error@^7.0.0": "patch:error@npm%3A7.0.2#./.yarn/patches/error-npm-7.0.2-6dfbeab4da.patch",
     "eslint-import-resolver-typescript@^2.5.0": "patch:eslint-import-resolver-typescript@npm%3A2.5.0#./.yarn/patches/eslint-import-resolver-typescript-npm-2.5.0-3b8adf0d03.patch",
