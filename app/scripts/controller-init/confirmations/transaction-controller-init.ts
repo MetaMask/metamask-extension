@@ -59,7 +59,6 @@ export const TransactionControllerInit: ControllerInitFunction<
   const {
     controllerMessenger,
     initMessenger,
-    getFlatState,
     getPermittedAccounts,
     getTransactionMetricsRequest,
     persistedState,
@@ -129,9 +128,10 @@ export const TransactionControllerInit: ControllerInitFunction<
     },
     isEIP7702GasFeeTokensEnabled: async (transactionMeta) => {
       const { chainId } = transactionMeta;
-      const uiState = getUIState(getFlatState());
+      // TODO: Read from controllers directly instead of flat state.
+      // getIsSmartTransaction selector needs refactoring to accept keyed state.
+      const uiState = getUIState({} as ControllerFlatState);
 
-      // @ts-expect-error Smart transaction selector types does not match controller state
       const isSmartTransactionEnabled = getIsSmartTransaction(uiState, chainId);
 
       const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
@@ -188,9 +188,10 @@ export const TransactionControllerInit: ControllerInitFunction<
         return response;
       },
       // @ts-expect-error Controller type does not support undefined return value
+      // TODO: publishHook needs refactoring to read from controllers directly.
       publish: (transactionMeta, signedTx) =>
         publishHook({
-          flatState: getFlatState(),
+          flatState: {} as ControllerFlatState,
           initMessenger,
           signedTx,
           smartTransactionsController: smartTransactionsController(),
@@ -203,11 +204,11 @@ export const TransactionControllerInit: ControllerInitFunction<
           smartTransactionsController: smartTransactionsController(),
           hookControllerMessenger:
             initMessenger as SmartTransactionHookMessenger,
-          flatState: getFlatState(),
+          // TODO: publishBatchHook needs refactoring to read from controllers directly.
+          flatState: {} as ControllerFlatState,
           transactions: _request.transactions as PublishBatchHookTransaction[],
         }),
     },
-    // @ts-expect-error Keyring controller expects TxData returned but TransactionController expects TypedTransaction
     sign: (...args) => keyringController().signTransaction(...args),
     state: persistedState.TransactionController,
   });
