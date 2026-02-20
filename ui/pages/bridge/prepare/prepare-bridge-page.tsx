@@ -18,6 +18,8 @@ import {
   setToToken,
   updateQuoteRequestParams,
   trackUnifiedSwapBridgeEvent,
+  setIsSrcAssetPickerOpen,
+  setIsDestAssetPickerOpen,
 } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -42,6 +44,8 @@ import {
   getIsStxEnabled,
   getIsGasIncluded,
   getValidatedFromValue,
+  getIsSrcAssetPickerOpen,
+  getIsDestAssetPickerOpen,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -145,6 +149,8 @@ const PrepareBridgePage = ({
   );
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
+  const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
+  const isDestAssetPickerOpen = useSelector(getIsDestAssetPickerOpen);
 
   // Determine if the current quote is expired or does not match the currently
   // selected destination asset/chain.
@@ -383,6 +389,10 @@ const PrepareBridgePage = ({
 
       <Column className="prepare-bridge-page" gap={4}>
         <BridgeInputGroup
+          isAssetPickerOpen={isSrcAssetPickerOpen}
+          setIsAssetPickerOpen={(isOpen) =>
+            dispatch(setIsSrcAssetPickerOpen(isOpen))
+          }
           header={getFromInputHeader()}
           token={fromToken}
           accountAddress={selectedAccount?.address}
@@ -532,6 +542,10 @@ const PrepareBridgePage = ({
           />
 
           <BridgeInputGroup
+            isAssetPickerOpen={isDestAssetPickerOpen}
+            setIsAssetPickerOpen={(isOpen) =>
+              dispatch(setIsDestAssetPickerOpen(isOpen))
+            }
             header={getToInputHeader()}
             accountAddress={
               selectedDestinationAccount?.address ?? selectedAccount.address

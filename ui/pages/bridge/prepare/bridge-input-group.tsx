@@ -60,7 +60,11 @@ export const BridgeInputGroup = ({
   disabledChainId,
   containerProps = {},
   isDestination,
+  isAssetPickerOpen,
+  setIsAssetPickerOpen,
 }: {
+  isAssetPickerOpen: boolean;
+  setIsAssetPickerOpen: (isOpen: boolean) => void;
   amountInFiat?: string;
   onAmountChange?: (value: string) => void;
   token: BridgeToken;
@@ -153,7 +157,6 @@ export const BridgeInputGroup = ({
       }
     }
   };
-  const [isAssetPickerOpen, setIsAssetPickerOpen] = useState(false);
 
   return (
     <Column gap={1} {...containerProps}>

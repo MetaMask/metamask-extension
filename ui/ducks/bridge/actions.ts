@@ -43,6 +43,8 @@ const {
   setWasTxDeclined,
   setSlippage,
   restoreQuoteRequestFromState,
+  setIsSrcAssetPickerOpen,
+  setIsDestAssetPickerOpen,
 } = bridgeSlice.actions;
 
 export {
@@ -56,6 +58,8 @@ export {
   setSlippage,
   setTxAlerts,
   restoreQuoteRequestFromState,
+  setIsSrcAssetPickerOpen,
+  setIsDestAssetPickerOpen,
 };
 
 const callBridgeControllerMethod = (

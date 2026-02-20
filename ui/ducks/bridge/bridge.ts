@@ -29,6 +29,8 @@ const initialState: BridgeState = {
   slippage: SlippageValue.BridgeDefault,
   txAlert: null,
   txAlertStatus: RequestStatus.FETCHED,
+  isSrcAssetPickerOpen: false,
+  isDestAssetPickerOpen: false,
 };
 
 export const setSrcTokenExchangeRates = createAsyncThunk(
@@ -103,6 +105,7 @@ const bridgeSlice = createSlice({
     setFromToken: (state, { payload }: { payload: TokenPayload }) => {
       const currentFromToken = state.fromToken;
       const newFromToken = toBridgeToken(payload);
+      state.isSrcAssetPickerOpen = false;
       // Set toToken to previous fromToken if new fromToken is the same as the current toToken
       if (
         state.toToken?.assetId &&
@@ -122,6 +125,7 @@ const bridgeSlice = createSlice({
     },
     setToToken: (state, { payload }: { payload: TokenPayload }) => {
       state.toToken = payload ? toBridgeToken(payload) : null;
+      state.isDestAssetPickerOpen = false;
     },
     setFromTokenInputValue: (
       state,
@@ -161,6 +165,12 @@ const bridgeSlice = createSlice({
     },
     setSlippage: (state, action) => {
       state.slippage = action.payload;
+    },
+    setIsSrcAssetPickerOpen: (state, action) => {
+      state.isSrcAssetPickerOpen = action.payload;
+    },
+    setIsDestAssetPickerOpen: (state, action) => {
+      state.isDestAssetPickerOpen = action.payload;
     },
   },
   extraReducers: (builder) => {
