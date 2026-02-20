@@ -518,8 +518,7 @@ export const getMultiChainBalancesControllerBalances = createDeepEqualSelector(
 export const getCurrencyRateControllerCurrentCurrency = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
-    (state: { metamask: CurrencyRateState }) =>
-      state.metamask.currentCurrency ?? {},
+    (state: { metamask: CurrencyRateState }) => state.metamask.currentCurrency,
     (state: { metamask: AssetsControllerState }) =>
       state.metamask.selectedCurrency,
   ],

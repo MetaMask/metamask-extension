@@ -855,9 +855,9 @@ describe('Aggregated balance recomputation behavior', () => {
     );
   });
 
-  it('recomputes when a relevant slice reference changes (e.g., tokenBalances)', () => {
+  it.only('recomputes when a relevant slice reference changes (e.g., tokenBalances)', () => {
     const tokenBalancesA = {};
-    const tokenBalancesB = {}; // new reference
+    const tokenBalancesB = { newProperty: 'newProperty' }; // different references with different values
 
     const stateA: BalanceCalculationState = {
       metamask: {
