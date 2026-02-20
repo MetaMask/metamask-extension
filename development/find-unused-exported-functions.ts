@@ -32,6 +32,11 @@ type UnusedFunctionReportItem = {
   column: number;
 };
 
+type NamedImportBinding = {
+  moduleFilePath: string;
+  exportName: string;
+};
+
 const DEFAULT_ENTRIES = ['app/scripts/load/ui.ts', 'app/service-worker.ts'];
 const DEFAULT_ROOTS = ['app', 'shared', 'ui'];
 
@@ -364,6 +369,221 @@ function collectDependencySpecifiers(sourceFile: ts.SourceFile): string[] {
   return [...specifiers];
 }
 
+function buildUsageKey(moduleFilePath: string, exportName: string): string {
+  return `${moduleFilePath}::${exportName}`;
+}
+
+function getImportCallModuleSpecifier(
+  expression: ts.Expression,
+): string | undefined {
+  let currentExpression: ts.Expression = expression;
+
+  while (
+    ts.isAwaitExpression(currentExpression) ||
+    ts.isParenthesizedExpression(currentExpression)
+  ) {
+    currentExpression = currentExpression.expression;
+  }
+
+  if (!ts.isCallExpression(currentExpression)) {
+    return undefined;
+  }
+
+  const firstArgument = currentExpression.arguments.at(0);
+  if (
+    !firstArgument ||
+    (!ts.isStringLiteral(firstArgument) &&
+      !ts.isNoSubstitutionTemplateLiteral(firstArgument))
+  ) {
+    return undefined;
+  }
+
+  const isRequireCall =
+    ts.isIdentifier(currentExpression.expression) &&
+    currentExpression.expression.text === 'require';
+  const isImportCall =
+    currentExpression.expression.kind === ts.SyntaxKind.ImportKeyword;
+
+  if (!isRequireCall && !isImportCall) {
+    return undefined;
+  }
+
+  return firstArgument.text;
+}
+
+function isIdentifierDeclarationName(identifier: ts.Identifier): boolean {
+  const { parent } = identifier;
+
+  if (
+    (ts.isVariableDeclaration(parent) && parent.name === identifier) ||
+    (ts.isBindingElement(parent) && parent.name === identifier) ||
+    (ts.isParameter(parent) && parent.name === identifier) ||
+    (ts.isFunctionDeclaration(parent) && parent.name === identifier) ||
+    (ts.isClassDeclaration(parent) && parent.name === identifier) ||
+    (ts.isImportSpecifier(parent) && parent.name === identifier) ||
+    (ts.isImportClause(parent) && parent.name === identifier) ||
+    (ts.isNamespaceImport(parent) && parent.name === identifier) ||
+    (ts.isImportEqualsDeclaration(parent) && parent.name === identifier)
+  ) {
+    return true;
+  }
+
+  if (ts.isPropertyAccessExpression(parent) && parent.name === identifier) {
+    return true;
+  }
+
+  return false;
+}
+
+function countManualRuntimeImportUsages({
+  checker,
+  compilerOptions,
+  filesToAnalyze,
+  moduleResolutionCache,
+  program,
+}: {
+  checker: ts.TypeChecker;
+  compilerOptions: ts.CompilerOptions;
+  filesToAnalyze: string[];
+  moduleResolutionCache: ts.ModuleResolutionCache;
+  program: ts.Program;
+}): Map<string, number> {
+  const filesToAnalyzeSet = new Set(filesToAnalyze);
+  const manualUsageCounts = new Map<string, number>();
+
+  const incrementUsage = (moduleFilePath: string, exportName: string): void => {
+    const usageKey = buildUsageKey(moduleFilePath, exportName);
+    manualUsageCounts.set(usageKey, (manualUsageCounts.get(usageKey) ?? 0) + 1);
+  };
+
+  for (const filePath of filesToAnalyze) {
+    const sourceFile = program.getSourceFile(filePath);
+    if (!sourceFile) {
+      continue;
+    }
+
+    const namedImportBindings = new Map<ts.Symbol, NamedImportBinding>();
+    const namespaceImportBindings = new Map<ts.Symbol, string>();
+
+    function maybeResolveImportBinding(
+      declaration: ts.VariableDeclaration,
+    ): string | undefined {
+      if (!declaration.initializer) {
+        return undefined;
+      }
+
+      const moduleSpecifier = getImportCallModuleSpecifier(declaration.initializer);
+      if (!moduleSpecifier) {
+        return undefined;
+      }
+
+      return resolveModuleSpecifier(
+        filePath,
+        moduleSpecifier,
+        compilerOptions,
+        moduleResolutionCache,
+      );
+    }
+
+    function collectBindings(node: ts.Node): void {
+      if (ts.isVariableDeclaration(node)) {
+        const resolvedModulePath = maybeResolveImportBinding(node);
+        if (
+          resolvedModulePath &&
+          filesToAnalyzeSet.has(resolvedModulePath) &&
+          ts.isObjectBindingPattern(node.name)
+        ) {
+          for (const bindingElement of node.name.elements) {
+            if (!ts.isIdentifier(bindingElement.name)) {
+              continue;
+            }
+
+            const symbol = checker.getSymbolAtLocation(bindingElement.name);
+            if (!symbol) {
+              continue;
+            }
+
+            let exportName: string | undefined;
+            if (!bindingElement.propertyName) {
+              exportName = bindingElement.name.text;
+            } else if (ts.isIdentifier(bindingElement.propertyName)) {
+              exportName = bindingElement.propertyName.text;
+            } else if (
+              ts.isStringLiteral(bindingElement.propertyName) ||
+              ts.isNoSubstitutionTemplateLiteral(bindingElement.propertyName)
+            ) {
+              exportName = bindingElement.propertyName.text;
+            }
+
+            if (!exportName) {
+              continue;
+            }
+
+            namedImportBindings.set(symbol, {
+              moduleFilePath: resolvedModulePath,
+              exportName,
+            });
+          }
+        } else if (
+          resolvedModulePath &&
+          filesToAnalyzeSet.has(resolvedModulePath) &&
+          ts.isIdentifier(node.name)
+        ) {
+          const symbol = checker.getSymbolAtLocation(node.name);
+          if (symbol) {
+            namespaceImportBindings.set(symbol, resolvedModulePath);
+          }
+        }
+      }
+
+      ts.forEachChild(node, collectBindings);
+    }
+
+    function countUsages(node: ts.Node): void {
+      if (ts.isIdentifier(node) && !isIdentifierDeclarationName(node)) {
+        const symbol = checker.getSymbolAtLocation(node);
+        const binding = symbol ? namedImportBindings.get(symbol) : undefined;
+        if (binding) {
+          incrementUsage(binding.moduleFilePath, binding.exportName);
+        }
+      } else if (ts.isPropertyAccessExpression(node)) {
+        if (ts.isIdentifier(node.expression)) {
+          const symbol = checker.getSymbolAtLocation(node.expression);
+          const moduleFilePath = symbol
+            ? namespaceImportBindings.get(symbol)
+            : undefined;
+          if (moduleFilePath) {
+            incrementUsage(moduleFilePath, node.name.text);
+          }
+        }
+      } else if (
+        ts.isElementAccessExpression(node) &&
+        ts.isIdentifier(node.expression)
+      ) {
+        const symbol = checker.getSymbolAtLocation(node.expression);
+        const moduleFilePath = symbol
+          ? namespaceImportBindings.get(symbol)
+          : undefined;
+        if (
+          moduleFilePath &&
+          node.argumentExpression &&
+          (ts.isStringLiteral(node.argumentExpression) ||
+            ts.isNoSubstitutionTemplateLiteral(node.argumentExpression))
+        ) {
+          incrementUsage(moduleFilePath, node.argumentExpression.text);
+        }
+      }
+
+      ts.forEachChild(node, countUsages);
+    }
+
+    collectBindings(sourceFile);
+    countUsages(sourceFile);
+  }
+
+  return manualUsageCounts;
+}
+
 function isFunctionLikeVariableDeclaration(
   declaration: ts.VariableDeclaration,
   checker: ts.TypeChecker,
@@ -642,6 +862,14 @@ async function main(): Promise<void> {
     : [...reachableFiles];
 
   const filesToAnalyzeSet = new Set(filesToAnalyze);
+  const manualUsageCounts = countManualRuntimeImportUsages({
+    checker,
+    compilerOptions: parsedConfig.options,
+    filesToAnalyze,
+    moduleResolutionCache,
+    program,
+  });
+
   const exportedFunctionCandidates = filesToAnalyze.flatMap((filePath) => {
     const sourceFile = program.getSourceFile(filePath);
     if (!sourceFile) {
@@ -682,6 +910,11 @@ async function main(): Promise<void> {
         usageCount += 1;
       }
     }
+
+    usageCount +=
+      manualUsageCounts.get(
+        buildUsageKey(candidate.declarationFilePath, candidate.exportName),
+      ) ?? 0;
 
     if (usageCount === 0) {
       unusedItems.push({
