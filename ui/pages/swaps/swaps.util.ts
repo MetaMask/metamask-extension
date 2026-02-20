@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { Hex, Json } from '@metamask/utils';
-import { IndividualTxFees } from '@metamask/smart-transactions-controller';
+import { Hex } from '@metamask/utils';
 import {
   FeeMarketGasFeeEstimates,
   TransactionParams,
@@ -22,12 +21,8 @@ import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SWAPS_CLIENT_ID,
   SWAPS_DEV_API_V2_BASE_URL,
-  SwapsTokenObject,
 } from '../../../shared/constants/swaps';
-import {
-  isSwapsDefaultTokenAddress,
-  isSwapsDefaultTokenSymbol,
-} from '../../../shared/modules/swaps.utils';
+import { isSwapsDefaultTokenSymbol } from '../../../shared/modules/swaps.utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
@@ -35,7 +30,6 @@ import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 import {
   calcGasTotal,
-  calcTokenAmount,
   toPrecisionWithoutTrailingZeros,
 } from '../../../shared/lib/transactions-controller-utils';
 import {
@@ -84,24 +78,6 @@ export const TOKEN_VALIDATORS: Validator[] = [
 
 const TOP_ASSET_VALIDATORS = TOKEN_VALIDATORS.slice(0, 2);
 
-const AGGREGATOR_METADATA_VALIDATORS: Validator[] = [
-  {
-    property: 'color',
-    type: 'string',
-    validator: (string) => Boolean(string.match(/^#[A-Fa-f0-9]+$/u)),
-  },
-  {
-    property: 'title',
-    type: 'string',
-    validator: truthyString,
-  },
-  {
-    property: 'icon',
-    type: 'string',
-    validator: (string) => Boolean(string.match(/^data:image/u)),
-  },
-];
-
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isValidDecimalNumber = (string: any): boolean =>
@@ -124,91 +100,6 @@ const SWAP_GAS_PRICE_VALIDATOR: Validator[] = [
     validator: isValidDecimalNumber,
   },
 ];
-
-export async function fetchToken(
-  contractAddress: string,
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  chainId: any,
-): Promise<Json> {
-  const tokenUrl = getBaseApi('token', chainId);
-  return await fetchWithCache({
-    url: `${tokenUrl}?address=${contractAddress}`,
-    fetchOptions: { method: 'GET', headers: clientIdHeader },
-    cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
-    functionName: 'fetchToken',
-  });
-}
-
-export async function fetchBlockedTokens(
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  chainId: any,
-): Promise<string[]> {
-  const blockedTokensUrl = getBaseApi('blockedTokens', chainId);
-  return await fetchWithCache({
-    url: `${blockedTokensUrl}`,
-    fetchOptions: { method: 'GET', headers: clientIdHeader },
-    cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
-    functionName: 'fetchBlockedTokens',
-  });
-}
-
-type Token = { symbol: string; address: string };
-export async function fetchTokens(
-  chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-): Promise<SwapsTokenObject[]> {
-  const tokensUrl = getBaseApi('tokens', chainId);
-  const tokens = await fetchWithCache({
-    url: tokensUrl,
-    fetchOptions: { method: 'GET', headers: clientIdHeader },
-    cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
-    functionName: 'fetchTokens',
-  });
-  const logError = false;
-  const tokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId] || null;
-  return [
-    tokenObject,
-    ...tokens.filter((token: Token) => {
-      return (
-        validateData(TOKEN_VALIDATORS, token, tokensUrl, logError) &&
-        !(
-          isSwapsDefaultTokenSymbol(token.symbol, chainId) ||
-          isSwapsDefaultTokenAddress(token.address, chainId)
-        )
-      );
-    }),
-  ];
-}
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
-  const aggregatorMetadataUrl = getBaseApi('aggregatorMetadata', chainId);
-  const aggregators = await fetchWithCache({
-    url: aggregatorMetadataUrl,
-    fetchOptions: { method: 'GET', headers: clientIdHeader },
-    cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
-    functionName: 'fetchAggregatorMetadata',
-  });
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const filteredAggregators = {} as any;
-  for (const aggKey in aggregators) {
-    if (
-      validateData(
-        AGGREGATOR_METADATA_VALIDATORS,
-        aggregators[aggKey],
-        aggregatorMetadataUrl,
-      )
-    ) {
-      filteredAggregators[aggKey] = aggregators[aggKey];
-    }
-  }
-  return filteredAggregators;
-}
 
 export async function fetchTopAssetsList(
   chainId: string,
@@ -234,19 +125,6 @@ export async function fetchTopAssetsList(
   return topAssetsList;
 }
 
-export async function fetchTopAssets(
-  chainId: string,
-): Promise<Record<string, { index: string }>> {
-  const response = await fetchTopAssetsList(chainId);
-  const topAssetsMap = response.reduce(
-    (_topAssetsMap, asset: { address: string }, index: number) => {
-      return { ..._topAssetsMap, [asset.address]: { index: String(index) } };
-    },
-    {},
-  );
-  return topAssetsMap;
-}
-
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchSwapsFeatureFlags(): Promise<any> {
@@ -259,24 +137,6 @@ export async function fetchSwapsFeatureFlags(): Promise<any> {
     cacheOptions: { cacheRefreshTime: 600000 },
     functionName: 'fetchSwapsFeatureFlags',
   });
-}
-
-export async function fetchTokenPrice(
-  tokenContractAddress: string,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Promise<any> {
-  const query = `spot-prices?tokenAddresses=${tokenContractAddress}&vsCurrency=eth&includeMarketData=false`;
-
-  const prices = await fetchWithCache({
-    url: `https://price.api.cx.metamask.io/v2/chains/1/${query}`,
-    fetchOptions: {
-      method: 'GET',
-    },
-    cacheOptions: { cacheRefreshTime: 60000 },
-    functionName: 'fetchTokenPrice',
-  });
-  return prices?.[tokenContractAddress]?.eth;
 }
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -475,167 +335,6 @@ export function getRenderableNetworkFeesForQuote({
   };
 }
 
-export function quotesToRenderableData({
-  quotes,
-  gasPriceTrade,
-  gasPriceApprove,
-  conversionRate,
-  currentCurrency,
-  approveGas,
-  tokenConversionRates,
-  chainId,
-  smartTransactionEstimatedGas,
-  nativeCurrencySymbol,
-  multiLayerL1ApprovalFeeTotal,
-}: {
-  quotes: object;
-  gasPriceTrade: string;
-  gasPriceApprove: string;
-  conversionRate: number;
-  currentCurrency: string;
-  approveGas: string;
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  tokenConversionRates: Record<string, any>;
-  chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP;
-  smartTransactionEstimatedGas: IndividualTxFees;
-  nativeCurrencySymbol: string;
-  multiLayerL1ApprovalFeeTotal: string | null;
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-}): Record<string, any> {
-  return Object.values(quotes).map((quote) => {
-    const {
-      destinationAmount = 0,
-      sourceAmount = 0,
-      sourceTokenInfo,
-      destinationTokenInfo,
-      slippage,
-      aggType,
-      aggregator,
-      gasEstimateWithRefund,
-      averageGas,
-      fee,
-      trade,
-      multiLayerL1TradeFeeTotal,
-    } = quote;
-    let multiLayerL1FeeTotal = null;
-    if (
-      multiLayerL1TradeFeeTotal !== null &&
-      multiLayerL1ApprovalFeeTotal !== null
-    ) {
-      multiLayerL1FeeTotal = sumHexes(
-        multiLayerL1TradeFeeTotal || '0x0',
-        multiLayerL1ApprovalFeeTotal || '0x0',
-      );
-    } else if (multiLayerL1TradeFeeTotal !== null) {
-      multiLayerL1FeeTotal = multiLayerL1TradeFeeTotal;
-    }
-    const sourceValue = calcTokenAmount(
-      sourceAmount,
-      sourceTokenInfo.decimals,
-    ).toString(10);
-    const destinationValue = calcTokenAmount(
-      destinationAmount,
-      destinationTokenInfo.decimals,
-    ).toPrecision(8);
-
-    let feeInFiat = null;
-    let feeInEth = null;
-    let rawNetworkFees = null;
-    let rawEthFee = null;
-
-    ({ feeInFiat, feeInEth, rawNetworkFees, rawEthFee } =
-      getRenderableNetworkFeesForQuote({
-        tradeGas: gasEstimateWithRefund || decimalToHex(averageGas || 800000),
-        approveGas,
-        gasPriceTrade,
-        gasPriceApprove,
-        currentCurrency,
-        conversionRate,
-        tradeValue: trade.value,
-        sourceSymbol: sourceTokenInfo.symbol,
-        sourceAmount,
-        chainId,
-        multiLayerL1FeeTotal,
-      }));
-
-    if (smartTransactionEstimatedGas) {
-      ({ feeInFiat, feeInEth } = getFeeForSmartTransaction({
-        chainId,
-        currentCurrency,
-        conversionRate,
-        nativeCurrencySymbol,
-        feeInWeiDec: smartTransactionEstimatedGas.feeEstimate,
-      }));
-    }
-
-    const slippageMultiplier = new BigNumber(100 - slippage).div(100);
-    const minimumAmountReceived = new BigNumber(destinationValue)
-      .times(slippageMultiplier)
-      .toFixed(6);
-
-    const tokenConversionRate =
-      tokenConversionRates[destinationTokenInfo.address];
-    const ethValueOfTrade = isSwapsDefaultTokenSymbol(
-      destinationTokenInfo.symbol,
-      chainId,
-    )
-      ? calcTokenAmount(destinationAmount, destinationTokenInfo.decimals).minus(
-          rawEthFee,
-          10,
-        )
-      : new BigNumber(tokenConversionRate || 0, 10)
-          .times(
-            calcTokenAmount(destinationAmount, destinationTokenInfo.decimals),
-            10,
-          )
-          .minus(rawEthFee, 10);
-
-    let liquiditySourceKey;
-    let renderedSlippage = slippage;
-
-    if (aggType === 'AGG') {
-      liquiditySourceKey = 'swapAggregator';
-    } else if (aggType === 'RFQ') {
-      liquiditySourceKey = 'swapRequestForQuotation';
-      renderedSlippage = 0;
-    } else if (aggType === 'DEX') {
-      liquiditySourceKey = 'swapDecentralizedExchange';
-    } else if (aggType === 'CONTRACT') {
-      liquiditySourceKey = 'swapDirectContract';
-    } else {
-      liquiditySourceKey = 'swapUnknown';
-    }
-
-    return {
-      aggId: aggregator,
-      amountReceiving: `${destinationValue} ${destinationTokenInfo.symbol}`,
-      destinationTokenDecimals: destinationTokenInfo.decimals,
-      destinationTokenSymbol: destinationTokenInfo.symbol,
-      destinationTokenValue: formatSwapsValueForDisplay(destinationValue),
-      destinationIconUrl: destinationTokenInfo.iconUrl,
-      isBestQuote: quote.isBestQuote,
-      liquiditySourceKey,
-      feeInEth,
-      detailedNetworkFees: `${feeInEth} (${feeInFiat})`,
-      networkFees: feeInFiat,
-      quoteSource: aggType,
-      rawNetworkFees,
-      slippage: renderedSlippage,
-      sourceTokenDecimals: sourceTokenInfo.decimals,
-      sourceTokenSymbol: sourceTokenInfo.symbol,
-      sourceTokenValue: sourceValue,
-      sourceTokenIconUrl: sourceTokenInfo.iconUrl,
-      ethValueOfTrade,
-      minimumAmountReceived,
-      metaMaskFee: fee,
-    };
-  });
-}
-
 export function formatSwapsValueForDisplay(
   destinationAmount: string | BigNumber,
 ): string {
@@ -653,21 +352,6 @@ export function formatSwapsValueForDisplay(
   }
   return amountToDisplay;
 }
-
-export const getClassNameForCharLength = (
-  num: string,
-  classNamePrefix: string,
-): string => {
-  let modifier;
-  if (!num || num.length <= 10) {
-    modifier = 'lg';
-  } else if (num.length > 10 && num.length <= 13) {
-    modifier = 'md';
-  } else {
-    modifier = 'sm';
-  }
-  return `${classNamePrefix}--${modifier}`;
-};
 
 /**
  * Checks whether a contract address is valid before swapping tokens.
@@ -765,33 +449,6 @@ export const getSwapsLivenessForNetwork = (
   };
 };
 
-/**
- * @param value
- * @returns number
- */
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const countDecimals = (value: any): number => {
-  if (!value || Math.floor(value) === value) {
-    return 0;
-  }
-  return value.toString().split('.')[1]?.length || 0;
-};
-
-export const showRemainingTimeInMinAndSec = (
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  remainingTimeInSec: any,
-): string => {
-  if (!Number.isInteger(remainingTimeInSec)) {
-    return '0:00';
-  }
-  const minutes = Math.floor(remainingTimeInSec / 60);
-  const seconds = remainingTimeInSec % 60;
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-};
-
 export enum StxErrorTypes {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -803,24 +460,6 @@ export enum StxErrorTypes {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   regularTxPending = 'regular_tx_pending',
 }
-
-export const getTranslatedStxErrorMessage = (
-  errorType: StxErrorTypes,
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  t: (...args: any[]) => string,
-): string => {
-  switch (errorType) {
-    case StxErrorTypes.unavailable:
-    case StxErrorTypes.regularTxPending:
-      return t('smartSwapsErrorUnavailable');
-    case StxErrorTypes.notEnoughFunds:
-      return t('smartSwapsErrorNotEnoughFunds');
-    default:
-      return t('smartSwapsErrorUnavailable');
-  }
-};
 
 export const parseSmartTransactionsError = (errorMessage: string): string => {
   const errorJson = errorMessage.slice(12);

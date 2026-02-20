@@ -525,13 +525,6 @@ export const STABLE_PAIRS: Record<string, boolean> = {
   [CURRENCY_SYMBOLS.USDT]: true,
 };
 
-export function isStablePair(
-  sourceSymbol: string,
-  destinationSymbol: string,
-): boolean {
-  return STABLE_PAIRS[sourceSymbol] && STABLE_PAIRS[destinationSymbol];
-}
-
 /**
  * A map of chain IDs to sets of known stablecoin contract addresses with deep liquidity.
  * Used to determine if a pair qualifies for lower default slippage to avoid frontrunning.

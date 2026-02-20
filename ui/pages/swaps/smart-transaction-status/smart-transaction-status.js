@@ -6,10 +6,9 @@ import { isEqual } from 'lodash';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   getFetchParams,
-  prepareToLeaveSwaps,
   getCurrentSmartTransactions,
   getCurrentSmartTransactionsEnabled,
-  getSwapsNetworkConfig,
+  clearSwapsState,
   cancelSwapsSmartTransaction,
   getUsedQuote,
 } from '../../../ducks/swaps/swaps';
@@ -43,12 +42,12 @@ import {
 import {
   stopPollingForQuotes,
   setBackgroundSwapRouteState,
+  setSwapsErrorKey,
 } from '../../../store/actions';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { SmartTransactionStatus } from '../../../../shared/constants/transaction';
 
 import SwapsFooter from '../swaps-footer';
-import { showRemainingTimeInMinAndSec } from '../swaps.util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import CreateNewSwap from '../create-new-swap';
 import ViewOnBlockExplorer from '../view-on-block-explorer';
@@ -60,6 +59,33 @@ import CanceledIcon from './canceled-icon';
 import UnknownIcon from './unknown-icon';
 import ArrowIcon from './arrow-icon';
 import TimerIcon from './timer-icon';
+
+const getSwapsNetworkConfig = (state) => {
+  const swapsState = state.metamask?.swapsState ?? {};
+  return {
+    quoteRefreshTime: swapsState.swapsQuoteRefreshTime,
+    quotePrefetchingRefreshTime: swapsState.swapsQuotePrefetchingRefreshTime,
+    stxGetTransactionsRefreshTime:
+      swapsState.swapsStxGetTransactionsRefreshTime,
+    stxBatchStatusRefreshTime: swapsState.swapsStxBatchStatusRefreshTime,
+    stxStatusDeadline: swapsState.swapsStxStatusDeadline,
+    stxMaxFeeMultiplier: swapsState.swapsStxMaxFeeMultiplier,
+  };
+};
+
+const showRemainingTimeInMinAndSec = (remainingTimeInSec) => {
+  const minutes = Math.floor(remainingTimeInSec / 60);
+  const seconds = remainingTimeInSec % 60;
+  return `${minutes}:${String(seconds).padStart(2, '0')}`;
+};
+
+const leaveSwaps = () => {
+  return async (dispatch) => {
+    dispatch(clearSwapsState());
+    await dispatch(setBackgroundSwapRouteState(''));
+    await dispatch(setSwapsErrorKey(''));
+  };
+};
 
 export default function SmartTransactionStatusPage() {
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
@@ -469,14 +495,14 @@ export default function SmartTransactionStatusPage() {
       <SwapsFooter
         onSubmit={async () => {
           if (showCloseButtonOnly) {
-            await dispatch(prepareToLeaveSwaps());
+            await dispatch(leaveSwaps());
             navigate(DEFAULT_ROUTE);
           } else {
             navigate(PREPARE_SWAP_ROUTE);
           }
         }}
         onCancel={async () => {
-          await dispatch(prepareToLeaveSwaps());
+          await dispatch(leaveSwaps());
           navigate(DEFAULT_ROUTE);
         }}
         submitText={showCloseButtonOnly ? t('close') : t('tryAgain')}

@@ -5,11 +5,13 @@ import classnames from 'classnames';
 import { Duration } from 'luxon';
 import { I18nContext } from '../../../contexts/i18n';
 import InfoTooltip from '../../../components/ui/info-tooltip';
-import {
-  getSwapsQuoteRefreshTime,
-  getSwapsQuotePrefetchingRefreshTime,
-} from '../../../ducks/swaps/swaps';
 import { SECOND } from '../../../../shared/constants/time';
+
+const getSwapsQuoteRefreshTime = (state) =>
+  state.metamask?.swapsState?.swapsQuoteRefreshTime;
+
+const getSwapsQuotePrefetchingRefreshTime = (state) =>
+  state.metamask?.swapsState?.swapsQuotePrefetchingRefreshTime;
 
 // Return the mm:ss start time of the countdown timer.
 // If time has elapsed between `timeStarted` the time current time,

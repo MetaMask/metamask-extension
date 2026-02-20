@@ -3,8 +3,6 @@ import type {
   BridgeHistoryItem,
   BridgeStatusControllerState,
 } from '@metamask/bridge-status-controller';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import {
   getInternalAccountsFromGroupById,
@@ -111,31 +109,5 @@ export const selectReceivedSwapsTokenAmountFromTxMeta = createSelector(
       approvalTxMeta,
       destAsset.chainId,
     );
-  },
-);
-
-/**
- * Returns an array of sorted bridge history items for when the user's current chain is the destination chain for a bridge tx
- */
-export const selectIncomingBridgeHistory = createSelector(
-  selectBridgeHistoryForAccountGroup,
-  getCurrentChainId,
-  (bridgeHistory, currentChainId) => {
-    // Get all history items with dest chain that matches current chain
-    return Object.values(bridgeHistory)
-      .filter((bridgeHistoryItem) => {
-        const hexDestChainId = new Numeric(
-          bridgeHistoryItem.quote.destChainId,
-          10,
-        ).toPrefixedHexString();
-
-        return hexDestChainId === currentChainId;
-      })
-      .sort((a, b) => {
-        if (a.startTime && b.startTime) {
-          return b.startTime - a.startTime;
-        }
-        return 0;
-      });
   },
 );

@@ -1,12 +1,10 @@
 export { AccountListItem, AccountListItemMenuTypes } from './account-list-item';
 export { AccountListItemMenu } from './account-list-item-menu';
-export { AccountListMenu } from './account-list-menu';
 export { AccountOverview } from './account-overview';
 export { AccountPicker } from './account-picker';
 export { ActivityListItem } from './activity-list-item';
 export { AppHeader } from './app-header';
 export { DetectedTokensBanner } from './detected-token-banner';
-export { GlobalMenu } from './global-menu';
 export { TokenListItem } from './token-list-item';
 export { AddressCopyButton } from './address-copy-button';
 export { ConnectedSiteMenu } from './connected-site-menu';
@@ -47,7 +45,6 @@ export { Toast, ToastContainer } from './toast';
 export { DisconnectPermissionsModal } from './disconnect-permissions-modal';
 export { ReceiveModal } from './receive-modal';
 export { EditNetworksModal } from './edit-networks-modal';
-export { EditAccountsModal } from './edit-accounts-modal';
 export {
   Carousel,
   CarouselWithEmptyState,

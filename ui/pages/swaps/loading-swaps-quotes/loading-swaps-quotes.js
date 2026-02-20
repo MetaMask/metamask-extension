@@ -8,7 +8,6 @@ import isEqual from 'lodash/isEqual';
 import {
   navigateBackToPrepareSwap,
   getFetchParams,
-  getQuotesFetchStartTime,
   getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
@@ -36,6 +35,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 import BackgroundAnimation from './background-animation';
+
+const getQuotesFetchStartTime = (state) =>
+  state.swaps?.quotesFetchStartTime ??
+  state.metamask?.swapsState?.quotesFetchStartTime;
 
 export default function LoadingSwapsQuotes({
   aggregatorMetadata,

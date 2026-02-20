@@ -1,13 +1,12 @@
 import { act } from '@testing-library/react-hooks';
-import * as actions from '../store/actions';
+import * as tokenUtil from '../helpers/utils/token-util';
 import mockState from '../../test/data/mock-state.json';
 
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import { useIsOriginalTokenSymbol } from './useIsOriginalTokenSymbol';
 
-// Mocking the getTokenSymbol function
-jest.mock('../store/actions', () => ({
-  getTokenSymbol: jest.fn(),
+jest.mock('../helpers/utils/token-util', () => ({
+  getSymbolAndDecimalsAndName: jest.fn(),
 }));
 
 const state = {
@@ -31,7 +30,7 @@ describe('useIsOriginalTokenSymbol', () => {
     const tokenAddress = '0x123';
     const tokenSymbol = 'ABC';
 
-    actions.getTokenSymbol.mockResolvedValue('ABC'); // Mock the getTokenSymbol function
+    tokenUtil.getSymbolAndDecimalsAndName.mockResolvedValue({ symbol: 'ABC' });
 
     let result;
 
@@ -50,7 +49,7 @@ describe('useIsOriginalTokenSymbol', () => {
     const tokenAddress = '0x456';
     const tokenSymbol = 'XYZ';
 
-    actions.getTokenSymbol.mockResolvedValue('DEF'); // Mock the getTokenSymbol function
+    tokenUtil.getSymbolAndDecimalsAndName.mockResolvedValue({ symbol: 'DEF' });
 
     let result;
 
@@ -69,7 +68,9 @@ describe('useIsOriginalTokenSymbol', () => {
     const tokenAddress = '0x1234';
     const tokenSymbol = 'ABCD';
 
-    actions.getTokenSymbol.mockResolvedValue('Should not matter'); // Mock the getTokenSymbol function
+    tokenUtil.getSymbolAndDecimalsAndName.mockResolvedValue({
+      symbol: 'Should not matter',
+    });
 
     let result;
 

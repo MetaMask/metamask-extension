@@ -60,7 +60,6 @@ export { Tag } from './tag';
 export type { TagProps } from './tag';
 export { SuccessPill } from './success-pill';
 export type { SuccessPillProps } from './success-pill';
-export { TagUrl } from './tag-url';
 export type { TagUrlProps } from './tag-url';
 export { Text, ValidTag, TextDirection, InvisibleCharacter } from './text';
 export type { TextProps } from './text';
@@ -100,11 +99,6 @@ export { ModalHeader } from './modal-header';
 export type { ModalHeaderProps } from './modal-header';
 export { SelectButton, SelectButtonSize } from './select-button';
 export type { SelectButtonProps } from './select-button';
-export { SelectOption } from './select-option';
 export type { SelectOptionProps } from './select-option';
-export {
-  SelectWrapper,
-  SelectContext,
-  useSelectContext,
-} from './select-wrapper';
+export { SelectContext } from './select-wrapper';
 export type { SelectWrapperProps } from './select-wrapper';

@@ -1,9 +1,8 @@
 import {
   conversionRateSelector,
   currentCurrencySelector,
-  unconfirmedTransactionsHashSelector,
 } from '../../selectors';
-import { getNativeCurrency, getTokens } from '../metamask/metamask';
+import { getNativeCurrency } from '../metamask/metamask';
 
 import {
   getTransactionFee,
@@ -14,12 +13,9 @@ import {
 
 import {
   getValueFromWeiHex,
-  hexToDecimal,
   sumHexes,
 } from '../../../shared/modules/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from '../../selectors/custom-gas';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 
 // Actions
 const createActionType = (action) => `metamask/confirm-transaction/${action}`;
@@ -271,63 +267,8 @@ export function updateTxDataAndCalculate(txData) {
   };
 }
 
-export function setTransactionToConfirm(transactionId) {
-  return (dispatch, getState) => {
-    const state = getState();
-    const unconfirmedTransactionsHash =
-      unconfirmedTransactionsHashSelector(state);
-    const transaction = unconfirmedTransactionsHash[transactionId];
-
-    if (!transaction) {
-      console.error(`Transaction with id ${transactionId} not found`);
-      return;
-    }
-
-    if (transaction.txParams) {
-      dispatch(updateTxDataAndCalculate(transaction));
-      const { txParams } = transaction;
-
-      if (txParams.data) {
-        const { to: tokenAddress, data } = txParams;
-
-        const tokenData = parseStandardTokenTransactionData(data);
-        const tokens = getTokens(state);
-        const currentToken = tokens?.find(({ address }) =>
-          isEqualCaseInsensitive(tokenAddress, address),
-        );
-
-        dispatch(
-          updateTokenProps({
-            decimals: currentToken?.decimals,
-            symbol: currentToken?.symbol,
-          }),
-        );
-        dispatch(updateTokenData(tokenData));
-      }
-
-      if (txParams.nonce) {
-        const nonce = hexToDecimal(txParams.nonce);
-
-        dispatch(updateNonce(nonce));
-      }
-    } else {
-      dispatch(updateTxData(transaction));
-    }
-  };
-}
-
 export function clearConfirmTransaction() {
   return {
     type: CLEAR_CONFIRM_TRANSACTION,
-  };
-}
-
-export function setMaxValueMode(transactionId, enabled) {
-  return {
-    type: SET_MAX_VALUE_MODE,
-    payload: {
-      transactionId,
-      enabled,
-    },
   };
 }

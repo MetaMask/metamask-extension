@@ -3,7 +3,6 @@ import { KnownCaipNamespace } from '@metamask/utils';
 import {
   BtcAccountType,
   EthAccountType,
-  EthMethod,
   SolAccountType,
 } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
@@ -108,41 +107,6 @@ describe('Selectors', () => {
       expect(
         selectors.getSelectedAddress({ metamask: { internalAccounts } }),
       ).toStrictEqual(mockInternalAccount.address);
-    });
-  });
-
-  describe('#checkIfMethodIsEnabled', () => {
-    it('returns true if the method is enabled', () => {
-      expect(
-        selectors.checkIfMethodIsEnabled(mockState, EthMethod.SignTransaction),
-      ).toBe(true);
-    });
-
-    it('returns false if the method is not enabled', () => {
-      expect(
-        selectors.checkIfMethodIsEnabled(
-          {
-            metamask: {
-              internalAccounts: {
-                accounts: {
-                  'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                    ...mockState.metamask.internalAccounts.accounts[
-                      'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
-                    ],
-                    methods: [
-                      ...Object.values(EthMethod).filter(
-                        (method) => method !== EthMethod.SignTransaction,
-                      ),
-                    ],
-                  },
-                },
-                selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-              },
-            },
-          },
-          EthMethod.SignTransaction,
-        ),
-      ).toBe(false);
     });
   });
 
@@ -583,26 +547,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getNetworksTabSelectedNetworkConfigurationId', () => {
-    it('returns undefined if selectedNetworkConfigurationId is undefined', () => {
-      expect(
-        selectors.getNetworksTabSelectedNetworkConfigurationId({
-          appState: {},
-        }),
-      ).toBeUndefined();
-    });
-
-    it('returns selectedNetworkConfigurationId', () => {
-      expect(
-        selectors.getNetworksTabSelectedNetworkConfigurationId({
-          appState: {
-            selectedNetworkConfigurationId: 'testNetworkConfigurationId',
-          },
-        }),
-      ).toStrictEqual('testNetworkConfigurationId');
-    });
-  });
-
   describe('#getCurrentNetwork', () => {
     it('returns built-in network configuration', () => {
       const modifiedMockState = {
@@ -708,54 +652,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getAllEnabledNetworks', () => {
-    const networkConfigurationsByChainId = {
-      [CHAIN_IDS.MAINNET]: {
-        chainId: CHAIN_IDS.MAINNET,
-        defaultRpcEndpointIndex: 0,
-        rpcEndpoints: [{ networkClientId: 'mainnet' }],
-      },
-      [CHAIN_IDS.LINEA_MAINNET]: {
-        chainId: CHAIN_IDS.LINEA_MAINNET,
-        defaultRpcEndpointIndex: 0,
-        rpcEndpoints: [{ networkClientId: 'linea-mainnet' }],
-      },
-      [CHAIN_IDS.SEPOLIA]: {
-        chainId: CHAIN_IDS.SEPOLIA,
-        defaultRpcEndpointIndex: 0,
-        rpcEndpoints: [{ networkClientId: 'sepolia' }],
-      },
-      [CHAIN_IDS.LINEA_SEPOLIA]: {
-        chainId: CHAIN_IDS.LINEA_SEPOLIA,
-        defaultRpcEndpointIndex: 0,
-        rpcEndpoints: [{ networkClientId: 'linea-sepolia' }],
-      },
-    };
-
-    it('returns only Mainnet and Linea with showTestNetworks off', () => {
-      const networks = selectors.getAllEnabledNetworks({
-        metamask: {
-          preferences: { showTestNetworks: false },
-          networkConfigurationsByChainId,
-        },
-      });
-      expect(Object.values(networks)).toHaveLength(2);
-    });
-
-    it('returns networks with showTestNetworks on', () => {
-      const networks = selectors.getAllEnabledNetworks({
-        metamask: {
-          preferences: {
-            showTestNetworks: true,
-          },
-          networkConfigurationsByChainId,
-        },
-      });
-
-      expect(Object.values(networks).length).toBeGreaterThan(2);
-    });
-  });
-
   describe('#getChainIdsToPoll', () => {
     const networkConfigurationsByChainId = {
       [CHAIN_IDS.MAINNET]: {
@@ -846,7 +742,7 @@ describe('Selectors', () => {
     });
 
     it('returns only non-test chain IDs', () => {
-      const chainIds = selectors.getNetworkClientIdsToPoll({
+      const chainIds = selectors.getChainIdsToPoll({
         metamask: {
           enabledNetworkMap: {
             eip155: {
@@ -863,7 +759,10 @@ describe('Selectors', () => {
         },
       });
       expect(Object.values(chainIds)).toHaveLength(2);
-      expect(chainIds).toStrictEqual(['mainnet', 'linea-mainnet']);
+      expect(chainIds).toStrictEqual([
+        CHAIN_IDS.MAINNET,
+        CHAIN_IDS.LINEA_MAINNET,
+      ]);
     });
   });
 
@@ -968,46 +867,6 @@ describe('Selectors', () => {
         '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599': 0.0017123,
         '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 0.0000000018,
       });
-    });
-  });
-
-  describe('#checkNetworkOrAccountNotSupports1559', () => {
-    it('returns false if network and account supports EIP-1559', () => {
-      const not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          ...mockNetworkState({
-            chainId: CHAIN_IDS.GOERLI,
-            metadata: { EIPS: { 1559: true } },
-          }),
-          keyrings: [
-            {
-              type: KeyringType.ledger,
-              accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
-              metadata: {
-                name: 'Ledger',
-                id: 'ledger',
-              },
-            },
-          ],
-        },
-      });
-      expect(not1559Network).toStrictEqual(false);
-    });
-
-    it('returns true if network does not support EIP-1559', () => {
-      const not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          ...mockNetworkState({
-            chainId: CHAIN_IDS.GOERLI,
-            metadata: { EIPS: { 1559: false } },
-          }),
-        },
-      });
-      expect(not1559Network).toStrictEqual(true);
     });
   });
 

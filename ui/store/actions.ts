@@ -9,7 +9,7 @@ import log from 'loglevel';
 import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
-import { providerErrors, serializeError } from '@metamask/rpc-errors';
+import { providerErrors } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import {
   CaipAccountId,
@@ -20,7 +20,6 @@ import {
 } from '@metamask/utils';
 import {
   AssetsContractController,
-  BalanceMap,
   Nft,
   Token,
 } from '@metamask/assets-controllers';
@@ -142,10 +141,8 @@ import {
   MetaMetricsEventFragment,
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
-  MetaMetricsPageObject,
   MetaMetricsPageOptions,
   MetaMetricsPagePayload,
-  MetaMetricsReferrerObject,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventAccountType,
@@ -924,14 +921,6 @@ export function changePassword(
       throw error;
     }
   };
-}
-
-export function storeKeyringEncryptionKey(
-  encryptionKey: string,
-): Promise<void> {
-  return submitRequestToBackground('storeKeyringEncryptionKey', [
-    encryptionKey,
-  ]);
 }
 
 export function tryUnlockMetamask(
@@ -1721,17 +1710,6 @@ export async function backupUserData(): Promise<{
   return backedupData;
 }
 
-export async function restoreUserData(jsonString: Json): Promise<true> {
-  try {
-    await submitRequestToBackground('restoreUserData', [jsonString]);
-  } catch (error) {
-    logErrorWithMessage(error);
-    throw error;
-  }
-
-  return true;
-}
-
 export function updateSlides(
   slides,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -1813,39 +1791,6 @@ export function updateTransactionGasFees(
     }
 
     return updatedTransaction;
-  };
-}
-
-export function updateTransaction(
-  txMeta: TransactionMeta,
-  dontShowLoadingIndicator: boolean,
-): ThunkAction<
-  Promise<TransactionMeta>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    !dontShowLoadingIndicator && dispatch(showLoadingIndication());
-
-    try {
-      await submitRequestToBackground('updateTransaction', [txMeta]);
-    } catch (error) {
-      dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
-      dispatch(hideLoadingIndication());
-      dispatch(goHome());
-      logErrorWithMessage(error);
-      throw error;
-    }
-
-    try {
-      dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
-      await forceUpdateMetamaskState(dispatch);
-      dispatch(showConfTxPage({ id: txMeta.id }));
-      return txMeta;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
   };
 }
 
@@ -2403,49 +2348,6 @@ export function cancelTx(
   };
 }
 
-/**
- * Cancels all of the given transactions
- *
- * @param txMetaList
- * @returns
- */
-export function cancelTxs(
-  txMetaList: TransactionMeta[],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
-    try {
-      const txIds = txMetaList.map(({ id }) => id);
-      const jsonRpcError = providerErrors.userRejectedRequest().serialize();
-
-      const cancellations = txIds.map((id) =>
-        submitRequestToBackground('rejectPendingApproval', [
-          String(id),
-          jsonRpcError,
-        ]),
-      );
-
-      await Promise.all(cancellations);
-
-      await forceUpdateMetamaskState(dispatch);
-
-      txIds.forEach((id) => {
-        dispatch(completedTx(id));
-      });
-    } finally {
-      if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-        // Use closeCurrentNotificationWindow which has hardware wallet guards
-        dispatch(closeCurrentNotificationWindow());
-      } else {
-        dispatch(hideLoadingIndication());
-      }
-    }
-  };
-}
-
 export function markPasswordForgotten(): ThunkAction<
   void,
   MetaMaskReduxState,
@@ -2476,12 +2378,6 @@ export function unMarkPasswordForgotten(): ThunkAction<
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('unMarkPasswordForgotten', []);
     await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-export function closeWelcomeScreen() {
-  return {
-    type: actionConstants.CLOSE_WELCOME_SCREEN,
   };
 }
 
@@ -2885,15 +2781,6 @@ export function addPermittedAccount(
     await forceUpdateMetamaskState(dispatch);
   };
 }
-export function addPermittedAccounts(
-  origin: string,
-  address: string[],
-): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('addPermittedAccounts', [origin, address]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
 
 export function removePermittedAccount(
   origin: string,
@@ -2927,25 +2814,6 @@ export function addPermittedChain(
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('addPermittedChain', [origin, chainId]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-export function addPermittedChains(
-  origin: string,
-  chainIds: string[],
-): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('addPermittedChains', [origin, chainIds]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-export function removePermittedChain(
-  origin: string,
-  chainId: string,
-): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('removePermittedChain', [origin, chainId]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -3303,25 +3171,6 @@ export function refreshAssetsForSelectedAccount(
 }
 
 /**
- * To fetch the ERC20 tokens with non-zero balance in a single call
- *
- * @param selectedAddress - the targeted account
- * @param tokensToDetect - the targeted list of tokens
- * @param networkClientId - unique identifier for the network client
- */
-export async function getBalancesInSingleCall(
-  selectedAddress: string,
-  tokensToDetect: string[],
-  networkClientId: string,
-): Promise<BalanceMap> {
-  return await submitRequestToBackground('getBalancesInSingleCall', [
-    selectedAddress,
-    tokensToDetect,
-    networkClientId,
-  ]);
-}
-
-/**
  * Find networkClientId for the chainId passed.
  *
  * @param chainId - chainId of the network
@@ -3330,40 +3179,6 @@ export async function findNetworkClientIdByChainId(chainId: string): string {
   return await submitRequestToBackground('findNetworkClientIdByChainId', [
     chainId,
   ]);
-}
-
-export function addNft(
-  address: string,
-  tokenID: string,
-  networkClientId: NetworkClientId,
-  dontShowLoadingIndicator: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    if (!address) {
-      throw new Error('MetaMask - Cannot add NFT without address');
-    }
-    if (!tokenID) {
-      throw new Error('MetaMask - Cannot add NFT without tokenID');
-    }
-    if (!dontShowLoadingIndicator) {
-      dispatch(showLoadingIndication());
-    }
-    try {
-      await submitRequestToBackground('addNft', [
-        address,
-        tokenID,
-        networkClientId,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning(error));
-    } finally {
-      await forceUpdateMetamaskState(dispatch);
-      dispatch(hideLoadingIndication());
-    }
-  };
 }
 
 export function addNftVerifyOwnership(
@@ -3458,58 +3273,10 @@ export function getAssets(
   };
 }
 
-export function removeNft(
-  address: string,
-  tokenID: string,
-  networkClientId: NetworkClientId,
-  dontShowLoadingIndicator: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    if (!address) {
-      throw new Error('MetaMask - Cannot remove NFT without address');
-    }
-    if (!tokenID) {
-      throw new Error('MetaMask - Cannot remove NFT without tokenID');
-    }
-    if (!dontShowLoadingIndicator) {
-      dispatch(showLoadingIndication());
-    }
-    try {
-      await submitRequestToBackground('removeNft', [
-        address,
-        tokenID,
-        networkClientId,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning(error));
-    } finally {
-      await forceUpdateMetamaskState(dispatch);
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
 export async function checkAndUpdateAllNftsOwnershipStatus(
   networkClientId: NetworkClientId,
 ) {
   await submitRequestToBackground('checkAndUpdateAllNftsOwnershipStatus', [
-    networkClientId,
-  ]);
-}
-
-export async function isNftOwner(
-  ownerAddress: string,
-  nftAddress: string,
-  nftId: string,
-  networkClientId: NetworkClientId,
-): Promise<boolean> {
-  return await submitRequestToBackground('isNftOwner', [
-    ownerAddress,
-    nftAddress,
-    nftId,
     networkClientId,
   ]);
 }
@@ -3560,10 +3327,6 @@ export async function getTokenStandardAndDetailsByChain(
     tokenId,
     chainId,
   ]);
-}
-
-export async function getTokenSymbol(address: string): Promise<string | null> {
-  return await submitRequestToBackground('getTokenSymbol', [address]);
 }
 
 export function clearPendingTokens(): Action {
@@ -3638,23 +3401,6 @@ export function abortTransactionSigning(
   };
 }
 
-export function getLayer1GasFee({
-  chainId,
-  networkClientId,
-  transactionParams,
-}: {
-  chainId?: Hex;
-  networkClientId?: NetworkClientId;
-  transactionParams: TransactionParams;
-}): // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
-  return async () =>
-    await submitRequestToBackground('getLayer1GasFee', [
-      { chainId, networkClientId, transactionParams },
-    ]);
-}
-
 export function createCancelTransaction(
   txId: string,
   customGasSettings: CustomGasSettings,
@@ -3717,32 +3463,6 @@ export function createSpeedUpTransaction(
         customGasSettings,
         { ...options, actionId },
       ]);
-
-      await forceUpdateMetamaskState(dispatch);
-
-      const currentNetworkTxList = getCurrentNetworkTransactions(newState);
-      const newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
-
-      return newTx;
-    } catch (err) {
-      dispatch(displayWarning(err));
-      throw err;
-    }
-  };
-}
-
-export function createRetryTransaction(
-  txId: string,
-  customGasSettings: CustomGasSettings,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    const actionId = generateActionId();
-    try {
-      const newState = await submitRequestToBackground<
-        MetaMaskReduxState['metamask']
-      >('createSpeedUpTransaction', [txId, customGasSettings, { actionId }]);
 
       await forceUpdateMetamaskState(dispatch);
 
@@ -3834,27 +3554,6 @@ export function setActiveNetworkWithError(
   };
 }
 
-export function getNetworksWithTransactionActivityByAccounts(): ThunkAction<
-  Promise<NetworkConfiguration[]>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    log.debug('background.getNetworksWithTransactionActivityByAccounts');
-    try {
-      return await submitRequestToBackground(
-        'getNetworksWithTransactionActivityByAccounts',
-      );
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw new Error(
-        'Had a problem getting networks with activity by accounts!',
-      );
-    }
-  };
-}
-
 export function setActiveNetworkConfigurationId(
   networkConfigurationId: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
@@ -3868,24 +3567,6 @@ export function setActiveNetworkConfigurationId(
       ]);
     } catch (error) {
       logErrorWithMessage(error);
-    }
-  };
-}
-
-export function rollbackToPreviousProvider(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    try {
-      await submitRequestToBackground('rollbackToPreviousProvider');
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem changing networks!'));
     }
   };
 }
@@ -3954,18 +3635,6 @@ export function removeFromAddressBook(
       toChecksumHexAddress(addressToRemove),
     ]);
     await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-export function showNetworkDropdown(): Action {
-  return {
-    type: actionConstants.NETWORK_DROPDOWN_OPEN,
-  };
-}
-
-export function hideNetworkDropdown() {
-  return {
-    type: actionConstants.NETWORK_DROPDOWN_CLOSE,
   };
 }
 
@@ -4187,13 +3856,6 @@ export function hideLoadingIndication(): Action {
   };
 }
 
-export function setSlides(slides): Action {
-  return {
-    type: actionConstants.SET_SLIDES,
-    slides,
-  };
-}
-
 export function hideNftStillFetchingIndication(): Action {
   return {
     type: actionConstants.HIDE_NFT_STILL_FETCHING_INDICATION,
@@ -4304,13 +3966,6 @@ export function exportAccounts(
   };
 }
 
-export function showPrivateKey(key: string): PayloadAction<string> {
-  return {
-    type: actionConstants.SHOW_PRIVATE_KEY,
-    payload: key,
-  };
-}
-
 export function setAccountLabel(
   account: string,
   label: string,
@@ -4340,12 +3995,6 @@ export function setAccountLabel(
 export function clearAccountDetails(): Action {
   return {
     type: actionConstants.CLEAR_ACCOUNT_DETAILS,
-  };
-}
-
-export function showSendTokenPage(): Action {
-  return {
-    type: actionConstants.SHOW_SEND_TOKEN_PAGE,
   };
 }
 
@@ -4802,26 +4451,6 @@ export async function getMarketingConsent() {
   }
 }
 
-/**
- * @deprecated Use setAvatarType instead
- * @param val - Boolean value for blockie preference
- */
-export function setUseBlockie(
-  val: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setUseBlockie`);
-    try {
-      await submitRequestToBackground('setUseBlockie', [val]);
-    } catch (err) {
-      dispatch(displayWarning(err));
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
 export function setAvatarType(value: string) {
   return setPreference('avatarType', value);
 }
@@ -5256,31 +4885,6 @@ export function setSelectedQuoteAggId(
   };
 }
 
-export function setSwapsTokens(
-  tokens: Token[],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('setSwapsTokens', [tokens]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-export function clearSwapsQuotes(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('clearSwapsQuotes');
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
 export function resetBackgroundSwapsState(): ThunkAction<
   void,
   MetaMaskReduxState,
@@ -5291,17 +4895,6 @@ export function resetBackgroundSwapsState(): ThunkAction<
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('resetSwapsState');
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-export function setCustomApproveTxData(
-  data: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('setCustomApproveTxData', [data]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -5363,33 +4956,6 @@ export function updateSwapsUserFeeLevel(
     await submitRequestToBackground('setSwapsUserFeeLevel', [
       swapsCustomUserFeeLevel,
     ]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-export function setSwapsQuotesPollingLimitEnabled(
-  quotesPollingLimitEnabled: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('setSwapsQuotesPollingLimitEnabled', [
-      quotesPollingLimitEnabled,
-    ]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-export function safeRefetchQuotes(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('safeRefetchQuotes');
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -5774,36 +5340,6 @@ export function rejectPendingApproval(
   };
 }
 
-/**
- * Rejects all approvals for the given messages
- *
- * @param messageList - The list of messages to reject
- */
-export function rejectAllMessages(
-  messageList: [],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    const userRejectionError = serializeError(
-      providerErrors.userRejectedRequest(),
-    );
-    await Promise.all(
-      messageList.map(
-        async ({ id }) =>
-          await submitRequestToBackground('rejectPendingApproval', [
-            id,
-            userRejectionError,
-          ]),
-      ),
-    );
-    const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
-    if (Object.values(pendingApprovals).length === 0) {
-      dispatch(closeCurrentNotificationWindow());
-    }
-  };
-}
-
 export function updateThrottledOriginState(
   origin: string,
   throttledOriginState: ThrottledOrigin,
@@ -5832,15 +5368,6 @@ export function setFirstTimeFlowType(
     } catch (err) {
       dispatch(displayWarning(err));
     }
-  };
-}
-
-export function setSelectedNetworkConfigurationId(
-  networkConfigurationId: string,
-): PayloadAction<string> {
-  return {
-    type: actionConstants.SET_SELECTED_NETWORK_CONFIGURATION_ID,
-    payload: networkConfigurationId,
   };
 }
 
@@ -5934,20 +5461,6 @@ export function setDismissSeedBackUpReminder(
   };
 }
 
-export function setOverrideContentSecurityPolicyHeader(
-  value: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    await submitRequestToBackground('setOverrideContentSecurityPolicyHeader', [
-      value,
-    ]);
-    dispatch(hideLoadingIndication());
-  };
-}
-
 export function setManageInstitutionalWallets(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -5956,21 +5469,6 @@ export function setManageInstitutionalWallets(
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     await submitRequestToBackground('setManageInstitutionalWallets', [value]);
-    dispatch(hideLoadingIndication());
-  };
-}
-
-export function getRpcMethodPreferences(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    await submitRequestToBackground('getRpcMethodPreferences', []);
     dispatch(hideLoadingIndication());
   };
 }
@@ -6260,17 +5758,6 @@ export function estimateGas(params: TransactionParams): Promise<Hex> {
   return submitRequestToBackground('estimateGas', [params]);
 }
 
-export async function updateTokenType(
-  tokenAddress: string,
-): Promise<Token | undefined> {
-  try {
-    return await submitRequestToBackground('updateTokenType', [tokenAddress]);
-  } catch (error) {
-    logErrorWithMessage(error);
-  }
-  return undefined;
-}
-
 export async function addPollingTokenToAppState(pollingToken: string) {
   return submitRequestToBackground('addPollingTokenToAppState', [
     pollingToken,
@@ -6476,20 +5963,6 @@ export async function tokenRatesStopPollingByPollingToken(
 }
 
 /**
- * Stops polling on the account tracker controller.
- *
- * @param pollingToken - polling token to use to stop polling.
- */
-export async function accountTrackerStopPollingByPollingToken(
-  pollingToken: string,
-) {
-  await submitRequestToBackground('accountTrackerStopPollingByPollingToken', [
-    pollingToken,
-  ]);
-  await removePollingTokenFromAppState(pollingToken);
-}
-
-/**
  * Informs the GasFeeController that the UI requires gas fee polling
  *
  * @param networkClientId - unique identifier for the network client
@@ -6588,15 +6061,6 @@ export function trackMetaMetricsEvent(
   ]);
 }
 
-export function createEventFragment(
-  options: MetaMetricsEventFragment,
-): Promise<string> {
-  const actionId = generateActionId();
-  return submitRequestToBackground('createEventFragment', [
-    { ...options, actionId },
-  ]);
-}
-
 export function upsertTransactionUIMetricsFragment(
   transactionId: string,
   payload: Partial<MetaMetricsEventFragment>,
@@ -6612,17 +6076,6 @@ export function updateEventFragment(
   payload: Partial<MetaMetricsEventFragment>,
 ) {
   return submitRequestToBackground('updateEventFragment', [id, payload]);
-}
-
-export function finalizeEventFragment(
-  id: string,
-  options?: {
-    abandoned?: boolean;
-    page?: MetaMetricsPageObject;
-    referrer?: MetaMetricsReferrerObject;
-  },
-) {
-  return submitRequestToBackground('finalizeEventFragment', [id, options]);
 }
 
 /**
@@ -6647,14 +6100,6 @@ export function resetViewedNotifications() {
   return submitRequestToBackground('resetViewedNotifications');
 }
 
-export function updateViewedNotifications(notificationIdViewedStatusMap: {
-  [notificationId: string]: boolean;
-}) {
-  return submitRequestToBackground('updateViewedNotifications', [
-    notificationIdViewedStatusMap,
-  ]);
-}
-
 export async function setAlertEnabledness(
   alertId: string,
   enabledness: boolean,
@@ -6671,11 +6116,6 @@ export async function setUnconnectedAccountAlertShown(origin: string) {
 
 export async function setWeb3ShimUsageAlertDismissed(origin: string) {
   await submitRequestToBackground('setWeb3ShimUsageAlertDismissed', [origin]);
-}
-
-// Smart Transactions Controller
-export function clearSmartTransactionFees() {
-  submitRequestToBackground('clearSmartTransactionFees');
 }
 
 export function fetchSmartTransactionFees(
@@ -6888,33 +6328,6 @@ export function fetchSmartTransactionsLiveness({
       logErrorWithMessage(err);
     }
   };
-}
-
-export function dismissSmartTransactionsErrorMessage(): Action {
-  return {
-    type: actionConstants.DISMISS_SMART_TRANSACTIONS_ERROR_MESSAGE,
-  };
-}
-
-// App state
-export function hideTestNetMessage() {
-  return submitRequestToBackground('setShowTestnetMessageInDropdown', [false]);
-}
-
-export function hideBetaHeader() {
-  return submitRequestToBackground('setShowBetaHeader', [false]);
-}
-
-export function hidePermissionsTour() {
-  return submitRequestToBackground('setShowPermissionsTour', [false]);
-}
-
-export function hideAccountBanner() {
-  return submitRequestToBackground('setShowAccountBanner', [false]);
-}
-
-export function hideNetworkBanner() {
-  return submitRequestToBackground('setShowNetworkBanner', [false]);
 }
 
 export function updateNetworkConnectionBanner(
@@ -7193,34 +6606,6 @@ export function rewardsLinkAccountsToSubscriptionCandidate(
   };
 }
 
-export function requestUserApproval({
-  origin,
-  type,
-  requestData,
-}: {
-  origin: string;
-  type: string;
-  requestData: object;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    try {
-      return await submitRequestToBackground('requestUserApproval', [
-        {
-          origin,
-          type,
-          requestData,
-        },
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had trouble requesting user approval'));
-      return null;
-    }
-  };
-}
-
 export function rejectAllApprovals() {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('rejectAllPendingApprovals');
@@ -7231,20 +6616,6 @@ export function rejectAllApprovals() {
       dispatch(closeCurrentNotificationWindow());
     }
   };
-}
-
-export async function getCurrentNetworkEIP1559Compatibility(): Promise<
-  boolean | undefined
-> {
-  let networkEIP1559Compatibility;
-  try {
-    networkEIP1559Compatibility = await submitRequestToBackground<boolean>(
-      'getCurrentNetworkEIP1559Compatibility',
-    );
-  } catch (error) {
-    console.error(error);
-  }
-  return networkEIP1559Compatibility;
 }
 
 export async function getNetworkConfigurationByNetworkClientId(
@@ -7349,6 +6720,7 @@ export async function captureTestBackgroundError(
  * @param shown - True if popover has been shown.
  * @returns Promise Resolved on successfully submitted background request.
  */
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
   return async () => {
     await submitRequestToBackground(
@@ -7394,19 +6766,6 @@ export function deleteInterface(
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
-}
-
-export function trackInsightSnapUsage(snapId: string) {
-  return async () => {
-    await submitRequestToBackground('trackInsightSnapView', [snapId]);
-  };
-}
-
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-export async function setSnapsAddSnapAccountModalDismissed() {
-  await submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [
-    true,
-  ]);
 }
 ///: END:ONLY_INCLUDE_IF
 
@@ -7890,6 +7249,7 @@ export function setConfirmationAdvancedDetailsOpen(value: boolean) {
   return setPreference('showConfirmationAdvancedDetails', value);
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 export function setMultichainAccountsIntroModalShown(value: boolean) {
   return async () => {
     await submitRequestToBackground('setHasShownMultichainAccountsIntroModal', [
@@ -7924,22 +7284,6 @@ export async function decodeTransactionData({
     },
   ]);
 }
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
-export async function multichainUpdateBalance(
-  accountId: string,
-): Promise<void> {
-  return await submitRequestToBackground<void>('multichainUpdateBalance', [
-    accountId,
-  ]);
-}
-
-export async function multichainUpdateTransactions(
-  accountId: string,
-): Promise<void> {
-  return await submitRequestToBackground<void>('multichainUpdateTransactions', [
-    accountId,
-  ]);
-}
 
 export async function alignMultichainWallets(): Promise<void> {
   return await submitRequestToBackground<void>('alignMultichainWallets', []);
@@ -7970,20 +7314,6 @@ export async function setLastInteractedConfirmationInfo(
     'setLastInteractedConfirmationInfo',
     [info],
   );
-}
-
-export async function endBackgroundTrace(request: EndTraceRequest) {
-  // We want to record the timestamp immediately, not after the request reaches the background.
-  // Sentry uses the Performance interface for more accuracy, so we also must use it to align with
-  // other timings.
-  const timestamp =
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    request.timestamp || performance.timeOrigin + performance.now();
-
-  await submitRequestToBackground<void>('endTrace', [
-    { ...request, timestamp },
-  ]);
 }
 
 function applyPatches(
@@ -8080,18 +7410,6 @@ export async function isSendBundleSupported(chainId: Hex): Promise<boolean> {
  */
 export function setSkipDeepLinkInterstitial(value: boolean) {
   return setPreference('skipDeepLinkInterstitial', value, false);
-}
-
-/**
- * Asks the UI to reload the browser extension safely.
- *
- * Much better than `browser.runtime.reload()`, as safeReload will wait for all
- * writes to finish!
- *
- * @returns
- */
-export async function requestSafeReload() {
-  return await submitRequestToBackground('requestSafeReload');
 }
 
 /**

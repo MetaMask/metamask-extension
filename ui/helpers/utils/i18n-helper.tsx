@@ -4,7 +4,6 @@ import {
   I18NSubstitution,
   getMessage as getMessageShared,
 } from '../../../shared/modules/i18n';
-import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { captureException } from '../../../shared/lib/sentry';
 
 /**
@@ -45,13 +44,3 @@ export const getMessage = (
     join,
   );
 };
-
-export function getNetworkLabelKey(network: string): string {
-  if (network === NETWORK_TYPES.LINEA_SEPOLIA) {
-    return 'lineaSepolia';
-  }
-  if (network === NETWORK_TYPES.LINEA_MAINNET) {
-    return 'lineaMainnet';
-  }
-  return network;
-}

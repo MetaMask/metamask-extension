@@ -6,7 +6,6 @@ export {
   ANY_BENEFICIARY,
   ROOT_AUTHORITY,
   createDelegation,
-  createOpenDelegation,
   encodeDelegation,
   encodePermissionContexts,
   getDelegationHashOffchain,
@@ -20,7 +19,6 @@ export {
   BATCH_TRY_MODE,
   SINGLE_DEFAULT_MODE,
   SINGLE_TRY_MODE,
-  createExecution,
   encodeBatchExecution,
   encodeExecutionCalldata,
   encodeExecutionCalldatas,
@@ -28,5 +26,5 @@ export {
   type ExecutionMode,
   type ExecutionStruct,
 } from './execution';
-export { createCaveat, type Caveat } from './caveat';
+export { type Caveat } from './caveat';
 export { createCaveatBuilder, type CaveatBuilder } from './caveatBuilder';

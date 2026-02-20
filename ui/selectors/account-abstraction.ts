@@ -35,18 +35,6 @@ export function getUserOperation(state: AccountAbstractionState) {
   return userOperations[id];
 }
 
-export function getIsUsingPaymaster(state: AccountAbstractionState) {
-  const userOperation = getUserOperation(state);
-
-  if (!userOperation) {
-    return false;
-  }
-
-  const paymasterData = userOperation.userOperation?.paymasterAndData;
-
-  return Boolean(paymasterData?.length) && paymasterData !== '0x';
-}
-
 export const selectPaymasterData = createSelector(
   selectUserOperationMetadata,
   (userOperationMetadata) => {

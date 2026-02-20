@@ -21,26 +21,16 @@ import {
 } from '../../../shared/constants/swaps';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
-  fetchTokens,
-  fetchAggregatorMetadata,
-  fetchTopAssets,
   isContractAddressValid,
   getNetworkNameByChainId,
   getSwapsLivenessForNetwork,
-  countDecimals,
-  showRemainingTimeInMinAndSec,
   getFeeForSmartTransaction,
   formatSwapsValueForDisplay,
   fetchTopAssetsList,
   getSwap1559GasFeeEstimates,
 } from './swaps.util';
 import { estimateGasFee } from './swaps.util.gas';
-import {
-  TOKENS,
-  EXPECTED_TOKENS_RESULT,
-  AGGREGATOR_METADATA,
-  TOP_ASSETS,
-} from './swaps-util-test-constants';
+import { TOP_ASSETS } from './swaps-util-test-constants';
 
 jest.mock('../../../shared/lib/storage-helpers', () => ({
   getStorageItem: jest.fn(),
@@ -69,44 +59,6 @@ describe('Swaps Util', () => {
     nock.cleanAll();
   });
 
-  describe('fetchTokens', () => {
-    beforeEach(() => {
-      nock('https://bridge.api.cx.metamask.io')
-        .persist()
-        .get('/networks/1/tokens?includeBlockedTokens=true')
-        .reply(200, TOKENS);
-    });
-
-    it('should fetch tokens', async () => {
-      const result = await fetchTokens(CHAIN_IDS.MAINNET);
-      expect(result).toStrictEqual(EXPECTED_TOKENS_RESULT);
-    });
-
-    it('should fetch tokens on prod', async () => {
-      const result = await fetchTokens(CHAIN_IDS.MAINNET);
-      expect(result).toStrictEqual(EXPECTED_TOKENS_RESULT);
-    });
-  });
-
-  describe('fetchAggregatorMetadata', () => {
-    beforeEach(() => {
-      nock('https://bridge.api.cx.metamask.io')
-        .persist()
-        .get('/networks/1/aggregatorMetadata')
-        .reply(200, AGGREGATOR_METADATA);
-    });
-
-    it('should fetch aggregator metadata', async () => {
-      const result = await fetchAggregatorMetadata(CHAIN_IDS.MAINNET);
-      expect(result).toStrictEqual(AGGREGATOR_METADATA);
-    });
-
-    it('should fetch aggregator metadata on prod', async () => {
-      const result = await fetchAggregatorMetadata(CHAIN_IDS.MAINNET);
-      expect(result).toStrictEqual(AGGREGATOR_METADATA);
-    });
-  });
-
   describe('fetchTopAssetsList', () => {
     beforeEach(() => {
       nock('https://bridge.api.cx.metamask.io')
@@ -131,42 +83,6 @@ describe('Swaps Util', () => {
       );
       expect(await fetchTopAssetsList(ChainId.SOLANA)).toStrictEqual([]);
       expect(await fetchTopAssetsList('0x416EDEF1601BE')).toStrictEqual([]);
-    });
-  });
-
-  describe('fetchTopAssets', () => {
-    beforeEach(() => {
-      nock('https://bridge.api.cx.metamask.io')
-        .persist()
-        .get('/networks/1/topAssets')
-        .reply(200, TOP_ASSETS);
-    });
-
-    const expectedResult = {
-      '0x514910771af9ca656af840dff83e8264ecf986ca': {
-        index: '0',
-      },
-      '0x04fa0d235c4abf4bcf4787af4cf447de572ef828': {
-        index: '1',
-      },
-      '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': {
-        index: '2',
-      },
-      '0x80fb784b7ed66730e8b1dbd9820afd29931aab03': {
-        index: '3',
-      },
-      '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
-        index: '4',
-      },
-    };
-    it('should fetch top assets', async () => {
-      const result = await fetchTopAssets(CHAIN_IDS.MAINNET);
-      expect(result).toStrictEqual(expectedResult);
-    });
-
-    it('should fetch top assets on prod', async () => {
-      const result = await fetchTopAssets(CHAIN_IDS.MAINNET);
-      expect(result).toStrictEqual(expectedResult);
     });
   });
 
@@ -382,42 +298,6 @@ describe('Swaps Util', () => {
       expect(
         getSwapsLivenessForNetwork(CHAIN_IDS.MAINNET, swapsFeatureFlags),
       ).toMatchObject(expectedSwapsLiveness);
-    });
-  });
-
-  describe('countDecimals', () => {
-    it('returns 0 decimals for an undefined value', () => {
-      expect(countDecimals()).toBe(0);
-    });
-
-    it('returns 0 decimals for number: 1', () => {
-      expect(countDecimals(1)).toBe(0);
-    });
-
-    it('returns 1 decimals for number: 1.1', () => {
-      expect(countDecimals(1.1)).toBe(1);
-    });
-
-    it('returns 3 decimals for number: 1.123', () => {
-      expect(countDecimals(1.123)).toBe(3);
-    });
-
-    it('returns 9 decimals for number: 1.123456789', () => {
-      expect(countDecimals(1.123456789)).toBe(9);
-    });
-  });
-
-  describe('showRemainingTimeInMinAndSec', () => {
-    it('returns 0:00 if we do not pass an integer', () => {
-      expect(showRemainingTimeInMinAndSec('5')).toBe('0:00');
-    });
-
-    it('returns 0:05 if 5 seconds are remaining', () => {
-      expect(showRemainingTimeInMinAndSec(5)).toBe('0:05');
-    });
-
-    it('returns 2:59', () => {
-      expect(showRemainingTimeInMinAndSec(179)).toBe('2:59');
     });
   });
 

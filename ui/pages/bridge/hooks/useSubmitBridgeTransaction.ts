@@ -27,19 +27,6 @@ import {
 import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
-const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
-const APPROVAL_TX_ERROR = 'Approve transaction failed';
-
-export const isAllowanceResetError = (error: unknown): boolean => {
-  const errorMessage = (error as Error).message ?? '';
-  return errorMessage.includes(ALLOWANCE_RESET_ERROR);
-};
-
-export const isApprovalTxError = (error: unknown): boolean => {
-  const errorMessage = (error as Error).message ?? '';
-  return errorMessage.includes(APPROVAL_TX_ERROR);
-};
-
 const isHardwareWalletUserRejection = (error: unknown): boolean => {
   if (isUserRejectedHardwareWalletError(error)) {
     return true;

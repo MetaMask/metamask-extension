@@ -3,7 +3,6 @@ import { isHexString } from '@metamask/utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
-import { TokenStandard } from '../../../../shared/constants/transaction';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { BURN_ADDRESS } from '../../../../shared/modules/hexstring-utils';
 import {
@@ -14,15 +13,11 @@ import {
 } from './send.constants';
 
 export {
-  addGasBuffer,
-  getAssetTransferData,
   generateERC20TransferData,
   generateERC20ApprovalData,
   generateERC721TransferData,
   generateERC1155TransferData,
   isBalanceSufficient,
-  isTokenBalanceSufficient,
-  isERC1155BalanceSufficient,
   ellipsify,
 };
 
@@ -42,46 +37,6 @@ function isBalanceSufficient({
   }
 
   return balanceNumeric.greaterThanOrEqualTo(totalAmount);
-}
-
-function isTokenBalanceSufficient({ amount = '0x0', tokenBalance, decimals }) {
-  const amountNumeric = new Numeric(amount, 16).shiftedBy(decimals);
-  const tokenBalanceNumeric = new Numeric(tokenBalance, 16);
-
-  return tokenBalanceNumeric.greaterThanOrEqualTo(amountNumeric);
-}
-
-function isERC1155BalanceSufficient({ amount = '0', tokenBalance }) {
-  const amountNumeric = new Numeric(amount, 16);
-  const tokenBalanceNumeric = new Numeric(tokenBalance, 10);
-
-  return tokenBalanceNumeric.greaterThanOrEqualTo(amountNumeric);
-}
-
-function addGasBuffer(
-  initialGasLimitHex,
-  blockGasLimitHex,
-  bufferMultiplier = 1.5,
-) {
-  const initialGasLimit = new Numeric(initialGasLimitHex, 16);
-  const upperGasLimit = new Numeric(blockGasLimitHex, 16)
-    .times(new Numeric(0.9, 10))
-    .round(0);
-
-  const bufferedGasLimit = initialGasLimit
-    .times(new Numeric(bufferMultiplier, 10))
-    .round(0);
-
-  // if initialGasLimit is above blockGasLimit, dont modify it
-  if (initialGasLimit.greaterThanOrEqualTo(upperGasLimit)) {
-    return initialGasLimitHex;
-  }
-  // if bufferedGasLimit is below blockGasLimit, use bufferedGasLimit
-  if (bufferedGasLimit.lessThan(upperGasLimit)) {
-    return bufferedGasLimit.toString();
-  }
-  // otherwise use blockGasLimit
-  return upperGasLimit.toString();
 }
 
 function generateERC20TransferData({
@@ -177,30 +132,6 @@ function generateERC20ApprovalData({
       )
       .join('')
   );
-}
-
-function getAssetTransferData({ sendToken, fromAddress, toAddress, amount }) {
-  switch (sendToken.standard) {
-    case TokenStandard.ERC721:
-      return generateERC721TransferData({
-        toAddress,
-        fromAddress,
-        tokenId: sendToken.tokenId,
-      });
-    case TokenStandard.ERC1155:
-      return generateERC1155TransferData({
-        toAddress,
-        fromAddress,
-        tokenId: sendToken.tokenId,
-      });
-    case TokenStandard.ERC20:
-    default:
-      return generateERC20TransferData({
-        toAddress,
-        amount,
-        sendToken,
-      });
-  }
 }
 
 function ellipsify(text, first = 6, last = 4) {

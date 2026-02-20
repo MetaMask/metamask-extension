@@ -6,7 +6,6 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { EthAccountType } from '@metamask/keyring-api';
-import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { SubscriptionUserEvent } from '@metamask/subscription-controller';
@@ -17,8 +16,6 @@ import enLocale from '../../app/_locales/en/messages.json';
 // eslint-disable-next-line import/no-restricted-paths
 import MetaMaskController from '../../app/scripts/metamask-controller';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
-import { GAS_LIMITS } from '../../shared/constants/gas';
-import { ORIGIN_METAMASK } from '../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
@@ -92,8 +89,6 @@ const mockStore = (state = defaultState) => configureStore(middleware)(state);
 
 describe('Actions', () => {
   let background;
-
-  const currentChainId = '0x5';
 
   let originalNavigator;
 
@@ -1196,86 +1191,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#updateTransaction', () => {
-    const txParams = {
-      from: '0x1',
-      gas: GAS_LIMITS.SIMPLE,
-      gasPrice: '0x3b9aca00',
-      to: '0x2',
-      value: '0x0',
-    };
-
-    const txData = {
-      id: '1',
-      status: TransactionStatus.unapproved,
-      chainId: currentChainId,
-      txParams,
-    };
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('updates transaction', async () => {
-      const store = mockStore();
-
-      const updateTransactionStub = sinon.stub().resolves();
-
-      background.getApi.returns({
-        updateTransaction: updateTransactionStub,
-        getStatePatches: sinon.stub().resolves([]),
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(actions.updateTransaction(txData));
-
-      const resultantActions = store.getActions();
-      expect(updateTransactionStub.callCount).toStrictEqual(1);
-      expect(resultantActions[1]).toStrictEqual({
-        type: 'UPDATE_TRANSACTION_PARAMS',
-        id: txData.id,
-        value: txParams,
-      });
-    });
-
-    it('rejects with error message', async () => {
-      const store = mockStore();
-
-      background.getApi.returns({
-        updateTransaction: () => {
-          throw new Error('error');
-        },
-        getStatePatches: sinon.stub().resolves([]),
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        {
-          type: 'UPDATE_TRANSACTION_PARAMS',
-          id: '1',
-          value: {
-            from: '0x1',
-            gas: GAS_LIMITS.SIMPLE,
-            gasPrice: '0x3b9aca00',
-            to: '0x2',
-            value: '0x0',
-          },
-        },
-        { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'GO_HOME' },
-      ];
-
-      await expect(
-        store.dispatch(actions.updateTransaction(txData)),
-      ).rejects.toThrow('error');
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
   describe('#lockMetamask', () => {
     afterEach(() => {
       sinon.restore();
@@ -2077,47 +1992,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#requestUserApproval', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls requestUserApproval in the background with the correct arguments', async () => {
-      const store = mockStore();
-
-      const requestUserApprovalStub = sinon.stub().resolves();
-
-      background.getApi.returns({
-        requestUserApproval: requestUserApprovalStub,
-      });
-      setBackgroundConnection(background.getApi());
-
-      const networkConfiguration = {
-        rpcUrl: 'newRpc',
-        chainId: '0x',
-        ticker: 'ETH',
-        nickname: 'nickname',
-        rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
-      };
-
-      await store.dispatch(
-        actions.requestUserApproval({
-          origin: ORIGIN_METAMASK,
-          type: 'test',
-          requestData: networkConfiguration,
-        }),
-      );
-
-      expect(
-        requestUserApprovalStub.calledOnceWith({
-          origin: ORIGIN_METAMASK,
-          type: 'test',
-          requestData: networkConfiguration,
-        }),
-      ).toBe(true);
-    });
-  });
-
   describe('removeNetwork', () => {
     afterEach(() => {
       sinon.restore();
@@ -2233,25 +2107,6 @@ describe('Actions', () => {
           actions.refreshAssetsForSelectedAccount([mockAccount], {}),
         ),
       ).resolves.not.toThrow();
-    });
-  });
-
-  describe('#setSelectedNetworkConfigurationId', () => {
-    it('sets appState.networkConfigurationId to provided value', async () => {
-      const store = mockStore();
-
-      const networkConfigurationId = 'testNetworkConfigurationId';
-
-      store.dispatch(
-        actions.setSelectedNetworkConfigurationId(networkConfigurationId),
-      );
-
-      const resultantActions = store.getActions();
-
-      expect(resultantActions[0]).toStrictEqual({
-        type: 'SET_SELECTED_NETWORK_CONFIGURATION_ID',
-        payload: networkConfigurationId,
-      });
     });
   });
 
@@ -2606,37 +2461,6 @@ describe('Actions', () => {
 
       await store.dispatch(actions.setParticipateInMetaMetrics(true));
       expect(setParticipateInMetaMetricsStub).toHaveBeenCalledWith(true);
-    });
-  });
-
-  describe('#setUseBlockie', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls setUseBlockie in background', async () => {
-      const store = mockStore();
-      const setUseBlockieStub = sinon.stub().resolves();
-      setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
-
-      await store.dispatch(actions.setUseBlockie());
-      expect(setUseBlockieStub.callCount).toStrictEqual(1);
-    });
-
-    it('errors when setUseBlockie in background throws', async () => {
-      const store = mockStore();
-      const setUseBlockieStub = sinon.stub().rejects(new Error('error'));
-
-      setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await store.dispatch(actions.setUseBlockie());
-      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
@@ -3537,26 +3361,6 @@ describe('Actions', () => {
           USER_STORAGE_WALLETS_FEATURE_KEY,
         ),
       ).toBe(true);
-    });
-  });
-
-  describe('removePermittedChain', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls removePermittedChain in the background', async () => {
-      const store = mockStore();
-
-      background.removePermittedChain.resolves();
-      setBackgroundConnection(background);
-
-      await store.dispatch(actions.removePermittedChain('test.com', '0x1'));
-
-      expect(
-        background.removePermittedChain.calledWith('test.com', '0x1'),
-      ).toBe(true);
-      expect(store.getActions()).toStrictEqual([]);
     });
   });
 

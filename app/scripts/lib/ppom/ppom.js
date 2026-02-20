@@ -216,12 +216,6 @@ function __wbg_adapter_21(arg0, arg1) {
     wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__destroy(arg0, arg1);
 }
 
-/**
-*/
-export function main() {
-    wasm.main();
-}
-
 let cachedUint32Memory0 = null;
 
 function getUint32Memory0() {
@@ -488,22 +482,6 @@ function __wbg_finalize_init(instance, module) {
     return wasm;
 }
 
-function initSync(module) {
-    if (wasm !== undefined) return wasm;
-
-    const imports = __wbg_get_imports();
-
-    __wbg_init_memory(imports);
-
-    if (!(module instanceof WebAssembly.Module)) {
-        module = new WebAssembly.Module(module);
-    }
-
-    const instance = new WebAssembly.Instance(module, imports);
-
-    return __wbg_finalize_init(instance, module);
-}
-
 async function __wbg_init(input) {
     if (wasm !== undefined) return wasm;
 
@@ -520,6 +498,4 @@ async function __wbg_init(input) {
 
     return __wbg_finalize_init(instance, module);
 }
-
-export { initSync }
 export default __wbg_init;

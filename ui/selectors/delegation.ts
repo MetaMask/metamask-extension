@@ -1,6 +1,7 @@
 import type { Hex } from '@metamask/utils';
 import type { DelegationEntry } from '@metamask/delegation-controller';
-import { isHexEqual } from '../../shared/lib/delegation/utils';
+
+const isHexEqual = (a: Hex, b: Hex) => a.toLowerCase() === b.toLowerCase();
 
 type Address = Hex;
 

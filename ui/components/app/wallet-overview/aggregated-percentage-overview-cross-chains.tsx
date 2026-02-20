@@ -24,12 +24,24 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Box, SensitiveText } from '../../component-library';
-import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { TokenWithBalance } from '../assets/types';
 import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
+
+const getCalculatedTokenAmount1dAgo = (
+  tokenFiatAmount?: string | number,
+  tokenPercent1dAgo?: number,
+) => {
+  if (tokenFiatAmount === undefined) {
+    return 0;
+  }
+  if (tokenPercent1dAgo === undefined) {
+    return tokenFiatAmount;
+  }
+  return Number(tokenFiatAmount) / (1 + tokenPercent1dAgo / 100);
+};
 
 export const AggregatedPercentageOverviewCrossChains = ({
   trailingChild,

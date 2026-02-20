@@ -32,13 +32,9 @@ import {
   getFetchParams,
   getApproveTxParams,
   getUsedSwapsGasPrice,
-  fetchQuotesAndSetQuoteState,
   navigateBackToPrepareSwap,
-  prepareForRetryGetQuotes,
-  prepareToLeaveSwaps,
+  clearSwapsState,
   getCurrentSmartTransactionsEnabled,
-  getFromTokenInputValue,
-  getMaxSlippage,
 } from '../../../ducks/swaps/swaps';
 import Mascot from '../../../components/ui/mascot';
 import {
@@ -55,7 +51,11 @@ import PulseLoader from '../../../components/ui/pulse-loader';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { stopPollingForQuotes } from '../../../store/actions';
+import {
+  stopPollingForQuotes,
+  setBackgroundSwapRouteState,
+  setSwapsErrorKey,
+} from '../../../store/actions';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
@@ -66,6 +66,14 @@ import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import SwapFailureIcon from './swap-failure-icon';
 import SwapSuccessIcon from './swap-success-icon';
 import QuotesTimeoutIcon from './quotes-timeout-icon';
+
+const leaveSwaps = () => {
+  return async (dispatch) => {
+    dispatch(clearSwapsState());
+    await dispatch(setBackgroundSwapRouteState(''));
+    await dispatch(setSwapsErrorKey(''));
+  };
+};
 
 export default function AwaitingSwap({
   swapComplete,
@@ -84,8 +92,6 @@ export default function AwaitingSwap({
   const { swapMetaData } =
     useSelector((state) => getFullTxData(state, txId)) || {};
   const fetchParams = useSelector(getFetchParams, isEqual);
-  const fromTokenInputValue = useSelector(getFromTokenInputValue);
-  const maxSlippage = useSelector(getMaxSlippage);
   const usedQuote = useSelector(getUsedQuote, isEqual);
   const approveTxParams = useSelector(getApproveTxParams, shallowEqual);
   const swapsGasPrice = useSelector(getUsedSwapsGasPrice);
@@ -325,18 +331,10 @@ export default function AwaitingSwap({
         onSubmit={async () => {
           /* istanbul ignore next */
           if (errorKey === OFFLINE_FOR_MAINTENANCE) {
-            await dispatch(prepareToLeaveSwaps());
+            await dispatch(leaveSwaps());
             navigate(DEFAULT_ROUTE);
           } else if (errorKey === QUOTES_EXPIRED_ERROR) {
-            dispatch(prepareForRetryGetQuotes());
-            await dispatch(
-              fetchQuotesAndSetQuoteState(
-                navigate,
-                fromTokenInputValue,
-                maxSlippage,
-                trackEvent,
-              ),
-            );
+            await dispatch(navigateBackToPrepareSwap(navigate));
           } else if (errorKey) {
             await dispatch(navigateBackToPrepareSwap(navigate));
           } else if (

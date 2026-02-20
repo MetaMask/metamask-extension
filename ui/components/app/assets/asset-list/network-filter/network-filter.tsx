@@ -11,7 +11,6 @@ import {
 } from '../../../../../selectors';
 import {
   getCurrentChainId,
-  getIsAllNetworksFilterEnabled,
   getNetworkConfigurationsByChainId,
 } from '../../../../../../shared/modules/selectors/networks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -44,6 +43,22 @@ type SortControlProps = {
   handleFilterNetwork?: (chainFilters: Record<string, boolean>) => void;
   networkFilter?: Record<string, boolean>;
   showTokenFiatBalance?: boolean;
+};
+
+const getIsAllNetworksFilterEnabled = (state: {
+  metamask: {
+    networkConfigurationsByChainId?: Record<string, unknown>;
+  };
+}): Record<string, boolean> => {
+  const configuredNetworks =
+    state.metamask.networkConfigurationsByChainId ?? {};
+  return FEATURED_NETWORK_CHAIN_IDS.reduce<Record<string, boolean>>(
+    (acc, chainId) => {
+      acc[chainId] = Boolean(configuredNetworks[chainId]);
+      return acc;
+    },
+    {},
+  );
 };
 
 const NetworkFilter = ({

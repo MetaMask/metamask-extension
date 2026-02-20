@@ -6,9 +6,8 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
-  getTokensMarketData,
+  getMarketData,
   getPreferences,
-  getSelectedInternalAccount,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
@@ -23,8 +22,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Box, SensitiveText } from '../../component-library';
-import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
-import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/assets';
 import { formatWithThreshold } from '../assets/util/formatWithThreshold';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
@@ -37,13 +34,26 @@ type MarketDataDetails = {
   pricePercentChange1d: number;
 };
 
+const getCalculatedTokenAmount1dAgo = (
+  tokenFiatAmount?: string | number,
+  tokenPercent1dAgo?: number,
+) => {
+  if (tokenFiatAmount === undefined) {
+    return 0;
+  }
+  if (tokenPercent1dAgo === undefined) {
+    return tokenFiatAmount;
+  }
+  return Number(tokenFiatAmount) / (1 + tokenPercent1dAgo / 100);
+};
+
 export const AggregatedPercentageOverview = ({
   trailingChild,
 }: {
   trailingChild: () => JSX.Element | null;
 }) => {
   const tokensMarketData: Record<string, MarketDataDetails> =
-    useSelector(getTokensMarketData);
+    useSelector(getMarketData);
   const { formatCurrencyCompact } = useFormatters();
   const fiatCurrency = useSelector(getCurrentCurrency);
   const { privacyMode } = useSelector(getPreferences);
@@ -162,18 +172,14 @@ export const AggregatedMultichainPercentageOverview = ({
 }) => {
   const locale = useSelector(getIntlLocale);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const historicalAggregatedBalances = useSelector((state) =>
-    getHistoricalMultichainAggregatedBalance(state, selectedAccount),
-  );
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
 
   let color = TextColor.textAlternative;
 
-  const singleDayPercentChange = historicalAggregatedBalances.P1D.percentChange;
-  const singleDayAmountChange = historicalAggregatedBalances.P1D.amountChange;
+  const singleDayPercentChange = 0;
+  const singleDayAmountChange = 0;
   const signPrefix = singleDayPercentChange >= 0 ? '+' : '-';
 
   if (!privacyMode && isValidAmount(singleDayPercentChange)) {

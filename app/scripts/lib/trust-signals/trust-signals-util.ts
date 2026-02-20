@@ -1,12 +1,6 @@
-import { NetworkController } from '@metamask/network-controller';
 import { JsonRpcRequest } from '@metamask/utils';
-import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PreferencesController } from '../../controllers/preferences-controller';
-import {
-  SupportedEVMChain,
-  mapChainIdToSupportedEVMChain,
-} from '../../../../shared/lib/trust-signals';
 
 // isSecurityAlertsEnabledByUser is a function that checks if the security alerts are enabled in the preferences controller.
 export function isSecurityAlertsEnabledByUser(
@@ -88,16 +82,4 @@ export function hasValidTypedDataParams(
   }
 
   return req.params[1] !== undefined && req.params[1] !== null;
-}
-
-export function getChainId(
-  networkController: NetworkController,
-): SupportedEVMChain | undefined {
-  const chainId = getProviderConfig({
-    metamask: networkController.state,
-  })?.chainId;
-  if (!chainId) {
-    throw new Error('Chain ID not found');
-  }
-  return mapChainIdToSupportedEVMChain(chainId);
 }

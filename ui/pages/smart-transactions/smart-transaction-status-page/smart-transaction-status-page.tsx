@@ -47,17 +47,6 @@ export type SmartTransactionStatusPageProps = {
   onViewActivity?: () => void;
 };
 
-export const showRemainingTimeInMinAndSec = (
-  remainingTimeInSec: number,
-): string => {
-  if (!Number.isInteger(remainingTimeInSec)) {
-    return '0:00';
-  }
-  const minutes = Math.floor(remainingTimeInSec / 60);
-  const seconds = remainingTimeInSec % 60;
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-};
-
 const getDisplayValues = ({
   t,
   isSmartTransactionPending,

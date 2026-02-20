@@ -16,7 +16,6 @@ import { isObject, isStrictHexString } from '@metamask/utils';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import { logErrorWithMessage } from '../../../shared/modules/error';
 import {
   toChecksumHexAddress,
@@ -72,51 +71,6 @@ export function formatDateWithYearContext(
   return dateTime.toFormat(
     now.year === dateTime.year ? formatThisYear : fallback,
   );
-}
-
-export function formatDateWithSuffix(timestamp) {
-  const date = DateTime.fromMillis(timestamp * 1000); // Convert to milliseconds
-  const { day } = date;
-  const suffix = getOrdinalSuffix(day);
-
-  return date.toFormat(`MMM d'${suffix}', yyyy`);
-}
-
-function getOrdinalSuffix(day) {
-  if (day > 3 && day < 21) {
-    return 'th';
-  } // because 11th, 12th, 13th
-  switch (day % 10) {
-    case 1:
-      return 'st';
-    case 2:
-      return 'nd';
-    case 3:
-      return 'rd';
-    default:
-      return 'th';
-  }
-}
-/**
- * Determines if the provided chainId is a default MetaMask chain
- *
- * @param {string} chainId - chainId to check
- */
-export function isDefaultMetaMaskChain(chainId) {
-  if (
-    !chainId ||
-    chainId === CHAIN_IDS.MAINNET ||
-    chainId === CHAIN_IDS.LINEA_MAINNET ||
-    chainId === CHAIN_IDS.GOERLI ||
-    chainId === CHAIN_IDS.SEPOLIA ||
-    chainId === CHAIN_IDS.LINEA_GOERLI ||
-    chainId === CHAIN_IDS.LINEA_SEPOLIA ||
-    chainId === CHAIN_IDS.LOCALHOST
-  ) {
-    return true;
-  }
-
-  return false;
 }
 
 export function valuesFor(obj) {
@@ -235,13 +189,6 @@ export function isResolvableName(name) {
   return false;
 }
 
-export function isOriginContractAddress(to, sendTokenAddress) {
-  if (!to || !sendTokenAddress) {
-    return false;
-  }
-  return to.toLowerCase() === sendTokenAddress.toLowerCase();
-}
-
 // Takes wei Hex, returns wei BN, even if input is null
 export function numericBalance(balance) {
   if (!balance) {
@@ -309,20 +256,6 @@ export function getContractAtAddress(tokenAddress) {
     abi,
     new Web3Provider(global.ethereumProvider),
   );
-}
-
-export function getRandomFileName() {
-  let fileName = '';
-  const charBank = [
-    ...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
-  ];
-  const fileNameLength = Math.floor(Math.random() * 7 + 6);
-
-  for (let i = 0; i < fileNameLength; i++) {
-    fileName += charBank[Math.floor(Math.random() * charBank.length)];
-  }
-
-  return fileName;
 }
 
 /**
@@ -500,20 +433,6 @@ export function bnLessThan(a, b) {
   return new BigNumber(a, 10).lt(b, 10);
 }
 
-export function bnGreaterThanEqualTo(a, b) {
-  if (a === null || a === undefined || b === null || b === undefined) {
-    return null;
-  }
-  return new BigNumber(a, 10).gte(b, 10);
-}
-
-export function bnLessThanEqualTo(a, b) {
-  if (a === null || a === undefined || b === null || b === undefined) {
-    return null;
-  }
-  return new BigNumber(a, 10).lte(b, 10);
-}
-
 export function getURL(url) {
   try {
     return new URL(url);
@@ -559,10 +478,6 @@ export const toHumanReadableTime = (t, milliseconds) => {
   }
   return t('gasTimingHoursShort', [Math.ceil(seconds / 3600)]);
 };
-
-export function clearClipboard() {
-  window.navigator.clipboard.writeText('');
-}
 
 const solidityTypes = () => {
   const types = [
@@ -1001,19 +916,4 @@ export const getFilteredSnapPermissions = (
   }
 
   return filteredPermissions;
-};
-/**
- * Helper function to calculate the token amount 1dAgo using price percentage a day ago.
- *
- * @param {*} tokenFiatBalance - current token fiat balance
- * @param {*} tokenPricePercentChange1dAgo - price percentage 1day ago
- * @returns token amount 1day ago
- */
-export const getCalculatedTokenAmount1dAgo = (
-  tokenFiatBalance,
-  tokenPricePercentChange1dAgo,
-) => {
-  return tokenPricePercentChange1dAgo !== undefined && tokenFiatBalance
-    ? tokenFiatBalance / (1 + tokenPricePercentChange1dAgo / 100)
-    : (tokenFiatBalance ?? 0);
 };

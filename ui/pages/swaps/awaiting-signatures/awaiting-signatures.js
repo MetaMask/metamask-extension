@@ -6,9 +6,13 @@ import { I18nContext } from '../../../contexts/i18n';
 import {
   getFetchParams,
   getApproveTxParams,
-  prepareToLeaveSwaps,
+  clearSwapsState,
   getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
+import {
+  setBackgroundSwapRouteState,
+  setSwapsErrorKey,
+} from '../../../store/actions';
 import {
   isHardwareWallet,
   getHardwareWalletType,
@@ -32,6 +36,14 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { Text } from '../../../components/component-library';
 import SwapStepIcon from './swap-step-icon';
+
+const leaveSwaps = () => {
+  return async (dispatch) => {
+    dispatch(clearSwapsState());
+    await dispatch(setBackgroundSwapRouteState(''));
+    await dispatch(setSwapsErrorKey(''));
+  };
+};
 
 export default function AwaitingSignatures() {
   const t = useContext(I18nContext);
@@ -141,8 +153,7 @@ export default function AwaitingSignatures() {
       </Box>
       <SwapsFooter
         onSubmit={async () => {
-          await dispatch(prepareToLeaveSwaps());
-          // prepareToLeaveSwaps() clears all swaps state, so we can navigate directly
+          await dispatch(leaveSwaps());
           navigate(PREPARE_SWAP_ROUTE);
         }}
         submitText={t('cancel')}

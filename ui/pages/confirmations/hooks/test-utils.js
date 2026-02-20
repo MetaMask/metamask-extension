@@ -13,11 +13,6 @@ import {
   selectConversionRateByChainId,
   selectNetworkConfigurationByChainId,
 } from '../../../selectors';
-
-import {
-  getCustomMaxFeePerGas,
-  getCustomMaxPriorityFeePerGas,
-} from '../../../ducks/swaps/swaps';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
@@ -27,6 +22,12 @@ import {
   getMultichainNativeCurrency,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
+
+const getCustomMaxFeePerGas = (state) =>
+  state.metamask?.swapsState?.customMaxFeePerGas;
+
+const getCustomMaxPriorityFeePerGas = (state) =>
+  state.metamask?.swapsState?.customMaxPriorityFeePerGas;
 
 // Why this number?
 // 20 gwei * 21000 gasLimit = 420,000 gwei

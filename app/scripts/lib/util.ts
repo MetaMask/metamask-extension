@@ -1,7 +1,6 @@
 import urlLib from 'url';
 import ipRegex from 'ip-regex';
 import { AccessList } from '@ethereumjs/tx';
-import BN from 'bn.js';
 import { memoize } from 'lodash';
 import {
   TransactionEnvelopeType,
@@ -44,8 +43,6 @@ import {
   type Os,
   type Platform,
 } from '../../../shared/constants/app';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
-import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { getMethodDataAsync } from '../../../shared/lib/four-byte';
 import {
   getSafeChainsListFromCacheOnly,
@@ -373,36 +370,6 @@ export const getOs = (): Os => {
 };
 
 /**
- * Converts a hex string to a BN object
- *
- * @param inputHex - A number represented as a hex string
- * @returns A BN object
- */
-function hexToBn(inputHex: string) {
-  return new BN(stripHexPrefix(inputHex), 16);
-}
-
-/**
- * Used to multiply a BN by a fraction
- *
- * @param targetBN - The number to multiply by a fraction
- * @param numerator - The numerator of the fraction multiplier
- * @param denominator - The denominator of the fraction multiplier
- * @returns The product of the multiplication
- */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function BnMultiplyByFraction(
-  targetBN: BN,
-  numerator: number,
-  denominator: number,
-) {
-  const numBN = new BN(numerator);
-  const denomBN = new BN(denominator);
-  return targetBN.mul(numBN).div(denomBN);
-}
-
-/**
  * Prefixes a hex string with '0x' or '-0x' and returns it. Idempotent.
  *
  * @param str - The string to prefix.
@@ -424,15 +391,6 @@ const addHexPrefix = (str: string) => {
   return `0x${str}`;
 };
 
-function getChainType(chainId: string) {
-  if (chainId === CHAIN_IDS.MAINNET) {
-    return 'mainnet';
-  } else if ((TEST_CHAINS as string[]).includes(chainId)) {
-    return 'testnet';
-  }
-  return 'custom';
-}
-
 /**
  * Checks if the alarmname exists in the list
  *
@@ -444,15 +402,7 @@ function checkAlarmExists(alarmList: { name: string }[], alarmName: string) {
   return alarmList.some((alarm) => alarm.name === alarmName);
 }
 
-export {
-  BnMultiplyByFraction,
-  addHexPrefix,
-  checkAlarmExists,
-  getChainType,
-  getEnvironmentType,
-  getPlatform,
-  hexToBn,
-};
+export { addHexPrefix, checkAlarmExists, getEnvironmentType, getPlatform };
 
 // Taken from https://stackoverflow.com/a/1349426/3696652
 const characters =

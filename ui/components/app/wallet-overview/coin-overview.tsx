@@ -1,7 +1,6 @@
 import React, { useContext, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import classnames from 'classnames';
 import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
 
@@ -22,37 +21,21 @@ import {
   AddressListSource,
 } from '../../../pages/multichain-accounts/multichain-account-address-list-page';
 import Tooltip from '../../ui/tooltip';
-import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import {
   getPreferences,
-  getShouldHideZeroBalanceTokens,
-  getIsTestnet,
-  getIsTokenNetworkFilterEqualCurrentNetwork,
-  getChainIdsToPoll,
   getDataCollectionForMarketing,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
-  getEnabledNetworksByNamespace,
-  selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
 
 import { AccountGroupBalance } from '../assets/account-group-balance/account-group-balance';
 import { AccountGroupBalanceChange } from '../assets/account-group-balance-change/account-group-balance-change';
 
-import {
-  getMultichainShouldShowFiat,
-  getMultichainIsTestnet,
-} from '../../../selectors/multichain';
+import { getMultichainIsTestnet } from '../../../selectors/multichain';
 import { setPrivacyMode } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 
-import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { Skeleton } from '../../component-library/skeleton';
-import { isZeroAmount } from '../../../helpers/utils/number-utils';
 import { RewardsPointsBalance } from '../rewards/RewardsPointsBalance';
 import { selectRewardsEnabled } from '../../../ducks/rewards/selectors';
 import { BalanceEmptyState } from '../balance-empty-state';
@@ -72,107 +55,6 @@ export type CoinOverviewProps = {
   isBuyableChain: boolean;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
-};
-
-export const LegacyAggregatedBalance = ({
-  classPrefix,
-  account,
-  balance,
-  balanceIsCached,
-  handleSensitiveToggle,
-}: {
-  classPrefix: string;
-  account: InternalAccount;
-  balance: string;
-  balanceIsCached: boolean;
-  handleSensitiveToggle: () => void;
-}) => {
-  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
-    getIsTokenNetworkFilterEqualCurrentNetwork,
-  );
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
-  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
-
-  const allChainIDs = useSelector(getChainIdsToPoll) as string[];
-  const shouldShowFiat = useMultichainSelector(
-    getMultichainShouldShowFiat,
-    account,
-  );
-  const { privacyMode, showNativeTokenAsMainBalance } =
-    useSelector(getPreferences);
-  const isTestnet = useSelector(getIsTestnet);
-
-  const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
-    account,
-    shouldHideZeroBalanceTokens,
-    isTokenNetworkFilterEqualCurrentNetwork,
-    allChainIDs,
-  );
-
-  const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
-    account,
-    formattedTokensWithBalancesPerChain,
-  );
-
-  const anyEnabledNetworksAreAvailable = useSelector(
-    selectAnyEnabledNetworksAreAvailable,
-  );
-
-  const showNativeTokenAsMain =
-    showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1;
-
-  const isNotAggregatedFiatBalance =
-    !shouldShowFiat || showNativeTokenAsMain || isTestnet;
-
-  let balanceToDisplay;
-  if (isNotAggregatedFiatBalance) {
-    balanceToDisplay = balance;
-  } else {
-    balanceToDisplay = totalFiatBalance;
-  }
-
-  /**
-   * Determines the currency display type based on network configuration.
-   * Returns SECONDARY for multi-network setups, otherwise returns PRIMARY for single network configurations.
-   */
-  const getCurrencyDisplayType = (): typeof PRIMARY | typeof SECONDARY => {
-    const isMultiNetwork = Object.keys(enabledNetworks).length > 1;
-
-    if (isMultiNetwork && showNativeTokenAsMainBalance) {
-      return SECONDARY;
-    }
-    return PRIMARY;
-  };
-
-  return (
-    <Skeleton
-      isLoading={
-        !anyEnabledNetworksAreAvailable && isZeroAmount(balanceToDisplay)
-      }
-      marginBottom={1}
-    >
-      <UserPreferencedCurrencyDisplay
-        style={{ display: 'contents' }}
-        account={account}
-        className={classnames(`${classPrefix}-overview__primary-balance`, {
-          [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
-        })}
-        data-testid={`${classPrefix}-overview__primary-currency`}
-        value={balanceToDisplay}
-        type={getCurrencyDisplayType()}
-        ethNumberOfDecimals={4}
-        hideTitle
-        shouldCheckShowNativeToken
-        isAggregatedFiatOverviewBalance={
-          !showNativeTokenAsMain && !isTestnet && shouldShowFiat
-        }
-        privacyMode={privacyMode}
-        onClick={handleSensitiveToggle}
-      />
-    </Skeleton>
-  );
 };
 
 export const CoinOverview = ({

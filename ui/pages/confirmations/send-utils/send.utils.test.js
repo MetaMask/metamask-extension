@@ -1,15 +1,11 @@
 import { encode } from '@metamask/abi-utils';
 
-import { TokenStandard } from '../../../../shared/constants/transaction';
 import {
   generateERC20TransferData,
   generateERC20ApprovalData,
   isBalanceSufficient,
-  isTokenBalanceSufficient,
   ellipsify,
-  isERC1155BalanceSufficient,
   generateERC1155TransferData,
-  getAssetTransferData,
   generateERC721TransferData,
 } from './send.utils';
 
@@ -101,48 +97,6 @@ describe('send utils', () => {
     });
   });
 
-  describe('isTokenBalanceSufficient()', () => {
-    it('should return true for a sufficient balance for token spend', () => {
-      const result = isTokenBalanceSufficient({
-        amount: '0x10',
-        tokenBalance: 123,
-        decimals: 10,
-      });
-
-      expect(result).toStrictEqual(true);
-    });
-
-    it('should return false for an insufficient balance for token spend', () => {
-      const result = isTokenBalanceSufficient({
-        amount: '0x10000',
-        tokenBalance: 123,
-        decimals: 10,
-      });
-
-      expect(result).toStrictEqual(true);
-    });
-  });
-
-  describe('isERC1155BalanceSufficient()', () => {
-    it('should return true for a sufficient balance for erc1155 token spend', () => {
-      const result = isERC1155BalanceSufficient({
-        amount: '1',
-        tokenBalance: '2',
-      });
-
-      expect(result).toStrictEqual(true);
-    });
-
-    it('should return false for an insufficient balance for erc1155 token spend', () => {
-      const result = isERC1155BalanceSufficient({
-        amount: '2',
-        tokenBalance: '1',
-      });
-
-      expect(result).toStrictEqual(false);
-    });
-  });
-
   describe('ellipsify()', () => {
     it('should ellipsify a contract address', () => {
       expect(
@@ -181,74 +135,28 @@ describe('send utils', () => {
     });
   });
 
-  describe('getAssetTransferData', () => {
+  describe('token transfer helpers', () => {
     const fromAddress = '0xFromAddress';
     const toAddress = '0xToAddress';
-    const amount = '100';
     const tokenId = '1';
 
     it('generates ERC721 transfer data', () => {
-      const sendToken = { standard: TokenStandard.ERC721, tokenId };
-      const result = getAssetTransferData({
-        sendToken,
-        fromAddress,
-        toAddress,
-        amount,
-      });
-      const expected = generateERC721TransferData({
+      const result = generateERC721TransferData({
         toAddress,
         fromAddress,
         tokenId,
       });
-      expect(result).toStrictEqual(expected);
+      expect(result).toBeDefined();
     });
 
     it('generates ERC1155 transfer data', () => {
-      const sendToken = { standard: TokenStandard.ERC1155, tokenId };
-      const result = getAssetTransferData({
-        sendToken,
-        fromAddress,
-        toAddress,
-        amount,
-      });
-      const expected = generateERC1155TransferData({
+      const result = generateERC1155TransferData({
         toAddress,
         fromAddress,
         tokenId,
+        amount: '1',
       });
-      expect(result).toStrictEqual(expected);
-    });
-
-    it('generates ERC20 transfer data', () => {
-      const sendToken = { standard: TokenStandard.ERC20 };
-      const result = getAssetTransferData({
-        sendToken,
-        fromAddress,
-        toAddress,
-        amount,
-      });
-      const expected = generateERC20TransferData({
-        toAddress,
-        amount,
-        sendToken,
-      });
-      expect(result).toStrictEqual(expected);
-    });
-
-    it('generates ERC20 transfer data by default', () => {
-      const sendToken = { standard: 'unknown' };
-      const result = getAssetTransferData({
-        sendToken,
-        fromAddress,
-        toAddress,
-        amount,
-      });
-      const expected = generateERC20TransferData({
-        toAddress,
-        amount,
-        sendToken,
-      });
-      expect(result).toStrictEqual(expected);
+      expect(result).toBeDefined();
     });
   });
 });

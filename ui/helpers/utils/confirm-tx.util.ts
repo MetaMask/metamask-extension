@@ -1,6 +1,5 @@
 import currencyFormatter from 'currency-formatter';
 import currencies from 'currency-formatter/currencies';
-import { BigNumber } from 'bignumber.js';
 
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Numeric } from '../../../shared/modules/Numeric';
@@ -76,47 +75,6 @@ export function formatCurrency(
         precision,
       })
     : value;
-}
-
-export function convertTokenToFiat({
-  value,
-  fromCurrency = EtherDenomination.ETH,
-  toCurrency,
-  conversionRate,
-  contractExchangeRate,
-}: {
-  value: string;
-  fromCurrency: EtherDenomination;
-  toCurrency: string;
-  conversionRate: number;
-  contractExchangeRate: number;
-}): string {
-  const totalExchangeRate = conversionRate * contractExchangeRate;
-
-  let tokenInFiat = new Numeric(value, 10);
-
-  if (fromCurrency !== toCurrency && totalExchangeRate) {
-    tokenInFiat = tokenInFiat.applyConversionRate(totalExchangeRate);
-  }
-
-  return tokenInFiat.round(2).toString();
-}
-
-/**
- * Rounds the given decimal string to 4 significant digits.
- *
- * @param decimalString - The base-ten number to round.
- * @returns The rounded number, or the original number if no
- * rounding was necessary.
- */
-export function roundExponential(decimalString: string): string {
-  const PRECISION = 4;
-  const bigNumberValue = new BigNumber(decimalString);
-
-  // In JS, numbers with exponentials greater than 20 get displayed as an exponential.
-  return bigNumberValue.e > 20
-    ? bigNumberValue.toPrecision(PRECISION)
-    : decimalString;
 }
 
 export function areDappSuggestedAndTxParamGasFeesTheSame(

@@ -4,7 +4,6 @@ import {
   getSettingsRoutes,
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
-  getSpecificSettingsRoute,
   escapeRegExp,
   colorText,
   highlightSearchedText,
@@ -252,19 +251,6 @@ describe('Settings Search Utils', () => {
           return React.createRef();
         });
       expect(handleSettingsRefs(t, t('general'), settingsRefs)).toBeUndefined();
-    });
-  });
-
-  describe('getSpecificSettingsRoute', () => {
-    it('should return show native token as main balance route', () => {
-      const result = getSpecificSettingsRoute(
-        t,
-        t('general'),
-        t('showNativeTokenAsMainBalance'),
-      );
-      expect(result.route).toBe(
-        '/settings/general#show-native-token-as-main-balance',
-      );
     });
   });
 

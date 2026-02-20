@@ -10,7 +10,6 @@ import { TextVariant } from '../constants/design-system';
 import {
   CHAIN_IDS,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  NETWORK_TO_NAME_MAP,
   FEATURED_RPCS,
   MAINNET_RPC_URL,
   GOERLI_RPC_URL,
@@ -269,21 +268,6 @@ export const getUsdAmount = (amount: string, decimals: string, usd: string) => {
   const numericAmount = parseFloat(`${amountInEther}`) * parseFloat(usd);
 
   return formatAmount(numericAmount);
-};
-
-/**
- * Retrieves the network name associated with a given chain ID.
- *
- * This function looks up the chain ID in a predefined map (`NETWORK_TO_NAME_MAP`)
- * to find the corresponding network name. If the chain ID is not found, it returns undefined.
- *
- * @param chainId - The chain ID for which the network name is required.
- * @returns The name of the network as a string, or undefined if the chain ID is not recognized.
- */
-export const getNetworkNameByChainId = (
-  chainId: string,
-): string | undefined => {
-  return NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP];
 };
 
 /**
