@@ -73,7 +73,7 @@
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
     "showBetaHeader": false,
-    "isUpdateAvailable": false,
+    "pendingExtensionVersion": null,
     "updateModalLastDismissedAt": null,
     "lastUpdatedAt": null,
     "subscriptions": [],
