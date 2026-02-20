@@ -184,8 +184,13 @@ async function fetchPageLoadResults(
             buildType,
             page,
           );
-          if (data?.[page]) {
-            results[platform][buildType][page] = data[page];
+          // The JSON key is derived from the benchmark file name (e.g. standard-home.ts
+          // → "standardHome"), not from the preset name ("startupStandardHome"). Use
+          // the first (and only) value in the fetched object and store it under the
+          // preset key so the rest of the pipeline stays consistent.
+          const pageResult = data ? Object.values(data)[0] : undefined;
+          if (pageResult) {
+            results[platform][buildType][page] = pageResult;
           }
         } catch (error) {
           console.log(

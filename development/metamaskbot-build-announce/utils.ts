@@ -5,6 +5,7 @@ import startCase from 'lodash/startCase';
 import {
   BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
+  STARTUP_PRESETS,
 } from '../../test/e2e/benchmarks/utils/constants';
 import type { BenchmarkResults } from '../../test/e2e/benchmarks/utils/types';
 
@@ -583,6 +584,16 @@ export function buildPageLoadTable(
   return `<table>${tableHeader}${tableBody}</table>`;
 }
 
+/**
+ * Maps legacy benchmark-gate.json page keys (pre-rename) to their current
+ * STARTUP_PRESETS values. Used to stay compatible with the hosted
+ * benchmark-gate.json on CloudFront until it is updated to use the new names.
+ */
+const LEGACY_PAGE_KEY_MAP: Record<string, string> = {
+  standardHome: STARTUP_PRESETS.STANDARD_HOME,
+  powerUserHome: STARTUP_PRESETS.POWER_USER_HOME,
+};
+
 /** Shape of the benchmark-gate.json configuration. */
 type BenchmarkGateConfig = {
   gates: Record<
@@ -625,7 +636,8 @@ export async function runBenchmarkGate(
   for (const platform of Object.keys(gates)) {
     for (const buildType of Object.keys(gates[platform])) {
       for (const page of Object.keys(gates[platform][buildType])) {
-        const pageData = data[platform]?.[buildType]?.[page];
+        const resolvedPage = LEGACY_PAGE_KEY_MAP[page] ?? page;
+        const pageData = data[platform]?.[buildType]?.[resolvedPage];
         if (!pageData) {
           continue;
         }
