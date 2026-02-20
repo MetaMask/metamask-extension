@@ -44,11 +44,9 @@ export const regionTokenCache = {
  * Fetches the token list from the on-ramp token cache API for a given country.
  * Results are cached for 5 minutes.
  *
- * @param {string} country - the country to fetch the token list for
- *
- * @returns {RampToken[]} the token list for the given country
- *
- * @throws {Error} if fetching the token list from the token cache API returns an error
+ * @param country - the country to fetch the token list for
+ * @returns the token list for the given country
+ * @throws if fetching the token list from the token cache API returns an error
  */
 export async function fetchRegionTokens(country: string): Promise<RampToken[]> {
   if (
@@ -120,7 +118,7 @@ export type UseCanBuyMusdResult = {
  * The user can buy when both conditions are met:
  * 1. They are not in a geo-blocked region.
  * 2. mUSD is available via ramp on at least one supported chain
- *    (verified against the token cache API using CAIP-19 asset IDs).
+ * (verified against the token cache API using CAIP-19 asset IDs).
  */
 export function useCanBuyMusd(): UseCanBuyMusdResult {
   const {

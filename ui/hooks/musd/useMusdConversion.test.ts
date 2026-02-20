@@ -2,8 +2,8 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { ConvertibleToken } from '../../pages/musd/types';
-import { useMusdConversion } from './useMusdConversion';
 import { MUSD_CONVERSION_EDUCATION_ROUTE } from '../../pages/musd/constants/routes';
+import { useMusdConversion } from './useMusdConversion';
 
 const mockNavigate = jest.fn();
 const mockDispatch = jest.fn();
