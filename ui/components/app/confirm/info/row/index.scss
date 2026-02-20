@@ -15,3 +15,11 @@
   cursor: pointer;
   text-decoration: underline;
 }
+
+.confirm-info-row-address-display__clickable {
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-info-default);
+  }
+}

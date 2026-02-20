@@ -1,4 +1,6 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { NameType } from '@metamask/name-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   AlignItems,
@@ -8,9 +10,11 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { Box, Text } from '../../../../component-library';
-import { shortenAddress } from '../../../../../helpers/utils/util';
+import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { PreferredAvatar } from '../../../preferred-avatar';
-import { useFallbackDisplayName } from './hook';
+import NameDetails from '../../../name/name-details/name-details';
+import { useConfirmContext } from '../../../../../pages/confirmations/context/confirm';
+import { useDisplayName } from '../../../../../hooks/useDisplayName';
 
 const ELLIPSIS = '\u2026';
 
@@ -74,10 +78,34 @@ export type ConfirmInfoRowAddressDisplayProps = {
 
 export const ConfirmInfoRowAddressDisplay = memo(
   ({ address }: ConfirmInfoRowAddressDisplayProps) => {
-    const { displayName, hexAddress } = useFallbackDisplayName(address);
+    const { currentConfirmation: transactionMeta } =
+      useConfirmContext<TransactionMeta>();
 
-    const isUnknown = displayName === shortenAddress(hexAddress);
+    const hexAddress = toChecksumHexAddress(address);
+    const chainId = transactionMeta.chainId;
+
+    const { name, isAccount } = useDisplayName({
+      value: hexAddress,
+      type: NameType.ETHEREUM_ADDRESS,
+      preferContractSymbol: true,
+      variation: chainId,
+    });
+
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const isClickable = !isAccount;
     const { containerRef, display } = useMiddleTruncation(hexAddress);
+
+    const handleClick = useCallback(() => {
+      if (!isClickable) {
+        return;
+      }
+      setModalOpen(true);
+    }, [isClickable]);
+
+    const handleModalClose = useCallback(() => {
+      setModalOpen(false);
+    }, []);
 
     return (
       <Box
@@ -86,24 +114,44 @@ export const ConfirmInfoRowAddressDisplay = memo(
         alignItems={AlignItems.center}
         gap={2}
       >
-        {isUnknown ? (
+        {modalOpen && (
+          <NameDetails
+            value={hexAddress}
+            type={NameType.ETHEREUM_ADDRESS}
+            variation={chainId}
+            onClose={handleModalClose}
+          />
+        )}
+        {name ? (
+          <Text
+            variant={TextVariant.bodyMd}
+            color={TextColor.textDefault}
+            data-testid="confirm-info-row-display-name"
+            className={
+              isClickable
+                ? 'confirm-info-row-address-display__clickable'
+                : undefined
+            }
+            style={{ whiteSpace: 'nowrap', flex: 1 }}
+            onClick={handleClick}
+          >
+            {name}
+          </Text>
+        ) : (
           <Text
             ref={containerRef}
             variant={TextVariant.bodyMd}
             color={TextColor.textDefault}
             data-testid="confirm-info-row-display-name"
+            className={
+              isClickable
+                ? 'confirm-info-row-address-display__clickable'
+                : undefined
+            }
             style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}
+            onClick={handleClick}
           >
             {display}
-          </Text>
-        ) : (
-          <Text
-            variant={TextVariant.bodyMd}
-            color={TextColor.textDefault}
-            data-testid="confirm-info-row-display-name"
-            style={{ whiteSpace: 'nowrap', flex: 1 }}
-          >
-            {displayName}
           </Text>
         )}
         <PreferredAvatar
