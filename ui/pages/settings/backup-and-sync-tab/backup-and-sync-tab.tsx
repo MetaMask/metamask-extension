@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxBorderColor,
@@ -11,7 +12,6 @@ import {
 import { BackupAndSyncFeaturesToggles } from '../../../components/app/identity/backup-and-sync-features-toggles/backup-and-sync-features-toggles';
 import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useSelector } from 'react-redux';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 
 const BackupAndSyncTab = () => {
