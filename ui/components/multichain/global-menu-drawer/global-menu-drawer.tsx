@@ -354,7 +354,7 @@ export const GlobalMenuDrawer = ({
 
             <Box
               flexDirection={BoxFlexDirection.Column}
-              className="flex-1 overflow-y-auto overflow-x-hidden"
+              className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-6"
             >
               {children}
             </Box>
