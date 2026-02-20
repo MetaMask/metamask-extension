@@ -58,11 +58,6 @@
       "error: StorageService: Failed to remove item:": 1,
       "error: StorageService: Failed to set item:": 1
     },
-    "app/scripts/lib/transaction/metrics.test.ts": {
-      "Third-party: Bindings failed, using pure JS": 1,
-      "µWebSockets: Compatibility warnings": 1,
-      "µWebSockets: Fallback to Node implementation": 1
-    },
     "app/scripts/metamask-controller.actions.test.js": {
       "MetaMask: Chain processing errors": 2,
       "Test errors: Fetch failures": 4,
@@ -1546,6 +1541,7 @@
     },
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 6,
+      "React: State updates on unmounted components": 1,
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -2269,8 +2265,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/gas-details-item/gas-details-item.test.js": {
-      "Reselect: Identity function warnings": 2,
-      "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/gas-estimate-list-item/gas-estimate-list-item.test.tsx": {
