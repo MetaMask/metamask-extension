@@ -44,7 +44,8 @@ jobs:
         # Startup + Interaction benchmarks run on all 4 browser/buildType combinations
         browser: [chrome, firefox]
         buildType: [browserify, webpack]
-        pageType: [startupStandardHome, startupPowerUserHome, interactionUserActions]
+        pageType:
+          [startupStandardHome, startupPowerUserHome, interactionUserActions]
         # User journey benchmarks run on Chrome + Browserify (every trigger)
         include:
           - browser: chrome
