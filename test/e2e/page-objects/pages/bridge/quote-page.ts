@@ -69,6 +69,8 @@ class BridgeQuotePage {
 
   private slippageCustomInput =
     'input[data-testid="bridge__tx-settings-modal-custom-input"]';
+  private networkNameSelector = (network: string) =>
+    `[data-testid="${network}"]`;
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -263,6 +265,9 @@ class BridgeQuotePage {
       const input = document.querySelector('${this.slippageCustomInput}');
       if (input) { input.blur(); }
     `);
+  async selectNetwork(network: string): Promise<void> {
+    await this.driver.clickElement(this.networkSelector);
+    await this.driver.clickElement(this.networkNameSelector(network));
   }
 }
 
