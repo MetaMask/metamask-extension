@@ -211,9 +211,9 @@ describe('MUSD Utility Functions', () => {
     });
 
     it('should return mUSD address when chain ID has uppercase hex', () => {
-      expect(
-        getMusdTokenAddressForChain('0xE708' as `0x${string}`),
-      ).toBe(MUSD_TOKEN_ADDRESS);
+      expect(getMusdTokenAddressForChain('0xE708' as `0x${string}`)).toBe(
+        MUSD_TOKEN_ADDRESS,
+      );
     });
 
     it('should return undefined for unsupported chain', () => {
