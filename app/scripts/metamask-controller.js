@@ -239,7 +239,6 @@ import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-
 ///: END:ONLY_INCLUDE_IF
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
-import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
 import { WalletFundsObtainedMonitor } from './lib/WalletFundsObtainedMonitor';
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
 import { createDappSwapMiddleware } from './lib/dapp-swap/dapp-swap-middleware';
@@ -881,19 +880,12 @@ export default class MetamaskController extends EventEmitter {
       messenger: petnamesBridgeMessenger,
       events: [
         'NameController:stateChange',
-        'AccountsController:stateChange',
         'AddressBookController:stateChange',
       ],
-      actions: ['AccountsController:listAccounts'],
     });
 
     new AddressBookPetnamesBridge({
       addressBookController: this.addressBookController,
-      nameController: this.nameController,
-      messenger: petnamesBridgeMessenger,
-    }).init();
-
-    new AccountIdentitiesPetnamesBridge({
       nameController: this.nameController,
       messenger: petnamesBridgeMessenger,
     }).init();
