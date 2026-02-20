@@ -7,7 +7,6 @@
 export { isGeoBlocked } from './validation';
 
 export {
-  getMusdTokenAddress,
   generateERC20TransferData,
   buildMusdConversionTx,
   extractMusdConversionTransferDetails,

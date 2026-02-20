@@ -16,7 +16,6 @@ import type { Hex } from '@metamask/utils';
 import { MUSD_TOKEN_ADDRESS } from '../constants';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import {
-  getMusdTokenAddress,
   generateERC20TransferData,
   buildMusdConversionTx,
   extractMusdConversionTransferDetails,
@@ -52,33 +51,6 @@ const MOCK_TX_META_BASE: Pick<
     data: '0x',
   },
 };
-
-// ============================================================================
-// getMusdTokenAddress Tests
-// ============================================================================
-
-describe('getMusdTokenAddress', () => {
-  it('should return the correct address for Mainnet', () => {
-    const address = getMusdTokenAddress(CHAIN_IDS.MAINNET);
-    expect(address.toLowerCase()).toBe(MUSD_TOKEN_ADDRESS.toLowerCase());
-  });
-
-  it('should return the correct address for Linea', () => {
-    const address = getMusdTokenAddress(CHAIN_IDS.LINEA_MAINNET);
-    expect(address.toLowerCase()).toBe(MUSD_TOKEN_ADDRESS.toLowerCase());
-  });
-
-  it('should return the correct address for BSC', () => {
-    const address = getMusdTokenAddress(CHAIN_IDS.BSC);
-    expect(address.toLowerCase()).toBe(MUSD_TOKEN_ADDRESS.toLowerCase());
-  });
-
-  it('should throw for unsupported chains', () => {
-    expect(() => getMusdTokenAddress('0x999' as Hex)).toThrow(
-      'mUSD token address not found for chain ID: 0x999',
-    );
-  });
-});
 
 // ============================================================================
 // generateERC20TransferData Tests

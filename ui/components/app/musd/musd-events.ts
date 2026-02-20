@@ -21,7 +21,7 @@ export const MUSD_EVENTS_CONSTANTS = {
 
   /** Event locations */
   EVENT_LOCATIONS: {
-    HOME_SCREEN: 'home',
+    HOME_SCREEN: 'home_screen',
     TOKEN_LIST_ITEM: 'token_list_item',
     ASSET_OVERVIEW: 'asset_overview',
     CLAIM_BONUS_BOTTOM_SHEET: 'claim_bonus_bottom_sheet',

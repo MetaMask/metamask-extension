@@ -18,7 +18,7 @@ import {
 import type { Hex } from '@metamask/utils';
 
 import { NetworkClientId } from '@metamask/network-controller';
-import { MUSD_TOKEN_ADDRESS_BY_CHAIN } from '../constants';
+import { getMusdTokenAddressForChain } from '../constants';
 import { parseStandardTokenTransactionData } from '../../../../../shared/modules/transaction.utils';
 
 // ============================================================================
@@ -89,22 +89,6 @@ const erc20Interface = new Interface(ERC20_TRANSFER_ABI);
 // ============================================================================
 // Internal Helpers
 // ============================================================================
-
-/**
- * Returns the mUSD token address for a given chain ID.
- * Throws if mUSD is not deployed on this chain.
- *
- * @param chainId - The chain ID in hex format
- * @returns The mUSD token address
- * @throws Error if mUSD is not supported on the chain
- */
-export function getMusdTokenAddress(chainId: Hex): Hex {
-  const musdTokenAddress = MUSD_TOKEN_ADDRESS_BY_CHAIN[chainId];
-  if (!musdTokenAddress) {
-    throw new Error(`mUSD token address not found for chain ID: ${chainId}`);
-  }
-  return musdTokenAddress;
-}
 
 /**
  * Generates ERC-20 transfer data for mUSD conversion.
@@ -183,8 +167,10 @@ export function buildMusdConversionTx(params: {
   const { chainId, fromAddress, recipientAddress, amountHex, networkClientId } =
     params;
 
-  // Throws if mUSD is not deployed on this chain
-  const musdTokenAddress = getMusdTokenAddress(chainId);
+  const musdTokenAddress = getMusdTokenAddressForChain(chainId);
+  if (!musdTokenAddress) {
+    throw new Error(`mUSD token address not found for chain ID: ${chainId}`);
+  }
 
   // Generate ERC-20 transfer data
   const transferData = generateERC20TransferData(recipientAddress, amountHex);
