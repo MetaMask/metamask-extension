@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { usePerpsStreamManager } from './usePerpsStreamManager';
 import type { PerpsMarketData } from '@metamask/perps-controller';
+import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 /**
  * Options for usePerpsLiveMarketData hook

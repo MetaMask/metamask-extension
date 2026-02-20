@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsController } from '../../../providers/perps';
 import type { OrderFill } from '@metamask/perps-controller';
+import { usePerpsController } from '../../../providers/perps';
 
 /**
  * Options for usePerpsLiveFills hook
