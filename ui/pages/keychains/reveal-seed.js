@@ -499,9 +499,9 @@ function RevealSeedPage() {
           width={BlockSize.Full}
           endAccessory={
             <ButtonIcon
+              iconName={showPassword ? IconName.EyeSlash : IconName.Eye}
               onClick={togglePasswordVisibility}
               iconProps={{
-                name: showPassword ? IconName.EyeSlash : IconName.Eye,
                 color: IconColor.IconAlternative,
               }}
             />
@@ -713,27 +713,25 @@ function RevealSeedPage() {
           ariaLabel={t('back')}
         />
         <Text variant={TextVariant.headingSm} color={TextColor.textDefault}>
-          {t('secretRecoveryPhrase')}
+          {t('revealSecretRecoveryPhraseSettings')}
         </Text>
         <Box />
       </Box>
       {screen === PASSWORD_PROMPT_SCREEN && (
         <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-          {screen === PASSWORD_PROMPT_SCREEN
-            ? t('revealSeedWordsDescription1', [
-                <Button
-                  key="srp-learn-srp"
-                  variant={BUTTON_VARIANT.LINK}
-                  size={BUTTON_SIZES.INHERIT}
-                  as="a"
-                  href={ZENDESK_URLS.SECRET_RECOVERY_PHRASE}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t('revealSeedWordsSRPName')}
-                </Button>,
-              ])
-            : t('revealSeedWordsDescription')}
+          {t('revealSeedWordsDescription1', [
+            <Button
+              key="srp-learn-srp"
+              variant={BUTTON_VARIANT.LINK}
+              size={BUTTON_SIZES.INHERIT}
+              as="a"
+              href={ZENDESK_URLS.SECRET_RECOVERY_PHRASE}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('revealSeedWordsSRPName')}
+            </Button>,
+          ])}
         </Text>
       )}
       {screen === PASSWORD_PROMPT_SCREEN && renderWarning()}

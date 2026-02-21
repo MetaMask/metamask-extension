@@ -6456,6 +6456,9 @@
     "message": "sec"
   },
   "secretRecoveryPhrase": {
+    "message": "Secret Recovery Phrase"
+  },
+  "revealSecretRecoveryPhraseSettings": {
     "message": "Reveal Secret Recovery Phrase"
   },
   "secretRecoveryPhrasePlusNumber": {

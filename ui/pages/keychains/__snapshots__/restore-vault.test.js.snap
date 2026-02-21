@@ -44,7 +44,7 @@ exports[`Restore vault Component renders match snapshot 1`] = `
             <button
               class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
             >
-              Reveal Secret Recovery Phrase
+              Secret Recovery Phrase
             </button>
             . By importing the wallet, you will erase your current wallet data from this device. This can’t be undone.
              
