@@ -45,9 +45,9 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   const showTag = membersCount > limit;
 
   let marginLeftValue = '';
-  if (AvatarTokenSize.Xs) {
+  if (size === AvatarTokenSize.Xs) {
     marginLeftValue = '-8px';
-  } else if (AvatarTokenSize.Sm) {
+  } else if (size === AvatarTokenSize.Sm) {
     marginLeftValue = '-12px';
   } else {
     marginLeftValue = '-16px';
