@@ -1072,7 +1072,7 @@
         "eslint>glob-parent": true,
         "chokidar>normalize-path": true,
         "schema-utils": true,
-        "copy-webpack-plugin>serialize-javascript": true,
+        "mocha>serialize-javascript": true,
         "copy-webpack-plugin>tinyglobby": true
       }
     },
@@ -1090,7 +1090,7 @@
       "packages": {
         "postcss-loader>cosmiconfig>env-paths": true,
         "eslint>@eslint/eslintrc>import-fresh": true,
-        "eslint>js-yaml": true,
+        "mocha>js-yaml": true,
         "depcheck>cosmiconfig>parse-json": true,
         "typescript": true
       }
@@ -2785,7 +2785,7 @@
         "mockttp>express>statuses": true
       }
     },
-    "copy-webpack-plugin>serialize-javascript": {
+    "mocha>serialize-javascript": {
       "globals": {
         "URL": true
       },
@@ -3056,7 +3056,7 @@
         "@storybook/test-runner>@storybook/core-common>esbuild": true,
         "terser-webpack-plugin>jest-worker": true,
         "schema-utils": true,
-        "copy-webpack-plugin>serialize-javascript": true,
+        "mocha>serialize-javascript": true,
         "terser": true,
         "html-bundler-webpack-plugin>handlebars>uglify-js": true
       }
