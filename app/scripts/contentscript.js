@@ -25,10 +25,10 @@ const start = () => {
     initializeCookieHandlerSteam();
   }
 
-  if (shouldInjectProvider() && getIsBrowserPrerenderBroken()) {
+  if (shouldInjectProvider()) {
     initStreams();
 
-    if (document.prerendering) {
+    if (document.prerendering && getIsBrowserPrerenderBroken()) {
       document.addEventListener('prerenderingchange', () => {
         onDisconnectDestroyStreams(
           new Error('Prerendered page has become active.'),
