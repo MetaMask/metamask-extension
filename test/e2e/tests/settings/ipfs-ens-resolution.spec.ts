@@ -1,6 +1,7 @@
 import { MockedEndpoint, MockttpServer } from 'mockttp';
 import { tinyDelayMs, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import LoginPage from '../../page-objects/pages/login-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
@@ -76,7 +77,7 @@ describe('Settings', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: ensDomainPassthrough,
       },

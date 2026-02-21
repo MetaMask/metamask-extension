@@ -813,7 +813,7 @@
       },
       "packages": {
         "@metamask/account-api": true,
-        "@metamask/accounts-controller": true,
+        "@metamask/account-tree-controller>@metamask/accounts-controller": true,
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
@@ -838,6 +838,18 @@
         "@metamask/utils": true,
         "@metamask/accounts-controller>ethereum-cryptography": true,
         "lodash": true,
+        "uuid": true
+      }
+    },
+    "@metamask/account-tree-controller>@metamask/accounts-controller": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/keyring-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography": true,
         "uuid": true
       }
     },
@@ -2309,7 +2321,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/transaction-controller>@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/network-controller": true,
+        "@metamask/transaction-controller>@metamask/network-controller": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
@@ -2517,6 +2529,11 @@
       }
     },
     "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
+    "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true
       }
@@ -2990,6 +3007,30 @@
       },
       "packages": {
         "@swc/helpers": true
+      }
+    },
+    "@tanstack/react-query>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "addEventListener": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console": true,
+        "document": true,
+        "navigator": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
+      }
+    },
+    "@tanstack/react-query": {
+      "globals": {
+        "ReactQueryClientContext": "write"
+      },
+      "packages": {
+        "@tanstack/react-query>@tanstack/query-core": true,
+        "react": true,
+        "@tanstack/react-query>use-sync-external-store": true
       }
     },
     "@tanstack/react-virtual": {
@@ -3647,7 +3688,7 @@
         "buffer>ieee754": true
       }
     },
-    "@metamask/snaps-utils>validate-npm-package-name>builtins": {
+    "eslint-plugin-n>builtins": {
       "globals": {
         "process.version": true
       },
@@ -4158,6 +4199,16 @@
       },
       "packages": {
         "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true,
+        "module": true
+      },
+      "packages": {
+        "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography": {
@@ -6294,6 +6345,14 @@
         "tslib": true
       }
     },
+    "@tanstack/react-query>use-sync-external-store": {
+      "globals": {
+        "document": true
+      },
+      "packages": {
+        "react": true
+      }
+    },
     "@storybook/react>util-deprecate": {
       "globals": {
         "console.trace": true,
@@ -6362,7 +6421,7 @@
     },
     "@metamask/snaps-utils>validate-npm-package-name": {
       "packages": {
-        "@metamask/snaps-utils>validate-npm-package-name>builtins": true
+        "eslint-plugin-n>builtins": true
       }
     },
     "react-markdown>vfile>vfile-message": {
