@@ -208,6 +208,7 @@
     "@json-schema-tools/reference-resolver@npm:^1.2.4": "patch:@json-schema-tools/reference-resolver@npm%3A1.2.6#~/.yarn/patches/@json-schema-tools-reference-resolver-npm-1.2.6-4e1497c16d.patch",
     "@json-schema-tools/reference-resolver@npm:^1.2.1": "patch:@json-schema-tools/reference-resolver@npm%3A1.2.6#~/.yarn/patches/@json-schema-tools-reference-resolver-npm-1.2.6-4e1497c16d.patch",
     "path-to-regexp": "1.9.0",
+    "minimatch@npm:^10.1.1": "10.2.1",
     "@ledgerhq/cryptoassets-evm-signatures/axios": "patch:axios@npm%3A1.13.5#~/.yarn/patches/axios-npm-1.13.5-ed8865f696.patch",
     "@ledgerhq/domain-service/axios": "patch:axios@npm%3A1.13.5#~/.yarn/patches/axios-npm-1.13.5-ed8865f696.patch",
     "@ledgerhq/evm-tools/axios": "patch:axios@npm%3A1.13.5#~/.yarn/patches/axios-npm-1.13.5-ed8865f696.patch",
