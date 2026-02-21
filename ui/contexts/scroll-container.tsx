@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useRef } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useRef,
+  useState,
+  useLayoutEffect,
+  RefObject,
+} from 'react';
 
 const ScrollContainerContext =
   createContext<React.RefObject<HTMLDivElement> | null>(null);
@@ -32,4 +39,36 @@ export const ScrollContainer = ({
  */
 export const useScrollContainer = () => {
   return useContext(ScrollContainerContext);
+};
+
+export const useScrollContainerOffset = (
+  elementRef: RefObject<HTMLElement | null>,
+): number => {
+  const scrollContainerRef = useScrollContainer();
+  const [offset, setOffset] = useState(0);
+
+  useLayoutEffect(() => {
+    let rafId: number;
+
+    const measure = () => {
+      const element = elementRef.current;
+      const scrollContainer = scrollContainerRef?.current;
+      if (element && scrollContainer) {
+        setOffset(
+          element.getBoundingClientRect().top -
+            scrollContainer.getBoundingClientRect().top +
+            scrollContainer.scrollTop,
+        );
+      } else {
+        // Refs not ready yet, try again next frame
+        rafId = requestAnimationFrame(measure);
+      }
+    };
+
+    measure();
+
+    return () => cancelAnimationFrame(rafId);
+  }, [elementRef, scrollContainerRef]);
+
+  return offset;
 };

@@ -12,7 +12,7 @@ import {
   isCaipChainId,
   parseCaipAssetType,
 } from '@metamask/utils';
-import React, { ReactNode, useEffect, useMemo } from 'react';
+import React, { ReactNode, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -53,6 +53,7 @@ import {
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useScrollContainerOffset } from '../../../contexts/scroll-container';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getDataCollectionForMarketing,
@@ -105,6 +106,10 @@ const AssetPage = ({
   const selectedAccount = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
   ) as InternalAccount;
+
+  // Measure offset from scroll container to activity list for virtualizer
+  const activityListRef = useRef<HTMLDivElement>(null);
+  const activityListOffset = useScrollContainerOffset(activityListRef);
 
   useEffect(() => {
     endTrace({ name: TraceName.AssetDetails });
@@ -424,7 +429,7 @@ const AssetPage = ({
             marginInline={4}
             style={{ height: '1px', borderBottomWidth: 0 }}
           ></Box>
-          <Box marginBottom={4}>
+          <Box marginBottom={4} ref={activityListRef}>
             <Text paddingInline={4} variant={TextVariant.headingSm}>
               {t('yourActivity')}
             </Text>
@@ -432,6 +437,7 @@ const AssetPage = ({
               tokenAddress={address}
               hideNetworkFilter
               tokenChainIdOverride={chainId}
+              scrollMarginOffset={activityListOffset}
             />
           </Box>
         </Box>

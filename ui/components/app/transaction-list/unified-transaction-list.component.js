@@ -456,8 +456,10 @@ export default function UnifiedTransactionList({
   boxProps,
   hideNetworkFilter,
   tokenChainIdOverride,
+  scrollMarginOffset,
 }) {
   const scrollContainerRef = useScrollContainer();
+  const scrollMargin = scrollMarginOffset ?? 0;
   const selectedAccount = useSelector(getSelectedAccount);
   const enabledNetworks = useSelector(getEnabledNetworks);
 
@@ -915,7 +917,7 @@ export default function UnifiedTransactionList({
     estimateSize: (index) =>
       items[index]?.type === 'date-header' ? HEADER_HEIGHT : ITEM_HEIGHT,
     overscan: 10,
-    initialOffset: scrollContainerRef?.current?.scrollTop,
+    scrollMargin,
   });
 
   return (
@@ -957,14 +959,17 @@ export default function UnifiedTransactionList({
           >
             {virtualizer.getVirtualItems().map((virtualItem) => {
               const item = items[virtualItem.index];
+              const translateY = virtualItem.start - scrollMargin;
 
               if (item.type === 'date-header') {
                 return (
                   <div
                     key={`date-${item.date}`}
+                    data-index={virtualItem.index}
+                    ref={virtualizer.measureElement}
                     className="absolute top-0 left-0 w-full"
                     style={{
-                      transform: `translateY(${virtualItem.start}px)`,
+                      transform: `translateY(${translateY}px)`,
                     }}
                   >
                     <Text
@@ -986,7 +991,7 @@ export default function UnifiedTransactionList({
                   ref={virtualizer.measureElement}
                   className="absolute top-0 left-0 w-full"
                   style={{
-                    transform: `translateY(${virtualItem.start}px)`,
+                    transform: `translateY(${translateY}px)`,
                   }}
                 >
                   {renderTransaction(item.data, virtualItem.index)}
@@ -1130,6 +1135,7 @@ UnifiedTransactionList.propTypes = {
   boxProps: PropTypes.object,
   tokenChainIdOverride: PropTypes.string,
   hideNetworkFilter: PropTypes.bool,
+  scrollMarginOffset: PropTypes.number,
 };
 
 UnifiedTransactionList.defaultProps = {
@@ -1137,4 +1143,5 @@ UnifiedTransactionList.defaultProps = {
   tokenAddress: undefined,
   boxProps: undefined,
   tokenChainIdOverride: null,
+  scrollMarginOffset: undefined,
 };
