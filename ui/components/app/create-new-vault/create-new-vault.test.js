@@ -27,7 +27,9 @@ describe('CreateNewVault', () => {
       <CreateNewVault submitText="Import" onSubmit={jest.fn()} />,
       store,
     );
-    expect(screen.getByText('Secret Recovery Phrase')).toBeInTheDocument();
+    expect(
+      screen.getByText('Reveal Secret Recovery Phrase'),
+    ).toBeInTheDocument();
   });
 
   it('renders CreateNewVault component and shows You can paste... text', () => {
