@@ -23,6 +23,7 @@ import { formatTransactionDateTime } from '../utils';
 import { getTransactions } from '../../../../../selectors/transactions';
 import { getTokenByAccountAndAddressAndChainId } from '../../../../../selectors/assets';
 import { selectNetworkConfigurationByChainId } from '../../../../../selectors';
+import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { BlockExplorerLink } from '../block-explorer-link';
 import { TransactionStatusIcon } from '../transaction-status-icon';
 
@@ -54,6 +55,7 @@ export function TransactionDetailsSummary() {
   }, [requiredTransactions, transactionMeta]);
 
   const payTokenAddress = metamaskPay?.tokenAddress as Hex | undefined;
+  const payTokenChainId = metamaskPay?.chainId as Hex | undefined;
 
   return (
     <Box
@@ -73,6 +75,7 @@ export function TransactionDetailsSummary() {
             key={tx.id}
             transactionMeta={tx}
             payTokenAddress={payTokenAddress}
+            payTokenChainId={payTokenChainId}
             isLast={index === transactions.length - 1}
           />
         ))}
@@ -84,10 +87,12 @@ export function TransactionDetailsSummary() {
 function TransactionSummaryLine({
   transactionMeta,
   payTokenAddress,
+  payTokenChainId,
   isLast,
 }: {
   transactionMeta: TransactionMeta;
   payTokenAddress: Hex | undefined;
+  payTokenChainId: Hex | undefined;
   isLast: boolean;
 }) {
   const { type } = transactionMeta;
@@ -97,6 +102,7 @@ function TransactionSummaryLine({
       <RelayDepositSummaryLine
         transactionMeta={transactionMeta}
         tokenAddress={payTokenAddress}
+        tokenChainId={payTokenChainId}
       />
     );
   }
@@ -119,22 +125,18 @@ function TransactionSummaryLine({
 function RelayDepositSummaryLine({
   transactionMeta,
   tokenAddress,
+  tokenChainId,
 }: {
   transactionMeta: TransactionMeta;
   tokenAddress: Hex | undefined;
+  tokenChainId: Hex | undefined;
 }) {
   const t = useI18nContext() as TranslateFunction;
   const { chainId } = transactionMeta;
 
-  const token = useSelector((state) =>
-    tokenAddress && chainId
-      ? getTokenByAccountAndAddressAndChainId(
-          state,
-          undefined,
-          tokenAddress,
-          chainId,
-        )
-      : null,
+  const token = useTokenWithBalance(
+    (tokenAddress ?? '0x0') as Hex,
+    tokenChainId ?? chainId,
   );
 
   const networkConfig = useSelector((state) =>

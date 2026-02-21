@@ -182,7 +182,7 @@ describe('PayWithRow', () => {
 
     expect(screen.queryByTestId('pay-with-modal')).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByTestId('pay-with-pill'));
+    fireEvent.click(screen.getByTestId('pay-with-row'));
 
     expect(screen.getByTestId('pay-with-modal')).toBeInTheDocument();
   });
@@ -191,7 +191,7 @@ describe('PayWithRow', () => {
     const store = mockStore(getMockState());
     renderWithProvider(<PayWithRow />, store);
 
-    fireEvent.click(screen.getByTestId('pay-with-pill'));
+    fireEvent.click(screen.getByTestId('pay-with-row'));
     expect(screen.getByTestId('pay-with-modal')).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('close-modal'));
@@ -233,24 +233,35 @@ describe('PayWithRow', () => {
     const store = mockStore(getMockState());
     renderWithProvider(<PayWithRow />, store);
 
-    fireEvent.click(screen.getByTestId('pay-with-pill'));
+    fireEvent.click(screen.getByTestId('pay-with-row'));
 
     expect(screen.queryByTestId('pay-with-modal')).not.toBeInTheDocument();
   });
 
   describe('Default variant', () => {
-    it('renders pill element', () => {
+    it('renders default pill container', () => {
       const store = mockStore(getMockState());
       renderWithProvider(<PayWithRow />, store);
 
-      expect(screen.getByTestId('pay-with-pill')).toBeInTheDocument();
+      expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
     });
 
-    it('hides balance display', () => {
+    it('renders balance display', () => {
       const store = mockStore(getMockState());
       renderWithProvider(<PayWithRow />, store);
 
-      expect(screen.queryByTestId('pay-with-balance')).not.toBeInTheDocument();
+      expect(screen.getByTestId('pay-with-balance')).toHaveTextContent(
+        '$150.00',
+      );
+    });
+
+    it('renders pay with text inside symbol text', () => {
+      const store = mockStore(getMockState());
+      renderWithProvider(<PayWithRow />, store);
+
+      expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
+        'Pay with ETH',
+      );
     });
 
     it('shows arrow icon when editable', () => {
@@ -288,7 +299,8 @@ describe('PayWithRow', () => {
         store,
       );
 
-      expect(screen.queryByTestId('pay-with-pill')).not.toBeInTheDocument();
+      expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
+      expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent('ETH');
     });
   });
 });
