@@ -54,7 +54,7 @@ type TriageSummary = {
   };
 };
 
-const DEFAULT_BRANCH = 'unknown';
+const DEFAULT_BRANCH = 'main';
 const BRANCH = process.env.BRANCH ?? DEFAULT_BRANCH;
 const IS_RELEASE_BRANCH = BRANCH.startsWith('release/');
 
@@ -119,7 +119,7 @@ function parseJsonOrNdjson(text: string): unknown[] {
 function spawnYarnAudit(environment: 'production' | 'development'): string {
   const result = spawnSync(
     YARN_BIN,
-    ['audit', '--recursive', '--environment', environment, '--json'],
+    ['npm audit', '--recursive', '--environment', environment, '--json'],
     {
       encoding: 'utf8',
       shell: YARN_SHELL,
