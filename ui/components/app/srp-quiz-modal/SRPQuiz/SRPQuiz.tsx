@@ -71,7 +71,6 @@ export type SRPQuizProps = {
     ): void;
     (delta: number): void;
   };
-  skipQuiz?: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
