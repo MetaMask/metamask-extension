@@ -244,7 +244,7 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
                 route = `${REVEAL_SEED_ROUTE}/${props.keyringId}`;
               }
 
-              props.navigate(route, { state: { skipQuiz: props.skipQuiz } });
+              props.navigate(route);
               if (props.closeAfterCompleting) {
                 props.onClose();
               }

@@ -6195,11 +6195,11 @@
   "revealSecretRecoveryPhrase": {
     "message": "Back up Secret Recovery Phrase"
   },
-  "revealSeedWords": {
+  "revealSecretRecoveryPhraseSettings": {
     "message": "Reveal Secret Recovery Phrase"
   },
-  "revealSeedWordsDescription": {
-    "message": "Your Secret Recovery Phrase gives full access to your wallet. Do not share it with anyone."
+  "revealSeedWords": {
+    "message": "Reveal Secret Recovery Phrase"
   },
   "revealSeedWordsDescription1": {
     "message": "Your $1 gives full access to your wallet, funds, and accounts.",
@@ -6456,7 +6456,7 @@
     "message": "sec"
   },
   "secretRecoveryPhrase": {
-    "message": "Reveal Secret Recovery Phrase"
+    "message": "Secret Recovery Phrase"
   },
   "secretRecoveryPhrasePlusNumber": {
     "message": "Secret Recovery Phrase $1",

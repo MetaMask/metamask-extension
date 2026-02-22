@@ -38,7 +38,7 @@ export const MultichainSrpBackup: React.FC<MultichainSrpBackupProps> = ({
     if (shouldShowBackupReminder) {
       const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
       navigate(backUpSRPRoute);
-    } else {
+    } else if (keyringId) {
       navigate(`${REVEAL_SEED_ROUTE}/${keyringId}`);
     }
   }, [shouldShowBackupReminder, navigate, keyringId]);

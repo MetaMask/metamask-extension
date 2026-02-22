@@ -6201,9 +6201,6 @@
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
   },
-  "revealSeedWordsDescription": {
-    "message": "Your Secret Recovery Phrase gives full access to your wallet. Do not share it with anyone."
-  },
   "revealSeedWordsDescription1": {
     "message": "Your $1 gives full access to your wallet, funds, and accounts.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."

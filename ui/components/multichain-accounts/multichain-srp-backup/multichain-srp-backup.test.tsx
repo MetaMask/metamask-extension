@@ -71,7 +71,7 @@ describe('MultichainSrpBackup', () => {
     );
   });
 
-  it('navigates to reveal seed page when shouldShowBackupReminder is false', () => {
+  it('navigates to reveal seed page when shouldShowBackupReminder is false and keyringId is provided', () => {
     renderComponent({
       shouldShowBackupReminder: false,
       keyringId: 'test-keyring-id',
