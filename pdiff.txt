@@ -1,0 +1,1807 @@
+diff --git a/test/e2e/page-objects/flows/deep-link.flow.ts b/test/e2e/page-objects/flows/deep-link.flow.ts
+new file mode 100644
+index 0000000000..69a1996215
+--- /dev/null
++++ b/test/e2e/page-objects/flows/deep-link.flow.ts
+@@ -0,0 +1,57 @@
++import assert from 'node:assert/strict';
++import { Driver } from '../../webdriver/driver';
++import DeepLink from '../pages/deep-link-page';
++import LoginPage from '../pages/login-page';
++
++/**
++ * Opens a deep link URL, verifies the checkbox, navigates through the interstitial page,
++ * handles login if locked, and verifies the target page has loaded.
++ * This is the complete navigation flow for deep link route tests.
++ *
++ * @param driver - The webdriver instance.
++ * @param deepLinkUrl - The prepared deep link URL to navigate to.
++ * @param locked - Whether the wallet is 'locked' or 'unlocked'.
++ * @param shouldShowCheckbox - Whether the checkbox should be rendered (based on signing status).
++ * @param targetPageClass - The page object class to verify after navigation (e.g., HomePage, SwapPage).
++ * @param password - Optional password to use if wallet is locked.
++ */
++export const navigateDeepLinkToDestination = async (
++  driver: Driver,
++  deepLinkUrl: string,
++  locked: 'locked' | 'unlocked',
++  shouldShowCheckbox: boolean,
++  targetPageClass: new (driverInstance: Driver) => {
++    checkPageIsLoaded: () => Promise<void>;
++  },
++  password?: string,
++): Promise<void> => {
++  console.log('Opening deep link URL');
++  await driver.openNewURL(deepLinkUrl);
++
++  const deepLink = new DeepLink(driver);
++  console.log('Checking if deep link page is loaded');
++  await deepLink.checkPageIsLoaded();
++
++  // we should render the checkbox when the link is "signed"
++  console.log('Checking if deep link interstitial checkbox exists');
++  const hasCheckbox = await deepLink.hasSkipDeepLinkInterstitialCheckBox();
++  assert.equal(hasCheckbox, shouldShowCheckbox, 'Checkbox presence mismatch');
++
++  console.log('Clicking continue button');
++  await deepLink.clickContinueButton();
++
++  // If wallet is locked, handle the login flow
++  if (locked === 'locked') {
++    console.log('Checking if login page is loaded (locked scenario)');
++    const loginPage = new LoginPage(driver);
++    await loginPage.checkPageIsLoaded();
++    console.log('Logging in to homepage (locked scenario)');
++    await loginPage.loginToHomepage(password);
++  }
++
++  // check that the target page has been loaded!
++  const TargetPage = targetPageClass;
++  const targetPage = new TargetPage(driver);
++  console.log('Checking if target page is loaded');
++  await targetPage.checkPageIsLoaded();
++};
+diff --git a/test/e2e/tests/deep-link/deep-link-params.spec.ts b/test/e2e/tests/deep-link/deep-link-params.spec.ts
+new file mode 100644
+index 0000000000..b93e5568c4
+--- /dev/null
++++ b/test/e2e/tests/deep-link/deep-link-params.spec.ts
+@@ -0,0 +1,364 @@
++import assert from 'node:assert/strict';
++import { Browser } from 'selenium-webdriver';
++import { WINDOW_TITLES } from '../../constants';
++import { withFixtures } from '../../helpers';
++import { Driver } from '../../webdriver/driver';
++import DeepLink from '../../page-objects/pages/deep-link-page';
++import LoginPage from '../../page-objects/pages/login-page';
++import SwapPage from '../../page-objects/pages/swap/swap-page';
++import HomePage from '../../page-objects/pages/home/homepage';
++import type { Anvil } from '../../seeder/anvil';
++import type { Ganache } from '../../seeder/ganache';
++import {
++  bytesToB64,
++  signDeepLink,
++  generateECDSAKeyPair,
++  getHashParams,
++  getConfig,
++} from './helpers';
++
++const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
++
++type LocalNode = Ganache | Anvil;
++
++const TEST_PAGE = 'https://doesntexist.test/';
++
++describe('Deep Link - Parameter Handling & Security', function () {
++  let keyPair: CryptoKeyPair;
++  let deepLinkPublicKey: string;
++
++  beforeEach(async function () {
++    keyPair = await generateECDSAKeyPair();
++    deepLinkPublicKey = bytesToB64(
++      await crypto.subtle.exportKey('raw', keyPair.publicKey),
++    );
++  });
++
++  // this test is skipped because the swap route does not work correctly in
++  // the e2e environment. Once swaps/bridge flows are all fully migrated to the
++  // route page this test can be re-enabled.
++  // eslint-disable-next-line mocha/no-skipped-tests
++  it.skip("passes params to the deep link's component", async function () {
++    await withFixtures(
++      await getConfig({
++        title: this.test?.fullTitle(),
++        deepLinkPublicKey,
++      }),
++      async ({ driver }: { driver: Driver }) => {
++        await driver.navigate();
++        const loginPage = new LoginPage(driver);
++        await loginPage.checkPageIsLoaded();
++        await loginPage.loginToHomepage();
++        const homePage = new HomePage(driver);
++        await homePage.checkPageIsLoaded();
++
++        // params that are not related to the swap, and get filtered out
++        // (may or not be processed by the deep link router, but we aren't
++        // concerned with that in this test)
++        const extraParams = {
++          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
++          // eslint-disable-next-line @typescript-eslint/naming-convention
++          utm_medium: '123',
++          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
++          // eslint-disable-next-line @typescript-eslint/naming-convention
++          attribution_id: '456',
++          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
++          // eslint-disable-next-line @typescript-eslint/naming-convention
++          random_param: '789',
++        };
++        // these should all be forwarded to the swap page
++        const swapsParams = {
++          from: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
++          to: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
++          value: '0x38d7ea4c68000',
++        };
++        const params = new URLSearchParams({ ...extraParams, ...swapsParams });
++        const rawUrl = `https://link.metamask.io/swap?${params.toString()}`;
++
++        // test signed flow
++        await driver.openNewURL(rawUrl);
++
++        const deepLink = new DeepLink(driver);
++        await deepLink.checkPageIsLoaded();
++
++        await deepLink.clickContinueButton();
++        await new SwapPage(driver).checkPageIsLoaded();
++
++        const currentUrl = await driver.getCurrentUrl();
++
++        // the URL params is actually in the `hash`, e.g. #some/path?query=param
++        const hash = new URL(currentUrl).hash.slice(1);
++        const urlParams = new URLSearchParams(hash.split('?')[1]);
++
++        // ensure all of the params are all present in the URL
++        assert.deepStrictEqual(
++          Object.fromEntries(urlParams.entries()),
++          swapsParams,
++        );
++      },
++    );
++  });
++
++  it('handles the skipDeepLinkInterstitial flag correctly', async function () {
++    await withFixtures(
++      await getConfig({
++        title: this.test?.fullTitle(),
++        deepLinkPublicKey,
++      }),
++      async ({ driver }: { driver: Driver }) => {
++        // This `skipDeepLinkInterstitial` test:
++        // 1. checks the the option only applies for signed and verified links,
++        // 2. the checkbox state is preserved,
++        // 3. works as expected,
++        // 4. and that it does not apply to unsigned links.
++
++        await driver.navigate();
++        const loginPage = new LoginPage(driver);
++        await loginPage.checkPageIsLoaded();
++        await loginPage.loginToHomepage();
++        const homePage = new HomePage(driver);
++        await homePage.checkPageIsLoaded();
++
++        const rawUrl = `https://link.metamask.io/home`;
++        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
++        await driver.openNewURL(signedUrl);
++        const internalDeepLinkUrl = await driver.getCurrentUrl();
++        const deepLink = new DeepLink(driver);
++        await deepLink.checkPageIsLoaded();
++        const isChecked =
++          await deepLink.getSkipDeepLinkInterstitialCheckBoxState();
++        assert.equal(isChecked, false, 'checkbox should not be checked');
++
++        // check the checkbox
++        await deepLink.setSkipDeepLinkInterstitialCheckBox(true);
++
++        // click continue
++        await deepLink.clickContinueButton();
++
++        // make sure we're on the home page
++        await homePage.checkPageIsLoaded();
++
++        // a nice in-between page to make testing more obvious
++        await driver.openNewURL(TEST_PAGE);
++
++        // open the deep link again, it should go straight to the home page
++        await driver.openNewURL(signedUrl);
++        await homePage.checkPageIsLoaded();
++
++        // navigating to an unsigned page should NOT skip the interstitial
++        await driver.openNewURL(rawUrl);
++        await deepLink.checkPageIsLoaded();
++
++        // navigating to the internalDeepLinkUrl should display the interstitial
++        // with the checkbox *already checked*
++        await driver.openNewURL(internalDeepLinkUrl);
++        await deepLink.checkPageIsLoaded();
++        const isChecked2 =
++          await deepLink.getSkipDeepLinkInterstitialCheckBoxState();
++        assert.equal(isChecked2, true, 'checkbox should be checked');
++
++        // unchecking the checkbox should cause the interstitial to be shown
++        // for signed links again
++        await deepLink.setSkipDeepLinkInterstitialCheckBox(false);
++        await deepLink.clickContinueButton();
++
++        // open the signed link again, it should show the interstitial
++        await driver.openNewURL(signedUrl);
++        await deepLink.checkPageIsLoaded();
++      },
++    );
++  });
++
++  it("does not allow the loading screen over the deep link's component", async function () {
++    await withFixtures(
++      await getConfig({
++        title: this.test?.fullTitle(),
++        deepLinkPublicKey,
++      }),
++      async ({
++        driver,
++        localNodes,
++      }: {
++        driver: Driver;
++        localNodes: LocalNode[];
++      }) => {
++        await driver.navigate();
++        // shut down all local nodes to ensure the network loading screen is needed
++        await Promise.all(localNodes.map((node) => node.quit()));
++
++        const loginPage = new LoginPage(driver);
++        await loginPage.checkPageIsLoaded();
++        await loginPage.loginToHomepage();
++        const homePage = new HomePage(driver);
++        await homePage.checkPageIsLoaded();
++
++        const rawUrl = `https://link.metamask.io/home`;
++        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
++
++        // test signed flow
++        await driver.openNewURL(signedUrl);
++        const deepLink = new DeepLink(driver);
++        await deepLink.checkPageIsLoaded();
++
++        // make sure the loading overlays is not present
++        await driver.assertElementNotPresent('.loading-overlay');
++
++        // make sure we can click the continue button
++        await deepLink.clickContinueButton();
++
++        // make sure the home page has loaded!
++        await homePage.checkPageIsLoaded();
++      },
++    );
++  });
++
++  it('handles dapps that open MM via window.open', async function () {
++    await withFixtures(
++      await getConfig({
++        title: this.test?.fullTitle(),
++        deepLinkPublicKey,
++      }),
++      async ({ driver }: { driver: Driver }) => {
++        await driver.navigate();
++        const loginPage = new LoginPage(driver);
++        await loginPage.checkPageIsLoaded();
++        await loginPage.loginToHomepage();
++        const homePage = new HomePage(driver);
++        await homePage.checkPageIsLoaded();
++
++        // use our dummy page to drive the new window
++        await driver.openNewURL(TEST_PAGE);
++
++        const dappWindowHandle = await driver.driver.getWindowHandle();
++        // simulate a dapp calling `window.open('https://link.metamask.io/home')`
++        const windowOpened = await driver.executeScript(
++          `
++          globalThis.testWindow = window.open('https://link.metamask.io/home', '_blank');
++          return globalThis.testWindow != null;
++          `,
++        );
++        assert.strictEqual(windowOpened, true, 'window.open failed');
++
++        await driver.delay(1000); // give the window a second to open
++
++        await driver.switchToWindowWithTitle(
++          WINDOW_TITLES.ExtensionInFullScreenView,
++        );
++
++        const metamaskWindowHandle = await driver.driver.getWindowHandle();
++
++        // wait for the homepage to load in this new window
++        const deepLink = new DeepLink(driver);
++        await deepLink.checkPageIsLoaded();
++        const initialUrlStr = await driver.getCurrentUrl();
++        const initialUrl = new URL(initialUrlStr);
++        assert.equal(initialUrl.pathname, `/home.html`);
++        assert.equal(initialUrl.hash, '#link?u=%2Fhome');
++        assert.equal(initialUrl.search, '');
++
++        await driver.switchToWindow(dappWindowHandle);
++
++        const hackUrl = new URL(initialUrl);
++        hackUrl.hash = '#notifications';
++        // if we are testing Firefox, make sure `testWindow` is unset, FF
++        // doesn't allow cross-origin access to the extension's window by
++        // default
++        if (isFirefox) {
++          // globalThis.testWindow is unset in Firefox. Neat!
++          await driver.executeScript(`return globalThis.testWindow == null;`);
++        } else {
++          // on chrome, the location change is ignored due to the
++          // `cross_origin_opener_policy` set in the manifest.json
++          await driver.executeScript(
++            `globalThis.testWindow.location.href = ${JSON.stringify(hackUrl)};`,
++          );
++        }
++
++        // go back to the Metamask window.
++        await driver.switchToWindow(metamaskWindowHandle);
++
++        const finalUrlStr = await driver.getCurrentUrl();
++        assert.equal(finalUrlStr, initialUrlStr);
++      },
++    );
++  });
++
++  it('correctly exposes or filters params based on signing method', async function () {
++    await withFixtures(
++      await getConfig({
++        title: this.test?.fullTitle(),
++        deepLinkPublicKey,
++      }),
++      async ({ driver }: { driver: Driver }) => {
++        await driver.navigate();
++        const loginPage = new LoginPage(driver);
++        await loginPage.checkPageIsLoaded();
++        await loginPage.loginToHomepage();
++        const homePage = new HomePage(driver);
++        await homePage.checkPageIsLoaded();
++
++        const deepLink = new DeepLink(driver);
++
++        // 1. signed with sig_params only exposes foo (both) and bar, not baz
++        console.log(
++          'Testing: signed with sig_params filters out unsigned params',
++        );
++        const url1 = 'https://link.metamask.io/test?foo=0&foo=1&bar=2';
++        const signedUrl1 = `${await signDeepLink(keyPair.privateKey, url1)}&baz=3`;
++        await driver.openNewURL(signedUrl1);
++        await deepLink.checkPageIsLoaded();
++        await deepLink.clickContinueButton();
++        const params1 = getHashParams(new URL(await driver.getCurrentUrl()));
++        assert.deepStrictEqual(params1.getAll('foo'), ['0', '1']);
++        assert.deepStrictEqual(params1.getAll('bar'), ['2']);
++        assert.equal(params1.has('baz'), false);
++
++        // 2. signed with empty sig_params + extra params appended: exposes nothing
++        console.log(
++          'Testing: signed with empty sig_params does not expose extra params',
++        );
++        const url2 = 'https://link.metamask.io/test';
++        const signedUrl2 = `${await signDeepLink(keyPair.privateKey, url2)}&foo=0&foo=1&bar=2&baz=3`;
++        await driver.openNewURL(signedUrl2);
++        await deepLink.checkPageIsLoaded();
++        await deepLink.clickContinueButton();
++        const params2 = getHashParams(new URL(await driver.getCurrentUrl()));
++        assert.deepStrictEqual(params2.size, 0);
++
++        // 3. signed with sig_params, no extra params: exposes nothing (no params to forward)
++        console.log('Testing: signed with sig_params and no params works');
++        const url3 = 'https://link.metamask.io/test';
++        const signedUrl3 = await signDeepLink(keyPair.privateKey, url3);
++        await driver.openNewURL(signedUrl3);
++        await deepLink.checkPageIsLoaded();
++        await deepLink.clickContinueButton();
++        const params3 = getHashParams(new URL(await driver.getCurrentUrl()));
++        assert.deepStrictEqual(params3.size, 0);
++
++        // 4. signed without sig_params exposes all params (foo, bar, baz)
++        console.log('Testing: signed without sig_params exposes all params');
++        const url4 = 'https://link.metamask.io/test?foo=1&bar=2&baz=3';
++        const signedUrl4 = await signDeepLink(keyPair.privateKey, url4, false);
++        await driver.openNewURL(signedUrl4);
++        await deepLink.checkPageIsLoaded();
++        await deepLink.clickContinueButton();
++        const params4 = getHashParams(new URL(await driver.getCurrentUrl()));
++        assert.deepStrictEqual(params4.getAll('foo'), ['1']);
++        assert.deepStrictEqual(params4.getAll('bar'), ['2']);
++        assert.deepStrictEqual(params4.getAll('baz'), ['3']);
++
++        // 5. unsigned flow exposes all params including duplicate values
++        console.log(
++          'Testing: unsigned flow exposes all params including duplicates',
++        );
++        const url5 = 'https://link.metamask.io/test?foo=1&foo=2&bar=3';
++        await driver.openNewURL(url5);
++        await deepLink.checkPageIsLoaded();
++        await deepLink.clickContinueButton();
++        const params5 = getHashParams(new URL(await driver.getCurrentUrl()));
++        assert.deepStrictEqual(params5.getAll('foo'), ['1', '2']);
++        assert.deepStrictEqual(params5.getAll('bar'), ['3']);
++      },
++    );
++  });
++});
+diff --git a/test/e2e/tests/deep-link/deep-link-redirects.spec.ts b/test/e2e/tests/deep-link/deep-link-redirects.spec.ts
+new file mode 100644
+index 0000000000..99c73e16f5
+--- /dev/null
++++ b/test/e2e/tests/deep-link/deep-link-redirects.spec.ts
+@@ -0,0 +1,60 @@
++import { withFixtures } from '../../helpers';
++import { Driver } from '../../webdriver/driver';
++import LoginPage from '../../page-objects/pages/login-page';
++import HomePage from '../../page-objects/pages/home/homepage';
++import {
++  bytesToB64,
++  generateECDSAKeyPair,
++  getConfig,
++  prepareDeepLinkUrl,
++  REDIRECT_ROUTES,
++} from './helpers';
++
++describe('Deep Link - External Redirects', function () {
++  it('handles all external redirect routes (signed and unsigned)', async function () {
++    const keyPair = await generateECDSAKeyPair();
++    const deepLinkPublicKey = bytesToB64(
++      await crypto.subtle.exportKey('raw', keyPair.publicKey),
++    );
++
++    await withFixtures(
++      await getConfig({
++        title: this.test?.fullTitle(),
++        deepLinkPublicKey,
++      }),
++      async ({ driver }: { driver: Driver }) => {
++        await driver.navigate();
++        const loginPage = new LoginPage(driver);
++        await loginPage.checkPageIsLoaded();
++        await loginPage.loginToHomepage();
++        const homePage = new HomePage(driver);
++        await homePage.checkPageIsLoaded();
++
++        for (const { route, expectedUrl } of REDIRECT_ROUTES) {
++          console.log(`Testing signed redirect for ${route}`);
++          const signedUrl = await prepareDeepLinkUrl({
++            route,
++            signed: 'signed with sig_params',
++            privateKey: keyPair.privateKey,
++          });
++          await driver.openNewURL(signedUrl);
++          await driver.waitForUrl({ url: expectedUrl });
++
++          await driver.navigate();
++          await homePage.checkPageIsLoaded();
++
++          console.log(`Testing unsigned redirect for ${route}`);
++          const unsignedUrl = await prepareDeepLinkUrl({
++            route,
++            signed: 'unsigned',
++          });
++          await driver.openNewURL(unsignedUrl);
++          await driver.waitForUrl({ url: expectedUrl });
++
++          await driver.navigate();
++          await homePage.checkPageIsLoaded();
++        }
++      },
++    );
++  });
++});
+diff --git a/test/e2e/tests/deep-link/deep-link-route-home.spec.ts b/test/e2e/tests/deep-link/deep-link-route-home.spec.ts
+new file mode 100644
+index 0000000000..f723be48d4
+--- /dev/null
++++ b/test/e2e/tests/deep-link/deep-link-route-home.spec.ts
+@@ -0,0 +1,71 @@
++import { withFixtures } from '../../helpers';
++import { Driver } from '../../webdriver/driver';
++import LoginPage from '../../page-objects/pages/login-page';
++import HomePage from '../../page-objects/pages/home/homepage';
++import { navigateDeepLinkToDestination } from '../../page-objects/flows/deep-link.flow';
++import {
++  bytesToB64,
++  generateECDSAKeyPair,
++  generateScenariosForRoutes,
++  getConfig,
++  prepareDeepLinkUrl,
++  shouldRenderCheckbox,
++} from './helpers';
++
++describe('Deep Link - /home Route', function () {
++  const scenarios = generateScenariosForRoutes(['/home']);
++
++  scenarios.forEach(({ locked, signed, route, action }) => {
++    it(`handles ${locked} and ${signed} ${route} deep link with ${action} action`, async function () {
++      const keyPair = await generateECDSAKeyPair();
++      const deepLinkPublicKey = bytesToB64(
++        await crypto.subtle.exportKey('raw', keyPair.publicKey),
++      );
++
++      await withFixtures(
++        await getConfig({
++          title: this.test?.fullTitle(),
++          deepLinkPublicKey,
++        }),
++        async ({ driver }: { driver: Driver }) => {
++          // ensure the background is ready to process deep links (by waiting
++          // for the UI to load)
++          console.log('Navigating to initial page');
++          await driver.navigate();
++          const loginPage = new LoginPage(driver);
++          console.log('Checking if login page is loaded');
++          await loginPage.checkPageIsLoaded();
++
++          // if `locked` is set to "unlocked", we need to log in _now_, so the
++          // deep link's `continue` button is able to can skip the lock screen.
++          if (locked === 'unlocked') {
++            console.log('Logging in to homepage (unlocked scenario)');
++            await loginPage.loginToHomepage();
++
++            console.log('Checking if home page is loaded (unlocked scenario)');
++            const homePage = new HomePage(driver);
++            await homePage.checkPageIsLoaded();
++          }
++
++          // navigate to the route and make sure it
++          // redirects to the deep link interstitial page
++          const preparedUrl = await prepareDeepLinkUrl({
++            route,
++            signed,
++            privateKey: keyPair.privateKey,
++          });
++
++          // Navigate through deep link interstitial, complete login if locked,
++          // and verify the home page has been loaded!
++          await navigateDeepLinkToDestination(
++            driver,
++            preparedUrl,
++            locked,
++            shouldRenderCheckbox(signed),
++            HomePage,
++          );
++        },
++      );
++    });
++  });
++});
+diff --git a/test/e2e/tests/deep-link/deep-link-route-invalid.spec.ts b/test/e2e/tests/deep-link/deep-link-route-invalid.spec.ts
+new file mode 100644
+index 0000000000..fef494d827
+--- /dev/null
++++ b/test/e2e/tests/deep-link/deep-link-route-invalid.spec.ts
+@@ -0,0 +1,107 @@
++import assert from 'node:assert/strict';
++import { withFixtures } from '../../helpers';
++import { Driver } from '../../webdriver/driver';
++import DeepLink from '../../page-objects/pages/deep-link-page';
++import LoginPage from '../../page-objects/pages/login-page';
++import HomePage from '../../page-objects/pages/home/homepage';
++import {
++  bytesToB64,
++  generateECDSAKeyPair,
++  generateScenariosForRoutes,
++  getConfig,
++  prepareDeepLinkUrl,
++  shouldRenderCheckbox,
++} from './helpers';
++
++describe('Deep Link - Invalid Route', function () {
++  const scenarios = generateScenariosForRoutes(['/INVALID']);
++
++  scenarios.forEach(({ locked, signed, route, action }) => {
++    it(`handles ${locked} and ${signed} ${route} deep link with ${action} action`, async function () {
++      const keyPair = await generateECDSAKeyPair();
++      const deepLinkPublicKey = bytesToB64(
++        await crypto.subtle.exportKey('raw', keyPair.publicKey),
++      );
++
++      await withFixtures(
++        await getConfig({
++          title: this.test?.fullTitle(),
++          deepLinkPublicKey,
++        }),
++        async ({ driver }: { driver: Driver }) => {
++          const isSigned = shouldRenderCheckbox(signed);
++
++          // ensure the background is ready to process deep links (by waiting
++          // for the UI to load)
++          console.log('Navigating to initial page');
++          await driver.navigate();
++          const loginPage = new LoginPage(driver);
++          console.log('Checking if login page is loaded');
++          await loginPage.checkPageIsLoaded();
++
++          // if `locked` is set to "unlocked", we need to log in _now_, so the
++          // deep link's `continue` button is able to can skip the lock screen.
++          if (locked === 'unlocked') {
++            console.log('Logging in to homepage (unlocked scenario)');
++            await loginPage.loginToHomepage();
++
++            console.log('Checking if home page is loaded (unlocked scenario)');
++            const homePage = new HomePage(driver);
++            await homePage.checkPageIsLoaded();
++          }
++
++          // navigate to the route and make sure it
++          // redirects to the deep link interstitial page
++          // note: we sign the "/INVALID" link as well, as signed links that no
++          // longer exist/match should be handled the same way as
++          // unsigned links. We test for this below.
++          const preparedUrl = await prepareDeepLinkUrl({
++            route,
++            signed,
++            privateKey: keyPair.privateKey,
++          });
++
++          console.log('Opening deep link URL');
++          await driver.openNewURL(preparedUrl);
++
++          const deepLink = new DeepLink(driver);
++          console.log('Checking if deep link page is loaded');
++          await deepLink.checkPageIsLoaded();
++
++          // we should NOT render the checkbox for invalid routes
++          console.log('Checking if deep link interstitial checkbox exists');
++          const hasCheckbox =
++            await deepLink.hasSkipDeepLinkInterstitialCheckBox();
++          assert.equal(hasCheckbox, false, 'Checkbox presence mismatch');
++
++          console.log('Getting error text for invalid route');
++          const text = await deepLink.getDescriptionText();
++          assert.equal(
++            text,
++            `We can't find the page you are looking for.${
++              isSigned
++                ? `
++Update to the latest version of MetaMask
++and we'll take you to the right place.`
++                : ''
++            }`,
++          );
++
++          console.log('Clicking continue button');
++          await deepLink.clickContinueButton();
++          if (locked === 'locked') {
++            console.log('Checking if login page is loaded (locked scenario)');
++            await loginPage.checkPageIsLoaded();
++            console.log('Logging in to homepage (locked scenario)');
++            await loginPage.loginToHomepage();
++          }
++
++          // invalid routes redirect to home page
++          const homePage = new HomePage(driver);
++          console.log('Checking if target page is loaded');
++          await homePage.checkPageIsLoaded();
++        },
++      );
++    });
++  });
++});
+diff --git a/test/e2e/tests/deep-link/deep-link-route-rewards.spec.ts b/test/e2e/tests/deep-link/deep-link-route-rewards.spec.ts
+new file mode 100644
+index 0000000000..3d05493cd8
+--- /dev/null
++++ b/test/e2e/tests/deep-link/deep-link-route-rewards.spec.ts
+@@ -0,0 +1,83 @@
++import type { Mockttp } from 'mockttp';
++import { withFixtures } from '../../helpers';
++import { Driver } from '../../webdriver/driver';
++import LoginPage from '../../page-objects/pages/login-page';
++import HomePage from '../../page-objects/pages/home/homepage';
++import RewardsPage from '../../page-objects/pages/rewards/rewards-page';
++import { REWARDS_ROUTE } from '../../../../ui/helpers/constants/routes';
++import { navigateDeepLinkToDestination } from '../../page-objects/flows/deep-link.flow';
++import {
++  bytesToB64,
++  generateECDSAKeyPair,
++  getConfig,
++  prepareDeepLinkUrl,
++  shouldRenderCheckbox,
++  mockRewardsApi,
++} from './helpers';
++
++describe('Deep Link - Rewards Route', function () {
++  it('handles rewards deep link route', async function () {
++    const keyPair = await generateECDSAKeyPair();
++    const deepLinkPublicKey = bytesToB64(
++      await crypto.subtle.exportKey('raw', keyPair.publicKey),
++    );
++
++    await withFixtures(
++      await getConfig({
++        title: this.test?.fullTitle(),
++        deepLinkPublicKey,
++        manifestFlags: {
++          remoteFeatureFlags: {
++            rewardsEnabled: {
++              enabled: true,
++              minimumVersion: '0.0.0',
++            },
++            rewardsOnboardingEnabled: {
++              enabled: true,
++              minimumVersion: '0.0.0',
++            },
++            rewardsBitcoinEnabledExtension: true,
++            rewardsTronEnabledExtension: true,
++          },
++        },
++        additionalMocks: async (server: Mockttp) => {
++          await mockRewardsApi(server);
++        },
++      }),
++      async ({ driver }: { driver: Driver }) => {
++        // ensure the background is ready to process deep links (by waiting
++        // for the UI to load)
++        console.log('Navigating to initial page');
++        await driver.navigate();
++        const loginPage = new LoginPage(driver);
++        console.log('Checking if login page is loaded');
++        await loginPage.checkPageIsLoaded();
++
++        // log in so the deep link's `continue` button can skip the lock screen
++        console.log('Logging in to homepage');
++        await loginPage.loginToHomepage();
++
++        console.log('Checking if home page is loaded');
++        const homePage = new HomePage(driver);
++        await homePage.checkPageIsLoaded();
++
++        // navigate to the route and make sure it
++        // redirects to the deep link interstitial page
++        const preparedUrl = await prepareDeepLinkUrl({
++          route: REWARDS_ROUTE,
++          signed: 'signed with sig_params',
++          privateKey: keyPair.privateKey,
++        });
++
++        // Navigate through deep link interstitial and verify the rewards page has been loaded!
++        await navigateDeepLinkToDestination(
++          driver,
++          preparedUrl,
++          'unlocked',
++          shouldRenderCheckbox('signed with sig_params'),
++          RewardsPage,
++        );
++      },
++    );
++  });
++});
+diff --git a/test/e2e/tests/deep-link/deep-link-route-swap.spec.ts b/test/e2e/tests/deep-link/deep-link-route-swap.spec.ts
+new file mode 100644
+index 0000000000..46f311e5e1
+--- /dev/null
++++ b/test/e2e/tests/deep-link/deep-link-route-swap.spec.ts
+@@ -0,0 +1,72 @@
++import { withFixtures } from '../../helpers';
++import { Driver } from '../../webdriver/driver';
++import LoginPage from '../../page-objects/pages/login-page';
++import SwapPage from '../../page-objects/pages/swap/swap-page';
++import HomePage from '../../page-objects/pages/home/homepage';
++import { navigateDeepLinkToDestination } from '../../page-objects/flows/deep-link.flow';
++import {
++  bytesToB64,
++  generateECDSAKeyPair,
++  generateScenariosForRoutes,
++  getConfig,
++  prepareDeepLinkUrl,
++  shouldRenderCheckbox,
++} from './helpers';
++
++describe('Deep Link - /swap Route', function () {
++  const scenarios = generateScenariosForRoutes(['/swap']);
++
++  scenarios.forEach(({ locked, signed, route, action }) => {
++    it(`handles ${locked} and ${signed} ${route} deep link with ${action} action`, async function () {
++      const keyPair = await generateECDSAKeyPair();
++      const deepLinkPublicKey = bytesToB64(
++        await crypto.subtle.exportKey('raw', keyPair.publicKey),
++      );
++
++      await withFixtures(
++        await getConfig({
++          title: this.test?.fullTitle(),
++          deepLinkPublicKey,
++        }),
++        async ({ driver }: { driver: Driver }) => {
++          // ensure the background is ready to process deep links (by waiting
++          // for the UI to load)
++          console.log('Navigating to initial page');
++          await driver.navigate();
++          const loginPage = new LoginPage(driver);
++          console.log('Checking if login page is loaded');
++          await loginPage.checkPageIsLoaded();
++
++          // if `locked` is set to "unlocked", we need to log in _now_, so the
++          // deep link's `continue` button is able to can skip the lock screen.
++          if (locked === 'unlocked') {
++            console.log('Logging in to homepage (unlocked scenario)');
++            await loginPage.loginToHomepage();
++
++            console.log('Checking if home page is loaded (unlocked scenario)');
++            const homePage = new HomePage(driver);
++            await homePage.checkPageIsLoaded();
++          }
++
++          // navigate to the route and make sure it
++          // redirects to the deep link interstitial page
++          const preparedUrl = await prepareDeepLinkUrl({
++            route,
++            signed,
++            privateKey: keyPair.privateKey,
++          });
++
++          // Navigate through deep link interstitial, complete login if locked,
++          // and verify the swap page has been loaded!
++          await navigateDeepLinkToDestination(
++            driver,
++            preparedUrl,
++            locked,
++            shouldRenderCheckbox(signed),
++            SwapPage,
++          );
++        },
++      );
++    });
++  });
++});
+diff --git a/test/e2e/tests/deep-link/deep-link.spec.ts b/test/e2e/tests/deep-link/deep-link.spec.ts
+deleted file mode 100644
+index d93741ab4c..0000000000
+--- a/test/e2e/tests/deep-link/deep-link.spec.ts
++++ /dev/null
+@@ -1,699 +0,0 @@
+-import assert from 'node:assert/strict';
+-import type { Mockttp } from 'mockttp';
+-import { Browser } from 'selenium-webdriver';
+-import { WINDOW_TITLES } from '../../constants';
+-import { withFixtures } from '../../helpers';
+-import { Driver } from '../../webdriver/driver';
+-import DeepLink from '../../page-objects/pages/deep-link-page';
+-import LoginPage from '../../page-objects/pages/login-page';
+-import SwapPage from '../../page-objects/pages/swap/swap-page';
+-import HomePage from '../../page-objects/pages/home/homepage';
+-import RewardsPage from '../../page-objects/pages/rewards/rewards-page';
+-import { emptyHtmlPage } from '../../mock-e2e';
+-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+-import { BaseUrl } from '../../../../shared/constants/urls';
+-import { REWARDS_ROUTE } from '../../../../ui/helpers/constants/routes';
+-import type { Anvil } from '../../seeder/anvil';
+-import type { Ganache } from '../../seeder/ganache';
+-import {
+-  bytesToB64,
+-  cartesianProduct,
+-  signDeepLink,
+-  generateECDSAKeyPair,
+-  getHashParams,
+-} from './helpers';
+-
+-const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+-
+-type LocalNode = Ganache | Anvil;
+-
+-const TEST_PAGE = 'https://doesntexist.test/';
+-
+-describe('Deep Link', function () {
+-  let keyPair: CryptoKeyPair;
+-  let deepLinkPublicKey: string;
+-
+-  beforeEach(async function () {
+-    keyPair = await generateECDSAKeyPair();
+-    deepLinkPublicKey = bytesToB64(
+-      await crypto.subtle.exportKey('raw', keyPair.publicKey),
+-    );
+-  });
+-
+-  /**
+-   * Generates the configuration for the test, including fixtures and
+-   * manifest flags.
+-   *
+-   * @param title - The title of the test, used for debugging and logging.
+-   */
+-  async function getConfig(title?: string) {
+-    return {
+-      fixtures: new FixtureBuilderV2().build(),
+-      title,
+-      manifestFlags: {
+-        testing: {
+-          deepLinkPublicKey,
+-        },
+-      },
+-      testSpecificMock: async (server: Mockttp) => {
+-        // Deep Links
+-        await server
+-          .forGet(/^https?:\/\/link\.metamask\.io\/.*$/u)
+-          .thenCallback(() => {
+-            return {
+-              statusCode: 200,
+-              body: emptyHtmlPage(),
+-              headers: {
+-                'Content-Type': 'text/html; charset=utf-8',
+-              },
+-            };
+-          });
+-        await server.forGet(TEST_PAGE).thenCallback(() => {
+-          return {
+-            statusCode: 200,
+-            body: emptyHtmlPage(),
+-            headers: {
+-              'Content-Type': 'text/html; charset=utf-8',
+-            },
+-          };
+-        });
+-      },
+-    };
+-  }
+-
+-  const scenarios = cartesianProduct(
+-    ['locked', 'unlocked'] as const,
+-    [
+-      'signed with sig_params',
+-      'signed without sig_params',
+-      'unsigned',
+-    ] as const,
+-    ['/home', '/swap', '/INVALID', REWARDS_ROUTE] as const,
+-    ['continue'] as const,
+-  ).map(([locked, signed, route, action]) => {
+-    return { locked, signed, route, action };
+-  });
+-
+-  scenarios.forEach(({ locked, signed, route, action }) => {
+-    it(`handles ${locked} and ${signed} ${route} deep link with ${action} action`, async function () {
+-      await withFixtures(
+-        await getConfig(this.test?.fullTitle()),
+-        async ({ driver }: { driver: Driver }) => {
+-          const isSigned =
+-            signed === 'signed with sig_params' ||
+-            signed === 'signed without sig_params';
+-          const withSigParams = signed === 'signed with sig_params';
+-          const isInvalidRoute = route === '/INVALID';
+-
+-          // ensure the background is ready to process deep links (by waiting
+-          // for the UI to load)
+-          console.log('Navigating to initial page');
+-          await driver.navigate();
+-          const loginPage = new LoginPage(driver);
+-          console.log('Checking if login page is loaded');
+-          await loginPage.checkPageIsLoaded();
+-
+-          // if `locked` is set to "unlocked", we need to log in _now_, so the
+-          // deep link's `continue` button is able to can skip the lock screen.
+-          if (locked === 'unlocked') {
+-            console.log('Logging in to homepage (unlocked scenario)');
+-            await loginPage.loginToHomepage();
+-
+-            console.log('Checking if home page is loaded (unlocked scenario)');
+-            const homePage = new HomePage(driver);
+-            await homePage.checkPageIsLoaded();
+-          }
+-
+-          // navigate to the route and make sure it
+-          // redirects to the deep link interstitial page
+-          const rawUrl = `https://link.metamask.io${route}`;
+-          // note: we sign the "/INVALID" link as well, as signed links that no
+-          // longer exist/match should be treated handled the same way as
+-          // unsigned links. We test for this below.
+-          const preparedUrl = isSigned
+-            ? await signDeepLink(keyPair.privateKey, rawUrl, withSigParams)
+-            : rawUrl;
+-          console.log('Opening deep link URL');
+-          await driver.openNewURL(preparedUrl);
+-
+-          const deepLink = new DeepLink(driver);
+-          console.log('Checking if deep link page is loaded');
+-          await deepLink.checkPageIsLoaded();
+-
+-          // we should render the checkbox when the link is "signed", unless
+-          // it's an "INVALID" route
+-          const shouldRenderCheckbox = isSigned && !isInvalidRoute;
+-          console.log('Checking if deep link interstitial checkbox exists');
+-          const hasCheckbox =
+-            await deepLink.hasSkipDeepLinkInterstitialCheckBox();
+-          assert.equal(
+-            hasCheckbox,
+-            shouldRenderCheckbox,
+-            'Checkbox presence mismatch',
+-          );
+-
+-          if (isInvalidRoute) {
+-            console.log('Getting error text for invalid route');
+-            const text = await deepLink.getDescriptionText();
+-            assert.equal(
+-              text,
+-              `We can't find the page you are looking for.${
+-                isSigned
+-                  ? `
+-Update to the latest version of MetaMask
+-and we'll take you to the right place.`
+-                  : ''
+-              }`,
+-            );
+-          }
+-
+-          console.log('Clicking continue button');
+-          await deepLink.clickContinueButton();
+-          if (locked === 'locked') {
+-            console.log('Checking if login page is loaded (locked scenario)');
+-            await loginPage.checkPageIsLoaded();
+-            console.log('Logging in to homepage (locked scenario)');
+-            await loginPage.loginToHomepage();
+-          }
+-
+-          let Page;
+-          switch (route) {
+-            case '/home':
+-            case '/INVALID':
+-              Page = HomePage;
+-              break;
+-            case '/swap':
+-              Page = SwapPage;
+-              break;
+-            case REWARDS_ROUTE:
+-              Page = RewardsPage;
+-              break;
+-            default: {
+-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+-              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+-              throw new Error(`Unknown route: ${route}`);
+-            }
+-          }
+-          // check that the page we want has been loaded!
+-          const page = new Page(driver);
+-          console.log('Checking if target page is loaded');
+-          page.checkPageIsLoaded();
+-        },
+-      );
+-    });
+-  });
+-
+-  it('handles /buy route redirect', async function () {
+-    await withFixtures(
+-      await getConfig(this.test?.fullTitle()),
+-      async ({ driver }: { driver: Driver }) => {
+-        await driver.navigate();
+-        const loginPage = new LoginPage(driver);
+-        await loginPage.checkPageIsLoaded();
+-        await loginPage.loginToHomepage();
+-        const homePage = new HomePage(driver);
+-        await homePage.checkPageIsLoaded();
+-
+-        const rawUrl = `https://link.metamask.io/buy`;
+-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+-
+-        // test signed flow
+-        await driver.openNewURL(signedUrl);
+-
+-        await driver.waitForUrl({ url: `${BaseUrl.Portfolio}/buy` });
+-
+-        await driver.navigate();
+-        await homePage.checkPageIsLoaded();
+-
+-        // test unsigned flow
+-        await driver.openNewURL(rawUrl);
+-
+-        await driver.waitForUrl({ url: `${BaseUrl.Portfolio}/buy` });
+-      },
+-    );
+-  });
+-
+-  it('handles /card-onboarding route redirect', async function () {
+-    await withFixtures(
+-      await getConfig(this.test?.fullTitle()),
+-      async ({ driver }: { driver: Driver }) => {
+-        await driver.navigate();
+-        const loginPage = new LoginPage(driver);
+-        await loginPage.checkPageIsLoaded();
+-        await loginPage.loginToHomepage();
+-        const homePage = new HomePage(driver);
+-        await homePage.checkPageIsLoaded();
+-
+-        const rawUrl = `https://link.metamask.io/card-onboarding`;
+-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+-
+-        // test signed flow
+-        await driver.openNewURL(signedUrl);
+-
+-        await driver.waitForUrl({
+-          url: `${BaseUrl.MetaMask}/card`,
+-        });
+-
+-        await driver.navigate();
+-        await homePage.checkPageIsLoaded();
+-
+-        // test unsigned flow
+-        await driver.openNewURL(rawUrl);
+-
+-        await driver.waitForUrl({
+-          url: `${BaseUrl.MetaMask}/card`,
+-        });
+-      },
+-    );
+-  });
+-
+-  it('handles /perps route redirect', async function () {
+-    await withFixtures(
+-      await getConfig(this.test?.fullTitle()),
+-      async ({ driver }: { driver: Driver }) => {
+-        await driver.navigate();
+-        const loginPage = new LoginPage(driver);
+-        await loginPage.checkPageIsLoaded();
+-        await loginPage.loginToHomepage();
+-        const homePage = new HomePage(driver);
+-        await homePage.checkPageIsLoaded();
+-
+-        const rawUrl = `https://link.metamask.io/perps`;
+-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+-
+-        // test signed flow
+-        await driver.openNewURL(signedUrl);
+-
+-        await driver.waitForUrl({ url: `${BaseUrl.MetaMask}/perps` });
+-
+-        await driver.navigate();
+-        await homePage.checkPageIsLoaded();
+-
+-        // test unsigned flow
+-        await driver.openNewURL(rawUrl);
+-
+-        await driver.waitForUrl({ url: `${BaseUrl.MetaMask}/perps` });
+-      },
+-    );
+-  });
+-
+-  it('handles /predict route redirect', async function () {
+-    await withFixtures(
+-      await getConfig(this.test?.fullTitle()),
+-      async ({ driver }: { driver: Driver }) => {
+-        await driver.navigate();
+-        const loginPage = new LoginPage(driver);
+-        await loginPage.checkPageIsLoaded();
+-        await loginPage.loginToHomepage();
+-        const homePage = new HomePage(driver);
+-        await homePage.checkPageIsLoaded();
+-
+-        const rawUrl = `https://link.metamask.io/predict`;
+-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+-
+-        // test signed flow
+-        await driver.openNewURL(signedUrl);
+-
+-        await driver.waitForUrl({
+-          url: `${BaseUrl.MetaMask}/prediction-markets`,
+-        });
+-
+-        await driver.navigate();
+-        await homePage.checkPageIsLoaded();
+-
+-        // test unsigned flow
+-        await driver.openNewURL(rawUrl);
+-
+-        await driver.waitForUrl({
+-          url: `${BaseUrl.MetaMask}/prediction-markets`,
+-        });
+-      },
+-    );
+-  });
+-
+-  // this test is skipped because the swap route does not work correctly in
+-  // the e2e environment. Once swaps/bridge flows are all fully migrated to the
+-  // route page this test can be re-enabled.
+-  // eslint-disable-next-line mocha/no-skipped-tests
+-  it.skip("passes params to the deep link's component", async function () {
+-    await withFixtures(
+-      await getConfig(this.test?.fullTitle()),
+-      async ({ driver }: { driver: Driver }) => {
+-        await driver.navigate();
+-        const loginPage = new LoginPage(driver);
+-        await loginPage.checkPageIsLoaded();
+-        await loginPage.loginToHomepage();
+-        const homePage = new HomePage(driver);
+-        await homePage.checkPageIsLoaded();
+-
+-        // params that are not related to the swap, and get filtered out
+-        // (may or not be processed by the deep link router, but we aren't
+-        // concerned with that in this test)
+-        const extraParams = {
+-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+-          // eslint-disable-next-line @typescript-eslint/naming-convention
+-          utm_medium: '123',
+-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+-          // eslint-disable-next-line @typescript-eslint/naming-convention
+-          attribution_id: '456',
+-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+-          // eslint-disable-next-line @typescript-eslint/naming-convention
+-          random_param: '789',
+-        };
+-        // these should all be forwarded to the swap page
+-        const swapsParams = {
+-          from: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+-          to: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+-          value: '0x38d7ea4c68000',
+-        };
+-        const params = new URLSearchParams({ ...extraParams, ...swapsParams });
+-        const rawUrl = `https://link.metamask.io/swap?${params.toString()}`;
+-
+-        // test signed flow
+-        await driver.openNewURL(rawUrl);
+-
+-        const deepLink = new DeepLink(driver);
+-        await deepLink.checkPageIsLoaded();
+-
+-        await deepLink.clickContinueButton();
+-        await new SwapPage(driver).checkPageIsLoaded();
+-
+-        const currentUrl = await driver.getCurrentUrl();
+-
+-        // the URL params is actually in the `hash`, e.g. #some/path?query=param
+-        const hash = new URL(currentUrl).hash.slice(1);
+-        const urlParams = new URLSearchParams(hash.split('?')[1]);
+-
+-        // ensure all of the params are all present in the URL
+-        assert.deepStrictEqual(
+-          Object.fromEntries(urlParams.entries()),
+-          swapsParams,
+-        );
+-      },
+-    );
+-  });
+-
+-  it('handles the skipDeepLinkInterstitial flag correctly', async function () {
+-    await withFixtures(
+-      await getConfig(this.test?.fullTitle()),
+-      async ({ driver }: { driver: Driver }) => {
+-        // This `skipDeepLinkInterstitial` test:
+-        // 1. checks the the option only applies for signed and verified links,
+-        // 2. the checkbox state is preserved,
+-        // 3. works as expected,
+-        // 4. and that it does not apply to unsigned links.
+-
+-        await driver.navigate();
+-        const loginPage = new LoginPage(driver);
+-        await loginPage.checkPageIsLoaded();
+-        await loginPage.loginToHomepage();
+-        const homePage = new HomePage(driver);
+-        await homePage.checkPageIsLoaded();
+-
+-        const rawUrl = `https://link.metamask.io/home`;
+-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+-        await driver.openNewURL(signedUrl);
+-        const internalDeepLinkUrl = await driver.getCurrentUrl();
+-        const deepLink = new DeepLink(driver);
+-        await deepLink.checkPageIsLoaded();
+-        const isChecked =
+-          await deepLink.getSkipDeepLinkInterstitialCheckBoxState();
+-        assert.equal(isChecked, false, 'checkbox should not be checked');
+-
+-        // check the checkbox
+-        await deepLink.setSkipDeepLinkInterstitialCheckBox(true);
+-
+-        // click continue
+-        await deepLink.clickContinueButton();
+-
+-        // make sure we're on the home page
+-        await homePage.checkPageIsLoaded();
+-
+-        // a nice in-between page to make testing more obvious
+-        await driver.openNewURL(TEST_PAGE);
+-
+-        // open the deep link again, it should go straight to the home page
+-        await driver.openNewURL(signedUrl);
+-        await homePage.checkPageIsLoaded();
+-
+-        // navigating to an unsigned page should NOT skip the interstitial
+-        await driver.openNewURL(rawUrl);
+-        await deepLink.checkPageIsLoaded();
+-
+-        // navigating to the internalDeepLinkUrl should display the interstitial
+-        // with the checkbox *already checked*
+-        await driver.openNewURL(internalDeepLinkUrl);
+-        await deepLink.checkPageIsLoaded();
+-        const isChecked2 =
+-          await deepLink.getSkipDeepLinkInterstitialCheckBoxState();
+-        assert.equal(isChecked2, true, 'checkbox should be checked');
+-
+-        // unchecking the checkbox should cause the interstitial to be shown
+-        // for signed links again
+-        await deepLink.setSkipDeepLinkInterstitialCheckBox(false);
+-        await deepLink.clickContinueButton();
+-
+-        // open the signed link again, it should show the interstitial
+-        await driver.openNewURL(signedUrl);
+-        await deepLink.checkPageIsLoaded();
+-      },
+-    );
+-  });
+-
+-  it("does not allow the loading screen over the deep link's component", async function () {
+-    await withFixtures(
+-      await getConfig(this.test?.fullTitle()),
+-      async ({
+-        driver,
+-        localNodes,
+-      }: {
+-        driver: Driver;
+-        localNodes: LocalNode[];
+-      }) => {
+-        await driver.navigate();
+-        // shut down all local nodes to ensure the network loading screen is needed
+-        await Promise.all(localNodes.map((node) => node.quit()));
+-
+-        const loginPage = new LoginPage(driver);
+-        await loginPage.checkPageIsLoaded();
+-        await loginPage.loginToHomepage();
+-        const homePage = new HomePage(driver);
+-        await homePage.checkPageIsLoaded();
+-
+-        const rawUrl = `https://link.metamask.io/home`;
+-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+-
+-        // test signed flow
+-        await driver.openNewURL(signedUrl);
+-        const deepLink = new DeepLink(driver);
+-        await deepLink.checkPageIsLoaded();
+-
+-        // make sure the loading overlays is not present
+-        await driver.assertElementNotPresent('.loading-overlay');
+-
+-        // make sure we can click the continue button
+-        await deepLink.clickContinueButton();
+-
+-        // make sure the home page has loaded!
+-        await homePage.checkPageIsLoaded();
+-      },
+-    );
+-  });
+-
+-  it('handles dapps that open MM via window.open', async function () {
+-    await withFixtures(
+-      await getConfig(this.test?.fullTitle()),
+-      async ({ driver }: { driver: Driver }) => {
+-        await driver.navigate();
+-        const loginPage = new LoginPage(driver);
+-        await loginPage.checkPageIsLoaded();
+-        await loginPage.loginToHomepage();
+-        const homePage = new HomePage(driver);
+-        await homePage.checkPageIsLoaded();
+-
+-        // use our dummy page to drive the new window
+-        await driver.openNewURL(TEST_PAGE);
+-
+-        const dappWindowHandle = await driver.driver.getWindowHandle();
+-        // simulate a dapp calling `window.open('https://link.metamask.io/home')`
+-        const windowOpened = await driver.executeScript(
+-          `
+-          globalThis.testWindow = window.open('https://link.metamask.io/home', '_blank');
+-          return globalThis.testWindow != null;
+-          `,
+-        );
+-        assert.strictEqual(windowOpened, true, 'window.open failed');
+-
+-        driver.delay(1000); // give the window a second to open
+-
+-        await driver.switchToWindowWithTitle(
+-          WINDOW_TITLES.ExtensionInFullScreenView,
+-        );
+-
+-        const metamaskWindowHandle = await driver.driver.getWindowHandle();
+-
+-        // wait for the homepage to load in this new window
+-        const deepLink = new DeepLink(driver);
+-        await deepLink.checkPageIsLoaded();
+-        const initialUrlStr = await driver.getCurrentUrl();
+-        const initialUrl = new URL(initialUrlStr);
+-        assert.equal(initialUrl.pathname, `/home.html`);
+-        assert.equal(initialUrl.hash, '#link?u=%2Fhome');
+-        assert.equal(initialUrl.search, '');
+-
+-        await driver.switchToWindow(dappWindowHandle);
+-
+-        const hackUrl = new URL(initialUrl);
+-        hackUrl.hash = '#notifications';
+-        // if we are testing Firefox, make sure `testWindow` is unset, FF
+-        // doesn't allow cross-origin access to the extension's window by
+-        // default
+-        if (isFirefox) {
+-          // globalThis.testWindow is unset in Firefox. Neat!
+-          await driver.executeScript(`return globalThis.testWindow == null;`);
+-        } else {
+-          // on chrome, the location change is ignored due to the
+-          // `cross_origin_opener_policy` set in the manifest.json
+-          await driver.executeScript(
+-            `globalThis.testWindow.location.href = ${JSON.stringify(hackUrl)};`,
+-          );
+-        }
+-
+-        // go back to the Metamask window.
+-        await driver.switchToWindow(metamaskWindowHandle);
+-
+-        const finalUrlStr = await driver.getCurrentUrl();
+-        assert.equal(finalUrlStr, initialUrlStr);
+-      },
+-    );
+-  });
+-
+-  it('signed with sig_params only exposes foo (both) and bar, not baz', async function () {
+-    await withFixtures(
+-      await getConfig(this.test?.fullTitle()),
+-      async ({ driver }: { driver: Driver }) => {
+-        await driver.navigate();
+-        const loginPage = new LoginPage(driver);
+-        await loginPage.checkPageIsLoaded();
+-        await loginPage.loginToHomepage();
+-        const homePage = new HomePage(driver);
+-        await homePage.checkPageIsLoaded();
+-
+-        const rawUrl = 'https://link.metamask.io/test?foo=0&foo=1&bar=2';
+-        const signedUrl = `${await signDeepLink(keyPair.privateKey, rawUrl)}&baz=3`;
+-
+-        await driver.openNewURL(signedUrl);
+-        const deepLink = new DeepLink(driver);
+-        await deepLink.checkPageIsLoaded();
+-        await deepLink.clickContinueButton();
+-        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
+-
+-        assert.deepStrictEqual(hashParams.getAll('foo'), ['0', '1']);
+-        assert.deepStrictEqual(hashParams.getAll('bar'), ['2']);
+-        assert.equal(hashParams.has('baz'), false);
+-      },
+-    );
+-  });
+-
+-  it('signed with empty sig_params, but url has extra params added, does not expose extra params', async function () {
+-    await withFixtures(
+-      await getConfig(this.test?.fullTitle()),
+-      async ({ driver }: { driver: Driver }) => {
+-        await driver.navigate();
+-        const loginPage = new LoginPage(driver);
+-        await loginPage.checkPageIsLoaded();
+-        await loginPage.loginToHomepage();
+-        const homePage = new HomePage(driver);
+-        await homePage.checkPageIsLoaded();
+-
+-        const rawUrl = 'https://link.metamask.io/test';
+-        const signedUrl = `${await signDeepLink(keyPair.privateKey, rawUrl)}&foo=0&foo=1&bar=2&baz=3`;
+-
+-        await driver.openNewURL(signedUrl);
+-        const deepLink = new DeepLink(driver);
+-        await deepLink.checkPageIsLoaded();
+-        await deepLink.clickContinueButton();
+-        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
+-
+-        assert.deepStrictEqual(hashParams.size, 0);
+-      },
+-    );
+-  });
+-
+-  it('signed with sig_params, url has no extra params added, works', async function () {
+-    await withFixtures(
+-      await getConfig(this.test?.fullTitle()),
+-      async ({ driver }: { driver: Driver }) => {
+-        await driver.navigate();
+-        const loginPage = new LoginPage(driver);
+-        await loginPage.checkPageIsLoaded();
+-        await loginPage.loginToHomepage();
+-        const homePage = new HomePage(driver);
+-        await homePage.checkPageIsLoaded();
+-
+-        const rawUrl = 'https://link.metamask.io/test';
+-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+-
+-        await driver.openNewURL(signedUrl);
+-        const deepLink = new DeepLink(driver);
+-        await deepLink.checkPageIsLoaded();
+-        await deepLink.clickContinueButton();
+-        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
+-
+-        assert.deepStrictEqual(hashParams.size, 0);
+-      },
+-    );
+-  });
+-
+-  it('signed without sig_params exposes all params (foo, bar, baz)', async function () {
+-    await withFixtures(
+-      await getConfig(this.test?.fullTitle()),
+-      async ({ driver }: { driver: Driver }) => {
+-        await driver.navigate();
+-        const loginPage = new LoginPage(driver);
+-        await loginPage.checkPageIsLoaded();
+-        await loginPage.loginToHomepage();
+-        const homePage = new HomePage(driver);
+-        await homePage.checkPageIsLoaded();
+-
+-        const rawUrl = 'https://link.metamask.io/test?foo=1&bar=2&baz=3';
+-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl, false);
+-
+-        await driver.openNewURL(signedUrl);
+-        const deepLink = new DeepLink(driver);
+-        await deepLink.checkPageIsLoaded();
+-        await deepLink.clickContinueButton();
+-        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
+-
+-        assert.deepStrictEqual(hashParams.getAll('foo'), ['1']);
+-        assert.deepStrictEqual(hashParams.getAll('bar'), ['2']);
+-        assert.deepStrictEqual(hashParams.getAll('baz'), ['3']);
+-      },
+-    );
+-  });
+-
+-  it('unsigned flow exposes all params including duplicate values', async function () {
+-    await withFixtures(
+-      await getConfig(this.test?.fullTitle()),
+-      async ({ driver }: { driver: Driver }) => {
+-        await driver.navigate();
+-        const loginPage = new LoginPage(driver);
+-        await loginPage.checkPageIsLoaded();
+-        await loginPage.loginToHomepage();
+-        const homePage = new HomePage(driver);
+-        await homePage.checkPageIsLoaded();
+-
+-        const rawUrl = 'https://link.metamask.io/test?foo=1&foo=2&bar=3';
+-
+-        await driver.openNewURL(rawUrl);
+-        const deepLink = new DeepLink(driver);
+-        await deepLink.checkPageIsLoaded();
+-        await deepLink.clickContinueButton();
+-        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
+-
+-        assert.deepStrictEqual(hashParams.getAll('foo'), ['1', '2']);
+-        assert.deepStrictEqual(hashParams.getAll('bar'), ['3']);
+-      },
+-    );
+-  });
+-});
+diff --git a/test/e2e/tests/deep-link/helpers.ts b/test/e2e/tests/deep-link/helpers.ts
+index e6b6edd0ea..9addfb9a3c 100644
+--- a/test/e2e/tests/deep-link/helpers.ts
++++ b/test/e2e/tests/deep-link/helpers.ts
+@@ -1,8 +1,12 @@
++import type { Mockttp } from 'mockttp';
+ import { canonicalize } from '../../../../shared/lib/deep-links/canonicalize';
+ import {
+   SIG_PARAM,
+   SIG_PARAMS_PARAM,
+ } from '../../../../shared/lib/deep-links/constants';
++import { emptyHtmlPage } from '../../mock-e2e';
++import FixtureBuilder from '../../fixtures/fixture-builder';
++import { BaseUrl } from '../../../../shared/constants/urls';
+ 
+ /**
+  * Generates an ECDSA key pair for signing deep links for testing purposes.
+@@ -93,6 +97,228 @@ export function cartesianProduct<T extends unknown[][]>(...sets: T) {
+   }[];
+ }
+ 
++export type DeepLinkScenario = {
++  locked: 'locked' | 'unlocked';
++  signed: 'signed with sig_params' | 'signed without sig_params' | 'unsigned';
++  route: string;
++  action: 'continue';
++};
++
++/**
++ * Generates test scenarios for the given routes by creating a cartesian product
++ * of lock states, signing methods, routes, and actions.
++ *
++ * @param routes - The routes to generate scenarios for.
++ * @returns An array of scenario objects with `locked`, `signed`, `route`, and
++ * `action` properties.
++ */
++export function generateScenariosForRoutes(
++  routes: readonly string[],
++): DeepLinkScenario[] {
++  return cartesianProduct(
++    ['locked', 'unlocked'] as const,
++    [
++      'signed with sig_params',
++      'signed without sig_params',
++      'unsigned',
++    ] as const,
++    [...routes],
++    ['continue'] as const,
++  ).map(([locked, signed, route, action]) => {
++    return {
++      locked,
++      signed,
++      route,
++      action,
++    } as DeepLinkScenario;
++  });
++}
++
++const TEST_PAGE = 'https://doesntexist.test/';
++
++/**
++ * Options for navigating to a deep link.
++ */
++export type DeepLinkNavigationOptions = {
++  /** The route path to navigate to (e.g., '/home', '/swap') */
++  route: string;
++  /** Whether the link should be signed */
++  signed: 'signed with sig_params' | 'signed without sig_params' | 'unsigned';
++  /** The private key to use for signing (required if signed) */
++  privateKey?: CryptoKey;
++};
++
++/**
++ * Configuration options for deep link tests.
++ */
++export type DeepLinkTestConfigOptions = {
++  /** Title of the test for debugging and logging */
++  title?: string;
++  /** Public key for deep link verification */
++  deepLinkPublicKey?: string;
++  /** Additional manifest flags to merge */
++  manifestFlags?: Record<string, unknown>;
++  /** Additional test-specific mocks to add */
++  additionalMocks?: (server: Mockttp) => Promise<void>;
++};
++
++/**
++ * Mocks the deep link domain and test page.
++ * This is the common mock setup used across all deep link tests.
++ *
++ * @param server - The Mockttp server instance.
++ */
++export const mockDeepLinkPages = async (server: Mockttp): Promise<void> => {
++  await server
++    .forGet(/^https?:\/\/link\.metamask\.io\/.*$/u)
++    .thenCallback(() => {
++      return {
++        statusCode: 200,
++        body: emptyHtmlPage(),
++        headers: {
++          'Content-Type': 'text/html; charset=utf-8',
++        },
++      };
++    });
++  await server.forGet(TEST_PAGE).thenCallback(() => {
++    return {
++      statusCode: 200,
++      body: emptyHtmlPage(),
++      headers: {
++        'Content-Type': 'text/html; charset=utf-8',
++      },
++    };
++  });
++};
++
++/**
++ * Generates the configuration for deep link tests, including fixtures,
++ * manifest flags, and test-specific mocking.
++ *
++ * @param options - Configuration options for the deep link test.
++ * @returns The test configuration object for use with withFixtures.
++ */
++export const getConfig = async (options: DeepLinkTestConfigOptions = {}) => {
++  const {
++    title,
++    deepLinkPublicKey,
++    manifestFlags = {},
++    additionalMocks,
++  } = options;
++
++  return {
++    fixtures: new FixtureBuilder().build(),
++    title,
++    manifestFlags: {
++      testing: {
++        deepLinkPublicKey,
++        ...((manifestFlags.testing as Record<string, unknown>) ?? {}),
++      },
++      ...Object.fromEntries(
++        Object.entries(manifestFlags).filter(([key]) => key !== 'testing'),
++      ),
++    },
++    testSpecificMock: async (server: Mockttp) => {
++      await mockDeepLinkPages(server);
++
++      if (additionalMocks) {
++        await additionalMocks(server);
++      }
++    },
++  };
++};
++
++/**
++ * Prepares a deep link URL by optionally signing it based on the provided options.
++ *
++ * @param options - Navigation options including route, signing preference, and private key.
++ * @returns The prepared URL string (signed or unsigned).
++ */
++export const prepareDeepLinkUrl = async (
++  options: DeepLinkNavigationOptions,
++): Promise<string> => {
++  const { route, signed, privateKey } = options;
++
++  const isSigned =
++    signed === 'signed with sig_params' ||
++    signed === 'signed without sig_params';
++  const withSigParams = signed === 'signed with sig_params';
++
++  const rawUrl = `https://link.metamask.io${route}`;
++
++  if (isSigned) {
++    if (!privateKey) {
++      throw new Error('privateKey is required for signed deep links');
++    }
++    return await signDeepLink(privateKey, rawUrl, withSigParams);
++  }
++
++  return rawUrl;
++};
++
++/**
++ * Checks if the deep link interstitial should render the skip checkbox
++ * based on the signing status.
++ *
++ * @param signed - The signing status of the deep link.
++ * @returns True if the checkbox should be rendered, false otherwise.
++ */
++export const shouldRenderCheckbox = (
++  signed: DeepLinkNavigationOptions['signed'],
++): boolean => {
++  return (
++    signed === 'signed with sig_params' ||
++    signed === 'signed without sig_params'
++  );
++};
++
++/**
++ * Mocks the rewards API endpoints for testing.
++ *
++ * @param server - The Mockttp server instance.
++ */
++export const mockRewardsApi = async (server: Mockttp): Promise<void> => {
++  await server
++    .forPost('https://rewards.uat-api.cx.metamask.io/public/rewards/ois')
++    .thenJson(200, {
++      ois: [true],
++      sids: ['019b2245-9533-7739-a89c-b4c839a3d53a'],
++    });
++
++  await server
++    .forPost('https://rewards.uat-api.cx.metamask.io/auth/mobile-login')
++    .thenJson(200, {
++      sessionId: 'yErC0OBAAh9BlS7frZYkjGz6RVyoo4p3R6nz3THmQlc=',
++      accessToken: 'yErC0OBAAh9BlS7frZYkjGz6RVyoo4p3R6nz3THmQlc=',
++      subscription: {
++        id: '019b2245-9533-7739-a89c-b4c839a3d53a',
++        createdAt: '2025-12-15T13:49:04.180Z',
++        updatedAt: '2025-12-15T13:49:04.180Z',
++        referralCode: '4DFZV9',
++        accounts: [
++          {
++            id: 4338,
++            address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
++            blockchain: 1,
++            subscriptionId: '019b2245-9533-7739-a89c-b4c839a3d53a',
++            createdAt: '2025-12-15T13:49:04.180Z',
++            updatedAt: '2025-12-15T13:49:04.180Z',
++          },
++        ],
++      },
++    });
++};
++
++export const REDIRECT_ROUTES = [
++  { route: '/buy', expectedUrl: `${BaseUrl.Portfolio}/buy` },
++  { route: '/card-onboarding', expectedUrl: `${BaseUrl.MetaMask}/card` },
++  { route: '/perps', expectedUrl: `${BaseUrl.MetaMask}/perps` },
++  {
++    route: '/predict',
++    expectedUrl: `${BaseUrl.MetaMask}/prediction-markets`,
++  },
++] as const;
++
+ export function getHashParams(url: URL) {
+   const hash = url.hash.slice(1); // remove leading '#'
+   const hashQuery = hash.split('?')[1] ?? '';
