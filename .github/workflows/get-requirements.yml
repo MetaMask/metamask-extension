@@ -40,7 +40,7 @@ env:
   RUN_ID: ${{ github.run_id }}
   IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
   EVENT_NAME: ${{ github.event_name }}
-  PR_NUMBER: ${{ github.event.pull_request.number }}
+  PR_NUMBER: 40260 # ${{ github.event.pull_request.number }}
 
 jobs:
   detect-changes:
@@ -129,7 +129,7 @@ jobs:
       # If the only change is in package.json, and the only line changed is "version", then we can skip everything
       - name: Compute set-just-package-json-version
         id: set-just-package-json-version
-        if: ${{ env.EVENT_NAME == 'pull_request' && steps.filter.outputs.package_json_count == '1' && steps.filter.outputs.all_changes_count == '1' }}
+        # if: ${{ env.EVENT_NAME == 'pull_request' && steps.filter.outputs.package_json_count == '1' && steps.filter.outputs.all_changes_count == '1' }}
         run: |
           # At this point we already know the *only* changed file is package.json.
           # Emit true only if the diff is exactly a single "version" line replacement.
