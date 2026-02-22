@@ -41,6 +41,7 @@ env:
   IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
   EVENT_NAME: ${{ github.event_name }}
   PR_NUMBER: 40260 # ${{ github.event.pull_request.number }}
+  GH_TOKEN: ${{ github.token }}
 
 jobs:
   detect-changes:
@@ -127,19 +128,21 @@ jobs:
         run: echo "just-repository-health-checks=true" >> "$GITHUB_OUTPUT"
 
       # If the only change is in package.json, and the only line changed is "version", then we can skip everything
-      - name: Compute set-just-package-json-version
+      - name: Compute just-package-json-version flag
         id: set-just-package-json-version
         # if: ${{ env.EVENT_NAME == 'pull_request' && steps.filter.outputs.package_json_count == '1' && steps.filter.outputs.all_changes_count == '1' }}
         run: |
           # At this point we already know the *only* changed file is package.json.
           # Emit true only if the diff is exactly a single "version" line replacement.
-          DIFF="$(GH_PAGER=cat gh pr diff "${PR_NUMBER}" -- package.json || true)"
+          export GH_PAGER=cat
+          DIFF="$(gh pr diff "${PR_NUMBER}" || true)"
           CHANGES="$(printf '%s\n' "$DIFF" | grep -E '^[+-]' | grep -vE '^(\+\+\+|---)' || true)"
           CHANGES_COUNT="$(printf '%s\n' "$CHANGES" | sed '/^$/d' | wc -l | tr -d ' ')"
 
           if [[ "$CHANGES_COUNT" == '2' ]] && \
              printf '%s\n' "$CHANGES" | grep -Eq '^-[[:space:]]*"version"[[:space:]]*:' && \
              printf '%s\n' "$CHANGES" | grep -Eq '^\+[[:space:]]*"version"[[:space:]]*:'; then
+            echo "The only change is in package.json, and the only line changed is 'version'."
             echo "just-package-json-version=true" >> "$GITHUB_OUTPUT"
           fi
 
