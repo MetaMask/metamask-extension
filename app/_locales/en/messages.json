@@ -6195,6 +6195,9 @@
   "revealSecretRecoveryPhrase": {
     "message": "Back up Secret Recovery Phrase"
   },
+  "revealSecretRecoveryPhraseSettings": {
+    "message": "Reveal Secret Recovery Phrase"
+  },
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
   },
@@ -6457,9 +6460,6 @@
   },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
-  },
-  "revealSecretRecoveryPhraseSettings": {
-    "message": "Reveal Secret Recovery Phrase"
   },
   "secretRecoveryPhrasePlusNumber": {
     "message": "Secret Recovery Phrase $1",
