@@ -100,6 +100,8 @@ jobs:
         with:
           filters: .github/filter-rules.yml
           list-files: shell
+          base: 'release/13.20.0'
+          ref: 'release-changelog/13.20.0'
 
       # This puts the workflow in locales-only mode, with skip-everything=true and needs-locales=true
       - name: Compute needs-locales flag
