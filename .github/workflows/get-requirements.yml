@@ -146,13 +146,13 @@ jobs:
       # skip-everything is a shortcut for up-to-date == 'true' || needs-locales == 'true' || just-repository-health-checks = 'true' || just-package-json-version == 'true'
       - name: Compute skip-everything flag
         id: set-skip-everything
-        if: |
-          ${{ env.IS_RUN_EVERYTHING_BRANCH == 'false' && (
+        if: >-
+          env.IS_RUN_EVERYTHING_BRANCH == 'false' && (
             steps.check-skip-merge-queue.outputs.up-to-date == 'true' ||
             steps.set-needs-locales.outputs.needs-locales == 'true' ||
             steps.set-just-repository-health-checks.outputs.just-repository-health-checks == 'true' ||
             steps.set-just-package-json-version.outputs.just-package-json-version == 'true'
-          ) }}
+          )
         run: echo "skip-everything=true" >> "$GITHUB_OUTPUT"
 
       # This is very simple right now (and equivalent to !skip-everything)
