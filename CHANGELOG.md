@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Uncategorized
 
+- chore: sync stable into release/13.20.0 (#40295)
 - Bump assets-controllers to v99.4.0 (#40227)
 - Bump assets-controller:2.0.0 (#40087)
 - Remove pinned swap token from asset picker (#40211)
