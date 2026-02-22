@@ -132,7 +132,6 @@ async function buildUiStartupSection(
       hostUrl,
       Object.values(INTERACTION_PRESETS),
       '👆 Interaction Benchmarks',
-      'Action',
     ),
   );
 
@@ -150,7 +149,6 @@ async function buildUiStartupSection(
         hostUrl,
         Object.values(USER_JOURNEY_PRESETS),
         '🧭 User Journey Benchmarks',
-        'Benchmark',
       ),
   );
 

@@ -345,13 +345,11 @@ function wrapInDetailsTable(
  *
  * @param entries - Parsed benchmark entries.
  * @param summary - The collapsible header text (e.g. '👆 Interaction Benchmarks').
- * @param firstColumn - Label for the first column (e.g. 'Action', 'Benchmark').
  * @returns HTML string or empty string if no data.
  */
 export function buildBenchmarkSection(
   entries: BenchmarkEntry[],
   summary: string,
-  firstColumn: string,
 ): string {
   if (entries.length === 0) {
     return '';
@@ -360,7 +358,7 @@ export function buildBenchmarkSection(
   return wrapInDetailsTable(
     summary,
     [
-      firstColumn,
+      'Benchmark',
       'Metric',
       'Mean (ms)',
       'Std Dev (ms)',
@@ -424,14 +422,12 @@ export function extractEntries(
  * @param hostUrl - Base URL for CI artifacts.
  * @param presets - Preset names to fetch (e.g. INTERACTION_PRESETS, USER_JOURNEY_PRESETS).
  * @param summary - Collapsible header text (e.g. '👆 Interaction Benchmarks').
- * @param firstColumn - Label for the first table column (e.g. 'Action', 'Benchmark').
  * @returns HTML string for the collapsible section, or empty string if no data.
  */
 export async function buildBenchmarkSectionComment(
   hostUrl: string,
   presets: string[],
   summary: string,
-  firstColumn: string,
 ): Promise<string> {
   const allEntries: BenchmarkEntry[] = [];
 
@@ -447,7 +443,7 @@ export async function buildBenchmarkSectionComment(
     }
   }
 
-  return buildBenchmarkSection(allEntries, summary, firstColumn);
+  return buildBenchmarkSection(allEntries, summary);
 }
 
 /**
@@ -565,9 +561,17 @@ export function buildPageLoadTable(
     return '';
   }
 
-  const headers = ['Build', 'Metric'];
+  const MEASURE_LABELS: Record<string, string> = {
+    mean: 'Mean',
+    min: 'Min',
+    max: 'Max',
+    stdDev: 'Std Dev',
+    p75: 'P75',
+    p95: 'P95',
+  };
+  const headers = ['Benchmark', 'Metric'];
   for (const measure of measures) {
-    headers.push(`${startCase(measure)} (ms)`);
+    headers.push(`${MEASURE_LABELS[measure] ?? startCase(measure)} (ms)`);
   }
   const tableHeader = `<thead><tr>${headers
     .map((h) => `<th>${h}</th>`)

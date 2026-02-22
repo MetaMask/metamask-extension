@@ -219,11 +219,7 @@ describe('buildBenchmarkSection', () => {
     const entries = extractEntries(mockUserActionsJson);
 
     it('wraps rows in a collapsible details section', () => {
-      const html = buildBenchmarkSection(
-        entries,
-        '👆 Interaction Benchmarks',
-        'Action',
-      );
+      const html = buildBenchmarkSection(entries, '👆 Interaction Benchmarks');
 
       expect(html).toContain('<details>');
       expect(html).toContain('👆 Interaction Benchmarks');
@@ -232,13 +228,9 @@ describe('buildBenchmarkSection', () => {
     });
 
     it('includes correct column headers', () => {
-      const html = buildBenchmarkSection(
-        entries,
-        '👆 Interaction Benchmarks',
-        'Action',
-      );
+      const html = buildBenchmarkSection(entries, '👆 Interaction Benchmarks');
 
-      expect(html).toContain('<th>Action</th>');
+      expect(html).toContain('<th>Benchmark</th>');
       expect(html).toContain('<th>Metric</th>');
       expect(html).toContain('<th>Mean (ms)</th>');
       expect(html).toContain('<th>Std Dev (ms)</th>');
@@ -247,9 +239,7 @@ describe('buildBenchmarkSection', () => {
     });
 
     it('returns empty string when no data', () => {
-      expect(
-        buildBenchmarkSection([], '👆 Interaction Benchmarks', 'Action'),
-      ).toBe('');
+      expect(buildBenchmarkSection([], '👆 Interaction Benchmarks')).toBe('');
     });
   });
 
@@ -260,11 +250,7 @@ describe('buildBenchmarkSection', () => {
     ];
 
     it('wraps rows in a collapsible details section', () => {
-      const html = buildBenchmarkSection(
-        entries,
-        '🧭 User Journey Benchmarks',
-        'Benchmark',
-      );
+      const html = buildBenchmarkSection(entries, '🧭 User Journey Benchmarks');
 
       expect(html).toContain('<details>');
       expect(html).toContain('🧭 User Journey Benchmarks');
@@ -273,11 +259,7 @@ describe('buildBenchmarkSection', () => {
     });
 
     it('includes correct column headers', () => {
-      const html = buildBenchmarkSection(
-        entries,
-        '🧭 User Journey Benchmarks',
-        'Benchmark',
-      );
+      const html = buildBenchmarkSection(entries, '🧭 User Journey Benchmarks');
 
       expect(html).toContain('<th>Benchmark</th>');
       expect(html).toContain('<th>Metric</th>');
@@ -285,20 +267,14 @@ describe('buildBenchmarkSection', () => {
     });
 
     it('includes entries from all presets', () => {
-      const html = buildBenchmarkSection(
-        entries,
-        '🧭 User Journey Benchmarks',
-        'Benchmark',
-      );
+      const html = buildBenchmarkSection(entries, '🧭 User Journey Benchmarks');
 
       expect(html).toContain('Onboarding Import Wallet');
       expect(html).toContain('Asset Details');
     });
 
     it('returns empty string when no data', () => {
-      expect(
-        buildBenchmarkSection([], '🧭 User Journey Benchmarks', 'Benchmark'),
-      ).toBe('');
+      expect(buildBenchmarkSection([], '🧭 User Journey Benchmarks')).toBe('');
     });
   });
 });
