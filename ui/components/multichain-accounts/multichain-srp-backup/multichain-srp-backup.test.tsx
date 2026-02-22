@@ -37,9 +37,7 @@ describe('MultichainSrpBackup', () => {
   it('renders with default props', () => {
     renderComponent();
 
-    expect(
-      screen.getByText('Reveal Secret Recovery Phrase'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Secret Recovery Phrase')).toBeInTheDocument();
     expect(screen.getByText('Reveal')).toBeInTheDocument();
 
     const buttonElement = screen.getByTestId(srpBackupRowTestId);
