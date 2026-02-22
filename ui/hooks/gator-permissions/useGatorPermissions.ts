@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { GatorPermissionsMap } from '@metamask/gator-permissions-controller';
 import { fetchAndUpdateGatorPermissions } from '../../store/controller-actions/gator-permissions-controller';
 import {
   getGatorPermissionsMap,
   AppState,
+  type GatorPermissionsMap,
 } from '../../selectors/gator-permissions/gator-permissions';
 
 export type UseGatorPermissionsOptions = {
