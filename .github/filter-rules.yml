@@ -60,3 +60,7 @@ locales:
 # To inform just-repository-health-checks
 repository_health_checks_related:
   - 'CHANGELOG.md'
+
+# To inform just-package-json-version
+package_json:
+  - 'package.json'
