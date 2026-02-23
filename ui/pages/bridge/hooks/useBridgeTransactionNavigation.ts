@@ -79,8 +79,20 @@ export function useBridgeTransactionNavigation(): void {
     return historyItem?.approvalTxId !== undefined && !hasSubmittedBridgeTx;
   }, [historyItem, hasSubmittedBridgeTx]);
 
+  // Navigate to activity tab with consistent options
+  const navigateToActivity = useCallback(() => {
+    navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+      replace: true,
+      state: { stayOnHomePage: true },
+    });
+  }, [navigate]);
+
   // Track state transitions and detect navigation scenarios
   useEffect(() => {
+    // Read previous QR scan request BEFORE updating the ref
+    // This ensures we can detect transitions (e.g., active -> cleared)
+    const prevQrScanRequest = prevQrScanRequestRef.current;
+
     // Track if we've seen a requestId (indicates transaction was initiated)
     if (requestId) {
       hasSeenRequestIdRef.current = true;
@@ -101,30 +113,20 @@ export function useBridgeTransactionNavigation(): void {
       hasSeenQrScanActiveRef.current = true;
     }
 
-    prevQrScanRequestRef.current = activeQrCodeScanRequest;
-  }, [requestId, activeQuote, activeQrCodeScanRequest]);
-
-  // Navigate to activity tab with consistent options
-  const navigateToActivity = useCallback(() => {
-    navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-      replace: true,
-      state: { stayOnHomePage: true },
-    });
-  }, [navigate]);
-
-  // Navigate away when transaction completes (success or cancellation/failure)
-  useEffect(() => {
     // Success: Transaction is in bridge history
     if (hasSubmittedBridgeTx) {
       navigateToActivity();
+      // Update ref after navigation check
+      prevQrScanRequestRef.current = activeQrCodeScanRequest;
       return;
     }
 
     // Detect cancellation/failure scenarios:
     // 1. QR scan cancellation: QR scan was active, then cleared (null or undefined), and no activeQuote
     //    (handles popup-initiated cancellations where activeQuote gets cleared)
+    //    Note: We read prevQrScanRequest BEFORE updating the ref to detect transitions
     const qrScanWasCancelled = Boolean(
-      wasQrScanActive(prevQrScanRequestRef.current) &&
+      wasQrScanActive(prevQrScanRequest) &&
         isQrScanCleared(activeQrCodeScanRequest) &&
         requestId &&
         !activeQuote,
@@ -168,6 +170,9 @@ export function useBridgeTransactionNavigation(): void {
     if (isBetweenApprovalAndBridgeSteps) {
       // Wait for bridge transaction to be submitted
     }
+
+    // Update ref AFTER all checks to preserve previous value for next render
+    prevQrScanRequestRef.current = activeQrCodeScanRequest;
   }, [
     hasSubmittedBridgeTx,
     activeQrCodeScanRequest,
