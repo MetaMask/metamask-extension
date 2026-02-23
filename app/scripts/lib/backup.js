@@ -18,14 +18,9 @@ export default class Backup {
   }
 
   async restoreUserData(jsonString) {
-    const existingPreferences = this.preferencesController.state;
     const { preferences, addressBook, network, internalAccounts } =
       JSON.parse(jsonString);
     if (preferences) {
-      preferences.identities = existingPreferences.identities;
-      preferences.lostIdentities = existingPreferences.lostIdentities;
-      preferences.selectedAddress = existingPreferences.selectedAddress;
-
       this.preferencesController.update(preferences);
     }
 
@@ -61,13 +56,6 @@ export default class Backup {
           this.networkController.state.networkConfigurationsByChainId,
       },
     };
-
-    /**
-     * We can remove these properties since we will won't be restoring identities from backup
-     */
-    delete userData.preferences.identities;
-    delete userData.preferences.lostIdentities;
-    delete userData.preferences.selectedAddress;
 
     const result = JSON.stringify(userData);
 

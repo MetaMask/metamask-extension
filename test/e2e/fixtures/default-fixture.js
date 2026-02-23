@@ -230,17 +230,9 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         overrideContentSecurityPolicyHeader: true,
         featureFlags: {},
         forgottenPassword: false,
-        identities: {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-            lastSelected: 1665507600000,
-            name: 'Account 1',
-          },
-        },
         ipfsGateway: 'dweb.link',
         knownMethodData: {},
         ledgerTransportType: 'webhid',
-        lostIdentities: {},
         openSeaEnabled: false,
         preferences: {
           defaultAddressScope: 'eip155',
@@ -263,7 +255,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           tokenNetworkFilter: {},
           avatarType: 'maskicon',
         },
-        selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',
         useBlockie: false,
         useNftDetection: false,

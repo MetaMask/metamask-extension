@@ -189,7 +189,7 @@ describe('Multichain API', function () {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
               .withNetworkControllerTripleNode()
-              .withPreferencesControllerAdditionalAccountIdentities()
+              .withPreferencesController()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
@@ -311,7 +311,7 @@ describe('Multichain API', function () {
                   '0x539': true,
                 },
               })
-              .withPreferencesControllerAdditionalAccountIdentities()
+              .withPreferencesController()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },

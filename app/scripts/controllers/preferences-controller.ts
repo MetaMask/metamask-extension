@@ -35,12 +35,6 @@ export enum ReferralStatus {
   Declined = 'declined',
 }
 
-type AccountIdentityEntry = {
-  address: string;
-  name: string;
-  lastSelected?: number;
-};
-
 const controllerName = 'PreferencesController';
 
 /**
@@ -139,6 +133,9 @@ export type PreferencesControllerState = Omit<
   | 'smartAccountOptInForAccounts'
   | 'showIncomingTransactions'
   | 'tokenNetworkFilter'
+  | 'identities'
+  | 'lostIdentities'
+  | 'selectedAddress'
 > & {
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
@@ -188,7 +185,6 @@ export const getDefaultPreferencesControllerState =
     enableMV3TimestampSave: true,
     featureFlags: {},
     forgottenPassword: false,
-    identities: {},
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
     isIpfsGatewayEnabled: true,
@@ -198,7 +194,6 @@ export const getDefaultPreferencesControllerState =
     ledgerTransportType: window.navigator.hid
       ? LedgerTransportTypes.webhid
       : LedgerTransportTypes.u2f,
-    lostIdentities: {},
     manageInstitutionalWallets: false,
     openSeaEnabled: true,
     overrideContentSecurityPolicyHeader: true,
@@ -231,7 +226,6 @@ export const getDefaultPreferencesControllerState =
       useSidePanelAsDefault: false,
     },
     securityAlertsEnabled: true,
-    selectedAddress: '',
     snapRegistryList: {},
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     snapsAddSnapAccountModalDismissed: false,
@@ -313,12 +307,6 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
-  identities: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: false,
-    usedInUi: true,
-  },
   ipfsGateway: {
     includeInStateLogs: true,
     persist: true,
@@ -341,12 +329,6 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  lostIdentities: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   manageInstitutionalWallets: {
@@ -374,12 +356,6 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     usedInUi: true,
   },
   securityAlertsEnabled: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: false,
-    usedInUi: true,
-  },
-  selectedAddress: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: false,
@@ -541,11 +517,6 @@ export class PreferencesController extends BaseController<
       name: controllerName,
       state: mergedState,
     });
-
-    this.messenger.subscribe(
-      'AccountsController:stateChange',
-      this.#handleAccountsControllerSync.bind(this),
-    );
 
     globalThis.setPreference = (key: keyof Preferences, value: boolean) => {
       return this.setFeatureFlag(key, value);
@@ -1067,49 +1038,6 @@ export class PreferencesController extends BaseController<
       },
     };
     this.update(() => resetState);
-  }
-
-  #handleAccountsControllerSync(
-    newAccountsControllerState: AccountsControllerState,
-  ): void {
-    const { accounts, selectedAccount: selectedAccountId } =
-      newAccountsControllerState.internalAccounts;
-    const selectedAccount = accounts[selectedAccountId];
-
-    const { identities, lostIdentities } = this.state;
-
-    const addresses = Object.values(accounts).map((account) =>
-      account.address.toLowerCase(),
-    );
-
-    const updatedLostIdentities = Object.keys(identities).reduce(
-      (acc, identity) => {
-        if (addresses.includes(identity.toLowerCase())) {
-          acc[identity] = identities[identity];
-        }
-        return acc;
-      },
-      { ...lostIdentities },
-    );
-
-    const updatedIdentities = Object.values(accounts).reduce(
-      (identitiesMap: Record<string, AccountIdentityEntry>, account) => {
-        identitiesMap[account.address] = {
-          address: account.address,
-          name: account.metadata.name,
-          lastSelected: account.metadata.lastSelected,
-        };
-
-        return identitiesMap;
-      },
-      {},
-    );
-
-    this.update((state) => {
-      state.identities = updatedIdentities;
-      state.lostIdentities = updatedLostIdentities;
-      state.selectedAddress = selectedAccount?.address || ''; // it will be an empty string during onboarding
-    });
   }
 
   // Defi Referral methods

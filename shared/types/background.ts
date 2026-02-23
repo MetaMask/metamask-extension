@@ -243,14 +243,11 @@ export type ControllerStatePropertiesEnumerated = {
   storageMetadata: PPOMState['storageMetadata'];
   versionInfo: PPOMState['versionInfo'];
   featureFlags: PreferencesControllerState['featureFlags'];
-  identities: PreferencesControllerState['identities'];
   ipfsGateway: PreferencesControllerState['ipfsGateway'];
   isIpfsGatewayEnabled: PreferencesControllerState['isIpfsGatewayEnabled'];
   isMultiAccountBalancesEnabled: PreferencesControllerState['isMultiAccountBalancesEnabled'];
-  lostIdentities: PreferencesControllerState['lostIdentities'];
   openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
   securityAlertsEnabled: PreferencesControllerState['securityAlertsEnabled'];
-  selectedAddress: PreferencesControllerState['selectedAddress'];
   useNftDetection: PreferencesControllerState['useNftDetection'];
   useTokenDetection: PreferencesControllerState['useTokenDetection'];
   useTransactionSimulations: PreferencesControllerState['useTransactionSimulations'];

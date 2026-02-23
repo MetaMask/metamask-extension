@@ -255,37 +255,15 @@ function generateNetworkControllerState() {
 /**
  * Generates the state for the PreferencesController.
  *
- * @param {Array<string>} accounts - The account addresses.
  * @returns {object} The generated PreferencesController state.
  */
-function generatePreferencesControllerState(accounts) {
+function generatePreferencesControllerState() {
   console.log('Generating PreferencesController state');
   let preferencesControllerState = {};
 
   if (FIXTURES_CONFIG.withPreferences) {
     preferencesControllerState = FIXTURES_PREFERENCES;
   }
-
-  // Add account identities
-  preferencesControllerState.identities = Object.assign(
-    ...accounts.map((address, index) => ({
-      [address]: {
-        address,
-        lastSelected: 1725363500048,
-        name: `Account ${index + 1}`,
-      },
-    })),
-  );
-
-  preferencesControllerState.lostIdentities = Object.assign(
-    ...accounts.map((address, index) => ({
-      [address]: {
-        address,
-        lastSelected: 1725363500048,
-        name: `Account ${index + 1}`,
-      },
-    })),
-  );
 
   return preferencesControllerState;
 }

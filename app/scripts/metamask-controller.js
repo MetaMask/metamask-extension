@@ -5754,13 +5754,10 @@ export default class MetamaskController extends EventEmitter {
         };
       },
     );
-    // Select the account
-    this.preferencesController.setSelectedAddress(unlockedAccount);
 
     const accounts = this.accountsController.listAccounts();
 
-    const { identities } = this.preferencesController.state;
-    return { unlockedAccount, identities, accounts };
+    return { unlockedAccount, accounts };
   }
 
   //
@@ -5812,10 +5809,6 @@ export default class MetamaskController extends EventEmitter {
         return newAddress;
       },
     );
-
-    if (!oldAccounts.includes(addedAccountAddress)) {
-      this.preferencesController.setSelectedAddress(addedAccountAddress);
-    }
 
     return addedAccountAddress;
   }
