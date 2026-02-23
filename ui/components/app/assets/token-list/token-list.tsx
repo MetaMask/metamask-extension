@@ -167,6 +167,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
               privacyMode={privacyMode}
               onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
               safeChains={safeChains}
+              showMerklBadge
             />
           );
         })}
@@ -193,6 +194,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
             privacyMode={privacyMode}
             onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
             safeChains={safeChains}
+            showMerklBadge
           />
         );
       }}

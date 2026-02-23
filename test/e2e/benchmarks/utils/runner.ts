@@ -25,6 +25,7 @@ import type {
   BenchmarkSummary,
   BenchmarkType,
   Metrics,
+  Persona,
   ThresholdConfig,
   TimerStatistics,
   UserActionMeasurement,
@@ -204,7 +205,7 @@ export async function runBenchmarkWithIterations(
 export type MeasurePageResult = {
   metrics: Metrics[];
   title: string;
-  persona: string;
+  persona: Persona;
 };
 
 export async function runPageLoadBenchmark(
@@ -227,7 +228,7 @@ export async function runPageLoadBenchmark(
   const pageName = 'home';
   let runResults: Metrics[] = [];
   let testTitle = '';
-  let resultPersona = '';
+  let resultPersona: Persona = 'standard';
 
   for (let i = 0; i < browserLoads; i += 1) {
     console.log('Starting browser load', i + 1, 'of', browserLoads);

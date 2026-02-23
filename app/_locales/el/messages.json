@@ -3599,9 +3599,6 @@
   "lock": {
     "message": "Κλείδωμα"
   },
-  "lockMetaMask": {
-    "message": "Κλείδωμα του MetaMask"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "Γίνεται κλείδωμα του MetaMask..."
   },

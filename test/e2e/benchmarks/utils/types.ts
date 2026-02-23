@@ -32,11 +32,13 @@ export type StatisticalResult = {
   [key: string]: number;
 };
 
+export type Persona = 'standard' | 'powerUser';
+
 export type BenchmarkType = 'benchmark' | 'performance' | 'userAction';
 
 export type BenchmarkResults = {
-  testTitle?: string;
-  persona?: string;
+  testTitle: string;
+  persona: Persona;
   benchmarkType?: BenchmarkType;
   mean: StatisticalResult;
   min: StatisticalResult;
@@ -106,7 +108,7 @@ export type WebVitalsSummary = {
 /** User action result with testTitle, persona, timing metrics, and Core Web Vitals. */
 export type UserActionResult = {
   testTitle: string;
-  persona?: string;
+  persona: Persona;
   webVitals?: WebVitalsMetrics;
   benchmarkType?: BenchmarkType;
   [key: string]: string | number | WebVitalsMetrics | undefined;
@@ -118,7 +120,7 @@ export type BenchmarkArguments = {
   pageLoads: number;
   out?: string;
   retries: number;
-  persona: 'standard' | 'powerUser';
+  persona: Persona;
 };
 
 export type NetworkReport = {

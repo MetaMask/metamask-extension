@@ -3599,9 +3599,6 @@
   "lock": {
     "message": "잠금"
   },
-  "lockMetaMask": {
-    "message": "MetaMask 고정"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask 잠그는 중..."
   },
