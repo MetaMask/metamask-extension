@@ -3176,6 +3176,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings/backup-and-sync-tab/backup-and-sync-tab.test.tsx": {
+      "MetaMask: Background connection not initialized": 1,
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
