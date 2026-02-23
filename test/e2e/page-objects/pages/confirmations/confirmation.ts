@@ -208,7 +208,9 @@ class Confirmation {
     name?: string;
     proposedName?: string;
   }): Promise<void> {
-    await this.clickName(value);
+    await this.driver.clickElement({
+      text: value,
+    });
     console.log(
       `Saving name for value: ${value}, name: ${name}, proposedName: ${proposedName}`,
     );
