@@ -16,16 +16,16 @@
 /**
  * Entry from PerformanceObserver for longtask entries.
  */
-interface LongTaskEntry {
+type LongTaskEntry = {
   name: string;
   duration: number;
   startTime: number;
-}
+};
 
 /**
  * Accumulated metrics for Long Tasks.
  */
-export interface LongTaskMetrics {
+export type LongTaskMetrics = {
   /** Total count of long tasks observed */
   count: number;
   /** Sum of all long task durations in milliseconds */
@@ -34,17 +34,17 @@ export interface LongTaskMetrics {
   maxDuration: number;
   /** Individual task entries (capped at 50) */
   tasks: LongTaskEntry[];
-}
+};
 
 /**
  * Extended metrics including derived TBT.
  */
-export interface LongTaskMetricsWithTBT extends LongTaskMetrics {
+export type LongTaskMetricsWithTBT = LongTaskMetrics & {
   /** Total Blocking Time in milliseconds */
   tbt: number;
   /** TBT rating based on Lighthouse thresholds */
   tbtRating: 'good' | 'needs-improvement' | 'poor';
-}
+};
 
 /** Maximum number of individual tasks to store */
 const MAX_TASKS_STORED = 50;
@@ -176,7 +176,7 @@ export function resetLongTaskMetrics(): void {
  * @param tasks - Array of task objects with duration property
  * @returns Total Blocking Time in milliseconds
  */
-export function calculateTBT(tasks: Array<{ duration: number }>): number {
+export function calculateTBT(tasks: { duration: number }[]): number {
   return tasks.reduce(
     (total, task) =>
       total + Math.max(0, task.duration - LONG_TASK_THRESHOLD_MS),
@@ -245,11 +245,7 @@ export function reportLongTaskMetricsToSentry(
   }
 
   // Set measurements for Sentry traces
-  sentry.setMeasurement?.(
-    'long_task_count',
-    metricsToReport.count,
-    'none',
-  );
+  sentry.setMeasurement?.('long_task_count', metricsToReport.count, 'none');
   sentry.setMeasurement?.(
     'long_task_total_ms',
     metricsToReport.totalDuration,
@@ -282,6 +278,9 @@ export function reportLongTaskMetricsToSentry(
 
 /**
  * Bucketize count for Sentry tag filtering.
+ *
+ * @param count - The count value to bucketize
+ * @returns A string representing the bucket range
  */
 function bucketizeCount(count: number): string {
   if (count === 0) {
