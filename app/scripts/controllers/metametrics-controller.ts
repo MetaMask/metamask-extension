@@ -1386,10 +1386,6 @@ export default class MetaMetricsController extends BaseController<
   _buildUserTraitsObject(
     metamaskState: MetaMaskState,
   ): Partial<MetaMetricsUserTraits> | null {
-    if (!metamaskState?.preferences) {
-      return null;
-    }
-
     const { traits } = this.state;
     const storageKindTrait = traits[MetaMetricsUserTrait.StorageKind];
 
@@ -1445,7 +1441,7 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.TokenDetectionEnabled]:
         metamaskState.useTokenDetection,
       [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]:
-        metamaskState.preferences.showNativeTokenAsMainBalance,
+        metamaskState.preferences?.showNativeTokenAsMainBalance,
       [MetaMetricsUserTrait.CurrentCurrency]: metamaskState.currentCurrency,
       [MetaMetricsUserTrait.SecurityProviders]:
         metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
@@ -1456,11 +1452,11 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.HasMarketingConsent]:
         metamaskState.dataCollectionForMarketing,
       [MetaMetricsUserTrait.TokenSortPreference]:
-        metamaskState.preferences.tokenSortConfig?.key || '',
+        metamaskState.preferences?.tokenSortConfig?.key || '',
       [MetaMetricsUserTrait.PrivacyModeEnabled]:
-        metamaskState.preferences.privacyMode,
+        metamaskState.preferences?.privacyMode,
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
-        metamaskState.preferences.tokenNetworkFilter || {},
+        metamaskState.preferences?.tokenNetworkFilter || {},
       ),
       [MetaMetricsUserTrait.ProfileId]: Object.entries(
         metamaskState.srpSessionData || {},
