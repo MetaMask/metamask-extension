@@ -31,7 +31,7 @@ describe('ConnectionTrustSignalGate', () => {
     jest.clearAllMocks();
   });
 
-  it('renders children when trust state is Unknown (NONE)', () => {
+  it('renders children when trust state is Unknown', () => {
     mockUseOriginTrustSignals.mockReturnValue({
       state: TrustSignalDisplayState.Unknown,
       label: null,
@@ -46,20 +46,21 @@ describe('ConnectionTrustSignalGate', () => {
     expect(getByText('Child content')).toBeInTheDocument();
   });
 
-  it('renders verified modal when trust state is Verified', () => {
+  it('renders children when trust state is Verified (no modal)', () => {
     mockUseOriginTrustSignals.mockReturnValue({
       state: TrustSignalDisplayState.Verified,
       label: null,
     });
 
-    const { getByTestId, queryByText } = renderWithI18n(
+    const { getByText, queryByTestId } = renderWithI18n(
       <ConnectionTrustSignalGate {...defaultProps}>
         <div>Child content</div>
       </ConnectionTrustSignalGate>,
     );
 
-    expect(getByTestId('trust-signal-verified-modal')).toBeInTheDocument();
-    expect(queryByText('Child content')).not.toBeInTheDocument();
+    expect(getByText('Child content')).toBeInTheDocument();
+    expect(queryByTestId('trust-signal-warning-modal')).not.toBeInTheDocument();
+    expect(queryByTestId('trust-signal-block-modal')).not.toBeInTheDocument();
   });
 
   it('renders warning modal when trust state is Warning', () => {
@@ -94,23 +95,6 @@ describe('ConnectionTrustSignalGate', () => {
     expect(queryByText('Child content')).not.toBeInTheDocument();
   });
 
-  it('shows children after dismissing verified modal via OK', () => {
-    mockUseOriginTrustSignals.mockReturnValue({
-      state: TrustSignalDisplayState.Verified,
-      label: null,
-    });
-
-    const { getByTestId, getByText, queryByTestId } = renderWithI18n(
-      <ConnectionTrustSignalGate {...defaultProps}>
-        <div>Child content</div>
-      </ConnectionTrustSignalGate>,
-    );
-
-    fireEvent.click(getByTestId('trust-signal-verified-ok'));
-    expect(queryByTestId('trust-signal-verified-modal')).not.toBeInTheDocument();
-    expect(getByText('Child content')).toBeInTheDocument();
-  });
-
   it('shows children after dismissing warning modal', () => {
     mockUseOriginTrustSignals.mockReturnValue({
       state: TrustSignalDisplayState.Warning,
@@ -123,7 +107,7 @@ describe('ConnectionTrustSignalGate', () => {
       </ConnectionTrustSignalGate>,
     );
 
-    fireEvent.click(getByTestId('trust-signal-warning-continue'));
+    fireEvent.click(getByTestId('trust-signal-warning-modal-continue'));
     expect(queryByTestId('trust-signal-warning-modal')).not.toBeInTheDocument();
     expect(getByText('Child content')).toBeInTheDocument();
   });
@@ -140,7 +124,7 @@ describe('ConnectionTrustSignalGate', () => {
       </ConnectionTrustSignalGate>,
     );
 
-    fireEvent.click(getByTestId('trust-signal-block-continue'));
+    fireEvent.click(getByTestId('trust-signal-block-modal-continue'));
     expect(queryByTestId('trust-signal-block-modal')).not.toBeInTheDocument();
     expect(getByText('Child content')).toBeInTheDocument();
   });

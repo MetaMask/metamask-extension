@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
-import { TrustSignalWarningModal } from './trust-signal-warning-modal';
-import { TrustSignalBlockModal } from './trust-signal-block-modal';
+import { TrustSignalModal } from './trust-signal-modal';
 
 type ConnectionTrustSignalGateProps = {
   origin: string;
@@ -24,19 +23,14 @@ export function ConnectionTrustSignalGate({
     return <>{children}</>;
   }
 
-  if (state === TrustSignalDisplayState.Warning) {
+  if (
+    state === TrustSignalDisplayState.Warning ||
+    state === TrustSignalDisplayState.Malicious
+  ) {
     return (
-      <TrustSignalWarningModal
+      <TrustSignalModal
         origin={origin}
-        onContinue={() => setDismissed(true)}
-      />
-    );
-  }
-
-  if (state === TrustSignalDisplayState.Malicious) {
-    return (
-      <TrustSignalBlockModal
-        origin={origin}
+        state={state}
         onContinue={() => setDismissed(true)}
       />
     );
