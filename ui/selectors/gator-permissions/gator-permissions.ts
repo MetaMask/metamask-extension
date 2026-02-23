@@ -65,6 +65,12 @@ const TOKEN_TRANSFER_PERMISSION_TYPES: SupportedGatorPermissionType[] = [
   'erc20-token-revocation',
 ];
 
+/** All keys required by GatorPermissionsMap; used to normalize deserialized state with missing keys. */
+const GATOR_PERMISSIONS_MAP_KEYS: SupportedGatorPermissionType[] = [
+  ...TOKEN_TRANSFER_PERMISSION_TYPES,
+  'other',
+];
+
 const getMetamask = (state: AppState) => state.metamask;
 
 /**
@@ -134,8 +140,20 @@ function sortGatorPermissionsByStartTime<
  */
 export const getGatorPermissionsMap = createSelector(
   [getMetamask],
-  (metamask) =>
-    deserializeGatorPermissionsMap(metamask.gatorPermissionsMapSerialized),
+  (metamask) => {
+    const rawDeserialized = deserializeGatorPermissionsMap(
+      metamask.gatorPermissionsMapSerialized,
+    );
+
+    // Ensure all permission-type keys are present in the deserialized map
+    GATOR_PERMISSIONS_MAP_KEYS.forEach((permissionType) => {
+      if (rawDeserialized[permissionType] === undefined) {
+        rawDeserialized[permissionType] = {};
+      }
+    });
+
+    return rawDeserialized;
+  },
 );
 
 /**

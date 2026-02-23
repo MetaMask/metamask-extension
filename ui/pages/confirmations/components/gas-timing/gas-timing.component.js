@@ -24,6 +24,7 @@ import { GAS_FORM_ERRORS } from '../../../../helpers/constants/gas';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { getGasFeeTimeEstimate } from '../../../../store/actions';
 import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransactionWithTxParams';
+
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
 
@@ -137,6 +138,7 @@ export default function GasTiming({
   const textTKey = estimateToUse === 'low' ? 'gasTimingLow' : estimateToUse;
   let text = t(textTKey);
   let time = '';
+  let timeMs = 0;
 
   // Anything medium or faster is positive
   if (
@@ -147,10 +149,12 @@ export default function GasTiming({
       Number(maxPriorityFeePerGas) < Number(high.suggestedMaxPriorityFeePerGas)
     ) {
       // Medium
-      time = toHumanReadableTime(low.maxWaitTimeEstimate, t);
+      timeMs = low.maxWaitTimeEstimate;
+      time = toHumanReadableTime(timeMs, t);
     } else {
       // High
-      time = toHumanReadableTime(high.minWaitTimeEstimate, t);
+      timeMs = high.minWaitTimeEstimate;
+      time = toHumanReadableTime(timeMs, t);
     }
   } else if (isUnknownLow) {
     // If the user has chosen a value less than our low estimate,
@@ -165,13 +169,12 @@ export default function GasTiming({
     ) {
       text = t('editGasTooLow');
     } else {
-      time = toHumanReadableTime(
-        Number(customEstimatedTime?.upperTimeBound),
-        t,
-      );
+      timeMs = Number(customEstimatedTime?.upperTimeBound);
+      time = toHumanReadableTime(timeMs, t);
     }
   } else {
-    time = toHumanReadableTime(low.maxWaitTimeEstimate, t);
+    timeMs = low.maxWaitTimeEstimate;
+    time = toHumanReadableTime(timeMs, t);
   }
 
   return (
@@ -188,7 +191,9 @@ export default function GasTiming({
 
       {time && (
         <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
-          <span data-testid="gas-timing-time">~{time}</span>
+          <span data-testid="gas-timing-time">
+            {timeMs > 0 && timeMs < 1000 ? `<${time}` : `~${time}`}
+          </span>
         </Text>
       )}
     </Box>

@@ -1,4 +1,5 @@
 import {
+  type EnsureDeviceReadyOptions,
   type HardwareWalletAdapter,
   type HardwareWalletAdapterOptions,
 } from '../types';
@@ -20,10 +21,8 @@ export class NonHardwareAdapter implements HardwareWalletAdapter {
 
   /**
    * Connect resolves successfully - regular accounts are always connected
-   *
-   * @param _deviceId
    */
-  async connect(_deviceId: string): Promise<void> {
+  async connect(): Promise<void> {
     return Promise.resolve();
   }
 
@@ -53,9 +52,11 @@ export class NonHardwareAdapter implements HardwareWalletAdapter {
    * Always returns true - regular accounts are always ready
    * since there's no hardware device state to check
    *
-   * @param _deviceId
+   * @param _options
    */
-  async ensureDeviceReady(_deviceId: string): Promise<boolean> {
+  async ensureDeviceReady(
+    _options?: EnsureDeviceReadyOptions,
+  ): Promise<boolean> {
     return true;
   }
 }

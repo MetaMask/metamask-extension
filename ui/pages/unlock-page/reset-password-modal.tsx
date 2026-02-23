@@ -48,7 +48,7 @@ export default function ResetPasswordModal({
   onRestore: () => void;
 }) {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const [resetWallet, setResetWallet] = useState(false);
   const navigate = useNavigate();

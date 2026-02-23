@@ -13,6 +13,13 @@
       "web3ShimUsageOrigins": "object"
     },
     "AnnouncementController": { "announcements": "object" },
+    "AppMetadataController": {
+      "currentAppVersion": "string",
+      "currentMigrationVersion": "number",
+      "firstTimeInfo": "object",
+      "previousAppVersion": "",
+      "previousMigrationVersion": 0
+    },
     "AppStateController": {
       "appActiveTab": "object",
       "browserEnvironment": {},
@@ -122,10 +129,12 @@
       "openSeaEnabled": false,
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
+        "defaultAddressScope": "string",
         "hideZeroBalanceTokens": false,
         "petnamesEnabled": "boolean",
         "shouldShowAggregatedBalancePopover": "boolean",
         "showConfirmationAdvancedDetails": false,
+        "showDefaultAddress": "boolean",
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": "boolean",
@@ -157,6 +166,7 @@
         "smartTransactions": "object"
       }
     },
+    "StaticAssetsController": {},
     "SubjectMetadataController": { "subjectMetadata": "object" },
     "TokensController": {
       "allDetectedTokens": {},
@@ -164,7 +174,6 @@
       "allTokens": {}
     },
     "TransactionController": { "transactions": "object" },
-    "config": "object",
-    "firstTimeInfo": "object"
+    "config": "object"
   }
 }

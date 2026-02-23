@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { isValidMnemonic } from '@ethersproject/hdnode';
+import browser from 'webextension-polyfill';
 
 import { Textarea, TextareaResize } from '../../component-library/textarea';
 import {
@@ -25,8 +26,14 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_SIDEPANEL,
+  PLATFORM_FIREFOX,
+} from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
 const SRP_LENGTHS = [12, 15, 18, 21, 24];
@@ -57,8 +64,10 @@ export default function SrpInputImport({
   const [draftSrp, setDraftSrp] = useState<DraftSrp[]>([]);
   const [firstWord, setFirstWord] = useState('');
   const [misSpelledWords, setMisSpelledWords] = useState<DraftSrp[]>([]);
+  const [hasInvalidChecksum, setHasInvalidChecksum] = useState(false);
 
   const srpRefs = useRef<ListOfTextFieldRefs>({});
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const onChangeRef = useRef(onChange);
 
   // Keep the ref updated with the latest onChange callback
@@ -252,17 +261,29 @@ export default function SrpInputImport({
     [draftSrp],
   );
 
-  // in firefox, we do need to request permission explicitly, to read the clipboard
-  const requestPermissionAndTriggerPasteFireFox = async () => {
+  // Request clipboardRead extension permission explicitly and then read clipboard.
+  // This is needed for Firefox (always) and Chrome side panel (where the web
+  // Clipboard API permission prompt is not displayed to the user, causing
+  // navigator.clipboard.readText() to throw "permission denied").
+  //
+  // In Chrome's side panel, document.hasFocus() may return false when the main
+  // browser view was last focused, causing navigator.clipboard.readText() to
+  // throw "Document is not focused". Focusing the textarea (via textareaRef)
+  // before reading ensures the side panel document has focus.
+  const requestPermissionAndReadClipboard = async () => {
     try {
       const permissionGranted = await browser.permissions.request({
         permissions: ['clipboardRead'],
       });
-      if (permissionGranted) {
-        const newSrp = await navigator.clipboard.readText();
-        if (newSrp.trim().match(/\s/u)) {
-          onSrpPaste(newSrp);
-        }
+      if (!permissionGranted) {
+        throw new Error('`ClipboardRead` permission not granted');
+      }
+
+      window.focus();
+      textareaRef.current?.focus();
+      const newSrp = await navigator.clipboard.readText();
+      if (newSrp.trim().match(/\s/u)) {
+        onSrpPaste(newSrp);
       }
     } catch (error) {
       console.error('Error requesting clipboard permission', error);
@@ -271,23 +292,35 @@ export default function SrpInputImport({
 
   const onTriggerPaste = async () => {
     setMisSpelledWords([]);
-    if (getBrowserName() === PLATFORM_FIREFOX) {
-      await requestPermissionAndTriggerPasteFireFox();
+
+    // Firefox and Chrome side panel both need to request the clipboardRead
+    // extension permission explicitly before reading the clipboard.
+    // In the side panel, the web Clipboard API permission prompt is never
+    // shown to the user, so navigator.clipboard.readText() fails without
+    // the extension-level permission being granted first.
+    const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+
+    if (getBrowserName() === PLATFORM_FIREFOX || isSidePanel) {
+      await requestPermissionAndReadClipboard();
       return;
     }
 
-    const permissionResult = await navigator.permissions.query({
-      name: 'clipboard-read' as PermissionName,
-    });
+    try {
+      const permissionResult = await navigator.permissions.query({
+        name: 'clipboard-read' as PermissionName,
+      });
 
-    if (
-      permissionResult.state === 'granted' ||
-      permissionResult.state === 'prompt'
-    ) {
-      const newSrp = await navigator.clipboard.readText();
-      if (newSrp.trim().match(/\s/u)) {
-        onSrpPaste(newSrp);
+      if (
+        permissionResult.state === 'granted' ||
+        permissionResult.state === 'prompt'
+      ) {
+        const newSrp = await navigator.clipboard.readText();
+        if (newSrp.trim().match(/\s/u)) {
+          onSrpPaste(newSrp);
+        }
       }
+    } catch (error) {
+      console.error('Error reading clipboard', error);
     }
   };
 
@@ -308,12 +341,21 @@ export default function SrpInputImport({
 
       if (hasInvalidWords) {
         onChangeRef.current('');
+        setHasInvalidChecksum(false);
       } else {
         const stringSrp = draftSrp.map((word) => word.word).join(' ');
-        onChangeRef.current(stringSrp);
+        // Only pass valid mnemonic (with correct checksum) to parent
+        if (isValidMnemonic(stringSrp)) {
+          onChangeRef.current(stringSrp);
+          setHasInvalidChecksum(false);
+        } else {
+          onChangeRef.current('');
+          setHasInvalidChecksum(true);
+        }
       }
     } else {
       onChangeRef.current('');
+      setHasInvalidChecksum(false);
     }
   }, [draftSrp]);
 
@@ -407,6 +449,7 @@ export default function SrpInputImport({
               borderRadius={BorderRadius.LG}
             >
               <Textarea
+                ref={textareaRef}
                 data-testid="srp-input-import__srp-note"
                 borderColor={BorderColor.transparent}
                 backgroundColor={BackgroundColor.transparent}
@@ -439,6 +482,7 @@ export default function SrpInputImport({
               onClick={async () => {
                 setDraftSrp([]);
                 setMisSpelledWords([]);
+                setHasInvalidChecksum(false);
                 onClearCallback?.();
               }}
             >
@@ -459,6 +503,17 @@ export default function SrpInputImport({
         <Box marginTop={2}>
           <Text color={TextColor.errorDefault} variant={TextVariant.bodySm}>
             {t('onboardingSrpImportError')}
+          </Text>
+        </Box>
+      )}
+      {hasInvalidChecksum && misSpelledWords.length === 0 && (
+        <Box marginTop={2}>
+          <Text
+            color={TextColor.errorDefault}
+            variant={TextVariant.bodySm}
+            data-testid="srp-input-import__invalid-checksum-error"
+          >
+            {t('invalidSeedPhraseNotFound')}
           </Text>
         </Box>
       )}

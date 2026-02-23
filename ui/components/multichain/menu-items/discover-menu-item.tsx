@@ -26,7 +26,7 @@ export const DiscoverMenuItem = ({
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const t = useI18nContext();
 
   const handlePortfolioOnClick = useCallback(() => {
@@ -57,7 +57,7 @@ export const DiscoverMenuItem = ({
 
   return (
     <MenuItem
-      iconName={IconName.Export}
+      iconNameLegacy={IconName.Export}
       onClick={() => handlePortfolioOnClick()}
       data-testid="portfolio-menu-item"
     >

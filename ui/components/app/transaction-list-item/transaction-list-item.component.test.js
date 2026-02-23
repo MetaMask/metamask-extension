@@ -186,8 +186,14 @@ describe('TransactionListItem', () => {
 
       const store = mockStore(mockState);
       const mockTrackEvent = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: mockTrackEvent,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
       const { queryByTestId } = renderWithProvider(
-        <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
           <TransactionListItem transactionGroup={transactionGroup} />
         </MetaMetricsContext.Provider>,
         store,

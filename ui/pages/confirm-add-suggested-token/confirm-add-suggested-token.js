@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
+import { ERC20 } from '@metamask/controller-utils';
 import {
   BannerAlert,
   Button,
@@ -33,10 +34,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../shared/constants/metametrics';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../shared/constants/transaction';
+import { AssetType } from '../../../shared/constants/transaction';
 import { getSuggestedTokens } from '../../selectors';
 import { Nav } from '../confirmations/components/confirm/nav';
 import { hideAppHeader } from '../routes/utils';
@@ -101,7 +99,7 @@ const ConfirmAddSuggestedToken = () => {
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const suggestedTokens = useSelector(getSuggestedTokens);
   const tokens = useSelector(getTokens);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const approvalId = suggestedTokens[0]?.id;
 
   const knownTokenBannerAlert = useMemo(() => {
@@ -151,7 +149,7 @@ const ConfirmAddSuggestedToken = () => {
             token_decimal_precision: asset.decimals,
             unlisted: asset.unlisted,
             source: MetaMetricsTokenEventSource.Dapp,
-            token_standard: TokenStandard.ERC20,
+            token_standard: ERC20,
             asset_type: AssetType.token,
           },
         });

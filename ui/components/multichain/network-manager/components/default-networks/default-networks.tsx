@@ -44,6 +44,7 @@ import {
   ButtonIconSize,
   IconName,
   IconSize,
+  SuccessPill,
   Text,
 } from '../../../../component-library';
 import { NetworkListItem } from '../../../network-list-item';
@@ -61,8 +62,6 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getOrderedNetworksList,
   getMultichainNetworkConfigurationsByChainId,
-  getIsMultichainAccountsState2Enabled,
-  getSelectedInternalAccount,
   getGasFeesSponsoredNetworkEnabled,
   getUseExternalServices,
 } from '../../../../../selectors';
@@ -87,10 +86,6 @@ const DefaultNetworks = memo(() => {
 
   const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
 
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-
   const useExternalServices = useSelector(getUseExternalServices);
 
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
@@ -103,8 +98,7 @@ const DefaultNetworks = memo(() => {
 
   const enabledChainIds = useSelector(getAllEnabledNetworksForAllNamespaces);
 
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-
+  // extract the solana account of the selected account group
   const solAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, SolScope.Mainnet),
   );
@@ -264,41 +258,22 @@ const DefaultNetworks = memo(() => {
 
   const networkListItems = useMemo(() => {
     const getFilteredNetworks = () => {
-      if (isMultichainAccountsState2Enabled) {
-        return orderedNetworks.filter((network) => {
-          if (evmAccountGroup && network.isEvm) {
-            return true;
-          }
-          if (!useExternalServices) {
-            return network.chainId === selectedNonEvmChainId;
-          }
-          if (solAccountGroup && network.chainId === SolScope.Mainnet) {
-            return true;
-          }
-          if (btcAccountGroup && network.chainId === BtcScope.Mainnet) {
-            return true;
-          }
-          if (trxAccountGroup && network.chainId === TrxScope.Mainnet) {
-            return true;
-          }
-          return false;
-        });
-      }
       return orderedNetworks.filter((network) => {
-        if (isEvmNetworkSelected) {
-          return network.isEvm;
+        // Show EVM networks if user has EVM accounts
+        if (evmAccountGroup && network.isEvm) {
+          return true;
         }
         if (!useExternalServices) {
           return network.chainId === selectedNonEvmChainId;
         }
-        if (selectedAccount.scopes.includes(SolScope.Mainnet)) {
-          return network.chainId === SolScope.Mainnet;
+        if (solAccountGroup && network.chainId === SolScope.Mainnet) {
+          return true;
         }
-        if (selectedAccount.scopes.includes(BtcScope.Mainnet)) {
-          return network.chainId === BtcScope.Mainnet;
+        if (btcAccountGroup && network.chainId === BtcScope.Mainnet) {
+          return true;
         }
-        if (selectedAccount.scopes.includes(TrxScope.Mainnet)) {
-          return network.chainId === TrxScope.Mainnet;
+        if (trxAccountGroup && network.chainId === TrxScope.Mainnet) {
+          return true;
         }
         return false;
       });
@@ -356,7 +331,6 @@ const DefaultNetworks = memo(() => {
     });
   }, [
     orderedNetworks,
-    isEvmNetworkSelected,
     isNetworkInDefaultNetworkTab,
     getItemCallbacks,
     isSingleNetworkSelected,
@@ -366,10 +340,8 @@ const DefaultNetworks = memo(() => {
     btcAccountGroup,
     solAccountGroup,
     trxAccountGroup,
-    isMultichainAccountsState2Enabled,
     evmAccountGroup,
     dispatch,
-    selectedAccount,
     enabledChainIds,
     useExternalServices,
     selectedNonEvmChainId,
@@ -404,7 +376,12 @@ const DefaultNetworks = memo(() => {
             src={networkImageUrl}
             borderRadius={BorderRadius.LG}
           />
-          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            alignItems={AlignItems.center}
+            gap={2}
+          >
             <Text
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textDefault}
@@ -412,12 +389,10 @@ const DefaultNetworks = memo(() => {
               {network.name}
             </Text>
             {isNetworkGasSponsored(network.chainId) && (
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-              >
-                {t('noNetworkFee')}
-              </Text>
+              <SuccessPill
+                label={t('noNetworkFee')}
+                display={Display.InlineFlex}
+              />
             )}
           </Box>
           <ButtonIcon
@@ -441,28 +416,24 @@ const DefaultNetworks = memo(() => {
   return (
     <>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-        {isEvmNetworkSelected || isMultichainAccountsState2Enabled ? (
-          <Box
-            className="network-manager__all-popular-networks"
-            data-testid="network-manager-select-all"
-          >
-            <NetworkListItem
-              name={t('allPopularNetworks')}
-              onClick={selectAllDefaultNetworks}
-              iconSrc={IconName.Global}
-              iconSize={IconSize.Xl}
-              selected={isAllPopularNetworksSelected}
-              focus={false}
-            />
-          </Box>
-        ) : null}
+        <Box
+          className="network-manager__all-popular-networks"
+          data-testid="network-manager-select-all"
+        >
+          <NetworkListItem
+            name={t('allPopularNetworks')}
+            onClick={selectAllDefaultNetworks}
+            iconSrc={IconName.Global}
+            iconSize={IconSize.Xl}
+            selected={isAllPopularNetworksSelected}
+            focus={false}
+          />
+        </Box>
         {networkListItems}
-        {(isEvmNetworkSelected || isMultichainAccountsState2Enabled) && (
-          <>
-            <AdditionalNetworksInfo />
-            {additionalNetworkListItems}
-          </>
-        )}
+        <>
+          <AdditionalNetworksInfo />
+          {additionalNetworkListItems}
+        </>
       </Box>
     </>
   );

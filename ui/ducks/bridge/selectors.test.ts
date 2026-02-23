@@ -399,7 +399,7 @@ describe('Bridge selectors', () => {
       });
       const result = getToChains(state as never);
 
-      expect(result).toHaveLength(14);
+      expect(result).toHaveLength(16);
       expect(result.map(({ name, chainId }) => ({ name, chainId })))
         .toMatchInlineSnapshot(`
         [
@@ -454,6 +454,14 @@ describe('Bridge selectors', () => {
           {
             "chainId": "eip155:1329",
             "name": "Sei",
+          },
+          {
+            "chainId": "eip155:999",
+            "name": "HyperEVM",
+          },
+          {
+            "chainId": "eip155:4326",
+            "name": "MegaETH",
           },
           {
             "chainId": "eip155:324",
@@ -576,7 +584,7 @@ describe('Bridge selectors', () => {
         balance: '0',
         chainId: 'eip155:1',
         decimals: 18,
-        image:
+        iconUrl:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
         name: 'Ether',
         symbol: 'ETH',
@@ -613,7 +621,7 @@ describe('Bridge selectors', () => {
           "balance": "0",
           "chainId": "eip155:1",
           "decimals": 18,
-          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x567.png",
+          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x567.png",
           "name": "DEST",
           "rwaData": undefined,
           "symbol": "DEST",
@@ -642,7 +650,7 @@ describe('Bridge selectors', () => {
         balance: '0',
         chainId: 'eip155:1',
         decimals: 6,
-        image:
+        iconUrl:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png',
         name: 'MetaMask USD',
         symbol: 'mUSD',
@@ -709,7 +717,7 @@ describe('Bridge selectors', () => {
         balance: '0',
         chainId: 'eip155:1',
         decimals: 18,
-        image:
+        iconUrl:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
         name: 'Ether',
         symbol: 'ETH',

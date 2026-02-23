@@ -1,0 +1,8 @@
+{
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "flask-firefox-extension-id@metamask.io"
+    }
+  },
+  "flask_firefox_property": "from_flask_firefox"
+}

@@ -10,6 +10,10 @@ import { MultichainNetworks } from '../../../shared/constants/multichain/network
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import * as bridgeSelectors from '../../ducks/bridge/selectors';
+import {
+  CROSS_CHAIN_SWAP_ROUTE,
+  PREPARE_SWAP_ROUTE,
+} from '../../helpers/constants/routes';
 import useBridging from './useBridging';
 
 const mockUseNavigate = jest.fn();
@@ -27,6 +31,7 @@ jest.mock('react-redux', () => ({
 }));
 
 const MOCK_METAMETRICS_ID = '0xtestMetaMetricsId';
+const BRIDGE_PREPARE_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
 
 const renderUseBridging = (mockStoreState: object, pathname?: string) =>
   renderHookWithProvider(() => useBridging(), mockStoreState, pathname);
@@ -48,34 +53,34 @@ describe('useBridging', () => {
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
-        '/cross-chain/swaps/prepare-swap-page',
+        BRIDGE_PREPARE_PATH,
         getNativeAssetForChainId(CHAIN_IDS.MAINNET),
         'Home',
         false,
         { srcToken: getNativeAssetForChainId(CHAIN_IDS.MAINNET) },
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page',
+        BRIDGE_PREPARE_PATH,
         getNativeAssetForChainId(CHAIN_IDS.MAINNET),
         MetaMetricsSwapsEventSource.TokenView,
         false,
         { srcToken: getNativeAssetForChainId(CHAIN_IDS.MAINNET) },
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page',
+        BRIDGE_PREPARE_PATH,
         getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
         MetaMetricsSwapsEventSource.TokenView,
         false,
         { srcToken: getNativeAssetForChainId(CHAIN_IDS.OPTIMISM) },
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page',
+        BRIDGE_PREPARE_PATH,
         { ...getNativeAssetForChainId(CHAIN_IDS.OPTIMISM), chainId: 123 },
         MetaMetricsSwapsEventSource.TokenView,
         false,
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page',
+        BRIDGE_PREPARE_PATH,
         {
           ...getNativeAssetForChainId(CHAIN_IDS.SEI),
           chainId: 243,
@@ -84,7 +89,7 @@ describe('useBridging', () => {
         false,
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page',
+        BRIDGE_PREPARE_PATH,
         {
           iconUrl: 'https://icon.url',
           symbol: 'TEST',
@@ -179,13 +184,13 @@ describe('useBridging', () => {
     it.each([
       [
         '/',
-        '/cross-chain/swaps/prepare-swap-page?from=eip155:1/slip44:60',
+        `${BRIDGE_PREPARE_PATH}?from=eip155:1/slip44:60`,
         undefined,
         'Home',
       ],
       [
         '/asset/0xa/',
-        '/cross-chain/swaps/prepare-swap-page',
+        BRIDGE_PREPARE_PATH,
         getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
         MetaMetricsSwapsEventSource.TokenView,
         {
@@ -194,7 +199,7 @@ describe('useBridging', () => {
       ],
       [
         '/asset/0xa/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
-        '/cross-chain/swaps/prepare-swap-page',
+        BRIDGE_PREPARE_PATH,
         {
           iconUrl: 'https://icon.url',
           symbol: 'TEST',
@@ -227,7 +232,7 @@ describe('useBridging', () => {
       ],
       [
         '/asset/0xa/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
-        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/erc20:0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+        `${BRIDGE_PREPARE_PATH}?from=eip155:10/erc20:0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d`,
         {
           iconUrl: 'https://icon.url',
           address: toChecksumAddress(
@@ -244,7 +249,7 @@ describe('useBridging', () => {
       // Should use bip44 default asset for BTC
       [
         `/`,
-        '/cross-chain/swaps/prepare-swap-page',
+        BRIDGE_PREPARE_PATH,
         getNativeAssetForChainId(MultichainNetworks.BITCOIN),
         MetaMetricsSwapsEventSource.TokenView,
         {
@@ -254,7 +259,7 @@ describe('useBridging', () => {
       // Should use bip44 default asset for SOLANA
       [
         '/',
-        '/cross-chain/swaps/prepare-swap-page',
+        BRIDGE_PREPARE_PATH,
         getNativeAssetForChainId(MultichainNetworks.SOLANA),
         MetaMetricsSwapsEventSource.TokenView,
         {
@@ -264,7 +269,7 @@ describe('useBridging', () => {
       // test account has no TRON account
       [
         '/',
-        '/cross-chain/swaps/prepare-swap-page?from=eip155:1/slip44:60',
+        `${BRIDGE_PREPARE_PATH}?from=eip155:1/slip44:60`,
         getNativeAssetForChainId(MultichainNetworks.TRON),
         MetaMetricsSwapsEventSource.TokenView,
       ],

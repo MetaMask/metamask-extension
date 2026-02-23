@@ -8,8 +8,13 @@ import {
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import { VaultCorruptionType } from '../../../../shared/constants/state-corruption';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
 import { trackVaultCorruptionEvent } from '../state-corruption/track-vault-corruption';
+import { trackEarlySegmentEvent } from '../segment/early-segment-tracking';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
   MetaMaskStateType,
@@ -48,7 +53,7 @@ export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
  * a reference to the original error that caused the persistence failure.
  */
 export class PersistenceError extends Error {
-  backup: object | null;
+  getBackup: () => object | null;
 
   /**
    * The type of vault corruption that occurred.
@@ -72,7 +77,9 @@ export class PersistenceError extends Error {
   ) {
     super(message);
     this.name = 'PersistenceError';
-    this.backup = backup;
+    // closure around `backup` to prevent it from being serialized with the
+    // error in debug logs, error reporting, etc.
+    this.getBackup = () => backup;
     this.corruptionType = corruptionType;
     this.cause = cause;
   }
@@ -199,14 +206,15 @@ export class PersistenceManager {
   /**
    * Callback to be invoked when a set operation fails (storage.local or IndexedDB).
    * This allows the background script to notify the UI about the failure.
+   * The callback receives the storage write error type.
    */
-  #onSetFailed?: () => void;
+  #onSetFailed?: (errorType: StorageWriteErrorType) => void;
 
   /**
-   * Tracks if a set failure occurred before the callback was registered.
-   * This handles the race condition where failures happen during controller initialization.
+   * Stores the error type from the first failure that occurred before the callback was registered.
+   * If not null, indicates a failure occurred before the callback was registered.
    */
-  #setFailedBeforeCallbackRegistered = false;
+  #errorTypeBeforeCallbackRegistered: StorageWriteErrorType | null = null;
 
   constructor({ localStore }: { localStore: BaseStore }) {
     this.#localStore = localStore;
@@ -216,30 +224,51 @@ export class PersistenceManager {
    * Sets the callback to be invoked when a set operation fails.
    * This is called by the background script to wire up the notification to the UI.
    * If a failure already occurred before this callback was registered, it will be
-   * called immediately.
+   * called immediately with the stored error type.
    *
    * @param callback - The callback to invoke when a set operation fails
    */
-  setOnSetFailed(callback: () => void) {
+  setOnSetFailed(callback: (errorType: StorageWriteErrorType) => void) {
     this.#onSetFailed = callback;
 
     // If a failure occurred before this callback was registered, call it now
-    if (this.#setFailedBeforeCallbackRegistered) {
-      callback();
+    if (this.#errorTypeBeforeCallbackRegistered !== null) {
+      callback(this.#errorTypeBeforeCallbackRegistered);
     }
+  }
+
+  /**
+   * Determines the storage write error type from an error message.
+   *
+   * @param errorMessage - The error message from the failed operation
+   * @returns The appropriate StorageWriteErrorType
+   */
+  #getStorageWriteErrorType(errorMessage: string): StorageWriteErrorType {
+    if (errorMessage.includes('FILE_ERROR_NO_SPACE')) {
+      return StorageWriteErrorType.FileErrorNoSpace;
+    }
+    return StorageWriteErrorType.Default;
   }
 
   /**
    * Notifies the UI that a set operation has failed (storage.local or IndexedDB).
    * If the callback is not yet registered, tracks the failure for later notification.
+   *
+   * @param errorMessage - The error message from the failed operation
    */
-  #notifySetFailed() {
+  #notifySetFailed(errorMessage: string) {
+    const errorType = this.#getStorageWriteErrorType(errorMessage);
+
     if (this.#onSetFailed) {
-      this.#onSetFailed();
+      this.#onSetFailed(errorType);
     } else {
       // Callback not yet registered - track the failure for later
-      this.#setFailedBeforeCallbackRegistered = true;
+      this.#errorTypeBeforeCallbackRegistered = errorType;
     }
+  }
+
+  #normalizePersistError(error: unknown): Error {
+    return error instanceof Error ? error : new Error(String(error));
   }
 
   async open() {
@@ -270,7 +299,6 @@ export class PersistenceManager {
           console.warn(
             'Could not open backup database; automatic vault recovery will not be available.',
           );
-          console.error(error);
         } else {
           // rethrow since we couldn't handle it here.
           throw error;
@@ -379,12 +407,11 @@ export class PersistenceManager {
    *
    * @param state - The state to set in the local store. This should be an object
    * containing the state data to be stored.
+   * @returns Tuple containing success status and error (if any).
    * @throws Error if the state is missing or if the metadata is not set before
    * calling this method.
-   * @throws Error if the local store is not open.
-   * @throws Error if the data persistence fails during the write operation.
    */
-  async set(state: MetaMaskStateType) {
+  async set(state: MetaMaskStateType): Promise<[boolean, Error | undefined]> {
     if (this.storageKind !== 'data') {
       throw new Error(
         'MetaMask - cannot set full state when storageKind is not "data"',
@@ -414,7 +441,7 @@ export class PersistenceManager {
     this.#currentLockAbortController?.abort();
     this.#currentLockAbortController = abortController;
 
-    await navigator.locks.request(
+    return await navigator.locks.request(
       STATE_LOCK,
       { mode: 'exclusive', signal: abortController.signal },
       async () => {
@@ -459,6 +486,8 @@ export class PersistenceManager {
               },
             );
           }
+
+          return [true, undefined];
         } catch (err) {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
@@ -473,8 +502,10 @@ export class PersistenceManager {
               fingerprint: ['persistence-error', tag],
             });
           }
-          this.#notifySetFailed();
+          const normalizedError = this.#normalizePersistError(err);
+          this.#notifySetFailed(normalizedError.message);
           log.error('error setting state in local store:', err);
+          return [false, normalizedError];
         } finally {
           this.#isExtensionInitialized = true;
         }
@@ -499,7 +530,7 @@ export class PersistenceManager {
     this.#pendingPairs.set(key, value);
   }
 
-  async persist() {
+  async persist(): Promise<[boolean, Error | undefined]> {
     if (this.storageKind !== 'split') {
       throw new Error(
         'MetaMask - cannot use `persist` when storageKind is not "split"',
@@ -528,7 +559,7 @@ export class PersistenceManager {
     this.#currentLockAbortController?.abort();
     this.#currentLockAbortController = abortController;
 
-    await navigator.locks.request(
+    return await navigator.locks.request(
       STATE_LOCK,
       { mode: 'exclusive', signal: abortController.signal },
       async () => {
@@ -586,6 +617,8 @@ export class PersistenceManager {
               },
             );
           }
+
+          return [true, undefined];
         } catch (err) {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
@@ -602,8 +635,10 @@ export class PersistenceManager {
               fingerprint: ['persistence-error', tag],
             });
           }
-          this.#notifySetFailed();
+          const normalizedError = this.#normalizePersistError(err);
+          this.#notifySetFailed(normalizedError.message);
           log.error('error setting state in local store:', err);
+          return [false, normalizedError];
         } finally {
           this.#isExtensionInitialized = true;
         }
@@ -758,6 +793,10 @@ export class PersistenceManager {
         this.#metadata = undefined;
         this.storageKind = PersistenceManager.defaultStorageKind;
         this.cleanUpMostRecentRetrievedState();
+
+        // Clear failure tracking state to prevent stale errors from being reported
+        this.#onSetFailed = undefined;
+        this.#errorTypeBeforeCallbackRegistered = null;
       },
     );
   }
@@ -840,33 +879,68 @@ export class PersistenceManager {
    * occur.
    */
   async migrateToSplitState(state: MetaMaskStateType) {
-    return runTrackedTask('migrateToSplitState', async () => {
-      if (this.storageKind === 'split') {
-        log.debug(
-          '[Split State]: Storage is already split, skipping migration',
-        );
-        return;
+    try {
+      type MigrationStatus = 'skipped' | 'succeeded';
+
+      const migrationStatus = await runTrackedTask<MigrationStatus>(
+        'migrateToSplitState',
+        async () => {
+          if (this.storageKind === 'split') {
+            log.debug(
+              '[Split State]: Storage is already split, skipping migration',
+            );
+            return 'skipped';
+          }
+
+          if (!this.#metadata) {
+            throw new Error(
+              'MetaMask - metadata must be set before calling "migrateToSplitState"',
+            );
+          }
+
+          this.storageKind = 'split';
+          const metadata = structuredClone(this.#metadata);
+          metadata.storageKind = 'split';
+          this.setMetadata(metadata);
+          for (const [key, value] of Object.entries(state)) {
+            this.update(key, value);
+          }
+
+          // mark data key for deletion
+          this.update('data', undefined);
+
+          log.debug('[Split State]: Migrating to split state storage');
+          // persist doesn't throw when it fails, so we need to check the return
+          // value for an error condition and throw it in that case.
+          const [didPersist, persistError] = await this.persist();
+          if (!didPersist) {
+            throw (
+              persistError ??
+              new Error(
+                'MetaMask - persist failed during "migrateToSplitState"',
+              )
+            );
+          }
+
+          return 'succeeded';
+        },
+      );
+
+      if (migrationStatus === 'succeeded') {
+        trackEarlySegmentEvent({
+          state,
+          event: MetaMetricsEventName.StateMigrationSucceeded,
+          category: MetaMetricsEventCategory.StateMigration,
+        });
       }
+    } catch (error) {
+      trackEarlySegmentEvent({
+        state,
+        event: MetaMetricsEventName.StateMigrationFailed,
+        category: MetaMetricsEventCategory.StateMigration,
+      });
 
-      if (!this.#metadata) {
-        throw new Error(
-          'MetaMask - metadata must be set before calling "migrateToSplitState"',
-        );
-      }
-
-      this.storageKind = 'split';
-      const metadata = structuredClone(this.#metadata);
-      metadata.storageKind = 'split';
-      this.setMetadata(metadata);
-      for (const [key, value] of Object.entries(state)) {
-        this.update(key, value);
-      }
-
-      // mark data key for deletion
-      this.update('data', undefined);
-
-      log.debug('[Split State]: Migrating to split state storage');
-      await this.persist();
-    });
+      throw error;
+    }
   }
 }

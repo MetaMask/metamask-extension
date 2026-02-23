@@ -30,6 +30,7 @@ import {
   TokenRatesController,
   TokensController,
 } from '@metamask/assets-controllers';
+import { AssetsController } from '@metamask/assets-controller';
 import { MultichainNetworkController } from '@metamask/multichain-network-controller';
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
 import {
@@ -109,6 +110,7 @@ import DecryptMessageController from '../controllers/decrypt-message';
 import EncryptionPublicKeyController from '../controllers/encryption-public-key';
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
+import { StaticAssetsController } from '../controllers/static-assets-controller';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -123,6 +125,7 @@ export type Controller =
   | AppMetadataController
   | ApprovalController
   | AppStateController
+  | AssetsController
   | AuthenticationController
   | BridgeController
   | BridgeStatusController
@@ -207,6 +210,7 @@ export type Controller =
   | MultichainAccountService
   | NetworkEnablementController
   | ClaimsService
+  | StaticAssetsController
   | ProfileMetricsController
   | ProfileMetricsService
   | ConnectivityController;
@@ -224,6 +228,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   AppMetadataController['state'] &
   ApprovalController['state'] &
   AppStateController['state'] &
+  AssetsController['state'] &
   AuthenticationController['state'] &
   BridgeController['state'] &
   BridgeStatusController['state'] &
@@ -276,6 +281,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   TokenDetectionController['state'] &
   TokenListController['state'] &
   TokensController['state'] &
+  StaticAssetsController['state'] &
   TransactionController['state'] &
   TransactionPayController['state'] &
   UserOperationController['state'] &

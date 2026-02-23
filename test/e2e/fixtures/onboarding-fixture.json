@@ -36,8 +36,11 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentAppVersion": "13.17.0",
-      "currentMigrationVersion": 189,
+      "currentMigrationVersion": 195,
+      "firstTimeInfo": {
+        "date": 0,
+        "version": "13.17.0"
+      },
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -63,6 +66,7 @@
       "nftsDetectionNoticeDismissed": false,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
+      "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": false,
       "productTour": "accountIcon",
@@ -1919,19 +1923,20 @@
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
         "avatarType": "maskicon",
+        "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "hideZeroBalanceTokens": false,
         "petnamesEnabled": true,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
+        "showDefaultAddress": false,
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": false,
         "showNativeTokenAsMainBalance": false,
         "showTestNetworks": false,
         "skipDeepLinkInterstitial": false,
-        "smartAccountOptIn": true,
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
         "tokenNetworkFilter": {},
@@ -1944,6 +1949,7 @@
         "useSidePanelAsDefault": false
       },
       "referrals": {
+        "gmx": {},
         "hyperliquid": {}
       },
       "securityAlertsEnabled": true,
@@ -1976,6 +1982,7 @@
     "RewardsController": {
       "rewardsAccounts": {},
       "rewardsActiveAccount": null,
+      "rewardsPointsEstimateHistory": [],
       "rewardsSeasonStatuses": {},
       "rewardsSeasons": {},
       "rewardsSubscriptionTokens": {},
@@ -2127,10 +2134,6 @@
     "TokenBalancesController": {
       "tokenBalances": {}
     },
-    "TokenListController": {
-      "preventPollingOnNetworkRestart": false,
-      "tokensChainsCache": {}
-    },
     "TokenRatesController": {
       "marketData": {}
     },
@@ -2158,6 +2161,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 189
+    "version": 195
   }
 }

@@ -211,3 +211,7 @@ app/scripts/lib/middleware/                                           @MetaMask/
 app/scripts/lib/createOriginThrottlingMiddleware.ts                   @MetaMask/wallet-integrations
 app/scripts/lib/createMainFrameOriginMiddleware.ts                    @MetaMask/wallet-integrations
 app/scripts/lib/createTracingMiddleware.ts                            @MetaMask/wallet-integrations
+
+# mUSD
+ui/components/app/musd                              @MetaMask/metamask-earn
+ui/hooks/musd                                       @MetaMask/metamask-earn

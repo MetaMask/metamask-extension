@@ -235,8 +235,6 @@ class ConsoleBaselineReporter {
 
     const baseline = {
       files: mergedFiles,
-      generated: new Date().toISOString(),
-      nodeVersion: process.version,
     };
 
     if (JSON.stringify(mergedFiles) === JSON.stringify(this.baseline.files)) {

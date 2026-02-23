@@ -407,9 +407,6 @@
   "next": {
     "message": "Edasi"
   },
-  "noConversionRateAvailable": {
-    "message": "Ühtegi vahetuskurssi pole saadaval"
-  },
   "noWebcamFound": {
     "message": "Teie arvuti veebikaamerat ei leitud. Proovige uuesti."
   },

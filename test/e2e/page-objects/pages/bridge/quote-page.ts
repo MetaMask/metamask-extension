@@ -62,8 +62,39 @@ class BridgeQuotePage {
 
   private switchTokensButton = '[data-testid="switch-tokens"]';
 
+  private slippageEditButton = '[data-testid="slippage-edit-button"]';
+
+  private slippageCustomButton =
+    '[data-testid="bridge__tx-settings-modal-custom-button"]';
+
+  private slippageCustomInput =
+    'input[data-testid="bridge__tx-settings-modal-custom-input"]';
+
+  private networkNameSelector = (network: string) =>
+    `[data-testid="${network}"]`;
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * Checks that the bridge quote page is loaded.
+   *
+   * @param timeout - Optional timeout in milliseconds. Defaults to 10000.
+   */
+  async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.sourceAssetPickerButton, {
+        timeout,
+      });
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for bridge quote page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Bridge quote page is loaded');
   }
 
   enterBridgeQuote = async (quote: BridgeQuote) => {
@@ -82,8 +113,6 @@ class BridgeQuotePage {
         });
       }
     }
-    // QTY
-    await this.driver.fill(this.sourceAmount, quote.amount);
 
     // Destination
     if (quote.tokenTo || quote.toChain) {
@@ -112,6 +141,9 @@ class BridgeQuotePage {
         });
       }
     }
+
+    // QTY
+    await this.driver.fill(this.sourceAmount, quote.amount);
     await this.driver.assertElementNotPresent(
       {
         tag: 'p',
@@ -216,6 +248,29 @@ class BridgeQuotePage {
 
   async switchTokens(): Promise<void> {
     await this.driver.clickElement(this.switchTokensButton);
+  }
+
+  async checkTokenRiskWarningIsDisplayed(
+    title: string,
+    description: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({ text: title }, { timeout: 30000 });
+    await this.driver.waitForSelector({ text: description });
+  }
+
+  async setCustomSlippage(value: string): Promise<void> {
+    await this.driver.clickElement(this.slippageEditButton);
+    await this.driver.clickElement(this.slippageCustomButton);
+    await this.driver.fill(this.slippageCustomInput, value);
+    await this.driver.executeScript(`
+      const input = document.querySelector('${this.slippageCustomInput}');
+      if (input) { input.blur(); }
+    `);
+  }
+
+  async selectNetwork(network: string): Promise<void> {
+    await this.driver.clickElement(this.networkSelector);
+    await this.driver.clickElement(this.networkNameSelector(network));
   }
 }
 

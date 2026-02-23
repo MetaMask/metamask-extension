@@ -544,6 +544,12 @@ export const toHumanReadableTime = (t, milliseconds) => {
   if (milliseconds === undefined || milliseconds === null) {
     return '';
   }
+
+  if (milliseconds < 1000) {
+    const decimalSeconds = (milliseconds / 1000).toFixed(1);
+    return t('gasTimingSecondsShort', [decimalSeconds]);
+  }
+
   const seconds = Math.ceil(milliseconds / 1000);
   if (seconds <= SECOND_CUTOFF) {
     return t('gasTimingSecondsShort', [seconds]);

@@ -33,8 +33,6 @@ type TrackEventHook = (event: TrackingEventPayload) => void;
  * initialization purposes only.
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
- * @param request.removeAllConnections - Function to remove all connections for
- * a given origin.
  * @param request.preinstalledSnaps - The list of preinstalled Snaps.
  * @returns The initialized controller.
  */
@@ -46,7 +44,6 @@ export const SnapControllerInit: ControllerInitFunction<
   initMessenger,
   controllerMessenger,
   persistedState,
-  removeAllConnections,
   preinstalledSnaps,
 }) => {
   const allowLocalSnaps = getBooleanFlag(process.env.ALLOW_LOCAL_SNAPS);
@@ -128,8 +125,6 @@ export const SnapControllerInit: ControllerInitFunction<
       ...ExcludedSnapPermissions,
       ...ExcludedSnapEndowments,
     },
-
-    closeAllConnections: removeAllConnections,
 
     // @ts-expect-error: `persistedState.SnapController` is not compatible with
     // the expected type.

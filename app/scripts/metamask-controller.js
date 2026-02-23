@@ -6,6 +6,7 @@ import {
   createScaffoldMiddleware,
   JsonRpcEngine,
 } from '@metamask/json-rpc-engine';
+import { asLegacyMiddleware } from '@metamask/json-rpc-engine/v2';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
@@ -37,6 +38,7 @@ import {
 } from '@metamask/selected-network-controller';
 
 import {
+  createWalletSnapPermissionMiddleware,
   createPreinstalledSnapsMiddleware,
   createSnapsMethodMiddleware,
   SnapEndowments,
@@ -141,7 +143,6 @@ import {
   isMultichainAccountsFeatureEnabled,
 } from '../../shared/lib/multichain-accounts/remote-feature-flag';
 import { captureException } from '../../shared/lib/sentry';
-import { TokenStandard } from '../../shared/constants/transaction';
 import {
   CHAIN_IDS,
   CHAIN_SPEC_URL,
@@ -225,7 +226,14 @@ import {
 } from '../../shared/modules/shield';
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
 import { createSentryError } from '../../shared/modules/error';
-import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
+import {
+  toHardwareWalletError,
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../ui/contexts/hardware-wallets';
+import {
+  isAssetsUnifyStateFeatureEnabled,
+  ASSETS_UNIFY_STATE_VERSION_1,
+} from '../../shared/lib/assets-unify-state/remote-feature-flag';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
@@ -264,6 +272,7 @@ import {
   getMethodDataName,
   previousValueComparator,
   initializeRpcProviderDomains,
+  isPublicEndpointUrl,
   getPlatform,
   getBooleanFlag,
 } from './lib/util';
@@ -325,6 +334,7 @@ import {
 } from './controller-init/multichain';
 import {
   AssetsContractControllerInit,
+  AssetsControllerInit,
   NetworkOrderControllerInit,
   NftControllerInit,
   NftDetectionControllerInit,
@@ -381,6 +391,7 @@ import { TokenListControllerInit } from './controller-init/token-list-controller
 import { TokenDetectionControllerInit } from './controller-init/token-detection-controller-init';
 import { TokensControllerInit } from './controller-init/tokens-controller-init';
 import { TokenBalancesControllerInit } from './controller-init/token-balances-controller-init';
+import { StaticAssetsControllerInit } from './controller-init/static-assets-controller-init';
 import { RatesControllerInit } from './controller-init/rates-controller-init';
 import { CurrencyRateControllerInit } from './controller-init/currency-rate-controller-init';
 import { EnsControllerInit } from './controller-init/confirmations/ens-controller-init';
@@ -490,8 +501,14 @@ export default class MetamaskController extends EventEmitter {
     this.platform = opts.platform;
     this.notificationManager = opts.notificationManager;
     const initState = opts.initState || {};
+    const assetsUnifyFlag =
+      initState?.RemoteFeatureFlagController?.remoteFeatureFlags
+        ?.assetsUnifyState;
+    const shouldInitAssetsController = isAssetsUnifyStateFeatureEnabled(
+      assetsUnifyFlag,
+      ASSETS_UNIFY_STATE_VERSION_1,
+    );
     const version = process.env.METAMASK_VERSION;
-    this.recordFirstTimeInfo(initState);
     this.featureFlags = opts.featureFlags;
 
     // this keeps track of how many "controllerStream" connections are open
@@ -628,6 +645,7 @@ export default class MetamaskController extends EventEmitter {
       TokenDetectionController: TokenDetectionControllerInit,
       TokensController: TokensControllerInit,
       TokenBalancesController: TokenBalancesControllerInit,
+      StaticAssetsController: StaticAssetsControllerInit,
       // MultichainNetworkController and NetworkEnablementController must be initialized before TokenRatesController
       // because TokenRatesController depends on NetworkEnablementController:getState during construction.
       MultichainNetworkController: MultichainNetworkControllerInit,
@@ -673,6 +691,9 @@ export default class MetamaskController extends EventEmitter {
       RewardsController: RewardsControllerInit,
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
+      ...(shouldInitAssetsController
+        ? { AssetsController: AssetsControllerInit }
+        : {}),
     };
 
     const {
@@ -740,6 +761,7 @@ export default class MetamaskController extends EventEmitter {
     this.nftController = controllersByName.NftController;
     this.nftDetectionController = controllersByName.NftDetectionController;
     this.assetsContractController = controllersByName.AssetsContractController;
+    this.assetsController = controllersByName.AssetsController;
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     this.multichainAssetsController =
       controllersByName.MultichainAssetsController;
@@ -752,6 +774,7 @@ export default class MetamaskController extends EventEmitter {
     this.multichainAccountService = controllersByName.MultichainAccountService;
     ///: END:ONLY_INCLUDE_IF
     this.tokenBalancesController = controllersByName.TokenBalancesController;
+    this.staticAssetsController = controllersByName.StaticAssetsController;
     this.tokenListController = controllersByName.TokenListController;
     this.tokenDetectionController = controllersByName.TokenDetectionController;
     this.tokensController = controllersByName.TokensController;
@@ -798,6 +821,10 @@ export default class MetamaskController extends EventEmitter {
         'MetaMetricsController:trackEvent',
       ),
     });
+
+    // Record installation info if this is the first time the extension is running.
+    // This captures the version and date when MetaMask was first installed.
+    this.appMetadataController.maybeRecordFirstTimeInfo(version);
 
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
@@ -939,7 +966,15 @@ export default class MetamaskController extends EventEmitter {
           firstTimeFlowType,
         } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
-          const { address } = this.accountsController.getSelectedAccount();
+          // Safely read the selected account and entropy id. In some test or
+          // edge flows the selected account may not yet be available.
+          const selected = this.accountsController.getSelectedAccount();
+          const address = selected?.address;
+          // After onboarding, default selected account will be an EVM
+          // account, and those accounts are `Bip44Account`s which should have
+          // an `entropy` property.
+          // If not, discovery will fallback to the primary keyring ID anyway.
+          const id = selected?.options?.entropy?.id;
 
           if (this.isMultichainAccountsFeatureState2Enabled()) {
             ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -953,7 +988,7 @@ export default class MetamaskController extends EventEmitter {
             // importing multiple SRPs on social login rehydration
             await this._importAccountsWithBalances();
           } else if (this.isMultichainAccountsFeatureState2Enabled()) {
-            await this.discoverAndCreateAccounts();
+            await this.discoverAndCreateAccounts(id);
           } else {
             await this._addAccountsWithBalance();
           }
@@ -982,6 +1017,9 @@ export default class MetamaskController extends EventEmitter {
       wallet_getCapabilities: createAsyncMiddleware(async (req, res) =>
         walletGetCapabilities(req, res, {
           getAccounts,
+          getPermittedAccountsForOrigin: async () => {
+            return getAccounts({ origin: req.origin });
+          },
           getCapabilities: getCapabilities.bind(
             null,
             {
@@ -1006,6 +1044,9 @@ export default class MetamaskController extends EventEmitter {
       wallet_sendCalls: createAsyncMiddleware(async (req, res) => {
         return await walletSendCalls(req, res, {
           getAccounts,
+          getPermittedAccountsForOrigin: async () => {
+            return getAccounts({ origin: req.origin });
+          },
           processSendCalls: processSendCalls.bind(
             null,
             {
@@ -1018,6 +1059,9 @@ export default class MetamaskController extends EventEmitter {
               getDismissSmartAccountSuggestionEnabled: () =>
                 this.preferencesController.state.preferences
                   .dismissSmartAccountSuggestionEnabled,
+              getPermittedAccountsForOrigin: async () => {
+                return getAccounts({ origin: req.origin });
+              },
               isAtomicBatchSupported:
                 this.txController.isAtomicBatchSupported.bind(
                   this.txController,
@@ -1257,8 +1301,12 @@ export default class MetamaskController extends EventEmitter {
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
       TokenBalancesController: this.tokenBalancesController,
+      StaticAssetsController: this.staticAssetsController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
+      ...(this.assetsController
+        ? { AssetsController: this.assetsController }
+        : {}),
       PhishingController: this.phishingController,
       SelectedNetworkController: this.selectedNetworkController,
       LoggingController: this.loggingController,
@@ -1314,8 +1362,12 @@ export default class MetamaskController extends EventEmitter {
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
         TokenBalancesController: this.tokenBalancesController,
+        StaticAssetsController: this.staticAssetsController,
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,
+        ...(this.assetsController
+          ? { AssetsController: this.assetsController }
+          : {}),
         SelectedNetworkController: this.selectedNetworkController,
         LoggingController: this.loggingController,
         MultichainRatesController: this.multichainRatesController,
@@ -2457,6 +2509,7 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       multichainAssetsRatesController,
       ///: END:ONLY_INCLUDE_IF
+      staticAssetsController,
     } = this;
 
     return {
@@ -2501,6 +2554,8 @@ export default class MetamaskController extends EventEmitter {
         getProviderConfig({
           metamask: this.networkController.state,
         }),
+      isPublicEndpointUrl: (endpointUrl) =>
+        isPublicEndpointUrl(endpointUrl, this.opts.infuraProjectId),
       grantPermissionsIncremental:
         this.permissionController.grantPermissionsIncremental.bind(
           this.permissionController,
@@ -2705,10 +2760,13 @@ export default class MetamaskController extends EventEmitter {
       connectHardware: this.connectHardware.bind(this),
       forgetDevice: this.forgetDevice.bind(this),
       checkHardwareStatus: this.checkHardwareStatus.bind(this),
+      getHdPathForLedgerKeyring: this.getHdPathForLedgerKeyring.bind(this),
       unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
       attemptLedgerTransportCreation:
         this.attemptLedgerTransportCreation.bind(this),
       getAppNameAndVersion: this.getAppNameAndVersion.bind(this),
+      getLedgerPublicKey: this.getLedgerPublicKey.bind(this),
+      getLedgerAppConfiguration: this.getLedgerAppConfiguration.bind(this),
 
       // qr hardware devices
       completeQrCodeScan:
@@ -2912,6 +2970,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setBrowserEnvironment.bind(appStateController),
       setDefaultHomeActiveTabName:
         appStateController.setDefaultHomeActiveTabName.bind(appStateController),
+      removeDeferredDeepLink:
+        appStateController.removeDeferredDeepLink.bind(appStateController),
       setConnectedStatusPopoverHasBeenShown:
         appStateController.setConnectedStatusPopoverHasBeenShown.bind(
           appStateController,
@@ -2952,8 +3012,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setOutdatedBrowserWarningLastShown.bind(
           appStateController,
         ),
-      setIsUpdateAvailable:
-        appStateController.setIsUpdateAvailable.bind(appStateController),
+      setPendingExtensionVersion:
+        appStateController.setPendingExtensionVersion.bind(appStateController),
       setUpdateModalLastDismissedAt:
         appStateController.setUpdateModalLastDismissedAt.bind(
           appStateController,
@@ -3022,6 +3082,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShieldEndingToastLastClickedOrClosed.bind(
           appStateController,
         ),
+      setShieldSubscriptionError:
+        appStateController.setShieldSubscriptionError.bind(appStateController),
       setPna25Acknowledged:
         appStateController.setPna25Acknowledged.bind(appStateController),
       setAppActiveTab:
@@ -3094,8 +3156,6 @@ export default class MetamaskController extends EventEmitter {
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
-      generateNewMnemonicAndAddToVault:
-        this.generateNewMnemonicAndAddToVault.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
       exportAccount: this.exportAccount.bind(this),
 
@@ -3127,11 +3187,8 @@ export default class MetamaskController extends EventEmitter {
             waitForSubmit: true,
           }),
         ),
-      createTransactionEventFragment:
-        createTransactionEventFragmentWithTxId.bind(
-          null,
-          this.getTransactionMetricsRequest(),
-        ),
+      upsertTransactionUIMetricsFragment:
+        this.upsertTransactionUIMetricsFragment.bind(this),
       setTransactionActive:
         txController.setTransactionActive.bind(txController),
       // decryptMessageController
@@ -3422,6 +3479,8 @@ export default class MetamaskController extends EventEmitter {
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
       resolvePendingApproval: this.resolvePendingApproval,
+      approveHardwareWalletTransaction:
+        this.approveHardwareWalletTransaction.bind(this),
 
       // Notifications
       resetViewedNotifications: announcementController.resetViewed.bind(
@@ -3478,6 +3537,13 @@ export default class MetamaskController extends EventEmitter {
           tokenBalancesController,
         ),
 
+      staticAssetsStartPolling: staticAssetsController.startPolling.bind(
+        staticAssetsController,
+      ),
+      staticAssetsStopPollingByPollingToken:
+        staticAssetsController.stopPollingByPollingToken.bind(
+          staticAssetsController,
+        ),
       updateBalances: tokenBalancesController.updateBalances.bind(
         tokenBalancesController,
       ),
@@ -3526,6 +3592,17 @@ export default class MetamaskController extends EventEmitter {
         nftDetectionController,
       ),
 
+      // Assets Controller - accounts passed from UI; options may include chainIds, assetTypes
+      getAssets: (accounts, options) => {
+        if (!this.assetsController) {
+          return Promise.resolve();
+        }
+        return this.assetsController.getAssets(accounts, {
+          ...options,
+          forceUpdate: true,
+        });
+      },
+
       /** Token Detection V2 */
       addDetectedTokens:
         tokensController.addDetectedTokens.bind(tokensController),
@@ -3534,6 +3611,13 @@ export default class MetamaskController extends EventEmitter {
       getBalancesInSingleCall: (...args) =>
         this.assetsContractController.getBalancesInSingleCall(...args),
 
+      // New Assets Controller
+      hideAsset: (assetId) => this.assetsController.hideAsset(assetId),
+      unhideAsset: (assetId) => this.assetsController.unhideAsset(assetId),
+      addCustomAsset: (accountId, assetId) =>
+        this.assetsController.addCustomAsset(accountId, assetId),
+      removeCustomAsset: (accountId, assetId) =>
+        this.assetsController.removeCustomAsset(accountId, assetId),
       // Authentication Controller
       performSignIn: authenticationController.performSignIn.bind(
         authenticationController,
@@ -3704,14 +3788,38 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  async resetWallet() {
+  /**
+   * Reset the wallet, restart the from the onboarding flow
+   *
+   * @param {boolean} restoreOnly - Whether to only restore the vault, without resetting the onboarding.
+   * @returns void
+   */
+  async resetWallet(restoreOnly = false) {
+    // sign out from Authentication service and clear the Session Data
+    this.authenticationController.performSignOut();
+
     // clear SeedlessOnboardingController state
     this.seedlessOnboardingController.clearState();
 
-    // reset onboarding state
-    this.onboardingController.resetOnboarding();
+    // stop subscription polling
+    this.subscriptionController.stopAllPolling();
 
-    this.appStateController.setIsWalletResetInProgress(true);
+    // clear States
+    this.subscriptionController.clearState();
+    this.shieldController.clearState();
+    this.claimsController.clearState();
+
+    // clear contacts (address book)
+    this.addressBookController.clear();
+
+    // reset preferences to defaults
+    this.preferencesController.resetState();
+
+    if (!restoreOnly) {
+      // reset onboarding state
+      this.onboardingController.resetOnboarding();
+      this.appStateController.setIsWalletResetInProgress(true);
+    }
   }
 
   async exportAccount(address, password) {
@@ -3744,14 +3852,14 @@ export default class MetamaskController extends EventEmitter {
 
     // boolean to check if the token is an ERC20
     const tokenDetailsStandardIsERC20 =
-      isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC20) ||
+      isEqualCaseInsensitive(tokenDetails.standard, ERC20) ||
       tokenDetails.erc20 === true;
 
     // boolean to check if the token is an NFT
     const noEvidenceThatTokenIsAnNFT =
       !tokenId &&
-      !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC1155) &&
-      !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC721) &&
+      !isEqualCaseInsensitive(tokenDetails.standard, ERC1155) &&
+      !isEqualCaseInsensitive(tokenDetails.standard, ERC721) &&
       !tokenDetails.erc721;
 
     // boolean to check if the token is an ERC20 like
@@ -3773,7 +3881,7 @@ export default class MetamaskController extends EventEmitter {
         details = {
           address,
           balance,
-          standard: TokenStandard.ERC20,
+          standard: ERC20,
           decimals: tokenDetails.decimals,
           symbol: tokenDetails.symbol,
         };
@@ -3803,7 +3911,7 @@ export default class MetamaskController extends EventEmitter {
     if (details) {
       const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
         details.standard,
-        TokenStandard.ERC1155,
+        ERC1155,
       );
 
       if (tokenDetailsStandardIsERC1155) {
@@ -3869,13 +3977,13 @@ export default class MetamaskController extends EventEmitter {
     };
 
     const tokenDetailsStandardIsERC20 =
-      isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC20) ||
+      isEqualCaseInsensitive(tokenDetails.standard, ERC20) ||
       tokenDetails.erc20 === true;
 
     const noEvidenceThatTokenIsAnNFT =
       !tokenId &&
-      !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC1155) &&
-      !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC721) &&
+      !isEqualCaseInsensitive(tokenDetails.standard, ERC1155) &&
+      !isEqualCaseInsensitive(tokenDetails.standard, ERC721) &&
       !tokenDetails.erc721;
 
     const otherDetailsAreERC20Like =
@@ -3901,7 +4009,7 @@ export default class MetamaskController extends EventEmitter {
         details = {
           address,
           balance,
-          standard: TokenStandard.ERC20,
+          standard: ERC20,
           decimals: tokenDetails.decimals,
           symbol: tokenDetails.symbol,
         };
@@ -3941,7 +4049,7 @@ export default class MetamaskController extends EventEmitter {
     if (details) {
       const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
         details.standard,
-        TokenStandard.ERC1155,
+        ERC1155,
       );
 
       if (tokenDetailsStandardIsERC1155) {
@@ -4481,7 +4589,10 @@ export default class MetamaskController extends EventEmitter {
         this.txController.clearUnapprovedTransactions();
       }
 
-      await this.keyringController.createNewVaultAndKeychain(password);
+      await this.multichainAccountService.createMultichainAccountWallet({
+        type: 'create',
+        password,
+      });
 
       // set is resetting wallet in progress to false, after new vault and keychain are created
       this.appStateController.setIsWalletResetInProgress(false);
@@ -4569,10 +4680,9 @@ export default class MetamaskController extends EventEmitter {
       // Ensure the snap keyring is initialized
       await this.getSnapKeyring();
 
-      const wallet = this.controllerMessenger.call(
-        'MultichainAccountService:getMultichainAccountWallet',
-        { entropySource: keyringIdToDiscover },
-      );
+      const wallet = this.multichainAccountService.getMultichainAccountWallet({
+        entropySource: keyringIdToDiscover,
+      });
 
       const result = await wallet.discoverAccounts();
 
@@ -4618,31 +4728,13 @@ export default class MetamaskController extends EventEmitter {
     } = options;
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
-      // FIXME: The `KeyringController` does not check yet for duplicated accounts with HD keyrings, see: https://github.com/MetaMask/core/issues/5411
-      const alreadyImportedSrp = this.keyringController
-        .getKeyringsByType(KeyringTypes.hd)
-        .some((keyring) => {
-          return (
-            Buffer.from(
-              this._convertEnglishWordlistIndicesToCodepoints(keyring.mnemonic),
-            ).toString('utf8') === mnemonic
-          );
+      const { entropySource: id } =
+        await this.multichainAccountService.createMultichainAccountWallet({
+          type: 'import',
+          mnemonic: this._convertMnemonicToWordlistIndices(
+            Buffer.from(mnemonic, 'utf8'),
+          ),
         });
-
-      if (alreadyImportedSrp) {
-        throw new Error(
-          'This Secret Recovery Phrase has already been imported.',
-        );
-      }
-
-      const { id } = await this.keyringController.addNewKeyring(
-        KeyringTypes.hd,
-        {
-          mnemonic,
-          numberOfAccounts: 1,
-        },
-      );
 
       const [newAccountAddress] = await this.keyringController.withKeyring(
         { id },
@@ -4658,9 +4750,10 @@ export default class MetamaskController extends EventEmitter {
             shouldCreateSocialBackup,
           );
         } catch (err) {
-          // handle seedless controller import error by reverting keyring controller mnemonic import
-          // KeyringController.removeAccount will remove keyring when it's emptied, currently there are no other method in keyring controller to remove keyring
-          await this.keyringController.removeAccount(newAccountAddress);
+          await this.multichainAccountService.removeMultichainAccountWallet(
+            id,
+            newAccountAddress,
+          );
           throw err;
         }
       }
@@ -4834,37 +4927,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Generates a new mnemonic phrase and adds it to the vault, creating a new HD keyring.
-   * This method automatically creates one account associated with the new keyring.
-   * The method is protected by a mutex to prevent concurrent vault modifications.
-   *
-   * @async
-   * @returns {Promise<string>} The address of the newly created account
-   * @throws Will throw an error if keyring creation fails
-   */
-  async generateNewMnemonicAndAddToVault() {
-    const releaseLock = await this.createVaultMutex.acquire();
-    try {
-      // addNewKeyring auto creates 1 account.
-      const { id } = await this.keyringController.addNewKeyring(
-        KeyringTypes.hd,
-      );
-      const [newAccount] = await this.keyringController.withKeyring(
-        { id },
-        async ({ keyring }) => keyring.getAccounts(),
-      );
-      const account = this.accountsController.getAccountByAddress(newAccount);
-      this.accountsController.setSelectedAccount(account.id);
-
-      // NOTE: No need to update balances here since we're generating a fresh seed.
-
-      return newAccount;
-    } finally {
-      releaseLock();
-    }
-  }
-
-  /**
    * Create a new Vault and restore an existent keyring.
    *
    * @param {string} password
@@ -4903,10 +4965,13 @@ export default class MetamaskController extends EventEmitter {
       // create new vault
       const seedPhraseAsUint8Array =
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
-      await this.keyringController.createNewVaultAndRestore(
-        password,
-        seedPhraseAsUint8Array,
-      );
+
+      const { entropySource: id } =
+        await this.multichainAccountService.createMultichainAccountWallet({
+          type: 'restore',
+          password,
+          mnemonic: seedPhraseAsUint8Array,
+        });
 
       // set is resetting wallet in progress to false, after new vault and keychain are created
       this.appStateController.setIsWalletResetInProgress(false);
@@ -4947,7 +5012,7 @@ export default class MetamaskController extends EventEmitter {
           await this.getSnapKeyring();
           ///: END:ONLY_INCLUDE_IF
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-          await this.discoverAndCreateAccounts();
+          await this.discoverAndCreateAccounts(id);
         } else {
           await this._addAccountsWithBalance();
         }
@@ -5485,6 +5550,13 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
+  async getLedgerAppConfiguration() {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger },
+      async (keyring) => await keyring.bridge.getAppConfiguration(),
+    );
+  }
+
   /**
    * Fetch account list from a hardware device.
    *
@@ -5527,6 +5599,27 @@ export default class MetamaskController extends EventEmitter {
       async (keyring) => {
         return keyring.isUnlocked();
       },
+    );
+  }
+
+  /**
+   * Get the hd path currently configured on a hardware keyring.
+   *
+   * @returns {Promise<string>}
+   */
+  async getHdPathForLedgerKeyring() {
+    return this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger },
+      async (keyring) => {
+        return await keyring.hdPath;
+      },
+    );
+  }
+
+  async getLedgerPublicKey(hdPath) {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger },
+      async (keyring) => await keyring.bridge.getPublicKey({ hdPath }),
     );
   }
 
@@ -5845,9 +5938,7 @@ export default class MetamaskController extends EventEmitter {
       if (!account) {
         return undefined;
       }
-      const context = this.multichainAccountService.getAccountContext(
-        account.id,
-      );
+      const context = this.accountTreeController.getAccountContext(account.id);
       // Get EOA account as it's the only account having lastSelected set
       return context?.group?.get({ scopes: [EthScope.Eoa] })?.metadata
         .lastSelected;
@@ -7075,10 +7166,6 @@ export default class MetamaskController extends EventEmitter {
   setupCommonMiddlewareHooks(origin) {
     return {
       // Miscellaneous
-      addSubjectMetadata:
-        this.subjectMetadataController.addSubjectMetadata.bind(
-          this.subjectMetadataController,
-        ),
       getProviderState: this.getProviderState.bind(this),
       handleWatchAssetRequest: this.handleWatchAssetRequest.bind(this),
       requestUserApproval:
@@ -7340,6 +7427,8 @@ export default class MetamaskController extends EventEmitter {
       );
     }
 
+    engine.push(asLegacyMiddleware(createWalletSnapPermissionMiddleware()));
+
     // Legacy RPC method that needs to be implemented _ahead of_ the permission
     // middleware.
     engine.push(
@@ -7394,7 +7483,6 @@ export default class MetamaskController extends EventEmitter {
     // They must nevertheless be placed _behind_ the permission middleware.
     engine.push(
       createEip1193MethodMiddleware({
-        subjectType,
         ...this.setupCommonMiddlewareHooks(origin),
 
         // Miscellaneous
@@ -7832,10 +7920,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     engine.push(
-      createMultichainMethodMiddleware({
-        subjectType,
-        ...this.setupCommonMiddlewareHooks(origin),
-      }),
+      createMultichainMethodMiddleware(this.setupCommonMiddlewareHooks(origin)),
     );
 
     engine.push(this.metamaskMiddleware);
@@ -7971,24 +8056,6 @@ export default class MetamaskController extends EventEmitter {
     if (Object.keys(connections).length === 0) {
       delete this.connections[origin];
     }
-  }
-
-  /**
-   * Closes all connections for the given origin, and removes the references
-   * to them.
-   * Ignores unknown origins.
-   *
-   * @param {string} origin - The origin string.
-   */
-  removeAllConnections(origin) {
-    const connections = this.connections[origin];
-    if (!connections) {
-      return;
-    }
-
-    Object.keys(connections).forEach((id) => {
-      this.removeConnection(origin, id);
-    });
   }
 
   /**
@@ -8234,31 +8301,62 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  getTransactionUIMetricsFragmentId(transactionId) {
+    return `transaction-ui-${transactionId}`;
+  }
+
+  getTransactionUIMetricsFragment(transactionId) {
+    return this.controllerMessenger.call(
+      'MetaMetricsController:getEventFragmentById',
+      this.getTransactionUIMetricsFragmentId(transactionId),
+    );
+  }
+
+  upsertTransactionUIMetricsFragment(transactionId, payload) {
+    if (!transactionId || !payload) {
+      return;
+    }
+
+    const fragmentId = this.getTransactionUIMetricsFragmentId(transactionId);
+    const existingFragment =
+      this.getTransactionUIMetricsFragment(transactionId);
+
+    if (existingFragment) {
+      this.controllerMessenger.call(
+        'MetaMetricsController:updateEventFragment',
+        fragmentId,
+        payload,
+      );
+      return;
+    }
+
+    this.controllerMessenger.call('MetaMetricsController:createEventFragment', {
+      id: fragmentId,
+      uniqueIdentifier: fragmentId,
+      // Required by createEventFragment, but this fragment is storage-only.
+      // We never finalize this fragment and we do not set initialEvent.
+      successEvent: 'Transaction Fragment Created',
+      category: MetaMetricsEventCategory.Transactions,
+      canDeleteIfAbandoned: true,
+      properties: payload.properties ?? {},
+      sensitiveProperties: payload.sensitiveProperties ?? {},
+    });
+  }
+
   getTransactionMetricsRequest() {
     const controllerActions = {
+      // Transaction metrics state
+      getTransactionUIMetricsFragment:
+        this.getTransactionUIMetricsFragment.bind(this),
+      upsertTransactionUIMetricsFragment:
+        this.upsertTransactionUIMetricsFragment.bind(this),
       // Metametrics Actions
-      createEventFragment: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:createEventFragment',
-      ),
-      finalizeEventFragment: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:finalizeEventFragment',
-      ),
-      getEventFragmentById: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:getEventFragmentById',
-      ),
       getParticipateInMetrics: () =>
         this.controllerMessenger.call('MetaMetricsController:getState')
           .participateInMetaMetrics,
       trackEvent: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'MetaMetricsController:trackEvent',
-      ),
-      updateEventFragment: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:updateEventFragment',
       ),
       // Other dependencies
       getAccountBalance: (account, chainId) =>
@@ -8377,7 +8475,6 @@ export default class MetamaskController extends EventEmitter {
 
   toggleExternalServices(useExternal) {
     this.preferencesController.toggleExternalServices(useExternal);
-    this.tokenListController.updatePreventPollingOnNetworkRestart(!useExternal);
     const subscriptionState = this.controllerMessenger.call(
       'SubscriptionController:getState',
     );
@@ -8426,22 +8523,6 @@ export default class MetamaskController extends EventEmitter {
     return undefined;
   }
 
-  /**
-   * A method for initializing storage the first time.
-   *
-   * @param {object} initState - The default state to initialize with.
-   * @private
-   */
-  recordFirstTimeInfo(initState) {
-    if (!('firstTimeInfo' in initState)) {
-      const version = process.env.METAMASK_VERSION;
-      initState.firstTimeInfo = {
-        version,
-        date: Date.now(),
-      };
-    }
-  }
-
   // TODO: Replace isClientOpen methods with `controllerConnectionChanged` events.
   /* eslint-disable accessor-pairs */
   /**
@@ -8482,6 +8563,7 @@ export default class MetamaskController extends EventEmitter {
       this.tokenDetectionController.stopAllPolling();
       this.tokenListController.stopAllPolling();
       this.tokenBalancesController.stopAllPolling();
+      this.staticAssetsController.stopAllPolling();
       this.appStateController.clearPollingTokens();
       this.accountTrackerController.stopAllPolling();
       this.deFiPositionsController.stopAllPolling();
@@ -8511,6 +8593,7 @@ export default class MetamaskController extends EventEmitter {
       this.tokenDetectionController.stopPollingByPollingToken(pollingToken);
       this.tokenListController.stopPollingByPollingToken(pollingToken);
       this.tokenBalancesController.stopPollingByPollingToken(pollingToken);
+      this.staticAssetsController.stopPollingByPollingToken(pollingToken);
       this.accountTrackerController.stopPollingByPollingToken(pollingToken);
       this.appStateController.removePollingToken(
         pollingToken,
@@ -8588,6 +8671,14 @@ export default class MetamaskController extends EventEmitter {
 
       // stop polling for the subscriptions when the wallet is locked manually and window/side-panel is still open
       this.subscriptionController.stopAllPolling();
+
+      // sign out from Authentication service and clear the Session Data if user is signed in
+      // this check is to make sure that the user sensitive data is cleared when the wallet is locked.
+      // We have `useAutoSignOut` hook that should handle the automatic sign out, however, it's not always triggered.
+      const { isSignedIn } = this.authenticationController.state;
+      if (isSignedIn) {
+        this.authenticationController.performSignOut();
+      }
     } catch (error) {
       log.error('Error setting locked state', error);
       throw error;
@@ -8707,13 +8798,38 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  resolvePendingApproval = async (id, value, options) => {
+  /**
+   * Resolve a pending approval. For hardware wallet transactions and signatures,
+   * this handles error parsing.
+   *
+   * @param {string} id - The approval ID
+   * @param {unknown} value - The value to resolve with (for transactions, contains txMeta)
+   * @param {object} options - Options for the approval
+   * @param {string} [options.walletType] - The hardware wallet type (if hardware wallet)
+   * @param {boolean} [options.waitForResult] - Whether to wait for the result
+   */
+  resolvePendingApproval = async (id, value, options = {}) => {
+    // RPC params may serialize an omitted argument as `null`, so normalize first
+    // before destructuring to avoid a runtime TypeError.
+    const normalizedOptions = options ?? {};
+    const { walletType, waitForResult } = normalizedOptions;
+    const approvalOptions =
+      typeof waitForResult === 'boolean' ? { waitForResult } : undefined;
+
     try {
-      await this.approvalController.accept(id, value, options);
-    } catch (exp) {
-      if (!(exp instanceof ApprovalRequestNotFoundError)) {
-        throw exp;
+      await this.approvalController.accept(id, value, approvalOptions);
+    } catch (error) {
+      // Ignore if approval was already handled
+      if (error instanceof ApprovalRequestNotFoundError) {
+        return;
       }
+
+      if (walletType) {
+        await this.#handleHardwareWalletError(error, walletType);
+        return;
+      }
+
+      throw error;
     }
   };
 
@@ -8728,6 +8844,57 @@ export default class MetamaskController extends EventEmitter {
         throw exp;
       }
     }
+  };
+
+  /**
+   * Handle hardware wallet errors with retry support.
+   * Parses the error, checks if it's retryable, and if so, attempts to recreate
+   * the request (transaction or signature). Always throws an RPC error with
+   * properly formatted data.
+   *
+   * @param {Error} error - The original error from the hardware wallet
+   * @param {string} walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor')
+   * @throws {JsonRpcError} Always throws with hardware wallet error data
+   */
+  async #handleHardwareWalletError(error, walletType) {
+    const hwError = toHardwareWalletError(error, walletType);
+    // Throw a JsonRpcError with hardware wallet error data preserved
+    // This ensures the error properties survive serialization across the RPC boundary
+    throw rpcErrors.internal({
+      message: hwError.message,
+      data: {
+        code: hwError.code,
+        severity: hwError.severity,
+        category: hwError.category,
+        userMessage: hwError.userMessage,
+        metadata: hwError.metadata,
+      },
+    });
+  }
+
+  /**
+   * Approve a hardware wallet transaction with retry support.
+   * This is a convenience wrapper around resolvePendingApproval for the
+   * transaction confirmation flow, which passes txMeta in a specific format.
+   *
+   * @param {object} opts - Options for the transaction
+   * @param {string} opts.txId - The transaction ID to approve
+   * @param {object} opts.txMeta - The transaction metadata
+   * @param {string} opts.actionId - The action ID for tracking
+   * @param {string} opts.walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor')
+   * @throws {JsonRpcError} When hardware wallet error occurs (with recreatedTxId if recreation succeeded)
+   */
+  approveHardwareWalletTransaction = async ({
+    txId,
+    txMeta,
+    actionId,
+    walletType,
+  }) => {
+    await this.resolvePendingApproval(
+      String(txId),
+      { txMeta, actionId },
+      { waitForResult: true, walletType },
+    );
   };
 
   rejectAllPendingApprovals() {
@@ -9286,7 +9453,6 @@ export default class MetamaskController extends EventEmitter {
       preinstalledSnaps: this.opts.preinstalledSnaps,
       persistedState: initState,
       removeAccount: this.removeAccount.bind(this),
-      removeAllConnections: this.removeAllConnections.bind(this),
       setupUntrustedCommunicationEip1193:
         this.setupUntrustedCommunicationEip1193.bind(this),
       setupUntrustedCommunicationCaip:

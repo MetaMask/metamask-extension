@@ -329,7 +329,7 @@ export const MOCK_TOKENS_LINEA = [
     ],
     occurrences: 7,
     iconUrl:
-      'https://assets.coingecko.com/coins/images/31272/thumb/dai-stablecoin.png?1696530095',
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x6b175474e89094c44da98b954eedeac495271d0f.png',
     address: '0x6b175474e89094c44da98b954eedeac495271d0f',
     name: 'Bridged Dai Stablecoin  Linea ',
   },
@@ -347,7 +347,7 @@ export const MOCK_TOKENS_LINEA = [
     ],
     occurrences: 7,
     iconUrl:
-      'https://assets.coingecko.com/coins/images/31271/thumb/usdt.jpeg?1696530095',
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0xa219439258ca9da29e9cc4ce5596924745e12b93.png',
     address: '0xa219439258ca9da29e9cc4ce5596924745e12b93',
     name: 'Bridged Tether  Linea ',
   },
@@ -2585,7 +2585,7 @@ export const MOCK_BRIDGE_USDC_TO_DAI_LINEA = [
       from: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
       value: '0x00',
       data: '0x095ea7b30000000000000000000000000439e60f02a8900a951603950d8d4527f400c3f10000000000000000000000000000000000000000000000000000000000989680',
-      gasLimit: 36007,
+      gasLimit: 60000,
     },
     trade: {
       chainId: 1,

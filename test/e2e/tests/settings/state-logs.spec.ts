@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { join } from 'path';
+import { Mockttp } from 'mockttp';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { createDownloadFolder, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -25,6 +26,49 @@ import {
 
 const downloadsFolder = join(process.cwd(), 'test-artifacts', 'downloads');
 
+const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
+
+async function mockDummyFeatureFlags(server: Mockttp) {
+  await server
+    .forGet(FEATURE_FLAGS_URL)
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [
+        { feature1: true },
+        { feature2: false },
+        {
+          feature3: [
+            {
+              value: 'valueA',
+              name: 'groupA',
+              scope: { type: 'threshold', value: 0.3 },
+            },
+            {
+              value: 'valueB',
+              name: 'groupB',
+              scope: { type: 'threshold', value: 0.5 },
+            },
+            {
+              scope: { type: 'threshold', value: 1 },
+              value: 'valueC',
+              name: 'groupC',
+            },
+          ],
+        },
+      ],
+    }));
+}
+
+async function mockStateLogsMocks(server: Mockttp) {
+  await mockDummyFeatureFlags(server);
+  await mockPriceApi(server);
+}
+
 describe('State logs', function () {
   it('should download state logs for the account', async function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
@@ -47,7 +91,7 @@ describe('State logs', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockPriceApi,
+        testSpecificMock: mockStateLogsMocks,
       },
       async ({ driver }: { driver: Driver }) => {
         await createDownloadFolder(downloadsFolder);
@@ -107,7 +151,7 @@ describe('State logs', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockPriceApi,
+        testSpecificMock: mockStateLogsMocks,
       },
       async ({ driver }: { driver: Driver }) => {
         await createDownloadFolder(downloadsFolder);
@@ -133,20 +177,12 @@ describe('State logs', function () {
           stateLogs.metamask.internalAccounts.accounts,
         )[1];
 
-        // Get new sync Queue Entropy
-        const syncQueueEntropy = Object.keys(stateLogs.metamask.syncQueue)[1];
-
         let referenceLogsText = JSON.stringify(referenceStateLogsDefinition);
 
         // Replace ID in reference logs
         referenceLogsText = referenceLogsText.replaceAll(
           '3c62fe60-6f00-4227-86f4-33d0b1f4c39e',
           newAccountId,
-        );
-        // Replace Queue Entropy in reference logs
-        referenceLogsText = referenceLogsText.replaceAll(
-          '01KBPCGKC0N982CH1VYK4WJ5BH',
-          syncQueueEntropy,
         );
         const referenceLogs = JSON.parse(referenceLogsText);
 

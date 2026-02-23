@@ -56,6 +56,8 @@ import {
   getTokenRatesControllerMessenger,
   getAssetsContractControllerInitMessenger,
   getNetworkEnablementControllerInitMessenger,
+  getAssetsControllerMessenger,
+  getAssetsControllerInitMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -117,6 +119,10 @@ import {
   getConfigRegistryControllerMessenger,
   getConfigRegistryControllerInitMessenger,
 } from './config-registry-controller-messenger';
+import {
+  getStaticAssetsControllerInitMessenger,
+  getStaticAssetsControllerMessenger,
+} from './static-assets-controller-messenger';
 import { getRatesControllerMessenger } from './rates-controller-messenger';
 import {
   getCurrencyRateControllerInitMessenger,
@@ -388,6 +394,14 @@ export {
   getTokenBalancesControllerInitMessenger,
 } from './token-balances-controller-messenger';
 export type {
+  StaticAssetsControllerMessenger,
+  StaticAssetsControllerInitMessenger,
+} from './static-assets-controller-messenger';
+export {
+  getStaticAssetsControllerMessenger,
+  getStaticAssetsControllerInitMessenger,
+} from './static-assets-controller-messenger';
+export type {
   TokenDetectionControllerMessenger,
   TokenDetectionControllerInitMessenger,
 } from './token-detection-controller-messenger';
@@ -463,6 +477,10 @@ export const CONTROLLER_MESSENGERS = {
   AppStateController: {
     getMessenger: getAppStateControllerMessenger,
     getInitMessenger: noop,
+  },
+  AssetsController: {
+    getMessenger: getAssetsControllerMessenger,
+    getInitMessenger: getAssetsControllerInitMessenger,
   },
   AuthenticationController: {
     getMessenger: getAuthenticationControllerMessenger,
@@ -681,6 +699,10 @@ export const CONTROLLER_MESSENGERS = {
   SnapKeyringBuilder: {
     getMessenger: getSnapKeyringBuilderMessenger,
     getInitMessenger: getSnapKeyringBuilderInitMessenger,
+  },
+  StaticAssetsController: {
+    getMessenger: getStaticAssetsControllerMessenger,
+    getInitMessenger: getStaticAssetsControllerInitMessenger,
   },
   SubjectMetadataController: {
     getMessenger: getSubjectMetadataControllerMessenger,

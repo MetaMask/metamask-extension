@@ -127,9 +127,10 @@ export type ControllerStatePropertiesEnumerated = {
   activeQrCodeScanRequest: AppStateControllerState['activeQrCodeScanRequest'];
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
   surveyLinkLastClickedOrClosed: AppStateControllerState['surveyLinkLastClickedOrClosed'];
+  shieldSubscriptionError: AppStateControllerState['shieldSubscriptionError'];
   shieldEndingToastLastClickedOrClosed: AppStateControllerState['shieldEndingToastLastClickedOrClosed'];
   shieldPausedToastLastClickedOrClosed: AppStateControllerState['shieldPausedToastLastClickedOrClosed'];
-  showStorageErrorToast: AppStateControllerState['showStorageErrorToast'];
+  storageWriteErrorType: AppStateControllerState['storageWriteErrorType'];
   signatureSecurityAlertResponses: AppStateControllerState['signatureSecurityAlertResponses'];
   addressSecurityAlertResponses: AppStateControllerState['addressSecurityAlertResponses'];
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
@@ -138,7 +139,7 @@ export type ControllerStatePropertiesEnumerated = {
   termsOfUseLastAgreed?: AppStateControllerState['termsOfUseLastAgreed'];
   snapsInstallPrivacyWarningShown?: AppStateControllerState['snapsInstallPrivacyWarningShown'];
   slides: AppStateControllerState['slides'];
-  isUpdateAvailable: AppStateControllerState['isUpdateAvailable'];
+  pendingExtensionVersion: AppStateControllerState['pendingExtensionVersion'];
   updateModalLastDismissedAt: AppStateControllerState['updateModalLastDismissedAt'];
   lastUpdatedAt: AppStateControllerState['lastUpdatedAt'];
   lastUpdatedFromVersion: AppStateControllerState['lastUpdatedFromVersion'];
@@ -310,7 +311,6 @@ export type ControllerStatePropertiesEnumerated = {
   allDetectedTokens: TokensControllerState['allDetectedTokens'];
   allIgnoredTokens: TokensControllerState['allIgnoredTokens'];
   allTokens: TokensControllerState['allTokens'];
-  preventPollingOnNetworkRestart: TokenListState['preventPollingOnNetworkRestart'];
   tokensChainsCache: TokenListState['tokensChainsCache'];
   marketData: TokenRatesControllerState['marketData'];
   lastFetchedBlockNumbers: TransactionControllerState['lastFetchedBlockNumbers'];
@@ -330,6 +330,7 @@ export type ControllerStatePropertiesEnumerated = {
   rewardsSeasons: RewardsControllerState['rewardsSeasons'];
   rewardsSeasonStatuses: RewardsControllerState['rewardsSeasonStatuses'];
   rewardsSubscriptionTokens: RewardsControllerState['rewardsSubscriptionTokens'];
+  rewardsPointsEstimateHistory: RewardsControllerState['rewardsPointsEstimateHistory'];
   claims: ClaimsControllerState['claims'];
   claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
   drafts: ClaimsControllerState['drafts'];

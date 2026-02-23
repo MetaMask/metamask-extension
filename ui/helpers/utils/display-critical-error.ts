@@ -67,6 +67,24 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
     const eventId = uuidv4().replace(/-/gu, '');
     const timestamp = Math.floor(Date.now() / 1000);
 
+    // Extract sentryTags from error object (if present)
+    // Any error can define error.sentryTags to add searchable tags to Sentry
+    const errorObj = error as Record<string, unknown>;
+    const sentryTags =
+      errorObj?.sentryTags && typeof errorObj.sentryTags === 'object'
+        ? (errorObj.sentryTags as Record<string, string>)
+        : {};
+
+    // Create error_details without sentryTags to avoid duplication
+    // (sentryTags are sent as top-level tags)
+    let errorDetails: Record<string, unknown>;
+    if (error && typeof error === 'object') {
+      const { sentryTags: _omitted, ...rest } = errorObj;
+      errorDetails = rest;
+    } else {
+      errorDetails = { message: String(error) };
+    }
+
     // Create event payload according to Sentry specs
     // event_id, error_details and user_agent are required by Sentry envelope format, hence the disable is valid
     const eventPayload = {
@@ -79,13 +97,12 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
       release: browser.runtime.getManifest()?.version || 'unknown',
       extra: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_details:
-          error && typeof error === 'object'
-            ? error
-            : { message: String(error) },
+        error_details: errorDetails,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         user_agent: globalThis.navigator?.userAgent || 'unknown',
       },
+      // Add tags for searchable/filterable fields in Sentry UI
+      tags: sentryTags,
     };
 
     // Create envelope headers

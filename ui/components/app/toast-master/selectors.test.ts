@@ -19,7 +19,11 @@ import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-
 import { supportsChainIds } from '../../../hooks/useAccountGroupsForPermissions';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
-import { selectShowConnectAccountGroupToast } from './selectors';
+import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
+import {
+  selectShowConnectAccountGroupToast,
+  selectStorageWriteErrorType,
+} from './selectors';
 
 jest.mock('@metamask/chain-agnostic-permission', () => ({
   ...jest.requireActual('@metamask/chain-agnostic-permission'),
@@ -390,5 +394,41 @@ describe('#selectShowConnectAccountGroupToast', () => {
     );
 
     expect(result).toBe(true);
+  });
+});
+
+describe('#selectStorageWriteErrorType', () => {
+  it('returns null when storageWriteErrorType is not set', () => {
+    const state = {
+      metamask: {},
+    };
+
+    const result = selectStorageWriteErrorType(state);
+
+    expect(result).toBeNull();
+  });
+
+  it('returns StorageWriteErrorType.Default when storageWriteErrorType is default', () => {
+    const state = {
+      metamask: {
+        storageWriteErrorType: StorageWriteErrorType.Default,
+      },
+    };
+
+    const result = selectStorageWriteErrorType(state);
+
+    expect(result).toBe(StorageWriteErrorType.Default);
+  });
+
+  it('returns StorageWriteErrorType.FileErrorNoSpace when storageWriteErrorType is file-error-no-space', () => {
+    const state = {
+      metamask: {
+        storageWriteErrorType: StorageWriteErrorType.FileErrorNoSpace,
+      },
+    };
+
+    const result = selectStorageWriteErrorType(state);
+
+    expect(result).toBe(StorageWriteErrorType.FileErrorNoSpace);
   });
 });

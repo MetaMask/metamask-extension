@@ -1,11 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Text } from '../../../components/component-library';
-import {
-  getBridgeQuotes,
-  BridgeAppState,
-  selectNoFeeAssets,
-} from '../../../ducks/bridge/selectors';
+import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   JustifyContent,
@@ -18,28 +14,20 @@ export const BridgeNoFeeMessage = () => {
   const t = useI18nContext();
   const { activeQuote } = useSelector(getBridgeQuotes);
 
-  const noFeeAssets = useSelector((state: BridgeAppState) =>
-    selectNoFeeAssets(state, activeQuote?.quote?.destChainId?.toString()),
-  );
-
   if (!activeQuote) {
     return null;
   }
 
-  const isNoFeeAsset = noFeeAssets.includes(
-    activeQuote.quote.destAsset.address?.toLowerCase() ?? '',
-  );
+  const hasNoMMFee = Number(activeQuote.quote.feeData.metabridge.amount) === 0;
 
-  if (!isNoFeeAsset) {
+  if (!hasNoMMFee) {
     return null;
   }
-
-  const destSymbol = activeQuote.quote.destAsset?.symbol || 'token';
 
   return (
     <Row gap={1} justifyContent={JustifyContent.center}>
       <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>
-        {t('noMMFeeSwapping', [destSymbol])}
+        {t('noMMFeeSwapping')}
       </Text>
     </Row>
   );

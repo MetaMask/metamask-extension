@@ -11,6 +11,7 @@ import log from 'loglevel';
 import { useSubscriptionEligibility } from '../../hooks/subscription/useSubscription';
 import {
   assignUserToCohort,
+  setPendingShieldCohort,
   setShowShieldEntryModalOnce,
   subscriptionsStartPolling,
 } from '../../store/actions';
@@ -25,6 +26,8 @@ import { MetaMaskReduxDispatch } from '../../store/store';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { useSubscriptionMetrics } from '../../hooks/shield/metrics/useSubscriptionMetrics';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import { captureException } from '../../../shared/lib/sentry';
+import { createSentryError } from '../../../shared/modules/error';
 
 export const ShieldSubscriptionContext = React.createContext<{
   evaluateCohortEligibility: (entrypointCohort: string) => Promise<void>;
@@ -152,6 +155,12 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
           return;
         }
 
+        // Clear the pending cohort before any async work to prevent a race
+        // condition: if #assignPostTxCohort sets POST_TX while the eligibility
+        // check is in-flight, a late clear would clobber the new value.
+        // The entrypointCohort argument already captures the value we need.
+        await dispatch(setPendingShieldCohort(null));
+
         const shieldEligibility = await getShieldSubscriptionEligibility();
 
         if (
@@ -176,24 +185,32 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
             return;
           }
 
-          // User has an assigned cohort but it has expired
-          // track `shield_eligibility_cohort_timeout` event
-          await captureShieldEligibilityCohortEvent(
-            {
-              cohort: assignedCohortName as CohortName,
-              numberOfEligibleCohorts: eligibleCohorts.length,
-            },
-            MetaMetricsEventName.ShieldEligibilityCohortTimeout,
-          );
+          // could continue if entrypointCohort is post_tx and assignedCohort has not expired
+          // so we need to check hasExpired here before recording the event
+          if (hasExpired) {
+            // User has an assigned cohort but it has expired
+            // track `shield_eligibility_cohort_timeout` event
+            await captureShieldEligibilityCohortEvent(
+              {
+                cohort: assignedCohortName as CohortName,
+                numberOfEligibleCohorts: eligibleCohorts.length,
+              },
+              MetaMetricsEventName.ShieldEligibilityCohortTimeout,
+            );
+          }
 
           const cohort = eligibleCohorts.find(
             (c) => c.cohort === entrypointCohort,
           );
           if (!cohort) {
+            log.warn(
+              '[evaluateCohortEligibility] error',
+              'user pending no cohort found',
+            );
             return;
           }
 
-          dispatch(
+          await dispatch(
             setShowShieldEntryModalOnce({
               show: true,
               shouldSubmitEvents: true, // submits `shield_entry_modal_viewed` event
@@ -218,7 +235,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
             modalType,
           );
           if (selectedCohort?.cohort === COHORT_NAMES.WALLET_HOME) {
-            dispatch(
+            await dispatch(
               setShowShieldEntryModalOnce({
                 show: true,
                 shouldSubmitEvents: true, // submits `shield_entry_modal_viewed` event to subscription backend
@@ -232,6 +249,19 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
           }
         }
       } catch (error) {
+        // Restore the pending cohort so it can be retried on the next
+        // componentDidUpdate cycle instead of being silently lost.
+        try {
+          await dispatch(setPendingShieldCohort(entrypointCohort));
+        } catch {
+          // if this also fails - the next transaction will re-set the cohort.
+        }
+        captureException(
+          createSentryError(
+            'Failed to evaluate cohort eligibility',
+            error as Error,
+          ),
+        );
         log.warn('[evaluateCohortEligibility] error', error);
       }
     },

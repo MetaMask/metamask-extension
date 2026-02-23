@@ -82,6 +82,7 @@ async function update(): Promise<void> {
         // get options from .prettierrc
         ...prettierOptions,
         filepath: TARGET_FILE,
+        trailingComma: 'none', // Ensure no trailing commas for JSONC compatibility
       },
     );
     writeFileSync(TARGET_FILE, formatted);

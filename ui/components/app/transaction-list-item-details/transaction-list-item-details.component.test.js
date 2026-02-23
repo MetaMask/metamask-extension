@@ -152,8 +152,8 @@ describe('TransactionListItemDetails for swaps', () => {
       'Gas used (units)357212',
       'Base fee (GWEI)0.00000002',
       'Priority fee (GWEI)30',
-      'Total gas fee0.010716ETH',
-      'Max fee per gas0.00000003ETH',
+      'Total gas fee0.010716POL',
+      'Max fee per gas0.00000003POL',
       'Total0.01071636POL',
     ];
 

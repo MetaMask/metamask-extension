@@ -89,7 +89,7 @@ export const ViewExplorerMenuItem = ({
   account,
 }: ViewExplorerMenuItemProps) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const navigate = useNavigate();
 
   const multichainNetwork = useMultichainSelector(
@@ -172,7 +172,7 @@ export const ViewExplorerMenuItem = ({
         closeMenu?.();
       }}
       subtitle={blockExplorerUrlSubTitle || null}
-      iconName={IconName.Export}
+      iconNameLegacy={IconName.Export}
       data-testid="account-list-menu-open-explorer"
     >
       {textProps ? <Text {...textProps}>{LABEL}</Text> : LABEL}

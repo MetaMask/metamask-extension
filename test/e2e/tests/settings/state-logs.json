@@ -549,6 +549,10 @@
     "featureFlags": {},
     "fiatCurrency": "string",
     "firstTimeFlowType": "string",
+    "firstTimeInfo": {
+      "date": "number",
+      "version": "string"
+    },
     "forgottenPassword": "boolean",
     "fragments": {},
     "fullScreenGasPollTokens": ["string"],
@@ -664,7 +668,7 @@
     "isSeedlessOnboardingUserAuthenticated": "boolean",
     "isSignedIn": "boolean",
     "isUnlocked": "boolean",
-    "isUpdateAvailable": "boolean",
+    "pendingExtensionVersion": "null",
     "isUpdatingFCMToken": "boolean",
     "isUpdatingMetamaskNotifications": "boolean",
     "isUpdatingMetamaskNotificationsAccount": [],
@@ -831,7 +835,7 @@
     "pendingApprovalCount": "number",
     "pendingApprovals": {},
     "pendingRevocations": [],
-    "pendingShieldCohort": "null",
+    "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": "null",
     "pna25Acknowledged": "boolean",
     "permissionActivityLog": [
@@ -850,11 +854,13 @@
     "popupGasPollTokens": [],
     "preferences": {
       "avatarType": "string",
+      "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": "boolean",
       "petnamesEnabled": "boolean",
       "privacyMode": "boolean",
+      "showDefaultAddress": "boolean",
       "shouldShowAggregatedBalancePopover": "boolean",
       "showExtensionInFullSizeView": "boolean",
       "showFiatInTestnets": "boolean",
@@ -862,7 +868,6 @@
       "showNativeTokenAsMainBalance": "boolean",
       "showTestNetworks": "boolean",
       "skipDeepLinkInterstitial": "boolean",
-      "smartAccountOptIn": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": "boolean",
       "tokenNetworkFilter": {
@@ -876,7 +881,6 @@
       "useNativeCurrencyAsPrimaryCurrency": "boolean",
       "useSidePanelAsDefault": "boolean"
     },
-    "preventPollingOnNetworkRestart": "boolean",
     "previousAppVersion": "string",
     "previousMigrationVersion": "number",
     "productTour": "string",
@@ -902,6 +906,7 @@
     "recoveryPhraseReminderHasBeenShown": "boolean",
     "recoveryPhraseReminderLastShown": "number",
     "referrals": {
+      "gmx": {},
       "hyperliquid": {}
     },
     "remoteFeatureFlags": {
@@ -914,6 +919,7 @@
     },
     "rewardsAccounts": {},
     "rewardsActiveAccount": "null",
+    "rewardsPointsEstimateHistory": [],
     "rewardsSeasons": {},
     "rewardsSeasonStatuses": {},
     "rewardsSubscriptions": {},
@@ -924,6 +930,7 @@
     "selectedAddress": "string",
     "selectedMultichainNetworkChainId": "string",
     "selectedNetworkClientId": "string",
+    "shieldSubscriptionError": "null",
     "shieldEndingToastLastClickedOrClosed": "null",
     "shieldPausedToastLastClickedOrClosed": "null",
     "showAccountBanner": "boolean",
@@ -932,19 +939,18 @@
     "showNetworkBanner": "boolean",
     "showPermissionsTour": "boolean",
     "showShieldEntryModalOnce": "boolean",
-    "showStorageErrorToast": "boolean",
+    "storageWriteErrorType": "null",
     "showTestnetMessageInDropdown": "boolean",
     "sidePanelGasPollTokens": [],
     "signature": "string",
     "signatureRequests": {},
     "signatureSecurityAlertResponses": {},
     "syncQueue": {
-      "null": [
+      "01KG2PT3Y3FHYEM874K8J5SZ07": [
         {
-          "address": "string"
-        }
-      ],
-      "01KBPCGKC0N982CH1VYK4WJ5BH": [
+          "address": "string",
+          "scopes": ["string"]
+        },
         {
           "address": "string",
           "scopes": ["string", "string", "string"]
@@ -1170,6 +1176,11 @@
     "watchEthereumAccountEnabled": "boolean",
     "web3ShimUsageOrigins": {},
     "verifiedSnaps": {}
+  },
+  "perpsTutorial": {
+    "tutorialModalOpen": "boolean",
+    "activeStep": "string",
+    "tutorialCompleted": "boolean"
   },
   "platform": {
     "arch": "string",

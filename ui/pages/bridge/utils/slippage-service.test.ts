@@ -20,7 +20,7 @@ describe('Slippage Service', () => {
     ) as CaipAssetType,
     symbol: 'USDC',
     decimals: 6,
-    image: '',
+    iconUrl: '',
     balance: '0',
     name: 'USDC',
   });
@@ -34,7 +34,7 @@ describe('Slippage Service', () => {
     ) as CaipAssetType,
     symbol: 'USDT',
     decimals: 6,
-    image: '',
+    iconUrl: '',
     balance: '0',
     name: 'USDT',
   });
@@ -48,7 +48,7 @@ describe('Slippage Service', () => {
     assetId: toAssetId(address, chainId) as CaipAssetType,
     symbol: 'WETH',
     decimals: 18,
-    image: '',
+    iconUrl: '',
     balance: '0',
     name: 'WETH',
   });
@@ -59,7 +59,7 @@ describe('Slippage Service', () => {
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:So11111111111111111111111111111111111111112',
     symbol: 'SOL',
     decimals: 9,
-    image: '',
+    iconUrl: '',
     balance: '0',
     name: 'SOL',
   };

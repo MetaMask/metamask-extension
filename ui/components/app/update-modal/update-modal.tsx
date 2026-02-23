@@ -34,7 +34,7 @@ import {
 function UpdateModal() {
   const t = useI18nContext();
   const [isLoading, setIsLoading] = useState(false);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   // Track when modal is viewed
   useEffect(() => {

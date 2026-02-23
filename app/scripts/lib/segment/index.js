@@ -28,7 +28,7 @@ const SEGMENT_FLUSH_INTERVAL = SECOND * 5;
  * spy on the methods to ensure proper behavior
  *
  * @param {number} flushAt - number of events to queue before sending to segment
- * @returns {SegmentInterface}
+ * @returns {Analytics}
  */
 export const createSegmentMock = (flushAt = SEGMENT_FLUSH_AT) => {
   const segmentMock = {

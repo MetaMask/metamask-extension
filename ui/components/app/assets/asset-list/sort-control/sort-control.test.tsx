@@ -34,6 +34,12 @@ const mockHandleClose = jest.fn();
 
 describe('SortControl', () => {
   const mockTrackEvent = jest.fn();
+  const mockMetaMetricsContext = {
+    trackEvent: mockTrackEvent,
+    bufferedTrace: jest.fn(),
+    bufferedEndTrace: jest.fn(),
+    onboardingParentContext: { current: null },
+  };
 
   const renderComponent = () => {
     (useSelector as jest.Mock).mockImplementation((selector) => {
@@ -51,7 +57,7 @@ describe('SortControl', () => {
     });
 
     return renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <SortControl handleClose={mockHandleClose} />
       </MetaMetricsContext.Provider>,
     );

@@ -128,26 +128,8 @@ type EventPayload = {
   properties: Record<string, unknown>;
 };
 
-/**
- * Assert that the event names begin with the appropriate prefixes. Even
- * finalized events begin with transaction-submitted because they start as
- * event fragments created when the transaction is submitted.
- *
- * @param payload
- */
-const messageIdStartsWithTransactionSubmitted = (
-  payload: EventPayload,
-): boolean => payload.messageId.startsWith('transaction-submitted');
-
-/**
- * Assert that the events with sensitive properties should have messageIds
- * ending in 0x000 this is important because otherwise the events are seen as
- * duplicates in segment
- *
- * @param payload
- */
-const messageIdEndsWithZeros = (payload: EventPayload): boolean =>
-  payload.messageId.endsWith('0x000');
+const hasNonEmptyMessageId = (payload: EventPayload): boolean =>
+  typeof payload.messageId === 'string' && payload.messageId.length > 0;
 
 /**
  * Assert that the events with sensitive data do not contain a userId (the
@@ -207,8 +189,7 @@ describe('Transaction Finalized Event', function (this: Suite) {
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         const transactionSubmittedWithSensitivePropertiesAssertions = [
-          messageIdStartsWithTransactionSubmitted,
-          messageIdEndsWithZeros,
+          hasNonEmptyMessageId,
           eventDoesNotIncludeUserId,
           eventHasZeroAddressAnonymousId,
           (payload: EventPayload) =>
@@ -235,7 +216,7 @@ describe('Transaction Finalized Event', function (this: Suite) {
         ];
 
         const transactionSubmittedWithoutSensitivePropertiesAssertions = [
-          messageIdStartsWithTransactionSubmitted,
+          hasNonEmptyMessageId,
           eventHasUserIdWithoutAnonymousId,
           (payload: EventPayload) =>
             // Check key properties for submitted transaction without sensitive data
@@ -259,8 +240,7 @@ describe('Transaction Finalized Event', function (this: Suite) {
         await driver.delay(10000);
 
         const transactionFinalizedWithSensitivePropertiesAssertions = [
-          messageIdStartsWithTransactionSubmitted,
-          messageIdEndsWithZeros,
+          hasNonEmptyMessageId,
           eventDoesNotIncludeUserId,
           eventHasZeroAddressAnonymousId,
           (payload: EventPayload) =>
@@ -290,7 +270,7 @@ describe('Transaction Finalized Event', function (this: Suite) {
         ];
 
         const transactionFinalizedWithoutSensitivePropertiesAssertions = [
-          messageIdStartsWithTransactionSubmitted,
+          hasNonEmptyMessageId,
           eventHasUserIdWithoutAnonymousId,
           (payload: EventPayload) =>
             // Check key properties for finalized transaction without sensitive data

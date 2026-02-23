@@ -58,13 +58,15 @@ const render = async ({
   componentProps,
   transactionProps,
   contextProps,
+  chainId = CHAIN_IDS.GOERLI,
+  gasFeeEstimates = MOCK_FEE_ESTIMATE,
 } = {}) => {
   const store = configureStore({
     metamask: {
       currencyRates: {},
-      ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI, ticker: 'ETH' }),
+      ...mockNetworkState({ chainId, ticker: 'ETH' }),
       accountsByChainId: {
-        [CHAIN_IDS.GOERLI]: {
+        [chainId]: {
           '0xAddress': {
             address: '0xAddress',
             balance: '0x176e5b6f173ebe66',
@@ -103,15 +105,15 @@ const render = async ({
       },
       featureFlags: { advancedInlineGas: true },
       gasEstimateType: 'fee-market',
-      gasFeeEstimates: MOCK_FEE_ESTIMATE,
+      gasFeeEstimates,
       gasFeeEstimatesByChainId: {
-        [CHAIN_IDS.GOERLI]: {
-          gasFeeEstimates: MOCK_FEE_ESTIMATE,
+        [chainId]: {
+          gasFeeEstimates,
           gasEstimateType: 'fee-market',
         },
       },
       advancedGasFee: {
-        [CHAIN_IDS.GOERLI]: {
+        [chainId]: {
           maxBaseFee: '100',
           priorityFee: '2',
         },
@@ -125,7 +127,11 @@ const render = async ({
     async () =>
       (result = renderWithProvider(
         <GasFeeContextProvider
-          transaction={{ txParams: { gas: '0x5208' }, ...transactionProps }}
+          transaction={{
+            txParams: { gas: '0x5208' },
+            chainId,
+            ...transactionProps,
+          }}
           {...contextProps}
         >
           <EditGasItem priorityLevel="low" {...componentProps} />
@@ -233,6 +239,23 @@ describe('EditGasItem', () => {
     expect(screen.queryByText('Advanced')).toBeInTheDocument();
     // below value of custom gas fee estimate is default obtained from state.metamask.advancedGasFee
     expect(screen.queryByTitle('0.0021 ETH')).toBeInTheDocument();
+  });
+
+  it('should render sub-second time estimate on fast confirmation chains', async () => {
+    const subSecondFeeEstimate = {
+      ...MOCK_FEE_ESTIMATE,
+      high: {
+        ...MOCK_FEE_ESTIMATE.high,
+        minWaitTimeEstimate: 500,
+      },
+    };
+    await render({
+      componentProps: { priorityLevel: PriorityLevels.high },
+      transactionProps: { chainId: CHAIN_IDS.MEGAETH_TESTNET },
+      gasFeeEstimates: subSecondFeeEstimate,
+    });
+    expect(screen.queryByRole('button', { name: 'high' })).toBeInTheDocument();
+    expect(screen.queryByText('0.5 sec')).toBeInTheDocument();
   });
 
   it('should renders +10% gas estimate option for priorityLevel minimum', async () => {

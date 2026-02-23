@@ -29,6 +29,8 @@ export const VirtualizedList = <TItem,>({
     getScrollElement: () =>
       disabled ? null : (scrollContainerRef?.current ?? null),
     estimateSize: () => estimatedItemSize,
+    getItemKey: (index) =>
+      keyExtractor ? keyExtractor(data[index], index) : index,
     overscan,
     initialOffset: scrollContainerRef?.current?.scrollTop,
   });
@@ -68,7 +70,7 @@ export const VirtualizedList = <TItem,>({
           const item = data[virtualItem.index];
           const key = keyExtractor
             ? keyExtractor(item, virtualItem.index)
-            : virtualItem.index.toString();
+            : virtualItem.key.toString();
 
           return (
             <div

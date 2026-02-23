@@ -38,7 +38,7 @@ export default function ConnectedSnaps({ connectedSubjects }) {
         show={showOptions === snapId}
       >
         <MenuItem
-          iconName={IconName.Logout}
+          iconNameLegacy={IconName.Logout}
           onClick={(e) => {
             e.preventDefault();
             onDisconnect(snapId);
@@ -47,7 +47,7 @@ export default function ConnectedSnaps({ connectedSubjects }) {
           {t('disconnect')}
         </MenuItem>
         <MenuItem
-          iconName={IconName.Setting}
+          iconNameLegacy={IconName.Setting}
           onClick={() => navigate(getSnapRoute(snapId))}
         >
           {t('snapsSettings')}

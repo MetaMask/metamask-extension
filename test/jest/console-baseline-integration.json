@@ -136,7 +136,5 @@
       "warn: Infura project ID not found,": 1,
       "warn: ⚠️ React Router Future Flag": 2
     }
-  },
-  "generated": "2025-12-15T13:30:25.527Z",
-  "nodeVersion": "v24.11.1"
+  }
 }

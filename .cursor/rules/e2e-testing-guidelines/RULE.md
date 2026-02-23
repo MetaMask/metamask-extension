@@ -6,6 +6,8 @@ alwaysApply: false
 
 Reference: [MetaMask Extension E2E Test Guidelines](https://github.com/MetaMask/contributor-docs/blob/main/docs/testing/e2e/extension-e2e-guidelines.md)
 
+**See also:** [Test i18n Usage Guidelines](../test-i18n-usage/RULE.md) - For i18n patterns in test assertions
+
 # MetaMask Extension E2E Testing Guidelines
 
 ## Core Principles

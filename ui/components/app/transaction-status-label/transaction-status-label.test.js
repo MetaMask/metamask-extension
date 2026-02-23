@@ -110,6 +110,28 @@ describe('TransactionStatusLabel Component', () => {
     expect(screen.getByText('queued')).toBeInTheDocument();
   });
 
+  it('should map signed status to pending when isEarliestNonce is true', () => {
+    const props = {
+      status: TransactionStatus.signed,
+      isEarliestNonce: true,
+    };
+
+    render(<TransactionStatusLabel {...props} />);
+    expect(
+      screen.getByText(TransactionGroupStatus.pending),
+    ).toBeInTheDocument();
+  });
+
+  it('should map signed status to queued when isEarliestNonce is false', () => {
+    const props = {
+      status: TransactionStatus.signed,
+      isEarliestNonce: false,
+    };
+
+    render(<TransactionStatusLabel {...props} />);
+    expect(screen.getByText('queued')).toBeInTheDocument();
+  });
+
   it('should display date for confirmed transactions when not statusOnly', () => {
     const props = {
       status: TransactionStatus.confirmed,

@@ -20,10 +20,11 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 2. **ALWAYS run `yarn lint:changed:fix`** before committing
 3. **ALWAYS update LavaMoat policies** after dependency changes: `yarn lavamoat:auto`
 4. **ALWAYS colocate tests** with source files (`.test.ts`/`.test.tsx`)
-5. **NEVER use class components** (use functional components with hooks)
-6. **NEVER modify git config** or run destructive git operations
-7. **NEVER commit** unless explicitly requested by user
-8. **NEVER stage changes** unless explicitly requested by user
+5. **ALWAYS use yarn.cmd** if you're running in PowerShell
+6. **NEVER use class components** (use functional components with hooks)
+7. **NEVER modify git config** or run destructive git operations
+8. **NEVER commit** unless explicitly requested by user
+9. **NEVER stage changes** unless explicitly requested by user
 
 ### Comprehensive Guidelines Location
 
@@ -31,7 +32,7 @@ Read these files for detailed coding standards:
 
 - Controller patterns: `.cursor/rules/controller-guidelines/RULE.md`
 - Unit testing standards: `.cursor/rules/unit-testing-guidelines/RULE.md`
-- E2E testing standards: `.cursor/rules/e2e-testing-guidelines/RULE.md`
+- E2E testing standards: `./test/e2e/AGENTS.md`
 - Front-end performance:
   - `.cursor/rules/front-end-performance-rendering/RULE.md` (rendering performance - start here)
   - `.cursor/rules/front-end-performance-hooks-effects/RULE.md` (hooks & effects)
@@ -985,16 +986,7 @@ yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js \
 
 **E2E Best Practices:**
 
-- Always use test builds (not dev builds)
-- Tests should be independent and isolated
-- Use page objects for reusable UI interactions
-- Clean up state between tests
-- Use fixtures to set up state programmatically
-- Use `data-testid` for element locators
-
-**Detailed Guidelines:** See `.cursor/rules/e2e-testing-guidelines/RULE.md`
-
-**Deprecated Patterns:** See `.cursor/BUGBOT.md` for a list of deprecated E2E testing patterns to avoid.
+Find them in [](./test/e2e/AGENTS.md)
 
 ### Integration Tests
 
@@ -1615,8 +1607,8 @@ Performance Checks (React Components):
 
 - **Controller Patterns:** [.cursor/rules/controller-guidelines/RULE.md](./.cursor/rules/controller-guidelines/RULE.md)
 - **Unit Testing:** [.cursor/rules/unit-testing-guidelines/RULE.md](./.cursor/rules/unit-testing-guidelines/RULE.md)
-- **E2E Testing:** [.cursor/rules/e2e-testing-guidelines/RULE.md](./.cursor/rules/e2e-testing-guidelines/RULE.md)
-- **E2E Deprecated Patterns:** [.cursor/BUGBOT.md](./.cursor/BUGBOT.md)
+- **E2E Testing:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
+- **E2E Deprecated Patterns:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
 - **Front-End Performance:**
   - [Rendering Performance](.cursor/rules/front-end-performance-rendering/RULE.md) - Start here (keys, memoization, virtualization)
   - [Hooks & Effects](.cursor/rules/front-end-performance-hooks-effects/RULE.md) - useEffect best practices

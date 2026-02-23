@@ -46,6 +46,7 @@ import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
 
 import log from 'loglevel';
+import browser from 'webextension-polyfill';
 import { parseCaipAccountId } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
@@ -83,11 +84,7 @@ import {
 } from './controllers/permissions';
 import MetaMaskController from './metamask-controller';
 
-const { Ganache } = require('../../test/e2e/seeder/ganache');
-
-const ganacheServer = new Ganache();
-
-const browserPolyfillMock = {
+jest.mock('webextension-polyfill', () => ({
   runtime: {
     id: 'fake-extension-id',
     onInstalled: {
@@ -99,6 +96,11 @@ const browserPolyfillMock = {
     getPlatformInfo: jest.fn().mockResolvedValue({ os: 'mac' }),
   },
   storage: {
+    local: {
+      get: jest.fn().mockResolvedValue({}),
+      set: jest.fn().mockResolvedValue(undefined),
+      remove: jest.fn().mockResolvedValue(undefined),
+    },
     session: {
       set: jest.fn(),
     },
@@ -111,7 +113,15 @@ const browserPolyfillMock = {
       addListener: jest.fn(),
     },
   },
-};
+}));
+
+// Use the actual mocked module so all code importing webextension-polyfill
+// shares the same mock instance
+const browserPolyfillMock = jest.mocked(browser);
+
+const { Ganache } = require('../../test/e2e/seeder/ganache');
+
+const ganacheServer = new Ganache();
 
 const mockULIDs = [
   '01JKAF3DSGM3AB87EM9N0K41AJ',
@@ -248,13 +258,23 @@ const KNOWN_PUBLIC_KEY_ADDRESSES = [
   },
 ];
 
-const buildMockKeyringBridge = (publicKeyPayload) =>
+const buildMockKeyringBridge = (
+  publicKeyPayload,
+  appConfiguration = {
+    arbitraryDataEnabled: 1,
+    erc20ProvisioningNecessary: 0,
+    starkEnabled: 0,
+    starkv2Supported: 0,
+    version: '1.0.0',
+  },
+) =>
   jest.fn(() => ({
     init: jest.fn(),
     dispose: jest.fn(),
     destroy: jest.fn(),
     updateTransportMethod: jest.fn(),
     getPublicKey: jest.fn(async () => publicKeyPayload),
+    getAppConfiguration: jest.fn(async () => appConfiguration),
   }));
 
 jest.mock('@metamask/eth-trezor-keyring', () => ({
@@ -298,6 +318,11 @@ jest.mock('@metamask/utils', () => ({
 jest.mock('@metamask/chain-agnostic-permission', () => ({
   ...jest.requireActual('@metamask/chain-agnostic-permission'),
   getEthAccounts: jest.fn(),
+}));
+
+jest.mock('@metamask/core-backend', () => ({
+  ...jest.requireActual('@metamask/core-backend'),
+  createApiPlatformClient: jest.fn().mockReturnValue({ mockApiClient: true }),
 }));
 
 const DEFAULT_LABEL = 'Account 1';
@@ -489,7 +514,6 @@ describe('MetaMaskController', () => {
       jest.spyOn(Messenger.prototype, 'subscribe');
       jest.spyOn(TokenListController.prototype, 'start');
       jest.spyOn(TokenListController.prototype, 'stop');
-      jest.spyOn(TokenListController.prototype, 'clearingTokenListData');
 
       metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
@@ -524,14 +548,13 @@ describe('MetaMaskController', () => {
         )
         .mockResolvedValue();
 
+      // Mock MultichainAccountService to avoid creating wallets in tests (it's being mocked
+      // on a per-test basis when needed)
       jest.spyOn(
-        metamaskController.keyringController,
-        'createNewVaultAndKeychain',
+        metamaskController.multichainAccountService,
+        'createMultichainAccountWallet',
       );
-      jest.spyOn(
-        metamaskController.keyringController,
-        'createNewVaultAndRestore',
-      );
+
       jest.spyOn(
         metamaskController.seedlessOnboardingController,
         'authenticate',
@@ -791,22 +814,26 @@ describe('MetaMaskController', () => {
       const password = 'a-fake-password';
 
       it('should call resyncAccounts and alignWallets asynchronously when submitPasswordOrEncryptionKey is called', async () => {
-        const mockAlignWallets = jest.fn();
-        const mockResyncAccounts = jest.fn();
+        const resyncAccountsSpy = jest.spyOn(
+          metamaskController.multichainAccountService,
+          'resyncAccounts',
+        );
+        const alignWalletsSpy = jest.spyOn(
+          metamaskController.multichainAccountService,
+          'alignWallets',
+        );
 
-        metamaskController.multichainAccountService = {
-          init: jest.fn(),
-          resyncAccounts: mockResyncAccounts,
-          alignWallets: mockAlignWallets,
-        };
+        // Make them resolved right away for the test.
+        resyncAccountsSpy.mockResolvedValue();
+        alignWalletsSpy.mockResolvedValue();
 
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
         await metamaskController.submitPasswordOrEncryptionKey({ password });
 
         await waitForAllPromises();
 
-        expect(mockResyncAccounts).toHaveBeenCalled();
-        expect(mockAlignWallets).toHaveBeenCalled();
+        expect(resyncAccountsSpy).toHaveBeenCalled();
+        expect(alignWalletsSpy).toHaveBeenCalled();
       });
     });
 
@@ -891,8 +918,21 @@ describe('MetaMaskController', () => {
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
 
         expect(
-          metamaskController.keyringController.createNewVaultAndRestore,
-        ).toHaveBeenCalledTimes(2);
+          metamaskController.multichainAccountService
+            .createMultichainAccountWallet,
+        ).toHaveBeenNthCalledWith(1, {
+          type: 'restore',
+          password,
+          mnemonic: expect.any(Uint8Array),
+        });
+        expect(
+          metamaskController.multichainAccountService
+            .createMultichainAccountWallet,
+        ).toHaveBeenNthCalledWith(2, {
+          type: 'restore',
+          password,
+          mnemonic: expect.any(Uint8Array),
+        });
       });
 
       it('should clear previous identities after vault restoration', async () => {
@@ -1563,10 +1603,7 @@ describe('MetaMaskController', () => {
     describe('#sortMultichainAccountsByLastSelected', () => {
       const mockGetAccountContext = (lastSelectedMap) => {
         return jest
-          .spyOn(
-            metamaskController.multichainAccountService,
-            'getAccountContext',
-          )
+          .spyOn(metamaskController.accountTreeController, 'getAccountContext')
           .mockImplementation((accountId) => {
             const lastSelected = lastSelectedMap[accountId];
             return {
@@ -1643,10 +1680,7 @@ describe('MetaMaskController', () => {
           });
 
         jest
-          .spyOn(
-            metamaskController.multichainAccountService,
-            'getAccountContext',
-          )
+          .spyOn(metamaskController.accountTreeController, 'getAccountContext')
           .mockImplementation((accountId) => {
             if (accountId === 'id-1') {
               return {
@@ -1758,6 +1792,44 @@ describe('MetaMaskController', () => {
             });
           },
         );
+      });
+
+      describe('getLedgerAppConfiguration', () => {
+        it('returns the app configuration from the Ledger bridge', async () => {
+          const mockConfiguration = {
+            arbitraryDataEnabled: 1,
+            erc20ProvisioningNecessary: 0,
+            starkEnabled: 0,
+            starkv2Supported: 0,
+            version: '1.0.0',
+          };
+
+          const mockKeyring = {
+            bridge: {
+              getAppConfiguration: jest
+                .fn()
+                .mockResolvedValue(mockConfiguration),
+            },
+            updateTransportMethod: jest.fn().mockResolvedValue(undefined),
+          };
+
+          const withKeyringSpy = jest
+            .spyOn(metamaskController.keyringController, 'withKeyring')
+            .mockImplementation(async (_selector, fn) => {
+              return await fn({ keyring: mockKeyring });
+            });
+
+          try {
+            const result = await metamaskController.getLedgerAppConfiguration();
+
+            expect(
+              mockKeyring.bridge.getAppConfiguration,
+            ).toHaveBeenCalledTimes(1);
+            expect(result).toStrictEqual(mockConfiguration);
+          } finally {
+            withKeyringSpy.mockRestore();
+          }
+        });
       });
 
       describe('getHardwareTypeForMetric', () => {
@@ -1944,7 +2016,7 @@ describe('MetaMaskController', () => {
       it('only checks for accounts in the keyring when comparing accountCount', async () => {
         await metamaskController.createNewVaultAndKeychain('password');
         // add a new hd keyring vault to simulate having multiple accounts from different keyrings
-        await metamaskController.generateNewMnemonicAndAddToVault();
+        await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
 
         const numberOfAccounts = (
           await metamaskController.keyringController.getAccounts()
@@ -3573,28 +3645,6 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('generateNewMnemonicAndAddToVault', () => {
-      it('generates a new hd keyring instance', async () => {
-        const password = 'what-what-what';
-        jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
-
-        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
-
-        const previousKeyrings =
-          metamaskController.keyringController.state.keyrings;
-
-        await metamaskController.generateNewMnemonicAndAddToVault();
-
-        const currentKeyrings =
-          metamaskController.keyringController.state.keyrings;
-
-        expect(
-          currentKeyrings.filter((kr) => kr.type === 'HD Key Tree'),
-        ).toHaveLength(2);
-        expect(currentKeyrings).toHaveLength(previousKeyrings.length + 1);
-      });
-    });
-
     describe('importMnemonicToVault', () => {
       it('generates a new hd keyring instance with a mnemonic', async () => {
         const password = 'what-what-what';
@@ -5157,17 +5207,17 @@ describe('MetaMaskController', () => {
           ]),
       };
 
-      jest
-        .spyOn(metamaskController.controllerMessenger, 'call')
-        .mockReturnValue(wallet);
+      const getMultichainAccountWalletSpy = jest.spyOn(
+        metamaskController.multichainAccountService,
+        'getMultichainAccountWallet',
+      );
+      getMultichainAccountWalletSpy.mockReturnValue(wallet);
 
       const result = await metamaskController.discoverAndCreateAccounts();
 
-      expect(metamaskController.controllerMessenger.call).toHaveBeenCalledWith(
-        'MultichainAccountService:getMultichainAccountWallet',
-        { entropySource: primaryId },
-      );
-
+      expect(getMultichainAccountWalletSpy).toHaveBeenCalledWith({
+        entropySource: primaryId,
+      });
       expect(wallet.discoverAccounts).toHaveBeenCalledTimes(1);
       expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1, Tron: 0 });
     });
@@ -5184,17 +5234,18 @@ describe('MetaMaskController', () => {
           ]),
       };
 
-      jest
-        .spyOn(metamaskController.controllerMessenger, 'call')
-        .mockReturnValue(wallet);
+      const getMultichainAccountWalletSpy = jest.spyOn(
+        metamaskController.multichainAccountService,
+        'getMultichainAccountWallet',
+      );
+      getMultichainAccountWalletSpy.mockReturnValue(wallet);
 
       const result =
         await metamaskController.discoverAndCreateAccounts(providedId);
 
-      expect(metamaskController.controllerMessenger.call).toHaveBeenCalledWith(
-        'MultichainAccountService:getMultichainAccountWallet',
-        { entropySource: providedId },
-      );
+      expect(getMultichainAccountWalletSpy).toHaveBeenCalledWith({
+        entropySource: providedId,
+      });
 
       expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1, Tron: 0 });
     });
@@ -5226,9 +5277,11 @@ describe('MetaMaskController', () => {
         call: jest.fn().mockReturnValue(wallet),
       };
 
-      jest
-        .spyOn(metamaskController.controllerMessenger, 'call')
-        .mockReturnValue(wallet);
+      const getMultichainAccountWalletSpy = jest.spyOn(
+        metamaskController.multichainAccountService,
+        'getMultichainAccountWallet',
+      );
+      getMultichainAccountWalletSpy.mockReturnValue(wallet);
 
       const warnSpy = jest.spyOn(log, 'warn');
 

@@ -414,9 +414,6 @@
   "next": {
     "message": "التالي"
   },
-  "noConversionRateAvailable": {
-    "message": "لا يوجد معدل تحويل متاح"
-  },
   "noWebcamFound": {
     "message": "لم يتم العثور على كاميرا ويب للكمبيوتر الخاص بك. حاول مرة اخرى."
   },

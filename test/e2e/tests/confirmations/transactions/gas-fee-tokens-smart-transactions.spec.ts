@@ -64,6 +64,10 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
           });
         },
         title: this.test?.fullTitle(),
+        ignoredConsoleErrors: [
+          // TODO: Remove after bug is fixed, tracked here: https://github.com/MetaMask/metamask-extension/issues/39370
+          'useTransactionDisplayData does not recognize transaction type. Type received is: gas_payment',
+        ],
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
         await loginWithBalanceValidation(

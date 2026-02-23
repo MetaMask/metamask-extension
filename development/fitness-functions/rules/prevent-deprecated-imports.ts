@@ -34,7 +34,7 @@ const DEPRECATED_COMPONENT_PATHS = [
   'ui/icon-border',
   'ui/icon-with-fallback',
   'ui/identicon',
-  'ui/menu',
+  // 'ui/menu',
   'ui/popover',
   'ui/site-origin',
   'ui/textarea',

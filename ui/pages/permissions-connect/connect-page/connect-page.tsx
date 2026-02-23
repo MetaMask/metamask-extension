@@ -129,7 +129,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   targetSubjectMetadata,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [activeTab, setActiveTab] = useState('accounts');
 
   const existingPermissions = useSelector((state) =>

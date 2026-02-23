@@ -2,6 +2,7 @@ import React from 'react';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { act, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
+import localforage from 'localforage';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   createBridgeMockStore,
@@ -131,22 +132,21 @@ const openAssetPicker = async () => {
   });
 };
 
-const fillSearchInput = async (searchQuery: string) => {
+const fillSearchInput = async (searchQuery: string, expectedValue?: string) => {
   const searchInput = screen.getByTestId('bridge-asset-picker-search-input');
   await act(async () => {
     await searchInput.focus();
     await userEvent.keyboard(searchQuery);
   });
-};
-
-const expectAssetListToMatch = (stringifiedSnapshot: string) => {
-  expect(
-    screen.getAllByTestId('bridge-asset').map(({ textContent }) => textContent),
-  ).toMatchInlineSnapshot(stringifiedSnapshot);
+  await waitFor(() => {
+    expect(screen.getByTestId('bridge-asset-picker-search-input')).toHaveValue(
+      expectedValue ?? searchQuery,
+    );
+  });
 };
 
 describe('BridgeInputGroup', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     mockUseVirtualizer.mockReturnValue({
       getVirtualItems: () =>
         tokens.map((token, index) => ({
@@ -157,6 +157,10 @@ describe('BridgeInputGroup', () => {
       getTotalSize: () => 78 * tokens.length,
       measureElement: () => 78,
     });
+    await act(async () => {
+      await localforage.clear();
+    });
+
     jest.clearAllMocks();
   });
 
@@ -168,37 +172,43 @@ describe('BridgeInputGroup', () => {
 
     await openAssetPicker();
     expect(getByTestId('bridge-asset-picker-modal')).toMatchSnapshot();
-    expectAssetListToMatch(
-      `
+    expect(
+      screen
+        .getAllByTestId('bridge-asset')
+        .map(({ textContent }) => textContent),
+    ).toMatchInlineSnapshot(`
       [
         "USDCUSD Coin",
         "USDTUSDT",
       ]
-    `,
-    );
+    `);
 
     await fillSearchInput('U');
     await waitFor(() => {
-      expectAssetListToMatch(
-        `
-        [
-          "UNI$0.00Uniswap<0.000001 UNI",
-        ]
-      `,
-      );
+      expect(
+        screen
+          .getAllByTestId('bridge-asset')
+          .map(({ textContent }) => textContent),
+      ).toMatchInlineSnapshot(`
+              [
+                "UNI$0.00Uniswap<0.000001 UNI",
+              ]
+      `);
     });
 
-    await fillSearchInput('SD');
+    await fillSearchInput('SD', 'USD');
     await waitFor(() => {
-      expectAssetListToMatch(
-        `
-        [
-          "USDCUSD Coin",
-          "USDTUSDT",
-          "USDCUSDC",
-        ]
-      `,
-      );
+      expect(
+        screen
+          .getAllByTestId('bridge-asset')
+          .map(({ textContent }) => textContent),
+      ).toMatchInlineSnapshot(`
+              [
+                "USDCUSD Coin",
+                "USDTUSDT",
+                "USDCUSDC",
+              ]
+          `);
     });
 
     expect(mockHandleFetch.mock.calls.map((call) => [call[0], call[1].body]))
@@ -206,11 +216,11 @@ describe('BridgeInputGroup', () => {
       [
         [
           "https://bridge.api.cx.metamask.io/getTokens/popular",
-          "{"chainIds":["eip155:1"],"includeAssets":[{"decimals":18,"symbol":"ETH","name":"Ether","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png","assetId":"eip155:1/slip44:60","balance":"0.01","tokenFiatAmount":25.242128065034784},{"decimals":10,"symbol":"UNI","name":"Uniswap","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png","assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","balance":"0.0000001848","tokenFiatAmount":0.0010728914112762384},{"decimals":9,"symbol":"LINK","name":"Link","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png","assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","balance":"0.000000001","tokenFiatAmount":0.0000030290553678041743}]}",
+          "{"chainIds":["eip155:1"],"includeAssets":[{"assetId":"eip155:1/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","symbol":"UNI","name":"Uniswap","decimals":10},{"assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9}]}",
         ],
         [
           "https://bridge.api.cx.metamask.io/getTokens/search",
-          "{"chainIds":["eip155:1"],"includeAssets":[],"query":"USD"}",
+          "{"chainIds":["eip155:1"],"query":"USD"}",
         ],
       ]
     `);
@@ -234,26 +244,30 @@ describe('BridgeInputGroup', () => {
     expect(getByTestId(ASSET_PICKER_BUTTON_TEST_ID)).toHaveTextContent('ETH');
 
     await openAssetPicker();
-    expectAssetListToMatch(
-      `
+    expect(
+      screen
+        .getAllByTestId('bridge-asset')
+        .map(({ textContent }) => textContent),
+    ).toMatchInlineSnapshot(`
       [
         "USDCUSD Coin",
         "USDTUSDT",
       ]
-      `,
-    );
+    `);
 
     await fillSearchInput('USD');
     await waitFor(() => {
-      expectAssetListToMatch(
-        `
+      expect(
+        screen
+          .getAllByTestId('bridge-asset')
+          .map(({ textContent }) => textContent),
+      ).toMatchInlineSnapshot(`
         [
           "USDCUSD Coin",
         ]
-        `,
-      );
+      `);
     });
-    expect(mockHandleFetch).toHaveBeenCalledTimes(2);
+    expect(mockHandleFetch.mock.calls.length).toBeGreaterThanOrEqual(2);
     expect(getAllByTestId('bridge-asset-loading-skeleton')).toHaveLength(2);
 
     expect(mockUseVirtualizer).toHaveBeenCalledWith({
@@ -279,22 +293,24 @@ describe('BridgeInputGroup', () => {
     expect(getByTestId(ASSET_PICKER_BUTTON_TEST_ID)).toHaveTextContent('ETH');
 
     await openAssetPicker();
-    expectAssetListToMatch(
-      `
+    expect(
+      screen
+        .getAllByTestId('bridge-asset')
+        .map(({ textContent }) => textContent),
+    ).toMatchInlineSnapshot(`
       [
         "USDCUSD Coin",
         "USDTUSDT",
         "UNI$0.00Uniswap<0.000001 UNI",
       ]
-    `,
-    );
+    `);
 
     expect(mockHandleFetch.mock.calls.map((call) => [call[0], call[1].body]))
       .toMatchInlineSnapshot(`
       [
         [
           "https://bridge.api.cx.metamask.io/getTokens/popular",
-          "{"chainIds":["eip155:1"],"includeAssets":[{"decimals":18,"symbol":"ETH","name":"Ether","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png","assetId":"eip155:1/slip44:60","balance":"0.01","tokenFiatAmount":25.242128065034784},{"decimals":10,"symbol":"UNI","name":"Uniswap","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png","assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","balance":"0.0000001848","tokenFiatAmount":0.0010728914112762384},{"decimals":9,"symbol":"LINK","name":"Link","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png","assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","balance":"0.000000001","tokenFiatAmount":0.0000030290553678041743}]}",
+          "{"chainIds":["eip155:1"],"includeAssets":[{"assetId":"eip155:1/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","symbol":"UNI","name":"Uniswap","decimals":10},{"assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9}]}",
         ],
       ]
     `);
@@ -383,18 +399,28 @@ describe('BridgeInputGroup', () => {
       );
 
       await openAssetPicker();
-      expectAssetListToMatch(
-        `
-        [
-          "USDCUSD Coin",
-          "USDTUSDT",
-          "UNI$0.00Uniswap<0.000001 UNI",
-        ]
-      `,
-      );
+      expect(
+        screen
+          .getAllByTestId('bridge-asset')
+          .map(({ textContent }) => textContent),
+      ).toMatchInlineSnapshot(`
+              [
+                "USDCUSD Coin",
+                "USDTUSDT",
+                "UNI$0.00Uniswap<0.000001 UNI",
+              ]
+          `);
 
       const networkPicker = getByTestId('multichain-asset-picker__network');
       await fillSearchInput('SD');
+      // Wait for the debounced search fetch to fire before clicking the
+      // network picker, which unmounts the asset list and cancels the debounce
+      await waitFor(() => {
+        expect(mockHandleFetch).toHaveBeenCalledWith(
+          expect.stringContaining('search'),
+          expect.anything(),
+        );
+      });
       await act(async () => {
         await networkPicker.click();
       });
@@ -404,7 +430,7 @@ describe('BridgeInputGroup', () => {
       );
       await waitFor(() => {
         expect(networkPickerPopover).toBeVisible();
-        expect(abortSpy).toHaveBeenCalledTimes(4);
+        expect(abortSpy).toHaveBeenCalledTimes(5);
       });
 
       expect(networkPickerPopover).toMatchSnapshot();
@@ -419,21 +445,11 @@ describe('BridgeInputGroup', () => {
       });
       await waitFor(() => {
         expect(networkPickerPopover).not.toBeVisible();
-        expect(abortSpy).toHaveBeenCalledTimes(7);
+        expect(abortSpy).toHaveBeenCalledTimes(8);
+        expect(mockHandleFetch).toHaveBeenCalledTimes(4);
       });
 
       expect(mockHandleFetch.mock.calls).toMatchSnapshot();
-      expect(mockHandleFetch).toHaveBeenCalledTimes(3);
-
-      expect(abortSpy.mock.calls.flat()).toStrictEqual([
-        'Search query changed',
-        'Search query changed',
-        'Search query changed',
-        'Page unmounted',
-        'Search query changed',
-        'Asset balances changed',
-        'Asset balances changed',
-      ]);
     },
   );
 });

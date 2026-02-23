@@ -1,13 +1,7 @@
-import { BUILT_IN_CUSTOM_NETWORKS_RPC } from '@metamask/controller-utils';
-
-import {
-  FEATURED_RPCS,
-  QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME,
-} from '../constants/network';
+import { QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME } from '../constants/network';
 import {
   getIsMetaMaskInfuraEndpointUrl,
   getIsQuicknodeEndpointUrl,
-  isPublicEndpointUrl,
 } from './network-utils';
 
 jest.mock('../constants/network', () => ({
@@ -53,8 +47,6 @@ jest.mock('@metamask/controller-utils', () => ({
     'Custom Network 2': 'https://custom.example.com/2',
   },
 }));
-
-const MOCK_METAMASK_INFURA_PROJECT_ID = 'metamask-infura-project-id';
 
 describe('getIsMetaMaskInfuraEndpointUrl', () => {
   it('returns true given an Infura v3 URL with the MetaMask API key at the end', () => {
@@ -156,49 +148,5 @@ describe('getIsQuicknodeEndpointUrl', () => {
 
   it('returns false for an empty URL', () => {
     expect(getIsQuicknodeEndpointUrl('')).toBe(false);
-  });
-});
-
-describe('isPublicEndpointUrl', () => {
-  it('returns true for Infura URLs', () => {
-    expect(
-      isPublicEndpointUrl(
-        `https://mainnet.infura.io/v3/${MOCK_METAMASK_INFURA_PROJECT_ID}`,
-        MOCK_METAMASK_INFURA_PROJECT_ID,
-      ),
-    ).toBe(true);
-  });
-
-  it('returns true for Quicknode URLs', () => {
-    const quicknodeUrl =
-      QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME['ethereum-mainnet']();
-    expect(
-      // We can assume this is set.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      isPublicEndpointUrl(quicknodeUrl!, MOCK_METAMASK_INFURA_PROJECT_ID),
-    ).toBe(true);
-  });
-
-  it('returns true for featured RPC endpoints', () => {
-    const featuredUrl = FEATURED_RPCS[0].rpcEndpoints[0].url;
-    expect(
-      isPublicEndpointUrl(featuredUrl, MOCK_METAMASK_INFURA_PROJECT_ID),
-    ).toBe(true);
-  });
-
-  it('returns true for built-in custom endpoints', () => {
-    const builtInUrl = Object.values(BUILT_IN_CUSTOM_NETWORKS_RPC)[0];
-    expect(
-      isPublicEndpointUrl(builtInUrl, MOCK_METAMASK_INFURA_PROJECT_ID),
-    ).toBe(true);
-  });
-
-  it('returns false for unknown URLs', () => {
-    expect(
-      isPublicEndpointUrl(
-        'https://unknown.example.com',
-        MOCK_METAMASK_INFURA_PROJECT_ID,
-      ),
-    ).toBe(false);
   });
 });

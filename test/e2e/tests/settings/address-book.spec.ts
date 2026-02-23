@@ -3,6 +3,7 @@ import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import ContactsPage from '../../page-objects/pages/settings/contacts-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -31,7 +32,7 @@ describe('Address Book', function (this: Suite) {
   it('Sends to an address book entry', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAddressBookController({
             addressBook: {
               '0x539': {
@@ -123,7 +124,7 @@ describe('Address Book', function (this: Suite) {
   it('Adds a new contact to the address book', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -151,7 +152,7 @@ describe('Address Book', function (this: Suite) {
   it('Adds a new contact to the address book on a different chain', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -180,7 +181,7 @@ describe('Address Book', function (this: Suite) {
   it('Edit entry in address book', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAddressBookController({
             addressBook: {
               '0x539': {
@@ -223,7 +224,7 @@ describe('Address Book', function (this: Suite) {
   it('Deletes existing entry from address book', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAddressBookController({
             addressBook: {
               '0x539': {
@@ -265,7 +266,7 @@ describe('Address Book', function (this: Suite) {
   it('User can add same address contacts on different chains', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
