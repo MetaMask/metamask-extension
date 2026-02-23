@@ -162,6 +162,5 @@ export function useBridgeTransactionNavigation(): void {
     historyItem,
     isBetweenApprovalAndBridgeSteps,
     navigateToActivity,
-    location.pathname,
   ]);
 }
