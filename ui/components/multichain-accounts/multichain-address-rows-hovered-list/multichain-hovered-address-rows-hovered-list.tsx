@@ -5,7 +5,7 @@ import React, {
   useState,
   useEffect,
 } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -19,19 +19,34 @@ import {
   ButtonVariant,
   FontWeight,
   Text,
+  TextButton,
+  TextButtonSize,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { Popover, PopoverPosition } from '../../component-library';
+import ToggleButton from '../../ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import {
   getAllAccountGroups,
   getInternalAccountListSpreadByScopesByGroupId,
 } from '../../../selectors/multichain-accounts/account-tree';
-import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  GENERAL_ROUTE,
+  MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
+} from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE,
+  DefaultAddressScope,
+} from '../../../../shared/constants/default-address';
+import {
+  getDefaultAddressScope,
+  getShowDefaultAddress,
+} from '../../../selectors';
+import { setShowDefaultAddress } from '../../../store/actions';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { useFormatters } from '../../../hooks/useFormatters';
 // eslint-disable-next-line import/no-restricted-paths
@@ -70,30 +85,55 @@ export type MultichainAddressRowsListProps = {
    * before navigation occurs. Useful for analytics or tracing.
    */
   onViewAllClick?: () => void;
+  /**
+   * When false, the popover does not show the "View All" button.
+   * Used e.g. on the account list page.
+   */
+  showViewAllButton?: boolean;
+  /**
+   * When false, the popover does not show the "Show default address" toggle section.
+   * Used e.g. on the account list page.
+   */
+  showDefaultAddressSection?: boolean;
 };
 
+const Divider = () => (
+  <div className="my-3 mx-4 border-t border-border-muted" />
+);
+
 export const MultichainHoveredAddressRowsList = ({
-  groupId,
   children,
-  showAccountHeaderAndBalance = true,
+  groupId,
   hoverCloseDelay = 50,
+  showAccountHeaderAndBalance = true,
   onViewAllClick,
+  showViewAllButton = true,
+  showDefaultAddressSection = true,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
 
   // useCopyToClipboard analysis: Copies one of your public addresses
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const navigate = useNavigate();
+  const showDefaultAddress = useSelector(getShowDefaultAddress);
+  const defaultAddressScope = useSelector(
+    getDefaultAddressScope,
+  ) as DefaultAddressScope;
+  const defaultScopeDisplayLabel = t(
+    DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE[defaultAddressScope],
+  );
   const [isHoverOpen, setIsHoverOpen] = useState(false);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
     null,
   );
   const [dynamicPosition, setDynamicPosition] = useState<PopoverPosition>(
     PopoverPosition.BottomStart,
   );
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const allAccountGroups = useSelector(getAllAccountGroups);
 
+  const allAccountGroups = useSelector(getAllAccountGroups);
   const allBalances = useSelector(selectBalanceForAllWallets);
   const { balance, currency, accountGroup } = useMemo(() => {
     const group = allAccountGroups.find((g) => g.id === groupId);
@@ -293,9 +333,6 @@ export const MultichainHoveredAddressRowsList = ({
         ref={setReferenceElement}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        gap={1}
       >
         {children}
       </Box>
@@ -341,27 +378,65 @@ export const MultichainHoveredAddressRowsList = ({
               </Text>
             </Box>
           )}
-          <Box marginBottom={2}>{renderedRows}</Box>
-          <Box
-            paddingBottom={1}
-            className="multichain-address-rows-border"
-            style={{
-              borderTop: '1px solid var(--color-border-muted)',
-            }}
-          />
-          <Box>
+          <Box>{renderedRows}</Box>
+          {showViewAllButton && (
             <Button
               size={ButtonSize.Sm}
-              variant={ButtonVariant.Tertiary}
+              variant={ButtonVariant.Secondary}
               onClick={handleViewAllClick}
-              style={{ width: '100%' }}
-              className="multichain-address-rows-view-all-button"
+              className="mt-2 ml-3 mr-3"
+              data-testid="multichain-address-rows-view-all-button"
             >
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {t('multichainAddressViewAll')}
-              </Text>
+              {t('multichainAddressViewAll')}
             </Button>
-          </Box>
+          )}
+          {showDefaultAddressSection && (
+            <>
+              <Divider />
+              <Box paddingLeft={4} paddingBottom={2}>
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.Between}
+                  alignItems={BoxAlignItems.Center}
+                >
+                  <Box flexDirection={BoxFlexDirection.Column}>
+                    <Text
+                      variant={TextVariant.BodySm}
+                      fontWeight={FontWeight.Medium}
+                      color={TextColor.TextDefault}
+                    >
+                      {t('showDefaultAddress')}
+                    </Text>
+                    <Box flexDirection={BoxFlexDirection.Row} gap={2}>
+                      <Text
+                        variant={TextVariant.BodyXs}
+                        color={TextColor.TextAlternative}
+                      >
+                        {t('default')}: {defaultScopeDisplayLabel}
+                      </Text>
+                      <TextButton
+                        size={TextButtonSize.BodyXs}
+                        onClick={(e: React.MouseEvent) => {
+                          e.stopPropagation();
+                          navigate(`${GENERAL_ROUTE}#show-default-address`);
+                        }}
+                        data-testid="change-in-settings-link"
+                      >
+                        {t('changeInSettings')}
+                      </TextButton>
+                    </Box>
+                  </Box>
+                  <ToggleButton
+                    value={showDefaultAddress}
+                    onToggle={(value: boolean) =>
+                      dispatch(setShowDefaultAddress(!value))
+                    }
+                    dataTestId="show-default-address-toggle"
+                  />
+                </Box>
+              </Box>
+            </>
+          )}
         </Box>
       </Popover>
     </>

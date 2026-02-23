@@ -3612,9 +3612,6 @@
   "lock": {
     "message": "Заблокировать"
   },
-  "lockMetaMask": {
-    "message": "Заблокировать MetaMask"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "Блокировка MetaMask..."
   },
