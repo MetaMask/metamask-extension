@@ -804,17 +804,20 @@ export const getDefaultScopeAndAddressByAccountGroupId =
       }[],
       defaultScope: DefaultAddressScope,
     ): { defaultAddress: string | null; defaultScopes: CaipChainId[] } => {
-      const matching = spreadList.filter((x) =>
-        String(x.scope).startsWith(defaultScope),
-      );
-      if (matching.length === 0) {
-        return { defaultAddress: null, defaultScopes: [] };
+      let defaultAddress: string | null = null;
+      const defaultScopes: CaipChainId[] = [];
+      for (const x of spreadList) {
+        if (!String(x.scope).startsWith(defaultScope)) {
+          continue;
+        }
+        if (defaultAddress === null) {
+          defaultAddress = x.account.address;
+        }
+        if (x.account.address === defaultAddress) {
+          defaultScopes.push(x.scope);
+        }
       }
-      const { address } = matching[0].account;
-      const defaultScopes = matching
-        .filter((x) => x.account.address === address)
-        .map((x) => x.scope);
-      return { defaultAddress: address, defaultScopes };
+      return { defaultAddress, defaultScopes };
     },
   );
 
