@@ -1,5 +1,5 @@
 diff --git a/dist/AssetsController.cjs b/dist/AssetsController.cjs
-index 60ebb3df734e7b1ba06373b1884b15e9330dd224..b29cf14e3c6dd20a7a422f494dcacd1bc1145975 100644
+index 60ebb3df734e7b1ba06373b1884b15e9330dd224..fe3020e06ab15fc01613bcf13da0a19f11985f82 100644
 --- a/dist/AssetsController.cjs
 +++ b/dist/AssetsController.cjs
 @@ -62,6 +62,7 @@ function getDefaultAssetsControllerState() {
@@ -31,7 +31,15 @@ index 60ebb3df734e7b1ba06373b1884b15e9330dd224..b29cf14e3c6dd20a7a422f494dcacd1b
              ...priceDataSourceConfig,
          }), "f");
          __classPrivateFieldSet(this, _AssetsController_detectionMiddleware, new DetectionMiddleware_1.DetectionMiddleware(), "f");
-@@ -530,6 +538,33 @@ class AssetsController extends base_controller_1.BaseController {
+@@ -350,6 +358,7 @@ class AssetsController extends base_controller_1.BaseController {
+                 dataTypes,
+                 customAssets: customAssets.length > 0 ? customAssets : undefined,
+                 forceUpdate: true,
++                assetsForPriceUpdate: options?.assetsForPriceUpdate,
+             });
+             const sources = __classPrivateFieldGet(this, _AssetsController_isBasicFunctionality, "f").call(this)
+                 ? [
+@@ -530,6 +539,34 @@ class AssetsController extends base_controller_1.BaseController {
          });
      }
      // ============================================================================
@@ -57,6 +65,7 @@ index 60ebb3df734e7b1ba06373b1884b15e9330dd224..b29cf14e3c6dd20a7a422f494dcacd1b
 +        this.getAssets(__classPrivateFieldGet(this, _AssetsController_instances, "a", _AssetsController_selectedAccounts_get), {
 +            forceUpdate: true,
 +            dataTypes: ['price'],
++            assetsForPriceUpdate: Object.values(this.state.assetsBalance).flatMap((balances) => Object.keys(balances)),
 +        }).catch((error) => {
 +            log('Failed to fetch asset prices after current currency change', error);
 +        });
@@ -66,7 +75,7 @@ index 60ebb3df734e7b1ba06373b1884b15e9330dd224..b29cf14e3c6dd20a7a422f494dcacd1b
      // ============================================================================
      /**
 diff --git a/dist/AssetsController.d.cts b/dist/AssetsController.d.cts
-index 1ac4e6e4256843fb66c0c61dd9d6a4c041dfacb8..955404885461636ee40b7127080dff4b32a9bdc4 100644
+index 1ac4e6e4256843fb66c0c61dd9d6a4c041dfacb8..79ef19a1b9fe4d144e9b90a959592d2690f2fec5 100644
 --- a/dist/AssetsController.d.cts
 +++ b/dist/AssetsController.d.cts
 @@ -2,7 +2,7 @@ import type { AccountTreeControllerGetAccountsFromSelectedAccountGroupAction, Ac
@@ -87,7 +96,15 @@ index 1ac4e6e4256843fb66c0c61dd9d6a4c041dfacb8..955404885461636ee40b7127080dff4b
  };
  /**
   * Returns the default state for AssetsController.
-@@ -244,6 +246,12 @@ export declare class AssetsController extends BaseController<typeof CONTROLLER_N
+@@ -195,6 +197,7 @@ export declare class AssetsController extends BaseController<typeof CONTROLLER_N
+         assetTypes?: AssetType[];
+         forceUpdate?: boolean;
+         dataTypes?: DataType[];
++        assetsForPriceUpdate?: Caip19AssetId[];
+     }): Promise<Record<AccountId, Record<Caip19AssetId, Asset>>>;
+     getAssetsBalance(accounts: InternalAccount[], options?: {
+         chainIds?: ChainId[];
+@@ -244,6 +247,12 @@ export declare class AssetsController extends BaseController<typeof CONTROLLER_N
       * @param assetId - The CAIP-19 asset ID to unhide.
       */
      unhideAsset(assetId: Caip19AssetId): void;
@@ -101,7 +118,7 @@ index 1ac4e6e4256843fb66c0c61dd9d6a4c041dfacb8..955404885461636ee40b7127080dff4b
       * Subscribe to price updates for all assets held by the given accounts.
       * Polls PriceDataSource which fetches prices from balance state.
 diff --git a/dist/data-sources/PriceDataSource.cjs b/dist/data-sources/PriceDataSource.cjs
-index eb5e4b82c37e41fe94786024a36158bf42f97a99..478a6ad7f7ca0d3296faa9c1e1bc271e7a61fde7 100644
+index eb5e4b82c37e41fe94786024a36158bf42f97a99..f52956f8deeb60ce87f1e796825fd90958be242a 100644
 --- a/dist/data-sources/PriceDataSource.cjs
 +++ b/dist/data-sources/PriceDataSource.cjs
 @@ -10,7 +10,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
@@ -129,7 +146,42 @@ index eb5e4b82c37e41fe94786024a36158bf42f97a99..478a6ad7f7ca0d3296faa9c1e1bc271e
          __classPrivateFieldSet(this, _PriceDataSource_pollInterval, options.pollInterval ?? DEFAULT_POLL_INTERVAL, "f");
          __classPrivateFieldSet(this, _PriceDataSource_apiClient, options.queryApiClient, "f");
      }
-@@ -271,7 +271,7 @@ class PriceDataSource {
+@@ -110,23 +110,26 @@ class PriceDataSource {
+     get assetsMiddleware() {
+         return (0, types_1.forDataTypes)(['price'], async (ctx, next) => {
+             // Extract response from context
+-            const { response } = ctx;
++            const { response, request } = ctx;
+             // Only fetch prices for detected assets (assets without metadata)
+             // The subscription handles fetching prices for all existing assets
+-            if (!response.detectedAssets) {
++            if (!response.detectedAssets && !request.assetsForPriceUpdate?.length) {
+                 return next(ctx);
+             }
+-            const detectedAssetIds = new Set();
+-            for (const detectedIds of Object.values(response.detectedAssets)) {
+-                for (const assetId of detectedIds) {
+-                    detectedAssetIds.add(assetId);
++            const assetIds = new Set();
++            for (const detectedAccountAssets of Object.values(response.detectedAssets ?? {})) {
++                for (const assetId of detectedAccountAssets) {
++                    assetIds.add(assetId);
+                 }
+             }
+-            if (detectedAssetIds.size === 0) {
++            for (const assetId of request.assetsForPriceUpdate ?? []) {
++                assetIds.add(assetId);
++            }
++            if (assetIds.size === 0) {
+                 return next(ctx);
+             }
+             // Filter to only priceable assets
+-            const priceableAssetIds = [...detectedAssetIds].filter(isPriceableAsset);
++            const priceableAssetIds = [...assetIds].filter(isPriceableAsset);
+             if (priceableAssetIds.length === 0) {
+                 return next(ctx);
+             }
+@@ -271,7 +274,7 @@ class PriceDataSource {
      }
  }
  exports.PriceDataSource = PriceDataSource;
@@ -138,7 +190,7 @@ index eb5e4b82c37e41fe94786024a36158bf42f97a99..478a6ad7f7ca0d3296faa9c1e1bc271e
  // ============================================================================
  // HELPERS
  // ============================================================================
-@@ -283,7 +283,7 @@ _PriceDataSource_currency = new WeakMap(), _PriceDataSource_pollInterval = new W
+@@ -283,7 +286,7 @@ _PriceDataSource_currency = new WeakMap(), _PriceDataSource_pollInterval = new W
   */
  async function _PriceDataSource_fetchSpotPrices(assetIds) {
      return __classPrivateFieldGet(this, _PriceDataSource_apiClient, "f").prices.fetchV3SpotPrices(assetIds, {
@@ -162,3 +214,16 @@ index 5269f7cfd0c638a7401d20e035bf97c47993bb90..e4e574b2cf927dda7d4a3ea48f27756f
  };
  /**
   * PriceDataSource fetches asset prices from the Price API.
+diff --git a/dist/types.d.cts b/dist/types.d.cts
+index 2a1f8df5757ccc9ea1a6dea4384ac5bb16d58b2c..197ac70bd92ca6f70328a7211d4dac11e6ff3bd3 100644
+--- a/dist/types.d.cts
++++ b/dist/types.d.cts
+@@ -280,6 +280,8 @@ export type DataRequest = {
+     forceUpdate?: boolean;
+     /** Hint for polling interval (ms) - used by data sources that implement polling */
+     updateInterval?: number;
++    /** Specific CAIP-19 asset IDs for price update */
++    assetsForPriceUpdate?: Caip19AssetId[];
+ };
+ /**
+  * Response from data sources
