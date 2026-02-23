@@ -73,7 +73,7 @@
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
     "showBetaHeader": false,
-    "isUpdateAvailable": false,
+    "pendingExtensionVersion": null,
     "updateModalLastDismissedAt": null,
     "lastUpdatedAt": null,
     "subscriptions": [],
@@ -418,6 +418,8 @@
       }
     },
     "preferences": {
+      "defaultAddressScope": "eip155",
+      "showDefaultAddress": false,
       "hideZeroBalanceTokens": false,
       "petnamesEnabled": false,
       "showExtensionInFullSizeView": false,
