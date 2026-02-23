@@ -674,12 +674,19 @@ const handleOnConnect = async (port) => {
     if (message?.data?.method === METHOD_REPAIR_DATABASE_TIMEOUT) {
       port.onMessage.removeListener(repairListener);
 
+      const params = message?.data?.params ?? {};
+      const criticalErrorType = Object.values(CriticalErrorType).includes(
+        params.criticalErrorType,
+      )
+        ? params.criticalErrorType
+        : CriticalErrorType.Other;
+
       try {
         const backup = (await persistenceManager.getBackup()) ?? null;
         trackCriticalErrorEvent(
           backup,
           MetaMetricsEventName.CriticalErrorRestoreWalletButtonPressed,
-          CriticalErrorType.Other,
+          criticalErrorType,
         );
         // Snapshot ports before repair; re-init can disconnect them and clear the set.
         const portsToReload = [...metamaskUIPorts];

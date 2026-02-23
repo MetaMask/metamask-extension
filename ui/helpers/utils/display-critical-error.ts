@@ -299,6 +299,7 @@ export async function displayCriticalErrorMessage(
             (port as browser.Runtime.Port).postMessage({
               data: {
                 method: METHOD_REPAIR_DATABASE_TIMEOUT,
+                params: { criticalErrorType },
               },
             });
           }

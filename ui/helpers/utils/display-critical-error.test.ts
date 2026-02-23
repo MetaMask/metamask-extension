@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill';
 import { act } from 'react-dom/test-utils';
+import { CriticalErrorType } from '../../../shared/constants/state-corruption';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
 import * as errorUtils from '../../../shared/lib/error-utils';
 import {
@@ -374,6 +375,7 @@ describe('restore accounts link', () => {
         error,
         'en',
         mockPort,
+        CriticalErrorType.BackgroundInitTimeout,
       ),
     ).rejects.toThrow(error);
 
@@ -397,7 +399,12 @@ describe('restore accounts link', () => {
 
     expect(window.confirm).toHaveBeenCalled();
     expect(mockPort.postMessage).toHaveBeenCalledWith({
-      data: { method: 'repairDatabaseTimeout' },
+      data: {
+        method: 'repairDatabaseTimeout',
+        params: {
+          criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+        },
+      },
     });
   });
 
