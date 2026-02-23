@@ -95,6 +95,7 @@ export function RevealSeedContent({
             alignItems={BoxAlignItems.Center}
             data-testid="qr-srp"
           >
+            {/* eslint-disable-next-line @typescript-eslint/naming-convention */}
             <div dangerouslySetInnerHTML={{ __html: qrHtml }} />
           </Box>
         </Tab>

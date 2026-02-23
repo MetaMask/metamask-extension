@@ -68,8 +68,11 @@ function RevealSeedPage() {
       category: MetaMetricsEventCategory.Keys,
       event: MetaMetricsEventName.KeyExportCopied,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         key_type: MetaMetricsEventKeyType.Srp,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         copy_method: 'clipboard',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
       },
     });
@@ -77,8 +80,11 @@ function RevealSeedPage() {
       category: MetaMetricsEventCategory.Keys,
       event: MetaMetricsEventName.SrpCopiedToClipboard,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         key_type: MetaMetricsEventKeyType.Srp,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         copy_method: 'clipboard',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
       },
     });
@@ -107,7 +113,9 @@ function RevealSeedPage() {
             category: MetaMetricsEventCategory.Keys,
             event: MetaMetricsEventName.KeyExportRevealed,
             properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               key_type: MetaMetricsEventKeyType.Srp,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               hd_entropy_index: hdEntropyIndex,
             },
           });
@@ -119,8 +127,10 @@ function RevealSeedPage() {
             category: MetaMetricsEventCategory.Keys,
             event: MetaMetricsEventName.KeyExportFailed,
             properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               key_type: MetaMetricsEventKeyType.Srp,
               reason: e.message,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               hd_entropy_index: hdEntropyIndex,
             },
           });
@@ -158,8 +168,10 @@ function RevealSeedPage() {
       category: MetaMetricsEventCategory.Keys,
       event: MetaMetricsEventName.SrpRevealBackButtonClicked,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         key_type: MetaMetricsEventKeyType.Srp,
         screen,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
       },
     });
@@ -176,6 +188,7 @@ function RevealSeedPage() {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpViewSrpText,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
         },
       });
@@ -188,6 +201,7 @@ function RevealSeedPage() {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
       },
     });
@@ -201,6 +215,7 @@ function RevealSeedPage() {
           category: MetaMetricsEventCategory.Keys,
           event: MetaMetricsEventName.SrpViewSrpText,
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             key_type: MetaMetricsEventKeyType.Srp,
           },
         });
@@ -209,6 +224,7 @@ function RevealSeedPage() {
           category: MetaMetricsEventCategory.Keys,
           event: MetaMetricsEventName.SrpViewsSrpQR,
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             key_type: MetaMetricsEventKeyType.Srp,
           },
         });
@@ -223,7 +239,9 @@ function RevealSeedPage() {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportRequested,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: hdEntropyIndex,
         },
       });
@@ -231,6 +249,7 @@ function RevealSeedPage() {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpRevealNextClicked,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
         },
       });
@@ -248,7 +267,9 @@ function RevealSeedPage() {
               category: MetaMetricsEventCategory.Keys,
               event: MetaMetricsEventName.SrpRevealStarted,
               properties: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 key_type: MetaMetricsEventKeyType.Srp,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 hd_entropy_index: hdEntropyIndex,
               },
             });

@@ -15,7 +15,7 @@ import {
   BoxJustifyContent,
   BoxBorderColor,
   BoxBackgroundColor,
-  ButtonVariant,
+  TextButton,
   BoxAlignItems,
   ButtonSize,
 } from '@metamask/design-system-react';
@@ -113,11 +113,9 @@ function RestoreVaultPage() {
     <Box
       flexDirection={BoxFlexDirection.Column}
       justifyContent={BoxJustifyContent.Between}
-      // height={BlockSize.Full}
       gap={4}
-      className="import-srp-restore-vault"
+      className="import-srp-restore-vault h-full rounded-lg"
       data-testid="import-srp-restore-vault"
-      // borderRadius={BorderRadius.LG}
       borderColor={BoxBorderColor.BorderMuted}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
     >
@@ -141,10 +139,7 @@ function RestoreVaultPage() {
                 ariaLabel={t('back')}
               />
             </Box>
-            <Box
-              // textAlign={TextAlign.Left}
-              marginBottom={2}
-            >
+            <Box className="text-left" marginBottom={2}>
               <Text variant={TextVariant.HeadingLg}>{t('importAWallet')}</Text>
             </Box>
             <Box marginBottom={4}>
@@ -153,13 +148,12 @@ function RestoreVaultPage() {
                 color={TextColor.TextAlternative}
               >
                 {t('restoreWalletDescription', [
-                  <Button
+                  <TextButton
                     key="secret-recovery-phrase"
-                    variant={ButtonVariant.Tertiary}
                     onClick={() => setToggleSrpDetailsModal(true)}
                   >
                     {t('secretRecoveryPhrase')}
-                  </Button>,
+                  </TextButton>,
                 ])}
               </Text>
             </Box>
@@ -176,16 +170,14 @@ function RestoreVaultPage() {
             flexDirection={BoxFlexDirection.Column}
             justifyContent={BoxJustifyContent.Center}
             alignItems={BoxAlignItems.Center}
-            // width={BlockSize.Full}
-            // textAlign={TextAlign.Left}
+            className="w-full text-left"
           >
             <Button
-              // width={BlockSize.Full}
               size={ButtonSize.Lg}
               data-testid="import-srp-confirm"
               onClick={handleContinue}
               disabled={!secretRecoveryPhrase.trim() || Boolean(srpError)}
-              className="import-srp__continue-button"
+              className="import-srp__continue-button w-full"
             >
               {t('continue')}
             </Button>

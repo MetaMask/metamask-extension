@@ -251,7 +251,9 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpRevealStarted,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
       });
@@ -259,7 +261,9 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportRequested,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
       });
@@ -267,6 +271,7 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpRevealNextClicked,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
         },
       });
@@ -274,7 +279,9 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportFailed,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
           reason: 'bad password',
         },
@@ -294,7 +301,9 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportRequested,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
       });
@@ -302,6 +311,7 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpRevealNextClicked,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
         },
       });
@@ -309,7 +319,9 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportRevealed,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
       });
@@ -321,6 +333,7 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpViewSrpText,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
         },
       });
@@ -338,6 +351,7 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpViewsSrpQR,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
         },
       });
@@ -355,6 +369,7 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpViewSrpText,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
         },
       });
@@ -371,8 +386,11 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportCopied,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           copy_method: 'clipboard',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
       });
@@ -380,8 +398,11 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpCopiedToClipboard,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           copy_method: 'clipboard',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
       });
@@ -411,8 +432,11 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpRevealBackButtonClicked,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           screen: 'QUIZ_INTRODUCTION_SCREEN',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
       });
