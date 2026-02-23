@@ -11,6 +11,7 @@ import {
   fetchBridgeTokens,
   BridgeClientId,
   type BridgeAsset,
+  getNativeAssetForChainId,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import type {
@@ -141,8 +142,8 @@ export const useTokensWithFiltering = (
     }
     // For Bitcoin chains, we only support native asset
     if (isBitcoinChainId(chainId)) {
-      // Return native asset for Bitcoin chains (safe: returns undefined if not in swaps map)
-      const nativeAsset = getNativeAssetForChainIdSafe(chainId);
+      // Return native asset for Bitcoin chains
+      const nativeAsset = getNativeAssetForChainId(chainId);
       if (nativeAsset) {
         const key = nativeAsset.address ?? '';
         return {
@@ -265,7 +266,6 @@ export const useTokensWithFiltering = (
           }
           if (shouldAddToken(token.symbol, token.address, token.chainId)) {
             if (isNativeAddress(token.address) || token.isNative) {
-              const nativeAsset = getNativeAssetForChainIdSafe(token.chainId);
               yield {
                 symbol: token.symbol,
                 chainId: token.chainId,
@@ -282,12 +282,24 @@ export const useTokensWithFiltering = (
                   MULTICHAIN_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
                   ] ??
-                  nativeAsset?.icon ??
-                  nativeAsset?.iconUrl ??
-                  getAssetImageUrl(
-                    token.address,
-                    formatChainIdToCaip(token.chainId),
-                  ),
+                  (() => {
+                    try {
+                      return (
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string must fall through (https://github.com/MetaMask/metamask-extension/issues/31880)
+                        getNativeAssetForChainIdSafe(token.chainId)?.icon ||
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string must fall through (https://github.com/MetaMask/metamask-extension/issues/31880)
+                        getNativeAssetForChainIdSafe(token.chainId)?.iconUrl ||
+                        getAssetImageUrl(
+                          token.address,
+                          formatChainIdToCaip(token.chainId),
+                        )
+                      );
+                    } catch {
+                      return '';
+                    }
+                  })(),
                 accountType: token.accountType,
               };
             } else {
