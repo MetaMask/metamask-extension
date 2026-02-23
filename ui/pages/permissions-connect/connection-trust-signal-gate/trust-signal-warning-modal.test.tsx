@@ -18,7 +18,6 @@ describe('TrustSignalWarningModal', () => {
   const defaultProps = {
     origin: 'https://suspicious-site.example.com',
     onContinue: jest.fn(),
-    onGoBack: jest.fn(),
   };
 
   beforeEach(() => {
@@ -34,21 +33,20 @@ describe('TrustSignalWarningModal', () => {
     expect(getByText('suspicious-site.example.com')).toBeInTheDocument();
   });
 
-  it('calls onContinue when continue button is clicked', () => {
+  it('shows "Unverified site" title', () => {
+    const { getByText } = renderWithI18n(
+      <TrustSignalWarningModal {...defaultProps} />,
+    );
+
+    expect(getByText('Unverified site')).toBeInTheDocument();
+  });
+
+  it('calls onContinue when "Connect Anyway" is clicked', () => {
     const { getByTestId } = renderWithI18n(
       <TrustSignalWarningModal {...defaultProps} />,
     );
 
     fireEvent.click(getByTestId('trust-signal-warning-continue'));
     expect(defaultProps.onContinue).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls onGoBack when go back button is clicked', () => {
-    const { getByTestId } = renderWithI18n(
-      <TrustSignalWarningModal {...defaultProps} />,
-    );
-
-    fireEvent.click(getByTestId('trust-signal-warning-go-back'));
-    expect(defaultProps.onGoBack).toHaveBeenCalledTimes(1);
   });
 });

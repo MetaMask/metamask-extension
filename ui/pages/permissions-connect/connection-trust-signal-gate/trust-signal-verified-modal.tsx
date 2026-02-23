@@ -5,6 +5,8 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
+  ButtonIcon,
+  ButtonIconSize,
   Icon,
   IconName,
   IconSize,
@@ -24,15 +26,15 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-type TrustSignalBlockModalProps = {
+type TrustSignalVerifiedModalProps = {
   origin: string;
-  onContinue: () => void;
+  onDismiss: () => void;
 };
 
-export function TrustSignalBlockModal({
+export function TrustSignalVerifiedModal({
   origin,
-  onContinue,
-}: TrustSignalBlockModalProps) {
+  onDismiss,
+}: TrustSignalVerifiedModalProps) {
   const t = useI18nContext();
 
   let hostname: string;
@@ -44,21 +46,30 @@ export function TrustSignalBlockModal({
 
   return (
     <Box
-      data-testid="trust-signal-block-modal"
+      data-testid="trust-signal-verified-modal"
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
       padding={4}
       paddingTop={6}
       gap={4}
+      style={{ position: 'relative' }}
     >
+      <ButtonIcon
+        iconName={IconName.Close}
+        size={ButtonIconSize.Sm}
+        onClick={onDismiss}
+        ariaLabel="Close"
+        data-testid="trust-signal-verified-close"
+        style={{ position: 'absolute', top: '16px', right: '16px' }}
+      />
       <Icon
-        name={IconName.Danger}
+        name={IconName.Confirmation}
         size={IconSize.Xl}
-        color={IconColor.errorDefault}
+        color={IconColor.successDefault}
       />
       <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
-        {t('trustSignalBlockTitle')}
+        {t('trustSignalVerifiedTitle')}
       </Text>
       <Box
         display={Display.Flex}
@@ -68,36 +79,35 @@ export function TrustSignalBlockModal({
       >
         <Text
           variant={TextVariant.bodyMd}
-          color={TextColor.errorDefault}
+          color={TextColor.successDefault}
           textAlign={TextAlign.Center}
         >
           {hostname}
         </Text>
         <Icon
-          name={IconName.Danger}
+          name={IconName.VerifiedFilled}
           size={IconSize.Sm}
-          color={IconColor.errorDefault}
+          color={IconColor.successDefault}
         />
       </Box>
       <Box
-        backgroundColor={BackgroundColor.errorMuted}
+        backgroundColor={BackgroundColor.successMuted}
         borderRadius={BorderRadius.LG}
         padding={4}
         width={BlockSize.Full}
       >
         <Text variant={TextVariant.bodyMd}>
-          {t('trustSignalBlockDescription')}
+          {t('trustSignalVerifiedDescription')}
         </Text>
       </Box>
       <Button
         variant={ButtonVariant.Primary}
         size={ButtonSize.Lg}
         width={BlockSize.Full}
-        onClick={onContinue}
-        data-testid="trust-signal-block-continue"
-        danger
+        onClick={onDismiss}
+        data-testid="trust-signal-verified-ok"
       >
-        {t('trustSignalContinueAnyway')}
+        {t('ok')}
       </Button>
     </Box>
   );

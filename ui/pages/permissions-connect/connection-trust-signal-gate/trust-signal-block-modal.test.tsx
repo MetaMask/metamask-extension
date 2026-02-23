@@ -18,7 +18,6 @@ describe('TrustSignalBlockModal', () => {
   const defaultProps = {
     origin: 'https://malicious-site.example.com',
     onContinue: jest.fn(),
-    onGoBack: jest.fn(),
   };
 
   beforeEach(() => {
@@ -34,39 +33,20 @@ describe('TrustSignalBlockModal', () => {
     expect(getByText('malicious-site.example.com')).toBeInTheDocument();
   });
 
-  it('has continue button disabled by default', () => {
-    const { getByTestId } = renderWithI18n(
+  it('shows "Malicious site detected" title', () => {
+    const { getByText } = renderWithI18n(
       <TrustSignalBlockModal {...defaultProps} />,
     );
 
-    expect(getByTestId('trust-signal-block-continue')).toBeDisabled();
+    expect(getByText('Malicious site detected')).toBeInTheDocument();
   });
 
-  it('enables continue button after checkbox is checked', () => {
+  it('calls onContinue when "Connect Anyway" is clicked', () => {
     const { getByTestId } = renderWithI18n(
       <TrustSignalBlockModal {...defaultProps} />,
     );
 
-    fireEvent.click(getByTestId('trust-signal-block-checkbox'));
-    expect(getByTestId('trust-signal-block-continue')).not.toBeDisabled();
-  });
-
-  it('calls onContinue when checkbox is checked and continue is clicked', () => {
-    const { getByTestId } = renderWithI18n(
-      <TrustSignalBlockModal {...defaultProps} />,
-    );
-
-    fireEvent.click(getByTestId('trust-signal-block-checkbox'));
     fireEvent.click(getByTestId('trust-signal-block-continue'));
     expect(defaultProps.onContinue).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls onGoBack when go back button is clicked', () => {
-    const { getByTestId } = renderWithI18n(
-      <TrustSignalBlockModal {...defaultProps} />,
-    );
-
-    fireEvent.click(getByTestId('trust-signal-block-go-back'));
-    expect(defaultProps.onGoBack).toHaveBeenCalledTimes(1);
   });
 });

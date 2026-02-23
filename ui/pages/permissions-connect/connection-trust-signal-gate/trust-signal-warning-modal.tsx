@@ -11,11 +11,14 @@ import {
 } from '../../../components/component-library';
 import {
   AlignItems,
+  BackgroundColor,
+  BorderRadius,
   Display,
   FlexDirection,
   IconColor,
   JustifyContent,
   TextAlign,
+  TextColor,
   TextVariant,
   BlockSize,
 } from '../../../helpers/constants/design-system';
@@ -24,13 +27,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 type TrustSignalWarningModalProps = {
   origin: string;
   onContinue: () => void;
-  onGoBack: () => void;
 };
 
 export function TrustSignalWarningModal({
   origin,
   onContinue,
-  onGoBack,
 }: TrustSignalWarningModalProps) {
   const t = useI18nContext();
 
@@ -47,8 +48,8 @@ export function TrustSignalWarningModal({
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
       padding={4}
+      paddingTop={6}
       gap={4}
     >
       <Icon
@@ -59,41 +60,45 @@ export function TrustSignalWarningModal({
       <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
         {t('trustSignalWarningTitle')}
       </Text>
-      <Text
-        variant={TextVariant.bodyMd}
-        textAlign={TextAlign.Center}
-        data-testid="trust-signal-warning-hostname"
-      >
-        {hostname}
-      </Text>
-      <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
-        {t('trustSignalWarningDescription')}
-      </Text>
       <Box
         display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        gap={2}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
+        gap={1}
+      >
+        <Text
+          variant={TextVariant.bodyMd}
+          color={TextColor.warningDefault}
+          textAlign={TextAlign.Center}
+        >
+          {hostname}
+        </Text>
+        <Icon
+          name={IconName.Danger}
+          size={IconSize.Sm}
+          color={IconColor.warningDefault}
+        />
+      </Box>
+      <Box
+        backgroundColor={BackgroundColor.warningMuted}
+        borderRadius={BorderRadius.LG}
+        padding={4}
         width={BlockSize.Full}
       >
-        <Button
-          variant={ButtonVariant.Primary}
-          size={ButtonSize.Lg}
-          width={BlockSize.Full}
-          onClick={onGoBack}
-          data-testid="trust-signal-warning-go-back"
-        >
-          {t('trustSignalGoBack')}
-        </Button>
-        <Button
-          variant={ButtonVariant.Link}
-          size={ButtonSize.Lg}
-          width={BlockSize.Full}
-          onClick={onContinue}
-          data-testid="trust-signal-warning-continue"
-        >
-          {t('trustSignalContinueAnyway')}
-        </Button>
+        <Text variant={TextVariant.bodyMd}>
+          {t('trustSignalWarningDescription')}
+        </Text>
       </Box>
+      <Button
+        variant={ButtonVariant.Primary}
+        size={ButtonSize.Lg}
+        width={BlockSize.Full}
+        onClick={onContinue}
+        data-testid="trust-signal-warning-continue"
+        style={{ backgroundColor: 'var(--color-warning-default)' }}
+      >
+        {t('trustSignalContinueAnyway')}
+      </Button>
     </Box>
   );
 }

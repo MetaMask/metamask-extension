@@ -8705,26 +8705,26 @@
   "transferRequest": {
     "message": "Transfer request"
   },
-  "trustSignalBlockCheckbox": {
-    "message": "I understand the risks and want to proceed"
-  },
   "trustSignalBlockDescription": {
-    "message": "This site has been flagged as malicious. Connecting your wallet may result in loss of funds."
+    "message": "If you connect to this site, you could lose all your assets."
   },
   "trustSignalBlockTitle": {
-    "message": "Dangerous site detected"
+    "message": "Malicious site detected"
   },
   "trustSignalContinueAnyway": {
-    "message": "Continue anyway"
+    "message": "Connect Anyway"
   },
-  "trustSignalGoBack": {
-    "message": "Go back"
+  "trustSignalVerifiedDescription": {
+    "message": "This site has been verified by MetaMask and is safe to connect."
+  },
+  "trustSignalVerifiedTitle": {
+    "message": "Verified site"
   },
   "trustSignalWarningDescription": {
-    "message": "This site has been flagged as suspicious. Proceed with caution."
+    "message": "This site has not been verified. Proceed with caution when connecting."
   },
   "trustSignalWarningTitle": {
-    "message": "Suspicious site"
+    "message": "Unverified site"
   },
   "trezor": {
     "message": "Trezor",

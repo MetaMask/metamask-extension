@@ -25,29 +25,13 @@ function renderWithI18n(ui: React.ReactElement) {
 describe('ConnectionTrustSignalGate', () => {
   const defaultProps = {
     origin: 'https://example.com',
-    onReject: jest.fn(),
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders children when trust state is Verified', () => {
-    mockUseOriginTrustSignals.mockReturnValue({
-      state: TrustSignalDisplayState.Verified,
-      label: null,
-    });
-
-    const { getByText } = renderWithI18n(
-      <ConnectionTrustSignalGate {...defaultProps}>
-        <div>Child content</div>
-      </ConnectionTrustSignalGate>,
-    );
-
-    expect(getByText('Child content')).toBeInTheDocument();
-  });
-
-  it('renders children when trust state is Unknown', () => {
+  it('renders children when trust state is Unknown (NONE)', () => {
     mockUseOriginTrustSignals.mockReturnValue({
       state: TrustSignalDisplayState.Unknown,
       label: null,
@@ -60,6 +44,22 @@ describe('ConnectionTrustSignalGate', () => {
     );
 
     expect(getByText('Child content')).toBeInTheDocument();
+  });
+
+  it('renders verified modal when trust state is Verified', () => {
+    mockUseOriginTrustSignals.mockReturnValue({
+      state: TrustSignalDisplayState.Verified,
+      label: null,
+    });
+
+    const { getByTestId, queryByText } = renderWithI18n(
+      <ConnectionTrustSignalGate {...defaultProps}>
+        <div>Child content</div>
+      </ConnectionTrustSignalGate>,
+    );
+
+    expect(getByTestId('trust-signal-verified-modal')).toBeInTheDocument();
+    expect(queryByText('Child content')).not.toBeInTheDocument();
   });
 
   it('renders warning modal when trust state is Warning', () => {
@@ -94,6 +94,23 @@ describe('ConnectionTrustSignalGate', () => {
     expect(queryByText('Child content')).not.toBeInTheDocument();
   });
 
+  it('shows children after dismissing verified modal via OK', () => {
+    mockUseOriginTrustSignals.mockReturnValue({
+      state: TrustSignalDisplayState.Verified,
+      label: null,
+    });
+
+    const { getByTestId, getByText, queryByTestId } = renderWithI18n(
+      <ConnectionTrustSignalGate {...defaultProps}>
+        <div>Child content</div>
+      </ConnectionTrustSignalGate>,
+    );
+
+    fireEvent.click(getByTestId('trust-signal-verified-ok'));
+    expect(queryByTestId('trust-signal-verified-modal')).not.toBeInTheDocument();
+    expect(getByText('Child content')).toBeInTheDocument();
+  });
+
   it('shows children after dismissing warning modal', () => {
     mockUseOriginTrustSignals.mockReturnValue({
       state: TrustSignalDisplayState.Warning,
@@ -111,22 +128,6 @@ describe('ConnectionTrustSignalGate', () => {
     expect(getByText('Child content')).toBeInTheDocument();
   });
 
-  it('calls onReject when go back is clicked on warning modal', () => {
-    mockUseOriginTrustSignals.mockReturnValue({
-      state: TrustSignalDisplayState.Warning,
-      label: null,
-    });
-
-    const { getByTestId } = renderWithI18n(
-      <ConnectionTrustSignalGate {...defaultProps}>
-        <div>Child content</div>
-      </ConnectionTrustSignalGate>,
-    );
-
-    fireEvent.click(getByTestId('trust-signal-warning-go-back'));
-    expect(defaultProps.onReject).toHaveBeenCalledTimes(1);
-  });
-
   it('shows children after dismissing block modal', () => {
     mockUseOriginTrustSignals.mockReturnValue({
       state: TrustSignalDisplayState.Malicious,
@@ -139,8 +140,6 @@ describe('ConnectionTrustSignalGate', () => {
       </ConnectionTrustSignalGate>,
     );
 
-    // Must check checkbox first, then click continue
-    fireEvent.click(getByTestId('trust-signal-block-checkbox'));
     fireEvent.click(getByTestId('trust-signal-block-continue'));
     expect(queryByTestId('trust-signal-block-modal')).not.toBeInTheDocument();
     expect(getByText('Child content')).toBeInTheDocument();

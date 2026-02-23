@@ -640,10 +640,7 @@ function PermissionsConnect() {
   );
 
   return (
-    <ConnectionTrustSignalGate
-      origin={origin}
-      onReject={() => cancelPermissionsRequest(permissionsRequestId || '')}
-    >
+    <ConnectionTrustSignalGate origin={origin}>
       <div className="permissions-connect">
         {!hideTopBar &&
           permissionsRequestId &&
@@ -789,8 +786,8 @@ function PermissionsConnect() {
               />
             }
           />
-        </Routes>
-      )}
+          </Routes>
+        )}
       </div>
     </ConnectionTrustSignalGate>
   );

@@ -515,7 +515,7 @@ export const MultichainAccountsConnectPage: React.FC<
   ]);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
-  const originTrustSignals = useOriginTrustSignals(
+  const { state: trustSignalState } = useOriginTrustSignals(
     targetSubjectMetadata.origin,
   );
 
@@ -593,7 +593,7 @@ export const MultichainAccountsConnectPage: React.FC<
           >
             {title}
           </Text>
-          {originTrustSignals.state === TrustSignalDisplayState.Verified && (
+          {trustSignalState === TrustSignalDisplayState.Verified && (
             <Tooltip
               title={t('alertReasonOriginTrustSignalVerified')}
               position="bottom"
@@ -601,7 +601,33 @@ export const MultichainAccountsConnectPage: React.FC<
             >
               <Icon
                 name={IconName.VerifiedFilled}
-                color={IconColor.infoDefault}
+                color={IconColor.successDefault}
+                size={IconSize.Sm}
+              />
+            </Tooltip>
+          )}
+          {trustSignalState === TrustSignalDisplayState.Warning && (
+            <Tooltip
+              title={t('trustSignalWarningTitle')}
+              position="bottom"
+              style={{ display: 'flex' }}
+            >
+              <Icon
+                name={IconName.Danger}
+                color={IconColor.warningDefault}
+                size={IconSize.Sm}
+              />
+            </Tooltip>
+          )}
+          {trustSignalState === TrustSignalDisplayState.Malicious && (
+            <Tooltip
+              title={t('trustSignalBlockTitle')}
+              position="bottom"
+              style={{ display: 'flex' }}
+            >
+              <Icon
+                name={IconName.Danger}
+                color={IconColor.errorDefault}
                 size={IconSize.Sm}
               />
             </Tooltip>
@@ -726,10 +752,14 @@ export const MultichainAccountsConnectPage: React.FC<
               data-testid="confirm-btn"
               size={ButtonSize.Lg}
               onClick={onConfirm}
+              danger={trustSignalState === TrustSignalDisplayState.Malicious}
               disabled={
                 selectedAccountGroupIds.length === 0 ||
                 selectedChainIds.length === 0
               }
+              {...(trustSignalState === TrustSignalDisplayState.Warning
+                ? { style: { backgroundColor: 'var(--color-warning-default)' } }
+                : {})}
             >
               {t('connect')}
             </Button>
