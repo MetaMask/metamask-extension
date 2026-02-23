@@ -96,7 +96,7 @@ describe('useConfirmationAlerts', () => {
       state,
     );
 
-    const alertKeys = result.current.map((alert) => alert.key);
+    const alertKeys = result.current.map((alert: Alert) => alert.key);
     expect(alertKeys).toContain('shared-alert');
     expect(alertKeys).not.toContain('perps-alert');
   });
@@ -130,7 +130,7 @@ describe('useConfirmationAlerts', () => {
       state,
     );
 
-    const alertKeys = result.current.map((alert) => alert.key);
+    const alertKeys = result.current.map((alert: Alert) => alert.key);
     expect(alertKeys).toContain('perps-alert');
     expect(alertKeys).not.toContain('shared-alert');
   });

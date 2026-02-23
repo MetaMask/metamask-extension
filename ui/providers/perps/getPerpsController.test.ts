@@ -14,31 +14,31 @@ describe('getFallbackBlockedRegions', () => {
 
   it('returns empty array when MM_PERPS_BLOCKED_REGIONS is not set', async () => {
     delete process.env.MM_PERPS_BLOCKED_REGIONS;
-    const { getFallbackBlockedRegions } = await import('./getPerpsController');
+    const { getFallbackBlockedRegions } = await import('./getPerpsController.js');
     expect(getFallbackBlockedRegions()).toEqual([]);
   });
 
   it('returns empty array when MM_PERPS_BLOCKED_REGIONS is empty string', async () => {
     process.env.MM_PERPS_BLOCKED_REGIONS = '';
-    const { getFallbackBlockedRegions } = await import('./getPerpsController');
+    const { getFallbackBlockedRegions } = await import('./getPerpsController.js');
     expect(getFallbackBlockedRegions()).toEqual([]);
   });
 
   it('parses comma-separated region codes', async () => {
     process.env.MM_PERPS_BLOCKED_REGIONS = 'US,CA-ON,GB,BE';
-    const { getFallbackBlockedRegions } = await import('./getPerpsController');
+    const { getFallbackBlockedRegions } = await import('./getPerpsController.js');
     expect(getFallbackBlockedRegions()).toEqual(['US', 'CA-ON', 'GB', 'BE']);
   });
 
   it('trims whitespace around region codes', async () => {
     process.env.MM_PERPS_BLOCKED_REGIONS = ' US , CA-ON , GB ';
-    const { getFallbackBlockedRegions } = await import('./getPerpsController');
+    const { getFallbackBlockedRegions } = await import('./getPerpsController.js');
     expect(getFallbackBlockedRegions()).toEqual(['US', 'CA-ON', 'GB']);
   });
 
   it('filters out empty segments', async () => {
     process.env.MM_PERPS_BLOCKED_REGIONS = 'US,,CA-ON,,';
-    const { getFallbackBlockedRegions } = await import('./getPerpsController');
+    const { getFallbackBlockedRegions } = await import('./getPerpsController.js');
     expect(getFallbackBlockedRegions()).toEqual(['US', 'CA-ON']);
   });
 });
@@ -79,9 +79,9 @@ const mockCreatePerpsInfrastructure = jest.fn(
 
 const mockGetDefaultPerpsControllerState = jest.fn(() => ({}));
 
-let getPerpsController: typeof import('./getPerpsController').getPerpsController;
-let resetPerpsController: typeof import('./getPerpsController').resetPerpsController;
-let isPerpsControllerInitializationCancelledError: typeof import('./getPerpsController').isPerpsControllerInitializationCancelledError;
+let getPerpsController: typeof import('./getPerpsController.js').getPerpsController;
+let resetPerpsController: typeof import('./getPerpsController.js').resetPerpsController;
+let isPerpsControllerInitializationCancelledError: typeof import('./getPerpsController.js').isPerpsControllerInitializationCancelledError;
 
 function createMockStore() {
   return {
@@ -143,7 +143,7 @@ describe('getPerpsController', () => {
       };
     });
 
-    const module = await import('./getPerpsController');
+    const module = await import('./getPerpsController.js');
     getPerpsController = module.getPerpsController;
     resetPerpsController = module.resetPerpsController;
     isPerpsControllerInitializationCancelledError =

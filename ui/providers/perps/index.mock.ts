@@ -20,8 +20,9 @@ export {
   getPerpsStreamManager,
   resetPerpsStreamManager,
   PerpsStreamManager,
-  PerpsDataChannel,
 } from './PerpsStreamManager';
+
+export { PerpsDataChannel } from './PerpsDataChannel';
 
 // Controller access (mock version)
 export {

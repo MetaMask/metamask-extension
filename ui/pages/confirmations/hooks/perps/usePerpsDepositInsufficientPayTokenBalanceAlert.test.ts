@@ -47,14 +47,27 @@ const REQUIRED_TOKEN_MOCK = {
 const TOTALS_MOCK = {
   fees: {
     sourceNetwork: {
+      estimate: {
+        raw: '800000000000000',
+        human: '0.0008',
+        fiat: '$0.008',
+        usd: '0.008',
+      },
       max: {
         raw: '1000000000000000',
+        human: '0.001',
+        fiat: '$0.01',
         usd: '0.01',
       },
     },
     isSourceGasFeeToken: false,
   },
-  sourceAmount: { raw: '5000000000000000000', usd: '5.00' },
+  sourceAmount: {
+    raw: '5000000000000000000',
+    human: '5',
+    fiat: '$5.00',
+    usd: '5.00',
+  },
 } as TransactionPayTotals;
 
 function runHook(
@@ -192,12 +205,25 @@ describe('usePerpsDepositInsufficientPayTokenBalanceAlert', () => {
 
     useTransactionPayTotalsMock.mockReturnValue({
       ...TOTALS_MOCK,
-      sourceAmount: { raw: '5000000000000000000', usd: '5.00' },
+      sourceAmount: {
+        raw: '5000000000000000000',
+        human: '5',
+        fiat: '$5.00',
+        usd: '5.00',
+      },
       fees: {
         ...TOTALS_MOCK.fees,
         sourceNetwork: {
+          estimate: {
+            raw: '800000000000000',
+            human: '0.0008',
+            fiat: '$0.008',
+            usd: '0.008',
+          },
           max: {
             raw: '1000000000000000',
+            human: '0.001',
+            fiat: '$0.01',
             usd: '0.01',
           },
         },
