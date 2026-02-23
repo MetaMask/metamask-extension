@@ -8,7 +8,6 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers-na
 import { TransactionDetailsProvider } from '../transaction-details-context';
 import { TransactionDetails } from './transaction-details';
 
-
 jest.mock('../../../hooks/send/useSendTokens', () => ({
   useSendTokens: () => [],
 }));
