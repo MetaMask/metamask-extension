@@ -116,4 +116,30 @@ describe('TransactionDetailsSummary', () => {
 
     expect(useTokenWithBalanceMock).toHaveBeenCalledWith('0xabc123', '0x89');
   });
+
+  it('renders approve title with token symbol for tokenMethodApprove', () => {
+    useTokenWithBalanceMock.mockReturnValue({
+      address: '0x456',
+      chainId: CHAIN_ID,
+      symbol: 'USDC',
+      decimals: 6,
+      balance: '1',
+      balanceFiat: '$1.00',
+      balanceRaw: '1000000',
+      tokenFiatAmount: 1,
+    });
+
+    const { getByText } = render(TransactionType.tokenMethodApprove);
+    expect(getByText('Approve USDC')).toBeInTheDocument();
+  });
+
+  it('renders approve fallback title when token symbol is not resolved', () => {
+    const { getByText } = render(TransactionType.tokenMethodApprove);
+    expect(getByText('Approve')).toBeInTheDocument();
+  });
+
+  it('uses txParams.to as token address for tokenMethodApprove lookup', () => {
+    render(TransactionType.tokenMethodApprove);
+    expect(useTokenWithBalanceMock).toHaveBeenCalledWith('0x456', CHAIN_ID);
+  });
 });

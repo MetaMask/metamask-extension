@@ -26,6 +26,7 @@ import { selectNetworkConfigurationByChainId } from '../../../../../selectors';
 import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { BlockExplorerLink } from '../block-explorer-link';
 import { TransactionStatusIcon } from '../transaction-status-icon';
+import { hasTransactionType } from '../../../utils/transaction-pay';
 
 type TranslateFunction = (key: string, args?: string[]) => string;
 
@@ -97,13 +98,19 @@ function TransactionSummaryLine({
 }) {
   const { type } = transactionMeta;
 
-  if (type === TransactionType.relayDeposit) {
+  if (hasTransactionType(transactionMeta, [TransactionType.relayDeposit])) {
     return (
       <RelayDepositSummaryLine
         transactionMeta={transactionMeta}
         tokenAddress={payTokenAddress}
         tokenChainId={payTokenChainId}
       />
+    );
+  }
+
+  if (type === TransactionType.tokenMethodApprove) {
+    return (
+      <ApprovalSummaryLine transactionMeta={transactionMeta} isLast={isLast} />
     );
   }
 
@@ -159,6 +166,38 @@ function RelayDepositSummaryLine({
       time={transactionMeta.submittedTime ?? transactionMeta.time}
       title={title}
       isLast={false}
+    />
+  );
+}
+
+function ApprovalSummaryLine({
+  transactionMeta,
+  isLast,
+}: {
+  transactionMeta: TransactionMeta;
+  isLast: boolean;
+}) {
+  const t = useI18nContext() as TranslateFunction;
+  const { chainId, txParams } = transactionMeta;
+
+  const tokenAddress = txParams?.to as Hex | undefined;
+
+  const token = useTokenWithBalance((tokenAddress ?? '0x0') as Hex, chainId);
+
+  const tokenSymbol = token?.symbol;
+
+  const title = tokenSymbol
+    ? t('approveToken', [tokenSymbol])
+    : t('approveButtonText');
+
+  return (
+    <SummaryLine
+      chainId={chainId}
+      hash={transactionMeta.hash}
+      status={transactionMeta.status}
+      time={transactionMeta.submittedTime ?? transactionMeta.time}
+      title={title}
+      isLast={isLast}
     />
   );
 }

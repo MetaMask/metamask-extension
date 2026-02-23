@@ -16,8 +16,18 @@ const FOUR_BYTE_TOKEN_TRANSFER = '0xa9059cbb';
 export function hasTransactionType(
   transactionMeta: TransactionMeta | undefined,
   types: TransactionType[],
-): boolean {
-  return types.includes(transactionMeta?.type as TransactionType);
+) {
+  const { nestedTransactions, type } = transactionMeta ?? {};
+
+  if (types.includes(type as TransactionType)) {
+    return true;
+  }
+
+  return (
+    nestedTransactions?.some((tx) =>
+      types.includes(tx.type as TransactionType),
+    ) ?? false
+  );
 }
 
 export function getTokenTransferData(
