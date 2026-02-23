@@ -4396,6 +4396,12 @@
   "nftEmptyDescription": {
     "message": "There's a world of NFTs out there. Start your collection today."
   },
+  "nftBought": {
+    "message": "Bought $1"
+  },
+  "nftMinted": {
+    "message": "Minted $1"
+  },
   "nftOptions": {
     "message": "NFT Options"
   },
