@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   Button,
   Icon,
@@ -17,41 +17,82 @@ import {
   TextAlign,
   TextButton
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../hooks/useI18nContext';
 import type { QuizQuestionConfig, AnsweredQuizQuestion } from './types';
 
 interface QuizQuestionProps {
-  currentQuestionIndex: number;
-  questionAnswered: boolean;
-  correctAnswer: boolean;
-  questionConfig: QuizQuestionConfig;
-  answeredQuestion: AnsweredQuizQuestion;
-  currentQuestionLabel: string;
-  correctLabel: string;
-  incorrectLabel: string;
-  learnMoreLabel: string;
-  continueLabel: string;
-  tryAgainLabel: string;
-  onAnswer: (isCorrect: boolean) => void;
-  onFooterButtonClick: (correctAnswer: boolean) => void;
+  onQuizComplete: () => void;
   onLearnMore: () => void;
 }
 
 export function QuizQuestion({
-  currentQuestionIndex,
-  questionAnswered,
-  correctAnswer,
-  questionConfig,
-  answeredQuestion,
-  currentQuestionLabel,
-  correctLabel,
-  incorrectLabel,
-  learnMoreLabel,
-  continueLabel,
-  tryAgainLabel,
-  onAnswer,
-  onFooterButtonClick,
+  onQuizComplete,
   onLearnMore,
 }: QuizQuestionProps) {
+  const t = useI18nContext();
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [questionAnswered, setQuestionAnswered] = useState(false);
+  const [correctAnswer, setCorrectAnswer] = useState(false);
+
+  const questionConfigs: QuizQuestionConfig[] = useMemo(
+    () => [
+      {
+        question: t('srpSecurityQuizQuestionOneQuestion'),
+        buttonLabelOne: t('srpSecurityQuizQuestionOneWrongAnswer'),
+        buttonLabelTwo: t('srpSecurityQuizQuestionOneRightAnswer'),
+        questionDataTestId: 'srp_stage_question_one',
+      },
+      {
+        question: t('srpSecurityQuizQuestionTwoQuestion'),
+        buttonLabelOne: t('srpSecurityQuizQuestionTwoRightAnswer'),
+        buttonLabelTwo: t('srpSecurityQuizQuestionTwoWrongAnswer'),
+        questionDataTestId: 'srp_stage_question_two',
+      },
+    ],
+    [t],
+  );
+
+  const answeredQuestions: AnsweredQuizQuestion[] = useMemo(
+    () => [
+      {
+        correct: {
+          title: t('srpSecurityQuizQuestionOneRightAnswerTitle'),
+          description: t('srpSecurityQuizQuestionOneRightAnswerDescription'),
+        },
+        wrong: {
+          title: t('srpSecurityQuizQuestionOneWrongAnswerTitle'),
+          description: t('srpSecurityQuizQuestionOneWrongAnswerDescription'),
+        },
+      },
+      {
+        correct: {
+          title: t('srpSecurityQuizQuestionTwoRightAnswerTitle'),
+          description: t('srpSecurityQuizQuestionTwoRightAnswerDescription'),
+        },
+        wrong: {
+          title: t('srpSecurityQuizQuestionTwoWrongAnswerTitle'),
+          description: t('srpSecurityQuizQuestionTwoWrongAnswerDescription'),
+        },
+      },
+    ],
+    [t],
+  );
+
+  const currentQuestionLabels: [string, string] = useMemo(
+    () => [t('currentQuestion', ['1']), t('currentQuestion', ['2'])],
+    [t],
+  );
+
+  const questionConfig = questionConfigs[currentQuestionIndex];
+  const answeredQuestion = answeredQuestions[currentQuestionIndex];
+  const currentQuestionLabel = currentQuestionLabels[currentQuestionIndex];
+
+  const correctLabel = t('correct');
+  const incorrectLabel = t('incorrect');
+  const learnMoreLabel = t('learnMoreUpperCase');
+  const continueLabel = t('continue');
+  const tryAgainLabel = t('tryAgain');
+
   const { question, buttonLabelOne, buttonLabelTwo, questionDataTestId } =
     questionConfig;
   const { correct, wrong } = answeredQuestion;
@@ -61,6 +102,26 @@ export function QuizQuestion({
   const showFooter = questionAnswered;
   const isFirstQuestion = currentQuestionIndex === 0;
   const isSecondQuestion = currentQuestionIndex === 1;
+
+  const handleAnswer = useCallback((isCorrect: boolean) => {
+    setQuestionAnswered(true);
+    setCorrectAnswer(isCorrect);
+  }, []);
+
+  const handleFooterButtonClick = useCallback(() => {
+    if (correctAnswer) {
+      if (currentQuestionIndex === 0) {
+        setCurrentQuestionIndex(1);
+        setQuestionAnswered(false);
+        setCorrectAnswer(false);
+      } else {
+        onQuizComplete();
+      }
+    } else {
+      setQuestionAnswered(false);
+      setCorrectAnswer(false);
+    }
+  }, [correctAnswer, currentQuestionIndex, onQuizComplete]);
 
   return (
     <>
@@ -139,7 +200,7 @@ export function QuizQuestion({
           >
             <Button
               variant={ButtonVariant.Secondary}
-              onClick={() => onAnswer(isSecondQuestion)}
+              onClick={() => handleAnswer(isSecondQuestion)}
               data-testid={
                 isSecondQuestion
                   ? 'srp-quiz-right-answer'
@@ -151,7 +212,7 @@ export function QuizQuestion({
             </Button>
             <Button
               variant={ButtonVariant.Secondary}
-              onClick={() => onAnswer(isFirstQuestion)}
+              onClick={() => handleAnswer(isFirstQuestion)}
               data-testid={
                 isFirstQuestion ? 'srp-quiz-right-answer' : 'srp-quiz-wrong-answer'
               }
@@ -180,7 +241,7 @@ export function QuizQuestion({
         >
           <Button
             variant={ButtonVariant.Primary}
-            onClick={() => onFooterButtonClick(correctAnswer)}
+            onClick={handleFooterButtonClick}
             data-testid={
               correctAnswer ? 'srp-quiz-continue' : 'srp-quiz-try-again'
             }

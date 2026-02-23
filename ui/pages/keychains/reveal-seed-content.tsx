@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import qrCode from 'qrcode-generator';
-import { IconName, IconColor, TextButton, Icon, ButtonVariant, Box, BoxAlignItems, BoxJustifyContent, BoxFlexDirection } from '@metamask/design-system-react';
+import { IconName, IconColor, TextButton, Icon, Box, BoxAlignItems, BoxJustifyContent, BoxFlexDirection } from '@metamask/design-system-react';
 import { Tab, Tabs } from '../../components/ui/tabs';
 import RecoveryPhraseChips from '../onboarding-flow/recovery-phrase/recovery-phrase-chips';
+import { useI18nContext } from '../../hooks/useI18nContext';
 
 type TabKey = 'text-seed' | 'qr-srp';
 
@@ -23,9 +24,6 @@ function createSeedQRCode(seedWords: string): QRCodeInstance {
 interface RevealSeedContentProps {
   seedWords: string;
   phraseRevealed: boolean;
-  textTabLabel: string;
-  qrTabLabel: string;
-  copyButtonLabel: string;
   onRevealPhrase: () => void;
   onCopy: () => void;
   onTabClick?: (tabKey: 'text-seed' | 'qr-srp') => void;
@@ -34,13 +32,11 @@ interface RevealSeedContentProps {
 export function RevealSeedContent({
   seedWords,
   phraseRevealed,
-  textTabLabel,
-  qrTabLabel,
-  copyButtonLabel,
   onRevealPhrase,
   onCopy,
   onTabClick,
 }: RevealSeedContentProps) {
+  const t = useI18nContext();
   const [activeTab, setActiveTab] = useState<TabKey>('text-seed');
 
   const qrHtml = React.useMemo(
@@ -59,7 +55,7 @@ export function RevealSeedContent({
   return (
     <div data-testid="reveal-seed-tabs-container">
       <Tabs activeTab={activeTab} onTabClick={handleTabClick}>
-        <Tab name={textTabLabel} tabKey="text-seed" className="flex-1">
+        <Tab name={t('revealSeedWordsText')} tabKey="text-seed" className="flex-1">
           <RecoveryPhraseChips
             secretRecoveryPhrase={seedWords.split(' ')}
             phraseRevealed={phraseRevealed}
@@ -76,10 +72,10 @@ export function RevealSeedContent({
               color={IconColor.PrimaryDefault}
               className="mr-2"
             />
-            {copyButtonLabel}
+            {t('copyToClipboard')}
           </TextButton>
         </Tab>
-        <Tab name={qrTabLabel} tabKey="qr-srp" className="flex-1">
+        <Tab name={t('revealSeedWordsQR')} tabKey="qr-srp" className="flex-1">
           <Box
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Center}

@@ -24,7 +24,6 @@ import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import { Toast, ToastContainer } from '../../components/multichain/toast';
 import type { RevealSeedScreen, RevealSeedLocationState } from './types';
-import type { QuizQuestionConfig, AnsweredQuizQuestion } from './types';
 import { RevealSeedPageHeader } from './reveal-seed-page-header';
 import { RevealSeedWarning } from './reveal-seed-warning';
 import { QuizIntroduction } from './quiz-introduction';
@@ -56,10 +55,6 @@ function RevealSeedPage() {
   const [srpViewEventTracked, setSrpViewEventTracked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [phraseRevealed, setPhraseRevealed] = useState(false);
-
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [questionAnswered, setQuestionAnswered] = useState(false);
-  const [correctAnswer, setCorrectAnswer] = useState(false);
 
   const [showSuccessToast, setShowSuccessToast] = useState(false);
 
@@ -170,23 +165,9 @@ function RevealSeedPage() {
     navigate(PREVIOUS_ROUTE);
   }, [trackEvent, screen, hdEntropyIndex, navigate]);
 
-  const handleQuizFooterButtonClick = useCallback(
-    (correct: boolean) => {
-      if (currentQuestionIndex === 0) {
-        setCurrentQuestionIndex(correct ? currentQuestionIndex + 1 : 0);
-        setQuestionAnswered(false);
-        setCorrectAnswer(false);
-      } else if (currentQuestionIndex === 1) {
-        if (correct) {
-          setScreen(PASSWORD_PROMPT_SCREEN);
-        } else {
-          setQuestionAnswered(false);
-          setCorrectAnswer(false);
-        }
-      }
-    },
-    [currentQuestionIndex],
-  );
+  const handleQuizComplete = useCallback(() => {
+    setScreen(PASSWORD_PROMPT_SCREEN);
+  }, []);
 
   useEffect(() => {
     if (
@@ -203,44 +184,6 @@ function RevealSeedPage() {
       setSrpViewEventTracked(true);
     }
   }, [screen, srpViewEventTracked, trackEvent]);
-
-  const quizQuestionAnswers: QuizQuestionConfig[] = [
-    {
-      question: t('srpSecurityQuizQuestionOneQuestion'),
-      buttonLabelOne: t('srpSecurityQuizQuestionOneWrongAnswer'),
-      buttonLabelTwo: t('srpSecurityQuizQuestionOneRightAnswer'),
-      questionDataTestId: 'srp_stage_question_one',
-    },
-    {
-      question: t('srpSecurityQuizQuestionTwoQuestion'),
-      buttonLabelOne: t('srpSecurityQuizQuestionTwoRightAnswer'),
-      buttonLabelTwo: t('srpSecurityQuizQuestionTwoWrongAnswer'),
-      questionDataTestId: 'srp_stage_question_two',
-    },
-  ];
-
-  const answeredQuizQuestions: AnsweredQuizQuestion[] = [
-    {
-      correct: {
-        title: t('srpSecurityQuizQuestionOneRightAnswerTitle'),
-        description: t('srpSecurityQuizQuestionOneRightAnswerDescription'),
-      },
-      wrong: {
-        title: t('srpSecurityQuizQuestionOneWrongAnswerTitle'),
-        description: t('srpSecurityQuizQuestionOneWrongAnswerDescription'),
-      },
-    },
-    {
-      correct: {
-        title: t('srpSecurityQuizQuestionTwoRightAnswerTitle'),
-        description: t('srpSecurityQuizQuestionTwoRightAnswerDescription'),
-      },
-      wrong: {
-        title: t('srpSecurityQuizQuestionTwoWrongAnswerTitle'),
-        description: t('srpSecurityQuizQuestionTwoWrongAnswerDescription'),
-      },
-    },
-  ];
 
   const handleRevealPhrase = useCallback(() => {
     trackEvent({
@@ -302,7 +245,6 @@ function RevealSeedPage() {
     if (screen === QUIZ_INTRODUCTION_SCREEN) {
       return (
         <QuizIntroduction
-          introductionText={t('quizIntroduction')}
           onGetStarted={() => {
             trackEvent({
               category: MetaMetricsEventCategory.Keys,
@@ -315,32 +257,13 @@ function RevealSeedPage() {
             setScreen(QUIZ_QUESTIONS_SCREEN);
           }}
           onLearnMore={openSupportArticle}
-          getStartedLabel={t('srpSecurityQuizGetStarted')}
-          learnMoreLabel={t('learnMoreUpperCase')}
         />
       );
     }
     if (screen === QUIZ_QUESTIONS_SCREEN) {
       return (
         <QuizQuestion
-          currentQuestionIndex={currentQuestionIndex}
-          questionAnswered={questionAnswered}
-          correctAnswer={correctAnswer}
-          questionConfig={quizQuestionAnswers[currentQuestionIndex]}
-          answeredQuestion={answeredQuizQuestions[currentQuestionIndex]}
-          currentQuestionLabel={t('currentQuestion', [
-            String(currentQuestionIndex + 1),
-          ])}
-          correctLabel={t('correct')}
-          incorrectLabel={t('incorrect')}
-          learnMoreLabel={t('learnMoreUpperCase')}
-          continueLabel={t('continue')}
-          tryAgainLabel={t('tryAgain')}
-          onAnswer={(isCorrect) => {
-            setQuestionAnswered(true);
-            setCorrectAnswer(isCorrect);
-          }}
-          onFooterButtonClick={handleQuizFooterButtonClick}
+          onQuizComplete={handleQuizComplete}
           onLearnMore={openSupportArticle}
         />
       );
@@ -351,8 +274,6 @@ function RevealSeedPage() {
           password={password}
           error={error}
           showPassword={showPassword}
-          passwordLabel={t('enterPasswordContinue')}
-          continueLabel={t('continue')}
           onPasswordChange={setPassword}
           onTogglePasswordVisibility={togglePasswordVisibility}
           onSubmit={handleSubmit}
@@ -365,9 +286,6 @@ function RevealSeedPage() {
         <RevealSeedContent
           seedWords={seedWords}
           phraseRevealed={phraseRevealed}
-          textTabLabel={t('revealSeedWordsText')}
-          qrTabLabel={t('revealSeedWordsQR')}
-          copyButtonLabel={t('copyToClipboard')}
           onRevealPhrase={handleRevealPhrase}
           onCopy={onClickCopy}
           onTabClick={handleTabClick}
