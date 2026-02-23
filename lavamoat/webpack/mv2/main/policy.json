@@ -1713,7 +1713,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
-        "@metamask/network-controller": true,
+        "@metamask/multichain-network-controller>@metamask/network-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "lodash": true
