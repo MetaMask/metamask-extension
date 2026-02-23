@@ -3633,28 +3633,6 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('calls discoverAndCreateAccounts', async () => {
-        jest
-          .spyOn(
-            metamaskController.accountTreeController,
-            'syncWithUserStorage',
-          )
-          .mockResolvedValue();
-
-        jest
-          .spyOn(metamaskController, 'discoverAndCreateAccounts')
-          .mockResolvedValue({});
-
-        await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
-
-        await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
-
-        // Wait for the fire-and-forget sync and discover operation to complete
-        await new Promise((resolve) => setImmediate(resolve));
-
-        expect(metamaskController.discoverAndCreateAccounts).toHaveBeenCalled();
-      });
-
       it('calls discoverAndCreateAccounts when importMnemonicToVault runs', async () => {
         jest
           .spyOn(
