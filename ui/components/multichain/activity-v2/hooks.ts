@@ -118,6 +118,8 @@ export function useGetTitle(transaction: TransactionViewModel): string {
       if (isOutgoing) {
         return t('sentSpecifiedTokens', ['NFT']);
       }
+    } else {
+      return t('sentSpecifiedTokens', ['NFT']);
     }
   }
 

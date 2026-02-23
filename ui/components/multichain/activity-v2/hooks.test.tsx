@@ -233,4 +233,21 @@ describe('useGetTitle', () => {
 
     expect(result.current).toBe('bridgedToChain:Linea');
   });
+
+  it('returns sent NFT title for ERC_721_TRANSFER with empty valueTransfers', () => {
+    const tx = {
+      from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+      methodId: '0x23b872dd',
+      to: '0x889edc2edab5f40e902b864ad4d7ade8e412f9b1',
+      transactionCategory: 'TRANSFER',
+      transactionProtocol: 'ERC_721',
+      transactionType: 'ERC_721_TRANSFER',
+      value: '0',
+      valueTransfers: [],
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHook(() => useGetTitle(tx));
+
+    expect(result.current).toBe('sentSpecifiedTokens:NFT');
+  });
 });
