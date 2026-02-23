@@ -82,7 +82,7 @@ class PrivacySettings {
 
   private readonly revealSrpContinueButton = {
     text: 'Continue',
-    tag: 'button',
+    tag: 'text',
   };
 
   private readonly tapToRevealButton = '[data-testid="recovery-phrase-reveal"]';
