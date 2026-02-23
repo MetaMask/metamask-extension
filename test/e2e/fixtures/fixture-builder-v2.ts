@@ -166,7 +166,18 @@ class FixtureBuilderV2 {
           },
         } as PreferencesControllerState['identities'],
         selectedAddress: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+      })
+      .withMetaMetricsDisabled();
+  }
+
+  withMetaMetricsDisabled(): this {
+    if (this.fixture.data.MetaMetricsController) {
+      merge(this.fixture.data.MetaMetricsController, {
+        participateInMetaMetrics: false,
+        dataCollectionForMarketing: false,
       });
+    }
+    return this;
   }
 
   withPermissionController(
