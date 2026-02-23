@@ -8,7 +8,7 @@ import {
   mockMultichainNetworkState,
   mockNetworkState,
 } from '../../../../../test/stub/networks';
-import { getAccountTrackerControllerAccountsByChainId } from '../../../../selectors/assets-unify-state/migration-selectors';
+import { getAccountTrackerControllerAccountsByChainId } from '../../../../../shared/modules/selectors/assets-migration';
 
 const STORE_MOCK = {
   ...testData,

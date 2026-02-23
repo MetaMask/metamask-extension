@@ -25,7 +25,7 @@ import {
   getAssetsRates,
 } from '../../selectors/assets';
 import { getInternalAccountByGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
-import { getAccountTrackerControllerAccountsByChainId } from '../../selectors/assets-unify-state/migration-selectors';
+import { getAccountTrackerControllerAccountsByChainId } from '../../../shared/modules/selectors/assets-migration';
 import { type BridgeAppState, getFromChains } from './selectors';
 import { type BridgeToken } from './types';
 import { getMaybeHexChainId, isTronEnergyOrBandwidthResource } from './utils';
