@@ -92,15 +92,15 @@ class FixtureBuilderV2 {
       .TransactionController as Partial<TransactionControllerState>;
 
     const { transactions, ...rest } = data;
+    // Always merge non-transaction state first (lastFetchedBlockNumbers, methodData, etc.)
     merge(target, rest);
     if (transactions !== undefined) {
       const existing = Array.isArray(target.transactions)
         ? target.transactions
         : [];
-      const combined: TransactionMeta[] = [
-        ...existing,
-        ...transactions,
-      ].sort((a, b) => (b.time ?? 0) - (a.time ?? 0));
+      const combined: TransactionMeta[] = [...existing, ...transactions].sort(
+        (a, b) => (b.time ?? 0) - (a.time ?? 0),
+      );
       target.transactions = combined;
     }
     return this;
@@ -163,6 +163,8 @@ class FixtureBuilderV2 {
       txParams: {
         from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         gas: '0x5208',
+        maxFeePerGas: '0x4d7fc07fb',
+        maxPriorityFeePerGas: '0x59682f00',
         to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         type: '0x2',
         value: '0xde0b6b3a7640000',
@@ -173,6 +175,7 @@ class FixtureBuilderV2 {
       txReceipt: {
         blockNumber: '0x7cbf95',
         gasUsed: '0x1458', // 5208 decimal, valid hex for code paths that parse as hex
+        effectiveGasPrice: '0x4d7fc07fb',
         status: '0x1',
       },
       type: TransactionType.simpleSend,
