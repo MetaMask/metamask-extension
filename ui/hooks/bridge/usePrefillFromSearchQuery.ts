@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useCallback, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
 import {
   type CaipAssetType,
   CaipAssetTypeStruct,
@@ -18,6 +17,7 @@ import {
   setToToken,
 } from '../../ducks/bridge/actions';
 import { getFromToken } from '../../ducks/bridge/selectors';
+import { useBridgeNavigation } from './useBridgeNavigation';
 
 const parseAsset = (assetId: string | null) => {
   if (!assetId) {
@@ -68,31 +68,10 @@ export const usePrefillFromSearchQuery = () => {
 
   const abortController = useRef<AbortController>(new AbortController());
 
-  const { search, pathname } = useLocation();
-  const navigate = useNavigate();
+  const { resetSearchParams, search } = useBridgeNavigation();
 
   // Parse CAIP asset data
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
-
-  // Clean up URL parameters
-  const cleanupUrlParams = useCallback(
-    (paramsToRemove: BridgeQueryParams[]) => {
-      const updatedSearchParams = new URLSearchParams(search);
-      paramsToRemove.forEach((param) => {
-        if (updatedSearchParams.get(param)) {
-          updatedSearchParams.delete(param);
-        }
-      });
-      navigate(
-        {
-          pathname,
-          search: updatedSearchParams.toString(),
-        },
-        { replace: true },
-      );
-    },
-    [search, pathname, navigate],
-  );
 
   const [parsedFromAssetId, setParsedFromAssetId] =
     useState<ReturnType<typeof parseAsset>>(null);
@@ -127,7 +106,7 @@ export const usePrefillFromSearchQuery = () => {
       if (searchParamsAmount) {
         setParsedAmount(searchParamsAmount);
       }
-      cleanupUrlParams([
+      resetSearchParams([
         BridgeQueryParams.From,
         BridgeQueryParams.To,
         BridgeQueryParams.Amount,
