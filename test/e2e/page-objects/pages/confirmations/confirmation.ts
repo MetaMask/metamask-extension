@@ -209,9 +209,7 @@ class Confirmation {
     await this.driver.clickElement({
       css: '[data-testid="confirm-info-row-display-name"]',
     });
-    console.log(
-      `Saving name: ${name}, proposedName: ${proposedName}`,
-    );
+    console.log(`Saving name: ${name}, proposedName: ${proposedName}`);
     await this.driver.clickElement(this.formComboFieldSelector);
 
     if (proposedName) {
