@@ -39,6 +39,7 @@ import {
 import { Driver } from '../../webdriver/driver';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
+import { switchToNetworkFromNetworkSelect } from 'test/e2e/page-objects/flows/network.flow';
 
 const EVM_ADDRESS_TWO = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 const SOLANA_ACCOUNT_ONE = `${SolScope.Mainnet}:${SOLANA_ADDRESS_ONE}`;
@@ -54,15 +55,6 @@ const SOLANA_PERMISSIONS = {
     [SolScope.Mainnet]: {
       accounts: [SOLANA_ACCOUNT_ONE],
     },
-  },
-};
-
-const SOLANA_ENABLED_NETWORKS = {
-  eip155: {
-    '0x539': true,
-  },
-  solana: {
-    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
   },
 };
 
@@ -297,7 +289,6 @@ describe('Multiple Standard Dapp Connections', function () {
           .withPreferencesControllerAdditionalAccountIdentities()
           .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDappWithTwoAccounts()
-          .withEnabledNetworks(SOLANA_ENABLED_NETWORKS)
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
@@ -305,6 +296,8 @@ describe('Multiple Standard Dapp Connections', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
+        // TODO: Use fixtures V2 with Solana network
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const testDapp = new TestDappSolana(driver);
 
         await testDapp.openTestDappPage();
@@ -354,7 +347,6 @@ describe('Multiple Standard Dapp Connections', function () {
             // @ts-expect-error Type error is expected here since its being inferred as null
             value: SOLANA_PERMISSIONS,
           })
-          .withEnabledNetworks(SOLANA_ENABLED_NETWORKS)
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
@@ -362,6 +354,8 @@ describe('Multiple Standard Dapp Connections', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
+        // TODO: Use fixtures V2 with Solana network
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const testDapp = new TestDapp(driver);
 
         await testDapp.openTestDappPage();
@@ -415,7 +409,6 @@ describe('Multiple Standard Dapp Connections', function () {
             // @ts-expect-error Type error is expected here since its being inferred as null
             value: SOLANA_PERMISSIONS,
           })
-          .withEnabledNetworks(SOLANA_ENABLED_NETWORKS)
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
@@ -423,6 +416,8 @@ describe('Multiple Standard Dapp Connections', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
+        // TODO: Use fixtures V2 with Solana network
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const testDapp = new TestDapp(driver);
 
         await testDapp.openTestDappPage();
@@ -490,7 +485,6 @@ describe('Multiple Standard Dapp Connections', function () {
             // @ts-expect-error Type error is expected here since its being inferred as null
             value: SOLANA_PERMISSIONS,
           })
-          .withEnabledNetworks(SOLANA_ENABLED_NETWORKS)
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },

@@ -53,11 +53,6 @@ class FixtureBuilderV2 {
                           GENERIC  CONTROLLER METHODS
      ==================================================================
   */
-  withAccountsController(data: Partial<AccountsControllerState>): this {
-    merge(this.fixture.data.AccountsController, data);
-    return this;
-  }
-
   withAddressBookController(data: Partial<AddressBookControllerState>): this {
     if (!this.fixture.data.AddressBookController) {
       (this.fixture.data as Record<string, unknown>).AddressBookController = {
