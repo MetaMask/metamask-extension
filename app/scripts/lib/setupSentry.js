@@ -402,9 +402,13 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
  */
 export async function rewriteReport(report) {
   try {
-    const metaMetricsId = await getMetaMetricsId();
-    if (metaMetricsId) {
-      report.user = { id: metaMetricsId };
+    try {
+      const metaMetricsId = await getMetaMetricsId();
+      if (metaMetricsId) {
+        report.user = { id: metaMetricsId };
+      }
+    } catch (metaMetricsErr) {
+      log('MetaMetrics lookup failed, skipping user id', metaMetricsErr);
     }
 
     // simplify certain complex error messages (e.g. Ethjs)
