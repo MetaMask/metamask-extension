@@ -240,7 +240,7 @@ function getSentryTarget() {
  * Returns the MetaMetrics controller state. If the application hasn't yet
  * been initialized, the persisted state will be used (if any).
  *
- * @returns The MetaMetrics state from app state, persisted state, or backup state; null if unavailable.
+ * @returns {object | null} The MetaMetrics state from app state, persisted state, or backup state; null if unavailable.
  */
 async function getMetaMetrics() {
   const appState = getState();
@@ -287,7 +287,7 @@ async function getMetaMetricsEnabled() {
  * Returns the MetaMetrics ID from state only when the user has opted in.
  * If the application hasn't yet been initialized, the persisted state will be used (if any).
  *
- * @returns The metaMetricsId string when participateInMetaMetrics is true, otherwise null.
+ * @returns {string | null} The metaMetricsId when participateInMetaMetrics is true, otherwise null.
  */
 async function getMetaMetricsId() {
   const metaMetrics = await getMetaMetrics();
