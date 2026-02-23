@@ -200,6 +200,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             backgroundColor={BackgroundColor.backgroundMuted}
             className="w-full"
             data-testid="amount-input-field"
+            inputProps={{ inputMode: 'decimal' }}
             startAccessory={
               <Text
                 variant={TextVariant.BodyMd}
