@@ -909,6 +909,14 @@ export default function UnifiedTransactionList({
     return flattened;
   }, [processedUnifiedActivityItems]);
 
+  const [scrollMargin, setScrollMargin] = useState(0);
+
+  const listRef = useCallback((node) => {
+    if (node) {
+      setScrollMargin(node.offsetTop);
+    }
+  }, []);
+
   const virtualizer = useVirtualizer({
     count: items.length,
     getScrollElement: () => scrollContainerRef?.current || null,
@@ -916,6 +924,7 @@ export default function UnifiedTransactionList({
       items[index]?.type === 'date-header' ? HEADER_HEIGHT : ITEM_HEIGHT,
     overscan: 10,
     initialOffset: scrollContainerRef?.current?.scrollTop,
+    scrollMargin,
   });
 
   return (
@@ -950,6 +959,7 @@ export default function UnifiedTransactionList({
           <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
         ) : (
           <div
+            ref={listRef}
             className="transaction-list__transactions relative w-full"
             style={{
               height: `${virtualizer.getTotalSize()}px`,
@@ -957,6 +967,8 @@ export default function UnifiedTransactionList({
           >
             {virtualizer.getVirtualItems().map((virtualItem) => {
               const item = items[virtualItem.index];
+              const translateY =
+                virtualItem.start - virtualizer.options.scrollMargin;
 
               if (item.type === 'date-header') {
                 return (
@@ -964,7 +976,7 @@ export default function UnifiedTransactionList({
                     key={`date-${item.date}`}
                     className="absolute top-0 left-0 w-full"
                     style={{
-                      transform: `translateY(${virtualItem.start}px)`,
+                      transform: `translateY(${translateY}px)`,
                     }}
                   >
                     <Text
@@ -986,7 +998,7 @@ export default function UnifiedTransactionList({
                   ref={virtualizer.measureElement}
                   className="absolute top-0 left-0 w-full"
                   style={{
-                    transform: `translateY(${virtualItem.start}px)`,
+                    transform: `translateY(${translateY}px)`,
                   }}
                 >
                   {renderTransaction(item.data, virtualItem.index)}

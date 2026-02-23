@@ -10,21 +10,13 @@ import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { selectMarketRates } from '../../../selectors/activity';
 import { selectEvmAddress } from '../../../selectors/accounts';
 import { getUseExternalServices } from '../../../selectors';
-import { submitRequestToBackground } from '../../../store/background-connection';
 import { parseApprovalTransactionData } from '../../../../shared/modules/transaction.utils';
 import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
-import {
-  queries,
-  transactionsQueryKey,
-} from '../../../../shared/lib/multichain/queries';
-import type { Params } from '../../../../shared/lib/api-client';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
+import { queries } from '../../../helpers/queries';
 import { calculateFiatFromMarketRates } from './helpers';
 
-const getBearerToken = () =>
-  submitRequestToBackground<string | undefined>('getBearerToken');
-
-function useTransactionParams(): Params {
+function useTransactionParams() {
   const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
   const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
 
@@ -33,30 +25,32 @@ function useTransactionParams(): Params {
     [enabledNetworks],
   );
 
+  const accountAddresses = useMemo(
+    () => (evmAddress ? [`eip155:0:${evmAddress}`] : []),
+    [evmAddress],
+  );
+
   return useMemo(
     () => ({
-      accountAddresses: evmAddress ? [evmAddress] : [],
+      evmAddress,
+      accountAddresses,
       networks: evmNetworks,
     }),
-    [evmAddress, evmNetworks],
+    [evmAddress, accountAddresses, evmNetworks],
   );
 }
 
 export function useTransactionsQuery() {
   const useExternalServices = useSelector(getUseExternalServices);
-  const params = useTransactionParams();
+  const { evmAddress, accountAddresses, networks } = useTransactionParams();
 
   const queryOptions = useMemo(
     () =>
-      queries.transactions({
-        params,
-        options: {
-          enabled: Boolean(useExternalServices),
-          keepPreviousData: true,
-        },
-        getBearerToken,
-      }),
-    [params, useExternalServices],
+      queries.transactions(
+        { accountAddresses, evmAddress, networks },
+        { enabled: Boolean(useExternalServices), keepPreviousData: true },
+      ),
+    [evmAddress, accountAddresses, networks, useExternalServices],
   );
 
   return useInfiniteQuery(queryOptions);
@@ -65,16 +59,20 @@ export function useTransactionsQuery() {
 export function usePrefetchTransactions() {
   const queryClient = useQueryClient();
   const useExternalServices = useSelector(getUseExternalServices);
-  const params = useTransactionParams();
-  const evmAddress = params.accountAddresses[0] ?? '';
+  const { evmAddress, accountAddresses, networks } = useTransactionParams();
+
+  const queryOptions = useMemo(
+    () => queries.transactions({ accountAddresses, evmAddress, networks }),
+    [evmAddress, accountAddresses, networks],
+  );
 
   return useCallback(() => {
     if (!useExternalServices || !evmAddress) {
       return;
     }
 
-    const queryKey = [...transactionsQueryKey, params];
-    if (queryClient.getQueryData(queryKey)) {
+    const { queryKey } = queryOptions;
+    if (!queryKey || queryClient.getQueryData(queryKey)) {
       return;
     }
 
@@ -82,12 +80,10 @@ export function usePrefetchTransactions() {
       return;
     }
 
-    queryClient
-      .prefetchInfiniteQuery(queries.transactions({ params, getBearerToken }))
-      .catch(() => {
-        // Prefetch is opportunistic
-      });
-  }, [evmAddress, params, queryClient, useExternalServices]);
+    queryClient.prefetchInfiniteQuery(queryOptions).catch(() => {
+      // Prefetch is opportunistic
+    });
+  }, [evmAddress, queryOptions, queryClient, useExternalServices]);
 }
 
 export function useGetTitle(transaction: TransactionViewModel): string {
