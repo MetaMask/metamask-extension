@@ -509,7 +509,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       className="main-container asset__container"
       data-testid="perps-order-entry-page"
     >
-      {/* Header: Back (left) + Long/Short toggle (centered) */}
+      {/* Header: Back (left) + Long/Short toggle (centered) + spacer (right) */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
@@ -522,7 +522,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           data-testid="perps-order-entry-back-button"
           onClick={handleBackClick}
           aria-label={t('back')}
-          className="p-2 -ml-2 cursor-pointer shrink-0"
+          className="w-9 shrink-0 cursor-pointer"
         >
           <Icon
             name={IconName.ArrowLeft}
@@ -541,8 +541,7 @@ const PerpsOrderEntryPage: React.FC = () => {
             onDirectionChange={setOrderDirection}
           />
         </Box>
-        {/* Spacer matching back button width (icon Md + p-2) so Long/Short stays centered */}
-        <Box className="shrink-0 w-10" aria-hidden="true" />
+        <Box className="w-9 shrink-0" aria-hidden="true" />
       </Box>
 
       {/* Scrollable form */}
