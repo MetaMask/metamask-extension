@@ -7562,21 +7562,21 @@ __metadata:
   linkType: hard
 
 "@metamask/multichain-network-controller@npm:^3.0.0, @metamask/multichain-network-controller@npm:^3.0.2, @metamask/multichain-network-controller@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "@metamask/multichain-network-controller@npm:3.0.3"
+  version: 3.0.4
+  resolution: "@metamask/multichain-network-controller@npm:3.0.4"
   dependencies:
-    "@metamask/accounts-controller": "npm:^36.0.0"
+    "@metamask/accounts-controller": "npm:^36.0.1"
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.18.0"
+    "@metamask/controller-utils": "npm:^11.19.0"
     "@metamask/keyring-api": "npm:^21.5.0"
     "@metamask/keyring-internal-api": "npm:^10.0.0"
     "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/network-controller": "npm:^29.0.0"
+    "@metamask/network-controller": "npm:^30.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.9.0"
     "@solana/addresses": "npm:^2.0.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/ea4b79ad5c35c660617a146822ad708a2ea978d1a8f907432fac6f6083dc303fa4faf1609cbf8ff5b068f11857e10893320b733e0aed2b44f4dfb5586fcaa383
+  checksum: 10/bbdda3f49160b9a23bab2f9695b1eba7e2ccd29b4ba72347cd9efdd22f898c1b910965a220d969ded28f2624d0d8783f885f5f727e2e8f2f027481c21d5c8fb5
   languageName: node
   linkType: hard
 
@@ -8301,24 +8301,24 @@ __metadata:
   linkType: hard
 
 "@metamask/signature-controller@npm:^39.0.1, @metamask/signature-controller@npm:^39.0.2":
-  version: 39.0.3
-  resolution: "@metamask/signature-controller@npm:39.0.3"
+  version: 39.0.4
+  resolution: "@metamask/signature-controller@npm:39.0.4"
   dependencies:
-    "@metamask/accounts-controller": "npm:^36.0.0"
+    "@metamask/accounts-controller": "npm:^36.0.1"
     "@metamask/approval-controller": "npm:^8.0.0"
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.18.0"
+    "@metamask/controller-utils": "npm:^11.19.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/gator-permissions-controller": "npm:^2.0.0"
     "@metamask/keyring-controller": "npm:^25.1.0"
     "@metamask/logging-controller": "npm:^7.0.1"
     "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/network-controller": "npm:^29.0.0"
+    "@metamask/network-controller": "npm:^30.0.0"
     "@metamask/utils": "npm:^11.9.0"
     jsonschema: "npm:^1.4.1"
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
-  checksum: 10/bd41caaddb390bcd7d606a93be00664169d13f85e5074ef363d2bf3aa43e912ededb91ab422b43a40b4c0336cb50a8e0ba1ba55311386c1967694066d70f247d
+  checksum: 10/9dbda00030f75211b0aaf5d53be047c2a0a02797be3f69fffc18af00ff549691290aaa5656d12b02aab95aba083dadfd8be1e5e73c5298325e237305334233fb
   languageName: node
   linkType: hard
 
@@ -33699,8 +33699,8 @@ __metadata:
     "@metamask/connectivity-controller": "npm:^0.1.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.18.0"
-    "@metamask/delegation-controller": "npm:^2.0.1"
     "@metamask/core-backend": "npm:^6.0.0"
+    "@metamask/delegation-controller": "npm:^2.0.1"
     "@metamask/delegation-core": "npm:^0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^0.15.0"
     "@metamask/design-system-react": "npm:^0.7.0"
