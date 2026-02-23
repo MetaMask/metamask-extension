@@ -3671,7 +3671,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('calls discoverAndCreateAccounts when shouldImportSolanaAccount is true', async () => {
+      it('calls discoverAndCreateAccounts', async () => {
         jest
           .spyOn(
             metamaskController.accountTreeController,
@@ -3693,7 +3693,7 @@ describe('MetaMaskController', () => {
         expect(metamaskController.discoverAndCreateAccounts).toHaveBeenCalled();
       });
 
-      it('calls discoverAndCreateAccounts when importMnemonicToVault runs (shouldImportSolanaAccount option no longer branches)', async () => {
+      it('calls discoverAndCreateAccounts when importMnemonicToVault runs', async () => {
         jest
           .spyOn(
             metamaskController.accountTreeController,
@@ -3710,7 +3710,6 @@ describe('MetaMaskController', () => {
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT, {
           shouldCreateSocialBackup: false,
           shouldSelectAccount: false,
-          shouldImportSolanaAccount: false,
         });
 
         // Wait for the fire-and-forget sync and discover operation to complete
