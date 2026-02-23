@@ -136,9 +136,8 @@ function aggregateHistoricalBenchmarkData(
       const values = metricMeans[metricKey];
       if (values.length > 0) {
         const calculatedMean = calculateMean(values);
-        pageData.mean[
-          metricKey as keyof NumericBenchmarkMetrics
-        ] = calculatedMean;
+        pageData.mean[metricKey as keyof NumericBenchmarkMetrics] =
+          calculatedMean;
       }
     });
 
@@ -334,12 +333,9 @@ function getMetricValues(
   summary: BenchmarkSummary,
   metric: string,
 ): { mean: number; stdDev: number } | null {
-  const meanValue =
-    summary.mean[metric as keyof NumericBenchmarkMetrics];
+  const meanValue = summary.mean[metric as keyof NumericBenchmarkMetrics];
   const stdDevValue =
-    summary.standardDeviation[
-      metric as keyof NumericBenchmarkMetrics
-    ];
+    summary.standardDeviation[metric as keyof NumericBenchmarkMetrics];
 
   if (typeof meanValue !== 'number') {
     return null;
@@ -483,14 +479,10 @@ function generateBenchmarkComment(
         continue;
       }
 
-      const minValue =
-        pageSummary.min[metric as keyof NumericBenchmarkMetrics];
-      const maxValue =
-        pageSummary.max[metric as keyof NumericBenchmarkMetrics];
-      const p95Value =
-        pageSummary.p95[metric as keyof NumericBenchmarkMetrics];
-      const p99Value =
-        pageSummary.p99[metric as keyof NumericBenchmarkMetrics];
+      const minValue = pageSummary.min[metric as keyof NumericBenchmarkMetrics];
+      const maxValue = pageSummary.max[metric as keyof NumericBenchmarkMetrics];
+      const p95Value = pageSummary.p95[metric as keyof NumericBenchmarkMetrics];
+      const p99Value = pageSummary.p99[metric as keyof NumericBenchmarkMetrics];
 
       comment += `| ${metric} | ${formatTime(currentValues.mean)} | ${formatTime(currentValues.stdDev)} | ${formatTime(minValue || 0)} | ${formatTime(maxValue || 0)} | ${formatTime(p95Value || 0)} | ${formatTime(p99Value || 0)} |\n`;
     }
