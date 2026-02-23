@@ -2,6 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import {
   useCanBuyMusd,
   clearRegionTokenCache,
+  fetchRegionTokens,
   type RampToken,
 } from './useCanBuyMusd';
 import { useMusdGeoBlocking } from './useMusdGeoBlocking';
@@ -340,5 +341,48 @@ describe('useCanBuyMusd', () => {
     expect(result.current.canBuyMusdInRegion).toBe(false);
     expect(result.current.isMusdBuyableOnChain['0x1']).toBe(false);
     expect(result.current.isMusdBuyableOnChain['0xe708']).toBe(false);
+  });
+
+  // -------------------------------------------------------------------
+  // Error caching
+  // -------------------------------------------------------------------
+
+  it('does not cache error responses so subsequent calls retry the API', async () => {
+    mockFetch.mockRejectedValueOnce(new Error('Network error'));
+
+    const first = await fetchRegionTokens('US');
+    expect(first).toStrictEqual([]);
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        allTokens: [makeMusdToken(MAINNET_MUSD_ASSET_ID)],
+      }),
+    });
+
+    const second = await fetchRegionTokens('US');
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+    expect(second).toHaveLength(1);
+    expect(second[0].assetId).toBe(MAINNET_MUSD_ASSET_ID);
+  });
+
+  it('does not cache non-ok HTTP responses so subsequent calls retry the API', async () => {
+    mockFetch.mockResolvedValueOnce({ ok: false, status: 500 });
+
+    const first = await fetchRegionTokens('US');
+    expect(first).toStrictEqual([]);
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        allTokens: [makeMusdToken(MAINNET_MUSD_ASSET_ID)],
+      }),
+    });
+
+    const second = await fetchRegionTokens('US');
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+    expect(second).toHaveLength(1);
   });
 });

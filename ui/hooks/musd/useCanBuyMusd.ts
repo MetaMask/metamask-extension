@@ -82,9 +82,6 @@ export async function fetchRegionTokens(country: string): Promise<RampToken[]> {
 
     return tokens;
   } catch {
-    regionTokenCache.country = country;
-    regionTokenCache.tokens = [];
-    regionTokenCache.timestamp = Date.now();
     return [];
   }
 }

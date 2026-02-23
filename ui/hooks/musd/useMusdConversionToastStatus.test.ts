@@ -374,6 +374,59 @@ describe('useMusdConversionToastStatus', () => {
     expect(result.current.toastState).toBe('in-progress');
   });
 
+  it('does not leak previous conversion symbol to a new conversion whose payment token has not populated yet', () => {
+    setupMock(
+      [createMusdConversionTx('tx-1', TransactionStatus.submitted)],
+      MOCK_PAYMENT_TOKEN,
+    );
+
+    const { result, rerender } = renderHook(() =>
+      useMusdConversionToastStatus(),
+    );
+
+    expect(result.current.sourceTokenSymbol).toBe('USDC');
+
+    // tx-1 completes: activePendingTxId → undefined, symbol cached for completion toast
+    updateMock(
+      [createMusdConversionTx('tx-1', TransactionStatus.confirmed)],
+      undefined,
+    );
+    rerender();
+    expect(result.current.toastState).toBe('success');
+    expect(result.current.sourceTokenSymbol).toBe('USDC');
+
+    // tx-2 appears but its payment token has NOT populated yet
+    updateMock(
+      [
+        createMusdConversionTx('tx-1', TransactionStatus.confirmed),
+        createMusdConversionTx('tx-2', TransactionStatus.submitted),
+      ],
+      undefined,
+    );
+    rerender();
+
+    expect(result.current.toastState).toBe('in-progress');
+    // Must be undefined, NOT the stale 'USDC' from tx-1
+    expect(result.current.sourceTokenSymbol).toBeUndefined();
+
+    // Once tx-2's payment token populates, it should display the new symbol
+    const DAI_PAYMENT_TOKEN = {
+      ...MOCK_PAYMENT_TOKEN,
+      symbol: 'DAI',
+      address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    };
+    updateMock(
+      [
+        createMusdConversionTx('tx-1', TransactionStatus.confirmed),
+        createMusdConversionTx('tx-2', TransactionStatus.submitted),
+      ],
+      DAI_PAYMENT_TOKEN,
+    );
+    rerender();
+
+    expect(result.current.sourceTokenSymbol).toBe('DAI');
+  });
+
   it('shows in-progress for new pending conversion after previous conversion failed', () => {
     setupMock(
       [createMusdConversionTx('tx-1', TransactionStatus.submitted)],
