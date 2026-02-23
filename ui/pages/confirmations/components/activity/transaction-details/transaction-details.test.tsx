@@ -8,6 +8,11 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers-na
 import { TransactionDetailsProvider } from '../transaction-details-context';
 import { TransactionDetails } from './transaction-details';
 
+
+jest.mock('../../../hooks/send/useSendTokens', () => ({
+  useSendTokens: () => [],
+}));
+
 const CHAIN_ID = '0x1';
 const TOKEN_ADDRESS = '0xtoken123';
 
@@ -45,6 +50,13 @@ function createMockState(includeToken = false) {
           defaultBlockExplorerUrlIndex: 0,
         },
       },
+      multichainNetworkConfigurationsByChainId: {},
+      accountTree: { wallets: {}, selectedAccountGroup: null },
+      allIgnoredTokens: {},
+      marketData: {},
+      currencyRates: {},
+      currentCurrency: 'usd',
+      accountsByChainId: {},
     },
   };
 }
