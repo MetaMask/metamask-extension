@@ -172,14 +172,22 @@ async function handleRestartAction(
  * @returns A promise that resolves to true if a vault backup exists, false otherwise.
  */
 async function checkVaultBackupExists(): Promise<boolean> {
+  let db: IDBDatabase | undefined;
   try {
-    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+    db = await new Promise<IDBDatabase>((resolve, reject) => {
       const request = indexedDB.open('metamask-backup', 1);
+      request.onupgradeneeded = () => {
+        const database = request.result;
+        if (!database.objectStoreNames.contains('store')) {
+          database.createObjectStore('store');
+        }
+      };
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
 
-    const tx = db.transaction('store', 'readonly');
+    const openedDb = db;
+    const tx = openedDb.transaction('store', 'readonly');
     const store = tx.objectStore('store');
     const keyringRequest = store.get('KeyringController');
 
@@ -189,15 +197,22 @@ async function checkVaultBackupExists(): Promise<boolean> {
           | { vault?: unknown }
           | undefined;
         const hasVault = Boolean(keyringController?.vault);
-        db.close();
+        openedDb.close();
         resolve(hasVault);
       };
       keyringRequest.onerror = () => {
-        db.close();
+        openedDb.close();
         resolve(false);
       };
     });
   } catch {
+    if (db) {
+      try {
+        db.close();
+      } catch {
+        // Ignore close errors when cleaning up after a failed check
+      }
+    }
     return false;
   }
 }
