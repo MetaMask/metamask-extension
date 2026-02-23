@@ -3599,9 +3599,6 @@
   "lock": {
     "message": "लॉक"
   },
-  "lockMetaMask": {
-    "message": "MetaMask लॉक करें"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask लॉक हो रहा है..."
   },
