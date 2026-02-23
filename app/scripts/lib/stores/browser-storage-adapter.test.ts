@@ -1,6 +1,9 @@
 import browser from 'webextension-polyfill';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
-import { BrowserStorageAdapter } from './browser-storage-adapter';
+
+const { BrowserStorageAdapter } = jest.requireActual(
+  './browser-storage-adapter',
+);
 
 jest.mock('webextension-polyfill', () => ({
   storage: {
@@ -13,7 +16,7 @@ jest.mock('webextension-polyfill', () => ({
 }));
 
 describe('BrowserStorageAdapter', () => {
-  let adapter: BrowserStorageAdapter;
+  let adapter: typeof BrowserStorageAdapter;
   const mockGet = jest.mocked(browser.storage.local.get);
   const mockSet = jest.mocked(browser.storage.local.set);
   const mockRemove = jest.mocked(browser.storage.local.remove);

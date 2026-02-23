@@ -13,6 +13,7 @@ import { usePerpsOrderForm } from '../../../../hooks/perps';
 import type { OrderEntryProps } from './order-entry.types';
 
 import { AmountInput } from './components/amount-input';
+import { LimitPriceInput } from './components/limit-price-input';
 import { LeverageSlider } from './components/leverage-slider';
 import { OrderSummary } from './components/order-summary';
 import { AutoCloseSection } from './components/auto-close-section';
@@ -44,6 +45,9 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.mode - Order mode: 'new', 'modify', or 'close' (defaults to 'new')
  * @param props.existingPosition - Existing position data for pre-population
  * @param props.orderType
+ * @param props.midPrice
+ * @param props.bidPrice
+ * @param props.askPrice
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -57,6 +61,9 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   mode = 'new',
   existingPosition,
   orderType = 'market',
+  midPrice,
+  bidPrice,
+  askPrice,
 }) => {
   const t = useI18nContext();
 
@@ -72,6 +79,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     handleTakeProfitPriceChange,
     handleStopLossPriceChange,
     handleClosePercentChange,
+    handleLimitPriceChange,
     handleSubmit,
   } = usePerpsOrderForm({
     asset,
@@ -142,12 +150,30 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
           />
         )}
 
+        {/* Limit Orders: Show Limit Price Input below Order Amount */}
+        {mode !== 'close' && formState.type === 'limit' && (
+          <LimitPriceInput
+            limitPrice={formState.limitPrice}
+            onLimitPriceChange={handleLimitPriceChange}
+            currentPrice={currentPrice}
+            direction={formState.direction}
+            midPrice={midPrice}
+            bidPrice={bidPrice}
+            askPrice={askPrice}
+          />
+        )}
+
         {/* New/Modify Modes: Show Leverage Slider Section */}
         {mode !== 'close' && (
           <LeverageSlider
             leverage={formState.leverage}
             onLeverageChange={handleLeverageChange}
             maxLeverage={maxLeverage}
+            minLeverage={
+              mode === 'modify' && existingPosition
+                ? existingPosition.leverage
+                : undefined
+            }
           />
         )}
 
@@ -177,6 +203,16 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             onStopLossPriceChange={handleStopLossPriceChange}
             direction={formState.direction}
             currentPrice={currentPrice}
+            entryPrice={
+              mode === 'modify' && existingPosition?.entryPrice
+                ? (() => {
+                    const p = parseFloat(
+                      existingPosition.entryPrice.replace(/,/gu, ''),
+                    );
+                    return Number.isNaN(p) ? undefined : p;
+                  })()
+                : undefined
+            }
           />
         )}
       </Box>

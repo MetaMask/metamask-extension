@@ -235,6 +235,26 @@
       "globals": {
         "fetch": false
       }
+    },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": true,
+        "addEventListener": false
+      }
+    },
+    "@tanstack/react-query>@tanstack/query-core": {
+      "globals": {
+        "addEventListener": false,
+        "document": false
+      }
+    },
+    "@tanstack/react-query>use-sync-external-store": {
+      "globals": {
+        "__REACT_DEVTOOLS_GLOBAL_HOOK__": false,
+        "document": false,
+        "document.createElement": true
+      }
     }
   }
 }

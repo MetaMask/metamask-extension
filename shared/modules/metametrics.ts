@@ -14,6 +14,9 @@ type SmartTransactionMetricsProperties = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   smart_transaction_proxied?: boolean;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  stx_original_transaction_status?: string;
 };
 
 export const getSmartTransactionMetricsProperties = (
@@ -43,5 +46,7 @@ export const getSmartTransactionMetricsProperties = (
   properties.smart_transaction_timed_out =
     smartTransactionStatusMetadata.timedOut;
   properties.smart_transaction_proxied = smartTransactionStatusMetadata.proxied;
+  properties.stx_original_transaction_status =
+    smartTransactionStatusMetadata.originalTransactionStatus;
   return properties;
 };

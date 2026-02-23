@@ -56,6 +56,8 @@ import {
   getTokenRatesControllerMessenger,
   getAssetsContractControllerInitMessenger,
   getNetworkEnablementControllerInitMessenger,
+  getAssetsControllerMessenger,
+  getAssetsControllerInitMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -451,6 +453,10 @@ export const CONTROLLER_MESSENGERS = {
   AppStateController: {
     getMessenger: getAppStateControllerMessenger,
     getInitMessenger: noop,
+  },
+  AssetsController: {
+    getMessenger: getAssetsControllerMessenger,
+    getInitMessenger: getAssetsControllerInitMessenger,
   },
   AuthenticationController: {
     getMessenger: getAuthenticationControllerMessenger,

@@ -111,55 +111,6 @@ function getErrorProperties(code: ErrorCode): {
 }
 
 /**
- * Parse an unknown error and convert it to a HardwareWalletError
- *
- * @param error - The error to parse
- * @param walletType - The hardware wallet type
- * @returns A HardwareWalletError instance
- */
-export function parseErrorByType(
-  error: unknown,
-  walletType: HardwareWalletType,
-): HardwareWalletError {
-  // If already a HardwareWalletError, return it
-  if (error instanceof HardwareWalletError) {
-    return error;
-  }
-
-  // Get error message
-  const errorMessage = error instanceof Error ? error.message : String(error);
-  const errorMessageLower = errorMessage.toLowerCase();
-  const cause = error instanceof Error ? error : undefined;
-
-  // Parse hardware wallet error codes using mappings from keyring-utils
-  // Only check Ledger mappings for Ledger wallets
-  if (walletType === HardwareWalletType.Ledger) {
-    for (const [errorCode, mapping] of Object.entries(LEDGER_ERROR_MAPPINGS)) {
-      if (errorMessageLower.includes(errorCode.toLowerCase())) {
-        return createHardwareWalletError(
-          mapping.code,
-          walletType,
-          errorMessage,
-          {
-            cause,
-          },
-        );
-      }
-    }
-  }
-
-  // TODO: Add mappings for other hardware wallets
-
-  // Default to unknown error
-  return createHardwareWalletError(
-    ErrorCode.Unknown,
-    walletType,
-    errorMessage,
-    { cause },
-  );
-}
-
-/**
  * Convert a HardwareWalletError to an appropriate connection state
  *
  * @param error - The hardware wallet error
@@ -224,6 +175,7 @@ export function isRetryableHardwareWalletError(error: HardwareWalletError) {
     case ErrorCode.ConnectionTimeout:
     case ErrorCode.ConnectionClosed:
     case ErrorCode.DeviceDisconnected:
+    case ErrorCode.DeviceStateBlindSignNotSupported:
       return true;
     default:
       return false;

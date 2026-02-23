@@ -2,6 +2,7 @@ export const SHIELD_ERROR = {
   tabActionFailed: 'tab action failed',
   stripePaymentCancelled: 'stripe payment cancelled',
   subscriptionPollingTimedOut: 'subscription polling timed out',
+  payerAddressAlreadyUsed: 'payer address is already used by another customer',
 };
 
 /**

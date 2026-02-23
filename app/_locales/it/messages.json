@@ -894,9 +894,6 @@
   "noAccountsFound": {
     "message": "Nessun account trovato per la ricerca effettuata"
   },
-  "noConversionRateAvailable": {
-    "message": "Tasso di conversione non disponibile"
-  },
   "noWebcamFound": {
     "message": "La fotocamera del tuo computer non è stata trovata. Riprova."
   },

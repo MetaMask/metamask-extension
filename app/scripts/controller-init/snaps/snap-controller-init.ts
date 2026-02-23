@@ -1,5 +1,5 @@
 import { SnapController } from '@metamask/snaps-controllers';
-import { createDeferredPromise, hasProperty, Json } from '@metamask/utils';
+import { createDeferredPromise, Json } from '@metamask/utils';
 import { ControllerInitFunction } from '../types';
 import {
   EndowmentPermissions,
@@ -7,13 +7,13 @@ import {
   ExcludedSnapPermissions,
 } from '../../../../shared/constants/snaps/permissions';
 import { encryptorFactory } from '../../lib/encryptor-factory';
-import { KeyringType } from '../../../../shared/constants/keyring';
 import {
   SnapControllerInitMessenger,
   SnapControllerMessenger,
 } from '../messengers/snaps';
 import { getBooleanFlag } from '../../lib/util';
 import { OnboardingControllerState } from '../../controllers/onboarding';
+import { getMnemonicSeed } from '../../controllers/permissions/snaps/utils';
 
 // Copied from `@metamask/snaps-controllers`, since it is not exported.
 type TrackingEventPayload = {
@@ -33,8 +33,6 @@ type TrackEventHook = (event: TrackingEventPayload) => void;
  * initialization purposes only.
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
- * @param request.removeAllConnections - Function to remove all connections for
- * a given origin.
  * @param request.preinstalledSnaps - The list of preinstalled Snaps.
  * @returns The initialized controller.
  */
@@ -46,7 +44,6 @@ export const SnapControllerInit: ControllerInitFunction<
   initMessenger,
   controllerMessenger,
   persistedState,
-  removeAllConnections,
   preinstalledSnaps,
 }) => {
   const allowLocalSnaps = getBooleanFlag(process.env.ALLOW_LOCAL_SNAPS);
@@ -63,23 +60,6 @@ export const SnapControllerInit: ControllerInitFunction<
     process.env.FORCE_PREINSTALLED_SNAPS,
   );
   ///: END:ONLY_INCLUDE_IF
-
-  async function getMnemonicSeed() {
-    const keyrings = initMessenger.call(
-      'KeyringController:getKeyringsByType',
-      KeyringType.hdKeyTree,
-    );
-
-    if (
-      !keyrings[0] ||
-      !hasProperty(keyrings[0], 'seed') ||
-      !(keyrings[0].seed instanceof Uint8Array)
-    ) {
-      throw new Error('Primary keyring mnemonic unavailable.');
-    }
-
-    return keyrings[0].seed;
-  }
 
   /**
    * Get the feature flags for the `SnapController.
@@ -129,8 +109,6 @@ export const SnapControllerInit: ControllerInitFunction<
       ...ExcludedSnapEndowments,
     },
 
-    closeAllConnections: removeAllConnections,
-
     // @ts-expect-error: `persistedState.SnapController` is not compatible with
     // the expected type.
     // TODO: Look into the type mismatch.
@@ -155,7 +133,7 @@ export const SnapControllerInit: ControllerInitFunction<
     // TODO: Look into the type mismatch.
     encryptor: encryptorFactory(600_000),
 
-    getMnemonicSeed,
+    getMnemonicSeed: getMnemonicSeed.bind(null, initMessenger, undefined),
 
     preinstalledSnaps,
     getFeatureFlags,

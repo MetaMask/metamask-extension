@@ -91,6 +91,34 @@ export const INSTALL_TYPE = {
 
 export type InstallType = (typeof INSTALL_TYPE)[keyof typeof INSTALL_TYPE];
 
+/**
+ * Device type for analytics: mobile or desktop.
+ * - 'mobile' means the user-agent indicates a mobile device
+ * - 'desktop' means the user-agent indicates a desktop device (default when UA is missing or inconclusive)
+ */
+export const DEVICE_TYPE = {
+  DESKTOP: 'desktop',
+  MOBILE: 'mobile',
+} as const;
+
+export type DeviceType = (typeof DEVICE_TYPE)[keyof typeof DEVICE_TYPE];
+
+/**
+ * Normalized operating system for analytics.
+ */
+export const OS = {
+  ANDROID: 'Android',
+  IOS: 'iOS',
+  LINUX: 'Linux',
+  MACOS: 'macOS',
+  UNKNOWN: 'unknown',
+  WINDOWS: 'Windows',
+  /** Chrome OS, or other OS not in the main set */
+  OTHER: 'Other',
+} as const;
+
+export type Os = (typeof OS)[keyof typeof OS];
+
 export const MESSAGE_TYPE = {
   ADD_ETHEREUM_CHAIN: 'wallet_addEthereumChain',
   ETH_ACCOUNTS: RestrictedMethods.eth_accounts,
@@ -129,6 +157,7 @@ export const MESSAGE_TYPE = {
   SNAP_DIALOG_DEFAULT: DIALOG_APPROVAL_TYPES.default,
   HYPERLIQUID_REFERRAL_CONSENT: 'hyperliquid_referral_consent',
   ASTERDEX_REFERRAL_CONSENT: 'asterdex_referral_consent',
+  GMX_REFERRAL_CONSENT: 'gmx_referral_consent',
 } as const;
 
 export type MessageType = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE];
@@ -137,6 +166,7 @@ export type MessageType = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE];
 export const HYPERLIQUID_APPROVAL_TYPE =
   MESSAGE_TYPE.HYPERLIQUID_REFERRAL_CONSENT;
 export const ASTERDEX_APPROVAL_TYPE = MESSAGE_TYPE.ASTERDEX_REFERRAL_CONSENT;
+export const GMX_APPROVAL_TYPE = MESSAGE_TYPE.GMX_REFERRAL_CONSENT;
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {

@@ -2,6 +2,7 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { withFixtures, isSidePanelEnabled } from '../../helpers';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import { METAMASK_STALELIST_URL } from '../phishing-controller/helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -24,6 +25,44 @@ import {
   getAccountsSyncMockResponse,
 } from '../identity/account-syncing/mock-data';
 import { mockIdentityServices } from '../identity/mocks';
+
+const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
+
+async function mockFeatureFlagsForPrivacyTest(server: Mockttp) {
+  const prodFlags = getProductionRemoteFlagApiResponse();
+  await server
+    .forGet(FEATURE_FLAGS_URL)
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [
+        ...prodFlags,
+        { bitcoinAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+        { solanaAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+        { tronAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+        {
+          enableMultichainAccounts: {
+            enabled: false,
+            featureVersion: null,
+            minimumVersion: null,
+          },
+        },
+        {
+          enableMultichainAccountsState2: {
+            enabled: false,
+            featureVersion: null,
+            minimumVersion: null,
+          },
+        },
+        { assetsEnableNotificationsByDefault: false },
+        { assetsEnableNotificationsByDefaultV2: { value: false } },
+      ],
+    }));
+}
 
 async function mockApis(
   mockServer: Mockttp,
@@ -102,12 +141,14 @@ describe('MetaMask onboarding', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) =>
-          mockApis(
+        testSpecificMock: async (server: Mockttp) => {
+          await mockFeatureFlagsForPrivacyTest(server);
+          return mockApis(
             server,
             userStorageMockttpController,
             mockedAccountSyncResponse,
-          ),
+          );
+        },
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await importSRPOnboardingFlow({ driver });
@@ -161,12 +202,14 @@ describe('MetaMask onboarding', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) =>
-          mockApis(
+        testSpecificMock: async (server: Mockttp) => {
+          await mockFeatureFlagsForPrivacyTest(server);
+          return mockApis(
             server,
             userStorageMockttpController,
             mockedAccountSyncResponse,
-          ),
+          );
+        },
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeImportSRPOnboardingFlow({ driver });
@@ -194,9 +237,10 @@ describe('MetaMask onboarding', function () {
             continue;
           }
 
-          assert.equal(
-            requests.length,
-            1,
+          // There could be more than 1 requests since we're dealing with multichain
+          // accounts (e.g 1 request per supported chains).
+          assert.ok(
+            requests.length >= 1,
             `${mockedEndpoint} should make requests after onboarding`,
           );
         }

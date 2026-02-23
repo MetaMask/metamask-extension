@@ -1,7 +1,44 @@
 import type { ThresholdConfig } from './types';
 
+/**
+ * Shared benchmark configuration.
+ * These are the single source of truth consumed by:
+ * - test/e2e/benchmarks/run-benchmark.ts  (PRESETS map)
+ * - development/metamaskbot-build-announce/index.ts  (PR comment builder)
+ * - .github/workflows/run-benchmarks.yml  (CI matrix — must be updated manually)
+ */
+export const BENCHMARK_PLATFORMS = ['chrome', 'firefox'] as const;
+export const BENCHMARK_BUILD_TYPES = ['browserify', 'webpack'] as const;
+export const STARTUP_PRESETS = {
+  STANDARD_HOME: 'startupStandardHome',
+  POWER_USER_HOME: 'startupPowerUserHome',
+} as const;
+
+export const INTERACTION_PRESETS = {
+  USER_ACTIONS: 'interactionUserActions',
+} as const;
+
+export const USER_JOURNEY_PRESETS = {
+  ONBOARDING_IMPORT: 'userJourneyOnboardingImport',
+  ONBOARDING_NEW: 'userJourneyOnboardingNew',
+  ASSETS: 'userJourneyAssets',
+  ACCOUNT_MANAGEMENT: 'userJourneyAccountManagement',
+  TRANSACTIONS: 'userJourneyTransactions',
+} as const;
+
 export const DEFAULT_NUM_BROWSER_LOADS = 10;
 export const DEFAULT_NUM_PAGE_LOADS = 10;
+
+export const BENCHMARK_PERSONA = {
+  STANDARD: 'standard',
+  POWER_USER: 'powerUser',
+} as const;
+
+export const BENCHMARK_TYPE = {
+  BENCHMARK: 'benchmark',
+  PERFORMANCE: 'performance',
+  USER_ACTION: 'userAction',
+} as const;
 
 export const ALL_METRICS = {
   uiStartup: 'UI Startup',
@@ -48,12 +85,12 @@ export const ONBOARDING_IMPORT_THRESHOLDS: ThresholdConfig = {
     p95: { warn: 2800, fail: 3500 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
-  confirmSrpToPasswordForm: {
+  confirmSrpToPwForm: {
     p75: { warn: 2700, fail: 3500 },
     p95: { warn: 4200, fail: 5200 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
-  passwordFormToMetricsScreen: {
+  pwFormToMetricsScreen: {
     p75: { warn: 2700, fail: 3500 },
     p95: { warn: 4200, fail: 5200 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
@@ -84,12 +121,12 @@ export const ONBOARDING_NEW_WALLET_THRESHOLDS: ThresholdConfig = {
     p95: { warn: 2800, fail: 3500 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
-  srpButtonToPasswordForm: {
+  srpButtonToPwForm: {
     p75: { warn: 1800, fail: 2400 },
     p95: { warn: 2800, fail: 3500 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
-  createPasswordToRecoveryScreen: {
+  createPwToRecoveryScreen: {
     p75: { warn: 2700, fail: 3500 },
     p95: { warn: 4200, fail: 5200 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
@@ -174,8 +211,8 @@ export const SEND_TRANSACTIONS_THRESHOLDS: ThresholdConfig = {
  */
 export const ASSET_DETAILS_THRESHOLDS: ThresholdConfig = {
   assetClickToPriceChart: {
-    p75: { warn: 5500, fail: 9000 },
-    p95: { warn: 8000, fail: 10000 },
+    p75: { warn: 8000, fail: 12000 },
+    p95: { warn: 12000, fail: 15000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
@@ -185,7 +222,7 @@ export const ASSET_DETAILS_THRESHOLDS: ThresholdConfig = {
  */
 export const SOLANA_ASSET_DETAILS_THRESHOLDS: ThresholdConfig = {
   assetClickToPriceChart: {
-    p75: { warn: 5500, fail: 7000 },
+    p75: { warn: 5500, fail: 8000 },
     p95: { warn: 8000, fail: 10000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },

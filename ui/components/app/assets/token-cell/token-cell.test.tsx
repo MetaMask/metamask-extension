@@ -136,6 +136,7 @@ describe('Token Cell', () => {
     token: {
       ...propToken,
     },
+    showMerklBadge: true,
     onClick: jest.fn(),
   };
   const propAnotherToken: Partial<TokenWithFiatAmount> & {
@@ -157,6 +158,7 @@ describe('Token Cell', () => {
     token: {
       ...propAnotherToken,
     },
+    showMerklBadge: true,
     onClick: jest.fn(),
   };
   const mockProviderConfig = jest.fn().mockReturnValue({

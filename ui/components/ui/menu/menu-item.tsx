@@ -9,9 +9,11 @@ import {
   Icon,
   IconName,
   IconSize,
+  IconColor,
   Text,
   TextVariant,
   TextColor,
+  FontWeight,
   twMerge,
 } from '@metamask/design-system-react';
 import {
@@ -32,12 +34,18 @@ type MenuItemProps = {
   // Legacy props from component-library (kept for backward compatibility)
   iconNameLegacy?: IconNameLegacy;
   iconColorLegacy?: IconColorLegacy;
+  iconSizeLegacy?: IconSizeLegacy;
   textVariantLegacy?: TextVariantLegacy;
   // New props from @metamask/design-system-react
   iconName?: IconName;
   iconSize?: IconSize;
+  iconColor?: IconColor;
   textVariant?: TextVariant;
+  fontWeight?: FontWeight;
+  textColor?: TextColor;
   to?: string;
+  /** React Router location state (e.g. { prevPath } for back navigation) */
+  state?: object;
   onClick?: () => void;
   subtitle?: string;
   disabled?: boolean;
@@ -55,15 +63,20 @@ const MenuItem = React.forwardRef<
       'data-testid': dataTestId,
       iconNameLegacy,
       iconColorLegacy,
+      iconSizeLegacy,
       textVariantLegacy,
       iconName,
       iconSize,
+      iconColor,
       textVariant,
+      fontWeight,
+      textColor,
       onClick,
       subtitle,
       disabled,
       showInfoDot,
       to,
+      state,
     }: MenuItemProps,
     ref,
   ) => {
@@ -84,13 +97,14 @@ const MenuItem = React.forwardRef<
               <Icon
                 name={iconName}
                 size={iconSize || IconSize.Md}
+                color={iconColor}
                 className="mr-2"
               />
             )}
             {!useNewSystem && iconNameLegacy && (
               <IconLegacy
                 name={iconNameLegacy}
-                size={IconSizeLegacy.Sm}
+                size={iconSizeLegacy || IconSizeLegacy.Sm}
                 marginRight={2}
               />
             )}
@@ -102,13 +116,14 @@ const MenuItem = React.forwardRef<
               <Icon
                 name={iconName}
                 size={iconSize || IconSize.Md}
+                color={iconColor}
                 className="mr-3"
               />
             )}
             {!useNewSystem && iconNameLegacy && (
               <IconLegacy
                 name={iconNameLegacy}
-                size={IconSizeLegacy.Sm}
+                size={iconSizeLegacy || IconSizeLegacy.Sm}
                 marginRight={3}
                 color={iconColorLegacy}
               />
@@ -118,7 +133,12 @@ const MenuItem = React.forwardRef<
 
         <div>
           {textVariant && (
-            <Text variant={textVariant} asChild>
+            <Text
+              variant={textVariant}
+              fontWeight={fontWeight}
+              color={textColor}
+              asChild
+            >
               <div>{children}</div>
             </Text>
           )}
@@ -127,7 +147,14 @@ const MenuItem = React.forwardRef<
               {children}
             </TextLegacy>
           )}
-          {!textVariant && !textVariantLegacy && <div>{children}</div>}
+          {!textVariant && !textVariantLegacy && textColor && (
+            <Text color={textColor} asChild>
+              <div>{children}</div>
+            </Text>
+          )}
+          {!textVariant && !textVariantLegacy && !textColor && (
+            <div>{children}</div>
+          )}
           {subtitle && (
             <Text
               variant={TextVariant.BodyXs}
@@ -164,6 +191,7 @@ const MenuItem = React.forwardRef<
       ) : (
         <Link
           to={to}
+          state={state}
           className={baseClasses}
           data-testid={dataTestId}
           ref={ref as React.Ref<HTMLAnchorElement>}
