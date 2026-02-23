@@ -6,11 +6,9 @@ import type {
   PermissionControllerState,
 } from '@metamask/permission-controller';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
-import type {
-  TransactionControllerState,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
 import {
+  type TransactionControllerState,
+  type TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -93,21 +91,17 @@ class FixtureBuilderV2 {
     const target = this.fixture.data
       .TransactionController as Partial<TransactionControllerState>;
 
-    if (data.transactions === undefined) {
-      merge(target, data);
-    } else {
+    const { transactions, ...rest } = data;
+    merge(target, rest);
+    if (transactions !== undefined) {
       const existing = Array.isArray(target.transactions)
         ? target.transactions
         : [];
       const combined: TransactionMeta[] = [
         ...existing,
-        ...data.transactions,
+        ...transactions,
       ].sort((a, b) => (b.time ?? 0) - (a.time ?? 0));
       target.transactions = combined;
-      // Merge other TransactionController state (lastFetchedBlockNumbers, methodData, etc.)
-      // so non-transaction properties are not dropped.
-      const { transactions: _dropped, ...rest } = data;
-      merge(target, rest);
     }
     return this;
   }
