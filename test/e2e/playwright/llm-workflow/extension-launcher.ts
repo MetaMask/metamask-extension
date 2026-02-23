@@ -6,6 +6,7 @@ import {
   resolveExtensionId,
   waitForExtensionUiReady,
 } from '@metamask/client-mcp-core';
+import type { ExtensionReadinessConfig } from '@metamask/client-mcp-core';
 import type {
   LauncherLaunchOptions,
   ScreenshotOptions,
@@ -16,6 +17,18 @@ import type {
 
 const DEFAULT_PASSWORD = 'correct horse battery staple';
 const DEFAULT_CHAIN_ID = 1337;
+const METAMASK_EXTENSION_READINESS_CONFIG: ExtensionReadinessConfig = {
+  readySelectors: [
+    '[data-testid="unlock-password"]',
+    '[data-testid="onboarding-create-wallet"]',
+    '[data-testid="onboarding-import-wallet"]',
+    '[data-testid="account-menu-icon"]',
+    '[data-testid="get-started"]',
+    '[data-testid="onboarding-terms-checkbox"]',
+    '[data-testid="onboarding-privacy-policy"]',
+  ],
+  expectedStatesDescription: 'unlock page, onboarding page, or home page',
+};
 
 type ResolvedOptions = {
   extensionPath: string;
@@ -255,14 +268,17 @@ export class MetaMaskExtensionLauncher {
 
     this.attachConsoleListeners(page);
 
-    await waitForExtensionUiReady({
-      page,
-      screenshotDir: this.options.screenshotDir,
-      log: {
-        info: (message: string) => console.log(message),
-        error: (message: string) => console.error(message),
+    await waitForExtensionUiReady(
+      {
+        page,
+        screenshotDir: this.options.screenshotDir,
+        log: {
+          info: (message: string) => console.log(message),
+          error: (message: string) => console.error(message),
+        },
       },
-    });
+      METAMASK_EXTENSION_READINESS_CONFIG,
+    );
 
     this.extensionPage = page;
   }
