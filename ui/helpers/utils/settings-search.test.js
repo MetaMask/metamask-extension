@@ -163,7 +163,7 @@ describe('Settings Search Utils', () => {
 
   describe('getNumberOfSettingRoutesInTab', () => {
     it('returns "General" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('general'))).toStrictEqual(6);
+      expect(getNumberOfSettingRoutesInTab(t, t('general'))).toStrictEqual(7);
     });
 
     it('returns "Advanced" section count', () => {

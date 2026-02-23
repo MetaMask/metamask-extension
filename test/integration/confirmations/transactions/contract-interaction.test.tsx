@@ -506,8 +506,9 @@ describe('Contract Interaction Confirmation', () => {
       expect(
         mockedBackgroundConnection.submitRequestToBackground,
       ).toHaveBeenCalledWith(
-        'updateEventFragment',
+        'upsertTransactionUIMetricsFragment',
         expect.arrayContaining([
+          expect.any(String),
           expect.objectContaining({
             properties: expect.objectContaining({
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

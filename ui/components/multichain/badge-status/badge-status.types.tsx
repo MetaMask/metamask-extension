@@ -33,4 +33,8 @@ export interface BadgeStatusProps extends StyleUtilityProps {
    * Show the status of the connected account on the badge
    */
   showConnectedStatus?: boolean;
+  /**
+   * Hide the tooltip only
+   */
+  hideTooltip?: boolean;
 }

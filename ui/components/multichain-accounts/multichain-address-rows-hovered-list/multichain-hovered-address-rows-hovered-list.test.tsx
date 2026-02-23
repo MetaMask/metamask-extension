@@ -75,6 +75,9 @@ const TEST_IDS = {
   MULTICHAIN_ADDRESS_ROW: 'multichain-address-row',
   AVATAR_GROUP: 'avatar-group',
   HOVER_TRIGGER: 'hover-trigger',
+  CHANGE_IN_SETTINGS_LINK: 'change-in-settings-link',
+  SHOW_DEFAULT_ADDRESS_TOGGLE: 'show-default-address-toggle',
+  VIEW_ALL_BUTTON: 'multichain-address-rows-view-all-button',
 } as const;
 
 const mockWalletEntropySource = '01K437Z7EJ0VCMFDE9TQKRV60A';
@@ -179,6 +182,10 @@ const ACCOUNT_TREE_MOCK = {
 const createMockState = () => ({
   metamask: {
     completedOnboarding: true,
+    preferences: {
+      showDefaultAddress: true,
+      defaultAddressScope: 'eip155',
+    },
     internalAccounts: {
       accounts: INTERNAL_ACCOUNTS_MOCK,
       selectedAccount: ACCOUNT_EVM_ID_MOCK,
@@ -313,12 +320,16 @@ const createMockBalance = (
 const renderComponent = (
   groupId: AccountGroupId = GROUP_ID_MOCK,
   onViewAllClick?: () => void,
+  showViewAllButton?: boolean,
+  showDefaultAddressSection?: boolean,
 ) => {
   const store = mockStore(createMockState());
   return renderWithProvider(
     <MultichainHoveredAddressRowsList
       groupId={groupId}
       onViewAllClick={onViewAllClick}
+      showViewAllButton={showViewAllButton}
+      showDefaultAddressSection={showDefaultAddressSection}
     >
       <div data-testid="hover-trigger">Hover Me</div>
     </MultichainHoveredAddressRowsList>,
@@ -683,9 +694,9 @@ describe('MultichainHoveredAddressRowsList', () => {
         ).toBeInTheDocument();
       });
 
-      const buttons = screen.getAllByRole('button');
-      expect(buttons.length).toBeGreaterThan(0);
-      const viewAllButton = buttons[buttons.length - 1];
+      const viewAllButton = screen.getByTestId(
+        'multichain-address-rows-view-all-button',
+      );
       expect(viewAllButton).toBeInTheDocument();
     });
 
@@ -700,8 +711,9 @@ describe('MultichainHoveredAddressRowsList', () => {
         ).toBeInTheDocument();
       });
 
-      const buttons = screen.getAllByRole('button');
-      const viewAllButton = buttons[buttons.length - 1];
+      const viewAllButton = screen.getByTestId(
+        'multichain-address-rows-view-all-button',
+      );
 
       fireEvent.click(viewAllButton);
 
@@ -740,8 +752,9 @@ describe('MultichainHoveredAddressRowsList', () => {
         ).toBeInTheDocument();
       });
 
-      const buttons = screen.getAllByRole('button');
-      const viewAllButton = buttons[buttons.length - 1];
+      const viewAllButton = screen.getByTestId(
+        'multichain-address-rows-view-all-button',
+      );
 
       fireEvent.click(viewAllButton);
 
@@ -762,8 +775,9 @@ describe('MultichainHoveredAddressRowsList', () => {
         ).toBeInTheDocument();
       });
 
-      const buttons = screen.getAllByRole('button');
-      const viewAllButton = buttons[buttons.length - 1];
+      const viewAllButton = screen.getByTestId(
+        'multichain-address-rows-view-all-button',
+      );
 
       fireEvent.click(viewAllButton);
 
@@ -771,6 +785,22 @@ describe('MultichainHoveredAddressRowsList', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith(
         `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(GROUP_ID_MOCK)}`,
       );
+    });
+
+    it('does not render the button when showViewAllButton is false', async () => {
+      renderComponent(GROUP_ID_MOCK, undefined, false);
+
+      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
+      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+        ).toBeInTheDocument();
+      });
+
+      expect(
+        screen.queryByTestId(TEST_IDS.VIEW_ALL_BUTTON),
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -928,6 +958,59 @@ describe('MultichainHoveredAddressRowsList', () => {
       ).not.toBeInTheDocument();
 
       jest.useRealTimers();
+    });
+  });
+
+  describe('Default address section', () => {
+    it('renders the change-in-settings link when popover is open', async () => {
+      renderComponent();
+
+      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
+      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+        ).toBeInTheDocument();
+      });
+
+      expect(
+        screen.getByTestId(TEST_IDS.CHANGE_IN_SETTINGS_LINK),
+      ).toBeInTheDocument();
+    });
+
+    it('renders the show-default-address toggle when popover is open', async () => {
+      renderComponent();
+
+      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
+      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+        ).toBeInTheDocument();
+      });
+
+      expect(
+        screen.getByTestId(TEST_IDS.SHOW_DEFAULT_ADDRESS_TOGGLE),
+      ).toBeInTheDocument();
+    });
+
+    it('does not render the default address section when showDefaultAddressSection is false', async () => {
+      renderComponent(GROUP_ID_MOCK, undefined, undefined, false);
+
+      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
+      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+        ).toBeInTheDocument();
+      });
+
+      expect(
+        screen.queryByTestId(TEST_IDS.CHANGE_IN_SETTINGS_LINK),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId(TEST_IDS.SHOW_DEFAULT_ADDRESS_TOGGLE),
+      ).not.toBeInTheDocument();
     });
   });
 });

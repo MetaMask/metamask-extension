@@ -3599,9 +3599,6 @@
   "lock": {
     "message": "Kunci"
   },
-  "lockMetaMask": {
-    "message": "Kunci MetaMask"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "Mengunci MetaMask..."
   },
