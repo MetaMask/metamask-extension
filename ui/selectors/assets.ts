@@ -1290,7 +1290,6 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     conversionRates: {},
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   multichainState = {
     accountsAssets: metamask.accountsAssets,
     assetsMetadata: metamask.assetsMetadata,
@@ -1298,7 +1297,6 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     balances: metamask.balances,
     conversionRates: metamask.conversionRates,
   };
-  ///: END:ONLY_INCLUDE_IF
 
   return {
     ...initialState,

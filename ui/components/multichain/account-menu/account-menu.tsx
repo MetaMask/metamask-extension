@@ -33,9 +33,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   getIsWatchEthereumAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
@@ -221,9 +219,7 @@ export const AccountMenu = ({
   const [previousActionMode, setPreviousActionMode] = useState<ActionMode>(
     ACTION_MODES.LIST,
   );
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   const isAddWatchEthereumAccountEnabled = useSelector(
     getIsWatchEthereumAccountEnabled,
@@ -646,7 +642,6 @@ export const AccountMenu = ({
               </ButtonLink>
             </Box>
             {
-              ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
               addSnapAccountEnabled ? (
                 <Box marginTop={4}>
                   <ButtonLink
@@ -677,7 +672,6 @@ export const AccountMenu = ({
                   </ButtonLink>
                 </Box>
               ) : null
-              ///: END:ONLY_INCLUDE_IF
             }
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)

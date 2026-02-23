@@ -5,37 +5,22 @@ import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-///: END:ONLY_INCLUDE_IF
-
+import { Text, Box } from '../../../components/component-library';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  Text,
-  ///: END:ONLY_INCLUDE_IF
-  Box,
-} from '../../../components/component-library';
-
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   TextColor,
   TextVariant,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   FontWeight,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
 
 type ExperimentalTabProps = {
   watchAccountEnabled: boolean;
   setWatchAccountEnabled: (value: boolean) => void;
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   addSnapAccountEnabled: boolean;
   setAddSnapAccountEnabled: (value: boolean) => void;
-  ///: END:ONLY_INCLUDE_IF
   petnamesEnabled: boolean;
   featureNotificationsEnabled: boolean;
   setFeatureNotificationsEnabled: (value: boolean) => void;
@@ -115,7 +100,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   renderKeyringSnapsToggle() {
     const { t, trackEvent } = this.context;
     const { addSnapAccountEnabled, setAddSnapAccountEnabled } = this.props;
@@ -165,7 +149,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
       </>
     );
   }
-  ///: END:ONLY_INCLUDE_IF
 
   renderNotificationsToggle() {
     const { t } = this.context;
@@ -224,11 +207,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
       <div className="settings-page__body">
         {process.env.NOTIFICATIONS ? this.renderNotificationsToggle() : null}
         {/* Section: Account Management Snaps */}
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-          this.renderKeyringSnapsToggle()
-          ///: END:ONLY_INCLUDE_IF
-        }
+        {this.renderKeyringSnapsToggle()}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
           this.renderWatchAccountToggle()
