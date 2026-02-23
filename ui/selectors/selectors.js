@@ -816,7 +816,7 @@ export function getCrossChainMetaMaskCachedBalances(state) {
  * @returns {object} An object of tokens with balances for the given account. Data relationship will be chainId => balance
  */
 export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
-  const { accountsByChainId } = state.metamask;
+  const accountsByChainId = getAccountTrackerControllerAccountsByChainId(state);
   const { address: selectedAddress } = getSelectedEvmInternalAccount(state);
 
   const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);

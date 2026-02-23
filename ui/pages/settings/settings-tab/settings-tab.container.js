@@ -15,11 +15,13 @@ import {
   getSelectedInternalAccount,
 } from '../../../selectors';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
+import { getCurrencyRateControllerCurrentCurrency } from '../../../selectors/assets-migration';
 import SettingsTab from './settings-tab.component';
 
 const mapStateToProps = (state) => {
   const { metamask } = state;
-  const { currentCurrency, useBlockie, currentLocale } = metamask;
+  const { useBlockie, currentLocale } = metamask;
+  const currentCurrency = getCurrencyRateControllerCurrentCurrency(state);
   const { ticker: nativeCurrency } = getProviderConfig(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { hideZeroBalanceTokens, showNativeTokenAsMainBalance, avatarType } =
