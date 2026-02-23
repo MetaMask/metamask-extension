@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   AvatarAccountSize,
   Icon,
@@ -21,8 +20,6 @@ import Identicon from '../../../../ui/identicon';
 import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { PreferredAvatar } from '../../../preferred-avatar';
 import NameDetails from '../../../name/name-details/name-details';
-import { useConfirmContext } from '../../../../../pages/confirmations/context/confirm';
-import { useDisplayName } from '../../../../../hooks/useDisplayName';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 
 const ELLIPSIS = '\u2026';
@@ -127,23 +124,25 @@ const TrustIcon = ({
 
 export type ConfirmInfoRowAddressDisplayProps = {
   address: string;
+  chainId: string;
+  name: string | null;
+  isAccount: boolean;
+  image?: string;
+  displayState: TrustSignalDisplayState;
   showAvatar?: boolean;
 };
 
 export const ConfirmInfoRowAddressDisplay = memo(
-  ({ address, showAvatar = true }: ConfirmInfoRowAddressDisplayProps) => {
-    const { currentConfirmation: transactionMeta } =
-      useConfirmContext<TransactionMeta>();
-
+  ({
+    address,
+    chainId,
+    name,
+    isAccount,
+    image,
+    displayState,
+    showAvatar = true,
+  }: ConfirmInfoRowAddressDisplayProps) => {
     const hexAddress = toChecksumHexAddress(address);
-    const { chainId } = transactionMeta;
-
-    const { name, isAccount, image, displayState } = useDisplayName({
-      value: hexAddress,
-      type: NameType.ETHEREUM_ADDRESS,
-      preferContractSymbol: true,
-      variation: chainId,
-    });
 
     const [modalOpen, setModalOpen] = useState(false);
 

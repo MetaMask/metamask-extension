@@ -24,16 +24,13 @@ describe('Petnames - Signatures', function (this: Suite) {
         await confirmation.checkNameIsDisplayed('0xCD2a3...DD826', false);
         await confirmation.checkNameIsDisplayed('0xbBbBB...bBBbB', false);
         await confirmation.saveName({
-          value: '0xCD2a3...DD826',
           proposedName: 'test.lens',
         });
         await confirmation.saveName({
-          value: '0xbBbBB...bBBbB',
           proposedName: 'test2.lens',
         });
         await confirmation.checkNameIsDisplayed('0xCcCCc...ccccC', false);
         await confirmation.saveName({
-          value: '0xCcCCc...ccccC',
           name: 'Custom Name',
         });
         await confirmation.checkPageIsLoaded();
@@ -64,16 +61,13 @@ describe('Petnames - Signatures', function (this: Suite) {
         await confirmation.checkNameIsDisplayed('0xB0Bda...bEa57', false);
         await confirmation.checkNameIsDisplayed('0xB0B0b...00000', false);
         await confirmation.saveName({
-          value: '0xCD2a3...DD826',
           proposedName: 'test.lens',
         });
         await confirmation.saveName({
-          value: '0xB0Bda...bEa57',
           proposedName: 'Test Token 2',
         });
         await confirmation.checkNameIsDisplayed('0xCcCCc...ccccC', false);
         await confirmation.saveName({
-          value: '0xCcCCc...ccccC',
           name: 'Custom Name',
         });
         await confirmation.checkPageIsLoaded();

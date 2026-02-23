@@ -31,14 +31,26 @@ export const TransactionFlowSection = () => {
   const fromAddress = transactionMeta.txParams.from;
   const toAddress = recipientAddress ?? '';
 
-  const { subtitle: fromWalletName } = useDisplayName({
+  const {
+    name: fromName,
+    isAccount: fromIsAccount,
+    image: fromImage,
+    displayState: fromDisplayState,
+    subtitle: fromWalletName,
+  } = useDisplayName({
     value: toChecksumHexAddress(fromAddress),
     type: NameType.ETHEREUM_ADDRESS,
     preferContractSymbol: true,
     variation: chainId,
   });
 
-  const { subtitle: toWalletName } = useDisplayName({
+  const {
+    name: toName,
+    isAccount: toIsAccount,
+    image: toImage,
+    displayState: toDisplayState,
+    subtitle: toWalletName,
+  } = useDisplayName({
     value: toChecksumHexAddress(toAddress),
     type: NameType.ETHEREUM_ADDRESS,
     preferContractSymbol: true,
@@ -74,6 +86,11 @@ export const TransactionFlowSection = () => {
               >
                 <ConfirmInfoRowAddressDisplay
                   address={fromAddress}
+                  chainId={chainId}
+                  name={fromName}
+                  isAccount={fromIsAccount}
+                  image={fromImage}
+                  displayState={fromDisplayState}
                   showAvatar={false}
                 />
               </Box>
@@ -107,6 +124,11 @@ export const TransactionFlowSection = () => {
                 >
                   <ConfirmInfoRowAddressDisplay
                     address={toAddress}
+                    chainId={chainId}
+                    name={toName}
+                    isAccount={toIsAccount}
+                    image={toImage}
+                    displayState={toDisplayState}
                     showAvatar={false}
                   />
                 </Box>
