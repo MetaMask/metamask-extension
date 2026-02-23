@@ -19,7 +19,6 @@ buildTypes:
       - build-main
       - keyring-snaps
       - multi-srp
-      - multichain
       - bitcoin
       - bitcoin-swaps
       - tron
@@ -51,7 +50,6 @@ buildTypes:
     features:
       - build-beta
       - keyring-snaps
-      - multichain
       - bitcoin
       - bitcoin-swaps
       - multi-srp
@@ -87,7 +85,6 @@ buildTypes:
       - build-main
       - keyring-snaps
       - multi-srp
-      - multichain
       - bitcoin
       - bitcoin-swaps
       - tron
@@ -122,7 +119,6 @@ buildTypes:
       - bitcoin
       - tron
       - multi-srp
-      - multichain
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -202,7 +198,6 @@ features:
       # srp-list is a special case and is used in the srp recovery flow now.
       - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
   bitcoin-swaps:
-  multichain:
   ocap-kernel:
     assets:
       - ./{app,shared,ui}/**/ocap-kernel/**

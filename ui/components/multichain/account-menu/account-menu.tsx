@@ -41,9 +41,7 @@ import {
   getIsSolanaSupportEnabled,
   getIsTronSupportEnabled,
   getHdKeyringOfSelectedAccountOrPrimaryKeyring,
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   getMetaMaskHdKeyrings,
-  ///: END:ONLY_INCLUDE_IF
   getManageInstitutionalWallets,
   getHDEntropyIndex,
   getIsMultichainAccountsState1Enabled,
@@ -69,20 +67,15 @@ import {
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
 ///: END:ONLY_INCLUDE_IF
-
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import {
   MultichainWalletSnapClient,
   useMultichainWalletSnapClient,
   WalletClientType,
 } from '../../../hooks/accounts/useMultichainWalletSnapClient';
-///: END:ONLY_INCLUDE_IF
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { CreateEthAccount } from '../create-eth-account';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { CreateSnapAccount } from '../create-snap-account';
 import { CreateAccountSnapOptions } from '../../../../shared/lib/accounts';
-///: END:ONLY_INCLUDE_IF
 import { ImportAccount } from '../import-account';
 import { SrpList } from '../multi-srp/srp-list';
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
@@ -116,7 +109,6 @@ export const ACTION_MODES = {
 
 export type ActionMode = (typeof ACTION_MODES)[keyof typeof ACTION_MODES];
 
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 export const SNAP_CLIENT_CONFIG_MAP: Record<
   string,
   { clientType: WalletClientType | null; chainId: CaipChainId | null }
@@ -134,7 +126,7 @@ export const SNAP_CLIENT_CONFIG_MAP: Record<
     chainId: MultichainNetworks.TRON,
   },
 };
-///: END:ONLY_INCLUDE_IF(multichain)
+
 /**
  * Gets the title for a given action mode.
  *
@@ -253,7 +245,6 @@ export const AccountMenu = ({
     WalletClientType.Tron,
   );
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
 
   const handleMultichainSnapAccountCreation = async (
@@ -286,7 +277,7 @@ export const AccountMenu = ({
 
     return setActionMode(action);
   };
-  ///: END:ONLY_INCLUDE_IF
+
   const manageInstitutionalWallets = useSelector(getManageInstitutionalWallets);
 
   // Here we are getting the keyring of the last selected account
@@ -343,12 +334,10 @@ export const AccountMenu = ({
     setActionMode(ACTION_MODES.SELECT_SRP);
   }, [setActionMode, actionMode, trackEvent]);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const { clientType, chainId } = SNAP_CLIENT_CONFIG_MAP[actionMode] || {
     clientType: null,
     chainId: null,
   };
-  ///: END:ONLY_INCLUDE_IF(multichain)
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -374,21 +363,17 @@ export const AccountMenu = ({
             />
           </Box>
         ) : null}
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-          clientType && chainId ? (
-            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-              <CreateSnapAccount
-                onActionComplete={onActionComplete}
-                selectedKeyringId={selectedKeyringId}
-                onSelectSrp={onSelectSrp}
-                clientType={clientType}
-                chainId={chainId}
-              />
-            </Box>
-          ) : null
-          ///: END:ONLY_INCLUDE_IF(multichain)
-        }
+        {clientType && chainId ? (
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+            <CreateSnapAccount
+              onActionComplete={onActionComplete}
+              selectedKeyringId={selectedKeyringId}
+              onSelectSrp={onSelectSrp}
+              clientType={clientType}
+              chainId={chainId}
+            />
+          </Box>
+        ) : null}
         {actionMode === ACTION_MODES.IMPORT ? (
           <Box
             paddingLeft={4}
