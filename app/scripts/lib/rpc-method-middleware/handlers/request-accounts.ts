@@ -11,11 +11,13 @@ import type { OriginString } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import type { FlattenedBackgroundStateProxy } from '../../../../../shared/types';
+import type { PermissionLogControllerState } from '@metamask/permission-log-controller';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../../shared/constants/metametrics';
+import type { MetaMetricsControllerState } from '../../../controllers/metametrics-controller';
+import type { PreferencesControllerState } from '../../../controllers/preferences-controller';
 import { shouldEmitDappViewedEvent } from '../../util';
 import type {
   GetAccounts,
@@ -28,10 +30,9 @@ import type {
 export type RequestEthereumAccountsOptions = {
   getAccounts: GetAccounts;
   sendMetrics: SendMetrics;
-  metamaskState: Pick<
-    FlattenedBackgroundStateProxy,
-    'metaMetricsId' | 'permissionHistory' | 'identities'
-  >;
+  metamaskState: Pick<MetaMetricsControllerState, 'metaMetricsId'> &
+    Pick<PermissionLogControllerState, 'permissionHistory'> &
+    Pick<PreferencesControllerState, 'identities'>;
   getCaip25PermissionFromLegacyPermissionsForOrigin: GetCaip25PermissionFromLegacyPermissionsForOrigin;
   requestPermissionsForOrigin: RequestPermissionsForOrigin;
 };
