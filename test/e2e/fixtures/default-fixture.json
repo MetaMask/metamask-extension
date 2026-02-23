@@ -855,15 +855,7 @@
     },
     "PermissionController": {},
     "PermissionLogController": {
-      "permissionHistory": {
-        "npm:@metamask/gator-permissions-snap": {
-          "eth_accounts": {
-            "accounts": {
-              "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": 1771540274060
-            }
-          }
-        }
-      }
+      "permissionHistory": {}
     },
     "PhishingController": {
       "c2DomainBlocklistLastFetched": 1770282505,
