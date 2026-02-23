@@ -1,4 +1,4 @@
-# MetaMask Playwright Page Load Benchmark
+# 🌐 Dapp Page Load Benchmarks
 
 This directory contains the Playwright-based page load benchmark implementation for the MetaMask extension, following the strategy outlined in this [markdown](https://gist.github.com/ffmcgee725/2c4f67a5a3d6255ea985635510d19d47), created using [Playwright](https://playwright.dev/).
 
