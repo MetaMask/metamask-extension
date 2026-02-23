@@ -1,4 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { NameType } from '@metamask/name-controller';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import React from 'react';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
@@ -14,6 +15,7 @@ import { ConfirmInfoRowAddressDisplay } from '../../../../../../components/app/c
 import { PreferredAvatar } from '../../../../../../components/app/preferred-avatar';
 import { toChecksumHexAddress } from '../../../../../../../shared/modules/hexstring-utils';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { useDisplayName } from '../../../../../../hooks/useDisplayName';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useTransferRecipient } from '../hooks/useTransferRecipient';
 
@@ -25,8 +27,29 @@ export const TransactionFlowSection = () => {
 
   const recipientAddress = useTransferRecipient();
 
+  const { chainId } = transactionMeta;
   const fromAddress = transactionMeta.txParams.from;
   const toAddress = recipientAddress ?? '';
+
+  const { subtitle: fromWalletName } = useDisplayName({
+    value: toChecksumHexAddress(fromAddress),
+    type: NameType.ETHEREUM_ADDRESS,
+    preferContractSymbol: true,
+    variation: chainId,
+  });
+
+  const { subtitle: toWalletName } = useDisplayName({
+    value: toChecksumHexAddress(toAddress),
+    type: NameType.ETHEREUM_ADDRESS,
+    preferContractSymbol: true,
+    variation: chainId,
+  });
+
+  const fromLabel = fromWalletName
+    ? `${t('from')} ${fromWalletName}`
+    : t('from');
+
+  const toLabel = toWalletName ? `${t('to')} ${toWalletName}` : t('to');
 
   return (
     <ConfirmInfoSection data-testid="confirmation__transaction-flow">
@@ -40,7 +63,7 @@ export const TransactionFlowSection = () => {
           <Box style={{ flex: 1, minWidth: 0 }}>
             <ConfirmInfoAlertRow
               alertKey={RowAlertKey.SigningInWith}
-              label={t('from')}
+              label={fromLabel}
               ownerId={transactionMeta.id}
               style={{ flexDirection: FlexDirection.Column, width: '100%' }}
             >
@@ -73,7 +96,7 @@ export const TransactionFlowSection = () => {
             <Box style={{ flex: 1, minWidth: 0 }}>
               <ConfirmInfoAlertRow
                 alertKey={RowAlertKey.InteractingWith}
-                label={t('to')}
+                label={toLabel}
                 ownerId={transactionMeta.id}
                 style={{ flexDirection: FlexDirection.Column, width: '100%' }}
               >
