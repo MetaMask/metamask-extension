@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 import {
   twMerge,
   Box,
@@ -101,9 +101,12 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
 
   const isLong = formState.direction === 'long';
 
+  const onCalculationsChangeRef = useRef(onCalculationsChange);
+  onCalculationsChangeRef.current = onCalculationsChange;
+
   useEffect(() => {
-    onCalculationsChange?.(calculations);
-  }, [calculations, onCalculationsChange]);
+    onCalculationsChangeRef.current?.(calculations);
+  }, [calculations]);
 
   const handleOrderTypeClick = (type: 'market' | 'limit') => {
     handleOrderTypeChange(type);

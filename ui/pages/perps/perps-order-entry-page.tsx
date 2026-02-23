@@ -73,7 +73,10 @@ function formStateToOrderParams(
 ): OrderParams {
   const isBuy = formState.direction === 'long';
   const marginAmount = parseFloat(formState.amount) || 0;
-  const positionSize = (marginAmount * formState.leverage) / currentPrice;
+  const positionSize =
+    currentPrice > 0
+      ? (marginAmount * formState.leverage) / currentPrice
+      : 0;
   const size =
     mode === 'close' && existingPositionSize
       ? Math.abs(parseFloat(existingPositionSize)).toString()
@@ -170,7 +173,8 @@ const PerpsOrderEntryPage: React.FC = () => {
     return !cleaned || isNaN(parsed) || parsed <= 0;
   }, [orderType, orderFormState]);
 
-  const isSubmitDisabled = !isEligible || isOrderPending || isLimitPriceInvalid;
+  const isSubmitDisabled =
+    !isEligible || isOrderPending || isLimitPriceInvalid || currentPrice <= 0;
 
   const market = useMemo(() => {
     if (!decodedSymbol) {

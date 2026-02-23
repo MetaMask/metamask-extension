@@ -148,6 +148,9 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           );
           onBalancePercentChange(pct);
           setPercentInputValue(String(pct));
+        } else {
+          onBalancePercentChange(0);
+          setPercentInputValue('0');
         }
       }
     },
