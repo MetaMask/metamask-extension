@@ -1016,7 +1016,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 ajv
-6.12.6 <https://github.com/ajv-validator/ajv>
+6.14.0 <https://github.com/ajv-validator/ajv>
 The MIT License (MIT)
 
 Copyright (c) 2015-2017 Evgeny Poberezkin
@@ -4569,7 +4569,7 @@ For more information on the use of the Business Source License for MariaDB produ
 ******************************
 
 bn.js
-5.2.1 <https://github.com/indutny/bn.js>
+5.2.3 <https://github.com/indutny/bn.js>
 Copyright Fedor Indutny, 2015.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
