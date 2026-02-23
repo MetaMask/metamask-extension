@@ -80,7 +80,7 @@ const useBridging = () => {
       );
 
       const queryParams = [];
-      const navigationState: Partial<Record<'srcToken', MinimalAsset>> = {};
+      const navigationState: Partial<Record<'token', MinimalAsset>> = {};
 
       const assetId =
         srcToken?.chainId && isChainIdEnabledForBridging(srcToken.chainId)
@@ -94,7 +94,7 @@ const useBridging = () => {
           name: srcToken.name ?? srcToken.symbol,
         };
         if (validateMinimalAssetObject(tokenToUse)) {
-          navigationState.srcToken = tokenToUse;
+          navigationState.token = tokenToUse;
         } else {
           // Otherwise, set the from param to use the bridge page's deep linking logic
           queryParams.push(`${BridgeQueryParams.From}=${assetId}`);

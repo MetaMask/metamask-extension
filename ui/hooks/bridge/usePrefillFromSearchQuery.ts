@@ -13,13 +13,11 @@ import {
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
-  setEvmBalances,
   setFromToken,
   setFromTokenInputValue,
   setToToken,
 } from '../../ducks/bridge/actions';
 import { getFromToken } from '../../ducks/bridge/selectors';
-import { getMultichainCurrentChainId } from '../../selectors/multichain';
 
 const parseAsset = (assetId: string | null) => {
   if (!assetId) {
@@ -60,9 +58,9 @@ const fetchAssetMetadata = async (
 };
 
 /**
- * This hook is used to set the bridge fromChain, fromToken, fromTokenInputValue,
+ * This sets the bridge fromChain, fromToken, fromTokenInputValue,
  * toChainId, and toToken from the URL search params.
- * It also clear the search params after setting the values.
+ * It also clears the search params after setting the values.
  */
 export const usePrefillFromSearchQuery = () => {
   const dispatch = useDispatch();
@@ -70,12 +68,7 @@ export const usePrefillFromSearchQuery = () => {
 
   const abortController = useRef<AbortController>(new AbortController());
 
-  /**
-   * @deprecated remove this when GNS references are removed
-   */
-  const currentChainId = useSelector(getMultichainCurrentChainId);
-
-  const { search, pathname, state } = useLocation();
+  const { search, pathname } = useLocation();
   const navigate = useNavigate();
 
   // Parse CAIP asset data
@@ -220,19 +213,4 @@ export const usePrefillFromSearchQuery = () => {
       }
     }
   }, [parsedAmount, parsedFromAssetId, assetMetadataByAssetId, fromToken]);
-
-  // Set src token balance after url params are applied
-  // This effect runs on each token change regardless of the url params
-  useEffect(() => {
-    if (fromToken?.assetId) {
-      dispatch(setEvmBalances(fromToken.assetId));
-    }
-  }, [fromToken, fromToken?.assetId, currentChainId]);
-
-  // If srcToken object is passed through navigation options, use it as the fromToken
-  useEffect(() => {
-    if (state?.srcToken) {
-      dispatch(setFromToken(state.srcToken));
-    }
-  }, [state?.srcToken]);
 };

@@ -92,6 +92,7 @@ import type { BridgeToken } from '../../../ducks/bridge/types';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { usePrefillFromSearchQuery } from '../../../hooks/bridge/usePrefillFromSearchQuery';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
+import { usePrefillFromBridgeState } from '../../../hooks/bridge/usePrefillFromBridgeState';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
 import { BridgeInputGroup } from './bridge-input-group';

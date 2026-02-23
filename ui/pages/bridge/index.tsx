@@ -30,8 +30,7 @@ import {
 } from '../../components/multichain/pages/page';
 import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
 import {
-  resetBridgeState,
-  restoreQuoteRequestFromState,
+  resetBridgeControllerAndCache,
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
@@ -39,7 +38,7 @@ import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRate
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
-import { getFromChain, getBridgeQuotes } from '../../ducks/bridge/selectors';
+import { getFromChain } from '../../ducks/bridge/selectors';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
@@ -63,10 +62,8 @@ const CrossChainSwap = () => {
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
 
   const resetControllerAndInputStates = async () => {
-    await dispatch(resetBridgeState());
+    await dispatch(resetBridgeControllerAndCache());
   };
-
-  const { activeQuote } = useSelector(getBridgeQuotes);
 
   // Get chain information to determine if we need gas estimates
   const fromChain = useSelector(getFromChain);
@@ -82,10 +79,6 @@ const CrossChainSwap = () => {
     dispatch(
       trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.PageViewed, {}),
     );
-
-    if (activeQuote) {
-      dispatch(restoreQuoteRequestFromState(activeQuote.quote));
-    }
 
     // Reset controller and inputs before unloading the page
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
