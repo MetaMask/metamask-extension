@@ -1,11 +1,17 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Box,
   Text,
   TextVariant,
+  TextColor,
   BoxFlexDirection,
   BoxAlignItems,
 } from '@metamask/design-system-react';
+import { TextField, TextFieldSize } from '../../../../../component-library';
+import {
+  BorderRadius,
+  BackgroundColor,
+} from '../../../../../../helpers/constants/design-system';
 import { PerpsSlider } from '../../../perps-slider';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import type { LeverageSliderProps } from '../../order-entry.types';
@@ -26,14 +32,44 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
   minLeverage = 1,
 }) => {
   const t = useI18nContext();
+  const [inputValue, setInputValue] = useState<string>(String(leverage));
 
   const handleSliderChange = useCallback(
     (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
       const newValue = Array.isArray(value) ? value[0] : value;
       onLeverageChange(newValue);
+      setInputValue(String(newValue));
     },
     [onLeverageChange],
   );
+
+  const handleInputChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      if (value === '' || /^\d*$/u.test(value)) {
+        setInputValue(value);
+        const num = parseInt(value, 10);
+        if (!isNaN(num) && num >= minLeverage && num <= maxLeverage) {
+          onLeverageChange(num);
+        }
+      }
+    },
+    [onLeverageChange, minLeverage, maxLeverage],
+  );
+
+  const handleInputBlur = useCallback(() => {
+    const num = parseInt(inputValue, 10);
+    if (isNaN(num) || num < minLeverage) {
+      onLeverageChange(minLeverage);
+      setInputValue(String(minLeverage));
+    } else if (num > maxLeverage) {
+      onLeverageChange(maxLeverage);
+      setInputValue(String(maxLeverage));
+    } else {
+      onLeverageChange(num);
+      setInputValue(String(num));
+    }
+  }, [inputValue, onLeverageChange, minLeverage, maxLeverage]);
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={2}>
@@ -53,8 +89,30 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
             onChange={handleSliderChange}
           />
         </Box>
-        <Box className="bg-muted py-1 rounded-lg shrink-0 w-14 text-center">
-          <Text variant={TextVariant.BodySm}>{leverage}x</Text>
+        <Box className="shrink-0 w-20">
+          <TextField
+            size={TextFieldSize.Sm}
+            value={inputValue}
+            onChange={handleInputChange}
+            onBlur={handleInputBlur}
+            borderRadius={BorderRadius.MD}
+            borderWidth={0}
+            backgroundColor={BackgroundColor.backgroundMuted}
+            className="w-full"
+            data-testid="leverage-input"
+            inputProps={{
+              inputMode: 'numeric',
+              style: { textAlign: 'center' },
+            }}
+            endAccessory={
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+              >
+                x
+              </Text>
+            }
+          />
         </Box>
       </Box>
     </Box>

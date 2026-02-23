@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Box,
   Text,
@@ -46,6 +46,9 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 }) => {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold, formatNumber } = useFormatters();
+  const [percentInputValue, setPercentInputValue] = useState<string>(
+    String(balancePercent),
+  );
 
   const tokenAmount = useMemo(() => {
     const cleanAmount = amount.replace(/,/gu, '');
@@ -76,13 +79,19 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         if (cleanValue && availableBalance > 0) {
           const numValue = parseFloat(cleanValue);
           if (!isNaN(numValue) && numValue > 0) {
-            const percent = Math.min((numValue / availableBalance) * 100, 100);
-            onBalancePercentChange(Math.round(percent));
+            const pct = Math.min(
+              Math.round((numValue / availableBalance) * 100),
+              100,
+            );
+            onBalancePercentChange(pct);
+            setPercentInputValue(String(pct));
           } else {
             onBalancePercentChange(0);
+            setPercentInputValue('0');
           }
         } else {
           onBalancePercentChange(0);
+          setPercentInputValue('0');
         }
       }
     },
@@ -114,6 +123,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         if (value === '' || value === '.') {
           onAmountChange('');
           onBalancePercentChange(0);
+          setPercentInputValue('0');
           return;
         }
         const numToken = parseFloat(value);
@@ -128,8 +138,12 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         const usdMargin = (numToken * currentPrice) / leverage;
         onAmountChange(formatAmount(usdMargin));
         if (availableBalance > 0) {
-          const percent = Math.min((usdMargin / availableBalance) * 100, 100);
-          onBalancePercentChange(Math.round(percent));
+          const pct = Math.min(
+            Math.round((usdMargin / availableBalance) * 100),
+            100,
+          );
+          onBalancePercentChange(pct);
+          setPercentInputValue(String(pct));
         }
       }
     },
@@ -151,6 +165,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
       const percent = Array.isArray(value) ? value[0] : value;
       onBalancePercentChange(percent);
+      setPercentInputValue(String(percent));
       if (percent === 0) {
         onAmountChange('');
       } else {
@@ -160,6 +175,48 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     },
     [onAmountChange, onBalancePercentChange, availableBalance, formatAmount],
   );
+
+  const handlePercentInputChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      if (value === '' || /^\d*$/u.test(value)) {
+        setPercentInputValue(value);
+        const num = parseInt(value, 10);
+        if (!isNaN(num) && num >= 0 && num <= 100) {
+          onBalancePercentChange(num);
+          if (num === 0) {
+            onAmountChange('');
+          } else {
+            const newAmount = (availableBalance * num) / 100;
+            onAmountChange(formatAmount(newAmount));
+          }
+        }
+      }
+    },
+    [onAmountChange, onBalancePercentChange, availableBalance, formatAmount],
+  );
+
+  const handlePercentInputBlur = useCallback(() => {
+    const num = parseInt(percentInputValue, 10);
+    if (isNaN(num) || num < 0) {
+      onBalancePercentChange(0);
+      setPercentInputValue('0');
+      onAmountChange('');
+    } else if (num > 100) {
+      onBalancePercentChange(100);
+      setPercentInputValue('100');
+      onAmountChange(formatAmount(availableBalance));
+    } else {
+      onBalancePercentChange(num);
+      setPercentInputValue(String(num));
+    }
+  }, [
+    percentInputValue,
+    onAmountChange,
+    onBalancePercentChange,
+    availableBalance,
+    formatAmount,
+  ]);
 
   const formattedPlaceholder = useMemo(() => formatAmount(0), [formatAmount]);
 
@@ -250,8 +307,30 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             onChange={handleSliderChange}
           />
         </Box>
-        <Box className="bg-muted py-1 rounded-lg shrink-0 w-14 text-center">
-          <Text variant={TextVariant.BodySm}>{balancePercent}%</Text>
+        <Box className="shrink-0 w-20">
+          <TextField
+            size={TextFieldSize.Sm}
+            value={percentInputValue}
+            onChange={handlePercentInputChange}
+            onBlur={handlePercentInputBlur}
+            borderRadius={BorderRadius.MD}
+            borderWidth={0}
+            backgroundColor={BackgroundColor.backgroundMuted}
+            className="w-full"
+            data-testid="balance-percent-input"
+            inputProps={{
+              inputMode: 'numeric',
+              style: { textAlign: 'center' },
+            }}
+            endAccessory={
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+              >
+                %
+              </Text>
+            }
+          />
         </Box>
       </Box>
     </Box>
