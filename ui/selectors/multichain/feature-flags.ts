@@ -1,3 +1,5 @@
+// TODO: remove dead code in this file and related files now that code fences are gone
+
 import { createSelector } from 'reselect';
 import { isMultichainFeatureEnabled } from '../../../shared/lib/multichain-feature-flags';
 import { getRemoteFeatureFlags } from '../remote-feature-flags';

@@ -1282,15 +1282,7 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     accountsByChainId: metamask.accountsByChainId,
   };
 
-  let multichainState = {
-    accountsAssets: {},
-    assetsMetadata: {},
-    allIgnoredAssets: {},
-    balances: {},
-    conversionRates: {},
-  };
-
-  multichainState = {
+  const multichainState = {
     accountsAssets: metamask.accountsAssets,
     assetsMetadata: metamask.assetsMetadata,
     allIgnoredAssets: metamask.allIgnoredAssets,
