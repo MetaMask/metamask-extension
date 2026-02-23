@@ -57,6 +57,8 @@
         "name": "null"
       }
     },
+    "musdConversionEducationSeen": "boolean",
+    "musdConversionDismissedCtaKeys": "object",
     "networkDropdownOpen": "boolean",
     "networksTabSelectedRpcUrl": "string",
     "newNetworkAddedConfigurationId": "string",
