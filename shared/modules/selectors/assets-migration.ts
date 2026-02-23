@@ -10,8 +10,8 @@ import { AssetsControllerState } from '@metamask/assets-controller';
 import { AccountTrackerControllerState } from '@metamask/assets-controllers';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
-import { decimalToPrefixedHex } from '../../../shared/modules/conversion.utils';
-import { createDeepEqualSelector } from '../../../shared/modules/selectors/selector-creators';
+import { decimalToPrefixedHex } from '../../modules/conversion.utils';
+import { createDeepEqualSelector } from '../../modules/selectors/selector-creators';
 import {
   ASSETS_UNIFY_STATE_FLAG,
   ASSETS_UNIFY_STATE_VERSION_1,
