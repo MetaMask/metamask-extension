@@ -6,14 +6,14 @@ const NAME = 'FilterEvents';
  * Filter events when MetaMetrics is disabled.
  *
  * @param options - Options bag.
- * @param options.getMetaMetricsEnabled - Function that returns whether MetaMetrics is enabled.
+ * @param options.getMetaMetricsEnabled - Function that returns whether MetaMetrics is enabled for the given event_id (and cleans up internally when false).
  * @param options.log - Function to log messages.
  */
 export function filterEvents({
   getMetaMetricsEnabled,
   log,
 }: {
-  getMetaMetricsEnabled: () => Promise<boolean>;
+  getMetaMetricsEnabled: (eventId: string | undefined) => Promise<boolean>;
   log: (message: string) => void;
 }): Integration {
   return {
@@ -24,7 +24,7 @@ export function filterEvents({
       // store, so it can later be added to the event via the `beforeSend` overload.
       // It also provides a more native solution for discarding events, but any
       // session requests will always be handled by the custom transport.
-      const metricsEnabled = await getMetaMetricsEnabled();
+      const metricsEnabled = await getMetaMetricsEnabled(event?.event_id);
 
       if (!metricsEnabled) {
         log('Event dropped as metrics disabled');

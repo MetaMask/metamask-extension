@@ -82,7 +82,10 @@ function getClientOptions() {
           return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
         },
       }),
-      filterEvents({ getMetaMetricsEnabled, log }),
+      filterEvents({
+        getMetaMetricsEnabled,
+        log,
+      }),
     ],
     release: RELEASE,
     // Client reports are automatically sent when a page's visibility changes to
@@ -237,12 +240,11 @@ function getSentryTarget() {
 }
 
 /**
- * Returns the MetaMetrics controller state. If the application hasn't yet
- * been initialized, the persisted state will be used (if any).
+ * Fetches MetaMetrics state from app, then persisted, then backup. Internal; use getMetaMetrics(eventId) for caching.
  *
- * @returns {object | null} The MetaMetrics state from app state, persisted state, or backup state; null if unavailable.
+ * @returns {Promise<object | null>} The MetaMetrics state; null if unavailable.
  */
-async function getMetaMetrics() {
+async function fetchMetaMetricsState() {
   const appState = getState();
 
   if (appState.state || appState.persistedState) {
@@ -268,29 +270,72 @@ async function getMetaMetrics() {
 }
 
 /**
- * Returns whether MetaMetrics is enabled. If the application hasn't yet
- * been initialized, the persisted state will be used (if any).
+ * Map of event_id -> MetaMetrics promise, so filterEvents and rewriteReport
+ * share one async fetch per event. Cleaned up after use.
  *
- * @returns `true` if MetaMetrics is enabled, `false` otherwise.
+ * @type {Map<string, Promise<object | null>>}
  */
-async function getMetaMetricsEnabled() {
-  const flags = getManifestFlags();
+const metaMetricsPromiseByEventId = new Map();
 
-  if (flags.ci && flags.sentry.forceEnable) {
-    return true;
+/**
+ * Returns the MetaMetrics state. When eventId is provided, reuses the same promise per event
+ * (for filterEvents and rewriteReport); when eventId is missing, fetches without caching.
+ *
+ * @param {string | undefined} [eventId] - Optional Sentry event_id; when set, result is cached per event.
+ * @returns {Promise<object | null>}
+ */
+function getMetaMetrics(eventId) {
+  if (!eventId) {
+    return fetchMetaMetricsState();
   }
-
-  return Boolean((await getMetaMetrics())?.participateInMetaMetrics);
+  let promise = metaMetricsPromiseByEventId.get(eventId);
+  if (!promise) {
+    promise = fetchMetaMetricsState();
+    metaMetricsPromiseByEventId.set(eventId, promise);
+  }
+  return promise;
 }
 
 /**
- * Returns the MetaMetrics ID from state only when the user has opted in.
- * If the application hasn't yet been initialized, the persisted state will be used (if any).
+ * Removes the cached promise for an event. Call after rewriteReport or when dropping in filterEvents.
  *
- * @returns {string | null} The metaMetricsId when participateInMetaMetrics is true, otherwise null.
+ * @param {string | undefined} eventId - Sentry event_id.
  */
-async function getMetaMetricsId() {
-  const metaMetrics = await getMetaMetrics();
+function deleteMetaMetricsForEventId(eventId) {
+  if (eventId) {
+    metaMetricsPromiseByEventId.delete(eventId);
+  }
+}
+
+/**
+ * Returns whether MetaMetrics is enabled. When eventId is provided, uses the same cached fetch as
+ * other code for that event. When returning false with an eventId, cleans up the cache.
+ *
+ * @param {string | undefined} [eventId] - Optional Sentry event_id for cache sharing; undefined e.g. from transport.
+ * @returns {Promise<boolean>} `true` if MetaMetrics is enabled, `false` otherwise.
+ */
+async function getMetaMetricsEnabled(eventId) {
+  const flags = getManifestFlags();
+  if (flags.ci && flags.sentry?.forceEnable) {
+    return true;
+  }
+  const metaMetrics = await getMetaMetrics(eventId);
+  const enabled = Boolean(metaMetrics?.participateInMetaMetrics);
+  if (!enabled && eventId) {
+    deleteMetaMetricsForEventId(eventId);
+  }
+  return enabled;
+}
+
+/**
+ * Returns the MetaMetrics user id when the user has opted in; null otherwise.
+ * Uses the same cached fetch as getMetaMetrics(eventId) when eventId is provided.
+ *
+ * @param {string | undefined} [eventId] - Optional Sentry event_id for cache sharing.
+ * @returns {Promise<string | null>}
+ */
+async function getMetaMetricsId(eventId) {
+  const metaMetrics = await getMetaMetrics(eventId);
   if (!metaMetrics?.participateInMetaMetrics) {
     return null;
   }
@@ -403,10 +448,12 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
 export async function rewriteReport(report) {
   try {
     try {
-      const metaMetricsId = await getMetaMetricsId();
+      const eventId = report?.event_id;
+      const metaMetricsId = await getMetaMetricsId(eventId);
       if (metaMetricsId) {
         report.user = { id: metaMetricsId };
       }
+      deleteMetaMetricsForEventId(eventId);
     } catch (metaMetricsErr) {
       log('MetaMetrics lookup failed, skipping user id', metaMetricsErr);
     }
@@ -600,6 +647,7 @@ function addDebugListeners() {
 
 function makeTransport(options) {
   return Sentry.makeFetchTransport(options, async (...args) => {
+    // No eventId here: transport runs outside event context; uncached read is correct.
     const metricsEnabled = await getMetaMetricsEnabled();
 
     if (!metricsEnabled) {
