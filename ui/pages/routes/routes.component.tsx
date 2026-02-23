@@ -161,7 +161,7 @@ const UnlockPage = mmLazy(
 );
 const RestoreVaultPage = mmLazy(
   (() =>
-    import('../keychains/restore-vault.js')) as unknown as DynamicImportType,
+    import('../keychains/restore-vault.tsx')) as unknown as DynamicImportType,
 );
 const ImportSrpPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
@@ -169,7 +169,8 @@ const ImportSrpPage = mmLazy(
     import('../multi-srp/import-srp/index.ts')) as unknown as DynamicImportType,
 );
 const RevealSeedConfirmation = mmLazy(
-  (() => import('../keychains/reveal-seed.js')) as unknown as DynamicImportType,
+  (() =>
+    import('../keychains/reveal-seed.tsx')) as unknown as DynamicImportType,
 );
 const Settings = mmLazy(
   (() => import('../settings/index.js')) as unknown as DynamicImportType,

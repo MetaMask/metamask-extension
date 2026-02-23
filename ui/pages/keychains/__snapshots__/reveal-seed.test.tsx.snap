@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Reveal Seed Page should match snapshot 1`] = `
+<div>
+  <div
+    class="gap-4 pt-8 pr-4 pb-8 pl-4 page-container"
+    data-testid="reveal-seed-page"
+  >
+    <div
+      class="flex flex-row gap-2 items-center justify-between"
+    >
+      <button
+        aria-label="Back"
+        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+        color="text-icon-default"
+        data-testid="reveal-recovery-phrase-back-button"
+      >
+        <svg
+          class="inline-block w-6 h-6 text-inherit"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+          />
+        </svg>
+      </button>
+      <h4
+        class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default"
+      >
+        Reveal Secret Recovery Phrase
+      </h4>
+      <div
+        class=""
+      />
+    </div>
+    <div
+      class="flex flex-col gap-6 items-center justify-center pt-6"
+      data-testid="reveal-seed-quiz-introduction"
+    >
+      <img
+        alt="Reveal SRP"
+        class="w-[190px] h-[220px] object-contain"
+        src="images/reveal_srp.png"
+      />
+      <p
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        To reveal your Secret Recovery Phrase, you need to correctly answer two questions.
+      </p>
+    </div>
+    <div
+      class="flex flex-col gap-4 items-center justify-center w-full mt-auto"
+    >
+      <button
+        class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
+        data-testid="reveal-seed-quiz-get-started"
+        role="button"
+      >
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Get started
+        </span>
+      </button>
+      <button
+        class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:bg-pressed active:text-primary-default-pressed active:decoration-primary-default-pressed w-full hover:bg-transparent"
+        data-testid="reveal-seed-quiz-intro-learn-more"
+        role="button"
+      >
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Learn more
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;

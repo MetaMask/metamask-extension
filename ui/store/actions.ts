@@ -1175,7 +1175,7 @@ export async function getSeedPhrase(password: string, keyringId?: string) {
 
 export function requestRevealSeedWords(
   password: string,
-  keyringId: string,
+  keyringId?: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -2280,7 +2280,7 @@ export function deleteExpiredNotifications(): ThunkAction<
 
         return Boolean(
           notification.readDate &&
-            new Date(notification.readDate) < expirationTime,
+          new Date(notification.readDate) < expirationTime,
         );
       })
       .map(({ id }) => id);
@@ -3647,8 +3647,8 @@ export function getLayer1GasFee({
   networkClientId?: NetworkClientId;
   transactionParams: TransactionParams;
 }): // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
   return async () =>
     await submitRequestToBackground('getLayer1GasFee', [
       { chainId, networkClientId, transactionParams },
@@ -5154,15 +5154,15 @@ export function setPendingTokens(pendingTokens: {
   } = pendingTokens;
   const tokens =
     customToken?.address &&
-    customToken?.symbol &&
-    Boolean(customToken?.decimals >= 0 && customToken?.decimals <= 36)
+      customToken?.symbol &&
+      Boolean(customToken?.decimals >= 0 && customToken?.decimals <= 36)
       ? {
-          ...selectedTokens,
-          [customToken.address]: {
-            ...customToken,
-            isCustom: true,
-          },
-        }
+        ...selectedTokens,
+        [customToken.address]: {
+          ...customToken,
+          isCustom: true,
+        },
+      }
       : selectedTokens;
 
   Object.keys(tokens).forEach((tokenAddress) => {
@@ -5860,12 +5860,12 @@ export function setNewNetworkAdded({
 export function setEditedNetwork(
   payload:
     | {
-        chainId: string;
-        nickname?: string;
-        editCompleted?: boolean;
-        newNetwork?: boolean;
-        trackRpcUpdateFromBanner?: boolean;
-      }
+      chainId: string;
+      nickname?: string;
+      editCompleted?: boolean;
+      newNetwork?: boolean;
+      trackRpcUpdateFromBanner?: boolean;
+    }
     | undefined = undefined,
 ): PayloadAction<object> {
   return { type: actionConstants.SET_EDIT_NETWORK, payload };

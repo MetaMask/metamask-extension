@@ -9,30 +9,30 @@ import * as actions from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import RestoreVaultPage from './restore-vault';
 
+const mockUseNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockUseNavigate,
+}));
+
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
 describe('Restore vault Component', () => {
   const mockStore = configureMockStore([thunk]);
 
-  const props = {
-    navigate: jest.fn(),
-    location: { pathname: '/restore-vault' },
-    params: {},
-  };
-
   beforeEach(() => {
-    // Reset mocks before each test
-    props.navigate.mockClear();
+    mockUseNavigate.mockClear();
   });
 
   it('renders match snapshot', () => {
     const { container } = renderWithProvider(
-      <RestoreVaultPage {...props} />,
+      <RestoreVaultPage />,
       mockStore({
         metamask: { currentLocale: 'en' },
         appState: { isLoading: false },
-      }),
+      }) as ReturnType<typeof mockStore>,
     );
 
     expect(container).toMatchSnapshot();
@@ -40,17 +40,17 @@ describe('Restore vault Component', () => {
 
   it('should render password input when continue button is clicked and navigate to default route', async () => {
     const { queryByTestId } = renderWithProvider(
-      <RestoreVaultPage {...props} />,
+      <RestoreVaultPage />,
       mockStore({
         metamask: { currentLocale: 'en' },
         appState: { isLoading: false },
-      }),
+      }) as ReturnType<typeof mockStore>,
     );
 
     const srpNote = queryByTestId('srp-input-import__srp-note');
     expect(srpNote).toBeInTheDocument();
 
-    srpNote.focus();
+    (srpNote as HTMLElement).focus();
 
     await userEvent.paste(TEST_SEED);
 
@@ -58,7 +58,7 @@ describe('Restore vault Component', () => {
 
     expect(confirmSrpButton).not.toBeDisabled();
 
-    fireEvent.click(confirmSrpButton);
+    fireEvent.click(confirmSrpButton as HTMLElement);
 
     expect(queryByTestId('create-password')).toBeInTheDocument();
   });
@@ -77,35 +77,43 @@ describe('Restore vault Component', () => {
     // Mock the action creators
     sinon
       .stub(actions, 'unMarkPasswordForgotten')
-      .returns(mockUnMarkPasswordForgotten);
-    sinon.stub(actions, 'createNewVaultAndRestore').callsFake((pw, seed) => {
-      return (_dispatch) => {
-        mockCreateNewVaultAndRestore(pw, seed);
-        return Promise.resolve();
-      };
-    });
-    sinon.stub(actions, 'setFirstTimeFlowType').callsFake((type) => {
-      return (_dispatch) => {
-        mockSetFirstTimeFlowType(type);
-        return Promise.resolve();
-      };
-    });
-    sinon.stub(actions, 'resetWallet').callsFake((restoreOnly) => {
-      return (_dispatch) => {
-        mockResetWallet(restoreOnly);
-        return Promise.resolve();
-      };
-    });
+      .returns(mockUnMarkPasswordForgotten as ReturnType<
+        typeof actions.unMarkPasswordForgotten
+      >);
+    sinon
+      .stub(actions, 'createNewVaultAndRestore')
+      .callsFake(((pw: string, seed: string) => {
+        return () => {
+          mockCreateNewVaultAndRestore(pw, seed);
+          return Promise.resolve();
+        };
+      }) as typeof actions.createNewVaultAndRestore);
+    sinon
+      .stub(actions, 'setFirstTimeFlowType')
+      .callsFake(((type) => {
+        return () => {
+          mockSetFirstTimeFlowType(type);
+          return Promise.resolve();
+        };
+      }) as typeof actions.setFirstTimeFlowType);
+    sinon
+      .stub(actions, 'resetWallet')
+      .callsFake(((restoreOnly?: boolean) => {
+        return () => {
+          mockResetWallet(restoreOnly);
+          return Promise.resolve();
+        };
+      }) as typeof actions.resetWallet);
 
     const { queryByTestId } = renderWithProvider(
-      <RestoreVaultPage {...props} />,
+      <RestoreVaultPage />,
       testStore,
     );
 
     const srpNote = queryByTestId('srp-input-import__srp-note');
     expect(srpNote).toBeInTheDocument();
 
-    srpNote.focus();
+    (srpNote as HTMLElement).focus();
 
     await userEvent.paste(TEST_SEED);
 
@@ -113,7 +121,7 @@ describe('Restore vault Component', () => {
 
     expect(confirmSrpButton).not.toBeDisabled();
 
-    fireEvent.click(confirmSrpButton);
+    fireEvent.click(confirmSrpButton as HTMLElement);
 
     // Wait for the password form to appear
     await waitFor(() => {
@@ -139,11 +147,11 @@ describe('Restore vault Component', () => {
       },
     };
 
-    fireEvent.change(createPasswordInput, createPasswordEvent);
-    fireEvent.change(confirmPasswordInput, confirmPasswordEvent);
+    fireEvent.change(createPasswordInput as HTMLElement, createPasswordEvent);
+    fireEvent.change(confirmPasswordInput as HTMLElement, confirmPasswordEvent);
 
     const terms = queryByTestId('create-password-terms');
-    fireEvent.click(terms);
+    fireEvent.click(terms as HTMLElement);
 
     const createPasswordForm = queryByTestId('create-password');
     const createNewWalletButton = queryByTestId('create-password-submit');
@@ -154,7 +162,7 @@ describe('Restore vault Component', () => {
     });
 
     // Submit the form directly
-    fireEvent.submit(createPasswordForm);
+    fireEvent.submit(createPasswordForm as HTMLElement);
 
     // Wait for the async action to be called
     await waitFor(() => {
@@ -168,13 +176,13 @@ describe('Restore vault Component', () => {
     );
 
     // Restore the stubs
-    actions.unMarkPasswordForgotten.restore();
-    actions.createNewVaultAndRestore.restore();
-    actions.setFirstTimeFlowType.restore();
-    actions.resetWallet.restore();
+    (actions.unMarkPasswordForgotten as sinon.SinonStub).restore();
+    (actions.createNewVaultAndRestore as sinon.SinonStub).restore();
+    (actions.setFirstTimeFlowType as sinon.SinonStub).restore();
+    (actions.resetWallet as sinon.SinonStub).restore();
 
-    // Verify navigation to default route - component uses navigate, not history.push
-    expect(props.navigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+    // Verify navigation to default route
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
       replace: true,
     });
   });

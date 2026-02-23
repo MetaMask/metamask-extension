@@ -3,48 +3,60 @@
 exports[`Restore vault Component renders match snapshot 1`] = `
 <div>
   <div
-    class="mm-box import-srp-restore-vault mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--height-full mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+    class="flex flex-col gap-4 justify-between border-muted bg-default import-srp-restore-vault"
     data-testid="import-srp-restore-vault"
   >
     <div
-      class="mm-box"
+      class=""
     >
       <div
-        class="mm-box mm-box--margin-bottom-4"
+        class="mb-4"
       >
         <button
           aria-label="Back"
-          class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+          class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+          color="text-icon-default"
           data-testid="import-srp-back-button"
         >
-          <span
-            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-left.svg');"
-          />
+          <svg
+            class="inline-block w-6 h-6 text-inherit"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+            />
+          </svg>
         </button>
       </div>
       <div
-        class="mm-box mm-box--margin-bottom-2 mm-box--text-align-left"
+        class="mb-2"
       >
         <h2
-          class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+          class="text-default text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default"
         >
           Import a wallet
         </h2>
       </div>
       <div
-        class="mm-box mm-box--margin-bottom-4 mm-box--text-align-left"
+        class="mb-4"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
           <span>
              
             Enter your 
             <button
-              class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
+              class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-transparent text-primary-default hover:bg-hover active:bg-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+              role="button"
             >
-              Secret Recovery Phrase
+              <span
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Secret Recovery Phrase
+              </span>
             </button>
             . By importing the wallet, you will erase your current wallet data from this device. This can’t be undone.
              
@@ -94,14 +106,19 @@ exports[`Restore vault Component renders match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--text-align-left mm-box--width-full"
+      class="flex flex-col items-center justify-center"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled import-srp__continue-button mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+        class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default import-srp__continue-button"
         data-testid="import-srp-confirm"
         disabled=""
+        role="button"
       >
-        Continue
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Continue
+        </span>
       </button>
     </div>
   </div>
