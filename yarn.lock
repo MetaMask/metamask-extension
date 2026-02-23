@@ -8326,7 +8326,7 @@ __metadata:
     "@noble/curves": "npm:^1.9.2"
     "@noble/hashes": "npm:^1.8.0"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/9b28e5b255e5eecdcfc46788b03f2a33940b53b56129329492a2c803c3cd6cbc2db9cd2f5ed8124743d6f044e30f97356fd9e95ccaf92bbdbc13f06e9f57f401
+  checksum: 10/6c99f7fcfc621453e87eb37b224aa6be9ddca366004130b2641199aeb6dddeab669273a5e44999a5cac148649f49e16064cd27bcc3c7ce495fad9823f1557d22
   languageName: node
   linkType: hard
 
