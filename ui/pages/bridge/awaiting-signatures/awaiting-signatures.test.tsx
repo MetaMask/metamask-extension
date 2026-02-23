@@ -51,6 +51,11 @@ describe('AwaitingSignatures', () => {
                 requestId,
               },
               account: MOCK_EVM_ACCOUNT.address,
+              status: {
+                srcChain: {
+                  txHash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+                },
+              },
             },
           },
         },

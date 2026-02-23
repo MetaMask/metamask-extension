@@ -106,7 +106,12 @@ export function useBridgeTransactionNavigation(): void {
     const prevQrScanRequest = prevQrScanRequestRef.current;
 
     // Mark QR scan as seen when it becomes active (truthy object)
-    if (activeQrCodeScanRequest !== null && activeQrCodeScanRequest !== false) {
+    // Exclude null, undefined, and false to ensure we only mark actual active scans
+    if (
+      activeQrCodeScanRequest !== null &&
+      activeQrCodeScanRequest !== undefined &&
+      activeQrCodeScanRequest !== false
+    ) {
       hasSeenQrScanActiveRef.current = true;
     }
 
@@ -115,8 +120,10 @@ export function useBridgeTransactionNavigation(): void {
     // Detect cancellation/failure scenarios:
     // 1. QR scan cancellation: QR scan was active, then cleared, and no activeQuote
     //    (handles popup-initiated cancellations where activeQuote gets cleared)
+    // Exclude undefined from prevQrScanRequest to avoid false positives
     const qrScanWasCancelled =
       prevQrScanRequest !== null &&
+      prevQrScanRequest !== undefined &&
       activeQrCodeScanRequest === null &&
       requestId &&
       !activeQuote;
