@@ -10,29 +10,41 @@ import {
 } from 'lodash';
 import { keccak256 } from 'ethereum-cryptography/keccak';
 import { v4 as uuidv4 } from 'uuid';
-import { NameType } from '@metamask/name-controller';
-import {
-  bytesToHex,
-  getErrorMessage,
-  isErrorWithMessage,
-  isErrorWithStack,
-} from '@metamask/utils';
+import type { AccountsControllerState } from '@metamask/accounts-controller';
+import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type {
-  NetworkClientId,
-  NetworkControllerGetNetworkClientByIdAction,
-  NetworkControllerGetStateAction,
-  NetworkControllerNetworkDidChangeEvent,
-} from '@metamask/network-controller';
-import type { Browser } from 'webextension-polyfill';
-import type { Nft } from '@metamask/assets-controllers';
+  CurrencyRateState,
+  Nft,
+  NftControllerState,
+  TokensControllerState,
+} from '@metamask/assets-controllers';
 import {
   BaseController,
   type ControllerGetStateAction,
   type ControllerStateChangeEvent,
   type StateMetadata,
 } from '@metamask/base-controller';
+import type { KeyringControllerState } from '@metamask/keyring-controller';
 import type { Messenger } from '@metamask/messenger';
+import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
+import { NameType } from '@metamask/name-controller';
+import type { NameControllerState } from '@metamask/name-controller';
+import type {
+  NetworkClientId,
+  NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetStateAction,
+  NetworkControllerNetworkDidChangeEvent,
+  NetworkState,
+} from '@metamask/network-controller';
+import type { AuthenticationController } from '@metamask/profile-sync-controller';
+import {
+  bytesToHex,
+  getErrorMessage,
+  isErrorWithMessage,
+  isErrorWithStack,
+} from '@metamask/utils';
 import type { Json, Hex } from '@metamask/utils';
+import type { Browser } from 'webextension-polyfill';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   PLATFORM_FIREFOX,
@@ -85,9 +97,9 @@ import { ENVIRONMENT } from '../../../development/build/constants';
 
 import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
-import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
 import type {
   PreferencesControllerGetStateAction,
+  PreferencesControllerState,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
 
@@ -168,36 +180,39 @@ type BufferedTrace = {
 };
 
 export type MetaMaskState = Pick<
-  FlattenedBackgroundStateProxy,
+  PreferencesControllerState,
   | 'ledgerTransportType'
-  | 'networkConfigurationsByChainId'
-  | 'internalAccounts'
-  | 'allNfts'
-  | 'allTokens'
   | 'theme'
-  | 'participateInMetaMetrics'
-  | 'dataCollectionForMarketing'
   | 'useNftDetection'
   | 'openSeaEnabled'
   | 'securityAlertsEnabled'
   | 'useTokenDetection'
-  | 'names'
-  | 'addressBook'
-  | 'currentCurrency'
-  | 'srpSessionData'
-  | 'keyrings'
-  | 'multichainNetworkConfigurationsByChainId'
-  // TODO: Remove as this is no longer a top-level property of the flattened background state object.
-  // | 'security_providers'
-> & {
-  preferences: Pick<
-    FlattenedBackgroundStateProxy['preferences'],
-    | 'privacyMode'
-    | 'tokenNetworkFilter'
-    | 'showNativeTokenAsMainBalance'
-    | 'tokenSortConfig'
-  >;
-};
+> &
+  Pick<NetworkState, 'networkConfigurationsByChainId'> &
+  Pick<AccountsControllerState, 'internalAccounts'> &
+  Pick<NftControllerState, 'allNfts'> &
+  Pick<TokensControllerState, 'allTokens'> &
+  Pick<
+    MetaMetricsControllerState,
+    'participateInMetaMetrics' | 'dataCollectionForMarketing'
+  > &
+  Pick<NameControllerState, 'names'> &
+  Pick<AddressBookControllerState, 'addressBook'> &
+  Pick<CurrencyRateState, 'currentCurrency'> &
+  Pick<KeyringControllerState, 'keyrings'> &
+  Pick<
+    MultichainNetworkControllerState,
+    'multichainNetworkConfigurationsByChainId'
+  > & {
+    srpSessionData?: AuthenticationController.AuthenticationControllerState['srpSessionData'];
+    preferences: Pick<
+      PreferencesControllerState['preferences'],
+      | 'privacyMode'
+      | 'tokenNetworkFilter'
+      | 'showNativeTokenAsMainBalance'
+      | 'tokenSortConfig'
+    >;
+  };
 
 /**
  * {@link MetaMetricsController}'s metadata.
