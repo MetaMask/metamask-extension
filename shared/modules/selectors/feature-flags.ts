@@ -6,7 +6,6 @@ import {
   BASE,
   BSC,
   ETHEREUM,
-  GOERLI,
   LINEA,
   OPTIMISM,
   POLYGON,
@@ -66,13 +65,13 @@ export type FeatureFlagsMetaMaskState = {
 function getNetworkNameByChainId(chainId: string): string {
   switch (chainId) {
     case CHAIN_IDS.MAINNET:
+    case CHAIN_IDS.GOERLI:
+    case CHAIN_IDS.SEPOLIA:
       return ETHEREUM;
     case CHAIN_IDS.BSC:
       return BSC;
     case CHAIN_IDS.POLYGON:
       return POLYGON;
-    case CHAIN_IDS.GOERLI:
-      return GOERLI;
     case CHAIN_IDS.AVALANCHE:
       return AVALANCHE;
     case CHAIN_IDS.OPTIMISM:
