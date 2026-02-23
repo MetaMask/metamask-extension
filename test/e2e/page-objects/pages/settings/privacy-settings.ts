@@ -80,10 +80,8 @@ class PrivacySettings {
   private readonly passwordChangeErrorToast =
     '[data-testid="password-change-toast-error"]';
 
-  private readonly revealSrpContinueButton = {
-    text: 'Continue',
-    tag: 'text',
-  };
+  private readonly revealSrpContinueButton =
+    '[data-testid="reveal-seed-password-continue"]';
 
   private readonly tapToRevealButton = '[data-testid="recovery-phrase-reveal"]';
 
