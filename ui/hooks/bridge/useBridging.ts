@@ -26,8 +26,8 @@ import {
   type MinimalAsset,
   validateMinimalAssetObject,
 } from '../../pages/bridge/utils/tokens';
+import { toBridgeToken } from '../../ducks/bridge/utils';
 import { useBridgeNavigation } from './useBridgeNavigation';
-import { toBridgeToken } from 'ui/ducks/bridge/utils';
 
 const useBridging = () => {
   const dispatch = useDispatch();
