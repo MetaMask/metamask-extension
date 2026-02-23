@@ -286,6 +286,19 @@ describe('Setup Sentry', () => {
         id: 'backup-metrics-id',
       });
     });
+
+    it('does not set report.user when both persisted state and backup state fail', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({}),
+        getPersistedState: () => Promise.reject(new Error('storage failed')),
+        getBackupState: () => Promise.reject(new Error('backup failed')),
+      };
+
+      const testReport = { message: 'test', request: {} };
+      const rewrittenReport = await rewriteReport(testReport);
+
+      expect(rewrittenReport.user).toBeUndefined();
+    });
   });
 
   describe('removeUrlsFromBreadCrumb', () => {
