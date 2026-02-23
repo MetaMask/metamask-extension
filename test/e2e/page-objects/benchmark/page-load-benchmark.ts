@@ -76,30 +76,37 @@ export type BenchmarkMetrics = {
     jsHeapSizeLimit: number;
   };
   /**
-   * Long Task metrics for measuring main thread blocking.
-   * TBT (Total Blocking Time) is a key Core Web Vital proxy metric.
+   * Total count of long tasks (>50ms) observed.
+   * Part of Long Task metrics for measuring main thread blocking.
    */
-  longTaskMetrics?: {
-    /** Total count of long tasks (>50ms) observed */
-    count: number;
-    /** Sum of all long task durations in milliseconds */
-    totalDuration: number;
-    /** Maximum single long task duration in milliseconds */
-    maxDuration: number;
-    /** Total Blocking Time in milliseconds (sum of duration - 50ms for each task) */
-    tbt: number;
-    /** TBT rating based on Lighthouse thresholds */
-    tbtRating: 'good' | 'needs-improvement' | 'poor';
-  };
+  longTaskCount?: number;
+  /**
+   * Sum of all long task durations in milliseconds.
+   */
+  longTaskTotalDuration?: number;
+  /**
+   * Maximum single long task duration in milliseconds.
+   */
+  longTaskMaxDuration?: number;
+  /**
+   * Total Blocking Time in milliseconds (sum of duration - 50ms for each task).
+   * TBT is a key Core Web Vital proxy metric.
+   */
+  tbt?: number;
+  /**
+   * TBT rating based on Lighthouse thresholds ('good' | 'needs-improvement' | 'poor').
+   * Non-numeric, excluded from statistical aggregation.
+   */
+  tbtRating?: 'good' | 'needs-improvement' | 'poor';
 };
 
 /**
  * Numeric-only benchmark metrics for statistical aggregation.
- * Excludes object-typed properties (memoryUsage, longTaskMetrics).
+ * Excludes object-typed properties (memoryUsage) and non-numeric fields (tbtRating).
  */
 export type NumericBenchmarkMetrics = Omit<
   BenchmarkMetrics,
-  'memoryUsage' | 'longTaskMetrics'
+  'memoryUsage' | 'tbtRating'
 >;
 
 /**
@@ -373,15 +380,11 @@ export class PageLoadBenchmark {
               jsHeapSizeLimit: performance.memory.jsHeapSizeLimit,
             }
           : undefined,
-        longTaskMetrics: longTaskMetricsRaw
-          ? {
-              count: longTaskMetricsRaw.count,
-              totalDuration: longTaskMetricsRaw.totalDuration,
-              maxDuration: longTaskMetricsRaw.maxDuration,
-              tbt: longTaskMetricsRaw.tbt,
-              tbtRating: longTaskMetricsRaw.tbtRating,
-            }
-          : undefined,
+        longTaskCount: longTaskMetricsRaw?.count,
+        longTaskTotalDuration: longTaskMetricsRaw?.totalDuration,
+        longTaskMaxDuration: longTaskMetricsRaw?.maxDuration,
+        tbt: longTaskMetricsRaw?.tbt,
+        tbtRating: longTaskMetricsRaw?.tbtRating,
       };
     });
 
@@ -463,7 +466,7 @@ export class PageLoadBenchmark {
     for (const [page, pageResults] of Object.entries(resultsByPage)) {
       const metrics = pageResults.map((r) => r.metrics);
       const metricKeys = Object.keys(metrics[0]).filter(
-        (k) => k !== 'memoryUsage' && k !== 'longTaskMetrics',
+        (k) => k !== 'memoryUsage' && k !== 'tbtRating',
       ) as (keyof NumericBenchmarkMetrics)[];
 
       const summary: BenchmarkSummary = {
