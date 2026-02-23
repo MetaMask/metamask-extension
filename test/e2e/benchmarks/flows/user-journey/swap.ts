@@ -21,13 +21,15 @@ import {
 } from '../../utils/mock-config';
 import { BENCHMARK_PERSONA, WITH_STATE_POWER_USER } from '../../utils';
 import { BENCHMARK_TYPE } from '../../utils/constants';
-import type { BenchmarkRunResult } from '../../utils/types';
+import type { BenchmarkRunResult, WebVitalsMetrics } from '../../utils/types';
+import { collectWebVitals } from '../../utils/web-vitals-collector';
 import { registerSwapInterceptor } from '../../mocks/swap-mocks';
 
 export const testTitle = 'benchmark-swap-power-user';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
+  let webVitals: WebVitalsMetrics | undefined;
   try {
     const branchMock = getTestSpecificMock();
 
@@ -101,17 +103,21 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
           await swapPage.checkQuoteIsDisplayed({ timeout: 60000 });
         });
         performanceTracker.addTimer(timerQuoteFetching);
+
+        webVitals = await collectWebVitals(driver);
       },
     );
 
     return {
       timers: collectTimerResults(),
+      webVitals,
       success: true,
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   } catch (error) {
     return {
       timers: collectTimerResults(),
+      webVitals,
       success: false,
       error: error instanceof Error ? error.message : String(error),
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,

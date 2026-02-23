@@ -282,8 +282,9 @@ async function buildUiStartupSection(
 }
 
 /**
- * Fetches interaction benchmark data and builds a Core Web Vitals summary section.
- * Only interaction benchmarks collect web vitals (INP requires real user interactions).
+ * Fetches benchmark data from all preset categories and builds a Core Web Vitals
+ * summary section. Web vitals are collected across interaction, journey, and startup
+ * benchmarks — entries without web vitals data are filtered out by `buildWebVitalsSection`.
  *
  * @param hostUrl - Base URL for CI artifacts.
  * @returns HTML string for the CWV section, or empty string if no data.
@@ -291,7 +292,13 @@ async function buildUiStartupSection(
 async function fetchAndBuildWebVitalsSection(hostUrl: string): Promise<string> {
   const allEntries: BenchmarkEntry[] = [];
 
-  for (const preset of Object.values(INTERACTION_PRESETS)) {
+  const allPresets = [
+    ...Object.values(INTERACTION_PRESETS),
+    ...Object.values(USER_JOURNEY_PRESETS),
+    ...Object.values(STARTUP_PRESETS),
+  ];
+
+  for (const preset of allPresets) {
     try {
       const data = await fetchBenchmarkJson(
         hostUrl,

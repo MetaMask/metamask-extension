@@ -30,12 +30,14 @@ import {
   shouldUseMockedRequests,
 } from '../../utils/mock-config';
 import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
-import type { BenchmarkRunResult } from '../../utils/types';
+import type { BenchmarkRunResult, WebVitalsMetrics } from '../../utils/types';
+import { collectWebVitals } from '../../utils/web-vitals-collector';
 
 export const testTitle = 'benchmark-onboarding-import-wallet';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRunResult> {
+  let webVitals: WebVitalsMetrics | undefined;
   try {
     await withFixtures(
       {
@@ -151,17 +153,21 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           await accountListPage.checkPageIsLoaded(120000);
         });
         performanceTracker.addTimer(timerAccountListLoad);
+
+        webVitals = await collectWebVitals(driver);
       },
     );
 
     return {
       timers: collectTimerResults(),
+      webVitals,
       success: true,
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   } catch (error) {
     return {
       timers: collectTimerResults(),
+      webVitals,
       success: false,
       error: error instanceof Error ? error.message : String(error),
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
