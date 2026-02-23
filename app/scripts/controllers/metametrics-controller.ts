@@ -1386,6 +1386,10 @@ export default class MetaMetricsController extends BaseController<
   _buildUserTraitsObject(
     metamaskState: MetaMaskState,
   ): Partial<MetaMetricsUserTraits> | null {
+    if (!metamaskState?.preferences) {
+      return null;
+    }
+
     const { traits } = this.state;
     const storageKindTrait = traits[MetaMetricsUserTrait.StorageKind];
 

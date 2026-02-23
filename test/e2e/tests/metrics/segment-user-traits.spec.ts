@@ -165,10 +165,25 @@ describe('Segment User Traits', function () {
         // Data Collection toggle is disabled if participate in meta metrics is off
         await privacySettings.toggleParticipateInMetaMetrics();
         await privacySettings.toggleDataCollectionForMarketing();
+        // Allow debounced state updates to flush (maxWait may cause
+        // intermediate identify events between the two toggles)
+        await driver.delay(2000);
         events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 1);
-        assert.deepStrictEqual(events[0].traits.is_metrics_opted_in, true);
-        assert.deepStrictEqual(events[0].traits.has_marketing_consent, true);
+        assert.ok(events.length >= 1);
+        // Aggregate traits across all identify events to handle both
+        // single-event (batched) and multi-event (split) cases
+        const allTraits = events.reduce(
+          (
+            acc: Record<string, unknown>,
+            event: { traits: Record<string, unknown> },
+          ) => ({
+            ...acc,
+            ...event.traits,
+          }),
+          {} as Record<string, unknown>,
+        );
+        assert.deepStrictEqual(allTraits.is_metrics_opted_in, true);
+        assert.deepStrictEqual(allTraits.has_marketing_consent, true);
       },
     );
   });
