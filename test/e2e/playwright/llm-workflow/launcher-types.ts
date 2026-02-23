@@ -39,6 +39,7 @@ export type LaunchOptions = {
   stateMode?: StateMode;
   network?: NetworkConfig;
   fixture?: FixtureData;
+  proxyServer?: string;
 };
 
 export type LauncherLaunchOptions = LaunchOptions;

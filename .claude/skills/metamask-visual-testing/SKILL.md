@@ -59,7 +59,7 @@ The MetaMask MCP server provides tools for browser automation:
 | `mm_knowledge_summarize`    | Generate session recipe                                     |
 | `mm_knowledge_sessions`     | List recent sessions and their metadata (tags/flowTags)     |
 | `mm_run_steps`              | Execute multiple tools in sequence with error handling      |
-| `mm_set_context`            | Switch workflow context (e2e or prod)                       |
+| `mm_set_context`            | Switch workflow context, optionally with context options    |
 | `mm_get_context`            | Get current context and available capabilities              |
 
 ## Context Switching (e2e vs prod)
@@ -128,11 +128,51 @@ mm_set_context { "context": "prod" }
 mm_set_context { "context": "e2e" }
 ```
 
+**Reconfigure e2e context with options (same-context update):**
+
+```json
+mm_set_context {
+  "context": "e2e",
+  "options": {
+    "mockServer": {
+      "enabled": true,
+      "port": 8000
+    }
+  }
+}
+```
+
+Notes:
+
+- `options` is optional.
+- In `e2e`, `mockServer.enabled` defaults to `false`.
+- Calling `mm_set_context` with the same context and non-empty `options` rebuilds that context with the new settings.
+
 ### Context Switching Rules
 
 1. **Cannot switch during active session** - You must call `mm_cleanup` first
 2. **Default context is e2e** - On server startup, context is always e2e
 3. **Context persists** - Once switched, context remains until changed or server restarts
+4. **Mock server is opt-in** - In `e2e`, enable it explicitly via `mm_set_context` options
+
+### Recommended Order (Enable Mock Server)
+
+Use this exact sequence when you need mocked external API responses:
+
+```json
+mm_cleanup
+mm_set_context {
+  "context": "e2e",
+  "options": {
+    "mockServer": {
+      "enabled": true,
+      "port": 8000
+    }
+  }
+}
+mm_get_context
+mm_launch { "stateMode": "default" }
+```
 
 ### Example: Testing in Different Contexts
 
@@ -152,6 +192,14 @@ mm_cleanup
 
 # Switch back to e2e
 mm_set_context { "context": "e2e" }
+
+# Reconfigure e2e with mock server enabled
+mm_cleanup
+mm_set_context {
+  "context": "e2e",
+  "options": { "mockServer": { "enabled": true, "port": 8000 } }
+}
+mm_launch { "stateMode": "default" }
 ```
 
 ## Core Workflow
@@ -585,16 +633,17 @@ Error responses:
 
 ## Common Failures & Solutions
 
-| Symptom                      | Likely Cause                  | Solution                                          |
-| ---------------------------- | ----------------------------- | ------------------------------------------------- |
-| `MM_SESSION_ALREADY_RUNNING` | Previous session not cleaned  | Call `mm_cleanup` first                           |
-| `MM_NO_ACTIVE_SESSION`       | No browser running            | Call `mm_launch` first                            |
-| Extension not loading        | Extension not built           | Call `mm_build` or `yarn build:test`              |
-| `EADDRINUSE` port error      | Orphan processes              | `lsof -ti:8545,12345,8000 \| xargs kill -9`       |
-| `MM_TARGET_NOT_FOUND`        | Element not visible           | Use `mm_describe_screen` to check state           |
-| `MM_WAIT_TIMEOUT`            | Slow environment or UI change | Increase timeout, check screenshot                |
-| `MM_CONTEXT_SWITCH_BLOCKED`  | Switching during session      | Call `mm_cleanup` before `mm_set_context`         |
-| Fixtures not available       | Running in prod context       | Switch to e2e: `mm_set_context {"context":"e2e"}` |
+| Symptom                                              | Likely Cause                                   | Solution                                                                          |
+| ---------------------------------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------- |
+| `MM_SESSION_ALREADY_RUNNING`                         | Previous session not cleaned                   | Call `mm_cleanup` first                                                           |
+| `MM_NO_ACTIVE_SESSION`                               | No browser running                             | Call `mm_launch` first                                                            |
+| Extension not loading                                | Extension not built                            | Call `mm_build` or `yarn build:test`                                              |
+| `EADDRINUSE` port error                              | Orphan processes                               | `lsof -ti:8545,12345,8000 \| xargs kill -9`                                       |
+| `MM_TARGET_NOT_FOUND`                                | Element not visible                            | Use `mm_describe_screen` to check state                                           |
+| `MM_WAIT_TIMEOUT`                                    | Slow environment or UI change                  | Increase timeout, check screenshot                                                |
+| `MM_CONTEXT_SWITCH_BLOCKED`                          | Switching during session                       | Call `mm_cleanup` before `mm_set_context`                                         |
+| Fixtures not available                               | Running in prod context                        | Switch to e2e: `mm_set_context {"context":"e2e"}`                                 |
+| Network shows provisional headers for gas/price APIs | Mock server not enabled in current e2e context | `mm_cleanup` → `mm_set_context` with `options.mockServer.enabled=true` → relaunch |
 
 ## Key Files
 

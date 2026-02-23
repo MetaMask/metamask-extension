@@ -28,6 +28,10 @@ import {
   createMetaMaskE2EContext,
   createMetaMaskProdContext,
 } from '../capabilities/factory';
+import type {
+  CreateMetaMaskContextOptions,
+  CreateMetaMaskProdContextOptions,
+} from '../capabilities/factory';
 import type { LauncherLaunchOptions } from '../launcher-types';
 import type { AnvilSeederWrapper } from '../anvil-seeder-wrapper';
 import type { MetaMaskFixtureCapability } from '../capabilities/fixture';
@@ -90,7 +94,10 @@ export class MetaMaskSessionManager implements ISessionManager {
     return this.workflowContext?.mockServer;
   }
 
-  setContext(context: 'e2e' | 'prod'): void {
+  setContext(
+    context: 'e2e' | 'prod',
+    options?: CreateMetaMaskContextOptions | CreateMetaMaskProdContextOptions,
+  ): void {
     if (this.hasActiveSession()) {
       throw new Error(
         `${ErrorCodes.MM_CONTEXT_SWITCH_BLOCKED}: Cannot switch context while session is active. ` +
@@ -99,14 +106,18 @@ export class MetaMaskSessionManager implements ISessionManager {
     }
 
     const currentContext = this.getEnvironmentMode();
-    if (currentContext === context) {
+    const hasOptions = Boolean(options && Object.keys(options).length > 0);
+
+    if (currentContext === context && !hasOptions) {
       return;
     }
 
     const newContext =
       context === 'e2e'
-        ? createMetaMaskE2EContext()
-        : createMetaMaskProdContext();
+        ? createMetaMaskE2EContext(options as CreateMetaMaskContextOptions)
+        : createMetaMaskProdContext(
+            options as CreateMetaMaskProdContextOptions,
+          );
 
     this.setWorkflowContext(newContext as WorkflowContext);
   }
@@ -369,8 +380,13 @@ export class MetaMaskSessionManager implements ISessionManager {
     }
 
     const mockServerCapability = this.getMockServerCapability();
+    let proxyServer: string | undefined;
     if (mockServerCapability) {
       await mockServerCapability.start();
+
+      if (mockServerCapability.isRunning()) {
+        proxyServer = `127.0.0.1:${mockServerCapability.getPort()}`;
+      }
     }
 
     const contractSeedingCapability = this.getContractSeedingCapability();
@@ -390,6 +406,7 @@ export class MetaMaskSessionManager implements ISessionManager {
       stateMode,
       slowMo: input.slowMo ?? 0,
       extensionPath,
+      proxyServer,
     };
 
     const launcher = await launchMetaMask(launchOptions);

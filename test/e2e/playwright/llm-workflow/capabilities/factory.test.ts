@@ -23,6 +23,31 @@ describe('Capability Factory', () => {
       expect(context.mockServer).toBeInstanceOf(MetaMaskMockServerCapability);
     });
 
+    it('keeps mock server disabled by default', () => {
+      const context = createMetaMaskE2EContext();
+      const mockServerCapability = context.mockServer as unknown as {
+        enabled: boolean;
+      };
+
+      expect(mockServerCapability.enabled).toBe(false);
+    });
+
+    it('enables mock server when e2e mockServer.enabled is true', () => {
+      const context = createMetaMaskE2EContext({
+        mockServer: {
+          enabled: true,
+          port: 18000,
+        },
+      });
+      const mockServerCapability = context.mockServer as unknown as {
+        enabled: boolean;
+        port: number | undefined;
+      };
+
+      expect(mockServerCapability.enabled).toBe(true);
+      expect(mockServerCapability.port).toBe(18000);
+    });
+
     it('creates config with E2E environment', () => {
       const context = createMetaMaskE2EContext();
 
@@ -265,6 +290,43 @@ describe('Capability Factory', () => {
       it('is no-op when switching to same context', () => {
         sessionManager.setContext('e2e');
         expect(sessionManager.getEnvironmentMode()).toBe('e2e');
+      });
+
+      it('rebuilds same context when options are provided', () => {
+        const originalContext = sessionManager.getWorkflowContext();
+
+        sessionManager.setContext('e2e', {
+          mockServer: {
+            enabled: true,
+            port: 18000,
+          },
+        });
+
+        const updatedContext = sessionManager.getWorkflowContext();
+        const mockServerCapability = updatedContext?.mockServer as unknown as {
+          enabled: boolean;
+          port: number | undefined;
+        };
+
+        expect(updatedContext).not.toBe(originalContext);
+        expect(mockServerCapability.enabled).toBe(true);
+        expect(mockServerCapability.port).toBe(18000);
+      });
+
+      it('passes prod context options when switching to prod', () => {
+        sessionManager.setContext('prod', {
+          includeBuild: true,
+          remoteChain: {
+            rpcUrl: 'https://mainnet.infura.io/v3/test-key',
+            chainId: 1,
+          },
+        });
+
+        const context = sessionManager.getWorkflowContext();
+
+        expect(context?.config.environment).toBe('prod');
+        expect(context?.build).toBeInstanceOf(MetaMaskBuildCapability);
+        expect(context?.chain).toBeInstanceOf(NoOpChainCapability);
       });
 
       it('throws MM_CONTEXT_SWITCH_BLOCKED when session is active', () => {

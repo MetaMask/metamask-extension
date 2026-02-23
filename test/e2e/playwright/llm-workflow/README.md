@@ -173,10 +173,10 @@ When implementing UI changes, follow this cycle:
 
 ### Context Switching
 
-| Tool             | Description                                    |
-| ---------------- | ---------------------------------------------- |
-| `mm_set_context` | Switch workflow context (e2e or prod)          |
-| `mm_get_context` | Get current context and available capabilities |
+| Tool             | Description                                      |
+| ---------------- | ------------------------------------------------ |
+| `mm_set_context` | Switch workflow context, optionally with options |
+| `mm_get_context` | Get current context and available capabilities   |
 
 ---
 
@@ -201,11 +201,34 @@ Use `mm_set_context` to switch between contexts:
 mm_set_context { "context": "prod" }
 ```
 
+You can also pass optional context-specific overrides:
+
+```json
+mm_set_context {
+  "context": "e2e",
+  "options": {
+    "mockServer": {
+      "enabled": true,
+      "port": 8000
+    }
+  }
+}
+```
+
+For `e2e`, useful options include:
+
+- `mockServer.enabled` and `mockServer.port`
+- `ports.anvil` and `ports.fixtureServer`
+- `forkUrl` and `forkBlockNumber`
+
 ### Important Constraints
 
 - **Cannot switch during active session**: You must call `mm_cleanup` first before switching contexts
 - **Context persists**: Once set, the context remains active for subsequent sessions until changed
 - **Verify context**: Use `mm_get_context` to check the current context and available capabilities
+- **Options are optional**: Omitting `options` uses defaults for the selected context
+- **Same-context updates are allowed**: `mm_set_context` with non-empty `options` reapplies that context with the new settings
+- **Mock server is opt-in**: In `e2e`, mock server is disabled by default and must be enabled explicitly via `options`
 
 ### Example: Switching to Production Context
 
@@ -214,6 +237,20 @@ mm_set_context { "context": "prod" }
 2. mm_set_context { "context": "prod" }  # Switch to production
 3. mm_get_context                # Verify context switched
 4. mm_launch { ... }             # Launch in production context
+```
+
+### Example: Enable Mock Server in E2E
+
+```
+1. mm_cleanup
+2. mm_set_context {
+     "context": "e2e",
+     "options": {
+       "mockServer": { "enabled": true, "port": 8000 }
+     }
+   }
+3. mm_get_context                # Verify capabilities and no active session
+4. mm_launch { "stateMode": "default" }
 ```
 
 ---

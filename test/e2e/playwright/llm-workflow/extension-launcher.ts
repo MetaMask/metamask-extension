@@ -26,7 +26,30 @@ type ResolvedOptions = {
   screenshotDir: string;
   stateMode: 'default' | 'onboarding' | 'custom';
   network: NetworkConfig;
+  proxyServer?: string;
 };
+
+export function buildChromiumLaunchArgs(
+  extensionPath: string,
+  proxyServer?: string,
+): string[] {
+  const launchArgs = [
+    `--disable-extensions-except=${extensionPath}`,
+    `--load-extension=${extensionPath}`,
+    '--disable-background-timer-throttling',
+    '--disable-backgrounding-occluded-windows',
+    '--disable-renderer-backgrounding',
+    '--disable-features=TranslateUI',
+  ];
+
+  if (proxyServer) {
+    launchArgs.unshift('--allow-insecure-localhost');
+    launchArgs.unshift('--ignore-certificate-errors');
+    launchArgs.unshift(`--proxy-server=${proxyServer}`);
+  }
+
+  return launchArgs;
+}
 
 export class MetaMaskExtensionLauncher {
   private context: BrowserContext | undefined;
@@ -57,6 +80,7 @@ export class MetaMaskExtensionLauncher {
         mode: 'localhost',
         chainId: DEFAULT_CHAIN_ID,
       },
+      proxyServer: options.proxyServer,
     };
     this.userDataDir = '';
 
@@ -130,18 +154,15 @@ export class MetaMaskExtensionLauncher {
         path.join(process.cwd(), `temp-llm-workflow-${Date.now()}`);
       await fs.mkdir(this.userDataDir, { recursive: true });
 
-      const launchArgs = [
-        `--disable-extensions-except=${this.options.extensionPath}`,
-        `--load-extension=${this.options.extensionPath}`,
-        '--disable-background-timer-throttling',
-        '--disable-backgrounding-occluded-windows',
-        '--disable-renderer-backgrounding',
-        '--disable-features=TranslateUI',
-      ];
+      const launchArgs = buildChromiumLaunchArgs(
+        this.options.extensionPath,
+        this.options.proxyServer,
+      );
 
       this.context = await chromium.launchPersistentContext(this.userDataDir, {
         headless: false,
         args: launchArgs,
+        ignoreHTTPSErrors: Boolean(this.options.proxyServer),
         viewport: {
           width: this.options.viewportWidth,
           height: this.options.viewportHeight,
