@@ -374,6 +374,107 @@ export function buildBenchmarkSection(
 }
 
 /**
+ * Builds a compact Core Web Vitals HTML section from benchmark entries.
+ *
+ * Renders a per-flow table showing p75, p95, and rating distribution for
+ * INP, LCP, and CLS. CLS is unitless so the table uses a generic "Value"
+ * column with units appended per-row.
+ *
+ * @param entries - Parsed benchmark entries (must include webVitals data).
+ * @param summary - Collapsible header text.
+ * @returns HTML string, or empty string if no web vitals data.
+ */
+export function buildWebVitalsSection(
+  entries: BenchmarkEntry[],
+  summary: string,
+): string {
+  const entriesWithVitals = entries.filter(
+    (e) => e.entry.webVitals?.aggregated,
+  );
+  if (entriesWithVitals.length === 0) {
+    return '';
+  }
+
+  const metrics: Array<{
+    key: 'inp' | 'lcp' | 'cls';
+    label: string;
+    unit: string;
+    formatValue: (v: number) => string;
+  }> = [
+    {
+      key: 'inp',
+      label: 'INP',
+      unit: 'ms',
+      formatValue: (v) => `${Math.round(v)}ms`,
+    },
+    {
+      key: 'lcp',
+      label: 'LCP',
+      unit: 'ms',
+      formatValue: (v) =>
+        v >= 1000 ? `${(v / 1000).toFixed(1)}s` : `${Math.round(v)}ms`,
+    },
+    {
+      key: 'cls',
+      label: 'CLS',
+      unit: '',
+      formatValue: (v) => v.toFixed(3),
+    },
+  ];
+
+  const rows: string[] = [];
+  for (const { benchmarkName, entry } of entriesWithVitals) {
+    const agg = entry.webVitals?.aggregated;
+    if (!agg) {
+      continue;
+    }
+
+    let isFirstMetricForBenchmark = true;
+    const metricCount = metrics.filter(
+      (m) => agg[m.key] !== null && agg[m.key] !== undefined,
+    ).length;
+
+    for (const { key, label, formatValue } of metrics) {
+      const stats = agg[key];
+      if (!stats || typeof stats !== 'object' || !('p75' in stats)) {
+        continue;
+      }
+
+      const ratings = agg.ratings[key];
+      const ratingStr = `${ratings.good}/${ratings['needs-improvement']}/${ratings.poor}`;
+
+      let row = '';
+      if (isFirstMetricForBenchmark) {
+        row += `<td rowspan="${metricCount}">${startCase(benchmarkName)}</td>`;
+        isFirstMetricForBenchmark = false;
+      }
+      row += `<td>${label}</td>`;
+      row += `<td align="right">${formatValue(stats.p75)}</td>`;
+      row += `<td align="right">${key === 'cls' ? '-' : formatValue(stats.p95)}</td>`;
+      row += `<td align="center">${ratingStr}</td>`;
+      row += `<td align="right">${stats.samples}</td>`;
+      rows.push(`<tr>${row}</tr>`);
+    }
+  }
+
+  if (rows.length === 0) {
+    return '';
+  }
+
+  const columns = [
+    'Flow',
+    'Metric',
+    'p75',
+    'p95',
+    'Rating (G/NI/P)',
+    'Samples',
+  ];
+  const header = `<thead><tr>${columns.map((c) => `<th>${c}</th>`).join('')}</tr></thead>`;
+  const table = `<table>${header}<tbody>${rows.join('')}</tbody></table>`;
+  return `<details><summary>${summary}</summary>${table}</details>\n\n`;
+}
+
+/**
  * Fetches benchmark JSON artifact for a given preset/platform/buildType.
  * Returns null if the artifact doesn't exist (preset not run or failed).
  *

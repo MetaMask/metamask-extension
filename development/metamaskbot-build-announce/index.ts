@@ -10,6 +10,7 @@ import {
 } from '../../test/e2e/benchmarks/utils/constants';
 import {
   type ArtifactLinks,
+  type BenchmarkEntry,
   type PageLoadBenchmarkResults,
   type PageLoadEntry,
   getHumanReadableSize,
@@ -19,7 +20,9 @@ import {
   formatBuildLinks,
   discoverBundleArtifacts,
   fetchBenchmarkJson,
+  extractEntries,
   buildBenchmarkSectionComment,
+  buildWebVitalsSection,
   buildPageLoadTable,
   runBenchmarkGate,
   safeBuildSection,
@@ -237,6 +240,11 @@ async function buildUiStartupSection(
     ),
   );
 
+  const webVitalsHtml = await safeBuildSection(
+    'core web vitals',
+    () => fetchAndBuildWebVitalsSection(hostUrl),
+  );
+
   const pageLoadSection = await safeBuildSection('page load', () => {
     const table = buildPageLoadTable(benchmarkResults);
     return table
@@ -266,12 +274,43 @@ async function buildUiStartupSection(
     console.log('CLOUDFRONT_REPO_URL not set, skipping benchmark gate');
   }
 
-  const content = `${interactionHtml}${pageLoadSection}${userJourneyHtml}${benchmarkWarnings}`;
+  const content = `${interactionHtml}${webVitalsHtml}${pageLoadSection}${userJourneyHtml}${benchmarkWarnings}`;
   if (!content) {
     return '';
   }
 
   return `<details><summary>${benchmarkSummary}</summary>\n<blockquote>\n${content}</blockquote>\n</details>\n\n`;
+}
+
+/**
+ * Fetches interaction benchmark data and builds a Core Web Vitals summary section.
+ * Only interaction benchmarks collect web vitals (INP requires real user interactions).
+ *
+ * @param hostUrl - Base URL for CI artifacts.
+ * @returns HTML string for the CWV section, or empty string if no data.
+ */
+async function fetchAndBuildWebVitalsSection(hostUrl: string): Promise<string> {
+  const allEntries: BenchmarkEntry[] = [];
+
+  for (const preset of Object.values(INTERACTION_PRESETS)) {
+    try {
+      const data = await fetchBenchmarkJson(
+        hostUrl,
+        BENCHMARK_PLATFORMS[0],
+        BENCHMARK_BUILD_TYPES[0],
+        preset,
+      );
+      if (data) {
+        allEntries.push(...extractEntries(data));
+      }
+    } catch (error) {
+      console.error(
+        `Failed to fetch web vitals for preset "${preset}": ${String(error)}`,
+      );
+    }
+  }
+
+  return buildWebVitalsSection(allEntries, '📊 Core Web Vitals');
 }
 
 /**

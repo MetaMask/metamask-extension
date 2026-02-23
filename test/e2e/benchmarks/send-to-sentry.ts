@@ -243,7 +243,7 @@ async function main() {
         sendWebVitalsToSentry(
           name,
           benchmark.webVitals,
-          benchmark.persona || 'standard',
+          benchmark.persona || BENCHMARK_PERSONA.STANDARD,
           benchmark.testTitle,
           baseCiAttributes,
         );
