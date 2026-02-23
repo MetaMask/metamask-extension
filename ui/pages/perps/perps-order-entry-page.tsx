@@ -173,9 +173,6 @@ const PerpsOrderEntryPage: React.FC = () => {
     return !cleaned || isNaN(parsed) || parsed <= 0;
   }, [orderType, orderFormState]);
 
-  const isSubmitDisabled =
-    !isEligible || isOrderPending || isLimitPriceInvalid || currentPrice <= 0;
-
   const market = useMemo(() => {
     if (!decodedSymbol) {
       return undefined;
@@ -310,6 +307,10 @@ const PerpsOrderEntryPage: React.FC = () => {
   }, [livePrice, marketPrice]);
 
   const availableBalance = account ? parseFloat(account.availableBalance) : 0;
+
+  const isSubmitDisabled =
+    !isEligible || isOrderPending || isLimitPriceInvalid || currentPrice <= 0;
+
   const maxLeverage = useMemo(() => {
     if (!market) {
       return 50;
