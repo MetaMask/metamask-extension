@@ -437,7 +437,7 @@ function generateBenchmarkComment(
   const date = new Date(timestamp).toLocaleDateString();
 
   let comment = `\n\n**Current Commit**: \`${shortCommit}\` | **Date**: ${date}\n\n`;
-  let commentHeader = `📊 Page Load Benchmark Results`;
+  let commentHeader = `🌐 Dapp Page Load Benchmarks`;
 
   // Track significant increases for warning
   const significantIncreases: {

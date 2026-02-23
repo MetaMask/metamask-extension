@@ -1,4 +1,3 @@
-export { GlobalMenu } from './global-menu';
 export { GlobalMenuList } from './global-menu-list';
 export type {
   GlobalMenuItem,

@@ -276,6 +276,7 @@ describe('ConfirmTitle', () => {
 
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
+      TransactionType.musdClaim,
       TransactionType.musdConversion,
       TransactionType.perpsDeposit,
       TransactionType.predictDeposit,
