@@ -29,6 +29,7 @@ import type {
   ThresholdConfig,
   TimerStatistics,
   UserActionMeasurement,
+  WebVitalsMetrics,
   WebVitalsRun,
   WebVitalsSummary,
 } from './types';
@@ -206,6 +207,7 @@ export type MeasurePageResult = {
   metrics: Metrics[];
   title: string;
   persona: Persona;
+  webVitalsRuns?: WebVitalsMetrics[];
 };
 
 export async function runPageLoadBenchmark(
@@ -227,15 +229,24 @@ export async function runPageLoadBenchmark(
 
   const pageName = 'home';
   let runResults: Metrics[] = [];
+  let allWebVitalsRuns: WebVitalsRun[] = [];
   let testTitle = '';
   let resultPersona: Persona = 'standard';
 
   for (let i = 0; i < browserLoads; i += 1) {
     console.log('Starting browser load', i + 1, 'of', browserLoads);
-    const { metrics, title, persona } = await retry({ retries }, () =>
-      measurePageFn(pageName, pageLoads),
+    const { metrics, title, persona, webVitalsRuns } = await retry(
+      { retries },
+      () => measurePageFn(pageName, pageLoads),
     );
     runResults = runResults.concat(metrics);
+    if (webVitalsRuns) {
+      const indexed = webVitalsRuns.map((wv, j) => ({
+        ...wv,
+        iteration: i * pageLoads + j,
+      }));
+      allWebVitalsRuns = allWebVitalsRuns.concat(indexed);
+    }
     testTitle = title;
     resultPersona = persona;
   }
@@ -260,6 +271,14 @@ export async function runPageLoadBenchmark(
       .sort((a, b) => a - b);
   }
 
+  let webVitals: WebVitalsSummary | undefined;
+  if (allWebVitalsRuns.length > 0) {
+    webVitals = {
+      runs: allWebVitalsRuns,
+      aggregated: aggregateWebVitals(allWebVitalsRuns),
+    };
+  }
+
   return {
     testTitle,
     persona: resultPersona,
@@ -269,6 +288,7 @@ export async function runPageLoadBenchmark(
     stdDev: calcStdDevResult(result),
     p75: calcPResult(result, 75),
     p95: calcPResult(result, 95),
+    ...(webVitals && { webVitals }),
   };
 }
 
