@@ -297,7 +297,7 @@ export const useTokensWithFiltering = (
                         )
                       );
                     } catch {
-                      return '';
+                      return undefined;
                     }
                   })(),
                 accountType: token.accountType,
