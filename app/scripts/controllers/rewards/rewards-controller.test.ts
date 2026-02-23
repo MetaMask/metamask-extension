@@ -26,10 +26,7 @@ import {
   RECURRING_INTERVALS,
   RecurringInterval,
 } from '@metamask/subscription-controller';
-import {
-  HardwareDeviceNames,
-  HardwareKeyringType,
-} from '../../../../shared/constants/hardware-wallets';
+import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 import {
   RewardsControllerActions,
   RewardsControllerEvents,
@@ -559,7 +556,7 @@ describe('RewardsController', () => {
           metadata: {
             ...MOCK_INTERNAL_ACCOUNT.metadata,
             keyring: {
-              type: HardwareDeviceNames.ledger,
+              type: HardwareKeyringType.ledger,
             },
           },
         };
@@ -3712,7 +3709,7 @@ describe('RewardsController', () => {
           metadata: {
             ...MOCK_INTERNAL_ACCOUNT.metadata,
             keyring: {
-              type: HardwareDeviceNames.ledger,
+              type: HardwareKeyringType.ledger,
             },
           },
         };
@@ -5941,7 +5938,7 @@ describe('Hardware Wallet Support for Rewards', () => {
 
           expect(capturedRequest).toMatchObject({
             from: MOCK_ACCOUNT_ADDRESS,
-            data: expect.any(String),
+            data: expect.stringMatching(/^0x[0-9a-f]+$/u),
             siwe: expect.objectContaining({
               isSIWEMessage: expect.any(Boolean),
             }),

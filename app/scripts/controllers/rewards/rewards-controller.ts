@@ -553,9 +553,11 @@ export class RewardsController extends BaseController<
         Buffer.from(hotWalletMessage, 'utf8').toString('base64'),
       );
       // Bitcoin signatures are typically hex-encoded, return as-is or convert if needed
-      return { signature: result.signature.startsWith('0x')
-        ? result.signature
-        : `0x${result.signature}` };
+      return {
+        signature: result.signature.startsWith('0x')
+          ? result.signature
+          : `0x${result.signature}`,
+      };
     } else if (isTronAddress(account.address)) {
       if (this.#isTronDisabled()) {
         throw new Error('Unsupported account type for signing rewards message');
@@ -569,9 +571,11 @@ export class RewardsController extends BaseController<
         Buffer.from(hotWalletMessage, 'utf8').toString('base64'),
       );
       // Tron signatures are typically hex-encoded, return as-is or convert if needed
-      return { signature: result.signature.startsWith('0x')
-        ? result.signature
-        : `0x${result.signature}` };
+      return {
+        signature: result.signature.startsWith('0x')
+          ? result.signature
+          : `0x${result.signature}`,
+      };
     } else if (isEvm) {
       const result = await this.#signEvmMessage(account, hotWalletMessage);
       return { signature: result };
@@ -609,7 +613,7 @@ export class RewardsController extends BaseController<
     account: InternalAccount,
     challenge: ChallengeDto,
   ): Promise<string> {
-    const messageHex = Buffer.from(challenge.message, 'utf8').toString('hex');
+    const messageHex = `0x${Buffer.from(challenge.message, 'utf8').toString('hex')}`;
     const siwe = detectSIWE({ data: messageHex });
     const signature = await this.messenger.call(
       'KeyringController:signPersonalMessage',
@@ -1099,9 +1103,10 @@ export class RewardsController extends BaseController<
             const shouldRecheckFresh =
               !accountState.lastFreshOptInStatusCheck ||
               Date.now() - accountState.lastFreshOptInStatusCheck >
-              NOT_OPTED_IN_OIS_STALE_CACHE_THRESHOLD_MS;
+                NOT_OPTED_IN_OIS_STALE_CACHE_THRESHOLD_MS;
             if (
-              (accountState.hasOptedIn === false || (accountState.hasOptedIn && !accountState.subscriptionId)) &&
+              (accountState.hasOptedIn === false ||
+                (accountState.hasOptedIn && !accountState.subscriptionId)) &&
               shouldRecheckFresh
             ) {
               // Force a fresh check for this not-opted-in account
@@ -1181,14 +1186,17 @@ export class RewardsController extends BaseController<
           const hasOptedIn = freshOptInResults[i];
           const subscriptionId =
             Array.isArray(freshSubscriptionIds) &&
-              i < freshSubscriptionIds.length
+            i < freshSubscriptionIds.length
               ? freshSubscriptionIds[i]
               : null;
           const internalAccount = addressToAccountMap.get(
             address.toLowerCase(),
           );
 
-          const canUseSubscriptionId = subscriptionId && (this.#getSubscriptionToken(subscriptionId) || (internalAccount && !isHardwareAccount(internalAccount)));
+          const canUseSubscriptionId =
+            subscriptionId &&
+            (this.#getSubscriptionToken(subscriptionId) ||
+              (internalAccount && !isHardwareAccount(internalAccount)));
 
           if (internalAccount) {
             const caipAccount =
@@ -1199,14 +1207,17 @@ export class RewardsController extends BaseController<
                 // Update or create account state with fresh opt-in status
                 if (state.rewardsAccounts[caipAccount]) {
                   state.rewardsAccounts[caipAccount].hasOptedIn = hasOptedIn;
-                  state.rewardsAccounts[caipAccount].subscriptionId = canUseSubscriptionId ? subscriptionId : null;
+                  state.rewardsAccounts[caipAccount].subscriptionId =
+                    canUseSubscriptionId ? subscriptionId : null;
                   state.rewardsAccounts[caipAccount].lastFreshOptInStatusCheck =
                     lastFreshOptInStatusCheck;
                 } else {
                   state.rewardsAccounts[caipAccount] = {
                     account: caipAccount,
                     hasOptedIn,
-                    subscriptionId: canUseSubscriptionId ? subscriptionId : null,
+                    subscriptionId: canUseSubscriptionId
+                      ? subscriptionId
+                      : null,
                     perpsFeeDiscount: null,
                     lastPerpsDiscountRateFetched: null,
                     lastFreshOptInStatusCheck,
@@ -1215,7 +1226,8 @@ export class RewardsController extends BaseController<
 
                 if (state.rewardsActiveAccount?.account === caipAccount) {
                   state.rewardsActiveAccount.hasOptedIn = hasOptedIn;
-                  state.rewardsActiveAccount.subscriptionId = canUseSubscriptionId ? subscriptionId : null;
+                  state.rewardsActiveAccount.subscriptionId =
+                    canUseSubscriptionId ? subscriptionId : null;
                   state.rewardsActiveAccount.lastFreshOptInStatusCheck =
                     lastFreshOptInStatusCheck;
                 }
@@ -1378,7 +1390,7 @@ export class RewardsController extends BaseController<
    * @returns Promise<SeasonDtoState> - The season metadata
    */
   async getSeasonMetadata(
-    type: 'current' | 'next' = 'current',
+    type: 'current' | 'next' | 'previous' = 'current',
   ): Promise<SeasonDtoState> {
     const result = await wrapWithCache<SeasonDtoState>({
       key: type,
@@ -1406,6 +1418,8 @@ export class RewardsController extends BaseController<
           seasonInfo = discoverSeasons.current;
         } else if (type === 'next') {
           seasonInfo = discoverSeasons.next;
+        } else if (type === 'previous') {
+          seasonInfo = discoverSeasons.previous;
         }
 
         // If found with valid start date, fetch metadata and populate cache
@@ -1514,7 +1528,7 @@ export class RewardsController extends BaseController<
 
               if (
                 this.state.rewardsActiveAccount?.subscriptionId ===
-                subscriptionId &&
+                  subscriptionId &&
                 !isHardwareAccount(account as InternalAccount)
               ) {
                 await this.performSilentAuth(account, false, false); // try and auth.
@@ -2031,7 +2045,7 @@ export class RewardsController extends BaseController<
         // Defensive: Ensure sids is an array and i is within bounds
         let subscriptionId =
           Array.isArray(optInStatusResponse?.sids) &&
-            i < optInStatusResponse.sids.length
+          i < optInStatusResponse.sids.length
             ? optInStatusResponse.sids[i]
             : null;
         const sessionToken = subscriptionId

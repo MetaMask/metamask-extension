@@ -67,7 +67,6 @@ import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-s
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
 import {
   BillingPortalResponse,
@@ -7057,7 +7056,7 @@ export function getRewardsCandidateSubscriptionId(
 }
 
 export function getRewardsSeasonMetadata(
-  type?: 'current' | 'next',
+  type?: 'current' | 'next' | 'previous',
 ): ThunkAction<
   Promise<SeasonDtoState>,
   MetaMaskReduxState,

@@ -137,6 +137,7 @@ export const RewardsPointsBalance = () => {
     candidateSubscriptionId,
     onboardingModalRendered,
     rewardsOnboardingEnabled,
+    rewardsActiveAccountSubscriptionId,
   ]);
 
   const setHasSeenOnboardingInStorage = useCallback(async () => {
