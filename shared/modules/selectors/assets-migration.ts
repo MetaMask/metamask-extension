@@ -9,6 +9,7 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { AssetsControllerState } from '@metamask/assets-controller';
 import { AccountTrackerControllerState } from '@metamask/assets-controllers';
 import { AccountsControllerState } from '@metamask/accounts-controller';
+import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { decimalToPrefixedHex } from '../../../shared/modules/conversion.utils';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/selector-creators';
 import {
@@ -63,7 +64,10 @@ type ControllerStateSelector<
 > = (state: { metamask: InputState }) => InputState[ResultField];
 
 const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
-  [(state) => state.mematasm.remoteFeatureFlags],
+  [
+    (state: { metamask: RemoteFeatureFlagControllerState }) =>
+      state.metamask?.remoteFeatureFlags ?? {},
+  ],
   (remoteFeatureFlags) => {
     const featureFlag = remoteFeatureFlags[ASSETS_UNIFY_STATE_FLAG] as
       | AssetsUnifyStateFeatureFlag
