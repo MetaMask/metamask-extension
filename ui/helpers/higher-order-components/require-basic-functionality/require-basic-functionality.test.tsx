@@ -112,7 +112,7 @@ describe('BasicFunctionalityRequired', () => {
       );
     });
 
-    it('passes current location pathname and feature name in state', () => {
+    it('passes current location pathname and feature name i18n key in state', () => {
       mockUseSelector.mockReturnValue(false);
       mockUseLocation.mockReturnValue({
         pathname: SWAP_PATH,
@@ -123,7 +123,7 @@ describe('BasicFunctionalityRequired', () => {
       } as ReturnType<typeof useLocation>);
 
       const { getByTestId } = render(
-        <BasicFunctionalityRequired featureName="Swap">
+        <BasicFunctionalityRequired localizedFeatureName="swap">
           {testChild}
         </BasicFunctionalityRequired>,
       );
@@ -132,7 +132,7 @@ describe('BasicFunctionalityRequired', () => {
       const state = stateJson ? JSON.parse(stateJson) : undefined;
       expect(state).toStrictEqual({
         blockedRoutePath: SWAP_PATH,
-        featureName: 'Swap',
+        localizedFeatureName: 'swap',
       });
     });
 
@@ -147,7 +147,7 @@ describe('BasicFunctionalityRequired', () => {
       } as ReturnType<typeof useLocation>);
 
       const { getByTestId } = render(
-        <BasicFunctionalityRequired featureName="Swap">
+        <BasicFunctionalityRequired localizedFeatureName="swap">
           {testChild}
         </BasicFunctionalityRequired>,
       );

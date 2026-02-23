@@ -70,7 +70,7 @@ describe('Basic functionality off', function () {
     );
   });
 
-  it('navigates to destination when turning on Basic functionality via inline toggle and clicking Open the feature page', async function () {
+  it('navigates to swap route after enabling Basic functionality via inline toggle then opening feature', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()

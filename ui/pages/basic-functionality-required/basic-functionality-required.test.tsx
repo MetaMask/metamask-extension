@@ -45,6 +45,8 @@ const I18N_KEYS = {
   openFeaturePage: 'basicFunctionalityRequired_openFeaturePage',
   off: 'off',
   on: 'on',
+  /** i18n key for the Swap feature name (used as state.localizedFeatureName in tests). */
+  featureNameSwap: 'swap',
 } as const;
 
 const DESCRIPTION_TEXT =
@@ -60,6 +62,7 @@ jest.mock('../../hooks/useI18nContext', () => ({
       [I18N_KEYS.reviewInSettings]: 'Review in settings',
       [I18N_KEYS.off]: 'Off',
       [I18N_KEYS.on]: 'On',
+      [I18N_KEYS.featureNameSwap]: 'Swap',
     };
     if (key === I18N_KEYS.openFeaturePage && substitutions?.[0]) {
       const name =
@@ -148,7 +151,7 @@ describe('BasicFunctionalityOff', () => {
         pathname: '/basic-functionality-off',
         state: {
           blockedRoutePath: '/cross-chain/swaps/prepare-bridge-page',
-          featureName: 'Swap',
+          localizedFeatureName: I18N_KEYS.featureNameSwap,
         },
         key: '',
         search: '',
@@ -175,7 +178,7 @@ describe('BasicFunctionalityOff', () => {
       expect(primaryButton).toBeDisabled();
     });
 
-    it('enables primary CTA when Basic functionality is on and navigates to blocked route when clicked', () => {
+    it('navigates to blocked route when Open the feature page is clicked with Basic functionality on', () => {
       const store = configureStore({
         reducer: {
           metamask: () => ({ useExternalServices: true }),

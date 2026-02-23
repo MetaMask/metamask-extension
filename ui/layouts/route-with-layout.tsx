@@ -18,8 +18,8 @@ export type RouteWithLayoutConfig = {
   initialized?: boolean;
   /** When true (default), redirects to the basic-functionality-off screen if Basic Functionality (useExternalServices) is off. Set to false to allow access without external services (e.g. Home, Settings). */
   basicFunctionalityRequired?: boolean;
-  /** Display name for the feature (e.g. "Swap", "Rewards") when redirecting to basic-functionality-off. Used for "Open the [feature name] page" CTA. Required when basicFunctionalityRequired is true. */
-  basicFunctionalityFeatureName?: string;
+  /** i18n message key for the feature name (e.g. "swap", "notifications"). Same keys as nav/tabs so "Open the [feature] page" CTA is localized. Required when basicFunctionalityRequired is true. */
+  basicFunctionalityLocalizedFeatureName?: string;
   children?: ReactNode;
 };
 
@@ -49,7 +49,7 @@ export const createRouteWithLayout = (
     authenticated,
     initialized,
     basicFunctionalityRequired = true,
-    basicFunctionalityFeatureName,
+    basicFunctionalityLocalizedFeatureName,
     children,
   } = config;
 
@@ -69,15 +69,15 @@ export const createRouteWithLayout = (
 
   // Then wrap with BasicFunctionalityRequired when route depends on external services (default: wrapped)
   if (basicFunctionalityRequired && content) {
-    const featureName = basicFunctionalityFeatureName?.trim();
-    if (!featureName) {
+    const localizedFeatureName = basicFunctionalityLocalizedFeatureName?.trim();
+    if (!localizedFeatureName) {
       throw new Error(
-        `Route "${path}" has basicFunctionalityRequired set to true but no basicFunctionalityFeatureName. ` +
-          'Add a display name (e.g. "Swap", "Rewards") for the basic-functionality-off page CTA.',
+        `Route "${path}" has basicFunctionalityRequired set to true but no basicFunctionalityLocalizedFeatureName. ` +
+          'Add an i18n message key (e.g. "swap", "notifications") for the basic-functionality-off page CTA.',
       );
     }
     content = (
-      <BasicFunctionalityRequired featureName={featureName}>
+      <BasicFunctionalityRequired localizedFeatureName={localizedFeatureName}>
         {content}
       </BasicFunctionalityRequired>
     );
