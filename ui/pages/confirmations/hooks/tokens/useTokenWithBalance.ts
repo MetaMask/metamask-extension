@@ -4,7 +4,7 @@ import { BigNumber } from 'bignumber.js';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
-import { getTokenByAccountAndAddressAndChainId } from '../../../../selectors/assets';
+import { selectSingleTokenByAddressAndChainId } from '../../../../selectors/assets';
 import { getSelectedInternalAccount } from '../../../../selectors/accounts';
 import {
   getNativeTokenCachedBalanceByChainIdSelector,
@@ -44,12 +44,7 @@ export function useTokenWithBalance(
   const ticker = nativeTokenInfo?.symbol ?? 'ETH';
 
   const token = useSelector((state) =>
-    getTokenByAccountAndAddressAndChainId(
-      state,
-      selectedAccount,
-      tokenAddress,
-      chainId,
-    ),
+    selectSingleTokenByAddressAndChainId(state, tokenAddress, chainId),
   );
 
   const nativeBalances = useSelector((state) =>

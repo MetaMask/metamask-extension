@@ -4,14 +4,12 @@
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "error: Error: AggregateError": 1,
-      "warn: No tokens found for chainId:": 6,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/confirmations/signatures/permit-seaport.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "error: Error: AggregateError": 1,
-      "warn: No tokens found for chainId:": 8,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/confirmations/signatures/permit-single.test.tsx": {
@@ -19,56 +17,48 @@
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "error: Error: AggregateError": 1,
-      "warn: No tokens found for chainId:": 8,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/confirmations/signatures/permit-tradeOrder.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "error: Error: AggregateError": 1,
-      "warn: No tokens found for chainId:": 6,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/confirmations/signatures/permit.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "error: Error: AggregateError": 1,
-      "warn: No tokens found for chainId:": 11,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/confirmations/signatures/personalSign.test.tsx": {
       "Reselect: Identity function warnings": 10,
       "Reselect: Input stability warnings": 8,
       "error: Error: AggregateError": 1,
-      "warn: No tokens found for chainId:": 4,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/confirmations/transactions/alerts.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "error: Error: AggregateError": 1,
-      "warn: No tokens found for chainId:": 74,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/confirmations/transactions/contract-deployment.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "error: Error: AggregateError": 1,
-      "warn: No tokens found for chainId:": 11,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/confirmations/transactions/contract-interaction.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "error: Error: AggregateError": 1,
-      "warn: No tokens found for chainId:": 16,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/confirmations/transactions/dapp-swap-comparison-banner.test.tsx": {
       "Reselect: Identity function warnings": 9,
       "Reselect: Input stability warnings": 4,
       "error: Error: AggregateError": 1,
-      "warn: No tokens found for chainId:": 14,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/confirmations/transactions/erc20-approve.test.tsx": {
@@ -76,14 +66,12 @@
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "error: Error: AggregateError": 1,
-      "warn: No tokens found for chainId:": 39,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/confirmations/transactions/erc721-approve.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "error: Error: AggregateError": 1,
-      "warn: No tokens found for chainId:": 25,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/confirmations/transactions/increase-allowance.test.tsx": {
@@ -91,22 +79,18 @@
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "error: Error: AggregateError": 1,
-      "warn: No tokens found for chainId:": 25,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/confirmations/transactions/set-approval-for-all-revoke.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "error: Error: AggregateError": 1,
-      "warn: No tokens found for chainId:": 4,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/confirmations/transactions/set-approval-for-all.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 1,
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "error: Error: AggregateError": 1,
-      "warn: No tokens found for chainId:": 9,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/defi/defi-positions.test.tsx": {
