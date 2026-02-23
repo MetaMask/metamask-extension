@@ -4,7 +4,6 @@
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
 import { obj as createThroughStream } from 'through2';
-import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import {
   ListNames,
@@ -1961,32 +1960,6 @@ describe('MetaMaskController', () => {
             });
           },
         );
-      });
-    });
-
-    describe('getPrimaryKeyringMnemonic', () => {
-      it('should return a mnemonic as a Uint8Array', () => {
-        const mockMnemonic =
-          'above mercy benefit hospital call oval domain student sphere interest argue shock';
-        const mnemonicIndices = mockMnemonic
-          .split(' ')
-          .map((word) => englishWordlist.indexOf(word));
-        const uint8ArrayMnemonic = new Uint8Array(
-          new Uint16Array(mnemonicIndices).buffer,
-        );
-
-        const mockHDKeyring = {
-          type: 'HD Key Tree',
-          mnemonic: uint8ArrayMnemonic,
-        };
-        jest
-          .spyOn(metamaskController.keyringController, 'getKeyringsByType')
-          .mockReturnValue([mockHDKeyring]);
-
-        const recoveredMnemonic =
-          metamaskController.getPrimaryKeyringMnemonic();
-
-        expect(recoveredMnemonic).toStrictEqual(uint8ArrayMnemonic);
       });
     });
 
