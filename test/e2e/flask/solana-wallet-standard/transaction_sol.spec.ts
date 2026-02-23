@@ -3,33 +3,27 @@ import { By } from 'selenium-webdriver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { WINDOW_TITLES } from '../../constants';
 import { largeDelayMs, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import {
-  buildSolanaTestSpecificMock,
-  SOLANA_MANIFEST_FLAGS,
-  SOLANA_IGNORED_CONSOLE_ERRORS,
-} from '../../tests/solana/common-solana';
+import { buildSolanaTestSpecificMock } from '../../tests/solana/common-solana';
 import {
   clickCancelButton,
   clickConfirmButton,
   connectSolanaTestDapp,
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
 } from './testHelpers';
+import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
 
 describe('Solana Wallet Standard - Transfer SOL', function () {
   describe('Send a transaction', function () {
     it('Should send a transaction', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          manifestFlags: SOLANA_MANIFEST_FLAGS,
           testSpecificMock: buildSolanaTestSpecificMock({
             mockGetTransactionSuccess: true,
           }),
-          ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -75,14 +69,12 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
     it('Should be able to cancel a transaction and send another one', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          manifestFlags: SOLANA_MANIFEST_FLAGS,
           testSpecificMock: buildSolanaTestSpecificMock({
             mockGetTransactionSuccess: true,
           }),
-          ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -124,14 +116,12 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
       it('Should use the Devnet scope as specified by the Dapp', async function () {
         await withFixtures(
           {
-            fixtures: new FixtureBuilder().build(),
+            fixtures: new FixtureBuilderV2().build(),
             title: this.test?.fullTitle(),
             dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-            manifestFlags: SOLANA_MANIFEST_FLAGS,
             testSpecificMock: buildSolanaTestSpecificMock({
               mockGetTransactionSuccess: true,
             }),
-            ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
           },
           async ({ driver }) => {
             await loginWithBalanceValidation(driver);

@@ -1,13 +1,9 @@
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { WINDOW_TITLES } from '../../constants';
 import { largeDelayMs, veryLargeDelayMs, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import {
-  buildSolanaTestSpecificMock,
-  SOLANA_MANIFEST_FLAGS,
-  SOLANA_IGNORED_CONSOLE_ERRORS,
-} from '../../tests/solana/common-solana';
+import { buildSolanaTestSpecificMock } from '../../tests/solana/common-solana';
 import {
   account1,
   assertSignedMessageIsValid,
@@ -21,12 +17,10 @@ describe('Solana Wallet Standard - Sign Message', function () {
     it('Should sign a message', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          manifestFlags: SOLANA_MANIFEST_FLAGS,
           testSpecificMock: buildSolanaTestSpecificMock(),
-          ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);

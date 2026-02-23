@@ -5,7 +5,8 @@ import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import { SOLANA_MAINNET_SCOPE } from '../../constants';
+import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
@@ -13,6 +14,7 @@ import {
   SOLANA_IGNORED_CONSOLE_ERRORS,
   SOLANA_MANIFEST_FLAGS,
 } from './common-solana';
+import { switchToNetworkFromNetworkSelect } from 'test/e2e/page-objects/flows/network.flow';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
 
@@ -21,7 +23,7 @@ describe('Send flow', function (this: Suite) {
     this.timeout(120000);
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         manifestFlags: SOLANA_MANIFEST_FLAGS,
         testSpecificMock: buildSolanaTestSpecificMock({
@@ -34,11 +36,17 @@ describe('Send flow', function (this: Suite) {
         const homePage = new NonEvmHomepage(driver);
         const sendPage = new SendPage(driver);
 
+        // TODO: Use fixtures V2 with Solana network
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Popular',
+          'Solana',
+        );
         await homePage.checkPageIsLoaded({ amount: '0' });
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
         await sendPage.selectToken(
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          SOLANA_MAINNET_SCOPE,
           'SOL',
         );
 
@@ -61,7 +69,7 @@ describe('Send flow', function (this: Suite) {
     this.timeout(120000);
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         manifestFlags: SOLANA_MANIFEST_FLAGS,
         testSpecificMock: buildSolanaTestSpecificMock({
@@ -73,11 +81,18 @@ describe('Send flow', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
         const sendPage = new SendPage(driver);
+
+        // TODO: Use fixtures V2 with Solana network
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Popular',
+          'Solana',
+        );
         await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
         await sendPage.selectToken(
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          SOLANA_MAINNET_SCOPE,
           'SOL',
         );
 
@@ -113,7 +128,7 @@ describe('Send flow', function (this: Suite) {
     this.timeout(120000);
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         manifestFlags: SOLANA_MANIFEST_FLAGS,
         testSpecificMock: buildSolanaTestSpecificMock({
@@ -125,11 +140,18 @@ describe('Send flow', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
         const sendPage = new SendPage(driver);
+
+        // TODO: Use fixtures V2 with Solana network
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Popular',
+          'Solana',
+        );
         await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
         await sendPage.selectToken(
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          SOLANA_MAINNET_SCOPE,
           'SOL',
         );
 

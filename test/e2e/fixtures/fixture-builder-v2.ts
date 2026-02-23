@@ -1,11 +1,16 @@
 import { merge, cloneDeep } from 'lodash';
+import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { CurrencyRateState } from '@metamask/assets-controllers';
+import type {
+  MultichainNetworkControllerState,
+  SupportedCaipChainId,
+} from '@metamask/multichain-network-controller';
+import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type {
   PermissionConstraint,
   PermissionControllerState,
 } from '@metamask/permission-controller';
-import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type {
   Preferences,
   PreferencesControllerState,
@@ -48,6 +53,11 @@ class FixtureBuilderV2 {
                           GENERIC  CONTROLLER METHODS
      ==================================================================
   */
+  withAccountsController(data: Partial<AccountsControllerState>): this {
+    merge(this.fixture.data.AccountsController, data);
+    return this;
+  }
+
   withAddressBookController(data: Partial<AddressBookControllerState>): this {
     if (!this.fixture.data.AddressBookController) {
       (this.fixture.data as Record<string, unknown>).AddressBookController = {
@@ -60,6 +70,20 @@ class FixtureBuilderV2 {
 
   withCurrencyController(data: Partial<CurrencyRateState>): this {
     merge(this.fixture.data.CurrencyController, data);
+    return this;
+  }
+
+  withMultichainNetworkController(
+    data: Partial<MultichainNetworkControllerState>,
+  ): this {
+    merge(this.fixture.data.MultichainNetworkController, data);
+    return this;
+  }
+
+  withNetworkEnablementController(
+    data: Partial<NetworkEnablementControllerState>,
+  ): this {
+    merge(this.fixture.data.NetworkEnablementController, data);
     return this;
   }
 
@@ -79,53 +103,6 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withMultichainNetworkControllerOnSolana(): this {
-    merge(this.fixture.data.MultichainNetworkController, {
-      isEvmSelected: false,
-      selectedMultichainNetworkChainId: SOLANA_MAINNET_SCOPE,
-    });
-
-    // Enable only the Solana mainnet and disable all EVM networks,
-    // matching the state of a wallet that has Solana actively selected.
-    const enabledNetworkMap =
-      this.fixture.data.NetworkEnablementController.enabledNetworkMap;
-    if (enabledNetworkMap.eip155) {
-      for (const key of Object.keys(enabledNetworkMap.eip155)) {
-        (
-          enabledNetworkMap.eip155 as Record<string, boolean>
-        )[key] = false;
-      }
-    }
-    merge(this.fixture.data.NetworkEnablementController, {
-      enabledNetworkMap: {
-        solana: {
-          [SOLANA_MAINNET_SCOPE]: true,
-        },
-      },
-    });
-
-    // Select the Solana account and give it a high lastSelected timestamp
-    // so it wins any re-selection during startup.
-    const accounts = this.fixture.data.AccountsController.internalAccounts
-      .accounts as Record<string, { metadata: { lastSelected: number } }>;
-    const solanaAccount = accounts[DEFAULT_FIXTURE_SOLANA_ACCOUNT_ID];
-    if (solanaAccount) {
-      solanaAccount.metadata.lastSelected = Date.now();
-    }
-    this.fixture.data.AccountsController.internalAccounts.selectedAccount =
-      DEFAULT_FIXTURE_SOLANA_ACCOUNT_ID;
-
-    return this;
-  }
-
-  withShowNativeTokenAsMainBalanceDisabled(): this {
-    return this.withPreferencesController({
-      preferences: {
-        showNativeTokenAsMainBalance: false,
-      },
-    } as Partial<PreferencesControllerState>);
-  }
-
   /* ==================================================================
                               CUSTOM METHODS
      ==================================================================
@@ -141,6 +118,44 @@ class FixtureBuilderV2 {
   ): this {
     this.fixture.data.NetworkEnablementController.enabledNetworkMap =
       data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
+    return this;
+  }
+
+  withMultichainNetworkControllerOnSolana(): this {
+    this.withMultichainNetworkController({
+      isEvmSelected: false,
+      selectedMultichainNetworkChainId:
+        SOLANA_MAINNET_SCOPE as SupportedCaipChainId,
+    });
+
+    // Enable only the Solana mainnet and disable all EVM networks,
+    // matching the state of a wallet that has Solana actively selected.
+    const enabledNetworkMap =
+      this.fixture.data.NetworkEnablementController.enabledNetworkMap;
+    if (enabledNetworkMap.eip155) {
+      for (const key of Object.keys(enabledNetworkMap.eip155)) {
+        (enabledNetworkMap.eip155 as Record<string, boolean>)[key] = false;
+      }
+    }
+    this.withNetworkEnablementController({
+      enabledNetworkMap: {
+        solana: {
+          [SOLANA_MAINNET_SCOPE]: true,
+        },
+      },
+    } as Partial<NetworkEnablementControllerState>);
+
+    // Select the Solana account and give it a high lastSelected timestamp
+    // so it wins any re-selection during startup.
+    const accounts = this.fixture.data.AccountsController.internalAccounts
+      .accounts as Record<string, { metadata: { lastSelected: number } }>;
+    const solanaAccount = accounts[DEFAULT_FIXTURE_SOLANA_ACCOUNT_ID];
+    if (solanaAccount) {
+      solanaAccount.metadata.lastSelected = Date.now();
+    }
+    this.fixture.data.AccountsController.internalAccounts.selectedAccount =
+      DEFAULT_FIXTURE_SOLANA_ACCOUNT_ID;
+
     return this;
   }
 
@@ -204,6 +219,14 @@ class FixtureBuilderV2 {
             },
           },
         },
+      },
+    });
+  }
+
+  withShowNativeTokenAsMainBalanceDisabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        showNativeTokenAsMainBalance: false,
       },
     });
   }

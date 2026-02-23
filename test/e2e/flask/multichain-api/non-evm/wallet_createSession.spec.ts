@@ -1,7 +1,8 @@
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import { largeDelayMs, withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import { SOLANA_MAINNET_SCOPE } from '../../../constants';
+import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { addAccount } from '../../../page-objects/flows/add-account.flow';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
@@ -13,23 +14,20 @@ import {
 } from '../../../tests/solana/common-solana';
 
 describe('Multichain API - Non EVM', function () {
-  const SOLANA_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
   describe("Call `wallet_createSession` with both EVM and Solana scopes that match the user's enabled networks", function () {
     it('should only select the specified scopes requested by the user', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-          manifestFlags: SOLANA_MANIFEST_FLAGS,
           testSpecificMock: buildSolanaTestSpecificMock(),
-          ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
         },
         async ({ driver, extensionId }) => {
           await loginWithBalanceValidation(driver);
           const requestScopesToNetworkMap = {
             'eip155:1': 'Ethereum',
-            [SOLANA_SCOPE]: 'Solana',
+            [SOLANA_MAINNET_SCOPE]: 'Solana',
           };
 
           const requestScopes = Object.keys(requestScopesToNetworkMap);
@@ -86,12 +84,10 @@ describe('Multichain API - Non EVM', function () {
     it('should automatically select the current active Solana account', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-          manifestFlags: SOLANA_MANIFEST_FLAGS,
           testSpecificMock: buildSolanaTestSpecificMock(),
-          ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
         },
         async ({ driver, extensionId }) => {
           await loginWithBalanceValidation(driver);
@@ -100,7 +96,7 @@ describe('Multichain API - Non EVM', function () {
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
           await testDapp.connectExternallyConnectable(extensionId);
-          await testDapp.initCreateSessionScopes([SOLANA_SCOPE]);
+          await testDapp.initCreateSessionScopes([SOLANA_MAINNET_SCOPE]);
 
           const editButtons = await driver.findElements('[data-testid="edit"]');
           await editButtons[0].click();

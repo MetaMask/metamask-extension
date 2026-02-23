@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { isObject } from 'lodash';
-import { WINDOW_TITLES } from '../../../constants';
+import { SOLANA_MAINNET_SCOPE, WINDOW_TITLES } from '../../../constants';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../testHelpers';
 import {
@@ -9,31 +9,28 @@ import {
   SOLANA_IGNORED_CONSOLE_ERRORS,
 } from '../../../tests/solana/common-solana';
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import SnapSignInConfirmation from '../../../page-objects/pages/confirmations/snap-sign-in-confirmation';
 
 describe('Multichain API - Non EVM', function () {
-  const SOLANA_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
   describe('Calling `wallet_invokeMethod`', function () {
     describe('signIn method', function () {
       it('Should match selected method to the expected confirmation UI', async function () {
         await withFixtures(
           {
-            fixtures: new FixtureBuilder().build(),
+            fixtures: new FixtureBuilderV2().build(),
             title: this.test?.fullTitle(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-            manifestFlags: SOLANA_MANIFEST_FLAGS,
             testSpecificMock: buildSolanaTestSpecificMock(),
-            ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
           },
           async ({ driver, extensionId }) => {
             await loginWithBalanceValidation(driver);
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
             await testDapp.connectExternallyConnectable(extensionId);
-            await testDapp.initCreateSessionScopes([SOLANA_SCOPE]);
+            await testDapp.initCreateSessionScopes([SOLANA_MAINNET_SCOPE]);
             await driver.clickElementAndWaitForWindowToClose({
               text: 'Connect',
               tag: 'button',
@@ -44,7 +41,7 @@ describe('Multichain API - Non EVM', function () {
             );
 
             await testDapp.invokeMethod({
-              scope: SOLANA_SCOPE,
+              scope: SOLANA_MAINNET_SCOPE,
               method: 'signIn',
             });
 
@@ -61,21 +58,19 @@ describe('Multichain API - Non EVM', function () {
       it('Should match selected method to the expected confirmation UI', async function () {
         await withFixtures(
           {
-            fixtures: new FixtureBuilder().build(),
+            fixtures: new FixtureBuilderV2().build(),
             title: this.test?.fullTitle(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-            manifestFlags: SOLANA_MANIFEST_FLAGS,
             testSpecificMock: buildSolanaTestSpecificMock({
               mockGetTransactionSuccess: true,
             }),
-            ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
           },
           async ({ driver, extensionId }) => {
             await loginWithBalanceValidation(driver);
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
             await testDapp.connectExternallyConnectable(extensionId);
-            await testDapp.initCreateSessionScopes([SOLANA_SCOPE]);
+            await testDapp.initCreateSessionScopes([SOLANA_MAINNET_SCOPE]);
             await driver.clickElementAndWaitForWindowToClose({
               text: 'Connect',
               tag: 'button',
@@ -88,7 +83,7 @@ describe('Multichain API - Non EVM', function () {
             const invokeMethod = 'signAndSendTransaction';
 
             await testDapp.invokeMethod({
-              scope: SOLANA_SCOPE,
+              scope: SOLANA_MAINNET_SCOPE,
               method: invokeMethod,
             });
 
@@ -104,7 +99,7 @@ describe('Multichain API - Non EVM', function () {
             );
 
             const transactionResult = await testDapp.getInvokeMethodResult({
-              scope: SOLANA_SCOPE,
+              scope: SOLANA_MAINNET_SCOPE,
               method: invokeMethod,
             });
             const parsedTransactionResult = JSON.parse(transactionResult);

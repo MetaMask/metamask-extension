@@ -2,13 +2,12 @@ import { strict as assert } from 'assert';
 import {
   SOLANA_DEVNET_URL,
   buildSolanaTestSpecificMock,
-  SOLANA_MANIFEST_FLAGS,
-  SOLANA_IGNORED_CONSOLE_ERRORS,
 } from '../../tests/solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { WINDOW_TITLES } from '../../constants';
 import { regularDelayMs, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { addAccount } from '../../page-objects/flows/add-account.flow';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
@@ -23,15 +22,13 @@ import {
 
 describe('Solana Wallet Standard - e2e tests', function () {
   describe('Solana Wallet Standard - Connect & disconnect', function () {
-    it.only('Should connect and check there is existing Solana accounts in the wallet', async function () {
+    it('Should connect and check there is existing Solana accounts in the wallet', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          manifestFlags: SOLANA_MANIFEST_FLAGS,
           testSpecificMock: buildSolanaTestSpecificMock(),
-          ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -52,12 +49,10 @@ describe('Solana Wallet Standard - e2e tests', function () {
     it('Should connect when there is an existing Solana account in the wallet', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          manifestFlags: SOLANA_MANIFEST_FLAGS,
           testSpecificMock: buildSolanaTestSpecificMock(),
-          ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -83,9 +78,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
           dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          manifestFlags: SOLANA_MANIFEST_FLAGS,
           testSpecificMock: buildSolanaTestSpecificMock(),
-          ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -136,9 +129,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
           dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          manifestFlags: SOLANA_MANIFEST_FLAGS,
           testSpecificMock: buildSolanaTestSpecificMock(),
-          ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -194,9 +185,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
           dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          manifestFlags: SOLANA_MANIFEST_FLAGS,
           testSpecificMock: buildSolanaTestSpecificMock(),
-          ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -227,9 +216,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
           dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          manifestFlags: SOLANA_MANIFEST_FLAGS,
           testSpecificMock: buildSolanaTestSpecificMock(),
-          ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -270,9 +257,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
           dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          manifestFlags: SOLANA_MANIFEST_FLAGS,
           testSpecificMock: buildSolanaTestSpecificMock(),
-          ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -317,12 +302,10 @@ describe('Solana Wallet Standard - e2e tests', function () {
     it('Should not disconnect the dapp', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          manifestFlags: SOLANA_MANIFEST_FLAGS,
           testSpecificMock: buildSolanaTestSpecificMock(),
-          ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -352,9 +335,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
           dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          manifestFlags: SOLANA_MANIFEST_FLAGS,
           testSpecificMock: buildSolanaTestSpecificMock(),
-          ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -386,9 +367,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
           dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          manifestFlags: SOLANA_MANIFEST_FLAGS,
           testSpecificMock: buildSolanaTestSpecificMock(),
-          ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
