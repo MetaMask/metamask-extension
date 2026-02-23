@@ -8,7 +8,10 @@ import {
   calculateBalanceChangeForAccountGroup,
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
-import { getAggregatedBalanceForAccount } from '@metamask/assets-controller';
+import {
+  AssetsControllerState,
+  getAggregatedBalanceForAccount,
+} from '@metamask/assets-controller';
 import { CaipAssetId, isEvmAccountType } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
 import {
@@ -128,7 +131,9 @@ export function getAssetsMetadata(state: AssetsState) {
  * @param state.metamask - MetaMask slice.
  * @returns Assets info map or empty object.
  */
-export function getAssetsInfo(state: { metamask?: Record<string, unknown> }) {
+export function getAssetsInfo(state: {
+  metamask?: AssetsControllerState['assetsInfo'];
+}) {
   return state.metamask?.assetsInfo ?? {};
 }
 
@@ -139,9 +144,7 @@ export function getAssetsInfo(state: { metamask?: Record<string, unknown> }) {
  * @param state.metamask - MetaMask slice.
  * @returns Assets balance map or empty object.
  */
-export function getAssetsBalance(state: {
-  metamask?: Record<string, unknown>;
-}) {
+export function getAssetsBalance(state: { metamask?: AssetsControllerState }) {
   return state.metamask?.assetsBalance ?? {};
 }
 
@@ -152,7 +155,7 @@ export function getAssetsBalance(state: {
  * @param state.metamask - MetaMask slice.
  * @returns Assets price map or empty object.
  */
-export function getAssetsPrice(state: { metamask?: Record<string, unknown> }) {
+export function getAssetsPrice(state: { metamask?: AssetsControllerState }) {
   return state.metamask?.assetsPrice ?? {};
 }
 
@@ -164,7 +167,7 @@ export function getAssetsPrice(state: { metamask?: Record<string, unknown> }) {
  * @returns Asset preferences map or empty object.
  */
 export function getAssetPreferences(state: {
-  metamask?: Record<string, unknown>;
+  metamask?: AssetsControllerState;
 }) {
   return state.metamask?.assetPreferences ?? {};
 }
@@ -176,7 +179,7 @@ export function getAssetPreferences(state: {
  * @param state.metamask - MetaMask slice.
  * @returns Custom assets map or empty object.
  */
-export function getCustomAssets(state: { metamask?: Record<string, unknown> }) {
+export function getCustomAssets(state: { metamask?: AssetsControllerState }) {
   return state.metamask?.customAssets ?? {};
 }
 
@@ -194,7 +197,6 @@ type AggregatedBalanceState = {
 export const selectAggregatedBalanceForSelectedAccount = createSelector(
   [
     getAssetsInfo,
-    getAssetsMetadata,
     getAssetsBalance,
     getAssetsPrice,
     getAssetPreferences,
@@ -225,7 +227,6 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
   ],
   (
     assetsInfo,
-    assetsMetadata,
     assetsBalance,
     assetsPrice,
     assetPreferences,
@@ -244,30 +245,30 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
     }
     const assetsControllerState = {
       assetsInfo,
-      assetsMetadata,
       assetsBalance,
       assetsPrice,
       assetPreferences,
       customAssets,
     };
-    const accountTreeState = accountTree
+    const accountTreeState: AccountTreeControllerState | undefined = accountTree
       ? {
           accountTree,
           isAccountTreeSyncingInProgress:
             isAccountTreeSyncingInProgress ?? false,
           hasAccountTreeSyncingSyncedAtLeastOnce:
             hasAccountTreeSyncingSyncedAtLeastOnce ?? false,
-          accountGroupsMetadata: accountGroupsMetadata ?? {},
-          accountWalletsMetadata: accountWalletsMetadata ?? {},
+          accountGroupsMetadata: (accountGroupsMetadata ??
+            {}) as AccountTreeControllerState['accountGroupsMetadata'],
+          accountWalletsMetadata: (accountWalletsMetadata ??
+            {}) as AccountTreeControllerState['accountWalletsMetadata'],
         }
       : undefined;
+
     return getAggregatedBalanceForAccount(
-      assetsControllerState as unknown as Parameters<
-        typeof getAggregatedBalanceForAccount
-      >[0],
+      assetsControllerState,
       selectedInternalAccount,
       enabledNetworkMap,
-      accountTreeState as Parameters<typeof getAggregatedBalanceForAccount>[3],
+      accountTreeState,
       undefined,
       (accountsById ?? {}) as Parameters<
         typeof getAggregatedBalanceForAccount
