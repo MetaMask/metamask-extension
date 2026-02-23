@@ -11,6 +11,7 @@ import {
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_ERC4337,
   MOCK_ACCOUNT_BIP122_P2WPKH,
+  MOCK_ACCOUNT_ID_BY_ADDRESS,
 } from '../../test/data/mock-accounts';
 import mockState from '../../test/data/mock-state.json';
 import {
@@ -20,6 +21,8 @@ import {
   getInternalAccounts,
   getInternalAccountsObject,
   getInternalAccountsByScope,
+  getInternalAccountByAddress,
+  getAccountIdByAddress,
 } from './accounts';
 
 const MOCK_STATE: AccountsState = {
@@ -28,6 +31,7 @@ const MOCK_STATE: AccountsState = {
       selectedAccount: MOCK_ACCOUNT_EOA.id,
       accounts: MOCK_ACCOUNTS,
     },
+    accountIdByAddress: MOCK_ACCOUNT_ID_BY_ADDRESS,
   },
 };
 
@@ -43,6 +47,25 @@ describe('Accounts Selectors', () => {
       const result1 = getInternalAccounts(mockState as AccountsState);
       const result2 = getInternalAccounts(mockState as AccountsState);
       expect(result1 === result2).toBe(true);
+    });
+  });
+
+  describe('#getAccountIdByAddress', () => {
+    it('returns the mapping of addresses to account IDs', () => {
+      expect(getAccountIdByAddress(mockState as AccountsState)).toStrictEqual(
+        MOCK_ACCOUNT_ID_BY_ADDRESS,
+      );
+    });
+  });
+
+  describe('#getInternalAccountByAddress', () => {
+    it('returns the internal account by address', () => {
+      expect(
+        getInternalAccountByAddress(
+          mockState as AccountsState,
+          '0xa0b86991c431e50c0dd0b653aa1e8c7b7c66f5e4b',
+        ),
+      ).toStrictEqual(MOCK_ACCOUNT_EOA);
     });
   });
 
