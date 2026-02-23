@@ -61,6 +61,11 @@ const FILE_SOURCES: Array<{
     file: 'ui/selectors/multichain-accounts/feature-flags.ts',
     exportName: 'STATE_2_FLAG',
   },
+  {
+    key: 'MERKL_FEATURE_FLAG_KEY',
+    file: 'ui/components/app/musd/constants.ts',
+    exportName: 'MERKL_FEATURE_FLAG_KEY',
+  },
 ];
 
 /**
