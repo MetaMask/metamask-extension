@@ -20,6 +20,7 @@ export type ConnectedStatusProps = {
   address: string;
   isActive?: boolean;
   showConnectedStatus?: boolean;
+  hideTooltip?: boolean;
 };
 
 export type AddressConnectedSubjectMap = {
@@ -32,6 +33,7 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
   address = '',
   isActive,
   showConnectedStatus = true,
+  hideTooltip = false,
 }): JSX.Element => {
   const t = useI18nContext();
 
@@ -91,6 +93,7 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
       text={tooltipText}
       isConnectedAndNotActive={connectedAndNotActive}
       showConnectedStatus={showConnectedStatus}
+      hideTooltip={hideTooltip}
     />
   );
 };

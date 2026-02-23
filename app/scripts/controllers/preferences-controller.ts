@@ -22,6 +22,7 @@ import {
   DEFAULT_AUTO_LOCK_TIME_LIMIT,
   ThemeType,
 } from '../../../shared/constants/preferences';
+import { type DefaultAddressScope } from '../../../shared/constants/default-address';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import { FALLBACK_LOCALE } from '../../../shared/modules/i18n';
 
@@ -97,12 +98,14 @@ type PreferencesControllerOptions = {
 export type Preferences = {
   autoLockTimeLimit?: number;
   avatarType?: 'maskicon' | 'jazzicon' | 'blockies';
+  defaultAddressScope: DefaultAddressScope;
   dismissSmartAccountSuggestionEnabled: boolean;
   featureNotificationsEnabled: boolean;
   hideZeroBalanceTokens: boolean;
   petnamesEnabled: boolean;
   privacyMode: boolean;
   showConfirmationAdvancedDetails: boolean;
+  showDefaultAddress: boolean;
   showExtensionInFullSizeView: boolean;
   showFiatInTestnets: boolean;
   showMultiRpcModal: boolean;
@@ -208,6 +211,8 @@ export const getDefaultPreferencesControllerState =
       petnamesEnabled: true,
       privacyMode: false,
       showConfirmationAdvancedDetails: false,
+      showDefaultAddress: false,
+      defaultAddressScope: 'eip155',
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
       showMultiRpcModal: false,
@@ -1023,6 +1028,18 @@ export class PreferencesController extends BaseController<
   setUseSidePanelAsDefault(value: boolean): void {
     this.update((state) => {
       state.preferences.useSidePanelAsDefault = value;
+    });
+  }
+
+  setShowDefaultAddress(value: boolean): void {
+    this.update((state) => {
+      state.preferences.showDefaultAddress = value;
+    });
+  }
+
+  setDefaultAddressScope(value: DefaultAddressScope): void {
+    this.update((state) => {
+      state.preferences.defaultAddressScope = value;
     });
   }
 
