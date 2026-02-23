@@ -447,12 +447,16 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
  */
 export async function rewriteReport(report) {
   try {
-    const eventId = report?.event_id;
-    const metaMetricsId = await getMetaMetricsId(eventId);
-    if (metaMetricsId) {
-      report.user = { id: metaMetricsId };
+    try {
+      const eventId = report?.event_id;
+      const metaMetricsId = await getMetaMetricsId(eventId);
+      if (metaMetricsId) {
+        report.user = { id: metaMetricsId };
+      }
+      deleteMetaMetricsForEventId(eventId);
+    } catch (metaMetricsErr) {
+      log('MetaMetrics lookup failed, skipping user id', metaMetricsErr);
     }
-    deleteMetaMetricsForEventId(eventId);
 
     // simplify certain complex error messages (e.g. Ethjs)
     simplifyErrorMessages(report);
