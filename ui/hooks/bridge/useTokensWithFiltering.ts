@@ -266,6 +266,16 @@ export const useTokensWithFiltering = (
           }
           if (shouldAddToken(token.symbol, token.address, token.chainId)) {
             if (isNativeAddress(token.address) || token.isNative) {
+              const nativeAsset = getNativeAssetForChainIdSafe(token.chainId);
+              let assetImageUrl: string | undefined;
+              try {
+                assetImageUrl = getAssetImageUrl(
+                  token.address,
+                  formatChainIdToCaip(token.chainId),
+                );
+              } catch (err) {
+                assetImageUrl = undefined;
+              }
               yield {
                 symbol: token.symbol,
                 chainId: token.chainId,
@@ -282,24 +292,8 @@ export const useTokensWithFiltering = (
                   MULTICHAIN_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
                   ] ??
-                  (() => {
-                    try {
-                      return (
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string must fall through (https://github.com/MetaMask/metamask-extension/issues/31880)
-                        getNativeAssetForChainIdSafe(token.chainId)?.icon ||
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string must fall through (https://github.com/MetaMask/metamask-extension/issues/31880)
-                        getNativeAssetForChainIdSafe(token.chainId)?.iconUrl ||
-                        getAssetImageUrl(
-                          token.address,
-                          formatChainIdToCaip(token.chainId),
-                        )
-                      );
-                    } catch {
-                      return undefined;
-                    }
-                  })(),
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string must fall through (https://github.com/MetaMask/metamask-extension/issues/31880)
+                  (nativeAsset?.icon || nativeAsset?.iconUrl || assetImageUrl),
                 accountType: token.accountType,
               };
             } else {
