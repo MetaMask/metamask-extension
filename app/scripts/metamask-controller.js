@@ -4468,7 +4468,9 @@ export default class MetamaskController extends EventEmitter {
         });
 
         // Run data type migration before adding new SRP to ensure data consistency.
-        await this._runSeedlessOnboardingMigrations();
+        await this._runSeedlessOnboardingMigrations({
+          reportToSentry: false,
+        });
 
         await this.seedlessOnboardingController.addNewSecretData(
           seedPhraseAsUint8Array,
@@ -8170,9 +8172,12 @@ export default class MetamaskController extends EventEmitter {
    * version tracking and migration logic. Called before adding new secret data
    * to ensure data type consistency and correct ordering.
    *
+   * @param {object} options - Migration execution options.
+   * @param {boolean} [options.reportToSentry] - Whether to capture migration failures in Sentry. Defaults to true.
    * @returns {Promise<void>}
    */
-  async _runSeedlessOnboardingMigrations() {
+  async _runSeedlessOnboardingMigrations(options = {}) {
+    const { reportToSentry = true } = options;
     const { completedOnboarding } = this.onboardingController.state;
 
     if (!completedOnboarding) {
@@ -8197,20 +8202,38 @@ export default class MetamaskController extends EventEmitter {
     } catch (error) {
       const isError = error instanceof Error;
       const errorMessage = isError ? error.message : 'Unknown error';
+      const migrationError = isError ? error : new Error(errorMessage);
 
-      this.metaMetricsController.trackEvent({
-        event: MetaMetricsEventName.SeedlessOnboardingMigrationFailed,
-        category: MetaMetricsEventCategory.Background,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          migration_version:
-            this.seedlessOnboardingController.state?.migrationVersion,
-          error: errorMessage,
-        },
-      });
-      captureException(isError ? error : new Error(errorMessage));
+      try {
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.SeedlessOnboardingMigrationFailed,
+          category: MetaMetricsEventCategory.Background,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            migration_version:
+              this.seedlessOnboardingController.state?.migrationVersion,
+            error: errorMessage,
+          },
+        });
+      } catch (metaMetricsError) {
+        log.warn(
+          'Failed to track seedless onboarding migration failure',
+          metaMetricsError,
+        );
+      }
 
-      throw error;
+      if (reportToSentry) {
+        try {
+          captureException(migrationError);
+        } catch (sentryError) {
+          log.warn(
+            'Failed to capture seedless onboarding migration failure',
+            sentryError,
+          );
+        }
+      }
+
+      throw migrationError;
     }
   }
 
