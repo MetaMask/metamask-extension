@@ -114,7 +114,7 @@ function RestoreVaultPage() {
       flexDirection={BoxFlexDirection.Column}
       justifyContent={BoxJustifyContent.Between}
       gap={4}
-      className="import-srp-restore-vault h-full rounded-lg"
+      className="import-srp-restore-vault h-full rounded-lg border border-solid"
       data-testid="import-srp-restore-vault"
       borderColor={BoxBorderColor.BorderMuted}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}

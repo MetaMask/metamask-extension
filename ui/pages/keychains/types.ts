@@ -15,13 +15,6 @@ export type RevealSeedLocationState = {
 };
 
 /**
- * Route params for keychains (e.g. keyring ID for multi-SRP).
- */
-export type KeychainsParams = {
-  keyringId?: string;
-};
-
-/**
  * Single quiz question configuration.
  */
 export type QuizQuestionConfig = {

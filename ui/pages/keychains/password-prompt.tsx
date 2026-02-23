@@ -56,7 +56,7 @@ export function PasswordPrompt({
           endAccessory={
             <ButtonIcon
               iconName={showPassword ? IconName.EyeSlash : IconName.Eye}
-              ariaLabel={showPassword ? 'Hide password' : 'Show password'}
+              ariaLabel={showPassword ? t('passwordToggleHide') : t('passwordToggleShow')}
               onClick={onTogglePasswordVisibility}
               iconProps={{
                 color: IconColor.IconAlternative,
