@@ -83,9 +83,7 @@ export function setupLongTaskObserver(sampleRate: number = 0.1): () => void {
   }
 
   if (!('PerformanceObserver' in globalThis)) {
-    console.warn(
-      '[Performance] PerformanceObserver not supported, skipping Long Task observation',
-    );
+    // Silent no-op in non-browser environments (Node/Jest)
     return () => {
       // No-op cleanup
     };
