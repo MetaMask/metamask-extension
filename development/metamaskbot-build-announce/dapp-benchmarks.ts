@@ -2,8 +2,8 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { mean as calculateMean } from 'lodash';
 import {
-  BenchmarkMetrics,
   BenchmarkSummary,
+  NumericBenchmarkMetrics,
 } from '../../test/e2e/page-objects/benchmark/dapp-page-load-benchmark';
 
 export type BenchmarkOutput = {
@@ -94,12 +94,12 @@ export function aggregateHistoricalBenchmarkData(
     const pageData: BenchmarkSummary = {
       page: pageName,
       samples: 0, // Not used downstream
-      mean: {} as BenchmarkMetrics,
-      standardDeviation: {} as BenchmarkMetrics,
-      min: {} as BenchmarkMetrics,
-      max: {} as BenchmarkMetrics,
-      p95: {} as BenchmarkMetrics,
-      p99: {} as BenchmarkMetrics,
+      mean: {},
+      standardDeviation: {},
+      min: {},
+      max: {},
+      p95: {},
+      p99: {},
     };
 
     // Collect mean values for key metrics across all commits
@@ -113,9 +113,7 @@ export function aggregateHistoricalBenchmarkData(
         // Only collect key metrics
         Object.values(KeyMetrics).forEach((metricKey) => {
           const metricValue =
-            pageSummary.mean[
-              metricKey as keyof Omit<BenchmarkMetrics, 'memoryUsage'>
-            ];
+            pageSummary.mean[metricKey as keyof NumericBenchmarkMetrics];
           if (typeof metricValue === 'number') {
             if (!metricMeans[metricKey]) {
               metricMeans[metricKey] = [];
@@ -132,7 +130,7 @@ export function aggregateHistoricalBenchmarkData(
       if (values.length > 0) {
         const calculatedMean = calculateMean(values);
         pageData.mean[
-          metricKey as keyof Omit<BenchmarkMetrics, 'memoryUsage'>
+          metricKey as keyof NumericBenchmarkMetrics
         ] = calculatedMean;
       }
     });
@@ -329,10 +327,10 @@ export function getMetricValues(
   metric: string,
 ): { mean: number; stdDev: number } | null {
   const meanValue =
-    summary.mean[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
+    summary.mean[metric as keyof NumericBenchmarkMetrics];
   const stdDevValue =
     summary.standardDeviation[
-      metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>
+      metric as keyof NumericBenchmarkMetrics
     ];
 
   if (typeof meanValue !== 'number') {
@@ -478,13 +476,13 @@ export function generateBenchmarkComment(
       }
 
       const minValue =
-        pageSummary.min[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
+        pageSummary.min[metric as keyof NumericBenchmarkMetrics];
       const maxValue =
-        pageSummary.max[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
+        pageSummary.max[metric as keyof NumericBenchmarkMetrics];
       const p95Value =
-        pageSummary.p95[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
+        pageSummary.p95[metric as keyof NumericBenchmarkMetrics];
       const p99Value =
-        pageSummary.p99[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
+        pageSummary.p99[metric as keyof NumericBenchmarkMetrics];
 
       comment += `| ${metric} | ${formatTime(currentValues.mean)} | ${formatTime(currentValues.stdDev)} | ${formatTime(minValue || 0)} | ${formatTime(maxValue || 0)} | ${formatTime(p95Value || 0)} | ${formatTime(p99Value || 0)} |\n`;
     }

@@ -94,6 +94,15 @@ export type BenchmarkMetrics = {
 };
 
 /**
+ * Numeric-only benchmark metrics for statistical aggregation.
+ * Excludes object-typed properties (memoryUsage, longTaskMetrics).
+ */
+export type NumericBenchmarkMetrics = Omit<
+  BenchmarkMetrics,
+  'memoryUsage' | 'longTaskMetrics'
+>;
+
+/**
  * Individual benchmark measurement result for a single page load test.
  * Contains the raw performance metrics for one specific test run.
  */
@@ -118,17 +127,17 @@ export type BenchmarkSummary = {
   /** Number of test samples collected for this page */
   samples: number;
   /** Mean (average) values for each performance metric */
-  mean: Partial<BenchmarkMetrics>;
+  mean: Partial<NumericBenchmarkMetrics>;
   /** 95th percentile values for each performance metric */
-  p95: Partial<BenchmarkMetrics>;
+  p95: Partial<NumericBenchmarkMetrics>;
   /** 99th percentile values for each performance metric */
-  p99: Partial<BenchmarkMetrics>;
+  p99: Partial<NumericBenchmarkMetrics>;
   /** Minimum values for each performance metric */
-  min: Partial<BenchmarkMetrics>;
+  min: Partial<NumericBenchmarkMetrics>;
   /** Maximum values for each performance metric */
-  max: Partial<BenchmarkMetrics>;
+  max: Partial<NumericBenchmarkMetrics>;
   /** Standard deviation values for each performance metric */
-  standardDeviation: Partial<BenchmarkMetrics>;
+  standardDeviation: Partial<NumericBenchmarkMetrics>;
 };
 
 /**
@@ -453,10 +462,9 @@ export class PageLoadBenchmark {
 
     for (const [page, pageResults] of Object.entries(resultsByPage)) {
       const metrics = pageResults.map((r) => r.metrics);
-      const metricKeys = Object.keys(metrics[0]) as (keyof Omit<
-        BenchmarkMetrics,
-        'memoryUsage'
-      >)[];
+      const metricKeys = Object.keys(metrics[0]).filter(
+        (k) => k !== 'memoryUsage' && k !== 'longTaskMetrics',
+      ) as (keyof NumericBenchmarkMetrics)[];
 
       const summary: BenchmarkSummary = {
         page,
