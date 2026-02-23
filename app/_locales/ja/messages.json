@@ -3612,9 +3612,6 @@
   "lock": {
     "message": "ロック"
   },
-  "lockMetaMask": {
-    "message": "MetaMaskをロック"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMaskをロックしています…"
   },
