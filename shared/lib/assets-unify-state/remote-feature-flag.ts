@@ -1,5 +1,7 @@
 import { hasMinimumRequiredVersion } from '../feature-flags/version-gating';
 
+export const ASSETS_UNIFY_STATE_FLAG = 'assetsUnifyState';
+
 export const ASSETS_UNIFY_STATE_VERSION_1 = '1';
 
 export type AssetsUnifyStateFeatureFlag = {

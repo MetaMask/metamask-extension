@@ -12,6 +12,7 @@ import {
   isAssetsUnifyStateFeatureEnabled,
   ASSETS_UNIFY_STATE_VERSION_1,
   type AssetsUnifyStateFeatureFlag,
+  ASSETS_UNIFY_STATE_FLAG,
 } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { type ControllerInitFunction } from '../types';
 import {
@@ -22,8 +23,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-
-const ASSETS_UNIFY_STATE_FLAG = 'assetsUnifyState';
 
 /**
  * Cached API client instance.
