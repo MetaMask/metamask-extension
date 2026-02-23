@@ -14,31 +14,41 @@ describe('getFallbackBlockedRegions', () => {
 
   it('returns empty array when MM_PERPS_BLOCKED_REGIONS is not set', async () => {
     delete process.env.MM_PERPS_BLOCKED_REGIONS;
-    const { getFallbackBlockedRegions } = await import('./getPerpsController.js');
+    const { getFallbackBlockedRegions } = await import(
+      './getPerpsController.js'
+    );
     expect(getFallbackBlockedRegions()).toEqual([]);
   });
 
   it('returns empty array when MM_PERPS_BLOCKED_REGIONS is empty string', async () => {
     process.env.MM_PERPS_BLOCKED_REGIONS = '';
-    const { getFallbackBlockedRegions } = await import('./getPerpsController.js');
+    const { getFallbackBlockedRegions } = await import(
+      './getPerpsController.js'
+    );
     expect(getFallbackBlockedRegions()).toEqual([]);
   });
 
   it('parses comma-separated region codes', async () => {
     process.env.MM_PERPS_BLOCKED_REGIONS = 'US,CA-ON,GB,BE';
-    const { getFallbackBlockedRegions } = await import('./getPerpsController.js');
+    const { getFallbackBlockedRegions } = await import(
+      './getPerpsController.js'
+    );
     expect(getFallbackBlockedRegions()).toEqual(['US', 'CA-ON', 'GB', 'BE']);
   });
 
   it('trims whitespace around region codes', async () => {
     process.env.MM_PERPS_BLOCKED_REGIONS = ' US , CA-ON , GB ';
-    const { getFallbackBlockedRegions } = await import('./getPerpsController.js');
+    const { getFallbackBlockedRegions } = await import(
+      './getPerpsController.js'
+    );
     expect(getFallbackBlockedRegions()).toEqual(['US', 'CA-ON', 'GB']);
   });
 
   it('filters out empty segments', async () => {
     process.env.MM_PERPS_BLOCKED_REGIONS = 'US,,CA-ON,,';
-    const { getFallbackBlockedRegions } = await import('./getPerpsController.js');
+    const { getFallbackBlockedRegions } = await import(
+      './getPerpsController.js'
+    );
     expect(getFallbackBlockedRegions()).toEqual(['US', 'CA-ON']);
   });
 });
