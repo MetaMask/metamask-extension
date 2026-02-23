@@ -37,9 +37,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   getIsWatchEthereumAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   getIsBitcoinSupportEnabled,
-  ///: END:ONLY_INCLUDE_IF
   getIsSolanaSupportEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
   getIsTronSupportEnabled,
@@ -105,10 +103,8 @@ export const ACTION_MODES = {
   // Displays the add account form controls (for watch-only account)
   ADD_WATCH_ONLY: 'add-watch-only',
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   // Displays the add account form controls (for bitcoin account)
   ADD_BITCOIN: 'add-bitcoin',
-  ///: END:ONLY_INCLUDE_IF
   // Displays the add account form controls (for solana account)
   ADD_SOLANA: 'add-solana',
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
@@ -165,10 +161,8 @@ export const getActionTitle = (
     case ACTION_MODES.ADD_WATCH_ONLY:
       return t('addAccountFromNetwork', [t('networkNameEthereum')]);
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     case ACTION_MODES.ADD_BITCOIN:
       return t('addAccountFromNetwork', [t('networkNameBitcoin')]);
-    ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.ADD_SOLANA:
       return t('addAccountFromNetwork', [t('networkNameSolana')]);
     ///: BEGIN:ONLY_INCLUDE_IF(tron)
@@ -250,12 +244,10 @@ export const AccountMenu = ({
   }, [trackEvent, hdEntropyIndex, onClose, navigate]);
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
   const bitcoinWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Bitcoin,
   );
-  ///: END:ONLY_INCLUDE_IF
 
   const solanaSupportEnabled = useSelector(getIsSolanaSupportEnabled);
   const solanaWalletSnapClient = useMultichainWalletSnapClient(
@@ -484,34 +476,30 @@ export const AccountMenu = ({
                 </ButtonLink>
               </Box>
             )}
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-              bitcoinSupportEnabled && (
-                <Box marginTop={4}>
-                  <ButtonLink
-                    size={ButtonLinkSize.Sm}
-                    startIconName={IconName.Add}
-                    startIconProps={{ size: IconSize.Md }}
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                    onClick={async () => {
-                      return await handleMultichainSnapAccountCreation(
-                        bitcoinWalletSnapClient,
-                        {
-                          scope: MultichainNetworks.BITCOIN,
-                          entropySource: primaryKeyring.metadata.id,
-                        },
-                        ACTION_MODES.ADD_BITCOIN,
-                      );
-                    }}
-                    data-testid="multichain-account-menu-popover-add-btc-account"
-                  >
-                    {t('addBitcoinAccountLabel')}
-                  </ButtonLink>
-                </Box>
-              )
-              ///: END:ONLY_INCLUDE_IF
-            }
+            {bitcoinSupportEnabled && (
+              <Box marginTop={4}>
+                <ButtonLink
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Add}
+                  startIconProps={{ size: IconSize.Md }}
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                  onClick={async () => {
+                    return await handleMultichainSnapAccountCreation(
+                      bitcoinWalletSnapClient,
+                      {
+                        scope: MultichainNetworks.BITCOIN,
+                        entropySource: primaryKeyring.metadata.id,
+                      },
+                      ACTION_MODES.ADD_BITCOIN,
+                    );
+                  }}
+                  data-testid="multichain-account-menu-popover-add-btc-account"
+                >
+                  {t('addBitcoinAccountLabel')}
+                </ButtonLink>
+              </Box>
+            )}
 
             {
               ///: BEGIN:ONLY_INCLUDE_IF(tron)
@@ -641,38 +629,36 @@ export const AccountMenu = ({
                 {t('addHardwareWalletLabel')}
               </ButtonLink>
             </Box>
-            {
-              addSnapAccountEnabled ? (
-                <Box marginTop={4}>
-                  <ButtonLink
-                    size={ButtonLinkSize.Sm}
-                    startIconName={IconName.Snaps}
-                    startIconProps={{ size: IconSize.Md }}
-                    onClick={() => {
-                      onClose();
-                      trackEvent({
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.AccountAddSelected,
-                        properties: {
-                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
-                          account_type: MetaMetricsEventAccountType.Snap,
-                          location: 'Main Menu',
-                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
-                          hd_entropy_index: hdEntropyIndex,
-                        },
-                      });
-                      global.platform.openTab({
-                        url: process.env.ACCOUNT_SNAPS_DIRECTORY_URL as string,
-                      });
-                    }}
-                  >
-                    {t('settingAddSnapAccount')}
-                  </ButtonLink>
-                </Box>
-              ) : null
-            }
+            {addSnapAccountEnabled ? (
+              <Box marginTop={4}>
+                <ButtonLink
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Snaps}
+                  startIconProps={{ size: IconSize.Md }}
+                  onClick={() => {
+                    onClose();
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Navigation,
+                      event: MetaMetricsEventName.AccountAddSelected,
+                      properties: {
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        account_type: MetaMetricsEventAccountType.Snap,
+                        location: 'Main Menu',
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        hd_entropy_index: hdEntropyIndex,
+                      },
+                    });
+                    global.platform.openTab({
+                      url: process.env.ACCOUNT_SNAPS_DIRECTORY_URL as string,
+                    });
+                  }}
+                >
+                  {t('settingAddSnapAccount')}
+                </ButtonLink>
+              </Box>
+            ) : null}
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
               isAddWatchEthereumAccountEnabled && (

@@ -26,9 +26,7 @@ import {
 } from '../../../../hooks/accounts/useMultichainWalletSnapClient';
 import {
   getIsSolanaSupportEnabled,
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   getIsBitcoinSupportEnabled,
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
   getIsTronSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
@@ -45,9 +43,7 @@ export const WalletDetailsAccountTypeSelection: React.FC<
   WalletDetailsAccountTypeSelectionProps
 > = ({ onAccountTypeSelect, onClose }) => {
   const t = useI18nContext();
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
-  ///: END:ONLY_INCLUDE_IF
   const solanaSupportEnabled = useSelector(getIsSolanaSupportEnabled);
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
   const tronSupportEnabled = useSelector(getIsTronSupportEnabled);
@@ -106,21 +102,17 @@ export const WalletDetailsAccountTypeSelection: React.FC<
               {t('addNewSolanaAccountLabel')}
             </ButtonLink>
           )}
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-            bitcoinSupportEnabled && (
-              <ButtonLink
-                size={ButtonLinkSize.Sm}
-                startIconName={IconName.Add}
-                startIconProps={{ size: IconSize.Md }}
-                onClick={() => onAccountTypeSelect(WalletClientType.Bitcoin)}
-                data-testid="wallet-details-add-bitcoin-account"
-              >
-                {t('addBitcoinAccountLabel')}
-              </ButtonLink>
-            )
-            ///: END:ONLY_INCLUDE_IF
-          }
+          {bitcoinSupportEnabled && (
+            <ButtonLink
+              size={ButtonLinkSize.Sm}
+              startIconName={IconName.Add}
+              startIconProps={{ size: IconSize.Md }}
+              onClick={() => onAccountTypeSelect(WalletClientType.Bitcoin)}
+              data-testid="wallet-details-add-bitcoin-account"
+            >
+              {t('addBitcoinAccountLabel')}
+            </ButtonLink>
+          )}
           {
             ///: BEGIN:ONLY_INCLUDE_IF(tron)
             tronSupportEnabled && (

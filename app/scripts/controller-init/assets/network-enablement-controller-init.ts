@@ -5,9 +5,7 @@ import {
 import { NetworkState } from '@metamask/network-controller';
 import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcScope,
-  ///: END:ONLY_INCLUDE_IF
   SolAccountType,
   SolScope,
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
@@ -119,10 +117,7 @@ const generateDefaultNetworkEnablementControllerState = (
   }
 
   const enabledMultichainNetworks: string[] = [SolScope.Mainnet];
-
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   enabledMultichainNetworks.push(BtcScope.Mainnet);
-  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
   enabledMultichainNetworks.push(TrxScope.Mainnet);
@@ -193,15 +188,12 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
           scopes: [SolScope.Mainnet],
         },
       );
-
-      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       const btcAccounts = initMessenger.call(
         'AccountTreeController:getAccountsFromSelectedAccountGroup',
         {
           scopes: [BtcScope.Mainnet],
         },
       );
-      ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(tron)
       const trxAccounts = initMessenger.call(
@@ -225,12 +217,9 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
         if (chainId === SolScope.Mainnet && solAccounts.length === 0) {
           shouldEnableMainnetNetworks = true;
         }
-
-        ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
         if (chainId === BtcScope.Mainnet && btcAccounts.length === 0) {
           shouldEnableMainnetNetworks = true;
         }
-        ///: END:ONLY_INCLUDE_IF
 
         ///: BEGIN:ONLY_INCLUDE_IF(tron)
         if (chainId === TrxScope.Mainnet && trxAccounts.length === 0) {

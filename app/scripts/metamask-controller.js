@@ -63,9 +63,7 @@ import {
   isEvmAccountType,
   SolAccountType,
   EthScope,
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcScope,
-  ///: END:ONLY_INCLUDE_IF
   SolScope,
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
   TrxScope,
@@ -205,9 +203,7 @@ import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
-///: END:ONLY_INCLUDE_IF
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: BEGIN:ONLY_INCLUDE_IF(tron)
 import { TRON_WALLET_SNAP_ID } from '../../shared/lib/accounts/tron-wallet-snap';
@@ -5110,7 +5106,6 @@ export default class MetamaskController extends EventEmitter {
         Tron: 0,
       };
 
-      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       const btcClient = await this._getMultichainWalletSnapClient(
         BITCOIN_WALLET_SNAP_ID,
       );
@@ -5129,7 +5124,6 @@ export default class MetamaskController extends EventEmitter {
           synchronize: false,
         });
       }
-      ///: END:ONLY_INCLUDE_IF
 
       if (shouldImportSolanaAccount) {
         const solanaClient = await this._getMultichainWalletSnapClient(

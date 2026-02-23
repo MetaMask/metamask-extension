@@ -13,9 +13,7 @@ export const getIsBitcoinSupportEnabled = createSelector(
   ({ bitcoinAccounts }) => {
     // When bitcoin is not enabled, always return false
     let enabled = false;
-    ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     enabled = isMultichainFeatureEnabled(bitcoinAccounts);
-    ///: END:ONLY_INCLUDE_IF
     return enabled;
   },
 );
