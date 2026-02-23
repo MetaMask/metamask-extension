@@ -414,6 +414,7 @@ export const completeCreateNewWalletOnboardingFlow = async ({
   await handleSidepanelPostOnboarding(driver);
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
+  await homePage.waitForLoadingOverlayToDisappear();
 };
 
 /**
@@ -608,12 +609,13 @@ export const completeVaultRecoveryOnboardingFlow = async ({
 
   await handleSidepanelPostOnboarding(driver);
 
-  const homePage = new HomePage(driver);
-  await homePage.checkPageIsLoaded();
-
   // Because our state was reset, and the flow skips the welcome screen, we now
-  // need to accept the terms of use again
+  // need to accept the terms of use again. Must handle this BEFORE checking
+  // homepage is loaded, as the modal blocks the homepage elements.
   const updateTermsOfUseModal = new TermsOfUseUpdateModal(driver);
   await updateTermsOfUseModal.checkPageIsLoaded();
   await updateTermsOfUseModal.confirmAcceptTermsOfUseUpdate();
+
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
 };
