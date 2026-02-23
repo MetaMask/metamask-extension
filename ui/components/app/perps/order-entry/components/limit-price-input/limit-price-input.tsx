@@ -9,6 +9,7 @@ import {
   BoxAlignItems,
   FontWeight,
   ButtonBase,
+  ButtonBaseSize,
 } from '@metamask/design-system-react';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import {
@@ -117,17 +118,17 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
         }
         endAccessory={
           <ButtonBase
+            size={ButtonBaseSize.Sm}
             onClick={handleMidClick}
-            className="px-2 py-1 rounded text-sm bg-muted hover:bg-muted-hover"
+            className="bg-transparent rounded-none px-2 min-w-0 h-auto"
             data-testid="limit-price-mid-button"
+            textProps={{
+              color: TextColor.PrimaryDefault,
+              fontWeight: FontWeight.Medium,
+              variant: TextVariant.BodySm,
+            }}
           >
-            <Text
-              variant={TextVariant.BodySm}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.TextAlternative}
-            >
-              {t('perpsMid')}
-            </Text>
+            {t('perpsMid')}
           </ButtonBase>
         }
       />
