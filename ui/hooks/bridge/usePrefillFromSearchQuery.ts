@@ -64,7 +64,7 @@ const fetchAssetMetadata = async (
  * toChainId, and toToken from the URL search params.
  * It also clear the search params after setting the values.
  */
-export const useBridgeQueryParams = () => {
+export const usePrefillFromSearchQuery = () => {
   const dispatch = useDispatch();
   const fromToken = useSelector(getFromToken);
 

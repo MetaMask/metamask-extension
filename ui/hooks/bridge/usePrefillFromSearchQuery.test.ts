@@ -10,13 +10,13 @@ import * as assetUtils from '../../../shared/lib/asset-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 
-import { useBridgeQueryParams } from './useBridgeQueryParams';
+import { usePrefillFromSearchQuery } from './usePrefillFromSearchQuery';
 
 // Helper hook that combines useBridgeQueryParams with useLocation
 // so we can inspect the router state from the same v6 context
 const useBridgeQueryParamsWithLocation = () => {
   const location = useLocation();
-  useBridgeQueryParams();
+  usePrefillFromSearchQuery();
   return { location };
 };
 

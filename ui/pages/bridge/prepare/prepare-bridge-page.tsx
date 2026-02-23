@@ -91,7 +91,7 @@ import { Toast, ToastContainer } from '../../../components/multichain';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
+import { usePrefillFromSearchQuery } from '../../../hooks/bridge/usePrefillFromSearchQuery';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
@@ -358,7 +358,7 @@ const PrepareBridgePage = ({
     }
   }, []);
 
-  useBridgeQueryParams();
+  usePrefillFromSearchQuery();
 
   const [showBlockExplorerToast, setShowBlockExplorerToast] = useState(false);
   const [blockExplorerToken, setBlockExplorerToken] =
