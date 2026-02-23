@@ -27,14 +27,18 @@ import {
   PERPS_MARKET_LIST_ROUTE,
 } from '../../helpers/constants/routes';
 import {
-  mockPositions,
-  mockOrders,
-  mockCryptoMarkets,
-  mockHip3Markets,
-} from '../../components/app/perps/mocks';
+  usePerpsLivePositions,
+  usePerpsLiveOrders,
+  usePerpsLiveMarketData,
+} from '../../hooks/perps/stream';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import { PerpsMarketBalanceActions } from '../../components/app/perps/perps-market-balance-actions';
 import { getDisplayName } from '../../components/app/perps/utils';
+import {
+  PerpsBalanceActionsSkeleton,
+  PerpsHomeCardSkeleton,
+} from '../../components/app/perps/perps-skeletons';
+import { Skeleton } from '../../components/component-library/skeleton';
 import { PerpsTutorialModal } from '../../components/app/perps/perps-tutorial-modal';
 import { setTutorialModalOpen } from '../../ducks/perps';
 
@@ -56,25 +60,39 @@ const PerpsHomePage: React.FC = () => {
   const dispatch = useDispatch();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
 
-  // Filter positions (only crypto for now, limit to 3)
-  const positions = useMemo(() => {
-    return mockPositions.filter((pos) => !pos.coin.includes(':')).slice(0, 3);
-  }, []);
+  // Use stream hooks for real-time data
+  const { positions: allPositions, isInitialLoading: positionsLoading } =
+    usePerpsLivePositions();
+  const { orders: allOrders, isInitialLoading: ordersLoading } =
+    usePerpsLiveOrders();
+  const {
+    cryptoMarkets: allCryptoMarkets,
+    hip3Markets: allHip3Markets,
+    isInitialLoading: marketsLoading,
+  } = usePerpsLiveMarketData();
 
-  // Filter open orders (limit to 5)
+  const isLoading = positionsLoading || ordersLoading || marketsLoading;
+
+  // Filter positions (only crypto for now)
+  const positions = useMemo(() => {
+    return allPositions;
+  }, [allPositions]);
+
+  // Filter to user-placed limit orders resting on the orderbook.
+  // Excludes position-attached orders (TP/SL triggers, reduce-only, etc.)
   const openOrders = useMemo(() => {
-    return mockOrders.filter((order) => order.status === 'open').slice(0, 5);
-  }, []);
+    return allOrders.filter((order) => order.status === 'open');
+  }, [allOrders]);
 
   // Filter crypto markets (limit to 5)
   const cryptoMarkets = useMemo(() => {
-    return mockCryptoMarkets.slice(0, 5);
-  }, []);
+    return allCryptoMarkets.slice(0, 5);
+  }, [allCryptoMarkets]);
 
   // Filter HIP-3 markets (stocks and commodities, limit to 5)
   const hip3Markets = useMemo(() => {
-    return mockHip3Markets.slice(0, 5);
-  }, []);
+    return allHip3Markets.slice(0, 5);
+  }, [allHip3Markets]);
 
   // Navigation handlers
   const handleBackClick = useCallback(() => {
@@ -155,21 +173,78 @@ const PerpsHomePage: React.FC = () => {
 
       {/* Balance Actions */}
       <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-        <PerpsMarketBalanceActions
-          onAddFunds={() => {
-            // TODO: Navigate to add funds flow
-          }}
-          onWithdraw={() => {
-            // TODO: Navigate to withdraw flow
-          }}
-          onLearnMore={() => {
-            // TODO: Navigate to learn more
-          }}
-        />
+        {isLoading ? (
+          <PerpsBalanceActionsSkeleton />
+        ) : (
+          <PerpsMarketBalanceActions
+            onAddFunds={() => {
+              // TODO: Navigate to add funds flow
+            }}
+            onWithdraw={() => {
+              // TODO: Navigate to withdraw flow
+            }}
+            onLearnMore={() => {
+              // TODO: Navigate to learn more
+            }}
+          />
+        )}
       </Box>
 
+      {/* Loading skeletons for sections */}
+      {isLoading && (
+        <>
+          {/* Positions skeleton */}
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+            <Box paddingBottom={2}>
+              <Skeleton className="h-5 w-32" />
+            </Box>
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              style={{ gap: '1px' }}
+              className="rounded-xl overflow-hidden"
+            >
+              {Array.from({ length: 3 }).map((_, index) => (
+                <PerpsHomeCardSkeleton key={`pos-skeleton-${index}`} />
+              ))}
+            </Box>
+          </Box>
+
+          {/* Crypto markets skeleton */}
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+            <Box paddingBottom={2}>
+              <Skeleton className="h-5 w-28" />
+            </Box>
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              style={{ gap: '1px' }}
+              className="rounded-xl overflow-hidden"
+            >
+              {Array.from({ length: 5 }).map((_, index) => (
+                <PerpsHomeCardSkeleton key={`crypto-skeleton-${index}`} />
+              ))}
+            </Box>
+          </Box>
+
+          {/* HIP-3 markets skeleton */}
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+            <Box paddingBottom={2}>
+              <Skeleton className="h-5 w-40" />
+            </Box>
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              style={{ gap: '1px' }}
+              className="rounded-xl overflow-hidden"
+            >
+              {Array.from({ length: 5 }).map((_, index) => (
+                <PerpsHomeCardSkeleton key={`hip3-skeleton-${index}`} />
+              ))}
+            </Box>
+          </Box>
+        </>
+      )}
+
       {/* Section 1: Your positions */}
-      {positions.length > 0 && (
+      {!isLoading && positions.length > 0 && (
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
           <Box
             flexDirection={BoxFlexDirection.Row}
@@ -183,38 +258,40 @@ const PerpsHomePage: React.FC = () => {
             >
               {t('perpsYourPositions')}
             </Text>
-            <ButtonIcon
-              color={IconColor.IconAlternative}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('perpsPositions')}
-              iconName={IconName.MoreHorizontal}
-              onClick={() => {
-                // TODO: Handle positions menu
-              }}
-            />
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+              className="cursor-pointer"
+              // TODO: Handle close all positions
+              // onClick={() => {
+              // }}
+            >
+              {t('perpsCloseAll')}
+            </Text>
           </Box>
           <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
             {positions.map((position) => {
-              const displaySymbol = getDisplayName(position.coin);
+              const displaySymbol = getDisplayName(position.symbol);
               const isLong = parseFloat(position.size) >= 0;
               const pnlValue = parseFloat(position.unrealizedPnl);
               const isProfit = pnlValue >= 0;
+              const leverage = position.leverage?.value ?? 1;
 
               return (
                 <Box
-                  key={position.coin}
+                  key={position.symbol}
                   className={`${LIST_ITEM_BASE} ${LIST_ITEM_RADIUS}`}
                   role="button"
                   tabIndex={0}
-                  onClick={() => handlePositionClick(position.coin)}
+                  onClick={() => handlePositionClick(position.symbol)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
-                      handlePositionClick(position.coin);
+                      handlePositionClick(position.symbol);
                     }
                   }}
                 >
                   <PerpsTokenLogo
-                    symbol={position.coin}
+                    symbol={position.symbol}
                     size={AvatarTokenSize.Md}
                   />
                   <Box className="flex-1 min-w-0 flex flex-col gap-1">
@@ -222,7 +299,7 @@ const PerpsHomePage: React.FC = () => {
                       variant={TextVariant.BodySm}
                       fontWeight={FontWeight.Medium}
                     >
-                      {displaySymbol} |{' '}
+                      {displaySymbol} {leverage}x{' '}
                       {isLong ? t('perpsLong') : t('perpsShort')}
                     </Text>
                     <Text
@@ -232,17 +309,30 @@ const PerpsHomePage: React.FC = () => {
                       {Math.abs(parseFloat(position.size))} {displaySymbol}
                     </Text>
                   </Box>
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                    color={
-                      isProfit
-                        ? TextColor.SuccessDefault
-                        : TextColor.ErrorDefault
-                    }
+                  <Box
+                    flexDirection={BoxFlexDirection.Column}
+                    alignItems={BoxAlignItems.End}
                   >
-                    {isProfit ? '+' : ''}${position.unrealizedPnl}
-                  </Text>
+                    <Text
+                      variant={TextVariant.BodySm}
+                      fontWeight={FontWeight.Medium}
+                    >
+                      {formatCurrencyWithMinThreshold(
+                        parseFloat(position.positionValue),
+                        'USD',
+                      )}
+                    </Text>
+                    <Text
+                      variant={TextVariant.BodyXs}
+                      color={
+                        isProfit
+                          ? TextColor.SuccessDefault
+                          : TextColor.ErrorDefault
+                      }
+                    >
+                      {isProfit ? '+' : ''}${position.unrealizedPnl}
+                    </Text>
+                  </Box>
                 </Box>
               );
             })}
@@ -251,7 +341,7 @@ const PerpsHomePage: React.FC = () => {
       )}
 
       {/* Section 2: Your orders */}
-      {openOrders.length > 0 && (
+      {!isLoading && openOrders.length > 0 && (
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
           <Box
             flexDirection={BoxFlexDirection.Row}
@@ -265,15 +355,16 @@ const PerpsHomePage: React.FC = () => {
             >
               {t('perpsYourOrders')}
             </Text>
-            <ButtonIcon
-              color={IconColor.IconAlternative}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('perpsOrders')}
-              iconName={IconName.MoreHorizontal}
-              onClick={() => {
-                // TODO: Handle orders menu
-              }}
-            />
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+              className="cursor-pointer"
+              // onClick={() => {
+              //   // TODO: Handle close all orders
+              // }}
+            >
+              {t('perpsCloseAll')}
+            </Text>
           </Box>
           <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
             {openOrders.map((order) => {
@@ -283,14 +374,12 @@ const PerpsHomePage: React.FC = () => {
                   ? t('perpsLimit')
                   : t('perpsMarket');
               const sideLabel =
-                order.side === 'buy' ? t('perpsBuy') : t('perpsSell');
-              const orderValue =
-                order.orderType === 'limit'
-                  ? formatCurrencyWithMinThreshold(
-                      parseFloat(order.size) * parseFloat(order.price),
-                      'USD',
-                    )
-                  : '-';
+                order.side === 'buy' ? t('perpsLong') : t('perpsShort');
+              // Show limit price for limit orders, "Market" label for market orders
+              const priceDisplay =
+                order.orderType === 'limit' && order.price !== '0'
+                  ? `$${order.price}`
+                  : t('perpsMarket');
 
               return (
                 <Box
@@ -317,12 +406,17 @@ const PerpsHomePage: React.FC = () => {
                       {order.size} {displaySymbol}
                     </Text>
                   </Box>
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
+                  <Box
+                    flexDirection={BoxFlexDirection.Column}
+                    alignItems={BoxAlignItems.End}
                   >
-                    {orderValue}
-                  </Text>
+                    <Text
+                      variant={TextVariant.BodySm}
+                      fontWeight={FontWeight.Medium}
+                    >
+                      {priceDisplay}
+                    </Text>
+                  </Box>
                 </Box>
               );
             })}
@@ -330,276 +424,308 @@ const PerpsHomePage: React.FC = () => {
         </Box>
       )}
 
-      {/* Section 3: Explore crypto */}
-      <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={1}
-          paddingBottom={2}
-          className="cursor-pointer"
-          role="button"
-          tabIndex={0}
-          onClick={handleSearchClick}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              handleSearchClick();
-            }
-          }}
-        >
-          <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
-            {t('perpsExploreCrypto')}
-          </Text>
-          <Icon
-            name={IconName.ArrowRight}
-            size={IconSize.Sm}
-            color={IconColor.IconAlternative}
-          />
-        </Box>
-        <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
-          {cryptoMarkets.map((market) => {
-            const isPositiveChange = market.change24hPercent.startsWith('+');
-            return (
-              <Box
-                key={market.symbol}
-                className={`${LIST_ITEM_BASE} ${LIST_ITEM_RADIUS}`}
-                role="button"
-                tabIndex={0}
-                onClick={() => handleMarketClick(market.symbol)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    handleMarketClick(market.symbol);
-                  }
-                }}
+      {/* Explore sections - hidden during loading */}
+      {!isLoading && (
+        <>
+          {/* Section 3: Explore crypto */}
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={1}
+              paddingBottom={2}
+              className="cursor-pointer"
+              role="button"
+              tabIndex={0}
+              onClick={handleSearchClick}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  handleSearchClick();
+                }
+              }}
+            >
+              <Text
+                variant={TextVariant.HeadingSm}
+                fontWeight={FontWeight.Medium}
               >
-                <PerpsTokenLogo
-                  symbol={market.symbol}
-                  size={AvatarTokenSize.Md}
-                />
-                <Box className="flex-1 min-w-0 flex flex-col gap-1">
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
+                {t('perpsExploreCrypto')}
+              </Text>
+              <Icon
+                name={IconName.ArrowRight}
+                size={IconSize.Sm}
+                color={IconColor.IconAlternative}
+              />
+            </Box>
+            <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
+              {cryptoMarkets.map((market) => {
+                const isPositiveChange =
+                  market.change24hPercent.startsWith('+');
+                return (
+                  <Box
+                    key={market.symbol}
+                    className={`${LIST_ITEM_BASE} ${LIST_ITEM_RADIUS}`}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => handleMarketClick(market.symbol)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        handleMarketClick(market.symbol);
+                      }
+                    }}
                   >
-                    {market.name}
-                  </Text>
-                  <Text
-                    variant={TextVariant.BodyXs}
-                    color={TextColor.TextAlternative}
-                  >
-                    {getDisplayName(market.symbol)}-USD
-                  </Text>
-                </Box>
-                <Box
-                  flexDirection={BoxFlexDirection.Column}
-                  alignItems={BoxAlignItems.End}
-                >
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                  >
-                    {market.price}
-                  </Text>
-                  <Text
-                    variant={TextVariant.BodyXs}
-                    color={
-                      isPositiveChange
-                        ? TextColor.SuccessDefault
-                        : TextColor.ErrorDefault
-                    }
-                  >
-                    {market.change24hPercent}
-                  </Text>
-                </Box>
-              </Box>
-            );
-          })}
-        </Box>
-      </Box>
+                    <PerpsTokenLogo
+                      symbol={market.symbol}
+                      size={AvatarTokenSize.Md}
+                    />
+                    <Box className="flex-1 min-w-0 flex flex-col gap-1">
+                      <Text
+                        variant={TextVariant.BodySm}
+                        fontWeight={FontWeight.Medium}
+                      >
+                        {market.name}
+                      </Text>
+                      <Text
+                        variant={TextVariant.BodyXs}
+                        color={TextColor.TextAlternative}
+                      >
+                        {getDisplayName(market.symbol)}-USD
+                      </Text>
+                    </Box>
+                    <Box
+                      flexDirection={BoxFlexDirection.Column}
+                      alignItems={BoxAlignItems.End}
+                    >
+                      <Text
+                        variant={TextVariant.BodySm}
+                        fontWeight={FontWeight.Medium}
+                      >
+                        {market.price}
+                      </Text>
+                      <Text
+                        variant={TextVariant.BodyXs}
+                        color={
+                          isPositiveChange
+                            ? TextColor.SuccessDefault
+                            : TextColor.ErrorDefault
+                        }
+                      >
+                        {market.change24hPercent}
+                      </Text>
+                    </Box>
+                  </Box>
+                );
+              })}
+            </Box>
+          </Box>
 
-      {/* Section 4: Explore stocks and commodities */}
-      <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={1}
-          paddingBottom={2}
-          className="cursor-pointer"
-          role="button"
-          tabIndex={0}
-          onClick={handleSearchClick}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              handleSearchClick();
-            }
-          }}
-        >
-          <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
-            {t('perpsExploreStocksAndCommodities')}
-          </Text>
-          <Icon
-            name={IconName.ArrowRight}
-            size={IconSize.Sm}
-            color={IconColor.IconAlternative}
-          />
-        </Box>
-        <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
-          {hip3Markets.map((market) => {
-            const isPositiveChange = market.change24hPercent.startsWith('+');
-            return (
-              <Box
-                key={market.symbol}
-                className={`${LIST_ITEM_BASE} ${LIST_ITEM_RADIUS}`}
-                role="button"
-                tabIndex={0}
-                onClick={() => handleMarketClick(market.symbol)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    handleMarketClick(market.symbol);
-                  }
-                }}
+          {/* Section 4: Explore stocks and commodities */}
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={1}
+              paddingBottom={2}
+              className="cursor-pointer"
+              role="button"
+              tabIndex={0}
+              onClick={handleSearchClick}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  handleSearchClick();
+                }
+              }}
+            >
+              <Text
+                variant={TextVariant.HeadingSm}
+                fontWeight={FontWeight.Medium}
               >
-                <PerpsTokenLogo
-                  symbol={market.symbol}
-                  size={AvatarTokenSize.Md}
-                />
-                <Box className="flex-1 min-w-0 flex flex-col gap-1">
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
+                {t('perpsExploreStocksAndCommodities')}
+              </Text>
+              <Icon
+                name={IconName.ArrowRight}
+                size={IconSize.Sm}
+                color={IconColor.IconAlternative}
+              />
+            </Box>
+            <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
+              {hip3Markets.map((market) => {
+                const isPositiveChange =
+                  market.change24hPercent.startsWith('+');
+                const displaySymbol = getDisplayName(market.symbol);
+                // Use getDisplayName on market.name to strip any DEX prefix
+                const displayName = market.name
+                  ? getDisplayName(market.name)
+                  : displaySymbol;
+                return (
+                  <Box
+                    key={market.symbol}
+                    className={`${LIST_ITEM_BASE} ${LIST_ITEM_RADIUS}`}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => handleMarketClick(market.symbol)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        handleMarketClick(market.symbol);
+                      }
+                    }}
                   >
-                    {market.name}
-                  </Text>
-                  <Text
-                    variant={TextVariant.BodyXs}
-                    color={TextColor.TextAlternative}
-                  >
-                    {getDisplayName(market.symbol)}-USD
-                  </Text>
-                </Box>
-                <Box
-                  flexDirection={BoxFlexDirection.Column}
-                  alignItems={BoxAlignItems.End}
-                >
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                  >
-                    {market.price}
-                  </Text>
-                  <Text
-                    variant={TextVariant.BodyXs}
-                    color={
-                      isPositiveChange
-                        ? TextColor.SuccessDefault
-                        : TextColor.ErrorDefault
-                    }
-                  >
-                    {market.change24hPercent}
-                  </Text>
-                </Box>
-              </Box>
-            );
-          })}
-        </Box>
-      </Box>
+                    <PerpsTokenLogo
+                      symbol={market.symbol}
+                      size={AvatarTokenSize.Md}
+                    />
+                    <Box className="flex-1 min-w-0 flex flex-col gap-1">
+                      <Text
+                        variant={TextVariant.BodySm}
+                        fontWeight={FontWeight.Medium}
+                      >
+                        {displayName}
+                      </Text>
+                      <Text
+                        variant={TextVariant.BodyXs}
+                        color={TextColor.TextAlternative}
+                      >
+                        {displaySymbol}-USD
+                      </Text>
+                    </Box>
+                    <Box
+                      flexDirection={BoxFlexDirection.Column}
+                      alignItems={BoxAlignItems.End}
+                    >
+                      <Text
+                        variant={TextVariant.BodySm}
+                        fontWeight={FontWeight.Medium}
+                      >
+                        {market.price}
+                      </Text>
+                      <Text
+                        variant={TextVariant.BodyXs}
+                        color={
+                          isPositiveChange
+                            ? TextColor.SuccessDefault
+                            : TextColor.ErrorDefault
+                        }
+                      >
+                        {market.change24hPercent}
+                      </Text>
+                    </Box>
+                  </Box>
+                );
+              })}
+            </Box>
+          </Box>
+        </>
+      )}
 
       {/* Section 5: Activity */}
-      <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={1}
-          paddingBottom={2}
-        >
-          <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
-            {t('perpsActivity')}
-          </Text>
-          <Icon
-            name={IconName.ArrowRight}
-            size={IconSize.Sm}
-            color={IconColor.IconAlternative}
-          />
-        </Box>
-        <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
-          {/* Activity Item 1 - Opened long */}
+      {!isLoading && (
+        <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
           <Box
-            className={`${LIST_ITEM_BASE} rounded-t-xl`}
-            role="button"
-            tabIndex={0}
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={1}
+            paddingBottom={2}
           >
-            <PerpsTokenLogo symbol="ETH" size={AvatarTokenSize.Md} />
-            <Box className="flex-1 min-w-0 flex flex-col gap-1">
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {t('perpsOpenedLong')}
-              </Text>
-              <Text
-                variant={TextVariant.BodyXs}
-                color={TextColor.TextAlternative}
-              >
-                2.5 ETH
-              </Text>
-            </Box>
             <Text
-              variant={TextVariant.BodySm}
+              variant={TextVariant.HeadingSm}
               fontWeight={FontWeight.Medium}
-              color={TextColor.SuccessDefault}
             >
-              +$125.00
+              {t('perpsActivity')}
             </Text>
+            <Icon
+              name={IconName.ArrowRight}
+              size={IconSize.Sm}
+              color={IconColor.IconAlternative}
+            />
           </Box>
-
-          {/* Activity Item 2 - Closed short */}
-          <Box className={LIST_ITEM_BASE} role="button" tabIndex={0}>
-            <PerpsTokenLogo symbol="BTC" size={AvatarTokenSize.Md} />
-            <Box className="flex-1 min-w-0 flex flex-col gap-1">
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {t('perpsClosedShort')}
-              </Text>
+          <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
+            {/* Activity Item 1 - Opened long */}
+            <Box
+              className={`${LIST_ITEM_BASE} rounded-t-xl`}
+              role="button"
+              tabIndex={0}
+            >
+              <PerpsTokenLogo symbol="ETH" size={AvatarTokenSize.Md} />
+              <Box className="flex-1 min-w-0 flex flex-col gap-1">
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {t('perpsOpenedLong')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodyXs}
+                  color={TextColor.TextAlternative}
+                >
+                  2.5 ETH
+                </Text>
+              </Box>
               <Text
-                variant={TextVariant.BodyXs}
-                color={TextColor.TextAlternative}
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.SuccessDefault}
               >
-                0.5 BTC
+                +$125.00
               </Text>
             </Box>
-            <Text
-              variant={TextVariant.BodySm}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.ErrorDefault}
-            >
-              -$32.50
-            </Text>
-          </Box>
 
-          {/* Activity Item 3 - Increased position */}
-          <Box
-            className={`${LIST_ITEM_BASE} rounded-b-xl`}
-            role="button"
-            tabIndex={0}
-          >
-            <PerpsTokenLogo symbol="SOL" size={AvatarTokenSize.Md} />
-            <Box className="flex-1 min-w-0 flex flex-col gap-1">
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {t('perpsIncreasedPosition')}
-              </Text>
+            {/* Activity Item 2 - Closed short */}
+            <Box className={LIST_ITEM_BASE} role="button" tabIndex={0}>
+              <PerpsTokenLogo symbol="BTC" size={AvatarTokenSize.Md} />
+              <Box className="flex-1 min-w-0 flex flex-col gap-1">
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {t('perpsClosedShort')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodyXs}
+                  color={TextColor.TextAlternative}
+                >
+                  0.5 BTC
+                </Text>
+              </Box>
               <Text
-                variant={TextVariant.BodyXs}
-                color={TextColor.TextAlternative}
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.ErrorDefault}
               >
-                50 SOL
+                -$32.50
               </Text>
             </Box>
-            <Text
-              variant={TextVariant.BodySm}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.SuccessDefault}
+
+            {/* Activity Item 3 - Increased position */}
+            <Box
+              className={`${LIST_ITEM_BASE} rounded-b-xl`}
+              role="button"
+              tabIndex={0}
             >
-              +$45.20
-            </Text>
+              <PerpsTokenLogo symbol="SOL" size={AvatarTokenSize.Md} />
+              <Box className="flex-1 min-w-0 flex flex-col gap-1">
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {t('perpsIncreasedPosition')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodyXs}
+                  color={TextColor.TextAlternative}
+                >
+                  50 SOL
+                </Text>
+              </Box>
+              <Text
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.SuccessDefault}
+              >
+                +$45.20
+              </Text>
+            </Box>
           </Box>
         </Box>
-      </Box>
+      )}
 
       {/* Support & Learn Section */}
       <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
@@ -622,6 +748,31 @@ const PerpsHomePage: React.FC = () => {
           >
             <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
               {t('perpsContactSupport')}
+            </Text>
+            <Icon
+              name={IconName.ArrowRight}
+              size={IconSize.Sm}
+              color={IconColor.IconAlternative}
+            />
+          </Box>
+
+          {/* Give us feedback */}
+          <Box
+            className={LIST_ITEM_BASE}
+            role="button"
+            tabIndex={0}
+            onClick={() => {
+              // TODO: Navigate to feedback page
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                // TODO: Navigate to feedback page
+              }
+            }}
+            justifyContent={BoxJustifyContent.Between}
+          >
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+              {t('perpsGiveFeedback')}
             </Text>
             <Icon
               name={IconName.ArrowRight}

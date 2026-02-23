@@ -5083,9 +5083,6 @@
   "perpsAutoClose": {
     "message": "Cierre automático"
   },
-  "perpsBuy": {
-    "message": "comprar"
-  },
   "perpsCloseAll": {
     "message": "Cerrar todo"
   },
@@ -5132,9 +5129,6 @@
     "message": "Cripto"
   },
   "perpsFilterStocks": {
-    "message": "Acciones"
-  },
-  "perpsFilterStocksOnly": {
     "message": "Acciones"
   },
   "perpsFundingPayments": {
@@ -5213,29 +5207,17 @@
   "perpsSearchMarkets": {
     "message": "Buscar mercados"
   },
-  "perpsSell": {
-    "message": "vender"
-  },
   "perpsShort": {
     "message": "Posición corta"
   },
   "perpsSize": {
     "message": "Tamaño"
   },
-  "perpsSortFundingRate": {
-    "message": "Tasa de financiación"
-  },
-  "perpsSortOpenInterest": {
-    "message": "Interés abierto"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "Variación de precio: de máximo a mínimo"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "Variación de precio: de mínimo a máximo"
-  },
-  "perpsSortVolume": {
-    "message": "Volumen"
   },
   "perpsStartNewTrade": {
     "message": "Iniciar una nueva operación"
@@ -7076,44 +7058,8 @@
   "smartAccount": {
     "message": "Cuenta inteligente"
   },
-  "smartAccountAccept": {
-    "message": "Use una cuenta inteligente"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Transacciones más rápidas, tarifas más bajas"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "Ahorre tiempo y dinero procesando transacciones de forma conjunta."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Mantenga la misma dirección de cuenta y podrá volver a cambiarla en cualquier momento."
-  },
   "smartAccountLabel": {
     "message": "Cuenta inteligente"
-  },
-  "smartAccountPayToken": {
-    "message": "Pague con cualquier token, en cualquier momento"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Use los tokens que ya tiene para cubrir las tarifas de red."
-  },
-  "smartAccountReject": {
-    "message": "No use una cuenta inteligente"
-  },
-  "smartAccountSameAccount": {
-    "message": "La misma cuenta, funciones más inteligentes."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Cuentas inteligentes"
-  },
-  "smartAccountSplashTitle": {
-    "message": "¿Usar una cuenta inteligente?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Tu cuenta se actualizará a cuenta inteligente con tu próxima transacción."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "¡Éxito!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "La misma dirección. Funciones más inteligentes."
@@ -8603,12 +8549,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useSmartAccountDescription": {
-    "message": "Mantén esta opción activada para cambiar automáticamente las cuentas creadas dentro de MetaMask a cuentas inteligentes, siempre que estén disponibles funciones relevantes, como transacciones más rápidas, tarifas de red más bajas y flexibilidad de pago para ellas."
-  },
-  "useSmartAccountTitle": {
-    "message": "Usar cuenta inteligente"
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "La visualización automática de tokens enviados a su cuenta implica la comunicación con servidores de terceros para obtener imágenes de tokens. Esos servicios tendrán acceso a su dirección IP."

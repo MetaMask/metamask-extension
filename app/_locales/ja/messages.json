@@ -5107,9 +5107,6 @@
   "perpsAutoClose": {
     "message": "自動クローズ"
   },
-  "perpsBuy": {
-    "message": "購入"
-  },
   "perpsCloseAll": {
     "message": "すべてクローズ"
   },
@@ -5156,9 +5153,6 @@
     "message": "仮想通貨"
   },
   "perpsFilterStocks": {
-    "message": "株式"
-  },
-  "perpsFilterStocksOnly": {
     "message": "株式"
   },
   "perpsFundingPayments": {
@@ -5237,29 +5231,17 @@
   "perpsSearchMarkets": {
     "message": "市場を検索"
   },
-  "perpsSell": {
-    "message": "売却"
-  },
   "perpsShort": {
     "message": "ショート"
   },
   "perpsSize": {
     "message": "サイズ"
   },
-  "perpsSortFundingRate": {
-    "message": "資金調達率"
-  },
-  "perpsSortOpenInterest": {
-    "message": "取組高"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "価格変動: 大きい順"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "価格変動: 小さい順"
-  },
-  "perpsSortVolume": {
-    "message": "取引量"
   },
   "perpsStartNewTrade": {
     "message": "新規取引を開始"
@@ -7100,44 +7082,8 @@
   "smartAccount": {
     "message": "スマートアカウント"
   },
-  "smartAccountAccept": {
-    "message": "スマートアカウントを使用"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "より高速なトランザクション、低い手数料"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "トランザクションをまとめて処理して時間とお金を節約します"
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "アカウントアドレスはそのままで、いつでも元に戻せます。"
-  },
   "smartAccountLabel": {
     "message": "スマートアカウント"
-  },
-  "smartAccountPayToken": {
-    "message": "いつでもどのトークンでも支払い可能"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "すでに持っているトークンを使ってネットワーク手数料を支払えます。"
-  },
-  "smartAccountReject": {
-    "message": "スマートアカウントを使用しない"
-  },
-  "smartAccountSameAccount": {
-    "message": "同じアカウントでよりスマートな機能。"
-  },
-  "smartAccountSplashInfo": {
-    "message": "スマートアカウント"
-  },
-  "smartAccountSplashTitle": {
-    "message": "スマートアカウントを使用しますか？"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "次回のトランザクションの際に、アカウントがスマートアカウントにアップデートされます。"
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "成功！"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "同じアドレスでよりスマートな機能。"
@@ -8627,12 +8573,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useSmartAccountDescription": {
-    "message": "これをオンにしておくと、より高速なトランザクション、より有利なネットワーク手数料、柔軟な支払方法など、該当する機能が利用可能な場合に必ず、MetaMask内で作成されたアカウントが自動的にスマートアカウントに切り替わります。"
-  },
-  "useSmartAccountTitle": {
-    "message": "スマートアカウントを使用する"
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "アカウントに送信されたトークンを自動的に表示するには、サードパーティサーバーと通信してトークンの画像を取得する必要があります。これらのサーバーは、あなたのIPアドレスにアクセスすることになります。"

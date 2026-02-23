@@ -19,7 +19,7 @@ import {
   copyAddressAndPasteWalletAddress,
 } from '../../../page-objects/flows/signature-confirmation.flow';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   WINDOW_TITLES,
@@ -113,7 +113,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.fullTitle(),

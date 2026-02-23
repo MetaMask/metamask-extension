@@ -5083,9 +5083,6 @@
   "perpsAutoClose": {
     "message": "Fermeture automatique"
   },
-  "perpsBuy": {
-    "message": "acheter"
-  },
   "perpsCloseAll": {
     "message": "Tout fermer"
   },
@@ -5132,9 +5129,6 @@
     "message": "Crypto"
   },
   "perpsFilterStocks": {
-    "message": "Actions"
-  },
-  "perpsFilterStocksOnly": {
     "message": "Actions"
   },
   "perpsFundingPayments": {
@@ -5213,29 +5207,17 @@
   "perpsSearchMarkets": {
     "message": "Rechercher des marchés"
   },
-  "perpsSell": {
-    "message": "vendre"
-  },
   "perpsShort": {
     "message": "Vendre"
   },
   "perpsSize": {
     "message": "Taille"
   },
-  "perpsSortFundingRate": {
-    "message": "Taux de financement"
-  },
-  "perpsSortOpenInterest": {
-    "message": "Intérêts ouverts"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "Variation des prix : du plus élevé au plus bas"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "Variation des prix : du plus bas au plus élevé"
-  },
-  "perpsSortVolume": {
-    "message": "Volume"
   },
   "perpsStartNewTrade": {
     "message": "Commencez un nouveau trade"
@@ -7076,44 +7058,8 @@
   "smartAccount": {
     "message": "Compte intelligent"
   },
-  "smartAccountAccept": {
-    "message": "Utiliser un compte intelligent"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Transactions plus rapides, frais réduits"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "Gagnez du temps et de l’argent en traitant plusieurs transactions en même temps."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Vous conserverez la même adresse de compte et pourrez repasser à un compte standard à tout moment."
-  },
   "smartAccountLabel": {
     "message": "Compte intelligent"
-  },
-  "smartAccountPayToken": {
-    "message": "Payez en utilisant n’importe quel jeton, à tout moment"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Utilisez les jetons que vous possédez déjà pour couvrir les frais de réseau."
-  },
-  "smartAccountReject": {
-    "message": "Ne pas utiliser un compte intelligent"
-  },
-  "smartAccountSameAccount": {
-    "message": "Même compte, mais des fonctionnalités plus intelligentes."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Comptes intelligents"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Voulez-vous utiliser un compte intelligent ?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Votre compte sera converti en compte intelligent lors de votre prochaine transaction."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Mise à jour effectuée avec succès !"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Même adresse. Des fonctionnalités plus intelligentes."
@@ -8603,12 +8549,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useSmartAccountDescription": {
-    "message": "Gardez cette option activée pour convertir automatiquement des comptes créés dans MetaMask en comptes intelligents dès que des caractéristiques pertinentes seront disponible : transactions plus rapides, frais de réseau réduits et paiements flexibles."
-  },
-  "useSmartAccountTitle": {
-    "message": "Utiliser un compte intelligent"
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "L’affichage automatique des jetons envoyés à votre compte implique de communiquer avec des serveurs tiers pour la récupération des images de jeton. Ces serveurs auront accès à votre adresse IP."

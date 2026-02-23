@@ -898,7 +898,7 @@ export const useShieldRewards = (): {
       getRewardsHasAccountOptedIn(caipAccountId),
     );
     return optinStatus;
-  }, [caipAccountId]);
+  }, [caipAccountId, dispatch]);
 
   const {
     value: pointsValue,
@@ -912,35 +912,40 @@ export const useShieldRewards = (): {
       return { monthly: null, yearly: null };
     }
 
-    const [monthlyPointsData, yearlyPointsData] = await Promise.all([
-      dispatch(
-        estimateRewardsPoints({
-          activityType: 'SHIELD',
-          account: caipAccountId,
-          activityContext: {
-            shieldContext: {
-              recurringInterval: 'month',
+    try {
+      const [monthlyPointsData, yearlyPointsData] = await Promise.all([
+        dispatch(
+          estimateRewardsPoints({
+            activityType: 'SHIELD',
+            account: caipAccountId,
+            activityContext: {
+              shieldContext: {
+                recurringInterval: 'month',
+              },
             },
-          },
-        }),
-      ),
-      dispatch(
-        estimateRewardsPoints({
-          activityType: 'SHIELD',
-          account: caipAccountId,
-          activityContext: {
-            shieldContext: {
-              recurringInterval: 'year',
+          }),
+        ),
+        dispatch(
+          estimateRewardsPoints({
+            activityType: 'SHIELD',
+            account: caipAccountId,
+            activityContext: {
+              shieldContext: {
+                recurringInterval: 'year',
+              },
             },
-          },
-        }),
-      ),
-    ]);
+          }),
+        ),
+      ]);
 
-    return {
-      monthly: monthlyPointsData?.pointsEstimate ?? null,
-      yearly: yearlyPointsData?.pointsEstimate ?? null,
-    };
+      return {
+        monthly: monthlyPointsData?.pointsEstimate ?? null,
+        yearly: yearlyPointsData?.pointsEstimate ?? null,
+      };
+    } catch {
+      // Points estimation may fail if no active rewards season - return null values gracefully
+      return { monthly: null, yearly: null };
+    }
   }, [dispatch, caipAccountId]);
 
   const {
@@ -948,17 +953,32 @@ export const useShieldRewards = (): {
     pending: seasonPending,
     error: seasonError,
   } = useAsyncResult<boolean>(async () => {
-    const seasonMetadata = await dispatch(getRewardsSeasonMetadata('current'));
+    try {
+      const seasonMetadata = await dispatch(
+        getRewardsSeasonMetadata('current'),
+      );
 
-    if (!seasonMetadata) {
-      return false;
+      if (!seasonMetadata) {
+        return false;
+      }
+
+      const currentTimestamp = Date.now();
+      return (
+        currentTimestamp >= seasonMetadata.startDate &&
+        currentTimestamp <= seasonMetadata.endDate
+      );
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        // if the error is because the current season metadata is not found, return false
+        error.message.includes(
+          'No valid season metadata could be found for type',
+        )
+      ) {
+        return false;
+      }
+      throw error;
     }
-
-    const currentTimestamp = Date.now();
-    return (
-      currentTimestamp >= seasonMetadata.startDate &&
-      currentTimestamp <= seasonMetadata.endDate
-    );
   }, [dispatch]);
 
   // if there is an error, return null values for points and season so it will not block the UI

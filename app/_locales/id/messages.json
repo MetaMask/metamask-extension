@@ -5083,9 +5083,6 @@
   "perpsAutoClose": {
     "message": "Tutup otomatis"
   },
-  "perpsBuy": {
-    "message": "beli"
-  },
   "perpsCloseAll": {
     "message": "Tutup semua"
   },
@@ -5132,9 +5129,6 @@
     "message": "Kripto"
   },
   "perpsFilterStocks": {
-    "message": "Saham"
-  },
-  "perpsFilterStocksOnly": {
     "message": "Saham"
   },
   "perpsFundingPayments": {
@@ -5213,29 +5207,17 @@
   "perpsSearchMarkets": {
     "message": "Cari pasar"
   },
-  "perpsSell": {
-    "message": "jual"
-  },
   "perpsShort": {
     "message": "Short"
   },
   "perpsSize": {
     "message": "Ukuran"
   },
-  "perpsSortFundingRate": {
-    "message": "Tingkat pendanaan"
-  },
-  "perpsSortOpenInterest": {
-    "message": "Kontrak terbuka"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "Perubahan harga: tinggi ke rendah"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "Perubahan harga: rendah ke tinggi"
-  },
-  "perpsSortVolume": {
-    "message": "Volume"
   },
   "perpsStartNewTrade": {
     "message": "Mulai perdagangan baru"
@@ -7076,44 +7058,8 @@
   "smartAccount": {
     "message": "Akun cerdas"
   },
-  "smartAccountAccept": {
-    "message": "Gunakan akun cerdas"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Transaksi lebih cepat, biaya lebih rendah"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "Hemat waktu dan uang dengan memproses transaksi secara bersamaan."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Simpan alamat akun yang sama dan Anda dapat beralih kembali setiap saat."
-  },
   "smartAccountLabel": {
     "message": "Akun Cerdas"
-  },
-  "smartAccountPayToken": {
-    "message": "Bayar dengan token apa pun setiap saat"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Gunakan token yang sudah Anda miliki untuk menutup biaya jaringan."
-  },
-  "smartAccountReject": {
-    "message": "Jangan gunakan akun cerdas"
-  },
-  "smartAccountSameAccount": {
-    "message": "Akun sama, fitur lebih cerdas."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Akun cerdas"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Gunakan akun cerdas?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Akun Anda akan diperbarui ke akun cerdas pada transaksi berikutnya."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Berhasil!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Alamat sama. Fitur lebih cerdas."
@@ -8603,12 +8549,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useSmartAccountDescription": {
-    "message": "Aktifkan ini untuk secara otomatis mengalihkan akun yang dibuat dalam MetaMask ke akun cerdas setiap kali fitur relevan tersedia, seperti transaksi yang lebih cepat, biaya jaringan yang lebih rendah, dan fleksibilitas pembayaran untuk transaksi tersebut."
-  },
-  "useSmartAccountTitle": {
-    "message": "Gunakan akun cerdas"
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Menampilkan token yang dikirim ke akun Anda secara otomatis yang melibatkan komunikasi dengan server pihak ketiga untuk mengambil gambar token. Server tersebut akan memiliki akses ke alamat IP Anda."
