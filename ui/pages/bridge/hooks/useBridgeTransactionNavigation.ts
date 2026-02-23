@@ -52,24 +52,23 @@ export function useBridgeTransactionNavigation(): void {
   }, [bridgeHistory, requestId]);
 
   // Check if the bridge transaction has been submitted to the network
-  // In two-step flows, a history item with approvalTxId means we're between steps
+  // Use status.srcChain.txHash to detect submission, as approvalTxId can remain
+  // present even after the bridge transaction is submitted/completed
   const hasSubmittedBridgeTx = useMemo(() => {
     if (!historyItem) {
       return false;
     }
 
-    // History item with approvalTxId means approval is done but bridge tx not submitted yet
-    if (historyItem.approvalTxId !== undefined) {
-      return false;
-    }
-
-    // No approvalTxId means this is the final bridge transaction
-    return true;
+    // status.srcChain.txHash indicates the bridge transaction has been submitted
+    return Boolean(historyItem.status?.srcChain?.txHash);
   }, [historyItem]);
 
   // Check if we're between approval and bridge steps in a two-step flow
+  // This is true when approvalTxId exists but bridge tx hasn't been submitted yet
   const isBetweenApprovalAndBridgeSteps = useMemo(() => {
-    return historyItem?.approvalTxId !== undefined && !hasSubmittedBridgeTx;
+    return (
+      historyItem?.approvalTxId !== undefined && !hasSubmittedBridgeTx
+    );
   }, [historyItem, hasSubmittedBridgeTx]);
 
   // Navigate to activity tab with consistent options
