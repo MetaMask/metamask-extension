@@ -137,6 +137,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           currentPrice === 0 ||
           leverage === 0
         ) {
+          onAmountChange('');
           onBalancePercentChange(0);
           setPercentInputValue('0');
           return;

@@ -74,9 +74,7 @@ function formStateToOrderParams(
   const isBuy = formState.direction === 'long';
   const marginAmount = parseFloat(formState.amount) || 0;
   const positionSize =
-    currentPrice > 0
-      ? (marginAmount * formState.leverage) / currentPrice
-      : 0;
+    currentPrice > 0 ? (marginAmount * formState.leverage) / currentPrice : 0;
   const size =
     mode === 'close' && existingPositionSize
       ? Math.abs(parseFloat(existingPositionSize)).toString()
@@ -352,7 +350,12 @@ const PerpsOrderEntryPage: React.FC = () => {
   );
 
   const handleOrderSubmit = useCallback(async () => {
-    if (!isEligible || !orderFormState || !selectedAddress || currentPrice <= 0) {
+    if (
+      !isEligible ||
+      !orderFormState ||
+      !selectedAddress ||
+      currentPrice <= 0
+    ) {
       return;
     }
 
