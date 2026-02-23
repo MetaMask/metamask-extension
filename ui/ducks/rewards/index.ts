@@ -134,7 +134,8 @@ const rewardsSlice = createSlice({
         previousCandidateId &&
         previousCandidateId !== 'pending' &&
         previousCandidateId !== 'error' &&
-        previousCandidateId !== 'error-existing-subscription-hardware-wallet-explicit-sign' &&
+        previousCandidateId !==
+          'error-existing-subscription-hardware-wallet-explicit-sign' &&
         previousCandidateId !== 'retry';
 
       const candidateIdChanged =

@@ -829,6 +829,7 @@ export class RewardsController extends BaseController<
       this.convertInternalAccountToCaipAccountId(internalAccount);
 
     let shouldSkip: boolean;
+    let effectiveRespectSkipSilentAuth = respectSkipSilentAuth;
 
     const hardwareAcc = isHardwareAccount(internalAccount);
 
@@ -838,7 +839,7 @@ export class RewardsController extends BaseController<
       (!hardwareWalletSignResult?.challenge ||
         !hardwareWalletSignResult?.signature)
     ) {
-      respectSkipSilentAuth = true;
+      effectiveRespectSkipSilentAuth = true;
       shouldSkip = true;
     } else {
       shouldSkip = account
@@ -846,7 +847,7 @@ export class RewardsController extends BaseController<
         : false;
     }
 
-    if (shouldSkip && respectSkipSilentAuth) {
+    if (shouldSkip && effectiveRespectSkipSilentAuth) {
       // This means that we'll have a record for this account
       let accountState = this.#getAccountState(account as CaipAccountId);
       if (accountState) {

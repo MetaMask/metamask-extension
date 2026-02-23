@@ -1,4 +1,4 @@
-import { useCallback, useState, useContext, useMemo } from 'react';
+import { useCallback, useState, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import log from 'loglevel';
@@ -20,9 +20,9 @@ import {
   linkRewardToShieldSubscription,
 } from '../../store/actions';
 import { handleRewardsErrorMessage } from '../../components/app/rewards/utils/handleRewardsErrorMessage';
+import { isHardwareAccount } from '../../../shared/lib/accounts';
 import { useI18nContext } from '../useI18nContext';
 import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
-import { isHardwareAccount } from '../../../shared/lib/accounts';
 
 export type UseOptinResult = {
   /**
@@ -56,7 +56,6 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
   const { trackEvent } = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
-
 
   // Get accounts for active (selected) account group
   const activeGroupAccounts = useSelector((state) =>
@@ -94,7 +93,6 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
         setOptinLoading(true);
         setOptinError(null);
 
-
         // First, opt in with side effect accounts
         const accountsToOptIn =
           primaryWalletAccountGroupId && primaryWalletGroupAccounts.length > 0
@@ -113,7 +111,10 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
         if (subscriptionId) {
           // Prevent more than 1 explicit sign request for opting in, in case of hardware wallet
           // Linking of other accounts for the hardware wallet can be handled later.
-          if (accountsToLinkAfterOptIn.length > 0 && !isHardwareAccount(accountsToLinkAfterOptIn[0])) {
+          if (
+            accountsToLinkAfterOptIn.length > 0 &&
+            !isHardwareAccount(accountsToLinkAfterOptIn[0])
+          ) {
             try {
               await dispatch(
                 rewardsLinkAccountsToSubscriptionCandidate(
