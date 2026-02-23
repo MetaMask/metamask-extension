@@ -12,7 +12,10 @@ import {
   getFirstAddress,
   onboardThenTriggerTimeOutFlow,
 } from '../../page-objects/flows/vault-corruption.flow';
-import { getConfig } from '../vault-corruption/helpers';
+import {
+  getConfig,
+  mockFeatureFlagsWithoutNonEvmAccounts,
+} from '../vault-corruption/helpers';
 
 // Match timeout values in critical-startup-error-handler.ts
 const BACKGROUND_CONNECTION_TIMEOUT = 15_000;
@@ -82,14 +85,17 @@ describe('Critical errors', function (this: Suite) {
   it('shows critical error screen when background takes over 16 seconds to initialize, and allows user to restore accounts', async function () {
     this.timeout(120_000);
     await withFixtures(
-      getConfig(this.test?.fullTitle(), {
-        additionalIgnoredErrors: ['Background initialization timeout'],
-        additionalManifestFlags: {
-          testing: {
-            simulateBackgroundInitializationHang: true,
+      {
+        ...getConfig(this.test?.fullTitle(), {
+          additionalIgnoredErrors: ['Background initialization timeout'],
+          additionalManifestFlags: {
+            testing: {
+              simulateBackgroundInitializationHang: true,
+            },
           },
-        },
-      }),
+        }),
+        testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
+      },
       async ({ driver }) => {
         const initialFirstAddress = await onboardThenTriggerTimeOutFlow(driver);
 
@@ -120,14 +126,17 @@ describe('Critical errors', function (this: Suite) {
   it('shows critical error screen when background takes over 16 seconds to sync state, and allows user to restore accounts', async function () {
     this.timeout(120_000);
     await withFixtures(
-      getConfig(this.test?.fullTitle(), {
-        additionalIgnoredErrors: ['Background state sync timeout'],
-        additionalManifestFlags: {
-          testing: {
-            simulateBackgroundStateSyncHang: true,
+      {
+        ...getConfig(this.test?.fullTitle(), {
+          additionalIgnoredErrors: ['Background state sync timeout'],
+          additionalManifestFlags: {
+            testing: {
+              simulateBackgroundStateSyncHang: true,
+            },
           },
-        },
-      }),
+        }),
+        testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
+      },
       async ({ driver }) => {
         const initialFirstAddress = await onboardThenTriggerTimeOutFlow(driver);
 
