@@ -560,14 +560,14 @@ type WebVitalsNumericKey = (typeof WEB_VITALS_NUMERIC_KEYS)[number];
  */
 const WEB_VITALS_BOUNDS: Record<
   WebVitalsNumericKey,
-  { min: number; max: number; allowZero: boolean }
+  { min: number; max: number }
 > = {
-  /** INP: interaction responsiveness. Google "poor" starts at 500ms. */
-  inp: { min: 1, max: 30_000, allowZero: false },
-  /** LCP: perceived load time. Google "poor" starts at 4s. */
-  lcp: { min: 1, max: 60_000, allowZero: false },
-  /** CLS: layout shift score (unitless). 0 is perfect; >1 is extremely poor. */
-  cls: { min: 0, max: 10, allowZero: true },
+  /** INP: interaction responsiveness. Google "poor" starts at 500ms. 0ms is invalid. */
+  inp: { min: 1, max: 30_000 },
+  /** LCP: perceived load time. Google "poor" starts at 4s. 0ms is invalid. */
+  lcp: { min: 1, max: 60_000 },
+  /** CLS: layout shift score (unitless). 0 is perfect stability; >1 is extremely poor. */
+  cls: { min: 0, max: 10 },
 };
 
 /**
@@ -585,12 +585,11 @@ export const calculateWebVitalsStatistics = (
 ): TimerStatistics => {
   const bounds = WEB_VITALS_BOUNDS[metricId];
 
-  // Metric-specific sanity filtering
+  // Metric-specific sanity filtering: exclude values outside [min, max]
   const filtered: number[] = [];
   let excludedCount = 0;
   for (const value of values) {
-    const tooLow = bounds.allowZero ? value < bounds.min : value <= bounds.min;
-    if (tooLow || value > bounds.max) {
+    if (value < bounds.min || value > bounds.max) {
       excludedCount += 1;
     } else {
       filtered.push(value);

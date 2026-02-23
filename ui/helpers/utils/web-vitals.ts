@@ -97,10 +97,10 @@ function getRating(
   goodThreshold: number,
   needsImprovementThreshold: number,
 ): 'good' | 'needs-improvement' | 'poor' {
-  if (value < goodThreshold) {
+  if (value <= goodThreshold) {
     return 'good';
   }
-  if (value < needsImprovementThreshold) {
+  if (value <= needsImprovementThreshold) {
     return 'needs-improvement';
   }
   return 'poor';
