@@ -123,10 +123,10 @@ export const usePrefillFromSearchQuery = () => {
   // are set (once) to prevent infinite re-renders
   useEffect(() => {
     const searchParamsFrom = parseAsset(
-      searchParams.get(BridgeQueryParams.FROM),
+      searchParams.get(BridgeQueryParams.From),
     );
-    const searchParamsTo = parseAsset(searchParams.get(BridgeQueryParams.TO));
-    const searchParamsAmount = searchParams.get(BridgeQueryParams.AMOUNT);
+    const searchParamsTo = parseAsset(searchParams.get(BridgeQueryParams.To));
+    const searchParamsAmount = searchParams.get(BridgeQueryParams.Amount);
 
     if (searchParamsFrom || searchParamsTo || searchParamsAmount) {
       setParsedToAssetId(searchParamsTo);
@@ -135,9 +135,9 @@ export const usePrefillFromSearchQuery = () => {
         setParsedAmount(searchParamsAmount);
       }
       cleanupUrlParams([
-        BridgeQueryParams.FROM,
-        BridgeQueryParams.TO,
-        BridgeQueryParams.AMOUNT,
+        BridgeQueryParams.From,
+        BridgeQueryParams.To,
+        BridgeQueryParams.Amount,
       ]);
 
       // Fetch asset metadata for both tokens in 1 call

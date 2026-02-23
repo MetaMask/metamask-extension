@@ -97,7 +97,7 @@ const useBridging = () => {
           navigationState.srcToken = tokenToUse;
         } else {
           // Otherwise, set the from param to use the bridge page's deep linking logic
-          queryParams.push(`${BridgeQueryParams.FROM}=${assetId}`);
+          queryParams.push(`${BridgeQueryParams.From}=${assetId}`);
         }
       } else if (lastSelectedChainId !== fromChain.chainId) {
         // If an unsupported network is selected in the network filter, use bridge page's default fromChain
@@ -110,11 +110,11 @@ const useBridging = () => {
         // Otherwise, use the native assetId
         const defaultAssetId =
           bip44AssetId ?? getNativeAssetForChainId(fallbackChainId)?.assetId;
-        queryParams.push(`${BridgeQueryParams.FROM}=${defaultAssetId}`);
+        queryParams.push(`${BridgeQueryParams.From}=${defaultAssetId}`);
       }
 
       if (location === MetaMetricsSwapsEventSource.TransactionShield) {
-        queryParams.push('isFromTransactionShield=true');
+        queryParams.push(`${BridgeQueryParams.IsFromTransactionShield}=true`);
       }
 
       const url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
