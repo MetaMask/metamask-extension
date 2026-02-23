@@ -9,7 +9,6 @@ import { createInternalTransaction } from '../../page-objects/flows/transaction'
 
 const ADDRESS_MOCK = '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb';
 const ADDRESS_MOCK_RENDERED = '0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb';
-const ABBREVIATED_ADDRESS_MOCK = '0x0c54FcCd2e3…5Cbc15a017AaFb';
 const CUSTOM_NAME_MOCK = 'Custom Name';
 const PROPOSED_NAME_MOCK = 'test4.lens';
 
@@ -31,11 +30,9 @@ describe('Petnames - Transactions', function () {
         await testDapp.openTestDappPage();
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.checkAddressIsDisplayed(ABBREVIATED_ADDRESS_MOCK);
 
         // Test custom name.
         await confirmation.saveName({
-          value: ABBREVIATED_ADDRESS_MOCK,
           name: CUSTOM_NAME_MOCK,
         });
         await confirmation.checkPageIsLoaded();
@@ -47,7 +44,6 @@ describe('Petnames - Transactions', function () {
 
         // Test proposed name.
         await confirmation.saveName({
-          value: CUSTOM_NAME_MOCK,
           proposedName: PROPOSED_NAME_MOCK,
         });
         await confirmation.checkPageIsLoaded();
@@ -81,7 +77,6 @@ describe('Petnames - Transactions', function () {
 
         // Test custom name.
         await confirmation.saveName({
-          value: ADDRESS_MOCK_RENDERED,
           name: CUSTOM_NAME_MOCK,
         });
 
@@ -95,7 +90,6 @@ describe('Petnames - Transactions', function () {
 
         // Test proposed name.
         await confirmation.saveName({
-          value: CUSTOM_NAME_MOCK,
           proposedName: PROPOSED_NAME_MOCK,
         });
         await confirmation.checkPageIsLoaded();

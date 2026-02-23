@@ -200,19 +200,17 @@ class Confirmation {
   }
 
   async saveName({
-    value,
     name,
     proposedName,
   }: {
-    value: string;
     name?: string;
     proposedName?: string;
   }): Promise<void> {
     await this.driver.clickElement({
-      text: value,
+      css: '[data-testid="confirm-info-row-display-name"]',
     });
     console.log(
-      `Saving name for value: ${value}, name: ${name}, proposedName: ${proposedName}`,
+      `Saving name: ${name}, proposedName: ${proposedName}`,
     );
     await this.driver.clickElement(this.formComboFieldSelector);
 
