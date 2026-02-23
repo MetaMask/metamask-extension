@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 
 import { getActiveQrCodeScanRequest } from '../../../selectors/selectors';
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
@@ -12,8 +11,6 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
  * Hook to handle navigation logic for bridge transaction awaiting signatures page.
  * Encapsulates refs and detection logic for transaction success, cancellation, and failure.
  * The refs are tightly coupled with the navigation logic, so they're kept together.
- *
- * @returns void - Navigation is handled internally via useEffect
  */
 export function useBridgeTransactionNavigation(): void {
   const navigate = useNavigate();
@@ -66,9 +63,7 @@ export function useBridgeTransactionNavigation(): void {
   // Check if we're between approval and bridge steps in a two-step flow
   // This is true when approvalTxId exists but bridge tx hasn't been submitted yet
   const isBetweenApprovalAndBridgeSteps = useMemo(() => {
-    return (
-      historyItem?.approvalTxId !== undefined && !hasSubmittedBridgeTx
-    );
+    return historyItem?.approvalTxId !== undefined && !hasSubmittedBridgeTx;
   }, [historyItem, hasSubmittedBridgeTx]);
 
   // Navigate to activity tab with consistent options
@@ -84,11 +79,6 @@ export function useBridgeTransactionNavigation(): void {
     // Success: Transaction is in bridge history
     if (hasSubmittedBridgeTx) {
       navigateToActivity();
-      return;
-    }
-
-    // Don't navigate if we're between approval and bridge steps in two-step flow
-    if (isBetweenApprovalAndBridgeSteps) {
       return;
     }
 
@@ -130,14 +120,15 @@ export function useBridgeTransactionNavigation(): void {
 
     // 2. Fullscreen-initiated failure: QR scan was active then cleared, but activeQuote
     //    doesn't get cleared in fullscreen mode (fallback when error handler doesn't fire)
+    //    Note: We detect this even when between approval and bridge steps, as it indicates
+    //    the user cancelled the bridge transaction QR scan (not the approval)
     const qrScanWasActiveThenCleared =
       hasSeenQrScanActiveRef.current && activeQrCodeScanRequest === null;
     const fullscreenInitiatedFailure =
       requestIdFromLocation !== undefined &&
       hasSeenRequestIdRef.current &&
       !hasSubmittedBridgeTx &&
-      qrScanWasActiveThenCleared &&
-      !isBetweenApprovalAndBridgeSteps;
+      qrScanWasActiveThenCleared;
 
     // 3. Popup-initiated failure: Transaction was initiated (we saw activeQuote) but now cleared
     //    (activeQuote gets cleared in popup mode when transaction fails)
@@ -150,8 +141,16 @@ export function useBridgeTransactionNavigation(): void {
       !activeQrCodeScanRequest;
 
     // Navigate on any failure/cancellation scenario
+    // Even if we're between approval and bridge steps, we should navigate on cancellation
     if (qrScanWasCancelled || fullscreenInitiatedFailure || transactionFailed) {
       navigateToActivity();
+      return;
+    }
+
+    // Don't navigate if we're between approval and bridge steps in two-step flow
+    // (but only if we haven't detected a cancellation above)
+    if (isBetweenApprovalAndBridgeSteps) {
+      // Wait for bridge transaction to be submitted
     }
   }, [
     hasSubmittedBridgeTx,
