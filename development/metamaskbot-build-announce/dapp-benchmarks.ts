@@ -4,12 +4,8 @@ import { mean as calculateMean } from 'lodash';
 import {
   BenchmarkMetrics,
   BenchmarkSummary,
-} from '../test/e2e/page-objects/benchmark/page-load-benchmark';
+} from '../../test/e2e/page-objects/benchmark/page-load-benchmark';
 
-/**
- * Structure of the benchmark results output file.
- * Contains aggregated performance data and raw measurement results.
- */
 type BenchmarkOutput = {
   /** Timestamp when the benchmark was executed */
   timestamp: number;
@@ -525,7 +521,7 @@ function generateBenchmarkComment(
  * Required environment variables:
  * - HEAD_COMMIT_HASH: Git commit hash of the current HEAD
  */
-export async function getPageLoadBenchmarkComment(): Promise<string | null> {
+export async function getDappBenchmarkComment(): Promise<string | null> {
   const { HEAD_COMMIT_HASH } = process.env as Record<string, string>;
   const N_COMMITS = 10;
 
@@ -558,7 +554,7 @@ export async function getPageLoadBenchmarkComment(): Promise<string | null> {
 // If main module (i.e. this is the TS file that was run directly)
 // Used for testing this script by itself
 if (require.main === module) {
-  getPageLoadBenchmarkComment()
+  getDappBenchmarkComment()
     .then((comment) => {
       console.log('Generated comment:');
       console.log(comment);
