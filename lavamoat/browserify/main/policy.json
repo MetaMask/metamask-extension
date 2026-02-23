@@ -786,7 +786,7 @@
       },
       "packages": {
         "@metamask/account-api": true,
-        "@metamask/accounts-controller": true,
+        "@metamask/account-tree-controller>@metamask/accounts-controller": true,
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
@@ -798,6 +798,23 @@
       }
     },
     "@metamask/accounts-controller": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/eth-snap-keyring": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "lodash": true,
+        "uuid": true
+      }
+    },
+    "@metamask/account-tree-controller>@metamask/accounts-controller": {
       "globals": {
         "console.warn": true
       },
@@ -1226,6 +1243,21 @@
         "@metamask/eth-qr-keyring>hdkey": true
       }
     },
+    "@metamask/eth-mpc-keyring": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "fetch": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/eth-mpc-keyring>@metamask/mfa-wallet-cl24-lib": true,
+        "@metamask/eth-mpc-keyring>@metamask/mfa-wallet-dkls19-lib": true,
+        "@metamask/eth-mpc-keyring>@metamask/mfa-wallet-network": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/eth-qr-keyring": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/rlp": true,
@@ -1556,6 +1588,53 @@
     "@metamask/messenger": {
       "globals": {
         "console.error": true
+      }
+    },
+    "@metamask/eth-mpc-keyring>@metamask/mfa-wallet-cl24-lib": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/eth-mpc-keyring>@metamask/mfa-wallet-e2ee>@msgpack/msgpack": true,
+        "@noble/curves": true,
+        "@noble/hashes": true
+      }
+    },
+    "@metamask/eth-mpc-keyring>@metamask/mfa-wallet-dkls19-lib": {
+      "packages": {
+        "@metamask/eth-mpc-keyring>@metamask/mfa-wallet-util": true,
+        "@noble/curves": true
+      }
+    },
+    "@metamask/eth-mpc-keyring>@metamask/mfa-wallet-e2ee": {
+      "globals": {
+        "TextEncoder": true,
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@noble/ciphers": true,
+        "@noble/curves": true,
+        "@noble/hashes": true
+      }
+    },
+    "@metamask/eth-mpc-keyring>@metamask/mfa-wallet-network": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/eth-mpc-keyring>@metamask/mfa-wallet-e2ee": true,
+        "@metamask/eth-mpc-keyring>@metamask/mfa-wallet-e2ee>@msgpack/msgpack": true,
+        "@noble/hashes": true,
+        "@metamask/eth-mpc-keyring>@metamask/mfa-wallet-network>centrifuge": true
+      }
+    },
+    "@metamask/eth-mpc-keyring>@metamask/mfa-wallet-util": {
+      "globals": {
+        "console.log": true
       }
     },
     "@metamask/multichain-account-service": {
@@ -2305,6 +2384,25 @@
         "lodash": true
       }
     },
+    "@metamask/tss-dkls19-lib": {
+      "globals": {
+        "FinalizationRegistry": true,
+        "Iterator": true,
+        "Request": true,
+        "Response": true,
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "URL": true,
+        "WebAssembly.Instance": true,
+        "WebAssembly.Module": true,
+        "WebAssembly.instantiate": true,
+        "WebAssembly.instantiateStreaming": true,
+        "atob": true,
+        "console.warn": true,
+        "fetch": true,
+        "queueMicrotask": true
+      }
+    },
     "@metamask/user-operation-controller": {
       "globals": {
         "fetch": true
@@ -2355,6 +2453,12 @@
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
         "semver": true
+      }
+    },
+    "@metamask/eth-mpc-keyring>@metamask/mfa-wallet-e2ee>@msgpack/msgpack": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
       }
     },
     "@ngraveio/bc-ur": {
@@ -3311,6 +3415,30 @@
       },
       "packages": {
         "browserify>buffer": true
+      }
+    },
+    "@metamask/eth-mpc-keyring>@metamask/mfa-wallet-network>centrifuge": {
+      "globals": {
+        "AbortController": true,
+        "Event": true,
+        "EventSource": true,
+        "EventTarget": true,
+        "MessageEvent": true,
+        "ReadableStream": true,
+        "SockJS": true,
+        "SuppressedError": true,
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "URL": true,
+        "WebSocket": true,
+        "WebTransport": true,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console": true,
+        "document": true,
+        "fetch": true,
+        "localStorage": true,
+        "setTimeout": true
       }
     },
     "chalk": {
