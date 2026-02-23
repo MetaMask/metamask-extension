@@ -89,20 +89,12 @@ class CriticalErrorPage {
     if (confirm) {
       await alert.accept();
 
-      // Wait for extension window after reload (tab may close and re-open). Poll instead of fixed delay.
+      // delay needed to mitigate a race condition where the tab is closed and re-opened after confirming, causing to window to become stale
+      await this.driver.delay(3000);
+
       try {
-        await this.driver.waitUntil(
-          async () => {
-            try {
-              await this.driver.switchToWindowWithTitle(
-                WINDOW_TITLES.ExtensionInFullScreenView,
-              );
-              return true;
-            } catch {
-              return false;
-            }
-          },
-          { interval: 300, timeout: 25000 },
+        await this.driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
         );
       } catch {
         // to mitigate a race condition where the tab is closed after confirming (issue #36916)
