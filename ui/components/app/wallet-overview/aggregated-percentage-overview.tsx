@@ -5,6 +5,7 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   getSelectedAccount,
+  getSelectedInternalAccount,
   getShouldHideZeroBalanceTokens,
   getMarketData,
   getPreferences,
@@ -26,6 +27,7 @@ import { formatWithThreshold } from '../assets/util/formatWithThreshold';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
 import { Skeleton } from '../../component-library/skeleton';
+import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/assets';
 
 // core already has this exported type but its not yet available in this version
 // todo remove this and use core type once available
@@ -172,14 +174,18 @@ export const AggregatedMultichainPercentageOverview = ({
 }) => {
   const locale = useSelector(getIntlLocale);
   const currentCurrency = useSelector(getCurrentCurrency);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const historicalAggregatedBalances = useSelector((state) =>
+    getHistoricalMultichainAggregatedBalance(state, selectedAccount),
+  );
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
 
   let color = TextColor.textAlternative;
 
-  const singleDayPercentChange = 0;
-  const singleDayAmountChange = 0;
+  const singleDayPercentChange = historicalAggregatedBalances.P1D.percentChange;
+  const singleDayAmountChange = historicalAggregatedBalances.P1D.amountChange;
   const signPrefix = singleDayPercentChange >= 0 ? '+' : '-';
 
   if (!privacyMode && isValidAmount(singleDayPercentChange)) {

@@ -1,4 +1,4 @@
-import type { I18NMessageDict } from './i18n';
+import type { I18NMessageDict } from './i18n.js';
 
 const localeCodeMock = 'te';
 const keyMock = 'testKey';
@@ -23,9 +23,9 @@ jest.mock('./fetch-with-timeout', () =>
 
 describe('I18N Module', () => {
   let fallbackLocale: string;
-  let getMessage: typeof import('./i18n').getMessage;
-  let fetchLocale: typeof import('./i18n').fetchLocale;
-  let loadRelativeTimeFormatLocaleData: typeof import('./i18n').loadRelativeTimeFormatLocaleData;
+  let getMessage: typeof import('./i18n.js').getMessage;
+  let fetchLocale: typeof import('./i18n.js').fetchLocale;
+  let loadRelativeTimeFormatLocaleData: typeof import('./i18n.js').loadRelativeTimeFormatLocaleData;
   let logMock: { warn: jest.Mock; error: jest.Mock };
 
   beforeEach(async () => {
@@ -37,7 +37,10 @@ describe('I18N Module', () => {
       warn: jest.Mock;
       error: jest.Mock;
     };
-    const i18nModule = await import('./i18n');
+    const i18nModulePath = './i18n';
+    const i18nModule = (await import(
+      i18nModulePath
+    )) as typeof import('./i18n.js');
     fallbackLocale = i18nModule.FALLBACK_LOCALE;
     getMessage = i18nModule.getMessage;
     fetchLocale = i18nModule.fetchLocale;
