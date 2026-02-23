@@ -776,6 +776,9 @@
     "ui/components/multichain-accounts/multichain-account-menu/multichain-account-menu.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/multichain-accounts/multichain-account-network-group-with-default-address/multichain-account-network-group-with-default-address.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/multichain-accounts/multichain-accounts-tree/multichain-accounts-tree.test.tsx": {
       "React: Missing key props in lists": 1,
       "Reselect: Identity function warnings": 1,
@@ -783,6 +786,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain-accounts/multichain-address-rows-hovered-list/multichain-hovered-address-rows-hovered-list.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain-accounts/multichain-address-rows-list/multichain-address-rows-list.test.tsx": {
@@ -910,6 +914,7 @@
     },
     "ui/components/multichain/app-header/app-header-unlocked-content.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2,
+      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 5,
       "warn: ⚠️ React Router Future Flag": 2
