@@ -189,7 +189,12 @@ export function usePerpsOrderForm({
   useEffect(() => {
     const wasZero = prevBalanceRef.current === 0;
     prevBalanceRef.current = availableBalance;
-    if (wasZero && availableBalance > 0 && mode === 'modify' && existingPosition) {
+    if (
+      wasZero &&
+      availableBalance > 0 &&
+      mode === 'modify' &&
+      existingPosition
+    ) {
       setFormState((prev) => ({
         ...prev,
         ...deriveModifyFields(existingPosition, availableBalance),
