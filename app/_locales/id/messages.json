@@ -3599,9 +3599,6 @@
   "lock": {
     "message": "Kunci"
   },
-  "lockMetaMask": {
-    "message": "Kunci MetaMask"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "Mengunci MetaMask..."
   },
@@ -5083,9 +5080,6 @@
   "perpsAutoClose": {
     "message": "Tutup otomatis"
   },
-  "perpsBuy": {
-    "message": "beli"
-  },
   "perpsCloseAll": {
     "message": "Tutup semua"
   },
@@ -5132,9 +5126,6 @@
     "message": "Kripto"
   },
   "perpsFilterStocks": {
-    "message": "Saham"
-  },
-  "perpsFilterStocksOnly": {
     "message": "Saham"
   },
   "perpsFundingPayments": {
@@ -5213,29 +5204,17 @@
   "perpsSearchMarkets": {
     "message": "Cari pasar"
   },
-  "perpsSell": {
-    "message": "jual"
-  },
   "perpsShort": {
     "message": "Short"
   },
   "perpsSize": {
     "message": "Ukuran"
   },
-  "perpsSortFundingRate": {
-    "message": "Tingkat pendanaan"
-  },
-  "perpsSortOpenInterest": {
-    "message": "Kontrak terbuka"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "Perubahan harga: tinggi ke rendah"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "Perubahan harga: rendah ke tinggi"
-  },
-  "perpsSortVolume": {
-    "message": "Volume"
   },
   "perpsStartNewTrade": {
     "message": "Mulai perdagangan baru"
@@ -7076,44 +7055,8 @@
   "smartAccount": {
     "message": "Akun cerdas"
   },
-  "smartAccountAccept": {
-    "message": "Gunakan akun cerdas"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Transaksi lebih cepat, biaya lebih rendah"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "Hemat waktu dan uang dengan memproses transaksi secara bersamaan."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Simpan alamat akun yang sama dan Anda dapat beralih kembali setiap saat."
-  },
   "smartAccountLabel": {
     "message": "Akun Cerdas"
-  },
-  "smartAccountPayToken": {
-    "message": "Bayar dengan token apa pun setiap saat"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Gunakan token yang sudah Anda miliki untuk menutup biaya jaringan."
-  },
-  "smartAccountReject": {
-    "message": "Jangan gunakan akun cerdas"
-  },
-  "smartAccountSameAccount": {
-    "message": "Akun sama, fitur lebih cerdas."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Akun cerdas"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Gunakan akun cerdas?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Akun Anda akan diperbarui ke akun cerdas pada transaksi berikutnya."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Berhasil!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Alamat sama. Fitur lebih cerdas."

@@ -3612,9 +3612,6 @@
   "lock": {
     "message": "Заблокировать"
   },
-  "lockMetaMask": {
-    "message": "Заблокировать MetaMask"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "Блокировка MetaMask..."
   },
@@ -5107,9 +5104,6 @@
   "perpsAutoClose": {
     "message": "Автозакрытие"
   },
-  "perpsBuy": {
-    "message": "купить"
-  },
   "perpsCloseAll": {
     "message": "Закрыть все"
   },
@@ -5156,9 +5150,6 @@
     "message": "Крипто"
   },
   "perpsFilterStocks": {
-    "message": "Акции"
-  },
-  "perpsFilterStocksOnly": {
     "message": "Акции"
   },
   "perpsFundingPayments": {
@@ -5237,29 +5228,17 @@
   "perpsSearchMarkets": {
     "message": "Поиск рынков"
   },
-  "perpsSell": {
-    "message": "продать"
-  },
   "perpsShort": {
     "message": "Короткие"
   },
   "perpsSize": {
     "message": "Размер"
   },
-  "perpsSortFundingRate": {
-    "message": "Ставка финансирования"
-  },
-  "perpsSortOpenInterest": {
-    "message": "Открытый процент"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "Изменение цены: от высокой к низкой"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "Изменение цены: от низкой к высокой"
-  },
-  "perpsSortVolume": {
-    "message": "Объем"
   },
   "perpsStartNewTrade": {
     "message": "Создать новую сделку"
@@ -7100,44 +7079,8 @@
   "smartAccount": {
     "message": "Смарт-счет"
   },
-  "smartAccountAccept": {
-    "message": "Использовать смарт-счет"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Более быстрые транзакции, более низкие комиссии"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "Экономьте время и деньги, обрабатывая транзакции вместе."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Сохраните тот же адрес счета, и вы сможете вернуться к нему в любое время."
-  },
   "smartAccountLabel": {
     "message": "Смарт-счет"
-  },
-  "smartAccountPayToken": {
-    "message": "Платите любым токеном в любое время"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Используйте имеющиеся у вас токены для оплаты комиссий сети."
-  },
-  "smartAccountReject": {
-    "message": "Не использовать смарт-счет"
-  },
-  "smartAccountSameAccount": {
-    "message": "Один и тот же счет, более умные функции."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Смарт-счета"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Использовать смарт-счет?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Ваш счет будет обновлен до смарт-счета при следующей транзакции."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Успех!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Один и тот же адрес. Более умные функции."

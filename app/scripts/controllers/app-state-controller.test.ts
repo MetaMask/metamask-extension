@@ -29,6 +29,7 @@ type RootMessenger = Messenger<
 >;
 
 jest.mock('webextension-polyfill');
+jest.mock('../../../shared/lib/deep-links/utils');
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(false);
 jest.mock('../../../shared/modules/mv3.utils', () => ({
@@ -554,19 +555,27 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('isUpdateAvailable', () => {
-    it('defaults to false', async () => {
+  describe('pendingExtensionVersion', () => {
+    it('defaults to null', async () => {
       await withController(({ controller }) => {
-        expect(controller.state.isUpdateAvailable).toStrictEqual(false);
+        expect(controller.state.pendingExtensionVersion).toStrictEqual(null);
       });
     });
   });
 
-  describe('setIsUpdateAvailable', () => {
-    it('sets isUpdateAvailable', async () => {
+  describe('setPendingExtensionVersion', () => {
+    it('sets pendingExtensionVersion', async () => {
       await withController(({ controller }) => {
-        controller.setIsUpdateAvailable(true);
-        expect(controller.state.isUpdateAvailable).toStrictEqual(true);
+        controller.setPendingExtensionVersion('1.2.3');
+        expect(controller.state.pendingExtensionVersion).toStrictEqual('1.2.3');
+      });
+    });
+
+    it('clears pendingExtensionVersion when set to null', async () => {
+      await withController(({ controller }) => {
+        controller.setPendingExtensionVersion('1.2.3');
+        controller.setPendingExtensionVersion(null);
+        expect(controller.state.pendingExtensionVersion).toStrictEqual(null);
       });
     });
   });
@@ -816,7 +825,6 @@ describe('AppStateController', () => {
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
-              "isUpdateAvailable": false,
               "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
@@ -834,6 +842,7 @@ describe('AppStateController', () => {
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "pendingExtensionVersion": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
               "pna25Acknowledged": false,
@@ -911,7 +920,6 @@ describe('AppStateController', () => {
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
-              "isUpdateAvailable": false,
               "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
@@ -929,6 +937,7 @@ describe('AppStateController', () => {
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "pendingExtensionVersion": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
               "pna25Acknowledged": false,
@@ -1085,7 +1094,6 @@ describe('AppStateController', () => {
               "fullScreenGasPollTokens": [],
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
-              "isUpdateAvailable": false,
               "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
@@ -1105,6 +1113,7 @@ describe('AppStateController', () => {
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "pendingExtensionVersion": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
               "pna25Acknowledged": false,
@@ -1134,6 +1143,39 @@ describe('AppStateController', () => {
           `);
         },
       );
+    });
+  });
+
+  describe('setDeferredDeepLink', () => {
+    it('updates the state when deferred deep link is available', async () => {
+      await withController(async ({ controller }) => {
+        const mockDeepLinkData = {
+          createdAt: 1765465337256,
+          referringLink: 'https://link.metamask.io/deep-link',
+        };
+
+        controller.setDeferredDeepLink(mockDeepLinkData);
+
+        expect(controller.state.deferredDeepLink).toStrictEqual(
+          mockDeepLinkData,
+        );
+      });
+    });
+  });
+
+  describe('removeDeferredDeepLink', () => {
+    it('removes the deferred deep link data from state', async () => {
+      await withController(async ({ controller }) => {
+        const mockDeepLinkData = {
+          createdAt: 1765465337256,
+          referringLink: 'https://link.metamask.io/deep-link',
+        };
+
+        controller.setDeferredDeepLink(mockDeepLinkData);
+        controller.removeDeferredDeepLink();
+
+        expect(controller.state.deferredDeepLink).toBeUndefined();
+      });
     });
   });
 });

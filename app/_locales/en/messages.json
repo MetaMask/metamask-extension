@@ -1286,6 +1286,9 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
   },
+  "changeInSettings": {
+    "message": "Change in Settings"
+  },
   "changePasswordDetailsSocial": {
     "message": "Losing this password means losing wallet access on all devices."
   },
@@ -2115,6 +2118,9 @@
   "deepLink_theTransactionShieldPage": {
     "message": "the transaction shield page"
   },
+  "default": {
+    "message": "Default"
+  },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
   },
@@ -2697,6 +2703,9 @@
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
+  "ethereumAndEvms": {
+    "message": "Ethereum and EVMs"
+  },
   "ethereumProviderAccess": {
     "message": "Grant Ethereum provider access to $1",
     "description": "The parameter is the name of the requesting origin"
@@ -3037,7 +3046,7 @@
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
   "gmxReferralSubtitle": {
-    "message": "Save up to 10% on trades with a MetaMask referral code.",
+    "message": "Save up to 5% on trades with a MetaMask referral code.",
     "description": "The subtitle of the GMX referral confirmation screen"
   },
   "goToSite": {
@@ -3717,9 +3726,6 @@
   "lock": {
     "message": "Lock"
   },
-  "lockMetaMask": {
-    "message": "Lock MetaMask"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "Locking MetaMask..."
   },
@@ -3852,6 +3858,10 @@
   "memo": {
     "message": "memo"
   },
+  "merklRewardsClaimBonus": {
+    "message": "Claim bonus",
+    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
+  },
   "merklRewardsToastFailed": {
     "message": "Your mUSD bonus claim failed",
     "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
@@ -3863,6 +3873,10 @@
   "merklRewardsToastSuccess": {
     "message": "Your mUSD bonus is here!",
     "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
+  },
+  "merklRewardsUnexpectedError": {
+    "message": "Unexpected error. Please try again.",
+    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "Message"
@@ -4027,6 +4041,18 @@
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
+  },
+  "musdClaimClaimingTo": {
+    "message": "Claiming to",
+    "description": "Label for the account row in the mUSD claim confirmation screen"
+  },
+  "musdClaimDescription": {
+    "message": "Bonus payout will be on Linea network.",
+    "description": "Subtitle shown on the mUSD claim confirmation screen explaining rewards are on Linea"
+  },
+  "musdClaimTitle": {
+    "message": "Claim bonus",
+    "description": "Title for the mUSD bonus claim confirmation screen"
   },
   "musdConversionActivityTitle": {
     "message": "mUSD Conversion"
@@ -5228,8 +5254,14 @@
   "perpsAddFundsDescription": {
     "message": "Add funds to start trading perpetual contracts with leverage"
   },
+  "perpsAddMargin": {
+    "message": "Add Margin"
+  },
   "perpsAddToFavorites": {
     "message": "Add to favorites"
+  },
+  "perpsAsk": {
+    "message": "Ask"
   },
   "perpsAutoClose": {
     "message": "Auto close"
@@ -5238,8 +5270,14 @@
     "message": "available",
     "description": "is the available balance amount"
   },
-  "perpsBuy": {
-    "message": "buy"
+  "perpsAvailableBalance": {
+    "message": "Available balance"
+  },
+  "perpsBid": {
+    "message": "Bid"
+  },
+  "perpsCancelAllOrders": {
+    "message": "Cancel all"
   },
   "perpsClose": {
     "message": "Close"
@@ -5316,10 +5354,13 @@
   "perpsFilterCrypto": {
     "message": "Crypto"
   },
-  "perpsFilterStocks": {
-    "message": "Stocks"
+  "perpsFilterForex": {
+    "message": "Forex"
   },
-  "perpsFilterStocksOnly": {
+  "perpsFilterNew": {
+    "message": "New"
+  },
+  "perpsFilterStocks": {
     "message": "Stocks"
   },
   "perpsFunding": {
@@ -5330,6 +5371,15 @@
   },
   "perpsFundingRate": {
     "message": "Funding Rate"
+  },
+  "perpsFundingRateTooltip": {
+    "message": "An hourly fee paid between traders to keep prices in line with the market. If the rate is positive, longs pay shorts. If negative, shorts pay longs."
+  },
+  "perpsGeoBlockedTooltip": {
+    "message": "Perpetual trading is not available in your region"
+  },
+  "perpsGiveFeedback": {
+    "message": "Give us feedback"
   },
   "perpsIncreasedPosition": {
     "message": "Increased position"
@@ -5346,6 +5396,12 @@
   "perpsLimit": {
     "message": "Limit"
   },
+  "perpsLimitPrice": {
+    "message": "Limit Price"
+  },
+  "perpsLiquidationDistance": {
+    "message": "Liq. distance"
+  },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
   },
@@ -5357,6 +5413,9 @@
   },
   "perpsMargin": {
     "message": "Margin"
+  },
+  "perpsMarginRiskWarning": {
+    "message": "Removing margin moves your liquidation price closer. Ensure you have sufficient buffer."
   },
   "perpsMarket": {
     "message": "Market"
@@ -5370,6 +5429,15 @@
   },
   "perpsMarkets": {
     "message": "Markets"
+  },
+  "perpsMax": {
+    "message": "Max"
+  },
+  "perpsMaxRemovable": {
+    "message": "Max removable"
+  },
+  "perpsMid": {
+    "message": "Mid"
   },
   "perpsModify": {
     "message": "Modify"
@@ -5389,6 +5457,9 @@
   "perpsOpenInterest": {
     "message": "Open Interest"
   },
+  "perpsOpenInterestTooltip": {
+    "message": "The combined value of all open positions for this perp"
+  },
   "perpsOpenLong": {
     "message": "Open Long $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
@@ -5402,6 +5473,12 @@
   },
   "perpsOpenedLong": {
     "message": "Opened long"
+  },
+  "perpsOraclePrice": {
+    "message": "Oracle Price"
+  },
+  "perpsOraclePriceTooltip": {
+    "message": "The median of external prices reported by validators, used for computing funding rate"
   },
   "perpsOrderAmount": {
     "message": "Order Amount"
@@ -5424,8 +5501,15 @@
   "perpsRecentActivity": {
     "message": "Recent Activity"
   },
+  "perpsRemoveMargin": {
+    "message": "Remove Margin"
+  },
   "perpsReturn": {
     "message": "Return"
+  },
+  "perpsSaveChanges": {
+    "message": "Save Changes",
+    "description": "Button text for saving TP/SL changes"
   },
   "perpsSearchMarkets": {
     "message": "Search markets"
@@ -5433,8 +5517,8 @@
   "perpsSeeAll": {
     "message": "See All"
   },
-  "perpsSell": {
-    "message": "sell"
+  "perpsSeeAllPerps": {
+    "message": "See all Perps"
   },
   "perpsShort": {
     "message": "Short"
@@ -5442,11 +5526,17 @@
   "perpsSize": {
     "message": "Size"
   },
-  "perpsSortFundingRate": {
-    "message": "Funding rate"
+  "perpsSortFundingRateHighToLow": {
+    "message": "Funding rate: high to low"
   },
-  "perpsSortOpenInterest": {
-    "message": "Open interest"
+  "perpsSortFundingRateLowToHigh": {
+    "message": "Funding rate: low to high"
+  },
+  "perpsSortOpenInterestHighToLow": {
+    "message": "Open interest: high to low"
+  },
+  "perpsSortOpenInterestLowToHigh": {
+    "message": "Open interest: low to high"
   },
   "perpsSortPriceChangeHighToLow": {
     "message": "Price change: high to low"
@@ -5454,8 +5544,11 @@
   "perpsSortPriceChangeLowToHigh": {
     "message": "Price change: low to high"
   },
-  "perpsSortVolume": {
-    "message": "Volume"
+  "perpsSortVolumeHighToLow": {
+    "message": "Volume: high to low"
+  },
+  "perpsSortVolumeLowToHigh": {
+    "message": "Volume: low to high"
   },
   "perpsStartNewTrade": {
     "message": "Start a new trade"
@@ -5486,6 +5579,18 @@
   },
   "perpsStatusTriggered": {
     "message": "Triggered"
+  },
+  "perpsStopLoss": {
+    "message": "Stop Loss",
+    "description": "Label for stop loss price input"
+  },
+  "perpsSubmitting": {
+    "message": "Submitting...",
+    "description": "Loading text shown while an order is being submitted"
+  },
+  "perpsTakeProfit": {
+    "message": "Take Profit",
+    "description": "Label for take profit price input"
   },
   "perpsTotalBalance": {
     "message": "Total Balance"
@@ -7192,6 +7297,12 @@
   "showAdvancedDetails": {
     "message": "Show advanced details"
   },
+  "showDefaultAddress": {
+    "message": "Show default address"
+  },
+  "showDefaultAddressDescription": {
+    "message": "Set a default address that's always visible on your home screen and account list."
+  },
   "showExtensionInFullSizeView": {
     "message": "Show extension in full-size view"
   },
@@ -7391,44 +7502,8 @@
   "smartAccount": {
     "message": "Smart account"
   },
-  "smartAccountAccept": {
-    "message": "Use smart account"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Faster transactions, lower fees"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "Save time and money by processing transactions together."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Keep the same account address, and you can switch back anytime."
-  },
   "smartAccountLabel": {
     "message": "Smart Account"
-  },
-  "smartAccountPayToken": {
-    "message": "Pay with any token, any time"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Use the tokens you already have to cover network fees."
-  },
-  "smartAccountReject": {
-    "message": "Don’t use smart account"
-  },
-  "smartAccountSameAccount": {
-    "message": "Same account, smarter features."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Smart accounts"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Use smart account?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Your account will be updated to smart account with your next transaction."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Successful!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."

@@ -102,6 +102,7 @@ function TransactionSummaryLine({
   }
 
   if (
+    type === TransactionType.musdClaim ||
     type === TransactionType.musdConversion ||
     type === TransactionType.perpsDeposit
   ) {

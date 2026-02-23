@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { MultichainAccountCell } from './multichain-account-cell';
 import { MultichainAccountCellProps } from './multichain-account-cell';
@@ -74,6 +74,11 @@ export default {
     endAccessory: {
       control: false,
       description: 'Optional component to display at the end of the cell',
+    },
+    avatarWrapper: {
+      control: false,
+      description:
+        'When provided, wraps the account avatar (e.g. to attach a hover popover). Receives the avatar node and should return the wrapped node.',
     },
     selected: {
       control: 'boolean',
@@ -165,6 +170,63 @@ WithCheckedCheckboxAccessory.args = {
   startAccessory: <CheckboxAccessory checked={true} />,
   endAccessory: <MoreOptionsAccessory />,
   selected: true,
+};
+
+const HoverableAvatarWrapper = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      style={{ position: 'relative', display: 'inline-flex' }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {children}
+      {hovered && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '100%',
+            left: '50%',
+            transform: 'translateX(-50%) translateY(-4px)',
+            padding: '6px 10px',
+            backgroundColor: 'var(--color-background-default, #fff)',
+            border: '1px solid var(--color-border-muted, #b0b0b0)',
+            borderRadius: '8px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+            fontSize: '12px',
+            whiteSpace: 'nowrap',
+            zIndex: 1,
+          }}
+        >
+          Hover for address list
+        </div>
+      )}
+    </div>
+  );
+};
+
+export const WithAvatarWrapper = Template.bind({});
+WithAvatarWrapper.storyName = 'With Avatar Wrapper';
+WithAvatarWrapper.args = {
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+  accountName: 'Account with wrapped avatar',
+  balance: '$2,400.00',
+  endAccessory: <MoreOptionsAccessory />,
+  avatarWrapper: (avatar) => (
+    <HoverableAvatarWrapper>{avatar}</HoverableAvatarWrapper>
+  ),
+};
+WithAvatarWrapper.parameters = {
+  docs: {
+    description: {
+      story:
+        'When `avatarWrapper` is provided, the account avatar is passed to it and the returned node is rendered (e.g. to wrap the avatar in a popover trigger for address rows). Hover the avatar to see the tooltip.',
+    },
+  },
 };
 
 export const MultipleAccounts: StoryFn<typeof MultichainAccountCell> = () => (
