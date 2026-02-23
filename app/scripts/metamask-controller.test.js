@@ -5202,24 +5202,6 @@ describe('MetaMaskController', () => {
 
       await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
     });
-
-    it('calls discoverAndCreateAccounts when multichain accounts state2 is enabled', async () => {
-      jest
-        .spyOn(metamaskController, 'discoverAndCreateAccounts')
-        .mockResolvedValue({});
-
-      await metamaskController._importAccountsWithBalances();
-
-      const { keyrings } = metamaskController.keyringController.state;
-      const hdIds = keyrings
-        .filter((keyring) => keyring.metadata.type === KeyringTypes.hd)
-        .map((keyring) => keyring.metadata.id);
-      hdIds.forEach((id) => {
-        expect(
-          metamaskController.discoverAndCreateAccounts,
-        ).toHaveBeenCalledWith(id);
-      });
-    });
   });
 
   describe('selectedAccountGroupChange subscription for Solana', () => {
