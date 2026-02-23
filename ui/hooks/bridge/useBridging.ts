@@ -54,7 +54,7 @@ const useBridging = () => {
         address: string;
         decimals?: number;
         name?: string;
-        chainId: Hex | CaipChainId;
+        chainId: Hex | CaipChainId | number;
       },
     ) => {
       dispatch(resetInputFields());
@@ -88,7 +88,7 @@ const useBridging = () => {
           ...token,
           assetId,
           name: token.name ?? token.symbol,
-          chainId: token.chainId,
+          chainId: formatChainIdToCaip(token.chainId),
         };
         if (validateMinimalAssetObject(tokenWithAssetId)) {
           tokenToUse = tokenWithAssetId;
