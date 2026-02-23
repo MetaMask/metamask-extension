@@ -46,7 +46,10 @@ import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
-import { resolveReduxStore } from './store/redux-store-promise';
+import {
+  getReduxStorePromise,
+  resolveReduxStore,
+} from './store/redux-store-promise';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
 export {
@@ -73,7 +76,7 @@ export const connectToBackground = (
   backgroundConnection.onNotification(async (data) => {
     const { method } = data;
     if (method === 'sendUpdate') {
-      const store = await reduxStore.promise;
+      const store = await getReduxStorePromise();
       store.dispatch(actions.updateMetamaskState(data.params[0]));
     } else if (method === START_UI_SYNC) {
       await handleStartUISync(data.params[0]);
