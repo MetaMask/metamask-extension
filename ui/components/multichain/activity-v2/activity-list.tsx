@@ -157,7 +157,7 @@ export const ActivityList = () => {
       return (
         <Box className="px-4 py-2 bg-background-default">
           <Text className="text-sm text-alternative">
-            {formatDateWithYearContext(item.date, 'MMM d, y', 'MMM d')}
+            {formatDateWithYearContext(item.date, 'MMM d, y', 'MMM d, y')}
           </Text>
         </Box>
       );
