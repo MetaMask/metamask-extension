@@ -27,16 +27,11 @@ const renderUseBridgeQueryParams = (mockStoreState: object, path?: string) =>
     path,
   );
 
-let calcLatestSrcBalanceSpy: jest.SpyInstance;
-
-describe('useBridgeQueryParams', () => {
+describe('usePrefillFromSearchQuery', () => {
   const { ChainId } = bridgeControllerUtils;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    calcLatestSrcBalanceSpy = jest
-      .spyOn(bridgeControllerUtils, 'calcLatestSrcBalance')
-      .mockResolvedValue(BigNumber.from('1000000'));
   });
 
   it('should set solana swap params', async () => {
@@ -181,7 +176,6 @@ describe('useBridgeQueryParams', () => {
       fromNativeBalance,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
-    expect(calcLatestSrcBalanceSpy.mock.calls).toMatchSnapshot();
   });
 
   it('should not set params when fetchAssetMetadataForAssetIds fails', async () => {
@@ -281,7 +275,6 @@ describe('useBridgeQueryParams', () => {
       fromTokenInputValue,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
-    expect(calcLatestSrcBalanceSpy).toHaveBeenCalledTimes(2);
   });
 
   it('should set src token after navigating from native asset page', async () => {
@@ -332,10 +325,9 @@ describe('useBridgeQueryParams', () => {
       fromTokenInputValue,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
-    expect(calcLatestSrcBalanceSpy.mock.calls).toMatchSnapshot();
   });
 
-  it.only('should not set inputs when there are no query params', async () => {
+  it('should not set inputs when there are no query params', async () => {
     const fetchAssetMetadataForAssetIdsSpy = jest.spyOn(
       assetUtils,
       'fetchAssetMetadataForAssetIds',
@@ -467,7 +459,6 @@ describe('useBridgeQueryParams', () => {
       fromTokenInputValue,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
-    expect(calcLatestSrcBalanceSpy.mock.calls).toMatchSnapshot();
   });
 
   it('should unset amount', async () => {

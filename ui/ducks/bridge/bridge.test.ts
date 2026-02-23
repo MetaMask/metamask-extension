@@ -238,6 +238,26 @@ describe('Ducks - Bridge', () => {
       expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
       expect(mockResetBridgeState).toHaveBeenCalledWith();
       const actions = mockStore.getActions();
+      expect(actions.map((action) => action.type)).not.toContain(
+        'bridge/resetInputFields',
+      );
+    });
+  });
+
+  describe('resetInputFields', () => {
+    it('dispatches action to the bridge controller', () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mockStore = configureMockStore<any>(middleware)(
+        createBridgeMockStore({
+          bridgeSliceOverrides: { fromTokenInputValue: '10' },
+        }),
+      );
+      const state = mockStore.getState().bridge;
+
+      mockStore.dispatch(resetInputFields() as never);
+
+      const actions = mockStore.getActions();
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState).toStrictEqual({
