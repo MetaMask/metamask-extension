@@ -3726,9 +3726,6 @@
   "lock": {
     "message": "Lock"
   },
-  "lockMetaMask": {
-    "message": "Lock MetaMask"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "Locking MetaMask..."
   },

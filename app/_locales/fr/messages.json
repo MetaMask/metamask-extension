@@ -3599,9 +3599,6 @@
   "lock": {
     "message": "Verrouiller"
   },
-  "lockMetaMask": {
-    "message": "Verrouiller MetaMask"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "Verrouillage de MetaMask…"
   },
