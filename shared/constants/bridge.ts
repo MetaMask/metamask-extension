@@ -17,9 +17,7 @@ import {
 
 export const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
   MultichainNetworks.SOLANA,
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
   MultichainNetworks.BITCOIN,
-  ///: END:ONLY_INCLUDE_IF
   MultichainNetworks.TRON,
 ];
 

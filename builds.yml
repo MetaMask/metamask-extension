@@ -20,7 +20,6 @@ buildTypes:
       - keyring-snaps
       - multi-srp
       - bitcoin
-      - bitcoin-swaps
       - tron
     # Additional env variables that are specific to this build
     env:
@@ -51,7 +50,6 @@ buildTypes:
       - build-beta
       - keyring-snaps
       - bitcoin
-      - bitcoin-swaps
       - multi-srp
       - tron
     env:
@@ -86,7 +84,6 @@ buildTypes:
       - keyring-snaps
       - multi-srp
       - bitcoin
-      - bitcoin-swaps
       - tron
     env:
       - INFURA_EXPERIMENTAL_PROJECT_ID
@@ -197,7 +194,6 @@ features:
     assets:
       # srp-list is a special case and is used in the srp recovery flow now.
       - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
-  bitcoin-swaps:
   ocap-kernel:
     assets:
       - ./{app,shared,ui}/**/ocap-kernel/**
