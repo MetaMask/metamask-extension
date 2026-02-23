@@ -31,7 +31,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
-const METRICS_LOCATION_CHANGE_IN_SETTINGS = 'Account Hover Menu';
+const METRICS_LOCATION = 'account-hover-menu';
+const SETTINGS_PATH = 'show-default-address';
 
 export const DefaultAddress = () => {
   const t = useI18nContext();
@@ -76,11 +77,11 @@ export const DefaultAddress = () => {
                   category: MetaMetricsEventCategory.Navigation,
                   event: MetaMetricsEventName.NavSettingsOpened,
                   properties: {
-                    location: METRICS_LOCATION_CHANGE_IN_SETTINGS,
-                    settings_section: 'show-default-address',
+                    location: METRICS_LOCATION,
+                    settings_section: SETTINGS_PATH,
                   },
                 });
-                navigate(`${GENERAL_ROUTE}#show-default-address`);
+                navigate(`${GENERAL_ROUTE}#${SETTINGS_PATH}`);
               }}
               data-testid="change-in-settings-link"
             >
@@ -91,14 +92,15 @@ export const DefaultAddress = () => {
         <ToggleButton
           value={showDefaultAddress}
           onToggle={(value: boolean) => {
-            dispatch(setShowDefaultAddress(!value));
+            const newValue = !value;
+            dispatch(setShowDefaultAddress(newValue));
             trackEvent({
               category: MetaMetricsEventCategory.Settings,
               event: MetaMetricsEventName.SettingsUpdated,
               properties: {
                 default_address_network: defaultAddressScope,
-                location: 'hover-address-menu',
-                show_default_address: value,
+                location: METRICS_LOCATION,
+                show_default_address: newValue,
               },
             });
           }}
