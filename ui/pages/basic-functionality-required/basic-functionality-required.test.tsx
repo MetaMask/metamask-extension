@@ -27,7 +27,7 @@ jest.mock('react-toggle-button', () => {
       type: 'checkbox',
       checked: value,
       'data-testid': passThroughInputProps?.['data-testid'],
-      onChange: () => onToggle(!value),
+      onChange: () => onToggle(value),
       readOnly: true,
     });
   }
