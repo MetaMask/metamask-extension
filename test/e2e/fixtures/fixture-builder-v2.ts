@@ -178,7 +178,7 @@ class FixtureBuilderV2 {
       blockTimestamp: '63a32240',
       txReceipt: {
         blockNumber: '0x7cbf95',
-        gasUsed: '5208',
+        gasUsed: '0x1458', // 5208 decimal, valid hex for code paths that parse as hex
         status: '0x1',
       },
       type: TransactionType.simpleSend,
