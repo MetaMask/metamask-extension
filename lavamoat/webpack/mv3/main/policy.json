@@ -739,6 +739,15 @@
         "lodash": true
       }
     },
+    "@metamask/core-backend": {
+      "globals": {
+        "URL": true,
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/core-backend>@tanstack/query-core": true
+      }
+    },
     "@metamask/delegation-core": {
       "packages": {
         "@metamask/abi-utils": true,
@@ -1850,6 +1859,22 @@
       "packages": {
         "@noble/hashes": true,
         "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true
+      }
+    },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "addEventListener": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "document": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@swc/helpers": true
       }
     },
     "@tanstack/react-query>@tanstack/query-core": {
