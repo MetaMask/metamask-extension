@@ -31,9 +31,7 @@ describe('Petnames - Transactions', function () {
         await testDapp.openTestDappPage();
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.checkAddressIsDisplayed(
-          ABBREVIATED_ADDRESS_MOCK,
-        );
+        await confirmation.checkAddressIsDisplayed(ABBREVIATED_ADDRESS_MOCK);
 
         // Test custom name.
         await confirmation.saveName({
@@ -79,9 +77,7 @@ describe('Petnames - Transactions', function () {
         const confirmation = new Confirmation(driver);
         await loginWithBalanceValidation(driver);
         await createWalletSendTransaction(ADDRESS_MOCK, driver);
-        await confirmation.checkAddressIsDisplayed(
-          ADDRESS_MOCK_RENDERED,
-        );
+        await confirmation.checkAddressIsDisplayed(ADDRESS_MOCK_RENDERED);
 
         // Test custom name.
         await confirmation.saveName({
