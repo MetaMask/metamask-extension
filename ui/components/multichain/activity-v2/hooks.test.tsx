@@ -250,4 +250,189 @@ describe('useGetTitle', () => {
 
     expect(result.current).toBe('sentSpecifiedTokens:NFT');
   });
+
+  it('returns bought title for CONTRACT_CALL with incoming NFT', () => {
+    const tx = {
+      from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+      methodId: '0x00000000',
+      to: '0x0000000000000068f116a894984e2db1123eb395',
+      transactionCategory: 'CONTRACT_CALL',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      value: '1000000000000000',
+      valueTransfers: [
+        {
+          amount: '1000000000000000',
+          decimal: 18,
+          from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+          to: '0x0000000000000068f116a894984e2db1123eb395',
+          transferType: 'normal',
+        },
+        {
+          amount: 1,
+          contractAddress: '0x3edf71a31b80ff6a45fdb0858ec54de98df047aa',
+          from: '0x78c87da124bb36a914ff1c0f2d642f47870c997c',
+          to: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+          tokenId: '984',
+          transferType: 'erc1155',
+        },
+      ],
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHook(() => useGetTitle(tx));
+
+    expect(result.current).toBe('nftBought:NFT');
+  });
+
+  it('returns bought title for TRANSFER with incoming NFT (OpenSea purchase)', () => {
+    const tx = {
+      chainId: '0x1',
+      from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+      methodId: '0x00000000',
+      to: '0x7be8076f4ea4a4ad08075c2508e481d6c946d12b',
+      toAddressName: 'OPENSEA_V1.6',
+      transactionCategory: 'TRANSFER',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      value: '116000000000000000',
+      valueTransfers: [
+        {
+          amount: '116000000000000000',
+          decimal: 18,
+          from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+          to: '0x7be8076f4ea4a4ad08075c2508e481d6c946d12b',
+          transferType: 'normal',
+        },
+        {
+          amount: 1,
+          contractAddress: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
+          from: '0xf7e0d1fc68e3fb6cc6ad8aa0f7c48fadd9419a10',
+          to: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+          tokenId: '1432508',
+          transferType: 'erc721',
+        },
+      ],
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHook(() => useGetTitle(tx));
+
+    expect(result.current).toBe('nftBought:NFT');
+  });
+
+  it('returns minted title for CONTRACT_CALL with NFT from zero address', () => {
+    const tx = {
+      from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+      methodId: '0x1f7fdffa',
+      to: '0x61de1b47cca2e4383803a48b5cafa78a25c4d69f',
+      transactionCategory: 'CONTRACT_CALL',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      value: '0',
+      valueTransfers: [
+        {
+          amount: null,
+          contractAddress: '0x61de1b47cca2e4383803a48b5cafa78a25c4d69f',
+          from: '0x0000000000000000000000000000000000000000',
+          to: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+          tokenId: '0',
+          transferType: 'erc1155',
+        },
+      ],
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHook(() => useGetTitle(tx));
+
+    expect(result.current).toBe('nftMinted:NFT');
+  });
+
+  it('returns received for incoming NFT with no payment (gift)', () => {
+    const tx = {
+      from: '0xabcdef1234567890abcdef1234567890abcdef12',
+      to: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+      transactionCategory: 'TRANSFER',
+      transactionType: 'ERC_721_TRANSFER',
+      value: '0',
+      valueTransfers: [
+        {
+          amount: 1,
+          contractAddress: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
+          from: '0xabcdef1234567890abcdef1234567890abcdef12',
+          to: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+          tokenId: '12345',
+          transferType: 'erc721',
+        },
+      ],
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHook(() => useGetTitle(tx));
+
+    expect(result.current).toBe('received');
+  });
+
+  it('returns received for CONTRACT_CALL with incoming NFT and no payment', () => {
+    const tx = {
+      from: '0x9bed78535d6a03a955f1504aadba974d9a29e292',
+      methodId: '0xf242432a',
+      to: '0x3edf71a31b80ff6a45fdb0858ec54de98df047aa',
+      transactionCategory: 'CONTRACT_CALL',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      value: '0',
+      valueTransfers: [
+        {
+          amount: 1,
+          contractAddress: '0x3edf71a31b80ff6a45fdb0858ec54de98df047aa',
+          from: '0x9bed78535d6a03a955f1504aadba974d9a29e292',
+          to: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+          tokenId: '984',
+          transferType: 'erc1155',
+        },
+      ],
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHook(() => useGetTitle(tx));
+
+    expect(result.current).toBe('received');
+  });
+
+  it('returns sent NFT for CONTRACT_CALL with outgoing NFT (sender view)', () => {
+    // Different store where selected account is the sender
+    const senderAddress = '0x9bed78535d6a03a955f1504aadba974d9a29e292';
+    const senderStore = configureMockStore()({
+      metamask: {
+        internalAccounts: {
+          selectedAccount: '1',
+          accounts: {
+            '1': {
+              address: senderAddress,
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
+    });
+
+    const tx = {
+      from: senderAddress,
+      methodId: '0xf242432a',
+      to: '0x3edf71a31b80ff6a45fdb0858ec54de98df047aa',
+      transactionCategory: 'CONTRACT_CALL',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      value: '0',
+      valueTransfers: [
+        {
+          amount: 1,
+          contractAddress: '0x3edf71a31b80ff6a45fdb0858ec54de98df047aa',
+          from: senderAddress,
+          to: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+          tokenId: '984',
+          transferType: 'erc1155',
+        },
+      ],
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHookBase(() => useGetTitle(tx), {
+      wrapper: ({ children }) => (
+        <Provider store={senderStore}>{children}</Provider>
+      ),
+    });
+
+    expect(result.current).toBe('sentSpecifiedTokens:NFT');
+  });
 });
