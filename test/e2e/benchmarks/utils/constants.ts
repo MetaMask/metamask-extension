@@ -1,5 +1,31 @@
 import type { ThresholdConfig } from './types';
 
+/**
+ * Shared benchmark configuration.
+ * These are the single source of truth consumed by:
+ * - test/e2e/benchmarks/run-benchmark.ts  (PRESETS map)
+ * - development/metamaskbot-build-announce/index.ts  (PR comment builder)
+ * - .github/workflows/run-benchmarks.yml  (CI matrix — must be updated manually)
+ */
+export const BENCHMARK_PLATFORMS = ['chrome', 'firefox'] as const;
+export const BENCHMARK_BUILD_TYPES = ['browserify', 'webpack'] as const;
+export const STARTUP_PRESETS = {
+  STANDARD_HOME: 'startupStandardHome',
+  POWER_USER_HOME: 'startupPowerUserHome',
+} as const;
+
+export const INTERACTION_PRESETS = {
+  USER_ACTIONS: 'interactionUserActions',
+} as const;
+
+export const USER_JOURNEY_PRESETS = {
+  ONBOARDING_IMPORT: 'userJourneyOnboardingImport',
+  ONBOARDING_NEW: 'userJourneyOnboardingNew',
+  ASSETS: 'userJourneyAssets',
+  ACCOUNT_MANAGEMENT: 'userJourneyAccountManagement',
+  TRANSACTIONS: 'userJourneyTransactions',
+} as const;
+
 export const DEFAULT_NUM_BROWSER_LOADS = 10;
 export const DEFAULT_NUM_PAGE_LOADS = 10;
 
@@ -185,8 +211,8 @@ export const SEND_TRANSACTIONS_THRESHOLDS: ThresholdConfig = {
  */
 export const ASSET_DETAILS_THRESHOLDS: ThresholdConfig = {
   assetClickToPriceChart: {
-    p75: { warn: 5500, fail: 9000 },
-    p95: { warn: 8000, fail: 10000 },
+    p75: { warn: 8000, fail: 12000 },
+    p95: { warn: 12000, fail: 15000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };

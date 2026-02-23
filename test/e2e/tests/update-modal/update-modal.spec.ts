@@ -4,6 +4,7 @@ import type { Mockttp } from 'mockttp';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import UpdateModal from '../../page-objects/pages/dialog/update-modal';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { version } from '../../../../package.json';
@@ -12,7 +13,7 @@ describe('Update modal', function (this: Suite) {
   it('should not be shown by default', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -24,17 +25,18 @@ describe('Update modal', function (this: Suite) {
   });
 
   it('should be shown if an update is available on an outdated version', async function () {
+    const minimumVersion = semver.inc(version, 'patch');
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withAppStateController({
-            isUpdateAvailable: true,
+            pendingExtensionVersion: minimumVersion,
           })
           .build(),
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUpdatePromptMinimumVersion: semver.inc(version, 'patch'),
+            extensionUpdatePromptMinimumVersion: minimumVersion,
           },
         },
       },
@@ -46,18 +48,43 @@ describe('Update modal', function (this: Suite) {
     );
   });
 
-  it('should disappear when closed', async function () {
+  it('is not shown when pending version is not newer than current version', async function () {
+    const minimumVersion = semver.inc(version, 'patch');
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withAppStateController({
-            isUpdateAvailable: true,
+            pendingExtensionVersion: version,
           })
           .build(),
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUpdatePromptMinimumVersion: semver.inc(version, 'patch'),
+            extensionUpdatePromptMinimumVersion: minimumVersion,
+          },
+        },
+      },
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
+        const updateModal = new UpdateModal(driver);
+        await updateModal.checkPageIsNotPresent();
+      },
+    );
+  });
+
+  it('should disappear when closed', async function () {
+    const minimumVersion = semver.inc(version, 'patch');
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withAppStateController({
+            pendingExtensionVersion: minimumVersion,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUpdatePromptMinimumVersion: minimumVersion,
           },
         },
       },
@@ -72,18 +99,19 @@ describe('Update modal', function (this: Suite) {
   });
 
   it('should reload the extension when confirmed', async function () {
+    const minimumVersion = semver.inc(version, 'patch');
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withAppStateController({
-            isUpdateAvailable: true,
+            pendingExtensionVersion: minimumVersion,
           })
           .build(),
         title: this.test?.fullTitle(),
         disableServerMochaToBackground: true,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUpdatePromptMinimumVersion: semver.inc(version, 'patch'),
+            extensionUpdatePromptMinimumVersion: minimumVersion,
           },
         },
         // we need to mock the updating page that is opened when the user confirms the update
@@ -107,18 +135,19 @@ describe('Update modal', function (this: Suite) {
   });
 
   it('should not be shown if the modal was recently dismissed', async function () {
+    const minimumVersion = semver.inc(version, 'patch');
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withAppStateController({
-            isUpdateAvailable: true,
+            pendingExtensionVersion: minimumVersion,
             updateModalLastDismissedAt: Date.now(),
           })
           .build(),
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUpdatePromptMinimumVersion: semver.inc(version, 'patch'),
+            extensionUpdatePromptMinimumVersion: minimumVersion,
           },
         },
       },
@@ -131,18 +160,19 @@ describe('Update modal', function (this: Suite) {
   });
 
   it('should not be shown if the extension was recently updated', async function () {
+    const minimumVersion = semver.inc(version, 'patch');
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withAppStateController({
-            isUpdateAvailable: true,
+            pendingExtensionVersion: minimumVersion,
             lastUpdatedAt: Date.now(),
           })
           .build(),
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUpdatePromptMinimumVersion: semver.inc(version, 'patch'),
+            extensionUpdatePromptMinimumVersion: minimumVersion,
           },
         },
       },

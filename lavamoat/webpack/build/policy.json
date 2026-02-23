@@ -236,7 +236,7 @@
         "@babel/core>@babel/template": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
         "nock>debug": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>globals": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
       }
     },
     "@babel/core>@babel/types": {
@@ -315,7 +315,7 @@
         "node:path.sep": true
       },
       "packages": {
-        "depcheck>resolve": true
+        "lavamoat>@lavamoat/aa>resolve": true
       }
     },
     "@lavamoat/webpack": {
@@ -635,6 +635,11 @@
       "packages": {
         "webpack>mime-types": true,
         "koa>accepts>negotiator": true
+      }
+    },
+    "webpack>acorn-import-phases": {
+      "packages": {
+        "jsdom>acorn": true
       }
     },
     "jsdom>acorn": {
@@ -1052,16 +1057,16 @@
     },
     "copy-webpack-plugin": {
       "builtin": {
-        "path.basename": true,
-        "path.dirname": true,
-        "path.extname": true,
-        "path.isAbsolute": true,
-        "path.join": true,
-        "path.normalize": true,
-        "path.posix.join": true,
-        "path.relative": true,
-        "path.resolve": true,
-        "path.sep": true
+        "node:path.basename": true,
+        "node:path.dirname": true,
+        "node:path.extname": true,
+        "node:path.isAbsolute": true,
+        "node:path.join": true,
+        "node:path.normalize": true,
+        "node:path.posix.join": true,
+        "node:path.relative": true,
+        "node:path.resolve": true,
+        "node:path.sep": true
       },
       "packages": {
         "eslint>glob-parent": true,
@@ -1334,7 +1339,8 @@
         "path.posix.normalize": true,
         "path.win32.normalize": true,
         "process.nextTick": true,
-        "process.versions.pnp": true
+        "process.versions.pnp": true,
+        "url": true
       },
       "globals": {
         "Buffer.isBuffer": true,
@@ -1368,6 +1374,8 @@
     "webpack>es-module-lexer": {
       "globals": {
         "Buffer": true,
+        "WebAssembly.Instance": true,
+        "WebAssembly.Module": true,
         "WebAssembly.compile": true,
         "WebAssembly.instantiate": true,
         "atob": true
@@ -2555,6 +2563,36 @@
         "path.resolve": true
       }
     },
+    "lavamoat>@lavamoat/aa>resolve": {
+      "builtin": {
+        "fs.readFileSync": true,
+        "fs.realpathSync": true,
+        "fs.statSync": true,
+        "os.homedir": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.parse": true,
+        "path.relative": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "process.env.HOME": true,
+        "process.env.HOMEDRIVE": true,
+        "process.env.HOMEPATH": true,
+        "process.env.LNAME": true,
+        "process.env.LOGNAME": true,
+        "process.env.USER": true,
+        "process.env.USERNAME": true,
+        "process.env.USERPROFILE": true,
+        "process.getuid": true,
+        "process.platform": true,
+        "process.versions.pnp": true
+      },
+      "packages": {
+        "depcheck>is-core-module": true,
+        "depcheck>resolve>path-parse": true
+      }
+    },
     "depcheck>resolve": {
       "builtin": {
         "fs.readFile": true,
@@ -3198,6 +3236,7 @@
         "path.extname": true,
         "path.isAbsolute": true,
         "path.join": true,
+        "path.normalize": true,
         "path.posix.dirname": true,
         "path.posix.isAbsolute": true,
         "path.posix.join": true,
@@ -3210,15 +3249,14 @@
         "path.win32.relative": true,
         "querystring.parse": true,
         "stream.pipeline": true,
-        "url.URL": true,
+        "tty.isatty": true,
         "url.fileURLToPath": true,
+        "url.parse": true,
         "url.pathToFileURL": true,
         "util.deprecate": true,
         "util.format": true,
         "util.inspect.custom": true,
-        "vm.createContext": true,
-        "vm.runInContext": true,
-        "vm.runInThisContext": true,
+        "vm": true,
         "zlib.constants.BROTLI_MODE_TEXT": true,
         "zlib.constants.BROTLI_PARAM_DISABLE_LITERAL_CONTEXT_MODELING": true,
         "zlib.constants.BROTLI_PARAM_MODE": true,
@@ -3233,6 +3271,7 @@
       },
       "globals": {
         "AggregateError": true,
+        "Buffer.alloc": true,
         "Buffer.allocUnsafe": true,
         "Buffer.allocUnsafeSlow": true,
         "Buffer.byteLength": true,
@@ -3253,10 +3292,12 @@
         "console.profile": true,
         "console.profileEnd": true,
         "console.warn": true,
+        "process.argv": true,
         "process.cwd": true,
         "process.env": true,
         "process.hrtime": true,
         "process.nextTick": true,
+        "process.platform": true,
         "process.stderr": true,
         "process.versions.modules": true,
         "process.versions.pnp": true,
@@ -3269,6 +3310,7 @@
         "webpack>@webassemblyjs/ast": true,
         "webpack>@webassemblyjs/wasm-edit": true,
         "webpack>@webassemblyjs/wasm-parser": true,
+        "webpack>acorn-import-phases": true,
         "jsdom>acorn": true,
         "browserslist": true,
         "webpack>chrome-trace-event": true,
