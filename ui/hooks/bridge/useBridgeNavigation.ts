@@ -17,7 +17,7 @@ import {
 } from '../../helpers/constants/routes';
 import type { MinimalAsset } from '../../pages/bridge/utils/tokens';
 
-type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
+export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
   state: {
     /**
      * If this is set, it will be used to set the `fromToken` when the user navigates to the bridge page.
@@ -116,9 +116,17 @@ export const useBridgeNavigation = () => {
    */
   const navigateToBridgePage = useCallback(
     (
-      token: BridgeNavigationOptions['state']['token'] = state?.token,
-      searchParams: string = new URLSearchParams('').toString(),
+      params: {
+        token: BridgeNavigationOptions['state']['token'];
+        searchParams: string;
+        preventBackNavigation: boolean;
+      } = {
+        token: state?.token,
+        searchParams: new URLSearchParams('').toString(),
+        preventBackNavigation: true,
+      },
     ) => {
+      const { token, searchParams, preventBackNavigation } = params;
       navigate(
         {
           pathname: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
@@ -127,9 +135,9 @@ export const useBridgeNavigation = () => {
         {
           state: {
             ...state,
-            token,
+            token: token ? token : null,
           },
-          replace: true,
+          replace: preventBackNavigation,
         },
       );
     },

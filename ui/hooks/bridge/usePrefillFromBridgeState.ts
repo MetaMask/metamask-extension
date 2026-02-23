@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { isCrossChain } from '@metamask/bridge-controller';
 import {
   resetBridgeControllerAndCache,
   restoreQuoteRequestFromState,
@@ -31,10 +32,16 @@ export const usePrefillFromBridgeState = () => {
 
   // Set src chain balances when the fromToken changes
   useEffect(() => {
+    if (
+      isCrossChain(fromToken.chainId, currentChainId) ||
+      (token && token.assetId.toLowerCase() === fromToken.assetId.toLowerCase())
+    ) {
+      return;
+    }
     if (fromToken?.assetId) {
       dispatch(setEvmBalances(fromToken.assetId));
     }
-  }, [fromToken, fromToken?.assetId, currentChainId]);
+  }, [fromToken?.assetId, currentChainId]);
 
   const shouldRehydrateFromLocationState = token;
   const shouldRestoreInputsFromQuote = activeQuote;

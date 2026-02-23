@@ -2,11 +2,10 @@ import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   formatChainIdToCaip,
-  type GenericQuoteRequest,
   getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
-import { parseCaipChainId } from '@metamask/utils';
+import { type CaipChainId, type Hex, parseCaipChainId } from '@metamask/utils';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
@@ -22,12 +21,11 @@ import {
   resetInputFields,
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
+import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
 import {
-  type MinimalAsset,
-  validateMinimalAssetObject,
-} from '../../pages/bridge/utils/tokens';
-import { toBridgeToken } from '../../ducks/bridge/utils';
-import { useBridgeNavigation } from './useBridgeNavigation';
+  BridgeNavigationOptions,
+  useBridgeNavigation,
+} from './useBridgeNavigation';
 
 const useBridging = () => {
   const dispatch = useDispatch();
@@ -56,7 +54,7 @@ const useBridging = () => {
         address: string;
         decimals?: number;
         name?: string;
-        chainId: GenericQuoteRequest['srcChainId'];
+        chainId: Hex | CaipChainId;
       },
     ) => {
       dispatch(resetInputFields());
@@ -76,7 +74,7 @@ const useBridging = () => {
         }),
       );
 
-      let tokenToUse: MinimalAsset | undefined;
+      let tokenToUse: BridgeNavigationOptions['state']['token'] = null;
       const search = new URLSearchParams('');
 
       const assetId =
@@ -116,10 +114,11 @@ const useBridging = () => {
         search.set(BridgeQueryParams.IsFromTransactionShield, 'true');
       }
 
-      navigateToBridgePage(
-        tokenToUse ? toBridgeToken(tokenToUse) : undefined,
-        search.toString(),
-      );
+      navigateToBridgePage({
+        token: tokenToUse,
+        searchParams: search.toString(),
+        preventBackNavigation: false,
+      });
     },
     [
       navigateToBridgePage,
