@@ -26,11 +26,8 @@ const SCAN_DIRECTORIES = ['app/', 'ui/', 'shared/', 'test/'];
 
 /** Bracket-access patterns run BEFORE string stripping (need quoted flag name). */
 const BRACKET_STRING_PATTERNS: RegExp[] = [
-  // remoteFeatureFlags['flagName']  /  remoteFeatureFlags?.['flagName']
-  /remoteFeatureFlags(?:\?\.)?\[['"](\w+)['"]\]/g,
-
-  // getRemoteFeatureFlags(state)['flagName']  /  getRemoteFeatureFlags(state)?.['flagName']
-  /getRemoteFeatureFlags\([^)]*\)(?:\?\.)?\[['"](\w+)['"]\]/g,
+  /remoteFeatureFlags(?:\?\.)?\[\s*['"`](\w+)['"`]\s*\]/g,
+  /getRemoteFeatureFlags\([^)]*\)(?:\?\.)?\[\s*['"`](\w+)['"`]\s*\]/g,
 ];
 
 /** Dot-access patterns run AFTER string stripping to avoid false positives. */
@@ -389,16 +386,13 @@ function extractDestructuredIdentifiers(content: string): string[] {
   return ids;
 }
 
-/** Returns true for UPPER_CASE or Enum.Member patterns (not camelCase variables). */
+/** Returns true for UPPER_CASE, PascalCase, or Enum.Member patterns (not camelCase). */
 function isStaticConstant(expr: string): boolean {
-  // Enum.Member pattern (e.g. FeatureFlagNames.AssetsDefiPositionsEnabled)
-  // Both parts must start with an uppercase letter to distinguish from
-  // runtime expressions like options.key or config.flagName.
   if (expr.includes('.')) {
     return /^[A-Z]\w*\.[A-Z]\w*$/.test(expr);
   }
-  // UPPER_CASE_CONSTANT pattern (e.g. ASSETS_UNIFY_STATE_FLAG)
-  return /^[A-Z_][A-Z0-9_]*$/.test(expr);
+  // UPPER_CASE or PascalCase (starts with uppercase, not camelCase)
+  return /^[A-Z]/.test(expr);
 }
 
 /** Returns true when the name looks like a plausible feature flag. */
@@ -462,6 +456,16 @@ function stripInlineComments(line: string): string {
         i += 1;
         continue;
       }
+      // Skip regex literals: /.../ preceded by =, (, [, !, &, |, ,, ;, :, ?
+      // to avoid treating content inside regex as code.
+      if (i === 0 || /[=([!&|,;:?]/.test(line[i - 1].trim() || '=')) {
+        const closeIdx = line.indexOf('/', i + 1);
+        if (closeIdx > i + 1) {
+          result += line.slice(i, closeIdx + 1);
+          i = closeIdx;
+          continue;
+        }
+      }
     }
 
     result += ch;
@@ -469,12 +473,12 @@ function stripInlineComments(line: string): string {
   return result;
 }
 
-/** Replaces string literal contents with empty placeholders. */
+/** Replaces string literal contents with empty placeholders (handles escaped quotes). */
 function stripStringLiterals(line: string): string {
   return line
-    .replace(/'[^']*'/g, "''")
-    .replace(/"[^"]*"/g, '""')
-    .replace(/`[^`]*`/g, '``');
+    .replace(/'(?:[^'\\]|\\.)*'/g, "''")
+    .replace(/"(?:[^"\\]|\\.)*"/g, '""')
+    .replace(/`(?:[^`\\]|\\.)*`/g, '``');
 }
 
 /** Logs which flags were added/removed in the registry (informational only). */
