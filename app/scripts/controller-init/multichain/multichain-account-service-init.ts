@@ -3,9 +3,7 @@ import {
   AccountProviderWrapper,
   SOL_ACCOUNT_PROVIDER_NAME,
   BtcAccountProvider,
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   TrxAccountProvider,
-  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/multichain-account-service';
 import { ControllerInitFunction } from '../types';
 import {
@@ -55,21 +53,14 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
     new BtcAccountProvider(controllerMessenger, snapAccountProviderConfig),
   );
 
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   const trxProvider = new AccountProviderWrapper(
     controllerMessenger,
     new TrxAccountProvider(controllerMessenger, snapAccountProviderConfig),
   );
-  ///: END:ONLY_INCLUDE_IF
 
   const controller = new MultichainAccountService({
     messenger: controllerMessenger,
-    providers: [
-      btcProvider,
-      ///: BEGIN:ONLY_INCLUDE_IF(tron)
-      trxProvider,
-      ///: END:ONLY_INCLUDE_IF
-    ],
+    providers: [btcProvider, trxProvider],
     providerConfigs: {
       [SOL_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
     },
@@ -130,12 +121,10 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   );
   btcProvider.setEnabled(initialBitcoinEnabled);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   const initialTronEnabled = isMultichainFeatureEnabled(
     initialRemoteFeatureFlagsState?.remoteFeatureFlags?.tronAccounts,
   );
   trxProvider.setEnabled(initialTronEnabled);
-  ///: END:ONLY_INCLUDE_IF
 
   controllerMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
@@ -164,7 +153,6 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
         // Note: When disabled, no action needed as the provider won't create new accounts
       }
 
-      ///: BEGIN:ONLY_INCLUDE_IF(tron)
       const prevTronEnabled = isMultichainFeatureEnabled(
         prevState?.remoteFeatureFlags?.tronAccounts,
       );
@@ -184,7 +172,6 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
           });
         }
       }
-      ///: END:ONLY_INCLUDE_IF
 
       return true;
     }, initialRemoteFeatureFlagsState),

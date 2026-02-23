@@ -65,10 +65,8 @@ import {
   EthScope,
   BtcScope,
   SolScope,
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   TrxScope,
   TrxAccountType,
-  ///: END:ONLY_INCLUDE_IF
   BtcAccountType,
 } from '@metamask/keyring-api';
 import {
@@ -205,9 +203,7 @@ import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 ///: END:ONLY_INCLUDE_IF
 import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
-///: BEGIN:ONLY_INCLUDE_IF(tron)
 import { TRON_WALLET_SNAP_ID } from '../../shared/lib/accounts/tron-wallet-snap';
-///: END:ONLY_INCLUDE_IF
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
@@ -4604,10 +4600,7 @@ export default class MetamaskController extends EventEmitter {
 
     const solanaAccountTypes = Object.values(SolAccountType);
     const bitcoinAccountTypes = Object.values(BtcAccountType);
-
-    ///: BEGIN:ONLY_INCLUDE_IF(tron)
     const tronAccountTypes = Object.values(TrxAccountType);
-    ///: END:ONLY_INCLUDE_IF
 
     for (const account of accounts) {
       // Newly supported account types should be added here
@@ -4618,11 +4611,9 @@ export default class MetamaskController extends EventEmitter {
       if (bitcoinAccountTypes.includes(account.type)) {
         counts.Bitcoin += 1;
       }
-      ///: BEGIN:ONLY_INCLUDE_IF(tron)
       if (tronAccountTypes.includes(account.type)) {
         counts.Tron += 1;
       }
-      ///: END:ONLY_INCLUDE_IF
     }
 
     return counts;
@@ -5145,7 +5136,6 @@ export default class MetamaskController extends EventEmitter {
         }
       }
 
-      ///: BEGIN:ONLY_INCLUDE_IF(tron)
       const tronClient =
         await this._getMultichainWalletSnapClient(TRON_WALLET_SNAP_ID);
       const tronScope = TrxScope.Mainnet;
@@ -5162,7 +5152,6 @@ export default class MetamaskController extends EventEmitter {
           scope: tronScope,
         });
       }
-      ///: END:ONLY_INCLUDE_IF
 
       return discoveredAccounts;
     } catch (e) {

@@ -8,9 +8,7 @@ import {
   BtcScope,
   SolAccountType,
   SolScope,
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   TrxScope,
-  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 import {
   CaipChainId,
@@ -118,10 +116,7 @@ const generateDefaultNetworkEnablementControllerState = (
 
   const enabledMultichainNetworks: string[] = [SolScope.Mainnet];
   enabledMultichainNetworks.push(BtcScope.Mainnet);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   enabledMultichainNetworks.push(TrxScope.Mainnet);
-  ///: END:ONLY_INCLUDE_IF
 
   return {
     enabledNetworkMap: {
@@ -194,15 +189,12 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
           scopes: [BtcScope.Mainnet],
         },
       );
-
-      ///: BEGIN:ONLY_INCLUDE_IF(tron)
       const trxAccounts = initMessenger.call(
         'AccountTreeController:getAccountsFromSelectedAccountGroup',
         {
           scopes: [TrxScope.Mainnet],
         },
       );
-      ///: END:ONLY_INCLUDE_IF
 
       const allEnabledNetworks = {};
 
@@ -220,13 +212,9 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
         if (chainId === BtcScope.Mainnet && btcAccounts.length === 0) {
           shouldEnableMainnetNetworks = true;
         }
-
-        ///: BEGIN:ONLY_INCLUDE_IF(tron)
         if (chainId === TrxScope.Mainnet && trxAccounts.length === 0) {
           shouldEnableMainnetNetworks = true;
         }
-        ///: END:ONLY_INCLUDE_IF
-
         if (shouldEnableMainnetNetworks) {
           controller.enableNetwork('0x1');
         }

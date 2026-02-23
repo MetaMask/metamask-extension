@@ -39,9 +39,7 @@ export const getIsTronSupportEnabled = createSelector(
   getRemoteFeatureFlags,
   ({ tronAccounts }) => {
     let enabled = false;
-    ///: BEGIN:ONLY_INCLUDE_IF(tron)
     enabled = isMultichainFeatureEnabled(tronAccounts);
-    ///: END:ONLY_INCLUDE_IF
     return enabled;
   },
 );

@@ -27,9 +27,7 @@ import {
 import {
   getIsSolanaSupportEnabled,
   getIsBitcoinSupportEnabled,
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   getIsTronSupportEnabled,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../../selectors';
 
 type WalletDetailsAccountTypeSelectionProps = {
@@ -45,9 +43,7 @@ export const WalletDetailsAccountTypeSelection: React.FC<
   const t = useI18nContext();
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
   const solanaSupportEnabled = useSelector(getIsSolanaSupportEnabled);
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   const tronSupportEnabled = useSelector(getIsTronSupportEnabled);
-  ///: END:ONLY_INCLUDE_IF
 
   return (
     <>
@@ -113,21 +109,17 @@ export const WalletDetailsAccountTypeSelection: React.FC<
               {t('addBitcoinAccountLabel')}
             </ButtonLink>
           )}
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(tron)
-            tronSupportEnabled && (
-              <ButtonLink
-                size={ButtonLinkSize.Sm}
-                startIconName={IconName.Add}
-                startIconProps={{ size: IconSize.Md }}
-                onClick={() => onAccountTypeSelect(WalletClientType.Tron)}
-                data-testid="wallet-details-add-tron-account"
-              >
-                {t('addNewTronAccountLabel')}
-              </ButtonLink>
-            )
-            ///: END:ONLY_INCLUDE_IF
-          }
+          {tronSupportEnabled && (
+            <ButtonLink
+              size={ButtonLinkSize.Sm}
+              startIconName={IconName.Add}
+              startIconProps={{ size: IconSize.Md }}
+              onClick={() => onAccountTypeSelect(WalletClientType.Tron)}
+              data-testid="wallet-details-add-tron-account"
+            >
+              {t('addNewTronAccountLabel')}
+            </ButtonLink>
+          )}
         </Box>
       </ModalBody>
     </>

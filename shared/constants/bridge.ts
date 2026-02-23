@@ -20,9 +20,7 @@ export const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
   MultichainNetworks.BITCOIN,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   MultichainNetworks.TRON,
-  ///: END:ONLY_INCLUDE_IF
 ];
 
 const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
@@ -48,9 +46,7 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.BASE,
   MultichainNetworks.SOLANA,
   MultichainNetworks.BITCOIN,
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   MultichainNetworks.TRON,
-  ///: END:ONLY_INCLUDE_IF
 ] as const;
 
 export const ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP =
@@ -127,9 +123,7 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [MultichainNetworks.BITCOIN]: 'Bitcoin',
   [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
   [MultichainNetworks.BITCOIN_SIGNET]: 'Bitcoin Mutinynet',
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   [MultichainNetworks.TRON]: 'Tron',
-  ///: END:ONLY_INCLUDE_IF
 };
 
 export const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
@@ -259,7 +253,6 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     assetId: `${MultichainNetworks.SOLANA}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
   },
   [MultichainNetworks.BITCOIN]: getNativeAssetForChainId(CHAIN_IDS.MAINNET),
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   [MultichainNetworks.TRON]: {
     // TRX -> USDT on Tron
     address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
@@ -268,5 +261,4 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     name: 'Tether USD',
     assetId: `${MultichainNetworks.TRON}/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`,
   },
-  ///: END:ONLY_INCLUDE_IF
 } as const;

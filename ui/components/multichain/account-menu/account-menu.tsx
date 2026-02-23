@@ -39,9 +39,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   getIsTronSupportEnabled,
-  ///: END:ONLY_INCLUDE_IF
   getHdKeyringOfSelectedAccountOrPrimaryKeyring,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   getMetaMaskHdKeyrings,
@@ -107,10 +105,8 @@ export const ACTION_MODES = {
   ADD_BITCOIN: 'add-bitcoin',
   // Displays the add account form controls (for solana account)
   ADD_SOLANA: 'add-solana',
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   // Displays the add account form controls (for tron account)
   ADD_TRON: 'add-tron',
-  ///: END:ONLY_INCLUDE_IF
   // Displays the import account form controls
   IMPORT: 'import',
   CREATE_SRP: 'create-srp',
@@ -165,10 +161,8 @@ export const getActionTitle = (
       return t('addAccountFromNetwork', [t('networkNameBitcoin')]);
     case ACTION_MODES.ADD_SOLANA:
       return t('addAccountFromNetwork', [t('networkNameSolana')]);
-    ///: BEGIN:ONLY_INCLUDE_IF(tron)
     case ACTION_MODES.ADD_TRON:
       return t('addAccountFromNetwork', [t('networkNameTron')]);
-    ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.IMPORT:
       return t('importPrivateKey');
     case ACTION_MODES.CREATE_SRP:
@@ -254,12 +248,10 @@ export const AccountMenu = ({
     WalletClientType.Solana,
   );
 
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   const tronSupportEnabled = useSelector(getIsTronSupportEnabled);
   const tronWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Tron,
   );
-  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
@@ -501,34 +493,30 @@ export const AccountMenu = ({
               </Box>
             )}
 
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(tron)
-              tronSupportEnabled && (
-                <Box marginTop={4}>
-                  <ButtonLink
-                    size={ButtonLinkSize.Sm}
-                    startIconName={IconName.Add}
-                    startIconProps={{ size: IconSize.Md }}
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                    onClick={async () => {
-                      return await handleMultichainSnapAccountCreation(
-                        tronWalletSnapClient,
-                        {
-                          scope: MultichainNetworks.TRON,
-                          entropySource: primaryKeyring.metadata.id,
-                        },
-                        ACTION_MODES.ADD_TRON,
-                      );
-                    }}
-                    data-testid="multichain-account-menu-popover-add-tron-account"
-                  >
-                    {t('addNewTronAccountLabel')}
-                  </ButtonLink>
-                </Box>
-              )
-              ///: END:ONLY_INCLUDE_IF
-            }
+            {tronSupportEnabled && (
+              <Box marginTop={4}>
+                <ButtonLink
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Add}
+                  startIconProps={{ size: IconSize.Md }}
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                  onClick={async () => {
+                    return await handleMultichainSnapAccountCreation(
+                      tronWalletSnapClient,
+                      {
+                        scope: MultichainNetworks.TRON,
+                        entropySource: primaryKeyring.metadata.id,
+                      },
+                      ACTION_MODES.ADD_TRON,
+                    );
+                  }}
+                  data-testid="multichain-account-menu-popover-add-tron-account"
+                >
+                  {t('addNewTronAccountLabel')}
+                </ButtonLink>
+              </Box>
+            )}
 
             <Text
               variant={TextVariant.bodySmMedium}

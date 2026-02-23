@@ -108,12 +108,9 @@ const DefaultNetworks = memo(() => {
   );
 
   let trxAccountGroup = null;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   trxAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, TrxScope.Mainnet),
   );
-  ///: END:ONLY_INCLUDE_IF
 
   // Get blacklisted chain IDs from feature flag
   const blacklistedChainIds = useSelector(
