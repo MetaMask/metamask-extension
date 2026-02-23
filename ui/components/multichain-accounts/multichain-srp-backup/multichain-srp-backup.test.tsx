@@ -81,4 +81,14 @@ describe('MultichainSrpBackup', () => {
       `${REVEAL_SEED_ROUTE}/test-keyring-id`,
     );
   });
+
+  it('navigates to base reveal seed route when shouldShowBackupReminder is false and keyringId is missing', () => {
+    renderComponent({
+      shouldShowBackupReminder: false,
+    });
+
+    fireEvent.click(screen.getByTestId(srpBackupRowTestId));
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(REVEAL_SEED_ROUTE);
+  });
 });
