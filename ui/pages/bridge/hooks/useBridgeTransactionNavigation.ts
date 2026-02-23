@@ -9,8 +9,7 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 /**
  * Hook to handle navigation logic for bridge transaction awaiting signatures page.
- * Encapsulates refs and detection logic for transaction success, cancellation, and failure.
- * The refs are tightly coupled with the navigation logic, so they're kept together.
+ * Encapsulates refs, detection logic, and navigation for transaction success, cancellation, and failure.
  */
 export function useBridgeTransactionNavigation(): void {
   const navigate = useNavigate();
@@ -66,6 +65,75 @@ export function useBridgeTransactionNavigation(): void {
     return historyItem?.approvalTxId !== undefined && !hasSubmittedBridgeTx;
   }, [historyItem, hasSubmittedBridgeTx]);
 
+  // Track state transitions and detect navigation scenarios
+  useEffect(() => {
+    // Track if we've seen a requestId (indicates transaction was initiated)
+    if (requestId) {
+      hasSeenRequestIdRef.current = true;
+    }
+
+    // Track if we've seen activeQuote (indicates transaction was actually started)
+    if (activeQuote !== null && activeQuote !== undefined) {
+      hasSeenActiveQuoteRef.current = true;
+    }
+
+    // Mark QR scan as seen when it becomes active (truthy object)
+    // Exclude null, undefined, and false to ensure we only mark actual active scans
+    if (
+      activeQrCodeScanRequest !== null &&
+      activeQrCodeScanRequest !== undefined &&
+      activeQrCodeScanRequest !== false
+    ) {
+      hasSeenQrScanActiveRef.current = true;
+    }
+
+    prevQrScanRequestRef.current = activeQrCodeScanRequest;
+  }, [requestId, activeQuote, activeQrCodeScanRequest]);
+
+  // Helper to check if QR scan request is cleared (null or undefined)
+  const isQrScanCleared = (value: typeof activeQrCodeScanRequest): boolean => {
+    return value === null || value === undefined;
+  };
+
+  // Helper to check if QR scan request was previously active (not null, undefined, or false)
+  const wasQrScanActive = (value: typeof activeQrCodeScanRequest): boolean => {
+    return value !== null && value !== undefined && value !== false;
+  };
+
+  // Detect cancellation/failure scenarios:
+  // 1. QR scan cancellation: QR scan was active, then cleared (null or undefined), and no activeQuote
+  //    (handles popup-initiated cancellations where activeQuote gets cleared)
+  const qrScanWasCancelled = Boolean(
+    wasQrScanActive(prevQrScanRequestRef.current) &&
+      isQrScanCleared(activeQrCodeScanRequest) &&
+      requestId &&
+      !activeQuote,
+  );
+
+  // 2. Fullscreen-initiated failure: QR scan was active then cleared (null or undefined), but activeQuote
+  //    doesn't get cleared in fullscreen mode (fallback when error handler doesn't fire)
+  //    Note: We detect this even when between approval and bridge steps, as it indicates
+  //    the user cancelled the bridge transaction QR scan (not the approval)
+  const qrScanWasActiveThenCleared =
+    hasSeenQrScanActiveRef.current && isQrScanCleared(activeQrCodeScanRequest);
+  const fullscreenInitiatedFailure = Boolean(
+    requestIdFromLocation !== undefined &&
+      hasSeenRequestIdRef.current &&
+      !hasSubmittedBridgeTx &&
+      qrScanWasActiveThenCleared,
+  );
+
+  // 3. Popup-initiated failure: Transaction was initiated (we saw activeQuote) but now cleared
+  //    (activeQuote gets cleared in popup mode when transaction fails)
+  //    Only trigger if we've actually seen the transaction start (activeQuote was present)
+  const transactionFailed = Boolean(
+    hasSeenActiveQuoteRef.current &&
+      requestId &&
+      !activeQuote &&
+      !historyItem &&
+      isQrScanCleared(activeQrCodeScanRequest),
+  );
+
   // Navigate to activity tab with consistent options
   const navigateToActivity = useCallback(() => {
     navigate(`${DEFAULT_ROUTE}?tab=activity`, {
@@ -82,64 +150,6 @@ export function useBridgeTransactionNavigation(): void {
       return;
     }
 
-    // Track if we've seen a requestId (indicates transaction was initiated)
-    if (requestId) {
-      hasSeenRequestIdRef.current = true;
-    }
-
-    // Track if we've seen activeQuote (indicates transaction was actually started)
-    if (activeQuote !== null && activeQuote !== undefined) {
-      hasSeenActiveQuoteRef.current = true;
-    }
-
-    // Track QR scan state transitions
-    const prevQrScanRequest = prevQrScanRequestRef.current;
-
-    // Mark QR scan as seen when it becomes active (truthy object)
-    // Exclude null, undefined, and false to ensure we only mark actual active scans
-    if (
-      activeQrCodeScanRequest !== null &&
-      activeQrCodeScanRequest !== undefined &&
-      activeQrCodeScanRequest !== false
-    ) {
-      hasSeenQrScanActiveRef.current = true;
-    }
-
-    prevQrScanRequestRef.current = activeQrCodeScanRequest;
-
-    // Detect cancellation/failure scenarios:
-    // 1. QR scan cancellation: QR scan was active, then cleared, and no activeQuote
-    //    (handles popup-initiated cancellations where activeQuote gets cleared)
-    // Exclude undefined from prevQrScanRequest to avoid false positives
-    const qrScanWasCancelled =
-      prevQrScanRequest !== null &&
-      prevQrScanRequest !== undefined &&
-      activeQrCodeScanRequest === null &&
-      requestId &&
-      !activeQuote;
-
-    // 2. Fullscreen-initiated failure: QR scan was active then cleared, but activeQuote
-    //    doesn't get cleared in fullscreen mode (fallback when error handler doesn't fire)
-    //    Note: We detect this even when between approval and bridge steps, as it indicates
-    //    the user cancelled the bridge transaction QR scan (not the approval)
-    const qrScanWasActiveThenCleared =
-      hasSeenQrScanActiveRef.current && activeQrCodeScanRequest === null;
-    const fullscreenInitiatedFailure =
-      requestIdFromLocation !== undefined &&
-      hasSeenRequestIdRef.current &&
-      !hasSubmittedBridgeTx &&
-      qrScanWasActiveThenCleared;
-
-    // 3. Popup-initiated failure: Transaction was initiated (we saw activeQuote) but now cleared
-    //    (activeQuote gets cleared in popup mode when transaction fails)
-    //    Only trigger if we've actually seen the transaction start (activeQuote was present)
-    const transactionFailed =
-      hasSeenActiveQuoteRef.current &&
-      requestId &&
-      !activeQuote &&
-      !historyItem &&
-      !activeQrCodeScanRequest;
-
     // Navigate on any failure/cancellation scenario
     // Even if we're between approval and bridge steps, we should navigate on cancellation
     if (qrScanWasCancelled || fullscreenInitiatedFailure || transactionFailed) {
@@ -154,11 +164,9 @@ export function useBridgeTransactionNavigation(): void {
     }
   }, [
     hasSubmittedBridgeTx,
-    activeQrCodeScanRequest,
-    requestId,
-    requestIdFromLocation,
-    activeQuote,
-    historyItem,
+    qrScanWasCancelled,
+    fullscreenInitiatedFailure,
+    transactionFailed,
     isBetweenApprovalAndBridgeSteps,
     navigateToActivity,
   ]);

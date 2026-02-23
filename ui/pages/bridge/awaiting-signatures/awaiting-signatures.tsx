@@ -52,6 +52,7 @@ export default function AwaitingSignatures() {
   const hasTrackedEventRef = useRef(false);
 
   // Handle navigation logic for transaction success, cancellation, and failure
+  // (encapsulates refs, detection logic, and navigation)
   useBridgeTransactionNavigation();
 
   useEffect(() => {
