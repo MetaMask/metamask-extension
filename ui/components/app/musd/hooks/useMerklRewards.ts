@@ -69,6 +69,7 @@ export const formatClaimableAmount = (
 type UseMerklRewardsOptions = {
   tokenAddress: string | undefined;
   chainId: Hex;
+  isEligible: boolean;
 };
 
 type UseMerklRewardsReturn = {
@@ -85,18 +86,18 @@ type UseMerklRewardsReturn = {
  * @param options - Hook options
  * @param options.tokenAddress - The token's contract address
  * @param options.chainId - The chain ID of the token
- * @returns Claimable reward amount and refetch function
+ * @param options.isEligible - whether the token is actually eligible for rewards. Determines whether we make a request
+ * @returns Claimable reward amount
  */
 export const useMerklRewards = ({
   tokenAddress,
   chainId,
+  isEligible,
 }: UseMerklRewardsOptions): UseMerklRewardsReturn => {
   const [claimableReward, setClaimableReward] = useState<string | null>(null);
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
-
-  const isEligible = isEligibleForMerklRewards(chainId, tokenAddress);
 
   const fetchClaimableRewards = useCallback(
     async (abortController: AbortController) => {

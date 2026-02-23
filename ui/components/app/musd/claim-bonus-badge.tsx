@@ -13,30 +13,22 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMerklClaim } from './hooks/useMerklClaim';
 import { useOnMerklClaimConfirmed } from './hooks/useOnMerklClaimConfirmed';
-import { useMerklRewards } from './hooks/useMerklRewards';
 
 export const ClaimBonusBadge = ({
   label,
   tokenAddress,
   chainId,
-  fallback,
+  refetchRewards,
 }: {
   label: string;
   tokenAddress: string;
   chainId: Hex;
-  /** A react element that will be shown in the case that there are no bonuses to claim */
-  fallback: React.ReactElement;
+  refetchRewards: () => void;
 }) => {
   const t = useI18nContext();
 
-  // Check whether there are rewards available for the user
-  const { claimableReward, refetch } = useMerklRewards({
-    tokenAddress,
-    chainId,
-  });
-
   // Refetch rewards when a pending claim is confirmed
-  useOnMerklClaimConfirmed(refetch);
+  useOnMerklClaimConfirmed(refetchRewards);
 
   const { claimRewards, isClaiming, error } = useMerklClaim({
     tokenAddress,
@@ -50,10 +42,6 @@ export const ClaimBonusBadge = ({
     },
     [claimRewards],
   );
-
-  if (!claimableReward) {
-    return fallback;
-  }
 
   if (isClaiming) {
     return (

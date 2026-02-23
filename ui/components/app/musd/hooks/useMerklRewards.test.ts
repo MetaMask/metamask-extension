@@ -18,6 +18,10 @@ jest.mock('react-redux', () => ({
 
 jest.mock('../merkl-client');
 
+jest.mock('..', () => ({
+  useOnMerklClaimConfirmed: jest.fn(),
+}));
+
 const { useSelector } = jest.requireMock('react-redux');
 
 const MOCK_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
@@ -139,6 +143,7 @@ describe('useMerklRewards', () => {
       useMerklRewards({
         tokenAddress: '0xunknown',
         chainId: '0x1' as `0x${string}`,
+        isEligible: false,
       }),
     );
 
@@ -168,6 +173,7 @@ describe('useMerklRewards', () => {
       useMerklRewards({
         tokenAddress: MUSD_TOKEN_ADDRESS,
         chainId: '0x1' as `0x${string}`,
+        isEligible: true,
       }),
     );
 
@@ -200,6 +206,7 @@ describe('useMerklRewards', () => {
       useMerklRewards({
         tokenAddress: MUSD_TOKEN_ADDRESS,
         chainId: '0x1' as `0x${string}`,
+        isEligible: true,
       }),
     );
 
@@ -237,6 +244,7 @@ describe('useMerklRewards', () => {
       useMerklRewards({
         tokenAddress: MUSD_TOKEN_ADDRESS,
         chainId: '0x1' as `0x${string}`,
+        isEligible: true,
       }),
     );
 
@@ -254,6 +262,7 @@ describe('useMerklRewards', () => {
       useMerklRewards({
         tokenAddress: MUSD_TOKEN_ADDRESS,
         chainId: '0x1' as `0x${string}`,
+        isEligible: true,
       }),
     );
 
@@ -286,6 +295,7 @@ describe('useMerklRewards', () => {
       useMerklRewards({
         tokenAddress: MUSD_TOKEN_ADDRESS,
         chainId: '0x1' as `0x${string}`,
+        isEligible: true,
       }),
     );
 
@@ -306,6 +316,7 @@ describe('useMerklRewards', () => {
       useMerklRewards({
         tokenAddress: MUSD_TOKEN_ADDRESS,
         chainId: '0x1' as `0x${string}`,
+        isEligible: true,
       }),
     );
 
@@ -326,6 +337,7 @@ describe('useMerklRewards', () => {
       useMerklRewards({
         tokenAddress: MUSD_TOKEN_ADDRESS,
         chainId: '0x1' as `0x${string}`,
+        isEligible: true,
       }),
     );
 
@@ -357,6 +369,7 @@ describe('useMerklRewards', () => {
       useMerklRewards({
         tokenAddress: MUSD_TOKEN_ADDRESS,
         chainId: '0x1' as `0x${string}`,
+        isEligible: true,
       }),
     );
 

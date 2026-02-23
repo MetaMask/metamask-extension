@@ -23,7 +23,11 @@ import { type TokenWithFiatAmount } from '../types';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
-import { ClaimBonusBadge, isEligibleForMerklRewards } from '../../musd';
+import {
+  ClaimBonusBadge,
+  isEligibleForMerklRewards,
+  useMerklRewards,
+} from '../../musd';
 import { getMerklRewardsEnabled } from '../../musd/selectors';
 import {
   TokenCellTitle,
@@ -72,6 +76,13 @@ export default function TokenCell({
     [showMerklBadge, merklRewardsEnabled, token.chainId, token.address],
   );
 
+  // Check whether there are rewards available for the user
+  const { claimableReward, refetch: refetchMerklRewards } = useMerklRewards({
+    tokenAddress: token.address,
+    chainId: token.chainId as Hex,
+    isEligible: showClaimBonusBadge,
+  });
+
   const tokenDisplayInfo = useTokenDisplayInfo({
     token,
     fixCurrencyToUSD,
@@ -115,12 +126,12 @@ export default function TokenCell({
           />
         }
         footerLeftDisplay={
-          showClaimBonusBadge ? (
+          claimableReward ? (
             <ClaimBonusBadge
               tokenAddress={token.address as string}
               chainId={token.chainId as Hex}
               label={t('merklRewardsClaimBonus')}
-              fallback={<TokenCellPercentChange token={displayToken} />}
+              refetchRewards={refetchMerklRewards}
             />
           ) : (
             <TokenCellPercentChange token={displayToken} />
