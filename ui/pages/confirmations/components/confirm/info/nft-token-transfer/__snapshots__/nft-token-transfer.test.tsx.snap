@@ -75,7 +75,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  From
+                  From Wallet 1
                 </p>
               </div>
             </div>
