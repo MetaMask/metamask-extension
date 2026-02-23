@@ -169,6 +169,9 @@
   "accountsSmallCase": {
     "message": "एकाउंट्स"
   },
+  "actionUnavailable": {
+    "message": "एक्शन उपलब्ध नहीं है"
+  },
   "active": {
     "message": "एक्टिव है"
   },
@@ -530,6 +533,9 @@
   "alertMessageSignInWrongAccount": {
     "message": "यह साइट आपसे गलत अकाउंट का उपयोग करके साइन इन करने के लिए कह रही है।"
   },
+  "alertMessageSuggestedGasFeeHigh": {
+    "message": "यह साइट आवश्यक से अधिक नेटवर्क शुल्क सुझा रही है। कम भुगतान करने के लिए नेटवर्क शुल्क बदलें।"
+  },
   "alertMessageTokenTrustSignalMalicious": {
     "message": "इस टोकन को बुरी नीयत वाला के रूप में पहचाना गया है। इस टोकन के साथ इंटरैक्ट करने से फंड्स का नुकसान हो सकता है।"
   },
@@ -569,6 +575,9 @@
   "alertReasonGasFeeLow": {
     "message": "धीमी गति"
   },
+  "alertReasonGasSponsorshipUnavailable": {
+    "message": "गैस स्पॉन्सरशिप उपलब्ध नहीं है"
+  },
   "alertReasonGasTooLow": {
     "message": "कम गैस लिमिट"
   },
@@ -596,6 +605,9 @@
   "alertReasonSignIn": {
     "message": "संदिग्ध साइन-इन अनुरोध"
   },
+  "alertReasonSuggestedGasFeeHigh": {
+    "message": "उच्च साइट शुल्क"
+  },
   "alertReasonTokenTrustSignalMalicious": {
     "message": "बुरी नियत वाला टोकन"
   },
@@ -616,6 +628,9 @@
   },
   "allNetworks": {
     "message": "सभी नेटवर्क"
+  },
+  "allPermissions": {
+    "message": "Dapp कनेक्शन्स"
   },
   "allPopularNetworks": {
     "message": "सभी लोकप्रिय नेटवर्क"
@@ -1610,6 +1625,10 @@
   "connectAnAccountHeader": {
     "message": "किसी अकाउंट को कनेक्ट करें"
   },
+  "connectHardwareDevice": {
+    "message": "$1 को कनेक्ट करें",
+    "description": "$1 is the hardware wallet device name"
+  },
   "connectManually": {
     "message": "वर्तमान साइट से मैन्युअल रूप से कनेक्ट करें"
   },
@@ -1911,6 +1930,9 @@
   "customizeYourNotificationsText": {
     "message": "आप जिस प्रकार के नोटिफिकेशंस प्राप्त करना चाहते हैं, उन्हें चालू करें:"
   },
+  "dappConnections": {
+    "message": "Dapp कनेक्शन्स"
+  },
   "dappSuggested": {
     "message": "सुझावित साइट"
   },
@@ -2054,6 +2076,9 @@
     "message": "आपको यहाँ किसी थर्ड पार्टी द्वारा भेजा गया, MetaMask द्वारा नहीं। $1",
     "description": "$1 is the message 'deepLink_ContinueDescription'"
   },
+  "deepLink_theAssetPage": {
+    "message": "एसेट पेज"
+  },
   "deepLink_theBuyPage": {
     "message": "खरीद पेज"
   },
@@ -2062,6 +2087,9 @@
   },
   "deepLink_theHomePage": {
     "message": "होम पेज"
+  },
+  "deepLink_theNFTsPage": {
+    "message": "NFTs पेज"
   },
   "deepLink_theNotificationsPage": {
     "message": "नोटिफिकेशंस पेज"
@@ -2087,6 +2115,9 @@
   "deepLink_theTransactionShieldPage": {
     "message": "ट्रांसेक्शन शील्ड पेज"
   },
+  "default": {
+    "message": "डिफॉल्ट"
+  },
   "defaultRpcUrl": {
     "message": "डिफॉल्ट RPC URL"
   },
@@ -2105,6 +2136,10 @@
   "defiReferralCheckboxLabel": {
     "message": "MetaMask को रेफ़रल कोड जोड़ने की अनुमति दें। यह स्थायी है। साइट अपने नियमों के अनुसार डिस्काउंट देती है। MetaMask को एक फीस मिलता है।",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralTitle": {
+    "message": "MetaMask x $1",
+    "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
   },
   "defiTabErrorContent": {
     "message": "दोबारा आकर देखें।"
@@ -2210,6 +2245,18 @@
   },
   "disconnectAllDescriptionText": {
     "message": "यदि आप इस साइट से डिस्कनेक्ट हो जाते हैं, तो आपको इस साइट का दोबारा उपयोग करने के लिए अपने एकाउंट्स और नेटवर्क को फिर से कनेक्ट करना होगा।"
+  },
+  "disconnectAllSites": {
+    "message": "सभी को डिस्कनेक्ट करें"
+  },
+  "disconnectAllSitesDescriptionText": {
+    "message": "यदि आप सभी साइट से डिस्कनेक्ट हो जाते हैं, तो आपको उन्हें दोबारा उपयोग करने के लिए अपने एकाउंट्स और नेटवर्क को फिर से कनेक्ट करना होगा।"
+  },
+  "disconnectAllSitesError": {
+    "message": "कुछ dapps डिसकनेक्ट नहीं किए जा सके। कृपया फिर से कोशिश करें।"
+  },
+  "disconnectAllSitesSuccess": {
+    "message": "सभी dapps सही से डिसकनेक्ट किए गए।"
   },
   "disconnectAllSnapsText": {
     "message": "Snaps"
@@ -2865,6 +2912,10 @@
   "gasPriceFetchFailed": {
     "message": "गैस प्राइस अनुमान नेटवर्क गड़बड़ी के कारण नहीं हो पाया है।"
   },
+  "gasSponsorshipReserveBalanceWarning": {
+    "message": "इस ट्रांसेक्शन के लिए गैस स्पॉन्सरशिप उपलब्ध नहीं है। आपको अपने अकाउंट में कम से कम $1 $2 रखना होगा।",
+    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
   "gasTimingHoursShort": {
     "message": "$1 घंटे",
     "description": "$1 represents a number of hours"
@@ -2988,6 +3039,10 @@
     "message": "web3 का उपयोग करने के लिए अपना वॉलेट तैयार करें",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralSubtitle": {
+    "message": "MetaMask रेफ़रल कोड के साथ ट्रेड पर 5% तक की बचत करें।",
+    "description": "The subtitle of the GMX referral confirmation screen"
+  },
   "goToSite": {
     "message": "साइट पर जाएं"
   },
@@ -3009,6 +3064,54 @@
   "hardwareWalletConnected": {
     "message": "hardware wallet कनेक्ट किया गया"
   },
+  "hardwareWalletErrorContinueButton": {
+    "message": "जारी रखें"
+  },
+  "hardwareWalletErrorReconnectButton": {
+    "message": "रीकनेक्ट"
+  },
+  "hardwareWalletErrorRecoveryConnection1": {
+    "message": "पक्का करें कि आपका हार्डवेयर वॉलेट USB से ठीक से कनेक्ट हो"
+  },
+  "hardwareWalletErrorRecoveryConnection2": {
+    "message": "कोई दूसरा USB केबल या पोर्ट इस्तेमाल करके देखें"
+  },
+  "hardwareWalletErrorRecoveryConnection3": {
+    "message": "अपना डिवाइस रीस्टार्ट करें और दोबारा कनेक्ट करने की कोशिश करें"
+  },
+  "hardwareWalletErrorRecoveryTitle": {
+    "message": "सुनिश्चित करते रहें कि:"
+  },
+  "hardwareWalletErrorRecoveryUnlock1": {
+    "message": "आपका लेजर अनलॉक है"
+  },
+  "hardwareWalletErrorRecoveryUnlock2": {
+    "message": "इथेरियम ऐप खुला है"
+  },
+  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
+    "message": "इथेरियम ऐप आपके लेज़र पर खुला है"
+  },
+  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction2": {
+    "message": "आपने सेटिंग्स में ब्लाइंड साइनिंग चालू कर दी है"
+  },
+  "hardwareWalletErrorTitleConnectYourDevice": {
+    "message": "अपने $1 से कनेक्ट करें",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleDeviceLocked": {
+    "message": "$1 लॉक किया गया",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorUnknownErrorDescription": {
+    "message": "पक्का करें कि चुने गए अकाउंट के लिए आपका $1 डिवाइस सीक्रेट रिकवरी फ्रेज़ या पासफ्रेज़ के साथ सेट अप है",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorUnknownErrorTitle": {
+    "message": "कुछ गलत हो गया"
+  },
+  "hardwareWalletEthAppNotOpenDescription": {
+    "message": "जारी रखने के लिए अपने डिवाइस पर इथेरियम ऐप खोलें"
+  },
   "hardwareWalletLegacyDescription": {
     "message": "(लेगसी)",
     "description": "Text representing the MEW path"
@@ -3025,6 +3128,10 @@
   "hardwareWalletSupportLinkConversion": {
     "message": "यहां क्लिक करें"
   },
+  "hardwareWalletTypeConnected": {
+    "message": "$1 कनेक्ट हो गया है",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWallets": {
     "message": "किसी hardware wallet को कनेक्ट करें"
   },
@@ -3033,6 +3140,9 @@
   },
   "hardwareWalletsMsg": {
     "message": "किसी hardware wallet को चुनें, जिसे आप MetaMask के साथ इस्तेमाल करना चाहते हैं।"
+  },
+  "helpAndSettings": {
+    "message": "सहायता और सेटिंग्स"
   },
   "here": {
     "message": "यहाँ",
@@ -3399,6 +3509,9 @@
     "message": "JSON फाइल",
     "description": "format for importing an account"
   },
+  "keycardShell": {
+    "message": "कीकार्ड शैल"
+  },
   "keyringAccountName": {
     "message": "अकाउंट का नाम"
   },
@@ -3444,6 +3557,10 @@
   "lastSold": {
     "message": "पिछली बार बेचा गया"
   },
+  "lattice": {
+    "message": "लैटिस",
+    "description": "Hardware device name"
+  },
   "lavaDomeCopyWarning": {
     "message": "सुरक्षा कारणों से, इस टेक्स्ट को चुनने का विकल्प अभी उपलब्ध नहीं है।"
   },
@@ -3483,6 +3600,10 @@
   },
   "leaveMetaMaskDesc": {
     "message": "आप MetaMask के बाहर किसी साइट पर जाने वाले हैं। जारी रखने से पहले URL को दोबारा जांचें।"
+  },
+  "ledger": {
+    "message": "Ledger",
+    "description": "Hardware device name"
   },
   "ledgerAccountRestriction": {
     "message": "नया अकाउंट जोड़ने से पहले आपको अपने पिछले अकाउंट का इस्तेमाल करना होगा।"
@@ -3605,6 +3726,9 @@
   "lockTimeInvalid": {
     "message": "लॉक का समय 0 और 10080 के बीच की कोई संख्या होनी चाहिए"
   },
+  "logOut": {
+    "message": "लॉग आउट करें"
+  },
   "loginErrorConnectButton": {
     "message": "फिर से कोशिश करें"
   },
@@ -3667,6 +3791,9 @@
     "message": "पक्का करें कि इसे कोई भी नहीं देख रहा है",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
+  "manage": {
+    "message": "मैनेज करें"
+  },
   "manageDefaultSettings": {
     "message": "डिफॉल्ट सेटिंग्स मैनेज करें"
   },
@@ -3724,6 +3851,22 @@
   },
   "memo": {
     "message": "ज्ञापन"
+  },
+  "merklRewardsToastFailed": {
+    "message": "आपका mUSD बोनस क्लेम फेल हो गया",
+    "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
+  },
+  "merklRewardsToastInProgress": {
+    "message": "आपका mUSD बोनस प्रोसेस हो रहा है",
+    "description": "Toast message shown when a Merkl reward claim transaction is being processed"
+  },
+  "merklRewardsToastSuccess": {
+    "message": "आपका mUSD बोनस यहाँ है!",
+    "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
+  },
+  "merklRewardsUnexpectedError": {
+    "message": "एक अनचाही गड़बड़ी हुई। कृपया फिर से कोशिश करें।",
+    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "मैसेज"
@@ -3875,6 +4018,10 @@
   "multichainAddressViewAll": {
     "message": "सभी दिखाएं"
   },
+  "multichainProviderAccess": {
+    "message": "$1 को मल्टीचेन प्रोवाइडर एक्सेस दें",
+    "description": "The parameter is the name of the requesting origin"
+  },
   "multichainQuoteCardRateExplanation": {
     "message": "प्रदाताओं से हमें जो सबसे अच्छा दर मिला, उसमें प्रदाता फीस और $1% MetaMask फीस शामिल है।"
   },
@@ -3884,6 +4031,10 @@
   "multipleSnapConnectionWarning": {
     "message": "$1 $2 Snaps का उपयोग करना चाहता है",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
+  },
+  "musdClaimClaimingTo": {
+    "message": "को क्लेम किया जा रहा है",
+    "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
     "message": "mUSD कन्वर्शन"
@@ -4265,6 +4416,9 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap और अधिकांश हार्डवेयर वॉलेट, आपके वर्तमान ब्राउज़र वर्जन के साथ काम नहीं करेंगे।"
   },
+  "noMMFeeSwapping": {
+    "message": "कोई MetaMask शुल्क नहीं"
+  },
   "noNetworkFee": {
     "message": "कोई नेटवर्क शुल्क नहीं"
   },
@@ -4619,6 +4773,10 @@
   "onboardingSrpInputPlaceholder": {
     "message": "प्रत्येक शब्द के बीच में एक स्पेस जोड़ें और सुनिश्चित करें कि कोई देख न रहा हो।"
   },
+  "oneKey": {
+    "message": "OneKey",
+    "description": "Hardware device name"
+  },
   "only": {
     "message": "केवल"
   },
@@ -4926,6 +5084,10 @@
     "message": "$1 को एन्क्रिप्शन के साथ सुरक्षित रूप से डेटा को स्टोर करने, अपडेट करने और फिर से पाने की अनुमति दें। अन्य Snaps इस जानकारी को एक्सेस नहीं कर सकते।",
     "description": "An extended description for the `snap_manageState` permission. $1 is the snap name."
   },
+  "permission_multichainProvider": {
+    "message": "मल्टीचेन प्रोवाइडर एक्सेस करें।",
+    "description": "The description for the `endowment:multichain-provider` permission"
+  },
   "permission_multichainProviderDescription": {
     "message": "$1 को MetaMask के साथ सीधे कम्यूनिकेट करने की अनुमति दें, ताकि वह ब्लॉकचेन से डेटा पढ़ सके और मैसेज और ट्रांसेक्शन का सुझाव दे सके।",
     "description": "An extended description for the `endowment:multichain-provider` permission. $1 is the snap name."
@@ -5074,26 +5236,72 @@
   "perpsAddFundsDescription": {
     "message": "लेवरेज के साथ परपेचुअल कॉन्ट्रैक्ट्स में ट्रेडिंग शुरू करने के लिए फंड जोड़ें"
   },
+  "perpsAddMargin": {
+    "message": "मार्जिन जोड़ें"
+  },
   "perpsAddToFavorites": {
     "message": "पसंदीदा में जोड़े"
+  },
+  "perpsAsk": {
+    "message": "आस्क"
   },
   "perpsAutoClose": {
     "message": "ऑटो क्लोज़"
   },
+  "perpsAvailable": {
+    "message": "उपलब्ध",
+    "description": "is the available balance amount"
+  },
+  "perpsAvailableBalance": {
+    "message": "उपलब्ध बैलेंस"
+  },
+  "perpsBid": {
+    "message": "बिड"
+  },
+  "perpsCancelAllOrders": {
+    "message": "सब कैंसिल करें"
+  },
+  "perpsClose": {
+    "message": "बंद करें"
+  },
   "perpsCloseAll": {
     "message": "सब बंद करें"
+  },
+  "perpsCloseAmount": {
+    "message": "अमाउंट क्लोज़ करें"
+  },
+  "perpsCloseLong": {
+    "message": "लॉन्ग क्लोज़ करें"
+  },
+  "perpsCloseShort": {
+    "message": "शॉर्ट क्लोज़ करें"
   },
   "perpsClosedShort": {
     "message": "शॉर्ट को क्लोज़ किया गया"
   },
+  "perpsConfirmCloseLong": {
+    "message": "लॉन्ग क्लोज़ करें"
+  },
+  "perpsConfirmCloseShort": {
+    "message": "शॉर्ट क्लोज़ करें"
+  },
   "perpsContactSupport": {
     "message": "सपोर्ट टीम से कॉन्टेक्ट करें"
+  },
+  "perpsDateToday": {
+    "message": "आज"
+  },
+  "perpsDateYesterday": {
+    "message": "कल"
   },
   "perpsDepositActivityTitle": {
     "message": "फंडेड पर्प्स"
   },
   "perpsDepositTitle": {
     "message": "फंडेड पर्प्स अकाउंट"
+  },
+  "perpsDeposits": {
+    "message": "डिपॉज़िट"
   },
   "perpsDetails": {
     "message": "विवरण"
@@ -5116,6 +5324,9 @@
   "perpsExploreStocksAndCommodities": {
     "message": "स्टॉक्स और कमोडिटीज़ एक्सप्लोर करें"
   },
+  "perpsFees": {
+    "message": "फीस"
+  },
   "perpsFilterAll": {
     "message": "सभी"
   },
@@ -5125,14 +5336,29 @@
   "perpsFilterCrypto": {
     "message": "क्रिप्टो"
   },
+  "perpsFilterForex": {
+    "message": "फॉरेक्स"
+  },
+  "perpsFilterNew": {
+    "message": "नया"
+  },
   "perpsFilterStocks": {
     "message": "स्टॉक्स"
+  },
+  "perpsFunding": {
+    "message": "फंडिंग"
   },
   "perpsFundingPayments": {
     "message": "फंडिंग पेमेंट्स"
   },
   "perpsFundingRate": {
     "message": "फंडिंग रेट"
+  },
+  "perpsFundingRateTooltip": {
+    "message": "एक घंटे का फीस जो ट्रेडर्स के बीच मार्केट प्राइस को संतुलित रखने के लिए लिया जाता है। अगर रेट सकारात्मक है, तो लॉन्ग्स शॉर्ट्स को भुगतान करते हैं; अगर नकारात्मक है, तो शॉर्ट्स लॉन्ग्स को भुगतान करते हैं।"
+  },
+  "perpsGiveFeedback": {
+    "message": "हमें फीडबैक दें"
   },
   "perpsIncreasedPosition": {
     "message": "पोज़िशन बढ़ाई गई"
@@ -5143,11 +5369,20 @@
   "perpsLearnMore": {
     "message": "ज़्यादा जानें"
   },
+  "perpsLeverage": {
+    "message": "लीवरेज"
+  },
   "perpsLimit": {
     "message": "सीमित करें"
   },
+  "perpsLimitPrice": {
+    "message": "लिमिट प्राइस"
+  },
   "perpsLiquidationPrice": {
     "message": "लिक्विडेशन प्राइस"
+  },
+  "perpsLiquidationPriceEst": {
+    "message": "लिक्विडेशन प्राइस का अनुमान"
   },
   "perpsLong": {
     "message": "लॉन्ग"
@@ -5168,20 +5403,46 @@
   "perpsMarkets": {
     "message": "मार्केट"
   },
+  "perpsMax": {
+    "message": "मैक्स"
+  },
+  "perpsMid": {
+    "message": "मिड"
+  },
+  "perpsModify": {
+    "message": "बदलाव करें"
+  },
+  "perpsModifyPosition": {
+    "message": "पोज़िशन को मॉडिफाई करें"
+  },
   "perpsMore": {
     "message": "अधिक"
   },
   "perpsNoMarketsFound": {
     "message": "कोई मार्केट नहीं मिला"
   },
+  "perpsNoTransactions": {
+    "message": "अभी तक कोई ट्रांसेक्शन नहीं है"
+  },
   "perpsOpenInterest": {
     "message": "ओपन इंटरेस्ट"
+  },
+  "perpsOpenLong": {
+    "message": "लॉन्ग $1 को ओपन करें",
+    "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOpenOrders": {
     "message": "खुला ऑर्डर"
   },
+  "perpsOpenShort": {
+    "message": "शॉर्ट $1 को ओपन करें",
+    "description": "$1 is the asset symbol (e.g., BTC, ETH)"
+  },
   "perpsOpenedLong": {
     "message": "खुला लॉन्ग"
+  },
+  "perpsOrderAmount": {
+    "message": "ऑर्डर अमाउंट"
   },
   "perpsOrders": {
     "message": "ऑर्डर"
@@ -5192,17 +5453,26 @@
   "perpsPosition": {
     "message": "पोज़िशन"
   },
+  "perpsPositionSize": {
+    "message": "पोज़िशन साइज़"
+  },
   "perpsPositions": {
     "message": "पोजीशन्स"
   },
   "perpsRecentActivity": {
     "message": "हालिया गतिविधि"
   },
+  "perpsRemoveMargin": {
+    "message": "मार्जिन हटाएं"
+  },
   "perpsReturn": {
     "message": "कमाई"
   },
   "perpsSearchMarkets": {
     "message": "मार्केट्स खोजें"
+  },
+  "perpsSeeAll": {
+    "message": "सभी को देखें"
   },
   "perpsShort": {
     "message": "शॉर्ट"
@@ -5225,11 +5495,95 @@
   "perpsStats": {
     "message": "आँकड़े"
   },
+  "perpsStatusCanceled": {
+    "message": "कैंसिल किया गया"
+  },
+  "perpsStatusCompleted": {
+    "message": "पूरा किया गया"
+  },
+  "perpsStatusFilled": {
+    "message": "भरा गया"
+  },
+  "perpsStatusOpen": {
+    "message": "ओपन"
+  },
+  "perpsStatusQueued": {
+    "message": "कतारबद्ध"
+  },
+  "perpsStatusRejected": {
+    "message": "रिजेक्ट किया गया"
+  },
+  "perpsStatusTriggered": {
+    "message": "ट्रिगर हो गया"
+  },
+  "perpsStopLoss": {
+    "message": "स्टॉप लॉस",
+    "description": "Label for stop loss price input"
+  },
+  "perpsSubmitting": {
+    "message": "सबमिट किया जा रहा है...",
+    "description": "Loading text shown while an order is being submitted"
+  },
+  "perpsTakeProfit": {
+    "message": "टेक प्रॉफ़िट",
+    "description": "Label for take profit price input"
+  },
   "perpsTotalBalance": {
     "message": "कुल बैलेंस"
   },
   "perpsTradePerps": {
     "message": "पर्प्स ट्रेड करें"
+  },
+  "perpsTrades": {
+    "message": "ट्रेड्स"
+  },
+  "perpsTutorialChooseLeverageDescription": {
+    "message": "लीवरेज आपके लाभ और हानि दोनों को बढ़ा देता है। 40x लीवरेज के साथ, प्राइस में 1% का बदलाव आपके मार्जिन पर 40% लाभ या हानि के बराबर होता है।"
+  },
+  "perpsTutorialChooseLeverageTitle": {
+    "message": "अपना लीवरेज चुनें"
+  },
+  "perpsTutorialCloseAnytimeDescription": {
+    "message": "जब चाहें बाहर निकलें। आपको अपना मार्जिन वापस मिलेगा, साथ ही लाभ या हानि शामिल होगी।"
+  },
+  "perpsTutorialCloseAnytimeTitle": {
+    "message": "किसी भी समय बंद करें"
+  },
+  "perpsTutorialContinue": {
+    "message": "जारी रखें"
+  },
+  "perpsTutorialGoLongShortDescription": {
+    "message": "किसी टोकन को लॉन्ग या शॉर्ट लेने के लिए चुनें, फिर अपना ऑर्डर साइज़ सेट करें।"
+  },
+  "perpsTutorialGoLongShortSubtitle": {
+    "message": "यदि प्राइस बढ़ती है तो लाभ के लिए लॉन्ग लें। यदि प्राइस घटती है तो लाभ के लिए शॉर्ट लें।"
+  },
+  "perpsTutorialGoLongShortTitle": {
+    "message": "टोकन पर लॉन्ग या शॉर्ट लें"
+  },
+  "perpsTutorialLetsGo": {
+    "message": "चलिए शुरू करें"
+  },
+  "perpsTutorialReadyToTradeDescription": {
+    "message": "अपने पर्प्स अकाउंट को किसी भी टोकन से फंड करें और सेकंडों में अपना पहला ट्रेड करें।"
+  },
+  "perpsTutorialReadyToTradeTitle": {
+    "message": "ट्रेड करने के लिए तैयार हैं?"
+  },
+  "perpsTutorialSkip": {
+    "message": "छोड़ें"
+  },
+  "perpsTutorialWatchLiquidationDescription": {
+    "message": "अगर टोकन आपकी लिक्विडेशन प्राइस तक पहुँचता है, तो आप अपना पूरा मार्जिन खो देंगे। अधिक लीवरेज का मतलब है लिक्विडेशन के लिए कम स्थान।"
+  },
+  "perpsTutorialWatchLiquidationTitle": {
+    "message": "लिक्विडेशन से सावधान रहें।"
+  },
+  "perpsTutorialWhatArePerpsSubtitle": {
+    "message": "यहां बताया गया है कि यह कैसे काम करता है।"
+  },
+  "perpsTutorialWhatArePerpsTitle": {
+    "message": "पर्प्स क्या हैं?"
   },
   "perpsUnrealizedPnl": {
     "message": "अनरियलाइज्ड P&L"
@@ -5509,6 +5863,10 @@
   "pushPlatformNotificationsSwapCompletedTitle": {
     "message": "स्वैप पूरा हुआ"
   },
+  "qr": {
+    "message": "QR",
+    "description": "Hardware device name"
+  },
   "queued": {
     "message": "कतारबद्ध"
   },
@@ -5680,6 +6038,10 @@
   },
   "required": {
     "message": "जरुरी"
+  },
+  "requiredToken": {
+    "message": "ज़रूरी टोकन",
+    "description": "Label for the required token row showing the token and amount needed by the transaction"
   },
   "reset": {
     "message": "रीसेट करें"
@@ -6548,6 +6910,9 @@
   "shieldEntryModalTitleB": {
     "message": "पेश है ट्रांसेक्शन शील्ड"
   },
+  "shieldErrorPayerAddressAlreadyUsed": {
+    "message": "यह पता पहले से ही किसी दूसरे अकाउंट से लिंक है। सब्सक्राइब करने के लिए कोई दूसरा पता इस्तेमाल करें।"
+  },
   "shieldEstimatedChangesMonthlyTooltipText": {
     "message": "12 महीनों के लिए $1/महीना ऑथराइज़ करें ($2 टोटल)। आपको अभी पूरा अमाउंट नहीं देना होगा, बल्कि आपसे हर महीने बिल के हिसाब से पैसे लिए जाएंगे।"
   },
@@ -6683,6 +7048,15 @@
   "shieldTxCancelDetails": {
     "message": "यदि आप कैंसिल करते हैं, तो आपके वॉलेट और ट्रांसेक्शन पर $1 से शुरू होने वाला कोई भी शुल्क नहीं लगेगा।",
     "description": "The $1 is the date subscription ends"
+  },
+  "shieldTxCancelImmediateDetails": {
+    "message": "यदि आप कैंसिल करते हैं, तो आपका वॉलेट और ट्रांसेक्शन कवर नहीं होंगे।"
+  },
+  "shieldTxCancelNotAllowed": {
+    "message": "आपका सब्सक्रिप्शन अभी कैंसिल नहीं किया जा सकता।"
+  },
+  "shieldTxCancelNotAllowedPendingVerification": {
+    "message": "आपका सब्सक्रिप्शन सत्यापन अभी पूरा नहीं होने की वजह से कैंसिल नहीं किया जा सकता।"
   },
   "shieldTxCancelWhenPausedDetails": {
     "message": "रोके जाने के दौरान आपका प्लान एक्टिव नहीं होता है। अगर आप कैंसिल करते हैं, तो आपका प्लान तुरंत खत्म हो जाएगा।"
@@ -7612,6 +7986,9 @@
   "storageErrorDescriptionDefault": {
     "message": "अपने सीक्रेट रिकवरी फ्रेज़ का बैकअप लें और अगर समस्या बनी रहती है तो MetaMask को फिर से इनस्टॉल करें।"
   },
+  "storageErrorDescriptionNoSpace": {
+    "message": "आपके डिवाइस में स्टोरेज खत्म हो गया है। अभी जगह खाली करें वरना वॉलेट में सेव नहीं किए गए बदलाव खो सकते हैं।"
+  },
   "storageErrorTitle": {
     "message": "हम आपका डेटा सेव नहीं कर सके"
   },
@@ -8287,6 +8664,10 @@
   "transferRequest": {
     "message": "ट्रांसफर अनुरोध"
   },
+  "trezor": {
+    "message": "ट्रेज़र",
+    "description": "Hardware device name"
+  },
   "tronBandwidth": {
     "message": "बैंडविड्थ"
   },
@@ -8401,6 +8782,9 @@
   },
   "unapproved": {
     "message": "रिजेक्ट"
+  },
+  "unavailable": {
+    "message": "अनुपलब्ध"
   },
   "unexpectedBehavior": {
     "message": "यह व्यवहार अप्रत्याशित है और इसे बग के रूप में रिपोर्ट किया जाना चाहिए, भले ही आपके एकाउंट्स रिस्टोर कर दिए गए हों।"
