@@ -364,7 +364,12 @@ const CancelSpeedupModal = ({
   };
 
   return (
-    <Modal isOpen onClose={onClose} data-testid={dataTestId}>
+    <Modal
+      isOpen
+      onClose={onClose}
+      data-testid={dataTestId}
+      isClosedOnOutsideClick={false}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose}>

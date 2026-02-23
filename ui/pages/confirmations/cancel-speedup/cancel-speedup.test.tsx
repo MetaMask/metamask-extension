@@ -21,6 +21,7 @@ import {
   createSpeedUpTransaction,
 } from '../../../store/actions';
 import { MetaMaskReduxState } from '../../../selectors';
+import { tEn } from '../../../../test/lib/i18n-helpers';
 import { CancelSpeedup } from './cancel-speedup';
 
 jest.mock('../../../store/actions', () => ({
@@ -172,17 +173,19 @@ describe('CancelSpeedup Component', () => {
     render({ editGasMode: EditGasModes.speedUp });
 
     await waitFor(() => {
-      expect(screen.getByText('Speed up transaction')).toBeInTheDocument();
+      expect(
+        screen.getByText(tEn('speedUpTransactionTitle') as string),
+      ).toBeInTheDocument();
     });
 
     expect(
-      screen.getByText('This network fee will replace the original.'),
+      screen.getByText(tEn('speedUpTransactionDescription') as string),
     ).toBeInTheDocument();
     expect(
       screen.getByTestId('cancel-speedup-confirm-button'),
     ).toBeInTheDocument();
-    expect(screen.getByText('Network fee')).toBeInTheDocument();
-    expect(screen.getByText('Speed')).toBeInTheDocument();
+    expect(screen.getByText(tEn('networkFee') as string)).toBeInTheDocument();
+    expect(screen.getByText(tEn('speed') as string)).toBeInTheDocument();
     expect(screen.getByTestId('gas-timing-time')).toBeInTheDocument();
   });
 
@@ -190,13 +193,13 @@ describe('CancelSpeedup Component', () => {
     render({ editGasMode: EditGasModes.cancel });
 
     await waitFor(() => {
-      expect(screen.getByText('Cancel transaction')).toBeInTheDocument();
+      expect(
+        screen.getByText(tEn('cancelTransactionTitle') as string),
+      ).toBeInTheDocument();
     });
 
     expect(
-      screen.getByText(
-        'This transaction will be canceled and this network fee will replace the original.',
-      ),
+      screen.getByText(tEn('cancelTransactionDescription') as string),
     ).toBeInTheDocument();
   });
 
