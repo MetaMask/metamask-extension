@@ -83,4 +83,4 @@ jobs:
 
       - name: Publish prerelease
         if: ${{ env.MERGE_BASE_COMMIT_HASH && env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}
-        run: yarn tsx ./development/metamaskbot-build-announce.ts
+        run: yarn tsx ./development/metamaskbot-build-announce/index.ts

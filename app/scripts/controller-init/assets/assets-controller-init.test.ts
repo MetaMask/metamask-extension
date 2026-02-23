@@ -8,8 +8,21 @@ import {
   AssetsControllerMessenger,
   AssetsControllerInitMessenger,
 } from '../messengers/assets/assets-controller-messenger';
-import { ASSETS_UNIFY_STATE_VERSION_1 } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
+import {
+  ASSETS_UNIFY_STATE_VERSION_1,
+  isAssetsUnifyStateFeatureEnabled,
+} from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { AssetsControllerInit } from './assets-controller-init';
+
+jest.mock(
+  '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+    ),
+    isAssetsUnifyStateFeatureEnabled: jest.fn(),
+  }),
+);
 
 jest.mock('@metamask/assets-controller', () => ({
   ...jest.requireActual('@metamask/assets-controller'),
@@ -100,8 +113,20 @@ describe('AssetsControllerInit', () => {
       messenger: expect.any(Object),
       state: undefined,
       isEnabled: expect.any(Function),
+      isBasicFunctionality: expect.any(Function),
+      subscribeToBasicFunctionalityChange: expect.any(Function),
       queryApiClient: expect.any(Object),
-      rpcDataSourceConfig: { tokenDetectionEnabled: true },
+      rpcDataSourceConfig: {
+        tokenDetectionEnabled: expect.any(Function),
+        balanceInterval: 30_000,
+        detectionInterval: 180_000,
+      },
+      priceDataSourceConfig: { pollInterval: 180_000 },
+      stakedBalanceDataSourceConfig: {
+        pollInterval: 30_000,
+        enabled: true,
+      },
+      trackMetaMetricsEvent: expect.any(Function),
     });
   });
 
@@ -123,8 +148,20 @@ describe('AssetsControllerInit', () => {
       messenger: expect.any(Object),
       state: persistedState.AssetsController,
       isEnabled: expect.any(Function),
+      isBasicFunctionality: expect.any(Function),
+      subscribeToBasicFunctionalityChange: expect.any(Function),
       queryApiClient: expect.any(Object),
-      rpcDataSourceConfig: { tokenDetectionEnabled: true },
+      rpcDataSourceConfig: {
+        tokenDetectionEnabled: expect.any(Function),
+        balanceInterval: 30_000,
+        detectionInterval: 180_000,
+      },
+      priceDataSourceConfig: { pollInterval: 180_000 },
+      stakedBalanceDataSourceConfig: {
+        pollInterval: 30_000,
+        enabled: true,
+      },
+      trackMetaMetricsEvent: expect.any(Function),
     });
   });
 
@@ -132,11 +169,15 @@ describe('AssetsControllerInit', () => {
     const requestMock = getInitRequestMock({ useTokenDetection: false });
     AssetsControllerInit(requestMock);
 
-    expect(AssetsController).toHaveBeenCalledWith(
-      expect.objectContaining({
-        rpcDataSourceConfig: { tokenDetectionEnabled: false },
-      }),
-    );
+    const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
+    const config = constructorCall.rpcDataSourceConfig;
+    if (!config?.tokenDetectionEnabled) {
+      throw new Error('Expected rpcDataSourceConfig.tokenDetectionEnabled');
+    }
+    const tokenDetectionEnabledGetter = config.tokenDetectionEnabled;
+
+    expect(typeof tokenDetectionEnabledGetter).toBe('function');
+    expect(tokenDetectionEnabledGetter()).toBe(false);
   });
 
   it('defaults tokenDetectionEnabled to true when preferences call fails', () => {
@@ -153,15 +194,21 @@ describe('AssetsControllerInit', () => {
 
     AssetsControllerInit(requestMock);
 
-    expect(AssetsController).toHaveBeenCalledWith(
-      expect.objectContaining({
-        rpcDataSourceConfig: { tokenDetectionEnabled: true },
-      }),
-    );
+    const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
+    const config = constructorCall.rpcDataSourceConfig;
+    if (!config?.tokenDetectionEnabled) {
+      throw new Error('Expected rpcDataSourceConfig.tokenDetectionEnabled');
+    }
+    const tokenDetectionEnabledGetter = config.tokenDetectionEnabled;
+
+    expect(typeof tokenDetectionEnabledGetter).toBe('function');
+    expect(tokenDetectionEnabledGetter()).toBe(true);
   });
 
   describe('isEnabled function', () => {
     it('returns true when feature flag is enabled with correct version', () => {
+      jest.mocked(isAssetsUnifyStateFeatureEnabled).mockReturnValue(true);
+
       const requestMock = getInitRequestMock({
         featureFlagEnabled: true,
         featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
@@ -177,6 +224,8 @@ describe('AssetsControllerInit', () => {
     });
 
     it('returns false when feature flag is disabled', () => {
+      jest.mocked(isAssetsUnifyStateFeatureEnabled).mockReturnValue(false);
+
       const requestMock = getInitRequestMock({
         featureFlagEnabled: false,
       });
@@ -190,6 +239,8 @@ describe('AssetsControllerInit', () => {
     });
 
     it('returns false when feature version does not match', () => {
+      jest.mocked(isAssetsUnifyStateFeatureEnabled).mockReturnValue(false);
+
       const requestMock = getInitRequestMock({
         featureFlagEnabled: true,
         featureVersion: '999', // Wrong version
@@ -204,6 +255,7 @@ describe('AssetsControllerInit', () => {
     });
 
     it('returns false when feature flag is not present', () => {
+      jest.mocked(isAssetsUnifyStateFeatureEnabled).mockReturnValue(false);
       const baseMessenger = getRootMessenger<never, never>();
 
       const requestMock = {
@@ -245,6 +297,8 @@ describe('AssetsControllerInit', () => {
     });
 
     it('returns false when getController throws an error', () => {
+      jest.mocked(isAssetsUnifyStateFeatureEnabled).mockReturnValue(false);
+
       const baseMessenger = getRootMessenger<never, never>();
 
       const requestMock = {

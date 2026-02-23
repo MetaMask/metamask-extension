@@ -2009,11 +2009,15 @@ async function onInstall() {
 
 /**
  * Trigger actions that should happen only when an update is available
+ *
+ * @param {object} details - Event details from runtime.onUpdateAvailable (e.g. details.version)
  */
-async function onUpdateAvailable() {
+async function onUpdateAvailable(details) {
   await isInitialized;
-  log.debug('An update is available');
-  controller.appStateController.setIsUpdateAvailable(true);
+  log.info('An update is available', details?.version);
+  controller.appStateController.setPendingExtensionVersion(
+    details?.version ?? null,
+  );
 }
 
 browser.runtime.onUpdateAvailable.addListener(onUpdateAvailable);
