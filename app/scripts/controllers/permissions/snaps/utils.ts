@@ -7,7 +7,7 @@ import { RootMessenger } from '../../../lib/messenger';
 
 /**
  * Get the mnemonic for a given entropy source. If no source is
- * provided, the primary HD keyring's mnemonic seed will be returned.
+ * provided, the primary HD keyring's mnemonic will be returned.
  *
  * @param messenger - The messenger.
  * @param source - The ID of the entropy source keyring.
