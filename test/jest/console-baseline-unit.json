@@ -476,9 +476,6 @@
       "error: Unexpected keys \"allTokens\", \"enableEnforcedSimulations\", \"e...": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/app/musd/musd-buy-get-cta.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/app/name/name-details/name-details.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 12,
       "warn: ⚠️ React Router Future Flag": 2
