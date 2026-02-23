@@ -1,13 +1,13 @@
 import React from 'react';
+import { TextVariant, TextColor, Text } from '@metamask/design-system-react';
 import {
   BannerAlert,
   BannerAlertSeverity,
 } from '../../components/component-library';
-import { TextVariant, TextColor, Text } from '@metamask/design-system-react';
 
-interface RevealSeedWarningProps {
+type RevealSeedWarningProps = {
   message: string;
-}
+};
 
 export function RevealSeedWarning({ message }: RevealSeedWarningProps) {
   return (

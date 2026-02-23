@@ -1,11 +1,22 @@
 import React from 'react';
-import { Button, Text, TextButton, Box, BoxFlexDirection, BoxAlignItems, BoxJustifyContent, TextVariant, TextColor, ButtonVariant } from '@metamask/design-system-react';
+import {
+  Button,
+  Text,
+  TextButton,
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+  TextVariant,
+  TextColor,
+  ButtonVariant,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
-interface QuizIntroductionProps {
+type QuizIntroductionProps = {
   onGetStarted: () => void;
   onLearnMore: () => void;
-}
+};
 
 export function QuizIntroduction({
   onGetStarted,
@@ -30,7 +41,7 @@ export function QuizIntroduction({
         <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           {t('quizIntroduction')}
         </Text>
-      </Box >
+      </Box>
       <Box
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Center}

@@ -2,14 +2,6 @@ import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
-  createNewVaultAndRestore,
-  resetOAuthLoginState,
-  resetWallet,
-  setFirstTimeFlowType,
-  unMarkPasswordForgotten,
-} from '../../store/actions';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import {
   Box,
   Text,
   ButtonIcon,
@@ -25,8 +17,16 @@ import {
   BoxBackgroundColor,
   ButtonVariant,
   BoxAlignItems,
-  ButtonSize
+  ButtonSize,
 } from '@metamask/design-system-react';
+import {
+  createNewVaultAndRestore,
+  resetOAuthLoginState,
+  resetWallet,
+  setFirstTimeFlowType,
+  unMarkPasswordForgotten,
+} from '../../store/actions';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -84,13 +84,7 @@ function RestoreVaultPage() {
         console.error('[RestoreVault] Error during import:', error);
       }
     },
-    [
-      isSocialLoginFlow,
-      secretRecoveryPhrase,
-      dispatch,
-      trackEvent,
-      navigate,
-    ],
+    [isSocialLoginFlow, secretRecoveryPhrase, dispatch, trackEvent, navigate],
   );
 
   const handleContinue = useCallback(() => {
@@ -149,13 +143,11 @@ function RestoreVaultPage() {
             </Box>
             <Box
               // textAlign={TextAlign.Left}
-              marginBottom={2}>
-              <Text variant={TextVariant.HeadingLg}>
-                {t('importAWallet')}
-              </Text>
+              marginBottom={2}
+            >
+              <Text variant={TextVariant.HeadingLg}>{t('importAWallet')}</Text>
             </Box>
-            <Box
-              marginBottom={4}>
+            <Box marginBottom={4}>
               <Text
                 variant={TextVariant.BodyMd}
                 color={TextColor.TextAlternative}
@@ -184,17 +176,15 @@ function RestoreVaultPage() {
             flexDirection={BoxFlexDirection.Column}
             justifyContent={BoxJustifyContent.Center}
             alignItems={BoxAlignItems.Center}
-          // width={BlockSize.Full}
-          // textAlign={TextAlign.Left}
+            // width={BlockSize.Full}
+            // textAlign={TextAlign.Left}
           >
             <Button
               // width={BlockSize.Full}
               size={ButtonSize.Lg}
               data-testid="import-srp-confirm"
               onClick={handleContinue}
-              disabled={
-                !secretRecoveryPhrase.trim() || Boolean(srpError)
-              }
+              disabled={!secretRecoveryPhrase.trim() || Boolean(srpError)}
               className="import-srp__continue-button"
             >
               {t('continue')}

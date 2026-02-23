@@ -1,11 +1,23 @@
 import React from 'react';
-import { ButtonIcon, IconName, IconColor, ButtonIconSize, Text, TextVariant, TextColor, Box, BoxAlignItems, BoxJustifyContent, BoxFlexDirection } from '@metamask/design-system-react';
+import {
+  ButtonIcon,
+  IconName,
+  IconColor,
+  ButtonIconSize,
+  Text,
+  TextVariant,
+  TextColor,
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 
-interface RevealSeedPageHeaderProps {
+type RevealSeedPageHeaderProps = {
   onBack: () => void;
   title: string;
   backButtonAriaLabel: string;
-}
+};
 
 export function RevealSeedPageHeader({
   onBack,

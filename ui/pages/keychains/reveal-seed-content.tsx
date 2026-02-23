@@ -1,6 +1,15 @@
 import React, { useState, useCallback } from 'react';
 import qrCode from 'qrcode-generator';
-import { IconName, IconColor, TextButton, Icon, Box, BoxAlignItems, BoxJustifyContent, BoxFlexDirection } from '@metamask/design-system-react';
+import {
+  IconName,
+  IconColor,
+  TextButton,
+  Icon,
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { Tab, Tabs } from '../../components/ui/tabs';
 import RecoveryPhraseChips from '../onboarding-flow/recovery-phrase/recovery-phrase-chips';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -8,11 +17,11 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 type TabKey = 'text-seed' | 'qr-srp';
 
 /** Minimal type for qrcode-generator instance (no @types package) */
-interface QRCodeInstance {
+type QRCodeInstance = {
   addData: (data: string) => void;
   make: () => void;
   createTableTag: (cellSize?: number, margin?: number) => string;
-}
+};
 
 function createSeedQRCode(seedWords: string): QRCodeInstance {
   const qrImage = qrCode(0, 'L') as QRCodeInstance;
@@ -21,13 +30,13 @@ function createSeedQRCode(seedWords: string): QRCodeInstance {
   return qrImage;
 }
 
-interface RevealSeedContentProps {
+type RevealSeedContentProps = {
   seedWords: string;
   phraseRevealed: boolean;
   onRevealPhrase: () => void;
   onCopy: () => void;
   onTabClick?: (tabKey: 'text-seed' | 'qr-srp') => void;
-}
+};
 
 export function RevealSeedContent({
   seedWords,
@@ -55,7 +64,11 @@ export function RevealSeedContent({
   return (
     <div data-testid="reveal-seed-tabs-container">
       <Tabs activeTab={activeTab} onTabClick={handleTabClick}>
-        <Tab name={t('revealSeedWordsText')} tabKey="text-seed" className="flex-1">
+        <Tab
+          name={t('revealSeedWordsText')}
+          tabKey="text-seed"
+          className="flex-1"
+        >
           <RecoveryPhraseChips
             secretRecoveryPhrase={seedWords.split(' ')}
             phraseRevealed={phraseRevealed}
@@ -65,7 +78,7 @@ export function RevealSeedContent({
           <TextButton
             onClick={onCopy}
             data-testid="reveal-seed-copy-button"
-            className='hover:bg-transparent flex justify-center items-center w-full'
+            className="hover:bg-transparent flex justify-center items-center w-full"
           >
             <Icon
               name={IconName.Copy}

@@ -77,33 +77,32 @@ describe('Restore vault Component', () => {
     // Mock the action creators
     sinon
       .stub(actions, 'unMarkPasswordForgotten')
-      .returns(mockUnMarkPasswordForgotten as ReturnType<
-        typeof actions.unMarkPasswordForgotten
-      >);
-    sinon
-      .stub(actions, 'createNewVaultAndRestore')
-      .callsFake(((pw: string, seed: string) => {
-        return () => {
-          mockCreateNewVaultAndRestore(pw, seed);
-          return Promise.resolve();
-        };
-      }) as typeof actions.createNewVaultAndRestore);
-    sinon
-      .stub(actions, 'setFirstTimeFlowType')
-      .callsFake(((type) => {
-        return () => {
-          mockSetFirstTimeFlowType(type);
-          return Promise.resolve();
-        };
-      }) as typeof actions.setFirstTimeFlowType);
-    sinon
-      .stub(actions, 'resetWallet')
-      .callsFake(((restoreOnly?: boolean) => {
-        return () => {
-          mockResetWallet(restoreOnly);
-          return Promise.resolve();
-        };
-      }) as typeof actions.resetWallet);
+      .returns(
+        mockUnMarkPasswordForgotten as ReturnType<
+          typeof actions.unMarkPasswordForgotten
+        >,
+      );
+    sinon.stub(actions, 'createNewVaultAndRestore').callsFake(((
+      pw: string,
+      seed: string,
+    ) => {
+      return () => {
+        mockCreateNewVaultAndRestore(pw, seed);
+        return Promise.resolve();
+      };
+    }) as typeof actions.createNewVaultAndRestore);
+    sinon.stub(actions, 'setFirstTimeFlowType').callsFake(((type) => {
+      return () => {
+        mockSetFirstTimeFlowType(type);
+        return Promise.resolve();
+      };
+    }) as typeof actions.setFirstTimeFlowType);
+    sinon.stub(actions, 'resetWallet').callsFake(((restoreOnly?: boolean) => {
+      return () => {
+        mockResetWallet(restoreOnly);
+        return Promise.resolve();
+      };
+    }) as typeof actions.resetWallet);
 
     const { queryByTestId } = renderWithProvider(
       <RestoreVaultPage />,

@@ -15,15 +15,15 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
   TextAlign,
-  TextButton
+  TextButton,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import type { QuizQuestionConfig, AnsweredQuizQuestion } from './types';
 
-interface QuizQuestionProps {
+type QuizQuestionProps = {
   onQuizComplete: () => void;
   onLearnMore: () => void;
-}
+};
 
 export function QuizQuestion({
   onQuizComplete,
@@ -151,7 +151,9 @@ export function QuizQuestion({
               key={correctAnswer ? 'correct' : 'incorrect'}
               name={correctAnswer ? IconName.Confirmation : IconName.CircleX}
               color={
-                correctAnswer ? IconColor.SuccessDefault : IconColor.ErrorDefault
+                correctAnswer
+                  ? IconColor.SuccessDefault
+                  : IconColor.ErrorDefault
               }
               size={IconSize.Lg}
             />
@@ -206,7 +208,7 @@ export function QuizQuestion({
                   ? 'srp-quiz-right-answer'
                   : 'srp-quiz-wrong-answer'
               }
-              className='w-full'
+              className="w-full"
             >
               {buttonLabelOne}
             </Button>
@@ -214,16 +216,18 @@ export function QuizQuestion({
               variant={ButtonVariant.Secondary}
               onClick={() => handleAnswer(isFirstQuestion)}
               data-testid={
-                isFirstQuestion ? 'srp-quiz-right-answer' : 'srp-quiz-wrong-answer'
+                isFirstQuestion
+                  ? 'srp-quiz-right-answer'
+                  : 'srp-quiz-wrong-answer'
               }
-              className='w-full'
+              className="w-full"
             >
               {buttonLabelTwo}
             </Button>
             <TextButton
               onClick={onLearnMore}
               data-testid="reveal-seed-quiz-learn-more"
-              className='w-full hover:bg-transparent'
+              className="w-full hover:bg-transparent"
             >
               {learnMoreLabel}
             </TextButton>
@@ -245,14 +249,14 @@ export function QuizQuestion({
             data-testid={
               correctAnswer ? 'srp-quiz-continue' : 'srp-quiz-try-again'
             }
-            className='w-full'
+            className="w-full"
           >
             {correctAnswer ? continueLabel : tryAgainLabel}
           </Button>
           <TextButton
             onClick={onLearnMore}
             data-testid="reveal-seed-quiz-footer-learn-more"
-            className='w-full hover:bg-transparent'
+            className="w-full hover:bg-transparent"
           >
             {learnMoreLabel}
           </TextButton>

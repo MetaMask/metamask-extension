@@ -18,7 +18,7 @@ import {
 import { BlockSize } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
-interface PasswordPromptProps {
+type PasswordPromptProps = {
   password: string;
   error: string | null;
   showPassword: boolean;
@@ -26,7 +26,7 @@ interface PasswordPromptProps {
   onTogglePasswordVisibility: (event: React.MouseEvent) => void;
   onSubmit: (event: React.MouseEvent | React.FormEvent) => void;
   onContinueClick: (event: React.MouseEvent) => void;
-}
+};
 
 export function PasswordPrompt({
   password,
@@ -73,17 +73,13 @@ export function PasswordPrompt({
           </HelpText>
         )}
       </form>
-      <Box
-        gap={4}
-        data-testid="reveal-seed-password-footer"
-        className="w-full"
-      >
+      <Box gap={4} data-testid="reveal-seed-password-footer" className="w-full">
         <Button
           size={ButtonSize.Lg}
           onClick={onContinueClick}
           disabled={password === ''}
           data-testid="reveal-seed-password-continue"
-          className='w-full'
+          className="w-full"
         >
           {t('continue')}
         </Button>

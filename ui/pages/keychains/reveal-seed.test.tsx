@@ -20,7 +20,9 @@ jest.mock('react-router-dom', () => ({
   useParams: () => mockUseParams(),
 }));
 
-const mockSuccessfulSrpReveal = (): ((dispatch: jest.Mock) => Promise<string>) => {
+const mockSuccessfulSrpReveal = (): ((
+  dispatch: jest.Mock,
+) => Promise<string>) => {
   return (dispatch: jest.Mock) => {
     dispatch({ type: 'MOCK_REQUEST_REVEAL_SEED_WORDS' });
     return Promise.resolve('test srp');
@@ -33,7 +35,9 @@ const mockUnsuccessfulSrpReveal = (): (() => Promise<never>) => {
 
 const mockRequestRevealSeedWords = jest
   .fn()
-  .mockImplementation(mockSuccessfulSrpReveal as () => (dispatch: jest.Mock) => Promise<string>);
+  .mockImplementation(
+    mockSuccessfulSrpReveal as () => (dispatch: jest.Mock) => Promise<string>,
+  );
 
 const password = 'password';
 
@@ -43,11 +47,11 @@ jest.mock('../../store/actions.ts', () => ({
     mockRequestRevealSeedWords(userPassword, keyringId),
 }));
 
-interface NavigateQuizToPasswordScreenArgs {
+type NavigateQuizToPasswordScreenArgs = {
   getByText: (id: string | RegExp) => HTMLElement;
   queryByTestId: (id: string) => HTMLElement | null;
   fireEvent: typeof fireEvent;
-}
+};
 
 async function navigateQuizToPasswordScreen({
   getByText,
@@ -145,7 +149,9 @@ describe('Reveal Seed Page', () => {
 
   it('shows error when password is wrong', async () => {
     mockRequestRevealSeedWords.mockImplementation(
-      mockUnsuccessfulSrpReveal as () => (dispatch: jest.Mock) => Promise<string>,
+      mockUnsuccessfulSrpReveal as () => (
+        dispatch: jest.Mock,
+      ) => Promise<string>,
     );
 
     const { queryByTestId, getByText, queryByText } = renderWithProvider(
@@ -203,10 +209,14 @@ describe('Reveal Seed Page', () => {
     const store = configureStore(mockState as object);
     mockRequestRevealSeedWords
       .mockImplementationOnce(
-        mockUnsuccessfulSrpReveal as () => (dispatch: jest.Mock) => Promise<string>,
+        mockUnsuccessfulSrpReveal as () => (
+          dispatch: jest.Mock,
+        ) => Promise<string>,
       )
       .mockImplementationOnce(
-        mockSuccessfulSrpReveal as () => (dispatch: jest.Mock) => Promise<string>,
+        mockSuccessfulSrpReveal as () => (
+          dispatch: jest.Mock,
+        ) => Promise<string>,
       );
 
     const mockTrackEvent = jest.fn();

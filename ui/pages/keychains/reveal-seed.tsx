@@ -2,12 +2,6 @@ import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import copyToClipboard from 'copy-to-clipboard';
-import { getErrorMessage } from '../../../shared/modules/error';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventKeyType,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
 import {
   TextButton,
   Text,
@@ -15,6 +9,12 @@ import {
   TextVariant,
   TextColor,
 } from '@metamask/design-system-react';
+import { getErrorMessage } from '../../../shared/modules/error';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -59,7 +59,9 @@ function RevealSeedPage() {
   const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   const onClickCopy = useCallback(() => {
-    if (!seedWords) return;
+    if (!seedWords) {
+      return;
+    }
     copyToClipboard(seedWords);
     setShowSuccessToast(true);
     trackEvent({
@@ -95,9 +97,11 @@ function RevealSeedPage() {
       trace({ name: TraceName.RevealSeed });
       setSeedWords(null);
       setError(null);
-      (dispatch(
-        requestRevealSeedWords(password, keyringId),
-      ) as unknown as Promise<string>)
+      (
+        dispatch(
+          requestRevealSeedWords(password, keyringId),
+        ) as unknown as Promise<string>
+      )
         .then((revealedSeedWords) => {
           trackEvent({
             category: MetaMetricsEventCategory.Keys,
@@ -129,14 +133,11 @@ function RevealSeedPage() {
     [dispatch, password, keyringId, trackEvent, hdEntropyIndex],
   );
 
-  const togglePasswordVisibility = useCallback(
-    (event: React.MouseEvent) => {
-      event.stopPropagation();
-      event.preventDefault();
-      setShowPassword((prev) => !prev);
-    },
-    [],
-  );
+  const togglePasswordVisibility = useCallback((event: React.MouseEvent) => {
+    event.stopPropagation();
+    event.preventDefault();
+    setShowPassword((prev) => !prev);
+  }, []);
 
   const openSupportArticle = useCallback(() => {
     trackEvent({
@@ -170,10 +171,7 @@ function RevealSeedPage() {
   }, []);
 
   useEffect(() => {
-    if (
-      screen === REVEAL_SEED_SCREEN &&
-      !srpViewEventTracked
-    ) {
+    if (screen === REVEAL_SEED_SCREEN && !srpViewEventTracked) {
       trackEvent({
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpViewSrpText,
@@ -322,7 +320,7 @@ function RevealSeedPage() {
             <TextButton
               key="srp-learn-srp"
               onClick={handleSrpClick}
-              className='hover:bg-transparent'
+              className="hover:bg-transparent"
             >
               {t('revealSeedWordsSRPName')}
             </TextButton>,
