@@ -4,7 +4,6 @@
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
 import { obj as createThroughStream } from 'through2';
-import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import {
   ListNames,
