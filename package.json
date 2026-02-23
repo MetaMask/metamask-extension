@@ -144,7 +144,8 @@
     "attributions:check": "./development/attributions-check.sh",
     "attributions:generate": "./development/generate-attributions.sh",
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
-    "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
+    "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate",
+    "docs:messenger": "messenger-docs --serve"
   },
   "resolutions": {
     "jest-clean-console-reporter/chalk": "^4.1.2",
@@ -250,7 +251,8 @@
     "@metamask/bridge-status-controller": "64.3.0",
     "@ledgerhq/hw-transport-webhid@npm:^6.31.0": "patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch",
     "fast-xml-parser": "^5.3.6",
-    "@metamask/snaps-controllers": "^18.0.1"
+    "@metamask/snaps-controllers": "^18.0.1",
+    "@metamask/messenger-docs": "npm:@metamask-previews/messenger-docs@0.0.0-preview-658f090af"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -510,6 +512,7 @@
     "@metamask/eth-json-rpc-provider": "^6.0.0",
     "@metamask/forwarder": "^1.1.0",
     "@metamask/foundryup": "^1.0.1",
+    "@metamask/messenger-docs": "^1.0.0",
     "@metamask/phishing-warning": "^5.1.0",
     "@metamask/preferences-controller": "^21.0.0",
     "@metamask/snap-account-abstraction-keyring-site": "^1.0.0",
@@ -767,6 +770,8 @@
       "$root$": true,
       "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false,
       "@metamask/kernel-browser-runtime>@metamask/kernel-store>better-sqlite3": false,
+      "@metamask/messenger-docs>@docusaurus/core>@docusaurus/babel>@babel/runtime-corejs3>core-js-pure": false,
+      "@metamask/messenger-docs>@docusaurus/core>core-js": false,
       "@metamask/streams": false,
       "@metamask/test-dapp-solana>@solana/spl-token>@solana/buffer-layout-utils>bigint-buffer": false,
       "@sentry/cli": true,
@@ -798,6 +803,11 @@
     }
   },
   "packageManager": "yarn@4.12.0",
+  "messenger-docs": {
+    "scanDirs": [
+      "app"
+    ]
+  },
   "foundryup": {
     "binaries": [
       "anvil"
