@@ -86,6 +86,9 @@ function RevealSeedPage() {
   const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   const onClickCopy = useCallback(() => {
+    if (!phraseRevealed) {
+      return;
+    }
     copyToClipboard(seedWords);
     setShowSuccessToast(true);
     trackEvent({
@@ -106,7 +109,7 @@ function RevealSeedPage() {
         hd_entropy_index: hdEntropyIndex,
       },
     });
-  }, [seedWords, trackEvent, hdEntropyIndex]);
+  }, [seedWords, phraseRevealed, trackEvent, hdEntropyIndex]);
 
   useEffect(() => {
     const passwordBox = document.getElementById('password-box');
@@ -583,6 +586,7 @@ function RevealSeedPage() {
               width={BlockSize.Full}
               size={Size.LG}
               onClick={onClickCopy}
+              disabled={!phraseRevealed}
               data-testid="reveal-seed-copy-button"
             >
               <Icon
