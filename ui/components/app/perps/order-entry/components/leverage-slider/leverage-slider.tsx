@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   Text,
@@ -33,6 +33,10 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
 }) => {
   const t = useI18nContext();
   const [inputValue, setInputValue] = useState<string>(String(leverage));
+
+  useEffect(() => {
+    setInputValue(String(leverage));
+  }, [leverage]);
 
   const handleSliderChange = useCallback(
     (_event: React.ChangeEvent<unknown>, value: number | number[]) => {

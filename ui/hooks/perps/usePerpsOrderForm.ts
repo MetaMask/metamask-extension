@@ -62,6 +62,8 @@ export type UsePerpsOrderFormReturn = {
   handleClosePercentChange: (percent: number) => void;
   /** Handler for limitPrice changes */
   handleLimitPriceChange: (limitPrice: string) => void;
+  /** Handler for order type changes */
+  handleOrderTypeChange: (type: OrderType) => void;
   /** Handler for form submission */
   handleSubmit: () => void;
 };
@@ -181,6 +183,20 @@ export function usePerpsOrderForm({
     }
   }, [mode, existingPosition, asset, initialDirection, orderType]);
 
+  // Re-derive modify fields when availableBalance transitions from 0 to a
+  // real value (e.g. account data loading after mount).
+  const prevBalanceRef = useRef(availableBalance);
+  useEffect(() => {
+    const wasZero = prevBalanceRef.current === 0;
+    prevBalanceRef.current = availableBalance;
+    if (wasZero && availableBalance > 0 && mode === 'modify' && existingPosition) {
+      setFormState((prev) => ({
+        ...prev,
+        ...deriveModifyFields(existingPosition, availableBalance),
+      }));
+    }
+  }, [availableBalance, mode, existingPosition]);
+
   // Notify parent of form state changes
   useEffect(() => {
     onFormStateChange?.(formState);
@@ -287,6 +303,10 @@ export function usePerpsOrderForm({
     setFormState((prev) => ({ ...prev, limitPrice }));
   }, []);
 
+  const handleOrderTypeChange = useCallback((type: OrderType) => {
+    setFormState((prev) => ({ ...prev, type }));
+  }, []);
+
   // Submit handler
   const handleSubmit = useCallback(() => {
     onSubmit?.(formState);
@@ -304,6 +324,7 @@ export function usePerpsOrderForm({
     handleStopLossPriceChange,
     handleClosePercentChange,
     handleLimitPriceChange,
+    handleOrderTypeChange,
     handleSubmit,
   };
 }

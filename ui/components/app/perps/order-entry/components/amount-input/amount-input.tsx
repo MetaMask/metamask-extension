@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Text,
@@ -49,6 +49,10 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   const [percentInputValue, setPercentInputValue] = useState<string>(
     String(balancePercent),
   );
+
+  useEffect(() => {
+    setPercentInputValue(String(balancePercent));
+  }, [balancePercent]);
 
   const tokenAmount = useMemo(() => {
     const cleanAmount = amount.replace(/,/gu, '');

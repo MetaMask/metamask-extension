@@ -85,6 +85,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     handleStopLossPriceChange,
     handleClosePercentChange,
     handleLimitPriceChange,
+    handleOrderTypeChange,
     handleSubmit,
   } = usePerpsOrderForm({
     asset,
@@ -105,6 +106,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   }, [calculations, onCalculationsChange]);
 
   const handleOrderTypeClick = (type: 'market' | 'limit') => {
+    handleOrderTypeChange(type);
     onOrderTypeChange?.(type);
   };
 
@@ -153,19 +155,19 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
               label={t('perpsMarket')}
               onClick={() => handleOrderTypeClick('market')}
               backgroundColor={
-                orderType === 'market'
+                formState.type === 'market'
                   ? BackgroundColor.backgroundMuted
                   : BackgroundColor.backgroundDefault
               }
               borderWidth={0}
               className={twMerge(
                 'cursor-pointer transition-colors',
-                orderType !== 'market' && 'hover:opacity-80',
+                formState.type !== 'market' && 'hover:opacity-80',
               )}
               borderRadius={BorderRadius.pill}
               labelProps={{
                 color:
-                  orderType === 'market'
+                  formState.type === 'market'
                     ? TextColor.textDefault
                     : TextColor.textAlternative,
               }}
@@ -178,7 +180,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
               label={t('perpsLimit')}
               onClick={() => handleOrderTypeClick('limit')}
               backgroundColor={
-                orderType === 'limit'
+                formState.type === 'limit'
                   ? BackgroundColor.backgroundMuted
                   : BackgroundColor.backgroundDefault
               }
@@ -186,11 +188,11 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
               borderRadius={BorderRadius.pill}
               className={twMerge(
                 'cursor-pointer transition-colors',
-                orderType !== 'limit' && 'hover:opacity-80',
+                formState.type !== 'limit' && 'hover:opacity-80',
               )}
               labelProps={{
                 color:
-                  orderType === 'limit'
+                  formState.type === 'limit'
                     ? TextColor.textDefault
                     : TextColor.textAlternative,
               }}
