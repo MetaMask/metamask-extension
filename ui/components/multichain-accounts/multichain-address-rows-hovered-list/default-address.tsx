@@ -78,6 +78,7 @@ export const DefaultAddress = () => {
                   event: MetaMetricsEventName.NavSettingsOpened,
                   properties: {
                     location: METRICS_LOCATION,
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
                     settings_section: SETTINGS_PATH,
                   },
                 });
@@ -98,8 +99,10 @@ export const DefaultAddress = () => {
               category: MetaMetricsEventCategory.Settings,
               event: MetaMetricsEventName.SettingsUpdated,
               properties: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 default_address_network: defaultAddressScope,
                 location: METRICS_LOCATION,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 show_default_address: newValue,
               },
             });
