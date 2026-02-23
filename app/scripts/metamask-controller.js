@@ -5494,41 +5494,6 @@ export default class MetamaskController extends EventEmitter {
     await this.keyringController.verifyPassword(password);
   }
 
-  /**
-   * @type Identity
-   * @property {string} name - The account nickname.
-   * @property {string} address - The account's ethereum address, in lower case.
-   * receiving funds from our automatic Ropsten faucet.
-   */
-
-  /**
-   * Gets the mnemonic of the user's primary keyring.
-   */
-  getPrimaryKeyringMnemonic() {
-    const [keyring] = this.keyringController.getKeyringsByType(
-      KeyringType.hdKeyTree,
-    );
-    if (!keyring.mnemonic) {
-      throw new Error('Primary keyring mnemonic unavailable.');
-    }
-
-    return keyring.mnemonic;
-  }
-
-  /**
-   * Gets the mnemonic seed of the user's primary keyring.
-   */
-  getPrimaryKeyringMnemonicSeed() {
-    const [keyring] = this.keyringController.getKeyringsByType(
-      KeyringType.hdKeyTree,
-    );
-    if (!keyring.seed) {
-      throw new Error('Primary keyring mnemonic unavailable.');
-    }
-
-    return keyring.seed;
-  }
-
   //
   // Hardware
   //
