@@ -243,6 +243,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         lostIdentities: {},
         openSeaEnabled: false,
         preferences: {
+          defaultAddressScope: 'eip155',
           hideZeroBalanceTokens: false,
           showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
@@ -250,6 +251,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           smartTransactionsOptInStatus: true,
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
+          showDefaultAddress: false,
           showMultiRpcModal: false,
           showConfirmationAdvancedDetails: false,
           tokenSortConfig: {
