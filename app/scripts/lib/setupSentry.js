@@ -294,7 +294,7 @@ async function getMetaMetricsId() {
   if (!metaMetrics?.participateInMetaMetrics) {
     return null;
   }
-  return metaMetrics?.metaMetricsId ?? null;
+  return metaMetrics.metaMetricsId ?? null;
 }
 
 function setSentryClient() {
