@@ -282,7 +282,8 @@ export const useTokensWithFiltering = (
                   MULTICHAIN_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
                   ] ??
-                  (nativeAsset?.icon ?? nativeAsset?.iconUrl) ??
+                  nativeAsset?.icon ??
+                  nativeAsset?.iconUrl ??
                   getAssetImageUrl(
                     token.address,
                     formatChainIdToCaip(token.chainId),
