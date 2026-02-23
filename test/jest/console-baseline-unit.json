@@ -923,6 +923,10 @@
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 16,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/multichain/avatar-group/avatar-group.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -3431,11 +3435,18 @@
       "Reselect: Identity function warnings": 2,
       "Reselect: Input stability warnings": 1
     },
+    "ui/selectors/assets.test.ts": {
+      "Reselect: Identity function warnings": 2,
+      "warn: No tokens found for chainId:": 1
+    },
     "ui/selectors/confirm-transaction.test.js": {
       "Reselect: Identity function warnings": 1
     },
     "ui/selectors/gator-permissions/gator-permissions.test.ts": {
       "MetaMask: Permission type warnings": 2
+    },
+    "ui/selectors/metamask-notifications/metamask-notifications.test.ts": {
+      "Reselect: Input stability warnings": 4
     },
     "ui/selectors/multi-srp/multi-srp.test.ts": {
       "Reselect: Identity function warnings": 1,
