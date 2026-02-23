@@ -4941,10 +4941,14 @@ export default class MetamaskController extends EventEmitter {
       );
 
       if (completedOnboarding) {
-        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-        await this.getSnapKeyring();
-        ///: END:ONLY_INCLUDE_IF
-        await this.accountTreeController.syncWithUserStorageAtLeastOnce();
+        // check if external services are enabled
+        const { useExternalServices } = this.preferencesController.state;
+        if (useExternalServices) {
+          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+          await this.getSnapKeyring();
+          ///: END:ONLY_INCLUDE_IF
+          await this.accountTreeController.syncWithUserStorageAtLeastOnce();
+        }
         await this.discoverAndCreateAccounts(id);
       }
 
@@ -4977,171 +4981,6 @@ export default class MetamaskController extends EventEmitter {
     return new MultichainWalletSnapClient(snapId, keyring, messenger);
   }
   ///: END:ONLY_INCLUDE_IF
-
-  /**
-   * Adds accounts with balances to the keyring.
-   *
-   * @param {string} keyringId - The Optional ID of the keyring to add the accounts to.
-   * @param {boolean} shouldImportSolanaAccount - Whether to import Solana accounts.
-   * For the context, we do not need to import the Solana account if the onboarding flow has not completed yet during the social login import flow.
-   */
-  async _addAccountsWithBalance(keyringId, shouldImportSolanaAccount = true) {
-    trace({
-      name: TraceName.DiscoverAccounts,
-      op: TraceOperation.AccountDiscover,
-    });
-    try {
-      // Scan accounts until we find an empty one
-      const chainId = this.#getGlobalChainId();
-
-      const keyringSelector = keyringId
-        ? { id: keyringId }
-        : { type: KeyringTypes.hd };
-
-      const { accounts, entropySource } =
-        await this.keyringController.withKeyring(
-          keyringSelector,
-          async ({ keyring, metadata }) => {
-            const keyringAccounts = await keyring.getAccounts();
-            return {
-              accounts: keyringAccounts,
-              entropySource: metadata.id,
-            };
-          },
-        );
-      let address = accounts[accounts.length - 1];
-
-      trace({
-        name: TraceName.EvmDiscoverAccounts,
-        op: TraceOperation.AccountDiscover,
-      });
-      try {
-        for (let count = accounts.length; ; count++) {
-          const balance = await this.getBalance(address, this.provider);
-
-          if (balance === '0x0') {
-            // This account has no balance, so check for tokens
-            await this.tokenDetectionController.detectTokens({
-              chainIds: [chainId],
-              selectedAddress: address,
-            });
-
-            const tokens =
-              this.tokensController.state.allTokens?.[chainId]?.[address];
-            const detectedTokens =
-              this.tokensController.state.allDetectedTokens?.[chainId]?.[
-                address
-              ];
-
-            if (
-              (tokens?.length ?? 0) === 0 &&
-              (detectedTokens?.length ?? 0) === 0
-            ) {
-              // This account has no balance or tokens
-              if (count !== 1) {
-                await this.removeAccount(address);
-              }
-              break;
-            }
-          }
-
-          // This account has assets, so check the next one
-          address = await this.keyringController.withKeyring(
-            keyringSelector,
-            async ({ keyring }) => {
-              const [newAddress] = await keyring.addAccounts(1);
-              return newAddress;
-            },
-          );
-        }
-      } finally {
-        endTrace({
-          name: TraceName.EvmDiscoverAccounts,
-          op: TraceOperation.AccountDiscover,
-        });
-      }
-
-      const discoveredAccounts = {
-        Bitcoin: 0,
-        Solana: 0,
-        Tron: 0,
-      };
-
-      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-      const btcClient = await this._getMultichainWalletSnapClient(
-        BITCOIN_WALLET_SNAP_ID,
-      );
-      const btcScope = BtcScope.Mainnet;
-      const btcAccounts = await btcClient.discoverAccounts(
-        entropySource,
-        btcScope,
-      );
-
-      discoveredAccounts.Bitcoin = btcAccounts.length;
-
-      // If none accounts got discovered, we still create the first (default) one.
-      if (btcAccounts.length === 0) {
-        await this._addSnapAccount(entropySource, btcClient, {
-          scope: btcScope,
-          synchronize: false,
-        });
-      }
-      ///: END:ONLY_INCLUDE_IF
-
-      if (shouldImportSolanaAccount) {
-        const solanaClient = await this._getMultichainWalletSnapClient(
-          SOLANA_WALLET_SNAP_ID,
-        );
-        const solScope = SolScope.Mainnet;
-        const solanaAccounts = await solanaClient.discoverAccounts(
-          entropySource,
-          solScope,
-        );
-
-        discoveredAccounts.Solana = solanaAccounts.length;
-
-        // If none accounts got discovered, we still create the first (default) one.
-        if (solanaAccounts.length === 0) {
-          await this._addSnapAccount(entropySource, solanaClient, {
-            scope: solScope,
-          });
-        }
-      }
-
-      ///: BEGIN:ONLY_INCLUDE_IF(tron)
-      const tronClient =
-        await this._getMultichainWalletSnapClient(TRON_WALLET_SNAP_ID);
-      const tronScope = TrxScope.Mainnet;
-      const tronAccounts = await tronClient.discoverAccounts(
-        entropySource,
-        tronScope,
-      );
-
-      discoveredAccounts.Tron = tronAccounts.length;
-
-      // If none accounts got discovered, we still create the first (default) one.
-      if (tronAccounts.length === 0) {
-        await this._addSnapAccount(entropySource, tronClient, {
-          scope: tronScope,
-        });
-      }
-      ///: END:ONLY_INCLUDE_IF
-
-      return discoveredAccounts;
-    } catch (e) {
-      log.warn(`Failed to add accounts with balance. Error: ${e}`);
-      return {
-        Bitcoin: 0,
-        Solana: 0,
-        Tron: 0,
-      };
-    } finally {
-      endTrace({
-        name: TraceName.DiscoverAccounts,
-        op: TraceOperation.AccountDiscover,
-      });
-    }
-  }
 
   /**
    * Imports accounts with balances to the keyring.
