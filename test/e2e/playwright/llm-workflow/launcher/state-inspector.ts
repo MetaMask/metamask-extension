@@ -1,4 +1,13 @@
 import type { Page } from '@playwright/test';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
+  PREPARE_SWAP_ROUTE,
+  SEND_ROUTE,
+  SETTINGS_ROUTE,
+  SIGNATURE_REQUEST_PATH,
+  UNLOCK_ROUTE,
+} from '../../../../../ui/helpers/constants/routes';
 import type { ExtensionState } from '../launcher-types';
 import { HomePage } from '../page-objects/home-page';
 
@@ -66,28 +75,52 @@ export function detectScreenFromUrl(
   url: string,
 ): ExtensionState['currentScreen'] {
   const hash = url.split('#')[1] ?? '';
+  const hashPath = hash.split(/[?#]/u)[0] || hash;
 
-  const urlPatterns: {
-    pattern: RegExp;
+  const routeMatchers: {
+    matcher: (path: string) => boolean;
     screen: ExtensionState['currentScreen'];
   }[] = [
-    { pattern: /^\/send/u, screen: 'send' },
-    { pattern: /^\/swap/u, screen: 'swap' },
-    { pattern: /^\/bridge/u, screen: 'bridge' },
-    { pattern: /^\/confirm-transaction/u, screen: 'confirm-transaction' },
-    { pattern: /^\/confirm-signature/u, screen: 'confirm-signature' },
-    { pattern: /^\/settings/u, screen: 'settings' },
-    { pattern: /^\/unlock/u, screen: 'unlock' },
-    { pattern: /notification\.html/u, screen: 'notification' },
+    { matcher: (path) => hasRoutePrefix(path, SEND_ROUTE), screen: 'send' },
+    {
+      matcher: (path) =>
+        hasRoutePrefix(path, CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE),
+      screen: 'swap',
+    },
+    {
+      matcher: (path) =>
+        hasRoutePrefix(
+          path,
+          `${CONFIRM_TRANSACTION_ROUTE}${SIGNATURE_REQUEST_PATH}`,
+        ) || path.includes(SIGNATURE_REQUEST_PATH),
+      screen: 'confirm-signature',
+    },
+    {
+      matcher: (path) => hasRoutePrefix(path, CONFIRM_TRANSACTION_ROUTE),
+      screen: 'confirm-transaction',
+    },
+    {
+      matcher: (path) => hasRoutePrefix(path, SETTINGS_ROUTE),
+      screen: 'settings',
+    },
+    { matcher: (path) => hasRoutePrefix(path, UNLOCK_ROUTE), screen: 'unlock' },
+    {
+      matcher: (path) => /notification\.html/u.test(path),
+      screen: 'notification',
+    },
   ];
 
-  for (const { pattern, screen } of urlPatterns) {
-    if (pattern.test(hash) || pattern.test(url)) {
+  for (const { matcher, screen } of routeMatchers) {
+    if (matcher(hashPath) || matcher(url)) {
       return screen;
     }
   }
 
   return 'unknown';
+}
+
+function hasRoutePrefix(path: string, route: string): boolean {
+  return path === route || path.startsWith(`${route}/`);
 }
 
 export async function getExtensionState(
