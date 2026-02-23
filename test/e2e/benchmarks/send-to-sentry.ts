@@ -32,17 +32,17 @@ const { version } = JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as {
 };
 
 const WEB_VITALS_METRICS = [
-  { key: 'inp', ratingKey: 'inpRating', unit: 'millisecond' },
-  { key: 'lcp', ratingKey: 'lcpRating', unit: 'millisecond' },
-  { key: 'cls', ratingKey: 'clsRating', unit: 'none' },
+  { key: 'inp', ratingKey: 'inpRating' },
+  { key: 'lcp', ratingKey: 'lcpRating' },
+  { key: 'cls', ratingKey: 'clsRating' },
 ] as const;
 
 /**
  * Send web vitals to Sentry as spans — separate from timer-based structured logs.
  *
- * Per-run snapshots become individual spans with measurements and rating tags,
+ * Per-run snapshots become individual spans with rating tags,
  * following the conventions from ui/helpers/utils/web-vitals.ts:
- * - setMeasurement: benchmark.{metric} with appropriate unit
+ * - setAttribute: benchmark.{metric} (numeric value)
  * - setAttribute: {metric}.rating
  *
  * Aggregated summary goes as a structured log for dashboards.
@@ -74,13 +74,12 @@ function sendWebVitalsToSentry(
         },
       },
       (span) => {
-        for (const { key, ratingKey, unit } of WEB_VITALS_METRICS) {
+        for (const { key, ratingKey } of WEB_VITALS_METRICS) {
           const value = run[key];
           const rating = run[ratingKey];
 
           if (value !== null) {
             span.setAttribute(`benchmark.${key}`, value);
-            Sentry.setMeasurement(`benchmark.${key}`, value, unit);
           }
 
           if (rating !== null) {

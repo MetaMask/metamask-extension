@@ -42,14 +42,3 @@ export async function collectWebVitals(
   });
 }
 
-/** Empty web vitals snapshot for initialization / fallback */
-export function createEmptyWebVitalsMetrics(): WebVitalsMetrics {
-  return {
-    inp: null,
-    lcp: null,
-    cls: null,
-    inpRating: null,
-    lcpRating: null,
-    clsRating: null,
-  };
-}
