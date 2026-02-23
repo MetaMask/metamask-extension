@@ -241,7 +241,7 @@ export async function runPageLoadBenchmark(
     );
     runResults = runResults.concat(metrics);
     if (webVitalsRuns) {
-      const indexed = webVitalsRuns.map((wv, j) => ({
+      const indexed = webVitalsRuns.map((wv: WebVitalsMetrics, j: number) => ({
         ...wv,
         iteration: i * pageLoads + j,
       }));
