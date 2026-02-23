@@ -395,12 +395,12 @@ export function buildWebVitalsSection(
     return '';
   }
 
-  const metrics: Array<{
+  const metrics: {
     key: 'inp' | 'lcp' | 'cls';
     label: string;
     unit: string;
     formatValue: (v: number) => string;
-  }> = [
+  }[] = [
     {
       key: 'inp',
       label: 'INP',

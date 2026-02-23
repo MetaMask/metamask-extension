@@ -11,7 +11,12 @@ import type { Driver } from '../../webdriver/driver';
 import type { WebVitalsMetrics } from './types';
 
 /**
- * Collect Core Web Vitals from the running extension via stateHooks.
+ * Collect Core Web Vitals from the running extension via stateHooks,
+ * then reset metrics so the next iteration starts with a clean slate.
+ *
+ * Without the reset, metrics persist across benchmark iterations — if an
+ * observer doesn't fire in a later run (e.g. LCP only fires on initial
+ * load), the stale value from an earlier iteration would be recorded.
  *
  * @param driver - Selenium WebDriver instance with access to the extension page
  * @returns Per-run web vitals snapshot. Null values indicate the metric was not
@@ -24,11 +29,14 @@ export async function collectWebVitals(
     const { stateHooks } = window as Window & {
       stateHooks?: {
         getWebVitalsMetrics?: () => WebVitalsMetrics;
+        resetWebVitalsMetrics?: () => void;
       };
     };
 
     if (stateHooks?.getWebVitalsMetrics) {
-      return stateHooks.getWebVitalsMetrics();
+      const metrics = stateHooks.getWebVitalsMetrics();
+      stateHooks.resetWebVitalsMetrics?.();
+      return metrics;
     }
 
     return {
@@ -41,4 +49,3 @@ export async function collectWebVitals(
     };
   });
 }
-

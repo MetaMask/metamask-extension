@@ -240,9 +240,8 @@ async function buildUiStartupSection(
     ),
   );
 
-  const webVitalsHtml = await safeBuildSection(
-    'core web vitals',
-    () => fetchAndBuildWebVitalsSection(hostUrl),
+  const webVitalsHtml = await safeBuildSection('core web vitals', () =>
+    fetchAndBuildWebVitalsSection(hostUrl),
   );
 
   const pageLoadSection = await safeBuildSection('page load', () => {
