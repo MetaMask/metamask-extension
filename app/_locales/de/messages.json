@@ -3599,9 +3599,6 @@
   "lock": {
     "message": "Sperren"
   },
-  "lockMetaMask": {
-    "message": "MetaMask sperren"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask wird gesperrt ..."
   },
