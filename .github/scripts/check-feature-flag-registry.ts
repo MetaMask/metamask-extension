@@ -42,6 +42,7 @@ import { execSync } from 'child_process';
 import * as path from 'path';
 import { context, getOctokit } from '@actions/github';
 import { getRegisteredFlagNames } from '../../test/e2e/feature-flags';
+import { buildKnownFlagConstants } from './known-feature-flag-constants';
 
 // ============================================================================
 // Configuration
@@ -135,23 +136,12 @@ const CONSTANT_BRACKET_PATTERNS: RegExp[] = [
 ];
 
 /**
- * Map of known constant names/expressions to their resolved flag name string.
- * Sourced from the codebase to handle bracket-access with constants.
+ * Map of constant expressions to resolved flag name strings.
+ * Maintained in a separate file for easy discovery and updates.
  *
- * When a new constant is used for feature-flag bracket access, add it here.
+ * @see {@link ./known-feature-flag-constants.ts}
  */
-const KNOWN_FLAG_CONSTANTS: Record<string, string> = {
-  // shared/modules/feature-flags.ts
-  'FeatureFlagNames.AssetsDefiPositionsEnabled': 'assetsDefiPositionsEnabled',
-
-  // app/scripts/controller-init/assets/assets-controller-init.ts
-  // ui/selectors/assets-unify-state/feature-flags.ts
-  ASSETS_UNIFY_STATE_FLAG: 'assetsUnifyState',
-
-  // ui/selectors/multichain-accounts/feature-flags.ts
-  STATE_1_FLAG: 'enableMultichainAccounts',
-  STATE_2_FLAG: 'enableMultichainAccountsState2',
-};
+const KNOWN_FLAG_CONSTANTS = buildKnownFlagConstants();
 
 /**
  * Property / method names that may follow `remoteFeatureFlags.` but are
@@ -746,6 +736,11 @@ function buildCommentBody(
     '',
     'Set `inProd` and `productionDefault` to match the current production values from the',
     '[client-config API](https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod).',
+    '',
+    'If you access the flag via a **constant** (e.g. `remoteFeatureFlags[MY_CONSTANT]`),',
+    'also add the constant to',
+    '[`.github/scripts/known-feature-flag-constants.ts`](https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/known-feature-flag-constants.ts)',
+    'so the CI check can resolve it.',
     '',
     '</details>',
   );
