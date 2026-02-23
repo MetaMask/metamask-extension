@@ -48,7 +48,7 @@ export default function InfoTab(): React.ReactElement {
     () =>
       Array.from({ length: n }, () =>
         React.createRef<HTMLDivElement>(),
-      ) as React.RefObject<HTMLDivElement | null>[],
+      ) as React.RefObject<HTMLDivElement>[],
     [n],
   );
 
@@ -84,7 +84,10 @@ export default function InfoTab(): React.ReactElement {
       className: 'text-default',
     };
 
-    const linkItemProps = { paddingTop: 4, paddingBottom: 4 };
+    const linkItemProps = {
+      paddingTop: 4 as const,
+      paddingBottom: 4 as const,
+    };
 
     const separatorBox = (
       <Box className="mt-4 mb-4 border-t border-border-muted" />
@@ -94,7 +97,7 @@ export default function InfoTab(): React.ReactElement {
       <Box
         ref={settingsRefs[1]}
         flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.FlexStart}
+        alignItems={BoxAlignItems.Start}
         className="settings-page__content-item settings-page__content-item--without-height w-full px-0"
       >
         <Box ref={settingsRefs[2]} {...linkItemProps}>
@@ -190,7 +193,7 @@ export default function InfoTab(): React.ReactElement {
             <img
               src="./images/logo/metamask-fox.svg"
               alt="MetaMask Logo"
-              className="w-24 h-24"
+              className="info-tab__logo w-24 h-24"
             />
           </Box>
           <Box ref={settingsRefs[0]} data-testid="info-tab-version">
