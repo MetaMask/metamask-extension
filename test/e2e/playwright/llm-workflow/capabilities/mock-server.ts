@@ -1,12 +1,15 @@
-import type { Mockttp } from 'mockttp';
 import type { MockServerCapability } from '@metamask/client-mcp-core';
 import { fetchWithTimeout, retryUntil } from '@metamask/client-mcp-core';
+import type { MockedEndpoint, Mockttp } from '../../../mock-e2e';
+import { setupMocking } from '../../../mock-e2e';
 import { MockServer } from '../mock-server';
 
 export type MetaMaskMockServerCapabilityOptions = {
   enabled?: boolean;
   port?: number;
-  testSpecificMock?: (mockServer: Mockttp) => Promise<void>;
+  chainId?: number;
+  ethConversionInUsd?: string;
+  testSpecificMock?: (mockServer: Mockttp) => Promise<void | MockedEndpoint[]>;
   fetchWithTimeout?: (
     url: string,
     options: RequestInit,
@@ -21,7 +24,13 @@ export class MetaMaskMockServerCapability implements MockServerCapability {
 
   private readonly port?: number;
 
-  private readonly testSpecificMock?: (mockServer: Mockttp) => Promise<void>;
+  private readonly chainId: number;
+
+  private readonly ethConversionInUsd: string;
+
+  private readonly testSpecificMock?: (
+    mockServer: Mockttp,
+  ) => Promise<void | MockedEndpoint[]>;
 
   private readonly fetchWithTimeout: (
     url: string,
@@ -32,6 +41,8 @@ export class MetaMaskMockServerCapability implements MockServerCapability {
   constructor(options: MetaMaskMockServerCapabilityOptions = {}) {
     this.enabled = options.enabled ?? false;
     this.port = options.port;
+    this.chainId = options.chainId ?? 1337;
+    this.ethConversionInUsd = options.ethConversionInUsd ?? '1700';
     this.testSpecificMock = options.testSpecificMock;
     this.fetchWithTimeout = options.fetchWithTimeout ?? fetchWithTimeout;
   }
@@ -48,11 +59,22 @@ export class MetaMaskMockServerCapability implements MockServerCapability {
     this.server = new MockServer({ port: this.port });
     await this.server.start();
     await this.waitForReady();
-    await this.server.setupDefaultMocks();
 
-    if (this.testSpecificMock) {
-      await this.testSpecificMock(this.server.getServer());
-    }
+    await setupMocking(
+      this.server.getServer(),
+      async (mockServer) => {
+        if (!this.testSpecificMock) {
+          return [];
+        }
+
+        const mockedEndpoints = await this.testSpecificMock(mockServer);
+        return Array.isArray(mockedEndpoints) ? mockedEndpoints : [];
+      },
+      {
+        chainId: this.chainId.toString(),
+        ethConversionInUsd: this.ethConversionInUsd,
+      },
+    );
   }
 
   async stop(): Promise<void> {
