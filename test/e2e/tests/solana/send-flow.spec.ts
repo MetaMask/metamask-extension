@@ -9,11 +9,7 @@ import { SOLANA_MAINNET_SCOPE } from '../../constants';
 import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import {
-  buildSolanaTestSpecificMock,
-  SOLANA_IGNORED_CONSOLE_ERRORS,
-  SOLANA_MANIFEST_FLAGS,
-} from './common-solana';
+import { buildSolanaTestSpecificMock } from './common-solana';
 import { switchToNetworkFromNetworkSelect } from 'test/e2e/page-objects/flows/network.flow';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
@@ -25,11 +21,9 @@ describe('Send flow', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        manifestFlags: SOLANA_MANIFEST_FLAGS,
         testSpecificMock: buildSolanaTestSpecificMock({
           mockZeroBalance: true,
         }),
-        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -37,11 +31,7 @@ describe('Send flow', function (this: Suite) {
         const sendPage = new SendPage(driver);
 
         // TODO: Use fixtures V2 with Solana network
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Popular',
-          'Solana',
-        );
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '0' });
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
@@ -71,11 +61,9 @@ describe('Send flow', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        manifestFlags: SOLANA_MANIFEST_FLAGS,
         testSpecificMock: buildSolanaTestSpecificMock({
           mockGetTransactionSuccess: true,
         }),
-        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -83,11 +71,7 @@ describe('Send flow', function (this: Suite) {
         const sendPage = new SendPage(driver);
 
         // TODO: Use fixtures V2 with Solana network
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Popular',
-          'Solana',
-        );
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
@@ -130,11 +114,9 @@ describe('Send flow', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        manifestFlags: SOLANA_MANIFEST_FLAGS,
         testSpecificMock: buildSolanaTestSpecificMock({
           mockGetTransactionFailed: true,
         }),
-        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -142,11 +124,7 @@ describe('Send flow', function (this: Suite) {
         const sendPage = new SendPage(driver);
 
         // TODO: Use fixtures V2 with Solana network
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Popular',
-          'Solana',
-        );
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();

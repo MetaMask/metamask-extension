@@ -28,11 +28,7 @@ import {
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
-import {
-  buildSolanaTestSpecificMock,
-  SOLANA_IGNORED_CONSOLE_ERRORS,
-  SOLANA_MANIFEST_FLAGS,
-} from '../solana/common-solana';
+import { buildSolanaTestSpecificMock } from '../solana/common-solana';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
@@ -305,9 +301,7 @@ describe('Multiple Standard Dapp Connections', function () {
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-        manifestFlags: SOLANA_MANIFEST_FLAGS,
         testSpecificMock: buildSolanaTestSpecificMock(),
-        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -364,9 +358,7 @@ describe('Multiple Standard Dapp Connections', function () {
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
-        manifestFlags: SOLANA_MANIFEST_FLAGS,
         testSpecificMock: buildSolanaTestSpecificMock(),
-        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -427,9 +419,7 @@ describe('Multiple Standard Dapp Connections', function () {
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
-        manifestFlags: SOLANA_MANIFEST_FLAGS,
         testSpecificMock: buildSolanaTestSpecificMock(),
-        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -504,9 +494,7 @@ describe('Multiple Standard Dapp Connections', function () {
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
-        manifestFlags: SOLANA_MANIFEST_FLAGS,
         testSpecificMock: buildSolanaTestSpecificMock(),
-        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);

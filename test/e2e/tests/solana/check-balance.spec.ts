@@ -26,11 +26,7 @@ describe('Check balance', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
         // TODO: Use fixtures V2 with Solana network
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Popular',
-          'Solana',
-        );
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '0 SOL' });
       },
     );
@@ -51,11 +47,7 @@ describe('Check balance', function (this: Suite) {
         await loginWithoutBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
         // TODO: Use fixtures V2 with Solana network
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Popular',
-          'Solana',
-        );
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '$0' });
       },
     );
@@ -76,11 +68,7 @@ describe('Check balance', function (this: Suite) {
         await loginWithoutBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
         // TODO: Use fixtures V2 with Solana network
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Popular',
-          'Solana',
-        );
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '$5,643.50' });
       },
     );
@@ -98,11 +86,7 @@ describe('Check balance', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
         // TODO: Use fixtures V2 with Solana network
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Popular',
-          'Solana',
-        );
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '50 SOL' });
       },
     );

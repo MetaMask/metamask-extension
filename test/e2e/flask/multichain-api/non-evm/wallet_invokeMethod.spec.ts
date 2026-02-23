@@ -3,11 +3,7 @@ import { isObject } from 'lodash';
 import { SOLANA_MAINNET_SCOPE, WINDOW_TITLES } from '../../../constants';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../testHelpers';
-import {
-  buildSolanaTestSpecificMock,
-  SOLANA_MANIFEST_FLAGS,
-  SOLANA_IGNORED_CONSOLE_ERRORS,
-} from '../../../tests/solana/common-solana';
+import { buildSolanaTestSpecificMock } from '../../../tests/solana/common-solana';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';

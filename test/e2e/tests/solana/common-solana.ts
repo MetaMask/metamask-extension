@@ -1975,20 +1975,6 @@ const featureFlagsWithSnapConfirmation = {
   },
 };
 
-export const SOLANA_MANIFEST_FLAGS = {
-  remoteFeatureFlags: {
-    solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
-    bridgeConfig: featureFlags,
-  },
-};
-
-export const SOLANA_MANIFEST_FLAGS_WITH_SNAP_CONFIRMATION = {
-  remoteFeatureFlags: {
-    solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
-    bridgeConfig: featureFlagsWithSnapConfirmation,
-  },
-};
-
 export const SOLANA_DEFAULT_DAPP_OPTIONS = {
   numberOfTestDapps: 1,
   customDappPaths: [DAPP_PATH.TEST_SNAPS],

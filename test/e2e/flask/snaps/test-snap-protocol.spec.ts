@@ -1,11 +1,7 @@
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../multichain-api/testHelpers';
 import { DAPP_ONE_URL, WINDOW_TITLES } from '../../constants';
-import {
-  buildSolanaTestSpecificMock,
-  SOLANA_MANIFEST_FLAGS,
-  SOLANA_IGNORED_CONSOLE_ERRORS,
-} from '../../tests/solana/common-solana';
+import { buildSolanaTestSpecificMock } from '../../tests/solana/common-solana';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -19,11 +15,9 @@ describe('Test Protocol Snaps', function () {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-        manifestFlags: SOLANA_MANIFEST_FLAGS,
         testSpecificMock: buildSolanaTestSpecificMock({
           withProtocolSnap: true,
         }),
-        ignoredConsoleErrors: SOLANA_IGNORED_CONSOLE_ERRORS,
       },
       async ({ driver, mockServer, extensionId }) => {
         await loginWithBalanceValidation(driver);

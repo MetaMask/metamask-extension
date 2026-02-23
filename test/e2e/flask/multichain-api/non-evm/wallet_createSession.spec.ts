@@ -7,11 +7,7 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import { addAccount } from '../../../page-objects/flows/add-account.flow';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../testHelpers';
-import {
-  buildSolanaTestSpecificMock,
-  SOLANA_MANIFEST_FLAGS,
-  SOLANA_IGNORED_CONSOLE_ERRORS,
-} from '../../../tests/solana/common-solana';
+import { buildSolanaTestSpecificMock } from '../../../tests/solana/common-solana';
 
 describe('Multichain API - Non EVM', function () {
   describe("Call `wallet_createSession` with both EVM and Solana scopes that match the user's enabled networks", function () {
