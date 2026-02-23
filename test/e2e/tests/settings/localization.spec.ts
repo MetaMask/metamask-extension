@@ -1,5 +1,5 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -94,7 +94,7 @@ describe('Localization', function () {
   it('can correctly display Philippine peso symbol and code', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withCurrencyController({
             currentCurrency: 'php',
           })

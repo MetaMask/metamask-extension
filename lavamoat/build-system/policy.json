@@ -806,7 +806,7 @@
         "@babel/core>@babel/template": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
         "nock>debug": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>globals": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
       }
     },
     "@babel/core>@babel/types": {
@@ -901,11 +901,11 @@
         "eslint-config-prettier": true,
         "eslint-plugin-import": true,
         "eslint-plugin-jsdoc": true,
-        "eslint-plugin-node": true,
+        "eslint-plugin-n": true,
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
-        "eslint>@eslint/eslintrc>globals": true,
+        "eslint>globals": true,
         "eslint>ignore": true,
         "eslint>minimatch": true,
         "mocha>strip-json-comments": true
@@ -1035,6 +1035,11 @@
     "@metamask/design-system-tailwind-preset": {
       "packages": {
         "tailwindcss": true
+      }
+    },
+    "@metamask/eslint-config-typescript": {
+      "globals": {
+        "process.cwd": true
       }
     },
     "@metamask/build-utils>@metamask/utils": {
@@ -1774,6 +1779,14 @@
     "terser>source-map-support>buffer-from": {
       "globals": {
         "Buffer": true
+      }
+    },
+    "eslint-plugin-n>builtins": {
+      "globals": {
+        "process.version": true
+      },
+      "packages": {
+        "semver": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>cache-base": {
@@ -2753,10 +2766,13 @@
         "eslint-import-resolver-node": true
       }
     },
-    "eslint-plugin-node>eslint-plugin-es": {
+    "eslint-plugin-n>eslint-plugin-es": {
+      "globals": {
+        "process": true
+      },
       "packages": {
-        "eslint-plugin-node>eslint-utils": true,
-        "eslint-plugin-node>eslint-plugin-es>regexpp": true
+        "eslint-plugin-n>eslint-plugin-es>eslint-utils": true,
+        "eslint-plugin-n>eslint-plugin-es>regexpp": true
       }
     },
     "eslint-plugin-import": {
@@ -2821,30 +2837,31 @@
         "eslint-plugin-jsdoc>spdx-expression-parse": true
       }
     },
-    "eslint-plugin-node": {
+    "eslint-plugin-n": {
       "builtin": {
-        "fs.readFileSync": true,
-        "fs.readdirSync": true,
-        "fs.statSync": true,
-        "path.basename": true,
-        "path.dirname": true,
-        "path.extname": true,
-        "path.isAbsolute": true,
-        "path.join": true,
-        "path.relative": true,
-        "path.resolve": true,
-        "path.sep": true
+        "assert": true,
+        "fs": true,
+        "path": true,
+        "url.URL": true,
+        "url.fileURLToPath": true,
+        "url.pathToFileURL": true,
+        "util.format": true,
+        "util.inspect": true
       },
       "globals": {
-        "process.cwd": true
+        "process.cwd": true,
+        "process.emitWarning": true,
+        "process.platform": true
       },
       "packages": {
-        "eslint-plugin-node>eslint-plugin-es": true,
-        "eslint-plugin-node>eslint-utils": true,
+        "eslint-plugin-n>builtins": true,
+        "eslint-plugin-n>eslint-plugin-es": true,
+        "eslint-plugin-n>eslint-utils": true,
         "eslint>ignore": true,
+        "depcheck>is-core-module": true,
         "eslint>minimatch": true,
         "depcheck>resolve": true,
-        "eslint-plugin-node>semver": true
+        "semver": true
       }
     },
     "eslint-plugin-prettier": {
@@ -2923,14 +2940,19 @@
         "semver": true
       }
     },
+    "eslint-plugin-n>eslint-plugin-es>eslint-utils": {
+      "packages": {
+        "eslint-plugin-n>eslint-plugin-es>eslint-utils>eslint-visitor-keys": true
+      }
+    },
     "eslint-plugin-mocha>eslint-utils": {
       "packages": {
         "eslint-plugin-mocha>eslint-utils>eslint-visitor-keys": true
       }
     },
-    "eslint-plugin-node>eslint-utils": {
+    "eslint-plugin-n>eslint-utils": {
       "packages": {
-        "eslint-plugin-node>eslint-utils>eslint-visitor-keys": true
+        "eslint-plugin-n>eslint-utils>eslint-visitor-keys": true
       }
     },
     "eslint>espree": {
@@ -6579,12 +6601,6 @@
       }
     },
     "eslint-plugin-import>semver": {
-      "globals": {
-        "console": true,
-        "process": true
-      }
-    },
-    "eslint-plugin-node>semver": {
       "globals": {
         "console": true,
         "process": true

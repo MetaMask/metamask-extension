@@ -213,19 +213,20 @@
       "openSeaEnabled": false,
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
+        "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
         "hideZeroBalanceTokens": false,
         "petnamesEnabled": "boolean",
         "privacyMode": "boolean",
         "shouldShowAggregatedBalancePopover": "boolean",
+        "showDefaultAddress": "boolean",
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": "boolean",
         "showNativeTokenAsMainBalance": true,
         "showTestNetworks": false,
         "skipDeepLinkInterstitial": "boolean",
-        "smartAccountOptIn": "boolean",
         "smartTransactionsMigrationApplied": "boolean",
         "smartTransactionsOptInStatus": true,
         "tokenNetworkFilter": {},
@@ -317,5 +318,5 @@
     },
     "config": "object"
   },
-  "meta": { "version": 194 }
+  "meta": { "version": 195 }
 }

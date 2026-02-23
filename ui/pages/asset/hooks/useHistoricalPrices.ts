@@ -236,7 +236,7 @@ const useHistoricalPricesNonEvm = ({
    * So we follow up with an other effect that will respond on the redux state update and set the prices locally in this hook.
    */
   useEffect(() => {
-    if (isEvm) {
+    if (isEvm || !internalAccount) {
       return;
     }
 
