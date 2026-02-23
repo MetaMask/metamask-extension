@@ -1,6 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -38,7 +39,7 @@ export async function withMultichainAccountsDesignEnabled(
 
   switch (accountType) {
     case AccountType.HardwareWallet:
-      fixture = new FixtureBuilder()
+      fixture = new FixtureBuilderV2()
         .withLedgerAccount()
         .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
         .withEnabledNetworks({ eip155: { '0x1': true } })
