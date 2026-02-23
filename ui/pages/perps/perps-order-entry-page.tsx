@@ -45,9 +45,11 @@ import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skelet
 import {
   OrderEntry,
   DirectionTabs,
+  OrderSummary,
   type OrderDirection,
   type OrderFormState,
   type OrderMode,
+  type OrderCalculations,
 } from '../../components/app/perps/order-entry';
 import type {
   OrderType,
@@ -149,6 +151,8 @@ const PerpsOrderEntryPage: React.FC = () => {
   const [orderFormState, setOrderFormState] = useState<OrderFormState | null>(
     null,
   );
+  const [orderCalculations, setOrderCalculations] =
+    useState<OrderCalculations | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [pendingOrderSymbol, setPendingOrderSymbol] = useState<string | null>(
@@ -334,6 +338,13 @@ const PerpsOrderEntryPage: React.FC = () => {
   const handleFormStateChange = useCallback((formState: OrderFormState) => {
     setOrderFormState(formState);
   }, []);
+
+  const handleCalculationsChange = useCallback(
+    (calculations: OrderCalculations) => {
+      setOrderCalculations(calculations);
+    },
+    [],
+  );
 
   const handleOrderSubmit = useCallback(async () => {
     if (!isEligible || !orderFormState || !selectedAddress) {
@@ -552,6 +563,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           initialDirection={orderDirection}
           showSubmitButton={false}
           onFormStateChange={handleFormStateChange}
+          onCalculationsChange={handleCalculationsChange}
           mode={orderMode}
           orderType={orderType}
           existingPosition={existingPositionForOrder}
@@ -560,7 +572,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         />
       </Box>
 
-      {/* Sticky bottom button */}
+      {/* Sticky bottom: summary + button */}
       <Box
         paddingLeft={4}
         paddingRight={4}
@@ -570,6 +582,13 @@ const PerpsOrderEntryPage: React.FC = () => {
         gap={2}
         className="shrink-0"
       >
+        {orderCalculations && (
+          <OrderSummary
+            marginRequired={orderCalculations.marginRequired}
+            estimatedFees={orderCalculations.estimatedFees}
+            liquidationPrice={orderCalculations.liquidationPrice}
+          />
+        )}
         {submitError && (
           <Box
             className="bg-error-muted rounded-lg"

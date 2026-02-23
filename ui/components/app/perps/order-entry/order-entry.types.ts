@@ -103,6 +103,8 @@ export type OrderEntryProps = {
   onSubmit?: (formState: OrderFormState) => void;
   /** Callback when form state changes (used when showSubmitButton is false) */
   onFormStateChange?: (formState: OrderFormState) => void;
+  /** Callback when calculated values change (liquidation price, margin, fees) */
+  onCalculationsChange?: (calculations: OrderCalculations) => void;
   /** Whether to show the internal submit button (defaults to true) */
   showSubmitButton?: boolean;
   /** Order mode: 'new' for opening, 'modify' for adjusting, 'close' for closing (defaults to 'new') */

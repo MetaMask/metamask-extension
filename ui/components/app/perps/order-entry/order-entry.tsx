@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import {
   twMerge,
   Box,
@@ -52,6 +52,7 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.orderType
  * @param props.midPrice
  * @param props.onOrderTypeChange
+ * @param props.onCalculationsChange
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -61,6 +62,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   initialDirection = 'long',
   onSubmit,
   onFormStateChange,
+  onCalculationsChange,
   showSubmitButton = true,
   mode = 'new',
   existingPosition,
@@ -97,6 +99,10 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   });
 
   const isLong = formState.direction === 'long';
+
+  useEffect(() => {
+    onCalculationsChange?.(calculations);
+  }, [calculations, onCalculationsChange]);
 
   const handleOrderTypeClick = (type: 'market' | 'limit') => {
     onOrderTypeChange?.(type);
@@ -267,12 +273,14 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
           />
         )}
 
-        {/* Order Summary Section - shown in all modes */}
-        <OrderSummary
-          marginRequired={calculations.marginRequired}
-          estimatedFees={calculations.estimatedFees}
-          liquidationPrice={calculations.liquidationPrice}
-        />
+        {/* Order Summary Section - shown when parent doesn't handle it externally */}
+        {!onCalculationsChange && (
+          <OrderSummary
+            marginRequired={calculations.marginRequired}
+            estimatedFees={calculations.estimatedFees}
+            liquidationPrice={calculations.liquidationPrice}
+          />
+        )}
       </Box>
 
       {/* Submit Button - shown only when showSubmitButton is true */}
