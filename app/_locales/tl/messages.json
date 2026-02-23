@@ -5862,12 +5862,6 @@
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Subukang muli"
   },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Ang mga account na hardware wallet ay hindi pa kwalipikadong tumanggap ng mga reward. Lumipat sa ibang account upang magpatuloy."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Hindi sinusuportahan ang account"
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Subukang muli"
   },

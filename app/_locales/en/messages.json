@@ -6291,9 +6291,6 @@
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Retry"
   },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Hardware wallet accounts are not eligible to receive rewards yet. Please switch to a different account to proceed."
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Retry"
   },

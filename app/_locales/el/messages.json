@@ -5862,12 +5862,6 @@
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Επανάληψη"
   },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Οι λογαριασμοί με πορτοφόλι υλικού δεν είναι ακόμη επιλέξιμοι για ανταμοιβές. Παρακαλούμε αλλάξτε λογαριασμό για να συνεχίσετε."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Ο λογαριασμός δεν υποστηρίζεται"
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Επανάληψη"
   },
