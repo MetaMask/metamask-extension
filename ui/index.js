@@ -6,7 +6,6 @@ import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
 import { captureException } from '../shared/lib/sentry';
-import { withResolvers } from '../shared/lib/promise-with-resolvers';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../app/scripts/lib/util';
@@ -47,6 +46,7 @@ import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
+import { resolveReduxStore } from './store/redux-store-promise';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
 export {
@@ -56,20 +56,8 @@ export {
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
-/**
- * @type {PromiseWithResolvers<ReturnType<typeof configureStore>>}
- */
-const reduxStore = withResolvers();
-
-/**
- * Returns a promise that resolves to the Redux store once the UI has started.
- * Used by modules that need the store but may run before it is passed in (e.g. PerpsController init).
- *
- * @returns {Promise<ReturnType<typeof configureStore>>}
- */
-export function getReduxStorePromise() {
-  return reduxStore.promise;
-}
+// Re-export so existing consumers that import from 'ui' still work.
+export { getReduxStorePromise } from './store/redux-store-promise';
 
 /**
  * Method to update backgroundConnection object use by UI
@@ -184,7 +172,7 @@ export async function setupInitialStore(metamaskState, activeTab) {
   }
 
   const store = configureStore(draftInitialState);
-  reduxStore.resolve(store);
+  resolveReduxStore(store);
 
   const unapprovedTxs = getUnapprovedTransactions(metamaskState);
 

@@ -13,7 +13,7 @@ import {
   submitRequestToBackground,
   generateActionId,
 } from '../../store/background-connection';
-import { getReduxStorePromise } from '../..';
+import { getReduxStorePromise } from '../../store/redux-store-promise';
 
 const REMOTE_FEATURE_FLAG_GET_STATE = 'RemoteFeatureFlagController:getState';
 const REMOTE_FEATURE_FLAG_STATE_CHANGE =
