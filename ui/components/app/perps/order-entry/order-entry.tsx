@@ -104,8 +104,14 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   const onCalculationsChangeRef = useRef(onCalculationsChange);
   onCalculationsChangeRef.current = onCalculationsChange;
 
+  const prevCalculationsRef = useRef<string>('');
+
   useEffect(() => {
-    onCalculationsChangeRef.current?.(calculations);
+    const serialized = JSON.stringify(calculations);
+    if (serialized !== prevCalculationsRef.current) {
+      prevCalculationsRef.current = serialized;
+      onCalculationsChangeRef.current?.(calculations);
+    }
   }, [calculations]);
 
   const handleOrderTypeClick = (type: 'market' | 'limit') => {
