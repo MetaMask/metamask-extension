@@ -31,8 +31,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
-const METRICS_LOCATION = 'account-hover-menu';
-const SETTINGS_PATH = 'show-default-address';
+const METRICS_LOCATION = 'Account Hover Menu';
 
 export const DefaultAddress = () => {
   const t = useI18nContext();
@@ -79,10 +78,10 @@ export const DefaultAddress = () => {
                   properties: {
                     location: METRICS_LOCATION,
                     // eslint-disable-next-line @typescript-eslint/naming-convention
-                    settings_section: SETTINGS_PATH,
+                    settings_type: 'show_default_address',
                   },
                 });
-                navigate(`${GENERAL_ROUTE}#${SETTINGS_PATH}`);
+                navigate(`${GENERAL_ROUTE}#show-default-address`);
               }}
               data-testid="change-in-settings-link"
             >

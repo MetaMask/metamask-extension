@@ -215,7 +215,7 @@ export default class SettingsTab extends PureComponent {
       event: MetaMetricsEventName.SettingsUpdated,
       properties: {
         default_address_network: networkScope,
-        location: 'settings-page',
+        location: 'Settings Page',
         show_default_address: value,
       },
     });

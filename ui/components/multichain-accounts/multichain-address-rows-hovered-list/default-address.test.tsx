@@ -79,9 +79,9 @@ describe('DefaultAddress', () => {
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.NavSettingsOpened,
       properties: {
-        location: 'account-hover-menu',
+        location: 'Account Hover Menu',
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        settings_section: 'show-default-address',
+        settings_type: 'show_default_address',
       },
     });
   });
@@ -106,7 +106,7 @@ describe('DefaultAddress', () => {
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         default_address_network: 'eip155',
-        location: 'account-hover-menu',
+        location: 'Account Hover Menu',
         // eslint-disable-next-line @typescript-eslint/naming-convention
         show_default_address: false,
       },
