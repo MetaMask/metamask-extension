@@ -353,6 +353,7 @@ describe('sourcemap-validator', () => {
       mock.method(process, 'cwd', () => EMPTY_FIXTURE, { times: Infinity });
       const exitMock = mock.method(process, 'exit', noop as () => never);
       mock.method(console, 'error', noop);
+      mock.method(console, 'log', noop);
       await main();
       assert.ok(exitMock.mock.calls.length >= 1);
       assert.strictEqual(exitMock.mock.calls[0].arguments[0], 1);
@@ -366,6 +367,7 @@ describe('sourcemap-validator', () => {
       mock.method(process, 'cwd', () => emptyChromeDir, { times: Infinity });
       const exitMock = mock.method(process, 'exit', noop as () => never);
       mock.method(console, 'error', noop);
+      mock.method(console, 'log', noop);
       await main();
       await rm(emptyChromeDir, { recursive: true, force: true });
       assert.ok(exitMock.mock.calls.length >= 1);
