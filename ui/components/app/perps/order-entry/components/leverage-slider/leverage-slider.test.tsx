@@ -35,7 +35,10 @@ describe('LeverageSlider', () => {
         mockStore,
       );
 
-      expect(screen.getByText('3x')).toBeInTheDocument();
+      const container = screen.getByTestId('leverage-input');
+      const input = container.querySelector('input');
+      expect(input).toHaveValue('3');
+      expect(screen.getByText('x')).toBeInTheDocument();
     });
 
     it('renders the slider container', () => {

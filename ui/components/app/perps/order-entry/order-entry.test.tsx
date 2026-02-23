@@ -120,7 +120,9 @@ describe('OrderEntry', () => {
     it('defaults to 1x leverage', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('1x')).toBeInTheDocument();
+      const container = screen.getByTestId('leverage-input');
+      const input = container.querySelector('input');
+      expect(input).toHaveValue('1');
     });
   });
 
@@ -220,8 +222,9 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      // Should show 3x leverage (pre-populated from existing position)
-      expect(screen.getByText('3x')).toBeInTheDocument();
+      const container = screen.getByTestId('leverage-input');
+      const input = container.querySelector('input');
+      expect(input).toHaveValue('3');
     });
 
     it('shows amount input in modify mode', () => {

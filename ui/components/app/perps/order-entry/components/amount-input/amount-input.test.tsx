@@ -68,7 +68,10 @@ describe('AmountInput', () => {
         mockStore,
       );
 
-      expect(screen.getByText(/25\s*%/u)).toBeInTheDocument();
+      const container = screen.getByTestId('balance-percent-input');
+      const input = container.querySelector('input');
+      expect(input).toHaveValue('25');
+      expect(screen.getByText('%')).toBeInTheDocument();
     });
   });
 
