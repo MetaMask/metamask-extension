@@ -16,9 +16,11 @@
  * `PerformanceEventTiming` which IS supported on extension pages, so INP
  * may still report in production.
  *
- * These observers reliably fire during CI E2E benchmark runs, where metrics
- * are collected via `stateHooks.getWebVitalsMetrics()` and sent to Sentry
- * by `test/e2e/benchmarks/send-to-sentry.ts`.
+ * All observers use `{ reportAllChanges: true }` so callbacks fire on every
+ * metric update rather than only on page visibility change. This is required
+ * for E2E benchmark collection (pages stay visible throughout the test run)
+ * and also ensures production Sentry enrichment happens as interactions occur
+ * rather than being deferred until tab switch.
  *
  * @see https://github.com/GoogleChrome/web-vitals
  * @see https://web.dev/articles/inp
@@ -170,39 +172,42 @@ function enrichSentryWithWebVitals(
  */
 export function initINPObserver(): void {
   try {
-    onINP((metric: INPMetricWithAttribution) => {
-      const { value, attribution } = metric;
-      const rating = getRating(
-        value,
-        INP_GOOD_THRESHOLD_MS,
-        INP_NEEDS_IMPROVEMENT_THRESHOLD_MS,
-      );
+    onINP(
+      (metric: INPMetricWithAttribution) => {
+        const { value, attribution } = metric;
+        const rating = getRating(
+          value,
+          INP_GOOD_THRESHOLD_MS,
+          INP_NEEDS_IMPROVEMENT_THRESHOLD_MS,
+        );
 
-      // Store for E2E benchmark retrieval
-      webVitalsMetrics.inp = value;
-      webVitalsMetrics.inpRating = rating;
+        webVitalsMetrics.inp = value;
+        webVitalsMetrics.inpRating = rating;
 
-      const attributionData: Record<string, unknown> = {};
-      if (attribution) {
-        attributionData.interactionTarget =
-          attribution.interactionTarget ?? null;
-        attributionData.interactionType = attribution.interactionType ?? null;
-        attributionData.loadState = attribution.loadState ?? null;
-        attributionData.inputDelay = attribution.inputDelay ?? null;
-        attributionData.processingDuration =
-          attribution.processingDuration ?? null;
-        attributionData.presentationDelay =
-          attribution.presentationDelay ?? null;
-      }
+        const attributionData: Record<string, unknown> = {};
+        if (attribution) {
+          attributionData.interactionTarget =
+            attribution.interactionTarget ?? null;
+          attributionData.interactionType =
+            attribution.interactionType ?? null;
+          attributionData.loadState = attribution.loadState ?? null;
+          attributionData.inputDelay = attribution.inputDelay ?? null;
+          attributionData.processingDuration =
+            attribution.processingDuration ?? null;
+          attributionData.presentationDelay =
+            attribution.presentationDelay ?? null;
+        }
 
-      enrichSentryWithWebVitals(
-        'INP',
-        value,
-        'millisecond',
-        rating,
-        attributionData,
-      );
-    });
+        enrichSentryWithWebVitals(
+          'INP',
+          value,
+          'millisecond',
+          rating,
+          attributionData,
+        );
+      },
+      { reportAllChanges: true },
+    );
   } catch (error) {
     console.warn('[Performance] Failed to initialize INP observer:', error);
   }
@@ -222,32 +227,34 @@ export function initINPObserver(): void {
  */
 export function initLCPObserver(): void {
   try {
-    onLCP((metric: LCPMetricWithAttribution) => {
-      const { value, attribution } = metric;
-      const rating = getRating(
-        value,
-        LCP_GOOD_THRESHOLD_MS,
-        LCP_NEEDS_IMPROVEMENT_THRESHOLD_MS,
-      );
+    onLCP(
+      (metric: LCPMetricWithAttribution) => {
+        const { value, attribution } = metric;
+        const rating = getRating(
+          value,
+          LCP_GOOD_THRESHOLD_MS,
+          LCP_NEEDS_IMPROVEMENT_THRESHOLD_MS,
+        );
 
-      // Store for E2E benchmark retrieval
-      webVitalsMetrics.lcp = value;
-      webVitalsMetrics.lcpRating = rating;
+        webVitalsMetrics.lcp = value;
+        webVitalsMetrics.lcpRating = rating;
 
-      const attributionData: Record<string, unknown> = {};
-      if (attribution) {
-        attributionData.element = attribution.element ?? null;
-        attributionData.url = attribution.url ?? null;
-      }
+        const attributionData: Record<string, unknown> = {};
+        if (attribution) {
+          attributionData.element = attribution.element ?? null;
+          attributionData.url = attribution.url ?? null;
+        }
 
-      enrichSentryWithWebVitals(
-        'LCP',
-        value,
-        'millisecond',
-        rating,
-        attributionData,
-      );
-    });
+        enrichSentryWithWebVitals(
+          'LCP',
+          value,
+          'millisecond',
+          rating,
+          attributionData,
+        );
+      },
+      { reportAllChanges: true },
+    );
   } catch (error) {
     console.warn('[Performance] Failed to initialize LCP observer:', error);
   }
@@ -268,30 +275,38 @@ export function initLCPObserver(): void {
  */
 export function initCLSObserver(): void {
   try {
-    onCLS((metric: CLSMetricWithAttribution) => {
-      const { value, attribution } = metric;
-      const rating = getRating(
-        value,
-        CLS_GOOD_THRESHOLD,
-        CLS_NEEDS_IMPROVEMENT_THRESHOLD,
-      );
+    onCLS(
+      (metric: CLSMetricWithAttribution) => {
+        const { value, attribution } = metric;
+        const rating = getRating(
+          value,
+          CLS_GOOD_THRESHOLD,
+          CLS_NEEDS_IMPROVEMENT_THRESHOLD,
+        );
 
-      // Store for E2E benchmark retrieval
-      webVitalsMetrics.cls = value;
-      webVitalsMetrics.clsRating = rating;
+        webVitalsMetrics.cls = value;
+        webVitalsMetrics.clsRating = rating;
 
-      const attributionData: Record<string, unknown> = {};
-      if (attribution) {
-        attributionData.largestShiftTarget =
-          attribution.largestShiftTarget ?? null;
-        attributionData.largestShiftTime = attribution.largestShiftTime ?? null;
-        attributionData.largestShiftValue =
-          attribution.largestShiftValue ?? null;
-      }
+        const attributionData: Record<string, unknown> = {};
+        if (attribution) {
+          attributionData.largestShiftTarget =
+            attribution.largestShiftTarget ?? null;
+          attributionData.largestShiftTime =
+            attribution.largestShiftTime ?? null;
+          attributionData.largestShiftValue =
+            attribution.largestShiftValue ?? null;
+        }
 
-      // CLS is unitless
-      enrichSentryWithWebVitals('CLS', value, 'none', rating, attributionData);
-    });
+        enrichSentryWithWebVitals(
+          'CLS',
+          value,
+          'none',
+          rating,
+          attributionData,
+        );
+      },
+      { reportAllChanges: true },
+    );
   } catch (error) {
     console.warn('[Performance] Failed to initialize CLS observer:', error);
   }
