@@ -3661,10 +3661,6 @@ describe('MetaMaskController', () => {
 
     describe('NetworkController state', () => {
       it('fixes selectedNetworkClientId from network controller state if it is invalid', () => {
-        jest
-          .spyOn(require('../../shared/lib/sentry'), 'captureException')
-          .mockImplementation(() => undefined);
-
         metamaskController = new MetaMaskController({
           showUserConfirmation: noop,
           encryptor: mockEncryptor,
@@ -5141,6 +5137,37 @@ describe('MetaMaskController', () => {
       });
 
       await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
+    });
+
+    it('calls getSnapKeyring, syncWithUserStorageAtLeastOnce, and discoverAndCreateAccounts for each HD keyring', async () => {
+      jest
+        .spyOn(
+          metamaskController.accountTreeController,
+          'syncWithUserStorageAtLeastOnce',
+        )
+        .mockResolvedValue(undefined);
+      jest
+        .spyOn(metamaskController, 'discoverAndCreateAccounts')
+        .mockResolvedValue({});
+
+      await metamaskController._importAccountsWithBalances();
+
+      const { keyrings } = metamaskController.keyringController.state;
+      const hdIds = keyrings
+        .filter((keyring) => keyring.type === 'HD Key Tree')
+        .map((keyring) => keyring.metadata.id);
+
+      expect(
+        metamaskController.accountTreeController.syncWithUserStorageAtLeastOnce,
+      ).toHaveBeenCalledTimes(hdIds.length);
+      expect(
+        metamaskController.discoverAndCreateAccounts,
+      ).toHaveBeenCalledTimes(hdIds.length);
+      hdIds.forEach((id) => {
+        expect(
+          metamaskController.discoverAndCreateAccounts,
+        ).toHaveBeenCalledWith(id);
+      });
     });
   });
 
