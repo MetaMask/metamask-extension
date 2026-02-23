@@ -4033,7 +4033,7 @@
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
   "musdClaimClaimingTo": {
-    "message": "En prétendant à",
+    "message": "Réclamez à",
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
