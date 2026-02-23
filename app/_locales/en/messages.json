@@ -1286,6 +1286,9 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
   },
+  "changeInSettings": {
+    "message": "Change in Settings"
+  },
   "changePasswordDetailsSocial": {
     "message": "Losing this password means losing wallet access on all devices."
   },
@@ -2115,6 +2118,9 @@
   "deepLink_theTransactionShieldPage": {
     "message": "the transaction shield page"
   },
+  "default": {
+    "message": "Default"
+  },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
   },
@@ -2696,6 +2702,9 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
+  },
+  "ethereumAndEvms": {
+    "message": "Ethereum and EVMs"
   },
   "ethereumProviderAccess": {
     "message": "Grant Ethereum provider access to $1",
@@ -7290,6 +7299,12 @@
   },
   "showAdvancedDetails": {
     "message": "Show advanced details"
+  },
+  "showDefaultAddress": {
+    "message": "Show default address"
+  },
+  "showDefaultAddressDescription": {
+    "message": "Set a default address that's always visible on your home screen and account list."
   },
   "showExtensionInFullSizeView": {
     "message": "Show extension in full-size view"
