@@ -135,7 +135,7 @@ export const useBridgeNavigation = () => {
         {
           state: {
             ...state,
-            token: token ? token : null,
+            token,
           },
           replace: preventBackNavigation,
         },

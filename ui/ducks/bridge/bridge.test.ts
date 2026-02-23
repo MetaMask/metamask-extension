@@ -226,7 +226,6 @@ describe('Ducks - Bridge', () => {
           bridgeSliceOverrides: { fromTokenInputValue: '10' },
         }),
       );
-      const state = mockStore.getState().bridge;
       const mockResetBridgeState = jest.fn();
       setBackgroundConnection({
         [BridgeBackgroundAction.RESET_STATE]: mockResetBridgeState,
