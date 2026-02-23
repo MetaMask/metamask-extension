@@ -17,7 +17,6 @@ import {
   setSelectedQuote,
   setToToken,
   updateQuoteRequestParams,
-  resetBridgeState,
   trackUnifiedSwapBridgeEvent,
 } from '../../../ducks/bridge/actions';
 import {
@@ -308,13 +307,6 @@ const PrepareBridgePage = ({
   );
 
   useEffect(() => {
-    return () => {
-      // This `ref` is safe from unintended mutations, because it points to a function reference, not any reactive node or element.
-      debouncedUpdateQuoteRequestInController.current.cancel();
-    };
-  }, []);
-
-  useEffect(() => {
     dispatch(setSelectedQuote(null));
     if (!quoteParams) {
       return;
@@ -342,9 +334,6 @@ const PrepareBridgePage = ({
     );
   }, [quoteParams]);
 
-  // Use smart slippage defaults
-  useSmartSlippage();
-
   // Trace swap/bridge view loaded
   useEffect(() => {
     endTrace({
@@ -352,12 +341,17 @@ const PrepareBridgePage = ({
       timestamp: Date.now(),
     });
 
-    if (!activeQuote) {
-      // Reset controller and inputs on load if there's no restored active quote
-      dispatch(resetBridgeState());
-    }
+    return () => {
+      // This `ref` is safe from unintended mutations, because it points to a function reference, not any reactive node or element.
+      debouncedUpdateQuoteRequestInController.current.cancel();
+    };
   }, []);
 
+  // Use smart slippage defaults
+  useSmartSlippage();
+
+  // Prefill the page on load
+  usePrefillFromBridgeState();
   usePrefillFromSearchQuery();
 
   const [showBlockExplorerToast, setShowBlockExplorerToast] = useState(false);

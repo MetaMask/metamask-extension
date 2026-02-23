@@ -129,9 +129,20 @@ const bridgeSlice = createSlice({
     ) => {
       state.fromTokenInputValue = payload;
     },
-    resetInputFields: () => ({
-      ...initialState,
-    }),
+    resetInputFields: (state: BridgeState) => {
+      state.fromToken = initialState.fromToken;
+      state.toToken = initialState.toToken;
+      state.fromTokenInputValue = initialState.fromTokenInputValue;
+      state.fromTokenExchangeRate = initialState.fromTokenExchangeRate;
+      state.fromTokenBalance = initialState.fromTokenBalance;
+      state.fromNativeBalance = initialState.fromNativeBalance;
+      state.sortOrder = initialState.sortOrder;
+      state.selectedQuote = initialState.selectedQuote;
+      state.wasTxDeclined = initialState.wasTxDeclined;
+      state.slippage = initialState.slippage;
+      state.txAlert = initialState.txAlert;
+      state.txAlertStatus = initialState.txAlertStatus;
+    },
     restoreQuoteRequestFromState: (
       state,
       { payload: quote }: { payload: QuoteResponse['quote'] },

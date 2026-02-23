@@ -18,7 +18,7 @@ import {
   setToToken,
   resetInputFields,
   updateQuoteRequestParams,
-  resetBridgeState,
+  resetBridgeControllerAndCache,
   setWasTxDeclined,
   setSlippage,
 } from './actions';
@@ -233,7 +233,7 @@ describe('Ducks - Bridge', () => {
         getStatePatches: jest.fn(),
       } as never);
 
-      mockStore.dispatch(resetBridgeState() as never);
+      mockStore.dispatch(resetBridgeControllerAndCache() as never);
 
       expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
       expect(mockResetBridgeState).toHaveBeenCalledWith();
