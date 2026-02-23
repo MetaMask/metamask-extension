@@ -1538,7 +1538,6 @@
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
       "Test errors: Uncaught Errors": 1,
-      "error: background[method] is not a function": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/prepare/bridge-cta-button.test.tsx": {

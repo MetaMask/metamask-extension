@@ -116,7 +116,7 @@ export function usePerpsOrderForm({
     balance: number,
   ): Partial<OrderFormState> {
     const entryPrice = parseFloat(pos.entryPrice.replace(/,/gu, '')) || 0;
-    const absSize = Math.abs(parseFloat(pos.size)) || 0;
+    const absSize = Math.abs(parseFloat(pos.size.replace(/,/gu, ''))) || 0;
     const margin =
       entryPrice > 0 && pos.leverage > 0
         ? (absSize * entryPrice) / pos.leverage

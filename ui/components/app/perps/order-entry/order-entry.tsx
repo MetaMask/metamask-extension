@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useRef } from 'react';
+import React, { useMemo, useEffect, useRef, useCallback } from 'react';
 import {
   twMerge,
   Box,
@@ -16,7 +16,7 @@ import {
   BorderRadius,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import type { OrderEntryProps } from './order-entry.types';
+import type { OrderEntryProps, OrderCalculations } from './order-entry.types';
 
 import { AmountInput } from './components/amount-input';
 import { LimitPriceInput } from './components/limit-price-input';
@@ -104,15 +104,30 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   const onCalculationsChangeRef = useRef(onCalculationsChange);
   onCalculationsChangeRef.current = onCalculationsChange;
 
-  const prevCalculationsRef = useRef<string>('');
+  const prevCalculationsRef = useRef<OrderCalculations | null>(null);
+
+  const hasCalculationsChanged = useCallback(
+    (a: OrderCalculations | null, b: OrderCalculations): boolean => {
+      if (a === null) {
+        return true;
+      }
+      return (
+        a.positionSize !== b.positionSize ||
+        a.marginRequired !== b.marginRequired ||
+        a.liquidationPrice !== b.liquidationPrice ||
+        a.orderValue !== b.orderValue ||
+        a.estimatedFees !== b.estimatedFees
+      );
+    },
+    [],
+  );
 
   useEffect(() => {
-    const serialized = JSON.stringify(calculations);
-    if (serialized !== prevCalculationsRef.current) {
-      prevCalculationsRef.current = serialized;
+    if (hasCalculationsChanged(prevCalculationsRef.current, calculations)) {
+      prevCalculationsRef.current = calculations;
       onCalculationsChangeRef.current?.(calculations);
     }
-  }, [calculations]);
+  }, [calculations, hasCalculationsChanged]);
 
   const handleOrderTypeClick = (type: 'market' | 'limit') => {
     handleOrderTypeChange(type);
