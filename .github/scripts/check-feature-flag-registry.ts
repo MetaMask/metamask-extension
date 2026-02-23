@@ -3,39 +3,11 @@
  *
  * Scans PR diffs for feature flag references and verifies every referenced
  * flag exists in the central feature flag registry.  When a new flag is
- * introduced (or an existing one removed) without a matching registry
- * update the job fails, prompting the author to keep the registry in sync.
+ * introduced without a matching registry update the job fails, prompting
+ * the author to keep the registry in sync.
  *
- * Detected patterns
- * -----------------
- * Direct property access:
- * - `remoteFeatureFlags.flagName`  /  `remoteFeatureFlags?.flagName`
- * - `this.remoteFeatureFlagController?.state?.remoteFeatureFlags?.flagName`
- * - `state.metamask.remoteFeatureFlags.flagName`
- * - `remoteFeatureFlagController.state.remoteFeatureFlags.flagName`
- * - `getRemoteFeatureFlags(state).flagName`
- *
- * Bracket access (string literals):
- * - `remoteFeatureFlags['flagName']`  /  `remoteFeatureFlags["flagName"]`
- * - `getRemoteFeatureFlags(state)['flagName']`
- *
- * Bracket access (constants — resolved via KNOWN_FLAG_CONSTANTS):
- * - `remoteFeatureFlags[ASSETS_UNIFY_STATE_FLAG]`
- * - `remoteFeatureFlags[FeatureFlagNames.AssetsDefiPositionsEnabled]`
- * - `getRemoteFeatureFlags(state)[CONSTANT]`
- *
- * Destructuring:
- * - `{ flagA, flagB } = getRemoteFeatureFlags(...)`
- * - `useSelector(getRemoteFeatureFlags) as { flagA, ... }`
- * - `remoteFeatureFlags: { flagA, flagB }` (nested destructuring)
- *
- * Usage
- * -----
- *   yarn tsx .github/scripts/check-feature-flag-registry.ts [base-branch]
- *
- * In CI the base branch comes from GITHUB_BASE_REF.
- * Locally you can pass it as the first positional argument (defaults to
- * "main").
+ * Usage: yarn tsx .github/scripts/check-feature-flag-registry.ts [base-branch]
+ * In CI the base branch comes from GITHUB_BASE_REF (defaults to "main").
  */
 
 import { execSync } from 'child_process';
@@ -48,21 +20,11 @@ import { buildKnownFlagConstants } from './known-feature-flag-constants';
 // Configuration
 // ============================================================================
 
-/** Changes inside this directory are excluded from scanning. */
 const REGISTRY_DIR = 'test/e2e/feature-flags/';
-
-/** Only files with these extensions are scanned. */
 const SCANNABLE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx']);
-
-/** Only files under these directories are scanned. */
 const SCAN_DIRECTORIES = ['app/', 'ui/', 'shared/', 'test/'];
 
-/**
- * Regexes that require access to the original string literal content.
- * These are run BEFORE string stripping so bracket access like
- * `remoteFeatureFlags['flagName']` is still matchable.
- * Each pattern MUST expose the flag name in capture-group 1.
- */
+/** Bracket-access patterns run BEFORE string stripping (need quoted flag name). */
 const BRACKET_STRING_PATTERNS: RegExp[] = [
   // remoteFeatureFlags['flagName']  /  remoteFeatureFlags?.['flagName']
   /remoteFeatureFlags(?:\?\.)?\[['"](\w+)['"]\]/g,
@@ -71,82 +33,32 @@ const BRACKET_STRING_PATTERNS: RegExp[] = [
   /getRemoteFeatureFlags\([^)]*\)(?:\?\.)?\[['"](\w+)['"]\]/g,
 ];
 
-/**
- * Regexes that capture a flag name via property (dot) access.
- * These are run AFTER string stripping to avoid false positives from
- * flag names inside quoted text or inline comments.
- * Each pattern MUST expose the flag name in capture-group 1.
- */
+/** Dot-access patterns run AFTER string stripping to avoid false positives. */
 const FLAG_ACCESS_PATTERNS: RegExp[] = [
-  // remoteFeatureFlags.flagName  /  remoteFeatureFlags?.flagName
-  // Also matches: this.remoteFeatureFlagController?.state?.remoteFeatureFlags?.flagName
-  //               initialRemoteFeatureFlagsState?.remoteFeatureFlags?.flagName
-  //               prevState?.remoteFeatureFlags?.flagName
-  //               state.RemoteFeatureFlagController?.remoteFeatureFlags?.flagName
   /remoteFeatureFlags\??\.(\w+)/g,
-
-  // state.metamask.remoteFeatureFlags.flagName
   /state\.metamask\.remoteFeatureFlags\??\.(\w+)/g,
-
-  // remoteFeatureFlagController.state.remoteFeatureFlags.flagName
   /remoteFeatureFlagController\.state\.remoteFeatureFlags\??\.(\w+)/g,
-
-  // getRemoteFeatureFlags(state).flagName  /  getRemoteFeatureFlags(state)?.flagName
   /getRemoteFeatureFlags\([^)]*\)\??\.(\w+)/g,
 ];
 
-/**
- * Regexes that capture the *contents* of a destructuring assignment from
- * a remote-feature-flag selector.  The identifiers are then extracted in
- * a second step via {@link extractDestructuredIdentifiers}.
- */
+/** Destructuring patterns — identifiers extracted via extractDestructuredIdentifiers. */
 const DESTRUCTURING_PATTERNS: RegExp[] = [
-  // const { flagA, flagB } = getRemoteFeatureFlags(state)
   /\{\s*([^}]+)\}\s*=\s*getRemoteFeatureFlags/g,
-
-  // const { flagA, flagB } = useSelector(getRemoteFeatureFlags)
   /\{\s*([^}]+)\}\s*=\s*useSelector\s*\(\s*getRemoteFeatureFlags/g,
-
-  // useSelector(getRemoteFeatureFlags) as { flagA, flagB }
   /useSelector\s*\(\s*getRemoteFeatureFlags\s*\)\s*as\s*\{\s*([^}]+)\}/g,
-
-  // Nested destructuring: remoteFeatureFlags: { flagA, flagB }
-  // e.g. selectBridgeFeatureFlags({ remoteFeatureFlags: { bridgeConfig } })
-  // e.g. ({ remoteFeatureFlags: { smartTransactionsNetworks } })
   /remoteFeatureFlags:\s*\{\s*([^}]+)\}/g,
-
-  // const { remoteFeatureFlags } = state.metamask  (then accessed later)
-  // Captured by FLAG_ACCESS_PATTERNS when properties are read
 ];
 
-/**
- * Regexes that capture bracket-access with a non-string-literal key
- * (constants, enum members, or variables).
- * These require resolution via {@link KNOWN_FLAG_CONSTANTS}.
- * Capture-group 1 holds the identifier / constant expression.
- *
- * Handles both `[key]` and optional-chaining `?.[key]` syntax.
- */
+/** Bracket-access with constants/variables. Resolved via KNOWN_FLAG_CONSTANTS. */
 const CONSTANT_BRACKET_PATTERNS: RegExp[] = [
-  // remoteFeatureFlags[identifier]  /  remoteFeatureFlags?.[identifier]
   /remoteFeatureFlags(?:\?\.)?\[([A-Za-z_]\w*(?:\.\w+)?)\]/g,
-
-  // getRemoteFeatureFlags(state)[identifier]  /  getRemoteFeatureFlags(state)?.[identifier]
   /getRemoteFeatureFlags\([^)]*\)(?:\?\.)?\[([A-Za-z_]\w*(?:\.\w+)?)\]/g,
 ];
 
-/**
- * Map of constant expressions to resolved flag name strings.
- * Maintained in a separate file for easy discovery and updates.
- *
- * @see {@link ./known-feature-flag-constants.ts}
- */
+/** @see ./known-feature-flag-constants.ts */
 const KNOWN_FLAG_CONSTANTS = buildKnownFlagConstants();
 
-/**
- * Property / method names that may follow `remoteFeatureFlags.` but are
- * never actual flags.
- */
+/** Property/method names that follow `remoteFeatureFlags.` but aren't flags. */
 const NON_FLAG_NAMES = new Set([
   'constructor',
   'prototype',
@@ -176,25 +88,13 @@ const NON_FLAG_NAMES = new Set([
   'undefined',
 ]);
 
-/**
- * Marker used to identify the bot comment so it can be updated on
- * subsequent pushes instead of posting duplicate comments.
- */
-const PR_COMMENT_MARKER =
-  '<!-- check-feature-flag-registry -->';
-
-// ============================================================================
-// Types
-// ============================================================================
+/** Hidden HTML marker to identify/update the bot comment across pushes. */
+const PR_COMMENT_MARKER = '<!-- check-feature-flag-registry -->';
 
 type FlagReference = {
   flagName: string;
   filePath: string;
 };
-
-// ============================================================================
-// Main
-// ============================================================================
 
 async function main(): Promise<void> {
   const baseBranch =
@@ -308,17 +208,7 @@ async function main(): Promise<void> {
   process.exit(1);
 }
 
-// ============================================================================
-// Git helpers
-// ============================================================================
-
-/**
- * Computes the diff between the base branch and HEAD for the directories
- * we care about.  Only tries full-range diffs against the base branch so
- * the entire PR is scanned.  Fails hard if no diff can be computed — a
- * silent fallback to a single-commit diff could miss unregistered flags
- * introduced in earlier commits.
- */
+/** Computes the full-range diff between the base branch and HEAD. */
 function getDiff(baseBranch: string): string {
   const paths = SCAN_DIRECTORIES.join(' ');
   const candidates = [
@@ -348,13 +238,7 @@ function getDiff(baseBranch: string): string {
   process.exit(1);
 }
 
-/**
- * Parses a unified diff into a map of `filePath -> chunks`.
- * Each chunk is an array of truly adjacent added lines (consecutive `+`
- * lines in the diff with no context or removed lines between them).
- * This lets the multiline join only combine lines that are actually
- * next to each other in the file.
- */
+/** Parses diff into chunks of truly adjacent added lines per file. */
 function parseDiff(diff: string): Map<string, string[][]> {
   const result = new Map<string, string[][]>();
   let currentFile = '';
@@ -386,19 +270,9 @@ function parseDiff(diff: string): Map<string, string[][]> {
   return result;
 }
 
-// ============================================================================
-// Flag detection
-// ============================================================================
-
 /**
- * Extracts feature flag references from a single line (or joined line pair).
- * String literals are stripped before scanning to prevent false positives
- * from flag names that appear inside quoted text.
- *
- * @param skipDestructuring - When true, destructuring patterns are not run.
- *   Used for joined line pairs where brace-matching is unreliable (e.g.
- *   `) {` joined with `const { flag } = getRemoteFeatureFlags(state);`
- *   would cause the greedy `[^}]+` to match from the wrong brace).
+ * Extracts feature flag references from a line of code.
+ * @param skipDestructuring - skip destructuring patterns (used for joined line pairs)
  */
 function extractFlagReferences(
   line: string,
@@ -497,10 +371,7 @@ function extractFlagReferences(
   return refs;
 }
 
-/**
- * Pulls identifiers out of a destructuring expression.
- * Handles renaming (`original: local`) and skips spread elements.
- */
+/** Extracts identifiers from a destructuring expression. */
 function extractDestructuredIdentifiers(content: string): string[] {
   const ids: string[] = [];
   for (const part of content.split(/[,;]/)) {
@@ -518,11 +389,7 @@ function extractDestructuredIdentifiers(content: string): string[] {
   return ids;
 }
 
-/**
- * Returns `true` when the expression looks like a static constant that
- * should be resolvable (UPPER_CASE or Enum.Member), as opposed to a
- * runtime variable (camelCase) that cannot be resolved statically.
- */
+/** Returns true for UPPER_CASE or Enum.Member patterns (not camelCase variables). */
 function isStaticConstant(expr: string): boolean {
   // Enum.Member pattern (e.g. FeatureFlagNames.AssetsDefiPositionsEnabled)
   // Both parts must start with an uppercase letter to distinguish from
@@ -534,10 +401,7 @@ function isStaticConstant(expr: string): boolean {
   return /^[A-Z_][A-Z0-9_]*$/.test(expr);
 }
 
-/**
- * Returns `true` when the name looks like a plausible feature flag
- * (camelCase, >= 3 chars, not a well-known property / method name).
- */
+/** Returns true when the name looks like a plausible feature flag. */
 function isLikelyFlagName(name: string): boolean {
   if (NON_FLAG_NAMES.has(name)) {
     return false;
@@ -551,13 +415,7 @@ function isLikelyFlagName(name: string): boolean {
   return true;
 }
 
-/**
- * Strips inline comments from a line of code:
- * - `//` line comments: everything from `//` to end of line is removed
- * - `/* ... *​/` block comments: content between delimiters is replaced with spaces
- *
- * Both styles are only stripped when they appear outside string literals.
- */
+// Strips inline // and block comments that appear outside string literals.
 function stripInlineComments(line: string): string {
   let result = '';
   let inSingle = false;
@@ -611,14 +469,7 @@ function stripInlineComments(line: string): string {
   return result;
 }
 
-/**
- * Replaces the contents of string literals with empty placeholders so that
- * regex scanning does not match flag names inside quoted text.
- *
- * Handles single-quoted, double-quoted, and backtick template strings.
- * Does not handle escaped quotes or multi-line template literals, but
- * covers the common cases that would produce false positives.
- */
+/** Replaces string literal contents with empty placeholders. */
 function stripStringLiterals(line: string): string {
   return line
     .replace(/'[^']*'/g, "''")
@@ -626,14 +477,7 @@ function stripStringLiterals(line: string): string {
     .replace(/`[^`]*`/g, '``');
 }
 
-// ============================================================================
-// Registry-change reporting (informational only)
-// ============================================================================
-
-/**
- * If the registry file was modified in this PR, logs which flags were added
- * or removed.  This is purely informational and never causes failure.
- */
+/** Logs which flags were added/removed in the registry (informational only). */
 function logRegistryChanges(baseBranch: string): void {
   const registryFile = 'test/e2e/feature-flags/feature-flag-registry.ts';
   const candidates = [
@@ -686,13 +530,7 @@ function logRegistryChanges(baseBranch: string): void {
   }
 }
 
-// ============================================================================
-// PR commenting
-// ============================================================================
-
-/**
- * Builds the Markdown body for the PR comment.
- */
+/** Builds the Markdown body for the PR comment. */
 function buildCommentBody(
   flags: Array<{ flag: string; files: string[] }>,
 ): string {
@@ -748,11 +586,7 @@ function buildCommentBody(
   return lines.join('\n');
 }
 
-/**
- * Posts or updates a comment on the current PR.
- * Uses the hidden marker to find an existing comment to update.
- * Silently skips when not running in a GitHub Actions PR context.
- */
+/** Posts or updates the PR comment. Skips when not in a GitHub Actions context. */
 async function postPrComment(
   flags: Array<{ flag: string; files: string[] }>,
 ): Promise<void> {
@@ -796,10 +630,7 @@ async function postPrComment(
   }
 }
 
-/**
- * Deletes the marker comment if one exists (called on success so stale
- * warnings don't linger after the author fixes the issue).
- */
+/** Deletes a stale marker comment when all flags are registered. */
 async function deletePrComment(): Promise<void> {
   const token = process.env.GITHUB_TOKEN;
   const prNumber = context.payload.pull_request?.number;
@@ -826,10 +657,7 @@ async function deletePrComment(): Promise<void> {
   }
 }
 
-/**
- * Finds the bot comment identified by {@link PR_COMMENT_MARKER}.
- * Paginates through all comments to handle PRs with 100+ comments.
- */
+/** Finds the bot comment by marker, paginating through all comments. */
 async function findMarkerComment(
   octokit: ReturnType<typeof getOctokit>,
   owner: string,
@@ -850,10 +678,6 @@ async function findMarkerComment(
 
   return undefined;
 }
-
-// ============================================================================
-// Entry point
-// ============================================================================
 
 main().catch((error) => {
   console.error('Feature flag registry check failed:', error);
