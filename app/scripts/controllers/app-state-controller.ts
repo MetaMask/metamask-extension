@@ -115,7 +115,7 @@ export type AppStateControllerState = {
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
   canTrackWalletFundsObtained: boolean;
   isRampCardClosed: boolean;
-  isUpdateAvailable: boolean;
+  pendingExtensionVersion: string | null;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   lastUpdatedAt: number | null;
   lastUpdatedFromVersion: string | null;
@@ -310,7 +310,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
   canTrackWalletFundsObtained: true,
   isRampCardClosed: false,
-  isUpdateAvailable: false,
+  pendingExtensionVersion: null,
   lastUpdatedAt: null,
   lastUpdatedFromVersion: null,
   lastViewedUserSurvey: null,
@@ -469,7 +469,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
-  isUpdateAvailable: {
+  pendingExtensionVersion: {
     includeInStateLogs: true,
     persist: false,
     includeInDebugSnapshot: true,
@@ -1111,13 +1111,13 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Set whether or not there is an update available
+   * Set the version of the pending extension update, or null when no update is available or after update is applied.
    *
-   * @param isUpdateAvailable - Whether or not there is an update available
+   * @param version - Version string of the available update, or null to clear.
    */
-  setIsUpdateAvailable(isUpdateAvailable: boolean): void {
+  setPendingExtensionVersion(version: string | null): void {
     this.update((state) => {
-      state.isUpdateAvailable = isUpdateAvailable;
+      state.pendingExtensionVersion = version;
     });
   }
 

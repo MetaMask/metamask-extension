@@ -3612,9 +3612,6 @@
   "lock": {
     "message": "Kilitle"
   },
-  "lockMetaMask": {
-    "message": "MetaMask'i kilitle"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask kilitleniyor..."
   },

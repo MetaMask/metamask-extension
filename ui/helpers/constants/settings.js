@@ -73,6 +73,13 @@ const SETTINGS_CONSTANTS = [
     route: `${GENERAL_ROUTE}#zero-balancetokens`,
     iconName: IconName.Setting,
   },
+  {
+    tabMessage: (t) => t('general'),
+    sectionMessage: (t) => t('showDefaultAddress'),
+    descriptionMessage: (t) => t('showDefaultAddressDescription'),
+    route: `${GENERAL_ROUTE}#show-default-address`,
+    iconName: IconName.Setting,
+  },
   // advanced settingsRefs[0]
   {
     tabMessage: (t) => t('advanced'),

@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "13.20.0",
+  "version": "13.21.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -348,7 +348,7 @@
     "@metamask/multichain-network-controller": "^2.0.0",
     "@metamask/multichain-transactions-controller": "^6.0.0",
     "@metamask/name-controller": "^9.0.0",
-    "@metamask/network-controller": "^29.0.0",
+    "@metamask/network-controller": "^30.0.0",
     "@metamask/network-enablement-controller": "^4.1.0",
     "@metamask/notification-services-controller": "^22.0.0",
     "@metamask/object-multiplex": "^2.0.0",
@@ -401,6 +401,7 @@
     "@sentry/utils": "^8.33.1",
     "@solana/addresses": "2.0.0-rc.4",
     "@swc/core": "^1.13.2",
+    "@tanstack/react-query": "^4.36.1",
     "@tanstack/react-virtual": "^3.10.8",
     "@trezor/connect-web": "~9.6.0",
     "@zxing/browser": "^0.1.5",

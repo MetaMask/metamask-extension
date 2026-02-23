@@ -3599,9 +3599,6 @@
   "lock": {
     "message": "注销"
   },
-  "lockMetaMask": {
-    "message": "锁定 MetaMask"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "正在锁定 MetaMask……"
   },
