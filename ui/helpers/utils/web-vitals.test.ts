@@ -35,10 +35,13 @@ describe('web-vitals', () => {
   });
 
   describe('initINPObserver', () => {
-    it('registers INP callback', () => {
+    it('registers INP callback with reportAllChanges', () => {
       initINPObserver();
       expect(mockOnINP).toHaveBeenCalledTimes(1);
       expect(typeof mockOnINP.mock.calls[0][0]).toBe('function');
+      expect(mockOnINP.mock.calls[0][1]).toEqual({
+        reportAllChanges: true,
+      });
     });
 
     it('enriches Sentry with rating tag and attribution for good INP', () => {
@@ -119,9 +122,13 @@ describe('web-vitals', () => {
   });
 
   describe('initLCPObserver', () => {
-    it('registers LCP callback', () => {
+    it('registers LCP callback with reportAllChanges', () => {
       initLCPObserver();
       expect(mockOnLCP).toHaveBeenCalledTimes(1);
+      expect(typeof mockOnLCP.mock.calls[0][0]).toBe('function');
+      expect(mockOnLCP.mock.calls[0][1]).toEqual({
+        reportAllChanges: true,
+      });
     });
 
     it('enriches Sentry with rating tag and attribution for good LCP', () => {
@@ -182,9 +189,13 @@ describe('web-vitals', () => {
   });
 
   describe('initCLSObserver', () => {
-    it('registers CLS callback', () => {
+    it('registers CLS callback with reportAllChanges', () => {
       initCLSObserver();
       expect(mockOnCLS).toHaveBeenCalledTimes(1);
+      expect(typeof mockOnCLS.mock.calls[0][0]).toBe('function');
+      expect(mockOnCLS.mock.calls[0][1]).toEqual({
+        reportAllChanges: true,
+      });
     });
 
     it('enriches Sentry with rating tag and attribution for good CLS', () => {
