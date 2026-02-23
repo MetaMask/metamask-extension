@@ -6,12 +6,8 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   LOCK_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  ONBOARDING_EXPERIMENTAL_AREA, // eslint-disable-line no-unused-vars
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
-  ONBOARDING_WELCOME_ROUTE, // eslint-disable-line no-unused-vars
-  ///: END:ONLY_INCLUDE_IF
+  ONBOARDING_EXPERIMENTAL_AREA,
+  ONBOARDING_WELCOME_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -22,10 +18,8 @@ import {
   getIsWalletResetInProgress,
   getSeedPhraseBackedUp,
 } from '../../../ducks/metamask/metamask';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app'; // eslint-disable-line no-unused-vars
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
-///: END:ONLY_INCLUDE_IF
 import {
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
@@ -33,6 +27,12 @@ import {
   getIsSocialLoginUserAuthenticated,
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import {
+  isBeta,
+  isExperimental,
+  isFlask,
+  isMain,
+} from '../../../helpers/utils/build-types';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -79,17 +79,26 @@ export default function OnboardingFlowSwitch() {
     !isUserAuthenticatedWithSocialLogin
   ) {
     let redirect;
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    redirect = <Navigate to={ONBOARDING_EXPERIMENTAL_AREA} replace />;
-    ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
-    redirect =
-      getBrowserName() === PLATFORM_FIREFOX ? (
-        <Navigate to={ONBOARDING_METAMETRICS} replace />
-      ) : (
-        <Navigate to={ONBOARDING_WELCOME_ROUTE} replace />
+
+    if (isFlask()) {
+      redirect = <Navigate to={ONBOARDING_EXPERIMENTAL_AREA} replace />;
+    } else if (isMain() || isBeta() || isExperimental()) {
+      redirect = (
+        <Navigate
+          to={
+            getBrowserName() === PLATFORM_FIREFOX
+              ? ONBOARDING_METAMETRICS
+              : ONBOARDING_WELCOME_ROUTE
+          }
+          replace
+        />
       );
-    ///: END:ONLY_INCLUDE_IF
+    } else {
+      throw new Error(
+        'This should be unreachable code, so something is wrong with the build type',
+      );
+    }
+
     return redirect;
   }
   if (

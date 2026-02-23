@@ -62,7 +62,6 @@ buildTypes:
       - INFURA_ENV_KEY_REF: INFURA_BETA_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
       - SUPPORT_LINK: https://intercom.help/internal-beta-testing/
-      - SUPPORT_REQUEST_LINK: https://intercom.help/internal-beta-testing/
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
@@ -132,7 +131,6 @@ buildTypes:
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.0.0/index.html
       - SUPPORT_LINK: https://support.metamask.io/
-      - SUPPORT_REQUEST_LINK: https://support.metamask.io/
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
@@ -233,7 +231,6 @@ env:
   - DEBUG: null
   - METAMASK_REACT_REDUX_DEVTOOLS: null
   - SUPPORT_LINK: https://support.metamask.io
-  - SUPPORT_REQUEST_LINK: https://support.metamask.io
   - SKIP_BACKGROUND_INITIALIZATION: false
   - PPOM_URI: ./ppom_bg.wasm
   # CDN for blockaid files
