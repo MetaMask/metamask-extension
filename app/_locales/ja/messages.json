@@ -169,6 +169,9 @@
   "accountsSmallCase": {
     "message": "アカウント"
   },
+  "actionUnavailable": {
+    "message": "アクションが利用できません"
+  },
   "active": {
     "message": "アクティブ"
   },
@@ -572,6 +575,9 @@
   "alertReasonGasFeeLow": {
     "message": "低速"
   },
+  "alertReasonGasSponsorshipUnavailable": {
+    "message": "ガススポンサーシップが利用できません"
+  },
   "alertReasonGasTooLow": {
     "message": "低ガスリミット"
   },
@@ -622,6 +628,9 @@
   },
   "allNetworks": {
     "message": "すべてのネットワーク"
+  },
+  "allPermissions": {
+    "message": "DAppの接続"
   },
   "allPopularNetworks": {
     "message": "すべての人気のネットワーク"
@@ -1616,6 +1625,10 @@
   "connectAnAccountHeader": {
     "message": "アカウントの接続"
   },
+  "connectHardwareDevice": {
+    "message": "$1を接続",
+    "description": "$1 is the hardware wallet device name"
+  },
   "connectManually": {
     "message": "現在のサイトに手動で接続"
   },
@@ -1917,6 +1930,9 @@
   "customizeYourNotificationsText": {
     "message": "受け取る通知の種類をオンにします"
   },
+  "dappConnections": {
+    "message": "DAppの接続"
+  },
   "dappSuggested": {
     "message": "おすすめのサイト"
   },
@@ -2060,6 +2076,9 @@
     "message": "お客様をこのページに誘導したのはMetaMask以外の第三者です。$1",
     "description": "$1 is the message 'deepLink_ContinueDescription'"
   },
+  "deepLink_theAssetPage": {
+    "message": "資産ページ"
+  },
   "deepLink_theBuyPage": {
     "message": "購入ページ"
   },
@@ -2095,6 +2114,9 @@
   },
   "deepLink_theTransactionShieldPage": {
     "message": "トランザクションシールドページ"
+  },
+  "default": {
+    "message": "デフォルト"
   },
   "defaultRpcUrl": {
     "message": "デフォルトのRPC URL"
@@ -2223,6 +2245,18 @@
   },
   "disconnectAllDescriptionText": {
     "message": "このサイトとの接続を解除すると、このサイトをもう一度使用するには、アカウントとネットワークを接続しなおす必要があります。"
+  },
+  "disconnectAllSites": {
+    "message": "すべて接続解除"
+  },
+  "disconnectAllSitesDescriptionText": {
+    "message": "すべてのサイトとの接続を解除すると、これらをもう一度使用するには、アカウントとネットワークを接続しなおす必要があります。"
+  },
+  "disconnectAllSitesError": {
+    "message": "一部のDAppの接続を解除できませんでした。もう一度お試しください。"
+  },
+  "disconnectAllSitesSuccess": {
+    "message": "すべてのDAppの接続が解除されました。"
   },
   "disconnectAllSnapsText": {
     "message": "Snap"
@@ -2878,6 +2912,10 @@
   "gasPriceFetchFailed": {
     "message": "ネットワークエラーのため、ガス価格の見積もりに失敗しました。"
   },
+  "gasSponsorshipReserveBalanceWarning": {
+    "message": "このトランザクションでガススポンサーシップは利用できません。アカウントに$1 $2以上の残高を残す必要があります。",
+    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
   "gasTimingHoursShort": {
     "message": "$1時間",
     "description": "$1 represents a number of hours"
@@ -3001,6 +3039,10 @@
     "message": "Web3を使用できるようにウォレットを準備しましょう",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralSubtitle": {
+    "message": "MetaMaskの紹介コードを使うと、取引手数料が最大5%割引されます。",
+    "description": "The subtitle of the GMX referral confirmation screen"
+  },
   "goToSite": {
     "message": "サイトに移動"
   },
@@ -3022,6 +3064,54 @@
   "hardwareWalletConnected": {
     "message": "ハードウェアウォレットが接続されました"
   },
+  "hardwareWalletErrorContinueButton": {
+    "message": "続行"
+  },
+  "hardwareWalletErrorReconnectButton": {
+    "message": "再接続"
+  },
+  "hardwareWalletErrorRecoveryConnection1": {
+    "message": "ハードウェアウォレットがUSBで正しく接続されていることを確認してください"
+  },
+  "hardwareWalletErrorRecoveryConnection2": {
+    "message": "別のUSBケーブルまたはポートを使用してみてください"
+  },
+  "hardwareWalletErrorRecoveryConnection3": {
+    "message": "デバイスを再起動してもう一度接続してみてください"
+  },
+  "hardwareWalletErrorRecoveryTitle": {
+    "message": "引き続き次のことを確認します:"
+  },
+  "hardwareWalletErrorRecoveryUnlock1": {
+    "message": "Ledgerのロックが解除されていること"
+  },
+  "hardwareWalletErrorRecoveryUnlock2": {
+    "message": "イーサリアムアプリが開いていること"
+  },
+  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
+    "message": "Ledgerでイーサリアムアプリが開いていること"
+  },
+  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction2": {
+    "message": "設定でブラインド署名が有効になっていること"
+  },
+  "hardwareWalletErrorTitleConnectYourDevice": {
+    "message": "$1の接続",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleDeviceLocked": {
+    "message": "$1がロックされています",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorUnknownErrorDescription": {
+    "message": "$1デバイスが選択されたアカウントのシークレットリカバリーフレーズまたはパスフレーズででセットアップされていることを確認します",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorUnknownErrorTitle": {
+    "message": "問題が発生しました"
+  },
+  "hardwareWalletEthAppNotOpenDescription": {
+    "message": "続行するには、デバイスでイーサリアムアプリを開きます"
+  },
   "hardwareWalletLegacyDescription": {
     "message": "(レガシー)",
     "description": "Text representing the MEW path"
@@ -3038,6 +3128,10 @@
   "hardwareWalletSupportLinkConversion": {
     "message": "こちらをクリックしてください"
   },
+  "hardwareWalletTypeConnected": {
+    "message": "$1が接続されました",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWallets": {
     "message": "ハードウェアウォレットの接続"
   },
@@ -3046,6 +3140,9 @@
   },
   "hardwareWalletsMsg": {
     "message": "MetaMaskに接続するハードウェアウォレットを選択してください。"
+  },
+  "helpAndSettings": {
+    "message": "ヘルプと設定"
   },
   "here": {
     "message": "こちら",
@@ -3412,6 +3509,9 @@
     "message": "JSONファイル",
     "description": "format for importing an account"
   },
+  "keycardShell": {
+    "message": "Keycard Shell"
+  },
   "keyringAccountName": {
     "message": "アカウント名"
   },
@@ -3457,6 +3557,10 @@
   "lastSold": {
     "message": "前回の売却"
   },
+  "lattice": {
+    "message": "Lattice",
+    "description": "Hardware device name"
+  },
   "lavaDomeCopyWarning": {
     "message": "安全上の理由により、現在このテキストは選択できません。"
   },
@@ -3496,6 +3600,10 @@
   },
   "leaveMetaMaskDesc": {
     "message": "MetaMask以外のサイトにアクセスしようとしています。続行する前にURLをもう一度確認してください。"
+  },
+  "ledger": {
+    "message": "Ledger",
+    "description": "Hardware device name"
   },
   "ledgerAccountRestriction": {
     "message": "新しいアカウントを追加するには、その前に最後のアカウントを使用する必要があります。"
@@ -3618,6 +3726,9 @@
   "lockTimeInvalid": {
     "message": "ロック時間は0～10080の間の数字で設定する必要があります"
   },
+  "logOut": {
+    "message": "ログアウト"
+  },
   "loginErrorConnectButton": {
     "message": "再試行"
   },
@@ -3680,6 +3791,9 @@
     "message": "誰にも見られていないことを確認してください",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
+  "manage": {
+    "message": "管理"
+  },
   "manageDefaultSettings": {
     "message": "デフォルトのプライバシー設定の管理"
   },
@@ -3737,6 +3851,22 @@
   },
   "memo": {
     "message": "メモ"
+  },
+  "merklRewardsToastFailed": {
+    "message": "mUSDボーナスの請求に失敗しました",
+    "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
+  },
+  "merklRewardsToastInProgress": {
+    "message": "mUSDのボーナスを処理しています",
+    "description": "Toast message shown when a Merkl reward claim transaction is being processed"
+  },
+  "merklRewardsToastSuccess": {
+    "message": "mUSDのボーナスを獲得しました！",
+    "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
+  },
+  "merklRewardsUnexpectedError": {
+    "message": "予期せぬエラーが発生しました。もう一度お試しください。",
+    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "メッセージ"
@@ -3901,6 +4031,10 @@
   "multipleSnapConnectionWarning": {
     "message": "$1が$2 Snapの使用を求めています",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
+  },
+  "musdClaimClaimingTo": {
+    "message": "入金先:",
+    "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
     "message": "mUSDへの変換"
@@ -4639,6 +4773,10 @@
   "onboardingSrpInputPlaceholder": {
     "message": "各単語の間に半角スペースを追加して、誰にも見られていないことを確認してください。"
   },
+  "oneKey": {
+    "message": "OneKey",
+    "description": "Hardware device name"
+  },
   "only": {
     "message": "のみ"
   },
@@ -5098,26 +5236,72 @@
   "perpsAddFundsDescription": {
     "message": "レバレッジを利用したパーペチュアル契約の取引を開始するには、資金を追加してください"
   },
+  "perpsAddMargin": {
+    "message": "証拠金を追加"
+  },
   "perpsAddToFavorites": {
     "message": "お気に入りに追加"
+  },
+  "perpsAsk": {
+    "message": "Ask"
   },
   "perpsAutoClose": {
     "message": "自動クローズ"
   },
+  "perpsAvailable": {
+    "message": "使用可能",
+    "description": "is the available balance amount"
+  },
+  "perpsAvailableBalance": {
+    "message": "利用可能残高"
+  },
+  "perpsBid": {
+    "message": "Bid"
+  },
+  "perpsCancelAllOrders": {
+    "message": "すべてキャンセル"
+  },
+  "perpsClose": {
+    "message": "閉じる"
+  },
   "perpsCloseAll": {
     "message": "すべてクローズ"
+  },
+  "perpsCloseAmount": {
+    "message": "クローズ金額"
+  },
+  "perpsCloseLong": {
+    "message": "ロングをクローズ"
+  },
+  "perpsCloseShort": {
+    "message": "ショートをクローズ"
   },
   "perpsClosedShort": {
     "message": "ショートをクローズしました"
   },
+  "perpsConfirmCloseLong": {
+    "message": "ロングをクローズ"
+  },
+  "perpsConfirmCloseShort": {
+    "message": "ショートをクローズ"
+  },
   "perpsContactSupport": {
     "message": "サポートへのお問い合わせ"
+  },
+  "perpsDateToday": {
+    "message": "今日"
+  },
+  "perpsDateYesterday": {
+    "message": "昨日"
   },
   "perpsDepositActivityTitle": {
     "message": "パーペチュアルに入金しました"
   },
   "perpsDepositTitle": {
     "message": "パーペチュアルアカウントに入金しました"
+  },
+  "perpsDeposits": {
+    "message": "デポジット"
   },
   "perpsDetails": {
     "message": "詳細"
@@ -5140,6 +5324,9 @@
   "perpsExploreStocksAndCommodities": {
     "message": "株式や商品先物を探す"
   },
+  "perpsFees": {
+    "message": "手数料"
+  },
   "perpsFilterAll": {
     "message": "すべて"
   },
@@ -5149,14 +5336,29 @@
   "perpsFilterCrypto": {
     "message": "仮想通貨"
   },
+  "perpsFilterForex": {
+    "message": "FX"
+  },
+  "perpsFilterNew": {
+    "message": "新登場"
+  },
   "perpsFilterStocks": {
     "message": "株式"
+  },
+  "perpsFunding": {
+    "message": "入金"
   },
   "perpsFundingPayments": {
     "message": "資金調達率の支払い"
   },
   "perpsFundingRate": {
     "message": "資金調達率"
+  },
+  "perpsFundingRateTooltip": {
+    "message": "価格を市場に合わせるためにトレーダー間で支払われる、1時間あたりの手数料です。資金調達率がプラスの場合はロングがショートに支払い、マイナスの場合はショートがロングに支払います。"
+  },
+  "perpsGiveFeedback": {
+    "message": "ご意見をお聞かせください"
   },
   "perpsIncreasedPosition": {
     "message": "拡大したポジション"
@@ -5167,11 +5369,20 @@
   "perpsLearnMore": {
     "message": "詳細。"
   },
+  "perpsLeverage": {
+    "message": "レバレッジ"
+  },
   "perpsLimit": {
     "message": "リミット"
   },
+  "perpsLimitPrice": {
+    "message": "リミット価格"
+  },
   "perpsLiquidationPrice": {
     "message": "清算価格"
+  },
+  "perpsLiquidationPriceEst": {
+    "message": "推定清算価格"
   },
   "perpsLong": {
     "message": "ロング"
@@ -5192,20 +5403,46 @@
   "perpsMarkets": {
     "message": "市場"
   },
+  "perpsMax": {
+    "message": "最大額"
+  },
+  "perpsMid": {
+    "message": "中間値"
+  },
+  "perpsModify": {
+    "message": "変更"
+  },
+  "perpsModifyPosition": {
+    "message": "ポジションを調整"
+  },
   "perpsMore": {
     "message": "さらに表示"
   },
   "perpsNoMarketsFound": {
     "message": "市場が見つかりませんでした"
   },
+  "perpsNoTransactions": {
+    "message": "まだトランザクションがありません"
+  },
   "perpsOpenInterest": {
     "message": "取組高"
+  },
+  "perpsOpenLong": {
+    "message": "$1のロングをオープン",
+    "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOpenOrders": {
     "message": "未決済の注文"
   },
+  "perpsOpenShort": {
+    "message": "$1のショートをオープン",
+    "description": "$1 is the asset symbol (e.g., BTC, ETH)"
+  },
   "perpsOpenedLong": {
     "message": "ロングをオープンしました"
+  },
+  "perpsOrderAmount": {
+    "message": "注文金額"
   },
   "perpsOrders": {
     "message": "注文"
@@ -5216,17 +5453,26 @@
   "perpsPosition": {
     "message": "ポジション"
   },
+  "perpsPositionSize": {
+    "message": "ポジションサイズ"
+  },
   "perpsPositions": {
     "message": "ポジション"
   },
   "perpsRecentActivity": {
     "message": "最近のアクティビティ"
   },
+  "perpsRemoveMargin": {
+    "message": "証拠金を減額"
+  },
   "perpsReturn": {
     "message": "損益率"
   },
   "perpsSearchMarkets": {
     "message": "市場を検索"
+  },
+  "perpsSeeAll": {
+    "message": "すべて表示"
   },
   "perpsShort": {
     "message": "ショート"
@@ -5249,11 +5495,95 @@
   "perpsStats": {
     "message": "統計"
   },
+  "perpsStatusCanceled": {
+    "message": "取消済"
+  },
+  "perpsStatusCompleted": {
+    "message": "完了"
+  },
+  "perpsStatusFilled": {
+    "message": "約定済"
+  },
+  "perpsStatusOpen": {
+    "message": "未約定"
+  },
+  "perpsStatusQueued": {
+    "message": "キュー待ち"
+  },
+  "perpsStatusRejected": {
+    "message": "拒否されました"
+  },
+  "perpsStatusTriggered": {
+    "message": "トリガー済み"
+  },
+  "perpsStopLoss": {
+    "message": "損切り",
+    "description": "Label for stop loss price input"
+  },
+  "perpsSubmitting": {
+    "message": "送信中...",
+    "description": "Loading text shown while an order is being submitted"
+  },
+  "perpsTakeProfit": {
+    "message": "利益確定",
+    "description": "Label for take profit price input"
+  },
   "perpsTotalBalance": {
     "message": "合計残高"
   },
   "perpsTradePerps": {
     "message": "パーペチュアルを取引"
+  },
+  "perpsTrades": {
+    "message": "取引"
+  },
+  "perpsTutorialChooseLeverageDescription": {
+    "message": "レバレッジを利用すると、利益も損失も大きくなります。レバレッジが40倍の場合、価格が1%変動すると、証拠金に対して40%の利益または損失が生まれます。"
+  },
+  "perpsTutorialChooseLeverageTitle": {
+    "message": "レバレッジの選択"
+  },
+  "perpsTutorialCloseAnytimeDescription": {
+    "message": "いつでも好きなときに取引を終了でき、証拠金に利益を足した額、または損失を引いた額が返金されます。"
+  },
+  "perpsTutorialCloseAnytimeTitle": {
+    "message": "いつでもクローズ可能"
+  },
+  "perpsTutorialContinue": {
+    "message": "続行"
+  },
+  "perpsTutorialGoLongShortDescription": {
+    "message": "ロングまたはショートするトークンを選び、注文数量を設定します。"
+  },
+  "perpsTutorialGoLongShortSubtitle": {
+    "message": "価格が上がる場合はロングで利益を生み、下がる場合はショートで利益を得ます。"
+  },
+  "perpsTutorialGoLongShortTitle": {
+    "message": "トークンのロングまたはショート"
+  },
+  "perpsTutorialLetsGo": {
+    "message": "さあ始めましょう"
+  },
+  "perpsTutorialReadyToTradeDescription": {
+    "message": "任意のトークンでパーペチュアルアカウントに入金すれば、数秒で最初の取引ができます。"
+  },
+  "perpsTutorialReadyToTradeTitle": {
+    "message": "取引の準備はできましたか？"
+  },
+  "perpsTutorialSkip": {
+    "message": "スキップ"
+  },
+  "perpsTutorialWatchLiquidationDescription": {
+    "message": "トークンが清算価格に達すると、証拠金がすべて失われます。レバレッジが高ければ高いほど、清算までの余裕が少なくなります。"
+  },
+  "perpsTutorialWatchLiquidationTitle": {
+    "message": "清算に注意"
+  },
+  "perpsTutorialWhatArePerpsSubtitle": {
+    "message": "仕組みは次のとおりです。"
+  },
+  "perpsTutorialWhatArePerpsTitle": {
+    "message": "パーペチュアルとは"
   },
   "perpsUnrealizedPnl": {
     "message": "含み損益"
@@ -5533,6 +5863,10 @@
   "pushPlatformNotificationsSwapCompletedTitle": {
     "message": "スワップ完了"
   },
+  "qr": {
+    "message": "QR",
+    "description": "Hardware device name"
+  },
   "queued": {
     "message": "キュー待ち"
   },
@@ -5704,6 +6038,10 @@
   },
   "required": {
     "message": "必須"
+  },
+  "requiredToken": {
+    "message": "必要なトークン",
+    "description": "Label for the required token row showing the token and amount needed by the transaction"
   },
   "reset": {
     "message": "リセット"
@@ -6572,6 +6910,9 @@
   "shieldEntryModalTitleB": {
     "message": "トランザクションシールドのご紹介"
   },
+  "shieldErrorPayerAddressAlreadyUsed": {
+    "message": "このアドレスはすでに別のアカウントにリンクされています。登録するには別のアドレスを使用してください。"
+  },
   "shieldEstimatedChangesMonthlyTooltipText": {
     "message": "12か月間、毎月$1（合計$2）を承認します。一括ではなく、毎月請求されます。"
   },
@@ -6707,6 +7048,15 @@
   "shieldTxCancelDetails": {
     "message": "キャンセルすると、$1からウォレットおよび取引が補償対象外となります。",
     "description": "The $1 is the date subscription ends"
+  },
+  "shieldTxCancelImmediateDetails": {
+    "message": "キャンセルすると、ウォレットとトランザクションが対象外となります。"
+  },
+  "shieldTxCancelNotAllowed": {
+    "message": "現在サブスクリプションをキャンセルできません。"
+  },
+  "shieldTxCancelNotAllowedPendingVerification": {
+    "message": "検証が保留中のため、サブスクリプションをキャンセルできません。"
   },
   "shieldTxCancelWhenPausedDetails": {
     "message": "一時停止中、プランはご利用いただけません。キャンセルすると、プランは直ちに終了します。"
@@ -7636,6 +7986,9 @@
   "storageErrorDescriptionDefault": {
     "message": "問題が解決しない場合は、シークレットリカバリーフレーズをバックアップして、MetaMaskを再インストールしてください。"
   },
+  "storageErrorDescriptionNoSpace": {
+    "message": "デバイスのストレージが不足しています。今すぐスペースを解放しないと、保存されていないウォレットの変更が失われる可能性があります。"
+  },
   "storageErrorTitle": {
     "message": "データを保存できませんでした"
   },
@@ -8311,6 +8664,10 @@
   "transferRequest": {
     "message": "送金リクエスト"
   },
+  "trezor": {
+    "message": "Trezor",
+    "description": "Hardware device name"
+  },
   "tronBandwidth": {
     "message": "帯域幅"
   },
@@ -8425,6 +8782,9 @@
   },
   "unapproved": {
     "message": "未承認"
+  },
+  "unavailable": {
+    "message": "利用不可"
   },
   "unexpectedBehavior": {
     "message": "これは予期せぬ動作なので、アカウントが復元されたとしても、バグとして報告すべきです。"
