@@ -24,7 +24,7 @@ describe('DefaultAddress', () => {
     expect(screen.getByText('Show default address')).toBeInTheDocument();
   });
 
-  it('renders the change in settings link', () => {
+  it('renders the Change in Settings link', () => {
     const store = mockStore(createMockState());
     renderWithProvider(<DefaultAddress />, store);
 
