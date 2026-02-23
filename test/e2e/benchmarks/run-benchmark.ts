@@ -23,11 +23,15 @@ import {
   SEND_TRANSACTIONS_THRESHOLDS,
   ASSET_DETAILS_THRESHOLDS,
   SOLANA_ASSET_DETAILS_THRESHOLDS,
+  STARTUP_PRESETS,
+  INTERACTION_PRESETS,
+  USER_JOURNEY_PRESETS,
 } from './utils/constants';
 import type {
   BenchmarkResults,
   BenchmarkSummary,
   BenchmarkType,
+  Persona,
   StatisticalResult,
   ThresholdConfig,
 } from './utils/types';
@@ -44,7 +48,7 @@ import type {
 function convertSummaryToResults(
   summary: BenchmarkSummary,
   testTitle: string,
-  persona?: string,
+  persona: Persona = 'standard',
   benchmarkType?: BenchmarkType,
 ): BenchmarkResults {
   const mean: StatisticalResult = {};
@@ -83,7 +87,7 @@ function convertSummaryToResults(
  */
 function supportsIterations(filePath: string): boolean {
   return (
-    filePath.includes('/performance/') || filePath.includes('/user-actions/')
+    filePath.includes('/user-journey/') || filePath.includes('/interaction/')
   );
 }
 
@@ -104,36 +108,44 @@ function getThresholdConfig(filePath: string): ThresholdConfig | undefined {
 
 const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
 
+/**
+ * Preset definitions mapping preset names to benchmark files.
+ * Keys reference the shared constants from ./utils/constants.ts.
+ */
 const PRESETS: Record<string, string[]> = {
-  // Performance benchmarks - Onboarding
-  performanceOnboardingImport: [
-    `${BENCHMARK_DIR}/performance/onboarding-import-wallet.ts`,
+  // User journey benchmarks - Onboarding
+  [USER_JOURNEY_PRESETS.ONBOARDING_IMPORT]: [
+    `${BENCHMARK_DIR}/user-journey/onboarding-import-wallet.ts`,
   ],
-  performanceOnboardingNew: [
-    `${BENCHMARK_DIR}/performance/onboarding-new-wallet.ts`,
+  [USER_JOURNEY_PRESETS.ONBOARDING_NEW]: [
+    `${BENCHMARK_DIR}/user-journey/onboarding-new-wallet.ts`,
   ],
-  // Performance benchmarks - Assets
-  performanceAssets: [
-    `${BENCHMARK_DIR}/performance/asset-details.ts`,
-    `${BENCHMARK_DIR}/performance/solana-asset-details.ts`,
+  // User journey benchmarks - Assets
+  [USER_JOURNEY_PRESETS.ASSETS]: [
+    `${BENCHMARK_DIR}/user-journey/asset-details.ts`,
+    `${BENCHMARK_DIR}/user-journey/solana-asset-details.ts`,
   ],
-  // Performance benchmarks - Accounts
-  performanceAccountManagement: [
-    `${BENCHMARK_DIR}/performance/import-srp-home.ts`,
+  // User journey benchmarks - Accounts
+  [USER_JOURNEY_PRESETS.ACCOUNT_MANAGEMENT]: [
+    `${BENCHMARK_DIR}/user-journey/import-srp-home.ts`,
   ],
-  // Performance benchmarks - Transactions
-  performanceTransactions: [
-    `${BENCHMARK_DIR}/performance/send-transactions.ts`,
-    `${BENCHMARK_DIR}/performance/swap.ts`,
+  // User journey benchmarks - Transactions
+  [USER_JOURNEY_PRESETS.TRANSACTIONS]: [
+    `${BENCHMARK_DIR}/user-journey/send-transactions.ts`,
+    `${BENCHMARK_DIR}/user-journey/swap.ts`,
   ],
-  // Page load benchmarks
-  standardHome: [`${BENCHMARK_DIR}/page-load/standard-home.ts`],
-  powerUserHome: [`${BENCHMARK_DIR}/page-load/power-user-home.ts`],
-  // User action benchmarks
-  userActions: [
-    `${BENCHMARK_DIR}/user-actions/load-new-account.ts`,
-    `${BENCHMARK_DIR}/user-actions/confirm-tx.ts`,
-    `${BENCHMARK_DIR}/user-actions/bridge-user-actions.ts`,
+  // Startup benchmarks
+  [STARTUP_PRESETS.STANDARD_HOME]: [
+    `${BENCHMARK_DIR}/startup/standard-home.ts`,
+  ],
+  [STARTUP_PRESETS.POWER_USER_HOME]: [
+    `${BENCHMARK_DIR}/startup/power-user-home.ts`,
+  ],
+  // Interaction benchmarks
+  [INTERACTION_PRESETS.USER_ACTIONS]: [
+    `${BENCHMARK_DIR}/interaction/load-new-account.ts`,
+    `${BENCHMARK_DIR}/interaction/confirm-tx.ts`,
+    `${BENCHMARK_DIR}/interaction/bridge-user-actions.ts`,
   ],
   // Playwright page-load benchmark (for local use; CI runs this separately)
   pageLoadBenchmark: [
