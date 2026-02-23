@@ -162,6 +162,9 @@ export function useBridgeTransactionNavigation(): void {
     // Even if we're between approval and bridge steps, we should navigate on cancellation
     if (qrScanWasCancelled || fullscreenInitiatedFailure || transactionFailed) {
       navigateToActivity();
+      // Update ref even on failure/cancellation to prevent re-triggering
+      // if component doesn't unmount immediately
+      prevQrScanRequestRef.current = activeQrCodeScanRequest;
       return;
     }
 
@@ -169,9 +172,13 @@ export function useBridgeTransactionNavigation(): void {
     // (but only if we haven't detected a cancellation above)
     if (isBetweenApprovalAndBridgeSteps) {
       // Wait for bridge transaction to be submitted
+      // Update ref to track current state
+      prevQrScanRequestRef.current = activeQrCodeScanRequest;
+      return;
     }
 
     // Update ref AFTER all checks to preserve previous value for next render
+    // This ensures the ref is always updated, preventing repeated navigation triggers
     prevQrScanRequestRef.current = activeQrCodeScanRequest;
   }, [
     hasSubmittedBridgeTx,
