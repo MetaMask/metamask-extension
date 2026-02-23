@@ -1958,6 +1958,11 @@
       "Reselect: Input stability warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-modal/gas-fee-token-modal.test.tsx": {
+      "MetaMask: Background connection not initialized": 120,
+      "Reselect: Identity function warnings": 4,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-toast/gas-fee-token-toast.test.tsx": {
       "MetaMask: Background connection not initialized": 12,
       "React: Missing key props in lists": 1,
