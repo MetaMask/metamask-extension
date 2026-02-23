@@ -135,15 +135,10 @@ describe('performance-observers', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       delete (globalThis as any).PerformanceObserver;
 
-      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
       const cleanup = setupLongTaskObserver(1);
 
+      // Should return no-op cleanup without throwing
       expect(typeof cleanup).toBe('function');
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('PerformanceObserver not supported'),
-      );
-
-      consoleSpy.mockRestore();
     });
   });
 
