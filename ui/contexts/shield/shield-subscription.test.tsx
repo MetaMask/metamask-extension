@@ -18,6 +18,7 @@ jest.mock('../../hooks/subscription/useSubscription');
 jest.mock('../../hooks/shield/metrics/useSubscriptionMetrics');
 jest.mock('../../store/actions', () => ({
   assignUserToCohort: jest.fn(),
+  setPendingShieldCohort: jest.fn(),
   setShowShieldEntryModalOnce: jest.fn(),
   subscriptionsStartPolling: jest.fn(),
 }));
@@ -59,9 +60,6 @@ describe('ShieldSubscriptionProvider', () => {
     // Mock hooks
     jest.spyOn(useSubscription, 'useSubscriptionEligibility').mockReturnValue({
       getSubscriptionEligibility: mockGetSubscriptionEligibility,
-      isLoading: false,
-      error: null,
-      data: null,
     });
 
     jest
@@ -69,7 +67,9 @@ describe('ShieldSubscriptionProvider', () => {
       .mockReturnValue({
         captureShieldEligibilityCohortEvent:
           mockCaptureShieldEligibilityCohortEvent,
-      });
+      } as unknown as ReturnType<
+        typeof useSubscriptionMetrics.useSubscriptionMetrics
+      >);
   });
 
   it('renders children correctly', () => {
@@ -180,12 +180,14 @@ describe('ShieldSubscriptionProvider', () => {
         modalType: 'entry',
       });
 
-      let evaluateFn: ((cohort: string) => Promise<void>) | null = null;
+      const evaluateFnRef: {
+        current: ((cohort: string) => Promise<void>) | null;
+      } = { current: null };
 
       const TestConsumer = () => {
         const { evaluateCohortEligibility } = useShieldSubscriptionContext();
         // eslint-disable-next-line react-compiler/react-compiler
-        evaluateFn = evaluateCohortEligibility;
+        evaluateFnRef.current = evaluateCohortEligibility;
         return <div data-testid="consumer">Consumer</div>;
       };
 
@@ -195,8 +197,7 @@ describe('ShieldSubscriptionProvider', () => {
         </ShieldSubscriptionProvider>,
       );
 
-      // Call the function after render
-      await evaluateFn?.('wallet_home');
+      await evaluateFnRef.current?.('wallet_home');
 
       await waitFor(() => {
         expect(mockGetSubscriptionEligibility).toHaveBeenCalled();
@@ -204,7 +205,6 @@ describe('ShieldSubscriptionProvider', () => {
     });
 
     it('accesses current values even with stable callback', async () => {
-      // Initially return false for basic functionality
       let isBasicFunctionalityEnabled = false;
 
       jest.spyOn(redux, 'useSelector').mockImplementation((selector) => {
@@ -237,12 +237,14 @@ describe('ShieldSubscriptionProvider', () => {
         modalType: 'entry',
       });
 
-      let evaluateFn: ((cohort: string) => Promise<void>) | null = null;
+      const evaluateFnRef: {
+        current: ((cohort: string) => Promise<void>) | null;
+      } = { current: null };
 
       const TestConsumer = () => {
         const { evaluateCohortEligibility } = useShieldSubscriptionContext();
         // eslint-disable-next-line react-compiler/react-compiler
-        evaluateFn = evaluateCohortEligibility;
+        evaluateFnRef.current = evaluateCohortEligibility;
         return <div data-testid="consumer">Consumer</div>;
       };
 
@@ -252,28 +254,22 @@ describe('ShieldSubscriptionProvider', () => {
         </ShieldSubscriptionProvider>,
       );
 
-      // Call with basic functionality disabled
-      await evaluateFn?.('wallet_home');
+      await evaluateFnRef.current?.('wallet_home');
 
-      // Should not call getSubscriptionEligibility when basic functionality is disabled
       await waitFor(() => {
         expect(mockGetSubscriptionEligibility).not.toHaveBeenCalled();
       });
 
-      // Enable basic functionality
       isBasicFunctionalityEnabled = true;
 
-      // Force re-render with updated state
       rerender(
         <ShieldSubscriptionProvider>
           <TestConsumer />
         </ShieldSubscriptionProvider>,
       );
 
-      // Call again with basic functionality enabled
-      await evaluateFn?.('wallet_home');
+      await evaluateFnRef.current?.('wallet_home');
 
-      // Now it should call getSubscriptionEligibility
       await waitFor(
         () => {
           expect(mockGetSubscriptionEligibility).toHaveBeenCalled();
