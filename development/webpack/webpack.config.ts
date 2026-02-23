@@ -166,11 +166,6 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
-      // Copy rive.wasm for Rive animations
-      {
-        from: join(nodeModules, '@rive-app/canvas/rive.wasm'),
-        to: 'images/riv_animations/rive.wasm',
-      },
       // snaps MV3 needs the offscreen document
       ...(MANIFEST_VERSION === 3
         ? [
@@ -298,6 +293,11 @@ const config = {
     alias: {
       'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),
       'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime.js'),
+      // Mock perps-controller for minimal POC branch development
+      '@metamask/perps-controller': join(
+        context,
+        '../ui/__mocks__/perps/perps-controller',
+      ),
     },
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in

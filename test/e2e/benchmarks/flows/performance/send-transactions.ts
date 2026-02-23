@@ -17,6 +17,10 @@ import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
 import {
+  getTestSpecificMock,
+  shouldUseMockedRequests,
+} from '../../utils/mock-config';
+import {
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
   WITH_STATE_POWER_USER,
@@ -42,9 +46,10 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
-        useMockingPassThrough: true,
+        useMockingPassThrough: !shouldUseMockedRequests(),
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
+        testSpecificMock: getTestSpecificMock(),
       },
       async ({ driver }: { driver: Driver }) => {
         const timerOpenSendPage = new TimerHelper('openSendPageFromHome');
@@ -62,6 +67,12 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         await accountListPage.switchToAccount('Account 1');
+        // Wait for Solana balance to load before starting the send flow
+        if (shouldUseMockedRequests()) {
+          await assetListPage.checkTokenAmountIsDisplayed('50 SOL');
+        } else {
+          await assetListPage.waitForTokenToBeDisplayed('SOL');
+        }
         // Measure: Open send page
         await homePage.startSendFlow();
         await timerOpenSendPage.measure(async () => {

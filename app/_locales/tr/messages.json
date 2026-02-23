@@ -5107,9 +5107,6 @@
   "perpsAutoClose": {
     "message": "Otomatik kapat"
   },
-  "perpsBuy": {
-    "message": "al"
-  },
   "perpsCloseAll": {
     "message": "Tümünü kapat"
   },
@@ -5156,9 +5153,6 @@
     "message": "Kripto"
   },
   "perpsFilterStocks": {
-    "message": "Hisse Senetleri"
-  },
-  "perpsFilterStocksOnly": {
     "message": "Hisse Senetleri"
   },
   "perpsFundingPayments": {
@@ -5237,29 +5231,17 @@
   "perpsSearchMarkets": {
     "message": "Piyasa ara"
   },
-  "perpsSell": {
-    "message": "sat"
-  },
   "perpsShort": {
     "message": "Kısa"
   },
   "perpsSize": {
     "message": "Boyut"
   },
-  "perpsSortFundingRate": {
-    "message": "Fonlama oranı"
-  },
-  "perpsSortOpenInterest": {
-    "message": "Açık faiz"
-  },
   "perpsSortPriceChangeHighToLow": {
     "message": "Fiyat değişikliği: yüksekten düşüğe"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "Fiyat değişikliği: düşükten yükseğe"
-  },
-  "perpsSortVolume": {
-    "message": "Hacim"
   },
   "perpsStartNewTrade": {
     "message": "Yeni bir işlem başlat"
@@ -7100,44 +7082,8 @@
   "smartAccount": {
     "message": "Akıllı hesap"
   },
-  "smartAccountAccept": {
-    "message": "Akıllı hesap kullanın"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Daha hızlı işlemler, daha düşük ücretler"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "İşlemleri birlikte gerçekleştirerek vakitten ve nakitten tasarruf edin."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Aynı hesap adresini koruyun; dilediğiniz zaman tekrar geçebilirsiniz."
-  },
   "smartAccountLabel": {
     "message": "Akıllı Hesap"
-  },
-  "smartAccountPayToken": {
-    "message": "Dilediğiniz token ile dilediğiniz zaman ödeyin"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Ağ ücretlerini karşılamak için zaten sahip olduğunuz token'ları kullanın."
-  },
-  "smartAccountReject": {
-    "message": "Akıllı hesap kullanma"
-  },
-  "smartAccountSameAccount": {
-    "message": "Aynı hesap, daha akıllı özellikler."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Akıllı hesaplar"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Akıllı hesap kullanılsın mı?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Hesabınız bir sonraki işleminizle akıllı hesaba güncellenecektir."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Başarılı!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Aynı adres. Daha akıllı özellikler."
@@ -8627,12 +8573,6 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
-  },
-  "useSmartAccountDescription": {
-    "message": "Bu hesaplar için daha hızlı işlemler, daha düşük ağ ücretleri ve ödeme esnekliği gibi ilgili özellikler mevcut olduğunda MetaMask dahilinde oluşturulan hesapları otomatik olarak akıllı hesaplara döndürmek için bunu açık tutun."
-  },
-  "useSmartAccountTitle": {
-    "message": "Akıllı hesap kullanın"
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Hesabına gönderilen token'ların otomatik olarak görüntülenmesi, token'ın görüntülerini almak için üçüncü parti sunucularla iletişimi içerir. Bu servislerin IP adresine erişimi olacaktır."

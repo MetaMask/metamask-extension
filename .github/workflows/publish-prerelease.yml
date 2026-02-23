@@ -75,6 +75,7 @@ jobs:
 
       - name: Download page load benchmark results
         if: ${{ github.event_name == 'pull_request' }}
+        continue-on-error: true
         uses: actions/download-artifact@v7
         with:
           name: page-load-benchmark-results

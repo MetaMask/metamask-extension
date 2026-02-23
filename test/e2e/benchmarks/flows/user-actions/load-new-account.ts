@@ -3,7 +3,7 @@
  * Measures time to create and load a new account
  */
 
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
@@ -22,7 +22,7 @@ export async function run(): Promise<BenchmarkRunResult> {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         disableServerMochaToBackground: true,
         localNodeOptions: {
           accounts: 1,

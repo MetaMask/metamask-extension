@@ -55,6 +55,7 @@ import {
   Text,
 } from '../../../components/component-library';
 import {
+  AlignItems,
   BackgroundColor,
   BlockSize,
   Display,
@@ -363,6 +364,7 @@ const PrepareBridgePage = ({
   const [blockExplorerToken, setBlockExplorerToken] =
     useState<BridgeToken | null>(null);
   const [toastTriggerCounter, setToastTriggerCounter] = useState(0);
+  const isInitialQuoteLoading = isLoading && !unvalidatedQuote;
 
   const getFromInputHeader = () => {
     return t('swapSelectToken');
@@ -429,7 +431,6 @@ const PrepareBridgePage = ({
         />
 
         <Column
-          height={BlockSize.Full}
           padding={4}
           gap={4}
           backgroundColor={BackgroundColor.backgroundDefault}
@@ -602,80 +603,89 @@ const PrepareBridgePage = ({
             }}
             isDestination={true}
           />
+        </Column>
 
-          <Column
-            justifyContent={
-              isLoading && !unvalidatedQuote
-                ? JustifyContent.center
-                : JustifyContent.flexEnd
-            }
-            width={BlockSize.Full}
-            height={BlockSize.Full}
-            gap={3}
-          >
-            {!wasTxDeclined && unvalidatedQuote && (
-              <MultichainBridgeQuoteCard
-                onOpenRecipientModal={() =>
-                  setIsDestinationAccountPickerOpen(true)
-                }
-                onOpenSlippageModal={onOpenSettings}
-                selectedDestinationAccount={selectedDestinationAccount}
-              />
-            )}
-            {isNoQuotesAvailable &&
-              !isQuoteExpired &&
-              quoteParams &&
-              // Only show banner if quoteParams (inputs) are valid
-              isValidQuoteRequest(quoteParams, true) && (
-                <BannerAlert
-                  severity={BannerAlertSeverity.Danger}
-                  description={t('noOptionsAvailableMessage')}
-                  textAlign={TextAlign.Left}
-                />
-              )}
-            {isLoading && !unvalidatedQuote ? (
-              <>
-                <Text
-                  textAlign={TextAlign.Center}
-                  color={TextColor.textAlternative}
-                >
-                  {t('swapFetchingQuotes')}
-                </Text>
-                <MascotBackgroundAnimation height="64" width="64" />
-              </>
-            ) : (
-              <PrepareBridgePageFooter
-                onFetchNewQuotes={() => {
-                  if (!quoteParams) {
-                    return;
-                  }
-                  debouncedUpdateQuoteRequestInController.current(quoteParams, {
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    stx_enabled: smartTransactionsEnabled,
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    token_symbol_source: fromToken?.symbol ?? '',
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    token_symbol_destination: toToken?.symbol ?? '',
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    security_warnings: securityWarnings,
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    usd_amount_source: fromAmountInCurrency.usd.toNumber(),
-                  });
-                }}
-                needsDestinationAddress={
-                  isToOrFromNonEvm && !selectedDestinationAccount
-                }
-                onOpenRecipientModal={() =>
-                  setIsDestinationAccountPickerOpen(true)
-                }
-              />
-            )}
+        {/* Quote details - displayed below the swap form */}
+        {!wasTxDeclined && unvalidatedQuote && (
+          <Column paddingInline={4} gap={2}>
+            <MultichainBridgeQuoteCard
+              onOpenRecipientModal={() =>
+                setIsDestinationAccountPickerOpen(true)
+              }
+              onOpenSlippageModal={onOpenSettings}
+              selectedDestinationAccount={selectedDestinationAccount}
+            />
           </Column>
+        )}
+
+        {isNoQuotesAvailable &&
+          !isQuoteExpired &&
+          quoteParams &&
+          // Only show banner if quoteParams (inputs) are valid
+          isValidQuoteRequest(quoteParams, true) && (
+            <Column paddingInline={4}>
+              <BannerAlert
+                severity={BannerAlertSeverity.Danger}
+                description={t('noOptionsAvailableMessage')}
+                textAlign={TextAlign.Left}
+              />
+            </Column>
+          )}
+
+        <Column
+          justifyContent={
+            isInitialQuoteLoading
+              ? JustifyContent.center
+              : JustifyContent.flexEnd
+          }
+          width={BlockSize.Full}
+          height={BlockSize.Full}
+          gap={3}
+          paddingInline={4}
+          paddingBottom={4}
+        >
+          {isInitialQuoteLoading ? (
+            <Column alignItems={AlignItems.center}>
+              <Text
+                textAlign={TextAlign.Center}
+                color={TextColor.textAlternative}
+              >
+                {t('swapFetchingQuotes')}
+              </Text>
+              <MascotBackgroundAnimation height="64" width="64" />
+            </Column>
+          ) : (
+            <PrepareBridgePageFooter
+              onFetchNewQuotes={() => {
+                if (!quoteParams) {
+                  return;
+                }
+                debouncedUpdateQuoteRequestInController.current(quoteParams, {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  stx_enabled: smartTransactionsEnabled,
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  token_symbol_source: fromToken?.symbol ?? '',
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  token_symbol_destination: toToken?.symbol ?? '',
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  security_warnings: securityWarnings,
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  usd_amount_source: fromAmountInCurrency.usd.toNumber(),
+                });
+              }}
+              needsDestinationAddress={
+                isToOrFromNonEvm && !selectedDestinationAccount
+              }
+              onOpenRecipientModal={() =>
+                setIsDestinationAccountPickerOpen(true)
+              }
+            />
+          )}
         </Column>
       </Column>
 

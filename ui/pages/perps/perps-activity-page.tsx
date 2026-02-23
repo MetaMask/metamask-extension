@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import {
@@ -20,13 +20,14 @@ import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { mockTransactions } from '../../components/app/perps/mocks';
 import { TransactionCard } from '../../components/app/perps/transaction-card';
+import { PerpsActivityPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
   groupTransactionsByDate,
   filterTransactionsByType,
 } from '../../components/app/perps/utils';
 import type { PerpsTransactionFilter } from '../../components/app/perps/types';
+import { usePerpsTransactionHistory } from '../../hooks/perps/usePerpsTransactionHistory';
 import {
   Dropdown,
   type DropdownOption,
@@ -44,6 +45,15 @@ const PerpsActivityPage: React.FC = () => {
   const [activeFilter, setActiveFilter] =
     useState<PerpsTransactionFilter>('trade');
 
+  // Fetch real transaction data from the Perps controller
+  const { transactions, isLoading, error, refetch } =
+    usePerpsTransactionHistory();
+
+  // Refetch on mount to ensure fresh data
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
   // Filter options for dropdown
   const filterOptions: DropdownOption<PerpsTransactionFilter>[] = useMemo(
     () => [
@@ -57,8 +67,8 @@ const PerpsActivityPage: React.FC = () => {
 
   // Filter and group transactions
   const filteredTransactions = useMemo(
-    () => filterTransactionsByType(mockTransactions, activeFilter),
-    [activeFilter],
+    () => filterTransactionsByType(transactions, activeFilter),
+    [transactions, activeFilter],
   );
 
   const groupedTransactions = useMemo(
@@ -108,7 +118,29 @@ const PerpsActivityPage: React.FC = () => {
 
         {/* Transaction List */}
         <Box flexDirection={BoxFlexDirection.Column}>
-          {groupedTransactions.length === 0 ? (
+          {/* Loading State */}
+          {isLoading && transactions.length === 0 && (
+            <PerpsActivityPageSkeleton />
+          )}
+
+          {/* Error State */}
+          {!isLoading && error && (
+            <Box
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={8}
+              paddingBottom={8}
+              alignItems={BoxAlignItems.Center}
+              justifyContent={BoxJustifyContent.Center}
+            >
+              <Text variant={TextVariant.BodyMd} color={TextColor.ErrorDefault}>
+                {error}
+              </Text>
+            </Box>
+          )}
+
+          {/* Empty State */}
+          {!isLoading && !error && groupedTransactions.length === 0 && (
             <Box
               paddingLeft={4}
               paddingRight={4}
@@ -124,7 +156,11 @@ const PerpsActivityPage: React.FC = () => {
                 {t('perpsNoTransactions')}
               </Text>
             </Box>
-          ) : (
+          )}
+
+          {/* Transaction Groups */}
+          {!isLoading &&
+            !error &&
             groupedTransactions.map((group) => (
               <Box
                 key={group.date}
@@ -157,8 +193,7 @@ const PerpsActivityPage: React.FC = () => {
                   ))}
                 </Box>
               </Box>
-            ))
-          )}
+            ))}
         </Box>
       </Content>
     </Page>

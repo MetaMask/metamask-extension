@@ -15,6 +15,10 @@ import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
 import {
+  getTestSpecificMock,
+  shouldUseMockedRequests,
+} from '../../utils/mock-config';
+import {
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
   WITH_STATE_POWER_USER,
@@ -47,9 +51,10 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
-        useMockingPassThrough: true,
+        useMockingPassThrough: !shouldUseMockedRequests(),
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
+        testSpecificMock: getTestSpecificMock(),
       },
       async ({ driver }: { driver: Driver }) => {
         const timerLogin = new TimerHelper('loginToHomeScreen');

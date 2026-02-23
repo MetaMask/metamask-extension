@@ -11,6 +11,7 @@ import { toHardwareWalletError } from '../rpcErrorUtils';
 import {
   DeviceEvent,
   HardwareWalletType,
+  type EnsureDeviceReadyOptions,
   type HardwareWalletAdapter,
   type HardwareWalletAdapterOptions,
 } from '../types';
@@ -211,9 +212,17 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    * Throws HardwareWalletError from the KeyringController/Ledger keyring
    * These errors are already properly formatted and include all necessary metadata
    *
+   * @param options - Optional settings to control readiness checks
+   * @param options.requireBlindSigning - Whether to check if blind signing is enabled
+   * on the Ledger device. Defaults to true. Set to false for simple sends (plain
+   * native asset transfers) that don't involve contract interactions.
    * @returns true if device is ready
    */
-  async ensureDeviceReady(): Promise<boolean> {
+  async ensureDeviceReady(
+    options?: EnsureDeviceReadyOptions,
+  ): Promise<boolean> {
+    const { requireBlindSigning = true } = options ?? {};
+
     if (!this.isConnected()) {
       await this.connect();
     }
@@ -229,14 +238,18 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         );
       }
 
-      // This is blind signing check. This is needed for dapps and signatures.
-      const { arbitraryDataEnabled } = await getLedgerAppConfiguration();
-      if (arbitraryDataEnabled !== 1) {
-        throw createHardwareWalletError(
-          ErrorCode.DeviceStateBlindSignNotSupported,
-          HardwareWalletType.Ledger,
-          'Blind signing is not enabled',
-        );
+      // Blind signing check: only needed for contract interactions, signatures,
+      // and dapp transactions. Simple sends (plain native asset transfers) do not
+      // require blind signing since the Ledger can display them natively.
+      if (requireBlindSigning) {
+        const { arbitraryDataEnabled } = await getLedgerAppConfiguration();
+        if (arbitraryDataEnabled !== 1) {
+          throw createHardwareWalletError(
+            ErrorCode.DeviceStateBlindSignNotSupported,
+            HardwareWalletType.Ledger,
+            'Blind signing is not enabled',
+          );
+        }
       }
 
       return true;

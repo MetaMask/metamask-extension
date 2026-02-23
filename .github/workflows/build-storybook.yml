@@ -41,5 +41,5 @@ jobs:
         env:
           STORYBOOK_TOKEN: ${{ secrets.STORYBOOK_TOKEN }}
         run: |
-          git remote add storybook "https://${STORYBOOK_TOKEN}@github.com/MetaMask/metamask-storybook.git"
+          git remote add storybook "https://x-access-token:${STORYBOOK_TOKEN}@github.com/MetaMask/metamask-storybook.git"
           yarn storybook:deploy

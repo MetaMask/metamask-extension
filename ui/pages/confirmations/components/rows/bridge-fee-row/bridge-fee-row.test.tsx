@@ -13,16 +13,20 @@ import {
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { BridgeFeeRow } from './bridge-fee-row';
+import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
+import { BridgeFeeRow, BridgeFeeRowProps } from './bridge-fee-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../../../hooks/useI18nContext');
 
 const mockStore = configureMockStore([]);
 
-function render() {
+function render(props: BridgeFeeRowProps = {}) {
   const state = getMockPersonalSignConfirmState();
-  return renderWithConfirmContextProvider(<BridgeFeeRow />, mockStore(state));
+  return renderWithConfirmContextProvider(
+    <BridgeFeeRow {...props} />,
+    mockStore(state),
+  );
 }
 
 describe('BridgeFeeRow', () => {
@@ -61,26 +65,71 @@ describe('BridgeFeeRow', () => {
     ]);
   });
 
-  it('renders transaction fee', () => {
-    const { getByText } = render();
-    expect(getByText('$1.23')).toBeInTheDocument();
-  });
-
-  it('renders skeletons if quotes loading', () => {
+  it('renders skeleton with label when loading (Default variant)', () => {
     useIsTransactionPayLoadingMock.mockReturnValue(true);
 
-    const { getByTestId } = render();
+    const { getByTestId, queryByTestId, getByText } = render();
+
+    expect(getByTestId('bridge-fee-row-skeleton')).toBeInTheDocument();
+    expect(queryByTestId('metamask-fee-row-skeleton')).not.toBeInTheDocument();
+    expect(getByText('Transaction fee')).toBeInTheDocument();
+  });
+
+  it('renders full skeletons without labels when loading (Small variant)', () => {
+    useIsTransactionPayLoadingMock.mockReturnValue(true);
+
+    const { getByTestId, queryByText } = render({
+      variant: ConfirmInfoRowSize.Small,
+    });
 
     expect(getByTestId('bridge-fee-row-skeleton')).toBeInTheDocument();
     expect(getByTestId('metamask-fee-row-skeleton')).toBeInTheDocument();
+    expect(queryByText('Transaction fee')).not.toBeInTheDocument();
+    expect(queryByText('MetaMask fee')).not.toBeInTheDocument();
   });
 
-  it('does not render metamask fee if no quotes', () => {
-    useTransactionPayQuotesMock.mockReturnValue([]);
-
+  it('does not render metamask fee with Default variant', () => {
     const { getByTestId, queryByTestId } = render();
 
     expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
     expect(queryByTestId('metamask-fee-row')).not.toBeInTheDocument();
+  });
+
+  it('renders metamask fee with Small variant when quotes exist', () => {
+    const { getByTestId } = render({
+      variant: ConfirmInfoRowSize.Small,
+    });
+
+    expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
+    expect(getByTestId('metamask-fee-row')).toBeInTheDocument();
+  });
+
+  it('does not render metamask fee if no quotes (Small variant)', () => {
+    useTransactionPayQuotesMock.mockReturnValue([]);
+
+    const { getByTestId, queryByTestId } = render({
+      variant: ConfirmInfoRowSize.Small,
+    });
+
+    expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
+    expect(queryByTestId('metamask-fee-row')).not.toBeInTheDocument();
+  });
+
+  it('renders fee value with ConfirmInfoRowText for Default variant', () => {
+    const { getByTestId } = render();
+
+    const feeValue = getByTestId('transaction-fee-value');
+    expect(feeValue).toBeInTheDocument();
+    expect(feeValue).toHaveTextContent('$1.23');
+  });
+
+  it('renders fee value with Text component for Small variant', () => {
+    const { getByTestId } = render({
+      variant: ConfirmInfoRowSize.Small,
+    });
+
+    const feeValue = getByTestId('transaction-fee-value');
+    expect(feeValue).toBeInTheDocument();
+    expect(feeValue).toHaveTextContent('$1.23');
   });
 });

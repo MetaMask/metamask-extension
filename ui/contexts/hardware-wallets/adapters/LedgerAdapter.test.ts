@@ -743,6 +743,53 @@ describe('LedgerAdapter', () => {
       );
     });
 
+    it('skips blind signing check when requireBlindSigning is false', async () => {
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      await adapter.connect();
+
+      mockGetAppNameAndVersion.mockResolvedValue({
+        appName: 'Ethereum',
+        version: '1.0.0',
+      });
+      mockGetLedgerAppConfiguration.mockResolvedValue({
+        ...DEFAULT_LEDGER_APP_CONFIGURATION,
+        arbitraryDataEnabled: 0,
+      });
+
+      const result = await adapter.ensureDeviceReady({
+        requireBlindSigning: false,
+      });
+
+      expect(result).toBe(true);
+      expect(mockGetLedgerAppConfiguration).not.toHaveBeenCalled();
+    });
+
+    it('checks blind signing when requireBlindSigning is true (default)', async () => {
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      await adapter.connect();
+
+      mockGetAppNameAndVersion.mockResolvedValue({
+        appName: 'Ethereum',
+        version: '1.0.0',
+      });
+      mockGetLedgerAppConfiguration.mockResolvedValue({
+        ...DEFAULT_LEDGER_APP_CONFIGURATION,
+        arbitraryDataEnabled: 0,
+      });
+
+      await expect(
+        adapter.ensureDeviceReady({ requireBlindSigning: true }),
+      ).rejects.toThrow(HardwareWalletError);
+
+      expect(mockGetLedgerAppConfiguration).toHaveBeenCalled();
+    });
+
     it('emits DeviceLocked event when device is locked during verification', async () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),

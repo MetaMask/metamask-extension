@@ -8,6 +8,7 @@ import { ConnectionState } from './connectionState';
 import { createAdapterForHardwareWalletType } from './adapters/factory';
 import {
   HardwareWalletType,
+  type EnsureDeviceReadyOptions,
   type HardwareWalletConnectionState,
   type HardwareWalletAdapterOptions,
   type DeviceEventPayload,
@@ -313,8 +314,10 @@ export const useHardwareWalletConnection = ({
   );
 
   const ensureDeviceReady = useCallback(
-    async (): Promise<boolean> => {
-      const inFlightPromise = refs.ensureDeviceReadyPromiseRef.current;
+    async (options?: EnsureDeviceReadyOptions): Promise<boolean> => {
+      const requireBlindSigning = options?.requireBlindSigning ?? true;
+      const inFlightPromise =
+        refs.ensureDeviceReadyPromiseRef.current.get(requireBlindSigning);
       if (inFlightPromise) {
         return inFlightPromise;
       }
@@ -372,7 +375,9 @@ export const useHardwareWalletConnection = ({
           }
 
           try {
-            const result = await adapter.ensureDeviceReady();
+            const result = await adapter.ensureDeviceReady({
+              requireBlindSigning,
+            });
             if (abortSignal?.aborted || isEnsureStale()) {
               return false;
             }
@@ -400,11 +405,16 @@ export const useHardwareWalletConnection = ({
         return false;
       })();
 
-      refs.ensureDeviceReadyPromiseRef.current = ensurePromise;
+      refs.ensureDeviceReadyPromiseRef.current.set(
+        requireBlindSigning,
+        ensurePromise,
+      );
 
       ensurePromise.finally(() => {
-        if (refs.ensureDeviceReadyPromiseRef.current === ensurePromise) {
-          refs.ensureDeviceReadyPromiseRef.current = null;
+        const trackedPromise =
+          refs.ensureDeviceReadyPromiseRef.current.get(requireBlindSigning);
+        if (trackedPromise === ensurePromise) {
+          refs.ensureDeviceReadyPromiseRef.current.delete(requireBlindSigning);
         }
       });
 

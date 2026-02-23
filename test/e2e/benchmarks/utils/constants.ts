@@ -185,8 +185,8 @@ export const SEND_TRANSACTIONS_THRESHOLDS: ThresholdConfig = {
  */
 export const ASSET_DETAILS_THRESHOLDS: ThresholdConfig = {
   assetClickToPriceChart: {
-    p75: { warn: 5500, fail: 9000 },
-    p95: { warn: 8000, fail: 10000 },
+    p75: { warn: 8000, fail: 12000 },
+    p95: { warn: 12000, fail: 15000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };

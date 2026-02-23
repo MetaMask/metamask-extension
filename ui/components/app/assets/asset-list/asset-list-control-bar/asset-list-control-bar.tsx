@@ -8,17 +8,12 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import {
-  isStrictHexString,
-  KnownCaipNamespace,
-  parseCaipChainId,
-} from '@metamask/utils';
+import { isStrictHexString } from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
   getIsMainnet,
-  getIsMultichainAccountsState2Enabled,
   getTokenNetworkFilter,
   getUseNftDetection,
 } from '../../../../../selectors';
@@ -26,7 +21,6 @@ import { selectAccountSupportsEnabledNetworks } from '../../../../../selectors/a
 import {
   getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
-  getSelectedMultichainNetworkChainId,
 } from '../../../../../selectors/multichain/networks';
 import {
   getAllNetworkConfigurationsByCaipChainId,
@@ -123,10 +117,6 @@ const AssetListControlBar = ({
 
   const { collections } = useNftsCollections();
 
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
@@ -136,11 +126,6 @@ const AssetListControlBar = ({
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
     useState(false);
   const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
-
-  const currentMultichainChainId = useSelector(
-    getSelectedMultichainNetworkChainId,
-  );
-  const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   const allNetworkClientIds = useMemo(() => {
     return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
@@ -290,41 +275,8 @@ const AssetListControlBar = ({
       checkAndUpdateAllNftsOwnershipStatus(networkClientId);
     });
   };
+
   const networkButtonText = useMemo(() => {
-    if (currentNamespaceNetworkCount === 1) {
-      const chainId = Object.keys(enabledNetworksByNamespace)[0];
-      return isStrictHexString(chainId)
-        ? (allNetworks[chainId]?.name ?? t('currentNetwork'))
-        : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
-    }
-
-    if (
-      namespace !== KnownCaipNamespace.Eip155 &&
-      currentNamespaceNetworkCount > 1
-    ) {
-      return currentMultichainNetwork.network.nickname ?? t('currentNetwork');
-    }
-
-    // > 1 network selected, show "all networks"
-    if (currentNamespaceNetworkCount > 1) {
-      return t('allNetworks');
-    }
-
-    if (currentNamespaceNetworkCount === 0) {
-      return t('noNetworksSelected');
-    }
-
-    return t('popularNetworks');
-  }, [
-    enabledNetworksByNamespace,
-    currentNamespaceNetworkCount,
-    currentMultichainNetwork.network.nickname,
-    t,
-    allNetworks,
-    namespace,
-  ]);
-
-  const networkButtonTextEnabledAccountState2 = useMemo(() => {
     if (totalEnabledNetworkCount === 1) {
       const chainId = allEnabledNetworksForAllNamespaces[0];
       const caipChainId = isStrictHexString(chainId)
@@ -387,9 +339,7 @@ const AssetListControlBar = ({
               />
             )}
             <Text variant={TextVariant.bodySmMedium} ellipsis>
-              {isMultichainAccountsState2Enabled
-                ? networkButtonTextEnabledAccountState2
-                : networkButtonText}
+              {networkButtonText}
             </Text>
           </Box>
         </ButtonBase>

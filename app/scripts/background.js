@@ -52,6 +52,7 @@ import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
+import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
 import {
   CorruptionHandler,
   hasVault,
@@ -750,7 +751,7 @@ async function initialize(backup) {
   if (process.env.IN_TEST && window.navigator?.webdriver) {
     const { getSocketBackgroundToMocha } =
       // Use `require` to make it easier to exclude this test code from the Browserify build.
-      // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+      // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
       require('../../test/e2e/background-socket/socket-background-to-mocha');
     getSocketBackgroundToMocha();
   }
@@ -778,15 +779,15 @@ async function initialize(backup) {
     ? {
         keyrings: {
           // Use `require` to make it easier to exclude this test code from the Browserify build.
-          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
           trezorBridge: require('../../test/stub/keyring-bridge')
             .FakeTrezorBridge,
           // Use `require` to make it easier to exclude this test code from the Browserify build.
-          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
           ledgerBridge: require('../../test/stub/keyring-bridge')
             .FakeLedgerBridge,
           // Use `require` to make it easier to exclude this test code from the Browserify build.
-          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
           qrBridge: require('../../test/stub/keyring-bridge').FakeQrBridge,
         },
       }
@@ -957,7 +958,7 @@ export async function loadStateFromPersistence(backup) {
     const withState = JSON.parse(process.env.WITH_STATE);
 
     // Use `require` to make it easier to exclude this test code from the Browserify build.
-    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
     const { generateWalletState } = require('./fixtures/generate-wallet-state');
     const fixtureBuilder = await generateWalletState(withState, false);
 
@@ -1014,7 +1015,7 @@ export async function loadStateFromPersistence(backup) {
   const migrator = new Migrator({
     migrations,
     defaultVersion: process.env.WITH_STATE
-      ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+      ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
         require('../../test/e2e/fixtures/fixture-builder')
           .FIXTURE_STATE_METADATA_VERSION
       : null,
@@ -1947,23 +1948,33 @@ async function triggerUi() {
 }
 
 // It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
-const addAppInstalledEvent = () => {
+const addAppInstalledEvent = async () => {
   if (controller) {
     controller.metaMetricsController.updateTraits({
       [MetaMetricsUserTrait.InstallDateExt]: new Date()
         .toISOString()
         .split('T')[0], // yyyy-mm-dd
     });
+
+    const deferredDeepLink = await getDeferredDeepLinkFromCookie();
+    const eventProperties = {};
+
+    if (deferredDeepLink) {
+      controller.appStateController.setDeferredDeepLink(deferredDeepLink);
+      eventProperties.install_source = 'deeplink';
+      eventProperties.deeplink_path = deferredDeepLink.referringLink;
+    }
+
     controller.metaMetricsController.addEventBeforeMetricsOptIn({
       category: MetaMetricsEventCategory.App,
       event: MetaMetricsEventName.AppInstalled,
-      properties: {},
+      properties: eventProperties,
     });
     return;
   }
-  setTimeout(() => {
+  setTimeout(async () => {
     // If the controller is not set yet, we wait and try to add the "App Installed" event again.
-    addAppInstalledEvent();
+    await addAppInstalledEvent();
   }, 500);
 };
 
@@ -1974,7 +1985,7 @@ const addAppInstalledEvent = () => {
  */
 async function handleOnInstalled([details]) {
   if (details.reason === 'install') {
-    onInstall();
+    await onInstall();
   } else if (details.reason === 'update') {
     const { previousVersion } = details;
     if (!previousVersion || previousVersion === platform.getVersion()) {
@@ -1988,12 +1999,12 @@ async function handleOnInstalled([details]) {
 /**
  * Trigger actions that should happen only upon initial install (e.g. open tab for onboarding).
  */
-function onInstall() {
+async function onInstall() {
   log.debug('First install detected');
-  addAppInstalledEvent();
   if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
     platform.openExtensionInBrowser();
   }
+  await addAppInstalledEvent();
 }
 
 /**
