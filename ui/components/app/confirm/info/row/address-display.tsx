@@ -1,16 +1,23 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
-import { AvatarAccountSize } from '@metamask/design-system-react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { NameType } from '@metamask/name-controller';
 import {
-  AlignItems,
-  Display,
-  FlexDirection,
+  AvatarAccountSize,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+  Text,
   TextColor,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../../component-library';
-import { shortenAddress } from '../../../../../helpers/utils/util';
+} from '@metamask/design-system-react';
+import Identicon from '../../../../ui/identicon';
+import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { PreferredAvatar } from '../../../preferred-avatar';
-import { useFallbackDisplayName } from './hook';
+import NameDetails from '../../../name/name-details/name-details';
+import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 
 const ELLIPSIS = '\u2026';
 
@@ -68,49 +75,174 @@ function useMiddleTruncation(text: string) {
   return { containerRef, display };
 }
 
+const TrustIcon = ({
+  displayState,
+  image,
+  address,
+}: {
+  displayState: TrustSignalDisplayState;
+  image?: string;
+  address: string;
+}) => {
+  switch (displayState) {
+    case TrustSignalDisplayState.Malicious:
+      return (
+        <Icon
+          name={IconName.Danger}
+          size={IconSize.Sm}
+          color={IconColor.ErrorDefault}
+          style={{ flexShrink: 0 }}
+        />
+      );
+    case TrustSignalDisplayState.Verified:
+      return (
+        <Icon
+          name={IconName.VerifiedFilled}
+          size={IconSize.Sm}
+          color={IconColor.InfoDefault}
+          style={{ flexShrink: 0 }}
+        />
+      );
+    case TrustSignalDisplayState.Unknown:
+      return (
+        <Icon
+          name={IconName.Question}
+          size={IconSize.Sm}
+          style={{ flexShrink: 0 }}
+        />
+      );
+    default:
+      if (image) {
+        return <Identicon address={address} diameter={16} image={image} />;
+      }
+      return null;
+  }
+};
+
 export type ConfirmInfoRowAddressDisplayProps = {
   address: string;
+  chainId: string;
+  name: string | null;
+  isAccount: boolean;
+  image?: string;
+  displayState: TrustSignalDisplayState;
+  showAvatar?: boolean;
 };
 
 export const ConfirmInfoRowAddressDisplay = memo(
-  ({ address }: ConfirmInfoRowAddressDisplayProps) => {
-    const { displayName, hexAddress } = useFallbackDisplayName(address);
+  ({
+    address,
+    chainId,
+    name,
+    isAccount,
+    image,
+    displayState,
+    showAvatar = true,
+  }: ConfirmInfoRowAddressDisplayProps) => {
+    const hexAddress = toChecksumHexAddress(address);
 
-    const isUnknown = displayName === shortenAddress(hexAddress);
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const isClickable = !isAccount;
     const { containerRef, display } = useMiddleTruncation(hexAddress);
+
+    const handleClick = useCallback(() => {
+      if (!isClickable) {
+        return;
+      }
+      setModalOpen(true);
+    }, [isClickable]);
+
+    const handleModalClose = useCallback(() => {
+      setModalOpen(false);
+    }, []);
 
     return (
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         gap={2}
       >
-        {isUnknown ? (
+        {modalOpen && (
+          <NameDetails
+            value={hexAddress}
+            type={NameType.ETHEREUM_ADDRESS}
+            variation={chainId}
+            onClose={handleModalClose}
+          />
+        )}
+        <TrustIcon
+          displayState={displayState}
+          image={image}
+          address={hexAddress}
+        />
+        {name && isClickable && (
           <Text
-            ref={containerRef}
-            variant={TextVariant.bodyMd}
-            color={TextColor.textDefault}
-            data-testid="confirm-info-row-display-name"
-            style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextDefault}
+            className="confirm-info-row-address-display__clickable"
+            asChild
           >
-            {display}
+            <button
+              type="button"
+              style={{ whiteSpace: 'nowrap', flex: 1 }}
+              onClick={handleClick}
+              data-testid="confirm-info-row-display-name"
+            >
+              {name}
+            </button>
           </Text>
-        ) : (
+        )}
+        {name && !isClickable && (
           <Text
-            variant={TextVariant.bodyMd}
-            color={TextColor.textDefault}
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextDefault}
             data-testid="confirm-info-row-display-name"
             style={{ whiteSpace: 'nowrap', flex: 1 }}
           >
-            {displayName}
+            {name}
           </Text>
         )}
-        <PreferredAvatar
-          address={hexAddress}
-          size={AvatarAccountSize.Sm}
-          style={{ flexShrink: 0 }}
-        />
+        {!name && isClickable && (
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextDefault}
+            className="confirm-info-row-address-display__clickable"
+            asChild
+          >
+            <button
+              type="button"
+              ref={containerRef as unknown as React.Ref<HTMLButtonElement>}
+              style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}
+              onClick={handleClick}
+              data-testid="confirm-info-row-display-name"
+            >
+              {display}
+            </button>
+          </Text>
+        )}
+        {!name && !isClickable && (
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextDefault}
+            data-testid="confirm-info-row-display-name"
+            asChild
+          >
+            <span
+              ref={containerRef}
+              style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}
+            >
+              {display}
+            </span>
+          </Text>
+        )}
+        {showAvatar && (
+          <PreferredAvatar
+            address={hexAddress}
+            size={AvatarAccountSize.Sm}
+            style={{ flexShrink: 0 }}
+          />
+        )}
       </Box>
     );
   },

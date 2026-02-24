@@ -155,7 +155,7 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
                   style="overflow: hidden;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
                     data-testid="Ethereum"
                   >
                     <div
@@ -196,7 +196,7 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
                   style="overflow: hidden;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
                     data-testid="OP"
                   >
                     <div
@@ -327,7 +327,7 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                   style="overflow: hidden;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
                     data-testid="Ethereum"
                   >
                     <div
@@ -368,7 +368,7 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                   style="overflow: hidden;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
                     data-testid="OP"
                   >
                     <div

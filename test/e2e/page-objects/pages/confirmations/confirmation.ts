@@ -25,6 +25,9 @@ class Confirmation {
 
   private inlineAlertButton = '[data-testid="inline-alert"]';
 
+  private addressDisplaySelector =
+    '[data-testid="recipient-address"] [data-testid="confirm-info-row-display-name"]';
+
   private nameSelector = '.name';
 
   private navigationTitle: RawLocator;
@@ -204,16 +207,19 @@ class Confirmation {
     name,
     proposedName,
   }: {
-    value: string;
+    value?: string;
     name?: string;
     proposedName?: string;
   }): Promise<void> {
-    await this.clickName(value);
-    console.log(
-      `Saving name for value: ${value}, name: ${name}, proposedName: ${proposedName}`,
-    );
+    if (value) {
+      await this.driver.clickElement({
+        text: value,
+      });
+    } else {
+      await this.driver.clickElement(this.addressDisplaySelector);
+    }
+    console.log(`Saving name: ${name}, proposedName: ${proposedName}`);
     await this.driver.clickElement(this.formComboFieldSelector);
-
     if (proposedName) {
       await this.driver.clickElement({
         css: this.formComboFieldOptionPrimarySelector,

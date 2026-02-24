@@ -53,6 +53,7 @@ import { getSelectedInternalAccount } from './accounts';
 import { getMultichainBalances } from './multichain';
 import { EMPTY_OBJECT } from './shared';
 import {
+  getAllTokens,
   getCurrencyRates,
   getCurrentNetwork,
   getIsTokenNetworkFilterEqualCurrentNetwork,
@@ -1351,5 +1352,25 @@ export const getAsset = createSelector(
     const chainAssets = assetsBySelectedAccountGroup[chainId];
 
     return chainAssets?.find((item) => item.assetId === assetId);
+  },
+);
+
+export const selectSingleTokenByAddressAndChainId = createSelector(
+  getAllTokens,
+  (_state: { metamask: TokensControllerState }, tokenAddress: Hex) =>
+    tokenAddress,
+  (
+    _state: { metamask: TokensControllerState },
+    _tokenAddress: Hex,
+    chainId: Hex,
+  ) => chainId,
+  (allTokens, tokenAddress, chainId) => {
+    const chainTokens = Object.values(
+      allTokens[chainId] ?? {},
+    ).flat() as Token[];
+
+    return chainTokens.find(
+      (token) => token.address.toLowerCase() === tokenAddress.toLowerCase(),
+    );
   },
 );
