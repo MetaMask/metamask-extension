@@ -33,19 +33,6 @@
     }
   }
 
-  &__activity-log {
-    flex: 2;
-    min-width: 0;
-
-    .transaction-activity-log__activities-container {
-      padding-top: 0;
-    }
-
-    .transaction-activity-log__title {
-      display: none;
-    }
-  }
-
   @keyframes loading-dot {
     0% {
       transform: scale(1);
