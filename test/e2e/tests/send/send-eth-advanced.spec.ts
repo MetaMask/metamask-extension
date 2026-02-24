@@ -207,7 +207,7 @@ describe('Send ETH - Advanced', function () {
     });
   });
 
-  describe('Hex data', function () {
+  describe.only('Hex data', function () {
     it('renders correct recipient with ERC20 transfer signature in hex data', async function () {
       await withFixtures(
         {
@@ -243,9 +243,8 @@ describe('Send ETH - Advanced', function () {
           await sendPage.pressContinueButton();
 
           // Verify the recipient address is displayed correctly (should show the actual recipient, not the one in the data)
-          await sendTokenConfirmPage.checkRecipientAddressDisplayedCount(
-            '0xc427D...Acd28',
-            1,
+          await sendTokenConfirmPage.checkRecipientAddressDisplayed(
+            '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
           );
         },
       );

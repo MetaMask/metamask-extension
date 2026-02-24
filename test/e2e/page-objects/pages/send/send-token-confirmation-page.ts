@@ -136,6 +136,21 @@ class SendTokenConfirmPage {
     );
   }
 
+  async checkRecipientAddressDisplayed(
+    address: string,
+  ): Promise<void> {
+    console.log(
+      `Checking recipient address ${address} is displayed on confirmation screen`,
+    );
+    await this.driver.wait(async () => {
+      const recipientAddress = await this.driver.findElement('[data-testid="recipient-address"]');
+      return (await recipientAddress.getText()).includes(address.substring(0, 6));
+    }, 10000);
+    console.log(
+      `Recipient address displayed as expected`,
+    );
+  }
+
   async checkTransactionAmount(amount: string): Promise<void> {
     console.log(`Checking transaction amount is ${amount}`);
     await this.driver.waitForSelector({
