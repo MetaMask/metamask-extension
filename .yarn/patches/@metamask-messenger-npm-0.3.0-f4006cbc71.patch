@@ -1,0 +1,116 @@
+diff --git a/dist/Messenger.cjs b/dist/Messenger.cjs
+index 0b3ef0e91cc51d6fcfa3894abda55ffd54da472b..ca95d7007614328e3890464c007a51243cd85b99 100644
+--- a/dist/Messenger.cjs
++++ b/dist/Messenger.cjs
+@@ -506,6 +506,30 @@ class Messenger {
+     _internalPublishDelegated(eventType, ...payload) {
+         __classPrivateFieldGet(this, _Messenger_instances, "m", _Messenger_publish).call(this, eventType, ...payload);
+     }
++    //========
++    // In this branch we're adding a couple of methods to Messenger, although
++    // this work would be split off into another PR within `core`.
++    // We use these methods to validate a messenger we get from `useMessenger`
++    // (as we can't really trust what we're getting from a context).
++    //========
++    /**
++     * Check if an action handler is registered for the given action type.
++     *
++     * @param actionType - The action type to check.
++     * @returns True if a handler is registered for this action type.
++     */
++    isActionHandlerRegistered(actionType) {
++        return __classPrivateFieldGet(this, _Messenger_actions, "f").has(actionType);
++    }
++    /**
++     * Check if there are any subscribers for the given event type.
++     *
++     * @param eventType - The event type to check.
++     * @returns True if there are subscribers for this event type.
++     */
++    hasEventSubscriptions(eventType) {
++        return __classPrivateFieldGet(this, _Messenger_events, "f").has(eventType);
++    }
+ }
+ exports.Messenger = Messenger;
+ _Messenger_namespace = new WeakMap(), _Messenger_parent = new WeakMap(), _Messenger_actions = new WeakMap(), _Messenger_events = new WeakMap(), _Messenger_subscriptionDelegationTargets = new WeakMap(), _Messenger_actionDelegationTargets = new WeakMap(), _Messenger_initialEventPayloadGetters = new WeakMap(), _Messenger_eventPayloadCache = new WeakMap(), _Messenger_instances = new WeakSet(), _Messenger_registerActionHandler = function _Messenger_registerActionHandler(actionType, handler) {
+diff --git a/dist/Messenger.d.cts b/dist/Messenger.d.cts
+index fe6963922a967d87845b6009beeca44c1149a9e9..b0689c7990d9eb0ffb4d28cfe5b432acee6cb1d9 100644
+--- a/dist/Messenger.d.cts
++++ b/dist/Messenger.d.cts
+@@ -364,6 +364,20 @@ export declare class Messenger<Namespace extends string, Action extends ActionCo
+      * @template EventType - A type union of Event type strings.
+      */
+     _internalPublishDelegated<EventType extends Event['type']>(eventType: EventType, ...payload: ExtractEventPayload<Event, EventType>): void;
++    /**
++     * Check if an action handler is registered for the given action type.
++     *
++     * @param actionType - The action type to check.
++     * @returns True if a handler is registered for this action type.
++     */
++    isActionHandlerRegistered(actionType: string): boolean;
++    /**
++     * Check if there are any subscribers for the given event type.
++     *
++     * @param eventType - The event type to check.
++     * @returns True if there are subscribers for this event type.
++     */
++    hasEventSubscriptions(eventType: string): boolean;
+ }
+ export {};
+ //# sourceMappingURL=Messenger.d.cts.map
+\ No newline at end of file
+diff --git a/dist/Messenger.d.mts b/dist/Messenger.d.mts
+index 3e2871972487bbf8194a22bbcc6fb57f465e084e..e311a0b18f867348874c90aec495ea47d00d5837 100644
+--- a/dist/Messenger.d.mts
++++ b/dist/Messenger.d.mts
+@@ -364,6 +364,20 @@ export declare class Messenger<Namespace extends string, Action extends ActionCo
+      * @template EventType - A type union of Event type strings.
+      */
+     _internalPublishDelegated<EventType extends Event['type']>(eventType: EventType, ...payload: ExtractEventPayload<Event, EventType>): void;
++    /**
++     * Check if an action handler is registered for the given action type.
++     *
++     * @param actionType - The action type to check.
++     * @returns True if a handler is registered for this action type.
++     */
++    isActionHandlerRegistered(actionType: string): boolean;
++    /**
++     * Check if there are any subscribers for the given event type.
++     *
++     * @param eventType - The event type to check.
++     * @returns True if there are subscribers for this event type.
++     */
++    hasEventSubscriptions(eventType: string): boolean;
+ }
+ export {};
+ //# sourceMappingURL=Messenger.d.mts.map
+\ No newline at end of file
+diff --git a/dist/Messenger.mjs b/dist/Messenger.mjs
+index 77696b9e3d7d6dc530ee6a64297d6795d5154b9f..b921b574ec45326ac7c7eda31c6c8cc6dbcd488c 100644
+--- a/dist/Messenger.mjs
++++ b/dist/Messenger.mjs
+@@ -503,6 +503,24 @@ export class Messenger {
+     _internalPublishDelegated(eventType, ...payload) {
+         __classPrivateFieldGet(this, _Messenger_instances, "m", _Messenger_publish).call(this, eventType, ...payload);
+     }
++    /**
++     * Check if an action handler is registered for the given action type.
++     *
++     * @param actionType - The action type to check.
++     * @returns True if a handler is registered for this action type.
++     */
++    isActionHandlerRegistered(actionType) {
++        return __classPrivateFieldGet(this, _Messenger_actions, "f").has(actionType);
++    }
++    /**
++     * Check if there are any subscribers for the given event type.
++     *
++     * @param eventType - The event type to check.
++     * @returns True if there are subscribers for this event type.
++     */
++    hasEventSubscriptions(eventType) {
++        return __classPrivateFieldGet(this, _Messenger_events, "f").has(eventType);
++    }
+ }
+ _Messenger_namespace = new WeakMap(), _Messenger_parent = new WeakMap(), _Messenger_actions = new WeakMap(), _Messenger_events = new WeakMap(), _Messenger_subscriptionDelegationTargets = new WeakMap(), _Messenger_actionDelegationTargets = new WeakMap(), _Messenger_initialEventPayloadGetters = new WeakMap(), _Messenger_eventPayloadCache = new WeakMap(), _Messenger_instances = new WeakSet(), _Messenger_registerActionHandler = function _Messenger_registerActionHandler(actionType, handler) {
+     if (__classPrivateFieldGet(this, _Messenger_actions, "f").has(actionType)) {

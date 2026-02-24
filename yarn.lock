@@ -7530,10 +7530,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/messenger@npm:^0.3.0":
+"@metamask/messenger@npm:0.3.0":
   version: 0.3.0
   resolution: "@metamask/messenger@npm:0.3.0"
   checksum: 10/84e9f4193646d749c7260a4958b13974b3c8738cc2e414116279ed31734e1edba687ff56ddbfdb75033bce30aaa9eeb7c391bccb87a66dbc99a902882271f673
+  languageName: node
+  linkType: hard
+
+"@metamask/messenger@patch:@metamask/messenger@npm%3A0.3.0#~/.yarn/patches/@metamask-messenger-npm-0.3.0-f4006cbc71.patch":
+  version: 0.3.0
+  resolution: "@metamask/messenger@patch:@metamask/messenger@npm%3A0.3.0#~/.yarn/patches/@metamask-messenger-npm-0.3.0-f4006cbc71.patch::version=0.3.0&hash=b76173"
+  checksum: 10/7ff20d7bf56f8fd5bccb1f6ffd4c9f576fec4f7242d8c10798018f5538247c5df46005932450fe601bfc81e7f570a3a44efa2b12683b15a793c18140550f09d1
   languageName: node
   linkType: hard
 
@@ -33854,7 +33861,7 @@ __metadata:
     "@metamask/logo": "npm:^4.0.0"
     "@metamask/message-manager": "npm:^14.0.0"
     "@metamask/message-signing-snap": "npm:1.1.4"
-    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/messenger": "patch:@metamask/messenger@npm%3A0.3.0#~/.yarn/patches/@metamask-messenger-npm-0.3.0-f4006cbc71.patch"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-account-service": "npm:^6.0.0"
     "@metamask/multichain-api-client": "npm:^0.10.1"

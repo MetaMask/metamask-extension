@@ -250,7 +250,8 @@
     "@metamask/bridge-status-controller": "64.3.0",
     "@ledgerhq/hw-transport-webhid@npm:^6.31.0": "patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch",
     "fast-xml-parser": "^5.3.6",
-    "@metamask/snaps-controllers": "^18.0.1"
+    "@metamask/snaps-controllers": "^18.0.1",
+    "@metamask/messenger@^0.3.0": "patch:@metamask/messenger@npm%3A0.3.0#~/.yarn/patches/@metamask-messenger-npm-0.3.0-f4006cbc71.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -341,7 +342,7 @@
     "@metamask/logo": "^4.0.0",
     "@metamask/message-manager": "^14.0.0",
     "@metamask/message-signing-snap": "1.1.4",
-    "@metamask/messenger": "^0.3.0",
+    "@metamask/messenger": "patch:@metamask/messenger@npm%3A0.3.0#~/.yarn/patches/@metamask-messenger-npm-0.3.0-f4006cbc71.patch",
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/multichain-account-service": "^6.0.0",
     "@metamask/multichain-api-client": "^0.10.1",
