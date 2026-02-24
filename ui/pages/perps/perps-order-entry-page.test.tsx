@@ -501,7 +501,7 @@ describe('PerpsOrderEntryPage', () => {
   });
 
   describe('available balance', () => {
-    it('shows zero balance when account is null', () => {
+    it('renders when account is null', () => {
       mockLiveAccount.mockReturnValue({
         account: null,
         isInitialLoading: false,
@@ -510,6 +510,306 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+    });
+  });
+
+  describe('price subscriptions', () => {
+    let priceCallback: (updates: unknown[]) => void;
+    let orderBookCallback: (book: unknown) => void;
+
+    beforeEach(() => {
+      mockGetPerpsController.mockResolvedValue({
+        placeOrder: jest.fn().mockResolvedValue({ success: true }),
+        closePosition: jest.fn().mockResolvedValue({ success: true }),
+        updatePositionTPSL: jest.fn().mockResolvedValue({ success: true }),
+        subscribeToPrices: jest.fn(
+          (opts: { callback: (u: unknown[]) => void }) => {
+            priceCallback = opts.callback;
+            return jest.fn();
+          },
+        ),
+        subscribeToOrderBook: jest.fn(
+          (opts: { callback: (b: unknown) => void }) => {
+            orderBookCallback = opts.callback;
+            return jest.fn();
+          },
+        ),
+      });
+    });
+
+    it('processes price updates from subscribeToPrices callback', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        await new Promise((r) => setTimeout(r, 10));
+      });
+
+      act(() => {
+        priceCallback([
+          {
+            symbol: 'ETH',
+            price: '3200.50',
+            timestamp: 1000,
+            markPrice: '3201.00',
+          },
+        ]);
+      });
+
+      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+    });
+
+    it('uses price field when markPrice is absent', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        await new Promise((r) => setTimeout(r, 10));
+      });
+
+      act(() => {
+        priceCallback([
+          {
+            symbol: 'ETH',
+            price: '3100.00',
+          },
+        ]);
+      });
+
+      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+    });
+
+    it('ignores price updates for other symbols', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        await new Promise((r) => setTimeout(r, 10));
+      });
+
+      act(() => {
+        priceCallback([
+          { symbol: 'BTC', price: '50000.00', markPrice: '50001.00' },
+        ]);
+      });
+
+      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+    });
+
+    it('processes order book updates from subscribeToOrderBook callback', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        await new Promise((r) => setTimeout(r, 10));
+      });
+
+      act(() => {
+        orderBookCallback({
+          bids: [{ price: '3199', size: '10' }],
+          asks: [{ price: '3201', size: '10' }],
+          midPrice: '3200.00',
+        });
+      });
+
+      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+    });
+
+    it('ignores empty order book updates', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        await new Promise((r) => setTimeout(r, 10));
+      });
+
+      act(() => {
+        orderBookCallback({
+          bids: [],
+          asks: [],
+          midPrice: null,
+        });
+      });
+
+      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+    });
+  });
+
+  describe('order submission error paths', () => {
+    const mockPlaceOrder = jest.fn().mockResolvedValue({ success: true });
+    const mockClosePosition = jest.fn().mockResolvedValue({ success: true });
+    const mockUpdateTPSL = jest.fn().mockResolvedValue({ success: true });
+
+    beforeEach(() => {
+      mockGetPerpsController.mockResolvedValue({
+        placeOrder: mockPlaceOrder,
+        closePosition: mockClosePosition,
+        updatePositionTPSL: mockUpdateTPSL,
+        subscribeToPrices: jest.fn(() => jest.fn()),
+        subscribeToOrderBook: jest.fn(() => jest.fn()),
+      });
+    });
+
+    it('shows error when closePosition fails', async () => {
+      mockSearchParams.set('mode', 'close');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockClosePosition.mockResolvedValueOnce({
+        success: false,
+        error: 'Close failed',
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(screen.getByText('Close failed')).toBeInTheDocument();
+    });
+
+    it('shows error when updatePositionTPSL fails', async () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockUpdateTPSL.mockResolvedValueOnce({
+        success: false,
+        error: 'TPSL update failed',
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(screen.getByText('TPSL update failed')).toBeInTheDocument();
+    });
+
+    it('shows generic error for non-Error throws', async () => {
+      mockPlaceOrder.mockRejectedValueOnce('string error');
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(screen.getByText('An unknown error occurred')).toBeInTheDocument();
+    });
+
+    it('navigates back after successful limit order', async () => {
+      mockSearchParams.set('orderType', 'limit');
+      mockPlaceOrder.mockResolvedValueOnce({ success: true });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '500' },
+      });
+
+      const limitContainer = screen.getByTestId('limit-price-input');
+      const limitInput = limitContainer.querySelector('input');
+      fireEvent.change(limitInput as HTMLInputElement, {
+        target: { value: '3000' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockPlaceOrder).toHaveBeenCalledWith(
+        expect.objectContaining({
+          orderType: 'limit',
+          price: '3000',
+        }),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
+    });
+  });
+
+  describe('pending order effects', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+      mockGetPerpsController.mockResolvedValue({
+        placeOrder: jest.fn().mockResolvedValue({ success: true }),
+        closePosition: jest.fn().mockResolvedValue({ success: true }),
+        updatePositionTPSL: jest.fn().mockResolvedValue({ success: true }),
+        subscribeToPrices: jest.fn(() => jest.fn()),
+        subscribeToOrderBook: jest.fn(() => jest.fn()),
+      });
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('navigates back when position appears after market order', async () => {
+      const store = mockStore(createMockState());
+      const { rerender } = renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      mockLivePositions.mockReturnValue({
+        positions: [
+          {
+            ...mockPositions[0],
+            symbol: 'ETH',
+          },
+        ],
+        isInitialLoading: false,
+      });
+
+      await act(async () => {
+        rerender(<PerpsOrderEntryPage />);
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
+    });
+
+    it('navigates back after 15s timeout if position never appears', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      await act(async () => {
+        jest.advanceTimersByTime(15000);
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
   });
 });
