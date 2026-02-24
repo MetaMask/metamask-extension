@@ -214,12 +214,14 @@
       "openSeaEnabled": false,
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
+        "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
         "hideZeroBalanceTokens": false,
         "petnamesEnabled": "boolean",
         "privacyMode": "boolean",
         "shouldShowAggregatedBalancePopover": "boolean",
+        "showDefaultAddress": "boolean",
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": "boolean",
@@ -317,5 +319,5 @@
     },
     "config": "object"
   },
-  "meta": { "version": 195 }
+  "meta": { "version": 196 }
 }
