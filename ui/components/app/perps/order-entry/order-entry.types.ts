@@ -107,6 +107,8 @@ export type OrderEntryProps = {
   onCalculationsChange?: (calculations: OrderCalculations) => void;
   /** Whether to show the internal submit button (defaults to true) */
   showSubmitButton?: boolean;
+  /** Whether to show the order summary inside the form (defaults to true) */
+  showOrderSummary?: boolean;
   /** Order mode: 'new' for opening, 'modify' for adjusting, 'close' for closing (defaults to 'new') */
   mode?: OrderMode;
   /** Existing position data for pre-populating form in modify/close modes */

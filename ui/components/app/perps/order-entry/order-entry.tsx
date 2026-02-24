@@ -47,6 +47,7 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.onSubmit - Callback when order is submitted
  * @param props.onFormStateChange - Callback when form state changes
  * @param props.showSubmitButton - Whether to show the internal submit button
+ * @param props.showOrderSummary - Whether to show the order summary inside the form
  * @param props.mode - Order mode: 'new', 'modify', or 'close' (defaults to 'new')
  * @param props.existingPosition - Existing position data for pre-population
  * @param props.orderType
@@ -64,6 +65,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   onFormStateChange,
   onCalculationsChange,
   showSubmitButton = true,
+  showOrderSummary = true,
   mode = 'new',
   existingPosition,
   orderType = 'market',
@@ -299,8 +301,8 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
           />
         )}
 
-        {/* Order Summary Section - shown when parent doesn't handle it externally */}
-        {!onCalculationsChange && (
+        {/* Order Summary Section */}
+        {showOrderSummary && (
           <OrderSummary
             marginRequired={calculations.marginRequired}
             estimatedFees={calculations.estimatedFees}

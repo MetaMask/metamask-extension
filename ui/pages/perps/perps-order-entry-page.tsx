@@ -569,6 +569,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           availableBalance={availableBalance}
           initialDirection={orderDirection}
           showSubmitButton={false}
+          showOrderSummary={false}
           onFormStateChange={handleFormStateChange}
           onCalculationsChange={handleCalculationsChange}
           mode={orderMode}
