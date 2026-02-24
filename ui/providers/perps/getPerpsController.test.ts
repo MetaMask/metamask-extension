@@ -84,11 +84,8 @@ const mockCreatePerpsInfrastructure = jest.fn(
 
 const mockGetDefaultPerpsControllerState = jest.fn(() => ({}));
 
-// @ts-expect-error Jest resolves .ts directly; tsc wants .js extension
 let getPerpsController: typeof import('./getPerpsController').getPerpsController;
-// @ts-expect-error Jest resolves .ts directly; tsc wants .js extension
 let resetPerpsController: typeof import('./getPerpsController').resetPerpsController;
-// @ts-expect-error Jest resolves .ts directly; tsc wants .js extension
 let isPerpsControllerInitializationCancelledError: typeof import('./getPerpsController').isPerpsControllerInitializationCancelledError;
 
 function createMockStore() {
