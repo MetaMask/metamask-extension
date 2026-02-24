@@ -2,70 +2,143 @@ import type { Driver } from '../../webdriver/driver';
 import type { WebVitalsMetrics } from './types';
 import { collectWebVitals } from './web-vitals-collector';
 
+function createMockDriver(overrides: {
+  executeScript?: jest.Mock;
+  executeAsyncScript?: jest.Mock;
+}): Driver {
+  return {
+    executeScript: overrides.executeScript ?? jest.fn().mockResolvedValue(null),
+    executeAsyncScript:
+      overrides.executeAsyncScript ?? jest.fn().mockResolvedValue(null),
+  } as unknown as Driver;
+}
+
+const fullMetrics: WebVitalsMetrics = {
+  inp: 120,
+  lcp: 2400,
+  cls: 0.05,
+  inpRating: 'good',
+  lcpRating: 'good',
+  clsRating: 'good',
+};
+
+const nullMetrics: WebVitalsMetrics = {
+  inp: null,
+  lcp: null,
+  cls: null,
+  inpRating: null,
+  lcpRating: null,
+  clsRating: null,
+};
+
 describe('collectWebVitals', () => {
-  function createMockDriver(
-    scriptResult: WebVitalsMetrics,
-  ): Driver {
-    return {
-      executeScript: jest.fn().mockResolvedValue(scriptResult),
-    } as unknown as Driver;
-  }
+  describe('fast path (stateHooks)', () => {
+    it('returns metrics from stateHooks when available', async () => {
+      const driver = createMockDriver({
+        executeScript: jest.fn().mockResolvedValue(fullMetrics),
+      });
 
-  const metricsWithData: WebVitalsMetrics = {
-    inp: 120,
-    lcp: 2400,
-    cls: 0.05,
-    inpRating: 'good',
-    lcpRating: 'good',
-    clsRating: 'good',
-  };
+      const result = await collectWebVitals(driver);
 
-  const nullMetrics: WebVitalsMetrics = {
-    inp: null,
-    lcp: null,
-    cls: null,
-    inpRating: null,
-    lcpRating: null,
-    clsRating: null,
-  };
+      expect(result).toEqual(fullMetrics);
+      expect(driver.executeScript).toHaveBeenCalledTimes(1);
+      expect(driver.executeAsyncScript).not.toHaveBeenCalled();
+    });
 
-  it('returns metrics from driver.executeScript', async () => {
-    const driver = createMockDriver(metricsWithData);
-    const result = await collectWebVitals(driver);
+    it('returns stateHooks values when only some metrics are non-null', async () => {
+      const partial: WebVitalsMetrics = {
+        inp: 80,
+        lcp: null,
+        cls: null,
+        inpRating: 'good',
+        lcpRating: null,
+        clsRating: null,
+      };
+      const driver = createMockDriver({
+        executeScript: jest.fn().mockResolvedValue(partial),
+      });
 
-    expect(result).toEqual(metricsWithData);
-    expect(driver.executeScript).toHaveBeenCalledTimes(1);
+      const result = await collectWebVitals(driver);
+
+      expect(result.inp).toBe(80);
+      expect(driver.executeAsyncScript).not.toHaveBeenCalled();
+    });
   });
 
-  it('returns null metrics when stateHooks are unavailable', async () => {
-    const driver = createMockDriver(nullMetrics);
-    const result = await collectWebVitals(driver);
+  describe('fallback path (direct PerformanceObserver)', () => {
+    it('falls back to executeAsyncScript when stateHooks return null', async () => {
+      const observerResult: WebVitalsMetrics = {
+        inp: 150,
+        lcp: 1800,
+        cls: 0.02,
+        inpRating: 'good',
+        lcpRating: 'good',
+        clsRating: 'good',
+      };
+      const driver = createMockDriver({
+        executeScript: jest.fn().mockResolvedValue(null),
+        executeAsyncScript: jest.fn().mockResolvedValue(observerResult),
+      });
 
-    expect(result).toEqual(nullMetrics);
+      const result = await collectWebVitals(driver);
+
+      expect(result).toEqual(observerResult);
+      expect(driver.executeScript).toHaveBeenCalledTimes(1);
+      expect(driver.executeAsyncScript).toHaveBeenCalledTimes(1);
+      expect(driver.executeAsyncScript).toHaveBeenCalledWith(
+        expect.stringContaining('PerformanceObserver'),
+      );
+    });
+
+    it('returns null metrics when no observers produce data', async () => {
+      const driver = createMockDriver({
+        executeScript: jest.fn().mockResolvedValue(null),
+        executeAsyncScript: jest.fn().mockResolvedValue(nullMetrics),
+      });
+
+      const result = await collectWebVitals(driver);
+
+      expect(result).toEqual(nullMetrics);
+    });
+
+    it('returns CLS of 0 (valid) when layout-shift observer fires with no shifts', async () => {
+      const zeroClsResult: WebVitalsMetrics = {
+        inp: null,
+        lcp: null,
+        cls: 0,
+        inpRating: null,
+        lcpRating: null,
+        clsRating: 'good',
+      };
+      const driver = createMockDriver({
+        executeScript: jest.fn().mockResolvedValue(null),
+        executeAsyncScript: jest.fn().mockResolvedValue(zeroClsResult),
+      });
+
+      const result = await collectWebVitals(driver);
+
+      expect(result.cls).toBe(0);
+      expect(result.clsRating).toBe('good');
+    });
   });
 
-  it('returns partial metrics when only some observers fire', async () => {
-    const partialMetrics: WebVitalsMetrics = {
-      inp: 80,
-      lcp: null,
-      cls: null,
-      inpRating: 'good',
-      lcpRating: null,
-      clsRating: null,
-    };
-    const driver = createMockDriver(partialMetrics);
-    const result = await collectWebVitals(driver);
+  describe('script content', () => {
+    it('passes an inline script string with PerformanceObserver setup', async () => {
+      const driver = createMockDriver({
+        executeScript: jest.fn().mockResolvedValue(null),
+        executeAsyncScript: jest.fn().mockResolvedValue(nullMetrics),
+      });
 
-    expect(result.inp).toBe(80);
-    expect(result.inpRating).toBe('good');
-    expect(result.lcp).toBeNull();
-    expect(result.cls).toBeNull();
-  });
+      await collectWebVitals(driver);
 
-  it('passes a function to executeScript', async () => {
-    const driver = createMockDriver(nullMetrics);
-    await collectWebVitals(driver);
-
-    expect(driver.executeScript).toHaveBeenCalledWith(expect.any(Function));
+      const script = (driver.executeAsyncScript as jest.Mock).mock
+        .calls[0][0] as string;
+      expect(script).toContain('PerformanceObserver');
+      expect(script).toContain("type: 'event'");
+      expect(script).toContain("type: 'largest-contentful-paint'");
+      expect(script).toContain("type: 'layout-shift'");
+      expect(script).toContain('buffered: true');
+      expect(script).toContain('setTimeout');
+    });
   });
 });
