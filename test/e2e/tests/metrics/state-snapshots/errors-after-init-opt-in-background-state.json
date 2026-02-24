@@ -50,7 +50,7 @@
     "isWalletResetInProgress": "boolean",
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
-    "musdConversionDismissedCtaKeys": [],
+    "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
     "networkConnectionBanner": "object",
     "newPrivacyPolicyToastClickedOrClosed": "boolean",

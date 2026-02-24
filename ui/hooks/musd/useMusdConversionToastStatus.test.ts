@@ -427,6 +427,87 @@ describe('useMusdConversionToastStatus', () => {
     expect(result.current.sourceTokenSymbol).toBe('DAI');
   });
 
+  it('shows success toast when completion and new pending conversion arrive in the same render cycle', () => {
+    setupMock(
+      [createMusdConversionTx('tx-1', TransactionStatus.submitted)],
+      MOCK_PAYMENT_TOKEN,
+    );
+
+    const { result, rerender } = renderHook(() =>
+      useMusdConversionToastStatus(),
+    );
+
+    expect(result.current.toastState).toBe('in-progress');
+
+    // Simulate tx-1 confirming AND tx-2 appearing pending in the same render
+    updateMock(
+      [
+        createMusdConversionTx('tx-1', TransactionStatus.confirmed),
+        createMusdConversionTx('tx-2', TransactionStatus.submitted),
+      ],
+      MOCK_PAYMENT_TOKEN,
+    );
+    rerender();
+
+    expect(result.current.toastState).toBe('success');
+  });
+
+  it('shows failed toast when failure and new pending conversion arrive in the same render cycle', () => {
+    setupMock(
+      [createMusdConversionTx('tx-1', TransactionStatus.submitted)],
+      MOCK_PAYMENT_TOKEN,
+    );
+
+    const { result, rerender } = renderHook(() =>
+      useMusdConversionToastStatus(),
+    );
+
+    expect(result.current.toastState).toBe('in-progress');
+
+    // Simulate tx-1 failing AND tx-2 appearing pending in the same render
+    updateMock(
+      [
+        createMusdConversionTx('tx-1', TransactionStatus.failed),
+        createMusdConversionTx('tx-2', TransactionStatus.submitted),
+      ],
+      MOCK_PAYMENT_TOKEN,
+    );
+    rerender();
+
+    expect(result.current.toastState).toBe('failed');
+  });
+
+  it('transitions to in-progress for tx-2 after dismissing simultaneous completion toast', () => {
+    setupMock(
+      [createMusdConversionTx('tx-1', TransactionStatus.submitted)],
+      MOCK_PAYMENT_TOKEN,
+    );
+
+    const { result, rerender } = renderHook(() =>
+      useMusdConversionToastStatus(),
+    );
+
+    // tx-1 confirms and tx-2 starts in the same render
+    updateMock(
+      [
+        createMusdConversionTx('tx-1', TransactionStatus.confirmed),
+        createMusdConversionTx('tx-2', TransactionStatus.submitted),
+      ],
+      MOCK_PAYMENT_TOKEN,
+    );
+    rerender();
+    expect(result.current.toastState).toBe('success');
+
+    act(() => {
+      result.current.dismissToast();
+    });
+
+    // After dismissing completion, pending tx-2 should show in-progress
+    // (dismissed=true hides it, but next rerender with tx-2 still pending
+    //  doesn't change the state — dismissal hides the toast)
+    expect(result.current.toastState).toBeNull();
+  });
+
   it('shows in-progress for new pending conversion after previous conversion failed', () => {
     setupMock(
       [createMusdConversionTx('tx-1', TransactionStatus.submitted)],

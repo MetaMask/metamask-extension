@@ -233,7 +233,7 @@
     "methodData": "object",
     "minimumBalanceForRentExemptionInLamports": "string",
     "multichainNetworkConfigurationsByChainId": "object",
-    "musdConversionDismissedCtaKeys": [],
+    "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
     "nameSources": "object",
     "names": "object",

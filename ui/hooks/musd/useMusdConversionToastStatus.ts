@@ -122,6 +122,7 @@ export const useMusdConversionToastStatus = (): {
   // Detect transitions from pending → confirmed/failed
   useEffect(() => {
     const currentPendingIds = new Set(pendingConversions.map((tx) => tx.id));
+    let hasNewCompletion = false;
 
     for (const tx of musdConversions) {
       if (shownCompletionIdsRef.current.has(tx.id)) {
@@ -134,6 +135,7 @@ export const useMusdConversionToastStatus = (): {
         setCompletionState('success');
         setDismissed(false);
         shownCompletionIdsRef.current.add(tx.id);
+        hasNewCompletion = true;
       } else if (
         (tx.status === TransactionStatus.failed ||
           tx.status === TransactionStatus.dropped) &&
@@ -142,16 +144,21 @@ export const useMusdConversionToastStatus = (): {
         setCompletionState('failed');
         setDismissed(false);
         shownCompletionIdsRef.current.add(tx.id);
+        hasNewCompletion = true;
       }
     }
 
     // Reset dismissed and completion state if a new pending conversion appeared
-    // so we show in-progress for the new conversion, not the previous completion toast
-    for (const id of currentPendingIds) {
-      if (!pendingConversionIdsRef.current.has(id)) {
-        setCompletionState(null);
-        setDismissed(false);
-        break;
+    // so we show in-progress for the new conversion, not the previous completion toast.
+    // Skip when a completion was just detected — the completion toast takes priority
+    // and must not be overwritten by the null reset (React batches both setState calls).
+    if (!hasNewCompletion) {
+      for (const id of currentPendingIds) {
+        if (!pendingConversionIdsRef.current.has(id)) {
+          setCompletionState(null);
+          setDismissed(false);
+          break;
+        }
       }
     }
 
@@ -165,9 +172,11 @@ export const useMusdConversionToastStatus = (): {
 
   // Completion state takes priority over pending state.
   // If the user dismissed the toast, hide it until a new state change resets `dismissed`.
-  const toastState: MusdConversionToastState = dismissed
-    ? null
-    : (completionState ?? (hasPendingConversion ? 'in-progress' : null));
+  let toastState: MusdConversionToastState = null;
+  if (!dismissed) {
+    toastState =
+      completionState ?? (hasPendingConversion ? 'in-progress' : null);
+  }
 
   return { toastState, sourceTokenSymbol, dismissToast };
 };
