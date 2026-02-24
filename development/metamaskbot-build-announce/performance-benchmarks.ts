@@ -65,7 +65,12 @@ export function extractEntries(
   data: Record<string, BenchmarkResults>,
 ): BenchmarkEntry[] {
   return Object.entries(data)
-    .filter(([, raw]) => raw?.mean !== undefined && raw.mean !== null && typeof raw.mean === 'object')
+    .filter(
+      ([, raw]) =>
+        raw?.mean !== undefined &&
+        raw.mean !== null &&
+        typeof raw.mean === 'object',
+    )
     .map(([name, raw]) => ({
       benchmarkName: name,
       mean: raw.mean,
@@ -100,7 +105,12 @@ export async function fetchBenchmarkEntries(
   const fetches = ENTRY_BENCHMARK_PLATFORMS.flatMap((platform) =>
     ENTRY_BENCHMARK_BUILD_TYPES.flatMap((buildType) =>
       presets.map(async (preset) => {
-        const data = await fetchBenchmarkJson(hostUrl, platform, buildType, preset);
+        const data = await fetchBenchmarkJson(
+          hostUrl,
+          platform,
+          buildType,
+          preset,
+        );
         return { platform, buildType, preset, data };
       }),
     ),

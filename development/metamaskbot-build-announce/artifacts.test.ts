@@ -1,4 +1,11 @@
-import { getArtifactLinks, getBuildLinks, formatBuildLinks } from './artifacts';
+import {
+  getArtifactLinks,
+  getBuildLinks,
+  formatBuildLinks,
+  artifactExists,
+  discoverBundleArtifacts,
+  buildArtifactsBody,
+} from './artifacts';
 
 const HOST = 'https://ci.example.com';
 
@@ -60,5 +67,148 @@ describe('formatBuildLinks', () => {
     expect(rows[0]).toMatch(
       /^builds: <a href=".*">chrome<\/a>, <a href=".*">firefox<\/a>$/u,
     );
+  });
+});
+
+describe('artifactExists', () => {
+  const mockFetch = jest.fn();
+
+  beforeEach(() => {
+    global.fetch = mockFetch;
+  });
+
+  afterEach(() => {
+    mockFetch.mockReset();
+  });
+
+  it('returns true when the HEAD request succeeds', async () => {
+    mockFetch.mockResolvedValue({ ok: true } as Response);
+
+    expect(await artifactExists('https://example.com/file.html')).toBe(true);
+    expect(mockFetch).toHaveBeenCalledWith('https://example.com/file.html', {
+      method: 'HEAD',
+    });
+  });
+
+  it('returns false when the HEAD request fails', async () => {
+    mockFetch.mockResolvedValue({ ok: false } as Response);
+
+    expect(await artifactExists('https://example.com/missing.html')).toBe(
+      false,
+    );
+  });
+});
+
+describe('discoverBundleArtifacts', () => {
+  const mockFetch = jest.fn();
+
+  beforeEach(() => {
+    global.fetch = mockFetch;
+    jest.spyOn(console, 'log').mockImplementation();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+    mockFetch.mockReset();
+  });
+
+  it('returns a list with links for each found artifact', async () => {
+    // FILE_ROOTS = [background, common, ui, content-script, offscreen]
+    // background-0 found, background-1 not found, then all others not found
+    mockFetch
+      .mockResolvedValueOnce({ ok: true } as Response) // background-0 found
+      .mockResolvedValueOnce({ ok: false } as Response) // background-1 not found → stop
+      .mockResolvedValueOnce({ ok: false } as Response) // common-0 not found
+      .mockResolvedValueOnce({ ok: false } as Response) // ui-0 not found
+      .mockResolvedValueOnce({ ok: false } as Response) // content-script-0 not found
+      .mockResolvedValueOnce({ ok: false } as Response); // offscreen-0 not found
+
+    const result = await discoverBundleArtifacts(HOST);
+
+    expect(result).toContain('<a href=');
+    expect(result).toContain('background');
+  });
+
+  it('returns empty list items when no artifacts are found', async () => {
+    mockFetch.mockResolvedValue({ ok: false } as Response);
+
+    const result = await discoverBundleArtifacts(HOST);
+
+    expect(result).toContain('<ul>');
+    expect(result).not.toContain('<a href=');
+  });
+});
+
+describe('buildArtifactsBody', () => {
+  const mockFetch = jest.fn();
+
+  beforeEach(() => {
+    global.fetch = mockFetch;
+    jest.spyOn(console, 'log').mockImplementation();
+    // discoverBundleArtifacts HEAD requests all return not-found by default
+    mockFetch.mockResolvedValue({ ok: false } as Response);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+    mockFetch.mockReset();
+  });
+
+  const makeArtifacts = () =>
+    getArtifactLinks(HOST, 'MetaMask', 'metamask-extension', '99');
+
+  it('includes build links when postNewBuilds is true', async () => {
+    const result = await buildArtifactsBody({
+      hostUrl: HOST,
+      version: '12.0.0',
+      shortSha: 'abc1234',
+      artifacts: makeArtifacts(),
+      postNewBuilds: true,
+      lavamoatPolicyChanged: false,
+    });
+
+    expect(result).toContain('metamask-chrome-12.0.0.zip');
+  });
+
+  it('omits build links when postNewBuilds is false', async () => {
+    const result = await buildArtifactsBody({
+      hostUrl: HOST,
+      version: '12.0.0',
+      shortSha: 'abc1234',
+      artifacts: makeArtifacts(),
+      postNewBuilds: false,
+      lavamoatPolicyChanged: false,
+    });
+
+    expect(result).not.toContain('metamask-chrome-12.0.0.zip');
+  });
+
+  it('includes lavamoat viz link when lavamoatPolicyChanged is true', async () => {
+    const result = await buildArtifactsBody({
+      hostUrl: HOST,
+      version: '12.0.0',
+      shortSha: 'abc1234',
+      artifacts: makeArtifacts(),
+      postNewBuilds: false,
+      lavamoatPolicyChanged: true,
+    });
+
+    expect(result).toContain('lavamoat build viz');
+  });
+
+  it('wraps everything in a collapsible details element with the sha', async () => {
+    const result = await buildArtifactsBody({
+      hostUrl: HOST,
+      version: '12.0.0',
+      shortSha: 'abc1234',
+      artifacts: makeArtifacts(),
+      postNewBuilds: false,
+      lavamoatPolicyChanged: false,
+    });
+
+    expect(result).toContain('<details>');
+    expect(result).toContain('Builds ready [abc1234]');
+    expect(result).toContain('bundle size:');
+    expect(result).toContain('storybook:');
   });
 });

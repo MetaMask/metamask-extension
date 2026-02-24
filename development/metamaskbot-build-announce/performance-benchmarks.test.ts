@@ -3,6 +3,8 @@ import {
   buildTableRows,
   buildBenchmarkSection,
   extractEntries,
+  fetchBenchmarkEntries,
+  buildPerformanceBenchmarksSection,
   type FetchBenchmarkResult,
 } from './performance-benchmarks';
 
@@ -130,8 +132,10 @@ describe('extractEntries', () => {
 
   it('filters out entries with undefined mean', () => {
     const entries = extractEntries({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      undefinedMean: { ...mockUserActionsJson.loadNewAccount, mean: undefined as any },
+      undefinedMean: {
+        ...mockUserActionsJson.loadNewAccount,
+        mean: undefined as unknown as BenchmarkResults['mean'],
+      },
       loadNewAccount: mockUserActionsJson.loadNewAccount,
     });
 
@@ -377,5 +381,118 @@ describe('buildBenchmarkSection', () => {
       expect(html).toContain('<table>');
       expect(html).toContain('Load New Account');
     });
+  });
+});
+
+describe('fetchBenchmarkEntries', () => {
+  const HOST = 'https://ci.example.com';
+  const mockFetch = jest.fn();
+
+  beforeEach(() => {
+    global.fetch = mockFetch;
+  });
+
+  afterEach(() => {
+    mockFetch.mockReset();
+  });
+
+  it('returns entries when fetch succeeds', async () => {
+    const payload: Record<string, BenchmarkResults> = {
+      confirmTx: {
+        testTitle: 'benchmark-confirm-tx',
+        persona: 'standard',
+        mean: { confirmTx: 1000 },
+        min: { confirmTx: 900 },
+        max: { confirmTx: 1100 },
+        stdDev: { confirmTx: 50 },
+        p75: { confirmTx: 1050 },
+        p95: { confirmTx: 1090 },
+      },
+    };
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(payload),
+    } as unknown as Response);
+
+    const { entries, missingPresets } = await fetchBenchmarkEntries(HOST, [
+      'interactionUserActions',
+    ]);
+
+    expect(entries.length).toBeGreaterThan(0);
+    expect(entries[0].benchmarkName).toBe('confirmTx');
+    expect(missingPresets).toHaveLength(0);
+  });
+
+  it('records missing presets when fetch returns non-ok', async () => {
+    mockFetch.mockResolvedValue({ ok: false } as Response);
+
+    const { entries, missingPresets } = await fetchBenchmarkEntries(HOST, [
+      'interactionUserActions',
+    ]);
+
+    expect(entries).toHaveLength(0);
+    expect(missingPresets.length).toBeGreaterThan(0);
+    expect(missingPresets[0]).toContain('interactionUserActions');
+  });
+
+  it('records missing presets when fetch throws', async () => {
+    mockFetch.mockRejectedValue(new Error('network error'));
+
+    const { entries, missingPresets } = await fetchBenchmarkEntries(HOST, [
+      'interactionUserActions',
+    ]);
+
+    expect(entries).toHaveLength(0);
+    expect(missingPresets.length).toBeGreaterThan(0);
+  });
+});
+
+describe('buildPerformanceBenchmarksSection', () => {
+  const HOST = 'https://ci.example.com';
+  const mockFetch = jest.fn();
+
+  beforeEach(() => {
+    global.fetch = mockFetch;
+    jest.spyOn(console, 'log').mockImplementation();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+    mockFetch.mockReset();
+  });
+
+  const mockPayload: Record<string, BenchmarkResults> = {
+    confirmTx: {
+      testTitle: 'benchmark-confirm-tx',
+      persona: 'standard',
+      mean: { confirmTx: 1000 },
+      min: { confirmTx: 900 },
+      max: { confirmTx: 1100 },
+      stdDev: { confirmTx: 50 },
+      p75: { confirmTx: 1050 },
+      p95: { confirmTx: 1090 },
+    },
+  };
+
+  it('returns a collapsible section with all three subsections when data is available', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(mockPayload),
+    } as unknown as Response);
+
+    const result = await buildPerformanceBenchmarksSection(HOST);
+
+    expect(result).toContain('<details>');
+    expect(result).toContain('⚡ Performance Benchmarks');
+  });
+
+  it('returns a section with missing preset warnings when all fetches fail', async () => {
+    mockFetch.mockResolvedValue({ ok: false } as Response);
+
+    const result = await buildPerformanceBenchmarksSection(HOST);
+
+    // When all fetches fail, missing-preset warnings are shown instead of empty string
+    expect(result).toContain('⚡ Performance Benchmarks');
+    expect(result).toContain('Missing data');
   });
 });

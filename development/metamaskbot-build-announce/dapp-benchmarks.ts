@@ -6,7 +6,7 @@ import {
   BenchmarkSummary,
 } from '../../test/e2e/page-objects/benchmark/page-load-benchmark';
 
-type BenchmarkOutput = {
+export type BenchmarkOutput = {
   /** Timestamp when the benchmark was executed */
   timestamp: number;
   /** Git commit SHA (shortened) */

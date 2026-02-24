@@ -1,3 +1,4 @@
+import { promises as fs } from 'fs';
 import type {
   BenchmarkMetrics,
   BenchmarkSummary,
@@ -11,6 +12,8 @@ import {
   aggregateHistoricalBenchmarkData,
   generateBenchmarkComment,
   getMetricValues,
+  getDappBenchmarkComment,
+  type BenchmarkOutput,
 } from './dapp-benchmarks';
 
 const MOCK_COMMIT = 'abc1234567890';
@@ -507,5 +510,147 @@ describe('generateBenchmarkComment', () => {
     const result = generateBenchmarkComment(current, reference);
 
     expect(result).not.toContain('Performance Warning');
+  });
+
+  it('skips a metric in the summary loop when currentValues is null', () => {
+    const summaryWithMissingMetric = buildMockSummary({
+      mean: {
+        pageLoadTime: undefined,
+        domContentLoaded: 1100,
+        firstContentfulPaint: 700,
+      } as unknown as BenchmarkMetrics,
+    });
+    const current = buildMockBenchmarkOutput([summaryWithMissingMetric]);
+
+    // Should not throw; missing pageLoadTime row is silently skipped
+    const result = generateBenchmarkComment(current, null);
+
+    expect(result).toContain('domContentLoaded');
+    expect(result).not.toMatch(/pageLoadTime.*mean/u);
+  });
+
+  it('falls back to no-comparison row when referenceValues is null for a metric', () => {
+    const current = buildMockBenchmarkOutput([buildMockSummary()]);
+    const referenceSummary = buildMockSummary({
+      mean: {
+        pageLoadTime: undefined,
+        domContentLoaded: 1000,
+        firstContentfulPaint: 700,
+      } as unknown as BenchmarkMetrics,
+    });
+    const reference = buildMockBenchmarkOutput([referenceSummary]);
+
+    // Should not throw; pageLoadTime in reference has no numeric mean so
+    // processMetricForComparison falls back to formatMetricRow (line 388)
+    const result = generateBenchmarkComment(current, reference);
+
+    expect(result).toContain('pageLoadTime');
+    expect(result).toContain('domContentLoaded');
+  });
+
+  it('skips a metric in the detailed results loop when currentValues is null', () => {
+    const summaryAllMetricsMissing = buildMockSummary({
+      mean: {
+        pageLoadTime: undefined,
+        domContentLoaded: 1100,
+        firstContentfulPaint: 700,
+      } as unknown as BenchmarkMetrics,
+    });
+    const current = buildMockBenchmarkOutput([summaryAllMetricsMissing]);
+
+    const result = generateBenchmarkComment(current, null);
+
+    // Detailed results table should still appear
+    expect(result).toContain('Detailed Results');
+  });
+});
+
+describe('getDappBenchmarkComment', () => {
+  const mockFetch = jest.fn();
+  let readFileSpy: jest.SpyInstance;
+
+  const MOCK_PAGE = 'chrome-extension://abc/home.html';
+  const benchmarkOutput: BenchmarkOutput = {
+    commit: 'abc123',
+    timestamp: 1704067200000,
+    rawResults: [],
+    summary: [buildMockSummary({ page: MOCK_PAGE })],
+  };
+
+  const historicalData = {
+    abc123: {
+      commit: 'abc123',
+      timestamp: 1704067200000,
+      rawResults: [],
+      summary: [buildMockSummary({ page: MOCK_PAGE })],
+    },
+  };
+
+  beforeEach(() => {
+    global.fetch = mockFetch;
+    readFileSpy = jest.spyOn(fs, 'readFile');
+    jest.spyOn(console, 'log').mockImplementation();
+    jest.spyOn(console, 'warn').mockImplementation();
+    process.env.HEAD_COMMIT_HASH = 'test-commit-hash';
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+    delete process.env.HEAD_COMMIT_HASH;
+    mockFetch.mockReset();
+  });
+
+  it('returns null when benchmark file cannot be read', async () => {
+    readFileSpy.mockRejectedValue(new Error('file not found'));
+
+    const result = await getDappBenchmarkComment();
+
+    expect(result).toBeNull();
+  });
+
+  it('returns a formatted comment when benchmark file exists and fetch succeeds', async () => {
+    readFileSpy.mockResolvedValue(JSON.stringify(benchmarkOutput));
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(historicalData),
+    } as unknown as Response);
+
+    const result = await getDappBenchmarkComment();
+
+    expect(result).toContain('Dapp Page Load Benchmarks');
+    expect(result).toContain('home.html');
+  });
+
+  it('returns comment with no historical comparison when fetch returns non-ok', async () => {
+    readFileSpy.mockResolvedValue(JSON.stringify(benchmarkOutput));
+    mockFetch.mockResolvedValue({
+      ok: false,
+      statusText: 'Not Found',
+    } as Response);
+
+    const result = await getDappBenchmarkComment();
+
+    expect(result).toContain('home.html');
+  });
+
+  it('returns comment when historical fetch throws', async () => {
+    readFileSpy.mockResolvedValue(JSON.stringify(benchmarkOutput));
+    mockFetch.mockRejectedValue(new Error('network error'));
+
+    const result = await getDappBenchmarkComment();
+
+    expect(result).toContain('home.html');
+  });
+
+  it('returns comment when historical data has no commits', async () => {
+    readFileSpy.mockResolvedValue(JSON.stringify(benchmarkOutput));
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({}),
+    } as unknown as Response);
+
+    const result = await getDappBenchmarkComment();
+
+    expect(result).toContain('home.html');
   });
 });
