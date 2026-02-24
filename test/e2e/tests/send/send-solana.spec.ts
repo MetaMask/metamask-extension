@@ -6,6 +6,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { buildSolanaTestSpecificMock } from '../solana/common-solana';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 
 describe('Send Solana', function () {
   it('it should be possible to send SOL', async function () {
@@ -19,6 +20,7 @@ describe('Send Solana', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const sendPage = new SendPage(driver);
         const nonEvmHomepage = new NonEvmHomepage(driver);
         const snapTransactionConfirmation = new SnapTransactionConfirmation(

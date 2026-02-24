@@ -128,8 +128,8 @@ class HomePage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.sendButton,
         this.activityTab,
+        this.erc20TokenDropdown,
         this.tokensTab,
       ]);
     } catch (e) {
