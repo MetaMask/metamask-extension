@@ -2616,6 +2616,11 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setServiceWorkerKeepAlivePreference.bind(
           preferencesController,
         ),
+      setNftApiBaseUrl: (value) => {
+        preferencesController.setNftApiBaseUrl(value);
+        nftController.setNftApiBaseUrl(value);
+        nftDetectionController.setNftApiBaseUrl(value);
+      },
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       getRequestAccountTabIds: this.getRequestAccountTabIds,

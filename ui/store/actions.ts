@@ -4672,6 +4672,24 @@ export function setServiceWorkerKeepAlivePreference(
   };
 }
 
+export function setNftApiBaseUrl(
+  value: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setNftApiBaseUrl`);
+    try {
+      await submitRequestToBackground('setNftApiBaseUrl', [value]);
+    } catch (error) {
+      dispatch(displayWarning(error));
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export async function forceUpdateMetamaskState(
   dispatch: MetaMaskReduxDispatch,
 ) {

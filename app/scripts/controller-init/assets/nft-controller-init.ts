@@ -17,13 +17,16 @@ import {
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
  * @param request.initMessenger - The messenger used for initialization.
+ * @param request.getController - The function to get a controller by name.
  * @returns The initialized controller.
  */
 export const NftControllerInit: ControllerInitFunction<
   NftController,
   NftControllerMessenger,
   NftControllerInitMessenger
-> = ({ controllerMessenger, initMessenger, persistedState }) => {
+> = ({ controllerMessenger, initMessenger, persistedState, getController }) => {
+  const { nftApiBaseUrl } = getController('PreferencesController').state;
+
   const controller = new NftController({
     state: persistedState.NftController,
     messenger: controllerMessenger,
@@ -50,7 +53,7 @@ export const NftControllerInit: ControllerInitFunction<
           source,
         },
       }),
-    nftApiBaseUrl: 'https://nft.dev-api.cx.metamask.io',
+    nftApiBaseUrl,
   });
 
   return {

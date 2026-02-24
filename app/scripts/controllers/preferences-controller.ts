@@ -146,6 +146,7 @@ export type PreferencesControllerState = Omit<
   dismissSeedBackUpReminder: boolean;
   enableMV3TimestampSave: boolean;
   forgottenPassword: boolean;
+  nftApiBaseUrl: string;
   knownMethodData: Record<string, string>;
   ledgerTransportType: LedgerTransportTypes;
   manageInstitutionalWallets: boolean;
@@ -188,6 +189,7 @@ export const getDefaultPreferencesControllerState =
     enableMV3TimestampSave: true,
     featureFlags: {},
     forgottenPassword: false,
+    nftApiBaseUrl: 'https://nft.api.cx.metamask.io',
     identities: {},
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -308,6 +310,12 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     usedInUi: true,
   },
   forgottenPassword: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  nftApiBaseUrl: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -1022,6 +1030,12 @@ export class PreferencesController extends BaseController<
   setServiceWorkerKeepAlivePreference(value: boolean): void {
     this.update((state) => {
       state.enableMV3TimestampSave = value;
+    });
+  }
+
+  setNftApiBaseUrl(value: string): void {
+    this.update((state) => {
+      state.nftApiBaseUrl = value;
     });
   }
 

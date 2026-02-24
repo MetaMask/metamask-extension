@@ -30,7 +30,7 @@ index 1ea0a1398b929ff3d86da88b737db4438029b0c1..054599151ed82d4a27c2678dc235acdc
          __classPrivateFieldSet(this, _NftController_selectedAccountId, this.messenger.call('AccountsController:getSelectedAccount').id, "f");
          __classPrivateFieldSet(this, _NftController_ipfsGateway, ipfsGateway, "f");
          __classPrivateFieldSet(this, _NftController_displayNftMedia, displayNftMedia, "f");
-@@ -103,9 +105,10 @@ class NftController extends base_controller_1.BaseController {
+@@ -103,9 +105,13 @@ class NftController extends base_controller_1.BaseController {
          __classPrivateFieldSet(this, _NftController_onNftAdded, onNftAdded, "f");
          this.messenger.subscribe('PreferencesController:stateChange', __classPrivateFieldGet(this, _NftController_instances, "m", _NftController_onPreferencesControllerStateChange).bind(this));
          this.messenger.subscribe('AccountsController:selectedEvmAccountChange', __classPrivateFieldGet(this, _NftController_instances, "m", _NftController_onSelectedAccountChange).bind(this));
@@ -39,10 +39,13 @@ index 1ea0a1398b929ff3d86da88b737db4438029b0c1..054599151ed82d4a27c2678dc235acdc
      getNftApi() {
 -        return `${controller_utils_1.NFT_API_BASE_URL}/tokens`;
 +        return `${__classPrivateFieldGet(this, _NftController_nftApiBaseUrl, "f")}/tokens`;
++    }
++    setNftApiBaseUrl(url) {
++        __classPrivateFieldSet(this, _NftController_nftApiBaseUrl, url, "f");
      }
      /**
       * Adds a new suggestedAsset to state. Parameters will be validated according to
-@@ -629,7 +632,7 @@ class NftController extends base_controller_1.BaseController {
+@@ -629,7 +635,7 @@ class NftController extends base_controller_1.BaseController {
      }
  }
  exports.NftController = NftController;
@@ -66,13 +69,14 @@ index 5c70ccb04dae006b7e241b6c57a18e52cae303d9..600366ae9536b5f4e176e6dc1a8fd055
          ipfsGateway?: string;
          displayNftMedia?: boolean;
          useIpfsSubdomains?: boolean;
-@@ -227,6 +228,7 @@ export declare class NftController extends BaseController<typeof controllerName,
+@@ -227,6 +228,8 @@ export declare class NftController extends BaseController<typeof controllerName,
          }) => void;
          messenger: NftControllerMessenger;
          state?: Partial<NftControllerState>;
 +        nftApiBaseUrl?: string;
      });
      getNftApi(): string;
++    setNftApiBaseUrl(url: string): void;
      /**
 diff --git a/dist/NftDetectionController.cjs b/dist/NftDetectionController.cjs
 index c793f3444083da95082efaa8a3161263c196a36e..13a8e0282322c40a750c6b1b80fe69eb9349dbbb 100644
@@ -98,7 +102,7 @@ index c793f3444083da95082efaa8a3161263c196a36e..13a8e0282322c40a750c6b1b80fe69eb
          super({
              name: controllerName,
              messenger,
-@@ -63,11 +64,13 @@ class NftDetectionController extends base_controller_1.BaseController {
+@@ -63,11 +64,16 @@ class NftDetectionController extends base_controller_1.BaseController {
          _NftDetectionController_addNfts.set(this, void 0);
          _NftDetectionController_getNftState.set(this, void 0);
          _NftDetectionController_inProcessNftFetchingUpdates.set(this, void 0);
@@ -109,10 +113,13 @@ index c793f3444083da95082efaa8a3161263c196a36e..13a8e0282322c40a750c6b1b80fe69eb
          __classPrivateFieldSet(this, _NftDetectionController_addNfts, addNfts, "f");
          this.messenger.subscribe('PreferencesController:stateChange', __classPrivateFieldGet(this, _NftDetectionController_instances, "m", _NftDetectionController_onPreferencesControllerStateChange).bind(this));
 +        __classPrivateFieldSet(this, _NftDetectionController_nftApiBaseUrl, nftApiBaseUrl, "f");
++    }
++    setNftApiBaseUrl(url) {
++        __classPrivateFieldSet(this, _NftDetectionController_nftApiBaseUrl, url, "f");
      }
      /**
       * Checks whether network is mainnet or not.
-@@ -172,14 +175,14 @@ class NftDetectionController extends base_controller_1.BaseController {
+@@ -172,14 +178,14 @@ class NftDetectionController extends base_controller_1.BaseController {
      }
  }
  exports.NftDetectionController = NftDetectionController;
@@ -133,7 +140,7 @@ diff --git a/dist/NftDetectionController.d.cts b/dist/NftDetectionController.d.c
 index e8b2eca7f5a4c0bd99a20edb9a4eb7d3f04931a5..c7e6c6736eccd4cb235040bea5415aaac3cb1501 100644
 --- a/dist/NftDetectionController.d.cts
 +++ b/dist/NftDetectionController.d.cts
-@@ -345,12 +345,14 @@ export declare class NftDetectionController extends BaseController<typeof contro
+@@ -345,12 +345,15 @@ export declare class NftDetectionController extends BaseController<typeof contro
       * @param options.disabled - Represents previous value of useNftDetection. Used to detect changes of useNftDetection. Default value is true.
       * @param options.addNfts - Add multiple NFTs.
       * @param options.getNftState - Gets the current state of the Assets controller.
@@ -147,5 +154,6 @@ index e8b2eca7f5a4c0bd99a20edb9a4eb7d3f04931a5..c7e6c6736eccd4cb235040bea5415aaa
          getNftState: () => NftControllerState;
 +        nftApiBaseUrl?: string;
      });
++    setNftApiBaseUrl(url: string): void;
      /**
       * Checks whether network is mainnet or not.
