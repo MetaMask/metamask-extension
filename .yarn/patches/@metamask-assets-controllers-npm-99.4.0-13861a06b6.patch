@@ -1,5 +1,5 @@
 diff --git a/dist/NftController.cjs b/dist/NftController.cjs
-index 1ea0a1398b929ff3d86da88b737db4438029b0c1..054599151ed82d4a27c2678dc235acdca56133e6 100644
+index 1ea0a1398b929ff3d86da88b737db4438029b0c1..b163df44b969750cccdc8a8cc01f8b1a9062c7e7 100644
 --- a/dist/NftController.cjs
 +++ b/dist/NftController.cjs
 @@ -13,7 +13,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
@@ -55,7 +55,7 @@ index 1ea0a1398b929ff3d86da88b737db4438029b0c1..054599151ed82d4a27c2678dc235acdc
   * Handles the state change of the preference controller.
   *
 diff --git a/dist/NftController.d.cts b/dist/NftController.d.cts
-index 5c70ccb04dae006b7e241b6c57a18e52cae303d9..600366ae9536b5f4e176e6dc1a8fd0550dbe011d 100644
+index 5c70ccb04dae006b7e241b6c57a18e52cae303d9..e81f8fb2af065d331cfe4459be248946ad64ef58 100644
 --- a/dist/NftController.d.cts
 +++ b/dist/NftController.d.cts
 @@ -212,8 +212,9 @@ export declare class NftController extends BaseController<typeof controllerName,
@@ -69,7 +69,7 @@ index 5c70ccb04dae006b7e241b6c57a18e52cae303d9..600366ae9536b5f4e176e6dc1a8fd055
          ipfsGateway?: string;
          displayNftMedia?: boolean;
          useIpfsSubdomains?: boolean;
-@@ -227,6 +228,8 @@ export declare class NftController extends BaseController<typeof controllerName,
+@@ -227,8 +228,10 @@ export declare class NftController extends BaseController<typeof controllerName,
          }) => void;
          messenger: NftControllerMessenger;
          state?: Partial<NftControllerState>;
@@ -78,8 +78,10 @@ index 5c70ccb04dae006b7e241b6c57a18e52cae303d9..600366ae9536b5f4e176e6dc1a8fd055
      getNftApi(): string;
 +    setNftApiBaseUrl(url: string): void;
      /**
+      * Adds a new suggestedAsset to state. Parameters will be validated according to
+      * asset type being watched. A `<suggestedNftMeta.id>:pending` hub event will be emitted once added.
 diff --git a/dist/NftDetectionController.cjs b/dist/NftDetectionController.cjs
-index c793f3444083da95082efaa8a3161263c196a36e..13a8e0282322c40a750c6b1b80fe69eb9349dbbb 100644
+index c793f3444083da95082efaa8a3161263c196a36e..8694a9721fc68d0329da5d7d4627fc8d771332af 100644
 --- a/dist/NftDetectionController.cjs
 +++ b/dist/NftDetectionController.cjs
 @@ -10,7 +10,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
@@ -87,7 +89,7 @@ index c793f3444083da95082efaa8a3161263c196a36e..13a8e0282322c40a750c6b1b80fe69eb
      return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
  };
 -var _NftDetectionController_instances, _NftDetectionController_disabled, _NftDetectionController_addNfts, _NftDetectionController_getNftState, _NftDetectionController_inProcessNftFetchingUpdates, _NftDetectionController_onPreferencesControllerStateChange, _NftDetectionController_getOwnerNftApi, _NftDetectionController_getOwnerNfts;
-+var _NftDetectionController_instances, _NftDetectionController_disabled, _NftDetectionController_addNfts, _NftDetectionController_getNftState, _NftDetectionController_inProcessNftFetchingUpdates, _NftDetectionController_nftApiBaseUrl, _NftDetectionController_onPreferencesControllerStateChange, _NftDetectionController_getOwnerNftApi, _NftDetectionController_getOwnerNfts;
++var _NftDetectionController_instances, _NftDetectionController_disabled, _NftDetectionController_addNfts, _NftDetectionController_getNftState, _NftDetectionController_inProcessNftFetchingUpdates, _NftDetectionController_nftApiBaseUrl, _NftDetectionController_overrideAddress, _NftDetectionController_onPreferencesControllerStateChange, _NftDetectionController_getOwnerNftApi, _NftDetectionController_getOwnerNfts;
  Object.defineProperty(exports, "__esModule", { value: true });
  exports.NftDetectionController = exports.BlockaidResultType = void 0;
  const base_controller_1 = require("@metamask/base-controller");
@@ -102,11 +104,12 @@ index c793f3444083da95082efaa8a3161263c196a36e..13a8e0282322c40a750c6b1b80fe69eb
          super({
              name: controllerName,
              messenger,
-@@ -63,11 +64,16 @@ class NftDetectionController extends base_controller_1.BaseController {
+@@ -63,11 +64,20 @@ class NftDetectionController extends base_controller_1.BaseController {
          _NftDetectionController_addNfts.set(this, void 0);
          _NftDetectionController_getNftState.set(this, void 0);
          _NftDetectionController_inProcessNftFetchingUpdates.set(this, void 0);
 +        _NftDetectionController_nftApiBaseUrl.set(this, controller_utils_1.NFT_API_BASE_URL);
++        _NftDetectionController_overrideAddress.set(this, void 0);
          __classPrivateFieldSet(this, _NftDetectionController_disabled, disabled, "f");
          __classPrivateFieldSet(this, _NftDetectionController_inProcessNftFetchingUpdates, {}, "f");
          __classPrivateFieldSet(this, _NftDetectionController_getNftState, getNftState, "f");
@@ -116,15 +119,27 @@ index c793f3444083da95082efaa8a3161263c196a36e..13a8e0282322c40a750c6b1b80fe69eb
 +    }
 +    setNftApiBaseUrl(url) {
 +        __classPrivateFieldSet(this, _NftDetectionController_nftApiBaseUrl, url, "f");
++    }
++    setOverrideAddress(address) {
++        __classPrivateFieldSet(this, _NftDetectionController_overrideAddress, address, "f");
      }
      /**
       * Checks whether network is mainnet or not.
-@@ -172,14 +178,14 @@ class NftDetectionController extends base_controller_1.BaseController {
+@@ -122,7 +132,7 @@ class NftDetectionController extends base_controller_1.BaseController {
+         let resultNftApi;
+         try {
+             do {
+-                resultNftApi = await __classPrivateFieldGet(this, _NftDetectionController_instances, "m", _NftDetectionController_getOwnerNfts).call(this, userAddress, supportedChainIds, next);
++                resultNftApi = await __classPrivateFieldGet(this, _NftDetectionController_instances, "m", _NftDetectionController_getOwnerNfts).call(this, __classPrivateFieldGet(this, _NftDetectionController_overrideAddress, "f") ?? userAddress, supportedChainIds, next);
+                 apiNfts = resultNftApi.tokens.filter((elm) => elm.token.isSpam === false &&
+                     (elm.blockaidResult?.result_type
+                         ? elm.blockaidResult?.result_type === BlockaidResultType.Benign
+@@ -172,14 +182,14 @@ class NftDetectionController extends base_controller_1.BaseController {
      }
  }
  exports.NftDetectionController = NftDetectionController;
 -_NftDetectionController_disabled = new WeakMap(), _NftDetectionController_addNfts = new WeakMap(), _NftDetectionController_getNftState = new WeakMap(), _NftDetectionController_inProcessNftFetchingUpdates = new WeakMap(), _NftDetectionController_instances = new WeakSet(), _NftDetectionController_onPreferencesControllerStateChange = function _NftDetectionController_onPreferencesControllerStateChange({ useNftDetection, }) {
-+_NftDetectionController_disabled = new WeakMap(), _NftDetectionController_addNfts = new WeakMap(), _NftDetectionController_getNftState = new WeakMap(), _NftDetectionController_inProcessNftFetchingUpdates = new WeakMap(), _NftDetectionController_nftApiBaseUrl = new WeakMap(), _NftDetectionController_instances = new WeakSet(), _NftDetectionController_onPreferencesControllerStateChange = function _NftDetectionController_onPreferencesControllerStateChange({ useNftDetection, }) {
++_NftDetectionController_disabled = new WeakMap(), _NftDetectionController_addNfts = new WeakMap(), _NftDetectionController_getNftState = new WeakMap(), _NftDetectionController_inProcessNftFetchingUpdates = new WeakMap(), _NftDetectionController_nftApiBaseUrl = new WeakMap(), _NftDetectionController_overrideAddress = new WeakMap(), _NftDetectionController_instances = new WeakSet(), _NftDetectionController_onPreferencesControllerStateChange = function _NftDetectionController_onPreferencesControllerStateChange({ useNftDetection, }) {
      if (!useNftDetection !== __classPrivateFieldGet(this, _NftDetectionController_disabled, "f")) {
          __classPrivateFieldSet(this, _NftDetectionController_disabled, !useNftDetection, "f");
      }
@@ -137,10 +152,10 @@ index c793f3444083da95082efaa8a3161263c196a36e..13a8e0282322c40a750c6b1b80fe69eb
      // Convert hex chainId to number
      const convertedChainIds = chainIds.map((chainId) => (0, controller_utils_1.convertHexToDecimal)(chainId).toString());
 diff --git a/dist/NftDetectionController.d.cts b/dist/NftDetectionController.d.cts
-index e8b2eca7f5a4c0bd99a20edb9a4eb7d3f04931a5..c7e6c6736eccd4cb235040bea5415aaac3cb1501 100644
+index e8b2eca7f5a4c0bd99a20edb9a4eb7d3f04931a5..7cced91063cfb85126d215a93b8afef1299a70f4 100644
 --- a/dist/NftDetectionController.d.cts
 +++ b/dist/NftDetectionController.d.cts
-@@ -345,12 +345,15 @@ export declare class NftDetectionController extends BaseController<typeof contro
+@@ -345,13 +345,17 @@ export declare class NftDetectionController extends BaseController<typeof contro
       * @param options.disabled - Represents previous value of useNftDetection. Used to detect changes of useNftDetection. Default value is true.
       * @param options.addNfts - Add multiple NFTs.
       * @param options.getNftState - Gets the current state of the Assets controller.
@@ -155,5 +170,7 @@ index e8b2eca7f5a4c0bd99a20edb9a4eb7d3f04931a5..c7e6c6736eccd4cb235040bea5415aaa
 +        nftApiBaseUrl?: string;
      });
 +    setNftApiBaseUrl(url: string): void;
++    setOverrideAddress(address: string | undefined): void;
      /**
       * Checks whether network is mainnet or not.
+      *

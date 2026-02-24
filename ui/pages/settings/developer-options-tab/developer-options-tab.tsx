@@ -30,6 +30,7 @@ import {
   resetOnboarding,
   resetViewedNotifications,
   setNftApiBaseUrl,
+  setNftDetectionOverrideAddress,
   setServiceWorkerKeepAlivePreference,
 } from '../../../store/actions';
 // TODO: Remove restricted import
@@ -75,6 +76,18 @@ const DeveloperOptionsTab = () => {
     }
   }, [currentNftApiBaseUrl]);
 
+  const currentOverrideAddress = useSelector(
+    (state: { metamask: { nftDetectionOverrideAddress: string } }) =>
+      state.metamask.nftDetectionOverrideAddress,
+  );
+  const [overrideAddressInput, setOverrideAddressInput] = useState('');
+  const [hasUpdatedOverrideAddress, setHasUpdatedOverrideAddress] =
+    useState(false);
+
+  useEffect(() => {
+    setOverrideAddressInput(currentOverrideAddress ?? '');
+  }, [currentOverrideAddress]);
+
   const settingsRefs = Array(
     getNumberOfSettingRoutesInTab(t, t('developerOptions')),
   )
@@ -119,6 +132,11 @@ const DeveloperOptionsTab = () => {
   const handleSaveNftApiBaseUrl = async (): Promise<void> => {
     await dispatch(setNftApiBaseUrl(nftApiBaseUrlInput.trim()));
     setHasUpdatedNftApiUrl(true);
+  };
+
+  const handleSaveOverrideAddress = async (): Promise<void> => {
+    await dispatch(setNftDetectionOverrideAddress(overrideAddressInput.trim()));
+    setHasUpdatedOverrideAddress(true);
   };
 
   const renderAnnouncementReset = () => {
@@ -248,7 +266,7 @@ const DeveloperOptionsTab = () => {
           <span>NFT API Base URL</span>
           <div className="settings-page__content-description">
             Override the NFT API base URL used by NftController and
-            NftDetectionController. Requires extension restart to take effect.
+            NftDetectionController. Takes effect immediately.
           </div>
         </div>
 
@@ -283,6 +301,61 @@ const DeveloperOptionsTab = () => {
               color={IconColor.successDefault}
               size={IconSize.Lg}
               hidden={!hasUpdatedNftApiUrl}
+            />
+          </Box>
+        </div>
+      </Box>
+    );
+  };
+
+  const renderNftDetectionOverrideAddress = () => {
+    return (
+      <Box
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>NFT Detection Override Address</span>
+          <div className="settings-page__content-description">
+            Override the address used by NftDetectionController when fetching
+            NFTs. Leave empty to use the actual selected account address.
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <Box display={Display.Flex} gap={2} alignItems={AlignItems.center}>
+            <input
+              type="text"
+              value={overrideAddressInput}
+              onChange={(e) => {
+                setOverrideAddressInput(e.target.value);
+                setHasUpdatedOverrideAddress(false);
+              }}
+              placeholder="0x..."
+              style={{
+                padding: '8px',
+                border: '1px solid var(--color-border-default)',
+                borderRadius: '4px',
+                minWidth: '320px',
+              }}
+            />
+            <Button
+              variant={ButtonVariant.Primary}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onClick={handleSaveOverrideAddress}
+            >
+              Save
+            </Button>
+            <Icon
+              className="settings-page-developer-options__icon-check"
+              name={IconName.Check}
+              color={IconColor.successDefault}
+              size={IconSize.Lg}
+              hidden={!hasUpdatedOverrideAddress}
             />
           </Box>
         </div>
@@ -360,6 +433,7 @@ const DeveloperOptionsTab = () => {
       </Text>
       <div className="settings-page__content-padded">
         {renderNftApiBaseUrl()}
+        {renderNftDetectionOverrideAddress()}
       </div>
 
       <BackupAndSyncDevSettings />

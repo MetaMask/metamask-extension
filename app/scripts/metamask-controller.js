@@ -2621,6 +2621,10 @@ export default class MetamaskController extends EventEmitter {
         nftController.setNftApiBaseUrl(value);
         nftDetectionController.setNftApiBaseUrl(value);
       },
+      setNftDetectionOverrideAddress: (value) => {
+        preferencesController.setNftDetectionOverrideAddress(value);
+        nftDetectionController.setOverrideAddress(value || undefined);
+      },
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       getRequestAccountTabIds: this.getRequestAccountTabIds,

@@ -147,6 +147,7 @@ export type PreferencesControllerState = Omit<
   enableMV3TimestampSave: boolean;
   forgottenPassword: boolean;
   nftApiBaseUrl: string;
+  nftDetectionOverrideAddress: string;
   knownMethodData: Record<string, string>;
   ledgerTransportType: LedgerTransportTypes;
   manageInstitutionalWallets: boolean;
@@ -190,6 +191,7 @@ export const getDefaultPreferencesControllerState =
     featureFlags: {},
     forgottenPassword: false,
     nftApiBaseUrl: 'https://nft.api.cx.metamask.io',
+    nftDetectionOverrideAddress: '',
     identities: {},
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -316,6 +318,12 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     usedInUi: true,
   },
   nftApiBaseUrl: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  nftDetectionOverrideAddress: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -1036,6 +1044,12 @@ export class PreferencesController extends BaseController<
   setNftApiBaseUrl(value: string): void {
     this.update((state) => {
       state.nftApiBaseUrl = value;
+    });
+  }
+
+  setNftDetectionOverrideAddress(value: string): void {
+    this.update((state) => {
+      state.nftDetectionOverrideAddress = value;
     });
   }
 

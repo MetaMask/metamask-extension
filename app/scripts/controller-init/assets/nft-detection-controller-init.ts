@@ -19,13 +19,20 @@ export const NftDetectionControllerInit: ControllerInitFunction<
   const preferencesController = () => getController('PreferencesController');
   const nftController = () => getController('NftController');
 
+  const { nftApiBaseUrl, nftDetectionOverrideAddress } =
+    preferencesController().state;
+
   const controller = new NftDetectionController({
     messenger: controllerMessenger,
     addNfts: (...args) => nftController().addNfts(...args),
     getNftState: () => nftController().state,
     disabled: !preferencesController().state.useNftDetection,
-    nftApiBaseUrl: preferencesController().state.nftApiBaseUrl,
+    nftApiBaseUrl,
   });
+
+  if (nftDetectionOverrideAddress) {
+    controller.setOverrideAddress(nftDetectionOverrideAddress);
+  }
 
   return {
     controller,
