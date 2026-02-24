@@ -142,11 +142,6 @@ export const getAccountTrackerControllerAccountsByChainId =
         }
       }
 
-      console.log('DEBUG ACCOUNTS BY CHAIN ID', {
-        oldState: accountsByChainId,
-        newState: result,
-      });
-
       return result;
     },
   ) as unknown as ControllerStateSelector<
