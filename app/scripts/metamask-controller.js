@@ -259,7 +259,9 @@ import {
   makeMethodMiddlewareMaker,
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
-import createRpcBlockingMiddleware from './lib/rpcBlockingMiddleware';
+import createRpcBlockingMiddleware, {
+  createRpcBlockingCallbacks,
+} from './lib/rpcBlockingMiddleware';
 import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
@@ -1088,7 +1090,7 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
-    const rpcBlockingMiddlewareState = { isBlocked: false };
+    const rpcBlockingMiddlewareState = { blockingSymbols: new Set() };
     const eip7715BlockingMiddleware = createRpcBlockingMiddleware({
       state: rpcBlockingMiddlewareState,
       allowedOrigins: [
@@ -1200,16 +1202,16 @@ export default class MetamaskController extends EventEmitter {
           }
         }
 
+        const { onBeforeRequest, onAfterRequest } = createRpcBlockingCallbacks(
+          rpcBlockingMiddlewareState,
+        );
+
         return forwardRequestToSnap(
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
             handleRequest: this.handleSnapRequest.bind(this),
-            onBeforeRequest: () => {
-              rpcBlockingMiddlewareState.isBlocked = true;
-            },
-            onAfterRequest: () => {
-              rpcBlockingMiddlewareState.isBlocked = false;
-            },
+            onBeforeRequest,
+            onAfterRequest,
           },
           params,
           req,
@@ -5487,41 +5489,6 @@ export default class MetamaskController extends EventEmitter {
    */
   async verifyPassword(password) {
     await this.keyringController.verifyPassword(password);
-  }
-
-  /**
-   * @type Identity
-   * @property {string} name - The account nickname.
-   * @property {string} address - The account's ethereum address, in lower case.
-   * receiving funds from our automatic Ropsten faucet.
-   */
-
-  /**
-   * Gets the mnemonic of the user's primary keyring.
-   */
-  getPrimaryKeyringMnemonic() {
-    const [keyring] = this.keyringController.getKeyringsByType(
-      KeyringType.hdKeyTree,
-    );
-    if (!keyring.mnemonic) {
-      throw new Error('Primary keyring mnemonic unavailable.');
-    }
-
-    return keyring.mnemonic;
-  }
-
-  /**
-   * Gets the mnemonic seed of the user's primary keyring.
-   */
-  getPrimaryKeyringMnemonicSeed() {
-    const [keyring] = this.keyringController.getKeyringsByType(
-      KeyringType.hdKeyTree,
-    );
-    if (!keyring.seed) {
-      throw new Error('Primary keyring mnemonic unavailable.');
-    }
-
-    return keyring.seed;
   }
 
   //
