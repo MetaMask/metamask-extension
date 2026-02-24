@@ -7509,12 +7509,6 @@
   "snapAccountRemovedDescription": {
     "message": "此账户将在 MetaMask 中不再可用。"
   },
-  "snapAccounts": {
-    "message": "账户Snap"
-  },
-  "snapAccountsDescription": {
-    "message": "由第三方 Snap 控制的账户。"
-  },
   "snapConnectTo": {
     "message": "连接到 $1",
     "description": "$1 is the website URL or a Snap name. Used for Snaps pre-approved connections."
