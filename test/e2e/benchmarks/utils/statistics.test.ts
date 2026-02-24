@@ -18,7 +18,11 @@ import {
   aggregateWebVitals,
   MAX_METRIC_DURATION_MS,
 } from './statistics';
-import type { ThresholdConfig, TimerStatistics, WebVitalsMetrics } from './types';
+import type {
+  ThresholdConfig,
+  TimerStatistics,
+  WebVitalsMetrics,
+} from './types';
 
 function createMockStats(
   overrides: Partial<TimerStatistics> = {},
@@ -472,9 +476,30 @@ describe('Statistics Utils', () => {
   describe('aggregateWebVitals', () => {
     it('aggregates runs with data', () => {
       const runs: WebVitalsMetrics[] = [
-        { inp: 100, lcp: 2000, cls: 0.05, inpRating: 'good', lcpRating: 'good', clsRating: 'good' },
-        { inp: 120, lcp: 2200, cls: 0.08, inpRating: 'good', lcpRating: 'good', clsRating: 'good' },
-        { inp: 150, lcp: 2500, cls: 0.03, inpRating: 'good', lcpRating: 'good', clsRating: 'good' },
+        {
+          inp: 100,
+          lcp: 2000,
+          cls: 0.05,
+          inpRating: 'good',
+          lcpRating: 'good',
+          clsRating: 'good',
+        },
+        {
+          inp: 120,
+          lcp: 2200,
+          cls: 0.08,
+          inpRating: 'good',
+          lcpRating: 'good',
+          clsRating: 'good',
+        },
+        {
+          inp: 150,
+          lcp: 2500,
+          cls: 0.03,
+          inpRating: 'good',
+          lcpRating: 'good',
+          clsRating: 'good',
+        },
       ];
 
       const result = aggregateWebVitals(runs);
@@ -489,9 +514,30 @@ describe('Statistics Utils', () => {
 
     it('tallies rating distribution correctly', () => {
       const runs: WebVitalsMetrics[] = [
-        { inp: 100, lcp: 2000, cls: 0.05, inpRating: 'good', lcpRating: 'good', clsRating: 'good' },
-        { inp: 300, lcp: 3000, cls: 0.15, inpRating: 'needs-improvement', lcpRating: 'needs-improvement', clsRating: 'needs-improvement' },
-        { inp: 600, lcp: 5000, cls: 0.3, inpRating: 'poor', lcpRating: 'poor', clsRating: 'poor' },
+        {
+          inp: 100,
+          lcp: 2000,
+          cls: 0.05,
+          inpRating: 'good',
+          lcpRating: 'good',
+          clsRating: 'good',
+        },
+        {
+          inp: 300,
+          lcp: 3000,
+          cls: 0.15,
+          inpRating: 'needs-improvement',
+          lcpRating: 'needs-improvement',
+          clsRating: 'needs-improvement',
+        },
+        {
+          inp: 600,
+          lcp: 5000,
+          cls: 0.3,
+          inpRating: 'poor',
+          lcpRating: 'poor',
+          clsRating: 'poor',
+        },
       ];
 
       const result = aggregateWebVitals(runs);
@@ -504,8 +550,22 @@ describe('Statistics Utils', () => {
 
     it('handles all-null runs', () => {
       const runs: WebVitalsMetrics[] = [
-        { inp: null, lcp: null, cls: null, inpRating: null, lcpRating: null, clsRating: null },
-        { inp: null, lcp: null, cls: null, inpRating: null, lcpRating: null, clsRating: null },
+        {
+          inp: null,
+          lcp: null,
+          cls: null,
+          inpRating: null,
+          lcpRating: null,
+          clsRating: null,
+        },
+        {
+          inp: null,
+          lcp: null,
+          cls: null,
+          inpRating: null,
+          lcpRating: null,
+          clsRating: null,
+        },
       ];
 
       const result = aggregateWebVitals(runs);
@@ -520,9 +580,30 @@ describe('Statistics Utils', () => {
 
     it('handles mixed null and non-null values', () => {
       const runs: WebVitalsMetrics[] = [
-        { inp: 100, lcp: null, cls: null, inpRating: 'good', lcpRating: null, clsRating: null },
-        { inp: 120, lcp: null, cls: 0.01, inpRating: 'good', lcpRating: null, clsRating: 'good' },
-        { inp: null, lcp: null, cls: null, inpRating: null, lcpRating: null, clsRating: null },
+        {
+          inp: 100,
+          lcp: null,
+          cls: null,
+          inpRating: 'good',
+          lcpRating: null,
+          clsRating: null,
+        },
+        {
+          inp: 120,
+          lcp: null,
+          cls: 0.01,
+          inpRating: 'good',
+          lcpRating: null,
+          clsRating: 'good',
+        },
+        {
+          inp: null,
+          lcp: null,
+          cls: null,
+          inpRating: null,
+          lcpRating: null,
+          clsRating: null,
+        },
       ];
 
       const result = aggregateWebVitals(runs);
