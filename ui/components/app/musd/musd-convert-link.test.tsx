@@ -93,21 +93,6 @@ describe('MusdConvertLink', () => {
     expect(screen.getByText('Get 3% bonus')).toBeInTheDocument();
   });
 
-  it('renders with bullet separator', () => {
-    renderWithProvider(
-      <MusdConvertLink
-        tokenAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-        chainId="0x1"
-        tokenSymbol="USDC"
-      />,
-      mockStore,
-    );
-
-    // Check for bullet point
-    const bulletElement = screen.getByText('\u2022');
-    expect(bulletElement).toBeInTheDocument();
-  });
-
   it('calls startConversionFlow on click', () => {
     renderWithProvider(
       <MusdConvertLink
@@ -212,7 +197,7 @@ describe('MusdConvertLink', () => {
     expect(screen.getByText('Custom CTA Text')).toBeInTheDocument();
   });
 
-  it('has correct accessibility attributes', () => {
+  it('renders as an accessible button element', () => {
     renderWithProvider(
       <MusdConvertLink
         tokenAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
@@ -223,6 +208,7 @@ describe('MusdConvertLink', () => {
     );
 
     const ctaButton = screen.getByTestId('musd-convert-link-0x1');
-    expect(ctaButton).toHaveAttribute('tabIndex', '0');
+    expect(ctaButton.tagName).toBe('BUTTON');
+    expect(ctaButton).toHaveAttribute('type', 'button');
   });
 });

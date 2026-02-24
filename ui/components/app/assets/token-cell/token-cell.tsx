@@ -23,8 +23,16 @@ import { type TokenWithFiatAmount } from '../types';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
-import { ClaimBonusBadge, isEligibleForMerklRewards } from '../../musd';
+import {
+  ClaimBonusBadge,
+  isEligibleForMerklRewards,
+  MusdConvertLink,
+} from '../../musd';
 import { getMerklRewardsEnabled } from '../../musd/selectors';
+import {
+  useMusdCtaVisibility,
+  useMusdBalance,
+} from '../../../../hooks/musd';
 import {
   TokenCellTitle,
   TokenCellPercentChange,
@@ -72,6 +80,29 @@ export default function TokenCell({
     [showMerklBadge, merklRewardsEnabled, token.chainId, token.address],
   );
 
+  const { shouldShowTokenListItemCta } = useMusdCtaVisibility();
+  const { hasMusdBalance } = useMusdBalance();
+
+  const showMusdCta = useMemo(() => {
+    if (!token.address || !token.chainId) {
+      return false;
+    }
+    return shouldShowTokenListItemCta(
+      {
+        address: token.address as Hex,
+        chainId: token.chainId as Hex,
+        symbol: token.symbol,
+      },
+      { hasMusdBalance },
+    );
+  }, [
+    token.address,
+    token.chainId,
+    token.symbol,
+    shouldShowTokenListItemCta,
+    hasMusdBalance,
+  ]);
+
   const tokenDisplayInfo = useTokenDisplayInfo({
     token,
     fixCurrencyToUSD,
@@ -115,21 +146,28 @@ export default function TokenCell({
           />
         }
         footerLeftDisplay={
-          showClaimBonusBadge ? (
+          <TokenCellPercentChange token={displayToken} />
+        }
+        footerRightDisplay={
+          showMusdCta ? (
+            <MusdConvertLink
+              tokenAddress={token.address as Hex}
+              chainId={token.chainId as Hex}
+              tokenSymbol={token.symbol}
+              entryPoint="token_list"
+            />
+          ) : showClaimBonusBadge ? (
             <ClaimBonusBadge
               tokenAddress={token.address as string}
               chainId={token.chainId as Hex}
               label={t('merklRewardsClaimBonus')}
             />
           ) : (
-            <TokenCellPercentChange token={displayToken} />
+            <TokenCellPrimaryDisplay
+              token={displayToken}
+              privacyMode={privacyMode}
+            />
           )
-        }
-        footerRightDisplay={
-          <TokenCellPrimaryDisplay
-            token={displayToken}
-            privacyMode={privacyMode}
-          />
         }
       />
       {isEvm && showScamWarningModal && (

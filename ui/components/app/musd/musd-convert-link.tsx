@@ -1,21 +1,18 @@
 /**
  * MusdConvertLink Component
  *
- * An inline CTA link that appears next to token names in the token list.
+ * A CTA link that appears in the token list footer-right slot.
  * Shows "Get X% bonus" text and navigates to the mUSD conversion flow.
- *
- * Follows the StakeableLink pattern from:
- * ui/components/multichain/token-list-item/stakeable-link.tsx
  */
 
 import React, { useCallback, useContext } from 'react';
 import type { Hex } from '@metamask/utils';
 import {
-  BackgroundColor,
   FontWeight,
   TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../component-library';
+import { Text } from '../../component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -48,10 +45,7 @@ export type MusdConvertLinkProps = {
 // ============================================================================
 
 /**
- * Inline CTA link for mUSD conversion
- *
- * Displays as: • Get X% bonus
- * Clicking initiates the mUSD conversion flow
+ * CTA link for mUSD conversion, rendered in the token cell footer-right.
  *
  * @param options0
  * @param options0.tokenAddress
@@ -71,22 +65,14 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
   const { trackEvent } = useContext(MetaMetricsContext);
   const { startConversionFlow } = useMusdConversion();
 
-  /**
-   * Default CTA text with APY percentage
-   */
   const displayText =
     ctaText ?? t('musdGetBonusPercentage', [String(MUSD_CONVERSION_APY)]);
 
-  /**
-   * Handle click - start conversion flow with this token
-   */
   const handleClick = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      // Prevent parent row click
       e.preventDefault();
       e.stopPropagation();
 
-      // Track analytics event
       trackEvent({
         event: MetaMetricsEventName.MusdConversionCtaClicked,
         category: MetaMetricsEventCategory.Tokens,
@@ -101,15 +87,13 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
         },
       });
 
-      // Start conversion flow with preferred token
       await startConversionFlow({
         preferredToken: {
           address: tokenAddress as Hex,
           chainId: chainId as Hex,
           symbol: tokenSymbol,
-          // These will be filled by the conversion flow
           name: tokenSymbol,
-          decimals: 6, // Default, will be updated
+          decimals: 6,
           balance: '0',
           fiatBalance: '0',
         },
@@ -128,33 +112,28 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
   );
 
   return (
-    <Box
-      as="button"
-      backgroundColor={BackgroundColor.transparent}
-      data-testid={`musd-convert-link-${chainId}`}
-      gap={1}
-      paddingInline={0}
-      paddingInlineStart={1}
-      paddingInlineEnd={1}
-      tabIndex={0}
+    <button
+      type="button"
       onClick={handleClick}
-      className="musd-convert-link"
+      data-testid={`musd-convert-link-${chainId}`}
+      style={{
+        cursor: 'pointer',
+        background: 'none',
+        border: 'none',
+        padding: 0,
+        margin: 0,
+        font: 'inherit',
+      }}
     >
-      {/* Bullet separator */}
-      <Text as="span" color={TextColor.textMuted}>
-        {'\u2022'}
-      </Text>
-      {/* CTA text */}
       <Text
-        as="span"
+        variant={TextVariant.bodySmMedium}
         color={TextColor.primaryDefault}
-        paddingInlineStart={1}
-        paddingInlineEnd={1}
         fontWeight={FontWeight.Medium}
+        data-testid="musd-convert-link-text"
       >
         {displayText}
       </Text>
-    </Box>
+    </button>
   );
 };
 

@@ -48,6 +48,15 @@ jest.mock('../../../../hooks/useIsOriginalTokenSymbol', () => {
   };
 });
 
+jest.mock('../../../../hooks/musd', () => ({
+  useMusdCtaVisibility: () => ({
+    shouldShowTokenListItemCta: jest.fn().mockReturnValue(false),
+  }),
+  useMusdBalance: () => ({
+    hasMusdBalance: false,
+  }),
+}));
+
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
   return {
