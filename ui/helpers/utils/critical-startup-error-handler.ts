@@ -7,6 +7,7 @@ import {
 } from '../../../shared/constants/state-corruption';
 import type { ErrorLike } from '../../../shared/constants/errors';
 import {
+  APP_INIT_LIVENESS_METHOD,
   BACKGROUND_LIVENESS_METHOD,
   BACKGROUND_INITIALIZED_METHOD,
 } from '../../../shared/constants/ui-initialization';
@@ -42,6 +43,8 @@ export class CriticalStartupErrorHandler {
   #port: browser.Runtime.Port;
 
   #container: HTMLElement;
+
+  #receivedAppInitPing = false;
 
   #livenessCheckTimeoutId?: NodeJS.Timeout;
 
@@ -84,6 +87,36 @@ export class CriticalStartupErrorHandler {
   }
 
   /**
+   * Attaches the app-init liveness Sentry tag to an error for diagnostics.
+   * Used when displaying any phase timeout so we can tell whether the port
+   * worked at app-init level (see PR #40189).
+   *
+   * @param error - The error to attach the tag to (mutated in place).
+   */
+  #attachAppInitPingSentryTag(error: ErrorLike): void {
+    (error as unknown as { sentryTags?: Record<string, unknown> }).sentryTags =
+      {
+        // we want to know if a problem happens between app-init's onConnect and
+        // this background's onConnect. if we receive the app-init liveness
+        // ping, then we can be pretty confident that the connection was working
+        // but something went wrong between app-init and background.js.
+        // If after a few months, we find that most of the errors are happening
+        // without receiving the app-init ping (`uiStartup.receivedAppInitPing`
+        // is false), then we can be pretty confident that the port connection
+        // itself just isn't working, and we can remove the
+        // `uiStartup.receivedAppInitPing` tag and all logic related to it
+        // since it won't be providing any useful information anymore. However,
+        // if we find that some errors are happening with receiving the app-init
+        // ping (`uiStartup.receivedAppInitPing` is true), then we know that the
+        // connection _can be_ working, but something is going wrong somewhere else, probably
+        // related to the background.js startup process, and in that case, we
+        // can remove the app-init ping logic since it will have served its
+        // purpose of helping us.
+        'uiStartup.receivedAppInitPing': this.#receivedAppInitPing.toString(),
+      };
+  }
+
+  /**
    * Declare that the start UI sync message has been received.
    */
   startUiSyncReceived() {
@@ -120,6 +153,9 @@ export class CriticalStartupErrorHandler {
     clearTimeout(this.#livenessCheckTimeoutId);
     this.#livenessCheckTimeoutId = undefined;
     if (livenessError !== null) {
+      // add sentryTags to the error for better debugging in Sentry.
+      this.#attachAppInitPingSentryTag(livenessError as ErrorLike);
+
       await displayCriticalErrorMessage(
         this.#container,
         CriticalErrorTranslationKey.TroubleStarting,
@@ -162,6 +198,9 @@ export class CriticalStartupErrorHandler {
     clearTimeout(this.#initializationCheckTimeoutId);
     this.#initializationCheckTimeoutId = undefined;
     if (initError !== null) {
+      // add sentryTags to the error for better debugging in Sentry.
+      this.#attachAppInitPingSentryTag(initError as ErrorLike);
+
       await displayCriticalErrorMessage(
         this.#container,
         CriticalErrorTranslationKey.TroubleStarting,
@@ -202,6 +241,9 @@ export class CriticalStartupErrorHandler {
     clearTimeout(this.#startUiSyncTimeoutId);
     this.#startUiSyncTimeoutId = undefined;
     if (stateSyncError !== null) {
+      // add sentryTags to the error for better debugging in Sentry.
+      this.#attachAppInitPingSentryTag(stateSyncError as ErrorLike);
+
       await displayCriticalErrorMessage(
         this.#container,
         CriticalErrorTranslationKey.TroubleStarting,
@@ -231,9 +273,12 @@ export class CriticalStartupErrorHandler {
       return;
     }
     const { method } = data;
-    // Currently, we only handle BACKGROUND_LIVENESS_METHOD, RELOAD_WINDOW, and the state
-    // corruption error message, but we will be adding more in the future.
-    if (method === BACKGROUND_LIVENESS_METHOD) {
+    // Currently, we handle APP_INIT_LIVENESS_METHOD, BACKGROUND_LIVENESS_METHOD,
+    // BACKGROUND_INITIALIZED_METHOD, RELOAD_WINDOW, the state corruption error message,
+    // and the general startup error message.
+    if (method === APP_INIT_LIVENESS_METHOD) {
+      this.#receivedAppInitPing = true;
+    } else if (method === BACKGROUND_LIVENESS_METHOD) {
       if (this.#onLivenessCheckCompleted) {
         this.#onLivenessCheckCompleted();
       } else {
