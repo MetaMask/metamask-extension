@@ -7515,12 +7515,6 @@
   "snapAccountRemovedDescription": {
     "message": "Bu hesap artık MetaMask'te kullanılamayacak."
   },
-  "snapAccounts": {
-    "message": "Snap Hesapları"
-  },
-  "snapAccountsDescription": {
-    "message": "Üçüncü taraf Snapleri tarafından kontrol edilen hesaplar."
-  },
   "snapConnectTo": {
     "message": "$1 uygulamasına bağlan",
     "description": "$1 is the website URL or a Snap name. Used for Snaps pre-approved connections."
