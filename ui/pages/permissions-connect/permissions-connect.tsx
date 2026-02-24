@@ -649,143 +649,143 @@ function PermissionsConnect() {
           <PermissionsRedirect subjectMetadata={targetSubjectMetadata} />
         ) : (
           <Routes>
-          <Route
-            path="/"
-            element={(() => {
-              if (isRequestingSnap) {
-                return renderSnapChooseAccount();
-              }
-              return renderConnectPage();
-            })()}
-          />
-          <Route
-            path={toRelativeRoutePath(CONNECT_CONFIRM_PERMISSIONS_ROUTE)}
-            element={
-              <PermissionPageContainer
-                request={permissionsRequest || {}}
-                approvePermissionsRequest={(request: unknown) => {
-                  dispatch(
-                    approvePermissionsRequestAction(
-                      request as unknown as ControllerPermissionsRequest,
-                    ),
-                  );
-                  redirect(true);
-                }}
-                rejectPermissionsRequest={(requestId: string) =>
-                  cancelPermissionsRequest(requestId)
+            <Route
+              path="/"
+              element={(() => {
+                if (isRequestingSnap) {
+                  return renderSnapChooseAccount();
                 }
-                selectedAccounts={accountsWithLabels.filter(
-                  (account: { address: string }) =>
-                    selectedAccountAddresses.has(account.address),
-                )}
-                requestedChainIds={getRequestedChainIds(
-                  permissions as PermissionsRequest | undefined,
-                )}
-                // Chain-agnostic data for multichain permission approval
-                selectedCaipAccountIds={selectedCaipAccountIds}
-                // Use selectedCaipChainIds if set (from account selection), otherwise use non-EVM CAIP chain IDs
-                // EVM chains are already displayed via requestedChainIds, so we only pass non-EVM chains here
-                selectedCaipChainIds={
-                  selectedCaipChainIds ??
-                  getNonEvmRequestedCaipChainIds(
+                return renderConnectPage();
+              })()}
+            />
+            <Route
+              path={toRelativeRoutePath(CONNECT_CONFIRM_PERMISSIONS_ROUTE)}
+              element={
+                <PermissionPageContainer
+                  request={permissionsRequest || {}}
+                  approvePermissionsRequest={(request: unknown) => {
+                    dispatch(
+                      approvePermissionsRequestAction(
+                        request as unknown as ControllerPermissionsRequest,
+                      ),
+                    );
+                    redirect(true);
+                  }}
+                  rejectPermissionsRequest={(requestId: string) =>
+                    cancelPermissionsRequest(requestId)
+                  }
+                  selectedAccounts={accountsWithLabels.filter(
+                    (account: { address: string }) =>
+                      selectedAccountAddresses.has(account.address),
+                  )}
+                  requestedChainIds={getRequestedChainIds(
                     permissions as PermissionsRequest | undefined,
-                  )
-                }
-                targetSubjectMetadata={targetSubjectMetadata}
-                navigate={navigate}
-                connectPath={connectPath}
-                snapsInstallPrivacyWarningShown={
-                  snapsInstallPrivacyWarningShown
-                }
-                setSnapsInstallPrivacyWarningShownStatus={
-                  setSnapsInstallPrivacyWarningShownStatus
-                }
-              />
-            }
-          />
-          <Route
-            path={toRelativeRoutePath(CONNECT_SNAPS_CONNECT_ROUTE)}
-            element={
-              <SnapsConnect
-                request={permissionsRequest || {}}
-                approveConnection={approveConnection}
-                rejectConnection={(requestId) =>
-                  cancelPermissionsRequest(requestId)
-                }
-                targetSubjectMetadata={targetSubjectMetadata}
-                snapsInstallPrivacyWarningShown={
-                  snapsInstallPrivacyWarningShown
-                }
-                setSnapsInstallPrivacyWarningShownStatus={
-                  setSnapsInstallPrivacyWarningShownStatus
-                }
-              />
-            }
-          />
-          <Route
-            path={toRelativeRoutePath(CONNECT_SNAP_INSTALL_ROUTE)}
-            element={
-              <SnapInstall
-                request={permissionsRequest || {}}
-                requestState={requestState || {}}
-                approveSnapInstall={(requestId) => {
-                  approvePendingApproval(requestId, {
-                    ...permissionsRequest,
-                    permissions: requestState.permissions,
-                    approvedAccounts: [...selectedAccountAddresses],
-                  });
-                  setPermissionsApproved(true);
-                }}
-                rejectSnapInstall={(requestId) => {
-                  rejectPendingApproval(
-                    requestId,
-                    serializeError(providerErrors.userRejectedRequest()),
-                  );
-                  setPermissionsApproved(true);
-                }}
-                targetSubjectMetadata={targetSubjectMetadata}
-              />
-            }
-          />
-          <Route
-            path={toRelativeRoutePath(CONNECT_SNAP_UPDATE_ROUTE)}
-            element={
-              <SnapUpdate
-                request={permissionsRequest || {}}
-                requestState={requestState || {}}
-                approveSnapUpdate={(requestId) => {
-                  approvePendingApproval(requestId, {
-                    ...permissionsRequest,
-                    permissions: requestState.permissions,
-                    approvedAccounts: [...selectedAccountAddresses],
-                  });
-                  setPermissionsApproved(true);
-                }}
-                rejectSnapUpdate={(requestId) => {
-                  rejectPendingApproval(
-                    requestId,
-                    serializeError(providerErrors.userRejectedRequest()),
-                  );
-                  setPermissionsApproved(false);
-                }}
-                targetSubjectMetadata={targetSubjectMetadata}
-              />
-            }
-          />
-          <Route
-            path={toRelativeRoutePath(CONNECT_SNAP_RESULT_ROUTE)}
-            element={
-              <SnapResult
-                request={permissionsRequest || {}}
-                requestState={requestState || {}}
-                approveSnapResult={(requestId: string) => {
-                  approvePendingApproval(requestId, undefined);
-                  setPermissionsApproved(true);
-                }}
-                targetSubjectMetadata={targetSubjectMetadata}
-              />
-            }
-          />
+                  )}
+                  // Chain-agnostic data for multichain permission approval
+                  selectedCaipAccountIds={selectedCaipAccountIds}
+                  // Use selectedCaipChainIds if set (from account selection), otherwise use non-EVM CAIP chain IDs
+                  // EVM chains are already displayed via requestedChainIds, so we only pass non-EVM chains here
+                  selectedCaipChainIds={
+                    selectedCaipChainIds ??
+                    getNonEvmRequestedCaipChainIds(
+                      permissions as PermissionsRequest | undefined,
+                    )
+                  }
+                  targetSubjectMetadata={targetSubjectMetadata}
+                  navigate={navigate}
+                  connectPath={connectPath}
+                  snapsInstallPrivacyWarningShown={
+                    snapsInstallPrivacyWarningShown
+                  }
+                  setSnapsInstallPrivacyWarningShownStatus={
+                    setSnapsInstallPrivacyWarningShownStatus
+                  }
+                />
+              }
+            />
+            <Route
+              path={toRelativeRoutePath(CONNECT_SNAPS_CONNECT_ROUTE)}
+              element={
+                <SnapsConnect
+                  request={permissionsRequest || {}}
+                  approveConnection={approveConnection}
+                  rejectConnection={(requestId) =>
+                    cancelPermissionsRequest(requestId)
+                  }
+                  targetSubjectMetadata={targetSubjectMetadata}
+                  snapsInstallPrivacyWarningShown={
+                    snapsInstallPrivacyWarningShown
+                  }
+                  setSnapsInstallPrivacyWarningShownStatus={
+                    setSnapsInstallPrivacyWarningShownStatus
+                  }
+                />
+              }
+            />
+            <Route
+              path={toRelativeRoutePath(CONNECT_SNAP_INSTALL_ROUTE)}
+              element={
+                <SnapInstall
+                  request={permissionsRequest || {}}
+                  requestState={requestState || {}}
+                  approveSnapInstall={(requestId) => {
+                    approvePendingApproval(requestId, {
+                      ...permissionsRequest,
+                      permissions: requestState.permissions,
+                      approvedAccounts: [...selectedAccountAddresses],
+                    });
+                    setPermissionsApproved(true);
+                  }}
+                  rejectSnapInstall={(requestId) => {
+                    rejectPendingApproval(
+                      requestId,
+                      serializeError(providerErrors.userRejectedRequest()),
+                    );
+                    setPermissionsApproved(true);
+                  }}
+                  targetSubjectMetadata={targetSubjectMetadata}
+                />
+              }
+            />
+            <Route
+              path={toRelativeRoutePath(CONNECT_SNAP_UPDATE_ROUTE)}
+              element={
+                <SnapUpdate
+                  request={permissionsRequest || {}}
+                  requestState={requestState || {}}
+                  approveSnapUpdate={(requestId) => {
+                    approvePendingApproval(requestId, {
+                      ...permissionsRequest,
+                      permissions: requestState.permissions,
+                      approvedAccounts: [...selectedAccountAddresses],
+                    });
+                    setPermissionsApproved(true);
+                  }}
+                  rejectSnapUpdate={(requestId) => {
+                    rejectPendingApproval(
+                      requestId,
+                      serializeError(providerErrors.userRejectedRequest()),
+                    );
+                    setPermissionsApproved(false);
+                  }}
+                  targetSubjectMetadata={targetSubjectMetadata}
+                />
+              }
+            />
+            <Route
+              path={toRelativeRoutePath(CONNECT_SNAP_RESULT_ROUTE)}
+              element={
+                <SnapResult
+                  request={permissionsRequest || {}}
+                  requestState={requestState || {}}
+                  approveSnapResult={(requestId: string) => {
+                    approvePendingApproval(requestId, undefined);
+                    setPermissionsApproved(true);
+                  }}
+                  targetSubjectMetadata={targetSubjectMetadata}
+                />
+              }
+            />
           </Routes>
         )}
       </div>
