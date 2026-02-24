@@ -33,6 +33,9 @@ import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
 import { getFromChain } from '../../ducks/bridge/selectors';
 import { useBridgeNavigation } from '../../hooks/bridge/useBridgeNavigation';
+import { usePrefillFromSearchQuery } from '../../hooks/bridge/usePrefillFromSearchQuery';
+import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBridgeState';
+import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
@@ -46,7 +49,13 @@ const CrossChainSwap = () => {
   // Load swaps feature flags so that we can use smart transactions
   useSwapsFeatureFlags();
   useBridging();
+
   const { navigateToDefaultRoute } = useBridgeNavigation();
+  // Pre-fill the src chain balances, slippage and other quote params before rendering the bridge page
+  // This also resets any search query parameters and navigation states
+  usePrefillFromSearchQuery();
+  usePrefillFromBridgeState();
+  useSmartSlippage();
 
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
 
