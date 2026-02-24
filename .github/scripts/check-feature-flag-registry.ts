@@ -322,9 +322,8 @@ function parseDiff(diff: string): DiffResult {
       lastWasAdded = false;
     } else if (line.startsWith('+++ /dev/null') && pendingFile) {
       currentFile = pendingFile;
-      if (!removed.has(currentFile)) {
-        removed.set(currentFile, []);
-      }
+      if (!added.has(currentFile)) { added.set(currentFile, []); }
+      if (!removed.has(currentFile)) { removed.set(currentFile, []); }
       lastWasAdded = false;
     } else if (
       line.startsWith('+') &&
