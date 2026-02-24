@@ -2839,12 +2839,6 @@
         "crypto": true
       }
     },
-    "@metamask/assets-controllers>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
     "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
@@ -4307,15 +4301,6 @@
       },
       "packages": {
         "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/accounts-controller>ethereum-cryptography": {
-      "globals": {
-        "TextDecoder": true,
-        "crypto": true
-      },
-      "packages": {
-        "@metamask/assets-controllers>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@metamask/eth-hd-keyring>ethereum-cryptography": {
