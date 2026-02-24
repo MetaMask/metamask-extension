@@ -4393,8 +4393,14 @@
   "nftAutoDetectionEnabled": {
     "message": "NFT autodetection enabled"
   },
+  "nftBought": {
+    "message": "Bought $1"
+  },
   "nftEmptyDescription": {
     "message": "There's a world of NFTs out there. Start your collection today."
+  },
+  "nftMinted": {
+    "message": "Minted $1"
   },
   "nftOptions": {
     "message": "NFT Options"
