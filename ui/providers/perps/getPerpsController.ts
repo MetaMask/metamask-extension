@@ -173,8 +173,7 @@ function startControllerInitialization(
         getNetworkClientIdForChain(storeRef, chainId),
       submitRequestToBackground,
       generateActionId,
-      getRemoteFeatureFlagState: () =>
-        getRemoteFeatureFlagState(storeRef),
+      getRemoteFeatureFlagState: () => getRemoteFeatureFlagState(storeRef),
       subscribeToRemoteFeatureFlagChanges: (handler) => {
         if (!storeRef) {
           return () => undefined;

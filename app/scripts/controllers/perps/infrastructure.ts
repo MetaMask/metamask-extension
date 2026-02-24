@@ -253,9 +253,8 @@ function createControllers(
     },
     remoteFeatureFlags: {
       getState: () => getRemoteFeatureFlagState() ?? defaultFeatureFlagState,
-      onStateChange: (
-        handler: (state: PerpsRemoteFeatureFlagState) => void,
-      ) => subscribeToRemoteFeatureFlagChanges(handler),
+      onStateChange: (handler: (state: PerpsRemoteFeatureFlagState) => void) =>
+        subscribeToRemoteFeatureFlagChanges(handler),
     },
     accountTree: {
       getAccountsFromSelectedGroup: () => [
