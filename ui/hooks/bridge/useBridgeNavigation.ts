@@ -97,12 +97,13 @@ export const useBridgeNavigation = () => {
    * @param to - The default route to navigate to.
    */
   const resetLocationState = useCallback(
-    (to: To = { pathname }) =>
+    (to: To = { pathname }, stayOnHomePage = false) =>
       navigate(to, {
         state: {
           ...state,
           bridgeState: null,
           token: null,
+          stayOnHomePage,
         },
         replace: true,
       }),
@@ -251,14 +252,7 @@ export const useBridgeNavigation = () => {
     if (isFromTransactionShield) {
       resetLocationState(TRANSACTION_SHIELD_ROUTE);
     } else {
-      navigate(DEFAULT_ROUTE, {
-        state: {
-          bridgeState: null,
-          token: null,
-          stayOnHomePage: true,
-        },
-        replace: true,
-      });
+      resetLocationState(DEFAULT_ROUTE, true);
     }
   }, [search, navigate, resetLocationState]);
 

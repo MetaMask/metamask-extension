@@ -172,7 +172,7 @@ describe('useBridging', () => {
 
         result.current.openBridgeExperience(location, token, isSwap);
 
-        expect(mockDispatch.mock.calls).toHaveLength(2);
+        expect(mockDispatch.mock.calls).toHaveLength(3);
         expect(mockUseNavigate).toHaveBeenCalledWith(
           { pathname: expectedUrl, search: '' },
           {
@@ -365,7 +365,7 @@ describe('useBridging', () => {
 
         result.current.openBridgeExperience(location, token, true);
 
-        expect(mockDispatch.mock.calls).toHaveLength(2);
+        expect(mockDispatch.mock.calls).toHaveLength(3);
         expect(mockUseNavigate).toHaveBeenCalledWith(expectedUrl, {
           replace: false,
           state: {

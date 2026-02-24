@@ -34,7 +34,7 @@ describe('Bridge tests', function (this: Suite) {
         false,
         true,
       ),
-      async ({ driver, mockedEndpoint: mockedEndpoints, mockServer }) => {
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await loginWithBalanceValidation(driver, undefined, undefined, '0');
 
         const homePage = new HomePage(driver);
@@ -164,8 +164,9 @@ describe('Bridge tests', function (this: Suite) {
         const crossChainQuotesReceived = findEventsByName(
           EventTypes.UnifiedSwapBridgeQuotesReceived,
         );
-        // The flow receives 3 quotes, so we expect 3 events
-        assert.ok(crossChainQuotesReceived.length === 3);
+        // The flow request quotes 3 times, but the 2nd response may be cancelled
+        // before QuotesReceived is emitted
+        assert.ok(crossChainQuotesReceived.length >= 2);
         assert.ok(
           crossChainQuotesReceived[0].properties.chain_id_source ===
             'eip155:1' &&
