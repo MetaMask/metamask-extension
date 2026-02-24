@@ -20,6 +20,15 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 export const PERPS_TAB_HASH = '#/?tab=perps';
 export const PERPS_HOME_ROUTE = '#/perps/home';
 
+/** Base route for Perps market detail. Append encoded symbol, e.g. PERPS_MARKET_DETAIL_ROUTE + '/AVAX' */
+export const PERPS_MARKET_DETAIL_ROUTE = '#/perps/market';
+
+/** Perps Activity page (full history). */
+export const PERPS_ACTIVITY_ROUTE = '#/perps/activity';
+
+/** Perps Market List (search / explore). */
+export const PERPS_MARKET_LIST_ROUTE = '#/perps/market-list';
+
 /**
  * Default withFixtures config for Perps tests (feature flag enabled).
  * Use as base and add title, testSpecificMock, etc. as needed.

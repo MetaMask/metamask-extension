@@ -51,14 +51,13 @@ export class PerpsTabPage {
    * Returns the number of position cards currently displayed.
    */
   async getPositionCardsCount(): Promise<number> {
-    const elements = await this.driver.findElements(
-      this.positionCardsSelector,
-    );
+    const elements = await this.driver.findElements(this.positionCardsSelector);
     return elements.length;
   }
 
   /**
    * Waits for a position card for the given symbol to be visible.
+   * @param symbol
    */
   async waitForPositionCard(symbol: string): Promise<void> {
     await this.driver.waitForSelector({

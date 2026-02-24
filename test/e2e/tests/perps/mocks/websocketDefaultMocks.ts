@@ -23,7 +23,10 @@ export type WebSocketMessageMock = {
   logMessage?: string;
 };
 
-/** Returns the response payload, evaluating getters at send time so timestamps are fresh. */
+/**
+ * Returns the response payload, evaluating getters at send time so timestamps are fresh.
+ * @param mock
+ */
 export function getResponsePayload(mock: WebSocketMessageMock): object {
   return typeof mock.response === 'function' ? mock.response() : mock.response;
 }
@@ -37,7 +40,13 @@ export const DEFAULT_HYPERLIQUID_WS_MOCKS: WebSocketMessageMock[] = [
         channel: 'l2Book',
         data: {
           coin: 'BTC',
-          levels: [[['50000', '1.5'], ['49999', '2.0']], [['50001', '1.2']]],
+          levels: [
+            [
+              ['50000', '1.5'],
+              ['49999', '2.0'],
+            ],
+            [['50001', '1.2']],
+          ],
           time: now,
         },
       };

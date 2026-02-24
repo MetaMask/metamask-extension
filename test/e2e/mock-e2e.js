@@ -1222,9 +1222,7 @@ async function setupMocking(
    */
   await server
     .forAnyWebSocket()
-    .matching((req) =>
-      /^wss:\/\/api\.hyperliquid\.xyz\/ws/u.test(req.url),
-    )
+    .matching((req) => /^wss:\/\/api\.hyperliquid\.xyz\/ws/u.test(req.url))
     .thenForwardTo('ws://localhost:8088');
 
   /**

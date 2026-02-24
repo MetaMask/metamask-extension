@@ -8,6 +8,21 @@ import {
 } from './tests/perps/mocks/websocketDefaultMocks';
 
 /**
+ * Converts WebSocket message payload (Buffer | ArrayBuffer | Buffer[]) to string.
+ * Avoids calling toString() on plain objects, which would yield '[object Object]'.
+ * @param data
+ */
+function rawDataToString(data: Buffer | ArrayBuffer | Buffer[]): string {
+  if (Buffer.isBuffer(data)) {
+    return data.toString('utf8');
+  }
+  if (Array.isArray(data)) {
+    return Buffer.concat(data).toString('utf8');
+  }
+  return Buffer.from(data).toString('utf8');
+}
+
+/**
  * Sets up Hyperliquid Perps WebSocket mocks with configurable message handlers.
  *
  * Messages from the PerpsController (or UI) to api.hyperliquid.xyz/ws are
@@ -30,15 +45,12 @@ export async function setupPerpsWebsocketMocks(
 
   // Add Perps/Hyperliquid-specific message handlers to the existing server
   wsServer.on('connection', (socket: WebSocket) => {
-    socket.on('message', (data) => {
-      const message = data.toString();
+    socket.on('message', (data: Buffer | ArrayBuffer | Buffer[]) => {
+      const message = rawDataToString(data);
 
       // Only handle Hyperliquid-style messages (e.g. "method":"subscribe").
       // Avoid processing Solana messages (which contain "jsonrpc" and "signatureSubscribe" etc.).
-      if (
-        message.includes('jsonrpc') ||
-        !message.includes('subscribe')
-      ) {
+      if (message.includes('jsonrpc') || !message.includes('subscribe')) {
         return;
       }
 

@@ -75,10 +75,109 @@ export class PerpsHomePage {
 
   /**
    * Waits for a position card for the given symbol to be visible.
+   * @param symbol
    */
   async waitForPositionCard(symbol: string): Promise<void> {
     await this.driver.waitForSelector({
       testId: `position-card-${symbol}`,
+    });
+  }
+
+  /**
+   * Waits for the balance section to be visible (empty or with balance).
+   */
+  async waitForBalanceSection(timeout?: number): Promise<void> {
+    await this.driver.waitForSelector(
+      '[data-testid="perps-balance-actions"], [data-testid="perps-balance-actions-empty"]',
+      { timeout },
+    );
+  }
+
+  /**
+   * Clicks the Add funds button (visible in empty state or when balance exists).
+   */
+  async clickAddFunds(): Promise<void> {
+    await this.driver.waitForSelector(
+      '[data-testid="perps-balance-actions-add-funds-empty"], [data-testid="perps-balance-actions-add-funds"]',
+    );
+    const addFundsButton = await this.driver.findElement(
+      '[data-testid="perps-balance-actions-add-funds-empty"], [data-testid="perps-balance-actions-add-funds"]',
+    );
+    await this.driver.scrollToElement(addFundsButton);
+    await this.driver.clickElement(
+      '[data-testid="perps-balance-actions-add-funds-empty"], [data-testid="perps-balance-actions-add-funds"]',
+    );
+  }
+
+  /**
+   * Clicks the Withdraw button (visible when account has balance).
+   */
+  async clickWithdraw(): Promise<void> {
+    await this.driver.waitForSelector({
+      testId: 'perps-balance-actions-withdraw',
+    });
+    await this.driver.clickElement({
+      testId: 'perps-balance-actions-withdraw',
+    });
+  }
+
+  /**
+   * Clicks the "See All" link in the Recent Activity section (navigates to Perps Activity).
+   * Requires positions so Recent Activity section is visible.
+   */
+  async clickRecentActivitySeeAll(): Promise<void> {
+    await this.driver.waitForSelector({
+      testId: 'perps-recent-activity-see-all',
+    });
+    await this.driver.clickElement({
+      testId: 'perps-recent-activity-see-all',
+    });
+  }
+
+  /**
+   * Clicks the search button in the header (navigates to Market List).
+   */
+  async clickSearchButton(): Promise<void> {
+    await this.driver.waitForSelector(this.perpsHomeSearchButton);
+    await this.driver.clickElement(this.perpsHomeSearchButton);
+  }
+
+  /**
+   * Clicks the "Learn the basics of perps" row (opens the tutorial modal).
+   */
+  async clickLearnBasics(): Promise<void> {
+    await this.driver.waitForSelector({ testId: 'perps-learn-basics' });
+    await this.driver.clickElement({ testId: 'perps-learn-basics' });
+  }
+
+  /**
+   * Waits for the tutorial modal and goes through all steps (Continue x5, then Let's go).
+   */
+  async goThroughTutorialModal(): Promise<void> {
+    await this.driver.waitForSelector({ testId: 'perps-tutorial-modal' });
+    for (let i = 0; i < 5; i++) {
+      await this.driver.waitForSelector({
+        testId: 'perps-tutorial-continue-button',
+      });
+      await this.driver.clickElement({
+        testId: 'perps-tutorial-continue-button',
+      });
+      await this.driver.delay(300);
+    }
+    await this.driver.waitForSelector({
+      testId: 'perps-tutorial-lets-go-button',
+    });
+    await this.driver.clickElement({
+      testId: 'perps-tutorial-lets-go-button',
+    });
+  }
+
+  /**
+   * Waits for the Recent Activity section to be visible (when user has positions).
+   */
+  async waitForRecentActivitySection(): Promise<void> {
+    await this.driver.waitForSelector({
+      testId: 'perps-recent-activity',
     });
   }
 }

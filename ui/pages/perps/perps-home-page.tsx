@@ -793,6 +793,7 @@ const PerpsHomePage: React.FC = () => {
             role="button"
             tabIndex={0}
             onClick={handleLearnPerps}
+            data-testid="perps-learn-basics"
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
