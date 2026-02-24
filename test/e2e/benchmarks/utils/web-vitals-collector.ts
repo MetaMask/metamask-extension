@@ -1,16 +1,15 @@
 /**
  * Web Vitals collection for E2E benchmarks.
  *
- * Two-phase approach:
- * 1. Fast path — read from `stateHooks.getWebVitalsMetrics()` (populated by
- *    the web-vitals library's PerformanceObserver callbacks).
- * 2. Fallback — create short-lived PerformanceObservers with `buffered: true`
- *    via `executeAsyncScript`, wait for async entry delivery, and compute
- *    INP/LCP/CLS directly from raw entries.
+ * Uses a two-phase approach. The fast path reads from
+ * `stateHooks.getWebVitalsMetrics()` (populated by the web-vitals library).
+ * The fallback creates short-lived PerformanceObservers with `buffered: true`
+ * via `executeAsyncScript`, waits for async entry delivery, and computes
+ * INP/LCP/CLS directly from raw entries.
  *
- * Phase 2 exists because the web-vitals library callbacks fire asynchronously
- * and may not have updated stateHooks by the time collection runs. Direct
- * observer queries bypass this timing issue entirely.
+ * The fallback exists because the web-vitals library callbacks fire
+ * asynchronously and may not have updated stateHooks by the time collection
+ * runs. Direct observer queries bypass this timing issue entirely.
  */
 
 import type { Driver } from '../../webdriver/driver';
