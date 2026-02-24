@@ -238,7 +238,7 @@ describe('ConnectHardwareForm', () => {
         expect(getByText(messages.keystone.message)).toBeInTheDocument();
         expect(getByText(messages.airgapVault.message)).toBeInTheDocument();
         expect(getByText(messages.coolWallet.message)).toBeInTheDocument();
-        expect(getByText("D'Cent")).toBeInTheDocument();
+        expect(getByText(messages.dcent.message)).toBeInTheDocument();
         expect(getByText(messages.imToken.message)).toBeInTheDocument();
         expect(
           getByText(messages.QRHardwareWalletSteps2Description.message),

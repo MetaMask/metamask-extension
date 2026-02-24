@@ -73,9 +73,7 @@ describe('PermitSimulation', () => {
         await findByText(messages.estimatedChanges.message),
       ).toBeInTheDocument();
       expect(
-        await findByText(
-          "You're giving the spender permission to spend this many tokens from your account.",
-        ),
+        await findByText(messages.permitSimulationDetailInfo.message),
       ).toBeInTheDocument();
     });
   });
@@ -110,9 +108,7 @@ describe('PermitSimulation', () => {
         await findByText(messages.estimatedChanges.message),
       ).toBeInTheDocument();
       expect(
-        await findByText(
-          "You're giving the spender permission to spend this many tokens from your account.",
-        ),
+        await findByText(messages.permitSimulationDetailInfo.message),
       ).toBeInTheDocument();
     });
   });

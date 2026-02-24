@@ -280,9 +280,7 @@ describe('NetworkForm Component', () => {
     });
 
     expect(
-      await screen.findByText(
-        "Invalid number. Enter a decimal or '0x'-prefixed hexadecimal number.",
-      ),
+      await screen.findByText(messages.invalidNumber.message),
     ).toBeInTheDocument();
   });
 
@@ -368,7 +366,7 @@ describe('NetworkForm Component', () => {
 
     expect(
       await screen.findByText(
-        "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue.",
+        messages.chainListReturnedDifferentTickerSymbol.message,
       ),
     ).toBeInTheDocument();
   });

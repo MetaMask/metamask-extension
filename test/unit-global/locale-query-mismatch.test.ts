@@ -148,13 +148,15 @@ function findRule1Violations(filePath: string, lines: string[]): Violation[] {
     }
   };
 
-  // Pattern 1: Direct arg — always on the same line as the query function
-  for (let i = 0; i < lines.length; i++) {
-    let match;
-    LOCALE_QUERY_DIRECT_PATTERN.lastIndex = 0;
-    while ((match = LOCALE_QUERY_DIRECT_PATTERN.exec(lines[i])) !== null) {
-      addViolationIfHardcoded(match[1], i + 1);
-    }
+  // Pattern 1: Direct arg — match against full content to handle multiline calls
+  let directMatch;
+  LOCALE_QUERY_DIRECT_PATTERN.lastIndex = 0;
+  while ((directMatch = LOCALE_QUERY_DIRECT_PATTERN.exec(content)) !== null) {
+    const lineNum = lineNumberAt(
+      content,
+      directMatch.index + directMatch[0].length,
+    );
+    addViolationIfHardcoded(directMatch[1], lineNum);
   }
 
   // Pattern 2: Options object — may span lines, match against full content
@@ -185,16 +187,18 @@ for (const [key, entry] of Object.entries(enLocale)) {
 //   getByText("..."), getByText('...')
 //   getByRole('...', { name: '...' }), getByRole('...', { name: "..." })
 
-// Direct arg: getByText('Close')
+// Direct arg: getByText('Close') or getByText("Close")
+// Uses alternation to require matching quote pairs (avoids apostrophe false positives).
 const HARDCODED_QUERY_DIRECT_PATTERN_R2 = new RegExp(
-  `(?:${QUERY_FN_GROUP})\\s*\\(\\s*['"]([^'"]{3,})['"]`,
+  `(?:${QUERY_FN_GROUP})\\s*\\(\\s*(?:'([^']{3,})'|"([^"]{3,})")`,
   'gu',
 );
 
 // Options arg: getByRole('button', { name: 'Close' })
 // Requires a query function before { name: } to avoid matching plain objects.
+// Uses alternation to require matching quote pairs.
 const HARDCODED_QUERY_OPTIONS_PATTERN_R2 = new RegExp(
-  `(?:${QUERY_FN_GROUP})\\s*\\([^)]*\\{\\s*name:\\s*['"]([^'"]{3,})['"]`,
+  `(?:${QUERY_FN_GROUP})\\s*\\([^)]*\\{\\s*name:\\s*(?:'([^']{3,})'|"([^"]{3,})")`,
   'gu',
 );
 
@@ -220,6 +224,9 @@ const RULE_2_BASELINE: Record<string, number> = {
   'ui/components/app/multi-rpc-edit-modal/network-list-item/network-list-item.test.tsx': 1,
   'ui/components/multichain-accounts/smart-contract-account-toggle/smart-contract-account-toggle.test.tsx': 1,
   'ui/components/multichain-accounts/smart-contract-account-toggle-section/smart-contract-account-toggle-section.test.tsx': 1,
+  // Snap SDK Field props (label, error) are external input data, not i18n-rendered by the component under test.
+  // Hardcoded to avoid tying Snap test fixtures to MetaMask locale files.
+  'ui/components/app/snaps/snap-ui-renderer/components/address-input.test.ts': 2,
 };
 
 function findRule2Violations(filePath: string, lines: string[]): Violation[] {
@@ -249,15 +256,17 @@ function findRule2Violations(filePath: string, lines: string[]): Violation[] {
     }
   };
 
-  // Pattern 1: Direct arg — always on the same line as the query function
-  for (let i = 0; i < lines.length; i++) {
-    let match;
-    HARDCODED_QUERY_DIRECT_PATTERN_R2.lastIndex = 0;
-    while (
-      (match = HARDCODED_QUERY_DIRECT_PATTERN_R2.exec(lines[i])) !== null
-    ) {
-      addViolationIfLocale(match[1], i + 1);
-    }
+  // Pattern 1: Direct arg — match against full content to handle multiline calls
+  let directMatch;
+  HARDCODED_QUERY_DIRECT_PATTERN_R2.lastIndex = 0;
+  while (
+    (directMatch = HARDCODED_QUERY_DIRECT_PATTERN_R2.exec(content)) !== null
+  ) {
+    const lineNum = lineNumberAt(
+      content,
+      directMatch.index + directMatch[0].length,
+    );
+    addViolationIfLocale(directMatch[1] ?? directMatch[2], lineNum);
   }
 
   // Pattern 2: Options object — may span lines, match against full content
@@ -267,7 +276,7 @@ function findRule2Violations(filePath: string, lines: string[]): Violation[] {
     (optMatch = HARDCODED_QUERY_OPTIONS_PATTERN_R2.exec(content)) !== null
   ) {
     const lineNum = lineNumberAt(content, optMatch.index + optMatch[0].length);
-    addViolationIfLocale(optMatch[1], lineNum);
+    addViolationIfLocale(optMatch[1] ?? optMatch[2], lineNum);
   }
 
   return violations;
