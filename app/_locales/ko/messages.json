@@ -7515,12 +7515,6 @@
   "snapAccountRemovedDescription": {
     "message": "이 계정은 더 이상 MetaMask에서 사용할 수 없습니다."
   },
-  "snapAccounts": {
-    "message": "계정 Snap"
-  },
-  "snapAccountsDescription": {
-    "message": "제삼자 Snap이 제어하는 계정입니다."
-  },
   "snapConnectTo": {
     "message": "$1에 연결",
     "description": "$1 is the website URL or a Snap name. Used for Snaps pre-approved connections."
