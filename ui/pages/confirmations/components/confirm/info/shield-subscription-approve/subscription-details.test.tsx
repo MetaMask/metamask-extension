@@ -29,8 +29,8 @@ describe('SubscriptionDetails', () => {
     );
 
     expect(getByText(tEn('transactionShield'))).toBeInTheDocument();
-    expect(getByText('$80/year (Annual)' as string)).toBeInTheDocument();
-    expect(getByText(tEn('freeTrialDays', [14]))).toBeInTheDocument();
+    expect(getByText('$80/year (Annual)')).toBeInTheDocument();
+    expect(getByText(tEn('freeTrialDays', ['14']))).toBeInTheDocument();
   });
 
   it('renders monthly plan without trial correctly', () => {
@@ -50,6 +50,6 @@ describe('SubscriptionDetails', () => {
     );
 
     expect(getByText(tEn('transactionShield'))).toBeInTheDocument();
-    expect(getByText('$8/month (Monthly)' as string)).toBeInTheDocument();
+    expect(getByText('$8/month (Monthly)')).toBeInTheDocument();
   });
 });
