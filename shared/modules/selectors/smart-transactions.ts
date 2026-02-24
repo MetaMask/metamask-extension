@@ -226,3 +226,15 @@ export const getIsSmartTransaction = (
     smartTransactionsPreferenceEnabled && smartTransactionsEnabled,
   );
 };
+
+export const getGaslessBridgeWith7702EnabledForChain = (
+  state: SmartTransactionsState,
+  chainId?: string,
+): boolean => {
+  const effectiveChainId = (chainId || getCurrentChainId(state)) as Hex;
+  const featureFlags = getSmartTransactionsFeatureFlagsForChain(
+    state,
+    effectiveChainId,
+  );
+  return featureFlags?.gaslessBridgeWith7702Enabled ?? false;
+};
