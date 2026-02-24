@@ -168,11 +168,11 @@ describe('Segment User Traits', function () {
         // maxWait on sendUpdate debounce may split the two toggles into
         // separate identify events. Poll until the expected traits arrive.
         await driver.wait(async () => {
-          events = await getEventPayloads(
-            driver,
-            mockedEndpoints,
-            false,
-          );
+          try {
+            events = await getEventPayloads(driver, mockedEndpoints, false);
+          } catch {
+            return false;
+          }
           if (events.length === 0) {
             return false;
           }
@@ -187,7 +187,7 @@ describe('Segment User Traits', function () {
             allTraits.is_metrics_opted_in === true &&
             allTraits.has_marketing_consent === true
           );
-        }, driver.timeout);
+        }, 30_000);
         const allTraits = events.reduce(
           (
             acc: Record<string, unknown>,
