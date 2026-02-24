@@ -25,6 +25,10 @@ import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import {
+  getCurrencyRateControllerCurrentCurrency,
+  getCurrencyRateControllerCurrencyRates,
+} from '../../selectors/assets-migration';
 
 const initialState = {
   isInitialized: false,
@@ -313,16 +317,17 @@ export function getNativeCurrency(state) {
 }
 
 export function getConversionRate(state) {
-  return state.metamask.currencyRates[getProviderConfig(state).ticker]
-    ?.conversionRate;
+  return getCurrencyRateControllerCurrencyRates(state)[
+    getProviderConfig(state).ticker
+  ]?.conversionRate;
 }
 
 export function getConversionRateByTicker(state, ticker) {
-  return state.metamask.currencyRates[ticker]?.conversionRate;
+  return getCurrencyRateControllerCurrencyRates(state)[ticker]?.conversionRate;
 }
 
 export function getCurrencyRates(state) {
-  return state.metamask.currencyRates;
+  return getCurrencyRateControllerCurrencyRates(state);
 }
 
 export function getSendHexDataFeatureFlagState(state) {
@@ -428,9 +433,7 @@ export const getGasEstimateTypeByChainId = createSelector(
  * @param {*} state
  * @returns { import('@metamask/assets-controllers').TokenBalancesControllerState['tokenBalances']}
  */
-export function getTokenBalances(state) {
-  return state.metamask.tokenBalances;
-}
+export { getTokenBalancesControllerTokenBalances as getTokenBalances } from '../../selectors/assets-migration';
 
 export const getGasFeeEstimatesByChainId = createSelector(
   getGasFeeControllerEstimatesByChainId,
@@ -635,9 +638,7 @@ export function doesUserHaveALedgerAccount(state) {
  * @param {object} state - Redux state
  * @returns {string} The current fiat currency code
  */
-export function getCurrentCurrency(state) {
-  return state.metamask.currentCurrency;
-}
+export { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency };
 
 /**
  * Returns a boolean indicating whether the user opened the extension with the sidepanel.

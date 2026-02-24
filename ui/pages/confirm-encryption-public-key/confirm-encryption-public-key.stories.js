@@ -2,6 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from '../../store/store';
 import testData from '../../../.storybook/test-data';
+import { getCurrencyRateControllerCurrentCurrency } from '../../selectors/assets-migration';
 import ConfirmEncryptionPublicKey from './confirm-encryption-public-key.component';
 
 const store = configureStore(testData);
@@ -70,7 +71,7 @@ export default {
     subjectMetadata: metamask.subjectMetadata,
     mostRecentOverviewPage: history.mostRecentOverviewPage,
     nativeCurrency: metamask.nativeCurrency,
-    currentCurrency: metamask.currentCurrency,
+    currentCurrency: getCurrencyRateControllerCurrentCurrency({ metamask }),
     conversionRate: metamask.conversionRate,
   },
 };

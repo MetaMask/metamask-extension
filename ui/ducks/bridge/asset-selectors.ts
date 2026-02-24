@@ -25,6 +25,11 @@ import {
   getAssetsRates,
 } from '../../selectors/assets';
 import { getInternalAccountByGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import {
+  getAccountTrackerControllerAccountsByChainId,
+  getCurrencyRateControllerCurrencyRates,
+  getTokenRatesControllerMarketData,
+} from '../../selectors/assets-migration';
 import { type BridgeAppState, getFromChains } from './selectors';
 import { type BridgeToken } from './types';
 import { getMaybeHexChainId, isTronEnergyOrBandwidthResource } from './utils';
@@ -130,7 +135,7 @@ const getNativeAssetsWithBalance = createSelector(
   [
     getEvmAccountAddress,
     getAllowedHexChainIds,
-    ({ metamask }) => metamask.accountsByChainId,
+    getAccountTrackerControllerAccountsByChainId,
   ],
   (accountAddress, hexChainIds, balanceByChainIdByAccountAddress) => {
     const assetsWithBalance: BridgeToken[] = [];
@@ -176,8 +181,8 @@ const getEvmAssetsWithBalance = createSelector(
 // Calculates the exchange rate for each asset with a balance
 const getEvmExchangeRates = createSelector(
   [
-    ({ metamask }) => metamask.marketData,
-    ({ metamask }) => metamask.currencyRates,
+    getTokenRatesControllerMarketData,
+    getCurrencyRateControllerCurrencyRates,
     getERC20AssetsWithBalance,
     getNativeAssetsWithBalance,
   ],

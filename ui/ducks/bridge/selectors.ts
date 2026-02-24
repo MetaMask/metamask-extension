@@ -44,6 +44,7 @@ import {
   type AccountGroupObject,
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
+import { AssetsControllerState } from '@metamask/assets-controller';
 import { getHardwareWalletType } from '../../selectors/selectors';
 import {
   ALL_ALLOWED_BRIDGE_CHAIN_IDS,
@@ -83,6 +84,10 @@ import {
 import { getAllEnabledNetworksForAllNamespaces } from '../../selectors/multichain/networks';
 import { type MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
 import {
+  getCurrencyRateControllerCurrencyRates,
+  getTokenRatesControllerMarketData,
+} from '../../selectors/assets-migration';
+import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
   getDefaultToToken,
@@ -116,7 +121,8 @@ export type BridgeAppState = {
     MultichainNetworkControllerState &
     TokenListState &
     RemoteFeatureFlagControllerState &
-    CurrencyRateState & {
+    CurrencyRateState &
+    AssetsControllerState & {
       useExternalServices: boolean;
     };
   bridge: BridgeState;
@@ -379,6 +385,10 @@ export const getFromAccount = createSelector(
     selectedInternalAccount,
 );
 
+// TODO Unified Assets Controller State Access (5)
+// Uses: getWalletsWithAccounts
+// References
+// ui/pages/bridge/prepare/components/destination-account-picker-modal.tsx (1)
 export const getToAccounts = createSelector(
   [
     (state: BridgeAppState) => getToChain(state)?.chainId,
@@ -492,8 +502,8 @@ export const getFromTokenConversionRate = createSelector(
     (state: BridgeAppState) => state.bridge.fromTokenExchangeRate,
     getAssetsRates, // non-evm conversion rates multichain equivalent of getMarketData
     getMultichainCoinRates,
-    (state: BridgeAppState) => state.metamask.marketData, // rates for non-native evm tokens
-    (state: BridgeAppState) => state.metamask.currencyRates, // EVM only
+    getTokenRatesControllerMarketData, // rates for non-native evm tokens
+    getCurrencyRateControllerCurrencyRates, // EVM only
   ],
   (
     fromToken,

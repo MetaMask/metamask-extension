@@ -141,6 +141,7 @@ import { MultichainReviewPermissions } from '../../components/multichain-account
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { createRouteWithLayout } from '../../layouts/route-with-layout';
+import { getCurrencyRateControllerCurrentCurrency } from '../../selectors/assets-migration';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -398,7 +399,7 @@ export default function Routes() {
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
   const currentCurrency = useAppSelector(
-    (state) => state.metamask.currentCurrency,
+    getCurrencyRateControllerCurrentCurrency,
   );
   const os = useAppSelector((state) => state.metamask.browserEnvironment?.os);
   const browser = useAppSelector(

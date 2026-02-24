@@ -178,6 +178,12 @@ import {
   getCurrentNetworkTransactions,
 } from './transactions';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+import {
+  getTokensControllerAllTokens,
+  getAccountTrackerControllerAccountsByChainId,
+  getCurrencyRateControllerCurrencyRates,
+  getTokenRatesControllerMarketData,
+} from './assets-migration';
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
@@ -490,6 +496,14 @@ export function getAccountTypeForKeyring(keyring) {
   }
 }
 
+// TODO Unified Assets Controller State Access (1)
+// AccountTrackerController: accountsByChainId
+// References
+// ui/selectors/selectors.js (5)
+// ui/store/actions.ts (1)
+// ui/pages/create-account/connect-hardware/index.js (1)
+// ui/components/multichain/multi-srp/srp-list/srp-list.tsx (1)
+// ui/selectors/confirm-transaction.js (1)
 /**
  * Get account balances state.
  *
@@ -497,7 +511,7 @@ export function getAccountTypeForKeyring(keyring) {
  * @returns {object} A map of account addresses to account objects (which includes the account balance)
  */
 export const getMetaMaskAccountBalances = createSelector(
-  (state) => state.metamask.accountsByChainId,
+  getAccountTrackerControllerAccountsByChainId,
   getCurrentChainId,
   (accountsByChainId, currentChainId) => {
     const balancesForCurrentChain = accountsByChainId?.[currentChainId] ?? {};
@@ -514,8 +528,16 @@ export const getMetaMaskAccountBalances = createSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access (1)
+// AccountTrackerController: accountsByChainId
+// References
+// ui/selectors/selectors.js (3)
+// ui/hooks/useAccountTotalCrossChainFiatBalance.ts (1)
+// ui/pages/confirmations/components/confirm/info/hooks/useMaxValueRefresher.ts (1)
+// ui/hooks/useAccountTotalFiatBalance.js (1)
+// ui/selectors/multi-srp/multi-srp.ts (1)
 export const getMetaMaskCachedBalances = createSelector(
-  (state) => state.metamask.accountsByChainId,
+  getAccountTrackerControllerAccountsByChainId,
   getEnabledNetworks,
   getCurrentChainId,
   (_, networkChainId) => networkChainId,
@@ -654,6 +676,10 @@ export function checkIfMethodIsEnabled(state, methodName) {
   return Boolean(internalAccount.methods.includes(methodName));
 }
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getMetaMaskAccountBalances
+// References
+// ui/ducks/send/send.js (1)
 export function getSelectedInternalAccountWithBalance(state) {
   const selectedAccount = getSelectedInternalAccount(state);
   const rawAccount = getMetaMaskAccountBalances(state)[selectedAccount.address];
@@ -784,8 +810,13 @@ export function getHDEntropyIndex(state) {
   return hdEntropyIndex === -1 ? undefined : hdEntropyIndex;
 }
 
+// TODO Unified Assets Controller State Access (1)
+// AccountTrackerController: accountsByChainId
+// References
+// ui/hooks/useAccountTotalCrossChainFiatBalance.ts (1)
 export function getCrossChainMetaMaskCachedBalances(state) {
-  const allAccountsByChainId = state.metamask.accountsByChainId;
+  const allAccountsByChainId =
+    getAccountTrackerControllerAccountsByChainId(state);
   return Object.keys(allAccountsByChainId).reduce((acc, chainId) => {
     acc[chainId] = Object.keys(allAccountsByChainId[chainId]).reduce(
       (innerAcc, address) => {
@@ -800,6 +831,12 @@ export function getCrossChainMetaMaskCachedBalances(state) {
   }, {});
 }
 
+// TODO Unified Assets Controller State Access (1)
+// AccountTrackerController: accountsByChainId
+// References
+// ui/selectors/selectors.js (2)
+// ui/pages/confirmations/hooks/useHasInsufficientBalance.ts (1)
+// ui/pages/asset/components/asset-page.tsx (1)
 /**
  * Based on the current account address, return the balance for the native token of all chain networks on that account
  *
@@ -822,6 +859,11 @@ export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
   return balancesByChainId;
 }
 
+// TODO Unified Assets Controller State Access (1)
+// TokensController: allTokens
+// References
+// ui/selectors/assets.ts (1)
+// ui/selectors/multi-srp/multi-srp.ts (1)
 /**
  * Based on the current account address, query for all tokens across all chain networks on that account,
  * including the native tokens, without hardcoding any native token information.
@@ -885,6 +927,11 @@ export function getSelectedAccountTokensAcrossChains(state) {
   return tokensByChain;
 }
 
+// TODO Unified Assets Controller State Access (1)
+// AccountTrackerController: accountsByChainId
+// References
+// ui/selectors/selectors.js (2)
+// ui/selectors/assets.ts (1)
 /**
  * Get the native token balance for a given account address and chainId
  *
@@ -894,7 +941,7 @@ export function getSelectedAccountTokensAcrossChains(state) {
  * @param {string} chainId - The chainId of the account
  */
 export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
-  (state) => state.metamask.accountsByChainId,
+  getAccountTrackerControllerAccountsByChainId,
   (_state, accountAddress) => accountAddress,
   (accountsByChainId, selectedAddress) => {
     const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
@@ -910,6 +957,10 @@ export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access (1)
+// TokensController: allTokens
+// References
+// ui/selectors/assets.ts (1)
 // eslint-disable-next-line jsdoc/require-param
 /**
  * Get the tokens across chains for a given account address
@@ -918,7 +969,7 @@ export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
  */
 export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
   [
-    (state) => state.metamask.allTokens,
+    (state) => getTokensControllerAllTokens(state),
     (state) => state.metamask.networkConfigurationsByChainId,
     (state, accountAddress) =>
       getNativeTokenCachedBalanceByChainIdSelector(state, accountAddress),
@@ -1008,6 +1059,19 @@ export function getNativeTokenInfo(networkConfigurationsByChainId, chainId) {
  *  @typedef {import('./selectors.types').InternalAccountWithBalance} InternalAccountWithBalance
  */
 
+// TODO Unified Assets Controller State Access (3)
+// Uses: getMetaMaskAccounts
+// References
+// ui/selectors/selectors.js (6)
+// ui/components/multichain/account-list-menu/hidden-account-list.js (1)
+// ui/pages/nonevm-balance-check/index.tsx (1)
+// ui/components/multichain/create-account/create-account.tsx (1)
+// ui/components/multichain/account-details/account-details.tsx (1)
+// ui/selectors/multichain-accounts/account-tree.ts (2)
+// ui/components/multichain/account-list-menu/account-list-menu.tsx (1)
+// ui/components/app/snaps/snap-ui-account-selector/snap-ui-account-selector.tsx (1)
+// ui/pages/remove-snap-account/snap-account-card.tsx (1)
+// ui/hooks/accounts/useAccountCreationOnNetworkChange.ts (1)
 /**
  * Get ordered (by keyrings) accounts with InternalAccount and balance
  *
@@ -1026,12 +1090,21 @@ export const getMetaMaskAccountsOrdered = createSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access (4)
+// Uses: getMetaMaskAccountsOrdered
+// SHOULD NOT DEPEND ON ASSETS STATE
+// References
+// ui/pages/create-account/connect-hardware/index.js
 export const getMetaMaskAccountsConnected = createSelector(
   getMetaMaskAccountsOrdered,
   (connectedAccounts) =>
     connectedAccounts.map(({ address }) => address.toLowerCase()),
 );
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getMetaMaskAccountBalances
+// References
+// ui/components/app/wallet-overview/eth-overview.js (1)
 export function isBalanceCached(state) {
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const selectedAccountBalance =
@@ -1041,6 +1114,17 @@ export function isBalanceCached(state) {
   return Boolean(!selectedAccountBalance && cachedBalance);
 }
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getMetaMaskCachedBalances
+// References
+// ui/selectors/selectors.js (1)
+// ui/selectors/multichain.ts (1)
+// ui/pages/confirm-add-suggested-nft/confirm-add-suggested-nft.js (1)
+// ui/hooks/useCarouselManagement/useCarouselManagement.ts (1)
+// ui/components/multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change.tsx (1)
+// ui/components/app/wallet-overview/eth-overview.js (1)
+// ui/components/multichain/asset-picker-amount/asset-balance/asset-balance-text.tsx (1)
+// ui/pages/confirmations/hooks/useBalance.js (1)
 export function getSelectedAccountCachedBalance(state) {
   const cachedBalances = getMetaMaskCachedBalances(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
@@ -1048,10 +1132,23 @@ export function getSelectedAccountCachedBalance(state) {
   return cachedBalances?.[selectedAddress];
 }
 
-export function getAllTokens(state) {
-  return state.metamask.allTokens;
-}
+// TODO Unified Assets Controller State Access (1)
+// TokensController: allTokens
+// References
+// ui/selectors/selectors.js (3)
+// ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx (1)
+// ui/components/multichain/import-tokens-modal/import-tokens-modal.js (1)
+// ui/hooks/useTransactionDisplayData.js (1)
+// ui/hooks/gator-permissions/useGatorPermissionTokenInfo.ts (1)
+// ui/pages/confirmations/components/confirm/info/hooks/useTokenDetails.ts (1)
+// ui/hooks/useAccountTotalFiatBalance.js (1)
+// ui/hooks/useGetFormattedTokensPerChain.ts (1)
+export { getTokensControllerAllTokens as getAllTokens };
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getAllTokens
+// References
+// ui/helpers/utils/tags.ts (1)
 /**
  * Get a flattened list of all ERC-20 tokens owned by the user.
  * Includes all tokens from all chains and accounts.
@@ -1059,7 +1156,7 @@ export function getAllTokens(state) {
  * @returns {object[]} All ERC-20 tokens owned by the user in a flat array.
  */
 export const selectAllTokensFlat = createSelector(
-  getAllTokens,
+  getTokensControllerAllTokens,
   (tokensByAccountByChain) => {
     const tokensByAccountArray = Object.values(tokensByAccountByChain);
 
@@ -1095,32 +1192,25 @@ export const getSelectedAccount = createSelector(
   },
 );
 
-export const getWatchedToken = (transactionMeta) =>
-  createSelector(
-    [getSelectedAccount, getAllTokens],
-    (selectedAccount, detectedTokens) => {
-      const { chainId } = transactionMeta;
-
-      const selectedToken = detectedTokens?.[chainId]?.[
-        selectedAccount.address
-      ]?.find(
-        (token) =>
-          toChecksumHexAddress(token.address) ===
-          toChecksumHexAddress(transactionMeta.txParams.to),
-      );
-
-      return selectedToken;
-    },
-  );
-
 export function getTargetAccount(state, targetAddress) {
   const accounts = getMetaMaskAccounts(state);
   return accounts[targetAddress];
 }
 
+// TODO Unified Assets Controller State Access (1)
+// TokenRatesController: marketData
+// References
+// ui/components/app/currency-input/hooks/useTokenExchangeRate.tsx (1)
+// ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx (1)
+// ui/components/multichain/import-tokens-modal/import-tokens-modal.js (1)
+// ui/ducks/send/helpers.js (1)
+// ui/hooks/useAccountTotalFiatBalance.js (1)
+// ui/hooks/useTokenFiatAmount.js (1)
+// ui/hooks/useTokensToSearch.js (1)
+// ui/components/ui/token-input/token-input.container.js (1)
 export const getTokenExchangeRates = createSelector(
   (state) => getCurrentChainId(state),
-  (state) => state.metamask.marketData,
+  getTokenRatesControllerMarketData,
   (chainId, marketData) => {
     const contractMarketData = marketData?.[chainId] ?? {};
     return Object.entries(contractMarketData).reduce(
@@ -1133,8 +1223,12 @@ export const getTokenExchangeRates = createSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access (1)
+// TokenRatesController: marketData
+// References
+// ui/hooks/useAccountTotalCrossChainFiatBalance.ts (1)
 export const getCrossChainTokenExchangeRates = (state) => {
-  const contractMarketData = state.metamask.marketData ?? {};
+  const contractMarketData = getTokenRatesControllerMarketData(state) ?? {};
 
   return Object.keys(contractMarketData).reduce((acc, topLevelKey) => {
     acc[topLevelKey] = Object.keys(contractMarketData[topLevelKey]).reduce(
@@ -1149,6 +1243,11 @@ export const getCrossChainTokenExchangeRates = (state) => {
   }, {});
 };
 
+// TODO Unified Assets Controller State Access (1)
+// TokenRatesController: marketData
+// References
+// ui/components/app/wallet-overview/aggregated-percentage-overview.tsx (1)
+// ui/components/multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change.tsx (1)
 /**
  * Get market data for tokens on the current chain
  *
@@ -1157,12 +1256,23 @@ export const getCrossChainTokenExchangeRates = (state) => {
  */
 export const getTokensMarketData = (state) => {
   const chainId = getCurrentChainId(state);
-  return state.metamask.marketData?.[chainId];
+  return getTokenRatesControllerMarketData(state)?.[chainId];
 };
 
-export const getMarketData = (state) => {
-  return state.metamask.marketData;
-};
+// TODO Unified Assets Controller State Access (1)
+// TokenRatesController: marketData
+// References
+// ui/selectors/assets.ts (2)
+// ui/ducks/bridge/selectors.ts (1)
+// ui/hooks/bridge/useBridgeExchangeRates.ts (1)
+// ui/components/multichain/token-list-item/token-list-item.tsx (1)
+// ui/hooks/useTokenInsightsData.ts (1)
+// ui/components/app/wallet-overview/aggregated-percentage-overview-cross-chains.tsx (1)
+// ui/components/app/assets/token-cell/cells/token-cell-percent-change.tsx (1)
+// ui/pages/asset/components/asset-market-details.tsx (1)
+// ui/pages/asset/hooks/useCurrentPrice.ts (1)
+// ui/hooks/useTokenFiatAmount.js (1)
+export { getTokenRatesControllerMarketData as getMarketData };
 
 export function getAddressBook(state) {
   const chainId = getCurrentChainId(state);
@@ -1245,6 +1355,10 @@ export function accountsWithSendEtherInfoSelector(state) {
   return accountsWithSendEtherInfo;
 }
 
+// TODO Unified Assets Controller State Access (4)
+// Uses: getMetaMaskAccountsOrdered
+// References
+// ui/pages/permissions-connect/permissions-connect.tsx (1)
 export const getAccountsWithLabels = createSelector(
   getMetaMaskAccountsOrdered,
   (accounts) => {
@@ -1329,6 +1443,15 @@ export const getIsRpcFailoverEnabled = createSelector(
     remoteFeatureFlags.walletFrameworkRpcFailoverEnabled ?? false,
 );
 
+// TODO Unified Assets Controller State Access (1)
+// CurrencyRateController: currencyRates
+// References
+// ui/components/app/currency-input/hooks/useTokenExchangeRate.tsx (1)
+// ui/pages/confirmations/components/confirm/info/hooks/useFeeCalculations.ts (1)
+// ui/pages/confirmations/hooks/useAssetDetails.js (1)
+// ui/pages/confirmations/components/simulation-details/useBalanceChanges.ts (1)
+// ui/pages/confirmations/components/confirm/info/shared/native-send-heading/native-send-heading.tsx (1)
+// ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/native-value-display/native-value-display.tsx (1)
 /**
  * @type (state: any, chainId: string) => number | undefined
  */
@@ -1341,10 +1464,15 @@ export const selectConversionRateByChainId = createSelector(
     }
 
     const { nativeCurrency } = networkConfiguration;
-    return state.metamask.currencyRates[nativeCurrency]?.conversionRate;
+    return getCurrencyRateControllerCurrencyRates(state)[nativeCurrency]
+      ?.conversionRate;
   },
 );
 
+// TODO Unified Assets Controller State Access (1)
+// NftController: allNfts
+// References
+// ui/pages/confirmations/hooks/useAssetDetails.js (1)
 export const selectNftsByChainId = createSelector(
   getSelectedInternalAccount,
   (state) => state.metamask.allNfts,
@@ -1593,6 +1721,20 @@ export function getTestNetworkBackgroundColor(state) {
   }
 }
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getCurrencyRates
+// References
+// ui/selectors/multichain.ts (1)
+// ui/components/app/transaction-breakdown/transaction-breakdown-utils.ts (1)
+// ui/pages/asset/hooks/useHistoricalPrices.ts (1)
+// ui/pages/confirmations/components/confirm/info/hooks/useGasFeeToken.ts (1)
+// ui/components/app/currency-input/currency-input.js (1)
+// ui/pages/confirmations/components/simulation-details/fiat-display.tsx (1)
+// ui/hooks/useEthFiatAmount.js (1)
+// ui/hooks/useTokenFiatAmount.js (1)
+// ui/pages/confirmations/components/gas-details-item/gas-details-item.js (1)
+// ui/pages/confirmations/components/fee-details-component/fee-details-component.js (1)
+// ui/components/ui/token-input/token-input.container.js (1)
 export function getShouldShowFiat(state, chainId) {
   let currentChainId;
   let conversionRate;
@@ -1603,7 +1745,8 @@ export function getShouldShowFiat(state, chainId) {
       CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId] ??
       CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION[chainId] ??
       selectNetworkConfigurationByChainId(state, chainId)?.nativeCurrency;
-    conversionRate = getCurrencyRates(state)?.[ticker]?.conversionRate;
+    conversionRate =
+      getCurrencyRateControllerCurrencyRates(state)?.[ticker]?.conversionRate;
   } else {
     currentChainId = getCurrentChainId(state);
     conversionRate = getConversionRate(state);
@@ -1946,14 +2089,27 @@ export function getUseExternalServices(state) {
   return state.metamask.useExternalServices;
 }
 
+// TODO Unified Assets Controller State Access (1)
+// CurrencyRateController: currencyRates
+// References
+// ui/pages/swaps/prepare-swap-page/review-quote.js (1)
+// ui/pages/swaps/awaiting-swap/awaiting-swap.js (1)
+// ui/ducks/swaps/swaps.js (1)
+// ui/pages/confirmations/components/simulation-details/useBalanceChanges.ts (1)
+// ui/hooks/useAccountTotalFiatBalance.js (1)
 export function getUSDConversionRate(state) {
-  return state.metamask.currencyRates[getProviderConfig(state).ticker]
-    ?.usdConversionRate;
+  return getCurrencyRateControllerCurrencyRates(state)[
+    getProviderConfig(state).ticker
+  ]?.usdConversionRate;
 }
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getCurrencyRates
+// References
+// ui/pages/confirmations/components/simulation-details/useBalanceChanges.ts (1)
 export const getUSDConversionRateByChainId = (chainId) =>
   createSelector(
-    getCurrencyRates,
+    getCurrencyRateControllerCurrencyRates,
     (state) => selectNetworkConfigurationByChainId(state, chainId),
     (currencyRates, networkConfiguration) => {
       if (!networkConfiguration) {
@@ -1965,9 +2121,21 @@ export const getUSDConversionRateByChainId = (chainId) =>
     },
   );
 
-export function getCurrencyRates(state) {
-  return state.metamask.currencyRates;
-}
+// TODO Unified Assets Controller State Access (1)
+// CurrencyRateController: currencyRates
+// References
+// ui/selectors/selectors.js (2)
+// ui/selectors/assets.ts (2)
+// ui/ducks/metamask/metamask.js (1)
+// ui/components/multichain/token-list-item/token-list-item.tsx (1)
+// ui/pages/confirmations/components/confirm/info/hooks/useGasFeeToken.ts (1)
+// ui/hooks/useTokenInsightsData.ts (1)
+// ui/hooks/useCurrencyDisplay.js (1)
+// ui/pages/asset/components/asset-market-details.tsx (1)
+// ui/pages/asset/hooks/useCurrentPrice.ts (1)
+// ui/hooks/useAccountTotalCrossChainFiatBalance.ts (1)
+// ui/hooks/useTokenFiatAmount.js (1)
+export { getCurrencyRateControllerCurrencyRates as getCurrencyRates };
 
 export function getWeb3ShimUsageStateForOrigin(state, origin) {
   return state.metamask.web3ShimUsageOrigins[origin];
@@ -2101,17 +2269,54 @@ export function getNativeCurrencyForChain(chainId) {
   return CHAIN_ID_TOKEN_IMAGE_MAP[chainId] ?? undefined;
 }
 
+// TODO Unified Assets Controller State Access (1)
+// TokenListController: tokensChainsCache
+// References
+// ui/components/multichain/import-tokens-modal/import-tokens-modal-confirm.js (1)
+// ui/pages/asset/components/token-asset.tsx (1)
+// ui/hooks/useTransactionDisplayData.js (1)
+// ui/hooks/gator-permissions/useGatorPermissionTokenInfo.ts (1)
+// ui/pages/confirmations/components/confirm/info/hooks/useTokenDetails.ts (1)
+// ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-icon/gas-fee-token-icon.tsx (1)
+// ui/hooks/useDisplayName.ts (1)
+// ui/components/multichain/asset-picker-amount/asset-picker-modal/Asset.tsx (1)
+// ui/components/app/assets/hooks/useTokenDisplayInfo.tsx (1)
 export const selectERC20TokensByChain = createDeepEqualSelector(
   (state) => state.metamask.tokensChainsCache,
   (erc20TokensByChain) => erc20TokensByChain,
 );
 
-export const selectERC20Tokens = createDeepEqualSelector(
+// TODO Unified Assets Controller State Access (1)
+// TokenListController: tokensChainsCache
+// References
+// ui/selectors/selectors.js (2)
+const selectERC20Tokens = createDeepEqualSelector(
   getCurrentChainId,
   (state) => state.metamask.tokensChainsCache,
   (chainId, erc20Tokens) => erc20Tokens?.[chainId]?.data || {},
 );
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: selectERC20Tokens
+// References
+// ui/selectors/selectors.js (1)
+// ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx (1)
+// ui/pages/bridge/prepare/prepare-bridge-page.tsx (1)
+// ui/pages/swaps/prepare-swap-page/prepare-swap-page.js (1)
+// ui/pages/asset/components/token-asset.tsx (1)
+// ui/components/ui/nickname-popover/nickname-popover.component.js (1)
+// ui/hooks/useIsOriginalTokenSymbol.js (1)
+// ui/ducks/send/send.js (1)
+// ui/components/app/assets/hooks/useTokenDisplayInfo.tsx (1)
+// ui/hooks/useAccountTotalFiatBalance.js (1)
+// ui/components/ui/identicon/identicon.component.js (1)
+// ui/components/multichain/asset-picker-amount/asset-picker-amount.tsx (1)
+// ui/pages/settings/settings-tab/settings-tab.container.js (1)
+// ui/components/multichain/pages/send/components/recipient-content.tsx (1)
+// ui/hooks/useTokensToSearch.js (1)
+// ui/components/ui/update-nickname-popover/update-nickname-popover.js (1)
+// ui/components/ui/identicon/identicon.container.js (1)
+// ui/components/app/detected-token/detected-token-details/detected-token-details.js (1)
 /**
  * To retrieve the token list for use throughout the UI. Will return the remotely fetched list
  * from the tokens controller if token detection is enabled, or the static list if not.
@@ -3008,6 +3213,15 @@ export function getIsDynamicTokenListAvailable(state) {
   ].includes(chainId);
 }
 
+// TODO Unified Assets Controller State Access (1)
+// TokensController: allDetectedTokens
+// References
+// ui/selectors/selectors.js (1)
+// ui/hooks/useTransactionDisplayData.js (1)
+// ui/components/app/detected-token/detected-token-selection-popover/detected-token-selection-popover.js (1)
+// ui/components/app/assets/hooks/useAssetListTokenDetection.tsx (1)
+// ui/components/app/detected-token/detected-token.js (1)
+// ui/components/multichain/detected-token-banner/detected-token-banner.js (1)
 /**
  * To retrieve the list of tokens detected and saved on the state to detectedToken object.
  *
@@ -3020,10 +3234,21 @@ export function getDetectedTokensInCurrentNetwork(state) {
   return state.metamask.allDetectedTokens?.[currentChainId]?.[selectedAddress];
 }
 
+// TODO Unified Assets Controller State Access (1)
+// TokensController: allDetectedTokens
+// References
+// ui/hooks/useTransactionDisplayData.js
 export function getAllDetectedTokens(state) {
   return state.metamask.allDetectedTokens;
 }
 
+// TODO Unified Assets Controller State Access (1)
+// TokensController: allDetectedTokens
+// References
+// ui/components/multichain/detected-token-banner/detected-token-banner.js (1)
+// ui/components/app/detected-token/detected-token-selection-popover/detected-token-selection-popover.js
+// ui/components/app/detected-token/detected-token.js
+// ui/components/app/assets/hooks/useAssetListTokenDetection.tsx
 /**
  * To retrieve the list of tokens detected across all chains.
  *
@@ -3316,16 +3541,10 @@ export function getBlockExplorerLinkText(
   return blockExplorerLinkText;
 }
 
-export function getAllAccountsOnNetworkAreEmpty(state) {
-  const balances = getMetaMaskCachedBalances(state) ?? {};
-  const hasNoNativeFundsOnAnyAccounts = Object.values(balances).every(
-    (balance) => balance === '0x0' || balance === '0x00',
-  );
-  const hasNoTokens = getNumberOfTokens(state) === 0;
-
-  return hasNoNativeFundsOnAnyAccounts && hasNoTokens;
-}
-
+// TODO Unified Assets Controller State Access (4)
+// Uses: getMetaMaskAccountsOrdered
+// References
+// ui/components/multichain/connect-accounts-modal/connect-accounts-modal.tsx (1)
 export function getUnconnectedAccounts(state, activeTab) {
   const accounts = getMetaMaskAccountsOrdered(state);
   const connectedAccounts = getOrderedConnectedAccountsForConnectedDapp(
@@ -3340,6 +3559,14 @@ export function getUnconnectedAccounts(state, activeTab) {
   return unConnectedAccounts;
 }
 
+// TODO Unified Assets Controller State Access (4)
+// Uses: getMetaMaskAccountsOrdered
+// References
+// ui/selectors/selectors.js (2)
+// ui/selectors/multichain-accounts/account-tree.ts (2)
+// ui/selectors/dapp.ts (1)
+// ui/components/app/alerts/unconnected-account-alert/unconnected-account-alert.js (1)
+// ui/pages/connected-accounts/connected-accounts.container.js (1)
 export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
   getOriginOfCurrentTab,
   (state) => state.metamask.permissionHistory,
@@ -3381,6 +3608,15 @@ export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access (4)
+// Uses: getMetaMaskAccountsOrdered, getOrderedConnectedAccountsForActiveTab
+// References
+// ui/selectors/selectors.js (1)
+// ui/pages/permissions-connect/connect-page/connect-page.tsx (1)
+// ui/components/multichain/pages/review-permissions-page/review-permissions-page.tsx (1)
+// ui/hooks/subscription/useSubscription.ts (1)
+// ui/components/multichain/pages/send/components/your-accounts.tsx (1)
+// ui/components/multichain/account-list-menu/account-list-menu.tsx (1)
 /**
  * @deprecated
  */
@@ -3459,6 +3695,12 @@ export const getUpdatedAndSortedAccounts = createSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access (5)
+// Uses: getUpdatedAndSortedAccounts
+// References
+// ui/pages/permissions-connect/connect-page/connect-page.tsx (1)
+// ui/components/multichain/pages/review-permissions-page/review-permissions-page.tsx (1)
+// ui/hooks/subscription/useSubscription.ts (1)
 export const getUpdatedAndSortedAccountsWithCaipAccountId =
   createDeepEqualSelector(getUpdatedAndSortedAccounts, (accounts) => {
     return accounts.map((account) => {

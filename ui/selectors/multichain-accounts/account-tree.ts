@@ -63,6 +63,15 @@ export const getAccountTree = (
   state: MultichainAccountsState,
 ): AccountTreeState => state.metamask.accountTree;
 
+// TODO Unified Assets Controller State Access (4)
+// Uses: getMetaMaskAccountsOrdered, getOrderedConnectedAccountsForActiveTab
+// References
+// ui/selectors/multichain-accounts/account-tree.ts (1)
+// ui/ducks/bridge/selectors.ts (1)
+// ui/pages/multichain-accounts/wallet-details-page/wallet-details-page.tsx (1)
+// ui/pages/settings/transaction-shield-tab/account-selector/account-selector.tsx (1)
+// ui/pages/confirmations/hooks/send/useAccountRecipients.ts (1)
+// ui/pages/confirmations/hooks/useConfirmationRecipientInfo.ts (1)
 /**
  * Retrieve all wallets and their accounts with metadata in consolidated data structure.
  *
@@ -179,6 +188,14 @@ export const getNormalizedGroupsMetadata = createDeepEqualSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access (5)
+// Uses: getWalletsWithAccounts
+// SHOULD NOT DEPEND ON ASSETS STATE
+// References
+// ui/hooks/rewards/useOptIn.ts (1)
+// ui/hooks/useDisplayName.ts (1)
+// ui/pages/bridge/hooks/useDestinationAccount.ts (1)
+// ui/pages/confirmations/hooks/useConfirmationRecipientInfo.ts (1)
 /**
  * Retrieve the wallet ID and name for an account with a given address.
  *
