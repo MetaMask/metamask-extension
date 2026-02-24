@@ -1247,7 +1247,9 @@
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true,
-        "fetch": true
+        "console.log": true,
+        "fetch": true,
+        "performance.now": true
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
