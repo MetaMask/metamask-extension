@@ -12,8 +12,7 @@
 # Optional environment variables:
 #   FLASK_TAG - Flask tag name (e.g., v12.5.0-flask.0), created if provided
 
-set -e
-set -o pipefail
+set -euo pipefail
 
 if [[ -z "${GITHUB_TOKEN}" ]]; then
     echo "::error::GITHUB_TOKEN not provided."

@@ -2,8 +2,7 @@
 # Verifies 'all-jobs-pass' CI check has passed on RELEASE_SHA.
 # Required env: GITHUB_TOKEN, GITHUB_REPOSITORY, RELEASE_SHA
 
-set -e
-set -o pipefail
+set -euo pipefail
 
 if [[ -z "${GITHUB_TOKEN}" ]]; then
     echo "::error::GITHUB_TOKEN not provided."
