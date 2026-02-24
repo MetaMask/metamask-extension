@@ -467,7 +467,7 @@ const CrossChainSwapTxDetails = () => {
             {transactionGroup && typeof isEarliestNonce !== 'undefined' && (
               <TransactionActivityLog
                 transactionGroup={transactionGroup}
-                className="transaction-list-item-details__transaction-activity-log"
+                className="bridge-transaction-details__activity-log"
                 isEarliestNonce={isEarliestNonce}
               />
             )}

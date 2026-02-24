@@ -374,7 +374,6 @@ function TransactionListItemInner({
             onRetry={retryTransaction}
             // showRetry={showRetry}
             showSpeedUp={isSpeedUpButtonVisible}
-            isEarliestNonce={isEarliestNonce}
             onCancel={cancelTransaction}
             transactionStatus={() => (
               <TransactionStatusLabel
