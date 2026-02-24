@@ -37,13 +37,10 @@ import { ConfirmInfoRow } from '../../../components/app/confirm/info/row';
 import GasTiming from '../components/gas-timing/gas-timing.component';
 import {
   getAppIsLoading,
-  getPreferences,
+  getShouldShowFiat,
   selectNetworkConfigurationByChainId,
 } from '../../../selectors';
-import {
-  CHAIN_ID_TOKEN_IMAGE_MAP,
-  TEST_CHAINS,
-} from '../../../../shared/constants/network';
+import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../shared/constants/network';
 import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
@@ -92,7 +89,7 @@ const NetworkFeeRow = ({
   const source =
     CHAIN_ID_TOKEN_IMAGE_MAP[chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP];
 
-  const { nativeCurrency } = networkConfiguration;
+  const { nativeCurrency } = networkConfiguration ?? {};
 
   return (
     <ConfirmInfoRow
@@ -174,11 +171,7 @@ const GasFeesSection = ({ transaction }: { transaction: TransactionMeta }) => {
 
   const { chainId } = transaction;
 
-  const { showFiatInTestnets } = useSelector(getPreferences);
-  const isTestnet = TEST_CHAINS.includes(
-    chainId as (typeof TEST_CHAINS)[number],
-  );
-  const showFiat = !isTestnet || showFiatInTestnets;
+  const showFiat = useSelector((state) => getShouldShowFiat(state, chainId));
 
   const {
     currency: primaryCurrency,
