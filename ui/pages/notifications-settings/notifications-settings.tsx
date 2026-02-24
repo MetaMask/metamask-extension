@@ -1,28 +1,24 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Text,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+  TextVariant,
+  TextColor,
+  FontWeight,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   NOTIFICATIONS_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
-import {
-  Box,
-  IconName,
-  Text,
-  ButtonIcon,
-  ButtonIconSize,
-} from '../../components/component-library';
-import {
-  BlockSize,
-  BorderColor,
-  Display,
-  JustifyContent,
-  FlexDirection,
-  AlignItems,
-  TextVariant,
-  TextColor,
-} from '../../helpers/constants/design-system';
 import { Content, Header, Page } from '../../components/multichain/pages/page';
 import {
   selectIsMetamaskNotificationsEnabled,
@@ -87,105 +83,119 @@ export default function NotificationsSettings() {
     await accountSettingsProps.update(accountAddresses);
   };
 
+  const handleClose = () => {
+    if (window.history.length > 1) {
+      navigate(PREVIOUS_ROUTE);
+    } else {
+      navigate(NOTIFICATIONS_ROUTE);
+    }
+  };
+
   return (
     <Page>
       <Header
         startAccessory={
           <ButtonIcon
-            ariaLabel="Back"
+            ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Md}
-            onClick={() => {
-              // Use browser history for natural back navigation
-              // Fallback to notifications route if no history exists
-              if (window.history.length > 1) {
-                navigate(PREVIOUS_ROUTE);
-              } else {
-                navigate(NOTIFICATIONS_ROUTE);
-              }
-            }}
+            onClick={handleClose}
           />
         }
-        endAccessory={null}
+        endAccessory={
+          <ButtonIcon
+            ariaLabel={t('close')}
+            iconName={IconName.Close}
+            size={ButtonIconSize.Md}
+            onClick={handleClose}
+          />
+        }
       >
         {t('notifications')}
       </Header>
       <Content padding={0}>
-        {/* Allow notifications */}
-        <NotificationsSettingsAllowNotifications
-          loading={loadingAllowNotifications}
-          setLoading={setLoadingAllowNotifications}
-          dataTestId="notifications-settings-allow"
-          disabled={updatingAccounts}
-        />
         <Box
-          borderColor={BorderColor.borderMuted}
-          width={BlockSize.Full}
-          style={{ height: '1px', borderBottomWidth: 0 }}
-        />
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Stretch}
+          gap={6}
+          paddingLeft={4}
+          paddingRight={4}
+          paddingTop={4}
+          paddingBottom={6}
+        >
+          {/* Allow notifications - when off, only this block is shown */}
+          <NotificationsSettingsAllowNotifications
+            loading={loadingAllowNotifications}
+            setLoading={setLoadingAllowNotifications}
+            dataTestId="notifications-settings-allow"
+            disabled={updatingAccounts}
+          />
 
-        {isMetamaskNotificationsEnabled && (
-          <>
-            {/* Notifications settings per types */}
-            <NotificationsSettingsTypes
-              disabled={loadingAllowNotifications || updatingAccounts}
-            />
-
-            {/* Notifications settings per account */}
+          {isMetamaskNotificationsEnabled && (
             <>
+              <Box className="w-full h-px border-t border-muted" />
+              {/* Customize your notification */}
+              <NotificationsSettingsTypes
+                disabled={loadingAllowNotifications || updatingAccounts}
+              />
+              {/* Account activity - single section so gap-6 only between major sections */}
+              <Box className="w-full h-px border-t border-muted" />
               <Box
-                paddingLeft={8}
-                paddingRight={8}
-                paddingBottom={4}
-                paddingTop={4}
+                flexDirection={BoxFlexDirection.Column}
+                alignItems={BoxAlignItems.Stretch}
+                gap={6}
                 data-testid="notifications-settings-per-account"
               >
-                <Text
-                  variant={TextVariant.bodyMd}
-                  color={TextColor.textDefault}
+                <Box
+                  flexDirection={BoxFlexDirection.Column}
+                  alignItems={BoxAlignItems.Start}
+                  gap={2}
                 >
-                  {t('accountActivity')}
-                </Text>
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    fontWeight={FontWeight.Medium}
+                    color={TextColor.TextDefault}
+                  >
+                    {t('accountActivity')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    fontWeight={FontWeight.Regular}
+                    color={TextColor.TextAlternative}
+                  >
+                    {t('accountActivityText')}
+                  </Text>
+                </Box>
+                <Box
+                  flexDirection={BoxFlexDirection.Column}
+                  justifyContent={BoxJustifyContent.Start}
+                  alignItems={BoxAlignItems.Stretch}
+                  gap={4}
                 >
-                  {t('accountActivityText')}
-                </Text>
-              </Box>
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.flexStart}
-                flexDirection={FlexDirection.Column}
-                alignItems={AlignItems.flexStart}
-                gap={6}
-                paddingLeft={8}
-                paddingRight={8}
-                paddingBottom={4}
-              >
-                {accounts.map((account) => (
-                  <NotificationsSettingsPerAccount
-                    key={account.id}
-                    address={account.address}
-                    name={account.metadata.name}
-                    disabledSwitch={
-                      accountSettingsProps.initialLoading || updatingAccounts
-                    }
-                    isLoading={accountSettingsProps.accountsBeingUpdated.includes(
-                      account.address,
-                    )}
-                    isEnabled={
-                      accountSettingsProps.data?.[
-                        account.address.toLowerCase()
-                      ] ?? false
-                    }
-                    refetchAccountSettings={refetchAccountSettings}
-                  />
-                ))}
+                  {accounts.map((account) => (
+                    <NotificationsSettingsPerAccount
+                      key={account.id}
+                      address={account.address}
+                      name={account.metadata.name}
+                      disabledSwitch={
+                        accountSettingsProps.initialLoading || updatingAccounts
+                      }
+                      isLoading={accountSettingsProps.accountsBeingUpdated.includes(
+                        account.address,
+                      )}
+                      isEnabled={
+                        accountSettingsProps.data?.[
+                          account.address.toLowerCase()
+                        ] ?? false
+                      }
+                      refetchAccountSettings={refetchAccountSettings}
+                    />
+                  ))}
+                </Box>
               </Box>
             </>
-          </>
-        )}
+          )}
+        </Box>
       </Content>
     </Page>
   );
