@@ -6,12 +6,12 @@ import TransactionDetailsPage from '../../page-objects/pages/home/transaction-de
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import {
   commonSolanaTxConfirmedDetailsFixture,
   commonSolanaTxFailedDetailsFixture,
   buildSolanaTestSpecificMock,
 } from './common-solana';
-import { switchToNetworkFromNetworkSelect } from 'test/e2e/page-objects/flows/network.flow';
 
 describe('Transaction activity list', function (this: Suite) {
   it('user can see activity list and a confirmed transaction details', async function () {
