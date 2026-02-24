@@ -8,16 +8,16 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { AssetsControllerState } from '@metamask/assets-controller';
 import { AccountTrackerControllerState } from '@metamask/assets-controllers';
 import { AccountsControllerState } from '@metamask/accounts-controller';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { decimalToPrefixedHex } from '../conversion.utils';
-import { createDeepEqualSelector } from './selector-creators';
 import {
   ASSETS_UNIFY_STATE_FLAG,
   ASSETS_UNIFY_STATE_VERSION_1,
   isAssetsUnifyStateFeatureEnabled,
   type AssetsUnifyStateFeatureFlag,
 } from '../../lib/assets-unify-state/remote-feature-flag';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { createDeepEqualSelector } from './selector-creators';
 
 // Old state controllers and fields status
 //
@@ -140,6 +140,11 @@ export const getAccountTrackerControllerAccountsByChainId =
           };
         }
       }
+
+      console.log('DEBUG ACCOUNTS BY CHAIN ID', {
+        oldState: accountsByChainId,
+        newState: result,
+      });
 
       return result;
     },
