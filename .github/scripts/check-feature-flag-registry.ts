@@ -281,18 +281,14 @@ function isScannableFile(filePath: string): boolean {
  */
 function findOrphanedFlags(flagNames: string[]): string[] {
   const orphaned: string[] = [];
+  const dirs = SCAN_DIRECTORIES.map((d) => `"${d}"`).join(' ');
+
   for (const flag of flagNames) {
     try {
-      execSync(
-        `git grep -q "remoteFeatureFlags" -- ${SCAN_DIRECTORIES.map((d) => `"${d}"`).join(' ')} | head -1`,
-        { encoding: 'utf-8', stdio: 'pipe' },
-      );
-      // git grep with the flag name specifically
       const result = execSync(
-        `git grep -l "${flag}" -- ${SCAN_DIRECTORIES.map((d) => `"${d}"`).join(' ')}`,
+        `git grep -l "${flag}" -- ${dirs}`,
         { encoding: 'utf-8', stdio: 'pipe' },
       ).trim();
-      // Filter out the registry itself
       const files = result
         .split('\n')
         .filter((f) => f && !f.startsWith(REGISTRY_DIR));
@@ -374,20 +370,22 @@ function extractFlagReferences(
   //    "code(); // remoteFeatureFlags.old" don't produce false positives.
   const commentStripped = stripInlineComments(line);
 
-  // 2. Strip string literal contents for most patterns.
+  // 2. Build a mask where string literal contents are replaced with spaces
+  //    (same length) so character positions stay aligned.
+  const masked = maskStringLiterals(commentStripped);
+
+  // 3. Strip string literals (may change length) for remaining patterns.
   const sanitized = stripStringLiterals(commentStripped);
 
-  // 3. Run bracket string-literal patterns.  These need the quoted flag
-  //    name intact, so we run on commentStripped.  To avoid false matches
-  //    inside outer string literals (e.g. "remoteFeatureFlags['flag']" in
-  //    a log message), we verify each match position is not blanked out
-  //    in the sanitized version (blanked regions were string content).
+  // 4. Run bracket string-literal patterns on commentStripped (needs the
+  //    quoted flag name), but use the same-length mask to reject matches
+  //    that fall inside an outer string literal.
   for (const pattern of BRACKET_STRING_PATTERNS) {
     pattern.lastIndex = 0;
     let match: RegExpExecArray | null;
     while ((match = pattern.exec(commentStripped)) !== null) {
-      const posInSanitized = sanitized.charAt(match.index);
-      if (posInSanitized === "'" || posInSanitized === '"' || posInSanitized === '`') {
+      const posInMasked = masked.charAt(match.index);
+      if (posInMasked === ' ' && commentStripped.charAt(match.index) !== ' ') {
         continue;
       }
       if (isLikelyFlagName(match[1])) {
@@ -396,7 +394,7 @@ function extractFlagReferences(
     }
   }
 
-  // 4. Dot-access patterns (run on fully sanitized line)
+  // 5. Dot-access patterns (run on fully sanitized line)
   for (const pattern of FLAG_ACCESS_PATTERNS) {
     pattern.lastIndex = 0;
     let match: RegExpExecArray | null;
@@ -407,7 +405,7 @@ function extractFlagReferences(
     }
   }
 
-  // 5. Bracket access with constants (run on fully sanitized line)
+  // 6. Bracket access with constants (run on fully sanitized line)
   for (const pattern of CONSTANT_BRACKET_PATTERNS) {
     pattern.lastIndex = 0;
     let match: RegExpExecArray | null;
@@ -431,7 +429,7 @@ function extractFlagReferences(
     }
   }
 
-  // 6. Destructuring patterns (run on fully sanitized line)
+  // 7. Destructuring patterns (run on fully sanitized line)
   //    Skipped for joined line pairs where brace-matching is unreliable.
   if (skipDestructuring) {
     return refs;
@@ -562,6 +560,14 @@ function stripStringLiterals(line: string): string {
     .replace(/'(?:[^'\\]|\\.)*'/g, "''")
     .replace(/"(?:[^"\\]|\\.)*"/g, '""')
     .replace(/`(?:[^`\\]|\\.)*`/g, '``');
+}
+
+/** Replaces string literal contents with spaces (same length) so positions stay aligned. */
+function maskStringLiterals(line: string): string {
+  return line
+    .replace(/'(?:[^'\\]|\\.)*'/g, (m) => `'${' '.repeat(Math.max(0, m.length - 2))}'`)
+    .replace(/"(?:[^"\\]|\\.)*"/g, (m) => `"${' '.repeat(Math.max(0, m.length - 2))}"`)
+    .replace(/`(?:[^`\\]|\\.)*`/g, (m) => `\`${' '.repeat(Math.max(0, m.length - 2))}\``);
 }
 
 /** Logs which flags were added/removed in the registry (informational only). */
