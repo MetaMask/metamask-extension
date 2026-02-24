@@ -5,7 +5,7 @@ class ExperimentalSettings {
 
   // Locators
   private readonly addAccountSnapToggle =
-    '[data-testid="add-account-snap-toggle-div"]';
+    '[data-testid="add-account-snap-toggle-button"]';
 
   private readonly experimentalPageTitle = {
     text: 'Experimental',
