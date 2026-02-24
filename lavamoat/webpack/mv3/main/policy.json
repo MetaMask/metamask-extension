@@ -657,6 +657,13 @@
         "nanoid": true
       }
     },
+    "@metamask/assets-controller": {
+      "packages": {
+        "@metamask/controller-utils": true,
+        "@metamask/utils": true,
+        "@metamask/assets-controller>bignumber.js": true
+      }
+    },
     "@metamask/assets-controllers": {
       "globals": {
         "Intl.NumberFormat": true,
@@ -2211,6 +2218,11 @@
       }
     },
     "@ledgerhq/hw-app-eth>bignumber.js": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/assets-controller>bignumber.js": {
       "globals": {
         "crypto": true
       }
