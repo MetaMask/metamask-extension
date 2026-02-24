@@ -23,6 +23,7 @@ export const queries = {
   transactions: (
     params: Params,
     options?: QueryOptions,
+    excludeTxHashes?: Set<string>,
   ): UseInfiniteQueryOptions<
     V4MultiAccountTransactionsResponse,
     unknown,
@@ -51,7 +52,7 @@ export const queries = {
           }) => Promise<V4MultiAccountTransactionsResponse>
         )({ signal });
       },
-      select: selectTransactions(evmAddress),
+      select: selectTransactions({ address: evmAddress, excludeTxHashes }),
       getNextPageParam: ({ pageInfo }) =>
         pageInfo.hasNextPage ? pageInfo.endCursor : undefined,
       staleTime: STALE_TIMES.TRANSACTIONS,

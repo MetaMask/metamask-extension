@@ -13,6 +13,7 @@ import { getUseExternalServices } from '../../../selectors';
 import { parseApprovalTransactionData } from '../../../../shared/modules/transaction.utils';
 import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
+import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { queries } from '../../../helpers/queries';
 import { calculateFiatFromMarketRates } from './helpers';
 
@@ -43,14 +44,25 @@ function useTransactionParams() {
 export function useTransactionsQuery() {
   const useExternalServices = useSelector(getUseExternalServices);
   const { evmAddress, accountAddresses, networks } = useTransactionParams();
+  const internalTxHashes = useSelector(selectRequiredTransactionHashes);
 
   const queryOptions = useMemo(
     () =>
       queries.transactions(
         { accountAddresses, evmAddress, networks },
-        { enabled: Boolean(useExternalServices), keepPreviousData: true },
+        {
+          enabled: Boolean(useExternalServices),
+          keepPreviousData: true,
+        },
+        internalTxHashes,
       ),
-    [evmAddress, accountAddresses, networks, useExternalServices],
+    [
+      evmAddress,
+      accountAddresses,
+      networks,
+      internalTxHashes,
+      useExternalServices,
+    ],
   );
 
   return useInfiniteQuery(queryOptions);

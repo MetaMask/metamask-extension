@@ -40,7 +40,7 @@ export const selectLocalTransactions = createSelector(
     transactions,
     selectedAccount,
     smartTransactions,
-    requiredTxHashes,
+    internalTxHashes,
   ): TransactionGroup[] => {
     if (!selectedAccount?.address) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
@@ -58,7 +58,7 @@ export const selectLocalTransactions = createSelector(
         return false;
       }
 
-      if (tx.hash && requiredTxHashes.has(tx.hash.toLowerCase())) {
+      if (tx.hash && internalTxHashes.has(tx.hash.toLowerCase())) {
         return false;
       }
 
