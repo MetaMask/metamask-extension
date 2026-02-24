@@ -125,8 +125,6 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
 
   readonly #client: KeyringInternalSnapClient;
 
-  readonly #messenger: MultichainWalletSnapClientMessenger;
-
   constructor(
     snapId: SUPPORTED_WALLET_SNAP_ID,
     snapKeyring: SnapKeyring,
@@ -135,16 +133,11 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
     this.#snapId = snapId;
     this.#snapKeyring = snapKeyring;
 
-    this.#messenger = messenger;
-
     const clientMessenger: KeyringInternalSnapClientMessenger = new Messenger({
       namespace: 'KeyringInternalSnapClient',
       parent: messenger,
     });
-    messenger.delegate({
-      messenger: clientMessenger,
-      actions: ['SnapController:handleRequest'],
-    });
+
     this.#client = new KeyringInternalSnapClient({
       snapId,
       messenger: clientMessenger,
