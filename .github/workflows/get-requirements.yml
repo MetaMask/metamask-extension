@@ -61,9 +61,11 @@ jobs:
       - uses: actions/checkout@v6
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
         with:
-          # Specifying `ref` ensures that the head commit is checked out directly.
-          ref: ${{ env.HEAD_COMMIT_HASH }}
           fetch-depth: 1
+
+      - name: Fetch HEAD commit for message checks
+        if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
+        run: git fetch --depth=1 origin "${HEAD_COMMIT_HASH}"
 
       # Do this before we use dorny/paths-filter, which might checkout other commits
       - name: Check skip-e2e tag
@@ -84,7 +86,7 @@ jobs:
       - name: 'Look for `[builds-from-run: <run>]` in the last commit message'
         id: identify-builds
         if: ${{ env.IS_RUN_EVERYTHING_BRANCH != 'true' && steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
-        run: .github/scripts/identify-builds-from-run.sh
+        run: .github/scripts/identify-builds-from-run.sh "${HEAD_COMMIT_HASH}"
 
       - id: filter
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}

@@ -70,9 +70,6 @@ describe('HardwareWalletErrorModal', () => {
       expect(
         getByText('[hardwareWalletErrorRecoveryUnlock2]'),
       ).toBeInTheDocument();
-      expect(
-        getByText('[hardwareWalletErrorRecoveryUnlock3]'),
-      ).toBeInTheDocument();
     });
 
     it('renders nothing when error is not provided', () => {
@@ -123,9 +120,6 @@ describe('HardwareWalletErrorModal', () => {
       expect(
         getByText('[hardwareWalletErrorRecoveryUnlock2]'),
       ).toBeInTheDocument();
-      expect(
-        getByText('[hardwareWalletErrorRecoveryUnlock3]'),
-      ).toBeInTheDocument();
     });
 
     it('displays blind signing instructions for DeviceStateBlindSignNotSupported', () => {
@@ -148,11 +142,6 @@ describe('HardwareWalletErrorModal', () => {
       expect(
         getByText(
           '[hardwareWalletErrorTitleBlindSignNotSupportedInstruction2]',
-        ),
-      ).toBeInTheDocument();
-      expect(
-        getByText(
-          '[hardwareWalletErrorTitleBlindSignNotSupportedInstruction3]',
         ),
       ).toBeInTheDocument();
     });
@@ -214,9 +203,6 @@ describe('HardwareWalletErrorModal', () => {
       ).toBeInTheDocument();
       expect(
         getByText('[hardwareWalletErrorRecoveryUnlock2]'),
-      ).toBeInTheDocument();
-      expect(
-        getByText('[hardwareWalletErrorRecoveryUnlock3]'),
       ).toBeInTheDocument();
     });
 

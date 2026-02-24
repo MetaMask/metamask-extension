@@ -377,6 +377,10 @@ describe('Shield Plan Stripe Integration', function () {
               claimErrorCode: 'E102', // TRANSACTION_NOT_ELIGIBLE
             });
           },
+          ignoredConsoleErrors: [
+            'Failed to submit shield claim',
+            'SubmitClaimError: This transaction is not done within MetaMask, hence it is not eligible for claims',
+          ],
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -433,6 +437,10 @@ describe('Shield Plan Stripe Integration', function () {
               claimErrorCode: 'E203', // DUPLICATE_CLAIM_EXISTS
             });
           },
+          ignoredConsoleErrors: [
+            'Failed to submit shield claim',
+            'SubmitClaimError: A claim has already been submitted for this transaction hash.',
+          ],
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);

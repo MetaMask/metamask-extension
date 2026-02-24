@@ -1,6 +1,6 @@
 const ZENDESK_URLS = {
   ACCOUNT_UPGRADE:
-    'https://support.metamask.io/configure/accounts/what-is-a-smart-account',
+    'https://support.metamask.io/configure/accounts/what-is-a-smart-account/#what-are-metamask-smart-accounts',
   ADD_CUSTOM_TOKENS:
     'https://support.metamask.io/managing-my-tokens/custom-tokens/how-to-display-tokens-in-metamask/',
   ADD_SOLANA_ACCOUNTS:

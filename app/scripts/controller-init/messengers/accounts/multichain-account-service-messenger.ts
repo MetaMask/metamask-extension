@@ -17,6 +17,8 @@ import {
   KeyringControllerStateChangeEvent,
   KeyringControllerAddNewKeyringAction,
   KeyringControllerGetKeyringsByTypeAction,
+  KeyringControllerCreateNewVaultAndKeychainAction,
+  KeyringControllerCreateNewVaultAndRestoreAction,
 } from '@metamask/keyring-controller';
 import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
@@ -42,6 +44,8 @@ type Actions =
   | KeyringControllerWithKeyringAction
   | KeyringControllerAddNewKeyringAction
   | KeyringControllerGetKeyringsByTypeAction
+  | KeyringControllerCreateNewVaultAndKeychainAction
+  | KeyringControllerCreateNewVaultAndRestoreAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerFindNetworkClientIdByChainIdAction;
 
@@ -95,6 +99,8 @@ export function getMultichainAccountServiceMessenger(
       'KeyringController:withKeyring',
       'KeyringController:addNewKeyring',
       'KeyringController:getKeyringsByType',
+      'KeyringController:createNewVaultAndKeychain',
+      'KeyringController:createNewVaultAndRestore',
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
     ],

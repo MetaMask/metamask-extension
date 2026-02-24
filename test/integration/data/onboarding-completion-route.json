@@ -277,7 +277,9 @@
   "pinnedAccountList": [],
   "popupGasPollTokens": [],
   "preferences": {
+    "defaultAddressScope": "eip155",
     "hideZeroBalanceTokens": false,
+    "showDefaultAddress": false,
     "showExtensionInFullSizeView": false,
     "showFiatInTestnets": false,
     "showTestNetworks": false,
@@ -324,6 +326,7 @@
   "selectedNetworkClientId": "sepolia",
   "shieldEndingToastLastClickedOrClosed": null,
   "shieldPausedToastLastClickedOrClosed": null,
+  "shieldSubscriptionError": null,
   "showAccountBanner": true,
   "showBetaHeader": false,
   "showNetworkBanner": true,

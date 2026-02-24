@@ -9,6 +9,7 @@ import SwapPage from '../../page-objects/pages/swap/swap-page';
 import {
   mockTronSwapApis,
   mockTronSwapApisNoQuotes,
+  TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
 } from './mocks/common-tron';
 
 // Tron chainId for bridge/swap config
@@ -49,6 +50,9 @@ describe('Swap on Tron', function () {
             bridgeConfig,
           },
         },
+        ignoredConsoleErrors: [
+          `Failed to send transaction: ${TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE}`,
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
@@ -63,10 +67,11 @@ describe('Swap on Tron', function () {
 
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSolanaSwap({
+        await swapPage.createSwap({
           amount: 1,
           swapTo: 'USDT',
           swapFrom: 'TRX',
+          network: 'Tron',
         });
 
         // Review quote - mock returns ~0.295 USDT for 1 TRX
@@ -106,10 +111,11 @@ describe('Swap on Tron', function () {
 
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSolanaSwap({
+        await swapPage.createSwap({
           amount: 1,
           swapTo: 'USDT',
           swapFrom: 'TRX',
+          network: 'Tron',
         });
 
         // Verify no quotes available message

@@ -63,7 +63,7 @@ exports[`Token Cell should match snapshot 1`] = `
             data-testid="multichain-token-list-item-secondary-value"
             style="white-space: nowrap; padding-inline-start: 8px;"
           >
-            No conversion rate available
+            —
           </p>
         </div>
         <div
@@ -75,7 +75,9 @@ exports[`Token Cell should match snapshot 1`] = `
             <p
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
               data-testid="token-increase-decrease-percentage-0xAnotherToken"
-            />
+            >
+              -
+            </p>
           </div>
           <p
             class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"

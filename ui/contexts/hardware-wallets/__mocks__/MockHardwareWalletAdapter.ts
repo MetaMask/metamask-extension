@@ -3,6 +3,7 @@
  */
 
 import type {
+  EnsureDeviceReadyOptions,
   HardwareWalletAdapter,
   HardwareWalletAdapterOptions,
 } from '../types';
@@ -45,8 +46,8 @@ export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
     return this.destroyMock();
   }
 
-  ensureDeviceReady(): Promise<boolean> {
-    return this.ensureDeviceReadyMock();
+  ensureDeviceReady(options?: EnsureDeviceReadyOptions): Promise<boolean> {
+    return this.ensureDeviceReadyMock(options);
   }
 
   // Test helpers

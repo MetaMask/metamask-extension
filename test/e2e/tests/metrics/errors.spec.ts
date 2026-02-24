@@ -15,6 +15,44 @@ import LoginPage from '../../page-objects/pages/login-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 
+const FEATURE_FLAGS_RESPONSE = [
+  { feature1: true },
+  { feature2: false },
+  {
+    feature3: [
+      {
+        value: 'valueA',
+        name: 'groupA',
+        scope: { type: 'threshold', value: 0.3 },
+      },
+      {
+        value: 'valueB',
+        name: 'groupB',
+        scope: { type: 'threshold', value: 0.5 },
+      },
+      {
+        scope: { type: 'threshold', value: 1 },
+        value: 'valueC',
+        name: 'groupC',
+      },
+    ],
+  },
+];
+
+async function mockRemoteFeatureFlags(server: MockttpServer): Promise<void> {
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: FEATURE_FLAGS_RESPONSE,
+    }));
+}
+
 /**
  * Derive a UI state field from a background state field.
  *
@@ -40,6 +78,7 @@ const maskedBackgroundFields = [
   'AppStateController.surveyLinkLastClickedOrClosed',
   'AppStateController.recoveryPhraseReminderLastShown',
   'AppStateController.termsOfUseLastAgreed',
+  'AppStateController.shieldSubscriptionError',
   'AppStateController.shieldEndingToastLastClickedOrClosed',
   'AppStateController.shieldPausedToastLastClickedOrClosed',
   // The value in these properties may change each run
@@ -263,6 +302,7 @@ describe('Sentry errors', function () {
           },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
               'eip155:1/slip44:60': {
                 price: 1700,
@@ -331,6 +371,7 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
               'eip155:1/slip44:60': {
                 price: 1700,
@@ -409,6 +450,7 @@ describe('Sentry errors', function () {
           },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
               'eip155:1/slip44:60': {
                 price: 1700,
@@ -492,6 +534,7 @@ describe('Sentry errors', function () {
           },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
               'eip155:1/slip44:60': {
                 price: 1700,
@@ -591,6 +634,7 @@ describe('Sentry errors', function () {
           },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
               'eip155:1/slip44:60': {
                 price: 1700,
@@ -677,6 +721,7 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
               'eip155:1/slip44:60': {
                 price: 1700,
@@ -759,6 +804,7 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
               'eip155:1/slip44:60': {
                 price: 1700,
@@ -864,6 +910,7 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
               'eip155:1/slip44:60': {
                 price: 1700,
@@ -936,6 +983,7 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
               'eip155:1/slip44:60': {
                 price: 1700,
@@ -1008,6 +1056,7 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
               'eip155:1/slip44:60': {
                 price: 1700,
@@ -1094,6 +1143,7 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
               'eip155:1/slip44:60': {
                 price: 1700,
@@ -1194,6 +1244,7 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
               'eip155:1/slip44:60': {
                 price: 1700,
@@ -1274,6 +1325,7 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
               'eip155:1/slip44:60': {
                 price: 1700,
@@ -1415,6 +1467,9 @@ describe('Sentry errors', function () {
       // preferences state change handler
       timeoutMinutes: true,
       lastInteractedConfirmationInfo: undefined,
+      connectivityStatus: true,
+      rewardsPointsEstimateHistory: false,
+      storageWriteErrorType: true,
     };
     await withFixtures(
       {
@@ -1422,6 +1477,9 @@ describe('Sentry errors', function () {
         title: this.test?.fullTitle(),
         manifestFlags: {
           sentry: { forceEnable: false },
+        },
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockRemoteFeatureFlags(mockServer);
         },
       },
       async ({ driver }) => {
