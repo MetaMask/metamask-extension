@@ -4,7 +4,12 @@ const HOST = 'https://ci.example.com';
 
 describe('getArtifactLinks', () => {
   it('returns URLs using the provided host, owner, repo, and runId', () => {
-    const links = getArtifactLinks(HOST, 'MetaMask', 'metamask-extension', '42');
+    const links = getArtifactLinks(
+      HOST,
+      'MetaMask',
+      'metamask-extension',
+      '42',
+    );
 
     expect(links.bundleSizeStats.url).toBe(
       `${HOST}/bundle-size/bundle_size.json`,
@@ -52,6 +57,8 @@ describe('formatBuildLinks', () => {
     const rows = formatBuildLinks(builds);
 
     expect(rows).toHaveLength(5);
-    expect(rows[0]).toMatch(/^builds: <a href=".*">chrome<\/a>, <a href=".*">firefox<\/a>$/u);
+    expect(rows[0]).toMatch(
+      /^builds: <a href=".*">chrome<\/a>, <a href=".*">firefox<\/a>$/u,
+    );
   });
 });

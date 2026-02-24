@@ -42,13 +42,17 @@ export async function fetchBenchmarkJson<
   buildType: string,
   preset: string,
 ): Promise<Result | null> {
-  const url = `${hostUrl}/benchmarks/benchmark-${platform}-${buildType}-${preset}.json`;
-  const response = await fetch(url);
-  if (!response.ok) {
+  try {
+    const url = `${hostUrl}/benchmarks/benchmark-${platform}-${buildType}-${preset}.json`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      return null;
+    }
+    const data: Result = await response.json();
+    return data;
+  } catch {
     return null;
   }
-  const data: Result = await response.json();
-  return data;
 }
 
 /**
@@ -58,19 +62,17 @@ export async function fetchBenchmarkJson<
  * @returns Flat BenchmarkEntry array with only the fields we render.
  */
 export function extractEntries(
-  data: Record<string, Partial<BenchmarkResults>>,
+  data: Record<string, BenchmarkResults>,
 ): BenchmarkEntry[] {
-  return Object.entries(data)
-    .filter(([, raw]) => raw.mean !== null && raw.mean !== undefined)
-    .map(([name, raw]) => ({
-      benchmarkName: name,
-      mean: raw.mean as StatisticalResult,
-      min: raw.min as StatisticalResult,
-      max: raw.max as StatisticalResult,
-      stdDev: raw.stdDev as StatisticalResult,
-      p75: raw.p75 as StatisticalResult,
-      p95: raw.p95 as StatisticalResult,
-    }));
+  return Object.entries(data).map(([name, raw]) => ({
+    benchmarkName: name,
+    mean: raw.mean,
+    min: raw.min,
+    max: raw.max,
+    stdDev: raw.stdDev,
+    p75: raw.p75,
+    p95: raw.p95,
+  }));
 }
 
 export type FetchBenchmarkResult = {

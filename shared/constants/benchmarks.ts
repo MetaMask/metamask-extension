@@ -21,10 +21,8 @@ export const BENCHMARK_BUILD_TYPES = {
  * Extend these arrays here to automatically include more combos in
  * both the PR comment builder and the benchmark gate checks.
  */
-export const ENTRY_BENCHMARK_PLATFORMS: ReadonlyArray<
-  (typeof BENCHMARK_PLATFORMS)[keyof typeof BENCHMARK_PLATFORMS]
-> = [BENCHMARK_PLATFORMS.CHROME];
+export const ENTRY_BENCHMARK_PLATFORMS: readonly (typeof BENCHMARK_PLATFORMS)[keyof typeof BENCHMARK_PLATFORMS][] =
+  [BENCHMARK_PLATFORMS.CHROME];
 
-export const ENTRY_BENCHMARK_BUILD_TYPES: ReadonlyArray<
-  (typeof BENCHMARK_BUILD_TYPES)[keyof typeof BENCHMARK_BUILD_TYPES]
-> = [BENCHMARK_BUILD_TYPES.BROWSERIFY];
+export const ENTRY_BENCHMARK_BUILD_TYPES: readonly (typeof BENCHMARK_BUILD_TYPES)[keyof typeof BENCHMARK_BUILD_TYPES][] =
+  [BENCHMARK_BUILD_TYPES.BROWSERIFY];

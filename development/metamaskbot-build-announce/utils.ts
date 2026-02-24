@@ -15,7 +15,9 @@ export function buildSectionWithFallback(
   sectionName: string,
 ): Promise<string> {
   const fallback = `<p><i>${sectionName}: data not available.</i></p>\n\n`;
-  return fn().then((result) => result ?? fallback).catch(() => fallback);
+  return fn()
+    .then((result) => result ?? fallback)
+    .catch(() => fallback);
 }
 
 /**

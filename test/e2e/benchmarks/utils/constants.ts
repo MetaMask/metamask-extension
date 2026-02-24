@@ -1,6 +1,9 @@
 import type { ThresholdConfig } from './types';
 
-export { BENCHMARK_PLATFORMS, BENCHMARK_BUILD_TYPES } from '../../../../shared/constants/benchmarks';
+export {
+  BENCHMARK_PLATFORMS,
+  BENCHMARK_BUILD_TYPES,
+} from '../../../../shared/constants/benchmarks';
 export const STARTUP_PRESETS = {
   STANDARD_HOME: 'startupStandardHome',
   POWER_USER_HOME: 'startupPowerUserHome',

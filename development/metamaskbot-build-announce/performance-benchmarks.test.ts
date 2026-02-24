@@ -96,15 +96,11 @@ const mockPerformanceAssetsJson: Record<string, BenchmarkResults> = {
 };
 
 describe('extractEntries', () => {
-  it('skips entries without a mean field', () => {
-    const data = {
-      valid: { mean: { metric: 100 } },
-      invalid: { testTitle: 'no-mean' },
-    };
-
-    const entries = extractEntries(data);
-    expect(entries).toHaveLength(1);
-    expect(entries[0].benchmarkName).toBe('valid');
+  it('maps all entries from the data object', () => {
+    const entries = extractEntries(mockUserActionsJson);
+    expect(entries).toHaveLength(Object.keys(mockUserActionsJson).length);
+    expect(entries.map((e) => e.benchmarkName)).toContain('loadNewAccount');
+    expect(entries.map((e) => e.benchmarkName)).toContain('confirmTx');
   });
 
   it('extracts all statistical fields', () => {

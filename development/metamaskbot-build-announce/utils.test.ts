@@ -16,9 +16,7 @@ describe('buildSectionWithFallback', () => {
       'Test section',
     );
 
-    expect(result).toBe(
-      '<p><i>Test section: data not available.</i></p>\n\n',
-    );
+    expect(result).toBe('<p><i>Test section: data not available.</i></p>\n\n');
   });
 
   it('returns fallback when builder resolves with undefined', async () => {
@@ -27,9 +25,7 @@ describe('buildSectionWithFallback', () => {
       'Test section',
     );
 
-    expect(result).toBe(
-      '<p><i>Test section: data not available.</i></p>\n\n',
-    );
+    expect(result).toBe('<p><i>Test section: data not available.</i></p>\n\n');
   });
 
   it('returns fallback when builder throws', async () => {
