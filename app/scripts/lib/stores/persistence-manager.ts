@@ -171,6 +171,15 @@ export class PersistenceManager {
     : null) ?? 'split') as StorageKind;
 
   /**
+   * dataRetrievalFailing is a boolean that is set to true if the storage
+   * system attempts to read state and the read operation fails. This is only
+   * used as a way of deduplicating error reports sent to sentry as it is
+   * likely that multiple reads will fail in quick succession (e.g. each report
+   * triggers getMetaMetricsEnabled → getPersistedState → get() fails again).
+   */
+  #dataRetrievalFailing: boolean = false;
+
+  /**
    * dataPersistenceFailing is a boolean that is set to true if the storage
    * system attempts to write state and the write operation fails. This is only
    * used as a way of deduplicating error reports sent to sentry as it is
@@ -682,13 +691,16 @@ export class PersistenceManager {
             'Error retrieving the current state of the local store:',
             localStoreError,
           );
-          // Custom fingerprint prevents Sentry's deduplication from dropping
-          // this event when other persistence errors with the same underlying
-          // error message (e.g., "An unexpected error occurred") are reported.
-          captureException(localStoreError, {
-            tags: { 'persistence.error': 'get-failed' },
-            fingerprint: ['persistence-error', 'get-failed'],
-          });
+          if (!this.#dataRetrievalFailing) {
+            this.#dataRetrievalFailing = true;
+            // Custom fingerprint prevents Sentry's deduplication from dropping
+            // this event when other persistence errors with the same underlying
+            // error message (e.g., "An unexpected error occurred") are reported.
+            captureException(localStoreError, {
+              tags: { 'persistence.error': 'get-failed' },
+              fingerprint: ['persistence-error', 'get-failed'],
+            });
+          }
         }
 
         if (validateVault) {
@@ -756,6 +768,15 @@ export class PersistenceManager {
           throw localStoreError;
         }
 
+        if (this.#dataRetrievalFailing) {
+          this.#dataRetrievalFailing = false;
+          captureMessage('Data retrieval recovered after temporary failure', {
+            level: 'info',
+            tags: { 'persistence.event': 'get-recovered' },
+            fingerprint: ['persistence-event', 'get-recovered'],
+          });
+        }
+
         if (isEmpty(result)) {
           this.#mostRecentRetrievedState = null;
           return undefined;
@@ -789,6 +810,7 @@ export class PersistenceManager {
         ]);
         this.#backup = undefined;
         this.#isExtensionInitialized = false;
+        this.#dataRetrievalFailing = false;
         this.#dataPersistenceFailing = false;
         this.#metadata = undefined;
         this.storageKind = PersistenceManager.defaultStorageKind;
