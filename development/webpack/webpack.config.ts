@@ -330,6 +330,13 @@ const config = {
       /^lodash$/u,
     ],
     rules: [
+      {
+        test: /\.mjs$/u,
+        include: /node_modules[\\/]@myx-trade[\\/]sdk/u,
+        resolve: {
+          fullySpecified: false,
+        },
+      },
       // json
       { test: /\.json$/u, type: 'json' },
       // treats JSON and compressed JSON files loaded via `new URL('./file.json(?:\.gz)', import.meta.url)` as assets.

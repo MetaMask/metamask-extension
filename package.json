@@ -9,7 +9,7 @@
   "previewBuilds": {
     "@metamask/perps-controller": {
       "type": "breaking",
-      "previewVersion": "0.0.0-preview-e4aa1532"
+      "previewVersion": "0.0.0-preview-567bc78af"
     }
   },
   "scripts": {

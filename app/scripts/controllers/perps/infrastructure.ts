@@ -23,11 +23,14 @@ import type {
   PerpsPerformance,
   PerpsTracer,
   PerpsStreamManager,
-  PerpsControllerAccess,
   PerpsAnalyticsEvent,
   PerpsAnalyticsProperties,
   PerpsTraceName,
   PerpsTraceValue,
+  PerpsRemoteFeatureFlagState,
+  MarketDataFormatters,
+  PerpsCacheInvalidator,
+  VersionGatedFeatureFlag,
 } from '@metamask/perps-controller';
 
 type SubmitRequestToBackground = <Result>(
@@ -52,25 +55,28 @@ export type CreatePerpsInfrastructureOptions = {
   submitRequestToBackground: SubmitRequestToBackground;
   /** Function to create a unique action id for background actions */
   generateActionId: () => number;
+  /**
+   * Read remote feature flag state from Redux.
+   * Returns the current state; null means store not yet available.
+   */
+  getRemoteFeatureFlagState: () => PerpsRemoteFeatureFlagState | null;
+  /**
+   * Subscribe to Redux store changes for remote feature flag state.
+   * Returns an unsubscribe function.
+   */
+  subscribeToRemoteFeatureFlagChanges: (
+    handler: (state: PerpsRemoteFeatureFlagState) => void,
+  ) => () => void;
 };
 
-/**
- * Create a stubbed logger for error reporting.
- * In production, this should integrate with Sentry.
- */
 function createLogger(): PerpsLogger {
   return {
     error: (error, options) => {
       console.error('[Perps Error]', error, options);
-      // TODO: Integrate with Sentry when ready
     },
   };
 }
 
-/**
- * Create a debug logger for development.
- * Only logs in development mode.
- */
 function createDebugLogger(): PerpsDebugLogger {
   const isDevelopment = process.env.METAMASK_DEBUG === 'true';
   return {
@@ -82,13 +88,9 @@ function createDebugLogger(): PerpsDebugLogger {
   };
 }
 
-/**
- * Create a stubbed metrics tracker.
- * In production, this should integrate with MetaMetrics.
- */
 function createMetrics(): PerpsMetrics {
   return {
-    isEnabled: () => false, // Disable metrics for PoC
+    isEnabled: () => false,
     trackPerpsEvent: (
       _event: PerpsAnalyticsEvent,
       _properties: PerpsAnalyticsProperties,
@@ -98,19 +100,12 @@ function createMetrics(): PerpsMetrics {
   };
 }
 
-/**
- * Create a performance monitor using the browser Performance API.
- */
 function createPerformance(): PerpsPerformance {
   return {
     now: () => performance.now(),
   };
 }
 
-/**
- * Create a stubbed tracer for Sentry/observability.
- * In production, this should create real Sentry spans.
- */
 function createTracer(): PerpsTracer {
   return {
     trace: (_params: {
@@ -135,14 +130,10 @@ function createTracer(): PerpsTracer {
   };
 }
 
-/**
- * Create a stubbed stream manager.
- * The extension doesn't need stream pausing for the PoC.
- */
 function createStreamManager(): PerpsStreamManager {
   return {
     pauseChannel: (_channel: string) => {
-      // No-op for PoC - stream pausing not needed in extension
+      // No-op for PoC
     },
     resumeChannel: (_channel: string) => {
       // No-op for PoC
@@ -153,101 +144,133 @@ function createStreamManager(): PerpsStreamManager {
   };
 }
 
-/**
- * Create stubbed controller access.
- * These should be wired to real extension controllers for trading operations.
- *
- * @param options - Configuration options
- * @param options.selectedAddress - The currently selected account address
- * @param options.signTypedMessage - Function to sign EIP-712 typed data
- */
-function createControllerAccess(
+function createFeatureFlags(): PerpsPlatformDependencies['featureFlags'] {
+  return {
+    validateVersionGated: (_flag: VersionGatedFeatureFlag) => {
+      // Extension PoC: always allow version-gated features
+      return true;
+    },
+  };
+}
+
+function createMarketDataFormatters(): MarketDataFormatters {
+  const formatCompact = (value: number): string => {
+    const abs = Math.abs(value);
+    if (abs >= 1e9) {
+      return `$${(value / 1e9).toFixed(1)}B`;
+    }
+    if (abs >= 1e6) {
+      return `$${(value / 1e6).toFixed(1)}M`;
+    }
+    if (abs >= 1e3) {
+      return `$${(value / 1e3).toFixed(1)}K`;
+    }
+    return `$${value.toFixed(2)}`;
+  };
+
+  return {
+    formatVolume: formatCompact,
+    formatPerpsFiat: (value: number) => {
+      return `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    },
+    formatPercentage: (percent: number) => {
+      return `${percent >= 0 ? '' : ''}${percent.toFixed(2)}%`;
+    },
+    priceRangesUniversal: [],
+  };
+}
+
+function createCacheInvalidator(): PerpsCacheInvalidator {
+  return {
+    invalidate: () => {
+      // No-op for PoC
+    },
+    invalidateAll: () => {
+      // No-op for PoC
+    },
+  };
+}
+
+function createControllers(
   options: CreatePerpsInfrastructureOptions,
-): PerpsControllerAccess {
+): PerpsPlatformDependencies['controllers'] {
   const {
     selectedAddress,
     signTypedMessage,
     findNetworkClientIdForChain,
-    submitRequestToBackground,
+    submitRequestToBackground: submitRequest,
     generateActionId,
+    getRemoteFeatureFlagState,
+    subscribeToRemoteFeatureFlagChanges,
   } = options;
+
+  const defaultFeatureFlagState: PerpsRemoteFeatureFlagState = {
+    remoteFeatureFlags: {},
+  };
+
   return {
-    accounts: {
-      getSelectedEvmAccount: () => {
-        return { address: selectedAddress };
-      },
-      formatAccountToCaipId: (address: string, chainId: string) => {
-        return `eip155:${chainId}:${address}`;
-      },
+    network: {
+      getState: () => ({
+        selectedNetworkClientId: 'mainnet',
+      }),
+      getNetworkClientById: (_id: string) => ({
+        configuration: { chainId: '0xa4b1' },
+      }),
+      findNetworkClientIdByChainId: (chainId: `0x${string}`) =>
+        findNetworkClientIdForChain(chainId),
     },
     keyring: {
+      getState: () => ({ isUnlocked: true }),
       signTypedMessage: async (msgParams, version) => {
-        const signature = await signTypedMessage(msgParams, version);
-        return signature;
-      },
-    },
-    network: {
-      getChainIdForNetwork: (_networkClientId: string) => {
-        // TODO: Wire to NetworkController
-        // Return Arbitrum mainnet as default for Hyperliquid
-        return '0xa4b1' as `0x${string}`;
-      },
-      findNetworkClientIdForChain: (chainId) =>
-        findNetworkClientIdForChain(chainId),
-      getSelectedNetworkClientId: () => {
-        // TODO: Wire to NetworkController
-        return 'mainnet';
+        return signTypedMessage(msgParams, version);
       },
     },
     transaction: {
-      submit: async (txParams, txOptions) => {
-        const {
-          networkClientId: rawNetworkClientId,
-          origin,
-          type,
-          gasFeeToken,
-        } = txOptions;
-
-        const networkClientId = await Promise.resolve(rawNetworkClientId);
+      addTransaction: async (txParams, opts) => {
+        const { networkClientId, origin, type } = opts;
 
         if (!networkClientId) {
           throw new Error('No network client found for Perps transaction');
         }
 
-        // Intentionally do not forward skipInitialGasEstimate.
-        // Confirmations rely on initial gas estimation for pay validation state.
         const addTransactionOptions = {
           networkClientId,
           origin: origin ?? 'metamask',
           actionId: generateActionId(),
           ...(type === undefined ? {} : { type }),
-          ...(gasFeeToken === undefined ? {} : { gasFeeToken }),
         };
 
-        const transactionMeta = await submitRequestToBackground<{
+        const transactionMeta = await submitRequest<{
           id: string;
           hash?: string;
         }>('addTransaction', [txParams, addTransactionOptions]);
 
         return {
-          // PoC behavior: creation happens immediately so confirmations route can render.
-          // Full transaction lifecycle parity requires background-controller event wiring.
           result: Promise.resolve(transactionMeta.hash ?? ''),
           transactionMeta,
         };
       },
     },
-    rewards: {
-      getFeeDiscount: async (_caipAccountId) => {
-        // No fee discount for PoC
-        return 0;
+    remoteFeatureFlags: {
+      getState: () => getRemoteFeatureFlagState() ?? defaultFeatureFlagState,
+      onStateChange: (
+        handler: (state: PerpsRemoteFeatureFlagState) => void,
+      ) => subscribeToRemoteFeatureFlagChanges(handler),
+    },
+    accountTree: {
+      getAccountsFromSelectedGroup: () => [
+        { address: selectedAddress, type: 'eip155:eoa', id: selectedAddress },
+      ],
+      onSelectedAccountGroupChange: () => {
+        // No-op for PoC; returns unsubscribe stub
+        return () => undefined;
       },
     },
     authentication: {
-      getBearerToken: async () => {
-        // No authentication for PoC
-        return '';
-      },
+      getBearerToken: async () => '',
+    },
+    rewards: {
+      getPerpsDiscountForAccount: async () => 0,
     },
   };
 }
@@ -270,6 +293,9 @@ export function createPerpsInfrastructure(
     performance: createPerformance(),
     tracer: createTracer(),
     streamManager: createStreamManager(),
-    controllers: createControllerAccess(options),
+    featureFlags: createFeatureFlags(),
+    marketDataFormatters: createMarketDataFormatters(),
+    cacheInvalidator: createCacheInvalidator(),
+    controllers: createControllers(options),
   };
 }
