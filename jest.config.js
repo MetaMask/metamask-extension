@@ -72,8 +72,10 @@ module.exports = {
   // - @noble/hashes, @noble/curves
   // - @scure/base (nested in micro-packed)
   // - valibot, micro-eth-signer, micro-packed
+  // - lodash-es, wretch (transitive via @myx-trade/sdk)
+  // - @myx-trade/sdk (ESM .mjs with CJS sub-imports)
   transformIgnorePatterns: [
-    'node_modules/(?!(@nktkas|@noble|@scure|valibot|micro-eth-signer|micro-packed)/)',
+    'node_modules/(?!(@nktkas|@noble|@scure|@myx-trade|valibot|micro-eth-signer|micro-packed|lodash-es|wretch)/)',
   ],
   testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The
