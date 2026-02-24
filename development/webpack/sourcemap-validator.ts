@@ -269,7 +269,7 @@ export async function validateBundle({
           column: origColumn,
           source: origSource,
         } = result;
-        const sourceContent = consumer.sourceContentFor(origSource);
+        const sourceContent = consumer.sourceContentFor(origSource, true);
         if (sourceContent === null) {
           valid = false;
           console.error(
