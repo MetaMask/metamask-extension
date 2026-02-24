@@ -34,6 +34,7 @@ export const KeyringSnapsItem = ({ sectionRef }: KeyringSnapsItemProps) => {
         });
         dispatch(setAddSnapAccountEnabled(!value));
       }}
+      toggleContainerDataTestId="add-account-snap-toggle-div"
       toggleDataTestId="add-account-snap-toggle-button"
       sectionRef={sectionRef}
     />

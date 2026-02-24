@@ -5,7 +5,7 @@ class ExperimentalSettings {
 
   // Locators
   private readonly addAccountSnapToggle =
-    '[data-testid="add-account-snap-toggle-button"]';
+    '[data-testid="add-account-snap-toggle-div"]';
 
   private readonly experimentalPageTitle = {
     text: 'Experimental',
@@ -14,6 +14,9 @@ class ExperimentalSettings {
 
   private readonly watchAccountToggleState =
     '[data-testid="watch-account-toggle"]';
+
+  private readonly watchAccountToggle =
+    '[data-testid="watch-account-toggle-div"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -48,7 +51,7 @@ class ExperimentalSettings {
 
   async toggleWatchAccount(): Promise<void> {
     console.log('Toggle Watch Account on experimental setting page');
-    await this.driver.clickElement(this.watchAccountToggleState);
+    await this.driver.clickElement(this.watchAccountToggle);
   }
 }
 

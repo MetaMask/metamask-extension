@@ -43,6 +43,7 @@ export const WatchAccountItem = ({ sectionRef }: WatchAccountItemProps) => {
         });
         dispatch(setWatchEthereumAccountEnabled(!value));
       }}
+      toggleContainerDataTestId="watch-account-toggle-div"
       toggleDataTestId="watch-account-toggle"
       sectionRef={sectionRef}
     />

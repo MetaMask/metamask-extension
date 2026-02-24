@@ -16,6 +16,7 @@ export type ExperimentalTabItemProps = {
   description: React.ReactNode;
   toggleValue: boolean;
   toggleCallback: (value: boolean) => void;
+  toggleContainerDataTestId?: string;
   toggleDataTestId: string;
   sectionRef?: React.RefObject<HTMLDivElement>;
 };
@@ -25,6 +26,7 @@ export const ExperimentalTabItem = ({
   description,
   toggleValue,
   toggleCallback,
+  toggleContainerDataTestId,
   toggleDataTestId,
   sectionRef,
 }: ExperimentalTabItemProps) => (
@@ -42,11 +44,13 @@ export const ExperimentalTabItem = ({
       <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
         {title}
       </Text>
-      <ToggleButton
-        value={toggleValue}
-        onToggle={toggleCallback}
-        dataTestId={toggleDataTestId}
-      />
+      <div data-testid={toggleContainerDataTestId}>
+        <ToggleButton
+          value={toggleValue}
+          onToggle={toggleCallback}
+          dataTestId={toggleDataTestId}
+        />
+      </div>
     </Box>
     <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
       {description}
