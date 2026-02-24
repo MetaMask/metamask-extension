@@ -91,7 +91,9 @@ describe('AccountRow', () => {
         <AccountRow label={messages.musdClaimClaimingTo.message} />,
         mockStore,
       );
-      expect(result.getByText(messages.musdClaimClaimingTo.message)).toBeDefined();
+      expect(
+        result.getByText(messages.musdClaimClaimingTo.message),
+      ).toBeDefined();
       expect(result.container.querySelector('.confirm-info-row')).toBeDefined();
     });
   });

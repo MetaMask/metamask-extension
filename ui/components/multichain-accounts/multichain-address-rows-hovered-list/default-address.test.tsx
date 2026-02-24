@@ -42,7 +42,9 @@ describe('DefaultAddress', () => {
     const store = mockStore(createMockState());
     renderWithProvider(<DefaultAddress />, store);
 
-    expect(screen.getByText(messages.showDefaultAddress.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.showDefaultAddress.message),
+    ).toBeInTheDocument();
   });
 
   it('renders the Change in Settings link', () => {
@@ -50,7 +52,9 @@ describe('DefaultAddress', () => {
     renderWithProvider(<DefaultAddress />, store);
 
     expect(screen.getByTestId('change-in-settings-link')).toBeInTheDocument();
-    expect(screen.getByText(messages.changeInSettings.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.changeInSettings.message),
+    ).toBeInTheDocument();
   });
 
   it('renders the show default address toggle', () => {

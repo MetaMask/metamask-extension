@@ -79,6 +79,8 @@ describe('MultichainAccountNetworkGroupWithDefaultAddress', () => {
       store,
     );
 
-    expect(screen.getByText(messages.addressCopied.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.addressCopied.message),
+    ).toBeInTheDocument();
   });
 });
