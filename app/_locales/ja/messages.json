@@ -5242,9 +5242,6 @@
   "perpsAddToFavorites": {
     "message": "お気に入りに追加"
   },
-  "perpsAsk": {
-    "message": "Ask"
-  },
   "perpsAutoClose": {
     "message": "自動クローズ"
   },
@@ -5255,14 +5252,8 @@
   "perpsAvailableBalance": {
     "message": "利用可能残高"
   },
-  "perpsBid": {
-    "message": "Bid"
-  },
   "perpsCancelAllOrders": {
     "message": "すべてキャンセル"
-  },
-  "perpsClose": {
-    "message": "閉じる"
   },
   "perpsCloseAll": {
     "message": "すべてクローズ"
@@ -5380,9 +5371,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "清算価格"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "推定清算価格"
   },
   "perpsLong": {
     "message": "ロング"

@@ -5242,9 +5242,6 @@
   "perpsAddToFavorites": {
     "message": "添加到收藏夹"
   },
-  "perpsAsk": {
-    "message": "卖出价"
-  },
   "perpsAutoClose": {
     "message": "自动平仓"
   },
@@ -5255,14 +5252,8 @@
   "perpsAvailableBalance": {
     "message": "可用余额"
   },
-  "perpsBid": {
-    "message": "买入价"
-  },
   "perpsCancelAllOrders": {
     "message": "全部取消"
-  },
-  "perpsClose": {
-    "message": "关闭"
   },
   "perpsCloseAll": {
     "message": "全部平仓"
@@ -5380,9 +5371,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "清算价格"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "预估清算价格"
   },
   "perpsLong": {
     "message": "做多"

@@ -5242,9 +5242,6 @@
   "perpsAddToFavorites": {
     "message": "पसंदीदा में जोड़े"
   },
-  "perpsAsk": {
-    "message": "आस्क"
-  },
   "perpsAutoClose": {
     "message": "ऑटो क्लोज़"
   },
@@ -5255,14 +5252,8 @@
   "perpsAvailableBalance": {
     "message": "उपलब्ध बैलेंस"
   },
-  "perpsBid": {
-    "message": "बिड"
-  },
   "perpsCancelAllOrders": {
     "message": "सब कैंसिल करें"
-  },
-  "perpsClose": {
-    "message": "बंद करें"
   },
   "perpsCloseAll": {
     "message": "सब बंद करें"
@@ -5380,9 +5371,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "लिक्विडेशन प्राइस"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "लिक्विडेशन प्राइस का अनुमान"
   },
   "perpsLong": {
     "message": "लॉन्ग"

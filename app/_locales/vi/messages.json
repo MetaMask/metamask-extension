@@ -5242,9 +5242,6 @@
   "perpsAddToFavorites": {
     "message": "Thêm vào mục yêu thích"
   },
-  "perpsAsk": {
-    "message": "Giá bán"
-  },
   "perpsAutoClose": {
     "message": "Tự động đóng"
   },
@@ -5255,14 +5252,8 @@
   "perpsAvailableBalance": {
     "message": "Số dư khả dụng"
   },
-  "perpsBid": {
-    "message": "Giá mua"
-  },
   "perpsCancelAllOrders": {
     "message": "Hủy tất cả"
-  },
-  "perpsClose": {
-    "message": "Đóng"
   },
   "perpsCloseAll": {
     "message": "Đóng tất cả"
@@ -5380,9 +5371,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Giá thanh lý"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Giá thanh lý ước tính"
   },
   "perpsLong": {
     "message": "Mua khống"
