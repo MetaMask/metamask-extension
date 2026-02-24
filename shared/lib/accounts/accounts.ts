@@ -138,6 +138,11 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
       parent: messenger,
     });
 
+    messenger.delegate({
+      messenger: clientMessenger,
+      actions: ['SnapController:handleRequest'],
+    });
+
     this.#client = new KeyringInternalSnapClient({
       snapId,
       messenger: clientMessenger,
