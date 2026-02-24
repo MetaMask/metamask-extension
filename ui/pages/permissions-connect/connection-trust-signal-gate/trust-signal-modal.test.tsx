@@ -39,17 +39,13 @@ describe('TrustSignalModal', () => {
     });
 
     it('shows "Unverified site" title', () => {
-      const { getByText } = render(
-        <TrustSignalModal {...defaultProps} />,
-      );
+      const { getByText } = render(<TrustSignalModal {...defaultProps} />);
 
       expect(getByText('Unverified site')).toBeInTheDocument();
     });
 
     it('calls onContinue when "Connect Anyway" is clicked', () => {
-      const { getByTestId } = render(
-        <TrustSignalModal {...defaultProps} />,
-      );
+      const { getByTestId } = render(<TrustSignalModal {...defaultProps} />);
 
       fireEvent.click(getByTestId('trust-signal-warning-modal-continue'));
       expect(defaultProps.onContinue).toHaveBeenCalledTimes(1);
@@ -73,17 +69,13 @@ describe('TrustSignalModal', () => {
     });
 
     it('shows "Malicious site detected" title', () => {
-      const { getByText } = render(
-        <TrustSignalModal {...defaultProps} />,
-      );
+      const { getByText } = render(<TrustSignalModal {...defaultProps} />);
 
       expect(getByText('Malicious site detected')).toBeInTheDocument();
     });
 
     it('calls onContinue when "Connect Anyway" is clicked', () => {
-      const { getByTestId } = render(
-        <TrustSignalModal {...defaultProps} />,
-      );
+      const { getByTestId } = render(<TrustSignalModal {...defaultProps} />);
 
       fireEvent.click(getByTestId('trust-signal-block-modal-continue'));
       expect(defaultProps.onContinue).toHaveBeenCalledTimes(1);
