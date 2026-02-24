@@ -97,25 +97,28 @@ export async function fetchBenchmarkEntries(
   hostUrl: string,
   presets: string[],
 ): Promise<FetchBenchmarkResult> {
+  const fetches = ENTRY_BENCHMARK_PLATFORMS.flatMap((platform) =>
+    ENTRY_BENCHMARK_BUILD_TYPES.flatMap((buildType) =>
+      presets.map(async (preset) => {
+        const data = await fetchBenchmarkJson(hostUrl, platform, buildType, preset);
+        return { platform, buildType, preset, data };
+      }),
+    ),
+  );
+
+  const results = await Promise.all(fetches);
+
   const allEntries: BenchmarkEntry[] = [];
   const missingPresets: string[] = [];
-  for (const platform of ENTRY_BENCHMARK_PLATFORMS) {
-    for (const buildType of ENTRY_BENCHMARK_BUILD_TYPES) {
-      for (const preset of presets) {
-        const data = await fetchBenchmarkJson(
-          hostUrl,
-          platform,
-          buildType,
-          preset,
-        );
-        if (data) {
-          allEntries.push(...extractEntries(data));
-        } else {
-          missingPresets.push(`${platform}/${buildType}/${preset}`);
-        }
-      }
+
+  for (const { platform, buildType, preset, data } of results) {
+    if (data) {
+      allEntries.push(...extractEntries(data));
+    } else {
+      missingPresets.push(`${platform}/${buildType}/${preset}`);
     }
   }
+
   return { entries: allEntries, missingPresets };
 }
 
