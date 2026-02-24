@@ -21,6 +21,12 @@ export class PerpsHomePage {
     testId: 'perps-home-search-button',
   };
 
+  private readonly perpsPositionsSection = {
+    testId: 'perps-positions-section',
+  };
+
+  private readonly positionCardsSelector = '[data-testid^="position-card-"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -60,7 +66,7 @@ export class PerpsHomePage {
    * Waits for the positions section to be visible (mock positions loaded).
    */
   async waitForPositionsSection(): Promise<void> {
-    await this.driver.waitForSelector({ testId: 'perps-positions-section' });
+    await this.driver.waitForSelector(this.perpsPositionsSection);
   }
 
   /**
@@ -68,7 +74,7 @@ export class PerpsHomePage {
    */
   async getPositionCardsCount(): Promise<number> {
     const elements = await this.driver.findElements(
-      '[data-testid^="position-card-"]',
+      this.positionCardsSelector,
     );
     return elements.length;
   }

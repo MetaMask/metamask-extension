@@ -226,7 +226,8 @@ class MockPerpsController {
 
   /**
    * Place a new order
-   * On success, pushes a new position to the stream so the UI updates immediately.
+   * On success, updates the stream: replaces any existing position with the same
+   * symbol (so one position per symbol) and pushes the new position so the UI updates immediately.
    *
    * @param params - OrderParams from PerpsController (symbol, isBuy, size, orderType, etc.)
    */
@@ -240,10 +241,10 @@ class MockPerpsController {
     const streamManager = getPerpsStreamManager();
     const currentPositions = streamManager.positions.getCachedData();
     const newPosition = this.buildPositionFromOrderParams(params);
-    streamManager.pushPositionsWithOverrides([
-      ...currentPositions,
-      newPosition,
-    ]);
+    const otherPositions = currentPositions.filter(
+      (p) => p.symbol !== params.symbol,
+    );
+    streamManager.pushPositionsWithOverrides([...otherPositions, newPosition]);
 
     return {
       success: true,
