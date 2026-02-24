@@ -43,7 +43,7 @@ export const MERKL_FEATURE_FLAG_KEY = 'earnMerklCampaignClaiming';
  * This is the canonical mUSD contract address used across Mainnet, Linea, and BSC.
  */
 export const MUSD_TOKEN_ADDRESS: Hex =
-  '0xaca92e438df0b2401ff60da7e4337b687a2435da';
+  '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
 
 /**
  * Map of chains and their eligible token addresses for Merkl rewards.
