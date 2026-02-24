@@ -13,8 +13,11 @@ import type {
 import {
   DAPP_URL,
   DAPP_URL_LOCALHOST,
+  DEFAULT_FIXTURE_ACCOUNT,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  DEFAULT_FIXTURE_LEDGER_ACCOUNT,
   DEFAULT_FIXTURE_SOLANA_ACCOUNT,
+  LEDGER_FIXTURE_VAULT,
   SOLANA_MAINNET_SCOPE,
 } from '../constants';
 import defaultFixtureJson from './default-fixture.json';
@@ -110,15 +113,14 @@ class FixtureBuilderV2 {
 
   withLedgerAccount(): this {
     return this.withKeyringController({
-      vault:
-        '{"data":"dwEWCLyS14yChQuzUYsiVhfaSZ7pzwjnhUhmTlz/5Nmxn3aTN/tIicWEMGjQ3+GgJw7E1fkn2OLfA4U9iw5eV5ZVozHLJC+4K3YihNJGcLaxQQj9hb8fnxWhRR2NWgKlThkGiGBF+66qE5rCgmGijYy3WA19OrpgTANYRE9IZifS46MokrWxHlZNY90PQWl+6ROc6XtfbdetpslQkOBCGDTp49FZz0E2M62crLMAU+cSLHuMIkwq7WfbJwy5ybMe085Bo3ghzrwwpysu39vUozGbaQN4EUhNgE7vzxPcasQWwqi/3aLKTm2JATs3sia0jIp5OSdaZkcTX4pcvqgXxGUrxsqK56FtFzAg4TE7qjl2smX3ScW1xJopYHvI8Uv6eEH6kLcnZbV7MJw+Dasu/ROrsynrbywevY3LQ62g07t2ZPz/82VfcEOGcdBmhsVoFGpNYoaESGQIKV2yXLU+0erOzAmYz4bSI+66i+a1woLaQveko/7nm38ILojedM9+Zqfcgh+PjCYyfjRxTc+5BhS+AjHHQgWAD/sqvaMTLQiH7dP4rYHYeZQi9WL9nfvv/orxVJFCEpMAb13BbJefvCKTKxiOg/F+4RPPB46gAAXMrMGtin/P8wxlFcOR0Drfg0COa5hMvSM2hOhV6LUfx3gL5ilAjuFAL3iANh5qJSECg8m46BU6maVQoGQCiaGSfSerEvnbXftXNCK1SfpkSpV7k/hFAVQyv5tN+4yi4CYqLq+43roSNxlaEVSz8MDJr+SNIJQFD8aqT4RiHMQqOPpYrmSvWeZDELs0TQU4XEVKIU/7naocQfdncUfsExXKdJGvIvnISZpNGcr9/DU2V6a3ZmF3pvQ2HPnZgYSsYBXK7mxJSpgTNCwvV1HBSl93SHs59Zn2aWW0qvaS0IpTHklMWC+8YF3FQAikgaEnVnTwGJL/4gg02MMHOKbazr7Cv/z9Vfj8sSU3enuiK4fCRqlFbwKHtQwqry6or6p+NiXFZ40EuMy0NYPkDy/h5Srk0Y1JMRJJp6bcTIu1f90+fVziqQ==","iv":"2gvqZ+DkKASrRK8iCXALPQ==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"PwqqENo0YiZXcRrMzg+ujLG2VtyTNkKBCvFMsnzFefk="}',
+      vault: LEDGER_FIXTURE_VAULT,
     })
       .withAccountsController({
         internalAccounts: {
           accounts: {
             'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
               id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-              address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+              address: DEFAULT_FIXTURE_ACCOUNT,
               options: {
                 entropySource: '01JWZDDDB45SRHTRE5KYWZJK9W',
                 derivationPath: "m/44'/60'/0'/0/0",
@@ -151,7 +153,7 @@ class FixtureBuilderV2 {
             },
             '221ecb67-0d29-4c04-83b2-dff07c263634': {
               id: '221ecb67-0d29-4c04-83b2-dff07c263634',
-              address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+              address: DEFAULT_FIXTURE_LEDGER_ACCOUNT,
               options: {},
               methods: [
                 'personal_sign',
@@ -178,18 +180,18 @@ class FixtureBuilderV2 {
       })
       .withPreferencesController({
         identities: {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          [DEFAULT_FIXTURE_ACCOUNT]: {
+            address: DEFAULT_FIXTURE_ACCOUNT,
             lastSelected: 1665507600000,
             name: 'Account 1',
           },
-          '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
-            address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+          [DEFAULT_FIXTURE_LEDGER_ACCOUNT]: {
+            address: DEFAULT_FIXTURE_LEDGER_ACCOUNT,
             lastSelected: 1725507800000,
             name: 'Ledger 1',
           },
-        } as PreferencesControllerState['identities'],
-        selectedAddress: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+        } as unknown as PreferencesControllerState['identities'],
+        selectedAddress: DEFAULT_FIXTURE_LEDGER_ACCOUNT,
       })
       .withMetaMetricsDisabled();
   }
