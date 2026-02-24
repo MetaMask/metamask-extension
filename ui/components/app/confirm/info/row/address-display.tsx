@@ -2,6 +2,9 @@ import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import {
   AvatarAccountSize,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
   Icon,
   IconColor,
   IconName,
@@ -10,12 +13,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-} from '../../../../../helpers/constants/design-system';
-import { Box } from '../../../../component-library';
 import Identicon from '../../../../ui/identicon';
 import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { PreferredAvatar } from '../../../preferred-avatar';
@@ -162,9 +159,8 @@ export const ConfirmInfoRowAddressDisplay = memo(
 
     return (
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         gap={2}
       >
         {modalOpen && (
@@ -180,41 +176,61 @@ export const ConfirmInfoRowAddressDisplay = memo(
           image={image}
           address={hexAddress}
         />
-        {name ? (
+        {name && isClickable && (
           <Text
             variant={TextVariant.BodyMd}
             color={TextColor.TextDefault}
-            className={
-              isClickable
-                ? 'confirm-info-row-address-display__clickable'
-                : undefined
-            }
+            className="confirm-info-row-address-display__clickable"
             asChild
           >
-            <span
+            <button
+              type="button"
               style={{ whiteSpace: 'nowrap', flex: 1 }}
               onClick={handleClick}
               data-testid="confirm-info-row-display-name"
             >
               {name}
-            </span>
+            </button>
           </Text>
-        ) : (
+        )}
+        {name && !isClickable && (
           <Text
             variant={TextVariant.BodyMd}
             color={TextColor.TextDefault}
-            className={
-              isClickable
-                ? 'confirm-info-row-address-display__clickable'
-                : undefined
-            }
+            data-testid="confirm-info-row-display-name"
+            style={{ whiteSpace: 'nowrap', flex: 1 }}
+          >
+            {name}
+          </Text>
+        )}
+        {!name && isClickable && (
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextDefault}
+            className="confirm-info-row-address-display__clickable"
+            asChild
+          >
+            <button
+              type="button"
+              ref={containerRef as unknown as React.Ref<HTMLButtonElement>}
+              style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}
+              onClick={handleClick}
+              data-testid="confirm-info-row-display-name"
+            >
+              {display}
+            </button>
+          </Text>
+        )}
+        {!name && !isClickable && (
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextDefault}
+            data-testid="confirm-info-row-display-name"
             asChild
           >
             <span
               ref={containerRef}
               style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}
-              onClick={handleClick}
-              data-testid="confirm-info-row-display-name"
             >
               {display}
             </span>
