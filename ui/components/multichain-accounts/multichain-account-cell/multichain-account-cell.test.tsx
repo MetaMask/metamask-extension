@@ -168,6 +168,26 @@ describe('MultichainAccountCell', () => {
     expect(screen.getByTestId('start-accessory')).toBeInTheDocument();
   });
 
+  it('does not render default address copy element when showDefaultAddress is false', () => {
+    renderWithProvider(<MultichainAccountCell {...defaultProps} />, store);
+
+    expect(
+      screen.queryByTestId('multichain-account-cell-address'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders default address copy element when showDefaultAddress is true', () => {
+    renderWithProvider(
+      <MultichainAccountCell {...defaultProps} showDefaultAddress />,
+      store,
+    );
+
+    const addressElement = screen.getByTestId(
+      'multichain-account-cell-address',
+    );
+    expect(addressElement).toBeInTheDocument();
+  });
+
   it('hides balance value when privacy mode is enabled', () => {
     const props = {
       ...defaultProps,
@@ -276,9 +296,7 @@ describe('MultichainAccountCell', () => {
       expect(badgeStatus).toBeInTheDocument();
 
       // Avatar container should still be present
-      const avatarContainer = document.querySelector(
-        '.multichain-account-cell__account-avatar',
-      );
+      const avatarContainer = screen.getByTestId('account-cell-avatar');
       expect(avatarContainer).toBeInTheDocument();
     });
   });
