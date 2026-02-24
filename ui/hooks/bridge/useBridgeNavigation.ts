@@ -1,27 +1,46 @@
 import { useCallback, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   type NavigateOptions,
   type To,
   useLocation,
   useNavigate,
 } from 'react-router-dom';
-import { type CaipChainId, type Hex } from '@metamask/utils';
-import { AssetType } from '@metamask/bridge-controller';
+import {
+  type CaipChainId,
+  type Hex,
+  parseCaipAssetType,
+} from '@metamask/utils';
+import {
+  AssetType,
+  formatAddressToCaipReference,
+  formatChainIdToHex,
+  isNativeAddress,
+  isNonEvmChainId,
+} from '@metamask/bridge-controller';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
-import { DEFAULT_ROUTE } from '../../../shared/lib/deep-links/routes/route';
+import {
+  ASSET_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../shared/lib/deep-links/routes/route';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
+import { getBridgeState } from '../../ducks/bridge/selectors';
 import type { MinimalAsset } from '../../pages/bridge/utils/tokens';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
 import { resetBackgroundSwapsState } from '../../store/actions';
+import type { BridgeState, BridgeToken } from '../../ducks/bridge/types';
 
 export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
   state: {
+    /**
+     * If this is set, it will be used to rehydrate the bridge store when the user navigates to the bridge page.
+     */
+    bridgeState: BridgeState | null;
     /**
      * If this is set, it will be used to set the `fromToken` when the user navigates to the bridge page.
      */
@@ -59,6 +78,7 @@ export const useBridgeNavigation = () => {
     () => maybeState ?? {},
     [maybeState],
   );
+  const bridgeState = useSelector(getBridgeState);
 
   const navigate = useCallback(
     (to: To, options: BridgeNavigationOptions) => {
@@ -81,11 +101,12 @@ export const useBridgeNavigation = () => {
       navigate(to, {
         state: {
           ...state,
+          bridgeState: null,
           token: null,
         },
         replace: true,
       }),
-    [navigate, state, pathname],
+    [navigate, state, pathname, bridgeState],
   );
 
   /**
@@ -150,6 +171,53 @@ export const useBridgeNavigation = () => {
   );
 
   /**
+   * Navigates to the asset page for the given asset.
+   * @param asset - The asset to display on the asset page.
+   */
+  const navigateToAssetPage = useCallback(
+    (asset: BridgeToken) => {
+      // Parse the CAIP assetId to get the address
+      const { assetReference } = parseCaipAssetType(asset.assetId);
+      const isNonEvm = isNonEvmChainId(asset.chainId);
+      // For EVM: convert CAIP chainId to hex format; for non-EVM: keep CAIP format
+      const routeChainId = isNonEvm
+        ? asset.chainId
+        : formatChainIdToHex(asset.chainId);
+      // For EVM: convert assetReference to address; for non-EVM: use CAIP assetId
+      const tokenAddress = isNonEvm
+        ? asset.assetId
+        : formatAddressToCaipReference(assetReference);
+      const isNative = isNativeAddress(
+        isNonEvm ? assetReference : tokenAddress,
+      );
+
+      navigate(
+        isNative && !isNonEvm
+          ? `${ASSET_ROUTE}/${routeChainId}`
+          : `${ASSET_ROUTE}/${routeChainId}/${encodeURIComponent(tokenAddress)}`,
+        {
+          state: {
+            ...state,
+            bridgeState,
+            token: {
+              type: isNative ? AssetType.native : AssetType.token,
+              assetId: asset.assetId,
+              address: tokenAddress,
+              symbol: asset.symbol,
+              name: asset.name ?? asset.symbol,
+              chainId: routeChainId,
+              image: asset.iconUrl,
+              isNative,
+              decimals: asset.decimals,
+            },
+          },
+        },
+      );
+    },
+    [navigate, state, bridgeState],
+  );
+
+  /**
    * Navigates to the hw transaction signing page.
    */
   const navigateToHwSigningPage = useCallback(() => {
@@ -165,6 +233,7 @@ export const useBridgeNavigation = () => {
     navigate(`${DEFAULT_ROUTE}?tab=activity`, {
       state: {
         ...state,
+        bridgeState: null,
         token: null,
         stayOnHomePage: true,
       },
@@ -184,6 +253,7 @@ export const useBridgeNavigation = () => {
     } else {
       navigate(DEFAULT_ROUTE, {
         state: {
+          bridgeState: null,
           token: null,
           stayOnHomePage: true,
         },
@@ -193,10 +263,12 @@ export const useBridgeNavigation = () => {
   }, [search, navigate, resetLocationState]);
 
   return {
+    bridgeState: state.bridgeState,
     token: state.token,
     search,
     resetLocationState,
     resetSearchParams,
+    navigateToAssetPage,
     navigateToBridgePage,
     navigateToHwSigningPage,
     navigateToActivityPage,

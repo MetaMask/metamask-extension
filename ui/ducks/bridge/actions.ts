@@ -42,6 +42,7 @@ const {
   setToToken: setToTokenAction,
   setFromTokenInputValue,
   resetInputFields,
+  rehydrateBridgeStore,
   setSortOrder,
   setSelectedQuote,
   setWasTxDeclined,
@@ -53,6 +54,7 @@ const {
 
 export {
   resetInputFields,
+  rehydrateBridgeStore,
   setFromTokenInputValue,
   setSrcTokenExchangeRates,
   setSortOrder,

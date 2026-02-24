@@ -2,10 +2,12 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { isCrossChain } from '@metamask/bridge-controller';
 import {
+  rehydrateBridgeStore,
   resetBridgeControllerAndCache,
   restoreQuoteRequestFromState,
   setEvmBalances,
   setFromToken,
+  setToToken,
 } from '../../ducks/bridge/actions';
 import { getBridgeQuotes, getFromToken } from '../../ducks/bridge/selectors';
 import { getMultichainCurrentChainId } from '../../selectors/multichain';
@@ -28,10 +30,10 @@ export const usePrefillFromBridgeState = () => {
   const currentChainId = useSelector(getMultichainCurrentChainId);
   const { activeQuote } = useSelector(getBridgeQuotes);
 
-  const { resetLocationState, token } = useBridgeNavigation();
+  const { resetLocationState, token, bridgeState } = useBridgeNavigation();
 
-  const shouldRehydrateFromLocationState = token;
-  const shouldRestoreInputsFromQuote = activeQuote;
+  const shouldRehydrateFromLocationState = bridgeState || token;
+  const shouldRestoreInputsFromQuote = !bridgeState && activeQuote;
 
   // Set src chain balances when the fromToken changes and after the token object is applied
   useEffect(() => {
@@ -52,12 +54,30 @@ export const usePrefillFromBridgeState = () => {
 
   useEffect(() => {
     if (shouldRehydrateFromLocationState) {
-      // If token object is passed through navigation options, use it as the fromToken
-      dispatch(setFromToken(token));
+      bridgeState &&
+        dispatch(
+          rehydrateBridgeStore({
+            bridgeState,
+          }),
+        );
+      // If token object is passed through navigation options, use it
+      const shouldSetFromToken =
+        token &&
+        (bridgeState?.isSrcAssetPickerOpen ||
+          (!bridgeState?.isSrcAssetPickerOpen &&
+            !bridgeState?.isDestAssetPickerOpen));
+      const shouldSetToToken = token && bridgeState?.isDestAssetPickerOpen;
+
+      if (shouldSetFromToken) {
+        dispatch(setFromToken(token));
+      } else if (shouldSetToToken) {
+        dispatch(setToToken(token));
+      }
+
       // Clear location state after using it to prevent infinite re-renders
       resetLocationState();
     } else if (shouldRestoreInputsFromQuote) {
-      dispatch(restoreQuoteRequestFromState(activeQuote.quote));
+      dispatch(restoreQuoteRequestFromState(activeQuote));
     } else {
       // Reset controller and cache on load if there's no restored active quote or token object
       resetControllerAndCache();

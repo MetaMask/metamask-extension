@@ -7,6 +7,7 @@ import {
   type QuoteResponse,
   isNativeAddress,
   RequestStatus,
+  type QuoteMetadata,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
@@ -146,13 +147,38 @@ const bridgeSlice = createSlice({
       state.slippage = initialState.slippage;
       state.txAlert = initialState.txAlert;
       state.txAlertStatus = initialState.txAlertStatus;
+      state.isSrcAssetPickerOpen = initialState.isSrcAssetPickerOpen;
+      state.isDestAssetPickerOpen = initialState.isDestAssetPickerOpen;
+    },
+    rehydrateBridgeStore: (
+      state,
+      { payload: { bridgeState: maybeBridgeState } },
+    ) => {
+      const bridgeState = maybeBridgeState ?? (initialState as BridgeState);
+      state.fromToken = bridgeState.fromToken;
+      state.toToken = bridgeState.toToken;
+      state.fromTokenInputValue = bridgeState.fromTokenInputValue;
+      state.fromTokenExchangeRate = bridgeState.fromTokenExchangeRate;
+      state.fromTokenBalance = bridgeState.fromTokenBalance;
+      state.fromNativeBalance = bridgeState.fromNativeBalance;
+      state.sortOrder = bridgeState.sortOrder;
+      state.selectedQuote = bridgeState.selectedQuote;
+      state.wasTxDeclined = bridgeState.wasTxDeclined;
+      state.slippage = bridgeState.slippage;
+      state.txAlert = bridgeState.txAlert;
+      state.txAlertStatus = bridgeState.txAlertStatus;
+      state.isSrcAssetPickerOpen = bridgeState.isSrcAssetPickerOpen;
+      state.isDestAssetPickerOpen = bridgeState.isDestAssetPickerOpen;
     },
     restoreQuoteRequestFromState: (
       state,
-      { payload: quote }: { payload: QuoteResponse['quote'] },
+      {
+        payload: { sentAmount, quote },
+      }: { payload: QuoteResponse & QuoteMetadata },
     ) => {
       state.fromToken = toBridgeToken(quote.srcAsset);
       state.toToken = toBridgeToken(quote.destAsset);
+      state.fromTokenInputValue = sentAmount.amount;
     },
     setSortOrder: (state, action) => {
       state.sortOrder = action.payload;
