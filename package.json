@@ -143,6 +143,8 @@
     "update-snap-binary": "tsx test/e2e/mock-response-data/snaps/update-snap-binary.ts",
     "attributions:check": "./development/attributions-check.sh",
     "attributions:generate": "./development/generate-attributions.sh",
+    "feature-flags:sync": "tsx test/e2e/feature-flags/sync-production-flags.ts",
+    "feature-flags:sync:check": "tsx test/e2e/feature-flags/sync-production-flags.ts --check",
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
