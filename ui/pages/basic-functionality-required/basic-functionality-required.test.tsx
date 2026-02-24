@@ -42,35 +42,26 @@ const I18N_KEYS = {
   goToHome: 'basicFunctionalityRequired_goToHome',
   toggleLabel: 'basicFunctionalityRequired_toggleLabel',
   reviewInSettings: 'basicFunctionalityRequired_reviewInSettings',
-  openFeaturePage: 'basicFunctionalityRequired_openFeaturePage',
+  openSwapsPage: 'basicFunctionalityRequired_openSwapsPage',
   off: 'off',
   on: 'on',
-  /** i18n key for the Swap feature name (used as state.localizedFeatureName in tests). */
-  featureNameSwap: 'swap',
 } as const;
 
 const DESCRIPTION_TEXT =
   "This feature isn't available while basic functionality is turned off. Use the toggle below to turn it on.";
 
 jest.mock('../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string, substitutions?: React.ReactNode[]) => {
+  useI18nContext: () => (key: string) => {
     const messages: Record<string, string> = {
       [I18N_KEYS.title]: 'Basic functionality is off',
       [I18N_KEYS.description]: DESCRIPTION_TEXT,
       [I18N_KEYS.goToHome]: 'Go to the home page',
       [I18N_KEYS.toggleLabel]: 'Basic functionality',
       [I18N_KEYS.reviewInSettings]: 'Review in settings',
+      [I18N_KEYS.openSwapsPage]: 'Open the Swap page',
       [I18N_KEYS.off]: 'Off',
       [I18N_KEYS.on]: 'On',
-      [I18N_KEYS.featureNameSwap]: 'Swap',
     };
-    if (key === I18N_KEYS.openFeaturePage && substitutions?.[0]) {
-      const name =
-        typeof substitutions[0] === 'string'
-          ? substitutions[0]
-          : String(substitutions[0]);
-      return `Open the ${name} page`;
-    }
     return messages[key] ?? key;
   },
 }));
@@ -151,7 +142,7 @@ describe('BasicFunctionalityOff', () => {
         pathname: '/basic-functionality-off',
         state: {
           blockedRoutePath: '/cross-chain/swaps/prepare-bridge-page',
-          localizedFeatureName: I18N_KEYS.featureNameSwap,
+          openPageCtaMessageKey: I18N_KEYS.openSwapsPage,
         },
         key: '',
         search: '',
@@ -159,7 +150,7 @@ describe('BasicFunctionalityOff', () => {
       } as ReturnType<typeof useLocation>);
     });
 
-    it('renders primary CTA Open the [feature name] page', () => {
+    it('renders primary CTA Open the [feature] page', () => {
       renderWithStore(<BasicFunctionalityOff />);
 
       expect(

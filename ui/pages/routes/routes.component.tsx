@@ -596,35 +596,40 @@ export default function Routes() {
         component: NotificationsSettings,
         layout: RootLayout,
         authenticated: true,
-        basicFunctionalityLocalizedFeatureName: 'notifications',
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openNotificationsPage',
       }),
       createRouteWithLayout({
         path: `${NOTIFICATIONS_ROUTE}/:uuid`,
         component: NotificationDetails,
         layout: RootLayout,
         authenticated: true,
-        basicFunctionalityLocalizedFeatureName: 'notifications',
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openNotificationsPage',
       }),
       createRouteWithLayout({
         path: NOTIFICATIONS_ROUTE,
         component: Notifications,
         layout: RootLayout,
         authenticated: true,
-        basicFunctionalityLocalizedFeatureName: 'notifications',
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openNotificationsPage',
       }),
       createRouteWithLayout({
         path: SNAPS_ROUTE,
         component: SnapList,
         layout: RootLayout,
         authenticated: true,
-        basicFunctionalityLocalizedFeatureName: 'snaps',
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openSnapsPage',
       }),
       createRouteWithLayout({
         path: `${SNAPS_VIEW_ROUTE}/*`,
         component: SnapView,
         layout: RootLayout,
         authenticated: true,
-        basicFunctionalityLocalizedFeatureName: 'snaps',
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openSnapsPage',
       }),
       createRouteWithLayout({
         path: `${SEND_ROUTE}/:page?`,
@@ -659,14 +664,16 @@ export default function Routes() {
         component: CrossChainSwapTxDetails,
         layout: LegacyLayout,
         authenticated: true,
-        basicFunctionalityLocalizedFeatureName: 'swap',
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openSwapsPage',
       }),
       createRouteWithLayout({
         path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
         component: CrossChainSwap,
         layout: RootLayout,
         authenticated: true,
-        basicFunctionalityLocalizedFeatureName: 'swap',
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openSwapsPage',
       }),
       createRouteWithLayout({
         path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -736,7 +743,8 @@ export default function Routes() {
         component: DeFiPage,
         layout: RootLayout,
         authenticated: true,
-        basicFunctionalityLocalizedFeatureName: 'defi',
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openDefiPage',
       }),
       createRouteWithLayout({
         path: PERMISSIONS,
@@ -841,49 +849,56 @@ export default function Routes() {
         component: NonEvmBalanceCheck,
         layout: LegacyLayout,
         authenticated: true,
-        basicFunctionalityLocalizedFeatureName: 'createSnapAccountTitle',
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openCreateSnapAccountPage',
       }),
       createRouteWithLayout({
         path: SHIELD_PLAN_ROUTE,
         component: ShieldPlan,
         layout: LegacyLayout,
         authenticated: true,
-        basicFunctionalityLocalizedFeatureName: 'transactionShield',
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openTransactionShieldPage',
       }),
       createRouteWithLayout({
         path: REWARDS_ROUTE,
         component: RewardsPage,
         layout: RootLayout,
         authenticated: true,
-        basicFunctionalityLocalizedFeatureName: 'shieldPlanDetailsRewardsTitle',
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openRewardsPage',
       }),
       createRouteWithLayout({
         path: PERPS_HOME_ROUTE,
         component: WrappedPerpsHomePage,
         layout: RootLayout,
         authenticated: true,
-        basicFunctionalityLocalizedFeatureName: 'perps',
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openPerpsPage',
       }),
       createRouteWithLayout({
         path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
         component: WrappedPerpsMarketDetailPage,
         layout: RootLayout,
         authenticated: true,
-        basicFunctionalityLocalizedFeatureName: 'perps',
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openPerpsPage',
       }),
       createRouteWithLayout({
         path: PERPS_ACTIVITY_ROUTE,
         component: WrappedPerpsActivityPage,
         layout: RootLayout,
         authenticated: true,
-        basicFunctionalityLocalizedFeatureName: 'perps',
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openPerpsPage',
       }),
       createRouteWithLayout({
         path: PERPS_MARKET_LIST_ROUTE,
         component: WrappedMarketListView,
         layout: RootLayout,
         authenticated: true,
-        basicFunctionalityLocalizedFeatureName: 'perps',
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openPerpsPage',
       }),
       createRouteWithLayout({
         path: DEFAULT_ROUTE,

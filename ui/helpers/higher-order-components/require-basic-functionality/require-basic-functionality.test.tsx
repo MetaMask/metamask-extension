@@ -123,7 +123,7 @@ describe('BasicFunctionalityRequired', () => {
       } as ReturnType<typeof useLocation>);
 
       const { getByTestId } = render(
-        <BasicFunctionalityRequired localizedFeatureName="swap">
+        <BasicFunctionalityRequired openPageCtaMessageKey="basicFunctionalityRequired_openSwapsPage">
           {testChild}
         </BasicFunctionalityRequired>,
       );
@@ -132,7 +132,7 @@ describe('BasicFunctionalityRequired', () => {
       const state = stateJson ? JSON.parse(stateJson) : undefined;
       expect(state).toStrictEqual({
         blockedRoutePath: SWAP_PATH,
-        localizedFeatureName: 'swap',
+        openPageCtaMessageKey: 'basicFunctionalityRequired_openSwapsPage',
       });
     });
 
@@ -147,7 +147,7 @@ describe('BasicFunctionalityRequired', () => {
       } as ReturnType<typeof useLocation>);
 
       const { getByTestId } = render(
-        <BasicFunctionalityRequired localizedFeatureName="swap">
+        <BasicFunctionalityRequired openPageCtaMessageKey="basicFunctionalityRequired_openSwapsPage">
           {testChild}
         </BasicFunctionalityRequired>,
       );

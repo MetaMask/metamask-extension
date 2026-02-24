@@ -881,9 +881,29 @@
   "basicFunctionalityRequired_goToHome": {
     "message": "Go to the home page"
   },
-  "basicFunctionalityRequired_openFeaturePage": {
-    "message": "Open the $1 page",
-    "description": "$1 is the feature name (e.g. Swap, Rewards)"
+  "basicFunctionalityRequired_openCreateSnapAccountPage": {
+    "message": "Open the Create account page"
+  },
+  "basicFunctionalityRequired_openDefiPage": {
+    "message": "Open the DeFi page"
+  },
+  "basicFunctionalityRequired_openNotificationsPage": {
+    "message": "Open the Notifications page"
+  },
+  "basicFunctionalityRequired_openPerpsPage": {
+    "message": "Open the Perps page"
+  },
+  "basicFunctionalityRequired_openRewardsPage": {
+    "message": "Open the Rewards page"
+  },
+  "basicFunctionalityRequired_openSnapsPage": {
+    "message": "Open the Snaps page"
+  },
+  "basicFunctionalityRequired_openSwapsPage": {
+    "message": "Open the Swap page"
+  },
+  "basicFunctionalityRequired_openTransactionShieldPage": {
+    "message": "Open the Transaction Shield page"
   },
   "basicFunctionalityRequired_reviewInSettings": {
     "message": "Review in settings"

@@ -18,8 +18,8 @@ export type RouteWithLayoutConfig = {
   initialized?: boolean;
   /** When true (default), redirects to the basic-functionality-off screen if Basic Functionality (useExternalServices) is off. Set to false to allow access without external services (e.g. Home, Settings). */
   basicFunctionalityRequired?: boolean;
-  /** i18n message key for the feature name (e.g. "swap", "notifications"). Same keys as nav/tabs so "Open the [feature] page" CTA is localized. Required when basicFunctionalityRequired is true. */
-  basicFunctionalityLocalizedFeatureName?: string;
+  /** i18n message key for the full "Open the [X] page" CTA (e.g. basicFunctionalityRequired_openSwapsPage). One key per destination so each locale can translate the whole sentence. Required when basicFunctionalityRequired is true. */
+  basicFunctionalityOpenPageCtaKey?: string;
   children?: ReactNode;
 };
 
@@ -49,7 +49,7 @@ export const createRouteWithLayout = (
     authenticated,
     initialized,
     basicFunctionalityRequired = true,
-    basicFunctionalityLocalizedFeatureName,
+    basicFunctionalityOpenPageCtaKey,
     children,
   } = config;
 
@@ -69,15 +69,15 @@ export const createRouteWithLayout = (
 
   // Then wrap with BasicFunctionalityRequired when route depends on external services (default: wrapped)
   if (basicFunctionalityRequired && content) {
-    const localizedFeatureName = basicFunctionalityLocalizedFeatureName?.trim();
-    if (!localizedFeatureName) {
+    const openPageCtaKey = basicFunctionalityOpenPageCtaKey?.trim();
+    if (!openPageCtaKey) {
       throw new Error(
-        `Route "${path}" has basicFunctionalityRequired set to true but no basicFunctionalityLocalizedFeatureName. ` +
-          'Add an i18n message key (e.g. "swap", "notifications") for the basic-functionality-off page CTA.',
+        `Route "${path}" has basicFunctionalityRequired set to true but no basicFunctionalityOpenPageCtaKey. ` +
+          'Add an i18n message key (e.g. basicFunctionalityRequired_openSwapsPage) for the basic-functionality-off page CTA.',
       );
     }
     content = (
-      <BasicFunctionalityRequired localizedFeatureName={localizedFeatureName}>
+      <BasicFunctionalityRequired openPageCtaMessageKey={openPageCtaKey}>
         {content}
       </BasicFunctionalityRequired>
     );

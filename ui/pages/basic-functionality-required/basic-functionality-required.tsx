@@ -47,13 +47,8 @@ export const BasicFunctionalityOff = () => {
 
   const state = location.state as BasicFunctionalityOffState | undefined;
   const blockedRoutePath = state?.blockedRoutePath ?? '';
-  const localizedFeatureNameKey = state?.localizedFeatureName ?? '';
-  const localizedFeatureName = localizedFeatureNameKey
-    ? t(localizedFeatureNameKey)
-    : '';
-  const hasFeatureContext = Boolean(
-    blockedRoutePath && localizedFeatureNameKey,
-  );
+  const openPageCtaMessageKey = state?.openPageCtaMessageKey ?? '';
+  const hasFeatureContext = Boolean(blockedRoutePath && openPageCtaMessageKey);
 
   const handleToggleBasicFunctionality = (currentValue: boolean) => {
     dispatch(toggleExternalServices(!currentValue));
@@ -154,9 +149,7 @@ export const BasicFunctionalityOff = () => {
               disabled={useExternalServices !== true}
               style={{ width: '100%', marginBottom: 12 }}
             >
-              {t('basicFunctionalityRequired_openFeaturePage', [
-                localizedFeatureName,
-              ])}
+              {t(openPageCtaMessageKey)}
             </Button>
           )}
           <TextButton
