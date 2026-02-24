@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { WINDOW_TITLES } from '../../constants';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { largeDelayMs, withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { buildSolanaTestSpecificMock } from '../../tests/solana/common-solana';
@@ -9,7 +9,6 @@ import {
   clickCancelButton,
   clickConfirmButton,
   connectSolanaTestDapp,
-  DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
 } from './testHelpers';
 import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
 
@@ -20,7 +19,9 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
           testSpecificMock: buildSolanaTestSpecificMock({
             mockGetTransactionSuccess: true,
           }),
@@ -71,7 +72,9 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
           testSpecificMock: buildSolanaTestSpecificMock({
             mockGetTransactionSuccess: true,
           }),
@@ -118,7 +121,9 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           {
             fixtures: new FixtureBuilderV2().build(),
             title: this.test?.fullTitle(),
-            dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
+            dappOptions: {
+              customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+            },
             testSpecificMock: buildSolanaTestSpecificMock({
               mockGetTransactionSuccess: true,
             }),

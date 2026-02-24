@@ -1,11 +1,11 @@
 import { merge, cloneDeep } from 'lodash';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { CurrencyRateState } from '@metamask/assets-controllers';
-import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type {
   PermissionConstraint,
   PermissionControllerState,
 } from '@metamask/permission-controller';
+import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type {
   Preferences,
   PreferencesControllerState,
