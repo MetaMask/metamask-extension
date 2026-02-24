@@ -152,6 +152,13 @@ const PRESETS: Record<string, string[]> = {
   powerUserHomeLoad: [
     `${BENCHMARK_DIR}/interaction/power-user-home-load.ts`,
   ],
+  // Cascade fix targeted flows — isolate each fix's cascade vector
+  cascadeFixProfiling: [
+    `${BENCHMARK_DIR}/interaction/rapid-route-cycling.ts`,
+    `${BENCHMARK_DIR}/interaction/account-switching-cycle.ts`,
+    `${BENCHMARK_DIR}/interaction/extended-idle-soak.ts`,
+    `${BENCHMARK_DIR}/interaction/return-to-home.ts`,
+  ],
   // Playwright page-load benchmark (for local use; CI runs this separately)
   pageLoadBenchmark: [
     'test/e2e/playwright/benchmark/page-load-benchmark.spec.ts',
