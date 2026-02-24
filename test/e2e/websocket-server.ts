@@ -56,9 +56,29 @@ class LocalWebSocketServer {
       });
 
       socket.on('message', (data) => {
-        console.log('Message received from client:', data.toString(), false);
-        // Echo the message back to the client (pure WebSocket server behavior)
-        socket.send(data.toString());
+        const raw = data.toString();
+        console.log('Message received from client:', raw, false);
+
+        // Do NOT echo back JSON messages that carry an `event` field.
+        // These are AccountActivity protocol frames (subscribe, unsubscribe,
+        // etc.) whose responses are provided by the mock handler in
+        // websocket-account-activity-mocks.ts.  Echoing them causes
+        // BackendWebSocketService to resolve the pending request with the
+        // raw echo (which lacks a subscriptionId) before the mock's proper
+        // response arrives.
+        let isEventMessage = false;
+        try {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed.event === 'string') {
+            isEventMessage = true;
+          }
+        } catch {
+          // Not JSON — safe to echo
+        }
+
+        if (!isEventMessage) {
+          socket.send(raw);
+        }
       });
     });
 

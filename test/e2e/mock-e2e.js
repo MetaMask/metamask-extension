@@ -1215,6 +1215,17 @@ async function setupMocking(
     )
     .thenForwardTo('ws://localhost:8088');
 
+  /**
+   * Backend WebSocket (AccountActivity, etc.)
+   * Forward gateway WebSocket connections to local mock server
+   */
+  await server
+    .forAnyWebSocket()
+    .matching((req) =>
+      /^wss:\/\/gateway\.api\.cx\.metamask\.io\//u.test(req.url),
+    )
+    .thenForwardTo('ws://localhost:8088');
+
   // Test Dapp Styles
   const TEST_DAPP_STYLES_1 = fs.readFileSync(TEST_DAPP_STYLES_1_PATH);
   const TEST_DAPP_STYLES_2 = fs.readFileSync(TEST_DAPP_STYLES_2_PATH);
