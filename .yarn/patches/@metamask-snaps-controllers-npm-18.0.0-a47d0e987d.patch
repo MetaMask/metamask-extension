@@ -1,0 +1,34 @@
+diff --git a/dist/snaps/SnapController.cjs b/dist/snaps/SnapController.cjs
+index ebde9e492387eca9808d72a63997c74803c4ee11..8991ace8f1a138860ef132cd50d277e9c57e6ef6 100644
+--- a/dist/snaps/SnapController.cjs
++++ b/dist/snaps/SnapController.cjs
+@@ -1087,10 +1087,8 @@ class SnapController extends base_controller_1.BaseController {
+         this.#snapsRuntimeData.clear();
+         this.#rollbackSnapshots.clear();
+         await this.#clearStorageService();
+-        // We want to remove all snaps & permissions, except for preinstalled snaps
+-        if (this.#preinstalledSnaps) {
+-            await this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
+-        }
++        // Re-initialize the controller after clearing the state, re-installing preinstalled Snaps etc.
++        await this.init();
+     }
+     /**
+      * Removes the given snap from state, and clears all associated handlers
+diff --git a/dist/snaps/SnapController.mjs b/dist/snaps/SnapController.mjs
+index 25d7e0999fe2a372b8e490369458a2c6f8dd888c..2bebffd20fdeac0ede5db66d9b6f0b62afbd920c 100644
+--- a/dist/snaps/SnapController.mjs
++++ b/dist/snaps/SnapController.mjs
+@@ -1084,10 +1084,8 @@ export class SnapController extends BaseController {
+         this.#snapsRuntimeData.clear();
+         this.#rollbackSnapshots.clear();
+         await this.#clearStorageService();
+-        // We want to remove all snaps & permissions, except for preinstalled snaps
+-        if (this.#preinstalledSnaps) {
+-            await this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
+-        }
++        // Re-initialize the controller after clearing the state, re-installing preinstalled Snaps etc.
++        await this.init();
+     }
+     /**
+      * Removes the given snap from state, and clears all associated handlers
