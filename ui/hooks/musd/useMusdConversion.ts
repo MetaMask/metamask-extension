@@ -225,15 +225,7 @@ export function useMusdConversion(): UseMusdConversionResult {
           const inFlightInitiation =
             inFlightInitiationPromises.get(initiationKey);
 
-          if (inFlightInitiation !== undefined) {
-            const existingTxId = await inFlightInitiation;
-            if (existingTxId) {
-              txId = existingTxId;
-            } else {
-              setError('Failed to start conversion');
-              return;
-            }
-          } else {
+          if (inFlightInitiation === undefined) {
             const initiationPromise = createConversionTransaction({
               chainId,
               fromAddress: selectedAddress as Hex,
@@ -254,6 +246,14 @@ export function useMusdConversion(): UseMusdConversionResult {
               return;
             } finally {
               inFlightInitiationPromises.delete(initiationKey);
+            }
+          } else {
+            const existingTxId = await inFlightInitiation;
+            if (existingTxId) {
+              txId = existingTxId;
+            } else {
+              setError('Failed to start conversion');
+              return;
             }
           }
         }

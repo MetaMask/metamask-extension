@@ -97,23 +97,27 @@ export const useMusdConversionToastStatus = (): {
   // Cache the symbol while the tx is still in-flight so it survives the
   // transition to confirmed/failed (when the tx leaves pendingConversions
   // and activePendingTxId becomes undefined).
-  const cachedSymbolRef = useRef<string | undefined>(undefined);
+  const [cachedSymbol, setCachedSymbol] = useState<string | undefined>(
+    undefined,
+  );
   const prevActivePendingTxIdRef = useRef<string | undefined>(undefined);
 
   // Clear stale cache when a NEW pending conversion becomes active, but
   // preserve it when the current conversion completes (id → undefined).
-  if (activePendingTxId !== prevActivePendingTxIdRef.current) {
-    if (activePendingTxId !== undefined) {
-      cachedSymbolRef.current = undefined;
+  useEffect(() => {
+    if (activePendingTxId !== prevActivePendingTxIdRef.current) {
+      if (activePendingTxId !== undefined) {
+        setCachedSymbol(undefined);
+      }
+      prevActivePendingTxIdRef.current = activePendingTxId;
     }
-    prevActivePendingTxIdRef.current = activePendingTxId;
-  }
 
-  if (paymentToken?.symbol) {
-    cachedSymbolRef.current = paymentToken.symbol;
-  }
+    if (paymentToken?.symbol) {
+      setCachedSymbol(paymentToken.symbol);
+    }
+  }, [activePendingTxId, paymentToken?.symbol]);
 
-  const sourceTokenSymbol = paymentToken?.symbol ?? cachedSymbolRef.current;
+  const sourceTokenSymbol = paymentToken?.symbol ?? cachedSymbol;
 
   // Detect transitions from pending → confirmed/failed
   useEffect(() => {
