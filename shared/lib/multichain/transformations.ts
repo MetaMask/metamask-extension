@@ -180,10 +180,10 @@ const EXCLUDED_TRANSACTION_TYPES = ['SPAM_TOKEN_TRANSFER'];
 // Transform and filter raw API response
 export function selectTransactions({
   address,
-  excludeTxHashes,
+  excludedTxHashes,
 }: {
   address: string;
-  excludeTxHashes?: Set<string>;
+  excludedTxHashes?: Set<string>;
 }) {
   const addr = address.toLowerCase();
 
@@ -202,7 +202,7 @@ export function selectTransactions({
         }
 
         // Filter out excluded transaction hashes (e.g. internal prerequisite transactions)
-        if (raw.hash && excludeTxHashes?.has(raw.hash.toLowerCase())) {
+        if (raw.hash && excludedTxHashes?.has(raw.hash.toLowerCase())) {
           return result;
         }
 
