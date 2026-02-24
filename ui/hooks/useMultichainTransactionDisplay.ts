@@ -6,7 +6,6 @@ import {
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { MULTICHAIN_NETWORK_DECIMAL_PLACES } from '@metamask/multichain-network-controller';
 import { useSelector } from 'react-redux';
-import type { CaipChainId } from '@metamask/utils';
 import { formatWithThreshold } from '../components/app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../ducks/locale/locale';
 import { TransactionGroupStatus } from '../../shared/constants/transaction';
@@ -37,13 +36,9 @@ type AggregatedMovement = {
   amount: number;
 };
 
-export function useMultichainTransactionDisplay(
-  transaction: Transaction,
-  networkConfig: { chainId: CaipChainId },
-) {
+export function useMultichainTransactionDisplay(transaction: Transaction) {
   const locale = useSelector(getIntlLocale);
-  const { chainId } = networkConfig;
-  const decimalPlaces = MULTICHAIN_NETWORK_DECIMAL_PLACES[chainId];
+  const decimalPlaces = MULTICHAIN_NETWORK_DECIMAL_PLACES[transaction.chain];
   const t = useI18nContext();
 
   const from = aggregateAmount(
