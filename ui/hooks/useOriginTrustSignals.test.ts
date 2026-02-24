@@ -166,7 +166,7 @@ describe('useOriginTrustSignals', () => {
     getUrlScanCacheResultMock.mockReturnValue(undefined);
 
     renderHook(() => {
-      const result = useOriginTrustSignals('not-a-valid-url');
+      const result = useOriginTrustSignals('://bad');
 
       expect(result).toStrictEqual({
         state: TrustSignalDisplayState.Unknown,
