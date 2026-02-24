@@ -64,15 +64,17 @@ export async function fetchBenchmarkJson<
 export function extractEntries(
   data: Record<string, BenchmarkResults>,
 ): BenchmarkEntry[] {
-  return Object.entries(data).map(([name, raw]) => ({
-    benchmarkName: name,
-    mean: raw.mean,
-    min: raw.min,
-    max: raw.max,
-    stdDev: raw.stdDev,
-    p75: raw.p75,
-    p95: raw.p95,
-  }));
+  return Object.entries(data)
+    .filter(([, raw]) => raw?.mean !== undefined)
+    .map(([name, raw]) => ({
+      benchmarkName: name,
+      mean: raw.mean,
+      min: raw.min,
+      max: raw.max,
+      stdDev: raw.stdDev,
+      p75: raw.p75,
+      p95: raw.p95,
+    }));
 }
 
 export type FetchBenchmarkResult = {
@@ -201,6 +203,24 @@ export function buildBenchmarkSection(
 }
 
 /**
+ * Wraps buildBenchmarkSection so a failure in one sub-section doesn't
+ * prevent the others from rendering.
+ * @param result
+ * @param summary
+ */
+function safeBuildSection(
+  result: FetchBenchmarkResult,
+  summary: string,
+): string {
+  try {
+    return buildBenchmarkSection(result, summary);
+  } catch (error: unknown) {
+    console.log(`Failed to build ${summary}: ${String(error)}`);
+    return '';
+  }
+}
+
+/**
  * Builds the full ⚡ Performance Benchmarks collapsible section,
  * including 👆 Interaction, 🔌 Startup, and 🧭 User Journey sub-sections.
  *
@@ -219,15 +239,12 @@ export async function buildPerformanceBenchmarksSection(
       fetchBenchmarkEntries(hostUrl, Object.values(USER_JOURNEY_PRESETS)),
     ]);
 
-  const interactionHtml = buildBenchmarkSection(
+  const interactionHtml = safeBuildSection(
     interactionResult,
     '👆 Interaction Benchmarks',
   );
-  const startupHtml = buildBenchmarkSection(
-    startupResult,
-    '🔌 Startup Benchmarks',
-  );
-  const userJourneyHtml = buildBenchmarkSection(
+  const startupHtml = safeBuildSection(startupResult, '🔌 Startup Benchmarks');
+  const userJourneyHtml = safeBuildSection(
     userJourneyResult,
     '🧭 User Journey Benchmarks',
   );

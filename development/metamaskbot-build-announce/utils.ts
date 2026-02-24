@@ -17,7 +17,12 @@ export function buildSectionWithFallback(
   const fallback = `<p><i>${sectionName}: data not available.</i></p>\n\n`;
   return fn()
     .then((result) => result ?? fallback)
-    .catch(() => fallback);
+    .catch((error: unknown) => {
+      console.log(
+        `No data available for ${sectionName}; skipping (${String(error)})`,
+      );
+      return fallback;
+    });
 }
 
 /**
