@@ -1013,10 +1013,6 @@ describe('MetaMaskController', () => {
         expect(accounts).toHaveLength(1);
         expect(accounts[0].address).toBe(TEST_ADDRESS);
         expect(accounts[0].metadata.name).toBe('');
-        // TODO: Handle last selected in the update of the next accounts controller.
-        // expect(accounts[1].metadata.lastSelected).toBeGreaterThan(
-        //   accounts[0].metadata.lastSelected,
-        // );
       });
 
       it('calls discoverAndCreateAccounts when onboarding is complete', async () => {
