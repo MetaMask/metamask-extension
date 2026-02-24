@@ -43,6 +43,7 @@ import {
   addMpcCustodian,
 } from '../../../store/controller-actions/mpc-controller';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
+import ToggleButton from '../../../components/ui/toggle-button';
 
 export const MpcWalletManagementPage = () => {
   const t = useI18nContext();
@@ -62,6 +63,17 @@ export const MpcWalletManagementPage = () => {
   const [joinData, setJoinData] = useState<string | null>(null);
   const [isGeneratingJoinData, setIsGeneratingJoinData] = useState(false);
   const [isAddingCustodian, setIsAddingCustodian] = useState(false);
+
+  // Passkeys toggle
+  const [passkeysEnabled, setPasskeysEnabled] = useState(true);
+
+  useEffect(() => {
+    chrome.storage.local
+      .get('mpcPasskeysEnabled')
+      .then(({ mpcPasskeysEnabled }) => {
+        setPasskeysEnabled(mpcPasskeysEnabled !== false);
+      });
+  }, []);
 
   const keyringId =
     wallet?.type === AccountWalletType.Keyring
@@ -264,6 +276,47 @@ export const MpcWalletManagementPage = () => {
               ))}
             </Box>
           )}
+
+          {/* Passkeys toggle */}
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            backgroundColor={BackgroundColor.backgroundMuted}
+            borderRadius={BorderRadius.LG}
+            padding={4}
+            marginTop={2}
+          >
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              style={{ flex: 1 }}
+            >
+              <Text
+                variant={TextVariant.bodyMdMedium}
+                color={TextColor.textDefault}
+              >
+                {t('passkeys')}
+              </Text>
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {passkeysEnabled
+                  ? t('passkeysEnabledDescription')
+                  : t('passkeysDisabledDescription')}
+              </Text>
+            </Box>
+            <ToggleButton
+              value={passkeysEnabled}
+              onToggle={(current: boolean) => {
+                const next = !current;
+                setPasskeysEnabled(next);
+                chrome.storage.local.set({ mpcPasskeysEnabled: next });
+              }}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </Box>
 
           {/* Add custodian section */}
           <Box

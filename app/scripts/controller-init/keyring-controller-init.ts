@@ -249,9 +249,11 @@ export const KeyringControllerInit: ControllerInitFunction<
         ? () => Promise.resolve(generateToken(jwtSecretKey, 'MetaMask Client'))
         : undefined,
       getVerifierToken: async (verifierId: string) => {
-        // Request a passkey assertion via the offscreen document.
-        // The offscreen document has full WebAuthn access, unlike service
-        // workers or extension side panels.
+        const { mpcPasskeysEnabled } =
+          await chrome.storage.local.get('mpcPasskeysEnabled');
+        if (mpcPasskeysEnabled === false) {
+          return '';
+        }
         return PasskeyOffscreenBridge.sign(verifierId);
       },
     };

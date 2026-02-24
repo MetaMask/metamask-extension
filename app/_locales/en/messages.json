@@ -8720,6 +8720,15 @@
   "waitingForCustodian": {
     "message": "Waiting for custodian..."
   },
+  "passkeys": {
+    "message": "Passkeys"
+  },
+  "passkeysEnabledDescription": {
+    "message": "Signing operations require passkey verification."
+  },
+  "passkeysDisabledDescription": {
+    "message": "Passkey verification is disabled. Signing will proceed without biometric authentication."
+  },
   "adding": {
     "message": "Adding..."
   },
