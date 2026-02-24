@@ -216,9 +216,7 @@ class Confirmation {
         text: value,
       });
     } else {
-      await this.driver.clickElement({
-        css: this.addressDisplaySelector,
-      });
+      await this.driver.clickElement(this.addressDisplaySelector);
     }
     console.log(`Saving name: ${name}, proposedName: ${proposedName}`);
     await this.driver.clickElement(this.formComboFieldSelector);
