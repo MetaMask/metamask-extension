@@ -1,5 +1,3 @@
-// TODO: remove — testing PR comment bot
-const _testFlag = (s) => s?.metamask?.remoteFeatureFlags?.myTestFlagForPRComment;
 import { toUnicode } from 'punycode/punycode.js';
 import { SubjectType } from '@metamask/permission-controller';
 import { ApprovalType } from '@metamask/controller-utils';
