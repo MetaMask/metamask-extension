@@ -13,7 +13,7 @@ import ToggleButton from '../../components/ui/toggle-button';
 
 export type SettingsToggleItemProps = {
   title: string;
-  description: React.ReactNode;
+  description?: React.ReactNode;
   value: boolean;
   onToggle: (value: boolean) => void;
   containerDataTestId?: string;
@@ -52,8 +52,8 @@ export const SettingsToggleItem = ({
         />
       </div>
     </Box>
-    <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+    {description && <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
       {description}
-    </Text>
+    </Text>}
   </Box>
 );
