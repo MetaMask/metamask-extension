@@ -12,6 +12,11 @@
  * yarn feature-flags:sync - Report differences, exit 0 (manual use)
  * yarn feature-flags:sync:check - Report differences, exit 1 if drift (CI)
  *
+ * Exit codes (sync:check):
+ * 0 - No drift
+ * 1 - Drift detected
+ * 2 - Script/API error (network failure, parse error, etc.)
+ *
  * @see {@link https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod}
  */
 
@@ -190,16 +195,17 @@ function formatSyncReport(result: SyncResult): string {
   }
 
   if (result.valueMismatches.length > 0) {
+    const { valueMismatches } = result;
     lines.push(
       sectionTitle(
-        `Value mismatches (registry vs production) [${result.valueMismatches.length}]:`,
+        `Value mismatches (registry vs production) [${valueMismatches.length}]:`,
       ),
     );
     for (const {
       name,
       productionValue,
       registryValue,
-    } of result.valueMismatches) {
+    } of valueMismatches) {
       lines.push(chalk.red(`  - ${name}:`));
       lines.push(`      registry:   ${JSON.stringify(registryValue)}`);
       lines.push(`      production: ${JSON.stringify(productionValue)}`);
@@ -256,7 +262,7 @@ async function main(): Promise<void> {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.error(`Error: ${message}`);
-    process.exit(1);
+    process.exit(2); // 2 = script/API error; 1 is reserved for drift
   }
 }
 

@@ -30,10 +30,18 @@ jobs:
       - name: Check for drift
         id: check
         run: |
-          if yarn feature-flags:sync:check 2>/dev/null; then
+          yarn feature-flags:sync:check
+          EXIT=$?
+          if [ $EXIT -eq 0 ]; then
             echo "HAS_DRIFT=false" >> "$GITHUB_OUTPUT"
-          else
+            echo "HAS_ERROR=false" >> "$GITHUB_OUTPUT"
+          elif [ $EXIT -eq 1 ]; then
             echo "HAS_DRIFT=true" >> "$GITHUB_OUTPUT"
+            echo "HAS_ERROR=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "HAS_DRIFT=false" >> "$GITHUB_OUTPUT"
+            echo "HAS_ERROR=true" >> "$GITHUB_OUTPUT"
+            exit $EXIT
           fi
 
       - name: Create issue on drift
