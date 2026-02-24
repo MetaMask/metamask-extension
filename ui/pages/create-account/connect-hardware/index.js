@@ -5,12 +5,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import * as actions from '../../../store/actions';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   getMetaMaskAccounts,
   getRpcPrefsForCurrentProvider,
   getMetaMaskAccountsConnected,
+  getActiveQrCodeScanRequest,
 } from '../../../selectors';
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
@@ -121,6 +123,35 @@ class ConnectHardwareForm extends Component {
     const useAgent = window.navigator.userAgent;
     if (/Firefox/u.test(useAgent)) {
       this.setState({ isFirefox: true });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const prevScanRequest = prevProps.activeQrCodeScanRequest;
+    const currentScanRequest = this.props.activeQrCodeScanRequest;
+
+    // When the sidebar redirects to fullscreen for camera permissions during
+    // QR hardware wallet pairing, the original connectHardware caller is lost.
+    // Detect when a PAIR scan completes and fetch accounts from the
+    // now-initialized keyring.
+    if (
+      prevScanRequest?.type === QrScanRequestType.PAIR &&
+      !currentScanRequest &&
+      this.state.accounts.length === 0 &&
+      !this.state.device
+    ) {
+      this.props
+        .checkHardwareStatus(HardwareDeviceNames.qr)
+        .then((isUnlocked) => {
+          if (isUnlocked && this.state.accounts.length === 0) {
+            this.setState({ device: HardwareDeviceNames.qr });
+            this.getPage(
+              HardwareDeviceNames.qr,
+              0,
+              this.props.defaultHdPaths[HardwareDeviceNames.qr],
+            );
+          }
+        });
     }
   }
 
@@ -542,6 +573,7 @@ ConnectHardwareForm.propTypes = {
   ledgerTransportType: PropTypes.oneOf(Object.values(LedgerTransportTypes)),
   hdEntropyIndex: PropTypes.number,
   keyrings: PropTypes.array.isRequired,
+  activeQrCodeScanRequest: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({
@@ -554,6 +586,7 @@ const mapStateToProps = (state) => ({
   ledgerTransportType: state.metamask.ledgerTransportType,
   hdEntropyIndex: getHDEntropyIndex(state),
   keyrings: state.metamask.keyrings,
+  activeQrCodeScanRequest: getActiveQrCodeScanRequest(state),
 });
 
 const mapDispatchToProps = (dispatch) => {

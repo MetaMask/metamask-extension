@@ -31,6 +31,7 @@ jest.mock('../../../selectors', () => ({
   getMetaMaskAccounts: () => {
     return {};
   },
+  getActiveQrCodeScanRequest: () => null,
 }));
 
 jest.mock('../../../selectors/multi-srp/multi-srp', () => ({
