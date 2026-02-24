@@ -253,7 +253,7 @@ describe('getMetricValues', () => {
     const summary = buildMockSummary();
     const result = getMetricValues(summary, 'pageLoadTime');
 
-    expect(result).toEqual({ mean: 900, stdDev: 50 });
+    expect(result).toStrictEqual({ mean: 900, stdDev: 50 });
   });
 
   it('returns null when the metric is not a number', () => {
@@ -274,7 +274,7 @@ describe('getMetricValues', () => {
     });
     const result = getMetricValues(summary, 'domContentLoaded');
 
-    expect(result).toEqual({ mean: 1100, stdDev: 0 });
+    expect(result).toStrictEqual({ mean: 1100, stdDev: 0 });
   });
 });
 
@@ -509,4 +509,3 @@ describe('generateBenchmarkComment', () => {
     expect(result).not.toContain('Performance Warning');
   });
 });
-

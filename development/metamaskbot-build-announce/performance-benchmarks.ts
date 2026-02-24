@@ -65,7 +65,7 @@ export function extractEntries(
   data: Record<string, BenchmarkResults>,
 ): BenchmarkEntry[] {
   return Object.entries(data)
-    .filter(([, raw]) => raw?.mean !== undefined)
+    .filter(([, raw]) => raw?.mean !== undefined && raw.mean !== null && typeof raw.mean === 'object')
     .map(([name, raw]) => ({
       benchmarkName: name,
       mean: raw.mean,

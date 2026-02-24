@@ -116,6 +116,28 @@ describe('extractEntries', () => {
     expect(entries[0].p75).toStrictEqual({ loadNewAccount: 550 });
     expect(entries[0].p95).toStrictEqual({ loadNewAccount: 612 });
   });
+
+  it('filters out entries with null mean', () => {
+    const entries = extractEntries({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      nullMean: { ...mockUserActionsJson.loadNewAccount, mean: null as any },
+      loadNewAccount: mockUserActionsJson.loadNewAccount,
+    });
+
+    expect(entries).toHaveLength(1);
+    expect(entries[0].benchmarkName).toBe('loadNewAccount');
+  });
+
+  it('filters out entries with undefined mean', () => {
+    const entries = extractEntries({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      undefinedMean: { ...mockUserActionsJson.loadNewAccount, mean: undefined as any },
+      loadNewAccount: mockUserActionsJson.loadNewAccount,
+    });
+
+    expect(entries).toHaveLength(1);
+    expect(entries[0].benchmarkName).toBe('loadNewAccount');
+  });
 });
 
 describe('buildTableRows', () => {
