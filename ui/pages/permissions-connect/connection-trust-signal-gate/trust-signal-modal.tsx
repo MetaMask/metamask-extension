@@ -105,9 +105,7 @@ export function TrustSignalModal({
         className="rounded-lg"
         padding={4}
       >
-        <Text variant={TextVariant.BodyMd}>
-          {t(config.descriptionKey)}
-        </Text>
+        <Text variant={TextVariant.BodyMd}>{t(config.descriptionKey)}</Text>
       </Box>
       <Button
         variant={ButtonVariant.Primary}

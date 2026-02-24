@@ -10,9 +10,7 @@ const t = (key: string, ...args: string[]) =>
   getMessage('en', en, key, ...args);
 
 function renderWithI18n(ui: React.ReactElement) {
-  return render(
-    <I18nContext.Provider value={t}>{ui}</I18nContext.Provider>,
-  );
+  return render(<I18nContext.Provider value={t}>{ui}</I18nContext.Provider>);
 }
 
 describe('TrustSignalModal', () => {
