@@ -218,8 +218,8 @@ export function useMusdConversionTokens(): UseMusdConversionTokensResult {
   const filterAllowedTokens = useCallback(
     <TToken extends ConversionToken>(tokens: TToken[]): TToken[] =>
       tokens
-        .filter(filterTokensWithAllowlistAndBlocklist)
-        .filter(filterTokensWithMinBalance),
+        .filter((token) => filterTokensWithAllowlistAndBlocklist(token))
+        .filter((token) => filterTokensWithMinBalance(token)),
     [filterTokensWithAllowlistAndBlocklist, filterTokensWithMinBalance],
   );
 

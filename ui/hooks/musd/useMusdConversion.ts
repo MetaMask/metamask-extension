@@ -225,7 +225,7 @@ export function useMusdConversion(): UseMusdConversionResult {
           const inFlightInitiation =
             inFlightInitiationPromises.get(initiationKey);
 
-          if (inFlightInitiation) {
+          if (inFlightInitiation !== undefined) {
             const existingTxId = await inFlightInitiation;
             if (existingTxId) {
               txId = existingTxId;

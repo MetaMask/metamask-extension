@@ -28,7 +28,7 @@
       "fullScreenGasPollTokens": "object",
       "hasShownMultichainAccountsIntroModal": "boolean",
       "isRampCardClosed": false,
-      "musdConversionDismissedCtaKeys": "object",
+      "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
