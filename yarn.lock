@@ -9119,9 +9119,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/messenger-docs@npm:@metamask-previews/messenger-docs@0.0.0-preview-658f090af":
-  version: 0.0.0-preview-658f090af
-  resolution: "@metamask-previews/messenger-docs@npm:0.0.0-preview-658f090af"
+"@metamask/messenger-docs@npm:@metamask-previews/messenger-docs@0.0.0-preview-0866a6f":
+  version: 0.0.0-preview-0866a6f
+  resolution: "@metamask-previews/messenger-docs@npm:0.0.0-preview-0866a6f"
   dependencies:
     "@docusaurus/core": "npm:^3.9.0"
     "@docusaurus/preset-classic": "npm:^3.9.0"
@@ -9134,7 +9134,7 @@ __metadata:
     typescript: "npm:~5.3.3"
   bin:
     messenger-docs: ./dist/cli.mjs
-  checksum: 10/0e27ee57d987a767e678831bef6bb8b95a1698c464c57bd60487a98bbcb0c525397c3bd443e0febd8136d5b13d6544e1d0b33f99a6eabb2202770806306d6d1b
+  checksum: 10/3215be45c97d91f069f9d5490c08ce18e400f6c1f2a531214e3884a3623b791db363670676ef587fe84b827305466ef4e7061c9f9e1a86849427247e742d233d
   languageName: node
   linkType: hard
 
