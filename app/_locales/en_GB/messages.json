@@ -2109,6 +2109,9 @@
   "deepLink_theRewardsPage": {
     "message": "the MetaMask Rewards page"
   },
+  "deepLink_theSellPage": {
+    "message": "the sell page"
+  },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
   },
