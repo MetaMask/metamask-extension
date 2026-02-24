@@ -159,22 +159,17 @@ export const useBridgeNavigation = () => {
   }, [navigate, state]);
 
   /**
-   * Navigates to the activity page.
-   * @param shouldResetNavigationState - Whether to reset the navigation state. If
-   * false, the input params will be restored when the user re-enters the bridge flow.
+   * Navigates to the activity page and clears the navigation state.
    */
-  const navigateToActivityPage = useCallback(
-    (shouldResetNavigationState: boolean = true) => {
-      navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-        state: {
-          ...state,
-          token: shouldResetNavigationState ? null : state?.token,
-          stayOnHomePage: true,
-        },
-      });
-    },
-    [navigate, state],
-  );
+  const navigateToActivityPage = useCallback(() => {
+    navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+      state: {
+        ...state,
+        token: null,
+        stayOnHomePage: true,
+      },
+    });
+  }, [navigate, state]);
 
   const navigateToDefaultRoute = useCallback(async () => {
     // TODO remove these when swaps codebase is removed

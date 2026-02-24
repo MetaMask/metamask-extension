@@ -108,6 +108,6 @@ describe('Bridge', () => {
 
     expect(getByText('Swap')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
-    expect(mockResetBridgeState).toHaveBeenCalledTimes(0);
+    expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
   });
 });

@@ -46,8 +46,8 @@ export const usePrefillFromBridgeState = () => {
     }
   }, [fromToken.assetId, currentChainId, token]);
 
-  const resetControllerAndCache = async () => {
-    await dispatch(resetBridgeControllerAndCache());
+  const resetControllerAndCache = () => {
+    dispatch(resetBridgeControllerAndCache());
   };
 
   useEffect(() => {
