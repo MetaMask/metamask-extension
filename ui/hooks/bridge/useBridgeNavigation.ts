@@ -187,8 +187,10 @@ export const useBridgeNavigation = () => {
     }
   }, [search, navigate, resetLocationState]);
 
+  const memoizedToken = useMemo(() => state.token, [state.token]);
+
   return {
-    token: state.token,
+    token: memoizedToken,
     search,
     resetLocationState,
     resetSearchParams,
