@@ -5,7 +5,7 @@ import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../testHelpers';
 import { buildSolanaTestSpecificMock } from '../../../tests/solana/common-solana';
 import { withFixtures } from '../../../helpers';
-import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import SnapSignInConfirmation from '../../../page-objects/pages/confirmations/snap-sign-in-confirmation';
@@ -16,10 +16,9 @@ describe('Multichain API - Non EVM', function () {
       it('Should match selected method to the expected confirmation UI', async function () {
         await withFixtures(
           {
+            ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             fixtures: new FixtureBuilderV2().build(),
             title: this.test?.fullTitle(),
-            ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-            testSpecificMock: buildSolanaTestSpecificMock(),
           },
           async ({ driver, extensionId }) => {
             await loginWithBalanceValidation(driver);
@@ -54,9 +53,9 @@ describe('Multichain API - Non EVM', function () {
       it('Should match selected method to the expected confirmation UI', async function () {
         await withFixtures(
           {
+            ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             fixtures: new FixtureBuilderV2().build(),
             title: this.test?.fullTitle(),
-            ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             testSpecificMock: buildSolanaTestSpecificMock({
               mockGetTransactionSuccess: true,
             }),

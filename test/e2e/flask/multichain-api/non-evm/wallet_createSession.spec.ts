@@ -2,22 +2,20 @@ import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import { largeDelayMs, withFixtures } from '../../../helpers';
 import { SOLANA_MAINNET_SCOPE } from '../../../constants';
-import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { addAccount } from '../../../page-objects/flows/add-account.flow';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../testHelpers';
-import { buildSolanaTestSpecificMock } from '../../../tests/solana/common-solana';
 
 describe('Multichain API - Non EVM', function () {
   describe("Call `wallet_createSession` with both EVM and Solana scopes that match the user's enabled networks", function () {
     it('should only select the specified scopes requested by the user', async function () {
       await withFixtures(
         {
+          ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-          testSpecificMock: buildSolanaTestSpecificMock(),
         },
         async ({ driver, extensionId }) => {
           await loginWithBalanceValidation(driver);
@@ -80,10 +78,9 @@ describe('Multichain API - Non EVM', function () {
     it('should automatically select the current active Solana account', async function () {
       await withFixtures(
         {
+          ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-          testSpecificMock: buildSolanaTestSpecificMock(),
         },
         async ({ driver, extensionId }) => {
           await loginWithBalanceValidation(driver);

@@ -1,13 +1,10 @@
 import { strict as assert } from 'assert';
-import {
-  SOLANA_DEVNET_URL,
-  buildSolanaTestSpecificMock,
-} from '../../tests/solana/common-solana';
+import { SOLANA_DEVNET_URL } from '../../tests/solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { WINDOW_TITLES } from '../../constants';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { regularDelayMs, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { addAccount } from '../../page-objects/flows/add-account.flow';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
@@ -16,7 +13,6 @@ import {
   account1Short,
   account2Short,
   connectSolanaTestDapp,
-  DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
   switchToAccount,
 } from './testHelpers';
 
@@ -27,8 +23,9 @@ describe('Solana Wallet Standard - e2e tests', function () {
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          testSpecificMock: buildSolanaTestSpecificMock(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -51,8 +48,9 @@ describe('Solana Wallet Standard - e2e tests', function () {
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          testSpecificMock: buildSolanaTestSpecificMock(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -77,8 +75,9 @@ describe('Solana Wallet Standard - e2e tests', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
-          dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          testSpecificMock: buildSolanaTestSpecificMock(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -128,8 +127,9 @@ describe('Solana Wallet Standard - e2e tests', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
-          dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          testSpecificMock: buildSolanaTestSpecificMock(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -184,8 +184,9 @@ describe('Solana Wallet Standard - e2e tests', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
-          dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          testSpecificMock: buildSolanaTestSpecificMock(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -215,8 +216,9 @@ describe('Solana Wallet Standard - e2e tests', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
-          dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          testSpecificMock: buildSolanaTestSpecificMock(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -256,8 +258,9 @@ describe('Solana Wallet Standard - e2e tests', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
-          dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          testSpecificMock: buildSolanaTestSpecificMock(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -304,8 +307,9 @@ describe('Solana Wallet Standard - e2e tests', function () {
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          testSpecificMock: buildSolanaTestSpecificMock(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -334,8 +338,9 @@ describe('Solana Wallet Standard - e2e tests', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
-          dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          testSpecificMock: buildSolanaTestSpecificMock(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -366,8 +371,9 @@ describe('Solana Wallet Standard - e2e tests', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
-          dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          testSpecificMock: buildSolanaTestSpecificMock(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);

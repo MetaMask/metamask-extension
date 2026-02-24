@@ -3,7 +3,7 @@ import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { SOLANA_MAINNET_SCOPE } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { buildSolanaTestSpecificMock } from '../solana/common-solana';
 

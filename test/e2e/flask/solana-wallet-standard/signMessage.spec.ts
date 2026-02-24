@@ -1,15 +1,13 @@
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { WINDOW_TITLES } from '../../constants';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { largeDelayMs, veryLargeDelayMs, withFixtures } from '../../helpers';
-import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { buildSolanaTestSpecificMock } from '../../tests/solana/common-solana';
 import {
   account1,
   assertSignedMessageIsValid,
   clickConfirmButton,
   connectSolanaTestDapp,
-  DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
 } from './testHelpers';
 
 describe('Solana Wallet Standard - Sign Message', function () {
@@ -19,8 +17,9 @@ describe('Solana Wallet Standard - Sign Message', function () {
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-          testSpecificMock: buildSolanaTestSpecificMock(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);

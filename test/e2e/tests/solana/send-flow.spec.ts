@@ -6,7 +6,7 @@ import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import { SOLANA_MAINNET_SCOPE } from '../../constants';
-import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { buildSolanaTestSpecificMock } from './common-solana';
@@ -21,24 +21,17 @@ describe('Send flow', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: buildSolanaTestSpecificMock({
-          mockZeroBalance: true,
-        }),
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
         const sendPage = new SendPage(driver);
 
-        // TODO: Use fixtures V2 with Solana network
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '0' });
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
-        await sendPage.selectToken(
-          SOLANA_MAINNET_SCOPE,
-          'SOL',
-        );
+        await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
         await sendPage.fillRecipient('2433asd');
         await sendPage.checkInvalidAddressError();
@@ -70,15 +63,11 @@ describe('Send flow', function (this: Suite) {
         const homePage = new NonEvmHomepage(driver);
         const sendPage = new SendPage(driver);
 
-        // TODO: Use fixtures V2 with Solana network
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
-        await sendPage.selectToken(
-          SOLANA_MAINNET_SCOPE,
-          'SOL',
-        );
+        await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
         assert.equal(
           await sendPage.isContinueButtonEnabled(),
@@ -123,15 +112,11 @@ describe('Send flow', function (this: Suite) {
         const homePage = new NonEvmHomepage(driver);
         const sendPage = new SendPage(driver);
 
-        // TODO: Use fixtures V2 with Solana network
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
-        await sendPage.selectToken(
-          SOLANA_MAINNET_SCOPE,
-          'SOL',
-        );
+        await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
         assert.equal(
           await sendPage.isContinueButtonEnabled(),

@@ -6,26 +6,21 @@ import {
   loginWithBalanceValidation,
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { buildSolanaTestSpecificMock } from './common-solana';
-import { switchToNetworkFromNetworkSelect } from 'test/e2e/page-objects/flows/network.flow';
 
 describe('Check balance', function (this: Suite) {
   this.timeout(300000);
   it('Just created Solana account shows 0 SOL when native token is enabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2()
-          .withMultichainNetworkControllerOnSolana()
-          .build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: buildSolanaTestSpecificMock({
-          mockZeroBalance: true,
-        }),
+        testSpecificMock: buildSolanaTestSpecificMock({ balance: 0 }),
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
-        // TODO: Use fixtures V2 with Solana network
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '0 SOL' });
       },
@@ -35,18 +30,14 @@ describe('Check balance', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withMultichainNetworkControllerOnSolana()
           .withShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: buildSolanaTestSpecificMock({
-          mockZeroBalance: true,
-        }),
+        testSpecificMock: buildSolanaTestSpecificMock({ balance: 0 }),
       },
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
-        // TODO: Use fixtures V2 with Solana network
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '$0' });
       },
@@ -56,18 +47,14 @@ describe('Check balance', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withMultichainNetworkControllerOnSolana()
           .withShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: buildSolanaTestSpecificMock({
-          mockZeroBalance: false,
-        }),
+        testSpecificMock: buildSolanaTestSpecificMock(),
       },
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
-        // TODO: Use fixtures V2 with Solana network
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '$5,643.50' });
       },
@@ -76,16 +63,13 @@ describe('Check balance', function (this: Suite) {
   it('For a non 0 balance account - SOL balance', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2()
-          .withMultichainNetworkControllerOnSolana()
-          .build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: buildSolanaTestSpecificMock(),
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
-        // TODO: Use fixtures V2 with Solana network
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '50 SOL' });
       },

@@ -3,7 +3,7 @@ import { Suite } from 'mocha';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import TransactionDetailsPage from '../../page-objects/pages/home/transaction-details';
-import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
@@ -27,12 +27,7 @@ describe('Transaction activity list', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
-        // TODO: Use fixtures V2 with Solana network
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Popular',
-          'Solana',
-        );
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
@@ -72,12 +67,7 @@ describe('Transaction activity list', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        // TODO: Use fixtures V2 with Solana network
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Popular',
-          'Solana',
-        );
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.goToActivityList();

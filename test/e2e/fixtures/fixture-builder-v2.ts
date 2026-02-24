@@ -1,11 +1,6 @@
 import { merge, cloneDeep } from 'lodash';
-import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { CurrencyRateState } from '@metamask/assets-controllers';
-import type {
-  MultichainNetworkControllerState,
-  SupportedCaipChainId,
-} from '@metamask/multichain-network-controller';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type {
   PermissionConstraint,
@@ -20,7 +15,6 @@ import {
   DAPP_URL_LOCALHOST,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_FIXTURE_SOLANA_ACCOUNT,
-  DEFAULT_FIXTURE_SOLANA_ACCOUNT_ID,
   SOLANA_MAINNET_SCOPE,
 } from '../constants';
 import defaultFixtureJson from './default-fixture.json';
@@ -68,20 +62,6 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withMultichainNetworkController(
-    data: Partial<MultichainNetworkControllerState>,
-  ): this {
-    merge(this.fixture.data.MultichainNetworkController, data);
-    return this;
-  }
-
-  withNetworkEnablementController(
-    data: Partial<NetworkEnablementControllerState>,
-  ): this {
-    merge(this.fixture.data.NetworkEnablementController, data);
-    return this;
-  }
-
   withPermissionController(
     data: Partial<PermissionControllerState<PermissionConstraint>>,
   ): this {
@@ -113,44 +93,6 @@ class FixtureBuilderV2 {
   ): this {
     this.fixture.data.NetworkEnablementController.enabledNetworkMap =
       data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
-    return this;
-  }
-
-  withMultichainNetworkControllerOnSolana(): this {
-    this.withMultichainNetworkController({
-      isEvmSelected: false,
-      selectedMultichainNetworkChainId:
-        SOLANA_MAINNET_SCOPE as SupportedCaipChainId,
-    });
-
-    // Enable only the Solana mainnet and disable all EVM networks,
-    // matching the state of a wallet that has Solana actively selected.
-    const enabledNetworkMap =
-      this.fixture.data.NetworkEnablementController.enabledNetworkMap;
-    if (enabledNetworkMap.eip155) {
-      for (const key of Object.keys(enabledNetworkMap.eip155)) {
-        (enabledNetworkMap.eip155 as Record<string, boolean>)[key] = false;
-      }
-    }
-    this.withNetworkEnablementController({
-      enabledNetworkMap: {
-        solana: {
-          [SOLANA_MAINNET_SCOPE]: true,
-        },
-      },
-    } as Partial<NetworkEnablementControllerState>);
-
-    // Select the Solana account and give it a high lastSelected timestamp
-    // so it wins any re-selection during startup.
-    const accounts = this.fixture.data.AccountsController.internalAccounts
-      .accounts as Record<string, { metadata: { lastSelected: number } }>;
-    const solanaAccount = accounts[DEFAULT_FIXTURE_SOLANA_ACCOUNT_ID];
-    if (solanaAccount) {
-      solanaAccount.metadata.lastSelected = Date.now();
-    }
-    this.fixture.data.AccountsController.internalAccounts.selectedAccount =
-      DEFAULT_FIXTURE_SOLANA_ACCOUNT_ID;
-
     return this;
   }
 

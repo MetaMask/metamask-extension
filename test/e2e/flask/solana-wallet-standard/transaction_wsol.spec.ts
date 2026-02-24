@@ -1,15 +1,11 @@
 import { strict as assert } from 'assert';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { WINDOW_TITLES } from '../../constants';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { largeDelayMs, withFixtures } from '../../helpers';
-import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { buildSolanaTestSpecificMock } from '../../tests/solana/common-solana';
-import {
-  clickConfirmButton,
-  connectSolanaTestDapp,
-  DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
-} from './testHelpers';
+import { clickConfirmButton, connectSolanaTestDapp } from './testHelpers';
 
 describe('Solana Wallet Standard - Transfer WSOL', function () {
   describe('Send WSOL transactions', function () {
@@ -18,7 +14,9 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
           testSpecificMock: buildSolanaTestSpecificMock({
             mockGetTransactionSuccess: true,
             mockTokenAccountAccountInfo: false,

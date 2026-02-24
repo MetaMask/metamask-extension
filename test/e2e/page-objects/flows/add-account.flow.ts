@@ -8,11 +8,8 @@ import AccountListPage from '../pages/account-list-page';
  *
  * @param options - Flow options.
  * @param options.driver - The webdriver instance.
- * @param options.createdAccountLabel - Expected label of the newly created
- *   account. Defaults to 'Account 2'.
- * @param options.switchToAccount - Account label to switch to after creation
- *   (e.g. 'Account 1'). When omitted the multichain accounts page is closed
- *   instead.
+ * @param options.createdAccountLabel - Expected label of the newly created account. Defaults to 'Account 2'.
+ * @param options.switchToAccount - Account label to switch to after creation.
  */
 export const addAccount = async ({
   driver,

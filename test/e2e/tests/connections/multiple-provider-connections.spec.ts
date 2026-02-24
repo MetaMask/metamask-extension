@@ -4,6 +4,7 @@
 import { SolScope } from '@metamask/keyring-api';
 import {
   DAPP_HOST_ADDRESS,
+  DAPP_PATH,
   DEFAULT_FIXTURE_ACCOUNT as EVM_ADDRESS_ONE,
   WINDOW_TITLES,
 } from '../../constants';
@@ -28,12 +29,10 @@ import {
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
-import { buildSolanaTestSpecificMock } from '../solana/common-solana';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
   connectSolanaTestDapp,
-  DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
   account1 as SOLANA_ADDRESS_ONE,
 } from '../../flask/solana-wallet-standard/testHelpers';
 import { Driver } from '../../webdriver/driver';
@@ -291,12 +290,12 @@ describe('Multiple Standard Dapp Connections', function () {
           .withPermissionControllerConnectedToTestDappWithTwoAccounts()
           .build(),
         title: this.test?.fullTitle(),
-        dappOptions: DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS.dappOptions,
-        testSpecificMock: buildSolanaTestSpecificMock(),
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+        },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        // TODO: Use fixtures V2 with Solana network
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const testDapp = new TestDappSolana(driver);
 
@@ -350,11 +349,9 @@ describe('Multiple Standard Dapp Connections', function () {
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
-        testSpecificMock: buildSolanaTestSpecificMock(),
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        // TODO: Use fixtures V2 with Solana network
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const testDapp = new TestDapp(driver);
 
@@ -412,11 +409,9 @@ describe('Multiple Standard Dapp Connections', function () {
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
-        testSpecificMock: buildSolanaTestSpecificMock(),
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        // TODO: Use fixtures V2 with Solana network
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const testDapp = new TestDapp(driver);
 
@@ -488,7 +483,6 @@ describe('Multiple Standard Dapp Connections', function () {
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
-        testSpecificMock: buildSolanaTestSpecificMock(),
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);

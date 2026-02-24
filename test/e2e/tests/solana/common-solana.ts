@@ -425,10 +425,13 @@ export async function mockMultiCoinPrice(mockServer: Mockttp) {
   });
 }
 
-export async function mockSolanaBalanceQuote(
-  mockServer: Mockttp,
-  mockZeroBalance: boolean = false,
-) {
+export async function mockSolanaBalanceQuote({
+  mockServer,
+  balance = SOL_BALANCE,
+}: {
+  mockServer: Mockttp;
+  balance?: number;
+}) {
   const response = {
     statusCode: 200,
     json: {
@@ -439,7 +442,7 @@ export async function mockSolanaBalanceQuote(
           apiVersion: '2.0.18',
           slot: 308460925,
         },
-        value: mockZeroBalance ? 0 : SOL_BALANCE,
+        value: balance,
       },
     },
   };
@@ -1937,44 +1940,6 @@ export async function mockGetSignaturesForWalletOnly(
 
 export const SHOW_SWAP_SNAP_CONFIRMATION = false;
 
-const featureFlags = {
-  refreshRate: 30000,
-  maxRefreshCount: 5,
-  support: true,
-  minimumVersion: '0.0.0',
-  chains: {
-    '1': { isActiveSrc: true, isActiveDest: true },
-    '42161': { isActiveSrc: true, isActiveDest: true },
-    '59144': { isActiveSrc: true, isActiveDest: true },
-    '1151111081099710': {
-      topAssets: [
-        'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', // USDC
-        'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN', // Jupiter
-        '7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxsDx8F8k8k3uYw1PDC',
-        '3iQL8BFS2vE7mww4ehAqQHAsbmRNCrPxizWAT2Zfyr9y',
-        '9zNQRsGLjNKwCUU5Gq5LR8beUCPzQMVMqKAi3SSZh54u',
-        'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
-        'rndrizKT3MK1iimdxRdWabcF7Zg7AR5T4nud4EkHBof',
-        '2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
-      ],
-      isActiveSrc: true,
-      isActiveDest: true,
-      isSnapConfirmationEnabled: false,
-    },
-  },
-};
-
-const featureFlagsWithSnapConfirmation = {
-  ...featureFlags,
-  chains: {
-    ...featureFlags.chains,
-    '1151111081099710': {
-      ...featureFlags.chains['1151111081099710'],
-      isSnapConfirmationEnabled: true,
-    },
-  },
-};
-
 export const SOLANA_DEFAULT_DAPP_OPTIONS = {
   numberOfTestDapps: 1,
   customDappPaths: [DAPP_PATH.TEST_SNAPS],
@@ -1987,11 +1952,11 @@ export const SOLANA_IGNORED_CONSOLE_ERRORS = [
   'No Infura network client was found with the ID "linea-mainnet"',
 ];
 
-export interface SolanaMockOptions {
+export type SolanaMockOptions = {
   mockGetTransactionSuccess?: boolean;
   mockGetTransactionFailed?: boolean;
   mockTokenAccountAccountInfo?: boolean;
-  mockZeroBalance?: boolean;
+  balance?: number;
   mockSwapUSDtoSOL?: boolean;
   mockSwapSOLtoUSDC?: boolean;
   mockSwapWithNoQuotes?: boolean;
@@ -2003,14 +1968,14 @@ export interface SolanaMockOptions {
     | Promise<MockedEndpoint[] | MockedEndpoint>
     | MockedEndpoint[]
     | MockedEndpoint;
-}
+};
 
 export function buildSolanaTestSpecificMock(options: SolanaMockOptions = {}) {
   const {
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
     mockTokenAccountAccountInfo = true,
-    mockZeroBalance,
+    balance,
     mockSwapUSDtoSOL,
     mockSwapSOLtoUSDC,
     mockSwapWithNoQuotes,
@@ -2047,9 +2012,7 @@ export function buildSolanaTestSpecificMock(options: SolanaMockOptions = {}) {
     if (!isExecutedSwapScenario) {
       mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
     }
-    mockList.push(
-      await mockSolanaBalanceQuote(mockServer, mockZeroBalance),
-    );
+    mockList.push(await mockSolanaBalanceQuote({ mockServer, balance }));
 
     mockList.push(
       await mockGetMinimumBalanceForRentExemption(mockServer),
@@ -2133,4 +2096,3 @@ export function buildSolanaTestSpecificMock(options: SolanaMockOptions = {}) {
     return mockList;
   };
 }
-
