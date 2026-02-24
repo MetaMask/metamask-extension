@@ -312,6 +312,41 @@ describe('displayCriticalError', () => {
       expect(browser.runtime.reload).toHaveBeenCalled();
     }
   });
+
+  it('still displays error and throws original error when notifying background fails', async () => {
+    const port = {
+      postMessage: jest.fn().mockImplementation(() => {
+        throw new Error('Message port closed');
+      }),
+      onMessage: { addListener: jest.fn(), removeListener: jest.fn() },
+      onDisconnect: { addListener: jest.fn(), removeListener: jest.fn() },
+      name: 'popup',
+      disconnect: jest.fn(),
+    } as unknown as browser.Runtime.Port;
+
+    const error = new Error('Background initialization timeout');
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        'en',
+        port,
+        CriticalErrorType.BackgroundInitTimeout,
+      ),
+    ).rejects.toThrow(error);
+
+    expect(port.postMessage).toHaveBeenCalledWith({
+      data: {
+        method: CRITICAL_ERROR_SCREEN_VIEWED,
+        params: {
+          canTriggerRestore: false,
+          criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+        },
+      },
+    });
+  });
 });
 
 describe('restore accounts link', () => {
