@@ -28,6 +28,15 @@ describe('buildSectionWithFallback', () => {
     expect(result).toBe('<p><i>Test section: data not available.</i></p>\n\n');
   });
 
+  it('returns fallback when builder resolves with no data returned', async () => {
+    const result = await buildSectionWithFallback(
+      () => Promise.resolve(''),
+      'Test section',
+    );
+
+    expect(result).toBe('<p><i>Test section: data not available.</i></p>\n\n');
+  });
+
   it('returns fallback and logs the error when builder throws', async () => {
     const logSpy = jest.spyOn(console, 'log').mockImplementation();
 

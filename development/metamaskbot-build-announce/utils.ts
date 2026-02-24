@@ -4,7 +4,7 @@
 
 /**
  * Runs a section builder and returns its result, or a "data not available"
- * message for `sectionName` if the builder returns null/undefined or throws.
+ * message for `sectionName` if the builder returns null/undefined/'' or throws.
  *
  * @param fn - Async builder function.
  * @param sectionName - Human-readable section name used in the fallback message.
@@ -16,7 +16,7 @@ export function buildSectionWithFallback(
 ): Promise<string> {
   const fallback = `<p><i>${sectionName}: data not available.</i></p>\n\n`;
   return fn()
-    .then((result) => result ?? fallback)
+    .then((result) => result || fallback)
     .catch((error: unknown) => {
       console.log(
         `No data available for ${sectionName}; skipping (${String(error)})`,
