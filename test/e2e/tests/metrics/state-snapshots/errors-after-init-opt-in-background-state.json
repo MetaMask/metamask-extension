@@ -46,7 +46,6 @@
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "hasShownMultichainAccountsIntroModal": "boolean",
     "isRampCardClosed": false,
-    "isUpdateAvailable": false,
     "isWalletResetInProgress": "boolean",
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
@@ -58,6 +57,7 @@
     "notificationGasPollTokens": "object",
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
+    "pendingExtensionVersion": null,
     "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": null,
     "pna25Acknowledged": "boolean",
@@ -257,6 +257,7 @@
     "permissionHistory": "object"
   },
   "PhishingController": {
+    "addressScanCache": "object",
     "tokenScanCache": "object",
     "urlScanCache": "object"
   },
@@ -279,12 +280,14 @@
     "openSeaEnabled": false,
     "overrideContentSecurityPolicyHeader": true,
     "preferences": {
+      "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": false,
       "petnamesEnabled": "boolean",
       "privacyMode": "boolean",
       "shouldShowAggregatedBalancePopover": "boolean",
+      "showDefaultAddress": "boolean",
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showMultiRpcModal": "boolean",

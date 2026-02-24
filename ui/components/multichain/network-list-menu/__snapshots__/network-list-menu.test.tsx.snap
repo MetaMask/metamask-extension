@@ -127,7 +127,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       style="overflow: hidden;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
                         data-testid="Ethereum"
                       >
                         <div
@@ -190,7 +190,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       style="overflow: hidden;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
                         data-testid="Linea"
                       >
                         <div
@@ -253,7 +253,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       style="overflow: hidden;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
                         data-testid="BNB Chain"
                       >
                         <div
@@ -312,7 +312,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       style="overflow: hidden;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
                         data-testid="Chain 5"
                       >
                         <div
@@ -375,7 +375,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       style="overflow: hidden;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
                         data-testid="Monad"
                       >
                         <div
@@ -1364,7 +1364,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       style="overflow: hidden;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
                         data-testid="Ethereum"
                       >
                         <div
@@ -1427,7 +1427,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       style="overflow: hidden;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
                         data-testid="Linea"
                       >
                         <div
@@ -1490,7 +1490,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       style="overflow: hidden;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
                         data-testid="BNB Chain"
                       >
                         <div
@@ -1549,7 +1549,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       style="overflow: hidden;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
                         data-testid="Chain 5"
                       >
                         <div
@@ -1612,7 +1612,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       style="overflow: hidden;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
                         data-testid="Monad"
                       >
                         <div
