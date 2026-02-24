@@ -237,6 +237,19 @@ export async function validateBundle({
           continue;
         }
 
+        // We need original line/column to verify that "new Error" in the bundle maps to
+        // "new Error" in the source. Some maps return source file but null line/column
+        // (e.g. sparse mappings). For our purpose (reliable stack traces) that is
+        // insufficient — treat it as a validation failure.
+        if (result.line == null || result.column == null) {
+          sampleCount += 1;
+          valid = false;
+          console.error(
+            `SourcemapValidator (webpack) - mapping for "${label}" has source but no original line/column; precise position required for stack traces.`,
+          );
+          continue;
+        }
+
         sampleCount += 1;
 
         const sourceContent = consumer.sourceContentFor(result.source);
@@ -249,9 +262,9 @@ export async function validateBundle({
         }
 
         const sourceLines = sourceContent.split('\n');
-        const sourceLineIndex = (result.line ?? 1) - 1;
+        const sourceLineIndex = result.line - 1;
         const sourceLine = sourceLines[sourceLineIndex];
-        const column = result.column ?? 0;
+        const column = result.column;
         const portion = sourceLine ? sourceLine.slice(column) : '';
         const foundValidSource = portion.includes(TARGET_STRING);
 
@@ -259,7 +272,7 @@ export async function validateBundle({
           valid = false;
           const location = {
             start: {
-              line: result.line ?? 1,
+              line: result.line,
               column: column + 1,
             },
           };

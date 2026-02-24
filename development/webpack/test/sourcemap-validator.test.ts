@@ -346,6 +346,53 @@ describe('sourcemap-validator', () => {
       });
       assert.strictEqual(ok, true);
     });
+
+    it('returns false when source map has source but null line/column (insufficient for stack traces)', async () => {
+      // Source map returns source file but no original line/column (allowed by spec for
+      // sparse/partial maps). We require precise position for every "new Error" so stack
+      // traces resolve correctly — so we fail validation when position is missing.
+      const bundle = 'throw new Error("x");';
+      const sourceContent = [
+        'function init() {',
+        '  throw new Error("x");',
+        '}',
+      ].join('\n');
+      const mapJson = makeSourceMap(sourceContent, 1, 6, 2, 2);
+      const jsPath = join(tmpDir, 'null-position.js');
+      const mapPath = join(tmpDir, 'null-position.js.map');
+      await writeFile(jsPath, bundle);
+      await writeFile(mapPath, mapJson);
+      const errors: string[] = [];
+      mock.method(console, 'log', noop);
+      mock.method(console, 'warn', noop);
+      mock.method(console, 'error', (...args: unknown[]) => {
+        errors.push(args.map((a) => String(a)).join(' '));
+      });
+      const { SourceMapConsumer } = await import('source-map');
+      const consumer = await new SourceMapConsumer(mapJson);
+      const consumerProto = Object.getPrototypeOf(consumer);
+      consumer.destroy();
+      mock.method(consumerProto, 'originalPositionFor', () => ({
+        source: 'src.ts',
+        line: null,
+        column: null,
+        name: null,
+      }));
+      const ok = await validateBundle({
+        jsPath,
+        mapPath,
+        label: 'null-position.js',
+      });
+      assert.strictEqual(ok, false);
+      assert.ok(
+        errors.some(
+          (e) =>
+            e.includes('no original line/column') &&
+            e.includes('stack traces'),
+        ),
+        'should log that precise position is required for stack traces',
+      );
+    });
   });
 
   describe('main', () => {
