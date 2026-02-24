@@ -631,19 +631,20 @@ function findRegexClose(line: string, start: number): number {
 }
 
 /** Replaces string literal contents with empty placeholders (handles escaped quotes). */
+// Backtick regex only matches simple template literals (no ${} expressions).
+// Template literals with expressions are left intact so embedded flag references are detected.
+const SIMPLE_BACKTICK = /`(?:[^`\\$]|\\.|\$(?!\{))*`/g;
 function stripStringLiterals(line: string): string {
   return line
     .replace(/'(?:[^'\\]|\\.)*'/g, "''")
     .replace(/"(?:[^"\\]|\\.)*"/g, '""')
-    .replace(/`(?:[^`\\]|\\.)*`/g, '``');
+    .replace(SIMPLE_BACKTICK, '``');
 }
-
-/** Replaces string literal contents with spaces (same length) so positions stay aligned. */
 function maskStringLiterals(line: string): string {
   return line
     .replace(/'(?:[^'\\]|\\.)*'/g, (m) => `'${' '.repeat(Math.max(0, m.length - 2))}'`)
     .replace(/"(?:[^"\\]|\\.)*"/g, (m) => `"${' '.repeat(Math.max(0, m.length - 2))}"`)
-    .replace(/`(?:[^`\\]|\\.)*`/g, (m) => `\`${' '.repeat(Math.max(0, m.length - 2))}\``);
+    .replace(SIMPLE_BACKTICK, (m) => `\`${' '.repeat(Math.max(0, m.length - 2))}\``);
 }
 
 /** Logs which flags were added/removed in the registry (informational only). */
