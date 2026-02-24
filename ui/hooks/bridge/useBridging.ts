@@ -6,7 +6,7 @@ import {
   getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
-import { type CaipChainId, type Hex, parseCaipChainId } from '@metamask/utils';
+import { parseCaipChainId } from '@metamask/utils';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
@@ -19,6 +19,7 @@ import {
   getLastSelectedChainId,
 } from '../../ducks/bridge/selectors';
 import {
+  resetBridgeControllerAndCache,
   resetInputFields,
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
@@ -70,6 +71,7 @@ const useBridging = () => {
       },
     ) => {
       dispatch(resetInputFields());
+      dispatch(resetBridgeControllerAndCache());
       trace({
         name: TraceName.SwapViewLoaded,
         startTime: Date.now(),

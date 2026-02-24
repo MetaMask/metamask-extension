@@ -354,13 +354,6 @@ const PrepareBridgePage = ({
     };
   }, []);
 
-  // Use smart slippage defaults
-  useSmartSlippage();
-
-  // Prefill the page on load
-  usePrefillFromBridgeState();
-  usePrefillFromSearchQuery();
-
   const [showBlockExplorerToast, setShowBlockExplorerToast] = useState(false);
   const [blockExplorerToken, setBlockExplorerToken] =
     useState<BridgeToken | null>(null);

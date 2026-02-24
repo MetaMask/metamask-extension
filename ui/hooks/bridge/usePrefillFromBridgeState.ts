@@ -37,16 +37,13 @@ export const usePrefillFromBridgeState = () => {
 
   // Set src chain balances when the fromToken changes and after the token object is applied
   useEffect(() => {
-    if (
-      isCrossChain(fromToken.chainId, currentChainId) ||
-      (token && token.assetId.toLowerCase() === fromToken.assetId.toLowerCase())
-    ) {
+    if (isCrossChain(fromToken.chainId, currentChainId)) {
       return;
     }
     if (fromToken?.assetId) {
       dispatch(setEvmBalances(fromToken.assetId));
     }
-  }, [fromToken.assetId, currentChainId, token]);
+  }, [fromToken, currentChainId]);
 
   const resetControllerAndCache = () => {
     dispatch(resetBridgeControllerAndCache());

@@ -75,7 +75,7 @@ export const useBridgeNavigation = () => {
 
   const { search, pathname, state: maybeState } = useLocation();
   const state: BridgeNavigationOptions['state'] = useMemo(
-    () => maybeState ?? {},
+    () => maybeState ?? { token: null },
     [maybeState],
   );
   const bridgeState = useSelector(getBridgeState);
