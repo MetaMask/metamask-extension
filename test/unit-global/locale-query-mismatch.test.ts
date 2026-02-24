@@ -212,7 +212,14 @@ const IGNORED_STRINGS = new Set([
  * When a file reaches 0, remove it from this map.
  */
 const RULE_2_BASELINE: Record<string, number> = {
-  // 🎉 All violations fixed! Keep this map for future baselines if needed.
+  // Network configuration names are stored data, not i18n-rendered values.
+  // These tests hardcode 'Ethereum Mainnet' in fixtures and assertions because
+  // the name field represents persisted config, not a locale key resolved at
+  // render time. Accepted as false positives per review consensus.
+  'ui/components/app/multi-rpc-edit-modal/multi-rpc-edit-modal.test.tsx': 1,
+  'ui/components/app/multi-rpc-edit-modal/network-list-item/network-list-item.test.tsx': 1,
+  'ui/components/multichain-accounts/smart-contract-account-toggle/smart-contract-account-toggle.test.tsx': 1,
+  'ui/components/multichain-accounts/smart-contract-account-toggle-section/smart-contract-account-toggle-section.test.tsx': 1,
 };
 
 function findRule2Violations(filePath: string, lines: string[]): Violation[] {

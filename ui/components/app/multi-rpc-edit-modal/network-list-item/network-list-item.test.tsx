@@ -4,7 +4,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import NetworkListItem from './network-list-item';
 import '@testing-library/jest-dom';
 
@@ -26,7 +25,7 @@ describe('NetworkListItem', () => {
     const { container } = setup({
       networkConfiguration: {
         chainId: '0x1',
-        name: messages.mainnet.message,
+        name: 'Ethereum Mainnet',
         defaultRpcEndpointIndex: 0,
         rpcEndpoints: [
           {
@@ -42,7 +41,7 @@ describe('NetworkListItem', () => {
     setup({
       networkConfiguration: {
         chainId: '0x1',
-        name: messages.mainnet.message,
+        name: 'Ethereum Mainnet',
         defaultRpcEndpointIndex: 0,
         rpcEndpoints: [
           {
@@ -53,7 +52,7 @@ describe('NetworkListItem', () => {
       },
     });
 
-    expect(screen.getByText(messages.mainnet.message)).toBeInTheDocument();
+    expect(screen.getByText('Ethereum Mainnet')).toBeInTheDocument();
     expect(screen.getByText('Infura Mainnet')).toBeInTheDocument();
   });
 
@@ -61,7 +60,7 @@ describe('NetworkListItem', () => {
     setup({
       networkConfiguration: {
         chainId: '0x1',
-        name: messages.mainnet.message,
+        name: 'Ethereum Mainnet',
         defaultRpcEndpointIndex: 0,
         rpcEndpoints: [
           {

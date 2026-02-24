@@ -148,7 +148,7 @@ describe('SmartContractAccountToggleSection', () => {
 
       const { container } = render();
 
-      expect(screen.getByText(messages.mainnet.message)).toBeInTheDocument();
+      expect(screen.getByText('Ethereum Mainnet')).toBeInTheDocument();
       expect(screen.getByText('Sepolia')).toBeInTheDocument();
       // Check that toggle checkboxes are rendered (2 toggles) + 1 learn more button
       expect(screen.getAllByRole('checkbox')).toHaveLength(2);
