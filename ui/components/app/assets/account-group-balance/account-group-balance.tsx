@@ -166,8 +166,9 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
           isHidden={privacyMode}
           data-testid="account-value-and-suffix"
           onClick={handleSensitiveToggle}
-          className="cursor-pointer transition duration-200 hover:text-text-alternative"
+          className="cursor-pointer transition-colors duration-200 hover:text-text-alternative"
         >
+          {/* We should always show something but the check is just to appease TypeScript */}
           {formattedTotal}
         </SensitiveText>
       </Box>
