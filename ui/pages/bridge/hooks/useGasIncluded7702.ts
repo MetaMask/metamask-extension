@@ -6,9 +6,10 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getGaslessBridgeWith7702EnabledForChain,
-  getIsSmartTransaction,
+  SmartTransactionsState,
 } from '../../../../shared/modules/selectors';
 import { isRelaySupported } from '../../../store/actions';
+import { getIsStxEnabled } from '../../../ducks/bridge/selectors';
 import { getMaybeHexChainId } from '../../../ducks/bridge/utils';
 
 type Chain = {
@@ -42,25 +43,20 @@ export function useGasIncluded7702({
   fromChain,
   isSendBundleSupportedForChain,
 }: UseGasIncluded7702Params): boolean {
-  const isGaslessBridgeWith7702Enabled = useSelector((state) =>
-    fromChain?.chainId
-      ? getGaslessBridgeWith7702EnabledForChain(
-          state as never,
-          getMaybeHexChainId(fromChain.chainId) ?? fromChain.chainId,
-        )
-      : false,
+  const isGaslessBridgeWith7702Enabled = useSelector(
+    (state: SmartTransactionsState) => {
+      const hexChainId = fromChain?.chainId
+        ? getMaybeHexChainId(fromChain.chainId)
+        : undefined;
+      return hexChainId
+        ? getGaslessBridgeWith7702EnabledForChain(state, hexChainId)
+        : false;
+    },
   );
 
   const [isGasIncluded7702Supported, setIsGasIncluded7702Supported] =
     useState(false);
-  const isSmartTransaction = useSelector((state) =>
-    fromChain?.chainId
-      ? getIsSmartTransaction(
-          state as never,
-          getMaybeHexChainId(fromChain.chainId) ?? fromChain.chainId,
-        )
-      : false,
-  );
+  const isSmartTransaction = useSelector(getIsStxEnabled);
 
   useEffect(() => {
     let isCancelled = false;

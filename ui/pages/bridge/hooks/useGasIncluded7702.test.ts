@@ -1,9 +1,7 @@
 import { act, waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import {
-  getGaslessBridgeWith7702EnabledForChain,
-  getIsSmartTransaction,
-} from '../../../../shared/modules/selectors';
+import { getGaslessBridgeWith7702EnabledForChain } from '../../../../shared/modules/selectors';
+import { getIsStxEnabled } from '../../../ducks/bridge/selectors';
 import { useGasIncluded7702 } from './useGasIncluded7702';
 
 jest.mock('../../../store/actions', () => ({
@@ -15,6 +13,11 @@ jest.mock('../../../store/controller-actions/transaction-controller', () => ({
 }));
 
 jest.mock('../../../../shared/modules/selectors');
+
+jest.mock('../../../ducks/bridge/selectors', () => ({
+  ...jest.requireActual('../../../ducks/bridge/selectors'),
+  getIsStxEnabled: jest.fn(),
+}));
 
 const renderUseGasIncluded7702 = (
   params: Parameters<typeof useGasIncluded7702>[0],
@@ -35,7 +38,7 @@ describe('useGasIncluded7702', () => {
   const mockIsAtomicBatchSupported = jest.requireMock(
     '../../../store/controller-actions/transaction-controller',
   ).isAtomicBatchSupported;
-  const mockGetIsSmartTransaction = jest.mocked(getIsSmartTransaction);
+  const mockGetIsStxEnabled = jest.mocked(getIsStxEnabled);
   const mockGetGaslessBridgeWith7702Enabled = jest.mocked(
     getGaslessBridgeWith7702EnabledForChain,
   );
@@ -43,7 +46,7 @@ describe('useGasIncluded7702', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
-    mockGetIsSmartTransaction.mockReturnValue(false);
+    mockGetIsStxEnabled.mockReturnValue(false);
     mockGetGaslessBridgeWith7702Enabled.mockReturnValue(false);
   });
 
@@ -52,7 +55,7 @@ describe('useGasIncluded7702', () => {
   });
 
   it('returns false and skips checks when send bundle supported AND Smart Transactions enabled', () => {
-    mockGetIsSmartTransaction.mockReturnValue(true);
+    mockGetIsStxEnabled.mockReturnValue(true);
 
     const { result } = renderUseGasIncluded7702({
       isSwap: true,
@@ -67,7 +70,7 @@ describe('useGasIncluded7702', () => {
   });
 
   it('proceeds with checks when send bundle supported BUT Smart Transactions disabled', async () => {
-    mockGetIsSmartTransaction.mockReturnValue(false);
+    mockGetIsStxEnabled.mockReturnValue(false);
     mockIsRelaySupported.mockResolvedValue(true);
 
     const { result, waitForNextUpdate } = renderUseGasIncluded7702({
@@ -157,7 +160,6 @@ describe('useGasIncluded7702', () => {
     expect(result.current).toBe(false);
     expect(mockIsRelaySupported).not.toHaveBeenCalled();
     expect(mockGetGaslessBridgeWith7702Enabled).not.toHaveBeenCalled();
-    expect(mockGetIsSmartTransaction).not.toHaveBeenCalled();
   });
 
   it('returns false for non-EVM chain IDs and skips relay check', () => {
@@ -184,10 +186,7 @@ describe('useGasIncluded7702', () => {
       expect.anything(),
       '0x1',
     );
-    expect(mockGetIsSmartTransaction).toHaveBeenCalledWith(
-      expect.anything(),
-      '0x1',
-    );
+    expect(mockGetIsStxEnabled).toHaveBeenCalled();
   });
 
   it('returns true when relay is supported', async () => {
