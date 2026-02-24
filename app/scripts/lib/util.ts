@@ -12,16 +12,36 @@ import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
 import { AssetConversion, FungibleAssetMarketData } from '@metamask/snaps-sdk';
 import {
+  DEVICE_TYPE,
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_SIDEPANEL,
   ENVIRONMENT_TYPE_POPUP,
+  OS,
   PLATFORM_BRAVE,
   PLATFORM_CHROME,
+  PLATFORM_CHROMIUM,
+  PLATFORM_COCCOC,
   PLATFORM_EDGE,
+  PLATFORM_EDGE_ANDROID,
   PLATFORM_FIREFOX,
+  PLATFORM_KIWI,
+  PLATFORM_LEMUR,
+  PLATFORM_MAXTHON,
+  PLATFORM_MISES,
   PLATFORM_OPERA,
+  PLATFORM_OTHER,
+  PLATFORM_PUFFIN,
+  PLATFORM_QQBROWSER,
+  PLATFORM_SAMSUNG,
+  PLATFORM_SILK,
+  PLATFORM_UCBROWSER,
+  PLATFORM_VIVALDI,
+  PLATFORM_WHALE,
+  PLATFORM_YANDEX,
+  type DeviceType,
+  type Os,
   type Platform,
 } from '../../../shared/constants/app';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
@@ -71,24 +91,285 @@ const getEnvironmentType = (url = window.location.href) =>
   getEnvironmentTypeMemo(url);
 
 /**
+ * Minimal type for User-Agent Client Hints API (NavigatorUAData).
+ * Not present in all TypeScript DOM libs, so we define the shape we use.
+ */
+type NavigatorUserAgentData = {
+  brands?: { brand: string; version?: string }[];
+  mobile?: boolean;
+  platform?: string;
+};
+
+type NavigatorWithUserAgentData = Navigator & {
+  userAgentData?: NavigatorUserAgentData;
+};
+
+function getNavigator(): NavigatorWithUserAgentData {
+  if (typeof window !== 'undefined') {
+    return window.navigator as NavigatorWithUserAgentData;
+  }
+  return (globalThis as unknown as { navigator: NavigatorWithUserAgentData })
+    .navigator;
+}
+
+// Brand to platform mapping for userAgentData.brands detection
+// Used as fallback when UA string detection returns Chrome or Other
+const BRAND_TO_PLATFORM_MAP: Record<string, Platform> = {
+  Brave: PLATFORM_BRAVE,
+  'Google Chrome': PLATFORM_CHROME,
+  Lemur: PLATFORM_LEMUR,
+  'Microsoft Edge': PLATFORM_EDGE,
+  Mises: PLATFORM_MISES,
+  Opera: PLATFORM_OPERA,
+  'Samsung Internet': PLATFORM_SAMSUNG,
+  Vivaldi: PLATFORM_VIVALDI,
+  Whale: PLATFORM_WHALE,
+  YaBrowser: PLATFORM_YANDEX,
+  Yandex: PLATFORM_YANDEX,
+};
+
+/**
+ * Detects platform from userAgentData.brands.
+ * Filters out noise brands (Chromium, GREASE brands) and matches against known browsers.
+ * Returns unknown meaningful brands for analytics discovery.
+ *
+ * @returns the matched Platform, unknown brand name, or undefined if not detected
+ */
+const getPlatformFromBrands = (): Platform | undefined => {
+  const { userAgentData } = getNavigator();
+  if (!userAgentData?.brands) {
+    return undefined;
+  }
+
+  // Extract brand names
+  const brands: string[] = userAgentData.brands.map(
+    (b: { brand: string }) => b.brand,
+  );
+
+  // Filter out noise brands (Chromium engine and GREASE brands like "Not(A:Brand")
+  const meaningfulBrands = brands.filter((brand) => {
+    const lowerBrand = brand.toLowerCase();
+    return !lowerBrand.includes('chromium') && !lowerBrand.includes('brand');
+  });
+
+  // Check each meaningful brand against our mapping
+  for (const brand of meaningfulBrands) {
+    const platform = BRAND_TO_PLATFORM_MAP[brand];
+    if (platform) {
+      return platform;
+    }
+  }
+
+  // Return first unknown meaningful brand for analytics discovery
+  // This allows us to detect new browsers we haven't explicitly mapped yet
+  if (meaningfulBrands.length > 0) {
+    return meaningfulBrands[0] as Platform;
+  }
+
+  return undefined;
+};
+
+/**
+ * Detects platform from the User-Agent string.
+ *
+ * @returns the detected Platform
+ */
+const getPlatformFromUserAgent = (): Platform => {
+  const { navigator } = window;
+  const { userAgent } = navigator;
+
+  // Firefox - check first as it has a unique engine
+  if (userAgent.includes('Firefox')) {
+    return PLATFORM_FIREFOX;
+  }
+
+  // Brave - uses navigator.brave API
+  if ('brave' in navigator) {
+    return PLATFORM_BRAVE;
+  }
+
+  // Edge - identified by "Edg/" in user agent (desktop) or "EdgA/" (Android)
+  if (userAgent.includes('EdgA/')) {
+    return PLATFORM_EDGE_ANDROID;
+  }
+  if (userAgent.includes('Edg/')) {
+    return PLATFORM_EDGE;
+  }
+
+  // Opera - identified by "OPR" in user agent
+  if (userAgent.includes('OPR')) {
+    return PLATFORM_OPERA;
+  }
+
+  // Chromium-based browsers with unique identifiers
+  // Check these before Chrome since they include "Chrome/" in their user agent
+  if (userAgent.includes('Vivaldi/')) {
+    return PLATFORM_VIVALDI;
+  }
+  if (userAgent.includes('YaBrowser/')) {
+    return PLATFORM_YANDEX;
+  }
+  if (userAgent.includes('SamsungBrowser/')) {
+    return PLATFORM_SAMSUNG;
+  }
+  if (userAgent.includes('Whale/')) {
+    return PLATFORM_WHALE;
+  }
+  if (userAgent.includes('Puffin/')) {
+    return PLATFORM_PUFFIN;
+  }
+  if (userAgent.includes('Silk/')) {
+    return PLATFORM_SILK;
+  }
+  if (userAgent.includes('UCBrowser/')) {
+    return PLATFORM_UCBROWSER;
+  }
+  if (userAgent.includes('Maxthon/')) {
+    return PLATFORM_MAXTHON;
+  }
+  if (userAgent.includes('coc_coc_browser/')) {
+    return PLATFORM_COCCOC;
+  }
+  if (userAgent.includes('QQBrowser/') || userAgent.includes('MQQBrowser/')) {
+    return PLATFORM_QQBROWSER;
+  }
+  if (userAgent.includes('Kiwi')) {
+    return PLATFORM_KIWI;
+  }
+  if (userAgent.includes('Lemur')) {
+    return PLATFORM_LEMUR;
+  }
+  if (userAgent.includes('Mises')) {
+    return PLATFORM_MISES;
+  }
+  if (userAgent.includes('Chromium/')) {
+    return PLATFORM_CHROMIUM;
+  }
+
+  // Chrome - identified by "Chrome/" and "Safari/" in user agent
+  // Note: Some browsers like Arc mimic Chrome's exact user agent and cannot be distinguished
+  if (userAgent.includes('Chrome/') && userAgent.includes('Safari/')) {
+    return PLATFORM_CHROME;
+  }
+
+  // Unknown browser
+  return PLATFORM_OTHER;
+};
+
+/**
  * Returns the platform (browser) where the extension is running.
+ * Uses a hybrid approach: first tries UA string detection, then falls back to
+ * userAgentData.brands for browsers that hide their identity in the UA string
+ * but expose it via the Client Hints API (e.g., Lemur, Mises).
  *
  * @returns the platform ENUM
  */
 const getPlatform = (): Platform => {
-  const { navigator } = window;
-  const { userAgent } = navigator;
+  // First, try to detect from User-Agent string
+  const platformFromUA = getPlatformFromUserAgent();
 
-  if (userAgent.includes('Firefox')) {
-    return PLATFORM_FIREFOX;
-  } else if ('brave' in navigator) {
-    return PLATFORM_BRAVE;
-  } else if (userAgent.includes('Edg/')) {
-    return PLATFORM_EDGE;
-  } else if (userAgent.includes('OPR')) {
-    return PLATFORM_OPERA;
+  // If UA detection found a specific browser, use it
+  if (platformFromUA !== PLATFORM_CHROME && platformFromUA !== PLATFORM_OTHER) {
+    return platformFromUA;
   }
-  return PLATFORM_CHROME;
+
+  // UA returned Chrome or Other - try userAgentData.brands as fallback
+  // Some browsers (Lemur, Mises) hide their identity in UA but expose it in brands
+  const platformFromBrands = getPlatformFromBrands();
+  if (platformFromBrands) {
+    return platformFromBrands;
+  }
+
+  // Return what UA detection found (Chrome or Other)
+  return platformFromUA;
+};
+
+/** Regex to detect mobile device from userAgent when userAgentData is not available */
+const MOBILE_UA_REGEX =
+  /Mobile|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Opera Mobi|Fennec|Silk|Kindle|EdgA/iu;
+
+/**
+ * Returns whether the device is mobile or desktop.
+ * Uses userAgentData.mobile when available (Chromium), otherwise parses userAgent.
+ *
+ * @returns the device type
+ */
+export const getDeviceType = (): DeviceType => {
+  const nav = getNavigator();
+  const { userAgentData } = nav;
+  if (userAgentData && typeof userAgentData.mobile === 'boolean') {
+    return userAgentData.mobile ? DEVICE_TYPE.MOBILE : DEVICE_TYPE.DESKTOP;
+  }
+  const ua = nav?.userAgent ?? '';
+  if (MOBILE_UA_REGEX.test(ua)) {
+    return DEVICE_TYPE.MOBILE;
+  }
+  return DEVICE_TYPE.DESKTOP;
+};
+
+/** Map userAgentData.platform (and UA fallback) to normalized OS constants */
+const PLATFORM_TO_OS: Record<string, Os> = {
+  Android: OS.ANDROID,
+  Linux: OS.LINUX,
+  Mac: OS.MACOS,
+  macOS: OS.MACOS,
+  Windows: OS.WINDOWS,
+  Win32: OS.WINDOWS,
+  iPhone: OS.IOS,
+  iPad: OS.IOS,
+  iPod: OS.IOS,
+  CrOS: OS.OTHER,
+};
+
+/**
+ * Returns the operating system.
+ * Uses userAgentData.platform when available (Chromium), otherwise parses userAgent and navigator.platform.
+ *
+ * @returns the normalized OS
+ */
+export const getOs = (): Os => {
+  const nav = getNavigator();
+  const { userAgentData } = nav;
+  if (userAgentData?.platform && typeof userAgentData.platform === 'string') {
+    const platform = userAgentData.platform.trim();
+    const mapped = PLATFORM_TO_OS[platform];
+    if (mapped) {
+      return mapped;
+    }
+    if (platform.length > 0) {
+      return OS.OTHER;
+    }
+  }
+  const ua = nav?.userAgent ?? '';
+  const platformStr = (nav?.platform ?? '').trim();
+  // Order matters: Android UA contains "Linux"
+  if (ua.includes('Android')) {
+    return OS.ANDROID;
+  }
+  if (ua.includes('iPhone') || ua.includes('iPad') || ua.includes('iPod')) {
+    return OS.IOS;
+  }
+  if (ua.includes('CrOS')) {
+    return OS.OTHER;
+  }
+  if (ua.includes('Windows') || platformStr.startsWith('Win')) {
+    return OS.WINDOWS;
+  }
+  if (
+    ua.includes('Macintosh') ||
+    ua.includes('Mac OS') ||
+    platformStr.startsWith('Mac')
+  ) {
+    return OS.MACOS;
+  }
+  if (ua.includes('Linux') || platformStr.includes('Linux')) {
+    return OS.LINUX;
+  }
+  const mapped = PLATFORM_TO_OS[platformStr];
+  if (mapped) {
+    return mapped;
+  }
+  return OS.UNKNOWN;
 };
 
 /**

@@ -71,6 +71,13 @@
         "crypto.getRandomValues": true
       }
     },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": true,
+        "addEventListener": false
+      }
+    },
     "@metamask/notification-services-controller>firebase>@firebase/messaging": {
       "globals": {
         "PushManager.getSubscription": true,
@@ -109,6 +116,19 @@
     "lightweight-charts": {
       "globals": {
         "fetch": false
+      }
+    },
+    "@tanstack/react-query>@tanstack/query-core": {
+      "globals": {
+        "addEventListener": false,
+        "document": false
+      }
+    },
+    "@tanstack/react-query>use-sync-external-store": {
+      "globals": {
+        "__REACT_DEVTOOLS_GLOBAL_HOOK__": false,
+        "document": false,
+        "document.createElement": true
       }
     }
   }

@@ -3,7 +3,7 @@
  */
 export enum DefiReferralPartner {
   Hyperliquid = 'hyperliquid',
-  // AsterDex = 'asterdex',
+  GMX = 'gmx',
 }
 
 /**
@@ -39,14 +39,14 @@ export const DEFI_REFERRAL_PARTNERS: Record<
     learnMoreUrl: 'https://hyperliquid.gitbook.io/hyperliquid-docs/referrals',
     approvalType: 'hyperliquid_referral_consent',
   },
-  // [DefiReferralPartner.AsterDex]: {
-  //   id: DefiReferralPartner.AsterDex,
-  //   name: 'AsterDex',
-  //   origin: 'https://www.asterdex.com',
-  //   referralUrl: 'https://www.asterdex.com/en/referral/wsuZBc',
-  //   learnMoreUrl: 'https://docs.asterdex.com/product/aster-perpetuals/referral-program',
-  //   approvalType: 'asterdex_referral_consent',
-  // },
+  [DefiReferralPartner.GMX]: {
+    id: DefiReferralPartner.GMX,
+    name: 'GMX',
+    origin: 'https://app.gmx.io',
+    referralUrl: 'https://app.gmx.io/#/referrals/?ref=MMREFCSI2',
+    learnMoreUrl: 'https://docs.gmx.io/docs/referrals/',
+    approvalType: 'gmx_referral_consent',
+  },
 };
 
 /**

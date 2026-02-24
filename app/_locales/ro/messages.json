@@ -404,9 +404,6 @@
   "next": {
     "message": "Înainte"
   },
-  "noConversionRateAvailable": {
-    "message": "Nici o rată de conversie disponibilă"
-  },
   "noWebcamFound": {
     "message": "Webcam-ul computerului dvs. nu a fost găsit. Vă rugăm să încercați din nou."
   },

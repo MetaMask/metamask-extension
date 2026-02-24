@@ -29,7 +29,8 @@ import { StreamProvider } from '@metamask/providers';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
 import { ExtensionPortStream } from 'extension-port-stream';
-import launchMetaMaskUi, {
+import {
+  launchMetamaskUi,
   CriticalStartupErrorHandler,
   connectToBackground,
   displayCriticalErrorMessage,
@@ -235,19 +236,20 @@ async function loadPhishingWarningPage() {
 }
 
 async function initializeUiWithTab(
-  tab,
-  connectionStream,
+  activeTab,
+  backgroundConnection,
   windowType,
   traceContext,
   initialState,
 ) {
   try {
-    const store = await initializeUi(
-      tab,
-      connectionStream,
+    const store = await launchMetamaskUi({
+      activeTab,
+      container,
+      backgroundConnection,
       traceContext,
       initialState,
-    );
+    });
 
     endTrace({ name: TraceName.UIStartup });
 
@@ -315,21 +317,6 @@ async function queryCurrentActiveTab(windowType) {
   return { id, title, origin, protocol, url };
 }
 
-async function initializeUi(
-  activeTab,
-  backgroundConnection,
-  traceContext,
-  initialState,
-) {
-  return await launchMetaMaskUi({
-    activeTab,
-    container,
-    backgroundConnection,
-    traceContext,
-    initialState,
-  });
-}
-
 /**
  * Establishes a connections between the PortStream (background) and various UI
  * streams.
@@ -343,6 +330,7 @@ function connectSubstreams(connectionStream) {
   const controllerSubstream = mx.createStream('controller');
   const providerSubstream = mx.createStream('provider');
   mx.ignoreStream('background-liveness');
+  mx.ignoreStream('app-init-liveness');
 
   return {
     controller: controllerSubstream,

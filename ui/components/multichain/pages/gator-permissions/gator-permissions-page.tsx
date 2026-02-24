@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Content, Header, Page } from '../page';
 import {
@@ -29,6 +29,7 @@ import { TabEmptyState } from '../../../ui/tab-empty-state';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import {
   DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
   PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
 } from '../../../../helpers/constants/routes';
@@ -43,8 +44,19 @@ import { PermissionListItem } from './components/permission-list-item';
 export const GatorPermissionsPage = () => {
   const t = useI18nContext();
   const theme = useTheme();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const headerRef = useRef<HTMLSpanElement>(null);
+
+  const fromPath = searchParams.get('from') ?? undefined;
+
+  const handleBack = () => {
+    if (fromPath === DEFAULT_ROUTE) {
+      navigate(PREVIOUS_ROUTE);
+    } else {
+      navigate(DEFAULT_ROUTE);
+    }
+  };
+
   const totalGatorPermissions = useSelector((state: AppState) =>
     getAggregatedGatorPermissionsCountAcrossAllChains(state, 'token-transfer'),
   );
@@ -199,7 +211,7 @@ export const GatorPermissionsPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.iconDefault}
-            onClick={() => navigate(DEFAULT_ROUTE)}
+            onClick={handleBack}
             size={ButtonIconSize.Sm}
           />
         }
@@ -210,13 +222,10 @@ export const GatorPermissionsPage = () => {
           textAlign={TextAlign.Center}
           data-testid="gator-permissions-page-title"
         >
-          {t('permissions')}
+          {t('dappConnections')}
         </Text>
       </Header>
-      <Content padding={0}>
-        <Box ref={headerRef}></Box>
-        {renderPageContent()}
-      </Content>
+      <Content padding={0}>{renderPageContent()}</Content>
     </Page>
   );
 };

@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import {
-  AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   UNLOCK_ROUTE,
@@ -37,8 +36,6 @@ import {
 import { useModalState } from '../../hooks/useModalState';
 
 const EXEMPTED_ROUTES = [
-  AWAITING_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   UNLOCK_ROUTE,
   CONNECT_ROUTE,
@@ -83,10 +80,7 @@ export const ConfirmationHandler = () => {
 
   // Ported from home.component - checkStatusAndNavigate()
   const checkStatusAndNavigate = useCallback(() => {
-    if (canRedirect && showAwaitingSwapScreen) {
-      closeModals();
-      navigate(AWAITING_SWAP_ROUTE);
-    } else if (canRedirect && hasBridgeQuotes && isPopup) {
+    if (canRedirect && hasBridgeQuotes && isPopup) {
       closeModals();
       navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {
@@ -107,11 +101,8 @@ export const ConfirmationHandler = () => {
     closeModals,
     hasApprovalFlows,
     hasBridgeQuotes,
-    hasSwapsQuotes,
     navigate,
     pendingApprovals,
-    showAwaitingSwapScreen,
-    swapsFetchParams,
     isPopup,
   ]);
 

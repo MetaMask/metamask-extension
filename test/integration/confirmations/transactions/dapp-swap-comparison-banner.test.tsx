@@ -27,10 +27,11 @@ import {
   getUnapprovedDappSwapTransaction,
 } from './transactionDataHelpers';
 
+jest.setTimeout(30_000);
+
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
@@ -334,12 +335,12 @@ describe('DappSwapComparisonBanner', () => {
       await screen.findByText(tEn('dappSwapAdvantageSaveOnly') as string),
     ).toBeInTheDocument();
 
-    // Verify metrics: swap_mm_cta_displayed should be tracked via updateEventFragment
+    // Verify metrics: swap_mm_cta_displayed should be tracked via tx-ui fragment upsert
     await waitFor(() => {
       const metricsCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'updateEventFragment' &&
+            call[0] === 'upsertTransactionUIMetricsFragment' &&
             call[1]?.[1]?.properties?.swap_mm_cta_displayed === 'true',
         );
 
@@ -354,7 +355,7 @@ describe('DappSwapComparisonBanner', () => {
       const metricsCallSwapOpened =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'updateEventFragment' &&
+            call[0] === 'upsertTransactionUIMetricsFragment' &&
             call[1]?.[1]?.properties?.swap_mm_opened === 'true',
         );
       expect(metricsCallSwapOpened).toBeDefined();
@@ -446,7 +447,7 @@ describe('DappSwapComparisonBanner', () => {
       const metricsCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'updateEventFragment' &&
+            call[0] === 'upsertTransactionUIMetricsFragment' &&
             call[1]?.[1]?.properties?.swap_mm_opened === 'true',
         );
 

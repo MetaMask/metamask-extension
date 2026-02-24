@@ -1,14 +1,16 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
+import BridgeQuotePage from '../bridge/quote-page';
 
-export type SwapSolanaOptions = {
+export type SwapOptions = {
   amount: number;
   swapFrom: string;
   swapTo: string;
+  network: string;
   swapToContractAddress?: string;
 };
 
-export type SwapSolanaReviewOptions = {
+export type SwapReviewOptions = {
   swapFrom: string;
   swapTo: string;
   swapToAmount: string;
@@ -35,9 +37,6 @@ class SwapPage {
 
   private readonly bridgeSourceButton = '[data-testid="bridge-source-button"]';
 
-  private readonly bridgeSourceTokenButton =
-    '[data-testid="prepare-swap-page-swap-from"]';
-
   private readonly bridgeDestinationButton =
     '[data-testid="bridge-destination-button"]';
 
@@ -48,8 +47,10 @@ class SwapPage {
 
   private readonly closeQuotesButton = 'header button';
 
-  private readonly destinationTokenButton =
-    '[data-testid="bridge-destination-button"]';
+  private readonly assetPickerSearchInput =
+    '[data-testid="bridge-asset-picker-search-input"]';
+
+  private readonly bridgeAsset = '[data-testid="bridge-asset"]';
 
   private readonly fromToText = '[data-testid="bridge-asset"] p';
 
@@ -100,6 +101,21 @@ class SwapPage {
     tag: 'button',
   };
 
+  private readonly awaitingSwapDescription =
+    '[data-testid="awaiting-swap-main-description"]';
+
+  private readonly importTokensButton =
+    '[data-testid="import-tokens-import-button"]';
+
+  private readonly swapsBannerTitle = '[data-testid="swaps-banner-title"]';
+
+  private readonly bannerBase = '.mm-banner-base';
+
+  private readonly quotesModal = '.quotes-modal';
+
+  private readonly quotesModalRow =
+    '.quotes-modal [style*="position: relative"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -112,7 +128,7 @@ class SwapPage {
     try {
       await this.driver.waitForMultipleSelectors([
         this.reviewFromAmount,
-        this.destinationTokenButton,
+        this.bridgeDestinationButton,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for Swap page to be loaded', e);
@@ -156,23 +172,30 @@ class SwapPage {
 
   async selectSourceToken(sourceToken: string): Promise<void> {
     console.log('Click source token button');
-    await this.driver.clickElement(this.bridgeSourceTokenButton);
-    // click element wth test-id searchable-item-list-primary-label and text sourceToken
+    await this.driver.clickElement(this.bridgeSourceButton);
+    await this.driver.waitForSelector(this.assetPickerSearchInput);
+    await this.driver.fill(this.assetPickerSearchInput, sourceToken);
     await this.driver.waitForSelector({
-      css: '[data-testid="searchable-item-list-primary-label"]',
+      css: this.bridgeAsset,
       text: sourceToken,
     });
     await this.driver.clickElement({
-      css: '[data-testid="searchable-item-list-primary-label"]',
+      css: this.bridgeAsset,
       text: sourceToken,
     });
   }
 
   async selectDestinationToken(destinationToken: string): Promise<void> {
-    console.log('Entering swap amount');
-    await this.driver.clickElement(this.destinationTokenButton);
+    console.log('Click destination token button');
+    await this.driver.clickElement(this.bridgeDestinationButton);
+    await this.driver.waitForSelector(this.assetPickerSearchInput);
+    await this.driver.fill(this.assetPickerSearchInput, destinationToken);
+    await this.driver.waitForSelector({
+      css: this.bridgeAsset,
+      text: destinationToken,
+    });
     await this.driver.clickElement({
-      tag: 'span',
+      css: this.bridgeAsset,
       text: destinationToken,
     });
   }
@@ -209,12 +232,11 @@ class SwapPage {
     await this.driver.waitForSelector(this.noQuotesAvailableMessage);
   }
 
-  async checkQuoteIsDisplayed(): Promise<void> {
-    await this.driver.waitForMultipleSelectors([
-      this.networkFees,
-      this.slippageEditButton,
-      this.minimumReceived,
-    ]);
+  async checkQuoteIsDisplayed(options?: { timeout?: number }): Promise<void> {
+    await this.driver.waitForMultipleSelectors(
+      [this.networkFees, this.slippageEditButton, this.minimumReceived],
+      options,
+    );
   }
 
   async checkQuoteIsGasIncluded(): Promise<void> {
@@ -250,15 +272,113 @@ class SwapPage {
     await this.driver.clickElement(this.closeButton);
   }
 
-  async createSolanaSwap(options: SwapSolanaOptions) {
+  async fillSwapAmount(amount: string): Promise<void> {
+    await this.driver.waitForSelector(this.reviewFromAmount);
+    await this.driver.fill(this.reviewFromAmount, amount);
+  }
+
+  async selectDestinationTokenByContract(
+    contractAddress: string,
+  ): Promise<void> {
+    await this.driver.clickElement(this.bridgeDestinationButton);
+    await this.driver.waitForSelector(this.assetPickerSearchInput);
+    await this.driver.fill(this.assetPickerSearchInput, contractAddress);
+
+    const result = await Promise.any([
+      this.driver
+        .waitForSelector(this.importTokensButton)
+        .then(() => 'import' as const),
+      this.driver
+        .waitForSelector(this.bridgeAsset)
+        .then(() => 'asset' as const),
+    ]);
+
+    if (result === 'import') {
+      await this.driver.clickElement(this.importTokensButton);
+      await this.driver.waitForSelector(this.bridgeAsset);
+    }
+    await this.driver.clickElement(this.bridgeAsset);
+  }
+
+  async checkSourceToken(token: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.bridgeSourceButton,
+      text: token,
+    });
+  }
+
+  async checkDestinationToken(token: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.bridgeDestinationButton,
+      text: token,
+    });
+  }
+
+  async getFromAmountValue(): Promise<string> {
+    const element = await this.driver.waitForSelector(this.reviewFromAmount);
+    return element.getAttribute('value');
+  }
+
+  async getToAmountValue(): Promise<string> {
+    const element = await this.driver.waitForSelector(this.reviewToAmount);
+    return element.getAttribute('value');
+  }
+
+  async waitForTransactionCompleteWithToken(tokenName: string): Promise<void> {
+    await this.swapProcessingMessageCheck('Processing');
+    await this.driver.waitForSelector(
+      { css: this.transactionHeader, text: 'Transaction complete' },
+      { timeout: 30000 },
+    );
+    await this.driver.waitForSelector({
+      css: this.awaitingSwapDescription,
+      text: tokenName,
+    });
+    await this.driver.clickElement(this.closeButton);
+  }
+
+  async checkNotificationBanner(title: string, text: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.swapsBannerTitle,
+      text: title,
+    });
+    await this.driver.waitForSelector({
+      css: this.bannerBase,
+      text,
+    });
+  }
+
+  async selectAlternativeQuote(): Promise<void> {
+    await this.driver.waitForSelector(this.moreQuotesButton);
+    await this.driver.clickElement(this.moreQuotesButton);
+    await this.driver.waitForSelector({ text: 'Select a quote' });
+
+    await this.driver.executeScript(`
+      const quoteRows = Array.from(
+        document.querySelectorAll('${this.quotesModalRow}'),
+      );
+      if (quoteRows.length === 0) {
+        throw new Error('No quotes available to select');
+      }
+      const targetRow = quoteRows[Math.min(1, quoteRows.length - 1)];
+      targetRow.scrollIntoView({ block: 'center' });
+      targetRow.click();
+    `);
+
+    await this.driver.assertElementNotPresent(this.quotesModal);
+  }
+
+  async createSwap(options: SwapOptions) {
     await this.driver.clickElement(this.bridgeSourceButton);
+    const bridgeQuotePage = new BridgeQuotePage(this.driver);
+    await bridgeQuotePage.selectNetwork(options.network);
     await this.driver.clickElement({
       text: options.swapFrom,
       css: this.fromToText,
     });
 
     await this.driver.clickElement(this.bridgeDestinationButton);
-
+    await bridgeQuotePage.selectNetwork(options.network);
     await this.driver.clickElement({
       text: options.swapTo,
       css: this.fromToText,
@@ -268,7 +388,7 @@ class SwapPage {
     await this.driver.fill(this.reviewFromAmount, options.amount.toString());
   }
 
-  async reviewQuote(options: SwapSolanaReviewOptions) {
+  async reviewQuote(options: SwapReviewOptions) {
     await this.driver.waitForSelector(this.submitSwapButton);
     const fromAmount = await this.driver.findElement(this.reviewFromAmount);
     const fromAmountText = await fromAmount.getAttribute('value');

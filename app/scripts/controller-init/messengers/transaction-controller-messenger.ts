@@ -97,7 +97,13 @@ export function getTransactionControllerMessenger(
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
     ],
-    events: [`NetworkController:stateChange`],
+    events: [
+      'AccountActivityService:transactionUpdated',
+      'AccountActivityService:statusChanged',
+      'AccountsController:selectedAccountChange',
+      'BackendWebSocketService:connectionStateChanged',
+      'NetworkController:stateChange',
+    ],
   });
   return controllerMessenger;
 }

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Button from '../../../components/ui/button';
 import { Tag } from '../../../components/component-library';
 
-import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
+import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { isBeta } from '../../../helpers/utils/build-types';
 import {
   getNumberOfSettingRoutesInTab,
@@ -136,7 +136,7 @@ export default class InfoTab extends PureComponent {
         <div ref={this.settingsRefs[7]} className="info-tab__link-item">
           <Button
             type="link"
-            href={SUPPORT_REQUEST_LINK}
+            href={SUPPORT_LINK}
             target="_blank"
             rel="noopener noreferrer"
             className="info-tab__link-text"
@@ -146,7 +146,7 @@ export default class InfoTab extends PureComponent {
                   category: MetaMetricsEventCategory.Settings,
                   event: MetaMetricsEventName.SupportLinkClicked,
                   properties: {
-                    url: SUPPORT_REQUEST_LINK,
+                    url: SUPPORT_LINK,
                   },
                 },
                 {

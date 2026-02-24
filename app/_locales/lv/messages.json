@@ -413,9 +413,6 @@
   "next": {
     "message": "Nākamais"
   },
-  "noConversionRateAvailable": {
-    "message": "Konversijas kurss nav pieejams"
-  },
   "noWebcamFound": {
     "message": "Jūsu datora tīmekļa kamera netika atrasta. Lūdzu, mēģiniet vēlreiz."
   },

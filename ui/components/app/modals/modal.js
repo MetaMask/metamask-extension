@@ -13,6 +13,7 @@ import isMobileView from '../../../helpers/utils/is-mobile-view';
 import * as actions from '../../../store/actions';
 
 import { NetworkManager } from '../../multichain/network-manager';
+import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../../../contexts/hardware-wallets/constants';
 import {
   CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
   ConfirmTurnOnBackupAndSyncModal,
@@ -21,6 +22,7 @@ import {
 } from './identity';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
+import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
 
 import ConfirmRemoveAccount from './confirm-remove-account';
 import ConfirmResetAccount from './confirm-reset-account';
@@ -292,6 +294,20 @@ const MODALS = {
     },
     laptopModalStyle: {
       ...modalContainerLaptopStyle,
+    },
+  },
+
+  [HARDWARE_WALLET_ERROR_MODAL_NAME]: {
+    contents: <HardwareWalletErrorModal />,
+    testId: 'hardware-wallet-error-modal',
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
     },
   },
 

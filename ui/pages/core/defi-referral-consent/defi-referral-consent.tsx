@@ -52,7 +52,6 @@ const PartnerImage: React.FC<{ partnerId: string; partnerName: string }> = ({
     <img
       src={`./images/${partnerId}-referral.png`}
       alt={`${partnerName} referral`}
-      width="full"
     />
   );
 };
@@ -80,8 +79,9 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
 
   // If this is done inline, verify-locales will output `Forbidden use of template strings in 't' function`
   const defiReferralSubtitle = `${partnerId}ReferralSubtitle`;
-  // This is here to stop yarn verify-locales from removing this string
+  // This is here to stop yarn verify-locales from removing these strings
   t('hyperliquidReferralSubtitle');
+  t('gmxReferralSubtitle');
 
   return (
     <Box

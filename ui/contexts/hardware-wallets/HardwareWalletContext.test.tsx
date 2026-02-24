@@ -56,7 +56,6 @@ jest.mock('./webConnectionUtils', () => ({
   requestHardwareWalletPermission: jest.fn().mockResolvedValue(false),
   checkWebHidPermission: jest.fn().mockResolvedValue('unknown'),
   checkWebUsbPermission: jest.fn().mockResolvedValue('unknown'),
-  getHardwareWalletDeviceId: jest.fn().mockResolvedValue(null),
   subscribeToHardwareWalletEvents: jest.fn().mockReturnValue(jest.fn()),
 }));
 
@@ -147,7 +146,6 @@ describe('HardwareWalletContext', () => {
       expect(result.current.connectionState.status).toBe(
         ConnectionStatus.Disconnected,
       );
-      expect(result.current.deviceId).toBe(null);
       expect(result.current.hardwareConnectionPermissionState).toBe(
         HardwareConnectionPermissionState.Unknown,
       );
@@ -265,16 +263,6 @@ describe('HardwareWalletContext', () => {
       );
       expect(typeof result.current.isWebHidAvailable).toBe('boolean');
       expect(typeof result.current.isWebUsbAvailable).toBe('boolean');
-    });
-
-    it('includes device ID in config', () => {
-      const store = mockStore(createMockState(KeyringTypes.ledger));
-
-      const { result } = renderHook(() => useHardwareWalletConfig(), {
-        wrapper: createWrapper(store),
-      });
-
-      expect(result.current.deviceId).toBeNull();
     });
   });
 

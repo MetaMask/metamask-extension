@@ -42,7 +42,7 @@ export const PercentageChange = ({
         data-testid={`token-increase-decrease-percentage-${address}`}
         ellipsis
       >
-        {formattedValue}
+        {formattedValue || '-'}
       </Text>
     </Box>
   );

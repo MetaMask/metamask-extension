@@ -428,6 +428,55 @@ export function getHardwareWalletErrorCode(error: unknown): ErrorCode | null {
   return null;
 }
 
+/**
+ * Type guard to check if an error is a hardware wallet error.
+ * This avoids treating unrelated errors with a `code` field as HW errors.
+ *
+ * @param error - The error to check
+ * @returns True if the error matches known HW error shapes
+ */
+export function isHardwareWalletError(error: unknown): boolean {
+  if (error instanceof HardwareWalletError) {
+    return true;
+  }
+
+  if (isSerializedRpcHardwareWalletError(error)) {
+    return true;
+  }
+
+  if (isJsonRpcHardwareWalletError(error)) {
+    return true;
+  }
+
+  const errorAsAny = error as {
+    name?: string;
+    data?: { cause?: { name?: string } };
+  };
+
+  return (
+    errorAsAny?.name === 'HardwareWalletError' ||
+    errorAsAny?.data?.cause?.name === 'HardwareWalletError'
+  );
+}
+
+/**
+ * Check if an error represents a user rejection/cancellation on a hardware wallet.
+ *
+ * @param error - The error to check
+ * @returns True if the error is a user rejection/cancellation
+ */
+export function isUserRejectedHardwareWalletError(error: unknown): boolean {
+  if (!isHardwareWalletError(error)) {
+    return false;
+  }
+
+  const errorCode = getHardwareWalletErrorCode(error);
+  return (
+    errorCode === ErrorCode.UserRejected ||
+    errorCode === ErrorCode.UserCancelled
+  );
+}
+
 // Helper to extract message from error (handles plain objects from RPC boundary)
 const getErrorMessage = (err: unknown): string => {
   if (err instanceof Error) {

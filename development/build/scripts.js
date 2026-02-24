@@ -1014,7 +1014,6 @@ function setupBundlerDefaults(
             './**/node_modules/@firebase',
             './**/node_modules/marked',
             './**/node_modules/@solana',
-            './**/node_modules/axios',
             // Lattice hardware wallet deps (gridplus-sdk@4 pulls in modern syntax, e.g. `??=` in viem)
             './**/node_modules/eth-lattice-keyring',
             './**/node_modules/gridplus-sdk',
@@ -1034,6 +1033,11 @@ function setupBundlerDefaults(
             // Charting library (ESM-only)
             './**/node_modules/lightweight-charts',
             './**/node_modules/fancy-canvas',
+            // Ledger WebHID transport
+            './**/node_modules/@ledgerhq/hw-transport-webhid',
+            './**/node_modules/@ledgerhq/hw-transport',
+            './**/node_modules/@ledgerhq/hw-app-eth',
+            './**/node_modules/@ledgerhq/devices',
           ],
           global: true,
         },
