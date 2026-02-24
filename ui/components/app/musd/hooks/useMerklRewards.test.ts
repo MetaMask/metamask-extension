@@ -5,11 +5,7 @@ import {
   AGLAMERKL_ADDRESS_LINEA,
   MUSD_TOKEN_ADDRESS,
 } from '../constants';
-import {
-  isEligibleForMerklRewards,
-  useMerklRewards,
-  formatClaimableAmount,
-} from './useMerklRewards';
+import { isEligibleForMerklRewards, useMerklRewards } from './useMerklRewards';
 
 // Mock dependencies
 jest.mock('react-redux', () => ({
@@ -28,7 +24,9 @@ const MOCK_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 
 /**
  * Helper to set up useSelector mock.
- * The hook only calls useSelector once (for the selected account).
+ * The hook calls useSelector twice: once for getMerklRewardsEnabled and once
+ * for the selected account. mockReturnValue covers both (truthy object for the
+ * feature flag, correct shape for the account).
  *
  * @param overrides - Optional overrides
  * @param overrides.account - The mock account object
@@ -85,42 +83,6 @@ describe('isEligibleForMerklRewards', () => {
   });
 });
 
-describe('formatClaimableAmount', () => {
-  it('returns null for zero amount', () => {
-    expect(formatClaimableAmount(0n, 18)).toBeNull();
-  });
-
-  it('returns null for negative amount', () => {
-    expect(formatClaimableAmount(-1n, 18)).toBeNull();
-  });
-
-  it('returns "< 0.01" for very small amounts', () => {
-    // 1 wei of an 18-decimal token
-    expect(formatClaimableAmount(1n, 18)).toBe('< 0.01');
-  });
-
-  it('formats amount with 2 decimal places', () => {
-    // 1.5 tokens with 6 decimals = 1500000
-    expect(formatClaimableAmount(1500000n, 6)).toBe('1.50');
-  });
-
-  it('formats large amounts correctly', () => {
-    // 100.99 tokens with 6 decimals = 100990000
-    expect(formatClaimableAmount(100990000n, 6)).toBe('100.99');
-  });
-
-  it('formats small but displayable amounts', () => {
-    // 0.02 tokens with 6 decimals = 20000
-    expect(formatClaimableAmount(20000n, 6)).toBe('0.02');
-  });
-
-  it('returns null when amount rounds to 0.00', () => {
-    // Amount so small it rounds to 0.00 but > 0
-    // This would be handled by the < 0.01 check
-    expect(formatClaimableAmount(1n, 6)).toBe('< 0.01');
-  });
-});
-
 describe('useMerklRewards', () => {
   const mockFetchMerklRewardsForAsset =
     merklClient.fetchMerklRewardsForAsset as jest.MockedFunction<
@@ -138,20 +100,20 @@ describe('useMerklRewards', () => {
     mockGetClaimedAmountFromContract.mockResolvedValue(null);
   });
 
-  it('returns null claimableReward for ineligible token', () => {
+  it('returns false for ineligible token', () => {
     const { result } = renderHook(() =>
       useMerklRewards({
         tokenAddress: '0xunknown',
         chainId: '0x1' as `0x${string}`,
-        isEligible: false,
+        showMerklBadge: false,
       }),
     );
 
-    expect(result.current.claimableReward).toBeNull();
+    expect(result.current.hasClaimableReward).toBe(false);
     expect(mockFetchMerklRewardsForAsset).not.toHaveBeenCalled();
   });
 
-  it('fetches and formats claimable reward using API claimed value as fallback', async () => {
+  it('returns true when claimable reward exists using API claimed value as fallback', async () => {
     mockFetchMerklRewardsForAsset.mockResolvedValueOnce({
       token: {
         address: MUSD_TOKEN_ADDRESS,
@@ -173,7 +135,7 @@ describe('useMerklRewards', () => {
       useMerklRewards({
         tokenAddress: MUSD_TOKEN_ADDRESS,
         chainId: '0x1' as `0x${string}`,
-        isEligible: true,
+        showMerklBadge: true,
       }),
     );
 
@@ -181,7 +143,7 @@ describe('useMerklRewards', () => {
       await waitForNextUpdate();
     });
 
-    expect(result.current.claimableReward).toBe('10.50');
+    expect(result.current.hasClaimableReward).toBe(true);
   });
 
   it('uses on-chain claimed amount when available', async () => {
@@ -206,7 +168,7 @@ describe('useMerklRewards', () => {
       useMerklRewards({
         tokenAddress: MUSD_TOKEN_ADDRESS,
         chainId: '0x1' as `0x${string}`,
-        isEligible: true,
+        showMerklBadge: true,
       }),
     );
 
@@ -215,14 +177,14 @@ describe('useMerklRewards', () => {
     });
 
     // 10.5 - 5.5 = 5.0 MUSD claimable
-    expect(result.current.claimableReward).toBe('5.00');
+    expect(result.current.hasClaimableReward).toBe(true);
     expect(mockGetClaimedAmountFromContract).toHaveBeenCalledWith(
       MOCK_ADDRESS,
       MUSD_TOKEN_ADDRESS,
     );
   });
 
-  it('returns null when on-chain shows all claimed', async () => {
+  it('returns false when on-chain shows all claimed', async () => {
     mockFetchMerklRewardsForAsset.mockResolvedValueOnce({
       token: {
         address: MUSD_TOKEN_ADDRESS,
@@ -244,7 +206,7 @@ describe('useMerklRewards', () => {
       useMerklRewards({
         tokenAddress: MUSD_TOKEN_ADDRESS,
         chainId: '0x1' as `0x${string}`,
-        isEligible: true,
+        showMerklBadge: true,
       }),
     );
 
@@ -252,17 +214,17 @@ describe('useMerklRewards', () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
-    expect(result.current.claimableReward).toBeNull();
+    expect(result.current.hasClaimableReward).toBe(false);
   });
 
-  it('returns null when API returns no matching reward', async () => {
+  it('returns false when API returns no matching reward', async () => {
     mockFetchMerklRewardsForAsset.mockResolvedValueOnce(null);
 
     const { result } = renderHook(() =>
       useMerklRewards({
         tokenAddress: MUSD_TOKEN_ADDRESS,
         chainId: '0x1' as `0x${string}`,
-        isEligible: true,
+        showMerklBadge: true,
       }),
     );
 
@@ -272,10 +234,10 @@ describe('useMerklRewards', () => {
     });
 
     expect(mockFetchMerklRewardsForAsset).toHaveBeenCalled();
-    expect(result.current.claimableReward).toBeNull();
+    expect(result.current.hasClaimableReward).toBe(false);
   });
 
-  it('returns null when all rewards are claimed (API)', async () => {
+  it('returns false when all rewards are claimed (API)', async () => {
     mockFetchMerklRewardsForAsset.mockResolvedValueOnce({
       token: {
         address: MUSD_TOKEN_ADDRESS,
@@ -295,7 +257,7 @@ describe('useMerklRewards', () => {
       useMerklRewards({
         tokenAddress: MUSD_TOKEN_ADDRESS,
         chainId: '0x1' as `0x${string}`,
-        isEligible: true,
+        showMerklBadge: true,
       }),
     );
 
@@ -303,7 +265,7 @@ describe('useMerklRewards', () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
-    expect(result.current.claimableReward).toBeNull();
+    expect(result.current.hasClaimableReward).toBe(false);
   });
 
   it('handles API errors gracefully', async () => {
@@ -316,7 +278,7 @@ describe('useMerklRewards', () => {
       useMerklRewards({
         tokenAddress: MUSD_TOKEN_ADDRESS,
         chainId: '0x1' as `0x${string}`,
-        isEligible: true,
+        showMerklBadge: true,
       }),
     );
 
@@ -325,7 +287,7 @@ describe('useMerklRewards', () => {
     });
 
     expect(consoleSpy).toHaveBeenCalled();
-    expect(result.current.claimableReward).toBeNull();
+    expect(result.current.hasClaimableReward).toBe(false);
     consoleSpy.mockRestore();
   });
 
@@ -337,7 +299,7 @@ describe('useMerklRewards', () => {
       useMerklRewards({
         tokenAddress: MUSD_TOKEN_ADDRESS,
         chainId: '0x1' as `0x${string}`,
-        isEligible: true,
+        showMerklBadge: true,
       }),
     );
 
@@ -369,7 +331,7 @@ describe('useMerklRewards', () => {
       useMerklRewards({
         tokenAddress: MUSD_TOKEN_ADDRESS,
         chainId: '0x1' as `0x${string}`,
-        isEligible: true,
+        showMerklBadge: true,
       }),
     );
 
@@ -378,6 +340,6 @@ describe('useMerklRewards', () => {
     });
 
     // Falls back to API value (claimed=0), so full amount is claimable
-    expect(result.current.claimableReward).toBe('10.50');
+    expect(result.current.hasClaimableReward).toBe(true);
   });
 });

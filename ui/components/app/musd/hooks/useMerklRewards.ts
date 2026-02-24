@@ -35,38 +35,6 @@ export const isEligibleForMerklRewards = (
   );
 };
 
-/**
- * Format unclaimed base units into a human-readable display amount.
- * Returns a string with exactly 2 decimal places, or "< 0.01" for very small amounts.
- *
- * @param unclaimedBaseUnits - The unclaimed amount in base units (wei-like)
- * @param tokenDecimals - The number of decimals for the token
- * @returns Formatted display string, or null if amount is zero
- */
-export const formatClaimableAmount = (
-  unclaimedBaseUnits: bigint,
-  tokenDecimals: number,
-): string | null => {
-  if (unclaimedBaseUnits <= 0n) {
-    return null;
-  }
-
-  const divisor = BigInt(10 ** tokenDecimals);
-  const whole = unclaimedBaseUnits / divisor;
-  const remainder = unclaimedBaseUnits % divisor;
-
-  const decimalPart = Number(remainder) / Number(divisor);
-  const totalAmount = Number(whole) + decimalPart;
-
-  if (totalAmount < 0.01) {
-    return '< 0.01';
-  }
-
-  const displayAmount = totalAmount.toFixed(2);
-
-  return displayAmount;
-};
-
 type UseMerklRewardsOptions = {
   tokenAddress: string | undefined;
   chainId: Hex;
@@ -74,7 +42,7 @@ type UseMerklRewardsOptions = {
 };
 
 type UseMerklRewardsReturn = {
-  claimableReward: string | null;
+  hasClaimableReward: boolean;
   refetch: () => void;
 };
 
@@ -88,7 +56,7 @@ type UseMerklRewardsReturn = {
  * @param options.tokenAddress - The token's contract address
  * @param options.chainId - The chain ID of the token
  * @param options.showMerklBadge - whether the token should be shown. If false we don't make a request.
- * @returns Claimable reward amount
+ * @returns Whether there is a claimable reward
  */
 export const useMerklRewards = ({
   tokenAddress,
@@ -97,7 +65,7 @@ export const useMerklRewards = ({
 }: UseMerklRewardsOptions): UseMerklRewardsReturn => {
   const merklRewardsEnabled = useSelector(getMerklRewardsEnabled);
 
-  const [claimableReward, setClaimableReward] = useState<string | null>(null);
+  const [hasClaimableReward, setHasClaimableReward] = useState(false);
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
@@ -113,7 +81,7 @@ export const useMerklRewards = ({
   const fetchClaimableRewards = useCallback(
     async (abortController: AbortController) => {
       if (!tokenAddress || !isEligible || !selectedAddress) {
-        setClaimableReward(null);
+        setHasClaimableReward(false);
         return;
       }
 
@@ -130,7 +98,7 @@ export const useMerklRewards = ({
         }
 
         if (!matchingReward) {
-          setClaimableReward(null);
+          setHasClaimableReward(false);
           return;
         }
 
@@ -156,15 +124,9 @@ export const useMerklRewards = ({
         // Calculate unclaimed: total amount from Merkle tree minus what's been claimed
         const unclaimedBaseUnits =
           BigInt(matchingReward.amount) - BigInt(claimedAmount);
-        const tokenDecimals = matchingReward.token.decimals ?? 18;
-
-        const displayAmount = formatClaimableAmount(
-          unclaimedBaseUnits,
-          tokenDecimals,
-        );
 
         if (!abortController.signal.aborted) {
-          setClaimableReward(displayAmount);
+          setHasClaimableReward(unclaimedBaseUnits > 0n);
         }
       } catch (error) {
         if (error instanceof Error && error.name === 'AbortError') {
@@ -196,7 +158,7 @@ export const useMerklRewards = ({
   }, [fetchClaimableRewards, fetchKey]);
 
   return {
-    claimableReward,
+    hasClaimableReward,
     refetch,
   };
 };
