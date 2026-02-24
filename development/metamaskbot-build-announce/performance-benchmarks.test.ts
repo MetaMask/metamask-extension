@@ -3,29 +3,29 @@ import {
   buildTableRows,
   buildBenchmarkSection,
   extractEntries,
+  type FetchBenchmarkResult,
 } from './performance-benchmarks';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const mockUserActionsJson: Record<string, BenchmarkResults> = {
   loadNewAccount: {
     testTitle: 'benchmark-user-actions-load-new-account',
     persona: 'standard',
-    mean: { load_new_account: 523.4 },
-    min: { load_new_account: 480 },
-    max: { load_new_account: 620 },
-    stdDev: { load_new_account: 45.2 },
-    p75: { load_new_account: 550 },
-    p95: { load_new_account: 612 },
+    mean: { loadNewAccount: 523.4 },
+    min: { loadNewAccount: 480 },
+    max: { loadNewAccount: 620 },
+    stdDev: { loadNewAccount: 45.2 },
+    p75: { loadNewAccount: 550 },
+    p95: { loadNewAccount: 612 },
   },
   confirmTx: {
     testTitle: 'benchmark-user-actions-confirm-tx',
     persona: 'standard',
-    mean: { confirm_tx: 3456.7 },
-    min: { confirm_tx: 3100 },
-    max: { confirm_tx: 3900 },
-    stdDev: { confirm_tx: 210.3 },
-    p75: { confirm_tx: 3600 },
-    p95: { confirm_tx: 3812 },
+    mean: { confirmTx: 3456.7 },
+    min: { confirmTx: 3100 },
+    max: { confirmTx: 3900 },
+    stdDev: { confirmTx: 210.3 },
+    p75: { confirmTx: 3600 },
+    p95: { confirmTx: 3812 },
   },
   bridgeUserActions: {
     testTitle: 'benchmark-user-actions-bridge',
@@ -113,12 +113,12 @@ describe('extractEntries', () => {
     });
 
     expect(entries).toHaveLength(1);
-    expect(entries[0].mean).toStrictEqual({ load_new_account: 523.4 });
-    expect(entries[0].min).toStrictEqual({ load_new_account: 480 });
-    expect(entries[0].max).toStrictEqual({ load_new_account: 620 });
-    expect(entries[0].stdDev).toStrictEqual({ load_new_account: 45.2 });
-    expect(entries[0].p75).toStrictEqual({ load_new_account: 550 });
-    expect(entries[0].p95).toStrictEqual({ load_new_account: 612 });
+    expect(entries[0].mean).toStrictEqual({ loadNewAccount: 523.4 });
+    expect(entries[0].min).toStrictEqual({ loadNewAccount: 480 });
+    expect(entries[0].max).toStrictEqual({ loadNewAccount: 620 });
+    expect(entries[0].stdDev).toStrictEqual({ loadNewAccount: 45.2 });
+    expect(entries[0].p75).toStrictEqual({ loadNewAccount: 550 });
+    expect(entries[0].p95).toStrictEqual({ loadNewAccount: 612 });
   });
 });
 
@@ -137,7 +137,7 @@ describe('buildTableRows', () => {
     const [row] = buildTableRows(entries);
 
     expect(row).toContain('Load New Account');
-    expect(row).toContain('load_new_account');
+    expect(row).toContain('loadNewAccount');
     expect(row).toContain('>523<');
     expect(row).toContain('>480<');
     expect(row).toContain('>620<');
@@ -153,7 +153,7 @@ describe('buildTableRows', () => {
     const [row] = buildTableRows(entries);
 
     expect(row).toContain('Confirm Tx');
-    expect(row).toContain('confirm_tx');
+    expect(row).toContain('confirmTx');
     expect(row).toContain('>3457<');
     expect(row).toContain('>3100<');
     expect(row).toContain('>3900<');
@@ -252,11 +252,18 @@ describe('buildTableRows', () => {
 });
 
 describe('buildBenchmarkSection', () => {
+  const noMissing = (
+    entries: ReturnType<typeof extractEntries>,
+  ): FetchBenchmarkResult => ({
+    entries,
+    missingPresets: [],
+  });
+
   describe('interaction benchmarks', () => {
-    const entries = extractEntries(mockUserActionsJson);
+    const result = noMissing(extractEntries(mockUserActionsJson));
 
     it('wraps rows in a collapsible details section', () => {
-      const html = buildBenchmarkSection(entries, '👆 Interaction Benchmarks');
+      const html = buildBenchmarkSection(result, '👆 Interaction Benchmarks');
 
       expect(html).toContain('<details>');
       expect(html).toContain('👆 Interaction Benchmarks');
@@ -265,7 +272,7 @@ describe('buildBenchmarkSection', () => {
     });
 
     it('includes correct column headers', () => {
-      const html = buildBenchmarkSection(entries, '👆 Interaction Benchmarks');
+      const html = buildBenchmarkSection(result, '👆 Interaction Benchmarks');
 
       expect(html).toContain('<th>Benchmark</th>');
       expect(html).toContain('<th>Metric</th>');
@@ -277,8 +284,11 @@ describe('buildBenchmarkSection', () => {
       expect(html).toContain('<th>P95 (ms)</th>');
     });
 
-    it('returns empty string when no data', () => {
-      expect(buildBenchmarkSection([], '👆 Interaction Benchmarks')).toBe('');
+    it('returns empty string when no entries and no missing presets', () => {
+      const empty: FetchBenchmarkResult = { entries: [], missingPresets: [] };
+      expect(buildBenchmarkSection(empty, '👆 Interaction Benchmarks')).toBe(
+        '',
+      );
     });
   });
 
@@ -287,9 +297,10 @@ describe('buildBenchmarkSection', () => {
       ...extractEntries(mockPerformanceOnboardingJson),
       ...extractEntries(mockPerformanceAssetsJson),
     ];
+    const result = noMissing(entries);
 
     it('wraps rows in a collapsible details section', () => {
-      const html = buildBenchmarkSection(entries, '🧭 User Journey Benchmarks');
+      const html = buildBenchmarkSection(result, '🧭 User Journey Benchmarks');
 
       expect(html).toContain('<details>');
       expect(html).toContain('🧭 User Journey Benchmarks');
@@ -298,7 +309,7 @@ describe('buildBenchmarkSection', () => {
     });
 
     it('includes correct column headers', () => {
-      const html = buildBenchmarkSection(entries, '🧭 User Journey Benchmarks');
+      const html = buildBenchmarkSection(result, '🧭 User Journey Benchmarks');
 
       expect(html).toContain('<th>Benchmark</th>');
       expect(html).toContain('<th>Metric</th>');
@@ -308,14 +319,45 @@ describe('buildBenchmarkSection', () => {
     });
 
     it('includes entries from all presets', () => {
-      const html = buildBenchmarkSection(entries, '🧭 User Journey Benchmarks');
+      const html = buildBenchmarkSection(result, '🧭 User Journey Benchmarks');
 
       expect(html).toContain('Onboarding Import Wallet');
       expect(html).toContain('Asset Details');
     });
 
-    it('returns empty string when no data', () => {
-      expect(buildBenchmarkSection([], '🧭 User Journey Benchmarks')).toBe('');
+    it('returns empty string when no entries and no missing presets', () => {
+      const empty: FetchBenchmarkResult = { entries: [], missingPresets: [] };
+      expect(buildBenchmarkSection(empty, '🧭 User Journey Benchmarks')).toBe(
+        '',
+      );
+    });
+  });
+
+  describe('missing data warnings', () => {
+    it('renders warning when presets are missing', () => {
+      const result: FetchBenchmarkResult = {
+        entries: [],
+        missingPresets: ['chrome/browserify/interactionUserActions'],
+      };
+      const html = buildBenchmarkSection(result, '👆 Interaction Benchmarks');
+
+      expect(html).toContain('⚠️');
+      expect(html).toContain('Missing data');
+      expect(html).toContain('chrome/browserify/interactionUserActions');
+      expect(html).not.toContain('<table>');
+    });
+
+    it('renders both table and warning when some presets are missing', () => {
+      const result: FetchBenchmarkResult = {
+        entries: extractEntries(mockUserActionsJson),
+        missingPresets: ['firefox/browserify/interactionUserActions'],
+      };
+      const html = buildBenchmarkSection(result, '👆 Interaction Benchmarks');
+
+      expect(html).toContain('⚠️');
+      expect(html).toContain('firefox/browserify/interactionUserActions');
+      expect(html).toContain('<table>');
+      expect(html).toContain('Load New Account');
     });
   });
 });
