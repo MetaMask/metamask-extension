@@ -86,6 +86,43 @@ export function usePrefetchTransactions() {
   }, [evmAddress, queryOptions, queryClient, useExternalServices]);
 }
 
+function classifyNft(
+  valueTransfers: TransactionViewModel['valueTransfers'],
+  address: string,
+): 'mint' | 'bought' | 'received' | 'sent' | null {
+  const incoming = valueTransfers?.find(
+    (vt) =>
+      (vt.transferType === 'erc721' || vt.transferType === 'erc1155') &&
+      vt.to?.toLowerCase() === address,
+  );
+
+  if (incoming) {
+    const isMint =
+      incoming.from?.toLowerCase() ===
+      '0x0000000000000000000000000000000000000000';
+    if (isMint) {
+      return 'mint';
+    }
+    const hasPaid = valueTransfers?.some(
+      (vt) =>
+        vt.transferType === 'normal' && vt.from?.toLowerCase() === address,
+    );
+    return hasPaid ? 'bought' : 'received';
+  }
+
+  const outgoing = valueTransfers?.find(
+    (vt) =>
+      (vt.transferType === 'erc721' || vt.transferType === 'erc1155') &&
+      vt.from?.toLowerCase() === address,
+  );
+
+  if (outgoing) {
+    return 'sent';
+  }
+
+  return null;
+}
+
 export function useGetTitle(transaction: TransactionViewModel): string {
   const t = useI18nContext();
   const evmAddress = useSelector(selectEvmAddress)?.toLowerCase();
@@ -204,25 +241,20 @@ export function useGetTitle(transaction: TransactionViewModel): string {
   }
 
   if (transactionCategory === 'TRANSFER') {
-    // Incoming NFT in TRANSFER (e.g., OpenSea purchase)
-    const incomingNft = transaction.valueTransfers?.find(
-      (vt) =>
-        (vt.transferType === 'erc721' || vt.transferType === 'erc1155') &&
-        vt.to?.toLowerCase() === evmAddress,
-    );
-    if (incomingNft) {
-      const isMint =
-        incomingNft.from?.toLowerCase() ===
-        '0x0000000000000000000000000000000000000000';
-      if (isMint) {
-        return t('nftMinted', ['NFT']);
+    const nft = classifyNft(transaction.valueTransfers, evmAddress ?? '');
+    if (nft) {
+      switch (nft) {
+        case 'mint':
+          return t('nftMinted', ['NFT']);
+        case 'bought':
+          return t('nftBought', ['NFT']);
+        case 'received':
+          return t('received');
+        case 'sent':
+          return t('sentSpecifiedTokens', ['NFT']);
+        default:
+          break;
       }
-      // Check if user paid something (outgoing value transfer)
-      const hasPaidSomething = transaction.valueTransfers?.some(
-        (vt) =>
-          vt.transferType === 'normal' && vt.from?.toLowerCase() === evmAddress,
-      );
-      return hasPaidSomething ? t('nftBought', ['NFT']) : t('received');
     }
 
     if (transaction.amounts?.to && !transaction.amounts?.from) {
@@ -267,35 +299,20 @@ export function useGetTitle(transaction: TransactionViewModel): string {
       return t('received');
     }
 
-    // Incoming NFT in CONTRACT_CALL (e.g., OpenSea purchase)
-    const incomingNft = transaction.valueTransfers?.find(
-      (vt) =>
-        (vt.transferType === 'erc721' || vt.transferType === 'erc1155') &&
-        vt.to?.toLowerCase() === evmAddress,
-    );
-    if (incomingNft) {
-      const isMint =
-        incomingNft.from?.toLowerCase() ===
-        '0x0000000000000000000000000000000000000000';
-      if (isMint) {
-        return t('nftMinted', ['NFT']);
+    const nft = classifyNft(transaction.valueTransfers, evmAddress ?? '');
+    if (nft) {
+      switch (nft) {
+        case 'mint':
+          return t('nftMinted', ['NFT']);
+        case 'bought':
+          return t('nftBought', ['NFT']);
+        case 'received':
+          return t('received');
+        case 'sent':
+          return t('sentSpecifiedTokens', ['NFT']);
+        default:
+          break;
       }
-      // Check if user paid something (outgoing value transfer)
-      const hasPaidSomething = transaction.valueTransfers?.some(
-        (vt) =>
-          vt.transferType === 'normal' && vt.from?.toLowerCase() === evmAddress,
-      );
-      return hasPaidSomething ? t('nftBought', ['NFT']) : t('received');
-    }
-
-    // Outgoing NFT in CONTRACT_CALL
-    const outgoingNft = transaction.valueTransfers?.find(
-      (vt) =>
-        (vt.transferType === 'erc721' || vt.transferType === 'erc1155') &&
-        vt.from?.toLowerCase() === evmAddress,
-    );
-    if (outgoingNft) {
-      return t('sentSpecifiedTokens', ['NFT']);
     }
   }
 
