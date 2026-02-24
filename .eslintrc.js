@@ -187,6 +187,11 @@ module.exports = {
           },
           { selector: 'enumMember', format: ['PascalCase'] },
           {
+            selector: 'function',
+            modifiers: ['exported'],
+            format: ['camelCase', 'PascalCase'],
+          },
+          {
             selector: 'import',
             format: ['camelCase', 'PascalCase', 'snake_case', 'UPPER_CASE'],
           },

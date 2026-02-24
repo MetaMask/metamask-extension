@@ -4,6 +4,10 @@ import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
   Icon,
   IconName,
   IconSize,
@@ -11,15 +15,13 @@ import {
 } from '@metamask/design-system-react';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import {
-  Box,
+  Box as BoxDeprecated,
   ButtonIcon,
   ButtonIconSize,
   IconName as IconNameDeprecated,
@@ -38,6 +40,7 @@ import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
 import {
   getSelectedInternalAccount,
   getOriginOfCurrentTab,
+  getShowDefaultAddress,
 } from '../../../selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -63,10 +66,12 @@ import {
 } from '../../../ducks/app/app';
 import {
   getAccountListStats,
+  getDefaultScopeAndAddressByAccountGroupId,
   getMultichainAccountGroupById,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import { MultichainAccountNetworkGroupWithDefaultAddress } from '../../multichain-accounts/multichain-account-network-group-with-default-address';
 import { MultichainAccountNetworkGroup } from '../../multichain-accounts/multichain-account-network-group';
 
 type AppHeaderUnlockedContentProps = {
@@ -91,6 +96,13 @@ export const AppHeaderUnlockedContent = ({
     getMultichainAccountGroupById(state, selectedMultichainAccountId),
   );
   const accountListStats = useSelector(getAccountListStats);
+  const showDefaultAddress = useSelector(getShowDefaultAddress);
+  const { defaultAddress } = useSelector((state) =>
+    getDefaultScopeAndAddressByAccountGroupId(
+      state,
+      selectedMultichainAccountId,
+    ),
+  );
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
@@ -167,7 +179,7 @@ export const AppHeaderUnlockedContent = ({
 
   const multichainAccountAppContent = useMemo(() => {
     return (
-      <Box style={{ overflow: 'hidden' }}>
+      <BoxDeprecated style={{ overflow: 'hidden' }}>
         {/* Prevent overflow of account picker by long account names */}
         <Text
           as="div"
@@ -209,12 +221,9 @@ export const AppHeaderUnlockedContent = ({
           />
         </Text>
         {selectedMultichainAccountId && (
-          <Box
+          <BoxDeprecated
             marginTop={1}
             marginLeft={2}
-            padding={1}
-            borderRadius={BorderRadius.LG}
-            backgroundColor={BackgroundColor.backgroundMuted}
             style={{ width: 'fit-content' }}
             data-testid="networks-subtitle-test-id"
           >
@@ -228,24 +237,41 @@ export const AppHeaderUnlockedContent = ({
                 });
               }}
             >
-              <MultichainAccountNetworkGroup
-                groupId={selectedMultichainAccountId}
-                limit={4}
-              />
-              <Icon
-                name={IconName.Copy}
-                size={IconSize.Sm}
-                color={IconColor.IconAlternative}
-              />
+              {showDefaultAddress && defaultAddress ? (
+                <MultichainAccountNetworkGroupWithDefaultAddress
+                  groupId={selectedMultichainAccountId}
+                />
+              ) : (
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  backgroundColor={BoxBackgroundColor.BackgroundMuted}
+                  padding={1}
+                  gap={1}
+                  className="rounded-lg"
+                >
+                  <MultichainAccountNetworkGroup
+                    groupId={selectedMultichainAccountId}
+                    limit={4}
+                  />
+                  <Icon
+                    name={IconName.Copy}
+                    size={IconSize.Sm}
+                    color={IconColor.IconAlternative}
+                  />
+                </Box>
+              )}
             </MultichainHoveredAddressRowsList>
-          </Box>
+          </BoxDeprecated>
         )}
-      </Box>
+      </BoxDeprecated>
     );
   }, [
     accountName,
+    defaultAddress,
     disableAccountPicker,
     selectedMultichainAccountId,
+    showDefaultAddress,
     navigate,
     trackEvent,
     accountListStats,
@@ -253,7 +279,7 @@ export const AppHeaderUnlockedContent = ({
 
   return (
     <>
-      <Box
+      <BoxDeprecated
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
@@ -261,31 +287,31 @@ export const AppHeaderUnlockedContent = ({
         className="min-w-0"
       >
         {multichainAccountAppContent}
-      </Box>
-      <Box
+      </BoxDeprecated>
+      <BoxDeprecated
         display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.flexEnd}
         style={{ marginLeft: 'auto' }}
       >
-        <Box display={Display.Flex} gap={2}>
+        <BoxDeprecated display={Display.Flex} gap={2}>
           {showConnectedStatus && (
-            <Box data-testid="connection-menu" margin="auto">
+            <BoxDeprecated data-testid="connection-menu" margin="auto">
               <ConnectedStatusIndicator
                 onClick={() => handleConnectionsRoute()}
               />
-            </Box>
+            </BoxDeprecated>
           )}{' '}
-          <Box
+          <BoxDeprecated
             display={Display.Flex}
             justifyContent={JustifyContent.flexEnd}
             width={BlockSize.Full}
             style={{ position: 'relative' }}
           >
             {!accountOptionsMenuOpen && (
-              <Box onClick={handleMainMenuToggle}>
+              <BoxDeprecated onClick={handleMainMenuToggle}>
                 <NotificationsTagCounter noLabel />
-              </Box>
+              </BoxDeprecated>
             )}
             <ButtonIcon
               ref={menuRef}
@@ -295,8 +321,8 @@ export const AppHeaderUnlockedContent = ({
               onClick={handleMainMenuToggle}
               size={ButtonIconSize.Lg}
             />
-          </Box>
-        </Box>
+          </BoxDeprecated>
+        </BoxDeprecated>
         <GlobalMenuDrawerWithList
           anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
@@ -306,7 +332,7 @@ export const AppHeaderUnlockedContent = ({
           isOpen={showSupportDataConsentModal}
           onClose={() => dispatch(setShowSupportDataConsentModal(false))}
         />
-      </Box>
+      </BoxDeprecated>
     </>
   );
 };

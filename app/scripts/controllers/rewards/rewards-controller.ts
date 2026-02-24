@@ -593,7 +593,7 @@ export class RewardsController extends BaseController<
     try {
       const accounts = this.messenger.call(
         'AccountTreeController:getAccountsFromSelectedAccountGroup',
-      );
+      ) as InternalAccount[];
 
       if (!accounts || accounts.length === 0) {
         await this.performSilentAuth(null, true, true);

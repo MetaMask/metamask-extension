@@ -260,6 +260,14 @@ const createMockState = (overrides = {}) => {
       ...mockMultichainState.metamask,
       keyrings: [],
       defaultHomeActiveTabName: 'activity',
+      preferences: {
+        ...(
+          mockMultichainState.metamask as {
+            preferences?: Record<string, unknown>;
+          }
+        )?.preferences,
+        defaultAddressScope: 'eip155',
+      },
       ...overrides,
     },
     activeTab: {

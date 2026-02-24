@@ -322,6 +322,7 @@ const AssetPage = ({
             key={`${symbol}-${address}`}
             token={tokenWithFiatAmount as TokenWithFiatAmount}
             safeChains={safeChains}
+            showMerklBadge
           />
         )}
         <Box
