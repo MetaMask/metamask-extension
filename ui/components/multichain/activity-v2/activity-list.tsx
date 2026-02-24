@@ -9,6 +9,7 @@ import { useScrollContainer } from '../../../contexts/scroll-container';
 import { TransactionActivityEmptyState } from '../../app/transaction-activity-empty-state';
 import { PENDING_STATUS_HASH } from '../../../helpers/constants/transactions';
 import { selectLocalTransactions } from '../../../selectors/activity';
+import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { selectEvmAddress } from '../../../selectors/accounts';
 import { selectCurrentAccountNonEvmTransactions } from '../../../selectors/multichain-transactions';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
@@ -64,6 +65,9 @@ export const ActivityList = () => {
   // Local transactions - may not be in API yet
   const localTransactions = useSelector(selectLocalTransactions);
 
+  // Nested internal transactions that should not be shown in activity
+  const requiredTxHashes = useSelector(selectRequiredTransactionHashes);
+
   // Non-EVM transactions - not in API
   const nonEvmTransactions = useSelector(
     selectCurrentAccountNonEvmTransactions,
@@ -71,8 +75,7 @@ export const ActivityList = () => {
 
   // Merge and flatten for virtualization
   const flattenedItems = useMemo(() => {
-    const evmTransactions =
-      data?.pages?.flatMap((page) => page.data ?? []) ?? [];
+    const evmTransactions = parseApiTransactions(data, requiredTxHashes);
 
     // Filter local transactions by converting hex chainId to CAIP-2
     const filteredLocalTransactions = filterLocalNotInApi(
@@ -96,7 +99,13 @@ export const ActivityList = () => {
     );
 
     return groupAndFlattenMergedTransactions(mergedByTime);
-  }, [data, nonEvmTransactions, localTransactions, enabledNetworks]);
+  }, [
+    data,
+    nonEvmTransactions,
+    localTransactions,
+    enabledNetworks,
+    requiredTxHashes,
+  ]);
 
   const virtualizer = useVirtualizer({
     count: flattenedItems.length,
@@ -248,3 +257,14 @@ export const ActivityList = () => {
     </Box>
   );
 };
+
+function parseApiTransactions(
+  data: ReturnType<typeof useTransactionsQuery>['data'],
+  requiredTxHashes: Set<string>,
+): TransactionViewModel[] {
+  const all = data?.pages?.flatMap((page) => page.data ?? []) ?? [];
+
+  return all.filter(
+    (tx) => !tx.hash || !requiredTxHashes.has(tx.hash.toLowerCase()),
+  );
+}
