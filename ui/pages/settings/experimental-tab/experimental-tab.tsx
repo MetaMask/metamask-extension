@@ -31,7 +31,9 @@ import {
   setAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
   setFeatureNotificationsEnabled,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   setWatchEthereumAccountEnabled,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -95,7 +97,9 @@ const ExperimentalTab = () => {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   const watchAccountEnabled = useSelector(getIsWatchEthereumAccountEnabled);
+  ///: END:ONLY_INCLUDE_IF
 
   const settingsRefs = useMemo(() => {
     const count = getNumberOfSettingRoutesInTab(t, t('experimental'));
