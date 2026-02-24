@@ -1,4 +1,3 @@
-import { Hex } from '@metamask/utils';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   ASSETS_UNIFY_STATE_FLAG,
@@ -9,29 +8,21 @@ import { getAccountTrackerControllerAccountsByChainId } from './assets-migration
 const mockAccountId = 'mock-account-id-1';
 const mockAccountId2 = 'mock-account-id-2';
 
-const mockAddress1 = '0x1234567890123456789012345678901234567890';
-const mockAddress2 = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd';
-const checksummedAddress1 = toChecksumHexAddress(mockAddress1);
-const checksummedAddress2 = toChecksumHexAddress(mockAddress2);
+const mockAccountAddress = '0x1234567890123456789012345678901234567890';
+const checksummedAccountAddress = toChecksumHexAddress(mockAccountAddress);
 
 const nativeEthAssetId = 'eip155:1/slip44:60';
 const erc20AssetId =
   'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 
 describe('getAccountTrackerControllerAccountsByChainId', () => {
-  const assetsUnifyStateEnabled = {
-    [ASSETS_UNIFY_STATE_FLAG]: {
-      enabled: true,
-      featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-      minimumVersion: null,
-    },
-  };
-
   describe('when assets unify state feature is disabled', () => {
     it('returns accountsByChainId from state unchanged', () => {
       const legacyAccountsByChainId = {
         '0x1': {
-          [checksummedAddress1]: { balance: '0xde0b6b3a7640000' as const },
+          [checksummedAccountAddress]: {
+            balance: '0xde0b6b3a7640000' as const,
+          },
         },
       };
       const state = {
@@ -72,7 +63,7 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
             accounts: {
               [mockAccountId]: {
                 id: mockAccountId,
-                address: mockAddress1,
+                address: mockAccountAddress,
                 type: 'eip155:eoa',
               },
               [mockAccountId2]: {
@@ -87,7 +78,7 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
 
       expect(result).toStrictEqual({
         '0x1': {
-          [checksummedAddress1]: {
+          [checksummedAccountAddress]: {
             balance: '0x112210f4768db400', // 1234567890000000000
           },
         },
