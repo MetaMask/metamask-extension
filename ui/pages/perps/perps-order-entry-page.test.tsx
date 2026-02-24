@@ -4,13 +4,17 @@ import thunk from 'redux-thunk';
 import { screen, fireEvent, act } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
+import type {
+  AccountState,
+  Position,
+  PerpsMarketData,
+} from '@metamask/perps-controller';
 import {
   mockPositions,
   mockAccountState,
   mockCryptoMarkets,
   mockHip3Markets,
 } from '../../components/app/perps/mocks';
-import type { OrderFormState } from '../../components/app/perps/order-entry';
 
 jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
@@ -39,15 +43,24 @@ jest.mock('../../providers/perps/PerpsStreamManager', () => ({
   }),
 }));
 
-const mockLivePositions = jest.fn(() => ({
+const mockLivePositions = jest.fn<
+  { positions: Position[]; isInitialLoading: boolean },
+  []
+>(() => ({
   positions: [],
   isInitialLoading: false,
 }));
-const mockLiveAccount = jest.fn(() => ({
+const mockLiveAccount = jest.fn<
+  { account: AccountState | null; isInitialLoading: boolean },
+  []
+>(() => ({
   account: mockAccountState,
   isInitialLoading: false,
 }));
-const mockLiveMarketData = jest.fn(() => ({
+const mockLiveMarketData = jest.fn<
+  { markets: PerpsMarketData[]; isInitialLoading: boolean },
+  []
+>(() => ({
   markets: [...mockCryptoMarkets, ...mockHip3Markets],
   isInitialLoading: false,
 }));
@@ -284,9 +297,7 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       fireEvent.click(screen.getByTestId('perps-order-entry-back-button'));
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        '/perps/market/xyz%3ATSLA',
-      );
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/xyz%3ATSLA');
     });
   });
 
@@ -463,9 +474,7 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       // Close mode uses closePosition, not placeOrder with params
-      expect(
-        mockGetPerpsController.mock.results[0]?.value,
-      ).toBeDefined();
+      expect(mockGetPerpsController.mock.results[0]?.value).toBeDefined();
     });
   });
 
