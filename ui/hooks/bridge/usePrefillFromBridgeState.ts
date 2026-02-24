@@ -37,7 +37,7 @@ export const usePrefillFromBridgeState = () => {
   useEffect(() => {
     if (
       isCrossChain(fromToken.chainId, currentChainId) ||
-      (token && token.assetId.toLowerCase() === fromToken.assetId.toLowerCase())
+      (token && token.assetId.toLowerCase() !== fromToken.assetId.toLowerCase())
     ) {
       return;
     }

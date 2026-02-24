@@ -108,7 +108,7 @@ describe('usePrefillFromBridgeState', () => {
         [
           undefined,
           "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-          "0x0000000000000000000000000000000000000000",
+          "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D",
           "0xe708",
         ],
       ]
