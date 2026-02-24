@@ -1,19 +1,21 @@
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'classnames';
-import { IconSize } from '@metamask/design-system-react';
-import { Box, Icon, IconName, Text } from '../../component-library';
 import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
-  IconColor,
-  JustifyContent,
-  TextAlign,
+  IconSize,
+  Box,
+  Icon,
+  IconName,
+  Text,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+  BoxBackgroundColor,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+  FontWeight,
+  IconColor,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_REVIEW_SRP_ROUTE,
@@ -45,46 +47,51 @@ export const MultichainSrpBackup: React.FC<MultichainSrpBackupProps> = ({
     }
   }, [shouldShowBackupReminder, navigate, keyringId]);
 
-  const finalClassName = classnames('multichain-srp-backup', className);
+  const finalClassName = classnames(
+    'multichain-srp-backup w-full text-left',
+    className,
+  );
 
   return (
-    <>
-      <Box
-        className={finalClassName}
-        padding={4}
-        width={BlockSize.Full}
-        textAlign={TextAlign.Left}
-        display={Display.Flex}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.center}
-        backgroundColor={BackgroundColor.backgroundMuted}
-        onClick={handleSrpBackupClick}
-        data-testid="multichain-srp-backup"
-      >
-        <Box>
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textDefault}
-          >
-            {t('secretRecoveryPhrase')}
-          </Text>
-        </Box>
-        <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textAlternative}
-          >
-            {shouldShowBackupReminder
-              ? t('accountDetailsSrpBackUpMessage')
-              : t('srpListStateBackedUp')}
-          </Text>
-          <Icon
-            name={IconName.ArrowRight}
-            size={IconSize.Sm}
-            color={IconColor.iconAlternative}
-          />
-        </Box>
+    <Box
+      className={finalClassName}
+      padding={4}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
+      alignItems={BoxAlignItems.Center}
+      backgroundColor={BoxBackgroundColor.BackgroundMuted}
+      onClick={handleSrpBackupClick}
+      data-testid="multichain-srp-backup"
+    >
+      <Box>
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextDefault}
+        >
+          {t('secretRecoveryPhrase')}
+        </Text>
       </Box>
-    </>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={2}
+      >
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextAlternative}
+        >
+          {shouldShowBackupReminder
+            ? t('accountDetailsSrpBackUpMessage')
+            : t('srpListStateBackedUp')}
+        </Text>
+        <Icon
+          name={IconName.ArrowRight}
+          size={IconSize.Sm}
+          color={IconColor.IconAlternative}
+        />
+      </Box>
+    </Box>
   );
 };

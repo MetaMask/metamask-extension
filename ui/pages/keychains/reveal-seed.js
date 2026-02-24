@@ -9,6 +9,18 @@ import {
   ButtonIconSize,
   Icon,
   IconSize,
+  Box,
+  ButtonVariant,
+  ButtonSize,
+  Text,
+  TextVariant,
+  TextColor,
+  FontWeight,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+  Button,
+  TextButton,
 } from '@metamask/design-system-react';
 import copyToClipboard from 'copy-to-clipboard';
 import { getErrorMessage } from '../../../shared/modules/error';
@@ -18,34 +30,17 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import {
-  BUTTON_SIZES,
-  BUTTON_VARIANT,
   BannerAlert,
-  Button,
   HelpText,
   HelpTextSeverity,
   Label,
-  Text,
   TextField,
   TextFieldSize,
   TextFieldType,
 } from '../../components/component-library';
-import Box from '../../components/ui/box';
+import { Severity } from '../../helpers/constants/design-system';
 import { Tab, Tabs } from '../../components/ui/tabs';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import {
-  AlignItems,
-  BlockSize,
-  Display,
-  JustifyContent,
-  Severity,
-  Size,
-  TextVariant,
-  TextColor,
-  FlexDirection,
-  TextAlign,
-  FontWeight,
-} from '../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { requestRevealSeedWords } from '../../store/actions';
@@ -54,6 +49,8 @@ import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import RecoveryPhraseChips from '../onboarding-flow/recovery-phrase/recovery-phrase-chips';
 import { Toast, ToastContainer } from '../../components/multichain/toast';
+import { useTheme } from '../../hooks/useTheme';
+import { ThemeType } from '../../../shared/constants/preferences';
 
 const QUIZ_INTRODUCTION_SCREEN = 'QUIZ_INTRODUCTION_SCREEN';
 const QUIZ_QUESTIONS_SCREEN = 'QUIZ_QUESTIONS_SCREEN';
@@ -84,6 +81,8 @@ function RevealSeedPage() {
   const [correctAnswer, setCorrectAnswer] = useState(false);
 
   const [showSuccessToast, setShowSuccessToast] = useState(false);
+
+  const theme = useTheme();
 
   const onClickCopy = useCallback(() => {
     if (!phraseRevealed) {
@@ -197,20 +196,23 @@ function RevealSeedPage() {
   const renderQuizIntroductionContent = () => {
     return (
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
         gap={6}
         paddingTop={6}
         data-testid="reveal-seed-quiz-introduction"
       >
         <img
-          src="images/reveal_srp.png"
+          src={
+            theme === ThemeType.light
+              ? 'images/reveal_srp_light.png'
+              : 'images/reveal_srp.png'
+          }
           alt="Reveal SRP"
           className="w-[190px] h-[220px] object-contain"
         />
-        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           {t('quizIntroduction')}
         </Text>
       </Box>
@@ -220,17 +222,15 @@ function RevealSeedPage() {
   const renderQuizIntroductionFooter = () => {
     return (
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        marginTop="auto"
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+        className="w-full margin-top-auto"
         gap={4}
       >
         <Button
-          variant={BUTTON_VARIANT.PRIMARY}
-          width={BlockSize.Full}
-          size={Size.LG}
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
           onClick={() => {
             trackEvent({
               category: MetaMetricsEventCategory.Keys,
@@ -243,18 +243,17 @@ function RevealSeedPage() {
             setScreen(QUIZ_QUESTIONS_SCREEN);
           }}
           data-testid="reveal-seed-quiz-get-started"
+          className="w-full"
         >
           {t('srpSecurityQuizGetStarted')}
         </Button>
-        <Button
-          variant={BUTTON_VARIANT.LINK}
-          width={BlockSize.Full}
-          size={Size.LG}
+        <TextButton
+          className="w-full hover:bg-transparent"
           onClick={openSupportArticle}
           data-testid="reveal-seed-quiz-intro-learn-more"
         >
           {t('learnMoreUpperCase')}
-        </Button>
+        </TextButton>
       </Box>
     );
   };
@@ -309,27 +308,26 @@ function RevealSeedPage() {
 
     return (
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexStart}
-        justifyContent={JustifyContent.center}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.FlexStart}
+        justifyContent={BoxJustifyContent.Center}
         data-testid="reveal-seed-quiz-question"
       >
         <Text
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
-          paddingBottom={2}
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          className="mb-2"
         >
           {t('currentQuestion', [currentQuestionIndex + 1])}
         </Text>
 
         {questionAnswered && (
           <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Start}
             gap={2}
-            paddingBottom={4}
+            className="mb-4"
           >
             <Icon
               key={correctAnswer ? 'correct' : 'incorrect'}
@@ -342,12 +340,12 @@ function RevealSeedPage() {
               size={IconSize.Lg}
             />
             <Text
-              variant={TextVariant.headingMd}
+              variant={TextVariant.HeadingMd}
               fontWeight={FontWeight.Medium}
               color={
                 correctAnswer
-                  ? TextColor.successDefault
-                  : TextColor.errorDefault
+                  ? TextColor.SuccessDefault
+                  : TextColor.ErrorDefault
               }
             >
               {correctAnswer ? t('correct') : t('incorrect')}
@@ -356,21 +354,20 @@ function RevealSeedPage() {
         )}
 
         <Text
-          variant={TextVariant.headingLg}
-          color={TextColor.textDefault}
-          textAlign={TextAlign.Start}
+          variant={TextVariant.HeadingLg}
+          color={TextColor.TextDefault}
           fontWeight={FontWeight.Medium}
-          paddingBottom={questionAnswered ? 4 : 6}
           data-testid={questionDataTestId}
+          className={`text-left ${questionAnswered ? 'mb-4' : 'mb-6'}`}
         >
           {title}
         </Text>
 
         {questionAnswered && (
           <Text
-            variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
-            textAlign={TextAlign.Start}
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+            className="text-left"
           >
             {correctAnswer ? correct.description : wrong.description}
           </Text>
@@ -378,17 +375,16 @@ function RevealSeedPage() {
 
         {!questionAnswered && (
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
             gap={4}
-            width={BlockSize.Full}
+            className="w-full"
           >
             <Button
-              variant={BUTTON_VARIANT.SECONDARY}
-              width={BlockSize.Full}
-              size={Size.LG}
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Lg}
+              className="w-full"
               onClick={() => {
                 setQuestionAnswered(true);
                 setCorrectAnswer(currentQuestionIndex === 1);
@@ -402,9 +398,9 @@ function RevealSeedPage() {
               {buttonLabelOne}
             </Button>
             <Button
-              variant={BUTTON_VARIANT.SECONDARY}
-              width={BlockSize.Full}
-              size={Size.LG}
+              variant={ButtonVariant.Secondary}
+              className="w-full"
+              size={ButtonSize.Lg}
               onClick={() => {
                 setQuestionAnswered(true);
                 setCorrectAnswer(currentQuestionIndex === 0);
@@ -417,15 +413,13 @@ function RevealSeedPage() {
             >
               {buttonLabelTwo}
             </Button>
-            <Button
-              variant={BUTTON_VARIANT.LINK}
-              width={BlockSize.Full}
-              size={Size.LG}
+            <TextButton
+              className="w-full hover:bg-transparent"
               onClick={openSupportArticle}
               data-testid="reveal-seed-quiz-learn-more"
             >
               {t('learnMoreUpperCase')}
-            </Button>
+            </TextButton>
           </Box>
         )}
       </Box>
@@ -454,17 +448,16 @@ function RevealSeedPage() {
     };
     return (
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
         gap={4}
-        marginTop="auto"
+        className="margin-top-auto"
       >
         <Button
-          variant={BUTTON_VARIANT.PRIMARY}
-          width={BlockSize.Full}
-          size={Size.LG}
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
+          className="w-full"
           onClick={handleButtonClick}
           data-testid={
             correctAnswer ? 'srp-quiz-continue' : 'srp-quiz-try-again'
@@ -472,15 +465,13 @@ function RevealSeedPage() {
         >
           {correctAnswer ? t('continue') : t('tryAgain')}
         </Button>
-        <Button
-          variant={BUTTON_VARIANT.LINK}
-          width={BlockSize.Full}
-          size={Size.LG}
+        <TextButton
+          className="w-full hover:bg-transparent"
           onClick={openSupportArticle}
           data-testid="reveal-seed-quiz-footer-learn-more"
         >
           {t('learnMoreUpperCase')}
-        </Button>
+        </TextButton>
       </Box>
     );
   };
@@ -499,7 +490,7 @@ function RevealSeedPage() {
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           error={Boolean(error)}
-          width={BlockSize.Full}
+          className="w-full"
           endAccessory={
             <ButtonIcon
               iconName={showPassword ? IconName.EyeSlash : IconName.Eye}
@@ -581,10 +572,8 @@ function RevealSeedPage() {
               }}
               recoveryPhraseChipsContainerClassName="recovery-phrase-chips-container"
             />
-            <Button
-              variant={BUTTON_VARIANT.LINK}
-              width={BlockSize.Full}
-              size={Size.LG}
+            <TextButton
+              className="w-max hover:bg-transparent mx-auto flex items-center justify-center"
               onClick={onClickCopy}
               disabled={!phraseRevealed}
               data-testid="reveal-seed-copy-button"
@@ -595,13 +584,13 @@ function RevealSeedPage() {
                 className="mr-2"
               />
               {t('copyToClipboard')}
-            </Button>
+            </TextButton>
           </Tab>
           <Tab name={t('revealSeedWordsQR')} tabKey="qr-srp" className="flex-1">
             <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.Center}
+              justifyContent={BoxJustifyContent.Center}
               data-testid="qr-srp"
             >
               <div
@@ -619,14 +608,13 @@ function RevealSeedPage() {
   const renderPasswordPromptFooter = () => {
     return (
       <Box
-        display={Display.Flex}
-        marginTop="auto"
+        className="margin-top-auto"
         gap={4}
         data-testid="reveal-seed-password-footer"
       >
         <Button
-          width={BlockSize.Full}
-          size={Size.LG}
+          className="w-full"
+          size={ButtonSize.Lg}
           onClick={(event) => {
             trackEvent({
               category: MetaMetricsEventCategory.Keys,
@@ -681,6 +669,12 @@ function RevealSeedPage() {
     return null;
   };
 
+  const handleSrpClick = () => {
+    global.platform.openTab({
+      url: ZENDESK_URLS.SECRET_RECOVERY_PHRASE,
+    });
+  };
+
   return (
     <Box
       className="page-container"
@@ -692,14 +686,14 @@ function RevealSeedPage() {
       data-testid="reveal-seed-page"
     >
       <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.spaceBetween}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Between}
         gap={2}
       >
         <ButtonIcon
           iconName={IconName.ArrowLeft}
-          color={IconColor.iconDefault}
+          color={IconColor.IconDefault}
           size={ButtonIconSize.Md}
           data-testid="reveal-recovery-phrase-back-button"
           onClick={() => {
@@ -716,25 +710,17 @@ function RevealSeedPage() {
           }}
           ariaLabel={t('back')}
         />
-        <Text variant={TextVariant.headingSm} color={TextColor.textDefault}>
+        <Text variant={TextVariant.HeadingSm} color={TextColor.TextDefault}>
           {t('revealSecretRecoveryPhraseSettings')}
         </Text>
         <Box />
       </Box>
       {screen === PASSWORD_PROMPT_SCREEN && (
-        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           {t('revealSeedWordsDescription1', [
-            <Button
-              key="srp-learn-srp"
-              variant={BUTTON_VARIANT.LINK}
-              size={BUTTON_SIZES.INHERIT}
-              as="a"
-              href={ZENDESK_URLS.SECRET_RECOVERY_PHRASE}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <TextButton key="srp-learn-srp" onClick={handleSrpClick}>
               {t('revealSeedWordsSRPName')}
-            </Button>,
+            </TextButton>,
           ])}
         </Text>
       )}
