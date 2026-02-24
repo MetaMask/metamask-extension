@@ -30,6 +30,9 @@ export const usePrefillFromBridgeState = () => {
 
   const { resetLocationState, token } = useBridgeNavigation();
 
+  const shouldRehydrateFromLocationState = token;
+  const shouldRestoreInputsFromQuote = activeQuote;
+
   // Set src chain balances when the fromToken changes and after the token object is applied
   useEffect(() => {
     if (
@@ -42,9 +45,6 @@ export const usePrefillFromBridgeState = () => {
       dispatch(setEvmBalances(fromToken.assetId));
     }
   }, [fromToken.assetId, currentChainId, token]);
-
-  const shouldRehydrateFromLocationState = token;
-  const shouldRestoreInputsFromQuote = activeQuote;
 
   const resetControllerAndCache = async () => {
     await dispatch(resetBridgeControllerAndCache());
