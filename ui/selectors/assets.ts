@@ -134,7 +134,7 @@ export function getAssetsMetadata(state: AssetsState) {
 export function getAssetsInfo(state: {
   metamask?: AssetsControllerState['assetsInfo'];
 }) {
-  return state.metamask?.assetsInfo ?? {};
+  return state.metamask?.assetsInfo ?? EMPTY_OBJECT;
 }
 
 /**
@@ -145,7 +145,7 @@ export function getAssetsInfo(state: {
  * @returns Assets balance map or empty object.
  */
 export function getAssetsBalance(state: { metamask?: AssetsControllerState }) {
-  return state.metamask?.assetsBalance ?? {};
+  return state.metamask?.assetsBalance ?? EMPTY_OBJECT;
 }
 
 /**
@@ -156,7 +156,7 @@ export function getAssetsBalance(state: { metamask?: AssetsControllerState }) {
  * @returns Assets price map or empty object.
  */
 export function getAssetsPrice(state: { metamask?: AssetsControllerState }) {
-  return state.metamask?.assetsPrice ?? {};
+  return state.metamask?.assetsPrice ?? EMPTY_OBJECT;
 }
 
 /**
@@ -169,7 +169,7 @@ export function getAssetsPrice(state: { metamask?: AssetsControllerState }) {
 export function getAssetPreferences(state: {
   metamask?: AssetsControllerState;
 }) {
-  return state.metamask?.assetPreferences ?? {};
+  return state.metamask?.assetPreferences ?? EMPTY_OBJECT;
 }
 
 /**
@@ -180,7 +180,7 @@ export function getAssetPreferences(state: {
  * @returns Custom assets map or empty object.
  */
 export function getCustomAssets(state: { metamask?: AssetsControllerState }) {
-  return state.metamask?.customAssets ?? {};
+  return state.metamask?.customAssets ?? EMPTY_OBJECT;
 }
 
 /** State shape used for aggregated balance selector */
