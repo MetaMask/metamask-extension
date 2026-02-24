@@ -49,7 +49,7 @@ export function NotificationsSettingsBox({
           className="w-10 min-w-10 shrink-0"
         >
           {loading ? (
-            <Box style={{ textAlign: 'right' }}>
+            <Box className="text-right">
               <Preloader size={24} />
             </Box>
           ) : (
