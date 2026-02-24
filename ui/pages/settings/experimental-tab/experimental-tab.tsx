@@ -40,7 +40,9 @@ import {
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
   getFeatureNotificationsEnabled,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   getIsWatchEthereumAccountEnabled,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 
 type ItemProps = {
