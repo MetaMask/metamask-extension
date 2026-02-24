@@ -6,7 +6,7 @@ import {
   getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
-import { type CaipChainId, type Hex, parseCaipChainId } from '@metamask/utils';
+import { parseCaipChainId } from '@metamask/utils';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
