@@ -34,7 +34,7 @@ describe('Bridge tests', function (this: Suite) {
         false,
         true,
       ),
-      async ({ driver, mockedEndpoint: mockedEndpoints, mockServer }) => {
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await loginWithBalanceValidation(driver, undefined, undefined, '0');
 
         const homePage = new HomePage(driver);
