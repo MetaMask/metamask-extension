@@ -50,6 +50,7 @@ export const NftControllerInit: ControllerInitFunction<
           source,
         },
       }),
+    nftApiBaseUrl: 'https://nft.dev-api.cx.metamask.io',
   });
 
   return {

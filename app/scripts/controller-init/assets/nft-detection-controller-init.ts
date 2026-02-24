@@ -25,6 +25,7 @@ export const NftDetectionControllerInit: ControllerInitFunction<
     getNftState: () => nftController().state,
     // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
     disabled: !preferencesController().state.useNftDetection,
+    nftApiBaseUrl: 'https://nft.dev-api.cx.metamask.io',
   });
 
   return {
