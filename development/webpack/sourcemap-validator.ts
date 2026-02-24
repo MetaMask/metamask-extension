@@ -241,7 +241,7 @@ export async function validateBundle({
         // "new Error" in the source. Some maps return source file but null line/column
         // (e.g. sparse mappings). For our purpose (reliable stack traces) that is
         // insufficient — treat it as a validation failure.
-        if (result.line == null || result.column == null) {
+        if (result.line === null || result.column === null) {
           sampleCount += 1;
           valid = false;
           console.error(
@@ -264,19 +264,24 @@ export async function validateBundle({
 
         sampleCount += 1;
 
-        const sourceContent = consumer.sourceContentFor(result.source);
+        const {
+          line: origLine,
+          column: origColumn,
+          source: origSource,
+        } = result;
+        const sourceContent = consumer.sourceContentFor(origSource);
         if (sourceContent === null) {
           valid = false;
           console.error(
-            `SourcemapValidator (webpack) - no source content for "${result.source}", in bundle "${label}"`,
+            `SourcemapValidator (webpack) - no source content for "${origSource}", in bundle "${label}"`,
           );
           continue;
         }
 
         const sourceLines = sourceContent.split('\n');
-        const sourceLineIndex = result.line - 1;
+        const sourceLineIndex = origLine - 1;
         const sourceLine = sourceLines[sourceLineIndex];
-        const column = result.column;
+        const column = origColumn;
         const portion = sourceLine ? sourceLine.slice(column) : '';
         const foundValidSource = portion.includes(TARGET_STRING);
 
@@ -284,7 +289,7 @@ export async function validateBundle({
           valid = false;
           const location = {
             start: {
-              line: result.line,
+              line: origLine,
               column: column + 1,
             },
           };
@@ -293,7 +298,7 @@ export async function validateBundle({
             highlightCode: true,
           });
           console.error(
-            `Sourcemap seems invalid, ${result.source}\n${codeSample}`,
+            `Sourcemap seems invalid, ${origSource}\n${codeSample}`,
           );
         }
       }

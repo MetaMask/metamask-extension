@@ -387,8 +387,7 @@ describe('sourcemap-validator', () => {
       assert.ok(
         errors.some(
           (e) =>
-            e.includes('no original line/column') &&
-            e.includes('stack traces'),
+            e.includes('no original line/column') && e.includes('stack traces'),
         ),
         'should log that precise position is required for stack traces',
       );
