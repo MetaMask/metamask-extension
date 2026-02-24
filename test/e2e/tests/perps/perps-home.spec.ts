@@ -19,7 +19,6 @@ import { getConfig } from './helpers';
 describe('Perps', function (this: Suite) {
   this.timeout(120000);
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- enable when positions list is stable
   it('shows list of open positions', async function () {
     await withFixtures(
       {

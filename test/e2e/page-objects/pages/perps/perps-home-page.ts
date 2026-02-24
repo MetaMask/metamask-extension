@@ -27,6 +27,15 @@ export class PerpsHomePage {
 
   private readonly positionCardsSelector = '[data-testid^="position-card-"]';
 
+  /** Step testids shown after each Continue click (steps 2–6). Used to wait for transition. */
+  private readonly tutorialStepTestIdsAfterContinue = [
+    'perps-tutorial-go-long-short',
+    'perps-tutorial-choose-leverage',
+    'perps-tutorial-watch-liquidation',
+    'perps-tutorial-close-anytime',
+    'perps-tutorial-ready-to-trade',
+  ];
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -158,6 +167,7 @@ export class PerpsHomePage {
 
   /**
    * Waits for the tutorial modal and goes through all steps (Continue x5, then Let's go).
+   * Uses waitForSelector for the next step's content instead of fixed delays.
    */
   async goThroughTutorialModal(): Promise<void> {
     await this.driver.waitForSelector({ testId: 'perps-tutorial-modal' });
@@ -168,7 +178,9 @@ export class PerpsHomePage {
       await this.driver.clickElement({
         testId: 'perps-tutorial-continue-button',
       });
-      await this.driver.delay(300);
+      await this.driver.waitForSelector({
+        testId: this.tutorialStepTestIdsAfterContinue[i],
+      });
     }
     await this.driver.waitForSelector({
       testId: 'perps-tutorial-lets-go-button',
