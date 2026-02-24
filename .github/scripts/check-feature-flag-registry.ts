@@ -110,37 +110,23 @@ async function main(): Promise<void> {
     process.exit(0);
   }
 
-  const fileChanges = parseDiff(diff);
+  const { added: fileChanges, removed: fileRemovals } = parseDiff(diff);
   const fileCount = [...fileChanges.values()].filter((c) => c.length > 0).length;
   console.log(`Found changes in ${fileCount} file(s)\n`);
 
-  // Informational: log if the registry itself was touched
   logRegistryChanges(baseBranch);
 
   // --- Collect flag references from added lines ---
   const allReferences: FlagReference[] = [];
 
   for (const [filePath, chunks] of fileChanges) {
-    if (filePath.startsWith(REGISTRY_DIR)) {
+    if (!isScannableFile(filePath)) {
       continue;
     }
-    if (!SCANNABLE_EXTENSIONS.has(path.extname(filePath))) {
-      continue;
-    }
-    if (!SCAN_DIRECTORIES.some((dir) => filePath.startsWith(dir))) {
-      continue;
-    }
-
     for (const chunk of chunks) {
-      // Per-line scan
       for (const line of chunk) {
         allReferences.push(...extractFlagReferences(line, filePath));
       }
-
-      // Multiline pass: join truly adjacent line pairs within each chunk
-      // to catch patterns split across two lines like:
-      //   remoteFeatureFlags
-      //     .myFlag
       for (let i = 0; i < chunk.length - 1; i++) {
         const joined = `${chunk[i].trimEnd()}${chunk[i + 1].trimStart()}`;
         allReferences.push(
@@ -150,7 +136,18 @@ async function main(): Promise<void> {
     }
   }
 
-  // --- De-duplicate: flag -> set of files ---
+  // --- Collect flag references from removed lines ---
+  const removedReferences: FlagReference[] = [];
+  for (const [filePath, lines] of fileRemovals) {
+    if (!isScannableFile(filePath)) {
+      continue;
+    }
+    for (const line of lines) {
+      removedReferences.push(...extractFlagReferences(line, filePath));
+    }
+  }
+
+  // --- De-duplicate added flags: flag -> set of files ---
   const flagToFiles = new Map<string, Set<string>>();
   for (const { flagName, filePath } of allReferences) {
     if (!flagToFiles.has(flagName)) {
@@ -171,38 +168,65 @@ async function main(): Promise<void> {
     }
   }
 
+  // --- Detect removed flags with no remaining codebase references ---
+  const addedFlagNames = new Set(flagToFiles.keys());
+  const removedOnlyFlags = new Set<string>();
+  for (const { flagName } of removedReferences) {
+    if (!addedFlagNames.has(flagName) && registeredFlags.has(flagName)) {
+      removedOnlyFlags.add(flagName);
+    }
+  }
+  const orphanedFlags = findOrphanedFlags([...removedOnlyFlags]);
+
   // --- Report ---
   console.log(
     `\nResults: ${flagToFiles.size} unique flag(s) referenced in changed files`,
   );
   console.log(`  ${registeredCount} flag(s) are registered`);
-  console.log(`  ${unregisteredFlags.length} flag(s) are NOT registered\n`);
+  console.log(`  ${unregisteredFlags.length} flag(s) are NOT registered`);
+  if (orphanedFlags.length > 0) {
+    console.log(`  ${orphanedFlags.length} flag(s) may need removal from the registry`);
+  }
+  console.log('');
 
-  if (unregisteredFlags.length === 0) {
+  const hasIssues = unregisteredFlags.length > 0 || orphanedFlags.length > 0;
+
+  if (!hasIssues) {
     console.log('All detected feature flags are registered.');
-    // If a previous run left a comment, delete it since everything is clean now
     await deletePrComment();
     process.exit(0);
   }
 
-  // ---- Failure path ----
-  const sorted = unregisteredFlags.sort((a, b) =>
+  const sortedUnregistered = unregisteredFlags.sort((a, b) =>
     a.flag.localeCompare(b.flag),
   );
 
-  // Log to CI console
-  console.error('Unregistered feature flags detected!\n');
-  for (const { flag, files } of sorted) {
-    console.error(`  - ${flag}`);
-    for (const file of files) {
-      console.error(`      ${file}`);
+  if (sortedUnregistered.length > 0) {
+    console.error('Unregistered feature flags detected!\n');
+    for (const { flag, files } of sortedUnregistered) {
+      console.error(`  - ${flag}`);
+      for (const file of files) {
+        console.error(`      ${file}`);
+      }
     }
   }
 
-  // Post / update PR comment
-  await postPrComment(sorted);
+  if (orphanedFlags.length > 0) {
+    console.warn('\nFlags with no remaining codebase references:\n');
+    for (const flag of orphanedFlags) {
+      console.warn(`  - ${flag}`);
+    }
+    console.warn(
+      '\nConsider removing these from the registry or marking them as deprecated.\n',
+    );
+  }
 
-  process.exit(1);
+  await postPrComment(sortedUnregistered, orphanedFlags);
+
+  // Fail only for unregistered flags; orphaned flags are warnings
+  if (sortedUnregistered.length > 0) {
+    process.exit(1);
+  }
 }
 
 /** Computes the full-range diff between the base branch and HEAD. */
@@ -235,17 +259,69 @@ function getDiff(baseBranch: string): string {
   process.exit(1);
 }
 
-/** Parses diff into chunks of truly adjacent added lines per file. */
-function parseDiff(diff: string): Map<string, string[][]> {
-  const result = new Map<string, string[][]>();
+type DiffResult = {
+  added: Map<string, string[][]>;
+  removed: Map<string, string[]>;
+};
+
+/** Returns true if the file is in a scannable directory with a valid extension. */
+function isScannableFile(filePath: string): boolean {
+  if (filePath.startsWith(REGISTRY_DIR)) {
+    return false;
+  }
+  if (!SCANNABLE_EXTENSIONS.has(path.extname(filePath))) {
+    return false;
+  }
+  return SCAN_DIRECTORIES.some((dir) => filePath.startsWith(dir));
+}
+
+/**
+ * Checks which flags have no remaining references in the codebase.
+ * Uses `git grep` for fast searching across tracked files.
+ */
+function findOrphanedFlags(flagNames: string[]): string[] {
+  const orphaned: string[] = [];
+  for (const flag of flagNames) {
+    try {
+      execSync(
+        `git grep -q "remoteFeatureFlags" -- ${SCAN_DIRECTORIES.map((d) => `"${d}"`).join(' ')} | head -1`,
+        { encoding: 'utf-8', stdio: 'pipe' },
+      );
+      // git grep with the flag name specifically
+      const result = execSync(
+        `git grep -l "${flag}" -- ${SCAN_DIRECTORIES.map((d) => `"${d}"`).join(' ')}`,
+        { encoding: 'utf-8', stdio: 'pipe' },
+      ).trim();
+      // Filter out the registry itself
+      const files = result
+        .split('\n')
+        .filter((f) => f && !f.startsWith(REGISTRY_DIR));
+      if (files.length === 0) {
+        orphaned.push(flag);
+      }
+    } catch {
+      // git grep exits non-zero when no matches found
+      orphaned.push(flag);
+    }
+  }
+  return orphaned.sort();
+}
+
+/** Parses diff into added line chunks and removed lines per file. */
+function parseDiff(diff: string): DiffResult {
+  const added = new Map<string, string[][]>();
+  const removed = new Map<string, string[]>();
   let currentFile = '';
   let lastWasAdded = false;
 
   for (const line of diff.split('\n')) {
     if (line.startsWith('+++ b/')) {
       currentFile = line.slice(6);
-      if (!result.has(currentFile)) {
-        result.set(currentFile, []);
+      if (!added.has(currentFile)) {
+        added.set(currentFile, []);
+      }
+      if (!removed.has(currentFile)) {
+        removed.set(currentFile, []);
       }
       lastWasAdded = false;
     } else if (
@@ -253,18 +329,25 @@ function parseDiff(diff: string): Map<string, string[][]> {
       !line.startsWith('+++') &&
       currentFile
     ) {
-      const chunks = result.get(currentFile)!;
+      const chunks = added.get(currentFile)!;
       if (!lastWasAdded || chunks.length === 0) {
         chunks.push([]);
       }
       chunks[chunks.length - 1].push(line.slice(1));
       lastWasAdded = true;
+    } else if (
+      line.startsWith('-') &&
+      !line.startsWith('---') &&
+      currentFile
+    ) {
+      removed.get(currentFile)?.push(line.slice(1));
+      lastWasAdded = false;
     } else {
       lastWasAdded = false;
     }
   }
 
-  return result;
+  return { added, removed };
 }
 
 /**
@@ -536,63 +619,75 @@ function logRegistryChanges(baseBranch: string): void {
 
 /** Builds the Markdown body for the PR comment. */
 function buildCommentBody(
-  flags: Array<{ flag: string; files: string[] }>,
+  unregistered: Array<{ flag: string; files: string[] }>,
+  orphaned: string[],
 ): string {
-  const lines: string[] = [
-    PR_COMMENT_MARKER,
-    '## Feature Flag Registry Check',
-    '',
-    'This PR introduces feature flag references that are **not yet registered** in the',
-    '[feature flag registry](https://github.com/MetaMask/metamask-extension/blob/main/test/e2e/feature-flags/feature-flag-registry.ts).',
-    '',
-    'Please add the missing flags with their production default values so that',
-    'E2E tests run against accurate configurations.',
-    '',
-    '### Unregistered flags',
-    '',
-    '| Flag | Referenced in |',
-    '| ---- | ------------ |',
-  ];
+  const lines: string[] = [PR_COMMENT_MARKER, '## Feature Flag Registry Check', ''];
 
-  for (const { flag, files } of flags) {
-    const fileList = files.map((f) => `\`${f}\``).join(', ');
-    lines.push(`| \`${flag}\` | ${fileList} |`);
+  if (unregistered.length > 0) {
+    lines.push(
+      'This PR introduces feature flag references that are **not yet registered** in the',
+      '[feature flag registry](https://github.com/MetaMask/metamask-extension/blob/main/test/e2e/feature-flags/feature-flag-registry.ts).',
+      '',
+      '### Unregistered flags',
+      '',
+      '| Flag | Referenced in |',
+      '| ---- | ------------ |',
+    );
+    for (const { flag, files } of unregistered) {
+      const fileList = files.map((f) => `\`${f}\``).join(', ');
+      lines.push(`| \`${flag}\` | ${fileList} |`);
+    }
+    lines.push(
+      '',
+      '<details>',
+      '<summary>How to fix</summary>',
+      '',
+      'Add an entry for each flag in `test/e2e/feature-flags/feature-flag-registry.ts`:',
+      '',
+      '```ts',
+      'myNewFlag: {',
+      "  name: 'myNewFlag',",
+      '  type: FeatureFlagType.Remote,',
+      '  inProd: false,',
+      '  productionDefault: false,',
+      '  status: FeatureFlagStatus.Active,',
+      '},',
+      '```',
+      '',
+      'Set `inProd` and `productionDefault` to match the current production values from the',
+      '[client-config API](https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod).',
+      '',
+      'If you access the flag via a **constant** (e.g. `remoteFeatureFlags[MY_CONSTANT]`),',
+      'also add the constant to',
+      '[`.github/scripts/known-feature-flag-constants.ts`](https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/known-feature-flag-constants.ts)',
+      'so the CI check can resolve it.',
+      '',
+      '</details>',
+    );
   }
 
-  lines.push(
-    '',
-    '<details>',
-    '<summary>How to fix</summary>',
-    '',
-    'Add an entry for each flag in `test/e2e/feature-flags/feature-flag-registry.ts`:',
-    '',
-    '```ts',
-    'myNewFlag: {',
-    "  name: 'myNewFlag',",
-    '  type: FeatureFlagType.Remote,',
-    '  inProd: false,',
-    '  productionDefault: false,',
-    '  status: FeatureFlagStatus.Active,',
-    '},',
-    '```',
-    '',
-    'Set `inProd` and `productionDefault` to match the current production values from the',
-    '[client-config API](https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod).',
-    '',
-    'If you access the flag via a **constant** (e.g. `remoteFeatureFlags[MY_CONSTANT]`),',
-    'also add the constant to',
-    '[`.github/scripts/known-feature-flag-constants.ts`](https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/known-feature-flag-constants.ts)',
-    'so the CI check can resolve it.',
-    '',
-    '</details>',
-  );
+  if (orphaned.length > 0) {
+    if (unregistered.length > 0) {
+      lines.push('', '---', '');
+    }
+    lines.push(
+      '### Possibly unused flags',
+      '',
+      'This PR removes the last codebase references to the following registered flags.',
+      'Consider removing them from the registry or marking them as `deprecated`.',
+      '',
+      ...orphaned.map((f) => `- \`${f}\``),
+    );
+  }
 
   return lines.join('\n');
 }
 
 /** Posts or updates the PR comment. Skips when not in a GitHub Actions context. */
 async function postPrComment(
-  flags: Array<{ flag: string; files: string[] }>,
+  unregistered: Array<{ flag: string; files: string[] }>,
+  orphaned: string[] = [],
 ): Promise<void> {
   const token = process.env.GITHUB_TOKEN;
   const prNumber = context.payload.pull_request?.number;
@@ -606,7 +701,7 @@ async function postPrComment(
 
   const octokit = getOctokit(token);
   const { owner, repo } = context.repo;
-  const body = buildCommentBody(flags);
+  const body = buildCommentBody(unregistered, orphaned);
 
   try {
     const existingComment = await findMarkerComment(octokit, owner, repo, prNumber);
