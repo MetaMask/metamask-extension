@@ -6,13 +6,11 @@ import {
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
-import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
   PREPARE_SWAP_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
-import { resetBackgroundSwapsState } from '../../store/actions';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -27,10 +25,7 @@ import {
   Page,
 } from '../../components/multichain/pages/page';
 import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
-import {
-  resetBridgeControllerAndCache,
-  trackUnifiedSwapBridgeEvent,
-} from '../../ducks/bridge/actions';
+import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
@@ -54,10 +49,6 @@ const CrossChainSwap = () => {
   const { navigateToDefaultRoute } = useBridgeNavigation();
 
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
-
-  const resetControllerAndInputStates = async () => {
-    await dispatch(resetBridgeControllerAndCache());
-  };
 
   // Get chain information to determine if we need gas estimates
   const fromChain = useSelector(getFromChain);
@@ -84,13 +75,6 @@ const CrossChainSwap = () => {
   // Sets tx alerts for the active quote
   useTxAlerts();
 
-  const redirectToDefaultRoute = async () => {
-    await resetControllerAndInputStates();
-    navigateToDefaultRoute();
-    dispatch(clearSwapsState());
-    await dispatch(resetBackgroundSwapsState());
-  };
-
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
   return (
@@ -104,7 +88,7 @@ const CrossChainSwap = () => {
             ariaLabel={t('back')}
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={redirectToDefaultRoute}
+            onClick={() => navigateToDefaultRoute()}
           />
         }
         endAccessory={
