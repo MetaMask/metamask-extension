@@ -1,3 +1,7 @@
+//========
+// Changes to this file demonstrate how `useMessenger` is used in a hook.
+//========
+
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -19,10 +23,8 @@ import {
   getFromChains,
   getLastSelectedChainId,
 } from '../../ducks/bridge/selectors';
-import {
-  resetInputFields,
-  trackUnifiedSwapBridgeEvent,
-} from '../../ducks/bridge/actions';
+import { resetInputFields } from '../../ducks/bridge/actions';
+import { useMessenger } from '../useMessenger';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -36,6 +38,12 @@ import { clearAllBridgeCacheItems } from '../../pages/bridge/utils/cache';
 const useBridging = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  //========
+  // Similarly for a component, we use `useMessenger` to grab a messenger...
+  //========
+  const messenger = useMessenger({
+    actions: ['BridgeController:trackUnifiedSwapBridgeEvent'],
+  });
 
   const lastSelectedChainId = useSelector(getLastSelectedChainId);
   const fromChain = useSelector(getFromChain);
@@ -69,8 +77,13 @@ const useBridging = () => {
         name: TraceName.SwapViewLoaded,
         startTime: Date.now(),
       });
-      dispatch(
-        trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.ButtonClicked, {
+      //========
+      // ...and then we call it.
+      //========
+      messenger.call(
+        'BridgeController:trackUnifiedSwapBridgeEvent',
+        UnifiedSwapBridgeEventName.ButtonClicked,
+        {
           location: location as never,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -78,7 +91,7 @@ const useBridging = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol_destination: '',
-        }),
+        },
       );
 
       const queryParams = [];
@@ -125,6 +138,8 @@ const useBridging = () => {
       });
     },
     [
+      dispatch,
+      messenger,
       navigate,
       lastSelectedChainId,
       fromChain?.chainId,

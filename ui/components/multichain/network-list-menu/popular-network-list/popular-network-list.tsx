@@ -1,3 +1,8 @@
+//========
+// Changes to this file demonstrate how `useMessenger` is used in a component
+// to call a messenger action.
+//========
+
 import React, { useState, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { AddNetworkFields } from '@metamask/network-controller';
@@ -10,6 +15,7 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useMessenger } from '../../../../hooks/useMessenger';
 import {
   Box,
   Text,
@@ -24,7 +30,6 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import {
   setEnabledNetworks,
   toggleNetworkMenu,
-  addNetwork,
 } from '../../../../store/actions';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -49,6 +54,13 @@ const PopularNetworkList = ({
   const t = useI18nContext();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const dispatch = useDispatch();
+  //========
+  // All we need to do is use `useMessenger` to retrieve the messenger for the
+  // current route...
+  //========
+  const messenger = useMessenger({
+    actions: ['NetworkController:addNetwork'],
+  });
   const [isOpen, setIsOpen] = useState(false);
 
   const handleMouseEnter = () => {
@@ -164,7 +176,7 @@ const PopularNetworkList = ({
                 size={AvatarNetworkSize.Sm}
                 src={
                   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                    network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                  network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
                   ]
                 }
                 name={network.name}
@@ -189,8 +201,10 @@ const PopularNetworkList = ({
                 onClick={async () => {
                   dispatch(toggleNetworkMenu());
 
-                  // First add the network to user's configuration
-                  await dispatch(addNetwork(network));
+                  //========
+                  // ...and then we can call the action!
+                  //========
+                  await messenger.call('NetworkController:addNetwork', network);
 
                   // Then enable it in the network list
                   await dispatch(setEnabledNetworks(network.chainId));

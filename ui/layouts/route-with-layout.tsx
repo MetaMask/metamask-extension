@@ -2,8 +2,13 @@ import React, { ComponentType, ReactNode } from 'react';
 import type { RouteObject } from 'react-router-dom';
 import Authenticated from '../helpers/higher-order-components/authenticated/authenticated.container';
 import Initialized from '../helpers/higher-order-components/initialized';
+import type {
+  UIMessengerActions,
+  UIMessengerEvents,
+} from '../messengers/ui-messenger';
 import type { RootLayout } from './root-layout';
 import type { LegacyLayout } from './legacy-layout';
+import { RouteWithMessenger } from './route-with-messenger';
 
 export type RouteWithLayoutConfig = {
   path: string;
@@ -16,6 +21,15 @@ export type RouteWithLayoutConfig = {
   authenticated?: boolean;
   initialized?: boolean;
   children?: ReactNode;
+  //========
+  // When defining a route, you can create a messenger for that route, providing
+  // actions and events which that messenger should have access to.
+  // (Right now this is optional, but eventually it will be required.)
+  //========
+  messenger?: {
+    actions?: UIMessengerActions['type'][];
+    events?: UIMessengerEvents['type'][];
+  };
 };
 
 /**
@@ -30,6 +44,7 @@ export type RouteWithLayoutConfig = {
  * @param config.authenticated - Whether to wrap with the Authenticated component
  * @param config.initialized - Whether to wrap with the Initialized component
  * @param config.children - Nested route content
+ * @param config.messenger - Optional messenger configuration for this route
  * @returns RouteObject ready for useRoutes()
  */
 export const createRouteWithLayout = (
@@ -43,13 +58,23 @@ export const createRouteWithLayout = (
     authenticated,
     initialized,
     children,
+    messenger,
   } = config;
 
   // Determine content: children > element > component
   let content: ReactNode =
     children || element || (Component ? <Component /> : null);
 
-  // Wrap with Initialized first (outermost guard)
+  // Wrap with RouteWithMessenger first
+  if (messenger && content) {
+    content = (
+      <RouteWithMessenger actions={messenger.actions} events={messenger.events}>
+        {content}
+      </RouteWithMessenger>
+    );
+  }
+
+  // Then wrap with Initialized (outermost guard)
   if (initialized && content) {
     content = <Initialized>{content}</Initialized>;
   }

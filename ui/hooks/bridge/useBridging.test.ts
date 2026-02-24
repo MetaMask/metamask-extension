@@ -1,10 +1,18 @@
+//========
+// Changes to this file demonstrate how the use of `useMessenger` in a hook
+// can be tested. (See the implementation file for the hook for how
+// `useMessenger` actually gets used.)
+//========
+
 import { toChecksumAddress } from 'ethereumjs-util';
 import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
+  UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { createMockMessenger } from '../../../test/lib/mock-messenger';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { mockNetworkState } from '../../../test/stub/networks';
@@ -33,8 +41,22 @@ jest.mock('react-redux', () => ({
 const MOCK_METAMETRICS_ID = '0xtestMetaMetricsId';
 const BRIDGE_PREPARE_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
 
-const renderUseBridging = (mockStoreState: object, pathname?: string) =>
-  renderHookWithProvider(() => useBridging(), mockStoreState, pathname);
+type RenderUseBridgingOptions = {
+  state: object;
+  pathname?: string;
+  messenger: ReturnType<typeof createMockMessenger>;
+};
+
+const renderUseBridging = ({
+  state,
+  pathname,
+  messenger,
+}: RenderUseBridgingOptions) =>
+  renderHookWithProvider(() => useBridging(), {
+    state,
+    router: { pathname: pathname ?? '/' },
+    messenger,
+  });
 
 describe('useBridging', () => {
   beforeAll(() => {
@@ -130,8 +152,13 @@ describe('useBridging', () => {
         expectedState = {},
       ) => {
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
-        const { result } = renderUseBridging(
-          createBridgeMockStore({
+        const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+        const messenger = createMockMessenger({
+          'BridgeController:trackUnifiedSwapBridgeEvent': mockTrackEvent,
+        });
+
+        const { result } = renderUseBridging({
+          state: createBridgeMockStore({
             metamaskStateOverrides: {
               useExternalServices: true,
               metaMetricsId: MOCK_METAMETRICS_ID,
@@ -168,11 +195,24 @@ describe('useBridging', () => {
               },
             },
           }),
-        );
+          messenger,
+        });
 
         result.current.openBridgeExperience(location, token, isSwap);
 
-        expect(mockDispatch.mock.calls).toHaveLength(2);
+        // dispatch is called once for resetInputFields
+        expect(mockDispatch.mock.calls).toHaveLength(1);
+        // trackUnifiedSwapBridgeEvent is called via messenger
+        expect(mockTrackEvent).toHaveBeenCalledWith(
+          UnifiedSwapBridgeEventName.ButtonClicked,
+          expect.objectContaining({
+            location,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_symbol_source: token?.symbol ?? 'ETH',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_symbol_destination: '',
+          }),
+        );
         expect(mockUseNavigate).toHaveBeenCalledWith(expectedUrl, {
           state: expectedState,
         });
@@ -283,12 +323,17 @@ describe('useBridging', () => {
         expectedState = {},
       ) => {
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
+        const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+        const messenger = createMockMessenger({
+          'BridgeController:trackUnifiedSwapBridgeEvent': mockTrackEvent,
+        });
+
         jest
           .spyOn(bridgeSelectors, 'getLastSelectedChainId')
           .mockReturnValueOnce(formatChainIdToCaip(CHAIN_IDS.MAINNET));
 
-        const { result } = renderUseBridging(
-          createBridgeMockStore({
+        const { result } = renderUseBridging({
+          state: createBridgeMockStore({
             metamaskStateOverrides: {
               useExternalServices: true,
               ...mockNetworkState(
@@ -328,11 +373,25 @@ describe('useBridging', () => {
               },
             },
           }),
-        );
+          pathname,
+          messenger,
+        });
 
         result.current.openBridgeExperience(location, token, true);
 
-        expect(mockDispatch.mock.calls).toHaveLength(2);
+        // dispatch is called once for resetInputFields
+        expect(mockDispatch.mock.calls).toHaveLength(1);
+        // trackUnifiedSwapBridgeEvent is called via messenger
+        expect(mockTrackEvent).toHaveBeenCalledWith(
+          UnifiedSwapBridgeEventName.ButtonClicked,
+          expect.objectContaining({
+            location,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_symbol_source: token?.symbol ?? 'ETH',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_symbol_destination: '',
+          }),
+        );
         expect(mockUseNavigate).toHaveBeenCalledWith(expectedUrl, {
           state: expectedState,
         });

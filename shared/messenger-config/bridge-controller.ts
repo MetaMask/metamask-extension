@@ -3,12 +3,17 @@
 // the UI would live here. The idea is that the team responsible for this
 // service would maintain these types (the Rewards team in this case).
 //========
+//========
+// We amend this file to add `BridgeController:trackUnifiedSwapBridgeEvent` to
+// the list of available actions (so that we can access it in the UI).
+//========
 
 import { BridgeControllerMessenger } from '@metamask/bridge-controller';
 import { ExtractMessengerActions, ExtractMessengerEvents } from './helpers';
 
 // Update this list to change the set of actions available in the UI.
 export const UI_ACTIONS = [
+  'BridgeController:trackUnifiedSwapBridgeEvent',
   'BridgeController:updateBridgeQuoteRequestParams',
 ] as const;
 

@@ -4,6 +4,11 @@
 // messenger would be passed down the React component tree, where it would serve
 // as the parent for more specific messengers.
 //========
+//========
+// We amend this file to add `network-controller` actions and events to the UI
+// messenger, as they weren't present before. We also expose the actions and
+// events available to the UI.
+//========
 
 import type { ActionConstraint } from '@metamask/messenger';
 import { Messenger } from '@metamask/messenger';
@@ -14,6 +19,7 @@ import type { MetaRPCClient } from '../../app/scripts/lib/metaRPCClientFactory';
 import * as accountTreeController from '../../shared/messenger-config/account-tree-controller';
 import * as bridgeController from '../../shared/messenger-config/bridge-controller';
 import * as keyringController from '../../shared/messenger-config/keyring-controller';
+import * as networkController from '../../shared/messenger-config/network-controller';
 import * as notificationServicesController from '../../shared/messenger-config/notification-services-controller';
 import * as rewardsController from '../../shared/messenger-config/rewards-controller';
 import * as shieldController from '../../shared/messenger-config/shield-controller';
@@ -42,20 +48,22 @@ type MakeActionsAsynchronous<Action> = Action extends ActionConstraint
     }
   : never;
 
-type UIMessengerActions = MakeActionsAsynchronous<
+export type UIMessengerActions = MakeActionsAsynchronous<
   | accountTreeController.UIActions
   | bridgeController.UIActions
   | keyringController.UIActions
+  | networkController.UIActions
   | notificationServicesController.UIActions
   | rewardsController.UIActions
   | shieldController.UIActions
   | walletService.UIActions
 >;
 
-type UIMessengerEvents =
+export type UIMessengerEvents =
   | accountTreeController.UIEvents
   | bridgeController.UIEvents
   | keyringController.UIEvents
+  | networkController.UIEvents
   | notificationServicesController.UIEvents
   | rewardsController.UIEvents
   | shieldController.UIEvents
@@ -71,6 +79,7 @@ const ACTIONS = [
   ...accountTreeController.UI_ACTIONS,
   ...bridgeController.UI_ACTIONS,
   ...keyringController.UI_ACTIONS,
+  ...networkController.UI_ACTIONS,
   ...notificationServicesController.UI_ACTIONS,
   ...rewardsController.UI_ACTIONS,
   ...shieldController.UI_ACTIONS,
@@ -82,6 +91,7 @@ const EVENTS = [
   ...accountTreeController.UI_EVENTS,
   ...bridgeController.UI_EVENTS,
   ...keyringController.UI_EVENTS,
+  ...networkController.UI_EVENTS,
   ...notificationServicesController.UI_EVENTS,
   ...rewardsController.UI_EVENTS,
   ...shieldController.UI_EVENTS,
