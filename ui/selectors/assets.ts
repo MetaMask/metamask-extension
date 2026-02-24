@@ -131,9 +131,7 @@ export function getAssetsMetadata(state: AssetsState) {
  * @param state.metamask - MetaMask slice.
  * @returns Assets info map or empty object.
  */
-export function getAssetsInfo(state: {
-  metamask?: AssetsControllerState['assetsInfo'];
-}) {
+export function getAssetsInfo(state: { metamask?: AssetsControllerState }) {
   return state.metamask?.assetsInfo ?? EMPTY_OBJECT;
 }
 
