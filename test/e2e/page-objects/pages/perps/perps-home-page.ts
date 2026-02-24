@@ -82,9 +82,7 @@ export class PerpsHomePage {
    * Returns the number of position cards currently displayed.
    */
   async getPositionCardsCount(): Promise<number> {
-    const elements = await this.driver.findElements(
-      this.positionCardsSelector,
-    );
+    const elements = await this.driver.findElements(this.positionCardsSelector);
     return elements.length;
   }
 
@@ -100,6 +98,7 @@ export class PerpsHomePage {
 
   /**
    * Waits for the balance section to be visible (empty or with balance).
+   * @param timeout - Optional timeout in ms for the selector wait.
    */
   async waitForBalanceSection(timeout?: number): Promise<void> {
     await this.driver.waitForSelector(

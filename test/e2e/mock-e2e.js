@@ -1234,7 +1234,7 @@ async function setupMocking(
     .forPost(/^https:\/\/api\.hyperliquid\.xyz\/info$/u)
     .thenCallback(async (req) => {
       let type;
-      const body = req.body;
+      const { body } = req;
       if (body) {
         let parsed = null;
         const json = await body.getJson().catch(() => undefined);
@@ -1252,7 +1252,8 @@ async function setupMocking(
           }
         }
         if (parsed !== null && typeof parsed === 'object') {
-          type = parsed.type ?? parsed.method;
+          const { type: parsedType, method: parsedMethod } = parsed;
+          type = parsedType ?? parsedMethod;
         }
       }
       if (type === 'meta') {

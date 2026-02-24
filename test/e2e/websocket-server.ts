@@ -45,6 +45,7 @@ class LocalWebSocketServer {
   /**
    * Register a mock connection handler. It will be invoked for each new connection.
    * Handlers are cleared each test via clearMockConnectionHandlers().
+   * @param handler - Callback invoked for each new WebSocket connection.
    */
   public addMockConnectionHandler(handler: ConnectionHandler): void {
     this.mockConnectionHandlers.push(handler);

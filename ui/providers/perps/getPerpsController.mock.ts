@@ -261,14 +261,12 @@ class MockPerpsController {
     const sizeNum = Number.parseFloat(params.size);
     const safeSize = Number.isFinite(sizeNum) && sizeNum > 0 ? sizeNum : 1;
     const signedSize = params.isBuy ? safeSize : -safeSize;
-    const leverage =
-      Number.isFinite(params.leverage) && params.leverage > 0
-        ? params.leverage
-        : 5;
-    const entryPrice =
-      Number.isFinite(params.currentPrice) && params.currentPrice > 0
-        ? params.currentPrice
-        : 50;
+    const rawLeverage = params.leverage ?? 0;
+    const leverage: number =
+      Number.isFinite(rawLeverage) && rawLeverage > 0 ? rawLeverage : 5;
+    const rawPrice = params.currentPrice ?? 0;
+    const entryPrice: number =
+      Number.isFinite(rawPrice) && rawPrice > 0 ? rawPrice : 50;
     const positionValue = Math.abs(signedSize) * entryPrice;
 
     return {

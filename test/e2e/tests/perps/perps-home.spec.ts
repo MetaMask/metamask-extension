@@ -3,7 +3,6 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
-import { PerpsActivityPage } from '../../page-objects/pages/perps/perps-activity-page';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
 import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../../page-objects/pages/perps/perps-market-list-page';
@@ -172,8 +171,8 @@ describe('Perps', function (this: Suite) {
     // Not implemented: assert position autoclose and that values get updated.
   });
 
+  // eslint-disable-next-line mocha/no-skipped-tests -- not implemented
   it.skip('navigates from Perps home to Activity via recent activity See All link', async function () {
     // Not implemented: navigates from Perps home to Activity via recent activity See All link.
   });
-
 });
