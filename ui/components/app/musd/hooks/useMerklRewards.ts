@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import { getSelectedInternalAccount } from '../../../../selectors/accounts';
@@ -7,6 +7,7 @@ import {
   fetchMerklRewardsForAsset,
   getClaimedAmountFromContract,
 } from '../merkl-client';
+import { getMerklRewardsEnabled } from '../selectors';
 
 /**
  * Check if a token is eligible for Merkl rewards.
@@ -69,7 +70,7 @@ export const formatClaimableAmount = (
 type UseMerklRewardsOptions = {
   tokenAddress: string | undefined;
   chainId: Hex;
-  isEligible: boolean;
+  showMerklBadge: boolean;
 };
 
 type UseMerklRewardsReturn = {
@@ -86,18 +87,28 @@ type UseMerklRewardsReturn = {
  * @param options - Hook options
  * @param options.tokenAddress - The token's contract address
  * @param options.chainId - The chain ID of the token
- * @param options.isEligible - whether the token is actually eligible for rewards. Determines whether we make a request
+ * @param options.showMerklBadge - whether the token should be shown. If false we don't make a request.
  * @returns Claimable reward amount
  */
 export const useMerklRewards = ({
   tokenAddress,
   chainId,
-  isEligible,
+  showMerklBadge,
 }: UseMerklRewardsOptions): UseMerklRewardsReturn => {
+  const merklRewardsEnabled = useSelector(getMerklRewardsEnabled);
+
   const [claimableReward, setClaimableReward] = useState<string | null>(null);
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
+
+  const isEligible = useMemo(
+    () =>
+      showMerklBadge &&
+      merklRewardsEnabled &&
+      isEligibleForMerklRewards(chainId, tokenAddress),
+    [showMerklBadge, merklRewardsEnabled, chainId, tokenAddress],
+  );
 
   const fetchClaimableRewards = useCallback(
     async (abortController: AbortController) => {

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import { useTokenDisplayInfo } from '../hooks';
@@ -23,12 +23,7 @@ import { type TokenWithFiatAmount } from '../types';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
-import {
-  ClaimBonusBadge,
-  isEligibleForMerklRewards,
-  useMerklRewards,
-} from '../../musd';
-import { getMerklRewardsEnabled } from '../../musd/selectors';
+import { ClaimBonusBadge, useMerklRewards } from '../../musd';
 import {
   TokenCellTitle,
   TokenCellPercentChange,
@@ -66,21 +61,11 @@ export default function TokenCell({
   );
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
-  const merklRewardsEnabled = useSelector(getMerklRewardsEnabled);
-
-  const showClaimBonusBadge = useMemo(
-    () =>
-      showMerklBadge &&
-      merklRewardsEnabled &&
-      isEligibleForMerklRewards(token.chainId, token.address),
-    [showMerklBadge, merklRewardsEnabled, token.chainId, token.address],
-  );
-
   // Check whether there are rewards available for the user
   const { claimableReward, refetch: refetchMerklRewards } = useMerklRewards({
     tokenAddress: token.address,
     chainId: token.chainId as Hex,
-    isEligible: showClaimBonusBadge,
+    showMerklBadge,
   });
 
   const tokenDisplayInfo = useTokenDisplayInfo({
