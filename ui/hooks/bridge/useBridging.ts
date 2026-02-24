@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   formatChainIdToCaip,
+  GenericQuoteRequest,
   getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
@@ -54,7 +55,7 @@ const useBridging = () => {
         address: string;
         decimals?: number;
         name?: string;
-        chainId: Hex | CaipChainId | number;
+        chainId: GenericQuoteRequest['srcChainId'];
       },
     ) => {
       dispatch(resetInputFields());
