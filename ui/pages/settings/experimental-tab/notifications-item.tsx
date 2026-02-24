@@ -19,8 +19,8 @@ export const NotificationsItem = ({ sectionRef }: NotificationsItemProps) => {
       title={t('notificationsFeatureToggle')}
       description={t('notificationsFeatureToggleDescription')}
       value={value}
-      onToggle={(value) =>
-        dispatch(setFeatureNotificationsEnabled(!value))
+      onToggle={(newValue) =>
+        dispatch(setFeatureNotificationsEnabled(!newValue))
       }
       dataTestId="toggle-notifications"
       sectionRef={sectionRef}

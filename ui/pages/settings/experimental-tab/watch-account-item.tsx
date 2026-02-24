@@ -35,13 +35,13 @@ export const WatchAccountItem = ({ sectionRef }: WatchAccountItemProps) => {
         </a>,
       ])}
       value={value}
-      onToggle={(value) => {
+      onToggle={(newValue) => {
         trackEvent({
           event: MetaMetricsEventName.WatchEthereumAccountsToggled,
           category: MetaMetricsEventCategory.Settings,
-          properties: { enabled: !value },
+          properties: { enabled: !newValue },
         });
-        dispatch(setWatchEthereumAccountEnabled(!value));
+        dispatch(setWatchEthereumAccountEnabled(!newValue));
       }}
       containerDataTestId="watch-account-toggle-div"
       dataTestId="watch-account-toggle"

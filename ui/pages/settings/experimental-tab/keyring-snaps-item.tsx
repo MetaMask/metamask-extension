@@ -26,13 +26,13 @@ export const KeyringSnapsItem = ({ sectionRef }: KeyringSnapsItemProps) => {
       title={t('addSnapAccountToggle')}
       description={t('addSnapAccountsDescription')}
       value={value}
-      onToggle={(value) => {
+      onToggle={(newValue) => {
         trackEvent({
           event: MetaMetricsEventName.AddSnapAccountEnabled,
           category: MetaMetricsEventCategory.Settings,
-          properties: { enabled: !value },
+          properties: { enabled: !newValue },
         });
-        dispatch(setAddSnapAccountEnabled(!value));
+        dispatch(setAddSnapAccountEnabled(!newValue));
       }}
       containerDataTestId="add-account-snap-toggle-div"
       dataTestId="add-account-snap-toggle-button"

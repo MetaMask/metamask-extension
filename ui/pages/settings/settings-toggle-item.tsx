@@ -52,8 +52,10 @@ export const SettingsToggleItem = ({
         />
       </div>
     </Box>
-    {description && <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-      {description}
-    </Text>}
+    {description && (
+      <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+        {description}
+      </Text>
+    )}
   </Box>
 );
