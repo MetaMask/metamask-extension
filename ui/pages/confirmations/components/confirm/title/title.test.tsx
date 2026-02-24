@@ -79,12 +79,8 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(
-      getByText(tEn('confirmTitleSignature') as string),
-    ).toBeInTheDocument();
-    expect(
-      getByText(tEn('confirmTitleDescSign') as string),
-    ).toBeInTheDocument();
+    expect(getByText(tEn('confirmTitleSignature'))).toBeInTheDocument();
+    expect(getByText(tEn('confirmTitleDescSign'))).toBeInTheDocument();
   });
 
   it('should render the title and description for a permit signature', () => {
@@ -96,11 +92,9 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
+    expect(getByText(tEn('confirmTitlePermitTokens'))).toBeInTheDocument();
     expect(
-      getByText(tEn('confirmTitlePermitTokens') as string),
-    ).toBeInTheDocument();
-    expect(
-      getByText(tEn('confirmTitleDescPermitSignature') as string),
+      getByText(tEn('confirmTitleDescPermitSignature')),
     ).toBeInTheDocument();
   });
 
@@ -114,10 +108,10 @@ describe('ConfirmTitle', () => {
     );
 
     expect(
-      getByText(tEn('confirmTitleApproveTransactionNFT') as string),
+      getByText(tEn('confirmTitleApproveTransactionNFT')),
     ).toBeInTheDocument();
     expect(
-      getByText(tEn('confirmTitleDescApproveTransaction') as string),
+      getByText(tEn('confirmTitleDescApproveTransaction')),
     ).toBeInTheDocument();
   });
 
@@ -132,11 +126,9 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
+    expect(getByText(tEn('confirmTitleAccountTypeSwitch'))).toBeInTheDocument();
     expect(
-      getByText(tEn('confirmTitleAccountTypeSwitch') as string),
-    ).toBeInTheDocument();
-    expect(
-      getByText(tEn('confirmTitleDescDelegationUpgrade') as string),
+      getByText(tEn('confirmTitleDescDelegationUpgrade')),
     ).toBeInTheDocument();
   });
 
@@ -147,12 +139,8 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(
-      getByText(tEn('confirmTitleSignature') as string),
-    ).toBeInTheDocument();
-    expect(
-      getByText(tEn('confirmTitleDescSign') as string),
-    ).toBeInTheDocument();
+    expect(getByText(tEn('confirmTitleSignature'))).toBeInTheDocument();
+    expect(getByText(tEn('confirmTitleDescSign'))).toBeInTheDocument();
   });
 
   it('should render the title and description for a contract interaction transaction', () => {
@@ -164,9 +152,7 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(
-      getByText(tEn('confirmTitleTransaction') as string),
-    ).toBeInTheDocument();
+    expect(getByText(tEn('confirmTitleTransaction'))).toBeInTheDocument();
   });
 
   it('should render the title and description for a approval transaction for NFTs', () => {
@@ -177,10 +163,10 @@ describe('ConfirmTitle', () => {
     );
 
     expect(
-      getByText(tEn('confirmTitleApproveTransactionNFT') as string),
+      getByText(tEn('confirmTitleApproveTransactionNFT')),
     ).toBeInTheDocument();
     expect(
-      getByText(tEn('confirmTitleDescApproveTransaction') as string),
+      getByText(tEn('confirmTitleDescApproveTransaction')),
     ).toBeInTheDocument();
   });
 
@@ -198,11 +184,9 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
+    expect(getByText(tEn('confirmTitlePermitTokens'))).toBeInTheDocument();
     expect(
-      getByText(tEn('confirmTitlePermitTokens') as string),
-    ).toBeInTheDocument();
-    expect(
-      getByText(tEn('confirmTitleDescERC20ApproveTransaction') as string),
+      getByText(tEn('confirmTitleDescERC20ApproveTransaction')),
     ).toBeInTheDocument();
   });
 
@@ -217,11 +201,11 @@ describe('ConfirmTitle', () => {
 
     await waitFor(() => {
       expect(
-        getByText(tEn('setApprovalForAllRedesignedTitle') as string),
+        getByText(tEn('setApprovalForAllRedesignedTitle')),
       ).toBeInTheDocument();
 
       expect(
-        getByText(tEn('confirmTitleDescApproveTransaction') as string),
+        getByText(tEn('confirmTitleDescApproveTransaction')),
       ).toBeInTheDocument();
     });
   });

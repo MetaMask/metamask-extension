@@ -450,7 +450,7 @@ describe('AlertModal', () => {
           blockaidMockStore,
         );
 
-        expect(getByText(tEn(expectedKey) as string)).toBeInTheDocument();
+        expect(getByText(tEn(expectedKey))).toBeInTheDocument();
       });
     });
 
@@ -470,7 +470,7 @@ describe('AlertModal', () => {
       );
 
       expect(
-        getByText(tEn('blockaidAlertDescriptionOthers') as string),
+        getByText(tEn('blockaidAlertDescriptionOthers')),
       ).toBeInTheDocument();
     });
   });

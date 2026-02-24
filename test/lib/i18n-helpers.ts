@@ -3,6 +3,6 @@ import * as en from '../../app/_locales/en/messages.json';
 
 export const enLocale = en;
 
-export function tEn(key, substitutions = []) {
-  return getMessage('en', en, key, substitutions);
+export function tEn(key: string, substitutions: string[] = []): string {
+  return getMessage('en', en, key, substitutions) as string;
 }
