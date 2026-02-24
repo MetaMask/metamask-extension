@@ -54,6 +54,8 @@ import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import RecoveryPhraseChips from '../onboarding-flow/recovery-phrase/recovery-phrase-chips';
 import { Toast, ToastContainer } from '../../components/multichain/toast';
+import { useTheme } from '../../hooks/useTheme';
+import { ThemeType } from '../../../shared/constants/preferences';
 
 const QUIZ_INTRODUCTION_SCREEN = 'QUIZ_INTRODUCTION_SCREEN';
 const QUIZ_QUESTIONS_SCREEN = 'QUIZ_QUESTIONS_SCREEN';
@@ -84,6 +86,8 @@ function RevealSeedPage() {
   const [correctAnswer, setCorrectAnswer] = useState(false);
 
   const [showSuccessToast, setShowSuccessToast] = useState(false);
+
+  const theme = useTheme();
 
   const onClickCopy = useCallback(() => {
     if (!phraseRevealed) {
@@ -206,7 +210,11 @@ function RevealSeedPage() {
         data-testid="reveal-seed-quiz-introduction"
       >
         <img
-          src="images/reveal_srp.png"
+          src={
+            theme === ThemeType.light
+              ? 'images/reveal_srp_light.png'
+              : 'images/reveal_srp.png'
+          }
           alt="Reveal SRP"
           className="w-[190px] h-[220px] object-contain"
         />
