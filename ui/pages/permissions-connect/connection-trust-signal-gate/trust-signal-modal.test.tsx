@@ -1,17 +1,21 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import { I18nContext } from '../../../contexts/i18n';
-import { getMessage } from '../../../helpers/utils/i18n-helper';
-import * as en from '../../../../app/_locales/en/messages.json';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
 import { TrustSignalModal } from './trust-signal-modal';
 
-const t = (key: string, ...args: string[]) =>
-  getMessage('en', en, key, ...args);
+const MOCK_I18N: Record<string, string> = {
+  trustSignalWarningTitle: 'Unverified site',
+  trustSignalWarningDescription:
+    'This site has not been verified. Proceed with caution when connecting.',
+  trustSignalBlockTitle: 'Malicious site detected',
+  trustSignalBlockDescription:
+    'If you connect to this site, you could lose all your assets.',
+  trustSignalContinueAnyway: 'Connect Anyway',
+};
 
-function renderWithI18n(ui: React.ReactElement) {
-  return render(<I18nContext.Provider value={t}>{ui}</I18nContext.Provider>);
-}
+jest.mock('../../../hooks/useI18nContext', () => ({
+  useI18nContext: () => (key: string) => MOCK_I18N[key] ?? key,
+}));
 
 describe('TrustSignalModal', () => {
   beforeEach(() => {
@@ -26,7 +30,7 @@ describe('TrustSignalModal', () => {
     };
 
     it('renders with the hostname visible', () => {
-      const { getByText, getByTestId } = renderWithI18n(
+      const { getByText, getByTestId } = render(
         <TrustSignalModal {...defaultProps} />,
       );
 
@@ -35,7 +39,7 @@ describe('TrustSignalModal', () => {
     });
 
     it('shows "Unverified site" title', () => {
-      const { getByText } = renderWithI18n(
+      const { getByText } = render(
         <TrustSignalModal {...defaultProps} />,
       );
 
@@ -43,7 +47,7 @@ describe('TrustSignalModal', () => {
     });
 
     it('calls onContinue when "Connect Anyway" is clicked', () => {
-      const { getByTestId } = renderWithI18n(
+      const { getByTestId } = render(
         <TrustSignalModal {...defaultProps} />,
       );
 
@@ -60,7 +64,7 @@ describe('TrustSignalModal', () => {
     };
 
     it('renders with the hostname visible', () => {
-      const { getByText, getByTestId } = renderWithI18n(
+      const { getByText, getByTestId } = render(
         <TrustSignalModal {...defaultProps} />,
       );
 
@@ -69,7 +73,7 @@ describe('TrustSignalModal', () => {
     });
 
     it('shows "Malicious site detected" title', () => {
-      const { getByText } = renderWithI18n(
+      const { getByText } = render(
         <TrustSignalModal {...defaultProps} />,
       );
 
@@ -77,7 +81,7 @@ describe('TrustSignalModal', () => {
     });
 
     it('calls onContinue when "Connect Anyway" is clicked', () => {
-      const { getByTestId } = renderWithI18n(
+      const { getByTestId } = render(
         <TrustSignalModal {...defaultProps} />,
       );
 

@@ -1,8 +1,5 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import { I18nContext } from '../../../contexts/i18n';
-import { getMessage } from '../../../helpers/utils/i18n-helper';
-import * as en from '../../../../app/_locales/en/messages.json';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
 import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
 import { ConnectionTrustSignalGate } from './connection-trust-signal-gate';
@@ -11,14 +8,11 @@ jest.mock('../../../hooks/useOriginTrustSignals', () => ({
   useOriginTrustSignals: jest.fn(),
 }));
 
+jest.mock('../../../hooks/useI18nContext', () => ({
+  useI18nContext: () => (key: string) => key,
+}));
+
 const mockUseOriginTrustSignals = useOriginTrustSignals as jest.Mock;
-
-const t = (key: string, ...args: string[]) =>
-  getMessage('en', en, key, ...args);
-
-function renderWithI18n(ui: React.ReactElement) {
-  return render(<I18nContext.Provider value={t}>{ui}</I18nContext.Provider>);
-}
 
 describe('ConnectionTrustSignalGate', () => {
   const defaultProps = {
@@ -35,7 +29,7 @@ describe('ConnectionTrustSignalGate', () => {
       label: null,
     });
 
-    const { getByText } = renderWithI18n(
+    const { getByText } = render(
       <ConnectionTrustSignalGate {...defaultProps}>
         <div>Child content</div>
       </ConnectionTrustSignalGate>,
@@ -50,7 +44,7 @@ describe('ConnectionTrustSignalGate', () => {
       label: null,
     });
 
-    const { getByText, queryByTestId } = renderWithI18n(
+    const { getByText, queryByTestId } = render(
       <ConnectionTrustSignalGate {...defaultProps}>
         <div>Child content</div>
       </ConnectionTrustSignalGate>,
@@ -67,7 +61,7 @@ describe('ConnectionTrustSignalGate', () => {
       label: null,
     });
 
-    const { getByTestId, queryByText } = renderWithI18n(
+    const { getByTestId, queryByText } = render(
       <ConnectionTrustSignalGate {...defaultProps}>
         <div>Child content</div>
       </ConnectionTrustSignalGate>,
@@ -83,7 +77,7 @@ describe('ConnectionTrustSignalGate', () => {
       label: null,
     });
 
-    const { getByTestId, queryByText } = renderWithI18n(
+    const { getByTestId, queryByText } = render(
       <ConnectionTrustSignalGate {...defaultProps}>
         <div>Child content</div>
       </ConnectionTrustSignalGate>,
@@ -99,7 +93,7 @@ describe('ConnectionTrustSignalGate', () => {
       label: null,
     });
 
-    const { getByTestId, getByText, queryByTestId } = renderWithI18n(
+    const { getByTestId, getByText, queryByTestId } = render(
       <ConnectionTrustSignalGate {...defaultProps}>
         <div>Child content</div>
       </ConnectionTrustSignalGate>,
@@ -116,7 +110,7 @@ describe('ConnectionTrustSignalGate', () => {
       label: null,
     });
 
-    const { getByTestId, getByText, queryByTestId } = renderWithI18n(
+    const { getByTestId, getByText, queryByTestId } = render(
       <ConnectionTrustSignalGate {...defaultProps}>
         <div>Child content</div>
       </ConnectionTrustSignalGate>,
