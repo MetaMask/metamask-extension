@@ -121,7 +121,7 @@ export const getAccountTrackerControllerAccountsByChainId =
 
         for (const [assetId, balanceData] of Object.entries(accountBalances)) {
           const metadata = assetsInfo[assetId];
-          if (!metadata || metadata.type !== 'native') {
+          if (metadata?.type !== 'native') {
             continue;
           }
 
@@ -133,7 +133,8 @@ export const getAccountTrackerControllerAccountsByChainId =
           const hexChainId = decimalToPrefixedHex(parsedChain.reference);
           const amount = balanceData?.amount ?? '0';
 
-          (result[hexChainId] ??= {})[checksummedAddress] = {
+          result[hexChainId] ??= {};
+          result[hexChainId][checksummedAddress] = {
             // TODO: Use raw value from state when available
             balance:
               parseBalanceWithDecimals(amount, metadata.decimals) ?? '0x0',
