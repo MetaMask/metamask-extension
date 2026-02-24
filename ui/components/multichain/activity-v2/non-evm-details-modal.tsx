@@ -18,10 +18,7 @@ export const NonEvmDetailsModal = ({ transaction, onClose }: Props) => {
 
   if (
     bridgeHistoryItem &&
-    isCrossChain(
-      quote?.srcChainId,
-      quote?.destChainId,
-    )
+    isCrossChain(quote?.srcChainId, quote?.destChainId)
   ) {
     return (
       <MultichainBridgeTransactionDetailsModal
