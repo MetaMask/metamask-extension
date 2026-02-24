@@ -37,10 +37,19 @@ const getCalculatedTokenAmount1dAgo = (
   if (tokenFiatAmount === undefined) {
     return 0;
   }
-  if (tokenPercent1dAgo === undefined) {
-    return tokenFiatAmount;
+  const numericTokenFiatAmount = Number(tokenFiatAmount);
+  if (!Number.isFinite(numericTokenFiatAmount)) {
+    return 0;
   }
-  return Number(tokenFiatAmount) / (1 + tokenPercent1dAgo / 100);
+  if (tokenPercent1dAgo === undefined) {
+    return numericTokenFiatAmount;
+  }
+  const denominator = 1 + tokenPercent1dAgo / 100;
+  if (!Number.isFinite(denominator) || denominator <= 0) {
+    return 0;
+  }
+  const tokenFiat1dAgo = numericTokenFiatAmount / denominator;
+  return Number.isFinite(tokenFiat1dAgo) ? tokenFiat1dAgo : 0;
 };
 
 export const AggregatedPercentageOverviewCrossChains = ({

@@ -1586,9 +1586,6 @@
   "swap": {
     "message": "Canjear"
   },
-  "swapAggregator": {
-    "message": "Agregador"
-  },
   "swapAllowSwappingOf": {
     "message": "Permitir canje de $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -1614,12 +1611,6 @@
   },
   "swapCustom": {
     "message": "personalizado"
-  },
-  "swapDecentralizedExchange": {
-    "message": "Intercambio descentralizado"
-  },
-  "swapDirectContract": {
-    "message": "Contrato directo"
   },
   "swapEditLimit": {
     "message": "Editar límite"
@@ -1713,9 +1704,6 @@
   "swapReceivingInfoTooltip": {
     "message": "Este es un valor estimado. El monto exacto depende del desfase."
   },
-  "swapRequestForQuotation": {
-    "message": "Solicitud de cotización"
-  },
   "swapSelect": {
     "message": "Seleccionar"
   },
@@ -1753,9 +1741,6 @@
   },
   "swapTwoTransactions": {
     "message": "2 transacciones"
-  },
-  "swapUnknown": {
-    "message": "Desconocido"
   },
   "swapZeroSlippage": {
     "message": "0 % de desfase"

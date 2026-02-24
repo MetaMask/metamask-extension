@@ -15,7 +15,7 @@ import {
   useTransactionPayRequiredTokens,
   useTransactionPayTotals,
 } from '../../pay/useTransactionPayData';
-import { useMultichainBalances } from '../../../../../hooks/useMultichainBalances';
+import { useTokenWithBalance } from '../../tokens/useTokenWithBalance';
 import { AlertsName } from '../constants';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -23,7 +23,7 @@ import { useInsufficientPayTokenBalanceAlert } from './useInsufficientPayTokenBa
 
 jest.mock('../../pay/useTransactionPayToken');
 jest.mock('../../pay/useTransactionPayData');
-jest.mock('../../../../../hooks/useMultichainBalances');
+jest.mock('../../tokens/useTokenWithBalance');
 
 const PAY_TOKEN_MOCK = {
   address: '0x123' as Hex,
@@ -74,7 +74,7 @@ function runHook(
 describe('useInsufficientPayTokenBalanceAlert', () => {
   const useTransactionPayTotalsMock = jest.mocked(useTransactionPayTotals);
   const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
-  const useMultichainBalancesMock = jest.mocked(useMultichainBalances);
+  const useTokenWithBalanceMock = jest.mocked(useTokenWithBalance);
   const useTransactionPayIsMaxAmountMock = jest.mocked(
     useTransactionPayIsMaxAmount,
   );
@@ -99,11 +99,16 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       setPayToken: jest.fn(),
     });
 
-    useMultichainBalancesMock.mockReturnValue({
-      assetsWithBalance: [NATIVE_TOKEN_MOCK],
-      isLoading: false,
-      balanceByChainId: {},
-    } as unknown as ReturnType<typeof useMultichainBalances>);
+    useTokenWithBalanceMock.mockReturnValue({
+      address: NATIVE_TOKEN_MOCK.address,
+      chainId: NATIVE_TOKEN_MOCK.chainId,
+      symbol: 'ETH',
+      decimals: 18,
+      balance: '5',
+      balanceRaw: NATIVE_TOKEN_MOCK.balance,
+      balanceFiat: '$0.00',
+      tokenFiatAmount: 0,
+    });
   });
 
   describe('for input', () => {
@@ -217,16 +222,16 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
 
   describe('for source network fee', () => {
     it('returns alert if native balance is less than total source network fee', () => {
-      useMultichainBalancesMock.mockReturnValue({
-        assetsWithBalance: [
-          {
-            ...NATIVE_TOKEN_MOCK,
-            balance: '100000000000000',
-          },
-        ],
-        isLoading: false,
-        balanceByChainId: {},
-      } as unknown as ReturnType<typeof useMultichainBalances>);
+      useTokenWithBalanceMock.mockReturnValue({
+        address: NATIVE_TOKEN_MOCK.address,
+        chainId: NATIVE_TOKEN_MOCK.chainId,
+        symbol: 'ETH',
+        decimals: 18,
+        balance: '0.0001',
+        balanceRaw: '100000000000000',
+        balanceFiat: '$0.00',
+        tokenFiatAmount: 0,
+      });
 
       const { result } = runHook();
 
@@ -243,16 +248,16 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
     });
 
     it('returns no alert if pay token is native', () => {
-      useMultichainBalancesMock.mockReturnValue({
-        assetsWithBalance: [
-          {
-            ...NATIVE_TOKEN_MOCK,
-            balance: '100000000000000',
-          },
-        ],
-        isLoading: false,
-        balanceByChainId: {},
-      } as unknown as ReturnType<typeof useMultichainBalances>);
+      useTokenWithBalanceMock.mockReturnValue({
+        address: NATIVE_TOKEN_MOCK.address,
+        chainId: NATIVE_TOKEN_MOCK.chainId,
+        symbol: 'ETH',
+        decimals: 18,
+        balance: '0.0001',
+        balanceRaw: '100000000000000',
+        balanceFiat: '$0.00',
+        tokenFiatAmount: 0,
+      });
 
       useTransactionPayTokenMock.mockReturnValue({
         payToken: {
@@ -270,16 +275,16 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
     });
 
     it('returns no alert if source network is using gas fee token', () => {
-      useMultichainBalancesMock.mockReturnValue({
-        assetsWithBalance: [
-          {
-            ...NATIVE_TOKEN_MOCK,
-            balance: '100000000000000',
-          },
-        ],
-        isLoading: false,
-        balanceByChainId: {},
-      } as unknown as ReturnType<typeof useMultichainBalances>);
+      useTokenWithBalanceMock.mockReturnValue({
+        address: NATIVE_TOKEN_MOCK.address,
+        chainId: NATIVE_TOKEN_MOCK.chainId,
+        symbol: 'ETH',
+        decimals: 18,
+        balance: '0.0001',
+        balanceRaw: '100000000000000',
+        balanceFiat: '$0.00',
+        tokenFiatAmount: 0,
+      });
 
       useTransactionPayTotalsMock.mockReturnValue({
         ...TOTALS_MOCK,
@@ -295,16 +300,16 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
     });
 
     it('returns no alert if pending amount is provided', () => {
-      useMultichainBalancesMock.mockReturnValue({
-        assetsWithBalance: [
-          {
-            ...NATIVE_TOKEN_MOCK,
-            balance: '100000000000000',
-          },
-        ],
-        isLoading: false,
-        balanceByChainId: {},
-      } as unknown as ReturnType<typeof useMultichainBalances>);
+      useTokenWithBalanceMock.mockReturnValue({
+        address: NATIVE_TOKEN_MOCK.address,
+        chainId: NATIVE_TOKEN_MOCK.chainId,
+        symbol: 'ETH',
+        decimals: 18,
+        balance: '0.0001',
+        balanceRaw: '100000000000000',
+        balanceFiat: '$0.00',
+        tokenFiatAmount: 0,
+      });
 
       const { result } = runHook({ pendingAmountUsd: '1.00' });
 

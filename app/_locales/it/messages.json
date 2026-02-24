@@ -1159,9 +1159,6 @@
   "swap": {
     "message": "Scambia"
   },
-  "swapAggregator": {
-    "message": "Aggregatore"
-  },
   "swapAmountReceived": {
     "message": "Importo garantito"
   },
@@ -1174,9 +1171,6 @@
   },
   "swapCustom": {
     "message": "personalizza"
-  },
-  "swapDecentralizedExchange": {
-    "message": "Sito di scambio decentralizzato"
   },
   "swapEditLimit": {
     "message": "Modifica limite"
@@ -1244,9 +1238,6 @@
   "swapReceivingInfoTooltip": {
     "message": "Questa è una stima. L'importo esatto dipende dallo slippage."
   },
-  "swapRequestForQuotation": {
-    "message": "Richiedi quotazione"
-  },
   "swapSelect": {
     "message": "Selezione"
   },
@@ -1272,9 +1263,6 @@
   },
   "swapTransactionComplete": {
     "message": "Transazione completata"
-  },
-  "swapUnknown": {
-    "message": "Sconosciuto"
   },
   "swapsMaxSlippage": {
     "message": "Tolleranza Slippage"

@@ -43,10 +43,19 @@ const getCalculatedTokenAmount1dAgo = (
   if (tokenFiatAmount === undefined) {
     return 0;
   }
-  if (tokenPercent1dAgo === undefined) {
-    return tokenFiatAmount;
+  const numericTokenFiatAmount = Number(tokenFiatAmount);
+  if (!Number.isFinite(numericTokenFiatAmount)) {
+    return 0;
   }
-  return Number(tokenFiatAmount) / (1 + tokenPercent1dAgo / 100);
+  if (tokenPercent1dAgo === undefined) {
+    return numericTokenFiatAmount;
+  }
+  const denominator = 1 + tokenPercent1dAgo / 100;
+  if (!Number.isFinite(denominator) || denominator <= 0) {
+    return 0;
+  }
+  const tokenFiat1dAgo = numericTokenFiatAmount / denominator;
+  return Number.isFinite(tokenFiat1dAgo) ? tokenFiat1dAgo : 0;
 };
 
 export const AggregatedPercentageOverview = ({
@@ -101,11 +110,18 @@ export const AggregatedPercentageOverview = ({
     }, 0); // Initial total1dAgo is 0
   }, [orderedTokenList, tokensMarketData, currentChainId]); // Dependencies: recalculate if orderedTokenList or tokensMarketData changes
 
-  const totalBalance: number = Number(totalFiatBalance);
-  const totalBalance1dAgo = totalFiat1dAgo;
+  const totalBalance = Number(totalFiatBalance);
+  const normalizedTotalBalance = Number.isFinite(totalBalance)
+    ? totalBalance
+    : 0;
+  const normalizedTotalBalance1dAgo =
+    Number.isFinite(totalFiat1dAgo) && totalFiat1dAgo > 0 ? totalFiat1dAgo : 0;
 
-  const amountChange = totalBalance - totalBalance1dAgo;
-  const percentageChange = (amountChange / totalBalance1dAgo) * 100 || 0;
+  const amountChange = normalizedTotalBalance - normalizedTotalBalance1dAgo;
+  const percentageChange =
+    normalizedTotalBalance1dAgo === 0
+      ? 0
+      : (amountChange / normalizedTotalBalance1dAgo) * 100;
 
   const formattedPercentChange = formatValue(
     amountChange === 0 ? 0 : percentageChange,

@@ -6364,21 +6364,31 @@ export function setSecurityAlertsEnabled(val: boolean): void {
   }
 }
 
-export async function setWatchEthereumAccountEnabled(value: boolean) {
-  try {
-    await submitRequestToBackground('setWatchEthereumAccountEnabled', [value]);
-  } catch (error) {
-    logErrorWithMessage(error);
-  }
+export function setWatchEthereumAccountEnabled(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      await submitRequestToBackground('setWatchEthereumAccountEnabled', [
+        value,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
-  try {
-    await submitRequestToBackground('setAddSnapAccountEnabled', [value]);
-  } catch (error) {
-    logErrorWithMessage(error);
-  }
+export function setAddSnapAccountEnabled(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      await submitRequestToBackground('setAddSnapAccountEnabled', [value]);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
 }
 
 export function showKeyringSnapRemovalModal(payload: {
@@ -7249,7 +7259,6 @@ export function setConfirmationAdvancedDetailsOpen(value: boolean) {
   return setPreference('showConfirmationAdvancedDetails', value);
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 export function setMultichainAccountsIntroModalShown(value: boolean) {
   return async () => {
     await submitRequestToBackground('setHasShownMultichainAccountsIntroModal', [
@@ -7285,6 +7294,7 @@ export async function decodeTransactionData({
   ]);
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 export async function alignMultichainWallets(): Promise<void> {
   return await submitRequestToBackground<void>('alignMultichainWallets', []);
 }

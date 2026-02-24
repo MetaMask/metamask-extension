@@ -711,6 +711,10 @@
     "message": "Approve $1 spending cap",
     "description": "The token symbol that is being approved"
   },
+  "approveToken": {
+    "message": "Approve $1",
+    "description": "Used in the transaction details summary to describe an approval transaction. $1 is the symbol of the token being approved."
+  },
   "approved": {
     "message": "Approved"
   },
@@ -2108,6 +2112,9 @@
   },
   "deepLink_theRewardsPage": {
     "message": "the MetaMask Rewards page"
+  },
+  "deepLink_theSellPage": {
+    "message": "the sell page"
   },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
@@ -3725,9 +3732,6 @@
   },
   "lock": {
     "message": "Lock"
-  },
-  "lockMetaMask": {
-    "message": "Lock MetaMask"
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Locking MetaMask..."
@@ -6148,9 +6152,6 @@
   "restore": {
     "message": "Restore"
   },
-  "restoreUserData": {
-    "message": "Restore user data"
-  },
   "restoreWalletDescription": {
     "message": "Enter your $1. By importing the wallet, you will erase your current wallet data from this device. This can’t be undone.",
     "description": "$1 is the Secret Recovery Phrase"
@@ -7517,12 +7518,6 @@
   "smartContracts": {
     "message": "Smart contracts"
   },
-  "smartSwapsErrorNotEnoughFunds": {
-    "message": "Not enough funds for a smart swap."
-  },
-  "smartSwapsErrorUnavailable": {
-    "message": "Smart Swaps are temporarily unavailable."
-  },
   "smartTransactionCancelled": {
     "message": "Your transaction was canceled"
   },
@@ -7584,12 +7579,6 @@
   },
   "snapAccountRemovedDescription": {
     "message": "This account will no longer be available to use in MetaMask."
-  },
-  "snapAccounts": {
-    "message": "Account Snaps"
-  },
-  "snapAccountsDescription": {
-    "message": "Accounts controlled by third-party Snaps."
   },
   "snapConnectTo": {
     "message": "Connect to $1",
@@ -8165,9 +8154,6 @@
   "swapAdjustSlippage": {
     "message": "Adjust slippage"
   },
-  "swapAggregator": {
-    "message": "Aggregator"
-  },
   "swapAllowSwappingOf": {
     "message": "Allow swapping of $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -8203,15 +8189,9 @@
   "swapCustom": {
     "message": "custom"
   },
-  "swapDecentralizedExchange": {
-    "message": "Decentralized exchange"
-  },
   "swapDetailsTitle": {
     "message": "Swap details",
     "description": "Title for the modal showing details about a swap transaction."
-  },
-  "swapDirectContract": {
-    "message": "Direct contract"
   },
   "swapEditLimit": {
     "message": "Edit limit"
@@ -8339,9 +8319,6 @@
   "swapReceivingInfoTooltip": {
     "message": "This is an estimate. The exact amount depends on slippage."
   },
-  "swapRequestForQuotation": {
-    "message": "Request for quotation"
-  },
   "swapSelect": {
     "message": "Select"
   },
@@ -8433,9 +8410,6 @@
   },
   "swapTwoTransactions": {
     "message": "2 transactions"
-  },
-  "swapUnknown": {
-    "message": "Unknown"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "You don't have enough $1 to pay the gas fee for this swap. Enter a smaller amount or buy more $1."
