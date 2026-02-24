@@ -86,7 +86,7 @@
                 "type": "Snap Keyring"
               },
               "lastSelected": 0,
-              "name": "Snap Account 1",
+              "name": "",
               "snap": {
                 "enabled": true,
                 "id": "npm:@metamask/solana-wallet-snap",
@@ -126,7 +126,7 @@
                 "type": "HD Key Tree"
               },
               "lastSelected": 1770282498132,
-              "name": "Account 1"
+              "name": ""
             },
             "methods": [
               "personal_sign",
