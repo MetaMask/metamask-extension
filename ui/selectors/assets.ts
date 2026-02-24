@@ -8,6 +8,10 @@ import {
   calculateBalanceChangeForAccountGroup,
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
+import {
+  AssetsControllerState,
+  getAggregatedBalanceForAccount,
+} from '@metamask/assets-controller';
 import { CaipAssetId, isEvmAccountType } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
 import {
@@ -118,8 +122,159 @@ export function getAccountAssets(state: AssetsState) {
  * @returns An object containing non-EVM assets metadata per asset types (CAIP-19).
  */
 export function getAssetsMetadata(state: AssetsState) {
-  return state.metamask.assetsMetadata;
+  return state.metamask?.assetsMetadata ?? {};
 }
+
+/**
+ * Returns the assets info (AssetsController state).
+ *
+ * @param state - Redux state object.
+ * @param state.metamask - MetaMask slice.
+ * @returns Assets info map or empty object.
+ */
+export function getAssetsInfo(state: { metamask?: AssetsControllerState }) {
+  return state.metamask?.assetsInfo ?? EMPTY_OBJECT;
+}
+
+/**
+ * Returns the assets balance (AssetsController state).
+ *
+ * @param state - Redux state object.
+ * @param state.metamask - MetaMask slice.
+ * @returns Assets balance map or empty object.
+ */
+export function getAssetsBalance(state: { metamask?: AssetsControllerState }) {
+  return state.metamask?.assetsBalance ?? EMPTY_OBJECT;
+}
+
+/**
+ * Returns the assets price (AssetsController state).
+ *
+ * @param state - Redux state object.
+ * @param state.metamask - MetaMask slice.
+ * @returns Assets price map or empty object.
+ */
+export function getAssetsPrice(state: { metamask?: AssetsControllerState }) {
+  return state.metamask?.assetsPrice ?? EMPTY_OBJECT;
+}
+
+/**
+ * Returns the asset preferences (AssetsController state).
+ *
+ * @param state - Redux state object.
+ * @param state.metamask - MetaMask slice.
+ * @returns Asset preferences map or empty object.
+ */
+export function getAssetPreferences(state: {
+  metamask?: AssetsControllerState;
+}) {
+  return state.metamask?.assetPreferences ?? EMPTY_OBJECT;
+}
+
+/**
+ * Returns the custom assets (AssetsController state).
+ *
+ * @param state - Redux state object.
+ * @param state.metamask - MetaMask slice.
+ * @returns Custom assets map or empty object.
+ */
+export function getCustomAssets(state: { metamask?: AssetsControllerState }) {
+  return state.metamask?.customAssets ?? EMPTY_OBJECT;
+}
+
+/** State shape used for aggregated balance selector */
+type AggregatedBalanceState = {
+  metamask?: Record<string, unknown>;
+};
+
+/**
+ * Returns the aggregated balance for the selected account (AssetsController aggregation).
+ *
+ * @param state - Redux state object.
+ * @returns Aggregated balance or null when no selected account.
+ */
+export const selectAggregatedBalanceForSelectedAccount = createSelector(
+  [
+    getAssetsInfo,
+    getAssetsBalance,
+    getAssetsPrice,
+    getAssetPreferences,
+    getCustomAssets,
+    getSelectedInternalAccount,
+    getEnabledNetworks,
+    (state: AggregatedBalanceState) => state.metamask?.accountTree,
+    (state: AggregatedBalanceState) =>
+      state.metamask?.isAccountTreeSyncingInProgress as boolean | undefined,
+    (state: AggregatedBalanceState) =>
+      state.metamask?.hasAccountTreeSyncingSyncedAtLeastOnce as
+        | boolean
+        | undefined,
+    (state: AggregatedBalanceState) =>
+      state.metamask?.accountGroupsMetadata as
+        | Record<string, unknown>
+        | undefined,
+    (state: AggregatedBalanceState) =>
+      state.metamask?.accountWalletsMetadata as
+        | Record<string, unknown>
+        | undefined,
+    (state: AggregatedBalanceState) =>
+      (
+        state.metamask?.internalAccounts as {
+          accounts?: Record<string, unknown>;
+        }
+      )?.accounts,
+  ],
+  (
+    assetsInfo,
+    assetsBalance,
+    assetsPrice,
+    assetPreferences,
+    customAssets,
+    selectedInternalAccount,
+    enabledNetworkMap,
+    accountTree,
+    isAccountTreeSyncingInProgress,
+    hasAccountTreeSyncingSyncedAtLeastOnce,
+    accountGroupsMetadata,
+    accountWalletsMetadata,
+    accountsById,
+  ) => {
+    if (!selectedInternalAccount) {
+      return null;
+    }
+    const assetsControllerState = {
+      assetsInfo,
+      assetsBalance,
+      assetsPrice,
+      assetPreferences,
+      customAssets,
+    };
+    const accountTreeState: AccountTreeControllerState | undefined = accountTree
+      ? {
+          accountTree,
+          isAccountTreeSyncingInProgress:
+            isAccountTreeSyncingInProgress ?? false,
+          hasAccountTreeSyncingSyncedAtLeastOnce:
+            hasAccountTreeSyncingSyncedAtLeastOnce ?? false,
+          accountGroupsMetadata: (accountGroupsMetadata ??
+            {}) as AccountTreeControllerState['accountGroupsMetadata'],
+          accountWalletsMetadata: (accountWalletsMetadata ??
+            {}) as AccountTreeControllerState['accountWalletsMetadata'],
+        }
+      : undefined;
+
+    return getAggregatedBalanceForAccount(
+      assetsControllerState,
+      selectedInternalAccount,
+      enabledNetworkMap,
+      accountTreeState,
+      undefined,
+      (accountsById ?? {}) as Parameters<
+        typeof getAggregatedBalanceForAccount
+      >[5],
+    );
+  },
+);
 
 /**
  * Gets non-EVM ignored assets.
