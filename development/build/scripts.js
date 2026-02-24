@@ -1034,6 +1034,10 @@ function setupBundlerDefaults(
             './**/node_modules/@scure',
             './**/node_modules/micro-eth-signer',
             './**/node_modules/micro-packed',
+            // MYX SDK and its ESM-only transitive dependencies
+            './**/node_modules/@myx-trade',
+            './**/node_modules/lodash-es',
+            './**/node_modules/wretch',
             // Ledger WebHID transport
             './**/node_modules/@ledgerhq/hw-transport-webhid',
             './**/node_modules/@ledgerhq/hw-transport',

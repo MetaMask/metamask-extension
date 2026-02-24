@@ -801,6 +801,12 @@
         "@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": true
       }
     },
+    "@metamask/perps-controller>@metamask/abi-utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@metamask/perps-controller>@metamask/abi-utils>@metamask/utils": true
+      }
+    },
     "@metamask/account-api": {
       "packages": {
         "@metamask/keyring-utils": true
@@ -1871,18 +1877,21 @@
     "@metamask/perps-controller": {
       "globals": {
         "AbortController": true,
-        "Intl.DateTimeFormat": true,
-        "Intl.NumberFormat": true,
         "WebSocket": true,
+        "clearInterval": true,
         "clearTimeout": true,
         "fetch": true,
+        "performance.now": true,
+        "process": true,
+        "setInterval": true,
         "setTimeout": true
       },
       "packages": {
+        "@metamask/perps-controller>@metamask/abi-utils": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
+        "@metamask/perps-controller>@myx-trade/sdk": true,
         "@metamask/perps-controller>@nktkas/hyperliquid": true,
         "@metamask/perps-controller>bignumber.js": true,
         "uuid": true
@@ -2427,6 +2436,51 @@
         "semver": true
       }
     },
+    "@metamask/perps-controller>@metamask/abi-utils>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "buffer": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
+    "@metamask/perps-controller>@myx-trade/sdk": {
+      "globals": {
+        "MxSDK": "write",
+        "TextEncoder": true,
+        "URLSearchParams": true,
+        "WebSocket.CONNECTING": true,
+        "WebSocket.OPEN": true,
+        "clearInterval": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "crypto.subtle.digest": true,
+        "fetch": true,
+        "queueMicrotask": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethersproject/bytes": true,
+        "@ethersproject/providers": true,
+        "@metamask/ppom-validator>crypto-js": true,
+        "@metamask/perps-controller>@myx-trade/sdk>dayjs": true,
+        "@metamask/perps-controller>@myx-trade/sdk>ethers-decode-error": true,
+        "@metamask/perps-controller>@myx-trade/sdk>ethers": true,
+        "@metamask/perps-controller>@myx-trade/sdk>lodash-es": true,
+        "@metamask/perps-controller>@myx-trade/sdk>mitt": true,
+        "@metamask/perps-controller>@myx-trade/sdk>reconnecting-websocket": true,
+        "@metamask/perps-controller>@myx-trade/sdk>wretch": true
+      }
+    },
     "@ngraveio/bc-ur": {
       "globals": {
         "Buffer.alloc": true,
@@ -2544,6 +2598,14 @@
         "@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
       }
     },
+    "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/curves>@noble/hashes": true
+      }
+    },
     "@noble/hashes": {
       "globals": {
         "TextDecoder": true,
@@ -2564,6 +2626,12 @@
       },
       "packages": {
         "@swc/helpers": true
+      }
+    },
+    "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/curves>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
@@ -2624,6 +2692,11 @@
       }
     },
     "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
+    "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/hashes": {
       "globals": {
         "TextEncoder": true
       }
@@ -4050,6 +4123,11 @@
         "react>object-assign": true
       }
     },
+    "@metamask/perps-controller>@myx-trade/sdk>dayjs": {
+      "globals": {
+        "define": true
+      }
+    },
     "nock>debug": {
       "globals": {
         "console": true,
@@ -4428,6 +4506,31 @@
         "ethers>@ethersproject/wallet": true,
         "ethers>@ethersproject/web": true,
         "ethers>@ethersproject/wordlists": true
+      }
+    },
+    "@metamask/perps-controller>@myx-trade/sdk>ethers-decode-error": {
+      "packages": {
+        "@metamask/perps-controller>@myx-trade/sdk>ethers": true
+      }
+    },
+    "@metamask/perps-controller>@myx-trade/sdk>ethers": {
+      "globals": {
+        "AbortController": true,
+        "Event": true,
+        "Headers": true,
+        "atob": true,
+        "btoa": true,
+        "clearTimeout": true,
+        "console.log": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/perps-controller>@myx-trade/sdk>ethers>@adraffy/ens-normalize": true,
+        "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/curves": true,
+        "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/hashes": true,
+        "@swc/helpers": true,
+        "@metamask/perps-controller>@myx-trade/sdk>ethers>aes-js": true
       }
     },
     "eth-method-registry>@metamask/ethjs-contract>ethjs-abi": {
@@ -4978,6 +5081,12 @@
     "lodash": {
       "globals": {
         "define": true
+      }
+    },
+    "@metamask/perps-controller>@myx-trade/sdk>lodash-es": {
+      "globals": {
+        "exports": true,
+        "module": true
       }
     },
     "loglevel": {
@@ -5892,6 +6001,15 @@
     "@metamask/snaps-controllers>readable-web-to-node-stream": {
       "packages": {
         "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": true
+      }
+    },
+    "@metamask/perps-controller>@myx-trade/sdk>reconnecting-websocket": {
+      "globals": {
+        "Blob": true,
+        "WebSocket": true,
+        "clearTimeout": true,
+        "console": true,
+        "setTimeout": true
       }
     },
     "redux": {
