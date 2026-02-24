@@ -148,6 +148,10 @@ const PRESETS: Record<string, string[]> = {
     `${BENCHMARK_DIR}/interaction/confirm-tx.ts`,
     `${BENCHMARK_DIR}/interaction/bridge-user-actions.ts`,
   ],
+  // Power user home load (interaction style - fresh browser per iteration)
+  powerUserHomeLoad: [
+    `${BENCHMARK_DIR}/interaction/power-user-home-load.ts`,
+  ],
   // Playwright page-load benchmark (for local use; CI runs this separately)
   pageLoadBenchmark: [
     'test/e2e/playwright/benchmark/page-load-benchmark.spec.ts',

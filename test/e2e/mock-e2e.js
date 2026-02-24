@@ -158,6 +158,13 @@ async function setupMocking(
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: ({ headers: { host }, url }) => {
+      if (!host || !url) {
+        return {
+          response: {
+            statusCode: 200,
+          },
+        };
+      }
       if (blocklistedHosts.includes(host)) {
         return {
           url: 'http://localhost:8545',
