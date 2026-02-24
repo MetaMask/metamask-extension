@@ -70,6 +70,8 @@ class HomePage {
     testId: 'account-overview__defi-tab',
   };
 
+  private readonly overviewBalanceSection = '.wallet-overview__balance';
+
   private readonly popoverBackground = '.popover-bg';
 
   private readonly portfolioLink = '[data-testid="portfolio-link"]';
@@ -129,7 +131,7 @@ class HomePage {
     try {
       await this.driver.waitForMultipleSelectors([
         this.activityTab,
-        this.erc20TokenDropdown,
+        this.overviewBalanceSection,
         this.tokensTab,
       ]);
     } catch (e) {
