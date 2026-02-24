@@ -113,16 +113,16 @@ describe('Add hide token', function () {
         smartContract,
       },
       async ({ driver, localNodes }) => {
+        // Register the subscription waiter BEFORE login so it captures the
+        // subscribe handshake regardless of timing (Firefox is slower and the
+        // extension may subscribe before the test reaches this point).
+        const subscriptionPromise = waitForAccountActivitySubscription();
         await loginWithBalanceValidation(driver, localNodes[0]);
         const assetListPage = new AssetListPage(driver);
-
-        // Verify initial balance is displayed
         await assetListPage.checkTokenAmountIsDisplayed('10 TST');
-
-        // Wait for the extension's AccountActivity service to connect and
-        // complete the subscribe handshake before pushing the notification.
+        // Now await the subscription that was registered before login
         const wsServer = LocalWebSocketServer.getServerInstance();
-        const subscriptionId = await waitForAccountActivitySubscription();
+        const subscriptionId = await subscriptionPromise;
         console.log(`Subscription established: ${subscriptionId}`);
         const notification = createBalanceUpdateNotification({
           subscriptionId,
