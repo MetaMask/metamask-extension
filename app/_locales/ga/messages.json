@@ -3219,9 +3219,6 @@
   "lock": {
     "message": "Glasáil"
   },
-  "lockMetaMask": {
-    "message": "Glasáil"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "Ag Glasáil MetaMask..."
   },

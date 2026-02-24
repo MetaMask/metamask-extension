@@ -2141,6 +2141,101 @@ describe('Actions', () => {
     });
   });
 
+  describe('refreshAssetsForSelectedAccount', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    const mockAccount = {
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      address: '0xFirstAddress',
+      metadata: {
+        name: 'Test Account',
+        keyring: { type: 'HD Key Tree' },
+      },
+      options: {},
+      methods: [],
+      type: EthAccountType.Eoa,
+    };
+
+    it('calls getAssets in the background with accounts and options', async () => {
+      const store = mockStore();
+      const getAssetsStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        getAssets: getAssetsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const accounts = [mockAccount];
+      const options = {
+        chainIds: ['eip155:5', 'eip155:1'],
+        assetTypes: ['token'],
+      };
+
+      await store.dispatch(
+        actions.refreshAssetsForSelectedAccount(accounts, options),
+      );
+
+      expect(getAssetsStub.calledOnceWith(accounts, options)).toBe(true);
+    });
+
+    it('calls getAssets with default options when options omitted', async () => {
+      const store = mockStore();
+      const getAssetsStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        getAssets: getAssetsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const accounts = [mockAccount];
+
+      await store.dispatch(actions.refreshAssetsForSelectedAccount(accounts));
+
+      expect(getAssetsStub.calledOnce).toBe(true);
+      expect(getAssetsStub.firstCall.args[0]).toStrictEqual(accounts);
+      expect(getAssetsStub.firstCall.args[1]).toStrictEqual({});
+    });
+
+    it('calls getAssets with empty accounts array', async () => {
+      const store = mockStore();
+      const getAssetsStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        getAssets: getAssetsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.refreshAssetsForSelectedAccount([], {
+          chainIds: ['eip155:5'],
+        }),
+      );
+
+      expect(getAssetsStub.calledOnceWith([], { chainIds: ['eip155:5'] })).toBe(
+        true,
+      );
+    });
+
+    it('does not throw when getAssets rejects', async () => {
+      const store = mockStore();
+      const error = new Error('Background getAssets failed');
+      const getAssetsStub = sinon.stub().rejects(error);
+
+      background.getApi.returns({
+        getAssets: getAssetsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await expect(
+        store.dispatch(
+          actions.refreshAssetsForSelectedAccount([mockAccount], {}),
+        ),
+      ).resolves.not.toThrow();
+    });
+  });
+
   describe('#setSelectedNetworkConfigurationId', () => {
     it('sets appState.networkConfigurationId to provided value', async () => {
       const store = mockStore();

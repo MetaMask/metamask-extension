@@ -106,7 +106,8 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                     style="min-width: 0; flex: 1;"
                   >
                     <div
-                      class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                      class="flex flex-row items-center justify-center border-2 border-transparent w-10 h-10 flex-shrink-0"
+                      data-testid="account-cell-avatar"
                     >
                       <button
                         class="mm-box multichain-badge-status pr-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
@@ -350,7 +351,8 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                     style="min-width: 0; flex: 1;"
                   >
                     <div
-                      class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                      class="flex flex-row items-center justify-center border-2 border-transparent w-10 h-10 flex-shrink-0"
+                      data-testid="account-cell-avatar"
                     >
                       <button
                         class="mm-box multichain-badge-status pr-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
@@ -594,7 +596,8 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                     style="min-width: 0; flex: 1;"
                   >
                     <div
-                      class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                      class="flex flex-row items-center justify-center border-2 border-transparent w-10 h-10 flex-shrink-0"
+                      data-testid="account-cell-avatar"
                     >
                       <button
                         class="mm-box multichain-badge-status pr-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"

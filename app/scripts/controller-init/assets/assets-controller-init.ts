@@ -4,10 +4,7 @@ import {
   type AssetsControllerOptions,
 } from '@metamask/assets-controller';
 import type { PreferencesState } from '@metamask/preferences-controller';
-import {
-  createApiPlatformClient,
-  type ApiPlatformClient,
-} from '@metamask/core-backend';
+import { createApiPlatformClient } from '@metamask/core-backend';
 import {
   isAssetsUnifyStateFeatureEnabled,
   ASSETS_UNIFY_STATE_VERSION_1,
@@ -27,7 +24,7 @@ import {
 /**
  * Cached API client instance.
  */
-let apiClient: ApiPlatformClient | null = null;
+let apiClient: AssetsControllerOptions['queryApiClient'] | null = null;
 
 /**
  * Safely retrieves the bearer token for API authentication.
@@ -94,12 +91,12 @@ function getIsBasicFunctionality(
  */
 function getApiClient(
   initMessenger: AssetsControllerInitMessenger,
-): ApiPlatformClient {
+): AssetsControllerOptions['queryApiClient'] {
   if (!apiClient) {
     apiClient = createApiPlatformClient({
       clientProduct: 'metamask-extension',
       getBearerToken: () => safeGetBearerToken(initMessenger),
-    });
+    }) as unknown as AssetsControllerOptions['queryApiClient'];
   }
   return apiClient;
 }
