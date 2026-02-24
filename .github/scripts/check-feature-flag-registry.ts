@@ -10,7 +10,7 @@
  * In CI the base branch comes from GITHUB_BASE_REF (defaults to "main").
  */
 
-import { execSync } from 'child_process';
+import { execSync, execFileSync } from 'child_process';
 import * as path from 'path';
 import { context, getOctokit } from '@actions/github';
 import { getRegisteredFlagNames } from '../../test/e2e/feature-flags';
@@ -24,10 +24,16 @@ const REGISTRY_DIR = 'test/e2e/feature-flags/';
 const SCANNABLE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx']);
 const SCAN_DIRECTORIES = ['app/', 'ui/', 'shared/', 'test/'];
 
+/** Matches balanced parens with one level of nesting: (arg) or (fn(arg)) */
+const ARGS = '[^)]*(?:\\([^)]*\\)[^)]*)*';
+
+/** Matches a quoted flag name in any of the three JS string delimiters. */
+const QUOTE_FLAG = `(?:'(\\w+)'|"(\\w+)"|` + '`(\\w+)`' + `)`;
+
 /** Bracket-access patterns run BEFORE string stripping (need quoted flag name). */
 const BRACKET_STRING_PATTERNS: RegExp[] = [
-  /remoteFeatureFlags(?:\?\.)?\[\s*['"`](\w+)['"`]\s*\]/g,
-  /getRemoteFeatureFlags\([^)]*\)(?:\?\.)?\[\s*['"`](\w+)['"`]\s*\]/g,
+  new RegExp(`remoteFeatureFlags(?:\\?\\.)?\\[\\s*${QUOTE_FLAG}\\s*\\]`, 'g'),
+  new RegExp(`getRemoteFeatureFlags\\(${ARGS}\\)(?:\\?\\.)?\\[\\s*${QUOTE_FLAG}\\s*\\]`, 'g'),
 ];
 
 /** Dot-access patterns run AFTER string stripping to avoid false positives. */
@@ -35,7 +41,7 @@ const FLAG_ACCESS_PATTERNS: RegExp[] = [
   /remoteFeatureFlags\??\.(\w+)/g,
   /state\.metamask\.remoteFeatureFlags\??\.(\w+)/g,
   /remoteFeatureFlagController\.state\.remoteFeatureFlags\??\.(\w+)/g,
-  /getRemoteFeatureFlags\([^)]*\)\??\.(\w+)/g,
+  new RegExp(`getRemoteFeatureFlags\\(${ARGS}\\)\\??\\.(\\w+)`, 'g'),
 ];
 
 /** Destructuring patterns — identifiers extracted via extractDestructuredIdentifiers. */
@@ -49,7 +55,7 @@ const DESTRUCTURING_PATTERNS: RegExp[] = [
 /** Bracket-access with constants/variables. Resolved via KNOWN_FLAG_CONSTANTS. */
 const CONSTANT_BRACKET_PATTERNS: RegExp[] = [
   /remoteFeatureFlags(?:\?\.)?\[([A-Za-z_]\w*(?:\.\w+)?)\]/g,
-  /getRemoteFeatureFlags\([^)]*\)(?:\?\.)?\[([A-Za-z_]\w*(?:\.\w+)?)\]/g,
+  new RegExp(`getRemoteFeatureFlags\\(${ARGS}\\)(?:\\?\\.)?\\[([A-Za-z_]\\w*(?:\\.\\w+)?)\\]`, 'g'),
 ];
 
 /** @see ./known-feature-flag-constants.ts */
@@ -97,6 +103,11 @@ async function main(): Promise<void> {
   const baseBranch =
     process.env.GITHUB_BASE_REF || process.argv[2] || 'main';
 
+  if (!/^[\w./-]+$/.test(baseBranch)) {
+    console.error(`Invalid base branch name: "${baseBranch}"`);
+    process.exit(1);
+  }
+
   console.log(
     `\nChecking feature flag references against registry (base: ${baseBranch})...\n`,
   );
@@ -128,11 +139,16 @@ async function main(): Promise<void> {
         allReferences.push(...extractFlagReferences(line, filePath));
       }
       for (let i = 0; i < chunk.length - 1; i++) {
-        const joined = `${chunk[i].trimEnd()}${chunk[i + 1].trimStart()}`;
-        allReferences.push(
-          ...extractFlagReferences(joined, filePath, true),
-        );
+        const j2 = `${chunk[i].trimEnd()}${chunk[i + 1].trimStart()}`;
+        allReferences.push(...extractFlagReferences(j2, filePath, true));
+        if (i < chunk.length - 2) {
+          const j3 = `${chunk[i].trimEnd()}${chunk[i + 1].trim()}${chunk[i + 2].trimStart()}`;
+          allReferences.push(...extractFlagReferences(j3, filePath, true));
+        }
       }
+      allReferences.push(
+        ...extractMultiLineDestructuring(chunk, filePath),
+      );
     }
   }
 
@@ -281,12 +297,14 @@ function isScannableFile(filePath: string): boolean {
  */
 function findOrphanedFlags(flagNames: string[]): string[] {
   const orphaned: string[] = [];
-  const dirs = SCAN_DIRECTORIES.map((d) => `"${d}"`).join(' ');
 
   for (const flag of flagNames) {
+    if (!/^[\w.]+$/.test(flag)) {
+      continue;
+    }
     try {
-      const result = execSync(
-        `git grep -l "${flag}" -- ${dirs}`,
+      const result = execFileSync(
+        'git', ['grep', '-l', '--', flag, ...SCAN_DIRECTORIES],
         { encoding: 'utf-8', stdio: 'pipe' },
       ).trim();
       const files = result
@@ -388,8 +406,9 @@ function extractFlagReferences(
       if (posInMasked === ' ' && commentStripped.charAt(match.index) !== ' ') {
         continue;
       }
-      if (isLikelyFlagName(match[1])) {
-        refs.push({ flagName: match[1], filePath });
+      const flagName = match[1] || match[2] || match[3];
+      if (flagName && isLikelyFlagName(flagName)) {
+        refs.push({ flagName, filePath });
       }
     }
   }
@@ -441,6 +460,45 @@ function extractFlagReferences(
       for (const id of extractDestructuredIdentifiers(match[1])) {
         if (isLikelyFlagName(id)) {
           refs.push({ flagName: id, filePath });
+        }
+      }
+    }
+  }
+
+  return refs;
+}
+
+/**
+ * Handles destructuring that spans 3+ lines by scanning backwards from
+ * lines containing `getRemoteFeatureFlags` to find the opening `{`.
+ */
+function extractMultiLineDestructuring(
+  chunk: string[],
+  filePath: string,
+): FlagReference[] {
+  const refs: FlagReference[] = [];
+
+  for (let i = 0; i < chunk.length; i++) {
+    if (!chunk[i].includes('getRemoteFeatureFlags')) {
+      continue;
+    }
+    let combined = '';
+    for (let j = i; j >= 0 && j >= i - 10; j--) {
+      const stripped = stripInlineComments(chunk[j]);
+      combined = `${stripped} ${combined}`;
+      if (stripped.includes('{')) {
+        break;
+      }
+    }
+    const sanitized = stripStringLiterals(combined);
+    for (const pattern of DESTRUCTURING_PATTERNS) {
+      pattern.lastIndex = 0;
+      let match: RegExpExecArray | null;
+      while ((match = pattern.exec(sanitized)) !== null) {
+        for (const id of extractDestructuredIdentifiers(match[1])) {
+          if (isLikelyFlagName(id)) {
+            refs.push({ flagName: id, filePath });
+          }
         }
       }
     }
@@ -538,10 +596,10 @@ function stripInlineComments(line: string): string {
         continue;
       }
       // Skip regex literals: /.../ preceded by =, (, [, !, &, |, ,, ;, :, ?
-      // to avoid treating content inside regex as code.
-      if (i === 0 || /[=([!&|,;:?]/.test(line[i - 1].trim() || '=')) {
-        const closeIdx = line.indexOf('/', i + 1);
-        if (closeIdx > i + 1) {
+      const prevNonWs = result.trimEnd().slice(-1);
+      if (i === 0 || /[=([!&|,;:?]/.test(prevNonWs)) {
+        const closeIdx = findRegexClose(line, i + 1);
+        if (closeIdx > i) {
           result += line.slice(i, closeIdx + 1);
           i = closeIdx;
           continue;
@@ -552,6 +610,23 @@ function stripInlineComments(line: string): string {
     result += ch;
   }
   return result;
+}
+
+/** Finds the closing `/` of a regex literal, handling `\/` and `[/]`. Returns -1 if not found. */
+function findRegexClose(line: string, start: number): number {
+  let inCharClass = false;
+  for (let k = start; k < line.length; k++) {
+    let backslashes = 0;
+    while (k - 1 - backslashes >= start && line[k - 1 - backslashes] === '\\') {
+      backslashes++;
+    }
+    if (backslashes % 2 === 1) { continue; }
+    const c = line[k];
+    if (c === '[') { inCharClass = true; }
+    else if (c === ']' && inCharClass) { inCharClass = false; }
+    else if (c === '/' && !inCharClass) { return k; }
+  }
+  return -1;
 }
 
 /** Replaces string literal contents with empty placeholders (handles escaped quotes). */

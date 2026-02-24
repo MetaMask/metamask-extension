@@ -1,26 +1,10 @@
 /**
- * Known Feature Flag Constants
+ * Known Feature Flag Constants — maps constant names to resolved flag strings.
+ * Used by check-feature-flag-registry.ts for bracket-access like `remoteFeatureFlags[CONSTANT]`.
  *
- * Maps constant names (as they appear in source code bracket access) to
- * their resolved flag name strings.  Used by check-feature-flag-registry.ts
- * to resolve bracket-access patterns like `remoteFeatureFlags[CONSTANT]`.
- *
- * ## How values are resolved
- *
- * - **Enum values** (e.g. `FeatureFlagNames`) are imported directly from
- *   the codebase.
- * - **UI selector constants** can't be imported directly (their modules
- *   pull in browser APIs), so they're resolved at startup by reading the
- *   source file and extracting the `export const NAME = 'value'` pattern.
- *
- * ## When to update this file
- *
- * Add an entry here whenever a new constant is used for bracket-access on
- * `remoteFeatureFlags` or `getRemoteFeatureFlags(state)`.  The CI job will
- * fail with an "unresolved constant" error to prompt you.
- *
- * For directly importable constants, add to {@link DIRECT_IMPORTS}.
- * For UI constants with browser dependencies, add to {@link FILE_SOURCES}.
+ * Enum values are imported directly. UI constants are resolved from source files
+ * (importing them would pull in browser APIs). Add new constants here when the
+ * CI job reports an "unresolved constant" error.
  */
 
 import * as fs from 'fs';
@@ -79,11 +63,12 @@ function resolveConstantFromFile(
   try {
     const fullPath = path.resolve(filePath);
     const content = fs.readFileSync(fullPath, 'utf-8');
+    const escaped = constantName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const re = new RegExp(
-      `export\\s+const\\s+${constantName}\\s*=\\s*['"]([^'"]+)['"]`,
+      `export\\s+const\\s+${escaped}\\s*=\\s*(?:'([^']+)'|"([^"]+)"|` + '`([^`]+)`)',
     );
     const match = re.exec(content);
-    return match?.[1];
+    return match?.[1] ?? match?.[2] ?? match?.[3];
   } catch {
     return undefined;
   }
