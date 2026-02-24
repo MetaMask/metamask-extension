@@ -259,7 +259,9 @@ import {
   makeMethodMiddlewareMaker,
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
-import createRpcBlockingMiddleware from './lib/rpcBlockingMiddleware';
+import createRpcBlockingMiddleware, {
+  createRpcBlockingCallbacks,
+} from './lib/rpcBlockingMiddleware';
 import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
@@ -1088,7 +1090,7 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
-    const rpcBlockingMiddlewareState = { isBlocked: false };
+    const rpcBlockingMiddlewareState = { blockingSymbols: new Set() };
     const eip7715BlockingMiddleware = createRpcBlockingMiddleware({
       state: rpcBlockingMiddlewareState,
       allowedOrigins: [
@@ -1200,16 +1202,16 @@ export default class MetamaskController extends EventEmitter {
           }
         }
 
+        const { onBeforeRequest, onAfterRequest } = createRpcBlockingCallbacks(
+          rpcBlockingMiddlewareState,
+        );
+
         return forwardRequestToSnap(
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
             handleRequest: this.handleSnapRequest.bind(this),
-            onBeforeRequest: () => {
-              rpcBlockingMiddlewareState.isBlocked = true;
-            },
-            onAfterRequest: () => {
-              rpcBlockingMiddlewareState.isBlocked = false;
-            },
+            onBeforeRequest,
+            onAfterRequest,
           },
           params,
           req,
