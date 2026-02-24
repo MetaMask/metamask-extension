@@ -11,7 +11,7 @@ const WhatArePerpsStep: React.FC = () => {
 
   return (
     <Box
-      className="flex-1 flex flex-col items-center px-6 pt-4"
+      className="flex-1 flex flex-col items-center px-6 pt-4 pb-2"
       data-testid="perps-tutorial-what-are-perps"
     >
       <Text variant={TextVariant.HeadingLg} className="text-left mb-2 w-full">
