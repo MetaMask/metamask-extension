@@ -864,6 +864,21 @@ describe('MetaMaskController', () => {
 
         expect(vault1).toStrictEqual(vault2);
       });
+
+      it('calls snapController.init() when wallet reset is in progress', async () => {
+        jest
+          .spyOn(
+            metamaskController.appStateController,
+            'getIsWalletResetInProgress',
+          )
+          .mockReturnValue(true);
+
+        const initSpy = jest.spyOn(metamaskController.snapController, 'init');
+
+        await metamaskController.createNewVaultAndKeychain('a-fake-password');
+
+        expect(initSpy).toHaveBeenCalledTimes(1);
+      });
     });
 
     describe('#createSeedPhraseBackup', () => {
@@ -1069,6 +1084,36 @@ describe('MetaMaskController', () => {
         expect(
           metamaskController._addAccountsWithBalance,
         ).not.toHaveBeenCalled();
+      });
+
+      it('does not call snapController.init() for fresh new vault', async () => {
+        jest
+          .spyOn(metamaskController.appStateController, 'state', 'get')
+          .mockReturnValue({ isWalletResetInProgress: false });
+
+        const initSpy = jest.spyOn(metamaskController.snapController, 'init');
+
+        await metamaskController.createNewVaultAndRestore(
+          'foobar1337',
+          TEST_SEED,
+        );
+
+        expect(initSpy).not.toHaveBeenCalled();
+      });
+
+      it('calls snapController.init() when wallet reset is in progress', async () => {
+        jest
+          .spyOn(metamaskController.appStateController, 'state', 'get')
+          .mockReturnValue({ isWalletResetInProgress: true });
+
+        const initSpy = jest.spyOn(metamaskController.snapController, 'init');
+
+        await metamaskController.createNewVaultAndRestore(
+          'foobar1337',
+          TEST_SEED,
+        );
+
+        expect(initSpy).toHaveBeenCalledTimes(1);
       });
     });
 

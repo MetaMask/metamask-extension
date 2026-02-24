@@ -974,19 +974,12 @@ export default class MetamaskController extends EventEmitter {
           // If not, discovery will fallback to the primary keyring ID anyway.
           const id = selected?.options?.entropy?.id;
 
-          if (this.isMultichainAccountsFeatureState2Enabled()) {
-            ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-            await this.getSnapKeyring();
-            ///: END:ONLY_INCLUDE_IF
-
-            await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-          }
-
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
             // importing multiple SRPs on social login rehydration
             await this._importAccountsWithBalances();
           } else if (this.isMultichainAccountsFeatureState2Enabled()) {
             await this.discoverAndCreateAccounts(id);
+            await this.accountTreeController.syncWithUserStorageAtLeastOnce();
           } else {
             await this._addAccountsWithBalance();
           }
@@ -4562,6 +4555,11 @@ export default class MetamaskController extends EventEmitter {
         // Clear account tree state
         this.accountTreeController.clearState();
 
+        // Re-initialize the SnapController so the Snap platform becomes
+        // ready again once onboarding completes. Fire-and-forget because
+        // init() waits for onboarding which hasn't finished yet.
+        this.snapController.init();
+
         // Currently, the account-order-controller is not in sync with
         // the accounts-controller. To properly persist the hidden state
         // of accounts, we should add a new flag to the account struct
@@ -4920,6 +4918,7 @@ export default class MetamaskController extends EventEmitter {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       const { completedOnboarding } = this.onboardingController.state;
+      const { isWalletResetInProgress } = this.appStateController.state;
 
       const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
@@ -4931,6 +4930,13 @@ export default class MetamaskController extends EventEmitter {
 
       // Clear account tree state
       this.accountTreeController.clearState();
+
+      if (isWalletResetInProgress) {
+        // Re-initialize the SnapController so the Snap platform becomes
+        // ready again once onboarding completes. Fire-and-forget because
+        // init() waits for onboarding which hasn't finished yet.
+        this.snapController.init();
+      }
 
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state
