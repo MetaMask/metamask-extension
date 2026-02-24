@@ -1,6 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/no-shadow
 import { WebSocket, WebSocketServer } from 'ws';
 
+type ConnectionHandler = (socket: WebSocket) => void;
+
 class LocalWebSocketServer {
   private static instance: LocalWebSocketServer; // Singleton instance
 
@@ -9,6 +11,9 @@ class LocalWebSocketServer {
   private static readonly port = 8088;
 
   private websocketConnections: WebSocket[] = []; // Track active connections
+
+  /** Mock connection handlers; cleared each test so we do not accumulate listeners. */
+  private mockConnectionHandlers: ConnectionHandler[] = [];
 
   /**
    * Get the singleton instance of the LocalWebSocketServer
@@ -27,6 +32,22 @@ class LocalWebSocketServer {
       throw new Error('WebSocket server has not been started yet.');
     }
     return this.server;
+  }
+
+  /**
+   * Clear mock connection handlers so the next test does not accumulate listeners.
+   * Call once per test before registering Solana/Perps (or other) mocks.
+   */
+  public clearMockConnectionHandlers(): void {
+    this.mockConnectionHandlers = [];
+  }
+
+  /**
+   * Register a mock connection handler. It will be invoked for each new connection.
+   * Handlers are cleared each test via clearMockConnectionHandlers().
+   */
+  public addMockConnectionHandler(handler: ConnectionHandler): void {
+    this.mockConnectionHandlers.push(handler);
   }
 
   /**
@@ -60,6 +81,12 @@ class LocalWebSocketServer {
         // Echo the message back to the client (pure WebSocket server behavior)
         socket.send(data.toString());
       });
+
+      // Run mock handlers (Solana, Perps, etc.) so they can add their message handlers.
+      // Handlers are cleared each test via clearMockConnectionHandlers() to avoid accumulation.
+      for (const handler of this.mockConnectionHandlers) {
+        handler(socket);
+      }
     });
 
     console.log(

@@ -315,9 +315,11 @@ async function withFixtures(options, testSuite) {
       }
     }
 
-    // Start WebSocket server and apply Solana + Perps mocks (defaults + overrides)
+    // Start WebSocket server and apply Solana + Perps mocks (defaults + overrides).
+    // Clear mock handlers each test so we do not accumulate connection listeners.
     webSocketServer = LocalWebSocketServer.getServerInstance();
     webSocketServer.start();
+    webSocketServer.clearMockConnectionHandlers();
     await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
     await setupPerpsWebsocketMocks(perpsWebSocketSpecificMocks);
 

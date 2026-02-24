@@ -27,8 +27,8 @@ function rawDataToString(data: Buffer | ArrayBuffer | Buffer[]): string {
  *
  * Messages from the PerpsController (or UI) to api.hyperliquid.xyz/ws are
  * forwarded to the local WebSocket server (localhost:8088) via mock-e2e.js.
- * This function adds handlers that respond with mock data for Hyperliquid
- * subscription types (l2Book, user, trades, etc.).
+ * This function registers a single connection handler (cleared each test in
+ * helpers.js) so we do not accumulate listeners across tests.
  *
  * @param mocks - Array of additional message mock configurations
  */
@@ -36,15 +36,13 @@ export async function setupPerpsWebsocketMocks(
   mocks: WebSocketMessageMock[] = [],
 ): Promise<void> {
   const localWebSocketServer = LocalWebSocketServer.getServerInstance();
-  const wsServer = localWebSocketServer.getServer();
 
   const mergedMocks: WebSocketMessageMock[] = [
     ...mocks,
     ...DEFAULT_HYPERLIQUID_WS_MOCKS,
   ];
 
-  // Add Perps/Hyperliquid-specific message handlers to the existing server
-  wsServer.on('connection', (socket: WebSocket) => {
+  localWebSocketServer.addMockConnectionHandler((socket: WebSocket) => {
     socket.on('message', (data: Buffer | ArrayBuffer | Buffer[]) => {
       const message = rawDataToString(data);
 
