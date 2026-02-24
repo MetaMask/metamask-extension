@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   type NavigateOptions,
   type To,
@@ -16,6 +17,8 @@ import {
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import type { MinimalAsset } from '../../pages/bridge/utils/tokens';
+import { clearSwapsState } from '../../ducks/swaps/swaps';
+import { resetBackgroundSwapsState } from '../../store/actions';
 
 export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
   state: {
@@ -49,6 +52,8 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
  */
 export const useBridgeNavigation = () => {
   const navigateUtil = useNavigate();
+  const dispatch = useDispatch();
+
   const { search, pathname, state: maybeState } = useLocation();
   const state: BridgeNavigationOptions['state'] = useMemo(
     () => maybeState ?? {},
@@ -172,6 +177,10 @@ export const useBridgeNavigation = () => {
   );
 
   const navigateToDefaultRoute = useCallback(async () => {
+    // TODO remove these when swaps codebase is removed
+    dispatch(clearSwapsState());
+    dispatch(resetBackgroundSwapsState());
+
     const isFromTransactionShield = new URLSearchParams(search || '').get(
       BridgeQueryParams.IsFromTransactionShield,
     );
