@@ -8522,19 +8522,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^18.0.0":
-  version: 18.0.0
-  resolution: "@metamask/snaps-controllers@npm:18.0.0"
+"@metamask/snaps-controllers@npm:^18.0.1":
+  version: 18.0.1
+  resolution: "@metamask/snaps-controllers@npm:18.0.1"
   dependencies:
     "@metamask/approval-controller": "npm:^8.0.0"
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/json-rpc-engine": "npm:^10.2.1"
+    "@metamask/json-rpc-engine": "npm:^10.2.2"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.8"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/object-multiplex": "npm:^2.1.0"
     "@metamask/permission-controller": "npm:^12.2.0"
-    "@metamask/phishing-controller": "npm:^16.1.0"
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/snaps-registry": "npm:^4.0.0"
@@ -8543,7 +8542,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^12.1.0"
     "@metamask/storage-service": "npm:^1.0.0"
     "@metamask/superstruct": "npm:^3.2.1"
-    "@metamask/utils": "npm:^11.9.0"
+    "@metamask/utils": "npm:^11.10.0"
     "@xstate/fsm": "npm:^2.0.0"
     async-mutex: "npm:^0.5.0"
     concat-stream: "npm:^2.0.0"
@@ -8562,7 +8561,7 @@ __metadata:
   peerDependenciesMeta:
     "@metamask/snaps-execution-environments":
       optional: true
-  checksum: 10/f0fb53c59a801118f29f28222c44ea0927cfae004cd5d9f5f33e7e4eef3a31e495c91b120e49cf310b6990e853090013e7a6ed10fac2dfb197410d073c54c4d4
+  checksum: 10/0b9c3f8097cda0621020bde7e63a74a20f7623a9926d2d102942df56f9b9fefbf0900f7a3a17b175f8648b1b93fc373f5c736ee88e517ee624ed6161985742cb
   languageName: node
   linkType: hard
 
@@ -9014,9 +9013,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^11.0.0, @metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.4.0, @metamask/utils@npm:^11.4.2, @metamask/utils@npm:^11.8.1, @metamask/utils@npm:^11.9.0":
-  version: 11.9.0
-  resolution: "@metamask/utils@npm:11.9.0"
+"@metamask/utils@npm:^11.0.0, @metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.10.0, @metamask/utils@npm:^11.4.0, @metamask/utils@npm:^11.4.2, @metamask/utils@npm:^11.8.1, @metamask/utils@npm:^11.9.0":
+  version: 11.10.0
+  resolution: "@metamask/utils@npm:11.10.0"
   dependencies:
     "@ethereumjs/tx": "npm:^4.2.0"
     "@metamask/superstruct": "npm:^3.1.0"
@@ -9029,7 +9028,7 @@ __metadata:
     pony-cause: "npm:^2.1.10"
     semver: "npm:^7.5.4"
     uuid: "npm:^9.0.1"
-  checksum: 10/f8f5e99ba6c6de0395ed4e0acc82ee9c0dca26991ea6a8f10b3896e72745790966a8eded8c42be905d9f01fa99c1fd29a7f68541e2ef9854fc14984a0b514ad3
+  checksum: 10/691a268af66593b60e9807a069127993cea3cdc941f99d5d7ca4664868754f08945821f1787b2f3e99e4497df63ceb0af37a2419ad494da29a1fddffe94f5797
   languageName: node
   linkType: hard
 
@@ -33893,7 +33892,7 @@ __metadata:
     "@metamask/smart-transactions-controller": "npm:^22.5.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
     "@metamask/snap-simple-keyring-site": "npm:^2.0.0"
-    "@metamask/snaps-controllers": "npm:^18.0.0"
+    "@metamask/snaps-controllers": "npm:^18.0.1"
     "@metamask/snaps-execution-environments": "npm:^11.0.0"
     "@metamask/snaps-rpc-methods": "npm:^14.3.0"
     "@metamask/snaps-sdk": "npm:^10.4.0"
