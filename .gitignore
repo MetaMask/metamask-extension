@@ -99,3 +99,6 @@ test/integration/config/assets
 
 # webpack
 development/.webpack
+
+# llm workflow playwirght temp files
+temp-llm-workflow-*
