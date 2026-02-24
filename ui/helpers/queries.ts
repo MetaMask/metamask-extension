@@ -1,5 +1,6 @@
 import type { UseInfiniteQueryOptions } from '@tanstack/react-query';
 import type { V4MultiAccountTransactionsResponse } from '@metamask/core-backend';
+import { STALE_TIMES } from '@metamask/core-backend';
 import type { NormalizedV4MultiAccountTransactionsResponse } from '../../shared/lib/multichain/types';
 import { selectTransactions } from '../../shared/lib/multichain/transformations';
 import { apiClient } from './api-client';
@@ -53,9 +54,7 @@ export const queries = {
       select: selectTransactions(evmAddress),
       getNextPageParam: ({ pageInfo }) =>
         pageInfo.hasNextPage ? pageInfo.endCursor : undefined,
-      refetchOnWindowFocus: false,
-      refetchInterval: 15 * 1000,
-      staleTime: 15 * 1000,
+      staleTime: STALE_TIMES.TRANSACTIONS,
       ...options,
       enabled: Boolean(accountAddresses[0]) && (options?.enabled ?? true),
     };
