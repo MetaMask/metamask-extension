@@ -16,10 +16,6 @@ import { context, getOctokit } from '@actions/github';
 import { getRegisteredFlagNames } from '../../test/e2e/feature-flags';
 import { buildKnownFlagConstants } from './known-feature-flag-constants';
 
-// ============================================================================
-// Configuration
-// ============================================================================
-
 const REGISTRY_DIR = 'test/e2e/feature-flags/';
 const SCANNABLE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx']);
 const SCAN_DIRECTORIES = ['app/', 'ui/', 'shared/', 'test/'];
@@ -27,16 +23,13 @@ const SCAN_DIRECTORIES = ['app/', 'ui/', 'shared/', 'test/'];
 /** Matches balanced parens with one level of nesting: (arg) or (fn(arg)) */
 const ARGS = '[^)]*(?:\\([^)]*\\)[^)]*)*';
 
-/** Matches a quoted flag name in any of the three JS string delimiters. */
 const QUOTE_FLAG = `(?:'(\\w+)'|"(\\w+)"|` + '`(\\w+)`' + `)`;
-
 /** Bracket-access patterns run BEFORE string stripping (need quoted flag name). */
 const BRACKET_STRING_PATTERNS: RegExp[] = [
   new RegExp(`remoteFeatureFlags(?:\\?\\.)?\\[\\s*${QUOTE_FLAG}\\s*\\]`, 'g'),
   new RegExp(`getRemoteFeatureFlags\\(${ARGS}\\)(?:\\?\\.)?\\[\\s*${QUOTE_FLAG}\\s*\\]`, 'g'),
 ];
 
-/** Dot-access patterns run AFTER string stripping to avoid false positives. */
 const FLAG_ACCESS_PATTERNS: RegExp[] = [
   /remoteFeatureFlags\??\.(\w+)/g,
   /state\.metamask\.remoteFeatureFlags\??\.(\w+)/g,
@@ -44,7 +37,6 @@ const FLAG_ACCESS_PATTERNS: RegExp[] = [
   new RegExp(`getRemoteFeatureFlags\\(${ARGS}\\)\\??\\.(\\w+)`, 'g'),
 ];
 
-/** Destructuring patterns — identifiers extracted via extractDestructuredIdentifiers. */
 const DESTRUCTURING_PATTERNS: RegExp[] = [
   /\{\s*([^}]+)\}\s*=\s*getRemoteFeatureFlags/g,
   /\{\s*([^}]+)\}\s*=\s*useSelector\s*\(\s*getRemoteFeatureFlags/g,
@@ -52,7 +44,6 @@ const DESTRUCTURING_PATTERNS: RegExp[] = [
   /remoteFeatureFlags:\s*\{\s*([^}]+)\}/g,
 ];
 
-/** Bracket-access with constants/variables. Resolved via KNOWN_FLAG_CONSTANTS. */
 const CONSTANT_BRACKET_PATTERNS: RegExp[] = [
   /remoteFeatureFlags(?:\?\.)?\[([A-Za-z_]\w*(?:\.\w+)?)\]/g,
   new RegExp(`getRemoteFeatureFlags\\(${ARGS}\\)(?:\\?\\.)?\\[([A-Za-z_]\\w*(?:\\.\\w+)?)\\]`, 'g'),
@@ -326,14 +317,24 @@ function parseDiff(diff: string): DiffResult {
   const added = new Map<string, string[][]>();
   const removed = new Map<string, string[]>();
   let currentFile = '';
+  let pendingFile = '';
   let lastWasAdded = false;
 
   for (const line of diff.split('\n')) {
+    if (line.startsWith('--- a/')) {
+      pendingFile = line.slice(6);
+    }
     if (line.startsWith('+++ b/')) {
       currentFile = line.slice(6);
       if (!added.has(currentFile)) {
         added.set(currentFile, []);
       }
+      if (!removed.has(currentFile)) {
+        removed.set(currentFile, []);
+      }
+      lastWasAdded = false;
+    } else if (line.startsWith('+++ /dev/null') && pendingFile) {
+      currentFile = pendingFile;
       if (!removed.has(currentFile)) {
         removed.set(currentFile, []);
       }
