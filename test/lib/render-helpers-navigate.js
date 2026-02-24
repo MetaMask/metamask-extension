@@ -17,6 +17,7 @@ import {
 } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as enLocaleMessages from '../../app/_locales/en/messages.json';
+import { RouteMessengerContext } from '../../ui/contexts/route-messenger';
 
 // Re-export en messages for tests that need direct access
 export const en = enLocaleMessages;
@@ -68,6 +69,7 @@ I18nProvider.defaultProps = {
  * @param {object|false} [options.i18n] - I18n provider config. Default: enabled with 'en' locale
  * @param {object|false} [options.metaMetrics] - MetaMetrics provider config. Default: enabled with default trackEvent mock
  * @param {object|false} [options.queryClient] - QueryClient provider config. Default: enabled using default QueryClient
+ * @param {object|false} [options.messenger] - Route messenger. Default: false (disabled)
  * @returns {Function} Wrapper component
  */
 export function createProviderWrapper({
@@ -76,11 +78,26 @@ export function createProviderWrapper({
   i18n = {},
   metaMetrics = {},
   queryClient: queryClientOption = {},
+  messenger = false,
 } = {}) {
   const Wrapper = ({ children }) => {
     let content = children;
 
-    // QueryClient (innermost)
+    //========
+    // We need a way to render a component or hook that uses `useMessenger`.
+    // With these changes, `messenger` can be passed to `renderWithProvider`
+    // or `renderHookWithProvider`.
+    //========
+    // Messenger (innermost)
+    if (messenger) {
+      content = (
+        <RouteMessengerContext.Provider value={messenger}>
+          {content}
+        </RouteMessengerContext.Provider>
+      );
+    }
+
+    // QueryClient
     if (queryClientOption !== false) {
       const queryClient =
         queryClientOption.queryClient ??
@@ -201,7 +218,7 @@ export function renderWithProvider(
  *
  * Can be called two ways:
  * 1. Legacy: renderHookWithProvider(hook, state, pathname, Container, getMockTrackEvent)
- * 2. Options: renderHookWithProvider(hook, { state, router, metaMetrics, Container })
+ * 2. Options: renderHookWithProvider(hook, { state, router, metaMetrics, Container, messenger })
  *
  * @param {Function} hook - The hook to render
  * @param {object} stateOrOptions - Either a state object (legacy) or options object
@@ -226,6 +243,7 @@ export function renderHookWithProvider(
       'router' in stateOrOptions ||
       'metaMetrics' in stateOrOptions ||
       'Container' in stateOrOptions ||
+      'messenger' in stateOrOptions ||
       'i18n' in stateOrOptions);
 
   if (isOptionsObject) {
