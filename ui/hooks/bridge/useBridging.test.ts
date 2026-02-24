@@ -127,7 +127,7 @@ describe('useBridging', () => {
         token: Record<string, unknown>,
         location: string,
         isSwap: boolean,
-        expectedState = { token: null },
+        expectedState: { token: { chainId: string } | null } = { token: null },
       ) => {
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         const { result } = renderUseBridging(
@@ -177,7 +177,15 @@ describe('useBridging', () => {
           { pathname: expectedUrl, search: '' },
           {
             replace: false,
-            state: expectedState,
+            state: {
+              ...expectedState,
+              token: expectedState.token
+                ? {
+                    ...expectedState.token,
+                    chainId: formatChainIdToCaip(expectedState.token.chainId),
+                  }
+                : null,
+            },
           },
         );
         expect(openTabSpy).not.toHaveBeenCalled();
@@ -305,7 +313,7 @@ describe('useBridging', () => {
         expectedUrl: string,
         token: string,
         location: string,
-        expectedState = { token: null },
+        expectedState: { token: { chainId: string } | null } = { token: null },
       ) => {
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         jest
@@ -360,7 +368,15 @@ describe('useBridging', () => {
         expect(mockDispatch.mock.calls).toHaveLength(2);
         expect(mockUseNavigate).toHaveBeenCalledWith(expectedUrl, {
           replace: false,
-          state: expectedState,
+          state: {
+            ...expectedState,
+            token: expectedState.token
+              ? {
+                  ...expectedState.token,
+                  chainId: formatChainIdToCaip(expectedState.token.chainId),
+                }
+              : null,
+          },
         });
         expect(openTabSpy).not.toHaveBeenCalled();
       },
