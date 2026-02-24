@@ -9,7 +9,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { setWatchEthereumAccountEnabled } from '../../../store/actions';
 import { getIsWatchEthereumAccountEnabled } from '../../../selectors';
-import { ExperimentalTabItem } from './experimental-tab-item';
+import { SettingsToggleItem } from '../settings-toggle-item';
 
 export type WatchAccountItemProps = {
   sectionRef?: React.RefObject<HTMLDivElement>;
@@ -19,10 +19,10 @@ export const WatchAccountItem = ({ sectionRef }: WatchAccountItemProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const toggleValue = useSelector(getIsWatchEthereumAccountEnabled);
+  const value = useSelector(getIsWatchEthereumAccountEnabled);
 
   return (
-    <ExperimentalTabItem
+    <SettingsToggleItem
       title={t('watchEthereumAccountsToggle')}
       description={t('watchEthereumAccountsDescription', [
         <a
@@ -34,8 +34,8 @@ export const WatchAccountItem = ({ sectionRef }: WatchAccountItemProps) => {
           {t('form')}
         </a>,
       ])}
-      toggleValue={toggleValue}
-      toggleCallback={(value) => {
+      value={value}
+      onToggle={(value) => {
         trackEvent({
           event: MetaMetricsEventName.WatchEthereumAccountsToggled,
           category: MetaMetricsEventCategory.Settings,
@@ -43,8 +43,8 @@ export const WatchAccountItem = ({ sectionRef }: WatchAccountItemProps) => {
         });
         dispatch(setWatchEthereumAccountEnabled(!value));
       }}
-      toggleContainerDataTestId="watch-account-toggle-div"
-      toggleDataTestId="watch-account-toggle"
+      containerDataTestId="watch-account-toggle-div"
+      dataTestId="watch-account-toggle"
       sectionRef={sectionRef}
     />
   );

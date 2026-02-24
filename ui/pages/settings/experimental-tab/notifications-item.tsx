@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setFeatureNotificationsEnabled } from '../../../store/actions';
 import { getFeatureNotificationsEnabled } from '../../../selectors';
-import { ExperimentalTabItem } from './experimental-tab-item';
+import { SettingsToggleItem } from '../settings-toggle-item';
 
 export type NotificationsItemProps = {
   sectionRef?: React.RefObject<HTMLDivElement>;
@@ -12,17 +12,17 @@ export type NotificationsItemProps = {
 export const NotificationsItem = ({ sectionRef }: NotificationsItemProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const toggleValue = useSelector(getFeatureNotificationsEnabled);
+  const value = useSelector(getFeatureNotificationsEnabled);
 
   return (
-    <ExperimentalTabItem
+    <SettingsToggleItem
       title={t('notificationsFeatureToggle')}
       description={t('notificationsFeatureToggleDescription')}
-      toggleValue={toggleValue}
-      toggleCallback={(value) =>
+      value={value}
+      onToggle={(value) =>
         dispatch(setFeatureNotificationsEnabled(!value))
       }
-      toggleDataTestId="toggle-notifications"
+      dataTestId="toggle-notifications"
       sectionRef={sectionRef}
     />
   );

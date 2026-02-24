@@ -9,27 +9,27 @@ import {
   BoxJustifyContent,
   BoxAlignItems,
 } from '@metamask/design-system-react';
-import ToggleButton from '../../../components/ui/toggle-button';
+import ToggleButton from '../../components/ui/toggle-button';
 
-export type ExperimentalTabItemProps = {
+export type SettingsToggleItemProps = {
   title: string;
   description: React.ReactNode;
-  toggleValue: boolean;
-  toggleCallback: (value: boolean) => void;
-  toggleContainerDataTestId?: string;
-  toggleDataTestId: string;
+  value: boolean;
+  onToggle: (value: boolean) => void;
+  containerDataTestId?: string;
+  dataTestId: string;
   sectionRef?: React.RefObject<HTMLDivElement>;
 };
 
-export const ExperimentalTabItem = ({
+export const SettingsToggleItem = ({
   title,
   description,
-  toggleValue,
-  toggleCallback,
-  toggleContainerDataTestId,
-  toggleDataTestId,
+  value,
+  onToggle,
+  containerDataTestId,
+  dataTestId,
   sectionRef,
-}: ExperimentalTabItemProps) => (
+}: SettingsToggleItemProps) => (
   <Box
     ref={sectionRef}
     flexDirection={BoxFlexDirection.Column}
@@ -44,11 +44,11 @@ export const ExperimentalTabItem = ({
       <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
         {title}
       </Text>
-      <div data-testid={toggleContainerDataTestId}>
+      <div data-testid={containerDataTestId}>
         <ToggleButton
-          value={toggleValue}
-          onToggle={toggleCallback}
-          dataTestId={toggleDataTestId}
+          value={value}
+          onToggle={onToggle}
+          dataTestId={dataTestId}
         />
       </div>
     </Box>
