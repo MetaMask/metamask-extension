@@ -184,7 +184,6 @@ export const ConfirmInfoRowAddressDisplay = memo(
           <Text
             variant={TextVariant.BodyMd}
             color={TextColor.TextDefault}
-            data-testid="confirm-info-row-display-name"
             className={
               isClickable
                 ? 'confirm-info-row-address-display__clickable'
@@ -195,6 +194,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
             <span
               style={{ whiteSpace: 'nowrap', flex: 1 }}
               onClick={handleClick}
+              data-testid="confirm-info-row-display-name"
             >
               {name}
             </span>
@@ -203,7 +203,6 @@ export const ConfirmInfoRowAddressDisplay = memo(
           <Text
             variant={TextVariant.BodyMd}
             color={TextColor.TextDefault}
-            data-testid="confirm-info-row-display-name"
             className={
               isClickable
                 ? 'confirm-info-row-address-display__clickable'
@@ -215,6 +214,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
               ref={containerRef}
               style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}
               onClick={handleClick}
+              data-testid="confirm-info-row-display-name"
             >
               {display}
             </span>
