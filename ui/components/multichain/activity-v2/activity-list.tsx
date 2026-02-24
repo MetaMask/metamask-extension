@@ -14,7 +14,6 @@ import { selectCurrentAccountNonEvmTransactions } from '../../../selectors/multi
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
-import { MultichainTransactionDetailsModal as LegacyMultichainTransactionDetailsModal } from '../../app/multichain-transaction-details-modal';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import AssetListControlBar from '../../app/assets/asset-list/asset-list-control-bar';
 import {
@@ -27,6 +26,7 @@ import { ActivityListItem } from './activity-list-item';
 import { ActivityDetailsModalAdapter } from './activity-details-modal-adapter';
 import { LocalActivityListItem } from './local-activity-list-item';
 import { NonEvmActivityListItem } from './non-evm-activity-list-item';
+import { NonEvmDetailsModal } from './non-evm-details-modal';
 import { useTransactionsQuery } from './hooks';
 
 const ITEM_HEIGHT = 70;
@@ -240,7 +240,7 @@ export const ActivityList = () => {
       />
 
       {selectedNonEvmTransaction && (
-        <LegacyMultichainTransactionDetailsModal
+        <NonEvmDetailsModal
           transaction={selectedNonEvmTransaction}
           onClose={handleNonEvmModalClose}
         />
