@@ -8771,12 +8771,6 @@
   "trustSignalContinueAnyway": {
     "message": "Connect Anyway"
   },
-  "trustSignalVerifiedDescription": {
-    "message": "This site has been verified by MetaMask and is safe to connect."
-  },
-  "trustSignalVerifiedTitle": {
-    "message": "Verified site"
-  },
   "trustSignalWarningDescription": {
     "message": "This site has not been verified. Proceed with caution when connecting."
   },

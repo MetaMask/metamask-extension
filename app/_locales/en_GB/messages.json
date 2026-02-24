@@ -8762,6 +8762,21 @@
   "troubleStartingTitle": {
     "message": "MetaMask had trouble starting."
   },
+  "trustSignalBlockDescription": {
+    "message": "If you connect to this site, you could lose all your assets."
+  },
+  "trustSignalBlockTitle": {
+    "message": "Malicious site detected"
+  },
+  "trustSignalContinueAnyway": {
+    "message": "Connect Anyway"
+  },
+  "trustSignalWarningDescription": {
+    "message": "This site has not been verified. Proceed with caution when connecting."
+  },
+  "trustSignalWarningTitle": {
+    "message": "Unverified site"
+  },
   "tryAgain": {
     "message": "Try again"
   },
