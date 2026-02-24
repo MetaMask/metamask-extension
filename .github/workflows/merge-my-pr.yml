@@ -8,10 +8,9 @@ on:
 env:
   VERSION_BUMP_HEAD_BRANCH_PATTERN: '^version-bump/[0-9]+\.[0-9]+\.[0-9]+$'
   STABLE_MAIN_HEAD_BRANCH_PATTERN: '^stable-main-[0-9]+\.[0-9]+\.[0-9]+$'
-  BRANCH: ${{ github.head_ref }}
 
 jobs:
-  merge-version-bump-pr:
+  merge-my-pr:
     # Only run if the comment is on a PR and the comment body matches exactly "Merge my PR"
     if: >-
       github.event.issue.pull_request &&
@@ -21,21 +20,41 @@ jobs:
         github.event.comment.author_association == 'OWNER'
       )
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
     steps:
+      # Fetch PR metadata (head branch) using the GitHub API
+      - name: Get PR Details
+        uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ github.event.issue.number }}
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            // Fetch full details of the pull request associated with the comment
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: parseInt(process.env.PR_NUMBER, 10),
+            });
+
+            // Export head ref for subsequent steps
+            core.exportVariable('PR_HEAD_REF', pr.head.ref);
+
       - name: Check the branch name against patterns
         id: check-branch
         run: |
-          if [[ "${BRANCH}" =~ ${VERSION_BUMP_HEAD_BRANCH_PATTERN} ]]; then
+          if [[ "${PR_HEAD_REF}" =~ ${VERSION_BUMP_HEAD_BRANCH_PATTERN} ]]; then
             echo "Branch name matches version bump pattern"
             echo "version-bump=true" >> "$GITHUB_OUTPUT"
-          elif [[ "${BRANCH}" =~ ${STABLE_MAIN_HEAD_BRANCH_PATTERN} ]]; then
+          elif [[ "${PR_HEAD_REF}" =~ ${STABLE_MAIN_HEAD_BRANCH_PATTERN} ]]; then
             echo "Branch name matches stable main pattern"
             echo "stable-main=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Merge approved version bump PR
         if: ${{ steps.check-branch.outputs.version-bump == 'true' }}
-        uses: MetaMask/github-tools/.github/actions/merge-approved-pr@main
+        uses: MetaMask/github-tools/.github/actions/merge-approved-pr@v1
         with:
           pr-number: ${{ github.event.issue.number }}
           # Merge PRs from version-bump/X.Y.Z into main
@@ -47,7 +66,7 @@ jobs:
 
       - name: Merge approved stable main PR
         if: ${{ steps.check-branch.outputs.stable-main == 'true' }}
-        uses: MetaMask/github-tools/.github/actions/merge-approved-pr@main
+        uses: MetaMask/github-tools/.github/actions/merge-approved-pr@v1
         with:
           pr-number: ${{ github.event.issue.number }}
           # Merge PRs from stable-main-X.Y.Z into main
