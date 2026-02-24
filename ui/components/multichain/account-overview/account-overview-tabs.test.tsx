@@ -48,8 +48,18 @@ jest.mock('../../app/assets/defi-list/defi-tab', () => ({
   default: () => null,
 }));
 
+jest.mock('../activity-v2/activity-list', () => ({
+  ActivityList: () => null,
+}));
+
 describe('AccountOverviewTabs - event metrics', () => {
   const mockTrackEvent = jest.fn();
+  const mockMetaMetricsContext = {
+    trackEvent: mockTrackEvent,
+    bufferedTrace: jest.fn(),
+    bufferedEndTrace: jest.fn(),
+    onboardingParentContext: { current: null },
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -72,7 +82,7 @@ describe('AccountOverviewTabs - event metrics', () => {
     });
 
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <AccountOverviewTabs
           showTokens={true}
           showNfts={false}

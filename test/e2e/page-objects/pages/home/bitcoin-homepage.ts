@@ -4,15 +4,15 @@ class BitcoinHomepage extends HomePage {
   protected readonly balance =
     '[data-testid="coin-overview__primary-currency"]';
 
-  protected readonly bridgeButton = '[data-testid="eth-overview-bridge"]';
+  protected readonly bridgeButton = '[data-testid="coin-overview-bridge"]';
 
-  private readonly buySellButton = '[data-testid="eth-overview-buy"]';
+  private readonly buySellButton = '[data-testid="coin-overview-buy"]';
 
-  private readonly receiveButton = '[data-testid="eth-overview-receive"]';
+  private readonly receiveButton = '[data-testid="coin-overview-receive"]';
 
-  protected readonly sendButton = '[data-testid="eth-overview-send"]';
+  protected readonly sendButton = '[data-testid="coin-overview-send"]';
 
-  protected readonly swapButton = '[data-testid="eth-overview-swap"]';
+  protected readonly swapButton = '[data-testid="coin-overview-swap"]';
 
   async checkPageIsLoaded(): Promise<void> {
     try {
@@ -73,12 +73,9 @@ class BitcoinHomepage extends HomePage {
   async checkIsExpectedBitcoinBalanceDisplayed(
     expectedBalance: number = 0,
   ): Promise<void> {
-    console.log(
-      `Check if expected bitcoin balance is displayed: ${expectedBalance} BTC`,
-    );
     await this.driver.waitForSelector({
-      css: this.balance,
-      text: `${expectedBalance}BTC`,
+      css: '[data-testid="multichain-token-list-item-value"]',
+      text: `${expectedBalance} BTC`,
     });
   }
 
@@ -112,6 +109,15 @@ class BitcoinHomepage extends HomePage {
     }
     console.log('Swap button is enabled');
     return true;
+  }
+
+  /**
+   * Clicks the swap button on bitcoin account homepage.
+   */
+  async clickOnSwapButton(): Promise<void> {
+    console.log('Clicking swap button on Bitcoin homepage');
+    await this.driver.waitForSelector(this.swapButton);
+    await this.driver.clickElement(this.swapButton);
   }
 }
 

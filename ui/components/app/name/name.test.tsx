@@ -204,6 +204,12 @@ describe('Name', () => {
       'sends displayed event with %s name',
       async (_: string, value: string, hasPetname: boolean) => {
         const trackEventMock = jest.fn();
+        const mockMetaMetricsContext = {
+          trackEvent: trackEventMock,
+          bufferedTrace: jest.fn(),
+          bufferedEndTrace: jest.fn(),
+          onboardingParentContext: { current: null },
+        };
 
         useDisplayNameMock.mockReturnValue({
           name: hasPetname ? SAVED_NAME_MOCK : null,
@@ -219,7 +225,7 @@ describe('Name', () => {
         });
 
         renderWithProvider(
-          <MetaMetricsContext.Provider value={trackEventMock}>
+          <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
             <Name
               type={NameType.ETHEREUM_ADDRESS}
               value={value}

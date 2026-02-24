@@ -65,6 +65,12 @@ describe('Welcome Page', () => {
   };
   const mockStore = configureMockStore([thunk])(mockState);
   const mockTrackEvent = jest.fn();
+  const mockMetaMetricsContext = {
+    trackEvent: mockTrackEvent,
+    bufferedTrace: jest.fn(),
+    bufferedEndTrace: jest.fn(),
+    onboardingParentContext: { current: null },
+  };
   let startOAuthLoginSpy: jest.SpyInstance;
   let enabledMetricsSpy: jest.SpyInstance;
 
@@ -140,7 +146,7 @@ describe('Welcome Page', () => {
       .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
       .mockReturnValue(true);
     const { getByText, getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <Welcome />
       </MetaMetricsContext.Provider>,
       mockStore,
@@ -206,7 +212,7 @@ describe('Welcome Page', () => {
       .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
       .mockReturnValue(true);
     const { getByText, getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <Welcome />
       </MetaMetricsContext.Provider>,
       mockStore,
@@ -276,7 +282,7 @@ describe('Welcome Page', () => {
       .mockReturnValue(PLATFORM_FIREFOX);
 
     const { getByText, getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <Welcome />
       </MetaMetricsContext.Provider>,
       mockStore,
@@ -344,7 +350,7 @@ describe('Welcome Page', () => {
       .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
       .mockReturnValue(true);
     const { getByText, getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <Welcome />
       </MetaMetricsContext.Provider>,
       mockStore,

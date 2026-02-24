@@ -5,6 +5,7 @@ import {
   RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
   Env as SubscriptionEnv,
+  CANCEL_TYPES,
 } from '@metamask/subscription-controller';
 import { getShieldGatewayConfig } from './shield';
 
@@ -37,6 +38,7 @@ const MOCK_SUBSCRIPTION: Subscription = {
     },
   },
   isEligibleForSupport: true,
+  cancelType: CANCEL_TYPES.ALLOWED_AT_PERIOD_END,
 };
 
 const setup = ({

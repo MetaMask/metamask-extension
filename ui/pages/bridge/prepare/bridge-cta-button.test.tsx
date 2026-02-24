@@ -3,6 +3,7 @@ import {
   QuoteResponse,
   RequestStatus,
   getNativeAssetForChainId,
+  formatChainIdToCaip,
 } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
@@ -11,17 +12,51 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import * as bridgeSelectors from '../../../ducks/bridge/selectors';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
+import {
+  ConnectionStatus,
+  HardwareConnectionPermissionState,
+  HardwareWalletType,
+} from '../../../contexts/hardware-wallets';
 import { BridgeCTAButton } from './bridge-cta-button';
 
+const mockUseHardwareWalletConfig = jest.fn();
+const mockUseHardwareWalletActions = jest.fn();
+const mockUseHardwareWalletState = jest.fn();
+
+jest.mock('../../../contexts/hardware-wallets', () => ({
+  ...jest.requireActual('../../../contexts/hardware-wallets'),
+  useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
+  useHardwareWalletActions: () => mockUseHardwareWalletActions(),
+  useHardwareWalletState: () => mockUseHardwareWalletState(),
+}));
+
+const baseHardwareWalletConfig = {
+  isHardwareWalletAccount: false,
+  walletType: null,
+  hardwareConnectionPermissionState: HardwareConnectionPermissionState.Unknown,
+  isWebHidAvailable: false,
+  isWebUsbAvailable: false,
+};
+
 describe('BridgeCTAButton', () => {
+  beforeEach(() => {
+    mockUseHardwareWalletConfig.mockReturnValue(baseHardwareWalletConfig);
+    mockUseHardwareWalletActions.mockReturnValue({
+      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Disconnected },
+    });
+  });
+
   it("should render the component's initial state", () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
-          },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+          ],
         },
       },
       bridgeSliceOverrides: { fromTokenInputValue: '1' },
@@ -40,14 +75,11 @@ describe('BridgeCTAButton', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.LINEA_MAINNET]: {
-              isActiveSrc: false,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
         },
       },
       bridgeSliceOverrides: {
@@ -69,20 +101,18 @@ describe('BridgeCTAButton', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.LINEA_MAINNET]: {
-              isActiveSrc: false,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
         },
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: null,
         fromToken: {
           symbol: 'ETH',
+          chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
           assetId: getNativeAssetForChainId(1).assetId,
         },
         toToken: toBridgeToken(
@@ -103,20 +133,18 @@ describe('BridgeCTAButton', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.LINEA_MAINNET]: {
-              isActiveSrc: false,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
         },
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: null,
         fromToken: {
           symbol: 'ETH',
+          chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
           assetId: getNativeAssetForChainId(1).assetId,
         },
         toToken: null,
@@ -135,19 +163,16 @@ describe('BridgeCTAButton', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.LINEA_MAINNET]: {
-              isActiveSrc: false,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
         },
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
-        fromToken: 'ETH',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
         toToken: toBridgeToken(
           getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
         ),
@@ -167,29 +192,60 @@ describe('BridgeCTAButton', () => {
     expect(getByRole('button')).not.toBeDisabled();
   });
 
-  it('should disable the component when quotes are loading and there are no existing quotes', () => {
+  it('should render hardware wallet connect label with wallet name', () => {
+    mockUseHardwareWalletConfig.mockReturnValue({
+      ...baseHardwareWalletConfig,
+      isHardwareWalletAccount: true,
+      walletType: HardwareWalletType.Ledger,
+    });
+
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [CHAIN_IDS.MAINNET]: {
-              isActiveSrc: true,
-              isActiveDest: false,
-            },
-            [CHAIN_IDS.OPTIMISM]: {
-              isActiveSrc: true,
-              isActiveDest: false,
-            },
-            [CHAIN_IDS.LINEA_MAINNET]: {
-              isActiveSrc: false,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
         },
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
-        fromToken: 'ETH',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+        ),
+      },
+      bridgeStateOverrides: {
+        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        quotesLastFetched: Date.now(),
+        quotesLoadingStatus: RequestStatus.FETCHED,
+      },
+    });
+
+    const { getByText, getByRole } = renderWithProvider(
+      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
+      configureStore(mockStore),
+    );
+
+    expect(getByText('Connect Ledger')).toBeInTheDocument();
+    expect(getByRole('button')).not.toBeDisabled();
+  });
+
+  it('should disable the component when quotes are loading and there are no existing quotes', () => {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
         toToken: toBridgeToken(
           getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
         ),
@@ -230,25 +286,16 @@ describe('BridgeCTAButton', () => {
       const mockStore = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
-            chains: {
-              [CHAIN_IDS.MAINNET]: {
-                isActiveSrc: true,
-                isActiveDest: false,
-              },
-              [CHAIN_IDS.OPTIMISM]: {
-                isActiveSrc: true,
-                isActiveDest: false,
-              },
-              [CHAIN_IDS.LINEA_MAINNET]: {
-                isActiveSrc: false,
-                isActiveDest: true,
-              },
-            },
+            chainRanking: [
+              { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+              { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+              { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+            ],
           },
         },
         bridgeSliceOverrides: {
           fromTokenInputValue: '1',
-          fromToken: 'ETH',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
           toToken: toBridgeToken(
             getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
           ),
@@ -287,25 +334,16 @@ describe('BridgeCTAButton', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [CHAIN_IDS.MAINNET]: {
-              isActiveSrc: true,
-              isActiveDest: false,
-            },
-            [CHAIN_IDS.OPTIMISM]: {
-              isActiveSrc: true,
-              isActiveDest: false,
-            },
-            [CHAIN_IDS.LINEA_MAINNET]: {
-              isActiveSrc: false,
-              isActiveDest: true,
-            },
-          },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
         },
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
-        fromToken: 'ETH',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
         toToken: toBridgeToken(
           getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
         ),

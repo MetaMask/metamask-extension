@@ -819,6 +819,7 @@
   },
   "pinnedAccountList": [],
   "preferences": {
+    "defaultAddressScope": "eip155",
     "hideZeroBalanceTokens": false,
     "showExtensionInFullSizeView": false,
     "showFiatInTestnets": false,
@@ -826,6 +827,7 @@
     "smartTransactionsOptInStatus": true,
     "petnamesEnabled": false,
     "showConfirmationAdvancedDetails": false,
+    "showDefaultAddress": false,
     "featureNotificationsEnabled": false,
     "showMultiRpcModal": false,
     "privacyMode": false,
@@ -836,7 +838,6 @@
       "sortCallback": "stringNumeric"
     }
   },
-  "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",
   "previousMigrationVersion": 112,
   "remoteFeatureFlags": {

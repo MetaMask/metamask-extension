@@ -159,27 +159,29 @@ import {
   FeatureFlagNames,
   DEFAULT_FEATURE_FLAG_VALUES,
 } from '../../shared/modules/feature-flags';
-import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
-import {
-  getUnapprovedTransactions,
-  getCurrentNetworkTransactions,
-} from './transactions';
 // eslint-disable-next-line import/order
 import {
   getSelectedInternalAccount,
   getInternalAccounts,
   getInternalAccountByAddress,
 } from './accounts';
-import { getMultichainBalances, getMultichainNetwork } from './multichain';
+import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../contexts/hardware-wallets/constants';
+import { getHasShieldEntryModalShownOnce } from './subscription';
+import { getApprovalRequestsByType } from './approvals';
 import {
   getSelectedMultichainNetworkChainId,
   getIsEvmMultichainNetworkSelected,
 } from './multichain/networks';
-import { getApprovalRequestsByType } from './approvals';
-import { getHasShieldEntryModalShownOnce } from './subscription';
+import { getMultichainBalances, getMultichainNetwork } from './multichain';
+import {
+  getUnapprovedTransactions,
+  getCurrentNetworkTransactions,
+} from './transactions';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
+ * @typedef {import('../../shared/lib/deep-links/types').DeferredDeepLink} DeferredDeepLink
  */
 
 // Re-export this file so we don't have to update all references
@@ -204,6 +206,21 @@ export function getAppIsLoading(state) {
   return state.appState.isLoading;
 }
 
+/**
+ * Check if the hardware wallet error modal is currently visible.
+ * Used to prevent auto-closing the notification popup when an error modal is shown.
+ *
+ * @param state - Redux state
+ * @returns true if the hardware wallet error modal is open
+ */
+export function getIsHardwareWalletErrorModalVisible(state) {
+  return (
+    // TODO: Modal is always in the appstate but many tests have not been updated to include it and therefore causing them to fail
+    // this will be fixed in a follow up PR.
+    state.appState?.modal?.modalState?.name === HARDWARE_WALLET_ERROR_MODAL_NAME
+  );
+}
+
 export function getNftIsStillFetchingIndication(state) {
   return state.appState.isNftStillFetchingIndication;
 }
@@ -218,10 +235,6 @@ export function getCustomNonceValue(state) {
 
 export function getNextSuggestedNonce(state) {
   return Number(state.appState.nextNonce);
-}
-
-export function getShowWhatsNewPopup(state) {
-  return state.appState.showWhatsNewPopup;
 }
 
 export function getShowPermittedNetworkToastOpen(state) {
@@ -1456,6 +1469,28 @@ export function getPrivacyMode(state) {
   return Boolean(privacyMode);
 }
 
+/**
+ * Show default address preference
+ *
+ * @param state - Redux state
+ * @returns {boolean}
+ */
+export function getShowDefaultAddress(state) {
+  const { showDefaultAddress } = getPreferences(state);
+  return Boolean(showDefaultAddress);
+}
+
+/**
+ * Default address scope preference
+ *
+ * @param state - Redux state
+ * @returns {string}
+ */
+export function getDefaultAddressScope(state) {
+  const { defaultAddressScope } = getPreferences(state);
+  return defaultAddressScope;
+}
+
 export function getUseExternalNameSources(state) {
   return state.metamask.useExternalNameSources;
 }
@@ -2434,46 +2469,6 @@ export const getSnapInsights = createDeepEqualSelector(
 );
 
 /**
- * Get an object of announcement IDs and if they are allowed or not.
- *
- * @returns {object}
- */
-function getAllowedAnnouncementIds() {
-  return {};
-}
-
-/**
- * @typedef {object} Announcement
- * @property {number} id - A unique identifier for the announcement
- * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was first committed
- */
-
-/**
- * Announcements are managed by the announcement controller and referenced by
- * `state.metamask.announcements`. This function returns a list of announcements
- * the can be shown to the user. This list includes all announcements that do not
- * have a truthy `isShown` property.
- *
- * The returned announcements are sorted by date.
- *
- * @param {object} state - the redux state object
- * @returns {Announcement[]} An array of announcements that can be shown to the user
- */
-
-export function getSortedAnnouncementsToShow(state) {
-  const announcements = Object.values(state.metamask.announcements);
-  const allowedAnnouncementIds = getAllowedAnnouncementIds(state);
-  const announcementsToShow = announcements.filter(
-    (announcement) =>
-      !announcement.isShown && allowedAnnouncementIds[announcement.id],
-  );
-  const announcementsSortedByDate = announcementsToShow.sort(
-    (a, b) => new Date(b.date) - new Date(a.date),
-  );
-  return announcementsSortedByDate;
-}
-
-/**
  * @param state
  * @returns {{networkId: string}[]}
  */
@@ -3008,6 +3003,8 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.MOONRIVER,
     CHAIN_IDS.SEI,
     CHAIN_IDS.MONAD,
+    CHAIN_IDS.HYPE,
+    CHAIN_IDS.MEGAETH_MAINNET,
   ].includes(chainId);
 }
 
@@ -4083,27 +4080,100 @@ export function getRequestType(state, id) {
 
 // #endregion permissions selectors
 
+/** Regex for four-segment versions (e.g. beta builds: 10.2.3.111). */
+const FOUR_SEGMENT_VERSION_REGEX = /^\d+\.\d+\.\d+\.\d+$/u;
+
+/**
+ * Converts a version string to a comparable tuple [major, minor, patch, fourth].
+ * Supports both semver (3 segments) and four-segment versions (e.g. 10.2.3.112).
+ * Three-segment versions get a fourth segment of 0.
+ *
+ * @param {string | undefined} versionStr - Version string (e.g. '10.2.3' or '10.2.3.112').
+ * @returns {[number, number, number, number] | null} Tuple of 4 numbers, or null if unparseable.
+ */
+function versionToComparable(versionStr) {
+  if (typeof versionStr !== 'string' || versionStr.length === 0) {
+    return null;
+  }
+  if (FOUR_SEGMENT_VERSION_REGEX.test(versionStr)) {
+    const segments = versionStr.split('.').map(Number);
+    return [segments[0], segments[1], segments[2], segments[3]];
+  }
+  const coerced = semver.coerce(versionStr);
+  const valid = semver.valid(coerced);
+  if (!valid) {
+    return null;
+  }
+  const parsed = semver.parse(valid);
+  return [parsed.major, parsed.minor, parsed.patch, 0];
+}
+
+/**
+ * Returns true if the first version is strictly greater than the second.
+ * Supports four-segment versions (e.g. 10.2.3.111 vs 10.2.3.112) and mixed
+ * comparison with three-segment semver.
+ *
+ * @param {string | undefined} newerCandidate - Version that should be greater.
+ * @param {string | undefined} olderCandidate - Version that should be smaller.
+ * @returns {boolean} True if newerCandidate > olderCandidate.
+ */
+function isExtensionVersionNewer(newerCandidate, olderCandidate) {
+  const a = versionToComparable(newerCandidate);
+  const b = versionToComparable(olderCandidate);
+  if (!a || !b) {
+    return false;
+  }
+  for (let i = 0; i < 4; i++) {
+    if (a[i] > b[i]) {
+      return true;
+    }
+    if (a[i] < b[i]) {
+      return false;
+    }
+  }
+  return false;
+}
+
 /**
  * Determines whether the update modal should be shown.
+ *
+ * Logic:
+ * - If !pendingVersion || pendingVersion <= version → do not show
+ * - Else if version < minimumVersion → show
+ * - Else → do not show
+ *
+ * Version comparison supports both semver (major.minor.patch) and four-segment
+ * versions (e.g. beta builds 10.2.3.111, 10.2.3.112) so the update prompt
+ * is shown when a newer build is available.
  *
  * @param {import('../../ui/store/store').MetaMaskReduxState} state - The MetaMask state.
  * @returns {boolean} True if the update modal should be shown, false otherwise.
  */
 export function getShowUpdateModal(state) {
   const {
-    metamask: { isUpdateAvailable, updateModalLastDismissedAt, lastUpdatedAt },
+    metamask: {
+      pendingExtensionVersion,
+      updateModalLastDismissedAt,
+      lastUpdatedAt,
+    },
   } = state;
   const remoteFeatureFlags = getRemoteFeatureFlags(state);
 
-  const extensionCurrentVersion = semver.valid(
-    semver.coerce(global.platform?.getVersion()),
-  );
-  const extensionUpdatePromptMinimumVersion = semver.valid(
-    semver.coerce(remoteFeatureFlags.extensionUpdatePromptMinimumVersion),
-  );
-  const isExtensionOutdated =
-    extensionCurrentVersion && extensionUpdatePromptMinimumVersion
-      ? semver.lt(extensionCurrentVersion, extensionUpdatePromptMinimumVersion)
+  const currentVersionRaw = global.platform?.getVersion();
+  const minimumVersionRaw =
+    remoteFeatureFlags.extensionUpdatePromptMinimumVersion;
+
+  const hasNewerUpdate =
+    Boolean(pendingExtensionVersion && currentVersionRaw) &&
+    isExtensionVersionNewer(pendingExtensionVersion, currentVersionRaw);
+
+  if (!hasNewerUpdate) {
+    return false;
+  }
+
+  const isBelowMinimum =
+    currentVersionRaw && minimumVersionRaw
+      ? isExtensionVersionNewer(minimumVersionRaw, currentVersionRaw)
       : false;
 
   const currentTime = Date.now();
@@ -4115,13 +4185,11 @@ export function getShowUpdateModal(state) {
     ? currentTime - lastUpdatedAt > updateModalCooldown
     : true;
 
-  const showUpdateModal =
-    isExtensionOutdated &&
-    isUpdateAvailable &&
+  return (
+    isBelowMinimum &&
     enoughTimePassedSinceLastDismissal &&
-    enoughTimePassedSinceLastUpdate;
-
-  return showUpdateModal;
+    enoughTimePassedSinceLastUpdate
+  );
 }
 
 /**
@@ -4162,4 +4230,14 @@ export function getNetworkConnectionBanner(state) {
  */
 export function getIsDeviceOffline(state) {
   return state.metamask.connectivityStatus === 'offline';
+}
+
+/**
+ * Retrieves the deferred deep link from the MetaMask state.
+ *
+ * @param {MetaMaskReduxState} state - The Redux state object.
+ * @returns {DeferredDeepLink | null} The deferred deep link object if available, null otherwise.
+ */
+export function getDeferredDeepLink(state) {
+  return state.metamask?.deferredDeepLink || null;
 }

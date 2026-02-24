@@ -1,11 +1,17 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
-import { AvatarAccountSize } from '@metamask/design-system-react';
+import {
+  AvatarAccountSize,
+  Icon as DsIcon,
+  IconColor as DsIconColor,
+  IconName as DsIconName,
+  IconSize as DsIconSize,
+} from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
@@ -30,11 +36,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
   getCurrentNetwork,
-  getIsMultichainAccountsState2Enabled,
   getMetaMaskHdKeyrings,
   getOriginOfCurrentTab,
   getPermissions,
-  getSelectedAccount,
   getUseNftDetection,
 } from '../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
@@ -54,7 +58,9 @@ import { SurveyToast } from '../../ui/survey-toast';
 import {
   PasswordChangeToastType,
   ClaimSubmitToastType,
+  StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
+import { useMerklClaimStatus } from '../../../hooks/musd/useMerklClaimStatus';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   getAccountGroupWithInternalAccounts,
@@ -78,6 +84,11 @@ import {
   isCryptoPaymentMethod,
 } from '../../../pages/settings/transaction-shield-tab/types';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   ShieldErrorStateActionClickedEnum,
   ShieldErrorStateLocationEnum,
@@ -85,7 +96,6 @@ import {
 } from '../../../../shared/constants/subscriptions';
 import {
   selectNftDetectionEnablementToast,
-  selectShowConnectAccountToast,
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
   selectNewSrpAdded,
@@ -96,6 +106,7 @@ import {
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
   selectShowStorageErrorToast,
+  selectStorageWriteErrorType,
   selectShowInfuraSwitchToast,
 } from './selectors';
 import {
@@ -114,9 +125,6 @@ import {
 
 export function ToastMaster() {
   const location = useLocation();
-  const isMultichainAccountsFeatureState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
 
   // Check if storage error toast should be shown (needed for conditional rendering on other screens)
   // The selector includes all conditions: flag is true, onboarding complete, and unlocked
@@ -135,11 +143,7 @@ export function ToastMaster() {
       <ToastContainer>
         {storageErrorToast}
         <SurveyToast />
-        {isMultichainAccountsFeatureState2Enabled ? (
-          <ConnectAccountGroupToast />
-        ) : (
-          <ConnectAccountToast />
-        )}
+        <ConnectAccountGroupToast />
         <SurveyToastMayDelete />
         <PrivacyPolicyToast />
         <NftEnablementToast />
@@ -147,6 +151,7 @@ export function ToastMaster() {
         <NewSrpAddedToast />
         <InfuraSwitchToast />
         <CopyAddressToast />
+        <MerklClaimToast />
         <ShieldPausedToast />
         <ShieldEndingToast />
       </ToastContainer>
@@ -170,59 +175,6 @@ export function ToastMaster() {
   }
 
   return null;
-}
-
-function ConnectAccountToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const [hideConnectAccountToast, setHideConnectAccountToast] = useState(false);
-  const account = useSelector(getSelectedAccount);
-
-  // If the account has changed, allow the connect account toast again
-  const prevAccountAddress = usePrevious(account?.address);
-  if (account?.address !== prevAccountAddress && hideConnectAccountToast) {
-    setHideConnectAccountToast(false);
-  }
-
-  const showConnectAccountToast = useSelector((state) =>
-    selectShowConnectAccountToast(state, account),
-  );
-
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-
-  return (
-    Boolean(!hideConnectAccountToast && showConnectAccountToast) && (
-      <Toast
-        dataTestId="connect-account-toast"
-        key="connect-account-toast"
-        startAdornment={
-          <PreferredAvatar address={account.address} className="self-center" />
-        }
-        text={t('accountIsntConnectedToastText', [
-          account?.metadata?.name,
-          getURLHost(activeTabOrigin),
-        ])}
-        actionText={t('connectAccount')}
-        onActionClick={() => {
-          // Connect this account
-          dispatch(addPermittedAccount(activeTabOrigin, account.address));
-          // Use setTimeout to prevent React re-render from
-          // hiding the tooltip
-          setTimeout(() => {
-            // Trigger a mouseenter on the header's connection icon
-            // to display the informative connection tooltip
-            document
-              .querySelector(
-                '[data-testid="connection-menu"] [data-tooltipped]',
-              )
-              ?.dispatchEvent(new CustomEvent('mouseenter', {}));
-          }, 250 * MILLISECOND);
-        }}
-        onClose={() => setHideConnectAccountToast(true)}
-      />
-    )
-  );
 }
 
 function ConnectAccountGroupToast() {
@@ -737,6 +689,77 @@ const ClaimSubmitToast = () => {
   );
 };
 
+function MerklClaimToast() {
+  const t = useI18nContext();
+  const { toastState, dismissToast } = useMerklClaimStatus();
+
+  const autoHideDelay = 5 * SECOND;
+
+  if (!toastState) {
+    return null;
+  }
+
+  const isInProgress = toastState === 'in-progress';
+  const isSuccess = toastState === 'success';
+
+  const toastText = (() => {
+    switch (toastState) {
+      case 'in-progress':
+        return t('merklRewardsToastInProgress');
+      case 'success':
+        return t('merklRewardsToastSuccess');
+      case 'failed':
+        return t('merklRewardsToastFailed');
+      default:
+        return '';
+    }
+  })();
+
+  const startAdornment = (() => {
+    if (isInProgress) {
+      return (
+        <DsIcon
+          name={DsIconName.Loading}
+          color={DsIconColor.IconDefault}
+          size={DsIconSize.Lg}
+          style={{ animation: 'spin 1.2s linear infinite' }}
+        />
+      );
+    }
+    if (isSuccess) {
+      return (
+        <DsIcon
+          name={DsIconName.Confirmation}
+          color={DsIconColor.SuccessDefault}
+          size={DsIconSize.Lg}
+        />
+      );
+    }
+    return (
+      <DsIcon
+        name={DsIconName.CircleX}
+        color={DsIconColor.ErrorDefault}
+        size={DsIconSize.Lg}
+      />
+    );
+  })();
+
+  return (
+    <Toast
+      key="merkl-claim-toast"
+      dataTestId="merkl-claim-toast"
+      text={toastText}
+      startAdornment={startAdornment}
+      onClose={dismissToast}
+      // In-progress toast stays until transaction completes; success/failed auto-hide
+      {...(!isInProgress && {
+        autoHideTime: autoHideDelay,
+        onAutoHideToast: dismissToast,
+      })}
+    />
+  );
+}
+
 function ShieldPausedToast() {
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -872,27 +895,64 @@ function ShieldEndingToast() {
 function StorageErrorToast() {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [isDismissed, setIsDismissed] = useState(false);
+  const [hasTrackedView, setHasTrackedView] = useState(false);
 
   // Selector includes all conditions: flag is true, onboarding complete, and unlocked
   const showStorageErrorToast = useSelector(selectShowStorageErrorToast);
+  const storageWriteErrorType = useSelector(selectStorageWriteErrorType);
+
+  // Only show toast if selector returns true and user hasn't dismissed it
+  const shouldShow = showStorageErrorToast && !isDismissed;
+
+  // Show disk space-specific message when error is due to no space
+  const isNoSpaceError =
+    storageWriteErrorType === StorageWriteErrorType.FileErrorNoSpace;
+  const description = isNoSpaceError
+    ? t('storageErrorDescriptionNoSpace')
+    : t('storageErrorDescriptionDefault');
+
+  // Track "Viewed" event when toast becomes visible
+  useEffect(() => {
+    if (shouldShow && !hasTrackedView) {
+      trackEvent({
+        event: MetaMetricsEventName.StorageErrorToastViewed,
+        category: MetaMetricsEventCategory.Error,
+      });
+      setHasTrackedView(true);
+    }
+  }, [shouldShow, hasTrackedView, trackEvent]);
 
   const handleRevealSrpClick = () => {
+    trackEvent({
+      event: MetaMetricsEventName.StorageErrorToastBackupSrpButtonPressed,
+      category: MetaMetricsEventCategory.Error,
+    });
     setIsDismissed(true);
     navigate(REVEAL_SEED_ROUTE);
   };
 
   const handleClose = () => {
+    trackEvent({
+      event: MetaMetricsEventName.StorageErrorToastDismissed,
+      category: MetaMetricsEventCategory.Error,
+    });
     setIsDismissed(true);
   };
 
-  // Only show toast if selector returns true and user hasn't dismissed it
-  const shouldShow = showStorageErrorToast && !isDismissed;
+  // Only show action button for default errors (not for no-space errors)
+  const actionProps = isNoSpaceError
+    ? {}
+    : {
+        actionText: t('storageErrorAction'),
+        onActionClick: handleRevealSrpClick,
+      };
 
   return (
     shouldShow && (
       <Toast
-        key="database-corruption-toast"
+        key="storage-error-toast"
         dataTestId="storage-error-toast"
         startAdornment={
           <Icon
@@ -902,9 +962,8 @@ function StorageErrorToast() {
           />
         }
         text={t('storageErrorTitle')}
-        description={t('storageErrorDescription')}
-        actionText={t('storageErrorAction')}
-        onActionClick={handleRevealSrpClick}
+        description={description}
+        {...actionProps}
         borderRadius={BorderRadius.LG}
         textVariant={TextVariant.bodyMd}
         onClose={handleClose}

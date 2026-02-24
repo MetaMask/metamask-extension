@@ -40,6 +40,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
 import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
+import { filterTransactionByChain } from '../../../helpers/utils/activity';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import {
@@ -378,13 +379,9 @@ export default function TransactionList({
       ? unfilteredCompletedTransactionsCurrentChain
       : unfilteredCompletedTransactionsAllChains;
 
-    // Filter transactions to only include those from enabled networks
     const filteredTransactions = transactionsToFilter.filter(
-      (transactionGroup) => {
-        const transactionChainId = transactionGroup.initialTransaction?.chainId;
-        const isIncluded = enabledChainIds.includes(transactionChainId);
-        return isIncluded;
-      },
+      (transactionGroup) =>
+        filterTransactionByChain(transactionGroup, enabledChainIds),
     );
 
     return filteredTransactions;
@@ -529,7 +526,7 @@ export default function TransactionList({
     selectedAccount,
   );
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
   const selectedBridgeHistoryItem = useSelector((state) =>
@@ -564,8 +561,6 @@ export default function TransactionList({
             <MultichainTransactionDetailsModal
               transaction={selectedTransaction}
               onClose={() => toggleShowDetails(null)}
-              userAddress={selectedAccount.address}
-              networkConfig={multichainNetworkConfig}
             />
           ))}
 
@@ -642,10 +637,7 @@ export default function TransactionList({
                 )}
               </Box>
             ) : (
-              <TransactionActivityEmptyState
-                className="mx-auto mt-5 mb-6"
-                account={selectedAccount}
-              />
+              <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
             )}
           </Box>
         </Box>
@@ -660,10 +652,7 @@ export default function TransactionList({
         {renderFilterButton()}
         {groupedPendingTransactions.length === 0 &&
         completedTransactions.length === 0 ? (
-          <TransactionActivityEmptyState
-            className="mx-auto mt-5 mb-6"
-            account={selectedAccount}
-          />
+          <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
         ) : (
           <Box className="transaction-list__transactions">
             {groupedPendingTransactions.length > 0 && (

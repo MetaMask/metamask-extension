@@ -93,6 +93,12 @@ describe('ConfirmDecryptMessage Component', () => {
   const mockDecryptMsg = jest.mocked(decryptMsg);
   const mockUseScrollRequired = jest.mocked(useScrollRequired);
   const mockTrackEvent = jest.fn();
+  const mockMetaMetricsContext = {
+    trackEvent: mockTrackEvent,
+    bufferedTrace: jest.fn(),
+    bufferedEndTrace: jest.fn(),
+    onboardingParentContext: { current: null },
+  };
 
   let store;
 
@@ -116,7 +122,7 @@ describe('ConfirmDecryptMessage Component', () => {
 
   const renderAndUnlockMessage = async () => {
     const result = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <ConfirmDecryptMessage />
       </MetaMetricsContext.Provider>,
       store,
@@ -162,7 +168,7 @@ describe('ConfirmDecryptMessage Component', () => {
 
   it('decrypt button calls decrypt action and calls metric event', async () => {
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <ConfirmDecryptMessage />
       </MetaMetricsContext.Provider>,
       store,
@@ -178,7 +184,7 @@ describe('ConfirmDecryptMessage Component', () => {
 
   it('cancel button calls cancel action and calls metric event', async () => {
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <ConfirmDecryptMessage />
       </MetaMetricsContext.Provider>,
       store,

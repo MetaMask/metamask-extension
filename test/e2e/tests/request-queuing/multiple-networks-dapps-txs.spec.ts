@@ -8,6 +8,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 // BUG #38149 - Request Queuing multiple Dapps and txs on different networks fails with unapproved transaction
 // eslint-disable-next-line
@@ -50,7 +51,7 @@ describe.skip('Request Queuing for Multiple Dapps and Txs on different networks.
         await testDapp.checkPageIsLoaded();
 
         // Connect to dapp 1
-        await testDapp.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -70,7 +71,7 @@ describe.skip('Request Queuing for Multiple Dapps and Txs on different networks.
         await testDappTwo.checkPageIsLoaded();
 
         // Connect to dapp 2
-        await testDappTwo.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         // Dapp one send tx
         await driver.switchToWindowWithUrl(DAPP_URL);

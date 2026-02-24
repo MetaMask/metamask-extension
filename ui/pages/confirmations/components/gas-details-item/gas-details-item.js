@@ -217,6 +217,7 @@ const GasDetailsItem = ({
       }
       subTitle={
         <GasTiming
+          chainId={txData.chainId}
           maxPriorityFeePerGas={maxPriorityFeePerGasToRender}
           maxFeePerGas={maxFeePerGasToRender}
         />

@@ -7,6 +7,7 @@ import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import { Driver } from '../../webdriver/driver';
 
 // Solana + EVM accounts (using the current E2E fixtures setup).
@@ -109,7 +110,7 @@ describe('Dapp viewed Event', function () {
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
-        await testDapp.connectAccount({
+        await connectAccountToTestDapp(driver, {
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
 
@@ -142,7 +143,7 @@ describe('Dapp viewed Event', function () {
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
-        await testDapp.connectAccount({
+        await connectAccountToTestDapp(driver, {
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
 
@@ -185,7 +186,7 @@ describe('Dapp viewed Event', function () {
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
-        await testDapp.connectAccount({
+        await connectAccountToTestDapp(driver, {
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
         // open dapp in a new page
@@ -231,7 +232,7 @@ describe('Dapp viewed Event', function () {
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
-        await testDapp.connectAccount({
+        await connectAccountToTestDapp(driver, {
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
         // refresh dapp
@@ -280,7 +281,7 @@ describe('Dapp viewed Event', function () {
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
-        await testDapp.connectAccount({
+        await connectAccountToTestDapp(driver, {
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
         // open dapp in a new page and switch to second connected dapp
@@ -327,14 +328,14 @@ describe('Dapp viewed Event', function () {
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
-        await testDapp.connectAccount({
+        await connectAccountToTestDapp(driver, {
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
         await testDapp.disconnectAccount(DEFAULT_FIXTURE_ACCOUNT);
 
         // reconnect again on test dapp
         await testDapp.checkPageIsLoaded();
-        await testDapp.connectAccount({
+        await connectAccountToTestDapp(driver, {
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
 

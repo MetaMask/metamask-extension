@@ -40,7 +40,7 @@ export const useLinkAccountGroup = (
       : [],
   );
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const triggerAccountLinkingEvent = useCallback(
     (event: MetaMetricsEventName, account: InternalAccount) => {

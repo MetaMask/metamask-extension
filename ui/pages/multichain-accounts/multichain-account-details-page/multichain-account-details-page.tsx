@@ -58,7 +58,7 @@ export const MultichainAccountDetailsPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { id } = useParams();
 
   const accountGroupId = decodeURIComponent(id ?? '') as AccountGroupId;

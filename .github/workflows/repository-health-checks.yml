@@ -36,6 +36,10 @@ jobs:
         if: ${{ !cancelled() }}
         run: yarn lint:lockfile
 
+      - name: Lint console baseline
+        if: ${{ !cancelled() }}
+        run: yarn lint:baseline
+
       - name: Check yarn resolutions
         if: ${{ !cancelled() }}
         run: yarn --check-resolutions

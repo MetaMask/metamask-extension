@@ -37,8 +37,10 @@ import type {
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
-import type { BridgeToken } from '../../ducks/bridge/types';
-import { isTronEnergyOrBandwidthResource } from '../../ducks/bridge/utils';
+import {
+  isTronEnergyOrBandwidthResource,
+  getNativeAssetForChainIdSafe,
+} from '../../ducks/bridge/utils';
 
 // This transforms the token object from the bridge-api into the format expected by the AssetPicker
 const buildTokenData = (
@@ -110,6 +112,7 @@ type FilterPredicate = (
  * - popularity
  * - all other tokens
  *
+ * @deprecated Use usePopularTokens or other token list hooks instead
  * @param chainId - the selected src/dest chainId
  * @param tokenToExclude - a token to exclude from the token list, usually the token being swapped from
  * @param tokenToExclude.symbol
@@ -119,7 +122,7 @@ type FilterPredicate = (
  */
 export const useTokensWithFiltering = (
   chainId?: ChainId | Hex | CaipChainId,
-  tokenToExclude?: null | Pick<BridgeToken, 'symbol' | 'address' | 'chainId'>,
+  tokenToExclude?: null | { address: string; chainId: string; symbol: string },
   accountAddress?: string,
 ) => {
   const topAssetsFromFeatureFlags = useSelector((state: BridgeAppState) =>
@@ -263,6 +266,16 @@ export const useTokensWithFiltering = (
           }
           if (shouldAddToken(token.symbol, token.address, token.chainId)) {
             if (isNativeAddress(token.address) || token.isNative) {
+              const nativeAsset = getNativeAssetForChainIdSafe(token.chainId);
+              let assetImageUrl: string | undefined;
+              try {
+                assetImageUrl = getAssetImageUrl(
+                  token.address,
+                  formatChainIdToCaip(token.chainId),
+                );
+              } catch (err) {
+                assetImageUrl = undefined;
+              }
               yield {
                 symbol: token.symbol,
                 chainId: token.chainId,
@@ -279,19 +292,15 @@ export const useTokensWithFiltering = (
                   MULTICHAIN_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
                   ] ??
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                  (getNativeAssetForChainId(token.chainId)?.icon ||
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                    getNativeAssetForChainId(token.chainId)?.iconUrl ||
-                    getAssetImageUrl(
-                      token.address,
-                      formatChainIdToCaip(token.chainId),
-                    )),
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string must fall through (https://github.com/MetaMask/metamask-extension/issues/31880)
+                  (nativeAsset?.icon || nativeAsset?.iconUrl || assetImageUrl),
                 accountType: token.accountType,
               };
             } else {
+              const assetId = toAssetId(
+                token.address,
+                formatChainIdToCaip(token.chainId),
+              );
               yield {
                 ...token,
                 symbol: token.symbol,
@@ -306,10 +315,9 @@ export const useTokensWithFiltering = (
                   (token.image ||
                     (token.address &&
                       tokenList?.[token.address.toLowerCase()]?.iconUrl)) ??
-                  getAssetImageUrl(
-                    token.address,
-                    formatChainIdToCaip(token.chainId),
-                  ) ??
+                  (assetId
+                    ? getAssetImageUrl(assetId, token.chainId)
+                    : undefined) ??
                   '',
               };
             }

@@ -32,7 +32,7 @@ jobs:
       - name: Rename coverage
         run: mv coverage/unit/coverage-final.json coverage/unit/coverage-unit-${{matrix.shard}}.json
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: coverage-unit-${{matrix.shard}}
           path: coverage/unit/coverage-unit-${{matrix.shard}}.json
@@ -55,7 +55,7 @@ jobs:
       - name: Rename coverage
         run: mv coverage/webpack/coverage-final.json coverage/webpack/coverage-webpack.json
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: coverage-webpack
           path: coverage/webpack/coverage-webpack.json
@@ -78,7 +78,7 @@ jobs:
       - name: Rename coverage
         run: mv coverage/integration/coverage-final.json coverage/integration/coverage-integration.json
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: coverage-integration
           path: coverage/integration/coverage-integration.json
@@ -104,7 +104,7 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: coverage
           pattern: coverage-*
@@ -113,7 +113,7 @@ jobs:
       - name: Merge coverage reports
         run: yarn nyc merge coverage .nyc_output/coverage-final.json && yarn nyc report --reporter lcov
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: lcov.info
           path: coverage/lcov.info

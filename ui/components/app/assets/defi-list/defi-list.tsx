@@ -22,6 +22,8 @@ import { useFormatters } from '../../../../hooks/useFormatters';
 import { extractUniqueIconAndSymbols } from '../util/extractIconAndSymbol';
 import { getDefiPositions } from '../../../../selectors/assets';
 import { DeFiProtocolPosition } from '../types';
+import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
+import { ASSET_CELL_HEIGHT } from '../constants';
 import { DeFiErrorMessage } from './cells/defi-error-message';
 import { DeFiEmptyStateMessage } from './cells/defi-empty-state';
 import DefiProtocolCell from './cells/defi-protocol-cell';
@@ -128,20 +130,15 @@ export default function DefiList({ onClick }: DefiListProps) {
   }
 
   return (
-    <>
-      {sortedFilteredDefi && sortedFilteredDefi.length > 0 ? (
-        sortedFilteredDefi.map((position: DeFiProtocolPosition) => {
-          return (
-            <DefiProtocolCell
-              key={`${position.protocolId}#${position.chainId}`}
-              position={position}
-              onClick={onClick}
-            />
-          );
-        })
-      ) : (
-        <DeFiEmptyStateMessage />
+    <VirtualizedList
+      data={sortedFilteredDefi}
+      estimatedItemSize={ASSET_CELL_HEIGHT}
+      overscan={10}
+      keyExtractor={(position) => `${position.protocolId}#${position.chainId}`}
+      renderItem={({ item: position }) => (
+        <DefiProtocolCell position={position} onClick={onClick} />
       )}
-    </>
+      listEmptyComponent={<DeFiEmptyStateMessage />}
+    />
   );
 }

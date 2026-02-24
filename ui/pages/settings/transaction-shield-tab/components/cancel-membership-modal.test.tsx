@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  CANCEL_TYPES,
   PAYMENT_TYPES,
   RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
@@ -24,6 +25,7 @@ const mockSubscription: Subscription = {
     },
   },
   isEligibleForSupport: true,
+  cancelType: CANCEL_TYPES.ALLOWED_AT_PERIOD_END,
 };
 
 describe('Cancel Membership Modal', () => {

@@ -5,6 +5,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks', function () {
   it('should put confirmation txs for different dapps on different networks in single queue', async function () {
@@ -40,7 +41,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await testDapp.checkPageIsLoaded();
 
         // Connect to dapp 1
-        await testDapp.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -60,7 +61,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await testDappTwo.checkPageIsLoaded();
 
         // Connect to dapp 2
-        await testDappTwo.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         // Dapp one send tx
         await driver.switchToWindowWithUrl(DAPP_URL);

@@ -388,9 +388,6 @@
   "next": {
     "message": "Další"
   },
-  "noConversionRateAvailable": {
-    "message": "Nie je k dispozícii žiadna sadzba konverzie"
-  },
   "noWebcamFound": {
     "message": "Webová kamera vášho počítača sa nenašla. Skúste znova."
   },

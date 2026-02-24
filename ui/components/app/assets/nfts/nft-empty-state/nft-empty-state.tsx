@@ -19,7 +19,7 @@ export type NftEmptyStateProps = {
 export const NftEmptyState = ({ className }: NftEmptyStateProps) => {
   const t = useI18nContext();
   const theme = useSelector(getTheme);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
 
   // Theme-aware icon

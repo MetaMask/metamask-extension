@@ -68,12 +68,11 @@ async function main() {
     debug,
     e2eTestPath,
     retries,
+    stopAfterOneFailure,
     leaveRunning,
     updateSnapshot,
     updatePrivacySnapshot,
   } = argv;
-
-  let { stopAfterOneFailure } = argv;
 
   const runTestsOnSingleBrowser = async (selectedBrowserForRun) => {
     if (!selectedBrowserForRun) {
@@ -124,11 +123,6 @@ async function main() {
       process.env.UPDATE_PRIVACY_SNAPSHOT = 'true';
     }
 
-    // If the file path includes 'tolerate-failure', there is no reason to retry
-    if (e2eTestPath.includes('tolerate-failure')) {
-      stopAfterOneFailure = true;
-    }
-
     const configFile = path.join(__dirname, '.mocharc.js');
     const extraArgs = process.env.E2E_ARGS?.split(' ') || [];
 
@@ -137,19 +131,40 @@ async function main() {
 
     console.log(`Running tests on ${selectedBrowserForRun}`);
 
+    // Use enhanced spec reporter for readable console output with colors and summary
+    // Only add junit reporter in CI environments
+    const isCI =
+      process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+    // Use enhanced reporter by default, allow override via E2E_REPORTER env var
+    const consoleReporter =
+      process.env.E2E_REPORTER ||
+      path.join(__dirname, 'reporters/enhanced-spec-reporter.js');
+    const reporters = [`--reporter=${consoleReporter}`];
+    const reporterOptions = [];
+
+    if (isCI) {
+      reporters.push('--reporter=mocha-junit-reporter');
+      reporterOptions.push(
+        '--reporter-options',
+        `mochaFile=test/test-results/e2e/[hash].xml,toConsole=false`,
+      );
+    }
+
     try {
       await retry({ retries, stopAfterOneFailure }, async () => {
-        await runInShell('yarn', [
+        const mochaArgs = [
           'mocha',
           `--config=${configFile}`,
           `--timeout=${testTimeoutInMilliseconds}`,
-          '--reporter=mocha-junit-reporter',
-          '--reporter-options',
-          `mochaFile=test/test-results/e2e/[hash].xml,toConsole=true`,
+          '--color',
+          ...reporters,
+          ...reporterOptions,
           ...extraArgs,
           e2eTestPath,
           exit,
-        ]);
+        ];
+
+        await runInShell('yarn', mochaArgs);
       });
     } catch (error) {
       // If the file path includes 'tolerate-failure', we log and tolerate the failure
@@ -168,17 +183,31 @@ async function main() {
   const allBrowsers = ['chrome', 'firefox'];
   if (browser === 'all') {
     for (const currentBrowser of allBrowsers) {
-      await runTestsOnSingleBrowser(currentBrowser);
+      console.log(`Running tests on ${currentBrowser}`);
+      try {
+        await runTestsOnSingleBrowser(currentBrowser);
+      } catch (error) {
+        exitWithError(
+          `Error occurred while running tests on ${currentBrowser}: ${error}`,
+        );
+      }
     }
   } else {
-    await runTestsOnSingleBrowser(browser);
+    console.log(`Running tests on ${browser}`);
+    try {
+      await runTestsOnSingleBrowser(browser);
+    } catch (error) {
+      exitWithError(
+        `Error occurred while running tests on ${browser}: ${error}`,
+      );
+    }
   }
 
   // In CI we sometimes get to this point without being ready to properly
   // terminate the process. We haven't been able to figure out what is
   // holding up the process. But this is a quick fix to ensure more
   // stable CI going forward.
-  // eslint-disable-next-line node/no-process-exit
+  // eslint-disable-next-line n/no-process-exit
   process.exit();
 }
 

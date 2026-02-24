@@ -41,6 +41,7 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
         await testDapp.clickPersonalSign();
+        await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({
@@ -122,6 +123,7 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
         await testDapp.clickPersonalSign();
+        await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({

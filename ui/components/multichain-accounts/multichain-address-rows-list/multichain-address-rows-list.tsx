@@ -57,7 +57,9 @@ export const MultichainAddressRowsList = ({
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [searchPattern, setSearchPattern] = React.useState<string>('');
-  const [, handleCopy] = useCopyToClipboard();
+
+  // useCopyToClipboard analysis: Copies one of your public addresses
+  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
 
   const getAccountsSpreadByNetworkByGroupId = useSelector((state) =>
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),

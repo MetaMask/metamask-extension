@@ -20,10 +20,11 @@ export async function getFirstAddress(
   driver: Driver,
   headerNavbar: HeaderNavbar = new HeaderNavbar(driver),
 ): Promise<string> {
+  await headerNavbar.checkPageIsLoaded();
   await headerNavbar.openAccountMenu();
 
   const accountListPage = new AccountListPage(driver);
-  await accountListPage.checkPageIsLoaded();
+  await accountListPage.checkPageIsLoaded(20000);
   await accountListPage.openMultichainAccountMenu({
     accountLabel: 'Account 1',
   });
@@ -56,11 +57,18 @@ export async function getFirstAddress(
  * @param driver - The WebDriver instance.
  * @param script - The script to break the DB that will be executed in the
  * background page for MV2 or offscreen page for MV3.
+ * @param options - Additional options.
+ * @param options.participateInMetaMetrics - Whether to participate in MetaMetrics. Defaults to false.
  * @returns The initial first account's address (before corruption).
  */
 export async function onboardThenTriggerCorruptionFlow(
   driver: Driver,
   script: string,
+  {
+    participateInMetaMetrics = false,
+  }: {
+    participateInMetaMetrics?: boolean;
+  } = {},
 ): Promise<string> {
   const initialWindow = await driver.driver.getWindowHandle();
 
@@ -72,6 +80,7 @@ export async function onboardThenTriggerCorruptionFlow(
   await completeCreateNewWalletOnboardingFlow({
     driver,
     password: WALLET_PASSWORD,
+    participateInMetaMetrics,
     skipSRPBackup: true,
   });
 

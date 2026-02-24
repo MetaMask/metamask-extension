@@ -1,18 +1,34 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import nock from 'nock';
-import { setBackgroundConnection } from '../../store/background-connection';
-import { MOCKS, CONSTANTS } from '../../../test/jest';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { PREPARE_SWAP_ROUTE } from '../../helpers/constants/routes';
+import { setBackgroundConnection } from '../../store/background-connection';
+import {
+  ConnectionStatus,
+  HardwareConnectionPermissionState,
+} from '../../contexts/hardware-wallets';
 import CrossChainSwap from '.';
 
 const mockResetBridgeState = jest.fn();
+const mockUseHardwareWalletConfig = jest.fn();
+const mockUseHardwareWalletActions = jest.fn();
+const mockUseHardwareWalletState = jest.fn();
 const middleware = [thunk];
+
+jest.mock('../../contexts/hardware-wallets', () => ({
+  ...jest.requireActual('../../contexts/hardware-wallets'),
+  useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
+  useHardwareWalletActions: () => mockUseHardwareWalletActions(),
+  useHardwareWalletState: () => mockUseHardwareWalletState(),
+}));
+
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),
+  getStatePatches: jest.fn(),
+  addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
   resetSwapsState: jest.fn(),
   setSwapsLiveness: jest.fn(() => true),
   setSwapsTokens: jest.fn(),
@@ -26,18 +42,18 @@ setBackgroundConnection({
   selectSrcNetwork: jest.fn(),
   resetState: () => mockResetBridgeState(),
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-} as any);
+  isRelaySupported: jest.fn().mockResolvedValue(true),
+  isSendBundleSupported: jest.fn().mockResolvedValue(true),
+} as never);
 
 const mockUseNavigate = jest.fn();
+const mockBridgePreparePath = '/cross-chain/swaps/prepare-bridge-page';
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
     useLocation: () => ({
-      pathname: '/cross-chain/swaps/prepare-swap-page',
+      pathname: mockBridgePreparePath,
       search: '',
       hash: '',
       state: null,
@@ -47,37 +63,20 @@ jest.mock('react-router-dom', () => {
 
 describe('Bridge', () => {
   beforeEach(() => {
-    nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/networks/1/topAssets')
-      .reply(200, MOCKS.TOP_ASSETS_GET_RESPONSE);
-
-    nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/refreshTime')
-      .reply(200, MOCKS.REFRESH_TIME_GET_RESPONSE);
-
-    nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/networks/1/aggregatorMetadata')
-      .reply(200, MOCKS.AGGREGATOR_METADATA_GET_RESPONSE);
-
-    nock(CONSTANTS.GAS_API_URL)
-      .get('/networks/1/gasPrices')
-      .reply(200, MOCKS.GAS_PRICES_GET_RESPONSE);
-
-    nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/networks/1/tokens')
-      .reply(200, MOCKS.TOKENS_GET_RESPONSE);
-
-    nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/networks/1/tokens?includeBlockedTokens=true')
-      .reply(200, MOCKS.TOKENS_GET_RESPONSE);
-
-    nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/featureFlags')
-      .reply(200, MOCKS.createFeatureFlagsResponse());
-  });
-
-  afterAll(() => {
-    nock.cleanAll();
+    mockUseHardwareWalletConfig.mockReturnValue({
+      isHardwareWalletAccount: false,
+      walletType: null,
+      hardwareConnectionPermissionState:
+        HardwareConnectionPermissionState.Unknown,
+      isWebHidAvailable: false,
+      isWebUsbAvailable: false,
+    });
+    mockUseHardwareWalletActions.mockReturnValue({
+      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Disconnected },
+    });
   });
 
   it('renders the component with initial props', async () => {

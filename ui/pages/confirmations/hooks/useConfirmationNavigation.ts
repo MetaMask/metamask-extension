@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { isEqual } from 'lodash';
 import { ApprovalRequest } from '@metamask/approval-controller';
@@ -23,12 +23,21 @@ import {
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
 
+export enum ConfirmationLoader {
+  Default = 'default',
+  CustomAmount = 'customAmount',
+}
+
 const CONNECT_APPROVAL_TYPES = [
   ApprovalType.WalletRequestPermissions,
   'wallet_installSnap',
   'wallet_updateSnap',
   'wallet_installSnapResult',
 ];
+
+export type ConfirmationNavigationOptions = {
+  loader?: ConfirmationLoader;
+};
 
 export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
@@ -85,13 +94,28 @@ export function useConfirmationNavigation() {
     [confirmations, getIndex, navigateToIndex],
   );
 
+  const navigateToTransaction = useCallback(
+    (transactionId: string, options: ConfirmationNavigationOptions = {}) => {
+      const loader = options.loader ?? ConfirmationLoader.Default;
+
+      navigate({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
+        search: options.loader
+          ? new URLSearchParams({ loader }).toString()
+          : '',
+      });
+    },
+    [navigate],
+  );
+
   return {
     confirmations,
     count,
     getIndex,
+    navigateNext,
     navigateToId,
     navigateToIndex,
-    navigateNext,
+    navigateToTransaction,
   };
 }
 
@@ -165,4 +189,16 @@ export function getConfirmationRoute(
   }
 
   return '';
+}
+
+export function useConfirmationNavigationOptions(): ConfirmationNavigationOptions {
+  const [searchParams] = useSearchParams();
+
+  const loader =
+    (searchParams.get('loader') as ConfirmationLoader) ??
+    ConfirmationLoader.Default;
+
+  return {
+    loader,
+  };
 }

@@ -825,7 +825,7 @@ export default class SelectHardware extends Component {
         message: (
           <>
             <p className="hw-connect__QR-subtitle">
-              {this.context.t('onekey')}
+              {this.context.t('oneKey')}
             </p>
             <Button
               className="hw-connect__external-btn-first"
@@ -889,6 +889,41 @@ export default class SelectHardware extends Component {
               data-testid="ngrave-brand-learn-more-btn"
             >
               {this.context.t('learnMoreUpperCase')}
+            </Button>
+          </>
+        ),
+      },
+      {
+        message: (
+          <>
+            <p className="hw-connect__QR-subtitle">
+              {this.context.t('keycardShell')}
+            </p>
+            <Button
+              className="hw-connect__external-btn-first"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.trackMarketingEvent(
+                  MarketingActionNames.BuyNow,
+                  QrHardwareDeviceNames.KShell,
+                );
+                openWindow(HardwareAffiliateLinks.KShell);
+              }}
+            >
+              {this.context.t('buyNow')}
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.trackMarketingEvent(
+                  MarketingActionNames.Tutorial,
+                  QrHardwareDeviceNames.KShell,
+                );
+                openWindow(HardwareAffiliateTutorialLinks.KShell);
+              }}
+            >
+              {this.context.t('tutorial')}
             </Button>
           </>
         ),

@@ -143,7 +143,7 @@ class FixtureBuilder {
   withKeyringControllerAdditionalAccountVault() {
     return this.withKeyringController({
       vault:
-        '{"data":"XBb1KJiGsxNOhcTC/xtzaNmpDqnMibJ/HCIjMGUHF/jPIghM63+xkoGcko9T2NKjeMyt2QLbl7K9tr0/qQgbAJP/LUn6gfovkajBdeBQ5N/qztdw7uGJsnrKnzo1krmb2wWeFstwoolcZ9GYwhYVSmCO/tYba50eanY2XvmFheT1ghowtiFmTIGRWV2X1HacnpI4n0rW88ZyBaVuOJOIJGEBiiTD+b0V5l9Tv4sFEms4jvatJwhjDQnx1HmyQE3K64+W5yJe764B0ZdcQ6j2dyIaGgutcz8PoQLBJR1uo78fufZeFzk1gk/BreXn2+4vQnPxQ3prhnXHO4S+7Kj1h2ticxYb3XWnprFLWyksu9ChMyqDXwgM6edLBRDH2jz/IMuC5g9JhABl7PsSH+001z/uBx3GvRTFviFF9dztf195/EPy8YbuYUVbYtJy1aPSju84efWYvb7GrzrmgFnbeh2BpjyWqHoCTdw8fhdm7HQO8GFF7JdGtoIpjkhwPrudIQeIYhGCezd+n5GFp3mdmFNrLbOVFgxufTdY6hlYkg6c5XuHC2VnWCSPwWKIn6t9VuvuyIxXBnol/bgYC8R/d99ctkPDHykigQcgr6cCnhPOwUFOLwrmXqm9HQeWiKb8WxwdGeRnblS+fhFhB+lSy7RvyTUb7HFogDPnDLP/LlUFxdSNNBgqNJU1Dc07Np65PZrpsPvSCfkFttzTytHswhtTEMOg/faaH2D6AwIGbh5Z9cubiNcMrdD75aT1WGuecJ8P7uOMYJq9C7e5l/35","iv":"U81Cv/oryQ1DI9lRezx1iw==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"ejIn0xx5qZMA0m2ekjvXJF2pJa8ocL11wEdNIFJsKZQ="}',
+        '{"data":"wiB80G6yk3XY9doo6nmVt+qIgGinIFw0iANKZB7uPM4jjWsLNPny8NaDlh9mQclXfxlvy6wRcEIXmM6D9Qpr3miTfhW4HFcuDFQ0DtrPOceSUZMQtrdpZWul8zwNbjRe1mbprZu0LdPK/0wiSKvHay4/UDHcIxIOWA64a4SUFMQ59Orbh8JQnDZ3rYEi2+zHZuyj4F4J6+HQuWdLV4m/ZbfDeytf7VAn1DXkaCnpne4KAy1YpPXQ2Ucqol1PM9gEZURErwL3xjBARaE8iQHyWQV2FuOj4tylU82Tsa1kn/ne9Sv9lFNNQE0d50EQtPFeLCqjCqj84q2AaOGFXN5ojgYId+m+SMgji2w/ANl/6FXLA7hIPvYEmiS2etLQXS9yj0Z1zGxQO/V6H7wBSGquute9Z1zkSivE5Bpym324ccB9S5H5h9CPgxtdFSnEs+0xkv0OB1GmcS+5dh2ZtK6Am7jvwlkuynC1ha0Gre/xp7SUpG4wM4cGhYn1b3cMz0eYHiP9POaINZvsZWbE+VTWezQ9hHBCdv7o4GXNrwHm3w1cI/bVGotr3MV3tLdXE5T/izNNNXU78s2ADDWkHfjgXm002TDHZtHbmBWFqw==","iv":"djp82xT3OOpenReQzhcEDA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"SJPfWAWz3MfeLwZrOve636Gh0l4qYC60udPVVdXtR/c="}',
     });
   }
 
@@ -861,7 +861,17 @@ class FixtureBuilder {
           '2fdb2de6-80c7-4d2f-9f95-cb6895389843': {
             id: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
             address: '0x0cc5261ab8ce458dc977078a3623e2badd27afd3',
-            options: {},
+            options: {
+              entropySource: '01KGHBX70TS965MXN93GBPKD6Z', // Can be found in the vault (see `withKeyringControllerAdditionalAccountVault`).
+              derivationPath: "m/44'/60'/0'/0/0",
+              groupIndex: 0,
+              entropy: {
+                type: 'mnemonic',
+                id: '01KGHBX70TS965MXN93GBPKD6Z', // Can be found in the vault (see `withKeyringControllerAdditionalAccountVault`).
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+              },
+            },
             methods: [
               'personal_sign',
               'eth_signTransaction',
@@ -882,7 +892,17 @@ class FixtureBuilder {
           '58093703-57e9-4ea9-8545-49e8a75cb084': {
             id: '58093703-57e9-4ea9-8545-49e8a75cb084',
             address: '0x3ed0ee22e0685ebbf07b2360a8331693c413cc59',
-            options: {},
+            options: {
+              entropySource: '01KGHBX70TS965MXN93GBPKD6Z', // Can be found in the vault (see `withKeyringControllerImportedAccountVault`).
+              derivationPath: "m/44'/60'/0'/0/1",
+              groupIndex: 1,
+              entropy: {
+                type: 'mnemonic',
+                id: '01KGHBX70TS965MXN93GBPKD6Z', // Can be found in the vault (see `withKeyringControllerImportedAccountVault`).
+                derivationPath: "m/44'/60'/0'/0/1",
+                groupIndex: 1,
+              },
+            },
             methods: [
               'personal_sign',
               'eth_signTransaction',
@@ -902,7 +922,17 @@ class FixtureBuilder {
           'dd658aab-abf2-4f53-b735-c8a57151d447': {
             id: 'dd658aab-abf2-4f53-b735-c8a57151d447',
             address: '0xd38d853771fb546bd8b18b2f3638491bc0b0e906',
-            options: {},
+            options: {
+              entropySource: '01KGHBX70TS965MXN93GBPKD6Z', // Can be found in the vault (see `withKeyringControllerImportedAccountVault`).
+              derivationPath: "m/44'/60'/0'/0/2",
+              groupIndex: 2,
+              entropy: {
+                type: 'mnemonic',
+                id: '01KGHBX70TS965MXN93GBPKD6Z', // Can be found in the vault (see `withKeyringControllerImportedAccountVault`).
+                derivationPath: "m/44'/60'/0'/0/2",
+                groupIndex: 2,
+              },
+            },
             methods: [
               'personal_sign',
               'eth_signTransaction',
@@ -931,7 +961,17 @@ class FixtureBuilder {
           'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
             id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
             address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-            options: {},
+            options: {
+              entropySource: '01KGHBJCECE5PTNHY84ZAE2V9Y', // Can be found in the vault (see `withKeyringControllerAdditionalAccountVault`).
+              derivationPath: "m/44'/60'/0'/0/0",
+              groupIndex: 0,
+              entropy: {
+                type: 'mnemonic',
+                id: '01KGHBJCECE5PTNHY84ZAE2V9Y', // Can be found in the vault (see `withKeyringControllerAdditionalAccountVault`).
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+              },
+            },
             methods: [
               'personal_sign',
               'eth_signTransaction',
@@ -952,7 +992,17 @@ class FixtureBuilder {
           'e9976a84-110e-46c3-9811-e2da7b5528d3': {
             id: 'e9976a84-110e-46c3-9811-e2da7b5528d3',
             address: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-            options: {},
+            options: {
+              entropySource: '01KGHBJCECE5PTNHY84ZAE2V9Y', // Can be found in the vault (see `withKeyringControllerAdditionalAccountVault`).
+              derivationPath: "m/44'/60'/0'/0/1",
+              groupIndex: 1,
+              entropy: {
+                type: 'mnemonic',
+                id: '01KGHBJCECE5PTNHY84ZAE2V9Y', // Can be found in the vault (see `withKeyringControllerAdditionalAccountVault`).
+                derivationPath: "m/44'/60'/0'/0/1",
+                groupIndex: 1,
+              },
+            },
             methods: [
               'personal_sign',
               'eth_signTransaction',
@@ -1663,22 +1713,86 @@ class FixtureBuilder {
   withLedgerAccount() {
     return this.withKeyringController({
       vault:
-        '{"data":"kCehIbrW5j8AKVLEdUUaidsTomloRQLmLnEIYUA+HHMCJTJ9/dX+B692ExnrgWlZK4PySLTVoofQZjgQcKVMHi+mO5wnPV3p4sKKpv/w1zh0AIx5h25zDln5DbyHWjJtUKISOvKyLvZ02I0oqFvVGF6Wae/TNLelUleYwjP02h39//Fkgy8hukDNMmscBlX/Vx3iNwyie9X7FXKXMHrHcMhSjRJaZxri48SOWbchx31hfZuv8oP2l1yJkrWv82JjkiZYoQcbGkBRis06GnfFU62cKyqh9ZrIRHb6yj8g7SjRF5mMe7czA3QdJQjUMHJLq9IV2To+WOiOsKd+CVrjvNR9A1fWrRlAvQENDWO9FxaBuuBsNF2mm9KHqowSXD+/TUP1fiftyTnxs9mzojKReX8fPP0qjlIE7Sv71OfKvD1+7zW1udWmgoO+RcCFj3tQ5wXc6/MAYB2N2vfSHB9k+AgUYvajtaf0cb4gdm3KDPhriv1sDkOenaKbZLGLnsbfMWAbTQPrwCDdhiOvHBUfCVrV1ac0FlUIERdNkxDMwbd9BllyscPsif9VNuZCUzzeboTk0LTm1FszgFD8UxlvCfxB9Z5pZgk5ublhAkWZGZuckfVTEPofcELNx8VVf2Un8Yju8QzX7XGwNTTg/v5jLx52NrGWHvWIRUHRjnLK6hOVL26yRbds4e6FK4vsi1Hxi85HiiB1J2RX3gBfl14R2/1nCpLZePnEUaH6TgGPzsbzlJsSsCktGvMZaLdD","iv":"utoVJtRyaiuYF9PnhgZD8w==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"PwqqENo0YiZXcRrMzg+ujLG2VtyTNkKBCvFMsnzFefk="}',
-    }).withPreferencesController({
-      identities: {
-        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-          lastSelected: 1665507600000,
-          name: 'Account 1',
+        '{"data":"dwEWCLyS14yChQuzUYsiVhfaSZ7pzwjnhUhmTlz/5Nmxn3aTN/tIicWEMGjQ3+GgJw7E1fkn2OLfA4U9iw5eV5ZVozHLJC+4K3YihNJGcLaxQQj9hb8fnxWhRR2NWgKlThkGiGBF+66qE5rCgmGijYy3WA19OrpgTANYRE9IZifS46MokrWxHlZNY90PQWl+6ROc6XtfbdetpslQkOBCGDTp49FZz0E2M62crLMAU+cSLHuMIkwq7WfbJwy5ybMe085Bo3ghzrwwpysu39vUozGbaQN4EUhNgE7vzxPcasQWwqi/3aLKTm2JATs3sia0jIp5OSdaZkcTX4pcvqgXxGUrxsqK56FtFzAg4TE7qjl2smX3ScW1xJopYHvI8Uv6eEH6kLcnZbV7MJw+Dasu/ROrsynrbywevY3LQ62g07t2ZPz/82VfcEOGcdBmhsVoFGpNYoaESGQIKV2yXLU+0erOzAmYz4bSI+66i+a1woLaQveko/7nm38ILojedM9+Zqfcgh+PjCYyfjRxTc+5BhS+AjHHQgWAD/sqvaMTLQiH7dP4rYHYeZQi9WL9nfvv/orxVJFCEpMAb13BbJefvCKTKxiOg/F+4RPPB46gAAXMrMGtin/P8wxlFcOR0Drfg0COa5hMvSM2hOhV6LUfx3gL5ilAjuFAL3iANh5qJSECg8m46BU6maVQoGQCiaGSfSerEvnbXftXNCK1SfpkSpV7k/hFAVQyv5tN+4yi4CYqLq+43roSNxlaEVSz8MDJr+SNIJQFD8aqT4RiHMQqOPpYrmSvWeZDELs0TQU4XEVKIU/7naocQfdncUfsExXKdJGvIvnISZpNGcr9/DU2V6a3ZmF3pvQ2HPnZgYSsYBXK7mxJSpgTNCwvV1HBSl93SHs59Zn2aWW0qvaS0IpTHklMWC+8YF3FQAikgaEnVnTwGJL/4gg02MMHOKbazr7Cv/z9Vfj8sSU3enuiK4fCRqlFbwKHtQwqry6or6p+NiXFZ40EuMy0NYPkDy/h5Srk0Y1JMRJJp6bcTIu1f90+fVziqQ==","iv":"2gvqZ+DkKASrRK8iCXALPQ==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"PwqqENo0YiZXcRrMzg+ujLG2VtyTNkKBCvFMsnzFefk="}',
+    })
+      .withAccountsController({
+        internalAccounts: {
+          accounts: {
+            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+              address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+              options: {
+                entropySource: '01JWZDDDB45SRHTRE5KYWZJK9W', // Can be found in the vault.
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+                entropy: {
+                  type: 'mnemonic',
+                  id: '01JWZDDDB45SRHTRE5KYWZJK9W', // Can be found in the vault.
+                  derivationPath: "m/44'/60'/0'/0/0",
+                  groupIndex: 0,
+                },
+              },
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Account 1',
+                importTime: 1724486724986,
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+            '221ecb67-0d29-4c04-83b2-dff07c263634': {
+              id: '221ecb67-0d29-4c04-83b2-dff07c263634',
+              address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+              options: {},
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Ledger 1',
+                importTime: 1724486729079,
+                keyring: {
+                  type: 'Ledger Hardware',
+                },
+                lastSelected: 1724486729083,
+              },
+            },
+          },
+          selectedAccount: '221ecb67-0d29-4c04-83b2-dff07c263634',
         },
-        '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
-          address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
-          lastSelected: 1665507800000,
-          name: 'Ledger 1',
+      })
+      .withPreferencesController({
+        identities: {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            lastSelected: 1665507600000,
+            name: 'Account 1',
+          },
+          '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
+            address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+            lastSelected: 1665507800000,
+            name: 'Ledger 1',
+          },
         },
-      },
-      selectedAddress: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
-    });
+        selectedAddress: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+      });
   }
 
   withTrezorAccount() {
@@ -1700,7 +1814,17 @@ class FixtureBuilder {
             'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
               id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
               address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-              options: {},
+              options: {
+                entropySource: '01KGHAX3WXGMX9H76THHSSV553', // Can be found in the vault.
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+                entropy: {
+                  type: 'mnemonic',
+                  id: '01KGHAX3WXGMX9H76THHSSV553', // Can be found in the vault.
+                  derivationPath: "m/44'/60'/0'/0/0",
+                  groupIndex: 0,
+                },
+              },
               methods: [
                 'personal_sign',
                 'eth_sign',
@@ -1749,7 +1873,7 @@ class FixtureBuilder {
       })
       .withKeyringController({
         vault:
-          '{"data":"NPUZE4s9SQOrsw1GtJSnQ9ptC3J1nf3O+hWT3N8Oh5MDcyO0XojQfSBZL88FgjuAGMT+oFEnX8gzsd1x0/Z7iinNSOD+U22LJ6w37Pkfw4mqAYvKJDbnb2HAdjNbjGD99PKn1qe5eR0vohL5taFW2lTKdlE3dficITFM9wm9mQTegQVvYClTSktweumFSTMxqO1fUPj7oacLmw69ZAk2/am4fhI4c6ZeJoAkvPTJvYZDOne3WkUlcuUoeJjCX7b/59NQNHeCry8OyWVMCZDMYFsJT9Pk2vlFgnVL69n9dRGHrZNuNGFOhFawta5TqDUn1Ya7Iq0FjBW1WQv+HKktMM+RA8KZZyAAJkXYHRMpmUhQkw4wQFELgHjKFm/NIYcFVT5t6/XIj9kLqh4+55krUGoEHygzX41uSNie/wNmLjTgNAZv/eK9R81vyv1FR8N1fgkr13KxQT/0o/bQZhnaVClFa/3t13epiRrU/1plVh2TaI7HLFLj69d4c7w96J7Z33osjCywpNCJLam3Xx5OLAaPVe+L7a9u/zOMmryxX37xCrQhn9YSzZ0+E9Hik9CZU9ZXqmNgRhYAoqpcRWgMVmEC2HRLBIXXF0VTyYvfUvEfn87iAsqw0KeoQagDpUPsEr8UU9zs6cGRqZZTfR6/Wa3UwuIwV5XnCRg3Eifiz2BHKG4kutxKIJJak9habIfXBjxMrrwrHns7tWmWmE3JRYoekJQxFdWP3mcnDHVNz2VscgWeW5bZEoBim91iPRbsXimX9605xE0WOaHpwu27G9LwTNwL+0f8BgwoCcfMbaKwoDGVqKFOSbKurYBByPmWsm1b10vVrnsxA3VZMd2HWhicD7DE5h/4R+7Z90VthpVwt4NQ7+QmXeSXqCpPcoq7UTrchdYgV95xbKna1r0lSnZSfUMALji1I2Nh96ki24SbbUEeFZGm4dxNSnub07hTKF6xeqS1FvV79hBpZi/6v+pS+SDNSlwEcfRWW3S02Ec6JAhK2rVCQqSwasFcVcznYB5OaKL6QCmriIpqH0ATsthAwsf9naHSU+36wwi3xogxbpzecjaZ8gxKs2wmJk+Rz6VoGB+z9DTzvha5sm4DmfuQ2CtbQNYZq20VG3hO9g7wzWwa5xZmbH7njBDqlpaNgmxMrAX1S+T8D7X6ElD+aH0MyP9UD5E5tT5xxgUAV0wi+LY0+uCi2Y2lragFM7ihmPr1MP5wEy/1eIf45cY3imfl9w0F/FrCo+Hy2Au9AueCCab2eabA8QAum3lhXtdOyc123sSghIPjC6RUlZE53skLx1cPaV5JJAkneQJ44QMWecLQjh3YyCzRQ8XCnFAL+Kmf7zW5t+l25PLCkcfuLE7zxvLsTz3w2TCIXzEJyw1vXjBzPTUdKCNSva0WGsbq5B93zYot6bmvK1RKHeje8Ed/4N/l8uwxulUAjYQ+94qDKkxTVxvAZ8ydoxwKuB8QCTXgbymDsF/Y5l+RDXmzMT8BdN/QtdjsCXJ2PjvBG+srQOPntOCZMS7FVMk9yc6MWE/DBDm7HtY5CiY3af4A5sOZmLSP3Ek91ijmYdr/nO32DnkV4NJ2/Hj8SWAK5OD8zq8q5uRlR8BDcj7oLnzJX4S+yJNJ/nZSleUyTsv5v6YZ8hno","iv":"6SgfUVcvgUDGbCuqmdZgbA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"nk4xdpmMR+1s5BYe4Vnk++XAQwrISI2bCtbMg7V1wUA="}',
+          '{"data":"H+KGUVIk87gi/8BeaSNHa2F0lyQ0Jbu/n8MlD1hV9s3EhA8978Qr1nfJyGlO9YY5pZo10R0dWGurtIe7wA/TSqhrY9gqn1O9zSW+4IJBx22iKTmcjN1PIlMtqP8h1Ft3vDVUtXC1ZR6wJWkmPVMMKGDay0OhZ0EL9iK6JEusN4F/XyTbvGHpvEbMq+dgxds3U9g/NcWH8oe0q9ZdqKmcxCwjalVsSfBgwVCpj66Tt+wTMEC38eDeXWrJEs0Kmq6dVUa74ivMhdVJYbqwg0rN4AA/SXBRx+37/nPOcJPV+spyzZvSBwFWDn7l1dwgszdiy+NyCBGUK/jJRYQo5np7+a7n62Gc2Jnbs2cZarqtUKKqQ+oVsSFPJAWfFgoe9QBVhaU+MP8+URSipvJvpgpX+ODV8iEFdJ3rLXs377cvyABKVrVHOusJzwLS1H2evLyqej+HaLMD0TkyB40AiVU1sMc/Od3P1xQ+I8GBxrxfK+hodNLxWbyjbIM9k4vSNZMoTSkiaWSeJ/hxgRL5Y8clAJTRRqgTpwERQUwW891i5t5HIQoIOl2PNsOw7V/wRzCqWR1COjgMRrAoKjVcuOBu2NmnM1MNq/hPNNn8LMmrCH3qydS2N/J/OKRoeny+h4+9IL8rxmzSP7Zqk+tTFZmMkMCrHo3bofmTXg2XjOqjbZuN3Rn+qtvDOjjzf1atI8+4yFn6jffgQF2wFrFpUnVxl+4Gc/EdEZPSKNQgWkYt8rhgMumDppJ1QboWnKIyNjeN2kVNfqUcNsgp4Qkw34Wq5Ifw3NPkmJ1iOmfpsGPjz4vx1+pRS49PT6qRpdM7nRjuB9uU17VztoPiU/ASj5lkTI53NgIGvMQ3qMoee2wRvPSflsy892f5cs8ZqFTm+YB3kRgl2pq8BHRFR+iXcsVPl+I=","iv":"yLI4xnkISVYDNAiMX5XsNw==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"KlzhFYDtD7xefesp6xGvs41ZaziHohL7RgfRf1yX1WM="}',
       })
       .withNameController({
         names: {

@@ -15,8 +15,6 @@ export const FIND_TRANSACTION_HASH_LINK =
 export const METAMETRICS_SETTINGS_LINK =
   'https://support.metamask.io/privacy-and-security/how-to-manage-your-metametrics-settings';
 // eslint-disable-next-line prefer-destructuring
-export const SUPPORT_REQUEST_LINK = process.env.SUPPORT_REQUEST_LINK;
-// eslint-disable-next-line prefer-destructuring
 export const SUPPORT_LINK = process.env.SUPPORT_LINK;
 export const CONTRACT_ADDRESS_LINK = _contractAddressLink;
 export const PASSWORD_MIN_LENGTH = 8;
@@ -69,17 +67,4 @@ export const FIXED_PRERENDER_BROWSER_VERSIONS = {
   // https://chromiumdash.appspot.com/commits?commit=a88eee8a2798c1dc4d69b255ccad24fea5ff2d8b&platform=Linux
   chrome: '>=121',
   edge: '>=121',
-};
-
-/**
- * Specifies the Chromium-based browser and their versions where
- * MV3 updates are stable and don't break service workers.
- *
- * @see {@link https://chromium.googlesource.com/chromium/src/+/4ff63e1f75af997e93f53b57aca21fc9cfd1cdb5}
- * @see {@link https://chromium.googlesource.com/chromium/src/+/a5d13d7b91139dfac4721708937f75094d3c24e3}
- */
-export const FIXED_MV3_STABLE_UPDATES_CHROMIUM_BROWSER_VERSIONS = {
-  // https://chromiumdash.appspot.com/commit/4ff63e1f75af997e93f53b57aca21fc9cfd1cdb5
-  chrome: '>=143.0.7465.0',
-  edge: '>=143',
 };

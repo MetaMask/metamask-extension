@@ -45,6 +45,13 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
         statusCode: 200,
         json: FEATURE_FLAGS_API_MOCK_RESULT,
       })),
+    // Mock chainid.network used by NetworkEnablementController
+    await mockServer
+      .forGet(/https:\/\/chainid\.network\/.*/u)
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [],
+      })),
   ];
 }
 

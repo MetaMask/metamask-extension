@@ -67,6 +67,24 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
     const eventId = uuidv4().replace(/-/gu, '');
     const timestamp = Math.floor(Date.now() / 1000);
 
+    // Extract sentryTags from error object (if present)
+    // Any error can define error.sentryTags to add searchable tags to Sentry
+    const errorObj = error as Record<string, unknown>;
+    const sentryTags =
+      errorObj?.sentryTags && typeof errorObj.sentryTags === 'object'
+        ? (errorObj.sentryTags as Record<string, string>)
+        : {};
+
+    // Create error_details without sentryTags to avoid duplication
+    // (sentryTags are sent as top-level tags)
+    let errorDetails: Record<string, unknown>;
+    if (error && typeof error === 'object') {
+      const { sentryTags: _omitted, ...rest } = errorObj;
+      errorDetails = rest;
+    } else {
+      errorDetails = { message: String(error) };
+    }
+
     // Create event payload according to Sentry specs
     // event_id, error_details and user_agent are required by Sentry envelope format, hence the disable is valid
     const eventPayload = {
@@ -79,13 +97,12 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
       release: browser.runtime.getManifest()?.version || 'unknown',
       extra: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_details:
-          error && typeof error === 'object'
-            ? error
-            : { message: String(error) },
+        error_details: errorDetails,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         user_agent: globalThis.navigator?.userAgent || 'unknown',
       },
+      // Add tags for searchable/filterable fields in Sentry UI
+      tags: sentryTags,
     };
 
     // Create envelope headers
@@ -150,33 +167,61 @@ async function handleRestartAction(
  * @throws {ErrorLike} Throws the error after displaying the message.
  * @returns A promise that resolves to never, as it always throws an error.
  */
-export async function displayCriticalError(
+export async function displayCriticalErrorMessage(
   container: HTMLElement,
   errorKey: CriticalErrorTranslationKey,
   error: ErrorLike,
   currentLocale?: string,
 ): Promise<never> {
   const localeContext = await maybeGetLocaleContext(currentLocale);
-  container.innerHTML = getErrorHtml(
-    errorKey,
-    error,
-    localeContext,
-    SUPPORT_LINK,
-  );
+  const html = getErrorHtml(errorKey, error, localeContext, SUPPORT_LINK);
 
-  const restartButton = container.querySelector<HTMLButtonElement>(
-    '#critical-error-button',
-  );
-  const reportCheckbox = container.querySelector<HTMLInputElement>(
-    '#critical-error-checkbox',
-  );
+  const criticalErrorContainer = displayCriticalErrorPage(container, html);
+  if (criticalErrorContainer) {
+    const restartButton =
+      criticalErrorContainer.querySelector<HTMLButtonElement>(
+        '#critical-error-button',
+      );
+    const reportCheckbox =
+      criticalErrorContainer.querySelector<HTMLInputElement>(
+        '#critical-error-checkbox',
+      );
 
-  // Restart button: report error and restart MetaMask
-  restartButton?.addEventListener('click', async () => {
-    const shouldReport = reportCheckbox?.checked ?? false;
-    await handleRestartAction(error, shouldReport);
-  });
+    // Restart button: report error and restart MetaMask
+    restartButton?.addEventListener('click', async () => {
+      const shouldReport = reportCheckbox?.checked ?? false;
+      await handleRestartAction(error, shouldReport);
+    });
+  }
 
   log.error(error.stack);
   throw error;
+}
+
+/**
+ * Displays a critical error in the given container using the given HTML.
+ *
+ * @param container - The HTML element to display the error in.
+ * @param html - The HTML contents of the critical error page.
+ */
+export function displayCriticalErrorPage(
+  container: HTMLElement,
+  html: string,
+): HTMLElement | undefined {
+  const appContainerParent = container.parentElement;
+  if (!appContainerParent) {
+    console.warn(
+      'Cannot display critical error. Another critical error may already be shown.',
+    );
+    return undefined;
+  }
+
+  const criticalErrorContainer = document.createElement('div');
+  criticalErrorContainer.setAttribute('id', 'critical-error-content');
+  criticalErrorContainer.innerHTML = html;
+
+  // Prevent app contents from writing over critical error by removing application root.
+  appContainerParent.removeChild(container);
+  appContainerParent.prepend(criticalErrorContainer);
+  return criticalErrorContainer;
 }

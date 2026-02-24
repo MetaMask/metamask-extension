@@ -35,6 +35,7 @@ export const useEnableMissingNetwork = () => {
         const isPopularNetwork =
           FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
 
+        // This causes selected network filter to be deselected after a src token is selected
         if (isPopularNetwork) {
           const isNetworkEnabled = enabledNetworkKeys.includes(hexChainId);
           if (!isNetworkEnabled) {

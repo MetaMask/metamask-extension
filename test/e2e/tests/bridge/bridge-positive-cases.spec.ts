@@ -120,6 +120,7 @@ describe('Bridge tests', function (this: Suite) {
       },
     );
   });
+
   it('updates recommended bridge quote incrementally when SSE events are received', async function () {
     await withFixtures(
       getBridgeFixtures(

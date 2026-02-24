@@ -401,9 +401,6 @@
   "next": {
     "message": "Neste"
   },
-  "noConversionRateAvailable": {
-    "message": "Ingen konverteringsrate tilgjengelig "
-  },
   "noWebcamFound": {
     "message": "Datamaskinens webkamera ble ikke funnet. Vennligst prøv igjen."
   },

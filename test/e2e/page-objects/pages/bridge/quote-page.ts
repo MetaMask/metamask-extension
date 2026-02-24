@@ -22,7 +22,7 @@ class BridgeQuotePage {
     '[data-testid="multichain-asset-picker__network"]';
 
   public assetPrickerSearchInput =
-    '[data-testid="asset-picker-modal-search-input"]';
+    '[data-testid="bridge-asset-picker-search-input"]';
 
   private sourceAmount = '[data-testid="from-amount"]';
 
@@ -30,7 +30,7 @@ class BridgeQuotePage {
 
   private lineaNetwork = '[data-testid="Linea"]';
 
-  public tokenButton = '[data-testid="multichain-token-list-button"]';
+  public tokenButton = '[data-testid="bridge-asset"]';
 
   private submitButton = { text: 'Swap', tag: 'button' };
 
@@ -41,7 +41,7 @@ class BridgeQuotePage {
 
   private backButton = '[aria-label="Back"]';
 
-  private networkSelector = '[data-testid="avatar-group"]';
+  private networkSelector = '[data-testid="multichain-asset-picker__network"]';
 
   private networkFees = '[data-testid="network-fees"]';
 
@@ -49,8 +49,6 @@ class BridgeQuotePage {
 
   private confirmButton =
     '[data-testid="confirm-sign-and-send-transaction-confirm-snap-footer-button"]';
-
-  private selectAllButton = { text: 'Select all', tag: 'button' };
 
   private noOptionAvailable = {
     text: `This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option.`,
@@ -64,8 +62,39 @@ class BridgeQuotePage {
 
   private switchTokensButton = '[data-testid="switch-tokens"]';
 
+  private slippageEditButton = '[data-testid="slippage-edit-button"]';
+
+  private slippageCustomButton =
+    '[data-testid="bridge__tx-settings-modal-custom-button"]';
+
+  private slippageCustomInput =
+    'input[data-testid="bridge__tx-settings-modal-custom-input"]';
+
+  private networkNameSelector = (network: string) =>
+    `[data-testid="${network}"]`;
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * Checks that the bridge quote page is loaded.
+   *
+   * @param timeout - Optional timeout in milliseconds. Defaults to 10000.
+   */
+  async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.sourceAssetPickerButton, {
+        timeout,
+      });
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for bridge quote page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Bridge quote page is loaded');
   }
 
   enterBridgeQuote = async (quote: BridgeQuote) => {
@@ -74,9 +103,7 @@ class BridgeQuotePage {
       await this.driver.clickElement(this.sourceAssetPickerButton);
       if (quote.fromChain) {
         await this.driver.clickElement(this.networkSelector);
-        await this.driver.clickElement(this.selectAllButton);
         await this.driver.clickElement(`[data-testid="${quote.fromChain}"]`);
-        await this.driver.clickElementAndWaitToDisappear(this.applyButton);
       }
       if (quote.tokenFrom) {
         await this.driver.fill(this.assetPrickerSearchInput, quote.tokenFrom);
@@ -86,8 +113,6 @@ class BridgeQuotePage {
         });
       }
     }
-    // QTY
-    await this.driver.fill(this.sourceAmount, quote.amount);
 
     // Destination
     if (quote.tokenTo || quote.toChain) {
@@ -100,13 +125,13 @@ class BridgeQuotePage {
 
       if (quote.toChain) {
         // We're in token picker, need to click network badge first
-        await this.driver.waitForSelector(this.mutlichainAssetPicker);
-        await this.driver.clickElement(this.mutlichainAssetPicker);
+        await this.driver.waitForSelector(this.networkSelector);
+        await this.driver.clickElement(this.networkSelector);
 
         // Now select the destination network
-        await this.driver.clickElementAndWaitToDisappear(
-          `[data-testid="${quote.toChain}"]`,
-        );
+        await this.driver.clickElementAndWaitToDisappear({
+          text: quote.toChain,
+        });
       }
       if (quote.tokenTo) {
         await this.driver.fill(this.assetPrickerSearchInput, quote.tokenTo);
@@ -116,6 +141,9 @@ class BridgeQuotePage {
         });
       }
     }
+
+    // QTY
+    await this.driver.fill(this.sourceAmount, quote.amount);
     await this.driver.assertElementNotPresent(
       {
         tag: 'p',
@@ -220,6 +248,29 @@ class BridgeQuotePage {
 
   async switchTokens(): Promise<void> {
     await this.driver.clickElement(this.switchTokensButton);
+  }
+
+  async checkTokenRiskWarningIsDisplayed(
+    title: string,
+    description: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({ text: title }, { timeout: 30000 });
+    await this.driver.waitForSelector({ text: description });
+  }
+
+  async setCustomSlippage(value: string): Promise<void> {
+    await this.driver.clickElement(this.slippageEditButton);
+    await this.driver.clickElement(this.slippageCustomButton);
+    await this.driver.fill(this.slippageCustomInput, value);
+    await this.driver.executeScript(`
+      const input = document.querySelector('${this.slippageCustomInput}');
+      if (input) { input.blur(); }
+    `);
+  }
+
+  async selectNetwork(network: string): Promise<void> {
+    await this.driver.clickElement(this.networkSelector);
+    await this.driver.clickElement(this.networkNameSelector(network));
   }
 }
 
