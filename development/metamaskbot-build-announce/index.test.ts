@@ -2,7 +2,14 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import type { BenchmarkResults } from '../../test/e2e/benchmarks/utils/types';
-import { buildTableRows, buildBenchmarkSection, extractEntries } from './utils';
+import {
+  buildTableRows,
+  buildBenchmarkSection,
+  buildWebVitalsSection,
+  buildPageLoadTable,
+  extractEntries,
+} from './utils';
+import type { BenchmarkEntry, PageLoadBenchmarkResults } from './utils';
 
 const mockUserActionsJson: Record<string, BenchmarkResults> = {
   loadNewAccount: {
@@ -300,5 +307,127 @@ describe('buildBenchmarkSection', () => {
         buildBenchmarkSection([], '🧭 User Journey Benchmarks', 'Benchmark'),
       ).toBe('');
     });
+  });
+});
+
+describe('buildWebVitalsSection', () => {
+  it('renders section with valid web vitals data', () => {
+    const entries: BenchmarkEntry[] = [
+      {
+        benchmarkName: 'loadNewAccount',
+        entry: {
+          mean: { load_new_account: 500 },
+          webVitals: {
+            runs: [],
+            aggregated: {
+              inp: {
+                id: 'inp', mean: 100, min: 80, max: 130, stdDev: 10, cv: 10,
+                p50: 100, p75: 110, p95: 125, p99: 130, samples: 5, outliers: 0,
+                dataQuality: 'good' as const,
+              },
+              lcp: {
+                id: 'lcp', mean: 2200, min: 2000, max: 2500, stdDev: 100, cv: 5,
+                p50: 2200, p75: 2300, p95: 2450, p99: 2490, samples: 5, outliers: 0,
+                dataQuality: 'good' as const,
+              },
+              cls: null,
+              ratings: {
+                inp: { good: 5, 'needs-improvement': 0, poor: 0, null: 0 },
+                lcp: { good: 4, 'needs-improvement': 1, poor: 0, null: 0 },
+                cls: { good: 0, 'needs-improvement': 0, poor: 0, null: 5 },
+              },
+            },
+          },
+        },
+      },
+    ];
+
+    const html = buildWebVitalsSection(entries, '📊 Core Web Vitals');
+
+    expect(html).toContain('<details>');
+    expect(html).toContain('📊 Core Web Vitals');
+    expect(html).toContain('Load New Account');
+    expect(html).toContain('INP');
+    expect(html).toContain('LCP');
+    expect(html).toContain('CLS');
+    expect(html).toContain('5/0/0');
+    expect(html).toContain('4/1/0');
+  });
+
+  it('renders rows with dashes when all metric stats are null', () => {
+    const entries: BenchmarkEntry[] = [
+      {
+        benchmarkName: 'standardHome',
+        entry: {
+          mean: { uiStartup: 1200 },
+          webVitals: {
+            runs: [],
+            aggregated: {
+              inp: null,
+              lcp: null,
+              cls: null,
+              ratings: {
+                inp: { good: 0, 'needs-improvement': 0, poor: 0, null: 10 },
+                lcp: { good: 0, 'needs-improvement': 0, poor: 0, null: 10 },
+                cls: { good: 0, 'needs-improvement': 0, poor: 0, null: 10 },
+              },
+            },
+          },
+        },
+      },
+    ];
+
+    const html = buildWebVitalsSection(entries, '📊 Core Web Vitals');
+
+    expect(html).toContain('<details>');
+    expect(html).toContain('Standard Home');
+    expect(html).toContain('INP');
+    expect(html).toContain('LCP');
+    expect(html).toContain('CLS');
+    expect(html).toContain('>-<');
+    expect(html).toContain('>10<');
+  });
+
+  it('returns empty string when no entries have webVitals.aggregated', () => {
+    const entries: BenchmarkEntry[] = [
+      {
+        benchmarkName: 'noVitals',
+        entry: { mean: { metric: 100 } },
+      },
+    ];
+
+    const html = buildWebVitalsSection(entries, '📊 Core Web Vitals');
+    expect(html).toBe('');
+  });
+
+  it('returns empty string for empty entries array', () => {
+    expect(buildWebVitalsSection([], '📊 Core Web Vitals')).toBe('');
+  });
+});
+
+describe('buildPageLoadTable', () => {
+  it('excludes webVitals from measure columns', () => {
+    const benchmarkResults: PageLoadBenchmarkResults = {
+      chrome: {
+        browserify: {
+          standardHome: {
+            mean: { uiStartup: '1200', load: '1100' },
+            p95: { uiStartup: '1500', load: '1400' },
+            webVitals: {
+              runs: '[array]',
+              aggregated: '[object]',
+            },
+          },
+        },
+      },
+    } as unknown as PageLoadBenchmarkResults;
+
+    const html = buildPageLoadTable(benchmarkResults);
+
+    expect(html).not.toContain('Web Vitals');
+    expect(html).not.toContain('runs');
+    expect(html).not.toContain('aggregated');
+    expect(html).toContain('uiStartup');
+    expect(html).toContain('load');
   });
 });

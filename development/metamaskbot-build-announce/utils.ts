@@ -430,18 +430,14 @@ export function buildWebVitalsSection(
     }
 
     let isFirstMetricForBenchmark = true;
-    const metricCount = metrics.filter(
-      (m) => agg[m.key] !== null && agg[m.key] !== undefined,
-    ).length;
+    const metricCount = metrics.length;
 
     for (const { key, label, formatValue } of metrics) {
       const stats = agg[key];
-      if (!stats || typeof stats !== 'object' || !('p75' in stats)) {
-        continue;
-      }
-
       const ratings = agg.ratings[key];
-      const ratingStr = `${ratings.good}/${ratings['needs-improvement']}/${ratings.poor}`;
+      const ratingStr = ratings
+        ? `${ratings.good}/${ratings['needs-improvement']}/${ratings.poor}`
+        : '-';
 
       let row = '';
       if (isFirstMetricForBenchmark) {
@@ -449,10 +445,24 @@ export function buildWebVitalsSection(
         isFirstMetricForBenchmark = false;
       }
       row += `<td>${label}</td>`;
-      row += `<td align="right">${formatValue(stats.p75)}</td>`;
-      row += `<td align="right">${key === 'cls' ? '-' : formatValue(stats.p95)}</td>`;
-      row += `<td align="center">${ratingStr}</td>`;
-      row += `<td align="right">${stats.samples}</td>`;
+
+      if (stats && typeof stats === 'object' && 'p75' in stats) {
+        row += `<td align="right">${formatValue(stats.p75)}</td>`;
+        row += `<td align="right">${key === 'cls' ? '-' : formatValue(stats.p95)}</td>`;
+        row += `<td align="center">${ratingStr}</td>`;
+        row += `<td align="right">${stats.samples}</td>`;
+      } else {
+        const totalRuns = ratings
+          ? ratings.good +
+            ratings['needs-improvement'] +
+            ratings.poor +
+            ratings.null
+          : 0;
+        row += `<td align="right">-</td>`;
+        row += `<td align="right">-</td>`;
+        row += `<td align="center">${ratingStr}</td>`;
+        row += `<td align="right">${totalRuns}</td>`;
+      }
       rows.push(`<tr>${row}</tr>`);
     }
   }
@@ -596,6 +606,7 @@ function discoverDimensions(
         const pageBenchmark = data[platform][buildType][page];
         const pageLoadMeasures = Object.keys(pageBenchmark).filter(
           (key) =>
+            key !== 'webVitals' &&
             typeof pageBenchmark[key] === 'object' &&
             pageBenchmark[key] !== null,
         );
