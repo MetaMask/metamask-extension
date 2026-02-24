@@ -79,7 +79,7 @@ describe('getReactCompilerLoader', () => {
       );
     });
 
-    it('sets poolTimeout to 500 when watch is false', () => {
+    it('sets poolTimeout to 2000 when watch is false', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
         disableThreadLoader: false,
@@ -92,8 +92,8 @@ describe('getReactCompilerLoader', () => {
       };
       assert.strictEqual(
         threadLoader.options.poolTimeout,
-        500,
-        'poolTimeout should be 500 when not in watch mode',
+        2000,
+        'poolTimeout should be 2000 when not in watch mode',
       );
     });
   });

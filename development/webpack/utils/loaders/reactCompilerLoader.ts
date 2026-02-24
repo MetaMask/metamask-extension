@@ -83,7 +83,7 @@ export const getReactCompilerLoader = (
         // Leave reserve for `swc-loader` etc
         workers: Math.max(1, numCores - 2),
         workerParallelJobs: 50,
-        poolTimeout: watch ? Number(Infinity) : 500,
+        poolTimeout: watch ? Number(Infinity) : 2000,
       },
     });
   }
