@@ -6,7 +6,6 @@ import {
   createPerpsInfrastructure,
   type PerpsControllerState,
   type PerpsControllerMessenger,
-  type PerpsRemoteFeatureFlagState,
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/perps';
 import type { MetaMaskReduxState } from '../../store/store';
@@ -15,6 +14,16 @@ import {
   generateActionId,
 } from '../../store/background-connection';
 import { getReduxStorePromise } from '../../store/redux-store-promise';
+
+const REMOTE_FEATURE_FLAG_GET_STATE = 'RemoteFeatureFlagController:getState';
+const REMOTE_FEATURE_FLAG_STATE_CHANGE =
+  'RemoteFeatureFlagController:stateChange';
+
+/** State shape expected by PerpsController (RemoteFeatureFlagControllerState). */
+type RemoteFeatureFlagState = {
+  remoteFeatureFlags: Record<string, unknown>;
+  cacheTimestamp: number;
+};
 
 type EvmRpcEndpoint = {
   networkClientId?: string;
@@ -86,15 +95,19 @@ function getNetworkClientIdForChain(
 }
 
 function getRemoteFeatureFlagState(
-  store: Store<MetaMaskReduxState> | null,
-): PerpsRemoteFeatureFlagState | null {
-  if (!store) {
-    return null;
-  }
+  store: Store<MetaMaskReduxState>,
+): RemoteFeatureFlagState {
   return {
     remoteFeatureFlags: store.getState().metamask?.remoteFeatureFlags ?? {},
+    cacheTimestamp: 0,
   };
 }
+
+/**
+ * Unsubscribe from Redux store when controller is reset.
+ * Used to stop publishing remote feature flag changes to the PerpsController.
+ */
+let unsubscribeRemoteFeatureFlags: (() => void) | null = null;
 
 /**
  * Singleton instance of the PerpsController.
@@ -123,10 +136,68 @@ let initializingAddress: string | null = null;
  */
 let initGeneration = 0;
 
-function createPerpsMessenger(): PerpsControllerMessenger {
-  return new Messenger({
+/**
+ * Create the RemoteFeatureFlagController-namespaced messenger and (when store is
+ * available) register getState and subscribe to Redux to publish stateChange.
+ * Then create the PerpsController messenger and delegate getState/stateChange to it.
+ *
+ * @param storeToUse - Redux store for feature flags, or null to use empty flags.
+ * @returns The PerpsController messenger with delegated RemoteFeatureFlagController actions/events.
+ */
+function createPerpsMessenger(
+  storeToUse: Store<MetaMaskReduxState> | null,
+): PerpsControllerMessenger {
+  const featureFlagMessenger = new Messenger({
+    namespace: 'RemoteFeatureFlagController',
+  });
+
+  const getState = (): RemoteFeatureFlagState =>
+    storeToUse
+      ? getRemoteFeatureFlagState(storeToUse)
+      : { remoteFeatureFlags: {}, cacheTimestamp: 0 };
+
+  const featureFlagMessengerTyped = featureFlagMessenger as unknown as {
+    registerActionHandler: (
+      action: string,
+      handler: () => RemoteFeatureFlagState,
+    ) => void;
+    publish: (event: string, payload: RemoteFeatureFlagState) => void;
+    delegate: (opts: {
+      actions: string[];
+      events: string[];
+      messenger: PerpsControllerMessenger;
+    }) => void;
+  };
+  featureFlagMessengerTyped.registerActionHandler(
+    REMOTE_FEATURE_FLAG_GET_STATE,
+    getState,
+  );
+
+  if (storeToUse) {
+    const publishStateChange = () => {
+      featureFlagMessengerTyped.publish(
+        REMOTE_FEATURE_FLAG_STATE_CHANGE,
+        getRemoteFeatureFlagState(storeToUse),
+      );
+    };
+    publishStateChange();
+    if (unsubscribeRemoteFeatureFlags) {
+      unsubscribeRemoteFeatureFlags();
+    }
+    unsubscribeRemoteFeatureFlags = storeToUse.subscribe(publishStateChange);
+  }
+
+  const perpsMessenger = new Messenger({
     namespace: 'PerpsController',
   }) as PerpsControllerMessenger;
+
+  featureFlagMessengerTyped.delegate({
+    actions: [REMOTE_FEATURE_FLAG_GET_STATE],
+    events: [REMOTE_FEATURE_FLAG_STATE_CHANGE],
+    messenger: perpsMessenger,
+  });
+
+  return perpsMessenger;
 }
 
 /**
@@ -154,7 +225,7 @@ function startControllerInitialization(
   initializingAddress = selectedAddress;
 
   const task = (async () => {
-    let storeToUse = store ?? null;
+    let storeToUse = store;
     if (!storeToUse) {
       try {
         storeToUse = await getReduxStorePromise();
@@ -163,32 +234,15 @@ function startControllerInitialization(
       }
     }
 
-    const storeRef = storeToUse;
-    const messenger = createPerpsMessenger();
+    const messenger = createPerpsMessenger(storeToUse ?? null);
     const infrastructure = createPerpsInfrastructure({
       selectedAddress,
       signTypedMessage: (msgParams) =>
         submitRequestToBackground<string>('perpsSignTypedData', [msgParams]),
       findNetworkClientIdForChain: (chainId) =>
-        getNetworkClientIdForChain(storeRef, chainId),
+        getNetworkClientIdForChain(storeToUse ?? null, chainId),
       submitRequestToBackground,
       generateActionId,
-      getRemoteFeatureFlagState: () => getRemoteFeatureFlagState(storeRef),
-      subscribeToRemoteFeatureFlagChanges: (handler) => {
-        if (!storeRef) {
-          return () => undefined;
-        }
-        let prev = getRemoteFeatureFlagState(storeRef);
-        return storeRef.subscribe(() => {
-          const next = getRemoteFeatureFlagState(storeRef);
-          if (next !== prev) {
-            prev = next;
-            if (next) {
-              handler(next);
-            }
-          }
-        });
-      },
     });
     const fallbackBlockedRegions = getFallbackBlockedRegions();
 
@@ -277,6 +331,10 @@ export async function getPerpsController(
     currentAddress !== null && currentAddress !== selectedAddress;
 
   if (addressChanged && controllerInstance) {
+    if (unsubscribeRemoteFeatureFlags) {
+      unsubscribeRemoteFeatureFlags();
+      unsubscribeRemoteFeatureFlags = null;
+    }
     await controllerInstance.disconnect();
     controllerInstance = null;
     currentAddress = null;
@@ -302,6 +360,10 @@ export async function getPerpsController(
  */
 export async function resetPerpsController(): Promise<void> {
   initGeneration += 1;
+  if (unsubscribeRemoteFeatureFlags) {
+    unsubscribeRemoteFeatureFlags();
+    unsubscribeRemoteFeatureFlags = null;
+  }
   if (controllerInstance) {
     await controllerInstance.disconnect();
   }

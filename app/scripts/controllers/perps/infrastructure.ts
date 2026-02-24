@@ -23,14 +23,11 @@ import type {
   PerpsPerformance,
   PerpsTracer,
   PerpsStreamManager,
+  PerpsControllerAccess,
   PerpsAnalyticsEvent,
   PerpsAnalyticsProperties,
   PerpsTraceName,
   PerpsTraceValue,
-  PerpsRemoteFeatureFlagState,
-  MarketDataFormatters,
-  PerpsCacheInvalidator,
-  VersionGatedFeatureFlag,
 } from '@metamask/perps-controller';
 
 type SubmitRequestToBackground = <Result>(
@@ -55,18 +52,6 @@ export type CreatePerpsInfrastructureOptions = {
   submitRequestToBackground: SubmitRequestToBackground;
   /** Function to create a unique action id for background actions */
   generateActionId: () => number;
-  /**
-   * Read remote feature flag state from Redux.
-   * Returns the current state; null means store not yet available.
-   */
-  getRemoteFeatureFlagState: () => PerpsRemoteFeatureFlagState | null;
-  /**
-   * Subscribe to Redux store changes for remote feature flag state.
-   * Returns an unsubscribe function.
-   */
-  subscribeToRemoteFeatureFlagChanges: (
-    handler: (state: PerpsRemoteFeatureFlagState) => void,
-  ) => () => void;
 };
 
 function createLogger(): PerpsLogger {
@@ -144,90 +129,53 @@ function createStreamManager(): PerpsStreamManager {
   };
 }
 
-function createFeatureFlags(): PerpsPlatformDependencies['featureFlags'] {
-  return {
-    validateVersionGated: (_flag: VersionGatedFeatureFlag) => {
-      // Extension PoC: always allow version-gated features
-      return true;
-    },
-  };
-}
-
-function createMarketDataFormatters(): MarketDataFormatters {
-  const formatCompact = (value: number): string => {
-    const abs = Math.abs(value);
-    if (abs >= 1e9) {
-      return `$${(value / 1e9).toFixed(1)}B`;
-    }
-    if (abs >= 1e6) {
-      return `$${(value / 1e6).toFixed(1)}M`;
-    }
-    if (abs >= 1e3) {
-      return `$${(value / 1e3).toFixed(1)}K`;
-    }
-    return `$${value.toFixed(2)}`;
-  };
-
-  return {
-    formatVolume: formatCompact,
-    formatPerpsFiat: (value: number) => {
-      return `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    },
-    formatPercentage: (percent: number) => {
-      return `${percent >= 0 ? '' : ''}${percent.toFixed(2)}%`;
-    },
-    priceRangesUniversal: [],
-  };
-}
-
-function createCacheInvalidator(): PerpsCacheInvalidator {
-  return {
-    invalidate: () => {
-      // No-op for PoC
-    },
-    invalidateAll: () => {
-      // No-op for PoC
-    },
-  };
-}
-
-function createControllers(
+function createControllerAccess(
   options: CreatePerpsInfrastructureOptions,
-): PerpsPlatformDependencies['controllers'] {
+): PerpsControllerAccess {
   const {
     selectedAddress,
     signTypedMessage,
     findNetworkClientIdForChain,
-    submitRequestToBackground: submitRequest,
+    submitRequestToBackground,
     generateActionId,
-    getRemoteFeatureFlagState,
-    subscribeToRemoteFeatureFlagChanges,
   } = options;
-
-  const defaultFeatureFlagState: PerpsRemoteFeatureFlagState = {
-    remoteFeatureFlags: {},
-  };
-
   return {
-    network: {
-      getState: () => ({
-        selectedNetworkClientId: 'mainnet',
-      }),
-      getNetworkClientById: (_id: string) => ({
-        configuration: { chainId: '0xa4b1' },
-      }),
-      findNetworkClientIdByChainId: (chainId: `0x${string}`) =>
-        findNetworkClientIdForChain(chainId),
+    accounts: {
+      getSelectedEvmAccount: () => {
+        return { address: selectedAddress };
+      },
+      formatAccountToCaipId: (address: string, chainId: string) => {
+        return `eip155:${chainId}:${address}`;
+      },
     },
     keyring: {
-      getState: () => ({ isUnlocked: true }),
       signTypedMessage: async (msgParams, version) => {
-        return signTypedMessage(msgParams, version);
+        const signature = await signTypedMessage(msgParams, version);
+        return signature;
+      },
+    },
+    network: {
+      getChainIdForNetwork: (_networkClientId: string) => {
+        // TODO: Wire to NetworkController
+        return '0xa4b1' as `0x${string}`;
+      },
+      findNetworkClientIdForChain: (chainId) =>
+        findNetworkClientIdForChain(chainId),
+      getSelectedNetworkClientId: () => {
+        // TODO: Wire to NetworkController
+        return 'mainnet';
       },
     },
     transaction: {
-      addTransaction: async (txParams, opts) => {
-        const { networkClientId, origin, type } = opts;
+      submit: async (txParams, txOptions) => {
+        const {
+          networkClientId: rawNetworkClientId,
+          origin,
+          type,
+          gasFeeToken,
+        } = txOptions;
+
+        const networkClientId = await Promise.resolve(rawNetworkClientId);
 
         if (!networkClientId) {
           throw new Error('No network client found for Perps transaction');
@@ -238,9 +186,10 @@ function createControllers(
           origin: origin ?? 'metamask',
           actionId: generateActionId(),
           ...(type === undefined ? {} : { type }),
+          ...(gasFeeToken === undefined ? {} : { gasFeeToken }),
         };
 
-        const transactionMeta = await submitRequest<{
+        const transactionMeta = await submitRequestToBackground<{
           id: string;
           hash?: string;
         }>('addTransaction', [txParams, addTransactionOptions]);
@@ -251,25 +200,15 @@ function createControllers(
         };
       },
     },
-    remoteFeatureFlags: {
-      getState: () => getRemoteFeatureFlagState() ?? defaultFeatureFlagState,
-      onStateChange: (handler: (state: PerpsRemoteFeatureFlagState) => void) =>
-        subscribeToRemoteFeatureFlagChanges(handler),
-    },
-    accountTree: {
-      getAccountsFromSelectedGroup: () => [
-        { address: selectedAddress, type: 'eip155:eoa', id: selectedAddress },
-      ],
-      onSelectedAccountGroupChange: () => {
-        // No-op for PoC; returns unsubscribe stub
-        return () => undefined;
+    rewards: {
+      getFeeDiscount: async (_caipAccountId) => {
+        return 0;
       },
     },
     authentication: {
-      getBearerToken: async () => '',
-    },
-    rewards: {
-      getPerpsDiscountForAccount: async () => 0,
+      getBearerToken: async () => {
+        return '';
+      },
     },
   };
 }
@@ -292,9 +231,6 @@ export function createPerpsInfrastructure(
     performance: createPerformance(),
     tracer: createTracer(),
     streamManager: createStreamManager(),
-    featureFlags: createFeatureFlags(),
-    marketDataFormatters: createMarketDataFormatters(),
-    cacheInvalidator: createCacheInvalidator(),
-    controllers: createControllers(options),
+    controllers: createControllerAccess(options),
   };
 }
