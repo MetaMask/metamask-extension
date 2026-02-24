@@ -10,7 +10,7 @@
  * In CI the base branch comes from GITHUB_BASE_REF (defaults to "main").
  */
 
-import { execSync, execFileSync } from 'child_process';
+import { execFileSync } from 'child_process';
 import * as path from 'path';
 import { context, getOctokit } from '@actions/github';
 import { getRegisteredFlagNames } from '../../test/e2e/feature-flags';
@@ -236,33 +236,20 @@ async function main(): Promise<void> {
   }
 }
 
-/** Computes the full-range diff between the base branch and HEAD. */
 function getDiff(baseBranch: string): string {
-  const paths = SCAN_DIRECTORIES.join(' ');
-  const candidates = [
-    `git diff origin/${baseBranch}...HEAD -- ${paths}`,
-    `git diff origin/${baseBranch}..HEAD -- ${paths}`,
-    `git diff ${baseBranch}...HEAD -- ${paths}`,
-    `git diff ${baseBranch}..HEAD -- ${paths}`,
+  const candidates: string[][] = [
+    ['git', 'diff', `origin/${baseBranch}...HEAD`, '--', ...SCAN_DIRECTORIES],
+    ['git', 'diff', `origin/${baseBranch}..HEAD`, '--', ...SCAN_DIRECTORIES],
+    ['git', 'diff', `${baseBranch}...HEAD`, '--', ...SCAN_DIRECTORIES],
+    ['git', 'diff', `${baseBranch}..HEAD`, '--', ...SCAN_DIRECTORIES],
   ];
-
-  for (const cmd of candidates) {
+  for (const [cmd, ...args] of candidates) {
     try {
-      return execSync(cmd, {
-        encoding: 'utf-8',
-        maxBuffer: 50 * 1024 * 1024,
-      });
-    } catch {
-      // try next
-    }
+      return execFileSync(cmd, args, { encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 });
+    } catch { /* try next */ }
   }
-
-  console.error(
-    `Could not compute diff against base branch "${baseBranch}".`,
-  );
-  console.error(
-    'Ensure the base branch is fetched (e.g. git fetch origin <base> --depth=1).',
-  );
+  console.error(`Could not compute diff against base branch "${baseBranch}".`);
+  console.error('Ensure the base branch is fetched (e.g. git fetch origin <base> --depth=1).');
   process.exit(1);
 }
 
@@ -650,22 +637,16 @@ function maskStringLiterals(line: string): string {
 /** Logs which flags were added/removed in the registry (informational only). */
 function logRegistryChanges(baseBranch: string): void {
   const registryFile = 'test/e2e/feature-flags/feature-flag-registry.ts';
-  const candidates = [
-    `git diff origin/${baseBranch}...HEAD -- ${registryFile}`,
-    `git diff ${baseBranch}...HEAD -- ${registryFile}`,
+  const candidates: string[][] = [
+    ['git', 'diff', `origin/${baseBranch}...HEAD`, '--', registryFile],
+    ['git', 'diff', `${baseBranch}...HEAD`, '--', registryFile],
   ];
-
   let registryDiff = '';
-  for (const cmd of candidates) {
+  for (const [cmd, ...args] of candidates) {
     try {
-      registryDiff = execSync(cmd, {
-        encoding: 'utf-8',
-        maxBuffer: 10 * 1024 * 1024,
-      });
+      registryDiff = execFileSync(cmd, args, { encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 });
       break;
-    } catch {
-      // try next
-    }
+    } catch { /* try next */ }
   }
 
   if (!registryDiff.trim()) {

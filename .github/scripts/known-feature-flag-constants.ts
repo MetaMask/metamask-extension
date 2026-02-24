@@ -65,7 +65,7 @@ function resolveConstantFromFile(
     const content = fs.readFileSync(fullPath, 'utf-8');
     const escaped = constantName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const re = new RegExp(
-      `export\\s+const\\s+${escaped}\\s*=\\s*(?:'([^']+)'|"([^"]+)"|` + '`([^`]+)`)',
+      `export\\s+const\\s+${escaped}(?:\\s*:[^=]+)?\\s*=\\s*(?:'([^']+)'|"([^"]+)"|` + '`([^`]+)`)',
     );
     const match = re.exec(content);
     return match?.[1] ?? match?.[2] ?? match?.[3];
