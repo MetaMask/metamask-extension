@@ -30,7 +30,7 @@ export const usePrefillFromBridgeState = () => {
 
   const { resetLocationState, token } = useBridgeNavigation();
 
-  // Set src chain balances when the fromToken changes
+  // Set src chain balances when the fromToken changes and after the token object is applied
   useEffect(() => {
     if (
       isCrossChain(fromToken.chainId, currentChainId) ||
@@ -41,7 +41,7 @@ export const usePrefillFromBridgeState = () => {
     if (fromToken?.assetId) {
       dispatch(setEvmBalances(fromToken.assetId));
     }
-  }, [fromToken?.assetId, currentChainId]);
+  }, [fromToken.assetId, currentChainId, token]);
 
   const shouldRehydrateFromLocationState = token;
   const shouldRestoreInputsFromQuote = activeQuote;
