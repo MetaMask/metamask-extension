@@ -1,7 +1,8 @@
 import type browser from 'webextension-polyfill';
 import {
-  BACKGROUND_LIVENESS_METHOD,
+  APP_INIT_LIVENESS_METHOD,
   BACKGROUND_INITIALIZED_METHOD,
+  BACKGROUND_LIVENESS_METHOD,
 } from '../../../shared/constants/ui-initialization';
 import {
   DISPLAY_GENERAL_STARTUP_ERROR,
@@ -410,6 +411,62 @@ describe('CriticalStartupErrorHandler', () => {
       handler.uninstall();
 
       expect(mockDisplayCriticalErrorMessage).not.toHaveBeenCalled();
+    });
+
+    it('does not call displayStateCorruptionError when METHOD_DISPLAY_STATE_CORRUPTION_ERROR has no valid params', async () => {
+      const handler = new CriticalStartupErrorHandler(port, container);
+      handler.install();
+
+      port.simulateMessage({
+        data: { method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR },
+      });
+      await flushMicrotasks();
+
+      expect(mockDisplayStateCorruptionError).not.toHaveBeenCalled();
+      handler.uninstall();
+    });
+
+    it('does not call displayCriticalErrorMessage when DISPLAY_GENERAL_STARTUP_ERROR has no valid params', async () => {
+      const handler = new CriticalStartupErrorHandler(port, container);
+      handler.install();
+
+      port.simulateMessage({
+        data: { method: DISPLAY_GENERAL_STARTUP_ERROR },
+      });
+      await flushMicrotasks();
+
+      expect(mockDisplayCriticalErrorMessage).not.toHaveBeenCalled();
+      handler.uninstall();
+    });
+
+    it('sets receivedAppInitPing when APP_INIT_LIVENESS_METHOD is received', async () => {
+      const handler = new CriticalStartupErrorHandler(port, container);
+      handler.install();
+
+      port.simulateMessage({
+        data: { method: APP_INIT_LIVENESS_METHOD },
+      });
+      await flushMicrotasks();
+
+      // Advance past liveness timeout so Phase 1 would fire; error should include
+      // sentryTags from #attachAppInitPingSentryTag (receivedAppInitPing true).
+      await advanceTimersAndFlush(15_000);
+
+      expect(mockDisplayCriticalErrorMessage).toHaveBeenCalledWith(
+        container,
+        'troubleStarting',
+        expect.objectContaining({
+          message: 'Background connection unresponsive',
+        }),
+        undefined,
+        port,
+        CriticalErrorType.BackgroundConnectionTimeout,
+      );
+      const capturedError = mockDisplayCriticalErrorMessage.mock.calls[0][2];
+      expect(
+        (capturedError as { sentryTags?: Record<string, string> }).sentryTags,
+      ).toStrictEqual({ 'uiStartup.receivedAppInitPing': 'true' });
+      handler.uninstall();
     });
   });
 });

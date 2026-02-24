@@ -5,6 +5,7 @@ import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up
 import * as errorUtils from '../../../shared/lib/error-utils';
 import {
   displayCriticalErrorMessage,
+  displayCriticalErrorPage,
   CriticalErrorTranslationKey,
   extractEnvelopeUrlFromDsn,
 } from './display-critical-error';
@@ -512,6 +513,19 @@ describe('restore accounts link', () => {
     expect(
       rootContainer.querySelector('#critical-error-restore-link'),
     ).toBeNull();
+  });
+});
+
+describe('displayCriticalErrorPage', () => {
+  it('returns undefined when container has no parent', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
+    const container = document.createElement('div');
+    const result = displayCriticalErrorPage(container, '<p>Error message</p>');
+    expect(result).toBeUndefined();
+    expect(warnSpy).toHaveBeenCalledWith(
+      'Cannot display critical error. Another critical error may already be shown.',
+    );
+    warnSpy.mockRestore();
   });
 });
 
