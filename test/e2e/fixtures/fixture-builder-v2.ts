@@ -43,13 +43,10 @@ class FixtureBuilderV2 {
     this.fixture = onboarding === true ? onboardingFixture() : defaultFixture();
   }
 
-  withAccountsController(
-    data: Partial<FixtureType['data']['AccountsController']>,
-  ): this {
-    merge(this.fixture.data.AccountsController, data);
-    return this;
-  }
-
+  /* ==================================================================
+                          GENERIC  CONTROLLER METHODS
+     ==================================================================
+  */
   withAddressBookController(data: Partial<AddressBookControllerState>): this {
     if (!this.fixture.data.AddressBookController) {
       (this.fixture.data as Record<string, unknown>).AddressBookController = {
@@ -60,10 +57,11 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withConversionRateDisabled(): this {
-    return this.withPreferencesController({
-      useCurrencyRateCheck: false,
-    });
+  withAccountsController(
+    data: Partial<FixtureType['data']['AccountsController']>,
+  ): this {
+    merge(this.fixture.data.AccountsController, data);
+    return this;
   }
 
   withCurrencyController(data: Partial<CurrencyRateState>): this {
@@ -71,16 +69,42 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withKeyringController(data: { vault?: string }): this {
+    merge(this.fixture.data.KeyringController, data);
+    return this;
+  }
+
+  withPermissionController(
+    data: Partial<PermissionControllerState<PermissionConstraint>>,
+  ): this {
+    merge(this.fixture.data.PermissionController, data);
+    return this;
+  }
+
+  withPreferencesController(
+    data: Omit<Partial<PreferencesControllerState>, 'preferences'> & {
+      preferences?: Partial<Preferences>;
+    },
+  ): this {
+    merge(this.fixture.data.PreferencesController, data);
+    return this;
+  }
+
+  /* ==================================================================
+                              CUSTOM METHODS
+     ==================================================================
+  */
+  withConversionRateDisabled(): this {
+    return this.withPreferencesController({
+      useCurrencyRateCheck: false,
+    });
+  }
+
   withEnabledNetworks(
     data: NetworkEnablementControllerState['enabledNetworkMap'],
   ): this {
     this.fixture.data.NetworkEnablementController.enabledNetworkMap =
       data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
-    return this;
-  }
-
-  withKeyringController(data: { vault?: string }): this {
-    merge(this.fixture.data.KeyringController, data);
     return this;
   }
 
@@ -180,13 +204,6 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withPermissionController(
-    data: Partial<PermissionControllerState<PermissionConstraint>>,
-  ): this {
-    merge(this.fixture.data.PermissionController, data);
-    return this;
-  }
-
   withPermissionControllerConnectedToTestDapp({
     account = '',
     useLocalhostHostname = false,
@@ -249,15 +266,6 @@ class FixtureBuilderV2 {
         },
       },
     });
-  }
-
-  withPreferencesController(
-    data: Omit<Partial<PreferencesControllerState>, 'preferences'> & {
-      preferences?: Partial<Preferences>;
-    },
-  ): this {
-    merge(this.fixture.data.PreferencesController, data);
-    return this;
   }
 
   withPreferencesControllerShowNativeTokenAsMainBalanceDisabled(): this {
