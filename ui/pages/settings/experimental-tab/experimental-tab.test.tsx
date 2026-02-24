@@ -9,7 +9,7 @@ import ExperimentalTab from './experimental-tab';
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  setAddSnapAccountEnabled: jest.fn().mockResolvedValue(undefined),
+  setAddSnapAccountEnabled: jest.fn().mockReturnValue(async () => undefined),
 }));
 
 const render = (overrideMetaMaskState = {}) => {
