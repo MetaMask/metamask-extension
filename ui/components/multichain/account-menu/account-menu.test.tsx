@@ -24,18 +24,6 @@ const mockBitcoinClientCreateAccount = jest.fn();
 const mockGenerateNewHdKeyring = jest.fn();
 const mockDetectNfts = jest.fn();
 
-// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
-// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
-jest.mock(
-  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
-  () => ({
-    ...jest.requireActual(
-      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
-    ),
-    isMultichainAccountsFeatureEnabled: () => false,
-  }),
-);
-
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => () => mockGetEnvironmentType(),
@@ -147,7 +135,7 @@ describe('AccountMenu', () => {
   it('displays important controls', () => {
     const { getByText } = render();
 
-    expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
+    expect(getByText('Add account or wallet')).toBeInTheDocument();
     expect(document.querySelector('[aria-label="Back"]')).toStrictEqual(null);
   });
 
@@ -175,7 +163,7 @@ describe('AccountMenu', () => {
     expect(backButton).toBeInTheDocument();
     backButton.click();
 
-    expect(getByText('Select an account')).toBeInTheDocument();
+    expect(getByText('Accounts')).toBeInTheDocument();
   });
 
   it('shows the account creation UI when Add Account is clicked', () => {
@@ -194,7 +182,7 @@ describe('AccountMenu', () => {
     expect(getByText('Cancel')).toBeInTheDocument();
 
     fireEvent.click(getByText('Cancel'));
-    expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
+    expect(getByText('Add account or wallet')).toBeInTheDocument();
   });
 
   it('shows the account import UI when Import Private Key is clicked', () => {
@@ -208,7 +196,7 @@ describe('AccountMenu', () => {
     expect(getByText('Cancel')).toBeInTheDocument();
 
     fireEvent.click(getByText('Cancel'));
-    expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
+    expect(getByText('Add account or wallet')).toBeInTheDocument();
   });
 
   it('navigates to hardware wallet connection screen when clicked', () => {

@@ -16,18 +16,6 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
-// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
-jest.mock(
-  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
-  () => ({
-    ...jest.requireActual(
-      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
-    ),
-    isMultichainAccountsFeatureEnabled: () => false,
-  }),
-);
-
 jest.mock('../../../store/actions', () => {
   return {
     showModal: () => mockShowModal,
@@ -62,9 +50,15 @@ const render = (props = {}) => {
   return renderWithProvider(<AccountListItemMenu {...allProps} />, store);
 };
 
-describe('AccountListItem', () => {
-  it('renders remove icon with isRemovable', () => {
-    const { getByTestId } = render({ isRemovable: true });
-    expect(getByTestId('account-list-menu-remove')).toBeInTheDocument();
+describe('AccountListItemMenu', () => {
+  it('renders account details, pin, and hide menu items', () => {
+    const { getByTestId } = render({ isPinned: false, isHidden: false });
+    expect(getByTestId('account-list-menu-pin')).toBeInTheDocument();
+    expect(getByTestId('account-list-menu-hide')).toBeInTheDocument();
+  });
+
+  it('does not render remove account menu item', () => {
+    const { queryByTestId } = render({ isRemovable: true });
+    expect(queryByTestId('account-list-menu-remove')).not.toBeInTheDocument();
   });
 });

@@ -52,7 +52,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getManageInstitutionalWallets,
   getHDEntropyIndex,
-  getIsMultichainAccountsState1Enabled,
 } from '../../../selectors';
 import {
   MetaMetricsEventAccountType,
@@ -210,9 +209,6 @@ export const AccountMenu = ({
     endTrace({ name: TraceName.AccountList });
   }, []);
   const navigate = useNavigate();
-  const isMultichainAccountsState1Enabled = useSelector(
-    getIsMultichainAccountsState1Enabled,
-  );
 
   // sync SRPs list when menu opens
   useSyncSRPs();
@@ -317,13 +313,8 @@ export const AccountMenu = ({
   );
 
   const title = useMemo(
-    () =>
-      getActionTitle(
-        t as (text: string) => string,
-        actionMode,
-        Boolean(isMultichainAccountsState1Enabled),
-      ),
-    [actionMode, t, isMultichainAccountsState1Enabled],
+    () => getActionTitle(t as (text: string) => string, actionMode, true),
+    [actionMode, t],
   );
 
   // eslint-disable-next-line no-empty-function
@@ -734,17 +725,13 @@ export const AccountMenu = ({
                 display={Display.Flex}
               >
                 <ButtonSecondary
-                  startIconName={
-                    isMultichainAccountsState1Enabled ? undefined : IconName.Add
-                  }
+                  startIconName={undefined}
                   size={ButtonSecondarySize.Lg}
                   block
                   onClick={() => setActionMode(ACTION_MODES.MENU)}
                   data-testid="multichain-account-menu-popover-action-button"
                 >
-                  {isMultichainAccountsState1Enabled
-                    ? t('addAccountOrWallet')
-                    : t('addImportAccount')}
+                  {t('addAccountOrWallet')}
                 </ButtonSecondary>
               </Box>
             ) : null}
