@@ -16,12 +16,20 @@ export type RouteWithLayoutConfig = {
     | ComponentType<{ children: ReactNode }>;
   authenticated?: boolean;
   initialized?: boolean;
-  /** When true (default), redirects to the basic-functionality-off screen if Basic Functionality (useExternalServices) is off. Set to false to allow access without external services (e.g. Home, Settings). */
-  basicFunctionalityRequired?: boolean;
-  /** i18n message key for the full "Open the [X] page" CTA (e.g. basicFunctionalityRequired_openSwapsPage). One key per destination so each locale can translate the whole sentence. Required when basicFunctionalityRequired is true. */
-  basicFunctionalityOpenPageCtaKey?: string;
   children?: ReactNode;
-};
+} & (
+  | {
+      /** When true (default), redirects to the basic-functionality-off screen if Basic Functionality (useExternalServices) is off. */
+      basicFunctionalityRequired?: true;
+      /** i18n message key for the full "Open the [X] page" CTA (e.g. basicFunctionalityRequired_openSwapsPage). One key per destination so each locale can translate the whole sentence. Required when basicFunctionalityRequired is true. */
+      basicFunctionalityOpenPageCtaKey: string;
+    }
+  | {
+      /** Set to false to allow access without external services (e.g. Home, Settings). */
+      basicFunctionalityRequired: false;
+      basicFunctionalityOpenPageCtaKey?: never;
+    }
+);
 
 /**
  * Helper function that creates a React Router v6 RouteObject with layout and auth wrapping.
