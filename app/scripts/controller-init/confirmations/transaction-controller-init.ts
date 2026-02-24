@@ -150,9 +150,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       isResubmitEnabled: () => false,
     },
     publicKeyEIP7702: process.env.EIP_7702_PUBLIC_KEY as Hex | undefined,
-    testGasFeeFlows: Boolean(
-      process.env.TEST_GAS_FEE_FLOWS?.toString() === 'true',
-    ),
+    testGasFeeFlows: process.env.TEST_GAS_FEE_FLOWS?.toString() === 'true',
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
