@@ -207,7 +207,7 @@ describe('Send ETH - Advanced', function () {
     });
   });
 
-  describe.only('Hex data', function () {
+  describe('Hex data', function () {
     it('renders correct recipient with ERC20 transfer signature in hex data', async function () {
       await withFixtures(
         {
