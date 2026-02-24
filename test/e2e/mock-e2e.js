@@ -1228,29 +1228,31 @@ async function setupMocking(
   /**
    * Hyperliquid REST API mocks for Perps E2E tests.
    * When PerpsController makes REST calls to api.hyperliquid.xyz, return mock data.
-   * Parses request body safely to avoid throwing on empty, non-JSON, or already-parsed body.
+   * Reads request body via mockttp's req.body.getJson()/getText() and parses safely.
    */
   await server
     .forPost(/^https:\/\/api\.hyperliquid\.xyz\/info$/u)
-    .thenCallback((req) => {
+    .thenCallback(async (req) => {
       let type;
       const body = req.body;
-      if (body !== undefined && body !== null) {
-        if (typeof body === 'object' && !Buffer.isBuffer(body) && !body.text) {
-          type = body.type ?? body.method;
-        } else {
-          const raw = body?.text ?? (typeof body === 'string' ? body : null);
+      if (body) {
+        let parsed = null;
+        const json = await body.getJson().catch(() => undefined);
+        if (json !== undefined && json !== null && typeof json === 'object') {
+          parsed = json;
+        }
+        if (parsed === null) {
+          const raw = await body.getText().catch(() => '');
           if (raw && typeof raw === 'string' && raw.trim() !== '') {
-            let parsed;
             try {
               parsed = JSON.parse(raw);
             } catch {
               parsed = null;
             }
-            if (parsed !== null && typeof parsed === 'object') {
-              type = parsed.type ?? parsed.method;
-            }
           }
+        }
+        if (parsed !== null && typeof parsed === 'object') {
+          type = parsed.type ?? parsed.method;
         }
       }
       if (type === 'meta') {
