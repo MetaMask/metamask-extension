@@ -250,6 +250,18 @@ export async function validateBundle({
           continue;
         }
 
+        // Reject invalid positions: line is 1-based (must be >= 1), column is 0-based (must be >= 0).
+        // Negative column would make sourceLine.slice(column) take from the end of the string (JS semantics),
+        // which can cause a false positive if "new Error" appears in that wrong portion.
+        if (result.line < 1 || result.column < 0) {
+          sampleCount += 1;
+          valid = false;
+          console.error(
+            `SourcemapValidator (webpack) - mapping for "${label}" has invalid original line/column (line: ${result.line}, column: ${result.column}); must be non-negative.`,
+          );
+          continue;
+        }
+
         sampleCount += 1;
 
         const sourceContent = consumer.sourceContentFor(result.source);

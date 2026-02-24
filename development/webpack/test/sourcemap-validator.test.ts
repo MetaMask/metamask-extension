@@ -393,6 +393,50 @@ describe('sourcemap-validator', () => {
         'should log that precise position is required for stack traces',
       );
     });
+
+    it('returns false when source map has negative column (avoids false positive from slice)', async () => {
+      // With a negative column, sourceLine.slice(column) uses JS "from end" semantics, so we
+      // check the wrong part of the line. Example: line "  throw new Error(\"x\");", column -14
+      // gives slice(-14) = "new Error(\"x\");" which contains TARGET_STRING, so without the fix
+      // validation would incorrectly pass. We reject negative (and line < 1) as invalid.
+      const bundle = 'throw new Error("x");';
+      const sourceContent = '  throw new Error("x");';
+      const mapJson = makeSourceMap(sourceContent, 1, 6, 1, 2);
+      const jsPath = join(tmpDir, 'negative-column.js');
+      const mapPath = join(tmpDir, 'negative-column.js.map');
+      await writeFile(jsPath, bundle);
+      await writeFile(mapPath, mapJson);
+      const errors: string[] = [];
+      mock.method(console, 'log', noop);
+      mock.method(console, 'warn', noop);
+      mock.method(console, 'error', (...args: unknown[]) => {
+        errors.push(args.map((a) => String(a)).join(' '));
+      });
+      const { SourceMapConsumer } = await import('source-map');
+      const consumer = await new SourceMapConsumer(mapJson);
+      const consumerProto = Object.getPrototypeOf(consumer);
+      consumer.destroy();
+      mock.method(consumerProto, 'originalPositionFor', () => ({
+        source: 'src.ts',
+        line: 1,
+        column: -14, // malformed: slice(-14) on "  throw new Error(\"x\");" = "new Error(\"x\");" -> false pass
+        name: null,
+      }));
+      const ok = await validateBundle({
+        jsPath,
+        mapPath,
+        label: 'negative-column.js',
+      });
+      assert.strictEqual(ok, false);
+      assert.ok(
+        errors.some(
+          (e) =>
+            e.includes('invalid original line/column') &&
+            e.includes('column: -14'),
+        ),
+        'should log invalid line/column including the negative column',
+      );
+    });
   });
 
   describe('main', () => {
