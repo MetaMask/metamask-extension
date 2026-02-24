@@ -99,8 +99,6 @@ export default function AwaitingSignatures() {
     });
   }, [
     activeQuote,
-    activeQuote?.quote?.destTokenAmount,
-    activeQuote?.quote?.srcTokenAmount,
     fromToken?.symbol,
     hardwareWalletType,
     hardwareWalletUsed,
