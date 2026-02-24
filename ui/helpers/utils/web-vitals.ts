@@ -188,8 +188,7 @@ export function initINPObserver(): void {
         if (attribution) {
           attributionData.interactionTarget =
             attribution.interactionTarget ?? null;
-          attributionData.interactionType =
-            attribution.interactionType ?? null;
+          attributionData.interactionType = attribution.interactionType ?? null;
           attributionData.loadState = attribution.loadState ?? null;
           attributionData.inputDelay = attribution.inputDelay ?? null;
           attributionData.processingDuration =
