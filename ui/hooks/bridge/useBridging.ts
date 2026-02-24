@@ -19,6 +19,7 @@ import {
   getLastSelectedChainId,
 } from '../../ducks/bridge/selectors';
 import {
+  resetBridgeControllerAndCache,
   resetInputFields,
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
@@ -59,6 +60,7 @@ const useBridging = () => {
       },
     ) => {
       dispatch(resetInputFields());
+      dispatch(resetBridgeControllerAndCache());
       trace({
         name: TraceName.SwapViewLoaded,
         startTime: Date.now(),

@@ -34,11 +34,12 @@ describe('Bridge tests', function (this: Suite) {
         false,
         true,
       ),
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+      async ({ driver, mockedEndpoint: mockedEndpoints, mockServer }) => {
         await loginWithBalanceValidation(driver, undefined, undefined, '0');
 
         const homePage = new HomePage(driver);
 
+        // QUOTE REQUEST #1
         await bridgeTransaction({
           driver,
           quote,
@@ -50,9 +51,11 @@ describe('Bridge tests', function (this: Suite) {
         await homePage.startSwapFlow();
 
         const bridgePage = new BridgeQuotePage(driver);
+        // QUOTE REQUEST #2
         await bridgePage.enterBridgeQuote(quote);
         await bridgePage.waitForQuote();
         await bridgePage.checkExpectedNetworkFeeIsDisplayed();
+        // QUOTE REQUEST #3
         await bridgePage.switchTokens();
 
         let events = await getEventPayloads(driver, mockedEndpoints);
@@ -109,7 +112,7 @@ describe('Bridge tests', function (this: Suite) {
          */
 
         assert(
-          swapBridgeInputChanged.length === 18,
+          swapBridgeInputChanged.length === 6 + 6 + 4,
           `Should have 18 input change events, but got ${swapBridgeInputChanged.length}`,
         );
 
@@ -161,8 +164,8 @@ describe('Bridge tests', function (this: Suite) {
         const crossChainQuotesReceived = findEventsByName(
           EventTypes.UnifiedSwapBridgeQuotesReceived,
         );
-        // The flow receives 2 quotes, so we expect 2 events
-        assert.ok(crossChainQuotesReceived.length === 2);
+        // The flow receives 3 quotes, so we expect 3 events
+        assert.ok(crossChainQuotesReceived.length === 3);
         assert.ok(
           crossChainQuotesReceived[0].properties.chain_id_source ===
             'eip155:1' &&
