@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`BridgeInputGroup should render destination networks 2`] = `
+exports[`BridgeInputGroup should render destination networks 1`] = `
 <div
   class="mm-box mm-popover mm-popover--open mm-popover--reference-hidden bridge-network-list-popover mm-box--margin-inline-3 mm-box--padding-4 mm-box--background-color-background-subsection mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
   data-popper-escaped="true"
@@ -356,7 +356,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
 </div>
 `;
 
-exports[`BridgeInputGroup should render destination networks 3`] = `
+exports[`BridgeInputGroup should render destination networks 2`] = `
 [
   [
     "https://bridge.api.cx.metamask.io/getTokens/popular",
@@ -409,7 +409,7 @@ exports[`BridgeInputGroup should render destination networks 3`] = `
 ]
 `;
 
-exports[`BridgeInputGroup should render source networks 2`] = `
+exports[`BridgeInputGroup should render source networks 1`] = `
 <div
   class="mm-box mm-popover mm-popover--open mm-popover--reference-hidden bridge-network-list-popover mm-box--margin-inline-3 mm-box--padding-4 mm-box--background-color-background-subsection mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
   data-popper-escaped="true"
@@ -642,7 +642,7 @@ exports[`BridgeInputGroup should render source networks 2`] = `
 </div>
 `;
 
-exports[`BridgeInputGroup should render source networks 3`] = `
+exports[`BridgeInputGroup should render source networks 2`] = `
 [
   [
     "https://bridge.api.cx.metamask.io/getTokens/popular",

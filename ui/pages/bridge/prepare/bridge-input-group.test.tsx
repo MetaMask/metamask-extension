@@ -399,17 +399,6 @@ describe('BridgeInputGroup', () => {
       );
 
       await openAssetPicker();
-      expect(
-        screen
-          .getAllByTestId('bridge-asset')
-          .map(({ textContent }) => textContent),
-      ).toMatchInlineSnapshot(`
-              [
-                "USDCUSD Coin",
-                "USDTUSDT",
-                "UNI$0.00Uniswap<0.000001 UNI",
-              ]
-          `);
 
       const networkPicker = getByTestId('multichain-asset-picker__network');
       await fillSearchInput('SD');

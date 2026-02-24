@@ -36,7 +36,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 195,
+      "currentMigrationVersion": 196,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -1885,6 +1885,7 @@
       "permissionHistory": {}
     },
     "PhishingController": {
+      "addressScanCache": {},
       "c2DomainBlocklistLastFetched": 0,
       "hotlistLastFetched": 0,
       "phishingLists": [],
@@ -2152,6 +2153,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 195
+    "version": 196
   }
 }

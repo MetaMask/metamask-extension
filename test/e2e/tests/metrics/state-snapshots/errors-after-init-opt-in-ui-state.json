@@ -90,6 +90,7 @@
     "activeQrCodeScanRequest": null,
     "addSnapAccountEnabled": "boolean",
     "addressBook": "object",
+    "addressScanCache": "object",
     "addressSecurityAlertResponses": "object",
     "advancedGasFee": {},
     "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
