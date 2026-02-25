@@ -5267,9 +5267,6 @@
   "perpsAddToFavorites": {
     "message": "Add to favorites"
   },
-  "perpsAsk": {
-    "message": "Ask"
-  },
   "perpsAutoClose": {
     "message": "Auto close"
   },
@@ -5280,14 +5277,12 @@
   "perpsAvailableBalance": {
     "message": "Available balance"
   },
-  "perpsBid": {
-    "message": "Bid"
+  "perpsAvailableToTrade": {
+    "message": "Available to trade",
+    "description": "Label for the available balance that can be used for trading"
   },
   "perpsCancelAllOrders": {
     "message": "Cancel all"
-  },
-  "perpsClose": {
-    "message": "Close"
   },
   "perpsCloseAll": {
     "message": "Close all"
@@ -5411,9 +5406,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Liquidation Price Est."
   },
   "perpsLong": {
     "message": "Long"

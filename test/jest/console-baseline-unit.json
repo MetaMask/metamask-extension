@@ -3185,6 +3185,10 @@
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/perps/perps-order-entry-page.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/remove-snap-account/remove-snap-account.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
