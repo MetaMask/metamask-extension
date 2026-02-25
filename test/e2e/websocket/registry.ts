@@ -150,6 +150,41 @@ class WebSocketRegistry {
   }
 
   /**
+   * Get the total connection count across ALL running servers.
+   * Useful for tests that just need to verify "some" websocket is connected,
+   * without caring which specific service.
+   *
+   * @returns Total number of active websocket connections across all servers
+   */
+  static getTotalConnectionCount(): number {
+    let total = 0;
+    for (const entry of WebSocketRegistry.entries.values()) {
+      if (entry.server) {
+        total += entry.server.getWebsocketConnectionCount();
+      }
+    }
+    return total;
+  }
+
+  /**
+   * Get a snapshot of open connections across all running servers.
+   *
+   * @returns Array of objects with service name, port, and connection count
+   */
+  static getOpenConnections(): { name: string; port: number; count: number }[] {
+    const connections: { name: string; port: number; count: number }[] = [];
+    for (const [name, entry] of WebSocketRegistry.entries.entries()) {
+      if (entry.server) {
+        const count = entry.server.getWebsocketConnectionCount();
+        if (count > 0) {
+          connections.push({ name, port: entry.port, count });
+        }
+      }
+    }
+    return connections;
+  }
+
+  /**
    * Reset the registry. Only needed for testing the registry itself.
    */
   static reset(): void {

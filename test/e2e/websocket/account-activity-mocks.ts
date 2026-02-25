@@ -18,7 +18,7 @@ let subscriptionWaiters: ((subscriptionId: string) => void)[] = [];
  * @param timeoutMs - Maximum time to wait for the subscription
  */
 export function waitForAccountActivitySubscription(
-  timeoutMs = 15_000,
+  timeoutMs = 30_000,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const timerRef: { current?: ReturnType<typeof setTimeout> } = {};

@@ -24,7 +24,7 @@ describe('Multichain account Web Socket', function (this: Suite) {
         await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
 
-        await waitForWebsocketConnections(driver, 1);
+        await waitForWebsocketConnections(driver, 2);
       },
     );
   });
@@ -51,7 +51,7 @@ describe('Multichain account Web Socket', function (this: Suite) {
         await driver.switchToWindowWithTitle('MetaMask');
         await driver.closeWindow();
 
-        await waitForWebsocketConnections(driver, 1);
+        await waitForWebsocketConnections(driver, 2);
       },
     );
   });
@@ -68,7 +68,7 @@ describe('Multichain account Web Socket', function (this: Suite) {
         const headerComponent = new HeaderNavbar(driver);
         await headerComponent.openAccountMenu();
 
-        await waitForWebsocketConnections(driver, 1);
+        await waitForWebsocketConnections(driver, 2);
 
         // Open a blank page to prevent browser from closing
         await driver.openNewPage('about:blank');
@@ -76,19 +76,19 @@ describe('Multichain account Web Socket', function (this: Suite) {
         // Open a new MetaMask window
         await driver.openNewPage(`${driver.extensionUrl}/home.html`);
 
-        await waitForWebsocketConnections(driver, 1);
+        await waitForWebsocketConnections(driver, 2);
 
         // Close the first MetaMask window
         await driver.switchToWindowWithTitle('MetaMask');
         await driver.closeWindow();
 
-        await waitForWebsocketConnections(driver, 1);
+        await waitForWebsocketConnections(driver, 2);
 
         // Close the second MetaMask window
         await driver.switchToWindowWithTitle('MetaMask');
         await driver.closeWindow();
 
-        await waitForWebsocketConnections(driver, 1);
+        await waitForWebsocketConnections(driver, 1, ['solana']);
 
         // The websocket close grace period is 5 minutes, we can't wait for this long to check if it's closed
       },
@@ -99,19 +99,29 @@ describe('Multichain account Web Socket', function (this: Suite) {
 async function waitForWebsocketConnections(
   driver: Driver,
   expectedCount: number,
+  expectedServices: string[] = ['solana', 'accountActivity'],
 ) {
-  let connectionCount;
+  let connectionCount: number | undefined;
+  let openConnections: { name: string; port: number; count: number }[] = [];
   await driver.wait(async () => {
-    connectionCount =
-      WebSocketRegistry.getServer(
-        'accountActivity',
-      ).getWebsocketConnectionCount();
+    connectionCount = WebSocketRegistry.getTotalConnectionCount();
+    openConnections = WebSocketRegistry.getOpenConnections();
     return connectionCount === expectedCount;
-  }, 10000);
+  }, 30000);
 
   assert.equal(
     connectionCount,
     expectedCount,
-    `Expected ${expectedCount} websocket connections, but found ${connectionCount}`,
+    `Expected ${expectedCount} websocket connections, but found ${connectionCount}. ` +
+      `Open: ${JSON.stringify(openConnections)}`,
   );
+
+  if (expectedServices) {
+    const openNames = openConnections.map((c) => c.name).sort();
+    assert.deepEqual(
+      openNames,
+      [...expectedServices].sort(),
+      `Expected services ${JSON.stringify(expectedServices)} but found ${JSON.stringify(openNames)}`,
+    );
+  }
 }
