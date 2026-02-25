@@ -53,6 +53,7 @@ import { isEvmChainId } from '../../shared/lib/asset-utils';
 import { isEmptyHexString } from '../../shared/modules/hexstring-utils';
 import { isZeroAmount } from '../helpers/utils/number-utils';
 import { getNonTestNetworks } from '../../shared/modules/selectors/networks';
+import { getAccountTrackerControllerAccountsByChainId } from '../../shared/modules/selectors/assets-migration';
 import { getSelectedInternalAccount } from './accounts';
 import { getMultichainBalances } from './multichain';
 import { EMPTY_OBJECT } from './shared';
@@ -893,20 +894,6 @@ const selectEnabledNetworkMapForBalances = createSelector(
 );
 
 /**
- * Provides accountsByChainId for checking EVM native balances.
- *
- * @param state - The application state.
- * @returns The accounts by chain ID object.
- */
-const selectAccountsByChainIdForBalances = createSelector(
-  [
-    (state: BalanceCalculationState) =>
-      getMetamaskState(state).accountsByChainId,
-  ],
-  (accountsByChainId) => accountsByChainId ?? EMPTY_OBJECT,
-);
-
-/**
  * Aggregates balances for all wallets and groups using core pure function.
  * Only the minimal controller state is composed to keep this selector lean.
  *
@@ -1205,7 +1192,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
     selectTokenBalancesStateForBalances,
     selectMultichainBalancesStateForBalances,
     selectAllMainnetNetworksEnabledMap,
-    selectAccountsByChainIdForBalances,
+    getAccountTrackerControllerAccountsByChainId,
   ],
   (
     accountTreeState,
@@ -1435,7 +1422,9 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     currencyRates: metamask.currencyRates,
     currentCurrency: metamask.currentCurrency,
     networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
-    accountsByChainId: metamask.accountsByChainId,
+    accountsByChainId: getAccountTrackerControllerAccountsByChainId({
+      metamask,
+    }),
   };
 
   let multichainState = {

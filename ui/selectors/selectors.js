@@ -41,6 +41,7 @@ import {
   getSelectedNetworkClientId,
   getNetworkConfigurationsByChainId,
 } from '../../shared/modules/selectors/networks';
+import { getAccountTrackerControllerAccountsByChainId } from '../../shared/modules/selectors/assets-migration';
 import { getEnabledNetworks } from '../../shared/modules/selectors/multichain';
 // TODO: Fix circular dependency
 // To avoid import evaluating as `undefined` due to circular dependency,
@@ -497,7 +498,7 @@ export function getAccountTypeForKeyring(keyring) {
  * @returns {object} A map of account addresses to account objects (which includes the account balance)
  */
 export const getMetaMaskAccountBalances = createSelector(
-  (state) => state.metamask.accountsByChainId,
+  getAccountTrackerControllerAccountsByChainId,
   getCurrentChainId,
   (accountsByChainId, currentChainId) => {
     const balancesForCurrentChain = accountsByChainId?.[currentChainId] ?? {};
@@ -515,7 +516,7 @@ export const getMetaMaskAccountBalances = createSelector(
 );
 
 export const getMetaMaskCachedBalances = createSelector(
-  (state) => state.metamask.accountsByChainId,
+  getAccountTrackerControllerAccountsByChainId,
   getEnabledNetworks,
   getCurrentChainId,
   (_, networkChainId) => networkChainId,
@@ -812,7 +813,8 @@ export function getHDEntropyIndex(state) {
 }
 
 export function getCrossChainMetaMaskCachedBalances(state) {
-  const allAccountsByChainId = state.metamask.accountsByChainId;
+  const allAccountsByChainId =
+    getAccountTrackerControllerAccountsByChainId(state);
   return Object.keys(allAccountsByChainId).reduce((acc, chainId) => {
     acc[chainId] = Object.keys(allAccountsByChainId[chainId]).reduce(
       (innerAcc, address) => {
@@ -921,7 +923,7 @@ export function getSelectedAccountTokensAcrossChains(state) {
  * @param {string} chainId - The chainId of the account
  */
 export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
-  (state) => state.metamask.accountsByChainId,
+  getAccountTrackerControllerAccountsByChainId,
   (_state, accountAddress) => accountAddress,
   (accountsByChainId, selectedAddress) => {
     const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
