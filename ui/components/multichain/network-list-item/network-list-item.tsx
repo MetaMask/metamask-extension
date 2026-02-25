@@ -14,10 +14,10 @@ import {
   BackgroundColor,
   BlockSize,
   Display,
+  FlexDirection,
   JustifyContent,
   TextColor,
   IconColor,
-  FlexDirection,
   TextVariant,
   BorderColor,
 } from '../../../helpers/constants/design-system';
@@ -30,6 +30,7 @@ import {
   Icon,
   IconName,
   IconSize,
+  SuccessPill,
   Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -260,7 +261,9 @@ export const NetworkListItem = ({
         <Box
           width={BlockSize.Full}
           display={Display.Flex}
+          flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
+          gap={2}
           data-testid={name}
         >
           <Tooltip
@@ -281,12 +284,13 @@ export const NetworkListItem = ({
               {name}
             </Text>
           </Tooltip>
+          {isNetworkGasSponsored(chainId) && (
+            <SuccessPill
+              label={t('noNetworkFee')}
+              display={Display.InlineFlex}
+            />
+          )}
         </Box>
-        {isNetworkGasSponsored(chainId) && (
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-            {t('noNetworkFee')}
-          </Text>
-        )}
         {rpcEndpoint && (
           <Box
             className="multichain-network-list-item__rpc-endpoint"

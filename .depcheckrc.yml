@@ -56,6 +56,7 @@ ignores:
   - '@storybook/core'
   - '@storybook/addon-essentials'
   - '@storybook/addon-a11y'
+  - '@storybook/addon-docs'
   - '@storybook/builder-webpack5'
   - '@storybook/manager-webpack5'
   - '@storybook/react-webpack5'
@@ -104,6 +105,8 @@ ignores:
   - '@metamask/institutional-wallet-snap'
   - '@metamask/gator-permissions-snap'
   - '@metamask/permissions-kernel-snap'
+  # perps poc
+  - '@metamask/perps-controller'
 
 # files depcheck should not parse
 ignorePatterns:

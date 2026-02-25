@@ -5,6 +5,25 @@ import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { OrderEntry } from './order-entry';
 
+// Mock hooks that depend on @metamask/perps-controller to avoid ESM transform issues
+jest.mock('../../../../hooks/perps/useUserHistory', () => ({
+  useUserHistory: () => ({
+    userHistory: [],
+    isLoading: false,
+    error: null,
+    refetch: jest.fn(),
+  }),
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsTransactionHistory', () => ({
+  usePerpsTransactionHistory: () => ({
+    transactions: [],
+    isLoading: false,
+    error: null,
+    refetch: jest.fn(),
+  }),
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
@@ -29,12 +48,12 @@ describe('OrderEntry', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('order-entry')).toBeInTheDocument();
-      expect(screen.getByText('Order Amount')).toBeInTheDocument();
+      expect(screen.getByText('Size')).toBeInTheDocument();
       expect(screen.getByTestId('amount-input-field')).toBeInTheDocument();
       expect(screen.getByTestId('leverage-slider')).toBeInTheDocument();
       expect(screen.getByText('Margin')).toBeInTheDocument();
       expect(screen.getByText('Fees')).toBeInTheDocument();
-      expect(screen.getByText('Liquidation Price Est.')).toBeInTheDocument();
+      expect(screen.getByText('Liquidation price')).toBeInTheDocument();
       expect(screen.getByTestId('auto-close-toggle')).toBeInTheDocument();
       expect(
         screen.getByTestId('order-entry-submit-button'),
@@ -44,7 +63,7 @@ describe('OrderEntry', () => {
     it('displays available balance', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('$10,000.00')).toBeInTheDocument();
+      expect(screen.getByText(/\$10,000\.00.*USDC/u)).toBeInTheDocument();
     });
 
     it('displays correct submit button text for long direction', () => {
@@ -91,8 +110,9 @@ describe('OrderEntry', () => {
         target: { value: '45250' },
       });
 
-      // $45250 / $45250 = 1 BTC - real formatter uses compact format
-      expect(screen.getByText(/≈.*1.*BTC/u)).toBeInTheDocument();
+      const tokenContainer = screen.getByTestId('amount-input-token-field');
+      const tokenInput = tokenContainer.querySelector('input');
+      expect(tokenInput).toHaveValue('1');
     });
   });
 
@@ -100,7 +120,9 @@ describe('OrderEntry', () => {
     it('defaults to 1x leverage', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('1x')).toBeInTheDocument();
+      const container = screen.getByTestId('leverage-input');
+      const input = container.querySelector('input');
+      expect(input).toHaveValue('1');
     });
   });
 
@@ -200,8 +222,9 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      // Should show 3x leverage (pre-populated from existing position)
-      expect(screen.getByText('3x')).toBeInTheDocument();
+      const container = screen.getByTestId('leverage-input');
+      const input = container.querySelector('input');
+      expect(input).toHaveValue('3');
     });
 
     it('shows amount input in modify mode', () => {
@@ -372,6 +395,91 @@ describe('OrderEntry', () => {
       expect(
         screen.getByTestId('close-percent-preset-100'),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('limit order mode', () => {
+    it('shows limit price input when orderType is limit', () => {
+      renderWithProvider(
+        <OrderEntry {...defaultProps} orderType="limit" />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('limit-price-input')).toBeInTheDocument();
+      expect(screen.getByText('Limit Price')).toBeInTheDocument();
+    });
+
+    it('hides limit price input when orderType is market', () => {
+      renderWithProvider(
+        <OrderEntry {...defaultProps} orderType="market" />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
+    });
+
+    it('hides limit price input in close mode even when orderType is limit', () => {
+      const existingPosition = {
+        size: '2.5',
+        leverage: 3,
+        entryPrice: '2850.00',
+      };
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          mode="close"
+          orderType="limit"
+          existingPosition={existingPosition}
+        />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
+    });
+
+    it('shows Mid button for long limit orders', () => {
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          orderType="limit"
+          initialDirection="long"
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByText('Mid')).toBeInTheDocument();
+      expect(screen.getByTestId('limit-price-mid-button')).toBeInTheDocument();
+    });
+
+    it('shows Mid button for short limit orders', () => {
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          orderType="limit"
+          initialDirection="short"
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByText('Mid')).toBeInTheDocument();
+      expect(screen.getByTestId('limit-price-mid-button')).toBeInTheDocument();
+    });
+
+    it('submits form with limit type when orderType is limit', () => {
+      const onSubmit = jest.fn();
+      renderWithProvider(
+        <OrderEntry {...defaultProps} orderType="limit" onSubmit={onSubmit} />,
+        mockStore,
+      );
+
+      const submitButton = screen.getByTestId('order-entry-submit-button');
+      fireEvent.click(submitButton);
+
+      expect(onSubmit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'limit',
+        }),
+      );
     });
   });
 });

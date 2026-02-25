@@ -61,17 +61,12 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain';
-import { setEditedNetwork } from '../../store/actions';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import RewardsOnboardingModal from '../../components/app/rewards/onboarding/OnboardingModal';
 import { Pna25Modal } from '../../components/app/modals/pna25-modal';
-///: BEGIN:ONLY_INCLUDE_IF(build-beta)
-import BetaHomeFooter from './beta/beta-home-footer.component';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import FlaskHomeFooter from './flask/flask-home-footer.component';
-///: END:ONLY_INCLUDE_IF
+import { isBeta, isFlask } from '../../helpers/utils/build-types';
+import BetaAndFlaskHomeFooter from './beta-and-flask-home-footer.component';
 import { HomeDeepLinkActions } from './HomeDeepLinkActions';
 
 function shouldCloseNotificationPopup({
@@ -349,7 +344,7 @@ export default class Home extends PureComponent {
       setRemoveNftMessage('');
       setNewTokensImported(''); // Added this so we dnt see the notif if user does not close it
       setNewTokensImportedError('');
-      setEditedNetwork();
+      clearEditedNetwork(); // dispatches setEditedNetwork(), setting editedNetwork to undefined, which clears the editedNetwork state
     };
 
     const autoHideDelay = 5 * SECOND;
@@ -893,20 +888,11 @@ export default class Home extends PureComponent {
               useExternalServices={useExternalServices}
               setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
             />
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
+            {(isBeta() || isFlask()) && (
               <div className="home__support">
-                <BetaHomeFooter />
+                <BetaAndFlaskHomeFooter />
               </div>
-              ///: END:ONLY_INCLUDE_IF
-            }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-              <div className="home__support">
-                <FlaskHomeFooter />
-              </div>
-              ///: END:ONLY_INCLUDE_IF
-            }
+            )}
           </div>
           {this.renderNotifications()}
         </div>

@@ -43,10 +43,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
 import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
-import {
-  getAccountName,
-  getSelectedMultichainNetworkConfiguration,
-} from '../../../selectors';
+import { getAccountName, getSelectedAccount } from '../../../selectors';
 import {
   KEYRING_TRANSACTION_STATUS_KEY,
   useMultichainTransactionDisplay,
@@ -66,7 +63,6 @@ import {
 export type MultichainTransactionDetailsModalProps = {
   transaction: Transaction;
   onClose: () => void;
-  userAddress: string;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -74,11 +70,10 @@ export type MultichainTransactionDetailsModalProps = {
 export function MultichainTransactionDetailsModal({
   transaction,
   onClose,
-  userAddress,
 }: MultichainTransactionDetailsModalProps) {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const networkConfig = useSelector(getSelectedMultichainNetworkConfiguration);
+  const userAddress = useSelector(getSelectedAccount)?.address;
   const {
     from,
     to,
@@ -90,7 +85,7 @@ export function MultichainTransactionDetailsModal({
     type,
     timestamp,
     id,
-  } = useMultichainTransactionDisplay(transaction, networkConfig);
+  } = useMultichainTransactionDisplay(transaction);
 
   const internalAccounts = useSelector(getInternalAccounts);
   const internalAccountsById = useSelector(getInternalAccountsObject);

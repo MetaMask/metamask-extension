@@ -25,7 +25,7 @@ describe('OrderSummary', () => {
 
       expect(screen.getByText('Margin')).toBeInTheDocument();
       expect(screen.getByText('Fees')).toBeInTheDocument();
-      expect(screen.getByText('Liquidation Price Est.')).toBeInTheDocument();
+      expect(screen.getByText('Liquidation price')).toBeInTheDocument();
     });
 
     it('displays dash when values are null', () => {

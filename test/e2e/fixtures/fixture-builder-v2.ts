@@ -1,8 +1,15 @@
 import { merge, cloneDeep } from 'lodash';
+import type { AddressBookControllerState } from '@metamask/address-book-controller';
+import type { CurrencyRateState } from '@metamask/assets-controllers';
 import type {
   PermissionConstraint,
   PermissionControllerState,
 } from '@metamask/permission-controller';
+import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
+import type {
+  Preferences,
+  PreferencesControllerState,
+} from '../../../app/scripts/controllers/preferences-controller';
 import {
   DAPP_URL,
   DAPP_URL_LOCALHOST,
@@ -40,6 +47,21 @@ class FixtureBuilderV2 {
                           GENERIC  CONTROLLER METHODS
      ==================================================================
   */
+  withAddressBookController(data: Partial<AddressBookControllerState>): this {
+    if (!this.fixture.data.AddressBookController) {
+      (this.fixture.data as Record<string, unknown>).AddressBookController = {
+        addressBook: {},
+      };
+    }
+    merge(this.fixture.data.AddressBookController, data);
+    return this;
+  }
+
+  withCurrencyController(data: Partial<CurrencyRateState>): this {
+    merge(this.fixture.data.CurrencyController, data);
+    return this;
+  }
+
   withPermissionController(
     data: Partial<PermissionControllerState<PermissionConstraint>>,
   ): this {
@@ -47,10 +69,33 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withPreferencesController(
+    data: Omit<Partial<PreferencesControllerState>, 'preferences'> & {
+      preferences?: Partial<Preferences>;
+    },
+  ): this {
+    merge(this.fixture.data.PreferencesController, data);
+    return this;
+  }
+
   /* ==================================================================
                               CUSTOM METHODS
      ==================================================================
   */
+  withConversionRateDisabled(): this {
+    return this.withPreferencesController({
+      useCurrencyRateCheck: false,
+    });
+  }
+
+  withEnabledNetworks(
+    data: NetworkEnablementControllerState['enabledNetworkMap'],
+  ): this {
+    this.fixture.data.NetworkEnablementController.enabledNetworkMap =
+      data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
+    return this;
+  }
+
   withPermissionControllerConnectedToTestDapp({
     account = '',
     useLocalhostHostname = false,

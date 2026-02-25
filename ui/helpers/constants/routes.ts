@@ -61,7 +61,6 @@ export const SECURITY_PASSWORD_CHANGE_ROUTE =
 export const BACKUPANDSYNC_ROUTE =
   '/settings/security-and-privacy/backup-and-sync';
 export const REVEAL_SEED_ROUTE = '/seed';
-export const SMART_ACCOUNT_UPDATE = '/smart-account-update';
 export const IMPORT_SRP_ROUTE = '/import-srp';
 export const RESTORE_VAULT_ROUTE = '/restore-vault';
 export const IMPORT_TOKEN_ROUTE = '/import-token';
@@ -145,6 +144,7 @@ export const DEFI_ROUTE = '/defi';
 export const PERPS_ROUTE = '/perps';
 export const PERPS_HOME_ROUTE = '/perps/home';
 export const PERPS_MARKET_DETAIL_ROUTE = '/perps/market';
+export const PERPS_ORDER_ENTRY_ROUTE = '/perps/trade';
 export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
 export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 
@@ -167,6 +167,11 @@ export const ROUTES = [
   {
     path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
     label: 'Perps Market Detail',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
+    label: 'Perps Order Entry',
     trackInAnalytics: true,
   },
   {
@@ -304,11 +309,6 @@ export const ROUTES = [
   {
     path: `${REVEAL_SEED_ROUTE}/:keyringId`,
     label: 'Reveal Secret Recovery Phrase Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: SMART_ACCOUNT_UPDATE,
-    label: 'Smart Account Update Page',
     trackInAnalytics: true,
   },
   {

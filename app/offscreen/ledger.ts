@@ -1,6 +1,8 @@
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import type Transport from '@ledgerhq/hw-transport';
 import LedgerEth from '@ledgerhq/hw-app-eth';
+import { parse } from '@ethersproject/transactions';
+import { add0x } from '@metamask/utils';
 import {
   Category,
   ErrorCode,
@@ -15,6 +17,38 @@ import {
 import { LEDGER_USB_VENDOR_ID } from '../../shared/constants/hardware-wallets';
 
 type EIP712Message = Parameters<LedgerEth['signEIP712Message']>[1];
+
+/**
+ * Selectors that are used only by NFT standards (ERC721/ERC1155), not by ERC20.
+ * When the tx uses one of these, we enable Ledger NFT clear signing.
+ * approve(0x095ea7b3) is shared by ERC20 and ERC721 so we do NOT include it here.
+ */
+const NFT_ONLY_SELECTORS = new Set([
+  '0xa22cb465', // setApprovalForAll (ERC721 + ERC1155)
+  '0x42842e0e', // safeTransferFrom (ERC721)
+  '0xb88d4fde', // safeTransferFrom(address,address,uint256,bytes) (ERC721)
+  '0xf242432a', // safeTransferFrom (ERC1155)
+  '0x2eb2c2d6', // safeBatchTransferFrom (ERC1155)
+]);
+
+/**
+ * Returns the 4-byte selector from raw tx hex or undefined if not present.
+ *
+ * @param rawTxHex - Raw RLP-encoded transaction hex (with or without 0x prefix).
+ * @returns The selector or undefined if parsing fails or no data.
+ */
+function getTransactionSelector(rawTxHex: string): string | undefined {
+  try {
+    const hex = rawTxHex.startsWith('0x') ? rawTxHex : add0x(rawTxHex);
+    const { data } = parse(hex);
+    if (data?.length >= 10) {
+      return data.substring(0, 10).toLowerCase();
+    }
+  } catch {
+    // ignore parse errors
+  }
+  return undefined;
+}
 
 /**
  * Checks if WebHID API is available in this environment.
@@ -213,10 +247,19 @@ export class LedgerOffscreenHandler {
     s: string;
   }> {
     const app = await this.ensureApp();
+    // The nft parameter resolution is selector-based only: approve() uses
+    // the same selector (0x095ea7b3) for both ERC20 and ERC721
+    // (see @ledgerhq/evm-tools selectors and hw-app-eth resolveTransaction).
+    //
+    // The nft parameter will be set to true only for the selectors defined in
+    // NFT_ONLY_SELECTORS, that way we can tell "token allowance" from "NFT allowance"
+    // for every operation except approve().
+    const selector = getTransactionSelector(tx);
+    const isNftTx = Boolean(selector && NFT_ONLY_SELECTORS.has(selector));
     const result = await app.clearSignTransaction(hdPath, tx, {
-      // nft: true, // TODO: FIX ME: temporarily disabled because erc20 are being misidentified.
       externalPlugins: true,
       erc20: true,
+      nft: isNftTx,
     });
     return {
       v: result.v,

@@ -21,7 +21,9 @@ import {
 import { merge } from 'lodash';
 import { ThemeType } from '../../../shared/constants/preferences';
 import {
+  DEVICE_TYPE,
   ENVIRONMENT_TYPE_BACKGROUND,
+  OS,
   PLATFORM_CHROME,
 } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
@@ -1421,6 +1423,8 @@ describe('MetaMetricsController', function () {
   describe('_buildUserTraitsObject', function () {
     beforeEach(() => {
       jest.spyOn(Utils, 'getPlatform').mockReturnValue(PLATFORM_CHROME);
+      jest.spyOn(Utils, 'getDeviceType').mockReturnValue(DEVICE_TYPE.DESKTOP);
+      jest.spyOn(Utils, 'getOs').mockReturnValue(OS.MACOS);
     });
 
     it('should return full user traits object on first call', async function () {
@@ -1619,6 +1623,8 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.NetworkFilterPreference]: [],
           [MetaMetricsUserTrait.Platform]: 'Chrome',
           [MetaMetricsUserTrait.InstallType]: 'unknown',
+          [MetaMetricsUserTrait.DeviceType]: DEVICE_TYPE.DESKTOP,
+          [MetaMetricsUserTrait.Os]: OS.MACOS,
         });
       });
     });
