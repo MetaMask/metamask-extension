@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   TransactionStatus,
   TransactionType,
@@ -54,8 +54,6 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
-import TransactionActivityLog from '../../../components/app/transaction-activity-log';
 import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
   type AllowedBridgeChainIds,
@@ -81,14 +79,9 @@ const CrossChainSwapTxDetails = () => {
   const rootState = useSelector((state) => state);
 
   const { srcTxMetaId } = useParams<{ srcTxMetaId: string }>();
-  const location = useLocation();
   const navigate = useNavigate();
   const allTransactions = useSelector(getTransactions) as TransactionMeta[];
 
-  const transactionGroup: TransactionGroup | null =
-    location?.state?.transactionGroup || null;
-  const isEarliestNonce: boolean | null =
-    location?.state?.isEarliestNonce || null;
   const srcChainTxMeta = allTransactions.find((tx) => tx.id === srcTxMetaId);
   // Even if user is still on /tx-details/txMetaId, we want to be able to show the bridge history item
   const bridgeHistoryItem = useSelector((state) =>
@@ -464,13 +457,6 @@ const CrossChainSwapTxDetails = () => {
                   : undefined
               }
             />
-            {transactionGroup && typeof isEarliestNonce !== 'undefined' && (
-              <TransactionActivityLog
-                transactionGroup={transactionGroup}
-                className="transaction-list-item-details__transaction-activity-log"
-                isEarliestNonce={isEarliestNonce}
-              />
-            )}
           </Box>
         </Box>
       </Content>
