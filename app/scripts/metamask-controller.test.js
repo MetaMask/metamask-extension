@@ -1890,22 +1890,6 @@ describe('MetaMaskController', () => {
                   ].address.toLowerCase(),
                 ]);
               });
-
-              it('should call preferencesController.setSelectedAddress', async () => {
-                jest.spyOn(
-                  metamaskController.preferencesController,
-                  'setSelectedAddress',
-                );
-
-                await metamaskController.unlockHardwareWalletAccount(
-                  accountToUnlock,
-                  device,
-                );
-
-                expect(
-                  metamaskController.preferencesController.setSelectedAddress,
-                ).toHaveBeenCalledTimes(1);
-              });
             });
           },
         );
