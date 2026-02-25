@@ -10,6 +10,9 @@
       "MetaMask: MetaMetrics invalid trait types": 4,
       "warn: MetaMetricsController#_identify: No userTraits found": 1
     },
+    "app/scripts/controllers/rewards/rewards-data-service.test.ts": {
+      "error: RewardsDataService: Failed to fetch geolocation": 2
+    },
     "app/scripts/controllers/swaps/swaps.test.ts": {
       "Third-party: Bindings failed, using pure JS": 1,
       "µWebSockets: Compatibility warnings": 1,
@@ -63,6 +66,8 @@
       "MetaMask: Chain processing errors": 2,
       "Test errors: Fetch failures": 4,
       "Third-party: Bindings failed, using pure JS": 1,
+      "error: Error: Attempted to synchronize recursively": 19,
+      "error: Error: Must specify a non-empty": 7,
       "error: This browser doesn't support cancelAnimationFrame.": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
@@ -74,6 +79,8 @@
       "ObjectMultiplex: Malformed chunk warnings": 1,
       "Third-party: Bindings failed, using pure JS": 1,
       "error: AssertionError: The Snaps platform requires": 1,
+      "error: Error: Attempted to synchronize recursively": 123,
+      "error: Error: Must specify a non-empty": 61,
       "error: Error: NetworkController state is invalid:": 1,
       "error: Error: invalid address (argument=\"address\", value=\"\",": 1,
       "error: Error: invalid address (argument=\"address\", value=\"0x\",": 2,

@@ -5,17 +5,11 @@ import Tooltip from '../tooltip';
 
 import { Icon, IconName, Text } from '../../component-library';
 import { AlignItems } from '../../../helpers/constants/design-system';
-import README from './README.mdx';
 import FormField from '.';
 
 export default {
   title: 'Components/UI/FormField',
   component: FormField,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     titleText: { control: 'text' },
     titleUnit: { control: 'text' },
