@@ -208,7 +208,7 @@ describe('Send ETH - Advanced', function () {
   });
 
   describe('Hex data', function () {
-    it.only('renders correct recipient with ERC20 transfer signature in hex data', async function () {
+    it('renders correct recipient with ERC20 transfer signature in hex data', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
@@ -239,9 +239,6 @@ describe('Send ETH - Advanced', function () {
           await sendPage.fillHexData(
             '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
           );
-
-          // test to check if there is a race condition with the hex data input not in the state yet
-          await driver.delay(1000);
 
           await sendPage.pressContinueButton();
 
