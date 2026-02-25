@@ -16,13 +16,6 @@ async function waitForWebsocketConnections(
       LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
     return connectionCount === expectedCount;
   }, 10000);
-
-  console.log('connectionCount', connectionCount);
-  assert.equal(
-    connectionCount,
-    expectedCount,
-    `Expected ${expectedCount} websocket connections, but found ${connectionCount}`,
-  );
 }
 
 describe('Solana Web Socket', function (this: Suite) {
