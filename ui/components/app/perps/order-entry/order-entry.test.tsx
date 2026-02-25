@@ -48,12 +48,12 @@ describe('OrderEntry', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('order-entry')).toBeInTheDocument();
-      expect(screen.getByText('Order Amount')).toBeInTheDocument();
+      expect(screen.getByText('Size')).toBeInTheDocument();
       expect(screen.getByTestId('amount-input-field')).toBeInTheDocument();
       expect(screen.getByTestId('leverage-slider')).toBeInTheDocument();
       expect(screen.getByText('Margin')).toBeInTheDocument();
       expect(screen.getByText('Fees')).toBeInTheDocument();
-      expect(screen.getByText('Liquidation Price Est.')).toBeInTheDocument();
+      expect(screen.getByText('Liquidation price')).toBeInTheDocument();
       expect(screen.getByTestId('auto-close-toggle')).toBeInTheDocument();
       expect(
         screen.getByTestId('order-entry-submit-button'),
@@ -63,7 +63,7 @@ describe('OrderEntry', () => {
     it('displays available balance', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('$10,000.00')).toBeInTheDocument();
+      expect(screen.getByText(/\$10,000\.00.*USDC/u)).toBeInTheDocument();
     });
 
     it('displays correct submit button text for long direction', () => {
@@ -110,8 +110,9 @@ describe('OrderEntry', () => {
         target: { value: '45250' },
       });
 
-      // $45250 / $45250 = 1 BTC - real formatter uses compact format
-      expect(screen.getByText(/≈.*1.*BTC/u)).toBeInTheDocument();
+      const tokenContainer = screen.getByTestId('amount-input-token-field');
+      const tokenInput = tokenContainer.querySelector('input');
+      expect(tokenInput).toHaveValue('1');
     });
   });
 
@@ -119,7 +120,9 @@ describe('OrderEntry', () => {
     it('defaults to 1x leverage', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('1x')).toBeInTheDocument();
+      const container = screen.getByTestId('leverage-input');
+      const input = container.querySelector('input');
+      expect(input).toHaveValue('1');
     });
   });
 
@@ -219,8 +222,9 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      // Should show 3x leverage (pre-populated from existing position)
-      expect(screen.getByText('3x')).toBeInTheDocument();
+      const container = screen.getByTestId('leverage-input');
+      const input = container.querySelector('input');
+      expect(input).toHaveValue('3');
     });
 
     it('shows amount input in modify mode', () => {
@@ -433,7 +437,7 @@ describe('OrderEntry', () => {
       expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
     });
 
-    it('shows direction-aware presets for long orders', () => {
+    it('shows Mid button for long limit orders', () => {
       renderWithProvider(
         <OrderEntry
           {...defaultProps}
@@ -444,12 +448,10 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.getByText('Mid')).toBeInTheDocument();
-      expect(screen.getByText('Bid')).toBeInTheDocument();
-      expect(screen.getByText('-1%')).toBeInTheDocument();
-      expect(screen.getByText('-2%')).toBeInTheDocument();
+      expect(screen.getByTestId('limit-price-mid-button')).toBeInTheDocument();
     });
 
-    it('shows direction-aware presets for short orders', () => {
+    it('shows Mid button for short limit orders', () => {
       renderWithProvider(
         <OrderEntry
           {...defaultProps}
@@ -460,9 +462,7 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.getByText('Mid')).toBeInTheDocument();
-      expect(screen.getByText('Ask')).toBeInTheDocument();
-      expect(screen.getByText('+1%')).toBeInTheDocument();
-      expect(screen.getByText('+2%')).toBeInTheDocument();
+      expect(screen.getByTestId('limit-price-mid-button')).toBeInTheDocument();
     });
 
     it('submits form with limit type when orderType is limit', () => {

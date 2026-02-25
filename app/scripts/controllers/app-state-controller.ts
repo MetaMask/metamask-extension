@@ -153,6 +153,8 @@ export type AppStateControllerState = {
   trezorModel: string | null;
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
+  musdConversionEducationSeen: boolean;
+  musdConversionDismissedCtaKeys: string[];
   showShieldEntryModalOnce: boolean | null;
   pendingShieldCohort: string | null;
   pendingShieldCohortTxType: string | null;
@@ -342,6 +344,8 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
+  musdConversionEducationSeen: false,
+  musdConversionDismissedCtaKeys: [],
   showShieldEntryModalOnce: null,
   pendingShieldCohort: null,
   pendingShieldCohortTxType: null,
@@ -692,6 +696,18 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   hasShownMultichainAccountsIntroModal: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
+  },
+  musdConversionEducationSeen: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
+  },
+  musdConversionDismissedCtaKeys: {
     persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
@@ -1358,6 +1374,31 @@ export class AppStateController extends BaseController<
   setHasShownMultichainAccountsIntroModal(hasShown: boolean): void {
     this.update((state) => {
       state.hasShownMultichainAccountsIntroModal = hasShown;
+    });
+  }
+
+  /**
+   * Sets whether the mUSD conversion education screen has been seen.
+   *
+   * @param value - Whether the education screen has been seen
+   */
+  setMusdConversionEducationSeen(value: boolean): void {
+    this.update((state) => {
+      state.musdConversionEducationSeen = value;
+    });
+  }
+
+  /**
+   * Adds a dismissed mUSD asset-detail CTA key (chainId-tokenAddress format).
+   * Used to hide the CTA for that token on that chain once dismissed.
+   *
+   * @param key - Key in format "chainId-tokenAddress" (e.g. "0x1-0xa0b86991...")
+   */
+  addMusdConversionDismissedCtaKey(key: string): void {
+    this.update((state) => {
+      if (!state.musdConversionDismissedCtaKeys.includes(key)) {
+        state.musdConversionDismissedCtaKeys.push(key);
+      }
     });
   }
 

@@ -210,6 +210,7 @@ import {
 } from '../../shared/modules/shield';
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
 import { createSentryError } from '../../shared/modules/error';
+import { getAccountTrackerControllerAccountsByChainId } from '../../shared/modules/selectors/assets-migration';
 import {
   toHardwareWalletError,
   // eslint-disable-next-line import/no-restricted-paths
@@ -223,7 +224,6 @@ import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-
 ///: END:ONLY_INCLUDE_IF
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
-import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
 import { WalletFundsObtainedMonitor } from './lib/WalletFundsObtainedMonitor';
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
 import { createDappSwapMiddleware } from './lib/dapp-swap/dapp-swap-middleware';
@@ -867,19 +867,12 @@ export default class MetamaskController extends EventEmitter {
       messenger: petnamesBridgeMessenger,
       events: [
         'NameController:stateChange',
-        'AccountsController:stateChange',
         'AddressBookController:stateChange',
       ],
-      actions: ['AccountsController:listAccounts'],
     });
 
     new AddressBookPetnamesBridge({
       addressBookController: this.addressBookController,
-      nameController: this.nameController,
-      messenger: petnamesBridgeMessenger,
-    }).init();
-
-    new AccountIdentitiesPetnamesBridge({
       nameController: this.nameController,
       messenger: petnamesBridgeMessenger,
     }).init();
@@ -2603,8 +2596,6 @@ export default class MetamaskController extends EventEmitter {
       resetAccount: this.resetAccount.bind(this),
       removeAccount: this.removeAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
-      getNextAvailableAccountName:
-        accountsController.getNextAvailableAccountName.bind(accountsController),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       getAccountsBySnapId: (snapId) =>
         getAccountsBySnapId(this.getSnapKeyring.bind(this), snapId),
@@ -3036,6 +3027,14 @@ export default class MetamaskController extends EventEmitter {
         ),
       setHasShownMultichainAccountsIntroModal:
         appStateController.setHasShownMultichainAccountsIntroModal.bind(
+          appStateController,
+        ),
+      setMusdConversionEducationSeen:
+        appStateController.setMusdConversionEducationSeen.bind(
+          appStateController,
+        ),
+      addMusdConversionDismissedCtaKey:
+        appStateController.addMusdConversionDismissedCtaKey.bind(
           appStateController,
         ),
       updateNetworkConnectionBanner:
@@ -5085,10 +5084,10 @@ export default class MetamaskController extends EventEmitter {
    * @param {Provider} provider - The provider instance to use when asking the network
    */
   async getBalance(address, provider) {
-    const accounts =
-      this.accountTrackerController.state.accountsByChainId[
-        this.#getGlobalChainId()
-      ];
+    const accountsByChainId = getAccountTrackerControllerAccountsByChainId(
+      this._getMetaMaskState(),
+    );
+    const accounts = accountsByChainId[this.#getGlobalChainId()];
     const cached = accounts?.[toChecksumHexAddress(address)];
 
     if (cached && cached.balance) {
@@ -5625,10 +5624,10 @@ export default class MetamaskController extends EventEmitter {
 
     const internalAccountCount = internalAccounts.length;
 
-    const accountsForCurrentChain =
-      this.accountTrackerController.state.accountsByChainId[
-        this.#getGlobalChainId()
-      ];
+    const accountsByChainId = getAccountTrackerControllerAccountsByChainId(
+      this._getMetaMaskState(),
+    );
+    const accountsForCurrentChain = accountsByChainId[this.#getGlobalChainId()];
 
     const accountTrackerCount = Object.keys(
       accountsForCurrentChain || {},
@@ -8088,9 +8087,9 @@ export default class MetamaskController extends EventEmitter {
       ),
       // Other dependencies
       getAccountBalance: (account, chainId) =>
-        this.accountTrackerController.state.accountsByChainId?.[chainId]?.[
-          toChecksumHexAddress(account)
-        ]?.balance,
+        getAccountTrackerControllerAccountsByChainId(this._getMetaMaskState())[
+          chainId
+        ]?.[toChecksumHexAddress(account)]?.balance,
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
       getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
