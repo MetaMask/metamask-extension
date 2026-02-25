@@ -185,12 +185,6 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     fireEvent.click(getByTestId('activity-list-item'));
     expect(mockUseNavigate).toHaveBeenCalledWith(
       '/cross-chain/tx-details/ba5f53b0-4e38-11f0-88dc-53f7e315d450',
-      {
-        state: {
-          transactionGroup: mockBridgeTxData.transactionGroup,
-          isEarliestNonce: false,
-        },
-      },
     );
   });
 
@@ -224,12 +218,6 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     fireEvent.click(getByTestId('activity-list-item'));
     expect(mockUseNavigate).toHaveBeenCalledWith(
       '/cross-chain/tx-details/ba5f53b0-4e38-11f0-88dc-53f7e315d450',
-      {
-        state: {
-          transactionGroup: failedTransactionGroup,
-          isEarliestNonce: false,
-        },
-      },
     );
   });
 });

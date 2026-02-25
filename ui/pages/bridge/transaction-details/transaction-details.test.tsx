@@ -68,10 +68,7 @@ describe('transaction-details', () => {
       pathname: '/cross-chain/tx-details/test-id',
       search: '',
       hash: '',
-      state: {
-        transactionGroup: mockBridgeTxData.transactionGroup,
-        isEarliestNonce: true,
-      },
+      state: null,
       key: 'test-key',
     } as RouterLocation);
     mockParams.mockReturnValue({

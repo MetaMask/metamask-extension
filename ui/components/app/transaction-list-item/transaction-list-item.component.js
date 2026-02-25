@@ -87,7 +87,6 @@ function TransactionListItemInner({
     isBridgeFailed,
   } = useBridgeTxHistoryData({
     transactionGroup,
-    isEarliestNonce,
   });
   const isUnifiedSwapTx =
     (isBridgeTx ||
