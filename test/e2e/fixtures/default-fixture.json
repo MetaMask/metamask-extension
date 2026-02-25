@@ -858,6 +858,7 @@
       "permissionHistory": {}
     },
     "PhishingController": {
+      "addressScanCache": {},
       "c2DomainBlocklistLastFetched": 1770282505,
       "hotlistLastFetched": 1770282505,
       "phishingLists": [],

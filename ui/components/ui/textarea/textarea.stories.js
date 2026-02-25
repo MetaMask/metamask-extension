@@ -9,18 +9,12 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 import { RESIZE } from './textarea.constants';
-import README from './README.mdx';
 import Textarea from '.';
 
 export default {
   title: 'Components/UI/Textarea',
 
   component: Textarea,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     className: {
       control: 'text',
