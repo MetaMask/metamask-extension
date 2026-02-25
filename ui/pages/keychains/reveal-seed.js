@@ -54,8 +54,6 @@ import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import RecoveryPhraseChips from '../onboarding-flow/recovery-phrase/recovery-phrase-chips';
 import { Toast, ToastContainer } from '../../components/multichain/toast';
-import { useTheme } from '../../hooks/useTheme';
-import { ThemeType } from '../../../shared/constants/preferences';
 
 const QUIZ_INTRODUCTION_SCREEN = 'QUIZ_INTRODUCTION_SCREEN';
 const QUIZ_QUESTIONS_SCREEN = 'QUIZ_QUESTIONS_SCREEN';
@@ -86,8 +84,6 @@ function RevealSeedPage() {
   const [correctAnswer, setCorrectAnswer] = useState(false);
 
   const [showSuccessToast, setShowSuccessToast] = useState(false);
-
-  const theme = useTheme();
 
   const onClickCopy = useCallback(() => {
     if (!phraseRevealed) {
@@ -210,11 +206,7 @@ function RevealSeedPage() {
         data-testid="reveal-seed-quiz-introduction"
       >
         <img
-          src={
-            theme === ThemeType.light
-              ? 'images/reveal_srp_light.png'
-              : 'images/reveal_srp.png'
-          }
+          src="images/reveal_srp_intro.png"
           alt="Reveal SRP"
           className="w-[190px] h-[220px] object-contain"
         />
@@ -320,7 +312,8 @@ function RevealSeedPage() {
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.flexStart}
-        justifyContent={JustifyContent.center}
+        justifyContent={JustifyContent.flexStart}
+        height={BlockSize.Full}
         data-testid="reveal-seed-quiz-question"
       >
         <Text
@@ -392,6 +385,7 @@ function RevealSeedPage() {
             justifyContent={JustifyContent.center}
             gap={4}
             width={BlockSize.Full}
+            marginTop="auto"
           >
             <Button
               variant={BUTTON_VARIANT.SECONDARY}
@@ -510,7 +504,8 @@ function RevealSeedPage() {
           width={BlockSize.Full}
           endAccessory={
             <ButtonIcon
-              iconName={showPassword ? IconName.EyeSlash : IconName.Eye}
+              type="button"
+              iconName={showPassword ? IconName.Eye : IconName.EyeSlash}
               onClick={togglePasswordVisibility}
               iconProps={{
                 color: IconColor.IconAlternative,
