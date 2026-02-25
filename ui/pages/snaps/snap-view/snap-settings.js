@@ -59,10 +59,8 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
     .find((snapState) => snapState.id === snapId);
 
   const [isShowingRemoveWarning, setIsShowingRemoveWarning] = useState(false);
-  // eslint-disable-next-line no-unused-vars -- Main build does not use setIsRemovingKeyringSnap
   const [isRemovingKeyringSnap, setIsRemovingKeyringSnap] = useState(false);
 
-  // eslint-disable-next-line no-unused-vars -- Main build does not use setKeyringAccounts
   const [keyringAccounts, setKeyringAccounts] = useState([]);
   const internalAccounts = useSelector(getInternalAccounts);
 
