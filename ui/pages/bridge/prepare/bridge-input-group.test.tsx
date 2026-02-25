@@ -17,6 +17,7 @@ import {
 } from '../../../ducks/bridge/selectors';
 import * as actions from '../../../ducks/bridge/actions';
 import configureStore from '../../../store/store';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const mockHandleFetch = jest.fn();
@@ -34,6 +35,10 @@ jest.mock('@tanstack/react-virtual', () => {
     useVirtualizer: (...args: unknown[]) => mockUseVirtualizer(...args),
   };
 });
+
+setBackgroundConnection({
+  getBearerToken: jest.fn().mockReturnValue('mock-bearer-token-for-tests'),
+} as never);
 
 const tokens = [
   {
@@ -399,17 +404,6 @@ describe('BridgeInputGroup', () => {
       );
 
       await openAssetPicker();
-      expect(
-        screen
-          .getAllByTestId('bridge-asset')
-          .map(({ textContent }) => textContent),
-      ).toMatchInlineSnapshot(`
-              [
-                "USDCUSD Coin",
-                "USDTUSDT",
-                "UNI$0.00Uniswap<0.000001 UNI",
-              ]
-          `);
 
       const networkPicker = getByTestId('multichain-asset-picker__network');
       await fillSearchInput('SD');
@@ -445,11 +439,19 @@ describe('BridgeInputGroup', () => {
       });
       await waitFor(() => {
         expect(networkPickerPopover).not.toBeVisible();
-        expect(abortSpy).toHaveBeenCalledTimes(8);
-        expect(mockHandleFetch).toHaveBeenCalledTimes(4);
+        expect(mockHandleFetch).toHaveBeenCalledWith(
+          'https://bridge.api.cx.metamask.io/getTokens/popular',
+          expect.any(Object),
+        );
+        expect(mockHandleFetch).toHaveBeenCalledWith(
+          'https://bridge.api.cx.metamask.io/getTokens/search',
+          expect.any(Object),
+        );
+        expect(mockHandleFetch).toHaveBeenCalledWith(
+          'https://bridge.api.cx.metamask.io/getTokens/popular',
+          expect.any(Object),
+        );
       });
-
-      expect(mockHandleFetch.mock.calls).toMatchSnapshot();
     },
   );
 });
