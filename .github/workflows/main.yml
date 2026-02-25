@@ -54,11 +54,10 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: lint:prettier (for json,md,mdx,yml files)
         run: yarn lint:prettier
@@ -75,16 +74,17 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
+        id: checkout-and-setup
         with:
           is-high-risk-environment: false
           cache-node-modules: true
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       # Need to cache `.metamask` folder for the anvil binary
       - name: Cache .metamask folder
-        uses: actions/cache/save@v4
+        if: ${{ steps.checkout-and-setup.outputs.node-modules-cache-hit != 'true' }}
+        uses: actions/cache/save@v5
         with:
           path: .metamask
           key: .metamask-${{ hashFiles('yarn.lock') }}
@@ -106,11 +106,10 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Lint
         run: yarn lint
@@ -311,6 +310,37 @@ jobs:
     if: ${{ needs.get-requirements.outputs.needs-unit-and-integration == 'true' }}
     uses: ./.github/workflows/run-tests.yml
 
+  sonarcloud:
+    name: SonarCloud
+    needs:
+      - run-tests
+    if: >-
+      ${{
+        !cancelled() &&
+        (github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main')) &&
+        needs.run-tests.result == 'success' &&
+        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: lcov.info
+          path: coverage
+
+      - name: SonarCloud Scan
+        # This is SonarSource/sonarqube-scan-action@v7.0.0
+        uses: SonarSource/sonarqube-scan-action@a31c9398be7ace6bbfaf30c0bd5d415f843d45e9
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
   bundle-size:
     needs:
       - get-requirements
@@ -322,11 +352,10 @@ jobs:
       SELENIUM_BROWSER: chrome
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v7
@@ -430,11 +459,10 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v7
@@ -477,11 +505,10 @@ jobs:
       lavamoat-policy-changed: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Download changed-files artifact
         if: ${{ env.BRANCH != 'main' }}

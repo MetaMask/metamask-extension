@@ -20,11 +20,10 @@ jobs:
         shard: [1, 2, 3, 4, 5, 6]
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: test:unit:coverage
         run: yarn test:unit:coverage --shard=${{ matrix.shard }}/${{ strategy.job-total }}
@@ -43,11 +42,10 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: test:unit:webpack:coverage
         run: yarn test:unit:webpack:coverage
@@ -66,11 +64,10 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: test:integration:coverage
         run: yarn test:integration:coverage
@@ -97,11 +94,10 @@ jobs:
       stored-coverage: ${{ steps.get-stored-coverage.outputs.STORED_COVERAGE }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Download artifacts
         uses: actions/download-artifact@v7

@@ -64,12 +64,11 @@ jobs:
       VAPID_KEY: ${{ secrets.VAPID_KEY }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: true
           skip-allow-scripts: true
           fetch-depth: 0
-          use-yarn-hydrate: true
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v7
