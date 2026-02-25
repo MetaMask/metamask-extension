@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-shadow
 import { WebSocket } from 'ws';
 import type { WebSocketMessageMock } from '../tests/solana/mocks/websocketDefaultMocks';
-import WebSocketRegistry from './registry';
+import type { WebSocketServiceConfig } from './registry';
 import type LocalWebSocketServer from './server';
 
 export const ACCOUNT_ACTIVITY_WS_PORT = 8089;
@@ -304,11 +304,8 @@ export function createBalanceUpdateNotification(options: {
   };
 }
 
-// Self-register with the registry on import
-WebSocketRegistry.register(
-  'accountActivity',
-  ACCOUNT_ACTIVITY_WS_PORT,
-  setupAccountActivityWebsocketMocks,
-);
-
-export { setupAccountActivityWebsocketMocks };
+export const accountActivityWebSocketConfig: WebSocketServiceConfig = {
+  name: 'accountActivity',
+  port: ACCOUNT_ACTIVITY_WS_PORT,
+  setup: setupAccountActivityWebsocketMocks,
+};

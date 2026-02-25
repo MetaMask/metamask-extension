@@ -15,6 +15,12 @@ type WebSocketSetupFn = (
   options?: Record<string, unknown>,
 ) => Promise<void>;
 
+export type WebSocketServiceConfig = {
+  name: string;
+  port: number;
+  setup: WebSocketSetupFn;
+};
+
 type WebSocketEntry = {
   port: number;
   setupFn: WebSocketSetupFn;
@@ -24,33 +30,33 @@ type WebSocketEntry = {
 /**
  * Central registry for all WebSocket mock servers used in e2e tests.
  *
- * Each service (Solana, AccountActivity, etc.) self-registers on import.
- * `helpers.js` calls `startAll()` / `stopAll()` — no per-service wiring needed.
+ * Each mock file exports a `WebSocketServiceConfig`. Registration happens
+ * explicitly in `helpers.js` — no hidden side effects.
  *
  * Adding a new websocket service:
- * 1. Create `websocket-<name>-mocks.ts`
- * 2. Call `WebSocketRegistry.register(name, port, setupFn)` at module level
- * 3. Import the file in `helpers.js`
- * 4. Add WSS forwarding rule in `mock-e2e.js` using `WebSocketRegistry.getPort(name)`
+ * 1. Create `websocket/<name>-mocks.ts`, export a `WebSocketServiceConfig`
+ * 2. Import and register it in `helpers.js`
+ * 3. Add WSS forwarding rule in `mock-e2e.js`
  */
 class WebSocketRegistry {
   private static entries: Map<string, WebSocketEntry> = new Map();
 
   /**
    * Register a websocket service with the registry.
-   * Called at module level by each mock file.
    *
-   * @param name - Unique service name (e.g. 'solana', 'accountActivity')
-   * @param port - Local port for this service's WebSocket server
-   * @param setupFn - Function to set up mock handlers on the server
+   * @param config - Service configuration (name, port, setup function)
    */
-  static register(name: string, port: number, setupFn: WebSocketSetupFn): void {
-    if (WebSocketRegistry.entries.has(name)) {
+  static register(config: WebSocketServiceConfig): void {
+    if (WebSocketRegistry.entries.has(config.name)) {
       throw new Error(
-        `WebSocket service '${name}' is already registered. Each service must have a unique name.`,
+        `WebSocket service '${config.name}' is already registered. Each service must have a unique name.`,
       );
     }
-    WebSocketRegistry.entries.set(name, { port, setupFn, server: null });
+    WebSocketRegistry.entries.set(config.name, {
+      port: config.port,
+      setupFn: config.setup,
+      server: null,
+    });
   }
 
   /**

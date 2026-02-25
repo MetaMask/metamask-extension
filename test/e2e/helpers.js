@@ -20,10 +20,14 @@ const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
 const WebSocketRegistry = require('./websocket/registry').default;
-// Importing these files triggers self-registration with the registry.
-// Each file calls WebSocketRegistry.register() at module level.
-require('./websocket/solana-mocks');
-require('./websocket/account-activity-mocks');
+const { solanaWebSocketConfig } = require('./websocket/solana-mocks');
+const {
+  accountActivityWebSocketConfig,
+} = require('./websocket/account-activity-mocks');
+
+// Register each WebSocket service explicitly.
+WebSocketRegistry.register(solanaWebSocketConfig);
+WebSocketRegistry.register(accountActivityWebSocketConfig);
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;

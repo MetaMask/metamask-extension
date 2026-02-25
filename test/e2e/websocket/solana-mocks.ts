@@ -4,7 +4,7 @@ import {
   WebSocketMessageMock,
   DEFAULT_SOLANA_WS_MOCKS,
 } from '../tests/solana/mocks/websocketDefaultMocks';
-import WebSocketRegistry from './registry';
+import type { WebSocketServiceConfig } from './registry';
 import type LocalWebSocketServer from './server';
 
 export const SOLANA_WS_PORT = 8088;
@@ -89,7 +89,8 @@ async function setupSolanaWebsocketMocks(
   });
 }
 
-// Self-register with the registry on import
-WebSocketRegistry.register('solana', SOLANA_WS_PORT, setupSolanaWebsocketMocks);
-
-export { setupSolanaWebsocketMocks };
+export const solanaWebSocketConfig: WebSocketServiceConfig = {
+  name: 'solana',
+  port: SOLANA_WS_PORT,
+  setup: setupSolanaWebsocketMocks,
+};
