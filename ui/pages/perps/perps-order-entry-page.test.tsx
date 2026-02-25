@@ -2,6 +2,11 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { screen, fireEvent, act } from '@testing-library/react';
+import type {
+  AccountState,
+  Position,
+  PerpsMarketData,
+} from '@metamask/perps-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import {
@@ -105,12 +110,6 @@ jest.mock('react-router-dom', () => ({
 
 // eslint-disable-next-line import/first
 import PerpsOrderEntryPage from './perps-order-entry-page';
-// eslint-disable-next-line import/first
-import type {
-  AccountState,
-  Position,
-  PerpsMarketData,
-} from '@metamask/perps-controller';
 
 describe('PerpsOrderEntryPage', () => {
   const middlewares = [thunk];

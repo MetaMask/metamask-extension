@@ -23,6 +23,11 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
+import type {
+  OrderType,
+  OrderParams,
+  PriceUpdate,
+} from '@metamask/perps-controller';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -51,11 +56,6 @@ import {
   type OrderMode,
   type OrderCalculations,
 } from '../../components/app/perps/order-entry';
-import type {
-  OrderType,
-  OrderParams,
-  PriceUpdate,
-} from '@metamask/perps-controller';
 
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
