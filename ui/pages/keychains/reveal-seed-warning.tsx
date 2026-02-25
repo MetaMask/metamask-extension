@@ -9,7 +9,9 @@ type RevealSeedWarningProps = {
   message: string;
 };
 
-export function RevealSeedWarning({ message }: Readonly<RevealSeedWarningProps>) {
+export function RevealSeedWarning({
+  message,
+}: Readonly<RevealSeedWarningProps>) {
   return (
     <BannerAlert
       severity={BannerAlertSeverity.Danger}

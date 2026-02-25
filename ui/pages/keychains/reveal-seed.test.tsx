@@ -385,6 +385,7 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
       });

@@ -57,7 +57,9 @@ export function PasswordPrompt({
             <ButtonIcon
               type="button"
               iconName={showPassword ? IconName.Eye : IconName.EyeSlash}
-              ariaLabel={showPassword ? t('passwordToggleHide') : t('passwordToggleShow')}
+              ariaLabel={
+                showPassword ? t('passwordToggleHide') : t('passwordToggleShow')
+              }
               onClick={onTogglePasswordVisibility}
               iconProps={{
                 color: IconColor.IconAlternative,
@@ -74,7 +76,11 @@ export function PasswordPrompt({
           </HelpText>
         )}
       </form>
-      <Box gap={4} data-testid="reveal-seed-password-footer" className="w-full mt-auto">
+      <Box
+        gap={4}
+        data-testid="reveal-seed-password-footer"
+        className="w-full mt-auto"
+      >
         <Button
           size={ButtonSize.Lg}
           onClick={onContinueClick}
