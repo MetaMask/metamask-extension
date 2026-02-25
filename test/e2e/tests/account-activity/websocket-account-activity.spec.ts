@@ -6,16 +6,17 @@ import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import LocalWebSocketServer from '../../websocket-server';
+import WebSocketRegistry from '../../websocket-registry';
+import { ACCOUNT_ACTIVITY_WS_PORT } from '../../websocket-account-activity-mocks';
 
-// The base WebSocket server echoes all messages back. This helper skips
-// the echo and resolves with the first non-echo response from a mock handler.
+// Helper that sends a message and resolves with the first response from
+// the mock handler (the dedicated server has no echo behaviour).
 function sendAndReceive(
   ws: WebSocket,
   message: Record<string, unknown>,
   timeoutMs = 5000,
 ): Promise<Record<string, unknown>> {
-  const sentJson = JSON.stringify(message);
+  const messageJson = JSON.stringify(message);
 
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(
@@ -25,16 +26,13 @@ function sendAndReceive(
 
     const handler = (data: { toString(): string }) => {
       const raw = data.toString();
-      if (raw === sentJson) {
-        return;
-      }
       ws.off('message', handler);
       clearTimeout(timeout);
       resolve(JSON.parse(raw) as Record<string, unknown>);
     };
 
     ws.on('message', handler);
-    ws.send(sentJson);
+    ws.send(messageJson);
   });
 }
 
@@ -48,13 +46,13 @@ describe('AccountActivity WebSocket Mock Infrastructure', function (this: Suite)
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
-        const serverInstance = LocalWebSocketServer.getServerInstance();
+        const serverInstance = WebSocketRegistry.getServer('accountActivity');
         assert.ok(
           serverInstance.getServer(),
-          'WebSocket server should be running',
+          'AccountActivity WebSocket server should be running',
         );
 
-        const ws = new WebSocket('ws://localhost:8088');
+        const ws = new WebSocket(`ws://localhost:${ACCOUNT_ACTIVITY_WS_PORT}`);
 
         const sessionMsg = await new Promise<Record<string, unknown>>(
           (resolve, reject) => {

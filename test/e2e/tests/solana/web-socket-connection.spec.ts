@@ -7,7 +7,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import LocalWebSocketServer from '../../websocket-server';
+import WebSocketRegistry from '../../websocket-registry';
 
 // These tests fails with BIP44 as it's no longer possible to add a Solana account
 // eslint-disable-next-line mocha/no-skipped-tests
@@ -36,7 +36,7 @@ describe.skip('Solana Web Socket', function (this: Suite) {
         });
 
         const connectionCount =
-          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
+          WebSocketRegistry.getServer('solana').getWebsocketConnectionCount();
         assert.equal(
           connectionCount,
           1,
@@ -80,7 +80,7 @@ describe.skip('Solana Web Socket', function (this: Suite) {
         await driver.delay(5000);
 
         const activeWebSocketConnections =
-          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
+          WebSocketRegistry.getServer('solana').getWebsocketConnectionCount();
         assert.equal(
           activeWebSocketConnections,
           1,
@@ -115,7 +115,7 @@ describe.skip('Solana Web Socket', function (this: Suite) {
 
         // Verify that a websocket connection has been established with first window
         let connectionCount =
-          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
+          WebSocketRegistry.getServer('solana').getWebsocketConnectionCount();
         assert.equal(
           connectionCount,
           1,
@@ -132,7 +132,7 @@ describe.skip('Solana Web Socket', function (this: Suite) {
         await driver.delay(5000);
         // jest.advanceTimersByTime(Duration.Second * 5);
         connectionCount =
-          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
+          WebSocketRegistry.getServer('solana').getWebsocketConnectionCount();
         assert.equal(
           connectionCount,
           1,
@@ -146,7 +146,7 @@ describe.skip('Solana Web Socket', function (this: Suite) {
         // Verify that websocket connection is NOT closed - second MM window still open (give it some time)
         await driver.delay(5000);
         connectionCount =
-          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
+          WebSocketRegistry.getServer('solana').getWebsocketConnectionCount();
         assert.equal(
           connectionCount,
           1,
@@ -162,7 +162,7 @@ describe.skip('Solana Web Socket', function (this: Suite) {
 
         // Verify that websocket connection is NOT closed
         const activeWebSocketConnections =
-          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
+          WebSocketRegistry.getServer('solana').getWebsocketConnectionCount();
         assert.equal(
           activeWebSocketConnections,
           1,

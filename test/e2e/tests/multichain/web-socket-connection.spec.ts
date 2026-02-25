@@ -6,7 +6,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import LocalWebSocketServer from '../../websocket-server';
+import WebSocketRegistry from '../../websocket-registry';
 
 describe('Multichain account Web Socket', function (this: Suite) {
   it('a websocket connection is open when MetaMask full view is open', async function () {
@@ -103,7 +103,9 @@ async function waitForWebsocketConnections(
   let connectionCount;
   await driver.wait(async () => {
     connectionCount =
-      LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
+      WebSocketRegistry.getServer(
+        'accountActivity',
+      ).getWebsocketConnectionCount();
     return connectionCount === expectedCount;
   }, 10000);
 

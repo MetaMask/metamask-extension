@@ -1,7 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/no-shadow
 import { WebSocket } from 'ws';
-import LocalWebSocketServer from './websocket-server';
+import WebSocketRegistry from './websocket-registry';
+import type LocalWebSocketServer from './websocket-server';
 import type { WebSocketMessageMock } from './tests/solana/mocks/websocketDefaultMocks';
+
+export const ACCOUNT_ACTIVITY_WS_PORT = 8089;
 
 // Subscription tracking — allows tests to wait until the mock has fully
 // processed a subscribe handshake before pushing notifications.
@@ -11,7 +14,8 @@ let subscriptionWaiters: ((subscriptionId: string) => void)[] = [];
  * Returns a Promise that resolves with the subscriptionId once the next
  * AccountActivity subscribe handshake completes on the mock server.
  * Call this BEFORE the extension connects so the waiter is registered in time.
- * @param timeoutMs
+ *
+ * @param timeoutMs - Maximum time to wait for the subscription
  */
 export function waitForAccountActivitySubscription(
   timeoutMs = 15_000,
@@ -35,6 +39,14 @@ export function waitForAccountActivitySubscription(
 
     subscriptionWaiters.push(waiter);
   });
+}
+
+/**
+ * Reset module-level state between tests.
+ * Called automatically by the registry during stopAll via server cleanup.
+ */
+export function resetAccountActivityMockState(): void {
+  subscriptionWaiters = [];
 }
 
 const DEFAULT_CHAINS_UP = [
@@ -69,30 +81,34 @@ export const DEFAULT_ACCOUNT_ACTIVITY_WS_MOCKS: WebSocketMessageMock[] = [
 ];
 
 /**
- * Sets up AccountActivity WebSocket mocks on the shared LocalWebSocketServer.
+ * Sets up AccountActivity WebSocket mocks on a dedicated server.
  *
  * Unlike Solana mocks, this handler dynamically echoes back the client's
  * `requestId` in subscribe/unsubscribe responses (required by BackendWebSocketService
  * for request-response correlation). After each subscribe, a system-notification
  * with chain status "up" is also sent.
  *
- * @param mocks - Additional WebSocketMessageMock overrides (matched before defaults)
+ * @param server - The LocalWebSocketServer instance (injected by registry)
+ * @param mocks - Per-test mock overrides (merged before defaults)
  * @param options - Configuration for the mock behaviour
- * @param options.chainsUp - Chain IDs to report as "up" in system notifications
  */
-export async function setupAccountActivityWebsocketMocks(
+async function setupAccountActivityWebsocketMocks(
+  server: LocalWebSocketServer,
   mocks: WebSocketMessageMock[] = [],
-  options: { chainsUp?: string[] } = {},
+  options?: Record<string, unknown>,
 ): Promise<void> {
-  const localWebSocketServer = LocalWebSocketServer.getServerInstance();
-  const wsServer = localWebSocketServer.getServer();
+  const wsServer = server.getServer();
 
-  const chainsUp = options.chainsUp ?? DEFAULT_CHAINS_UP;
+  const chainsUp =
+    (options?.chainsUp as string[] | undefined) ?? DEFAULT_CHAINS_UP;
 
   const mergedMocks: WebSocketMessageMock[] = [
     ...mocks,
     ...DEFAULT_ACCOUNT_ACTIVITY_WS_MOCKS,
   ];
+
+  // Reset module-level state for this test run
+  resetAccountActivityMockState();
 
   let subscriptionCounter = 0;
   let sessionCounter = 0;
@@ -242,7 +258,7 @@ export async function setupAccountActivityWebsocketMocks(
 
 /**
  * Creates a balance-update notification to push from tests via
- * `LocalWebSocketServer.sendMessage(JSON.stringify(notification))`.
+ * `WebSocketRegistry.getServer('accountActivity').sendMessage(JSON.stringify(notification))`.
  *
  * @param options - Notification fields
  * @param options.subscriptionId - The subscription ID from subscribe response
@@ -287,3 +303,12 @@ export function createBalanceUpdateNotification(options: {
     timestamp: Date.now(),
   };
 }
+
+// Self-register with the registry on import
+WebSocketRegistry.register(
+  'accountActivity',
+  ACCOUNT_ACTIVITY_WS_PORT,
+  setupAccountActivityWebsocketMocks,
+);
+
+export { setupAccountActivityWebsocketMocks };

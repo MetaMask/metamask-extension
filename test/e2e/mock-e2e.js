@@ -13,6 +13,10 @@ const {
 const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
+const { SOLANA_WS_PORT } = require('./websocket-solana-mocks');
+const {
+  ACCOUNT_ACTIVITY_WS_PORT,
+} = require('./websocket-account-activity-mocks');
 
 const { ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 const {
@@ -1227,7 +1231,7 @@ async function setupMocking(
     .matching((req) =>
       /^wss:\/\/solana-(mainnet|devnet)\.infura\.io\//u.test(req.url),
     )
-    .thenForwardTo('ws://localhost:8088');
+    .thenForwardTo(`ws://localhost:${SOLANA_WS_PORT}`);
 
   /**
    * Backend WebSocket (AccountActivity, etc.)
@@ -1238,7 +1242,7 @@ async function setupMocking(
     .matching((req) =>
       /^wss:\/\/gateway\.api\.cx\.metamask\.io\//u.test(req.url),
     )
-    .thenForwardTo('ws://localhost:8088');
+    .thenForwardTo(`ws://localhost:${ACCOUNT_ACTIVITY_WS_PORT}`);
 
   // Test Dapp Styles
   const TEST_DAPP_STYLES_1 = fs.readFileSync(TEST_DAPP_STYLES_1_PATH);

@@ -8,7 +8,7 @@ import {
   createBalanceUpdateNotification,
   waitForAccountActivitySubscription,
 } from '../../websocket-account-activity-mocks';
-import LocalWebSocketServer from '../../websocket-server';
+import WebSocketRegistry from '../../websocket-registry';
 
 describe('Add hide token', function () {
   const smartContract = SMART_CONTRACTS.HST;
@@ -121,7 +121,7 @@ describe('Add hide token', function () {
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenAmountIsDisplayed('10 TST');
         // Now await the subscription that was registered before login
-        const wsServer = LocalWebSocketServer.getServerInstance();
+        const wsServer = WebSocketRegistry.getServer('accountActivity');
         const subscriptionId = await subscriptionPromise;
         console.log(`Subscription established: ${subscriptionId}`);
         const notification = createBalanceUpdateNotification({

@@ -19,11 +19,11 @@ const { DAPP_PATHS, ERC_4337_ACCOUNT } = require('./constants');
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
-const LocalWebSocketServer = require('./websocket-server').default;
-const { setupSolanaWebsocketMocks } = require('./websocket-solana-mocks');
-const {
-  setupAccountActivityWebsocketMocks,
-} = require('./websocket-account-activity-mocks');
+const WebSocketRegistry = require('./websocket-registry').default;
+// Importing these files triggers self-registration with the registry.
+// Each file calls WebSocketRegistry.register() at module level.
+require('./websocket-solana-mocks');
+require('./websocket-account-activity-mocks');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -191,8 +191,6 @@ async function withFixtures(options, testSuite) {
   let localNode;
   const localNodes = [];
 
-  let webSocketServer;
-
   try {
     // Start servers based on the localNodes array
     for (let i = 0; i < localNodeOptsNormalized.length; i++) {
@@ -317,13 +315,11 @@ async function withFixtures(options, testSuite) {
       }
     }
 
-    // Start WebSocket server and apply mocks (Solana + AccountActivity)
-    webSocketServer = LocalWebSocketServer.getServerInstance();
-    webSocketServer.start();
-    await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
-    await setupAccountActivityWebsocketMocks(
-      accountActivityWebSocketSpecificMocks,
-    );
+    // Start all registered WebSocket servers and apply mocks
+    await WebSocketRegistry.startAll({
+      solana: { mocks: solanaWebSocketSpecificMocks },
+      accountActivity: { mocks: accountActivityWebSocketSpecificMocks },
+    });
 
     // Decide between the regular setupMocking and the passThrough version
     const mockingSetupFunction = useMockingPassThrough
@@ -536,14 +532,9 @@ async function withFixtures(options, testSuite) {
       shutdownTasks.push(
         (async () => {
           try {
-            if (
-              webSocketServer &&
-              typeof webSocketServer.stopAndCleanup === 'function'
-            ) {
-              await webSocketServer.stopAndCleanup();
-            }
+            await WebSocketRegistry.stopAll();
           } catch (e) {
-            console.log('WebSocket server already stopped or not initialized');
+            console.log('WebSocket servers already stopped or not initialized');
           }
         })(),
       );

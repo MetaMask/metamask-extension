@@ -1,108 +1,99 @@
 // eslint-disable-next-line @typescript-eslint/no-shadow
 import { WebSocket, WebSocketServer } from 'ws';
 
+/**
+ * A local WebSocket server for e2e tests.
+ *
+ * Each instance manages its own port, connections, and lifecycle.
+ * Instances are created by the WebSocketRegistry — one per service
+ * (Solana, AccountActivity, etc.).
+ */
 class LocalWebSocketServer {
-  private static instance: LocalWebSocketServer; // Singleton instance
+  private readonly name: string;
 
-  private server: WebSocketServer | null = null; // WebSocket server instance
+  private readonly port: number;
 
-  private static readonly port = 8088;
+  private server: WebSocketServer | null = null;
 
-  private websocketConnections: WebSocket[] = []; // Track active connections
+  private websocketConnections: WebSocket[] = [];
 
-  /**
-   * Get the singleton instance of the LocalWebSocketServer
-   *
-   * @returns The singleton instance of LocalWebSocketServer
-   */
-  public static getServerInstance(): LocalWebSocketServer {
-    if (!LocalWebSocketServer.instance) {
-      LocalWebSocketServer.instance = new LocalWebSocketServer();
-    }
-    return LocalWebSocketServer.instance;
+  constructor(name: string, port: number) {
+    this.name = name;
+    this.port = port;
   }
 
+  /**
+   * Get the underlying WebSocketServer instance.
+   *
+   * @returns The ws WebSocketServer
+   */
   public getServer(): WebSocketServer {
     if (!this.server) {
-      throw new Error('WebSocket server has not been started yet.');
+      throw new Error(
+        `WebSocket server '${this.name}' has not been started yet.`,
+      );
     }
     return this.server;
   }
 
   /**
-   * Start the WebSocket server
+   * Start the WebSocket server.
+   * The base server only tracks connections. Protocol-specific message
+   * handling is added by each service's setup function.
    */
   public start(): void {
     if (this.server) {
       console.log(
-        `WebSocket server is already running on ws://localhost:${LocalWebSocketServer.port}`,
+        `[${this.name}] WebSocket server is already running on ws://localhost:${this.port}`,
       );
-      return; // Do nothing if the server is already running
+      return;
     }
 
-    this.server = new WebSocketServer({ port: LocalWebSocketServer.port });
+    this.server = new WebSocketServer({ port: this.port });
 
     this.server.on('connection', (socket: WebSocket) => {
-      console.log('Client connected to the WebSocket server');
+      console.log(
+        `[${this.name}] Client connected to ws://localhost:${this.port}`,
+      );
       this.websocketConnections.push(socket);
 
-      // Handle client disconnection
       socket.addEventListener('close', () => {
-        console.log('Client disconnected from the WebSocket server');
+        console.log(
+          `[${this.name}] Client disconnected from ws://localhost:${this.port}`,
+        );
         const index = this.websocketConnections.indexOf(socket);
         if (index > -1) {
           this.websocketConnections.splice(index, 1);
         }
       });
-
-      socket.on('message', (data) => {
-        const raw = data.toString();
-        console.log('Message received from client:', raw, false);
-
-        // Do NOT echo back JSON messages that carry an `event` field.
-        // These are AccountActivity protocol frames (subscribe, unsubscribe,
-        // etc.) whose responses are provided by the mock handler in
-        // websocket-account-activity-mocks.ts.  Echoing them causes
-        // BackendWebSocketService to resolve the pending request with the
-        // raw echo (which lacks a subscriptionId) before the mock's proper
-        // response arrives.
-        let isEventMessage = false;
-        try {
-          const parsed = JSON.parse(raw);
-          if (parsed && typeof parsed.event === 'string') {
-            isEventMessage = true;
-          }
-        } catch {
-          // Not JSON — safe to echo
-        }
-
-        if (!isEventMessage) {
-          socket.send(raw);
-        }
-      });
     });
 
     console.log(
-      `WebSocket server running on ws://localhost:${LocalWebSocketServer.port}`,
+      `[${this.name}] WebSocket server running on ws://localhost:${this.port}`,
     );
   }
 
   /**
-   * Stop the WebSocket server
+   * Stop the WebSocket server.
    */
   public stop(): void {
     if (this.server) {
       this.server.close(() => {
         console.log(
-          `WebSocket server stopped on ws://localhost:${LocalWebSocketServer.port}`,
+          `[${this.name}] WebSocket server stopped on ws://localhost:${this.port}`,
         );
       });
       this.server = null;
     } else {
-      console.log('WebSocket server is not running');
+      console.log(`[${this.name}] WebSocket server is not running`);
     }
   }
 
+  /**
+   * Broadcast a message to all connected clients.
+   *
+   * @param message - The message string to send
+   */
   public sendMessage(message: string): void {
     if (this.server) {
       this.server.clients.forEach((client: WebSocket) => {
@@ -115,7 +106,7 @@ class LocalWebSocketServer {
   }
 
   /**
-   * Get the count of active WebSocket connections
+   * Get the count of active WebSocket connections.
    *
    * @returns The number of active connections
    */
@@ -125,22 +116,42 @@ class LocalWebSocketServer {
     }
     const serverClientCount = this.server.clients.size;
     console.log(
-      `Server has ${serverClientCount} clients, tracked array has ${this.websocketConnections.length}`,
+      `[${this.name}] Server has ${serverClientCount} clients, tracked array has ${this.websocketConnections.length}`,
     );
     return serverClientCount;
   }
 
   /**
-   * Stop the WebSocket server and close all connections
+   * Get the name of this server instance.
+   *
+   * @returns The service name
+   */
+  public getName(): string {
+    return this.name;
+  }
+
+  /**
+   * Get the port of this server instance.
+   *
+   * @returns The port number
+   */
+  public getPort(): number {
+    return this.port;
+  }
+
+  /**
+   * Stop the WebSocket server and close all connections.
    */
   public async stopAndCleanup(): Promise<void> {
     if (!this.server) {
-      console.log('WebSocket server is not running');
+      console.log(`[${this.name}] WebSocket server is not running`);
       return;
     }
 
     const serverClients = Array.from(this.server.clients);
-    console.log(`Found ${serverClients.length} active server clients`);
+    console.log(
+      `[${this.name}] Found ${serverClients.length} active server clients`,
+    );
 
     // Close all client connections
     for (const client of serverClients) {
@@ -152,7 +163,7 @@ class LocalWebSocketServer {
           client.close();
         }
       } catch (error) {
-        console.warn('Error closing server client:', error);
+        console.warn(`[${this.name}] Error closing server client:`, error);
       }
     }
 
@@ -166,7 +177,10 @@ class LocalWebSocketServer {
           socket.close();
         }
       } catch (error) {
-        console.warn('Error closing tracked websocket connection:', error);
+        console.warn(
+          `[${this.name}] Error closing tracked websocket connection:`,
+          error,
+        );
       }
     }
 
@@ -174,10 +188,6 @@ class LocalWebSocketServer {
 
     // Stop the server
     this.stop();
-
-    // Force reset the singleton instance to ensure fresh server for next test
-    // @ts-expect-error - accessing private static property for cleanup
-    LocalWebSocketServer.instance = undefined;
 
     // Give a delay to ensure all connections are fully closed
     await new Promise((resolve) => setTimeout(resolve, 500));
