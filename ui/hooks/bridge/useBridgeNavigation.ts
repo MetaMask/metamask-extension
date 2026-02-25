@@ -51,25 +51,13 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
  * @returns a function to navigate to a bridge-related page, and the current navigation state
  */
 export const useBridgeNavigation = () => {
-  const navigateUtil = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { search, pathname, state: maybeState } = useLocation();
   const state: BridgeNavigationOptions['state'] = useMemo(
     () => maybeState ?? { token: null },
     [maybeState],
-  );
-
-  const navigate = useCallback(
-    (to: To, options: BridgeNavigationOptions) => {
-      navigateUtil(to, {
-        ...options,
-        state: {
-          ...options.state,
-        },
-      });
-    },
-    [navigateUtil],
   );
 
   /**
@@ -86,7 +74,7 @@ export const useBridgeNavigation = () => {
         },
         replace: true,
       }),
-    [navigate, state, pathname],
+    [state, pathname],
   );
 
   /**
@@ -112,7 +100,7 @@ export const useBridgeNavigation = () => {
         },
       );
     },
-    [search, pathname, navigate, state],
+    [search, pathname, state],
   );
 
   /**
@@ -147,7 +135,7 @@ export const useBridgeNavigation = () => {
         },
       );
     },
-    [navigate, state],
+    [state],
   );
 
   /**
@@ -157,7 +145,7 @@ export const useBridgeNavigation = () => {
     navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`, {
       state,
     });
-  }, [navigate, state]);
+  }, [state]);
 
   /**
    * Navigates to the activity page and clears the navigation state.
@@ -170,7 +158,7 @@ export const useBridgeNavigation = () => {
         stayOnHomePage: true,
       },
     });
-  }, [navigate, state]);
+  }, [state]);
 
   const navigateToDefaultRoute = useCallback(async () => {
     // TODO remove these when swaps codebase is removed
@@ -185,7 +173,7 @@ export const useBridgeNavigation = () => {
     } else {
       resetLocationState(DEFAULT_ROUTE, true);
     }
-  }, [search, navigate, resetLocationState]);
+  }, [search, resetLocationState]);
 
   const memoizedToken = useMemo(() => state.token, [state.token]);
 
