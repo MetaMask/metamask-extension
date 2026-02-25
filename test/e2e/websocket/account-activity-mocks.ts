@@ -1,8 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/no-shadow
 import { WebSocket } from 'ws';
-import WebSocketRegistry from './websocket-registry';
-import type LocalWebSocketServer from './websocket-server';
-import type { WebSocketMessageMock } from './tests/solana/mocks/websocketDefaultMocks';
+import type { WebSocketMessageMock } from '../tests/solana/mocks/websocketDefaultMocks';
+import WebSocketRegistry from './registry';
+import type LocalWebSocketServer from './server';
 
 export const ACCOUNT_ACTIVITY_WS_PORT = 8089;
 

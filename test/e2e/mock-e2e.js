@@ -13,10 +13,10 @@ const {
 const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
-const { SOLANA_WS_PORT } = require('./websocket-solana-mocks');
+const { SOLANA_WS_PORT } = require('./websocket/solana-mocks');
 const {
   ACCOUNT_ACTIVITY_WS_PORT,
-} = require('./websocket-account-activity-mocks');
+} = require('./websocket/account-activity-mocks');
 
 const { ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 const {

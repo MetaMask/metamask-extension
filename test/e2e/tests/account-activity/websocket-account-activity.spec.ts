@@ -6,8 +6,8 @@ import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import WebSocketRegistry from '../../websocket-registry';
-import { ACCOUNT_ACTIVITY_WS_PORT } from '../../websocket-account-activity-mocks';
+import WebSocketRegistry from '../../websocket/registry';
+import { ACCOUNT_ACTIVITY_WS_PORT } from '../../websocket/account-activity-mocks';
 
 // Helper that sends a message and resolves with the first response from
 // the mock handler (the dedicated server has no echo behaviour).

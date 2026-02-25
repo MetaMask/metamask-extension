@@ -6,7 +6,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import WebSocketRegistry from '../../websocket-registry';
+import WebSocketRegistry from '../../websocket/registry';
 
 describe('Multichain account Web Socket', function (this: Suite) {
   it('a websocket connection is open when MetaMask full view is open', async function () {

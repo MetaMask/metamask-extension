@@ -7,8 +7,8 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import {
   createBalanceUpdateNotification,
   waitForAccountActivitySubscription,
-} from '../../websocket-account-activity-mocks';
-import WebSocketRegistry from '../../websocket-registry';
+} from '../../websocket/account-activity-mocks';
+import WebSocketRegistry from '../../websocket/registry';
 
 describe('Add hide token', function () {
   const smartContract = SMART_CONTRACTS.HST;

@@ -7,7 +7,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import WebSocketRegistry from '../../websocket-registry';
+import WebSocketRegistry from '../../websocket/registry';
 
 // These tests fails with BIP44 as it's no longer possible to add a Solana account
 // eslint-disable-next-line mocha/no-skipped-tests
