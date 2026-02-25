@@ -11,15 +11,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { FeatureFlagNames } from '../../shared/modules/feature-flags';
 
-/**
- * Constants whose values can be imported directly at runtime.
- * Key = the expression as it appears in source code.
- * Value = the resolved flag name string.
- */
-const DIRECT_IMPORTS: Record<string, string> = {
-  'FeatureFlagNames.AssetsDefiPositionsEnabled':
-    FeatureFlagNames.AssetsDefiPositionsEnabled,
-};
+/** Auto-populated from the FeatureFlagNames enum. Key = `FeatureFlagNames.Member`. */
+const DIRECT_IMPORTS: Record<string, string> = Object.fromEntries(
+  Object.entries(FeatureFlagNames).map(([k, v]) => [`FeatureFlagNames.${k}`, v]),
+);
 
 /**
  * Constants that must be resolved by reading their source file (because

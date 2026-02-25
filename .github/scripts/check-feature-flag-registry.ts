@@ -627,11 +627,17 @@ function processStrings(line: string, mode: 'strip' | 'mask'): string {
     if (ch !== "'" && ch !== '"' && ch !== '`') { result += ch; i++; continue; }
     if (ch === '`') {
       let j = i + 1;
+      let hasExpr = false;
       while (j < line.length) {
         if (line[j] === '\\') { j += 2; continue; }
-        if (line[j] === '$' && line[j + 1] === '{') { result += line.slice(i); return result; }
+        if (line[j] === '$' && line[j + 1] === '{') { hasExpr = true; break; }
         if (line[j] === '`') break;
         j++;
+      }
+      if (hasExpr) {
+        const endIdx = line.indexOf('`', j + 2);
+        const stop = endIdx >= 0 ? endIdx + 1 : line.length;
+        result += line.slice(i, stop); i = stop; continue;
       }
     }
     let j = i + 1;
