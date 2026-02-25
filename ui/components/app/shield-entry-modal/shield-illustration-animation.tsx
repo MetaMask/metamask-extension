@@ -1,16 +1,7 @@
 import React, { useEffect } from 'react';
-import {
-  useRive,
-  Layout,
-  Fit,
-  Alignment,
-  useRiveFile,
-} from '@rive-app/react-canvas';
+import { Layout, Fit, Alignment } from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
-import {
-  useRiveWasmContext,
-  useRiveWasmFile,
-} from '../../../contexts/rive-wasm';
+import { useRiveWasmAnimation } from '../../../contexts/rive-wasm';
 
 const ShieldIllustrationAnimation = ({
   containerClassName,
@@ -19,44 +10,21 @@ const ShieldIllustrationAnimation = ({
   containerClassName?: string;
   canvasClassName?: string;
 }) => {
-  const context = useRiveWasmContext();
-  const { isWasmReady, error: wasmError } = context;
-  const {
-    buffer,
-    error: bufferError,
-    loading: bufferLoading,
-  } = useRiveWasmFile('./images/riv_animations/shield_illustration.riv');
-
-  useEffect(() => {
-    if (wasmError) {
-      console.error('[Rive] Failed to load WASM:', wasmError);
-    }
-    if (bufferError) {
-      console.error('[Rive] Failed to load buffer:', bufferError);
-    }
-  }, [wasmError, bufferError]);
-
-  // Use the buffer parameter instead of src
-  const { riveFile, status } = useRiveFile({
-    buffer,
-  });
-
-  // Only initialize Rive after WASM is ready to avoid "source file required" error
-  // We always need to provide a valid config to useRive (hooks can't be conditional)
-  // but we control when to actually render the component
-  const { rive, RiveComponent } = useRive({
-    riveFile: riveFile ?? undefined,
-    stateMachines: riveFile ? 'Shield_Illustration' : undefined,
-    autoplay: false,
-    layout: new Layout({
-      fit: Fit.Contain,
-      alignment: Alignment.Center,
-    }),
+  const { rive, RiveComponent, status } = useRiveWasmAnimation({
+    url: './images/riv_animations/shield_illustration.riv',
+    riveParams: {
+      stateMachines: 'Shield_Illustration',
+      autoplay: false,
+      layout: new Layout({
+        fit: Fit.Contain,
+        alignment: Alignment.Center,
+      }),
+    },
   });
 
   // Trigger the animation start when rive is loaded
   useEffect(() => {
-    if (rive && isWasmReady && !bufferLoading && buffer) {
+    if (rive) {
       const inputs = rive.stateMachineInputs('Shield_Illustration');
       if (inputs) {
         const startTrigger = inputs.find((input) => input.name === 'Start');
@@ -66,25 +34,10 @@ const ShieldIllustrationAnimation = ({
         rive.play();
       }
     }
-  }, [rive, isWasmReady, bufferLoading, buffer]);
-
-  // Stop animation on unmount
-  useEffect(() => {
-    return () => {
-      if (rive) {
-        rive.cleanup();
-      }
-    };
-  }, []);
+  }, [rive]);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors
-  if (
-    !isWasmReady ||
-    bufferLoading ||
-    !buffer ||
-    status === 'loading' ||
-    status === 'failed'
-  ) {
+  if (status !== 'ready') {
     return <Box className={containerClassName}></Box>;
   }
 

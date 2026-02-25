@@ -56,7 +56,7 @@ import {
   JustifyContent,
   BlockSize,
 } from '../../../helpers/constants/design-system';
-import { useRiveWasmContext } from '../../../contexts/rive-wasm';
+import { useRiveAnimationCompletion } from '../../../contexts/rive-wasm';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 import WelcomeLogin from './welcome-login';
 import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE, LoginErrorType } from './types';
@@ -105,7 +105,7 @@ export default function OnboardingWelcome() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState<LoginErrorType | null>(null);
 
-  const { animationCompleted } = useRiveWasmContext();
+  const { animationCompleted } = useRiveAnimationCompletion();
   const shouldSkipAnimation = Boolean(
     animationCompleted?.MetamaskWordMarkAnimation ||
       process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING,

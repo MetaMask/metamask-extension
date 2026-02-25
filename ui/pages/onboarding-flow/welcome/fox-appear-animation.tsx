@@ -1,16 +1,7 @@
 import React, { useEffect } from 'react';
-import {
-  useRive,
-  useRiveFile,
-  Layout,
-  Fit,
-  Alignment,
-} from '@rive-app/react-canvas';
+import { Layout, Fit, Alignment } from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
-import {
-  useRiveWasmContext,
-  useRiveWasmFile,
-} from '../../../contexts/rive-wasm';
+import { useRiveWasmAnimation } from '../../../contexts/rive-wasm';
 
 type FoxAppearAnimationProps = {
   isLoader?: boolean;
@@ -23,48 +14,21 @@ export default function FoxAppearAnimation({
   isLoader = false,
   skipTransition = false,
 }: FoxAppearAnimationProps) {
-  const context = useRiveWasmContext();
-  const { isWasmReady, error: wasmError } = context;
-  const {
-    buffer,
-    error: bufferError,
-    loading: bufferLoading,
-  } = useRiveWasmFile('./images/riv_animations/fox_appear.riv');
-
-  useEffect(() => {
-    if (wasmError) {
-      console.error(
-        '[Rive - FoxAppearAnimation] Failed to load WASM:',
-        wasmError,
-      );
-    }
-    if (bufferError) {
-      console.error(
-        '[Rive - FoxAppearAnimation] Failed to load buffer:',
-        bufferError,
-      );
-    }
-  }, [wasmError, bufferError]);
-
-  // Use the buffer parameter instead of src
-  const { riveFile, status } = useRiveFile({
-    buffer,
+  const { rive, RiveComponent, status } = useRiveWasmAnimation({
+    url: './images/riv_animations/fox_appear.riv',
+    riveParams: {
+      stateMachines: 'FoxRaiseUp',
+      autoplay: false,
+      layout: new Layout({
+        fit: Fit.Contain,
+        alignment: Alignment.Center,
+      }),
+    },
   });
 
-  // Only initialize Rive after WASM is ready and riveFile is loaded
-  const { rive, RiveComponent } = useRive({
-    riveFile: riveFile ?? undefined,
-    stateMachines: riveFile ? 'FoxRaiseUp' : undefined,
-    autoplay: false,
-    layout: new Layout({
-      fit: Fit.Contain,
-      alignment: Alignment.Center,
-    }),
-  });
-
-  // Trigger the animation start when rive is loaded and WASM is ready
+  // Trigger the animation start when rive is loaded
   useEffect(() => {
-    if (rive && isWasmReady && !bufferLoading && buffer) {
+    if (rive) {
       // Get the state machine inputs
       const inputs = rive.stateMachineInputs('FoxRaiseUp');
 
@@ -98,16 +62,10 @@ export default function FoxAppearAnimation({
         rive.play();
       }
     }
-  }, [rive, isLoader, isWasmReady, skipTransition, bufferLoading, buffer]);
+  }, [rive, isLoader, skipTransition]);
 
   // Don't render Rive component until ready or if loading/failed
-  if (
-    !isWasmReady ||
-    bufferLoading ||
-    !buffer ||
-    status === 'loading' ||
-    status === 'failed'
-  ) {
+  if (status !== 'ready') {
     return (
       <Box
         className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}

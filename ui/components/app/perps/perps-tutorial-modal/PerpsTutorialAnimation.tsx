@@ -1,16 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
-import {
-  useRive,
-  useRiveFile,
-  Layout,
-  Fit,
-  Alignment,
-} from '@rive-app/react-canvas';
+import { Layout, Fit, Alignment } from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
-import {
-  useRiveWasmContext,
-  useRiveWasmFile,
-} from '../../../../contexts/rive-wasm';
+import { useRiveWasmAnimation } from '../../../../contexts/rive-wasm';
 import { useTheme } from '../../../../hooks/useTheme';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 // eslint-disable-next-line import/no-restricted-paths
@@ -94,33 +85,6 @@ const PerpsTutorialAnimation: React.FC<PerpsTutorialAnimationProps> = ({
     ? './images/riv_animations/perps-onboarding-carousel-dark.riv'
     : './images/riv_animations/perps-onboarding-carousel-light.riv';
 
-  const context = useRiveWasmContext();
-  const { isWasmReady, error: wasmError } = context;
-  const {
-    buffer,
-    error: bufferError,
-    loading: bufferLoading,
-  } = useRiveWasmFile(riveUrl);
-
-  useEffect(() => {
-    if (wasmError) {
-      console.error(
-        '[Rive - PerpsTutorialAnimation] Failed to load WASM:',
-        wasmError,
-      );
-    }
-    if (bufferError) {
-      console.error(
-        '[Rive - PerpsTutorialAnimation] Failed to load buffer:',
-        bufferError,
-      );
-    }
-  }, [wasmError, bufferError]);
-
-  const { riveFile, status } = useRiveFile({
-    buffer,
-  });
-
   const layout = useMemo(
     () =>
       new Layout({
@@ -130,35 +94,22 @@ const PerpsTutorialAnimation: React.FC<PerpsTutorialAnimationProps> = ({
     [fit, alignment],
   );
 
-  const { rive, RiveComponent } = useRive({
-    riveFile: riveFile ?? undefined,
-    artboard: riveFile ? artboardName : undefined,
-    autoplay: false,
-    layout,
+  const { rive, RiveComponent, status } = useRiveWasmAnimation({
+    url: riveUrl,
+    riveParams: {
+      artboard: artboardName,
+      autoplay: false,
+      layout,
+    },
   });
 
   useEffect(() => {
-    if (rive && isWasmReady && !bufferLoading && buffer) {
+    if (rive) {
       rive.play();
     }
-  }, [rive, isWasmReady, bufferLoading, buffer]);
-
-  // Cleanup Rive animation resources on unmount to prevent memory leaks
-  useEffect(() => {
-    return () => {
-      if (rive) {
-        rive.cleanup();
-      }
-    };
   }, [rive]);
 
-  if (
-    !isWasmReady ||
-    bufferLoading ||
-    !buffer ||
-    status === 'loading' ||
-    status === 'failed'
-  ) {
+  if (status !== 'ready') {
     return (
       <Box
         className={className}
