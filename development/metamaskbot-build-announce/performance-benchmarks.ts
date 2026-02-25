@@ -188,45 +188,32 @@ export function buildBenchmarkSection(
   result: FetchBenchmarkResult,
   summary: string,
 ): string {
-  const { entries, missingPresets } = result;
-  if (entries.length === 0 && missingPresets.length === 0) {
-    return '';
-  }
-  const rows = buildTableRows(entries);
-  let warningHtml = '';
-  if (missingPresets.length > 0) {
-    warningHtml = `<p>⚠️ <b>Missing data:</b> ${missingPresets.join(', ')}</p>\n`;
-  }
-  const columns = [
-    'Benchmark',
-    'Metric',
-    'Mean (ms)',
-    'Min (ms)',
-    'Max (ms)',
-    'Std Dev (ms)',
-    'P75 (ms)',
-    'P95 (ms)',
-  ];
-  const header = `<thead><tr>${columns.map((c) => `<th>${c}</th>`).join('')}</tr></thead>`;
-  let content = warningHtml;
-  if (rows.length > 0) {
-    content += `<table>${header}<tbody>${rows.join('')}</tbody></table>\n`;
-  }
-  return `<details><summary>${summary}</summary>${content}</details>\n\n`;
-}
-
-/**
- * Wraps buildBenchmarkSection so a failure in one sub-section doesn't
- * prevent the others from rendering.
- * @param result
- * @param summary
- */
-function safeBuildSection(
-  result: FetchBenchmarkResult,
-  summary: string,
-): string {
   try {
-    return buildBenchmarkSection(result, summary);
+    const { entries, missingPresets } = result;
+    if (entries.length === 0 && missingPresets.length === 0) {
+      return '';
+    }
+    const rows = buildTableRows(entries);
+    let warningHtml = '';
+    if (missingPresets.length > 0) {
+      warningHtml = `<p>⚠️ <b>Missing data:</b> ${missingPresets.join(', ')}</p>\n`;
+    }
+    const columns = [
+      'Benchmark',
+      'Metric',
+      'Mean (ms)',
+      'Min (ms)',
+      'Max (ms)',
+      'Std Dev (ms)',
+      'P75 (ms)',
+      'P95 (ms)',
+    ];
+    const header = `<thead><tr>${columns.map((c) => `<th>${c}</th>`).join('')}</tr></thead>`;
+    let content = warningHtml;
+    if (rows.length > 0) {
+      content += `<table>${header}<tbody>${rows.join('')}</tbody></table>\n`;
+    }
+    return `<details><summary>${summary}</summary>${content}</details>\n\n`;
   } catch (error: unknown) {
     console.log(`Failed to build ${summary}: ${String(error)}`);
     return '';
@@ -252,12 +239,15 @@ export async function buildPerformanceBenchmarksSection(
       fetchBenchmarkEntries(hostUrl, Object.values(USER_JOURNEY_PRESETS)),
     ]);
 
-  const interactionHtml = safeBuildSection(
+  const interactionHtml = buildBenchmarkSection(
     interactionResult,
     '👆 Interaction Benchmarks',
   );
-  const startupHtml = safeBuildSection(startupResult, '🔌 Startup Benchmarks');
-  const userJourneyHtml = safeBuildSection(
+  const startupHtml = buildBenchmarkSection(
+    startupResult,
+    '🔌 Startup Benchmarks',
+  );
+  const userJourneyHtml = buildBenchmarkSection(
     userJourneyResult,
     '🧭 User Journey Benchmarks',
   );
