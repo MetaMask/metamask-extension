@@ -9,7 +9,6 @@ const ActionsData = {
 export default {
   title: 'Components/App/PreferredAvatar',
   component: PreferredAvatar,
-  tags: ['autodocs'],
   args: {
     ...ActionsData,
   },
