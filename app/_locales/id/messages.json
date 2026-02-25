@@ -7515,12 +7515,6 @@
   "snapAccountRemovedDescription": {
     "message": "Akun ini tidak lagi tersedia untuk digunakan di MetaMask."
   },
-  "snapAccounts": {
-    "message": "Akun Snap"
-  },
-  "snapAccountsDescription": {
-    "message": "Akun yang dikontrol oleh Snap pihak ketiga."
-  },
   "snapConnectTo": {
     "message": "Hubungkan ke $1",
     "description": "$1 is the website URL or a Snap name. Used for Snaps pre-approved connections."
