@@ -187,28 +187,31 @@ async function mockPortfolioPage(mockServer: Mockttp) {
 }
 
 async function mockGetTxStatus(mockServer: Mockttp) {
-  return await mockServer.forGet(/getTxStatus/u).thenCallback(async (req) => {
-    const urlObj = new URL(req.url);
-    const txHash = urlObj.searchParams.get('srcTxHash');
-    const srcChainId = urlObj.searchParams.get('srcChainId');
-    const destChainId = urlObj.searchParams.get('destChainId');
-    return {
-      statusCode: 200,
-      json: {
-        status: 'COMPLETE',
-        isExpectedToken: true,
-        bridge: 'across',
-        srcChain: {
-          chainId: Number(srcChainId),
-          txHash,
+  return await mockServer
+    .forGet(/getTxStatus/u)
+    .withHeaders({ Authorization: 'Bearer test' })
+    .thenCallback(async (req) => {
+      const urlObj = new URL(req.url);
+      const txHash = urlObj.searchParams.get('srcTxHash');
+      const srcChainId = urlObj.searchParams.get('srcChainId');
+      const destChainId = urlObj.searchParams.get('destChainId');
+      return {
+        statusCode: 200,
+        json: {
+          status: 'COMPLETE',
+          isExpectedToken: true,
+          bridge: 'across',
+          srcChain: {
+            chainId: Number(srcChainId),
+            txHash,
+          },
+          destChain: {
+            chainId: Number(destChainId),
+            txHash,
+          },
         },
-        destChain: {
-          chainId: Number(destChainId),
-          txHash,
-        },
-      },
-    };
-  });
+      };
+    });
 }
 
 async function mockTopAssetsLinea(mockServer: Mockttp) {
@@ -293,23 +296,29 @@ const toBridgeTokenResponse = (
 };
 
 async function mockGetPopularTokens(mockServer: Mockttp) {
-  return await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
-    statusCode: 200,
-    json: [
-      MOCK_TOKENS_ETHEREUM.map((token) => toBridgeTokenResponse(1, token)),
-      MOCK_TOKENS_LINEA.map((token) => toBridgeTokenResponse(59144, token)),
-      MOCK_TOKENS_ARBITRUM.map((token) => toBridgeTokenResponse(42161, token)),
-      MOCK_GET_TOKEN_ARBITRUM.map((token) =>
-        toBridgeTokenResponse(42161, token),
-      ),
-    ].flat(),
-  }));
+  return await mockServer
+    .forPost(/getTokens\/popular/u)
+    .withHeaders({ Authorization: 'Bearer test' })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [
+        MOCK_TOKENS_ETHEREUM.map((token) => toBridgeTokenResponse(1, token)),
+        MOCK_TOKENS_LINEA.map((token) => toBridgeTokenResponse(59144, token)),
+        MOCK_TOKENS_ARBITRUM.map((token) =>
+          toBridgeTokenResponse(42161, token),
+        ),
+        MOCK_GET_TOKEN_ARBITRUM.map((token) =>
+          toBridgeTokenResponse(42161, token),
+        ),
+      ].flat(),
+    }));
 }
 
 async function mockSearchTokens(mockServer: Mockttp) {
   return [
     await mockServer
       .forPost(/getTokens\/search/u)
+      .withHeaders({ Authorization: 'Bearer test' })
       .withJsonBodyIncluding({
         chainIds: ['eip155:1'],
       })
@@ -478,6 +487,7 @@ async function mockSwapETHtoMUSD(mockServer: Mockttp) {
   return await mockServer
     .forGet(/getQuoteStream/u)
     .once()
+    .withHeaders({ Authorization: 'Bearer test' })
     .withQuery({
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
@@ -494,6 +504,7 @@ async function mockUSDCtoDAI(mockServer: Mockttp, sseEnabled?: boolean) {
     return await mockServer
       .forGet(/getQuoteStream/u)
       .once()
+      .withHeaders({ Authorization: 'Bearer test' })
       .withQuery({
         srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
         destTokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
@@ -507,6 +518,7 @@ async function mockUSDCtoDAI(mockServer: Mockttp, sseEnabled?: boolean) {
 
   return await mockServer
     .forGet(/getQuote/u)
+    .withHeaders({ Authorization: 'Bearer test' })
     .withQuery({
       srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       destTokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
@@ -535,12 +547,15 @@ async function mockGetTxStatusInvalid(
   mockServer: Mockttp,
   options: { statusCode: number; json: unknown },
 ) {
-  return await mockServer.forGet(/getTxStatus/u).thenCallback(() => {
-    return {
-      statusCode: options.statusCode,
-      json: options.json,
-    };
-  });
+  return await mockServer
+    .forGet(/getTxStatus/u)
+    .withHeaders({ Authorization: 'Bearer test' })
+    .thenCallback(() => {
+      return {
+        statusCode: options.statusCode,
+        json: options.json,
+      };
+    });
 }
 
 async function mockL2toMainnet(mockServer: Mockttp) {

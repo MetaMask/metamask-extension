@@ -6,6 +6,7 @@ import type {
   TokenRatesControllerGetStateAction,
 } from '@metamask/assets-controllers';
 import type { HandleSnapRequest } from '@metamask/snaps-controllers';
+import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
 import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
@@ -22,7 +23,8 @@ type AllowedActions =
   | HandleSnapRequest
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
-  | RemoteFeatureFlagControllerGetStateAction;
+  | RemoteFeatureFlagControllerGetStateAction
+  | AuthenticationControllerGetBearerToken;
 
 export type BridgeControllerMessenger = ReturnType<
   typeof getBridgeControllerMessenger
@@ -59,6 +61,7 @@ export function getBridgeControllerMessenger(
       'MultichainAssetsRatesController:getState',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:getState',
+      'AuthenticationController:getBearerToken',
     ],
   });
   return controllerMessenger;
