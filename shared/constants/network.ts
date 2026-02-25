@@ -157,6 +157,7 @@ export const CHAIN_IDS = {
   NEAR_TESTNET: '0x18e',
   GRAVITY_ALPHA_MAINNET: '0x659',
   GRAVITY_ALPHA_TESTNET_SEPOLIA: '0x34c1',
+  WANCHAIN: '0x378',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -264,6 +265,7 @@ export const SCROLL_SEPOLIA_DISPLAY_NAME = 'Scroll Sepolia';
 export const OP_BNB_DISPLAY_NAME = 'opBNB';
 export const BERACHAIN_DISPLAY_NAME = 'Berachain Artio';
 export const METACHAIN_ONE_DISPLAY_NAME = 'Metachain One Mainnet';
+export const WANCHAIN_DISPLAY_NAME = 'Wanchain';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -319,6 +321,7 @@ export const CURRENCY_SYMBOLS = {
   GLIMMER: 'GLMR',
   MOONRIVER: 'MOVR',
   ONE: 'ONE',
+  WANCHAIN: 'WAN',
 } as const;
 
 // Non-EVM currency symbols
@@ -468,6 +471,7 @@ export const NEAR_IMAGE_URL = './images/near.svg';
 export const APE_IMAGE_URL = './images/ape.svg';
 export const GRAVITY_ALPHA_MAINNET_IMAGE_URL = './images/gravity.svg';
 export const GRAVITY_ALPHA_TESTNET_SEPOLIA_IMAGE_URL = './images/gravity.svg';
+export const WANCHAIN_TOKEN_IMAGE_URL = './images/wanchain.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -578,6 +582,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.ZKSYNC_ERA]: ZK_SYNC_ERA_DISPLAY_NAME,
   [CHAIN_IDS.BERACHAIN]: BERACHAIN_DISPLAY_NAME,
   [CHAIN_IDS.METACHAIN_ONE]: METACHAIN_ONE_DISPLAY_NAME,
+  [CHAIN_IDS.WANCHAIN]: WANCHAIN_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -695,6 +700,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.ACALA_NETWORK,
   [CHAINLIST_CHAIN_IDS_MAP.IOTEX_MAINNET]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.IOTEX_MAINNET,
+  [CHAIN_IDS.WANCHAIN]: CURRENCY_SYMBOLS.WANCHAIN,
 } as const;
 
 /**
@@ -752,6 +758,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.ZKSYNC_ERA]: ZK_SYNC_ERA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
   [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
+  [CHAIN_IDS.WANCHAIN]: WANCHAIN_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ACALA_NETWORK]: ACALA_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ARBITRUM_NOVA]: ARBITRUM_NOVA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ASTAR]: ASTAR_IMAGE_URL,
@@ -848,6 +855,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.GRAVITY_ALPHA_MAINNET]: GRAVITY_ALPHA_MAINNET_IMAGE_URL,
   [CHAIN_IDS.GRAVITY_ALPHA_TESTNET_SEPOLIA]:
     GRAVITY_ALPHA_TESTNET_SEPOLIA_IMAGE_URL,
+  [CHAIN_IDS.WANCHAIN]: WANCHAIN_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -1073,6 +1081,20 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     ],
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: ['https://basescan.org'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
+    chainId: CHAIN_IDS.WANCHAIN,
+    name: WANCHAIN_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.WANCHAIN,
+    rpcEndpoints: [
+      {
+        url: 'https://gwan-ssl.wandevs.org:56891/',
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://wanscan.org/'],
     defaultBlockExplorerUrlIndex: 0,
   },
 ];
