@@ -13828,7 +13828,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-actions@npm:7.6.21, @storybook/addon-actions@npm:^7.6.21":
+"@storybook/addon-actions@npm:7.6.21":
   version: 7.6.21
   resolution: "@storybook/addon-actions@npm:7.6.21"
   dependencies:
@@ -14683,7 +14683,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/theming@npm:7.6.21, @storybook/theming@npm:^7.6.21":
+"@storybook/theming@npm:7.6.21":
   version: 7.6.21
   resolution: "@storybook/theming@npm:7.6.21"
   dependencies:
@@ -33939,7 +33939,6 @@ __metadata:
     "@slack/webhook": "npm:^7.0.5"
     "@solana/addresses": "npm:2.0.0-rc.4"
     "@storybook/addon-a11y": "npm:^7.6.21"
-    "@storybook/addon-actions": "npm:^7.6.21"
     "@storybook/addon-docs": "npm:^7.6.21"
     "@storybook/addon-essentials": "npm:^7.6.21"
     "@storybook/addons": "npm:^7.6.21"
@@ -33950,7 +33949,6 @@ __metadata:
     "@storybook/react-webpack5": "npm:^7.6.21"
     "@storybook/storybook-deployer": "npm:^2.8.16"
     "@storybook/test-runner": "npm:^0.14.1"
-    "@storybook/theming": "npm:^7.6.21"
     "@swc/core": "npm:^1.13.2"
     "@swc/helpers": "npm:^0.5.17"
     "@swc/types": "npm:^0.1.23"
