@@ -3219,9 +3219,6 @@
   "lock": {
     "message": "Glasáil"
   },
-  "lockMetaMask": {
-    "message": "Glasáil"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "Ag Glasáil MetaMask..."
   },
@@ -5809,12 +5806,6 @@
   },
   "snapAccountRemovedDescription": {
     "message": "Ní bheidh an cuntas seo ar fáil lena úsáid i MetaMask a thuilleadh."
-  },
-  "snapAccounts": {
-    "message": "Snapanna Cuntais"
-  },
-  "snapAccountsDescription": {
-    "message": "Cuntais atá faoi rialú Snaps tríú páirtí."
   },
   "snapConnectTo": {
     "message": "Ceangail le $1",

@@ -181,7 +181,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 195,
+      "currentMigrationVersion": 196,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -858,6 +858,7 @@
       "permissionHistory": {}
     },
     "PhishingController": {
+      "addressScanCache": {},
       "c2DomainBlocklistLastFetched": 1770282505,
       "hotlistLastFetched": 1770282505,
       "phishingLists": [],
@@ -929,12 +930,14 @@
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
         "avatarType": "maskicon",
+        "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "hideZeroBalanceTokens": false,
         "petnamesEnabled": true,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
+        "showDefaultAddress": false,
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": false,
@@ -1138,6 +1141,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 195
+    "version": 196
   }
 }
