@@ -46,8 +46,7 @@ describe('Show default address', function (this: Suite) {
   it('displays default address in header on homepage when toggle is on', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
