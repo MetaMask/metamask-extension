@@ -12,8 +12,9 @@ import {
 } from '@metamask/messenger';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import * as fetchWithCacheModule from '../../../shared/lib/fetch-with-cache';
-import type { StaticAssetsControllerMessenger } from './static-assets-controller';
-import { StaticAssetsController } from './static-assets-controller';
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+import type { StaticAssetsServiceMessenger } from './static-assets-service';
+import { StaticAssetsService } from './static-assets-service';
 
 const mockTopAssets = [
   {
@@ -31,28 +32,31 @@ const mockTopAssets = [
 ];
 
 const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
-  const messenger = new Messenger<
-    MockAnyNamespace,
-    | MessengerActions<StaticAssetsControllerMessenger>
-    | MessengerActions<AccountsControllerMessenger>,
-    | MessengerEvents<StaticAssetsControllerMessenger>
-    | MessengerEvents<AccountsControllerMessenger>
-  >({ namespace: MOCK_ANY_NAMESPACE });
-
+  // const captureExceptionSpy = jest.spyOn(Messenger.prototype, 'captureException');
+  const captureExceptionSpy = jest.fn();
   const tokensControllerAddTokensSpy = jest.fn();
   const networkControllerFindNetworkClientIdByChainIdSpy = jest.fn();
   const tokensControllerGetStateSpy = jest.fn();
   const fetchWithCacheSpy = jest.spyOn(fetchWithCacheModule, 'default');
 
-  const staticAssetsControllerMessenger: StaticAssetsControllerMessenger =
+  const messenger = new Messenger<
+    MockAnyNamespace,
+    | MessengerActions<StaticAssetsServiceMessenger>
+    | MessengerActions<AccountsControllerMessenger>,
+    | MessengerEvents<StaticAssetsServiceMessenger>
+    | MessengerEvents<AccountsControllerMessenger>
+  >({ namespace: MOCK_ANY_NAMESPACE, captureException: captureExceptionSpy });
+
+  const staticAssetsServiceMessenger: StaticAssetsServiceMessenger =
     new Messenger({
-      namespace: 'StaticAssetsController',
+      namespace: 'StaticAssetsService',
       parent: messenger,
     });
 
   messenger.delegate({
-    messenger: staticAssetsControllerMessenger,
+    messenger: staticAssetsServiceMessenger,
     actions: [
+      'RemoteFeatureFlagController:getState',
       'NetworkController:findNetworkClientIdByChainId',
       'TokensController:getState',
       'TokensController:addTokens',
@@ -75,11 +79,28 @@ const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
     tokensControllerAddTokensSpy,
   );
 
-  const controller = new StaticAssetsController({
-    messenger: staticAssetsControllerMessenger,
-    getSupportedChains: () => new Set(supportedChains),
-    getCacheExpirationTime: () => 1000,
-    getTopX: () => 10,
+  messenger.registerActionHandler(
+    'RemoteFeatureFlagController:getState',
+    jest.fn().mockReturnValue({
+      remoteFeatureFlags: {
+        staticAssetsPollingOptions: {
+          cacheExpirationTime: 1000,
+          supportedChains,
+          topX: 10,
+        },
+      },
+    }),
+  );
+
+  const controller = new StaticAssetsService({
+    messenger: staticAssetsServiceMessenger,
+    fetchFn: async (url, requestOptions, cacheOptions) =>
+      await fetchWithCache({
+        url: url.toString(),
+        fetchOptions: { ...requestOptions, method: 'GET' },
+        cacheOptions: { ...cacheOptions },
+        functionName: 'fetchTopAssets',
+      }),
   });
 
   return {
@@ -90,11 +111,12 @@ const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
       tokensControllerAddTokensSpy,
       networkControllerFindNetworkClientIdByChainIdSpy,
       tokensControllerGetStateSpy,
+      captureExceptionSpy,
     },
   };
 };
 
-describe('StaticAssetsController', () => {
+describe('StaticAssetsService', () => {
   afterEach(() => {
     jest.restoreAllMocks();
     jest.clearAllMocks();
@@ -390,6 +412,38 @@ describe('StaticAssetsController', () => {
           );
         },
       );
+
+      it('captures the error to Sentry if TokensController:addTokens fails', async () => {
+        const {
+          controller,
+          spies: {
+            tokensControllerAddTokensSpy,
+            networkControllerFindNetworkClientIdByChainIdSpy,
+            tokensControllerGetStateSpy,
+            captureExceptionSpy,
+            fetchWithCacheSpy,
+          },
+        } = setupController({
+          supportedChains: [CHAIN_IDS.MAINNET],
+        });
+        networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
+          'mainnet',
+        );
+        tokensControllerGetStateSpy.mockResolvedValue({
+          allIgnoredTokens: {},
+        });
+        tokensControllerAddTokensSpy.mockRejectedValue(
+          new Error('Add tokens failed'),
+        );
+        fetchWithCacheSpy.mockResolvedValue(mockTopAssets);
+
+        await controller._executePoll({
+          chainIds: [CHAIN_IDS.MAINNET],
+          selectedAccountAddress: '0x123',
+        });
+
+        expect(captureExceptionSpy).toHaveBeenCalled();
+      });
     });
 
     describe('filterIgnoredTokens', () => {

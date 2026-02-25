@@ -6410,7 +6410,7 @@ export function updateBalancesFoAccounts(
 }
 
 /**
- * Informs the StaticAssetsController that the UI requires static assets polling
+ * Informs the StaticAssetsService that the UI requires static assets polling
  * for the given chain ids and selected account address.
  *
  * @param params - The parameters for the polling.
