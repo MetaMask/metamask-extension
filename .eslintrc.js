@@ -589,6 +589,8 @@ module.exports = {
       rules: {
         'n/no-process-exit': 'off',
         'n/shebang': 'off',
+        // eslint-plugin-n 17.x: n/hashbang requires files not in package.json "bin" to have no shebang
+        'n/hashbang': 'off',
       },
     },
     /**
