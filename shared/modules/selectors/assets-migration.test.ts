@@ -183,6 +183,7 @@ describe('getTokensControllerAllTokens', () => {
               symbol: 'USDC',
               decimals: 6,
               name: 'USD Coin',
+              image: undefined,
             },
           ],
         },
