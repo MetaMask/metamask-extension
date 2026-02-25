@@ -2,6 +2,7 @@
 
 .toggle-button {
   display: flex;
+  width: 40px;
   cursor: pointer;
   $self: &;
 
