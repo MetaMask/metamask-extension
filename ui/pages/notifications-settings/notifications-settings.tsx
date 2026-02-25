@@ -54,11 +54,7 @@ function useNotificationAccounts() {
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function NotificationsSettings() {
-  const navigate = useNavigate();
-  const t = useI18nContext();
-
-  // Selectors
+export function NotificationsSettingsContent() {
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -66,22 +62,106 @@ export default function NotificationsSettings() {
     getIsUpdatingMetamaskNotifications,
   );
   const accounts = useNotificationAccounts();
-
-  // States
   const [loadingAllowNotifications, setLoadingAllowNotifications] =
     useState<boolean>(isUpdatingMetamaskNotifications);
-
   const accountAddresses = useMemo(
     () => accounts.map((a) => a.address),
     [accounts],
   );
-
-  // Account Settings
   const accountSettingsProps = useAccountSettingsProps(accountAddresses);
   const updatingAccounts = accountSettingsProps.accountsBeingUpdated.length > 0;
   const refetchAccountSettings = async () => {
     await accountSettingsProps.update(accountAddresses);
   };
+  const t = useI18nContext();
+
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Stretch}
+      gap={6}
+      paddingLeft={4}
+      paddingRight={4}
+      paddingTop={4}
+      paddingBottom={6}
+    >
+      <NotificationsSettingsAllowNotifications
+        loading={loadingAllowNotifications}
+        setLoading={setLoadingAllowNotifications}
+        dataTestId="notifications-settings-allow"
+        disabled={updatingAccounts}
+      />
+      {isMetamaskNotificationsEnabled && (
+        <>
+          <Box className="w-full h-px border-t border-muted" />
+          <NotificationsSettingsTypes
+            disabled={loadingAllowNotifications || updatingAccounts}
+          />
+          <Box className="w-full h-px border-t border-muted" />
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.Stretch}
+            gap={6}
+            data-testid="notifications-settings-per-account"
+          >
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.Start}
+              gap={2}
+            >
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.TextDefault}
+              >
+                {t('accountActivity')}
+              </Text>
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Regular}
+                color={TextColor.TextAlternative}
+              >
+                {t('accountActivityText')}
+              </Text>
+            </Box>
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              justifyContent={BoxJustifyContent.Start}
+              alignItems={BoxAlignItems.Stretch}
+              gap={4}
+            >
+              {accounts.map((account) => (
+                <NotificationsSettingsPerAccount
+                  key={account.id}
+                  address={account.address}
+                  name={account.metadata.name}
+                  disabledSwitch={
+                    accountSettingsProps.initialLoading || updatingAccounts
+                  }
+                  isLoading={accountSettingsProps.accountsBeingUpdated.includes(
+                    account.address,
+                  )}
+                  isEnabled={
+                    accountSettingsProps.data?.[
+                      account.address.toLowerCase()
+                    ] ?? false
+                  }
+                  refetchAccountSettings={refetchAccountSettings}
+                />
+              ))}
+            </Box>
+          </Box>
+        </>
+      )}
+    </Box>
+  );
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export default function NotificationsSettings() {
+  const navigate = useNavigate();
+  const t = useI18nContext();
 
   const handleClose = () => {
     if (window.history.length > 1) {
@@ -114,88 +194,7 @@ export default function NotificationsSettings() {
         {t('notifications')}
       </Header>
       <Content padding={0}>
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Stretch}
-          gap={6}
-          paddingLeft={4}
-          paddingRight={4}
-          paddingTop={4}
-          paddingBottom={6}
-        >
-          {/* Allow notifications - when off, only this block is shown */}
-          <NotificationsSettingsAllowNotifications
-            loading={loadingAllowNotifications}
-            setLoading={setLoadingAllowNotifications}
-            dataTestId="notifications-settings-allow"
-            disabled={updatingAccounts}
-          />
-
-          {isMetamaskNotificationsEnabled && (
-            <>
-              <Box className="w-full h-px border-t border-muted" />
-              {/* Customize your notification */}
-              <NotificationsSettingsTypes
-                disabled={loadingAllowNotifications || updatingAccounts}
-              />
-              {/* Account activity - single section so gap-6 only between major sections */}
-              <Box className="w-full h-px border-t border-muted" />
-              <Box
-                flexDirection={BoxFlexDirection.Column}
-                alignItems={BoxAlignItems.Stretch}
-                gap={6}
-                data-testid="notifications-settings-per-account"
-              >
-                <Box
-                  flexDirection={BoxFlexDirection.Column}
-                  alignItems={BoxAlignItems.Start}
-                  gap={2}
-                >
-                  <Text
-                    variant={TextVariant.BodyMd}
-                    fontWeight={FontWeight.Medium}
-                    color={TextColor.TextDefault}
-                  >
-                    {t('accountActivity')}
-                  </Text>
-                  <Text
-                    variant={TextVariant.BodyMd}
-                    fontWeight={FontWeight.Regular}
-                    color={TextColor.TextAlternative}
-                  >
-                    {t('accountActivityText')}
-                  </Text>
-                </Box>
-                <Box
-                  flexDirection={BoxFlexDirection.Column}
-                  justifyContent={BoxJustifyContent.Start}
-                  alignItems={BoxAlignItems.Stretch}
-                  gap={4}
-                >
-                  {accounts.map((account) => (
-                    <NotificationsSettingsPerAccount
-                      key={account.id}
-                      address={account.address}
-                      name={account.metadata.name}
-                      disabledSwitch={
-                        accountSettingsProps.initialLoading || updatingAccounts
-                      }
-                      isLoading={accountSettingsProps.accountsBeingUpdated.includes(
-                        account.address,
-                      )}
-                      isEnabled={
-                        accountSettingsProps.data?.[
-                          account.address.toLowerCase()
-                        ] ?? false
-                      }
-                      refetchAccountSettings={refetchAccountSettings}
-                    />
-                  ))}
-                </Box>
-              </Box>
-            </>
-          )}
-        </Box>
+        <NotificationsSettingsContent />
       </Content>
     </Page>
   );

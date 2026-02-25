@@ -4,7 +4,12 @@
 import classnames from 'classnames';
 import React, { Suspense, useEffect, useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { useRoutes, useLocation, useNavigationType } from 'react-router-dom';
+import {
+  useRoutes,
+  useLocation,
+  useNavigationType,
+  Navigate,
+} from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
@@ -174,12 +179,11 @@ const RevealSeedConfirmation = mmLazy(
 const Settings = mmLazy(
   (() => import('../settings/index.js')) as unknown as DynamicImportType,
 );
-const NotificationsSettings = mmLazy(
-  (() =>
-    import(
-      '../notifications-settings/index.js'
-    )) as unknown as DynamicImportType,
+
+const NotificationsSettingsRedirect = () => (
+  <Navigate to={NOTIFICATIONS_SETTINGS_ROUTE} replace />
 );
+
 const NotificationDetails = mmLazy(
   (() =>
     import('../notification-details/index.js')) as unknown as DynamicImportType,
@@ -570,8 +574,8 @@ export default function Routes() {
         authenticated: true,
       }),
       createRouteWithLayout({
-        path: NOTIFICATIONS_SETTINGS_ROUTE,
-        component: NotificationsSettings,
+        path: '/notifications/settings',
+        component: NotificationsSettingsRedirect,
         layout: RootLayout,
         authenticated: true,
       }),

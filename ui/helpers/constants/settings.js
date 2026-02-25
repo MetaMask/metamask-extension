@@ -12,6 +12,7 @@ import {
   EXPERIMENTAL_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
   BACKUPANDSYNC_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
@@ -190,6 +191,13 @@ const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('backupAndSyncFeatureContacts'),
     route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-features-toggles-contact-syncing`,
     iconName: IconName.SecurityTime,
+  },
+  {
+    tabMessage: (t) => t('notifications'),
+    sectionMessage: (t) => t('notifications'),
+    descriptionMessage: (t) => t('notifications'),
+    route: NOTIFICATIONS_SETTINGS_ROUTE,
+    iconName: IconName.Notification,
   },
   {
     tabMessage: (t) => t('contacts'),
