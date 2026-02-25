@@ -251,7 +251,10 @@
     "@ledgerhq/hw-transport-webhid@npm:^6.31.0": "patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch",
     "@metamask/accounts-controller": "36.0.0",
     "fast-xml-parser": "^5.3.6",
-    "@metamask/snaps-controllers": "^18.0.1"
+    "@metamask/snaps-controllers": "^18.0.1",
+    "@metamask/assets-controllers@npm:^99.2.0": "patch:@metamask/assets-controllers@npm%3A100.0.2#~/.yarn/patches/@metamask-assets-controllers-npm-100.0.2-e49991eaf1.patch",
+    "@metamask/assets-controllers@npm:^99.4.0": "patch:@metamask/assets-controllers@npm%3A100.0.2#~/.yarn/patches/@metamask-assets-controllers-npm-100.0.2-e49991eaf1.patch",
+    "@metamask/assets-controllers@npm:^93.0.0": "patch:@metamask/assets-controllers@npm%3A100.0.2#~/.yarn/patches/@metamask-assets-controllers-npm-100.0.2-e49991eaf1.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -286,7 +289,7 @@
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^8.0.0",
     "@metamask/assets-controller": "^2.0.0",
-    "@metamask/assets-controllers": "^100.0.2",
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A100.0.2#~/.yarn/patches/@metamask-assets-controllers-npm-100.0.2-e49991eaf1.patch",
     "@metamask/base-controller": "^9.0.0",
     "@metamask/bitcoin-wallet-snap": "^1.10.0",
     "@metamask/bridge-controller": "^65.3.0",
