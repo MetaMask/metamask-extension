@@ -122,46 +122,6 @@ class LocalWebSocketServer {
   }
 
   /**
-   * Returns a promise that resolves when at least one client is connected.
-   * Resolves immediately if a client is already connected.
-   *
-   * @param timeoutMs - Maximum time to wait (default 30 000 ms)
-   * @returns Promise that resolves once a connection is established
-   */
-  public waitForConnection(timeoutMs = 30_000): Promise<void> {
-    if (this.server && this.server.clients.size > 0) {
-      return Promise.resolve();
-    }
-
-    return new Promise((resolve, reject) => {
-      const timer = setTimeout(() => {
-        reject(
-          new Error(
-            `[${this.name}] Timed out after ${timeoutMs}ms waiting for a WebSocket connection on ws://localhost:${this.port}`,
-          ),
-        );
-      }, timeoutMs);
-
-      const onConnection = () => {
-        clearTimeout(timer);
-        resolve();
-      };
-
-      if (!this.server) {
-        clearTimeout(timer);
-        reject(
-          new Error(
-            `[${this.name}] Server not started — call start() before waitForConnection()`,
-          ),
-        );
-        return;
-      }
-
-      this.server.once('connection', onConnection);
-    });
-  }
-
-  /**
    * Get the name of this server instance.
    *
    * @returns The service name

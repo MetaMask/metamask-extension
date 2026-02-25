@@ -72,18 +72,20 @@ class WebSocketRegistry {
     > = {},
   ): Promise<void> {
     const allEntries = Array.from(WebSocketRegistry.entries.entries());
-    for (const [name, entry] of allEntries) {
-      const server = new LocalWebSocketServer(name, entry.port);
-      server.start();
-      entry.server = server;
+    await Promise.all(
+      allEntries.map(async ([name, entry]) => {
+        const server = new LocalWebSocketServer(name, entry.port);
+        server.start();
+        entry.server = server;
 
-      const serviceOverrides = overrides[name] ?? {};
-      await entry.setupFn(
-        server,
-        serviceOverrides.mocks ?? [],
-        serviceOverrides.options,
-      );
-    }
+        const serviceOverrides = overrides[name] ?? {};
+        await entry.setupFn(
+          server,
+          serviceOverrides.mocks ?? [],
+          serviceOverrides.options,
+        );
+      }),
+    );
   }
 
   /**
