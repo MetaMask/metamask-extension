@@ -7509,12 +7509,6 @@
   "snapAccountRemovedDescription": {
     "message": "このアカウントはMetaMaskで使用できなくなります。"
   },
-  "snapAccounts": {
-    "message": "アカウントSnap"
-  },
-  "snapAccountsDescription": {
-    "message": "サードパーティSnapが制御するアカウント"
-  },
   "snapConnectTo": {
     "message": "$1に接続",
     "description": "$1 is the website URL or a Snap name. Used for Snaps pre-approved connections."

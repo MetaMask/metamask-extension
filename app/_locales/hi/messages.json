@@ -7509,12 +7509,6 @@
   "snapAccountRemovedDescription": {
     "message": "यह अकाउंट अब MetaMask में उपयोग के लिए उपलब्ध नहीं होगा।"
   },
-  "snapAccounts": {
-    "message": "अकाउंट Snaps"
-  },
-  "snapAccountsDescription": {
-    "message": "थर्ड-पार्टी Snaps द्वारा कंट्रोल किए गए अकाउंट।"
-  },
   "snapConnectTo": {
     "message": "$1 से कनेक्ट करें",
     "description": "$1 is the website URL or a Snap name. Used for Snaps pre-approved connections."
