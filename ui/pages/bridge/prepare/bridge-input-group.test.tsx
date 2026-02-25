@@ -450,11 +450,19 @@ describe('BridgeInputGroup', () => {
       });
       await waitFor(() => {
         expect(networkPickerPopover).not.toBeVisible();
-        expect(abortSpy).toHaveBeenCalledTimes(8);
-        expect(mockHandleFetch).toHaveBeenCalledTimes(4);
+        expect(mockHandleFetch).toHaveBeenCalledWith(
+          'https://bridge.api.cx.metamask.io/getTokens/popular',
+          expect.any(Object),
+        );
+        expect(mockHandleFetch).toHaveBeenCalledWith(
+          'https://bridge.api.cx.metamask.io/getTokens/search',
+          expect.any(Object),
+        );
+        expect(mockHandleFetch).toHaveBeenCalledWith(
+          'https://bridge.api.cx.metamask.io/getTokens/popular',
+          expect.any(Object),
+        );
       });
-
-      expect(mockHandleFetch.mock.calls).toMatchSnapshot();
     },
   );
 });

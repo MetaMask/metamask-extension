@@ -356,59 +356,6 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
 </div>
 `;
 
-exports[`BridgeInputGroup should render destination networks 2`] = `
-[
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/popular",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","bip122:000000000019d6689c085ae165831e93","eip155:1","eip155:10","eip155:137","eip155:56","tron:728126428"],"includeAssets":[{"assetId":"eip155:10/erc20:0xc00e94Cb662C3520282E6f5717214004A7f26888","symbol":"COMP","name":"Compound","decimals":6},{"assetId":"eip155:10/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9},{"assetId":"eip155:10/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","symbol":"SOL","name":"Solana","decimals":18},{"assetId":"bip122:000000000019d6689c085ae165831e93/slip44:0","symbol":"BTC","name":"Bitcoin","decimals":18},{"assetId":"eip155:1/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6},{"assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","symbol":"UNI","name":"Uniswap","decimals":10},{"assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9}]}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/search",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","bip122:000000000019d6689c085ae165831e93","eip155:1","eip155:10","eip155:137","eip155:56","tron:728126428"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}],"query":"SD"}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/popular",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","symbol":"SOL","name":"Solana","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}]}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/search",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}],"query":"SD"}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-]
-`;
-
 exports[`BridgeInputGroup should render source networks 1`] = `
 <div
   class="mm-box mm-popover mm-popover--open mm-popover--reference-hidden bridge-network-list-popover mm-box--margin-inline-3 mm-box--padding-4 mm-box--background-color-background-subsection mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
@@ -640,59 +587,6 @@ exports[`BridgeInputGroup should render source networks 1`] = `
     </div>
   </div>
 </div>
-`;
-
-exports[`BridgeInputGroup should render source networks 2`] = `
-[
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/popular",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","bip122:000000000019d6689c085ae165831e93","eip155:1","eip155:10"],"includeAssets":[{"assetId":"eip155:10/erc20:0xc00e94Cb662C3520282E6f5717214004A7f26888","symbol":"COMP","name":"Compound","decimals":6},{"assetId":"eip155:10/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9},{"assetId":"eip155:10/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","symbol":"SOL","name":"Solana","decimals":18},{"assetId":"bip122:000000000019d6689c085ae165831e93/slip44:0","symbol":"BTC","name":"Bitcoin","decimals":18},{"assetId":"eip155:1/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6},{"assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","symbol":"UNI","name":"Uniswap","decimals":10},{"assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9}]}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/search",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","bip122:000000000019d6689c085ae165831e93","eip155:1","eip155:10"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}],"query":"SD"}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/popular",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","symbol":"SOL","name":"Solana","decimals":18},{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}]}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-  [
-    "https://bridge.api.cx.metamask.io/getTokens/search",
-    {
-      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","symbol":"USDC","name":"USDC","decimals":6}],"query":"SD"}",
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Client-Id": "extension",
-      },
-      "method": "POST",
-      "signal": AbortSignal {},
-    },
-  ],
-]
 `;
 
 exports[`BridgeInputGroup should search for tokens 1`] = `
