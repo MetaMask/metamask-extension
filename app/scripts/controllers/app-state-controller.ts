@@ -153,9 +153,7 @@ export type AppStateControllerState = {
   trezorModel: string | null;
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
-  /** mUSD conversion education screen seen (persisted until uninstall) */
   musdConversionEducationSeen: boolean;
-  /** mUSD asset detail CTA dismissed keys: "chainId-tokenAddress" (persisted until uninstall) */
   musdConversionDismissedCtaKeys: string[];
   showShieldEntryModalOnce: boolean | null;
   pendingShieldCohort: string | null;
