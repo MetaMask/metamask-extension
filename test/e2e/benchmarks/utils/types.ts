@@ -31,6 +31,10 @@ export type Metrics = {
   'Load Scripts': number;
   'Setup Store': number;
   numNetworkReqs: number;
+  longTaskCount?: number;
+  longTaskTotalDuration?: number;
+  longTaskMaxDuration?: number;
+  tbt?: number;
 };
 
 export type {

@@ -26,6 +26,10 @@ import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
+import {
+  setupLongTaskObserver,
+  exposeLongTaskMetricsForTesting,
+} from './helpers/utils/performance-observers';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -403,6 +407,12 @@ function setupStateHooks(store) {
 
     return logsArray;
   };
+
+  // Long Task observer for benchmark instrumentation (100% sample rate in test/debug builds)
+  if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
+    setupLongTaskObserver(1);
+    exposeLongTaskMetricsForTesting();
+  }
 }
 
 window.logStateString = async function (cb) {
