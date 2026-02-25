@@ -49,6 +49,8 @@
     "isWalletResetInProgress": "boolean",
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
+    "musdConversionDismissedCtaKeys": "object",
+    "musdConversionEducationSeen": "boolean",
     "networkConnectionBanner": "object",
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",

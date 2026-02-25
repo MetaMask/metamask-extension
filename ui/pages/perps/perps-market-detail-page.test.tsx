@@ -249,7 +249,7 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/home');
     });
 
     it('displays market price change', () => {
@@ -405,6 +405,68 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByText('Auto close'));
       expect(screen.getByText('Take Profit')).toBeInTheDocument();
       expect(screen.getByText('Stop Loss')).toBeInTheDocument();
+    });
+
+    it('populates TP price from preset button for long position', () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText('Auto close'));
+
+      // After expand, TP input is initialized to position's existing TP (3200.00)
+      expect(screen.getByDisplayValue('3200.00')).toBeInTheDocument();
+
+      // ETH is long, entry = 2850. TP +25% → 2850 * 1.25 = 3,562.50
+      const presetButton = screen.getByText('+25%').closest('[class]');
+      fireEvent.click(presetButton as HTMLElement);
+
+      expect(screen.getByDisplayValue('3,562.50')).toBeInTheDocument();
+    });
+
+    it('populates SL price from preset button for long position', () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText('Auto close'));
+
+      // After expand, SL input is initialized to position's existing SL (2600.00)
+      expect(screen.getByDisplayValue('2600.00')).toBeInTheDocument();
+
+      // ETH is long, entry = 2850. SL -25% → 2850 * 0.75 = 2,137.50
+      const presetButton = screen.getByText('-25%').closest('[class]');
+      fireEvent.click(presetButton as HTMLElement);
+
+      expect(screen.getByDisplayValue('2,137.50')).toBeInTheDocument();
+    });
+
+    it('populates TP price from preset button for short position', () => {
+      // BTC is short (size=-0.5), entry = 45,000
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText('Auto close'));
+
+      // Short TP +10% → 45000 * (1 - 10/100) = 45000 * 0.9 = 40,500.00
+      const presetButton = screen.getByText('+10%').closest('[class]');
+      fireEvent.click(presetButton as HTMLElement);
+
+      expect(screen.getByDisplayValue('40,500.00')).toBeInTheDocument();
+    });
+
+    it('populates SL price from preset button for short position', () => {
+      // BTC is short (size=-0.5), entry = 45,000
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText('Auto close'));
+
+      // Short SL -10% → 45000 * (1 + 10/100) = 45000 * 1.1 = 49,500.00
+      const presetButton = screen.getByText('-10%').closest('[class]');
+      fireEvent.click(presetButton as HTMLElement);
+
+      expect(screen.getByDisplayValue('49,500.00')).toBeInTheDocument();
     });
   });
 
