@@ -51,10 +51,10 @@ Use the rules in the [e2e-testing-guidelines](rules/e2e-testing-guidelines/RULE.
 ##### Trigger Signals (changed lines only)
 
 - Legacy import introduced:
-  - ``import FixtureBuilder from '.../fixtures/fixture-builder'``
+  - `import FixtureBuilder from '.../fixtures/fixture-builder'`
   - Regex: `import\s+FixtureBuilder\s+from\s+['"].*/fixtures/fixture-builder['"]`
 - Legacy instantiation introduced:
-  - ``new FixtureBuilder(...)``
+  - `new FixtureBuilder(...)`
   - Regex: `new\s+FixtureBuilder\s*\(`
 
 ##### Compatibility Check Before Reporting
