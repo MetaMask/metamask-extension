@@ -32,9 +32,7 @@ describe('AmountInput', () => {
     it('renders Size label and available to trade text', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 
-      expect(
-        screen.getByText(messages.perpsSize.message),
-      ).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsSize.message)).toBeInTheDocument();
       expect(
         screen.getByText(messages.perpsAvailableToTrade.message),
       ).toBeInTheDocument();

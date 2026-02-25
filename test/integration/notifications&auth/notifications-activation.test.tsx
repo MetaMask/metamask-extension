@@ -67,10 +67,8 @@ describe('Notifications Activation', () => {
     setupSubmitRequestToBackgroundMocks();
   });
 
-  afterEach(async () => {
-    await act(async () => {
-      window.history.pushState({}, '', '/'); // return to homescreen
-    });
+  afterEach(() => {
+    window.history.pushState({}, '', '/'); // return to homescreen
   });
 
   const clickElement = async (testId: string) => {

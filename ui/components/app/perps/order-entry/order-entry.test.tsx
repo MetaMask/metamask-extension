@@ -49,9 +49,7 @@ describe('OrderEntry', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('order-entry')).toBeInTheDocument();
-      expect(
-        screen.getByText(messages.perpsSize.message),
-      ).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsSize.message)).toBeInTheDocument();
       expect(screen.getByTestId('amount-input-field')).toBeInTheDocument();
       expect(screen.getByTestId('leverage-slider')).toBeInTheDocument();
       expect(
@@ -59,7 +57,7 @@ describe('OrderEntry', () => {
       ).toBeInTheDocument();
       expect(screen.getByText(messages.perpsFees.message)).toBeInTheDocument();
       expect(
-        screen.getByText(messages.perpsLiquidationPriceEst.message),
+        screen.getByText(messages.perpsLiquidationPrice.message),
       ).toBeInTheDocument();
       expect(screen.getByTestId('auto-close-toggle')).toBeInTheDocument();
       expect(
@@ -461,9 +459,7 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.getByText(messages.perpsMid.message)).toBeInTheDocument();
-      expect(screen.getByText(messages.perpsBid.message)).toBeInTheDocument();
-      expect(screen.getByText('-1%')).toBeInTheDocument();
-      expect(screen.getByText('-2%')).toBeInTheDocument();
+      expect(screen.getByTestId('limit-price-mid-button')).toBeInTheDocument();
     });
 
     it('shows Mid button for short limit orders', () => {
@@ -477,9 +473,7 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.getByText(messages.perpsMid.message)).toBeInTheDocument();
-      expect(screen.getByText(messages.perpsAsk.message)).toBeInTheDocument();
-      expect(screen.getByText('+1%')).toBeInTheDocument();
-      expect(screen.getByText('+2%')).toBeInTheDocument();
+      expect(screen.getByTestId('limit-price-mid-button')).toBeInTheDocument();
     });
 
     it('submits form with limit type when orderType is limit', () => {

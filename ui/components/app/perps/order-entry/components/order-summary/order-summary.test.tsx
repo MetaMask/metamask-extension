@@ -29,7 +29,7 @@ describe('OrderSummary', () => {
       ).toBeInTheDocument();
       expect(screen.getByText(messages.perpsFees.message)).toBeInTheDocument();
       expect(
-        screen.getByText(messages.perpsLiquidationPriceEst.message),
+        screen.getByText(messages.perpsLiquidationPrice.message),
       ).toBeInTheDocument();
     });
 

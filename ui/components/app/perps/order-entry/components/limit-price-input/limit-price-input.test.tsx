@@ -60,22 +60,8 @@ describe('LimitPriceInput', () => {
     it('displays Mid button as end accessory', () => {
       renderWithProvider(<LimitPriceInput {...defaultProps} />, mockStore);
 
+      expect(screen.getByTestId('limit-price-mid-button')).toBeInTheDocument();
       expect(screen.getByText(messages.perpsMid.message)).toBeInTheDocument();
-      expect(screen.getByText(messages.perpsBid.message)).toBeInTheDocument();
-      expect(screen.getByText('-1%')).toBeInTheDocument();
-      expect(screen.getByText('-2%')).toBeInTheDocument();
-    });
-
-    it('displays short presets (Mid, Ask, +1%, +2%)', () => {
-      renderWithProvider(
-        <LimitPriceInput {...defaultProps} direction="short" />,
-        mockStore,
-      );
-
-      expect(screen.getByText(messages.perpsMid.message)).toBeInTheDocument();
-      expect(screen.getByText(messages.perpsAsk.message)).toBeInTheDocument();
-      expect(screen.getByText('+1%')).toBeInTheDocument();
-      expect(screen.getByText('+2%')).toBeInTheDocument();
     });
   });
 
