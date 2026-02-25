@@ -254,6 +254,7 @@ export const getUnconnectedAccountAlertShown = (state) =>
   state.metamask.unconnectedAccountAlertShownOrigins;
 
 export const getTokens = (state) => {
+  // TODO: Refactor this to use the new state structure based on the feature flag.
   const { allTokens } = state.metamask;
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { chainId } = getProviderConfig(state);
@@ -261,6 +262,7 @@ export const getTokens = (state) => {
 };
 
 export const getTokensByChainId = (state, chainId) => {
+  // TODO: Refactor this to use the new state structure based on the feature flag.
   const { allTokens } = state.metamask;
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   return allTokens?.[chainId]?.[selectedAddress] || [];

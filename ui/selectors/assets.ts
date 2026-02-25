@@ -49,7 +49,11 @@ import { isEvmChainId } from '../../shared/lib/asset-utils';
 import { isEmptyHexString } from '../../shared/modules/hexstring-utils';
 import { isZeroAmount } from '../helpers/utils/number-utils';
 import { getNonTestNetworks } from '../../shared/modules/selectors/networks';
-import { getAccountTrackerControllerAccountsByChainId } from '../../shared/modules/selectors/assets-migration';
+import {
+  getAccountTrackerControllerAccountsByChainId,
+  getTokensControllerAllIgnoredTokens,
+  getTokensControllerAllTokens,
+} from '../../shared/modules/selectors/assets-migration';
 import { getSelectedInternalAccount } from './accounts';
 import { getMultichainBalances } from './multichain';
 import { EMPTY_OBJECT } from './shared';
@@ -711,6 +715,7 @@ const selectMultichainAssetsStateForBalances = createSelector(
  * @param state - Redux state providing `metamask.allTokens`.
  */
 const selectTokensStateForBalances = createSelector(
+  // TODO: Refactor this to use the new state structure based on the feature flag.
   [(state: BalanceCalculationState) => getMetamaskState(state).allTokens],
   (allTokens) => ({
     allTokens: allTokens ?? EMPTY_OBJECT,
@@ -1260,8 +1265,8 @@ const getStateForAssetSelector = ({ metamask }: any) => {
   const initialState = {
     accountTree: metamask.accountTree,
     internalAccounts: metamask.internalAccounts,
-    allTokens: metamask.allTokens,
-    allIgnoredTokens: metamask.allIgnoredTokens,
+    allTokens: getTokensControllerAllTokens({ metamask }),
+    allIgnoredTokens: getTokensControllerAllIgnoredTokens({ metamask }),
     tokenBalances: metamask.tokenBalances,
     marketData: metamask.marketData,
     currencyRates: metamask.currencyRates,

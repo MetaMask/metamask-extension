@@ -311,7 +311,9 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
     chainId: Hex,
     selectedAccountAddress: string,
   ): Promise<Token[]> {
-    const tokensControllerState = await this.messenger.call(
+    // TODO: Refactor this to use the new state structure based on the feature flag.
+    // Identify if this needs to also include non-evm assets.
+    const tokensControllerState = this.messenger.call(
       'TokensController:getState',
     );
 

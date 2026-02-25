@@ -1430,6 +1430,7 @@ export default class MetaMetricsController extends BaseController<
         metamaskState.allNfts,
       ).length,
       [MetaMetricsUserTrait.NumberOfTokens]: this.#getNumberOfTokens(
+        // TODO: Refactor this to use the new state structure based on the feature flag.
         metamaskState.allTokens,
       ),
       [MetaMetricsUserTrait.NumberOfHDEntropies]:

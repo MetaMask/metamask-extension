@@ -3832,6 +3832,7 @@ export default class MetamaskController extends EventEmitter {
 
     const { tokensChainsCache } = this.tokenListController.state;
     const tokenList = tokensChainsCache?.[currentChainId]?.data || {};
+    // TODO: Refactor this to use the new state structure based on the feature flag.
     const { allTokens } = this.tokensController.state;
 
     const tokens = allTokens?.[currentChainId]?.[userAddress] || [];
@@ -3955,6 +3956,7 @@ export default class MetamaskController extends EventEmitter {
     const { tokensChainsCache } = this.tokenListController.state;
     const tokenList = tokensChainsCache?.[chainId]?.data || {};
 
+    // TODO: Refactor this to use the new state structure based on the feature flag.
     const { allTokens } = this.tokensController.state;
     const selectedAccount = this.accountsController.getSelectedAccount();
     const tokens = allTokens?.[chainId]?.[selectedAccount.address] || [];
@@ -5096,9 +5098,11 @@ export default class MetamaskController extends EventEmitter {
               selectedAddress: address,
             });
 
+            // TODO: Refactor this to use the new state structure based on the feature flag.
             const tokens =
               this.tokensController.state.allTokens?.[chainId]?.[address];
             const detectedTokens =
+              // TODO: Refactor this to use the new state structure based on the feature flag.
               this.tokensController.state.allDetectedTokens?.[chainId]?.[
                 address
               ];
@@ -9225,6 +9229,7 @@ export default class MetamaskController extends EventEmitter {
   _trackTransactionFailure(transactionMeta) {
     const { txReceipt } = transactionMeta;
     const metamaskState = this.getState();
+    // TODO: Refactor this to use the new state structure based on the feature flag.
     const { allTokens } = this.tokensController.state;
     const selectedAccount = this.accountsController.getSelectedAccount();
     const tokens =
