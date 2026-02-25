@@ -1094,7 +1094,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
       },
     ],
     defaultRpcEndpointIndex: 0,
-    blockExplorerUrls: ['https://www.wanscan.org/'],
+    blockExplorerUrls: ['https://wanscan.org/'],
     defaultBlockExplorerUrlIndex: 0,
   },
 ];
