@@ -333,21 +333,5 @@ export function indicesOf(substring: string, str: string): number[] {
   return a;
 }
 
-/**
- * Runs main() when not in test mode. Used at load time and exported for tests.
- */
-export async function runEntryPoint(): Promise<void> {
-  if (
-    typeof process !== 'undefined' &&
-    !process.env.SOURCEMAP_VALIDATOR_SKIP_MAIN
-  ) {
-    try {
-      await main();
-    } catch (error) {
-      console.error(error);
-      process.exit(1);
-    }
-  }
-}
-
-void runEntryPoint();
+/** Alias for main(), used by the CLI entry point. */
+export const runWebpackSourceMapValidator = main;
