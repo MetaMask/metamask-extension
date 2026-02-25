@@ -8896,9 +8896,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^62.11.0, @metamask/transaction-controller@npm:^62.12.0, @metamask/transaction-controller@npm:^62.14.0, @metamask/transaction-controller@npm:^62.16.0, @metamask/transaction-controller@npm:^62.17.0, @metamask/transaction-controller@npm:^62.17.1, @metamask/transaction-controller@npm:^62.4.0, @metamask/transaction-controller@npm:^62.7.0, @metamask/transaction-controller@npm:^62.9.2":
-  version: 62.17.1
-  resolution: "@metamask/transaction-controller@npm:62.17.1"
+"@metamask/transaction-controller@npm:^62.11.0, @metamask/transaction-controller@npm:^62.12.0, @metamask/transaction-controller@npm:^62.14.0, @metamask/transaction-controller@npm:^62.16.0, @metamask/transaction-controller@npm:^62.17.0, @metamask/transaction-controller@npm:^62.17.1, @metamask/transaction-controller@npm:^62.19.0, @metamask/transaction-controller@npm:^62.4.0, @metamask/transaction-controller@npm:^62.7.0, @metamask/transaction-controller@npm:^62.9.2":
+  version: 62.19.0
+  resolution: "@metamask/transaction-controller@npm:62.19.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -8931,7 +8931,7 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
-  checksum: 10/b82970496e11c919f2be425ebd0aafcf10f355a8521b2c2d6aa62ab1bd634e8f71187f48e57d40a7c87620a61263fde38e5529d304ec5f144f8000f20b0acd27
+  checksum: 10/d98cff056d00830a962dfd41f26211334fe52cf7a3f2833ad3e542303d7c43011918760f37d5a9dd145088b9c45376914de6a523716686897e899842a5d19038
   languageName: node
   linkType: hard
 
@@ -33909,7 +33909,7 @@ __metadata:
     "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/test-dapp-tron": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.4.0"
-    "@metamask/transaction-controller": "npm:^62.16.0"
+    "@metamask/transaction-controller": "npm:^62.19.0"
     "@metamask/transaction-pay-controller": "npm:^12.2.0"
     "@metamask/tron-wallet-snap": "npm:^1.21.1"
     "@metamask/user-operation-controller": "npm:^40.0.0"
