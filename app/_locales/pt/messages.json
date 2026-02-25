@@ -7515,12 +7515,6 @@
   "snapAccountRemovedDescription": {
     "message": "Essa conta não estará mais disponível para uso na MetaMask."
   },
-  "snapAccounts": {
-    "message": "Snaps da conta"
-  },
-  "snapAccountsDescription": {
-    "message": "Contas controladas por Snaps de terceiros."
-  },
   "snapConnectTo": {
     "message": "Conectar-se a $1",
     "description": "$1 is the website URL or a Snap name. Used for Snaps pre-approved connections."

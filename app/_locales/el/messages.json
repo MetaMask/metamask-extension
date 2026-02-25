@@ -7515,12 +7515,6 @@
   "snapAccountRemovedDescription": {
     "message": "Αυτός ο λογαριασμός δεν θα είναι πλέον διαθέσιμος για χρήση στο MetaMask."
   },
-  "snapAccounts": {
-    "message": "Λογαριασμός Snaps"
-  },
-  "snapAccountsDescription": {
-    "message": "Λογαριασμοί που ελέγχονται από Snaps τρίτων."
-  },
   "snapConnectTo": {
     "message": "Σύνδεση με $1",
     "description": "$1 is the website URL or a Snap name. Used for Snaps pre-approved connections."

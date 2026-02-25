@@ -43,11 +43,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
 import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
-import {
-  getAccountName,
-  getSelectedAccount,
-  getSelectedMultichainNetworkConfiguration,
-} from '../../../selectors';
+import { getAccountName, getSelectedAccount } from '../../../selectors';
 import {
   KEYRING_TRANSACTION_STATUS_KEY,
   useMultichainTransactionDisplay,
@@ -78,7 +74,6 @@ export function MultichainTransactionDetailsModal({
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const userAddress = useSelector(getSelectedAccount)?.address;
-  const networkConfig = useSelector(getSelectedMultichainNetworkConfiguration);
   const {
     from,
     to,
@@ -90,7 +85,7 @@ export function MultichainTransactionDetailsModal({
     type,
     timestamp,
     id,
-  } = useMultichainTransactionDisplay(transaction, networkConfig);
+  } = useMultichainTransactionDisplay(transaction);
 
   const internalAccounts = useSelector(getInternalAccounts);
   const internalAccountsById = useSelector(getInternalAccountsObject);

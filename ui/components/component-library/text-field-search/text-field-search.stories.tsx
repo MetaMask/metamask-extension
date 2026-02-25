@@ -1,4 +1,5 @@
 import React from 'react';
+import README from "./README.mdx";
 import { useArgs } from '@storybook/client-api';
 import type { Meta } from '@storybook/react';
 
@@ -11,11 +12,11 @@ import {
 import { TextFieldSize, TextFieldType } from '../text-field';
 
 import { TextFieldSearch } from './text-field-search';
-import README from './README.mdx';
 
 const meta: Meta<typeof TextFieldSearch> = {
   title: 'Components/ComponentLibrary/TextFieldSearch',
   component: TextFieldSearch,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,

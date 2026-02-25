@@ -7515,12 +7515,6 @@
   "snapAccountRemovedDescription": {
     "message": "Ang account na ito ay hindi na magiging available para gamitin sa MetaMask."
   },
-  "snapAccounts": {
-    "message": "Mga Account Snap"
-  },
-  "snapAccountsDescription": {
-    "message": "Mga account na kontrol lang ng mga third-party na Snap."
-  },
   "snapConnectTo": {
     "message": "Kumonekta sa $1",
     "description": "$1 is the website URL or a Snap name. Used for Snaps pre-approved connections."

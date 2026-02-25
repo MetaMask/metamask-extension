@@ -7515,12 +7515,6 @@
   "snapAccountRemovedDescription": {
     "message": "Tài khoản này sẽ không còn khả dụng để sử dụng trong MetaMask nữa."
   },
-  "snapAccounts": {
-    "message": "Tài khoản Snap"
-  },
-  "snapAccountsDescription": {
-    "message": "Tài khoản được kiểm soát bởi Snap bên thứ ba."
-  },
   "snapConnectTo": {
     "message": "Kết nối với $1",
     "description": "$1 is the website URL or a Snap name. Used for Snaps pre-approved connections."
