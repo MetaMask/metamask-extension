@@ -68,10 +68,7 @@ import {
 import { CAIP_FORMATTED_TEST_CHAINS } from '../../../../shared/constants/network';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { Tab, Tabs } from '../../../components/ui/tabs';
-import {
-  AccountListItem,
-  EditAccountsModal,
-} from '../../../components/multichain';
+import { AccountListItem } from '../../../components/multichain';
 import {
   getAvatarFallbackLetter,
   isIpAddress,
@@ -93,7 +90,6 @@ import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
 import {
   PermissionsRequest,
   getCaip25CaveatValueFromPermissions,
-  getDefaultAccounts,
 } from './utils';
 
 export type ConnectPageRequest = {
@@ -120,6 +116,14 @@ export type ConnectPageProps = {
     subjectType: string;
   };
 };
+
+const getDefaultAccounts = (
+  supportedRequestedAccounts: MergedInternalAccountWithCaipAccountId[],
+  supportedAccountsForRequestedNamespaces: MergedInternalAccountWithCaipAccountId[],
+) =>
+  supportedRequestedAccounts.length > 0
+    ? supportedRequestedAccounts
+    : supportedAccountsForRequestedNamespaces;
 
 export const ConnectPage: React.FC<ConnectPageProps> = ({
   request,
@@ -202,7 +206,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 
   const [userHasModifiedSelection, setUserHasModifiedSelection] =
     useState(false);
-  const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
     useState(false);
 
@@ -304,7 +307,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     );
 
   const defaultAccounts = getDefaultAccounts(
-    requestedNamespacesWithoutWallet,
     supportedRequestedAccounts,
     supportedAccountsForRequestedNamespaces,
   );
@@ -401,7 +403,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   }, [allAccounts]);
 
   const handleOpenAccountsModal = useCallback(() => {
-    setShowEditAccountsModal(true);
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.ViewPermissionedAccounts,
@@ -418,10 +419,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 
   const handleCloseCreateSolanaAccountModal = useCallback(() => {
     setShowCreateSolanaAccountModal(false);
-  }, []);
-
-  const handleCloseEditAccountsModal = useCallback(() => {
-    setShowEditAccountsModal(false);
   }, []);
 
   const handleCancelConnection = useCallback(() => {
@@ -571,20 +568,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                     </Box>
                   )}
               </Box>
-              {selectedAccounts.length > 0 && (
-                <Box
-                  marginTop={4}
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.center}
-                >
-                  <ButtonLink
-                    onClick={handleOpenAccountsModal}
-                    data-testid="edit"
-                  >
-                    {t('editAccounts')}
-                  </ButtonLink>
-                </Box>
-              )}
               {promptToCreateSolanaAccount && !solanaAccountExistsInWallet && (
                 <Box
                   display={Display.Flex}
@@ -617,14 +600,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               {showCreateSolanaAccountModal && (
                 <CreateSolanaAccountModal
                   onClose={handleCloseCreateSolanaAccountModal}
-                />
-              )}
-              {showEditAccountsModal && (
-                <EditAccountsModal
-                  accounts={allAccounts}
-                  defaultSelectedAccountAddresses={selectedCaipAccountAddresses}
-                  onClose={handleCloseEditAccountsModal}
-                  onSubmit={handleCaipAccountAddressesSelected}
                 />
               )}
             </Box>

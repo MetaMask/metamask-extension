@@ -5,7 +5,7 @@ import type {
   RatesControllerState,
 } from '@metamask/assets-controllers';
 import { NetworkType } from '@metamask/controller-utils';
-import { isEvmAccountType, Transaction } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import { isBtcTestnetAddress } from '@metamask/keyring-utils';
@@ -14,22 +14,15 @@ import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import {
-  CaipChainId,
-  Hex,
-  isCaipChainId,
-  KnownCaipNamespace,
-} from '@metamask/utils';
+import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
 import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
 import {
-  MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET,
   MULTICHAIN_PROVIDER_CONFIGS,
   MULTICHAIN_TOKEN_IMAGE_MAP,
   MultichainNetworks,
   MultichainProviderConfig,
 } from '../../shared/constants/multichain/networks';
-import { Numeric } from '../../shared/modules/Numeric';
 import {
   getCompletedOnboarding,
   getConversionRate,
@@ -61,7 +54,6 @@ import {
   isTronAccount,
 } from './accounts';
 import {
-  getIsMainnet,
   getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
@@ -363,13 +355,6 @@ export function getMultichainCurrencyImage(
   return provider.rpcPrefs?.imageUrl;
 }
 
-export function getMultichainNativeCurrencyImage(
-  state: MultichainState,
-  account?: InternalAccount,
-) {
-  return getMultichainCurrencyImage(state, account);
-}
-
 export const makeGetMultichainShouldShowFiatByChainId =
   (chainId: Hex | CaipChainId) =>
   (state: MultichainState, account?: InternalAccount) =>
@@ -412,33 +397,6 @@ export function isChainIdMainnet(chainId: string) {
   return chainId === CHAIN_IDS.MAINNET;
 }
 
-export function getMultichainIsMainnet(
-  state: MultichainState,
-  account?: InternalAccount,
-) {
-  const selectedAccount = account ?? getSelectedInternalAccount(state);
-  const providerConfig = getMultichainProviderConfig(state, selectedAccount);
-
-  if (getMultichainIsEvm(state, account)) {
-    return getIsMainnet(state);
-  }
-
-  const mainnet = (
-    MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET as Record<string, string>
-  )[selectedAccount.type];
-
-  if (!mainnet) {
-    return false;
-  }
-
-  // If it's Bitcoin case, check if it's a testnet address
-  if (isBtcTestnetAddress(selectedAccount.address)) {
-    return false;
-  }
-
-  return providerConfig.chainId === mainnet;
-}
-
 export function getMultichainIsTestnet(
   state: MultichainState,
   account?: InternalAccount,
@@ -477,36 +435,6 @@ export function getMultichainBalances(
   state: MultichainState,
 ): BalancesState['metamask']['balances'] {
   return state.metamask.balances;
-}
-
-export function getMultichainTransactions(
-  state: MultichainState,
-): TransactionsState['metamask']['nonEvmTransactions'] {
-  return state.metamask.nonEvmTransactions;
-}
-
-export function getSelectedAccountMultichainTransactions(
-  state: MultichainState,
-):
-  | { transactions: Transaction[]; next: string | null; lastUpdated: number }
-  | undefined {
-  const selectedAccount = getSelectedInternalAccount(state);
-
-  if (isEvmAccountType(selectedAccount.type)) {
-    return undefined;
-  }
-
-  const transactions = state.metamask.nonEvmTransactions[selectedAccount.id];
-
-  // We need to get the provider config for the selected account to get the correct chainId
-  const providerConfig = getMultichainProviderConfig(state, selectedAccount);
-  const currentChainId = providerConfig.chainId;
-
-  if (isCaipChainId(currentChainId)) {
-    return transactions?.[currentChainId];
-  }
-
-  return undefined;
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {
@@ -565,15 +493,6 @@ export function getMultichainSelectedAccountCachedBalance(
     ? getSelectedAccountCachedBalance(state)
     : getNonEvmCachedBalance(state);
 }
-
-export const getMultichainSelectedAccountCachedBalanceIsZero = createSelector(
-  [getMultichainIsEvm, getMultichainSelectedAccountCachedBalance],
-  (isEvm, balance) => {
-    const base = isEvm ? 16 : 10;
-    const numericBalance = new Numeric(balance, base);
-    return numericBalance.isZero();
-  },
-);
 
 export function getMultichainConversionRate(
   state: MultichainState,

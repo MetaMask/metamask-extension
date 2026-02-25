@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { getUnconnectedAccounts } from '../../../selectors/selectors';
+import {
+  getPermittedEVMAccountsForSelectedTab,
+  getUpdatedAndSortedAccountsWithCaipAccountId,
+} from '../../../selectors/selectors';
 import { ConnectAccountsModalList } from './connect-accounts-modal-list';
 
 export const ConnectAccountsModal = ({
@@ -14,12 +17,18 @@ export const ConnectAccountsModal = ({
   onAccountsUpdate: () => void;
   activeTabOrigin: string;
 }) => {
+  const permittedEvmAccounts = useSelector((state) =>
+    getPermittedEVMAccountsForSelectedTab(state, activeTabOrigin),
+  ) as string[];
   const accounts = useSelector((state) =>
     // We only consider EVM accounts.
     // Connections with non-EVM accounts (Bitcoin only for now) are used implicitly and handled by the Bitcoin Snap itself.
-    getUnconnectedAccounts(state, activeTabOrigin).filter(
-      (account: InternalAccount) => isEvmAccountType(account.type),
-    ),
+    getUpdatedAndSortedAccountsWithCaipAccountId(state)
+      .filter((account: InternalAccount) => isEvmAccountType(account.type))
+      .filter(
+        (account: InternalAccount) =>
+          !permittedEvmAccounts.includes(account.address),
+      ),
   );
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
 

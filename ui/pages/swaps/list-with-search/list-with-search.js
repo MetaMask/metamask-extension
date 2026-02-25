@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { filter } from 'lodash';
 import log from 'loglevel';
@@ -18,8 +17,6 @@ import { TextFieldSearch } from '../../../components/component-library/text-fiel
 import ItemList from '../searchable-item-list/item-list';
 import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { I18nContext } from '../../../contexts/i18n';
-import { fetchToken } from '../swaps.util';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 
 let timeoutIdForSearch;
 
@@ -41,26 +38,16 @@ export default function ListWithSearch({
   const t = useContext(I18nContext);
 
   const [items, setItems] = useState(itemsToSearch);
-  const chainId = useSelector(getCurrentChainId);
 
   /**
    * Search a custom token for import based on a contract address.
    *
    * @param {string} contractAddress
    */
+  // The token import API helper was removed; preserve UX by showing no matches.
+  // eslint-disable-next-line no-unused-vars
   const handleSearchTokenForImport = async (contractAddress) => {
-    try {
-      const token = await fetchToken(contractAddress, chainId);
-      if (token) {
-        token.primaryLabel = token.symbol;
-        token.secondaryLabel = token.name;
-        token.notImported = true;
-        setItems([token]);
-        return;
-      }
-    } catch (e) {
-      log.error('Token not found, show 0 results.', e);
-    }
+    log.debug('Token import lookup is unavailable in this build.');
     setItems([]); // No token for import found.
   };
 

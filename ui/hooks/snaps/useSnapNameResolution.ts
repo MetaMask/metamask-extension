@@ -1,11 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  getChainIdsCaveat,
-  getLookupMatchersCaveat,
-} from '@metamask/snaps-rpc-methods';
 import { DomainLookupResult } from '@metamask/snaps-sdk';
-import { getNameLookupSnaps } from '../../selectors';
+import { getNameLookupSnapsIds } from '../../selectors';
 import { handleSnapRequest } from '../../store/actions';
 
 /**
@@ -14,7 +10,7 @@ import { handleSnapRequest } from '../../store/actions';
  * @returns Function to get domain name resolutions.
  */
 export function useSnapNameResolution() {
-  const snaps = useSelector(getNameLookupSnaps);
+  const snapIds = useSelector(getNameLookupSnapsIds) as string[];
 
   /**
    * Filters the available snaps based on the provided chain ID and domain.
@@ -24,29 +20,8 @@ export function useSnapNameResolution() {
    * @returns The filtered snap IDs.
    */
   const getAvailableSnaps = useCallback(
-    (chainId: string, domain: string) =>
-      snaps
-        .filter(({ permission }) => {
-          const chainIdCaveat = getChainIdsCaveat(permission);
-
-          if (chainIdCaveat && !chainIdCaveat.includes(chainId)) {
-            return false;
-          }
-
-          const lookupMatchersCaveat = getLookupMatchersCaveat(permission);
-
-          if (lookupMatchersCaveat) {
-            const { tlds, schemes } = lookupMatchersCaveat;
-            return (
-              tlds?.some((tld) => domain.endsWith(`.${tld}`)) ||
-              schemes?.some((scheme) => domain.startsWith(`${scheme}:`))
-            );
-          }
-
-          return true;
-        })
-        .map(({ id }) => id),
-    [snaps],
+    (_chainId: string, _domain: string) => snapIds,
+    [snapIds],
   );
 
   /**

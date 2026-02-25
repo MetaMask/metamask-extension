@@ -6084,9 +6084,6 @@
   "restore": {
     "message": "Ibalik"
   },
-  "restoreUserData": {
-    "message": "Ibalik ang data ng user"
-  },
   "restoreWalletDescription": {
     "message": "Ilagay ang $1 mo. Sa pag-import sa wallet, mabubura ang kasalukuyang data ng wallet mo mula sa device na ito. Hindi na ito mababawi.",
     "description": "$1 is the Secret Recovery Phrase"
@@ -7441,12 +7438,6 @@
   "smartContracts": {
     "message": "Mga smart na kontrata"
   },
-  "smartSwapsErrorNotEnoughFunds": {
-    "message": "Hindi sapat ang pondo para sa smart swap."
-  },
-  "smartSwapsErrorUnavailable": {
-    "message": "Pansamantalang hindi available ang mga Smart Swap."
-  },
   "smartTransactionCancelled": {
     "message": "Nakansela ang transaksyon mo"
   },
@@ -8083,9 +8074,6 @@
   "swapAdjustSlippage": {
     "message": "Ayusin ang slippage"
   },
-  "swapAggregator": {
-    "message": "Aggregator"
-  },
   "swapAllowSwappingOf": {
     "message": "Payagan ang pag-swap ng $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -8121,15 +8109,9 @@
   "swapCustom": {
     "message": "custom"
   },
-  "swapDecentralizedExchange": {
-    "message": "Decentralized exchange"
-  },
   "swapDetailsTitle": {
     "message": "Mga detalye ng swap",
     "description": "Title for the modal showing details about a swap transaction."
-  },
-  "swapDirectContract": {
-    "message": "Direktang kontrata"
   },
   "swapEditLimit": {
     "message": "I-edit ang limitasyon"
@@ -8257,9 +8239,6 @@
   "swapReceivingInfoTooltip": {
     "message": "Isang itong pagtatantya. Ang eksaktong halaga ay nakadepende sa slippage."
   },
-  "swapRequestForQuotation": {
-    "message": "Humiling ng quotation"
-  },
   "swapSelect": {
     "message": "Piliin ang"
   },
@@ -8351,9 +8330,6 @@
   },
   "swapTwoTransactions": {
     "message": "2 transaksyon"
-  },
-  "swapUnknown": {
-    "message": "Hindi Kilala"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Wala kang sapat na $1 para bayaran ang gas sa swap na ito. Maglagay ng mas maliit na halaga o bumili pa ng $1."

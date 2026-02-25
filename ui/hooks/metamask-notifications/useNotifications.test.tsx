@@ -5,11 +5,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { Store } from 'redux';
 import * as actions from '../../store/actions';
-import { MetamaskNotificationsProvider } from '../../contexts/metamask-notifications/metamask-notifications';
-import {
-  useCreateNotifications,
-  useDisableNotifications,
-} from './useNotifications';
+import { useDisableNotifications } from './useNotifications';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
@@ -59,24 +55,6 @@ describe('useNotifications', () => {
     });
 
     jest.clearAllMocks();
-  });
-
-  it('should create notifications', async () => {
-    const { result } = renderHook(() => useCreateNotifications(), {
-      wrapper: ({ children }) => (
-        <Provider store={store}>
-          <MetamaskNotificationsProvider>
-            {children}
-          </MetamaskNotificationsProvider>
-        </Provider>
-      ),
-    });
-
-    act(() => {
-      result.current.createNotifications();
-    });
-
-    expect(actions.createOnChainTriggers).toHaveBeenCalled();
   });
 
   it('should disable notifications and handle states', async () => {

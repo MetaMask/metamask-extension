@@ -2,7 +2,6 @@ import Bowser from 'bowser';
 import BN from 'bn.js';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
 import { MinPermissionAbstractionDisplayCount } from '../../../shared/constants/permissions';
@@ -188,35 +187,6 @@ describe('util', () => {
     });
   });
 
-  describe('isOriginContractAddress', () => {
-    it('should return true when the send address is the same as the selected tokens contract address', () => {
-      expect(
-        util.isOriginContractAddress(
-          '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-          '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-        ),
-      ).toStrictEqual(true);
-    });
-
-    it('should return true when the send address is the same as the selected tokens contract address, capitalized input', () => {
-      expect(
-        util.isOriginContractAddress(
-          '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-          '0X8D6B81208414189A58339873AB429B6C47AB92D3',
-        ),
-      ).toStrictEqual(true);
-    });
-
-    it('should return false when the recipient address differs', () => {
-      expect(
-        util.isOriginContractAddress(
-          '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-          '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B',
-        ),
-      ).toStrictEqual(false);
-    });
-  });
-
   describe('#numericBalance', () => {
     it('should return a BN 0 if given nothing', () => {
       const result = util.numericBalance();
@@ -343,25 +313,6 @@ describe('util', () => {
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
-    });
-  });
-
-  describe('normalizing values', function () {
-    describe('#getRandomFileName', () => {
-      it('should only return a string containing alphanumeric characters', () => {
-        const result = util.getRandomFileName();
-        expect(result[0]).toStrictEqual(
-          expect.stringMatching(/^[a-zA-Z0-9]*$/gu),
-        );
-      });
-
-      // 50 samples
-      it('should return a string that is between 6 and 12 characters in length', () => {
-        for (let i = 0; i < 50; i++) {
-          const result = util.getRandomFileName();
-          expect(result.length >= 6 && result.length <= 12).toStrictEqual(true);
-        }
-      });
     });
   });
 
@@ -1043,16 +994,6 @@ describe('util', () => {
     });
   });
 
-  describe('isDefaultMetaMaskChain()', () => {
-    it('should return true if the provided chainId is a default MetaMask chain', () => {
-      expect(util.isDefaultMetaMaskChain(CHAIN_IDS.GOERLI)).toBeTruthy();
-    });
-
-    it('should return false if the provided chainId is a not default MetaMask chain', () => {
-      expect(util.isDefaultMetaMaskChain(CHAIN_IDS.CELO)).toBeFalsy();
-    });
-  });
-
   describe('checkTokenIdExists()', () => {
     const data = {
       '0x2df920B180c58766951395c26ecF1EC2063490Fa': {
@@ -1338,39 +1279,6 @@ describe('util', () => {
           weight: 4,
         },
       ]);
-    });
-  });
-
-  describe('getCalculatedTokenAmount1dAgo', () => {
-    it('should return successfully balance of token 1dago', () => {
-      const mockTokenFiatAmount = '10';
-      const mockTokenPercent1dAgo = 1;
-      const expectedRes = 9.900990099009901;
-      const result = util.getCalculatedTokenAmount1dAgo(
-        mockTokenFiatAmount,
-        mockTokenPercent1dAgo,
-      );
-      expect(result).toBe(expectedRes);
-    });
-
-    it('should return token balance if percentage is undefined', () => {
-      const mockTokenFiatAmount = '10';
-      const mockTokenPercent1dAgo = undefined;
-      const result = util.getCalculatedTokenAmount1dAgo(
-        mockTokenFiatAmount,
-        mockTokenPercent1dAgo,
-      );
-      expect(result).toBe(mockTokenFiatAmount);
-    });
-
-    it('should return zero if token amount is undefined', () => {
-      const mockTokenFiatAmount = undefined;
-      const mockTokenPercent1dAgo = 1;
-      const result = util.getCalculatedTokenAmount1dAgo(
-        mockTokenFiatAmount,
-        mockTokenPercent1dAgo,
-      );
-      expect(result).toBe(0);
     });
   });
 

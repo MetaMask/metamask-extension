@@ -12,21 +12,19 @@ import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-send-state.json';
 import { AssetType } from '../../../../../shared/constants/transaction';
+
 import {
-  getNativeCurrencyImage,
-  getSelectedAccountCachedBalance,
+  getAllTokens,
   getSelectedEvmInternalAccount,
-  getShouldHideZeroBalanceTokens,
   getTokenExchangeRates,
   getTokenList,
+  getUseExternalServices,
+  hasCreatedSolanaAccount,
 } from '../../../../selectors';
+
 import {
-  getConversionRate,
-  getNativeCurrency,
-  getTokens,
-} from '../../../../ducks/metamask/metamask';
-import { getTopAssets } from '../../../../ducks/swaps/swaps';
-import {
+  getMultichainConversionRate,
+  getMultichainCurrencyImage,
   getMultichainNetworkConfigurationsByChainId,
   getMultichainCurrentChainId,
   getMultichainCurrentCurrency,
@@ -130,19 +128,10 @@ describe('AssetPickerModal', () => {
       if (selector === getMultichainCurrentCurrency) {
         return 'USD';
       }
-      if (selector === getNativeCurrencyImage) {
-        return 'native-image.png';
-      }
-      if (selector === getSelectedAccountCachedBalance) {
-        return '1000';
-      }
       if (selector === getSelectedEvmInternalAccount) {
         return { address: '0xAddress' };
       }
-      if (selector === getShouldHideZeroBalanceTokens) {
-        return false;
-      }
-      if (selector === getTokenExchangeRates) {
+      if (selector === getAllTokens) {
         return {};
       }
       if (selector === getTokenList) {
@@ -159,17 +148,33 @@ describe('AssetPickerModal', () => {
           },
         };
       }
-      if (selector === getConversionRate) {
-        return 1;
+      if (selector === getUseExternalServices) {
+        return false;
       }
-      if (selector === getNativeCurrency) {
+      if (selector === hasCreatedSolanaAccount) {
+        return true;
+      }
+      return undefined;
+    });
+
+    mockUseMultichainSelector.mockImplementation((selector) => {
+      if (selector === getMultichainIsEvm) {
+        return true;
+      }
+      if (selector === getMultichainCurrencyImage) {
+        return 'native-image.png';
+      }
+      if (selector === getMultichainNativeCurrency) {
         return 'ETH';
       }
-      if (selector === getTokens) {
-        return [];
+      if (selector === getMultichainSelectedAccountCachedBalance) {
+        return '1000';
       }
-      if (selector === getTopAssets) {
-        return [];
+      if (selector === getTokenExchangeRates) {
+        return {};
+      }
+      if (selector === getMultichainConversionRate) {
+        return 1;
       }
       return undefined;
     });
@@ -286,9 +291,11 @@ describe('AssetPickerModal', () => {
               type: RpcEndpointType.Custom,
             },
           ],
+
           name: 'Network name',
         }}
       />,
+
       store,
     );
 
@@ -319,9 +326,11 @@ describe('AssetPickerModal', () => {
               type: RpcEndpointType.Custom,
             },
           ],
+
           name: 'Network name',
         }}
       />,
+
       store,
     );
 

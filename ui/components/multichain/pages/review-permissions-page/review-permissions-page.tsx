@@ -19,9 +19,9 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
 import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
 import {
-  getAllPermittedAccountsForSelectedTab,
   getAllPermittedChainsForSelectedTab,
   getConnectedSitesList,
+  getPermittedEVMAccountsForSelectedTab,
   getPermissionSubjects,
   getShowPermittedNetworkToastOpen,
   getUpdatedAndSortedAccountsWithCaipAccountId,
@@ -168,7 +168,7 @@ export const ReviewPermissions = () => {
   ) as MergedInternalAccountWithCaipAccountId[];
 
   const nonRemappedConnectedAccountAddresses = useSelector((state) =>
-    getAllPermittedAccountsForSelectedTab(state, activeTabOrigin),
+    getPermittedEVMAccountsForSelectedTab(state, activeTabOrigin),
   ) as CaipAccountId[];
 
   // This remaps EVM caip account addresses to match the 'eip155:0'

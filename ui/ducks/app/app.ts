@@ -848,24 +848,10 @@ export function setLedgerTransportStatus(
   return { type: actionConstants.SET_LEDGER_TRANSPORT_STATUS, payload };
 }
 
-export function toggleCurrencySwitch(): Action {
-  return { type: actionConstants.TOGGLE_CURRENCY_INPUT_SWITCH };
-}
-
-export function setOnBoardedInThisUISession(
-  payload: boolean,
-): PayloadAction<boolean> {
-  return { type: actionConstants.ONBOARDED_IN_THIS_UI_SESSION, payload };
-}
-
 export function setShowCopyAddressToast(
   payload: boolean,
 ): PayloadAction<boolean> {
   return { type: actionConstants.SET_SHOW_COPY_ADDRESS_TOAST, payload };
-}
-
-export function setCustomTokenAmount(payload: string): PayloadAction<string> {
-  return { type: actionConstants.SET_CUSTOM_TOKEN_AMOUNT, payload };
 }
 
 /**
@@ -913,10 +899,6 @@ export function getLedgerTransportStatus(state: AppSliceState): string | null {
 
 export function getShowSupportDataConsentModal(state: AppSliceState): boolean {
   return state.appState.showSupportDataConsentModal;
-}
-
-export function getShowCopyAddressToast(state: AppSliceState): boolean {
-  return state.appState.showCopyAddressToast;
 }
 
 export function openDeleteMetaMetricsDataModal(): Action {

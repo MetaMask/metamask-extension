@@ -6078,9 +6078,6 @@
   "restore": {
     "message": "रीस्टोर करें"
   },
-  "restoreUserData": {
-    "message": "यूज़र डेटा रीस्टोर करें"
-  },
   "restoreWalletDescription": {
     "message": "अपना $1 टाइप करें। वॉलेट इंपोर्ट करके, आप इस डिवाइस से अपना मौजूदा वॉलेट डेटा मिटा देंगे। इसे पहले जैसा नहीं किया जा सकता।",
     "description": "$1 is the Secret Recovery Phrase"
@@ -7435,12 +7432,6 @@
   "smartContracts": {
     "message": "स्मार्ट कॉन्ट्रैक्ट्स"
   },
-  "smartSwapsErrorNotEnoughFunds": {
-    "message": "स्मार्ट स्वैप के लिए पर्याप्त फंड नहीं है।"
-  },
-  "smartSwapsErrorUnavailable": {
-    "message": "स्मार्ट स्वैप अस्थायी रूप से अनुपलब्ध हैं।"
-  },
   "smartTransactionCancelled": {
     "message": "आपका ट्रांसेक्शन कैंसिल कर दिया गया था"
   },
@@ -8077,9 +8068,6 @@
   "swapAdjustSlippage": {
     "message": "स्लिपेज को समायोजित करें"
   },
-  "swapAggregator": {
-    "message": "एग्रीगेटर"
-  },
   "swapAllowSwappingOf": {
     "message": "$1 स्वैप करने की अनुमति दें",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -8115,15 +8103,9 @@
   "swapCustom": {
     "message": "कस्टम"
   },
-  "swapDecentralizedExchange": {
-    "message": "विकेंद्रीकृत विनिमय"
-  },
   "swapDetailsTitle": {
     "message": "स्वैप विवरण",
     "description": "Title for the modal showing details about a swap transaction."
-  },
-  "swapDirectContract": {
-    "message": "प्रत्यक्ष कॉन्ट्रैक्ट"
   },
   "swapEditLimit": {
     "message": "सीमा बदलें"
@@ -8251,9 +8233,6 @@
   "swapReceivingInfoTooltip": {
     "message": "यह एक अनुमान है। सटीक अमाउंट स्लिपेज पर निर्भर करती है।"
   },
-  "swapRequestForQuotation": {
-    "message": "उद्धरण के लिए अनुरोध"
-  },
   "swapSelect": {
     "message": "चयन करें"
   },
@@ -8345,9 +8324,6 @@
   },
   "swapTwoTransactions": {
     "message": "2 ट्रांसेक्शन"
-  },
-  "swapUnknown": {
-    "message": "अज्ञात"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "इस स्वैप के लिए गैस फीस का भुगतान करने के लिए आपके पास पर्याप्त $1 नहीं है। कम राशि दर्ज करें या अधिक $1 खरीदें।"

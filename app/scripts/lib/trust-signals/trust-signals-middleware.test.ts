@@ -6,10 +6,12 @@ import {
   parseApprovalTransactionData,
   parseTypedDataMessage,
 } from '../../../../shared/modules/transaction.utils';
-import { ResultType } from '../../../../shared/lib/trust-signals';
+import {
+  mapChainIdToSupportedEVMChain,
+  ResultType,
+} from '../../../../shared/lib/trust-signals';
 import { createTrustSignalsMiddleware } from './trust-signals-middleware';
 import { scanAddressAndAddToCache } from './security-alerts-api';
-import { getChainId } from './trust-signals-util';
 
 jest.mock('./security-alerts-api');
 jest.mock('../../../../shared/modules/transaction.utils');
@@ -64,6 +66,19 @@ const createMockResponse = (): JsonRpcResponse => ({
   jsonrpc: '2.0',
   result: null,
 });
+
+const getSupportedEVMChain = (networkController: {
+  getNetworkConfigurationByNetworkClientId: (networkClientId: string) =>
+    | {
+        chainId?: Hex;
+      }
+    | undefined;
+}) =>
+  mapChainIdToSupportedEVMChain(
+    networkController.getNetworkConfigurationByNetworkClientId(
+      'testNetworkClientId',
+    )?.chainId as Hex,
+  );
 
 const createTransactionParams = (
   overrides: Partial<Record<string, unknown>> = {},
@@ -197,7 +212,7 @@ describe('createTrustSignalsMiddleware', () => {
         TEST_ADDRESSES.TO,
         appStateController.getAddressSecurityAlertResponse,
         appStateController.addAddressSecurityAlertResponse,
-        getChainId(networkController),
+        getSupportedEVMChain(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalledWith(req.origin);
       expect(next).toHaveBeenCalled();
@@ -228,7 +243,7 @@ describe('createTrustSignalsMiddleware', () => {
         TEST_ADDRESSES.TO,
         appStateController.getAddressSecurityAlertResponse,
         appStateController.addAddressSecurityAlertResponse,
-        getChainId(networkController),
+        getSupportedEVMChain(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
@@ -258,7 +273,7 @@ describe('createTrustSignalsMiddleware', () => {
         TEST_ADDRESSES.TO,
         appStateController.getAddressSecurityAlertResponse,
         appStateController.addAddressSecurityAlertResponse,
-        getChainId(networkController),
+        getSupportedEVMChain(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
@@ -296,7 +311,7 @@ describe('createTrustSignalsMiddleware', () => {
         TEST_ADDRESSES.TO,
         appStateController.getAddressSecurityAlertResponse,
         appStateController.addAddressSecurityAlertResponse,
-        getChainId(networkController),
+        getSupportedEVMChain(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
@@ -330,7 +345,7 @@ describe('createTrustSignalsMiddleware', () => {
         TEST_ADDRESSES.TO,
         appStateController.getAddressSecurityAlertResponse,
         appStateController.addAddressSecurityAlertResponse,
-        getChainId(networkController),
+        getSupportedEVMChain(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
     });
@@ -453,13 +468,13 @@ describe('createTrustSignalsMiddleware', () => {
           TEST_ADDRESSES.TO,
           appStateController.getAddressSecurityAlertResponse,
           appStateController.addAddressSecurityAlertResponse,
-          getChainId(networkController),
+          getSupportedEVMChain(networkController),
         );
         expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
           TEST_ADDRESSES.SPENDER,
           appStateController.getAddressSecurityAlertResponse,
           appStateController.addAddressSecurityAlertResponse,
-          getChainId(networkController),
+          getSupportedEVMChain(networkController),
         );
         expect(phishingController.scanUrl).toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
@@ -517,7 +532,7 @@ describe('createTrustSignalsMiddleware', () => {
           TEST_ADDRESSES.TO,
           appStateController.getAddressSecurityAlertResponse,
           appStateController.addAddressSecurityAlertResponse,
-          getChainId(networkController),
+          getSupportedEVMChain(networkController),
         );
         expect(next).toHaveBeenCalled();
       });
@@ -553,7 +568,7 @@ describe('createTrustSignalsMiddleware', () => {
           TEST_ADDRESSES.TO,
           appStateController.getAddressSecurityAlertResponse,
           appStateController.addAddressSecurityAlertResponse,
-          getChainId(networkController),
+          getSupportedEVMChain(networkController),
         );
         expect(next).toHaveBeenCalled();
       });
@@ -612,7 +627,7 @@ describe('createTrustSignalsMiddleware', () => {
         TEST_ADDRESSES.TO,
         appStateController.getAddressSecurityAlertResponse,
         appStateController.addAddressSecurityAlertResponse,
-        getChainId(networkController),
+        getSupportedEVMChain(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
@@ -654,7 +669,7 @@ describe('createTrustSignalsMiddleware', () => {
         TEST_ADDRESSES.TO,
         appStateController.getAddressSecurityAlertResponse,
         appStateController.addAddressSecurityAlertResponse,
-        getChainId(networkController),
+        getSupportedEVMChain(networkController),
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
@@ -707,7 +722,7 @@ describe('createTrustSignalsMiddleware', () => {
           TEST_ADDRESSES.TO,
           appStateController.getAddressSecurityAlertResponse,
           appStateController.addAddressSecurityAlertResponse,
-          getChainId(networkController),
+          getSupportedEVMChain(networkController),
         );
         expect(phishingController.scanUrl).toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
@@ -787,6 +802,7 @@ describe('createTrustSignalsMiddleware', () => {
             { name: 'chainId', type: 'uint256' },
             { name: 'verifyingContract', type: 'address' },
           ],
+
           Permit: [
             { name: 'owner', type: 'address' },
             { name: 'spender', type: 'address' },
@@ -824,13 +840,13 @@ describe('createTrustSignalsMiddleware', () => {
           TEST_ADDRESSES.TO,
           appStateController.getAddressSecurityAlertResponse,
           appStateController.addAddressSecurityAlertResponse,
-          getChainId(networkController),
+          getSupportedEVMChain(networkController),
         );
         expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
           TEST_ADDRESSES.SPENDER,
           appStateController.getAddressSecurityAlertResponse,
           appStateController.addAddressSecurityAlertResponse,
-          getChainId(networkController),
+          getSupportedEVMChain(networkController),
         );
         expect(phishingController.scanUrl).toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
@@ -903,7 +919,7 @@ describe('createTrustSignalsMiddleware', () => {
           TEST_ADDRESSES.TO,
           appStateController.getAddressSecurityAlertResponse,
           appStateController.addAddressSecurityAlertResponse,
-          getChainId(networkController),
+          getSupportedEVMChain(networkController),
         );
         expect(next).toHaveBeenCalled();
       });
@@ -934,7 +950,7 @@ describe('createTrustSignalsMiddleware', () => {
           TEST_ADDRESSES.TO,
           appStateController.getAddressSecurityAlertResponse,
           appStateController.addAddressSecurityAlertResponse,
-          getChainId(networkController),
+          getSupportedEVMChain(networkController),
         );
         expect(next).toHaveBeenCalled();
       });
@@ -969,13 +985,13 @@ describe('createTrustSignalsMiddleware', () => {
             TEST_ADDRESSES.TO,
             appStateController.getAddressSecurityAlertResponse,
             appStateController.addAddressSecurityAlertResponse,
-            getChainId(networkController),
+            getSupportedEVMChain(networkController),
           );
           expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
             TEST_ADDRESSES.SPENDER,
             appStateController.getAddressSecurityAlertResponse,
             appStateController.addAddressSecurityAlertResponse,
-            getChainId(networkController),
+            getSupportedEVMChain(networkController),
           );
         }
       });
@@ -1005,10 +1021,12 @@ describe('createTrustSignalsMiddleware', () => {
             { name: 'chainId', type: 'uint256' },
             { name: 'verifyingContract', type: 'address' },
           ],
+
           Caveat: [
             { name: 'enforcer', type: 'address' },
             { name: 'terms', type: 'bytes' },
           ],
+
           Delegation: [
             { name: 'delegate', type: 'address' },
             { name: 'delegator', type: 'address' },
@@ -1046,13 +1064,13 @@ describe('createTrustSignalsMiddleware', () => {
           TEST_ADDRESSES.TO,
           appStateController.getAddressSecurityAlertResponse,
           appStateController.addAddressSecurityAlertResponse,
-          getChainId(networkController),
+          getSupportedEVMChain(networkController),
         );
         expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
           TEST_ADDRESSES.DELEGATE,
           appStateController.getAddressSecurityAlertResponse,
           appStateController.addAddressSecurityAlertResponse,
-          getChainId(networkController),
+          getSupportedEVMChain(networkController),
         );
         expect(phishingController.scanUrl).toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
@@ -1114,7 +1132,7 @@ describe('createTrustSignalsMiddleware', () => {
           TEST_ADDRESSES.TO,
           appStateController.getAddressSecurityAlertResponse,
           appStateController.addAddressSecurityAlertResponse,
-          getChainId(networkController),
+          getSupportedEVMChain(networkController),
         );
         expect(next).toHaveBeenCalled();
       });

@@ -1,12 +1,4 @@
-import log from 'loglevel';
-import {
-  FALLBACK_LOCALE,
-  I18NMessageDict,
-  clearCaches,
-  fetchLocale,
-  getMessage,
-  loadRelativeTimeFormatLocaleData,
-} from './i18n';
+import type { I18NMessageDict } from './i18n.js';
 
 const localeCodeMock = 'te';
 const keyMock = 'testKey';
@@ -30,10 +22,30 @@ jest.mock('./fetch-with-timeout', () =>
 );
 
 describe('I18N Module', () => {
-  beforeEach(() => {
+  let fallbackLocale: string;
+  let getMessage: typeof import('./i18n.js').getMessage;
+  let fetchLocale: typeof import('./i18n.js').fetchLocale;
+  let loadRelativeTimeFormatLocaleData: typeof import('./i18n.js').loadRelativeTimeFormatLocaleData;
+  let logMock: { warn: jest.Mock; error: jest.Mock };
+
+  beforeEach(async () => {
+    jest.resetModules();
     jest.resetAllMocks();
-    clearCaches();
     process.env.IN_TEST = 'true';
+    const loglevelModule = await import('loglevel');
+    logMock = (loglevelModule.default ?? loglevelModule) as unknown as {
+      warn: jest.Mock;
+      error: jest.Mock;
+    };
+    const i18nModulePath = './i18n';
+    const i18nModule = (await import(
+      i18nModulePath
+    )) as typeof import('./i18n.js');
+    fallbackLocale = i18nModule.FALLBACK_LOCALE;
+    getMessage = i18nModule.getMessage;
+    fetchLocale = i18nModule.fetchLocale;
+    loadRelativeTimeFormatLocaleData =
+      i18nModule.loadRelativeTimeFormatLocaleData;
   });
 
   describe('getMessage', () => {
@@ -59,8 +71,8 @@ describe('I18N Module', () => {
               ),
             ).toBeNull();
 
-            expect(log.warn).toHaveBeenCalledTimes(1);
-            expect(log.warn).toHaveBeenCalledWith(
+            expect(logMock.warn).toHaveBeenCalledTimes(1);
+            expect(logMock.warn).toHaveBeenCalledWith(
               `Translator - Unable to find value of key "${keyMock}" for locale "${localeCodeMock}"`,
             );
           });
@@ -82,8 +94,8 @@ describe('I18N Module', () => {
               ),
             ).toBeNull();
 
-            expect(log.warn).toHaveBeenCalledTimes(1);
-            expect(log.warn).toHaveBeenCalledWith(
+            expect(logMock.warn).toHaveBeenCalledTimes(1);
+            expect(logMock.warn).toHaveBeenCalledWith(
               `Translator - Unable to find value of key "${keyMock}" for locale "${localeCodeMock}"`,
             );
           });
@@ -95,16 +107,16 @@ describe('I18N Module', () => {
 
             expect(
               getMessage(
-                FALLBACK_LOCALE,
+                fallbackLocale,
                 {} as unknown as I18NMessageDict,
                 keyMock,
               ),
             ).toBeNull();
 
-            expect(log.error).toHaveBeenCalledTimes(1);
-            expect(log.error).toHaveBeenCalledWith(
+            expect(logMock.error).toHaveBeenCalledTimes(1);
+            expect(logMock.error).toHaveBeenCalledWith(
               new Error(
-                `Unable to find value of key "${keyMock}" for locale "${FALLBACK_LOCALE}"`,
+                `Unable to find value of key "${keyMock}" for locale "${fallbackLocale}"`,
               ),
             );
           });
@@ -112,12 +124,12 @@ describe('I18N Module', () => {
           it('throws if IN_TEST is set true', () => {
             expect(() =>
               getMessage(
-                FALLBACK_LOCALE,
+                fallbackLocale,
                 {} as unknown as I18NMessageDict,
                 keyMock,
               ),
             ).toThrow(
-              `Unable to find value of key "${keyMock}" for locale "${FALLBACK_LOCALE}"`,
+              `Unable to find value of key "${keyMock}" for locale "${fallbackLocale}"`,
             );
           });
 
@@ -126,12 +138,12 @@ describe('I18N Module', () => {
             process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS = String(true);
             expect(() =>
               getMessage(
-                FALLBACK_LOCALE,
+                fallbackLocale,
                 {} as unknown as I18NMessageDict,
                 keyMock,
               ),
             ).toThrow(
-              `Unable to find value of key "${keyMock}" for locale "${FALLBACK_LOCALE}"`,
+              `Unable to find value of key "${keyMock}" for locale "${fallbackLocale}"`,
             );
           });
 
@@ -140,7 +152,7 @@ describe('I18N Module', () => {
 
             try {
               getMessage(
-                FALLBACK_LOCALE,
+                fallbackLocale,
                 {} as unknown as I18NMessageDict,
                 keyMock,
                 [],
@@ -153,7 +165,7 @@ describe('I18N Module', () => {
             expect(onErrorMock).toHaveBeenCalledTimes(1);
             expect(onErrorMock).toHaveBeenCalledWith(
               new Error(
-                `Unable to find value of key "${keyMock}" for locale "${FALLBACK_LOCALE}"`,
+                `Unable to find value of key "${keyMock}" for locale "${fallbackLocale}"`,
               ),
             );
           });
@@ -163,7 +175,7 @@ describe('I18N Module', () => {
 
             try {
               getMessage(
-                FALLBACK_LOCALE,
+                fallbackLocale,
                 {} as unknown as I18NMessageDict,
                 keyMock,
                 [],
@@ -174,14 +186,14 @@ describe('I18N Module', () => {
             }
 
             getMessage(
-              FALLBACK_LOCALE,
+              fallbackLocale,
               {} as unknown as I18NMessageDict,
               keyMock,
               [],
               onErrorMock,
             );
 
-            expect(log.error).toHaveBeenCalledTimes(1);
+            expect(logMock.error).toHaveBeenCalledTimes(1);
             expect(onErrorMock).toHaveBeenCalledTimes(1);
           });
         });
@@ -198,8 +210,8 @@ describe('I18N Module', () => {
             ),
           ).toStrictEqual('test1 a1 test2  test3');
 
-          expect(log.error).toHaveBeenCalledTimes(1);
-          expect(log.error).toHaveBeenCalledWith(
+          expect(logMock.error).toHaveBeenCalledTimes(1);
+          expect(logMock.error).toHaveBeenCalledWith(
             new Error(
               `Insufficient number of substitutions for key "${keyMock}" with locale "${localeCodeMock}"`,
             ),
@@ -250,7 +262,7 @@ describe('I18N Module', () => {
             ),
           ).toStrictEqual('test1 a1 test2  test3');
 
-          expect(log.error).toHaveBeenCalledTimes(1);
+          expect(logMock.error).toHaveBeenCalledTimes(1);
           expect(onErrorMock).toHaveBeenCalledTimes(1);
         });
       });
@@ -302,8 +314,8 @@ describe('I18N Module', () => {
     it('logs if fetch fails', async () => {
       await fetchLocale(errorLocaleMock);
 
-      expect(log.error).toHaveBeenCalledTimes(1);
-      expect(log.error).toHaveBeenCalledWith(
+      expect(logMock.error).toHaveBeenCalledTimes(1);
+      expect(logMock.error).toHaveBeenCalledWith(
         `failed to fetch testLocaleError locale because of Error: ${errorMock}`,
       );
     });

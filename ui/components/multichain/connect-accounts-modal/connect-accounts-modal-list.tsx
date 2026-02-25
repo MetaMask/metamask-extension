@@ -25,7 +25,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { getURLHost } from '../../../helpers/utils/util';
-import { addPermittedAccounts } from '../../../store/actions';
+import { addPermittedAccount } from '../../../store/actions';
 import { ConnectAccountsListProps } from './connect-account-modal.types';
 
 export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({
@@ -105,8 +105,12 @@ export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({
         <ModalFooter>
           <ButtonPrimary
             data-testid="connect-more-accounts-button"
-            onClick={() => {
-              dispatch(addPermittedAccounts(activeTabOrigin, selectedAccounts));
+            onClick={async () => {
+              await Promise.all(
+                selectedAccounts.map((address) =>
+                  dispatch(addPermittedAccount(activeTabOrigin, address)),
+                ),
+              );
               onClose();
               onAccountsUpdate();
             }}

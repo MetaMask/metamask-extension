@@ -6078,9 +6078,6 @@
   "restore": {
     "message": "復元"
   },
-  "restoreUserData": {
-    "message": "ユーザーデータの復元"
-  },
   "restoreWalletDescription": {
     "message": "$1を入力してください。ウォレットをインポートすると、現在のウォレットデータがこのデバイスから消去されます。この操作は元に戻せません。",
     "description": "$1 is the Secret Recovery Phrase"
@@ -7435,12 +7432,6 @@
   "smartContracts": {
     "message": "スマートコントラクト"
   },
-  "smartSwapsErrorNotEnoughFunds": {
-    "message": "スマートスワップに必要な資金が不足しています。"
-  },
-  "smartSwapsErrorUnavailable": {
-    "message": "スマートスワップは一時的にご利用いただけません。"
-  },
   "smartTransactionCancelled": {
     "message": "トランザクションがキャンセルされました"
   },
@@ -8077,9 +8068,6 @@
   "swapAdjustSlippage": {
     "message": "スリッページの調整"
   },
-  "swapAggregator": {
-    "message": "アグリゲーター"
-  },
   "swapAllowSwappingOf": {
     "message": "$1のスワップを許可",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -8115,15 +8103,9 @@
   "swapCustom": {
     "message": "カスタム"
   },
-  "swapDecentralizedExchange": {
-    "message": "分散型取引所"
-  },
   "swapDetailsTitle": {
     "message": "スワップの詳細",
     "description": "Title for the modal showing details about a swap transaction."
-  },
-  "swapDirectContract": {
-    "message": "ダイレクトコントラクト"
   },
   "swapEditLimit": {
     "message": "限度額を編集"
@@ -8251,9 +8233,6 @@
   "swapReceivingInfoTooltip": {
     "message": "これは推定値です。正確な額はスリッページによって異なります。"
   },
-  "swapRequestForQuotation": {
-    "message": "見積もりのリクエスト"
-  },
   "swapSelect": {
     "message": "選択"
   },
@@ -8345,9 +8324,6 @@
   },
   "swapTwoTransactions": {
     "message": "2つのトランザクション"
-  },
-  "swapUnknown": {
-    "message": "不明"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "このスワップのガス代を支払うのに十分な$1がありません。金額を下げるか、$1を買い足してください。"

@@ -20,9 +20,7 @@ import {
 ///: END:ONLY_INCLUDE_IF
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
-  nonceSortedCompletedTransactionsSelector,
   nonceSortedCompletedTransactionsSelectorAllChains,
-  nonceSortedPendingTransactionsSelector,
   nonceSortedPendingTransactionsSelectorAllChains,
 } from '../../../selectors/transactions';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
@@ -49,10 +47,8 @@ import {
 } from '../../../hooks/useEarliestNonceByChain';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import {
-  getMultichainNetwork,
-  getSelectedAccountMultichainTransactions,
-} from '../../../selectors/multichain';
+import { getMultichainNetwork } from '../../../selectors/multichain';
+import { selectCurrentAccountNonEvmTransactions } from '../../../selectors/multichain-transactions';
 ///: END:ONLY_INCLUDE_IF
 import {
   getIsEvmMultichainNetworkSelected,
@@ -141,10 +137,14 @@ const getTransactionGroupRecipientAddressFilter = (
 const getTransactionGroupRecipientAddressFilterAllChain = (
   recipientAddress,
 ) => {
+  const swapsContractAddresses = Object.values(
+    SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
+  );
+
   return ({ initialTransaction: { txParams } }) => {
     return (
       isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
-      (txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP &&
+      (swapsContractAddresses.includes(txParams?.to) &&
         txParams.data.match(recipientAddress.slice(2)))
     );
   };
@@ -296,6 +296,24 @@ const removeTxGroupsWithNoTx = (dateGroup) => {
   return dateGroup;
 };
 
+const selectSelectedAccountMultichainTransactions = (state) => {
+  const selectedAccount = getSelectedAccount(state);
+
+  if (!selectedAccount || isEvmAccountType(selectedAccount.type)) {
+    return { transactions: [] };
+  }
+
+  const selectedChainId = state.metamask.selectedMultichainNetworkChainId;
+  const selectedChainTransactions =
+    state.metamask.nonEvmTransactions?.[selectedAccount.id]?.[selectedChainId];
+
+  if (selectedChainTransactions) {
+    return selectedChainTransactions;
+  }
+
+  return { transactions: selectCurrentAccountNonEvmTransactions(state) };
+};
+
 export default function TransactionList({
   hideTokenTransactions,
   tokenAddress,
@@ -314,7 +332,7 @@ export default function TransactionList({
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   const nonEvmTransactions = useSelector(
-    getSelectedAccountMultichainTransactions,
+    selectSelectedAccountMultichainTransactions,
   );
 
   const nonEvmTransactionsForToken = useMemo(
@@ -323,12 +341,17 @@ export default function TransactionList({
   );
   ///: END:ONLY_INCLUDE_IF
 
-  const unfilteredPendingTransactionsCurrentChain = useSelector(
-    nonceSortedPendingTransactionsSelector,
-  );
+  const chainId = useSelector(getCurrentChainId);
 
   const unfilteredPendingTransactionsAllChains = useSelector(
     nonceSortedPendingTransactionsSelectorAllChains,
+  );
+  const unfilteredPendingTransactionsCurrentChain = useMemo(
+    () =>
+      unfilteredPendingTransactionsAllChains.filter((transactionGroup) =>
+        filterTransactionByChain(transactionGroup, [chainId]),
+      ),
+    [unfilteredPendingTransactionsAllChains, chainId],
   );
 
   const unfilteredPendingTransactions = useMemo(() => {
@@ -343,15 +366,16 @@ export default function TransactionList({
     overrideFilterForCurrentChain,
   ]);
 
-  const unfilteredCompletedTransactionsCurrentChain = useSelector(
-    nonceSortedCompletedTransactionsSelector,
-  );
-
   const unfilteredCompletedTransactionsAllChains = useSelector(
     nonceSortedCompletedTransactionsSelectorAllChains,
   );
-
-  const chainId = useSelector(getCurrentChainId);
+  const unfilteredCompletedTransactionsCurrentChain = useMemo(
+    () =>
+      unfilteredCompletedTransactionsAllChains.filter((transactionGroup) =>
+        filterTransactionByChain(transactionGroup, [chainId]),
+      ),
+    [unfilteredCompletedTransactionsAllChains, chainId],
+  );
 
   const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
 

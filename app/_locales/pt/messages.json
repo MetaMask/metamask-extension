@@ -6084,9 +6084,6 @@
   "restore": {
     "message": "Restaurar"
   },
-  "restoreUserData": {
-    "message": "Restaurar dados do usuário"
-  },
   "restoreWalletDescription": {
     "message": "Insira sua $1. Ao importar a carteira, você apagará os dados da sua carteira atual neste dispositivo. Esta ação não pode ser desfeita.",
     "description": "$1 is the Secret Recovery Phrase"
@@ -7441,12 +7438,6 @@
   "smartContracts": {
     "message": "Contratos inteligentes"
   },
-  "smartSwapsErrorNotEnoughFunds": {
-    "message": "Fundos insuficientes para uma troca inteligente."
-  },
-  "smartSwapsErrorUnavailable": {
-    "message": "As trocas inteligentes estão temporariamente indisponíveis."
-  },
   "smartTransactionCancelled": {
     "message": "Sua transação foi cancelada"
   },
@@ -8083,9 +8074,6 @@
   "swapAdjustSlippage": {
     "message": "Ajustar slippage"
   },
-  "swapAggregator": {
-    "message": "Agregador"
-  },
   "swapAllowSwappingOf": {
     "message": "Permitir troca de $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -8121,15 +8109,9 @@
   "swapCustom": {
     "message": "personalizado"
   },
-  "swapDecentralizedExchange": {
-    "message": "Corretora descentralizada"
-  },
   "swapDetailsTitle": {
     "message": "Detalhes da troca",
     "description": "Title for the modal showing details about a swap transaction."
-  },
-  "swapDirectContract": {
-    "message": "Contrato direto"
   },
   "swapEditLimit": {
     "message": "Editar limite"
@@ -8257,9 +8239,6 @@
   "swapReceivingInfoTooltip": {
     "message": "Essa é uma estimativa. O valor exato dependerá do slippage."
   },
-  "swapRequestForQuotation": {
-    "message": "Solicitação de cotação"
-  },
   "swapSelect": {
     "message": "Selecione"
   },
@@ -8351,9 +8330,6 @@
   },
   "swapTwoTransactions": {
     "message": "2 transações"
-  },
-  "swapUnknown": {
-    "message": "Desconhecido"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Você não tem $1 suficiente para pagar a taxa de transação (gas) dessa troca. Insira um valor menor ou compre mais $1."

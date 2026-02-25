@@ -40,7 +40,6 @@ import {
   getMultichainCurrentCurrency,
   getMultichainDefaultToken,
   getMultichainIsEvm,
-  getMultichainIsMainnet,
   getMultichainNativeCurrency,
   getMultichainNetwork,
   getMultichainNetworkProviders,
@@ -49,7 +48,6 @@ import {
   getMultichainShouldShowFiat,
   getMultichainIsBitcoin,
   getMultichainIsTron,
-  getMultichainSelectedAccountCachedBalanceIsZero,
   getMultichainIsTestnet,
   getLastSelectedTronAccount,
 } from './multichain';
@@ -558,53 +556,6 @@ describe('Multichain Selectors', () => {
     // No test for testnet with non-EVM for now, as we only support mainnet network providers!
   });
 
-  describe('getMultichainIsMainnet', () => {
-    it('returns true if account is EVM (mainnet)', () => {
-      const state = getEvmState();
-
-      expect(getMultichainIsMainnet(state)).toBe(true);
-    });
-
-    it('returns false if account is EVM (testnet)', () => {
-      const state = getEvmState(CHAIN_IDS.SEPOLIA);
-      expect(getMultichainIsMainnet(state)).toBe(false);
-    });
-
-    // @ts-expect-error This is missing from the Mocha type definitions
-    it.each([
-      { isMainnet: true, account: MOCK_ACCOUNT_BIP122_P2WPKH },
-      { isMainnet: false, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
-    ])(
-      'returns $isMainnet if non-EVM account address "$account.address" is compatible with mainnet',
-      ({
-        isMainnet,
-        account,
-      }: {
-        isMainnet: boolean;
-        account: InternalAccount;
-      }) => {
-        const state = getNonEvmState(account);
-
-        expect(getMultichainIsMainnet(state)).toBe(isMainnet);
-      },
-    );
-
-    it('returns true if Tron account is on mainnet', () => {
-      const state = getTronState(MOCK_ACCOUNT_TRON_MAINNET);
-      expect(getMultichainIsMainnet(state)).toBe(true);
-    });
-
-    it('returns false if Tron account is on Nile testnet', () => {
-      const state = getTronState(MOCK_ACCOUNT_TRON_NILE, TrxScope.Nile);
-      expect(getMultichainIsMainnet(state)).toBe(false);
-    });
-
-    it('returns false if Tron account is on Shasta testnet', () => {
-      const state = getTronState(MOCK_ACCOUNT_TRON_SHASTA, TrxScope.Shasta);
-      expect(getMultichainIsMainnet(state)).toBe(false);
-    });
-  });
-
   describe('getMultichainIsTestnet', () => {
     it('returns false if account is EVM (mainnet)', () => {
       const state = getEvmState();
@@ -747,44 +698,6 @@ describe('Multichain Selectors', () => {
     it('returns true if account is BTC', () => {
       const state = getNonEvmState(MOCK_ACCOUNT_BIP122_P2WPKH);
       expect(getMultichainIsBitcoin(state)).toBe(true);
-    });
-  });
-
-  describe('getMultichainSelectedAccountCachedBalanceIsZero', () => {
-    it('returns true if the selected EVM account has a zero balance', () => {
-      const state = getEvmState();
-      state.metamask.accountsByChainId['0x1'][
-        MOCK_ACCOUNT_EOA.address
-      ].balance = '0x00';
-      expect(getMultichainSelectedAccountCachedBalanceIsZero(state)).toBe(true);
-    });
-
-    it('returns false if the selected EVM account has a non-zero balance', () => {
-      const state = getEvmState();
-      state.metamask.accountsByChainId['0x1'][
-        MOCK_ACCOUNT_EOA.address
-      ].balance = '3';
-      expect(getMultichainSelectedAccountCachedBalanceIsZero(state)).toBe(
-        false,
-      );
-    });
-
-    it('returns true if the selected non-EVM account has a zero balance', () => {
-      const state = getNonEvmState(MOCK_ACCOUNT_BIP122_P2WPKH);
-      state.metamask.balances[MOCK_ACCOUNT_BIP122_P2WPKH.id][
-        MultichainNativeAssets.BITCOIN
-      ].amount = '0.00000000';
-      expect(getMultichainSelectedAccountCachedBalanceIsZero(state)).toBe(true);
-    });
-
-    it('returns false if the selected non-EVM account has a non-zero balance', () => {
-      const state = getNonEvmState(MOCK_ACCOUNT_BIP122_P2WPKH);
-      state.metamask.balances[MOCK_ACCOUNT_BIP122_P2WPKH.id][
-        MultichainNativeAssets.BITCOIN
-      ].amount = '1.00000000';
-      expect(getMultichainSelectedAccountCachedBalanceIsZero(state)).toBe(
-        false,
-      );
     });
   });
 

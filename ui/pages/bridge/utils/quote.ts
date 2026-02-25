@@ -92,11 +92,6 @@ export function formatNetworkFee(
   return formatCurrency(amount.toString(), currency, 2);
 }
 
-export const formatProviderLabel = (args?: {
-  bridgeId: QuoteResponse['quote']['bridgeId'];
-  bridges: QuoteResponse['quote']['bridges'];
-}): `${string}_${string}` => `${args?.bridgeId}_${args?.bridges[0]}`;
-
 export const sanitizeAmountInput = (
   textToSanitize: string,
   dropNumbersAfterSecondDecimal = true,

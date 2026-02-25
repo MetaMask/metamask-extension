@@ -6081,9 +6081,6 @@
   "restore": {
     "message": "Restaurer"
   },
-  "restoreUserData": {
-    "message": "Restaurer les données de l’utilisateur"
-  },
   "restoreWalletDescription": {
     "message": "Saisissez votre $1. En important le portefeuille, vous effacerez les données actuelles de votre portefeuille sur cet appareil. Cette opération est irréversible.",
     "description": "$1 is the Secret Recovery Phrase"
@@ -7438,12 +7435,6 @@
   "smartContracts": {
     "message": "Contrats intelligents"
   },
-  "smartSwapsErrorNotEnoughFunds": {
-    "message": "Fonds insuffisants pour souscrire un contrat de swap intelligent."
-  },
-  "smartSwapsErrorUnavailable": {
-    "message": "Les contrats de swap intelligents sont temporairement indisponibles."
-  },
   "smartTransactionCancelled": {
     "message": "Votre transaction a été annulée"
   },
@@ -8080,9 +8071,6 @@
   "swapAdjustSlippage": {
     "message": "Ajuster l’effet de glissement"
   },
-  "swapAggregator": {
-    "message": "Agrégateur"
-  },
   "swapAllowSwappingOf": {
     "message": "Autoriser le swap de $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -8118,15 +8106,9 @@
   "swapCustom": {
     "message": "personnalisé"
   },
-  "swapDecentralizedExchange": {
-    "message": "Échange décentralisé"
-  },
   "swapDetailsTitle": {
     "message": "Détails du swap",
     "description": "Title for the modal showing details about a swap transaction."
-  },
-  "swapDirectContract": {
-    "message": "Contrat direct"
   },
   "swapEditLimit": {
     "message": "Modifier la limite"
@@ -8254,9 +8236,6 @@
   "swapReceivingInfoTooltip": {
     "message": "Il s’agit d’une estimation. Le montant exact dépend du glissement."
   },
-  "swapRequestForQuotation": {
-    "message": "Demande de cotation"
-  },
   "swapSelect": {
     "message": "Sélectionner"
   },
@@ -8348,9 +8327,6 @@
   },
   "swapTwoTransactions": {
     "message": "2 transactions"
-  },
-  "swapUnknown": {
-    "message": "Inconnu"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Vous n’avez pas assez de $1 pour payer les frais de gaz pour ce swap. Saisissez un montant plus petit ou achetez plus de $1."

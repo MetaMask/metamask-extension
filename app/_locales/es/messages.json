@@ -6084,9 +6084,6 @@
   "restore": {
     "message": "Restaurar"
   },
-  "restoreUserData": {
-    "message": "Restaure sus datos de usuario"
-  },
   "restoreWalletDescription": {
     "message": "Ingresa $1. Al importar la billetera, borrarás los datos de tu billetera actual de este dispositivo. Esta acción es irreversible.",
     "description": "$1 is the Secret Recovery Phrase"
@@ -7441,12 +7438,6 @@
   "smartContracts": {
     "message": "Contratos inteligentes"
   },
-  "smartSwapsErrorNotEnoughFunds": {
-    "message": "No hay suficientes fondos para un intercambio inteligente."
-  },
-  "smartSwapsErrorUnavailable": {
-    "message": "Los intercambios inteligentes no están disponibles temporalmente."
-  },
   "smartTransactionCancelled": {
     "message": "Su transacción se canceló"
   },
@@ -8083,9 +8074,6 @@
   "swapAdjustSlippage": {
     "message": "Ajustar deslizamiento"
   },
-  "swapAggregator": {
-    "message": "Agregador"
-  },
   "swapAllowSwappingOf": {
     "message": "Permitir intercambio de $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -8121,15 +8109,9 @@
   "swapCustom": {
     "message": "personalizar"
   },
-  "swapDecentralizedExchange": {
-    "message": "Cambio descentralizado"
-  },
   "swapDetailsTitle": {
     "message": "Detalles del canje",
     "description": "Title for the modal showing details about a swap transaction."
-  },
-  "swapDirectContract": {
-    "message": "Contrato directo"
   },
   "swapEditLimit": {
     "message": "Editar límite"
@@ -8257,9 +8239,6 @@
   "swapReceivingInfoTooltip": {
     "message": "Este es un valor estimado. El monto exacto depende del deslizamiento."
   },
-  "swapRequestForQuotation": {
-    "message": "Solicitud de cotización"
-  },
   "swapSelect": {
     "message": "Seleccionar"
   },
@@ -8351,9 +8330,6 @@
   },
   "swapTwoTransactions": {
     "message": "2 transacciones"
-  },
-  "swapUnknown": {
-    "message": "Desconocida"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "No dispones de suficiente $1 para pagar la tarifa de gas de este canje. Ingresa un monto menor o compra más $1."

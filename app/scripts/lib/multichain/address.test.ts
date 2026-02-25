@@ -1,8 +1,4 @@
-import {
-  isEthAddress,
-  normalizeAddress,
-  normalizeSafeAddress,
-} from './address';
+import { isEthAddress, normalizeSafeAddress } from './address';
 
 type TestAddress = {
   address: string;
@@ -50,25 +46,6 @@ describe('address', () => {
       'returns false if address is not an ethereum address: $address',
       ({ address }: TestAddress) => {
         expect(isEthAddress(address)).toBe(false);
-      },
-    );
-  });
-
-  describe('normalizeAddress', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
-    it.each(ETH_ADDRESSES)(
-      'normalizes address: $address',
-      ({ address, normalizedAddress }: TestAddress) => {
-        expect(normalizeAddress(address)).toBe(normalizedAddress);
-        expect(normalizeAddress(address.toLowerCase())).toBe(normalizedAddress);
-      },
-    );
-
-    // @ts-expect-error This is missing from the Mocha type definitions
-    it.each(NON_EVM_ADDRESSES)(
-      'returns the original address if its a non-EVM address',
-      ({ address }: TestAddress) => {
-        expect(normalizeAddress(address)).toBe(address);
       },
     );
   });

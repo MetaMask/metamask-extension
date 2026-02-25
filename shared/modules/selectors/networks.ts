@@ -263,27 +263,6 @@ export const getProviderConfig = createSelector(
   },
 );
 
-export function getNetworkConfigurations(
-  state: NetworkConfigurationsState,
-): Record<string, InternalNetworkConfiguration> {
-  return state.metamask.networkConfigurations;
-}
-
-/**
- * Returns true if the currently selected network is inaccessible or whether no
- * provider has been set yet for the currently selected network.
- *
- * @param state - Redux state object.
- */
-export function isNetworkLoading(state: NetworkState) {
-  const selectedNetworkClientId = getSelectedNetworkClientId(state);
-  return (
-    selectedNetworkClientId &&
-    state.metamask.networksMetadata[selectedNetworkClientId].status !==
-      NetworkStatus.Available
-  );
-}
-
 export function getInfuraBlocked(
   state: SelectedNetworkClientIdState & NetworksMetadataState,
 ) {
@@ -301,17 +280,6 @@ export function getCurrentChainId(state: ProviderConfigState) {
   const { chainId } = getProviderConfig(state);
   return chainId;
 }
-
-export const getIsAllNetworksFilterEnabled = createSelector(
-  getNetworkConfigurationsByChainId,
-  (allNetworks) => {
-    const allOpts: Record<string, boolean> = {};
-    Object.keys(allNetworks || {}).forEach((chain) => {
-      allOpts[chain] = true;
-    });
-    return allOpts;
-  },
-);
 
 /**
  * Returns all available network configurations without test networks.

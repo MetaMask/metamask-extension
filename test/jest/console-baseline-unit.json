@@ -258,11 +258,6 @@
       "MetaMask: Background connection not initialized": 9,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/app/assets/asset-list/asset-list.test.tsx": {
-      "Reselect: Identity function warnings": 2,
-      "Reselect: Input stability warnings": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/app/assets/asset-list/sort-control/sort-control.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -877,8 +872,7 @@
     },
     "ui/components/multichain/account-list-menu/account-list-menu.test.tsx": {
       "MetaMask: Background connection not initialized": 2,
-      "Reselect: Identity function warnings": 1,
-      "Reselect: Input stability warnings": 2,
+      "Reselect: Input stability warnings": 1,
       "error: Warning: Encountered two children with": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -946,7 +940,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 18,
+      "React: Act warnings (component updates not wrapped)": 16,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain/avatar-group/avatar-group.test.tsx": {
@@ -1001,8 +995,8 @@
       "React: Act warnings (component updates not wrapped)": 1,
       "React: PropTypes validation failures": 1,
       "React: State updates on unmounted components": 1,
-      "Reselect: Identity function warnings": 2,
-      "Reselect: Input stability warnings": 3,
+      "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain/edit-networks-modal/edit-networks-modal.test.js": {
@@ -1373,9 +1367,6 @@
     },
     "ui/hooks/metamask-notifications/useCounter.test.tsx": {
       "Reselect: Input stability warnings": 3
-    },
-    "ui/hooks/metamask-notifications/useNotifications.test.tsx": {
-      "Reselect: Input stability warnings": 1
     },
     "ui/hooks/metamask-notifications/useSwitchNotifications.test.tsx": {
       "MetaMask: Background connection not initialized": 6,
@@ -1988,9 +1979,8 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-modal/gas-fee-token-modal.test.tsx": {
-      "MetaMask: Background connection not initialized": 126,
-      "Reselect: Identity function warnings": 6,
-      "Reselect: Input stability warnings": 3,
+      "MetaMask: Background connection not initialized": 120,
+      "Reselect: Identity function warnings": 4,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-toast/gas-fee-token-toast.test.tsx": {
@@ -3466,8 +3456,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/selectors/assets.test.ts": {
-      "Reselect: Identity function warnings": 4,
-      "Reselect: Input stability warnings": 1,
+      "Reselect: Identity function warnings": 2,
       "warn: No tokens found for chainId:": 1
     },
     "ui/selectors/confirm-transaction.test.js": {
@@ -3477,17 +3466,9 @@
       "MetaMask: Permission type warnings": 2
     },
     "ui/selectors/metamask-notifications/metamask-notifications.test.ts": {
-      "Reselect: Input stability warnings": 5
+      "Reselect: Input stability warnings": 4
     },
     "ui/selectors/multi-srp/multi-srp.test.ts": {
-      "Reselect: Identity function warnings": 1,
-      "Reselect: Input stability warnings": 1
-    },
-    "ui/selectors/multichain-accounts/account-tree.test.ts": {
-      "Reselect: Identity function warnings": 2,
-      "Reselect: Input stability warnings": 1
-    },
-    "ui/selectors/multichain.test.ts": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1
     },

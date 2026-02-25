@@ -44,10 +44,3 @@ export const selectFragmentById = createSelector(
     return undefined;
   },
 );
-
-export const selectMatchingFragment = createSelector(
-  (state, params) =>
-    selectFragmentBySuccessEvent(state, params.fragmentOptions),
-  (state, params) => selectFragmentById(state, params.existingId),
-  (matchedBySuccessEvent, matchedById) => matchedById ?? matchedBySuccessEvent,
-);

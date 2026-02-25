@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { toggleCurrencySwitch } from '../../../ducks/app/app';
+import { TOGGLE_CURRENCY_INPUT_SWITCH } from '../../../store/actionConstants';
 import UserPreferencedCurrencyInput from './user-preferenced-currency-input.component';
 
 const mapStateToProps = (state) => {
@@ -10,7 +10,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onPreferenceToggle: () => dispatch(toggleCurrencySwitch()),
+    onPreferenceToggle: () =>
+      dispatch({
+        type: TOGGLE_CURRENCY_INPUT_SWITCH,
+      }),
   };
 };
 

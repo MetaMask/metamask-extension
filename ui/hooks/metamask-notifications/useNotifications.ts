@@ -7,7 +7,6 @@ import {
   type INotification,
 } from '@metamask/notification-services-controller/notification-services';
 import {
-  createOnChainTriggers,
   fetchAndUpdateMetamaskNotifications,
   markMetamaskNotificationsAsRead,
   enableMetamaskNotifications,
@@ -78,38 +77,6 @@ export function useListNotifications(): {
     listNotifications,
     notificationsData,
     isLoading: loading,
-    error,
-  };
-}
-
-/**
- * Custom hook to enable notifications by creating on-chain triggers.
- * It manages loading and error states internally.
- *
- * @returns An object containing the `enableNotifications` function, loading state, and error state.
- */
-export function useCreateNotifications(): {
-  createNotifications: () => Promise<void>;
-  error: string | null;
-} {
-  const dispatch = useDispatch();
-  const [error, setError] = useState<string | null>(null);
-
-  const createNotifications = useCallback(async () => {
-    setError(null);
-
-    try {
-      await dispatch(createOnChainTriggers());
-      await updateNotificationSubscriptionExpiration();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'An unexpected error occurred');
-      log.error(e);
-      throw e;
-    }
-  }, [dispatch]);
-
-  return {
-    createNotifications,
     error,
   };
 }

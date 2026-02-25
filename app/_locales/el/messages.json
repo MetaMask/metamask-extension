@@ -6084,9 +6084,6 @@
   "restore": {
     "message": "Επαναφορά"
   },
-  "restoreUserData": {
-    "message": "Επαναφορά δεδομένων χρήστη"
-  },
   "restoreWalletDescription": {
     "message": "Πληκτρολογήστε τη $1. Με την εισαγωγή του πορτοφολιού, θα διαγράψετε τα τρέχοντα δεδομένα πορτοφολιού από αυτήν τη συσκευή. Η ενέργεια δεν μπορεί να αναιρεθεί.",
     "description": "$1 is the Secret Recovery Phrase"
@@ -7441,12 +7438,6 @@
   "smartContracts": {
     "message": "Έξυπνα συμβόλαια"
   },
-  "smartSwapsErrorNotEnoughFunds": {
-    "message": "Δεν υπάρχουν αρκετά κεφάλαια για έξυπνες ανταλλαγές."
-  },
-  "smartSwapsErrorUnavailable": {
-    "message": "Οι Έξυπνες Ανταλλαγές είναι προσωρινά μη διαθέσιμες."
-  },
   "smartTransactionCancelled": {
     "message": "Η συναλλαγή σας ακυρώθηκε"
   },
@@ -8083,9 +8074,6 @@
   "swapAdjustSlippage": {
     "message": "Ρύθμιση ολίσθησης"
   },
-  "swapAggregator": {
-    "message": "Φορέας συγκέντρωσης οικονομικών πληροφοριών"
-  },
   "swapAllowSwappingOf": {
     "message": "Επιτρέψτε την ανταλλαγή του $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -8121,15 +8109,9 @@
   "swapCustom": {
     "message": "προσαρμογή"
   },
-  "swapDecentralizedExchange": {
-    "message": "Αποκεντρωμένη ανταλλαγή"
-  },
   "swapDetailsTitle": {
     "message": "Λεπτομέρειες ανταλλαγής",
     "description": "Title for the modal showing details about a swap transaction."
-  },
-  "swapDirectContract": {
-    "message": "Άμεσο συμβόλαιο"
   },
   "swapEditLimit": {
     "message": "Επεξεργασία ορίου"
@@ -8257,9 +8239,6 @@
   "swapReceivingInfoTooltip": {
     "message": "Πρόκειται για εκτίμηση. Το ακριβές ποσό εξαρτάται από την ολίσθηση."
   },
-  "swapRequestForQuotation": {
-    "message": "Αίτημα για προσφορά"
-  },
   "swapSelect": {
     "message": "Επιλέξτε"
   },
@@ -8351,9 +8330,6 @@
   },
   "swapTwoTransactions": {
     "message": "2 συναλλαγές"
-  },
-  "swapUnknown": {
-    "message": "Άγνωστο"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Δεν έχετε αρκετά $1 για να πληρώσετε τα τέλη συναλλαγών για αυτήν την ανταλλαγή. Εισάγετε μικρότερο ποσό ή αγοράστε περισσότερα $1."

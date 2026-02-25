@@ -4,9 +4,7 @@ import {
   type DelegationStruct,
   ROOT_AUTHORITY,
   createDelegation,
-  createOpenDelegation,
   resolveAuthority,
-  ANY_BENEFICIARY,
   encodeDisableDelegation,
   encodeRedeemDelegations,
 } from './delegation';
@@ -58,6 +56,7 @@ describe('toDelegationStruct', () => {
           args: '0x',
         },
       ],
+
       salt: '0x123',
       signature: mockSignature,
     };
@@ -74,6 +73,7 @@ describe('toDelegationStruct', () => {
           args: '0x',
         },
       ],
+
       salt: 291n,
       signature: mockSignature,
     });
@@ -91,6 +91,7 @@ describe('toDelegationStruct', () => {
           args: '0x',
         },
       ],
+
       salt: 123n,
       signature: mockSignature,
     };
@@ -190,73 +191,7 @@ describe('createDelegation', () => {
           args: '0x',
         },
       ],
-      signature: '0x',
-    });
-  });
-});
 
-describe('createOpenDelegation', () => {
-  it('should create a basic open delegation with root authority', () => {
-    const result = createOpenDelegation({
-      from: mockDelegator,
-      caveats: [],
-    });
-
-    expect(result).toStrictEqual({
-      delegate: ANY_BENEFICIARY,
-      delegator: mockDelegator,
-      authority: ROOT_AUTHORITY,
-      caveats: [],
-      salt: '0x',
-      signature: '0x',
-    });
-  });
-
-  it('should create an open delegation with parent delegation authority', () => {
-    const parentHash =
-      '0x1234567890123456789012345678901234567890123456789012345678901234' as Hex;
-    const result = createOpenDelegation({
-      from: mockDelegator,
-      caveats: [],
-      parentDelegation: parentHash,
-    });
-
-    expect(result).toStrictEqual({
-      delegate: ANY_BENEFICIARY,
-      delegator: mockDelegator,
-      authority: parentHash,
-      caveats: [],
-      salt: '0x',
-      signature: '0x',
-    });
-  });
-
-  it('should create an open delegation with caveats', () => {
-    const caveats: Caveat[] = [
-      {
-        enforcer: '0x1111111111111111111111111111111111111111',
-        terms: '0x',
-        args: '0x',
-      },
-    ];
-
-    const result = createOpenDelegation({
-      from: mockDelegator,
-      caveats,
-    });
-
-    expect(result).toStrictEqual({
-      delegate: ANY_BENEFICIARY,
-      delegator: mockDelegator,
-      authority: ROOT_AUTHORITY,
-      caveats: [
-        {
-          enforcer: '0x1111111111111111111111111111111111111111',
-          terms: '0x',
-          args: '0x',
-        },
-      ],
-      salt: '0x',
       signature: '0x',
     });
   });
@@ -343,6 +278,7 @@ describe('encodeRedeemDelegations', () => {
         },
       ],
     ];
+
     const modes: ExecutionMode[] = [SINGLE_DEFAULT_MODE];
     const executions: ExecutionStruct[][] = [
       [

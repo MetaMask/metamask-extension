@@ -1,10 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { ChainId, getNativeAssetForChainId } from '@metamask/bridge-controller';
-import {
-  formatTokenAmount,
-  formatCurrencyAmount,
-  formatProviderLabel,
-} from './quote';
+import { formatTokenAmount, formatCurrencyAmount } from './quote';
 
 describe('Bridge quote utils', () => {
   describe('getNativeAssetForChainId', () => {
@@ -116,36 +112,6 @@ describe('Bridge quote utils', () => {
 
       const expectedAmount = `$${Number(amount).toFixed(precision)}`;
       expect(result).toBe(expectedAmount);
-    });
-  });
-
-  describe('formatProviderLabel', () => {
-    it('should format provider label with bridgeId and bridges', () => {
-      const args = {
-        bridgeId: 'bridge1',
-        bridges: ['provider1', 'provider2'],
-      };
-
-      const result = formatProviderLabel(args);
-
-      expect(result).toBe('bridge1_provider1');
-    });
-
-    it('should handle undefined args', () => {
-      const result = formatProviderLabel(undefined);
-
-      expect(result).toBe('undefined_undefined');
-    });
-
-    it('should handle empty bridges array', () => {
-      const args = {
-        bridgeId: 'bridge1',
-        bridges: [],
-      };
-
-      const result = formatProviderLabel(args);
-
-      expect(result).toBe('bridge1_undefined');
     });
   });
 });

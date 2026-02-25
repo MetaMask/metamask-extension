@@ -21,6 +21,13 @@ jest.mock(
   }),
 );
 
+jest.mock(
+  '../../../components/multichain/pages/review-permissions-page/site-cell/site-cell',
+  () => ({
+    SiteCell: () => <div data-testid="site-cell" />,
+  }),
+);
+
 const mockTestDappUrl = 'https://test.dapp';
 
 const mockTargetSubjectMetadata = {
@@ -166,66 +173,32 @@ describe('ConnectPage', () => {
 
     const valueElements = queryAllByText('966.988');
     expect(valueElements[0]).toBeDefined();
-    expect(getByText('Edit accounts')).toBeDefined();
-  });
-
-  it('should render edit accounts modal', () => {
-    const { getByText, queryAllByText } = render();
-    const editAccountsButton = getByText('Edit accounts');
-    fireEvent.click(editAccountsButton);
-
-    expect(getByText('Update')).toBeDefined();
-    expect(getByText('Select all')).toBeDefined();
-    expect(getByText('New account')).toBeDefined();
-
-    const accountElements = queryAllByText('Test Account');
-
-    expect(accountElements.length).toBe(2);
-    expect(accountElements[0].textContent).toBe('Test Account');
-    expect(accountElements[1].textContent).toBe('Test Account');
   });
 
   it('should render empty accounts state correctly', () => {
-    const { getByText, queryAllByText, getByTestId } = render();
-    const editAccountsButton = getByText('Edit accounts');
-    fireEvent.click(editAccountsButton);
-
-    const accountElements = queryAllByText('Test Account');
-    fireEvent.click(accountElements[1]);
-
-    const disconnectButton = getByText('Disconnect');
-    fireEvent.click(disconnectButton);
+    const { getByText, getByTestId } = render({
+      props: {
+        request: {},
+        permissionsRequestId: '1',
+        rejectPermissionsRequest: jest.fn(),
+        approveConnection: jest.fn(),
+        activeTabOrigin: mockTestDappUrl,
+        targetSubjectMetadata: mockTargetSubjectMetadata,
+      },
+    });
 
     expect(getByText('Select an account to connect')).toBeDefined();
 
     const confirmButton = getByTestId('confirm-btn');
     expect(confirmButton).toBeDisabled();
-
-    const selectAnAccountToConnectButton = getByText(
-      'Select an account to connect',
-    );
-    fireEvent.click(selectAnAccountToConnectButton);
-
-    expect(getByText('Select all')).toBeDefined();
-    expect(getByText('New account')).toBeDefined();
   });
 
-  it('should render account connectionListItem', () => {
-    const { getByText } = render();
+  it('should render permissions tab content', () => {
+    const { getByText, getByTestId } = render();
     const permissionsTab = getByText('Permissions');
     fireEvent.click(permissionsTab);
 
-    expect(
-      getByText('See your accounts and suggest transactions'),
-    ).toBeDefined();
-  });
-
-  it('should render network connectionListItem', () => {
-    const { getByText } = render();
-    const permissionsTab = getByText('Permissions');
-    fireEvent.click(permissionsTab);
-
-    expect(getByText('Use your enabled networks')).toBeDefined();
+    expect(getByTestId('site-cell')).toBeDefined();
   });
 
   it('should render confirm and cancel button', () => {

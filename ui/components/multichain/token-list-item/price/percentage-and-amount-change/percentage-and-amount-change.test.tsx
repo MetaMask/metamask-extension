@@ -6,8 +6,9 @@ import { MarketDataDetails } from '@metamask/assets-controllers';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import {
   getSelectedAccountCachedBalance,
-  getTokensMarketData,
+  getMarketData,
 } from '../../../../../selectors';
+
 import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   getConversionRate,
@@ -26,7 +27,7 @@ jest.mock('../../../../../ducks/locale/locale', () => ({
 
 jest.mock('../../../../../selectors', () => ({
   getSelectedAccountCachedBalance: jest.fn(),
-  getTokensMarketData: jest.fn(),
+  getMarketData: jest.fn(),
 }));
 
 jest.mock('../../../../../../shared/modules/selectors/networks', () => ({
@@ -46,7 +47,7 @@ const mockGetSelectedAccountCachedBalance = jest.mocked(
 );
 const mockGetConversionRate = jest.mocked(getConversionRate);
 const mockGetNativeCurrency = jest.mocked(getNativeCurrency);
-const mockGetTokensMarketData = jest.mocked(getTokensMarketData);
+const mockGetMarketData = jest.mocked(getMarketData);
 const mockGetCurrentChainId = jest.mocked(getCurrentChainId);
 
 describe('PercentageChange Component', () => {
@@ -56,7 +57,7 @@ describe('PercentageChange Component', () => {
     mockGetSelectedAccountCachedBalance.mockReturnValue('0x02e8ac1ede6ade83');
     mockGetConversionRate.mockReturnValue(2913.15);
     mockGetNativeCurrency.mockReturnValue('ETH');
-    mockGetTokensMarketData.mockReturnValue({
+    mockGetMarketData.mockReturnValue({
       [zeroAddress()]: {
         pricePercentChange1d: 2,
       } as MarketDataDetails,
@@ -118,7 +119,7 @@ describe('PercentageChange Component', () => {
   });
 
   it('should display percentage for non-zero native tokens (MATIC)', () => {
-    mockGetTokensMarketData.mockReturnValue({
+    mockGetMarketData.mockReturnValue({
       '0x0000000000000000000000000000000000001010': {
         pricePercentChange1d: 2,
       } as MarketDataDetails,

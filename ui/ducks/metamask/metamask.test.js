@@ -18,7 +18,6 @@ import reduceMetamask, {
   getIsNetworkBusyByChainId,
   getNativeCurrency,
   getSendHexDataFeatureFlagState,
-  getSendToAccounts,
   isNotEIP1559Network,
   getCurrentCurrency,
   getAllNfts,
@@ -292,82 +291,6 @@ describe('MetaMask Reducers', () => {
     describe('getSendHexDataFeatureFlagState()', () => {
       it('should return the sendHexData feature flag state', () => {
         expect(getSendHexDataFeatureFlagState(mockState)).toStrictEqual(true);
-      });
-    });
-
-    describe('getSendToAccounts()', () => {
-      it('should return an array including all the users accounts and the address book', () => {
-        expect(getSendToAccounts(mockState)).toStrictEqual([
-          {
-            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-            metadata: {
-              name: 'Send Account 1',
-              keyring: {
-                type: 'HD Key Tree',
-              },
-            },
-            options: {},
-            methods: ETH_EOA_METHODS,
-            type: EthAccountType.Eoa,
-            code: '0x',
-            balance: '0x47c9d71831c76efe',
-            nonce: '0x1b',
-            address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
-          },
-          {
-            id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
-            metadata: {
-              name: 'Send Account 2',
-              keyring: {
-                type: 'HD Key Tree',
-              },
-            },
-            options: {},
-            methods: ETH_EOA_METHODS,
-            type: EthAccountType.Eoa,
-            code: '0x',
-            balance: '0x37452b1315889f80',
-            nonce: '0xa',
-            address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
-          },
-          {
-            id: '15e69915-2a1a-4019-93b3-916e11fd432f',
-            metadata: {
-              name: 'Send Account 3',
-              keyring: {
-                type: 'HD Key Tree',
-              },
-            },
-            options: {},
-            methods: ETH_EOA_METHODS,
-            type: EthAccountType.Eoa,
-            code: '0x',
-            balance: '0x30c9d71831c76efe',
-            nonce: '0x1c',
-            address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
-          },
-          {
-            id: '784225f4-d30b-4e77-a900-c8bbce735b88',
-            metadata: {
-              name: 'Send Account 4',
-              keyring: {
-                type: 'HD Key Tree',
-              },
-            },
-            options: {},
-            methods: ETH_EOA_METHODS,
-            type: EthAccountType.Eoa,
-            code: '0x',
-            balance: '0x0',
-            nonce: '0x0',
-            address: '0xd85a4b6a394794842887b8284293d69163007bbb',
-          },
-          {
-            address: '0x06195827297c7a80a443b6894d3bdb8824b43896',
-            name: 'Address Book Account 1',
-            chainId: '0x5',
-          },
-        ]);
       });
     });
   });

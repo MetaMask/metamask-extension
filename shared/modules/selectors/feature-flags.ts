@@ -1,5 +1,17 @@
 import { Hex } from '@metamask/utils';
-import { getNetworkNameByChainId } from '../feature-flags';
+import { CHAIN_IDS } from '../../constants/network';
+import {
+  ARBITRUM,
+  AVALANCHE,
+  BASE,
+  BSC,
+  ETHEREUM,
+  LINEA,
+  OPTIMISM,
+  POLYGON,
+  SEI,
+  ZKSYNC_ERA,
+} from '../../constants/swaps';
 import { ProviderConfigState, getCurrentChainId } from './networks';
 
 type NetworkFeatureFlag = {
@@ -49,6 +61,35 @@ export type FeatureFlagsMetaMaskState = {
     };
   };
 };
+
+function getNetworkNameByChainId(chainId: string): string {
+  switch (chainId) {
+    case CHAIN_IDS.MAINNET:
+    case CHAIN_IDS.GOERLI:
+    case CHAIN_IDS.SEPOLIA:
+      return ETHEREUM;
+    case CHAIN_IDS.BSC:
+      return BSC;
+    case CHAIN_IDS.POLYGON:
+      return POLYGON;
+    case CHAIN_IDS.AVALANCHE:
+      return AVALANCHE;
+    case CHAIN_IDS.OPTIMISM:
+      return OPTIMISM;
+    case CHAIN_IDS.ARBITRUM:
+      return ARBITRUM;
+    case CHAIN_IDS.ZKSYNC_ERA:
+      return ZKSYNC_ERA;
+    case CHAIN_IDS.LINEA_MAINNET:
+      return LINEA;
+    case CHAIN_IDS.BASE:
+      return BASE;
+    case CHAIN_IDS.SEI:
+      return SEI;
+    default:
+      return '';
+  }
+}
 
 /**
  * @param state

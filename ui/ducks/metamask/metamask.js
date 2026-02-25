@@ -1,4 +1,4 @@
-import { addHexPrefix, isHexString } from 'ethereumjs-util';
+import { addHexPrefix } from 'ethereumjs-util';
 import { createSelector } from 'reselect';
 import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
 import { AlertTypes } from '../../../shared/constants/alerts';
@@ -8,22 +8,15 @@ import {
 } from '../../../shared/constants/gas';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import {
-  accountsWithSendEtherInfoSelector,
-  checkNetworkAndAccountSupports1559,
-  getAddressBook,
-} from '../../selectors/selectors';
+import { checkNetworkAndAccountSupports1559 } from '../../selectors/selectors';
 import {
   getProviderConfig,
   getSelectedNetworkClientId,
 } from '../../../shared/modules/selectors/networks';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
-import { updateTransactionGasFees } from '../../store/actions';
-import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 
 const initialState = {
@@ -201,45 +194,6 @@ export default function reduceMetamask(state = initialState, action) {
   }
 }
 
-const toHexWei = (value, expectHexWei) => {
-  return addHexPrefix(expectHexWei ? value : decGWEIToHexWEI(value));
-};
-
-// Action Creators
-export function updateGasFees({
-  gasPrice,
-  gasLimit,
-  maxPriorityFeePerGas,
-  maxFeePerGas,
-  transaction,
-  expectHexWei = false,
-}) {
-  return async (dispatch) => {
-    const txParamsCopy = { ...transaction.txParams, gas: gasLimit };
-    if (gasPrice) {
-      dispatch(
-        setCustomGasPrice(toHexWei(txParamsCopy.gasPrice, expectHexWei)),
-      );
-      txParamsCopy.gasPrice = toHexWei(gasPrice, expectHexWei);
-    } else if (maxFeePerGas && maxPriorityFeePerGas) {
-      txParamsCopy.maxFeePerGas = toHexWei(maxFeePerGas, expectHexWei);
-      txParamsCopy.maxPriorityFeePerGas = addHexPrefix(
-        decGWEIToHexWEI(maxPriorityFeePerGas),
-      );
-    }
-    const updatedTx = {
-      ...transaction,
-      txParams: txParamsCopy,
-    };
-
-    const customGasLimit = isHexString(addHexPrefix(gasLimit))
-      ? addHexPrefix(gasLimit)
-      : addHexPrefix(gasLimit.toString(16));
-    dispatch(setCustomGasLimit(customGasLimit));
-    await dispatch(updateTransactionGasFees(updatedTx.id, updatedTx));
-  };
-}
-
 // Selectors
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
@@ -317,22 +271,12 @@ export function getConversionRate(state) {
     ?.conversionRate;
 }
 
-export function getConversionRateByTicker(state, ticker) {
-  return state.metamask.currencyRates[ticker]?.conversionRate;
-}
-
 export function getCurrencyRates(state) {
   return state.metamask.currencyRates;
 }
 
 export function getSendHexDataFeatureFlagState(state) {
   return state.metamask.featureFlags.sendHexData;
-}
-
-export function getSendToAccounts(state) {
-  const fromAccounts = accountsWithSendEtherInfoSelector(state);
-  const addressBookAccounts = getAddressBook(state);
-  return [...fromAccounts, ...addressBookAccounts];
 }
 
 /**
@@ -461,15 +405,6 @@ export const getGasFeeEstimates = createSelector(
     return gasFeeControllerEstimates;
   },
 );
-
-export function getEstimatedGasFeeTimeBounds(state) {
-  return state.metamask.estimatedGasFeeTimeBounds;
-}
-
-export function getEstimatedGasFeeTimeBoundsByChainId(state, chainId) {
-  return state.metamask.gasFeeEstimatesByChainId?.[chainId]
-    ?.estimatedGasFeeTimeBounds;
-}
 
 export function getIsGasEstimatesLoading(state) {
   const networkAndAccountSupports1559 =
@@ -614,19 +549,6 @@ export function isAddressLedger(state, address) {
   const keyring = findKeyringForAddress(state, address);
 
   return keyring?.type === KeyringType.ledger;
-}
-
-/**
- * Given the redux state object, returns a boolean indicating whether the user has any Ledger accounts added to MetaMask (i.e. Ledger keyrings
- * in state)
- *
- * @param {object} state - the redux state object
- * @returns {boolean} true if the user has a Ledger account and false otherwise
- */
-export function doesUserHaveALedgerAccount(state) {
-  return state.metamask.keyrings.some((kr) => {
-    return kr.type === KeyringType.ledger;
-  });
 }
 
 /**

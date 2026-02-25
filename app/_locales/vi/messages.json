@@ -6084,9 +6084,6 @@
   "restore": {
     "message": "Khôi phục"
   },
-  "restoreUserData": {
-    "message": "Khôi phục dữ liệu người dùng"
-  },
   "restoreWalletDescription": {
     "message": "Nhập $1 của bạn. Khi nhập ví, bạn sẽ xóa dữ liệu ví hiện tại khỏi thiết bị này. Hành động này không thể hoàn tác.",
     "description": "$1 is the Secret Recovery Phrase"
@@ -7441,12 +7438,6 @@
   "smartContracts": {
     "message": "Hợp đồng thông minh"
   },
-  "smartSwapsErrorNotEnoughFunds": {
-    "message": "Không có đủ tiền để thực hiện hoán đổi thông minh."
-  },
-  "smartSwapsErrorUnavailable": {
-    "message": "Hoán đổi thông minh tạm thời không khả dụng."
-  },
   "smartTransactionCancelled": {
     "message": "Giao dịch của bạn đã bị hủy"
   },
@@ -8083,9 +8074,6 @@
   "swapAdjustSlippage": {
     "message": "Điều chỉnh mức trượt giá"
   },
-  "swapAggregator": {
-    "message": "Trình tổng hợp"
-  },
   "swapAllowSwappingOf": {
     "message": "Cho phép hoán đổi $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -8121,15 +8109,9 @@
   "swapCustom": {
     "message": "tùy chỉnh"
   },
-  "swapDecentralizedExchange": {
-    "message": "Sàn giao dịch phi tập trung"
-  },
   "swapDetailsTitle": {
     "message": "Chi tiết hoán đổi",
     "description": "Title for the modal showing details about a swap transaction."
-  },
-  "swapDirectContract": {
-    "message": "Hợp đồng trực tiếp"
   },
   "swapEditLimit": {
     "message": "Sửa hạn mức"
@@ -8257,9 +8239,6 @@
   "swapReceivingInfoTooltip": {
     "message": "Đây là giá trị ước tính. Số tiền chính xác phụ thuộc vào mức trượt giá."
   },
-  "swapRequestForQuotation": {
-    "message": "Yêu cầu báo giá"
-  },
   "swapSelect": {
     "message": "Chọn"
   },
@@ -8351,9 +8330,6 @@
   },
   "swapTwoTransactions": {
     "message": "2 giao dịch"
-  },
-  "swapUnknown": {
-    "message": "Không xác định"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Bạn không có đủ $1 để thanh toán phí gas cho giao dịch hoán đổi này. Nhập số lượng nhỏ hơn hoặc mua thêm $1."

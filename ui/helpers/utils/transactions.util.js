@@ -5,67 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { addHexPrefix } from '../../../app/scripts/lib/util';
 import { TransactionGroupStatus } from '../../../shared/constants/transaction';
-import { readAddressAsContract } from '../../../shared/modules/contract-utils';
-
-/**
- * Returns four-byte method signature from data
- *
- * @param {string} data - The hex data (@code txParams.data) of a transaction
- * @returns {string} The four-byte method signature
- */
-export function getFourBytePrefix(data = '') {
-  const prefixedData = addHexPrefix(data);
-  const fourBytePrefix = prefixedData.slice(0, 10);
-  return fourBytePrefix;
-}
-
-/**
- * Given an transaction category, returns a boolean which indicates whether the transaction is calling an erc20 token method
- *
- * @param {TRANSACTION_TYPES[keyof TRANSACTION_TYPES]} type - The type of transaction being evaluated
- * @returns {boolean} whether the transaction is calling an erc20 token method
- */
-export function isTokenMethodAction(type) {
-  return [
-    TransactionType.tokenMethodTransfer,
-    TransactionType.tokenMethodApprove,
-    TransactionType.tokenMethodSetApprovalForAll,
-    TransactionType.tokenMethodTransferFrom,
-    TransactionType.tokenMethodSafeTransferFrom,
-    TransactionType.tokenMethodIncreaseAllowance,
-  ].includes(type);
-}
-
-export function getLatestSubmittedTxWithNonce(
-  transactions = [],
-  nonce = '0x0',
-) {
-  if (!transactions.length) {
-    return {};
-  }
-
-  return transactions.reduce((acc, current) => {
-    const { submittedTime, txParams: { nonce: currentNonce } = {} } = current;
-
-    if (currentNonce === nonce) {
-      if (!acc.submittedTime) {
-        return current;
-      }
-      return submittedTime > acc.submittedTime ? current : acc;
-    }
-    return acc;
-  }, {});
-}
-
-export async function isSmartContractAddress(address) {
-  const { isContractAddress } = await readAddressAsContract(
-    global.ethereumProvider,
-    address,
-  );
-  return isContractAddress;
-}
 
 export function isLegacyTransaction(txParams) {
   return txParams?.type === TransactionEnvelopeType.legacy;

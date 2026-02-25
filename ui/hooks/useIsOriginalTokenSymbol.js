@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getTokenSymbol } from '../store/actions';
+import { getSymbolAndDecimalsAndName } from '../helpers/utils/token-util';
 import { getTokenList } from '../selectors';
 
 /**
@@ -27,7 +27,11 @@ export function useIsOriginalTokenSymbol(tokenAddress, tokenSymbol) {
 
       // if tokens aren't available, fetch from the blockchain
       if (!trueSymbol) {
-        trueSymbol = await getTokenSymbol(address);
+        const tokenMetadata = await getSymbolAndDecimalsAndName(
+          address,
+          tokens || {},
+        );
+        trueSymbol = tokenMetadata?.symbol;
       }
 
       // if the symbol is the same as the tokenSymbol, it's the original

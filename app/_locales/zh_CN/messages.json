@@ -6078,9 +6078,6 @@
   "restore": {
     "message": "恢复"
   },
-  "restoreUserData": {
-    "message": "恢复用户数据"
-  },
   "restoreWalletDescription": {
     "message": "请输入您的$1。导入钱包将清除此设备上当前的钱包数据。此操作无法撤销。",
     "description": "$1 is the Secret Recovery Phrase"
@@ -7435,12 +7432,6 @@
   "smartContracts": {
     "message": "智能合约"
   },
-  "smartSwapsErrorNotEnoughFunds": {
-    "message": "没有足够的资金进行智能兑换。"
-  },
-  "smartSwapsErrorUnavailable": {
-    "message": "智能兑换暂时不可用。"
-  },
   "smartTransactionCancelled": {
     "message": "您的交易已取消"
   },
@@ -8077,9 +8068,6 @@
   "swapAdjustSlippage": {
     "message": "调整滑点"
   },
-  "swapAggregator": {
-    "message": "聚合器"
-  },
   "swapAllowSwappingOf": {
     "message": "允许交换 $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -8115,15 +8103,9 @@
   "swapCustom": {
     "message": "自定义"
   },
-  "swapDecentralizedExchange": {
-    "message": "去中心化交易所"
-  },
   "swapDetailsTitle": {
     "message": "兑换详情",
     "description": "Title for the modal showing details about a swap transaction."
-  },
-  "swapDirectContract": {
-    "message": "直接合约"
   },
   "swapEditLimit": {
     "message": "编辑限制"
@@ -8251,9 +8233,6 @@
   "swapReceivingInfoTooltip": {
     "message": "这是一个预估额。确切的金额取决于滑点。"
   },
-  "swapRequestForQuotation": {
-    "message": "请求报价"
-  },
   "swapSelect": {
     "message": "选择"
   },
@@ -8345,9 +8324,6 @@
   },
   "swapTwoTransactions": {
     "message": "2笔交易"
-  },
-  "swapUnknown": {
-    "message": "未知"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "您没有足够的 $1 用于支付此次兑换的燃料费。请输入更小金额或者购买更多 $1。"

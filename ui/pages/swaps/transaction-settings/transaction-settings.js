@@ -22,7 +22,7 @@ import {
   Slippage,
   SLIPPAGE_VERY_HIGH_ERROR,
   SLIPPAGE_NEGATIVE_ERROR,
-  isStablePair,
+  STABLE_PAIRS,
 } from '../../../../shared/constants/swaps';
 import {
   BannerAlert,
@@ -33,7 +33,13 @@ import {
 import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 import { setSwapsErrorKey } from '../../../store/actions';
-import { getSwapsErrorKey } from '../../../ducks/swaps/swaps';
+
+const getSwapsErrorKey = (state) => state.metamask?.swapsState?.errorKey;
+
+const isStablePair = (sourceTokenSymbol, destinationTokenSymbol) =>
+  Boolean(
+    STABLE_PAIRS[sourceTokenSymbol] && STABLE_PAIRS[destinationTokenSymbol],
+  );
 
 export default function TransactionSettings({
   onSelect,

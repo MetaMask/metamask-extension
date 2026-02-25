@@ -6084,9 +6084,6 @@
   "restore": {
     "message": "Wiederherstellen"
   },
-  "restoreUserData": {
-    "message": "Benutzerdaten wiederherstellen"
-  },
   "restoreWalletDescription": {
     "message": "Geben Sie Ihre $1 ein. Durch das Importieren der Wallet werden Ihre aktuellen Wallet-Daten von diesem Gerät gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.",
     "description": "$1 is the Secret Recovery Phrase"
@@ -7441,12 +7438,6 @@
   "smartContracts": {
     "message": "Smart Contracts"
   },
-  "smartSwapsErrorNotEnoughFunds": {
-    "message": "Nicht genügend Gelder für einen Smart Swap."
-  },
-  "smartSwapsErrorUnavailable": {
-    "message": "Smart Swaps sind vorrübergehend nicht verfügbar."
-  },
   "smartTransactionCancelled": {
     "message": "Ihre Transaktion wurde storniert"
   },
@@ -8083,9 +8074,6 @@
   "swapAdjustSlippage": {
     "message": "Slippage anpassen"
   },
-  "swapAggregator": {
-    "message": "Aggregator"
-  },
   "swapAllowSwappingOf": {
     "message": "Swapping von $1 zulassen",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -8121,15 +8109,9 @@
   "swapCustom": {
     "message": "benutzerdefiniert"
   },
-  "swapDecentralizedExchange": {
-    "message": "Dezentralisierter Austausch"
-  },
   "swapDetailsTitle": {
     "message": "Swap-Details",
     "description": "Title for the modal showing details about a swap transaction."
-  },
-  "swapDirectContract": {
-    "message": "Direkter Contract"
   },
   "swapEditLimit": {
     "message": "Limit bearbeiten"
@@ -8257,9 +8239,6 @@
   "swapReceivingInfoTooltip": {
     "message": "Dies ist eine Schätzung. Der genaue Betrag hängt von der Slippage ab."
   },
-  "swapRequestForQuotation": {
-    "message": "Angebotsanfrage"
-  },
   "swapSelect": {
     "message": "Auswählen"
   },
@@ -8351,9 +8330,6 @@
   },
   "swapTwoTransactions": {
     "message": "2 Transaktionen"
-  },
-  "swapUnknown": {
-    "message": "Unbekannt"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Sie haben nicht genug $1, um die Gas-Gebühr für diese Swaps zu entrichten. Geben Sie einen kleineren Betrag ein oder kaufen Sie weitere $1."

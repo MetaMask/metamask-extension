@@ -116,6 +116,12 @@ module.exports = {
           },
         },
       },
+      rules: {
+        // ESM app/shared/ui files run in browser-like or Jest environments.
+        // Node builtins compatibility checks for globals like `navigator`
+        // produce false positives here.
+        'n/no-unsupported-features/node-builtins': 'off',
+      },
     },
     /**
      * TypeScript files
@@ -589,6 +595,17 @@ module.exports = {
       rules: {
         'n/no-process-exit': 'off',
         'n/shebang': 'off',
+        // Newer eslint-plugin-n uses this rule for shebang handling.
+        'n/hashbang': 'off',
+        // This helper stubs browser-like globals in test setup.
+        'n/no-unsupported-features/node-builtins': 'off',
+      },
+    },
+    {
+      files: ['test/e2e/lavamoat-stats.js'],
+      rules: {
+        // This script is intentionally executable.
+        'n/hashbang': 'off',
       },
     },
     /**

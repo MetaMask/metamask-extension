@@ -662,38 +662,6 @@ export const nonceSortedCompletedTransactionsSelectorAllChains = createSelector(
       .reverse(),
 );
 
-/**
- * @name nonceSortedPendingTransactionsSelector
- * @description Returns an array of transactionGroups where transactions are still pending sorted by
- * nonce in descending order.
- * @returns {transactionGroup[]}
- */
-export const nonceSortedPendingTransactionsSelector = createSelector(
-  nonceSortedTransactionsSelector,
-  (transactions = []) =>
-    transactions.filter(
-      ({ primaryTransaction }) =>
-        primaryTransaction.status in PENDING_STATUS_HASH,
-    ),
-);
-
-/**
- * @name nonceSortedCompletedTransactionsSelector
- * @description Returns an array of transactionGroups where transactions are confirmed sorted by
- * nonce in descending order.
- * @returns {transactionGroup[]}
- */
-export const nonceSortedCompletedTransactionsSelector = createSelector(
-  nonceSortedTransactionsSelector,
-  (transactions = []) =>
-    transactions
-      .filter(
-        ({ primaryTransaction }) =>
-          !(primaryTransaction.status in PENDING_STATUS_HASH),
-      )
-      .reverse(),
-);
-
 export const submittedPendingTransactionsSelector = createSelector(
   transactionsSelector,
   (transactions = []) =>

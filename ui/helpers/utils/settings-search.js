@@ -54,15 +54,6 @@ function getFilteredSettingsRoutes(t, tabMessage) {
   });
 }
 
-export function getSpecificSettingsRoute(t, tabMessage, sectionMessage) {
-  return getSettingsRoutes().find((routeObject) => {
-    return (
-      routeObject.tabMessage(t) === tabMessage &&
-      routeObject.sectionMessage(t) === sectionMessage
-    );
-  });
-}
-
 /**
  * @param {Function} t - context.t function
  * @param {string} tabMessage

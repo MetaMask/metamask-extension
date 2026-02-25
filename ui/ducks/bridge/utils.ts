@@ -4,7 +4,6 @@ import {
   type Hex,
   parseCaipAssetType,
 } from '@metamask/utils';
-import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
   ChainId,
@@ -15,7 +14,6 @@ import {
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
-import { Numeric } from '../../../shared/modules/Numeric';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
 import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
 import {
@@ -92,14 +90,6 @@ export const getNativeTokenName = (chainId: string): string | undefined => {
     // Return undefined for unsupported chains (e.g., test chains)
     return undefined;
   }
-};
-
-// We don't need to use gas multipliers here because the gasLimit from Bridge API already included it
-export const getHexMaxGasLimit = (gasLimit: number) => {
-  return new Numeric(
-    new BigNumber(gasLimit).toString(),
-    10,
-  ).toPrefixedHexString() as Hex;
 };
 /**
  * Converts basis points (BPS) to percentage
@@ -192,15 +182,6 @@ export const exchangeRateFromMarketData = (
   // @ts-expect-error - hexChainId is a Hex string
   return marketData?.[hexChainId]?.[address]?.price ?? undefined;
 };
-
-export const tokenAmountToCurrency = (
-  amount: string | BigNumber,
-  exchangeRate: number,
-) =>
-  new Numeric(amount, 10)
-    // Stringify exchangeRate before applying conversion to avoid floating point issues
-    .applyConversionRate(new BigNumber(exchangeRate.toString(), 10))
-    .toNumber();
 
 export const tokenPriceInNativeAsset = (
   tokenExchangeRate?: number | null,

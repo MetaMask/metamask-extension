@@ -1,9 +1,6 @@
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../app/scripts/lib/util';
-import { decEthToConvertedCurrency } from '../../shared/modules/conversion.utils';
-import { formatCurrency } from '../helpers/utils/confirm-tx.util';
-import { formatETHFee } from '../helpers/utils/formatters';
 
 import { GasEstimateTypes as GAS_FEE_CONTROLLER_ESTIMATE_TYPES } from '../../shared/constants/gas';
 import {
@@ -14,39 +11,15 @@ import {
 import { calcGasTotal } from '../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../shared/modules/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
-import { getIsMainnet } from './selectors';
-
-export function getCustomGasLimit(state) {
-  return state.gas.customData.limit;
-}
 
 export function getCustomGasPrice(state) {
   return state.gas.customData.price;
-}
-
-export function getBasicGasEstimateLoadingStatus(state) {
-  return getIsGasEstimatesFetched(state) === false;
 }
 
 export function getAveragePriceEstimateInHexWEI(state) {
   const averagePriceEstimate = getAverageEstimate(state);
 
   return getGasPriceInHexWei(averagePriceEstimate);
-}
-
-export function getFastPriceEstimateInHexWEI(state) {
-  const fastPriceEstimate = getFastPriceEstimate(state);
-  return getGasPriceInHexWei(fastPriceEstimate || '0x0');
-}
-
-export function getDefaultActiveButtonIndex(
-  gasButtonInfo,
-  customGasPriceInHex,
-  gasPrice,
-) {
-  return gasButtonInfo
-    .map(({ priceInHexWei }) => priceInHexWei)
-    .lastIndexOf(addHexPrefix(customGasPriceInHex || gasPrice));
 }
 
 export function getSafeLowEstimate(state) {
@@ -77,46 +50,6 @@ export function getFastPriceEstimate(state) {
     : null;
 }
 
-export function isCustomPriceSafe(state) {
-  const safeLow = getSafeLowEstimate(state);
-
-  const customGasPrice = getCustomGasPrice(state);
-
-  if (!customGasPrice) {
-    return true;
-  }
-
-  if (!safeLow) {
-    return false;
-  }
-
-  const customPriceSafe = new Numeric(customGasPrice, 16, EtherDenomination.WEI)
-    .toDenomination(EtherDenomination.GWEI)
-    .greaterThan(safeLow, 10);
-
-  return customPriceSafe;
-}
-
-export function isCustomPriceSafeForCustomNetwork(state) {
-  const estimatedPrice = getAverageEstimate(state);
-
-  const customGasPrice = getCustomGasPrice(state);
-
-  if (!customGasPrice) {
-    return true;
-  }
-
-  if (!estimatedPrice) {
-    return false;
-  }
-
-  const customPriceSafe = new Numeric(customGasPrice, 16, EtherDenomination.WEI)
-    .toDenomination(EtherDenomination.GWEI)
-    .greaterThan(estimatedPrice, 10);
-
-  return customPriceSafe;
-}
-
 export function basicPriceEstimateToETHTotal(
   estimate,
   gasLimit,
@@ -132,33 +65,6 @@ export function basicPriceEstimateToETHTotal(
     .toString();
 }
 
-export function getRenderableEthFee(
-  estimate,
-  gasLimit,
-  numberOfDecimals = 9,
-  nativeCurrency = 'ETH',
-) {
-  const value = new Numeric(estimate, 10).toBase(16).toString();
-  const fee = basicPriceEstimateToETHTotal(value, gasLimit, numberOfDecimals);
-  return formatETHFee(fee, nativeCurrency);
-}
-
-export function getRenderableConvertedCurrencyFee(
-  estimate,
-  gasLimit,
-  convertedCurrency,
-  conversionRate,
-) {
-  const value = new Numeric(estimate, 10).toBase(16).toString();
-  const fee = basicPriceEstimateToETHTotal(value, gasLimit);
-  const feeInCurrency = decEthToConvertedCurrency(
-    fee,
-    convertedCurrency,
-    conversionRate,
-  );
-  return formatCurrency(feeInCurrency, convertedCurrency);
-}
-
 export function priceEstimateToWei(priceEstimate) {
   return new Numeric(priceEstimate, 16, EtherDenomination.GWEI)
     .toDenomination(EtherDenomination.WEI)
@@ -169,14 +75,6 @@ export function priceEstimateToWei(priceEstimate) {
 export function getGasPriceInHexWei(price) {
   const value = new Numeric(price, 10).toBase(16).toString();
   return addHexPrefix(priceEstimateToWei(value));
-}
-
-export function getIsCustomNetworkGasPriceFetched(state) {
-  const gasEstimateType = getGasEstimateType(state);
-  return (
-    gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.ethGasPrice &&
-    !getIsMainnet(state)
-  );
 }
 
 export function getNoGasPriceFetched(state) {

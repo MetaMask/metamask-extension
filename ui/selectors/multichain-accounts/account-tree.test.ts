@@ -4,7 +4,6 @@ import {
   AccountGroupType,
   AccountWalletId,
 } from '@metamask/account-api';
-import { AccountGroupObject } from '@metamask/account-tree-controller';
 
 import { KeyringTypes } from '@metamask/keyring-controller';
 
@@ -16,14 +15,12 @@ import {
   getAccountTree,
   getAllAccountGroups,
   getAccountGroupWithInternalAccounts,
-  getCaip25IdByAccountGroupAndScope,
   getInternalAccountByGroupAndCaip,
   getInternalAccountBySelectedAccountGroupAndCaip,
   getInternalAccountsFromGroupById,
   getMultichainAccountGroupById,
   getMultichainAccountGroups,
   getMultichainAccountsToScopesMap,
-  getSingleAccountGroups,
   getMultichainAccountsByWalletId,
   getSelectedAccountGroup,
   getWalletIdAndNameByAccountAddress,
@@ -165,6 +162,7 @@ describe('Multichain Accounts Selectors', () => {
                   string,
                   ...string[],
                 ],
+
                 metadata: {
                   name: 'Test',
                   entropy: { groupIndex: 0 },
@@ -218,6 +216,7 @@ describe('Multichain Accounts Selectors', () => {
                   string,
                   ...string[],
                 ],
+
                 metadata: {
                   name: 'Test',
                   entropy: { groupIndex: 0 },
@@ -288,6 +287,7 @@ describe('Multichain Accounts Selectors', () => {
                     'eth_signTypedData_v3',
                     'eth_signTypedData_v4',
                   ],
+
                   options: {
                     entropySource: '01JKAF3DSGM3AB87EM9N0K41AJ',
                   },
@@ -315,6 +315,7 @@ describe('Multichain Accounts Selectors', () => {
                     'eth_signTypedData_v3',
                     'eth_signTypedData_v4',
                   ],
+
                   options: {
                     entropySource: '01JKAF3DSGM3AB87EM9N0K41AJ',
                   },
@@ -322,6 +323,7 @@ describe('Multichain Accounts Selectors', () => {
                   type: 'eip155:eoa',
                 },
               ],
+
               metadata: {
                 name: 'Account 1',
                 entropy: {
@@ -368,6 +370,7 @@ describe('Multichain Accounts Selectors', () => {
                     'eth_signTypedData_v3',
                     'eth_signTypedData_v4',
                   ],
+
                   options: {
                     entropySource: '01JKAF3PJ247KAM6C03G5Q0NP8',
                   },
@@ -375,6 +378,7 @@ describe('Multichain Accounts Selectors', () => {
                   type: 'eip155:eoa',
                 },
               ],
+
               metadata: {
                 name: 'Account 2',
                 entropy: {
@@ -422,11 +426,13 @@ describe('Multichain Accounts Selectors', () => {
                       'eth_signTypedData_v3',
                       'eth_signTypedData_v4',
                     ],
+
                     options: {},
                     scopes: ['eip155:0'],
                     type: 'eip155:eoa',
                   },
                 ],
+
                 metadata: {
                   name: 'Another Snap Account 1',
                   pinned: false,
@@ -471,11 +477,13 @@ describe('Multichain Accounts Selectors', () => {
                       'eth_signTypedData_v3',
                       'eth_signTypedData_v4',
                     ],
+
                     options: {},
                     scopes: ['eip155:0'],
                     type: 'eip155:eoa',
                   },
                 ],
+
                 metadata: {
                   name: 'Ledger Account 1',
                   pinned: false,
@@ -524,11 +532,13 @@ describe('Multichain Accounts Selectors', () => {
                     'eth_signTypedData_v3',
                     'eth_signTypedData_v4',
                   ],
+
                   options: {},
                   scopes: ['eip155:0'],
                   type: 'eip155:eoa',
                 },
               ],
+
               metadata: {
                 name: 'Snap Account 1',
                 pinned: false,
@@ -841,69 +851,6 @@ describe('Multichain Accounts Selectors', () => {
     });
   });
 
-  describe('getSingleAccountGroups', () => {
-    it('returns only non-entropy account groups', () => {
-      const result = getSingleAccountGroups(typedMockState);
-
-      expect(result).toHaveLength(3);
-      expect(
-        result.every(
-          (group) => !group.id.startsWith(AccountWalletType.Entropy),
-        ),
-      ).toBe(true);
-      expect(result.map((group) => group.id)).toEqual([
-        LEDGER_GROUP_ID,
-        'snap:local:custody:test/0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
-        'snap:local:snap-id/0xb552685e3d2790efd64a175b00d51f02cdafee5d',
-      ]);
-    });
-
-    it('returns all groups when no entropy groups exist', () => {
-      const stateWithoutEntropy = createMockMultichainAccountsState(
-        {
-          wallets: {
-            'keyring:Test': {
-              id: 'keyring:Test' as const,
-              type: AccountWalletType.Keyring,
-              status: 'ready',
-              groups: {
-                'keyring:Test/address': {
-                  id: 'keyring:Test/address' as const,
-                  type: AccountGroupType.SingleAccount,
-                  accounts: ['account1'] as [string],
-                  metadata: {
-                    name: 'Test',
-                    pinned: false,
-                    hidden: false,
-                  },
-                },
-              },
-              metadata: {
-                name: 'Test Keyring',
-                keyring: { type: KeyringTypes.hd },
-              },
-            },
-          },
-          selectedAccountGroup: null as unknown as AccountGroupId,
-        },
-        {
-          accounts: {},
-          selectedAccount: '',
-        },
-        {
-          networkConfigurationsByChainId:
-            typedMockState.metamask.networkConfigurationsByChainId,
-          multichainNetworkConfigurationsByChainId:
-            typedMockState.metamask.multichainNetworkConfigurationsByChainId,
-        },
-      );
-      const result = getSingleAccountGroups(stateWithoutEntropy);
-
-      expect(result).toHaveLength(1);
-      expect(result[0].id).toBe('keyring:Test/address');
-    });
-  });
-
   describe('getAccountGroupWithInternalAccounts', () => {
     it('returns account groups with resolved internal accounts', () => {
       const result = getAccountGroupWithInternalAccounts(typedMockState);
@@ -977,56 +924,6 @@ describe('Multichain Accounts Selectors', () => {
         createStateWithoutMultichain(),
       );
       expect(result.size).toBe(0);
-    });
-  });
-
-  describe('getCaip25IdByAccountGroupAndScope', () => {
-    it('returns CAIP-25 ID for valid account group and scope', () => {
-      const accountGroup = {
-        id: ENTROPY_GROUP_1_ID,
-        type: 'multichain-account',
-        accounts: [ACCOUNT_1_ID],
-        metadata: { name: 'Default' },
-      };
-
-      const result = getCaip25IdByAccountGroupAndScope(
-        typedMockState,
-        accountGroup as unknown as AccountGroupObject,
-        EIP155_MAINNET_SCOPE,
-      );
-      expect(result).toBe(`${EIP155_MAINNET_SCOPE}:${ACCOUNT_2_ADDRESS}`);
-    });
-
-    it('returns undefined for non-existent account group', () => {
-      const nonExistentGroup = {
-        id: 'entropy:nonexistent/0',
-        type: 'multichain-account',
-        accounts: [],
-        metadata: { name: 'Non-existent' },
-      };
-
-      const result = getCaip25IdByAccountGroupAndScope(
-        typedMockState,
-        nonExistentGroup as unknown as AccountGroupObject,
-        EIP155_MAINNET_SCOPE,
-      );
-      expect(result).toBeUndefined();
-    });
-
-    it('returns undefined for non-existent scope', () => {
-      const accountGroup = {
-        id: ENTROPY_GROUP_1_ID,
-        type: 'multichain-account',
-        accounts: [ACCOUNT_1_ID],
-        metadata: { name: 'Default' },
-      };
-
-      const result = getCaip25IdByAccountGroupAndScope(
-        typedMockState,
-        accountGroup as unknown as AccountGroupObject,
-        SOLANA_MAINNET_SCOPE,
-      );
-      expect(result).toBeUndefined();
     });
   });
 

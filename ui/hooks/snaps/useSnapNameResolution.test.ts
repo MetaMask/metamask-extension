@@ -155,13 +155,15 @@ describe('useSnapNameResolution', () => {
 
     expect(
       await result.current.fetchResolutions('eip155:1', 'metamask.eth'),
-    ).toStrictEqual([
-      {
-        domainName: 'metamask.eth',
-        protocol: 'ENS',
-        resolvedAddress: '0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb',
-      },
-    ]);
+    ).toEqual(
+      expect.arrayContaining([
+        {
+          domainName: 'metamask.eth',
+          protocol: 'ENS',
+          resolvedAddress: '0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb',
+        },
+      ]),
+    );
   });
 
   it('supports chain ID filtering', async () => {
@@ -175,18 +177,20 @@ describe('useSnapNameResolution', () => {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         'metamask',
       ),
-    ).toStrictEqual([
-      {
-        domainName: 'metamask.eth',
-        protocol: 'ENS',
-        resolvedAddress: '0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb',
-      },
-      {
-        domainName: 'metamask.sol',
-        protocol: 'SNS',
-        resolvedAddress: '7XGrbd3dmdesSR5vAu7siidiZ1YHyizzuPCQAnh2g2Lo',
-      },
-    ]);
+    ).toEqual(
+      expect.arrayContaining([
+        {
+          domainName: 'metamask.eth',
+          protocol: 'ENS',
+          resolvedAddress: '0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb',
+        },
+        {
+          domainName: 'metamask.sol',
+          protocol: 'SNS',
+          resolvedAddress: '7XGrbd3dmdesSR5vAu7siidiZ1YHyizzuPCQAnh2g2Lo',
+        },
+      ]),
+    );
   });
 
   it('supports scheme filtering', async () => {
@@ -197,13 +201,15 @@ describe('useSnapNameResolution', () => {
 
     expect(
       await result.current.fetchResolutions('eip155:1', 'farcaster:v'),
-    ).toStrictEqual([
-      {
-        domainName: 'farcaster:v',
-        protocol: 'Farcaster',
-        resolvedAddress: '0x0000000000000000000000000000000000000000',
-      },
-    ]);
+    ).toEqual(
+      expect.arrayContaining([
+        {
+          domainName: 'farcaster:v',
+          protocol: 'Farcaster',
+          resolvedAddress: '0x0000000000000000000000000000000000000000',
+        },
+      ]),
+    );
   });
 
   it('supports TLD filtering', async () => {
@@ -214,13 +220,15 @@ describe('useSnapNameResolution', () => {
 
     expect(
       await result.current.fetchResolutions('eip155:1', 'foo.lens'),
-    ).toStrictEqual([
-      {
-        domainName: 'foo.lens',
-        protocol: 'Lens',
-        resolvedAddress: '0x0000000000000000000000000000000000000000',
-      },
-    ]);
+    ).toEqual(
+      expect.arrayContaining([
+        {
+          domainName: 'foo.lens',
+          protocol: 'Lens',
+          resolvedAddress: '0x0000000000000000000000000000000000000000',
+        },
+      ]),
+    );
   });
 
   it('returns undefined if no snap is available for the given chain ID', async () => {

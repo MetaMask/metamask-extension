@@ -1,6 +1,5 @@
 export { AccountListItem, AccountListItemMenuTypes } from './account-list-item';
 export { AccountListItemMenu } from './account-list-item-menu';
-export { AccountListMenu } from './account-list-menu';
 export { AccountOverview } from './account-overview';
 export { AccountPicker } from './account-picker';
 export { ActivityListItem } from './activity-list-item';
@@ -46,7 +45,6 @@ export { Toast, ToastContainer } from './toast';
 export { DisconnectPermissionsModal } from './disconnect-permissions-modal';
 export { ReceiveModal } from './receive-modal';
 export { EditNetworksModal } from './edit-networks-modal';
-export { EditAccountsModal } from './edit-accounts-modal';
 export {
   Carousel,
   CarouselWithEmptyState,

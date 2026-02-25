@@ -279,7 +279,3 @@ export function getDomainResolutions(state) {
 export function getDomainError(state) {
   return state[name].error;
 }
-
-export function getDomainWarning(state) {
-  return state[name].warning;
-}

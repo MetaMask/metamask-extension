@@ -357,54 +357,5 @@ describe('Confirm Transaction Duck', () => {
         expect(action.type).toStrictEqual(expectedActions[index]),
       );
     });
-
-    it('updates confirmTransaction transaction', () => {
-      const mockState = {
-        metamask: {
-          currentCurrency: 'usd',
-          currencyRates: {
-            ETH: {
-              conversionRate: 468.58,
-            },
-          },
-          ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-          transactions: [
-            {
-              id: 2603411941761054,
-              loadingDefaults: false,
-              chainId: '0x5',
-              origin: 'faucet.metamask.io',
-              status: TransactionStatus.unapproved,
-              time: 1530838113716,
-              txParams: {
-                from: '0xc5ae6383e126f901dcb06131d97a88745bfa88d6',
-                gas: '0x33450',
-                gasPrice: '0x2540be400',
-                to: '0x81b7e08f65bdf5648606c89998a9cc8164397647',
-                value: '0xde0b6b3a7640000',
-              },
-            },
-          ],
-        },
-        confirmTransaction: {},
-      };
-      const middlewares = [thunk];
-      const mockStore = configureMockStore(middlewares);
-      const store = mockStore(mockState);
-      const expectedActions = [
-        'metamask/confirm-transaction/UPDATE_TX_DATA',
-        'metamask/confirm-transaction/UPDATE_TRANSACTION_AMOUNTS',
-        'metamask/confirm-transaction/UPDATE_TRANSACTION_FEES',
-        'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS',
-      ];
-
-      store.dispatch(actions.setTransactionToConfirm(2603411941761054));
-      const storeActions = store.getActions();
-      expect(storeActions).toHaveLength(expectedActions.length);
-
-      storeActions.forEach((action, index) =>
-        expect(action.type).toStrictEqual(expectedActions[index]),
-      );
-    });
   });
 });

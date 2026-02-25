@@ -21,7 +21,7 @@ import {
 } from '../../../ducks/app/app';
 import AdvancedTab from './advanced-tab.component';
 
-export const mapStateToProps = (state) => {
+const mapStateToProps = (state) => {
   const {
     appState: { errorInSettings },
     metamask,
@@ -53,7 +53,7 @@ export const mapStateToProps = (state) => {
   };
 };
 
-export const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     backupUserData: () => backupUserData(),
     setHexDataFeatureFlag: (shouldShow) =>

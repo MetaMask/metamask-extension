@@ -314,9 +314,6 @@ export const getSelectedMultichainNetworkConfiguration = createSelector(
   },
 );
 
-export const getNetworksWithActivity = (state: MultichainNetworkConfigState) =>
-  state.metamask.networksWithTransactionActivity;
-
 export const getEnabledNetworksByNamespace = createSelector(
   getEnabledNetworks,
   getSelectedMultichainNetworkChainId,

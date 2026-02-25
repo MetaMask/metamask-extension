@@ -1,8 +1,6 @@
 import { RpcEndpointType } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../constants/network';
-// Import the module to spy on
-import * as featureFlags from '../feature-flags';
 import {
   getFeatureFlagsByChainId,
   type SwapsFeatureFlags,
@@ -118,27 +116,6 @@ describe('Feature Flags Selectors', () => {
   };
 
   describe('getFeatureFlagsByChainId', () => {
-    beforeEach(() => {
-      jest
-        .spyOn(featureFlags, 'getNetworkNameByChainId')
-        .mockImplementation((chainId: string) => {
-          switch (chainId) {
-            case CHAIN_IDS.MAINNET:
-              return 'ethereum';
-            case CHAIN_IDS.BSC:
-              return 'bsc';
-            case CHAIN_IDS.POLYGON:
-              return 'polygon';
-            default:
-              return '';
-          }
-        });
-    });
-
-    afterEach(() => {
-      jest.restoreAllMocks();
-    });
-
     it('returns correct feature flags for current chain ID in state', () => {
       const state = createMockState(CHAIN_IDS.MAINNET);
       const result = getFeatureFlagsByChainId(state);
@@ -157,16 +134,8 @@ describe('Feature Flags Selectors', () => {
     });
 
     it('returns null if chainId is not supported', () => {
-      // Instead of using SEPOLIA, create a state with a custom network
-      // and mock getNetworkNameByChainId to return empty string
       const state = createMockState(CHAIN_IDS.MAINNET);
-
-      // Mock the implementation for this specific test
-      jest
-        .spyOn(featureFlags, 'getNetworkNameByChainId')
-        .mockReturnValueOnce('');
-
-      const result = getFeatureFlagsByChainId(state);
+      const result = getFeatureFlagsByChainId(state, '0x123456' as Hex);
       expect(result).toBeNull();
     });
 
@@ -196,6 +165,40 @@ describe('Feature Flags Selectors', () => {
         smartTransactions: {
           extensionActive: true,
           mobileActive: true,
+          expectedDeadline: 45,
+          maxDeadline: 150,
+          extensionReturnTxHashAsap: false,
+          extensionReturnTxHashAsapBatch: false,
+          extensionSkipSmartTransactionStatusPage: false,
+        },
+      });
+    });
+
+    it('uses ethereum feature flags for goerli', () => {
+      const state = createMockState(CHAIN_IDS.MAINNET);
+      const result = getFeatureFlagsByChainId(state, CHAIN_IDS.GOERLI);
+
+      expect(result).toStrictEqual({
+        smartTransactions: {
+          mobileActive: true,
+          extensionActive: true,
+          expectedDeadline: 45,
+          maxDeadline: 150,
+          extensionReturnTxHashAsap: false,
+          extensionReturnTxHashAsapBatch: false,
+          extensionSkipSmartTransactionStatusPage: false,
+        },
+      });
+    });
+
+    it('uses ethereum feature flags for sepolia', () => {
+      const state = createMockState(CHAIN_IDS.MAINNET);
+      const result = getFeatureFlagsByChainId(state, CHAIN_IDS.SEPOLIA);
+
+      expect(result).toStrictEqual({
+        smartTransactions: {
+          mobileActive: true,
+          extensionActive: true,
           expectedDeadline: 45,
           maxDeadline: 150,
           extensionReturnTxHashAsap: false,

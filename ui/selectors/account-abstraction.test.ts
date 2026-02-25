@@ -1,7 +1,6 @@
 import { UserOperationMetadata } from '@metamask/user-operation-controller';
 import {
   AccountAbstractionState,
-  getIsUsingPaymaster,
   getUserOperation,
   getUserOperations,
 } from './account-abstraction';
@@ -80,65 +79,6 @@ describe('Account Abstraction Selectors', () => {
       } as unknown as AccountAbstractionState;
 
       expect(getUserOperation(state)).toStrictEqual(userOperation);
-    });
-  });
-
-  describe('getIsUsingPaymaster', () => {
-    it('returns false if no user operation', () => {
-      const state = {} as AccountAbstractionState;
-
-      expect(getIsUsingPaymaster(state)).toBe(false);
-    });
-
-    it('returns false if no paymaster data', () => {
-      const state = {
-        confirmTransaction: {
-          txData: { isUserOperation: true, id: TRANSACTION_ID_MOCK },
-        },
-        metamask: {
-          userOperations: {
-            [TRANSACTION_ID_MOCK]: {
-              userOperation: { paymasterAndData: undefined },
-            },
-          },
-        },
-      } as unknown as AccountAbstractionState;
-
-      expect(getIsUsingPaymaster(state)).toBe(false);
-    });
-
-    it('returns false if empty paymaster data', () => {
-      const state = {
-        confirmTransaction: {
-          txData: { isUserOperation: true, id: TRANSACTION_ID_MOCK },
-        },
-        metamask: {
-          userOperations: {
-            [TRANSACTION_ID_MOCK]: {
-              userOperation: { paymasterAndData: '0x' },
-            },
-          },
-        },
-      } as unknown as AccountAbstractionState;
-
-      expect(getIsUsingPaymaster(state)).toBe(false);
-    });
-
-    it('returns true if paymaster data', () => {
-      const state = {
-        confirmTransaction: {
-          txData: { isUserOperation: true, id: TRANSACTION_ID_MOCK },
-        },
-        metamask: {
-          userOperations: {
-            [TRANSACTION_ID_MOCK]: {
-              userOperation: { paymasterAndData: '0x123' },
-            },
-          },
-        },
-      } as unknown as AccountAbstractionState;
-
-      expect(getIsUsingPaymaster(state)).toBe(true);
     });
   });
 });

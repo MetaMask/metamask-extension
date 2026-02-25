@@ -6084,9 +6084,6 @@
   "restore": {
     "message": "Восстановить"
   },
-  "restoreUserData": {
-    "message": "Восстановить пользовательские данные"
-  },
   "restoreWalletDescription": {
     "message": "Введите свою $1. При импорте кошелька вы удалите текущие данные кошелька с этого устройства. Это действие необратимо.",
     "description": "$1 is the Secret Recovery Phrase"
@@ -7441,12 +7438,6 @@
   "smartContracts": {
     "message": "Смарт-контракты"
   },
-  "smartSwapsErrorNotEnoughFunds": {
-    "message": "Недостаточно средств для смарт-свопа."
-  },
-  "smartSwapsErrorUnavailable": {
-    "message": "Смарт-свопы временно недоступны."
-  },
   "smartTransactionCancelled": {
     "message": "Ваша транзакция отменена"
   },
@@ -8083,9 +8074,6 @@
   "swapAdjustSlippage": {
     "message": "Откорректировать проскальзывание"
   },
-  "swapAggregator": {
-    "message": "Агрегатор"
-  },
   "swapAllowSwappingOf": {
     "message": "Разрешите своп $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -8121,15 +8109,9 @@
   "swapCustom": {
     "message": "пользовательские"
   },
-  "swapDecentralizedExchange": {
-    "message": "Децентрализованная биржа"
-  },
   "swapDetailsTitle": {
     "message": "Сведения о свопе",
     "description": "Title for the modal showing details about a swap transaction."
-  },
-  "swapDirectContract": {
-    "message": "Прямой контракт"
   },
   "swapEditLimit": {
     "message": "Изменить лимит"
@@ -8257,9 +8239,6 @@
   "swapReceivingInfoTooltip": {
     "message": "Это примерное значение. Точная сумма зависит от проскальзывания."
   },
-  "swapRequestForQuotation": {
-    "message": "Запрос котировки"
-  },
   "swapSelect": {
     "message": "Выбрать"
   },
@@ -8351,9 +8330,6 @@
   },
   "swapTwoTransactions": {
     "message": "2 транзакции"
-  },
-  "swapUnknown": {
-    "message": "Неизвестно"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "У вас недостаточно $1 для покрытия платы за газ для этого свопа. Введите меньшую сумму или купите больше $1."

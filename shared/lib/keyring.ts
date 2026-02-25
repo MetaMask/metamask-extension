@@ -32,10 +32,3 @@ export function findKeyringId(
 
   return matchingKeyring.metadata.id;
 }
-
-export function findKeyringIdByAddress(
-  keyrings: KeyringObject[],
-  address: string,
-): string {
-  return findKeyringId(keyrings, { address });
-}

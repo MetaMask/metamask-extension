@@ -6084,9 +6084,6 @@
   "restore": {
     "message": "Geri Yükle"
   },
-  "restoreUserData": {
-    "message": "Kullanıcı verilerini geri yükle"
-  },
   "restoreWalletDescription": {
     "message": "$1 girin. Cüzdanı içe aktardığınızda mevcut cüzdan verileriniz bu cihazdan silinir. Bu işlem geri alınamaz.",
     "description": "$1 is the Secret Recovery Phrase"
@@ -7441,12 +7438,6 @@
   "smartContracts": {
     "message": "Akıllı sözleşmeler"
   },
-  "smartSwapsErrorNotEnoughFunds": {
-    "message": "Akıllı swap için yeterli para yok."
-  },
-  "smartSwapsErrorUnavailable": {
-    "message": "Akıllı Swap'lar geçici olarak kullanılamıyor."
-  },
   "smartTransactionCancelled": {
     "message": "İşleminiz iptal edildi"
   },
@@ -8083,9 +8074,6 @@
   "swapAdjustSlippage": {
     "message": "Kaymayı ayarla"
   },
-  "swapAggregator": {
-    "message": "Toplayıcı"
-  },
   "swapAllowSwappingOf": {
     "message": "$1 takasına izin verin",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -8121,15 +8109,9 @@
   "swapCustom": {
     "message": "özel"
   },
-  "swapDecentralizedExchange": {
-    "message": "Merkeziyetsiz borsa"
-  },
   "swapDetailsTitle": {
     "message": "Takas bilgileri",
     "description": "Title for the modal showing details about a swap transaction."
-  },
-  "swapDirectContract": {
-    "message": "Doğrudan sözleşme"
   },
   "swapEditLimit": {
     "message": "Limiti düzenle"
@@ -8257,9 +8239,6 @@
   "swapReceivingInfoTooltip": {
     "message": "Bu bir tahmindir. Gerçek miktar kaymaya göre belirlenecektir."
   },
-  "swapRequestForQuotation": {
-    "message": "Teklif talebi"
-  },
   "swapSelect": {
     "message": "Seç"
   },
@@ -8351,9 +8330,6 @@
   },
   "swapTwoTransactions": {
     "message": "2 işlem"
-  },
-  "swapUnknown": {
-    "message": "Bilinmeyen"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Bu takas işlemi için gaz ücretini ödemeye yetecek $1 yok. Daha küçük bir tutar girin veya daha fazla $1 satın alın."

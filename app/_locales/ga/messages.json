@@ -4979,9 +4979,6 @@
   "restore": {
     "message": "Athchóirigh"
   },
-  "restoreUserData": {
-    "message": "Athchóirigh sonraí úsáideora"
-  },
   "resultPageError": {
     "message": "Earráid"
   },
@@ -5739,12 +5736,6 @@
   "smartContracts": {
     "message": "Conarthaí cliste"
   },
-  "smartSwapsErrorNotEnoughFunds": {
-    "message": "Níl dóthain cistí ann le haghaidh malartú cliste."
-  },
-  "smartSwapsErrorUnavailable": {
-    "message": "Níl Smart Swaps ar fáil go sealadach."
-  },
   "smartTransactionCancelled": {
     "message": "Cuireadh do idirbheart ar ceal"
   },
@@ -6354,9 +6345,6 @@
   "swapAdjustSlippage": {
     "message": "Coigeartaigh an sleamhnú"
   },
-  "swapAggregator": {
-    "message": "Comhiomlánaitheoir"
-  },
   "swapAllowSwappingOf": {
     "message": "Ceadaigh malartú $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -6392,15 +6380,9 @@
   "swapCustom": {
     "message": "saincheaptha"
   },
-  "swapDecentralizedExchange": {
-    "message": "Malartán díláraithe"
-  },
   "swapDetailsTitle": {
     "message": "Sonraí malartaithe",
     "description": "Title for the modal showing details about a swap transaction."
-  },
-  "swapDirectContract": {
-    "message": "Conradh díreach"
   },
   "swapEditLimit": {
     "message": "Teorainn in eagar"
@@ -6522,9 +6504,6 @@
   "swapReceivingInfoTooltip": {
     "message": "Is meastachán é seo. Braitheann an méid cruinn ar an sciorradh."
   },
-  "swapRequestForQuotation": {
-    "message": "Iarratas ar luachan"
-  },
   "swapSelect": {
     "message": "Roghnaigh"
   },
@@ -6616,9 +6595,6 @@
   },
   "swapTwoTransactions": {
     "message": "2 idirbheart"
-  },
-  "swapUnknown": {
-    "message": "Anaithnid"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Níl go leor $1 agat chun an táille gáis a íoc don mhalartú seo. Cuir isteach méid níos lú nó ceannaigh níos mó $1."

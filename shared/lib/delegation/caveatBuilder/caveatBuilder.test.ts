@@ -1,4 +1,3 @@
-import { createCaveat } from '../caveat';
 import { toHex, type Hex } from '../utils';
 import type { DeleGatorEnvironment } from '../environment';
 import { CaveatBuilder } from './caveatBuilder';
@@ -28,7 +27,13 @@ describe('CaveatBuilder', () => {
     },
   };
 
-  const mockCaveat = createCaveat(
+  const createMockCaveat = (enforcer: Hex, terms: Hex) => ({
+    enforcer,
+    terms,
+    args: toHex('0x'),
+  });
+
+  const mockCaveat = createMockCaveat(
     mockEnvironment.caveatEnforcers.AllowedMethodsEnforcer,
     toHex('0x12345678'),
   );
@@ -91,12 +96,17 @@ describe('CaveatBuilder', () => {
         terms: mockCaveat.terms,
       };
       const result = builder.addCaveat(caveatWithoutArgs).build();
-      expect(result).toStrictEqual([mockCaveat]);
+      expect(result).toStrictEqual([
+        {
+          ...mockCaveat,
+          args: '0x',
+        },
+      ]);
     });
 
     it('should add multiple caveats', () => {
       const builder = new CaveatBuilder(mockEnvironment);
-      const secondCaveat = createCaveat(
+      const secondCaveat = createMockCaveat(
         mockEnvironment.caveatEnforcers.AllowedTargetsEnforcer,
         toHex('0x87654321'),
       );

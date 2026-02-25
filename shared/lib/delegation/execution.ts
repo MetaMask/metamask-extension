@@ -2,31 +2,11 @@ import { encode } from '@metamask/abi-utils';
 import type { Hex as Address, Hex } from '@metamask/utils';
 import { toHex } from './utils';
 
-const zeroAddress = '0x0000000000000000000000000000000000000000' as const;
-
 export type ExecutionStruct = {
   target: Address;
   value: bigint;
   callData: Hex;
 };
-
-/**
- * Creates an execution data structure.
- *
- * @param target - The address to invoke some calldata on.
- * @param value - ETH to send to the address.
- * @param callData - The calldata to invoke on the address.
- * @returns The created execution data structure.
- */
-export const createExecution = (
-  target: Address = zeroAddress,
-  value: bigint = 0n,
-  callData: Hex = '0x',
-): ExecutionStruct => ({
-  target,
-  value,
-  callData,
-});
 
 // Encoded modes
 // https://github.com/erc7579/erc7579-implementation/blob/main/src/lib/ModeLib.sol

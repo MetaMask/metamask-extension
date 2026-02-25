@@ -12,7 +12,7 @@ import {
 import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   getSelectedAccountCachedBalance,
-  getTokensMarketData,
+  getMarketData,
 } from '../../../../../selectors';
 import { useFormatters } from '../../../../../hooks/useFormatters';
 import { EtherDenomination } from '../../../../../../shared/constants/common';
@@ -67,7 +67,10 @@ export const PercentageAndAmountChange = ({
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
   const conversionRate = useSelector(getConversionRate);
   const nativeCurrency = useSelector(getNativeCurrency);
-  const marketData = useSelector(getTokensMarketData);
+  const marketData = useSelector(getMarketData) as Record<
+    string,
+    { pricePercentChange1d?: number }
+  >;
   const currentChainId = useSelector(getCurrentChainId);
 
   const balanceChange = useMemo(() => {

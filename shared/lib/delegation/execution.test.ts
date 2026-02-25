@@ -1,5 +1,4 @@
 import {
-  createExecution,
   encodeSingleExecution,
   encodeBatchExecution,
   encodeExecutionCalldata,
@@ -10,35 +9,9 @@ import {
   BATCH_DEFAULT_MODE,
   BATCH_TRY_MODE,
 } from './execution';
-import { isHex, type Hex } from './utils';
-
-const zeroAddress = '0x0000000000000000000000000000000000000000' as Hex;
+import { isHex } from './utils';
 
 describe('execution', () => {
-  describe('createExecution', () => {
-    it('should create an execution with default values', () => {
-      const result = createExecution();
-      expect(result).toStrictEqual({
-        target: zeroAddress,
-        value: 0n,
-        callData: '0x',
-      });
-    });
-
-    it('should create an execution with provided values', () => {
-      const target = '0x1234567890123456789012345678901234567890' as Hex;
-      const value = 1000n;
-      const callData = '0xabcdef' as Hex;
-
-      const result = createExecution(target, value, callData);
-      expect(result).toStrictEqual({
-        target,
-        value,
-        callData,
-      });
-    });
-  });
-
   describe('encodeSingleExecution', () => {
     it('should encode a single execution', () => {
       const execution: ExecutionStruct = {

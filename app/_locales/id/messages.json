@@ -6084,9 +6084,6 @@
   "restore": {
     "message": "Pulihkan"
   },
-  "restoreUserData": {
-    "message": "Pulihkan data pengguna"
-  },
   "restoreWalletDescription": {
     "message": "Masukkan $1. Dengan mengimpor dompet, Anda akan menghapus data dompet saat ini dari perangkat ini. Tindakan ini tidak dapat dibatalkan.",
     "description": "$1 is the Secret Recovery Phrase"
@@ -7441,12 +7438,6 @@
   "smartContracts": {
     "message": "Kontrak cerdas"
   },
-  "smartSwapsErrorNotEnoughFunds": {
-    "message": "Dana tidak cukup untuk pertukaran cerdas."
-  },
-  "smartSwapsErrorUnavailable": {
-    "message": "Smart Swap tidak tersedia untuk sementara waktu."
-  },
   "smartTransactionCancelled": {
     "message": "Transaksi Anda dibatalkan"
   },
@@ -8083,9 +8074,6 @@
   "swapAdjustSlippage": {
     "message": "Sesuaikan selip"
   },
-  "swapAggregator": {
-    "message": "Agregator"
-  },
   "swapAllowSwappingOf": {
     "message": "Izinkan menukar $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -8121,15 +8109,9 @@
   "swapCustom": {
     "message": "kustom"
   },
-  "swapDecentralizedExchange": {
-    "message": "Bursa terdesentralisasi"
-  },
   "swapDetailsTitle": {
     "message": "Detail swap",
     "description": "Title for the modal showing details about a swap transaction."
-  },
-  "swapDirectContract": {
-    "message": "Kontrak langsung"
   },
   "swapEditLimit": {
     "message": "Edit batas"
@@ -8257,9 +8239,6 @@
   "swapReceivingInfoTooltip": {
     "message": "Ini hanyalah perkiraan. Jumlah yang tepat bergantung pada selip."
   },
-  "swapRequestForQuotation": {
-    "message": "Minta kuotasi"
-  },
   "swapSelect": {
     "message": "Pilih"
   },
@@ -8351,9 +8330,6 @@
   },
   "swapTwoTransactions": {
     "message": "2 transaksi"
-  },
-  "swapUnknown": {
-    "message": "Tidak dikenal"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Anda tidak memiliki cukup $1 untuk membayar biaya gas untuk swap ini. Masukkan jumlah yang lebih kecil atau beli $1 lebih banyak."

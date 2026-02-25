@@ -14,7 +14,6 @@ import type {
 } from '@metamask/network-controller';
 
 import {
-  CHAIN_IDS,
   MAX_SAFE_CHAIN_ID,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../constants/network';
@@ -51,38 +50,6 @@ export function isPrefixedFormattedHexString(value: unknown) {
     return false;
   }
   return /^0x[1-9a-f]+[0-9a-f]*$/iu.test(value);
-}
-
-/**
- * Check if token detection is enabled for certain networks
- *
- * @param chainId - ChainID of network
- * @returns Whether the current network supports token detection
- */
-export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
-  switch (chainId) {
-    case CHAIN_IDS.MAINNET:
-    case CHAIN_IDS.BSC:
-    case CHAIN_IDS.POLYGON:
-    case CHAIN_IDS.AVALANCHE:
-    case CHAIN_IDS.LINEA_GOERLI:
-    case CHAIN_IDS.LINEA_SEPOLIA:
-    case CHAIN_IDS.LINEA_MAINNET:
-    case CHAIN_IDS.ARBITRUM:
-    case CHAIN_IDS.OPTIMISM:
-    case CHAIN_IDS.BASE:
-    case CHAIN_IDS.ZKSYNC_ERA:
-    case CHAIN_IDS.CRONOS:
-    case CHAIN_IDS.CELO:
-    case CHAIN_IDS.GNOSIS:
-    case CHAIN_IDS.FANTOM:
-    case CHAIN_IDS.POLYGON_ZKEVM:
-    case CHAIN_IDS.MOONBEAM:
-    case CHAIN_IDS.MOONRIVER:
-      return true;
-    default:
-      return false;
-  }
 }
 
 /**

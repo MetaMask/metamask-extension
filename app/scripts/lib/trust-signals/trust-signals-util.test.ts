@@ -1,7 +1,6 @@
 import { JsonRpcRequest } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import * as networksModule from '../../../../shared/modules/selectors/networks';
 import {
   SupportedEVMChain,
   mapChainIdToSupportedEVMChain,
@@ -11,7 +10,6 @@ import {
   hasValidTransactionParams,
   isEthSignTypedData,
   hasValidTypedDataParams,
-  getChainId,
   isConnected,
   connectScreenHasBeenPrompted,
 } from './trust-signals-util';
@@ -53,6 +51,7 @@ describe('trust-signals-util', () => {
             chainId: '0x1',
           },
         ],
+
         id: 1,
         jsonrpc: '2.0',
       };
@@ -118,6 +117,7 @@ describe('trust-signals-util', () => {
             chainId: '0x1',
           },
         ],
+
         id: 1,
         jsonrpc: '2.0',
       };
@@ -245,129 +245,6 @@ describe('trust-signals-util', () => {
         jsonrpc: '2.0',
       };
       expect(hasValidTypedDataParams(req)).toBe(false);
-    });
-  });
-
-  describe('getChainId', () => {
-    const mockedGetProviderConfig = jest.mocked(
-      networksModule.getProviderConfig,
-    );
-
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('should return Ethereum for mainnet chain ID', () => {
-      const mockNetworkController = {
-        state: { providerConfig: { chainId: CHAIN_IDS.MAINNET } },
-      } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      mockedGetProviderConfig.mockReturnValue({
-        chainId: CHAIN_IDS.MAINNET,
-      } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      expect(getChainId(mockNetworkController)).toBe(
-        SupportedEVMChain.Ethereum,
-      );
-    });
-
-    it('should return Polygon for polygon chain ID', () => {
-      const mockNetworkController = {
-        state: { providerConfig: { chainId: CHAIN_IDS.POLYGON } },
-      } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      mockedGetProviderConfig.mockReturnValue({
-        chainId: CHAIN_IDS.POLYGON,
-      } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      expect(getChainId(mockNetworkController)).toBe(SupportedEVMChain.Polygon);
-    });
-
-    it('should return correct chain for various supported chains', () => {
-      const testCases = [
-        { chainId: CHAIN_IDS.ARBITRUM, expected: SupportedEVMChain.Arbitrum },
-        { chainId: CHAIN_IDS.AVALANCHE, expected: SupportedEVMChain.Avalanche },
-        { chainId: CHAIN_IDS.BASE, expected: SupportedEVMChain.Base },
-        { chainId: CHAIN_IDS.BSC, expected: SupportedEVMChain.Bsc },
-        { chainId: CHAIN_IDS.OPTIMISM, expected: SupportedEVMChain.Optimism },
-        {
-          chainId: CHAIN_IDS.SEPOLIA,
-          expected: SupportedEVMChain.EthereumSepolia,
-        },
-      ];
-
-      testCases.forEach(({ chainId, expected }) => {
-        const mockNetworkController = {
-          state: { providerConfig: { chainId } },
-        } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-        mockedGetProviderConfig.mockReturnValue({
-          chainId,
-        } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-
-        expect(getChainId(mockNetworkController)).toBe(expected);
-      });
-    });
-
-    it('should handle lowercase chain IDs', () => {
-      const mockNetworkController = {
-        state: { providerConfig: { chainId: '0X1' } },
-      } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      mockedGetProviderConfig.mockReturnValue({
-        chainId: '0X1', // Uppercase
-      } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      expect(getChainId(mockNetworkController)).toBe(
-        SupportedEVMChain.Ethereum,
-      );
-    });
-
-    it('should throw error when chain ID is not found', () => {
-      const mockNetworkController = {
-        state: { providerConfig: {} },
-      } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      mockedGetProviderConfig.mockReturnValue({} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      expect(() => getChainId(mockNetworkController)).toThrow(
-        'Chain ID not found',
-      );
-    });
-
-    it('should throw error when provider config is undefined', () => {
-      const mockNetworkController = {
-        state: { providerConfig: {} },
-      } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      mockedGetProviderConfig.mockReturnValue(undefined as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      expect(() => getChainId(mockNetworkController)).toThrow(
-        'Chain ID not found',
-      );
-    });
-
-    it('should handle custom chain IDs', () => {
-      const customChainMappings = [
-        { chainId: '0x76adf1', expected: SupportedEVMChain.Zora },
-        { chainId: '0x27bc86aa', expected: SupportedEVMChain.Degen },
-        { chainId: '0x343b', expected: SupportedEVMChain.ImmutableZkevm },
-        { chainId: '0x1e0', expected: SupportedEVMChain.Worldchain },
-        { chainId: '0x79a', expected: SupportedEVMChain.SoneiumMinato },
-        { chainId: '0x7e4', expected: SupportedEVMChain.Ronin },
-      ];
-
-      customChainMappings.forEach(({ chainId, expected }) => {
-        const mockNetworkController = {
-          state: { providerConfig: { chainId } },
-        } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-        mockedGetProviderConfig.mockReturnValue({
-          chainId,
-        } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-
-        expect(getChainId(mockNetworkController)).toBe(expected);
-      });
     });
   });
 

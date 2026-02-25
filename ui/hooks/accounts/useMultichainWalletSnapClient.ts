@@ -80,14 +80,6 @@ export class MultichainWalletSnapSender implements Sender {
   };
 }
 
-export function useMultichainWalletSnapSender(snapId: SnapId) {
-  const client = useMemo(() => {
-    return new MultichainWalletSnapSender(snapId);
-  }, [snapId]);
-
-  return client;
-}
-
 export class MultichainWalletSnapClient implements WalletSnapClient {
   readonly #snapId: SnapId;
 

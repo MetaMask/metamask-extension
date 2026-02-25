@@ -18,8 +18,6 @@ import {
   unapprovedMessagesSelector,
   transactionsSelector,
   nonceSortedTransactionsSelector,
-  nonceSortedPendingTransactionsSelector,
-  nonceSortedCompletedTransactionsSelector,
   submittedPendingTransactionsSelector,
   hasTransactionPendingApprovals,
   getApprovedAndSignedTransactions,
@@ -613,56 +611,6 @@ describe('Transaction Selectors', () => {
         transactions: [submittedTx, unapprovedTx, approvedTx, confirmedTx],
       },
     };
-
-    it('nonceSortedPendingTransactionsSelector', () => {
-      const expectedResult = [
-        {
-          nonce: submittedTx.txParams.nonce,
-          transactions: [submittedTx],
-          initialTransaction: submittedTx,
-          primaryTransaction: submittedTx,
-          hasRetried: false,
-          hasCancelled: false,
-        },
-        {
-          nonce: unapprovedTx.txParams.nonce,
-          transactions: [unapprovedTx],
-          initialTransaction: unapprovedTx,
-          primaryTransaction: unapprovedTx,
-          hasRetried: false,
-          hasCancelled: false,
-        },
-        {
-          nonce: approvedTx.txParams.nonce,
-          transactions: [approvedTx],
-          initialTransaction: approvedTx,
-          primaryTransaction: approvedTx,
-          hasRetried: false,
-          hasCancelled: false,
-        },
-      ];
-
-      expect(nonceSortedPendingTransactionsSelector(state)).toStrictEqual(
-        expectedResult,
-      );
-    });
-
-    it('nonceSortedCompletedTransactionsSelector', () => {
-      const expectedResult = [
-        {
-          nonce: confirmedTx.txParams.nonce,
-          transactions: [confirmedTx],
-          initialTransaction: confirmedTx,
-          primaryTransaction: confirmedTx,
-          hasRetried: false,
-          hasCancelled: false,
-        },
-      ];
-
-      expect(nonceSortedCompletedTransactionsSelector(state)).toStrictEqual(
-        expectedResult,
-      );
-    });
 
     it('submittedPendingTransactionsSelector', () => {
       const expectedResult = [submittedTx];

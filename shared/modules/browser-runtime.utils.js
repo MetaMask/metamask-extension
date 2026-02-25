@@ -50,17 +50,6 @@ export function checkForLastErrorAndLog() {
   return error;
 }
 
-/** @returns {Error|undefined} */
-export function checkForLastErrorAndWarn() {
-  const error = checkForLastError();
-
-  if (error) {
-    console.warn(error);
-  }
-
-  return error;
-}
-
 /**
  * Returns true if the browser is affected by a regression that causes the
  * extension port stream established between the contentscript and background

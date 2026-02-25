@@ -8,7 +8,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Box, IconName } from '../../../../component-library';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
-import { EditAccountsModal, EditNetworksModal } from '../../..';
+import { EditNetworksModal } from '../../..';
 import { MergedInternalAccountWithCaipAccountId } from '../../../../../selectors/selectors.types';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
@@ -42,7 +42,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   nonTestNetworks,
   testNetworks,
   accounts,
-  onSelectAccountAddresses,
+  onSelectAccountAddresses: _onSelectAccountAddresses,
   onSelectChainIds,
   selectedAccountAddresses,
   selectedChainIds,
@@ -53,7 +53,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   const { trackEvent } = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];
 
-  const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showEditNetworksModal, setShowEditNetworksModal] = useState(false);
 
   const selectedAccounts = accounts.filter(({ caipAccountId }) =>
@@ -92,7 +91,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
 
   const handleOpenAccountsModal = () => {
     hideAllToasts?.();
-    setShowEditAccountsModal(true);
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.ViewPermissionedAccounts,
@@ -157,15 +155,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
           content={<SiteCellTooltip networks={selectedNetworks} />}
         />
       </Box>
-      {showEditAccountsModal && (
-        <EditAccountsModal
-          accounts={accounts}
-          defaultSelectedAccountAddresses={selectedAccountAddresses}
-          onClose={() => setShowEditAccountsModal(false)}
-          onSubmit={onSelectAccountAddresses}
-        />
-      )}
-
       {showEditNetworksModal && (
         <EditNetworksModal
           nonTestNetworks={nonTestNetworks}

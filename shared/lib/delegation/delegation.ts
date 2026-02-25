@@ -3,7 +3,6 @@ import { getChecksumAddress, type Hex } from '@metamask/utils';
 import {
   Delegation as CoreDelegationStruct,
   ROOT_AUTHORITY,
-  ANY_BENEFICIARY,
   hashDelegation,
 } from '@metamask/delegation-core';
 import { resolveCaveats, type Caveats } from './caveatBuilder';
@@ -184,25 +183,6 @@ export const createDelegation = (
     authority: resolveAuthority(options.parentDelegation),
     caveats: resolveCaveats(options.caveats),
     salt: `0x${Math.random().toString(16).slice(2, 10)}`,
-    signature: '0x',
-  };
-};
-
-/**
- * Creates an open delegation that can be redeemed by any delegate
- *
- * @param options - The options for creating the open delegation
- * @returns The created delegation data structure
- */
-export const createOpenDelegation = (
-  options: CreateOpenDelegationOptions,
-): Delegation => {
-  return {
-    delegate: ANY_BENEFICIARY,
-    delegator: options.from,
-    authority: resolveAuthority(options.parentDelegation),
-    caveats: resolveCaveats(options.caveats),
-    salt: '0x',
     signature: '0x',
   };
 };

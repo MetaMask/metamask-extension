@@ -6084,9 +6084,6 @@
   "restore": {
     "message": "복구"
   },
-  "restoreUserData": {
-    "message": "사용자 데이터 복구"
-  },
   "restoreWalletDescription": {
     "message": "$1을(를) 입력하세요. 지갑을 가져오면 이 기기에서 현재 지갑 데이터가 삭제됩니다. 이 작업은 취소할 수 없습니다.",
     "description": "$1 is the Secret Recovery Phrase"
@@ -7441,12 +7438,6 @@
   "smartContracts": {
     "message": "스마트 계약"
   },
-  "smartSwapsErrorNotEnoughFunds": {
-    "message": "스마트 스왑 자금 부족"
-  },
-  "smartSwapsErrorUnavailable": {
-    "message": "스마트 스왑을 잠시 사용할 수 없습니다."
-  },
   "smartTransactionCancelled": {
     "message": "트랜잭션이 취소되었습니다"
   },
@@ -8083,9 +8074,6 @@
   "swapAdjustSlippage": {
     "message": "슬리피지 조정"
   },
-  "swapAggregator": {
-    "message": "애그리게이터"
-  },
   "swapAllowSwappingOf": {
     "message": "$1 스왑 허용",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -8121,15 +8109,9 @@
   "swapCustom": {
     "message": "맞춤"
   },
-  "swapDecentralizedExchange": {
-    "message": "분산형 교환"
-  },
   "swapDetailsTitle": {
     "message": "스왑 세부 정보",
     "description": "Title for the modal showing details about a swap transaction."
-  },
-  "swapDirectContract": {
-    "message": "직접 계약"
   },
   "swapEditLimit": {
     "message": "한도 편집"
@@ -8257,9 +8239,6 @@
   "swapReceivingInfoTooltip": {
     "message": "이것은 예상치입니다. 정확한 금액은 슬리패지에 따라 달라집니다."
   },
-  "swapRequestForQuotation": {
-    "message": "견적 요청"
-  },
   "swapSelect": {
     "message": "선택"
   },
@@ -8351,9 +8330,6 @@
   },
   "swapTwoTransactions": {
     "message": "트랜잭션 2건"
-  },
-  "swapUnknown": {
-    "message": "알 수 없음"
   },
   "swapValidationInsufficientGasMessage": {
     "message": "$1이 부족해서 이 스왑에 대한 가스비를 지불할 수 없습니다. 더 적은 금액을 입력하거나 $1을(를) 더 구매하세요."

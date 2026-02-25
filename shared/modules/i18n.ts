@@ -126,22 +126,6 @@ export async function loadRelativeTimeFormatLocaleData(
   }
 }
 
-export function clearCaches() {
-  Object.keys(warned).forEach((key) => {
-    delete warned[key];
-  });
-
-  Object.keys(missingMessageErrors).forEach((key) => {
-    delete missingMessageErrors[key];
-  });
-
-  Object.keys(missingSubstitutionErrors).forEach((key) => {
-    delete missingSubstitutionErrors[key];
-  });
-
-  relativeTimeFormatLocaleData.clear();
-}
-
 function applySubstitutions(
   message: string,
   substitutions: I18NSubstitution[],
