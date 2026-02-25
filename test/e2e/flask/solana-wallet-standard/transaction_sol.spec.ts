@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { largeDelayMs, withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -10,7 +11,6 @@ import {
   clickConfirmButton,
   connectSolanaTestDapp,
 } from './testHelpers';
-import FixtureBuilderV2 from 'test/e2e/fixtures/fixture-builder-v2';
 
 describe('Solana Wallet Standard - Transfer SOL', function () {
   describe('Send a transaction', function () {
