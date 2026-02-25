@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { type CaipChainId } from '@metamask/utils';
 import { BridgeClientId } from '@metamask/bridge-controller';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { getBearerToken } from '../../store/actions';
 import { BridgeToken } from '../../ducks/bridge/types';
@@ -33,7 +33,6 @@ export const usePopularTokens = ({
   assetsToInclude: BridgeToken[];
   accountAddress: string;
 }) => {
-  const dispatch = useDispatch();
   const [accountGroup] = useSelector((state: BridgeAppState) =>
     getAccountGroupsByAddress(state, [accountAddress]),
   );

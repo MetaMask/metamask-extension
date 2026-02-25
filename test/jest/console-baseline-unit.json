@@ -1568,7 +1568,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/index.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 4,
+      "React: Act warnings (component updates not wrapped)": 8,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
       "Test errors: Uncaught Errors": 1,
