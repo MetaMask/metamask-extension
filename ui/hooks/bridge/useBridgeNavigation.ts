@@ -175,7 +175,7 @@ export const useBridgeNavigation = () => {
             ...state,
             token,
           },
-          replace: isEntrypoint,
+          replace: !isEntrypoint,
         },
       );
     },
@@ -268,7 +268,10 @@ export const useBridgeNavigation = () => {
   }, [search, navigate, resetLocationState]);
 
   const memoizedToken = useMemo(() => state.token, [state.token]);
-  const memoizedBridgeState = useMemo(() => state.bridgeState, [state.bridgeState]);
+  const memoizedBridgeState = useMemo(
+    () => state.bridgeState,
+    [state.bridgeState],
+  );
 
   return {
     bridgeState: memoizedBridgeState,

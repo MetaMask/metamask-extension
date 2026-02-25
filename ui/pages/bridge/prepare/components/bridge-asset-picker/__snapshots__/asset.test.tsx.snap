@@ -75,6 +75,16 @@ exports[`BridgeAsset should render ERC20 asset 1`] = `
       />
     </div>
   </div>
+  <button
+    aria-label="View token details"
+    class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+    style="align-self: center;"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+      style="mask-image: url('./images/icons/info.svg');"
+    />
+  </button>
 </div>
 `;
 
@@ -162,6 +172,16 @@ exports[`BridgeAsset should render asset with accountType 1`] = `
       />
     </div>
   </div>
+  <button
+    aria-label="View token details"
+    class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+    style="align-self: center;"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+      style="mask-image: url('./images/icons/info.svg');"
+    />
+  </button>
 </div>
 `;
 
@@ -244,6 +264,16 @@ exports[`BridgeAsset should render asset with balance 1`] = `
       </p>
     </div>
   </div>
+  <button
+    aria-label="View token details"
+    class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+    style="align-self: center;"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+      style="mask-image: url('./images/icons/info.svg');"
+    />
+  </button>
 </div>
 `;
 
@@ -326,5 +356,15 @@ exports[`BridgeAsset should render native asset 1`] = `
       />
     </div>
   </div>
+  <button
+    aria-label="View token details"
+    class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+    style="align-self: center;"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+      style="mask-image: url('./images/icons/info.svg');"
+    />
+  </button>
 </div>
 `;

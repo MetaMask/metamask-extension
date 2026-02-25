@@ -136,6 +136,8 @@ describe('Ducks - Bridge', () => {
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState).toStrictEqual({
+        isDestAssetPickerOpen: false,
+        isSrcAssetPickerOpen: false,
         selectedQuote: null,
         fromToken: null,
         toToken: null,
@@ -265,6 +267,8 @@ describe('Ducks - Bridge', () => {
         fromTokenInputValue: null,
         selectedQuote: null,
         slippage: SlippageValue.BridgeDefault,
+        isDestAssetPickerOpen: false,
+        isSrcAssetPickerOpen: false,
         sortOrder: 'cost_ascending',
         toToken: null,
         txAlert: null,

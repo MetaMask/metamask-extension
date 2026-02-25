@@ -191,7 +191,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith(
         `${DEFAULT_ROUTE}?tab=activity`,
         {
-          state: { stayOnHomePage: true, token: null },
+          state: { stayOnHomePage: true, token: null, bridgeState: null },
         },
       );
     });
