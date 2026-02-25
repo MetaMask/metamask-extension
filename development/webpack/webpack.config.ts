@@ -34,22 +34,22 @@ import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
-import { getVariables, resolveEnvironment } from './utils/config';
+import { getVariables } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
+import { MODES } from './utils/constants';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
 if (args.dryRun) {
-  const resolvedEnv = resolveEnvironment(args);
-  console.error(getDryRunMessage(args, features, resolvedEnv));
+  console.error(getDryRunMessage(args, features));
   exit(0);
 }
 
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
-const isDevelopment = args.env === 'development';
+const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const MANIFEST_VERSION = args.manifest_version;
 const manifestPath = join(context, `manifest/v${MANIFEST_VERSION}/_base.json`);
 const manifest: Manifest = require(manifestPath);
@@ -69,7 +69,7 @@ const webAccessibleResources =
 const cache = args.cache
   ? ({
       type: 'filesystem',
-      name: `MetaMask—${args.env}`,
+      name: `MetaMask—${args.mode}`,
       version: cacheKey,
       idleTimeout: 0,
       idleTimeoutForInitialStore: 0,
@@ -114,14 +114,10 @@ const plugins: WebpackPluginInstance[] = [
     ],
   }),
   new ManifestPlugin({
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     web_accessible_resources: webAccessibleResources,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     manifest_version: MANIFEST_VERSION,
     description: commitHash
-      ? `${args.type} build for ${args.env} from git id: ${commitHash.substring(0, 8)}`
+      ? `${args.type} build for ${args.mode} from git id: ${commitHash.substring(0, 8)}`
       : null,
     version: version.version,
     versionName: version.versionName,
@@ -242,9 +238,9 @@ const config = {
   cache,
   plugins,
   context,
-  mode: args.env,
+  mode: args.mode,
   stats: args.stats ? 'normal' : 'none',
-  name: `MetaMask – ${args.env}`,
+  name: `MetaMask – ${args.mode}`,
   // use the `.browserlistrc` file directly to avoid browserslist searching
   target: `browserslist:${browsersListPath}:defaults`,
   // TODO: look into using SourceMapDevToolPlugin and its exclude option to speed up the build
@@ -453,11 +449,7 @@ const config = {
   node: {
     // eventually we should avoid any code that uses node globals `__dirname`
     // and `__filename``. But for now, just warn about their use.
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     __dirname: 'warn-mock',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     __filename: 'warn-mock',
     // Hopefully in the the future we won't need to polyfill node `global`, as
     // a browser version, `globalThis`, already exists and we should use it

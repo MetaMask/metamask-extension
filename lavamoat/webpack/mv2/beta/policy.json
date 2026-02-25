@@ -813,7 +813,7 @@
       },
       "packages": {
         "@metamask/account-api": true,
-        "@metamask/account-tree-controller>@metamask/accounts-controller": true,
+        "@metamask/accounts-controller": true,
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
@@ -838,18 +838,6 @@
         "@metamask/utils": true,
         "@metamask/accounts-controller>ethereum-cryptography": true,
         "lodash": true,
-        "uuid": true
-      }
-    },
-    "@metamask/account-tree-controller>@metamask/accounts-controller": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@metamask/keyring-controller": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography": true,
         "uuid": true
       }
     },
@@ -996,7 +984,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1018,7 +1006,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/bridge-status-controller>@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "buffer": true
@@ -1370,11 +1358,12 @@
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-internal-api": true,
-        "@metamask/keyring-internal-snap-client": true,
+        "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": true,
         "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": true,
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
+        "@metamask/keyring-api>async-mutex": true,
         "@metamask/eth-snap-keyring>uuid": true
       }
     },
@@ -1594,7 +1583,22 @@
         "@metamask/superstruct": true
       }
     },
+    "@metamask/keyring-internal-snap-client>@metamask/keyring-internal-api": {
+      "packages": {
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true
+      }
+    },
     "@metamask/keyring-internal-snap-client": {
+      "packages": {
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-internal-snap-client>@metamask/keyring-internal-api": true,
+        "@metamask/keyring-snap-client": true,
+        "@metamask/keyring-utils": true
+      }
+    },
+    "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
         "@metamask/keyring-internal-api": true,
@@ -1716,21 +1720,6 @@
         "lodash": true
       }
     },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "packages": {
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/bridge-status-controller>@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "packages": {
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/network-enablement-controller>@metamask/multichain-network-controller": {
-      "packages": {
-        "@metamask/utils": true
-      }
-    },
     "@metamask/multichain-transactions-controller": {
       "globals": {
         "console.error": true
@@ -1792,7 +1781,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
-        "@metamask/network-enablement-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/utils": true
       }
@@ -2530,11 +2519,6 @@
       }
     },
     "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
-    "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true
       }
@@ -4200,16 +4184,6 @@
       },
       "packages": {
         "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
-      }
-    },
-    "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography": {
-      "globals": {
-        "TextDecoder": true,
-        "crypto": true,
-        "module": true
-      },
-      "packages": {
-        "@metamask/account-tree-controller>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@metamask/eth-hd-keyring>ethereum-cryptography": {
