@@ -674,7 +674,7 @@
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/account-api": true,
-        "@metamask/controller-utils": true,
+        "@metamask/assets-controllers>@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/utils": true,
         "bn.js": true,
@@ -741,6 +741,59 @@
         "bn.js": true,
         "buffer": true,
         "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "bn.js": true,
+        "buffer": true,
+        "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
+      }
+    },
+    "@metamask/network-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "bn.js": true,
+        "buffer": true,
+        "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
+      }
+    },
+    "@metamask/transaction-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "bn.js": true,
+        "buffer": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
         "lodash": true
@@ -1125,7 +1178,7 @@
     "@metamask/multichain-network-controller": {
       "packages": {
         "@metamask/keyring-api": true,
-        "@metamask/network-controller": true,
+        "@metamask/multichain-network-controller>@metamask/network-controller": true,
         "@metamask/utils": true
       }
     },
@@ -1143,13 +1196,13 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+          "Dependency '@metamask/network-controller>@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/connectivity-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/network-controller>@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/eth-json-rpc-middleware": true,
@@ -1342,7 +1395,7 @@
     },
     "@metamask/transaction-controller": {
       "packages": {
-        "@metamask/controller-utils": true
+        "@metamask/transaction-controller>@metamask/controller-utils": true
       }
     },
     "@metamask/utils": {
