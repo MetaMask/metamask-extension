@@ -132,7 +132,7 @@ const useBridging = () => {
       navigateToBridgePage({
         token: tokenToUse,
         searchParams: search.toString(),
-        preventBackNavigation: false,
+        isEntrypoint: true,
       });
     },
     [

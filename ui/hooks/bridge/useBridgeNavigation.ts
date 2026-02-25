@@ -17,6 +17,7 @@ import {
   formatChainIdToHex,
   isNativeAddress,
   isNonEvmChainId,
+  UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import {
@@ -34,6 +35,7 @@ import type { MinimalAsset } from '../../pages/bridge/utils/tokens';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
 import { resetBackgroundSwapsState } from '../../store/actions';
 import type { BridgeState, BridgeToken } from '../../ducks/bridge/types';
+import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
 
 export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
   state: {
@@ -107,7 +109,7 @@ export const useBridgeNavigation = () => {
         },
         replace: true,
       }),
-    [navigate, state, pathname, bridgeState],
+    [navigate, state, pathname],
   );
 
   /**
@@ -140,20 +142,29 @@ export const useBridgeNavigation = () => {
    * Navigates to the bridge page.
    * @param token - The token to set after loading the bridge page.
    * @param searchParams - The search params for deep-link input parameters.
+   * @param isEntrypoint - Whether the bridge page is being loaded for the first time.
    */
   const navigateToBridgePage = useCallback(
     (
       params: {
         token: BridgeNavigationOptions['state']['token'];
         searchParams: string;
-        preventBackNavigation: boolean;
+        isEntrypoint: boolean;
       } = {
         token: state?.token,
         searchParams: new URLSearchParams('').toString(),
-        preventBackNavigation: true,
+        isEntrypoint: false,
       },
     ) => {
-      const { token, searchParams, preventBackNavigation } = params;
+      const { token, searchParams, isEntrypoint } = params;
+      // Publish PageViewed event on initial page view
+      isEntrypoint &&
+        dispatch(
+          trackUnifiedSwapBridgeEvent(
+            UnifiedSwapBridgeEventName.PageViewed,
+            {},
+          ),
+        );
       navigate(
         {
           pathname: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
@@ -164,7 +175,7 @@ export const useBridgeNavigation = () => {
             ...state,
             token,
           },
-          replace: preventBackNavigation,
+          replace: isEntrypoint,
         },
       );
     },
