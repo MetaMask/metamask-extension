@@ -17,7 +17,8 @@ describe('Show default address', function (this: Suite) {
         await loginWithBalanceValidation(driver);
 
         // Navigate to settings and check "show default address" section is displayed
-        await new HomePage(driver).headerNavbar.openSettingsPage();
+        const homePage = new HomePage(driver);
+        await homePage.headerNavbar.openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
         await generalSettings.checkPageIsLoaded();
         await generalSettings.checkShowDefaultAddressSectionIsDisplayed();
@@ -35,8 +36,9 @@ describe('Show default address', function (this: Suite) {
         await loginWithBalanceValidation(driver);
 
         // Check on home page that default address is not present
-        await new HomePage(driver).checkPageIsLoaded();
-        await new HomePage(driver).checkDefaultAddressIsNotDisplayed();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkDefaultAddressIsNotDisplayed();
       },
     );
   });
@@ -51,15 +53,16 @@ describe('Show default address', function (this: Suite) {
         await loginWithBalanceValidation(driver);
 
         // Navigate to settings and toggle on "show default address" feature
-        await new HomePage(driver).headerNavbar.openSettingsPage();
+        const homePage = new HomePage(driver);
+        await homePage.headerNavbar.openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
         await generalSettings.checkPageIsLoaded();
         await generalSettings.toggleShowDefaultAddress();
         await new SettingsPage(driver).closeSettingsPage();
 
         // Check on home page that default address is present
-        await new HomePage(driver).checkPageIsLoaded();
-        await new HomePage(driver).checkDefaultAddressIsDisplayed();
+        await homePage.checkPageIsLoaded();
+        await homePage.checkDefaultAddressIsDisplayed();
       },
     );
   });
