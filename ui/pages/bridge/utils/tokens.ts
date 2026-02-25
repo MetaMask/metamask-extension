@@ -89,6 +89,7 @@ const postWithCache = async (
  * Fetches a list of tokens sorted by balance, popularity and other criteria from the bridge-api
  *
  * @param params - The parameters for the fetchPopularTokens function
+ * @param params.jwt - The JWT token for authentication
  * @param params.chainIds - The chain IDs to fetch tokens for
  * @param params.assetsWithBalances - The user's balances sorted by amount. This is used to add balance information to the returned tokens. These assets are returned first in the list in the same order as the input.
  * @param params.clientId - The client ID for metrics
@@ -152,6 +153,7 @@ export const fetchPopularTokens = async ({
  * Fetches a list of matching tokens sorted by balance, popularity and other criteria from the bridge-api
  *
  * @param params - The parameters for the fetchTokensBySearchQuery function
+ * @param params.jwt - The JWT token for authentication
  * @param params.chainIds - The chain IDs to fetch tokens for
  * @param params.query - The search query
  * @param params.clientId - The client ID for metrics

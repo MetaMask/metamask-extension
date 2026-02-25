@@ -108,6 +108,7 @@ export const useTokenSearchResults = ({
   );
 
   const debouncedFetchSearchResults = useCallback(
+    // eslint-disable-next-line react-compiler/react-compiler
     debounce(
       (query: string, assets: BridgeToken[]) =>
         fetchSearchResults(query, assets),

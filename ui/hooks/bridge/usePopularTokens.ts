@@ -3,7 +3,7 @@ import { type CaipChainId } from '@metamask/utils';
 import { BridgeClientId } from '@metamask/bridge-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
-import { getBearerToken } from '../../../ui/store/actions';
+import { getBearerToken } from '../../store/actions';
 import { BridgeToken } from '../../ducks/bridge/types';
 import { toBridgeToken } from '../../ducks/bridge/utils';
 import { type BridgeAppState } from '../../ducks/bridge/selectors';
