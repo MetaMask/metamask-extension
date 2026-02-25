@@ -64,6 +64,7 @@ import {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   PERPS_HOME_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
+  PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
@@ -343,6 +344,12 @@ const PerpsActivityPage = mmLazy(
   (() =>
     import('../perps/perps-activity-page.tsx')) as unknown as DynamicImportType,
 );
+const PerpsOrderEntryPage = mmLazy(
+  (() =>
+    import(
+      '../perps/perps-order-entry-page.tsx'
+    )) as unknown as DynamicImportType,
+);
 
 // Perps pages wrapped with PerpsControllerProvider
 const WrappedPerpsHomePage = () => (
@@ -373,6 +380,13 @@ const WrappedPerpsActivityPage = () => (
     </PerpsControllerProvider>
   </PerpsRouteWrapper>
 );
+
+const WrappedPerpsOrderEntryPage = () => (
+  <PerpsControllerProvider>
+    <PerpsOrderEntryPage />
+  </PerpsControllerProvider>
+);
+
 // End Lazy Routes
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -813,6 +827,12 @@ export default function Routes() {
       createRouteWithLayout({
         path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
         component: WrappedPerpsMarketDetailPage,
+        layout: RootLayout,
+        authenticated: true,
+      }),
+      createRouteWithLayout({
+        path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
+        component: WrappedPerpsOrderEntryPage,
         layout: RootLayout,
         authenticated: true,
       }),

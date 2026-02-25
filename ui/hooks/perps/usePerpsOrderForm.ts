@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import type { OrderType } from '@metamask/perps-controller';
+import { OrderType } from '@metamask/perps-controller';
 import { useFormatters } from '../useFormatters';
 import type {
   OrderFormState,
@@ -23,6 +23,8 @@ export type UsePerpsOrderFormOptions = {
   mode: OrderMode;
   /** Existing position data for pre-population */
   existingPosition?: ExistingPositionData;
+  /** Available balance for trading (used to compute balancePercent) */
+  availableBalance?: number;
   /** Callback when form state changes */
   onFormStateChange?: (formState: OrderFormState) => void;
   /** Callback when order is submitted */
@@ -60,6 +62,8 @@ export type UsePerpsOrderFormReturn = {
   handleClosePercentChange: (percent: number) => void;
   /** Handler for limitPrice changes */
   handleLimitPriceChange: (limitPrice: string) => void;
+  /** Handler for order type changes */
+  handleOrderTypeChange: (type: OrderType) => void;
   /** Handler for form submission */
   handleSubmit: () => void;
 };
@@ -76,6 +80,7 @@ export type UsePerpsOrderFormReturn = {
  * @param options.initialDirection - Initial order direction
  * @param options.mode - Order mode: 'new', 'modify', or 'close'
  * @param options.existingPosition - Existing position data for pre-population
+ * @param options.availableBalance - Available balance for trading
  * @param options.onFormStateChange - Callback when form state changes
  * @param options.onSubmit - Callback when order is submitted
  * @param options.orderType - Order type: 'market' or 'limit'
@@ -87,6 +92,7 @@ export function usePerpsOrderForm({
   initialDirection,
   mode,
   existingPosition,
+  availableBalance = 0,
   onFormStateChange,
   onSubmit,
   orderType = 'market',
@@ -97,24 +103,47 @@ export function usePerpsOrderForm({
   // Close percentage state (for 'close' mode, defaults to 100%)
   const [closePercent, setClosePercent] = useState<number>(100);
 
+  /**
+   * Compute margin, balance percent, and TP/SL from an existing position.
+   * Uses the position's own entry price (not the volatile live price) so the
+   * result is stable across re-renders caused by price ticks.
+   *
+   * @param pos - Existing position data
+   * @param balance - Available balance for computing percent
+   */
+  function deriveModifyFields(
+    pos: ExistingPositionData,
+    balance: number,
+  ): Partial<OrderFormState> {
+    const entryPrice = parseFloat(pos.entryPrice.replace(/,/gu, '')) || 0;
+    const absSize = Math.abs(parseFloat(pos.size.replace(/,/gu, ''))) || 0;
+    const margin =
+      entryPrice > 0 && pos.leverage > 0
+        ? (absSize * entryPrice) / pos.leverage
+        : 0;
+    const balancePercent =
+      balance > 0 ? Math.min(Math.round((margin / balance) * 100), 100) : 0;
+    return {
+      amount: margin > 0 ? margin.toFixed(2) : '',
+      leverage: pos.leverage,
+      balancePercent,
+      takeProfitPrice: pos.takeProfitPrice ?? '',
+      stopLossPrice: pos.stopLossPrice ?? '',
+      autoCloseEnabled: Boolean(pos.takeProfitPrice || pos.stopLossPrice),
+    };
+  }
+
   // Initialize form state based on mode
   const [formState, setFormState] = useState<OrderFormState>(() => {
-    // For modify mode, pre-populate from existing position
     if (mode === 'modify' && existingPosition) {
       return {
         ...mockOrderFormDefaults,
         asset,
         direction: initialDirection,
         type: orderType,
-        leverage: existingPosition.leverage,
-        takeProfitPrice: existingPosition.takeProfitPrice ?? '',
-        stopLossPrice: existingPosition.stopLossPrice ?? '',
-        autoCloseEnabled: Boolean(
-          existingPosition.takeProfitPrice || existingPosition.stopLossPrice,
-        ),
+        ...deriveModifyFields(existingPosition, availableBalance),
       };
     }
-    // For new and close modes, use defaults
     return {
       ...mockOrderFormDefaults,
       asset,
@@ -128,39 +157,23 @@ export function usePerpsOrderForm({
     setFormState((prev) => ({ ...prev, type: orderType }));
   }, [orderType]);
 
-  // Track the last "context" we initialized from - only reset when this changes.
-  // This prevents the reset effect from overwriting user edits (e.g. preset button clicks)
-  // when existingPosition gets a new object reference (e.g. from stream updates) but
-  // refers to the same position.
-  const lastInitKeyRef = useRef<string>('');
+  // Ref so the reset effect can read the latest balance without depending on
+  // it, preventing live price ticks from wiping user edits.
+  const availableBalanceRef = useRef(availableBalance);
+  availableBalanceRef.current = availableBalance;
 
-  // Reset form state when mode changes or when switching to a different position
   useEffect(() => {
-    const initKey = `${mode}-${existingPosition?.size ?? ''}-${existingPosition?.symbol ?? ''}`;
-    if (lastInitKeyRef.current === initKey) {
-      return;
-    }
-    lastInitKeyRef.current = initKey;
-
-    // Reset close percent when mode changes
     setClosePercent(100);
 
-    // For modify mode, pre-populate from existing position
     if (mode === 'modify' && existingPosition) {
       setFormState({
         ...mockOrderFormDefaults,
         asset,
         direction: initialDirection,
         type: orderType,
-        leverage: existingPosition.leverage,
-        takeProfitPrice: existingPosition.takeProfitPrice ?? '',
-        stopLossPrice: existingPosition.stopLossPrice ?? '',
-        autoCloseEnabled: Boolean(
-          existingPosition.takeProfitPrice || existingPosition.stopLossPrice,
-        ),
+        ...deriveModifyFields(existingPosition, availableBalanceRef.current),
       });
     } else {
-      // For new and close modes, reset to defaults
       setFormState({
         ...mockOrderFormDefaults,
         asset,
@@ -169,6 +182,25 @@ export function usePerpsOrderForm({
       });
     }
   }, [mode, existingPosition, asset, initialDirection, orderType]);
+
+  // Re-derive modify fields when availableBalance transitions from 0 to a
+  // real value (e.g. account data loading after mount).
+  const prevBalanceRef = useRef(availableBalance);
+  useEffect(() => {
+    const wasZero = prevBalanceRef.current === 0;
+    prevBalanceRef.current = availableBalance;
+    if (
+      wasZero &&
+      availableBalance > 0 &&
+      mode === 'modify' &&
+      existingPosition
+    ) {
+      setFormState((prev) => ({
+        ...prev,
+        ...deriveModifyFields(existingPosition, availableBalance),
+      }));
+    }
+  }, [availableBalance, mode, existingPosition]);
 
   // Notify parent of form state changes
   useEffect(() => {
@@ -281,14 +313,18 @@ export function usePerpsOrderForm({
     setFormState((prev) => ({ ...prev, stopLossPrice }));
   }, []);
 
+  // Close percent change handler (for close mode)
+  const handleClosePercentChange = useCallback((percent: number) => {
+    setClosePercent(percent);
+  }, []);
+
   // Limit price change handler (for limit order mode)
   const handleLimitPriceChange = useCallback((limitPrice: string) => {
     setFormState((prev) => ({ ...prev, limitPrice }));
   }, []);
 
-  // Close percent change handler (for close mode)
-  const handleClosePercentChange = useCallback((percent: number) => {
-    setClosePercent(percent);
+  const handleOrderTypeChange = useCallback((type: OrderType) => {
+    setFormState((prev) => ({ ...prev, type }));
   }, []);
 
   // Submit handler
@@ -308,6 +344,7 @@ export function usePerpsOrderForm({
     handleStopLossPriceChange,
     handleClosePercentChange,
     handleLimitPriceChange,
+    handleOrderTypeChange,
     handleSubmit,
   };
 }

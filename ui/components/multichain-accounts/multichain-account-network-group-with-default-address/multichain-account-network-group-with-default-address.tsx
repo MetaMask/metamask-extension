@@ -13,6 +13,7 @@ import {
   Text,
   TextVariant,
   TextColor,
+  FontWeight,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
@@ -78,7 +79,8 @@ export const MultichainAccountNetworkGroupWithDefaultAddress = ({
         limit={MAX_NETWORK_AVATARS}
       />
       <Text
-        variant={TextVariant.BodyXs}
+        variant={TextVariant.BodySm}
+        fontWeight={FontWeight.Medium}
         color={
           addressCopied ? TextColor.SuccessDefault : TextColor.TextAlternative
         }
