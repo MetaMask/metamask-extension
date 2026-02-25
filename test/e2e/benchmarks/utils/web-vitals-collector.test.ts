@@ -279,6 +279,152 @@ describe('collectWebVitals', () => {
     });
   });
 
+  describe('zero-fallbacks', () => {
+    it('INP falls back to 0 when Event Timing API has no entries', async () => {
+      const execScript = jest
+        .fn()
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(undefined)
+        .mockResolvedValueOnce({
+          inp: 0,
+          lcp: null,
+          cls: 0,
+          inpRating: 'good',
+          lcpRating: null,
+          clsRating: 'good',
+        });
+
+      const driver = createMockDriver({ executeScript: execScript });
+      const result = await collectWebVitals(driver);
+
+      expect(result.inp).toBe(0);
+      expect(result.inpRating).toBe('good');
+    });
+
+    it('CLS falls back to 0 when layout-shift observer is unsupported', async () => {
+      const execScript = jest
+        .fn()
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(undefined)
+        .mockResolvedValueOnce({
+          inp: 0,
+          lcp: null,
+          cls: 0,
+          inpRating: 'good',
+          lcpRating: null,
+          clsRating: 'good',
+        });
+
+      const driver = createMockDriver({ executeScript: execScript });
+      const result = await collectWebVitals(driver);
+
+      expect(result.cls).toBe(0);
+      expect(result.clsRating).toBe('good');
+    });
+
+    it('read script contains INP = 0 fallback', async () => {
+      const execScript = jest
+        .fn()
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(undefined)
+        .mockResolvedValueOnce(nullMetrics);
+
+      const driver = createMockDriver({ executeScript: execScript });
+      await collectWebVitals(driver);
+
+      const readScript = execScript.mock.calls[2][0] as string;
+      expect(readScript).toContain('result.inp === null');
+      expect(readScript).toContain('result.inp = 0');
+      expect(readScript).toContain('result.inpRating = rate(maxDur');
+    });
+
+    it('read script contains CLS = 0 fallback', async () => {
+      const execScript = jest
+        .fn()
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(undefined)
+        .mockResolvedValueOnce(nullMetrics);
+
+      const driver = createMockDriver({ executeScript: execScript });
+      await collectWebVitals(driver);
+
+      const readScript = execScript.mock.calls[2][0] as string;
+      expect(readScript).toContain('result.cls === null');
+      expect(readScript).toContain('result.cls = 0');
+    });
+  });
+
+  describe('busy-wait keydown handler', () => {
+    it('setup script registers a busy-wait keydown handler', async () => {
+      const execScript = jest
+        .fn()
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(undefined)
+        .mockResolvedValueOnce(nullMetrics);
+
+      const driver = createMockDriver({ executeScript: execScript });
+      await collectWebVitals(driver);
+
+      const setupScript = execScript.mock.calls[1][0] as string;
+      expect(setupScript).toContain('busyWait');
+      expect(setupScript).toContain('keydown');
+      expect(setupScript).toContain('performance.now()');
+      expect(setupScript).toContain('once: true');
+    });
+
+    it('busy-wait targets 16ms duration', async () => {
+      const execScript = jest
+        .fn()
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(undefined)
+        .mockResolvedValueOnce(nullMetrics);
+
+      const driver = createMockDriver({ executeScript: execScript });
+      await collectWebVitals(driver);
+
+      const setupScript = execScript.mock.calls[1][0] as string;
+      expect(setupScript).toContain('+ 16');
+    });
+  });
+
+  describe('maxDur > 0 guard removed', () => {
+    it('read script does not gate INP on maxDur > 0', async () => {
+      const execScript = jest
+        .fn()
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(undefined)
+        .mockResolvedValueOnce(nullMetrics);
+
+      const driver = createMockDriver({ executeScript: execScript });
+      await collectWebVitals(driver);
+
+      const readScript = execScript.mock.calls[2][0] as string;
+      expect(readScript).not.toContain('if (maxDur > 0)');
+    });
+
+    it('INP is set even when all event durations are 0', async () => {
+      const execScript = jest
+        .fn()
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(undefined)
+        .mockResolvedValueOnce({
+          inp: 0,
+          lcp: 500,
+          cls: 0,
+          inpRating: 'good',
+          lcpRating: 'good',
+          clsRating: 'good',
+        });
+
+      const driver = createMockDriver({ executeScript: execScript });
+      const result = await collectWebVitals(driver);
+
+      expect(result.inp).toBe(0);
+      expect(result.inp).not.toBeNull();
+      expect(result.inpRating).toBe('good');
+    });
+  });
+
   describe('non-null output via fallback path', () => {
     function makeFallbackDriver(readResult: WebVitalsMetrics) {
       return createMockDriver({

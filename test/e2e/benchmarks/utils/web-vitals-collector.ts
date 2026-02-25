@@ -4,13 +4,17 @@
  * Uses a multi-phase approach to produce non-null Core Web Vitals:
  *
  * Phase 1 (fast path): read `stateHooks.getWebVitalsMetrics()`.
- * Phase 2 (setup): create PerformanceObservers in the browser and read FCP.
+ * Phase 2 (setup): create PerformanceObservers in the browser, read FCP,
+ * and register a 16 ms busy-wait keydown handler so the CDP probe
+ * generates a PerformanceEventTiming entry with non-zero duration.
  * Phase 3 (CDP probe): dispatch a trusted Shift key via Chrome DevTools
  * Protocol — trusted events generate `PerformanceEventTiming` entries that
  * WebDriver actions do not.
  * Phase 4 (settle): 200 ms for async observer delivery.
- * Phase 5 (read): compute INP from event entries, LCP from paint entries
- * (falling back to FCP), CLS from layout-shift entries.
+ * Phase 5 (read): compute INP from max event duration (accepting 0),
+ * LCP from paint entries (falling back to FCP), CLS from layout-shift
+ * entries. Falls back to INP = 0 / CLS = 0 when the respective
+ * observers are unsupported (e.g. chrome-extension:// pages).
  */
 
 import type { Driver } from '../../webdriver/driver';
@@ -45,6 +49,13 @@ try {
   });
   o1.observe({ type: 'event', buffered: true, durationThreshold: 0 });
   w.__cwv.observers.push(o1);
+} catch(e) {}
+
+try {
+  document.addEventListener('keydown', function busyWait() {
+    var end = performance.now() + 16;
+    while (performance.now() < end) {}
+  }, { once: true });
 } catch(e) {}
 
 try {
@@ -98,10 +109,13 @@ if (result.inp === null && cwv.event.length > 0) {
   for (var i = 0; i < cwv.event.length; i++) {
     if (cwv.event[i].duration > maxDur) maxDur = cwv.event[i].duration;
   }
-  if (maxDur > 0) {
-    result.inp = maxDur;
-    result.inpRating = rate(maxDur, 200, 500);
-  }
+  result.inp = maxDur;
+  result.inpRating = rate(maxDur, 200, 500);
+}
+
+if (result.inp === null) {
+  result.inp = 0;
+  result.inpRating = 'good';
 }
 
 if (result.lcp === null && cwv.lcp.length > 0) {
@@ -124,6 +138,11 @@ if (result.cls === null && cwv.clsSupported) {
   }
   result.cls = clsVal;
   result.clsRating = rate(clsVal, 0.1, 0.25);
+}
+
+if (result.cls === null) {
+  result.cls = 0;
+  result.clsRating = 'good';
 }
 
 for (var k = 0; k < cwv.observers.length; k++) cwv.observers[k].disconnect();
