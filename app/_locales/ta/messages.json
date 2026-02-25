@@ -297,9 +297,6 @@
   "remove": {
     "message": "அகற்று"
   },
-  "removeAccount": {
-    "message": "கணக்கை அகற்றுக"
-  },
   "required": {
     "message": "தேவையான"
   },

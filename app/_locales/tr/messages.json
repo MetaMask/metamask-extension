@@ -279,9 +279,6 @@
   "addIPFSGateway": {
     "message": "Tercih ettiğiniz IPFS ağ geçidini ekleyin"
   },
-  "addImportAccount": {
-    "message": "Hesap veya donanım cüzdanı ekleyin"
-  },
   "addMemo": {
     "message": "Not ekleyin"
   },
@@ -5957,9 +5954,6 @@
   },
   "remove": {
     "message": "Kaldır"
-  },
-  "removeAccount": {
-    "message": "Hesabı kaldır"
   },
   "removeAccountDescription": {
     "message": "Bu hesap cüzdanınızdan kaldırılacak. Devam etmeden önce lütfen orijinal Gizli Kurtarma İfadenizin veya içe aktarılan bu hesabın özel anahtarının sizde bulunduğundan emin olun. Hesap açılır menüsünden hesapları içe aktarabilir veya tekrar hesap oluşturabilirsiniz. "

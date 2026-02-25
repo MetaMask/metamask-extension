@@ -279,9 +279,6 @@
   "addIPFSGateway": {
     "message": "Thêm cổng IPFS ưa thích của bạn"
   },
-  "addImportAccount": {
-    "message": "Thêm tài khoản hoặc ví cứng"
-  },
   "addMemo": {
     "message": "Thêm bản ghi nhớ"
   },
@@ -5957,9 +5954,6 @@
   },
   "remove": {
     "message": "Xóa"
-  },
-  "removeAccount": {
-    "message": "Xóa tài khoản"
   },
   "removeAccountDescription": {
     "message": "Tài khoản này sẽ bị xóa khỏi ví của bạn. Hãy chắc chắn rằng bạn có Cụm từ khôi phục bí mật hoặc khóa riêng tư gốc cho tài khoản đã nhập này trước khi tiếp tục. Bạn có thể nhập hoặc tạo lại tài khoản từ trình đơn thả xuống tài khoản. "

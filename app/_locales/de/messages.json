@@ -279,9 +279,6 @@
   "addIPFSGateway": {
     "message": "Fügen Sie Ihr bevorzugtes IPFS-Gateway hinzu."
   },
-  "addImportAccount": {
-    "message": "Konto oder Hardware-Wallet hinzufügen"
-  },
   "addMemo": {
     "message": "Notiz hinzufügen"
   },
@@ -5957,9 +5954,6 @@
   },
   "remove": {
     "message": "Entfernen"
-  },
-  "removeAccount": {
-    "message": "Konto entfernen"
   },
   "removeAccountDescription": {
     "message": "Dieses Konto wird aus Ihrem Wallet entfernt. Bitte stellen Sie sicher, dass Sie die ursprüngliche geheime Wiederherstellungsphrase oder den privaten Schlüssel für dieses importierte Konto haben, bevor Sie fortfahren. Über die Dropdown-Liste des Kontos können Sie Konten importieren oder neu anlegen. "

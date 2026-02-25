@@ -483,9 +483,6 @@
   "remove": {
     "message": "Alih keluar"
   },
-  "removeAccount": {
-    "message": "Alih keluar akaun"
-  },
   "removeAccountDescription": {
     "message": "Akaun ini akan dibuang daripada dompet anda. Sila pastikan anda mempunyai ungkapan benih asal atau kunci persendirian untuk akaun yang diimport ini sebelum meneruskan. Anda boleh import atau cipta akaun semula daripada juntai bawah akaun."
   },

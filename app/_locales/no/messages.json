@@ -487,9 +487,6 @@
   "remove": {
     "message": "Fjern"
   },
-  "removeAccount": {
-    "message": "Fjern konto"
-  },
   "removeAccountDescription": {
     "message": "Denne kontoen blir fjernet fra lommeboken din. Forsikre deg om at du har den originale mnemoniske gjenopprettingsfrasen eller den private nøkkelen for denne importerte kontoen før du fortsetter. Du kan importere eller opprette kontoer igjen fra nedtrekksmenyen."
   },

@@ -471,9 +471,6 @@
   "remove": {
     "message": "Odstrániť"
   },
-  "removeAccount": {
-    "message": "Odstrániť účet"
-  },
   "removeAccountDescription": {
     "message": "Tento účet bude odstránený z vašej peňaženky. Skôr ako budete pokračovať, skontrolujte, či máte pre tento importovaný účet pôvodnú seed frázu alebo súkromný kľúč. Z rozbaľovacieho menu účtu môžete znova importovať alebo vytvoriť účty."
   },
