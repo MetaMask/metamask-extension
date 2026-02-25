@@ -2,6 +2,8 @@ import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import {
   AvatarAccountSize,
+  AvatarToken,
+  AvatarTokenSize,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
@@ -13,7 +15,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import Identicon from '../../../../ui/identicon';
 import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { PreferredAvatar } from '../../../preferred-avatar';
 import NameDetails from '../../../name/name-details/name-details';
@@ -113,7 +114,7 @@ const TrustIcon = ({
       );
     default:
       if (image) {
-        return <Identicon address={address} diameter={16} image={image} />;
+        return <AvatarToken src={image} size={AvatarTokenSize.Xs} />;
       }
       return null;
   }
