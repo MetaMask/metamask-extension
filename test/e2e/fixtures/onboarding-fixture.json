@@ -85,7 +85,9 @@
       "surveyLinkLastClickedOrClosed": null,
       "timeoutMinutes": 0,
       "trezorModel": null,
-      "updateModalLastDismissedAt": null
+      "updateModalLastDismissedAt": null,
+      "musdConversionEducationSeen": false,
+      "musdConversionDismissedCtaKeys": []
     },
     "AuthenticationController": {
       "isSignedIn": false
@@ -1885,6 +1887,7 @@
       "permissionHistory": {}
     },
     "PhishingController": {
+      "addressScanCache": {},
       "c2DomainBlocklistLastFetched": 0,
       "hotlistLastFetched": 0,
       "phishingLists": [],

@@ -139,11 +139,10 @@ jobs:
       TEST_RUNS_PATH: test/test-results/test-runs-chrome.json
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Download test results
         uses: actions/download-artifact@v7

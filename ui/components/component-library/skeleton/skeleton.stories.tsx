@@ -1,4 +1,5 @@
 import React from 'react';
+import README from "./README.mdx";
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   BackgroundColor,
@@ -11,7 +12,6 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Text } from '../text';
-import README from './README.mdx';
 import { Skeleton } from './skeleton';
 import { Box } from '../box';
 import { Button, ButtonVariant } from '../button';
@@ -19,6 +19,7 @@ import { Button, ButtonVariant } from '../button';
 const meta: Meta<typeof Skeleton> = {
   title: 'Components/ComponentLibrary/Skeleton',
   component: Skeleton,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,
