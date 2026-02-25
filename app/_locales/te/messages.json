@@ -109,6 +109,9 @@
   "remove": {
     "message": "తీసివేయి"
   },
+  "removeAccount": {
+    "message": "ఖాతాను తీసివేయి"
+  },
   "reset": {
     "message": "రీసెట్ చేయి"
   },

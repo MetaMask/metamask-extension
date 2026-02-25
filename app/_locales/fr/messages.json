@@ -279,6 +279,9 @@
   "addIPFSGateway": {
     "message": "Ajoutez votre passerelle IPFS préférée"
   },
+  "addImportAccount": {
+    "message": "Ajouter un compte ou un portefeuille matériel"
+  },
   "addMemo": {
     "message": "Ajouter un mémo"
   },
@@ -5951,6 +5954,9 @@
   },
   "remove": {
     "message": "Supprimer"
+  },
+  "removeAccount": {
+    "message": "Suprimer le compte"
   },
   "removeAccountDescription": {
     "message": "Ce compte sera supprimé de votre portefeuille. Veuillez vous assurer que vous disposez de la phrase secrète de récupération ou de la clé privée d’origine pour ce compte importé avant de continuer. Vous pouvez importer ou créer à nouveau des comptes à partir du menu déroulant des comptes. "

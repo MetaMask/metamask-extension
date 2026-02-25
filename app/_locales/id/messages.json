@@ -279,6 +279,9 @@
   "addIPFSGateway": {
     "message": "Tambahkan gateway IPFS pilihan Anda"
   },
+  "addImportAccount": {
+    "message": "Tambahkan akun atau dompet perangkat keras"
+  },
   "addMemo": {
     "message": "Tambahkan memo"
   },
@@ -5954,6 +5957,9 @@
   },
   "remove": {
     "message": "Hapus"
+  },
+  "removeAccount": {
+    "message": "Hapus akun"
   },
   "removeAccountDescription": {
     "message": "Akun ini akan dihapus dari dompet Anda. Pastikan Anda memiliki Frasa Pemulihan Rahasia atau kunci pribadi asli untuk akun yang diimpor ini sebelum melanjutkan. Anda dapat mengimpor atau membuat akun lagi dari menu tarik-turun akun. "

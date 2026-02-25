@@ -279,6 +279,9 @@
   "addIPFSGateway": {
     "message": "Idagdag ang mas gusto mong IPFS gateway"
   },
+  "addImportAccount": {
+    "message": "Magdagdag ng account o wallet na hardware"
+  },
   "addMemo": {
     "message": "Magdagdag ng memo"
   },
@@ -5954,6 +5957,9 @@
   },
   "remove": {
     "message": "Alisin"
+  },
+  "removeAccount": {
+    "message": "Alisin ang account"
   },
   "removeAccountDescription": {
     "message": "Aalisin ang account na ito sa wallet mo. Tiyakin na mayroon ka ng orihinal na Lihim na Parirala sa Pagbawi o pribadong key para sa in-import na account na ito bago magpatuloy. Maaari kang mag-import o gumawa muli ng mga account mula sa account drop-down. "

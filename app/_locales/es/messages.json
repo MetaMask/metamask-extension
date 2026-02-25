@@ -279,6 +279,9 @@
   "addIPFSGateway": {
     "message": "Agregue su puerta de enlace de IPFS preferida"
   },
+  "addImportAccount": {
+    "message": "Añadir una cuenta o un monedero físico"
+  },
   "addMemo": {
     "message": "Añadir memo"
   },
@@ -5954,6 +5957,9 @@
   },
   "remove": {
     "message": "Eliminar"
+  },
+  "removeAccount": {
+    "message": "Eliminar cuenta"
   },
   "removeAccountDescription": {
     "message": "Esta cuenta se eliminará de su billetera. Antes de continuar, asegúrese de que dispone de la frase secreta de recuperación original o de la clave privada de esta cuenta importada. Puede importar o volver a crear cuentas desde el menú desplegable de cuentas. "

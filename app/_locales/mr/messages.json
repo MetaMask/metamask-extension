@@ -109,6 +109,9 @@
   "remove": {
     "message": "काढून टाका"
   },
+  "removeAccount": {
+    "message": "खाते काढून टाका"
+  },
   "reset": {
     "message": "रीसेट करा"
   },

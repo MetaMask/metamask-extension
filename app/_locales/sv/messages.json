@@ -487,6 +487,9 @@
   "remove": {
     "message": "Ta bort"
   },
+  "removeAccount": {
+    "message": "Ta bort konto"
+  },
   "removeAccountDescription": {
     "message": "Detta konto kommer att avlägsnas från din plånbok. Säkerställ att du har din ursprungliga seed phrase eller den privata nyckeln till detta importerade konto innan du fortsätter. Du kan importera eller skapa konton igen via kontots rullgardinsmeny."
   },

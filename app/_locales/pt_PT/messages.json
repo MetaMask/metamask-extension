@@ -119,6 +119,9 @@
   "remove": {
     "message": "Remover"
   },
+  "removeAccount": {
+    "message": "Remover conta"
+  },
   "reset": {
     "message": "Repor"
   },

@@ -279,6 +279,9 @@
   "addIPFSGateway": {
     "message": "優先IPFSゲートウェイを追加"
   },
+  "addImportAccount": {
+    "message": "アカウントまたはハードウェアウォレットを追加"
+  },
   "addMemo": {
     "message": "メモを追加"
   },
@@ -5948,6 +5951,9 @@
   },
   "remove": {
     "message": "削除"
+  },
+  "removeAccount": {
+    "message": "アカウントを削除"
   },
   "removeAccountDescription": {
     "message": "このアカウントはウォレットから削除されます。続行する前に、インポートしたアカウントの元のシークレットリカバリーフレーズまたは秘密鍵を持っていることを確認してください。アカウントはアカウントドロップダウンから再度インポートまたは作成できます。"

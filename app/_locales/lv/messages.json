@@ -499,6 +499,9 @@
   "remove": {
     "message": "Noņemt"
   },
+  "removeAccount": {
+    "message": "Konta noņemšana"
+  },
   "removeAccountDescription": {
     "message": "Šis darījums tiks dzēsts no jūsu maka. Pirms turpiniet, lūdzu, pārliecinieties, ka jums ir šī importētā konta oriģinālā sēklas frāze vai privātā atslēga. Jūs varat importēt vai izveidot kontus vēlreiz, izmantojot konta nolaižamo izvēlni."
   },

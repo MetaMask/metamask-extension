@@ -279,6 +279,9 @@
   "addIPFSGateway": {
     "message": "Add your preferred IPFS gateway"
   },
+  "addImportAccount": {
+    "message": "Add account or hardware wallet"
+  },
   "addMemo": {
     "message": "Add memo"
   },
@@ -6022,6 +6025,9 @@
   },
   "remove": {
     "message": "Remove"
+  },
+  "removeAccount": {
+    "message": "Remove account"
   },
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "

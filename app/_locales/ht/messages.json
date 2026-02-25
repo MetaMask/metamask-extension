@@ -360,6 +360,9 @@
   "remove": {
     "message": "retire"
   },
+  "removeAccount": {
+    "message": "Retire kont"
+  },
   "removeAccountDescription": {
     "message": "Kont sa a pral retire nan Wallet ou. Tanpri, asire ou ke ou gen orijinal fraz seed la oubyen kle prive pou rantre kont lan avan ou kontinye. Oubyen ou ka rantre kont ou ankò apati kont \"drop-down\" ou an."
   },

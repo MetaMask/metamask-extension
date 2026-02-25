@@ -487,6 +487,9 @@
   "remove": {
     "message": "izbriši"
   },
+  "removeAccount": {
+    "message": "Izbriši račun"
+  },
   "removeAccountDescription": {
     "message": "Ta račun bo izbrisan. Prepričajte se, da imate seed phase ali zasebni ključ tega računa, da ga boste lahko kasneje obnovili. "
   },

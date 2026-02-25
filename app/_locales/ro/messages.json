@@ -490,6 +490,9 @@
   "remove": {
     "message": "Elimină"
   },
+  "removeAccount": {
+    "message": "Eliminați contul"
+  },
   "removeAccountDescription": {
     "message": "Acest cont va fi eliminat din portofelul dvs. Înainte de a continua, vă rugăm să vă asigurați că aveți expresia seed inițială sau cheia privată pentru acest cont importat. Puteți importa sau crea conturi din nou din meniul derulant al contului."
   },

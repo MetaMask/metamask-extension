@@ -261,6 +261,9 @@
   "addIPFSGateway": {
     "message": "Cuir do gheata IPFS is fearr leat leis"
   },
+  "addImportAccount": {
+    "message": "Cuir cuntas nó sparán crua-earraí leis"
+  },
   "addMemo": {
     "message": "Cuir meamram leis"
   },
@@ -4875,6 +4878,9 @@
   },
   "remove": {
     "message": "Bain"
+  },
+  "removeAccount": {
+    "message": "Bain cuntas"
   },
   "removeAccountDescription": {
     "message": "Bainfear an cuntas seo as do sparán. Déan cinnte go bhfuil an Frása Aisghabhála Rúnda bunaidh nó an eochair phríobháideach agat don chuntas allmhairithe seo sula leanann tú ar aghaidh. Is féidir leat cuntais a allmhairiú nó a chruthú arís ón roghchlár anuas cuntais."

@@ -279,6 +279,9 @@
   "addIPFSGateway": {
     "message": "선호하는 IPFS 게이트웨이를 추가하세요"
   },
+  "addImportAccount": {
+    "message": "계정 또는 하드웨어 지갑 추가"
+  },
   "addMemo": {
     "message": "메모 추가"
   },
@@ -5954,6 +5957,9 @@
   },
   "remove": {
     "message": "제거"
+  },
+  "removeAccount": {
+    "message": "계정 제거"
   },
   "removeAccountDescription": {
     "message": "이 계정이 지갑에서 제거됩니다. 계속하기 전에 가져온 계정의 원래 비밀복구구문이나 개인 키를 가지고 있는지 확인하세요. 계정 드롭다운에서 계정을 다시 가져오거나 생성할 수 있습니다. "

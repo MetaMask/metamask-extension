@@ -484,6 +484,9 @@
   "remove": {
     "message": "Fjern"
   },
+  "removeAccount": {
+    "message": "Fjern konto"
+  },
   "removeAccountDescription": {
     "message": "Denne konto fjernes fra din pung. Sikr dig venligst, at du har den originale seedfrase eller private nøgle til denne importerede konto, inden du fortsætter. Du kan importere eller skabe konti igen via kontomenuen."
   },
