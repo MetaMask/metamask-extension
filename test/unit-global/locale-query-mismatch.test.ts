@@ -183,18 +183,20 @@ for (const [key, entry] of Object.entries(enLocale)) {
 //   getByText("..."), getByText('...')
 //   getByRole('...', { name: '...' }), getByRole('...', { name: "..." })
 
-// Direct arg: getByText('Close') or getByText("Close")
-// Uses alternation to require matching quote pairs (avoids apostrophe false positives).
+// Direct arg: getByText('Close') or getByText(`Close`)
+// Backtick branch excludes strings containing $ to avoid matching template interpolations.
 const HARDCODED_QUERY_DIRECT_PATTERN_R2 = new RegExp(
-  `(?:${QUERY_FN_GROUP})\\s*\\(\\s*(?:'([^']{3,})'|"([^"]{3,})")`,
+  `(?:${QUERY_FN_GROUP})\\s*\\(\\s*(?:'([^']{3,})'` +
+    '|`([^`$]{3,})`)',
   'gu',
 );
 
 // Options arg: getByRole('button', { name: 'Close' })
 // Requires a query function before { name: } to avoid matching plain objects.
-// Uses alternation to require matching quote pairs.
+// Backtick branch excludes strings containing $ to avoid matching template interpolations.
 const HARDCODED_QUERY_OPTIONS_PATTERN_R2 = new RegExp(
-  `(?:${QUERY_FN_GROUP})\\s*\\([^)]*\\{\\s*name:\\s*(?:'([^']{3,})'|"([^"]{3,})")`,
+  `(?:${QUERY_FN_GROUP})\\s*\\([^)]*\\{\\s*name:\\s*(?:'([^']{3,})'` +
+    '|`([^`$]{3,})`)',
   'gu',
 );
 
