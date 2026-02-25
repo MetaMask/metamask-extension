@@ -18,6 +18,19 @@ export const DEFAULT_FIXTURE_ACCOUNT_LOWERCASE =
 
 export const DEFAULT_FIXTURE_ACCOUNT_SHORTENED = '0x5CfE73b602...474086a7e1';
 
+export const TREZOR_VAULT =
+  '{"data":"H+KGUVIk87gi/8BeaSNHa2F0lyQ0Jbu/n8MlD1hV9s3EhA8978Qr1nfJyGlO9YY5pZo10R0dWGurtIe7wA/TSqhrY9gqn1O9zSW+4IJBx22iKTmcjN1PIlMtqP8h1Ft3vDVUtXC1ZR6wJWkmPVMMKGDay0OhZ0EL9iK6JEusN4F/XyTbvGHpvEbMq+dgxds3U9g/NcWH8oe0q9ZdqKmcxCwjalVsSfBgwVCpj66Tt+wTMEC38eDeXWrJEs0Kmq6dVUa74ivMhdVJYbqwg0rN4AA/SXBRx+37/nPOcJPV+spyzZvSBwFWDn7l1dwgszdiy+NyCBGUK/jJRYQo5np7+a7n62Gc2Jnbs2cZarqtUKKqQ+oVsSFPJAWfFgoe9QBVhaU+MP8+URSipvJvpgpX+ODV8iEFdJ3rLXs377cvyABKVrVHOusJzwLS1H2evLyqej+HaLMD0TkyB40AiVU1sMc/Od3P1xQ+I8GBxrxfK+hodNLxWbyjbIM9k4vSNZMoTSkiaWSeJ/hxgRL5Y8clAJTRRqgTpwERQUwW891i5t5HIQoIOl2PNsOw7V/wRzCqWR1COjgMRrAoKjVcuOBu2NmnM1MNq/hPNNn8LMmrCH3qydS2N/J/OKRoeny+h4+9IL8rxmzSP7Zqk+tTFZmMkMCrHo3bofmTXg2XjOqjbZuN3Rn+qtvDOjjzf1atI8+4yFn6jffgQF2wFrFpUnVxl+4Gc/EdEZPSKNQgWkYt8rhgMumDppJ1QboWnKIyNjeN2kVNfqUcNsgp4Qkw34Wq5Ifw3NPkmJ1iOmfpsGPjz4vx1+pRS49PT6qRpdM7nRjuB9uU17VztoPiU/ASj5lkTI53NgIGvMQ3qMoee2wRvPSflsy892f5cs8ZqFTm+YB3kRgl2pq8BHRFR+iXcsVPl+I=","iv":"yLI4xnkISVYDNAiMX5XsNw==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"KlzhFYDtD7xefesp6xGvs41ZaziHohL7RgfRf1yX1WM="}';
+
+/** Trezor hardware wallet account ID (internalAccounts.accounts key). Used by FixtureBuilderV2.withTrezorAccount(). */
+export const TREZOR_ACCOUNT_ID = '221ecb67-0d29-4c04-83b2-dff07c263634';
+
+/** Trezor hardware wallet address (lowercase). Used by FixtureBuilderV2.withTrezorAccount(). */
+export const TREZOR_ADDRESS = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
+
+/** Trezor hardware wallet address (checksum form). Used for AccountTracker keys in fixtures. */
+export const TREZOR_ADDRESS_CHECKSUM =
+  '0xF68464152d7289D7eA9a2bEC2E0035c45188223c';
+
 /* Address of the 4337 entrypoint smart contract. */
 export const ENTRYPOINT = '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b';
 

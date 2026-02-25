@@ -13,9 +13,14 @@ import type {
 import {
   DAPP_URL,
   DAPP_URL_LOCALHOST,
+  DEFAULT_FIXTURE_ACCOUNT,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_FIXTURE_SOLANA_ACCOUNT,
   SOLANA_MAINNET_SCOPE,
+  TREZOR_ACCOUNT_ID,
+  TREZOR_ADDRESS,
+  TREZOR_ADDRESS_CHECKSUM,
+  TREZOR_VAULT,
 } from '../constants';
 import defaultFixtureJson from './default-fixture.json';
 import onboardingFixtureJson from './onboarding-fixture.json';
@@ -78,6 +83,26 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withAccountTracker(data: Record<string, unknown>): this {
+    merge(this.fixture.data.AccountTracker, data);
+    return this;
+  }
+
+  withAccountsController(data: Record<string, unknown>): this {
+    merge(this.fixture.data.AccountsController, data);
+    return this;
+  }
+
+  withKeyringController(data: Record<string, unknown>): this {
+    merge(this.fixture.data.KeyringController, data);
+    return this;
+  }
+
+  withNameController(data: Record<string, unknown>): this {
+    merge(this.fixture.data.NameController, data);
+    return this;
+  }
+
   /* ==================================================================
                               CUSTOM METHODS
      ==================================================================
@@ -93,6 +118,147 @@ class FixtureBuilderV2 {
   ): this {
     this.fixture.data.NetworkEnablementController.enabledNetworkMap =
       data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
+    return this;
+  }
+
+  withTrezorAccount(): this {
+    return this.withAccountTracker({
+      accountsByChainId: {
+        '0x539': {
+          [DEFAULT_FIXTURE_ACCOUNT]: {
+            balance: '0x15af1d78b58c40000',
+          },
+          [TREZOR_ADDRESS_CHECKSUM]: {
+            balance: '0x100000000000000000000',
+          },
+        },
+      },
+    })
+      .withAccountsController({
+        internalAccounts: {
+          accounts: {
+            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+              address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+              options: {
+                entropySource: '01KGHAX3WXGMX9H76THHSSV553',
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+                entropy: {
+                  type: 'mnemonic',
+                  id: '01KGHAX3WXGMX9H76THHSSV553',
+                  derivationPath: "m/44'/60'/0'/0/0",
+                  groupIndex: 0,
+                },
+              },
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Account 1',
+                importTime: 1724486724986,
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+            [TREZOR_ACCOUNT_ID]: {
+              id: TREZOR_ACCOUNT_ID,
+              address: TREZOR_ADDRESS,
+              options: {},
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Trezor 1',
+                importTime: 1724486729079,
+                keyring: {
+                  type: 'Trezor Hardware',
+                },
+                lastSelected: 1724486729083,
+              },
+            },
+          },
+          selectedAccount: TREZOR_ACCOUNT_ID,
+        },
+      })
+      .withKeyringController({ vault: TREZOR_VAULT })
+      .withNameController({
+        names: {
+          ethereumAddress: {
+            [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+              '*': {
+                name: 'Account 1',
+                sourceId: null,
+                proposedNames: {},
+                origin: 'account-identity',
+              },
+            },
+            [TREZOR_ADDRESS]: {
+              '*': {
+                proposedNames: {},
+                name: 'Trezor 1',
+                sourceId: null,
+                origin: 'account-identity',
+              },
+            },
+          },
+        },
+      })
+      .withPreferencesController({
+        identities: {
+          [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            lastSelected: 1665507600000,
+            name: 'Account 1',
+          },
+          [TREZOR_ADDRESS]: {
+            address: TREZOR_ADDRESS,
+            lastSelected: 1665507800000,
+            name: 'Trezor 1',
+          },
+        },
+        lostIdentities: {
+          [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            name: 'Account 1',
+            lastSelected: 1665507600000,
+          },
+          [TREZOR_ADDRESS]: {
+            address: TREZOR_ADDRESS,
+            name: 'Trezor 1',
+            lastSelected: 1665507800000,
+          },
+        },
+        selectedAddress: TREZOR_ADDRESS,
+      } as unknown as Parameters<
+        FixtureBuilderV2['withPreferencesController']
+      >[0])
+      .withMetaMetricsDisabled();
+  }
+
+  withMetaMetricsDisabled(): this {
+    if (this.fixture.data.MetaMetricsController) {
+      merge(this.fixture.data.MetaMetricsController, {
+        participateInMetaMetrics: false,
+        dataCollectionForMarketing: false,
+      });
+    }
     return this;
   }
 
