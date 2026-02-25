@@ -117,7 +117,7 @@ describe('CreateNewVault', () => {
     fireEvent.change(passwordInput, passwordEvent);
     fireEvent.change(confirmPasswordInput, confirmPasswordEvent);
 
-    const passwordError = queryByText(`Passwords don't match`);
+    const passwordError = queryByText(messages.passwordsDontMatch.message);
 
     expect(passwordError).toBeInTheDocument();
 
