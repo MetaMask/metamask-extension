@@ -616,22 +616,39 @@ function findRegexClose(line: string, start: number): number {
   return -1;
 }
 
-/** Replaces string literal contents with empty placeholders (handles escaped quotes). */
-// Backtick regex only matches simple template literals (no ${} expressions).
-// Template literals with expressions are left intact so embedded flag references are detected.
-const SIMPLE_BACKTICK = /`(?:[^`\\$]|\\.|\$(?!\{))*`/g;
-function stripStringLiterals(line: string): string {
-  return line
-    .replace(/'(?:[^'\\]|\\.)*'/g, "''")
-    .replace(/"(?:[^"\\]|\\.)*"/g, '""')
-    .replace(SIMPLE_BACKTICK, '``');
+// Single-pass string processor that handles all quote types correctly,
+// avoiding cross-contamination (e.g. apostrophe inside double-quoted string).
+// Template literals with ${} expressions are left intact.
+function processStrings(line: string, mode: 'strip' | 'mask'): string {
+  let result = '';
+  let i = 0;
+  while (i < line.length) {
+    const ch = line[i];
+    if (ch !== "'" && ch !== '"' && ch !== '`') { result += ch; i++; continue; }
+    if (ch === '`') {
+      let j = i + 1;
+      while (j < line.length) {
+        if (line[j] === '\\') { j += 2; continue; }
+        if (line[j] === '$' && line[j + 1] === '{') { result += line.slice(i); return result; }
+        if (line[j] === '`') break;
+        j++;
+      }
+    }
+    let j = i + 1;
+    while (j < line.length) {
+      if (line[j] === '\\') { j += 2; continue; }
+      if (line[j] === ch) break;
+      j++;
+    }
+    if (j >= line.length) { result += ch; i++; continue; }
+    const len = j - i - 1;
+    result += mode === 'mask' ? ch + ' '.repeat(len) + ch : ch + ch;
+    i = j + 1;
+  }
+  return result;
 }
-function maskStringLiterals(line: string): string {
-  return line
-    .replace(/'(?:[^'\\]|\\.)*'/g, (m) => `'${' '.repeat(Math.max(0, m.length - 2))}'`)
-    .replace(/"(?:[^"\\]|\\.)*"/g, (m) => `"${' '.repeat(Math.max(0, m.length - 2))}"`)
-    .replace(SIMPLE_BACKTICK, (m) => `\`${' '.repeat(Math.max(0, m.length - 2))}\``);
-}
+function stripStringLiterals(line: string): string { return processStrings(line, 'strip'); }
+function maskStringLiterals(line: string): string { return processStrings(line, 'mask'); }
 
 /** Logs which flags were added/removed in the registry (informational only). */
 function logRegistryChanges(baseBranch: string): void {
