@@ -13,7 +13,6 @@ export type EntryDescription = Exclude<EntryObject[string], string | string[]>;
 // See: https://github.com/MetaMask/metamask-extension/issues/22450
 // TODO: remove this variable when HMR is ready. The env var is for tests and
 // must also be removed everywhere.
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 export const __HMR_READY__ = Boolean(process.env.__HMR_READY__) || false;
 
 /**
