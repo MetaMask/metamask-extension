@@ -4400,8 +4400,14 @@
   "nftAutoDetectionEnabled": {
     "message": "NFT autodetection enabled"
   },
+  "nftBought": {
+    "message": "Bought $1"
+  },
   "nftEmptyDescription": {
     "message": "There's a world of NFTs out there. Start your collection today."
+  },
+  "nftMinted": {
+    "message": "Minted $1"
   },
   "nftOptions": {
     "message": "NFT Options"
@@ -5267,9 +5273,6 @@
   "perpsAddToFavorites": {
     "message": "Add to favorites"
   },
-  "perpsAsk": {
-    "message": "Ask"
-  },
   "perpsAutoClose": {
     "message": "Auto close"
   },
@@ -5280,14 +5283,12 @@
   "perpsAvailableBalance": {
     "message": "Available balance"
   },
-  "perpsBid": {
-    "message": "Bid"
+  "perpsAvailableToTrade": {
+    "message": "Available to trade",
+    "description": "Label for the available balance that can be used for trading"
   },
   "perpsCancelAllOrders": {
     "message": "Cancel all"
-  },
-  "perpsClose": {
-    "message": "Close"
   },
   "perpsCloseAll": {
     "message": "Close all"
@@ -5411,9 +5412,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Liquidation Price Est."
   },
   "perpsLong": {
     "message": "Long"

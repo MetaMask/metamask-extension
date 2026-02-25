@@ -2607,8 +2607,6 @@ export default class MetamaskController extends EventEmitter {
       resetAccount: this.resetAccount.bind(this),
       removeAccount: this.removeAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
-      getNextAvailableAccountName:
-        accountsController.getNextAvailableAccountName.bind(accountsController),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       getAccountsBySnapId: (snapId) =>
         getAccountsBySnapId(this.getSnapKeyring.bind(this), snapId),
@@ -3040,6 +3038,14 @@ export default class MetamaskController extends EventEmitter {
         ),
       setHasShownMultichainAccountsIntroModal:
         appStateController.setHasShownMultichainAccountsIntroModal.bind(
+          appStateController,
+        ),
+      setMusdConversionEducationSeen:
+        appStateController.setMusdConversionEducationSeen.bind(
+          appStateController,
+        ),
+      addMusdConversionDismissedCtaKey:
+        appStateController.addMusdConversionDismissedCtaKey.bind(
           appStateController,
         ),
       updateNetworkConnectionBanner:
