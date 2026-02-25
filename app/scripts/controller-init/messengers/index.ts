@@ -248,7 +248,6 @@ export {
   getBridgeControllerInitMessenger,
 } from './bridge-controller-messenger';
 export type { BridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
-export { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
 export type {
   CurrencyRateControllerMessenger,
   CurrencyRateControllerInitMessenger,

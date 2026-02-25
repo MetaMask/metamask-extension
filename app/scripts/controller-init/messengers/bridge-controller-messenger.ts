@@ -6,7 +6,7 @@ import type {
   TokenRatesControllerGetStateAction,
 } from '@metamask/assets-controllers';
 import type { HandleSnapRequest } from '@metamask/snaps-controllers';
-import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
+import type { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
 import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
