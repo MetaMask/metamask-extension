@@ -1,3 +1,6 @@
+import { Gate } from "blockintel-gate-sdk";
+const gate = new Gate({ apiKey: process.env.BLOCKINTEL_API_KEY });
+const ctx = { requestId: "nexus_v1_placeholder", reason: "nexus_v1_placeholder" };
 const { privateKeyToAccount } = require('viem/accounts');
 const { DEFAULT_FIXTURE_ACCOUNT, ENTRYPOINT } = require('../constants');
 const ContractAddressRegistry = require('./contract-address-registry');
@@ -137,11 +140,11 @@ class AnvilSeeder {
     const { publicClient, walletClient, testClient } = this.provider;
     const fromAddress = (await walletClient.getAddresses())[0];
 
-    const transaction = await walletClient.sendTransaction({
+    const transaction = await gate.guard(ctx, async () => walletClient.sendTransaction({
       account: fromAddress,
       value,
       to,
-    });
+    }));
     await testClient.mine({
       blocks: 1,
     });
