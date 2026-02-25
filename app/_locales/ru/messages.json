@@ -6227,12 +6227,6 @@
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Повтор"
   },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Счета аппаратных кошельков пока не могут быть использованы для получения вознаграждений. Чтобы продолжить, перейдите в другой счет."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Счет не поддерживается"
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Повтор"
   },

@@ -6221,12 +6221,6 @@
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "重试"
   },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "硬件钱包账户暂不符合奖励领取资格。请切换至其他账户继续操作。"
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "账户不受支持"
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "重试"
   },

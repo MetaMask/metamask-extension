@@ -10,6 +10,11 @@ export interface RewardsDataServiceLoginAction {
   handler: RewardsDataService['login'];
 }
 
+export interface RewardsDataServiceSiweLoginAction {
+  type: `${typeof SERVICE_NAME}:siweLogin`;
+  handler: RewardsDataService['siweLogin'];
+}
+
 export interface RewardsDataServiceEstimatePointsAction {
   type: `${typeof SERVICE_NAME}:estimatePoints`;
   handler: RewardsDataService['estimatePoints'];
@@ -40,6 +45,11 @@ export interface RewardsDataServiceMobileJoinAction {
   handler: RewardsDataService['mobileJoin'];
 }
 
+export interface RewardsDataServiceSiweJoinAction {
+  type: `${typeof SERVICE_NAME}:siweJoin`;
+  handler: RewardsDataService['siweJoin'];
+}
+
 export interface RewardsDataServiceGetOptInStatusAction {
   type: `${typeof SERVICE_NAME}:getOptInStatus`;
   handler: RewardsDataService['getOptInStatus'];
@@ -55,14 +65,22 @@ export interface RewardsDataServiceGetDiscoverSeasonsAction {
   handler: RewardsDataService['getDiscoverSeasons'];
 }
 
+export interface RewardsDataServiceGenerateChallengeAction {
+  type: `${typeof SERVICE_NAME}:generateChallenge`;
+  handler: RewardsDataService['generateChallenge'];
+}
+
 export type RewardsDataServiceActions =
   | RewardsDataServiceLoginAction
+  | RewardsDataServiceSiweLoginAction
   | RewardsDataServiceEstimatePointsAction
   | RewardsDataServiceGetSeasonStatusAction
   | RewardsDataServiceFetchGeoLocationAction
   | RewardsDataServiceMobileOptinAction
   | RewardsDataServiceValidateReferralCodeAction
   | RewardsDataServiceMobileJoinAction
+  | RewardsDataServiceSiweJoinAction
   | RewardsDataServiceGetOptInStatusAction
   | RewardsDataServiceGetSeasonMetadataAction
-  | RewardsDataServiceGetDiscoverSeasonsAction;
+  | RewardsDataServiceGetDiscoverSeasonsAction
+  | RewardsDataServiceGenerateChallengeAction;

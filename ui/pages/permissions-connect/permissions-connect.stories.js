@@ -1,5 +1,4 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';
 import { Box } from '../../components/component-library';
 import { PermissionPageContainerContent } from '../../components/app/permission-page-container';
 import PermissionsConnectFooter from '../../components/app/permissions-connect-footer';
@@ -45,7 +44,9 @@ export default {
 export const ChooseAccountComponent = () => {
   return (
     <ChooseAccount
-      selectAccounts={action('Account(s) Selected')}
+      selectAccounts={() => {
+        /* no-op */
+      }}
       selectedAccountAddresses={
         new Set([
           '0xcb47e5e29f925e7482d1712297fb6b268f412344',
@@ -84,7 +85,9 @@ export const PermissionPageContainerComponent = () => {
         <PermissionsConnectFooter />
         <PageContainerFooter
           cancelButtonType="default"
-          onSubmit={action('Account(s) Connected')}
+          onSubmit={() => {
+            /* no-op */
+          }}
           submitText="connect"
         />
       </Box>

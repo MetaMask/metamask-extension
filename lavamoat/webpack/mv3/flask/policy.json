@@ -704,7 +704,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/bridge-controller>bignumber.js": true,
@@ -1075,7 +1075,7 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
-    "@metamask/keyring-internal-api": {
+    "@metamask/keyring-internal-snap-client>@metamask/keyring-internal-api": {
       "packages": {
         "@metamask/keyring-api": true,
         "@metamask/keyring-utils": true,
@@ -1085,7 +1085,7 @@
     "@metamask/keyring-internal-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
-        "@metamask/keyring-internal-api": true,
+        "@metamask/keyring-internal-snap-client>@metamask/keyring-internal-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/keyring-utils": true
       }
@@ -1126,11 +1126,6 @@
       "packages": {
         "@metamask/keyring-api": true,
         "@metamask/network-controller": true,
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "packages": {
         "@metamask/utils": true
       }
     },
