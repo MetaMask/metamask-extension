@@ -1,14 +1,6 @@
-/**
- * Feature Flag Registry Check
- *
- * Scans PR diffs for feature flag references and verifies every referenced
- * flag exists in the central feature flag registry.  When a new flag is
- * introduced without a matching registry update the job fails, prompting
- * the author to keep the registry in sync.
- *
- * Usage: yarn tsx .github/scripts/check-feature-flag-registry.ts [base-branch]
- * In CI the base branch comes from GITHUB_BASE_REF (defaults to "main").
- */
+// Feature Flag Registry Check — scans PR diffs for feature flag references
+// and verifies they exist in the registry. Fails if unregistered flags found.
+// Usage: yarn tsx .github/scripts/check-feature-flag-registry.ts [base-branch]
 
 import { execFileSync } from 'child_process';
 import * as path from 'path';
@@ -635,9 +627,17 @@ function processStrings(line: string, mode: 'strip' | 'mask'): string {
         j++;
       }
       if (hasExpr) {
-        const endIdx = line.indexOf('`', j + 2);
-        const stop = endIdx >= 0 ? endIdx + 1 : line.length;
-        result += line.slice(i, stop); i = stop; continue;
+        let depth = 1, k = j + 2;
+        while (k < line.length && depth > 0) {
+          if (line[k] === '\\') { k += 2; continue; }
+          if (line[k] === '`' && depth === 1) { depth = 0; break; }
+          if (line[k] === '`') depth--;
+          else if (line[k] === '$' && line[k + 1] === '{') { depth++; k++; }
+          else if (line[k] === '}') depth--;
+          k++;
+        }
+        result += line.slice(i, depth === 0 ? k + 1 : line.length);
+        i = depth === 0 ? k + 1 : line.length; continue;
       }
     }
     let j = i + 1;
