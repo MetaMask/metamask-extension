@@ -1403,7 +1403,6 @@
   "ui/pages/settings/flask/view-snap/view-snap.js",
   "ui/pages/settings/index.js",
   "ui/pages/settings/info-tab/index.js",
-  "ui/pages/settings/info-tab/info-tab.component.js",
   "ui/pages/settings/info-tab/info-tab.stories.js",
   "ui/pages/settings/networks-tab/custom-content-search/custom-content-search.js",
   "ui/pages/settings/networks-tab/custom-content-search/custom-content-search.stories.js",
