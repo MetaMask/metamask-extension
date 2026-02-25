@@ -6227,12 +6227,6 @@
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Tentar novamente"
   },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Contas de carteira de hardware ainda não são qualificadas para receber recompensas. Mude para uma conta diferente para continuar."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Não há suporte para esta conta"
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Tentar novamente"
   },

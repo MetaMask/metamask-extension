@@ -6227,12 +6227,6 @@
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Tekrar Dene"
   },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Donanım cüzdanı hesapları henüz ödül almaya uygun değil. Devam etmek için lütfen farklı bir hesaba geçin."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Hesap desteklenmiyor"
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Tekrar Dene"
   },

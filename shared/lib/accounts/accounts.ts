@@ -9,11 +9,9 @@ import {
   SnapKeyring,
   SnapKeyringInternalOptions,
 } from '@metamask/eth-snap-keyring';
-import { KeyringTypes } from '@metamask/keyring-controller';
 import { Messenger } from '@metamask/messenger';
 import { SnapId } from '@metamask/snaps-sdk';
 import { HandleSnapRequest as SnapControllerHandleRequest } from '@metamask/snaps-controllers';
-import { AccountsControllerGetNextAvailableAccountNameAction } from '@metamask/accounts-controller';
 import { MultichainNetworks } from '../../constants/multichain/networks';
 import { createSentryError } from '../../modules/error';
 import { captureException } from '../sentry';
@@ -113,8 +111,7 @@ export type WalletSnapClient = {
 
 export type MultichainWalletSnapClientMessenger = Messenger<
   'MultichainWalletSnapClient',
-  | SnapControllerHandleRequest
-  | AccountsControllerGetNextAvailableAccountNameAction,
+  SnapControllerHandleRequest,
   never
 >;
 
@@ -125,8 +122,6 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
 
   readonly #client: KeyringInternalSnapClient;
 
-  readonly #messenger: MultichainWalletSnapClientMessenger;
-
   constructor(
     snapId: SUPPORTED_WALLET_SNAP_ID,
     snapKeyring: SnapKeyring,
@@ -135,16 +130,16 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
     this.#snapId = snapId;
     this.#snapKeyring = snapKeyring;
 
-    this.#messenger = messenger;
-
     const clientMessenger: KeyringInternalSnapClientMessenger = new Messenger({
       namespace: 'KeyringInternalSnapClient',
       parent: messenger,
     });
+
     messenger.delegate({
       messenger: clientMessenger,
       actions: ['SnapController:handleRequest'],
     });
+
     this.#client = new KeyringInternalSnapClient({
       snapId,
       messenger: clientMessenger,
@@ -182,10 +177,7 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
   ): Promise<string> {
     return getNextAvailableSnapAccountName(
       async () => {
-        return this.#messenger.call(
-          'AccountsController:getNextAvailableAccountName',
-          KeyringTypes.snap,
-        );
+        return '';
       },
       this.#snapId,
       options,
