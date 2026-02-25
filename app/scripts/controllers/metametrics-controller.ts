@@ -88,6 +88,7 @@ import { ENVIRONMENT } from '../../../development/build/constants';
 import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
 import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
+import { getTokensControllerAllTokens } from '../../../shared/modules/selectors/assets-migration';
 import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -176,6 +177,8 @@ export type MetaMaskState = Pick<
   | 'internalAccounts'
   | 'allNfts'
   | 'allTokens'
+  | 'allIgnoredTokens'
+  | 'allDetectedTokens'
   | 'theme'
   | 'participateInMetaMetrics'
   | 'dataCollectionForMarketing'
@@ -1430,8 +1433,7 @@ export default class MetaMetricsController extends BaseController<
         metamaskState.allNfts,
       ).length,
       [MetaMetricsUserTrait.NumberOfTokens]: this.#getNumberOfTokens(
-        // TODO: Refactor this to use the new state structure based on the feature flag.
-        metamaskState.allTokens,
+        getTokensControllerAllTokens({ metamask: metamaskState }),
       ),
       [MetaMetricsUserTrait.NumberOfHDEntropies]:
         this.#getNumberOfHDEntropies(metamaskState) ??

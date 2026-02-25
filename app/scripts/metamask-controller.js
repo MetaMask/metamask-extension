@@ -210,7 +210,10 @@ import {
 } from '../../shared/modules/shield';
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
 import { createSentryError } from '../../shared/modules/error';
-import { getAccountTrackerControllerAccountsByChainId } from '../../shared/modules/selectors/assets-migration';
+import {
+  getAccountTrackerControllerAccountsByChainId,
+  getTokensControllerAllTokens,
+} from '../../shared/modules/selectors/assets-migration';
 import {
   toHardwareWalletError,
   // eslint-disable-next-line import/no-restricted-paths
@@ -3805,8 +3808,7 @@ export default class MetamaskController extends EventEmitter {
 
     const { tokensChainsCache } = this.tokenListController.state;
     const tokenList = tokensChainsCache?.[currentChainId]?.data || {};
-    // TODO: Refactor this to use the new state structure based on the feature flag.
-    const { allTokens } = this.tokensController.state;
+    const allTokens = getTokensControllerAllTokens(this._getMetaMaskState());
 
     const tokens = allTokens?.[currentChainId]?.[userAddress] || [];
 
@@ -3929,8 +3931,7 @@ export default class MetamaskController extends EventEmitter {
     const { tokensChainsCache } = this.tokenListController.state;
     const tokenList = tokensChainsCache?.[chainId]?.data || {};
 
-    // TODO: Refactor this to use the new state structure based on the feature flag.
-    const { allTokens } = this.tokensController.state;
+    const allTokens = getTokensControllerAllTokens(this._getMetaMaskState());
     const selectedAccount = this.accountsController.getSelectedAccount();
     const tokens = allTokens?.[chainId]?.[selectedAccount.address] || [];
 
@@ -8991,8 +8992,7 @@ export default class MetamaskController extends EventEmitter {
   _trackTransactionFailure(transactionMeta) {
     const { txReceipt } = transactionMeta;
     const metamaskState = this.getState();
-    // TODO: Refactor this to use the new state structure based on the feature flag.
-    const { allTokens } = this.tokensController.state;
+    const allTokens = getTokensControllerAllTokens({ metamask: metamaskState });
     const selectedAccount = this.accountsController.getSelectedAccount();
     const tokens =
       allTokens?.[transactionMeta.chainId]?.[selectedAccount.address] || [];

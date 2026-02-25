@@ -1,9 +1,10 @@
 import { connect } from 'react-redux';
+import { getTokensControllerAllTokens } from '../../../../../shared/modules/selectors/assets-migration';
 import TokenList from './token-list.component';
 
 const mapStateToProps = (state) => {
-  // TODO: Refactor this to use the new state structure based on the feature flag.
-  const { allTokens, accountsAssets } = state.metamask;
+  const allTokens = getTokensControllerAllTokens(state);
+  const { accountsAssets } = state.metamask;
   return {
     allTokens,
     accountsAssets,
