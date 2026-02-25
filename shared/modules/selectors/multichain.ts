@@ -22,7 +22,7 @@ export const selectAllEnabledNetworkClientIds = createSelector(
   selectDefaultNetworkClientIdsByChainId,
   (allEnabledNetworks, defaultNetworkClientIdsByChainId) => {
     const chainIds = Object.entries(
-      allEnabledNetworks[KnownCaipNamespace.Eip155],
+      allEnabledNetworks?.[KnownCaipNamespace.Eip155] ?? {},
     )
       .filter(([_chainId, isEnabled]) => isEnabled)
       .map(([chainId, _isEnabled]) => chainId) as Hex[];

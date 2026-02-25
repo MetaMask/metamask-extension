@@ -322,7 +322,7 @@ export const getEnabledNetworksByNamespace = createSelector(
   getSelectedMultichainNetworkChainId,
   (enabledNetworkMap, currentMultichainChainId) => {
     const { namespace } = parseCaipChainId(currentMultichainChainId);
-    const namespaceMap = enabledNetworkMap[namespace] ?? {};
+    const namespaceMap = enabledNetworkMap?.[namespace] ?? {};
 
     return Object.fromEntries(
       Object.entries(namespaceMap).filter(([, enabled]) => enabled === true),
@@ -333,7 +333,7 @@ export const getEnabledNetworksByNamespace = createSelector(
 export const getAllEnabledNetworksForAllNamespaces = createSelector(
   getEnabledNetworks,
   (enabledNetworkMap) =>
-    Object.values(enabledNetworkMap).flatMap((namespaceNetworks) =>
+    Object.values(enabledNetworkMap ?? {}).flatMap((namespaceNetworks) =>
       Object.entries(namespaceNetworks)
         .filter(([, enabled]) => enabled)
         .map(([chainId]) => chainId),
@@ -343,7 +343,7 @@ export const getAllEnabledNetworksForAllNamespaces = createSelector(
 export const selectEnabledNetworksAsCaipChainIds = createSelector(
   getEnabledNetworks,
   (enabledNetworkMap): CaipChainId[] =>
-    Object.entries(enabledNetworkMap)
+    Object.entries(enabledNetworkMap ?? {})
       .flatMap(([namespace, namespaceNetworks]) =>
         Object.entries(namespaceNetworks)
           .filter(([, enabled]) => enabled)
@@ -359,7 +359,7 @@ export const selectEnabledNetworksAsCaipChainIds = createSelector(
 export const selectNonEvmChainIds = createSelector(
   getEnabledNetworks,
   (enabledNetworkMap) =>
-    Object.entries(enabledNetworkMap)
+    Object.entries(enabledNetworkMap ?? {})
       .filter(([namespace]) => namespace !== 'eip155')
       .flatMap(([, chains]) =>
         Object.entries(chains)
@@ -376,7 +376,7 @@ export const getEnabledChainIds = createSelector(
     const { namespace } = parseCaipChainId(currentMultichainChainId);
 
     // Get enabled networks for the current namespace
-    const networksForNamespace = enabledNetworks[namespace] || {};
+    const networksForNamespace = enabledNetworks?.[namespace] ?? {};
 
     return Object.keys(networkConfigurations).filter(
       (chainId) => networksForNamespace[chainId],
@@ -392,7 +392,7 @@ export const getEnabledNetworkClientIds = createSelector(
     const { namespace } = parseCaipChainId(currentMultichainChainId);
 
     // Get enabled networks for the current namespace
-    const networksForNamespace = enabledNetworks[namespace as string] || {};
+    const networksForNamespace = enabledNetworks?.[namespace as string] ?? {};
 
     return Object.entries(networkConfigurations).reduce(
       (acc, [chainId, network]) => {
@@ -414,7 +414,7 @@ export const selectAnyEnabledNetworksAreAvailable = createSelector(
   selectDefaultNetworkClientIdsByChainId,
   getNetworksMetadata,
   (allEnabledNetworks, defaultNetworkClientIdsByChainId, networksMetadata) => {
-    return Object.entries(allEnabledNetworks).reduce<boolean>(
+    return Object.entries(allEnabledNetworks ?? {}).reduce<boolean>(
       (result, [namespace, enabledNetworksByChainId]) => {
         if (namespace === KnownCaipNamespace.Eip155) {
           const chainIds = Object.entries(enabledNetworksByChainId)
@@ -447,7 +447,8 @@ export const selectFirstUnavailableEvmNetwork = createSelector(
   getNetworkConfigurationsByChainId,
   getNetworksMetadata,
   (enabledNetworks, networkConfigurationsByChainId, networksMetadata) => {
-    const enabledEvmNetworks = enabledNetworks[KnownCaipNamespace.Eip155] ?? {};
+    const enabledEvmNetworks =
+      enabledNetworks?.[KnownCaipNamespace.Eip155] ?? {};
     const enabledChainIds = Object.entries(enabledEvmNetworks)
       .filter(([, isEnabled]) => isEnabled)
       .map(([chainId]) => chainId as Hex);
