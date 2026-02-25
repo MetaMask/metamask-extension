@@ -1196,6 +1196,55 @@ describe('Actions', () => {
     });
   });
 
+  describe('#setWatchEthereumAccountEnabled', () => {
+    it('calls background setWatchEthereumAccountEnabled with value', async () => {
+      const store = mockStore();
+      background.setWatchEthereumAccountEnabled = sinon.stub().resolves();
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.setWatchEthereumAccountEnabled(true));
+      expect(background.setWatchEthereumAccountEnabled.callCount).toStrictEqual(
+        1,
+      );
+      expect(
+        background.setWatchEthereumAccountEnabled.getCall(0).args,
+      ).toStrictEqual([true]);
+
+      await store.dispatch(actions.setWatchEthereumAccountEnabled(false));
+      expect(background.setWatchEthereumAccountEnabled.callCount).toStrictEqual(
+        2,
+      );
+      expect(
+        background.setWatchEthereumAccountEnabled.getCall(1).args,
+      ).toStrictEqual([false]);
+    });
+  });
+
+  describe('#setAddSnapAccountEnabled', () => {
+    if (typeof actions.setAddSnapAccountEnabled !== 'function') {
+      it.todo('setAddSnapAccountEnabled not available in this build');
+      return;
+    }
+
+    it('calls background setAddSnapAccountEnabled with value', async () => {
+      const store = mockStore();
+      background.setAddSnapAccountEnabled = sinon.stub().resolves();
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.setAddSnapAccountEnabled(true));
+      expect(background.setAddSnapAccountEnabled.callCount).toStrictEqual(1);
+      expect(background.setAddSnapAccountEnabled.getCall(0).args).toStrictEqual(
+        [true],
+      );
+
+      await store.dispatch(actions.setAddSnapAccountEnabled(false));
+      expect(background.setAddSnapAccountEnabled.callCount).toStrictEqual(2);
+      expect(background.setAddSnapAccountEnabled.getCall(1).args).toStrictEqual(
+        [false],
+      );
+    });
+  });
+
   describe('#updateTransaction', () => {
     const txParams = {
       from: '0x1',
@@ -2141,6 +2190,101 @@ describe('Actions', () => {
     });
   });
 
+  describe('refreshAssetsForSelectedAccount', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    const mockAccount = {
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      address: '0xFirstAddress',
+      metadata: {
+        name: 'Test Account',
+        keyring: { type: 'HD Key Tree' },
+      },
+      options: {},
+      methods: [],
+      type: EthAccountType.Eoa,
+    };
+
+    it('calls getAssets in the background with accounts and options', async () => {
+      const store = mockStore();
+      const getAssetsStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        getAssets: getAssetsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const accounts = [mockAccount];
+      const options = {
+        chainIds: ['eip155:5', 'eip155:1'],
+        assetTypes: ['token'],
+      };
+
+      await store.dispatch(
+        actions.refreshAssetsForSelectedAccount(accounts, options),
+      );
+
+      expect(getAssetsStub.calledOnceWith(accounts, options)).toBe(true);
+    });
+
+    it('calls getAssets with default options when options omitted', async () => {
+      const store = mockStore();
+      const getAssetsStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        getAssets: getAssetsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const accounts = [mockAccount];
+
+      await store.dispatch(actions.refreshAssetsForSelectedAccount(accounts));
+
+      expect(getAssetsStub.calledOnce).toBe(true);
+      expect(getAssetsStub.firstCall.args[0]).toStrictEqual(accounts);
+      expect(getAssetsStub.firstCall.args[1]).toStrictEqual({});
+    });
+
+    it('calls getAssets with empty accounts array', async () => {
+      const store = mockStore();
+      const getAssetsStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        getAssets: getAssetsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.refreshAssetsForSelectedAccount([], {
+          chainIds: ['eip155:5'],
+        }),
+      );
+
+      expect(getAssetsStub.calledOnceWith([], { chainIds: ['eip155:5'] })).toBe(
+        true,
+      );
+    });
+
+    it('does not throw when getAssets rejects', async () => {
+      const store = mockStore();
+      const error = new Error('Background getAssets failed');
+      const getAssetsStub = sinon.stub().rejects(error);
+
+      background.getApi.returns({
+        getAssets: getAssetsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await expect(
+        store.dispatch(
+          actions.refreshAssetsForSelectedAccount([mockAccount], {}),
+        ),
+      ).resolves.not.toThrow();
+    });
+  });
+
   describe('#setSelectedNetworkConfigurationId', () => {
     it('sets appState.networkConfigurationId to provided value', async () => {
       const store = mockStore();
@@ -2511,6 +2655,60 @@ describe('Actions', () => {
 
       await store.dispatch(actions.setParticipateInMetaMetrics(true));
       expect(setParticipateInMetaMetricsStub).toHaveBeenCalledWith(true);
+    });
+  });
+
+  describe('#setMusdConversionEducationSeen', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls setMusdConversionEducationSeen in background with value', async () => {
+      const store = mockStore();
+      const setMusdConversionEducationSeenStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        setMusdConversionEducationSeen: setMusdConversionEducationSeenStub,
+      });
+
+      await store.dispatch(actions.setMusdConversionEducationSeen(true));
+      expect(setMusdConversionEducationSeenStub.callCount).toStrictEqual(1);
+      expect(setMusdConversionEducationSeenStub.calledWith(true)).toBe(true);
+    });
+
+    it('calls setMusdConversionEducationSeen in background with false', async () => {
+      const store = mockStore();
+      const setMusdConversionEducationSeenStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        setMusdConversionEducationSeen: setMusdConversionEducationSeenStub,
+      });
+
+      await store.dispatch(actions.setMusdConversionEducationSeen(false));
+      expect(setMusdConversionEducationSeenStub.calledWith(false)).toBe(true);
+    });
+  });
+
+  describe('#addMusdConversionDismissedCtaKey', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls addMusdConversionDismissedCtaKey in background with key', async () => {
+      const store = mockStore();
+      const addMusdConversionDismissedCtaKeyStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        addMusdConversionDismissedCtaKey: addMusdConversionDismissedCtaKeyStub,
+      });
+
+      await store.dispatch(
+        actions.addMusdConversionDismissedCtaKey('0x1-0xabc123'),
+      );
+      expect(addMusdConversionDismissedCtaKeyStub.callCount).toStrictEqual(1);
+      expect(
+        addMusdConversionDismissedCtaKeyStub.calledWith('0x1-0xabc123'),
+      ).toBe(true);
     });
   });
 
