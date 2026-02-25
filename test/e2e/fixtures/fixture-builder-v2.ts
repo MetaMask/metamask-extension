@@ -1,11 +1,13 @@
 import { merge, cloneDeep } from 'lodash';
+import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { CurrencyRateState } from '@metamask/assets-controllers';
+import type { KeyringControllerState } from '@metamask/keyring-controller';
+import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type {
   PermissionConstraint,
   PermissionControllerState,
 } from '@metamask/permission-controller';
-import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type {
   Preferences,
   PreferencesControllerState,
@@ -15,11 +17,11 @@ import {
   DAPP_URL_LOCALHOST,
   DEFAULT_FIXTURE_ACCOUNT,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-  DEFAULT_FIXTURE_LEDGER_ACCOUNT,
   DEFAULT_FIXTURE_SOLANA_ACCOUNT,
   LEDGER_FIXTURE_VAULT,
   SOLANA_MAINNET_SCOPE,
 } from '../constants';
+import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../stub/keyring-bridge';
 import defaultFixtureJson from './default-fixture.json';
 import onboardingFixtureJson from './onboarding-fixture.json';
 
@@ -60,9 +62,7 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withAccountsController(
-    data: Partial<FixtureType['data']['AccountsController']>,
-  ): this {
+  withAccountsController(data: Partial<AccountsControllerState>): this {
     merge(this.fixture.data.AccountsController, data);
     return this;
   }
@@ -72,7 +72,7 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withKeyringController(data: { vault?: string }): this {
+  withKeyringController(data: Partial<KeyringControllerState>): this {
     merge(this.fixture.data.KeyringController, data);
     return this;
   }
@@ -112,6 +112,9 @@ class FixtureBuilderV2 {
   }
 
   withLedgerAccount(): this {
+    const ledgerAddress = KNOWN_PUBLIC_KEY_ADDRESSES[0].address;
+    const ledgerAddressLower = ledgerAddress.toLowerCase();
+
     return this.withKeyringController({
       vault: LEDGER_FIXTURE_VAULT,
     })
@@ -153,7 +156,7 @@ class FixtureBuilderV2 {
             },
             '221ecb67-0d29-4c04-83b2-dff07c263634': {
               id: '221ecb67-0d29-4c04-83b2-dff07c263634',
-              address: DEFAULT_FIXTURE_LEDGER_ACCOUNT,
+              address: ledgerAddress,
               options: {},
               methods: [
                 'personal_sign',
@@ -180,20 +183,19 @@ class FixtureBuilderV2 {
       })
       .withPreferencesController({
         identities: {
-          [DEFAULT_FIXTURE_ACCOUNT]: {
-            address: DEFAULT_FIXTURE_ACCOUNT,
+          [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
             lastSelected: 1665507600000,
             name: 'Account 1',
           },
-          [DEFAULT_FIXTURE_LEDGER_ACCOUNT]: {
-            address: DEFAULT_FIXTURE_LEDGER_ACCOUNT,
-            lastSelected: 1725507800000,
+          [ledgerAddressLower]: {
+            address: ledgerAddressLower,
+            lastSelected: 1665507800000,
             name: 'Ledger 1',
           },
         } as unknown as PreferencesControllerState['identities'],
-        selectedAddress: DEFAULT_FIXTURE_LEDGER_ACCOUNT,
-      })
-      .withMetaMetricsDisabled();
+        selectedAddress: ledgerAddressLower,
+      });
   }
 
   withMetaMetricsDisabled(): this {
