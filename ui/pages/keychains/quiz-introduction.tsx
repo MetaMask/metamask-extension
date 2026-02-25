@@ -21,7 +21,7 @@ type QuizIntroductionProps = {
 export function QuizIntroduction({
   onGetStarted,
   onLearnMore,
-}: QuizIntroductionProps) {
+}: Readonly<QuizIntroductionProps>) {
   const t = useI18nContext();
   return (
     <>

@@ -44,7 +44,7 @@ export function RevealSeedContent({
   onRevealPhrase,
   onCopy,
   onTabClick,
-}: RevealSeedContentProps) {
+}: Readonly<RevealSeedContentProps>) {
   const t = useI18nContext();
   const [activeTab, setActiveTab] = useState<TabKey>('text-seed');
 

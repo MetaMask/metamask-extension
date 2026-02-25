@@ -28,7 +28,7 @@ type QuizQuestionProps = {
 export function QuizQuestion({
   onQuizComplete,
   onLearnMore,
-}: QuizQuestionProps) {
+}: Readonly<QuizQuestionProps>) {
   const t = useI18nContext();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [questionAnswered, setQuestionAnswered] = useState(false);

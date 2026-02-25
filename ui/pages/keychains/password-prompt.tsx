@@ -36,7 +36,7 @@ export function PasswordPrompt({
   onTogglePasswordVisibility,
   onSubmit,
   onContinueClick,
-}: PasswordPromptProps) {
+}: Readonly<PasswordPromptProps>) {
   const t = useI18nContext();
   return (
     <>

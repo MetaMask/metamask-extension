@@ -23,7 +23,7 @@ export function RevealSeedPageHeader({
   onBack,
   title,
   backButtonAriaLabel,
-}: RevealSeedPageHeaderProps) {
+}: Readonly<RevealSeedPageHeaderProps>) {
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}

@@ -33,7 +33,8 @@ import { RevealSeedContent } from './reveal-seed-content';
 
 const QUIZ_INTRODUCTION_SCREEN: RevealSeedScreen = 'QUIZ_INTRODUCTION_SCREEN';
 const QUIZ_QUESTIONS_SCREEN: RevealSeedScreen = 'QUIZ_QUESTIONS_SCREEN';
-const PASSWORD_PROMPT_SCREEN: RevealSeedScreen = 'PASSWORD_PROMPT_SCREEN';
+// Screen identifier for the unlock step (not a credential)
+const PASSWORD_PROMPT_SCREEN: RevealSeedScreen = 'PASSWORD_PROMPT_SCREEN'; // NOSONAR
 const REVEAL_SEED_SCREEN: RevealSeedScreen = 'REVEAL_SEED_SCREEN';
 
 function RevealSeedPage() {
@@ -158,7 +159,7 @@ function RevealSeedPage() {
         location: 'reveal_srp',
       },
     });
-    global.platform.openTab({
+    globalThis.platform.openTab({
       url: `${ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}#metamask-secret-recovery-phrase-dos-and-donts`,
     });
   }, [trackEvent]);
@@ -315,7 +316,7 @@ function RevealSeedPage() {
   };
 
   const handleSrpClick = () => {
-    global.platform.openTab({
+    globalThis.platform.openTab({
       url: ZENDESK_URLS.SECRET_RECOVERY_PHRASE,
     });
   };
