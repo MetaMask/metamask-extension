@@ -2998,8 +2998,14 @@
     "ui/pages/keychains/restore-vault.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/keychains/restore-vault.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/keychains/reveal-seed.test.js": {
       "error: Warning: React does not recognize": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/keychains/reveal-seed.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/lock/lock.test.tsx": {
