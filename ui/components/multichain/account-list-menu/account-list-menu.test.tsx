@@ -17,18 +17,6 @@ import { AccountListMenu } from '.';
 const mockGetEnvironmentType = jest.fn();
 const mockDetectNfts = jest.fn();
 
-// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
-// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
-jest.mock(
-  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
-  () => ({
-    ...jest.requireActual(
-      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
-    ),
-    isMultichainAccountsFeatureEnabled: () => false,
-  }),
-);
-
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => () => mockGetEnvironmentType(),
@@ -126,7 +114,7 @@ describe('AccountListMenu', () => {
     const { getByPlaceholderText, getByText } = render();
 
     expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
-    expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
+    expect(getByText('Add account or wallet')).toBeInTheDocument();
     expect(document.querySelector('[aria-label="Back"]')).toStrictEqual(null);
   });
 
