@@ -763,6 +763,7 @@ CODEBOT references detailed guidelines in `.cursor/rules/` for comprehensive rul
 **HIGH Priority Checks (includes deprecated patterns):**
 
 - [ ] ⚠️ No `driver.delay()` usage — **Deprecated**, use page object wait methods instead
+- [ ] ⚠️ Prefer `FixtureBuilderV2` in new/updated specs when required methods are supported
 - [ ] Using page objects for page interactions (not raw driver calls)
 - [ ] Using fixtures to set up state (not UI interactions for setup)
 - [ ] Explicit assertions with clear error messages
@@ -1031,7 +1032,7 @@ Before generating final report, perform these checks internally. **These checks 
 | **E2E:** `driver.delay()` usage       | ⚠️ **Deprecated:** Use page object wait methods instead  | `.cursor/rules/e2e-testing-guidelines/RULE.md` ("Timing and Waits")                               |
 | **E2E:** CSS class locator            | Use `data-testid` attribute                              | `.cursor/rules/e2e-testing-guidelines/RULE.md` ("Element Locators")                               |
 | **E2E:** Raw driver calls             | Use page object methods                                  | `.cursor/rules/e2e-testing-guidelines/RULE.md` ("Page Object Model")                              |
-| **E2E:** UI setup instead of fixtures | Use `FixtureBuilder` for state setup                     | `.cursor/rules/e2e-testing-guidelines/RULE.md` ("Controlling State")                              |
+| **E2E:** Legacy `FixtureBuilder` used for V2-compatible setup | Use `FixtureBuilderV2` (legacy only if required methods are unavailable in V2) | `.cursor/rules/e2e-testing-guidelines/RULE.md` ("Controlling State")                              |
 
 **Note:** For detailed examples and comprehensive guidelines, see the referenced rule files in `.cursor/rules/`.
 
