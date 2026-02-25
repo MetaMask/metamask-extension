@@ -3313,12 +3313,6 @@
   "importSelectedTokensDescription": {
     "message": "Sadece seçtiğiniz tokenlar cüzdanınızda gösterilecek. Dilediğiniz zaman onları arayarak gizli tokenları içe aktarabilirsiniz."
   },
-  "importTokenQuestion": {
-    "message": "Tokeni içe aktar?"
-  },
-  "importTokenWarning": {
-    "message": "Herkes, mevcut tokenların sahte sürümleri de dahil olmak üzere herhangi bir ada sahip bir token oluşturabilir. Riski tamamen size ait olacak şekikde token ekleyin ve işlem yapın!"
-  },
   "importTokensCamelCase": {
     "message": "Tokenları içe aktar"
   },
