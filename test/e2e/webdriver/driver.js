@@ -1864,6 +1864,14 @@ function collectMetrics() {
       });
     });
 
+  const longTaskData = window.stateHooks?.getLongTaskMetricsWithTBT?.();
+  if (longTaskData) {
+    results.longTaskCount = longTaskData.count;
+    results.longTaskTotalDuration = longTaskData.totalDuration;
+    results.longTaskMaxDuration = longTaskData.maxDuration;
+    results.tbt = longTaskData.tbt;
+  }
+
   return {
     ...results,
     ...window.stateHooks.getCustomTraces(),
