@@ -14,6 +14,7 @@ import {
   calculateTimerStatistics,
   checkExclusionRate,
   MAX_EXCLUSION_RATE,
+  MAX_TOTAL_DURATION_MS,
   validateThresholds,
 } from './statistics';
 import type {
@@ -23,6 +24,7 @@ import type {
   BenchmarkSummary,
   BenchmarkType,
   Metrics,
+  Persona,
   ThresholdConfig,
   TimerResult,
   TimerStatistics,
@@ -132,6 +134,22 @@ export async function runBenchmarkWithIterations(
     }
   }
 
+  // Compute per-run total durations and derive total statistics from them
+  // (min/max/percentiles are not additive across timers from different runs)
+  const perRunTotalDurations: number[] = [];
+  for (const result of allResults) {
+    if (result.success && result.timers.length > 0) {
+      const runTotal = result.timers.reduce((acc, t) => acc + t.duration, 0);
+      perRunTotalDurations.push(runTotal);
+    }
+  }
+  if (perRunTotalDurations.length > 0) {
+    const totalStats = calculateTimerStatistics('total', perRunTotalDurations, {
+      maxDurationMs: MAX_TOTAL_DURATION_MS,
+    });
+    timerStats.push(totalStats);
+  }
+
   // Check overall run exclusion rate
   const overallExclusionCheck = checkExclusionRate(
     iterations,
@@ -144,6 +162,7 @@ export async function runBenchmarkWithIterations(
     ? validateThresholds(timerStats, thresholdConfig)
     : undefined;
 
+  // Extract benchmarkType from the first result (same across all iterations)
   const benchmarkType = allResults.find((r) => r.benchmarkType)?.benchmarkType;
 
   return {
@@ -167,7 +186,7 @@ export async function runBenchmarkWithIterations(
 export type MeasurePageResult = {
   metrics: Metrics[];
   title: string;
-  persona: string;
+  persona: Persona;
 };
 
 export async function runPageLoadBenchmark(
@@ -190,7 +209,7 @@ export async function runPageLoadBenchmark(
   const pageName = 'home';
   let runResults: Metrics[] = [];
   let testTitle = '';
-  let resultPersona = '';
+  let resultPersona: Persona = 'standard';
 
   for (let i = 0; i < browserLoads; i += 1) {
     console.log('Starting browser load', i + 1, 'of', browserLoads);

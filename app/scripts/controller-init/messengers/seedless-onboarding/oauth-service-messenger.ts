@@ -31,6 +31,7 @@ export function getOAuthServiceMessenger(
     actions: [
       'SeedlessOnboardingController:getState',
       'OnboardingController:getState',
+      'SeedlessOnboardingController:getAccessToken',
     ],
   });
   return oauthMessenger;

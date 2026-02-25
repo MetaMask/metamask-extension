@@ -2,6 +2,7 @@ import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { withFixtures, sentryRegEx } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { triggerCrash } from '../../page-objects/flows/crash.flow';
@@ -80,7 +81,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
   it('gives option to cause a page crash and offer contact support option with rejecting to share data', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
           'Unable to find value of key "developerOptions" for locale "en"',

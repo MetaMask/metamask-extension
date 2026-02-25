@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import {
@@ -53,9 +53,6 @@ import {
 } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
-///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
-import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
-///: END:ONLY_INCLUDE_IF
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -80,10 +77,10 @@ import {
   getShieldSubscription,
   getSubscriptionPaymentData,
 } from '../../../../shared/lib/shield';
-import { selectRewardsEnabled } from '../../../ducks/rewards/selectors';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import type { GlobalMenuSection } from '../global-menu/global-menu-list.types';
+import { isBeta, isFlask } from '../../../helpers/utils/build-types';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -101,10 +98,10 @@ export function useGlobalMenuSections(
   const { trackEvent } = useContext(MetaMetricsContext);
   const { captureCommonExistingShieldSubscriptionEvents } =
     useSubscriptionMetrics();
+  const location = useLocation();
   const navigate = useNavigate();
 
   const basicFunctionality = useSelector(getUseExternalServices);
-  const rewardsEnabled = useSelector(selectRewardsEnabled);
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const { notificationsReadCount } = useReadNotificationsCounter();
   const isMetamaskNotificationFeatureSeen = useSelector(
@@ -147,12 +144,9 @@ export function useGlobalMenuSections(
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
-  let supportText = t('support');
-  let supportLink = SUPPORT_LINK || '';
-  ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
-  supportText = t('needHelpSubmitTicket');
-  supportLink = SUPPORT_REQUEST_LINK || '';
-  ///: END:ONLY_INCLUDE_IF
+  const supportText =
+    isBeta() || isFlask() ? t('needHelpSubmitTicket') : t('support');
+  const supportLink = SUPPORT_LINK || '';
 
   const handleNotificationsClick = useCallback(() => {
     const shouldShowEnableModal =
@@ -188,8 +182,9 @@ export function useGlobalMenuSections(
         read_count: notificationsReadCount,
       },
     });
-    navigate(NOTIFICATIONS_ROUTE);
-    onClose();
+    navigate(
+      `${NOTIFICATIONS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
+    );
   }, [
     hasThirdPartyNotifySnaps,
     isMetamaskNotificationsEnabled,
@@ -200,6 +195,7 @@ export function useGlobalMenuSections(
     navigate,
     notificationsUnreadCount,
     notificationsReadCount,
+    location.pathname,
   ]);
 
   const handleSupportMenuClick = useCallback(() => {
@@ -306,6 +302,7 @@ export function useGlobalMenuSections(
       section1.items.push({
         id: 'notifications-menu-item',
         iconName: IconName.Notification,
+        showChevron: true,
         label: (
           <Box
             flexDirection={BoxFlexDirection.Row}
@@ -324,32 +321,31 @@ export function useGlobalMenuSections(
 
     const section2: GlobalMenuSection = {
       id: 'global-menu-section-2',
+      hideDividerAbove: true, // No divider between notifications and this section
       items: [],
     };
 
-    if (rewardsEnabled) {
-      section2.items.push({
-        id: 'discover',
-        iconName: IconName.Export,
-        label: t('discover'),
-        onClick: () => {
-          const url = getPortfolioUrl(
-            'explore/tokens',
-            'ext_portfolio_button',
-            metaMetricsId,
-            isMetaMetricsEnabled,
-            isMarketingEnabled,
-          );
-          global.platform.openTab({ url });
-          trackEvent({
-            category: MetaMetricsEventCategory.Navigation,
-            event: MetaMetricsEventName.PortfolioLinkClicked,
-            properties: { location: METRICS_LOCATION, text: 'Portfolio' },
-          });
-          onClose();
-        },
-      });
-    }
+    section2.items.push({
+      id: 'discover',
+      iconName: IconName.Export,
+      label: t('discover'),
+      onClick: () => {
+        const url = getPortfolioUrl(
+          'explore/tokens',
+          'ext_portfolio_button',
+          metaMetricsId,
+          isMetaMetricsEnabled,
+          isMarketingEnabled,
+        );
+        global.platform.openTab({ url });
+        trackEvent({
+          category: MetaMetricsEventCategory.Navigation,
+          event: MetaMetricsEventName.PortfolioLinkClicked,
+          properties: { location: METRICS_LOCATION, text: 'Portfolio' },
+        });
+        onClose();
+      },
+    });
 
     if (isPopup || isSidepanel) {
       section2.items.push({
@@ -376,9 +372,7 @@ export function useGlobalMenuSections(
     ) {
       section2.items.push({
         id: 'global-menu-toggle-view',
-        // TODO: Add back the correct icon name when the design system is updated
-        // iconName: isSidepanel ? IconName.PopUp : IconName.SidePanel,
-        iconName: IconName.Expand,
+        iconName: isSidepanel ? IconName.PopUp : IconName.SidePanel,
         label: isSidepanel ? t('switchToPopup') : t('switchToSidePanel'),
         onClick: async () => {
           await toggleDefaultView();
@@ -406,15 +400,14 @@ export function useGlobalMenuSections(
           iconName: IconName.SecurityTick,
           label: t('allPermissions'),
           to: isGatorPermissionsRevocationFeatureEnabled()
-            ? GATOR_PERMISSIONS
-            : PERMISSIONS,
+            ? `${GATOR_PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`
+            : `${PERMISSIONS}?from=${encodeURIComponent(location.pathname)}`,
           onClick: () => {
             trackEvent({
               event: MetaMetricsEventName.NavPermissionsOpened,
               category: MetaMetricsEventCategory.Navigation,
               properties: { location: METRICS_LOCATION },
             });
-            onClose();
           },
           disabled: hasUnapprovedTransactions,
         },
@@ -431,8 +424,7 @@ export function useGlobalMenuSections(
           id: 'global-menu-snaps',
           iconName: IconName.Snaps,
           label: t('snaps'),
-          to: SNAPS_ROUTE,
-          onClick: onClose,
+          to: `${SNAPS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
           showInfoDot: snapsUpdatesAvailable,
         },
       ],
@@ -453,7 +445,6 @@ export function useGlobalMenuSections(
               event: MetaMetricsEventName.NavSettingsOpened,
               properties: { location: METRICS_LOCATION },
             });
-            onClose();
           },
           disabled: hasUnapprovedTransactions,
         },
@@ -525,8 +516,8 @@ export function useGlobalMenuSections(
     return sections;
   }, [
     t,
+    location.pathname,
     basicFunctionality,
-    rewardsEnabled,
     isPopup,
     isSidepanel,
     hasUnapprovedTransactions,

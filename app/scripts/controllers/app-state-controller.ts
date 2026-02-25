@@ -62,6 +62,8 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../../shared/types';
+import { ShieldSubscriptionError } from '../../../shared/modules/shield';
+import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -113,7 +115,7 @@ export type AppStateControllerState = {
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
   canTrackWalletFundsObtained: boolean;
   isRampCardClosed: boolean;
-  isUpdateAvailable: boolean;
+  pendingExtensionVersion: string | null;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   lastUpdatedAt: number | null;
   lastUpdatedFromVersion: string | null;
@@ -142,6 +144,7 @@ export type AppStateControllerState = {
   slides: CarouselSlide[];
   snapsInstallPrivacyWarningShown?: boolean;
   surveyLinkLastClickedOrClosed: number | null;
+  shieldSubscriptionError: ShieldSubscriptionError | null;
   shieldEndingToastLastClickedOrClosed: number | null;
   shieldPausedToastLastClickedOrClosed: number | null;
   termsOfUseLastAgreed?: number;
@@ -157,6 +160,7 @@ export type AppStateControllerState = {
   dappSwapComparisonData?: {
     [uniqueId: string]: DappSwapComparisonData;
   };
+  deferredDeepLink?: DeferredDeepLink;
 
   /**
    * The properties for the Shield subscription metrics.
@@ -207,6 +211,11 @@ export type AppStateControllerSetPendingShieldCohortAction = {
   handler: AppStateController['setPendingShieldCohort'];
 };
 
+export type AppStateControllerSetShieldSubscriptionErrorAction = {
+  type: 'AppStateController:setShieldSubscriptionError';
+  handler: AppStateController['setShieldSubscriptionError'];
+};
+
 /**
  * Actions exposed by the {@link AppStateController}.
  */
@@ -215,7 +224,8 @@ export type AppStateControllerActions =
   | AppStateControllerGetUnlockPromiseAction
   | AppStateControllerRequestQrCodeScanAction
   | AppStateControllerSetCanTrackWalletFundsObtainedAction
-  | AppStateControllerSetPendingShieldCohortAction;
+  | AppStateControllerSetPendingShieldCohortAction
+  | AppStateControllerSetShieldSubscriptionErrorAction;
 
 /**
  * Actions that this controller is allowed to call.
@@ -300,7 +310,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
   canTrackWalletFundsObtained: true,
   isRampCardClosed: false,
-  isUpdateAvailable: false,
+  pendingExtensionVersion: null,
   lastUpdatedAt: null,
   lastUpdatedFromVersion: null,
   lastViewedUserSurvey: null,
@@ -324,6 +334,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   showTestnetMessageInDropdown: true,
   slides: [],
   surveyLinkLastClickedOrClosed: null,
+  shieldSubscriptionError: null,
   shieldEndingToastLastClickedOrClosed: null,
   shieldPausedToastLastClickedOrClosed: null,
   throttledOrigins: {},
@@ -458,7 +469,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
-  isUpdateAvailable: {
+  pendingExtensionVersion: {
     includeInStateLogs: true,
     persist: false,
     includeInDebugSnapshot: true,
@@ -632,6 +643,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  shieldSubscriptionError: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   shieldEndingToastLastClickedOrClosed: {
     includeInStateLogs: true,
     persist: true,
@@ -728,6 +745,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  deferredDeepLink: {
+    includeInStateLogs: false,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
 };
 
 export class AppStateController extends BaseController<
@@ -813,6 +836,11 @@ export class AppStateController extends BaseController<
     this.messenger.registerActionHandler(
       'AppStateController:setPendingShieldCohort',
       this.setPendingShieldCohort.bind(this),
+    );
+
+    this.messenger.registerActionHandler(
+      'AppStateController:setShieldSubscriptionError',
+      this.setShieldSubscriptionError.bind(this),
     );
 
     this.#approvalRequestId = null;
@@ -959,6 +987,19 @@ export class AppStateController extends BaseController<
   }
 
   /**
+   * Sets a generic shield API error.
+   * When set to a non-null object, a toast is shown on the homepage with the error.
+   * Setting to null clears/dismisses the error.
+   *
+   * @param error - The error object with message and optional code, or null to clear
+   */
+  setShieldSubscriptionError(error: ShieldSubscriptionError | null): void {
+    this.update((state) => {
+      state.shieldSubscriptionError = error;
+    });
+  }
+
+  /**
    * Sets the storage write error type, which controls whether to show the storage error toast.
    * When errorType is not null, the toast will be shown with the appropriate message.
    * This is called when set operations fail (storage.local or IndexedDB).
@@ -1070,13 +1111,13 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Set whether or not there is an update available
+   * Set the version of the pending extension update, or null when no update is available or after update is applied.
    *
-   * @param isUpdateAvailable - Whether or not there is an update available
+   * @param version - Version string of the available update, or null to clear.
    */
-  setIsUpdateAvailable(isUpdateAvailable: boolean): void {
+  setPendingExtensionVersion(version: string | null): void {
     this.update((state) => {
-      state.isUpdateAvailable = isUpdateAvailable;
+      state.pendingExtensionVersion = version;
     });
   }
 
@@ -1749,5 +1790,25 @@ export class AppStateController extends BaseController<
     uniqueId: string,
   ): DappSwapComparisonData | undefined {
     return this.state.dappSwapComparisonData?.[uniqueId] ?? undefined;
+  }
+
+  /**
+   * Updates state with deferred deep link data.
+   *
+   * @param deferredDeepLink - Deferred deep link data.
+   */
+  setDeferredDeepLink(deferredDeepLink: DeferredDeepLink): void {
+    this.update((state) => {
+      state.deferredDeepLink = deferredDeepLink;
+    });
+  }
+
+  /**
+   * Removes deferred deep link data.
+   */
+  removeDeferredDeepLink(): void {
+    this.update((state) => {
+      state.deferredDeepLink = undefined;
+    });
   }
 }

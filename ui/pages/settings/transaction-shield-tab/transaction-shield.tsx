@@ -28,6 +28,7 @@ import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   useShieldRewards,
+  useSubscriptionError,
   useUserLastSubscriptionByProduct,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
@@ -83,6 +84,8 @@ const TransactionShield = () => {
   const navigate = useNavigate();
   const { search } = useLocation();
   const { captureShieldCtaClickedEvent } = useSubscriptionMetrics();
+  const { shieldSubscriptionApiError, getSubscriptionErrorMessage } =
+    useSubscriptionError();
 
   const shouldWaitForSubscriptionCreation = useMemo(() => {
     const searchParams = new URLSearchParams(search);
@@ -347,7 +350,9 @@ const TransactionShield = () => {
     subscriptionPricingError ||
     updateSubscriptionCardPaymentMethodResult.error ||
     updateSubscriptionCryptoPaymentMethodResult.error ||
-    resultTriggerSubscriptionCheckInsufficientFunds.error;
+    resultTriggerSubscriptionCheckInsufficientFunds.error ||
+    shieldSubscriptionApiError;
+  const apiErrorMessage = getSubscriptionErrorMessage(hasApiError);
 
   const loading =
     updateSubscriptionCardPaymentMethodResult.pending ||
@@ -433,6 +438,7 @@ const TransactionShield = () => {
           className="transaction-shield-page__error-content mx-auto"
           error={hasApiError}
           location={ShieldUnexpectedErrorEventLocationEnum.TransactionShieldTab}
+          message={apiErrorMessage}
         />
       </Box>
     );

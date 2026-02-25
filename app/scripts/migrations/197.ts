@@ -90,7 +90,7 @@ function transformState(
 ) {
   const networkControllerState = validateNetworkController(state);
   if (networkControllerState === undefined) {
-    // There used to be a warning "Migration 194: Missing or invalid NetworkController state, skip the migration"
+    // There used to be a warning "Migration 197: Missing or invalid NetworkController state, skip the migration"
     // But it is expected during some tests and caused new baseline violations se we removed it.
     return state;
   }

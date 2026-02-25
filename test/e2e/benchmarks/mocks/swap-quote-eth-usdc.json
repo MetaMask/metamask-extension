@@ -1,0 +1,81 @@
+{
+  "approval": null,
+  "estimatedProcessingTimeInSeconds": 60,
+  "quote": {
+    "requestId": "0xmock-request-id-123456789",
+    "bridgeId": "lifi",
+    "srcChainId": 1,
+    "destChainId": 1,
+    "aggregator": "lifi",
+    "aggregatorType": "AGG",
+    "srcAsset": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chainId": 1,
+      "assetId": "eip155:1/slip44:60",
+      "symbol": "ETH",
+      "decimals": 18,
+      "name": "Ethereum",
+      "coingeckoId": "ethereum",
+      "aggregators": [],
+      "occurrences": 100,
+      "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+      "metadata": {}
+    },
+    "srcTokenAmount": "1000000000000000000",
+    "destAsset": {
+      "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "chainId": 1,
+      "assetId": "eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "symbol": "USDC",
+      "decimals": 6,
+      "name": "USD Coin",
+      "coingeckoId": "usd-coin",
+      "aggregators": [],
+      "occurrences": 100,
+      "iconUrl": "https://static.cx.metamask.io/api/v1/tokenIcons/1/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
+      "metadata": {}
+    },
+    "destTokenAmount": "3400000000",
+    "minDestTokenAmount": "3332000000",
+    "walletAddress": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+    "destWalletAddress": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+    "feeData": {
+      "metabridge": {
+        "amount": "8750000000000000",
+        "asset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "chainId": 1,
+          "assetId": "eip155:1/slip44:60",
+          "symbol": "ETH",
+          "decimals": 18,
+          "name": "Ethereum",
+          "coingeckoId": "ethereum",
+          "aggregators": [],
+          "occurrences": 100,
+          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+          "metadata": {}
+        },
+        "quoteBpsFee": 87.5,
+        "baseBpsFee": 87.5
+      }
+    },
+    "bridges": ["lifi"],
+    "protocols": ["lifi"],
+    "steps": [],
+    "slippage": 2,
+    "priceData": {
+      "totalFromAmountUsd": "3400.00",
+      "totalToAmountUsd": "3400.00",
+      "priceImpact": "0.001",
+      "totalFeeAmountUsd": "30.00"
+    }
+  },
+  "trade": {
+    "chainId": 1,
+    "to": "0x881D40237659C251811CEC9c364ef91dC08D300C",
+    "from": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+    "value": "0xde0b6b3a7640000",
+    "data": "0x5f575529",
+    "gasLimit": 450000
+  }
+}

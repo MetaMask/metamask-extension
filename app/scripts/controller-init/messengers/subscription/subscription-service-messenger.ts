@@ -45,6 +45,7 @@ export function getSubscriptionServiceMessenger(
       'SubscriptionController:clearLastSelectedPaymentMethod',
       'AppStateController:getState',
       'AppStateController:setPendingShieldCohort',
+      'AppStateController:setShieldSubscriptionError',
       'AuthenticationController:getBearerToken',
       'TransactionController:getTransactions',
       'AccountsController:getState',
