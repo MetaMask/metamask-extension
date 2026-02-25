@@ -3003,6 +3003,14 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setHasShownMultichainAccountsIntroModal.bind(
           appStateController,
         ),
+      setMusdConversionEducationSeen:
+        appStateController.setMusdConversionEducationSeen.bind(
+          appStateController,
+        ),
+      addMusdConversionDismissedCtaKey:
+        appStateController.addMusdConversionDismissedCtaKey.bind(
+          appStateController,
+        ),
       updateNetworkConnectionBanner:
         appStateController.updateNetworkConnectionBanner.bind(
           appStateController,

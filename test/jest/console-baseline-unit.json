@@ -1389,6 +1389,20 @@
     "ui/hooks/multi-srp/useHdKeyringsWithSnapAccounts.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/hooks/musd/useMusdConversion.test.ts": {
+      "error: [MUSD] Transaction creation failed: Error:": 1,
+      "warn: [MUSD] Conversion flow not enabled": 1,
+      "warn: [MUSD] Geo-blocking check still in": 1,
+      "warn: [MUSD] User is geo-blocked": 1
+    },
+    "ui/hooks/musd/useMusdCtaVisibility.test.ts": {
+      "Reselect: Identity function warnings": 1
+    },
+    "ui/hooks/musd/useMusdGeoBlocking.test.ts": {
+      "React: Act warnings (component updates not wrapped)": 2,
+      "error: [MUSD Geo] Geolocation error: Geolocation": 1,
+      "error: [MUSD Geo] Geolocation error: Network": 2
+    },
     "ui/hooks/perps/usePerpsOrderForm.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -3171,6 +3185,10 @@
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/perps/perps-order-entry-page.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/remove-snap-account/remove-snap-account.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
@@ -3498,6 +3516,9 @@
     "ui/selectors/multichain/networks.test.ts": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1
+    },
+    "ui/selectors/musd/feature-flags.test.ts": {
+      "Reselect: Identity function warnings": 1
     },
     "ui/selectors/nft.test.ts": {
       "Reselect: Identity function warnings": 1

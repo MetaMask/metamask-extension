@@ -5242,9 +5242,6 @@
   "perpsAddToFavorites": {
     "message": "즐겨찾기에 추가"
   },
-  "perpsAsk": {
-    "message": "매도호가"
-  },
   "perpsAutoClose": {
     "message": "자동 종료"
   },
@@ -5255,14 +5252,8 @@
   "perpsAvailableBalance": {
     "message": "사용 가능한 잔액"
   },
-  "perpsBid": {
-    "message": "매수호가"
-  },
   "perpsCancelAllOrders": {
     "message": "모두 취소"
-  },
-  "perpsClose": {
-    "message": "닫기"
   },
   "perpsCloseAll": {
     "message": "모두 종료"
@@ -5380,9 +5371,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "청산 가격"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "추정 청산 가격"
   },
   "perpsLong": {
     "message": "롱"
