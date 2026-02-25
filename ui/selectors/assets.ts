@@ -1351,13 +1351,8 @@ export const getAsset = createSelector(
 
 export const selectSingleTokenByAddressAndChainId = createSelector(
   getAllTokens,
-  (_state: { metamask: TokensControllerState }, tokenAddress: Hex) =>
-    tokenAddress,
-  (
-    _state: { metamask: TokensControllerState },
-    _tokenAddress: Hex,
-    chainId: Hex,
-  ) => chainId,
+  (_state, tokenAddress: Hex) => tokenAddress,
+  (_state, _tokenAddress: Hex, chainId: Hex) => chainId,
   (allTokens, tokenAddress, chainId) => {
     const chainTokens = Object.values(
       allTokens[chainId] ?? {},
