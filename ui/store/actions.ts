@@ -6951,21 +6951,31 @@ export function setSecurityAlertsEnabled(val: boolean): void {
   }
 }
 
-export async function setWatchEthereumAccountEnabled(value: boolean) {
-  try {
-    await submitRequestToBackground('setWatchEthereumAccountEnabled', [value]);
-  } catch (error) {
-    logErrorWithMessage(error);
-  }
+export function setWatchEthereumAccountEnabled(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      await submitRequestToBackground('setWatchEthereumAccountEnabled', [
+        value,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
-  try {
-    await submitRequestToBackground('setAddSnapAccountEnabled', [value]);
-  } catch (error) {
-    logErrorWithMessage(error);
-  }
+export function setAddSnapAccountEnabled(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      await submitRequestToBackground('setAddSnapAccountEnabled', [value]);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
 }
 
 export function showKeyringSnapRemovalModal(payload: {
@@ -7044,21 +7054,19 @@ export function getRewardsHasAccountOptedIn(
   };
 }
 
-export function getRewardsCandidateSubscriptionId(): ThunkAction<
-  Promise<string | null>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function getRewardsCandidateSubscriptionId(
+  primaryWalletGroupAccounts?: InternalAccount[],
+): ThunkAction<Promise<string | null>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     return await submitRequestToBackground<string | null>(
       'getRewardsCandidateSubscriptionId',
+      primaryWalletGroupAccounts ? [primaryWalletGroupAccounts] : undefined,
     );
   };
 }
 
 export function getRewardsSeasonMetadata(
-  type?: 'current' | 'next',
+  type?: 'current' | 'next' | 'previous',
 ): ThunkAction<
   Promise<SeasonDtoState>,
   MetaMaskReduxState,
@@ -7180,6 +7188,7 @@ export function rewardsGetOptInStatus(
 
 export function rewardsLinkAccountsToSubscriptionCandidate(
   accounts: InternalAccount[],
+  primaryWalletGroupAccounts?: InternalAccount[],
 ): ThunkAction<
   Promise<{ account: InternalAccount; success: boolean }[]>,
   MetaMaskReduxState,
@@ -7189,7 +7198,12 @@ export function rewardsLinkAccountsToSubscriptionCandidate(
   return async () => {
     return await submitRequestToBackground<
       { account: InternalAccount; success: boolean }[]
-    >('rewardsLinkAccountsToSubscriptionCandidate', [accounts]);
+    >(
+      'rewardsLinkAccountsToSubscriptionCandidate',
+      primaryWalletGroupAccounts
+        ? [accounts, primaryWalletGroupAccounts]
+        : [accounts],
+    );
   };
 }
 
@@ -7895,6 +7909,30 @@ export function setMultichainAccountsIntroModalShown(value: boolean) {
     await submitRequestToBackground('setHasShownMultichainAccountsIntroModal', [
       value,
     ]);
+  };
+}
+
+/**
+ * Persist that the mUSD conversion education screen has been seen.
+ * Stored in AppStateController until uninstall.
+ *
+ * @param value
+ */
+export function setMusdConversionEducationSeen(value: boolean) {
+  return async () => {
+    await submitRequestToBackground('setMusdConversionEducationSeen', [value]);
+  };
+}
+
+/**
+ * Persist a dismissed mUSD asset-detail CTA key (chainId-tokenAddress).
+ * Stored in AppStateController until uninstall.
+ *
+ * @param key
+ */
+export function addMusdConversionDismissedCtaKey(key: string) {
+  return async () => {
+    await submitRequestToBackground('addMusdConversionDismissedCtaKey', [key]);
   };
 }
 

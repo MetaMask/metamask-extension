@@ -19,7 +19,8 @@ import InfoTooltip from '../../../ui/info-tooltip/info-tooltip';
 const sliderStyles = {
   root: {
     height: 6,
-    padding: '6px 0',
+    padding: 0,
+    overflow: 'visible',
   },
   rail: {
     borderRadius: 50,
@@ -37,7 +38,7 @@ const sliderStyles = {
     width: 20,
     marginTop: -7,
     marginLeft: -7,
-    backgroundColor: 'var(--color-background-default)',
+    backgroundColor: 'var(--color-icon-muted)',
     border: '2px solid var(--color-text-default)',
     boxSizing: 'border-box' as const,
     boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
@@ -53,7 +54,7 @@ const sliderStyles = {
       width: 22,
       marginTop: -8,
       marginLeft: -8,
-      backgroundColor: 'var(--color-background-default)',
+      backgroundColor: 'var(--color-icon-muted)',
       border: '2px solid var(--color-text-default)',
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     },

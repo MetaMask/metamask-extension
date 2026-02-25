@@ -45,7 +45,7 @@ const storeMock = configureStore({
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
-    ...mockNetworkState({chainId:CHAIN_IDS.MAINNET}),
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     preferences: {
       useCurrencyRateCheck: true,
       currentCurrency: 'ETH',
@@ -67,11 +67,6 @@ const DebugWrapper = ({ children }) => {
 const meta: Meta<typeof ConvertTokenToNFTModal> = {
   title: 'Components/App/Modals/ConvertTokenToNFTModal',
   component: ConvertTokenToNFTModal,
-  parameters: {
-    docs: {
-      // page: README, // Commented out as README.mdx does not exist
-    },
-  },
   decorators: [
     (Story) => (
       <Provider store={storeMock}>
@@ -97,4 +92,3 @@ type Story = StoryObj<typeof ConvertTokenToNFTModal>;
 export const DefaultStory: Story = {};
 
 DefaultStory.storyName = 'Default';
-
