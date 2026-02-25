@@ -57,8 +57,8 @@ describe('AccountListItemMenu', () => {
     expect(getByTestId('account-list-menu-hide')).toBeInTheDocument();
   });
 
-  it('does not render remove account menu item', () => {
-    const { queryByTestId } = render({ isRemovable: true });
-    expect(queryByTestId('account-list-menu-remove')).not.toBeInTheDocument();
+  it('renders remove account menu item when isRemovable is true', () => {
+    const { getByTestId } = render({ isRemovable: true });
+    expect(getByTestId('account-list-menu-remove')).toBeInTheDocument();
   });
 });

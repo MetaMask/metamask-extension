@@ -57,10 +57,6 @@ export const AccountListItemMenu = ({
 
   const deviceName = useSelector(getHardwareWalletType);
 
-  const isMultichainAccountsState1Enabled = useSelector(
-    getIsMultichainAccountsState1Enabled,
-  );
-
   const { keyring } = account.metadata;
   const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
 
