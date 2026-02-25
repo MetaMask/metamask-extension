@@ -13,6 +13,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import en from '../../app/_locales/en/messages.json';
 
 const TEST_FILE_PATTERN = /\.test\.(ts|tsx|js|jsx)$/u;
 
@@ -36,16 +37,11 @@ function findFiles(dir: string, pattern: RegExp): string[] {
   return results;
 }
 
-const enLocale: Record<string, { message: string }> =
-  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-  require('../../app/_locales/en/messages.json');
-
-// --- Shared patterns ---
+const enLocale = en as Record<string, { message: string }>;
 
 const MESSAGES_IMPORT_PATTERN =
   /import\s+\{[^}]*enLocale\s+as\s+messages[^}]*\}\s+from/u;
 
-// Query functions used in @testing-library
 const QUERY_FN_NAMES = [
   'getByText',
   'queryByText',
