@@ -2,6 +2,13 @@ module.exports = {
   extends: ['@metamask/eslint-config-nodejs'],
   rules: {
     'n/no-process-env': 'off',
+    'n/no-unsupported-features/node-builtins': [
+      'error',
+      {
+        ignores: ['navigator', 'Navigator', 'localStorage'],
+      },
+    ],
+    'n/hashbang': 'off',
     // TODO: re-enable these rules
     'n/no-sync': 'off',
     'n/no-unpublished-import': 'off',
