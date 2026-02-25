@@ -22,6 +22,7 @@ import {
   DAPP_URL_LOCALHOST,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_FIXTURE_SOLANA_ACCOUNT,
+  LOCALHOST_NETWORK_CLIENT_ID,
   SOLANA_MAINNET_SCOPE,
 } from '../constants';
 import defaultFixtureJson from './default-fixture.json';
@@ -42,9 +43,6 @@ type TransactionControllerFixtureInput = Partial<
 > & {
   transactions?: TransactionMeta[];
 };
-
-/** networkClientId for localhost (0x539); matches default-fixture.json. */
-const LOCALHOST_NETWORK_CLIENT_ID = '3a5eb6f2-cb62-428d-897c-b7ded577d7c2';
 
 class FixtureBuilderV2 {
   fixture: FixtureType;
