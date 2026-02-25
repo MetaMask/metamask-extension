@@ -176,9 +176,7 @@ export type PreferencesControllerState = Omit<
  */
 export const getDefaultPreferencesControllerState =
   (): PreferencesControllerState => ({
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
-    ///: END:ONLY_INCLUDE_IF
     advancedGasFee: {},
     currentLocale: '',
     dismissSeedBackUpReminder: false,
@@ -227,9 +225,7 @@ export const getDefaultPreferencesControllerState =
     },
     securityAlertsEnabled: true,
     snapRegistryList: {},
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     snapsAddSnapAccountModalDismissed: false,
-    ///: END:ONLY_INCLUDE_IF
     theme: ThemeType.os,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
@@ -659,7 +655,6 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   /**
    * Setter for the `addSnapAccountEnabled` property.
    *
@@ -671,7 +666,6 @@ export class PreferencesController extends BaseController<
       state.addSnapAccountEnabled = addSnapAccountEnabled;
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   /**
@@ -982,13 +976,11 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   setSnapsAddSnapAccountModalDismissed(value: boolean): void {
     this.update((state) => {
       state.snapsAddSnapAccountModalDismissed = value;
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Resets the preferences state to the default values.
