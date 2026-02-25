@@ -132,8 +132,6 @@ const FeatureToggle = ({
             value={isFeatureEnabled}
             disabled={!isBackupAndSyncEnabled}
             onToggle={handleToggleFeature}
-            offLabel={t('off')}
-            onLabel={t('on')}
             dataTestId={section.toggleButtonTestId}
           />
         </div>

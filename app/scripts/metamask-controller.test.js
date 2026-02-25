@@ -310,7 +310,6 @@ jest.mock('@metamask/core-backend', () => ({
   createApiPlatformClient: jest.fn().mockReturnValue({ mockApiClient: true }),
 }));
 
-const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -962,7 +961,7 @@ describe('MetaMaskController', () => {
           metamaskController.accountsController.getSelectedAccount().address,
         ).toBe(TEST_ADDRESS_ALT);
         expect(secondVaultAccounts[0].address).toBe(TEST_ADDRESS_ALT);
-        expect(secondVaultAccounts[0].metadata.name).toBe(DEFAULT_LABEL);
+        expect(secondVaultAccounts[0].metadata.name).toBe('');
       });
 
       it('should restore any consecutive accounts with balances without extra zero balance accounts', async () => {
@@ -1013,7 +1012,7 @@ describe('MetaMaskController', () => {
 
         expect(accounts).toHaveLength(1);
         expect(accounts[0].address).toBe(TEST_ADDRESS);
-        expect(accounts[0].metadata.name).toBe(DEFAULT_LABEL);
+        expect(accounts[0].metadata.name).toBe('');
       });
 
       it('calls discoverAndCreateAccounts when onboarding is complete', async () => {
