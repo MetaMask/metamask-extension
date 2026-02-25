@@ -6304,11 +6304,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@metamask/design-system-react@npm:0.7.0"
+"@metamask/design-system-react@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "@metamask/design-system-react@npm:0.8.0"
   dependencies:
-    "@metamask/design-system-shared": "npm:^0.1.2"
+    "@metamask/design-system-shared": "npm:^0.1.3"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
@@ -6316,19 +6316,19 @@ __metadata:
   peerDependencies:
     "@metamask/design-system-tailwind-preset": ^0.6.0
     "@metamask/design-tokens": ^8.1.0
-    "@metamask/utils": ^11.9.0
+    "@metamask/utils": ^11.10.0
     react: ^17.0.0 || ^18.0.0
     react-dom: ^17.0.0 || ^18.0.0
-  checksum: 10/38a94b5540c44f69037d187eed8975c0da69457d96dfa1883e5ff80e2e20d4624788d0f7c9f1c4e9765631f2f764e12449277a258fff995a576a92e9e8d25ee9
+  checksum: 10/a01bcc343313f3d85e1efb3301bfa6e5462d5f811dca214cda176440e017a12e16edc75b0496009798c1723adedc2f7029393d0e6b885607c6e6c090bddf3715
   languageName: node
   linkType: hard
 
-"@metamask/design-system-shared@npm:^0.1.2":
-  version: 0.1.2
-  resolution: "@metamask/design-system-shared@npm:0.1.2"
+"@metamask/design-system-shared@npm:^0.1.3":
+  version: 0.1.3
+  resolution: "@metamask/design-system-shared@npm:0.1.3"
   dependencies:
-    "@metamask/utils": "npm:^11.9.0"
-  checksum: 10/91f35b7e3db217aa7b83507bec3f59b4bacda6c86e97d0431ab49e610d8e4b118279bd3482975c3f2777f2876ba43c9f35566d513304cb481b53983b83e87e17
+    "@metamask/utils": "npm:^11.10.0"
+  checksum: 10/6e474dd5d1e45637e51ef1b1656d4717bc71e8a0b52f2822c66182fbde49f53c13a31d52988bb4c7587448d528d6f71bef11c3c4de97d29a353ef6ec59a0d484
   languageName: node
   linkType: hard
 
@@ -33618,7 +33618,7 @@ __metadata:
     "@metamask/delegation-controller": "npm:^2.0.1"
     "@metamask/delegation-core": "npm:^0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^0.15.0"
-    "@metamask/design-system-react": "npm:^0.7.0"
+    "@metamask/design-system-react": "npm:^0.8.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.1.1"
     "@metamask/eip-5792-middleware": "npm:^2.1.0"
@@ -33727,7 +33727,7 @@ __metadata:
     "@metamask/transaction-pay-controller": "npm:^12.2.0"
     "@metamask/tron-wallet-snap": "npm:^1.21.1"
     "@metamask/user-operation-controller": "npm:^40.0.0"
-    "@metamask/utils": "npm:^11.4.2"
+    "@metamask/utils": "npm:^11.10.0"
     "@ngraveio/bc-ur": "npm:^1.1.13"
     "@noble/ciphers": "npm:^1.3.0"
     "@noble/curves": "npm:^1.9.2"
