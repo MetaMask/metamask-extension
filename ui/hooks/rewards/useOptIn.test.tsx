@@ -669,5 +669,4 @@ describe('useOptIn', () => {
       expect(linkRewardToShieldSubscription).not.toHaveBeenCalled();
     });
   });
-
 });
