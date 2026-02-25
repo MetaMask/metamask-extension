@@ -12,7 +12,6 @@ import { getDomainResolutions } from '../ducks/domains';
 import { IconName } from '../components/component-library';
 import { IconColor } from '../helpers/constants/design-system';
 import { selectAccountGroupNameByInternalAccount } from '../pages/confirmations/selectors/accounts';
-import { getIsMultichainAccountsState2Enabled } from '../selectors/multichain-accounts/feature-flags';
 import { useDisplayName } from './useDisplayName';
 import { useNames } from './useName';
 import { useTrustSignals, TrustSignalDisplayState } from './useTrustSignals';
@@ -24,9 +23,6 @@ jest.mock('../ducks/domains', () => ({
 }));
 jest.mock('../pages/confirmations/selectors/accounts', () => ({
   selectAccountGroupNameByInternalAccount: jest.fn(),
-}));
-jest.mock('../selectors/multichain-accounts/feature-flags', () => ({
-  getIsMultichainAccountsState2Enabled: jest.fn(),
 }));
 
 const VALUE_MOCK = 'testvalue';
@@ -731,13 +727,9 @@ describe('useDisplayName', () => {
   });
 
   describe('Account Group Names', () => {
-    it('returns account group name when multichain accounts state 2 is enabled', () => {
+    it('returns account group name', () => {
       mockPetname(PETNAME_MOCK);
       mockAccountGroupName(VALUE_MOCK, GROUP_NAME_MOCK);
-
-      (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue({
-        multichainAccountsState2: true,
-      });
 
       const { result } = renderHookWithProvider(
         () =>
@@ -768,9 +760,6 @@ describe('useDisplayName', () => {
     it(`does not use group name when overridden by user's custom name`, () => {
       mockPetname(PETNAME_MOCK, NameOrigin.API);
       mockAccountGroupName(VALUE_MOCK, GROUP_NAME_MOCK);
-      (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue({
-        multichainAccountsState2: true,
-      });
 
       const { result } = renderHookWithProvider(
         () =>
@@ -793,43 +782,6 @@ describe('useDisplayName', () => {
         isAccount: false,
         name: PETNAME_MOCK,
         displayState: TrustSignalDisplayState.Petname,
-        icon: null,
-        subtitle: null,
-      });
-    });
-
-    it('does not use account group name when multichain accounts state 2 is disabled', () => {
-      mockAccountGroupName(VALUE_MOCK, GROUP_NAME_MOCK);
-      mockERC20Token(
-        VALUE_MOCK,
-        VARIATION_MOCK,
-        ERC20_TOKEN_NAME_MOCK,
-        SYMBOL_MOCK,
-        ERC20_IMAGE_MOCK,
-      );
-
-      const { result } = renderHookWithProvider(
-        () =>
-          useDisplayName({
-            value: VALUE_MOCK,
-            type: NameType.ETHEREUM_ADDRESS,
-            variation: VARIATION_MOCK,
-          }),
-        state,
-      );
-
-      expect(selectAccountGroupNameByInternalAccountMock).toHaveBeenCalledWith(
-        expect.any(Object),
-        VALUE_MOCK,
-      );
-
-      expect(result.current).toStrictEqual({
-        contractDisplayName: ERC20_TOKEN_NAME_MOCK,
-        hasPetname: false,
-        image: ERC20_IMAGE_MOCK,
-        isAccount: false,
-        name: ERC20_TOKEN_NAME_MOCK,
-        displayState: TrustSignalDisplayState.Recognized,
         icon: null,
         subtitle: null,
       });
@@ -869,7 +821,6 @@ describe('useDisplayName', () => {
 
     it('returns null when type is not ethereum address', () => {
       mockAccountGroupName(VALUE_MOCK, GROUP_NAME_MOCK);
-      (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue(true);
 
       const { result } = renderHookWithProvider(
         () =>
@@ -898,8 +849,6 @@ describe('useDisplayName', () => {
 
     it('handles empty group name', () => {
       mockAccountGroupName(VALUE_MOCK, '');
-
-      (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue(true);
 
       const { result } = renderHookWithProvider(
         () =>

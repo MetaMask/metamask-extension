@@ -12,11 +12,13 @@ import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
 import { AssetConversion, FungibleAssetMarketData } from '@metamask/snaps-sdk';
 import {
+  DEVICE_TYPE,
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_SIDEPANEL,
   ENVIRONMENT_TYPE_POPUP,
+  OS,
   PLATFORM_BRAVE,
   PLATFORM_CHROME,
   PLATFORM_CHROMIUM,
@@ -38,6 +40,8 @@ import {
   PLATFORM_VIVALDI,
   PLATFORM_WHALE,
   PLATFORM_YANDEX,
+  type DeviceType,
+  type Os,
   type Platform,
 } from '../../../shared/constants/app';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
@@ -86,6 +90,28 @@ const getEnvironmentTypeMemo = memoize((url) => {
 const getEnvironmentType = (url = window.location.href) =>
   getEnvironmentTypeMemo(url);
 
+/**
+ * Minimal type for User-Agent Client Hints API (NavigatorUAData).
+ * Not present in all TypeScript DOM libs, so we define the shape we use.
+ */
+type NavigatorUserAgentData = {
+  brands?: { brand: string; version?: string }[];
+  mobile?: boolean;
+  platform?: string;
+};
+
+type NavigatorWithUserAgentData = Navigator & {
+  userAgentData?: NavigatorUserAgentData;
+};
+
+function getNavigator(): NavigatorWithUserAgentData {
+  if (typeof window !== 'undefined') {
+    return window.navigator as NavigatorWithUserAgentData;
+  }
+  return (globalThis as unknown as { navigator: NavigatorWithUserAgentData })
+    .navigator;
+}
+
 // Brand to platform mapping for userAgentData.brands detection
 // Used as fallback when UA string detection returns Chrome or Other
 const BRAND_TO_PLATFORM_MAP: Record<string, Platform> = {
@@ -110,8 +136,7 @@ const BRAND_TO_PLATFORM_MAP: Record<string, Platform> = {
  * @returns the matched Platform, unknown brand name, or undefined if not detected
  */
 const getPlatformFromBrands = (): Platform | undefined => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { userAgentData } = window.navigator as any;
+  const { userAgentData } = getNavigator();
   if (!userAgentData?.brands) {
     return undefined;
   }
@@ -257,6 +282,94 @@ const getPlatform = (): Platform => {
 
   // Return what UA detection found (Chrome or Other)
   return platformFromUA;
+};
+
+/** Regex to detect mobile device from userAgent when userAgentData is not available */
+const MOBILE_UA_REGEX =
+  /Mobile|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Opera Mobi|Fennec|Silk|Kindle|EdgA/iu;
+
+/**
+ * Returns whether the device is mobile or desktop.
+ * Uses userAgentData.mobile when available (Chromium), otherwise parses userAgent.
+ *
+ * @returns the device type
+ */
+export const getDeviceType = (): DeviceType => {
+  const nav = getNavigator();
+  const { userAgentData } = nav;
+  if (userAgentData && typeof userAgentData.mobile === 'boolean') {
+    return userAgentData.mobile ? DEVICE_TYPE.MOBILE : DEVICE_TYPE.DESKTOP;
+  }
+  const ua = nav?.userAgent ?? '';
+  if (MOBILE_UA_REGEX.test(ua)) {
+    return DEVICE_TYPE.MOBILE;
+  }
+  return DEVICE_TYPE.DESKTOP;
+};
+
+/** Map userAgentData.platform (and UA fallback) to normalized OS constants */
+const PLATFORM_TO_OS: Record<string, Os> = {
+  Android: OS.ANDROID,
+  Linux: OS.LINUX,
+  Mac: OS.MACOS,
+  macOS: OS.MACOS,
+  Windows: OS.WINDOWS,
+  Win32: OS.WINDOWS,
+  iPhone: OS.IOS,
+  iPad: OS.IOS,
+  iPod: OS.IOS,
+  CrOS: OS.OTHER,
+};
+
+/**
+ * Returns the operating system.
+ * Uses userAgentData.platform when available (Chromium), otherwise parses userAgent and navigator.platform.
+ *
+ * @returns the normalized OS
+ */
+export const getOs = (): Os => {
+  const nav = getNavigator();
+  const { userAgentData } = nav;
+  if (userAgentData?.platform && typeof userAgentData.platform === 'string') {
+    const platform = userAgentData.platform.trim();
+    const mapped = PLATFORM_TO_OS[platform];
+    if (mapped) {
+      return mapped;
+    }
+    if (platform.length > 0) {
+      return OS.OTHER;
+    }
+  }
+  const ua = nav?.userAgent ?? '';
+  const platformStr = (nav?.platform ?? '').trim();
+  // Order matters: Android UA contains "Linux"
+  if (ua.includes('Android')) {
+    return OS.ANDROID;
+  }
+  if (ua.includes('iPhone') || ua.includes('iPad') || ua.includes('iPod')) {
+    return OS.IOS;
+  }
+  if (ua.includes('CrOS')) {
+    return OS.OTHER;
+  }
+  if (ua.includes('Windows') || platformStr.startsWith('Win')) {
+    return OS.WINDOWS;
+  }
+  if (
+    ua.includes('Macintosh') ||
+    ua.includes('Mac OS') ||
+    platformStr.startsWith('Mac')
+  ) {
+    return OS.MACOS;
+  }
+  if (ua.includes('Linux') || platformStr.includes('Linux')) {
+    return OS.LINUX;
+  }
+  const mapped = PLATFORM_TO_OS[platformStr];
+  if (mapped) {
+    return mapped;
+  }
+  return OS.UNKNOWN;
 };
 
 /**
