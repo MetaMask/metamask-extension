@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import {
   Box,
   BoxAlignItems,
@@ -26,13 +25,14 @@ import {
   AvatarTokenSize,
 } from '../../../components/component-library';
 
-import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
+import { EditGasModes } from '../../../../shared/constants/gas';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import {
-  GasFeeContextProvider,
-  useGasFeeContext,
-} from '../../../contexts/gasFee';
+  GasFeeModalContextProvider,
+  GasFeeModalWrapper,
+  useGasFeeModalContext,
+} from '../context/gas-fee-modal';
 import { ConfirmInfoRow } from '../../../components/app/confirm/info/row';
 import GasTiming from '../components/gas-timing/gas-timing.component';
 import {
@@ -41,11 +41,11 @@ import {
   selectNetworkConfigurationByChainId,
 } from '../../../selectors';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../shared/constants/network';
-import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
-import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
-import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { ConfirmInfoSection } from '../../../components/app/confirm/info/row/section';
+import { useEIP1559TxFees } from '../components/confirm/info/hooks/useEIP1559TxFees';
+import { useFeeCalculations } from '../components/confirm/info/hooks/useFeeCalculations';
+import { useCancelSpeedupGasState } from '../hooks/useCancelSpeedupGasState';
+import { useCancelSpeedupInitialGas } from '../hooks/useCancelSpeedupInitialGas';
 
 type EditGasButtonProps = {
   onClick: () => void;
@@ -66,16 +66,16 @@ const EditGasButton = ({ onClick }: EditGasButtonProps) => {
 };
 
 type NetworkFeeRowProps = {
-  nativeFeeParts: { value: string; suffix?: string };
-  fiatFee: string;
+  estimatedFeeNative: string;
+  estimatedFeeFiat: string;
   showFiat: boolean;
   onEdit: () => void;
   chainId: string;
 };
 
 const NetworkFeeRow = ({
-  nativeFeeParts,
-  fiatFee,
+  estimatedFeeNative,
+  estimatedFeeFiat,
   showFiat,
   onEdit,
   chainId,
@@ -110,8 +110,10 @@ const NetworkFeeRow = ({
           gap={1}
           className="flex"
         >
-          {showFiat && fiatFee && (
-            <Text className="text-alternative font-medium">{fiatFee}</Text>
+          {showFiat && estimatedFeeFiat && (
+            <Text className="text-alternative font-medium">
+              {estimatedFeeFiat}
+            </Text>
           )}
           <Box
             flexDirection={BoxFlexDirection.Row}
@@ -120,7 +122,7 @@ const NetworkFeeRow = ({
             className="flex"
           >
             <Text className="text-default font-medium">
-              {nativeFeeParts.value}
+              {estimatedFeeNative}
             </Text>
             <AvatarToken
               size={AvatarTokenSize.Xs}
@@ -162,57 +164,27 @@ const SpeedRow = ({
   );
 };
 
-const GasFeesSection = ({ transaction }: { transaction: TransactionMeta }) => {
-  const { openModal } =
-    useTransactionModalContext() as TransactionModalContextType;
+type GasFeesSectionProps = {
+  transaction: TransactionMeta;
+};
 
-  const { maxFeePerGas, maxPriorityFeePerGas, maximumCostInHexWei } =
-    useGasFeeContext() as GasFeeContextType;
-
+const GasFeesSection = ({ transaction }: GasFeesSectionProps) => {
+  const { openGasFeeModal } = useGasFeeModalContext();
   const { chainId } = transaction;
 
   const showFiat = useSelector((state) => getShouldShowFiat(state, chainId));
 
-  const {
-    currency: primaryCurrency,
-    numberOfDecimals: primaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(
-    PRIMARY,
-    {
-      ethNumberOfDecimals: 6,
-      shouldCheckShowNativeToken: true,
-      showNativeOverride: true,
-    },
-    chainId,
-  );
-
-  const {
-    currency: secondaryCurrency,
-    numberOfDecimals: secondaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [nativeFee, nativeFeeParts] = useCurrencyDisplay(
-    maximumCostInHexWei,
-    {
-      numberOfDecimals: primaryNumberOfDecimals,
-      currency: primaryCurrency,
-    },
-    chainId,
-  );
-
-  const [fiatFee] = useCurrencyDisplay(maximumCostInHexWei, {
-    numberOfDecimals: secondaryNumberOfDecimals,
-    currency: secondaryCurrency,
-  });
+  const { maxFeePerGas, maxPriorityFeePerGas } = useEIP1559TxFees(transaction);
+  const { estimatedFeeFiat, estimatedFeeNative } =
+    useFeeCalculations(transaction);
 
   return (
     <ConfirmInfoSection data-testid="cancel-speedup-section">
       <NetworkFeeRow
-        nativeFeeParts={nativeFeeParts}
-        fiatFee={fiatFee}
+        estimatedFeeNative={estimatedFeeNative}
+        estimatedFeeFiat={estimatedFeeFiat}
         showFiat={showFiat}
-        onEdit={() => openModal('editGasFee')}
+        onEdit={() => openGasFeeModal()}
         chainId={transaction.chainId}
       />
 
@@ -256,96 +228,31 @@ const ConfirmButton = ({ onClick }: { onClick: () => void }) => {
   );
 };
 
-type CancelSpeedupModalProps = {
-  mode: EditGasModes;
-  onClose: () => void;
-  dataTestId?: string;
-};
-
-type UpdateTransactionArgs = {
-  estimateUsed?: string;
-  gasLimit?: string;
-  maxFeePerGas?: string;
-  maxPriorityFeePerGas?: string;
-  estimateSuggested?: string;
-};
-
-// Define types for contexts since they are not fully typed in their source files
-type GasFeeContextType = {
-  cancelTransaction: () => void;
-  editGasMode: EditGasModes;
-  gasFeeEstimates: GasFeeEstimates;
-  speedUpTransaction: () => void;
-  transaction: TransactionMeta;
-  updateTransaction: (update: UpdateTransactionArgs) => void;
-  updateTransactionToTenPercentIncreasedGasFee: (arg: boolean) => void;
-  updateTransactionUsingEstimate: (level: string) => void;
-  maxFeePerGas?: string;
-  maxPriorityFeePerGas?: string;
-  maximumCostInHexWei: string;
-};
-
 type TransactionModalContextType = {
   closeModal: (modalNames: string[]) => void;
   openModal: (modalName: string) => void;
   currentModal: string;
 };
 
+type CancelSpeedupModalProps = {
+  mode: EditGasModes;
+  onClose: () => void;
+  dataTestId?: string;
+  effectiveTransaction: TransactionMeta;
+  cancelTransaction: () => void;
+  speedUpTransaction: () => void;
+};
+
 const CancelSpeedupModal = ({
   mode,
   onClose,
   dataTestId,
+  effectiveTransaction,
+  cancelTransaction,
+  speedUpTransaction,
 }: CancelSpeedupModalProps) => {
   const t = useI18nContext();
-  const { currentModal } =
-    useTransactionModalContext() as TransactionModalContextType;
-  const appIsLoading = useSelector(getAppIsLoading);
-
-  const {
-    cancelTransaction,
-    editGasMode,
-    gasFeeEstimates,
-    speedUpTransaction,
-    transaction,
-    updateTransaction,
-    updateTransactionToTenPercentIncreasedGasFee,
-    updateTransactionUsingEstimate,
-  } = useGasFeeContext() as GasFeeContextType;
-
   const isCancel = mode === EditGasModes.cancel;
-
-  useEffect(() => {
-    if (
-      transaction.previousGas ||
-      appIsLoading ||
-      currentModal !== 'cancelSpeedUpTransaction'
-    ) {
-      return;
-    }
-    // If gas used previously + 10% is less than medium estimated gas
-    // estimate is set to medium, else estimate is set to tenPercentIncreased
-    const gasUsedLessThanMedium =
-      gasFeeEstimates &&
-      gasEstimateGreaterThanGasUsedPlusTenPercent(
-        transaction.txParams,
-        gasFeeEstimates,
-        PriorityLevels.medium,
-      );
-    if (gasUsedLessThanMedium) {
-      updateTransactionUsingEstimate(PriorityLevels.medium);
-      return;
-    }
-    updateTransactionToTenPercentIncreasedGasFee(true);
-  }, [
-    appIsLoading,
-    currentModal,
-    editGasMode,
-    gasFeeEstimates,
-    transaction,
-    updateTransaction,
-    updateTransactionToTenPercentIncreasedGasFee,
-    updateTransactionUsingEstimate,
-  ]);
 
   const handleSubmit = () => {
     if (isCancel) {
@@ -371,7 +278,7 @@ const CancelSpeedupModal = ({
             : t('speedUpTransactionTitle')}
         </ModalHeader>
         <Box padding={4}>
-          <GasFeesSection transaction={transaction} />
+          <GasFeesSection transaction={effectiveTransaction} />
           <DescriptionSection isCancel={isCancel} />
         </Box>
         <ModalFooter>
@@ -379,6 +286,58 @@ const CancelSpeedupModal = ({
         </ModalFooter>
       </ModalContent>
     </Modal>
+  );
+};
+
+type CancelSpeedupContentProps = {
+  transaction: TransactionMeta;
+  editGasMode: EditGasModes;
+  onClose: () => void;
+};
+
+const CancelSpeedupContent = ({
+  transaction,
+  editGasMode,
+  onClose,
+}: CancelSpeedupContentProps) => {
+  const { currentModal } =
+    useTransactionModalContext() as TransactionModalContextType;
+  const appIsLoading = useSelector(getAppIsLoading);
+
+  const {
+    effectiveTransaction,
+    gasFeeEstimates,
+    cancelTransaction,
+    speedUpTransaction,
+    updateTransactionToTenPercentIncreasedGasFee,
+    updateTransactionUsingEstimate,
+  } = useCancelSpeedupGasState(transaction, editGasMode);
+
+  useCancelSpeedupInitialGas({
+    effectiveTransaction,
+    gasFeeEstimates,
+    updateTransactionUsingEstimate,
+    updateTransactionToTenPercentIncreasedGasFee,
+    appIsLoading,
+    currentModal,
+  });
+
+  return (
+    <GasFeeModalContextProvider
+      transactionMeta={effectiveTransaction}
+      editGasMode={editGasMode}
+    >
+      <>
+      <GasFeeModalWrapper />
+      <CancelSpeedupModal
+        mode={editGasMode}
+        onClose={onClose}
+        effectiveTransaction={effectiveTransaction}
+        cancelTransaction={cancelTransaction}
+        speedUpTransaction={speedUpTransaction}
+      />
+      </>
+    </GasFeeModalContextProvider>
   );
 };
 
@@ -399,11 +358,10 @@ export const CancelSpeedup = ({
   }
 
   return (
-    <GasFeeContextProvider transaction={transaction} editGasMode={editGasMode}>
-      <CancelSpeedupModal
-        mode={editGasMode}
-        onClose={() => closeModal(['cancelSpeedUpTransaction'])}
-      />
-    </GasFeeContextProvider>
+    <CancelSpeedupContent
+      transaction={transaction}
+      editGasMode={editGasMode}
+      onClose={() => closeModal(['cancelSpeedUpTransaction'])}
+    />
   );
 };

@@ -43,7 +43,11 @@ export const AdvancedGasPriceModal = ({
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { gas, gasPrice } = transactionMeta?.txParams || {};
+  if (!transactionMeta?.txParams) {
+    return null;
+  }
+
+  const { gas, gasPrice } = transactionMeta.txParams;
 
   const [gasParams, setGasParams] = useState<{
     gas: Hex;

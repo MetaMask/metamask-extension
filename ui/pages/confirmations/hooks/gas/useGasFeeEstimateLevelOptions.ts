@@ -6,7 +6,7 @@ import {
   type GasFeeEstimates as TransactionGasFeeEstimates,
 } from '@metamask/transaction-controller';
 import { type GasFeeEstimates } from '@metamask/gas-fee-controller';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
@@ -16,8 +16,8 @@ import { updateTransactionGasFees } from '../../../../store/actions';
 import { type GasOption } from '../../types/gas';
 import { EMPTY_VALUE_STRING } from '../../constants/gas';
 import { toHumanEstimatedTimeRange } from '../../utils/time';
-import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
 import { hexWEIToDecGWEI } from '../../../../../shared/modules/conversion.utils';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 
 const HEX_ZERO = '0x0';
 
@@ -30,7 +30,16 @@ export const useGasFeeEstimateLevelOptions = ({
   const dispatch = useDispatch();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-  const nativeTicker = useTransactionNativeTicker();
+
+  if (!transactionMeta) {
+    return [];
+  }
+
+  const nativeTicker = useSelector(
+    (state: Parameters<typeof getNetworkConfigurationsByChainId>[0]) =>
+      getNetworkConfigurationsByChainId(state)?.[transactionMeta.chainId]
+        ?.nativeCurrency,
+  );
   const { calculateGasEstimate } = useFeeCalculations(transactionMeta);
   const { gasFeeEstimates: networkGasFeeEstimates } = useGasFeeEstimates(
     transactionMeta.networkClientId,

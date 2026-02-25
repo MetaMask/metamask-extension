@@ -33,8 +33,16 @@ jest.mock('../../../../store/actions', () => ({
   updateTransactionGasFees: jest.fn(),
 }));
 
+const mockState = {
+  metamask: {
+    networkConfigurationsByChainId: {},
+  },
+};
+
 jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
+  useSelector: (selector: (state: unknown) => unknown) =>
+    selector?.(mockState) ?? undefined,
 }));
 
 const mockUseConfirmContext = jest.mocked(useConfirmContext);

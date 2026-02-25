@@ -44,8 +44,11 @@ export const AdvancedEIP1559Modal = ({
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { gas, maxFeePerGas, maxPriorityFeePerGas } =
-    transactionMeta?.txParams || {};
+  if (!transactionMeta?.txParams) {
+    return null;
+  }
+
+  const { gas, maxFeePerGas, maxPriorityFeePerGas } = transactionMeta.txParams;
 
   const [gasParams, setGasParams] = useState<{
     gas: Hex;
