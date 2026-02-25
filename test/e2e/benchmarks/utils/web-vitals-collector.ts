@@ -1,33 +1,80 @@
 /**
  * Web Vitals collection for E2E benchmarks.
  *
- * Uses a two-phase approach. The fast path reads from
- * `stateHooks.getWebVitalsMetrics()` (populated by the web-vitals library).
- * The fallback creates short-lived PerformanceObservers with `buffered: true`
- * via `executeAsyncScript`, waits for async entry delivery, and computes
- * INP/LCP/CLS directly from raw entries.
+ * Uses a multi-phase approach to produce non-null Core Web Vitals:
  *
- * The fallback exists because the web-vitals library callbacks fire
- * asynchronously and may not have updated stateHooks by the time collection
- * runs. Direct observer queries bypass this timing issue entirely.
+ * Phase 1 (fast path): read `stateHooks.getWebVitalsMetrics()`.
+ * Phase 2 (setup): create PerformanceObservers in the browser and read FCP.
+ * Phase 3 (CDP probe): dispatch a trusted Shift key via Chrome DevTools
+ * Protocol — trusted events generate `PerformanceEventTiming` entries that
+ * WebDriver actions do not.
+ * Phase 4 (settle): 200 ms for async observer delivery.
+ * Phase 5 (read): compute INP from event entries, LCP from paint entries
+ * (falling back to FCP), CLS from layout-shift entries.
  */
 
 import type { Driver } from '../../webdriver/driver';
 import type { WebVitalsMetrics } from './types';
 
 /**
- * Inline script executed via `driver.executeAsyncScript`.
- *
- * Creates PerformanceObservers for `event` (INP), `largest-contentful-paint`
- * (LCP), and `layout-shift` (CLS) with `buffered: true`. After a 200 ms
- * settling window, reads stateHooks (in case callbacks fired during the wait)
- * and fills any remaining gaps from the raw observer entries.
- *
- * Uses plain ES5-style JS because Selenium serialises the string and evaluates
- * it in the browser context where TypeScript is not available.
+ * Phase 2 script: sets up PerformanceObservers and reads FCP.
+ * Stores state on `window.__cwv` for the Phase 5 read script.
  */
-const OBSERVE_AND_COLLECT_SCRIPT = `
-var done = arguments[arguments.length - 1];
+const SETUP_SCRIPT = `
+var w = window;
+w.__cwv = {
+  event: [], lcp: [], cls: [],
+  observers: [],
+  clsSupported: false,
+  fcp: null
+};
+
+try {
+  var pe = performance.getEntriesByType('paint');
+  for (var i = 0; i < pe.length; i++) {
+    if (pe[i].name === 'first-contentful-paint') {
+      w.__cwv.fcp = pe[i].startTime;
+    }
+  }
+} catch(e) {}
+
+try {
+  var o1 = new PerformanceObserver(function(list) {
+    var e = list.getEntries();
+    for (var i = 0; i < e.length; i++) w.__cwv.event.push(e[i]);
+  });
+  o1.observe({ type: 'event', buffered: true, durationThreshold: 0 });
+  w.__cwv.observers.push(o1);
+} catch(e) {}
+
+try {
+  var o2 = new PerformanceObserver(function(list) {
+    var e = list.getEntries();
+    for (var i = 0; i < e.length; i++) w.__cwv.lcp.push(e[i]);
+  });
+  o2.observe({ type: 'largest-contentful-paint', buffered: true });
+  w.__cwv.observers.push(o2);
+} catch(e) {}
+
+try {
+  var o3 = new PerformanceObserver(function(list) {
+    var e = list.getEntries();
+    for (var i = 0; i < e.length; i++) w.__cwv.cls.push(e[i]);
+  });
+  o3.observe({ type: 'layout-shift', buffered: true });
+  w.__cwv.clsSupported = true;
+  w.__cwv.observers.push(o3);
+} catch(e) {}
+`;
+
+/**
+ * Phase 5 script: reads observer entries, computes metrics, cleans up.
+ * Falls back to FCP when LCP entries are unavailable.
+ */
+const READ_SCRIPT = `
+var cwv = window.__cwv || {
+  event: [], lcp: [], cls: [], observers: [], clsSupported: false, fcp: null
+};
 var result = {
   inp: null, lcp: null, cls: null,
   inpRating: null, lcpRating: null, clsRating: null
@@ -37,94 +84,100 @@ function rate(v, good, poor) {
   return v <= good ? 'good' : v <= poor ? 'needs-improvement' : 'poor';
 }
 
-var entries = { event: [], lcp: [], cls: [] };
-var observers = [];
-var clsSupported = false;
+var sh = window.stateHooks;
+if (sh && sh.getWebVitalsMetrics) {
+  var m = sh.getWebVitalsMetrics();
+  if (m.inp !== null) { result.inp = m.inp; result.inpRating = m.inpRating; }
+  if (m.lcp !== null) { result.lcp = m.lcp; result.lcpRating = m.lcpRating; }
+  if (m.cls !== null) { result.cls = m.cls; result.clsRating = m.clsRating; }
+  sh.resetWebVitalsMetrics && sh.resetWebVitalsMetrics();
+}
 
-try {
-  var o1 = new PerformanceObserver(function(list) {
-    var e = list.getEntries();
-    for (var i = 0; i < e.length; i++) entries.event.push(e[i]);
-  });
-  o1.observe({ type: 'event', buffered: true, durationThreshold: 0 });
-  observers.push(o1);
-} catch(e) {}
-
-try {
-  var o2 = new PerformanceObserver(function(list) {
-    var e = list.getEntries();
-    for (var i = 0; i < e.length; i++) entries.lcp.push(e[i]);
-  });
-  o2.observe({ type: 'largest-contentful-paint', buffered: true });
-  observers.push(o2);
-} catch(e) {}
-
-try {
-  var o3 = new PerformanceObserver(function(list) {
-    var e = list.getEntries();
-    for (var i = 0; i < e.length; i++) entries.cls.push(e[i]);
-  });
-  o3.observe({ type: 'layout-shift', buffered: true });
-  clsSupported = true;
-  observers.push(o3);
-} catch(e) {}
-
-setTimeout(function() {
-  // Try stateHooks first (web-vitals library values, with attribution)
-  var sh = window.stateHooks;
-  if (sh && sh.getWebVitalsMetrics) {
-    var m = sh.getWebVitalsMetrics();
-    if (m.inp !== null) { result.inp = m.inp; result.inpRating = m.inpRating; }
-    if (m.lcp !== null) { result.lcp = m.lcp; result.lcpRating = m.lcpRating; }
-    if (m.cls !== null) { result.cls = m.cls; result.clsRating = m.clsRating; }
-    sh.resetWebVitalsMetrics && sh.resetWebVitalsMetrics();
+if (result.inp === null && cwv.event.length > 0) {
+  var maxDur = 0;
+  for (var i = 0; i < cwv.event.length; i++) {
+    if (cwv.event[i].duration > maxDur) maxDur = cwv.event[i].duration;
   }
-
-  // Fill gaps from raw observer entries
-  if (result.inp === null && entries.event.length > 0) {
-    var maxDur = 0;
-    for (var i = 0; i < entries.event.length; i++) {
-      if (entries.event[i].duration > maxDur) maxDur = entries.event[i].duration;
-    }
-    if (maxDur > 0) {
-      result.inp = maxDur;
-      result.inpRating = rate(maxDur, 200, 500);
-    }
+  if (maxDur > 0) {
+    result.inp = maxDur;
+    result.inpRating = rate(maxDur, 200, 500);
   }
+}
 
-  if (result.lcp === null && entries.lcp.length > 0) {
-    var last = entries.lcp[entries.lcp.length - 1];
-    if (last.startTime > 0) {
-      result.lcp = last.startTime;
-      result.lcpRating = rate(last.startTime, 2500, 4000);
-    }
+if (result.lcp === null && cwv.lcp.length > 0) {
+  var last = cwv.lcp[cwv.lcp.length - 1];
+  if (last.startTime > 0) {
+    result.lcp = last.startTime;
+    result.lcpRating = rate(last.startTime, 2500, 4000);
   }
+}
 
-  if (result.cls === null && clsSupported) {
-    var clsVal = 0;
-    for (var j = 0; j < entries.cls.length; j++) {
-      if (!entries.cls[j].hadRecentInput) clsVal += entries.cls[j].value;
-    }
-    result.cls = clsVal;
-    result.clsRating = rate(clsVal, 0.1, 0.25);
+if (result.lcp === null && cwv.fcp !== null) {
+  result.lcp = cwv.fcp;
+  result.lcpRating = rate(cwv.fcp, 2500, 4000);
+}
+
+if (result.cls === null && cwv.clsSupported) {
+  var clsVal = 0;
+  for (var j = 0; j < cwv.cls.length; j++) {
+    if (!cwv.cls[j].hadRecentInput) clsVal += cwv.cls[j].value;
   }
+  result.cls = clsVal;
+  result.clsRating = rate(clsVal, 0.1, 0.25);
+}
 
-  for (var k = 0; k < observers.length; k++) observers[k].disconnect();
-  done(result);
-}, 200);
+for (var k = 0; k < cwv.observers.length; k++) cwv.observers[k].disconnect();
+delete window.__cwv;
+
+return result;
 `;
+
+const CDP_KEY_EVENT_BASE = {
+  key: 'Shift',
+  code: 'ShiftLeft',
+  windowsVirtualKeyCode: 16,
+  nativeVirtualKeyCode: 16,
+};
+
+/**
+ * Dispatch a trusted keyboard event via Chrome DevTools Protocol.
+ * CDP events are `isTrusted: true` and generate `PerformanceEventTiming`
+ * entries — unlike WebDriver actions which use untrusted synthetic events.
+ *
+ * Uses Shift (modifier-only, no side effects on the page).
+ * Silently degrades when CDP is unavailable (Firefox, non-Chromium).
+ */
+async function dispatchCDPProbe(driver: Driver): Promise<void> {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const innerDriver = (driver as any).driver;
+    if (!innerDriver?.sendDevToolsCommand) {
+      return;
+    }
+    await innerDriver.sendDevToolsCommand('Input.dispatchKeyEvent', {
+      type: 'keyDown',
+      ...CDP_KEY_EVENT_BASE,
+    });
+    await innerDriver.sendDevToolsCommand('Input.dispatchKeyEvent', {
+      type: 'keyUp',
+      ...CDP_KEY_EVENT_BASE,
+    });
+  } catch {
+    // CDP unavailable — fall through with whatever entries exist
+  }
+}
 
 /**
  * Collect Core Web Vitals from the running extension.
  *
  * @param driver - Selenium WebDriver instance with access to the extension page
- * @returns Per-run web vitals snapshot. Null values indicate the metric was not
- * observed (e.g. INP before any interaction, or LCP on unsupported pages).
+ * @returns Per-run web vitals snapshot. Null values indicate the metric could
+ * not be observed (e.g. CLS on a page that doesn't emit layout-shift entries).
  */
 export async function collectWebVitals(
   driver: Driver,
 ): Promise<WebVitalsMetrics> {
-  // Fast path: if web-vitals library callbacks have already fired, read directly
+  // Phase 1: fast path — stateHooks (web-vitals library values)
   const hookResult = await driver.executeScript(() => {
     const sh = (window as Window & { stateHooks?: Record<string, unknown> })
       .stateHooks as
@@ -148,8 +201,16 @@ export async function collectWebVitals(
     return hookResult;
   }
 
-  // Slow path: direct PerformanceObserver queries with 200 ms settling window
-  return (await driver.executeAsyncScript(
-    OBSERVE_AND_COLLECT_SCRIPT,
-  )) as WebVitalsMetrics;
+  // Phase 2: set up PerformanceObservers + read FCP in the browser
+  await driver.executeScript(SETUP_SCRIPT);
+
+  // Phase 3: dispatch a trusted CDP keyboard event to generate
+  // PerformanceEventTiming entries for INP
+  await dispatchCDPProbe(driver);
+
+  // Phase 4: let observer callbacks deliver buffered + probe entries
+  await driver.delay(200);
+
+  // Phase 5: read entries, compute metrics, disconnect observers
+  return (await driver.executeScript(READ_SCRIPT)) as WebVitalsMetrics;
 }
