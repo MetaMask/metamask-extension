@@ -6,6 +6,9 @@ module.exports = {
     'n/no-sync': 'off',
     'n/no-unpublished-import': 'off',
     'n/no-unpublished-require': 'off',
+    // Browser bundles (e.g. app/scripts/metamask-controller.js) use globals like navigator;
+    // eslint-plugin-n 17.x treats navigator as a Node builtin and flags it. Off for browser code.
+    'n/no-unsupported-features/node-builtins': 'off',
 
     // These rule modifications are removing changes to our shared ESLint config made after
     // version v9. This is a temporary measure to get us to ESLint v9 compatible versions,
