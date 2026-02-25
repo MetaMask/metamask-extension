@@ -36,9 +36,7 @@ describe('Show default address', function (this: Suite) {
 
         // Check on home page that default address is not present
         await new HomePage(driver).checkPageIsLoaded();
-        await driver.assertElementNotPresent(
-          '[data-testid="default-address-container"]',
-        );
+        await new HomePage(driver).checkDefaultAddressIsNotDisplayed();
       },
     );
   });
@@ -61,9 +59,7 @@ describe('Show default address', function (this: Suite) {
 
         // Check on home page that default address is present
         await new HomePage(driver).checkPageIsLoaded();
-        await driver.waitForSelector(
-          '[data-testid="default-address-container"]',
-        );
+        await new HomePage(driver).checkDefaultAddressIsDisplayed();
       },
     );
   });
