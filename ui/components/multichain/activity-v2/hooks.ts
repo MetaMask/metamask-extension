@@ -86,6 +86,43 @@ export function usePrefetchTransactions() {
   }, [evmAddress, queryOptions, queryClient, useExternalServices]);
 }
 
+function classifyNft(
+  valueTransfers: TransactionViewModel['valueTransfers'],
+  address: string,
+): 'mint' | 'bought' | 'received' | 'sent' | null {
+  const incoming = valueTransfers?.find(
+    (vt) =>
+      (vt.transferType === 'erc721' || vt.transferType === 'erc1155') &&
+      vt.to?.toLowerCase() === address,
+  );
+
+  if (incoming) {
+    const isMint =
+      incoming.from?.toLowerCase() ===
+      '0x0000000000000000000000000000000000000000';
+    if (isMint) {
+      return 'mint';
+    }
+    const hasPaid = valueTransfers?.some(
+      (vt) =>
+        vt.transferType === 'normal' && vt.from?.toLowerCase() === address,
+    );
+    return hasPaid ? 'bought' : 'received';
+  }
+
+  const outgoing = valueTransfers?.find(
+    (vt) =>
+      (vt.transferType === 'erc721' || vt.transferType === 'erc1155') &&
+      vt.from?.toLowerCase() === address,
+  );
+
+  if (outgoing) {
+    return 'sent';
+  }
+
+  return null;
+}
+
 export function useGetTitle(transaction: TransactionViewModel): string {
   const t = useI18nContext();
   const evmAddress = useSelector(selectEvmAddress)?.toLowerCase();
@@ -118,6 +155,8 @@ export function useGetTitle(transaction: TransactionViewModel): string {
       if (isOutgoing) {
         return t('sentSpecifiedTokens', ['NFT']);
       }
+    } else {
+      return t('sentSpecifiedTokens', ['NFT']);
     }
   }
 
@@ -202,6 +241,22 @@ export function useGetTitle(transaction: TransactionViewModel): string {
   }
 
   if (transactionCategory === 'TRANSFER') {
+    const nft = classifyNft(transaction.valueTransfers, evmAddress ?? '');
+    if (nft) {
+      switch (nft) {
+        case 'mint':
+          return t('nftMinted', ['NFT']);
+        case 'bought':
+          return t('nftBought', ['NFT']);
+        case 'received':
+          return t('received');
+        case 'sent':
+          return t('sentSpecifiedTokens', ['NFT']);
+        default:
+          break;
+      }
+    }
+
     if (transaction.amounts?.to && !transaction.amounts?.from) {
       return t('received');
     }
@@ -242,6 +297,22 @@ export function useGetTitle(transaction: TransactionViewModel): string {
 
     if (isIncoming && transaction.amounts?.to) {
       return t('received');
+    }
+
+    const nft = classifyNft(transaction.valueTransfers, evmAddress ?? '');
+    if (nft) {
+      switch (nft) {
+        case 'mint':
+          return t('nftMinted', ['NFT']);
+        case 'bought':
+          return t('nftBought', ['NFT']);
+        case 'received':
+          return t('received');
+        case 'sent':
+          return t('sentSpecifiedTokens', ['NFT']);
+        default:
+          break;
+      }
     }
   }
 

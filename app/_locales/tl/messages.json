@@ -5242,9 +5242,6 @@
   "perpsAddToFavorites": {
     "message": "Idagdag sa mga paborito"
   },
-  "perpsAsk": {
-    "message": "Ask"
-  },
   "perpsAutoClose": {
     "message": "Awtomatikong nagsasara"
   },
@@ -5255,14 +5252,8 @@
   "perpsAvailableBalance": {
     "message": "Available na balanse"
   },
-  "perpsBid": {
-    "message": "Bid"
-  },
   "perpsCancelAllOrders": {
     "message": "Kanselahin lahat"
-  },
-  "perpsClose": {
-    "message": "Isara"
   },
   "perpsCloseAll": {
     "message": "Isara lahat"
@@ -5380,9 +5371,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Tinatayang Liquidation Price"
   },
   "perpsLong": {
     "message": "Long"

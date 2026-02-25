@@ -1,4 +1,3 @@
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -40,4 +39,3 @@ export const KeyringSnapsItem = ({ sectionRef }: KeyringSnapsItemProps) => {
     />
   );
 };
-///: END:ONLY_INCLUDE_IF
