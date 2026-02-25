@@ -2,6 +2,14 @@
 
 MCP-based tooling for LLM agents to build, launch, and interact with the MetaMask Chrome extension using Playwright. Provides a complete feedback loop for implementing and validating UI changes.
 
+## Documentation Scope
+
+This file is the **canonical operator runbook** for the LLM workflow.
+
+- Use this README for all commands, tool behavior, context switching, and mock server setup.
+- The `mcp-server/README.md` file is an index for server internals and navigation only.
+- If command snippets differ across docs, treat this file as source of truth.
+
 ## Architecture
 
 The system uses a **decoupled, capability-based architecture**:
@@ -363,6 +371,6 @@ test/e2e/playwright/llm-workflow/
 
 ## See Also
 
-- **MCP Server Details**: [`mcp-server/README.md`](./mcp-server/README.md) - Tool reference, launch modes, examples
+- **MCP Server Index**: [`mcp-server/README.md`](./mcp-server/README.md) - Server internals and links back to this runbook
 - **Core Package**: `@metamask/client-mcp-core` - Generic MCP infrastructure
 - **Agent Skill**: `.claude/skills/metamask-visual-testing/SKILL.md` - Agent usage instructions
