@@ -279,9 +279,6 @@
   "addIPFSGateway": {
     "message": "優先IPFSゲートウェイを追加"
   },
-  "addImportAccount": {
-    "message": "アカウントまたはハードウェアウォレットを追加"
-  },
   "addMemo": {
     "message": "メモを追加"
   },

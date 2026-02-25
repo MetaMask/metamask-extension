@@ -261,9 +261,6 @@
   "addIPFSGateway": {
     "message": "Cuir do gheata IPFS is fearr leat leis"
   },
-  "addImportAccount": {
-    "message": "Cuir cuntas nó sparán crua-earraí leis"
-  },
   "addMemo": {
     "message": "Cuir meamram leis"
   },
