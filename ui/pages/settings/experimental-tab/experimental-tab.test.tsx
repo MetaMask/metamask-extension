@@ -4,18 +4,25 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { LegacyMetaMetricsProvider } from '../../../contexts/metametrics';
-import ExperimentalTab from './experimental-tab.component';
+import * as storeActions from '../../../store/actions';
+import ExperimentalTab from './experimental-tab';
 
-const render = (overrideMetaMaskState, props = {}) => {
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  setAddSnapAccountEnabled: jest.fn().mockReturnValue(async () => undefined),
+}));
+
+const render = (overrideMetaMaskState = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
       ...overrideMetaMaskState,
     },
   });
-  const comp = <ExperimentalTab {...props} />;
   return renderWithProvider(
-    <LegacyMetaMetricsProvider>{comp}</LegacyMetaMetricsProvider>,
+    <LegacyMetaMetricsProvider>
+      <ExperimentalTab />
+    </LegacyMetaMetricsProvider>,
     store,
   );
 };
@@ -35,20 +42,13 @@ describe('ExperimentalTab', () => {
   });
 
   it('enables add account snap', async () => {
-    const setAddSnapAccountEnabled = jest.fn();
-    const { getByTestId } = render(
-      {},
-      {
-        setAddSnapAccountEnabled,
-        petnamesEnabled: true,
-      },
-    );
+    const { getByTestId } = render();
 
     const toggle = getByTestId('add-account-snap-toggle-button');
     fireEvent.click(toggle);
 
     await waitFor(() => {
-      expect(setAddSnapAccountEnabled).toHaveBeenCalledWith(true);
+      expect(storeActions.setAddSnapAccountEnabled).toHaveBeenCalledWith(true);
     });
   });
 });
