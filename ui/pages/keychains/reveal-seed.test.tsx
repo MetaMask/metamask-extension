@@ -377,12 +377,24 @@ describe('Reveal Seed Page', () => {
 
     mockTrackEvent.mockClear();
 
-    const copyButton = getByText('Copy to clipboard');
-
-    fireEvent.click(copyButton);
+    const revealPhraseButton = queryByTestId('recovery-phrase-reveal');
+    fireEvent.click(revealPhraseButton as HTMLElement);
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
+        properties: {
+          hd_entropy_index: 0,
+        },
+      });
+    });
+
+    const copyButton = queryByTestId('reveal-seed-copy-button');
+    fireEvent.click(copyButton as HTMLElement);
+
+    await waitFor(() => {
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportCopied,
         properties: {
@@ -394,7 +406,7 @@ describe('Reveal Seed Page', () => {
           hd_entropy_index: 0,
         },
       });
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(3, {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpCopiedToClipboard,
         properties: {

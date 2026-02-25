@@ -34,9 +34,9 @@ export function QuizIntroduction({
         data-testid="reveal-seed-quiz-introduction"
       >
         <img
-          src="images/reveal_srp.png"
+          src="images/reveal_srp_intro.png"
           alt="Reveal SRP"
-          className="w-[190px] h-[220px] object-contain"
+          className="w-[205px] h-[184px] object-contain"
         />
         <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           {t('quizIntroduction')}
@@ -60,7 +60,7 @@ export function QuizIntroduction({
         <TextButton
           onClick={onLearnMore}
           data-testid="reveal-seed-quiz-intro-learn-more"
-          className="w-full hover:bg-transparent"
+          className="w-full hover:bg-transparent active:bg-transparent"
         >
           {t('learnMoreUpperCase')}
         </TextButton>

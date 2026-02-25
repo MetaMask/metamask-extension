@@ -78,7 +78,8 @@ export function RevealSeedContent({
           <TextButton
             onClick={onCopy}
             data-testid="reveal-seed-copy-button"
-            className="hover:bg-transparent flex justify-center items-center w-full"
+            className="hover:bg-transparent flex justify-center items-center w-full active:bg-transparent"
+            isDisabled={!phraseRevealed}
           >
             <Icon
               name={IconName.Copy}

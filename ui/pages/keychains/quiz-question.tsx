@@ -128,8 +128,9 @@ export function QuizQuestion({
       <Box
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Start}
-        justifyContent={BoxJustifyContent.Center}
+        justifyContent={BoxJustifyContent.Start}
         data-testid="reveal-seed-quiz-question"
+        className="h-full"
       >
         <Text
           variant={TextVariant.BodySm}
@@ -198,7 +199,7 @@ export function QuizQuestion({
             alignItems={BoxAlignItems.Center}
             justifyContent={BoxJustifyContent.Center}
             gap={4}
-            className="w-full"
+            className="w-full mt-auto"
           >
             <Button
               variant={ButtonVariant.Secondary}
@@ -256,7 +257,7 @@ export function QuizQuestion({
           <TextButton
             onClick={onLearnMore}
             data-testid="reveal-seed-quiz-footer-learn-more"
-            className="w-full hover:bg-transparent"
+            className="w-full hover:bg-transparent active:bg-transparent"
           >
             {learnMoreLabel}
           </TextButton>
