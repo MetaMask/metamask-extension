@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import { useTokenDisplayInfo } from '../hooks';
@@ -23,8 +23,7 @@ import { type TokenWithFiatAmount } from '../types';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
-import { ClaimBonusBadge, isEligibleForMerklRewards } from '../../musd';
-import { getMerklRewardsEnabled } from '../../musd/selectors';
+import { ClaimBonusBadge, useMerklRewards } from '../../musd';
 import {
   TokenCellTitle,
   TokenCellPercentChange,
@@ -62,15 +61,12 @@ export default function TokenCell({
   );
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
-  const merklRewardsEnabled = useSelector(getMerklRewardsEnabled);
-
-  const showClaimBonusBadge = useMemo(
-    () =>
-      showMerklBadge &&
-      merklRewardsEnabled &&
-      isEligibleForMerklRewards(token.chainId, token.address),
-    [showMerklBadge, merklRewardsEnabled, token.chainId, token.address],
-  );
+  // Check whether there are rewards available for the user
+  const { hasClaimableReward, refetch: refetchMerklRewards } = useMerklRewards({
+    tokenAddress: token.address,
+    chainId: token.chainId as Hex,
+    showMerklBadge,
+  });
 
   const tokenDisplayInfo = useTokenDisplayInfo({
     token,
@@ -114,22 +110,21 @@ export default function TokenCell({
             privacyMode={privacyMode}
           />
         }
-        footerLeftDisplay={
-          showClaimBonusBadge ? (
+        footerLeftDisplay={<TokenCellPercentChange token={displayToken} />}
+        footerRightDisplay={
+          hasClaimableReward ? (
             <ClaimBonusBadge
               tokenAddress={token.address as string}
               chainId={token.chainId as Hex}
               label={t('merklRewardsClaimBonus')}
+              refetchRewards={refetchMerklRewards}
             />
           ) : (
-            <TokenCellPercentChange token={displayToken} />
+            <TokenCellPrimaryDisplay
+              token={displayToken}
+              privacyMode={privacyMode}
+            />
           )
-        }
-        footerRightDisplay={
-          <TokenCellPrimaryDisplay
-            token={displayToken}
-            privacyMode={privacyMode}
-          />
         }
       />
       {isEvm && showScamWarningModal && (
