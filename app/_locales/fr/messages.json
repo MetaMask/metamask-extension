@@ -6224,12 +6224,6 @@
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Réessayer"
   },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Les comptes de portefeuille matériel ne sont pas encore autorisés à recevoir des récompenses. Veuillez passer à un autre compte pour continuer."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Compte non pris en charge"
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Réessayer"
   },
@@ -7511,12 +7505,6 @@
   },
   "snapAccountRemovedDescription": {
     "message": "Ce compte ne pourra plus être utilisé dans MetaMask."
-  },
-  "snapAccounts": {
-    "message": "Snaps de compte"
-  },
-  "snapAccountsDescription": {
-    "message": "Comptes contrôlés par des Snaps tiers."
   },
   "snapConnectTo": {
     "message": "Connectez-vous à $1",

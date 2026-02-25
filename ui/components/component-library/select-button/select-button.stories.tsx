@@ -1,12 +1,12 @@
 import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
+import README from "./README.mdx";
 import { Text } from '../text';
 import {
   Display,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import README from './README.mdx';
 
 import { SelectButtonSize } from './select-button.types';
 import { SelectButton } from './select-button';
@@ -22,6 +22,7 @@ import { SelectOption } from '../select-option';
 export default {
   title: 'Components/ComponentLibrary/SelectButton',
   component: SelectButton,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,

@@ -6221,12 +6221,6 @@
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "फिर से प्रयास करें"
   },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "हार्डवेयर वॉलेट एकाउंट्स अभी रिवॉर्ड्स प्राप्त करने के लिए योग्य नहीं हैं। जारी रखने के लिए कृपया किसी अन्य अकाउंट का उपयोग करें।"
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "अकाउंट सपोर्टेड नहीं है"
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "फिर से प्रयास करें"
   },
@@ -7508,12 +7502,6 @@
   },
   "snapAccountRemovedDescription": {
     "message": "यह अकाउंट अब MetaMask में उपयोग के लिए उपलब्ध नहीं होगा।"
-  },
-  "snapAccounts": {
-    "message": "अकाउंट Snaps"
-  },
-  "snapAccountsDescription": {
-    "message": "थर्ड-पार्टी Snaps द्वारा कंट्रोल किए गए अकाउंट।"
   },
   "snapConnectTo": {
     "message": "$1 से कनेक्ट करें",
