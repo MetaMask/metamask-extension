@@ -26,7 +26,6 @@
     "ui/ducks/**",
     "ui/selectors/**",
     "ui/store/**",
-    "ui/components/app/**",
-    "shared/modules/selectors/**"
+    "ui/components/app/**"
   ]
 }

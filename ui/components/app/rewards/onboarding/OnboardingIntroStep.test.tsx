@@ -65,7 +65,7 @@ jest.mock('../../../../ducks/rewards/selectors', () => ({
 }));
 
 // Mock hardware wallet selector
-jest.mock('../../../../../shared/modules/selectors', () => ({
+jest.mock('../../../../../shared/modules/selectors/hardware-wallet', () => ({
   isHardwareWallet: jest.fn(),
 }));
 
@@ -100,7 +100,7 @@ describe('OnboardingIntroStep', () => {
     selectCandidateSubscriptionId,
   } = jest.requireMock('../../../../ducks/rewards/selectors');
   const { isHardwareWallet } = jest.requireMock(
-    '../../../../../shared/modules/selectors',
+    '../../../../../shared/modules/selectors/hardware-wallet',
   );
   const { useAppSelector } = jest.requireMock('../../../../store/store');
   const { useGeoRewardsMetadata } = jest.requireMock(

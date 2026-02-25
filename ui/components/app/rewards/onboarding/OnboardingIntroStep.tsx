@@ -31,7 +31,7 @@ import {
 import { useGeoRewardsMetadata } from '../../../../hooks/rewards/useGeoRewardsMetadata';
 import { useCandidateSubscriptionId } from '../../../../hooks/rewards/useCandidateSubscriptionId';
 import { useAppSelector } from '../../../../store/store';
-import { isHardwareWallet } from '../../../../../shared/modules/selectors';
+import { isHardwareWallet } from '../../../../../shared/modules/selectors/hardware-wallet';
 
 /**
  * OnboardingIntroStep Component

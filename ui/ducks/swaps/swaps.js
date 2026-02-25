@@ -58,8 +58,6 @@ import {
   getTokenExchangeRates,
   getUSDConversionRate,
   getSwapsDefaultToken,
-  isHardwareWallet,
-  getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getSelectedInternalAccount,
   getSelectedNetwork,
@@ -71,6 +69,10 @@ import {
   getSmartTransactionsOptInStatusForMetrics,
   getSmartTransactionsPreferenceEnabled,
 } from '../../../shared/modules/selectors';
+import {
+  getHardwareWalletType,
+  isHardwareWallet,
+} from '../../../shared/modules/selectors/hardware-wallet';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

@@ -33,9 +33,9 @@ import { CANCEL_GAS_LIMIT_DEC } from '../../../../shared/constants/smartTransact
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import {
   getIsSmartTransaction,
-  isHardwareWallet,
   getSmartTransactionsFeatureFlagsForChain,
 } from '../../../../shared/modules/selectors';
+import { isHardwareWallet } from '../../../../shared/modules/selectors/hardware-wallet';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { isLegacyTransaction } from '../../../../shared/modules/transaction.utils';
 import { ControllerFlatState } from '../../controller-init/controller-list';

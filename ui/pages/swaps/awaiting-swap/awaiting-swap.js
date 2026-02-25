@@ -17,8 +17,6 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   getRpcPrefsForCurrentProvider,
   getUSDConversionRate,
-  isHardwareWallet,
-  getHardwareWalletType,
   getFullTxData,
 } from '../../../selectors';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
@@ -26,6 +24,10 @@ import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';
+import {
+  getHardwareWalletType,
+  isHardwareWallet,
+} from '../../../../shared/modules/selectors/hardware-wallet';
 
 import {
   getUsedQuote,

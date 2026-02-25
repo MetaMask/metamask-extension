@@ -394,16 +394,6 @@ export function getIsSigningQRHardwareTransaction(state) {
   );
 }
 
-export function getCurrentKeyring(state) {
-  const internalAccount = getSelectedInternalAccount(state);
-
-  if (!internalAccount) {
-    return null;
-  }
-
-  return internalAccount.metadata?.keyring;
-}
-
 /**
  * The function returns true if network and account details are fetched and
  * both of them support EIP-1559.
@@ -428,17 +418,6 @@ export function checkNetworkOrAccountNotSupports1559(state) {
 }
 
 /**
- * Checks if the current wallet is a hardware wallet.
- *
- * @param {object} state
- * @returns {boolean}
- */
-export function isHardwareWallet(state) {
-  const keyring = getCurrentKeyring(state);
-  return Boolean(keyring?.type?.includes('Hardware'));
-}
-
-/**
  * Checks if the account supports smart transactions.
  *
  * @param {object} state - The state object.
@@ -449,19 +428,9 @@ export function accountSupportsSmartTx(state) {
   return Boolean(accountType !== 'snap');
 }
 
-/**
- * Get a HW wallet type, e.g. "Ledger Hardware"
- *
- * @param {object} state
- * @returns {string | undefined}
- */
-export function getHardwareWalletType(state) {
-  const keyring = getCurrentKeyring(state);
-  return isHardwareWallet(state) ? keyring.type : undefined;
-}
-
 export function getAccountType(state) {
-  const currentKeyring = getCurrentKeyring(state);
+  const internalAccount = getSelectedInternalAccount(state);
+  const currentKeyring = internalAccount?.metadata?.keyring ?? null;
   return getAccountTypeForKeyring(currentKeyring);
 }
 

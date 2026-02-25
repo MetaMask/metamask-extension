@@ -23,13 +23,13 @@ import {
   setPna25Acknowledged,
 } from '../../../store/actions';
 import {
-  getCurrentKeyring,
   getDataCollectionForMarketing,
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
   getIsParticipateInMetaMetricsSet,
   getParticipateInMetaMetrics,
 } from '../../../selectors';
+import { getCurrentKeyring } from '../../../../shared/modules/selectors/hardware-wallet';
 
 import {
   MetaMetricsEventCategory,

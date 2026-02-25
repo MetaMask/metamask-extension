@@ -44,7 +44,6 @@ import {
   type AccountGroupObject,
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
-import { getHardwareWalletType } from '../../selectors/selectors';
 import {
   ALL_ALLOWED_BRIDGE_CHAIN_IDS,
   ALLOWED_BRIDGE_CHAIN_IDS,
@@ -68,6 +67,7 @@ import {
   getIsSmartTransaction,
   type SmartTransactionsMetaMaskState,
 } from '../../../shared/modules/selectors';
+import { getHardwareWalletType } from '../../../shared/modules/selectors/hardware-wallet';
 import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import { safeAmountForCalc } from '../../pages/bridge/utils/quote';
 import {

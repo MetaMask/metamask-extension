@@ -11,15 +11,15 @@ import {
   getQuotesFetchStartTime,
   getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
-import {
-  isHardwareWallet,
-  getHardwareWalletType,
-  getHDEntropyIndex,
-} from '../../../selectors/selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';
+import {
+  getHardwareWalletType,
+  isHardwareWallet,
+} from '../../../../shared/modules/selectors/hardware-wallet';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import Mascot from '../../../components/ui/mascot';

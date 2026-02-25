@@ -14,15 +14,15 @@ import {
   getUsedQuote,
 } from '../../../ducks/swaps/swaps';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import {
-  isHardwareWallet,
-  getHardwareWalletType,
-  getRpcPrefsForCurrentProvider,
-} from '../../../selectors';
+import { getRpcPrefsForCurrentProvider } from '../../../selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';
+import {
+  getHardwareWalletType,
+  isHardwareWallet,
+} from '../../../../shared/modules/selectors/hardware-wallet';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import {
   DEFAULT_ROUTE,

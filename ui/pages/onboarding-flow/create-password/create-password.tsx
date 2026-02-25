@@ -12,13 +12,13 @@ import {
 } from '../../../helpers/constants/routes';
 import {
   getFirstTimeFlowType,
-  getCurrentKeyring,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   getIsSocialLoginFlow,
   getSocialLoginType,
   getIsParticipateInMetaMetricsSet,
 } from '../../../selectors';
+import { getCurrentKeyring } from '../../../../shared/modules/selectors/hardware-wallet';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventAccountType,

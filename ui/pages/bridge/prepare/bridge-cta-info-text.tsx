@@ -16,7 +16,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Row, Tooltip } from '../layout';
-import { getCurrentKeyring } from '../../../selectors/selectors';
+import { getCurrentKeyring } from '../../../../shared/modules/selectors/hardware-wallet';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { bpsToPercentage } from '../../../ducks/bridge/utils';
 
