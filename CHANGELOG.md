@@ -9,34 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.20.0]
 
-### Uncategorized
-
-- chore: sync stable into release/13.20.0 (#40295)
-- Bump assets-controllers to v99.4.0 (#40227)
-- Bump assets-controller:2.0.0 (#40087)
-- Remove pinned swap token from asset picker (#40211)
-- Updated GMX referral image and subtitle (#40208)
-- Remove network dropdown from Activity tab (#39945)
-- Update `@metamask/subscription-controller` to `6.0.0`. Improve sentry error captures for subscriptions. (#39952)
-- Use `StorageService` in Snap Controller (#39804)
-
 ### Added
 
 - Activity view with infinite scroll (#39930)
-- Gas sponsorship UI - Show green “Paid by MetaMask” pill on Send/Dapp confirmation and (#40210)
-  transaction details when gas is sponsored.
-- Show green “No network fee” pill next to network name in network lists
-  (Your networks, Select token, default networks).
-- Show “Paid by MetaMask” pill on Bridge/Swap quote card when network
-  fee is sponsored.
-- Feature flags are dev-only; no change in production until enabled.
-- Adds initial Perps UI (#40076)
+- Gas sponsorship UI (#40210)
+- Added initial Perps UI (#40076)
 - Added deferred deep links (#38458)
 - Replaced global-menu with global-menu-drawer (#39991)
 - Added Perps tutorial modal with animated walkthrough explaining perpetual futures trading (#39693)
-- Added toast notifications for mUSD reward claim transaction status (in-progress, success, failed); fixed a bug where the (#39979)
-  "network added" home notification would reappear after navigation
+- Added toast notifications for mUSD reward claim transaction status (in-progress, success, failed); fixed a bug where the "network added" home notification would reappear after navigation (#39979)
 - Optimized gas fees for Shield crypto subscription transactions to reduce sponsorship costs (#39931)
+- Added vertical scroll to drawer (#40301)
+
+### Changed
+
+- Updated GMX referral image and subtitle (#40208)
+- Use `StorageService` in Snap Controller (#39804)
+- Remove network dropdown from Activity tab (#39945)
 
 ### Fixed
 
@@ -46,6 +35,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed an issue where approvals would be closed too soon (#40139)
 - Fixed access token not persisting across lock/unlock cycles for seedless onboarding users (#40013)
 - Fixed a security issue where users could skip onboarding by navigating directly to the completion route (#40012)
+- Remove pinned swap token from asset picker (#40211)
+- Fixed activity year format (#40329)
+- Fixed list item disappearing in token page (#40316)
+- Fixed error when importing tokens on EVM networks when chainId is provided as decimal string (#40325)
+- AccountsApiBalanceFetcher stricter zero out conditions (#40411)
 
 ## [13.19.0]
 
