@@ -54,12 +54,9 @@ export const SnapControllerInit: ControllerInitFunction<
   const autoUpdatePreinstalledSnaps = getBooleanFlag(
     process.env.AUTO_UPDATE_PREINSTALLED_SNAPS,
   );
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const forcePreinstalledSnaps = getBooleanFlag(
     process.env.FORCE_PREINSTALLED_SNAPS,
   );
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Get the feature flags for the `SnapController.
@@ -123,9 +120,7 @@ export const SnapControllerInit: ControllerInitFunction<
       requireAllowlist,
       rejectInvalidPlatformVersion,
       autoUpdatePreinstalledSnaps,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       forcePreinstalledSnaps,
-      ///: END:ONLY_INCLUDE_IF
     },
 
     // @ts-expect-error: `encryptorFactory` is not compatible with the expected
