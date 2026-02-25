@@ -1198,10 +1198,12 @@ function emitDappViewedMetricEvent(origin) {
     return;
   }
 
-  const preferencesState = controller.controllerMessenger.call(
-    'PreferencesController:getState',
+  const accountsState = controller.controllerMessenger.call(
+    'AccountsController:getState',
   );
-  const numberOfTotalAccounts = Object.keys(preferencesState.identities).length;
+  const numberOfTotalAccounts = Object.keys(
+    Object.keys(accountsState.internalAccounts.accounts),
+  ).length;
 
   controller.metaMetricsController.trackEvent(
     {

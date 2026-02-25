@@ -6284,7 +6284,7 @@ export default class MetamaskController extends EventEmitter {
       shouldSelectAccount: true,
     },
   ) {
-    const { shouldCreateSocialBackup, shouldSelectAccount } = options;
+    const { shouldCreateSocialBackup } = options;
 
     const importedAccountAddress =
       await this.keyringController.importAccountWithStrategy(strategy, args);
@@ -6315,11 +6315,6 @@ export default class MetamaskController extends EventEmitter {
         await this.keyringController.removeAccount(importedAccountAddress);
         throw err;
       }
-    }
-
-    if (shouldSelectAccount) {
-      // set new account as selected
-      this.preferencesController.setSelectedAddress(importedAccountAddress);
     }
   }
 

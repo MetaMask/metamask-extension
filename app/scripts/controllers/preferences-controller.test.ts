@@ -67,14 +67,6 @@ const setupController = ({
     });
   messenger.delegate({
     messenger: preferencesControllerMessenger,
-    actions: [
-      'AccountsController:getAccountByAddress',
-      'AccountsController:setAccountName',
-      'AccountsController:getSelectedAccount',
-      'AccountsController:setSelectedAccount',
-      'NetworkController:getState',
-    ],
-    events: ['AccountsController:stateChange'],
   });
 
   messenger.registerActionHandler(
@@ -175,192 +167,6 @@ describe('preferences controller', () => {
       controller.setCurrentLocale('ja');
       const { currentLocale } = controller.state;
       expect(currentLocale).toStrictEqual('ja');
-    });
-  });
-
-  describe('setAccountLabel', () => {
-    const { controller, messenger, accountsController } = setupController({});
-    const mockName = 'mockName';
-    const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
-    const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
-
-    it('updating name from preference controller will update the name in accounts controller and preferences controller', () => {
-      messenger.publish(
-        'KeyringController:stateChange',
-        {
-          isUnlocked: true,
-          keyrings: [
-            {
-              type: 'HD Key Tree',
-              accounts: [firstAddress, secondAddress],
-              metadata: {
-                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-                name: '',
-              },
-            },
-          ],
-        },
-        [],
-      );
-
-      let [firstAccount, secondAccount] = accountsController.listAccounts();
-      const { identities } = controller.state;
-      const firstPreferenceAccount = identities[firstAccount.address];
-      const secondPreferenceAccount = identities[secondAccount.address];
-
-      expect(firstAccount.metadata.name).toBe(firstPreferenceAccount.name);
-      expect(secondAccount.metadata.name).toBe(secondPreferenceAccount.name);
-
-      controller.setAccountLabel(firstAccount.address, mockName);
-
-      // refresh state after state changed
-
-      [firstAccount, secondAccount] = accountsController.listAccounts();
-
-      const { identities: updatedIdentities } = controller.state;
-
-      const updatedFirstPreferenceAccount =
-        updatedIdentities[firstAccount.address];
-      const updatedSecondPreferenceAccount =
-        updatedIdentities[secondAccount.address];
-
-      expect(firstAccount.metadata.name).toBe(
-        updatedFirstPreferenceAccount.name,
-      );
-      expect(updatedFirstPreferenceAccount.name).toBe(mockName);
-      expect(secondAccount.metadata.name).toBe(
-        updatedSecondPreferenceAccount.name,
-      );
-    });
-
-    it('updating name from accounts controller updates the name in preferences controller', () => {
-      messenger.publish(
-        'KeyringController:stateChange',
-        {
-          isUnlocked: true,
-          keyrings: [
-            {
-              type: 'HD Key Tree',
-              accounts: [firstAddress, secondAddress],
-              metadata: {
-                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-                name: '',
-              },
-            },
-          ],
-        },
-        [],
-      );
-
-      let [firstAccount, secondAccount] = accountsController.listAccounts();
-
-      const { identities } = controller.state;
-
-      const firstPreferenceAccount = identities[firstAccount.address];
-      const secondPreferenceAccount = identities[secondAccount.address];
-
-      expect(firstAccount.metadata.name).toBe(firstPreferenceAccount.name);
-      expect(secondAccount.metadata.name).toBe(secondPreferenceAccount.name);
-
-      accountsController.setAccountName(firstAccount.id, mockName);
-      // refresh state after state changed
-
-      [firstAccount, secondAccount] = accountsController.listAccounts();
-
-      const { identities: updatedIdentities } = controller.state;
-
-      const updatedFirstPreferenceAccount =
-        updatedIdentities[firstAccount.address];
-      const updatedSecondPreferenceAccount =
-        updatedIdentities[secondAccount.address];
-
-      expect(firstAccount.metadata.name).toBe(
-        updatedFirstPreferenceAccount.name,
-      );
-      expect(updatedFirstPreferenceAccount.name).toBe(mockName);
-      expect(secondAccount.metadata.name).toBe(
-        updatedSecondPreferenceAccount.name,
-      );
-    });
-  });
-
-  describe('setSelectedAddress', () => {
-    const { controller, messenger, accountsController } = setupController({});
-    it('updating selectedAddress from preferences controller updates the selectedAccount in accounts controller and preferences controller', () => {
-      const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
-      const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
-      messenger.publish(
-        'KeyringController:stateChange',
-        {
-          isUnlocked: true,
-          keyrings: [
-            {
-              type: 'HD Key Tree',
-              accounts: [firstAddress, secondAddress],
-              metadata: {
-                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-                name: '',
-              },
-            },
-          ],
-        },
-        [],
-      );
-
-      const selectedAccount = accountsController.getSelectedAccount();
-
-      const { selectedAddress } = controller.state;
-
-      expect(selectedAddress).toBe(selectedAccount.address);
-
-      controller.setSelectedAddress(secondAddress);
-      // refresh state after state changed
-
-      const { selectedAddress: updatedSelectedAddress } = controller.state;
-
-      const updatedSelectedAccount = accountsController.getSelectedAccount();
-
-      expect(updatedSelectedAddress).toBe(updatedSelectedAccount.address);
-
-      expect(controller.getSelectedAddress()).toBe(secondAddress);
-    });
-
-    it('updating selectedAccount from accounts controller updates the selectedAddress in preferences controller', () => {
-      const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
-      const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
-      messenger.publish(
-        'KeyringController:stateChange',
-        {
-          isUnlocked: true,
-          keyrings: [
-            {
-              type: 'HD Key Tree',
-              accounts: [firstAddress, secondAddress],
-              metadata: {
-                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-                name: '',
-              },
-            },
-          ],
-        },
-        [],
-      );
-
-      const selectedAccount = accountsController.getSelectedAccount();
-      const accounts = accountsController.listAccounts();
-
-      const { selectedAddress } = controller.state;
-
-      expect(selectedAddress).toBe(selectedAccount.address);
-
-      accountsController.setSelectedAccount(accounts[1].id);
-      // refresh state after state changed
-
-      const { selectedAddress: updatedSelectedAddress } = controller.state;
-
-      const updatedSelectedAccount = accountsController.getSelectedAccount();
-
-      expect(updatedSelectedAddress).toBe(updatedSelectedAccount.address);
     });
   });
 
@@ -534,39 +340,6 @@ describe('preferences controller', () => {
     it('should set the useCurrencyRateCheck property in state', () => {
       controller.setUseCurrencyRateCheck(false);
       expect(controller.state.useCurrencyRateCheck).toStrictEqual(false);
-    });
-  });
-
-  describe('AccountsController:stateChange subscription', () => {
-    const { controller, messenger, accountsController } = setupController({});
-    it('sync the identities with the accounts in the accounts controller', () => {
-      const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
-      const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
-      messenger.publish(
-        'KeyringController:stateChange',
-        {
-          isUnlocked: true,
-          keyrings: [
-            {
-              type: 'HD Key Tree',
-              accounts: [firstAddress, secondAddress],
-              metadata: {
-                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-                name: '',
-              },
-            },
-          ],
-        },
-        [],
-      );
-
-      const accounts = accountsController.listAccounts();
-
-      const { identities } = controller.state;
-
-      expect(accounts.map((account) => account.address)).toStrictEqual(
-        Object.keys(identities),
-      );
     });
   });
 
@@ -956,13 +729,11 @@ describe('preferences controller', () => {
           "enableMV3TimestampSave": true,
           "featureFlags": {},
           "forgottenPassword": false,
-          "identities": {},
           "ipfsGateway": "dweb.link",
           "isIpfsGatewayEnabled": true,
           "isMultiAccountBalancesEnabled": true,
           "knownMethodData": {},
           "ledgerTransportType": "u2f",
-          "lostIdentities": {},
           "manageInstitutionalWallets": false,
           "openSeaEnabled": true,
           "overrideContentSecurityPolicyHeader": true,
@@ -999,7 +770,6 @@ describe('preferences controller', () => {
             "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
-          "selectedAddress": "",
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
@@ -1042,13 +812,11 @@ describe('preferences controller', () => {
           "enableMV3TimestampSave": true,
           "featureFlags": {},
           "forgottenPassword": false,
-          "identities": {},
           "ipfsGateway": "dweb.link",
           "isIpfsGatewayEnabled": true,
           "isMultiAccountBalancesEnabled": true,
           "knownMethodData": {},
           "ledgerTransportType": "u2f",
-          "lostIdentities": {},
           "manageInstitutionalWallets": false,
           "openSeaEnabled": true,
           "overrideContentSecurityPolicyHeader": true,
@@ -1085,7 +853,6 @@ describe('preferences controller', () => {
             "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
-          "selectedAddress": "",
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
@@ -1128,13 +895,11 @@ describe('preferences controller', () => {
           "enableMV3TimestampSave": true,
           "featureFlags": {},
           "forgottenPassword": false,
-          "identities": {},
           "ipfsGateway": "dweb.link",
           "isIpfsGatewayEnabled": true,
           "isMultiAccountBalancesEnabled": true,
           "knownMethodData": {},
           "ledgerTransportType": "u2f",
-          "lostIdentities": {},
           "manageInstitutionalWallets": false,
           "openSeaEnabled": true,
           "overrideContentSecurityPolicyHeader": true,
@@ -1171,7 +936,6 @@ describe('preferences controller', () => {
             "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
-          "selectedAddress": "",
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",

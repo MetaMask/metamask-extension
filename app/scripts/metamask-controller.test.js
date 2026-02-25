@@ -777,19 +777,8 @@ describe('MetaMaskController', () => {
 
         await localMetaMaskController.submitPassword(password);
 
-        const identities = Object.keys(
-          localMetaMaskController.preferencesController.state.identities,
-        );
         const addresses =
           await localMetaMaskController.keyringController.getAccounts();
-
-        identities.forEach((identity) => {
-          expect(addresses).toContain(identity);
-        });
-
-        addresses.forEach((address) => {
-          expect(identities).toContain(address);
-        });
 
         const internalAccounts =
           localMetaMaskController.accountsController.listAccounts();
@@ -1872,11 +1861,6 @@ describe('MetaMaskController', () => {
 
           await metamaskController.forgetDevice(HardwareDeviceNames.trezor);
 
-          expect(
-            Object.keys(
-              metamaskController.preferencesController.state.identities,
-            ),
-          ).not.toContain(hardwareKeyringAccount);
           expect(
             metamaskController.accountsController
               .listAccounts()

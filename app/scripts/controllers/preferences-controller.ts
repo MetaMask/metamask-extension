@@ -133,6 +133,7 @@ export type PreferencesControllerState = Omit<
   | 'smartAccountOptInForAccounts'
   | 'showIncomingTransactions'
   | 'tokenNetworkFilter'
+  // TODO: Remove identies, lostIdentities and selectedAddress from here once the state type is updated in core
   | 'identities'
   | 'lostIdentities'
   | 'selectedAddress'
@@ -774,38 +775,6 @@ export class PreferencesController extends BaseController<
       state.textDirection = textDirection;
     });
     return textDirection;
-  }
-
-  /**
-   * Setter for the `selectedAddress` property
-   *
-   * @deprecated - Use setSelectedAccount from the AccountsController
-   * @param address - A new hex address for an account
-   */
-  setSelectedAddress(address: string): void {
-    const account = this.messenger.call(
-      'AccountsController:getAccountByAddress',
-      address,
-    );
-    if (!account) {
-      throw new Error(`Identity for '${address} not found`);
-    }
-
-    this.messenger.call('AccountsController:setSelectedAccount', account.id);
-  }
-
-  /**
-   * Getter for the `selectedAddress` property
-   *
-   * @deprecated - Use the getSelectedAccount from the AccountsController
-   * @returns The hex address for the currently selected account
-   */
-  getSelectedAddress(): string {
-    const selectedAccount = this.messenger.call(
-      'AccountsController:getSelectedAccount',
-    );
-
-    return selectedAccount.address;
   }
 
   /**

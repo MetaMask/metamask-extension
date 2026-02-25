@@ -30,7 +30,7 @@ export type RequestEthereumAccountsOptions = {
   sendMetrics: SendMetrics;
   metamaskState: Pick<
     FlattenedBackgroundStateProxy,
-    'metaMetricsId' | 'permissionHistory' | 'identities'
+    'metaMetricsId' | 'permissionHistory' | 'internalAccounts'
   >;
   getCaip25PermissionFromLegacyPermissionsForOrigin: GetCaip25PermissionFromLegacyPermissionsForOrigin;
   requestPermissionsForOrigin: RequestPermissionsForOrigin;
@@ -158,7 +158,9 @@ async function requestEthereumAccountsHandler<
           // eslint-disable-next-line @typescript-eslint/naming-convention
           is_first_visit: isFirstVisit,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          number_of_accounts: Object.keys(metamaskState.identities).length,
+          number_of_accounts: Object.keys(
+            Object.keys(metamaskState.internalAccounts.accounts),
+          ).length,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           number_of_accounts_connected: ethAccounts.length,
         },
