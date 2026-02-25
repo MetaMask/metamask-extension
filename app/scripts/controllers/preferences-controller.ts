@@ -4,7 +4,6 @@ import {
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerSetAccountNameAction,
   AccountsControllerSetSelectedAccountAction,
-  AccountsControllerState,
 } from '@metamask/accounts-controller';
 import { Json, Hex } from '@metamask/utils';
 import {
