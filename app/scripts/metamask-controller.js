@@ -210,6 +210,7 @@ import {
 } from '../../shared/modules/shield';
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
 import { createSentryError } from '../../shared/modules/error';
+import { getAccountTrackerControllerAccountsByChainId } from '../../shared/modules/selectors/assets-migration';
 import {
   toHardwareWalletError,
   // eslint-disable-next-line import/no-restricted-paths
@@ -5085,10 +5086,10 @@ export default class MetamaskController extends EventEmitter {
    * @param {Provider} provider - The provider instance to use when asking the network
    */
   async getBalance(address, provider) {
-    const accounts =
-      this.accountTrackerController.state.accountsByChainId[
-        this.#getGlobalChainId()
-      ];
+    const accountsByChainId = getAccountTrackerControllerAccountsByChainId(
+      this._getMetaMaskState(),
+    );
+    const accounts = accountsByChainId[this.#getGlobalChainId()];
     const cached = accounts?.[toChecksumHexAddress(address)];
 
     if (cached && cached.balance) {
@@ -5625,10 +5626,10 @@ export default class MetamaskController extends EventEmitter {
 
     const internalAccountCount = internalAccounts.length;
 
-    const accountsForCurrentChain =
-      this.accountTrackerController.state.accountsByChainId[
-        this.#getGlobalChainId()
-      ];
+    const accountsByChainId = getAccountTrackerControllerAccountsByChainId(
+      this._getMetaMaskState(),
+    );
+    const accountsForCurrentChain = accountsByChainId[this.#getGlobalChainId()];
 
     const accountTrackerCount = Object.keys(
       accountsForCurrentChain || {},
@@ -8088,9 +8089,9 @@ export default class MetamaskController extends EventEmitter {
       ),
       // Other dependencies
       getAccountBalance: (account, chainId) =>
-        this.accountTrackerController.state.accountsByChainId?.[chainId]?.[
-          toChecksumHexAddress(account)
-        ]?.balance,
+        getAccountTrackerControllerAccountsByChainId(this._getMetaMaskState())[
+          chainId
+        ]?.[toChecksumHexAddress(account)]?.balance,
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
       getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
