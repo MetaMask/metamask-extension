@@ -58,6 +58,7 @@ export function NotificationsSettingsBox({
               onToggle={onToggle}
               disabled={disabled}
               dataTestId={`${dataTestId}-toggle-input`}
+              className="notifications-settings-box__toggle"
             />
           )}
         </Box>

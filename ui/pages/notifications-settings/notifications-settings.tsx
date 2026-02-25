@@ -1,12 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Text,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
@@ -15,11 +11,6 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  NOTIFICATIONS_ROUTE,
-  PREVIOUS_ROUTE,
-} from '../../helpers/constants/routes';
-import { Content, Header, Page } from '../../components/multichain/pages/page';
 import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
@@ -157,45 +148,4 @@ export function NotificationsSettingsContent() {
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export default function NotificationsSettings() {
-  const navigate = useNavigate();
-  const t = useI18nContext();
-
-  const handleClose = () => {
-    if (window.history.length > 1) {
-      navigate(PREVIOUS_ROUTE);
-    } else {
-      navigate(NOTIFICATIONS_ROUTE);
-    }
-  };
-
-  return (
-    <Page>
-      <Header
-        startAccessory={
-          <ButtonIcon
-            ariaLabel={t('back')}
-            iconName={IconName.ArrowLeft}
-            size={ButtonIconSize.Md}
-            onClick={handleClose}
-          />
-        }
-        endAccessory={
-          <ButtonIcon
-            ariaLabel={t('close')}
-            iconName={IconName.Close}
-            size={ButtonIconSize.Md}
-            onClick={handleClose}
-          />
-        }
-      >
-        {t('notifications')}
-      </Header>
-      <Content padding={0}>
-        <NotificationsSettingsContent />
-      </Content>
-    </Page>
-  );
-}
+export default NotificationsSettingsContent;
