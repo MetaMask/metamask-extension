@@ -1,0 +1,7 @@
+{
+  "name": "@metamask/eslint-plugin-local-rules",
+  "version": "1.0.0",
+  "description": "Local ESLint rules for MetaMask Extension",
+  "main": "index.js",
+  "private": true
+}
