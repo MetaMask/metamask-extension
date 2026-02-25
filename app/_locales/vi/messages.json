@@ -6227,12 +6227,6 @@
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Thử lại"
   },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Tài khoản ví cứng hiện chưa đủ điều kiện nhận phần thưởng. Vui lòng chuyển sang tài khoản khác để tiếp tục."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Tài khoản không được hỗ trợ"
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Thử lại"
   },

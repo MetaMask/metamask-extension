@@ -6227,12 +6227,6 @@
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Reintentar"
   },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Las cuentas de billeteras físicas aún no pueden recibir recompensas. Cambia a otra cuenta para continuar."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Cuenta no admitida"
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Reintentar"
   },

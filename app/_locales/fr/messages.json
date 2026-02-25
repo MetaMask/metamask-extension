@@ -6224,12 +6224,6 @@
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Réessayer"
   },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Les comptes de portefeuille matériel ne sont pas encore autorisés à recevoir des récompenses. Veuillez passer à un autre compte pour continuer."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Compte non pris en charge"
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Réessayer"
   },

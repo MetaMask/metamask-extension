@@ -6227,12 +6227,6 @@
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "다시 시도"
   },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "아직은 하드웨어 지갑 계정으로 보상을 받을 수 없습니다. 다른 계정으로 변경하여 계속 진행하세요."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "지원되지 않는 계정입니다"
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "다시 시도"
   },

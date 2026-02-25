@@ -10,6 +10,9 @@
       "MetaMask: MetaMetrics invalid trait types": 4,
       "warn: MetaMetricsController#_identify: No userTraits found": 1
     },
+    "app/scripts/controllers/rewards/rewards-data-service.test.ts": {
+      "error: RewardsDataService: Failed to fetch geolocation": 2
+    },
     "app/scripts/controllers/swaps/swaps.test.ts": {
       "Third-party: Bindings failed, using pure JS": 1,
       "µWebSockets: Compatibility warnings": 1,
