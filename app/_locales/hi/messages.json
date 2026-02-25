@@ -6221,12 +6221,6 @@
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "फिर से प्रयास करें"
   },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "हार्डवेयर वॉलेट एकाउंट्स अभी रिवॉर्ड्स प्राप्त करने के लिए योग्य नहीं हैं। जारी रखने के लिए कृपया किसी अन्य अकाउंट का उपयोग करें।"
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "अकाउंट सपोर्टेड नहीं है"
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "फिर से प्रयास करें"
   },

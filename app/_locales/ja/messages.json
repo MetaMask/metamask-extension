@@ -6221,12 +6221,6 @@
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "再試行"
   },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "ハードウェアウォレットのアカウントは、現時点ではリワードを受け取ることはできません。別のアカウントに切り替えてください。"
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "サポートされていないアカウントです"
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "再試行"
   },

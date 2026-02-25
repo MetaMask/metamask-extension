@@ -6227,12 +6227,6 @@
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Coba lagi"
   },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Akun dompet perangkat keras belum memenuhi syarat untuk menerima reward. Beralih ke akun lain untuk melanjutkan."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Akun tidak didukung"
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Coba lagi"
   },

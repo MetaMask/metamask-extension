@@ -58,7 +58,9 @@ describe('snap-account-redirect confirmation', () => {
       store,
     );
     await waitFor(() => {
-      expect(getByText(messages.snapAccountRedirectFinishSigningTitle.message)).toBeInTheDocument();
+      expect(
+        getByText(messages.snapAccountRedirectFinishSigningTitle.message),
+      ).toBeInTheDocument();
       expect(
         getByText(`Follow the instructions from ${mockSnapName}`),
       ).toBeInTheDocument();

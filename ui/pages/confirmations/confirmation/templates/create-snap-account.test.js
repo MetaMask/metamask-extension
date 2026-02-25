@@ -56,7 +56,9 @@ describe('create-snap-account confirmation', () => {
       store,
     );
     await waitFor(() => {
-      expect(getByText(messages.createSnapAccountTitle.message)).toBeInTheDocument();
+      expect(
+        getByText(messages.createSnapAccountTitle.message),
+      ).toBeInTheDocument();
       expect(container.querySelector('.callout')).toBeDefined();
       expect(container).toMatchSnapshot();
     });

@@ -10,17 +10,21 @@ import InfoTab from '.';
 describe('InfoTab', () => {
   const mockStore = configureMockStore([thunk])(mockState);
   describe('validate links', () => {
+    let getByRole: (role: string, options?: { name: string }) => HTMLElement;
     let getByText: (text: string) => HTMLElement;
     let getByTestId: (testId: string) => HTMLElement;
 
     beforeEach(() => {
       const renderResult = renderWithProvider(<InfoTab />, mockStore);
+      getByRole = renderResult.getByRole;
       getByText = renderResult.getByText;
       getByTestId = renderResult.getByTestId;
     });
 
     it('should have correct href for "Privacy Policy" link', () => {
-      const privacyPolicyLink = getByText(messages.privacyMsg.message);
+      const privacyPolicyLink = getByRole('link', {
+        name: messages.privacyMsg.message,
+      });
       expect(privacyPolicyLink).toHaveAttribute(
         'href',
         'https://metamask.io/privacy.html',
@@ -28,7 +32,9 @@ describe('InfoTab', () => {
     });
 
     it('should have correct href for "Terms of Use" link', () => {
-      const termsOfUseLink = getByText(messages.terms.message);
+      const termsOfUseLink = getByRole('link', {
+        name: messages.onboardingLoginFooterTermsOfUse.message,
+      });
       expect(termsOfUseLink).toHaveAttribute(
         'href',
         'https://metamask.io/terms.html',
@@ -36,7 +42,9 @@ describe('InfoTab', () => {
     });
 
     it('should have correct href for "Attributions" link', () => {
-      const attributionsLink = getByText(messages.attributions.message);
+      const attributionsLink = getByRole('link', {
+        name: messages.attributions.message,
+      });
       expect(attributionsLink).toHaveAttribute(
         'href',
         `https://raw.githubusercontent.com/MetaMask/metamask-extension/vMOCK_VERSION/attribution.txt`,
@@ -52,12 +60,16 @@ describe('InfoTab', () => {
     });
 
     it('should have correct href for "Visit our website" link', () => {
-      const websiteLink = getByText(messages.visitWebSite.message);
+      const websiteLink = getByRole('link', {
+        name: messages.visitWebSite.message,
+      });
       expect(websiteLink).toHaveAttribute('href', 'https://metamask.io/');
     });
 
     it('should have correct href for "Contact us" link', () => {
-      const contactUsLink = getByText(messages.contactUs.message);
+      const contactUsLink = getByRole('link', {
+        name: messages.contactUs.message,
+      });
       expect(contactUsLink).toHaveAttribute(
         'href',
         'https://support.metamask.io',

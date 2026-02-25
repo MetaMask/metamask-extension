@@ -7,7 +7,6 @@ import {
   DISPLAY,
   FLEX_WRAP,
 } from '../../../helpers/constants/design-system';
-import README from './README.mdx';
 import { typeHash } from './actionable-message';
 import ActionableMessage from '.';
 
@@ -15,7 +14,6 @@ export default {
   title: 'Components/UI/ActionableMessage',
 
   component: ActionableMessage,
-  parameters: { docs: { page: README } },
   argTypes: {
     message: { control: 'text' },
     'primaryAction.label': { control: 'text' },
