@@ -32,16 +32,13 @@ describe('AmountInput', () => {
     it('renders Size label and available to trade text', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('$10,000.00')).toBeInTheDocument();
-      expect(screen.getByText(/available/iu)).toBeInTheDocument();
-    });
-
-    it('renders order amount section', () => {
-      renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
-
       expect(
-        screen.getByText(messages.perpsOrderAmount.message),
+        screen.getByText(messages.perpsSize.message),
       ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsAvailableToTrade.message),
+      ).toBeInTheDocument();
+      expect(screen.getByText(/USDC/u)).toBeInTheDocument();
     });
 
     it('renders the amount input field', () => {

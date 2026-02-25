@@ -50,7 +50,7 @@ describe('OrderEntry', () => {
 
       expect(screen.getByTestId('order-entry')).toBeInTheDocument();
       expect(
-        screen.getByText(messages.perpsOrderAmount.message),
+        screen.getByText(messages.perpsSize.message),
       ).toBeInTheDocument();
       expect(screen.getByTestId('amount-input-field')).toBeInTheDocument();
       expect(screen.getByTestId('leverage-slider')).toBeInTheDocument();
