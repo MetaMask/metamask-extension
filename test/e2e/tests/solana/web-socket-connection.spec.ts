@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import LocalWebSocketServer from '../../websocket-server';
