@@ -116,6 +116,12 @@ module.exports = {
           },
         },
       },
+      rules: {
+        // ESM app/shared/ui files run in browser-like or Jest environments.
+        // Node builtins compatibility checks for globals like `navigator`
+        // produce false positives here.
+        'n/no-unsupported-features/node-builtins': 'off',
+      },
     },
     /**
      * TypeScript files
