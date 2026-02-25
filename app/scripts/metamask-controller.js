@@ -63,12 +63,7 @@ import {
   isEvmAccountType,
   SolAccountType,
   EthScope,
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  BtcScope,
-  ///: END:ONLY_INCLUDE_IF
-  SolScope,
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
-  TrxScope,
   TrxAccountType,
   ///: END:ONLY_INCLUDE_IF
   BtcAccountType,
@@ -138,10 +133,6 @@ import {
   checkEip7702Support,
 } from '../../shared/lib/eip7702-support-utils';
 import { createEIP7702UpgradeTransaction } from '../../shared/lib/eip7702-utils';
-import {
-  FEATURE_VERSION_2,
-  isMultichainAccountsFeatureEnabled,
-} from '../../shared/lib/multichain-accounts/remote-feature-flag';
 import { captureException } from '../../shared/lib/sentry';
 import {
   CHAIN_IDS,
@@ -204,13 +195,6 @@ import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multicha
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
-///: END:ONLY_INCLUDE_IF
-import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
-///: BEGIN:ONLY_INCLUDE_IF(tron)
-import { TRON_WALLET_SNAP_ID } from '../../shared/lib/accounts/tron-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
@@ -975,21 +959,17 @@ export default class MetamaskController extends EventEmitter {
           // If not, discovery will fallback to the primary keyring ID anyway.
           const id = selected?.options?.entropy?.id;
 
-          if (this.isMultichainAccountsFeatureState2Enabled()) {
-            ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-            await this.getSnapKeyring();
-            ///: END:ONLY_INCLUDE_IF
+          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+          await this.getSnapKeyring();
+          ///: END:ONLY_INCLUDE_IF
 
-            await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-          }
+          await this.accountTreeController.syncWithUserStorageAtLeastOnce();
 
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
             // importing multiple SRPs on social login rehydration
             await this._importAccountsWithBalances();
-          } else if (this.isMultichainAccountsFeatureState2Enabled()) {
-            await this.discoverAndCreateAccounts(id);
           } else {
-            await this._addAccountsWithBalance();
+            await this.discoverAndCreateAccounts(id);
           }
 
           this.postOnboardingInitialization();
@@ -1538,13 +1518,6 @@ export default class MetamaskController extends EventEmitter {
     if (pollInterval > 0) {
       this.tokenBalancesController.setIntervalLength(pollInterval * SECOND);
     }
-  }
-
-  isMultichainAccountsFeatureState2Enabled() {
-    const featureFlag =
-      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-        ?.enableMultichainAccountsState2;
-    return isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2);
   }
 
   postOnboardingInitialization() {
@@ -4421,7 +4394,6 @@ export default class MetamaskController extends EventEmitter {
           await this.importMnemonicToVault(mnemonicToRestore, {
             shouldCreateSocialBackup: false,
             shouldSelectAccount: false,
-            shouldImportSolanaAccount: true,
           });
         }
       }
@@ -4709,7 +4681,6 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} options - The options for the import.
    * @param {boolean} options.shouldCreateSocialBackup - whether to create a backup for the seedless onboarding flow
    * @param {boolean} options.shouldSelectAccount - whether to select the new account in the wallet
-   * @param {boolean} options.shouldImportSolanaAccount - whether to import a Solana account
    * @returns {Promise<void>}
    */
   async importMnemonicToVault(
@@ -4717,14 +4688,9 @@ export default class MetamaskController extends EventEmitter {
     options = {
       shouldCreateSocialBackup: true,
       shouldSelectAccount: true,
-      shouldImportSolanaAccount: true,
     },
   ) {
-    const {
-      shouldCreateSocialBackup,
-      shouldSelectAccount,
-      shouldImportSolanaAccount,
-    } = options;
+    const { shouldCreateSocialBackup, shouldSelectAccount } = options;
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       const { entropySource: id } =
@@ -4764,27 +4730,11 @@ export default class MetamaskController extends EventEmitter {
       }
 
       const syncAndDiscoverAccounts = async () => {
-        if (this.isMultichainAccountsFeatureState2Enabled()) {
-          // We want to trigger a full sync of the account tree after importing a new SRP
-          // because `hasAccountTreeSyncingSyncedAtLeastOnce` is already true
-          await this.accountTreeController.syncWithUserStorage();
-        }
+        // We want to trigger a full sync of the account tree after importing a new SRP
+        // because `hasAccountTreeSyncingSyncedAtLeastOnce` is already true
+        await this.accountTreeController.syncWithUserStorage();
 
-        let discoveredAccounts;
-
-        if (
-          this.isMultichainAccountsFeatureState2Enabled() &&
-          shouldImportSolanaAccount
-        ) {
-          // We check if shouldImportSolanaAccount is true, because if it's false, we are in the middle of the onboarding flow.
-          // We just create the accounts at the end of the onboarding flow (including EVM).
-          discoveredAccounts = await this.discoverAndCreateAccounts(id);
-        } else {
-          discoveredAccounts = await this._addAccountsWithBalance(
-            id,
-            shouldImportSolanaAccount,
-          );
-        }
+        const discoveredAccounts = await this.discoverAndCreateAccounts(id);
 
         const newHdEntropyIndex = this.getHDEntropyIndex();
 
@@ -4834,11 +4784,6 @@ export default class MetamaskController extends EventEmitter {
     // Just let the user select the account manually after the restore.
     const shouldSetSelectedAccount = false;
 
-    // This method is called during the social login rehydration.
-    // At that point, we won't import the Solana account yet, since the wallet onboarding is not completed yet.
-    // Solana accounts will be imported after the wallet onboarding is completed.
-    const shouldImportSolanaAccount = false;
-
     for (const secret of secretDatas) {
       // import SRP secret
       // Get the SRP hash, and find the hash in the local state
@@ -4875,7 +4820,6 @@ export default class MetamaskController extends EventEmitter {
       await this.importMnemonicToVault(mnemonicToRestore, {
         shouldCreateSocialBackup,
         shouldSelectAccount: shouldSetSelectedAccount,
-        shouldImportSolanaAccount,
       });
     }
   }
@@ -5003,18 +4947,13 @@ export default class MetamaskController extends EventEmitter {
       if (completedOnboarding) {
         // check if external services are enabled
         const { useExternalServices } = this.preferencesController.state;
-        if (
-          this.isMultichainAccountsFeatureState2Enabled() &&
-          useExternalServices // skip the account sync if external services are disabled
-        ) {
+        if (useExternalServices) {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           await this.getSnapKeyring();
           ///: END:ONLY_INCLUDE_IF
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-          await this.discoverAndCreateAccounts(id);
-        } else {
-          await this._addAccountsWithBalance();
         }
+        await this.discoverAndCreateAccounts(id);
       }
 
       if (getIsSeedlessOnboardingFeatureEnabled()) {
@@ -5048,175 +4987,9 @@ export default class MetamaskController extends EventEmitter {
   ///: END:ONLY_INCLUDE_IF
 
   /**
-   * Adds accounts with balances to the keyring.
-   *
-   * @param {string} keyringId - The Optional ID of the keyring to add the accounts to.
-   * @param {boolean} shouldImportSolanaAccount - Whether to import Solana accounts.
-   * For the context, we do not need to import the Solana account if the onboarding flow has not completed yet during the social login import flow.
-   */
-  async _addAccountsWithBalance(keyringId, shouldImportSolanaAccount = true) {
-    trace({
-      name: TraceName.DiscoverAccounts,
-      op: TraceOperation.AccountDiscover,
-    });
-    try {
-      // Scan accounts until we find an empty one
-      const chainId = this.#getGlobalChainId();
-
-      const keyringSelector = keyringId
-        ? { id: keyringId }
-        : { type: KeyringTypes.hd };
-
-      const { accounts, entropySource } =
-        await this.keyringController.withKeyring(
-          keyringSelector,
-          async ({ keyring, metadata }) => {
-            const keyringAccounts = await keyring.getAccounts();
-            return {
-              accounts: keyringAccounts,
-              entropySource: metadata.id,
-            };
-          },
-        );
-      let address = accounts[accounts.length - 1];
-
-      trace({
-        name: TraceName.EvmDiscoverAccounts,
-        op: TraceOperation.AccountDiscover,
-      });
-      try {
-        for (let count = accounts.length; ; count++) {
-          const balance = await this.getBalance(address, this.provider);
-
-          if (balance === '0x0') {
-            // This account has no balance, so check for tokens
-            await this.tokenDetectionController.detectTokens({
-              chainIds: [chainId],
-              selectedAddress: address,
-            });
-
-            const tokens =
-              this.tokensController.state.allTokens?.[chainId]?.[address];
-            const detectedTokens =
-              this.tokensController.state.allDetectedTokens?.[chainId]?.[
-                address
-              ];
-
-            if (
-              (tokens?.length ?? 0) === 0 &&
-              (detectedTokens?.length ?? 0) === 0
-            ) {
-              // This account has no balance or tokens
-              if (count !== 1) {
-                await this.removeAccount(address);
-              }
-              break;
-            }
-          }
-
-          // This account has assets, so check the next one
-          address = await this.keyringController.withKeyring(
-            keyringSelector,
-            async ({ keyring }) => {
-              const [newAddress] = await keyring.addAccounts(1);
-              return newAddress;
-            },
-          );
-        }
-      } finally {
-        endTrace({
-          name: TraceName.EvmDiscoverAccounts,
-          op: TraceOperation.AccountDiscover,
-        });
-      }
-
-      const discoveredAccounts = {
-        Bitcoin: 0,
-        Solana: 0,
-        Tron: 0,
-      };
-
-      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-      const btcClient = await this._getMultichainWalletSnapClient(
-        BITCOIN_WALLET_SNAP_ID,
-      );
-      const btcScope = BtcScope.Mainnet;
-      const btcAccounts = await btcClient.discoverAccounts(
-        entropySource,
-        btcScope,
-      );
-
-      discoveredAccounts.Bitcoin = btcAccounts.length;
-
-      // If none accounts got discovered, we still create the first (default) one.
-      if (btcAccounts.length === 0) {
-        await this._addSnapAccount(entropySource, btcClient, {
-          scope: btcScope,
-          synchronize: false,
-        });
-      }
-      ///: END:ONLY_INCLUDE_IF
-
-      if (shouldImportSolanaAccount) {
-        const solanaClient = await this._getMultichainWalletSnapClient(
-          SOLANA_WALLET_SNAP_ID,
-        );
-        const solScope = SolScope.Mainnet;
-        const solanaAccounts = await solanaClient.discoverAccounts(
-          entropySource,
-          solScope,
-        );
-
-        discoveredAccounts.Solana = solanaAccounts.length;
-
-        // If none accounts got discovered, we still create the first (default) one.
-        if (solanaAccounts.length === 0) {
-          await this._addSnapAccount(entropySource, solanaClient, {
-            scope: solScope,
-          });
-        }
-      }
-
-      ///: BEGIN:ONLY_INCLUDE_IF(tron)
-      const tronClient =
-        await this._getMultichainWalletSnapClient(TRON_WALLET_SNAP_ID);
-      const tronScope = TrxScope.Mainnet;
-      const tronAccounts = await tronClient.discoverAccounts(
-        entropySource,
-        tronScope,
-      );
-
-      discoveredAccounts.Tron = tronAccounts.length;
-
-      // If none accounts got discovered, we still create the first (default) one.
-      if (tronAccounts.length === 0) {
-        await this._addSnapAccount(entropySource, tronClient, {
-          scope: tronScope,
-        });
-      }
-      ///: END:ONLY_INCLUDE_IF
-
-      return discoveredAccounts;
-    } catch (e) {
-      log.warn(`Failed to add accounts with balance. Error: ${e}`);
-      return {
-        Bitcoin: 0,
-        Solana: 0,
-        Tron: 0,
-      };
-    } finally {
-      endTrace({
-        name: TraceName.DiscoverAccounts,
-        op: TraceOperation.AccountDiscover,
-      });
-    }
-  }
-
-  /**
    * Imports accounts with balances to the keyring.
    */
   async _importAccountsWithBalances() {
-    const shouldImportSolanaAccount = true;
     const { keyrings } = this.keyringController.state;
 
     // walk through all the keyrings and import the solana accounts for the HD keyrings
@@ -5229,18 +5002,11 @@ export default class MetamaskController extends EventEmitter {
         },
       );
       if (isHdKeyring) {
-        if (this.isMultichainAccountsFeatureState2Enabled()) {
-          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-          await this.getSnapKeyring();
-          ///: END:ONLY_INCLUDE_IF
-          await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-          await this.discoverAndCreateAccounts(metadata.id);
-        } else {
-          await this._addAccountsWithBalance(
-            metadata.id,
-            shouldImportSolanaAccount,
-          );
-        }
+        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+        await this.getSnapKeyring();
+        ///: END:ONLY_INCLUDE_IF
+        await this.accountTreeController.syncWithUserStorageAtLeastOnce();
+        await this.discoverAndCreateAccounts(metadata.id);
       }
     }
   }
@@ -5414,25 +5180,23 @@ export default class MetamaskController extends EventEmitter {
       this.accountTreeController.getSelectedAccountGroup(),
     );
 
-    if (this.isMultichainAccountsFeatureState2Enabled()) {
-      const resyncAndAlignAccounts = async () => {
-        // READ THIS CAREFULLY:
-        // There is/was a bug with Snap accounts that can be desynchronized (Solana). To
-        // automatically "fix" this corrupted state, we run this method which will re-sync
-        // MetaMask accounts and Snap accounts upon login.
-        // BUG: https://github.com/MetaMask/metamask-extension/issues/37228
-        await this.multichainAccountService.resyncAccounts();
+    const resyncAndAlignAccounts = async () => {
+      // READ THIS CAREFULLY:
+      // There is/was a bug with Snap accounts that can be desynchronized (Solana). To
+      // automatically "fix" this corrupted state, we run this method which will re-sync
+      // MetaMask accounts and Snap accounts upon login.
+      // BUG: https://github.com/MetaMask/metamask-extension/issues/37228
+      await this.multichainAccountService.resyncAccounts();
 
-        // This allows to create missing accounts if new account providers have been added.
-        await this.multichainAccountService.alignWallets();
-      };
+      // This allows to create missing accounts if new account providers have been added.
+      await this.multichainAccountService.alignWallets();
+    };
 
-      // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
-      // for mobile.
-      // NOTE: We run this asynchronously on purpose, see FIXME^.
-      // eslint-disable-next-line no-void
-      void resyncAndAlignAccounts();
-    }
+    // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
+    // for mobile.
+    // NOTE: We run this asynchronously on purpose, see FIXME^.
+    // eslint-disable-next-line no-void
+    void resyncAndAlignAccounts();
   }
 
   async _loginUser(password) {
