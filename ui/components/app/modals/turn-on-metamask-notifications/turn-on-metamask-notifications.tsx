@@ -77,21 +77,24 @@ export default function TurnOnMetamaskNotifications() {
   };
 
   const handleHideModal = () => {
-    if (!isLoading) {
-      trackEvent({
-        category: MetaMetricsEventCategory.NotificationsActivationFlow,
-        event: MetaMetricsEventName.NotificationsActivated,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_profile_syncing_enabled: isBackupAndSyncEnabled,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          action_type: 'dismissed',
-        },
-      });
-    }
     hideModal();
+    setIsLoading((prevLoadingState) => {
+      if (!prevLoadingState) {
+        trackEvent({
+          category: MetaMetricsEventCategory.NotificationsActivationFlow,
+          event: MetaMetricsEventName.NotificationsActivated,
+          properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_profile_syncing_enabled: isBackupAndSyncEnabled,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            action_type: 'dismissed',
+          },
+        });
+      }
+      return prevLoadingState;
+    });
   };
 
   useEffect(() => {
