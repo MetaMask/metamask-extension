@@ -30,6 +30,7 @@ import {
   MultichainProviderConfig,
 } from '../../shared/constants/multichain/networks';
 import { Numeric } from '../../shared/modules/Numeric';
+import { getMultiChainBalancesControllerBalances } from '../../shared/modules/selectors/assets-migration';
 import {
   getCompletedOnboarding,
   getConversionRate,
@@ -53,7 +54,6 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-import { getMultiChainBalancesControllerBalances } from '../../shared/modules/selectors/assets-migration';
 import {
   AccountsState,
   getInternalAccounts,

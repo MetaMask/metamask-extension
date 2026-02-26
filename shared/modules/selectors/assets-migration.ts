@@ -49,12 +49,12 @@ import { createDeepEqualSelector } from './selector-creators';
 // marketData: TODO
 //
 // MultichainAssetsController
-// accountsAssets: TODO
-// assetsMetadata: TODO
-// allIgnoredAssets: TODO
+// accountsAssets: DONE
+// assetsMetadata: DONE
+// allIgnoredAssets: DONE
 //
 // MultichainBalancesController
-// balances: TODO
+// balances: DONE
 //
 // MultichainAssetsRatesController
 // conversionRates: TODO
