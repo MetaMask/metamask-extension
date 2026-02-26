@@ -11,8 +11,6 @@ ignores:
   - 'react-compiler-runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'
-  # injected via build system
-  - '@metamask/kernel-shims'
 
   #
   # dev deps
