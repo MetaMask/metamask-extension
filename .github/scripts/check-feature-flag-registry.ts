@@ -630,16 +630,22 @@ function processStrings(line: string, mode: 'strip' | 'mask'): string {
       }
       if (hasExpr) {
         let depth = 1, k = j + 2;
-        while (k < line.length && depth > 0) {
+        let foundClose = false;
+        while (k < line.length) {
           if (line[k] === '\\') { k += 2; continue; }
-          if (line[k] === '`' && depth === 1) { depth = 0; break; }
-          if (line[k] === '`') depth--;
-          else if (line[k] === '$' && line[k + 1] === '{') { depth++; k++; }
-          else if (line[k] === '}') depth--;
+          if (depth === 0) {
+            if (line[k] === '`') { foundClose = true; break; }
+            if (line[k] === '$' && line[k + 1] === '{') { depth = 1; k += 2; continue; }
+          } else {
+            if (line[k] === '`' && depth === 1) depth++;
+            else if (line[k] === '`' && depth > 1) depth--;
+            else if (line[k] === '$' && line[k + 1] === '{') { depth++; k++; }
+            else if (line[k] === '}') depth--;
+          }
           k++;
         }
-        result += line.slice(i, depth === 0 ? k + 1 : line.length);
-        i = depth === 0 ? k + 1 : line.length; continue;
+        result += line.slice(i, foundClose ? k + 1 : line.length);
+        i = foundClose ? k + 1 : line.length; continue;
       }
     }
     let j = i + 1;
