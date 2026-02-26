@@ -162,7 +162,6 @@ export function RevealSeedContent({
             <img
               src={qrDataUrl}
               alt={t('revealSeedWordsQR')}
-              role="img"
               width={QR_SIZE}
               height={QR_SIZE}
               className="rounded-lg"
