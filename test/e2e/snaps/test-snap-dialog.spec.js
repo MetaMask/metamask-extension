@@ -7,7 +7,7 @@ const {
   DAPP_URL_LOCALHOST,
   WINDOW_TITLES,
 } = require('../constants');
-const FixtureBuilder = require('../fixtures/fixture-builder');
+const { default: FixtureBuilderV2 } = require('../fixtures/fixture-builder-v2');
 const {
   mockDialogSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
@@ -19,7 +19,7 @@ describe('Test Snap Dialog', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: mockDialogSnap,
         title: this.test.fullTitle(),
       },

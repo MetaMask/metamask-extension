@@ -1,7 +1,7 @@
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
@@ -30,7 +30,9 @@ describe('Test Snap bip-32', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().withKeyringControllerMultiSRP().build(),
+        fixtures: new FixtureBuilderV2()
+          .withKeyringControllerMultiSRP()
+          .build(),
         testSpecificMock: mockBip32Snap,
         title: this.test?.fullTitle(),
       },

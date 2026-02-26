@@ -3,7 +3,7 @@ const {
 } = require('../page-objects/flows/login.flow');
 const { DAPP_PATH, DAPP_URL, WINDOW_TITLES } = require('../constants');
 const { withFixtures } = require('../helpers');
-const FixtureBuilder = require('../fixtures/fixture-builder');
+const { default: FixtureBuilderV2 } = require('../fixtures/fixture-builder-v2');
 const {
   mockBip32Snap,
   mockBip44Snap,
@@ -21,7 +21,7 @@ describe('Test Snap Multi Install', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         failOnConsoleError: false,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: mockSnapBinaries,
         title: this.test.fullTitle(),
       },

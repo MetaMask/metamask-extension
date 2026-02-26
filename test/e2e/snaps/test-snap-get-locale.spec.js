@@ -4,7 +4,7 @@ const {
 
 const { DAPP_PATH, DAPP_URL, WINDOW_TITLES } = require('../constants');
 const { withFixtures } = require('../helpers');
-const FixtureBuilder = require('../fixtures/fixture-builder');
+const { default: FixtureBuilderV2 } = require('../fixtures/fixture-builder-v2');
 const {
   mockLocalizationSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
@@ -16,7 +16,7 @@ describe('Test Snap Get Locale', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: mockLocalizationSnap,
         title: this.test.fullTitle(),
       },
