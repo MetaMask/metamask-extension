@@ -8,10 +8,13 @@ import type { TransactionGroup } from '../../shared/lib/multichain/types';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
 import {
-  getTransactions,
   groupAndSortTransactionsByNonce,
   smartTransactionsListSelector,
 } from './transactions';
+import {
+  selectOrderedTransactions,
+  selectRequiredTransactionHashes,
+} from './transactionController';
 import { getMarketData, getCurrencyRates } from './selectors';
 import { getSelectedInternalAccount } from './accounts';
 import { EMPTY_ARRAY } from './shared';
@@ -29,10 +32,16 @@ function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
 }
 
 export const selectLocalTransactions = createSelector(
-  getTransactions,
+  selectOrderedTransactions,
   getSelectedInternalAccount,
   smartTransactionsListSelector,
-  (transactions, selectedAccount, smartTransactions): TransactionGroup[] => {
+  selectRequiredTransactionHashes,
+  (
+    transactions,
+    selectedAccount,
+    smartTransactions,
+    internalTxHashes,
+  ): TransactionGroup[] => {
     if (!selectedAccount?.address) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
     }
@@ -46,6 +55,10 @@ export const selectLocalTransactions = createSelector(
       );
 
       if (!passesSenderAndTypeGate) {
+        return false;
+      }
+
+      if (tx.hash && internalTxHashes.has(tx.hash.toLowerCase())) {
         return false;
       }
 
