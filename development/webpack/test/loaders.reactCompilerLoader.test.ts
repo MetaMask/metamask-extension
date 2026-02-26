@@ -10,15 +10,15 @@ describe('getReactCompilerLoader', () => {
     target: '17',
     verbose: false,
     debug: 'none',
-    disableThreadLoader: false,
+    threadLoader: 'auto',
     watch: false,
   };
 
-  describe('when disableThreadLoader is false', () => {
+  describe('when threadLoader is not "off"', () => {
     it('returns thread-loader as first loader', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
-        disableThreadLoader: false,
+        threadLoader: 'full',
       });
 
       assert.strictEqual(loaders.length, 2, 'should return 2 loaders');
@@ -32,7 +32,7 @@ describe('getReactCompilerLoader', () => {
     it('returns wrapper loader as second loader', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
-        disableThreadLoader: false,
+        threadLoader: 'full',
       });
 
       const secondLoader = loaders[1] as { loader: string };
@@ -45,7 +45,7 @@ describe('getReactCompilerLoader', () => {
     it('passes __verbose option to wrapper when verbose is true', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
-        disableThreadLoader: false,
+        threadLoader: 'full',
         verbose: true,
       });
 
@@ -64,7 +64,7 @@ describe('getReactCompilerLoader', () => {
     it('sets poolTimeout to Infinity when watch is true', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
-        disableThreadLoader: false,
+        threadLoader: 'full',
         watch: true,
       });
 
@@ -82,7 +82,7 @@ describe('getReactCompilerLoader', () => {
     it('sets poolTimeout to 2000 when watch is false', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
-        disableThreadLoader: false,
+        threadLoader: 'full',
         watch: false,
       });
 
@@ -98,11 +98,11 @@ describe('getReactCompilerLoader', () => {
     });
   });
 
-  describe('when disableThreadLoader is true and verbose is false', () => {
+  describe('when threadLoader is "off" and verbose is false', () => {
     it('returns only one loader (no thread-loader)', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
-        disableThreadLoader: true,
+        threadLoader: 'off',
         verbose: false,
       });
 
@@ -112,12 +112,11 @@ describe('getReactCompilerLoader', () => {
     it('returns direct react-compiler-loader (not wrapper)', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
-        disableThreadLoader: true,
+        threadLoader: 'off',
         verbose: false,
       });
 
       const loader = loaders[0] as { loader: string };
-      // Direct loader path should NOT include 'wrapper'
       assert.ok(
         !loader.loader.includes('Wrapper'),
         'should use direct loader, not wrapper',
@@ -131,7 +130,7 @@ describe('getReactCompilerLoader', () => {
     it('does not include __verbose in options', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
-        disableThreadLoader: true,
+        threadLoader: 'off',
         verbose: false,
       });
 
@@ -147,11 +146,11 @@ describe('getReactCompilerLoader', () => {
     });
   });
 
-  describe('when disableThreadLoader is true but verbose is true', () => {
+  describe('when threadLoader is "off" but verbose is true', () => {
     it('returns only one loader (no thread-loader)', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
-        disableThreadLoader: true,
+        threadLoader: 'off',
         verbose: true,
       });
 
@@ -161,7 +160,7 @@ describe('getReactCompilerLoader', () => {
     it('uses wrapper loader for verbose logging', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
-        disableThreadLoader: true,
+        threadLoader: 'off',
         verbose: true,
       });
 
@@ -175,7 +174,7 @@ describe('getReactCompilerLoader', () => {
     it('passes __verbose option to wrapper', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
-        disableThreadLoader: true,
+        threadLoader: 'off',
         verbose: true,
       });
 
@@ -192,37 +191,63 @@ describe('getReactCompilerLoader', () => {
     });
   });
 
-  describe('thread-loader worker configuration', () => {
-    it('configures workers based on available parallelism', () => {
+  describe('thread-loader presets', () => {
+    it('"light" preset configures 1 worker with 10 parallel jobs', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
-        disableThreadLoader: false,
+        threadLoader: 'light',
       });
 
       const threadLoader = loaders[0] as {
         loader: string;
-        options: { workers: number };
+        options: { workers: number; workerParallelJobs: number };
+      };
+      assert.strictEqual(threadLoader.options.workers, 1);
+      assert.strictEqual(threadLoader.options.workerParallelJobs, 10);
+    });
+
+    it('"full" preset configures multiple workers with 15 parallel jobs', () => {
+      const loaders = getReactCompilerLoader({
+        ...baseConfig,
+        threadLoader: 'full',
+      });
+
+      const threadLoader = loaders[0] as {
+        loader: string;
+        options: { workers: number; workerParallelJobs: number };
       };
       assert.ok(
         threadLoader.options.workers >= 1,
         'should have at least 1 worker',
       );
+      assert.strictEqual(threadLoader.options.workerParallelJobs, 15);
     });
 
-    it('sets workerParallelJobs to 50', () => {
+    it('"auto" preset returns a valid config', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
-        disableThreadLoader: false,
+        threadLoader: 'auto',
       });
 
+      assert.strictEqual(loaders.length, 2, 'should return 2 loaders');
       const threadLoader = loaders[0] as {
         loader: string;
-        options: { workerParallelJobs: number };
+        options: { workers: number; workerParallelJobs: number };
       };
-      assert.strictEqual(
-        threadLoader.options.workerParallelJobs,
-        50,
-        'workerParallelJobs should be 50',
+      assert.ok(threadLoader.options.workers >= 1);
+      assert.ok(threadLoader.options.workerParallelJobs >= 1);
+    });
+
+    it('"off" preset returns no thread-loader', () => {
+      const loaders = getReactCompilerLoader({
+        ...baseConfig,
+        threadLoader: 'off',
+      });
+
+      assert.strictEqual(loaders.length, 1, 'should return 1 loader');
+      assert.notStrictEqual(
+        (loaders[0] as { loader: string }).loader,
+        'thread-loader',
       );
     });
   });
@@ -231,7 +256,7 @@ describe('getReactCompilerLoader', () => {
     it('sets panicThreshold for debug=all', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
-        disableThreadLoader: true,
+        threadLoader: 'off',
         debug: 'all',
       });
 
@@ -248,7 +273,7 @@ describe('getReactCompilerLoader', () => {
     it('sets panicThreshold for debug=critical', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
-        disableThreadLoader: true,
+        threadLoader: 'off',
         debug: 'critical',
       });
 
@@ -265,7 +290,7 @@ describe('getReactCompilerLoader', () => {
     it('does not set panicThreshold for debug=none', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
-        disableThreadLoader: true,
+        threadLoader: 'off',
         debug: 'none',
       });
 

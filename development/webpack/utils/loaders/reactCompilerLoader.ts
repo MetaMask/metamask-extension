@@ -5,6 +5,10 @@ import {
   type ReactCompilerLoaderOption,
   defineReactCompilerLoaderOption,
 } from 'react-compiler-webpack';
+import {
+  THREAD_LOADER_PRESETS,
+  type ThreadLoaderPreset,
+} from '../constants';
 
 /**
  * Resolve the wrapper loader path.
@@ -47,13 +51,40 @@ export type ReactCompilerLoaderConfig = {
   verbose: boolean;
   debug: 'all' | 'critical' | 'none';
   /**
-   * Disable thread-loader parallelization.
-   * Required when generating LavaMoat policies (static analysis needs full module graph).
+   * Thread-loader parallelization preset.
+   * 'off' is required when generating LavaMoat policies (static analysis needs full module graph).
    * Note: When verbose is true, the wrapper is still used for logging even without thread-loader.
    */
-  disableThreadLoader: boolean;
+  threadLoader: ThreadLoaderPreset;
   watch: boolean;
 };
+
+/**
+ * Resolves a thread-loader preset to concrete worker/job counts.
+ *
+ * @param preset - The thread-loader preset name.
+ * @returns Worker config, or null if thread-loader should be disabled.
+ */
+function resolveThreadLoaderPreset(
+  preset: ThreadLoaderPreset,
+): { workers: number; workerParallelJobs: number } | null {
+  const numCores = availableParallelism();
+
+  switch (preset) {
+    case THREAD_LOADER_PRESETS.LIGHT:
+      return { workers: 1, workerParallelJobs: 10 };
+    case THREAD_LOADER_PRESETS.FULL:
+      return { workers: Math.max(1, numCores - 2), workerParallelJobs: 15 };
+    case THREAD_LOADER_PRESETS.AUTO:
+      return numCores <= 4
+        ? resolveThreadLoaderPreset(THREAD_LOADER_PRESETS.LIGHT)
+        : resolveThreadLoaderPreset(THREAD_LOADER_PRESETS.FULL);
+    case THREAD_LOADER_PRESETS.OFF:
+      return null;
+    default:
+      return null;
+  }
+}
 
 /**
  * Get the React Compiler loader configuration as an array of loaders.
@@ -65,7 +96,7 @@ export type ReactCompilerLoaderConfig = {
 export const getReactCompilerLoader = (
   config: ReactCompilerLoaderConfig,
 ): RuleSetUseItem[] => {
-  const { target, verbose, debug, watch, disableThreadLoader } = config;
+  const { target, verbose, debug, watch, threadLoader: preset } = config;
 
   const reactCompilerOptions = {
     target,
@@ -73,16 +104,13 @@ export const getReactCompilerLoader = (
   } as const satisfies ReactCompilerLoaderOption;
 
   const loaders: RuleSetUseItem[] = [];
+  const threadConfig = resolveThreadLoaderPreset(preset);
 
-  // Add thread-loader for parallelization when enabled
-  if (!disableThreadLoader) {
-    const numCores = availableParallelism();
+  if (threadConfig) {
     loaders.push({
       loader: 'thread-loader',
       options: {
-        // Leave reserve for `swc-loader` etc
-        workers: Math.max(1, numCores - 2),
-        workerParallelJobs: 50,
+        ...threadConfig,
         poolTimeout: watch ? Number(Infinity) : 2000,
       },
     });
@@ -92,7 +120,7 @@ export const getReactCompilerLoader = (
   // - thread-loader is enabled (for buildMeta tracking in workers)
   // - verbose mode is enabled (wrapper provides logging via logger callback)
   // Skip wrapper only for policy generation (not resolvable under LavaMoat)
-  const useWrapper = !disableThreadLoader || verbose;
+  const useWrapper = threadConfig !== null || verbose;
 
   if (useWrapper) {
     loaders.push({

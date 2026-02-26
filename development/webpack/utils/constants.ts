@@ -4,6 +4,24 @@ export const MODES = {
 } as const;
 
 /**
+ * Thread-loader parallelization presets.
+ *
+ * - `auto`: Adaptive — uses `light` on <=4 cores, `full` otherwise
+ * - `light`: Single worker with modest batching (CI runners, low-core machines)
+ * - `full`: Multiple workers scaled to core count (dev machines with 8+ cores)
+ * - `off`: Disabled entirely (required for LavaMoat policy generation)
+ */
+export const THREAD_LOADER_PRESETS = {
+  AUTO: 'auto',
+  LIGHT: 'light',
+  FULL: 'full',
+  OFF: 'off',
+} as const;
+
+export type ThreadLoaderPreset =
+  (typeof THREAD_LOADER_PRESETS)[keyof typeof THREAD_LOADER_PRESETS];
+
+/**
  * The build environment. This describes the environment this build was produced in.
  */
 export const ENVIRONMENTS = {

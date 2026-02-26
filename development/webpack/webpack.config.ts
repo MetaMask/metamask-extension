@@ -225,7 +225,8 @@ const reactCompilerLoader = getReactCompilerLoader({
   target: '17',
   verbose: args.reactCompilerVerbose,
   debug: args.reactCompilerDebug,
-  disableThreadLoader: args.generatePolicy || args.reactCompilerVerbose,
+  threadLoader:
+    args.generatePolicy || args.reactCompilerVerbose ? 'off' : args.threadLoader,
   watch: args.watch,
 });
 

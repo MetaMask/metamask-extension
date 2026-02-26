@@ -15,7 +15,7 @@ import {
   uniqueSort,
   toOrange,
 } from './helpers';
-import { ENVIRONMENTS, MODES } from './constants';
+import { ENVIRONMENTS, MODES, THREAD_LOADER_PRESETS } from './constants';
 
 const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature' as const;
@@ -315,6 +315,19 @@ function getOptions(
       group: toOrange('Developer assistance:'),
       type: 'string',
     },
+    threadLoader: {
+      array: false,
+      choices: Object.values(THREAD_LOADER_PRESETS),
+      default: THREAD_LOADER_PRESETS.AUTO,
+      description:
+        'Thread-loader parallelization preset. ' +
+        '`auto` adapts to core count (light on <=4 cores, full otherwise). ' +
+        '`light` uses 1 worker (good for CI). ' +
+        '`full` uses max workers. ' +
+        '`off` disables thread-loader entirely.',
+      group: toOrange('Developer assistance:'),
+      type: 'string',
+    },
 
     ...prerequisites,
     zip: {
@@ -497,6 +510,7 @@ Snow: ${args.snow}
 Sentry: ${args.sentry}
 React Compiler verbose: ${args.reactCompilerVerbose}
 React Compiler debug: ${args.reactCompilerDebug}
+Thread Loader: ${args.threadLoader}
 Validate Env: ${args.validateEnv}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}
