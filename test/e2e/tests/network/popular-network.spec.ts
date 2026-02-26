@@ -14,7 +14,6 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-
 const MOCK_CHAINLIST_RESPONSE = [
   {
     name: 'Ethereum',
