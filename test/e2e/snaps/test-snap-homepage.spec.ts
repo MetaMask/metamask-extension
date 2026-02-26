@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { Driver } from '../webdriver/driver';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import SnapListPage from '../page-objects/pages/snap-list-page';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
@@ -16,7 +16,7 @@ describe('Test Snap Homepage', function (this: Suite) {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: mockHomePageSnap,
         title: this.test?.fullTitle(),
       },

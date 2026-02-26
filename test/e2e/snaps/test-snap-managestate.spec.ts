@@ -1,6 +1,6 @@
 import { Driver } from '../webdriver/driver';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { mockManageStateSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { DAPP_PATH } from '../constants';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
@@ -14,7 +14,7 @@ describe('Test Snap manageState', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: mockManageStateSnap,
         title: this.test?.fullTitle(),
       },
@@ -78,7 +78,7 @@ describe('Test Snap manageState', function () {
   it('can use the legacy state API', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: mockManageStateSnap,
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],

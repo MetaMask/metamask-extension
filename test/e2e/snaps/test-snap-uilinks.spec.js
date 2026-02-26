@@ -4,7 +4,7 @@ const {
   loginWithBalanceValidation,
 } = require('../page-objects/flows/login.flow');
 const { DAPP_PATH, DAPP_URL, WINDOW_TITLES } = require('../constants');
-const FixtureBuilder = require('../fixtures/fixture-builder');
+const { default: FixtureBuilderV2 } = require('../fixtures/fixture-builder-v2');
 const {
   mockDialogSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
@@ -32,7 +32,7 @@ describe('Test Snap UI Links', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         failOnConsoleError: false,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: mockSnapBinaryAndWebsite,
         title: this.test.fullTitle(),
       },
