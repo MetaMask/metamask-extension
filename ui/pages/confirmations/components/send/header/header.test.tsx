@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/dom';
 
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import { Header } from './header';
 
@@ -28,7 +29,7 @@ describe('Header', () => {
   it('should render correctly', () => {
     const { getByText } = render();
 
-    expect(getByText('Send')).toBeInTheDocument();
+    expect(getByText(messages.send.message)).toBeInTheDocument();
   });
 
   it('go to previous page when previous button is clicked', () => {

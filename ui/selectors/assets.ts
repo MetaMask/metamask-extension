@@ -1427,23 +1427,13 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     }),
   };
 
-  let multichainState = {
-    accountsAssets: {},
-    assetsMetadata: {},
-    allIgnoredAssets: {},
-    balances: {},
-    conversionRates: {},
-  };
-
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  multichainState = {
+  const multichainState = {
     accountsAssets: metamask.accountsAssets,
     assetsMetadata: metamask.assetsMetadata,
     allIgnoredAssets: metamask.allIgnoredAssets,
     balances: metamask.balances,
     conversionRates: metamask.conversionRates,
   };
-  ///: END:ONLY_INCLUDE_IF
 
   return {
     ...initialState,

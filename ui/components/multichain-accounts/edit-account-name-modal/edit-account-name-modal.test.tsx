@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore, { MetaMaskReduxDispatch } from '../../../store/store';
 import { EditAccountNameModal } from './edit-account-name-modal';
 
@@ -30,9 +31,9 @@ describe('EditAccountNameModal', () => {
     metamask: {
       localeMessages: {
         current: {
-          editAccountName: 'Edit account name',
-          name: 'Name',
-          save: 'Save',
+          editAccountName: messages.editAccountName,
+          name: messages.name,
+          save: messages.save,
         },
         currentLocale: 'en',
       },
@@ -59,15 +60,21 @@ describe('EditAccountNameModal', () => {
     it('should render the modal when isOpen is true', () => {
       renderComponent();
 
-      expect(screen.getByText('Edit account name')).toBeInTheDocument();
-      expect(screen.getByText('Name')).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.editAccountName.message),
+      ).toBeInTheDocument();
+      expect(screen.getByText(messages.name.message)).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: messages.save.message }),
+      ).toBeInTheDocument();
     });
 
     it('should not render the modal when isOpen is false', () => {
       renderComponent({ isOpen: false });
 
-      expect(screen.queryByText('Edit account name')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.editAccountName.message),
+      ).not.toBeInTheDocument();
     });
 
     it('should display the current account name as placeholder', () => {
@@ -101,7 +108,9 @@ describe('EditAccountNameModal', () => {
       renderComponent();
 
       const input = screen.getByPlaceholderText('Account 1');
-      const saveButton = screen.getByRole('button', { name: 'Save' });
+      const saveButton = screen.getByRole('button', {
+        name: messages.save.message,
+      });
 
       expect(saveButton).toBeDisabled();
 
@@ -115,7 +124,9 @@ describe('EditAccountNameModal', () => {
       renderComponent();
 
       const input = screen.getByPlaceholderText('Account 1');
-      const saveButton = screen.getByRole('button', { name: 'Save' });
+      const saveButton = screen.getByRole('button', {
+        name: messages.save.message,
+      });
 
       fireEvent.change(input, { target: { value: 'New Account Name' } });
       fireEvent.click(saveButton);
@@ -132,7 +143,9 @@ describe('EditAccountNameModal', () => {
       renderComponent();
 
       const input = screen.getByPlaceholderText('Account 1');
-      const saveButton = screen.getByRole('button', { name: 'Save' });
+      const saveButton = screen.getByRole('button', {
+        name: messages.save.message,
+      });
 
       fireEvent.change(input, { target: { value: 'Account 1' } });
       fireEvent.click(saveButton);
@@ -147,7 +160,9 @@ describe('EditAccountNameModal', () => {
       renderComponent({ onClose });
 
       const input = screen.getByPlaceholderText('Account 1');
-      const saveButton = screen.getByRole('button', { name: 'Save' });
+      const saveButton = screen.getByRole('button', {
+        name: messages.save.message,
+      });
 
       fireEvent.change(input, { target: { value: 'New Name' } });
       fireEvent.click(saveButton);
@@ -161,7 +176,9 @@ describe('EditAccountNameModal', () => {
       const onClose = jest.fn();
       renderComponent({ onClose });
 
-      const saveButton = screen.getByRole('button', { name: 'Save' });
+      const saveButton = screen.getByRole('button', {
+        name: messages.save.message,
+      });
 
       // Enable the button by adding some text first
       const input = screen.getByPlaceholderText('Account 1');
@@ -180,7 +197,9 @@ describe('EditAccountNameModal', () => {
       const onClose = jest.fn();
       renderComponent({ onClose });
 
-      const closeButton = screen.getByRole('button', { name: 'Close' });
+      const closeButton = screen.getByRole('button', {
+        name: messages.close.message,
+      });
       fireEvent.click(closeButton);
 
       expect(onClose).toHaveBeenCalled();

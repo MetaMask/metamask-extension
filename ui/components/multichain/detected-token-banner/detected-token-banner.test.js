@@ -1,8 +1,9 @@
 import React from 'react';
-import { fireEvent } from '../../../../test/jest';
+import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
@@ -45,7 +46,7 @@ describe('DetectedTokensBanner', () => {
 
     expect(getByText('3 new tokens found in this account')).toBeInTheDocument();
 
-    fireEvent.click(getByText('Import tokens'));
+    fireEvent.click(getByText(messages.importTokensCamelCase.message));
     expect(setShowDetectedTokensSpy).toHaveBeenCalled();
   });
 });

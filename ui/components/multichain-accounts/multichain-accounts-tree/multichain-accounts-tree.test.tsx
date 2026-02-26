@@ -15,6 +15,7 @@ import {
 } from '@metamask/account-api';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
@@ -196,7 +197,9 @@ describe('MultichainAccountsTree', () => {
     expect(screen.getByText('Account 1')).toBeInTheDocument();
     expect(screen.getByText('Account 2')).toBeInTheDocument();
     expect(screen.getByText('Account 3')).toBeInTheDocument();
-    expect(screen.getByText('Hidden accounts')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.hiddenAccounts.message),
+    ).toBeInTheDocument();
   });
 
   it('does not render empty wallets', () => {
