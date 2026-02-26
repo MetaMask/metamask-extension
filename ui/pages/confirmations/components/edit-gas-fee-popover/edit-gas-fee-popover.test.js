@@ -13,6 +13,7 @@ import configureStore from '../../../../store/store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import EditGasFeePopover from './edit-gas-fee-popover';
 
 jest.mock('../../../../store/actions', () => ({
@@ -125,11 +126,13 @@ describe('EditGasFeePopover', () => {
     expect(screen.queryByText('🦍')).toBeInTheDocument();
     expect(screen.queryByText('🌐')).toBeInTheDocument();
     expect(screen.queryByText('⚙️')).toBeInTheDocument();
-    expect(screen.queryByText('Low')).toBeInTheDocument();
-    expect(screen.queryByText('Market')).toBeInTheDocument();
-    expect(screen.queryByText('Aggressive')).toBeInTheDocument();
-    expect(screen.queryByText('Site')).toBeInTheDocument();
-    expect(screen.queryByText('Advanced')).toBeInTheDocument();
+    expect(screen.queryByText(messages.low.message)).toBeInTheDocument();
+    expect(screen.queryByText(messages.medium.message)).toBeInTheDocument();
+    expect(screen.queryByText(messages.high.message)).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.dappSuggestedShortLabel.message),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(messages.advanced.message)).toBeInTheDocument();
   });
 
   it('should show time estimates', async () => {
@@ -157,7 +160,9 @@ describe('EditGasFeePopover', () => {
         },
       },
     });
-    expect(screen.queryByText('Insufficient funds.')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.insufficientFunds.message),
+    ).not.toBeInTheDocument();
   });
 
   it('should show insufficient balance message if transaction value is more than balance', async () => {
@@ -172,7 +177,9 @@ describe('EditGasFeePopover', () => {
         },
       },
     });
-    expect(screen.queryByText('Insufficient funds.')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.insufficientFunds.message),
+    ).toBeInTheDocument();
   });
 
   it('should not show low, aggressive and dapp-suggested options for swap', async () => {
@@ -185,62 +192,76 @@ describe('EditGasFeePopover', () => {
     expect(screen.queryByText('🌐')).not.toBeInTheDocument();
     expect(screen.queryByText('🔄')).toBeInTheDocument();
     expect(screen.queryByText('⚙️')).toBeInTheDocument();
-    expect(screen.queryByText('Low')).not.toBeInTheDocument();
-    expect(screen.queryByText('Market')).toBeInTheDocument();
-    expect(screen.queryByText('Aggressive')).not.toBeInTheDocument();
-    expect(screen.queryByText('Site')).not.toBeInTheDocument();
-    expect(screen.queryByText('Swap suggested')).toBeInTheDocument();
-    expect(screen.queryByText('Advanced')).toBeInTheDocument();
+    expect(screen.queryByText(messages.low.message)).not.toBeInTheDocument();
+    expect(screen.queryByText(messages.medium.message)).toBeInTheDocument();
+    expect(screen.queryByText(messages.high.message)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.dappSuggestedShortLabel.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.swapSuggested.message),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(messages.advanced.message)).toBeInTheDocument();
   });
 
   it('should not show time estimates for swaps', async () => {
     await render({
       props: { editGasMode: EditGasModes.swaps },
     });
-    expect(screen.queryByText('Time')).not.toBeInTheDocument();
-    expect(screen.queryByText('Max fee')).toBeInTheDocument();
+    expect(screen.queryByText(messages.time.message)).not.toBeInTheDocument();
+    expect(screen.queryByText(messages.maxFee.message)).toBeInTheDocument();
   });
 
   it('should show correct header for edit gas mode', async () => {
     await render({
       props: { editGasMode: EditGasModes.swaps },
     });
-    expect(screen.queryByText('Edit gas fee')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.editGasFeeModalTitle.message),
+    ).toBeInTheDocument();
     await render({
       props: { editGasMode: EditGasModes.cancel },
     });
-    expect(screen.queryByText('Edit cancellation gas fee')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.editCancellationGasFeeModalTitle.message),
+    ).toBeInTheDocument();
     await render({
       props: { editGasMode: EditGasModes.speedUp },
     });
-    expect(screen.queryByText('Edit speed up gas fee')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.editSpeedUpEditGasFeeModalTitle.message),
+    ).toBeInTheDocument();
   });
 
   it('should not show low option for cancel mode', async () => {
     await render({
       props: { editGasMode: EditGasModes.cancel },
     });
-    expect(screen.queryByText('Low')).not.toBeInTheDocument();
+    expect(screen.queryByText(messages.low.message)).not.toBeInTheDocument();
   });
 
   it('should not show low option for speedup mode', async () => {
     await render({
       props: { editGasMode: EditGasModes.speedUp },
     });
-    expect(screen.queryByText('Low')).not.toBeInTheDocument();
+    expect(screen.queryByText(messages.low.message)).not.toBeInTheDocument();
   });
 
   it('should show tenPercentIncreased option for cancel gas mode', async () => {
     await render({
       props: { editGasMode: EditGasModes.cancel },
     });
-    expect(screen.queryByText('10% increase')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.tenPercentIncreased.message),
+    ).toBeInTheDocument();
   });
 
   it('should show tenPercentIncreased option for speedup gas mode', async () => {
     await render({
       props: { editGasMode: EditGasModes.speedUp },
     });
-    expect(screen.queryByText('10% increase')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.tenPercentIncreased.message),
+    ).toBeInTheDocument();
   });
 });

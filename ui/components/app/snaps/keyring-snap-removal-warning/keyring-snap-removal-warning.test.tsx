@@ -6,9 +6,7 @@ import { userEvent } from '@testing-library/user-event';
 import mockStore from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import messages from '../../../../../app/_locales/en/messages.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import KeyringSnapRemovalWarning from './keyring-snap-removal-warning';
 
 const mockOnClose = jest.fn();
@@ -77,7 +75,7 @@ describe('Keyring Snap Remove Warning', () => {
       store,
     );
 
-    const nextButton = getByText('Continue');
+    const nextButton = getByText(messages.continue.message);
 
     fireEvent.click(nextButton);
 
@@ -99,7 +97,7 @@ describe('Keyring Snap Remove Warning', () => {
     });
 
     await waitFor(() => {
-      const removeSnapButton = getAllByText('Remove Snap')[1];
+      const removeSnapButton = getAllByText(messages.removeSnap.message)[1];
       expect(removeSnapButton).not.toBeDisabled();
       fireEvent.click(removeSnapButton);
       expect(mockOnSubmit).toBeCalled();
@@ -112,7 +110,7 @@ describe('Keyring Snap Remove Warning', () => {
       store,
     );
 
-    const nextButton = getByText('Continue');
+    const nextButton = getByText(messages.continue.message);
 
     fireEvent.click(nextButton);
     const confirmationInput = getByTestId('remove-snap-confirmation-input');
@@ -155,7 +153,7 @@ describe('Keyring Snap Remove Warning', () => {
         store,
       );
 
-      const backButton = getByLabelText('Back');
+      const backButton = getByLabelText(messages.back.message);
 
       fireEvent.click(backButton);
 
@@ -170,11 +168,11 @@ describe('Keyring Snap Remove Warning', () => {
         store,
       );
 
-      const continueButton = getByText('Continue');
+      const continueButton = getByText(messages.continue.message);
 
       fireEvent.click(continueButton);
 
-      const backButton = getByLabelText('Back');
+      const backButton = getByLabelText(messages.back.message);
 
       fireEvent.click(backButton);
 

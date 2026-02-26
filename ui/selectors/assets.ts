@@ -53,7 +53,11 @@ import { isEvmChainId } from '../../shared/lib/asset-utils';
 import { isEmptyHexString } from '../../shared/modules/hexstring-utils';
 import { isZeroAmount } from '../helpers/utils/number-utils';
 import { getNonTestNetworks } from '../../shared/modules/selectors/networks';
-import { getAccountTrackerControllerAccountsByChainId } from '../../shared/modules/selectors/assets-migration';
+import {
+  getAccountTrackerControllerAccountsByChainId,
+  getTokensControllerAllIgnoredTokens,
+  getTokensControllerAllTokens,
+} from '../../shared/modules/selectors/assets-migration';
 import { getSelectedInternalAccount } from './accounts';
 import { getMultichainBalances } from './multichain';
 import { EMPTY_OBJECT } from './shared';
@@ -201,6 +205,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
     getAssetsPrice,
     getAssetPreferences,
     getCustomAssets,
+    getCurrentCurrency,
     getSelectedInternalAccount,
     getEnabledNetworks,
     (state: AggregatedBalanceState) => state.metamask?.accountTree,
@@ -231,6 +236,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
     assetsPrice,
     assetPreferences,
     customAssets,
+    selectedCurrency,
     selectedInternalAccount,
     enabledNetworkMap,
     accountTree,
@@ -249,6 +255,8 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
       assetsPrice,
       assetPreferences,
       customAssets,
+      selectedCurrency: (selectedCurrency ??
+        'usd') as AssetsControllerState['selectedCurrency'],
     };
     const accountTreeState: AccountTreeControllerState | undefined = accountTree
       ? {
@@ -866,7 +874,7 @@ const selectMultichainAssetsStateForBalances = createSelector(
  * @param state - Redux state providing `metamask.allTokens`.
  */
 const selectTokensStateForBalances = createSelector(
-  [(state: BalanceCalculationState) => getMetamaskState(state).allTokens],
+  [getTokensControllerAllTokens],
   (allTokens) => ({
     allTokens: allTokens ?? EMPTY_OBJECT,
     allIgnoredTokens: EMPTY_OBJECT,
@@ -1415,8 +1423,8 @@ const getStateForAssetSelector = ({ metamask }: any) => {
   const initialState = {
     accountTree: metamask.accountTree,
     internalAccounts: metamask.internalAccounts,
-    allTokens: metamask.allTokens,
-    allIgnoredTokens: metamask.allIgnoredTokens,
+    allTokens: getTokensControllerAllTokens({ metamask }),
+    allIgnoredTokens: getTokensControllerAllIgnoredTokens({ metamask }),
     tokenBalances: metamask.tokenBalances,
     marketData: metamask.marketData,
     currencyRates: metamask.currencyRates,
@@ -1427,23 +1435,13 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     }),
   };
 
-  let multichainState = {
-    accountsAssets: {},
-    assetsMetadata: {},
-    allIgnoredAssets: {},
-    balances: {},
-    conversionRates: {},
-  };
-
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  multichainState = {
+  const multichainState = {
     accountsAssets: metamask.accountsAssets,
     assetsMetadata: metamask.assetsMetadata,
     allIgnoredAssets: metamask.allIgnoredAssets,
     balances: metamask.balances,
     conversionRates: metamask.conversionRates,
   };
-  ///: END:ONLY_INCLUDE_IF
 
   return {
     ...initialState,
@@ -1501,13 +1499,8 @@ export const getAsset = createSelector(
 
 export const selectSingleTokenByAddressAndChainId = createSelector(
   getAllTokens,
-  (_state: { metamask: TokensControllerState }, tokenAddress: Hex) =>
-    tokenAddress,
-  (
-    _state: { metamask: TokensControllerState },
-    _tokenAddress: Hex,
-    chainId: Hex,
-  ) => chainId,
+  (_state, tokenAddress: Hex) => tokenAddress,
+  (_state, _tokenAddress: Hex, chainId: Hex) => chainId,
   (allTokens, tokenAddress, chainId) => {
     const chainTokens = Object.values(
       allTokens[chainId] ?? {},

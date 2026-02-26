@@ -2,12 +2,8 @@ import {
   MultichainAccountService,
   AccountProviderWrapper,
   SOL_ACCOUNT_PROVIDER_NAME,
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcAccountProvider,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   TrxAccountProvider,
-  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/multichain-account-service';
 import { ControllerInitFunction } from '../types';
 import {
@@ -15,9 +11,7 @@ import {
   MultichainAccountServiceInitMessenger,
 } from '../messengers/accounts';
 import { previousValueComparator } from '../../lib/util';
-///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import { isMultichainFeatureEnabled } from '../../../../shared/lib/multichain-feature-flags';
-///: END:ONLY_INCLUDE_IF
 import { trace } from '../../../../shared/lib/trace';
 
 /**
@@ -49,30 +43,19 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
     },
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   const btcProvider = new AccountProviderWrapper(
     controllerMessenger,
     new BtcAccountProvider(controllerMessenger, snapAccountProviderConfig),
   );
-  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   const trxProvider = new AccountProviderWrapper(
     controllerMessenger,
     new TrxAccountProvider(controllerMessenger, snapAccountProviderConfig),
   );
-  ///: END:ONLY_INCLUDE_IF
 
   const controller = new MultichainAccountService({
     messenger: controllerMessenger,
-    providers: [
-      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-      btcProvider,
-      ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(tron)
-      trxProvider,
-      ///: END:ONLY_INCLUDE_IF
-    ],
+    providers: [btcProvider, trxProvider],
     providerConfigs: {
       [SOL_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
     },
@@ -111,24 +94,19 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
     'RemoteFeatureFlagController:getState',
   );
 
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   const initialBitcoinEnabled = isMultichainFeatureEnabled(
     initialRemoteFeatureFlagsState?.remoteFeatureFlags?.bitcoinAccounts,
   );
   btcProvider.setEnabled(initialBitcoinEnabled);
-  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   const initialTronEnabled = isMultichainFeatureEnabled(
     initialRemoteFeatureFlagsState?.remoteFeatureFlags?.tronAccounts,
   );
   trxProvider.setEnabled(initialTronEnabled);
-  ///: END:ONLY_INCLUDE_IF
 
   controllerMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
     previousValueComparator((prevState, currState) => {
-      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       const prevBitcoinEnabled = isMultichainFeatureEnabled(
         prevState?.remoteFeatureFlags?.bitcoinAccounts,
       );
@@ -152,9 +130,7 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
         }
         // Note: When disabled, no action needed as the provider won't create new accounts
       }
-      ///: END:ONLY_INCLUDE_IF
 
-      ///: BEGIN:ONLY_INCLUDE_IF(tron)
       const prevTronEnabled = isMultichainFeatureEnabled(
         prevState?.remoteFeatureFlags?.tronAccounts,
       );
@@ -174,7 +150,6 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
           });
         }
       }
-      ///: END:ONLY_INCLUDE_IF
 
       return true;
     }, initialRemoteFeatureFlagsState),
