@@ -52,10 +52,9 @@ describe('createPerpsInfrastructure', () => {
   describe('rewards', () => {
     it('returns 0 discount as default stub', async () => {
       const infrastructure = createPerpsInfrastructure();
-      const discount =
-        await infrastructure.rewards.getPerpsDiscountForAccount(
-          'eip155:42161:0x1234',
-        );
+      const discount = await infrastructure.rewards.getPerpsDiscountForAccount(
+        'eip155:42161:0x1234',
+      );
       expect(discount).toBe(0);
     });
   });
