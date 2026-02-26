@@ -54,11 +54,13 @@ import {
   type MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
 import {
   ACCOUNT_WATCHER_NAME,
   ACCOUNT_WATCHER_SNAP_ID,
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
+///: END:ONLY_INCLUDE_IF
 
 export type AddWalletModalProps = Omit<
   ModalProps,
