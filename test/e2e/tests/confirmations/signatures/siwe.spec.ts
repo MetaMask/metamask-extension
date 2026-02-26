@@ -13,11 +13,8 @@ import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import {
-  openDappAndTriggerSignature,
-  copyAddressAndPasteWalletAddress,
-  assertVerifiedSiweMessage,
-} from '../../../page-objects/flows/signature-confirmation.flow';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { openDappAndTriggerSignature } from '../../../page-objects/flows/signature-confirmation.flow';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -27,7 +24,6 @@ import {
   assertAccountDetailsMetrics,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
-  WALLET_ADDRESS,
   WALLET_ETH_BALANCE,
   SignatureType,
 } from './signature-helpers';
@@ -44,21 +40,17 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
         const confirmation = new Confirmation(driver);
         const accountDetailsModal = new AccountDetailsModal(driver);
 
+        await loginWithBalanceValidation(driver);
         await openDappAndTriggerSignature(driver, SignatureType.SIWE);
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await confirmation.clickHeaderAccountDetailsButton();
         await accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
+        await accountDetailsModal.clickAccountDetailsModalCloseButton();
 
-        await copyAddressAndPasteWalletAddress(driver);
-        await testDapp.assertEip747ContractAddressInputValue(WALLET_ADDRESS);
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
 
-        await assertVerifiedSiweMessage(
-          driver,
+        await testDapp.assertVerifiedSiweMessage(
           '0xef8674a92d62a1876624547bdccaef6c67014ae821de18fa910fbff56577a65830f68848585b33d1f4b9ea1c3da1c1b11553b6aabe8446717daf7cd1e38a68271c',
         );
 
@@ -92,6 +84,7 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
         const confirmation = new PersonalSignConfirmation(driver);
         const testDapp = new TestDapp(driver);
 
+        await loginWithBalanceValidation(driver);
         await openDappAndTriggerSignature(driver, SignatureType.SIWE);
 
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();

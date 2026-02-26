@@ -48,9 +48,9 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         const confirmation = new Confirmation(driver);
         const accountDetailsModal = new AccountDetailsModal(driver);
 
+        await loginWithBalanceValidation(driver);
         await openDappAndTriggerSignature(driver, SignatureType.PersonalSign);
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await confirmation.clickHeaderAccountDetailsButton();
         await accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
 
@@ -89,6 +89,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         const confirmation = new PersonalSignConfirmation(driver);
         const testDapp = new TestDapp(driver);
 
+        await loginWithBalanceValidation(driver);
         await openDappAndTriggerSignature(driver, SignatureType.PersonalSign);
 
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();

@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
+import { SignatureType } from '../../tests/confirmations/signatures/signature-helpers';
 
 class TestDapp {
   private readonly driver: Driver;
@@ -627,6 +628,18 @@ class TestDapp {
   }
 
   /**
+   * Asserts SIWE success message on test dapp.
+   * Waits for dialog to close, switches to TestDApp window, then verifies the signed message.
+   *
+   * @param message - Expected signed message hex.
+   */
+  async assertVerifiedSiweMessage(message: string): Promise<void> {
+    await this.driver.waitUntilXWindowHandles(2);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+    await this.checkSuccessSiwe(message);
+  }
+
+  /**
    * Checks the value of a token address once created.
    *
    * @param value - The address to be checked
@@ -1084,6 +1097,51 @@ class TestDapp {
       : url;
     console.log(`Open test dapp page: ${dappUrl}`);
     await this.driver.openNewPage(dappUrl);
+  }
+
+  /**
+   * Opens test dapp, clicks deploy NFTs, and switches to confirmation dialog.
+   */
+  async openTestDappAndTriggerDeploy(): Promise<void> {
+    await this.openTestDappPage({ url: DAPP_URL });
+    await this.clickERC721DeployButton();
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  }
+
+  /**
+   * Triggers the given signature type on the test dapp.
+   *
+   * @param type - The signature type (SignatureType enum).
+   */
+  async triggerSignature(type: SignatureType): Promise<void> {
+    switch (type) {
+      case SignatureType.PersonalSign:
+        await this.clickPersonalSign();
+        break;
+      case SignatureType.Permit:
+        await this.clickPermit();
+        break;
+      case SignatureType.SignTypedData:
+        await this.clickSignTypedData();
+        break;
+      case SignatureType.SignTypedDataV3:
+        await this.clickSignTypedDatav3();
+        break;
+      case SignatureType.SignTypedDataV4:
+        await this.clickSignTypedDatav4();
+        break;
+      case SignatureType.SIWE:
+        await this.clickSiwe();
+        break;
+      case SignatureType.SIWE_BadDomain:
+        await this.clickSwieBadDomain();
+        break;
+      case SignatureType.NFTPermit:
+        await this.clickERC721Permit();
+        break;
+      default:
+        throw new Error('Invalid signature type');
+    }
   }
 
   async pasteIntoEip747ContractAddressInput() {

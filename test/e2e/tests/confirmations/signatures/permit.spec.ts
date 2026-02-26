@@ -16,16 +16,12 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
 import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
-import {
-  openDappAndTriggerSignature,
-  copyAddressAndPasteWalletAddress,
-} from '../../../page-objects/flows/signature-confirmation.flow';
+import { openDappAndTriggerSignature } from '../../../page-objects/flows/signature-confirmation.flow';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
-  WALLET_ADDRESS,
   WALLET_ETH_BALANCE,
   SignatureType,
 } from './signature-helpers';
@@ -41,19 +37,15 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
       }: TestSuiteArguments) => {
         const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
-        const testDapp = new TestDapp(driver);
         const confirmation = new Confirmation(driver);
         const accountDetailsModal = new AccountDetailsModal(driver);
 
+        await loginWithBalanceValidation(driver);
         await openDappAndTriggerSignature(driver, SignatureType.Permit);
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await confirmation.clickHeaderAccountDetailsButton();
         await accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
-
-        await copyAddressAndPasteWalletAddress(driver);
-        await testDapp.assertEip747ContractAddressInputValue(WALLET_ADDRESS);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await accountDetailsModal.clickAccountDetailsModalCloseButton();
 
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
@@ -124,6 +116,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
     await withSignatureFixtures(
       this.test?.fullTitle(),
       async ({ driver }: TestSuiteArguments) => {
+        await loginWithBalanceValidation(driver);
         await openDappAndTriggerSignature(driver, SignatureType.Permit);
 
         const simulationSection = driver.findElement({

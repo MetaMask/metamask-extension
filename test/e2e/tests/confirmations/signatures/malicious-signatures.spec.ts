@@ -10,10 +10,8 @@ import { TestSuiteArguments } from '../transactions/shared';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import ConfirmAlertModal from '../../../page-objects/pages/dialog/confirm-alert';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import {
-  openDappAndTriggerSignature,
-  assertVerifiedSiweMessage,
-} from '../../../page-objects/flows/signature-confirmation.flow';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { openDappAndTriggerSignature } from '../../../page-objects/flows/signature-confirmation.flow';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -31,7 +29,9 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
       async ({ driver }: TestSuiteArguments) => {
         const confirmation = new Confirmation(driver);
         const alertModal = new ConfirmAlertModal(driver);
+        const testDapp = new TestDapp(driver);
 
+        await loginWithBalanceValidation(driver);
         await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
 
         await confirmation.clickScrollToBottomButton();
@@ -43,8 +43,7 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
 
         await alertModal.confirmFromAlertModal();
 
-        await assertVerifiedSiweMessage(
-          driver,
+        await testDapp.assertVerifiedSiweMessage(
           '0x24e559452c37827008633f9ae50c68cdb28e33f547f795af687839b520b022e4093c38bf1dfebda875ded715f2754d458ed62a19248e5a9bd2205bd1cb66f9b51b',
         );
       },
@@ -61,6 +60,7 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
         const confirmation = new Confirmation(driver);
         const testDapp = new TestDapp(driver);
 
+        await loginWithBalanceValidation(driver);
         await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
 
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
@@ -119,6 +119,7 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
         const alertModal = new ConfirmAlertModal(driver);
         const testDapp = new TestDapp(driver);
 
+        await loginWithBalanceValidation(driver);
         await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
 
         await scrollAndConfirmAndAssertConfirm(driver);

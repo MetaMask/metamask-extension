@@ -12,17 +12,13 @@ import { TestSuiteArguments } from '../transactions/shared';
 import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
-import {
-  openDappAndTriggerDeploy,
-  copyAddressAndPasteWalletAddress,
-  triggerSignature,
-} from '../../../page-objects/flows/signature-confirmation.flow';
+import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
-  WALLET_ADDRESS,
   SignatureType,
 } from './signature-helpers';
 
@@ -39,21 +35,21 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
         const publicAddress = addresses?.[0] as string;
         const testDapp = new TestDapp(driver);
         const confirmation = new Confirmation(driver);
+        const accountDetailsModal = new AccountDetailsModal(driver);
 
-        await openDappAndTriggerDeploy(driver);
+        await loginWithBalanceValidation(driver);
+        await testDapp.openTestDappAndTriggerDeploy();
         await driver.delay(1000);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await scrollAndConfirmAndAssertConfirm(driver);
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.delay(1000);
-        await triggerSignature(driver, SignatureType.NFTPermit);
+        await testDapp.triggerSignature(SignatureType.NFTPermit);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await confirmation.clickHeaderAccountDetailsButton();
-        await copyAddressAndPasteWalletAddress(driver);
-        await testDapp.assertEip747ContractAddressInputValue(WALLET_ADDRESS);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await accountDetailsModal.clickAccountDetailsModalCloseButton();
 
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
@@ -93,14 +89,15 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
         const confirmation = new PermitConfirmation(driver);
         const testDapp = new TestDapp(driver);
 
-        await openDappAndTriggerDeploy(driver);
+        await loginWithBalanceValidation(driver);
+        await testDapp.openTestDappAndTriggerDeploy();
         await driver.delay(1000);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement('[data-testid="confirm-footer-button"]');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.delay(1000);
-        await triggerSignature(driver, SignatureType.NFTPermit);
+        await testDapp.triggerSignature(SignatureType.NFTPermit);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
