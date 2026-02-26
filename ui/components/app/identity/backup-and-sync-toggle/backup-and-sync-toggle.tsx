@@ -199,7 +199,7 @@ export const BackupAndSyncToggle = () => {
         display={Display.Flex}
         justifyContent={JustifyContent.spaceBetween}
         alignItems={AlignItems.flexStart}
-        marginBottom={4}
+        marginBottom={1}
       >
         <Text variant={TextVariant.bodyMdMedium}>
           {t('backupAndSyncEnable')}
@@ -217,8 +217,6 @@ export const BackupAndSyncToggle = () => {
             <ToggleButton
               value={isBackupAndSyncEnabled}
               onToggle={handleBackupAndSyncToggleSetValue}
-              offLabel={t('off')}
-              onLabel={t('on')}
               dataTestId={backupAndSyncToggleTestIds.toggleButton}
             />
           </div>

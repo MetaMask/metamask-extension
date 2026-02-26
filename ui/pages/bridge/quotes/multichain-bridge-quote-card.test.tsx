@@ -8,6 +8,7 @@ import {
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -217,7 +218,9 @@ describe('MultichainBridgeQuoteCard', () => {
     );
 
     expect(
-      getByText('Includes 0.875% MM fee. Approves token for bridge.'),
+      getByText(
+        `${messages.rateIncludesMMFee.message.replace('$1', '0.875')} ${messages.willApproveAmountForBridging.message}`,
+      ),
     ).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
@@ -679,7 +682,7 @@ describe('MultichainBridgeQuoteCard', () => {
     expect(sponsoredSection).toBeInTheDocument();
 
     // Verify the sponsored text appears
-    expect(getByText('Paid by MetaMask')).toBeInTheDocument();
+    expect(getByText(messages.paidByMetaMask.message)).toBeInTheDocument();
 
     expect(container).toMatchSnapshot();
   });

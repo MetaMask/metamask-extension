@@ -154,7 +154,7 @@ function buildApproveTransaction({
 function buildPermitSignatureRequest({
   spender = MOCK_SPENDER_ADDRESS,
   value = '1000',
-  domain = { name: 'Token', version: '1' },
+  domain = { name: 'TestToken', version: '1' },
 }: {
   spender?: string;
   value?: string;

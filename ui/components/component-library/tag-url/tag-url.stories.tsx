@@ -1,16 +1,17 @@
 import React from 'react';
+import README from "./README.mdx";
 import { Meta, StoryFn } from '@storybook/react';
 import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../box';
-import README from './README.mdx';
 import { TagUrl } from './tag-url';
 
 export default {
   title: 'Components/ComponentLibrary/TagUrl',
   component: TagUrl,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,

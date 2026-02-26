@@ -17,19 +17,12 @@ import InfoIcon from '../icon/info-icon.component';
 import Identicon from '../identicon/identicon.component';
 import { ChipWithInput } from './chip-with-input';
 
-import README from './README.mdx';
-
 import Chip from '.';
 
 export default {
   title: 'Components/UI/Chip',
 
   component: Chip,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     leftIcon: {
       control: {

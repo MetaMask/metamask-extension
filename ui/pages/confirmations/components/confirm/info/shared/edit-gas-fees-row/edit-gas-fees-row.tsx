@@ -5,7 +5,11 @@ import { useSelector } from 'react-redux';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
-import { Box, Text } from '../../../../../../../components/component-library';
+import {
+  Box,
+  SuccessPill,
+  Text,
+} from '../../../../../../../components/component-library';
 import { Skeleton } from '../../../../../../../components/component-library/skeleton';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
@@ -105,12 +109,10 @@ export const EditGasFeesRow = ({
             gap={1}
           >
             {isGasFeeSponsored && (
-              <Text
-                color={TextColor.textDefault}
+              <SuccessPill
+                label={t('paidByMetaMask')}
                 data-testid="paid-by-meta-mask"
-              >
-                {t('paidByMetaMask')}
-              </Text>
+              />
             )}
             {isGasFeeEditable && <EditGasIconButton />}
             {estimationFailed && !isGasFeeSponsored && (

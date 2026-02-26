@@ -52,7 +52,6 @@ import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
 import { SnapUIAssetSelector } from '../snaps/snap-ui-asset-selector';
 import { SnapUIAccountSelector } from '../snaps/snap-ui-account-selector';
 import { SnapUIDateTimePicker } from '../snaps/snap-ui-date-time-picker';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SnapAccountErrorMessage } from '../../../pages/confirmations/components/snap-account-error-message';
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
 import { CreateSnapAccount } from '../../../pages/create-snap-account';
@@ -63,7 +62,6 @@ import {
 import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
 import { Skeleton } from '../../component-library/skeleton';
-///: END:ONLY_INCLUDE_IF
 import { DefiReferralConsent } from '../../../pages/core/defi-referral-consent';
 
 export const safeComponentList = {
@@ -125,7 +123,6 @@ export const safeComponentList = {
   Typography,
   SmartTransactionStatusPage,
   UrlIcon,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   CreateSnapAccount,
   RemoveSnapAccount,
   SnapAccountCard,
@@ -133,5 +130,4 @@ export const safeComponentList = {
   SnapAccountRedirect,
   SnapAccountSuccessMessage,
   SnapAuthorshipHeader,
-  ///: END:ONLY_INCLUDE_IF
 };

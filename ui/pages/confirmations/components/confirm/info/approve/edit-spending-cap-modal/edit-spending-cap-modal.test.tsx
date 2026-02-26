@@ -7,6 +7,7 @@ import {
   getMockConfirmStateForTransaction,
 } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { buildPermit2ApproveTransactionData } from '../../../../../../../../test/data/confirmations/token-approve';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
@@ -88,7 +89,7 @@ describe('EditSpendingCapModal', () => {
   it('invokes onSubmit when submit button clicked', async () => {
     const onSubmit = jest.fn();
     const { getByText } = render({ onSubmit });
-    const submitButton = getByText('Save');
+    const submitButton = getByText(messages.save.message);
 
     await act(async () => {
       submitButton.click();
@@ -117,7 +118,7 @@ describe('EditSpendingCapModal', () => {
     });
 
     await act(async () => {
-      getByText('Save').click();
+      getByText(messages.save.message).click();
     });
 
     expect(onSubmit).toHaveBeenCalledWith(

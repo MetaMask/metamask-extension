@@ -1,9 +1,11 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { fireEvent, createSwapsMockStore } from '../../../../test/jest';
+import { createSwapsMockStore } from '../../../../test/jest';
 import { Slippage } from '../../../../shared/constants/swaps';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import TransactionSettings from './transaction-settings';
 
 jest.mock('react-redux', () => {
@@ -43,7 +45,7 @@ describe('TransactionSettings', () => {
     );
     expect(getByText('2%')).toBeInTheDocument();
     expect(getByText('3%')).toBeInTheDocument();
-    expect(getByText('custom')).toBeInTheDocument();
+    expect(getByText(messages.swapCustom.message)).toBeInTheDocument();
     expect(
       document.querySelector('.transaction-settings__button-group'),
     ).toMatchSnapshot();
