@@ -12,6 +12,8 @@ const mockUpdateCurrentLocale = jest.fn();
 const mockSetAvatarType = jest.fn();
 const mockSetHideZeroBalanceTokens = jest.fn();
 const mockSetShowNativeTokenAsMainBalance = jest.fn();
+const mockSetShowDefaultAddress = jest.fn();
+const mockSetDefaultAddressScope = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setCurrentCurrency: () => mockSetCurrentCurrency,
@@ -20,6 +22,8 @@ jest.mock('../../../store/actions.ts', () => ({
   setHideZeroBalanceTokens: () => mockSetHideZeroBalanceTokens,
   setShowNativeTokenAsMainBalancePreference: () =>
     mockSetShowNativeTokenAsMainBalance,
+  setShowDefaultAddress: (value) => () => mockSetShowDefaultAddress(value),
+  setDefaultAddressScope: (value) => () => mockSetDefaultAddressScope(value),
 }));
 
 describe('Settings Tab', () => {
@@ -98,5 +102,35 @@ describe('Settings Tab', () => {
     fireEvent.click(showNativeTokenAsMainBalance);
 
     expect(mockSetShowNativeTokenAsMainBalance).toHaveBeenCalled();
+  });
+
+  it('does not render show default address section when isDefaultAddressEnabled is false', () => {
+    const stateWithFlagOff = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags: { extensionUxDefaultAddress: false },
+      },
+    };
+    const store = configureMockStore([thunk])(stateWithFlagOff);
+    const { queryByTestId } = renderWithProvider(<SettingsTab />, store);
+
+    expect(
+      queryByTestId('show-default-address-toggle'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders show default address section when isDefaultAddressEnabled is true', () => {
+    const stateWithFlagOn = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags: { extensionUxDefaultAddress: true },
+      },
+    };
+    const store = configureMockStore([thunk])(stateWithFlagOn);
+    const { getByTestId } = renderWithProvider(<SettingsTab />, store);
+
+    expect(getByTestId('show-default-address-toggle')).toBeInTheDocument();
   });
 });

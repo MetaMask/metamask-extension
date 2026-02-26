@@ -82,4 +82,35 @@ describe('AppHeaderUnlockedContent trace', () => {
       }),
     );
   });
+
+  it('renders default address section when feature flag is enabled', async () => {
+    const stateWithFlagOn = {
+      ...mockDefaultState,
+      metamask: {
+        ...mockDefaultState.metamask,
+        remoteFeatureFlags: { extensionUxDefaultAddress: true },
+      },
+    };
+    const store = configureStore(stateWithFlagOn);
+    const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
+    renderWithProvider(
+      <AppHeaderUnlockedContent
+        disableAccountPicker={false}
+        menuRef={menuRef}
+      />,
+      store,
+    );
+
+    const networksSubtitle = screen.getByTestId('networks-subtitle-test-id');
+    const hoverTarget = networksSubtitle.firstElementChild as HTMLElement;
+    fireEvent.mouseEnter(hoverTarget);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('multichain-address-rows-list'),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('default-address-container')).toBeVisible();
+  });
 });
