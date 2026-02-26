@@ -839,7 +839,7 @@ export default class SecurityTab extends PureComponent {
 
         <div
           className="settings-page__content-item-col"
-          data-testid="autoDetectTokens"
+          data-testid="autodetect-tokens"
         >
           <ToggleButton
             value={useTokenDetection}
@@ -979,7 +979,7 @@ export default class SecurityTab extends PureComponent {
         </div>
         <div
           className="settings-page__content-item-col"
-          data-testid="displayNftMedia"
+          data-testid="display-nft-media"
         >
           <ToggleButton
             value={openSeaEnabled}
