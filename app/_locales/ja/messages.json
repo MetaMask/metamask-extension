@@ -7345,21 +7345,6 @@
   "simulationErrorMessageV2": {
     "message": "ガス代を見積もることができませんでした。コントラクトにエラーがある可能性があり、このトランザクションは失敗するかもしれません。"
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "最大スリッページ"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "残高の変動幅について許容できる値を設定してください。この変動幅を超える場合、トランザクションは実行されません。"
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "残高変更の実施"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "資金を安全に保つため、残高の増減がある場合やスリッページの許容範囲が満たされない場合、このトランザクションは行われません。"
-  },
-  "simulationSettingsModalTitle": {
-    "message": "トランザクション設定"
-  },
   "simulationsSettingDescription": {
     "message": "トランザクションと署名を確定する前に残高の増減を予測するには、この機能をオンにします。これは最終的な結果を保証するものではありません。$1"
   },

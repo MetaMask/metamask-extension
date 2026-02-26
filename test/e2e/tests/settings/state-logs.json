@@ -433,11 +433,7 @@
       "eip155:1329": "string",
       "eip155:6343": "string"
     },
-    "enableEnforcedSimulations": "boolean",
-    "enableEnforcedSimulationsForTransactions": {},
     "enableMV3TimestampSave": "boolean",
-    "enforcedSimulationsSlippage": "number",
-    "enforcedSimulationsSlippageForTransactions": {},
     "ensEntries": {
       "0x1": {
         ".": {
@@ -551,8 +547,8 @@
     "gasEstimateType": "string",
     "gasFeeEstimates": {},
     "gasFeeEstimatesByChainId": {},
-    "gatorPermissionsMapSerialized": "string",
-    "gatorPermissionsProviderSnapId": "string",
+    "grantedPermissions": [],
+    "lastSyncedTimestamp": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": "boolean",
     "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
     "hasShownMultichainAccountsIntroModal": "boolean",
@@ -648,7 +644,6 @@
     "isFeatureAnnouncementsEnabled": "boolean",
     "isFetchingGatorPermissions": "boolean",
     "isFetchingMetamaskNotifications": "boolean",
-    "isGatorPermissionsEnabled": "boolean",
     "isInitialized": "boolean",
     "isIpfsGatewayEnabled": "boolean",
     "isMetamaskNotificationsFeatureSeen": "boolean",

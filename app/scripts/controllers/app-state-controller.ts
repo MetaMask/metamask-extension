@@ -100,10 +100,6 @@ export type AppStateControllerState = {
   currentExtensionPopupId: number;
   currentPopupId?: number;
   defaultHomeActiveTabName: AccountOverviewTabKey | null;
-  enableEnforcedSimulations: boolean;
-  enableEnforcedSimulationsForTransactions: Record<string, boolean>;
-  enforcedSimulationsSlippage: number;
-  enforcedSimulationsSlippageForTransactions: Record<string, number>;
   fullScreenGasPollTokens: string[];
   // This key is only used for checking if the user had set advancedGasFee
   // prior to Migration 92.3 where we split out the setting to support
@@ -300,10 +296,6 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   browserEnvironment: {},
   connectedStatusPopoverHasBeenShown: true,
   defaultHomeActiveTabName: null,
-  enableEnforcedSimulations: true,
-  enableEnforcedSimulationsForTransactions: {},
-  enforcedSimulationsSlippage: 10,
-  enforcedSimulationsSlippageForTransactions: {},
   fullScreenGasPollTokens: [],
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -418,30 +410,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   defaultHomeActiveTabName: {
     includeInStateLogs: true,
     persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enableEnforcedSimulations: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enableEnforcedSimulationsForTransactions: {
-    includeInStateLogs: true,
-    persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enforcedSimulationsSlippage: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enforcedSimulationsSlippageForTransactions: {
-    includeInStateLogs: true,
-    persist: false,
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
@@ -1686,36 +1654,6 @@ export class AppStateController extends BaseController<
     });
 
     return deferredPromise.promise;
-  }
-
-  setEnableEnforcedSimulations(enabled: boolean): void {
-    this.update((state) => {
-      state.enableEnforcedSimulations = enabled;
-    });
-  }
-
-  setEnableEnforcedSimulationsForTransaction(
-    transactionId: string,
-    enabled: boolean,
-  ): void {
-    this.update((state) => {
-      state.enableEnforcedSimulationsForTransactions[transactionId] = enabled;
-    });
-  }
-
-  setEnforcedSimulationsSlippage(value: number): void {
-    this.update((state) => {
-      state.enforcedSimulationsSlippage = value;
-    });
-  }
-
-  setEnforcedSimulationsSlippageForTransaction(
-    transactionId: string,
-    value: number,
-  ): void {
-    this.update((state) => {
-      state.enforcedSimulationsSlippageForTransactions[transactionId] = value;
-    });
   }
 
   /**
