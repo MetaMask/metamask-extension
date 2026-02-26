@@ -16,6 +16,12 @@
   &__banner-base {
     box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   }
+
+  &--perps {
+    bottom: 80px;
+    width: calc(100% - 32px);
+    max-width: 408px;
+  }
 }
 
 .toast-text {

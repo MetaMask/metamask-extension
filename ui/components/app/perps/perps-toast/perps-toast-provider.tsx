@@ -10,7 +10,8 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { Toast, ToastContainer } from '../../../multichain';
-import { Icon, IconName } from '../../../component-library';
+import { Icon, IconName, IconSize } from '../../../component-library';
+import { IconColor } from '../../../../helpers/constants/design-system';
 import { getIsPerpsInAppToastsEnabled } from '../../../../selectors/perps/feature-flags';
 
 export type PerpsToastVariant = 'info' | 'success' | 'error';
@@ -66,14 +67,33 @@ const getDefaultAutoHideTime = (
 
 const getToastIcon = (variant: PerpsToastVariant): ReactNode => {
   if (variant === 'success') {
-    return <Icon name={IconName.CheckBold} />;
+    return (
+      <Icon
+        name={IconName.Confirmation}
+        size={IconSize.Xl}
+        color={IconColor.successDefault}
+      />
+    );
   }
 
   if (variant === 'error') {
-    return <Icon name={IconName.Warning} />;
+    return (
+      <Icon
+        name={IconName.Danger}
+        size={IconSize.Xl}
+        color={IconColor.errorDefault}
+      />
+    );
   }
 
-  return <Icon name={IconName.Info} />;
+  return (
+    <Icon
+      name={IconName.Loading}
+      size={IconSize.Xl}
+      color={IconColor.primaryDefault}
+      className="animate-spin"
+    />
+  );
 };
 
 type PerpsToastProviderProps = {
@@ -130,7 +150,7 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
     <PerpsToastContext.Provider value={contextValue}>
       {children}
       {isPerpsInAppToastsEnabled && activeToast ? (
-        <ToastContainer>
+        <ToastContainer className="toasts-container--perps">
           <Toast
             key={activeToast.id}
             startAdornment={getToastIcon(activeToast.variant)}
