@@ -892,6 +892,8 @@ export default function Routes() {
         component: WrappedPerpsOrderEntryPage,
         layout: RootLayout,
         authenticated: true,
+        basicFunctionalityOpenPageCtaKey:
+          'basicFunctionalityRequired_openPerpsPage',
       }),
       createRouteWithLayout({
         path: PERPS_ACTIVITY_ROUTE,
