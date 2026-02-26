@@ -11,8 +11,8 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import configureStore from '../../store/store';
-import RevealSeedPage from './reveal-seed';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import RevealSeedPage from './reveal-seed';
 
 const mockUseParams = jest.fn().mockReturnValue({});
 
