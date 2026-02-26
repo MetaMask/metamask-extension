@@ -587,9 +587,7 @@ describe('CandleStreamChannel', () => {
         .callback as (data: CandleData) => void;
       sourceCallback(makeCandleData([100]));
 
-      controller.fetchHistoricalCandles.mockRejectedValue(
-        new Error('network'),
-      );
+      controller.fetchHistoricalCandles.mockRejectedValue(new Error('network'));
 
       await expect(
         channel.fetchHistoricalCandles(

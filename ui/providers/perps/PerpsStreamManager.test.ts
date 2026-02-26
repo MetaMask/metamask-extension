@@ -1,4 +1,6 @@
 import type { Position } from '@metamask/perps-controller';
+// eslint-disable-next-line import/order
+import { PerpsStreamManager } from './PerpsStreamManager';
 
 // Polyfill crypto.randomUUID for jsdom
 let uuidCounter = 0;
@@ -9,22 +11,25 @@ Object.defineProperty(globalThis, 'crypto', {
   },
 });
 
-// --- Mocks must be declared before importing the module under test ---
-
-const mockGetPerpsController = jest.fn();
-const mockGetPerpsControllerCurrentAddress = jest.fn(() => null as string | null);
-const mockIsPerpsControllerInitialized = jest.fn(() => false);
-const mockIsPerpsControllerInitializationCancelledError = jest.fn(
+const mockGetPerpsController = jest.fn<Promise<unknown>, [string]>();
+const mockGetPerpsControllerCurrentAddress = jest.fn<string | null, []>(
+  () => null,
+);
+const mockIsPerpsControllerInitialized = jest.fn<boolean, [string?]>(
   () => false,
 );
+const mockIsPerpsControllerInitializationCancelledError = jest.fn<
+  boolean,
+  [unknown]
+>(() => false);
 
 jest.mock('./getPerpsController', () => ({
-  getPerpsController: (...args: unknown[]) => mockGetPerpsController(...args),
+  getPerpsController: (...args: [string]) => mockGetPerpsController(...args),
   getPerpsControllerCurrentAddress: () =>
     mockGetPerpsControllerCurrentAddress(),
-  isPerpsControllerInitialized: (...args: unknown[]) =>
+  isPerpsControllerInitialized: (...args: [string?]) =>
     mockIsPerpsControllerInitialized(...args),
-  isPerpsControllerInitializationCancelledError: (...args: unknown[]) =>
+  isPerpsControllerInitializationCancelledError: (...args: [unknown]) =>
     mockIsPerpsControllerInitializationCancelledError(...args),
 }));
 
@@ -34,8 +39,6 @@ jest.mock('./CandleStreamChannel', () => ({
     clearAll: jest.fn(),
   })),
 }));
-
-import { PerpsStreamManager } from './PerpsStreamManager';
 
 type MockController = {
   subscribeToPositions: jest.Mock;
@@ -163,9 +166,9 @@ describe('PerpsStreamManager', () => {
 
     it('wires markets channel to fetch from active provider', async () => {
       const mockProvider = {
-        getMarketDataWithPrices: jest.fn().mockResolvedValue([
-          { symbol: 'BTC', price: '50000' },
-        ]),
+        getMarketDataWithPrices: jest
+          .fn()
+          .mockResolvedValue([{ symbol: 'BTC', price: '50000' }]),
       };
       controller.getActiveProviderOrNull.mockReturnValue(mockProvider);
 
@@ -266,8 +269,8 @@ describe('PerpsStreamManager', () => {
       const cb = jest.fn();
       manager.positions.subscribe(cb);
 
-      const positionsCallback = controller.subscribeToPositions.mock
-        .calls[0][0].callback as (data: Position[]) => void;
+      const positionsCallback = controller.subscribeToPositions.mock.calls[0][0]
+        .callback as (data: Position[]) => void;
 
       manager.setOptimisticTPSL('BTC', '120', '80');
 
@@ -287,8 +290,8 @@ describe('PerpsStreamManager', () => {
       const cb = jest.fn();
       manager.positions.subscribe(cb);
 
-      const positionsCallback = controller.subscribeToPositions.mock
-        .calls[0][0].callback as (data: Position[]) => void;
+      const positionsCallback = controller.subscribeToPositions.mock.calls[0][0]
+        .callback as (data: Position[]) => void;
 
       manager.setOptimisticTPSL('BTC', '120', '80');
 
@@ -303,8 +306,8 @@ describe('PerpsStreamManager', () => {
       const cb = jest.fn();
       manager.positions.subscribe(cb);
 
-      const positionsCallback = controller.subscribeToPositions.mock
-        .calls[0][0].callback as (data: Position[]) => void;
+      const positionsCallback = controller.subscribeToPositions.mock.calls[0][0]
+        .callback as (data: Position[]) => void;
 
       manager.setOptimisticTPSL('BTC', '120', '80');
 
@@ -321,8 +324,8 @@ describe('PerpsStreamManager', () => {
       const cb = jest.fn();
       manager.positions.subscribe(cb);
 
-      const positionsCallback = controller.subscribeToPositions.mock
-        .calls[0][0].callback as (data: Position[]) => void;
+      const positionsCallback = controller.subscribeToPositions.mock.calls[0][0]
+        .callback as (data: Position[]) => void;
 
       manager.setOptimisticTPSL('BTC', '120', '80');
 
@@ -356,8 +359,8 @@ describe('PerpsStreamManager', () => {
       const cb = jest.fn();
       manager.positions.subscribe(cb);
 
-      const positionsCallback = controller.subscribeToPositions.mock
-        .calls[0][0].callback as (data: Position[]) => void;
+      const positionsCallback = controller.subscribeToPositions.mock.calls[0][0]
+        .callback as (data: Position[]) => void;
 
       manager.setOptimisticTPSL('BTC', '120', '80');
 
@@ -376,8 +379,8 @@ describe('PerpsStreamManager', () => {
       const cb = jest.fn();
       manager.positions.subscribe(cb);
 
-      const positionsCallback = controller.subscribeToPositions.mock
-        .calls[0][0].callback as (data: Position[]) => void;
+      const positionsCallback = controller.subscribeToPositions.mock.calls[0][0]
+        .callback as (data: Position[]) => void;
 
       manager.setOptimisticTPSL('BTC', '120', '80');
 
@@ -395,8 +398,8 @@ describe('PerpsStreamManager', () => {
       const cb = jest.fn();
       manager.positions.subscribe(cb);
 
-      const positionsCallback = controller.subscribeToPositions.mock
-        .calls[0][0].callback as (data: Position[]) => void;
+      const positionsCallback = controller.subscribeToPositions.mock.calls[0][0]
+        .callback as (data: Position[]) => void;
 
       manager.setOptimisticTPSL('BTC', '120.00', '80.00');
 
@@ -422,8 +425,8 @@ describe('PerpsStreamManager', () => {
       const cb = jest.fn();
       manager.positions.subscribe(cb);
 
-      const positionsCallback = controller.subscribeToPositions.mock
-        .calls[0][0].callback as (data: Position[]) => void;
+      const positionsCallback = controller.subscribeToPositions.mock.calls[0][0]
+        .callback as (data: Position[]) => void;
 
       manager.setOptimisticTPSL('BTC', '120', '80');
       manager.clearOptimisticTPSL('BTC');

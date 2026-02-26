@@ -13,6 +13,13 @@ type TestData = { value: number };
 
 const INITIAL: TestData = { value: 0 };
 
+function assertDefined<TValue>(value: TValue | null | undefined): TValue {
+  if (value === null || value === undefined) {
+    throw new Error('Expected value to be defined');
+  }
+  return value;
+}
+
 function createChannel(
   connectFn?: (callback: (data: TestData) => void) => () => void,
 ): PerpsDataChannel<TestData> {
@@ -97,7 +104,7 @@ describe('PerpsDataChannel', () => {
       channel.subscribe(cb1);
       channel.subscribe(cb2);
 
-      sourceCallback!({ value: 99 });
+      assertDefined(sourceCallback)({ value: 99 });
 
       expect(cb1).toHaveBeenCalledWith({ value: 99 });
       expect(cb2).toHaveBeenCalledWith({ value: 99 });
@@ -112,7 +119,7 @@ describe('PerpsDataChannel', () => {
       const channel = createChannel(connectFn);
 
       channel.subscribe(jest.fn());
-      sourceCallback!({ value: 77 });
+      assertDefined(sourceCallback)({ value: 77 });
 
       expect(channel.getCachedData()).toEqual({ value: 77 });
       expect(channel.hasCachedData()).toBe(true);
@@ -131,11 +138,11 @@ describe('PerpsDataChannel', () => {
       const cb = jest.fn();
       const unsub = channel.subscribe(cb);
 
-      sourceCallback!({ value: 1 });
+      assertDefined(sourceCallback)({ value: 1 });
       expect(cb).toHaveBeenCalledTimes(1);
 
       unsub();
-      sourceCallback!({ value: 2 });
+      assertDefined(sourceCallback)({ value: 2 });
 
       expect(cb).toHaveBeenCalledTimes(1);
     });
@@ -173,7 +180,7 @@ describe('PerpsDataChannel', () => {
       const channel = createChannel(connectFn);
 
       const unsub = channel.subscribe(jest.fn());
-      sourceCallback!({ value: 55 });
+      assertDefined(sourceCallback)({ value: 55 });
       unsub();
 
       expect(channel.getCachedData()).toEqual({ value: 55 });
@@ -322,7 +329,7 @@ describe('PerpsDataChannel', () => {
       const cb = jest.fn();
       const unsub = channel.subscribe(cb);
 
-      sourceCallback!({ value: 5 });
+      assertDefined(sourceCallback)({ value: 5 });
       expect(cb).toHaveBeenCalledWith({ value: 5 });
 
       unsub();
@@ -339,7 +346,7 @@ describe('PerpsDataChannel', () => {
       const channel = createChannel(connectFn);
 
       channel.prewarm();
-      sourceCallback!({ value: 88 });
+      assertDefined(sourceCallback)({ value: 88 });
 
       const cb = jest.fn();
       channel.subscribe(cb);
@@ -359,7 +366,7 @@ describe('PerpsDataChannel', () => {
       const channel = createChannel(connectFn);
 
       channel.prewarm();
-      sourceCallback!({ value: 42 });
+      assertDefined(sourceCallback)({ value: 42 });
 
       channel.reset();
 
