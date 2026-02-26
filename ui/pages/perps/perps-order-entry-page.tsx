@@ -62,6 +62,7 @@ import {
 import {
   PERPS_TOAST_KEYS,
   type PerpsToastKey,
+  type PerpsToastRouteState,
   usePerpsToast,
 } from '../../components/app/perps/perps-toast';
 
@@ -346,14 +347,28 @@ const PerpsOrderEntryPage: React.FC = () => {
     };
   }, [position]);
 
-  const handleBackClick = useCallback(() => {
-    if (!decodedSymbol) {
-      return;
-    }
-    navigate(
-      `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(decodedSymbol)}`,
-    );
-  }, [navigate, decodedSymbol]);
+  const handleBackClick = useCallback(
+    (perpsToastKey?: PerpsToastKey) => {
+      if (!decodedSymbol) {
+        return;
+      }
+
+      const marketDetailPath = `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(
+        decodedSymbol,
+      )}`;
+
+      if (!perpsToastKey) {
+        navigate(marketDetailPath);
+        return;
+      }
+
+      const toastRouteState: PerpsToastRouteState = {
+        perpsToastKey,
+      };
+      navigate(marketDetailPath, { state: toastRouteState });
+    },
+    [navigate, decodedSymbol],
+  );
 
   const handleFormStateChange = useCallback((formState: OrderFormState) => {
     setOrderFormState(formState);
@@ -443,7 +458,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.ORDER_SUBMITTED,
           });
-          handleBackClick();
+          handleBackClick(PERPS_TOAST_KEYS.ORDER_PLACED);
           return;
         }
         setPendingOrderSymbol(orderFormState.asset);
@@ -482,17 +497,9 @@ const PerpsOrderEntryPage: React.FC = () => {
     if (hasPosition) {
       setPendingOrderSymbol(null);
       setIsSubmitting(false);
-      replacePerpsToastByKey({
-        key: PERPS_TOAST_KEYS.TRADE_SUCCESS,
-      });
-      handleBackClick();
+      handleBackClick(PERPS_TOAST_KEYS.ORDER_FILLED);
     }
-  }, [
-    pendingOrderSymbol,
-    allPositions,
-    handleBackClick,
-    replacePerpsToastByKey,
-  ]);
+  }, [pendingOrderSymbol, allPositions, handleBackClick]);
 
   useEffect(() => {
     if (!pendingOrderSymbol) {
@@ -521,7 +528,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         <Box paddingLeft={2} paddingBottom={4} paddingTop={4}>
           <Box
             data-testid="perps-order-entry-back-button"
-            onClick={handleBackClick}
+            onClick={() => handleBackClick()}
             aria-label={t('back')}
             className="p-2 cursor-pointer"
           >
@@ -579,7 +586,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       >
         <Box
           data-testid="perps-order-entry-back-button"
-          onClick={handleBackClick}
+          onClick={() => handleBackClick()}
           aria-label={t('back')}
           className="w-9 shrink-0 cursor-pointer"
         >

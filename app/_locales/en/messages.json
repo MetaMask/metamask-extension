@@ -5699,35 +5699,43 @@
     "description": "Error toast text shown when closing a perps position fails"
   },
   "perpsToastCloseInProgress": {
-    "message": "Closing position...",
+    "message": "Closing position",
     "description": "In-progress toast text shown while closing a perps position"
   },
   "perpsToastOrderFailed": {
     "message": "Failed to place order",
     "description": "Error toast text shown when placing a perps order fails"
   },
+  "perpsToastOrderFilled": {
+    "message": "Order filled",
+    "description": "Success toast text shown when a perps market order is filled"
+  },
+  "perpsToastOrderPlaced": {
+    "message": "Order placed",
+    "description": "Success toast text shown when a perps limit order is accepted"
+  },
   "perpsToastOrderSubmitted": {
     "message": "Order submitted",
-    "description": "Success toast text shown when a limit order is successfully submitted"
+    "description": "In-progress toast text shown while a perps order is being submitted"
   },
   "perpsToastSubmitInProgress": {
-    "message": "Submitting order...",
+    "message": "Initializing order...",
     "description": "In-progress toast text shown while submitting a perps order"
   },
   "perpsToastTradeSuccess": {
-    "message": "Successful trade!",
-    "description": "Success toast text shown when a perps market trade succeeds"
+    "message": "Position closed",
+    "description": "Success toast text shown when a perps position is closed"
   },
   "perpsToastUpdateFailed": {
-    "message": "Failed to update position",
+    "message": "Failed to update TP/SL",
     "description": "Error toast text shown when updating TP/SL settings fails"
   },
   "perpsToastUpdateInProgress": {
-    "message": "Updating position...",
+    "message": "Updating TP/SL...",
     "description": "In-progress toast text shown while updating TP/SL settings"
   },
   "perpsToastUpdateSuccess": {
-    "message": "Position updated",
+    "message": "TP/SL updated successfully",
     "description": "Success toast text shown when TP/SL settings are updated"
   },
   "perpsTradePerps": {

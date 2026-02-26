@@ -54,6 +54,8 @@ jest.mock('../../components/app/perps/perps-toast', () => ({
     CLOSE_FAILED: 'perpsToastCloseFailed',
     CLOSE_IN_PROGRESS: 'perpsToastCloseInProgress',
     ORDER_FAILED: 'perpsToastOrderFailed',
+    ORDER_FILLED: 'perpsToastOrderFilled',
+    ORDER_PLACED: 'perpsToastOrderPlaced',
     ORDER_SUBMITTED: 'perpsToastOrderSubmitted',
     SUBMIT_IN_PROGRESS: 'perpsToastSubmitInProgress',
     TRADE_SUCCESS: 'perpsToastTradeSuccess',
@@ -808,7 +810,9 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
         key: 'perpsToastOrderSubmitted',
       });
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        state: { perpsToastKey: 'perpsToastOrderPlaced' },
+      });
     });
   });
 
@@ -850,10 +854,9 @@ describe('PerpsOrderEntryPage', () => {
         rerender(<PerpsOrderEntryPage />);
       });
 
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastTradeSuccess',
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        state: { perpsToastKey: 'perpsToastOrderFilled' },
       });
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
 
     it('navigates back after 15s timeout if position never appears', async () => {
