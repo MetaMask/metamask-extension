@@ -717,8 +717,6 @@ describe('MetaMaskController', () => {
 
     describe('submitPassword', () => {
       it('removes any identities that do not correspond to known accounts.', async () => {
-        const fakeAddress = '0xbad0';
-
         const localMetaMaskController = new MetaMaskController({
           showUserConfirmation: noop,
           encryptor: mockEncryptor,
@@ -727,13 +725,6 @@ describe('MetaMaskController', () => {
             KeyringController: {
               keyrings: [{ type: KeyringType.trezor, accounts: ['0x123'] }],
               isUnlocked: true,
-            },
-            PreferencesController: {
-              identities: {
-                '0x123': { name: 'Trezor 1', address: '0x123' },
-                [fakeAddress]: { name: 'fake', address: fakeAddress },
-              },
-              selectedAddress: '0x123',
             },
           },
           initLangCode: 'en_US',

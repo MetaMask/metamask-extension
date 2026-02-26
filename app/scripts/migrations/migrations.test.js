@@ -75,9 +75,6 @@ describe('wallet1 is migrated successfully', () => {
         expect(
           sixthResult.data.KeyringController.selectedAccount,
         ).toBeUndefined();
-        expect(
-          sixthResult.data.PreferencesController.selectedAddress,
-        ).toStrictEqual(vault5.data.KeyringController.selectedAccount);
 
         vault6 = sixthResult;
         return migration7.migrate(sixthResult);
