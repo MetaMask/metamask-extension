@@ -7,9 +7,6 @@ const tsconfigPath = ts.findConfigFile('./', ts.sys.fileExists);
 const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
 const tsconfig = ts.parseJsonConfigFileContent(config, ts.sys, './');
 
-// Load local ESLint rules
-const localRulesPlugin = require('./eslint-plugin-local-rules');
-
 /**
  * @type {import('eslint').Linter.Config }
  */
@@ -19,9 +16,6 @@ module.exports = {
   ignorePatterns: readFileSync('.prettierignore', 'utf8').trim().split('\n'),
   // eslint's parser, esprima, is not compatible with ESM, so use the babel parser instead
   parser: '@babel/eslint-parser',
-  plugins: {
-    '@metamask/local-rules': localRulesPlugin,
-  },
   overrides: [
     /**
      * == Modules ==
@@ -481,7 +475,19 @@ module.exports = {
         'mocha/consistent-spacing-between-blocks': 'off',
 
         // Enforce usage of FixtureBuilderV2 instead of legacy FixtureBuilder
-        '@metamask/local-rules/prefer-fixture-builder-v2': 'warn',
+        // See: https://consensyssoftware.atlassian.net/browse/MMQA-1462
+        'no-restricted-imports': [
+          'warn',
+          {
+            patterns: [
+              {
+                group: ['**/fixture-builder', '**/fixture-builder.js'],
+                message:
+                  'Use FixtureBuilderV2 from "../../fixtures/fixture-builder-v2" instead of legacy FixtureBuilder for better type safety and modern fixture building patterns.',
+              },
+            ],
+          },
+        ],
       },
     },
     /**
