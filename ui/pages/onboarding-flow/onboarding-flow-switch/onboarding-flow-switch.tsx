@@ -6,7 +6,9 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   LOCK_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   ONBOARDING_EXPERIMENTAL_AREA,
+  ///: END:ONLY_INCLUDE_IF
   ONBOARDING_WELCOME_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -30,7 +32,9 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   isBeta,
   isExperimental,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   isFlask,
+  ///: END:ONLY_INCLUDE_IF
   isMain,
 } from '../../../../shared/lib/build-types';
 
@@ -80,9 +84,11 @@ export default function OnboardingFlowSwitch() {
   ) {
     let redirect;
 
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     if (isFlask()) {
       redirect = <Navigate to={ONBOARDING_EXPERIMENTAL_AREA} replace />;
     } else if (isMain() || isBeta() || isExperimental()) {
+      ///: END:ONLY_INCLUDE_IF
       redirect = (
         <Navigate
           to={
