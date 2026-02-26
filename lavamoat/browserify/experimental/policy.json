@@ -2668,11 +2668,11 @@
         "@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
       }
     },
-<<<<<<< HEAD
     "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer>@noble/curves": {
       "packages": {
         "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer>@noble/hashes": true
-=======
+      }
+    },
     "eth-lattice-keyring>gridplus-sdk>ox>@noble/curves": {
       "globals": {
         "TextEncoder": true
@@ -2695,7 +2695,6 @@
       },
       "packages": {
         "@noble/hashes": true
->>>>>>> main
       }
     },
     "@noble/hashes": {
