@@ -844,15 +844,17 @@
         "@ethersproject/abi": true,
         "@ethersproject/providers": true,
         "@metamask/base-controller": true,
+        "@metamask/assets-controller>@metamask/client-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/assets-controller>@metamask/core-backend": true,
+        "@metamask/core-backend": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/polling-controller": true,
         "@metamask/assets-controller>@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@metamask/keyring-api>async-mutex": true,
         "@metamask/assets-controller>bignumber.js": true,
-        "lodash": true
+        "lodash": true,
+        "@metamask/assets-controller>p-limit": true
       }
     },
     "@metamask/assets-controllers": {
@@ -1043,6 +1045,11 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/assets-controller>@metamask/client-controller": {
+      "packages": {
+        "@metamask/base-controller": true
+      }
+    },
     "@metamask/connectivity-controller": {
       "packages": {
         "@metamask/base-controller": true
@@ -1068,21 +1075,6 @@
       }
     },
     "@metamask/core-backend": {
-      "globals": {
-        "URL": true,
-        "WebSocket": true,
-        "clearTimeout": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/utils": true,
-        "@metamask/core-backend>@tanstack/query-core": true,
-        "uuid": true
-      }
-    },
-    "@metamask/assets-controller>@metamask/core-backend": {
       "globals": {
         "URL": true,
         "WebSocket": true,
@@ -5062,6 +5054,11 @@
         "viem>ox>@noble/curves": true,
         "@noble/hashes": true,
         "viem>abitype": true
+      }
+    },
+    "@metamask/assets-controller>p-limit": {
+      "packages": {
+        "@metamask/assets-controller>p-limit>yocto-queue": true
       }
     },
     "crypto-browserify>public-encrypt>parse-asn1": {
