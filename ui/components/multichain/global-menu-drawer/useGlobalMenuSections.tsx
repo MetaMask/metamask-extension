@@ -80,7 +80,7 @@ import {
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import type { GlobalMenuSection } from '../global-menu/global-menu-list.types';
-import { isBeta, isFlask } from '../../../helpers/utils/build-types';
+import { isBeta, isFlask } from '../../../../shared/lib/build-types';
 
 const METRICS_LOCATION = 'Global Menu';
 
