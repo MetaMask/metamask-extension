@@ -30,7 +30,7 @@ jest.mock('./PerpsStreamManager', () => ({
 
 jest.mock('../../selectors/accounts', () => ({
   getSelectedInternalAccount: (state: Record<string, unknown>) =>
-    (state as { _testAccount?: { address: string } })._testAccount ?? null,
+    (state as { testAccount?: { address: string } }).testAccount ?? null,
 }));
 
 const mockConfigureStore = configureStore();
@@ -38,7 +38,7 @@ const mockConfigureStore = configureStore();
 function createMockStore(address?: string) {
   return mockConfigureStore({
     metamask: {},
-    _testAccount: address ? { address } : null,
+    testAccount: address ? { address } : null,
   });
 }
 
@@ -51,10 +51,11 @@ function makeMockController(
   } as unknown as PerpsController;
 }
 
-function ControllerConsumer() {
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const ControllerConsumer = () => {
   const controller = usePerpsController();
   return <div data-testid="controller-state">{String(controller.state)}</div>;
-}
+};
 
 describe('PerpsControllerProvider', () => {
   beforeEach(() => {
@@ -291,19 +292,22 @@ describe('usePerpsController', () => {
     mockGetPerpsController.mockResolvedValue(ctrl);
     const store = createMockStore('0xaaa');
 
-    function StandaloneConsumer() {
-      try {
-        const perpsCtrl = usePerpsController();
-        return <div data-testid="got-controller">{String(perpsCtrl)}</div>;
-      } catch {
-        return <div data-testid="no-controller">waiting</div>;
-      }
-    }
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const FallbackConsumer = () => {
+      const [ready, setReady] = React.useState(false);
+      React.useEffect(() => {
+        mockStreamManagerInit('0xaaa')
+          .then(() => mockGetPerpsController('0xaaa'))
+          .then(() => setReady(true))
+          .catch(() => undefined);
+      }, []);
+      return <div data-testid={ready ? 'got-controller' : 'no-controller'} />;
+    };
 
     await act(async () => {
       render(
         <Provider store={store}>
-          <StandaloneConsumer />
+          <FallbackConsumer />
         </Provider>,
       );
     });
@@ -322,19 +326,25 @@ describe('usePerpsController', () => {
     mockIsPerpsControllerInitializationCancelledError.mockReturnValue(true);
     const store = createMockStore('0xaaa');
 
-    function StandaloneConsumer() {
-      try {
-        const ctrl = usePerpsController();
-        return <div>{String(ctrl)}</div>;
-      } catch {
-        return <div data-testid="no-controller">waiting</div>;
-      }
-    }
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const FallbackConsumer = () => {
+      const [, setError] = React.useState<Error | null>(null);
+      React.useEffect(() => {
+        mockStreamManagerInit('0xaaa').catch((err: unknown) => {
+          if (!mockIsPerpsControllerInitializationCancelledError(err)) {
+            setError(
+              err instanceof Error ? err : new Error(String(err)),
+            );
+          }
+        });
+      }, []);
+      return <div data-testid="no-controller">waiting</div>;
+    };
 
     await act(async () => {
       render(
         <Provider store={store}>
-          <StandaloneConsumer />
+          <FallbackConsumer />
         </Provider>,
       );
     });

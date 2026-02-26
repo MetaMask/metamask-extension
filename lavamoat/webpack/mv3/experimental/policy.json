@@ -1536,7 +1536,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/curves>@noble/hashes": true
+        "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/hashes": true
       }
     },
     "@noble/hashes": {
@@ -1559,12 +1559,6 @@
       },
       "packages": {
         "@swc/helpers": true
-      }
-    },
-    "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/curves>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
@@ -1603,7 +1597,8 @@
     },
     "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/hashes": {
       "globals": {
-        "TextEncoder": true
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@popperjs/core": {

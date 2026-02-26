@@ -31,7 +31,7 @@ jest.mock('./getPerpsController', () => ({
 
 jest.mock('../../selectors/accounts', () => ({
   getSelectedInternalAccount: (state: Record<string, unknown>) =>
-    (state as { _testAccount?: { address: string } })._testAccount ?? null,
+    (state as { testAccount?: { address: string } }).testAccount ?? null,
 }));
 
 const mockConfigureStore = configureStore();
@@ -39,7 +39,7 @@ const mockConfigureStore = configureStore();
 function createMockStore(address?: string) {
   return mockConfigureStore({
     metamask: {},
-    _testAccount: address ? { address } : null,
+    testAccount: address ? { address } : null,
   });
 }
 
@@ -238,9 +238,9 @@ describe('PerpsRouteWrapper', () => {
     mockInit.mockResolvedValue(undefined);
     const store = createMockStore('0xaaa');
 
-    let unmount: () => void;
+    let unmountFn: (() => void) | undefined;
     await act(async () => {
-      ({ unmount } = render(
+      ({ unmount: unmountFn } = render(
         <Provider store={store}>
           <PerpsRouteWrapper>
             <div>child</div>
@@ -249,7 +249,9 @@ describe('PerpsRouteWrapper', () => {
       ));
     });
 
-    unmount!();
+    if (unmountFn) {
+      unmountFn();
+    }
 
     expect(mockCleanupPrewarm).toHaveBeenCalledTimes(1);
   });
