@@ -46,6 +46,7 @@ import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import {
   getDisplayName,
+  normalizeTpslPrices,
   safeDecodeURIComponent,
 } from '../../components/app/perps/utils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
@@ -377,32 +378,32 @@ const PerpsOrderEntryPage: React.FC = () => {
           error?: string;
         }>('perpsClosePosition', [closeParams]);
         if (!result.success) {
-          throw new Error(result.error || 'Failed to close position');
+          throw new Error(result.error ?? 'Failed to close position');
         }
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.TRADE_SUCCESS,
         });
       } else if (orderMode === 'modify' && position) {
-        const cleanTp =
-          orderFormState.autoCloseEnabled && orderFormState.takeProfitPrice
-            ? orderFormState.takeProfitPrice.replace(/,/gu, '')
-            : undefined;
-        const cleanSl =
-          orderFormState.autoCloseEnabled && orderFormState.stopLossPrice
-            ? orderFormState.stopLossPrice.replace(/,/gu, '')
-            : undefined;
+        const { takeProfitPrice, stopLossPrice } = normalizeTpslPrices({
+          takeProfitPrice: orderFormState.autoCloseEnabled
+            ? orderFormState.takeProfitPrice
+            : undefined,
+          stopLossPrice: orderFormState.autoCloseEnabled
+            ? orderFormState.stopLossPrice
+            : undefined,
+        });
         const result = await submitRequestToBackground<{
           success: boolean;
           error?: string;
         }>('perpsUpdatePositionTPSL', [
           {
             symbol: orderFormState.asset,
-            takeProfitPrice: cleanTp || undefined,
-            stopLossPrice: cleanSl || undefined,
+            takeProfitPrice,
+            stopLossPrice,
           },
         ]);
         if (!result.success) {
-          throw new Error(result.error || 'Failed to update TP/SL');
+          throw new Error(result.error ?? 'Failed to update TP/SL');
         }
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.UPDATE_SUCCESS,
@@ -419,7 +420,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           error?: string;
         }>('perpsPlaceOrder', [orderParams]);
         if (!result.success) {
-          throw new Error(result.error || 'Failed to place order');
+          throw new Error(result.error ?? 'Failed to place order');
         }
 
         if (orderFormState.type === 'limit') {
