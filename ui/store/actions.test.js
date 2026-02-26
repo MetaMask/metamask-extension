@@ -2658,6 +2658,60 @@ describe('Actions', () => {
     });
   });
 
+  describe('#setMusdConversionEducationSeen', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls setMusdConversionEducationSeen in background with value', async () => {
+      const store = mockStore();
+      const setMusdConversionEducationSeenStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        setMusdConversionEducationSeen: setMusdConversionEducationSeenStub,
+      });
+
+      await store.dispatch(actions.setMusdConversionEducationSeen(true));
+      expect(setMusdConversionEducationSeenStub.callCount).toStrictEqual(1);
+      expect(setMusdConversionEducationSeenStub.calledWith(true)).toBe(true);
+    });
+
+    it('calls setMusdConversionEducationSeen in background with false', async () => {
+      const store = mockStore();
+      const setMusdConversionEducationSeenStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        setMusdConversionEducationSeen: setMusdConversionEducationSeenStub,
+      });
+
+      await store.dispatch(actions.setMusdConversionEducationSeen(false));
+      expect(setMusdConversionEducationSeenStub.calledWith(false)).toBe(true);
+    });
+  });
+
+  describe('#addMusdConversionDismissedCtaKey', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls addMusdConversionDismissedCtaKey in background with key', async () => {
+      const store = mockStore();
+      const addMusdConversionDismissedCtaKeyStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        addMusdConversionDismissedCtaKey: addMusdConversionDismissedCtaKeyStub,
+      });
+
+      await store.dispatch(
+        actions.addMusdConversionDismissedCtaKey('0x1-0xabc123'),
+      );
+      expect(addMusdConversionDismissedCtaKeyStub.callCount).toStrictEqual(1);
+      expect(
+        addMusdConversionDismissedCtaKeyStub.calledWith('0x1-0xabc123'),
+      ).toBe(true);
+    });
+  });
+
   describe('#setUseBlockie', () => {
     afterEach(() => {
       sinon.restore();

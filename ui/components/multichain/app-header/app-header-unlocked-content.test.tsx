@@ -3,6 +3,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
 
 jest.mock('../../../../shared/lib/trace', () => {
@@ -69,7 +70,9 @@ describe('AppHeaderUnlockedContent trace', () => {
       ).toBeInTheDocument();
     });
 
-    const viewAllButton = screen.getByText('View all');
+    const viewAllButton = screen.getByText(
+      messages.multichainAddressViewAll.message,
+    );
     fireEvent.click(viewAllButton);
 
     const traceLib = jest.requireMock('../../../../shared/lib/trace');

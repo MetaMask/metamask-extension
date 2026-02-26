@@ -5235,9 +5235,6 @@
   "perpsAddToFavorites": {
     "message": "Ajouter aux favoris"
   },
-  "perpsAsk": {
-    "message": "Cours vendeur"
-  },
   "perpsAutoClose": {
     "message": "Fermeture automatique"
   },
@@ -5248,14 +5245,8 @@
   "perpsAvailableBalance": {
     "message": "Solde disponible"
   },
-  "perpsBid": {
-    "message": "Cours acheteur"
-  },
   "perpsCancelAllOrders": {
     "message": "Tout annuler"
-  },
-  "perpsClose": {
-    "message": "Fermer"
   },
   "perpsCloseAll": {
     "message": "Tout fermer"
@@ -5373,9 +5364,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Prix de liquidation"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Prix de liquidation estimé"
   },
   "perpsLong": {
     "message": "Acheter"
@@ -6202,12 +6190,6 @@
   },
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Réessayer"
-  },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Les comptes de portefeuille matériel ne sont pas encore autorisés à recevoir des récompenses. Veuillez passer à un autre compte pour continuer."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Compte non pris en charge"
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Réessayer"
