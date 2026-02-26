@@ -1,304 +1,150 @@
-// Timer IDs from benchmark flows use snake_case (e.g. load_new_account, confirm_tx)
-/* eslint-disable @typescript-eslint/naming-convention */
+/**
+ * Tests for index.ts (the `start()` entry point).
+ *
+ * `start()` is immediately invoked when the module is loaded. Each test:
+ * 1. Sets the required environment variables.
+ * 2. Calls `jest.resetModules()` so the module loads fresh.
+ * 3. Requires (dynamically) `./index` which triggers `start()`.
+ * 4. Flushes the microtask queue so `start()` has time to finish.
+ * 5. Asserts via the stable jest.mock references.
+ */
 
-import type { BenchmarkResults } from '../../test/e2e/benchmarks/utils/types';
-import { buildTableRows, buildBenchmarkSection, extractEntries } from './utils';
+jest.mock('./artifacts');
+jest.mock('./bundle-size');
+jest.mock('./dapp-benchmarks');
+jest.mock('./performance-benchmarks');
+jest.mock('./utils');
 
-const mockUserActionsJson: Record<string, BenchmarkResults> = {
-  loadNewAccount: {
-    testTitle: 'benchmark-user-actions-load-new-account',
-    persona: 'standard',
-    mean: { load_new_account: 523.4 },
-    min: { load_new_account: 480 },
-    max: { load_new_account: 620 },
-    stdDev: { load_new_account: 45.2 },
-    p75: { load_new_account: 550 },
-    p95: { load_new_account: 612 },
-  },
-  confirmTx: {
-    testTitle: 'benchmark-user-actions-confirm-tx',
-    persona: 'standard',
-    mean: { confirm_tx: 3456.7 },
-    min: { confirm_tx: 3100 },
-    max: { confirm_tx: 3900 },
-    stdDev: { confirm_tx: 210.3 },
-    p75: { confirm_tx: 3600 },
-    p95: { confirm_tx: 3812 },
-  },
-  bridgeUserActions: {
-    testTitle: 'benchmark-user-actions-bridge',
-    persona: 'standard',
-    mean: { bridgePageLoad: 200.1, bridgeTokenSwitch: 150.8 },
-    min: { bridgePageLoad: 180, bridgeTokenSwitch: 130 },
-    max: { bridgePageLoad: 260, bridgeTokenSwitch: 190 },
-    stdDev: { bridgePageLoad: 18.5, bridgeTokenSwitch: 12.3 },
-    p75: { bridgePageLoad: 215, bridgeTokenSwitch: 160 },
-    p95: { bridgePageLoad: 245, bridgeTokenSwitch: 178 },
-  },
+const BASE_ENV: Record<string, string> = {
+  PR_COMMENT_TOKEN: 'token',
+  OWNER: 'MetaMask',
+  REPOSITORY: 'metamask-extension',
+  RUN_ID: '99',
+  PR_NUMBER: '42',
+  HEAD_COMMIT_HASH: 'abc1234567',
+  MERGE_BASE_COMMIT_HASH: 'def7654321',
+  HOST_URL: 'https://ci.example.com',
+  LAVAMOAT_POLICY_CHANGED: 'false',
+  POST_NEW_BUILDS: 'false',
 };
 
-const mockPerformanceOnboardingJson: Record<string, BenchmarkResults> = {
-  onboardingImportWallet: {
-    testTitle: 'benchmark-onboarding-import-wallet',
-    persona: 'standard',
-    mean: {
-      importWalletToSocialScreen: 209,
-      srpButtonToSrpForm: 53,
-      confirmSrpToPasswordForm: 150,
-      doneButtonToHomeScreen: 8500,
-    },
-    min: {
-      importWalletToSocialScreen: 170,
-      srpButtonToSrpForm: 40,
-      confirmSrpToPasswordForm: 120,
-      doneButtonToHomeScreen: 7500,
-    },
-    max: {
-      importWalletToSocialScreen: 310,
-      srpButtonToSrpForm: 80,
-      confirmSrpToPasswordForm: 210,
-      doneButtonToHomeScreen: 11000,
-    },
-    stdDev: {
-      importWalletToSocialScreen: 32,
-      srpButtonToSrpForm: 8,
-      confirmSrpToPasswordForm: 20,
-      doneButtonToHomeScreen: 600,
-    },
-    p75: {
-      importWalletToSocialScreen: 230,
-      srpButtonToSrpForm: 58,
-      confirmSrpToPasswordForm: 165,
-      doneButtonToHomeScreen: 9000,
-    },
-    p95: {
-      importWalletToSocialScreen: 280,
-      srpButtonToSrpForm: 70,
-      confirmSrpToPasswordForm: 195,
-      doneButtonToHomeScreen: 10200,
-    },
-  },
-};
+function setEnv(overrides: Record<string, string | undefined> = {}): void {
+  for (const key of Object.keys(BASE_ENV)) {
+    delete process.env[key];
+  }
+  for (const [k, v] of Object.entries({ ...BASE_ENV, ...overrides })) {
+    if (v !== undefined) {
+      process.env[k] = v;
+    }
+  }
+}
 
-const mockPerformanceAssetsJson: Record<string, BenchmarkResults> = {
-  assetDetails: {
-    testTitle: 'benchmark-asset-details',
-    persona: 'powerUser',
-    mean: { assetClickToPriceChart: 4200 },
-    min: { assetClickToPriceChart: 3800 },
-    max: { assetClickToPriceChart: 5500 },
-    stdDev: { assetClickToPriceChart: 350 },
-    p75: { assetClickToPriceChart: 4500 },
-    p95: { assetClickToPriceChart: 5100 },
-  },
-};
+/** Drain the microtask + macrotask queue to let `start()` finish. */
+async function flushPromises(): Promise<void> {
+  // Several passes to let chained promises resolve
+  for (let i = 0; i < 5; i++) {
+    // eslint-disable-next-line no-await-in-loop
+    await new Promise<void>((resolve) => setImmediate(resolve));
+  }
+}
 
-describe('extractEntries', () => {
-  it('filters out entries without a mean object', () => {
-    const data = {
-      valid: { mean: { metric: 100 } },
-      invalid: { testTitle: 'no-mean' },
-    };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getMocks(): Record<string, any> {
+  return {
+    artifacts: jest.requireMock('./artifacts'),
+    bundleSize: jest.requireMock('./bundle-size'),
+    dapp: jest.requireMock('./dapp-benchmarks'),
+    perf: jest.requireMock('./performance-benchmarks'),
+    utils: jest.requireMock('./utils'),
+  };
+}
 
-    const entries = extractEntries(data);
-    expect(entries).toHaveLength(1);
-    expect(entries[0].benchmarkName).toBe('valid');
+function configureMocks(): void {
+  const { artifacts, bundleSize, dapp, perf, utils } = getMocks();
+
+  artifacts.getArtifactLinks.mockReturnValue({
+    link: () => '<a href="#">link</a>',
+    bundleSizeStats: { url: 'https://ci/bundle.json', label: 'bundle' },
+    bundleSizeData: { url: 'https://ci/data.json', label: 'data' },
+    interactionStats: { url: 'https://ci/inter.json', label: 'inter' },
+    storybook: { url: 'https://ci/storybook', label: 'Storybook' },
+    tsMigrationDashboard: { url: 'https://ci/ts', label: 'TS' },
+    depViz: { url: 'https://ci/dep', label: 'dep' },
+    allArtifacts: { url: 'https://ci/all', label: 'All' },
   });
-});
+  artifacts.buildArtifactsBody.mockResolvedValue('<p>artifacts</p>');
+  perf.buildPerformanceBenchmarksSection.mockResolvedValue('<p>perf</p>');
+  dapp.getDappBenchmarkComment.mockResolvedValue('<p>dapp</p>');
+  bundleSize.buildBundleSizeDiffSection.mockResolvedValue('<p>bundle</p>');
+  utils.buildSectionWithFallback.mockImplementation(
+    (fn: () => Promise<string | null | undefined>) =>
+      fn().then((r: string | null | undefined) => r ?? ''),
+  );
+  utils.postCommentWithMetamaskBot.mockResolvedValue(null);
+}
 
-describe('buildTableRows', () => {
-  it('produces one row per metric with correct cell values', () => {
-    const entries = extractEntries(mockUserActionsJson);
-    const rows = buildTableRows(entries);
+describe('start() entry point', () => {
+  let warnSpy: jest.SpyInstance;
+  let errorSpy: jest.SpyInstance;
 
-    expect(rows).toHaveLength(4);
+  beforeEach(() => {
+    jest.resetModules();
+    warnSpy = jest.spyOn(console, 'warn').mockImplementation();
+    errorSpy = jest.spyOn(console, 'error').mockImplementation();
+    configureMocks();
   });
 
-  it('renders loadNewAccount row with correct rounded values', () => {
-    const entries = extractEntries({
-      loadNewAccount: mockUserActionsJson.loadNewAccount,
-    });
-    const [row] = buildTableRows(entries);
-
-    expect(row).toContain('Load New Account');
-    expect(row).toContain('load_new_account');
-    expect(row).toContain('>523<');
-    expect(row).toContain('>45<');
-    expect(row).toContain('>550<');
-    expect(row).toContain('>612<');
+  afterEach(() => {
+    jest.restoreAllMocks();
+    for (const key of Object.keys(BASE_ENV)) {
+      delete process.env[key];
+    }
   });
 
-  it('renders confirmTx row with correct rounded values', () => {
-    const entries = extractEntries({
-      confirmTx: mockUserActionsJson.confirmTx,
-    });
-    const [row] = buildTableRows(entries);
+  it('logs a warning and returns early when PR_NUMBER is not set', async () => {
+    setEnv({ PR_NUMBER: undefined });
 
-    expect(row).toContain('Confirm Tx');
-    expect(row).toContain('confirm_tx');
-    expect(row).toContain('>3457<');
-    expect(row).toContain('>210<');
-    expect(row).toContain('>3600<');
-    expect(row).toContain('>3812<');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('.');
+    await flushPromises();
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('No pull request detected'),
+    );
+    expect(getMocks().utils.postCommentWithMetamaskBot).not.toHaveBeenCalled();
   });
 
-  it('renders multi-metric entry with rowspan on first row only', () => {
-    const entries = extractEntries({
-      bridgeUserActions: mockUserActionsJson.bridgeUserActions,
-    });
-    const rows = buildTableRows(entries);
+  it('invokes console.error when required env vars are missing', async () => {
+    setEnv({ HOST_URL: undefined });
 
-    expect(rows).toHaveLength(2);
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('.');
+    await flushPromises();
 
-    expect(rows[0]).toContain('rowspan="2"');
-    expect(rows[0]).toContain('Bridge User Actions');
-    expect(rows[0]).toContain('bridgePageLoad');
-    expect(rows[0]).toContain('>200<');
-    expect(rows[0]).toContain('>19<');
-    expect(rows[0]).toContain('>215<');
-    expect(rows[0]).toContain('>245<');
-
-    expect(rows[1]).not.toContain('Bridge User Actions');
-    expect(rows[1]).toContain('bridgeTokenSwitch');
-    expect(rows[1]).toContain('>151<');
-    expect(rows[1]).toContain('>12<');
-    expect(rows[1]).toContain('>160<');
-    expect(rows[1]).toContain('>178<');
+    expect(errorSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: expect.stringContaining(
+          'Missing required environment variables',
+        ),
+      }),
+    );
   });
 
-  it('renders performance metrics with correct values per row', () => {
-    const entries = extractEntries(mockPerformanceOnboardingJson);
-    const rows = buildTableRows(entries);
+  it('calls postCommentWithMetamaskBot with assembled comment body', async () => {
+    setEnv();
 
-    expect(rows).toHaveLength(4);
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('.');
+    await flushPromises();
 
-    expect(rows[0]).toContain('rowspan="4"');
-    expect(rows[0]).toContain('Onboarding Import Wallet');
-    expect(rows[0]).toContain('importWalletToSocialScreen');
-    expect(rows[0]).toContain('>209<');
-    expect(rows[0]).toContain('>32<');
-    expect(rows[0]).toContain('>230<');
-    expect(rows[0]).toContain('>280<');
-
-    expect(rows[1]).toContain('srpButtonToSrpForm');
-    expect(rows[1]).toContain('>53<');
-    expect(rows[1]).toContain('>8<');
-    expect(rows[1]).toContain('>58<');
-    expect(rows[1]).toContain('>70<');
-
-    expect(rows[2]).toContain('confirmSrpToPasswordForm');
-    expect(rows[2]).toContain('>150<');
-    expect(rows[2]).toContain('>20<');
-    expect(rows[2]).toContain('>165<');
-    expect(rows[2]).toContain('>195<');
-
-    expect(rows[3]).toContain('doneButtonToHomeScreen');
-    expect(rows[3]).toContain('>8500<');
-    expect(rows[3]).toContain('>600<');
-    expect(rows[3]).toContain('>9000<');
-    expect(rows[3]).toContain('>10200<');
-  });
-
-  it('renders dash for missing statistical fields', () => {
-    const rows = buildTableRows([
-      {
-        benchmarkName: 'noStats',
-        entry: { mean: { myMetric: 100 } },
-      },
-    ]);
-
-    expect(rows).toHaveLength(1);
-    expect(rows[0]).toContain('>100<');
-    const dashes = rows[0].match(/>-</gu);
-    expect(dashes).toHaveLength(3);
-  });
-});
-
-describe('buildBenchmarkSection', () => {
-  describe('interaction benchmarks', () => {
-    const entries = extractEntries(mockUserActionsJson);
-
-    it('wraps rows in a collapsible details section', () => {
-      const html = buildBenchmarkSection(
-        entries,
-        '👆 Interaction Benchmarks',
-        'Action',
-      );
-
-      expect(html).toContain('<details>');
-      expect(html).toContain('👆 Interaction Benchmarks');
-      expect(html).toContain('<table>');
-      expect(html).toContain('</details>');
-    });
-
-    it('includes correct column headers', () => {
-      const html = buildBenchmarkSection(
-        entries,
-        '👆 Interaction Benchmarks',
-        'Action',
-      );
-
-      expect(html).toContain('<th>Action</th>');
-      expect(html).toContain('<th>Metric</th>');
-      expect(html).toContain('<th>Mean (ms)</th>');
-      expect(html).toContain('<th>Std Dev (ms)</th>');
-      expect(html).toContain('<th>P75 (ms)</th>');
-      expect(html).toContain('<th>P95 (ms)</th>');
-    });
-
-    it('returns empty string when no data', () => {
-      expect(
-        buildBenchmarkSection([], '👆 Interaction Benchmarks', 'Action'),
-      ).toBe('');
-    });
-  });
-
-  describe('user journey benchmarks', () => {
-    const entries = [
-      ...extractEntries(mockPerformanceOnboardingJson),
-      ...extractEntries(mockPerformanceAssetsJson),
-    ];
-
-    it('wraps rows in a collapsible details section', () => {
-      const html = buildBenchmarkSection(
-        entries,
-        '🧭 User Journey Benchmarks',
-        'Benchmark',
-      );
-
-      expect(html).toContain('<details>');
-      expect(html).toContain('🧭 User Journey Benchmarks');
-      expect(html).toContain('<table>');
-      expect(html).toContain('</details>');
-    });
-
-    it('includes correct column headers', () => {
-      const html = buildBenchmarkSection(
-        entries,
-        '🧭 User Journey Benchmarks',
-        'Benchmark',
-      );
-
-      expect(html).toContain('<th>Benchmark</th>');
-      expect(html).toContain('<th>Metric</th>');
-      expect(html).toContain('<th>Mean (ms)</th>');
-    });
-
-    it('includes entries from all presets', () => {
-      const html = buildBenchmarkSection(
-        entries,
-        '🧭 User Journey Benchmarks',
-        'Benchmark',
-      );
-
-      expect(html).toContain('Onboarding Import Wallet');
-      expect(html).toContain('Asset Details');
-    });
-
-    it('returns empty string when no data', () => {
-      expect(
-        buildBenchmarkSection([], '🧭 User Journey Benchmarks', 'Benchmark'),
-      ).toBe('');
-    });
+    expect(getMocks().utils.postCommentWithMetamaskBot).toHaveBeenCalledWith(
+      expect.objectContaining({
+        owner: 'MetaMask',
+        repository: 'metamask-extension',
+        prNumber: '42',
+        commentToken: 'token',
+        commentBody: expect.stringContaining('<p>artifacts</p>'),
+      }),
+    );
   });
 });

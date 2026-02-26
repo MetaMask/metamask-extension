@@ -5235,9 +5235,6 @@
   "perpsAddToFavorites": {
     "message": "Добавить в Избранное"
   },
-  "perpsAsk": {
-    "message": "Аск"
-  },
   "perpsAutoClose": {
     "message": "Автозакрытие"
   },
@@ -5248,14 +5245,8 @@
   "perpsAvailableBalance": {
     "message": "Доступный баланс"
   },
-  "perpsBid": {
-    "message": "Бид"
-  },
   "perpsCancelAllOrders": {
     "message": "Отменить все"
-  },
-  "perpsClose": {
-    "message": "Закрыть"
   },
   "perpsCloseAll": {
     "message": "Закрыть все"
@@ -5373,9 +5364,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Цена ликвидации"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Прим. цена ликвидации"
   },
   "perpsLong": {
     "message": "Длинные"
@@ -6205,12 +6193,6 @@
   },
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Повтор"
-  },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Счета аппаратных кошельков пока не могут быть использованы для получения вознаграждений. Чтобы продолжить, перейдите в другой счет."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Счет не поддерживается"
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Повтор"

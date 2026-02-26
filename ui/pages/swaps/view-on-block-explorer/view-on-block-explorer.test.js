@@ -1,7 +1,7 @@
 import React from 'react';
-
-import { fireEvent } from '../../../../test/jest';
+import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import ViewOnBlockExplorer from '.';
 
 const createProps = (customProps = {}) => {
@@ -19,7 +19,13 @@ describe('ViewOnBlockExplorer', () => {
     const { container, getByText } = renderWithProvider(
       <ViewOnBlockExplorer {...createProps()} />,
     );
-    expect(getByText('View Swap at etherscan.io')).toBeInTheDocument();
+    expect(
+      getByText(
+        messages.viewOnCustomBlockExplorer.message
+          .replace('$1', 'Swap')
+          .replace('$2', 'etherscan.io'),
+      ),
+    ).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -28,7 +34,11 @@ describe('ViewOnBlockExplorer', () => {
     const { getByText } = renderWithProvider(
       <ViewOnBlockExplorer {...createProps()} />,
     );
-    const link = getByText('View Swap at etherscan.io');
+    const link = getByText(
+      messages.viewOnCustomBlockExplorer.message
+        .replace('$1', 'Swap')
+        .replace('$2', 'etherscan.io'),
+    );
     expect(link).toBeInTheDocument();
     fireEvent.click(link);
     expect(global.platform.openTab).toHaveBeenCalledWith({

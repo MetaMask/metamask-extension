@@ -5235,9 +5235,6 @@
   "perpsAddToFavorites": {
     "message": "添加到收藏夹"
   },
-  "perpsAsk": {
-    "message": "卖出价"
-  },
   "perpsAutoClose": {
     "message": "自动平仓"
   },
@@ -5248,14 +5245,8 @@
   "perpsAvailableBalance": {
     "message": "可用余额"
   },
-  "perpsBid": {
-    "message": "买入价"
-  },
   "perpsCancelAllOrders": {
     "message": "全部取消"
-  },
-  "perpsClose": {
-    "message": "关闭"
   },
   "perpsCloseAll": {
     "message": "全部平仓"
@@ -5373,9 +5364,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "清算价格"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "预估清算价格"
   },
   "perpsLong": {
     "message": "做多"
@@ -6199,12 +6187,6 @@
   },
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "重试"
-  },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "硬件钱包账户暂不符合奖励领取资格。请切换至其他账户继续操作。"
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "账户不受支持"
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "重试"
