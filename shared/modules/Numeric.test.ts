@@ -89,6 +89,11 @@ describe('Numeric', () => {
         expect(numeric.value).toStrictEqual(new BigNumber(100, 10));
       });
 
+      it('should create a new Numeric from a bigint', () => {
+        const numeric = new Numeric(100n, 10);
+        expect(numeric.value).toStrictEqual(new BigNumber(100, 10));
+      });
+
       it('should create a new Numeric from a BN-like value', () => {
         const numeric = new Numeric(createBnLike(100n), 10);
         expect(numeric.value).toStrictEqual(new BigNumber(100, 10));
