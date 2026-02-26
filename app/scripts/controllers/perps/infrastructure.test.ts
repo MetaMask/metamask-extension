@@ -1,148 +1,80 @@
-import type { PerpsControllerAccess } from '@metamask/perps-controller';
-
-import {
-  type CreatePerpsInfrastructureOptions,
-  createPerpsInfrastructure,
-} from './infrastructure';
-
-type SubmitTransaction = PerpsControllerAccess['transaction']['submit'];
-type SubmitTransactionParams = Parameters<SubmitTransaction>[0];
-type SubmitTransactionOptions = Parameters<SubmitTransaction>[1];
-
-function arrangeInfrastructure() {
-  const submitRequestToBackground = jest.fn();
-  const generateActionId = jest.fn().mockReturnValue(42);
-
-  const options: CreatePerpsInfrastructureOptions = {
-    selectedAddress: '0x1234',
-    signTypedMessage: jest.fn().mockResolvedValue('0xsignature'),
-    findNetworkClientIdForChain: jest.fn().mockReturnValue('mainnet'),
-    submitRequestToBackground,
-    generateActionId,
-  };
-
-  const infrastructure = createPerpsInfrastructure(options);
-
-  return {
-    infrastructure,
-    submitRequestToBackground,
-    generateActionId,
-  };
-}
-
-function getSubmitFunction(
-  infrastructure: ReturnType<typeof createPerpsInfrastructure>,
-) {
-  return infrastructure.controllers.transaction.submit;
-}
-
-function getForwardedAddTransactionOptions(
-  submitRequestToBackground: jest.Mock,
-): Record<string, unknown> {
-  const submitCall = submitRequestToBackground.mock.calls[0];
-  const submitArgs = submitCall?.[1] as unknown[];
-
-  return submitArgs[1] as Record<string, unknown>;
-}
+import { createPerpsInfrastructure } from './infrastructure';
 
 describe('createPerpsInfrastructure', () => {
-  describe('controllers.transaction.submit', () => {
-    it('forwards only whitelisted transaction options', async () => {
-      const { infrastructure, submitRequestToBackground, generateActionId } =
-        arrangeInfrastructure();
-      const submit = getSubmitFunction(infrastructure);
+  it('returns a valid PerpsPlatformDependencies object', () => {
+    const infrastructure = createPerpsInfrastructure();
 
-      const txParams: SubmitTransactionParams = {
-        from: '0xabc',
-        to: '0xdef',
-        value: '0x0',
-      };
-      const txOptions = {
-        networkClientId: Promise.resolve('mainnet') as unknown as string,
-        origin: 'perps',
-        type: 'perpsDeposit',
-        gasFeeToken: '0x1234' as `0x${string}`,
-        skipInitialGasEstimate: true,
-        internalOnlyField: 'do-not-forward',
-      } as SubmitTransactionOptions & { internalOnlyField: string };
+    expect(infrastructure.logger).toBeDefined();
+    expect(infrastructure.debugLogger).toBeDefined();
+    expect(infrastructure.metrics).toBeDefined();
+    expect(infrastructure.performance).toBeDefined();
+    expect(infrastructure.tracer).toBeDefined();
+    expect(infrastructure.streamManager).toBeDefined();
+    expect(infrastructure.featureFlags).toBeDefined();
+    expect(infrastructure.marketDataFormatters).toBeDefined();
+    expect(infrastructure.cacheInvalidator).toBeDefined();
+    expect(infrastructure.rewards).toBeDefined();
+  });
 
-      submitRequestToBackground.mockResolvedValue({
-        id: 'tx-id',
-        hash: '0xhash',
+  describe('featureFlags', () => {
+    it('validateVersionGated returns true as default stub', () => {
+      const infrastructure = createPerpsInfrastructure();
+      const result = infrastructure.featureFlags.validateVersionGated({
+        enabled: true,
+        minimumVersion: '1.0.0',
       });
+      expect(result).toBe(true);
+    });
+  });
 
-      await submit(txParams, txOptions);
-
-      expect(submitRequestToBackground).toHaveBeenCalledWith('addTransaction', [
-        txParams,
-        {
-          networkClientId: 'mainnet',
-          origin: 'perps',
-          type: 'perpsDeposit',
-          gasFeeToken: '0x1234',
-          actionId: 42,
-        },
-      ]);
-      expect(generateActionId).toHaveBeenCalledTimes(1);
-
-      const forwardedOptions = getForwardedAddTransactionOptions(
-        submitRequestToBackground,
-      );
-      expect(forwardedOptions.skipInitialGasEstimate).toBeUndefined();
-      expect(forwardedOptions.internalOnlyField).toBeUndefined();
+  describe('marketDataFormatters', () => {
+    it('formats volume as compact USD', () => {
+      const { marketDataFormatters } = createPerpsInfrastructure();
+      const formatted = marketDataFormatters.formatVolume(1_200_000_000);
+      expect(formatted).toContain('1.2');
+      expect(formatted).toContain('B');
     });
 
-    it('uses metamask as the default origin when none is provided', async () => {
-      const { infrastructure, submitRequestToBackground } =
-        arrangeInfrastructure();
-      const submit = getSubmitFunction(infrastructure);
-
-      submitRequestToBackground.mockResolvedValue({
-        id: 'tx-id',
-      });
-
-      await submit({ from: '0xabc' }, {
-        networkClientId: 'mainnet',
-      } as SubmitTransactionOptions);
-
-      const forwardedOptions = getForwardedAddTransactionOptions(
-        submitRequestToBackground,
-      );
-      expect(forwardedOptions.origin).toBe('metamask');
-      expect(forwardedOptions.networkClientId).toBe('mainnet');
-      expect(forwardedOptions.actionId).toBe(42);
+    it('formats fiat as USD with 2 decimals', () => {
+      const { marketDataFormatters } = createPerpsInfrastructure();
+      const formatted = marketDataFormatters.formatPerpsFiat(50000.123);
+      expect(formatted).toContain('50,000.12');
     });
 
-    it('throws when network client id is missing', async () => {
-      const { infrastructure, submitRequestToBackground } =
-        arrangeInfrastructure();
-      const submit = getSubmitFunction(infrastructure);
+    it('formats percentage', () => {
+      const { marketDataFormatters } = createPerpsInfrastructure();
+      const formatted = marketDataFormatters.formatPercentage(2.5);
+      expect(formatted).toContain('2.50');
+      expect(formatted).toContain('%');
+    });
+  });
 
-      await expect(
-        submit(
-          { from: '0xabc' },
-          { networkClientId: undefined as unknown as string },
-        ),
-      ).rejects.toThrow('No network client found for Perps transaction');
+  describe('rewards', () => {
+    it('returns 0 discount as default stub', async () => {
+      const infrastructure = createPerpsInfrastructure();
+      const discount =
+        await infrastructure.rewards.getPerpsDiscountForAccount(
+          'eip155:42161:0x1234',
+        );
+      expect(discount).toBe(0);
+    });
+  });
 
-      expect(submitRequestToBackground).not.toHaveBeenCalled();
+  describe('cacheInvalidator', () => {
+    it('invalidate does not throw', () => {
+      const infrastructure = createPerpsInfrastructure();
+      expect(() =>
+        infrastructure.cacheInvalidator.invalidate({
+          cacheType: 'positions',
+        }),
+      ).not.toThrow();
     });
 
-    it('returns transaction metadata and resolves hash fallback to empty string', async () => {
-      const { infrastructure, submitRequestToBackground } =
-        arrangeInfrastructure();
-      const submit = getSubmitFunction(infrastructure);
-
-      submitRequestToBackground.mockResolvedValue({
-        id: 'tx-id',
-      });
-
-      const result = await submit({ from: '0xabc' }, {
-        networkClientId: 'mainnet',
-      } as SubmitTransactionOptions);
-
-      expect(result.transactionMeta).toStrictEqual({ id: 'tx-id' });
-      await expect(result.result).resolves.toBe('');
+    it('invalidateAll does not throw', () => {
+      const infrastructure = createPerpsInfrastructure();
+      expect(() =>
+        infrastructure.cacheInvalidator.invalidateAll(),
+      ).not.toThrow();
     });
   });
 });

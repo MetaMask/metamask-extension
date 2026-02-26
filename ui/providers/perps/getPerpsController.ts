@@ -9,10 +9,6 @@ import {
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/perps';
 import type { MetaMaskReduxState } from '../../store/store';
-import {
-  submitRequestToBackground,
-  generateActionId,
-} from '../../store/background-connection';
 import { getReduxStorePromise } from '../../store/redux-store-promise';
 
 const REMOTE_FEATURE_FLAG_GET_STATE = 'RemoteFeatureFlagController:getState';
@@ -23,15 +19,6 @@ const REMOTE_FEATURE_FLAG_STATE_CHANGE =
 type RemoteFeatureFlagState = {
   remoteFeatureFlags: Record<string, unknown>;
   cacheTimestamp: number;
-};
-
-type EvmRpcEndpoint = {
-  networkClientId?: string;
-};
-
-type EvmNetworkConfiguration = {
-  defaultRpcEndpointIndex?: number;
-  rpcEndpoints?: EvmRpcEndpoint[];
 };
 
 export class PerpsControllerInitializationCancelledError extends Error {
@@ -48,49 +35,6 @@ export function isPerpsControllerInitializationCancelledError(
     error instanceof PerpsControllerInitializationCancelledError ||
     (error instanceof Error &&
       error.name === 'PerpsControllerInitializationCancelledError')
-  );
-}
-
-function getNetworkClientIdForChain(
-  store: Store<MetaMaskReduxState> | null,
-  chainId: string,
-): string | undefined {
-  if (!store || !chainId) {
-    return undefined;
-  }
-
-  const networkConfigurationsByChainId = store.getState().metamask
-    ?.networkConfigurationsByChainId as
-    | Record<string, EvmNetworkConfiguration>
-    | undefined;
-
-  if (!networkConfigurationsByChainId) {
-    return undefined;
-  }
-
-  const normalizedChainId = chainId.toLowerCase();
-
-  const networkConfiguration =
-    networkConfigurationsByChainId[chainId] ??
-    networkConfigurationsByChainId[normalizedChainId] ??
-    Object.entries(networkConfigurationsByChainId).find(
-      ([candidateChainId]) =>
-        candidateChainId.toLowerCase() === normalizedChainId,
-    )?.[1];
-
-  if (!networkConfiguration?.rpcEndpoints?.length) {
-    return undefined;
-  }
-
-  const defaultRpcEndpointIndex = Number.isInteger(
-    networkConfiguration.defaultRpcEndpointIndex,
-  )
-    ? Number(networkConfiguration.defaultRpcEndpointIndex)
-    : 0;
-
-  return (
-    networkConfiguration.rpcEndpoints[defaultRpcEndpointIndex]
-      ?.networkClientId ?? networkConfiguration.rpcEndpoints[0]?.networkClientId
   );
 }
 
@@ -235,15 +179,7 @@ function startControllerInitialization(
     }
 
     const messenger = createPerpsMessenger(storeToUse ?? null);
-    const infrastructure = createPerpsInfrastructure({
-      selectedAddress,
-      signTypedMessage: (msgParams) =>
-        submitRequestToBackground<string>('perpsSignTypedData', [msgParams]),
-      findNetworkClientIdForChain: (chainId) =>
-        getNetworkClientIdForChain(storeToUse ?? null, chainId),
-      submitRequestToBackground,
-      generateActionId,
-    });
+    const infrastructure = createPerpsInfrastructure();
     const fallbackBlockedRegions = getFallbackBlockedRegions();
 
     const controller = new PerpsController({

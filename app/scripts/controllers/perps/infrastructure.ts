@@ -8,8 +8,6 @@
  * UI process (the PerpsController is instantiated in the UI via getPerpsController.ts).
  * It's kept here intentionally so it's co-located with the controller re-exports and
  * will already be in the right place when the controller moves to the background.
- * All UI-specific dependencies (e.g. signTypedMessage) are injected via the options
- * parameter to avoid cross-layer imports.
  *
  * For the PoC, most dependencies are stubbed. As integration matures,
  * these should be wired up to real extension services.
@@ -17,42 +15,21 @@
 
 import type {
   PerpsPlatformDependencies,
+  PerpsCacheInvalidator,
+  MarketDataFormatters,
   PerpsLogger,
   PerpsDebugLogger,
   PerpsMetrics,
   PerpsPerformance,
   PerpsTracer,
   PerpsStreamManager,
-  PerpsControllerAccess,
   PerpsAnalyticsEvent,
   PerpsAnalyticsProperties,
   PerpsTraceName,
   PerpsTraceValue,
+  VersionGatedFeatureFlag,
+  InvalidateCacheParams,
 } from '@metamask/perps-controller';
-
-type SubmitRequestToBackground = <Result>(
-  method: string,
-  args?: unknown[],
-) => Promise<Result>;
-
-/**
- * Options for creating perps infrastructure.
- */
-export type CreatePerpsInfrastructureOptions = {
-  /** The currently selected account address */
-  selectedAddress: string;
-  /** Function to sign EIP-712 typed data via KeyringController */
-  signTypedMessage: (
-    msgParams: { from: string; data: unknown },
-    version: unknown,
-  ) => Promise<string>;
-  /** Synchronous resolver for mapping chain ID to network client ID */
-  findNetworkClientIdForChain: (chainId: string) => string | undefined;
-  /** Function to submit RPC-style requests to the background process */
-  submitRequestToBackground: SubmitRequestToBackground;
-  /** Function to create a unique action id for background actions */
-  generateActionId: () => number;
-};
 
 function createLogger(): PerpsLogger {
   return {
@@ -129,86 +106,52 @@ function createStreamManager(): PerpsStreamManager {
   };
 }
 
-function createControllerAccess(
-  options: CreatePerpsInfrastructureOptions,
-): PerpsControllerAccess {
-  const {
-    selectedAddress,
-    signTypedMessage,
-    findNetworkClientIdForChain,
-    submitRequestToBackground,
-    generateActionId,
-  } = options;
+function createFeatureFlags(): PerpsPlatformDependencies['featureFlags'] {
   return {
-    accounts: {
-      getSelectedEvmAccount: () => {
-        return { address: selectedAddress };
-      },
-      formatAccountToCaipId: (address: string, chainId: string) => {
-        return `eip155:${chainId}:${address}`;
-      },
+    validateVersionGated: (_flag: VersionGatedFeatureFlag) => {
+      // TODO: Implement version-gated feature flag validation using browser.runtime
+      return true;
     },
-    keyring: {
-      signTypedMessage: async (msgParams, version) => {
-        const signature = await signTypedMessage(msgParams, version);
-        return signature;
-      },
+  };
+}
+
+function createMarketDataFormatters(): MarketDataFormatters {
+  const compactFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    notation: 'compact',
+    maximumFractionDigits: 1,
+  });
+
+  const fiatFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  const percentFormatter = new Intl.NumberFormat('en-US', {
+    style: 'percent',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  return {
+    formatVolume: (value: number) => compactFormatter.format(value),
+    formatPerpsFiat: (value: number) => fiatFormatter.format(value),
+    formatPercentage: (percent: number) =>
+      percentFormatter.format(percent / 100),
+    priceRangesUniversal: [],
+  };
+}
+
+function createCacheInvalidator(): PerpsCacheInvalidator {
+  return {
+    invalidate: (_params: InvalidateCacheParams) => {
+      // TODO: Wire to React Query or custom cache when ready
     },
-    network: {
-      getChainIdForNetwork: (_networkClientId: string) => {
-        // TODO: Wire to NetworkController
-        return '0xa4b1' as `0x${string}`;
-      },
-      findNetworkClientIdForChain: (chainId) =>
-        findNetworkClientIdForChain(chainId),
-      getSelectedNetworkClientId: () => {
-        // TODO: Wire to NetworkController
-        return 'mainnet';
-      },
-    },
-    transaction: {
-      submit: async (txParams, txOptions) => {
-        const {
-          networkClientId: rawNetworkClientId,
-          origin,
-          type,
-          gasFeeToken,
-        } = txOptions;
-
-        const networkClientId = await Promise.resolve(rawNetworkClientId);
-
-        if (!networkClientId) {
-          throw new Error('No network client found for Perps transaction');
-        }
-
-        const addTransactionOptions = {
-          networkClientId,
-          origin: origin ?? 'metamask',
-          actionId: generateActionId(),
-          ...(type === undefined ? {} : { type }),
-          ...(gasFeeToken === undefined ? {} : { gasFeeToken }),
-        };
-
-        const transactionMeta = await submitRequestToBackground<{
-          id: string;
-          hash?: string;
-        }>('addTransaction', [txParams, addTransactionOptions]);
-
-        return {
-          result: Promise.resolve(transactionMeta.hash ?? ''),
-          transactionMeta,
-        };
-      },
-    },
-    rewards: {
-      getFeeDiscount: async (_caipAccountId) => {
-        return 0;
-      },
-    },
-    authentication: {
-      getBearerToken: async () => {
-        return '';
-      },
+    invalidateAll: () => {
+      // TODO: Wire to React Query or custom cache when ready
     },
   };
 }
@@ -216,14 +159,9 @@ function createControllerAccess(
 /**
  * Create the complete PerpsPlatformDependencies for the extension.
  *
- * @param options - Configuration options
- * @param options.selectedAddress - The currently selected account address
- * @param options.signTypedMessage - Function to sign EIP-712 typed data via background
  * @returns PerpsPlatformDependencies object ready for PerpsController
  */
-export function createPerpsInfrastructure(
-  options: CreatePerpsInfrastructureOptions,
-): PerpsPlatformDependencies {
+export function createPerpsInfrastructure(): PerpsPlatformDependencies {
   return {
     logger: createLogger(),
     debugLogger: createDebugLogger(),
@@ -231,6 +169,16 @@ export function createPerpsInfrastructure(
     performance: createPerformance(),
     tracer: createTracer(),
     streamManager: createStreamManager(),
-    controllers: createControllerAccess(options),
+    featureFlags: createFeatureFlags(),
+    marketDataFormatters: createMarketDataFormatters(),
+    cacheInvalidator: createCacheInvalidator(),
+    rewards: {
+      getPerpsDiscountForAccount: async (
+        _caipAccountId: `${string}:${string}:${string}`,
+      ) => {
+        // TODO: Wire to RewardsController when available
+        return 0;
+      },
+    },
   };
 }

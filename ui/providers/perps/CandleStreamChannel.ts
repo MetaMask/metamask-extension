@@ -219,12 +219,12 @@ export class CandleStreamChannel {
     const limit = Math.min(Math.max(rawLimit, LOAD_MORE_MIN), LOAD_MORE_MAX);
 
     try {
-      const olderData = await this.controller.fetchHistoricalCandles(
+      const olderData = await this.controller.fetchHistoricalCandles({
         symbol,
         interval,
         limit,
         endTime,
-      );
+      });
 
       if (!olderData?.candles?.length) {
         return;
