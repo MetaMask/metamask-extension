@@ -7,6 +7,7 @@ import {
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import initializedMockState from '../../../../test/data/mock-state.json';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import * as Actions from '../../../store/actions';
@@ -45,9 +46,11 @@ describe('Account Not Found Seedless Onboarding View', () => {
       customMockStore,
     );
 
-    expect(getByText('Wallet not found')).toBeInTheDocument();
+    expect(
+      getByText(messages.accountNotFoundTitle.message),
+    ).toBeInTheDocument();
     // should show the correct button
-    const loginButton = getByText('Yes, create a new wallet');
+    const loginButton = getByText(messages.accountNotFoundCreateOne.message);
     expect(loginButton).toBeInTheDocument();
     expect(loginButton.nodeName).toBe('BUTTON');
   });
@@ -58,7 +61,7 @@ describe('Account Not Found Seedless Onboarding View', () => {
       customMockStore,
     );
 
-    const loginButton = getByText('Yes, create a new wallet');
+    const loginButton = getByText(messages.accountNotFoundCreateOne.message);
     fireEvent.click(loginButton);
 
     await waitFor(() => {

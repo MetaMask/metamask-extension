@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { AmountInput } from './amount-input';
@@ -31,8 +32,10 @@ describe('AmountInput', () => {
     it('renders Size label and available to trade text', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('Size')).toBeInTheDocument();
-      expect(screen.getByText('Available to trade')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsSize.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsAvailableToTrade.message),
+      ).toBeInTheDocument();
       expect(screen.getByText(/USDC/u)).toBeInTheDocument();
     });
 

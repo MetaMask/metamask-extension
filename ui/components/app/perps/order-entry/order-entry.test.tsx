@@ -3,6 +3,7 @@ import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { OrderEntry } from './order-entry';
 
 // Mock hooks that depend on @metamask/perps-controller to avoid ESM transform issues
@@ -48,12 +49,16 @@ describe('OrderEntry', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('order-entry')).toBeInTheDocument();
-      expect(screen.getByText('Size')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsSize.message)).toBeInTheDocument();
       expect(screen.getByTestId('amount-input-field')).toBeInTheDocument();
       expect(screen.getByTestId('leverage-slider')).toBeInTheDocument();
-      expect(screen.getByText('Margin')).toBeInTheDocument();
-      expect(screen.getByText('Fees')).toBeInTheDocument();
-      expect(screen.getByText('Liquidation price')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsMargin.message),
+      ).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsFees.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLiquidationPrice.message),
+      ).toBeInTheDocument();
       expect(screen.getByTestId('auto-close-toggle')).toBeInTheDocument();
       expect(
         screen.getByTestId('order-entry-submit-button'),
@@ -318,8 +323,12 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Position Size')).toBeInTheDocument();
-      expect(screen.getByText('Close Amount')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsPositionSize.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCloseAmount.message),
+      ).toBeInTheDocument();
       expect(screen.getByTestId('close-amount-slider')).toBeInTheDocument();
     });
 
@@ -406,7 +415,9 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.getByTestId('limit-price-input')).toBeInTheDocument();
-      expect(screen.getByText('Limit Price')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLimitPrice.message),
+      ).toBeInTheDocument();
     });
 
     it('hides limit price input when orderType is market', () => {
@@ -447,7 +458,7 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Mid')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsMid.message)).toBeInTheDocument();
       expect(screen.getByTestId('limit-price-mid-button')).toBeInTheDocument();
     });
 
@@ -461,7 +472,7 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Mid')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsMid.message)).toBeInTheDocument();
       expect(screen.getByTestId('limit-price-mid-button')).toBeInTheDocument();
     });
 

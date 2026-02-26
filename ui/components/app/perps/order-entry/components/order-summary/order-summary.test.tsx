@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { OrderSummary } from './order-summary';
@@ -23,9 +24,13 @@ describe('OrderSummary', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Margin')).toBeInTheDocument();
-      expect(screen.getByText('Fees')).toBeInTheDocument();
-      expect(screen.getByText('Liquidation price')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsMargin.message),
+      ).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsFees.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLiquidationPrice.message),
+      ).toBeInTheDocument();
     });
 
     it('displays dash when values are null', () => {
