@@ -1,5 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import {
   BtcAccountType,
   EthAccountType,
@@ -7,11 +8,11 @@ import {
   KeyringAccountType,
 } from '@metamask/keyring-api';
 import { merge } from 'lodash';
-import { fireEvent } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { AccountListMenu } from '.';
 
 const mockGetEnvironmentType = jest.fn();
@@ -125,8 +126,10 @@ describe('AccountListMenu', () => {
   it('displays important controls', () => {
     const { getByPlaceholderText, getByText } = render();
 
-    expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
-    expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
+    expect(
+      getByPlaceholderText(messages.searchAccounts.message),
+    ).toBeInTheDocument();
+    expect(getByText(messages.addImportAccount.message)).toBeInTheDocument();
     expect(document.querySelector('[aria-label="Back"]')).toStrictEqual(null);
   });
 

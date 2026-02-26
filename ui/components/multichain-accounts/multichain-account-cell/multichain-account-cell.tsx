@@ -119,12 +119,14 @@ const AccountCellDefaultAddress = ({
       aria-label={t('copyAddressShort')}
     >
       <Text
-        variant={TextVariant.BodyXs}
+        variant={TextVariant.BodySm}
         color={
           addressCopied ? TextColor.SuccessDefault : TextColor.TextAlternative
         }
       >
-        {shortenAddress(normalizeSafeAddress(defaultAddress))}
+        {addressCopied
+          ? t('addressCopied')
+          : shortenAddress(normalizeSafeAddress(defaultAddress))}
       </Text>
       <Icon
         name={addressCopied ? IconName.CopySuccess : IconName.Copy}
