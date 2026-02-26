@@ -33,8 +33,8 @@ import {
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
-import { getSwcLoader } from './utils/loaders/swcLoader';
-import { getVariables } from './utils/config';
+import { getSwcLoader } from './utils/loaders/getSwcLoader';
+import { getVariables, resolveEnvironment } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
@@ -221,11 +221,14 @@ const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
-const reactCompilerLoader = getReactCompilerLoader(
-  '17',
-  args.reactCompilerVerbose,
-  args.reactCompilerDebug,
-);
+const reactCompilerLoader = getReactCompilerLoader({
+  target: '17',
+  verbose: args.reactCompilerVerbose,
+  debug: args.reactCompilerDebug,
+  disableThreadLoader: args.generatePolicy || args.reactCompilerVerbose,
+  watch: args.watch,
+});
+
 const envValidationLoader = args.validateEnv
   ? {
       loader: require.resolve('./utils/loaders/envValidationLoader'),
@@ -342,7 +345,7 @@ const config = {
       {
         test: /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:m?[jt]s|[jt]sx)$/u,
         include: UI_DIR_RE,
-        use: [reactCompilerLoader],
+        use: reactCompilerLoader,
       },
       // own typescript, and own typescript with jsx
       {
