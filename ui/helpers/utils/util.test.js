@@ -1,5 +1,4 @@
 import Bowser from 'bowser';
-import BN from 'bn.js';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -241,13 +240,13 @@ describe('util', () => {
     });
 
     it('should return 1.0000 ETH', () => {
-      const input = new BN(ethInWei, 10).toJSON();
+      const input = BigInt(ethInWei).toString(16);
       const result = util.formatBalance(input, 4);
       expect(result).toStrictEqual('1.0000 ETH');
     });
 
     it('should return 0.500 ETH', function () {
-      const input = new BN(ethInWei, 10).div(new BN('2', 10)).toJSON();
+      const input = (BigInt(ethInWei) / 2n).toString(16);
       const result = util.formatBalance(input, 3);
       expect(result).toStrictEqual('0.500 ETH');
     });
