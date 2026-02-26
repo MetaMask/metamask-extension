@@ -35,8 +35,6 @@ class LoginPage {
     testId: 'login-error-modal-button',
   };
 
-  private readonly rivAnimation = '.riv-animation__fox-container';
-
   private readonly unlockButton: object = { testId: 'unlock-submit' };
 
   constructor(driver: Driver) {
@@ -48,7 +46,6 @@ class LoginPage {
       await this.driver.waitForMultipleSelectors([
         this.forgotPasswordButton,
         this.passwordInput,
-        this.rivAnimation,
         this.unlockButton,
       ]);
     } catch (e) {
