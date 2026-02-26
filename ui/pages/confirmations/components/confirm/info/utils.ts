@@ -1,6 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import { remove0x } from '@metamask/utils';
 import { TransactionDescription } from '@ethersproject/abi';
 import {
   BackgroundColor,
@@ -72,8 +71,8 @@ function percentageChangeWithinThreshold(
   newValueHex: Hex,
   newNegative?: boolean,
 ): boolean {
-  const originalValue = BigInt(`0x${remove0x(originalValueHex)}`);
-  let newValue = BigInt(`0x${remove0x(newValueHex)}`);
+  const originalValue = BigInt(originalValueHex);
+  let newValue = BigInt(newValueHex);
 
   if (newNegative) {
     newValue = -newValue;
