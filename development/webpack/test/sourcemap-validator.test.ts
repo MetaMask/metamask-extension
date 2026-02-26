@@ -106,22 +106,13 @@ describe('sourcemap-validator', () => {
 
     it('returns false when block opens and closes on the same line', () => {
       const buildLines = ['/* comment */ throw new Error();'];
-      assert.strictEqual(
-        isInsideMultilineBlockComment(buildLines, 0),
-        false,
-      );
+      assert.strictEqual(isInsideMultilineBlockComment(buildLines, 0), false);
     });
 
     it('returns false when there is no block comment', () => {
       const buildLines = ['throw new Error("x");', 'const a = 1;'];
-      assert.strictEqual(
-        isInsideMultilineBlockComment(buildLines, 0),
-        false,
-      );
-      assert.strictEqual(
-        isInsideMultilineBlockComment(buildLines, 1),
-        false,
-      );
+      assert.strictEqual(isInsideMultilineBlockComment(buildLines, 0), false);
+      assert.strictEqual(isInsideMultilineBlockComment(buildLines, 1), false);
     });
   });
 
