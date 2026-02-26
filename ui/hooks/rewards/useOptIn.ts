@@ -20,7 +20,7 @@ import {
   linkRewardToShieldSubscription,
 } from '../../store/actions';
 import { handleRewardsErrorMessage } from '../../components/app/rewards/utils/handleRewardsErrorMessage';
-import { isHardwareAccount } from '../../../shared/lib/accounts';
+import { isHardwareAccount } from '../../components/app/rewards/utils/isHardwareAccount';
 import { useI18nContext } from '../useI18nContext';
 import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
