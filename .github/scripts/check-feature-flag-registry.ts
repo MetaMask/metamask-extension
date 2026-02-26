@@ -121,10 +121,10 @@ async function main(): Promise<void> {
         allReferences.push(...extractFlagReferences(line, filePath));
       }
       for (let i = 0; i < chunk.length - 1; i++) {
-        const j2 = `${chunk[i].trimEnd()}${chunk[i + 1].trimStart()}`;
+        const j2 = `${stripInlineComments(chunk[i]).trimEnd()}${chunk[i + 1].trimStart()}`;
         allReferences.push(...extractFlagReferences(j2, filePath, true));
         if (i < chunk.length - 2) {
-          const j3 = `${chunk[i].trimEnd()}${chunk[i + 1].trim()}${chunk[i + 2].trimStart()}`;
+          const j3 = `${stripInlineComments(chunk[i]).trimEnd()}${stripInlineComments(chunk[i + 1]).trim()}${chunk[i + 2].trimStart()}`;
           allReferences.push(...extractFlagReferences(j3, filePath, true));
         }
       }
@@ -272,7 +272,7 @@ function findOrphanedFlags(flagNames: string[]): string[] {
     }
     try {
       const result = execFileSync(
-        'git', ['grep', '-lw', '--', flag, ...SCAN_DIRECTORIES],
+        'git', ['grep', '-lFw', '--', flag, ...SCAN_DIRECTORIES],
         { encoding: 'utf-8', stdio: 'pipe' },
       ).trim();
       const files = result
