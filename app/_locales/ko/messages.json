@@ -7351,21 +7351,6 @@
   "simulationErrorMessageV2": {
     "message": "가스를 추정할 수 없었습니다. 계약에 오류가 있을 수 있으며 이 트랜잭션이 실패할 수 있습니다."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "슬리피지 허용치"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "잔액 변경 시 허용 가능한 차액 범위를 설정하세요. 차액이 이보다 클 경우 거래가 진행되지 않습니다."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "잔액 변동 적용"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "자금을 안전하게 보호하기 위해, 잔액이 변동되거나 슬리피지 허용치가 충족되지 않으면 이 트랜잭션은 진행되지 않습니다."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "트랜잭션 설정"
-  },
   "simulationsSettingDescription": {
     "message": "이 기능을 사용하면 트랜잭션 및 서명으로 인한 잔액 변동을 컨펌 전에 예상할 수 있습니다. 다만, 이러한 예상치가 최종 결과와 일치한다는 보장은 없습니다. $1"
   },

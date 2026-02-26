@@ -7351,21 +7351,6 @@
   "simulationErrorMessageV2": {
     "message": "Não conseguimos estimar o preço do gás. Pode haver um erro no contrato, e essa transação poderá falhar."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Tolerância a slippage"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Defina uma diferença que você considere adequada para alterações de saldo. Transações não serão executas se a diferença for maior."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Aplicar alterações de saldo"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Para manter seu dinheiro seguro, essa transação não será concluída se o saldo mudar ou se a tolerância a slippage não for atingida."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Configurações da transação"
-  },
   "simulationsSettingDescription": {
     "message": "Ative esta opção para estimar alterações de saldo pelas transações e assinaturas antes de confirmá-las. Isso não garante o resultado final de suas transações. $1"
   },

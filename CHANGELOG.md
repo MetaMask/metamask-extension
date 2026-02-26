@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.20.0]
+
+### Added
+
+- Activity view with infinite scroll (#39930)
+- Gas sponsorship UI (#40210)
+- Added initial Perps UI (#40076)
+- Added deferred deep links (#38458)
+- Replaced global-menu with global-menu-drawer (#39991)
+- Added Perps tutorial modal with animated walkthrough explaining perpetual futures trading (#39693)
+- Added toast notifications for mUSD reward claim transaction status (in-progress, success, failed); fixed a bug where the "network added" home notification would reappear after navigation (#39979)
+- Optimized gas fees for Shield crypto subscription transactions to reduce sponsorship costs (#39931)
+- Added vertical scroll to drawer (#40301)
+
+### Changed
+
+- Updated GMX referral image and subtitle (#40208)
+- Use `StorageService` in Snap Controller (#39804)
+- Remove network dropdown from Activity tab (#39945)
+
+### Fixed
+
+- Remove unintended "Dapp suggested" label from gas speed labels (#39934)
+- Fixed the "Paste" button not working in Chrome side panel mode during wallet import (#40222)
+- Swap tx submission fails if page navigates to Activity log before QuotesReceived event is published (#40173)
+- Fixed an issue where approvals would be closed too soon (#40139)
+- Fixed access token not persisting across lock/unlock cycles for seedless onboarding users (#40013)
+- Fixed a security issue where users could skip onboarding by navigating directly to the completion route (#40012)
+- Remove pinned swap token from asset picker (#40211)
+- Fixed activity year format (#40329)
+- Fixed list item disappearing in token page (#40316)
+- Fixed error when importing tokens on EVM networks when chainId is provided as decimal string (#40325)
+- AccountsApiBalanceFetcher stricter zero out conditions (#40411)
+
 ## [13.19.0]
 
 ### Added
@@ -1803,7 +1837,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.19.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.20.0...HEAD
+[13.20.0]: https://github.com/MetaMask/metamask-extension/compare/v13.19.0...v13.20.0
 [13.19.0]: https://github.com/MetaMask/metamask-extension/compare/v13.18.1...v13.19.0
 [13.18.1]: https://github.com/MetaMask/metamask-extension/compare/v13.18.0...v13.18.1
 [13.18.0]: https://github.com/MetaMask/metamask-extension/compare/v13.17.0...v13.18.0
