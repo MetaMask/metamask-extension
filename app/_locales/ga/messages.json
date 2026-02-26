@@ -5664,21 +5664,6 @@
   "simulationErrorMessageV2": {
     "message": "Ní raibh muid in ann gás a mheas. D’fhéadfadh earráid a bheith sa chonradh agus d’fhéadfadh teip a bheith ar an idirbheart seo."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Caoinfhulaingt sleamhnáin"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Socraigh difríocht atá tú sásta léi le haghaidh athruithe ar an iarmhéid. Ní rachaidh idirbhearta tríd má tá an difríocht níos airde."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Athruithe ar an iarmhéid a fhorfheidhmiú"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Chun do chuid airgid a choinneáil slán, ní rachaidh an t-idirbheart seo ar aghaidh mura n-athraíonn an t-iarmhéid nó mura gcomhlíontar an lamháltas sciorrtha."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Socruithe idirbhirt"
-  },
   "simulationsSettingDescription": {
     "message": "Cas air seo chun athruithe ar iarmhéid idirbheart agus sínithe a mheas sula ndeimhníonn tú iad. Ní ráthaíonn sé seo a dtoradh deiridh. $1"
   },
