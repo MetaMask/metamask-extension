@@ -6,15 +6,28 @@ import {
 } from '../../../../store/actions';
 import { Asset, AssetStandard } from '../../types/send';
 
-const getBalanceValue = (balance: string | { words: string }) => {
+type BalanceWithWords = {
+  words: number[];
+};
+
+const isBalanceWithWords = (value: unknown): value is BalanceWithWords => {
+  return Boolean(
+    value &&
+      typeof value === 'object' &&
+      'words' in value &&
+      Array.isArray((value as { words?: unknown }).words),
+  );
+};
+
+const getBalanceValue = (balance: unknown) => {
   let balanceStr: string;
   if (typeof balance === 'string') {
     balanceStr = parseInt(balance, 16).toString();
-  } else if (balance && typeof balance === 'object' && 'words' in balance) {
+  } else if (isBalanceWithWords(balance)) {
     // Reconstruct from BN internal structure (Firefox case)
     // BN stores value in `words` array as base-2^26 limbs
     const base = 2n ** 26n;
-    const { words } = balance as { words: number[] };
+    const { words } = balance;
     const value = words.reduce(
       (accumulator, word, index) =>
         accumulator + BigInt(word) * base ** BigInt(index),
