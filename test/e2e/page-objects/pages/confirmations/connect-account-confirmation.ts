@@ -10,10 +10,6 @@ class ConnectAccountConfirmation {
     };
   };
 
-  private readonly addSolanaAccountButton = {
-    testId: 'submit-add-account-with-name',
-  };
-
   private readonly cancelConnectButton = {
     testId: 'cancel-btn',
   };
@@ -30,10 +26,6 @@ class ConnectAccountConfirmation {
   private readonly connectAccountConfirmationTitle = {
     text: 'Connect this website with MetaMask',
     tag: 'p',
-  };
-
-  private readonly createSolanaAccountModalButton = {
-    testId: 'create-solana-account',
   };
 
   private readonly editAccountButton = {
@@ -96,28 +88,6 @@ class ConnectAccountConfirmation {
       this.editPermissionsButton,
     );
     await editButtons[1].click();
-  }
-
-  async createCreateSolanaAccountFromModal(): Promise<void> {
-    console.log('Create Solana account from modal');
-    await this.driver.clickElement(this.createSolanaAccountModalButton);
-    await this.driver.clickElement(this.addSolanaAccountButton);
-  }
-
-  async isCreateSolanaAccountModalButtonVisible(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(
-        this.createSolanaAccountModalButton,
-        {
-          timeout: 1000,
-        },
-      );
-    } catch (e) {
-      console.log('Create Solana account button not enabled', e);
-      return false;
-    }
-    console.log('Create Solana account button is enabled');
-    return true;
   }
 
   async isConfirmButtonEnabled(): Promise<boolean> {
