@@ -34,7 +34,7 @@ export function useGatorPermissions(
 
   // identify whether any gator permissions exist in the gator cache
   const hasCachedPermissions = useSelector(
-    (state: AppState) => state.metamask.grantedPermissions.length > 0,
+    (state: AppState) => state.metamask.grantedPermissions?.length > 0,
   );
 
   // Only show loading on initial load when no cache exists
