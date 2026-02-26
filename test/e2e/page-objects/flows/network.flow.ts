@@ -2,7 +2,7 @@ import { Driver } from '../../webdriver/driver';
 import AssetListPage from '../pages/home/asset-list';
 import NetworkManager from '../pages/network-manager';
 
-export const switchToNetwork = async (
+export const switchToNetworkFromNetworkSelect = async (
   driver: Driver,
   networkCategory: string,
   networkName: string,

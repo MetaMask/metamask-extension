@@ -6,7 +6,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { switchToNetwork } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 describe('Permissions Page when Dapp Switch to an enabled and non permissioned network', function () {
@@ -55,7 +55,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
         // Switch to ethereum network and check the chainId on testdapp
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetwork(driver, 'Popular', 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
         await homePage.checkLocalNodeBalanceIsDisplayed();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         const chainIdBeforeConnectAfterManualSwitch: string =
@@ -102,7 +102,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await homePage.checkPageIsLoaded();
-        await switchToNetwork(driver, 'Custom', 'Localhost 8546');
+        await switchToNetworkFromNetworkSelect(driver, 'Custom', 'Localhost 8546');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();

@@ -6,7 +6,7 @@
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { withFixtures } from '../../../helpers';
 import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
-import { switchToNetwork } from '../../../page-objects/flows/network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
@@ -67,7 +67,7 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         await assetListPage.checkTokenListIsDisplayed();
 
         // Switch to Ethereum Mainnet network
-        await switchToNetwork(driver, 'Popular', 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
 
         // Wait for token list to refresh after network switch
         await assetListPage.checkTokenListIsDisplayed();

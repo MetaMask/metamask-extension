@@ -8,7 +8,7 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
-import { switchToNetwork } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
@@ -174,7 +174,7 @@ describe('MetaMask onboarding', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        await switchToNetwork(driver, 'Popular', 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
         await homePage.refreshErc20TokenList();
 
         for (const mockedEndpoint of mockedEndpoints) {
@@ -217,7 +217,7 @@ describe('MetaMask onboarding', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        await switchToNetwork(driver, 'Popular', 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
         await homePage.refreshErc20TokenList();
 
         // Check if sidepanel is enabled
