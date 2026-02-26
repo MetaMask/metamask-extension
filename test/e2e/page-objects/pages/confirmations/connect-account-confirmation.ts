@@ -10,10 +10,6 @@ class ConnectAccountConfirmation {
     };
   };
 
-  private readonly addSolanaAccountButton = {
-    testId: 'submit-add-account-with-name',
-  };
-
   private readonly cancelConnectButton = {
     testId: 'cancel-btn',
   };
@@ -30,10 +26,6 @@ class ConnectAccountConfirmation {
   private readonly connectAccountConfirmationTitle = {
     text: 'Connect this website with MetaMask',
     tag: 'p',
-  };
-
-  private readonly createSolanaAccountModalButton = {
-    testId: 'create-solana-account',
   };
 
   private readonly editAccountButton = {
