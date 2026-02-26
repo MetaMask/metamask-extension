@@ -131,13 +131,11 @@ export const SNAP_CLIENT_CONFIG_MAP: Record<
  *
  * @param t - Function to translate text.
  * @param actionMode - An action mode.
- * @param isMultichainAccountsState1Enabled - Whether the multichain accounts state 1 is enabled.
  * @returns The title for this action mode.
  */
 export const getActionTitle = (
   t: (text: string, args?: string[]) => string,
   actionMode: ActionMode,
-  isMultichainAccountsState1Enabled: boolean,
 ) => {
   switch (actionMode) {
     case ACTION_MODES.ADD:
@@ -163,9 +161,7 @@ export const getActionTitle = (
     case ACTION_MODES.SELECT_SRP:
       return t('selectSecretRecoveryPhrase');
     default:
-      return isMultichainAccountsState1Enabled
-        ? t('accounts')
-        : t('selectAnAccount');
+      return t('accounts');
   }
 };
 
@@ -284,7 +280,7 @@ export const AccountMenu = ({
   );
 
   const title = useMemo(
-    () => getActionTitle(t as (text: string) => string, actionMode, true),
+    () => getActionTitle(t as (text: string) => string, actionMode),
     [actionMode, t],
   );
 
