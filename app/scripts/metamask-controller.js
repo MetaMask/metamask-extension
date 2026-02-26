@@ -5432,6 +5432,15 @@ export default class MetamaskController extends EventEmitter {
 
     const accounts = this.accountsController.listAccounts();
 
+    const internalAccount =
+      this.accountsController.getAccountByAddress(unlockedAccount);
+
+    if (internalAccount) {
+      this.accountsController.setSelectedAccount(internalAccount.id);
+    } else {
+      throw new Error(`No account found for address: ${unlockedAccount}`);
+    }
+
     return { unlockedAccount, accounts };
   }
 
@@ -5484,6 +5493,16 @@ export default class MetamaskController extends EventEmitter {
         return newAddress;
       },
     );
+
+    if (!oldAccounts.includes(addedAccountAddress)) {
+      const internalAccount =
+        this.accountsController.getAccountByAddress(addedAccountAddress);
+      if (internalAccount) {
+        this.accountsController.setSelectedAccount(internalAccount.id);
+      } else {
+        throw new Error(`No account found for address: ${addedAccountAddress}`);
+      }
+    }
 
     return addedAccountAddress;
   }
@@ -5959,7 +5978,7 @@ export default class MetamaskController extends EventEmitter {
       shouldSelectAccount: true,
     },
   ) {
-    const { shouldCreateSocialBackup } = options;
+    const { shouldCreateSocialBackup, shouldSelectAccount } = options;
 
     const importedAccountAddress =
       await this.keyringController.importAccountWithStrategy(strategy, args);
@@ -5989,6 +6008,19 @@ export default class MetamaskController extends EventEmitter {
         // KeyringController.removeAccount will remove keyring when it's emptied, currently there are no other method in keyring controller to remove keyring
         await this.keyringController.removeAccount(importedAccountAddress);
         throw err;
+      }
+    }
+
+    if (shouldSelectAccount) {
+      const account = this.accountsController.getAccountByAddress(
+        importedAccountAddress,
+      );
+      if (account) {
+        this.accountsController.setSelectedAccount(account.id);
+      } else {
+        throw new Error(
+          `No account found for address: ${importedAccountAddress}`,
+        );
       }
     }
   }
