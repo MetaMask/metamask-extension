@@ -3,18 +3,8 @@ import { ReadableStream as ReadableStreamWeb } from 'stream/web';
 import { Readable } from 'stream';
 import * as fs from 'fs/promises';
 import { Mockttp, MockedEndpoint } from 'mockttp';
-import { withFixtures } from '../../helpers';
-import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import { DAPP_PATH } from '../../constants';
-import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import Homepage from '../../page-objects/pages/home/homepage';
-import NetworkManager from '../../page-objects/pages/network-manager';
 
 /**
  * Holds the actual transaction signature captured from sendTransaction.
@@ -435,10 +425,13 @@ export async function mockMultiCoinPrice(mockServer: Mockttp) {
   });
 }
 
-export async function mockSolanaBalanceQuote(
-  mockServer: Mockttp,
-  mockZeroBalance: boolean = false,
-) {
+export async function mockSolanaBalanceQuote({
+  mockServer,
+  balance = SOL_BALANCE,
+}: {
+  mockServer: Mockttp;
+  balance?: number;
+}) {
   const response = {
     statusCode: 200,
     json: {
@@ -449,7 +442,7 @@ export async function mockSolanaBalanceQuote(
           apiVersion: '2.0.18',
           slot: 308460925,
         },
-        value: mockZeroBalance ? 0 : SOL_BALANCE,
+        value: balance,
       },
     },
   };
@@ -1947,289 +1940,152 @@ export async function mockGetSignaturesForWalletOnly(
 
 export const SHOW_SWAP_SNAP_CONFIRMATION = false;
 
-const featureFlags = {
-  refreshRate: 30000,
-  maxRefreshCount: 5,
-  support: true,
-  minimumVersion: '0.0.0',
-  chains: {
-    '1': { isActiveSrc: true, isActiveDest: true },
-    '42161': { isActiveSrc: true, isActiveDest: true },
-    '59144': { isActiveSrc: true, isActiveDest: true },
-    '1151111081099710': {
-      topAssets: [
-        'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', // USDC
-        'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN', // Jupiter
-        '7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxsDx8F8k8k3uYw1PDC',
-        '3iQL8BFS2vE7mww4ehAqQHAsbmRNCrPxizWAT2Zfyr9y',
-        '9zNQRsGLjNKwCUU5Gq5LR8beUCPzQMVMqKAi3SSZh54u',
-        'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
-        'rndrizKT3MK1iimdxRdWabcF7Zg7AR5T4nud4EkHBof',
-        '2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
-      ],
-      isActiveSrc: true,
-      isActiveDest: true,
-      isSnapConfirmationEnabled: false,
-    },
-  },
+export const SOLANA_DEFAULT_DAPP_OPTIONS = {
+  numberOfTestDapps: 1,
+  customDappPaths: [DAPP_PATH.TEST_SNAPS],
 };
 
-const featureFlagsWithSnapConfirmation = {
-  ...featureFlags,
-  chains: {
-    ...featureFlags.chains,
-    '1151111081099710': {
-      ...featureFlags.chains['1151111081099710'],
-      isSnapConfirmationEnabled: true,
-    },
-  },
+export type SolanaMockOptions = {
+  mockGetTransactionSuccess?: boolean;
+  mockGetTransactionFailed?: boolean;
+  mockTokenAccountAccountInfo?: boolean;
+  balance?: number;
+  mockSwapUSDtoSOL?: boolean;
+  mockSwapSOLtoUSDC?: boolean;
+  mockSwapWithNoQuotes?: boolean;
+  walletConnect?: boolean;
+  withProtocolSnap?: boolean;
+  withCustomMocks?: (
+    mockServer: Mockttp,
+  ) =>
+    | Promise<MockedEndpoint[] | MockedEndpoint>
+    | MockedEndpoint[]
+    | MockedEndpoint;
 };
 
-export async function withSolanaAccountSnap(
-  {
-    title,
-    numberOfAccounts = 1,
-    withNetworkOnSolana = true,
-    showNativeTokenAsMainBalance = true,
-    showSnapConfirmation = false,
+export function buildSolanaTestSpecificMock(options: SolanaMockOptions = {}) {
+  const {
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
     mockTokenAccountAccountInfo = true,
-    mockZeroBalance,
+    balance,
     mockSwapUSDtoSOL,
     mockSwapSOLtoUSDC,
     mockSwapWithNoQuotes,
     walletConnect = false,
-    dappOptions,
     withProtocolSnap,
     withCustomMocks,
-    withFixtureBuilder,
-  }: {
-    title?: string;
-    withNetworkOnSolana?: boolean;
-    showNativeTokenAsMainBalance?: boolean;
-    showSnapConfirmation?: boolean;
-    numberOfAccounts?: number;
-    mockGetTransactionSuccess?: boolean;
-    mockGetTransactionFailed?: boolean;
-    mockTokenAccountAccountInfo?: boolean;
-    mockZeroBalance?: boolean;
-    sendFailedTransaction?: boolean;
-    mockSwapUSDtoSOL?: boolean;
-    mockSwapSOLtoUSDC?: boolean;
-    mockSwapWithNoQuotes?: boolean;
-    walletConnect?: boolean;
-    dappOptions?: {
-      numberOfTestDapps?: number;
-      customDappPaths?: string[];
-    };
-    withProtocolSnap?: boolean;
-    withCustomMocks?: (
-      mockServer: Mockttp,
-    ) =>
-      | Promise<MockedEndpoint[] | MockedEndpoint>
-      | MockedEndpoint[]
-      | MockedEndpoint;
-    withFixtureBuilder?: (builder: FixtureBuilder) => FixtureBuilder;
-  },
-  test: (
-    driver: Driver,
-    mockServer: Mockttp,
-    extensionId: string,
-  ) => Promise<void>,
-) {
-  console.log('Starting withSolanaAccountSnap');
-  let fixtures = new FixtureBuilder();
-  if (!showNativeTokenAsMainBalance) {
-    fixtures =
-      fixtures.withPreferencesControllerShowNativeTokenAsMainBalanceDisabled();
-  }
-  if (withFixtureBuilder) {
-    fixtures = withFixtureBuilder(fixtures).withEnabledNetworks({
-      eip155: {
-        '0x539': true,
-      },
-      solana: {
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
-      },
-    });
-  }
+  } = options;
 
-  await withFixtures(
-    {
-      fixtures: fixtures.build(),
-      title,
-      dappOptions: dappOptions ?? {
-        numberOfTestDapps: 1,
-        customDappPaths: [DAPP_PATH.TEST_SNAPS],
-      },
-      manifestFlags: {
-        // This flag is used to enable/disable the remote mode for the carousel
-        // component, which will impact to the slides count.
-        // - If this flag is not set, the slides count will be 4.
-        // - If this flag is set, the slides count will be 5.
-        remoteFeatureFlags: {
-          solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
-          bridgeConfig: showSnapConfirmation
-            ? featureFlagsWithSnapConfirmation
-            : featureFlags,
-        },
-      },
-      testSpecificMock: async (mockServer: Mockttp) => {
-        const mockList: MockedEndpoint[] = [];
-        const isExecutedSwapScenario = Boolean(
-          mockSwapUSDtoSOL || mockSwapSOLtoUSDC,
-        );
-        const isSwapScenario = Boolean(
-          isExecutedSwapScenario || mockSwapWithNoQuotes,
-        );
-        mockList.push(await simulateSolanaTransaction(mockServer));
-        if (walletConnect) {
-          mockList.push(await mockGetTokenAccountsByOwnerDevnet(mockServer));
-          mockList.push(await mockGetAccountInfoDevnet(mockServer));
-        }
-        mockList.push(await mockGetMultipleAccounts(mockServer));
-        if (mockGetTransactionSuccess) {
-          console.log('mockGetTransactionSuccess');
-          mockList.push(await mockSendSolanaTransaction(mockServer));
-          mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
-          mockList.push(await mockGetSuccessTransaction(mockServer));
-        }
-        if (mockGetTransactionFailed) {
-          console.log('mockGetTransactionFailed');
-          mockList.push(await mockSendSolanaFailedTransaction(mockServer));
-          mockList.push(await mockGetFailedSignaturesForAddress(mockServer));
-          mockList.push(await mockGetFailedTransaction(mockServer));
-        }
+  return async (mockServer: Mockttp): Promise<MockedEndpoint[]> => {
+    const mockList: MockedEndpoint[] = [];
+    const isExecutedSwapScenario = Boolean(
+      mockSwapUSDtoSOL || mockSwapSOLtoUSDC,
+    );
+    const isSwapScenario = Boolean(
+      isExecutedSwapScenario || mockSwapWithNoQuotes,
+    );
+    mockList.push(await simulateSolanaTransaction(mockServer));
+    if (walletConnect) {
+      mockList.push(await mockGetTokenAccountsByOwnerDevnet(mockServer));
+      mockList.push(await mockGetAccountInfoDevnet(mockServer));
+    }
+    mockList.push(await mockGetMultipleAccounts(mockServer));
+    if (mockGetTransactionSuccess) {
+      mockList.push(await mockSendSolanaTransaction(mockServer));
+      mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
+      mockList.push(await mockGetSuccessTransaction(mockServer));
+    }
+    if (mockGetTransactionFailed) {
+      mockList.push(await mockSendSolanaFailedTransaction(mockServer));
+      mockList.push(await mockGetFailedSignaturesForAddress(mockServer));
+      mockList.push(await mockGetFailedTransaction(mockServer));
+    }
 
-        if (!isExecutedSwapScenario) {
-          mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
-        }
-        mockList.push(
-          await mockSolanaBalanceQuote(mockServer, mockZeroBalance),
-        );
+    if (!isExecutedSwapScenario) {
+      mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
+    }
+    mockList.push(await mockSolanaBalanceQuote({ mockServer, balance }));
 
-        mockList.push(
-          await mockGetMinimumBalanceForRentExemption(mockServer),
-          await mockMultiCoinPrice(mockServer),
-          await mockGetLatestBlockhash(mockServer),
-          await mockGetFeeForMessage(mockServer),
-          isSwapScenario
-            ? await mockPriceApiSpotPriceSwap(mockServer)
-            : await mockPriceApiSpotPrice(mockServer),
-          await mockPriceApiExchangeRates(mockServer),
-          await mockClientSideDetectionApi(mockServer),
-          await mockPhishingDetectionApi(mockServer),
-        );
+    mockList.push(
+      await mockGetMinimumBalanceForRentExemption(mockServer),
+      await mockMultiCoinPrice(mockServer),
+      await mockGetLatestBlockhash(mockServer),
+      await mockGetFeeForMessage(mockServer),
+      isSwapScenario
+        ? await mockPriceApiSpotPriceSwap(mockServer)
+        : await mockPriceApiSpotPrice(mockServer),
+      await mockPriceApiExchangeRates(mockServer),
+      await mockClientSideDetectionApi(mockServer),
+      await mockPhishingDetectionApi(mockServer),
+    );
 
-        if (mockTokenAccountAccountInfo) {
-          await mockGetTokenAccountInfo(mockServer);
-        }
+    if (mockTokenAccountAccountInfo) {
+      await mockGetTokenAccountInfo(mockServer);
+    }
 
-        mockList.push(
-          await mockTokenApiMainnetTest(mockServer),
-          await mockAccountsApi(mockServer),
-          await mockGetMultipleAccounts(mockServer),
-          await mockGetAccountInfoDevnet(mockServer),
-        );
+    mockList.push(
+      await mockTokenApiMainnetTest(mockServer),
+      await mockAccountsApi(mockServer),
+      await mockGetMultipleAccounts(mockServer),
+      await mockGetAccountInfoDevnet(mockServer),
+    );
 
-        if (mockSwapWithNoQuotes) {
-          mockList.push(await mockBridgeGetTokens(mockServer));
-          mockList.push(await mockBridgeSearchTokens(mockServer));
-          mockList.push(await mockNoQuotesAvailable(mockServer));
-        }
-        if (mockSwapUSDtoSOL) {
-          mockList.push(
-            ...[
-              await mockQuoteFromUSDCtoSOL(mockServer),
-              await mockSendSwapSolanaTransaction(mockServer),
-              await mockGetUSDCSOLTransaction(mockServer),
-              await mockSecurityAlertSwap(mockServer),
-              await mockGetSignaturesSuccessSwap(
-                mockServer,
-                USDC_TO_SOL_SWAP_SIGNATURE,
-              ),
-              await mockBridgeGetTokens(mockServer),
-              await mockBridgeSearchTokens(mockServer),
-            ],
-          );
-        }
-        if (mockSwapSOLtoUSDC) {
-          mockList.push(
-            ...[
-              await mockQuoteFromSoltoUSDC(mockServer),
-              await mockSendSwapSolanaTransaction(
-                mockServer,
-                undefined,
-                SOL_TO_USDC_SWAP_SIGNATURE,
-              ),
-              await mockGetSOLUSDCTransaction(mockServer),
-              await mockSecurityAlertSwap(mockServer),
-              await mockGetSignaturesSuccessSwap(
-                mockServer,
-                SOL_TO_USDC_SWAP_SIGNATURE,
-              ),
-              await mockBridgeGetTokens(mockServer),
-              await mockBridgeSearchTokens(mockServer),
-            ],
-          );
-        }
+    if (mockSwapWithNoQuotes) {
+      mockList.push(await mockBridgeGetTokens(mockServer));
+      mockList.push(await mockBridgeSearchTokens(mockServer));
+      mockList.push(await mockNoQuotesAvailable(mockServer));
+    }
+    if (mockSwapUSDtoSOL) {
+      mockList.push(
+        ...[
+          await mockQuoteFromUSDCtoSOL(mockServer),
+          await mockSendSwapSolanaTransaction(mockServer),
+          await mockGetUSDCSOLTransaction(mockServer),
+          await mockSecurityAlertSwap(mockServer),
+          await mockGetSignaturesSuccessSwap(
+            mockServer,
+            USDC_TO_SOL_SWAP_SIGNATURE,
+          ),
+          await mockBridgeGetTokens(mockServer),
+          await mockBridgeSearchTokens(mockServer),
+        ],
+      );
+    }
+    if (mockSwapSOLtoUSDC) {
+      mockList.push(
+        ...[
+          await mockQuoteFromSoltoUSDC(mockServer),
+          await mockSendSwapSolanaTransaction(
+            mockServer,
+            undefined,
+            SOL_TO_USDC_SWAP_SIGNATURE,
+          ),
+          await mockGetSOLUSDCTransaction(mockServer),
+          await mockSecurityAlertSwap(mockServer),
+          await mockGetSignaturesSuccessSwap(
+            mockServer,
+            SOL_TO_USDC_SWAP_SIGNATURE,
+          ),
+          await mockBridgeGetTokens(mockServer),
+          await mockBridgeSearchTokens(mockServer),
+        ],
+      );
+    }
 
-        if (withProtocolSnap) {
-          mockList.push(await mockProtocolSnap(mockServer));
+    if (withProtocolSnap) {
+      mockList.push(await mockProtocolSnap(mockServer));
+    }
+    if (withCustomMocks) {
+      const customMocksResult = await withCustomMocks(mockServer);
+      if (customMocksResult) {
+        if (Array.isArray(customMocksResult)) {
+          mockList.push(...customMocksResult.filter((m) => m));
+        } else {
+          mockList.push(customMocksResult);
         }
-        if (withCustomMocks) {
-          const customMocksResult = await withCustomMocks(mockServer);
-          if (customMocksResult) {
-            if (Array.isArray(customMocksResult)) {
-              mockList.push(...customMocksResult.filter((m) => m));
-            } else {
-              mockList.push(customMocksResult);
-            }
-          }
-        }
-        return mockList;
-      },
-      ignoredConsoleErrors: [
-        'SES_UNHANDLED_REJECTION: 0, never, undefined, index, Array(1)',
-        'SES_UNHANDLED_REJECTION: 1, never, undefined, index, Array(1)',
-        'No custom network client was found with the ID',
-        'No Infura network client was found with the ID "linea-mainnet"',
-      ],
-    },
-    async ({
-      driver,
-      mockServer,
-      extensionId,
-    }: {
-      driver: Driver;
-      mockServer: Mockttp;
-      extensionId: string;
-    }) => {
-      if (showNativeTokenAsMainBalance) {
-        await loginWithBalanceValidation(driver);
-      } else {
-        await loginWithoutBalanceValidation(driver);
       }
-      if (withNetworkOnSolana) {
-        // Change network to Solana
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Solana');
-      }
-      if (numberOfAccounts === 2) {
-        const homepage = new Homepage(driver);
-        await homepage.checkExpectedBalanceIsDisplayed();
-        // create 2nd account
-        await homepage.headerNavbar.openAccountMenu();
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
-        await accountListPage.addMultichainAccount();
-        await accountListPage.selectAccount('Account 1');
-      }
-
-      await test(driver, mockServer, extensionId);
-    },
-  );
+    }
+    return mockList;
+  };
 }
