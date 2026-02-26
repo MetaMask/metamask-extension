@@ -971,7 +971,6 @@ export default class MetamaskController extends EventEmitter {
     this.eip5792Middleware = createScaffoldMiddleware({
       wallet_getCapabilities: createAsyncMiddleware(async (req, res) =>
         walletGetCapabilities(req, res, {
-          getAccounts,
           getPermittedAccountsForOrigin: async () => {
             return getAccounts({ origin: req.origin });
           },
