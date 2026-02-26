@@ -159,7 +159,7 @@ async function requestEthereumAccountsHandler<
           is_first_visit: isFirstVisit,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           number_of_accounts: Object.keys(
-            Object.keys(metamaskState.internalAccounts.accounts),
+            metamaskState.internalAccounts.accounts,
           ).length,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           number_of_accounts_connected: ethAccounts.length,
