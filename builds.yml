@@ -197,9 +197,6 @@ features:
     assets:
       # srp-list is a special case and is used in the srp recovery flow now.
       - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
-  ocap-kernel:
-    assets:
-      - ./{app,shared,ui}/**/ocap-kernel/**
   build-experimental:
     assets:
       - src: ./node_modules/@metamask/account-watcher/dist/preinstalled-snap.json
