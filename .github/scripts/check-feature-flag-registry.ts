@@ -71,6 +71,9 @@ const NON_FLAG_NAMES = new Set([
   'every',
   'includes',
   'undefined',
+  'bind',
+  'call',
+  'apply',
 ]);
 
 /** Hidden HTML marker to identify/update the bot comment across pushes. */
@@ -341,10 +344,6 @@ function parseDiff(diff: string): DiffResult {
   return { added, removed };
 }
 
-/**
- * Extracts feature flag references from a line of code.
- * @param skipDestructuring - skip destructuring patterns (used for joined line pairs)
- */
 function extractFlagReferences(
   line: string,
   filePath: string,
