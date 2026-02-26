@@ -82,13 +82,19 @@ describe('AppHeaderUnlockedContent trace', () => {
       }),
     );
   });
+});
 
-  it('renders default address section when feature flag is enabled', async () => {
+describe('Default address section', () => {
+  it('renders the default address when feature flag is on', async () => {
     const stateWithFlagOn = {
       ...mockDefaultState,
       metamask: {
         ...mockDefaultState.metamask,
         remoteFeatureFlags: { extensionUxDefaultAddress: true },
+        preferences: {
+          ...mockDefaultState.metamask.preferences,
+          showDefaultAddress: true,
+        },
       },
     };
     const store = configureStore(stateWithFlagOn);
@@ -101,16 +107,36 @@ describe('AppHeaderUnlockedContent trace', () => {
       store,
     );
 
-    const networksSubtitle = screen.getByTestId('networks-subtitle-test-id');
-    const hoverTarget = networksSubtitle.firstElementChild as HTMLElement;
-    fireEvent.mouseEnter(hoverTarget);
+    const container = await screen.findByTestId('default-address-container');
+    await waitFor(() => expect(container).toBeVisible());
+  });
+
+  it('does not render the default address when feature flag is off', async () => {
+    const stateWithFlagOff = {
+      ...mockDefaultState,
+      metamask: {
+        ...mockDefaultState.metamask,
+        remoteFeatureFlags: { extensionUxDefaultAddress: false },
+        preferences: {
+          ...mockDefaultState.metamask.preferences,
+          showDefaultAddress: true,
+        },
+      },
+    };
+    const store = configureStore(stateWithFlagOff);
+    const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
+    renderWithProvider(
+      <AppHeaderUnlockedContent
+        disableAccountPicker={false}
+        menuRef={menuRef}
+      />,
+      store,
+    );
 
     await waitFor(() => {
       expect(
-        screen.getByTestId('multichain-address-rows-list'),
-      ).toBeInTheDocument();
+        screen.queryByTestId('default-address-container'),
+      ).not.toBeInTheDocument();
     });
-
-    expect(screen.getByTestId('default-address-container')).toBeVisible();
   });
 });
