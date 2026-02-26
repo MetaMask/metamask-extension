@@ -11,6 +11,7 @@ import {
   BoxFlexDirection,
   BoxBackgroundColor,
 } from '@metamask/design-system-react';
+import { lightTheme } from '@metamask/design-tokens';
 import { Tab, Tabs } from '../../components/ui/tabs';
 import RecoveryPhraseChips from '../onboarding-flow/recovery-phrase/recovery-phrase-chips';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -38,6 +39,7 @@ const QR_CENTER_HOLE_MODULES = 8;
 /**
  * Creates a QR code data URL with a white center cutout so the code remains
  * scannable while the logo sits in the empty space.
+ * @param seedWords
  */
 function createSeedQRCodeDataUrl(seedWords: string): string {
   // Use high error correction (H = 30%) so the center hole remains decodable
@@ -68,18 +70,18 @@ function createSeedQRCodeDataUrl(seedWords: string): string {
     return qrImage.createDataURL(cellSize, marginPx);
   }
 
-  ctx.fillStyle = '#ffffff';
+  const qrBackground = lightTheme.colors.background.default;
+  const qrForeground = lightTheme.colors.text.default;
+
+  ctx.fillStyle = qrBackground;
   ctx.fillRect(0, 0, size, size);
 
   for (let r = 0; r < moduleCount; r += 1) {
     for (let c = 0; c < moduleCount; c += 1) {
       const inCenter =
-        r >= centerStart &&
-        r < centerEnd &&
-        c >= centerStart &&
-        c < centerEnd;
+        r >= centerStart && r < centerEnd && c >= centerStart && c < centerEnd;
       const isDark = !inCenter && qrImage.isDark(r, c);
-      ctx.fillStyle = isDark ? '#000000' : '#ffffff';
+      ctx.fillStyle = isDark ? qrForeground : qrBackground;
       const x = margin + c * cell;
       const y = margin + r * cell;
       ctx.fillRect(x, y, cell, cell);

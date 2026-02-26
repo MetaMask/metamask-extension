@@ -12,6 +12,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import configureStore from '../../store/store';
 import RevealSeedPage from './reveal-seed';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 
 const mockUseParams = jest.fn().mockReturnValue({});
 
@@ -106,7 +107,7 @@ describe('Reveal Seed Page', () => {
   it('shows quiz introduction first', () => {
     const { getByText } = renderWithProvider(<RevealSeedPage />, mockStore);
 
-    expect(getByText('Get started')).toBeInTheDocument();
+    expect(getByText(messages.srpSecurityQuizGetStarted.message)).toBeInTheDocument();
   });
 
   it('navigates to password screen after completing quiz', async () => {
@@ -140,7 +141,7 @@ describe('Reveal Seed Page', () => {
       target: { value: password },
     });
 
-    fireEvent.click(getByText('Continue'));
+    fireEvent.click(getByText(messages.continue.message));
 
     await waitFor(() => {
       expect(mockRequestRevealSeedWords).toHaveBeenCalled();
@@ -169,7 +170,7 @@ describe('Reveal Seed Page', () => {
       target: { value: 'bad password' },
     });
 
-    fireEvent.click(getByText('Continue'));
+    fireEvent.click(getByText(messages.continue.message));
 
     await waitFor(() => {
       expect(queryByText('bad password')).toBeInTheDocument();
@@ -196,11 +197,11 @@ describe('Reveal Seed Page', () => {
       target: { value: password },
     });
 
-    fireEvent.click(getByText('Continue'));
+    fireEvent.click(getByText(messages.continue.message));
 
     await waitFor(() => {
       expect(mockRequestRevealSeedWords).toHaveBeenCalled();
-      expect(getByText('Copy to clipboard')).toBeInTheDocument();
+      expect(getByText(messages.copyToClipboard.message)).toBeInTheDocument();
     });
     expect(queryByTestId('recovery-phrase-chips')).toBeInTheDocument();
   });
@@ -243,7 +244,7 @@ describe('Reveal Seed Page', () => {
       target: { value: 'bad-password' },
     });
 
-    fireEvent.click(getByText('Continue'));
+    fireEvent.click(getByText(messages.continue.message));
 
     await waitFor(() => {
       expect(mockRequestRevealSeedWords).toHaveBeenCalled();
@@ -294,7 +295,7 @@ describe('Reveal Seed Page', () => {
       target: { value: password },
     });
 
-    fireEvent.click(getByText('Continue'));
+    fireEvent.click(getByText(messages.continue.message));
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
@@ -325,7 +326,7 @@ describe('Reveal Seed Page', () => {
           hd_entropy_index: 0,
         },
       });
-      expect(getByText('Copy to clipboard')).toBeInTheDocument();
+      expect(getByText(messages.copyToClipboard.message)).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -437,7 +438,7 @@ describe('Reveal Seed Page', () => {
       mockStore,
     );
 
-    const backButton = getByLabelText('Back');
+    const backButton = getByLabelText(messages.back.message);
     fireEvent.click(backButton);
 
     await waitFor(() => {
@@ -476,7 +477,7 @@ describe('Reveal Seed Page', () => {
         target: { value: password },
       });
 
-      fireEvent.click(getByText('Continue'));
+      fireEvent.click(getByText(messages.continue.message));
 
       await waitFor(() => {
         expect(mockRequestRevealSeedWords).toHaveBeenCalledWith(
@@ -504,7 +505,7 @@ describe('Reveal Seed Page', () => {
         target: { value: password },
       });
 
-      fireEvent.click(getByText('Continue'));
+      fireEvent.click(getByText(messages.continue.message));
 
       await waitFor(() => {
         expect(mockRequestRevealSeedWords).toHaveBeenCalledWith(
