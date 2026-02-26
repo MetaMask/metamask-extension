@@ -72,6 +72,7 @@
     "BridgeController": {},
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
+    "ClientController": "object",
     "CurrencyController": {
       "currencyRates": {
         "ETH": {
