@@ -1,50 +1,61 @@
+import React from 'react';
 import { waitFor } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
-import { act } from 'react-dom/test-utils';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import useFetchNftDetailsFromTokenURI from './useFetchNftDetailsFromTokenURI';
+
+function createWrapper() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  return ({ children }: { children: React.ReactNode }) =>
+    React.createElement(QueryClientProvider, { client: queryClient }, children);
+}
 
 describe('useFetchNftDetailsFromTokenURI', () => {
   afterEach(() => {
-    jest.clearAllMocks();
-  });
-  it('should return without fetching when tokenURI is undefined', async () => {
-    let result;
-
-    await act(async () => {
-      result = renderHook(() => useFetchNftDetailsFromTokenURI(undefined));
-    });
-
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((result as unknown as Record<string, any>).result.current).toEqual({
-      image: '',
-      name: '',
-    });
+    jest.restoreAllMocks();
   });
 
-  it('should return when fetch fails', async () => {
+  it('returns defaults when tokenURI is undefined', () => {
+    const { result } = renderHook(
+      () => useFetchNftDetailsFromTokenURI(undefined),
+      { wrapper: createWrapper() },
+    );
+
+    expect(result.current.image).toBe('');
+    expect(result.current.name).toBe('');
+  });
+
+  it('returns defaults when tokenURI is null', () => {
+    const { result } = renderHook(
+      () => useFetchNftDetailsFromTokenURI(null),
+      { wrapper: createWrapper() },
+    );
+
+    expect(result.current.image).toBe('');
+    expect(result.current.name).toBe('');
+  });
+
+  it('returns defaults when fetch response is not ok', async () => {
     jest.spyOn(global, 'fetch').mockResolvedValue({
       ok: false,
-      text: () => Promise.reject(new Error('Fetch failed')),
+      status: 404,
+      text: () => Promise.reject(new Error('Not found')),
     } as Response);
 
-    let result;
+    const { result } = renderHook(
+      () => useFetchNftDetailsFromTokenURI('https://test.com'),
+      { wrapper: createWrapper() },
+    );
 
-    await act(async () => {
-      result = renderHook(() =>
-        useFetchNftDetailsFromTokenURI('https://test.com'),
-      );
-    });
+    await waitFor(() => expect(result.current.isError).toBe(true));
 
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((result as unknown as Record<string, any>).result.current).toEqual({
-      image: '',
-      name: '',
-    });
+    expect(result.current.image).toBe('');
+    expect(result.current.name).toBe('');
   });
 
-  it('should return correctly when tokenURI is defined and contains valid JSON', async () => {
+  it('returns image and name from valid JSON response', async () => {
     const mockData = {
       name: 'Rocks',
       description: 'This is a collection of Rock NFTs.',
@@ -57,56 +68,72 @@ describe('useFetchNftDetailsFromTokenURI', () => {
       text: () => Promise.resolve(JSON.stringify(mockData)),
     } as Response);
 
-    let result;
+    const { result } = renderHook(
+      () => useFetchNftDetailsFromTokenURI('https://test.com'),
+      { wrapper: createWrapper() },
+    );
 
-    await act(async () => {
-      result = renderHook(() =>
-        useFetchNftDetailsFromTokenURI('https://test.com'),
-      );
-    });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((result as unknown as Record<string, any>).result.current).toEqual({
-      image:
-        'https://ipfs.io/ipfs/bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi',
-      name: 'Rocks',
-    });
+    expect(result.current.image).toBe(mockData.image);
+    expect(result.current.name).toBe('Rocks');
   });
 
-  it('should gracefully fail when providing an invalid token URI', async () => {
-    const mockFetch = jest
+  it('returns defaults when fetch throws', async () => {
+    jest
       .spyOn(global, 'fetch')
       .mockRejectedValue(new Error('MOCK BAD URI'));
-    const result = renderHook(() => useFetchNftDetailsFromTokenURI('BAD_URI'));
-    await waitFor(() => expect(mockFetch).toHaveBeenCalled());
-    expect(result.result.current).toEqual({
-      image: '',
-      name: '',
-    });
+
+    const { result } = renderHook(
+      () => useFetchNftDetailsFromTokenURI('BAD_URI'),
+      { wrapper: createWrapper() },
+    );
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+
+    expect(result.current.image).toBe('');
+    expect(result.current.name).toBe('');
   });
 
-  it('should not set image or name when they are not strings in the response', async () => {
+  it('returns defaults when image and name are not strings in response', async () => {
     const mockData = {
       name: { nested: 'object' },
       description: 'This is a collection of Rock NFTs.',
       image: ['array', 'of', 'images'],
     };
 
-    const mockFetch = jest.spyOn(global, 'fetch').mockResolvedValue({
+    jest.spyOn(global, 'fetch').mockResolvedValue({
       ok: true,
       text: () => Promise.resolve(JSON.stringify(mockData)),
     } as Response);
 
-    const result = renderHook(() =>
-      useFetchNftDetailsFromTokenURI('https://test.com'),
+    const { result } = renderHook(
+      () => useFetchNftDetailsFromTokenURI('https://test.com'),
+      { wrapper: createWrapper() },
     );
 
-    await waitFor(() => expect(mockFetch).toHaveBeenCalled());
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(result.result.current).toEqual({
-      image: '',
-      name: '',
-    });
+    expect(result.current.image).toBe('');
+    expect(result.current.name).toBe('');
+  });
+
+  it('handles JSON with trailing commas', async () => {
+    const invalidJson = '{"name": "Test", "image": "https://example.com/img.png",}';
+
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve(invalidJson),
+    } as Response);
+
+    const { result } = renderHook(
+      () => useFetchNftDetailsFromTokenURI('https://test.com'),
+      { wrapper: createWrapper() },
+    );
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(result.current.image).toBe('https://example.com/img.png');
+    expect(result.current.name).toBe('Test');
   });
 });

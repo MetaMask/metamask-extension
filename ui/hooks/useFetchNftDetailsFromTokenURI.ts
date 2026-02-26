@@ -1,44 +1,46 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+
+type NftTokenURIDetails = {
+  image: string;
+  name: string;
+};
+
+async function fetchNftDetailsFromTokenURI(
+  tokenURI: string,
+): Promise<NftTokenURIDetails> {
+  const response = await fetch(tokenURI);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch token URI: ${response.status}`);
+  }
+
+  let rawData = await response.text();
+  // Remove trailing commas before parsing
+  // eslint-disable-next-line require-unicode-regexp
+  rawData = rawData.replace(/,\s*}/g, '}').replace(/,\s*\]/g, ']');
+
+  const data = JSON.parse(rawData);
+
+  return {
+    image: typeof data.image === 'string' ? data.image : '',
+    name: typeof data.name === 'string' ? data.name : '',
+  };
+}
+
+const EMPTY_RESULT: NftTokenURIDetails = { image: '', name: '' };
 
 const useFetchNftDetailsFromTokenURI = (
   tokenURI: string | undefined | null,
 ) => {
-  const [image, setImage] = useState<string>('');
-  const [name, setName] = useState<string>('');
+  const { data = EMPTY_RESULT, ...rest } = useQuery({
+    queryKey: ['nftTokenURIDetails', tokenURI],
+    queryFn: () => fetchNftDetailsFromTokenURI(tokenURI as string),
+    enabled: Boolean(tokenURI),
+    staleTime: Infinity,
+    cacheTime: 30 * 60 * 1000,
+    retry: false,
+  });
 
-  useEffect(() => {
-    const fetchRemoteTokenURI = async () => {
-      if (!tokenURI) {
-        return;
-      }
-
-      try {
-        const response = await fetch(tokenURI);
-        if (!response.ok) {
-          return;
-        }
-        let rawData = await response.text();
-        // Remove trailing commas before parsing
-        // eslint-disable-next-line require-unicode-regexp
-        rawData = rawData.replace(/,\s*}/g, '}').replace(/,\s*\]/g, ']');
-
-        // Try parsing JSON
-        const data = JSON.parse(rawData);
-        if (typeof data.image === 'string') {
-          setImage(data.image);
-        }
-        if (typeof data.name === 'string') {
-          setName(data.name);
-        }
-      } catch {
-        // ignore
-      }
-    };
-
-    fetchRemoteTokenURI();
-  }, [tokenURI]);
-
-  return { image, name };
+  return { ...data, ...rest };
 };
 
 export default useFetchNftDetailsFromTokenURI;
