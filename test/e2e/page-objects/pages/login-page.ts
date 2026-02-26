@@ -35,10 +35,7 @@ class LoginPage {
     testId: 'login-error-modal-button',
   };
 
-  private readonly rivAnimation: object = {
-    css: '.riv-animation__fox-container',
-    tag: 'div',
-  };
+  private readonly rivAnimation = '.riv-animation__fox-container';
 
   private readonly unlockButton: object = { testId: 'unlock-submit' };
 
