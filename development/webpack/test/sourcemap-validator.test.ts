@@ -263,6 +263,34 @@ describe('sourcemap-validator', () => {
       assert.strictEqual(ok, true);
     });
 
+    it('returns false when bundle has no "new Error" (zero samples, nothing to validate)', async () => {
+      const bundle = 'const x = 1; export { x };';
+      const mapJson = makeSourceMap('const x = 1;', 1, 0, 1, 0);
+      const jsPath = join(tmpDir, 'no-samples.js');
+      const mapPath = join(tmpDir, 'no-samples.js.map');
+      await writeFile(jsPath, bundle);
+      await writeFile(mapPath, mapJson);
+      const errors: string[] = [];
+      mock.method(console, 'log', noop);
+      mock.method(console, 'warn', noop);
+      mock.method(console, 'error', (...args: unknown[]) => {
+        errors.push(args.map((a) => String(a)).join(' '));
+      });
+      const ok = await validateBundle({
+        jsPath,
+        mapPath,
+        label: 'no-samples.js',
+      });
+      assert.strictEqual(ok, false);
+      assert.ok(
+        errors.some(
+          (e) =>
+            e.includes('nothing to validate') || e.includes('no "new Error"'),
+        ),
+        'should log that no samples were found',
+      );
+    });
+
     it('returns false when source map maps to source without "new Error" at that position', async () => {
       const bundle = [
         '(function() {',
