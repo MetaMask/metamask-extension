@@ -6,6 +6,7 @@ import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { SourceMapGenerator } from 'source-map';
 import {
   isLikelyCommentLine,
+  isInsideMultilineBlockComment,
   indicesOf,
   discoverWebpackBundles,
   validateBundle,
@@ -47,6 +48,80 @@ describe('sourcemap-validator', () => {
       assert.strictEqual(isLikelyCommentLine('throw new Error("x");'), false);
       assert.strictEqual(isLikelyCommentLine('const x = 1;'), false);
       assert.strictEqual(isLikelyCommentLine('  return new Error();'), false);
+    });
+
+    it('returns false when block comment is followed by code on the same line', () => {
+      assert.strictEqual(
+        isLikelyCommentLine('/* some comment */throw new Error("an error")'),
+        false,
+      );
+      assert.strictEqual(
+        isLikelyCommentLine('  /**/ throw new Error();'),
+        false,
+      );
+    });
+  });
+
+  describe('isInsideMultilineBlockComment', () => {
+    it('returns true for lines between /* and */', () => {
+      const buildLines = [
+        'if (x) {',
+        '  /*',
+        '\t\tthrow new Error("in comment");',
+        '\t\ti = j;',
+        '  */',
+        '  doSomething();',
+      ];
+      assert.strictEqual(
+        isInsideMultilineBlockComment(buildLines, 0),
+        false,
+        'line 0: before block',
+      );
+      assert.strictEqual(
+        isInsideMultilineBlockComment(buildLines, 1),
+        true,
+        'line 1: opening /*',
+      );
+      assert.strictEqual(
+        isInsideMultilineBlockComment(buildLines, 2),
+        true,
+        'line 2: inside block',
+      );
+      assert.strictEqual(
+        isInsideMultilineBlockComment(buildLines, 3),
+        true,
+        'line 3: inside block',
+      );
+      assert.strictEqual(
+        isInsideMultilineBlockComment(buildLines, 4),
+        false,
+        'line 4: closing */',
+      );
+      assert.strictEqual(
+        isInsideMultilineBlockComment(buildLines, 5),
+        false,
+        'line 5: after block',
+      );
+    });
+
+    it('returns false when block opens and closes on the same line', () => {
+      const buildLines = ['/* comment */ throw new Error();'];
+      assert.strictEqual(
+        isInsideMultilineBlockComment(buildLines, 0),
+        false,
+      );
+    });
+
+    it('returns false when there is no block comment', () => {
+      const buildLines = ['throw new Error("x");', 'const a = 1;'];
+      assert.strictEqual(
+        isInsideMultilineBlockComment(buildLines, 0),
+        false,
+      );
+      assert.strictEqual(
+        isInsideMultilineBlockComment(buildLines, 1),
+        false,
+      );
     });
   });
 

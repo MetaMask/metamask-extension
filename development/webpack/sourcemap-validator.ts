@@ -34,6 +34,12 @@ const TARGET_STRING = 'new Error';
  */
 export function isLikelyCommentLine(line: string): boolean {
   const trimmed = line.trim();
+  if (trimmed.includes('*/')) {
+    const afterBlock = trimmed.split('*/').slice(1).join('*/').trim();
+    if (afterBlock !== '' && afterBlock.includes(TARGET_STRING)) {
+      return false;
+    }
+  }
   return (
     trimmed.startsWith('*') ||
     trimmed.startsWith('//') ||
@@ -41,6 +47,39 @@ export function isLikelyCommentLine(line: string): boolean {
     trimmed.startsWith('*/') ||
     trimmed === ''
   );
+}
+
+/**
+ * Returns true if the line at buildLines[lineIndex] is inside an unclosed
+ * multiline block comment. Used to skip "missing source" for code that
+ * appears only inside commented-out blocks in the bundle.
+ *
+ * @param buildLines - All lines of the bundle.
+ * @param lineIndex - Index of the current line (0-based).
+ * @returns True if we're inside a block comment at the end of that line.
+ */
+export function isInsideMultilineBlockComment(
+  buildLines: string[],
+  lineIndex: number,
+): boolean {
+  let inBlock = false;
+  for (let i = 0; i <= lineIndex; i++) {
+    const line = buildLines[i];
+    let searchFrom = 0;
+    while (searchFrom < line.length) {
+      const open = line.indexOf('/*', searchFrom);
+      const close = line.indexOf('*/', searchFrom);
+      if (open === -1 && close === -1) break;
+      if (close !== -1 && (open === -1 || close < open)) {
+        inBlock = false;
+        searchFrom = close + 2;
+      } else {
+        inBlock = true;
+        searchFrom = open + 2;
+      }
+    }
+  }
+  return inBlock;
 }
 
 /**
@@ -219,7 +258,10 @@ export async function validateBundle({
         const result = consumer.originalPositionFor(position);
 
         if (!result.source) {
-          if (isLikelyCommentLine(line)) {
+          if (
+            isLikelyCommentLine(line) ||
+            isInsideMultilineBlockComment(buildLines, lineIndex)
+          ) {
             continue;
           }
           sampleCount += 1;
