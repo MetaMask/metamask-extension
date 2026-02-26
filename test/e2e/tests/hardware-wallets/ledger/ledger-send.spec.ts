@@ -13,7 +13,10 @@ describe('Ledger Hardware', function (this: Suite) {
   it('send ETH using an EIP1559 transaction', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().withLedgerAccount().build(),
+        fixtures: new FixtureBuilderV2()
+          .withLedgerAccount()
+          .withMetaMetricsDisabled()
+          .build(),
         localNodeOptions: {
           hardfork: 'london',
         },
@@ -43,7 +46,10 @@ describe('Ledger Hardware', function (this: Suite) {
   it('send ETH using a legacy transaction', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().withLedgerAccount().build(),
+        fixtures: new FixtureBuilderV2()
+          .withLedgerAccount()
+          .withMetaMetricsDisabled()
+          .build(),
         localNodeOptions: {
           hardfork: 'muirGlacier',
         },

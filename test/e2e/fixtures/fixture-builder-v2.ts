@@ -15,7 +15,6 @@ import type {
 import {
   DAPP_URL,
   DAPP_URL_LOCALHOST,
-  DEFAULT_FIXTURE_ACCOUNT,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_FIXTURE_SOLANA_ACCOUNT,
   LEDGER_FIXTURE_VAULT,
@@ -112,10 +111,10 @@ class FixtureBuilderV2 {
   }
 
   withLedgerAccount(): this {
-    const ledgerAddress = KNOWN_PUBLIC_KEY_ADDRESSES[0].address;
-    const ledgerAddressLower = ledgerAddress.toLowerCase();
+    const ledgerAddressLower =
+      KNOWN_PUBLIC_KEY_ADDRESSES[0].address.toLowerCase();
 
-    return this.withKeyringController({
+    this.withKeyringController({
       vault: LEDGER_FIXTURE_VAULT,
     })
       .withAccountsController({
@@ -123,7 +122,7 @@ class FixtureBuilderV2 {
           accounts: {
             'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
               id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-              address: DEFAULT_FIXTURE_ACCOUNT,
+              address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
               options: {
                 entropySource: '01JWZDDDB45SRHTRE5KYWZJK9W',
                 derivationPath: "m/44'/60'/0'/0/0",
@@ -156,7 +155,7 @@ class FixtureBuilderV2 {
             },
             '221ecb67-0d29-4c04-83b2-dff07c263634': {
               id: '221ecb67-0d29-4c04-83b2-dff07c263634',
-              address: ledgerAddress,
+              address: ledgerAddressLower,
               options: {},
               methods: [
                 'personal_sign',
@@ -196,6 +195,7 @@ class FixtureBuilderV2 {
         } as unknown as PreferencesControllerState['identities'],
         selectedAddress: ledgerAddressLower,
       });
+    return this;
   }
 
   withMetaMetricsDisabled(): this {

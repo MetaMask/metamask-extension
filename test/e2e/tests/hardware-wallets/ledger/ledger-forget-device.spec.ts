@@ -17,7 +17,10 @@ describe('Ledger Hardware', function (this: Suite) {
   it('forgets device and checks if it is removed from the list', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().withLedgerAccount().build(),
+        fixtures: new FixtureBuilderV2()
+          .withLedgerAccount()
+          .withMetaMetricsDisabled()
+          .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

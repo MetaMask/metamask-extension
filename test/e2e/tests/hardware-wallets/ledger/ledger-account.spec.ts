@@ -15,7 +15,7 @@ describe('Ledger Hardware', function () {
   it('derives the correct accounts and unlocks the first account', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2().withMetaMetricsDisabled().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -75,7 +75,7 @@ describe('Ledger Hardware', function () {
   it('unlocks multiple accounts at once and removes one', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2().withMetaMetricsDisabled().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
