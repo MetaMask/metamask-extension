@@ -25,7 +25,11 @@ export function sendAndReceive(
       }
       settled = true;
       ws.off('message', handler);
-      resolve(JSON.parse(data.toString()) as Record<string, unknown>);
+      try {
+        resolve(JSON.parse(data.toString()) as Record<string, unknown>);
+      } catch (err) {
+        reject(err);
+      }
     };
 
     setTimeout(() => {
@@ -68,7 +72,11 @@ export function waitForNextMessage(
     ws.once('message', (data) => {
       clearTimeout(timeout);
       ws.off('error', onError);
-      resolve(JSON.parse(data.toString()) as Record<string, unknown>);
+      try {
+        resolve(JSON.parse(data.toString()) as Record<string, unknown>);
+      } catch (err) {
+        reject(err);
+      }
     });
   });
 }
