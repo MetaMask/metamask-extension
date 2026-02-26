@@ -25,11 +25,14 @@ export function sendAndReceive(
       }
       settled = true;
       ws.off('message', handler);
+      let parsed: Record<string, unknown>;
       try {
-        resolve(JSON.parse(data.toString()) as Record<string, unknown>);
+        parsed = JSON.parse(data.toString()) as Record<string, unknown>;
       } catch (err) {
         reject(err);
+        return;
       }
+      resolve(parsed);
     };
 
     setTimeout(() => {
@@ -72,11 +75,14 @@ export function waitForNextMessage(
     ws.once('message', (data) => {
       clearTimeout(timeout);
       ws.off('error', onError);
+      let parsed: Record<string, unknown>;
       try {
-        resolve(JSON.parse(data.toString()) as Record<string, unknown>);
+        parsed = JSON.parse(data.toString()) as Record<string, unknown>;
       } catch (err) {
         reject(err);
+        return;
       }
+      resolve(parsed);
     });
   });
 }
