@@ -25,13 +25,24 @@ const DIST_EXCLUDED_TESTS: string[] = ['wallet-fixture-export.spec.ts'];
 // These tests are excluded on RC branches
 const RC_EXCLUDED_TESTS: string[] = ['wallet-fixture-validation.spec.ts'];
 
-function isReleaseCandidateBranch(): boolean {
-  const branch =
+// These tests are excluded on the stable branch
+const STABLE_EXCLUDED_TESTS: string[] = ['wallet-fixture-validation.spec.ts'];
+
+function getBranchName(): string {
+  return (
     process.env.BRANCH ||
     process.env.GITHUB_HEAD_REF ||
     process.env.GITHUB_REF_NAME ||
-    '';
-  return /^release\/(\d+)[.](\d+)[.](\d+)$/u.test(branch);
+    ''
+  );
+}
+
+function isReleaseCandidateBranch(): boolean {
+  return /^release\/(\d+)[.](\d+)[.](\d+)$/u.test(getBranchName());
+}
+
+function isStableBranch(): boolean {
+  return getBranchName() === 'stable';
 }
 
 const getTestPathsForTestDir = async (testDir: string): Promise<string[]> => {
@@ -284,6 +295,18 @@ async function main(): Promise<void> {
     console.log('RC branch detected — excluding tests:', RC_EXCLUDED_TESTS);
     testPaths = testPaths.filter((p) =>
       RC_EXCLUDED_TESTS.every(
+        (excludedTest) => path.basename(p) !== excludedTest,
+      ),
+    );
+  }
+
+  if (isStableBranch()) {
+    console.log(
+      'Stable branch detected — excluding tests:',
+      STABLE_EXCLUDED_TESTS,
+    );
+    testPaths = testPaths.filter((p) =>
+      STABLE_EXCLUDED_TESTS.every(
         (excludedTest) => path.basename(p) !== excludedTest,
       ),
     );
