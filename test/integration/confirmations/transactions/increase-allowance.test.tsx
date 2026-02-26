@@ -161,10 +161,10 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     });
 
     expect(
-      await screen.findByText(tEn('confirmTitlePermitTokens') as string),
+      await screen.findByText(tEn('confirmTitlePermitTokens')),
     ).toBeInTheDocument();
     expect(
-      await screen.findByText(tEn('confirmTitleDescPermitSignature') as string),
+      await screen.findByText(tEn('confirmTitleDescPermitSignature')),
     ).toBeInTheDocument();
   });
 
@@ -185,9 +185,9 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     expect(simulationSection).toBeInTheDocument();
 
     expect(simulationSection).toHaveTextContent(
-      tEn('simulationDetailsERC20ApproveDesc') as string,
+      tEn('simulationDetailsERC20ApproveDesc'),
     );
-    expect(simulationSection).toHaveTextContent(tEn('spendingCap') as string);
+    expect(simulationSection).toHaveTextContent(tEn('spendingCap'));
     const spendingCapValue = await screen.findByTestId(
       'simulation-token-value',
     );
@@ -218,7 +218,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     );
 
     expect(approveDetails).toContainElement(approveDetailsSpender);
-    expect(approveDetailsSpender).toHaveTextContent(tEn('spender') as string);
+    expect(approveDetailsSpender).toHaveTextContent(tEn('spender'));
     expect(approveDetailsSpender).toHaveTextContent('0x9bc5b...AfEF4');
     const spenderTooltip = await screen.findByTestId(
       'confirmation__approve-spender-tooltip',
@@ -227,7 +227,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     await testUser.hover(spenderTooltip);
 
     const spenderTooltipContent = await screen.findByText(
-      tEn('spenderTooltipERC20ApproveDesc') as string,
+      tEn('spenderTooltipERC20ApproveDesc'),
     );
     expect(spenderTooltipContent).toBeInTheDocument();
 
@@ -248,7 +248,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     );
     await testUser.hover(approveDetailsRequestFromTooltip);
     const requestFromTooltipContent = await screen.findByText(
-      tEn('requestFromTransactionDescription') as string,
+      tEn('requestFromTransactionDescription'),
     );
     expect(requestFromTooltipContent).toBeInTheDocument();
   });
@@ -277,9 +277,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
       'transaction-details-recipient-row',
     );
     expect(approveDetails).toContainElement(approveDetailsRecipient);
-    expect(approveDetailsRecipient).toHaveTextContent(
-      tEn('interactingWith') as string,
-    );
+    expect(approveDetailsRecipient).toHaveTextContent(tEn('interactingWith'));
     expect(approveDetailsRecipient).toHaveTextContent('0x07614...3ad68');
 
     const approveDetailsRecipientTooltip = await screen.findByTestId(
@@ -290,7 +288,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     );
     await testUser.hover(approveDetailsRecipientTooltip);
     const recipientTooltipContent = await screen.findByText(
-      tEn('interactingWithTransactionDescription') as string,
+      tEn('interactingWithTransactionDescription'),
     );
     expect(recipientTooltipContent).toBeInTheDocument();
 
@@ -298,7 +296,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
       'transaction-details-method-data-row',
     );
     expect(approveDetails).toContainElement(approveMethodData);
-    expect(approveMethodData).toHaveTextContent(tEn('methodData') as string);
+    expect(approveMethodData).toHaveTextContent(tEn('methodData'));
     expect(approveMethodData).toHaveTextContent('increaseAllowance');
     const approveMethodDataTooltip = await screen.findByTestId(
       'transaction-details-method-data-row-tooltip',
@@ -306,7 +304,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     expect(approveMethodData).toContainElement(approveMethodDataTooltip);
     await testUser.hover(approveMethodDataTooltip);
     const approveMethodDataTooltipContent = await screen.findByText(
-      tEn('methodDataTransactionDesc') as string,
+      tEn('methodDataTransactionDesc'),
     );
     expect(approveMethodDataTooltipContent).toBeInTheDocument();
 
@@ -325,7 +323,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     );
     expect(dataSection).toContainElement(dataSectionFunction);
     expect(dataSectionFunction).toHaveTextContent(
-      tEn('transactionDataFunction') as string,
+      tEn('transactionDataFunction'),
     );
     expect(dataSectionFunction).toHaveTextContent('increaseAllowance');
 

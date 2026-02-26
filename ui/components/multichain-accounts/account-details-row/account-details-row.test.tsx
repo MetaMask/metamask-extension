@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { ButtonIcon, ButtonIconSize } from '../../component-library';
 import { IconName } from '../../component-library/icon';
 import { IconColor } from '../../../helpers/constants/design-system';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { AccountDetailsRow } from './account-details-row';
 
 describe('AccountDetailsRow', () => {
@@ -26,7 +27,7 @@ describe('AccountDetailsRow', () => {
           iconName={IconName.Edit}
           color={IconColor.iconAlternative}
           size={ButtonIconSize.Md}
-          ariaLabel="Edit"
+          ariaLabel={messages.edit.message}
           data-testid="end-accessory-button"
         />
       );
@@ -38,7 +39,7 @@ describe('AccountDetailsRow', () => {
       expect(screen.getByText('Test Label')).toBeInTheDocument();
       expect(screen.getByText('Test Value')).toBeInTheDocument();
       expect(screen.getByTestId('end-accessory-button')).toBeInTheDocument();
-      expect(screen.getByLabelText('Edit')).toBeInTheDocument();
+      expect(screen.getByLabelText(messages.edit.message)).toBeInTheDocument();
     });
 
     it('should render without endAccessory', () => {
@@ -92,7 +93,7 @@ describe('AccountDetailsRow', () => {
           iconName={IconName.Edit}
           color={IconColor.iconAlternative}
           size={ButtonIconSize.Md}
-          ariaLabel="Edit account name"
+          ariaLabel={messages.editAccountName.message}
           data-testid="edit-button"
         />
       );
@@ -106,7 +107,9 @@ describe('AccountDetailsRow', () => {
       );
 
       expect(screen.getByTestId('edit-button')).toBeInTheDocument();
-      expect(screen.getByLabelText('Edit account name')).toBeInTheDocument();
+      expect(
+        screen.getByLabelText(messages.editAccountName.message),
+      ).toBeInTheDocument();
     });
 
     it('should render with arrow button accessory', () => {
@@ -115,7 +118,7 @@ describe('AccountDetailsRow', () => {
           iconName={IconName.ArrowRight}
           color={IconColor.iconAlternative}
           size={ButtonIconSize.Md}
-          ariaLabel="View details"
+          ariaLabel={messages.viewDetails.message}
           data-testid="arrow-button"
         />
       );
@@ -129,7 +132,9 @@ describe('AccountDetailsRow', () => {
       );
 
       expect(screen.getByTestId('arrow-button')).toBeInTheDocument();
-      expect(screen.getByLabelText('View details')).toBeInTheDocument();
+      expect(
+        screen.getByLabelText(messages.viewDetails.message),
+      ).toBeInTheDocument();
     });
 
     it('should handle click events on endAccessory buttons', () => {
@@ -139,7 +144,7 @@ describe('AccountDetailsRow', () => {
           iconName={IconName.Edit}
           color={IconColor.iconAlternative}
           size={ButtonIconSize.Md}
-          ariaLabel="Edit"
+          ariaLabel={messages.edit.message}
           data-testid="end-accessory-button"
           onClick={mockButtonClick}
         />

@@ -10,6 +10,7 @@ import {
 } from '../../../../../../test/data/send/assets';
 import { Numeric } from '../../../../../../shared/modules/Numeric';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import * as AmountSelectionMetrics from '../../../hooks/send/metrics/useAmountSelectionMetrics';
 import * as BalanceFunctions from '../../../hooks/send/useBalance';
@@ -32,7 +33,7 @@ describe('Amount', () => {
   it('should render correctly', () => {
     const { getByText } = render();
 
-    expect(getByText('Amount')).toBeInTheDocument();
+    expect(getByText(messages.amount.message)).toBeInTheDocument();
   });
 
   it('call update value method when value is changed', () => {
@@ -221,7 +222,7 @@ describe('Amount', () => {
 
     const { getByRole, getByText } = render();
 
-    fireEvent.click(getByText('Max'));
+    fireEvent.click(getByText(messages.max.message));
     expect(getByRole('textbox')).toHaveValue('5');
     expect(mockUpdateValue).toHaveBeenCalledWith('5', true);
   });
@@ -243,7 +244,7 @@ describe('Amount', () => {
       >);
 
     const { getByText } = render();
-    fireEvent.click(getByText('Max'));
+    fireEvent.click(getByText(messages.max.message));
     expect(mockSetAmountInputMethodPressedMax).toHaveBeenCalled();
   });
 
@@ -331,7 +332,7 @@ describe('Amount', () => {
     });
 
     const { queryByText } = render();
-    expect(queryByText('Max')).not.toBeInTheDocument();
+    expect(queryByText(messages.max.message)).not.toBeInTheDocument();
   });
 
   describe('numeric input validation', () => {
