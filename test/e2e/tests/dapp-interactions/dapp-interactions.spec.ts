@@ -54,7 +54,7 @@ describe('Dapp interactions', function () {
     );
   });
 
-  it('should connect a second Dapp despite MetaMask being locked', async function () {
+  it('TEST should connect a second Dapp despite MetaMask being locked', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
@@ -77,12 +77,14 @@ describe('Dapp interactions', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
+        await driver.delay(90000)
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
         );
         await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await driver.delay(90000)
         await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
 
         // Login to homepage

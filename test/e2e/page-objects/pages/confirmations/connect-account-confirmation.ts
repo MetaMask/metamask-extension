@@ -98,28 +98,6 @@ class ConnectAccountConfirmation {
     await editButtons[1].click();
   }
 
-  async createCreateSolanaAccountFromModal(): Promise<void> {
-    console.log('Create Solana account from modal');
-    await this.driver.clickElement(this.createSolanaAccountModalButton);
-    await this.driver.clickElement(this.addSolanaAccountButton);
-  }
-
-  async isCreateSolanaAccountModalButtonVisible(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(
-        this.createSolanaAccountModalButton,
-        {
-          timeout: 1000,
-        },
-      );
-    } catch (e) {
-      console.log('Create Solana account button not enabled', e);
-      return false;
-    }
-    console.log('Create Solana account button is enabled');
-    return true;
-  }
-
   async isConfirmButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.confirmConnectButton, {
