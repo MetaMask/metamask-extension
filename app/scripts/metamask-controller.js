@@ -4091,9 +4091,6 @@ export default class MetamaskController extends EventEmitter {
       fetchAllSeedPhrasesSuccess = true;
 
       return allSeedPhrases;
-    } catch (error) {
-      log.error('error while fetching all seed phrases', error);
-      throw error;
     } finally {
       this.metaMetricsController.bufferedEndTrace?.({
         name: TraceName.OnboardingFetchSrps,
