@@ -74,7 +74,11 @@ describe('Multichain Asset List', function (this: Suite) {
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', NETWORK_NAME_MAINNET);
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Popular',
+          NETWORK_NAME_MAINNET,
+        );
         // Only Ethereum network is selected so only 1 token visible
         await assetListPage.checkTokenItemNumber(1);
         await assetListPage.clickOnAsset('Ether');

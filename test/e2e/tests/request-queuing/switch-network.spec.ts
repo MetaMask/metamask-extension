@@ -44,7 +44,11 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
         );
 
         // Switch to second network
-        await switchToNetworkFromNetworkSelect(driver, 'Custom', 'Localhost 8546');
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Custom',
+          'Localhost 8546',
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 

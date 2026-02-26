@@ -68,7 +68,11 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         const accountListPage = new AccountListPage(driver);
 
         console.log('Step 2: Switch to Ethereum');
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', NETWORK_NAME_MAINNET);
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Popular',
+          NETWORK_NAME_MAINNET,
+        );
 
         console.log('Step 3: Enable fiat balance display in settings');
         await headerNavbar.openSettingsPage();
@@ -87,7 +91,11 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         await accountListPage.closeMultichainAccountsPage();
 
         console.log('Step 5: Switch to Sepolia test network');
-        await switchToNetworkFromNetworkSelect(driver, 'Custom', NETWORK_NAME_SEPOLIA);
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Custom',
+          NETWORK_NAME_SEPOLIA,
+        );
 
         console.log('Step 6: Verify native balance on Sepolia network');
         // Not working with BIP44

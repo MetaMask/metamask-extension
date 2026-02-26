@@ -102,7 +102,11 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Custom', 'Localhost 8546');
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Custom',
+          'Localhost 8546',
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();

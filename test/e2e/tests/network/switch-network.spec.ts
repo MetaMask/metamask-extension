@@ -47,7 +47,11 @@ describe('Switch network - ', function (this: Suite) {
         await homePage.checkLocalNodeBalanceIsDisplayed();
 
         // Validate the switch network functionality to test network
-        await switchToNetworkFromNetworkSelect(driver, 'Custom', 'Localhost 8545');
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Custom',
+          'Localhost 8545',
+        );
         await homePage.checkLocalNodeBalanceIsDisplayed();
 
         // Add Arbitrum network and perform the switch network functionality

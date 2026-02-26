@@ -126,7 +126,11 @@ describe('Request Queueing chainId proxy sync', function () {
         );
 
         // Network Selector
-        await switchToNetworkFromNetworkSelect(driver, 'Custom', 'Localhost 8546');
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Custom',
+          'Localhost 8546',
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 

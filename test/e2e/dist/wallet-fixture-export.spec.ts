@@ -187,9 +187,17 @@ describe('Wallet State', function () {
         await enableTestNetworks(driver);
 
         // Action needed to apply the changes in the balance as doesn't happen right away (potential bug)
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'All popular networks');
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Popular',
+          'All popular networks',
+        );
 
-        await switchToNetworkFromNetworkSelect(driver, 'Custom', 'Localhost 8545');
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Custom',
+          'Localhost 8545',
+        );
 
         // Fiat value should be displayed as we mock the price and that is not a 'test network'
         await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
