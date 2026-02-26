@@ -6,7 +6,7 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Mockttp } from '../../mock-e2e';
-import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import NetworkManager from '../../page-objects/pages/network-manager';
 import SendPage from '../../page-objects/pages/send/send-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 
@@ -74,8 +74,7 @@ describe('Multichain Asset List', function (this: Suite) {
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
-        await switchToNetworkFromNetworkSelect(
-          driver,
+        await new NetworkManager(driver).switchToNetwork(
           'Popular',
           NETWORK_NAME_MAINNET,
         );

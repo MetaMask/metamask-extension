@@ -15,7 +15,34 @@ export enum NetworkId {
 class NetworkManager {
   protected readonly driver: Driver;
 
-  private readonly networkManagerToggle = '[data-testid="sort-by-networks"]';
+  private readonly addCustomNetworkButton = {
+    text: 'Add custom network',
+    tag: 'button',
+  };
+
+  private readonly allPopularNetworksLabel = {
+    text: 'All popular networks',
+    tag: 'p',
+  };
+
+  private readonly deselectedNetworkListItem = (selector: string) =>
+    `:is(${selector}.multichain-network-list-item--deselected, ${selector} .multichain-network-list-item--deselected)`;
+
+  private readonly multichainNetworkListItemByName = (networkName: string) => ({
+    css: '.multichain-network-list-item',
+    text: networkName,
+  });
+
+  private readonly networkItemDeleteOption = `[data-testid="network-list-item-options-delete"]`;
+
+  private readonly networkItemMenuButtonByChainId = (chainId: string) =>
+    `[data-testid="network-list-item-options-button-${chainId}"]`;
+
+  private readonly networkListItem = (networkName: string) =>
+    `[data-testid="network-list-item-${networkName}"]`;
+
+  private readonly networkListItemByName = (networkName: string) =>
+    `[data-testid="${networkName}"]`;
 
   private readonly networkManagerCloseButton =
     '[data-testid="modal-header-close-button"]';
@@ -23,34 +50,17 @@ class NetworkManager {
   private readonly networkManagerSelectAllButton =
     '[data-testid="network-manager-select-all"]';
 
-  private readonly selectedNetworkListItem = (selector: string) =>
-    `:is(${selector}.multichain-network-list-item--selected, ${selector} .multichain-network-list-item--selected)`;
-
-  private readonly deselectedNetworkListItem = (selector: string) =>
-    `:is(${selector}.multichain-network-list-item--deselected, ${selector} .multichain-network-list-item--deselected)`;
-
-  private readonly networkListItem = (networkName: string) =>
-    `[data-testid="network-list-item-${networkName}"]`;
-
-  private readonly tabList = '.network-manager__tab-list';
-
-  private readonly networkListItemByName = (networkName: string) =>
-    `[data-testid="${networkName}"]`;
-
-  private readonly multichainNetworkListItemByName = (networkName: string) => ({
-    css: '.multichain-network-list-item',
-    text: networkName,
-  });
-
-  private readonly networkItemMenuButtonByChainId = (chainId: string) =>
-    `[data-testid="network-list-item-options-button-${chainId}"]`;
-
-  private readonly networkItemDeleteOption = `[data-testid="network-list-item-options-delete"]`;
+  private readonly networkManagerToggle = '[data-testid="sort-by-networks"]';
 
   private readonly networkPopupDeleteButton = {
     text: 'Delete',
     tag: 'button',
   };
+
+  private readonly selectedNetworkListItem = (selector: string) =>
+    `:is(${selector}.multichain-network-list-item--selected, ${selector} .multichain-network-list-item--selected)`;
+
+  private readonly tabList = '.network-manager__tab-list';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -178,6 +188,25 @@ class NetworkManager {
     } catch (error) {
       throw new Error(`Network ${networkName} is selected`);
     }
+  }
+
+  async switchToNetwork(
+    networkCategory: string,
+    networkName: string,
+  ): Promise<void> {
+    console.log(
+      `Switching to network: ${networkName} in category: ${networkCategory}`,
+    );
+    await this.openNetworkManager();
+    await this.selectTab(networkCategory);
+
+    if (networkCategory === 'Custom') {
+      await this.driver.waitForSelector(this.addCustomNetworkButton);
+    } else if (networkCategory === 'Popular') {
+      await this.driver.waitForSelector(this.allPopularNetworksLabel);
+    }
+
+    await this.selectNetworkByNameWithWait(networkName);
   }
 
   async checkTabIsSelected(tabName: string): Promise<void> {

@@ -3,7 +3,7 @@ import { DAPP_URL, DAPP_ONE_URL, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import NetworkManager from '../../page-objects/pages/network-manager';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks revokePermissions', function (this: Suite) {
@@ -57,7 +57,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
         );
 
         // Network Selector
-        await switchToNetworkFromNetworkSelect(driver, 'Custom', hostname);
+        await new NetworkManager(driver).switchToNetwork('Custom', hostname);
 
         // Wait for the first dapp's connect confirmation to disappear
         await driver.waitUntilXWindowHandles(2);

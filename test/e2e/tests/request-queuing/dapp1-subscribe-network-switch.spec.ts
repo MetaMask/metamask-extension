@@ -5,7 +5,7 @@ import { withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
-import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import NetworkManager from '../../page-objects/pages/network-manager';
 
 describe('Request Queueing', function () {
   it('should keep subscription on dapp network when switching different mm network', async function () {
@@ -68,8 +68,7 @@ describe('Request Queueing', function () {
         );
 
         // Switch networks
-        await switchToNetworkFromNetworkSelect(
-          driver,
+        await new NetworkManager(driver).switchToNetwork(
           'Custom',
           'Localhost 8546',
         );

@@ -3,7 +3,7 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures, largeDelayMs } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import NetworkManager from '../../page-objects/pages/network-manager';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
@@ -48,8 +48,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         );
 
         // Network Selector
-        await switchToNetworkFromNetworkSelect(
-          driver,
+        await new NetworkManager(driver).switchToNetwork(
           'Custom',
           'Localhost 8546',
         );

@@ -13,7 +13,7 @@ import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
+
 
 const MOCK_CHAINLIST_RESPONSE = [
   {
@@ -74,7 +74,7 @@ describe('Popular Networks', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        await new HeaderNavbar(driver).openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
@@ -119,7 +119,7 @@ describe('Popular Networks', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const homepage = new Homepage(driver);
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        await new HeaderNavbar(driver).openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
@@ -127,7 +127,7 @@ describe('Popular Networks', function (this: Suite) {
 
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        await new HeaderNavbar(driver).openGlobalNetworksMenu();
 
         // check that arbitrum is on the list of popular network
         await selectNetworkDialog.checkPageIsLoaded();
@@ -163,7 +163,7 @@ describe('Popular Networks', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        await new HeaderNavbar(driver).openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
@@ -245,7 +245,7 @@ describe('Popular Networks', function (this: Suite) {
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        await new HeaderNavbar(driver).openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();

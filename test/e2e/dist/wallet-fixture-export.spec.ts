@@ -23,7 +23,7 @@ import {
   enableTestNetworks,
 } from '../page-objects/flows/settings.flow';
 import HomePage from '../page-objects/pages/home/homepage';
-import { switchToNetworkFromNetworkSelect } from '../page-objects/flows/network.flow';
+import NetworkManager from '../page-objects/pages/network-manager';
 
 type JsonLike = Record<string, unknown>;
 
@@ -187,14 +187,12 @@ describe('Wallet State', function () {
         await enableTestNetworks(driver);
 
         // Action needed to apply the changes in the balance as doesn't happen right away (potential bug)
-        await switchToNetworkFromNetworkSelect(
-          driver,
+        await new NetworkManager(driver).switchToNetwork(
           'Popular',
           'All popular networks',
         );
 
-        await switchToNetworkFromNetworkSelect(
-          driver,
+        await new NetworkManager(driver).switchToNetwork(
           'Custom',
           'Localhost 8545',
         );

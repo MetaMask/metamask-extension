@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
-import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import NetworkManager from '../../page-objects/pages/network-manager';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -58,8 +58,7 @@ describe.skip('Request Queuing for Multiple Dapps and Txs on different networks.
         );
 
         // Network Selector
-        await switchToNetworkFromNetworkSelect(
-          driver,
+        await new NetworkManager(driver).switchToNetwork(
           'Custom',
           'Localhost 8546',
         );
