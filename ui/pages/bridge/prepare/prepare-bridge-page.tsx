@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { debounce } from 'lodash';
 import {
   formatChainIdToCaip,

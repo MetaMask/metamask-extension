@@ -1666,8 +1666,12 @@ export class RewardsController extends BaseController<
     for (const accountToTry of sortedAccounts) {
       try {
         optinResult = await this.#optIn(accountToTry, referralCode);
-      } catch {
-        // Allow one failure to pass through
+      } catch (error) {
+        // Hardware wallet errors must propagate — the user explicitly interacted with their device
+        if (isHardwareAccount(accountToTry)) {
+          throw error;
+        }
+        // Allow one failure to pass through for non-hardware accounts
       }
 
       if (optinResult) {

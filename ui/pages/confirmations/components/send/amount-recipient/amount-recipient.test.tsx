@@ -7,6 +7,7 @@ import {
   EVM_NATIVE_ASSET,
 } from '../../../../../../test/data/send/assets';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import * as AmountSelectionMetrics from '../../../hooks/send/metrics/useAmountSelectionMetrics';
 import * as AmountValidation from '../../../hooks/send/useAmountValidation';
@@ -55,9 +56,9 @@ describe('AmountRecipient', () => {
 
     const { getByText } = render();
 
-    expect(getByText('Amount')).toBeInTheDocument();
+    expect(getByText(messages.amount.message)).toBeInTheDocument();
     expect(getByText('SendHero')).toBeInTheDocument();
-    expect(getByText('Continue')).toBeInTheDocument();
+    expect(getByText(messages.continue.message)).toBeInTheDocument();
   });
 
   it('submit transaction when continue button is clicked', async () => {
@@ -115,7 +116,7 @@ describe('AmountRecipient', () => {
       target: { value: MOCK_ADDRESS },
     });
 
-    fireEvent.click(getByText('Continue'));
+    fireEvent.click(getByText(messages.continue.message));
     expect(mockHandleSubmit).toHaveBeenCalled();
     expect(mockCaptureAmountSelected).toHaveBeenCalled();
     expect(mockCaptureRecipientSelected).toHaveBeenCalled();
@@ -135,7 +136,7 @@ describe('AmountRecipient', () => {
         typeof AmountSelectionMetrics.useAmountSelectionMetrics
       >);
     jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
-      amountError: 'Insufficient Funds',
+      amountError: messages.insufficientFundsSend.message,
     } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       toResolved: MOCK_ADDRESS,
@@ -156,7 +157,9 @@ describe('AmountRecipient', () => {
       target: { value: MOCK_ADDRESS },
     });
 
-    fireEvent.click(getByRole('button', { name: 'Insufficient Funds' }));
+    fireEvent.click(
+      getByRole('button', { name: messages.insufficientFundsSend.message }),
+    );
     expect(mockHandleSubmit).not.toHaveBeenCalled();
   });
 
@@ -209,7 +212,9 @@ describe('AmountRecipient', () => {
       target: { value: '###' },
     });
 
-    fireEvent.click(getByRole('button', { name: 'Invalid hex data' }));
+    fireEvent.click(
+      getByRole('button', { name: messages.invalidHexData.message }),
+    );
     expect(mockHandleSubmit).not.toHaveBeenCalled();
   });
 
@@ -278,7 +283,7 @@ describe('AmountRecipient', () => {
       target: { value: MOCK_ADDRESS },
     });
 
-    fireEvent.click(getByText('Continue'));
+    fireEvent.click(getByText(messages.continue.message));
 
     await new Promise(process.nextTick);
 
@@ -355,7 +360,7 @@ describe('AmountRecipient', () => {
       target: { value: MOCK_ADDRESS },
     });
 
-    fireEvent.click(getByText('Continue'));
+    fireEvent.click(getByText(messages.continue.message));
 
     await new Promise(process.nextTick);
 

@@ -36,7 +36,7 @@ class TransactionConfirmation extends Confirmation {
 
   private readonly dappInitiatedHeadingTitle: RawLocator = {
     css: 'h4',
-    text: tEn('transferRequest') as string,
+    text: tEn('transferRequest'),
   };
 
   private readonly editGasFeeIcon: RawLocator =
@@ -91,7 +91,7 @@ class TransactionConfirmation extends Confirmation {
 
   private readonly walletInitiatedHeadingTitle: RawLocator = {
     css: 'h4',
-    text: tEn('review') as string,
+    text: tEn('review'),
   };
 
   private readonly tokenGasFeeDropdown =
@@ -255,7 +255,7 @@ class TransactionConfirmation extends Confirmation {
   async checkPaidByMetaMask() {
     await this.driver.findElement({
       css: this.paidByMetaMaskNotice,
-      text: tEn('paidByMetaMask') as string,
+      text: tEn('paidByMetaMask'),
     });
   }
 
@@ -574,9 +574,7 @@ class TransactionConfirmation extends Confirmation {
     status: 'covered' | 'not_covered' | 'malicious',
   ): Promise<void> {
     const statusText =
-      status === 'covered'
-        ? (tEn('shieldCovered') as string)
-        : (tEn('shieldNotCovered') as string);
+      status === 'covered' ? tEn('shieldCovered') : tEn('shieldNotCovered');
     console.log(`Checking if shield coverage indicator shows "${statusText}"`);
     await this.driver.waitForSelector(
       this.shieldFooterCoverageIndicator(statusText),

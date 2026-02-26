@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import { Token } from '@metamask/assets-controllers';
+import { Hex } from '@metamask/utils';
 import { getAllTokens } from '../selectors';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
@@ -38,7 +39,8 @@ export const useGetFormattedTokensPerChain = (
     : allChainIDs;
   const formattedTokensWithBalancesPerChain = networksToFormat.map(
     (singleChain) => {
-      const tokens = importedTokens?.[singleChain]?.[account?.address] ?? [];
+      const tokens =
+        importedTokens?.[singleChain as Hex]?.[account?.address] ?? [];
 
       const tokensWithBalances = tokens.reduce(
         (acc: TokenWithBalance[], token: Token) => {

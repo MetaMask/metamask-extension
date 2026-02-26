@@ -332,7 +332,7 @@ describe('DappSwapComparisonBanner', () => {
 
     expect(screen.getByTestId('dapp-swap-banner')).toBeInTheDocument();
     expect(
-      await screen.findByText(tEn('dappSwapAdvantageSaveOnly') as string),
+      await screen.findByText(tEn('dappSwapAdvantageSaveOnly')),
     ).toBeInTheDocument();
 
     // Verify metrics: swap_mm_cta_displayed should be tracked via tx-ui fragment upsert
@@ -512,7 +512,7 @@ describe('DappSwapComparisonBanner', () => {
 
     // Verify standard confirmation UI is displayed instead
     expect(
-      await screen.findByText(tEn('confirmTitleTransaction') as string),
+      await screen.findByText(tEn('confirmTitleTransaction')),
     ).toBeInTheDocument();
   });
 
