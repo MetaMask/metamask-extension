@@ -4,9 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'clsx';
 import Unlock from '../unlock-page';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   ONBOARDING_EXPERIMENTAL_AREA,
-  ///: END:ONLY_INCLUDE_IF
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_CONFIRM_SRP_ROUTE,
@@ -44,9 +42,7 @@ import {
   getFirstTimeFlowTypeRouteAfterUnlock,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import ExperimentalArea from '../../components/app/flask/experimental-area';
-///: END:ONLY_INCLUDE_IF
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
 import { Box } from '../../components/component-library';
 import {
@@ -71,6 +67,7 @@ import LoadingScreen from '../../components/ui/loading-screen';
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import { useTheme } from '../../hooks/useTheme';
 import { ThemeType } from '../../../shared/constants/preferences';
+import { isFlask } from '../../../shared/lib/build-types';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -267,11 +264,8 @@ export default function OnboardingFlow() {
 
   let isFullPage =
     pathname === ONBOARDING_WELCOME_ROUTE ||
-    pathname === ONBOARDING_UNLOCK_ROUTE;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  isFullPage = isFullPage || pathname === ONBOARDING_EXPERIMENTAL_AREA;
-  ///: END:ONLY_INCLUDE_IF
+    pathname === ONBOARDING_UNLOCK_ROUTE ||
+    (isFlask() && pathname === ONBOARDING_EXPERIMENTAL_AREA);
 
   const backgroundColorForWelcomePage = useMemo(() => {
     if (isWelcomePage) {
@@ -319,9 +313,7 @@ export default function OnboardingFlow() {
             ? 0
             : 3
         }
-        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
         marginBottom={pathname === ONBOARDING_EXPERIMENTAL_AREA ? 6 : 0}
-        ///: END:ONLY_INCLUDE_IF
         marginInline="auto"
         style={{
           backgroundColor:
@@ -405,16 +397,10 @@ export default function OnboardingFlow() {
             path={toRelativePath(ONBOARDING_DOWNLOAD_APP_ROUTE)}
             element={<OnboardingDownloadApp />}
           />
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-          }
           <Route
             path={toRelativePath(ONBOARDING_EXPERIMENTAL_AREA)}
             element={<ExperimentalArea redirectTo={ONBOARDING_WELCOME_ROUTE} />}
           />
-          {
-            ///: END:ONLY_INCLUDE_IF
-          }
           <Route path="*" element={<OnboardingFlowSwitch />} />
         </Routes>
       </Box>

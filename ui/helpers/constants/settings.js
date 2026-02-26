@@ -572,7 +572,6 @@ const SETTINGS_CONSTANTS = [
     route: `${DEVELOPER_OPTIONS_ROUTE}#service-worker-keep-alive`,
     iconName: IconName.CodeCircle,
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   {
     tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('watchEthereumAccountsToggle'),
@@ -580,7 +579,6 @@ const SETTINGS_CONSTANTS = [
     route: `${EXPERIMENTAL_ROUTE}#watch-only`,
     icon: 'fas fa-flask',
   },
-  ///: END:ONLY_INCLUDE_IF
 ];
 
 export default SETTINGS_CONSTANTS;

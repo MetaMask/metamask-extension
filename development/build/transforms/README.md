@@ -16,13 +16,13 @@ this.store.updateStructure({
   ...,
   GasFeeController: this.gasFeeController,
   TokenListController: this.tokenListController,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-xx1)
   SnapController: this.snapController,
   ///: END:ONLY_INCLUDE_IF
 });
 ```
 
-Is transformed to the following if the `build-flask` feature is not included in the current build:
+Is transformed to the following if the `build-xx1` feature is not included in the current build:
 
 ```javascript
 this.store.updateStructure({
@@ -36,7 +36,7 @@ Note that multiple build types can be specified by separating them with
 commands inside the parameter parentheses:
 
 ```javascript
-///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-xx1,build-xx2)
 ```
 
 It's critical that this transform runs before anything else processes our code.

@@ -8,9 +8,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import { NotificationsItem } from './notifications-item';
 import { KeyringSnapsItem } from './keyring-snaps-item';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
 import { WatchAccountItem } from './watch-account-item';
-///: END:ONLY_INCLUDE_IF
+import { isExperimental, isFlask } from '../../../../shared/lib/build-types';
 
 const ExperimentalTab = () => {
   const t = useI18nContext();
@@ -28,15 +27,13 @@ const ExperimentalTab = () => {
 
   return (
     <Box paddingHorizontal={4} paddingBottom={4}>
-      {process.env.NOTIFICATIONS ? (
+      {process.env.NOTIFICATIONS && (
         <NotificationsItem sectionRef={settingsRefs[0]} />
-      ) : null}
+      )}
       {<KeyringSnapsItem sectionRef={settingsRefs[0]} />}
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
+      {(isFlask() || isExperimental()) && (
         <WatchAccountItem sectionRef={settingsRefs[0]} />
-        ///: END:ONLY_INCLUDE_IF
-      }
+      )}
     </Box>
   );
 };
