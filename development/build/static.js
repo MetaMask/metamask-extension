@@ -17,7 +17,6 @@ module.exports = function createStaticAssetTasks({
   browserPlatforms,
   shouldIncludeLockdown = true,
   shouldIncludeSnow = true,
-  shouldIncludeOcapKernel = false,
 }) {
   const copyTargetsProds = {};
   const copyTargetsDevs = {};
@@ -29,7 +28,6 @@ module.exports = function createStaticAssetTasks({
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
       shouldIncludeLockdown,
       shouldIncludeSnow,
-      shouldIncludeOcapKernel,
     );
     copyTargetsProds[browser] = copyTargetsProd;
     copyTargetsDevs[browser] = copyTargetsDev;
@@ -111,7 +109,6 @@ module.exports = function createStaticAssetTasks({
 function getCopyTargets(
   shouldIncludeLockdown,
   shouldIncludeSnow,
-  shouldIncludeOcapKernel,
 ) {
   const allCopyTargets = [
     {
@@ -218,40 +215,6 @@ function getCopyTargets(
             ),
             dest: `snaps/bundle.js`,
             pattern: '',
-          },
-        ]
-      : []),
-    ...(shouldIncludeOcapKernel
-      ? [
-          {
-            src: getPathInsideNodeModules(
-              '@metamask/kernel-shims',
-              'dist/eventual-send.js',
-            ),
-            dest: `scripts/eventual-send-install.js`,
-          },
-          {
-            src: getPathInsideNodeModules(
-              '@metamask/kernel-browser-runtime',
-              'dist/static/',
-            ),
-            pattern: '*',
-            dest: 'ocap-kernel/',
-          },
-          {
-            src: getPathInsideNodeModules(
-              '@metamask/kernel-ui',
-              'dist/styles.css',
-            ),
-            dest: `devtools/ocap-kernel/kernel-panel.css`,
-          },
-          {
-            src: `./app/devtools/devtools.html`,
-            dest: `devtools/devtools.html`,
-          },
-          {
-            src: `./app/devtools/ocap-kernel/kernel-panel.html`,
-            dest: `devtools/ocap-kernel/kernel-panel.html`,
           },
         ]
       : []),
