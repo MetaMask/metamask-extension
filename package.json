@@ -9,7 +9,7 @@
   "previewBuilds": {
     "@metamask/perps-controller": {
       "type": "breaking",
-      "previewVersion": "0.0.0-preview-e4aa1532"
+      "previewVersion": "0.0.0-preview-b0148922a"
     }
   },
   "scripts": {
@@ -153,7 +153,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/perps-controller@npm:^0.0.0": "npm:@metamask-previews/perps-controller@0.0.0-preview-e4aa1532",
+    "@metamask/perps-controller@npm:^0.0.0": "npm:@metamask-previews/perps-controller@0.0.0-preview-b0148922a",
     "jest-clean-console-reporter/chalk": "^4.1.2",
     "chokidar": "^3.6.0",
     "@types/react": "^17.0.11",
