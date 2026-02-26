@@ -39,6 +39,12 @@ import {
   ScanAddressResponse,
 } from '../../../../shared/lib/trust-signals';
 import { getTransactionDataRecipient } from '../../../../shared/modules/transaction.utils';
+import {
+  getTempoTransactionBatchRequestParams,
+  isTempoSupportEnabledForChainId,
+  isTempoTransactionParams,
+  isTempoTransactionRequest,
+} from './tempo-tx-utils';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -59,7 +65,7 @@ type BaseAddTransactionRequest = {
   addSecurityAlertResponse: AddAddressSecurityAlertResponse;
 };
 
-type FinalAddTransactionRequest = BaseAddTransactionRequest & {
+export type FinalAddTransactionRequest = BaseAddTransactionRequest & {
   transactionOptions: Partial<AddTransactionOptions>;
 };
 
@@ -78,6 +84,11 @@ const TRANSFER_TYPES = [
   TransactionType.tokenMethodTransferFrom,
   TransactionType.tokenMethodSafeTransferFrom,
 ];
+
+type AddTransactionResult = Promise<{
+  transactionMeta: TransactionMeta | undefined;
+  waitForHash: () => Promise<string | undefined>;
+}>;
 
 export async function addDappTransaction(
   request: AddDappTransactionRequest,
@@ -105,19 +116,74 @@ export async function addDappTransaction(
 
   endTrace({ name: TraceName.Middleware, id: actionId });
 
-  const { waitForHash } = await addTransactionOrUserOperation({
+  const addTransactionRequest: FinalAddTransactionRequest = {
     ...request,
     transactionOptions: {
       ...transactionOptions,
       traceContext,
     },
-  });
+  };
+
+  const { waitForHash } = await addTransactionOrUserOperation(
+    addTransactionRequest,
+  );
 
   const hash = (await waitForHash()) as string;
 
   endTrace({ name: TraceName.Transaction, id: actionId });
 
   return hash;
+}
+
+async function addTempoTransaction(
+  request: FinalAddTransactionRequest,
+): AddTransactionResult {
+  if (!isTempoSupportEnabledForChainId(request.chainId)) {
+    throw new Error(
+      `Tempo transactions are not supported for chain: ${request.chainId}`,
+    );
+  }
+
+  // Checks and infer Tempo Transaction format for supported fields.
+  if (!isTempoTransactionParams(request.transactionParams)) {
+    throw new Error('Invalid Tempo Transaction Params');
+  }
+
+  const { networkClientId, transactionController } = request;
+
+  const tempoBatchRequestParams = getTempoTransactionBatchRequestParams(
+    request.transactionParams,
+  );
+  const result = await transactionController.addTransactionBatch({
+    ...tempoBatchRequestParams,
+    ...request.transactionOptions,
+    networkClientId,
+  });
+
+  const { batchId } = result;
+
+  // We've got a batchId but we want to return a tx hash to the dApp
+  const transactionMeta = getTransactionByBatchId(
+    batchId,
+    transactionController,
+  );
+
+  if (!transactionMeta) {
+    throw new Error(
+      `Batch submitted with id ${batchId} but no matching transaction found in transactionController.`,
+    );
+  }
+
+  if (!transactionMeta.hash) {
+    throw new Error(
+      `Batch submitted with id ${batchId} but transaction found in transactionController does have a hash.`,
+    );
+  }
+
+  return {
+    transactionMeta,
+    waitForHash: async () => transactionMeta.hash,
+  };
 }
 
 export async function addTransaction(
@@ -150,6 +216,11 @@ async function addTransactionOrUserOperation(
   request: FinalAddTransactionRequest,
 ) {
   const { selectedAccount } = request;
+
+  const isTempoFlow = isTempoTransactionRequest(request);
+  if (isTempoFlow) {
+    return addTempoTransaction(request);
+  }
 
   const isSmartContractAccount =
     selectedAccount.type === EthAccountType.Erc4337;
@@ -250,6 +321,15 @@ function getTransactionByHash(
 ) {
   return transactionController.state.transactions.find(
     (tx) => tx.hash === transactionHash,
+  );
+}
+
+function getTransactionByBatchId(
+  batchId: string,
+  transactionController: TransactionController,
+) {
+  return transactionController.state.transactions.find(
+    (tx) => tx.batchId === batchId,
   );
 }
 
