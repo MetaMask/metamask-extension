@@ -85,11 +85,8 @@ export function stringifyBalance(
     return '0';
   }
 
-  const parsedDecimals = Number(tokenDecimals);
-  const decimals =
-    Number.isInteger(parsedDecimals) && parsedDecimals >= 0
-      ? parsedDecimals
-      : 0;
+  const parsed = Number(tokenDecimals);
+  const decimals = Number.isInteger(parsed) && parsed >= 0 ? parsed : 0;
 
   if (decimals === 0) {
     return balance;
