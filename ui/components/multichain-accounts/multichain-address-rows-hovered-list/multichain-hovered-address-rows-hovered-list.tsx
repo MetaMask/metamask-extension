@@ -11,7 +11,6 @@ import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   Box,
-  BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
   Button,
@@ -37,6 +36,7 @@ import { useFormatters } from '../../../hooks/useFormatters';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { MultichainAggregatedAddressListRow } from './multichain-aggregated-list-row';
+import { DefaultAddress } from './default-address';
 
 // Priority networks that should appear first (using CAIP chain IDs)
 const PRIORITY_CHAIN_IDS = new Map<CaipChainId, number>([
@@ -70,14 +70,30 @@ export type MultichainAddressRowsListProps = {
    * before navigation occurs. Useful for analytics or tracing.
    */
   onViewAllClick?: () => void;
+  /**
+   * When false, the popover does not show the "View All" button.
+   * Used e.g. on the account list page.
+   */
+  showViewAllButton?: boolean;
+  /**
+   * When false, the popover does not show the "Show default address" toggle section.
+   * Used e.g. on the account list page.
+   */
+  showDefaultAddressSection?: boolean;
 };
 
+const Divider = () => (
+  <div className="my-3 mx-4 border-t border-border-muted" />
+);
+
 export const MultichainHoveredAddressRowsList = ({
-  groupId,
   children,
-  showAccountHeaderAndBalance = true,
+  groupId,
   hoverCloseDelay = 50,
+  showAccountHeaderAndBalance = true,
   onViewAllClick,
+  showViewAllButton = true,
+  showDefaultAddressSection = true,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
 
@@ -85,15 +101,16 @@ export const MultichainHoveredAddressRowsList = ({
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const navigate = useNavigate();
   const [isHoverOpen, setIsHoverOpen] = useState(false);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
     null,
   );
   const [dynamicPosition, setDynamicPosition] = useState<PopoverPosition>(
     PopoverPosition.BottomStart,
   );
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const allAccountGroups = useSelector(getAllAccountGroups);
 
+  const allAccountGroups = useSelector(getAllAccountGroups);
   const allBalances = useSelector(selectBalanceForAllWallets);
   const { balance, currency, accountGroup } = useMemo(() => {
     const group = allAccountGroups.find((g) => g.id === groupId);
@@ -117,7 +134,7 @@ export const MultichainHoveredAddressRowsList = ({
 
     const rect = referenceElement.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
-    const popoverEstimatedHeight = 400; // Based on the maxHeight set on the popover
+    const popoverEstimatedHeight = 275; // Based on the maxHeight set on the popover
     const spaceBelow = viewportHeight - rect.bottom;
 
     // If there's not enough space below, use TopStart
@@ -293,9 +310,6 @@ export const MultichainHoveredAddressRowsList = ({
         ref={setReferenceElement}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        gap={1}
       >
         {children}
       </Box>
@@ -315,7 +329,7 @@ export const MultichainHoveredAddressRowsList = ({
         paddingTop={1}
         style={{
           zIndex: 99999,
-          maxHeight: '400px',
+          maxHeight: '275px',
           minWidth: '340px',
         }}
       >
@@ -341,27 +355,24 @@ export const MultichainHoveredAddressRowsList = ({
               </Text>
             </Box>
           )}
-          <Box marginBottom={2}>{renderedRows}</Box>
-          <Box
-            paddingBottom={1}
-            className="multichain-address-rows-border"
-            style={{
-              borderTop: '1px solid var(--color-border-muted)',
-            }}
-          />
-          <Box>
+          <Box>{renderedRows}</Box>
+          {showViewAllButton && (
             <Button
               size={ButtonSize.Sm}
-              variant={ButtonVariant.Tertiary}
+              variant={ButtonVariant.Secondary}
               onClick={handleViewAllClick}
-              style={{ width: '100%' }}
-              className="multichain-address-rows-view-all-button"
+              className="mt-2 ml-3 mr-3"
+              data-testid="multichain-address-rows-view-all-button"
             >
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {t('multichainAddressViewAll')}
-              </Text>
+              {t('multichainAddressViewAll')}
             </Button>
-          </Box>
+          )}
+          {showDefaultAddressSection && (
+            <>
+              <Divider />
+              <DefaultAddress />
+            </>
+          )}
         </Box>
       </Popover>
     </>

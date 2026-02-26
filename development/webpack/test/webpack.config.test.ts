@@ -143,13 +143,9 @@ ${Object.entries(env)
     assert(manifestPlugin.options.transform);
     const transformedManifest = manifestPlugin.options.transform(
       {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
         name: 'name',
         version: '1.2.3',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         content_scripts: [
           { js: ['scripts/contentscript.js', 'scripts/inpage.js'] },
         ],
@@ -158,13 +154,9 @@ ${Object.entries(env)
     );
     console.log('transformedManifest', transformedManifest);
     assert.deepStrictEqual(transformedManifest, {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       manifest_version: 3,
       name: 'name',
       version: '1.2.3',
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       content_scripts: [
         {
           js: ['scripts/contentscript.js', 'scripts/inpage.js'],
@@ -186,7 +178,7 @@ ${Object.entries(env)
     const removeUnsupportedFeatures = ['--no-lavamoat'];
     const config: Configuration = getWebpackConfig(
       [
-        '--env',
+        '--mode',
         'production',
         '--watch',
         '--stats',
@@ -289,8 +281,6 @@ ${Object.entries(env)
 
   it('should enable ReactRefreshPlugin in a development env when `--watch` is specified', () => {
     const config: Configuration = getWebpackConfig(['--watch'], {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       __HMR_READY__: 'true',
     });
     delete config.watch;

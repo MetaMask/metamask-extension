@@ -5,6 +5,7 @@ import { waitFor } from '@testing-library/react';
 
 import Confirmation from '../confirmation';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
 
 const middleware = [thunk];
@@ -57,7 +58,9 @@ describe('snap-account-redirect confirmation', () => {
       store,
     );
     await waitFor(() => {
-      expect(getByText(`Finish signing`)).toBeInTheDocument();
+      expect(
+        getByText(messages.snapAccountRedirectFinishSigningTitle.message),
+      ).toBeInTheDocument();
       expect(
         getByText(`Follow the instructions from ${mockSnapName}`),
       ).toBeInTheDocument();

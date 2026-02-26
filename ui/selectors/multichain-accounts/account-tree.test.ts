@@ -33,6 +33,7 @@ import {
   getAccountGroupsByAddress,
   getInternalAccountListSpreadByScopesByGroupId,
   getIconSeedAddressByAccountGroupId,
+  getDefaultScopeAndAddressByAccountGroupId,
   getIconSeedAddressesByAccountGroups,
   getNormalizedGroupsMetadata,
 } from './account-tree';
@@ -1369,6 +1370,57 @@ describe('Multichain Accounts Selectors', () => {
       );
 
       expect(result).toBe('');
+    });
+  });
+
+  describe('getDefaultScopeAndAddressByAccountGroupId', () => {
+    it('returns defaultAddress and defaultScopes for default scope (eip155) when group has eip155 scope', () => {
+      const result = getDefaultScopeAndAddressByAccountGroupId(
+        typedMockState,
+        ENTROPY_GROUP_1_ID,
+      );
+
+      expect(result.defaultAddress).toBe(ACCOUNT_1_ADDRESS);
+      expect(Array.isArray(result.defaultScopes)).toBe(true);
+      expect(result.defaultScopes.length).toBeGreaterThan(0);
+      expect(
+        result.defaultScopes.every((s) => String(s).startsWith('eip155')),
+      ).toBe(true);
+    });
+
+    it('returns null defaultAddress and empty defaultScopes when group ID does not exist', () => {
+      const result = getDefaultScopeAndAddressByAccountGroupId(
+        typedMockState,
+        'nonExistentGroupId' as AccountGroupId,
+      );
+
+      expect(result.defaultAddress).toBeNull();
+      expect(result.defaultScopes).toEqual([]);
+    });
+
+    it('returns null defaultAddress and empty defaultScopes when defaultAddressScope does not match groupId scopes', () => {
+      const stateWithBip122 = {
+        ...typedMockState,
+        metamask: {
+          ...typedMockState.metamask,
+          preferences: {
+            ...(
+              typedMockState.metamask as {
+                preferences?: Record<string, unknown>;
+              }
+            ).preferences,
+            defaultAddressScope: 'bip122',
+          },
+        },
+      } as MultichainAccountsState;
+
+      const result = getDefaultScopeAndAddressByAccountGroupId(
+        stateWithBip122,
+        ENTROPY_GROUP_1_ID,
+      );
+
+      expect(result.defaultAddress).toBeNull();
+      expect(result.defaultScopes).toEqual([]);
     });
   });
 

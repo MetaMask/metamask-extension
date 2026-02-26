@@ -73,16 +73,6 @@ exports[`SmartContractAccountToggleSection Disabled State Handling disables all 
                 value="true"
               />
             </div>
-            <div
-              class="toggle-button__status"
-            >
-              <span
-                class="toggle-button__label-off"
-              />
-              <span
-                class="toggle-button__label-on"
-              />
-            </div>
           </label>
         </div>
         <div
@@ -121,16 +111,6 @@ exports[`SmartContractAccountToggleSection Disabled State Handling disables all 
                 style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
                 type="checkbox"
                 value="false"
-              />
-            </div>
-            <div
-              class="toggle-button__status"
-            >
-              <span
-                class="toggle-button__label-off"
-              />
-              <span
-                class="toggle-button__label-on"
               />
             </div>
           </label>
@@ -335,16 +315,6 @@ exports[`SmartContractAccountToggleSection Network Integration displays toggle f
                 value="true"
               />
             </div>
-            <div
-              class="toggle-button__status"
-            >
-              <span
-                class="toggle-button__label-off"
-              />
-              <span
-                class="toggle-button__label-on"
-              />
-            </div>
           </label>
         </div>
         <div
@@ -383,16 +353,6 @@ exports[`SmartContractAccountToggleSection Network Integration displays toggle f
                 style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
                 type="checkbox"
                 value="false"
-              />
-            </div>
-            <div
-              class="toggle-button__status"
-            >
-              <span
-                class="toggle-button__label-off"
-              />
-              <span
-                class="toggle-button__label-on"
               />
             </div>
           </label>

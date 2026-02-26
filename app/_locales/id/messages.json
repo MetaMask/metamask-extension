@@ -169,6 +169,9 @@
   "accountsSmallCase": {
     "message": "akun"
   },
+  "actionUnavailable": {
+    "message": "Tindakan tidak tersedia"
+  },
   "active": {
     "message": "Aktif"
   },
@@ -530,6 +533,9 @@
   "alertMessageSignInWrongAccount": {
     "message": "Situs ini meminta Anda masuk menggunakan akun yang salah."
   },
+  "alertMessageSuggestedGasFeeHigh": {
+    "message": "Situs ini menyarankan biaya jaringan yang lebih tinggi dari yang seharusnya. Edit biaya jaringan agar Anda membayar lebih murah."
+  },
   "alertMessageTokenTrustSignalMalicious": {
     "message": "Token ini telah diidentifikasi sebagai berbahaya. Interaksi dengan token ini dapat mengakibatkan hilangnya dana."
   },
@@ -569,6 +575,9 @@
   "alertReasonGasFeeLow": {
     "message": "Kecepatan lambat"
   },
+  "alertReasonGasSponsorshipUnavailable": {
+    "message": "Sponsor gas tidak tersedia"
+  },
   "alertReasonGasTooLow": {
     "message": "Batas gas rendah"
   },
@@ -596,6 +605,9 @@
   "alertReasonSignIn": {
     "message": "Permintaan masuk yang mencurigakan"
   },
+  "alertReasonSuggestedGasFeeHigh": {
+    "message": "Biaya situs tinggi"
+  },
   "alertReasonTokenTrustSignalMalicious": {
     "message": "Token berbahaya"
   },
@@ -616,6 +628,9 @@
   },
   "allNetworks": {
     "message": "Semua jaringan"
+  },
+  "allPermissions": {
+    "message": "Koneksi dapp"
   },
   "allPopularNetworks": {
     "message": "Semua jaringan populer"
@@ -1610,6 +1625,10 @@
   "connectAnAccountHeader": {
     "message": "Hubungkan akun"
   },
+  "connectHardwareDevice": {
+    "message": "Hubungkan $1",
+    "description": "$1 is the hardware wallet device name"
+  },
   "connectManually": {
     "message": "Hubungkan ke situs saat ini secara manual"
   },
@@ -1911,6 +1930,9 @@
   "customizeYourNotificationsText": {
     "message": "Aktifkan jenis notifikasi yang ingin diterima:"
   },
+  "dappConnections": {
+    "message": "Koneksi Dapp"
+  },
   "dappSuggested": {
     "message": "Situs yang disarankan"
   },
@@ -2054,6 +2076,9 @@
     "message": "Anda diarahkan ke sini oleh pihak ketiga, bukan MetaMask. $1",
     "description": "$1 is the message 'deepLink_ContinueDescription'"
   },
+  "deepLink_theAssetPage": {
+    "message": "halaman aset"
+  },
   "deepLink_theBuyPage": {
     "message": "halaman pembelian"
   },
@@ -2062,6 +2087,9 @@
   },
   "deepLink_theHomePage": {
     "message": "halaman beranda"
+  },
+  "deepLink_theNFTsPage": {
+    "message": "halaman NFT"
   },
   "deepLink_theNotificationsPage": {
     "message": "halaman notifikasi"
@@ -2087,6 +2115,9 @@
   "deepLink_theTransactionShieldPage": {
     "message": "halaman transaction shield"
   },
+  "default": {
+    "message": "Awal"
+  },
   "defaultRpcUrl": {
     "message": "URL RPC Default"
   },
@@ -2105,6 +2136,10 @@
   "defiReferralCheckboxLabel": {
     "message": "Izinkan MetaMask menambahkan kode rujukan. Kode ini bersifat permanen. Situs ini menawarkan diskon sesuai ketentuan mereka. MetaMask mendapatkan komisi.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralTitle": {
+    "message": "MetaMask x $1",
+    "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
   },
   "defiTabErrorContent": {
     "message": "Coba kunjungi lagi nanti."
@@ -2210,6 +2245,18 @@
   },
   "disconnectAllDescriptionText": {
     "message": "Jika Anda memutuskan koneksi dari situs ini, Anda harus menghubungkan kembali akun dan jaringan agar dapat menggunakan situs ini lagi."
+  },
+  "disconnectAllSites": {
+    "message": "Putuskan Semua Koneksi"
+  },
+  "disconnectAllSitesDescriptionText": {
+    "message": "Jika Anda memutuskan koneksi dari semua situs, Anda perlu menghubungkan kembali akun dan jaringan Anda untuk dapat menggunakannya lagi."
+  },
+  "disconnectAllSitesError": {
+    "message": "Beberapa dapp tidak dapat diputus koneksinya. Coba lagi."
+  },
+  "disconnectAllSitesSuccess": {
+    "message": "Semua dapp berhasil diputus koneksinya."
   },
   "disconnectAllSnapsText": {
     "message": "Snap"
@@ -2865,6 +2912,10 @@
   "gasPriceFetchFailed": {
     "message": "Estimasi biaya gas gagal karena terjadi kesalahan pada jaringan."
   },
+  "gasSponsorshipReserveBalanceWarning": {
+    "message": "Sponsor gas tidak tersedia untuk transaksi ini. Anda perlu menyimpan minimal $1 atau $2 di akun Anda.",
+    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
   "gasTimingHoursShort": {
     "message": "$1 jam",
     "description": "$1 represents a number of hours"
@@ -2988,6 +3039,10 @@
     "message": "Siapkan dompet Anda untuk menggunakan web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralSubtitle": {
+    "message": "Hemat hingga 5% untuk perdagangan dengan kode rujukan MetaMask.",
+    "description": "The subtitle of the GMX referral confirmation screen"
+  },
   "goToSite": {
     "message": "Buka situs"
   },
@@ -3009,6 +3064,54 @@
   "hardwareWalletConnected": {
     "message": "Dompet perangkat keras terhubung"
   },
+  "hardwareWalletErrorContinueButton": {
+    "message": "Lanjutkan"
+  },
+  "hardwareWalletErrorReconnectButton": {
+    "message": "Hubungkan kembali"
+  },
+  "hardwareWalletErrorRecoveryConnection1": {
+    "message": "Pastikan dompet perangkat keras terhubung dengan benar melalui USB"
+  },
+  "hardwareWalletErrorRecoveryConnection2": {
+    "message": "Cobalah menggunakan kabel atau port USB yang berbeda"
+  },
+  "hardwareWalletErrorRecoveryConnection3": {
+    "message": "Mulai ulang perangkat Anda dan coba hubungkan kembali"
+  },
+  "hardwareWalletErrorRecoveryTitle": {
+    "message": "Lanjut untuk memastikan:"
+  },
+  "hardwareWalletErrorRecoveryUnlock1": {
+    "message": "Ledger sudah dibuka"
+  },
+  "hardwareWalletErrorRecoveryUnlock2": {
+    "message": "Aplikasi Ethereum sudah dibuka"
+  },
+  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
+    "message": "Aplikasi Ethereum sudah dibuka pada Ledger"
+  },
+  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction2": {
+    "message": "Anda telah mengaktifkan Penandatanganan Buta di Pengaturan"
+  },
+  "hardwareWalletErrorTitleConnectYourDevice": {
+    "message": "Hubungkan $1 Anda",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleDeviceLocked": {
+    "message": "$1 terkunci",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorUnknownErrorDescription": {
+    "message": "Pastikan perangkat $1 Anda telah diatur dengan Frasa Pemulihan Rahasia atau passphrase untuk akun yang dipilih",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorUnknownErrorTitle": {
+    "message": "Terjadi kesalahan"
+  },
+  "hardwareWalletEthAppNotOpenDescription": {
+    "message": "Buka aplikasi Ethereum di perangkat Anda untuk melanjutkan"
+  },
   "hardwareWalletLegacyDescription": {
     "message": "(legacy)",
     "description": "Text representing the MEW path"
@@ -3025,6 +3128,10 @@
   "hardwareWalletSupportLinkConversion": {
     "message": "klik di sini"
   },
+  "hardwareWalletTypeConnected": {
+    "message": "$1 terhubung",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWallets": {
     "message": "Hubungkan dompet perangkat keras"
   },
@@ -3033,6 +3140,9 @@
   },
   "hardwareWalletsMsg": {
     "message": "Pilih dompet perangkat keras yang ingin Anda gunakan dengan MetaMask."
+  },
+  "helpAndSettings": {
+    "message": "Bantuan dan pengaturan"
   },
   "here": {
     "message": "di sini",
@@ -3399,6 +3509,9 @@
     "message": "File JSON",
     "description": "format for importing an account"
   },
+  "keycardShell": {
+    "message": "Keycard Shell"
+  },
   "keyringAccountName": {
     "message": "Nama akun"
   },
@@ -3444,6 +3557,10 @@
   "lastSold": {
     "message": "Terakhir terjual"
   },
+  "lattice": {
+    "message": "Lattice",
+    "description": "Hardware device name"
+  },
   "lavaDomeCopyWarning": {
     "message": "Demi keamanan Anda, memilih teks ini tidak tersedia untuk saat ini."
   },
@@ -3483,6 +3600,10 @@
   },
   "leaveMetaMaskDesc": {
     "message": "Anda akan mengunjungi situs di luar MetaMask. Periksa kembali URL sebelum melanjutkan."
+  },
+  "ledger": {
+    "message": "Ledger",
+    "description": "Hardware device name"
   },
   "ledgerAccountRestriction": {
     "message": "Manfaatkan akun terakhir Anda sebelum menambahkan yang baru."
@@ -3599,14 +3720,14 @@
   "lock": {
     "message": "Kunci"
   },
-  "lockMetaMask": {
-    "message": "Kunci MetaMask"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "Mengunci MetaMask..."
   },
   "lockTimeInvalid": {
     "message": "Waktu kunci harus berupa angka antara 0 dan 10080"
+  },
+  "logOut": {
+    "message": "Keluar"
   },
   "loginErrorConnectButton": {
     "message": "Coba lagi"
@@ -3670,6 +3791,9 @@
     "message": "Pastikan tidak ada yang melihat layar Anda",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
+  "manage": {
+    "message": "Kelola"
+  },
   "manageDefaultSettings": {
     "message": "Kelola pengaturan default"
   },
@@ -3727,6 +3851,22 @@
   },
   "memo": {
     "message": "memo"
+  },
+  "merklRewardsToastFailed": {
+    "message": "Gagal mengklaim bonus mUSD",
+    "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
+  },
+  "merklRewardsToastInProgress": {
+    "message": "Bonus mUSD sedang diproses",
+    "description": "Toast message shown when a Merkl reward claim transaction is being processed"
+  },
+  "merklRewardsToastSuccess": {
+    "message": "Bonus mUSD telah tiba!",
+    "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
+  },
+  "merklRewardsUnexpectedError": {
+    "message": "Terjadi kesalahan tidak terduga. Coba lagi.",
+    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "Pesan"
@@ -3878,6 +4018,10 @@
   "multichainAddressViewAll": {
     "message": "Lihat semua"
   },
+  "multichainProviderAccess": {
+    "message": "Berikan akses kepada penyedia Multichain ke $1",
+    "description": "The parameter is the name of the requesting origin"
+  },
   "multichainQuoteCardRateExplanation": {
     "message": "Tarif terbaik yang kami temukan dari penyedia, termasuk biaya penyedia dan biaya MetaMask sebesar $1%."
   },
@@ -3887,6 +4031,10 @@
   "multipleSnapConnectionWarning": {
     "message": "$1 ingin menggunakan Snap $2",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
+  },
+  "musdClaimClaimingTo": {
+    "message": "Mengeklaim ke",
+    "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
     "message": "Konversi mUSD"
@@ -4268,6 +4416,9 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap, dan sebagian besar dompet perangkat keras, tidak akan berfungsi dengan versi browser saat ini."
   },
+  "noMMFeeSwapping": {
+    "message": "Tidak ada biaya MetaMask"
+  },
   "noNetworkFee": {
     "message": "Tidak ada biaya jaringan"
   },
@@ -4622,6 +4773,10 @@
   "onboardingSrpInputPlaceholder": {
     "message": "Tambahkan spasi di antara setiap kata dan pastikan tidak ada yang melihat."
   },
+  "oneKey": {
+    "message": "OneKey",
+    "description": "Hardware device name"
+  },
   "only": {
     "message": "hanya"
   },
@@ -4929,6 +5084,10 @@
     "message": "Izinkan $1 untuk menyimpan, memperbarui, dan memulihkan data secara aman dengan enkripsi. Snap lain tidak dapat mengakses informasi ini.",
     "description": "An extended description for the `snap_manageState` permission. $1 is the snap name."
   },
+  "permission_multichainProvider": {
+    "message": "Akses penyedia Multichain.",
+    "description": "The description for the `endowment:multichain-provider` permission"
+  },
   "permission_multichainProviderDescription": {
     "message": "Izinkan $1 untuk berkomunikasi dengan MetaMask secara langsung, agar dapat membaca data dari blockchain serta menyarankan pesan dan transaksi.",
     "description": "An extended description for the `endowment:multichain-provider` permission. $1 is the snap name."
@@ -5077,26 +5236,63 @@
   "perpsAddFundsDescription": {
     "message": "Tambahkan dana untuk mulai memperdagangkan kontrak perpetual dengan leverage"
   },
+  "perpsAddMargin": {
+    "message": "Tambahkan Margin"
+  },
   "perpsAddToFavorites": {
     "message": "Tambahkan ke favorit"
   },
   "perpsAutoClose": {
     "message": "Tutup otomatis"
   },
+  "perpsAvailable": {
+    "message": "tersedia",
+    "description": "is the available balance amount"
+  },
+  "perpsAvailableBalance": {
+    "message": "Saldo tersedia"
+  },
+  "perpsCancelAllOrders": {
+    "message": "Batalkan semua"
+  },
   "perpsCloseAll": {
     "message": "Tutup semua"
+  },
+  "perpsCloseAmount": {
+    "message": "Jumlah Penutupan"
+  },
+  "perpsCloseLong": {
+    "message": "Tutup posisi Long"
+  },
+  "perpsCloseShort": {
+    "message": "Tutup posisi Short"
   },
   "perpsClosedShort": {
     "message": "Short tertutup"
   },
+  "perpsConfirmCloseLong": {
+    "message": "Tutup posisi Long"
+  },
+  "perpsConfirmCloseShort": {
+    "message": "Tutup posisi Short"
+  },
   "perpsContactSupport": {
     "message": "Hubungi dukungan"
+  },
+  "perpsDateToday": {
+    "message": "Hari ini"
+  },
+  "perpsDateYesterday": {
+    "message": "Kemarin"
   },
   "perpsDepositActivityTitle": {
     "message": "Perp yang Didanai"
   },
   "perpsDepositTitle": {
     "message": "Akun perp yang didanai"
+  },
+  "perpsDeposits": {
+    "message": "Deposit"
   },
   "perpsDetails": {
     "message": "Detail"
@@ -5119,6 +5315,9 @@
   "perpsExploreStocksAndCommodities": {
     "message": "Jelajahi saham dan komoditas"
   },
+  "perpsFees": {
+    "message": "Biaya"
+  },
   "perpsFilterAll": {
     "message": "Semua"
   },
@@ -5128,14 +5327,29 @@
   "perpsFilterCrypto": {
     "message": "Kripto"
   },
+  "perpsFilterForex": {
+    "message": "Forex"
+  },
+  "perpsFilterNew": {
+    "message": "Baru"
+  },
   "perpsFilterStocks": {
     "message": "Saham"
+  },
+  "perpsFunding": {
+    "message": "Pendanaan"
   },
   "perpsFundingPayments": {
     "message": "Pembayaran pendanaan"
   },
   "perpsFundingRate": {
     "message": "Tingkat Pendanaan"
+  },
+  "perpsFundingRateTooltip": {
+    "message": "Biaya per jam yang dibayarkan antar trader untuk mempertahankan harga agar sesuai dengan pasar. Jika nilainya positif, pemegang posisi long membayar pemegang posisi short. Jika negatif, pemegang posisi short membayar pemegang posisi long."
+  },
+  "perpsGiveFeedback": {
+    "message": "Berikan masukan kepada kami"
   },
   "perpsIncreasedPosition": {
     "message": "Peningkatan posisi"
@@ -5146,8 +5360,14 @@
   "perpsLearnMore": {
     "message": "Selengkapnya"
   },
+  "perpsLeverage": {
+    "message": "Leverage"
+  },
   "perpsLimit": {
     "message": "Limit"
+  },
+  "perpsLimitPrice": {
+    "message": "Harga Limit"
   },
   "perpsLiquidationPrice": {
     "message": "Harga likuidasi"
@@ -5171,20 +5391,52 @@
   "perpsMarkets": {
     "message": "Pasar"
   },
+  "perpsMax": {
+    "message": "Maks"
+  },
+  "perpsMid": {
+    "message": "Tengah"
+  },
+  "perpsModify": {
+    "message": "Ubah"
+  },
+  "perpsModifyPosition": {
+    "message": "Ubah Posisi"
+  },
   "perpsMore": {
     "message": "Selengkapnya"
   },
   "perpsNoMarketsFound": {
     "message": "Tidak ditemukan pasar"
   },
+  "perpsNoTransactions": {
+    "message": "Belum ada transaksi"
+  },
   "perpsOpenInterest": {
     "message": "Kontrak Terbuka"
+  },
+  "perpsOpenInterestTooltip": {
+    "message": "Nilai gabungan dari semua posisi terbuka untuk perp ini"
+  },
+  "perpsOpenLong": {
+    "message": "Buka posisi Long $1",
+    "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOpenOrders": {
     "message": "Order Terbuka"
   },
+  "perpsOpenShort": {
+    "message": "Buka posisi Short $1",
+    "description": "$1 is the asset symbol (e.g., BTC, ETH)"
+  },
   "perpsOpenedLong": {
     "message": "Long terbuka"
+  },
+  "perpsOraclePriceTooltip": {
+    "message": "Nilai median dari harga eksternal yang dilaporkan oleh validator, digunakan untuk menghitung tingkat pendanaan"
+  },
+  "perpsOrderAmount": {
+    "message": "Jumlah Order"
   },
   "perpsOrders": {
     "message": "Order"
@@ -5195,17 +5447,26 @@
   "perpsPosition": {
     "message": "Posisi"
   },
+  "perpsPositionSize": {
+    "message": "Ukuran Posisi"
+  },
   "perpsPositions": {
     "message": "Posisi"
   },
   "perpsRecentActivity": {
     "message": "Aktivitas Terbaru"
   },
+  "perpsRemoveMargin": {
+    "message": "Hapus Margin"
+  },
   "perpsReturn": {
     "message": "Laba"
   },
   "perpsSearchMarkets": {
     "message": "Cari pasar"
+  },
+  "perpsSeeAll": {
+    "message": "Lihat Semua"
   },
   "perpsShort": {
     "message": "Short"
@@ -5228,11 +5489,95 @@
   "perpsStats": {
     "message": "Statistik"
   },
+  "perpsStatusCanceled": {
+    "message": "Dibatalkan"
+  },
+  "perpsStatusCompleted": {
+    "message": "Selesai"
+  },
+  "perpsStatusFilled": {
+    "message": "Terpenuhi"
+  },
+  "perpsStatusOpen": {
+    "message": "Buka"
+  },
+  "perpsStatusQueued": {
+    "message": "Antrean"
+  },
+  "perpsStatusRejected": {
+    "message": "Ditolak"
+  },
+  "perpsStatusTriggered": {
+    "message": "Diaktifkan"
+  },
+  "perpsStopLoss": {
+    "message": "Stop Loss",
+    "description": "Label for stop loss price input"
+  },
+  "perpsSubmitting": {
+    "message": "Mengirimkan...",
+    "description": "Loading text shown while an order is being submitted"
+  },
+  "perpsTakeProfit": {
+    "message": "Ambil Profit",
+    "description": "Label for take profit price input"
+  },
   "perpsTotalBalance": {
     "message": "Total Saldo"
   },
   "perpsTradePerps": {
     "message": "Perdagangkan perp"
+  },
+  "perpsTrades": {
+    "message": "Perdagangan"
+  },
+  "perpsTutorialChooseLeverageDescription": {
+    "message": "Leverage mengamplifikasi keuntungan dan kerugian. Dengan leverage 40x, pergerakan harga 1% setara dengan keuntungan atau kerugian 40% pada margin Anda."
+  },
+  "perpsTutorialChooseLeverageTitle": {
+    "message": "Pilih leverage"
+  },
+  "perpsTutorialCloseAnytimeDescription": {
+    "message": "Keluar setiap saat Anda mau. Anda akan mendapatkan kembali margin, plus profit atau minus loss."
+  },
+  "perpsTutorialCloseAnytimeTitle": {
+    "message": "Tutup setiap saat"
+  },
+  "perpsTutorialContinue": {
+    "message": "Lanjutkan"
+  },
+  "perpsTutorialGoLongShortDescription": {
+    "message": "Pilih token untuk posisi long atau short, lalu atur ukuran order Anda."
+  },
+  "perpsTutorialGoLongShortSubtitle": {
+    "message": "Ambil posisi long untuk dapat profit jika harga naik. Ambil posisi short untuk dapat profit jika harga turun."
+  },
+  "perpsTutorialGoLongShortTitle": {
+    "message": "Pilih long atau short di token"
+  },
+  "perpsTutorialLetsGo": {
+    "message": "Ayo"
+  },
+  "perpsTutorialReadyToTradeDescription": {
+    "message": "Danai akun perp Anda dengan token apa pun dan lakukan perdagangan pertama dalam hitungan detik."
+  },
+  "perpsTutorialReadyToTradeTitle": {
+    "message": "Siap untuk berdagang?"
+  },
+  "perpsTutorialSkip": {
+    "message": "Lewati"
+  },
+  "perpsTutorialWatchLiquidationDescription": {
+    "message": "Anda akan kehilangan seluruh margin jika token mencapai harga likuidasi. Leverage yang lebih tinggi berarti lebih sedikit ruang untuk likuidasi."
+  },
+  "perpsTutorialWatchLiquidationTitle": {
+    "message": "Waspadai likuidasi"
+  },
+  "perpsTutorialWhatArePerpsSubtitle": {
+    "message": "Begini cara kerjanya."
+  },
+  "perpsTutorialWhatArePerpsTitle": {
+    "message": "Apa itu perp?"
   },
   "perpsUnrealizedPnl": {
     "message": "P&L Belum Terealisasi"
@@ -5512,6 +5857,10 @@
   "pushPlatformNotificationsSwapCompletedTitle": {
     "message": "Swap selesai"
   },
+  "qr": {
+    "message": "QR",
+    "description": "Hardware device name"
+  },
   "queued": {
     "message": "Antrean"
   },
@@ -5683,6 +6032,10 @@
   },
   "required": {
     "message": "Diperlukan"
+  },
+  "requiredToken": {
+    "message": "Token yang diperlukan",
+    "description": "Label for the required token row showing the token and amount needed by the transaction"
   },
   "reset": {
     "message": "Reset"
@@ -5861,12 +6214,6 @@
   },
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Coba lagi"
-  },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Akun dompet perangkat keras belum memenuhi syarat untuk menerima reward. Beralih ke akun lain untuk melanjutkan."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Akun tidak didukung"
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Coba lagi"
@@ -6551,6 +6898,9 @@
   "shieldEntryModalTitleB": {
     "message": "Memperkenalkan Transaction Shield"
   },
+  "shieldErrorPayerAddressAlreadyUsed": {
+    "message": "Alamat ini sudah terhubung ke akun lain. Gunakan alamat lain untuk berlangganan."
+  },
   "shieldEstimatedChangesMonthlyTooltipText": {
     "message": "Otorisasi $1/bulan selama 12 bulan (total $2). Anda akan ditagih setiap bulan, bukan jumlah penuh sekarang."
   },
@@ -6686,6 +7036,15 @@
   "shieldTxCancelDetails": {
     "message": "Jika dibatalkan, dompet dan transaksi Anda tidak akan terlindungi mulai $1.",
     "description": "The $1 is the date subscription ends"
+  },
+  "shieldTxCancelImmediateDetails": {
+    "message": "Jika dibatalkan, dompet dan transaksi Anda tidak akan terlindungi."
+  },
+  "shieldTxCancelNotAllowed": {
+    "message": "Langganan Anda tidak dapat dibatalkan saat ini."
+  },
+  "shieldTxCancelNotAllowedPendingVerification": {
+    "message": "Langganan Anda tidak dapat dibatalkan karena masih dalam proses verifikasi."
   },
   "shieldTxCancelWhenPausedDetails": {
     "message": "Paket Anda tidak aktif saat dihentikan sementara. Jika Anda membatalkannya, paket akan langsung berakhir."
@@ -7137,12 +7496,6 @@
   },
   "snapAccountRemovedDescription": {
     "message": "Akun ini tidak lagi tersedia untuk digunakan di MetaMask."
-  },
-  "snapAccounts": {
-    "message": "Akun Snap"
-  },
-  "snapAccountsDescription": {
-    "message": "Akun yang dikontrol oleh Snap pihak ketiga."
   },
   "snapConnectTo": {
     "message": "Hubungkan ke $1",
@@ -7614,6 +7967,9 @@
   },
   "storageErrorDescriptionDefault": {
     "message": "Cadangkan Frasa Pemulihan Rahasia dan instal ulang MetaMask jika masalah berlanjut."
+  },
+  "storageErrorDescriptionNoSpace": {
+    "message": "Penyimpanan perangkat Anda sudah penuh. Kosongkan ruang sekarang juga, atau perubahan dompet yang belum disimpan mungkin akan hilang."
   },
   "storageErrorTitle": {
     "message": "Kami tidak dapat menyimpan data Anda"
@@ -8290,6 +8646,10 @@
   "transferRequest": {
     "message": "Permintaan transfer"
   },
+  "trezor": {
+    "message": "Trezor",
+    "description": "Hardware device name"
+  },
   "tronBandwidth": {
     "message": "Bandwidth"
   },
@@ -8404,6 +8764,9 @@
   },
   "unapproved": {
     "message": "Tidak disetujui"
+  },
+  "unavailable": {
+    "message": "Tidak tersedia"
   },
   "unexpectedBehavior": {
     "message": "Perilaku ini tidak terduga dan harus dilaporkan sebagai bug, bahkan jika akun Anda dipulihkan."
