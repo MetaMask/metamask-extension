@@ -6,7 +6,7 @@ import {
   matchPath,
   Navigate,
 } from 'react-router-dom';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import TabBar from '../../components/app/tab-bar';
 
 import {

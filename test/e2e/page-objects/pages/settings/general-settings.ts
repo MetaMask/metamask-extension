@@ -34,6 +34,9 @@ class GeneralSettings {
   private readonly toggleNativeTokenAsMainBalance =
     '[id="toggle-show-native-token-as-main-balance"] .toggle-button';
 
+  private readonly showDefaultAddressToggle =
+    '[id="show-default-address"] .toggle-button';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -113,6 +116,14 @@ class GeneralSettings {
 
   async toggleShowNativeTokenAsMainBalance(): Promise<void> {
     await this.driver.clickElement(this.toggleNativeTokenAsMainBalance);
+  }
+
+  async toggleShowDefaultAddress(): Promise<void> {
+    await this.driver.clickElement(this.showDefaultAddressToggle);
+  }
+
+  async checkShowDefaultAddressSectionIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.showDefaultAddressToggle);
   }
 }
 

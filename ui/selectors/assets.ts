@@ -8,6 +8,10 @@ import {
   calculateBalanceChangeForAccountGroup,
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
+import {
+  AssetsControllerState,
+  getAggregatedBalanceForAccount,
+} from '@metamask/assets-controller';
 import { CaipAssetId, isEvmAccountType } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
 import {
@@ -49,10 +53,16 @@ import { isEvmChainId } from '../../shared/lib/asset-utils';
 import { isEmptyHexString } from '../../shared/modules/hexstring-utils';
 import { isZeroAmount } from '../helpers/utils/number-utils';
 import { getNonTestNetworks } from '../../shared/modules/selectors/networks';
+import {
+  getAccountTrackerControllerAccountsByChainId,
+  getTokensControllerAllIgnoredTokens,
+  getTokensControllerAllTokens,
+} from '../../shared/modules/selectors/assets-migration';
 import { getSelectedInternalAccount } from './accounts';
 import { getMultichainBalances } from './multichain';
 import { EMPTY_OBJECT } from './shared';
 import {
+  getAllTokens,
   getCurrencyRates,
   getCurrentNetwork,
   getIsTokenNetworkFilterEqualCurrentNetwork,
@@ -117,8 +127,163 @@ export function getAccountAssets(state: AssetsState) {
  * @returns An object containing non-EVM assets metadata per asset types (CAIP-19).
  */
 export function getAssetsMetadata(state: AssetsState) {
-  return state.metamask.assetsMetadata;
+  return state.metamask?.assetsMetadata ?? {};
 }
+
+/**
+ * Returns the assets info (AssetsController state).
+ *
+ * @param state - Redux state object.
+ * @param state.metamask - MetaMask slice.
+ * @returns Assets info map or empty object.
+ */
+export function getAssetsInfo(state: { metamask?: AssetsControllerState }) {
+  return state.metamask?.assetsInfo ?? EMPTY_OBJECT;
+}
+
+/**
+ * Returns the assets balance (AssetsController state).
+ *
+ * @param state - Redux state object.
+ * @param state.metamask - MetaMask slice.
+ * @returns Assets balance map or empty object.
+ */
+export function getAssetsBalance(state: { metamask?: AssetsControllerState }) {
+  return state.metamask?.assetsBalance ?? EMPTY_OBJECT;
+}
+
+/**
+ * Returns the assets price (AssetsController state).
+ *
+ * @param state - Redux state object.
+ * @param state.metamask - MetaMask slice.
+ * @returns Assets price map or empty object.
+ */
+export function getAssetsPrice(state: { metamask?: AssetsControllerState }) {
+  return state.metamask?.assetsPrice ?? EMPTY_OBJECT;
+}
+
+/**
+ * Returns the asset preferences (AssetsController state).
+ *
+ * @param state - Redux state object.
+ * @param state.metamask - MetaMask slice.
+ * @returns Asset preferences map or empty object.
+ */
+export function getAssetPreferences(state: {
+  metamask?: AssetsControllerState;
+}) {
+  return state.metamask?.assetPreferences ?? EMPTY_OBJECT;
+}
+
+/**
+ * Returns the custom assets (AssetsController state).
+ *
+ * @param state - Redux state object.
+ * @param state.metamask - MetaMask slice.
+ * @returns Custom assets map or empty object.
+ */
+export function getCustomAssets(state: { metamask?: AssetsControllerState }) {
+  return state.metamask?.customAssets ?? EMPTY_OBJECT;
+}
+
+/** State shape used for aggregated balance selector */
+type AggregatedBalanceState = {
+  metamask?: Record<string, unknown>;
+};
+
+/**
+ * Returns the aggregated balance for the selected account (AssetsController aggregation).
+ *
+ * @param state - Redux state object.
+ * @returns Aggregated balance or null when no selected account.
+ */
+export const selectAggregatedBalanceForSelectedAccount = createSelector(
+  [
+    getAssetsInfo,
+    getAssetsBalance,
+    getAssetsPrice,
+    getAssetPreferences,
+    getCustomAssets,
+    getCurrentCurrency,
+    getSelectedInternalAccount,
+    getEnabledNetworks,
+    (state: AggregatedBalanceState) => state.metamask?.accountTree,
+    (state: AggregatedBalanceState) =>
+      state.metamask?.isAccountTreeSyncingInProgress as boolean | undefined,
+    (state: AggregatedBalanceState) =>
+      state.metamask?.hasAccountTreeSyncingSyncedAtLeastOnce as
+        | boolean
+        | undefined,
+    (state: AggregatedBalanceState) =>
+      state.metamask?.accountGroupsMetadata as
+        | Record<string, unknown>
+        | undefined,
+    (state: AggregatedBalanceState) =>
+      state.metamask?.accountWalletsMetadata as
+        | Record<string, unknown>
+        | undefined,
+    (state: AggregatedBalanceState) =>
+      (
+        state.metamask?.internalAccounts as {
+          accounts?: Record<string, unknown>;
+        }
+      )?.accounts,
+  ],
+  (
+    assetsInfo,
+    assetsBalance,
+    assetsPrice,
+    assetPreferences,
+    customAssets,
+    selectedCurrency,
+    selectedInternalAccount,
+    enabledNetworkMap,
+    accountTree,
+    isAccountTreeSyncingInProgress,
+    hasAccountTreeSyncingSyncedAtLeastOnce,
+    accountGroupsMetadata,
+    accountWalletsMetadata,
+    accountsById,
+  ) => {
+    if (!selectedInternalAccount) {
+      return null;
+    }
+    const assetsControllerState = {
+      assetsInfo,
+      assetsBalance,
+      assetsPrice,
+      assetPreferences,
+      customAssets,
+      selectedCurrency: (selectedCurrency ??
+        'usd') as AssetsControllerState['selectedCurrency'],
+    };
+    const accountTreeState: AccountTreeControllerState | undefined = accountTree
+      ? {
+          accountTree,
+          isAccountTreeSyncingInProgress:
+            isAccountTreeSyncingInProgress ?? false,
+          hasAccountTreeSyncingSyncedAtLeastOnce:
+            hasAccountTreeSyncingSyncedAtLeastOnce ?? false,
+          accountGroupsMetadata: (accountGroupsMetadata ??
+            {}) as AccountTreeControllerState['accountGroupsMetadata'],
+          accountWalletsMetadata: (accountWalletsMetadata ??
+            {}) as AccountTreeControllerState['accountWalletsMetadata'],
+        }
+      : undefined;
+
+    return getAggregatedBalanceForAccount(
+      assetsControllerState,
+      selectedInternalAccount,
+      enabledNetworkMap,
+      accountTreeState,
+      undefined,
+      (accountsById ?? {}) as Parameters<
+        typeof getAggregatedBalanceForAccount
+      >[5],
+    );
+  },
+);
 
 /**
  * Gets non-EVM ignored assets.
@@ -709,7 +874,7 @@ const selectMultichainAssetsStateForBalances = createSelector(
  * @param state - Redux state providing `metamask.allTokens`.
  */
 const selectTokensStateForBalances = createSelector(
-  [(state: BalanceCalculationState) => getMetamaskState(state).allTokens],
+  [getTokensControllerAllTokens],
   (allTokens) => ({
     allTokens: allTokens ?? EMPTY_OBJECT,
     allIgnoredTokens: EMPTY_OBJECT,
@@ -734,20 +899,6 @@ const selectCurrencyRateStateForBalances = createSelector(
 const selectEnabledNetworkMapForBalances = createSelector(
   [getEnabledNetworks],
   (map) => map,
-);
-
-/**
- * Provides accountsByChainId for checking EVM native balances.
- *
- * @param state - The application state.
- * @returns The accounts by chain ID object.
- */
-const selectAccountsByChainIdForBalances = createSelector(
-  [
-    (state: BalanceCalculationState) =>
-      getMetamaskState(state).accountsByChainId,
-  ],
-  (accountsByChainId) => accountsByChainId ?? EMPTY_OBJECT,
 );
 
 /**
@@ -1049,7 +1200,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
     selectTokenBalancesStateForBalances,
     selectMultichainBalancesStateForBalances,
     selectAllMainnetNetworksEnabledMap,
-    selectAccountsByChainIdForBalances,
+    getAccountTrackerControllerAccountsByChainId,
   ],
   (
     accountTreeState,
@@ -1272,33 +1423,25 @@ const getStateForAssetSelector = ({ metamask }: any) => {
   const initialState = {
     accountTree: metamask.accountTree,
     internalAccounts: metamask.internalAccounts,
-    allTokens: metamask.allTokens,
-    allIgnoredTokens: metamask.allIgnoredTokens,
+    allTokens: getTokensControllerAllTokens({ metamask }),
+    allIgnoredTokens: getTokensControllerAllIgnoredTokens({ metamask }),
     tokenBalances: metamask.tokenBalances,
     marketData: metamask.marketData,
     currencyRates: metamask.currencyRates,
     currentCurrency: metamask.currentCurrency,
     networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
-    accountsByChainId: metamask.accountsByChainId,
+    accountsByChainId: getAccountTrackerControllerAccountsByChainId({
+      metamask,
+    }),
   };
 
-  let multichainState = {
-    accountsAssets: {},
-    assetsMetadata: {},
-    allIgnoredAssets: {},
-    balances: {},
-    conversionRates: {},
-  };
-
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  multichainState = {
+  const multichainState = {
     accountsAssets: metamask.accountsAssets,
     assetsMetadata: metamask.assetsMetadata,
     allIgnoredAssets: metamask.allIgnoredAssets,
     balances: metamask.balances,
     conversionRates: metamask.conversionRates,
   };
-  ///: END:ONLY_INCLUDE_IF
 
   return {
     ...initialState,
@@ -1351,5 +1494,20 @@ export const getAsset = createSelector(
     const chainAssets = assetsBySelectedAccountGroup[chainId];
 
     return chainAssets?.find((item) => item.assetId === assetId);
+  },
+);
+
+export const selectSingleTokenByAddressAndChainId = createSelector(
+  getAllTokens,
+  (_state, tokenAddress: Hex) => tokenAddress,
+  (_state, _tokenAddress: Hex, chainId: Hex) => chainId,
+  (allTokens, tokenAddress, chainId) => {
+    const chainTokens = Object.values(
+      allTokens[chainId] ?? {},
+    ).flat() as Token[];
+
+    return chainTokens.find(
+      (token) => token.address.toLowerCase() === tokenAddress.toLowerCase(),
+    );
   },
 );

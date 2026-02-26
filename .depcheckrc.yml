@@ -11,8 +11,6 @@ ignores:
   - 'react-compiler-runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'
-  # injected via build system
-  - '@metamask/kernel-shims'
 
   #
   # dev deps
@@ -56,6 +54,7 @@ ignores:
   - '@storybook/core'
   - '@storybook/addon-essentials'
   - '@storybook/addon-a11y'
+  - '@storybook/addon-docs'
   - '@storybook/builder-webpack5'
   - '@storybook/manager-webpack5'
   - '@storybook/react-webpack5'
