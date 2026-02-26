@@ -160,6 +160,14 @@ class FixtureBuilderV2 {
     });
   }
 
+  withShowNativeTokenAsMainBalanceDisabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        showNativeTokenAsMainBalance: false,
+      },
+    });
+  }
+
   build() {
     return this.fixture;
   }
