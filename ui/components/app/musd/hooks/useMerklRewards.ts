@@ -126,7 +126,9 @@ export const useMerklRewards = ({
           BigInt(matchingReward.amount) - BigInt(claimedAmount);
 
         if (!abortController.signal.aborted) {
-          setHasClaimableReward(unclaimedBaseUnits > 0n);
+          const oneCentInBaseUnits =
+            10n ** BigInt(matchingReward.token.decimals - 2);
+          setHasClaimableReward(unclaimedBaseUnits >= oneCentInBaseUnits);
         }
       } catch (error) {
         if (error instanceof Error && error.name === 'AbortError') {
