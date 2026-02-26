@@ -1546,6 +1546,17 @@ export function getDefaultAddressScope(state) {
   return defaultAddressScope;
 }
 
+/**
+ * Show native token as main balance preference
+ *
+ * @param state - Redux state
+ * @returns {boolean}
+ */
+export function getShowNativeTokenAsMainBalance(state) {
+  const { showNativeTokenAsMainBalance } = getPreferences(state);
+  return Boolean(showNativeTokenAsMainBalance);
+}
+
 export function getUseExternalNameSources(state) {
   return state.metamask.useExternalNameSources;
 }
