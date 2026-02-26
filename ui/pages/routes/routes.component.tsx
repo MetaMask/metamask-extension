@@ -71,9 +71,7 @@ import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
   getNetworkIdentifier,
   getPreferences,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getUnapprovedConfirmations,
-  ///: END:ONLY_INCLUDE_IF
   getShowExtensionInFullSizeView,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
@@ -91,9 +89,7 @@ import {
   hideImportTokensModal,
   hideDeprecatedNetworkModal,
   automaticallySwitchNetwork,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import {
@@ -106,9 +102,7 @@ import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferen
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -116,9 +110,7 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
-///: END:ONLY_INCLUDE_IF
 
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
@@ -446,14 +438,12 @@ export default function Routes() {
     (state) => state.metamask.currentExtensionPopupId,
   );
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const isShowKeyringSnapRemovalResultModal = useAppSelector(
     (state) => state.appState.showKeyringRemovalSnapModal,
   );
   const pendingConfirmations = useAppSelector(getUnapprovedConfirmations);
   const hideShowKeyringSnapRemovalResultModal = () =>
     dispatch(hideKeyringRemovalResultModal());
-  ///: END:ONLY_INCLUDE_IF
 
   // Multichain intro modal logic (extracted to custom hook)
   const { showMultichainIntroModal, setShowMultichainIntroModal } =
@@ -895,13 +885,11 @@ export default function Routes() {
   const isLoadingShown =
     isLoading &&
     completedOnboarding &&
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     !pendingConfirmations.some(
       (confirmation: Confirmation) =>
         confirmation.type ===
         SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
     ) &&
-    ///: END:ONLY_INCLUDE_IF
     // In the redesigned screens, we hide the general loading spinner and the
     // loading states are on a component by component basis.
     !isCorrectApprovalType &&
@@ -943,16 +931,12 @@ export default function Routes() {
           onClose={() => dispatch(hideDeprecatedNetworkModal())}
         />
       ) : null}
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-        isShowKeyringSnapRemovalResultModal && (
-          <KeyringSnapRemovalResult
-            isOpen={isShowKeyringSnapRemovalResultModal}
-            onClose={hideShowKeyringSnapRemovalResultModal}
-          />
-        )
-        ///: END:ONLY_INCLUDE_IF
-      }
+      {isShowKeyringSnapRemovalResultModal && (
+        <KeyringSnapRemovalResult
+          isOpen={isShowKeyringSnapRemovalResultModal}
+          onClose={hideShowKeyringSnapRemovalResultModal}
+        />
+      )}
 
       {showMultichainIntroModal ? (
         <MultichainAccountIntroModalContainer

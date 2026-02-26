@@ -4,13 +4,9 @@ import { mean as calculateMean } from 'lodash';
 import {
   BenchmarkMetrics,
   BenchmarkSummary,
-} from '../test/e2e/page-objects/benchmark/page-load-benchmark';
+} from '../../test/e2e/page-objects/benchmark/page-load-benchmark';
 
-/**
- * Structure of the benchmark results output file.
- * Contains aggregated performance data and raw measurement results.
- */
-type BenchmarkOutput = {
+export type BenchmarkOutput = {
   /** Timestamp when the benchmark was executed */
   timestamp: number;
   /** Git commit SHA (shortened) */
@@ -66,7 +62,7 @@ const SIGNIFICANT_PERCENT_INCREASE_THRESHOLDS: Record<string, number> = {
  * @param n - The number of commits to aggregate
  * @returns Aggregated benchmark data
  */
-function aggregateHistoricalBenchmarkData(
+export function aggregateHistoricalBenchmarkData(
   commitHashes: string[],
   data: HistoricalBenchmarkData,
   n: number,
@@ -198,7 +194,7 @@ async function fetchLatestMainBenchmarkData(
  * @param ms - Time value in milliseconds
  * @returns Formatted time string (ex.: "500ms" or "1.25s")
  */
-function formatTime(ms: number): string {
+export function formatTime(ms: number): string {
   if (ms < 1000) {
     return `${Math.round(ms)}ms`;
   }
@@ -213,7 +209,7 @@ function formatTime(ms: number): string {
  * @param stdDev - Standard deviation value
  * @returns Formatted standard deviation string (ex.: " (±150ms)") or empty string
  */
-function formatStandardDeviation(mean: number, stdDev: number): string {
+export function formatStandardDeviation(mean: number, stdDev: number): string {
   if (!mean || !stdDev) {
     return '';
   }
@@ -228,7 +224,7 @@ function formatStandardDeviation(mean: number, stdDev: number): string {
  * @param value - Measured value in milliseconds
  * @returns Emoji indicating performance level: 🟢 (good), 🟡 (warning), 🔴 (poor), or ⚪ (neutral)
  */
-function getEmojiForMetric(metric: string, value: number): string {
+export function getEmojiForMetric(metric: string, value: number): string {
   const threshold = EMOJI_RENDERING_THRESHOLDS[metric];
   if (!threshold) {
     return '⚪';
@@ -249,7 +245,7 @@ function getEmojiForMetric(metric: string, value: number): string {
  * @param reference - Reference metric value
  * @returns Comparison emoji: ⬇️ (better), ⬆️ (worse), or ➡️ (similar)
  */
-function getComparisonEmoji(current: number, reference: number): string {
+export function getComparisonEmoji(current: number, reference: number): string {
   const diff = current - reference;
 
   if (diff === 0) {
@@ -266,7 +262,7 @@ function getComparisonEmoji(current: number, reference: number): string {
  * @param reference - Reference metric value
  * @returns True if the metric has increased by a significant amount
  */
-function hasSignificantIncrease(
+export function hasSignificantIncrease(
   metric: KeyMetrics,
   current: number,
   reference: number,
@@ -332,7 +328,7 @@ function formatMetricRow(
  * @param metric - Name of the metric to extract
  * @returns Object containing mean and standard deviation, or null if metric is not a number
  */
-function getMetricValues(
+export function getMetricValues(
   summary: BenchmarkSummary,
   metric: string,
 ): { mean: number; stdDev: number } | null {
@@ -423,7 +419,7 @@ function processMetricForComparison(
  * @param [referenceData] - Reference benchmark data from main branch for comparison
  * @returns Formatted markdown comment string ready for posting to GitHub
  */
-function generateBenchmarkComment(
+export function generateBenchmarkComment(
   benchmarkData: BenchmarkOutput,
   referenceData?: BenchmarkOutput | null,
 ): string {
@@ -525,7 +521,7 @@ function generateBenchmarkComment(
  * Required environment variables:
  * - HEAD_COMMIT_HASH: Git commit hash of the current HEAD
  */
-export async function getPageLoadBenchmarkComment(): Promise<string | null> {
+export async function getDappBenchmarkComment(): Promise<string | null> {
   const { HEAD_COMMIT_HASH } = process.env as Record<string, string>;
   const N_COMMITS = 10;
 
@@ -558,7 +554,7 @@ export async function getPageLoadBenchmarkComment(): Promise<string | null> {
 // If main module (i.e. this is the TS file that was run directly)
 // Used for testing this script by itself
 if (require.main === module) {
-  getPageLoadBenchmarkComment()
+  getDappBenchmarkComment()
     .then((comment) => {
       console.log('Generated comment:');
       console.log(comment);
