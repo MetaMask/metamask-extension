@@ -4,6 +4,7 @@
 import { SolScope } from '@metamask/keyring-api';
 import {
   DAPP_HOST_ADDRESS,
+  DAPP_PATH,
   DEFAULT_FIXTURE_ACCOUNT as EVM_ADDRESS_ONE,
   WINDOW_TITLES,
 } from '../../constants';
@@ -23,19 +24,21 @@ import PermissionListPage from '../../page-objects/pages/permission/permission-l
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  loginWithBalanceValidation,
+  loginWithoutBalanceValidation,
+} from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
-import { withSolanaAccountSnap } from '../solana/common-solana';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
   connectSolanaTestDapp,
-  DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
   account1 as SOLANA_ADDRESS_ONE,
 } from '../../flask/solana-wallet-standard/testHelpers';
 import { Driver } from '../../webdriver/driver';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 
 const EVM_ADDRESS_TWO = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 const SOLANA_ACCOUNT_ONE = `${SolScope.Mainnet}:${SOLANA_ADDRESS_ONE}`;
@@ -278,18 +281,22 @@ describe('Multiple Standard Dapp Connections', function () {
   });
 
   it('should retain EVM permissions when connecting through the Solana Wallet Standard', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
-        ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+        fixtures: new FixtureBuilder()
+          .withKeyringControllerAdditionalAccountVault()
+          .withPreferencesControllerAdditionalAccountIdentities()
+          .withAccountsControllerAdditionalAccountIdentities()
+          .withPermissionControllerConnectedToTestDappWithTwoAccounts()
+          .build(),
         title: this.test?.fullTitle(),
-        withFixtureBuilder: (builder) =>
-          builder
-            .withKeyringControllerAdditionalAccountVault()
-            .withPreferencesControllerAdditionalAccountIdentities()
-            .withAccountsControllerAdditionalAccountIdentities()
-            .withPermissionControllerConnectedToTestDappWithTwoAccounts(),
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+        },
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const testDapp = new TestDappSolana(driver);
 
         await testDapp.openTestDappPage();
@@ -332,16 +339,20 @@ describe('Multiple Standard Dapp Connections', function () {
   });
 
   it('should retain Solana permissions when connecting through the EVM provider', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
-        title: this.test?.fullTitle(),
-        withFixtureBuilder: (builder) =>
-          builder.withPermissionControllerConnectedToMultichainTestDapp({
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToMultichainTestDapp({
             // @ts-expect-error Type error is expected here since its being inferred as null
             value: SOLANA_PERMISSIONS,
-          }),
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        dappOptions: { numberOfTestDapps: 1 },
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const testDapp = new TestDapp(driver);
 
         await testDapp.openTestDappPage();
@@ -385,20 +396,23 @@ describe('Multiple Standard Dapp Connections', function () {
   });
 
   it('should default account selection to already permissioned Solana account and requested Ethereum account when `wallet_requestPermissions` is called with specific Ethereum account', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilder()
+          .withKeyringControllerAdditionalAccountVault()
+          .withPreferencesControllerAdditionalAccountIdentities()
+          .withAccountsControllerAdditionalAccountIdentities()
+          .withPermissionControllerConnectedToMultichainTestDapp({
+            // @ts-expect-error Type error is expected here since its being inferred as null
+            value: SOLANA_PERMISSIONS,
+          })
+          .build(),
         title: this.test?.fullTitle(),
-        withFixtureBuilder: (builder) =>
-          builder
-            .withKeyringControllerAdditionalAccountVault()
-            .withPreferencesControllerAdditionalAccountIdentities()
-            .withAccountsControllerAdditionalAccountIdentities()
-            .withPermissionControllerConnectedToMultichainTestDapp({
-              // @ts-expect-error Type error is expected here since its being inferred as null
-              value: SOLANA_PERMISSIONS,
-            }),
+        dappOptions: { numberOfTestDapps: 1 },
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const testDapp = new TestDapp(driver);
 
         await testDapp.openTestDappPage();
@@ -459,16 +473,19 @@ describe('Multiple Standard Dapp Connections', function () {
   });
 
   it('should be able to request specific chains when connecting through the EVM provider with existing permissions', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
-        title: this.test?.fullTitle(),
-        withFixtureBuilder: (builder) =>
-          builder.withPermissionControllerConnectedToMultichainTestDapp({
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToMultichainTestDapp({
             // @ts-expect-error Type error is expected here since its being inferred as null
             value: SOLANA_PERMISSIONS,
-          }),
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        dappOptions: { numberOfTestDapps: 1 },
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
 
         await testDapp.openTestDappPage();
