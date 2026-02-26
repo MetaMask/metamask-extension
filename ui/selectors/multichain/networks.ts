@@ -251,20 +251,14 @@ export const getEvmMultichainNetworkConfigurations = createSelector(
  * This selector provides stable references when the underlying data hasn't changed.
  */
 export const getAllMultichainNetworkConfigurations = createSelector(
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   getNonEvmMultichainNetworkConfigurationsByChainId,
-  ///: END:ONLY_INCLUDE_IF
   getEvmMultichainNetworkConfigurations,
   (
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     nonEvmNetworkConfigurationsByChainId,
-    ///: END:ONLY_INCLUDE_IF
     evmNetworks,
   ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
     return {
-      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       ...nonEvmNetworkConfigurationsByChainId,
-      ///: END:ONLY_INCLUDE_IF
       ...evmNetworks,
     };
   },
@@ -338,6 +332,34 @@ export const getAllEnabledNetworksForAllNamespaces = createSelector(
         .filter(([, enabled]) => enabled)
         .map(([chainId]) => chainId),
     ),
+);
+
+export const selectEnabledNetworksAsCaipChainIds = createSelector(
+  getEnabledNetworks,
+  (enabledNetworkMap): CaipChainId[] =>
+    Object.entries(enabledNetworkMap)
+      .flatMap(([namespace, namespaceNetworks]) =>
+        Object.entries(namespaceNetworks)
+          .filter(([, enabled]) => enabled)
+          .map(([chainId]) =>
+            namespace === KnownCaipNamespace.Eip155
+              ? toEvmCaipChainId(chainId as Hex)
+              : (chainId as CaipChainId),
+          ),
+      )
+      .sort(),
+);
+
+export const selectNonEvmChainIds = createSelector(
+  getEnabledNetworks,
+  (enabledNetworkMap) =>
+    Object.entries(enabledNetworkMap)
+      .filter(([namespace]) => namespace !== 'eip155')
+      .flatMap(([, chains]) =>
+        Object.entries(chains)
+          .filter(([, enabled]) => enabled)
+          .map(([id]) => id),
+      ),
 );
 
 export const getEnabledChainIds = createSelector(

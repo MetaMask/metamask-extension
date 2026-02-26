@@ -37,6 +37,7 @@ import {
   ButtonIconSize,
   IconName,
   IconSize,
+  SuccessPill,
   Text,
 } from '../../../../component-library';
 import { NetworkListItem } from '../../../network-list-item';
@@ -101,21 +102,13 @@ const DefaultNetworks = memo(() => {
     getInternalAccountBySelectedAccountGroupAndCaip(state, SolScope.Mainnet),
   );
 
-  let btcAccountGroup = null;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  btcAccountGroup = useSelector((state) =>
+  const btcAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, BtcScope.Mainnet),
   );
-  ///: END:ONLY_INCLUDE_IF
 
-  let trxAccountGroup = null;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
-  trxAccountGroup = useSelector((state) =>
+  const trxAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, TrxScope.Mainnet),
   );
-  ///: END:ONLY_INCLUDE_IF
 
   // Get blacklisted chain IDs from feature flag
   const blacklistedChainIds = useSelector(
@@ -371,7 +364,12 @@ const DefaultNetworks = memo(() => {
             src={networkImageUrl}
             borderRadius={BorderRadius.LG}
           />
-          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            alignItems={AlignItems.center}
+            gap={2}
+          >
             <Text
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textDefault}
@@ -379,12 +377,10 @@ const DefaultNetworks = memo(() => {
               {network.name}
             </Text>
             {isNetworkGasSponsored(network.chainId) && (
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-              >
-                {t('noNetworkFee')}
-              </Text>
+              <SuccessPill
+                label={t('noNetworkFee')}
+                display={Display.InlineFlex}
+              />
             )}
           </Box>
           <ButtonIcon

@@ -49,6 +49,7 @@ export function onUpdate(
 
   appStateController.setLastUpdatedAt(lastUpdatedAt);
   appStateController.setLastUpdatedFromVersion(previousVersion);
+  appStateController.setPendingExtensionVersion(null);
 
   if (!isFirefox) {
     // Work around Chromium bug https://issues.chromium.org/issues/40805401

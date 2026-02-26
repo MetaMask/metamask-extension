@@ -47,12 +47,11 @@ import {
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
 import { Immer, Patch } from 'immer';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
-///: END:ONLY_INCLUDE_IF
 import {
   GetAppNameAndVersionResponse,
   AppConfigurationResponse,
@@ -110,10 +109,8 @@ import {
   getCurrentNetworkTransactions,
   getIsSigningQRHardwareTransaction,
   getIsHardwareWalletErrorModalVisible,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
-  ///: END:ONLY_INCLUDE_IF
   getInternalAccountByAddress,
   getSelectedInternalAccount,
   getMetaMaskHdKeyrings,
@@ -165,6 +162,7 @@ import {
   logErrorWithMessage,
   createSentryError,
 } from '../../shared/modules/error';
+import type { DefaultAddressScope } from '../../shared/constants/default-address';
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
@@ -2190,14 +2188,8 @@ export async function getPhishingResult(website: string) {
 export function removeSnap(
   snapId: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
-  return async (
-    dispatch: MetaMaskReduxDispatch,
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    getState,
-    ///: END:ONLY_INCLUDE_IF
-  ) => {
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
     dispatch(showLoadingIndication());
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     const subjects = getPermissionSubjects(getState()) as {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -2206,10 +2198,8 @@ export function removeSnap(
 
     const isAccountsSnap =
       subjects[snapId]?.permissions?.snap_manageAccounts !== undefined;
-    ///: END:ONLY_INCLUDE_IF
 
     try {
-      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       if (isAccountsSnap) {
         const addresses: string[] = await submitRequestToBackground(
           'getAccountsBySnapId',
@@ -2219,7 +2209,6 @@ export function removeSnap(
           await submitRequestToBackground('removeAccount', [address]);
         }
       }
-      ///: END:ONLY_INCLUDE_IF
 
       await submitRequestToBackground('removeSnap', [snapId]);
       await forceUpdateMetamaskState(dispatch);
@@ -3121,6 +3110,133 @@ export function ignoreTokens({
 }
 
 /**
+ * To ignore tokens using the unified state
+ *
+ * @param assetId
+ * @returns void
+ */
+export function hideAsset(
+  assetId: Caip19AssetId,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('hideAsset', [assetId]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning(error));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * To ignore tokens using the unified state
+ *
+ * @param accountId - The account ID
+ * @param assetId - The asset ID (CAIP-19)
+ * @returns void
+ */
+export function addCustomAsset(
+  accountId: AccountId,
+  assetId: Caip19AssetId,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('addCustomAsset', [accountId, assetId]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning(error));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * To ignore tokens using the unified state
+ *
+ * @param assetId
+ * @returns void
+ */
+export function unhideAsset(
+  assetId: Caip19AssetId,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('unhideAsset', [assetId]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning(error));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * Remove a custom asset from an account (unified state).
+ *
+ * @param accountId - The account ID
+ * @param assetId - The asset ID (CAIP-19)
+ * @returns void
+ */
+export function removeCustomAsset(
+  accountId: AccountId,
+  assetId: Caip19AssetId,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('removeCustomAsset', [
+        accountId,
+        assetId,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning(error));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * Batch-import custom assets: unhides previously hidden assets and adds new
+ * custom assets, performing a single state refresh at the end instead of one
+ * per token.
+ *
+ * @param accountId - The account ID to add custom assets for
+ * @param assets - Array of asset descriptors with assetId and whether each was previously hidden in preferences
+ */
+export function importCustomAssetsBatch(
+  accountId: string,
+  assets: { assetId: Caip19AssetId; isHidden: boolean }[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    const results = await Promise.allSettled(
+      assets.map(({ assetId, isHidden }) =>
+        isHidden
+          ? submitRequestToBackground('unhideAsset', [assetId])
+          : submitRequestToBackground('addCustomAsset', [accountId, assetId]),
+      ),
+    );
+    const firstError = results.find(
+      (r): r is PromiseRejectedResult => r.status === 'rejected',
+    );
+    if (firstError) {
+      logErrorWithMessage(firstError.reason);
+      dispatch(displayWarning(firstError.reason));
+    }
+    await forceUpdateMetamaskState(dispatch);
+    dispatch(hideLoadingIndication());
+  };
+}
+
+/**
  * To ignore multichain assets (non-EVM tokens like Solana, Bitcoin)
  *
  * @param assetIds - The CAIP asset IDs (includes chain information)
@@ -3142,6 +3258,33 @@ export function multichainIgnoreAssets(
     } finally {
       await forceUpdateMetamaskState(dispatch);
       dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * Refreshes assets for the given accounts (unified state). Used when assets-unify-state
+ * is enabled (e.g. refresh in asset list control bar).
+ *
+ * @param accounts - Accounts to refresh assets for (e.g. selected account)
+ * @param options - Options for fetching assets
+ * @param options.chainIds - Optional chain IDs to fetch
+ * @param options.assetTypes - Optional asset types to fetch
+ * @returns void
+ */
+export function refreshAssetsForSelectedAccount(
+  accounts: InternalAccount[],
+  options: {
+    chainIds?: ChainId[];
+    assetTypes?: AssetType[];
+  } = {},
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('getAssets', [accounts, options]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
     }
   };
 }
@@ -3289,6 +3432,16 @@ export function removeAndIgnoreNft(
       await forceUpdateMetamaskState(dispatch);
       dispatch(hideLoadingIndication());
     }
+  };
+}
+
+export function getAssets(
+  accounts: InternalAccount[],
+  options: GetAssetsOptions,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('getAssets', [accounts, options]);
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 
@@ -4355,6 +4508,14 @@ export function setShowMultiRpcModal(value: boolean) {
 
 export function setUseSidePanelAsDefault(value: boolean) {
   return setPreference('useSidePanelAsDefault', value);
+}
+
+export function setShowDefaultAddress(value: boolean) {
+  return setPreference('showDefaultAddress', value);
+}
+
+export function setDefaultAddressScope(value: DefaultAddressScope) {
+  return setPreference('defaultAddressScope', value);
 }
 
 export function setAutoLockTimeLimit(value: number | null) {
@@ -6423,15 +6584,13 @@ export function createEventFragment(
   ]);
 }
 
-export function createTransactionEventFragment(
+export function upsertTransactionUIMetricsFragment(
   transactionId: string,
-): Promise<string> {
-  const actionId = generateActionId();
-  return submitRequestToBackground('createTransactionEventFragment', [
-    {
-      transactionId,
-      actionId,
-    },
+  payload: Partial<MetaMetricsEventFragment>,
+) {
+  return submitRequestToBackground('upsertTransactionUIMetricsFragment', [
+    transactionId,
+    payload,
   ]);
 }
 
@@ -6779,21 +6938,30 @@ export function setSecurityAlertsEnabled(val: boolean): void {
   }
 }
 
-export async function setWatchEthereumAccountEnabled(value: boolean) {
-  try {
-    await submitRequestToBackground('setWatchEthereumAccountEnabled', [value]);
-  } catch (error) {
-    logErrorWithMessage(error);
-  }
+export function setWatchEthereumAccountEnabled(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      await submitRequestToBackground('setWatchEthereumAccountEnabled', [
+        value,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
-  try {
-    await submitRequestToBackground('setAddSnapAccountEnabled', [value]);
-  } catch (error) {
-    logErrorWithMessage(error);
-  }
+export function setAddSnapAccountEnabled(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      await submitRequestToBackground('setAddSnapAccountEnabled', [value]);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
 }
 
 export function showKeyringSnapRemovalModal(payload: {
@@ -6820,7 +6988,6 @@ export async function getSnapAccountsById(snapId: string): Promise<string[]> {
 
   return addresses;
 }
-///: END:ONLY_INCLUDE_IF
 
 export function setUseExternalNameSources(val: boolean): void {
   try {
@@ -6872,21 +7039,19 @@ export function getRewardsHasAccountOptedIn(
   };
 }
 
-export function getRewardsCandidateSubscriptionId(): ThunkAction<
-  Promise<string | null>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function getRewardsCandidateSubscriptionId(
+  primaryWalletGroupAccounts?: InternalAccount[],
+): ThunkAction<Promise<string | null>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     return await submitRequestToBackground<string | null>(
       'getRewardsCandidateSubscriptionId',
+      primaryWalletGroupAccounts ? [primaryWalletGroupAccounts] : undefined,
     );
   };
 }
 
 export function getRewardsSeasonMetadata(
-  type?: 'current' | 'next',
+  type?: 'current' | 'next' | 'previous',
 ): ThunkAction<
   Promise<SeasonDtoState>,
   MetaMaskReduxState,
@@ -7008,6 +7173,7 @@ export function rewardsGetOptInStatus(
 
 export function rewardsLinkAccountsToSubscriptionCandidate(
   accounts: InternalAccount[],
+  primaryWalletGroupAccounts?: InternalAccount[],
 ): ThunkAction<
   Promise<{ account: InternalAccount; success: boolean }[]>,
   MetaMaskReduxState,
@@ -7017,7 +7183,12 @@ export function rewardsLinkAccountsToSubscriptionCandidate(
   return async () => {
     return await submitRequestToBackground<
       { account: InternalAccount; success: boolean }[]
-    >('rewardsLinkAccountsToSubscriptionCandidate', [accounts]);
+    >(
+      'rewardsLinkAccountsToSubscriptionCandidate',
+      primaryWalletGroupAccounts
+        ? [accounts, primaryWalletGroupAccounts]
+        : [accounts],
+    );
   };
 }
 
@@ -7230,13 +7401,11 @@ export function trackInsightSnapUsage(snapId: string) {
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export async function setSnapsAddSnapAccountModalDismissed() {
   await submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [
     true,
   ]);
 }
-///: END:ONLY_INCLUDE_IF
 
 /**
  * Initiates the sign-in process.
@@ -7726,6 +7895,30 @@ export function setMultichainAccountsIntroModalShown(value: boolean) {
   };
 }
 
+/**
+ * Persist that the mUSD conversion education screen has been seen.
+ * Stored in AppStateController until uninstall.
+ *
+ * @param value
+ */
+export function setMusdConversionEducationSeen(value: boolean) {
+  return async () => {
+    await submitRequestToBackground('setMusdConversionEducationSeen', [value]);
+  };
+}
+
+/**
+ * Persist a dismissed mUSD asset-detail CTA key (chainId-tokenAddress).
+ * Stored in AppStateController until uninstall.
+ *
+ * @param key
+ */
+export function addMusdConversionDismissedCtaKey(key: string) {
+  return async () => {
+    await submitRequestToBackground('addMusdConversionDismissedCtaKey', [key]);
+  };
+}
+
 export async function getNextAvailableAccountName(
   keyring?: KeyringTypes,
 ): Promise<string> {
@@ -7752,7 +7945,7 @@ export async function decodeTransactionData({
     },
   ]);
 }
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
+
 export async function multichainUpdateBalance(
   accountId: string,
 ): Promise<void> {
@@ -7772,8 +7965,6 @@ export async function multichainUpdateTransactions(
 export async function alignMultichainWallets(): Promise<void> {
   return await submitRequestToBackground<void>('alignMultichainWallets', []);
 }
-
-///: END:ONLY_INCLUDE_IF
 
 export async function getLastInteractedConfirmationInfo(): Promise<
   LastInteractedConfirmationInfo | undefined
@@ -7824,7 +8015,6 @@ function applyPatches(
   return immer.applyPatches(oldState, patches);
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 export async function sendMultichainTransaction(
   snapId: string,
   {
@@ -7851,9 +8041,7 @@ export async function sendMultichainTransaction(
     },
   });
 }
-///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export async function createSnapAccount(
   snapId: SnapId,
   options: Record<string, Json>,
@@ -7865,7 +8053,6 @@ export async function createSnapAccount(
     internalOptions,
   ]);
 }
-///: END:ONLY_INCLUDE_IF
 
 export async function getCode(address: Hex, networkClientId: string) {
   return await submitRequestToBackground<string>('getCode', [

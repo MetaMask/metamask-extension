@@ -11,7 +11,6 @@ import {
   Text,
 } from '../../component-library';
 import { MenuItem } from '../../ui/menu';
-import { IconColor, TextColor } from '../../../helpers/constants/design-system';
 
 export const NetworkListItemMenu = ({
   anchorElement,
@@ -94,14 +93,13 @@ export const NetworkListItemMenu = ({
           <MenuItem
             ref={deleteRef}
             iconNameLegacy={IconName.Trash}
-            iconColorLegacy={IconColor.errorDefault}
             onClick={(e) => {
               e.stopPropagation();
               onDeleteClick();
             }}
             data-testid="network-list-item-options-delete"
           >
-            <Text color={TextColor.errorDefault}>{t('delete')}</Text>
+            <Text>{t('delete')}</Text>
           </MenuItem>
         ) : null}
       </Box>

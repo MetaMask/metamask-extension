@@ -103,20 +103,22 @@ export type OrderEntryProps = {
   onSubmit?: (formState: OrderFormState) => void;
   /** Callback when form state changes (used when showSubmitButton is false) */
   onFormStateChange?: (formState: OrderFormState) => void;
+  /** Callback when calculated values change (liquidation price, margin, fees) */
+  onCalculationsChange?: (calculations: OrderCalculations) => void;
   /** Whether to show the internal submit button (defaults to true) */
   showSubmitButton?: boolean;
+  /** Whether to show the order summary inside the form (defaults to true) */
+  showOrderSummary?: boolean;
   /** Order mode: 'new' for opening, 'modify' for adjusting, 'close' for closing (defaults to 'new') */
   mode?: OrderMode;
   /** Existing position data for pre-populating form in modify/close modes */
   existingPosition?: ExistingPositionData;
   /** Order type: 'market' or 'limit' (defaults to 'market') */
   orderType?: OrderType;
-  /** Mid price from top-of-book for limit order presets */
+  /** Mid price from top-of-book for limit order Mid button */
   midPrice?: number;
-  /** Best bid price from top-of-book for limit order presets */
-  bidPrice?: number;
-  /** Best ask price from top-of-book for limit order presets */
-  askPrice?: number;
+  /** Callback when user changes order type (Market/Limit) */
+  onOrderTypeChange?: (orderType: OrderType) => void;
 };
 
 /**
@@ -133,7 +135,7 @@ export type DirectionTabsProps = {
  * Props for AmountInput component
  */
 export type AmountInputProps = {
-  /** Current amount value */
+  /** Current amount value (USD) */
   amount: string;
   /** Callback when amount changes */
   onAmountChange: (amount: string) => void;

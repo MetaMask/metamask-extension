@@ -10,6 +10,9 @@
       "MetaMask: MetaMetrics invalid trait types": 4,
       "warn: MetaMetricsController#_identify: No userTraits found": 1
     },
+    "app/scripts/controllers/rewards/rewards-data-service.test.ts": {
+      "error: RewardsDataService: Failed to fetch geolocation": 2
+    },
     "app/scripts/controllers/swaps/swaps.test.ts": {
       "Third-party: Bindings failed, using pure JS": 1,
       "µWebSockets: Compatibility warnings": 1,
@@ -39,6 +42,7 @@
       "error: Error: Migration 186: Invalid NetworkController": 1,
       "error: Error: Migration 189: Invalid NetworkController": 1,
       "error: Error: Migration 193: SnapController not": 1,
+      "error: Error: Migration 196: NetworkEnablementController not": 1,
       "error: Error: No INFURA_PROJECT_ID set!": 1,
       "warn: Migration 139: typeof state.SelectedNetworkController is": 1,
       "warn: Migration 183.1: currencyRates not found": 1,
@@ -58,15 +62,12 @@
       "error: StorageService: Failed to remove item:": 1,
       "error: StorageService: Failed to set item:": 1
     },
-    "app/scripts/lib/transaction/metrics.test.ts": {
-      "Third-party: Bindings failed, using pure JS": 1,
-      "µWebSockets: Compatibility warnings": 1,
-      "µWebSockets: Fallback to Node implementation": 1
-    },
     "app/scripts/metamask-controller.actions.test.js": {
       "MetaMask: Chain processing errors": 2,
       "Test errors: Fetch failures": 4,
       "Third-party: Bindings failed, using pure JS": 1,
+      "error: Error: Attempted to synchronize recursively": 19,
+      "error: Error: Must specify a non-empty": 7,
       "error: This browser doesn't support cancelAnimationFrame.": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
@@ -77,6 +78,9 @@
       "MetaMask: Sentry initialization warnings": 1,
       "ObjectMultiplex: Malformed chunk warnings": 1,
       "Third-party: Bindings failed, using pure JS": 1,
+      "error: AssertionError: The Snaps platform requires": 1,
+      "error: Error: Attempted to synchronize recursively": 123,
+      "error: Error: Must specify a non-empty": 61,
       "error: Error: NetworkController state is invalid:": 1,
       "error: Error: invalid address (argument=\"address\", value=\"\",": 1,
       "error: Error: invalid address (argument=\"address\", value=\"0x\",": 2,
@@ -84,6 +88,7 @@
       "error: TypeError: Cannot convert undefined or": 2,
       "error: {": 1,
       "warn: Error during SnapController initialization. AssertionError:": 2,
+      "warn: Unable to create some accounts": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
     },
@@ -173,6 +178,12 @@
       "error: Error: Migration 193: SnapController missing": 1,
       "error: Error: Migration 193: SnapController not": 1,
       "error: Error: Migration 193: SnapController.snaps is": 1
+    },
+    "app/scripts/migrations/196.test.ts": {
+      "error: Error: Migration 196: NetworkEnablementController is": 1,
+      "error: Error: Migration 196: NetworkEnablementController missing": 1,
+      "error: Error: Migration 196: NetworkEnablementController not": 1,
+      "error: Error: Migration 196: NetworkEnablementController.nativeAsse...": 1
     },
     "app/scripts/services/subscription/subscription-service.test.ts": {
       "Reselect: Identity function warnings": 1
@@ -778,13 +789,21 @@
     "ui/components/multichain-accounts/multichain-account-menu/multichain-account-menu.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/multichain-accounts/multichain-account-network-group-with-default-address/multichain-account-network-group-with-default-address.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/multichain-accounts/multichain-accounts-tree/multichain-accounts-tree.test.tsx": {
       "React: Missing key props in lists": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/multichain-accounts/multichain-address-rows-hovered-list/default-address.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/multichain-accounts/multichain-address-rows-hovered-list/multichain-hovered-address-rows-hovered-list.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain-accounts/multichain-address-rows-list/multichain-address-rows-list.test.tsx": {
@@ -912,6 +931,7 @@
     },
     "ui/components/multichain/app-header/app-header-unlocked-content.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2,
+      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 5,
       "warn: ⚠️ React Router Future Flag": 2
@@ -1368,6 +1388,20 @@
     },
     "ui/hooks/multi-srp/useHdKeyringsWithSnapAccounts.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/hooks/musd/useMusdConversion.test.ts": {
+      "error: [MUSD] Transaction creation failed: Error:": 1,
+      "warn: [MUSD] Conversion flow not enabled": 1,
+      "warn: [MUSD] Geo-blocking check still in": 1,
+      "warn: [MUSD] User is geo-blocked": 1
+    },
+    "ui/hooks/musd/useMusdCtaVisibility.test.ts": {
+      "Reselect: Identity function warnings": 1
+    },
+    "ui/hooks/musd/useMusdGeoBlocking.test.ts": {
+      "React: Act warnings (component updates not wrapped)": 2,
+      "error: [MUSD Geo] Geolocation error: Geolocation": 1,
+      "error: [MUSD Geo] Geolocation error: Network": 2
     },
     "ui/hooks/perps/usePerpsOrderForm.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
@@ -2295,6 +2329,11 @@
       "Reselect: Input stability warnings": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/components/info/musd-claim-info/musd-claim-info.test.tsx": {
+      "MetaMask: Background connection not initialized": 16,
+      "Reselect: Identity function warnings": 5,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/components/max-base-fee-input/max-base-fee-input.test.tsx": {
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 2,
@@ -2342,6 +2381,10 @@
     "ui/pages/confirmations/components/priority-fee-input/priority-fee-input.test.tsx": {
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 2,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/rows/account-row/account-row.test.tsx": {
+      "Reselect: Identity function warnings": 4,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/rows/bridge-fee-row/bridge-fee-row.test.tsx": {
@@ -2746,6 +2789,9 @@
     "ui/pages/confirmations/hooks/tokens/useTokenFiatRates.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/hooks/tokens/useTokenWithBalance.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/hooks/transactions/dapp-swap-comparison/useDappSwapActions.test.ts": {
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 2,
@@ -3139,6 +3185,10 @@
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/perps/perps-order-entry-page.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/remove-snap-account/remove-snap-account.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
@@ -3167,6 +3217,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings/backup-and-sync-tab/backup-and-sync-tab.test.tsx": {
+      "MetaMask: Background connection not initialized": 1,
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
@@ -3201,7 +3252,7 @@
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/settings/experimental-tab/experimental-tab.test.js": {
+    "ui/pages/settings/experimental-tab/experimental-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -3465,6 +3516,9 @@
     "ui/selectors/multichain/networks.test.ts": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1
+    },
+    "ui/selectors/musd/feature-flags.test.ts": {
+      "Reselect: Identity function warnings": 1
     },
     "ui/selectors/nft.test.ts": {
       "Reselect: Identity function warnings": 1

@@ -273,6 +273,7 @@
     "accountWalletsMetadata": {},
     "activeQrCodeScanRequest": "null",
     "addressBook": {},
+    "addressScanCache": {},
     "addressSecurityAlertResponses": {},
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
@@ -659,7 +660,7 @@
     "isSeedlessOnboardingUserAuthenticated": "boolean",
     "isSignedIn": "boolean",
     "isUnlocked": "boolean",
-    "isUpdateAvailable": "boolean",
+    "pendingExtensionVersion": "null",
     "isUpdatingFCMToken": "boolean",
     "isUpdatingMetamaskNotifications": "boolean",
     "isUpdatingMetamaskNotificationsAccount": [],
@@ -775,6 +776,8 @@
         "nativeCurrency": "string"
       }
     },
+    "musdConversionEducationSeen": "boolean",
+    "musdConversionDismissedCtaKeys": [],
     "names": {
       "ethereumAddress": {
         "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
@@ -845,11 +848,13 @@
     "popupGasPollTokens": [],
     "preferences": {
       "avatarType": "string",
+      "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": "boolean",
       "petnamesEnabled": "boolean",
       "privacyMode": "boolean",
+      "showDefaultAddress": "boolean",
       "shouldShowAggregatedBalancePopover": "boolean",
       "showExtensionInFullSizeView": "boolean",
       "showFiatInTestnets": "boolean",

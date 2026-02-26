@@ -2,17 +2,11 @@ import React from 'react';
 import InfoTooltip from '../../../../components/ui/info-tooltip/info-tooltip';
 
 import { Icon, IconName } from '../../../../components/component-library';
-import README from './README.mdx';
 import TransactionDetailItem from '.';
 
 export default {
   title: 'Confirmations/Components/TransactionDetailItem',
   component: TransactionDetailItem,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     detailTitle: { control: 'object' },
     detailText: { control: 'text' },

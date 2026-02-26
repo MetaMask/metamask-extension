@@ -86,7 +86,7 @@
                 "type": "Snap Keyring"
               },
               "lastSelected": 0,
-              "name": "Snap Account 1",
+              "name": "",
               "snap": {
                 "enabled": true,
                 "id": "npm:@metamask/solana-wallet-snap",
@@ -126,7 +126,7 @@
                 "type": "HD Key Tree"
               },
               "lastSelected": 1770282498132,
-              "name": "Account 1"
+              "name": ""
             },
             "methods": [
               "personal_sign",
@@ -155,18 +155,7 @@
       }
     },
     "AddressBookController": {
-      "addressBook": {
-        "*": {
-          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-            "address": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
-            "chainId": "*",
-            "isEns": false,
-            "lastUpdatedAt": 1770282498132,
-            "memo": "",
-            "name": "Account 1"
-          }
-        }
-      }
+      "addressBook": {}
     },
     "AlertController": {
       "alertEnabledness": {
@@ -181,7 +170,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 195,
+      "currentMigrationVersion": 196,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -224,7 +213,9 @@
       "termsOfUseLastAgreed": 1770282497124,
       "timeoutMinutes": 0,
       "trezorModel": null,
-      "updateModalLastDismissedAt": null
+      "updateModalLastDismissedAt": null,
+      "musdConversionEducationSeen": false,
+      "musdConversionDismissedCtaKeys": []
     },
     "AuthenticationController": {},
     "BridgeStatusController": {
@@ -491,16 +482,7 @@
     "NameController": {
       "nameSources": {},
       "names": {
-        "ethereumAddress": {
-          "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-            "*": {
-              "name": "Account 1",
-              "origin": "account-identity",
-              "proposedNames": {},
-              "sourceId": null
-            }
-          }
-        }
+        "ethereumAddress": {}
       }
     },
     "NetworkController": {
@@ -858,6 +840,7 @@
       "permissionHistory": {}
     },
     "PhishingController": {
+      "addressScanCache": {},
       "c2DomainBlocklistLastFetched": 1770282505,
       "hotlistLastFetched": 1770282505,
       "phishingLists": [],
@@ -879,22 +862,22 @@
         "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
           "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
           "lastSelected": 1770282498132,
-          "name": "Account 1"
+          "name": ""
         },
         "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
           "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
           "lastSelected": 0,
-          "name": "Snap Account 3"
+          "name": ""
         },
         "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3": {
           "address": "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3",
           "lastSelected": 0,
-          "name": "Snap Account 1"
+          "name": ""
         },
         "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252": {
           "address": "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252",
           "lastSelected": 0,
-          "name": "Snap Account 2"
+          "name": ""
         }
       },
       "ipfsGateway": "dweb.link",
@@ -906,22 +889,22 @@
         "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
           "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
           "lastSelected": 1770282498132,
-          "name": "Account 1"
+          "name": ""
         },
         "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
           "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
           "lastSelected": 0,
-          "name": "Snap Account 3"
+          "name": ""
         },
         "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3": {
           "address": "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3",
           "lastSelected": 0,
-          "name": "Snap Account 1"
+          "name": ""
         },
         "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252": {
           "address": "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252",
           "lastSelected": 0,
-          "name": "Snap Account 2"
+          "name": ""
         }
       },
       "manageInstitutionalWallets": false,
@@ -929,12 +912,14 @@
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
         "avatarType": "maskicon",
+        "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "hideZeroBalanceTokens": false,
         "petnamesEnabled": true,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
+        "showDefaultAddress": false,
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": false,
@@ -1138,6 +1123,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 195
+    "version": 196
   }
 }

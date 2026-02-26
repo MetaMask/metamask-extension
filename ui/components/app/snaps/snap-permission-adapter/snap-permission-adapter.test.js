@@ -4,6 +4,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import SnapPermissionAdapter from './snap-permission-adapter';
 
 describe('Snap Permission Adapter', () => {
@@ -58,7 +59,7 @@ describe('Snap Permission Adapter', () => {
       },
     },
     {
-      label: 'Display dialog windows in MetaMask.',
+      label: messages.permission_dialog.message,
       description: {},
       leftIcon: 'messages',
       weight: 4,
@@ -80,7 +81,7 @@ describe('Snap Permission Adapter', () => {
       store,
     );
     expect(
-      screen.queryByText('Display dialog windows in MetaMask.'),
+      screen.queryByText(messages.permission_dialog.message),
     ).toBeInTheDocument();
     expect(
       screen.queryByText(

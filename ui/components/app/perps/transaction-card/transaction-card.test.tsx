@@ -4,6 +4,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import type { PerpsTransaction } from '../types';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import {
   FillType,
   PerpsOrderTransactionStatus,
@@ -24,7 +25,7 @@ const createMockTransaction = (
   type: 'trade',
   category: 'position_open',
   symbol: 'ETH',
-  title: 'Opened long',
+  title: messages.perpsOpenedLong.message,
   subtitle: '2.5 ETH @ $2,850.00',
   timestamp: Date.now() - 3600000,
   fill: {
@@ -56,13 +57,17 @@ describe('TransactionCard', () => {
   });
 
   it('displays the transaction title', () => {
-    const transaction = createMockTransaction({ title: 'Opened long' });
+    const transaction = createMockTransaction({
+      title: messages.perpsOpenedLong.message,
+    });
     renderWithProvider(
       <TransactionCard transaction={transaction} />,
       mockStore,
     );
 
-    expect(screen.getByText('Opened long')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsOpenedLong.message),
+    ).toBeInTheDocument();
   });
 
   it('displays the token logo', () => {
@@ -277,7 +282,9 @@ describe('TransactionCard', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Completed')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsStatusCompleted.message),
+      ).toBeInTheDocument();
     });
   });
 
@@ -302,7 +309,9 @@ describe('TransactionCard', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Filled')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsStatusFilled.message),
+      ).toBeInTheDocument();
     });
 
     it('shows "Canceled" status text for canceled orders', () => {
@@ -325,7 +334,9 @@ describe('TransactionCard', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Canceled')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsStatusCanceled.message),
+      ).toBeInTheDocument();
     });
 
     it('shows "Queued" status text for queued orders', () => {
@@ -348,7 +359,9 @@ describe('TransactionCard', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Queued')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsStatusQueued.message),
+      ).toBeInTheDocument();
     });
 
     it('extracts size and symbol from subtitle for orders', () => {
@@ -448,7 +461,7 @@ describe('TransactionCard', () => {
         type: 'trade',
         category: 'position_open',
         symbol: 'xyz:TSLA',
-        title: 'Opened long',
+        title: messages.perpsOpenedLong.message,
         fill: {
           shortTitle: 'Opened long',
           amount: '+$2,400.00',
