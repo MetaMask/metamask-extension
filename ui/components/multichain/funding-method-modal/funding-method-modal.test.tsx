@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { FundingMethodModal } from './funding-method-modal';
@@ -73,7 +74,7 @@ describe('FundingMethodModal', () => {
       store,
     );
 
-    fireEvent.click(getByText('Token marketplace'));
+    fireEvent.click(getByText(messages.tokenMarketplace.message));
     expect(openBuyCryptoInPdapp).toHaveBeenCalled();
   });
 
@@ -90,7 +91,7 @@ describe('FundingMethodModal', () => {
       store,
     );
 
-    fireEvent.click(getByText('Receive crypto'));
+    fireEvent.click(getByText(messages.receiveCrypto.message));
     expect(onClickReceive).toHaveBeenCalled();
   });
 
@@ -108,7 +109,7 @@ describe('FundingMethodModal', () => {
       store,
     );
 
-    fireEvent.click(getByText('Transfer crypto'));
+    fireEvent.click(getByText(messages.transferCrypto.message));
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: expect.stringContaining('transfer'),
     });

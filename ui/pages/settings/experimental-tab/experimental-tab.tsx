@@ -7,9 +7,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import { NotificationsItem } from './notifications-item';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { KeyringSnapsItem } from './keyring-snaps-item';
-///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
 import { WatchAccountItem } from './watch-account-item';
 ///: END:ONLY_INCLUDE_IF
@@ -33,11 +31,7 @@ const ExperimentalTab = () => {
       {process.env.NOTIFICATIONS ? (
         <NotificationsItem sectionRef={settingsRefs[0]} />
       ) : null}
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-        <KeyringSnapsItem sectionRef={settingsRefs[0]} />
-        ///: END:ONLY_INCLUDE_IF
-      }
+      {<KeyringSnapsItem sectionRef={settingsRefs[0]} />}
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
         <WatchAccountItem sectionRef={settingsRefs[0]} />
