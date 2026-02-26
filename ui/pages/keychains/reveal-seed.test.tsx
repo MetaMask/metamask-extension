@@ -59,7 +59,7 @@ async function navigateQuizToPasswordScreen({
   queryByTestId,
   fireEvent: fireEventFn,
 }: NavigateQuizToPasswordScreenArgs) {
-  fireEventFn.click(getByText('Get started'));
+  fireEventFn.click(getByText(messages.srpSecurityQuizGetStarted.message));
 
   // Q1: click the correct-answer button (data-testid avoids i18n/apostrophe issues)
   await waitFor(() => {
