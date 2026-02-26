@@ -367,7 +367,7 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
   'tokenBalances'
 >;
 
-// AccountId (string) -> Array of AssetIds (string)
+// AccountId -> Array of AssetIds
 export const getMultiChainAssetsControllerAccountsAssets =
   createDeepEqualSelector(
     [
@@ -439,7 +439,7 @@ export const getMultiChainAssetsControllerAccountsAssets =
   >;
 
 // TODO There are issues with the new image url not matching the one in assetsMetadata iconUrl
-// AssetId (string) -> AssetMetadata
+// AssetId -> AssetMetadata
 export const getMultiChainAssetsControllerAssetsMetadata =
   createDeepEqualSelector(
     [
@@ -540,6 +540,7 @@ export const getMultiChainAssetsControllerAllIgnoredAssets =
     'allIgnoredAssets'
   >;
 
+// AccountId -> AssetId -> Balance (amount + unit)
 export const getMultiChainBalancesControllerBalances = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
