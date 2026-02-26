@@ -433,11 +433,7 @@
       "eip155:1329": "string",
       "eip155:6343": "string"
     },
-    "enableEnforcedSimulations": "boolean",
-    "enableEnforcedSimulationsForTransactions": {},
     "enableMV3TimestampSave": "boolean",
-    "enforcedSimulationsSlippage": "number",
-    "enforcedSimulationsSlippageForTransactions": {},
     "ensEntries": {
       "0x1": {
         ".": {

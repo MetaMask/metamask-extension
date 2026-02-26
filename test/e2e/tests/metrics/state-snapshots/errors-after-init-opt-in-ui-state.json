@@ -145,8 +145,6 @@
     "dismissSeedBackUpReminder": true,
     "domains": "object",
     "drafts": "object",
-    "enableEnforcedSimulations": true,
-    "enableEnforcedSimulationsForTransactions": "object",
     "enableMV3TimestampSave": true,
     "enabledNetworkMap": {
       "bip122": "object",
@@ -154,8 +152,6 @@
       "solana": "object",
       "tron": "object"
     },
-    "enforcedSimulationsSlippage": "number",
-    "enforcedSimulationsSlippageForTransactions": "object",
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
     "estimatedGasFeeTimeBounds": {},

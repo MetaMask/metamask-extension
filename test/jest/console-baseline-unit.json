@@ -2340,12 +2340,6 @@
     "ui/pages/confirmations/components/modals/pay-with-modal/pay-with-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/confirmations/components/modals/simulation-settings-modal/simulation-settings-modal.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
-      "Reselect: Identity function warnings": 4,
-      "Reselect: Input stability warnings": 2,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/confirmations/components/multilayer-fee-message/multi-layer-fee-message.test.js": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
