@@ -165,6 +165,8 @@ const CDP_KEY_EVENT_BASE = {
  *
  * Uses Shift (modifier-only, no side effects on the page).
  * Silently degrades when CDP is unavailable (Firefox, non-Chromium).
+ *
+ * @param driver - Selenium WebDriver instance
  */
 async function dispatchCDPProbe(driver: Driver): Promise<void> {
   try {
