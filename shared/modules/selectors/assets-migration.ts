@@ -11,6 +11,7 @@ import {
   AccountTrackerControllerState,
   MultichainAssetsControllerState,
   MultichainBalancesControllerState,
+  getNativeTokenAddress,
   Token,
   TokenBalancesControllerState,
   TokensControllerState,
@@ -18,7 +19,6 @@ import {
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { decimalToPrefixedHex } from '../conversion.utils';
 import {
   ASSETS_UNIFY_STATE_FLAG,
@@ -150,8 +150,7 @@ export const getAccountTrackerControllerAccountsByChainId =
           result[hexChainId] ??= {};
           result[hexChainId][checksummedAddress] = {
             // TODO: Use raw value from state when available
-            balance:
-              parseBalanceWithDecimals(amount, metadata.decimals) ?? '0x0',
+            balance: parseBalanceWithDecimals(amount, metadata.decimals),
           };
         }
       }
@@ -347,10 +346,10 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
 
         // No need to check if the chain is EVM, we already filtered out non-EVM accounts
         const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
-        const assetAddress = (
+        const assetAddress = toChecksumHexAddress(
           metadata.type === 'native'
-            ? getNativeAssetForChainId(hexChainId).address
-            : toChecksumHexAddress(assetType.assetReference)
+            ? getNativeTokenAddress(hexChainId)
+            : assetType.assetReference,
         ) as Hex;
 
         result[accountAddress][hexChainId] ??= {};
