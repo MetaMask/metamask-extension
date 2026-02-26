@@ -514,6 +514,15 @@ describe('sourcemap-validator', () => {
   });
 
   describe('main', () => {
+    let mainTestDir: string | undefined;
+
+    afterEach(async () => {
+      if (mainTestDir !== undefined) {
+        await rm(mainTestDir, { recursive: true, force: true });
+        mainTestDir = undefined;
+      }
+    });
+
     it('exits with 1 when dist/chrome does not exist', async () => {
       mock.method(process, 'cwd', () => EMPTY_FIXTURE, { times: Infinity });
       const exitMock = mock.method(process, 'exit', noop as () => never);
@@ -525,25 +534,24 @@ describe('sourcemap-validator', () => {
     });
 
     it('exits with 1 when dist/chrome exists but has no .js+.map pairs', async () => {
-      const emptyChromeDir = await mkdtemp(
+      mainTestDir = await mkdtemp(
         join(tmpdir(), 'sourcemap-validator-empty-chrome-'),
       );
-      await mkdir(join(emptyChromeDir, 'dist', 'chrome'), { recursive: true });
-      mock.method(process, 'cwd', () => emptyChromeDir, { times: Infinity });
+      await mkdir(join(mainTestDir, 'dist', 'chrome'), { recursive: true });
+      mock.method(process, 'cwd', () => mainTestDir, { times: Infinity });
       const exitMock = mock.method(process, 'exit', noop as () => never);
       mock.method(console, 'error', noop);
       mock.method(console, 'log', noop);
       await main();
-      await rm(emptyChromeDir, { recursive: true, force: true });
       assert.ok(exitMock.mock.calls.length >= 1);
       assert.strictEqual(exitMock.mock.calls[0].arguments[0], 1);
     });
 
     it('exits with 1 when at least one bundle fails validation', async () => {
-      const failDir = await mkdtemp(
+      mainTestDir = await mkdtemp(
         join(tmpdir(), 'sourcemap-validator-main-fail-'),
       );
-      const chromeDir = join(failDir, 'dist', 'chrome');
+      const chromeDir = join(mainTestDir, 'dist', 'chrome');
       await mkdir(chromeDir, { recursive: true });
       const bundle = 'throw new Error("x");';
       const gen = new SourceMapGenerator({ file: 'out.js' });
@@ -563,13 +571,12 @@ describe('sourcemap-validator', () => {
         join(chromeDir, 'fail.js.map'),
         JSON.stringify(gen.toJSON()),
       );
-      mock.method(process, 'cwd', () => failDir, { times: Infinity });
+      mock.method(process, 'cwd', () => mainTestDir, { times: Infinity });
       const exitMock = mock.method(process, 'exit', noop as () => never);
       mock.method(console, 'log', noop);
       mock.method(console, 'error', noop);
       mock.method(console, 'warn', noop);
       await main();
-      await rm(failDir, { recursive: true, force: true });
       assert.ok(exitMock.mock.calls.length >= 1);
       assert.strictEqual(exitMock.mock.calls[0].arguments[0], 1);
     });
