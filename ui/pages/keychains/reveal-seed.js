@@ -686,7 +686,7 @@ function RevealSeedPage() {
 
   return (
     <Box
-      className="page-container"
+      className="page-container h-full md:w-[490px]"
       paddingTop={8}
       paddingBottom={8}
       paddingLeft={4}

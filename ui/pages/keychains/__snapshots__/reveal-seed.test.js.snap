@@ -3,7 +3,7 @@
 exports[`Reveal Seed Page should match snapshot 1`] = `
 <div>
   <div
-    class="box page-container box--padding-top-8 box--padding-right-4 box--padding-bottom-8 box--padding-left-4 box--gap-4 box--flex-direction-row"
+    class="box page-container h-full md:w-[490px] box--padding-top-8 box--padding-right-4 box--padding-bottom-8 box--padding-left-4 box--gap-4 box--flex-direction-row"
     data-testid="reveal-seed-page"
   >
     <div
