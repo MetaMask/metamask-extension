@@ -38,7 +38,7 @@ describe('ConnectionTrustSignalGate', () => {
     expect(getByText('Child content')).toBeInTheDocument();
   });
 
-  it('renders children when trust state is Verified (no modal)', () => {
+  it('renders children when trust state is Verified', () => {
     mockUseOriginTrustSignals.mockReturnValue({
       state: TrustSignalDisplayState.Verified,
       label: null,
@@ -51,24 +51,23 @@ describe('ConnectionTrustSignalGate', () => {
     );
 
     expect(getByText('Child content')).toBeInTheDocument();
-    expect(queryByTestId('trust-signal-warning-modal')).not.toBeInTheDocument();
     expect(queryByTestId('trust-signal-block-modal')).not.toBeInTheDocument();
   });
 
-  it('renders warning modal when trust state is Warning', () => {
+  it('renders children when trust state is Warning', () => {
     mockUseOriginTrustSignals.mockReturnValue({
       state: TrustSignalDisplayState.Warning,
       label: null,
     });
 
-    const { getByTestId, queryByText } = render(
+    const { getByText, queryByTestId } = render(
       <ConnectionTrustSignalGate {...defaultProps}>
         <div>Child content</div>
       </ConnectionTrustSignalGate>,
     );
 
-    expect(getByTestId('trust-signal-warning-modal')).toBeInTheDocument();
-    expect(queryByText('Child content')).not.toBeInTheDocument();
+    expect(getByText('Child content')).toBeInTheDocument();
+    expect(queryByTestId('trust-signal-block-modal')).not.toBeInTheDocument();
   });
 
   it('renders block modal when trust state is Malicious', () => {
@@ -85,23 +84,6 @@ describe('ConnectionTrustSignalGate', () => {
 
     expect(getByTestId('trust-signal-block-modal')).toBeInTheDocument();
     expect(queryByText('Child content')).not.toBeInTheDocument();
-  });
-
-  it('shows children after dismissing warning modal', () => {
-    mockUseOriginTrustSignals.mockReturnValue({
-      state: TrustSignalDisplayState.Warning,
-      label: null,
-    });
-
-    const { getByTestId, getByText, queryByTestId } = render(
-      <ConnectionTrustSignalGate {...defaultProps}>
-        <div>Child content</div>
-      </ConnectionTrustSignalGate>,
-    );
-
-    fireEvent.click(getByTestId('trust-signal-warning-modal-continue'));
-    expect(queryByTestId('trust-signal-warning-modal')).not.toBeInTheDocument();
-    expect(getByText('Child content')).toBeInTheDocument();
   });
 
   it('shows children after dismissing block modal', () => {

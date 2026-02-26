@@ -606,19 +606,6 @@ export const MultichainAccountsConnectPage: React.FC<
               />
             </Tooltip>
           )}
-          {trustSignalState === TrustSignalDisplayState.Warning && (
-            <Tooltip
-              title={t('trustSignalWarningTitle')}
-              position="bottom"
-              style={{ display: 'flex' }}
-            >
-              <Icon
-                name={IconName.Danger}
-                color={IconColor.warningDefault}
-                size={IconSize.Sm}
-              />
-            </Tooltip>
-          )}
           {trustSignalState === TrustSignalDisplayState.Malicious && (
             <Tooltip
               title={t('trustSignalBlockTitle')}
@@ -757,9 +744,6 @@ export const MultichainAccountsConnectPage: React.FC<
                 selectedAccountGroupIds.length === 0 ||
                 selectedChainIds.length === 0
               }
-              {...(trustSignalState === TrustSignalDisplayState.Warning
-                ? { style: { backgroundColor: 'var(--color-warning-default)' } }
-                : {})}
             >
               {t('connect')}
             </Button>

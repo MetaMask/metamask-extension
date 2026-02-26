@@ -18,44 +18,14 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
-
-const VARIANT_CONFIG = {
-  [TrustSignalDisplayState.Warning]: {
-    iconColor: IconColor.WarningDefault,
-    textColor: TextColor.WarningDefault,
-    backgroundColor: BoxBackgroundColor.WarningMuted,
-    titleKey: 'trustSignalWarningTitle',
-    descriptionKey: 'trustSignalWarningDescription',
-    buttonStyle: { backgroundColor: 'var(--color-warning-default)' },
-    isDanger: false,
-    testId: 'trust-signal-warning-modal',
-  },
-  [TrustSignalDisplayState.Malicious]: {
-    iconColor: IconColor.ErrorDefault,
-    textColor: TextColor.ErrorDefault,
-    backgroundColor: BoxBackgroundColor.ErrorMuted,
-    titleKey: 'trustSignalBlockTitle',
-    descriptionKey: 'trustSignalBlockDescription',
-    buttonStyle: undefined,
-    isDanger: true,
-    testId: 'trust-signal-block-modal',
-  },
-} as const;
 
 type TrustSignalModalProps = {
   origin: string;
-  state: TrustSignalDisplayState.Warning | TrustSignalDisplayState.Malicious;
   onContinue: () => void;
 };
 
-export function TrustSignalModal({
-  origin,
-  state,
-  onContinue,
-}: TrustSignalModalProps) {
+export function TrustSignalModal({ origin, onContinue }: TrustSignalModalProps) {
   const t = useI18nContext();
-  const config = VARIANT_CONFIG[state];
 
   let hostname: string;
   try {
@@ -66,7 +36,7 @@ export function TrustSignalModal({
 
   return (
     <Box
-      data-testid={config.testId}
+      data-testid="trust-signal-block-modal"
       flexDirection={BoxFlexDirection.Column}
       alignItems={BoxAlignItems.Center}
       padding={4}
@@ -76,10 +46,10 @@ export function TrustSignalModal({
       <Icon
         name={IconName.Danger}
         size={IconSize.Xl}
-        color={config.iconColor}
+        color={IconColor.ErrorDefault}
       />
       <Text variant={TextVariant.HeadingMd} textAlign={TextAlign.Center}>
-        {t(config.titleKey)}
+        {t('trustSignalBlockTitle')}
       </Text>
       <Box
         alignItems={BoxAlignItems.Center}
@@ -89,7 +59,7 @@ export function TrustSignalModal({
       >
         <Text
           variant={TextVariant.BodyMd}
-          color={config.textColor}
+          color={TextColor.ErrorDefault}
           textAlign={TextAlign.Center}
         >
           {hostname}
@@ -97,24 +67,23 @@ export function TrustSignalModal({
         <Icon
           name={IconName.Danger}
           size={IconSize.Sm}
-          color={config.iconColor}
+          color={IconColor.ErrorDefault}
         />
       </Box>
       <Box
-        backgroundColor={config.backgroundColor}
+        backgroundColor={BoxBackgroundColor.ErrorMuted}
         className="rounded-lg"
         padding={4}
       >
-        <Text variant={TextVariant.BodyMd}>{t(config.descriptionKey)}</Text>
+        <Text variant={TextVariant.BodyMd}>{t('trustSignalBlockDescription')}</Text>
       </Box>
       <Button
         variant={ButtonVariant.Primary}
         size={ButtonSize.Lg}
         className="w-full"
         onClick={onContinue}
-        data-testid={`${config.testId}-continue`}
-        isDanger={config.isDanger}
-        {...(config.buttonStyle ? { style: config.buttonStyle } : {})}
+        data-testid="trust-signal-block-modal-continue"
+        isDanger
       >
         {t('trustSignalContinueAnyway')}
       </Button>

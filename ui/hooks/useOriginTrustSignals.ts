@@ -45,8 +45,8 @@ export function useOriginTrustSignals(origin: string): TrustSignalResult {
 
   if (origin) {
     try {
-      const url = origin.includes('://') ? origin : `https://${origin}`;
-      hostname = new URL(url).hostname;
+      const url = new URL(origin);
+      hostname = url.hostname;
     } catch (e) {
       hostname = undefined;
     }

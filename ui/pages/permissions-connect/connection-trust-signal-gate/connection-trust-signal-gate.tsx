@@ -15,22 +15,10 @@ export function ConnectionTrustSignalGate({
   const { state } = useOriginTrustSignals(origin);
   const [dismissed, setDismissed] = useState(false);
 
-  if (
-    dismissed ||
-    state === TrustSignalDisplayState.Unknown ||
-    state === TrustSignalDisplayState.Verified
-  ) {
-    return <>{children}</>;
-  }
-
-  if (
-    state === TrustSignalDisplayState.Warning ||
-    state === TrustSignalDisplayState.Malicious
-  ) {
+  if (!dismissed && state === TrustSignalDisplayState.Malicious) {
     return (
       <TrustSignalModal
         origin={origin}
-        state={state}
         onContinue={() => setDismissed(true)}
       />
     );

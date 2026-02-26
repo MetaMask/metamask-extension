@@ -8771,12 +8771,6 @@
   "trustSignalContinueAnyway": {
     "message": "Connect Anyway"
   },
-  "trustSignalWarningDescription": {
-    "message": "This site has not been verified. Proceed with caution when connecting."
-  },
-  "trustSignalWarningTitle": {
-    "message": "Unverified site"
-  },
   "tryAgain": {
     "message": "Try again"
   },
