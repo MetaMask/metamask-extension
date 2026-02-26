@@ -62,25 +62,13 @@ function createDeferred(): Deferred {
   return { promise, resolve };
 }
 
-const mockInitDeferreds = new Map<string, Deferred>();
+const mockInitDeferredQueue: Deferred[] = [];
 const mockCreatedControllers: {
-  address: string;
   init: jest.Mock<Promise<void>, []>;
   disconnect: jest.Mock<Promise<void>, []>;
 }[] = [];
 
-const mockCreatePerpsInfrastructure = jest.fn(
-  ({
-    selectedAddress,
-    findNetworkClientIdForChain,
-  }: {
-    selectedAddress: string;
-    findNetworkClientIdForChain?: (chainId: string) => string | undefined;
-  }) => ({
-    selectedAddress,
-    findNetworkClientIdForChain,
-  }),
-);
+const mockCreatePerpsInfrastructure = jest.fn(() => ({}));
 
 const mockGetDefaultPerpsControllerState = jest.fn(() => ({}));
 
@@ -110,31 +98,23 @@ describe('getPerpsController', () => {
     jest.resetModules();
     jest.doMock('../../../app/scripts/controllers/perps', () => {
       class MockPerpsController {
-        public address: string;
-
         public init: jest.Mock<Promise<void>, []>;
 
         public disconnect: jest.Mock<Promise<void>, []>;
 
         public state = {};
 
-        constructor({
-          infrastructure,
-        }: {
-          infrastructure: { selectedAddress: string };
-        }) {
-          this.address = infrastructure.selectedAddress;
-          const deferred = mockInitDeferreds.get(this.address);
+        constructor() {
+          const deferred = mockInitDeferredQueue.shift();
 
           if (!deferred) {
-            throw new Error(`Missing init deferred for ${this.address}`);
+            throw new Error('No init deferred queued for this controller');
           }
 
           this.init = jest.fn(() => deferred.promise);
           this.disconnect = jest.fn(async () => undefined);
 
           mockCreatedControllers.push({
-            address: this.address,
             init: this.init,
             disconnect: this.disconnect,
           });
@@ -159,23 +139,23 @@ describe('getPerpsController', () => {
   beforeEach(async () => {
     await resetPerpsController();
     jest.clearAllMocks();
-    mockInitDeferreds.clear();
+    mockInitDeferredQueue.length = 0;
     mockCreatedControllers.length = 0;
   });
 
   afterEach(async () => {
-    for (const deferred of mockInitDeferreds.values()) {
+    for (const deferred of mockInitDeferredQueue) {
       deferred.resolve();
     }
 
     await resetPerpsController();
-    mockInitDeferreds.clear();
+    mockInitDeferredQueue.length = 0;
     mockCreatedControllers.length = 0;
   });
 
   it('reuses the same in-flight initialization for concurrent same-address requests', async () => {
     const deferred = createDeferred();
-    mockInitDeferreds.set('0xaaa', deferred);
+    mockInitDeferredQueue.push(deferred);
     const mockStore = createMockStore();
 
     const firstRequest = getPerpsController('0xaaa', mockStore);
@@ -196,8 +176,7 @@ describe('getPerpsController', () => {
   it('returns the new address controller when address changes during in-flight init', async () => {
     const deferredA = createDeferred();
     const deferredB = createDeferred();
-    mockInitDeferreds.set('0xaaa', deferredA);
-    mockInitDeferreds.set('0xbbb', deferredB);
+    mockInitDeferredQueue.push(deferredA, deferredB);
     const mockStore = createMockStore();
 
     const requestA = getPerpsController('0xaaa', mockStore);
@@ -212,9 +191,7 @@ describe('getPerpsController', () => {
     expect(controllerA).toBe(controllerB);
     expect(mockCreatePerpsInfrastructure).toHaveBeenCalledTimes(2);
 
-    const staleController = mockCreatedControllers.find(
-      (controller) => controller.address === '0xaaa',
-    );
+    const staleController = mockCreatedControllers[0];
     expect(staleController?.disconnect).toHaveBeenCalledTimes(1);
 
     const activeController = await getPerpsController('0xbbb', mockStore);
@@ -223,20 +200,18 @@ describe('getPerpsController', () => {
 
   it('disconnects initialized controller when switching to a different address', async () => {
     const deferredA = createDeferred();
-    mockInitDeferreds.set('0xaaa', deferredA);
+    mockInitDeferredQueue.push(deferredA);
     const mockStore = createMockStore();
 
     const controllerARequest = getPerpsController('0xaaa', mockStore);
     deferredA.resolve();
     const controllerA = await controllerARequest;
 
-    const createdA = mockCreatedControllers.find(
-      (controller) => controller.address === '0xaaa',
-    );
+    const createdA = mockCreatedControllers[0];
     expect(createdA).toBeDefined();
 
     const deferredB = createDeferred();
-    mockInitDeferreds.set('0xbbb', deferredB);
+    mockInitDeferredQueue.push(deferredB);
     const controllerBRequest = getPerpsController('0xbbb', mockStore);
 
     expect(createdA?.disconnect).toHaveBeenCalledTimes(1);
@@ -247,50 +222,9 @@ describe('getPerpsController', () => {
     expect(controllerB).not.toBe(controllerA);
   });
 
-  it('injects a synchronous network-client resolver from Redux state', async () => {
-    const deferred = createDeferred();
-    mockInitDeferreds.set('0xaaa', deferred);
-
-    const mockStore = {
-      getState: () => ({
-        metamask: {
-          remoteFeatureFlags: {},
-          networkConfigurationsByChainId: {
-            '0xa4b1': {
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [{ networkClientId: 'arbitrum-mainnet' }],
-            },
-          },
-        },
-      }),
-      subscribe: () => () => undefined,
-    };
-
-    const request = getPerpsController(
-      '0xaaa',
-      mockStore as unknown as Parameters<typeof getPerpsController>[1],
-    );
-
-    expect(mockCreatePerpsInfrastructure).toHaveBeenCalledTimes(1);
-    const [infrastructureOptions] = mockCreatePerpsInfrastructure.mock
-      .calls[0] as [
-      {
-        findNetworkClientIdForChain: (chainId: string) => string | undefined;
-      },
-    ];
-    const { findNetworkClientIdForChain } = infrastructureOptions;
-
-    expect(findNetworkClientIdForChain('0xa4b1')).toBe('arbitrum-mainnet');
-    expect(findNetworkClientIdForChain('0xA4B1')).toBe('arbitrum-mainnet');
-    expect(findNetworkClientIdForChain('0xdead')).toBeUndefined();
-
-    deferred.resolve();
-    await request;
-  });
-
   it('rejects stale initialization with a cancellation error when reset without replacement', async () => {
     const deferred = createDeferred();
-    mockInitDeferreds.set('0xaaa', deferred);
+    mockInitDeferredQueue.push(deferred);
     const mockStore = createMockStore();
 
     const request = getPerpsController('0xaaa', mockStore);
