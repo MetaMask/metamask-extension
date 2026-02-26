@@ -177,8 +177,6 @@ export type MetaMaskState = Pick<
   | 'internalAccounts'
   | 'allNfts'
   | 'allTokens'
-  | 'allIgnoredTokens'
-  | 'allDetectedTokens'
   | 'theme'
   | 'participateInMetaMetrics'
   | 'dataCollectionForMarketing'

@@ -67,7 +67,9 @@ import { createDeepEqualSelector } from './selector-creators';
 type ControllerStateSelector<
   InputState extends Record<string, unknown>,
   ResultField extends keyof InputState,
-> = (state: { metamask: InputState }) => InputState[ResultField];
+> = (state: {
+  metamask: Pick<InputState, ResultField>;
+}) => InputState[ResultField];
 
 const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
   [
@@ -91,14 +93,16 @@ export const getAccountTrackerControllerAccountsByChainId =
   createDeepEqualSelector(
     [
       getIsAssetsUnifyStateEnabled,
-      (state: { metamask: AccountTrackerControllerState }) =>
-        state.metamask?.accountsByChainId ?? {},
-      (state: { metamask: AssetsControllerState }) =>
+      (state: {
+        metamask: Pick<AccountTrackerControllerState, 'accountsByChainId'>;
+      }) => state.metamask?.accountsByChainId ?? {},
+      (state: { metamask: Pick<AssetsControllerState, 'assetsBalance'> }) =>
         state.metamask?.assetsBalance ?? {},
-      (state: { metamask: AssetsControllerState }) =>
+      (state: { metamask: Pick<AssetsControllerState, 'assetsInfo'> }) =>
         state.metamask?.assetsInfo ?? {},
-      (state: { metamask: AccountsControllerState }) =>
-        state.metamask?.internalAccounts?.accounts ?? {},
+      (state: {
+        metamask: Pick<AccountsControllerState, 'internalAccounts'>;
+      }) => state.metamask?.internalAccounts?.accounts ?? {},
     ],
     (
       isAssetsUnifyStateEnabled,
@@ -159,15 +163,15 @@ export const getAccountTrackerControllerAccountsByChainId =
 export const getTokensControllerAllTokens = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
-    (state: { metamask: TokensControllerState }) =>
+    (state: { metamask: Pick<TokensControllerState, 'allTokens'> }) =>
       state.metamask?.allTokens ?? {},
-    (state: { metamask: AssetsControllerState }) =>
+    (state: { metamask: Pick<AssetsControllerState, 'assetsInfo'> }) =>
       state.metamask?.assetsInfo ?? {},
-    (state: { metamask: AssetsControllerState }) =>
+    (state: { metamask: Pick<AssetsControllerState, 'assetsBalance'> }) =>
       state.metamask?.assetsBalance ?? {},
-    (state: { metamask: AssetsControllerState }) =>
+    (state: { metamask: Pick<AssetsControllerState, 'customAssets'> }) =>
       state.metamask?.customAssets ?? {},
-    (state: { metamask: AccountsControllerState }) =>
+    (state: { metamask: Pick<AccountsControllerState, 'internalAccounts'> }) =>
       state.metamask?.internalAccounts?.accounts ?? {},
   ],
   (
@@ -238,11 +242,11 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
 export const getTokensControllerAllIgnoredTokens = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
-    (state: { metamask: TokensControllerState }) =>
+    (state: { metamask: Pick<TokensControllerState, 'allIgnoredTokens'> }) =>
       state.metamask?.allIgnoredTokens ?? {},
-    (state: { metamask: AssetsControllerState }) =>
+    (state: { metamask: Pick<AssetsControllerState, 'assetPreferences'> }) =>
       state.metamask?.assetPreferences ?? {},
-    (state: { metamask: AccountsControllerState }) =>
+    (state: { metamask: Pick<AccountsControllerState, 'internalAccounts'> }) =>
       state.metamask?.internalAccounts?.accounts ?? {},
   ],
   (
