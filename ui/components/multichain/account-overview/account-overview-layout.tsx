@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { NetworkConnectionBanner } from '../../app/network-connection-banner';
 import {
   AccountOverviewTabsProps,
@@ -14,12 +14,15 @@ export const AccountOverviewLayout = ({
   children,
   ...tabsProps
 }: AccountOverviewLayoutProps) => {
+  const heroRef = useCallback((node: HTMLDivElement | null) => {
+    node?.setAttribute('elementtiming', 'hero');
+  }, []);
+
   return (
     <>
       <div
+        ref={heroRef}
         className="account-overview__balance-wrapper flex flex-col p-4 gap-4"
-        // @ts-expect-error Element Timing API attribute (Chrome-specific, not in React types)
-        elementtiming="hero"
       >
         <NetworkConnectionBanner />
 

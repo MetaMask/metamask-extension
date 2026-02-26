@@ -15,13 +15,12 @@
  * **FCP** — Read directly from `performance.getEntriesByType('paint')`.
  * Always available on `chrome-extension://` pages.
  *
- * **LCP** — Two-tier fallback:
- *   1. PerformanceObserver (`largest-contentful-paint` type) — real LCP.
- *      Chrome does NOT emit these on `chrome-extension://` pages.
- *   2. Element Timing API (`element` type) — proxy LCP.
- *      The balance wrapper has `elementtiming="hero"`, so Chrome
- *      reports when its text content is first painted. Uses the
- *      entry with the latest `renderTime` as the LCP proxy.
+ * **LCP** — Two-tier fallback. First, PerformanceObserver
+ * (`largest-contentful-paint` type) for real LCP — Chrome does NOT
+ * emit these on `chrome-extension://` pages. Second, Element Timing
+ * API (`element` type) as proxy — the balance wrapper has
+ * `elementtiming="hero"`, so Chrome reports when its text content
+ * is first painted. Uses the latest `renderTime` as the LCP proxy.
  *
  * **CLS** — PerformanceObserver (`layout-shift` type).
  * Falls back to 0 on extension pages where the observer is unsupported.
