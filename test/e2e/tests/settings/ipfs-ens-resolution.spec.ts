@@ -48,7 +48,8 @@ describe('Settings', function () {
             'return window.stateHooks.getPersistedState()',
           );
           return (
-            persistedState?.PreferencesController?.ipfsGateway === 'dweb.link'
+            persistedState?.data?.PreferencesController?.ipfsGateway ===
+            'dweb.link'
           );
         }, 10000);
 
