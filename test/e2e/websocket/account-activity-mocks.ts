@@ -9,7 +9,12 @@ export const ACCOUNT_ACTIVITY_WS_PORT = 8089;
 
 // Subscription tracking — allows tests to wait until the mock has fully
 // processed a subscribe handshake before pushing notifications.
-let subscriptionWaiters: ((subscriptionId: string) => void)[] = [];
+type SubscriptionWaiter = {
+  resolve: (subscriptionId: string) => void;
+  timer: ReturnType<typeof setTimeout>;
+};
+
+let subscriptionWaiters: SubscriptionWaiter[] = [];
 
 /**
  * Returns a Promise that resolves with the subscriptionId once the next
@@ -22,23 +27,22 @@ export function waitForAccountActivitySubscription(
   timeoutMs = 30_000,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
-    const timerRef: { current?: ReturnType<typeof setTimeout> } = {};
-    const waiter = (subscriptionId: string) => {
-      clearTimeout(timerRef.current);
-      resolve(subscriptionId);
+    const entry: SubscriptionWaiter = {
+      resolve: (subscriptionId: string) => {
+        clearTimeout(entry.timer);
+        resolve(subscriptionId);
+      },
+      timer: setTimeout(() => {
+        subscriptionWaiters = subscriptionWaiters.filter((w) => w !== entry);
+        reject(
+          new Error(
+            `Timed out after ${timeoutMs}ms waiting for AccountActivity subscription`,
+          ),
+        );
+      }, timeoutMs),
     };
 
-    timerRef.current = setTimeout(() => {
-      // Remove this waiter on timeout
-      subscriptionWaiters = subscriptionWaiters.filter((w) => w !== waiter);
-      reject(
-        new Error(
-          `Timed out after ${timeoutMs}ms waiting for AccountActivity subscription`,
-        ),
-      );
-    }, timeoutMs);
-
-    subscriptionWaiters.push(waiter);
+    subscriptionWaiters.push(entry);
   });
 }
 
@@ -47,6 +51,9 @@ export function waitForAccountActivitySubscription(
  * Called automatically by the registry during stopAll via the onCleanup hook.
  */
 export function resetAccountActivityMockState(): void {
+  for (const waiter of subscriptionWaiters) {
+    clearTimeout(waiter.timer);
+  }
   subscriptionWaiters = [];
 }
 
@@ -174,7 +181,7 @@ async function setupAccountActivityWebsocketMocks(
             const waiters = [...subscriptionWaiters];
             subscriptionWaiters = [];
             for (const waiter of waiters) {
-              waiter(subscriptionId);
+              waiter.resolve(subscriptionId);
             }
           }, 100);
 

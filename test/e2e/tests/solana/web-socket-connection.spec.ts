@@ -12,8 +12,9 @@ async function waitForWebsocketConnections(
 ) {
   let connectionCount;
   await driver.wait(async () => {
-    connectionCount =
-      WebSocketRegistry.getServer(WEBSOCKET_SERVICES.solana).getWebsocketConnectionCount();
+    connectionCount = WebSocketRegistry.getServer(
+      WEBSOCKET_SERVICES.solana,
+    ).getWebsocketConnectionCount();
     return connectionCount === expectedCount;
   }, 10000);
 }

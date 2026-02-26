@@ -17,17 +17,25 @@ export function sendAndReceive(
   const messageJson = JSON.stringify(message);
 
   return new Promise((resolve, reject) => {
-    const timeout = setTimeout(
-      () => reject(new Error('Timed out waiting for WebSocket response')),
-      timeoutMs,
-    );
+    let settled = false;
 
     const handler = (data: { toString(): string }) => {
-      const raw = data.toString();
+      if (settled) {
+        return;
+      }
+      settled = true;
       ws.off('message', handler);
-      clearTimeout(timeout);
-      resolve(JSON.parse(raw) as Record<string, unknown>);
+      resolve(JSON.parse(data.toString()) as Record<string, unknown>);
     };
+
+    setTimeout(() => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      ws.off('message', handler);
+      reject(new Error('Timed out waiting for WebSocket response'));
+    }, timeoutMs);
 
     ws.on('message', handler);
     ws.send(messageJson);
