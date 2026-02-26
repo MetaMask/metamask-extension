@@ -53,6 +53,7 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { getMultiChainBalancesControllerBalances } from '../../shared/modules/selectors/assets-migration';
 import {
   AccountsState,
   getInternalAccounts,
@@ -473,11 +474,7 @@ export function getMultichainIsTestnet(
   ].includes(providerConfig.chainId as MultichainNetworks);
 }
 
-export function getMultichainBalances(state: {
-  metamask: BalancesState['metamask'];
-}): BalancesState['metamask']['balances'] {
-  return state.metamask.balances;
-}
+export { getMultiChainBalancesControllerBalances as getMultichainBalances };
 
 export function getMultichainTransactions(
   state: MultichainState,
@@ -517,7 +514,7 @@ function getNonEvmCachedBalance(
   state: MultichainState,
   account?: InternalAccount,
 ) {
-  const balances = getMultichainBalances(state);
+  const balances = getMultiChainBalancesControllerBalances(state);
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const selectedNetworkConfig =
     getSelectedMultichainNetworkConfiguration(state);

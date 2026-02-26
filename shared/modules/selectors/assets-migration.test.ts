@@ -1,5 +1,6 @@
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
+import type { CaipAssetType } from '@metamask/utils';
 import {
   ASSETS_UNIFY_STATE_FLAG,
   ASSETS_UNIFY_STATE_VERSION_1,
@@ -9,6 +10,10 @@ import {
   getTokensControllerAllTokens,
   getTokensControllerAllIgnoredTokens,
   getTokenBalancesControllerTokenBalances,
+  getMultiChainAssetsControllerAccountsAssets,
+  getMultiChainAssetsControllerAssetsMetadata,
+  getMultiChainAssetsControllerAllIgnoredAssets,
+  getMultiChainBalancesControllerBalances,
 } from './assets-migration';
 
 const mockAccountId = 'mock-account-id-1';
@@ -328,6 +333,279 @@ describe('getTokenBalancesControllerTokenBalances', () => {
             [nativeAddress]: '0x112210f4768db400', // 1.23456789 ETH (18 decimals)
             [erc20AssetAddressChecksummed]: '0xf4240', // 1 USDC (6 decimals)
           },
+        },
+      });
+    });
+  });
+});
+
+describe('getMultiChainAssetsControllerAccountsAssets', () => {
+  describe('when assets unify state feature is disabled', () => {
+    it('returns accountsAssets from state unchanged', () => {
+      const legacyAccountsAssets = {
+        [mockAccountId2]: [solanaTokenAssetId] as CaipAssetType[],
+      };
+      const state = {
+        metamask: {
+          accountsAssets: legacyAccountsAssets,
+        },
+      };
+      const result = getMultiChainAssetsControllerAccountsAssets(state);
+
+      expect(result).toBe(legacyAccountsAssets);
+      expect(result).toStrictEqual(legacyAccountsAssets);
+    });
+  });
+
+  describe('when assets unify state feature is enabled (happy path)', () => {
+    it('derives accountsAssets from new state structure for non-EVM accounts only', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            [ASSETS_UNIFY_STATE_FLAG]: {
+              enabled: true,
+              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
+              minimumVersion: null,
+            },
+          },
+          accountsAssets: {},
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1' },
+              [erc20AssetId]: { amount: '1' },
+            },
+            [mockAccountId2]: {
+              [solanaTokenAssetId]: { amount: '100' },
+            },
+          },
+          customAssets: {},
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+              [mockAccountId2]: {
+                id: mockAccountId2,
+                type: 'solana:data-account',
+              },
+            },
+          },
+        },
+      };
+      const result = getMultiChainAssetsControllerAccountsAssets(state);
+
+      expect(result).toStrictEqual({
+        [mockAccountId2]: [solanaTokenAssetId],
+      });
+    });
+  });
+});
+
+describe('getMultiChainAssetsControllerAssetsMetadata', () => {
+  describe('when assets unify state feature is disabled', () => {
+    it('returns assetsMetadata from state unchanged', () => {
+      const legacyAssetsMetadata = {
+        [solanaTokenAssetId]: {
+          fungible: true as const,
+          iconUrl: 'https://example.com/sol.png',
+          units: [{ decimals: 6, symbol: 'USDC', name: 'USD Coin' }],
+          symbol: 'USDC',
+          name: 'USD Coin',
+        },
+      };
+      const state = {
+        metamask: {
+          assetsMetadata: legacyAssetsMetadata,
+        },
+      };
+      const result = getMultiChainAssetsControllerAssetsMetadata(state);
+
+      expect(result).toBe(legacyAssetsMetadata);
+      expect(result).toStrictEqual(legacyAssetsMetadata);
+    });
+  });
+
+  describe('when assets unify state feature is enabled (happy path)', () => {
+    it('derives assetsMetadata from assetsInfo for non-EIP155 assets only', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            [ASSETS_UNIFY_STATE_FLAG]: {
+              enabled: true,
+              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
+              minimumVersion: null,
+            },
+          },
+          assetsMetadata: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 18 },
+            [erc20AssetId]: {
+              type: 'erc20',
+              decimals: 6,
+              symbol: 'USDC',
+              name: 'USD Coin',
+            },
+            [solanaTokenAssetId]: {
+              type: 'token',
+              decimals: 6,
+              symbol: 'USDC',
+              name: 'USD Coin',
+              image: 'https://example.com/sol-usdc.png',
+            },
+          },
+        },
+      };
+      const result = getMultiChainAssetsControllerAssetsMetadata(state);
+
+      expect(result).toStrictEqual({
+        [solanaTokenAssetId]: {
+          fungible: true,
+          iconUrl: 'https://example.com/sol-usdc.png',
+          units: [
+            {
+              decimals: 6,
+              symbol: 'USDC',
+              name: 'USD Coin',
+            },
+          ],
+          symbol: 'USDC',
+          name: 'USD Coin',
+        },
+      });
+    });
+  });
+});
+
+describe('getMultiChainAssetsControllerAllIgnoredAssets', () => {
+  describe('when assets unify state feature is disabled', () => {
+    it('returns allIgnoredAssets from state unchanged', () => {
+      const legacyAllIgnoredAssets = {
+        [mockAccountId2]: [solanaTokenAssetId] as CaipAssetType[],
+      };
+      const state = {
+        metamask: {
+          allIgnoredAssets: legacyAllIgnoredAssets,
+        },
+      };
+      const result = getMultiChainAssetsControllerAllIgnoredAssets(state);
+
+      expect(result).toBe(legacyAllIgnoredAssets);
+      expect(result).toStrictEqual(legacyAllIgnoredAssets);
+    });
+  });
+
+  describe('when assets unify state feature is enabled (happy path)', () => {
+    it('derives allIgnoredAssets from assetPreferences for non-EVM accounts only', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            [ASSETS_UNIFY_STATE_FLAG]: {
+              enabled: true,
+              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
+              minimumVersion: null,
+            },
+          },
+          allIgnoredAssets: {},
+          assetPreferences: {
+            [erc20AssetId]: { hidden: true },
+            [solanaTokenAssetId]: { hidden: true },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+              [mockAccountId2]: {
+                id: mockAccountId2,
+                type: 'solana:data-account',
+              },
+            },
+          },
+        },
+      };
+      const result = getMultiChainAssetsControllerAllIgnoredAssets(state);
+
+      expect(result).toStrictEqual({
+        [mockAccountId2]: [solanaTokenAssetId],
+      });
+    });
+  });
+});
+
+describe('getMultiChainBalancesControllerBalances', () => {
+  describe('when assets unify state feature is disabled', () => {
+    it('returns balances from state unchanged', () => {
+      const legacyBalances = {
+        [mockAccountId2]: {
+          [solanaTokenAssetId]: { amount: '100', unit: 'USDC' },
+        },
+      };
+      const state = {
+        metamask: {
+          balances: legacyBalances,
+        },
+      };
+      const result = getMultiChainBalancesControllerBalances(state);
+
+      expect(result).toBe(legacyBalances);
+      expect(result).toStrictEqual(legacyBalances);
+    });
+  });
+
+  describe('when assets unify state feature is enabled (happy path)', () => {
+    it('derives balances from new state structure for non-EVM accounts only', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            [ASSETS_UNIFY_STATE_FLAG]: {
+              enabled: true,
+              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
+              minimumVersion: null,
+            },
+          },
+          balances: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 18 },
+            [erc20AssetId]: { type: 'erc20', decimals: 6, symbol: 'USDC' },
+            [solanaTokenAssetId]: {
+              type: 'token',
+              decimals: 6,
+              symbol: 'USDC',
+            },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1' },
+              [erc20AssetId]: { amount: '1' },
+            },
+            [mockAccountId2]: {
+              [solanaTokenAssetId]: { amount: '250.5' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+              [mockAccountId2]: {
+                id: mockAccountId2,
+                type: 'solana:data-account',
+              },
+            },
+          },
+        },
+      };
+      const result = getMultiChainBalancesControllerBalances(state);
+
+      expect(result).toStrictEqual({
+        [mockAccountId2]: {
+          [solanaTokenAssetId]: { amount: '250.5', unit: 'USDC' },
         },
       });
     });
