@@ -4,6 +4,8 @@ import { selectDefaultNetworkClientIdsByChainId } from './networks';
 
 type EnabledNetworksByChainId = Record<CaipNamespace, Record<string, boolean>>;
 
+const EMPTY_ENABLED_NETWORKS: EnabledNetworksByChainId = {};
+
 /**
  *
  * @param state - Root state.
@@ -15,7 +17,7 @@ export const getEnabledNetworks = (state: {
   metamask: {
     enabledNetworkMap: EnabledNetworksByChainId;
   };
-}) => state.metamask.enabledNetworkMap ?? {};
+}) => state.metamask.enabledNetworkMap ?? EMPTY_ENABLED_NETWORKS;
 
 export const selectAllEnabledNetworkClientIds = createSelector(
   getEnabledNetworks,
