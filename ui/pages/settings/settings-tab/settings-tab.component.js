@@ -74,6 +74,7 @@ export default class SettingsTab extends PureComponent {
     defaultAddressScope: PropTypes.string,
     setDefaultAddressScope: PropTypes.func,
     selectedAddress: PropTypes.string,
+    isDefaultAddressEnabled: PropTypes.bool,
     theme: PropTypes.string,
     setTheme: PropTypes.func,
   };
@@ -528,7 +529,8 @@ export default class SettingsTab extends PureComponent {
         {this.renderTheme()}
         {this.renderBlockieOptIn()}
         {this.renderHideZeroBalanceTokensOptIn()}
-        {this.renderShowDefaultAddressOptIn()}
+        {this.props.isDefaultAddressEnabled &&
+          this.renderShowDefaultAddressOptIn()}
       </div>
     );
   }
