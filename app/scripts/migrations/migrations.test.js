@@ -14,7 +14,7 @@ import migration11 from './011';
 import migration12 from './012';
 import migration13 from './013';
 
-let vault5, vault6, vault7, vault8, vault9; // vault10, vault11
+let vault6, vault7, vault8, vault9; // vault10, vault11
 
 const oldTestRpc = 'https://rawtestrpc.metamask.io/';
 const newTestRpc = 'https://testrpc.metamask.io/';
