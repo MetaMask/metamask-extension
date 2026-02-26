@@ -58,6 +58,10 @@ import {
   type OrderMode,
   type OrderCalculations,
 } from '../../components/app/perps/order-entry';
+import {
+  PERPS_TOAST_KEYS,
+  usePerpsToast,
+} from '../../components/app/perps/perps-toast';
 
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
@@ -124,6 +128,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
+  const { replacePerpsToastByKey } = usePerpsToast();
 
   const { positions: allPositions } = usePerpsLivePositions();
   const { account } = usePerpsLiveAccount();
@@ -350,6 +355,15 @@ const PerpsOrderEntryPage: React.FC = () => {
 
     setIsSubmitting(true);
     setSubmitError(null);
+    let inProgressKey = PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS;
+    if (orderMode === 'close') {
+      inProgressKey = PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS;
+    } else if (orderMode === 'modify') {
+      inProgressKey = PERPS_TOAST_KEYS.UPDATE_IN_PROGRESS;
+    }
+    replacePerpsToastByKey({
+      key: inProgressKey,
+    });
 
     try {
       if (orderMode === 'close' && position) {
@@ -365,6 +379,9 @@ const PerpsOrderEntryPage: React.FC = () => {
         if (!result.success) {
           throw new Error(result.error || 'Failed to close position');
         }
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.TRADE_SUCCESS,
+        });
       } else if (orderMode === 'modify' && position) {
         const cleanTp =
           orderFormState.autoCloseEnabled && orderFormState.takeProfitPrice
@@ -387,6 +404,9 @@ const PerpsOrderEntryPage: React.FC = () => {
         if (!result.success) {
           throw new Error(result.error || 'Failed to update TP/SL');
         }
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.UPDATE_SUCCESS,
+        });
       } else {
         const orderParams = formStateToOrderParams(
           orderFormState,
@@ -403,6 +423,9 @@ const PerpsOrderEntryPage: React.FC = () => {
         }
 
         if (orderFormState.type === 'limit') {
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.ORDER_SUBMITTED,
+          });
           handleBackClick();
           return;
         }
@@ -411,9 +434,19 @@ const PerpsOrderEntryPage: React.FC = () => {
       }
       handleBackClick();
     } catch (error) {
-      setSubmitError(
-        error instanceof Error ? error.message : 'An unknown error occurred',
-      );
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unknown error occurred';
+      setSubmitError(errorMessage);
+      let failedKey = PERPS_TOAST_KEYS.ORDER_FAILED;
+      if (orderMode === 'close') {
+        failedKey = PERPS_TOAST_KEYS.CLOSE_FAILED;
+      } else if (orderMode === 'modify') {
+        failedKey = PERPS_TOAST_KEYS.UPDATE_FAILED;
+      }
+      replacePerpsToastByKey({
+        key: failedKey,
+        description: errorMessage,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -425,6 +458,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     position,
     currentPrice,
     handleBackClick,
+    replacePerpsToastByKey,
   ]);
 
   useEffect(() => {
@@ -437,9 +471,17 @@ const PerpsOrderEntryPage: React.FC = () => {
     if (hasPosition) {
       setPendingOrderSymbol(null);
       setIsSubmitting(false);
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.TRADE_SUCCESS,
+      });
       handleBackClick();
     }
-  }, [pendingOrderSymbol, allPositions, handleBackClick]);
+  }, [
+    pendingOrderSymbol,
+    allPositions,
+    handleBackClick,
+    replacePerpsToastByKey,
+  ]);
 
   useEffect(() => {
     if (!pendingOrderSymbol) {
