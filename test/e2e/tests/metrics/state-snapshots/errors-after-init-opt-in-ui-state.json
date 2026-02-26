@@ -208,6 +208,7 @@
     "isReady": "boolean",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
     "isSignedIn": "boolean",
+    "isUiOpen": "boolean",
     "isUnlocked": true,
     "isUpdatingFCMToken": "boolean",
     "isUpdatingMetamaskNotifications": "boolean",
