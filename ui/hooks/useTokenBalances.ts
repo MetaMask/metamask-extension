@@ -77,11 +77,11 @@ export const useTokenTracker = ({
 // From https://github.com/MetaMask/eth-token-tracker/blob/main/lib/util.js
 // Ensures backwards compatibility with display formatting.
 export function stringifyBalance(
-  balance: string | number | bigint,
+  balance: string,
   decimals?: number,
   balanceDecimals = 5,
 ) {
-  const normalizedBalance = balance.toString();
+  const normalizedBalance = balance;
   const parsedDecimals = Number(decimals);
   const normalizedDecimals =
     Number.isInteger(parsedDecimals) && parsedDecimals >= 0
