@@ -322,7 +322,7 @@ export const MultichainAccountList = ({
                 | undefined
             }
             privacyMode={privacyMode}
-            showDefaultAddress={showDefaultAddress}
+            showDefaultAddress={isDefaultAddressEnabled && showDefaultAddress}
             walletName={
               showWalletName
                 ? wallets[walletId as AccountWalletId]?.metadata?.name
@@ -414,7 +414,7 @@ export const MultichainAccountList = ({
             groupId,
             groupData,
             walletId,
-            showWalletName: !showDefaultAddress,
+            showWalletName: !(showDefaultAddress && isDefaultAddressEnabled),
           });
         });
       }
