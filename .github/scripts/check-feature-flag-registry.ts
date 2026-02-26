@@ -29,8 +29,8 @@ const FLAG_ACCESS_PATTERNS: RegExp[] = [
 ];
 
 const DESTRUCTURING_PATTERNS: RegExp[] = [
-  /\{\s*([^}]+)\}\s*=\s*getRemoteFeatureFlags/g,
-  /\{\s*([^}]+)\}\s*=\s*useSelector\s*\(\s*getRemoteFeatureFlags/g,
+  /\{\s*([^}]+)\}\s*(?::[^=]+)?\s*=\s*getRemoteFeatureFlags/g,
+  /\{\s*([^}]+)\}\s*(?::[^=]+)?\s*=\s*useSelector\s*\(\s*getRemoteFeatureFlags/g,
   /useSelector\s*\(\s*getRemoteFeatureFlags\s*\)\s*as\s*\{\s*([^}]+)\}/g,
   /remoteFeatureFlags:\s*\{\s*([^}]+)\}/g,
 ];
