@@ -217,7 +217,7 @@ describe('util', () => {
   });
 
   describe('#numericBalance', () => {
-    it('should return a BN 0 if given nothing', () => {
+    it('should return 0 if given nothing', () => {
       const result = util.numericBalance();
       expect(result.toString(10)).toStrictEqual('0');
     });

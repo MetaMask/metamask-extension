@@ -1,4 +1,3 @@
-import BN from 'bn.js';
 import { toBuffer } from './buffer-utils';
 
 describe('buffer utils', function () {
@@ -21,11 +20,6 @@ describe('buffer utils', function () {
     it('should work with regular strings', function () {
       const result = toBuffer('test');
       expect(result).toHaveLength(4);
-    });
-
-    it('should work with BN', function () {
-      const result = toBuffer(new BN(100));
-      expect(result).toHaveLength(1);
     });
 
     it('should work with Buffer', function () {
