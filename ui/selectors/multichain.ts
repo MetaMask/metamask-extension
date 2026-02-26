@@ -510,7 +510,6 @@ export function getSelectedAccountMultichainTransactions(
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {
-  console.log('DEBUG XXXX', state.metamask.rates);
   return state.metamask.rates;
 };
 
