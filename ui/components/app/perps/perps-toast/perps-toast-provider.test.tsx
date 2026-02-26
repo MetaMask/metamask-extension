@@ -3,10 +3,20 @@ import { act, fireEvent, screen } from '@testing-library/react';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
-import { PerpsToastProvider, usePerpsToast } from './perps-toast-provider';
+import {
+  PerpsToastProvider,
+  PERPS_TOAST_KEYS,
+  usePerpsToast,
+} from './perps-toast-provider';
 
 const ToastHarness = () => {
-  const { showPerpsToast, replacePerpsToast, hidePerpsToast } = usePerpsToast();
+  const {
+    showPerpsToast,
+    showPerpsToastByKey,
+    replacePerpsToast,
+    replacePerpsToastByKey,
+    hidePerpsToast,
+  } = usePerpsToast();
 
   return (
     <>
@@ -24,6 +34,16 @@ const ToastHarness = () => {
       <button
         type="button"
         onClick={() => {
+          showPerpsToastByKey({
+            key: PERPS_TOAST_KEYS.ORDER_SUBMITTED,
+          });
+        }}
+      >
+        Show Key Info
+      </button>
+      <button
+        type="button"
+        onClick={() => {
           replacePerpsToast({
             message: 'Successful trade!',
             variant: 'success',
@@ -31,6 +51,16 @@ const ToastHarness = () => {
         }}
       >
         Show Success
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.TRADE_SUCCESS,
+          });
+        }}
+      >
+        Show Key Success
       </button>
       <button
         type="button"
@@ -106,6 +136,46 @@ describe('PerpsToastProvider', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: 'Show Success' }));
+    expect(screen.getByText('Successful trade!')).toBeInTheDocument();
+
+    act(() => {
+      jest.advanceTimersByTime(3000);
+    });
+
+    expect(screen.queryByText('Successful trade!')).not.toBeInTheDocument();
+  });
+
+  it('maps order submitted key to info variant without auto-hide', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <PerpsToastProvider>
+        <ToastHarness />
+      </PerpsToastProvider>,
+      getStore(),
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Show Key Info' }));
+    expect(screen.getByText('Order submitted')).toBeInTheDocument();
+
+    act(() => {
+      jest.advanceTimersByTime(10000);
+    });
+
+    expect(screen.getByText('Order submitted')).toBeInTheDocument();
+  });
+
+  it('maps trade success key to success variant with auto-hide', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <PerpsToastProvider>
+        <ToastHarness />
+      </PerpsToastProvider>,
+      getStore(),
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Show Key Success' }));
     expect(screen.getByText('Successful trade!')).toBeInTheDocument();
 
     act(() => {
