@@ -5,6 +5,7 @@ import type {
 } from '@metamask/utils';
 import * as Util from '../../util';
 import requestEthereumAccounts from './request-accounts';
+import type { RequestEthereumAccountsOptions } from './request-accounts';
 
 jest.mock('../../util', () => ({
   ...jest.requireActual('../../util'),
@@ -31,22 +32,10 @@ const createMockedHandler = () => {
     metaMetricsId: 'metaMetricsId',
     internalAccounts: {
       accounts: {
-        '0x01': {
-          address: '0x01',
-          name: 'Account 1',
-          lastSelected: 0,
-        },
-        '0x02': {
-          address: '0x02',
-          name: 'Account 2',
-          lastSelected: 0,
-        },
-        '0x03': {
-          address: '0x03',
-          name: 'Account 3',
-          lastSelected: 0,
-        },
-      },
+        '0x01': { address: '0x01' },
+        '0x02': { address: '0x02' },
+        '0x03': { address: '0x03' },
+      } as unknown as RequestEthereumAccountsOptions['metamaskState']['internalAccounts']['accounts'],
       selectedAccount: '',
     },
   };
