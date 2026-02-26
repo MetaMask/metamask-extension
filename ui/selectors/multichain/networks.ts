@@ -376,7 +376,7 @@ export const getEnabledChainIds = createSelector(
     const { namespace } = parseCaipChainId(currentMultichainChainId);
 
     // Get enabled networks for the current namespace
-    const networksForNamespace = enabledNetworks[namespace] ?? {};
+    const networksForNamespace = enabledNetworks[namespace] || {};
 
     return Object.keys(networkConfigurations).filter(
       (chainId) => networksForNamespace[chainId],
