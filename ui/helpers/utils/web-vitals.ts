@@ -44,12 +44,16 @@ import { onINP, onLCP, onCLS } from 'web-vitals/attribution';
 export type WebVitalsMetrics = {
   /** Interaction to Next Paint in milliseconds */
   inp: number | null;
-  /** Largest Contentful Paint in milliseconds */
+  /** First Contentful Paint in milliseconds (always available on extension pages) */
+  fcp: number | null;
+  /** Largest Contentful Paint in milliseconds (null on chrome-extension:// pages) */
   lcp: number | null;
   /** Cumulative Layout Shift (unitless) */
   cls: number | null;
   /** Rating for INP metric */
   inpRating: 'good' | 'needs-improvement' | 'poor' | null;
+  /** Rating for FCP metric */
+  fcpRating: 'good' | 'needs-improvement' | 'poor' | null;
   /** Rating for LCP metric */
   lcpRating: 'good' | 'needs-improvement' | 'poor' | null;
   /** Rating for CLS metric */
@@ -62,9 +66,11 @@ export type WebVitalsMetrics = {
  */
 const webVitalsMetrics: WebVitalsMetrics = {
   inp: null,
+  fcp: null,
   lcp: null,
   cls: null,
   inpRating: null,
+  fcpRating: null,
   lcpRating: null,
   clsRating: null,
 };
@@ -341,9 +347,11 @@ export function getWebVitalsMetrics(): WebVitalsMetrics {
  */
 export function resetWebVitalsMetrics(): void {
   webVitalsMetrics.inp = null;
+  webVitalsMetrics.fcp = null;
   webVitalsMetrics.lcp = null;
   webVitalsMetrics.cls = null;
   webVitalsMetrics.inpRating = null;
+  webVitalsMetrics.fcpRating = null;
   webVitalsMetrics.lcpRating = null;
   webVitalsMetrics.clsRating = null;
 }

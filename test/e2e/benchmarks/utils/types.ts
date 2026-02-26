@@ -59,12 +59,16 @@ export type WebVitalsRating = 'good' | 'needs-improvement' | 'poor';
 export type WebVitalsMetrics = {
   /** Interaction to Next Paint in milliseconds */
   inp: number | null;
-  /** Largest Contentful Paint in milliseconds */
+  /** First Contentful Paint in milliseconds (always available on extension pages) */
+  fcp: number | null;
+  /** Largest Contentful Paint in milliseconds (null on chrome-extension:// pages) */
   lcp: number | null;
   /** Cumulative Layout Shift (unitless score) */
   cls: number | null;
   /** Rating for INP metric */
   inpRating: WebVitalsRating | null;
+  /** Rating for FCP metric */
+  fcpRating: WebVitalsRating | null;
   /** Rating for LCP metric */
   lcpRating: WebVitalsRating | null;
   /** Rating for CLS metric */
@@ -83,13 +87,16 @@ export type RatingDistribution = {
 export type WebVitalsAggregated = {
   /** Aggregated INP statistics (null if no runs reported INP) */
   inp: TimerStatistics | null;
-  /** Aggregated LCP statistics (null if no runs reported LCP) */
+  /** Aggregated FCP statistics (null if no runs reported FCP) */
+  fcp: TimerStatistics | null;
+  /** Aggregated LCP statistics (null on chrome-extension:// pages) */
   lcp: TimerStatistics | null;
   /** Aggregated CLS statistics (null if no runs reported CLS) */
   cls: TimerStatistics | null;
   /** Rating distribution across all runs */
   ratings: {
     inp: RatingDistribution;
+    fcp: RatingDistribution;
     lcp: RatingDistribution;
     cls: RatingDistribution;
   };

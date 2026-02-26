@@ -1,33 +1,44 @@
 /**
  * Web Vitals collection for E2E benchmarks.
  *
- * Uses a multi-phase approach to produce non-null Core Web Vitals:
+ * Measurement strategy per metric:
  *
- * Phase 1 (fast path): read `stateHooks.getWebVitalsMetrics()`.
- * Phase 2 (setup): create PerformanceObservers in the browser, read FCP,
- * and register a 16 ms busy-wait keydown handler so the CDP probe
- * generates a PerformanceEventTiming entry with non-zero duration.
- * Phase 3 (CDP probe): dispatch a trusted Shift key via Chrome DevTools
- * Protocol — trusted events generate `PerformanceEventTiming` entries that
- * WebDriver actions do not.
- * Phase 4 (settle): 200 ms for async observer delivery.
- * Phase 5 (read): compute INP from max event duration (accepting 0),
- * LCP from paint entries (falling back to FCP), CLS from layout-shift
- * entries. Falls back to INP = 0 / CLS = 0 when the respective
- * observers are unsupported (e.g. chrome-extension:// pages).
+ * **INP** — PerformanceObserver (`event` type, `buffered: true`).
+ * Captures `PerformanceEventTiming` entries from trusted events.
+ * WebDriver actions produce untrusted events that Chrome ignores,
+ * so a CDP probe (`Input.dispatchKeyEvent` Shift) generates at least
+ * one trusted entry. A 16 ms busy-wait keydown handler ensures the
+ * entry has non-zero `duration`. If the `web-vitals` library has
+ * already captured INP via `stateHooks`, that value takes priority
+ * (it uses the spec-correct 98th percentile algorithm).
+ *
+ * **FCP** — Read directly from `performance.getEntriesByType('paint')`.
+ * Always available on `chrome-extension://` pages.
+ *
+ * **LCP** — Two-tier fallback:
+ *   1. PerformanceObserver (`largest-contentful-paint` type) — real LCP.
+ *      Chrome does NOT emit these on `chrome-extension://` pages.
+ *   2. Element Timing API (`element` type) — proxy LCP.
+ *      The balance wrapper has `elementtiming="hero"`, so Chrome
+ *      reports when its text content is first painted. Uses the
+ *      entry with the latest `renderTime` as the LCP proxy.
+ *
+ * **CLS** — PerformanceObserver (`layout-shift` type).
+ * Falls back to 0 on extension pages where the observer is unsupported.
  */
 
 import type { Driver } from '../../webdriver/driver';
 import type { WebVitalsMetrics } from './types';
 
 /**
- * Phase 2 script: sets up PerformanceObservers and reads FCP.
- * Stores state on `window.__cwv` for the Phase 5 read script.
+ * Setup script: creates PerformanceObservers, reads FCP, registers
+ * a busy-wait keydown handler for the CDP probe.
+ * Stores state on `window.__cwv` for the read script.
  */
 const SETUP_SCRIPT = `
 var w = window;
 w.__cwv = {
-  event: [], lcp: [], cls: [],
+  event: [], lcp: [], cls: [], element: [],
   observers: [],
   clsSupported: false,
   fcp: null
@@ -70,31 +81,51 @@ try {
 try {
   var o3 = new PerformanceObserver(function(list) {
     var e = list.getEntries();
+    for (var i = 0; i < e.length; i++) w.__cwv.element.push(e[i]);
+  });
+  o3.observe({ type: 'element', buffered: true });
+  w.__cwv.observers.push(o3);
+} catch(e) {}
+
+try {
+  var o4 = new PerformanceObserver(function(list) {
+    var e = list.getEntries();
     for (var i = 0; i < e.length; i++) w.__cwv.cls.push(e[i]);
   });
-  o3.observe({ type: 'layout-shift', buffered: true });
+  o4.observe({ type: 'layout-shift', buffered: true });
   w.__cwv.clsSupported = true;
-  w.__cwv.observers.push(o3);
+  w.__cwv.observers.push(o4);
 } catch(e) {}
 `;
 
 /**
- * Phase 5 script: reads observer entries, computes metrics, cleans up.
- * Falls back to FCP when LCP entries are unavailable.
+ * Read script: computes metrics from observer entries and paint timing.
+ * Checks stateHooks first for web-vitals library values (INP uses
+ * spec-correct 98th percentile), then reads raw observer entries.
+ * FCP is always read from paint entries. LCP uses real
+ * `largest-contentful-paint` entries first, then Element Timing
+ * entries (`elementtiming="hero"`) as fallback on extension pages.
  */
 const READ_SCRIPT = `
 var cwv = window.__cwv || {
-  event: [], lcp: [], cls: [], observers: [], clsSupported: false, fcp: null
+  event: [], lcp: [], cls: [], element: [], observers: [], clsSupported: false, fcp: null
 };
 var result = {
-  inp: null, lcp: null, cls: null,
-  inpRating: null, lcpRating: null, clsRating: null
+  inp: null, fcp: null, lcp: null, cls: null,
+  inpRating: null, fcpRating: null, lcpRating: null, clsRating: null
 };
 
 function rate(v, good, poor) {
   return v <= good ? 'good' : v <= poor ? 'needs-improvement' : 'poor';
 }
 
+// FCP: always read from paint entries (available on extension pages)
+if (cwv.fcp !== null) {
+  result.fcp = cwv.fcp;
+  result.fcpRating = rate(cwv.fcp, 1800, 3000);
+}
+
+// Check stateHooks for web-vitals library values (more accurate for INP)
 var sh = window.stateHooks;
 if (sh && sh.getWebVitalsMetrics) {
   var m = sh.getWebVitalsMetrics();
@@ -104,6 +135,7 @@ if (sh && sh.getWebVitalsMetrics) {
   sh.resetWebVitalsMetrics && sh.resetWebVitalsMetrics();
 }
 
+// INP: from PerformanceObserver event entries (primary measurement path)
 if (result.inp === null && cwv.event.length > 0) {
   var maxDur = 0;
   for (var i = 0; i < cwv.event.length; i++) {
@@ -118,6 +150,7 @@ if (result.inp === null) {
   result.inpRating = 'good';
 }
 
+// LCP: real largest-contentful-paint entries first
 if (result.lcp === null && cwv.lcp.length > 0) {
   var last = cwv.lcp[cwv.lcp.length - 1];
   if (last.startTime > 0) {
@@ -126,11 +159,20 @@ if (result.lcp === null && cwv.lcp.length > 0) {
   }
 }
 
-if (result.lcp === null && cwv.fcp !== null) {
-  result.lcp = cwv.fcp;
-  result.lcpRating = rate(cwv.fcp, 2500, 4000);
+// LCP fallback: Element Timing API (elementtiming="hero" on balance wrapper)
+if (result.lcp === null && cwv.element.length > 0) {
+  var maxRender = 0;
+  for (var ei = 0; ei < cwv.element.length; ei++) {
+    var rt = cwv.element[ei].renderTime || cwv.element[ei].loadTime || 0;
+    if (rt > maxRender) maxRender = rt;
+  }
+  if (maxRender > 0) {
+    result.lcp = maxRender;
+    result.lcpRating = rate(maxRender, 2500, 4000);
+  }
 }
 
+// CLS: from layout-shift entries
 if (result.cls === null && cwv.clsSupported) {
   var clsVal = 0;
   for (var j = 0; j < cwv.cls.length; j++) {
@@ -189,49 +231,32 @@ async function dispatchCDPProbe(driver: Driver): Promise<void> {
 }
 
 /**
- * Collect Core Web Vitals from the running extension.
+ * Collect web vitals from the running extension.
+ *
+ * Primary measurement: PerformanceObserver for INP (`event` entries),
+ * FCP (paint entries), CLS (`layout-shift` entries).
+ * CDP probe dispatches a trusted Shift key to generate INP entries.
+ * `stateHooks` values from the web-vitals library override observer
+ * results when available (more accurate INP computation).
+ *
+ * LCP is attempted via `largest-contentful-paint` observer, with
+ * Element Timing (`elementtiming="hero"`) as fallback on extension pages.
  *
  * @param driver - Selenium WebDriver instance with access to the extension page
- * @returns Per-run web vitals snapshot. Null values indicate the metric could
- * not be observed (e.g. CLS on a page that doesn't emit layout-shift entries).
+ * @returns Per-run web vitals snapshot
  */
 export async function collectWebVitals(
   driver: Driver,
 ): Promise<WebVitalsMetrics> {
-  // Phase 1: fast path — stateHooks (web-vitals library values)
-  const hookResult = await driver.executeScript(() => {
-    const sh = (window as Window & { stateHooks?: Record<string, unknown> })
-      .stateHooks as
-      | {
-          getWebVitalsMetrics?: () => WebVitalsMetrics;
-          resetWebVitalsMetrics?: () => void;
-        }
-      | undefined;
-
-    if (sh?.getWebVitalsMetrics) {
-      const m = sh.getWebVitalsMetrics();
-      if (m.inp !== null || m.lcp !== null || m.cls !== null) {
-        sh.resetWebVitalsMetrics?.();
-        return m;
-      }
-    }
-    return null;
-  });
-
-  if (hookResult) {
-    return hookResult;
-  }
-
-  // Phase 2: set up PerformanceObservers + read FCP in the browser
+  // Set up PerformanceObservers + read FCP + register busy-wait handler
   await driver.executeScript(SETUP_SCRIPT);
 
-  // Phase 3: dispatch a trusted CDP keyboard event to generate
-  // PerformanceEventTiming entries for INP
+  // Dispatch trusted CDP keyboard event to generate PerformanceEventTiming
   await dispatchCDPProbe(driver);
 
-  // Phase 4: let observer callbacks deliver buffered + probe entries
+  // Let observer callbacks deliver buffered + probe entries
   await driver.delay(200);
 
-  // Phase 5: read entries, compute metrics, disconnect observers
+  // Read entries, compute metrics, disconnect observers
   return (await driver.executeScript(READ_SCRIPT)) as WebVitalsMetrics;
 }

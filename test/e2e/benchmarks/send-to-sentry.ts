@@ -33,6 +33,7 @@ const { version } = JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as {
 
 const WEB_VITALS_METRICS = [
   { key: 'inp', ratingKey: 'inpRating' },
+  { key: 'fcp', ratingKey: 'fcpRating' },
   { key: 'lcp', ratingKey: 'lcpRating' },
   { key: 'cls', ratingKey: 'clsRating' },
 ] as const;

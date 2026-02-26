@@ -546,7 +546,7 @@ export const formatThresholdViolations = (
   });
 };
 
-const WEB_VITALS_NUMERIC_KEYS = ['inp', 'lcp', 'cls'] as const;
+const WEB_VITALS_NUMERIC_KEYS = ['inp', 'fcp', 'lcp', 'cls'] as const;
 
 type WebVitalsNumericKey = (typeof WEB_VITALS_NUMERIC_KEYS)[number];
 
@@ -564,6 +564,8 @@ const WEB_VITALS_BOUNDS: Record<
 > = {
   /** INP: interaction responsiveness. Google "poor" starts at 500ms. 0ms is invalid. */
   inp: { min: 1, max: 30_000 },
+  /** FCP: first content paint. Google "poor" starts at 3s. 0ms is invalid. */
+  fcp: { min: 1, max: 60_000 },
   /** LCP: perceived load time. Google "poor" starts at 4s. 0ms is invalid. */
   lcp: { min: 1, max: 60_000 },
   /** CLS: layout shift score (unitless). 0 is perfect stability; >1 is extremely poor. */
@@ -641,10 +643,12 @@ export function aggregateWebVitals(
 ): WebVitalsAggregated {
   const result: WebVitalsAggregated = {
     inp: null,
+    fcp: null,
     lcp: null,
     cls: null,
     ratings: {
       inp: createEmptyRatingDistribution(),
+      fcp: createEmptyRatingDistribution(),
       lcp: createEmptyRatingDistribution(),
       cls: createEmptyRatingDistribution(),
     },

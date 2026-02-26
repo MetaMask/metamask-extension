@@ -242,11 +242,17 @@ export function buildWebVitalsSection(
   }
 
   const metrics: {
-    key: 'inp' | 'lcp' | 'cls';
+    key: 'inp' | 'fcp' | 'lcp' | 'cls';
     label: string;
     formatValue: (v: number) => string;
   }[] = [
     { key: 'inp', label: 'INP', formatValue: (v) => `${Math.round(v)}ms` },
+    {
+      key: 'fcp',
+      label: 'FCP',
+      formatValue: (v) =>
+        v >= 1000 ? `${(v / 1000).toFixed(1)}s` : `${Math.round(v)}ms`,
+    },
     {
       key: 'lcp',
       label: 'LCP',

@@ -272,9 +272,11 @@ describe('web-vitals', () => {
 
       expect(metrics).toEqual({
         inp: null,
+        fcp: null,
         lcp: null,
         cls: null,
         inpRating: null,
+        fcpRating: null,
         lcpRating: null,
         clsRating: null,
       });
@@ -353,9 +355,11 @@ describe('web-vitals', () => {
       metrics = getWebVitalsMetrics();
       expect(metrics).toEqual({
         inp: null,
+        fcp: null,
         lcp: null,
         cls: null,
         inpRating: null,
+        fcpRating: null,
         lcpRating: null,
         clsRating: null,
       });
