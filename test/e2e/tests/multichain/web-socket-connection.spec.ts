@@ -103,10 +103,16 @@ async function waitForWebsocketConnections(
 ) {
   let connectionCount: number | undefined;
   let openConnections: { name: string; port: number; count: number }[] = [];
+  const sortedExpected = [...expectedServices].sort();
+
   await driver.wait(async () => {
-    connectionCount = WebSocketRegistry.getTotalConnectionCount();
     openConnections = WebSocketRegistry.getOpenConnections();
-    return connectionCount === expectedCount;
+    connectionCount = WebSocketRegistry.getTotalConnectionCount();
+    const openNames = openConnections.map((c) => c.name).sort();
+    return (
+      connectionCount === expectedCount &&
+      JSON.stringify(openNames) === JSON.stringify(sortedExpected)
+    );
   }, 30000);
 
   assert.equal(
@@ -116,12 +122,10 @@ async function waitForWebsocketConnections(
       `Open: ${JSON.stringify(openConnections)}`,
   );
 
-  if (expectedServices) {
-    const openNames = openConnections.map((c) => c.name).sort();
-    assert.deepEqual(
-      openNames,
-      [...expectedServices].sort(),
-      `Expected services ${JSON.stringify(expectedServices)} but found ${JSON.stringify(openNames)}`,
-    );
-  }
+  const openNames = openConnections.map((c) => c.name).sort();
+  assert.deepEqual(
+    openNames,
+    sortedExpected,
+    `Expected services ${JSON.stringify(expectedServices)} but found ${JSON.stringify(openNames)}`,
+  );
 }

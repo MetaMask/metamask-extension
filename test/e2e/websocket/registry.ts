@@ -99,7 +99,7 @@ class WebSocketRegistry {
     for (const entry of allValues) {
       if (entry.server) {
         cleanupPromises.push(
-          entry.server.stopAndCleanup().then(() => {
+          entry.server.stopAndCleanup().finally(() => {
             entry.server = null;
           }),
         );
