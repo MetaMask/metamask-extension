@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import GeneralSettings from '../../page-objects/pages/settings/general-settings';
@@ -17,7 +17,7 @@ describe('Hide tokens without balance', function (this: Suite) {
     const smartContract = SMART_CONTRACTS.HST;
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x539': true } })
           .build(),
         title: this.test?.fullTitle(),

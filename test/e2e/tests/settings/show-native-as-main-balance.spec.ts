@@ -1,7 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
@@ -76,7 +75,7 @@ describe('Settings: Show native token as main balance', function () {
   it('Should show balance in fiat when toggle is on', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withConversionRateEnabled()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
@@ -111,7 +110,7 @@ describe('Settings: Show native token as main balance', function () {
   it('Should not show popover twice', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withConversionRateEnabled()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
