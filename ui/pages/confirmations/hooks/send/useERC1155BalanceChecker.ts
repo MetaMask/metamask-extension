@@ -11,6 +11,8 @@ const getBalanceValue = (balance: string | { words: string }) => {
   if (typeof balance === 'string') {
     balanceStr = parseInt(balance, 16).toString();
   } else if (balance && typeof balance === 'object' && 'words' in balance) {
+    // Reconstruct from BN internal structure (Firefox case)
+    // BN stores value in `words` array as base-2^26 limbs
     const base = 2n ** 26n;
     const words = (balance as { words: number[] }).words;
     const value = words.reduce(
