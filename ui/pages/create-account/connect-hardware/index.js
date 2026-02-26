@@ -151,6 +151,10 @@ class ConnectHardwareForm extends Component {
               this.props.defaultHdPaths[HardwareDeviceNames.qr],
             );
           }
+        })
+        .catch((e) => {
+          const errorMessage = typeof e === 'string' ? e : e.message;
+          this.setState({ error: errorMessage });
         });
     }
   }
