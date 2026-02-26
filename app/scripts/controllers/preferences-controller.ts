@@ -67,10 +67,7 @@ export type PreferencesControllerEvents = PreferencesControllerStateChangeEvent;
  */
 export type AllowedActions =
   | AccountsControllerGetAccountByAddressAction
-  | AccountsControllerSetAccountNameAction
-  | AccountsControllerGetSelectedAccountAction
-  | AccountsControllerSetSelectedAccountAction
-  | NetworkControllerGetStateAction;
+  | AccountsControllerSetAccountNameAction;
 
 /**
  * Events that this controller is allowed to subscribe.
