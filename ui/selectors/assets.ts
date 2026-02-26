@@ -55,6 +55,7 @@ import { isZeroAmount } from '../helpers/utils/number-utils';
 import { getNonTestNetworks } from '../../shared/modules/selectors/networks';
 import {
   getAccountTrackerControllerAccountsByChainId,
+  getTokenBalancesControllerTokenBalances,
   getTokensControllerAllIgnoredTokens,
   getTokensControllerAllTokens,
 } from '../../shared/modules/selectors/assets-migration';
@@ -1421,7 +1422,7 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     internalAccounts: metamask.internalAccounts,
     allTokens: getTokensControllerAllTokens({ metamask }),
     allIgnoredTokens: getTokensControllerAllIgnoredTokens({ metamask }),
-    tokenBalances: metamask.tokenBalances,
+    tokenBalances: getTokenBalancesControllerTokenBalances({ metamask }),
     marketData: metamask.marketData,
     currencyRates: metamask.currencyRates,
     currentCurrency: metamask.currentCurrency,
