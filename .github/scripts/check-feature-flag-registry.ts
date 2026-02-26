@@ -1,6 +1,5 @@
 // Feature Flag Registry Check — scans PR diffs for feature flag references
 // and verifies they exist in the registry. Fails if unregistered flags found.
-// Usage: yarn tsx .github/scripts/check-feature-flag-registry.ts [base-branch]
 
 import { execFileSync } from 'child_process';
 import * as path from 'path';
@@ -263,10 +262,7 @@ function isScannableFile(filePath: string): boolean {
   return SCAN_DIRECTORIES.some((dir) => filePath.startsWith(dir));
 }
 
-/**
- * Checks which flags have no remaining references in the codebase.
- * Uses `git grep` for fast searching across tracked files.
- */
+/** Checks which flags have no remaining references in the codebase. */
 function findOrphanedFlags(flagNames: string[]): string[] {
   const orphaned: string[] = [];
 
@@ -321,7 +317,7 @@ function parseDiff(diff: string): DiffResult {
       lastWasAdded = false;
     } else if (
       line.startsWith('+') &&
-      !line.startsWith('+++') &&
+      !line.startsWith('+++ ') &&
       currentFile
     ) {
       const chunks = added.get(currentFile)!;
@@ -332,7 +328,7 @@ function parseDiff(diff: string): DiffResult {
       lastWasAdded = true;
     } else if (
       line.startsWith('-') &&
-      !line.startsWith('---') &&
+      !line.startsWith('--- ') &&
       currentFile
     ) {
       removed.get(currentFile)?.push(line.slice(1));
@@ -529,7 +525,6 @@ function isLikelyFlagName(name: string): boolean {
   return true;
 }
 
-// Strips inline // and block comments that appear outside string literals.
 function stripInlineComments(line: string): string {
   let result = '';
   let inSingle = false;
@@ -593,7 +588,6 @@ function stripInlineComments(line: string): string {
   return result;
 }
 
-/** Finds the closing `/` of a regex literal, handling `\/` and `[/]`. Returns -1 if not found. */
 function findRegexClose(line: string, start: number): number {
   let inCharClass = false;
   for (let k = start; k < line.length; k++) {
@@ -610,8 +604,7 @@ function findRegexClose(line: string, start: number): number {
   return -1;
 }
 
-// Single-pass string processor that handles all quote types correctly,
-// avoiding cross-contamination (e.g. apostrophe inside double-quoted string).
+// Single-pass string processor: strips or masks string literal contents.
 // Template literals with ${} expressions are left intact.
 function processStrings(line: string, mode: 'strip' | 'mask'): string {
   let result = '';
