@@ -60,8 +60,30 @@ import {
 } from '../../components/app/perps/order-entry';
 import {
   PERPS_TOAST_KEYS,
+  type PerpsToastKey,
   usePerpsToast,
 } from '../../components/app/perps/perps-toast';
+
+const ORDER_MODE_TOAST_KEYS: Record<
+  OrderMode,
+  {
+    inProgress: PerpsToastKey;
+    failed: PerpsToastKey;
+  }
+> = {
+  new: {
+    inProgress: PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
+    failed: PERPS_TOAST_KEYS.ORDER_FAILED,
+  },
+  modify: {
+    inProgress: PERPS_TOAST_KEYS.UPDATE_IN_PROGRESS,
+    failed: PERPS_TOAST_KEYS.UPDATE_FAILED,
+  },
+  close: {
+    inProgress: PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS,
+    failed: PERPS_TOAST_KEYS.CLOSE_FAILED,
+  },
+};
 
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
@@ -353,14 +375,8 @@ const PerpsOrderEntryPage: React.FC = () => {
 
     setIsSubmitting(true);
     setSubmitError(null);
-    let inProgressKey = PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS;
-    if (orderMode === 'close') {
-      inProgressKey = PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS;
-    } else if (orderMode === 'modify') {
-      inProgressKey = PERPS_TOAST_KEYS.UPDATE_IN_PROGRESS;
-    }
     replacePerpsToastByKey({
-      key: inProgressKey,
+      key: ORDER_MODE_TOAST_KEYS[orderMode].inProgress,
     });
 
     try {
@@ -435,14 +451,8 @@ const PerpsOrderEntryPage: React.FC = () => {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
       setSubmitError(errorMessage);
-      let failedKey = PERPS_TOAST_KEYS.ORDER_FAILED;
-      if (orderMode === 'close') {
-        failedKey = PERPS_TOAST_KEYS.CLOSE_FAILED;
-      } else if (orderMode === 'modify') {
-        failedKey = PERPS_TOAST_KEYS.UPDATE_FAILED;
-      }
       replacePerpsToastByKey({
-        key: failedKey,
+        key: ORDER_MODE_TOAST_KEYS[orderMode].failed,
         description: errorMessage,
       });
     } finally {
