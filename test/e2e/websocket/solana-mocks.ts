@@ -6,6 +6,7 @@ import {
 } from '../tests/solana/mocks/websocketDefaultMocks';
 import type { WebSocketServiceConfig } from './registry';
 import type LocalWebSocketServer from './server';
+import { WEBSOCKET_SERVICES } from './constants';
 
 export const SOLANA_WS_PORT = 8088;
 
@@ -90,7 +91,7 @@ async function setupSolanaWebsocketMocks(
 }
 
 export const solanaWebSocketConfig: WebSocketServiceConfig = {
-  name: 'solana',
+  name: WEBSOCKET_SERVICES.solana,
   port: SOLANA_WS_PORT,
   setup: setupSolanaWebsocketMocks,
 };

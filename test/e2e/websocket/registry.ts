@@ -19,11 +19,14 @@ export type WebSocketServiceConfig = {
   name: string;
   port: number;
   setup: WebSocketSetupFn;
+  /** Optional cleanup function called during stopAll to reset module-level state. */
+  onCleanup?: () => void;
 };
 
 type WebSocketEntry = {
   port: number;
   setupFn: WebSocketSetupFn;
+  onCleanup?: () => void;
   server: LocalWebSocketServer | null;
 };
 
@@ -55,6 +58,7 @@ class WebSocketRegistry {
     WebSocketRegistry.entries.set(config.name, {
       port: config.port,
       setupFn: config.setup,
+      onCleanup: config.onCleanup,
       server: null,
     });
   }
@@ -97,6 +101,9 @@ class WebSocketRegistry {
 
     const allValues = Array.from(WebSocketRegistry.entries.values());
     for (const entry of allValues) {
+      if (entry.onCleanup) {
+        entry.onCleanup();
+      }
       if (entry.server) {
         cleanupPromises.push(
           entry.server.stopAndCleanup().finally(() => {

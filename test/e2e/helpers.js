@@ -24,6 +24,7 @@ const { solanaWebSocketConfig } = require('./websocket/solana-mocks');
 const {
   accountActivityWebSocketConfig,
 } = require('./websocket/account-activity-mocks');
+const { WEBSOCKET_SERVICES } = require('./websocket/constants');
 
 // Register each WebSocket service explicitly.
 WebSocketRegistry.register(solanaWebSocketConfig);
@@ -321,8 +322,10 @@ async function withFixtures(options, testSuite) {
 
     // Start all registered WebSocket servers and apply mocks
     await WebSocketRegistry.startAll({
-      solana: { mocks: solanaWebSocketSpecificMocks },
-      accountActivity: { mocks: accountActivityWebSocketSpecificMocks },
+      [WEBSOCKET_SERVICES.solana]: { mocks: solanaWebSocketSpecificMocks },
+      [WEBSOCKET_SERVICES.accountActivity]: {
+        mocks: accountActivityWebSocketSpecificMocks,
+      },
     });
 
     // Decide between the regular setupMocking and the passThrough version

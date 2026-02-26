@@ -3,6 +3,7 @@ import { WebSocket } from 'ws';
 import type { WebSocketMessageMock } from '../tests/solana/mocks/websocketDefaultMocks';
 import type { WebSocketServiceConfig } from './registry';
 import type LocalWebSocketServer from './server';
+import { WEBSOCKET_SERVICES } from './constants';
 
 export const ACCOUNT_ACTIVITY_WS_PORT = 8089;
 
@@ -43,7 +44,7 @@ export function waitForAccountActivitySubscription(
 
 /**
  * Reset module-level state between tests.
- * Called automatically by the registry during stopAll via server cleanup.
+ * Called automatically by the registry during stopAll via the onCleanup hook.
  */
 export function resetAccountActivityMockState(): void {
   subscriptionWaiters = [];
@@ -305,7 +306,8 @@ export function createBalanceUpdateNotification(options: {
 }
 
 export const accountActivityWebSocketConfig: WebSocketServiceConfig = {
-  name: 'accountActivity',
+  name: WEBSOCKET_SERVICES.accountActivity,
   port: ACCOUNT_ACTIVITY_WS_PORT,
   setup: setupAccountActivityWebsocketMocks,
+  onCleanup: resetAccountActivityMockState,
 };

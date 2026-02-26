@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
@@ -7,6 +6,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import WebSocketRegistry from '../../websocket/registry';
+import { WEBSOCKET_SERVICES } from '../../websocket/constants';
 
 describe('Multichain account Web Socket', function (this: Suite) {
   it('a websocket connection is open when MetaMask full view is open', async function () {
@@ -88,7 +88,9 @@ describe('Multichain account Web Socket', function (this: Suite) {
         await driver.switchToWindowWithTitle('MetaMask');
         await driver.closeWindow();
 
-        await waitForWebsocketConnections(driver, 1, ['solana']);
+        await waitForWebsocketConnections(driver, 1, [
+          WEBSOCKET_SERVICES.solana,
+        ]);
 
         // The websocket close grace period is 5 minutes, we can't wait for this long to check if it's closed
       },
@@ -99,33 +101,20 @@ describe('Multichain account Web Socket', function (this: Suite) {
 async function waitForWebsocketConnections(
   driver: Driver,
   expectedCount: number,
-  expectedServices: string[] = ['solana', 'accountActivity'],
+  expectedServices: string[] = [
+    WEBSOCKET_SERVICES.solana,
+    WEBSOCKET_SERVICES.accountActivity,
+  ],
 ) {
-  let connectionCount: number | undefined;
-  let openConnections: { name: string; port: number; count: number }[] = [];
   const sortedExpected = [...expectedServices].sort();
 
   await driver.wait(async () => {
-    openConnections = WebSocketRegistry.getOpenConnections();
-    connectionCount = WebSocketRegistry.getTotalConnectionCount();
+    const openConnections = WebSocketRegistry.getOpenConnections();
+    const totalCount = WebSocketRegistry.getTotalConnectionCount();
     const openNames = openConnections.map((c) => c.name).sort();
     return (
-      connectionCount === expectedCount &&
+      totalCount === expectedCount &&
       JSON.stringify(openNames) === JSON.stringify(sortedExpected)
     );
   }, 30000);
-
-  assert.equal(
-    connectionCount,
-    expectedCount,
-    `Expected ${expectedCount} websocket connections, but found ${connectionCount}. ` +
-      `Open: ${JSON.stringify(openConnections)}`,
-  );
-
-  const openNames = openConnections.map((c) => c.name).sort();
-  assert.deepEqual(
-    openNames,
-    sortedExpected,
-    `Expected services ${JSON.stringify(expectedServices)} but found ${JSON.stringify(openNames)}`,
-  );
 }

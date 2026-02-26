@@ -4,11 +4,13 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import {
   createBalanceUpdateNotification,
   waitForAccountActivitySubscription,
 } from '../../websocket/account-activity-mocks';
 import WebSocketRegistry from '../../websocket/registry';
+import { WEBSOCKET_SERVICES } from '../../websocket/constants';
 
 describe('Add hide token', function () {
   const smartContract = SMART_CONTRACTS.HST;
@@ -67,7 +69,7 @@ describe('Add hide token', function () {
   });
 
   it('updates token balance when a WebSocket balance update is received', async function () {
-    const account = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+    const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
     const tokenAddress = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
     const chainId = 1337;
 
@@ -113,7 +115,9 @@ describe('Add hide token', function () {
         smartContract,
       },
       async ({ driver, localNodes }) => {
-        const wsServer = WebSocketRegistry.getServer('accountActivity');
+        const wsServer = WebSocketRegistry.getServer(
+          WEBSOCKET_SERVICES.accountActivity,
+        );
 
         // Register the subscription waiter BEFORE login so we don't miss
         // the subscribe handshake if auth completes quickly.

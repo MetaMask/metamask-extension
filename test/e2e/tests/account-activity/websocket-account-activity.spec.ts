@@ -8,33 +8,8 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import WebSocketRegistry from '../../websocket/registry';
 import { ACCOUNT_ACTIVITY_WS_PORT } from '../../websocket/account-activity-mocks';
-
-// Helper that sends a message and resolves with the first response from
-// the mock handler (the dedicated server has no echo behaviour).
-function sendAndReceive(
-  ws: WebSocket,
-  message: Record<string, unknown>,
-  timeoutMs = 5000,
-): Promise<Record<string, unknown>> {
-  const messageJson = JSON.stringify(message);
-
-  return new Promise((resolve, reject) => {
-    const timeout = setTimeout(
-      () => reject(new Error('Timed out waiting for WebSocket response')),
-      timeoutMs,
-    );
-
-    const handler = (data: { toString(): string }) => {
-      const raw = data.toString();
-      ws.off('message', handler);
-      clearTimeout(timeout);
-      resolve(JSON.parse(raw) as Record<string, unknown>);
-    };
-
-    ws.on('message', handler);
-    ws.send(messageJson);
-  });
-}
+import { WEBSOCKET_SERVICES } from '../../websocket/constants';
+import { sendAndReceive, waitForNextMessage } from '../../websocket/utils';
 
 describe('AccountActivity WebSocket Mock Infrastructure', function (this: Suite) {
   it('mock server responds to subscribe with correct requestId correlation', async function () {
@@ -46,7 +21,9 @@ describe('AccountActivity WebSocket Mock Infrastructure', function (this: Suite)
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
-        const serverInstance = WebSocketRegistry.getServer('accountActivity');
+        const serverInstance = WebSocketRegistry.getServer(
+          WEBSOCKET_SERVICES.accountActivity,
+        );
         assert.ok(
           serverInstance.getServer(),
           'AccountActivity WebSocket server should be running',
@@ -54,23 +31,7 @@ describe('AccountActivity WebSocket Mock Infrastructure', function (this: Suite)
 
         const ws = new WebSocket(`ws://localhost:${ACCOUNT_ACTIVITY_WS_PORT}`);
 
-        const sessionMsg = await new Promise<Record<string, unknown>>(
-          (resolve, reject) => {
-            const timeout = setTimeout(
-              () =>
-                reject(
-                  new Error('Timed out waiting for session-created message'),
-                ),
-              5000,
-            );
-
-            ws.on('error', reject);
-            ws.once('message', (data) => {
-              clearTimeout(timeout);
-              resolve(JSON.parse(data.toString()) as Record<string, unknown>);
-            });
-          },
-        );
+        const sessionMsg = await waitForNextMessage(ws);
 
         assert.equal(
           sessionMsg.event,
@@ -110,20 +71,7 @@ describe('AccountActivity WebSocket Mock Infrastructure', function (this: Suite)
           'Response should list succeeded channels',
         );
 
-        const systemNotification = await new Promise<Record<string, unknown>>(
-          (resolve, reject) => {
-            const timeout = setTimeout(
-              () =>
-                reject(new Error('Timed out waiting for system notification')),
-              5000,
-            );
-
-            ws.once('message', (data) => {
-              clearTimeout(timeout);
-              resolve(JSON.parse(data.toString()) as Record<string, unknown>);
-            });
-          },
-        );
+        const systemNotification = await waitForNextMessage(ws);
 
         assert.equal(
           systemNotification.event,
@@ -166,8 +114,6 @@ describe('AccountActivity WebSocket Mock Infrastructure', function (this: Suite)
           unsubRequestId,
           'Unsubscribe response should echo back requestId',
         );
-
-        ws.close();
       },
     );
   });

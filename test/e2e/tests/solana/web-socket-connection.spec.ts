@@ -1,13 +1,10 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
+import WebSocketRegistry from '../../websocket/registry';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import WebSocketRegistry from '../../websocket/registry';
-
-// These tests fails with BIP44 as it's no longer possible to add a Solana account
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Solana Web Socket', function (this: Suite) {
+import { WEBSOCKET_SERVICES } from '../../websocket/constants';
 
 async function waitForWebsocketConnections(
   driver: Driver,
@@ -16,7 +13,7 @@ async function waitForWebsocketConnections(
   let connectionCount;
   await driver.wait(async () => {
     connectionCount =
-      WebSocketRegistry.getServer('solana').getWebsocketConnectionCount();
+      WebSocketRegistry.getServer(WEBSOCKET_SERVICES.solana).getWebsocketConnectionCount();
     return connectionCount === expectedCount;
   }, 10000);
 }
