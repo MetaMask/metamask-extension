@@ -5239,9 +5239,6 @@
   "perpsAddToFavorites": {
     "message": "Ajouter aux favoris"
   },
-  "perpsAsk": {
-    "message": "Cours vendeur"
-  },
   "perpsAutoClose": {
     "message": "Fermeture automatique"
   },
@@ -5252,14 +5249,8 @@
   "perpsAvailableBalance": {
     "message": "Solde disponible"
   },
-  "perpsBid": {
-    "message": "Cours acheteur"
-  },
   "perpsCancelAllOrders": {
     "message": "Tout annuler"
-  },
-  "perpsClose": {
-    "message": "Fermer"
   },
   "perpsCloseAll": {
     "message": "Tout fermer"
@@ -5377,9 +5368,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Prix de liquidation"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Prix de liquidation estimé"
   },
   "perpsLong": {
     "message": "Acheter"

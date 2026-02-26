@@ -3,6 +3,7 @@ import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { mockPositions, mockAccountState } from '../mocks';
 import { EditMarginExpandable } from './edit-margin-expandable';
 
@@ -55,10 +56,14 @@ describe('EditMarginExpandable', () => {
         mockStore,
       );
 
-      const addMarginElements = screen.getAllByText('Add Margin');
+      const addMarginElements = screen.getAllByText(
+        messages.perpsAddMargin.message,
+      );
       // Mode toggle tab + confirm button both show 'Add Margin'
       expect(addMarginElements.length).toBeGreaterThanOrEqual(2);
-      expect(screen.getByText('Remove Margin')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsRemoveMargin.message),
+      ).toBeInTheDocument();
     });
 
     it('renders amount input and preset buttons when expanded', () => {
@@ -70,7 +75,7 @@ describe('EditMarginExpandable', () => {
       expect(screen.getByPlaceholderText('0.00')).toBeInTheDocument();
       expect(screen.getByText('25%')).toBeInTheDocument();
       expect(screen.getByText('50%')).toBeInTheDocument();
-      expect(screen.getByText('Max')).toBeInTheDocument();
+      expect(screen.getByText(messages.max.message)).toBeInTheDocument();
     });
 
     it('renders confirm button with Add Margin when in add mode', () => {
@@ -89,7 +94,9 @@ describe('EditMarginExpandable', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Available balance')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsAvailableBalance.message),
+      ).toBeInTheDocument();
     });
 
     it('shows Max removable when Remove is selected', () => {
@@ -98,9 +105,11 @@ describe('EditMarginExpandable', () => {
         mockStore,
       );
 
-      fireEvent.click(screen.getByText('Remove Margin'));
+      fireEvent.click(screen.getByText(messages.perpsRemoveMargin.message));
 
-      expect(screen.getByText('Max removable')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsMaxRemovable.message),
+      ).toBeInTheDocument();
     });
   });
 
@@ -111,9 +120,11 @@ describe('EditMarginExpandable', () => {
         mockStore,
       );
 
-      fireEvent.click(screen.getByText('Remove Margin'));
+      fireEvent.click(screen.getByText(messages.perpsRemoveMargin.message));
 
-      expect(screen.getByText('Max removable')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsMaxRemovable.message),
+      ).toBeInTheDocument();
     });
 
     it('switches back to Add mode when Add Margin is clicked', () => {
@@ -122,10 +133,12 @@ describe('EditMarginExpandable', () => {
         mockStore,
       );
 
-      fireEvent.click(screen.getByText('Remove Margin'));
-      fireEvent.click(screen.getByText('Add Margin'));
+      fireEvent.click(screen.getByText(messages.perpsRemoveMargin.message));
+      fireEvent.click(screen.getByText(messages.perpsAddMargin.message));
 
-      expect(screen.getByText('Available balance')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsAvailableBalance.message),
+      ).toBeInTheDocument();
     });
   });
 

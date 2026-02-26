@@ -49,7 +49,7 @@ describe('./utils/config.ts', () => {
       assert.strictEqual(variables.get('METAMASK_VERSION'), version);
       assert.strictEqual(variables.get('IN_TEST'), args.test);
       assert.strictEqual(variables.get('METAMASK_BUILD_TYPE'), args.type);
-      assert.strictEqual(variables.get('NODE_ENV'), args.env);
+      assert.strictEqual(variables.get('NODE_ENV'), args.mode);
 
       // PPOM_URI is unique in that it is code, and has not been JSON.stringified, so we check it separately:
       assert.strictEqual(
@@ -95,7 +95,7 @@ describe('./utils/config.ts', () => {
       mockRc({ SEGMENT_BETA_WRITE_KEY: '.' });
       const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv(
-        ['--type', 'beta', '--test', '--env', 'production'],
+        ['--type', 'beta', '--test', '--mode', 'production'],
         buildTypes,
       );
       const { variables } = config.getVariables(args, buildTypes);
@@ -105,7 +105,7 @@ describe('./utils/config.ts', () => {
       );
       assert.strictEqual(variables.get('IN_TEST'), args.test);
       assert.strictEqual(variables.get('METAMASK_BUILD_TYPE'), args.type);
-      assert.strictEqual(variables.get('NODE_ENV'), args.env);
+      assert.strictEqual(variables.get('NODE_ENV'), args.mode);
     });
 
     it("should handle true/false/null/'' in rc", () => {
@@ -160,7 +160,7 @@ describe('./utils/config.ts', () => {
 
       const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv(
-        ['--targetEnvironment', 'production', '--validateEnv'],
+        ['--env', 'production', '--validateEnv'],
         buildTypes,
       );
 
@@ -190,7 +190,7 @@ describe('./utils/config.ts', () => {
 
       const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv(
-        ['--targetEnvironment', 'production', '--validateEnv', 'false'],
+        ['--env', 'production', '--validateEnv', 'false'],
         buildTypes,
       );
 
@@ -209,7 +209,7 @@ describe('./utils/config.ts', () => {
       mockRc(rcVars);
 
       const { args } = parseArgv(
-        ['--targetEnvironment', 'production', '--validateEnv'],
+        ['--env', 'production', '--validateEnv'],
         buildTypes,
       );
 
@@ -223,10 +223,7 @@ describe('./utils/config.ts', () => {
       const { args: devArgs } = parseArgv([], buildTypes);
       assert.doesNotThrow(() => config.getVariables(devArgs, buildTypes));
 
-      const { args: stagingArgs } = parseArgv(
-        ['--targetEnvironment', 'staging'],
-        buildTypes,
-      );
+      const { args: stagingArgs } = parseArgv(['--env', 'staging'], buildTypes);
       assert.doesNotThrow(() => config.getVariables(stagingArgs, buildTypes));
     });
   });

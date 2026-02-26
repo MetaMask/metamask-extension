@@ -5239,9 +5239,6 @@
   "perpsAddToFavorites": {
     "message": "Tambahkan ke favorit"
   },
-  "perpsAsk": {
-    "message": "Permintaan"
-  },
   "perpsAutoClose": {
     "message": "Tutup otomatis"
   },
@@ -5252,14 +5249,8 @@
   "perpsAvailableBalance": {
     "message": "Saldo tersedia"
   },
-  "perpsBid": {
-    "message": "Penawaran"
-  },
   "perpsCancelAllOrders": {
     "message": "Batalkan semua"
-  },
-  "perpsClose": {
-    "message": "Tutup"
   },
   "perpsCloseAll": {
     "message": "Tutup semua"
@@ -5377,9 +5368,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Harga likuidasi"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Estimasi Harga Likuidasi"
   },
   "perpsLong": {
     "message": "Long"
