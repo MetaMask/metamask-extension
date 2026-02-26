@@ -1202,7 +1202,7 @@ function emitDappViewedMetricEvent(origin) {
     'AccountsController:getState',
   );
   const numberOfTotalAccounts = Object.keys(
-    Object.keys(accountsState.internalAccounts.accounts),
+    accountsState.internalAccounts.accounts,
   ).length;
 
   controller.metaMetricsController.trackEvent(
