@@ -41,8 +41,13 @@ export const RewardsControllerInit: ControllerInitFunction<
 > = (request) => {
   const { controllerMessenger, persistedState, initMessenger } = request;
 
-  const rewardsControllerState =
-    persistedState.RewardsController ?? defaultRewardsControllerState;
+  const rewardsControllerState = {
+    ...(persistedState.RewardsController ?? defaultRewardsControllerState),
+    // Always start with empty tokens — this field is not persisted, and any
+    // previously-stored tokens (written before the persist:false migration)
+    // must not be rehydrated.
+    rewardsSubscriptionTokens: {},
+  };
 
   const controller = new RewardsController({
     messenger: controllerMessenger,
