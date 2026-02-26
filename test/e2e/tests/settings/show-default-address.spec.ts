@@ -6,12 +6,17 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
+const SHOW_DEFAULT_ADDRESS_FLAG = {
+  remoteFeatureFlags: { extensionUxDefaultAddress: true },
+};
+
 describe('Show default address', function (this: Suite) {
   it('displays Show default address section on General settings', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        manifestFlags: SHOW_DEFAULT_ADDRESS_FLAG,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -31,6 +36,7 @@ describe('Show default address', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        manifestFlags: SHOW_DEFAULT_ADDRESS_FLAG,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -48,6 +54,7 @@ describe('Show default address', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        manifestFlags: SHOW_DEFAULT_ADDRESS_FLAG,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -63,6 +70,28 @@ describe('Show default address', function (this: Suite) {
         // Check on home page that default address is present
         await homePage.checkPageIsLoaded();
         await homePage.checkDefaultAddressIsDisplayed();
+      },
+    );
+  });
+
+  it('does not display Show default address section when feature flag is off', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        manifestFlags: {
+          remoteFeatureFlags: { extensionUxDefaultAddress: false },
+        },
+      },
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
+
+        // Navigate to settings and check "show default address" section is not displayed
+        const homePage = new HomePage(driver);
+        await homePage.headerNavbar.openSettingsPage();
+        const generalSettings = new GeneralSettings(driver);
+        await generalSettings.checkPageIsLoaded();
+        await generalSettings.checkShowDefaultAddressSectionIsNotDisplayed();
       },
     );
   });
