@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { PREPARE_SWAP_ROUTE } from '../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../store/background-connection';
@@ -106,7 +107,7 @@ describe('Bridge', () => {
       PREPARE_SWAP_ROUTE,
     );
 
-    expect(getByText('Swap')).toBeInTheDocument();
+    expect(getByText(messages.swap.message)).toBeInTheDocument();
     expect(container).toMatchSnapshot();
     expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
   });

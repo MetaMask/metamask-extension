@@ -28,6 +28,8 @@
       "fullScreenGasPollTokens": "object",
       "hasShownMultichainAccountsIntroModal": "boolean",
       "isRampCardClosed": false,
+      "musdConversionDismissedCtaKeys": "object",
+      "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "nftsDropdownState": {},

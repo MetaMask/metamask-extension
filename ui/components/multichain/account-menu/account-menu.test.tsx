@@ -1,13 +1,11 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { merge } from 'lodash';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { fireEvent, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import messages from '../../../../app/_locales/en/messages.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
@@ -147,7 +145,7 @@ describe('AccountMenu', () => {
   it('displays important controls', () => {
     const { getByText } = render();
 
-    expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
+    expect(getByText(messages.addImportAccount.message)).toBeInTheDocument();
     expect(document.querySelector('[aria-label="Back"]')).toStrictEqual(null);
   });
 
@@ -162,20 +160,24 @@ describe('AccountMenu', () => {
 
     // Click the button to ensure the options and close button display
     button[0].click();
-    expect(getByText('Ethereum account')).toBeInTheDocument();
-    expect(getByText('Private Key')).toBeInTheDocument();
-    expect(getByText('Hardware wallet')).toBeInTheDocument();
+    expect(
+      getByText(messages.addNewEthereumAccountLabel.message),
+    ).toBeInTheDocument();
+    expect(getByText(messages.importPrivateKey.message)).toBeInTheDocument();
+    expect(
+      getByText(messages.addHardwareWalletLabel.message),
+    ).toBeInTheDocument();
     const header = document.querySelector('header') as Element;
-    expect(header.innerHTML).toContain('Add account');
+    expect(header.innerHTML).toContain(messages.addAccount.message);
     expect(
       document.querySelector('button[aria-label="Close"]'),
     ).toBeInTheDocument();
 
-    const backButton = getByLabelText('Back');
+    const backButton = getByLabelText(messages.back.message);
     expect(backButton).toBeInTheDocument();
     backButton.click();
 
-    expect(getByText('Select an account')).toBeInTheDocument();
+    expect(getByText(messages.selectAnAccount.message)).toBeInTheDocument();
   });
 
   it('shows the account creation UI when Add Account is clicked', () => {
@@ -184,17 +186,22 @@ describe('AccountMenu', () => {
     const button = getByTestId('multichain-account-menu-popover-action-button');
     button.click();
 
-    fireEvent.click(getByText('Ethereum account'));
+    fireEvent.click(getByText(messages.addNewEthereumAccountLabel.message));
     const header = document.querySelector('header') as Element;
-    expect(header.innerHTML).toContain('Add Ethereum account');
+    expect(header.innerHTML).toContain(
+      messages.addAccountFromNetwork.message.replace(
+        '$1',
+        messages.networkNameEthereum.message,
+      ),
+    );
     const addAccountButton = document.querySelector(
       '[data-testid="submit-add-account-with-name"]',
     );
     expect(addAccountButton).toBeInTheDocument();
-    expect(getByText('Cancel')).toBeInTheDocument();
+    expect(getByText(messages.cancel.message)).toBeInTheDocument();
 
-    fireEvent.click(getByText('Cancel'));
-    expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
+    fireEvent.click(getByText(messages.cancel.message));
+    expect(getByText(messages.addImportAccount.message)).toBeInTheDocument();
   });
 
   it('shows the account import UI when Import Private Key is clicked', () => {
@@ -203,12 +210,12 @@ describe('AccountMenu', () => {
     const button = getByTestId('multichain-account-menu-popover-action-button');
     button.click();
 
-    fireEvent.click(getByText('Private Key'));
-    expect(getByText('Import')).toBeInTheDocument();
-    expect(getByText('Cancel')).toBeInTheDocument();
+    fireEvent.click(getByText(messages.importPrivateKey.message));
+    expect(getByText(messages.import.message)).toBeInTheDocument();
+    expect(getByText(messages.cancel.message)).toBeInTheDocument();
 
-    fireEvent.click(getByText('Cancel'));
-    expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
+    fireEvent.click(getByText(messages.cancel.message));
+    expect(getByText(messages.addImportAccount.message)).toBeInTheDocument();
   });
 
   it('navigates to hardware wallet connection screen when clicked', () => {
@@ -217,7 +224,7 @@ describe('AccountMenu', () => {
     const button = getByTestId('multichain-account-menu-popover-action-button');
     button.click();
 
-    fireEvent.click(getByText('Hardware wallet'));
+    fireEvent.click(getByText(messages.addHardwareWalletLabel.message));
     expect(mockUseNavigate).toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
   });
 
@@ -476,6 +483,8 @@ describe('AccountMenu', () => {
     );
     actionButton.click();
 
-    expect(getByText('Manage institutional wallets')).toBeInTheDocument();
+    expect(
+      getByText(messages.manageInstitutionalWallets.message),
+    ).toBeInTheDocument();
   });
 });
