@@ -18,7 +18,7 @@ const mockAccount = (keyringType: string): InternalAccount =>
       keyring: { type: keyringType },
       importTime: Date.now(),
     },
-  } as InternalAccount);
+  }) as InternalAccount;
 
 describe('isHardwareAccount', () => {
   it('returns true for a Ledger hardware wallet', () => {
