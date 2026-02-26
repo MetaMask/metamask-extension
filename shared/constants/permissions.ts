@@ -47,11 +47,9 @@ export const RestrictedMethods = Object.freeze({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   wallet_snap: 'wallet_snap',
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   snap_manageAccounts: 'snap_manageAccounts',
-  ///: END:ONLY_INCLUDE_IF
 } as const);
 
 // ConnectionPermission is pseudo permission used to make possible

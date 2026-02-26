@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
@@ -78,6 +79,8 @@ describe('MultichainAccountNetworkGroupWithDefaultAddress', () => {
       store,
     );
 
-    expect(screen.getByText('Address copied')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.addressCopied.message),
+    ).toBeInTheDocument();
   });
 });
