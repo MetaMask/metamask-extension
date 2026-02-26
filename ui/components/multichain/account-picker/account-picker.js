@@ -27,6 +27,7 @@ import { PreferredAvatar } from '../../app/preferred-avatar';
 
 const AccountMenuStyle = { height: 'auto' };
 
+// delete
 export const AccountPicker = ({
   address,
   name,
