@@ -259,23 +259,25 @@ function RevealSeedPage() {
     [trackEvent, hdEntropyIndex, handleSubmit],
   );
 
+  const handleQuizGetStarted = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.SrpRevealStarted,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        key_type: MetaMetricsEventKeyType.Srp,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: hdEntropyIndex,
+      },
+    });
+    setScreen(QUIZ_QUESTIONS_SCREEN);
+  }, [trackEvent, hdEntropyIndex]);
+
   const renderContent = () => {
     if (screen === QUIZ_INTRODUCTION_SCREEN) {
       return (
         <QuizIntroduction
-          onGetStarted={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Keys,
-              event: MetaMetricsEventName.SrpRevealStarted,
-              properties: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                key_type: MetaMetricsEventKeyType.Srp,
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                hd_entropy_index: hdEntropyIndex,
-              },
-            });
-            setScreen(QUIZ_QUESTIONS_SCREEN);
-          }}
+          onGetStarted={handleQuizGetStarted}
           onLearnMore={openSupportArticle}
         />
       );
