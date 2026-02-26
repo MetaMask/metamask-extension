@@ -1,9 +1,7 @@
 import {
   AccountsControllerChangeEvent,
   AccountsControllerGetAccountByAddressAction,
-  AccountsControllerGetSelectedAccountAction,
   AccountsControllerSetAccountNameAction,
-  AccountsControllerSetSelectedAccountAction,
 } from '@metamask/accounts-controller';
 import { Json, Hex } from '@metamask/utils';
 import {
@@ -13,7 +11,6 @@ import {
   StateMetadata,
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
-import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import { type PreferencesState } from '@metamask/preferences-controller';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
