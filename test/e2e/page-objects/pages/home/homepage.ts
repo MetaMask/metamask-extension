@@ -70,6 +70,8 @@ class HomePage {
     testId: 'account-overview__defi-tab',
   };
 
+  private readonly overviewBalanceSection = '.wallet-overview__balance';
+
   private readonly popoverBackground = '.popover-bg';
 
   private readonly portfolioLink = '[data-testid="portfolio-link"]';
@@ -131,8 +133,8 @@ class HomePage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.sendButton,
         this.activityTab,
+        this.overviewBalanceSection,
         this.tokensTab,
       ]);
     } catch (e) {
