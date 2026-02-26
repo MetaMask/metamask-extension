@@ -6,59 +6,23 @@ import {
 } from '../../../../store/actions';
 import { Asset, AssetStandard } from '../../types/send';
 
-const MAX_SAFE_INTEGER_LIMIT = BigInt(Number.MAX_SAFE_INTEGER);
-const MIN_SAFE_INTEGER_LIMIT = BigInt(Number.MIN_SAFE_INTEGER);
-
-const parseHexLikeString = (balance: string): bigint => {
-  const normalizedBalance = balance.trim();
-
-  if (!normalizedBalance) {
-    return 0n;
+const getBalanceValue = (balance: string | { words: string }) => {
+  let balanceStr: string;
+  if (typeof balance === 'string') {
+    balanceStr = parseInt(balance, 16).toString();
+  } else if (balance && typeof balance === 'object' && 'words' in balance) {
+    const base = 2n ** 26n;
+    const words = (balance as { words: number[] }).words;
+    const value = words.reduce(
+      (accumulator, word, index) =>
+        accumulator + BigInt(word) * (base ** BigInt(index)),
+      0n,
+    );
+    balanceStr = value.toString(10);
+  } else {
+    balanceStr = '0';
   }
-
-  if (
-    normalizedBalance.startsWith('0x') ||
-    normalizedBalance.startsWith('-0x')
-  ) {
-    return BigInt(normalizedBalance);
-  }
-
-  // Keep existing behavior: plain strings are interpreted as hexadecimal.
-  return BigInt(`0x${normalizedBalance}`);
-};
-
-const getBalanceValue = (balance: unknown): number | string => {
-  let parsedBalance = 0n;
-
-  try {
-    if (typeof balance === 'string') {
-      parsedBalance = parseHexLikeString(balance);
-    } else if (
-      balance &&
-      typeof balance === 'object' &&
-      'words' in balance &&
-      Array.isArray(balance.words)
-    ) {
-      const base = 2n ** 26n;
-
-      parsedBalance = balance.words.reduce(
-        (accumulator, word, index) =>
-          accumulator + BigInt(word) * (base ** BigInt(index)),
-        0n,
-      );
-    }
-  } catch {
-    parsedBalance = 0n;
-  }
-
-  if (
-    parsedBalance >= MIN_SAFE_INTEGER_LIMIT &&
-    parsedBalance <= MAX_SAFE_INTEGER_LIMIT
-  ) {
-    return Number(parsedBalance);
-  }
-
-  return parsedBalance.toString(10);
+  return parseInt(balanceStr, 10);
 };
 
 export const useERC1155BalanceChecker = () => {
