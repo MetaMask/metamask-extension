@@ -209,6 +209,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
     getAssetsPrice,
     getAssetPreferences,
     getCustomAssets,
+    getCurrentCurrency,
     getSelectedInternalAccount,
     getEnabledNetworks,
     (state: AggregatedBalanceState) => state.metamask?.accountTree,
@@ -239,6 +240,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
     assetsPrice,
     assetPreferences,
     customAssets,
+    selectedCurrency,
     selectedInternalAccount,
     enabledNetworkMap,
     accountTree,
@@ -257,6 +259,8 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
       assetsPrice,
       assetPreferences,
       customAssets,
+      selectedCurrency: (selectedCurrency ??
+        'usd') as AssetsControllerState['selectedCurrency'],
     };
     const accountTreeState: AccountTreeControllerState | undefined = accountTree
       ? {
