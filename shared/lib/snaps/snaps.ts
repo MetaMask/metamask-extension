@@ -1,6 +1,6 @@
 import { SnapId } from '@metamask/snaps-sdk';
-import { isFlask } from '../build-types';
 
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 /**
  * Whether to force local Snaps to be treated as preinstalled Snaps.
  *
@@ -8,7 +8,8 @@ import { isFlask } from '../build-types';
  * are normally reserved for preinstalled Snaps.
  */
 const FORCE_PREINSTALLED_SNAPS =
-  isFlask() && process.env.FORCE_PREINSTALLED_SNAPS === 'true';
+  process.env.FORCE_PREINSTALLED_SNAPS === 'true';
+///: END:ONLY_INCLUDE_IF
 
 export const PREINSTALLED_SNAPS = [
   'npm:@metamask/message-signing-snap',
@@ -30,12 +31,13 @@ export const PREINSTALLED_SNAPS = [
  * @returns True if Snap is a preinstalled Snap, false otherwise.
  */
 export function isSnapPreinstalled(snapId: SnapId) {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // For development purposes, allow local Snaps to be treated as preinstalled
-  // Snaps if the `FORCE_PREINSTALLED_SNAPS` environment variable is enabled
-  // and this is a Flask build.
+  // Snaps if the `FORCE_PREINSTALLED_SNAPS` environment variable is enabled.
   if (FORCE_PREINSTALLED_SNAPS && snapId.startsWith('local:')) {
     return true;
   }
+  ///: END:ONLY_INCLUDE_IF
 
   return PREINSTALLED_SNAPS.some((snap) => snap === snapId);
 }
