@@ -383,7 +383,6 @@
     "@metamask/solana-wallet-snap": "^2.7.3",
     "@metamask/solana-wallet-standard": "^0.6.0",
     "@metamask/storage-service": "^1.0.0",
-    "@metamask/streams": "^0.4.0",
     "@metamask/subscription-controller": "^6.0.0",
     "@metamask/transaction-controller": "^62.19.0",
     "@metamask/transaction-pay-controller": "^12.2.0",
@@ -764,7 +763,6 @@
     "allowScripts": {
       "$root$": true,
       "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false,
-      "@metamask/streams": false,
       "@metamask/test-dapp-solana>@solana/spl-token>@solana/buffer-layout-utils>bigint-buffer": false,
       "@sentry/cli": true,
       "@storybook/test-runner>@storybook/core-common>esbuild": false,

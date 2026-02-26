@@ -2051,31 +2051,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/captp@npm:^4.4.8":
-  version: 4.4.8
-  resolution: "@endo/captp@npm:4.4.8"
-  dependencies:
-    "@endo/errors": "npm:^1.2.13"
-    "@endo/eventual-send": "npm:^1.3.4"
-    "@endo/marshal": "npm:^1.8.0"
-    "@endo/nat": "npm:^5.1.3"
-    "@endo/pass-style": "npm:^1.6.3"
-    "@endo/promise-kit": "npm:^1.1.13"
-  checksum: 10/7d8711ba100c42447552915c2db53e776778ecc4a5299395173a37d0843883d25c699a3aafeadc884f4206478ab48d3a5a7ec6ad0b3b54eb599257ee5ab70790
-  languageName: node
-  linkType: hard
-
-"@endo/common@npm:^1.2.13":
-  version: 1.2.13
-  resolution: "@endo/common@npm:1.2.13"
-  dependencies:
-    "@endo/errors": "npm:^1.2.13"
-    "@endo/eventual-send": "npm:^1.3.4"
-    "@endo/promise-kit": "npm:^1.1.13"
-  checksum: 10/78f4c7ec6a7cc9ea56071e97be55d156d6ee903b607764182ba9914ab48870757ad44b492ce984f1c35638da5beffbb155874b2552cbc34174b5718966478356
-  languageName: node
-  linkType: hard
-
 "@endo/env-options@npm:^1.1.11":
   version: 1.1.11
   resolution: "@endo/env-options@npm:1.1.11"
@@ -2083,83 +2058,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/errors@npm:^1.2.13":
-  version: 1.2.13
-  resolution: "@endo/errors@npm:1.2.13"
-  dependencies:
-    ses: "npm:^1.14.0"
-  checksum: 10/c001944815e1c294712e0cacb7df51f00ea64d683389a489ccec01bc600d625c47b8ca2f08948c7f1df2b1d224d8f83f041342fcdee84ce91df56cb2c38804bc
-  languageName: node
-  linkType: hard
-
-"@endo/eventual-send@npm:^1.3.4":
-  version: 1.3.4
-  resolution: "@endo/eventual-send@npm:1.3.4"
-  dependencies:
-    "@endo/env-options": "npm:^1.1.11"
-  checksum: 10/7ec81924de0c31c71e8e9fee8512edc28bd12643180495ae594d9cf9ecb554f6742d5ef463db726dc26b2091df558c21c9a0adf00e0c49e80ad2e18cae45ea90
-  languageName: node
-  linkType: hard
-
 "@endo/immutable-arraybuffer@npm:^1.1.2":
   version: 1.1.2
   resolution: "@endo/immutable-arraybuffer@npm:1.1.2"
   checksum: 10/99159e4a04aad1dbe633b54b90f4591ff527c301ff2dc6585b65949e9c98b8942d726a23815470e6e4641c447bc94368cc96282f8fb50fb78f326b670c48cd16
-  languageName: node
-  linkType: hard
-
-"@endo/marshal@npm:^1.8.0":
-  version: 1.8.0
-  resolution: "@endo/marshal@npm:1.8.0"
-  dependencies:
-    "@endo/common": "npm:^1.2.13"
-    "@endo/env-options": "npm:^1.1.11"
-    "@endo/errors": "npm:^1.2.13"
-    "@endo/eventual-send": "npm:^1.3.4"
-    "@endo/nat": "npm:^5.1.3"
-    "@endo/pass-style": "npm:^1.6.3"
-    "@endo/promise-kit": "npm:^1.1.13"
-  checksum: 10/f98c4ad7623bc6c7b6558c7c583a5c2a759421be691ab6d14de19324396fe2330cc128dfa3e5a508fde2d6dac10a6a47c56b07b2869cc5749f7bb22864adc70d
-  languageName: node
-  linkType: hard
-
-"@endo/nat@npm:^5.1.3":
-  version: 5.1.3
-  resolution: "@endo/nat@npm:5.1.3"
-  checksum: 10/825df371ab2afbbc9528db31e1bf98247ec4726286bfb996e0c65b025186614185945456cfc953fe47d93a6267b0e8696f0fc1a40612bace7e7ed038ebeb9180
-  languageName: node
-  linkType: hard
-
-"@endo/pass-style@npm:^1.6.3":
-  version: 1.6.3
-  resolution: "@endo/pass-style@npm:1.6.3"
-  dependencies:
-    "@endo/common": "npm:^1.2.13"
-    "@endo/env-options": "npm:^1.1.11"
-    "@endo/errors": "npm:^1.2.13"
-    "@endo/eventual-send": "npm:^1.3.4"
-    "@endo/promise-kit": "npm:^1.1.13"
-  checksum: 10/71a3cf51986ecdbfc5c1cd2ed3532ea95f7f8676663d7c3ccc01f50d04629a5e45567fea75a32616b3748c205faefe1b6cf75de38776340c3715f38a8f579191
-  languageName: node
-  linkType: hard
-
-"@endo/promise-kit@npm:^1.1.13":
-  version: 1.1.13
-  resolution: "@endo/promise-kit@npm:1.1.13"
-  dependencies:
-    ses: "npm:^1.14.0"
-  checksum: 10/38dc0ae80a1214ee7f5290fbafaa8a040e59ed5d6fef77995f189aae35d941948bad760de5562bb5452af3bb90dfc3d791afa1bf1924ad11299b5a677fcdf208
-  languageName: node
-  linkType: hard
-
-"@endo/stream@npm:^1.2.13":
-  version: 1.2.13
-  resolution: "@endo/stream@npm:1.2.13"
-  dependencies:
-    "@endo/eventual-send": "npm:^1.3.4"
-    "@endo/promise-kit": "npm:^1.1.13"
-    ses: "npm:^1.14.0"
-  checksum: 10/157f9f3cf3ae8bc62e0bce3d3d00a2e1c4668e98e835ce725e6d0113781b1572873ec13fd32a201e3866520ff4b8757b552f8ad0f6845c25d5a71358a90b16a4
   languageName: node
   linkType: hard
 
@@ -6765,29 +6667,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/kernel-errors@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@metamask/kernel-errors@npm:0.4.0"
-  dependencies:
-    "@metamask/superstruct": "npm:^3.2.1"
-    "@metamask/utils": "npm:^11.4.2"
-  checksum: 10/053e4ab4c81968a402ed8105b2e3bb95e0950edc723b87dbc24a41c92f3b233a9332a48d15ff9a1082cc4ca50787ec05e1f1f5142eaa69a46ab19d1d3fb61b7c
-  languageName: node
-  linkType: hard
-
-"@metamask/kernel-utils@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/kernel-utils@npm:0.3.0"
-  dependencies:
-    "@endo/captp": "npm:^4.4.8"
-    "@endo/promise-kit": "npm:^1.1.13"
-    "@metamask/superstruct": "npm:^3.2.1"
-    "@metamask/utils": "npm:^11.4.2"
-    setimmediate: "npm:^1.0.5"
-  checksum: 10/cc2a03d2e4c7ce92abab2fd6f042d4e22955dbfb5ff12a4c5d2cbb4ff5ff6f525d0d989dc180e58d085ce5fbdf720415d0442d0e05db326662ed9ea604fad9dc
-  languageName: node
-  linkType: hard
-
 "@metamask/key-tree@npm:^10.0.2, @metamask/key-tree@npm:^10.1.1":
   version: 10.1.1
   resolution: "@metamask/key-tree@npm:10.1.1"
@@ -8093,20 +7972,6 @@ __metadata:
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/utils": "npm:^11.9.0"
   checksum: 10/506b681f9f678102f8dd700d3c0531a35894d2a810431bdbcaaf1089d6dcfdb869ee3118b0375012498ba20e4fe8d2682d2695082268bb1dab3b774c9044d329
-  languageName: node
-  linkType: hard
-
-"@metamask/streams@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@metamask/streams@npm:0.4.0"
-  dependencies:
-    "@endo/promise-kit": "npm:^1.1.13"
-    "@endo/stream": "npm:^1.2.13"
-    "@metamask/kernel-errors": "npm:^0.4.0"
-    "@metamask/kernel-utils": "npm:^0.3.0"
-    "@metamask/superstruct": "npm:^3.2.1"
-    "@metamask/utils": "npm:^11.4.2"
-  checksum: 10/7b999bdac4462acaf1f7338eba0e20b7444a0e5cbab6b29cba4e5b0a18422e7dffa81badacc5aacd8254ac08a0abf638471f48219e56c554ea4fd6903117cce9
   languageName: node
   linkType: hard
 
@@ -33176,7 +33041,6 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^2.7.3"
     "@metamask/solana-wallet-standard": "npm:^0.6.0"
     "@metamask/storage-service": "npm:^1.0.0"
-    "@metamask/streams": "npm:^0.4.0"
     "@metamask/subscription-controller": "npm:^6.0.0"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
