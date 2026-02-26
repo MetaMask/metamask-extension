@@ -119,8 +119,8 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/notifications&auth/notifications-toggle.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "React: Missing key props in lists": 1,
+      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 9,
       "Reselect: Input stability warnings": 11,
       "warn: ⚠️ React Router Future Flag": 2
