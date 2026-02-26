@@ -1008,7 +1008,6 @@
   "ui/helpers/higher-order-components/with-modal-props/index.js",
   "ui/helpers/higher-order-components/with-modal-props/with-modal-props.js",
   "ui/helpers/higher-order-components/with-modal-props/with-modal-props.test.js",
-  "ui/helpers/utils/build-types.js",
   "ui/helpers/utils/common.util.js",
   "ui/helpers/utils/common.util.test.js",
   "ui/helpers/utils/confirm-tx.util.js",
