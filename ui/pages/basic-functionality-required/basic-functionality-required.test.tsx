@@ -107,7 +107,7 @@ describe('BasicFunctionalityOff', () => {
       screen.getByTestId('basic-functionality-off-toggle-row'),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(messages.basicConfigurationLabel.message),
+      screen.getByText(messages.basicFunctionalityRequired_toggleLabel.message),
     ).toBeInTheDocument();
   });
 
