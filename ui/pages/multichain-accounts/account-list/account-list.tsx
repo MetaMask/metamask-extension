@@ -33,6 +33,7 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import {
   getAllPermittedAccountsForCurrentTab,
+  getIsDefaultAddressEnabled,
   getShowDefaultAddress,
 } from '../../../selectors';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
@@ -64,6 +65,7 @@ export const AccountList = () => {
   const groupsMetadata = useSelector(getNormalizedGroupsMetadata);
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
   const showDefaultAddress = useSelector(getShowDefaultAddress);
+  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
 
   const {
     isAccountTreeSyncingInProgress,
@@ -166,7 +168,7 @@ export const AccountList = () => {
               isInSearchMode={Boolean(searchPattern)}
               displayWalletHeader={hasMultipleWallets}
               showConnectionStatus={permittedAccounts.length > 0}
-              showDefaultAddress={showDefaultAddress}
+              showDefaultAddress={isDefaultAddressEnabled && showDefaultAddress}
             />
           ) : (
             <Box
