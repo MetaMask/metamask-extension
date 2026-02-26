@@ -68,7 +68,6 @@ describe('wallet1 is migrated successfully', () => {
           ],
         );
 
-        vault5 = fifthResult;
         return migration6.migrate(fifthResult);
       })
       .then((sixthResult) => {
