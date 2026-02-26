@@ -148,8 +148,7 @@ export const getAccountTrackerControllerAccountsByChainId =
           result[hexChainId] ??= {};
           result[hexChainId][checksummedAddress] = {
             // TODO: Use raw value from state when available
-            balance:
-              parseBalanceWithDecimals(amount, metadata.decimals) ?? '0x0',
+            balance: parseBalanceWithDecimals(amount, metadata.decimals),
           };
         }
       }
