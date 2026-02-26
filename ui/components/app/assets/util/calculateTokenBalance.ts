@@ -1,4 +1,3 @@
-import BN from 'bn.js';
 import { Hex } from '@metamask/utils';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { stringifyBalance } from '../../../../hooks/useTokenBalances';
@@ -28,8 +27,8 @@ export function calculateTokenBalance({
     const nativeTokenBalanceHex = nativeBalances?.[chainId];
     if (nativeTokenBalanceHex && nativeTokenBalanceHex !== '0x0') {
       balance = stringifyBalance(
-        new BN(hexToDecimal(nativeTokenBalanceHex)),
-        new BN(decimals),
+        hexToDecimal(nativeTokenBalanceHex),
+        decimals,
         5, // precision for native token balance
       );
     } else {
@@ -42,8 +41,8 @@ export function calculateTokenBalance({
       ] || selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address];
     if (hexBalance && hexBalance !== '0x0') {
       balance = stringifyBalance(
-        new BN(hexToDecimal(hexBalance)),
-        new BN(decimals),
+        hexToDecimal(hexBalance),
+        decimals,
       );
     } else {
       balance = '0';

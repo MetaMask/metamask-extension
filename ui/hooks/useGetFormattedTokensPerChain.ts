@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-import { BN } from 'bn.js';
 import { Token } from '@metamask/assets-controllers';
 import { getAllTokens } from '../selectors';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
@@ -54,10 +53,7 @@ export const useGetFormattedTokensPerChain = (
               symbol: token.symbol,
               decimals: token.decimals,
               balance: decimalBalance,
-              string: stringifyBalance(
-                new BN(decimalBalance),
-                new BN(token.decimals),
-              ),
+              string: stringifyBalance(decimalBalance, token.decimals),
             });
           }
           return acc;
