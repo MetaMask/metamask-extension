@@ -7,10 +7,10 @@ import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-sto
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MINUTE } from '../../../shared/constants/time';
-import type { BridgeToken } from '../../ducks/bridge/types';
-import { useTokensWithFiltering } from './useTokensWithFiltering';
-import { setBackgroundConnection } from '../../store/background-connection';
 import { flushPromises } from '../../../test/lib/timer-helpers';
+import type { BridgeToken } from '../../ducks/bridge/types';
+import { setBackgroundConnection } from '../../store/background-connection';
+import { useTokensWithFiltering } from './useTokensWithFiltering';
 
 const NATIVE_TOKEN = getNativeAssetForChainId(CHAIN_IDS.MAINNET);
 
