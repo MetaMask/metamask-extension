@@ -276,6 +276,14 @@ class FixtureBuilderV2 {
     return this.withTransactionController({ transactions: [incomingTx] });
   }
 
+  withShowNativeTokenAsMainBalanceDisabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        showNativeTokenAsMainBalance: false,
+      },
+    });
+  }
+
   build() {
     return this.fixture;
   }

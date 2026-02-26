@@ -88,6 +88,7 @@ import { ENVIRONMENT } from '../../../development/build/constants';
 import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
 import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
+import { getTokensControllerAllTokens } from '../../../shared/modules/selectors/assets-migration';
 import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -1430,7 +1431,7 @@ export default class MetaMetricsController extends BaseController<
         metamaskState.allNfts,
       ).length,
       [MetaMetricsUserTrait.NumberOfTokens]: this.#getNumberOfTokens(
-        metamaskState.allTokens,
+        getTokensControllerAllTokens({ metamask: metamaskState }),
       ),
       [MetaMetricsUserTrait.NumberOfHDEntropies]:
         this.#getNumberOfHDEntropies(metamaskState) ??

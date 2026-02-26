@@ -63,9 +63,7 @@ import {
   isEvmAccountType,
   SolAccountType,
   EthScope,
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   TrxAccountType,
-  ///: END:ONLY_INCLUDE_IF
   BtcAccountType,
 } from '@metamask/keyring-api';
 import {
@@ -193,9 +191,7 @@ import {
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
-///: END:ONLY_INCLUDE_IF
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
@@ -210,7 +206,10 @@ import {
 } from '../../shared/modules/shield';
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
 import { createSentryError } from '../../shared/modules/error';
-import { getAccountTrackerControllerAccountsByChainId } from '../../shared/modules/selectors/assets-migration';
+import {
+  getAccountTrackerControllerAccountsByChainId,
+  getTokensControllerAllTokens,
+} from '../../shared/modules/selectors/assets-migration';
 import {
   toHardwareWalletError,
   // eslint-disable-next-line import/no-restricted-paths
@@ -219,9 +218,7 @@ import {
   isAssetsUnifyStateFeatureEnabled,
   ASSETS_UNIFY_STATE_VERSION_1,
 } from '../../shared/lib/assets-unify-state/remote-feature-flag';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
-///: END:ONLY_INCLUDE_IF
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import { WalletFundsObtainedMonitor } from './lib/WalletFundsObtainedMonitor';
@@ -281,9 +278,7 @@ import {
   getOriginsWithSessionProperty,
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { getAccountsBySnapId } from './lib/snap-keyring';
-///: END:ONLY_INCLUDE_IF
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 import {
@@ -310,12 +305,10 @@ import {
 } from './lib/approval/utils';
 import { InstitutionalSnapControllerInit } from './controller-init/institutional-snap/institutional-snap-controller-init';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
   MultichainBalancesControllerInit,
   MultichainAssetsRatesControllerInit,
-  ///: END:ONLY_INCLUDE_IF
   MultichainNetworkControllerInit,
 } from './controller-init/multichain';
 import {
@@ -341,9 +334,7 @@ import {
   SnapsNameProviderInit,
   SnapsRegistryInit,
   WebSocketServiceInit,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   MultichainRouterInit,
-  ///: END:ONLY_INCLUDE_IF
 } from './controller-init/snaps';
 import {
   BackendWebSocketServiceInit,
@@ -640,16 +631,12 @@ export default class MetamaskController extends EventEmitter {
       // FIXME: Must be init before `MultichainAccountService` to make sure account-tree is updated before
       // reacting to any `:multichainAccountGroup*` events.
       AccountTreeController: AccountTreeControllerInit,
-      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       MultichainAccountService: MultichainAccountServiceInit,
-      ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       MultichainRouter: MultichainRouterInit,
-      ///: END:ONLY_INCLUDE_IF
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
       NotificationServicesController: NotificationServicesControllerInit,
@@ -745,7 +732,6 @@ export default class MetamaskController extends EventEmitter {
     this.nftDetectionController = controllersByName.NftDetectionController;
     this.assetsContractController = controllersByName.AssetsContractController;
     this.assetsController = controllersByName.AssetsController;
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     this.multichainAssetsController =
       controllersByName.MultichainAssetsController;
     this.multichainBalancesController =
@@ -755,7 +741,6 @@ export default class MetamaskController extends EventEmitter {
     this.multichainAssetsRatesController =
       controllersByName.MultichainAssetsRatesController;
     this.multichainAccountService = controllersByName.MultichainAccountService;
-    ///: END:ONLY_INCLUDE_IF
     this.tokenBalancesController = controllersByName.TokenBalancesController;
     this.staticAssetsController = controllersByName.StaticAssetsController;
     this.tokenListController = controllersByName.TokenListController;
@@ -952,9 +937,7 @@ export default class MetamaskController extends EventEmitter {
           // If not, discovery will fallback to the primary keyring ID anyway.
           const id = selected?.options?.entropy?.id;
 
-          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           await this.getSnapKeyring();
-          ///: END:ONLY_INCLUDE_IF
 
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
 
@@ -1303,12 +1286,10 @@ export default class MetamaskController extends EventEmitter {
         AccountsController: this.accountsController,
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
-        ///: BEGIN:ONLY_INCLUDE_IF(multichain)
         MultichainAssetsController: this.multichainAssetsController,
         MultichainBalancesController: this.multichainBalancesController,
         MultichainTransactionsController: this.multichainTransactionsController,
         MultichainAssetsRatesController: this.multichainAssetsRatesController,
-        ///: END:ONLY_INCLUDE_IF
         TokenRatesController: this.tokenRatesController,
         MultichainNetworkController: this.multichainNetworkController,
         NetworkController: this.networkController,
@@ -1584,7 +1565,6 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   /**
    * Initialize the snap keyring if it is not present.
    *
@@ -1656,7 +1636,6 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   }
-  ///: END:ONLY_INCLUDE_IF
 
   trackInsightSnapView(snapId) {
     this.metaMetricsController.trackEvent({
@@ -2471,9 +2450,7 @@ export default class MetamaskController extends EventEmitter {
       notificationServicesController,
       notificationServicesPushController,
       deFiPositionsController,
-      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       multichainAssetsRatesController,
-      ///: END:ONLY_INCLUDE_IF
       staticAssetsController,
     } = this;
 
@@ -2532,12 +2509,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setSecurityAlertsEnabled.bind(
           preferencesController,
         ),
-      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       setAddSnapAccountEnabled:
         preferencesController.setAddSnapAccountEnabled.bind(
           preferencesController,
         ),
-      ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
       setWatchEthereumAccountEnabled:
         preferencesController.setWatchEthereumAccountEnabled.bind(
@@ -2596,10 +2571,8 @@ export default class MetamaskController extends EventEmitter {
       resetAccount: this.resetAccount.bind(this),
       removeAccount: this.removeAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
-      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       getAccountsBySnapId: (snapId) =>
         getAccountsBySnapId(this.getSnapKeyring.bind(this), snapId),
-      ///: END:ONLY_INCLUDE_IF
       checkIsSeedlessPasswordOutdated:
         this.checkIsSeedlessPasswordOutdated.bind(this),
       syncPasswordAndUnlockWallet: this.syncPasswordAndUnlockWallet.bind(this),
@@ -2819,12 +2792,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
-      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       setSnapsAddSnapAccountModalDismissed:
         preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
           preferencesController,
         ),
-      ///: END:ONLY_INCLUDE_IF
 
       setManageInstitutionalWallets:
         preferencesController.setManageInstitutionalWallets.bind(
@@ -2869,9 +2840,7 @@ export default class MetamaskController extends EventEmitter {
           this.accountTreeController,
         ),
       syncAccountTreeWithUserStorage: async () => {
-        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         await this.getSnapKeyring();
-        ///: END:ONLY_INCLUDE_IF
         await this.accountTreeController.syncWithUserStorage();
       },
 
@@ -3469,7 +3438,6 @@ export default class MetamaskController extends EventEmitter {
         currencyRateController.stopPollingByPollingToken.bind(
           currencyRateController,
         ),
-      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       multichainAssetsRatesStartPolling:
         multichainAssetsRatesController.startPolling.bind(
           multichainAssetsRatesController,
@@ -3478,7 +3446,6 @@ export default class MetamaskController extends EventEmitter {
         multichainAssetsRatesController.stopPollingByPollingToken.bind(
           multichainAssetsRatesController,
         ),
-      ///: END:ONLY_INCLUDE_IF
 
       tokenRatesStartPolling:
         tokenRatesController.startPolling.bind(tokenRatesController),
@@ -3679,7 +3646,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       setName: this.nameController.setName.bind(this.nameController),
 
-      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       // SnapKeyring
       createSnapAccount: async (snapId, options, internalOptions) => {
         // NOTE: We should probably start using `withKeyring` with `createIfMissing: true`
@@ -3688,9 +3654,7 @@ export default class MetamaskController extends EventEmitter {
 
         return await keyring.createAccount(snapId, options, internalOptions);
       },
-      ///: END:ONLY_INCLUDE_IF
 
-      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       // Multichain Assets Controller
       multichainAddAssets: (assetIds, accountId) =>
         this.multichainAssetsController.addAssets(assetIds, accountId),
@@ -3707,7 +3671,6 @@ export default class MetamaskController extends EventEmitter {
         this.multichainTransactionsController.updateTransactionsForAccount(
           accountId,
         ),
-      ///: END:ONLY_INCLUDE_IF
       // Transaction Decode
       decodeTransactionData: (request) =>
         decodeTransactionData({
@@ -3803,7 +3766,7 @@ export default class MetamaskController extends EventEmitter {
 
     const { tokensChainsCache } = this.tokenListController.state;
     const tokenList = tokensChainsCache?.[currentChainId]?.data || {};
-    const { allTokens } = this.tokensController.state;
+    const allTokens = getTokensControllerAllTokens(this._getMetaMaskState());
 
     const tokens = allTokens?.[currentChainId]?.[userAddress] || [];
 
@@ -3926,7 +3889,7 @@ export default class MetamaskController extends EventEmitter {
     const { tokensChainsCache } = this.tokenListController.state;
     const tokenList = tokensChainsCache?.[chainId]?.data || {};
 
-    const { allTokens } = this.tokensController.state;
+    const allTokens = getTokensControllerAllTokens(this._getMetaMaskState());
     const selectedAccount = this.accountsController.getSelectedAccount();
     const tokens = allTokens?.[chainId]?.[selectedAccount.address] || [];
 
@@ -4131,9 +4094,6 @@ export default class MetamaskController extends EventEmitter {
       fetchAllSeedPhrasesSuccess = true;
 
       return allSeedPhrases;
-    } catch (error) {
-      log.error('error while fetching all seed phrases', error);
-      throw error;
     } finally {
       this.metaMetricsController.bufferedEndTrace?.({
         name: TraceName.OnboardingFetchSrps,
@@ -4603,10 +4563,7 @@ export default class MetamaskController extends EventEmitter {
 
     const solanaAccountTypes = Object.values(SolAccountType);
     const bitcoinAccountTypes = Object.values(BtcAccountType);
-
-    ///: BEGIN:ONLY_INCLUDE_IF(tron)
     const tronAccountTypes = Object.values(TrxAccountType);
-    ///: END:ONLY_INCLUDE_IF
 
     for (const account of accounts) {
       // Newly supported account types should be added here
@@ -4617,11 +4574,9 @@ export default class MetamaskController extends EventEmitter {
       if (bitcoinAccountTypes.includes(account.type)) {
         counts.Bitcoin += 1;
       }
-      ///: BEGIN:ONLY_INCLUDE_IF(tron)
       if (tronAccountTypes.includes(account.type)) {
         counts.Tron += 1;
       }
-      ///: END:ONLY_INCLUDE_IF
     }
 
     return counts;
@@ -4926,10 +4881,8 @@ export default class MetamaskController extends EventEmitter {
       // depends only on keyrings `:stateChange`.
       await this.accountsController.updateAccounts();
 
-      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       // Init multichain accounts after creating internal accounts.
       await this.multichainAccountService.init();
-      ///: END:ONLY_INCLUDE_IF
 
       // And we re-init the account tree controller too, to use the
       // newly created accounts.
@@ -4947,9 +4900,7 @@ export default class MetamaskController extends EventEmitter {
         // check if external services are enabled
         const { useExternalServices } = this.preferencesController.state;
         if (useExternalServices) {
-          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           await this.getSnapKeyring();
-          ///: END:ONLY_INCLUDE_IF
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
         }
         await this.discoverAndCreateAccounts(id);
@@ -4976,14 +4927,12 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   async _getMultichainWalletSnapClient(snapId) {
     const keyring = await this.getSnapKeyring();
     const messenger = this.controllerMessenger;
 
     return new MultichainWalletSnapClient(snapId, keyring, messenger);
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Imports accounts with balances to the keyring.
@@ -5001,9 +4950,7 @@ export default class MetamaskController extends EventEmitter {
         },
       );
       if (isHdKeyring) {
-        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         await this.getSnapKeyring();
-        ///: END:ONLY_INCLUDE_IF
         await this.accountTreeController.syncWithUserStorageAtLeastOnce();
         await this.discoverAndCreateAccounts(metadata.id);
       }
@@ -5017,7 +4964,6 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} client - The Snap client instance.
    * @param {object} options - The options to pass to the createAccount method.
    */
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   async _addSnapAccount(keyringId, client, options = {}) {
     let entropySource = keyringId;
     try {
@@ -5047,7 +4993,6 @@ export default class MetamaskController extends EventEmitter {
       return null;
     }
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Encodes a BIP-39 mnemonic as the indices of words in the English BIP-39 wordlist.
@@ -7463,14 +7408,12 @@ export default class MetamaskController extends EventEmitter {
           return result;
         },
         endTrace,
-        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         handleSnapRpcRequest: (args) =>
           this.handleSnapRequest({ ...args, origin }),
         getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
           this.subjectMetadataController,
           origin,
         ),
-        ///: END:ONLY_INCLUDE_IF
       }),
     );
 
@@ -8987,7 +8930,7 @@ export default class MetamaskController extends EventEmitter {
   _trackTransactionFailure(transactionMeta) {
     const { txReceipt } = transactionMeta;
     const metamaskState = this.getState();
-    const { allTokens } = this.tokensController.state;
+    const allTokens = getTokensControllerAllTokens({ metamask: metamaskState });
     const selectedAccount = this.accountsController.getSelectedAccount();
     const tokens =
       allTokens?.[transactionMeta.chainId]?.[selectedAccount.address] || [];
