@@ -108,10 +108,15 @@ export function validateERC1155Balance(
   }
 
   if (asset?.balance && value) {
-    const valueInt = parseInt(value, 10);
-    const balanceInt = parseInt(asset.balance.toString(), 10);
-    if (valueInt > balanceInt) {
-      return t('insufficientFundsSend');
+    try {
+      const originalValue = BigInt(value);
+      const newValue = BigInt(asset.balance.toString());
+
+      if (originalValue > newValue) {
+        return t('insufficientFundsSend');
+      }
+    } catch {
+      return undefined;
     }
   }
 
