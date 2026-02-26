@@ -48,7 +48,6 @@
     },
     "AuthenticationController": { "isSignedIn": "boolean" },
     "BridgeController": {},
-    "ClientController": "object",
     "CurrencyController": {
       "currencyRates": {
         "ETH": {
