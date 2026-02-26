@@ -21,6 +21,8 @@ export const PERPS_TOAST_KEYS = {
   CLOSE_FAILED: 'perpsToastCloseFailed',
   CLOSE_IN_PROGRESS: 'perpsToastCloseInProgress',
   ORDER_FAILED: 'perpsToastOrderFailed',
+  ORDER_FILLED: 'perpsToastOrderFilled',
+  ORDER_PLACED: 'perpsToastOrderPlaced',
   ORDER_SUBMITTED: 'perpsToastOrderSubmitted',
   SUBMIT_IN_PROGRESS: 'perpsToastSubmitInProgress',
   TRADE_SUCCESS: 'perpsToastTradeSuccess',
@@ -31,6 +33,10 @@ export const PERPS_TOAST_KEYS = {
 
 export type PerpsToastKey =
   (typeof PERPS_TOAST_KEYS)[keyof typeof PERPS_TOAST_KEYS];
+
+export type PerpsToastRouteState = {
+  perpsToastKey?: PerpsToastKey;
+};
 
 export type PerpsToastConfig = {
   autoHideTime?: number;
@@ -50,7 +56,7 @@ export type PerpsToastKeyConfig = Omit<
 
 type PerpsToastState = Omit<PerpsToastConfig, 'variant'> & {
   id: number;
-  variant: PerpsToastVariant;
+  presentation: PerpsToastPresentation;
 };
 
 type PerpsToastContextValue = {
@@ -94,45 +100,78 @@ const getDefaultAutoHideTime = (
   return undefined;
 };
 
-const PERPS_TOAST_VARIANT_BY_KEY: Record<PerpsToastKey, PerpsToastVariant> = {
-  [PERPS_TOAST_KEYS.CLOSE_FAILED]: 'error',
-  [PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS]: 'info',
-  [PERPS_TOAST_KEYS.ORDER_FAILED]: 'error',
-  [PERPS_TOAST_KEYS.ORDER_SUBMITTED]: 'info',
-  [PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS]: 'info',
-  [PERPS_TOAST_KEYS.TRADE_SUCCESS]: 'success',
-  [PERPS_TOAST_KEYS.UPDATE_FAILED]: 'error',
-  [PERPS_TOAST_KEYS.UPDATE_IN_PROGRESS]: 'info',
-  [PERPS_TOAST_KEYS.UPDATE_SUCCESS]: 'success',
+type PerpsToastIconConfig = {
+  className?: string;
+  color: IconColor;
+  dataTestId: string;
+  name: IconName;
 };
 
-const getToastIcon = (variant: PerpsToastVariant): ReactNode => {
-  if (variant === 'success') {
-    return (
-      <Icon
-        name={IconName.Confirmation}
-        size={IconSize.Xl}
-        color={IconColor.successDefault}
-      />
-    );
-  }
+type PerpsToastPresentation = {
+  icon: PerpsToastIconConfig;
+  variant: PerpsToastVariant;
+};
 
-  if (variant === 'error') {
-    return (
-      <Icon
-        name={IconName.Danger}
-        size={IconSize.Xl}
-        color={IconColor.errorDefault}
-      />
-    );
-  }
+const PERPS_TOAST_PRESENTATION_BY_VARIANT: Record<
+  PerpsToastVariant,
+  PerpsToastPresentation
+> = {
+  error: {
+    variant: 'error',
+    icon: {
+      name: IconName.Warning,
+      color: IconColor.errorDefault,
+      dataTestId: 'perps-toast-icon-warning',
+    },
+  },
+  info: {
+    variant: 'info',
+    icon: {
+      name: IconName.Loading,
+      color: IconColor.primaryDefault,
+      className: 'animate-spin',
+      dataTestId: 'perps-toast-icon-loading',
+    },
+  },
+  success: {
+    variant: 'success',
+    icon: {
+      name: IconName.CheckBold,
+      color: IconColor.successDefault,
+      dataTestId: 'perps-toast-icon-check-bold',
+    },
+  },
+};
 
+const PERPS_TOAST_PRESENTATION_BY_KEY: Record<
+  PerpsToastKey,
+  PerpsToastPresentation
+> = {
+  [PERPS_TOAST_KEYS.CLOSE_FAILED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.error,
+  [PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS]:
+    PERPS_TOAST_PRESENTATION_BY_VARIANT.info,
+  [PERPS_TOAST_KEYS.ORDER_FAILED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.error,
+  [PERPS_TOAST_KEYS.ORDER_FILLED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
+  [PERPS_TOAST_KEYS.ORDER_PLACED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
+  [PERPS_TOAST_KEYS.ORDER_SUBMITTED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.info,
+  [PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS]:
+    PERPS_TOAST_PRESENTATION_BY_VARIANT.info,
+  [PERPS_TOAST_KEYS.TRADE_SUCCESS]: PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
+  [PERPS_TOAST_KEYS.UPDATE_FAILED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.error,
+  [PERPS_TOAST_KEYS.UPDATE_IN_PROGRESS]:
+    PERPS_TOAST_PRESENTATION_BY_VARIANT.info,
+  [PERPS_TOAST_KEYS.UPDATE_SUCCESS]:
+    PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
+};
+
+const getToastIcon = ({ icon }: PerpsToastPresentation): ReactNode => {
   return (
     <Icon
-      name={IconName.Loading}
+      name={icon.name}
       size={IconSize.Xl}
-      color={IconColor.primaryDefault}
-      className="animate-spin"
+      color={icon.color}
+      className={icon.className}
+      data-testid={icon.dataTestId}
     />
   );
 };
@@ -164,8 +203,9 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
       }
 
       const variant = config.variant ?? 'info';
+      const presentation = PERPS_TOAST_PRESENTATION_BY_VARIANT[variant];
       const autoHideTime =
-        config.autoHideTime ?? getDefaultAutoHideTime(variant);
+        config.autoHideTime ?? getDefaultAutoHideTime(presentation.variant);
 
       toastIdRef.current += 1;
 
@@ -173,7 +213,7 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
         id: toastIdRef.current,
         ...config,
         autoHideTime,
-        variant,
+        presentation,
       });
     },
     [isPerpsInAppToastsEnabled],
@@ -181,19 +221,30 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
 
   const showOrReplacePerpsToastByKey = useCallback(
     (config: PerpsToastKeyConfig) => {
+      if (!isPerpsInAppToastsEnabled) {
+        return;
+      }
+
       const { key, messageParams, ...rest } = config;
       const message =
         messageParams && messageParams.length > 0
           ? t(key, messageParams)
           : t(key);
+      const presentation = PERPS_TOAST_PRESENTATION_BY_KEY[key];
+      const autoHideTime =
+        rest.autoHideTime ?? getDefaultAutoHideTime(presentation.variant);
 
-      showOrReplacePerpsToast({
+      toastIdRef.current += 1;
+
+      setActiveToast({
+        id: toastIdRef.current,
         ...rest,
+        autoHideTime,
         message,
-        variant: PERPS_TOAST_VARIANT_BY_KEY[key],
+        presentation,
       });
     },
-    [showOrReplacePerpsToast, t],
+    [isPerpsInAppToastsEnabled, t],
   );
 
   const contextValue = useMemo<PerpsToastContextValue>(
@@ -214,7 +265,7 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
         <ToastContainer className="toasts-container--perps">
           <Toast
             key={activeToast.id}
-            startAdornment={getToastIcon(activeToast.variant)}
+            startAdornment={getToastIcon(activeToast.presentation)}
             text={activeToast.message}
             description={activeToast.description}
             autoHideTime={activeToast.autoHideTime}

@@ -44,6 +44,36 @@ const ToastHarness = () => {
       <button
         type="button"
         onClick={() => {
+          showPerpsToastByKey({
+            key: PERPS_TOAST_KEYS.ORDER_PLACED,
+          });
+        }}
+      >
+        Show Key Order Placed
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          showPerpsToastByKey({
+            key: PERPS_TOAST_KEYS.ORDER_FILLED,
+          });
+        }}
+      >
+        Show Key Order Filled
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          showPerpsToastByKey({
+            key: PERPS_TOAST_KEYS.ORDER_FAILED,
+          });
+        }}
+      >
+        Show Key Order Failed
+      </button>
+      <button
+        type="button"
+        onClick={() => {
           replacePerpsToast({
             message: 'Successful trade!',
             variant: 'success',
@@ -157,6 +187,7 @@ describe('PerpsToastProvider', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Show Key Info' }));
     expect(screen.getByText('Order submitted')).toBeInTheDocument();
+    expect(screen.getByTestId('perps-toast-icon-loading')).toBeInTheDocument();
 
     act(() => {
       jest.advanceTimersByTime(10000);
@@ -176,13 +207,89 @@ describe('PerpsToastProvider', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: 'Show Key Success' }));
-    expect(screen.getByText('Successful trade!')).toBeInTheDocument();
+    expect(screen.getByText('Position closed')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('perps-toast-icon-check-bold'),
+    ).toBeInTheDocument();
 
     act(() => {
       jest.advanceTimersByTime(3000);
     });
 
-    expect(screen.queryByText('Successful trade!')).not.toBeInTheDocument();
+    expect(screen.queryByText('Position closed')).not.toBeInTheDocument();
+  });
+
+  it('maps order placed key to success variant with auto-hide', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <PerpsToastProvider>
+        <ToastHarness />
+      </PerpsToastProvider>,
+      getStore(),
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Show Key Order Placed' }),
+    );
+    expect(screen.getByText('Order placed')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('perps-toast-icon-check-bold'),
+    ).toBeInTheDocument();
+
+    act(() => {
+      jest.advanceTimersByTime(3000);
+    });
+
+    expect(screen.queryByText('Order placed')).not.toBeInTheDocument();
+  });
+
+  it('maps order filled key to success variant with auto-hide', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <PerpsToastProvider>
+        <ToastHarness />
+      </PerpsToastProvider>,
+      getStore(),
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Show Key Order Filled' }),
+    );
+    expect(screen.getByText('Order filled')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('perps-toast-icon-check-bold'),
+    ).toBeInTheDocument();
+
+    act(() => {
+      jest.advanceTimersByTime(3000);
+    });
+
+    expect(screen.queryByText('Order filled')).not.toBeInTheDocument();
+  });
+
+  it('maps order failed key to error variant with auto-hide', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <PerpsToastProvider>
+        <ToastHarness />
+      </PerpsToastProvider>,
+      getStore(),
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Show Key Order Failed' }),
+    );
+    expect(screen.getByText('Failed to place order')).toBeInTheDocument();
+    expect(screen.getByTestId('perps-toast-icon-warning')).toBeInTheDocument();
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(screen.queryByText('Failed to place order')).not.toBeInTheDocument();
   });
 
   it('does not show toasts when perps toast flag is disabled', () => {

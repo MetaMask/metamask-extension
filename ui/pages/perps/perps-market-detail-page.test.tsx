@@ -106,6 +106,26 @@ jest.mock('../../providers/perps', () => ({
   }),
 }));
 
+const mockReplacePerpsToastByKey = jest.fn();
+jest.mock('../../components/app/perps/perps-toast', () => ({
+  PERPS_TOAST_KEYS: {
+    ORDER_FILLED: 'perpsToastOrderFilled',
+    ORDER_PLACED: 'perpsToastOrderPlaced',
+    ORDER_SUBMITTED: 'perpsToastOrderSubmitted',
+    TRADE_SUCCESS: 'perpsToastTradeSuccess',
+    UPDATE_FAILED: 'perpsToastUpdateFailed',
+    UPDATE_IN_PROGRESS: 'perpsToastUpdateInProgress',
+    UPDATE_SUCCESS: 'perpsToastUpdateSuccess',
+    CLOSE_FAILED: 'perpsToastCloseFailed',
+    CLOSE_IN_PROGRESS: 'perpsToastCloseInProgress',
+    ORDER_FAILED: 'perpsToastOrderFailed',
+    SUBMIT_IN_PROGRESS: 'perpsToastSubmitInProgress',
+  },
+  usePerpsToast: () => ({
+    replacePerpsToastByKey: mockReplacePerpsToastByKey,
+  }),
+}));
+
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
   usePerpsOrderForm: jest.fn(),
@@ -167,11 +187,17 @@ jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
 
 const mockUseParams = jest.fn().mockReturnValue({ symbol: 'ETH' });
 const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn().mockReturnValue({
+  pathname: '/perps/market/ETH',
+  search: '',
+  state: null,
+});
 const mockNavigateComponent = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
+  useLocation: () => mockUseLocation(),
   useParams: () => mockUseParams(),
   Navigate: (props: { to: string; replace?: boolean }) => {
     mockNavigateComponent(props);
@@ -201,7 +227,13 @@ describe('PerpsMarketDetailPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockReplacePerpsToastByKey.mockReset();
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
+    mockUseLocation.mockReturnValue({
+      pathname: '/perps/market/ETH',
+      search: '',
+      state: null,
+    });
   });
 
   describe('when perps feature is enabled', () => {
@@ -214,6 +246,25 @@ describe('PerpsMarketDetailPage', () => {
       );
 
       expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
+    });
+
+    it('shows handed-off perps toast and clears route state', () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/perps/market/ETH',
+        search: '',
+        state: { perpsToastKey: 'perpsToastOrderPlaced' },
+      });
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderPlaced',
+      });
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        replace: true,
+        state: undefined,
+      });
     });
 
     it('displays market symbol and price', () => {

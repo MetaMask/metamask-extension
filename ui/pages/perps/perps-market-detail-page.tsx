@@ -6,7 +6,12 @@ import React, {
   useEffect,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -71,6 +76,12 @@ import { EditMarginModal } from '../../components/app/perps/edit-margin';
 import { ReversePositionModal } from '../../components/app/perps/reverse-position';
 import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
+import {
+  PERPS_TOAST_KEYS,
+  type PerpsToastKey,
+  type PerpsToastRouteState,
+  usePerpsToast,
+} from '../../components/app/perps/perps-toast';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import { BorderRadius } from '../../helpers/constants/design-system';
 
@@ -163,6 +174,16 @@ const PopoverMenuItem: React.FC<PopoverMenuItemProps> = ({
   </Box>
 );
 
+const PERPS_TOAST_KEY_SET = new Set<PerpsToastKey>(
+  Object.values(PERPS_TOAST_KEYS),
+);
+
+const isPerpsToastKey = (value: unknown): value is PerpsToastKey => {
+  return (
+    typeof value === 'string' && PERPS_TOAST_KEY_SET.has(value as PerpsToastKey)
+  );
+};
+
 /**
  * PerpsMarketDetailPage component
  * Displays detailed market information for a specific perps market
@@ -171,6 +192,7 @@ const PopoverMenuItem: React.FC<PopoverMenuItemProps> = ({
 const PerpsMarketDetailPage: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const location = useLocation();
   const { symbol } = useParams<{ symbol: string }>();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -182,6 +204,37 @@ const PerpsMarketDetailPage: React.FC = () => {
     formatPercentWithMinThreshold,
   } = useFormatters();
   const fundingCountdown = useFundingCountdown();
+  const { replacePerpsToastByKey } = usePerpsToast();
+
+  useEffect(() => {
+    if (!location.state || typeof location.state !== 'object') {
+      return;
+    }
+
+    const routeState = location.state as PerpsToastRouteState &
+      Record<string, unknown>;
+    if (!isPerpsToastKey(routeState.perpsToastKey)) {
+      return;
+    }
+
+    replacePerpsToastByKey({
+      key: routeState.perpsToastKey,
+    });
+
+    const { perpsToastKey: _consumedToastKey, ...remainingState } = routeState;
+    navigate(`${location.pathname}${location.search}`, {
+      replace: true,
+      state:
+        Object.keys(remainingState).length > 0 ? remainingState : undefined,
+    });
+  }, [
+    location.pathname,
+    location.search,
+    location.state,
+    navigate,
+    replacePerpsToastByKey,
+  ]);
+
   // Use stream hooks for real-time data
   const { positions: allPositions } = usePerpsLivePositions();
   const { orders: allOrders } = usePerpsLiveOrders();
