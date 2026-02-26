@@ -85,6 +85,7 @@ class NetworkManager {
     await this.driver.clickElement({
       text: tabName,
     });
+    await this.waitForCategoryContent(tabName);
   }
 
   async selectNetworkByNameWithWait(networkName: string): Promise<void> {
@@ -190,23 +191,13 @@ class NetworkManager {
     }
   }
 
-  async switchToNetwork(
-    networkCategory: string,
-    networkName: string,
-  ): Promise<void> {
-    console.log(
-      `Switching to network: ${networkName} in category: ${networkCategory}`,
-    );
-    await this.openNetworkManager();
-    await this.selectTab(networkCategory);
-
+  async waitForCategoryContent(networkCategory: string): Promise<void> {
+    console.log(`Waiting for ${networkCategory} tab content to load`);
     if (networkCategory === 'Custom') {
       await this.driver.waitForSelector(this.addCustomNetworkButton);
     } else if (networkCategory === 'Popular') {
       await this.driver.waitForSelector(this.allPopularNetworksLabel);
     }
-
-    await this.selectNetworkByNameWithWait(networkName);
   }
 
   async checkTabIsSelected(tabName: string): Promise<void> {

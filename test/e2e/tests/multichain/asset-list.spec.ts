@@ -6,7 +6,7 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Mockttp } from '../../mock-e2e';
-import NetworkManager from '../../page-objects/pages/network-manager';
+import { switchToNetwork } from '../../page-objects/flows/network.flow';
 import SendPage from '../../page-objects/pages/send/send-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 
@@ -74,10 +74,7 @@ describe('Multichain Asset List', function (this: Suite) {
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
-        await new NetworkManager(driver).switchToNetwork(
-          'Popular',
-          NETWORK_NAME_MAINNET,
-        );
+        await switchToNetwork(driver, 'Popular', NETWORK_NAME_MAINNET);
         // Only Ethereum network is selected so only 1 token visible
         await assetListPage.checkTokenItemNumber(1);
         await assetListPage.clickOnAsset('Ether');

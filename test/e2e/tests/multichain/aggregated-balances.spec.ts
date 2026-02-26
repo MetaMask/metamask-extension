@@ -11,7 +11,7 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
-import NetworkManager from '../../page-objects/pages/network-manager';
+import { switchToNetwork } from '../../page-objects/flows/network.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockPriceApi } from '../tokens/utils/mocks';
 
@@ -68,10 +68,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         const accountListPage = new AccountListPage(driver);
 
         console.log('Step 2: Switch to Ethereum');
-        await new NetworkManager(driver).switchToNetwork(
-          'Popular',
-          NETWORK_NAME_MAINNET,
-        );
+        await switchToNetwork(driver, 'Popular', NETWORK_NAME_MAINNET);
 
         console.log('Step 3: Enable fiat balance display in settings');
         await headerNavbar.openSettingsPage();
@@ -90,10 +87,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         await accountListPage.closeMultichainAccountsPage();
 
         console.log('Step 5: Switch to Sepolia test network');
-        await new NetworkManager(driver).switchToNetwork(
-          'Custom',
-          NETWORK_NAME_SEPOLIA,
-        );
+        await switchToNetwork(driver, 'Custom', NETWORK_NAME_SEPOLIA);
 
         console.log('Step 6: Verify native balance on Sepolia network');
         // Not working with BIP44

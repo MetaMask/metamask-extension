@@ -8,7 +8,7 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import { Driver } from '../../../webdriver/driver';
 import { mockNoDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 
-import NetworkManager from '../../../page-objects/pages/network-manager';
+import { switchToNetwork } from '../../../page-objects/flows/network.flow';
 
 describe('Check DeFi empty state when no defi positions', function () {
   it('user should be able to view empty', async function () {
@@ -31,7 +31,7 @@ describe('Check DeFi empty state when no defi positions', function () {
         await defiTab.checkNoPositionsMessageIsDisplayed();
 
         // switch network
-        await new NetworkManager(driver).switchToNetwork('Popular', 'Ethereum');
+        await switchToNetwork(driver, 'Popular', 'Ethereum');
 
         await defiTab.checkNoPositionsMessageIsDisplayed();
       },

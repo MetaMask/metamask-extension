@@ -22,7 +22,7 @@ import {
   enableTestNetworks,
 } from '../page-objects/flows/settings.flow';
 import HomePage from '../page-objects/pages/home/homepage';
-import NetworkManager from '../page-objects/pages/network-manager';
+import { switchToNetwork } from '../page-objects/flows/network.flow';
 
 const ONBOARDING_FIXTURE_PATH = path.resolve(
   __dirname,
@@ -157,15 +157,9 @@ describe('Wallet State', function () {
         await enableTestNetworks(driver);
 
         // Action needed to apply the changes in the balance as doesn't happen right away (potential bug)
-        await new NetworkManager(driver).switchToNetwork(
-          'Popular',
-          'All popular networks',
-        );
+        await switchToNetwork(driver, 'Popular', 'All popular networks');
 
-        await new NetworkManager(driver).switchToNetwork(
-          'Custom',
-          'Localhost 8545',
-        );
+        await switchToNetwork(driver, 'Custom', 'Localhost 8545');
 
         // Fiat value should be displayed as we mock the price and that is not a 'test network'
         await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
