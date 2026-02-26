@@ -1,6 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Box, Icon, IconName, IconSize, Text, TextVariant } from '@metamask/design-system-react';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setRewardsBadgeHidden } from '../../../ducks/rewards';
 import { setStorageItem } from '../../../../shared/lib/storage-helpers';
