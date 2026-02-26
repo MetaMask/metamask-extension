@@ -99,7 +99,7 @@ describe('collectWebVitals', () => {
   });
 
   describe('CDP probe', () => {
-    it('dispatches Shift keyDown + keyUp via CDP', async () => {
+    it('dispatches Escape keyDown + keyUp via CDP', async () => {
       const sendCmd = jest.fn().mockResolvedValue(undefined);
       const execScript = jest
         .fn()
@@ -116,11 +116,11 @@ describe('collectWebVitals', () => {
       expect(sendCmd).toHaveBeenCalledTimes(2);
       expect(sendCmd).toHaveBeenCalledWith(
         'Input.dispatchKeyEvent',
-        expect.objectContaining({ type: 'keyDown', key: 'Shift' }),
+        expect.objectContaining({ type: 'keyDown', key: 'Escape' }),
       );
       expect(sendCmd).toHaveBeenCalledWith(
         'Input.dispatchKeyEvent',
-        expect.objectContaining({ type: 'keyUp', key: 'Shift' }),
+        expect.objectContaining({ type: 'keyUp', key: 'Escape' }),
       );
     });
   });
@@ -237,7 +237,7 @@ describe('collectWebVitals', () => {
       expect(readScript).toContain('loadTime');
     });
 
-    it('read script checks stateHooks for INP/LCP/CLS', async () => {
+    it('read script checks stateHooks for LCP/CLS only (not INP)', async () => {
       const execScript = jest
         .fn()
         .mockResolvedValueOnce(undefined)
@@ -250,6 +250,7 @@ describe('collectWebVitals', () => {
       expect(readScript).toContain('stateHooks');
       expect(readScript).toContain('getWebVitalsMetrics');
       expect(readScript).toContain('resetWebVitalsMetrics');
+      expect(readScript).not.toContain('m.inp');
     });
   });
 

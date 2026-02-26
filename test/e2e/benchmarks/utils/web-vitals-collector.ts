@@ -6,11 +6,10 @@
  * **INP** — PerformanceObserver (`event` type, `buffered: true`).
  * Captures `PerformanceEventTiming` entries from trusted events.
  * WebDriver actions produce untrusted events that Chrome ignores,
- * so a CDP probe (`Input.dispatchKeyEvent` Shift) generates at least
- * one trusted entry. A 16 ms busy-wait keydown handler ensures the
- * entry has non-zero `duration`. If the `web-vitals` library has
- * already captured INP via `stateHooks`, that value takes priority
- * (it uses the spec-correct 98th percentile algorithm).
+ * so a CDP probe (`Input.dispatchKeyEvent` Escape) generates a
+ * trusted entry with `interactionId`. A 16 ms busy-wait keydown
+ * handler ensures non-zero `duration`. Measured directly from
+ * observer entries — no web-vitals library dependency.
  *
  * **FCP** — Read directly from `performance.getEntriesByType('paint')`.
  * Always available on `chrome-extension://` pages.
@@ -99,11 +98,10 @@ try {
 
 /**
  * Read script: computes metrics from observer entries and paint timing.
- * Checks stateHooks first for web-vitals library values (INP uses
- * spec-correct 98th percentile), then reads raw observer entries.
- * FCP is always read from paint entries. LCP uses real
- * `largest-contentful-paint` entries first, then Element Timing
- * entries (`elementtiming="hero"`) as fallback on extension pages.
+ * INP is measured directly from event entries (no web-vitals library).
+ * FCP from paint entries. LCP from `largest-contentful-paint` entries
+ * first, then Element Timing (`elementtiming="hero"`) as fallback.
+ * stateHooks checked for LCP/CLS only (not INP).
  */
 const READ_SCRIPT = `
 var cwv = window.__cwv || {
@@ -124,18 +122,17 @@ if (cwv.fcp !== null) {
   result.fcpRating = rate(cwv.fcp, 1800, 3000);
 }
 
-// Check stateHooks for web-vitals library values (more accurate for INP)
+// Check stateHooks for LCP/CLS from web-vitals library
 var sh = window.stateHooks;
 if (sh && sh.getWebVitalsMetrics) {
   var m = sh.getWebVitalsMetrics();
-  if (m.inp !== null) { result.inp = m.inp; result.inpRating = m.inpRating; }
   if (m.lcp !== null) { result.lcp = m.lcp; result.lcpRating = m.lcpRating; }
   if (m.cls !== null) { result.cls = m.cls; result.clsRating = m.clsRating; }
   sh.resetWebVitalsMetrics && sh.resetWebVitalsMetrics();
 }
 
-// INP: from PerformanceObserver event entries (primary measurement path)
-if (result.inp === null && cwv.event.length > 0) {
+// INP: directly from PerformanceObserver event entries (no web-vitals dependency)
+if (cwv.event.length > 0) {
   var maxDur = 0;
   for (var i = 0; i < cwv.event.length; i++) {
     if (cwv.event[i].duration > maxDur) maxDur = cwv.event[i].duration;
@@ -193,10 +190,10 @@ return result;
 `;
 
 const CDP_KEY_EVENT_BASE = {
-  key: 'Shift',
-  code: 'ShiftLeft',
-  windowsVirtualKeyCode: 16,
-  nativeVirtualKeyCode: 16,
+  key: 'Escape',
+  code: 'Escape',
+  windowsVirtualKeyCode: 27,
+  nativeVirtualKeyCode: 27,
 };
 
 /**
@@ -204,7 +201,7 @@ const CDP_KEY_EVENT_BASE = {
  * CDP events are `isTrusted: true` and generate `PerformanceEventTiming`
  * entries — unlike WebDriver actions which use untrusted synthetic events.
  *
- * Uses Shift (modifier-only, no side effects on the page).
+ * Uses Escape (generates `interactionId`, minimal side effects).
  * Silently degrades when CDP is unavailable (Firefox, non-Chromium).
  *
  * @param driver - Selenium WebDriver instance
@@ -234,9 +231,9 @@ async function dispatchCDPProbe(driver: Driver): Promise<void> {
  *
  * Primary measurement: PerformanceObserver for INP (`event` entries),
  * FCP (paint entries), CLS (`layout-shift` entries).
- * CDP probe dispatches a trusted Shift key to generate INP entries.
- * `stateHooks` values from the web-vitals library override observer
- * results when available (more accurate INP computation).
+ * CDP probe dispatches a trusted Escape key to generate INP entries.
+ * INP is measured directly from PerformanceObserver — no web-vitals
+ * library dependency.
  *
  * LCP is attempted via `largest-contentful-paint` observer, with
  * Element Timing (`elementtiming="hero"`) as fallback on extension pages.

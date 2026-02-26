@@ -147,22 +147,72 @@ function formatCellValue(stats: StatisticalResult, metric: string): string {
   return typeof value === 'number' ? Math.round(value).toString() : '-';
 }
 
-/**
- * Builds table rows from benchmark entries.
- *
- * @param entries - Array of benchmark entries with names.
- * @returns Array of HTML table row strings.
- */
+const CWV_METRICS: {
+  key: 'inp' | 'fcp' | 'lcp' | 'cls';
+  label: string;
+  unit: string;
+}[] = [
+  { key: 'inp', label: 'INP', unit: 'ms' },
+  { key: 'fcp', label: 'FCP', unit: 'ms' },
+  { key: 'lcp', label: 'LCP', unit: 'ms' },
+  { key: 'cls', label: 'CLS', unit: '' },
+];
+
+function formatCwvValue(
+  value: number | undefined,
+  unit: string,
+): string {
+  if (value === undefined) {
+    return '-';
+  }
+  if (unit === 'ms') {
+    return value >= 1000
+      ? `${(value / 1000).toFixed(1)}s`
+      : `${Math.round(value)}ms`;
+  }
+  return value.toFixed(3);
+}
+
 export function buildTableRows(entries: BenchmarkEntry[]): string[] {
   const tableRows: string[] = [];
 
-  for (const { benchmarkName, mean, min, max, stdDev, p75, p95 } of entries) {
-    const metrics = Object.keys(mean);
-    for (let i = 0; i < metrics.length; i++) {
-      const metric = metrics[i];
+  for (const entry of entries) {
+    const { benchmarkName, mean, min, max, stdDev, p75, p95, webVitals } =
+      entry;
+    const timerMetrics = Object.keys(mean);
+    const agg = webVitals?.aggregated;
+
+    const cwvRows: {
+      label: string;
+      unit: string;
+      stats: Record<string, number>;
+    }[] = [];
+    if (agg) {
+      for (const { key, label, unit } of CWV_METRICS) {
+        const s = agg[key];
+        if (s && typeof s === 'object' && 'mean' in s) {
+          cwvRows.push({
+            label: `${label}${unit ? ` (${unit})` : ''}`,
+            unit,
+            stats: {
+              mean: s.mean,
+              min: s.min,
+              max: s.max,
+              stdDev: s.stdDev,
+              p75: s.p75,
+              p95: s.p95,
+            },
+          });
+        }
+      }
+    }
+
+    const totalRows = timerMetrics.length + cwvRows.length;
+    for (let i = 0; i < timerMetrics.length; i++) {
+      const metric = timerMetrics[i];
       let row = '';
       if (i === 0) {
-        row += `<td rowspan="${metrics.length}">${startCase(benchmarkName)}</td>`;
+        row += `<td rowspan="${totalRows}">${startCase(benchmarkName)}</td>`;
       }
       row += `<td>${metric}</td>`;
       row += `<td align="right">${Math.round(mean[metric])}</td>`;
@@ -171,6 +221,17 @@ export function buildTableRows(entries: BenchmarkEntry[]): string[] {
       row += `<td align="right">${formatCellValue(stdDev, metric)}</td>`;
       row += `<td align="right">${formatCellValue(p75, metric)}</td>`;
       row += `<td align="right">${formatCellValue(p95, metric)}</td>`;
+      tableRows.push(`<tr>${row}</tr>`);
+    }
+
+    for (const { label, unit, stats } of cwvRows) {
+      let row = `<td><em>${label}</em></td>`;
+      row += `<td align="right">${formatCwvValue(stats.mean, unit)}</td>`;
+      row += `<td align="right">${formatCwvValue(stats.min, unit)}</td>`;
+      row += `<td align="right">${formatCwvValue(stats.max, unit)}</td>`;
+      row += `<td align="right">${formatCwvValue(stats.stdDev, unit)}</td>`;
+      row += `<td align="right">${formatCwvValue(stats.p75, unit)}</td>`;
+      row += `<td align="right">${formatCwvValue(stats.p95, unit)}</td>`;
       tableRows.push(`<tr>${row}</tr>`);
     }
   }
@@ -224,105 +285,6 @@ export function buildBenchmarkSection(
 }
 
 /**
- * Builds a compact Core Web Vitals HTML section from benchmark entries.
- * Renders a per-flow table showing p75, p95, and rating distribution for
- * INP, LCP, and CLS.
- *
- * @param entries - Parsed benchmark entries (filters to those with webVitals).
- * @param summary - Collapsible header text.
- * @returns HTML string, or empty string if no web vitals data.
- */
-export function buildWebVitalsSection(
-  entries: BenchmarkEntry[],
-  summary: string,
-): string {
-  const entriesWithVitals = entries.filter((e) => e.webVitals?.aggregated);
-  if (entriesWithVitals.length === 0) {
-    return '';
-  }
-
-  const metrics: {
-    key: 'inp' | 'fcp' | 'lcp' | 'cls';
-    label: string;
-    formatValue: (v: number) => string;
-  }[] = [
-    { key: 'inp', label: 'INP', formatValue: (v) => `${Math.round(v)}ms` },
-    {
-      key: 'fcp',
-      label: 'FCP',
-      formatValue: (v) =>
-        v >= 1000 ? `${(v / 1000).toFixed(1)}s` : `${Math.round(v)}ms`,
-    },
-    {
-      key: 'lcp',
-      label: 'LCP',
-      formatValue: (v) =>
-        v >= 1000 ? `${(v / 1000).toFixed(1)}s` : `${Math.round(v)}ms`,
-    },
-    { key: 'cls', label: 'CLS', formatValue: (v) => v.toFixed(3) },
-  ];
-
-  const rows: string[] = [];
-  for (const { benchmarkName, webVitals } of entriesWithVitals) {
-    const agg = webVitals?.aggregated;
-    if (!agg) {
-      continue;
-    }
-
-    let isFirst = true;
-    for (const { key, label, formatValue } of metrics) {
-      const stats = agg[key];
-      const ratings = agg.ratings[key];
-      const ratingStr = ratings
-        ? `${ratings.good}/${ratings['needs-improvement']}/${ratings.poor}`
-        : '-';
-
-      let row = '';
-      if (isFirst) {
-        row += `<td rowspan="${metrics.length}">${startCase(benchmarkName)}</td>`;
-        isFirst = false;
-      }
-      row += `<td>${label}</td>`;
-
-      if (stats && typeof stats === 'object' && 'p75' in stats) {
-        row += `<td align="right">${formatValue(stats.p75)}</td>`;
-        row += `<td align="right">${key === 'cls' ? '-' : formatValue(stats.p95)}</td>`;
-        row += `<td align="center">${ratingStr}</td>`;
-        row += `<td align="right">${stats.samples}</td>`;
-      } else {
-        const totalRuns = ratings
-          ? ratings.good +
-            ratings['needs-improvement'] +
-            ratings.poor +
-            ratings.null
-          : 0;
-        row += `<td align="right">-</td>`;
-        row += `<td align="right">-</td>`;
-        row += `<td align="center">${ratingStr}</td>`;
-        row += `<td align="right">${totalRuns}</td>`;
-      }
-      rows.push(`<tr>${row}</tr>`);
-    }
-  }
-
-  if (rows.length === 0) {
-    return '';
-  }
-
-  const columns = [
-    'Flow',
-    'Metric',
-    'p75',
-    'p95',
-    'Rating (G/NI/P)',
-    'Samples',
-  ];
-  const header = `<thead><tr>${columns.map((c) => `<th>${c}</th>`).join('')}</tr></thead>`;
-  const table = `<table>${header}<tbody>${rows.join('')}</tbody></table>`;
-  return `<details><summary>${summary}</summary>${table}</details>\n\n`;
-}
-
-/**
  * Builds the full ⚡ Performance Benchmarks collapsible section,
  * including 👆 Interaction, 🔌 Startup, and 🧭 User Journey sub-sections.
  *
@@ -354,20 +316,13 @@ export async function buildPerformanceBenchmarksSection(
     '🧭 User Journey Benchmarks',
   );
 
-  const allEntries = [
-    ...interactionResult.entries,
-    ...startupResult.entries,
-    ...userJourneyResult.entries,
-  ];
-  const webVitalsHtml = buildWebVitalsSection(allEntries, '📊 Core Web Vitals');
-
   // TODO: Introduce a Traffic Light System for Regression Detection
   // https://github.com/MetaMask/MetaMask-planning/issues/6993
 
-  if (!interactionHtml && !startupHtml && !userJourneyHtml && !webVitalsHtml) {
+  if (!interactionHtml && !startupHtml && !userJourneyHtml) {
     return '';
   }
 
-  const content = `${interactionHtml}${webVitalsHtml}${startupHtml}${userJourneyHtml}`;
+  const content = `${interactionHtml}${startupHtml}${userJourneyHtml}`;
   return `<details><summary>${sectionTitle}</summary>\n<blockquote>\n${content}</blockquote>\n</details>\n\n`;
 }
