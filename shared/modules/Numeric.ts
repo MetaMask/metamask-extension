@@ -147,11 +147,8 @@ function numberToBigNumber(value: number, numericBase: NumericBase) {
 }
 
 function bigintToBigNumber(value: bigint, numericBase: NumericBase) {
-  if (numericBase === 16) {
-    return new BigNumber(value.toString(16), 16);
-  }
-
-  return new BigNumber(value.toString(10), 10);
+  const base = numericBase === 16 ? 16 : 10;
+  return new BigNumber(value.toString(base), base);
 }
 
 /**
