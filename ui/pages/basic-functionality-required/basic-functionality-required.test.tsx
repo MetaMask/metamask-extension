@@ -53,7 +53,7 @@ const DESCRIPTION_TEXT =
 
 jest.mock('../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => {
-    const messages: Record<string, string> = {
+    const mockT: Record<string, string> = {
       [I18N_KEYS.title]: 'Basic functionality is off',
       [I18N_KEYS.description]: DESCRIPTION_TEXT,
       [I18N_KEYS.goToHome]: 'Go to the home page',
@@ -63,7 +63,7 @@ jest.mock('../../hooks/useI18nContext', () => ({
       [I18N_KEYS.off]: 'Off',
       [I18N_KEYS.on]: 'On',
     };
-    return messages[key] ?? key;
+    return mockT[key] ?? key;
   },
 }));
 
