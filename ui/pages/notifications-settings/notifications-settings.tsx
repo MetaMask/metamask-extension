@@ -68,13 +68,10 @@ export function NotificationsSettingsContent() {
 
   return (
     <Box
+      className="settings-page__body"
       flexDirection={BoxFlexDirection.Column}
       alignItems={BoxAlignItems.Stretch}
       gap={6}
-      paddingLeft={4}
-      paddingRight={4}
-      paddingTop={4}
-      paddingBottom={6}
     >
       <NotificationsSettingsAllowNotifications
         loading={loadingAllowNotifications}
@@ -98,7 +95,7 @@ export function NotificationsSettingsContent() {
             <Box
               flexDirection={BoxFlexDirection.Column}
               alignItems={BoxAlignItems.Start}
-              gap={2}
+              gap={1}
             >
               <Text
                 variant={TextVariant.BodyMd}

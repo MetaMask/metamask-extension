@@ -162,7 +162,7 @@ export function NotificationsSettingsAllowNotifications({
       flexDirection={BoxFlexDirection.Column}
       justifyContent={BoxJustifyContent.Start}
       alignItems={BoxAlignItems.Stretch}
-      gap={4}
+      gap={1}
     >
       <NotificationsSettingsBox
         value={toggleValue}

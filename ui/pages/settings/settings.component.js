@@ -612,11 +612,7 @@ class SettingsPage extends PureComponent {
             NOTIFICATIONS_SETTINGS_ROUTE,
             SETTINGS_ROUTE,
           )}
-          element={
-            <div className="settings-page__body">
-              <NotificationsSettingsContent />
-            </div>
-          }
+          element={<NotificationsSettingsContent />}
         />
         <Route
           path={toRelativeRoutePath(REVEAL_SRP_LIST_ROUTE, SETTINGS_ROUTE)}
