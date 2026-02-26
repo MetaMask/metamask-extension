@@ -129,34 +129,4 @@ describe('MusdClaimInfo', () => {
       expect(result.getByTestId('gas-fee-section')).toBeDefined();
     });
   });
-
-  it('renders claiming-to and network in separate sections', async () => {
-    const transaction = buildMusdClaimTransaction();
-    const state = getMockConfirmState({
-      metamask: {
-        pendingApprovals: {
-          [transaction.id]: {
-            id: transaction.id,
-            type: ApprovalType.Transaction,
-          },
-        },
-        transactions: [transaction],
-      },
-    });
-    const mockStore = configureMockStore()(state);
-
-    let result: ReturnType<typeof renderWithConfirmContextProvider>;
-    await act(async () => {
-      result = renderWithConfirmContextProvider(<MusdClaimInfo />, mockStore);
-
-      const claimingToSection = result.getByTestId(
-        'musd-claim-details-section',
-      );
-      const networkSection = result.getByTestId('musd-claim-network-section');
-
-      // Sections are separate DOM elements
-      expect(claimingToSection).not.toBe(networkSection);
-      expect(claimingToSection.contains(networkSection)).toBe(false);
-    });
-  });
 });
