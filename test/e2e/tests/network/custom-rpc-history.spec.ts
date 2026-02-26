@@ -39,7 +39,8 @@ describe('Custom RPC history', function (this: Suite) {
         const rpcUrl = `http://127.0.0.1:${port}`;
         const networkName = 'Secondary Local Testnet';
 
-        await new HeaderNavbar(driver).openGlobalNetworksMenu();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openAddCustomNetworkModal();
@@ -81,7 +82,8 @@ describe('Custom RPC history', function (this: Suite) {
         // Duplicate network
         const duplicateRpcUrl = 'https://mainnet.infura.io/v3/';
 
-        await new HeaderNavbar(driver).openGlobalNetworksMenu();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openAddCustomNetworkModal();
@@ -117,7 +119,8 @@ describe('Custom RPC history', function (this: Suite) {
         // Duplicate network
         const duplicateChainId = '1';
 
-        await new HeaderNavbar(driver).openGlobalNetworksMenu();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openAddCustomNetworkModal();
@@ -170,7 +173,8 @@ describe('Custom RPC history', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await new HeaderNavbar(driver).openGlobalNetworksMenu();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
 
@@ -215,7 +219,8 @@ describe('Custom RPC history', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await new HeaderNavbar(driver).openGlobalNetworksMenu();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.checkNetworkOptionIsDisplayed(
@@ -231,7 +236,7 @@ describe('Custom RPC history', function (this: Suite) {
         // Check custom network http://127.0.0.1:8545/2 is removed from network list
         // need a hard delay to avoid the background error message "network configuration not found" for removed network
         await driver.delay(2000);
-        await new HeaderNavbar(driver).openGlobalNetworksMenu();
+        await headerNavbar.openGlobalNetworksMenu();
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.checkNetworkOptionIsDisplayed(
           'http://127.0.0.1:8545/2',

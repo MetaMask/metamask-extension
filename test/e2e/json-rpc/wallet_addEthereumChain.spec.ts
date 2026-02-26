@@ -574,7 +574,8 @@ describe('Add Ethereum Chain', function () {
           );
 
           // go to network selector
-          await new HeaderNavbar(driver).openGlobalNetworksMenu();
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.openGlobalNetworksMenu();
           await driver.findElement({ text: 'Localhost 8545' });
         },
       );

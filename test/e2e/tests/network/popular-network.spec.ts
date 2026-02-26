@@ -73,7 +73,8 @@ describe('Popular Networks', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await new HeaderNavbar(driver).openGlobalNetworksMenu();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
@@ -118,7 +119,8 @@ describe('Popular Networks', function (this: Suite) {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const homepage = new Homepage(driver);
-        await new HeaderNavbar(driver).openGlobalNetworksMenu();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
@@ -126,7 +128,7 @@ describe('Popular Networks', function (this: Suite) {
 
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
-        await new HeaderNavbar(driver).openGlobalNetworksMenu();
+        await headerNavbar.openGlobalNetworksMenu();
 
         // check that arbitrum is on the list of popular network
         await selectNetworkDialog.checkPageIsLoaded();
@@ -162,7 +164,8 @@ describe('Popular Networks', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await new HeaderNavbar(driver).openGlobalNetworksMenu();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
@@ -228,9 +231,10 @@ describe('Popular Networks', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
+        const headerNavbar = new HeaderNavbar(driver);
 
         // navigate to security & privacy settings and toggle off network details check
-        await new HeaderNavbar(driver).openSettingsPage();
+        await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
@@ -244,7 +248,7 @@ describe('Popular Networks', function (this: Suite) {
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
-        await new HeaderNavbar(driver).openGlobalNetworksMenu();
+        await headerNavbar.openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();

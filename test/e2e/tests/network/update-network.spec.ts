@@ -24,7 +24,8 @@ describe('Update Network:', function (this: Suite) {
           rpcUrl: 'test',
         };
         await loginWithBalanceValidation(driver);
-        await new HeaderNavbar(driver).openGlobalNetworksMenu();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
@@ -48,7 +49,7 @@ describe('Update Network:', function (this: Suite) {
         );
         await homePage.closeUseNetworkNotificationModal();
         // Since switching networks is disabled via the networks modal in global menu, we don't need to check the selected network anymore
-        await new HeaderNavbar(driver).openGlobalNetworksMenu();
+        await headerNavbar.openGlobalNetworksMenu();
 
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openNetworkListOptions('eip155:1337');
@@ -135,7 +136,8 @@ describe('Update Network:', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
-        await new HeaderNavbar(driver).openGlobalNetworksMenu();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
@@ -159,7 +161,7 @@ describe('Update Network:', function (this: Suite) {
         await homePage.closeUseNetworkNotificationModal();
 
         // Re-open the network menu and go back to edit the network
-        await new HeaderNavbar(driver).openGlobalNetworksMenu();
+        await headerNavbar.openGlobalNetworksMenu();
 
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openNetworkListOptions('eip155:42161');
@@ -223,7 +225,8 @@ describe('Update Network:', function (this: Suite) {
 
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
-        await new HeaderNavbar(driver).openGlobalNetworksMenu();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
@@ -254,7 +257,7 @@ describe('Update Network:', function (this: Suite) {
         await homePage.closeUseNetworkNotificationModal();
 
         // Re-open the network menu and go back to edit the network
-        await new HeaderNavbar(driver).openGlobalNetworksMenu();
+        await headerNavbar.openGlobalNetworksMenu();
 
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openNetworkListOptions('eip155:42161');

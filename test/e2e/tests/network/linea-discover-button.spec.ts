@@ -40,7 +40,8 @@ describe('Linea Network Discover Button', function (this: Suite) {
         await loginWithBalanceValidation(driver);
 
         // Open network dropdown
-        await new HeaderNavbar(driver).openGlobalNetworksMenu();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
 
         // Search for Linea
         const selectNetworkDialog = new SelectNetwork(driver);
