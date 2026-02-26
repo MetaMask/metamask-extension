@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { AutoCloseSection } from './auto-close-section';
@@ -32,7 +33,9 @@ describe('AutoCloseSection', () => {
       renderWithProvider(<AutoCloseSection {...defaultProps} />, mockStore);
 
       // Text is lowercase 'c' in "Auto close"
-      expect(screen.getByText('Auto close')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsAutoClose.message),
+      ).toBeInTheDocument();
     });
 
     it('renders the toggle button', () => {

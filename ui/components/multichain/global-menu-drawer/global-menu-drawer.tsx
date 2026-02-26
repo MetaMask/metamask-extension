@@ -61,6 +61,8 @@ export const GlobalMenuDrawer = ({
   const exitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const enterFrameRef = useRef<number | null>(null);
   const wasOpenRef = useRef(false);
+  /** Tracks previous isOpen so we can run enter transition only when opening from closed (hamburger), not when mounting/restoring with open (back from page). */
+  const prevIsOpenRef = useRef<boolean | undefined>(undefined);
   const rootLayoutRef = useRef<HTMLElement | null>(null);
   const appContainerRef = useRef<HTMLElement | null>(null);
   const resizeTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
@@ -69,7 +71,7 @@ export const GlobalMenuDrawer = ({
   const hasPosition = Object.keys(drawerStyle).length > 0;
   const readyToShow = isOpen && (!usePortal || hasPosition);
 
-  // Custom transition: only start when we can show (have position in portal mode).
+  // Open drawer: use entering transition only when going from closed to open (hamburger click). When mounting or returning from a page with drawerOpen in URL, show immediately.
   useEffect(() => {
     if (readyToShow) {
       wasOpenRef.current = true;
@@ -77,22 +79,27 @@ export const GlobalMenuDrawer = ({
         clearTimeout(exitTimeoutRef.current);
         exitTimeoutRef.current = null;
       }
-      setDrawerPhase('entering');
-      enterFrameRef.current = requestAnimationFrame(() => {
+      const wasClosed = prevIsOpenRef.current === false;
+      if (wasClosed) {
+        setDrawerPhase('entering');
         enterFrameRef.current = requestAnimationFrame(() => {
-          enterFrameRef.current = null;
-          setDrawerPhase('open');
+          enterFrameRef.current = requestAnimationFrame(() => {
+            enterFrameRef.current = null;
+            setDrawerPhase('open');
+          });
         });
-      });
-      return () => {
-        if (enterFrameRef.current !== null) {
-          cancelAnimationFrame(enterFrameRef.current);
-          enterFrameRef.current = null;
-        }
-      };
+      } else {
+        setDrawerPhase('open');
+      }
+      prevIsOpenRef.current = true;
     }
     if (wasOpenRef.current && !isOpen) {
       wasOpenRef.current = false;
+      prevIsOpenRef.current = false;
+      if (enterFrameRef.current !== null) {
+        cancelAnimationFrame(enterFrameRef.current);
+        enterFrameRef.current = null;
+      }
       setDrawerPhase('exiting');
       exitTimeoutRef.current = setTimeout(() => {
         exitTimeoutRef.current = null;
@@ -105,12 +112,20 @@ export const GlobalMenuDrawer = ({
         }
       };
     }
-    return undefined;
+    if (!isOpen) {
+      prevIsOpenRef.current = false;
+    }
+    return () => {
+      if (enterFrameRef.current !== null) {
+        cancelAnimationFrame(enterFrameRef.current);
+        enterFrameRef.current = null;
+      }
+    };
   }, [isOpen, readyToShow]);
 
   const isDrawerMounted = drawerPhase !== null;
-  const isExiting = drawerPhase === 'exiting';
   const isEntering = drawerPhase === 'entering';
+  const isExiting = drawerPhase === 'exiting';
   const isDrawerOpen = drawerPhase === 'open';
 
   useLayoutEffect(() => {
@@ -286,7 +301,7 @@ export const GlobalMenuDrawer = ({
 
   const backdropOpacity = isDrawerOpen ? 1 : 0;
   const panelTransform =
-    isEntering || isExiting ? 'translateX(100%)' : 'translateX(0)';
+    isExiting || isEntering ? 'translateX(100%)' : 'translateX(0)';
 
   const dialogContent = isDrawerMounted ? (
     <div
