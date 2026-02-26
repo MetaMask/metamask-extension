@@ -27,6 +27,7 @@ import {
 } from '../../../../shared/lib/storage-helpers';
 import { useAppSelector } from '../../../store/store';
 import { CandidateSubscriptionId } from '../../../ducks/rewards/types';
+import { IconName } from '@metamask/design-system-react';
 import { RewardsBadge } from './RewardsBadge';
 import {
   REWARDS_BADGE_HIDDEN,
@@ -67,7 +68,7 @@ export const RewardsPointsBalance = () => {
     candidateSubscriptionId ===
     'error-existing-subscription-hardware-wallet-explicit-sign';
 
-  const { optin, optinLoading } = useOptIn();
+  const { optin, optinLoading, optinError } = useOptIn();
 
   const isTestEnv = Boolean(process.env.IN_TEST);
 
@@ -181,13 +182,29 @@ export const RewardsPointsBalance = () => {
 
   // Show sign-in button if hardware wallet needs authentication
   if (!seasonStatusError && candidateSubscriptionIdErrorNeedsSignIn) {
-    return optinLoading ? (
-      <RewardsBadge
-        formattedPoints={t('rewardsSigningIn')}
-        withPointsSuffix={false}
-        boxClassName="gap-1 px-1.5 bg-background-muted rounded"
-      />
-    ) : (
+    if (optinLoading) {
+      return (
+        <RewardsBadge
+          formattedPoints={t('rewardsSigningIn')}
+          withPointsSuffix={false}
+          boxClassName="gap-1 px-1.5 bg-background-muted rounded"
+        />
+      );
+    }
+
+    if (optinError) {
+      return (
+        <RewardsBadge
+          formattedPoints={t('rewardsSignInFailed')}
+          withPointsSuffix={false}
+          boxClassName="gap-1 px-1.5 bg-background-muted rounded"
+          startIconName={IconName.Refresh}
+          onClick={handleSignIn}
+        />
+      );
+    }
+
+    return (
       <RewardsBadge
         formattedPoints={t('rewardsSignInToViewPoints')}
         withPointsSuffix={false}
