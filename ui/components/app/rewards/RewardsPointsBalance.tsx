@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import log from 'loglevel';
+import { IconName } from '@metamask/design-system-react';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { Skeleton } from '../../component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -27,7 +28,6 @@ import {
 } from '../../../../shared/lib/storage-helpers';
 import { useAppSelector } from '../../../store/store';
 import { CandidateSubscriptionId } from '../../../ducks/rewards/types';
-import { IconName } from '@metamask/design-system-react';
 import { RewardsBadge } from './RewardsBadge';
 import {
   REWARDS_BADGE_HIDDEN,
