@@ -42,6 +42,9 @@ const REMOVE_KEYS = [
   // SnapController
   'snapStates',
   'unencryptedSnapStates',
+
+  // RewardsController - sensitive tokens
+  'rewardsSubscriptionTokens',
 ];
 
 /*

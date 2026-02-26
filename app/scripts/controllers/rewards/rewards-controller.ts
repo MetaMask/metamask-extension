@@ -105,8 +105,8 @@ const metadata = {
   },
   rewardsSubscriptionTokens: {
     includeInStateLogs: false,
-    persist: true,
-    includeInDebugSnapshot: true,
+    persist: false,
+    includeInDebugSnapshot: false,
     usedInUi: false,
   },
   rewardsEnabled: {
