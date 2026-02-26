@@ -1,23 +1,35 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { EthGasPriceEstimate, GasFeeEstimates, LegacyGasPriceEstimate } from '@metamask/gas-fee-controller';
+import {
+  EthGasPriceEstimate,
+  GasFeeEstimates,
+  LegacyGasPriceEstimate,
+} from '@metamask/gas-fee-controller';
 import {
   EditGasModes,
   GasRecommendations,
 } from '../../../../shared/constants/gas';
-import { selectNetworkConfigurationByChainId } from '../../../selectors';
+import {
+  selectNetworkConfigurationByChainId,
+  selectTransactionMetadata,
+} from '../../../selectors';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
-import { useTransactionFunctions } from './useTransactionFunctions';
 import { editGasModeIsSpeedUpOrCancel } from '../../../helpers/utils/gas';
 import {
   hexToDecimal,
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
+import { useTransactionFunctions } from './useTransactionFunctions';
 
 export type UseCancelSpeedupGasStateReturn = {
   effectiveTransaction: TransactionMeta;
-  gasFeeEstimates: EthGasPriceEstimate | GasFeeEstimates | LegacyGasPriceEstimate | Record<string, never> | null;
+  gasFeeEstimates:
+    | EthGasPriceEstimate
+    | GasFeeEstimates
+    | LegacyGasPriceEstimate
+    | Record<string, never>
+    | null;
   cancelTransaction: () => void;
   speedUpTransaction: () => void;
   updateTransactionToTenPercentIncreasedGasFee: (
@@ -62,6 +74,10 @@ export function useCancelSpeedupGasState(
   const [retryTxMeta, setRetryTxMeta] =
     useState<Partial<TransactionMeta>>(initialRetryTxMeta);
 
+  const transactionFromStore = useSelector((state: Record<string, unknown>) =>
+    selectTransactionMetadata(state, transaction?.id),
+  ) as TransactionMeta | undefined;
+
   const network = useSelector((state: Record<string, unknown>) =>
     selectNetworkConfigurationByChainId(state, transaction?.chainId),
   );
@@ -76,17 +92,17 @@ export function useCancelSpeedupGasState(
       ?.defaultRpcEndpointIndex ?? 0
   ]?.networkClientId;
 
+  // Use store as single source of truth for display so SpeedRow and modal stay in sync.
+  // Initial gas rule and modal both update the store (updateTransactionGasFees).
   const effectiveTransaction = useMemo(() => {
-    const base = editGasModeIsSpeedUpOrCancel(editGasMode)
-      ? { ...transaction, ...retryTxMeta }
-      : transaction;
+    const sourceTx = transactionFromStore ?? transaction;
     return {
-      ...base,
+      ...sourceTx,
       networkClientId:
-        (base as TransactionMeta & { networkClientId?: string })
+        (sourceTx as TransactionMeta & { networkClientId?: string })
           .networkClientId ?? networkClientId,
     } as TransactionMeta;
-  }, [transaction, retryTxMeta, editGasMode, networkClientId]);
+  }, [transactionFromStore, transaction, networkClientId]);
 
   const { gasFeeEstimates } = useGasFeeEstimates(networkClientId);
 

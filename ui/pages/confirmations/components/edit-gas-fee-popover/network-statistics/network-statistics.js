@@ -9,13 +9,25 @@ import { isNullish } from '../../../../../helpers/utils/util';
 import { formatGasFeeOrFeeRange } from '../../../../../helpers/utils/gas';
 import { I18nContext } from '../../../../../contexts/i18n';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
+import { useGasFeeEstimates } from '../../../../../hooks/useGasFeeEstimates';
+import { useGasFeeModalContextOptional } from '../../../context/gas-fee-modal';
 import { Text } from '../../../../../components/component-library';
 import { BaseFeeTooltip, PriorityFeeTooltip } from './tooltips';
 import StatusSlider from './status-slider';
 
 const NetworkStatistics = ({ useRedesigned }) => {
   const t = useContext(I18nContext);
-  const { gasFeeEstimates } = useGasFeeContext();
+  const context = useGasFeeContext();
+  const gasModalContext = useGasFeeModalContextOptional();
+  const networkClientId = gasModalContext?.transactionMeta?.networkClientId;
+  const hasContextEstimates = Boolean(context?.gasFeeEstimates);
+  const { gasFeeEstimates: fallbackEstimates } = useGasFeeEstimates(
+    networkClientId,
+    !hasContextEstimates,
+  );
+  const gasFeeEstimates =
+    context?.gasFeeEstimates ?? fallbackEstimates ?? undefined;
+
   const formattedLatestBaseFee = formatGasFeeOrFeeRange(
     gasFeeEstimates?.estimatedBaseFee,
     {
@@ -84,7 +96,7 @@ const NetworkStatistics = ({ useRedesigned }) => {
         )}
         {isNullish(networkCongestion) ? null : (
           <div className="network-statistics__field">
-            <StatusSlider />
+            <StatusSlider gasFeeEstimates={gasFeeEstimates} />
           </div>
         )}
       </div>

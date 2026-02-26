@@ -143,12 +143,14 @@ type SpeedRowProps = {
   chainId: string;
   maxFeePerGas: string | undefined;
   maxPriorityFeePerGas: string | undefined;
+  userFeeLevelOverride?: string;
 };
 
 const SpeedRow = ({
   chainId,
   maxFeePerGas,
   maxPriorityFeePerGas,
+  userFeeLevelOverride,
 }: SpeedRowProps) => {
   const t = useI18nContext();
   return (
@@ -158,6 +160,7 @@ const SpeedRow = ({
           chainId={chainId}
           maxFeePerGas={maxFeePerGas as string}
           maxPriorityFeePerGas={maxPriorityFeePerGas as string}
+          userFeeLevelOverride={userFeeLevelOverride}
         />
       </Box>
     </ConfirmInfoRow>
@@ -192,6 +195,7 @@ const GasFeesSection = ({ transaction }: GasFeesSectionProps) => {
         chainId={transaction.chainId}
         maxFeePerGas={maxFeePerGas}
         maxPriorityFeePerGas={maxPriorityFeePerGas}
+        userFeeLevelOverride={transaction.userFeeLevel}
       />
     </ConfirmInfoSection>
   );
@@ -328,14 +332,14 @@ const CancelSpeedupContent = ({
       editGasMode={editGasMode}
     >
       <>
-      <GasFeeModalWrapper />
-      <CancelSpeedupModal
-        mode={editGasMode}
-        onClose={onClose}
-        effectiveTransaction={effectiveTransaction}
-        cancelTransaction={cancelTransaction}
-        speedUpTransaction={speedUpTransaction}
-      />
+        <GasFeeModalWrapper />
+        <CancelSpeedupModal
+          mode={editGasMode}
+          onClose={onClose}
+          effectiveTransaction={effectiveTransaction}
+          cancelTransaction={cancelTransaction}
+          speedUpTransaction={speedUpTransaction}
+        />
       </>
     </GasFeeModalContextProvider>
   );

@@ -1,7 +1,10 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { EditGasModes } from '../../../../shared/constants/gas';
+import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { useCancelSpeedupGasState } from './useCancelSpeedupGasState';
+
+import { useTransactionFunctions } from './useTransactionFunctions';
 
 jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
@@ -10,9 +13,6 @@ jest.mock('../../../hooks/useGasFeeEstimates', () => ({
 jest.mock('./useTransactionFunctions', () => ({
   useTransactionFunctions: jest.fn(),
 }));
-
-import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
-import { useTransactionFunctions } from './useTransactionFunctions';
 
 const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
 const mockUseTransactionFunctions = jest.mocked(useTransactionFunctions);
@@ -23,9 +23,12 @@ const mockNetwork = {
 };
 
 const mockSelectNetworkConfigurationByChainId = jest.fn();
+const mockSelectTransactionMetadata = jest.fn();
 jest.mock('../../../selectors', () => ({
   selectNetworkConfigurationByChainId: (...args: unknown[]) =>
     mockSelectNetworkConfigurationByChainId(...args),
+  selectTransactionMetadata: (...args: unknown[]) =>
+    mockSelectTransactionMetadata(...args),
 }));
 
 jest.mock('react-redux', () => ({
@@ -56,6 +59,7 @@ describe('useCancelSpeedupGasState', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSelectNetworkConfigurationByChainId.mockReturnValue(mockNetwork);
+    mockSelectTransactionMetadata.mockReturnValue(undefined);
     mockUseGasFeeEstimates.mockReturnValue({
       gasFeeEstimates: { medium: { suggestedMaxFeePerGas: '0x2' } },
     } as ReturnType<typeof mockUseGasFeeEstimates>);
@@ -97,13 +101,13 @@ describe('useCancelSpeedupGasState', () => {
     );
 
     expect(result.current.effectiveTransaction.id).toBe(transaction.id);
-    expect(result.current.effectiveTransaction.chainId).toBe(transaction.chainId);
+    expect(result.current.effectiveTransaction.chainId).toBe(
+      transaction.chainId,
+    );
     expect(result.current.effectiveTransaction.txParams).toEqual(
       transaction.txParams,
     );
-    expect(result.current.effectiveTransaction.networkClientId).toBe(
-      'mainnet',
-    );
+    expect(result.current.effectiveTransaction.networkClientId).toBe('mainnet');
   });
 
   it('merges transaction with retryTxMeta in effectiveTransaction when editGasMode is cancel', () => {

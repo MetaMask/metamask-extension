@@ -82,6 +82,15 @@ export const useGasFeeModalContext = () => {
   return context;
 };
 
+/**
+ * Optional getter for GasFeeModalContext. Returns undefined when outside
+ * GasFeeModalContextProvider (e.g. EditGasFeePopover on transaction list).
+ * Used by components that support both legacy useGasFeeContext and the
+ * GasFeeModalContextProvider flow (e.g. cancel-speedup).
+ */
+export const useGasFeeModalContextOptional = () =>
+  useContext(GasFeeModalContext);
+
 export const GasFeeModalWrapper = () => {
   const {
     isGasFeeModalVisible,

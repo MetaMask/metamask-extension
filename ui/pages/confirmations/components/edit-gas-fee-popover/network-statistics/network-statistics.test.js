@@ -2,7 +2,22 @@ import React from 'react';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import { GasFeeContext } from '../../../../../contexts/gasFee';
+import { useGasFeeEstimates } from '../../../../../hooks/useGasFeeEstimates';
+import { useGasFeeModalContextOptional } from '../../../context/gas-fee-modal';
 import NetworkStatistics from './network-statistics';
+
+jest.mock('../../../../../hooks/useGasFeeEstimates', () => ({
+  useGasFeeEstimates: jest.fn(),
+}));
+
+jest.mock('../../../context/gas-fee-modal', () => ({
+  useGasFeeModalContextOptional: jest.fn(),
+}));
+
+const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
+const mockUseGasFeeModalContextOptional = jest.mocked(
+  useGasFeeModalContextOptional,
+);
 
 const renderComponent = ({ gasFeeContext = {}, state = {} } = {}) => {
   const store = configureStore(state);
@@ -15,6 +30,11 @@ const renderComponent = ({ gasFeeContext = {}, state = {} } = {}) => {
 };
 
 describe('NetworkStatistics', () => {
+  beforeEach(() => {
+    mockUseGasFeeModalContextOptional.mockReturnValue(undefined);
+    mockUseGasFeeEstimates.mockReturnValue({ gasFeeEstimates: undefined });
+  });
+
   it('should render the latest base fee rounded to no decimal places', () => {
     const { getByText } = renderComponent({
       gasFeeContext: {
@@ -110,5 +130,44 @@ describe('NetworkStatistics', () => {
       },
     });
     expect(queryByTestId('status-slider-label')).not.toBeInTheDocument();
+  });
+
+  it('uses fallback from useGasFeeEstimates when context has no gasFeeEstimates and useGasFeeModalContextOptional provides transactionMeta', () => {
+    mockUseGasFeeModalContextOptional.mockReturnValue({
+      transactionMeta: { networkClientId: 'mainnet' },
+    });
+    mockUseGasFeeEstimates.mockReturnValue({
+      gasFeeEstimates: {
+        estimatedBaseFee: '50',
+        latestPriorityFeeRange: ['1', '3'],
+        networkCongestion: 0.5,
+      },
+    });
+
+    const { getByText } = renderComponent({ gasFeeContext: {} });
+
+    expect(getByText('50 GWEI')).toBeInTheDocument();
+    expect(getByText('1 - 3 GWEI')).toBeInTheDocument();
+    expect(getByText('Stable')).toBeInTheDocument();
+  });
+
+  it('uses context gasFeeEstimates when present and ignores fallback', () => {
+    mockUseGasFeeEstimates.mockReturnValue({
+      gasFeeEstimates: {
+        estimatedBaseFee: '50',
+        latestPriorityFeeRange: ['1', '3'],
+        networkCongestion: 0.5,
+      },
+    });
+
+    const { getByText } = renderComponent({
+      gasFeeContext: {
+        gasFeeEstimates: {
+          estimatedBaseFee: '99.5',
+        },
+      },
+    });
+
+    expect(getByText('100 GWEI')).toBeInTheDocument();
   });
 });
