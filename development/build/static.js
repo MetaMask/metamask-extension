@@ -106,10 +106,7 @@ module.exports = function createStaticAssetTasks({
   }
 };
 
-function getCopyTargets(
-  shouldIncludeLockdown,
-  shouldIncludeSnow,
-) {
+function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
   const allCopyTargets = [
     {
       src: `./app/_locales/`,

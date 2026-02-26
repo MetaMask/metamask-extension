@@ -13,7 +13,6 @@ const lavapack = require('@lavamoat/lavapack');
 const difference = require('lodash/difference');
 const intersection = require('lodash/intersection');
 
-const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 const { getVersion } = require('../lib/get-version');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { BUILD_TARGETS, TASKS } = require('./constants');
