@@ -6,8 +6,8 @@ import {
 import { Hex } from '@metamask/utils';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
-  Messenger,
   MOCK_ANY_NAMESPACE,
+  Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
@@ -185,6 +185,22 @@ describe('EnforceSimulationHook', () => {
           transactionMeta: {
             ...TRANSACTION_META_MOCK,
             containerTypes: [TransactionContainerType.EnforcedSimulations],
+          },
+        })) ?? {};
+
+      expect(updateTransaction).toBeUndefined();
+    });
+
+    it('container types exist but user opted out (empty array)', async () => {
+      const hook = new EnforceSimulationHook({
+        messenger,
+      }).getAfterSimulateHook();
+
+      const { updateTransaction } =
+        (await hook({
+          transactionMeta: {
+            ...TRANSACTION_META_MOCK,
+            containerTypes: [],
           },
         })) ?? {};
 
