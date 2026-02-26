@@ -27,7 +27,7 @@ const FILE_SOURCES: Array<{
 }> = [
   {
     key: 'ASSETS_UNIFY_STATE_FLAG',
-    file: 'ui/selectors/assets-unify-state/feature-flags.ts',
+    file: 'shared/lib/assets-unify-state/remote-feature-flag.ts',
     exportName: 'ASSETS_UNIFY_STATE_FLAG',
   },
   {
