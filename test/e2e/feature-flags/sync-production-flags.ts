@@ -22,11 +22,7 @@
 
 import { isEqual } from 'lodash';
 import chalk from 'chalk';
-import {
-  FEATURE_FLAG_REGISTRY,
-  FeatureFlagType,
-  getProductionRemoteFlagDefaults,
-} from './feature-flag-registry';
+import { getProductionRemoteFlagDefaults } from './feature-flag-registry';
 
 const PRODUCTION_FLAGS_URL =
   'https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod';
@@ -48,7 +44,10 @@ export type SyncResult = {
 
 /**
  * Parses the production API response (array of single-key objects) into a flat map.
- * @param response
+ * Skips and warns for unexpected formats (multi-key or empty objects).
+ *
+ * @param response - Raw API response array
+ * @returns Flat map of flag name to value
  */
 function parseProductionResponse(
   response: Record<string, unknown>[],
@@ -59,6 +58,10 @@ function parseProductionResponse(
       const keys = Object.keys(item);
       if (keys.length === 1) {
         map[keys[0]] = item[keys[0]];
+      } else if (keys.length > 1) {
+        console.warn(
+          `[sync] Skipping unexpected multi-key object (expected single-key): ${JSON.stringify(item)}`,
+        );
       }
     }
   }
@@ -69,25 +72,21 @@ function parseProductionResponse(
  * Compares production flags to the registry and returns drift information.
  *
  * @param productionApiResponse - Raw API response (array of { flagName: value })
+ * @param registryMap - Optional. Override for testing; defaults to getProductionRemoteFlagDefaults()
  * @returns SyncResult with new, removed, and mismatched flags
  */
 export function compareProductionFlagsToRegistry(
   productionApiResponse: Record<string, unknown>[],
+  registryMap?: Record<string, unknown>,
 ): SyncResult {
   const prodMap = parseProductionResponse(productionApiResponse);
-  const registryMap = getProductionRemoteFlagDefaults() as Record<
+  const registry = (registryMap ?? getProductionRemoteFlagDefaults()) as Record<
     string,
     unknown
   >;
 
   const prodKeys = new Set(Object.keys(prodMap));
-  const registryKeys = new Set(
-    Object.entries(FEATURE_FLAG_REGISTRY)
-      .filter(
-        ([, entry]) => entry.type === FeatureFlagType.Remote && entry.inProd,
-      )
-      .map(([name]) => name),
-  );
+  const registryKeys = new Set(Object.keys(registry));
 
   const newInProduction: SyncResult['newInProduction'] = [];
   const removedFromProduction: SyncResult['removedFromProduction'] = [];
@@ -96,11 +95,11 @@ export function compareProductionFlagsToRegistry(
   for (const name of prodKeys) {
     if (!registryKeys.has(name)) {
       newInProduction.push({ name, value: prodMap[name] });
-    } else if (!isEqual(prodMap[name], registryMap[name])) {
+    } else if (!isEqual(prodMap[name], registry[name])) {
       valueMismatches.push({
         name,
         productionValue: prodMap[name],
-        registryValue: registryMap[name],
+        registryValue: registry[name],
       });
     }
   }
@@ -109,7 +108,7 @@ export function compareProductionFlagsToRegistry(
     if (!prodKeys.has(name)) {
       removedFromProduction.push({
         name,
-        registryValue: registryMap[name],
+        registryValue: registry[name],
       });
     }
   }
@@ -201,11 +200,7 @@ function formatSyncReport(result: SyncResult): string {
         `Value mismatches (registry vs production) [${valueMismatches.length}]:`,
       ),
     );
-    for (const {
-      name,
-      productionValue,
-      registryValue,
-    } of valueMismatches) {
+    for (const { name, productionValue, registryValue } of valueMismatches) {
       lines.push(chalk.red(`  - ${name}:`));
       lines.push(`      registry:   ${JSON.stringify(registryValue)}`);
       lines.push(`      production: ${JSON.stringify(productionValue)}`);
@@ -216,7 +211,7 @@ function formatSyncReport(result: SyncResult): string {
 
   // Summary at end
   if (result.hasDrift) {
-    const green = chalk.green;
+    const { green } = chalk;
     lines.push(sectionTitle('--- Summary ---'));
     lines.push(
       `  ${green('New flags in production')}: ${result.newInProduction.length}`,

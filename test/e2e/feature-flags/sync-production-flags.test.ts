@@ -1,14 +1,21 @@
-import { getProductionRemoteFlagApiResponse } from './feature-flag-registry';
+import {
+  getProductionRemoteFlagApiResponse,
+  getProductionRemoteFlagDefaults,
+} from './feature-flag-registry';
 import { compareProductionFlagsToRegistry } from './sync-production-flags';
 
 describe('sync-production-flags', () => {
   describe('compareProductionFlagsToRegistry', () => {
     it('detects new flags in production not in registry', () => {
+      const registryMap = { addSolanaAccount: true };
       const prodResponse = [
         { addSolanaAccount: true },
         { brandNewFlag: { enabled: true } },
       ];
-      const result = compareProductionFlagsToRegistry(prodResponse);
+      const result = compareProductionFlagsToRegistry(
+        prodResponse,
+        registryMap,
+      );
 
       expect(result.newInProduction).toContainEqual({
         name: 'brandNewFlag',
@@ -18,12 +25,15 @@ describe('sync-production-flags', () => {
     });
 
     it('detects value mismatches between registry and production', () => {
-      // addSolanaAccount is true in registry - use false in prod to trigger mismatch
+      const registryMap = { addSolanaAccount: true, addBitcoinAccount: false };
       const prodResponse = [
         { addSolanaAccount: false },
         { addBitcoinAccount: false },
       ];
-      const result = compareProductionFlagsToRegistry(prodResponse);
+      const result = compareProductionFlagsToRegistry(
+        prodResponse,
+        registryMap,
+      );
 
       const addSolanaMismatch = result.valueMismatches.find(
         (m) => m.name === 'addSolanaAccount',
@@ -35,18 +45,34 @@ describe('sync-production-flags', () => {
     });
 
     it('detects flags in registry no longer in production', () => {
+      const registryMap = { someRemovedFlag: true };
       const prodResponse: Record<string, unknown>[] = [];
-      const result = compareProductionFlagsToRegistry(prodResponse);
+      const result = compareProductionFlagsToRegistry(
+        prodResponse,
+        registryMap,
+      );
 
-      expect(result.removedFromProduction.length).toBeGreaterThan(0);
+      expect(result.removedFromProduction).toContainEqual({
+        name: 'someRemovedFlag',
+        registryValue: true,
+      });
       expect(result.hasDrift).toBe(true);
     });
 
     it('returns hasDrift false when production matches registry', () => {
-      const registryResponse = getProductionRemoteFlagApiResponse();
-      const prodResponse = registryResponse as Record<string, unknown>[];
+      const registryMap = getProductionRemoteFlagDefaults() as Record<
+        string,
+        unknown
+      >;
+      const prodResponse = getProductionRemoteFlagApiResponse() as Record<
+        string,
+        unknown
+      >[];
 
-      const result = compareProductionFlagsToRegistry(prodResponse);
+      const result = compareProductionFlagsToRegistry(
+        prodResponse,
+        registryMap,
+      );
 
       expect(result.newInProduction).toHaveLength(0);
       expect(result.removedFromProduction).toHaveLength(0);
@@ -55,12 +81,16 @@ describe('sync-production-flags', () => {
     });
 
     it('parses production API format (array of single-key objects)', () => {
+      const registryMap = {};
       const prodResponse = [
         { flagA: true },
         { flagB: { nested: 'value' } },
         { flagC: [1, 2, 3] },
       ];
-      const result = compareProductionFlagsToRegistry(prodResponse);
+      const result = compareProductionFlagsToRegistry(
+        prodResponse,
+        registryMap,
+      );
 
       expect(result.newInProduction).toContainEqual({
         name: 'flagA',
