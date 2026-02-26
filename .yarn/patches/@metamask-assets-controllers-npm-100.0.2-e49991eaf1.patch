@@ -1,0 +1,28 @@
+diff --git a/dist/multi-chain-accounts-service/api-balance-fetcher.cjs b/dist/multi-chain-accounts-service/api-balance-fetcher.cjs
+index 6ae7034bd87dfdaa49324fd36a340689df45960e..4719739bf194f5fb8669f382b021b54952294508 100644
+--- a/dist/multi-chain-accounts-service/api-balance-fetcher.cjs
++++ b/dist/multi-chain-accounts-service/api-balance-fetcher.cjs
+@@ -150,7 +150,10 @@ class AccountsApiBalanceFetcher {
+             chains.forEach((chainId) => {
+                 const key = `${address}-${chainId}`;
+                 const existingBalance = nativeBalancesFromAPI.get(key);
+-                if (!existingBalance) {
++                const isChainIncludedInRequest = chainIds.includes(chainId);
++                const isChainSupported = this.supports(chainId);
++                const shouldZeroOutBalance = !existingBalance && isChainIncludedInRequest && isChainSupported;
++                if (shouldZeroOutBalance) {
+                     // Add zero native balance entry if API succeeded but didn't return one
+                     results.push({
+                         success: true,
+@@ -172,7 +175,10 @@ class AccountsApiBalanceFetcher {
+                         const key = `${account.toLowerCase()}-${tokenLowerCase}-${chainId}`;
+                         const isERC = tokenAddress !== ZERO_ADDRESS;
+                         const existingBalance = nonNativeBalancesFromAPI.get(key);
+-                        if (isERC && !existingBalance) {
++                        const isChainIncludedInRequest = chainIds.includes(chainId);
++                        const isChainSupported = this.supports(chainId);
++                        const shouldZeroOutBalance = !existingBalance && isChainIncludedInRequest && isChainSupported;
++                        if (isERC && shouldZeroOutBalance) {
+                             results.push({
+                                 success: true,
+                                 value: new bn_js_1.default('0'),
