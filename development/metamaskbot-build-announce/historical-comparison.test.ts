@@ -1,16 +1,12 @@
 import {
   aggregateHistoricalData,
-  fetchHistoricalUiStartupData,
-  type HistoricalUiStartupFile,
+  fetchHistoricalPerformanceData,
+  type HistoricalPerformanceFile,
 } from './historical-comparison';
 
-// ---------------------------------------------------------------------------
-// Fixtures
-// ---------------------------------------------------------------------------
-
 const makeCommit = (
-  overrides: Partial<HistoricalUiStartupFile[string]> = {},
-): HistoricalUiStartupFile[string] => ({
+  overrides: Partial<HistoricalPerformanceFile[string]> = {},
+): HistoricalPerformanceFile[string] => ({
   timestamp: 1_700_000_000,
   presets: {
     pageLoad: {
@@ -27,7 +23,7 @@ const makeCommit = (
   ...overrides,
 });
 
-const mockFile: HistoricalUiStartupFile = {
+const mockFile: HistoricalPerformanceFile = {
   abc123: makeCommit(),
   def456: makeCommit({
     presets: {
@@ -39,10 +35,6 @@ const mockFile: HistoricalUiStartupFile = {
     },
   }),
 };
-
-// ---------------------------------------------------------------------------
-// aggregateHistoricalData
-// ---------------------------------------------------------------------------
 
 describe('aggregateHistoricalData', () => {
   beforeEach(() => {
@@ -68,7 +60,7 @@ describe('aggregateHistoricalData', () => {
   });
 
   it('uses the latest commit even when earlier commits have bad presets', () => {
-    const data: HistoricalUiStartupFile = {
+    const data: HistoricalPerformanceFile = {
       bad1: { timestamp: 1, presets: {} },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       bad2: { timestamp: 2, presets: null as any },
@@ -81,7 +73,7 @@ describe('aggregateHistoricalData', () => {
   });
 
   it('skips benchmark entries where mean is null or missing', () => {
-    const data: HistoricalUiStartupFile = {
+    const data: HistoricalPerformanceFile = {
       c1: {
         timestamp: 1,
         presets: {
@@ -101,7 +93,7 @@ describe('aggregateHistoricalData', () => {
   });
 
   it('skips NaN metric values', () => {
-    const data: HistoricalUiStartupFile = {
+    const data: HistoricalPerformanceFile = {
       c1: {
         timestamp: 1,
         presets: {
@@ -119,7 +111,7 @@ describe('aggregateHistoricalData', () => {
   });
 
   it('parses string-encoded metric values', () => {
-    const data: HistoricalUiStartupFile = {
+    const data: HistoricalPerformanceFile = {
       c1: {
         timestamp: 1,
         presets: {
@@ -137,11 +129,7 @@ describe('aggregateHistoricalData', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// fetchHistoricalUiStartupData
-// ---------------------------------------------------------------------------
-
-describe('fetchHistoricalUiStartupData', () => {
+describe('fetchHistoricalPerformanceData', () => {
   const mockFetch = jest.fn();
 
   beforeEach(() => {
@@ -161,29 +149,28 @@ describe('fetchHistoricalUiStartupData', () => {
       json: () => Promise.resolve(body),
     } as Response);
 
-  const makeNotFoundResponse = () =>
-    Promise.resolve({ ok: false } as Response);
+  const makeNotFoundResponse = () => Promise.resolve({ ok: false } as Response);
 
   it('returns aggregated data when target branch has history', async () => {
     mockFetch.mockReturnValue(makeOkResponse(mockFile));
 
-    const result = await fetchHistoricalUiStartupData('main');
+    const result = await fetchHistoricalPerformanceData('main');
 
     expect(result).not.toBeNull();
     expect(result?.standardHome?.uiStartup).toBe(2000);
     // Should fetch the target branch file directly
     expect(mockFetch).toHaveBeenCalledWith(
-      expect.stringContaining('main/ui_startup_data.json'),
+      expect.stringContaining('main/performance_data.json'),
     );
   });
 
   it('sanitizes branch names with slashes', async () => {
     mockFetch.mockReturnValue(makeOkResponse(mockFile));
 
-    await fetchHistoricalUiStartupData('release/12.5.0');
+    await fetchHistoricalPerformanceData('release/12.5.0');
 
     expect(mockFetch).toHaveBeenCalledWith(
-      expect.stringContaining('release-12.5.0/ui_startup_data.json'),
+      expect.stringContaining('release-12.5.0/performance_data.json'),
     );
   });
 
@@ -198,11 +185,11 @@ describe('fetchHistoricalUiStartupData', () => {
       .mockReturnValueOnce(makeOkResponse(releaseDirs)) // GitHub API listing
       .mockReturnValueOnce(makeOkResponse(mockFile)); // release-12.5.0 data
 
-    const result = await fetchHistoricalUiStartupData('main');
+    const result = await fetchHistoricalPerformanceData('main');
 
     expect(result).not.toBeNull();
     expect(mockFetch).toHaveBeenCalledWith(
-      expect.stringContaining('release-12.5.0/ui_startup_data.json'),
+      expect.stringContaining('release-12.5.0/performance_data.json'),
     );
   });
 
@@ -218,11 +205,12 @@ describe('fetchHistoricalUiStartupData', () => {
       .mockReturnValueOnce(makeOkResponse(releaseDirs)) // listing
       .mockReturnValueOnce(makeOkResponse(mockFile)); // first tried: release-12.10.0
 
-    await fetchHistoricalUiStartupData('main');
+    await fetchHistoricalPerformanceData('main');
 
     const calls = mockFetch.mock.calls.map((c: [string]) => c[0]);
-    const releaseCall = calls.find((url: string) =>
-      url.includes('release-') && url.includes('ui_startup_data.json'),
+    const releaseCall = calls.find(
+      (url: string) =>
+        url.includes('release-') && url.includes('performance_data.json'),
     );
     expect(releaseCall).toContain('release-12.10.0');
   });
@@ -232,7 +220,7 @@ describe('fetchHistoricalUiStartupData', () => {
       .mockReturnValueOnce(makeNotFoundResponse()) // target branch
       .mockReturnValueOnce(makeOkResponse([])); // empty listing
 
-    const result = await fetchHistoricalUiStartupData('main');
+    const result = await fetchHistoricalPerformanceData('main');
 
     expect(result).toBeNull();
   });
@@ -242,7 +230,7 @@ describe('fetchHistoricalUiStartupData', () => {
       .mockReturnValueOnce(makeNotFoundResponse()) // target branch
       .mockReturnValueOnce(makeNotFoundResponse()); // listing API non-OK
 
-    const result = await fetchHistoricalUiStartupData('main');
+    const result = await fetchHistoricalPerformanceData('main');
 
     expect(result).toBeNull();
   });
@@ -258,7 +246,7 @@ describe('fetchHistoricalUiStartupData', () => {
       .mockReturnValueOnce(makeOkResponse(releaseDirs)) // listing
       .mockReturnValueOnce(makeOkResponse(mockFile)); // first release
 
-    const result = await fetchHistoricalUiStartupData('main');
+    const result = await fetchHistoricalPerformanceData('main');
 
     expect(result).not.toBeNull();
   });
@@ -266,7 +254,7 @@ describe('fetchHistoricalUiStartupData', () => {
   it('returns null when fetch throws', async () => {
     mockFetch.mockRejectedValue(new Error('network error'));
 
-    const result = await fetchHistoricalUiStartupData('main');
+    const result = await fetchHistoricalPerformanceData('main');
 
     expect(result).toBeNull();
   });
@@ -275,11 +263,11 @@ describe('fetchHistoricalUiStartupData', () => {
     process.env.GITHUB_BASE_REF = 'release/12.5.0';
     mockFetch.mockReturnValue(makeOkResponse(mockFile));
 
-    const result = await fetchHistoricalUiStartupData();
+    const result = await fetchHistoricalPerformanceData();
 
     expect(result).not.toBeNull();
     expect(mockFetch).toHaveBeenCalledWith(
-      expect.stringContaining('release-12.5.0/ui_startup_data.json'),
+      expect.stringContaining('release-12.5.0/performance_data.json'),
     );
 
     delete process.env.GITHUB_BASE_REF;
@@ -289,11 +277,11 @@ describe('fetchHistoricalUiStartupData', () => {
     delete process.env.GITHUB_BASE_REF;
     mockFetch.mockReturnValue(makeOkResponse(mockFile));
 
-    const result = await fetchHistoricalUiStartupData();
+    const result = await fetchHistoricalPerformanceData();
 
     expect(result).not.toBeNull();
     expect(mockFetch).toHaveBeenCalledWith(
-      expect.stringContaining('main/ui_startup_data.json'),
+      expect.stringContaining('main/performance_data.json'),
     );
   });
 
@@ -309,11 +297,11 @@ describe('fetchHistoricalUiStartupData', () => {
       .mockReturnValueOnce(makeOkResponse({})) // release-12.5.0: empty object
       .mockReturnValueOnce(makeOkResponse(mockFile)); // release-12.4.0: has data
 
-    const result = await fetchHistoricalUiStartupData('main');
+    const result = await fetchHistoricalPerformanceData('main');
 
     expect(result).not.toBeNull();
     expect(mockFetch).toHaveBeenCalledWith(
-      expect.stringContaining('release-12.4.0/ui_startup_data.json'),
+      expect.stringContaining('release-12.4.0/performance_data.json'),
     );
   });
 
@@ -331,13 +319,13 @@ describe('fetchHistoricalUiStartupData', () => {
       .mockReturnValueOnce(makeOkResponse(releaseDirs))
       .mockReturnValueOnce(makeOkResponse(mockFile));
 
-    await fetchHistoricalUiStartupData('main');
+    await fetchHistoricalPerformanceData('main');
 
     // release-12.5.1 should be tried first (highest version)
     const calls = mockFetch.mock.calls.map((c: [string]) => c[0]);
     const releaseCall = calls.find(
       (url: string) =>
-        url.includes('release-') && url.includes('ui_startup_data.json'),
+        url.includes('release-') && url.includes('performance_data.json'),
     );
     expect(releaseCall).toContain('release-12.5.1');
   });
@@ -354,7 +342,7 @@ describe('fetchHistoricalUiStartupData', () => {
       .mockReturnValueOnce(makeOkResponse(items))
       .mockReturnValueOnce(makeOkResponse(mockFile));
 
-    await fetchHistoricalUiStartupData('other-branch');
+    await fetchHistoricalPerformanceData('other-branch');
 
     // README.md and main (not release-*) should not be fetched
     const fetchedUrls = mockFetch.mock.calls.map((c: [string]) => c[0]);
@@ -365,24 +353,21 @@ describe('fetchHistoricalUiStartupData', () => {
     expect(
       fetchedUrls.some(
         (u: string) =>
-          u.includes('/main/ui_startup_data.json') &&
+          u.includes('/main/performance_data.json') &&
           !u.includes('other-branch'),
       ),
     ).toBe(false);
   });
 
   it('skips the target branch in the fallback loop to avoid double-fetching', async () => {
-    const releaseDirs = [
-      { name: 'release-12.5.0', type: 'dir' },
-    ];
+    const releaseDirs = [{ name: 'release-12.5.0', type: 'dir' }];
 
     // release-12.5.0 is also the sanitized target branch
     mockFetch
       .mockReturnValueOnce(makeNotFoundResponse()) // release-12.5.0 (target)
-      .mockReturnValueOnce(makeOkResponse(releaseDirs)) // listing
-    ; // no 3rd call expected since it was already tried
+      .mockReturnValueOnce(makeOkResponse(releaseDirs)); // listing // no 3rd call expected since it was already tried
 
-    const result = await fetchHistoricalUiStartupData('release/12.5.0');
+    const result = await fetchHistoricalPerformanceData('release/12.5.0');
 
     expect(result).toBeNull();
     // Only 2 fetch calls — target + listing; release-12.5.0 not re-fetched

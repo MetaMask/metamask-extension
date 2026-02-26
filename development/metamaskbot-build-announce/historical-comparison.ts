@@ -1,21 +1,23 @@
 /**
- * Historical data fetch and aggregation for UI startup benchmarks.
+ * Historical data fetch and aggregation for performance benchmarks.
  *
  * Retrieves benchmark data from MetaMask/extension_benchmark_stats
  * and aggregates it into a mean-of-means reference for PR comment comparisons.
  */
-import type { BenchmarkResults } from '../../test/e2e/benchmarks/utils/types';
+import type { BenchmarkResults } from '../../shared/constants/benchmarks';
 
 const STATS_REPO_BASE =
   'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats';
 
 /**
- * All presets in ui_startup_data.json share the same nested shape:
+ * All presets in performance_data.json share the same nested shape:
  * preset name → benchmark name → benchmark result.
  *
- * - pageLoad:         { "standardHome": { "mean": {...} }, "powerUserHome": { "mean": {...} } }
- * - userActions:      { "loadNewAccount": { "mean": {...} }, "confirmTx": { "mean": {...} } }
- * - performance*:     { "signTypedData": { "mean": {...} }, ... }
+ * - startupStandardHome:        { "uiStartup": { "mean": {...} }, ... }
+ * - startupPowerUserHome:       { "uiStartup": { "mean": {...} }, ... }
+ * - interactionUserActions:     { "loadNewAccount": { "mean": {...} }, "confirmTx": { "mean": {...} } }
+ * - userJourneyAssets:          { "assetClickToPriceChart": { "mean": {...} }, ... }
+ * - pageLoad (legacy group):    { "chrome-browserify-standardHome": { "mean": {...} }, ... }
  */
 type NestedPresetEntry = Record<string, Partial<BenchmarkResults>>;
 
@@ -24,7 +26,7 @@ type HistoricalCommitEntry = {
   presets: Record<string, NestedPresetEntry>;
 };
 
-export type HistoricalUiStartupFile = Record<string, HistoricalCommitEntry>;
+export type HistoricalPerformanceFile = Record<string, HistoricalCommitEntry>;
 
 export type HistoricalMeanReference = Record<string, Record<string, number>>;
 
@@ -33,38 +35,36 @@ export type HistoricalMeanReference = Record<string, Record<string, number>>;
 const STATS_REPO_API =
   'https://api.github.com/repos/MetaMask/extension_benchmark_stats/contents/stats?ref=main';
 
-// --- Fetch & Aggregate ---
-
 /**
  * Sanitizes a branch name for use as a URL path segment.
  * Mirrors the sed transform in benchmark-stats-commit.sh:
- *   "release/12.x" → "release-12.x", "main" → "main"
+ * "release/12.x" → "release-12.x", "main" → "main"
  *
  * @param branch - Raw branch name.
  * @returns URL-safe branch slug.
  */
 function sanitizeBranch(branch: string): string {
-  return branch.replace(/\//g, '-');
+  return branch.replace(/\//gu, '-');
 }
 
 /**
- * Fetches and parses ui_startup_data.json for a given sanitized branch slug.
+ * Fetches and parses performance_data.json for a given sanitized branch slug.
  * Returns null if the file does not exist or cannot be parsed.
  *
  * @param safeBranch - Sanitized branch name (e.g. "release-12.5.0").
  * @returns Parsed file contents or null.
  */
-async function fetchUiStartupFile(
+async function fetchPerformanceFile(
   safeBranch: string,
-): Promise<HistoricalUiStartupFile | null> {
+): Promise<HistoricalPerformanceFile | null> {
   try {
     const response = await fetch(
-      `${STATS_REPO_BASE}/${safeBranch}/ui_startup_data.json`,
+      `${STATS_REPO_BASE}/${safeBranch}/performance_data.json`,
     );
     if (!response.ok) {
       return null;
     }
-    return (await response.json()) as HistoricalUiStartupFile;
+    return (await response.json()) as HistoricalPerformanceFile;
   } catch {
     return null;
   }
@@ -91,7 +91,10 @@ async function listReleaseBranchesByVersion(): Promise<string[]> {
 
     releaseDirs.sort((a, b) => {
       const parse = (s: string) =>
-        s.replace(/^release-/, '').split('.').map(Number);
+        s
+          .replace(/^release-/u, '')
+          .split('.')
+          .map(Number);
       const av = parse(a);
       const bv = parse(b);
       for (let i = 0; i < Math.max(av.length, bv.length); i++) {
@@ -110,32 +113,34 @@ async function listReleaseBranchesByVersion(): Promise<string[]> {
 }
 
 /**
- * Fetches historical UI startup data from extension_benchmark_stats,
+ * Fetches historical performance data from extension_benchmark_stats,
  * always resolving to the latest release branch that has data.
  *
  * Strategy (in order):
- *  1. Try the current PR target branch (GITHUB_BASE_REF).
- *  2. If no data yet (e.g. newly cut release branch), walk release branches
- *     in descending semver order and use the first one that has data.
- *  3. Return null if nothing is found.
+ * 1. Try the current PR target branch (GITHUB_BASE_REF).
+ * 2. If no data yet (e.g. newly cut release branch), walk release branches
+ * in descending semver order and use the first one that has data.
+ * 3. Return null if nothing is found.
  *
  * This ensures every PR compares against the most recently released baseline,
  * even on a brand-new release branch with no history yet.
  *
  * @param baseBranch - PR target branch (e.g. "release/12.6.0").
- *                     Defaults to GITHUB_BASE_REF, falling back to "main".
+ * Defaults to GITHUB_BASE_REF, falling back to "main".
  * @returns Reference map (benchmarkName → metric → mean), or null if unavailable.
  */
-export async function fetchHistoricalUiStartupData(
+export async function fetchHistoricalPerformanceData(
   baseBranch: string = process.env.GITHUB_BASE_REF ?? 'main',
 ): Promise<HistoricalMeanReference | null> {
   const safeBranch = sanitizeBranch(baseBranch);
 
   // 1. Try the target branch first
-  const currentData = await fetchUiStartupFile(safeBranch);
+  const currentData = await fetchPerformanceFile(safeBranch);
   if (currentData && Object.keys(currentData).length > 0) {
     console.log(`Using historical data from branch "${baseBranch}"`);
-    console.log(`[DEBUG] Fetched commits: ${Object.keys(currentData).join(', ')}`);
+    console.log(
+      `[DEBUG] Fetched commits: ${Object.keys(currentData).join(', ')}`,
+    );
     console.log(`[DEBUG] Raw data: ${JSON.stringify(currentData, null, 2)}`);
     return aggregateHistoricalData(currentData);
   }
@@ -148,9 +153,9 @@ export async function fetchHistoricalUiStartupData(
 
   for (const branch of releaseBranches) {
     if (branch === safeBranch) {
-      continue; // already tried
+      continue;
     }
-    const data = await fetchUiStartupFile(branch);
+    const data = await fetchPerformanceFile(branch);
     if (data && Object.keys(data).length > 0) {
       console.log(`Falling back to historical data from "${branch}"`);
       console.log(`[DEBUG] Fetched commits: ${Object.keys(data).join(', ')}`);
@@ -159,7 +164,7 @@ export async function fetchHistoricalUiStartupData(
     }
   }
 
-  console.warn('No historical UI startup data found in any release branch.');
+  console.warn('No historical performance data found in any release branch.');
   return null;
 }
 
@@ -197,7 +202,9 @@ function collectMetrics(
       collected[benchmarkName][metricName] = [];
     }
     collected[benchmarkName][metricName].push(numValue);
-    console.log(`[DEBUG] Collected ${benchmarkName}.${metricName} = ${numValue}`);
+    console.log(
+      `[DEBUG] Collected ${benchmarkName}.${metricName} = ${numValue}`,
+    );
   }
 }
 
@@ -215,7 +222,7 @@ function collectMetrics(
  * @returns Aggregated reference map.
  */
 export function aggregateHistoricalData(
-  data: HistoricalUiStartupFile,
+  data: HistoricalPerformanceFile,
 ): HistoricalMeanReference {
   // Each benchmark run already samples 5–100 times and computes its own mean/stdDev,
   // so a single commit's data is statistically sufficient as a baseline.
@@ -223,7 +230,7 @@ export function aggregateHistoricalData(
   const latestCommits = commitHashes.slice(0, 1);
 
   console.log(
-    `Aggregating UI startup data from ${latestCommits.length} commits: ${latestCommits.join(', ')}`,
+    `Aggregating performance data from ${latestCommits.length} commits: ${latestCommits.join(', ')}`,
   );
 
   const collected: Record<string, Record<string, number[]>> = {};

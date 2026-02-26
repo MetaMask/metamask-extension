@@ -1,29 +1,14 @@
 #!/usr/bin/env bash
 #
 # Pushes benchmark results to MetaMask/extension_benchmark_stats.
+# Called twice per CI run (once per mode), writing to separate stats files
+# under stats/{branch}/, both keyed by commit hash.
 #
-# Supports two modes via the BENCHMARK_DATA_TYPE env var:
+# Modes (BENCHMARK_DATA_TYPE):
+#   dapp-page-load (default) - appends a single dapp page-load JSON to dapp_page_load_data.json
+#   performance              - aggregates Selenium-based benchmark JSONs (startup, interaction,
+#                              user-journey) into performance_data.json
 #
-#   page-load (default)
-#     Reads a single benchmark JSON file and appends it as-is
-#     to stats/page_load_data.json, keyed by commit hash.
-#
-#   ui-startup
-#     Reads multiple chrome-browserify benchmark JSON files from a directory,
-#     wraps them with a timestamp and preset map, and appends to
-#     stats/ui_startup_data.json, keyed by commit hash.
-#
-# Required env vars:
-#   EXTENSION_BENCHMARK_STATS_TOKEN - GitHub token for pushing to stats repo
-#   HEAD_COMMIT_HASH                - Commit hash to key the data
-#   OWNER                           - GitHub repo owner (e.g. "MetaMask")
-#
-# Optional env vars:
-#   BENCHMARK_DATA_TYPE     - "page-load" (default) or "ui-startup"
-#   BENCHMARK_FILE          - Path to single benchmark JSON (page-load mode)
-#   BENCHMARK_RESULTS_DIR   - Directory with benchmark JSONs (ui-startup mode)
-#   BRANCH_NAME             - Branch to store data under (default "main"); used as
-#                             subdirectory path in the stats repo (release/12.x → release-12.x)
 
 set -e
 set -u
@@ -44,7 +29,7 @@ if [[ -z "${OWNER:-}" ]]; then
     exit 1
 fi
 
-DATA_TYPE="${BENCHMARK_DATA_TYPE:-page-load}"
+DATA_TYPE="${BENCHMARK_DATA_TYPE:-dapp-page-load}"
 CLONE_DIR="temp-benchmark-stats"
 
 # Sanitize branch name for use as a directory (e.g. release/12.x → release-12.x)
@@ -52,8 +37,8 @@ RAW_BRANCH="${BRANCH_NAME:-main}"
 SAFE_BRANCH=$(echo "${RAW_BRANCH}" | sed 's|/|-|g')
 
 # Assemble the commit data based on mode
-assemble_page_load_data() {
-    local benchmark_file="${BENCHMARK_FILE:-../test-artifacts/benchmarks/page-load-benchmark-results.json}"
+assemble_dapp_page_load_data() {
+    local benchmark_file="${BENCHMARK_FILE:-../test-artifacts/benchmarks/dapp-page-load-benchmark-results.json}"
 
     jq . "${benchmark_file}" > /dev/null || {
         echo "Error: Benchmark JSON is invalid: ${benchmark_file}"
@@ -63,7 +48,7 @@ assemble_page_load_data() {
     cat "${benchmark_file}"
 }
 
-assemble_ui_startup_data() {
+assemble_performance_data() {
     local results_dir="${BENCHMARK_RESULTS_DIR:-benchmark-results}"
 
     if [[ ! -d "${results_dir}" ]]; then
@@ -160,22 +145,22 @@ assemble_ui_startup_data() {
 
 # Resolve stats file and assemble data
 case "${DATA_TYPE}" in
-    page-load)
-        STATS_FILE="stats/${SAFE_BRANCH}/page_load_data.json"
-        COMMIT_MESSAGE="Adding page load benchmark data for ${RAW_BRANCH} at commit: ${HEAD_COMMIT_HASH}"
-        echo "Mode: page-load (branch: ${RAW_BRANCH})"
+    dapp-page-load)
+        STATS_FILE="stats/${SAFE_BRANCH}/dapp_page_load_data.json"
+        COMMIT_MESSAGE="Adding dapp page-load benchmark data for ${RAW_BRANCH} at commit: ${HEAD_COMMIT_HASH}"
+        echo "Mode: dapp-page-load (branch: ${RAW_BRANCH})"
         # Assemble after cloning since the benchmark file path is relative
         ;;
-    ui-startup)
-        STATS_FILE="stats/${SAFE_BRANCH}/ui_startup_data.json"
-        COMMIT_MESSAGE="Adding UI startup benchmark data for ${RAW_BRANCH} at commit: ${HEAD_COMMIT_HASH}"
-        echo "Mode: ui-startup (branch: ${RAW_BRANCH})"
+    performance)
+        STATS_FILE="stats/${SAFE_BRANCH}/performance_data.json"
+        COMMIT_MESSAGE="Adding performance benchmark data for ${RAW_BRANCH} at commit: ${HEAD_COMMIT_HASH}"
+        echo "Mode: performance (branch: ${RAW_BRANCH})"
         echo "Assembling benchmark data from directory..."
-        COMMIT_DATA=$(assemble_ui_startup_data)
+        COMMIT_DATA=$(assemble_performance_data)
         ;;
     *)
         echo "Unknown BENCHMARK_DATA_TYPE: ${DATA_TYPE}"
-        echo "Must be 'page-load' or 'ui-startup'"
+        echo "Must be 'dapp-page-load' or 'performance'"
         exit 1
         ;;
 esac
@@ -193,9 +178,9 @@ cd "${CLONE_DIR}"
 git fetch origin main:main
 git checkout main
 
-# For page-load mode, assemble after cd so relative paths work
-if [[ "${DATA_TYPE}" == "page-load" ]]; then
-    COMMIT_DATA=$(assemble_page_load_data)
+# For dapp-page-load mode, assemble after cd so relative paths work
+if [[ "${DATA_TYPE}" == "dapp-page-load" ]]; then
+    COMMIT_DATA=$(assemble_dapp_page_load_data)
 fi
 
 # --- Ensure the stats file exists ---

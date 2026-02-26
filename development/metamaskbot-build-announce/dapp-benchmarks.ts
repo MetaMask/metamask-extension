@@ -4,7 +4,7 @@ import { mean as calculateMean } from 'lodash';
 import {
   BenchmarkMetrics,
   BenchmarkSummary,
-} from '../../test/e2e/page-objects/benchmark/page-load-benchmark';
+} from '../../test/e2e/page-objects/benchmark/dapp-page-load-benchmark';
 
 export type BenchmarkOutput = {
   /** Timestamp when the benchmark was executed */
@@ -154,9 +154,13 @@ export function aggregateHistoricalBenchmarkData(
 async function fetchLatestMainBenchmarkData(
   n: number,
 ): Promise<BenchmarkOutput | null> {
+  const url =
+    'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/page_load_data.json';
   try {
-    const response = await fetch(
-      'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/page_load_data.json',
+    console.log(`[Dapp Benchmarks] Fetching: ${url}`);
+    const response = await fetch(url);
+    console.log(
+      `[Dapp Benchmarks] Response status: ${response.status} ${response.statusText}`,
     );
 
     if (!response.ok) {
@@ -168,6 +172,9 @@ async function fetchLatestMainBenchmarkData(
 
     const data: HistoricalBenchmarkData = await response.json();
     const commitHashes = Object.keys(data).reverse(); // Sort by commit hash, newest first
+    console.log(
+      `[Dapp Benchmarks] Found ${commitHashes.length} total commits in historical data`,
+    );
 
     if (commitHashes.length === 0) {
       console.warn('No benchmark data found');
@@ -527,7 +534,7 @@ export async function getDappBenchmarkComment(): Promise<string | null> {
 
   const filePath = path.join(
     process.cwd(),
-    'test-artifacts/benchmarks/page-load-benchmark-results.json',
+    'test-artifacts/benchmarks/dapp-page-load-benchmark-results.json',
   );
 
   let benchmarkData: BenchmarkOutput | null = null;
@@ -535,20 +542,47 @@ export async function getDappBenchmarkComment(): Promise<string | null> {
   try {
     const fileContent = await fs.readFile(filePath, 'utf8');
     benchmarkData = JSON.parse(fileContent) as BenchmarkOutput;
-    console.log(`Found benchmark results at: ${filePath}`);
+    console.log(`[Dapp Benchmarks] Found benchmark results at: ${filePath}`);
+    console.log(
+      `[Dapp Benchmarks] Current PR benchmark data:\n${JSON.stringify(benchmarkData, null, 2)}`,
+    );
   } catch (error) {
-    console.log(`Could not read benchmark results from: ${filePath}`);
+    console.log(
+      `[Dapp Benchmarks] Could not read benchmark results from: ${filePath}`,
+    );
   }
 
   if (!benchmarkData) {
-    console.warn('No benchmark results found, skipping comment');
+    console.warn(
+      '[Dapp Benchmarks] No benchmark results found, skipping comment',
+    );
     return null;
   }
 
   benchmarkData.commit = HEAD_COMMIT_HASH;
-  const referenceData = await fetchLatestMainBenchmarkData(N_COMMITS);
 
-  return generateBenchmarkComment(benchmarkData, referenceData);
+  console.log(
+    `[Dapp Benchmarks] Fetching historical data (last ${N_COMMITS} commits)...`,
+  );
+  const referenceData = await fetchLatestMainBenchmarkData(N_COMMITS);
+  if (referenceData) {
+    console.log(
+      `[Dapp Benchmarks] Historical reference commit: ${referenceData.commit}`,
+    );
+    console.log(
+      `[Dapp Benchmarks] Historical pages: ${referenceData.summary.map((s) => s.page).join(', ')}`,
+    );
+  } else {
+    console.warn(
+      '[Dapp Benchmarks] No historical reference data available — comparison will be skipped',
+    );
+  }
+
+  const comment = generateBenchmarkComment(benchmarkData, referenceData);
+  console.log(
+    `[Dapp Benchmarks] Generated comment (${comment.length} chars):\n${comment}`,
+  );
+  return comment;
 }
 
 // If main module (i.e. this is the TS file that was run directly)

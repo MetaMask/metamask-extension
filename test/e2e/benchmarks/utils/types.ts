@@ -1,3 +1,8 @@
+import type {
+  Persona,
+  BenchmarkType,
+} from '../../../../shared/constants/benchmarks';
+
 export type TimerResult = {
   id: string;
   duration: number;
@@ -28,25 +33,12 @@ export type Metrics = {
   numNetworkReqs: number;
 };
 
-export type StatisticalResult = {
-  [key: string]: number;
-};
-
-export type Persona = 'standard' | 'powerUser';
-
-export type BenchmarkType = 'benchmark' | 'performance' | 'userAction';
-
-export type BenchmarkResults = {
-  testTitle: string;
-  persona: Persona;
-  benchmarkType?: BenchmarkType;
-  mean: StatisticalResult;
-  min: StatisticalResult;
-  max: StatisticalResult;
-  stdDev: StatisticalResult;
-  p75: StatisticalResult;
-  p95: StatisticalResult;
-};
+export type {
+  StatisticalResult,
+  Persona,
+  BenchmarkType,
+  BenchmarkResults,
+} from '../../../../shared/constants/benchmarks';
 
 /** User action result with testTitle, persona and numeric timing metrics. */
 export type UserActionResult = {

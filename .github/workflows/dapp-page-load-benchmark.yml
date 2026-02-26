@@ -1,4 +1,4 @@
-name: Page load benchmark
+name: Dapp page load benchmark
 
 on:
   workflow_call:
@@ -19,8 +19,8 @@ on:
         description: The run ID to get builds from
 
 jobs:
-  page-load-benchmark-pr:
-    name: Run Page Load Benchmarks
+  dapp-page-load-benchmark-pr:
+    name: Run Dapp Page Load Benchmarks
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -47,12 +47,12 @@ jobs:
       - name: Install Playwright browsers
         run: yarn playwright install chromium
 
-      - name: Run page load benchmarks
+      - name: Run dapp page load benchmarks
         run: yarn test:e2e:benchmark --preset=pageLoadBenchmark
 
       - name: Upload benchmark results (github artifacts)
         uses: actions/upload-artifact@v6
         with:
-          name: page-load-benchmark-results
-          path: test-artifacts/benchmarks/page-load-benchmark-results.json
+          name: dapp-page-load-benchmark-results
+          path: test-artifacts/benchmarks/dapp-page-load-benchmark-results.json
 
