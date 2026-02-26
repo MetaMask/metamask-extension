@@ -6,8 +6,6 @@ export {
 
 export { HomePage } from './page-objects/home-page';
 
-export { MockServer, DEFAULT_MOCK_PORT } from './mock-server';
-
 export {
   createFixtureBuilder,
   buildDefaultFixture,

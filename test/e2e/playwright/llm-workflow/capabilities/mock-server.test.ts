@@ -1,11 +1,17 @@
 import type { Mockttp } from 'mockttp';
+import * as mockttp from 'mockttp';
 import { setupMocking } from '../../../mock-e2e';
 import { MetaMaskMockServerCapability } from './mock-server';
 
-const mockStart = jest.fn();
-const mockStop = jest.fn();
-const mockGetServer = jest.fn();
-const mockGetPort = jest.fn();
+const mockServerStart = jest.fn();
+const mockServerStop = jest.fn();
+
+jest.mock('mockttp', () => {
+  return {
+    generateCACertificate: jest.fn(),
+    getLocal: jest.fn(),
+  };
+});
 
 jest.mock('../../../mock-e2e', () => {
   return {
@@ -14,22 +20,19 @@ jest.mock('../../../mock-e2e', () => {
 });
 
 const mockSetupMocking = jest.mocked(setupMocking);
+const mockGenerateCACertificate = jest.mocked(mockttp.generateCACertificate);
+const mockGetLocal = jest.mocked(mockttp.getLocal);
 
-jest.mock('../mock-server', () => {
-  return {
-    MockServer: jest.fn().mockImplementation(() => ({
-      start: mockStart,
-      stop: mockStop,
-      getServer: mockGetServer,
-      getPort: mockGetPort,
-    })),
-  };
-});
+const mockServerInstance = {
+  start: mockServerStart,
+  stop: mockServerStop,
+} as unknown as Mockttp;
 
 describe('MetaMaskMockServerCapability', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetPort.mockReturnValue(8000);
+    mockGenerateCACertificate.mockResolvedValue({} as never);
+    mockGetLocal.mockReturnValue(mockServerInstance);
     mockSetupMocking.mockResolvedValue(
       {} as Awaited<ReturnType<typeof setupMocking>>,
     );
@@ -40,7 +43,7 @@ describe('MetaMaskMockServerCapability', () => {
 
     await capability.start();
 
-    expect(mockStart).not.toHaveBeenCalled();
+    expect(mockGetLocal).not.toHaveBeenCalled();
     expect(mockSetupMocking).not.toHaveBeenCalled();
   });
 
@@ -49,8 +52,6 @@ describe('MetaMaskMockServerCapability', () => {
     const fetchWithTimeout = jest
       .fn<Promise<Response>, [string, RequestInit, number | undefined]>()
       .mockResolvedValue({ ok: true } as Response);
-    const mockServerInstance = {} as Mockttp;
-    mockGetServer.mockReturnValue(mockServerInstance);
 
     const capability = new MetaMaskMockServerCapability({
       enabled: true,
@@ -60,7 +61,12 @@ describe('MetaMaskMockServerCapability', () => {
 
     await capability.start();
 
-    expect(mockStart).toHaveBeenCalled();
+    expect(mockGenerateCACertificate).toHaveBeenCalled();
+    expect(mockGetLocal).toHaveBeenCalledWith({
+      https: expect.anything(),
+      cors: true,
+    });
+    expect(mockServerStart).toHaveBeenCalledWith(8000);
     expect(mockSetupMocking).toHaveBeenCalledWith(
       mockServerInstance,
       expect.any(Function),
@@ -83,8 +89,6 @@ describe('MetaMaskMockServerCapability', () => {
     const fetchWithTimeout = jest
       .fn<Promise<Response>, [string, RequestInit, number | undefined]>()
       .mockResolvedValue({ ok: true } as Response);
-    const mockServerInstance = {} as Mockttp;
-    mockGetServer.mockReturnValue(mockServerInstance);
 
     const capability = new MetaMaskMockServerCapability({
       enabled: true,
@@ -117,6 +121,6 @@ describe('MetaMaskMockServerCapability', () => {
     await capability.start();
     await capability.stop();
 
-    expect(mockStop).toHaveBeenCalled();
+    expect(mockServerStop).toHaveBeenCalled();
   });
 });
