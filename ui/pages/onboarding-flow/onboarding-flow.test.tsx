@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { Routes, Route } from 'react-router-dom';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import {
   ONBOARDING_EXPERIMENTAL_AREA,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -206,7 +207,7 @@ describe('Onboarding Flow', () => {
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );
 
-      const createPasswordText = queryByText('MetaMask password');
+      const createPasswordText = queryByText(messages.createPassword.message);
       expect(createPasswordText).toBeInTheDocument();
 
       const password = 'a-new-password';
@@ -296,8 +297,8 @@ describe('Onboarding Flow', () => {
       );
 
       const password = 'a-new-password';
-      const inputPassword = getByLabelText('Password');
-      const unlockButton = getByText('Unlock');
+      const inputPassword = getByLabelText(messages.password.message);
+      const unlockButton = getByText(messages.unlock.message);
 
       fireEvent.change(inputPassword, { target: { value: password } });
       fireEvent.click(unlockButton);

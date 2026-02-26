@@ -5,6 +5,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { TransactionDetailsProvider } from '../transaction-details-context';
 import { TransactionDetailsSummary } from './transaction-details-summary';
@@ -84,17 +85,17 @@ describe('TransactionDetailsSummary', () => {
 
   it('renders summary label', () => {
     const { getByText } = render();
-    expect(getByText('Summary')).toBeInTheDocument();
+    expect(getByText(messages.summary.message)).toBeInTheDocument();
   });
 
   it('renders bridge title for bridge transactions', () => {
     const { getByText } = render(TransactionType.bridge);
-    expect(getByText('Bridge')).toBeInTheDocument();
+    expect(getByText(messages.bridge.message)).toBeInTheDocument();
   });
 
   it('renders swap title for swap transactions', () => {
     const { getByText } = render(TransactionType.swap);
-    expect(getByText('Swap')).toBeInTheDocument();
+    expect(getByText(messages.swap.message)).toBeInTheDocument();
   });
 
   it('uses metamaskPay chain for relayDeposit source token lookup', () => {
@@ -135,7 +136,7 @@ describe('TransactionDetailsSummary', () => {
 
   it('renders approve fallback title when token symbol is not resolved', () => {
     const { getByText } = render(TransactionType.tokenMethodApprove);
-    expect(getByText('Approve')).toBeInTheDocument();
+    expect(getByText(messages.approveButtonText.message)).toBeInTheDocument();
   });
 
   it('uses txParams.to as token address for tokenMethodApprove lookup', () => {
