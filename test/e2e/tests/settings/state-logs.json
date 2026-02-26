@@ -659,6 +659,7 @@
     "isReady": "boolean",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
     "isSignedIn": "boolean",
+    "isUiOpen": "boolean",
     "isUnlocked": "boolean",
     "pendingExtensionVersion": "null",
     "isUpdatingFCMToken": "boolean",
