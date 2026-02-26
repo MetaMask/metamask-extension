@@ -374,7 +374,7 @@ describe('PerpsOrderEntryPage', () => {
         ],
       );
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastSubmitInProgress',
+        key: 'perpsToastOrderSubmitted',
       });
     });
 

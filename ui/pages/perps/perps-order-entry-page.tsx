@@ -73,7 +73,7 @@ const ORDER_MODE_TOAST_KEYS: Record<
   }
 > = {
   new: {
-    inProgress: PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
+    inProgress: PERPS_TOAST_KEYS.ORDER_SUBMITTED,
     failed: PERPS_TOAST_KEYS.ORDER_FAILED,
   },
   modify: {
@@ -452,9 +452,6 @@ const PerpsOrderEntryPage: React.FC = () => {
         }
 
         if (orderFormState.type === 'limit') {
-          replacePerpsToastByKey({
-            key: PERPS_TOAST_KEYS.ORDER_SUBMITTED,
-          });
           handleBackClick(PERPS_TOAST_KEYS.ORDER_PLACED);
           return;
         }
