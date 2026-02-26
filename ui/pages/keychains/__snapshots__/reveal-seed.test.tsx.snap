@@ -3,7 +3,7 @@
 exports[`Reveal Seed Page should match snapshot 1`] = `
 <div>
   <div
-    class="gap-4 pt-8 pr-4 pb-8 pl-4 page-container"
+    class="gap-4 pt-8 pr-4 pb-8 pl-4 page-container h-full md:w-[490px]"
     data-testid="reveal-seed-page"
   >
     <div
