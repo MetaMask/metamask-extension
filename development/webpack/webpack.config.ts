@@ -232,8 +232,7 @@ const reactCompilerLoader = getReactCompilerLoader({
 const envValidationLoader = args.validateEnv
   ? {
       loader: require.resolve('./utils/loaders/envValidationLoader'),
-      // Convert Set to array for JSON serialization through thread-loader
-      options: { declarations: Array.from(buildEnvVarDeclarations) },
+      options: { declarations: buildEnvVarDeclarations },
     }
   : null;
 
@@ -343,6 +342,21 @@ const config = {
         dependency: 'url',
         type: 'asset/resource',
       },
+      // Source preprocessing (enforce: 'pre' runs in the main thread before
+      // thread-loader, avoiding serialization of non-JSON-safe options like Sets)
+      {
+        test: /\.(?:ts|mts|tsx)$/u,
+        exclude: NODE_MODULES_RE,
+        enforce: 'pre',
+        use: [envValidationLoader, codeFenceLoader].filter(Boolean),
+      },
+      {
+        test: /\.(?:js|mjs|jsx)$/u,
+        exclude: NODE_MODULES_RE,
+        enforce: 'pre',
+        use: [envValidationLoader, codeFenceLoader].filter(Boolean),
+      },
+      // React Compiler (includes thread-loader for UI files)
       {
         test: /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:m?[jt]s|[jt]sx)$/u,
         include: UI_DIR_RE,
@@ -352,13 +366,13 @@ const config = {
       {
         test: /\.(?:ts|mts|tsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [tsxLoader, envValidationLoader, codeFenceLoader],
+        use: tsxLoader,
       },
       // own javascript, and own javascript with jsx
       {
         test: /\.(?:js|mjs|jsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [jsxLoader, envValidationLoader, codeFenceLoader],
+        use: jsxLoader,
       },
       // vendor javascript. We must transform all npm modules to ensure browser
       // compatibility.
