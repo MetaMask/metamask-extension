@@ -53,7 +53,8 @@ export function getPercentageChange(
   }
 
   const absoluteDifference = difference < 0n ? -difference : difference;
-  const absoluteOriginalValue = originalValue < 0n ? -originalValue : originalValue;
+  const absoluteOriginalValue =
+    originalValue < 0n ? -originalValue : originalValue;
 
   return Number((absoluteDifference * 100n) / absoluteOriginalValue);
 }
@@ -61,8 +62,8 @@ export function getPercentageChange(
 /**
  * Determine if the percentage change between two values is within a threshold.
  *
- * @param originalValue - The original value.
- * @param newValue - The new value.
+ * @param originalValueHex - The original value.
+ * @param newValueHex - The new value.
  * @param newNegative - Whether the new value is negative.
  * @returns Whether the percentage change between the two values is within a threshold.
  */

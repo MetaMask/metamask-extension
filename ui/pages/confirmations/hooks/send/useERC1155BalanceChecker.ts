@@ -14,10 +14,10 @@ const getBalanceValue = (balance: string | { words: string }) => {
     // Reconstruct from BN internal structure (Firefox case)
     // BN stores value in `words` array as base-2^26 limbs
     const base = 2n ** 26n;
-    const words = (balance as { words: number[] }).words;
+    const { words } = balance as { words: number[] };
     const value = words.reduce(
       (accumulator, word, index) =>
-        accumulator + BigInt(word) * (base ** BigInt(index)),
+        accumulator + BigInt(word) * base ** BigInt(index),
       0n,
     );
     balanceStr = value.toString(10);

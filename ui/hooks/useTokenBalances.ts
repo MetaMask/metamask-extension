@@ -82,9 +82,11 @@ export function stringifyBalance(
   balanceDecimals = 5,
 ) {
   const normalizedBalance = balance.toString();
-  const normalizedDecimals = Number.isFinite(Number(decimals))
-    ? Math.max(0, Math.trunc(Number(decimals)))
-    : 0;
+  const parsedDecimals = Number(decimals);
+  const normalizedDecimals =
+    Number.isInteger(parsedDecimals) && parsedDecimals >= 0
+      ? parsedDecimals
+      : 0;
 
   if (normalizedBalance === '0') {
     return '0';
