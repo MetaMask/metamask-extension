@@ -10,6 +10,7 @@ describe('ClientControllerInit', () => {
     const request = {
       ...buildControllerInitRequestMock(),
       controllerMessenger: getClientControllerMessenger(baseMessenger),
+      initMessenger: undefined,
       persistedState: {},
     };
 
@@ -23,6 +24,7 @@ describe('ClientControllerInit', () => {
     const request = {
       ...buildControllerInitRequestMock(),
       controllerMessenger: getClientControllerMessenger(baseMessenger),
+      initMessenger: undefined,
       persistedState: {
         ClientController: { isUiOpen: true },
       },
