@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js';
-import BN from 'bn.js';
 import { isHexString, isNullOrUndefined } from '@metamask/utils';
 import { addHexPrefix } from 'ethereumjs-util';
 import { EtherDenomination } from '../constants/common';
@@ -7,7 +6,24 @@ import { stripHexPrefix } from './hexstring-utils';
 
 const MAX_DECIMALS_FOR_TOKENS = 36;
 BigNumber.config({ DECIMAL_PLACES: MAX_DECIMALS_FOR_TOKENS });
-export type NumericValue = string | number | BN | BigNumber;
+
+type BnLike = {
+  words: unknown[];
+  toString(base?: number): string;
+};
+
+function isBnLike(value: unknown): value is BnLike {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'words' in value &&
+    Array.isArray(value.words) &&
+    'toString' in value &&
+    typeof value.toString === 'function'
+  );
+}
+
+export type NumericValue = string | number | bigint | BnLike | BigNumber;
 export type NumericBase = 10 | 16;
 
 /**
@@ -130,14 +146,22 @@ function numberToBigNumber(value: number, numericBase: NumericBase) {
   return new BigNumber(value, 10);
 }
 
+function bigintToBigNumber(value: bigint, numericBase: NumericBase) {
+  if (numericBase === 16) {
+    return new BigNumber(value.toString(16), 16);
+  }
+
+  return new BigNumber(value.toString(10), 10);
+}
+
 /**
  * Method to convert a BN to a BigNumber
  *
  * @param value - A BN representation of a value
  * @returns A BigNumber representation of the BN's underlying value
  */
-function bnToBigNumber(value: BN) {
-  if (value instanceof BN === false) {
+function bnToBigNumber(value: BnLike) {
+  if (!isBnLike(value)) {
     throw new Error(
       `value passed to bnToBigNumber is not a BN. Received type ${typeof value}`,
     );
@@ -152,11 +176,16 @@ function bnToBigNumber(value: BN) {
  * @param numericBase - The numeric base of the underlying value
  * @returns A BigNumber representation of the value
  */
-function valueToBigNumber(value: string | number, numericBase: NumericBase) {
+function valueToBigNumber(
+  value: string | number | bigint,
+  numericBase: NumericBase,
+) {
   if (typeof value === 'string') {
     return stringToBigNumber(value, numericBase);
   } else if (typeof value === 'number' && isNaN(value) === false) {
     return numberToBigNumber(value, numericBase);
+  } else if (typeof value === 'bigint') {
+    return bigintToBigNumber(value, numericBase);
   }
 
   throw new Error(
@@ -276,7 +305,7 @@ export class Numeric {
     this.denomination = denomination;
     if (value instanceof BigNumber) {
       this.value = value;
-    } else if (value instanceof BN) {
+    } else if (isBnLike(value)) {
       this.value = bnToBigNumber(value);
     } else if (
       isNullOrUndefined(value) ||
