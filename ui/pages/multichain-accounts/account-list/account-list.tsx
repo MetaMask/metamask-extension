@@ -33,7 +33,6 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import {
   getAllPermittedAccountsForCurrentTab,
-  getIsDefaultAddressEnabled,
   getShowDefaultAddress,
 } from '../../../selectors';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
