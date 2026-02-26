@@ -8,6 +8,8 @@ import {
 
 const VALUE_COMPARISON_PERCENT_THRESHOLD = 5;
 
+const abs = (value: bigint) => (value < 0n ? -value : value);
+
 export function getIsRevokeSetApprovalForAll(
   value: TransactionDescription | undefined,
 ): boolean {
@@ -52,11 +54,7 @@ export function getPercentageChange(
     return 100;
   }
 
-  const absoluteDifference = difference < 0n ? -difference : difference;
-  const absoluteOriginalValue =
-    originalValue < 0n ? -originalValue : originalValue;
-
-  return Number((absoluteDifference * 100n) / absoluteOriginalValue);
+  return Number((abs(difference) * 100n) / abs(originalValue));
 }
 
 /**
