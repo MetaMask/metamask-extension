@@ -1,6 +1,5 @@
 import { MockedEndpoint, MockttpServer } from 'mockttp';
 import { tinyDelayMs, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import LoginPage from '../../page-objects/pages/login-page';
@@ -32,7 +31,9 @@ describe('Settings', function () {
     // on the ".eth" hostname. The proxy does too much interference with 8000.
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
+        fixtures: new FixtureBuilderV2()
+          .withNetworkControllerOnMainnet()
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockEns,
         driverOptions: {

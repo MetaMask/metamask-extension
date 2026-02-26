@@ -1,3 +1,4 @@
+import { toHex } from '@metamask/controller-utils';
 import { merge, cloneDeep } from 'lodash';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { CurrencyRateState } from '@metamask/assets-controllers';
@@ -17,6 +18,7 @@ import {
   DEFAULT_FIXTURE_SOLANA_ACCOUNT,
   SOLANA_MAINNET_SCOPE,
 } from '../constants';
+import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import defaultFixtureJson from './default-fixture.json';
 import onboardingFixtureJson from './onboarding-fixture.json';
 
@@ -85,6 +87,28 @@ class FixtureBuilderV2 {
   withConversionRateDisabled(): this {
     return this.withPreferencesController({
       useCurrencyRateCheck: false,
+    });
+  }
+
+  withConversionRateEnabled(): this {
+    return this.withPreferencesController({
+      useCurrencyRateCheck: true,
+    });
+  }
+
+  withShowFiatTestnetEnabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        showFiatInTestnets: true,
+      },
+    });
+  }
+
+  withPreferencesControllerShowNativeTokenAsMainBalanceDisabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        showNativeTokenAsMainBalance: false,
+      },
     });
   }
 
@@ -158,6 +182,72 @@ class FixtureBuilderV2 {
         },
       },
     });
+  }
+
+  withAppStateController(
+    data: Partial<FixtureType['data']['AppStateController']>,
+  ): this {
+    merge(this.fixture.data.AppStateController, data);
+    return this;
+  }
+
+  withNetworkController(
+    data: Partial<FixtureType['data']['NetworkController']>,
+  ): this {
+    merge(this.fixture.data.NetworkController, data);
+    return this;
+  }
+
+  withNetworkControllerOnMainnet(): this {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'mainnet',
+    } as Partial<FixtureType['data']['NetworkController']>);
+  }
+
+  withTokenBalancesController(
+    data: Partial<FixtureType['data']['TokenBalancesController']>,
+  ): this {
+    merge(this.fixture.data.TokenBalancesController, data);
+    return this;
+  }
+
+  withNftController(data: Partial<FixtureType['data']['NftController']>): this {
+    merge(this.fixture.data.NftController, data);
+    return this;
+  }
+
+  withNftControllerERC1155(): this {
+    const contractAddress = `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.ERC1155}`;
+    return this.withNftController({
+      allNftContracts: {
+        [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+          [toHex(1337)]: [
+            {
+              address: contractAddress,
+            },
+          ],
+        },
+      },
+      allNfts: {
+        [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+          [toHex(1337)]: [
+            {
+              address: contractAddress,
+              tokenId: '1',
+              favorite: false,
+              isCurrentlyOwned: true,
+              name: 'Rocks',
+              description: 'This is a collection of Rock NFTs.',
+              image:
+                'ipfs://bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi',
+              standard: 'ERC1155',
+              chainId: 1337,
+            },
+          ],
+        },
+      },
+      ignoredNfts: [],
+    } as Partial<FixtureType['data']['NftController']>);
   }
 
   build() {

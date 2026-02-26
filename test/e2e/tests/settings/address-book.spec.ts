@@ -2,7 +2,6 @@ import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import ContactsPage from '../../page-objects/pages/settings/contacts-settings';
@@ -73,7 +72,7 @@ describe('Address Book', function (this: Suite) {
   it('Sends to an address book entry on a different network', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerOnMainnet()
           .withAddressBookController({
             addressBook: {
