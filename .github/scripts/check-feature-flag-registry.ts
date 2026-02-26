@@ -43,7 +43,6 @@ const CONSTANT_BRACKET_PATTERNS: RegExp[] = [
 /** @see ./known-feature-flag-constants.ts */
 const KNOWN_FLAG_CONSTANTS = buildKnownFlagConstants();
 
-/** Property/method names that follow `remoteFeatureFlags.` but aren't flags. */
 const NON_FLAG_NAMES = new Set([
   'constructor',
   'prototype',
@@ -628,6 +627,7 @@ function processStrings(line: string, mode: 'strip' | 'mask'): string {
             if (mode === 'mask') result += ' ';
           } else {
             if (line[k] === '$' && line[k + 1] === '{') { result += '${'; depth++; k++; }
+            else if (line[k] === '{') { result += '{'; depth++; }
             else if (line[k] === '}') { result += '}'; depth--; }
             else if (line[k] === '`' && depth === 1) { result += '`'; depth++; }
             else if (line[k] === '`' && depth > 1) { result += '`'; depth--; }
