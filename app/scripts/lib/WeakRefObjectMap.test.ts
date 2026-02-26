@@ -1,7 +1,39 @@
 import { WeakRefObjectMap } from './WeakRefObjectMap';
 
+type TestRecord = Record<string, object>;
+type InternalWeakEntry = {
+  keys: (keyof TestRecord)[];
+  refs: { deref: () => object | undefined }[];
+};
+
+function injectInternalEntry(
+  map: WeakRefObjectMap<TestRecord>,
+  key: string,
+  entry: InternalWeakEntry,
+) {
+  (
+    map as unknown as {
+      map: Map<string, InternalWeakEntry>;
+    }
+  ).map.set(key, entry);
+}
+
+async function collectWithRetries(
+  weakRef: WeakRef<object>,
+  retries = 100,
+): Promise<boolean> {
+  for (let i = 0; i < retries; i++) {
+    global.gc?.();
+    await new Promise((resolve) => setImmediate(resolve));
+    if (weakRef.deref() === undefined) {
+      return true;
+    }
+  }
+  return false;
+}
+
 describe('WeakDomainProxyMap', () => {
-  let map: WeakRefObjectMap<Record<string, object>>;
+  let map: WeakRefObjectMap<TestRecord>;
 
   beforeEach(() => {
     map = new WeakRefObjectMap();
@@ -50,6 +82,45 @@ describe('WeakDomainProxyMap', () => {
 
   it('delete returns false when key does not exist', () => {
     expect(map.delete('nonExistentKey')).toBe(false);
+  });
+
+  it('throws when setting non-object values', () => {
+    expect(() =>
+      map.set('bad', { objKey: null } as unknown as TestRecord),
+    ).toThrow(
+      'Property objKey is not an object and cannot be weakly referenced.',
+    );
+  });
+
+  const itIfGc = global.gc ? it : it.skip;
+
+  itIfGc(
+    'returns undefined and removes key when referenced value is collected',
+    async () => {
+      let staleTarget: object | null = {};
+      map.set('stale', { objKey: staleTarget });
+      const weakRef = new WeakRef(staleTarget);
+      staleTarget = null;
+
+      const collected = await collectWithRetries(weakRef);
+      if (!collected) {
+        // Keep this test resilient in runtimes where collection is delayed.
+        expect(map.has('stale')).toBe(true);
+        return;
+      }
+      expect(map.get('stale')).toBeUndefined();
+      expect(map.delete('stale')).toBe(false);
+    },
+  );
+
+  it('has removes stale internal entries', () => {
+    injectInternalEntry(map, 'stale', {
+      keys: ['objKey'],
+      refs: [{ deref: () => undefined }],
+    });
+
+    expect(map.has('stale')).toBe(false);
+    expect(map.delete('stale')).toBe(false);
   });
 
   describe('iterators', () => {
@@ -119,29 +190,128 @@ describe('WeakDomainProxyMap', () => {
       const iterator = map[Symbol.iterator]();
       expect(Array.from(iterator)).toEqual(Array.from(map.entries()));
     });
+
+    it('uses thisArg in forEach callback', () => {
+      const thisArg = { calledWithKeys: [] as string[] };
+      const callback = jest.fn(function (
+        this: { calledWithKeys: string[] },
+        _value: TestRecord,
+        key: string,
+        sourceMap: Map<string, TestRecord>,
+      ) {
+        this.calledWithKeys.push(key);
+        expect(sourceMap).toBe(map);
+      });
+
+      map.forEach(callback, thisArg);
+
+      expect(thisArg.calledWithKeys).toEqual(['key1', 'key2']);
+      expect(callback).toHaveBeenCalledTimes(2);
+    });
+
+    it('skips stale internal entries in entries, keys, and values', () => {
+      const staleAwareMap = new WeakRefObjectMap<TestRecord>();
+      const liveTarget = { detail: 'value1' };
+
+      injectInternalEntry(staleAwareMap, 'stale', {
+        keys: ['objKey'],
+        refs: [{ deref: () => undefined }],
+      });
+      staleAwareMap.set('live', { objKey: liveTarget });
+
+      expect(Array.from(staleAwareMap.entries())).toEqual([
+        ['live', { objKey: liveTarget }],
+      ]);
+      expect(Array.from(staleAwareMap.keys())).toEqual(['live']);
+      expect(Array.from(staleAwareMap.values())).toEqual([
+        { objKey: liveTarget },
+      ]);
+      expect(staleAwareMap.delete('stale')).toBe(false);
+    });
+
+    it('keys iterator continues when first internal entry is stale', () => {
+      const staleAwareMap = new WeakRefObjectMap<TestRecord>();
+      const liveTarget = { detail: 'value1' };
+
+      injectInternalEntry(staleAwareMap, 'stale', {
+        keys: ['objKey'],
+        refs: [{ deref: () => undefined }],
+      });
+      staleAwareMap.set('live', { objKey: liveTarget });
+
+      expect(Array.from(staleAwareMap.keys())).toEqual(['live']);
+      expect(staleAwareMap.delete('stale')).toBe(false);
+    });
+
+    it('values iterator continues when first internal entry is stale', () => {
+      const staleAwareMap = new WeakRefObjectMap<TestRecord>();
+      const liveTarget = { detail: 'value1' };
+
+      injectInternalEntry(staleAwareMap, 'stale', {
+        keys: ['objKey'],
+        refs: [{ deref: () => undefined }],
+      });
+      staleAwareMap.set('live', { objKey: liveTarget });
+
+      expect(Array.from(staleAwareMap.values())).toEqual([
+        { objKey: liveTarget },
+      ]);
+      expect(staleAwareMap.delete('stale')).toBe(false);
+    });
+
+    it('forEach skips stale internal entries and continues', () => {
+      const staleAwareMap = new WeakRefObjectMap<TestRecord>();
+      const liveTarget = { detail: 'value1' };
+
+      injectInternalEntry(staleAwareMap, 'stale', {
+        keys: ['objKey'],
+        refs: [{ deref: () => undefined }],
+      });
+      staleAwareMap.set('live', { objKey: liveTarget });
+
+      const callback = jest.fn();
+      staleAwareMap.forEach(callback);
+
+      expect(callback).toHaveBeenCalledTimes(1);
+      expect(callback).toHaveBeenCalledWith(
+        { objKey: liveTarget },
+        'live',
+        staleAwareMap,
+      );
+      expect(staleAwareMap.delete('stale')).toBe(false);
+    });
   });
 });
 
-// Commenting until we figure out how best to expose garbage collection in jest env
-// describe('WeakDomainProxyMap with garbage collection', () => {
-//   it('cleans up weakly referenced objects after garbage collection', () => {
-//     if ((global as any).gc) {
-//       const map = new WeakDomainProxyMap();
-//       let obj: object = { a: 1 };
-//       map.set('key', { obj });
+describe('WeakDomainProxyMap with garbage collection', () => {
+  const itIfGc = global.gc ? it : it.skip;
 
-//       expect(map.get('key')).toHaveProperty('obj', obj);
+  itIfGc(
+    'prunes stale entries from has, size, and iterators after collection',
+    async () => {
+      const gcMap = new WeakRefObjectMap<TestRecord>();
+      const liveTarget = {};
+      let staleTarget: object | null = {};
 
-//       obj = null!; // Remove the strong reference to the object
+      gcMap.set('stale', { objKey: staleTarget });
+      gcMap.set('live', { objKey: liveTarget });
 
-//       (global as any).gc(); // Force garbage collection
+      const weakRef = new WeakRef(staleTarget);
+      staleTarget = null;
 
-//       // The weakly referenced object should be gone after garbage collection.
-//       expect(map.get('key')).toBeUndefined();
-//     } else {
-//       console.warn(
-//         'Garbage collection is not exposed. Run Node.js with the --expose-gc flag.',
-//       );
-//     }
-//   });
-// });
+      const collected = await collectWithRetries(weakRef);
+      if (!collected) {
+        expect(gcMap.size).toBe(2);
+        return;
+      }
+
+      expect(gcMap.has('stale')).toBe(false);
+      expect(gcMap.size).toBe(1);
+      expect(Array.from(gcMap.entries())).toEqual([
+        ['live', { objKey: liveTarget }],
+      ]);
+      expect(Array.from(gcMap.keys())).toEqual(['live']);
+      expect(Array.from(gcMap.values())).toEqual([{ objKey: liveTarget }]);
+    },
+  );
+});

@@ -1,5 +1,6 @@
-type WeakRefObject<RecordType extends Record<string, object>> = {
-  [P in keyof RecordType]: WeakRef<RecordType[P]>;
+type WeakEntry<RecordType extends Record<string, object>> = {
+  keys: (keyof RecordType)[];
+  refs: WeakRef<RecordType[keyof RecordType]>[]; // aligned with keys
 };
 
 /**
@@ -24,11 +25,7 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
   /**
    * Internal map to store keys and their corresponding weakly referenced object values.
    */
-  private map: Map<string, WeakRefObject<RecordType>>;
-
-  constructor() {
-    this.map = new Map();
-  }
+  private readonly map = new Map<string, WeakEntry<RecordType>>();
 
   /**
    * Associates a key with a value in the map. If the key already exists, its associated value is updated.
@@ -39,23 +36,24 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
    * @returns The `WeakRefObjectMap` instance.
    */
   set(key: string, value: RecordType): this {
-    const weakRefValue: Partial<WeakRefObject<RecordType>> = {};
-    for (const keyValue in value) {
-      if (!Object.prototype.hasOwnProperty.call(value, keyValue)) {
-        continue;
-      }
-      const item: RecordType[typeof keyValue] = value[keyValue];
-      if (typeof item === 'object' && item !== null) {
-        weakRefValue[keyValue] = new WeakRef(item);
-      } else {
-        throw new Error(
-          `Property ${String(
-            keyValue,
-          )} is not an object and cannot be weakly referenced.`,
+    const keys = Object.keys(value) as (keyof RecordType)[];
+    const n = keys.length;
+    const refs = new Array<WeakRef<RecordType[keyof RecordType]>>(n);
+
+    for (let i = 0; i < n; i++) {
+      const prop = keys[i];
+      const item = value[prop];
+
+      if (typeof item !== 'object' || item === null) {
+        throw new TypeError(
+          `Property ${String(prop)} is not an object and cannot be weakly referenced.`,
         );
       }
+
+      refs[i] = new WeakRef(item);
     }
-    this.map.set(key, weakRefValue as WeakRefObject<RecordType>);
+
+    this.map.set(key, { keys, refs });
     return this;
   }
 
@@ -71,21 +69,7 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
     if (!weakRefValue) {
       return undefined;
     }
-
-    const deRefValue: Partial<RecordType> = {};
-    for (const keyValue in weakRefValue) {
-      if (!Object.prototype.hasOwnProperty.call(weakRefValue, keyValue)) {
-        continue;
-      }
-      const deref = weakRefValue[keyValue].deref();
-      if (deref === undefined) {
-        this.map.delete(key);
-        return undefined;
-      }
-      deRefValue[keyValue] = deref;
-    }
-
-    return deRefValue as RecordType;
+    return this.derefEntryOrDelete(key, weakRefValue);
   }
 
   /**
@@ -95,7 +79,11 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
    * @returns `true` if the map contains the key, otherwise `false`.
    */
   has(key: string): boolean {
-    return this.get(key) !== undefined;
+    const entry = this.map.get(key);
+    if (!entry) {
+      return false;
+    }
+    return this.isLiveOrDelete(key, entry);
   }
 
   /**
@@ -105,11 +93,7 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
    * @returns `true` if the element was successfully removed, otherwise `false`.
    */
   delete(key: string): boolean {
-    const value = this.get(key);
-    if (value !== undefined) {
-      return this.map.delete(key);
-    }
-    return false;
+    return this.map.delete(key);
   }
 
   /**
@@ -123,6 +107,8 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
    * Returns the number of key-value pairs present in the map.
    */
   get size(): number {
+    // make sure we return the correct size by pruning any dead entries first
+    this.pruneAllDead();
     return this.map.size;
   }
 
@@ -131,36 +117,89 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
    * The values are dereferenced before being returned.
    */
   entries(): IterableIterator<[string, RecordType]> {
-    const entries: [string, RecordType][] = [];
-    this.map.forEach((_, key) => {
-      const derefValue = this.get(key);
-      if (derefValue !== undefined) {
-        entries.push([key, derefValue]);
-      }
-    });
-    return entries.values();
+    const it = this.map[Symbol.iterator]();
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const self = this;
+
+    return {
+      [Symbol.iterator]() {
+        return this;
+      },
+      next(): IteratorResult<[string, RecordType]> {
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+          const n = it.next();
+          if (n.done) {
+            return { done: true, value: undefined };
+          }
+
+          const [key, entry] = n.value;
+          const value = self.derefEntryOrDelete(key, entry);
+          if (value !== undefined) {
+            return { done: false, value: [key, value] };
+          }
+          // dead entry got pruned; continue
+        }
+      },
+    };
   }
 
   /**
    * Returns a new iterator object that contains the keys for each element in the map.
    */
   keys(): IterableIterator<string> {
-    return this.map.keys();
+    const it = this.map[Symbol.iterator]();
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const self = this;
+
+    return {
+      [Symbol.iterator]() {
+        return this;
+      },
+      next(): IteratorResult<string> {
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+          const n = it.next();
+          if (n.done) {
+            return { done: true, value: undefined };
+          }
+
+          const [key, entry] = n.value;
+          if (self.isLiveOrDelete(key, entry)) {
+            return { done: false, value: key };
+          }
+          // dead entry got pruned; continue
+        }
+      },
+    };
   }
 
-  /**
-   * Returns a new iterator object that contains the values for each element in the map.
-   * The values are dereferenced before being returned.
-   */
   values(): IterableIterator<RecordType> {
-    const values: RecordType[] = [];
-    this.map.forEach((_, key) => {
-      const derefValue = this.get(key);
-      if (derefValue !== undefined) {
-        values.push(derefValue);
-      }
-    });
-    return values.values();
+    const it = this.map[Symbol.iterator]();
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const self = this;
+
+    return {
+      [Symbol.iterator]() {
+        return this;
+      },
+      next(): IteratorResult<RecordType> {
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+          const n = it.next();
+          if (n.done) {
+            return { done: true, value: undefined };
+          }
+
+          const [key, entry] = n.value;
+          const value = self.derefEntryOrDelete(key, entry);
+          if (value !== undefined) {
+            return { done: false, value };
+          }
+          // dead entry got pruned; continue
+        }
+      },
+    };
   }
 
   /**
@@ -199,22 +238,82 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
       map: Map<string, RecordType>,
     ) => void,
     // this is an unbound method, so the this value is unknown.
-    // Also the Map type this is based on uses any for this parameter as well.
-
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // Also the `Map` type this is based on uses any for this parameter as well.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     thisArg?: any,
   ): void {
-    this.map.forEach((_, key) => {
-      const deRefValue = this.get(key);
-      if (deRefValue === undefined) {
-        return;
+    const useThisArg = arguments.length > 1;
+
+    for (const [key, entry] of this.map) {
+      const value = this.derefEntryOrDelete(key, entry);
+      if (value === undefined) {
+        continue;
       }
-      if (thisArg) {
-        callback.call(thisArg, deRefValue, key, this);
+
+      if (useThisArg) {
+        Reflect.apply(callback, thisArg, [value, key, this]);
       } else {
-        callback(deRefValue, key, this);
+        callback(value, key, this);
       }
-    });
+    }
+  }
+
+  /**
+   * Checks if the entry for the given key is still live (i.e., all weak
+   * references are still valid) or deletes it if any reference has been
+   * collected.
+   *
+   * @param key - The key of the entry to check.
+   * @param entry - The entry to check.
+   * @returns `true` if the entry is still live, `false` if it was deleted.
+   */
+  private isLiveOrDelete(key: string, entry: WeakEntry<RecordType>): boolean {
+    const { refs } = entry;
+    for (let i = 0, n = refs.length; i < n; i++) {
+      if (refs[i].deref() === undefined) {
+        this.map.delete(key);
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Dereferences the entry for the given key. If any reference has been
+   * collected, the entry is deleted and `undefined` is returned.
+   *
+   * @param key - The key of the entry to dereference.
+   * @param entry - The entry to dereference.
+   * @returns The dereferenced value if all references are still valid, or
+   * `undefined` if the entry was deleted due to collected references.
+   */
+  private derefEntryOrDelete(
+    key: string,
+    entry: WeakEntry<RecordType>,
+  ): RecordType | undefined {
+    const { keys, refs } = entry;
+
+    const out: Partial<RecordType> = {};
+    for (let i = 0, n = keys.length; i < n; i++) {
+      const prop = keys[i];
+      const v = refs[i].deref();
+      if (v === undefined) {
+        this.map.delete(key);
+        return undefined;
+      }
+      out[prop] = v as RecordType[typeof prop];
+    }
+    return out as RecordType;
+  }
+
+  /**
+   * Prunes all entries in the map that have had any of their weak references
+   * collected. This is used to ensure that the `size` property reflects only
+   * live entries.
+   */
+  private pruneAllDead(): void {
+    for (const [key, entry] of this.map) {
+      this.isLiveOrDelete(key, entry);
+    }
   }
 }
