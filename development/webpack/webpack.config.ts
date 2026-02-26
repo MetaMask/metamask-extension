@@ -232,7 +232,8 @@ const reactCompilerLoader = getReactCompilerLoader({
 const envValidationLoader = args.validateEnv
   ? {
       loader: require.resolve('./utils/loaders/envValidationLoader'),
-      options: { declarations: buildEnvVarDeclarations },
+      // Convert Set to array for JSON serialization through thread-loader
+      options: { declarations: Array.from(buildEnvVarDeclarations) },
     }
   : null;
 

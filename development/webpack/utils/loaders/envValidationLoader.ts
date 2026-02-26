@@ -10,8 +10,9 @@ import type {
   KeyValuePatternProperty,
 } from '@swc/types';
 
+// Options are serialized to JSON arrays for thread-loader compatibility
 export type EnvValidationLoaderOptions = {
-  declarations: Set<string>;
+  declarations: string[];
 };
 
 /**
@@ -205,7 +206,9 @@ export default function envValidationLoader(
   source: string,
 ) {
   const callback = this.async();
-  const { declarations } = this.getOptions();
+  const options = this.getOptions();
+  // Reconstruct Set from array (options are serialized to JSON by thread-loader)
+  const declarations = new Set(options.declarations);
   const parseOptions = getParseOptions(this.resourcePath);
 
   (async () => {
