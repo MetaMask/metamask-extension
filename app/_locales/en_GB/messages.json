@@ -760,6 +760,9 @@
     "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to automatically pull data from those services. $1",
     "description": "$1 is a link to a support article"
   },
+  "autoDetectTokensDescriptionV2": {
+    "message": "Displays new tokens sent to your wallet."
+  },
   "autoLockTimeLimit": {
     "message": "Auto-lock timer (minutes)"
   },
@@ -2344,6 +2347,9 @@
   "displayNftMediaDescription": {
     "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
   },
+  "displayNftMediaDescriptionV2": {
+    "message": "NFT autodetection relies on this feature."
+  },
   "doNotShare": {
     "message": "Do not share this with anyone"
   },
@@ -3762,6 +3768,9 @@
   },
   "loadingTokenList": {
     "message": "Loading token list"
+  },
+  "localCurrency": {
+    "message": "Local currency"
   },
   "localhost": {
     "message": "Localhost 8545"
@@ -8980,6 +8989,9 @@
   },
   "useNftDetection": {
     "message": "Autodetect NFTs"
+  },
+  "useNftDetectionDescription": {
+    "message": "Displays all NFTs, including fake ones airdropped by scammers."
   },
   "useNftDetectionDescriptionText": {
     "message": "Let MetaMask add NFTs you own using third-party services. Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk."

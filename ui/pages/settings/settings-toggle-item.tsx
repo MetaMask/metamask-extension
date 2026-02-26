@@ -34,7 +34,7 @@ export const SettingsToggleItem = ({
     ref={sectionRef}
     flexDirection={BoxFlexDirection.Column}
     gap={1}
-    marginTop={4}
+    paddingVertical={3}
   >
     <Box
       flexDirection={BoxFlexDirection.Row}
