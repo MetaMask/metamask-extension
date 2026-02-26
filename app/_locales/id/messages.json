@@ -7351,21 +7351,6 @@
   "simulationErrorMessageV2": {
     "message": "Kami tidak dapat memperkirakan gas. Tampaknya ada kesalahan dalam kontrak dan transaksi ini berpotensi gagal."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Toleransi selip"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Atur selisih yang paling sesuai untuk perubahan saldo. Transaksi tidak akan diproses jika selisihnya lebih tinggi."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Terapkan perubahan saldo"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Untuk menjaga keamanan uang Anda, transaksi ini tidak akan dilakukan jika saldo berubah atau toleransi selip tidak terpenuhi."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Pengaturan transaksi"
-  },
   "simulationsSettingDescription": {
     "message": "Aktifkan untuk mengestimasikan perubahan saldo transaksi dan tanda tangan sebelum Anda mengonfirmasikannya. Ini tidak menjamin hasil akhirnya. $1"
   },

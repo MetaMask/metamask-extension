@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { screen, fireEvent, act } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import {
   mockPositions,
   mockAccountState,
@@ -179,8 +180,8 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      expect(screen.getByText('Long')).toBeInTheDocument();
-      expect(screen.getByText('Short')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsLong.message)).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsShort.message)).toBeInTheDocument();
     });
   });
 
@@ -222,7 +223,9 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      expect(screen.getByText('Market not found')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsMarketNotFound.message),
+      ).toBeInTheDocument();
     });
   });
 

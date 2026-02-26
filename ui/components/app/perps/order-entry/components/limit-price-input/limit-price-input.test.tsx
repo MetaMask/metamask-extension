@@ -3,6 +3,7 @@ import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import { LimitPriceInput } from './limit-price-input';
 
 jest.mock('../../../../../../hooks/perps/useUserHistory', () => ({
@@ -51,14 +52,16 @@ describe('LimitPriceInput', () => {
     it('displays the Limit Price label', () => {
       renderWithProvider(<LimitPriceInput {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('Limit Price')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLimitPrice.message),
+      ).toBeInTheDocument();
     });
 
     it('displays Mid button as end accessory', () => {
       renderWithProvider(<LimitPriceInput {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('limit-price-mid-button')).toBeInTheDocument();
-      expect(screen.getByText('Mid')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsMid.message)).toBeInTheDocument();
     });
   });
 
