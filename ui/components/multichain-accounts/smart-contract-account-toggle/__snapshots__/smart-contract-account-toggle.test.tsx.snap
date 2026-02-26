@@ -40,16 +40,6 @@ exports[`SmartContractAccountToggle Basic Rendering shows toggle as OFF for unsu
           value="false"
         />
       </div>
-      <div
-        class="toggle-button__status"
-      >
-        <span
-          class="toggle-button__label-off"
-        />
-        <span
-          class="toggle-button__label-on"
-        />
-      </div>
     </label>
   </div>
 </div>
@@ -95,16 +85,6 @@ exports[`SmartContractAccountToggle Basic Rendering shows toggle as enabled for 
           value="true"
         />
       </div>
-      <div
-        class="toggle-button__status"
-      >
-        <span
-          class="toggle-button__label-off"
-        />
-        <span
-          class="toggle-button__label-on"
-        />
-      </div>
     </label>
   </div>
 </div>
@@ -148,16 +128,6 @@ exports[`SmartContractAccountToggle Disabled State disables toggle during pendin
           style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
           type="checkbox"
           value="true"
-        />
-      </div>
-      <div
-        class="toggle-button__status"
-      >
-        <span
-          class="toggle-button__label-off"
-        />
-        <span
-          class="toggle-button__label-on"
         />
       </div>
     </label>

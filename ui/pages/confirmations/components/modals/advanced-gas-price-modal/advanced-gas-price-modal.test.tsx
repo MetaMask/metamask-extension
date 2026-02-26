@@ -6,6 +6,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../test/lib/con
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { GasModalType } from '../../../constants/gas';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { AdvancedGasPriceModal } from './advanced-gas-price-modal';
 
 jest.mock('../../gas-price-input/gas-price-input', () => ({
@@ -51,7 +52,9 @@ describe('AdvancedGasPriceModal', () => {
   it('renders the modal with header', () => {
     const { getByText } = render();
 
-    expect(getByText('Advanced network fee')).toBeInTheDocument();
+    expect(
+      getByText(messages.advancedGasPriceModalTitle.message),
+    ).toBeInTheDocument();
   });
 
   it('renders all gas input components', () => {
@@ -64,14 +67,14 @@ describe('AdvancedGasPriceModal', () => {
   it('renders Cancel and Save buttons', () => {
     const { getByText } = render();
 
-    expect(getByText('Cancel')).toBeInTheDocument();
-    expect(getByText('Save')).toBeInTheDocument();
+    expect(getByText(messages.cancel.message)).toBeInTheDocument();
+    expect(getByText(messages.save.message)).toBeInTheDocument();
   });
 
   it('navigates to EstimatesModal when Cancel is clicked', () => {
     const { getByText, mockSetActiveModal } = render();
 
-    fireEvent.click(getByText('Cancel'));
+    fireEvent.click(getByText(messages.cancel.message));
 
     expect(mockSetActiveModal).toHaveBeenCalledWith(
       GasModalType.EstimatesModal,

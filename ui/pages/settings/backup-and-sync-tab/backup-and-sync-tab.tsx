@@ -39,12 +39,16 @@ const BackupAndSyncTab = () => {
       paddingLeft={4}
     >
       <BackupAndSyncToggle />
-      <Box
-        borderColor={BoxBorderColor.BorderMuted}
-        borderWidth={1}
-        className="w-full h-px border-b-0"
-      />
-      {isBackupAndSyncEnabled && <BackupAndSyncFeaturesToggles />}
+      {isBackupAndSyncEnabled && (
+        <>
+          <Box
+            borderColor={BoxBorderColor.BorderMuted}
+            borderWidth={1}
+            className="w-full h-px border-b-0"
+          />
+          <BackupAndSyncFeaturesToggles />
+        </>
+      )}
     </Box>
   );
 };

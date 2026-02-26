@@ -70,6 +70,8 @@ class HomePage {
     testId: 'account-overview__defi-tab',
   };
 
+  private readonly overviewBalanceSection = '.wallet-overview__balance';
+
   private readonly popoverBackground = '.popover-bg';
 
   private readonly portfolioLink = '[data-testid="portfolio-link"]';
@@ -106,6 +108,9 @@ class HomePage {
 
   private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
 
+  private readonly defaultAddressContainer =
+    '[data-testid="default-address-container"]';
+
   private readonly connectionsRemovedModal =
     '[data-testid="connections-removed-modal"]';
 
@@ -128,8 +133,8 @@ class HomePage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.sendButton,
         this.activityTab,
+        this.overviewBalanceSection,
         this.tokensTab,
       ]);
     } catch (e) {
@@ -574,6 +579,16 @@ class HomePage {
 
   async checkConnectionsRemovedModalIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.connectionsRemovedModal);
+  }
+
+  async checkDefaultAddressIsDisplayed(): Promise<void> {
+    console.log('Check default address is displayed in header on homepage');
+    await this.driver.waitForSelector(this.defaultAddressContainer);
+  }
+
+  async checkDefaultAddressIsNotDisplayed(): Promise<void> {
+    console.log('Check default address is not displayed in header on homepage');
+    await this.driver.assertElementNotPresent(this.defaultAddressContainer);
   }
 
   async checkShieldEntryModalIsDisplayed(): Promise<void> {

@@ -5807,12 +5807,6 @@
   "snapAccountRemovedDescription": {
     "message": "Ní bheidh an cuntas seo ar fáil lena úsáid i MetaMask a thuilleadh."
   },
-  "snapAccounts": {
-    "message": "Snapanna Cuntais"
-  },
-  "snapAccountsDescription": {
-    "message": "Cuntais atá faoi rialú Snaps tríú páirtí."
-  },
   "snapConnectTo": {
     "message": "Ceangail le $1",
     "description": "$1 is the website URL or a Snap name. Used for Snaps pre-approved connections."

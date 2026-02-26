@@ -251,20 +251,14 @@ export const getEvmMultichainNetworkConfigurations = createSelector(
  * This selector provides stable references when the underlying data hasn't changed.
  */
 export const getAllMultichainNetworkConfigurations = createSelector(
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   getNonEvmMultichainNetworkConfigurationsByChainId,
-  ///: END:ONLY_INCLUDE_IF
   getEvmMultichainNetworkConfigurations,
   (
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     nonEvmNetworkConfigurationsByChainId,
-    ///: END:ONLY_INCLUDE_IF
     evmNetworks,
   ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
     return {
-      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       ...nonEvmNetworkConfigurationsByChainId,
-      ///: END:ONLY_INCLUDE_IF
       ...evmNetworks,
     };
   },
