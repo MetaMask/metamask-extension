@@ -1514,6 +1514,17 @@ export function getPrivacyMode(state) {
 }
 
 /**
+ * Default address feature flag (extension-ux-default-address)
+ *
+ * @param state - Redux state
+ * @returns {boolean}
+ */
+export function getIsDefaultAddressEnabled(state) {
+  const remoteFeatureFlags = getRemoteFeatureFlags(state);
+  return Boolean(remoteFeatureFlags?.extensionUxDefaultAddress);
+}
+
+/**
  * Show default address preference
  *
  * @param state - Redux state

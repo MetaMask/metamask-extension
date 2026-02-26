@@ -7348,21 +7348,6 @@
   "simulationErrorMessageV2": {
     "message": "Nous n’avons pas pu estimer le prix de carburant. Par conséquent, il se peut qu’il y ait une erreur dans le contrat et que cette transaction échoue."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Tolérance au slippage"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Fixez la différence qui vous convient pour les changements de solde. Les transactions ne seront pas effectuées si la différence est supérieure."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Appliquer les modifications de solde"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Pour protéger vos fonds, cette transaction ne sera pas effectuée si le solde change ou si la tolérance au slippage n’est pas respectée."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Paramètres de la transaction"
-  },
   "simulationsSettingDescription": {
     "message": "Activez cette option pour estimer les changements de solde des transactions et des signatures avant de les confirmer. Ces estimations sont fournies à titre indicatif et n’engagent en rien les parties à la transaction. $1"
   },

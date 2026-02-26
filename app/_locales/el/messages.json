@@ -7351,21 +7351,6 @@
   "simulationErrorMessageV2": {
     "message": "Δεν ήμασταν σε θέση να εκτιμήσουμε το τέλος συναλλαγής. Μπορεί να υπάρχει σφάλμα στο συμβόλαιο και η συναλλαγή αυτή να αποτύχει."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Ανοχή απόκλισης"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Ορίστε μια διαφορά που θα είναι αποδεκτή για αλλαγές στο υπόλοιπο. Οι συναλλαγές δεν θα ολοκληρωθούν αν η διαφορά είναι μεγαλύτερη."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Επιβολή αλλαγών υπολοίπου"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Για την ασφάλεια των χρημάτων σας, η συναλλαγή δεν θα ολοκληρωθεί αν αλλάξει το υπόλοιπο ή αν δεν τηρηθεί η ανοχή ολίσθησης."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Ρυθμίσεις συναλλαγών"
-  },
   "simulationsSettingDescription": {
     "message": "Ενεργοποιήστε το για να κάνετε εκτίμηση των αλλαγών υπολοίπου των συναλλαγών και των υπογραφών πριν τις επιβεβαιώσετε. Αυτό δεν εγγυάται το τελικό τους αποτέλεσμα. $1"
   },

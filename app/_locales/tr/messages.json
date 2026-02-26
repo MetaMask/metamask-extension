@@ -7351,21 +7351,6 @@
   "simulationErrorMessageV2": {
     "message": "Gaz tahmini yapamadık. Sözleşmede bir hata olabilir ve bu işlem başarısız olabilir."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Kayma toleransı"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Bakiye değişiklikleri konusunda rahat hissettiğiniz bir fark belirleyin. Fark daha yüksek olursa işlemler gerçekleşmez."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Bakiye değişikliklerini uygula"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Paranızı güvende tutmak amacıyla bakiye değişirse veya kayma toleransı karşılanmazsa bu işlem gerçekleşmeyecektir."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "İşlem ayarları"
-  },
   "simulationsSettingDescription": {
     "message": "Onaylamadan önce işlemlerdeki ve imzalardaki bakiye değişikliklerini tahmin etmek için bunu açın. Nihai sonucunu garanti etmez. $1"
   },
