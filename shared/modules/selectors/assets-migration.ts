@@ -350,10 +350,7 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
         result[accountAddress][hexChainId] ??= {};
         result[accountAddress][hexChainId][assetAddress] =
           // TODO: Use raw value from state when available
-          parseBalanceWithDecimals(
-            assetBalance.amount,
-            metadata.decimals,
-          ) as Hex;
+          parseBalanceWithDecimals(assetBalance.amount, metadata.decimals);
       }
     }
 
@@ -367,12 +364,7 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
 function parseBalanceWithDecimals(
   balanceString: string,
   decimals: number,
-): Hex | undefined {
-  // Allows: "123", "123.456", "0.123", but not: "-123", "123.", "abc", "12.34.56"
-  if (!/^\d+(\.\d+)?$/u.test(balanceString)) {
-    return undefined;
-  }
-
+): Hex {
   const [integerPart, fractionalPart = ''] = balanceString.split('.');
 
   if (decimals === 0) {
