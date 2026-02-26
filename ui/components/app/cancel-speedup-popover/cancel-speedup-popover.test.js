@@ -16,6 +16,7 @@ import {
   hexWEIToDecETH,
 } from '../../../../shared/modules/conversion.utils';
 import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import CancelSpeedupPopover from './cancel-speedup-popover';
 
 const MAXFEEPERGAS_ABOVE_MOCK_MEDIUM_HEX = '0x174876e800';
@@ -128,12 +129,12 @@ describe('CancelSpeedupPopover', () => {
 
   it('should have Cancel in header if editGasMode is cancel', async () => {
     await act(async () => render());
-    expect(screen.queryByText('Cancel')).toBeInTheDocument();
+    expect(screen.queryByText(messages.cancel.message)).toBeInTheDocument();
   });
 
   it('should have Speed up in header if editGasMode is speedup', async () => {
     await act(async () => render({ editGasMode: EditGasModes.speedUp }));
-    expect(screen.queryByText('Speed up')).toBeInTheDocument();
+    expect(screen.queryByText(messages.speedUp.message)).toBeInTheDocument();
   });
 
   it('information tooltip should contain the correct text if editGasMode is cancel', async () => {

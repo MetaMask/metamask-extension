@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
@@ -104,7 +105,7 @@ describe('Download App Onboarding View', () => {
       const store = arrangeMocks();
 
       const { getByText } = renderWithProvider(<DownloadApp />, store);
-      const continueButton = getByText('Continue');
+      const continueButton = getByText(messages.continue.message);
 
       fireEvent.click(continueButton);
 

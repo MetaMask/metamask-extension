@@ -5242,9 +5242,6 @@
   "perpsAddToFavorites": {
     "message": "Favorilere ekle"
   },
-  "perpsAsk": {
-    "message": "Satış"
-  },
   "perpsAutoClose": {
     "message": "Otomatik kapat"
   },
@@ -5255,14 +5252,8 @@
   "perpsAvailableBalance": {
     "message": "Kullanılabilir bakiye"
   },
-  "perpsBid": {
-    "message": "Alış"
-  },
   "perpsCancelAllOrders": {
     "message": "Tümünü iptal et"
-  },
-  "perpsClose": {
-    "message": "Kapat"
   },
   "perpsCloseAll": {
     "message": "Tümünü kapat"
@@ -5380,9 +5371,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Likidasyon fiyatı"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Likidasyon Fiyat Tah."
   },
   "perpsLong": {
     "message": "Uzun"

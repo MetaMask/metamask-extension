@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   DEFAULT_ROUTE,
@@ -108,7 +109,7 @@ describe('Wallet Ready Page', () => {
     const mockStore = configureMockStore([thunk])(mockState);
     const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
 
-    expect(getByText('Your wallet is ready!')).toBeInTheDocument();
+    expect(getByText(messages.yourWalletIsReady.message)).toBeInTheDocument();
   });
 
   it('should render the wallet ready content if the seed phrase is not backed up', () => {
@@ -121,13 +122,15 @@ describe('Wallet Ready Page', () => {
     });
     const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
 
-    expect(getByText('Your wallet is ready!')).toBeInTheDocument();
+    expect(getByText(messages.yourWalletIsReady.message)).toBeInTheDocument();
   });
 
   it('should redirect to privacy-settings view when "Manage default settings" button is clicked', () => {
     const mockStore = configureMockStore([thunk])(mockState);
     const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
-    const privacySettingsButton = getByText('Manage default settings');
+    const privacySettingsButton = getByText(
+      messages.manageDefaultSettings.message,
+    );
     fireEvent.click(privacySettingsButton);
     expect(mockUseNavigate).toHaveBeenCalledWith(
       ONBOARDING_PRIVACY_SETTINGS_ROUTE,
