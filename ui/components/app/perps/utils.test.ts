@@ -9,6 +9,7 @@ import {
   getDisplaySymbol,
   getAssetIconUrl,
   safeDecodeURIComponent,
+  normalizeTpslPrices,
   filterMarketsByQuery,
   groupTransactionsByDate,
   filterTransactionsByType,
@@ -198,6 +199,39 @@ describe('Perps Utils', () => {
 
     it('handles empty string', () => {
       expect(safeDecodeURIComponent('')).toBe('');
+    });
+  });
+
+  describe('normalizeTpslPrices', () => {
+    it('strips commas and whitespace from TP/SL inputs', () => {
+      expect(
+        normalizeTpslPrices({
+          takeProfitPrice: ' 12,345.67 ',
+          stopLossPrice: ' 9,876.54 ',
+        }),
+      ).toEqual({
+        takeProfitPrice: '12345.67',
+        stopLossPrice: '9876.54',
+      });
+    });
+
+    it('returns undefined for empty TP/SL inputs', () => {
+      expect(
+        normalizeTpslPrices({
+          takeProfitPrice: ' ',
+          stopLossPrice: '',
+        }),
+      ).toEqual({
+        takeProfitPrice: undefined,
+        stopLossPrice: undefined,
+      });
+    });
+
+    it('handles missing TP/SL values', () => {
+      expect(normalizeTpslPrices({})).toEqual({
+        takeProfitPrice: undefined,
+        stopLossPrice: undefined,
+      });
     });
   });
 
