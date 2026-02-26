@@ -52,7 +52,7 @@ async function navigateQuizToPasswordScreen({
   queryByTestId,
   fireEvent: fireEventFn,
 }) {
-  fireEventFn.click(getByText('Get started'));
+  fireEventFn.click(getByText(messages.srpSecurityQuizGetStarted.message));
 
   await waitFor(() => {
     expect(getByText(Q1_CORRECT)).toBeInTheDocument();
@@ -302,8 +302,8 @@ describe('Reveal Seed Page', () => {
 
     mockTrackEvent.mockClear();
 
-    const qrTab = getByText('QR');
-    const textTab = getByText('Text');
+    const qrTab = getByText(messages.revealSeedWordsQR.message);
+    const textTab = getByText(messages.revealSeedWordsText.message);
 
     fireEvent.click(qrTab);
 
