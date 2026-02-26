@@ -588,7 +588,7 @@ module.exports = {
       files: ['development/**/*.js', 'test/helpers/setup-helper.js'],
       rules: {
         'n/no-process-exit': 'off',
-        'n/shebang': 'off',
+        'n/hashbang': 'off',
       },
     },
     /**
