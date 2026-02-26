@@ -6436,6 +6436,10 @@
   "rewardsQRCodeTitle": {
     "message": "Get the mobile app"
   },
+  "rewardsSignInFailed": {
+    "message": "Failed to sign in",
+    "description": "Text shown when the opt-in sign attempt failed, with a retry affordance"
+  },
   "rewardsSignInToViewPoints": {
     "message": "Sign in to view points",
     "description": "Text shown when user needs to sign in to view their rewards points"

@@ -53,7 +53,11 @@ import { isEvmChainId } from '../../shared/lib/asset-utils';
 import { isEmptyHexString } from '../../shared/modules/hexstring-utils';
 import { isZeroAmount } from '../helpers/utils/number-utils';
 import { getNonTestNetworks } from '../../shared/modules/selectors/networks';
-import { getAccountTrackerControllerAccountsByChainId } from '../../shared/modules/selectors/assets-migration';
+import {
+  getAccountTrackerControllerAccountsByChainId,
+  getTokensControllerAllIgnoredTokens,
+  getTokensControllerAllTokens,
+} from '../../shared/modules/selectors/assets-migration';
 import { getSelectedInternalAccount } from './accounts';
 import { getMultichainBalances } from './multichain';
 import { EMPTY_OBJECT } from './shared';
@@ -866,7 +870,7 @@ const selectMultichainAssetsStateForBalances = createSelector(
  * @param state - Redux state providing `metamask.allTokens`.
  */
 const selectTokensStateForBalances = createSelector(
-  [(state: BalanceCalculationState) => getMetamaskState(state).allTokens],
+  [getTokensControllerAllTokens],
   (allTokens) => ({
     allTokens: allTokens ?? EMPTY_OBJECT,
     allIgnoredTokens: EMPTY_OBJECT,
@@ -1415,8 +1419,8 @@ const getStateForAssetSelector = ({ metamask }: any) => {
   const initialState = {
     accountTree: metamask.accountTree,
     internalAccounts: metamask.internalAccounts,
-    allTokens: metamask.allTokens,
-    allIgnoredTokens: metamask.allIgnoredTokens,
+    allTokens: getTokensControllerAllTokens({ metamask }),
+    allIgnoredTokens: getTokensControllerAllIgnoredTokens({ metamask }),
     tokenBalances: metamask.tokenBalances,
     marketData: metamask.marketData,
     currencyRates: metamask.currencyRates,
@@ -1491,13 +1495,8 @@ export const getAsset = createSelector(
 
 export const selectSingleTokenByAddressAndChainId = createSelector(
   getAllTokens,
-  (_state: { metamask: TokensControllerState }, tokenAddress: Hex) =>
-    tokenAddress,
-  (
-    _state: { metamask: TokensControllerState },
-    _tokenAddress: Hex,
-    chainId: Hex,
-  ) => chainId,
+  (_state, tokenAddress: Hex) => tokenAddress,
+  (_state, _tokenAddress: Hex, chainId: Hex) => chainId,
   (allTokens, tokenAddress, chainId) => {
     const chainTokens = Object.values(
       allTokens[chainId] ?? {},

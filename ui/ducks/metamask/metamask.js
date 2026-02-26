@@ -25,6 +25,7 @@ import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { getTokensControllerAllTokens } from '../../../shared/modules/selectors/assets-migration';
 
 const initialState = {
   isInitialized: false,
@@ -254,14 +255,14 @@ export const getUnconnectedAccountAlertShown = (state) =>
   state.metamask.unconnectedAccountAlertShownOrigins;
 
 export const getTokens = (state) => {
-  const { allTokens } = state.metamask;
+  const allTokens = getTokensControllerAllTokens(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { chainId } = getProviderConfig(state);
   return allTokens?.[chainId]?.[selectedAddress] || [];
 };
 
 export const getTokensByChainId = (state, chainId) => {
-  const { allTokens } = state.metamask;
+  const allTokens = getTokensControllerAllTokens(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   return allTokens?.[chainId]?.[selectedAddress] || [];
 };
