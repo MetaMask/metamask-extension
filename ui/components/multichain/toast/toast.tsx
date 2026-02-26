@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import classnames from 'classnames';
 import {
   Button,
   ButtonSize,
@@ -29,7 +28,9 @@ export const ToastContainer = ({
   children: React.ReactNode | string;
   className?: string;
 }) => (
-  <Box className={classnames('toasts-container', className)}>{children}</Box>
+  <Box className={['toasts-container', className].filter(Boolean).join(' ')}>
+    {children}
+  </Box>
 );
 
 export const Toast = ({
