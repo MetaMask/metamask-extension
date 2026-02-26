@@ -27,9 +27,6 @@ const createMockState = (overrides = {}) => ({
       defaultAddressScope: 'eip155',
       ...overrides,
     },
-    remoteFeatureFlags: {
-      extensionUxDefaultAddress: true,
-    },
   },
 });
 

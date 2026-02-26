@@ -240,7 +240,7 @@ export const AppHeaderUnlockedContent = ({
               }}
               showDefaultAddressSection={isDefaultAddressEnabled}
             >
-              {showDefaultAddress && defaultAddress ? (
+              {isDefaultAddressEnabled && showDefaultAddress && defaultAddress ? (
                 <MultichainAccountNetworkGroupWithDefaultAddress
                   groupId={selectedMultichainAccountId}
                 />

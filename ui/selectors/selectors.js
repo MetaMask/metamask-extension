@@ -1531,7 +1531,7 @@ export function getIsDefaultAddressEnabled(state) {
  */
 export function getShowDefaultAddress(state) {
   const { showDefaultAddress } = getPreferences(state);
-  return Boolean(showDefaultAddress) && getIsDefaultAddressEnabled(state);
+  return Boolean(showDefaultAddress);
 }
 
 /**
