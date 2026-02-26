@@ -17,12 +17,18 @@ import {
 } from '../../../../selectors';
 import { isExtensionUrl, getURLHost } from '../../../../helpers/utils/util';
 import Popover from '../../../ui/popover';
-import Button from '../../../ui/button';
+
 import Checkbox from '../../../ui/check-box';
 import Tooltip from '../../../ui/tooltip';
 import ConnectedAccountsList from '../../connected-accounts-list';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Icon, IconName, Text } from '../../../component-library';
+import {
+  Icon,
+  IconName,
+  Text,
+  Button,
+  ButtonVariant,
+} from '../../../component-library';
 
 const { ERROR, LOADING } = ALERT_STATE;
 
@@ -34,16 +40,6 @@ const UnconnectedAccountAlert = () => {
     getOrderedConnectedAccountsForActiveTab,
   );
   const internalAccounts = useSelector(getInternalAccounts);
-  // Temporary fix until https://github.com/MetaMask/metamask-extension/pull/21553
-  const internalAccountsMap = new Map(
-    internalAccounts.map((acc) => [acc.address, acc]),
-  );
-
-  const connectedAccountsWithName = connectedAccounts.map((account) => ({
-    ...account,
-    name: internalAccountsMap.get(account.address)?.metadata.name,
-  }));
-
   const origin = useSelector(getOriginOfCurrentTab);
   const account = useSelector(getSelectedInternalAccount);
   const { address: selectedAddress } = account;
@@ -87,8 +83,7 @@ const UnconnectedAccountAlert = () => {
         <Button
           disabled={alertState === LOADING}
           onClick={onClose}
-          type="primary"
-          className="unconnected-account-alert__dismiss-button"
+          variant={ButtonVariant.Primary}
         >
           {t('dismiss')}
         </Button>
@@ -111,7 +106,7 @@ const UnconnectedAccountAlert = () => {
       <ConnectedAccountsList
         accountToConnect={account}
         connectAccount={() => dispatch(connectAccount(selectedAddress))}
-        connectedAccounts={connectedAccountsWithName}
+        connectedAccounts={connectedAccounts}
         selectedAddress={selectedAddress}
         setSelectedAddress={(address) => {
           const { id: accountId } = internalAccounts.find(

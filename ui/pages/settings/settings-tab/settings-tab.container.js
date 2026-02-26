@@ -1,9 +1,11 @@
 import { connect } from 'react-redux';
 import {
   setCurrentCurrency,
-  setUseBlockie,
+  setAvatarType,
   updateCurrentLocale,
   setHideZeroBalanceTokens,
+  setShowDefaultAddress,
+  setDefaultAddressScope,
   setParticipateInMetaMetrics,
   setTheme,
   setShowNativeTokenAsMainBalancePreference,
@@ -22,8 +24,13 @@ const mapStateToProps = (state) => {
   const { currentCurrency, useBlockie, currentLocale } = metamask;
   const { ticker: nativeCurrency } = getProviderConfig(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
-  const { hideZeroBalanceTokens, showNativeTokenAsMainBalance } =
-    getPreferences(state);
+  const {
+    hideZeroBalanceTokens,
+    showDefaultAddress,
+    defaultAddressScope,
+    showNativeTokenAsMainBalance,
+    avatarType,
+  } = getPreferences(state);
 
   const tokenList = getTokenList(state);
 
@@ -32,8 +39,11 @@ const mapStateToProps = (state) => {
     currentCurrency,
     nativeCurrency,
     useBlockie,
+    avatarType,
     showNativeTokenAsMainBalance,
     hideZeroBalanceTokens,
+    showDefaultAddress,
+    defaultAddressScope,
     selectedAddress,
     tokenList,
     theme: getTheme(state),
@@ -43,7 +53,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     setCurrentCurrency: (currency) => dispatch(setCurrentCurrency(currency)),
-    setUseBlockie: (value) => dispatch(setUseBlockie(value)),
+    setAvatarType: (value) => dispatch(setAvatarType(value)),
     updateCurrentLocale: (key) => dispatch(updateCurrentLocale(key)),
     setShowNativeTokenAsMainBalancePreference: (value) => {
       return dispatch(setShowNativeTokenAsMainBalancePreference(value));
@@ -52,6 +62,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setParticipateInMetaMetrics(val)),
     setHideZeroBalanceTokens: (value) =>
       dispatch(setHideZeroBalanceTokens(value)),
+    setShowDefaultAddress: (value) => dispatch(setShowDefaultAddress(value)),
+    setDefaultAddressScope: (value) => dispatch(setDefaultAddressScope(value)),
     setTheme: (val) => dispatch(setTheme(val)),
   };
 };

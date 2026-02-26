@@ -33,7 +33,7 @@ export function useNames(requests: UseNameRequest[]): NameEntry[] {
     const entry =
       !variationEntry?.name && fallbackEntry
         ? fallbackEntry
-        : variationEntry ?? {};
+        : (variationEntry ?? {});
 
     const {
       name = null,

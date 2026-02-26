@@ -1,4 +1,5 @@
 import React from 'react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import {
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
@@ -6,6 +7,7 @@ import {
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {
+  addEthereumChainApproval,
   getMockContractInteractionConfirmState,
   getMockPersonalSignConfirmState,
   getMockPersonalSignConfirmStateForRequest,
@@ -18,7 +20,7 @@ import {
 } from '../../../../../../test/data/confirmations/personal_sign';
 import { permitSignatureMsg } from '../../../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { fireEvent } from '../../../../../../test/jest';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -27,13 +29,40 @@ import configureStore from '../../../../../store/store';
 import * as confirmContext from '../../../context/confirm';
 import { SignatureRequestType } from '../../../types/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
+import { useIsGaslessSupported } from '../../../hooks/gas/useIsGaslessSupported';
+import { useInsufficientBalanceAlerts } from '../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
+import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
+import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
+import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import Footer from './footer';
+
+jest.mock('../../../hooks/gas/useIsGaslessLoading');
+jest.mock('../../../hooks/alerts/transactions/useInsufficientBalanceAlerts');
+jest.mock('../../../hooks/gas/useIsGaslessSupported');
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let mockStore: any = null;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockDispatch: any = jest.fn((action: unknown) => {
+  if (typeof action === 'function') {
+    // Thunk actions need both dispatch and getState
+    const mockGetState = mockStore ? mockStore.getState : jest.fn(() => ({}));
+    return action(mockDispatch, mockGetState);
+  }
+  return action;
+});
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: () => jest.fn(),
+  useDispatch: () => mockDispatch,
 }));
-
+jest.mock('../../../hooks/useConfirmationNavigation', () => ({
+  useConfirmationNavigation: jest.fn(() => ({
+    navigateNext: jest.fn(),
+    navigateToId: jest.fn(),
+  })),
+}));
 jest.mock(
   '../../../../../components/app/alert-system/contexts/alertMetricsContext',
   () => ({
@@ -47,18 +76,91 @@ jest.mock(
 
 jest.mock('../../../hooks/useOriginThrottling');
 
+jest.mock('../../../../../hooks/subscription/useSubscription');
+jest.mock('../../../hooks/useAddEthereumChain', () => ({
+  useAddEthereumChain: jest.fn(() => ({
+    onSubmit: jest.fn().mockResolvedValue(undefined),
+  })),
+  isAddEthereumChainType: jest.fn(
+    (confirmation) => confirmation?.type === 'wallet_addEthereumChain',
+  ),
+}));
+jest.mock('../../../hooks/transactions/useTransactionConfirm', () => ({
+  useTransactionConfirm: jest.fn(() => ({
+    onTransactionConfirm: jest.fn().mockResolvedValue(undefined),
+  })),
+}));
+jest.mock('../../../hooks/useConfirmSendNavigation', () => ({
+  useConfirmSendNavigation: jest.fn(() => ({
+    navigateBackIfSend: jest.fn(),
+  })),
+}));
+
+const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
+  };
+});
+
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? getMockPersonalSignConfirmState());
+  mockStore = store;
 
   return renderWithConfirmContextProvider(<Footer />, store);
 };
 
+const ALERT_MOCK = [
+  {
+    key: 'insufficientNativeToken',
+    severity: Severity.Danger,
+    message: 'Not enough native token to cover fees',
+  },
+] as Alert[];
+
 describe('ConfirmFooter', () => {
   const mockUseOriginThrottling = useOriginThrottling as jest.Mock;
+  const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
+  const useInsufficientBalanceAlertsMock = jest.mocked(
+    useInsufficientBalanceAlerts,
+  );
+  const useIsGaslessLoadingMock = jest.mocked(useIsGaslessLoading);
+  const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
+  const useUserSubscriptionsMock = jest.mocked(useUserSubscriptions);
 
   beforeEach(() => {
+    jest.clearAllMocks();
+    mockDispatch.mockClear();
+    mockStore = null;
+
     mockUseOriginThrottling.mockReturnValue({
       shouldThrottleOrigin: false,
+    });
+
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: false,
+      pending: false,
+    });
+
+    useIsGaslessLoadingMock.mockReturnValue({
+      isGaslessLoading: false,
+    });
+
+    mockUseLocation.mockReturnValue({
+      pathname: '/confirm-transaction',
+      search: '',
+      hash: '',
+      state: null,
+    });
+    useUserSubscriptionsMock.mockReturnValue({
+      trialedProducts: [],
+      loading: false,
+      subscriptions: [],
+      error: undefined,
     });
   });
 
@@ -76,8 +178,8 @@ describe('ConfirmFooter', () => {
     const { getAllByRole, getByText } = render();
     const buttons = getAllByRole('button');
     expect(buttons).toHaveLength(2);
-    expect(getByText('Confirm')).toBeInTheDocument();
-    expect(getByText('Cancel')).toBeInTheDocument();
+    expect(getByText(messages.confirm.message)).toBeInTheDocument();
+    expect(getByText(messages.cancel.message)).toBeInTheDocument();
   });
 
   describe('renders enabled "Confirm" Button', () => {
@@ -85,7 +187,7 @@ describe('ConfirmFooter', () => {
       const mockStateTypedSign = getMockTypedSignConfirmState();
       const { getByText } = render(mockStateTypedSign);
 
-      const confirmButton = getByText('Confirm');
+      const confirmButton = getByText(messages.confirm.message);
       expect(confirmButton).not.toBeDisabled();
     });
 
@@ -94,12 +196,12 @@ describe('ConfirmFooter', () => {
         currentConfirmation: signatureRequestSIWE,
         isScrollToBottomCompleted: false,
         setIsScrollToBottomCompleted: () => undefined,
-      });
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
       const mockStateSIWE =
         getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
       const { getByText } = render(mockStateSIWE);
 
-      const confirmButton = getByText('Confirm');
+      const confirmButton = getByText(messages.confirm.message);
       expect(confirmButton).not.toBeDisabled();
     });
 
@@ -108,7 +210,47 @@ describe('ConfirmFooter', () => {
         getMockTypedSignConfirmStateForRequest(permitSignatureMsg);
       const { getByText } = render(mockStatePermit);
 
-      const confirmButton = getByText('Confirm');
+      const confirmButton = getByText(messages.confirm.message);
+      expect(confirmButton).not.toBeDisabled();
+    });
+
+    it('when simulation is enabled and fetched', () => {
+      useIsGaslessSupportedMock.mockReturnValue({
+        isSmartTransaction: true,
+        isSupported: true,
+        pending: false,
+      });
+      useInsufficientBalanceAlertsMock.mockReturnValue(ALERT_MOCK);
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: {
+          ...genUnapprovedContractInteractionConfirmation(),
+          simulationData: {
+            tokenBalanceChanges: [],
+          },
+        },
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: () => undefined,
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+      const mockState2 = {
+        ...getMockContractInteractionConfirmState(),
+        metamask: {
+          ...getMockContractInteractionConfirmState().metamask,
+          useTransactionSimulations: true,
+        },
+        appState: {
+          ...getMockContractInteractionConfirmState().appState,
+          confirmAlerts: {
+            alerts: {
+              '1': ALERT_MOCK,
+            },
+            confirmed: {},
+          },
+        },
+      };
+
+      const { getByText } = render(mockState2);
+      const confirmButton = getByText(messages.confirm.message);
       expect(confirmButton).not.toBeDisabled();
     });
   });
@@ -119,59 +261,98 @@ describe('ConfirmFooter', () => {
         currentConfirmation: genUnapprovedContractInteractionConfirmation(),
         isScrollToBottomCompleted: false,
         setIsScrollToBottomCompleted: () => undefined,
-      });
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
       const mockStateTypedSign = getMockContractInteractionConfirmState();
       const { getByText } = render(mockStateTypedSign);
 
-      const confirmButton = getByText('Confirm');
+      const confirmButton = getByText(messages.confirm.message);
+      expect(confirmButton).toBeDisabled();
+    });
+
+    it('disables confirm button when gas fee tokens are still loading', () => {
+      useIsGaslessLoadingMock.mockReturnValue({
+        isGaslessLoading: true,
+      });
+
+      const mockState2 = {
+        ...getMockContractInteractionConfirmState(),
+        metamask: {
+          ...getMockContractInteractionConfirmState().metamask,
+          useTransactionSimulations: true,
+        },
+        appState: {
+          ...getMockContractInteractionConfirmState().appState,
+          confirmAlerts: {
+            alerts: {
+              '1': ALERT_MOCK,
+            },
+            confirmed: {},
+          },
+        },
+      };
+
+      const { getByText } = render(mockState2);
+      const confirmButton = getByText(messages.confirm.message);
       expect(confirmButton).toBeDisabled();
     });
   });
 
-  it('invoke required actions when cancel button is clicked', () => {
+  it('invoke required actions when cancel button is clicked', async () => {
     const { getAllByRole } = render();
     const cancelButton = getAllByRole('button')[0];
     const rejectSpy = jest
       .spyOn(Actions, 'rejectPendingApproval')
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => ({} as any));
+      .mockImplementation(() => Promise.resolve() as any);
     const updateCustomNonceSpy = jest
       .spyOn(Actions, 'updateCustomNonce')
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => ({} as any));
+      .mockReturnValue({} as any);
     const setNextNonceSpy = jest
       .spyOn(Actions, 'setNextNonce')
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => ({} as any));
+      .mockReturnValue({} as any);
+
     fireEvent.click(cancelButton);
-    expect(rejectSpy).toHaveBeenCalled();
+
+    // Wait for async onCancel to complete
+    await waitFor(() => {
+      expect(rejectSpy).toHaveBeenCalled();
+    });
+
     expect(updateCustomNonceSpy).toHaveBeenCalledWith('');
     expect(setNextNonceSpy).toHaveBeenCalledWith('');
   });
 
-  it('invoke required actions when submit button is clicked', () => {
+  it('invoke required actions when submit button is clicked', async () => {
     const { getAllByRole } = render();
     const submitButton = getAllByRole('button')[1];
     const resolveSpy = jest
       .spyOn(Actions, 'resolvePendingApproval')
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => ({} as any));
+      .mockImplementation(() => Promise.resolve() as any);
     const updateCustomNonceSpy = jest
       .spyOn(Actions, 'updateCustomNonce')
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => ({} as any));
+      .mockReturnValue({} as any);
     const setNextNonceSpy = jest
       .spyOn(Actions, 'setNextNonce')
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => ({} as any));
+      .mockReturnValue({} as any);
+
     fireEvent.click(submitButton);
-    expect(resolveSpy).toHaveBeenCalled();
+
+    // Wait for async onSubmit to complete
+    await waitFor(() => {
+      expect(resolveSpy).toHaveBeenCalled();
+    });
+
     expect(updateCustomNonceSpy).toHaveBeenCalledWith('');
     expect(setNextNonceSpy).toHaveBeenCalledWith('');
   });
@@ -197,6 +378,8 @@ describe('ConfirmFooter', () => {
           metamask: {
             signatureSecurityAlertResponses: {
               [mockSecurityAlertId]: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 result_type: BlockaidResultType.Malicious,
               },
             },
@@ -301,7 +484,7 @@ describe('ConfirmFooter', () => {
         { [KEY_ALERT_KEY_MOCK]: false },
       );
       const { getByText } = render(stateWithMultipleDangerAlerts);
-      expect(getByText('Review alerts')).toBeInTheDocument();
+      expect(getByText(messages.reviewAlerts.message)).toBeInTheDocument();
     });
 
     it('renders the "review alerts" button disabled when there are blocking alerts', () => {
@@ -317,13 +500,13 @@ describe('ConfirmFooter', () => {
         { [KEY_ALERT_KEY_MOCK]: false },
       );
       const { getByText } = render(stateWithMultipleDangerAlerts);
-      expect(getByText('Review alerts')).toBeInTheDocument();
-      expect(getByText('Review alerts')).toBeDisabled();
+      expect(getByText(messages.reviewAlerts.message)).toBeInTheDocument();
+      expect(getByText(messages.reviewAlerts.message)).toBeDisabled();
     });
 
     it('renders the "review alert" button when there are unconfirmed alerts', () => {
       const { getByText } = render(stateWithAlertsMock);
-      expect(getByText('Review alert')).toBeInTheDocument();
+      expect(getByText(messages.reviewAlert.message)).toBeInTheDocument();
     });
 
     it('renders the "confirm" button when there are confirmed danger alerts', () => {
@@ -334,7 +517,7 @@ describe('ConfirmFooter', () => {
         },
       );
       const { getByText } = render(stateWithConfirmedDangerAlertMock);
-      expect(getByText('Confirm')).toBeInTheDocument();
+      expect(getByText(messages.confirm.message)).toBeInTheDocument();
     });
 
     it('renders the "confirm" button disabled when there are blocking dangerous banner alerts', () => {
@@ -351,19 +534,70 @@ describe('ConfirmFooter', () => {
         },
       );
       const { getByText } = render(stateWithBannerDangerAlertMock);
-      expect(getByText('Confirm')).toBeInTheDocument();
-      expect(getByText('Confirm')).toBeDisabled();
+      expect(getByText(messages.confirm.message)).toBeInTheDocument();
+      expect(getByText(messages.confirm.message)).toBeDisabled();
     });
 
     it('renders the "confirm" button when there are no alerts', () => {
       const { getByText } = render();
-      expect(getByText('Confirm')).toBeInTheDocument();
+      expect(getByText(messages.confirm.message)).toBeInTheDocument();
     });
 
     it('sets the alert modal visible when the review alerts button is clicked', () => {
       const { getByTestId } = render(stateWithAlertsMock);
       fireEvent.click(getByTestId('confirm-footer-button'));
       expect(getByTestId('alert-modal-button')).toBeDefined();
+    });
+
+    describe('navigates to the next confirmation', () => {
+      // @ts-expect-error This is missing from the Mocha type definitions
+      it.each(['Confirm', 'Cancel'])(
+        'on %s button click',
+        async (buttonText: string) => {
+          const navigateNextMock = jest.fn();
+          useConfirmationNavigationMock.mockReturnValue({
+            navigateNext: navigateNextMock,
+            navigateToId: jest.fn(),
+          } as unknown as ReturnType<typeof useConfirmationNavigation>);
+
+          const mockStateWithContractInteractionConfirmation =
+            getMockContractInteractionConfirmState();
+
+          // Get the actual transaction from the transactions array
+          const contractInteractionConfirmation =
+            mockStateWithContractInteractionConfirmation.metamask
+              .transactions[0];
+
+          mockStateWithContractInteractionConfirmation.metamask.pendingApprovals =
+            {
+              ...mockStateWithContractInteractionConfirmation.metamask
+                .pendingApprovals,
+              [addEthereumChainApproval.id]: addEthereumChainApproval,
+            };
+          mockStateWithContractInteractionConfirmation.metamask.pendingApprovalCount = 2;
+
+          jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+            currentConfirmation: contractInteractionConfirmation,
+            isScrollToBottomCompleted: true,
+            setIsScrollToBottomCompleted: () => undefined,
+          } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+          const { getByText } = render(
+            mockStateWithContractInteractionConfirmation,
+          );
+
+          const button = getByText(buttonText);
+          fireEvent.click(button);
+
+          // Wait for async operations to complete
+          await waitFor(() => {
+            expect(navigateNextMock).toHaveBeenCalledTimes(1);
+          });
+
+          expect(navigateNextMock).toHaveBeenCalledWith(
+            contractInteractionConfirmation.id,
+          );
+        },
+      );
     });
   });
 });

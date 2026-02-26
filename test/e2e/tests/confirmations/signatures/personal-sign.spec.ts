@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
+import { withFixtures } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
@@ -10,8 +10,14 @@ import {
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/redesign/personal-sign-confirmation';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/personal-sign-confirmation';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  WINDOW_TITLES,
+} from '../../../constants';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
@@ -98,6 +104,56 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
       mockSignatureRejected,
     );
   });
+
+  it('can queue multiple personal signs and confirm', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        const publicAddress = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
+        const confirmation = new PersonalSignConfirmation(driver);
+        await loginWithBalanceValidation(driver);
+
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
+
+        // Create first personal sign
+        await testDapp.clickPersonalSign();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await confirmation.verifyConfirmationHeadingTitle();
+
+        // Switch to Dapp
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+        // Create second personal sign
+        await testDapp.clickPersonalSign();
+
+        // Switch to confirmation window
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await confirmation.checkPageNumbers(1, 2);
+        await confirmation.verifyOrigin();
+        await confirmation.verifyMessage();
+
+        // Confirm first personal sign
+        await confirmation.clickFooterConfirmButton();
+        await confirmation.verifyRejectAllButtonNotPresent();
+
+        // Confirm second personal sign
+        await confirmation.clickFooterConfirmButton();
+
+        // Verify the signature
+        await testDapp.checkSuccessPersonalSign(publicAddress);
+        await testDapp.verifyPersonalSignSigUtilResult(publicAddress);
+      },
+    );
+  });
 });
 
 async function assertInfoValues(driver: Driver) {
@@ -114,6 +170,6 @@ async function assertVerifiedPersonalMessage(
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-  await testDapp.check_successPersonalSign(publicAddress);
+  await testDapp.checkSuccessPersonalSign(publicAddress);
   await testDapp.verifyPersonalSignSigUtilResult(publicAddress);
 }

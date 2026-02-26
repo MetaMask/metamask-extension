@@ -38,17 +38,68 @@ function publish_tag() {
     shift
     local build_version="${1}"
     shift
+    local tag_name="v${build_version}"
 
-    git config user.email "metamaskbot@users.noreply.github.com"
-    git config user.name "MetaMask Bot"
-    git tag -a "v${build_version}" -m "${build_name} version ${build_version}"
-    git push "https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}" "v${build_version}"
+    # 1. Check if tag already exists via API
+    if gh api "/repos/${GITHUB_REPOSITORY}/git/refs/tags/${tag_name}" >/dev/null 2>&1; then
+        printf '%s\n' "${build_name} tag ${tag_name} already exists. Skipping tag creation."
+        return 0
+    fi
+
+    # 2. Prepare tagger metadata (must match existing "MetaMask Bot" attribution)
+    local tag_date
+    tag_date=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+    # 3. Create annotated tag object via API
+    # Use jq to construct JSON safely (handles special characters in build_name)
+    local tag_payload
+    tag_payload=$(jq -n \
+        --arg tag "$tag_name" \
+        --arg message "${build_name} version ${build_version}" \
+        --arg object "$GITHUB_SHA" \
+        --arg email "metamaskbot@users.noreply.github.com" \
+        --arg date "$tag_date" \
+        '{
+            tag: $tag,
+            message: $message,
+            object: $object,
+            type: "commit",
+            tagger: {
+                name: "MetaMask Bot",
+                email: $email,
+                date: $date
+            }
+        }')
+
+    local tag_sha
+    tag_sha=$(echo "$tag_payload" | gh api \
+        --method POST \
+        "/repos/${GITHUB_REPOSITORY}/git/tags" \
+        --input - \
+        --jq '.sha')
+
+    if [[ -z "${tag_sha}" ]]; then
+        printf 'Error: Failed to create tag object for %s\n' "${tag_name}" >&2
+        return 1
+    fi
+
+    # 4. Create the ref (this effectively "pushes" the tag)
+    if ! gh api \
+        --method POST \
+        "/repos/${GITHUB_REPOSITORY}/git/refs" \
+        -f ref="refs/tags/${tag_name}" \
+        -f sha="${tag_sha}"; then
+        printf 'Error: Failed to create ref for tag %s\n' "${tag_name}" >&2
+        return 1
+    fi
+
+    printf '%s\n' "${build_name} tag ${tag_name} created successfully via API."
 }
 
 current_commit_msg=$(git show -s --format='%s' HEAD)
 
-if [[ "${current_commit_msg}" =~ Version[-[:space:]](v[[:digit:]]+.[[:digit:]]+.[[:digit:]]+) ]]; then
-    tag="${BASH_REMATCH[1]}"
+if [[ "${current_commit_msg}" =~ release/([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+) ]]; then
+    tag="v${BASH_REMATCH[1]}"
     flask_version="$(print_build_version 'flask')"
 
     printf '%s\n' 'Creating GitHub Release'

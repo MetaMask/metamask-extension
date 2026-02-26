@@ -1,16 +1,16 @@
 import * as React from 'react';
-import type { Hex } from '@metamask/utils';
 import {
   type TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
+import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import {
-  type BridgeHistoryItem,
+  StatusTypes,
+  type Step,
   ActionTypes,
-} from '@metamask/bridge-status-controller';
-import { StatusTypes, type Step } from '@metamask/bridge-controller';
+  formatChainIdToCaip,
+} from '@metamask/bridge-controller';
 import { Box, Text } from '../../../components/component-library';
-import { Numeric } from '../../../../shared/modules/Numeric';
 import {
   AlignItems,
   Display,
@@ -18,10 +18,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  type AllowedBridgeChainIds,
-  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
-} from '../../../../shared/constants/bridge';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 
 type I18nFunction = (
   key: string,
@@ -42,13 +39,11 @@ const getBridgeActionText = (
   stepStatus: StatusTypes | null,
   step: Step,
 ) => {
-  const hexDestChainId = step.destChainId
-    ? (new Numeric(step.destChainId, 10).toPrefixedHexString() as Hex)
-    : undefined;
-
-  const destChainName = hexDestChainId
-    ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[hexDestChainId as AllowedBridgeChainIds]
-    : '';
+  if (!step.destChainId) {
+    return null;
+  }
+  const caipChainId = formatChainIdToCaip(step.destChainId);
+  const destChainName = NETWORK_TO_SHORT_NETWORK_NAME_MAP[caipChainId];
 
   const destSymbol = step.destAsset?.symbol;
 
@@ -151,6 +146,8 @@ type BridgeStepProps = {
 // 1. Bridge: usually for cases like Optimism ETH to Arbitrum ETH
 // 2. Swap > Bridge
 // 3. Swap > Bridge > Swap: e.g. Optimism ETH to Avalanche USDC
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function BridgeStepDescription({
   step,
   time,

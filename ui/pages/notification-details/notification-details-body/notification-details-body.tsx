@@ -1,18 +1,18 @@
 import React from 'react';
+import type { INotification } from '@metamask/notification-services-controller/notification-services';
 import { Box } from '../../../components/component-library';
 import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import {
-  Notification,
   NotificationComponentType,
   type NotificationComponent,
 } from '../../notifications/notification-components/types/notifications/notifications';
 
 type NotificationDetailsBodyProps = {
-  body: NotificationComponent['details']['body'];
-  notification: Notification;
+  body: NonNullable<NotificationComponent['details']>['body'];
+  notification: INotification;
 };
 
 export const NotificationDetailsBody = ({

@@ -1,46 +1,41 @@
 .name {
   border-radius: 36px;
-  padding: 1px 8px 1px 4px;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
   font-size: 12px;
   max-width: 100%;
+  color: var(--color-text-default);
 
   &__clickable {
     cursor: pointer;
-  }
 
-  &__missing {
-    background-color: var(--color-background-alternative);
-
-    .name__value {
-      color: var(--color-text-default);
+    &:hover {
+      .name__name {
+        color: var(--color-info-default);
+      }
     }
   }
 
-  &__saved {
-    background-color: var(--color-info-muted);
+  &__trust-signal-icon {
+    width: 16px;
+    height: 16px;
+  }
 
-    .name__name {
-      color: var(--color-info-default);
+  &__warning {
+    &:hover {
+      .name__name {
+        color: var(--color-warning-default) !important;
+      }
     }
   }
 
-  &__recognized_unsaved {
-    background-color: var(--color-background-alternative);
-
-    .name__name {
-      color: var(--color-text-default);
+  &__malicious {
+    &:hover {
+      .name__name {
+        color: var(--color-error-default) !important;
+      }
     }
-  }
-
-  &__missing &__icon {
-    color: var(--color-text-default);
-  }
-
-  &__saved &__icon {
-    color: var(--color-info-default);
   }
 
   &__value,

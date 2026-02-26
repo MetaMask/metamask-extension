@@ -1,6 +1,10 @@
-import { delimiter, join } from 'path';
 import { execSync } from 'child_process';
-import { createAnvil, Anvil as AnvilType } from '@viem/anvil';
+import { delimiter, join } from 'path';
+import {
+  Anvil as AnvilType,
+  createAnvil,
+  CreateAnvilOptions,
+} from '@viem/anvil';
 import { createAnvilClients } from './anvil-clients';
 
 type Hardfork =
@@ -54,7 +58,7 @@ export class Anvil {
       noMining?: boolean;
     } = {},
   ): Promise<void> {
-    const options = { ...defaultOptions, ...opts };
+    const options: CreateAnvilOptions = { ...defaultOptions, ...opts };
 
     // Set blockTime if noMining is disabled, as those 2 options are incompatible
     if (!opts?.noMining && !opts?.blockTime) {

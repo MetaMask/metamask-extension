@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { INotification } from '@metamask/notification-services-controller/notification-services';
 import { Box } from '../../components/component-library';
 import {
   BlockSize,
@@ -14,18 +15,19 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { NotificationsPlaceholder } from './notifications-list-placeholder';
 import { NotificationsListTurnOnNotifications } from './notifications-list-turn-on-notifications';
 import { NotificationsListItem } from './notifications-list-item';
-import type { Notification } from './notifications';
 import { NotificationsListReadAllButton } from './notifications-list-read-all-button';
 
 export type NotificationsListProps = {
   activeTab: TAB_KEYS;
-  notifications: Notification[];
+  notifications: INotification[];
   isLoading: boolean;
   isError: boolean;
   notificationsCount: number;
 };
 
 // NOTE - Tab filters could change once we support more notifications.
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const enum TAB_KEYS {
   // Shows all notifications
   ALL = 'notifications-all-tab',
@@ -37,7 +39,7 @@ export const enum TAB_KEYS {
   WEB3 = 'notifications-other-tab',
 }
 
-function LoadingContent() {
+const LoadingContent = () => {
   return (
     <Box
       height={BlockSize.Full}
@@ -51,9 +53,9 @@ function LoadingContent() {
       <Preloader size={36} />
     </Box>
   );
-}
+};
 
-function EmptyContent() {
+const EmptyContent = () => {
   const t = useI18nContext();
   return (
     <NotificationsPlaceholder
@@ -61,9 +63,9 @@ function EmptyContent() {
       text={t('notificationsPageNoNotificationsContent')}
     />
   );
-}
+};
 
-function ErrorContent() {
+const ErrorContent = () => {
   const t = useI18nContext();
   return (
     <NotificationsPlaceholder
@@ -71,19 +73,19 @@ function ErrorContent() {
       text={t('notificationsPageErrorContent')}
     />
   );
-}
+};
 
-function NotificationItem(props: { notification: Notification }) {
+const NotificationItem = (props: { notification: INotification }) => {
   const { notification } = props;
   return <NotificationsListItem notification={notification} />;
-}
+};
 
-function NotificationsListStates({
+const NotificationsListStates = ({
   activeTab,
   notifications,
   isLoading,
   isError,
-}: NotificationsListProps) {
+}: NotificationsListProps) => {
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -114,9 +116,9 @@ function NotificationsListStates({
       ))}
     </>
   );
-}
+};
 
-export function NotificationsList(props: NotificationsListProps) {
+export const NotificationsList = (props: NotificationsListProps) => {
   return (
     <Box
       data-testid="notifications-list"
@@ -133,4 +135,4 @@ export function NotificationsList(props: NotificationsListProps) {
       ) : null}
     </Box>
   );
-}
+};

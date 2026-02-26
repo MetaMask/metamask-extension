@@ -4,8 +4,8 @@ import log from 'loglevel';
 import {
   setFeatureAnnouncementsEnabled,
   checkAccountsPresence,
-  deleteOnChainTriggersByAccount,
-  updateOnChainTriggersByAccount,
+  disableAccounts,
+  enableAccounts,
   hideLoadingIndication,
 } from '../../store/actions';
 import {
@@ -58,9 +58,9 @@ export function useSwitchAccountNotificationsChange(): {
 
       try {
         if (state) {
-          await dispatch(updateOnChainTriggersByAccount(addresses));
+          await dispatch(enableAccounts(addresses));
         } else {
-          await dispatch(deleteOnChainTriggersByAccount(addresses));
+          await dispatch(disableAccounts(addresses));
         }
       } catch (e) {
         const errorMessage =

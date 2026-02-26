@@ -1,37 +1,40 @@
 import { strict as assert } from 'assert';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
-import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
-import {
-  clickConfirmButton,
-  connectSolanaTestDapp,
-  DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
-} from './testHelpers';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { largeDelayMs, withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { buildSolanaTestSpecificMock } from '../../tests/solana/common-solana';
+import { clickConfirmButton, connectSolanaTestDapp } from './testHelpers';
 
 describe('Solana Wallet Standard - Transfer WSOL', function () {
   describe('Send WSOL transactions', function () {
     it('Should sign and send multiple WSOL transactions', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          mockCalls: true,
-          simulateTransaction: false,
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
+          testSpecificMock: buildSolanaTestSpecificMock({
+            mockGetTransactionSuccess: true,
+            mockTokenAccountAccountInfo: false,
+            walletConnect: false,
+          }),
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp, {
             includeDevnet: true,
           });
 
           // 1. Sign multiple transactions
           const sendWSolTest = await testDapp.getSendWSolTest();
-          await sendWSolTest.setNbAddresses('2');
-          await sendWSolTest.setAmount('0.0001');
-          await sendWSolTest.checkMultipleTransaction(true);
           await sendWSolTest.signTransaction();
-
           // Confirm the first signature
           await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

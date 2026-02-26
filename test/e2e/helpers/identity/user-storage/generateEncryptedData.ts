@@ -1,9 +1,9 @@
 import {
   Encryption,
-  UserStoragePathWithFeatureAndKey,
   createSHA256Hash,
   getFeatureAndKeyFromPath,
 } from '@metamask/profile-sync-controller/sdk';
+import { MOCK_SRP_E2E_IDENTIFIER_BASE_KEY } from '../../../tests/identity/mocks';
 import { UserStorageResponseData } from './userStorageMockttpController';
 
 /**
@@ -28,7 +28,7 @@ const encryptData = async (
  * @returns The generated SHA-256 hash as a string.
  */
 const generateEncryptedHash = (
-  path: UserStoragePathWithFeatureAndKey,
+  path: `${string}.${string}`,
   storageKey: string,
 ): string => {
   const { key: featureKey } = getFeatureAndKeyFromPath(path);
@@ -43,16 +43,20 @@ const generateEncryptedHash = (
  * @param options.data - The data to be encrypted.
  * @param options.storageKey - The key used for encryption.
  * @param options.path - The user storage path with feature and key.
+ * @param options.srpIdentifierNumber - Optional identifier number for SRP. Used to determine which SRP storage space to use.
  * @returns A promise that resolves to an object containing the hashed key and encrypted data.
  */
 export const createEncryptedResponse = async (options: {
   data: object;
   storageKey: string;
-  path: UserStoragePathWithFeatureAndKey;
+  path: `${string}.${string}`;
+  srpIdentifierNumber?: number;
 }): Promise<UserStorageResponseData> => {
-  const { data, storageKey: key, path } = options;
+  const { data, storageKey: key, path, srpIdentifierNumber = 1 } = options;
   return {
     HashedKey: generateEncryptedHash(path, key),
     Data: await encryptData(data, key),
+    // By default, encrypted data will be stored in the primary SRP storage space
+    SrpIdentifier: `${MOCK_SRP_E2E_IDENTIFIER_BASE_KEY}_${srpIdentifierNumber}`,
   };
 };

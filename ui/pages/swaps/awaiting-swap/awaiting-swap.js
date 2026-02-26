@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 import React, { useContext, useRef, useState, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
@@ -55,10 +55,7 @@ import PulseLoader from '../../../components/ui/pulse-loader';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import {
-  stopPollingForQuotes,
-  setDefaultHomeActiveTabName,
-} from '../../../store/actions';
+import { stopPollingForQuotes } from '../../../store/actions';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
@@ -79,8 +76,8 @@ export default function AwaitingSwap({
   txId,
 }) {
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
-  const history = useHistory();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const animationEventEmitter = useRef(new EventEmitter());
@@ -329,31 +326,30 @@ export default function AwaitingSwap({
           /* istanbul ignore next */
           if (errorKey === OFFLINE_FOR_MAINTENANCE) {
             await dispatch(prepareToLeaveSwaps());
-            history.push(DEFAULT_ROUTE);
+            navigate(DEFAULT_ROUTE);
           } else if (errorKey === QUOTES_EXPIRED_ERROR) {
             dispatch(prepareForRetryGetQuotes());
             await dispatch(
               fetchQuotesAndSetQuoteState(
-                history,
+                navigate,
                 fromTokenInputValue,
                 maxSlippage,
                 trackEvent,
               ),
             );
           } else if (errorKey) {
-            await dispatch(navigateBackToPrepareSwap(history));
+            await dispatch(navigateBackToPrepareSwap(navigate));
           } else if (
             isSwapsDefaultTokenSymbol(destinationTokenSymbol, chainId) ||
             swapComplete
           ) {
-            history.push(DEFAULT_ROUTE);
+            navigate(DEFAULT_ROUTE);
           } else {
-            await dispatch(setDefaultHomeActiveTabName('activity'));
-            history.push(DEFAULT_ROUTE);
+            navigate(`${DEFAULT_ROUTE}?tab=activity`);
           }
         }}
         onCancel={async () =>
-          await dispatch(navigateBackToPrepareSwap(history))
+          await dispatch(navigateBackToPrepareSwap(navigate))
         }
         submitText={submitText}
         disabled={submittingSwap}

@@ -22,7 +22,6 @@ import {
 import {
   decGWEIToHexWEI,
   getValueFromWeiHex,
-  subtractHexes,
   sumHexes,
 } from '../../shared/modules/conversion.utils';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
@@ -105,7 +104,7 @@ export const unconfirmedMessagesHashSelector = createSelector(
     };
   },
 );
-export const use4ByteResolutionSelector = (state) =>
+export const getUse4ByteResolution = (state) =>
   state.metamask.use4ByteResolution;
 export const currentCurrencySelector = (state) =>
   state.metamask.currentCurrency;
@@ -273,24 +272,6 @@ export function selectTransactionAvailableBalance(
 export function selectIsMaxValueEnabled(state, transactionId) {
   return state.confirmTransaction.maxValueMode?.[transactionId] ?? false;
 }
-
-export const selectMaxValue = createSelector(
-  selectTransactionFeeById,
-  selectTransactionAvailableBalance,
-  (transactionFee, balance) =>
-    balance && transactionFee.hexMaximumTransactionFee
-      ? subtractHexes(balance, transactionFee.hexMaximumTransactionFee)
-      : undefined,
-);
-
-/** @type {state: any, transactionId: string => string} */
-export const selectTransactionValue = createSelector(
-  selectIsMaxValueEnabled,
-  selectMaxValue,
-  selectTransactionMetadata,
-  (isMaxValueEnabled, maxValue, transactionMetadata) =>
-    isMaxValueEnabled ? maxValue : transactionMetadata?.txParams?.value,
-);
 
 const maxValueModeSelector = (state) => state.confirmTransaction.maxValueMode;
 

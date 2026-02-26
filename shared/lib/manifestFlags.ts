@@ -9,29 +9,29 @@ import browser from 'webextension-polyfill';
  */
 export type ManifestFlags = {
   /**
-   * CircleCI metadata for the current run
+   * CI metadata for the current run
    */
-  circleci?: {
+  ci?: {
     /**
-     * Whether CircleCI manifest flags are enabled.
+     * Whether CI manifest flags are enabled.
      */
     enabled: boolean;
     /**
-     * The name of the branch that triggered the current run on CircleCI
+     * The name of the branch that triggered the current run on CI
      */
     branch?: string;
     /**
-     * The current CircleCI build number
+     * The current CI commit hash
      */
-    buildNum?: number;
+    commitHash?: string;
     /**
-     * The name of the CircleCI job currently running
+     * The name of the CI job currently running
      */
     job?: string;
     /**
-     * For jobs with CircleCI parallelism enabled, this is the index of the current machine.
+     * For jobs with CI parallelism enabled, this is the index of the current machine.
      */
-    nodeIndex?: number;
+    matrixIndex?: number;
     /**
      * The number of the pull request that triggered the current run
      */
@@ -40,6 +40,14 @@ export type ManifestFlags = {
      * The number of minutes to allow the E2E tests to run before timing out
      */
     timeoutMinutes?: number;
+    /**
+     * The user persona being tested (e.g., 'standard' or 'powerUser')
+     */
+    persona?: string;
+    /**
+     * The test title for Sentry metrics grouping
+     */
+    testTitle?: string;
   };
   /**
    * Sentry flags
@@ -75,6 +83,52 @@ export type ManifestFlags = {
      * Whether to force the ExtensionStore class to be used during testing
      */
     forceExtensionStore?: boolean;
+    /**
+     * The public key used to verify deep links
+     */
+    deepLinkPublicKey?: string;
+    /**
+     * Whether to disable the smart transactions override (migration 135)
+     */
+    disableSmartTransactionsOverride?: boolean;
+    /**
+     * Whether to disable all of the syncing features that get automatically enabled in migrations 158 and 167
+     */
+    disableSync?: boolean;
+    /**
+     * Simulate a delay to how quickly the background responds to the UI. Set this to `true` to
+     * make the background completely unresponsive.
+     */
+    simulateDelayedBackgroundResponse?: number | true;
+    /**
+     * Number of milliseconds to wait before resolving the simulated slow
+     * background loading promise.
+     */
+    simulatedSlowBackgroundLoadingTimeout?: number;
+    /**
+     * The Infura project ID to use for API requests, useful to inject into a test build that doesn't have one
+     */
+    infuraProjectId?: string;
+    /**
+     * Storage kind to use for tests involving PersistenceManager
+     */
+    storageKind?: 'data' | 'split';
+    /**
+     * Simulate browser.storage.local.get() failure for testing vault recovery
+     * when storage operations fail (e.g., Firefox database corruption).
+     * When enabled, PersistenceManager.get() will throw a PersistenceError
+     * if a backup exists in IndexedDB, triggering the vault recovery flow.
+     * The simulation only triggers after onboarding (when backup exists),
+     * allowing the initial wallet creation to complete normally.
+     */
+    simulateStorageGetFailure?: boolean;
+    /**
+     * Simulate browser.storage.local.set() failure for testing the storage
+     * error toast when write operations fail (e.g., Firefox database corruption).
+     * When enabled, PersistenceManager.set() and persist() will throw an error
+     * immediately, triggering the storage error toast notification.
+     */
+    simulateStorageSetFailure?: boolean;
   };
 };
 

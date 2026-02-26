@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   EthAccountType,
   EthScope,
@@ -6,6 +6,8 @@ import {
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { SnapId } from '@metamask/snaps-sdk';
+import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+import { getRootMessenger } from '../messenger';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -13,11 +15,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { getSnapName } from '../../../../shared/lib/accounts/snaps';
-import {
-  showAccountCreationDialog,
-  showAccountNameSuggestionDialog,
-  snapKeyringBuilder,
-} from './snap-keyring';
+import { showAccountCreationDialog, snapKeyringBuilder } from './snap-keyring';
 import {
   SnapKeyringBuilderAllowActions,
   SnapKeyringBuilderMessenger,
@@ -37,10 +35,12 @@ const mockSetAccountName = jest.fn();
 const mockRemoveAccountHelper = jest.fn();
 const mockTrackEvent = jest.fn();
 const mockGetAccountByAddress = jest.fn();
+const mockListMultichainAccounts = jest.fn();
 const mockLocale = 'en';
 const mockPreferencesControllerGetState = jest.fn();
 const mockSnapControllerGet = jest.fn();
 const mockSnapControllerHandleRequest = jest.fn();
+const mockRemoteFeatureFlagsGetStateRequest = jest.fn();
 
 const mockFlowId = '123';
 const address = '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA';
@@ -84,12 +84,19 @@ const createControllerMessenger = ({
 }: {
   account?: InternalAccount;
 } = {}): SnapKeyringBuilderMessenger => {
+  const rootMessenger = getRootMessenger();
   const messenger = new Messenger<
+    'SnapKeyring',
     SnapKeyringBuilderAllowActions,
-    never
-  >().getRestricted({
-    name: 'SnapKeyring',
-    allowedActions: [
+    never,
+    typeof rootMessenger
+  >({
+    namespace: 'SnapKeyring',
+    parent: rootMessenger,
+  });
+  rootMessenger.delegate({
+    messenger,
+    actions: [
       'ApprovalController:addRequest',
       'ApprovalController:acceptRequest',
       'ApprovalController:rejectRequest',
@@ -101,11 +108,12 @@ const createControllerMessenger = ({
       'KeyringController:getAccounts',
       'AccountsController:setSelectedAccount',
       'AccountsController:getAccountByAddress',
+      'AccountsController:listMultichainAccounts',
       'PreferencesController:getState',
       'SnapController:get',
       'SnapController:handleRequest',
+      'RemoteFeatureFlagController:getState',
     ],
-    allowedEvents: [],
   });
 
   jest.spyOn(messenger, 'call').mockImplementation((...args) => {
@@ -137,6 +145,9 @@ const createControllerMessenger = ({
       case 'AccountsController:getAccountByAddress':
         return mockGetAccountByAddress.mockReturnValue(account)(params);
 
+      case 'AccountsController:listMultichainAccounts':
+        return mockListMultichainAccounts.mockReturnValue([])();
+
       case 'AccountsController:setSelectedAccount':
         return mockSetSelectedAccount(params);
 
@@ -159,6 +170,9 @@ const createControllerMessenger = ({
       case 'SnapController:handleRequest':
         return mockSnapControllerHandleRequest(params);
 
+      case 'RemoteFeatureFlagController:getState':
+        return mockRemoteFeatureFlagsGetStateRequest(params);
+
       default:
         throw new Error(
           `MOCK_FAIL - unsupported messenger call: ${actionType}`,
@@ -178,6 +192,11 @@ const createSnapKeyringBuilder = ({
 } = {}) => {
   jest.mocked(isSnapPreinstalled).mockReturnValue(snapPreinstalled);
   jest.mocked(getSnapName).mockReturnValue(snapName);
+
+  // Needed now to know if state 2 is enabled or not.
+  mockRemoteFeatureFlagsGetStateRequest.mockReturnValue({
+    remoteFeatureFlags: {},
+  } as RemoteFeatureFlagControllerState);
 
   return snapKeyringBuilder(createControllerMessenger(), {
     persistKeyringHelper: mockPersistKeyringHelper,
@@ -223,31 +242,6 @@ describe('Snap Keyring Methods', () => {
         ]);
       });
     });
-
-    describe('showAccountNameSuggestionDialog', () => {
-      it('shows account name suggestion dialog and return true on user confirmation', async () => {
-        const controllerMessenger = createControllerMessenger();
-        controllerMessenger.call('ApprovalController:startFlow');
-
-        await showAccountNameSuggestionDialog(
-          mockSnapId,
-          controllerMessenger,
-          accountNameSuggestion,
-        );
-
-        expect(mockAddRequest).toHaveBeenCalledTimes(1);
-        expect(mockAddRequest).toHaveBeenCalledWith([
-          {
-            origin: mockSnapId,
-            type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
-            requestData: {
-              snapSuggestedAccountName: accountNameSuggestion,
-            },
-          },
-          true,
-        ]);
-      });
-    });
   });
 
   describe('addAccount', () => {
@@ -258,7 +252,7 @@ describe('Snap Keyring Methods', () => {
       jest.resetAllMocks();
     });
 
-    it('handles account creation with confirmations and without a user defined name', async () => {
+    it('handles account creation with confirmations', async () => {
       const builder = createSnapKeyringBuilder();
       await builder().handleKeyringSnapMessage(mockSnapId, {
         method: 'notify:accountCreated',
@@ -268,12 +262,11 @@ describe('Snap Keyring Methods', () => {
         },
       });
 
-      // 1. Account creation confirmation dialogs (creation + account name suggestion)
+      // 1. Account creation confirmation dialogs
       // 2. Account creation summary dialog
       expect(mockStartFlow).toHaveBeenCalledTimes(2);
       // 1. Account creation confirmation dialog
-      // 2. Account account name suggestion dialog
-      expect(mockAddRequest).toHaveBeenCalledTimes(2);
+      expect(mockAddRequest).toHaveBeenCalledTimes(1);
       expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
         {
           origin: mockSnapId,
@@ -282,23 +275,19 @@ describe('Snap Keyring Methods', () => {
         true,
       ]);
       expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(1);
-      expect(mockAddRequest).toHaveBeenNthCalledWith(2, [
-        {
-          origin: mockSnapId,
-          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
-          requestData: {
-            snapSuggestedAccountName: '',
-          },
-        },
-        true,
-      ]);
       expect(mockTrackEvent).toHaveBeenCalledTimes(3);
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
         category: MetaMetricsEventCategory.Accounts,
         event: MetaMetricsEventName.AddSnapAccountSuccessViewed,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: mockSnapName,
         },
       });
@@ -306,8 +295,14 @@ describe('Snap Keyring Methods', () => {
         category: MetaMetricsEventCategory.Accounts,
         event: MetaMetricsEventName.AddSnapAccountSuccessClicked,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: mockSnapName,
         },
       });
@@ -315,9 +310,17 @@ describe('Snap Keyring Methods', () => {
         category: MetaMetricsEventCategory.Accounts,
         event: MetaMetricsEventName.AccountAdded,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: mockSnapName,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_suggested_name: false,
         },
       });
@@ -328,7 +331,7 @@ describe('Snap Keyring Methods', () => {
       expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
     });
 
-    it('handles account creation with skipping confirmation and without user defined name', async () => {
+    it('handles account creation with skipping confirmation', async () => {
       const builder = createSnapKeyringBuilder();
 
       await builder().handleKeyringSnapMessage(mockSnapId, {
@@ -339,240 +342,46 @@ describe('Snap Keyring Methods', () => {
         },
       });
 
-      expect(mockStartFlow).toHaveBeenCalledTimes(2);
-      expect(mockAddRequest).toHaveBeenCalledTimes(1);
+      // Skipping confirmations means no dialogs are shown, so no confirmations flows are started.
+      expect(mockStartFlow).toHaveBeenCalledTimes(0);
+      expect(mockAddRequest).toHaveBeenCalledTimes(0);
       expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(1);
-      expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
-        {
-          origin: mockSnapId,
-          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
-          requestData: {
-            // No user defined name
-            snapSuggestedAccountName: '',
-          },
-        },
-        true,
-      ]);
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
         category: MetaMetricsEventCategory.Accounts,
         event: MetaMetricsEventName.AccountAdded,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: mockSnapName,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_suggested_name: false,
         },
       });
       expect(mockSetAccountName).not.toHaveBeenCalled();
-      expect(mockEndFlow).toHaveBeenCalledTimes(2);
-      expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
-      expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
+      expect(mockEndFlow).toHaveBeenCalledTimes(0);
     });
 
-    it('handles account creation with confirmations and with a user defined name', async () => {
-      const mockNameSuggestion = 'new name';
-      mockAddRequest.mockReturnValueOnce(true).mockReturnValueOnce({
-        success: true,
-        name: mockNameSuggestion,
-      });
+    it('still accepts accountNameSuggestion and displayAccountNameSuggestion params (for retro-compatibility)', async () => {
       const builder = createSnapKeyringBuilder();
-      await builder().handleKeyringSnapMessage(mockSnapId, {
-        method: 'notify:accountCreated',
-        params: {
-          account: mockAccount,
-          displayConfirmation: true,
-          accountNameSuggestion: mockNameSuggestion,
-        },
-      });
-
-      expect(mockStartFlow).toHaveBeenCalledTimes(2);
-      // First request for show account creation dialog
-      // Second request for account name suggestion second
-      expect(mockAddRequest).toHaveBeenCalledTimes(2);
-      expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
-        {
-          origin: mockSnapId,
-          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
-        },
-        true,
-      ]);
-      expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(1);
-      expect(mockAddRequest).toHaveBeenNthCalledWith(2, [
-        {
-          origin: mockSnapId,
-          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
-          requestData: {
-            snapSuggestedAccountName: mockNameSuggestion,
+      await expect(
+        builder().handleKeyringSnapMessage(mockSnapId, {
+          method: 'notify:accountCreated',
+          params: {
+            account: mockAccount,
+            displayConfirmation: false,
+            accountNameSuggestion: 'Not used anymore',
+            displayAccountNameSuggestion: true,
           },
-        },
-        true,
-      ]);
-      expect(mockTrackEvent).toHaveBeenCalledTimes(3);
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Accounts,
-        event: MetaMetricsEventName.AddSnapAccountSuccessViewed,
-        properties: {
-          account_type: 'snap',
-          snap_id: mockSnapId,
-          snap_name: mockSnapName,
-        },
-      });
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: MetaMetricsEventCategory.Accounts,
-        event: MetaMetricsEventName.AddSnapAccountSuccessClicked,
-        properties: {
-          account_type: 'snap',
-          snap_id: mockSnapId,
-          snap_name: mockSnapName,
-        },
-      });
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(3, {
-        category: MetaMetricsEventCategory.Accounts,
-        event: MetaMetricsEventName.AccountAdded,
-        properties: {
-          account_type: 'snap',
-          snap_id: mockSnapId,
-          snap_name: mockSnapName,
-          is_suggested_name: true,
-        },
-      });
-      expect(mockSetAccountName).toHaveBeenCalledWith([
-        mockAccount.id,
-        mockNameSuggestion,
-      ]);
-      expect(mockShowSuccess).toHaveBeenCalledTimes(1);
-      expect(mockEndFlow).toHaveBeenCalledTimes(2);
-      expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
-      expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
-    });
-
-    it('handles account creation with skipping confirmation and with user defined name', async () => {
-      const mockNameSuggestion = 'suggested name';
-      mockAddRequest.mockReturnValueOnce({
-        success: true,
-        name: mockNameSuggestion,
-      });
-      const builder = createSnapKeyringBuilder();
-      await builder().handleKeyringSnapMessage(mockSnapId, {
-        method: 'notify:accountCreated',
-        params: {
-          account: mockAccount,
-          displayConfirmation: false,
-          accountNameSuggestion: mockNameSuggestion,
-        },
-      });
-
-      expect(mockStartFlow).toHaveBeenCalledTimes(2);
-      expect(mockAddRequest).toHaveBeenCalledTimes(1);
-      expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(1);
-      expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
-        {
-          origin: mockSnapId,
-          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
-          requestData: {
-            snapSuggestedAccountName: mockNameSuggestion,
-          },
-        },
-        true,
-      ]);
-      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Accounts,
-        event: MetaMetricsEventName.AccountAdded,
-        properties: {
-          account_type: 'snap',
-          snap_id: mockSnapId,
-          snap_name: mockSnapName,
-          is_suggested_name: true,
-        },
-      });
-      expect(mockSetAccountName).toHaveBeenCalledTimes(1);
-      expect(mockSetAccountName).toHaveBeenCalledWith([
-        mockAccount.id,
-        mockNameSuggestion,
-      ]);
-      expect(mockEndFlow).toHaveBeenCalledTimes(2);
-      expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
-      expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
-    });
-
-    it('handles account creation with confirmations and with a user defined name', async () => {
-      const mockNameSuggestion = 'new name';
-      mockAddRequest.mockReturnValueOnce(true).mockReturnValueOnce({
-        success: true,
-        name: mockNameSuggestion,
-      });
-      const builder = createSnapKeyringBuilder();
-      await builder().handleKeyringSnapMessage(mockSnapId, {
-        method: 'notify:accountCreated',
-        params: {
-          account: mockAccount,
-          displayConfirmation: true,
-          accountNameSuggestion: mockNameSuggestion,
-        },
-      });
-
-      expect(mockStartFlow).toHaveBeenCalledTimes(2);
-      // First request for show account creation dialog
-      // Second request for account name suggestion second
-      expect(mockAddRequest).toHaveBeenCalledTimes(2);
-      expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
-        {
-          origin: mockSnapId,
-          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
-        },
-        true,
-      ]);
-      expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(1);
-      expect(mockAddRequest).toHaveBeenNthCalledWith(2, [
-        {
-          origin: mockSnapId,
-          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
-          requestData: {
-            snapSuggestedAccountName: mockNameSuggestion,
-          },
-        },
-        true,
-      ]);
-      expect(mockTrackEvent).toHaveBeenCalledTimes(3);
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Accounts,
-        event: MetaMetricsEventName.AddSnapAccountSuccessViewed,
-        properties: {
-          account_type: 'snap',
-          snap_id: mockSnapId,
-          snap_name: mockSnapName,
-        },
-      });
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: MetaMetricsEventCategory.Accounts,
-        event: MetaMetricsEventName.AddSnapAccountSuccessClicked,
-        properties: {
-          account_type: 'snap',
-          snap_id: mockSnapId,
-          snap_name: mockSnapName,
-        },
-      });
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(3, {
-        category: MetaMetricsEventCategory.Accounts,
-        event: MetaMetricsEventName.AccountAdded,
-        properties: {
-          account_type: 'snap',
-          snap_id: mockSnapId,
-          snap_name: mockSnapName,
-          is_suggested_name: true,
-        },
-      });
-      expect(mockSetAccountName).toHaveBeenCalledTimes(1);
-      expect(mockSetAccountName).toHaveBeenCalledWith([
-        mockAccount.id,
-        mockNameSuggestion,
-      ]);
-      expect(mockShowSuccess).toHaveBeenCalledTimes(1);
-      expect(mockEndFlow).toHaveBeenCalledTimes(2);
-      expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
-      expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
+        }),
+      ).resolves.toBeNull(); // No throw.
     });
 
     it('ends approval flow on error', async () => {

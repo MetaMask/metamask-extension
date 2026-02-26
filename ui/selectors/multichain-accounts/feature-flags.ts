@@ -6,12 +6,18 @@ import {
   string,
   assert,
 } from '@metamask/superstruct';
-import semver from 'semver';
-import packageJson from '../../../package.json';
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
 } from '../remote-feature-flags';
+import {
+  FEATURE_VERSION_1,
+  FEATURE_VERSION_2,
+  isMultichainAccountsFeatureEnabled,
+} from '../../../shared/lib/multichain-accounts/remote-feature-flag';
+
+export const STATE_1_FLAG = 'enableMultichainAccounts';
+export const STATE_2_FLAG = 'enableMultichainAccountsState2';
 
 /**
  * Feature flag structure for multichain accounts features
@@ -29,60 +35,27 @@ export type MultichainAccountsFeatureFlag = Infer<
   typeof MultichainAccountsFeatureFlag
 >;
 
-const APP_VERSION = packageJson.version;
-const FEATURE_VERSION_1 = '1';
-const FEATURE_VERSION_2 = '2';
-
-/**
- * Checks if the multichain accounts feature is enabled for a given state and feature version.
- *
- * @param enableMultichainAccounts - The MetaMask state object
- * @param featureVersion - The specific feature version to check
- * @returns boolean - True if the feature is enabled for the given state and version, false otherwise.
- */
-export const isMultichainAccountsFeatureEnabled = (
-  enableMultichainAccounts: MultichainAccountsFeatureFlag,
-  featureVersion: string,
-) => {
-  const {
-    enabled,
-    featureVersion: currentFeatureVersion,
-    minimumVersion,
-  } = enableMultichainAccounts;
-
-  return (
-    enabled &&
-    currentFeatureVersion &&
-    minimumVersion &&
-    currentFeatureVersion === featureVersion &&
-    semver.gte(minimumVersion, APP_VERSION)
-  );
-};
-
 /**
  * Selector to get the multichain accounts remote feature flags.
  *
  * @param state - The MetaMask state object
+ * @param flagName - The name of the remote flag to use
  * @returns MultichainAccountsFeatureFlag - The feature flags for multichain accounts.
  */
 export const getMultichainAccountsRemoteFeatureFlags = (
   state: RemoteFeatureFlagsState,
+  flagName: typeof STATE_1_FLAG | typeof STATE_2_FLAG,
 ) => {
-  const multichainAccountsFeatureFlags =
-    getRemoteFeatureFlags(state).enableMultichainAccounts;
-
   try {
-    assert(multichainAccountsFeatureFlags, MultichainAccountsFeatureFlag);
-  } catch (error) {
-    console.warn('Invalid multichain accounts feature flags:', error);
-    return {
-      enabled: false,
-      featureVersion: null,
-      minimumVersion: null,
-    };
-  }
+    const multichainAccountsFeatureFlags =
+      getRemoteFeatureFlags(state)[flagName];
 
-  return multichainAccountsFeatureFlags;
+    assert(multichainAccountsFeatureFlags, MultichainAccountsFeatureFlag);
+
+    return multichainAccountsFeatureFlags;
+  } catch (error) {
+    return undefined;
+  }
 };
 
 /**
@@ -94,10 +67,18 @@ export const getMultichainAccountsRemoteFeatureFlags = (
 export const getIsMultichainAccountsState1Enabled = (
   state: RemoteFeatureFlagsState,
 ) => {
-  const flags = getMultichainAccountsRemoteFeatureFlags(state);
+  const remoteFlagState1 = getMultichainAccountsRemoteFeatureFlags(
+    state,
+    STATE_1_FLAG,
+  );
+  const remoteFlagState2 = getMultichainAccountsRemoteFeatureFlags(
+    state,
+    STATE_2_FLAG,
+  );
+
   return (
-    isMultichainAccountsFeatureEnabled(flags, FEATURE_VERSION_2) ||
-    isMultichainAccountsFeatureEnabled(flags, FEATURE_VERSION_1)
+    isMultichainAccountsFeatureEnabled(remoteFlagState1, FEATURE_VERSION_1) ||
+    isMultichainAccountsFeatureEnabled(remoteFlagState2, FEATURE_VERSION_2)
   );
 };
 
@@ -110,6 +91,9 @@ export const getIsMultichainAccountsState1Enabled = (
 export const getIsMultichainAccountsState2Enabled = (
   state: RemoteFeatureFlagsState,
 ) => {
-  const flags = getMultichainAccountsRemoteFeatureFlags(state);
-  return isMultichainAccountsFeatureEnabled(flags, FEATURE_VERSION_2);
+  const remoteFlag = getMultichainAccountsRemoteFeatureFlags(
+    state,
+    STATE_2_FLAG,
+  );
+  return isMultichainAccountsFeatureEnabled(remoteFlag, FEATURE_VERSION_2);
 };

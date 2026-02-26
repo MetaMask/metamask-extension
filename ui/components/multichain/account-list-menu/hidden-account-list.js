@@ -41,7 +41,7 @@ import {
 
 export const HiddenAccountList = ({ onClose }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const dispatch = useDispatch();
   const hiddenAddresses = useSelector(getHiddenAccountsList);
@@ -97,8 +97,8 @@ export const HiddenAccountList = ({ onClose }) => {
           </Text>
           <Icon
             name={showListItem ? IconName.ArrowUp : IconName.ArrowDown}
-            size={IconSize.Sm}
-            color={IconColor.iconDefault}
+            size={IconSize.Md}
+            color={IconColor.iconAlternative}
           />
         </Box>
       </Box>
@@ -133,7 +133,7 @@ export const HiddenAccountList = ({ onClose }) => {
                   connectedAvatar={connectedSite?.iconUrl}
                   menuType={AccountListItemMenuTypes.Account}
                   isPinned={Boolean(account.pinned)}
-                  isHidden={Boolean(account.hidden)}
+                  isHidden
                 />
               </Box>
             );

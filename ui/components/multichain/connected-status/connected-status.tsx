@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import {
@@ -12,15 +12,15 @@ import {
 } from '../../../helpers/constants/connected-sites';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BadgeStatus } from '../badge-status';
-import {
-  getAllPermittedAccountsForCurrentTab,
-  getInternalAccountByAddress,
-} from '../../../selectors';
+import { getAllPermittedAccountsForCurrentTab } from '../../../selectors';
+import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
+import { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
 
 export type ConnectedStatusProps = {
   address: string;
   isActive?: boolean;
   showConnectedStatus?: boolean;
+  hideTooltip?: boolean;
 };
 
 export type AddressConnectedSubjectMap = {
@@ -33,18 +33,23 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
   address = '',
   isActive,
   showConnectedStatus = true,
+  hideTooltip = false,
 }): JSX.Element => {
   const t = useI18nContext();
 
-  // Get the permitted accounts and the internal account for the address
-  const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
-  const internalAccount = useSelector((state) =>
-    getInternalAccountByAddress(state, address),
+  const addressArray = useMemo(() => [address], [address]);
+  const [accountGroup] = useSelector((state: MultichainAccountsState) =>
+    getAccountGroupsByAddress(state, addressArray),
   );
 
-  const currentTabIsConnectedToSelectedAddress =
-    internalAccount &&
-    isInternalAccountInPermittedAccountIds(internalAccount, permittedAccounts);
+  // Get the permitted accounts and the internal account for the address
+  const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
+
+  const currentTabIsConnectedToSelectedAddress = useMemo(() => {
+    return accountGroup?.accounts.some((account) =>
+      isInternalAccountInPermittedAccountIds(account, permittedAccounts),
+    );
+  }, [accountGroup, permittedAccounts]);
 
   let status = STATUS_NOT_CONNECTED;
   if (isActive) {
@@ -72,8 +77,9 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
     tooltipText = t('tooltipSatusConnectedUpperCase');
   }
 
-  const connectedAndNotActive =
-    currentTabIsConnectedToSelectedAddress && !isActive;
+  const connectedAndNotActive = Boolean(
+    currentTabIsConnectedToSelectedAddress && !isActive,
+  );
 
   return (
     <BadgeStatus
@@ -87,6 +93,7 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
       text={tooltipText}
       isConnectedAndNotActive={connectedAndNotActive}
       showConnectedStatus={showConnectedStatus}
+      hideTooltip={hideTooltip}
     />
   );
 };

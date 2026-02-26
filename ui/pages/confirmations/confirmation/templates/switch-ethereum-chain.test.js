@@ -3,11 +3,12 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor } from '@testing-library/react';
 
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 import Confirmation from '../confirmation';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 jest.mock('../../../../../shared/lib/fetch-with-cache');
 
@@ -93,7 +94,9 @@ describe('switch-ethereum-chain confirmation', () => {
     );
     await waitFor(() => {
       expect(
-        getByText('Switching networks will cancel all pending confirmations'),
+        getByText(
+          messages.switchingNetworksCancelsPendingConfirmations.message,
+        ),
       ).toBeInTheDocument();
       expect(container).toMatchSnapshot();
     });

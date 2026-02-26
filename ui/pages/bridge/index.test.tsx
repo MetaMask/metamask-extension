@@ -1,22 +1,35 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import nock from 'nock';
-import { MemoryRouter } from 'react-router-dom';
-
-import { setBackgroundConnection } from '../../store/background-connection';
-import { renderWithProvider, MOCKS, CONSTANTS } from '../../../test/jest';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
+import { PREPARE_SWAP_ROUTE } from '../../helpers/constants/routes';
+import { setBackgroundConnection } from '../../store/background-connection';
 import {
-  CROSS_CHAIN_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../helpers/constants/routes';
+  ConnectionStatus,
+  HardwareConnectionPermissionState,
+} from '../../contexts/hardware-wallets';
 import CrossChainSwap from '.';
 
 const mockResetBridgeState = jest.fn();
+const mockUseHardwareWalletConfig = jest.fn();
+const mockUseHardwareWalletActions = jest.fn();
+const mockUseHardwareWalletState = jest.fn();
 const middleware = [thunk];
+
+jest.mock('../../contexts/hardware-wallets', () => ({
+  ...jest.requireActual('../../contexts/hardware-wallets'),
+  useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
+  useHardwareWalletActions: () => mockUseHardwareWalletActions(),
+  useHardwareWalletState: () => mockUseHardwareWalletState(),
+}));
+
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),
+  getStatePatches: jest.fn(),
+  addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
   resetSwapsState: jest.fn(),
   setSwapsLiveness: jest.fn(() => true),
   setSwapsTokens: jest.fn(),
@@ -30,57 +43,54 @@ setBackgroundConnection({
   selectSrcNetwork: jest.fn(),
   resetState: () => mockResetBridgeState(),
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+  isRelaySupported: jest.fn().mockResolvedValue(true),
+  isSendBundleSupported: jest.fn().mockResolvedValue(true),
+} as never);
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-} as any);
+const mockUseNavigate = jest.fn();
+const mockBridgePreparePath = '/cross-chain/swaps/prepare-bridge-page';
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => ({
+      pathname: mockBridgePreparePath,
+      search: '',
+      hash: '',
+      state: null,
+    }),
+  };
+});
 
 describe('Bridge', () => {
   beforeEach(() => {
-    nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/networks/1/topAssets')
-      .reply(200, MOCKS.TOP_ASSETS_GET_RESPONSE);
-
-    nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/refreshTime')
-      .reply(200, MOCKS.REFRESH_TIME_GET_RESPONSE);
-
-    nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/networks/1/aggregatorMetadata')
-      .reply(200, MOCKS.AGGREGATOR_METADATA_GET_RESPONSE);
-
-    nock(CONSTANTS.GAS_API_URL)
-      .get('/networks/1/gasPrices')
-      .reply(200, MOCKS.GAS_PRICES_GET_RESPONSE);
-
-    nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/networks/1/tokens')
-      .reply(200, MOCKS.TOKENS_GET_RESPONSE);
-
-    nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/networks/1/tokens?includeBlockedTokens=true')
-      .reply(200, MOCKS.TOKENS_GET_RESPONSE);
-
-    nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/featureFlags')
-      .reply(200, MOCKS.createFeatureFlagsResponse());
-  });
-
-  afterAll(() => {
-    nock.cleanAll();
+    mockUseHardwareWalletConfig.mockReturnValue({
+      isHardwareWalletAccount: false,
+      walletType: null,
+      hardwareConnectionPermissionState:
+        HardwareConnectionPermissionState.Unknown,
+      isWebHidAvailable: false,
+      isWebUsbAvailable: false,
+    });
+    mockUseHardwareWalletActions.mockReturnValue({
+      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Disconnected },
+    });
   });
 
   it('renders the component with initial props', async () => {
     const bridgeMockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           support: true,
           refreshRate: 5000,
           maxRefreshCount: 5,
           chains: {
             '1': {
               isActiveSrc: true,
-              isActiveDest: false,
+              isActiveDest: true,
             },
           },
         },
@@ -92,15 +102,12 @@ describe('Bridge', () => {
     const store = configureMockStore(middleware)(bridgeMockStore);
 
     const { container, getByText } = renderWithProvider(
-      <MemoryRouter
-        initialEntries={[CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE]}
-      >
-        <CrossChainSwap />
-      </MemoryRouter>,
+      <CrossChainSwap />,
       store,
+      PREPARE_SWAP_ROUTE,
     );
 
-    expect(getByText('Bridge')).toBeInTheDocument();
+    expect(getByText(messages.swap.message)).toBeInTheDocument();
     expect(container).toMatchSnapshot();
     expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
   });

@@ -1,9 +1,13 @@
-import { CaipAssetType, assert } from '@metamask/utils';
+import {
+  CaipAssetType,
+  KnownCaipNamespace,
+  assert,
+  parseCaipAssetType,
+} from '@metamask/utils';
 import { chain } from 'lodash';
 import { Duration } from 'luxon';
 import { useSelector } from 'react-redux';
 import { getHistoricalPrices } from '../../../selectors/assets';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
 
 /**
  * Returns the list of time ranges (as ISO 8601 durations) to display in the historical prices chart for a given asset.
@@ -20,16 +24,26 @@ export const useChartTimeRanges = (
   currency?: string,
 ): string[] => {
   const DEFAULT_TIME_RANGES = ['P1D', 'P1W', 'P1M', 'P3M', 'P1Y', 'P1000Y'];
-  const isEvm = useSelector(getMultichainIsEvm);
   const historicalPricesNonEvm = useSelector(getHistoricalPrices);
 
-  if (isEvm) {
-    // On EVM, time ranges are hardcoded
+  try {
+    assert(caipAssetType, 'caipAssetType is required on non-EVM chains');
+    assert(currency, 'currency is required on non-EVM chains');
+
+    if (
+      parseCaipAssetType(caipAssetType).chain.namespace ===
+      KnownCaipNamespace.Eip155
+    ) {
+      // On EVM, time ranges are hardcoded
+      return DEFAULT_TIME_RANGES;
+    }
+  } catch (e) {
+    console.warn(
+      'useChartTimeRanges - failed, returning default time ranges',
+      e,
+    );
     return DEFAULT_TIME_RANGES;
   }
-
-  assert(caipAssetType, 'caipAssetType is required on non-EVM chains');
-  assert(currency, 'currency is required on non-EVM chains');
 
   // On non-EVM, time ranges are the intervals defined in the the historicalPrices state
   const intervals =

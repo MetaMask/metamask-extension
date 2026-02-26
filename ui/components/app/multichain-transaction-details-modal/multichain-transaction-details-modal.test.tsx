@@ -7,17 +7,20 @@ import {
 } from '@metamask/keyring-api';
 import { screen, fireEvent } from '@testing-library/react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../../../test/data/mock-accounts';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import {
+  MOCK_ACCOUNT_SOLANA_MAINNET,
+  MOCK_ACCOUNT_BIP122_P2WPKH,
+} from '../../../../test/data/mock-accounts';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
-  MultichainProviderConfig,
   SOLANA_BLOCK_EXPLORER_URL,
 } from '../../../../shared/constants/multichain/networks';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MultichainTransactionDetailsModal } from './multichain-transaction-details-modal';
 import {
   getAddressUrl,
@@ -127,12 +130,35 @@ const mockSwapTransaction = {
 const mockProps = {
   transaction: mockTransaction,
   onClose: jest.fn(),
-  userAddress: MOCK_ACCOUNT_SOLANA_MAINNET.address,
-  networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
+};
+
+const mockStateWithBitcoin = {
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    isEvmSelected: false,
+    remoteFeatureFlags: {
+      ...mockState.metamask.remoteFeatureFlags,
+      bitcoinAccounts: true,
+    },
+    internalAccounts: {
+      ...mockState.metamask.internalAccounts,
+      accounts: {
+        ...mockState.metamask.internalAccounts.accounts,
+        [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
+      },
+    },
+  },
 };
 
 describe('MultichainTransactionDetailsModal', () => {
   const mockTrackEvent = jest.fn();
+  const mockMetaMetricsContext = {
+    trackEvent: mockTrackEvent,
+    bufferedTrace: jest.fn(),
+    bufferedEndTrace: jest.fn(),
+    onboardingParentContext: { current: null },
+  };
   const useI18nContextMock = useI18nContext as jest.Mock;
 
   beforeEach(() => {
@@ -147,13 +173,11 @@ describe('MultichainTransactionDetailsModal', () => {
     props: {
       transaction: Transaction;
       onClose: jest.Mock;
-      userAddress: string;
-      networkConfig: MultichainProviderConfig;
     } = mockProps,
   ) => {
-    const store = configureStore(mockState.metamask);
+    const store = configureStore(mockStateWithBitcoin);
     return renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <MultichainTransactionDetailsModal {...props} />
       </MetaMetricsContext.Provider>,
       store,
@@ -163,8 +187,8 @@ describe('MultichainTransactionDetailsModal', () => {
   it('renders the modal with transaction details', () => {
     renderComponent();
 
-    expect(screen.getByText('Send')).toBeInTheDocument();
-    expect(screen.getByText('Confirmed')).toBeInTheDocument();
+    expect(screen.getByText(messages.send.message)).toBeInTheDocument();
+    expect(screen.getByText(messages.confirmed.message)).toBeInTheDocument();
     expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
       '1.2 BTC',
     );
@@ -172,7 +196,7 @@ describe('MultichainTransactionDetailsModal', () => {
 
   it('displays the correct transaction status with appropriate color', () => {
     renderComponent();
-    const statusElement = screen.getByText('Confirmed');
+    const statusElement = screen.getByText(messages.confirmed.message);
     expect(statusElement).toHaveClass('mm-box--color-success-default');
   });
 
@@ -310,22 +334,19 @@ describe('MultichainTransactionDetailsModal', () => {
   });
 
   it('renders Solana swap transaction details correctly', () => {
-    const userAddress = MOCK_ACCOUNT_SOLANA_MAINNET.address;
     const swapProps = {
       transaction: mockSwapTransaction,
       onClose: jest.fn(),
-      userAddress,
-      networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
     };
 
     renderComponent(swapProps);
 
-    expect(screen.getByText('Swap')).toBeInTheDocument();
+    expect(screen.getByText(messages.swap.message)).toBeInTheDocument();
     expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
       '-2.5 SOL',
     );
 
-    const addressStart = userAddress.substring(0, 6);
+    const addressStart = MOCK_ACCOUNT_SOLANA_MAINNET.address.substring(0, 6);
     const addressElements = screen.getAllByText((_content, element) => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -343,5 +364,50 @@ describe('MultichainTransactionDetailsModal', () => {
     expect(feeElement).not.toBeNull();
     expect(feeElement?.textContent).toContain('0.000005');
     expect(feeElement?.textContent).toContain('SOL');
+  });
+
+  it('displays the correct from address for Bitcoin send transaction', () => {
+    const btcTransaction: Transaction = {
+      ...mockTransaction,
+      account: MOCK_ACCOUNT_BIP122_P2WPKH.id,
+      from: [
+        {
+          address: MOCK_ACCOUNT_BIP122_P2WPKH.address,
+          asset: {
+            fungible: true,
+            type: 'native' as CaipAssetType,
+            amount: '1.0',
+            unit: 'BTC',
+          },
+        },
+      ],
+    };
+    const store = configureStore(mockStateWithBitcoin);
+    const props = {
+      transaction: btcTransaction,
+      onClose: jest.fn(),
+    };
+
+    renderWithProvider(
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <MultichainTransactionDetailsModal {...props} />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+
+    const fromLabel = screen.getByText('from');
+    expect(fromLabel).toBeInTheDocument();
+
+    const fromAddressElement = screen.getByText(
+      MOCK_ACCOUNT_BIP122_P2WPKH.metadata.name,
+    );
+    expect(fromAddressElement).toBeInTheDocument();
+
+    const expectedHref = getAddressUrl(
+      MOCK_ACCOUNT_BIP122_P2WPKH.address,
+      MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN].chainId,
+    );
+    const fromLink = fromAddressElement.closest('a');
+    expect(fromLink).toHaveAttribute('href', expectedHref);
   });
 });

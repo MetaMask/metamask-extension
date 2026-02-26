@@ -1,0 +1,44 @@
+name: Release Branch Sync
+
+permissions:
+  pull-requests: write
+  contents: write
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - stable
+
+jobs:
+  validate-branch:
+    name: Validate release branch format
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    outputs:
+      is-valid: ${{ steps.check.outputs.is-valid }}
+    steps:
+      - name: Check branch name format
+        id: check
+        env:
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          if [[ "$BRANCH" =~ ^release/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Branch '$BRANCH' matches release/X.Y.Z format"
+            echo "is-valid=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Branch '$BRANCH' does not match release/X.Y.Z format. Skipping."
+            echo "is-valid=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  sync-release-branches:
+    name: Sync open release branches with stable
+    needs: validate-branch
+    if: needs.validate-branch.outputs.is-valid == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync release branches with stable
+        uses: metamask/github-tools/.github/actions/release-branch-sync@v1.2.0
+        with:
+          merged-release-branch: ${{ github.event.pull_request.head.ref }}
+          github-token: ${{ secrets.STABLE_SYNC_TOKEN }}

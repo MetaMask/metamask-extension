@@ -6,6 +6,7 @@ import { UIComponentFactory } from './types';
 export const constructInputProps = (props: InputElement['props']) => {
   if (!hasProperty(props, 'type')) {
     return {
+      type: 'text',
       textFieldProps: {
         type: 'text',
       },
@@ -17,18 +18,18 @@ export const constructInputProps = (props: InputElement['props']) => {
       const { step, min, max, type } = props as NumberInputProps;
 
       return {
+        type,
+        step,
+        min,
+        max,
         textFieldProps: {
-          type,
-          inputProps: {
-            step: step?.toString(),
-            min: min?.toString(),
-            max: max?.toString(),
-          },
+          type: 'text',
         },
       };
     }
     default:
       return {
+        type: props.type,
         textFieldProps: {
           type: props.type,
         },

@@ -43,13 +43,9 @@ import {
   getTokenExchangeRates,
   getTokenList,
   getUseExternalServices,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   hasCreatedSolanaAccount,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../../selectors';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
-import { getSwapsBlockedTokens } from '../../../../ducks/send';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   NETWORK_TO_NAME_MAP,
@@ -60,6 +56,10 @@ import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constan
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { fetchTopAssetsList } from '../../../../pages/swaps/swaps.util';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import {
+  getNativeTokenName,
+  isTronEnergyOrBandwidthResource,
+} from '../../../../ducks/bridge/utils';
 import {
   getMultichainConversionRate,
   getMultichainCurrencyImage,
@@ -73,15 +73,10 @@ import {
 } from '../../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { Numeric } from '../../../../../shared/modules/Numeric';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+
 import { useAssetMetadata } from './hooks/useAssetMetadata';
-import type {
-  ERC20Asset,
-  NativeAsset,
-  NFT,
-  AssetWithDisplayData,
-} from './types';
-import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
-import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
+import type { ERC20Asset, NativeAsset, AssetWithDisplayData } from './types';
 import AssetList from './AssetList';
 import { Search } from './asset-picker-modal-search';
 import { AssetPickerModalNetwork } from './asset-picker-modal-network';
@@ -92,10 +87,7 @@ type AssetPickerModalProps = {
   isOpen: boolean;
   onClose: () => void;
   action?: 'send' | 'receive';
-  asset?:
-    | ERC20Asset
-    | NativeAsset
-    | Pick<NFT, 'type' | 'tokenId' | 'image' | 'symbol' | 'address'>;
+  asset?: ERC20Asset | NativeAsset;
   onBack?: () => void;
   onAssetChange: (
     asset: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
@@ -120,17 +112,17 @@ type AssetPickerModalProps = {
   >;
   isTokenListLoading?: boolean;
   autoFocus: boolean;
+  isDestinationToken?: boolean;
+  hideSearch?: boolean;
 } & Pick<
-  React.ComponentProps<typeof AssetPickerModalTabs>,
-  'visibleTabs' | 'defaultActiveTabKey'
-> &
-  Pick<
-    React.ComponentProps<typeof AssetPickerModalNetwork>,
-    'network' | 'networks' | 'isMultiselectEnabled' | 'selectedChainIds'
-  >;
+  React.ComponentProps<typeof AssetPickerModalNetwork>,
+  'network' | 'networks' | 'isMultiselectEnabled' | 'selectedChainIds'
+>;
 
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AssetPickerModal({
   header,
   isOpen,
@@ -148,7 +140,8 @@ export function AssetPickerModal({
   isMultiselectEnabled,
   selectedChainIds,
   autoFocus,
-  ...tabProps
+  isDestinationToken = false,
+  hideSearch = false,
 }: AssetPickerModalProps) {
   const t = useI18nContext();
   const [showSolanaAccountCreatedToast, setShowSolanaAccountCreatedToast] =
@@ -158,18 +151,35 @@ export function AssetPickerModal({
 
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
-  const debouncedSetSearchQuery = debounce(setDebouncedSearchQuery, 200);
+  const debouncedSetSearchQuery = useCallback(
+    debounce((value) => {
+      setDebouncedSearchQuery(value);
+    }, 200),
+    [],
+  );
+
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Cleanup abort controller and debounce on unmount
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+      abortControllerRef.current = null;
+      debouncedSetSearchQuery.cancel();
+    };
+  }, []);
+
   useEffect(() => {
     debouncedSetSearchQuery(searchQuery);
   }, [searchQuery, debouncedSetSearchQuery]);
-  const abortControllerRef = useRef<AbortController | null>(null);
 
-  const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
-  const memoizedSwapsBlockedTokens = useMemo(() => {
-    return new Set<string>(swapsBlockedTokens);
-  }, [swapsBlockedTokens]);
-
-  const handleAssetChange = useCallback(onAssetChange, [onAssetChange]);
+  const handleAssetChange = useCallback(
+    (newAsset) => {
+      onAssetChange(newAsset);
+      setSearchQuery('');
+    },
+    [onAssetChange],
+  );
 
   const currentChainId = useSelector(getMultichainCurrentChainId);
   const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
@@ -177,8 +187,6 @@ export function AssetPickerModal({
     network ??
     (currentChainId && allNetworks[currentChainId as keyof typeof allNetworks]);
   const allNetworksToUse = networks ?? Object.values(allNetworks ?? {});
-  // This indicates whether tokens in the wallet's active network are displayed
-  const isSelectedNetworkActive = selectedNetwork.chainId === currentChainId;
   const isEvm = useMultichainSelector(getMultichainIsEvm);
 
   useEffect(() => {
@@ -199,12 +207,10 @@ export function AssetPickerModal({
   let needsSolanaAccount = false;
   let hasSolanaAccount = false;
 
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   // Check if we need to show the Solana account creation UI when Solana is selected
   hasSolanaAccount = useSelector(hasCreatedSolanaAccount);
   needsSolanaAccount =
     !hasSolanaAccount && selectedNetwork.chainId === MultichainNetworks.SOLANA;
-  ///: END:ONLY_INCLUDE_IF
 
   // watches for needsSolanaAccount changes to show the Solana Account created toast
   useEffect(() => {
@@ -226,6 +232,7 @@ export function AssetPickerModal({
   const detectedTokens: Record<Hex, Record<string, Token[]>> = useSelector(
     getAllTokens,
   );
+
   // This only returns the detected tokens for the selected EVM account address
   const allDetectedTokens = useMemo(
     () =>
@@ -251,26 +258,6 @@ export function AssetPickerModal({
     return undefined;
   }, [selectedNetwork?.chainId, allowExternalServices]);
 
-  const getIsDisabled = useCallback(
-    ({
-      address,
-      symbol,
-    }:
-      | TokenListToken
-      | AssetWithDisplayData<ERC20Asset>
-      | AssetWithDisplayData<NativeAsset>) => {
-      const isDisabled = sendingAsset?.symbol
-        ? !isEqualCaseInsensitive(sendingAsset.symbol, symbol) &&
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-          memoizedSwapsBlockedTokens.has(address || '')
-        : false;
-
-      return isDisabled;
-    },
-    [sendingAsset?.symbol, memoizedSwapsBlockedTokens],
-  );
-
   /**
    * Generates a list of tokens sorted in this order
    * - native tokens with balance
@@ -281,7 +268,6 @@ export function AssetPickerModal({
    * - detected tokens (without balance)
    * - popularity
    * - all other tokens
-   * - blocked tokens
    */
   const tokenListGenerator = useCallback(
     function* (
@@ -298,10 +284,12 @@ export function AssetPickerModal({
           string?: string;
         })
     > {
-      const blockedTokens = [];
-
       // Yield multichain tokens with balances
       for (const token of multichainTokensWithBalance) {
+        // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
+        if (isTronEnergyOrBandwidthResource(token.chainId, token.symbol)) {
+          continue;
+        }
         if (shouldAddToken(token.symbol, token.address, token.chainId)) {
           yield token.isNative
             ? {
@@ -311,6 +299,8 @@ export function AssetPickerModal({
                     token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
                   ],
                 type: AssetType.native,
+                // Add human-readable name for native tokens (e.g., Ether, Binance Coin)
+                name: getNativeTokenName(token.chainId),
               }
             : {
                 ...token,
@@ -332,6 +322,8 @@ export function AssetPickerModal({
         string: undefined,
         chainId: selectedNetwork.chainId,
         type: AssetType.native,
+        // Add human-readable name for native token
+        name: getNativeTokenName(selectedNetwork.chainId),
       };
 
       if (
@@ -346,6 +338,10 @@ export function AssetPickerModal({
       }
 
       for (const token of allDetectedTokens) {
+        // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
+        if (isTronEnergyOrBandwidthResource(currentChainId, token.symbol)) {
+          continue;
+        }
         if (shouldAddToken(token.symbol, token.address, currentChainId)) {
           yield { ...token, chainId: currentChainId };
         }
@@ -353,7 +349,7 @@ export function AssetPickerModal({
 
       // Return early when SOLANA is selected since blocked and top tokens are not available
       // All available solana tokens are in the multichainTokensWithBalance results
-      if (selectedNetwork?.chainId === MultichainNetworks.SOLANA) {
+      if (!isEvmChainId(selectedNetwork?.chainId)) {
         return;
       }
 
@@ -366,12 +362,7 @@ export function AssetPickerModal({
           token &&
           shouldAddToken(token.symbol, token.address, currentChainId)
         ) {
-          if (getIsDisabled(token)) {
-            blockedTokens.push(token);
-            continue;
-          } else {
-            yield { ...token, chainId: currentChainId };
-          }
+          yield { ...token, chainId: currentChainId };
         }
       }
 
@@ -379,10 +370,6 @@ export function AssetPickerModal({
         if (shouldAddToken(token.symbol, token.address, currentChainId)) {
           yield { ...token, chainId: currentChainId };
         }
-      }
-
-      for (const token of blockedTokens) {
-        yield { ...token, chainId: currentChainId };
       }
     },
     [
@@ -396,7 +383,6 @@ export function AssetPickerModal({
       allDetectedTokens,
       topTokens,
       evmTokenMetadataByAddress,
-      getIsDisabled,
     ],
   );
 
@@ -419,10 +405,15 @@ export function AssetPickerModal({
       tokenChainId?: string,
     ) => {
       const trimmedSearchQuery = debouncedSearchQuery.trim().toLowerCase();
+      const isSymbolMatch = symbol?.toLowerCase().includes(trimmedSearchQuery);
+      // only check for matching address if search term has 6 characters or more
+      // users are expected to copy and paste addresses instead of typing them
+      const isAddressMatch =
+        trimmedSearchQuery.length >= 6 &&
+        address?.toLowerCase().includes(trimmedSearchQuery);
+
       const isMatchedBySearchQuery = Boolean(
-        !trimmedSearchQuery ||
-          symbol?.toLowerCase().indexOf(trimmedSearchQuery) !== -1 ||
-          address?.toLowerCase().indexOf(trimmedSearchQuery) !== -1,
+        !trimmedSearchQuery || isSymbolMatch || isAddressMatch,
       );
       const isTokenInSelectedChain = isMultiselectEnabled
         ? tokenChainId && selectedChainIds?.indexOf(tokenChainId) !== -1
@@ -518,6 +509,8 @@ export function AssetPickerModal({
             selectedNetwork.chainId as keyof typeof NETWORK_TO_NAME_MAP
           ]) ??
         selectedNetwork?.name ??
+        // @ts-expect-error TODO: fix typing
+        selectedNetwork?.nickname ??
         t('bridgeSelectNetwork')
       );
     }
@@ -647,50 +640,31 @@ export function AssetPickerModal({
           {needsSolanaAccount ? (
             <SolanaAccountCreationPrompt />
           ) : (
-            <AssetPickerModalTabs {...tabProps}>
-              <React.Fragment key={TabName.TOKENS}>
+            <>
+              {!hideSearch && (
                 <Search
                   searchQuery={searchQuery}
                   onChange={(value) => {
                     // Cancel previous asset metadata fetch
                     abortControllerRef.current?.abort();
-                    setSearchQuery(value);
+                    setSearchQuery(() => value);
                   }}
                   autoFocus={autoFocus}
                 />
-                <AssetList
-                  network={network}
-                  handleAssetChange={(selectedAsset) => {
-                    setSearchQuery('');
-                    handleAssetChange(selectedAsset);
-                  }}
-                  asset={asset?.type === AssetType.NFT ? undefined : asset}
-                  tokenList={displayedTokens}
-                  isTokenDisabled={getIsDisabled}
-                  isTokenListLoading={isTokenListLoading}
-                  assetItemProps={{
-                    isTitleNetworkName:
-                      // For src cross-chain swaps assets
-                      isMultiselectEnabled,
-                    isTitleHidden:
-                      // For dest cross-chain swaps assets
-                      !isSelectedNetworkActive,
-                  }}
-                />
-              </React.Fragment>
-              <AssetPickerModalNftTab
-                key={TabName.NFTS}
-                searchQuery={searchQuery}
-                onClose={onClose}
-                renderSearch={() => (
-                  <Search
-                    isNFTSearch
-                    searchQuery={searchQuery}
-                    onChange={(value) => setSearchQuery(value)}
-                  />
-                )}
+              )}
+              <AssetList
+                network={network}
+                handleAssetChange={handleAssetChange}
+                asset={asset}
+                tokenList={displayedTokens}
+                isTokenListLoading={isTokenListLoading}
+                assetItemProps={{
+                  isTitleNetworkName: false,
+                  isTitleHidden: false,
+                }}
+                isDestinationToken={isDestinationToken}
               />
-            </AssetPickerModalTabs>
+            </>
           )}
         </Box>
       </ModalContent>

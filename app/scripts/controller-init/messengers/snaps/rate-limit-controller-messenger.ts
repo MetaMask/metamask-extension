@@ -1,31 +1,22 @@
-import { Messenger } from '@metamask/base-controller';
 import {
-  SnapInstalled,
-  SnapUpdated,
-  SnapDisabled,
-  SnapEnabled,
-  SnapUninstalled,
-  HandleSnapRequest,
-  GetAllSnaps,
-} from '@metamask/snaps-controllers';
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 import {
-  GetPermissions,
-  GetSubjectMetadataState,
-} from '@metamask/permission-controller';
+  RateLimitMessenger,
+  RateLimitedApiMap,
+} from '@metamask/rate-limit-controller';
+import { GetSubjectMetadataState } from '@metamask/permission-controller';
 import { NotificationServicesControllerUpdateMetamaskNotificationsList } from '@metamask/notification-services-controller/notification-services';
+import { RootMessenger } from '../../../lib/messenger';
 
-type Actions = GetPermissions | HandleSnapRequest | GetAllSnaps;
+export type RateLimitControllerMessenger =
+  RateLimitMessenger<RateLimitedApiMap>;
 
-type Events =
-  | SnapInstalled
-  | SnapUpdated
-  | SnapUninstalled
-  | SnapEnabled
-  | SnapDisabled;
+type Actions = MessengerActions<RateLimitControllerMessenger>;
 
-export type RateLimitControllerMessenger = ReturnType<
-  typeof getRateLimitControllerMessenger
->;
+type Events = MessengerEvents<RateLimitControllerMessenger>;
 
 /**
  * Get a restricted controller messenger for the rate limit controller. This is
@@ -36,12 +27,16 @@ export type RateLimitControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getRateLimitControllerMessenger(
-  messenger: Messenger<Actions, Events>,
-) {
-  return messenger.getRestricted({
-    name: 'RateLimitController',
-    allowedEvents: [],
-    allowedActions: [],
+  messenger: RootMessenger<Actions, Events>,
+): RateLimitControllerMessenger {
+  return new Messenger<
+    'RateLimitController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'RateLimitController',
+    parent: messenger,
   });
 }
 
@@ -62,14 +57,23 @@ export type RateLimitControllerInitMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getRateLimitControllerInitMessenger(
-  messenger: Messenger<InitActions, never>,
+  messenger: RootMessenger<InitActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'RateLimitController',
-    allowedActions: [
+  const controllerInitMessenger = new Messenger<
+    'RateLimitController',
+    InitActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'RateLimitController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
       'SubjectMetadataController:getState',
       'NotificationServicesController:updateMetamaskNotificationsList',
     ],
-    allowedEvents: [],
   });
+  return controllerInitMessenger;
 }

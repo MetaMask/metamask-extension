@@ -28,6 +28,12 @@ const FIXTURES_FLAGS = {
     defaultValue: true,
     explanation: 'Specify whether to load suggested networks.',
   },
+  '--withNfts': {
+    type: 'number',
+    defaultValue: 20,
+    explanation:
+      'Specify the number of NFTs to import per network per account.',
+  },
   '--withPreferences': {
     type: 'boolean',
     defaultValue: true,

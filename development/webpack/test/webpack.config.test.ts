@@ -13,6 +13,7 @@ import { noop } from '../utils/helpers';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { getLatestCommit } from '../utils/git';
 import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
+import { MANIFEST_DEV_KEY } from '../../build/constants';
 
 function getWebpackInstance(config: Configuration) {
   // webpack logs a warning if we pass config.watch to it without a callback
@@ -89,8 +90,8 @@ ${Object.entries(env)
     const stats = options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'none');
     const fallback = options.resolve.fallback as Record<string, false>;
-    assert.strictEqual(typeof fallback['react-devtools'], 'string');
-    assert.strictEqual(typeof fallback['remote-redux-devtools'], 'string');
+    assert.strictEqual(typeof fallback['react-devtools-core'], 'boolean');
+    assert.strictEqual(typeof fallback['remote-redux-devtools'], 'boolean');
     assert.strictEqual(options.optimization.minimize, false);
     assert.strictEqual(options.optimization.sideEffects, false);
     assert.strictEqual(options.optimization.providedExports, false);
@@ -137,39 +138,32 @@ ${Object.entries(env)
     ]);
     assert.deepStrictEqual(
       manifestPlugin.options.description,
-      `development build from git id: ${getLatestCommit().hash()}`,
+      `main build for development from git id: ${getLatestCommit().hash()}`,
     );
     assert(manifestPlugin.options.transform);
-    assert.deepStrictEqual(
-      manifestPlugin.options.transform(
-        {
-          manifest_version: 3,
-          name: 'name',
-          version: '1.2.3',
-          content_scripts: [
-            {
-              js: [
-                'ignored',
-                'scripts/contentscript.js',
-                'scripts/inpage.js',
-                'ignored',
-              ],
-            },
-          ],
-        },
-        'brave',
-      ),
+    const transformedManifest = manifestPlugin.options.transform(
       {
         manifest_version: 3,
         name: 'name',
         version: '1.2.3',
         content_scripts: [
-          {
-            js: ['scripts/contentscript.js', 'scripts/inpage.js'],
-          },
+          { js: ['scripts/contentscript.js', 'scripts/inpage.js'] },
         ],
       },
+      'chrome',
     );
+    console.log('transformedManifest', transformedManifest);
+    assert.deepStrictEqual(transformedManifest, {
+      manifest_version: 3,
+      name: 'name',
+      version: '1.2.3',
+      content_scripts: [
+        {
+          js: ['scripts/contentscript.js', 'scripts/inpage.js'],
+        },
+      ],
+      key: MANIFEST_DEV_KEY,
+    });
     assert.strictEqual(manifestPlugin.options.zip, false);
     const manifestOpts = manifestPlugin.options as ManifestPluginOptions<true>;
     assert.strictEqual(manifestOpts.zipOptions, undefined);
@@ -184,7 +178,7 @@ ${Object.entries(env)
     const removeUnsupportedFeatures = ['--no-lavamoat'];
     const config: Configuration = getWebpackConfig(
       [
-        '--env',
+        '--mode',
         'production',
         '--watch',
         '--stats',
@@ -197,6 +191,9 @@ ${Object.entries(env)
         INFURA_PROD_PROJECT_ID: '00000000000000000000000000000000',
         SEGMENT_WRITE_KEY: '-',
         SEGMENT_PROD_WRITE_KEY: '-',
+        GOOGLE_PROD_CLIENT_ID: '00000000000',
+        APPLE_PROD_CLIENT_ID: '00000000000',
+        METAMASK_REACT_REDUX_DEVTOOLS: 'true',
       },
     );
     // webpack logs a warning if we specify `watch: true`, `getWebpackInstance`
@@ -213,8 +210,8 @@ ${Object.entries(env)
     const stats = instance.options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'normal');
     const fallback = instance.options.resolve.fallback as Record<string, false>;
-    assert.strictEqual(fallback['react-devtools'], false);
-    assert.strictEqual(fallback['remote-redux-devtools'], false);
+    assert.strictEqual(typeof fallback['react-devtools-core'], 'string');
+    assert.strictEqual(typeof fallback['remote-redux-devtools'], 'string');
     assert.strictEqual(instance.options.optimization.minimize, true);
     assert.strictEqual(instance.options.optimization.sideEffects, true);
     assert.strictEqual(instance.options.optimization.providedExports, true);
@@ -293,15 +290,4 @@ ${Object.entries(env)
     );
     assert(reactRefreshPlugin, 'ReactRefreshPlugin should be present');
   });
-
-  // these tests should be temporary until the below options are supported
-  const unsupportedOptions = [['--lavamoat'], ['--manifest_version', '3']];
-  for (const args of unsupportedOptions) {
-    it(`should throw on unsupported option \`${args.join('=')}\``, () => {
-      assert.throws(
-        () => getWebpackConfig(args),
-        `Unsupported option: ${args.join(' ')}`,
-      );
-    });
-  }
 });

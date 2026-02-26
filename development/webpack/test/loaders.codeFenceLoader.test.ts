@@ -26,7 +26,10 @@ console.log('I am Groot.');
       ? source.replace(`${fencedSource}\n`, '')
       : source;
 
-    const { promise, resolve } = Promise.withResolvers<CallbackArgs>();
+    // `withResolvers` is supported by Node.js LTS. It's optional in global type due to older
+    // browser support.
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const { promise, resolve } = Promise.withResolvers!<CallbackArgs>();
     const mockContext = {
       getOptions: () => {
         return {

@@ -1,13 +1,15 @@
 import 'navigator.locks';
 import {
-  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-  METHOD_REPAIR_DATABASE,
-} from '../state-corruption-errors';
-import {
   Backup,
   PersistenceError,
   PersistenceManager,
 } from '../stores/persistence-manager';
+import {
+  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+  METHOD_REPAIR_DATABASE,
+  VaultCorruptionType,
+} from '../../../../shared/constants/state-corruption';
+import { RELOAD_WINDOW } from '../../../../shared/constants/start-up-errors';
 import {
   waitForMicrotask,
   PortPolyfill,
@@ -35,12 +37,16 @@ function createConnectedPorts(uiCount: number) {
 const mockPersistence = (backup: unknown): PersistenceManager =>
   ({
     getBackup: jest.fn().mockResolvedValue(Promise.resolve(backup)),
-  } as unknown as PersistenceManager);
+  }) as unknown as PersistenceManager;
 
 const mockBrokenPersistence = (error: Error): PersistenceManager =>
   ({
     getBackup: jest.fn().mockRejectedValue(error),
-  } as unknown as PersistenceManager);
+  }) as unknown as PersistenceManager;
+
+// The cause error message that is always included in PersistenceError
+// to test that causeMessage is properly extracted and passed to the UI
+const CAUSE_ERROR_MESSAGE = 'Error: An unexpected error occurred';
 
 describe('CorruptionHandler.handleStateCorruptionError', () => {
   let corruptionHandler: CorruptionHandler;
@@ -84,7 +90,7 @@ describe('CorruptionHandler.handleStateCorruptionError', () => {
                   method: '__INVALID__',
                 },
               });
-            } else if (message.data.method === 'RELOAD') {
+            } else if (message.data.method === RELOAD_WINDOW) {
               reloadFn(ui);
             }
           });
@@ -104,12 +110,17 @@ describe('CorruptionHandler.handleStateCorruptionError', () => {
           });
         }
 
-        // some cases of Corruption detection will have a `backup` already
-        // present in the `error` object, this sets that case up.
+        // some cases of Corruption detection will expose `getBackup` on the
+        // error object, this sets that case up.
+        // We always include a cause to test that causeMessage is properly
+        // extracted and passed to the UI across all scenarios.
+        const cause = new Error(CAUSE_ERROR_MESSAGE);
         const error = new PersistenceError(
           'Corrupted',
           // `backup` is not always a `Backup`, but in reality that is also true
           backupHasErr ? (backup as Backup) : null,
+          VaultCorruptionType.InaccessibleDatabase,
+          cause,
         );
 
         // handle the case where `getBackup` function returns an error. We can't
@@ -171,12 +182,13 @@ describe('CorruptionHandler.handleStateCorruptionError', () => {
         );
 
         // make sure the `corruptionFn` was called with the expected error
-        // message
+        // message, including the causeMessage extracted from the cause
         expect(corruptionFn).toHaveBeenCalledWith({
           error: {
             message: error.message,
             name: error.name,
             stack: error.stack,
+            causeMessage: CAUSE_ERROR_MESSAGE,
           },
           ...result,
         });

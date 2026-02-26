@@ -1,0 +1,18 @@
+name: Post Merge Validation
+
+on:
+  schedule:
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+jobs:
+  post-merge-validation-tracker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run post-merge validation
+        uses: MetaMask/github-tools/.github/actions/post-merge-validation@v1
+        with:
+          repo: ${{ github.repository }}
+          start-hour-utc: '7'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          google-application-creds-base64: ${{ secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 }}

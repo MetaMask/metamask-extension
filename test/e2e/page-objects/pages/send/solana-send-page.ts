@@ -35,13 +35,13 @@ class SendSolanaPage {
     this.driver = driver;
   }
 
-  async check_amountCurrencyIsDisplayed(currency: string): Promise<void> {
+  async checkAmountCurrencyIsDisplayed(currency: string): Promise<void> {
     await this.driver.waitForSelector(this.amountCurrencyLabel(currency));
   }
 
-  async check_pageIsLoaded(amount: string = '') {
+  async checkPageIsLoaded(amount: string = '') {
     await this.driver.waitForSelector(this.toAddressInput, { timeout: 10000 });
-    console.log('check_pageIsLoaded after waitForSelector');
+    console.log('checkPageIsLoaded after waitForSelector');
     if (amount) {
       await this.driver.wait(async () => {
         try {
@@ -61,7 +61,7 @@ class SendSolanaPage {
     }
   }
 
-  async check_tokenBalanceIsDisplayed(
+  async checkTokenBalanceIsDisplayed(
     amount: string,
     tokenName: string,
   ): Promise<void> {
@@ -71,7 +71,7 @@ class SendSolanaPage {
     });
   }
 
-  async check_tokenByNameIsDisplayed(tokenName: string): Promise<void> {
+  async checkTokenByNameIsDisplayed(tokenName: string): Promise<void> {
     await this.driver.waitForSelector(
       {
         text: tokenName,
@@ -81,7 +81,7 @@ class SendSolanaPage {
     );
   }
 
-  async check_TxSimulationFailed(): Promise<void> {
+  async checkTxSimulationFailed(): Promise<void> {
     await this.driver.waitForSelector(
       { text: 'Transaction simulation failed', tag: 'p' },
       { timeout: 5000 },
@@ -93,7 +93,7 @@ class SendSolanaPage {
     console.log('Tx simulation failed');
   }
 
-  async check_validationErrorAppears(
+  async checkValidationErrorAppears(
     validationErrorText: string,
   ): Promise<boolean> {
     try {

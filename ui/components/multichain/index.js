@@ -6,7 +6,6 @@ export { AccountPicker } from './account-picker';
 export { ActivityListItem } from './activity-list-item';
 export { AppHeader } from './app-header';
 export { DetectedTokensBanner } from './detected-token-banner';
-export { GlobalMenu } from './global-menu';
 export { TokenListItem } from './token-list-item';
 export { AddressCopyButton } from './address-copy-button';
 export { ConnectedSiteMenu } from './connected-site-menu';
@@ -17,13 +16,11 @@ export { ProductTour } from './product-tour-popover';
 export { AccountDetails } from './account-details';
 export { CreateAccount } from './create-account';
 export { CreateEthAccount } from './create-eth-account';
-export { ConnectedAccountsMenu } from './connected-accounts-menu';
 export { ImportAccount } from './import-account';
 export { ImportNftsModal } from './import-nfts-modal';
 export { AccountDetailsMenuItem, ViewExplorerMenuItem } from './menu-items';
 export { ImportTokensModal } from './import-tokens-modal';
 export { AvatarGroup } from './avatar-group';
-export { AssetPickerAmount } from './asset-picker-amount';
 export { AddressListItem } from './address-list-item';
 export { ConnectedStatus } from './connected-status';
 export { NotificationListItem } from './notification-list-item';
@@ -40,16 +37,20 @@ export { NotificationDetailNft } from './notification-detail-nft';
 export { NotificationDetailTitle } from './notification-detail-title';
 export { NotificationDetailButton } from './notification-detail-button';
 export { NotificationDetailBlockExplorerButton } from './notification-detail-block-explorer-button';
-export { NotificationsPage } from './notifications-page';
 export { NotificationsSettingsBox } from './notifications-settings-box';
 export { NotificationsSettingsType } from './notifications-settings-type';
 export { NotificationsSettingsAccount } from './notifications-settings-account';
 export { NotificationListItemSnap } from './notification-list-item-snap';
 export { NotificationsTagCounter } from './notifications-tag-counter';
 export { Toast, ToastContainer } from './toast';
-export { PermissionDetailsModal } from './permission-details-modal';
+export { DisconnectPermissionsModal } from './disconnect-permissions-modal';
 export { ReceiveModal } from './receive-modal';
 export { EditNetworksModal } from './edit-networks-modal';
 export { EditAccountsModal } from './edit-accounts-modal';
-export { Carousel } from './carousel';
+export {
+  Carousel,
+  CarouselWithEmptyState,
+  StackCard,
+  StackCardEmpty,
+} from './carousel';
 export { SelectSrp, SrpList } from './multi-srp';

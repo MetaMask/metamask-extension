@@ -1,8 +1,8 @@
-import { useHistory } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { Json } from '@metamask/utils';
 import { ApprovalFlowState } from '@metamask/approval-controller';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
@@ -13,12 +13,25 @@ import {
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
-import { useConfirmationNavigation } from './useConfirmationNavigation';
+import {
+  ConfirmationLoader,
+  useConfirmationNavigation,
+  useConfirmationNavigationOptions,
+} from './useConfirmationNavigation';
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(),
-}));
+const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+const mockSearchParams = new URLSearchParams();
+const mockUseSearchParams = jest.fn(() => [mockSearchParams]);
+
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
+    useSearchParams: () => mockUseSearchParams(),
+  };
+});
 
 jest.mock('../confirmation/templates', () => ({
   TEMPLATED_CONFIRMATION_APPROVAL_TYPES: ['wallet_addEthereumChain'],
@@ -62,12 +75,11 @@ function renderHook(
 }
 
 describe('useConfirmationNavigation', () => {
-  const useHistoryMock = jest.mocked(useHistory);
-  const history = { replace: jest.fn() };
-
   beforeEach(() => {
     jest.resetAllMocks();
-    useHistoryMock.mockReturnValue(history);
+    mockUseLocation.mockReturnValue({
+      search: '',
+    } as unknown as ReturnType<typeof mockUseLocation>);
   });
 
   describe('navigateToId', () => {
@@ -76,20 +88,23 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId(APPROVAL_ID_MOCK);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}`,
+        { replace: true },
       );
     });
 
-    it('navigates to template route', () => {
+    // AddEthereumChain is not registered as a templated confirmation, so it uses explicit routing to CONFIRM_TRANSACTION_ROUTE
+    it('navigates to transaction route for AddEthereumChain', () => {
       const result = renderHook(ApprovalType.AddEthereumChain);
 
       result.navigateToId(APPROVAL_ID_MOCK);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRMATION_V_NEXT_ROUTE}/${APPROVAL_ID_MOCK}`,
+        { replace: true },
       );
     });
 
@@ -98,9 +113,10 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId(undefined);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRMATION_V_NEXT_ROUTE}`,
+        { replace: true },
       );
     });
 
@@ -111,9 +127,10 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId(APPROVAL_ID_MOCK);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}`,
+        { replace: true },
       );
     });
 
@@ -122,9 +139,10 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId(APPROVAL_ID_MOCK);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONNECT_ROUTE}/${APPROVAL_ID_MOCK}`,
+        { replace: true },
       );
     });
 
@@ -133,9 +151,10 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId(APPROVAL_ID_MOCK);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}`,
+        { replace: true },
       );
     });
 
@@ -146,9 +165,10 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId(APPROVAL_ID_MOCK);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRM_ADD_SUGGESTED_NFT_ROUTE}`,
+        { replace: true },
       );
     });
 
@@ -157,9 +177,10 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId(APPROVAL_ID_MOCK);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
+        { replace: true },
       );
     });
 
@@ -168,9 +189,10 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId(APPROVAL_ID_MOCK);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}${DECRYPT_MESSAGE_REQUEST_PATH}`,
+        { replace: true },
       );
     });
 
@@ -179,7 +201,7 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId('invalidId');
 
-      expect(history.replace).toHaveBeenCalledTimes(0);
+      expect(mockUseNavigate).toHaveBeenCalledTimes(0);
     });
 
     it('does not navigate if no confirmation ID provided', () => {
@@ -187,7 +209,7 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId();
 
-      expect(history.replace).toHaveBeenCalledTimes(0);
+      expect(mockUseNavigate).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -197,9 +219,27 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToIndex(1);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_2_MOCK}`,
+        { replace: true },
+      );
+    });
+  });
+
+  describe('queryParams', () => {
+    it('retain any queryParams present', () => {
+      mockUseLocation.mockReturnValue({
+        search: '?test=dummy',
+      } as unknown as ReturnType<typeof mockUseLocation>);
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToIndex(1);
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_2_MOCK}?test=dummy`,
+        { replace: true },
       );
     });
   });
@@ -293,5 +333,100 @@ describe('useConfirmationNavigation', () => {
         ).toEqual([APPROVAL_ID_MOCK, APPROVAL_ID_2_MOCK]);
       },
     );
+  });
+
+  describe('navigateNext', () => {
+    it('navigates to the next confirmation', () => {
+      const result = renderHook(ApprovalType.Transaction);
+      result.navigateNext(APPROVAL_ID_MOCK);
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_2_MOCK}`,
+        { replace: true },
+      );
+    });
+  });
+
+  describe('navigateToTransaction', () => {
+    it('navigates to transaction route without loader param when no options provided', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-123');
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-123`,
+        search: '',
+      });
+    });
+
+    it('navigates to transaction route with loader param when loader option provided', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-456', {
+        loader: ConfirmationLoader.CustomAmount,
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-456`,
+        search: 'loader=customAmount',
+      });
+    });
+
+    it('navigates without loader param when loader is Default', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-789', {
+        loader: ConfirmationLoader.Default,
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-789`,
+        search: 'loader=default',
+      });
+    });
+  });
+});
+
+describe('useConfirmationNavigationOptions', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  function renderOptionsHook(searchParams: URLSearchParams) {
+    mockUseSearchParams.mockReturnValue([searchParams]);
+
+    const { result } = renderHookWithProvider(
+      () => useConfirmationNavigationOptions(),
+      mockState,
+    );
+
+    return result.current;
+  }
+
+  it('returns loader from search params', () => {
+    const searchParams = new URLSearchParams({ loader: 'customAmount' });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.loader).toBe(ConfirmationLoader.CustomAmount);
+  });
+
+  it('returns Default loader when not present in search params', () => {
+    const searchParams = new URLSearchParams();
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.loader).toBe(ConfirmationLoader.Default);
+  });
+
+  it('returns default loader value from search params', () => {
+    const searchParams = new URLSearchParams({ loader: 'default' });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.loader).toBe(ConfirmationLoader.Default);
   });
 });

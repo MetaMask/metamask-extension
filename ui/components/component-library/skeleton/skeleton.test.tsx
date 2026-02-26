@@ -19,4 +19,12 @@ describe('Skeleton', () => {
     );
     expect(getByTestId('skeleton')).toHaveClass('test-class');
   });
+  it('should render the children and not the skeleton when isLoading is false', () => {
+    const { getByTestId } = render(
+      <Skeleton isLoading={false}>
+        <div data-testid="content">Content</div>
+      </Skeleton>,
+    );
+    expect(getByTestId('content')).toBeInTheDocument();
+  });
 });

@@ -85,7 +85,7 @@ class OnboardingPrivacySettingsPage {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.generalSettings,
@@ -163,7 +163,7 @@ class OnboardingPrivacySettingsPage {
 
   async navigateToGeneralSettings(): Promise<void> {
     console.log('Navigate to general settings');
-    await this.check_pageIsLoaded();
+    await this.checkPageIsLoaded();
     await this.driver.clickElement(this.generalSettings);
     await this.driver.waitForSelector(this.generalSettingsMessage);
   }
@@ -184,13 +184,13 @@ class OnboardingPrivacySettingsPage {
    */
   async toggleAssetsSettings(): Promise<void> {
     console.log('Toggle advanced assets settings in privacy settings');
-    await this.check_pageIsLoaded();
+    await this.checkPageIsLoaded();
     await this.driver.clickElement(this.assetsSettings);
     await this.driver.waitForSelector(this.assetsSettingsMessage);
     await Promise.all(
-      (
-        await this.driver.findClickableElements(this.assetsPrivacyToggle)
-      ).map((toggle) => toggle.click()),
+      (await this.driver.findClickableElements(this.assetsPrivacyToggle)).map(
+        (toggle) => toggle.click(),
+      ),
     );
     await this.navigateBackToSettingsPage();
   }

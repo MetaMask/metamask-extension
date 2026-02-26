@@ -1,7 +1,8 @@
 import { Suite } from 'mocha';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import DecryptMessageConfirmation from '../../page-objects/pages/confirmations/redesign/decrypt-message-confirmation';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import DecryptMessageConfirmation from '../../page-objects/pages/confirmations/decrypt-message-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
@@ -16,8 +17,8 @@ describe('Encrypt Decrypt', function (this: Suite) {
   it('should decrypt an encrypted message', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.fullTitle(),
@@ -26,7 +27,7 @@ describe('Encrypt Decrypt', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // ------ Get Encryption key ------
         await getEncryptionKeyInDapp(driver, encryptionKey);
@@ -39,8 +40,8 @@ describe('Encrypt Decrypt', function (this: Suite) {
 
         // ------ Verify decrypted message in Test Dapp ------
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
-        await testDapp.check_decryptedMessage(message);
+        await testDapp.checkPageIsLoaded();
+        await testDapp.checkDecryptedMessage(message);
       },
     );
   });
@@ -49,8 +50,8 @@ describe('Encrypt Decrypt', function (this: Suite) {
     const message2 = 'Hello, Alice!';
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.fullTitle(),
@@ -59,7 +60,7 @@ describe('Encrypt Decrypt', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // ------ Get Encryption key ------
         await getEncryptionKeyInDapp(driver, encryptionKey);
@@ -73,30 +74,30 @@ describe('Encrypt Decrypt', function (this: Suite) {
         const decryptMessageConfirmation = new DecryptMessageConfirmation(
           driver,
         );
-        await decryptMessageConfirmation.check_pageIsLoaded();
+        await decryptMessageConfirmation.checkPageIsLoaded();
 
         // ------ Encrypt Message 2 ------
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.encryptMessage(message2);
 
         // ------ Decrypt Message 1 on test dapp and verify the result------
         await decryptMessageAndVerifyResult(driver, message);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
-        await testDapp.check_decryptedMessage(message);
+        await testDapp.checkPageIsLoaded();
+        await testDapp.checkDecryptedMessage(message);
 
         // ------ Decrypt Message 2 on and verify the result------
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await decryptMessageConfirmation.check_pageIsLoaded();
+        await decryptMessageConfirmation.checkPageIsLoaded();
         await decryptMessageConfirmation.clickDecryptMessageButton();
-        await decryptMessageConfirmation.check_decryptedMessage(message2);
+        await decryptMessageConfirmation.checkDecryptedMessage(message2);
         await decryptMessageConfirmation.clickToConfirmDecryptMessage();
 
         // ------ Verify decrypted message 2 in Test Dapp ------
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
-        await testDapp.check_decryptedMessage(message2);
+        await testDapp.checkPageIsLoaded();
+        await testDapp.checkDecryptedMessage(message2);
       },
     );
   });

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toHex } from '@metamask/controller-utils';
 import {
@@ -22,6 +22,7 @@ import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDeta
 // eslint-disable-next-line import/no-restricted-paths
 import { isWebUrl } from '../../../../../../app/scripts/lib/util';
 import PulseLoader from '../../../../ui/pulse-loader';
+import { VirtualizedList } from '../../../../ui/virtualized-list/virtualized-list';
 import NFTGridItemErrorBoundary from './nft-grid-item-error-boundary';
 
 const NFTGridItem = (props: {
@@ -71,6 +72,11 @@ const NFTGridItem = (props: {
   );
 };
 
+// Container width threshold for switching between 3 and 4 columns
+const CONTAINER_WIDTH_THRESHOLD = 640;
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NftGrid({
   nfts,
   handleNftClick,
@@ -80,45 +86,90 @@ export default function NftGrid({
   handleNftClick: (nft: NFT) => void;
   privacyMode?: boolean;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
 
-  return (
-    <Box style={{ margin: 16 }}>
-      <Box display={Display.Grid} gap={4} className="nft-items__wrapper">
-        {nfts.map((nft: NFT) => {
-          const { tokenURI } = nft;
+  // Detect container width for virtualization grouping only
+  const [itemsPerRow, setItemsPerRow] = useState(3);
 
-          return (
-            <NFTGridItemErrorBoundary key={tokenURI} fallback={() => null}>
-              <Box
-                data-testid="nft-wrapper"
-                className="nft-items__image-wrapper"
-              >
-                <NFTGridItem
-                  nft={nft}
-                  onClick={() => handleNftClick(nft)}
-                  privacyMode={privacyMode}
-                />
-              </Box>
-            </NFTGridItemErrorBoundary>
-          );
-        })}
+  useEffect(() => {
+    if (process.env.IN_TEST) {
+      return;
+    }
+
+    const container = containerRef.current;
+    if (!container || typeof ResizeObserver === 'undefined') {
+      return;
+    }
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (entry) {
+        const containerWidth = entry.contentRect.width;
+        setItemsPerRow(containerWidth > CONTAINER_WIDTH_THRESHOLD ? 4 : 3);
+      }
+    });
+
+    resizeObserver.observe(container);
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  const loadingFooter = nftsStillFetchingIndication ? (
+    <Box
+      className="nfts-tab__fetching"
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
+      display={Display.Flex}
+      marginTop={4}
+    >
+      <Box marginTop={4} marginBottom={4}>
+        <PulseLoader />
       </Box>
-      {nftsStillFetchingIndication ? (
-        <Box
-          className="nfts-tab__fetching"
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
-          display={Display.Flex}
-          marginTop={4}
-        >
-          <Box marginTop={4} marginBottom={4}>
-            <PulseLoader />
+    </Box>
+  ) : null;
+
+  // Group NFTs into rows for virtualization
+  const nftRows = useMemo(() => {
+    const rows: NFT[][] = [];
+    for (let i = 0; i < nfts.length; i += itemsPerRow) {
+      rows.push(nfts.slice(i, i + itemsPerRow));
+    }
+    return rows;
+  }, [nfts, itemsPerRow]);
+
+  const gridClassName = itemsPerRow === 4 ? 'grid-cols-4' : 'grid-cols-3';
+
+  return (
+    <Box ref={containerRef} style={{ margin: 16 }}>
+      <VirtualizedList
+        data={nftRows}
+        estimatedItemSize={200}
+        listFooterComponent={loadingFooter}
+        renderItem={({ item, index: rowIndex }) => (
+          <Box className={`grid gap-4 pb-4 ${gridClassName}`}>
+            {item.map((nft, index) => (
+              <NFTGridItemErrorBoundary
+                key={`${rowIndex}-${index}`}
+                fallback={() => null}
+              >
+                <Box
+                  data-testid="nft-wrapper"
+                  className="nft-items__image-wrapper"
+                >
+                  <NFTGridItem
+                    nft={nft}
+                    onClick={() => handleNftClick(nft)}
+                    privacyMode={privacyMode}
+                  />
+                </Box>
+              </NFTGridItemErrorBoundary>
+            ))}
           </Box>
-        </Box>
-      ) : null}
+        )}
+      />
     </Box>
   );
 }

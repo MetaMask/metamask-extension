@@ -89,7 +89,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
 
   return (
     <Box
-      backgroundColor={BackgroundColor.backgroundAlternative}
+      backgroundColor={BackgroundColor.backgroundDefault}
       width={BlockSize.Full}
       height={BlockSize.Full}
       style={{

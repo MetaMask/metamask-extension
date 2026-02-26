@@ -12,51 +12,15 @@ const tsconfig = ts.parseJsonConfigFileContent(config, ts.sys, './');
  */
 module.exports = {
   root: true,
-  // Suggested addition from the storybook 6.5 update
-  extends: ['plugin:storybook/recommended'],
   // Ignore files which are also in .prettierignore
   ignorePatterns: readFileSync('.prettierignore', 'utf8').trim().split('\n'),
   // eslint's parser, esprima, is not compatible with ESM, so use the babel parser instead
   parser: '@babel/eslint-parser',
-  plugins: ['@metamask/design-tokens'],
-  rules: {
-    '@metamask/design-tokens/color-no-hex': 'warn',
-    'import/no-restricted-paths': [
-      'error',
-      {
-        basePath: './',
-        zones: [
-          {
-            target: './app',
-            from: './ui',
-            message:
-              'Should not import from UI in background, use shared directory instead',
-          },
-          {
-            target: './ui',
-            from: './app',
-            message:
-              'Should not import from background in UI, use shared directory instead',
-          },
-          {
-            target: './shared',
-            from: './app',
-            message: 'Should not import from background in shared',
-          },
-          {
-            target: './shared',
-            from: './ui',
-            message: 'Should not import from UI in shared',
-          },
-        ],
-      },
-    ],
-  },
   overrides: [
     /**
      * == Modules ==
      *
-     * The first two sections here, which cover module syntax, are mutually
+     * The first three sections here, which cover module syntax, are mutually
      * exclusive: the set of files covered between them may NOT overlap. This is
      * because we do not allow a file to use two different styles for specifying
      * imports and exports (however theoretically possible it may be).
@@ -73,6 +37,8 @@ module.exports = {
         '.eslintrc.*.js',
         '.mocharc.js',
         '*.config.js',
+        'app/scripts/lockdown-run.js',
+        'app/scripts/lockdown-more.js',
         'development/**/*.js',
         'test/e2e/**/*.js',
         'test/helpers/*.js',
@@ -112,15 +78,17 @@ module.exports = {
       files: [
         'app/**/*.js',
         'shared/**/*.js',
-        'shared/**/*.ts',
         'ui/**/*.js',
-        'offscreen/**/*.ts',
         '**/*.test.js',
         'test/lib/**/*.js',
         'test/mocks/**/*.js',
         'test/jest/**/*.js',
         'test/stub/**/*.js',
         'test/unit-global/**/*.js',
+      ],
+      excludedFiles: [
+        'app/scripts/lockdown-run.js',
+        'app/scripts/lockdown-more.js',
       ],
       extends: [
         path.resolve(__dirname, '.eslintrc.base.js'),
@@ -207,6 +175,128 @@ module.exports = {
             ignoreRestSiblings: true,
           },
         ],
+        // This rule temporarily applies the latest `@typescript-eslint/naming-convention` config found in `@metamask/eslint-config`.
+        // TODO: Remove once `@metamask/eslint-config` is updated to `^14.0.0`.
+        '@typescript-eslint/naming-convention': [
+          'error',
+          {
+            selector: 'default',
+            format: ['camelCase'],
+            leadingUnderscore: 'allow',
+            trailingUnderscore: 'forbid',
+          },
+          { selector: 'enumMember', format: ['PascalCase'] },
+          {
+            selector: 'function',
+            modifiers: ['exported'],
+            format: ['camelCase', 'PascalCase'],
+          },
+          {
+            selector: 'import',
+            format: ['camelCase', 'PascalCase', 'snake_case', 'UPPER_CASE'],
+          },
+          {
+            selector: 'interface',
+            format: ['PascalCase'],
+            custom: { regex: '^I[A-Z]', match: false },
+          },
+          {
+            selector: 'objectLiteralMethod',
+            format: ['camelCase', 'PascalCase', 'UPPER_CASE'],
+          },
+          {
+            selector: 'objectLiteralProperty',
+            format: ['camelCase', 'PascalCase', 'UPPER_CASE'],
+          },
+          { selector: 'typeLike', format: ['PascalCase'] },
+          {
+            selector: 'typeParameter',
+            format: ['PascalCase'],
+            custom: { regex: '^.{3,}', match: true },
+          },
+          {
+            selector: 'variable',
+            format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
+            leadingUnderscore: 'allow',
+          },
+          {
+            selector: 'parameter',
+            format: ['camelCase', 'PascalCase'],
+            leadingUnderscore: 'allow',
+          },
+          {
+            selector: [
+              'classProperty',
+              'objectLiteralProperty',
+              'typeProperty',
+              'classMethod',
+              'objectLiteralMethod',
+              'typeMethod',
+              'accessor',
+              'enumMember',
+            ],
+            format: null,
+            modifiers: ['requiresQuotes'],
+          },
+        ],
+        // This rule temporarily applies the latest `@typescript-eslint/restrict-template-expressions` config found in `@metamask/eslint-config`.
+        // TODO: Remove once `@metamask/eslint-config` is updated to `^14.0.0`.
+        '@typescript-eslint/restrict-template-expressions': [
+          'error',
+          {
+            allowBoolean: true,
+            allowNumber: true,
+          },
+        ],
+        // TODO: Remove once `@metamask/eslint-config-typescript` is updated to a version with this setting.
+        'consistent-return': 'off',
+
+        // These rule modifications are removing changes to our shared ESLint config made after
+        // version v9. This is a temporary measure to get us to ESLint v9 compatible versions,
+        // at which point we can restore the intended rules and use error suppression instead.
+        //
+        // TODO: Remove these modifications after the ESLint v9 update
+        '@typescript-eslint/await-thenable': 'off',
+        '@typescript-eslint/consistent-type-imports': 'off',
+        '@typescript-eslint/no-base-to-string': 'off',
+        '@typescript-eslint/no-duplicate-type-constituents': 'off',
+        '@typescript-eslint/no-floating-promises': 'off',
+        '@typescript-eslint/no-misused-promises': 'off',
+        '@typescript-eslint/no-redundant-type-constituents': 'off',
+        '@typescript-eslint/no-throw-literal': 'off',
+        '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+        '@typescript-eslint/no-unnecessary-type-arguments': 'off',
+        '@typescript-eslint/no-unsafe-enum-comparison': 'off',
+        '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off',
+        '@typescript-eslint/prefer-enum-initializers': 'off',
+        '@typescript-eslint/prefer-includes': 'off',
+        '@typescript-eslint/prefer-nullish-coalescing': 'off',
+        '@typescript-eslint/prefer-readonly': 'off',
+        '@typescript-eslint/prefer-reduce-type-parameter': 'off',
+        '@typescript-eslint/prefer-string-starts-ends-with': 'off',
+        '@typescript-eslint/promise-function-async': 'off',
+        '@typescript-eslint/restrict-plus-operands': 'off',
+        '@typescript-eslint/unbound-method': 'off',
+        'no-restricted-syntax': [
+          'error',
+          {
+            selector: 'WithStatement',
+            message: 'With statements are not allowed',
+          },
+          {
+            selector: 'SequenceExpression',
+            message: 'Sequence expressions are not allowed',
+          },
+          // {
+          //   selector: "BinaryExpression[operator='in']",
+          //   message: 'The "in" operator is not allowed',
+          // },
+          // {
+          //   selector:
+          //     "PropertyDefinition[accessibility='private'], MethodDefinition[accessibility='private'], TSParameterProperty[accessibility='private']",
+          //   message: 'Use a hash name instead.',
+          // },
+        ],
       },
       settings: {
         'import/resolver': {
@@ -220,12 +310,6 @@ module.exports = {
             alwaysTryTypes: true,
           },
         },
-      },
-    },
-    {
-      files: ['*.d.ts'],
-      parserOptions: {
-        sourceType: 'script',
       },
     },
     /**
@@ -253,8 +337,9 @@ module.exports = {
           jsx: true,
         },
       },
-      plugins: ['react'],
+      plugins: ['react', 'react-compiler'],
       rules: {
+        'react-compiler/react-compiler': 'error',
         'react/no-unused-prop-types': 'error',
         'react/no-unused-state': 'error',
         'react/jsx-boolean-value': 'error',
@@ -268,6 +353,12 @@ module.exports = {
         'react/no-deprecated': 'error',
         'react/default-props-match-prop-types': 'error',
         'react/jsx-no-duplicate-props': 'error',
+        'react-hooks/exhaustive-deps': [
+          'warn',
+          {
+            additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
+          },
+        ],
       },
       settings: {
         react: {
@@ -295,8 +386,9 @@ module.exports = {
           jsx: true,
         },
       },
-      plugins: ['react'],
+      plugins: ['react', 'react-compiler'],
       rules: {
+        'react-compiler/react-compiler': 'error',
         'react/no-unused-prop-types': 'warn',
         'react/no-unused-state': 'warn',
         'react/jsx-boolean-value': 'off',
@@ -309,7 +401,13 @@ module.exports = {
         'react/prop-types': 'off',
         'react/no-children-prop': 'off',
         'react/jsx-key': 'warn', // TODO - increase this into 'error' level
-        'react-hooks/rules-of-hooks': 'warn', // TODO - increase this into 'error' level
+        'react-hooks/rules-of-hooks': 'error',
+        'react-hooks/exhaustive-deps': [
+          'warn',
+          {
+            additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
+          },
+        ],
       },
       settings: {
         react: {
@@ -319,6 +417,35 @@ module.exports = {
           // LavaMoat policy for all of React, in the build system. That's a
           // no-go, so we grab it from React's package.json.
           version: reactVersion,
+        },
+      },
+    },
+    /**
+     * Tailwind CSS
+     */
+    {
+      files: [
+        'ui/pages/design-system/**/*.{ts,tsx}',
+        // Add your workspace if you'd like to start using tailwind css,
+        // for example:
+        // 'ui/pages/your-page/**/*.{ts,tsx}',
+      ],
+      plugins: ['tailwindcss'],
+      rules: {
+        // Tailwind CSS rules - same as design system
+        'tailwindcss/classnames-order': 'error',
+        'tailwindcss/enforces-negative-arbitrary-values': 'error',
+        'tailwindcss/enforces-shorthand': 'error',
+        'tailwindcss/no-arbitrary-value': 'off', // There are legitimate reasons to use arbitrary values but we should specifically error on static colors
+        'tailwindcss/no-custom-classname': 'error',
+        'tailwindcss/no-contradicting-classname': 'error',
+        'tailwindcss/no-unnecessary-arbitrary-value': 'error',
+      },
+      settings: {
+        tailwindcss: {
+          callees: ['twMerge'],
+          config: 'tailwind.config.js',
+          classRegex: ['^(class(Name)?)$'],
         },
       },
     },
@@ -336,6 +463,16 @@ module.exports = {
         // things like force the test to fail.
         '@babel/no-invalid-this': 'off',
         'mocha/no-setup-in-describe': 'off',
+
+        // Static hex values are only discouraged in application code, using them in tests is OK.
+        '@metamask/design-tokens/color-no-hex': 'off',
+
+        // These rule modifications are removing changes to our shared ESLint config made after
+        // version v9. This is a temporary measure to get us to ESLint v9 compatible versions,
+        // at which point we can restore the intended rules and use error suppression instead.
+        //
+        // TODO: Remove these modifications after the ESLint v9 update
+        'mocha/consistent-spacing-between-blocks': 'off',
       },
     },
     /**
@@ -383,6 +520,10 @@ module.exports = {
       rules: {
         'import/unambiguous': 'off',
         'import/named': 'off',
+
+        // Static hex values are only discouraged in application code, using them in tests is OK.
+        '@metamask/design-tokens/color-no-hex': 'off',
+
         // *.snap files weren't parsed by previous versions of this eslint
         // config section, but something got fixed somewhere, and now this rule
         // causes failures. We need to turn it off instead of fix them because
@@ -414,17 +555,25 @@ module.exports = {
       },
     },
     /**
-     * Migrations
+     * Jest files that aren't currently covered by Jest configuration above
+     *
+     * TODO: Update the `files` list for the Jest configuration.
      */
     {
-      files: ['app/scripts/migrations/*.js', '**/*.stories.js'],
+      files: ['**/*.test.{js,ts,tsx}'],
       rules: {
-        'import/no-anonymous-default-export': [
-          'error',
-          {
-            allowObject: true,
-          },
-        ],
+        // Static hex values are only discouraged in application code, using them in tests is OK.
+        '@metamask/design-tokens/color-no-hex': 'off',
+      },
+    },
+    /**
+     * Legacy migrations
+     */
+    {
+      files: ['app/scripts/migrations/*.js'],
+      rules: {
+        // Disable various rules that our legacy migrations don't follow
+        'import/no-anonymous-default-export': 'off',
       },
     },
     /**
@@ -436,14 +585,10 @@ module.exports = {
      * `process.exit` to exit).
      */
     {
-      files: [
-        'development/**/*.js',
-        'test/e2e/benchmark.js',
-        'test/helpers/setup-helper.js',
-      ],
+      files: ['development/**/*.js', 'test/helpers/setup-helper.js'],
       rules: {
-        'node/no-process-exit': 'off',
-        'node/shebang': 'off',
+        'n/no-process-exit': 'off',
+        'n/shebang': 'off',
       },
     },
     /**
@@ -461,12 +606,30 @@ module.exports = {
         Compartment: 'readonly',
       },
     },
+    /**
+     * Storybook
+     */
     {
-      files: ['app/scripts/lockdown-run.js', 'app/scripts/lockdown-more.js'],
-      parserOptions: {
-        sourceType: 'script',
+      files: ['**/*.stories.js', '**/*.stories.ts', '**/*.stories.tsx'],
+      // Suggested addition from the storybook 6.5 update
+      extends: ['plugin:storybook/recommended'],
+      rules: {
+        // Anonymous object exports are conventional for Storybook files
+        'import/no-anonymous-default-export': [
+          'error',
+          {
+            allowObject: true,
+          },
+        ],
+        // Static hex values are only discouraged in application code, using them in stories is OK.
+        '@metamask/design-tokens/color-no-hex': 'off',
       },
     },
+    /**
+     * Modules with sorted keys (to be expanded over time)
+     *
+     * TODO: Either continue migrating code to this rule, or abandon the effort.
+     */
     {
       files: ['ui/pages/settings/*.js'],
       rules: {
@@ -479,13 +642,13 @@ module.exports = {
         ],
       },
     },
+    /**
+     * Modules with sorted imports
+     *
+     * TODO: Remove in favor of `import-x/order`, which our shared config uses.
+     */
     {
       files: ['ui/components/multichain/**/*.{js}'],
-      extends: [
-        path.resolve(__dirname, '.eslintrc.base.js'),
-        path.resolve(__dirname, '.eslintrc.node.js'),
-        path.resolve(__dirname, '.eslintrc.babel.js'),
-      ],
       rules: {
         'sort-imports': [
           'error',
@@ -500,18 +663,23 @@ module.exports = {
       },
     },
     /**
-     * Don't check for static hex values in .test, .spec or .stories files
+     * TypeScript declaration files.
+     *
+     * TODO: Move this to `@metamask/eslint-config-typescript`
      */
     {
-      files: [
-        '**/*.test.{js,ts,tsx}',
-        '**/*.spec.{js,ts,tsx}',
-        '**/*.stories.{js,ts,tsx}',
-      ],
+      files: ['**/*.d.ts'],
       rules: {
-        '@metamask/design-tokens/color-no-hex': 'off',
+        'import/unambiguous': 'off',
       },
     },
+    /**
+     * Prevent new references to deprecated "globally selected network"
+     *
+     * This can be removed after all usages have been removed.
+     *
+     * TODO: Expand coverage to include non-confirmation UI as well.
+     */
     {
       files: ['ui/pages/confirmations/**/*.{js,ts,tsx}'],
       rules: {

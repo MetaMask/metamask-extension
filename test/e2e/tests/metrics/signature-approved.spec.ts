@@ -1,11 +1,21 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import {
+  DEFAULT_FIXTURE_ACCOUNT,
+  MOCK_META_METRICS_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { MetaMetricsRequestedThrough } from '../../../../shared/constants/metametrics';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import Confirmation from '../../page-objects/pages/confirmations/confirmation';
+import {
+  signTypedDataV3,
+  signTypedDataV4,
+  signTypedData,
+} from '../../page-objects/flows/sign.flow';
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
@@ -42,14 +52,28 @@ async function mockSegment(mockServer: Mockttp) {
 }
 
 const expectedEventPropertiesBase = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   account_type: 'MetaMask',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  address_alert_response: 'Loading',
   category: 'inpage_provider',
   locale: 'en',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   chain_id: '0x539',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   environment_type: 'background',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   security_alert_reason: 'validation_in_progress',
-  security_alert_response: 'loading',
-  ui_customizations: ['redesigned_confirmation'],
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  security_alert_response: 'Loading',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   api_source: MetaMetricsRequestedThrough.EthereumProvider,
 } as const;
 
@@ -57,7 +81,7 @@ describe('Signature Approved Event', function () {
   it('Successfully tracked for signTypedData_v4', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
@@ -72,25 +96,41 @@ describe('Signature Approved Event', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
-        // creates a sign typed data V4 signature request
-        await testDapp.signTypedDataV4();
+        // creates and approves a sign typed data V4 signature request
+        await signTypedDataV4(driver, DEFAULT_FIXTURE_ACCOUNT);
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
           ...expectedEventPropertiesBase,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           signature_type: 'eth_signTypedData_v4',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eip712_primary_type: 'Mail',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         });
 
         assert.deepStrictEqual(events[1].properties, {
           ...expectedEventPropertiesBase,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           signature_type: 'eth_signTypedData_v4',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eip712_primary_type: 'Mail',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           security_alert_response: 'Benign',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           security_alert_source: 'api',
         });
       },
@@ -100,7 +140,7 @@ describe('Signature Approved Event', function () {
   it('Successfully tracked for signTypedData_v3', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
@@ -115,23 +155,35 @@ describe('Signature Approved Event', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
-        // creates a sign typed data V3 signature request
-        await testDapp.signTypedDataV3Redesign();
+        // creates and approves a sign typed data V3 signature request
+        await signTypedDataV3(driver, DEFAULT_FIXTURE_ACCOUNT);
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
           ...expectedEventPropertiesBase,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           signature_type: 'eth_signTypedData_v3',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         });
 
         assert.deepStrictEqual(events[1].properties, {
           ...expectedEventPropertiesBase,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           signature_type: 'eth_signTypedData_v3',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           security_alert_response: 'Benign',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           security_alert_source: 'api',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         });
       },
@@ -141,7 +193,7 @@ describe('Signature Approved Event', function () {
   it('Successfully tracked for signTypedData', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
@@ -156,23 +208,35 @@ describe('Signature Approved Event', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
-        // creates a sign typed data signature request
-        await testDapp.signTypedData();
+        // creates and approves a sign typed data signature request
+        await signTypedData(driver, DEFAULT_FIXTURE_ACCOUNT);
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
           ...expectedEventPropertiesBase,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           signature_type: 'eth_signTypedData',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         });
 
         assert.deepStrictEqual(events[1].properties, {
           ...expectedEventPropertiesBase,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           signature_type: 'eth_signTypedData',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           security_alert_response: 'Benign',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           security_alert_source: 'api',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         });
       },
@@ -182,7 +246,7 @@ describe('Signature Approved Event', function () {
   it('Successfully tracked for personalSign', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
@@ -197,23 +261,38 @@ describe('Signature Approved Event', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // creates a sign typed data signature request
         await testDapp.personalSign();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const confirmation = new Confirmation(driver);
+        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
           ...expectedEventPropertiesBase,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           signature_type: 'personal_sign',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         });
 
         assert.deepStrictEqual(events[1].properties, {
           ...expectedEventPropertiesBase,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           signature_type: 'personal_sign',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           security_alert_response: 'Benign',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           security_alert_source: 'api',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         });
       },

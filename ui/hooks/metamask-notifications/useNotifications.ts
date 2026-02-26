@@ -1,9 +1,18 @@
-import { useState, useCallback } from 'react';
+import {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  type Dispatch,
+  type SetStateAction,
+} from 'react';
 import { useDispatch } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import log from 'loglevel';
-
-import { type MarkAsReadNotificationsParam } from '@metamask/notification-services-controller/notification-services';
+import {
+  type MarkAsReadNotificationsParam,
+  type INotification,
+} from '@metamask/notification-services-controller/notification-services';
 import {
   createOnChainTriggers,
   fetchAndUpdateMetamaskNotifications,
@@ -11,7 +20,38 @@ import {
   enableMetamaskNotifications,
   disableMetamaskNotifications,
 } from '../../store/actions';
-import { type Notification } from '../../pages/notifications/notification-components/types/notifications/notifications';
+import {
+  setUserHasTurnedOffNotificationsOnce,
+  updateNotificationSubscriptionExpiration,
+} from '../../contexts/metamask-notifications/notification-storage-keys';
+
+/**
+ * Internal: useState that only applies updates while mounted. Prevents
+ * "state updates on unmounted components" when async work completes after unmount.
+ *
+ * @param initialValue - The initial value of the state.
+ */
+function useSafeState<TValue>(
+  initialValue: TValue,
+): [TValue, Dispatch<SetStateAction<TValue>>] {
+  const [state, setState] = useState<TValue>(initialValue);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  const setSafeState = useCallback((value: SetStateAction<TValue>) => {
+    if (isMountedRef.current) {
+      setState(value);
+    }
+  }, []);
+
+  return [state, setSafeState];
+}
 
 // Define KeyringType interface
 type KeyringType = {
@@ -32,21 +72,21 @@ export type AccountType = InternalAccount & {
  * @returns An object containing the `listNotifications` function, loading state, and error state.
  */
 export function useListNotifications(): {
-  listNotifications: () => Promise<Notification[] | undefined>;
-  notificationsData?: Notification[];
+  listNotifications: () => Promise<INotification[] | undefined>;
+  notificationsData?: INotification[];
   isLoading: boolean;
   error?: unknown;
 } {
   const dispatch = useDispatch();
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<unknown>(null);
-  const [notificationsData, setNotificationsData] = useState<
-    Notification[] | undefined
+  const [loading, setLoading] = useSafeState<boolean>(false);
+  const [error, setError] = useSafeState<unknown>(null);
+  const [notificationsData, setNotificationsData] = useSafeState<
+    INotification[] | undefined
   >(undefined);
 
   const listNotifications = useCallback(async (): Promise<
-    Notification[] | undefined
+    INotification[] | undefined
   > => {
     setLoading(true);
     setError(null);
@@ -58,8 +98,8 @@ export function useListNotifications(): {
       const data = await dispatch(
         fetchAndUpdateMetamaskNotifications(previewToken ?? undefined),
       );
-      setNotificationsData(data as unknown as Notification[]);
-      return data as unknown as Notification[];
+      setNotificationsData(data as unknown as INotification[]);
+      return data as unknown as INotification[];
     } catch (e) {
       log.error(e);
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
@@ -67,7 +107,7 @@ export function useListNotifications(): {
     } finally {
       setLoading(false);
     }
-  }, [dispatch]);
+  }, [dispatch, setLoading, setError, setNotificationsData]);
 
   return {
     listNotifications,
@@ -88,19 +128,20 @@ export function useCreateNotifications(): {
   error: string | null;
 } {
   const dispatch = useDispatch();
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useSafeState<string | null>(null);
 
   const createNotifications = useCallback(async () => {
     setError(null);
 
     try {
       await dispatch(createOnChainTriggers());
+      await updateNotificationSubscriptionExpiration();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       log.error(e);
       throw e;
     }
-  }, [dispatch]);
+  }, [dispatch, setError]);
 
   return {
     createNotifications,
@@ -124,19 +165,20 @@ export function useEnableNotifications(): {
 } {
   const dispatch = useDispatch();
 
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useSafeState<string | null>(null);
 
   const enableNotifications = useCallback(async () => {
     setError(null);
 
     try {
       await dispatch(enableMetamaskNotifications());
+      await updateNotificationSubscriptionExpiration();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       log.error(e);
       throw e;
     }
-  }, [dispatch]);
+  }, [dispatch, setError]);
 
   return {
     enableNotifications,
@@ -155,20 +197,20 @@ export function useDisableNotifications(): {
   error: string | null;
 } {
   const dispatch = useDispatch();
-
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useSafeState<string | null>(null);
 
   const disableNotifications = useCallback(async () => {
     setError(null);
 
     try {
       await dispatch(disableMetamaskNotifications());
+      await setUserHasTurnedOffNotificationsOnce();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       log.error(e);
       throw e;
     }
-  }, [dispatch]);
+  }, [dispatch, setError]);
 
   return {
     disableNotifications,

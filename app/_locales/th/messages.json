@@ -111,9 +111,6 @@
   "etherscanView": {
     "message": "ดูบัญชีบน Etherscan"
   },
-  "expandView": {
-    "message": "ขยายมุมมอง"
-  },
   "failed": {
     "message": "ล้มเหลว"
   },
@@ -132,9 +129,6 @@
   },
   "gasLimitTooLow": {
     "message": "วงเงินแก็สต้องอย่างน้อย 21000"
-  },
-  "gasPrice": {
-    "message": "ราคาแก๊ส (GWEI)"
   },
   "general": {
     "message": "ทั่วไป"
@@ -206,9 +200,6 @@
   "needImportFile": {
     "message": "คุณต้องเลือกไฟล์ที่จะนำเข้า",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "ไม่สามารถส่งอีเธอร์เป็นจำนวนติดลบได้"
   },
   "networks": {
     "message": "เครือข่าย"
@@ -315,9 +306,6 @@
   },
   "supportCenter": {
     "message": "ไปที่ศูนย์สนับสนุนของเรา"
-  },
-  "switchNetworks": {
-    "message": "เปลี่ยนเครือข่าย"
   },
   "symbol": {
     "message": "เครื่องหมาย"

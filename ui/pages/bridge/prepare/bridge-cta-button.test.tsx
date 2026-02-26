@@ -1,27 +1,66 @@
 import React from 'react';
 import {
+  QuoteResponse,
   RequestStatus,
+  getNativeAssetForChainId,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import * as bridgeSelectors from '../../../ducks/bridge/selectors';
+import { toBridgeToken } from '../../../ducks/bridge/utils';
+import {
+  ConnectionStatus,
+  HardwareConnectionPermissionState,
+  HardwareWalletType,
+} from '../../../contexts/hardware-wallets';
 import { BridgeCTAButton } from './bridge-cta-button';
 
+const mockUseHardwareWalletConfig = jest.fn();
+const mockUseHardwareWalletActions = jest.fn();
+const mockUseHardwareWalletState = jest.fn();
+
+jest.mock('../../../contexts/hardware-wallets', () => ({
+  ...jest.requireActual('../../../contexts/hardware-wallets'),
+  useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
+  useHardwareWalletActions: () => mockUseHardwareWalletActions(),
+  useHardwareWalletState: () => mockUseHardwareWalletState(),
+}));
+
+const baseHardwareWalletConfig = {
+  isHardwareWalletAccount: false,
+  walletType: null,
+  hardwareConnectionPermissionState: HardwareConnectionPermissionState.Unknown,
+  isWebHidAvailable: false,
+  isWebUsbAvailable: false,
+};
+
 describe('BridgeCTAButton', () => {
+  beforeEach(() => {
+    mockUseHardwareWalletConfig.mockReturnValue(baseHardwareWalletConfig);
+    mockUseHardwareWalletActions.mockReturnValue({
+      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Disconnected },
+    });
+  });
+
   it("should render the component's initial state", () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
-          chains: {
-            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
-          },
+        bridgeConfig: {
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+          ],
         },
       },
-      bridgeSliceOverrides: { fromTokenInputValue: 1 },
+      bridgeSliceOverrides: { fromTokenInputValue: '1' },
     });
     const { container, getByText } = renderWithProvider(
       <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
@@ -30,28 +69,25 @@ describe('BridgeCTAButton', () => {
 
     expect(container).toMatchSnapshot();
 
-    expect(getByText('Select token')).toBeInTheDocument();
+    expect(getByText(messages.swapSelectToken.message)).toBeInTheDocument();
   });
 
   it('should render the component when amount is missing', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
-          chains: {
-            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.LINEA_MAINNET]: {
-              isActiveSrc: false,
-              isActiveDest: true,
-            },
-          },
+        bridgeConfig: {
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
         },
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: null,
-        fromToken: 'ETH',
-        toToken: 'ETH',
-        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+        ),
       },
     });
     const { getByText } = renderWithProvider(
@@ -59,28 +95,30 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Select amount')).toBeInTheDocument();
+    expect(getByText(messages.bridgeEnterAmount.message)).toBeInTheDocument();
   });
 
   it('should render the component when amount and dest token is missing', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
-          chains: {
-            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.LINEA_MAINNET]: {
-              isActiveSrc: false,
-              isActiveDest: true,
-            },
-          },
+        bridgeConfig: {
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
         },
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: null,
-        fromToken: 'ETH',
-        toToken: null,
-        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+        fromToken: {
+          symbol: 'ETH',
+          chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+          assetId: getNativeAssetForChainId(1).assetId,
+        },
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+        ),
       },
     });
     const { getByText, container } = renderWithProvider(
@@ -88,32 +126,60 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Select token and amount')).toBeInTheDocument();
+    expect(getByText(messages.bridgeEnterAmount.message)).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should render the component when amount, dest chain and dest token are missing (defaults set', () => {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: null,
+        fromToken: {
+          symbol: 'ETH',
+          chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+          assetId: getNativeAssetForChainId(1).assetId,
+        },
+        toToken: null,
+      },
+    });
+    const { getByText, container } = renderWithProvider(
+      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
+      configureStore(mockStore),
+    );
+
+    expect(getByText(messages.bridgeEnterAmount.message)).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
   it('should render the component when tx is submittable', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
-          chains: {
-            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.LINEA_MAINNET]: {
-              isActiveSrc: false,
-              isActiveDest: true,
-            },
-          },
+        bridgeConfig: {
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
         },
       },
       bridgeSliceOverrides: {
-        fromTokenInputValue: 1,
-        fromToken: 'ETH',
-        toToken: 'ETH',
-        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+        fromTokenInputValue: '1',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+        ),
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesNativeErc20,
+        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -123,35 +189,67 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Submit')).toBeInTheDocument();
+    expect(getByText(messages.swap.message)).toBeInTheDocument();
+    expect(getByRole('button')).not.toBeDisabled();
+  });
+
+  it('should render hardware wallet connect label with wallet name', () => {
+    mockUseHardwareWalletConfig.mockReturnValue({
+      ...baseHardwareWalletConfig,
+      isHardwareWalletAccount: true,
+      walletType: HardwareWalletType.Ledger,
+    });
+
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+        ),
+      },
+      bridgeStateOverrides: {
+        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        quotesLastFetched: Date.now(),
+        quotesLoadingStatus: RequestStatus.FETCHED,
+      },
+    });
+
+    const { getByText, getByRole } = renderWithProvider(
+      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
+      configureStore(mockStore),
+    );
+
+    expect(getByText('Connect Ledger')).toBeInTheDocument();
     expect(getByRole('button')).not.toBeDisabled();
   });
 
   it('should disable the component when quotes are loading and there are no existing quotes', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
-          chains: {
-            [CHAIN_IDS.MAINNET]: {
-              isActiveSrc: true,
-              isActiveDest: false,
-            },
-            [CHAIN_IDS.OPTIMISM]: {
-              isActiveSrc: true,
-              isActiveDest: false,
-            },
-            [CHAIN_IDS.LINEA_MAINNET]: {
-              isActiveSrc: false,
-              isActiveDest: true,
-            },
-          },
+        bridgeConfig: {
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
         },
       },
       bridgeSliceOverrides: {
-        fromTokenInputValue: 1,
-        fromToken: 'ETH',
-        toToken: 'ETH',
-        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+        fromTokenInputValue: '1',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+        ),
       },
       bridgeStateOverrides: {
         quotes: [],
@@ -167,45 +265,111 @@ describe('BridgeCTAButton', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should enable the component when quotes are loading and there are existing quotes', () => {
+  // @ts-expect-error: each is a valid test function in jest
+  it.each([
+    ['disable', 'there is a tx alert', { isTxAlertPresent: true }],
+    [
+      'disable',
+      'there is insufficient gas for quote',
+      { isInsufficientGasForQuote: true },
+      messages.insufficientFundsSend.message,
+    ],
+    ['enable', 'the estimated return is low', { isEstimatedReturnLow: true }],
+    ['enable', 'there are no validation errors', {}, messages.swap.message],
+  ])(
+    'should %s the component when quotes are loading and %s',
+    async (
+      status: 'disable' | 'enable',
+      _: string,
+      validationErrors: Record<string, boolean>,
+      buttonLabel: string = messages.swap.message,
+    ) => {
+      const mockStore = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [
+              { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+              { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+              { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+            ],
+          },
+        },
+        bridgeSliceOverrides: {
+          fromTokenInputValue: '1',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+          toToken: toBridgeToken(
+            getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+          ),
+        },
+        bridgeStateOverrides: {
+          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+          quotesLastFetched: Date.now(),
+          quotesLoadingStatus: RequestStatus.LOADING,
+        },
+      });
+      jest.spyOn(bridgeSelectors, 'getValidationErrors').mockReturnValue({
+        isTxAlertPresent: false,
+        isNoQuotesAvailable: false,
+        isInsufficientGasBalance: false,
+        isInsufficientGasForQuote: false,
+        isInsufficientBalance: false,
+        isEstimatedReturnLow: false,
+        isTxAlertLoading: false,
+        ...validationErrors,
+      });
+      const { findByRole } = renderWithProvider(
+        <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
+        configureStore(mockStore),
+      );
+
+      expect(await findByRole('button')).toHaveTextContent(buttonLabel);
+      if (status === 'disable') {
+        expect(await findByRole('button')).toBeDisabled();
+      } else {
+        expect(await findByRole('button')).not.toBeDisabled();
+      }
+    },
+  );
+
+  it('should not disable the component when quotes are loading and there are existing quotes', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
-          chains: {
-            [CHAIN_IDS.MAINNET]: {
-              isActiveSrc: true,
-              isActiveDest: false,
-            },
-            [CHAIN_IDS.OPTIMISM]: {
-              isActiveSrc: true,
-              isActiveDest: false,
-            },
-            [CHAIN_IDS.LINEA_MAINNET]: {
-              isActiveSrc: false,
-              isActiveDest: true,
-            },
-          },
+        bridgeConfig: {
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
         },
       },
       bridgeSliceOverrides: {
-        fromTokenInputValue: 1,
-        fromToken: 'ETH',
-        toToken: 'ETH',
-        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+        fromTokenInputValue: '1',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+        ),
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesNativeErc20,
+        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.LOADING,
       },
     });
-    const { getByText, getByRole, container } = renderWithProvider(
+    const { getByText, getByRole } = renderWithProvider(
       <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
       configureStore(mockStore),
     );
 
-    expect(getByText('Submit')).toBeInTheDocument();
+    expect(getByText(messages.swap.message)).toBeInTheDocument();
     expect(getByRole('button')).not.toBeDisabled();
-    expect(container).toMatchSnapshot();
+    expect(getByRole('button')).toMatchInlineSnapshot(`
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+        data-testid="bridge-cta-button"
+        style="box-shadow: none;"
+      >
+        Swap
+      </button>
+    `);
   });
 });

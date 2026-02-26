@@ -1,11 +1,11 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Asset } from '../../../../ducks/send';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from './asset-picker-modal';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import type { Asset } from './types';
 import { ERC20Asset } from './types';
 
 const storybook = {
@@ -29,6 +29,7 @@ export const DefaultStory = () => {
     <AssetPickerModal
       header={t('sendSelectSendAsset')}
       onAssetChange={() => ({})}
+      autoFocus={false}
       {...props}
     />
   );
@@ -42,6 +43,7 @@ export const TokenStory = () => {
     <AssetPickerModal
       header={t('sendSelectSendAsset')}
       onAssetChange={() => ({})}
+      autoFocus={false}
       {...props}
     />
   );

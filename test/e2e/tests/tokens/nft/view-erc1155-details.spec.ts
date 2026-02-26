@@ -1,7 +1,7 @@
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
@@ -23,7 +23,7 @@ describe('View ERC1155 NFT details', function () {
   it('user should be able to view ERC1155 NFT details', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
         smartContract,
         title: this.test?.fullTitle(),
@@ -39,13 +39,13 @@ describe('View ERC1155 NFT details', function () {
 
         // Check the NFT details are correctly displayed on NFT details page
         const nftDetailsPage = new NFTDetailsPage(driver);
-        await nftDetailsPage.check_pageIsLoaded();
-        await nftDetailsPage.check_nftNameIsDisplayed('Rocks');
-        await nftDetailsPage.check_nftDescriptionIsDisplayed(
+        await nftDetailsPage.checkPageIsLoaded();
+        await nftDetailsPage.checkNftNameIsDisplayed('Rocks');
+        await nftDetailsPage.checkNftDescriptionIsDisplayed(
           'This is a collection of Rock NFTs.',
         );
-        await nftDetailsPage.check_nftImageContainerIsDisplayed();
-        await nftDetailsPage.check_nftDetailsAddressIsDisplayed(
+        await nftDetailsPage.checkNftImageContainerIsDisplayed();
+        await nftDetailsPage.checkNftDetailsAddressIsDisplayed(
           '0x581c3...45947',
         );
       },

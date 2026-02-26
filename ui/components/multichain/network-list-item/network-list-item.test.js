@@ -1,6 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
+import { useSelector } from 'react-redux';
 import {
   POL_TOKEN_IMAGE_URL,
   POLYGON_DISPLAY_NAME,
@@ -41,9 +42,7 @@ describe('NetworkListItem', () => {
       <NetworkListItem {...DEFAULT_PROPS} selected />,
     );
     expect(
-      container.querySelector(
-        '.multichain-network-list-item__selected-indicator',
-      ),
+      container.querySelector('.multichain-network-list-item--selected'),
     ).toBeInTheDocument();
   });
 
@@ -85,5 +84,88 @@ describe('NetworkListItem', () => {
     fireEvent.click(getByTestId('network-list-item-options-delete'));
     expect(onDeleteClick).toHaveBeenCalledTimes(1);
     expect(onClick).toHaveBeenCalledTimes(0);
+  });
+
+  it('toggles menu open and closed when clicking the menu button', () => {
+    const onDeleteClick = jest.fn();
+    const { getByTestId, queryByTestId } = render(
+      <NetworkListItem {...DEFAULT_PROPS} onDeleteClick={onDeleteClick} />,
+    );
+
+    const menuButton = getByTestId('network-list-item-options-button-0x1');
+
+    // First click should open the menu
+    fireEvent.click(menuButton);
+    expect(
+      queryByTestId('network-list-item-options-delete'),
+    ).toBeInTheDocument();
+
+    // Second click should close the menu
+    fireEvent.click(menuButton);
+    expect(
+      queryByTestId('network-list-item-options-delete'),
+    ).not.toBeInTheDocument();
+  });
+});
+
+describe('NetworkListItem - Gas fees sponsored', () => {
+  beforeEach(() => {
+    useSelector.mockClear();
+    useSelector.mockReturnValue(undefined);
+  });
+
+  it('renders "No network fee" label when gas fees are sponsored for the network', () => {
+    useSelector.mockReturnValue({
+      '0x1': true, // Mainnet has gas fees sponsored
+    });
+
+    const { getByText } = render(
+      <NetworkListItem {...DEFAULT_PROPS} chainId="0x1" />,
+    );
+    expect(getByText('[noNetworkFee]')).toBeInTheDocument();
+  });
+
+  it('does not render "No network fee" label when gas fees sponsored for the network is false', () => {
+    useSelector.mockReturnValue({
+      '0x1': false, // Mainnet has gas fees sponsored
+    });
+
+    const { queryByText } = render(
+      <NetworkListItem {...DEFAULT_PROPS} chainId="0x1" />,
+    );
+    expect(queryByText('[noNetworkFee]')).not.toBeInTheDocument();
+  });
+
+  it('does not render "No network fee" label when feature flag is not set', () => {
+    // useSelector already returns undefined by default from beforeEach
+    const { queryByText } = render(
+      <NetworkListItem {...DEFAULT_PROPS} chainId="0x1" />,
+    );
+
+    expect(queryByText('[noNetworkFee]')).not.toBeInTheDocument();
+  });
+
+  it('handles CAIP format chainId for gas fees sponsored check', () => {
+    useSelector.mockReturnValue({
+      '0x1': true, // Mainnet has gas fees sponsored
+    });
+
+    const { getByText } = render(
+      <NetworkListItem {...DEFAULT_PROPS} chainId="eip155:1" />,
+    );
+
+    expect(getByText('[noNetworkFee]')).toBeInTheDocument();
+  });
+
+  it('does not render "No network fee" label when chainId is undefined', () => {
+    useSelector.mockReturnValue({
+      '0x1': true,
+    });
+
+    const { queryByText } = render(
+      <NetworkListItem {...DEFAULT_PROPS} chainId={undefined} />,
+    );
+
+    expect(queryByText('[noNetworkFee]')).not.toBeInTheDocument();
   });
 });

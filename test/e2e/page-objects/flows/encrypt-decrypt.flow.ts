@@ -1,8 +1,10 @@
 import { Driver } from '../../webdriver/driver';
-import { WINDOW_TITLES } from '../../helpers';
-import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
-import DecryptMessageConfirmation from '../pages/confirmations/redesign/decrypt-message-confirmation';
-import GetEncryptionKeyConfirmation from '../pages/confirmations/redesign/get-encryption-key-confirmation';
+import {
+  DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
+  WINDOW_TITLES,
+} from '../../constants';
+import DecryptMessageConfirmation from '../pages/confirmations/decrypt-message-confirmation';
+import GetEncryptionKeyConfirmation from '../pages/confirmations/get-encryption-key-confirmation';
 import TestDapp from '../pages/test-dapp';
 
 /**
@@ -22,13 +24,13 @@ export async function getEncryptionKeyInDapp(
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   const getEncryptionKeyConfirmation = new GetEncryptionKeyConfirmation(driver);
-  await getEncryptionKeyConfirmation.check_pageIsLoaded();
+  await getEncryptionKeyConfirmation.checkPageIsLoaded();
   // Check account balance is converted properly
-  await getEncryptionKeyConfirmation.check_accountBalance(balanceValue);
+  await getEncryptionKeyConfirmation.checkAccountBalance(balanceValue);
 
   await getEncryptionKeyConfirmation.clickToConfirmProvideEncryptionKey();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await testDapp.check_getEncryptionKeyResult(encryptionKey);
+  await testDapp.checkGetEncryptionKeyResult(encryptionKey);
 }
 
 /**
@@ -48,13 +50,13 @@ export async function decryptMessageAndVerifyResult(
   await testDapp.clickDecryptButton();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const decryptMessageConfirmation = new DecryptMessageConfirmation(driver);
-  await decryptMessageConfirmation.check_pageIsLoaded();
+  await decryptMessageConfirmation.checkPageIsLoaded();
 
   // Check account balance is converted properly
-  await decryptMessageConfirmation.check_accountBalance(balanceValue);
+  await decryptMessageConfirmation.checkAccountBalance(balanceValue);
 
   // Click decrypt message button and verify the result
   await decryptMessageConfirmation.clickDecryptMessageButton();
-  await decryptMessageConfirmation.check_decryptedMessage(message);
+  await decryptMessageConfirmation.checkDecryptedMessage(message);
   await decryptMessageConfirmation.clickToConfirmDecryptMessage();
 }

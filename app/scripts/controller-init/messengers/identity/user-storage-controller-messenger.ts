@@ -1,65 +1,15 @@
-import type { UserStorageControllerStateChangeEvent } from '@metamask/profile-sync-controller/user-storage';
-import { Messenger } from '@metamask/base-controller';
+import type { UserStorageControllerMessenger } from '@metamask/profile-sync-controller/user-storage';
 import {
-  KeyringControllerGetStateAction,
-  KeyringControllerLockEvent,
-  KeyringControllerUnlockEvent,
-  KeyringControllerWithKeyringAction,
-} from '@metamask/keyring-controller';
-import { HandleSnapRequest } from '@metamask/snaps-controllers';
-import {
-  AuthenticationControllerGetBearerToken,
-  AuthenticationControllerGetSessionProfile,
-  AuthenticationControllerIsSignedIn,
-  AuthenticationControllerPerformSignIn,
-} from '@metamask/profile-sync-controller/auth';
-import {
-  AccountsControllerAccountAddedEvent,
-  AccountsControllerAccountRenamedEvent,
-  AccountsControllerListAccountsAction,
-  AccountsControllerUpdateAccountMetadataAction,
-} from '@metamask/accounts-controller';
-import {
-  NetworkControllerAddNetworkAction,
-  NetworkControllerGetStateAction,
-  NetworkControllerNetworkRemovedEvent,
-  NetworkControllerRemoveNetworkAction,
-  NetworkControllerUpdateNetworkAction,
-} from '@metamask/network-controller';
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
+import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
-type MessengerActions =
-  // Keyring Requests
-  | KeyringControllerGetStateAction
-  // Snap Requests
-  | HandleSnapRequest
-  // Auth Requests
-  | AuthenticationControllerGetBearerToken
-  | AuthenticationControllerGetSessionProfile
-  | AuthenticationControllerPerformSignIn
-  | AuthenticationControllerIsSignedIn
-  // Account Syncing
-  | AccountsControllerListAccountsAction
-  | AccountsControllerUpdateAccountMetadataAction
-  | KeyringControllerWithKeyringAction
-  // Network Syncing
-  | NetworkControllerGetStateAction
-  | NetworkControllerAddNetworkAction
-  | NetworkControllerRemoveNetworkAction
-  | NetworkControllerUpdateNetworkAction;
+type AllowedActions = MessengerActions<UserStorageControllerMessenger>;
 
-type MessengerEvents =
-  | UserStorageControllerStateChangeEvent
-  | KeyringControllerLockEvent
-  | KeyringControllerUnlockEvent
-  // Account Syncing Events
-  | AccountsControllerAccountAddedEvent
-  | AccountsControllerAccountRenamedEvent
-  // Network Syncing Events
-  | NetworkControllerNetworkRemovedEvent;
-
-export type UserStorageControllerMessenger = ReturnType<
-  typeof getUserStorageControllerMessenger
->;
+type AllowedEvents = MessengerEvents<UserStorageControllerMessenger>;
 
 /**
  * Get a restricted messenger for the User Storage controller. This is scoped to the
@@ -69,14 +19,22 @@ export type UserStorageControllerMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getUserStorageControllerMessenger(
-  messenger: Messenger<MessengerActions, MessengerEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'UserStorageController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'UserStorageController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'UserStorageController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       // Keyring Controller Requests
       'KeyringController:getState',
-      'KeyringController:withKeyring',
       // Snap Controller Requests
       'SnapController:handleRequest',
       // Auth Controller Requests
@@ -84,24 +42,53 @@ export function getUserStorageControllerMessenger(
       'AuthenticationController:getSessionProfile',
       'AuthenticationController:isSignedIn',
       'AuthenticationController:performSignIn',
-      // Accounts Controller Requests
-      'AccountsController:listAccounts',
-      'AccountsController:updateAccountMetadata',
-      // Network Controller Requests
-      'NetworkController:getState',
-      'NetworkController:addNetwork',
-      'NetworkController:removeNetwork',
-      'NetworkController:updateNetwork',
+      // Address Book Controller Requests
+      'AddressBookController:list',
+      'AddressBookController:set',
+      'AddressBookController:delete',
     ],
-    allowedEvents: [
+    events: [
       // Keyring Controller Events
       'KeyringController:lock',
       'KeyringController:unlock',
-      // Accounts Controller Events
-      'AccountsController:accountAdded',
-      'AccountsController:accountRenamed',
-      // Network Controller Events
-      'NetworkController:networkRemoved',
+      // Address Book Controller Events
+      'AddressBookController:contactUpdated',
+      'AddressBookController:contactDeleted',
     ],
   });
+  return controllerMessenger;
+}
+
+export type AllowedInitializationActions =
+  MetaMetricsControllerTrackEventAction;
+
+export type UserStorageControllerInitMessenger = ReturnType<
+  typeof getUserStorageControllerInitMessenger
+>;
+
+/**
+ * Get a restricted messenger for initializing the User Storage controller.
+ * This is scoped to the actions that are allowed during controller
+ * initialization.
+ *
+ * @param messenger - The messenger to restrict.
+ * @returns The restricted messenger.
+ */
+export function getUserStorageControllerInitMessenger(
+  messenger: RootMessenger<AllowedInitializationActions, never>,
+) {
+  const controllerInitMessenger = new Messenger<
+    'UserStorageControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'UserStorageControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['MetaMetricsController:trackEvent'],
+  });
+  return controllerInitMessenger;
 }

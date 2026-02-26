@@ -1,12 +1,11 @@
-import React, { useContext, useEffect, useState, createRef } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { debounce } from 'lodash';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   Box,
   Button,
-  ButtonIcon,
   ButtonLink,
+  ButtonPrimary,
   ButtonSize,
   ButtonVariant,
   Checkbox,
@@ -26,12 +25,10 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
-  IconColor,
   TextAlign,
   TextColor,
   TextVariant,
@@ -43,8 +40,9 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
   const [isTermsOfUseChecked, setIsTermsOfUseChecked] = useState(false);
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
 
-  const trackEvent = useContext(MetaMetricsContext);
-  const bottomRef = createRef();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const bottomRef = useRef(null);
+  const scrollContainerRef = useRef(null);
 
   const handleScrollDownClick = (e) => {
     e.stopPropagation();
@@ -53,18 +51,38 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
     });
   };
 
-  const handleDebouncedScroll = debounce((target) => {
-    const termsReachedBottom =
-      target.scrollHeight - target.scrollTop === target.clientHeight;
-    setShouldShowScrollButton(!termsReachedBottom);
-    if (termsReachedBottom && !isScrolledToBottom) {
-      setIsScrolledToBottom(true);
-    }
-  }, 100);
+  // Set up IntersectionObserver to detect when bottom is reached
+  useEffect(() => {
+    const observer = new window.IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setShouldShowScrollButton(false);
+          if (!isScrolledToBottom) {
+            setIsScrolledToBottom(true);
+          }
+        } else {
+          setShouldShowScrollButton(true);
+        }
+      },
+      {
+        // The scrollable container
+        root: scrollContainerRef.current,
+        // Trigger when sentinel is visible
+        threshold: [0, 0.5],
+      },
+    );
 
-  const handleScroll = (e) => {
-    handleDebouncedScroll(e.target);
-  };
+    if (bottomRef.current) {
+      observer.observe(bottomRef.current);
+    }
+
+    // Cleanup observer on unmount
+    return () => {
+      if (bottomRef.current) {
+        observer.unobserve(bottomRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     trackEvent({
@@ -74,7 +92,6 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
         location: 'Terms Of Use Popover',
       },
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -96,7 +113,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
           display={Display.Flex}
           className="terms-of-use-popup__body-container"
         >
-          <Box onScroll={handleScroll} className="terms-of-use-popup__body">
+          <Box ref={scrollContainerRef} className="terms-of-use-popup__body">
             <Text variant={TextVariant.bodySm} marginBottom={4}>
               IMPORTANT NOTICE: THIS AGREEMENT IS SUBJECT TO BINDING ARBITRATION
               AND A WAIVER OF CLASS ACTION RIGHTS AS DETAILED IN SECTION 11.
@@ -1189,18 +1206,15 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
               however any information submitted to a blockchain protocol for
               processing.&nbsp;
             </Text>
-            {/* Bottom ref placeholder */}
-            <div ref={bottomRef} />
+            <div ref={bottomRef} style={{ height: '2px' }} />
           </Box>
           {shouldShowScrollButton && (
             <Box className="terms-of-use-popup__scroll-button-container">
-              <ButtonIcon
-                backgroundColor={BackgroundColor.primaryMuted}
-                iconName={IconName.ArrowDown}
-                color={IconColor.primaryDefault}
-                borderRadius={BorderRadius.full}
-                iconProps={{ size: IconSize.Md }}
+              <ButtonPrimary
                 onClick={handleScrollDownClick}
+                borderRadius={BorderRadius.full}
+                startIconName={IconName.ArrowDown}
+                startIconProps={{ size: IconSize.Md, marginRight: 0 }}
                 className="terms-of-use-popup__scroll-button"
                 data-testid="terms-of-use-scroll-button"
               />
@@ -1227,11 +1241,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
             onChange={() => {
               setIsTermsOfUseChecked(!isTermsOfUseChecked);
             }}
-            label={
-              <Text variant={TextVariant.bodySmMedium}>
-                {t('termsOfUseAgreeText')}
-              </Text>
-            }
+            label={t('termsOfUseAgreeText')}
           />
           <Button
             data-testid="terms-of-use-agree-button"

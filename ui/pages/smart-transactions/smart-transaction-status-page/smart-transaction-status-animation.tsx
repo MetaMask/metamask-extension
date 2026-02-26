@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
+import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
 import { Box } from '../../../components/component-library';
 import { Display } from '../../../helpers/constants/design-system';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';

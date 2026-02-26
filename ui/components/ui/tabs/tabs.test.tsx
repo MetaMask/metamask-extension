@@ -1,14 +1,12 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import Tabs from './tabs.component';
-import Tab from './tab/tab.component';
+import { Tabs } from './tabs';
+import { Tab } from './tab/tab';
 
 describe('Tabs', () => {
   const renderTabs = (props = {}) => {
     const defaultProps = {
-      defaultActiveTabKey: '',
       onTabClick: () => null,
-      tabsClassName: '',
       subHeader: null,
     };
 
@@ -41,9 +39,9 @@ describe('Tabs', () => {
     expect(getByText('Tab 2 Content')).toBeInTheDocument();
   });
 
-  it('renders with defaultActiveTabKey', () => {
+  it('renders with activeTab', () => {
     const { getByText, queryByText } = renderTabs({
-      defaultActiveTabKey: 'tab2',
+      activeTab: 'tab2',
     });
 
     expect(queryByText('Tab 1 Content')).not.toBeInTheDocument();
@@ -57,14 +55,6 @@ describe('Tabs', () => {
     fireEvent.click(getByText('Tab 2'));
 
     expect(onTabClick).toHaveBeenCalledWith('tab2');
-  });
-
-  it('applies tabsClassName to the tab list', () => {
-    const { container } = renderTabs({ tabsClassName: 'custom-tabs-class' });
-
-    expect(container.querySelector('.tabs__list')).toHaveClass(
-      'custom-tabs-class',
-    );
   });
 
   it('renders subHeader when provided', () => {
@@ -109,7 +99,7 @@ describe('Tabs', () => {
 
   it('handles null children gracefully', () => {
     const { getByText } = render(
-      <Tabs defaultActiveTabKey="" onTabClick={() => null}>
+      <Tabs onTabClick={() => null}>
         {null}
         <Tab tabKey="tab1" name="Tab 1">
           Tab 1 Content
@@ -124,7 +114,7 @@ describe('Tabs', () => {
 
   it('renders disabled tab with proper styling', () => {
     const { getByText } = render(
-      <Tabs defaultActiveTabKey="" onTabClick={() => null}>
+      <Tabs activeTab="tab1" onTabClick={() => null}>
         <Tab tabKey="tab1" name="Tab 1">
           Tab 1 Content
         </Tab>
@@ -134,16 +124,13 @@ describe('Tabs', () => {
       </Tabs>,
     );
 
-    const disabledTab = getByText('Tab 2').closest('li');
-    expect(disabledTab).toHaveClass('tab--disabled');
-
     const disabledButton = getByText('Tab 2').closest('button');
     expect(disabledButton).toHaveAttribute('disabled');
   });
 
   it('does not switch to disabled tab when clicked', () => {
     const { getByText, queryByText } = render(
-      <Tabs defaultActiveTabKey="tab1" onTabClick={() => null}>
+      <Tabs activeTab="tab1" onTabClick={() => null}>
         <Tab tabKey="tab1" name="Tab 1">
           Tab 1 Content
         </Tab>
@@ -162,7 +149,7 @@ describe('Tabs', () => {
   it('does not call onTabClick when disabled tab is clicked', () => {
     const onTabClick = jest.fn();
     const { getByText } = render(
-      <Tabs defaultActiveTabKey="tab1" onTabClick={onTabClick}>
+      <Tabs activeTab="tab1" onTabClick={onTabClick}>
         <Tab tabKey="tab1" name="Tab 1">
           Tab 1 Content
         </Tab>

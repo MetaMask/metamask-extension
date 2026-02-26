@@ -1,13 +1,13 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setTokenNetworkFilter } from '../../../../../store/actions';
+import { setEnabledNetworks } from '../../../../../store/actions';
 import {
   getCurrentNetwork,
   getShouldHideZeroBalanceTokens,
   getSelectedAccount,
   getAllChainsToPoll,
-  getTokenNetworkFilter,
   getIsTokenNetworkFilterEqualCurrentNetwork,
+  getEnabledNetworksByNamespace,
 } from '../../../../../selectors';
 import {
   getCurrentChainId,
@@ -58,7 +58,7 @@ const NetworkFilter = ({
   const currentNetwork = useSelector(getCurrentNetwork);
   const selectedAccount = useSelector(getSelectedAccount);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
@@ -96,7 +96,7 @@ const NetworkFilter = ({
     if (handleFilterNetwork) {
       handleFilterNetwork(chainFilters);
     } else {
-      dispatch(setTokenNetworkFilter(chainFilters));
+      dispatch(setEnabledNetworks(chainId));
     }
 
     // TODO Add metrics
@@ -110,9 +110,10 @@ const NetworkFilter = ({
   ).map((chain) => {
     return allNetworks[chain].name;
   });
+
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  const filter = networkFilter || tokenNetworkFilter;
+  const filter = networkFilter || enabledNetworksByNamespace;
 
   return (
     <>

@@ -9,7 +9,7 @@ export type ShortenedNameProps = {
 
 const MAX_PET_NAME_LENGTH = 12;
 
-const ShortenedName = memo(({ name }: ShortenedNameProps) => {
+const ShortenedName = memo(({ name, ...props }: ShortenedNameProps) => {
   const shortenedName = shortenString(name || '', {
     truncatedCharLimit: MAX_PET_NAME_LENGTH,
     truncatedStartChars: MAX_PET_NAME_LENGTH - 3,
@@ -17,7 +17,7 @@ const ShortenedName = memo(({ name }: ShortenedNameProps) => {
     skipCharacterInEnd: true,
   });
   return (
-    <Text className="name__name" variant={TextVariant.bodyMd}>
+    <Text className="name__name" variant={TextVariant.bodyMd} {...props}>
       {shortenedName}
     </Text>
   );

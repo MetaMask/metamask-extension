@@ -1,15 +1,11 @@
 import { By } from 'selenium-webdriver';
 
-import FixtureBuilder from '../../../fixture-builder';
-import {
-  DAPP_ONE_URL,
-  DAPP_URL,
-  unlockWallet,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../../helpers';
+import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../../constants';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
+import { withFixtures } from '../../../helpers';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 describe('Routing confirmstions from Multiple Dapps and different networks', function () {
   it('Confirmation requests from different DAPPS and networks should be in same queue, it is possible to navigate the queue.', async function () {
@@ -17,11 +13,10 @@ describe('Routing confirmstions from Multiple Dapps and different networks', fun
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',
@@ -39,7 +34,7 @@ describe('Routing confirmstions from Multiple Dapps and different networks', fun
 
       async ({ driver }) => {
         if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           // Open Dapp One
           const testDapp1 = new TestDapp(driver);
@@ -52,7 +47,7 @@ describe('Routing confirmstions from Multiple Dapps and different networks', fun
           const connectAccountConfirmation1 = new ConnectAccountConfirmation(
             driver,
           );
-          await connectAccountConfirmation1.check_pageIsLoaded();
+          await connectAccountConfirmation1.checkPageIsLoaded();
           await connectAccountConfirmation1.confirmConnect();
 
           // Wait for the first dapp's connect confirmation to disappear
@@ -69,7 +64,7 @@ describe('Routing confirmstions from Multiple Dapps and different networks', fun
           const connectAccountConfirmation2 = new ConnectAccountConfirmation(
             driver,
           );
-          await connectAccountConfirmation2.check_pageIsLoaded();
+          await connectAccountConfirmation2.checkPageIsLoaded();
           await connectAccountConfirmation2.confirmConnect();
 
           // Switch network on DAPP 2

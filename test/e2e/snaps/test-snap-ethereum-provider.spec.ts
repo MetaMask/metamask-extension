@@ -1,6 +1,7 @@
+import { Mockttp } from 'mockttp';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockEthereumProviderSnap } from '../mock-response-data/snaps/snap-binary-mocks';
@@ -8,13 +9,21 @@ import {
   approveAccount,
   approvePersonalSignMessage,
 } from '../page-objects/flows/snap-permission.flow';
+import { DAPP_PATH } from '../constants';
+import { mockGenesisBlocks } from './mocks';
 
 describe('Test Snap ethereum_provider', function () {
   it('can use the ethereum_provider endowment', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockEthereumProviderSnap,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockEthereumProviderSnap(mockServer);
+          await mockGenesisBlocks(mockServer);
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -26,13 +35,13 @@ describe('Test Snap ethereum_provider', function () {
           driver,
           'ethereumProviderConnectButton',
         );
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'ethereumProviderConnectButton',
           'Reconnect to Ethereum Provider Snap',
         );
 
         await testSnaps.scrollAndClickButton('getVersionButton');
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'providerVersionResultSpan',
           '0x1',
         );
@@ -40,7 +49,7 @@ describe('Test Snap ethereum_provider', function () {
         // Test getting accounts.
         await testSnaps.scrollAndClickButton('getAccountsButton');
         await approveAccount(driver);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'addressResultSpan',
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         );
@@ -49,7 +58,7 @@ describe('Test Snap ethereum_provider', function () {
         await testSnaps.fillMessage('personalSignMessageInput', 'foo');
         await testSnaps.scrollAndClickButton('personalSignButton');
         await approvePersonalSignMessage(driver);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'personalSignResultSpan',
           '"0xf63c587cd42e7775e2e815a579f9744ea62944f263b3e69fad48535ba98a5ea107bc878088a99942733a59a89ef1d590eafdb467d59cf76564158d7e78351b751b"',
         );
@@ -58,31 +67,31 @@ describe('Test Snap ethereum_provider', function () {
         await testSnaps.fillMessage('signTypedDataMessageInput', 'bar');
         await testSnaps.scrollAndClickButton('signTypedDataButton');
         await approvePersonalSignMessage(driver);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'signTypedDataResultSpan',
           '"0x7024dc071a7370eee444b2a3edc08d404dd03393694403cdca864653a7e8dd7c583419293d53602666cbe77faa8819fba04f8c57e95df2d4c0190968eece28021c"',
         );
 
         // Check other networks.
         await testSnaps.scrollAndSelectNetwork('networkDropDown', 'Ethereum');
-        await testSnaps.clickButton('getVersionButton');
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.clickButton('sendGenesisBlockEthProvider');
+        await testSnaps.checkMessageResultSpanIncludes(
           'providerVersionResultSpan',
-          '0x1',
+          '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3',
         );
 
         await testSnaps.scrollAndSelectNetwork('networkDropDown', 'Linea');
-        await testSnaps.clickButton('getVersionButton');
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.clickButton('sendGenesisBlockEthProvider');
+        await testSnaps.checkMessageResultSpanIncludes(
           'providerVersionResultSpan',
-          '0xe708',
+          '0xb6762a65689107b2326364aefc18f94cda413209fab35c00d4af51eaa20ffbc6',
         );
 
         await testSnaps.scrollAndSelectNetwork('networkDropDown', 'Sepolia');
-        await testSnaps.clickButton('getVersionButton');
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.clickButton('sendGenesisBlockEthProvider');
+        await testSnaps.checkMessageResultSpanIncludes(
           'providerVersionResultSpan',
-          '0xaa36a7',
+          '0x25a5cc106eea7138acab33231d7160d69cb777ee0c2c553fcddf5138993e6dd9',
         );
       },
     );

@@ -1,0 +1,234 @@
+import React, { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import log from 'loglevel';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { Skeleton } from '../../component-library/skeleton';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  setOnboardingModalOpen,
+  setOnboardingModalRendered,
+  setRewardsBadgeHidden,
+} from '../../../ducks/rewards';
+import {
+  selectCandidateSubscriptionId,
+  selectOnboardingModalRendered,
+  selectRewardsBadgeHidden,
+  selectRewardsEnabled,
+  selectRewardsOnboardingEnabled,
+  selectSeasonStatus,
+  selectSeasonStatusError,
+} from '../../../ducks/rewards/selectors';
+import { useCandidateSubscriptionId } from '../../../hooks/rewards/useCandidateSubscriptionId';
+import { useSeasonStatus } from '../../../hooks/rewards/useSeasonStatus';
+import { useOptIn } from '../../../hooks/rewards/useOptIn';
+import {
+  getStorageItem,
+  setStorageItem,
+} from '../../../../shared/lib/storage-helpers';
+import { useAppSelector } from '../../../store/store';
+import { CandidateSubscriptionId } from '../../../ducks/rewards/types';
+import { RewardsBadge } from './RewardsBadge';
+import {
+  REWARDS_BADGE_HIDDEN,
+  REWARDS_GTM_MODAL_SHOWN,
+} from './utils/constants';
+
+/**
+ * Component to display the rewards points balance
+ * Shows the points balance or a sign-up badge if the user hasn't opted in yet
+ */
+export const RewardsPointsBalance = () => {
+  const locale = useSelector(getIntlLocale);
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const rewardsEnabled = useSelector(selectRewardsEnabled);
+  const rewardsOnboardingEnabled = useSelector(selectRewardsOnboardingEnabled);
+  const rewardsBadgeHidden = useSelector(selectRewardsBadgeHidden);
+  const seasonStatus = useSelector(selectSeasonStatus);
+  const seasonStatusError = useSelector(selectSeasonStatusError);
+  const candidateSubscriptionId = useSelector(
+    selectCandidateSubscriptionId,
+  ) as CandidateSubscriptionId;
+  const onboardingModalRendered = useSelector(selectOnboardingModalRendered);
+  const rewardsActiveAccountSubscriptionId = useAppSelector(
+    (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
+  );
+
+  const candidateSubscriptionIdLoading =
+    !rewardsActiveAccountSubscriptionId &&
+    (candidateSubscriptionId === 'pending' ||
+      candidateSubscriptionId === 'retry');
+  const candidateSubscriptionIdError =
+    candidateSubscriptionId === 'error' ||
+    candidateSubscriptionId ===
+      'error-existing-subscription-hardware-wallet-explicit-sign';
+  const candidateSubscriptionIdErrorNeedsSignIn =
+    candidateSubscriptionId ===
+    'error-existing-subscription-hardware-wallet-explicit-sign';
+
+  const { optin, optinLoading } = useOptIn();
+
+  const isTestEnv = Boolean(process.env.IN_TEST);
+
+  const openRewardsOnboardingModal = useCallback(() => {
+    dispatch(setOnboardingModalOpen(true));
+  }, [dispatch]);
+
+  const handleSignIn = useCallback(async () => {
+    try {
+      await optin();
+    } catch (error) {
+      log.error('[RewardsPointsBalance] Error during opt-in:', error);
+    }
+  }, [optin]);
+
+  // entry point hooks
+  const { fetchCandidateSubscriptionId } = useCandidateSubscriptionId();
+  useSeasonStatus({
+    subscriptionId: candidateSubscriptionId,
+    onAuthorizationError: fetchCandidateSubscriptionId,
+  });
+
+  // check has seen rewards onboarding modal
+  useEffect(() => {
+    const checkHasSeenFlag = async () => {
+      try {
+        const seenBefore = await getStorageItem(REWARDS_GTM_MODAL_SHOWN);
+        dispatch(setOnboardingModalRendered(seenBefore === 'true'));
+      } catch (_e) {
+        // set to default value
+        dispatch(setOnboardingModalRendered(true));
+      }
+    };
+    checkHasSeenFlag();
+  }, [dispatch]);
+
+  // check has hidden rewards badge
+  useEffect(() => {
+    const checkHasHiddenBadge = async () => {
+      try {
+        const hiddenBefore = await getStorageItem(REWARDS_BADGE_HIDDEN);
+        dispatch(setRewardsBadgeHidden(hiddenBefore === 'true'));
+      } catch (_e) {
+        // set to default value
+        dispatch(setRewardsBadgeHidden(true));
+      }
+    };
+    checkHasHiddenBadge();
+  }, [dispatch]);
+
+  // dispatch onboarding modal open if not seen before
+  useEffect(() => {
+    if (
+      !isTestEnv &&
+      rewardsEnabled &&
+      rewardsOnboardingEnabled &&
+      candidateSubscriptionId === null && // determined that it's null
+      !rewardsActiveAccountSubscriptionId && // determined that it's not the active account
+      !onboardingModalRendered
+    ) {
+      openRewardsOnboardingModal();
+    }
+  }, [
+    openRewardsOnboardingModal,
+    rewardsEnabled,
+    isTestEnv,
+    candidateSubscriptionId,
+    onboardingModalRendered,
+    rewardsOnboardingEnabled,
+    rewardsActiveAccountSubscriptionId,
+  ]);
+
+  const setHasSeenOnboardingInStorage = useCallback(async () => {
+    try {
+      await setStorageItem(REWARDS_GTM_MODAL_SHOWN, 'true');
+    } catch (_e) {
+      // Silently fail - should not block the user from seeing the points balance
+    }
+  }, []);
+
+  useEffect(() => {
+    if (
+      candidateSubscriptionId &&
+      candidateSubscriptionId !== 'pending' &&
+      candidateSubscriptionId !== 'retry' &&
+      candidateSubscriptionId !== 'error'
+    ) {
+      try {
+        setHasSeenOnboardingInStorage();
+      } catch (_e) {
+        // Silently fail - should not block the user from seeing the points balance
+      }
+    }
+  }, [candidateSubscriptionId, setHasSeenOnboardingInStorage]);
+
+  if (!rewardsEnabled) {
+    return null;
+  }
+
+  if (!candidateSubscriptionId) {
+    return rewardsBadgeHidden || !rewardsOnboardingEnabled ? null : (
+      <RewardsBadge
+        boxClassName="gap-1 px-1.5 bg-background-muted rounded"
+        formattedPoints={t('rewardsSignUp')}
+        withPointsSuffix={false}
+        onClick={openRewardsOnboardingModal}
+        allowHideBadge
+      />
+    );
+  }
+
+  // Show sign-in button if hardware wallet needs authentication
+  if (!seasonStatusError && candidateSubscriptionIdErrorNeedsSignIn) {
+    return optinLoading ? (
+      <RewardsBadge
+        formattedPoints={t('rewardsSigningIn')}
+        withPointsSuffix={false}
+        boxClassName="gap-1 px-1.5 bg-background-muted rounded"
+      />
+    ) : (
+      <RewardsBadge
+        formattedPoints={t('rewardsSignInToViewPoints')}
+        withPointsSuffix={false}
+        boxClassName="gap-1 px-1.5 bg-background-muted rounded"
+        onClick={handleSignIn}
+      />
+    );
+  }
+
+  if (
+    (seasonStatusError && !seasonStatus?.balance) ||
+    candidateSubscriptionIdError
+  ) {
+    return (
+      <RewardsBadge
+        formattedPoints={t('rewardsPointsBalance_couldntLoad')}
+        withPointsSuffix={false}
+        boxClassName="gap-1 bg-background-transparent"
+        textClassName="text-alternative"
+        useAlternativeIconColor
+      />
+    );
+  }
+
+  if (
+    seasonStatus &&
+    candidateSubscriptionId &&
+    !candidateSubscriptionIdLoading
+  ) {
+    // Format the points balance with proper locale-aware number formatting
+    // Handle null/undefined balance by defaulting to 0
+    const balanceTotal = seasonStatus.balance?.total ?? 0;
+    const formattedPoints = new Intl.NumberFormat(locale).format(balanceTotal);
+    return (
+      <RewardsBadge
+        formattedPoints={formattedPoints}
+        boxClassName="gap-1 px-1.5 bg-background-muted rounded"
+        onClick={openRewardsOnboardingModal}
+      />
+    );
+  }
+
+  return rewardsBadgeHidden ? null : <Skeleton width="100px" />;
+};

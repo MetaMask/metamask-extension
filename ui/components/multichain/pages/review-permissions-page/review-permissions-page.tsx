@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   CaipAccountId,
   CaipChainId,
@@ -17,6 +17,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
+import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
 import {
   getAllPermittedAccountsForSelectedTab,
   getAllPermittedChainsForSelectedTab,
@@ -57,17 +58,19 @@ import {
   EvmAndMultichainNetworkConfigurationsWithCaipChainId,
   MergedInternalAccountWithCaipAccountId,
 } from '../../../../selectors/selectors.types';
-import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
+import { CAIP_FORMATTED_TEST_CHAINS } from '../../../../../shared/constants/network';
 import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const urlParams = useParams<{ origin: string }>();
+
   // @ts-expect-error TODO: Fix this type error by handling undefined parameters
   const securedOrigin = decodeURIComponent(urlParams.origin);
+
   const [showAccountToast, setShowAccountToast] = useState(false);
   const [showNetworkToast, setShowNetworkToast] = useState(false);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
@@ -88,7 +91,9 @@ export const ReviewPermissions = () => {
     const requestId = await dispatch(
       requestAccountsAndChainPermissionsWithId(activeTabOrigin),
     );
-    history.push(`${CONNECT_ROUTE}/${requestId}`);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    navigate(`${CONNECT_ROUTE}/${requestId}`);
   };
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -128,7 +133,7 @@ export const ReviewPermissions = () => {
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
           const caipChainId = chainId as CaipChainId;
           const isTestNetwork =
-            CAIP_FORMATTED_EVM_TEST_CHAINS.includes(caipChainId);
+            CAIP_FORMATTED_TEST_CHAINS.includes(caipChainId);
           (isTestNetwork ? testNetworksList : nonTestNetworksList).push({
             ...network,
             caipChainId,
@@ -177,8 +182,7 @@ export const ReviewPermissions = () => {
         chain: { namespace },
       } = parseCaipAccountId(caipAccountId);
       if (namespace === KnownCaipNamespace.Eip155) {
-        // this is very hacky, but it works for now
-        return `eip155:0:${address}` as CaipAccountId;
+        return toEvmCaipAccountId(address);
       }
       return caipAccountId;
     }),

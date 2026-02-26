@@ -62,6 +62,9 @@ function blockedDomainCheck(url) {
     'blueskybooking.com',
     'sharefile.com',
     'battle.net',
+    'accounts.google.com',
+    'accounts.youtube.com',
+    'appleid.apple.com',
   ];
 
   // Matching will happen based on the hostname, and path

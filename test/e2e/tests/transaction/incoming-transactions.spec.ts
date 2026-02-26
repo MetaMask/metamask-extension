@@ -1,11 +1,9 @@
 import { Mockttp } from 'mockttp';
-import { TransactionType } from '@metamask/transaction-controller';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 
@@ -28,7 +26,19 @@ const RESPONSE_STANDARD_MOCK = {
   to: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
   from: '0x2',
   isError: false,
-  valueTransfers: [],
+  valueTransfers: [
+    {
+      from: '0x2',
+      to: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+      amount: '1230000000000000000',
+      decimal: 18,
+      symbol: 'ETH',
+    },
+  ],
+  logs: [],
+  transactionCategory: 'TRANSFER',
+  transactionType: 'INCOMING',
+  readable: 'Received',
 };
 
 const RESPONSE_STANDARD_2_MOCK = {
@@ -36,6 +46,15 @@ const RESPONSE_STANDARD_2_MOCK = {
   hash: '0x2',
   value: '2340000000000000000',
   timestamp: new Date(TIMESTAMP_MOCK - 1).toISOString(),
+  valueTransfers: [
+    {
+      from: '0x2',
+      to: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+      amount: '2340000000000000000',
+      decimal: 18,
+      symbol: 'ETH',
+    },
+  ],
 };
 
 const RESPONSE_TOKEN_TRANSFER_MOCK = {
@@ -57,21 +76,33 @@ const RESPONSE_OUTGOING_MOCK = {
   ...RESPONSE_STANDARD_MOCK,
   from: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
   to: '0x2',
+  value: '4560000000000000000',
+  valueTransfers: [
+    {
+      from: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+      to: '0x2',
+      amount: '4560000000000000000',
+      decimal: 18,
+      symbol: 'ETH',
+    },
+  ],
+  transactionCategory: 'STANDARD',
+  transactionType: 'STANDARD',
+  readable: 'Send',
 };
 
 async function mockAccountsApi(
   mockServer: Mockttp,
   {
-    cursor,
     transactions,
   }: { cursor?: string; transactions?: Record<string, unknown>[] } = {},
 ) {
   return [
     await mockServer
       .forGet(
-        `https://accounts.api.cx.metamask.io/v1/accounts/${DEFAULT_FIXTURE_ACCOUNT.toLowerCase()}/transactions`,
+        `https://accounts.api.cx.metamask.io/v4/multiaccount/transactions`,
       )
-      .withQuery(cursor ? { cursor } : {})
+      .always()
       .thenCallback(() => ({
         statusCode: 200,
         json: {
@@ -91,19 +122,37 @@ describe('Incoming Transactions', function () {
       {
         fixtures: new FixtureBuilder()
           .withUseBasicFunctionalityEnabled()
+          .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockAccountsApi,
       },
       async ({ driver }: { driver: Driver }) => {
-        const activityList = await changeNetworkAndGoToActivity(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(2);
+        await loginWithoutBalanceValidation(driver);
+        const homepage = new HomePage(driver);
+        await homepage.goToActivityList();
 
-        await activityList.check_txAction('Receive', 1);
-        await activityList.check_txAmountInActivity('1.23 ETH', 1);
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
 
-        await activityList.check_txAction('Receive', 2);
-        await activityList.check_txAmountInActivity('2.34 ETH', 2);
+        await activityList.checkTxAction({
+          action: 'Received',
+          txIndex: 1,
+          confirmedTx: 2,
+        });
+        await activityList.checkTxAmountInActivity('1.23 ETH', 1);
+
+        await activityList.checkTxAction({
+          action: 'Received',
+          txIndex: 2,
+          confirmedTx: 2,
+        });
+        await activityList.checkTxAmountInActivity('2.34 ETH', 2);
       },
     );
   });
@@ -113,6 +162,11 @@ describe('Incoming Transactions', function () {
       {
         fixtures: new FixtureBuilder()
           .withUseBasicFunctionalityEnabled()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
@@ -125,16 +179,21 @@ describe('Incoming Transactions', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         const activityList = await changeNetworkAndGoToActivity(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
       },
     );
   });
 
-  it('ignores outgoing transactions', async function () {
+  it('adds outgoing transactions', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withUseBasicFunctionalityEnabled()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
@@ -144,7 +203,14 @@ describe('Incoming Transactions', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         const activityList = await changeNetworkAndGoToActivity(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
+
+        await activityList.checkTxAction({
+          action: 'Sent ETH',
+          txIndex: 2,
+          confirmedTx: 2,
+        });
+        await activityList.checkTxAmountInActivity('-4.56 ETH', 2);
       },
     );
   });
@@ -154,6 +220,11 @@ describe('Incoming Transactions', function () {
       {
         fixtures: new FixtureBuilder()
           .withUseBasicFunctionalityDisabled()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockAccountsApi,
@@ -161,30 +232,7 @@ describe('Incoming Transactions', function () {
       async ({ driver }: { driver: Driver }) => {
         const activityList = await changeNetworkAndGoToActivity(driver);
         await driver.delay(2000);
-        await activityList.check_noTxInActivity();
-      },
-    );
-  });
-
-  it('ignores duplicate transactions already in state', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withUseBasicFunctionalityEnabled()
-          .withTransactions([
-            {
-              hash: RESPONSE_STANDARD_MOCK.hash,
-              txParams: { from: RESPONSE_STANDARD_MOCK.from },
-              type: TransactionType.incoming,
-            },
-          ])
-          .build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockAccountsApi,
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activityList = await changeNetworkAndGoToActivity(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
+        await activityList.checkNoTxInActivity();
       },
     );
   });
@@ -192,7 +240,6 @@ describe('Incoming Transactions', function () {
 
 async function changeNetworkAndGoToActivity(driver: Driver) {
   await loginWithoutBalanceValidation(driver);
-  await switchToNetworkFlow(driver, 'Ethereum Mainnet');
 
   const homepage = new HomePage(driver);
   await homepage.goToActivityList();

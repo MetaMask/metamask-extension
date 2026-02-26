@@ -14,7 +14,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, Text, Icon, IconName, IconSize } from '../../component-library';
+import { Box, Text } from '../../component-library';
 
 export const ActivityListItem = ({
   topContent,
@@ -27,7 +27,6 @@ export const ActivityListItem = ({
   onClick,
   className,
   'data-testid': dataTestId,
-  isRemoteModeItem,
 }) => {
   const primaryClassName = classnames('activity-list-item', className, {
     'activity-list-item--single-content-row': !(subtitle || children),
@@ -45,7 +44,9 @@ export const ActivityListItem = ({
         }
       }}
       data-testid={dataTestId}
-      padding={4}
+      paddingInline={4}
+      paddingTop={3}
+      paddingBottom={3}
       display={Display.Flex}
       width={BlockSize.Full}
       flexWrap={FlexWrap.Wrap}
@@ -53,7 +54,7 @@ export const ActivityListItem = ({
     >
       {topContent && (
         <Text
-          variant={TextVariant.bodyMd}
+          variant={TextVariant.bodyMdMedium}
           color={TextColor.textDefault}
           display={Display.Flex}
           width={BlockSize.Full}
@@ -88,27 +89,19 @@ export const ActivityListItem = ({
               <Text
                 ellipsis
                 textAlign={TextAlign.Left}
-                variant={TextVariant.bodyLgMedium}
+                variant={TextVariant.bodyMdMedium}
                 fontWeight={FontWeight.Medium}
                 data-testid="activity-list-item-action"
               >
                 {title}
               </Text>
-              {isRemoteModeItem && (
-                <Icon
-                  name={IconName.RemoteMode}
-                  size={IconSize.Md}
-                  color={TextColor.textAlternative}
-                />
-              )}
             </Box>
             {subtitle && (
               <Text
                 as="div"
                 ellipsis
                 textAlign={TextAlign.Left}
-                variant={TextVariant.bodyMd}
-                fontWeight={FontWeight.Normal}
+                variant={TextVariant.bodySmMedium}
               >
                 {subtitle}
               </Text>
@@ -184,8 +177,4 @@ ActivityListItem.propTypes = {
    * Test ID for this component
    */
   'data-testid': PropTypes.string,
-  /**
-   * Whether the item is a remote mode item
-   */
-  isRemoteModeItem: PropTypes.bool,
 };

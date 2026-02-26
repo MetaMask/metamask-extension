@@ -1,21 +1,23 @@
-import { Provider } from '@metamask/network-controller';
-import {
-  ActionConstraint,
+import type {
   Messenger,
+  ActionConstraint,
   EventConstraint,
-  RestrictedMessenger,
-} from '@metamask/base-controller';
-import { Hex } from '@metamask/utils';
+} from '@metamask/messenger';
 import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
-import { TransactionMeta } from '@metamask/transaction-controller';
-import type { TransactionMetricsRequest } from '../../../shared/types/metametrics';
+import { Browser } from 'webextension-polyfill';
+import { Encryptor } from '@metamask/keyring-controller';
+import { KeyringClass } from '@metamask/keyring-utils';
+import { QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
+import type { TransactionMetricsRequest } from '../../../shared/types';
 import { MessageSender } from '../../../types/global';
-import {
-  MetaMetricsEventOptions,
-  MetaMetricsEventPayload,
-} from '../../../shared/constants/metametrics';
+import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
+import { HardwareTransportBridgeClass } from '../lib/hardware-keyring-builder-factory';
+import ExtensionPlatform from '../platforms/extension';
+// This import is only used for the type.
+// eslint-disable-next-line import/no-restricted-paths
+import type { MetaMaskReduxState } from '../../../ui/store/store';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
@@ -40,17 +42,16 @@ export type ControllerPersistedState = Partial<{
 
 /** Generic controller messenger using base template types. */
 export type BaseControllerMessenger = Messenger<
+  string,
   ActionConstraint,
   EventConstraint
 >;
 
 /** Generic restricted controller messenger using base template types. */
-export type BaseRestrictedControllerMessenger = RestrictedMessenger<
+export type BaseRestrictedControllerMessenger = Messenger<
   string,
   ActionConstraint,
-  EventConstraint,
-  string,
-  string
+  EventConstraint
 >;
 
 type SnapSender = {
@@ -74,6 +75,27 @@ export type ControllerInitRequest<
   controllerMessenger: ControllerMessengerType;
 
   /**
+   * The current version of the extension, used for migrations.
+   */
+  currentMigrationVersion: number;
+
+  /**
+   * An instance of an encryptor to use for encrypting and decrypting
+   * sensitive data.
+   */
+  encryptor: Encryptor;
+
+  /**
+   * The extension browser API.
+   */
+  extension: Browser;
+
+  /**
+   * Extension platform handler
+   */
+  platform: ExtensionPlatform;
+
+  /**
    * Retrieve a controller instance by name.
    * Throws an error if the controller is not yet initialized.
    *
@@ -92,13 +114,6 @@ export type ControllerInitRequest<
   getFlatState: () => ControllerFlatState;
 
   /**
-   * Retrieve the chain ID of the globally selected network.
-   *
-   * @deprecated Will be removed in the future pending multi-chain support.
-   */
-  getGlobalChainId(): Hex;
-
-  /**
    * Retrieve the permitted accounts for a given origin.
    *
    * @param origin - The origin for which to retrieve permitted accounts.
@@ -111,24 +126,32 @@ export type ControllerInitRequest<
   ): Promise<string[]>;
 
   /**
-   * Retrieve the provider instance for the globally selected network.
-   *
-   * @deprecated Will be removed in the future pending multi-chain support.
-   */
-  getProvider: () => Provider;
-
-  /**
    * Retrieve a transaction metrics request instance.
    * Includes data and callbacks required to generate metrics.
    */
   getTransactionMetricsRequest(): TransactionMetricsRequest;
 
   /**
-   * Function to update account balance for network of the transaction
+   * Get the MetaMask state of the client available to the UI.
    */
-  updateAccountBalanceForTransactionNetwork(
-    transactionMeta: TransactionMeta,
-  ): void;
+  getUIState(): MetaMaskReduxState['metamask'];
+
+  /**
+   * Overrides for the keyrings.
+   */
+  keyringOverrides?: {
+    qr?: KeyringClass;
+    qrBridge?: typeof QrKeyringScannerBridge;
+    lattice?: KeyringClass;
+    trezorBridge?: HardwareTransportBridgeClass;
+    oneKey?: HardwareTransportBridgeClass;
+    ledgerBridge?: HardwareTransportBridgeClass;
+  };
+
+  /**
+   * The Infura project ID to use for the network controller.
+   */
+  infuraProjectId: string;
 
   /**
    * A promise that resolves when the offscreen document is ready.
@@ -143,12 +166,9 @@ export type ControllerInitRequest<
   persistedState: ControllerPersistedState;
 
   /**
-   * Close all connections for the given origin, and removes the references
-   * to them. Ignores unknown origins.
-   *
-   * @param origin - The origin for which to remove all connections.
+   * Remove an account from keyring state.
    */
-  removeAllConnections(origin: string): void;
+  removeAccount(address: string): Promise<string>;
 
   /**
    * Create a multiplexed stream for connecting to an untrusted context like a
@@ -167,6 +187,27 @@ export type ControllerInitRequest<
   }): void;
 
   /**
+   * Create a multiplexed CAIP-25 stream for connecting to an untrusted context like a
+   * like a website, Snap, or other extension.
+   *
+   * @param options - The options for creating the stream.
+   * @param options.connectionStream - The stream to connect to the untrusted
+   * context.
+   * @param options.sender - The sender of the stream.
+   * @param options.subjectType - The type of the subject of the stream.
+   */
+  setupUntrustedCommunicationCaip(options: {
+    connectionStream: Duplex;
+    sender: Sender;
+    subjectType: SubjectType;
+  }): void;
+
+  /**
+   * Lock the extension.
+   */
+  setLocked(): void;
+
+  /**
    * Show a native notification.
    *
    * @param title - The title of the notification.
@@ -180,20 +221,9 @@ export type ControllerInitRequest<
   ) => Promise<void>;
 
   /**
-   * Get the MetaMetrics ID.
+   * Show the confirmation UI to the user.
    */
-  getMetaMetricsId: () => string;
-
-  /**
-   * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
-   *
-   * @param payload - details of the event
-   * @param options - options for handling/routing the event
-   */
-  trackEvent: (
-    payload: MetaMetricsEventPayload,
-    options?: MetaMetricsEventOptions,
-  ) => void;
+  showUserConfirmation: () => void | Promise<void>;
 
   /**
    * A list of preinstalled Snaps loaded from disk during boot.
@@ -205,6 +235,13 @@ export type ControllerInitRequest<
    * Generated using the callback specified in `getInitMessengerCallback`.
    */
   initMessenger: InitMessengerType;
+
+  getCronjobControllerStorageManager: () => CronjobControllerStorageManager;
+
+  /**
+   * The user's preferred language code, if any.
+   */
+  initLangCode: string | null;
 };
 
 /**

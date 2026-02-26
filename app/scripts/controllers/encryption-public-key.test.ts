@@ -1,3 +1,4 @@
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import {
   EncryptionPublicKeyManager,
   AbstractMessage,
@@ -48,13 +49,15 @@ const createMessengerMock = () =>
     subscribe: jest.fn(),
     call: jest.fn(),
     registerInitialEventPayload: jest.fn(),
-  } as unknown as jest.Mocked<EncryptionPublicKeyControllerMessenger>);
+  }) as unknown as jest.Mocked<EncryptionPublicKeyControllerMessenger>;
 
 const createManagerMessengerMock = () =>
   ({
     subscribe: jest.fn(),
-  } as unknown as jest.Mocked<EncryptionPublicKeyManagerMessenger>);
+  }) as unknown as jest.Mocked<EncryptionPublicKeyManagerMessenger>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const createEncryptionPublicKeyManagerMock = <T>() =>
   ({
     getUnapprovedMessages: jest.fn(),
@@ -68,7 +71,7 @@ const createEncryptionPublicKeyManagerMock = <T>() =>
     hub: {
       on: jest.fn(),
     },
-  } as unknown as jest.Mocked<T>);
+  }) as unknown as jest.Mocked<T>;
 
 describe('EncryptionPublicKeyController', () => {
   let encryptionPublicKeyController: EncryptionPublicKeyController;
@@ -113,7 +116,9 @@ describe('EncryptionPublicKeyController', () => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       metricsEvent: metricsEventMock as any,
-      managerMessenger: managerMessengerMock,
+      manager: new EncryptionPublicKeyManager({
+        messenger: managerMessengerMock,
+      }),
     } as EncryptionPublicKeyControllerOptions);
   });
 
@@ -353,6 +358,58 @@ describe('EncryptionPublicKeyController', () => {
           messageIdMock,
         ),
       ).toEqual(stateMock);
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      expect(
+        deriveStateFromMetadata(
+          encryptionPublicKeyController.state,
+          encryptionPublicKeyController.metadata,
+          'includeInDebugSnapshot',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('includes expected state in state logs', () => {
+      expect(
+        deriveStateFromMetadata(
+          encryptionPublicKeyController.state,
+          encryptionPublicKeyController.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "unapprovedEncryptionPublicKeyMsgCount": 0,
+          "unapprovedEncryptionPublicKeyMsgs": {},
+        }
+      `);
+    });
+
+    it('persists expected state', () => {
+      expect(
+        deriveStateFromMetadata(
+          encryptionPublicKeyController.state,
+          encryptionPublicKeyController.metadata,
+          'persist',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('exposes expected state to UI', () => {
+      expect(
+        deriveStateFromMetadata(
+          encryptionPublicKeyController.state,
+          encryptionPublicKeyController.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "unapprovedEncryptionPublicKeyMsgCount": 0,
+          "unapprovedEncryptionPublicKeyMsgs": {},
+        }
+      `);
     });
   });
 });

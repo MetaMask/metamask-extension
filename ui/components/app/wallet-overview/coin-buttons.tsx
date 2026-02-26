@@ -1,38 +1,38 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
-import { isCaipChainId, CaipChainId } from '@metamask/utils';
+import {
+  isCaipChainId,
+  CaipChainId,
+  isCaipAssetType,
+  parseCaipAssetType,
+} from '@metamask/utils';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-///: END:ONLY_INCLUDE_IF
 import { ChainId } from '../../../../shared/constants/network';
 
 import { I18nContext } from '../../../contexts/i18n';
+
+import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import {
-  PREPARE_SWAP_ROUTE,
-  SEND_ROUTE,
-} from '../../../helpers/constants/routes';
+  AddressListQueryParams,
+  AddressListSource,
+} from '../../../pages/multichain-accounts/multichain-account-address-list-page';
 import {
-  SwapsEthToken,
-  getCurrentKeyring,
   getUseExternalServices,
   getNetworkConfigurationIdByChainId,
-  isNonEvmAccount,
+  getSwapsDefaultToken,
 } from '../../../selectors';
+import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import Tooltip from '../../ui/tooltip';
-import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
-import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
-import { AssetType } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { startNewDraftTransaction } from '../../../ducks/send';
 import {
   BlockSize,
   Display,
@@ -43,28 +43,39 @@ import { Box, Icon, IconName, IconSize } from '../../component-library';
 import IconButton from '../../ui/icon-button';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
-import {
-  getIsUnifiedUIEnabled,
-  type BridgeAppState,
-} from '../../../ducks/bridge/selectors';
 import { ReceiveModal } from '../../multichain/receive-modal';
-import {
-  setSwitchedNetworkDetails,
-  setActiveNetworkWithError,
-} from '../../../store/actions';
+import { Toast, ToastContainer } from '../../multichain/toast';
+import { setActiveNetworkWithError } from '../../../store/actions';
 import {
   getMultichainNativeCurrency,
   getMultichainNetwork,
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-///: END:ONLY_INCLUDE_IF
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
+import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
-///: END:ONLY_INCLUDE_IF
+
+const TabOpenedToast = ({ onClose }: { onClose: () => void }) => {
+  const t = useContext(I18nContext);
+
+  return (
+    <ToastContainer>
+      <Toast
+        startAdornment={
+          <Icon name={IconName.Export} color={IconColor.iconDefault} />
+        }
+        text={t('buyTabOpenedToastText')}
+        description={t('buyTabOpenedToastDescription')}
+        onClose={onClose}
+        autoHideTime={3000}
+        onAutoHideToast={onClose}
+      />
+    </ToastContainer>
+  );
+};
 
 type CoinButtonsProps = {
   account: InternalAccount;
@@ -72,11 +83,13 @@ type CoinButtonsProps = {
   trackingLocation: string;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
+  /** @deprecated use bridge chain constants instead*/
   isBridgeChain: boolean;
   isBuyableChain: boolean;
-  defaultSwapsToken?: SwapsEthToken;
   classPrefix?: string;
   iconButtonClassName?: string;
+  /** When true, disables the send button for non-EVM chains (used on asset page) */
+  disableSendForNonEvm?: boolean;
 };
 
 const CoinButtons = ({
@@ -85,33 +98,38 @@ const CoinButtons = ({
   trackingLocation,
   isSwapsChain,
   isSigningEnabled,
-  isBridgeChain,
   isBuyableChain,
-  defaultSwapsToken,
   classPrefix = 'coin',
+  disableSendForNonEvm = false,
 }: CoinButtonsProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
+  const [showTabOpenedToast, setShowTabOpenedToast] = useState(false);
 
   const { address: selectedAddress } = account;
-  const history = useHistory();
+  const navigate = useNavigate();
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
     string,
     string
   >;
   const currentChainId = useSelector(getCurrentChainId);
-  const displayNewIconButtons = process.env.REMOVE_GNS;
+  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  const defaultSwapsToken = useSelector((state) =>
+    getSwapsDefaultToken(state, chainId.toString()),
+  );
+
+  // Pre-conditions
+  if (isSwapsChain && defaultSwapsToken === undefined) {
+    throw new Error('defaultSwapsToken is required');
+  }
+
   const handleSendNonEvm = useHandleSendNonEvm();
-  ///: END:ONLY_INCLUDE_IF
 
   const location = useLocation();
-  const keyring = useSelector(getCurrentKeyring);
-  const usingHardwareWallet = isHardwareKeyring(keyring?.type);
 
   // Initially, those events were using a "ETH" as `token_symbol`, so we keep this behavior
   // for EVM, no matter the currently selected native token (e.g. SepoliaETH if you are on Sepolia
@@ -127,21 +145,27 @@ const CoinButtons = ({
   const nativeToken = isEvmNetwork ? 'ETH' : multichainNativeToken;
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
-
-  const isNonEvmAccountWithoutExternalServices =
-    !isExternalServicesEnabled && isNonEvmAccount(account);
+  const normalizedChainId = isCaipChainId(chainId) ? chainId : toHex(chainId);
+  const isEvmAsset = isEvmChainId(normalizedChainId);
 
   const buttonTooltips = {
     buyButton: [{ condition: !isBuyableChain, message: '' }],
     sendButton: [
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
+      {
+        condition:
+          disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled,
+        message: 'currentlyUnavailable',
+      },
     ],
     swapButton: [
-      { condition: !isSwapsChain, message: 'currentlyUnavailable' },
+      {
+        condition: !isExternalServicesEnabled,
+        message: 'currentlyUnavailable',
+      },
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
     bridgeButton: [
-      { condition: !isBridgeChain, message: 'currentlyUnavailable' },
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
   };
@@ -176,12 +200,16 @@ const CoinButtons = ({
 
   const getSnapAccountMetaMetricsPropertiesIfAny = (
     internalAccount: InternalAccount,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
   ): { snap_id?: string } => {
     // Some accounts might be Snap accounts, in this case we add some extra properties
     // to the metrics:
     const snapId = internalAccount.metadata.snap?.id;
     if (snapId) {
       return {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_id: snapId,
       };
     }
@@ -195,39 +223,40 @@ const CoinButtons = ({
 
   const { openBridgeExperience } = useBridging();
 
-  const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
-    getIsUnifiedUIEnabled(state, chainId),
-  );
-
   const setCorrectChain = useCallback(async () => {
     if (currentChainId !== chainId && multichainChainId !== chainId) {
       try {
         const networkConfigurationId = networks[chainId];
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
-        await dispatch(
-          setSwitchedNetworkDetails({
-            networkClientId: networkConfigurationId,
-          }),
-        );
       } catch (err) {
         console.error(`Failed to switch chains.
         Target chainId: ${chainId}, Current chainId: ${currentChainId}.
-        ${err}`);
+        ${
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          err
+        }`);
         throw err;
       }
     }
-  }, [currentChainId, chainId, networks, dispatch]);
+  }, [currentChainId, multichainChainId, chainId, networks, dispatch]);
 
   const handleSendOnClick = useCallback(async () => {
     trackEvent(
       {
-        event: MetaMetricsEventName.NavSendButtonClicked,
+        event: MetaMetricsEventName.SendStarted,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: account.type,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol: nativeToken,
           location: 'Home',
           text: 'Send',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: chainId,
           ...getSnapAccountMetaMetricsPropertiesIfAny(account),
         },
@@ -235,101 +264,81 @@ const CoinButtons = ({
       { excludeMetaMetricsId: false },
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    if (!isEvmAccountType(account.type)) {
-      await handleSendNonEvm();
-      // Early return, not to let the non-EVM flow slip into the native send flow.
-      return;
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     // Native Send flow
     await setCorrectChain();
-    await dispatch(startNewDraftTransaction({ type: AssetType.native }));
-    history.push(SEND_ROUTE);
-  }, [
-    chainId,
-    account,
-    setCorrectChain,
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    handleSendNonEvm,
-    ///: END:ONLY_INCLUDE_IF
-  ]);
+    let params;
+    if (trackingLocation !== 'home') {
+      params = { chainId: chainId.toString() };
+    }
+    navigateToSendRoute(navigate, params);
+  }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
+    setShowTabOpenedToast(true);
     openBuyCryptoInPdapp(getChainId());
     trackEvent({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: account.type,
         location: 'Home',
         text: 'Buy',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: chainId,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol: defaultSwapsToken,
         ...getSnapAccountMetaMetricsPropertiesIfAny(account),
       },
     });
   }, [chainId, defaultSwapsToken]);
 
-  const handleBridgeOnClick = useCallback(
-    async (isSwap: boolean) => {
-      if (!defaultSwapsToken) {
-        return;
-      }
-      await setCorrectChain();
-      openBridgeExperience(
-        MetaMetricsSwapsEventSource.MainView,
-        defaultSwapsToken,
-        location.pathname.includes('asset') ? '&token=native' : '',
-        isSwap,
-      );
-    },
-    [defaultSwapsToken, location, openBridgeExperience],
-  );
-
   const handleSwapOnClick = useCallback(async () => {
-    if (isUnifiedUIEnabled) {
-      handleBridgeOnClick(true);
-      return;
-    }
-    ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-    if (multichainChainId === MultichainNetworks.SOLANA) {
-      handleBridgeOnClick(true);
-      return;
-    }
-    ///: END:ONLY_INCLUDE_IF
+    // Determine the chainId to use in the Swap experience using the url
+    const urlSuffix = location.pathname.split('/').filter(Boolean).at(-1);
+    const hexChainOrAssetId = urlSuffix
+      ? decodeURIComponent(urlSuffix)
+      : undefined;
+    const chainIdToUse = isCaipAssetType(hexChainOrAssetId)
+      ? parseCaipAssetType(hexChainOrAssetId).chainId
+      : hexChainOrAssetId;
 
-    await setCorrectChain();
+    // Handle clicking from the wallet or native asset overview page
+    openBridgeExperience(
+      MetaMetricsSwapsEventSource.MainView,
+      chainIdToUse && ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
+        ? getNativeAssetForChainId(chainIdToUse)
+        : undefined,
+    );
+  }, [location, openBridgeExperience]);
 
-    if (isSwapsChain) {
-      trackEvent({
-        event: MetaMetricsEventName.NavSwapButtonClicked,
-        category: MetaMetricsEventCategory.Swaps,
-        properties: {
-          token_symbol: 'ETH',
-          location: MetaMetricsSwapsEventSource.MainView,
-          text: 'Swap',
-          chain_id: chainId,
-        },
-      });
-      dispatch(setSwapsFromToken(defaultSwapsToken));
-      if (usingHardwareWallet) {
-        if (global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
-        }
-      } else {
-        history.push(PREPARE_SWAP_ROUTE);
-      }
+  const handleReceiveOnClick = useCallback(() => {
+    trace({ name: TraceName.ReceiveModal });
+    trackEvent({
+      event: MetaMetricsEventName.NavReceiveButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        text: 'Receive',
+        location: trackingLocation,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: chainId,
+      },
+    });
+
+    if (selectedAccountGroup) {
+      // Navigate to the multichain address list page with receive source
+      navigate(
+        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}?${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
+      );
+    } else {
+      // Show the traditional receive modal
+      setShowReceiveModal(true);
     }
-  }, [
-    setCorrectChain,
-    isSwapsChain,
-    chainId,
-    isUnifiedUIEnabled,
-    usingHardwareWallet,
-    defaultSwapsToken,
-  ]);
+  }, [selectedAccountGroup, navigate, trackEvent, trackingLocation, chainId]);
 
   return (
     <Box
@@ -338,171 +347,86 @@ const CoinButtons = ({
       width={BlockSize.Full}
       gap={3}
     >
-      {
-        <IconButton
-          className={`${classPrefix}-overview__button`}
-          Icon={
-            displayNewIconButtons ? (
-              <Icon
-                name={IconName.Money}
-                color={IconColor.iconAlternative}
-                size={IconSize.Md}
-              />
-            ) : (
-              <Icon
-                name={IconName.PlusAndMinus}
-                color={IconColor.iconDefault}
-                size={IconSize.Sm}
-              />
-            )
-          }
-          disabled={!isBuyableChain}
-          data-testid={`${classPrefix}-overview-buy`}
-          label={t('buyAndSell')}
-          onClick={handleBuyAndSellOnClick}
-          width={BlockSize.Full}
-          tooltipRender={(contents: React.ReactElement) =>
-            generateTooltip('buyButton', contents)
-          }
-          round={!displayNewIconButtons}
-        />
-      }
       <IconButton
         className={`${classPrefix}-overview__button`}
-        disabled={
-          (!isSwapsChain && !isUnifiedUIEnabled) ||
-          !isSigningEnabled ||
-          !isExternalServicesEnabled
-        }
         Icon={
-          displayNewIconButtons ? (
-            <Icon
-              name={IconName.SwapHorizontal}
-              color={IconColor.iconAlternative}
-              size={IconSize.Md}
-            />
-          ) : (
-            <Icon
-              name={IconName.SwapHorizontal}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-            />
-          )
+          <Icon
+            name={IconName.Dollar}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
+          />
+        }
+        disabled={!isBuyableChain}
+        data-testid={`${classPrefix}-overview-buy`}
+        label={t('buy')}
+        onClick={handleBuyAndSellOnClick}
+        width={BlockSize.Full}
+        tooltipRender={(contents: React.ReactElement) =>
+          generateTooltip('buyButton', contents)
+        }
+      />
+      <IconButton
+        className={`${classPrefix}-overview__button`}
+        disabled={!isSigningEnabled || !isExternalServicesEnabled}
+        Icon={
+          <Icon
+            name={IconName.SwapVertical}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
+          />
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
-        data-testid="token-overview-button-swap"
+        data-testid={`${classPrefix}-overview-swap`}
         width={BlockSize.Full}
         tooltipRender={(contents: React.ReactElement) =>
           generateTooltip('swapButton', contents)
         }
-        round={!displayNewIconButtons}
       />
-      {process.env.REMOVE_GNS ? null : (
-        <IconButton
-          className={`${classPrefix}-overview__button`}
-          disabled={
-            !isBridgeChain ||
-            !isSigningEnabled ||
-            isNonEvmAccountWithoutExternalServices
-          }
-          data-testid={`${classPrefix}-overview-bridge`}
-          Icon={
-            displayNewIconButtons ? (
-              <Icon
-                name={IconName.Bridge}
-                color={IconColor.iconAlternative}
-                size={IconSize.Md}
-              />
-            ) : (
-              <Icon
-                name={IconName.Bridge}
-                color={IconColor.iconDefault}
-                size={IconSize.Sm}
-              />
-            )
-          }
-          label={t('bridge')}
-          onClick={() => handleBridgeOnClick(false)}
-          width={BlockSize.Full}
-          tooltipRender={(contents: React.ReactElement) =>
-            generateTooltip('bridgeButton', contents)
-          }
-          round={!displayNewIconButtons}
-        />
-      )}
       <IconButton
         className={`${classPrefix}-overview__button`}
         data-testid={`${classPrefix}-overview-send`}
         Icon={
-          displayNewIconButtons ? (
-            <Icon
-              name={IconName.Send}
-              color={IconColor.iconAlternative}
-              size={IconSize.Md}
-            />
-          ) : (
-            <Icon
-              name={IconName.Arrow2UpRight}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-            />
-          )
+          <Icon
+            name={IconName.Send}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
+          />
         }
-        disabled={!isSigningEnabled || isNonEvmAccountWithoutExternalServices}
+        disabled={
+          !isSigningEnabled ||
+          (disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled)
+        }
         label={t('send')}
         onClick={handleSendOnClick}
         width={BlockSize.Full}
         tooltipRender={(contents: React.ReactElement) =>
           generateTooltip('sendButton', contents)
         }
-        round={!displayNewIconButtons}
       />
-      {
-        <>
-          {showReceiveModal && (
-            <ReceiveModal
-              address={selectedAddress}
-              onClose={() => setShowReceiveModal(false)}
-            />
-          )}
-          <IconButton
-            className={`${classPrefix}-overview__button`}
-            data-testid={`${classPrefix}-overview-receive`}
-            Icon={
-              displayNewIconButtons ? (
-                <Icon
-                  name={IconName.QrCode}
-                  color={IconColor.iconAlternative}
-                  size={IconSize.Md}
-                />
-              ) : (
-                <Icon
-                  name={IconName.ScanBarcode}
-                  color={IconColor.iconDefault}
-                  size={IconSize.Sm}
-                />
-              )
-            }
-            label={t('receive')}
-            width={BlockSize.Full}
-            onClick={() => {
-              trace({ name: TraceName.ReceiveModal });
-              trackEvent({
-                event: MetaMetricsEventName.NavReceiveButtonClicked,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  text: 'Receive',
-                  location: trackingLocation,
-                  chain_id: chainId,
-                },
-              });
-              setShowReceiveModal(true);
-            }}
-            round={!displayNewIconButtons}
+      {showReceiveModal && (
+        <ReceiveModal
+          address={selectedAddress}
+          onClose={() => setShowReceiveModal(false)}
+        />
+      )}
+      <IconButton
+        className={`${classPrefix}-overview__button`}
+        data-testid={`${classPrefix}-overview-receive`}
+        Icon={
+          <Icon
+            name={IconName.Received}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
           />
-        </>
-      }
+        }
+        label={t('receive')}
+        width={BlockSize.Full}
+        onClick={handleReceiveOnClick}
+      />
+      {showTabOpenedToast && (
+        <TabOpenedToast onClose={() => setShowTabOpenedToast(false)} />
+      )}
     </Box>
   );
 };

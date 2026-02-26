@@ -14,7 +14,6 @@ import {
 import {
   AlignItems,
   BlockSize,
-  BorderColor,
   Display,
   FlexWrap,
   TextColor,
@@ -60,12 +59,16 @@ export const NetworkRow = ({
         minWidth={BlockSize.Zero}
       >
         <AvatarNetwork
-          borderColor={BorderColor.backgroundDefault}
           size={AvatarNetworkSize.Xs}
           src={networkImageUrl}
           name={networkName}
+          style={{ borderWidth: 0 }}
         />
-        <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+        <Text
+          variant={TextVariant.bodyMd}
+          color={TextColor.textDefault}
+          data-testid="confirmation__details-network-name"
+        >
           {networkName}
         </Text>
       </Box>

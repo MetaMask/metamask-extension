@@ -1,16 +1,17 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect, useHistory } from 'react-router-dom';
-import Button from '../../../../components/ui/button/button.component';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import TextField from '../../../../components/ui/text-field';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
+  Button,
+  ButtonVariant,
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
@@ -35,7 +36,7 @@ import { getImageForChainId } from '../../../../selectors/multichain';
 import { I18nContext } from '../../../../contexts/i18n';
 import { ContactNetworks } from '../contact-networks';
 
-const EditContact = ({
+export default function EditContact({
   addressBook,
   internalAccounts,
   networkConfigurations,
@@ -47,9 +48,9 @@ const EditContact = ({
   memo = '',
   viewRoute,
   listRoute,
-}) => {
+}) {
   const t = useContext(I18nContext);
-  const history = useHistory();
+  const navigate = useNavigate();
   const [contactName, setContactName] = useState(name);
   const [newAddress, setNewAddress] = useState(address);
   const [newMemo, setNewMemo] = useState(memo);
@@ -58,7 +59,6 @@ const EditContact = ({
   const [showModal, setShowModal] = useState(false);
   const [selectedChainId, setSelectedChainId] = useState(contactChainId);
   const networks = networkConfigurations;
-  console.log(networkConfigurations, networks);
   const validateName = (nameValue) => {
     if (nameValue === name) {
       return true;
@@ -73,7 +73,7 @@ const EditContact = ({
   };
 
   if (!address) {
-    return <Redirect to={{ pathname: listRoute }} />;
+    return <Navigate to={{ pathname: listRoute }} />;
   }
 
   return (
@@ -94,7 +94,7 @@ const EditContact = ({
           style={{ overflow: 'hidden' }}
           paddingRight={2}
         >
-          <AvatarAccount size={AvatarAccountSize.Lg} address={address} />
+          <PreferredAvatar size={AvatarAccountSize.Lg} address={address} />
           <Text
             className="address-book__header__name"
             variant={TextVariant.bodyLgMedium}
@@ -107,11 +107,12 @@ const EditContact = ({
         </Box>
         <Box className="settings-page__address-book-button">
           <Button
-            type="link"
+            variant={ButtonVariant.Link}
+            danger
             style={{ display: 'contents' }}
             onClick={async () => {
               await removeFromAddressBook(contactChainId, address);
-              history.push(listRoute);
+              navigate(listRoute);
             }}
             data-testid="delete-contact-button"
           >
@@ -129,6 +130,7 @@ const EditContact = ({
           </div>
           <TextField
             id="nickname"
+            data-testid="address-book-edit-contact-name"
             placeholder={t('addAlias')}
             value={contactName}
             onChange={handleNameChange}
@@ -143,10 +145,11 @@ const EditContact = ({
           data-testid="edit-contact-address"
         >
           <div className="address-book__view-contact__group__label">
-            {t('ethereumPublicAddress')}
+            {t('publicAddress')}
           </div>
           <TextField
             id="address"
+            data-testid="address-book-edit-contact-address"
             value={newAddress}
             onChange={(e) => setNewAddress(e.target.value)}
             error={addressError}
@@ -174,41 +177,41 @@ const EditContact = ({
             margin="dense"
           />
         </div>
-        {process.env.REMOVE_GNS ? (
-          <div className="address-book__view-contact__group">
-            <div className="address-book__view-contact__group__label">
-              {t('network')}
-            </div>
-            <Box
-              as="button"
-              padding={3}
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              backgroundColor={BackgroundColor.transparent}
-              borderColor={BorderColor.borderDefault}
-              justifyContent={JustifyContent.spaceBetween}
-              borderRadius={BorderRadius.XL}
-              onClick={() => setShowModal(true)}
-              className="network-selector"
-              data-testid="network-selector"
-              marginTop={2}
-            >
-              <Box display={Display.Flex} gap={2}>
-                <AvatarNetwork
-                  size={AvatarNetworkSize.Sm}
-                  src={getImageForChainId(selectedChainId) || undefined}
-                  name={networks?.[selectedChainId]?.name}
-                />
-                <Text>{networks?.[selectedChainId]?.name}</Text>
-              </Box>
-              <Icon
-                name={IconName.ArrowDown}
-                color={IconColor.iconDefault}
-                size={IconSize.Sm}
-              />
-            </Box>
+        <div className="address-book__view-contact__group">
+          <div className="address-book__view-contact__group__label">
+            {t('network')}
           </div>
-        ) : null}
+          <Box
+            as="button"
+            padding={3}
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            backgroundColor={BackgroundColor.transparent}
+            borderColor={BorderColor.borderDefault}
+            justifyContent={JustifyContent.spaceBetween}
+            borderRadius={BorderRadius.XL}
+            onClick={() => setShowModal(true)}
+            className="network-selector"
+            data-testid="network-selector"
+            marginTop={2}
+          >
+            <Box display={Display.Flex} gap={2}>
+              <AvatarNetwork
+                size={AvatarNetworkSize.Sm}
+                src={getImageForChainId(selectedChainId) || undefined}
+                name={networks?.[selectedChainId]?.name}
+              />
+              <Text data-testid="address-book-edit-contact-network">
+                {networks?.[selectedChainId]?.name}
+              </Text>
+            </Box>
+            <Icon
+              name={IconName.ArrowDown}
+              color={IconColor.iconDefault}
+              size={IconSize.Sm}
+            />
+          </Box>
+        </div>
       </div>
       <PageContainerFooter
         cancelText={t('cancel')}
@@ -227,7 +230,7 @@ const EditContact = ({
                 newMemo || memo,
                 selectedChainId,
               );
-              history.push(listRoute);
+              navigate(listRoute);
             } else {
               setAddressError(t('invalidAddress'));
             }
@@ -239,7 +242,7 @@ const EditContact = ({
               newMemo || memo,
               selectedChainId,
             );
-            history.push(listRoute);
+            navigate(listRoute);
           } else {
             await addToAddressBook(
               address,
@@ -247,10 +250,10 @@ const EditContact = ({
               newMemo || memo,
               selectedChainId,
             );
-            history.push(listRoute);
+            navigate(listRoute);
           }
         }}
-        onCancel={() => history.push(`${viewRoute}/${address}`)}
+        onCancel={() => navigate(`${viewRoute}/${address}`)}
         submitText={t('save')}
         disabled={Boolean(
           (contactName === name &&
@@ -271,7 +274,7 @@ const EditContact = ({
       )}
     </div>
   );
-};
+}
 
 EditContact.propTypes = {
   addressBook: PropTypes.array,
@@ -286,5 +289,3 @@ EditContact.propTypes = {
   viewRoute: PropTypes.string.isRequired,
   listRoute: PropTypes.string.isRequired,
 };
-
-export default EditContact;

@@ -8,6 +8,8 @@
 @import 'customize-nonce/index';
 @import 'convert-token-to-nft-modal/index';
 @import 'visit-support-data-consent-modal/index';
+@import "multichain-accounts/intro-modal/index";
+@import 'add-funds-modal/index';
 
 .modal {
   z-index: 1050;

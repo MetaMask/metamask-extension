@@ -1,7 +1,7 @@
 import { Driver } from '../../webdriver/driver';
 import SnapInstall from '../pages/dialog/snap-install';
 import SnapInstallWarning from '../pages/dialog/snap-install-warning';
-import { WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
 
 /**
  * Grant permission to the snap installed with the optional warning dialog.
@@ -17,11 +17,11 @@ export async function confirmPermissionSwitchToTestSnap(
   const snapInstall = new SnapInstall(driver);
   const snapInstallWarning = new SnapInstallWarning(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await snapInstall.check_pageIsLoaded();
+  await snapInstall.checkPageIsLoaded();
   await snapInstall.clickConnectButton();
   await snapInstall.clickConfirmButton();
   if (withWarning) {
-    await snapInstallWarning.check_pageIsLoaded();
+    await snapInstallWarning.checkPageIsLoaded();
     await snapInstallWarning.clickCheckboxPermission();
     await snapInstallWarning.clickConfirmButton();
   }
@@ -66,12 +66,10 @@ export async function completeSnapInstallSwitchToTestSnap(driver: Driver) {
 export async function approveAccount(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  await driver.waitForSelector({
-    text: 'Connect with MetaMask',
-    tag: 'h3',
+  await driver.clickElement({
+    text: 'Connect',
+    tag: 'button',
   });
-
-  await driver.clickElement({ text: 'Next' });
 
   await driver.waitForSelector({
     text: 'Review permissions',
@@ -85,7 +83,7 @@ export async function approveAccount(driver: Driver) {
 export async function approvePersonalSignMessage(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.waitForSelector({
-    text: 'Signature request',
+    text: 'Sign',
     tag: 'h2',
   });
 

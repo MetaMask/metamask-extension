@@ -5,6 +5,13 @@
   vertical-align: middle;
   user-select: none;
 
+  // Focus styles from monorepo button
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-default);
+    outline-offset: 2px;
+    box-shadow: none;
+  }
+
   &--block {
     width: 100%;
   }

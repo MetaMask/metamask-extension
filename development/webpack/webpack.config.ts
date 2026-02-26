@@ -9,7 +9,6 @@ import {
   ProvidePlugin,
   type Configuration,
   type WebpackPluginInstance,
-  type Chunk,
   type MemoryCacheOptions,
   type FileCacheOptions,
 } from 'webpack';
@@ -19,22 +18,27 @@ import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
+import tailwindcss from 'tailwindcss';
 import { loadBuildTypesConfig } from '../lib/build-type';
-import { SelfInjectPlugin } from './utils/plugins/SelfInjectPlugin';
 import {
   type Manifest,
   collectEntries,
   getMinimizers,
   NODE_MODULES_RE,
   __HMR_READY__,
+  SNOW_MODULE_RE,
+  TREZOR_MODULE_RE,
+  UI_DIR_RE,
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
 import { getVariables } from './utils/config';
+import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
+import { MODES } from './utils/constants';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -43,19 +47,9 @@ if (args.dryRun) {
   exit(0);
 }
 
-// #region short circuit for unsupported build configurations
-if (args.lavamoat) {
-  throw new Error("The webpack build doesn't support LavaMoat yet. So sorry.");
-}
-if (args.manifest_version === 3) {
-  throw new Error(
-    "The webpack build doesn't support manifest_version version 3 yet. So sorry.",
-  );
-}
-// #endregion short circuit for unsupported build configurations
-
 const context = join(__dirname, '../../app');
-const isDevelopment = args.env === 'development';
+const nodeModules = join(__dirname, '../../node_modules');
+const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const MANIFEST_VERSION = args.manifest_version;
 const manifestPath = join(context, `manifest/v${MANIFEST_VERSION}/_base.json`);
 const manifest: Manifest = require(manifestPath);
@@ -64,7 +58,8 @@ const codeFenceLoader = getCodeFenceLoader(features);
 const browsersListPath = join(context, '../.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
-const { variables, safeVariables, version } = getVariables(args, buildTypes);
+const { variables, safeVariables, version, buildEnvVarDeclarations } =
+  getVariables(args, buildTypes);
 const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
@@ -74,7 +69,7 @@ const webAccessibleResources =
 const cache = args.cache
   ? ({
       type: 'filesystem',
-      name: `MetaMask—${args.env}`,
+      name: `MetaMask—${args.mode}`,
       version: cacheKey,
       idleTimeout: 0,
       idleTimeoutForInitialStore: 0,
@@ -90,6 +85,7 @@ const cache = args.cache
         // `buildDependencies`
         config: [
           __filename,
+          join(context, '../.metamaskprodrc'),
           join(context, '../.metamaskrc'),
           join(context, '../builds.yml'),
           browsersListPath,
@@ -102,17 +98,12 @@ const cache = args.cache
 // #region plugins
 const commitHash = isDevelopment ? getLatestCommit().hash() : null;
 const plugins: WebpackPluginInstance[] = [
-  new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }),
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({
     preprocessorOptions: { useWith: false },
     minify: args.minify,
-    integrity: 'auto',
     test: /\.html$/u, // default is eta/html, we only want html
-    data: {
-      isTest: args.test,
-      shouldIncludeSnow: args.snow,
-    },
+    data: { isTest: args.test },
     preload: [
       {
         attributes: { as: 'font', crossorigin: true },
@@ -126,7 +117,7 @@ const plugins: WebpackPluginInstance[] = [
     web_accessible_resources: webAccessibleResources,
     manifest_version: MANIFEST_VERSION,
     description: commitHash
-      ? `${args.env} build from git id: ${commitHash.substring(0, 8)}`
+      ? `${args.type} build for ${args.mode} from git id: ${commitHash.substring(0, 8)}`
       : null,
     version: version.version,
     versionName: version.versionName,
@@ -148,13 +139,14 @@ const plugins: WebpackPluginInstance[] = [
           },
         }
       : {}),
+    buildType: args.type,
   }),
   // use ProvidePlugin to polyfill *global* node variables
   new ProvidePlugin({
     // Make a global `Buffer` variable that points to the `buffer` package.
     Buffer: ['buffer', 'Buffer'],
     // Make a global `process` variable that points to the `process` package.
-    process: 'process/browser',
+    process: 'process/browser.js',
     // polyfill usages of `setImmediate`, ideally this would be automatically
     // handled by `swcLoader`'s `env.usage = 'entry'` option, but that setting
     // results in a compilation error: `Module parse failed: 'import' and
@@ -162,7 +154,7 @@ const plugins: WebpackPluginInstance[] = [
     // hours trying to figure it out but couldn't. So, this is the workaround.
     // Note: we should probably remove usages of `setImmediate` from our
     // codebase so we don't have to polyfill it.
-    setImmediate: 'core-js-pure/actual/set-immediate',
+    setImmediate: 'core-js-pure/actual/set-immediate.js',
   }),
   new CopyPlugin({
     patterns: [
@@ -170,9 +162,42 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // snaps MV3 needs the offscreen document
+      ...(MANIFEST_VERSION === 3
+        ? [
+            {
+              from: join(
+                nodeModules,
+                '@metamask/snaps-execution-environments',
+                'dist/webpack/iframe/index.html',
+              ),
+              to: 'snaps/index.html',
+            },
+            {
+              from: join(
+                nodeModules,
+                '@metamask/snaps-execution-environments',
+                'dist/webpack/iframe/bundle.js',
+              ),
+              to: 'snaps/bundle.js',
+            },
+          ]
+        : []),
     ],
   }),
 ];
+// MV2 requires self-injection
+if (MANIFEST_VERSION === 2) {
+  const { SelfInjectPlugin } = require('./utils/plugins/SelfInjectPlugin');
+  plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
+}
+if (args.lavamoat) {
+  const {
+    lavamoatPlugin,
+    lavamoatUnsafeLayerPlugin,
+  } = require('./utils/plugins/LavamoatPlugin');
+  plugins.push(lavamoatPlugin(args), lavamoatUnsafeLayerPlugin);
+}
 // enable React Refresh in 'development' mode when `watch` is enabled
 if (__HMR_READY__ && isDevelopment && args.watch) {
   const ReactRefreshWebpackPlugin: typeof ReactRefreshPluginType = require('@pmmmwh/react-refresh-webpack-plugin');
@@ -182,21 +207,40 @@ if (args.progress) {
   const { ProgressPlugin } = require('webpack');
   plugins.push(new ProgressPlugin());
 }
+if (args.reactCompilerVerbose) {
+  const {
+    ReactCompilerPlugin,
+  } = require('./utils/plugins/ReactCompilerPlugin');
+  plugins.push(new ReactCompilerPlugin());
+}
+
 // #endregion plugins
 
-const swcConfig = { args, safeVariables, browsersListQuery, isDevelopment };
-const tsxLoader = getSwcLoader('typescript', true, swcConfig);
-const jsxLoader = getSwcLoader('ecmascript', true, swcConfig);
-const ecmaLoader = getSwcLoader('ecmascript', false, swcConfig);
+const swcConfig = { args, browsersListQuery, isDevelopment };
+const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
+const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
+const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
+const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
+const reactCompilerLoader = getReactCompilerLoader(
+  '17',
+  args.reactCompilerVerbose,
+  args.reactCompilerDebug,
+);
+const envValidationLoader = args.validateEnv
+  ? {
+      loader: require.resolve('./utils/loaders/envValidationLoader'),
+      options: { declarations: buildEnvVarDeclarations },
+    }
+  : null;
 
 const config = {
   entry,
   cache,
   plugins,
   context,
-  mode: args.env,
+  mode: args.mode,
   stats: args.stats ? 'normal' : 'none',
-  name: `MetaMask – ${args.env}`,
+  name: `MetaMask – ${args.mode}`,
   // use the `.browserlistrc` file directly to avoid browserslist searching
   target: `browserslist:${browsersListPath}:defaults`,
   // TODO: look into using SourceMapDevToolPlugin and its exclude option to speed up the build
@@ -205,8 +249,6 @@ const config = {
   devtool: args.devtool === 'none' ? false : args.devtool,
   output: {
     wasmLoading: 'fetch',
-    // required for `integrity` to work in the browser
-    crossOriginLoading: 'anonymous',
     // filenames for *initial* files (essentially JS entry points)
     filename: '[name].[contenthash].js',
     path: join(context, '..', 'dist'),
@@ -226,17 +268,45 @@ const config = {
     // Extensions added to the request when trying to find the file. The most
     // common extensions should be first to improve resolution performance.
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    // TODO: Remove this workaround after upgrading to React 18
+    // WORKAROUND: Alias for React JSX runtime to handle ESM module resolution issues.
+    // This is needed because @metamask/design-system-react uses @radix-ui/react-slot,
+    // which is distributed as an ESM module (.mjs) that imports 'react/jsx-runtime'
+    // without the file extension. Webpack 5's strict ESM resolution requires fully
+    // specified imports, so we explicitly map these to the actual files.
+    //
+    // This issue only affects React 17. React 18+ properly exports jsx-runtime
+    // with correct ESM module resolution, so this workaround can be removed after upgrading.
+    //
+    // Related issues:
+    // - https://github.com/radix-ui/primitives/issues/3413
+    // - Fix example: https://github.com/xyflow/xyflow/issues/4683#issuecomment-2388049017
+    //
+    // Potential solutions until React 18 upgrade:
+    // 1. Current workaround: webpack aliases (what we're using)
+    // 2. @metamask/design-system-react could patch the Radix UI packages
+    // 3. @metamask/design-system-react could re-export components with a build step that fixes imports
+    alias: {
+      'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),
+      'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime.js'),
+      // Mock perps-controller for minimal POC branch development
+      '@metamask/perps-controller': join(
+        context,
+        '../ui/__mocks__/perps/perps-controller',
+      ),
+    },
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in
     // the browser. The browser will first attempt to load these modules, if
     // it fails it will load the fallback.
     fallback: {
       // #region conditionally remove developer tooling
-      'react-devtools': isDevelopment
-        ? require.resolve('react-devtools')
+      // remove react-devtools-core unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
+      'react-devtools-core': variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
+        ? require.resolve('react-devtools-core')
         : false,
-      // remove remote-redux-devtools unless METAMASK_DEBUG is enabled
-      'remote-redux-devtools': variables.get('METAMASK_DEBUG')
+      // remove remote-redux-devtools unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
+      'remote-redux-devtools': variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
         ? require.resolve('remote-redux-devtools')
         : false,
       // #endregion conditionally remove developer tooling
@@ -255,8 +325,11 @@ const config = {
   // note: loaders in a `use` array are applied in *reverse* order, i.e., bottom
   // to top, (or right to left depending on the current formatting of the file)
   module: {
-    // don't parse lodash, as it's large and already minified
-    noParse: /^lodash$/u,
+    noParse: [
+      // don't parse lodash, as it's large, already minified, and doesn't need
+      // to be transformed
+      /^lodash$/u,
+    ],
     rules: [
       // json
       { test: /\.json$/u, type: 'json' },
@@ -266,27 +339,50 @@ const config = {
         dependency: 'url',
         type: 'asset/resource',
       },
+      {
+        test: /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:m?[jt]s|[jt]sx)$/u,
+        include: UI_DIR_RE,
+        use: [reactCompilerLoader],
+      },
       // own typescript, and own typescript with jsx
       {
         test: /\.(?:ts|mts|tsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [tsxLoader, codeFenceLoader],
+        use: [tsxLoader, envValidationLoader, codeFenceLoader],
       },
       // own javascript, and own javascript with jsx
       {
         test: /\.(?:js|mjs|jsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [jsxLoader, codeFenceLoader],
+        use: [jsxLoader, envValidationLoader, codeFenceLoader],
       },
-      // vendor javascript
+      // vendor javascript. We must transform all npm modules to ensure browser
+      // compatibility.
       {
-        test: /\.(?:js|mjs)$/u,
-        include: NODE_MODULES_RE,
-        // never process `@lavamoat/snow/**.*`
-        exclude: /^.*\/node_modules\/@lavamoat\/snow\/.*$/u,
-        // can be removed once https://github.com/MetaMask/key-tree/issues/152 is resolved
-        resolve: { fullySpecified: false },
-        use: ecmaLoader,
+        oneOf: [
+          {
+            test: /\.m?js$/u,
+            include: NODE_MODULES_RE,
+            exclude: [
+              // security team requires that we never process `@lavamoat/snow/**.*`
+              SNOW_MODULE_RE,
+
+              // these trezor libraries are .js files with CJS exports, they
+              // must be processed with the CJS loader
+              TREZOR_MODULE_RE,
+            ],
+            use: npmLoader,
+          },
+          {
+            test: /\.c?js$/u,
+            include: NODE_MODULES_RE,
+            exclude: [
+              // security team requires that we never process `@lavamoat/snow/**.*`
+              SNOW_MODULE_RE,
+            ],
+            use: cjsLoader,
+          },
+        ],
       },
       // css, sass/scss
       {
@@ -299,6 +395,7 @@ const config = {
             options: {
               postcssOptions: {
                 plugins: [
+                  tailwindcss(),
                   autoprefixer({ overrideBrowserslist: browsersListQuery }),
                   rtlCss({ processEnv: false }),
                   discardFonts(['woff2']), // keep woff2 fonts
@@ -341,9 +438,9 @@ const config = {
           codeFenceLoader,
         ],
       },
-      // images, fonts, wasm, etc.
+      // images, fonts, wasm, riv etc.
       {
-        test: /\.(?:png|jpe?g|ico|webp|svg|gif|woff2|wasm)$/u,
+        test: /\.(?:png|jpe?g|ico|webp|svg|gif|woff2|wasm|riv)$/u,
         type: 'asset/resource',
         generator: { filename: 'assets/[name].[contenthash][ext]' },
       },
@@ -378,7 +475,9 @@ const config = {
     // platform is responsible for loading them and splitting these files
     // would require updating the manifest to include the other chunks.
     runtimeChunk: {
-      name: (chunk: Chunk) => (canBeChunked(chunk) ? 'runtime' : false),
+      // casting to string as webpack's types are wrong, `false` is allowed, and
+      // is actually the default value.
+      name: (chunk) => (canBeChunked(chunk) ? 'runtime' : false) as string,
     },
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations
@@ -410,6 +509,9 @@ const config = {
     aggregateTimeout: 5, // ms
     ignored: NODE_MODULES_RE, // avoid `fs.inotify.max_user_watches` issues
   },
+  ignoreWarnings: [
+    /the following module ids can't be controlled by policy and must be ignored at runtime/u,
+  ],
 } as const satisfies Configuration;
 
 export default config;

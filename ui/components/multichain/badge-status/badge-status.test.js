@@ -6,7 +6,7 @@ import {
   BorderColor,
 } from '../../../helpers/constants/design-system';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { BadgeStatus } from './badge-status';
 
 describe('Badge Status', () => {

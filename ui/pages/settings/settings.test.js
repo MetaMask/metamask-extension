@@ -1,19 +1,39 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../test/lib/render-helpers';
+import 'jest-canvas-mock';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import mockState from '../../../test/data/mock-state.json';
 import Settings from '.';
-import 'jest-canvas-mock';
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: () => ({ pathname: '/settings' }),
+  useNavigate: () => jest.fn(),
+  useParams: () => ({}),
+}));
+
+jest.mock(
+  '../../helpers/higher-order-components/with-router-hooks/with-router-hooks',
+  () => {
+    // eslint-disable-next-line react/display-name
+    return (Component) => (props) => (
+      <Component
+        {...props}
+        navigate={jest.fn()}
+        location={{ pathname: '/settings' }}
+        params={{}}
+      />
+    );
+  },
+);
 
 describe('SettingsPage', () => {
   const props = {
     addNewNetwork: false,
     addressName: '',
     backRoute: '/',
-    breadCrumbTextKey: '',
     conversionDate: Date.now(),
-    initialBreadCrumbKey: '',
-    initialBreadCrumbRoute: '',
     isAddressEntryPage: false,
     isPopup: false,
     isSnapViewPage: false,
@@ -30,7 +50,7 @@ describe('SettingsPage', () => {
       '/settings',
     );
 
-    expect(queryByText('Settings')).toBeInTheDocument();
+    expect(queryByText(messages.settings.message)).toBeInTheDocument();
   });
 
   it('should render search correctly', () => {
@@ -40,6 +60,6 @@ describe('SettingsPage', () => {
       '/settings',
     );
 
-    expect(queryByPlaceholderText('Search')).toBeInTheDocument();
+    expect(queryByPlaceholderText(messages.search.message)).toBeInTheDocument();
   });
 });

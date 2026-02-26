@@ -2,28 +2,38 @@ import {
   Controller as NotificationServicesPushController,
   defaultState,
 } from '@metamask/notification-services-controller/push-services';
-import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
+  getNotificationServicesPushControllerInitMessenger,
   getNotificationServicesPushControllerMessenger,
+  NotificationServicesPushControllerInitMessenger,
   type NotificationServicesPushControllerMessenger,
 } from '../messengers/notifications';
-import { NotificationServicesPushControllerInit } from './notification-services-push-controller-init';
+import { getRootMessenger } from '../../lib/messenger';
+import {
+  getNormalisedLocale,
+  NotificationServicesPushControllerInit,
+} from './notification-services-push-controller-init';
 
 jest.mock('@metamask/notification-services-controller/push-services');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<NotificationServicesPushControllerMessenger>
+  ControllerInitRequest<
+    NotificationServicesPushControllerMessenger,
+    NotificationServicesPushControllerInitMessenger
+  >
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = getRootMessenger();
 
   return {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getNotificationServicesPushControllerMessenger(
       baseControllerMessenger,
     ),
-    initMessenger: undefined,
+    initMessenger: getNotificationServicesPushControllerInitMessenger(
+      baseControllerMessenger,
+    ),
   };
 }
 
@@ -82,7 +92,23 @@ describe('NotificationServicesPushControllerInit', () => {
           deleteRegToken: expect.any(Function),
           subscribeToPushNotifications: expect.any(Function),
         },
+        getLocale: expect.any(Function),
       },
     });
+  });
+});
+
+describe('NotificationServicesPushControllerInit - getNormalisedLocale', () => {
+  it('converts underscore locale to hypenated locale', () => {
+    // normalises
+    expect(getNormalisedLocale('en_GB')).toBe('en-GB');
+    expect(getNormalisedLocale('zh_CN')).toBe('zh-CN');
+
+    // does nothing (since already hyphenated)
+    expect(getNormalisedLocale('en-GB')).toBe('en-GB');
+    expect(getNormalisedLocale('zh-CN')).toBe('zh-CN');
+
+    // does nothing (as does not specify region)
+    expect(getNormalisedLocale('en')).toBe('en');
   });
 });

@@ -1,13 +1,10 @@
-import { ApprovalType } from '@metamask/controller-utils';
+import { ApprovalType, ERC20 } from '@metamask/controller-utils';
 import { act, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import nock from 'nock';
-import { TokenStandard } from '../../../../shared/constants/transaction';
-import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
-import { createTestProviderTools } from '../../../stub/provider';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
 import { ENVIRONMENT } from '../../../../development/build/constants';
@@ -16,20 +13,9 @@ import { getUnapprovedApproveTransaction } from './transactionDataHelpers';
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
-}));
-
-jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
-  ...jest.requireActual(
-    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
-  ),
-  useAssetDetails: jest.fn().mockImplementation(() => ({
-    decimals: '4',
-  })),
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
-const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
@@ -113,6 +99,7 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'FourByte',
   },
+  addKnownMethodData: {},
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -121,44 +108,32 @@ const setupSubmitRequestToBackgroundMocks = (
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
       ...advancedDetailsMockedRequests,
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
-  );
-
-  mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    createMockImplementation({ addKnownMethodData: {} }),
   );
 };
 
 describe('ERC20 Approve Confirmation', () => {
   beforeAll(() => {
-    const { provider } = createTestProviderTools({
-      networkId: 'sepolia',
-      chainId: '0xaa36a7',
-    });
+    global.ethereumProvider = {
+      request: jest.fn(),
 
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    global.ethereumProvider = provider as any;
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
   });
 
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks({
       getTokenStandardAndDetailsByChain: {
-        standard: TokenStandard.ERC20,
+        standard: ERC20,
+        decimals: '4',
       },
     });
     const APPROVE_ERC20_HEX_SIG = '0x095ea7b3';
     const APPROVE_ERC20_TEXT_SIG = 'approve(address,uint256)';
     mock4byte(APPROVE_ERC20_HEX_SIG, APPROVE_ERC20_TEXT_SIG);
-    mockedAssetDetails.mockImplementation(() => ({
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      decimals: '4' as any,
-    }));
   });
 
   afterEach(() => {
@@ -183,12 +158,10 @@ describe('ERC20 Approve Confirmation', () => {
     });
 
     expect(
-      await screen.findByText(tEn('confirmTitlePermitTokens') as string),
+      await screen.findByText(tEn('confirmTitlePermitTokens')),
     ).toBeInTheDocument();
     expect(
-      await screen.findByText(
-        tEn('confirmTitleDescERC20ApproveTransaction') as string,
-      ),
+      await screen.findByText(tEn('confirmTitleDescERC20ApproveTransaction')),
     ).toBeInTheDocument();
   });
 
@@ -209,9 +182,9 @@ describe('ERC20 Approve Confirmation', () => {
     expect(simulationSection).toBeInTheDocument();
 
     expect(simulationSection).toHaveTextContent(
-      tEn('simulationDetailsERC20ApproveDesc') as string,
+      tEn('simulationDetailsERC20ApproveDesc'),
     );
-    expect(simulationSection).toHaveTextContent(tEn('spendingCap') as string);
+    expect(simulationSection).toHaveTextContent(tEn('spendingCap'));
     const spendingCapValue = await screen.findByTestId(
       'simulation-token-value',
     );
@@ -242,7 +215,7 @@ describe('ERC20 Approve Confirmation', () => {
     );
 
     expect(approveDetails).toContainElement(approveDetailsSpender);
-    expect(approveDetailsSpender).toHaveTextContent(tEn('spender') as string);
+    expect(approveDetailsSpender).toHaveTextContent(tEn('spender'));
     expect(approveDetailsSpender).toHaveTextContent('0x2e0D7...5d09B');
     const spenderTooltip = await screen.findByTestId(
       'confirmation__approve-spender-tooltip',
@@ -251,7 +224,7 @@ describe('ERC20 Approve Confirmation', () => {
     await testUser.hover(spenderTooltip);
 
     const spenderTooltipContent = await screen.findByText(
-      tEn('spenderTooltipERC20ApproveDesc') as string,
+      tEn('spenderTooltipERC20ApproveDesc'),
     );
     expect(spenderTooltipContent).toBeInTheDocument();
 
@@ -272,7 +245,7 @@ describe('ERC20 Approve Confirmation', () => {
     );
     await testUser.hover(approveDetailsRequestFromTooltip);
     const requestFromTooltipContent = await screen.findByText(
-      tEn('requestFromTransactionDescription') as string,
+      tEn('requestFromTransactionDescription'),
     );
     expect(requestFromTooltipContent).toBeInTheDocument();
   });
@@ -301,9 +274,7 @@ describe('ERC20 Approve Confirmation', () => {
       'transaction-details-recipient-row',
     );
     expect(approveDetails).toContainElement(approveDetailsRecipient);
-    expect(approveDetailsRecipient).toHaveTextContent(
-      tEn('interactingWith') as string,
-    );
+    expect(approveDetailsRecipient).toHaveTextContent(tEn('interactingWith'));
     expect(approveDetailsRecipient).toHaveTextContent('0x07614...3ad68');
 
     const approveDetailsRecipientTooltip = await screen.findByTestId(
@@ -314,7 +285,7 @@ describe('ERC20 Approve Confirmation', () => {
     );
     await testUser.hover(approveDetailsRecipientTooltip);
     const recipientTooltipContent = await screen.findByText(
-      tEn('interactingWithTransactionDescription') as string,
+      tEn('interactingWithTransactionDescription'),
     );
     expect(recipientTooltipContent).toBeInTheDocument();
 
@@ -322,7 +293,7 @@ describe('ERC20 Approve Confirmation', () => {
       'transaction-details-method-data-row',
     );
     expect(approveDetails).toContainElement(approveMethodData);
-    expect(approveMethodData).toHaveTextContent(tEn('methodData') as string);
+    expect(approveMethodData).toHaveTextContent(tEn('methodData'));
     expect(approveMethodData).toHaveTextContent('Approve');
     const approveMethodDataTooltip = await screen.findByTestId(
       'transaction-details-method-data-row-tooltip',
@@ -330,7 +301,7 @@ describe('ERC20 Approve Confirmation', () => {
     expect(approveMethodData).toContainElement(approveMethodDataTooltip);
     await testUser.hover(approveMethodDataTooltip);
     const approveMethodDataTooltipContent = await screen.findByText(
-      tEn('methodDataTransactionDesc') as string,
+      tEn('methodDataTransactionDesc'),
     );
     expect(approveMethodDataTooltipContent).toBeInTheDocument();
 
@@ -349,7 +320,7 @@ describe('ERC20 Approve Confirmation', () => {
     );
     expect(dataSection).toContainElement(dataSectionFunction);
     expect(dataSectionFunction).toHaveTextContent(
-      tEn('transactionDataFunction') as string,
+      tEn('transactionDataFunction'),
     );
     expect(dataSectionFunction).toHaveTextContent('Approve');
 

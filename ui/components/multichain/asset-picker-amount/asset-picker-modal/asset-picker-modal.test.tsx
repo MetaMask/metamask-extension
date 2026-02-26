@@ -3,15 +3,13 @@ import { screen, fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { useSelector } from 'react-redux';
 import thunk from 'redux-thunk';
-import sinon from 'sinon';
 import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-send-state.json';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
@@ -28,8 +26,6 @@ import {
   getTokens,
 } from '../../../../ducks/metamask/metamask';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
-import * as actions from '../../../../store/actions';
-import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getMultichainCurrentChainId,
@@ -41,6 +37,7 @@ import {
 } from '../../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { AssetPickerModal } from './asset-picker-modal';
 import { ERC20Asset } from './types';
 
@@ -70,10 +67,6 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
 }));
 
-jest.mock('../../../../hooks/useNftsCollections', () => ({
-  useNftsCollections: jest.fn(),
-}));
-
 jest.mock('../../../../hooks/useTokenTracker', () => ({
   useTokenTracker: jest.fn(),
 }));
@@ -88,21 +81,18 @@ jest.mock('../../../../hooks/useMultichainBalances', () => ({
   useMultichainBalances: () => mockUseMultichainBalances(),
 }));
 
-jest.mock('../../../../hooks/useNfts', () => ({
-  useNfts: () => ({
-    currentlyOwnedNfts: [],
-  }),
-}));
-
 jest.mock('lodash', () => ({
   ...jest.requireActual('lodash'),
-  debounce: jest.fn().mockImplementation((fn) => fn),
+  debounce: jest.fn().mockImplementation((fn) => {
+    const debouncedFn = fn;
+    debouncedFn.cancel = jest.fn();
+    return debouncedFn;
+  }),
 }));
 
 describe('AssetPickerModal', () => {
   const useSelectorMock = useSelector as jest.Mock;
   const useI18nContextMock = useI18nContext as jest.Mock;
-  const useNftsCollectionsMock = useNftsCollections as jest.Mock;
   const useTokenTrackerMock = useTokenTracker as jest.Mock;
   const mockStore = configureStore([thunk]);
   const store = mockStore(mockState);
@@ -182,18 +172,10 @@ describe('AssetPickerModal', () => {
       if (selector === getTopAssets) {
         return [];
       }
-
-      if (selector === getSwapsBlockedTokens) {
-        return new Set(['0xtoken1']);
-      }
       return undefined;
     });
 
     useI18nContextMock.mockReturnValue((key: string) => key);
-    useNftsCollectionsMock.mockReturnValue({
-      collections: {},
-      previouslyOwnedCollection: [],
-    });
     useTokenTrackerMock.mockReturnValue({
       tokensWithBalances: [],
     });
@@ -220,29 +202,6 @@ describe('AssetPickerModal', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /close/u }));
     expect(onCloseMock).toHaveBeenCalled();
-  });
-
-  it('renders no NFTs message when there are no NFTs', () => {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    sinon.stub(actions, 'detectNfts').returns(() => Promise.resolve());
-    renderWithProvider(
-      <AssetPickerModal
-        {...defaultProps}
-        asset={{
-          type: AssetType.NFT,
-          tokenId: 5,
-          image: 'nft image',
-          address: '',
-        }}
-        sendingAsset={undefined}
-      />,
-      store,
-    );
-
-    fireEvent.click(screen.getByText('nfts'));
-    expect(screen.getByText('noNFTs')).toBeInTheDocument();
-    expect(screen.getByText('learnMoreUpperCase')).toBeInTheDocument();
   });
 
   it('filters tokens based on search query', () => {
@@ -310,49 +269,6 @@ describe('AssetPickerModal', () => {
     expect(searchPlaceholder).toBeInTheDocument();
   });
 
-  it('should disable the token if it is in the blocked tokens list', () => {
-    renderWithProvider(
-      <AssetPickerModal
-        {...defaultProps}
-        sendingAsset={{ image: '', symbol: 'IRRELEVANT' }}
-      />,
-      store,
-    );
-
-    fireEvent.change(
-      screen.getByPlaceholderText('searchTokensByNameOrAddress'),
-      {
-        target: { value: 'TO' },
-      },
-    );
-
-    expect(mockAssetList.mock.calls.slice(-1)[0][0].tokenList.length).toBe(2);
-
-    fireEvent.change(
-      screen.getByPlaceholderText('searchTokensByNameOrAddress'),
-      {
-        target: { value: 'TOKEN1' },
-      },
-    );
-
-    expect(mockAssetList.mock.calls[1][0]).not.toEqual(
-      expect.objectContaining({
-        asset: {
-          balance: '0x0',
-          details: { address: '0xAddress', decimals: 18, symbol: 'TOKEN' },
-          error: null,
-          type: 'NATIVE',
-        },
-      }),
-    );
-
-    expect(mockAssetList.mock.calls.slice(-1)[0][0].tokenList.length).toBe(1);
-
-    expect(
-      mockAssetList.mock.calls[2][0].isTokenDisabled({ address: '0xtoken1' }),
-    ).toBe(true);
-  });
-
   it('should render network picker when onNetworkPickerClick prop is defined', () => {
     const { getByText, getAllByRole } = renderWithProvider(
       <AssetPickerModal
@@ -381,7 +297,7 @@ describe('AssetPickerModal', () => {
     expect(modalTitle).toBeInTheDocument();
 
     expect(getAllByRole('img')).toHaveLength(2);
-    const modalContent = getByText('Ethereum Mainnet');
+    const modalContent = getByText(messages.networkNameEthereum.message);
     expect(modalContent).toBeInTheDocument();
   });
 
@@ -425,8 +341,8 @@ describe('AssetPickerModal token filtering', () => {
     header: 'Select Token',
     isOpen: true,
     onClose: jest.fn(),
-    onAssetChange: onAssetChangeMock,
     autoFocus: true,
+    onAssetChange: onAssetChangeMock,
     network: {
       chainId: '0xa',
       name: 'Optimism',
@@ -503,8 +419,6 @@ describe('AssetPickerModal token filtering', () => {
           return '0xa';
         case getMultichainIsEvm:
           return true;
-        case getSwapsBlockedTokens:
-          return [];
         case getMultichainCurrentCurrency:
           return 'USD';
         default:

@@ -1,20 +1,34 @@
+import { NetworkController } from '@metamask/network-controller';
+// Mocha type definitions are conflicting with Jest
+import { it as jestIt } from '@jest/globals';
 import {
+  TransactionMeta,
+  TransactionType,
   TransactionController,
   TransactionControllerMessenger,
   TransactionControllerOptions,
+  TransactionStatus,
+  PublishHook,
 } from '@metamask/transaction-controller';
-import { Messenger } from '@metamask/base-controller';
-import { NetworkController } from '@metamask/network-controller';
-import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
+import { TransactionPayPublishHook } from '@metamask/transaction-pay-controller';
 import {
   getTransactionControllerInitMessenger,
   getTransactionControllerMessenger,
   TransactionControllerInitMessenger,
 } from '../messengers/transaction-controller-messenger';
+import { getRootMessenger } from '../../lib/messenger';
+import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import { ControllerInitRequest } from '../types';
+import * as smartTransactionsModule from '../../lib/smart-transaction/smart-transactions';
+import * as sentinelApiModule from '../../lib/transaction/sentinel-api';
+import { Delegation7702PublishHook } from '../../lib/transaction/hooks/delegation-7702-publish';
 import { TransactionControllerInit } from './transaction-controller-init';
 
 jest.mock('@metamask/transaction-controller');
+jest.mock('@metamask/transaction-pay-controller');
+jest.mock('../../lib/smart-transaction/smart-transactions');
+jest.mock('../../lib/transaction/sentinel-api');
+jest.mock('../../lib/transaction/hooks/delegation-7702-publish');
 
 /**
  * Build a mock NetworkController.
@@ -43,7 +57,7 @@ function buildInitRequestMock(): jest.Mocked<
     TransactionControllerInitMessenger
   >
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = getRootMessenger();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
@@ -62,6 +76,10 @@ function buildInitRequestMock(): jest.Mocked<
 
 describe('Transaction Controller Init', () => {
   const transactionControllerClassMock = jest.mocked(TransactionController);
+  const transactionPayPublishHookClassMock = jest.mocked(
+    TransactionPayPublishHook,
+  );
+  const payHookMock: jest.MockedFn<PublishHook> = jest.fn();
 
   /**
    * Extract a constructor option passed to the controller.
@@ -70,6 +88,8 @@ describe('Transaction Controller Init', () => {
    * @param dependencyProperties - Any properties required on the controller dependencies.
    * @returns The extracted option.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   function testConstructorOption<T extends keyof TransactionControllerOptions>(
     option: T,
     dependencyProperties: Record<string, unknown> = {},
@@ -87,6 +107,41 @@ describe('Transaction Controller Init', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+
+    transactionPayPublishHookClassMock.mockReturnValue({
+      getHook: () => payHookMock,
+    } as unknown as TransactionPayPublishHook);
+
+    payHookMock.mockResolvedValue({
+      transactionHash: undefined,
+    });
+
+    jest
+      .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+      .mockReturnValue({
+        isSmartTransaction: false,
+        featureFlags: {
+          extensionReturnTxHashAsap: false,
+          extensionReturnTxHashAsapBatch: false,
+          extensionSkipSmartTransactionStatusPage: false,
+          mobileActive: false,
+          extensionActive: false,
+        },
+        isHardwareWalletAccount: false,
+      });
+
+    jest
+      .mocked(sentinelApiModule.isSendBundleSupported)
+      .mockResolvedValue(false);
+
+    const delegation7702HookMock: jest.MockedFn<PublishHook> = jest.fn();
+    delegation7702HookMock.mockResolvedValue({ transactionHash: undefined });
+    jest.mocked(Delegation7702PublishHook).mockImplementation(
+      () =>
+        ({
+          getHook: () => delegation7702HookMock,
+        }) as unknown as Delegation7702PublishHook,
+    );
   });
 
   it('returns controller instance', () => {
@@ -179,5 +234,73 @@ describe('Transaction Controller Init', () => {
     });
 
     expect(isSimulationEnabled?.()).toBe(true);
+  });
+
+  it('always disables pending transaction resubmit', () => {
+    const pendingTransactions = testConstructorOption('pendingTransactions');
+
+    expect(pendingTransactions?.isResubmitEnabled?.()).toBe(false);
+  });
+
+  jestIt.each([
+    ['swap', TransactionType.swap, false],
+    ['swapApproval', TransactionType.swapApproval, false],
+    ['bridge', TransactionType.bridge, false],
+    ['bridgeApproval', TransactionType.bridgeApproval, false],
+    ['contractInteraction', TransactionType.contractInteraction, true],
+  ])(
+    'disables automatic gas fee updates for %s transactions',
+    (_label, type, gasFeeUpdateEnabled) => {
+      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
+        'isAutomaticGasFeeUpdateEnabled',
+      );
+
+      const tx: TransactionMeta = {
+        id: '1',
+        type,
+        chainId: CHAIN_ID_MOCK,
+        networkClientId: 'test-network',
+        status: TransactionStatus.unapproved,
+        time: Date.now(),
+        txParams: {
+          from: '0x0000000000000000000000000000000000000000',
+        },
+      };
+
+      expect(isAutomaticGasFeeUpdateEnabled?.(tx)).toBe(gasFeeUpdateEnabled);
+    },
+  );
+
+  describe('publish hook', () => {
+    const mockTransactionMeta: TransactionMeta = {
+      id: '123',
+      chainId: CHAIN_ID_MOCK,
+      status: TransactionStatus.approved,
+      time: Date.now(),
+      txParams: {
+        from: '0x0000000000000000000000000000000000000000',
+      },
+      networkClientId: 'test-network',
+    };
+
+    it('calls TransactionPayPublishHook', async () => {
+      const hooks = testConstructorOption('hooks');
+
+      await hooks?.publish?.(mockTransactionMeta);
+
+      expect(payHookMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('returns pay hook result when transactionHash is present', async () => {
+      payHookMock.mockResolvedValue({
+        transactionHash: '0xpayHash',
+      });
+
+      const hooks = testConstructorOption('hooks');
+
+      const result = await hooks?.publish?.(mockTransactionMeta);
+
+      expect(result).toStrictEqual({ transactionHash: '0xpayHash' });
+    });
   });
 });

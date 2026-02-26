@@ -75,27 +75,24 @@ export default class ContactList extends PureComponent {
       internalAccounts,
     );
 
-    const unsortedContactsByLetter = searchForContacts().reduce(
-      (obj, contact) => {
-        const firstLetter = contact.name[0].toUpperCase();
+    const unsortedContactsByLetter = {};
 
-        const isDuplicate =
-          (duplicateContactMap.get(contact.name.trim().toLowerCase()) ?? [])
-            .length > 1;
+    for (const contact of searchForContacts()) {
+      const firstLetter = contact.name[0].toUpperCase();
 
-        return {
-          ...obj,
-          [firstLetter]: [
-            ...(obj[firstLetter] || []),
-            {
-              ...contact,
-              isDuplicate,
-            },
-          ],
-        };
-      },
-      {},
-    );
+      const isDuplicate =
+        (duplicateContactMap.get(contact.name.trim().toLowerCase()) ?? [])
+          .length > 1;
+
+      if (!unsortedContactsByLetter[firstLetter]) {
+        unsortedContactsByLetter[firstLetter] = [];
+      }
+
+      unsortedContactsByLetter[firstLetter].push({
+        ...contact,
+        isDuplicate,
+      });
+    }
 
     const letters = Object.keys(unsortedContactsByLetter).sort();
 

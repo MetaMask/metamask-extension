@@ -1,4 +1,3 @@
-import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KeyringType } from '../shared/constants/keyring';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
@@ -45,6 +44,13 @@ const state = {
       },
     },
     orderedNetworkList: [],
+    enabledNetworkMap: {
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+        '0x539': true,
+      },
+    },
     pinnedAccountList: [],
     hiddenAccountList: [],
     tokensChainsCache: {
@@ -326,6 +332,59 @@ const state = {
     isInitialized: true,
     isUnlocked: true,
     rpcUrl: 'https://rawtestrpc.metamask.io/',
+    accountTree: {
+      selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+      wallets: {
+        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+          id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+          type: 'entropy',
+          groups: {
+            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+              id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+              type: 'multichain-account',
+              accounts: [
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+              ],
+              metadata: {
+                name: 'Account 1',
+                entropy: {
+                  groupIndex: 0,
+                },
+                hidden: false,
+                pinned: false,
+              },
+            },
+          },
+          metadata: {
+            name: 'Wallet 1',
+            entropy: {
+              id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+            },
+          },
+        },
+        'snap:npm:@metamask/test-snap-bip44': {
+          id: 'snap:npm:@metamask/test-snap-bip44',
+          type: 'snap',
+          groups: {
+            'snap:npm:@metamask/test-snap-bip44/0xde939393DDe455081fFb3Dfd027E189919F04BD0': {
+              id: 'snap:npm:@metamask/test-snap-bip44/0xde939393DDe455081fFb3Dfd027E189919F04BD0',
+              type: 'single-account',
+              accounts: ['64f9d02e-47e6-4dfd-8232-f3518606cad3'],
+              metadata: {
+                name: 'Snap Account 1',
+              },
+            },
+          },
+          metadata: {
+            name: 'BIP-44',
+            snap: {
+              id: 'npm:@metamask/test-snap-bip44',
+            },
+          }
+        },
+      },
+    },
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -398,6 +457,25 @@ const state = {
           type: EthAccountType.Eoa,
           scopes: [EthScope.Eoa],
         },
+        '64f9d02e-47e6-4dfd-8232-f3518606cad3': {
+          address: '0xde939393DDe455081fFb3Dfd027E189919F04BD0',
+          id: '64f9d02e-47e6-4dfd-8232-f3518606cad3',
+          metadata: {
+            name: 'Snap Account 1',
+            keyring: {
+              type: 'Snap Keyring',
+            },
+            snap: {
+              enabled: true,
+              id: 'npm:@metamask/test-snap-bip44',
+              name: 'BIP-44',
+            },
+          },
+          options: {},
+          methods: ETH_EOA_METHODS,
+          type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
+        },
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
@@ -415,56 +493,6 @@ const state = {
         address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
       },
     },
-    transactions: [
-      {
-        id: 3111025347726181,
-        time: 1620710815484,
-        status: 'unapproved',
-        msgParams: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-        chainId: '0x5',
-        loadingDefaults: false,
-        txParams: {
-          from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-          to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
-          value: '0x0',
-          data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
-          gas: '0xcb28',
-          gasPrice: '0x77359400',
-        },
-        type: 'standard',
-        origin: 'metamask',
-        transactionCategory: 'transfer',
-        history: [
-          {
-            id: 7786962153682822,
-            time: 1620710815484,
-            status: 'unapproved',
-            chainId: '0x5',
-            loadingDefaults: true,
-            txParams: {
-              from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-              to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
-              value: '0x0',
-              data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
-              gas: '0xcb28',
-              gasPrice: '0x77359400',
-            },
-            type: 'standard',
-            origin: 'metamask',
-            transactionCategory: 'transfer',
-          },
-          [
-            {
-              op: 'replace',
-              path: '/loadingDefaults',
-              value: false,
-              note: 'Added new unapproved transaction.',
-              timestamp: 1620710815497,
-            },
-          ],
-        ],
-      },
-    ],
     transactionBatches: {},
     addressBook: {
       undefined: {
@@ -528,6 +556,7 @@ const state = {
         ],
       },
     },
+    allIgnoredTokens: {},
     tokenBalances: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         '0x1': {
@@ -697,27 +726,12 @@ const state = {
         ],
       },
     ],
-    send: {
-      gasLimit: '0xcb28',
-      gasPrice: null,
-      gasTotal: null,
-      tokenBalance: '8.7a73149c048545a3fe58',
-      from: '',
-      to: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
-      amount: '3782dace9d900000',
-      memo: '',
-      errors: {},
-      maxModeOn: false,
-      editingTransactionId: null,
-      toNickname: 'Account 2',
-      domainResolution: null,
-      domainResolutionError: '',
-      token: {
-        address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
-        symbol: 'DAI',
-        decimals: 18,
-      },
-    },
+    accountsAssets: {},
+    assetsMetadata: {},
+    allIgnoredAssets: {},
+    balances: {},
+    conversionRates: {},
+    networkConfigurationsByChainId: {},
     useBlockie: false,
     featureFlags: {},
     slides: [],
@@ -746,46 +760,25 @@ const state = {
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Tokens',
     network: '5',
-    accounts: {
-      '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
-        address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-        balance: '0x176e5b6f173ebe66',
-      },
-      '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
-        address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
-        balance: '0x2d3142f5000',
-      },
-      '0x9d0ba4ddac06032527b140912ec808ab9451b788': {
-        address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
-        balance: '0x15f6f0b9d4f8d000',
-      },
-    },
     accountsByChainId: {
       '0x1': {
-        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': { balance: '0x0' },
-        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
+        '0x64A845a5b02460ACf8a3D84503b0D68d028B4bb4': { balance: '0x0' },
+        '0xb19Ac54EfA18CC3A14A5B821bFeC73d284Bf0c5e': {
           balance: '0xcaf5317161f400',
         },
-        '0x9d0ba4ddac06032527b140912ec808ab9451b788': { balance: '0x0' },
+        '0x9D0ba4DDAC06032527B140912EC808ab9451b788': { balance: '0x0' },
       },
       '0x5': {
-        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
-          address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+        '0x64A845a5b02460ACf8a3D84503b0D68d028B4bb4': {
           balance: '0x176e5b6f173ebe66',
         },
-        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
-          address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
+        '0xb19Ac54EfA18CC3A14A5B821bFeC73d284Bf0c5e': {
           balance: '0x2d3142f5000',
         },
-        '0x9d0ba4ddac06032527b140912ec808ab9451b788': {
-          address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
+        '0x9D0ba4DDAC06032527B140912EC808ab9451b788': {
           balance: '0x15f6f0b9d4f8d000',
         },
       },
-    },
-    currentBlockGasLimit: '0x793af4',
-    currentBlockGasLimitByChainId: {
-      '0x5': '0x793af4',
     },
     transactions: [
       {
@@ -1282,6 +1275,14 @@ const state = {
           name: '',
         },
       },
+      {
+        type: KeyringType.snap,
+        accounts: ['0xde939393DDe455081fFb3Dfd027E189919F04BD0'],
+        metadata: {
+          id: '',
+          name: '',
+        },
+      },
     ],
     ...mockNetworkState(
       {
@@ -1664,9 +1665,12 @@ const state = {
       },
     },
     openSeaEnabled: true,
+    networkConnectionBanner: {
+      status: 'unknown',
+    },
+    coverageResults: {},
   },
   appState: {
-    isAccountMenuOpen: false,
     welcomeScreenSeen: false,
     pendingTokens: {},
     confirmationExchangeRates: {},
@@ -1719,26 +1723,6 @@ const state = {
   },
   history: {
     mostRecentOverviewPage: '/',
-  },
-  send: {
-    toDropdownOpen: false,
-    gasButtonGroupShown: true,
-    errors: {},
-    asset: {
-      type: 'NATIVE',
-      balance: '0x0',
-      details: null,
-    },
-    gas: { error: 'gas' },
-    amount: {
-      error: 'amount',
-    },
-    currentTransactionUUID: 'test-uuid',
-    draftTransactions: {
-      'test-uuid': {
-        ...draftTransactionInitialState,
-      },
-    },
   },
   confirmTransaction: {
     txData: {

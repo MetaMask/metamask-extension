@@ -1,6 +1,7 @@
 import { Interface, TransactionDescription } from '@ethersproject/abi';
 import { Hex } from '@metamask/utils';
-import { addHexPrefix, stripHexPrefix } from 'ethereumjs-util';
+
+import { decodeCommandV3Path } from '../../../../../shared/modules/decoding';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { UNISWAP_ROUTER_COMMANDS } from './uniswap-commands';
 
@@ -22,9 +23,6 @@ export type UniswapPathPool = {
   tickSpacing: number;
   secondAddress: Hex;
 };
-
-const ADDRESS_LENGTH = 40;
-const TICK_SPACING_LENGTH = 6;
 
 export const UNISWAP_UNIVERSAL_ROUTER_ADDRESSES = {
   [CHAIN_IDS.ARBITRUM]: [
@@ -164,7 +162,7 @@ function decodeUniswapCommand(
   const params = data.params.map((param, index) => {
     const { name: paramName, type, description } = param;
     const rawData = values[index];
-    const value = paramName === 'path' ? decodeUniswapPath(rawData) : rawData;
+    const value = paramName === 'path' ? decodeCommandV3Path(rawData) : rawData;
 
     return { name: paramName, type, value, description };
   });
@@ -173,44 +171,4 @@ function decodeUniswapCommand(
     name,
     params,
   };
-}
-
-function decodeUniswapPath(rawPath: string): UniswapPathPool[] {
-  const pools: UniswapPathPool[] = [];
-  let remainingData = stripHexPrefix(rawPath);
-  let currentPool = {} as UniswapPathPool;
-  let isParsingAddress = true;
-
-  while (remainingData.length) {
-    if (isParsingAddress) {
-      const address = addHexPrefix(
-        remainingData.slice(0, ADDRESS_LENGTH),
-      ) as Hex;
-
-      if (currentPool.firstAddress) {
-        currentPool.secondAddress = address;
-
-        pools.push(currentPool);
-
-        currentPool = {
-          firstAddress: address,
-        } as UniswapPathPool;
-      } else {
-        currentPool.firstAddress = address;
-      }
-
-      remainingData = remainingData.slice(ADDRESS_LENGTH);
-    } else {
-      currentPool.tickSpacing = parseInt(
-        remainingData.slice(0, TICK_SPACING_LENGTH),
-        16,
-      );
-
-      remainingData = remainingData.slice(TICK_SPACING_LENGTH);
-    }
-
-    isParsingAddress = !isParsingAddress;
-  }
-
-  return pools;
 }

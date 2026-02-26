@@ -1,28 +1,36 @@
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
-import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { largeDelayMs, withFixtures } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { buildSolanaTestSpecificMock } from '../../tests/solana/common-solana';
 import {
   clickCancelButton,
   clickConfirmButton,
   connectSolanaTestDapp,
-  DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
 } from './testHelpers';
 
 describe('Solana Wallet Standard - Transfer SOL', function () {
   describe('Send a transaction', function () {
     it('Should send a transaction', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          mockCalls: true,
-          simulateTransaction: false,
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
+          testSpecificMock: buildSolanaTestSpecificMock({
+            mockGetTransactionSuccess: true,
+          }),
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp, {
             includeDevnet: true,
           });
@@ -60,16 +68,22 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
     });
 
     it('Should be able to cancel a transaction and send another one', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          mockCalls: true,
-          simulateTransaction: false,
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
+          testSpecificMock: buildSolanaTestSpecificMock({
+            mockGetTransactionSuccess: true,
+          }),
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp, {
             includeDevnet: true,
           });
@@ -103,17 +117,24 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
 
     describe('Given I have connected to Mainnet and Devnet', function () {
       it('Should use the Devnet scope as specified by the Dapp', async function () {
-        await withSolanaAccountSnap(
+        await withFixtures(
           {
-            ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+            fixtures: new FixtureBuilderV2().build(),
             title: this.test?.fullTitle(),
-            mockCalls: true,
+            dappOptions: {
+              customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+            },
+            testSpecificMock: buildSolanaTestSpecificMock({
+              mockGetTransactionSuccess: true,
+            }),
           },
-          async (driver) => {
+          async ({ driver }) => {
+            await loginWithBalanceValidation(driver);
             const testDapp = new TestDappSolana(driver);
             await testDapp.openTestDappPage();
+            await testDapp.checkPageIsLoaded();
             await connectSolanaTestDapp(driver, testDapp, {
-              includeDevnet: false, // Connect to Mainnet only
+              includeDevnet: true,
             });
 
             // Send a transaction
@@ -124,12 +145,14 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
             await driver.delay(largeDelayMs);
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            // Look for the permission to be set to Devnet
-            await driver.clickElement({ text: 'Permissions', tag: 'button' });
+            // Look for the target chain to be set to Devnet
             const permission = await driver.findElement(
-              By.xpath("//span[contains(text(), 'Solana Devnet')]"),
+              By.xpath("//p[contains(text(), 'Solana Devnet')]"),
             );
             assert.ok(permission);
+
+            // Confirm connection
+            await driver.clickElement({ text: 'Confirm', tag: 'span' });
           },
         );
       });

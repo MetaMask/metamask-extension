@@ -23,6 +23,8 @@ const ICON_MAP = {
   [TransactionGroupCategory.swapAndSend]: IconName.Arrow2UpRight,
   [TransactionGroupCategory.bridge]: IconName.Bridge,
   [TransactionGroupCategory.redeposit]: IconName.Refresh,
+  'stake:deposit': IconName.Stake,
+  'stake:withdraw': IconName.Stake,
 };
 
 const COLOR_MAP = {
@@ -100,5 +102,7 @@ TransactionIcon.propTypes = {
     TransactionGroupCategory.swap,
     TransactionGroupCategory.swapAndSend,
     TransactionGroupCategory.bridge,
+    'stake:deposit',
+    'stake:withdraw',
   ]).isRequired,
 };

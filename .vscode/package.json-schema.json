@@ -25,6 +25,14 @@
             "postinstall": {
               "type": "string",
               "description": "Runs automatically after running `yarn` (`yarn install`) in order to prime the webpack dev build."
+            },
+            "yarn-binary:download": {
+              "type": "string",
+              "description": "Downloads and packages the yarn version specified in package.json packageManager field into .yarn/yarn-corepack.tgz for offline use."
+            },
+            "yarn-binary:hydrate": {
+              "type": "string",
+              "description": "Activates the yarn version from the committed .yarn/yarn-corepack.tgz tarball using corepack hydrate."
             }
           }
         },

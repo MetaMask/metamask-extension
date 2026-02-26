@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { useLocation } from 'react-router-dom';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as Actions from '../../../store/actions';
 import {
   hideBasicFunctionalityModal,
@@ -32,35 +31,44 @@ jest.mock('react-redux', () => {
   };
 });
 
+const mockUseLocation = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useLocation: jest.fn(),
+  useLocation: () => mockUseLocation(),
 }));
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type StateOverrides<T extends boolean> = {
   metamask: {
     useExternalServices: T;
   };
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type ArrangeMocksParams<T extends boolean> = {
   isOnboarding?: boolean;
   stateOverrides?: StateOverrides<T>;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type ArrangeMocksReturn<T extends boolean> = {
   toggleBasicFunctionalityButton: HTMLElement;
   cancelButton: HTMLElement;
   agreementCheckbox: T extends true ? HTMLElement : null;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const arrangeMocks = <T extends boolean>({
   isOnboarding = false,
   stateOverrides,
 }: ArrangeMocksParams<T> = {}): ArrangeMocksReturn<T> => {
   jest.clearAllMocks();
 
-  (useLocation as jest.Mock).mockReturnValue({
+  (mockUseLocation as jest.Mock).mockReturnValue({
     pathname: isOnboarding
       ? ONBOARDING_PRIVACY_SETTINGS_ROUTE
       : '/any-other-path',

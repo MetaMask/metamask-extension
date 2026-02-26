@@ -1,26 +1,24 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
+
+import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
 import { useConfirmContext } from '../context/confirm';
-import { NATIVE_TOKEN_ADDRESS } from '../components/confirm/info/hooks/useGasFeeToken';
-import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useIsGaslessSupported } from './gas/useIsGaslessSupported';
+import { useHasInsufficientBalance } from './useHasInsufficientBalance';
 
 export function useAutomaticGasFeeTokenSelect() {
   const dispatch = useDispatch();
-  const { isSupported: isGaslessSupported, isSmartTransaction } =
-    useIsGaslessSupported();
+  const { isSmartTransaction } = useIsGaslessSupported();
   const [firstCheck, setFirstCheck] = useState(true);
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const hasInsufficientBalance = Boolean(
-    useInsufficientBalanceAlerts()?.length,
-  );
+  const { hasInsufficientBalance } = useHasInsufficientBalance();
 
   const {
     gasFeeTokens,
@@ -40,7 +38,6 @@ export function useAutomaticGasFeeTokenSelect() {
   }, [dispatch, transactionId, firstGasFeeTokenAddress]);
 
   const shouldSelect =
-    isGaslessSupported &&
     hasInsufficientBalance &&
     !selectedGasFeeToken &&
     Boolean(firstGasFeeTokenAddress);
@@ -50,10 +47,9 @@ export function useAutomaticGasFeeTokenSelect() {
       return;
     }
 
-    setFirstCheck(false);
-
     if (shouldSelect) {
       await selectFirstToken();
+      setFirstCheck(false);
     }
   }, [shouldSelect, selectFirstToken, firstCheck, gasFeeTokens, transactionId]);
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import { CaipAssetType, Hex } from '@metamask/utils';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -9,26 +9,55 @@ import {
   BadgeWrapper,
 } from '../../../../component-library';
 import { getNativeCurrencyForChain } from '../../../../../selectors';
-import {
-  getImageForChainId,
-  getMultichainIsEvm,
-} from '../../../../../selectors/multichain';
+import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import {
+  getAssetImageUrl,
+  isEvmChainId,
+} from '../../../../../../shared/lib/asset-utils';
 
 type AssetCellBadgeProps = {
   chainId: `0x${string}` | `${string}:${string}`;
   isNative?: boolean;
   tokenImage: string;
   symbol: string;
+  assetId?: CaipAssetType | Hex;
+};
+
+export const getAvatarTokenSrc = (
+  opts: Pick<
+    AssetCellBadgeProps,
+    'chainId' | 'isNative' | 'tokenImage' | 'assetId'
+  >,
+): string => {
+  try {
+    const isEvm = isEvmChainId(opts.chainId);
+    if (isEvm && opts.isNative) {
+      return getNativeCurrencyForChain(opts.chainId);
+    }
+
+    if (!opts.tokenImage && opts.assetId && !opts.isNative) {
+      return getAssetImageUrl(opts.assetId, opts.chainId) ?? '';
+    }
+
+    return opts.tokenImage;
+  } catch (error) {
+    console.error('getAvatarTokenSrc - failed to get avatar token src', error);
+  }
+
+  return opts.tokenImage;
 };
 
 export const AssetCellBadge = React.memo(
-  ({ chainId, isNative, tokenImage, symbol }: AssetCellBadgeProps) => {
-    const isEvm = useSelector(getMultichainIsEvm);
+  ({ chainId, isNative, tokenImage, symbol, assetId }: AssetCellBadgeProps) => {
     const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
-    const avatarTokenSrc =
-      isEvm && isNative ? getNativeCurrencyForChain(chainId) : tokenImage;
+    const avatarTokenSrc = getAvatarTokenSrc({
+      chainId,
+      isNative,
+      tokenImage,
+      assetId,
+    });
     const badgeWrapperSrc = getImageForChainId(chainId) ?? undefined;
 
     return (
@@ -38,7 +67,7 @@ export const AssetCellBadge = React.memo(
             size={AvatarNetworkSize.Xs}
             name={allNetworks?.[chainId as Hex]?.name}
             src={badgeWrapperSrc}
-            backgroundColor={BackgroundColor.backgroundMuted}
+            backgroundColor={BackgroundColor.backgroundSection}
             borderWidth={2}
           />
         }
@@ -47,7 +76,7 @@ export const AssetCellBadge = React.memo(
       >
         <AvatarToken
           name={symbol}
-          backgroundColor={BackgroundColor.backgroundMuted}
+          backgroundColor={BackgroundColor.backgroundSection}
           src={avatarTokenSrc}
         />
       </BadgeWrapper>

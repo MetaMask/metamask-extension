@@ -83,6 +83,7 @@ const snapConfigurations: Record<string, string> = {
   mockBip44Snap: 'bip44-example-snap',
   mockClientStatusSnap: 'client-status-example-snap',
   mockCronjobSnap: 'cronjob-example-snap',
+  mockCronjobDurationSnap: 'cronjob-duration-example-snap',
   mockDialogSnap: 'dialog-example-snap',
   mockErrorSnap: 'error-example-snap',
   mockEthereumProviderSnap: 'ethereum-provider-example-snap',
@@ -107,6 +108,7 @@ const snapConfigurations: Record<string, string> = {
   mockWasmSnap: 'wasm-example-snap',
   mockWebpackPluginSnap: 'webpack-plugin-example-snap',
   mockBackgroundEventsSnap: 'background-events-example-snap',
+  mockMultichainProviderSnap: 'multichain-provider-example-snap',
 };
 
 export async function mockAccountAbstractionKeyringSnap(mockServer: Mockttp) {
@@ -141,6 +143,13 @@ export async function mockCronjobSnap(mockServer: Mockttp) {
   return createSnapMock({
     mockServer,
     snapNamePrefix: snapConfigurations.mockCronjobSnap,
+  });
+}
+
+export async function mockCronjobDurationSnap(mockServer: Mockttp) {
+  return createSnapMock({
+    mockServer,
+    snapNamePrefix: snapConfigurations.mockCronjobDurationSnap,
   });
 }
 
@@ -317,5 +326,12 @@ export async function mockBackgroundEventsSnap(mockServer: Mockttp) {
   return createSnapMock({
     mockServer,
     snapNamePrefix: snapConfigurations.mockBackgroundEventsSnap,
+  });
+}
+
+export async function mockMultichainProviderSnap(mockServer: Mockttp) {
+  return createSnapMock({
+    mockServer,
+    snapNamePrefix: snapConfigurations.mockMultichainProviderSnap,
   });
 }

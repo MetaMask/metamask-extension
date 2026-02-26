@@ -1,6 +1,6 @@
 import { waitFor } from '@testing-library/react';
-import { Hex } from '@metamask/utils';
-import { renderHookWithProviderTyped } from '../../test/lib/render-helpers';
+import { CaipChainId, Hex } from '@metamask/utils';
+import { renderHookWithProviderTyped } from '../../test/lib/render-helpers-navigate';
 import * as SelectorsModule from '../selectors/selectors';
 import * as MultichainSelectorsModule from '../selectors/multichain';
 import * as IsOriginalNativeTokenSymbolModule from '../helpers/utils/isOriginalNativeTokenSymbol';
@@ -8,18 +8,14 @@ import { useIsOriginalNativeTokenSymbol } from './useIsOriginalNativeTokenSymbol
 
 const arrangeMocks = () => {
   // Mock Selectors
-  const mockGetMultichainIsEVM = jest
-    .spyOn(MultichainSelectorsModule, 'getMultichainIsEvm')
-    .mockReturnValue(true);
-
-  const mockUseSafeChainsListValidationSelector = jest
-    .spyOn(SelectorsModule, 'useSafeChainsListValidationSelector')
+  const mockGetUseSafeChainsListValidation = jest
+    .spyOn(SelectorsModule, 'getUseSafeChainsListValidation')
     .mockReturnValue(true);
 
   const createMockProviderConfig = () =>
     ({
       ticker: 'ETH',
-    } as MultichainSelectorsModule.MultichainNetwork['network']);
+    }) as MultichainSelectorsModule.MultichainNetwork['network'];
   const mockGetMultichainCurrentNetwork = jest
     .spyOn(MultichainSelectorsModule, 'getMultichainCurrentNetwork')
     .mockReturnValue(createMockProviderConfig());
@@ -30,8 +26,7 @@ const arrangeMocks = () => {
     .mockResolvedValue(true);
 
   return {
-    mockGetMultichainIsEVM,
-    mockUseSafeChainsListValidationSelector,
+    mockGetUseSafeChainsListValidation,
     createMockProviderConfig,
     mockGetMultichainCurrentNetwork,
     mockIsOriginalNativeTokenSymbol,
@@ -39,7 +34,7 @@ const arrangeMocks = () => {
 };
 
 const arrangeParams = () => ({
-  chainId: '0x1' as Hex,
+  chainId: '0x1' as Hex | CaipChainId,
   ticker: 'ETH',
   type: 'mainnet',
   rpcUrl: '',
@@ -107,12 +102,12 @@ describe('useIsOriginalNativeTokenSymbol', () => {
 
   it('should return true if non-evm symbol matches', async () => {
     const { hook, mocks } = arrangeActHook((m, params) => {
-      m.mockGetMultichainIsEVM.mockReturnValue(false);
       m.mockGetMultichainCurrentNetwork.mockReturnValue({
         ...m.createMockProviderConfig(),
         ticker: 'SOL',
       });
       params.ticker = 'SOL';
+      params.chainId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
     });
 
     await waitFor(() => {

@@ -24,13 +24,15 @@ export type FormattedValueProps = {
   type: NameType;
 };
 
-const FormattedValue = memo(({ value, type }: FormattedValueProps) => {
-  const formattedValue = formatValue(value, type);
-  return (
-    <Text className="name__value" variant={TextVariant.bodyMd}>
-      {formattedValue}
-    </Text>
-  );
-});
+const FormattedValue = memo(
+  ({ value, type, ...props }: FormattedValueProps) => {
+    const formattedValue = formatValue(value, type);
+    return (
+      <Text className="name__value" variant={TextVariant.bodyMd} {...props}>
+        {formattedValue}
+      </Text>
+    );
+  },
+);
 
 export default FormattedValue;

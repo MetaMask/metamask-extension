@@ -2,11 +2,9 @@ import React from 'react';
 import thunk from 'redux-thunk';
 import { waitFor, fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import messages from '../../../../../app/_locales/en/messages.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import NewAccountModal from './new-account-modal.container';
 
@@ -23,9 +21,9 @@ const mockNewMetamaskState = {
   currentLocale: 'en',
 };
 
-jest.mock('../../../../selectors/selectors', () => ({
-  ...jest.requireActual('../../../../selectors/selectors'),
-  getInternalAccountByAddress: () => jest.fn().mockReturnValue(mockNewAccount),
+jest.mock('../../../../selectors/accounts', () => ({
+  ...jest.requireActual('../../../../selectors/accounts'),
+  getInternalAccountByAddress: () => mockNewAccount,
 }));
 
 const mockSubmitRequestToBackground = jest.fn().mockImplementation((method) => {

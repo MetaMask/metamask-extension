@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../tooltip';
 import Popover from '../popover';
@@ -21,18 +21,19 @@ const NicknamePopover = ({
   explorerLink,
 }) => {
   const t = useContext(I18nContext);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const onAddClick = useCallback(() => {
     onAdd();
   }, [onAdd]);
 
-  const [copied, handleCopy] = useCopyToClipboard();
+  // useCopyToClipboard analysis: Copies one of your public addresses
+  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const tokenList = useSelector(getTokenList);
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
 
   const routeToAddBlockExplorerUrl = () => {
-    history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
+    navigate(`${NETWORKS_ROUTE}#blockExplorerUrl`);
   };
 
   const openBlockExplorer = () => {

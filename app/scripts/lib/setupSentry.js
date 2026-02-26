@@ -1,19 +1,14 @@
-import { createModuleLogger, createProjectLogger } from '@metamask/utils';
+import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
+import { sentryLogger as log } from '../../../shared/lib/sentry';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
+import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
-
-const projectLogger = createProjectLogger('sentry');
-let installType = 'unknown';
-
-export const log = createModuleLogger(
-  projectLogger,
-  globalThis.document ? 'ui' : 'background',
-);
+import { getInstallType, initInstallType } from './install-type';
 
 const internalLog = createModuleLogger(log, 'internal');
 
@@ -22,9 +17,13 @@ const internalLog = createModuleLogger(log, 'internal');
 const METAMASK_BUILD_TYPE = process.env.METAMASK_BUILD_TYPE;
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG;
 const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT;
-const RELEASE = process.env.METAMASK_VERSION;
+const RELEASE = getSentryRelease(
+  METAMASK_ENVIRONMENT,
+  process.env.METAMASK_VERSION,
+);
 const SENTRY_DSN = process.env.SENTRY_DSN;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
+const SENTRY_DSN_PERFORMANCE = process.env.SENTRY_DSN_PERFORMANCE;
 /* eslint-enable prefer-destructuring */
 
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
@@ -50,18 +49,10 @@ export default function setupSentry() {
 
   log('Initializing');
 
-  // Normally this would be awaited, but getSelf should be available by the time the report is finalized.
-  // If it's not, we still get the extensionId, but the installType will default to "unknown"
-  browser.management
-    .getSelf()
-    .then((extensionInfo) => {
-      if (extensionInfo.installType) {
-        installType = extensionInfo.installType;
-      }
-    })
-    .catch((error) => {
-      log('Error getting extension installType', error);
-    });
+  // Initialize install type early - fire and forget.
+  // By the time errors are reported, the cache should be populated.
+  initInstallType();
+
   integrateLogging();
   setSentryClient();
 
@@ -102,6 +93,8 @@ function getClientOptions() {
     // `false`.
     sendClientReports: false,
     tracesSampleRate: getTracesSampleRate(sentryTarget),
+    // If we are reporting to SENTRY_DSN_PERFORMANCE, we want to ignore all errors.
+    ignoreErrors: sentryTarget === SENTRY_DSN_PERFORMANCE ? [/.*/u] : undefined,
     transport: makeTransport,
   };
 }
@@ -125,13 +118,13 @@ function getTracesSampleRate(sentryTarget) {
     return flags.sentry.tracesSampleRate;
   }
 
-  if (flags.circleci) {
-    // Report very frequently on main branch, and never on other branches
+  if (flags.ci) {
+    // Report more frequently on main branch, and less frequently on other branches
     // (Unless you use a `flags = {"sentry": {"tracesSampleRate": x.xx}}` override)
-    if (flags.circleci.branch === 'main') {
+    if (flags.ci.branch === 'main') {
       return 0.015;
     }
-    return 0;
+    return 0.001;
   }
 
   if (METAMASK_DEBUG) {
@@ -142,19 +135,25 @@ function getTracesSampleRate(sentryTarget) {
 }
 
 /**
- * Get CircleCI tags passed from the test environment, through manifest.json,
+ * Get CI tags passed from the test environment, through manifest.json,
  * and give them to the Sentry client.
  */
-function setCircleCiTags() {
-  const { circleci } = getManifestFlags();
+function setCITags() {
+  const { ci } = getManifestFlags();
 
-  if (circleci?.enabled) {
-    Sentry.setTag('circleci.enabled', circleci.enabled);
-    Sentry.setTag('circleci.branch', circleci.branch);
-    Sentry.setTag('circleci.buildNum', circleci.buildNum);
-    Sentry.setTag('circleci.job', circleci.job);
-    Sentry.setTag('circleci.nodeIndex', circleci.nodeIndex);
-    Sentry.setTag('circleci.prNumber', circleci.prNumber);
+  if (ci?.enabled) {
+    Sentry.setTag('ci.enabled', ci.enabled);
+    Sentry.setTag('ci.branch', ci.branch);
+    Sentry.setTag('ci.commitHash', ci.commitHash);
+    Sentry.setTag('ci.job', ci.job);
+    Sentry.setTag('ci.matrixIndex', ci.matrixIndex);
+    Sentry.setTag('ci.prNumber', ci.prNumber);
+    if (ci.persona) {
+      Sentry.setTag('ci.persona', ci.persona);
+    }
+    if (ci.testTitle) {
+      Sentry.setTag('ci.testTitle', ci.testTitle);
+    }
   }
 }
 
@@ -198,38 +197,13 @@ function getMetaMetricsEnabledFromPersistedState(persistedState) {
 }
 
 /**
- * Returns whether onboarding has completed, given the application state.
+ * Returns whether MetaMetrics is enabled, given the backup state.
  *
- * @param {Record<string, unknown>} appState - Application state
- * @returns `true` if onboarding has completed, `false` otherwise.
+ * @param {unknown} backupState - Backup state from IndexedDB
+ * @returns `true` if MetaMetrics is enabled in the backup, `false` otherwise.
  */
-function getOnboardingCompleteFromAppState(appState) {
-  // during initialization after loading persisted state
-  if (appState.persistedState) {
-    return getOnboardingCompleteFromPersistedState(appState.persistedState);
-    // After initialization
-  } else if (appState.state) {
-    // UI
-    if (appState.state.metamask) {
-      return Boolean(appState.state.metamask.completedOnboarding);
-    }
-    // background
-    return Boolean(appState.state.OnboardingController?.completedOnboarding);
-  }
-  // during initialization, before first persisted state is read
-  return false;
-}
-
-/**
- * Returns whether onboarding has completed, given the persisted state.
- *
- * @param {Record<string, unknown>} persistedState - Persisted state
- * @returns `true` if onboarding has completed, `false` otherwise.
- */
-function getOnboardingCompleteFromPersistedState(persistedState) {
-  return Boolean(
-    persistedState.data?.OnboardingController?.completedOnboarding,
-  );
+function getMetaMetricsEnabledFromBackupState(backupState) {
+  return Boolean(backupState?.MetaMetricsController?.participateInMetaMetrics);
 }
 
 function getSentryEnvironment() {
@@ -241,11 +215,17 @@ function getSentryEnvironment() {
 }
 
 function getSentryTarget() {
+  const manifestFlags = getManifestFlags();
+
   if (
     process.env.IN_TEST &&
-    (!SENTRY_DSN_DEV || !getManifestFlags().sentry?.forceEnable)
+    (!SENTRY_DSN_DEV || !manifestFlags.sentry?.forceEnable)
   ) {
     return SENTRY_DSN_FAKE;
+  }
+
+  if (manifestFlags.ci?.enabled && SENTRY_DSN_PERFORMANCE) {
+    return SENTRY_DSN_PERFORMANCE;
   }
 
   if (METAMASK_ENVIRONMENT !== 'production') {
@@ -270,30 +250,31 @@ function getSentryTarget() {
 async function getMetaMetricsEnabled() {
   const flags = getManifestFlags();
 
-  if (flags.circleci && flags.sentry.forceEnable) {
+  if (flags.ci && flags.sentry.forceEnable) {
     return true;
   }
 
   const appState = getState();
 
   if (appState.state || appState.persistedState) {
-    return (
-      getMetaMetricsEnabledFromAppState(appState) &&
-      getOnboardingCompleteFromAppState(appState)
-    );
+    return getMetaMetricsEnabledFromAppState(appState);
   }
 
   // If we reach here, it means the error was thrown before initialization
   // completed, and before we loaded the persisted state for the first time.
   try {
     const persistedState = await globalThis.stateHooks.getPersistedState();
-    return (
-      getMetaMetricsEnabledFromPersistedState(persistedState) &&
-      getOnboardingCompleteFromPersistedState(persistedState)
-    );
+    return getMetaMetricsEnabledFromPersistedState(persistedState);
   } catch (error) {
-    log('Error retrieving persisted state', error);
-    return false;
+    log('Error retrieving persisted state, falling back to backup', error);
+    // Primary storage failed (e.g., database corruption) - check the backup
+    try {
+      const backupState = await globalThis.stateHooks.getBackupState();
+      return getMetaMetricsEnabledFromBackupState(backupState);
+    } catch (backupError) {
+      log('Error retrieving backup state', backupError);
+      return false;
+    }
   }
 }
 
@@ -325,7 +306,7 @@ function setSentryClient() {
   Sentry.registerSpanErrorInstrumentation();
   Sentry.init(clientOptions);
 
-  setCircleCiTags();
+  setCITags();
 
   addDebugListeners();
 
@@ -361,7 +342,6 @@ export function beforeBreadcrumb() {
     const appState = getState();
     if (
       !getMetaMetricsEnabledFromAppState(appState) ||
-      !getOnboardingCompleteFromAppState(appState) ||
       breadcrumb?.category === 'ui.input'
     ) {
       return null;
@@ -425,6 +405,8 @@ export function rewriteReport(report) {
       report.tags = {};
     }
 
+    const installType = getInstallType();
+
     Object.assign(report.extra, {
       appState,
       installType,
@@ -432,6 +414,8 @@ export function rewriteReport(report) {
     });
 
     report.tags.installType = installType;
+    report.tags.storageKind =
+      globalThis.stateHooks?.getStorageKind?.() ?? 'unknown';
   } catch (err) {
     log('Error rewriting report', err);
   }

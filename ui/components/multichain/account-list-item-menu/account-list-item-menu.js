@@ -11,6 +11,7 @@ import {
   getAccountTypeForKeyring,
   getPinnedAccountsList,
   getHiddenAccountsList,
+  getIsMultichainAccountsState1Enabled,
 } from '../../../selectors';
 
 import { MenuItem } from '../../ui/menu';
@@ -49,13 +50,17 @@ export const AccountListItemMenu = ({
   isHidden,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const dispatch = useDispatch();
 
   const chainId = useSelector(getCurrentChainId);
 
   const deviceName = useSelector(getHardwareWalletType);
+
+  const isMultichainAccountsState1Enabled = useSelector(
+    getIsMultichainAccountsState1Enabled,
+  );
 
   const { keyring } = account.metadata;
   const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
@@ -78,7 +83,6 @@ export const AccountListItemMenu = ({
     } else {
       lastItemRef.current = accountDetailsItemRef.current;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     removeJWTItemRef.current,
     removeAccountItemRef.current,
@@ -131,6 +135,12 @@ export const AccountListItemMenu = ({
   };
 
   const handleHidding = (address) => {
+    // If the account is already hidden, we do not add it again
+    // TODO: The controller should handle this logic
+    if (hiddenAccountList.includes(address)) {
+      return;
+    }
+
     const updatedHiddenAccountList = [...hiddenAccountList, address];
     if (pinnedAccountList.includes(address)) {
       handleUnpinning(address);
@@ -181,7 +191,7 @@ export const AccountListItemMenu = ({
                   : handlePinning(account.address);
                 onClose();
               }}
-              iconName={isPinned ? IconName.Unpin : IconName.Pin}
+              iconNameLegacy={isPinned ? IconName.Unpin : IconName.Pin}
             >
               <Text variant={TextVariant.bodySm}>
                 {isPinned ? t('unpin') : t('pinToTop')}
@@ -196,13 +206,13 @@ export const AccountListItemMenu = ({
                 : handleHidding(account.address);
               onClose();
             }}
-            iconName={isHidden ? IconName.Eye : IconName.EyeSlash}
+            iconNameLegacy={isHidden ? IconName.Eye : IconName.EyeSlash}
           >
             <Text variant={TextVariant.bodySm}>
               {isHidden ? t('showAccount') : t('hideAccount')}
             </Text>
           </MenuItem>
-          {isRemovable ? (
+          {isRemovable && !isMultichainAccountsState1Enabled ? (
             <MenuItem
               ref={removeAccountItemRef}
               data-testid="account-list-menu-remove"
@@ -227,7 +237,7 @@ export const AccountListItemMenu = ({
                 onClose();
                 closeMenu?.();
               }}
-              iconName={IconName.Trash}
+              iconNameLegacy={IconName.Trash}
             >
               <Text variant={TextVariant.bodySm}>{t('removeAccount')}</Text>
             </MenuItem>

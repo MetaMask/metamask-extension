@@ -22,6 +22,8 @@ import {
 } from './popover.types';
 
 export const Popover: PopoverComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       children,
@@ -84,29 +86,30 @@ export const Popover: PopoverComponent = React.forwardRef(
       width: matchWidth ? referenceElement?.clientWidth : 'auto',
     };
 
-    // Esc key press
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        // Close the popover when the "Esc" key is pressed
-        if (onPressEscKey) {
-          onPressEscKey();
-        }
-      }
-    };
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        isOpen &&
-        popoverRef.current &&
-        !popoverRef.current.contains(event.target as Node)
-      ) {
-        if (onClickOutside) {
-          onClickOutside();
-        }
-      }
-    };
-
     useEffect(() => {
+      // Esc key press
+      const handleEscKey = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+          // Close the popover when the "Esc" key is pressed
+          if (onPressEscKey) {
+            onPressEscKey();
+          }
+        }
+      };
+
+      const handleClickOutside = (event: MouseEvent) => {
+        if (
+          isOpen &&
+          popoverRef.current &&
+          !popoverRef.current.contains(event.target as Node) &&
+          !referenceElement?.contains(event.target as Node)
+        ) {
+          if (onClickOutside) {
+            onClickOutside();
+          }
+        }
+      };
+
       document.addEventListener('keydown', handleEscKey, { capture: true });
       if (isOpen) {
         document.addEventListener('click', handleClickOutside, {
@@ -120,7 +123,7 @@ export const Popover: PopoverComponent = React.forwardRef(
         document.removeEventListener('keydown', handleEscKey);
         document.removeEventListener('click', handleClickOutside);
       };
-    }, [onPressEscKey, isOpen, onClickOutside]);
+    }, [onPressEscKey, isOpen, onClickOutside, referenceElement]);
 
     const PopoverContent = (
       <Box

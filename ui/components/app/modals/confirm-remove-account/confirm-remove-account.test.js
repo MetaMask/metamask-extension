@@ -2,14 +2,16 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { BtcAccountType } from '@metamask/keyring-api';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { addressSummary } from '../../../../helpers/utils/util';
 import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import ConfirmRemoveAccount from '.';
 
+// @ts-expect-error mocking platform
 global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
 const mockAccount = createMockInternalAccount({
@@ -90,7 +92,7 @@ describe('Confirm Remove Account', () => {
       mockStore,
     );
 
-    fireEvent.click(queryByText('Nevermind'));
+    fireEvent.click(queryByText(messages.nevermind.message));
 
     expect(props.removeAccount).not.toHaveBeenCalled();
     expect(props.hideModal).toHaveBeenCalled();
@@ -102,7 +104,7 @@ describe('Confirm Remove Account', () => {
       mockStore,
     );
 
-    fireEvent.click(queryByText('Remove'));
+    fireEvent.click(queryByText(messages.remove.message));
 
     expect(props.removeAccount).toHaveBeenCalledWith(props.account.address);
     expect(props.hideModal).toHaveBeenCalled();

@@ -17,7 +17,6 @@ import { getMockedNotificationsState } from './data/notification-state';
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
 }));
 
 const backgroundConnectionMocked = {
@@ -31,7 +30,7 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };
@@ -47,7 +46,11 @@ const trackNotificationsActivatedMetaMetricsEvent = async (
         event: MetaMetricsEventName.NotificationsActivated,
         category: MetaMetricsEventCategory.NotificationsActivationFlow,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           action_type: actionType,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_profile_syncing_enabled: profileSyncEnabled,
         },
       }),
@@ -90,6 +93,8 @@ describe('Notifications Activation', () => {
           isNotificationServicesEnabled: false,
           isFeatureAnnouncementsEnabled: false,
           isMetamaskNotificationsFeatureSeen: false,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -134,6 +139,8 @@ describe('Notifications Activation', () => {
           isNotificationServicesEnabled: false,
           isFeatureAnnouncementsEnabled: false,
           isMetamaskNotificationsFeatureSeen: false,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
         },
         backgroundConnection: backgroundConnectionMocked,
       });

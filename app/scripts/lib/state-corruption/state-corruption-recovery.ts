@@ -1,11 +1,19 @@
 import { hasProperty, isObject } from '@metamask/utils';
-import log from 'loglevel';
-import { type Backup, PersistenceManager } from '../stores/persistence-manager';
 import {
-  ErrorLike,
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   METHOD_REPAIR_DATABASE,
-} from '../state-corruption-errors';
+  VaultCorruptionType,
+} from '../../../../shared/constants/state-corruption';
+import {
+  type Backup,
+  PersistenceError,
+  PersistenceManager,
+} from '../stores/persistence-manager';
+import { ErrorLike } from '../../../../shared/constants/errors';
+import { tryPostMessage } from '../start-up-errors/start-up-errors';
+import { RELOAD_WINDOW } from '../../../../shared/constants/start-up-errors';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { trackVaultCorruptionEvent } from './track-vault-corruption';
 
 type Message = Parameters<chrome.runtime.Port['postMessage']>[0];
 
@@ -47,30 +55,8 @@ async function requestRepair(
 }
 
 /**
- * Attempts to post a `message` to the given `port` via `port.postMessage`. If
- * the postMessage call fails due to an exception it will ignore it by catching
- * and then logging it.
- *
- * @param port - The port to post the message to.
- * @param message - The message to post.
- */
-function tryPostMessage(port: chrome.runtime.Port, message: Message): boolean {
-  try {
-    port.postMessage(message);
-    return true;
-  } catch (e) {
-    // an exception can occur here if the Window has since disconnected from
-    // the background, this might be expected, for example, if the UI is closed
-    // while we are still initializing the background (like during a call to
-    // `await isInitialized;`)
-    log.error('MetaMask - Failed to message to port', e, message);
-    return false;
-  }
-}
-
-/**
- * Attempts to get a backup from the database. If the error passed in has a
- * `backup` property, it will use that instead of reading from the database.
+ * Attempts to get a backup from the database. If the error passed in exposes a
+ * `getBackup` function, it will use that instead of reading from the database.
  * This is useful for errors that are thrown during the backup process, as
  * they may already have a backup object on them.
  *
@@ -82,16 +68,18 @@ async function maybeGetBackup(
   database: PersistenceManager,
 ): Promise<Backup | null> {
   /**
-   * A STATE_CORRUPTION_ERROR may have a `backup` property already on it,
-   * if it does, we can use it without reading from the DB again.
+   * A STATE_CORRUPTION_ERROR may expose a `getBackup` function already on it.
+   * If it does, we can use it without reading from the DB again.
    */
   let backup =
-    isObject(error) && hasProperty(error, 'backup') && error.backup !== null
-      ? (error.backup as Backup)
+    isObject(error) &&
+    hasProperty(error, 'getBackup') &&
+    typeof error.getBackup === 'function'
+      ? ((error.getBackup() as Backup) ?? null)
       : null;
   if (!backup) {
     try {
-      backup = await database.getBackup();
+      backup = (await database.getBackup()) ?? null;
     } catch {
       // ignore errors here since we're already in an error state, we really
       // only care about the error that got us here.
@@ -121,6 +109,41 @@ function maybeGetCurrentLocale(backup: Backup | null): string | null {
     }
   }
   return null;
+}
+
+/**
+ * Attempts to get the cause message from a PersistenceError.
+ * This provides additional context about the original error that caused
+ * the persistence failure (e.g., Firefox's "Error: An unexpected error occurred").
+ *
+ * @param error - The error to extract the cause message from.
+ * @returns The cause message if available, otherwise null.
+ */
+function maybeGetCauseMessage(error: ErrorLike): string | null {
+  if (
+    error instanceof PersistenceError &&
+    error.cause instanceof Error &&
+    error.cause.message
+  ) {
+    return error.cause.message;
+  }
+  return null;
+}
+
+/**
+ * Determines the type of vault corruption based on the error.
+ *
+ * @param error - The error that caused the vault corruption.
+ * @returns The vault corruption type.
+ */
+function getVaultCorruptionType(error: ErrorLike): VaultCorruptionType {
+  // PersistenceError carries the corruption type explicitly, set when the error
+  // was created in persistence-manager.ts.
+  if (error instanceof PersistenceError) {
+    return error.corruptionType;
+  }
+  // Fallback for non-PersistenceError errors (shouldn't happen in practice)
+  return VaultCorruptionType.Unknown;
 }
 
 /**
@@ -177,25 +200,37 @@ export class CorruptionHandler {
     // it is not worth claiming we have a backup if the vault doesn't actually
     // exist
     const hasBackup = Boolean(hasVault(backup));
+    // Extract cause message if available (e.g., Firefox's "Error: An unexpected error occurred")
+    // This helps users and customer support debug issues
+    const causeMessage = maybeGetCauseMessage(error);
 
     // send the `error` to the UI for this port
-    const sent = tryPostMessage(port, {
-      data: {
-        method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-        params: {
-          error: {
-            message: error.message,
-            name: error.name,
-            stack: error.stack,
-          },
-          currentLocale,
-          hasBackup,
-        },
+    const sent = tryPostMessage(port, METHOD_DISPLAY_STATE_CORRUPTION_ERROR, {
+      error: {
+        message: error.message,
+        name: error.name,
+        stack: error.stack,
+        causeMessage,
       },
+      currentLocale,
+      hasBackup,
     });
     if (!sent) {
       return Promise.resolve();
     }
+
+    // Determine the type of vault corruption for tracking.
+    const corruptionType = getVaultCorruptionType(error);
+
+    // Track that the restore wallet screen was viewed directly to Segment.
+    // This bypasses MetaMetricsController (not yet initialized) and uses the backup state.
+    // Note: VaultCorruptionDetected is tracked earlier in persistence-manager.ts
+    // when the PersistenceError is thrown.
+    trackVaultCorruptionEvent(
+      backup,
+      MetaMetricsEventName.VaultCorruptionRestoreWalletScreenViewed,
+      corruptionType,
+    );
 
     // if we successfully sent the error to the UI, listen for a "restore"
     // method call back to us
@@ -226,6 +261,13 @@ export class CorruptionHandler {
             connectedPort.onMessage.removeListener(restoreVaultListener),
           );
 
+          // Track that the user clicked the restore button.
+          trackVaultCorruptionEvent(
+            backup,
+            MetaMetricsEventName.VaultCorruptionRestoreWalletButtonPressed,
+            corruptionType,
+          );
+
           try {
             await requestRepair(async function repairDatabase() {
               // this callback might be ignored if another repair request
@@ -242,11 +284,7 @@ export class CorruptionHandler {
                 connectedPorts.forEach((connectedPort) => {
                   // as each page reloads, it will remove itself from the
                   // `connectedPorts` on disconnection.
-                  tryPostMessage(connectedPort, {
-                    data: {
-                      method: 'RELOAD',
-                    },
-                  });
+                  tryPostMessage(connectedPort, RELOAD_WINDOW);
                 });
               }
             });

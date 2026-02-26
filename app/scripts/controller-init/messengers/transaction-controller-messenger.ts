@@ -3,16 +3,42 @@ import {
   AccountsControllerGetStateAction,
 } from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
-import { Messenger } from '@metamask/base-controller';
+import {
+  AccountTrackerControllerGetStateAction,
+  CurrencyRateControllerActions,
+} from '@metamask/assets-controllers';
+import {
+  BridgeStatusControllerActions,
+  BridgeStatusControllerStateChangeEvent,
+} from '@metamask/bridge-status-controller';
+import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
+import {
+  KeyringControllerSignEip7702AuthorizationAction,
+  KeyringControllerSignTypedMessageAction,
+} from '@metamask/keyring-controller';
+import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetEIP1559CompatibilityAction,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
+import type { AuthenticationController } from '@metamask/profile-sync-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
+import { SubscriptionControllerActions } from '@metamask/subscription-controller';
 import {
+  TransactionControllerAddTransactionAction,
+  TransactionControllerAddTransactionBatchAction,
+  TransactionControllerEstimateGasAction,
+  TransactionControllerGetStateAction,
   TransactionControllerMessenger,
   TransactionControllerPostTransactionBalanceUpdatedEvent,
+  TransactionControllerStateChangeEvent,
   TransactionControllerTransactionApprovedEvent,
   TransactionControllerTransactionConfirmedEvent,
   TransactionControllerTransactionDroppedEvent,
@@ -22,61 +48,47 @@ import {
   TransactionControllerTransactionRejectedEvent,
   TransactionControllerTransactionSubmittedEvent,
   TransactionControllerUnapprovedTransactionAddedEvent,
+  TransactionControllerUpdateTransactionAction,
 } from '@metamask/transaction-controller';
-import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
-import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
-  KeyringControllerSignEip7702AuthorizationAction,
-  KeyringControllerSignTypedMessageAction,
-} from '@metamask/keyring-controller';
+  TransactionPayControllerGetStateAction,
+  TransactionPayControllerGetStrategyAction,
+} from '@metamask/transaction-pay-controller';
+import { RootMessenger } from '../../lib/messenger';
+import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
 } from '../../controllers/swaps/swaps.types';
+import { SubscriptionServiceAction } from '../../services/subscription/types';
 import {
-  InstitutionalSnapControllerPublishHookAction,
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
+  InstitutionalSnapControllerPublishHookAction,
 } from './accounts/institutional-snap-controller-messenger';
 
-type MessengerActions =
-  | ApprovalControllerActions
-  | AccountsControllerGetSelectedAccountAction
-  | AccountsControllerGetStateAction
-  | InstitutionalSnapControllerPublishHookAction
-  | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
-  | KeyringControllerSignEip7702AuthorizationAction
-  | KeyringControllerSignTypedMessageAction
-  | NetworkControllerFindNetworkClientIdByChainIdAction
-  | NetworkControllerGetEIP1559CompatibilityAction
-  | NetworkControllerGetNetworkClientByIdAction
-  | RemoteFeatureFlagControllerGetStateAction
-  | SwapsControllerSetApproveTxIdAction
-  | SwapsControllerSetTradeTxIdAction;
+type AllowedActions = MessengerActions<TransactionControllerMessenger>;
 
-type MessengerEvents =
-  | TransactionControllerTransactionApprovedEvent
-  | TransactionControllerTransactionConfirmedEvent
-  | TransactionControllerTransactionDroppedEvent
-  | TransactionControllerTransactionFailedEvent
-  | TransactionControllerTransactionNewSwapApprovalEvent
-  | TransactionControllerTransactionNewSwapEvent
-  | TransactionControllerTransactionRejectedEvent
-  | TransactionControllerTransactionSubmittedEvent
-  | TransactionControllerPostTransactionBalanceUpdatedEvent
-  | TransactionControllerUnapprovedTransactionAddedEvent
-  | NetworkControllerStateChangeEvent
-  | SmartTransactionsControllerSmartTransactionEvent;
+type AllowedEvents = MessengerEvents<TransactionControllerMessenger>;
 
 export type TransactionControllerInitMessenger = ReturnType<
   typeof getTransactionControllerInitMessenger
 >;
 
 export function getTransactionControllerMessenger(
-  messenger: Messenger<MessengerActions, MessengerEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ): TransactionControllerMessenger {
-  return messenger.getRestricted({
-    name: 'TransactionController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'TransactionController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'TransactionController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'AccountsController:getSelectedAccount',
       'AccountsController:getState',
       `ApprovalController:addRequest`,
@@ -85,16 +97,82 @@ export function getTransactionControllerMessenger(
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
     ],
-    allowedEvents: [`NetworkController:stateChange`],
+    events: [
+      'AccountActivityService:transactionUpdated',
+      'AccountActivityService:statusChanged',
+      'AccountsController:selectedAccountChange',
+      'BackendWebSocketService:connectionStateChanged',
+      'NetworkController:stateChange',
+    ],
   });
+  return controllerMessenger;
 }
 
+type InitMessengerActions =
+  | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerGetStateAction
+  | AccountTrackerControllerGetStateAction
+  | ApprovalControllerActions
+  | AppStateControllerGetStateAction
+  | AuthenticationController.AuthenticationControllerGetBearerToken
+  | BridgeStatusControllerActions
+  | CurrencyRateControllerActions
+  | DelegationControllerSignDelegationAction
+  | InstitutionalSnapControllerPublishHookAction
+  | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
+  | KeyringControllerSignEip7702AuthorizationAction
+  | KeyringControllerSignTypedMessageAction
+  | NetworkControllerFindNetworkClientIdByChainIdAction
+  | NetworkControllerGetEIP1559CompatibilityAction
+  | NetworkControllerGetNetworkClientByIdAction
+  | RemoteFeatureFlagControllerGetStateAction
+  | SubscriptionControllerActions
+  | SubscriptionServiceAction
+  | SwapsControllerSetApproveTxIdAction
+  | SwapsControllerSetTradeTxIdAction
+  | TransactionControllerAddTransactionAction
+  | TransactionControllerAddTransactionBatchAction
+  | TransactionControllerEstimateGasAction
+  | TransactionControllerGetStateAction
+  | TransactionControllerUpdateTransactionAction
+  | TransactionPayControllerGetStateAction
+  | TransactionPayControllerGetStrategyAction;
+
+type InitMessengerEvents =
+  | BridgeStatusControllerStateChangeEvent
+  | NetworkControllerStateChangeEvent
+  | SmartTransactionsControllerSmartTransactionEvent
+  | TransactionControllerPostTransactionBalanceUpdatedEvent
+  | TransactionControllerStateChangeEvent
+  | TransactionControllerTransactionApprovedEvent
+  | TransactionControllerTransactionConfirmedEvent
+  | TransactionControllerTransactionDroppedEvent
+  | TransactionControllerTransactionFailedEvent
+  | TransactionControllerTransactionNewSwapApprovalEvent
+  | TransactionControllerTransactionNewSwapEvent
+  | TransactionControllerTransactionRejectedEvent
+  | TransactionControllerTransactionSubmittedEvent
+  | TransactionControllerUnapprovedTransactionAddedEvent;
+
 export function getTransactionControllerInitMessenger(
-  messenger: Messenger<MessengerActions, MessengerEvents>,
+  messenger: RootMessenger<InitMessengerActions, InitMessengerEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'TransactionControllerInit',
-    allowedEvents: [
+  const controllerInitMessenger = new Messenger<
+    'TransactionControllerInit',
+    InitMessengerActions,
+    InitMessengerEvents,
+    typeof messenger
+  >({
+    namespace: 'TransactionControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    events: [
+      'BridgeStatusController:stateChange',
+      'SmartTransactionsController:smartTransaction',
+      'TransactionController:postTransactionBalanceUpdated',
+      'TransactionController:stateChange',
       'TransactionController:transactionApproved',
       'TransactionController:transactionConfirmed',
       'TransactionController:transactionDropped',
@@ -103,24 +181,41 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:transactionNewSwap',
       'TransactionController:transactionRejected',
       'TransactionController:transactionSubmitted',
-      'TransactionController:postTransactionBalanceUpdated',
       'TransactionController:unapprovedTransactionAdded',
-      'SmartTransactionsController:smartTransaction',
     ],
-    allowedActions: [
+    actions: [
+      'AccountTrackerController:getState',
       'ApprovalController:acceptRequest',
       'ApprovalController:addRequest',
       'ApprovalController:endFlow',
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
+      'AppStateController:getState',
+      'AuthenticationController:getBearerToken',
+      'BridgeStatusController:getState',
+      'BridgeStatusController:submitTx',
+      'CurrencyRateController:getState',
+      'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'InstitutionalSnapController:publishHook',
       'KeyringController:signEip7702Authorization',
       'KeyringController:signTypedMessage',
+      'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getEIP1559Compatibility',
+      'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
+      'SubscriptionController:getSubscriptionByProduct',
+      'SubscriptionService:submitSubscriptionSponsorshipIntent',
       'SwapsController:setApproveTxId',
       'SwapsController:setTradeTxId',
+      'TransactionController:addTransaction',
+      'TransactionController:addTransactionBatch',
+      'TransactionController:estimateGas',
+      'TransactionController:getState',
+      'TransactionController:updateTransaction',
+      'TransactionPayController:getState',
+      'TransactionPayController:getStrategy',
     ],
   });
+  return controllerInitMessenger;
 }

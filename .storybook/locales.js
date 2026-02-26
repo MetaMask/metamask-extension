@@ -13,7 +13,6 @@ import * as es_419 from '../app/_locales/es_419/messages.json';
 import * as et from '../app/_locales/et/messages.json';
 import * as fa from '../app/_locales/fa/messages.json';
 import * as fi from '../app/_locales/fi/messages.json';
-import * as fil from '../app/_locales/fil/messages.json';
 import * as fr from '../app/_locales/fr/messages.json';
 import * as gu from '../app/_locales/gu/messages.json';
 import * as he from '../app/_locales/he/messages.json';
@@ -34,7 +33,6 @@ import * as mr from '../app/_locales/mr/messages.json';
 import * as ms from '../app/_locales/ms/messages.json';
 import * as nl from '../app/_locales/nl/messages.json';
 import * as no from '../app/_locales/no/messages.json';
-import * as ph from '../app/_locales/ph/messages.json';
 import * as pl from '../app/_locales/pl/messages.json';
 import * as pt from '../app/_locales/pt/messages.json';
 import * as pt_BR from '../app/_locales/pt_BR/messages.json';
@@ -49,10 +47,67 @@ import * as sw from '../app/_locales/sw/messages.json';
 import * as ta from '../app/_locales/ta/messages.json';
 import * as te from '../app/_locales/te/messages.json';
 import * as th from '../app/_locales/th/messages.json';
+import * as tl from '../app/_locales/tl/messages.json';
 import * as tr from '../app/_locales/tr/messages.json';
 import * as uk from '../app/_locales/uk/messages.json';
 import * as vi from '../app/_locales/vi/messages.json';
 import * as zh_CN from '../app/_locales/zh_CN/messages.json';
 import * as zh_TW from '../app/_locales/zh_TW/messages.json';
 
-export { am, ar, bg, bn, ca, cs, da, de, el, en, es, es_419, et, fa, fi, fil, fr, gu, he, hi, hn, hr, ht, hu, id, it, ja, kn, ko, lt, lv, ml, mr, ms, nl, no, ph, pl, pt, pt_BR, pt_PT, ro, ru, sk, sl, sr, sv, sw, ta, te, th, tr, uk, vi, zh_CN, zh_TW };
+export {
+  am,
+  ar,
+  bg,
+  bn,
+  ca,
+  cs,
+  da,
+  de,
+  el,
+  en,
+  es,
+  es_419,
+  et,
+  fa,
+  fi,
+  fr,
+  gu,
+  he,
+  hi,
+  hn,
+  hr,
+  ht,
+  hu,
+  id,
+  it,
+  ja,
+  kn,
+  ko,
+  lt,
+  lv,
+  ml,
+  mr,
+  ms,
+  nl,
+  no,
+  pl,
+  pt,
+  pt_BR,
+  pt_PT,
+  ro,
+  ru,
+  sk,
+  sl,
+  sr,
+  sv,
+  sw,
+  ta,
+  te,
+  th,
+  tl,
+  tr,
+  uk,
+  vi,
+  zh_CN,
+  zh_TW,
+};

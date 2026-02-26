@@ -11,7 +11,7 @@ export default function RecipientGroup({ items, onSelect }) {
     <AddressListItem
       address={address}
       label={name}
-      onClick={() => onSelect(address, name)}
+      onClick={() => onSelect(address, name, chainId)}
       key={address}
       chainId={chainId}
       isDuplicate={isDuplicate}

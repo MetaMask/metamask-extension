@@ -1,6 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import {
+  AvatarAccount,
+  AvatarAccountVariant,
+} from '@metamask/design-system-react';
 import availableCurrencies from '../../../helpers/constants/available-conversions.json';
 import {
   TextVariant,
@@ -15,8 +19,6 @@ import ToggleButton from '../../../components/ui/toggle-button';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import locales from '../../../../app/_locales/index.json';
-import Jazzicon from '../../../components/ui/jazzicon';
-import BlockieIdenticon from '../../../components/ui/identicon/blockieIdenticon';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -27,6 +29,7 @@ import {
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import { ThemeType } from '../../../../shared/constants/preferences';
+import { DEFAULT_ADDRESS_OPTIONS } from '../../../../shared/constants/default-address';
 import { Text, Box } from '../../../components/component-library';
 
 const sortedCurrencies = availableCurrencies.sort((a, b) => {
@@ -55,7 +58,8 @@ export default class SettingsTab extends PureComponent {
   };
 
   static propTypes = {
-    setUseBlockie: PropTypes.func,
+    avatarType: PropTypes.string,
+    setAvatarType: PropTypes.func,
     setCurrentCurrency: PropTypes.func,
     updateCurrentLocale: PropTypes.func,
     currentLocale: PropTypes.string,
@@ -65,8 +69,11 @@ export default class SettingsTab extends PureComponent {
     setShowNativeTokenAsMainBalancePreference: PropTypes.func,
     hideZeroBalanceTokens: PropTypes.bool,
     setHideZeroBalanceTokens: PropTypes.func,
+    showDefaultAddress: PropTypes.bool,
+    setShowDefaultAddress: PropTypes.func,
+    defaultAddressScope: PropTypes.string,
+    setDefaultAddressScope: PropTypes.func,
     selectedAddress: PropTypes.string,
-    tokenList: PropTypes.object,
     theme: PropTypes.string,
     setTheme: PropTypes.func,
   };
@@ -123,6 +130,7 @@ export default class SettingsTab extends PureComponent {
                   event: MetaMetricsEventName.CurrentCurrency,
                   properties: {
                     current_currency: newCurrency,
+                    location: 'settings-page',
                   },
                 });
               }}
@@ -192,12 +200,98 @@ export default class SettingsTab extends PureComponent {
             {t('hideZeroBalanceTokens')}
           </Text>
         </div>
+        <ToggleButton
+          value={hideZeroBalanceTokens}
+          onToggle={(value) => setHideZeroBalanceTokens(!value)}
+          data-testid="toggle-zero-balance-button"
+        />
+      </Box>
+    );
+  }
 
-        <div className="settings-page__content-item-col">
+  trackShowDefaultAddress(value, networkScope) {
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        default_address_network: networkScope,
+        location: 'Settings Page',
+        show_default_address: value,
+      },
+    });
+  }
+
+  renderShowDefaultAddressOptIn() {
+    const { t } = this.context;
+    const {
+      showDefaultAddress,
+      setShowDefaultAddress,
+      defaultAddressScope,
+      setDefaultAddressScope,
+    } = this.props;
+
+    const defaultAddressDropdownOptions = DEFAULT_ADDRESS_OPTIONS.map(
+      (opt) => ({
+        name: t(opt.messageKey),
+        value: opt.value,
+      }),
+    );
+
+    return (
+      <Box
+        ref={this.settingsRefs[6]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        id="show-default-address"
+      >
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+          alignItems={AlignItems.center}
+        >
+          <div className="settings-page__content-item">
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textDefault}
+              className="settings-page__content-item__title"
+            >
+              {t('showDefaultAddress')}
+            </Text>
+          </div>
           <ToggleButton
-            value={hideZeroBalanceTokens}
-            onToggle={(value) => setHideZeroBalanceTokens(!value)}
-            data-testid="toggle-zero-balance-button"
+            value={showDefaultAddress}
+            onToggle={(value) => {
+              const newValue = !value;
+              setShowDefaultAddress(newValue);
+              this.trackShowDefaultAddress(newValue, defaultAddressScope);
+            }}
+            dataTestId="show-default-address-toggle"
+          />
+        </Box>
+        <Text
+          variant={TextVariant.bodyMd}
+          color={TextColor.textAlternative}
+          marginBottom={3}
+          className="settings-page__content-item__description"
+        >
+          {t('showDefaultAddressDescription')}
+        </Text>
+        <div className="settings-page__content-item">
+          <Dropdown
+            id="default-address-scope-dropdown"
+            options={defaultAddressDropdownOptions}
+            selectedOption={defaultAddressScope}
+            onChange={(value) => {
+              setDefaultAddressScope(value);
+              this.trackShowDefaultAddress(true, value);
+              if (!showDefaultAddress) {
+                setShowDefaultAddress(true);
+              }
+            }}
+            className="settings-page__content-item__dropdown"
+            data-testid="default-address-scope-dropdown"
           />
         </div>
       </Box>
@@ -206,15 +300,15 @@ export default class SettingsTab extends PureComponent {
 
   renderBlockieOptIn() {
     const { t } = this.context;
-    const { useBlockie, setUseBlockie, selectedAddress, tokenList } =
+    const { useBlockie, avatarType, setAvatarType, selectedAddress } =
       this.props;
 
-    const getIconStyles = () => ({
-      display: 'block',
-      borderRadius: '16px',
-      width: '32px',
-      height: '32px',
-    });
+    let currentAvatarType;
+    if (avatarType !== undefined) {
+      currentAvatarType = avatarType;
+    } else if (useBlockie) {
+      currentAvatarType = 'blockies';
+    }
 
     return (
       <Box
@@ -238,72 +332,73 @@ export default class SettingsTab extends PureComponent {
             marginBottom={3}
             className="settings-page__content-item__description"
           >
-            {t('jazzAndBlockies')}
+            {t('accountIdenticonDescription')}
           </Text>
-          <div className="settings-page__content-item__identicon">
+          <div className="settings-page__content-item__identicon gap-8">
             <button
-              data-testid="jazz_icon"
-              onClick={() => setUseBlockie(false)}
-              className="settings-page__content-item__identicon__item"
+              data-testid="maskicon_icon"
+              onClick={() => setAvatarType('maskicon')}
+              className="flex items-center gap-2 justify-center flex-wrap"
             >
-              <div
-                className={classnames(
-                  'settings-page__content-item__identicon__item__icon',
-                  {
-                    'settings-page__content-item__identicon__item__icon--active':
-                      !useBlockie,
-                  },
-                )}
-              >
-                <Jazzicon
-                  id="jazzicon"
-                  address={selectedAddress}
-                  diameter={32}
-                  tokenList={tokenList}
-                  style={getIconStyles()}
-                />
-              </div>
+              <AvatarAccount
+                address={selectedAddress}
+                variant={AvatarAccountVariant.Maskicon}
+                className={classnames({
+                  'outline outline-2 outline-primary-default':
+                    currentAvatarType === 'maskicon',
+                })}
+              />
+
               <Text
                 color={TextColor.textDefault}
                 variant={TextVariant.bodySm}
                 as="h6"
-                marginTop={0}
-                marginRight={12}
-                marginBottom={0}
-                marginLeft={3}
+              >
+                {t('maskicons')}
+              </Text>
+            </button>
+            <button
+              data-testid="jazz_icon"
+              onClick={() => setAvatarType('jazzicon')}
+              className="flex items-center gap-2 justify-center flex-wrap"
+            >
+              <AvatarAccount
+                id="jazzicon"
+                address={selectedAddress}
+                variant={AvatarAccountVariant.Jazzicon}
+                className={classnames({
+                  'outline outline-2 outline-primary-default':
+                    currentAvatarType === 'jazzicon',
+                })}
+              />
+
+              <Text
+                color={TextColor.textDefault}
+                variant={TextVariant.bodySm}
+                as="h6"
               >
                 {t('jazzicons')}
               </Text>
             </button>
             <button
               data-testid="blockie_icon"
-              onClick={() => setUseBlockie(true)}
-              className="settings-page__content-item__identicon__item"
+              onClick={() => setAvatarType('blockies')}
+              className="flex items-center gap-2 justify-center flex-wrap"
             >
-              <div
-                className={classnames(
-                  'settings-page__content-item__identicon__item__icon',
-                  {
-                    'settings-page__content-item__identicon__item__icon--active':
-                      useBlockie,
-                  },
-                )}
-              >
-                <BlockieIdenticon
-                  id="blockies"
-                  address={selectedAddress}
-                  diameter={32}
-                  borderRadius="50%"
-                />
-              </div>
+              <AvatarAccount
+                id="blockies"
+                address={selectedAddress}
+                variant={AvatarAccountVariant.Blockies}
+                className={classnames({
+                  'outline outline-2 outline-primary-default':
+                    currentAvatarType === 'blockies',
+                })}
+              />
+
               <Text
                 color={TextColor.textDefault}
                 variant={TextVariant.bodySm}
                 as="h6"
-                marginTop={3}
-                marginRight={0}
-                marginBottom={3}
-                marginLeft={3}
               >
                 {t('blockies')}
               </Text>
@@ -319,7 +414,7 @@ export default class SettingsTab extends PureComponent {
     const geShowNativeTokenAsMainBalanceForMetrics = (value) => {
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.ShowNativeTokenAsMainBalance,
+        event: MetaMetricsEventName.SettingsUpdated,
         properties: {
           show_native_token_as_main_balance: value,
         },
@@ -348,17 +443,14 @@ export default class SettingsTab extends PureComponent {
             {t('showNativeTokenAsMainBalance')}
           </Text>
         </div>
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            className="show-native-token-as-main-balance"
-            value={showNativeTokenAsMainBalance}
-            onToggle={(value) => {
-              setShowNativeTokenAsMainBalancePreference(!value);
-              geShowNativeTokenAsMainBalanceForMetrics(!value);
-            }}
-          />
-        </div>
+        <ToggleButton
+          className="show-native-token-as-main-balance"
+          value={showNativeTokenAsMainBalance}
+          onToggle={(value) => {
+            setShowNativeTokenAsMainBalancePreference(!value);
+            geShowNativeTokenAsMainBalanceForMetrics(!value);
+          }}
+        />
       </Box>
     );
   }
@@ -436,6 +528,7 @@ export default class SettingsTab extends PureComponent {
         {this.renderTheme()}
         {this.renderBlockieOptIn()}
         {this.renderHideZeroBalanceTokensOptIn()}
+        {this.renderShowDefaultAddressOptIn()}
       </div>
     );
   }

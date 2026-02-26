@@ -3,3 +3,10 @@
 endOfLine: auto
 singleQuote: true
 trailingComma: all
+plugins: ['prettier-plugin-sort-json']
+overrides:
+  - files:
+      - 'test/e2e/tests/metrics/state-snapshots/*.json'
+      - 'test/jest/console-baseline-*.json'
+    options:
+      jsonRecursiveSort: true

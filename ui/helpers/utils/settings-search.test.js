@@ -87,7 +87,7 @@ const t = (key) => {
     case 'networks':
       return 'Networks';
     case 'mainnet':
-      return 'Ethereum Mainnet';
+      return 'Ethereum';
     case 'goerli':
       return 'Goerli test network';
     case 'sepolia':
@@ -95,7 +95,7 @@ const t = (key) => {
     case 'localhost':
       return 'Localhost 8545';
     case 'developerOptions':
-      return 'Developer Options';
+      return 'Developer options';
     case 'experimental':
       return 'Experimental';
     case 'autoDetectTokens':
@@ -119,9 +119,9 @@ const t = (key) => {
     case 'links':
       return 'Links';
     case 'privacyMsg':
-      return 'Privacy policy';
+      return 'Privacy Policy';
     case 'terms':
-      return 'Terms of use';
+      return 'Terms of Use';
     case 'attributions':
       return 'Attributions';
     case 'supportCenter':
@@ -150,7 +150,7 @@ const t = (key) => {
 describe('Settings Search Utils', () => {
   describe('getSettingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
-      const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 4;
+      const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 6;
       const NUM_OF_HIDDEN_SETTINGS = 1;
 
       expect(getSettingsRoutes()).toHaveLength(
@@ -163,7 +163,7 @@ describe('Settings Search Utils', () => {
 
   describe('getNumberOfSettingRoutesInTab', () => {
     it('returns "General" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('general'))).toStrictEqual(6);
+      expect(getNumberOfSettingRoutesInTab(t, t('general'))).toStrictEqual(7);
     });
 
     it('returns "Advanced" section count', () => {
@@ -173,7 +173,7 @@ describe('Settings Search Utils', () => {
     it('returns "Backup And Sync" section count', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('backupAndSync')),
-      ).toStrictEqual(2);
+      ).toStrictEqual(3);
     });
 
     it('returns "Contact" section count', () => {
@@ -183,7 +183,7 @@ describe('Settings Search Utils', () => {
     it('returns "Security & privacy" section count', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),
-      ).toStrictEqual(20);
+      ).toStrictEqual(22);
     });
 
     it('returns "Network" section count', () => {
@@ -196,7 +196,7 @@ describe('Settings Search Utils', () => {
       );
     });
 
-    it('returns 0 "Developer Options" section count when env flag is disabled', () => {
+    it('returns 0 "Developer options" section count when env flag is disabled', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('developerOptions')),
       ).toStrictEqual(0);

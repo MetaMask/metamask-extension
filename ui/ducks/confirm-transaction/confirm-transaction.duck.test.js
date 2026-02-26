@@ -290,7 +290,6 @@ describe('Confirm Transaction Duck', () => {
   describe('Thunk actions', () => {
     it('updates txData and updates gas values in confirmTransaction', () => {
       const txData = {
-        history: [],
         id: 2603411941761054,
         loadingDefaults: false,
         chainId: '0x5',
@@ -371,7 +370,6 @@ describe('Confirm Transaction Duck', () => {
           ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
           transactions: [
             {
-              history: [],
               id: 2603411941761054,
               loadingDefaults: false,
               chainId: '0x5',

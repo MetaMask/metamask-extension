@@ -1,11 +1,16 @@
 import { Controller as UserStorageController } from '@metamask/profile-sync-controller/user-storage';
-import { Messenger } from '@metamask/base-controller';
+import { Env } from '@metamask/profile-sync-controller/sdk';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
   getUserStorageControllerMessenger,
   UserStorageControllerMessenger,
 } from '../messengers/identity';
+import {
+  getUserStorageControllerInitMessenger,
+  UserStorageControllerInitMessenger,
+} from '../messengers/identity/user-storage-controller-messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import { UserStorageControllerInit } from './user-storage-controller-init';
 
 jest.mock('@metamask/profile-sync-controller/user-storage');
@@ -15,16 +20,21 @@ jest.mock('../../../../shared/modules/environment', () => ({
 }));
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<UserStorageControllerMessenger>
+  ControllerInitRequest<
+    UserStorageControllerMessenger,
+    UserStorageControllerInitMessenger
+  >
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = getRootMessenger();
 
   return {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getUserStorageControllerMessenger(
       baseControllerMessenger,
     ),
-    initMessenger: undefined,
+    initMessenger: getUserStorageControllerInitMessenger(
+      baseControllerMessenger,
+    ),
   };
 }
 
@@ -49,13 +59,14 @@ describe('UserStorageControllerInit', () => {
     expect(UserStorageControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
       state: requestMock.persistedState.UserStorageController,
+      trace: expect.any(Function),
       config: {
-        accountSyncing: {
-          maxNumberOfAccountsToAdd: 100,
-          onAccountAdded: expect.any(Function),
-          onAccountNameUpdated: expect.any(Function),
-          onAccountSyncErroneousSituation: expect.any(Function),
+        contactSyncing: {
+          onContactUpdated: expect.any(Function),
+          onContactDeleted: expect.any(Function),
+          onContactSyncErroneousSituation: expect.any(Function),
         },
+        env: Env.PRD,
       },
     });
   });

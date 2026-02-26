@@ -27,7 +27,7 @@ type StakeableLinkProps = {
 
 export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
@@ -59,7 +59,11 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
             location: 'Token List Item',
             text: 'Stake',
             // FIXME: This might not be a number for non-EVM accounts
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id: chainId,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol: symbol,
           },
         });

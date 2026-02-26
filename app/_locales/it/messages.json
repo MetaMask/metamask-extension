@@ -51,13 +51,6 @@
     "message": "Ho letto e accetto i $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Accedi al tuo portafoglio con la tua frase di recupero segreta"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask non può recuperare la tua password. Useremo la tua frase di recupero segreta per assicurarci tu sia il proprietario, ripristinare il tuo portafoglio e impostare una nuova password. Innanzitutto, inserisci la frase di recupero segreta che ti è stata data in fase di creazione del tuo portafoglio. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Accesso alla fotocamera..."
   },
@@ -413,9 +406,6 @@
   "create": {
     "message": "Crea"
   },
-  "createNewWallet": {
-    "message": "Crea un nuovo portafoglio"
-  },
   "createPassword": {
     "message": "Crea Password"
   },
@@ -465,14 +455,8 @@
   "customToken": {
     "message": "Token Personalizzato"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Il rilevamento dei token non è ancora disponibile su questa rete. Importa il token manualmente e assicurati che sia corretto. Ulteriori informazioni su $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
-    "message": "Prima di importare manualmente un token, assicurati sia attendibile. Ulteriori informazioni su $ 1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Assicurati di fidarti di un token prima di importarlo. Scopri come evitare $1. Puoi anche abilitare il rilevamento dei token $2."
+    "message": "Prima di importare manualmente un token, assicurati sia attendibile. Ulteriori informazioni su $1"
   },
   "customerSupport": {
     "message": "servizio clienti"
@@ -654,14 +638,8 @@
     "message": "MetaMask ha riscontrato un errore",
     "description": "Title of generic error page"
   },
-  "ethereumPublicAddress": {
-    "message": "Indirizzo pubblico Ethereum "
-  },
   "etherscanView": {
     "message": "Vedi account su Etherscan"
-  },
-  "expandView": {
-    "message": "Espandi Vista"
   },
   "externalExtension": {
     "message": "Estensione Esterna"
@@ -694,31 +672,11 @@
   "from": {
     "message": "Da"
   },
-  "fromAddress": {
-    "message": "Da: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
   "gasLimit": {
     "message": "Gas Limite"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Il gas limite è il massimo importo di unità di gas che sei disposto a spendere."
-  },
   "gasLimitTooLow": {
     "message": "Il Gas Limite deve essere almeno 21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Il gas limite deve essere almeno $1",
-    "description": "$1 is the custom gas limit, in decimal."
-  },
-  "gasPrice": {
-    "message": "Prezzo del Gas (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Prezzo del gas troppo basso"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Il prezzo del gas specifica il totale di Ether che sei disposto a pagare per ogni unità di gas."
   },
   "gasUsed": {
     "message": "Gas Utilizzato"
@@ -902,9 +860,6 @@
     "message": "Devi selezionare un file da importare.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Non puoi inviare una quantità di ETH negativa."
-  },
   "networkName": {
     "message": "Nome Rete"
   },
@@ -938,9 +893,6 @@
   },
   "noAccountsFound": {
     "message": "Nessun account trovato per la ricerca effettuata"
-  },
-  "noConversionRateAvailable": {
-    "message": "Tasso di conversione non disponibile"
   },
   "noWebcamFound": {
     "message": "La fotocamera del tuo computer non è stata trovata. Riprova."
@@ -1125,10 +1077,6 @@
   "send": {
     "message": "Invia"
   },
-  "sendSpecifiedTokens": {
-    "message": "Invia $1",
-    "description": "Symbol of the specified token"
-  },
   "settings": {
     "message": "Impostazioni"
   },
@@ -1224,10 +1172,6 @@
     "message": "Approva $1 per gli scambi",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
   },
-  "swapApproveNeedMoreTokens": {
-    "message": "Devi avere $1 $2 in più per completare lo scambio",
-    "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
   "swapCustom": {
     "message": "personalizza"
   },
@@ -1264,23 +1208,11 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "Troviamo i migliori prezzi dalle sorgenti di liquidità migliori, sempre. Una tassa del $1% è automaticamente aggiunta ad ogni quotazione, ciò serve a supportare lo sviluppo in modo da rendere MetaMask sempre migliore.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapNewQuoteIn": {
-    "message": "Nuove quotazioni in $1",
-    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapOnceTransactionHasProcess": {
     "message": "I tuoi $1 saranno aggiunti al tuo account quando la transazione sarà processata.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapPriceDifference": {
-    "message": "Stai per scambiare $1 $2 (~$3) per $4 $5 (~$6).",
-    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
-  },
-  "swapPriceDifferenceTitle": {
-    "message": "Differenza di prezzo di circa ~$1%",
-    "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
   "swapProcessing": {
     "message": "In elaborazione"
@@ -1330,15 +1262,6 @@
   "swapSource": {
     "message": "Sorgente di liquidità"
   },
-  "swapSwapFrom": {
-    "message": "Scambia da"
-  },
-  "swapSwapSwitch": {
-    "message": "Inverti token"
-  },
-  "swapSwapTo": {
-    "message": "Scambia a"
-  },
   "swapTokenAvailable": {
     "message": "I $1 sono stati aggiunti al tuo account.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
@@ -1359,9 +1282,6 @@
   "swapsViewInActivity": {
     "message": "Vedi in attività"
   },
-  "switchNetworks": {
-    "message": "Cambia Reti"
-  },
   "switchToThisAccount": {
     "message": " Passa a questo account"
   },
@@ -1377,15 +1297,8 @@
   "termsOfService": {
     "message": "Termini di Servizio"
   },
-  "tips": {
-    "message": "Suggerimenti"
-  },
   "to": {
     "message": "A"
-  },
-  "toAddress": {
-    "message": "A: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "tokenAlreadyAdded": {
     "message": "Il token è già stato aggiunto."
@@ -1466,9 +1379,6 @@
   "unlock": {
     "message": "Sblocca"
   },
-  "unlockMessage": {
-    "message": "Il web decentralizzato ti attende"
-  },
   "urlErrorMsg": {
     "message": "Gli URI richiedono un prefisso HTTP/HTTPS."
   },
@@ -1508,8 +1418,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "La tua frase seed privata"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Prezzo del gas maggiore di zero"
   }
 }

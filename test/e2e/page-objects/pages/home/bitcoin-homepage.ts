@@ -14,7 +14,7 @@ class BitcoinHomepage extends HomePage {
 
   protected readonly swapButton = '[data-testid="coin-overview-swap"]';
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.sendButton,
@@ -36,7 +36,7 @@ class BitcoinHomepage extends HomePage {
    * Checks if the bridge button is enabled on bitcoin account homepage.
    *
    */
-  async check_isBridgeButtonEnabled(): Promise<boolean> {
+  async checkIsBridgeButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.bridgeButton, {
         timeout: 1000,
@@ -52,7 +52,7 @@ class BitcoinHomepage extends HomePage {
   /**
    * Checks if the buy/sell button is enabled on bitcoin account homepage.
    */
-  async check_isBuySellButtonEnabled(): Promise<boolean> {
+  async checkIsBuySellButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.buySellButton, {
         timeout: 1000,
@@ -70,22 +70,19 @@ class BitcoinHomepage extends HomePage {
    *
    * @param expectedBalance - The expected bitcoin balance to be displayed. Defaults to '0'.
    */
-  async check_isExpectedBitcoinBalanceDisplayed(
+  async checkIsExpectedBitcoinBalanceDisplayed(
     expectedBalance: number = 0,
   ): Promise<void> {
-    console.log(
-      `Check if expected bitcoin balance is displayed: ${expectedBalance} BTC`,
-    );
     await this.driver.waitForSelector({
-      css: this.balance,
-      text: `${expectedBalance}BTC`,
+      css: '[data-testid="multichain-token-list-item-value"]',
+      text: `${expectedBalance} BTC`,
     });
   }
 
   /**
    * Checks if the receive button is enabled on bitcoin account homepage.
    */
-  async check_isReceiveButtonEnabled(): Promise<boolean> {
+  async checkIsReceiveButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.receiveButton, {
         timeout: 1000,
@@ -101,7 +98,7 @@ class BitcoinHomepage extends HomePage {
   /**
    * Checks if the swap button is enabled on bitcoin account homepage.
    */
-  async check_isSwapButtonEnabled(): Promise<boolean> {
+  async checkIsSwapButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.swapButton, {
         timeout: 1000,
@@ -112,6 +109,15 @@ class BitcoinHomepage extends HomePage {
     }
     console.log('Swap button is enabled');
     return true;
+  }
+
+  /**
+   * Clicks the swap button on bitcoin account homepage.
+   */
+  async clickOnSwapButton(): Promise<void> {
+    console.log('Clicking swap button on Bitcoin homepage');
+    await this.driver.waitForSelector(this.swapButton);
+    await this.driver.clickElement(this.swapButton);
   }
 }
 

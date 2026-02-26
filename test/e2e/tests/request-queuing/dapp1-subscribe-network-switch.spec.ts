@@ -1,9 +1,11 @@
 import { strict as assert } from 'assert';
-import FixtureBuilder from '../../fixture-builder';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
-import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 
 describe('Request Queueing', function () {
   it('should keep subscription on dapp network when switching different mm network', async function () {
@@ -11,7 +13,7 @@ describe('Request Queueing', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),
@@ -36,9 +38,8 @@ describe('Request Queueing', function () {
         // Connect to dapp
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
-        await testDapp.connectAccount({});
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.checkPageIsLoaded();
+        await connectAccountToTestDapp(driver);
 
         // Subscribe to newHeads event
         const subscribeRequest = JSON.stringify({
@@ -67,7 +68,11 @@ describe('Request Queueing', function () {
         );
 
         // Switch networks
-        await switchToNetworkFlow(driver, 'Localhost 8546');
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Custom',
+          'Localhost 8546',
+        );
 
         // Navigate back to the test dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

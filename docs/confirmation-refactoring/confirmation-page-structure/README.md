@@ -52,7 +52,6 @@ Other confirmation components listed above map to different types of transaction
 4. ### Edit gas popovers:
 
    There are 2 different versions popovers for gas editing:
-
    - Legacy gas popover - [component](https://github.com/MetaMask/metamask-extension/tree/main/ui/components/app/edit-gas-popover)
    - EIP-1559 V2 gas popover - [component1](https://github.com/MetaMask/metamask-extension/tree/main/ui/components/app/edit-gas-fee-popover), [component2](https://github.com/MetaMask/metamask-extension/tree/main/ui/components/app/advanced-gas-fee-popover).
      Context [transaction-modal-context](https://github.com/MetaMask/metamask-extension/blob/main/ui/contexts/transaction-modal.js) is used to show hide EIP-1559 gas popovers.

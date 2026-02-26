@@ -10,6 +10,7 @@ import { components as SwapCompletedComponents } from './swap-completed/swap-com
 import { components as LidoWithdrawalRequestedComponents } from './lido-withdrawal-requested/lido-withdrawal-requested';
 import { components as LidoStakeReadyToBeWithdrawnComponents } from './lido-stake-ready-to-be-withdrawn/lido-stake-ready-to-be-withdrawn';
 import { components as SnapNotificationComponents } from './snap/snap';
+import { components as PlatformNotificationComponents } from './platform-notifications/platform-notification';
 
 export const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -24,7 +25,8 @@ export const { TRIGGER_TYPES } = NotificationServicesController.Constants;
  */
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/naming-convention
 const expandComponentsType = <C extends NotificationComponent<any>>(
   components: C,
 ) => components as NotificationComponent;
@@ -68,6 +70,9 @@ export const NotificationComponents = {
     LidoStakeReadyToBeWithdrawnComponents,
   ),
   [TRIGGER_TYPES.SNAP]: expandComponentsType(SnapNotificationComponents),
+  [TRIGGER_TYPES.PLATFORM]: expandComponentsType(
+    PlatformNotificationComponents,
+  ),
 };
 
 export const hasNotificationComponents = (

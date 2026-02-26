@@ -1,6 +1,6 @@
 @use "design-system";
 
-.solana-bridge-transaction-details-modal {
+.multichain-bridge-transaction-details-modal {
   &__content {
     overflow-y: auto;
     max-height: 60vh; // Allow scrolling if content exceeds this height

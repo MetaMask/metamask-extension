@@ -1,5 +1,5 @@
-import { extname, join } from 'node:path/posix';
 import { readFileSync } from 'node:fs';
+import { extname, join } from 'node:path/posix';
 import {
   sources,
   ProgressPlugin,
@@ -244,32 +244,70 @@ export class ManifestPlugin<Z extends boolean> {
     );
     // Load the base manifest
     const basePath = join(manifestPath, `_base.json`);
-    const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf8'));
+    const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
+
+    const buildTypeManifestPath = join(
+      context,
+      'build-types',
+      this.options.buildType,
+      'manifest',
+    );
+    // Load the build type base manifest if it exists for the specific build type
+    const buildTypeBasePath = join(buildTypeManifestPath, `_base.json`);
+    let buildTypeBaseManifest: Partial<Manifest> = {};
+    try {
+      buildTypeBaseManifest = JSON.parse(
+        readFileSync(buildTypeBasePath, 'utf-8'),
+      );
+    } catch {
+      // File doesn't exist or is invalid, use empty object
+    }
 
     const { transform } = this.options;
     const resources = this.options.web_accessible_resources;
+    const baseDescription =
+      buildTypeBaseManifest.description ?? baseManifest.description;
     const description = this.options.description
-      ? `${baseManifest.description} – ${this.options.description}`
-      : baseManifest.description;
+      ? `${baseDescription} – ${this.options.description}`
+      : baseDescription;
     const { version } = this.options;
 
     this.options.browsers.forEach((browser) => {
-      let manifest: Manifest = { ...baseManifest, description, version };
+      let manifest = structuredClone({
+        ...baseManifest,
+        ...buildTypeBaseManifest,
+        description,
+        version,
+      }) as Manifest;
 
       if (browser !== 'firefox') {
         // version_name isn't used by FireFox, but is by Chrome, et al.
         manifest.version_name = this.options.versionName;
       }
 
+      const browserManifestPath = join(manifestPath, `${browser}.json`);
       try {
-        const browserManifestPath = join(manifestPath, `${browser}.json`);
         // merge browser-specific overrides into the browser manifest
         manifest = {
           ...manifest,
-          ...require(browserManifestPath),
+          ...JSON.parse(readFileSync(browserManifestPath, 'utf-8')),
         };
       } catch {
-        // ignore if the file doesn't exist, as some browsers might not need overrides
+        // File doesn't exist or is invalid, skip merging
+      }
+
+      const buildTypeBrowserManifestPath = join(
+        buildTypeManifestPath,
+        `${browser}.json`,
+      );
+      try {
+        // merge browser-specific build type overrides into the browser manifest
+        manifest = {
+          ...manifest,
+          ...JSON.parse(readFileSync(buildTypeBrowserManifestPath, 'utf-8')),
+        };
+      } catch {
+        // File doesn't exist or is invalid, skip merging
       }
 
       // merge provided `web_accessible_resources`
@@ -302,10 +340,23 @@ export class ManifestPlugin<Z extends boolean> {
         }
       }
 
-      // allow the user to `transform` the manifest. Use a copy of the manifest
-      // so modifications for one browser don't affect other browsers.
+      // handle manifest v3 service worker logic
+      if (
+        manifest.manifest_version === 3 &&
+        manifest.background?.service_worker
+      ) {
+        const serviceWorkerEntrypoint = compilation.entrypoints.get(
+          manifest.background.service_worker,
+        );
+        if (serviceWorkerEntrypoint) {
+          const serviceWorkerFiles = serviceWorkerEntrypoint.getFiles();
+          manifest.background.service_worker = serviceWorkerFiles[0];
+        }
+      }
+
+      // allow the user to `transform` the manifest
       if (transform) {
-        manifest = transform?.(JSON.parse(JSON.stringify(manifest)), browser);
+        manifest = transform(manifest, browser);
       }
 
       // Add the manifest file to the assets
@@ -315,24 +366,14 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   private hookIntoPipelines(compilation: Compilation): void {
-    // prepare manifests early so we can catch errors early instead of waiting
-    // until the end of the compilation.
-    this.prepareManifests(compilation);
-
-    // TODO: MV3 needs to be handled differently. Specifically, it needs to
-    // load the files it needs via a function call to `importScripts`, plus some
-    // other shenanigans.
-
     // hook into the processAssets hook to move/zip assets
-    const tapOptions = {
-      name: NAME,
-      stage: Infinity,
-    };
+    const tapOptions = { name: NAME, stage: Infinity };
     if (this.options.zip) {
       const options = this.options as ManifestPluginOptions<true>;
       compilation.hooks.processAssets.tapPromise(
         tapOptions,
         async (assets: Assets) => {
+          this.prepareManifests(compilation);
           await this.zipAssets(compilation, assets, options);
           this.moveAssets(
             compilation,
@@ -344,6 +385,7 @@ export class ManifestPlugin<Z extends boolean> {
     } else {
       const options = this.options as ManifestPluginOptions<false>;
       compilation.hooks.processAssets.tap(tapOptions, (assets: Assets) => {
+        this.prepareManifests(compilation);
         this.moveAssets(compilation, assets, options);
       });
     }

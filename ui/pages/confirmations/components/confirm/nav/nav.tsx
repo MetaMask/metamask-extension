@@ -73,7 +73,7 @@ export const Nav = ({ confirmationId }: NavProps) => {
         <ButtonIcon
           ariaLabel="Previous Confirmation"
           data-testid="confirm-nav__previous-confirmation"
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          backgroundColor={BackgroundColor.backgroundMuted}
           borderRadius={BorderRadius.full}
           className="confirm_nav__left_btn"
           color={IconColor.iconAlternative}
@@ -93,7 +93,7 @@ export const Nav = ({ confirmationId }: NavProps) => {
         <ButtonIcon
           ariaLabel="Next Confirmation"
           data-testid="confirm-nav__next-confirmation"
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          backgroundColor={BackgroundColor.backgroundMuted}
           borderRadius={BorderRadius.full}
           className="confirm_nav__right_btn"
           color={IconColor.iconAlternative}

@@ -4,9 +4,10 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { ConnectPage, ConnectPageProps } from './connect-page';
 
 // Mock the CreateSolanaAccountModal component to avoid errors
@@ -40,8 +41,6 @@ const render = (
   const {
     props = {
       request: {
-        id: '1',
-        origin: mockTestDappUrl,
         permissions: {
           [Caip25EndowmentPermissionName]: {
             caveats: [
@@ -78,6 +77,8 @@ const render = (
       ...state,
       permissionHistory: {
         mockTestDappUrl: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_accounts: {
             accounts: {
               '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1709225290848,
@@ -99,15 +100,10 @@ describe('ConnectPage', () => {
   });
 
   it('should render image icon correctly', () => {
-    const { getAllByAltText } = render();
+    const { getByAltText } = render();
 
-    const images = getAllByAltText('github.io logo');
-    expect(images.length).toBe(2);
-    expect(images[0]).toHaveAttribute(
-      'src',
-      'https://metamask.github.io/test-dapp/metamask-fox.svg',
-    );
-    expect(images[1]).toHaveAttribute(
+    const image = getByAltText('metamask.github.io logo');
+    expect(image).toHaveAttribute(
       'src',
       'https://metamask.github.io/test-dapp/metamask-fox.svg',
     );
@@ -116,10 +112,7 @@ describe('ConnectPage', () => {
   it('should render fallback icon correctly', () => {
     const { container } = render({
       props: {
-        request: {
-          id: '1',
-          origin: mockTestDappUrl,
-        },
+        request: {},
         permissionsRequestId: '1',
         rejectPermissionsRequest: jest.fn(),
         approveConnection: jest.fn(),
@@ -132,16 +125,13 @@ describe('ConnectPage', () => {
     });
 
     const divElement = container.querySelector('div.mm-avatar-base--size-lg');
-    expect(divElement).toHaveTextContent('g');
+    expect(divElement).toHaveTextContent('m');
   });
 
   it('should render fallback icon correctly for IP address as an origin', () => {
     const { container } = render({
       props: {
-        request: {
-          id: '1',
-          origin: 'http://127.0.0.1/test-dapp',
-        },
+        request: {},
         permissionsRequestId: '1',
         rejectPermissionsRequest: jest.fn(),
         approveConnection: jest.fn(),
@@ -160,34 +150,34 @@ describe('ConnectPage', () => {
 
   it('should render title correctly', () => {
     const { getByText } = render();
-    expect(getByText('github.io')).toBeDefined();
+    expect(getByText('metamask.github.io')).toBeDefined();
   });
 
   it('should render subtitle correctly', () => {
     const { getByText } = render();
-    expect(getByText('Connect this website with MetaMask')).toBeDefined();
+    expect(getByText(messages.connectionDescription.message)).toBeDefined();
   });
 
   it('should render accounts tab correctly', () => {
     const { getByText, queryAllByText } = render();
 
-    expect(getByText('Accounts')).toBeDefined();
+    expect(getByText(messages.accounts.message)).toBeDefined();
     expect(getByText('Test Account')).toBeDefined();
     expect(getByText('0x0DCD5...3E7bc')).toBeDefined();
 
     const valueElements = queryAllByText('966.988');
     expect(valueElements[0]).toBeDefined();
-    expect(getByText('Edit accounts')).toBeDefined();
+    expect(getByText(messages.editAccounts.message)).toBeDefined();
   });
 
   it('should render edit accounts modal', () => {
     const { getByText, queryAllByText } = render();
-    const editAccountsButton = getByText('Edit accounts');
+    const editAccountsButton = getByText(messages.editAccounts.message);
     fireEvent.click(editAccountsButton);
 
-    expect(getByText('Update')).toBeDefined();
-    expect(getByText('Select all')).toBeDefined();
-    expect(getByText('New account')).toBeDefined();
+    expect(getByText(messages.update.message)).toBeDefined();
+    expect(getByText(messages.selectAll.message)).toBeDefined();
+    expect(getByText(messages.newAccount.message)).toBeDefined();
 
     const accountElements = queryAllByText('Test Account');
 
@@ -198,51 +188,51 @@ describe('ConnectPage', () => {
 
   it('should render empty accounts state correctly', () => {
     const { getByText, queryAllByText, getByTestId } = render();
-    const editAccountsButton = getByText('Edit accounts');
+    const editAccountsButton = getByText(messages.editAccounts.message);
     fireEvent.click(editAccountsButton);
 
     const accountElements = queryAllByText('Test Account');
     fireEvent.click(accountElements[1]);
 
-    const disconnectButton = getByText('Disconnect');
+    const disconnectButton = getByText(messages.disconnect.message);
     fireEvent.click(disconnectButton);
 
-    expect(getByText('Select an account to connect')).toBeDefined();
+    expect(getByText(messages.selectAccountToConnect.message)).toBeDefined();
 
     const confirmButton = getByTestId('confirm-btn');
     expect(confirmButton).toBeDisabled();
 
     const selectAnAccountToConnectButton = getByText(
-      'Select an account to connect',
+      messages.selectAccountToConnect.message,
     );
     fireEvent.click(selectAnAccountToConnectButton);
 
-    expect(getByText('Select all')).toBeDefined();
-    expect(getByText('New account')).toBeDefined();
+    expect(getByText(messages.selectAll.message)).toBeDefined();
+    expect(getByText(messages.newAccount.message)).toBeDefined();
   });
 
   it('should render account connectionListItem', () => {
     const { getByText } = render();
-    const permissionsTab = getByText('Permissions');
+    const permissionsTab = getByText(messages.permissions.message);
     fireEvent.click(permissionsTab);
 
-    expect(
-      getByText('See your accounts and suggest transactions'),
-    ).toBeDefined();
+    expect(getByText(messages.accountsPermissionsTitle.message)).toBeDefined();
   });
 
   it('should render network connectionListItem', () => {
     const { getByText } = render();
-    const permissionsTab = getByText('Permissions');
+    const permissionsTab = getByText(messages.permissions.message);
     fireEvent.click(permissionsTab);
 
-    expect(getByText('Use your enabled networks')).toBeDefined();
+    expect(
+      getByText(messages.permission_walletSwitchEthereumChain.message),
+    ).toBeDefined();
   });
 
   it('should render confirm and cancel button', () => {
     const { getByText } = render();
-    const confirmButton = getByText('Connect');
-    const cancelButton = getByText('Cancel');
+    const confirmButton = getByText(messages.connect.message);
+    const cancelButton = getByText(messages.cancel.message);
     expect(confirmButton).toBeDefined();
     expect(cancelButton).toBeDefined();
   });
@@ -251,8 +241,6 @@ describe('ConnectPage', () => {
     const { container } = render({
       props: {
         request: {
-          id: '1',
-          origin: mockTestDappUrl,
           permissions: {
             [Caip25EndowmentPermissionName]: {
               caveats: [
@@ -295,8 +283,6 @@ describe('ConnectPage', () => {
     const { getByText } = render({
       props: {
         request: {
-          id: '1',
-          origin: mockTestDappUrl,
           permissions: {
             [Caip25EndowmentPermissionName]: {
               caveats: [
@@ -317,6 +303,8 @@ describe('ConnectPage', () => {
             },
           },
           metadata: {
+            id: '1',
+            origin: mockTargetSubjectMetadata.origin,
             promptToCreateSolanaAccount: true,
           },
         },
@@ -328,18 +316,14 @@ describe('ConnectPage', () => {
       },
     });
 
-    expect(
-      getByText('This site is requesting a Solana account.'),
-    ).toBeDefined();
-    expect(getByText('Create Solana account')).toBeDefined();
+    expect(getByText(messages.solanaAccountRequested.message)).toBeDefined();
+    expect(getByText(messages.createSolanaAccount.message)).toBeDefined();
   });
 
   it('should not render Solana account message when promptToCreateSolanaAccount is false', () => {
     const { queryByText } = render({
       props: {
         request: {
-          id: '1',
-          origin: mockTestDappUrl,
           permissions: {
             [Caip25EndowmentPermissionName]: {
               caveats: [
@@ -360,6 +344,8 @@ describe('ConnectPage', () => {
             },
           },
           metadata: {
+            id: '1',
+            origin: mockTargetSubjectMetadata.origin,
             promptToCreateSolanaAccount: false,
           },
         },
@@ -371,18 +357,14 @@ describe('ConnectPage', () => {
       },
     });
 
-    expect(
-      queryByText('A Solana account is required to connect to this site.'),
-    ).toBeNull();
-    expect(queryByText('Create Solana account')).toBeNull();
+    expect(queryByText(messages.solanaAccountRequested.message)).toBeNull();
+    expect(queryByText(messages.createSolanaAccount.message)).toBeNull();
   });
 
   it('should open CreateSolanaAccountModal when create Solana account button is clicked', () => {
     const { getByText, getByTestId } = render({
       props: {
         request: {
-          id: '1',
-          origin: mockTestDappUrl,
           permissions: {
             [Caip25EndowmentPermissionName]: {
               caveats: [
@@ -403,6 +385,8 @@ describe('ConnectPage', () => {
             },
           },
           metadata: {
+            id: '1',
+            origin: mockTargetSubjectMetadata.origin,
             promptToCreateSolanaAccount: true,
           },
         },
@@ -414,7 +398,9 @@ describe('ConnectPage', () => {
       },
     });
 
-    const createSolanaAccountButton = getByText('Create Solana account');
+    const createSolanaAccountButton = getByText(
+      messages.createSolanaAccount.message,
+    );
     fireEvent.click(createSolanaAccountButton);
 
     expect(getByTestId('create-solana-account-modal')).toBeDefined();
@@ -424,8 +410,6 @@ describe('ConnectPage', () => {
     const { queryByText } = render({
       props: {
         request: {
-          id: '1',
-          origin: mockTestDappUrl,
           permissions: {
             [Caip25EndowmentPermissionName]: {
               caveats: [
@@ -446,6 +430,8 @@ describe('ConnectPage', () => {
             },
           },
           metadata: {
+            id: '1',
+            origin: mockTargetSubjectMetadata.origin,
             promptToCreateSolanaAccount: true,
           },
         },
@@ -457,6 +443,6 @@ describe('ConnectPage', () => {
       },
     });
 
-    expect(queryByText('Select an account to connect')).toBeNull();
+    expect(queryByText(messages.selectAccountToConnect.message)).toBeNull();
   });
 });

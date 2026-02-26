@@ -4,11 +4,12 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { SolAccountType, SolScope } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { EditAccountsModal } from '.';
 
 const mockKeyringId = '01JKAF3DSGM3AB87EM9N0K41AJ';
@@ -90,6 +91,8 @@ const render = (
       ...state,
       permissionHistory: {
         'https://test.dapp': {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_accounts: {
             accounts: {
               '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1709225290848,
@@ -133,7 +136,7 @@ describe('EditAccountsModal', () => {
 
   it('shows select all button', async () => {
     const { getByLabelText } = render();
-    expect(getByLabelText('Select all')).toBeInTheDocument();
+    expect(getByLabelText(messages.selectAll.message)).toBeInTheDocument();
   });
 
   it('calls onSubmit with the selected account addresses when the connect button is clicked', async () => {
@@ -160,8 +163,8 @@ describe('EditAccountsModal', () => {
 
   it('shows the disconnect text button when nothing is selected', () => {
     const { getByLabelText, getByTestId } = render();
-    fireEvent.click(getByLabelText('Select all'));
-    fireEvent.click(getByLabelText('Select all'));
+    fireEvent.click(getByLabelText(messages.selectAll.message));
+    fireEvent.click(getByLabelText(messages.selectAll.message));
     expect(getByTestId('disconnect-accounts-button')).toHaveTextContent(
       'Disconnect',
     );

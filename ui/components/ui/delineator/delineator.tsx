@@ -66,6 +66,8 @@ const Header = ({
   return (
     <Box
       className={classnames({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         delineator__header: true,
         'delineator__header--expanded': isExpanded,
         'delineator__header--loading': isLoading,
@@ -125,7 +127,7 @@ const Container = ({
       className="delineator__wrapper"
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
-      backgroundColor={BackgroundColor.backgroundDefault}
+      backgroundColor={BackgroundColor.backgroundSection}
       borderRadius={BorderRadius.LG}
       {...wrapperBoxProps}
     >

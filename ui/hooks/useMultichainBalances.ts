@@ -5,40 +5,34 @@ import {
   type CaipChainId,
   type Hex,
 } from '@metamask/utils';
+import { SolScope, BtcScope, TrxScope } from '@metamask/keyring-api';
+import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { BigNumber } from 'bignumber.js';
-import type { TokenWithBalance } from '../components/app/assets/types';
+import { AssetType } from '../../shared/constants/transaction';
+import {
+  SLIP44_ASSET_NAMESPACE,
+  TRON_RESOURCE_SYMBOLS_SET,
+  type TronResourceSymbol,
+} from '../../shared/constants/multichain/assets';
 import {
   getAccountAssets,
   getAssetsMetadata,
   getAssetsRates,
   getTokenBalancesEvm,
 } from '../selectors/assets';
+import { getMultichainBalances } from '../selectors/multichain';
 import {
-  getLastSelectedNonEvmAccount,
-  getMultichainBalances,
-} from '../selectors/multichain';
-import { AssetType } from '../../shared/constants/transaction';
-import {
-  getInternalAccount,
-  getSelectedEvmInternalAccount,
-} from '../selectors/selectors';
+  getAccountGroupsByAddress,
+  getInternalAccountByGroupAndCaip,
+  getSelectedAccountGroup,
+} from '../selectors/multichain-accounts/account-tree';
+import { type MultichainAccountsState } from '../selectors/multichain-accounts/account-tree.types';
 import { useMultichainSelector } from './useMultichainSelector';
 
-// TODO replace this with getMultichainAssets
 const useNonEvmAssetsWithBalances = (
   accountId?: string,
-): (
-  | Omit<TokenWithBalance, 'address' | 'chainId' | 'primary' | 'secondary'> & {
-      chainId: `${string}:${string}`;
-      decimals: number;
-      address: string;
-      assetId: `${string}:${string}`;
-      string: string;
-      balance: string;
-      tokenFiatAmount: number;
-      symbol: string;
-    }
-)[] => {
+  accountType?: InternalAccount['type'],
+) => {
   // non-evm tokens owned by non-evm account, includes native and non-native assets
   const assetsByAccountId = useSelector(getAccountAssets);
   const assetMetadataById = useSelector(getAssetsMetadata);
@@ -71,11 +65,13 @@ const useNonEvmAssetsWithBalances = (
           symbol: assetMetadataById[caipAssetId]?.symbol ?? '',
           assetId: caipAssetId,
           address: assetReference,
+          isNative: assetNamespace === SLIP44_ASSET_NAMESPACE,
           string: balancesByAssetId[caipAssetId]?.amount ?? '0',
           balance: balancesByAssetId[caipAssetId]?.amount ?? '0',
           decimals: assetMetadataById[caipAssetId]?.units[0]?.decimals,
           image: assetMetadataById[caipAssetId]?.iconUrl ?? '',
           type: assetNamespace === 'token' ? AssetType.token : AssetType.native,
+          accountType,
           tokenFiatAmount: new BigNumber(
             balancesByAssetId[caipAssetId]?.amount ?? '1',
           )
@@ -90,6 +86,7 @@ const useNonEvmAssetsWithBalances = (
     assetsByAccountId,
     accountId,
     nonEvmBalancesByAccountId,
+    accountType,
   ]);
 
   return nonEvmTokensWithFiatBalances;
@@ -99,40 +96,106 @@ const useNonEvmAssetsWithBalances = (
  * This hook is used to get the balances of all tokens and native tokens across all chains
  * This also returns the total fiat balances by chainId/caipChainId
  *
- * @param accountId - the accountId to use for the token list, if not provided, the selected account will be used
+ * @param accountAddress - the accountAddress to use for the token list, if not provided, the selected account will be used
  */
-export const useMultichainBalances = (accountId?: string) => {
-  // EVM data
-  const selectedAccount = useSelector(getSelectedEvmInternalAccount);
-  const requestedAccount = useSelector((state) =>
-    getInternalAccount(state, accountId ?? ''),
+export const useMultichainBalances = (
+  accountAddress?: InternalAccount['address'],
+) => {
+  // Use accountAddress's account group if it exists, otherwise use the selected account group
+  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
+  const [requestedAccountGroup] = useSelector((state) =>
+    getAccountGroupsByAddress(state as MultichainAccountsState, [
+      accountAddress ?? '',
+    ]),
   );
-  const evmAccount = accountId ? requestedAccount : selectedAccount;
+  const accountGroupIdToUse = requestedAccountGroup?.id ?? selectedAccountGroup;
 
+  // Get internal account to use for each supported scope
+  const evmAccount = useSelector((state) =>
+    getInternalAccountByGroupAndCaip(state, accountGroupIdToUse, 'eip155:1'),
+  );
+  const solanaAccount = useSelector((state) =>
+    getInternalAccountByGroupAndCaip(
+      state,
+      accountGroupIdToUse,
+      SolScope.Mainnet,
+    ),
+  );
+  const bitcoinAccount = useSelector((state) =>
+    getInternalAccountByGroupAndCaip(
+      state,
+      accountGroupIdToUse,
+      BtcScope.Mainnet,
+    ),
+  );
+  const tronAccount = useSelector((state) =>
+    getInternalAccountByGroupAndCaip(
+      state,
+      accountGroupIdToUse,
+      TrxScope.Mainnet,
+    ),
+  );
+
+  // EVM balances
   const evmBalancesWithFiatByChainId = useSelector((state) =>
     getTokenBalancesEvm(state, evmAccount?.address),
   );
-  // Non-EVM data
-  const nonEvmAccount = useSelector(getLastSelectedNonEvmAccount);
-  const nonEvmBalancesWithFiatByChainId = useNonEvmAssetsWithBalances(
-    accountId ?? nonEvmAccount?.id,
+  // Solana balances
+  const solanaBalancesWithFiat = useNonEvmAssetsWithBalances(solanaAccount?.id);
+  // Bitcoin balances
+  const bitcoinBalancesWithFiat = useNonEvmAssetsWithBalances(
+    bitcoinAccount?.id,
+    bitcoinAccount?.type,
+  );
+  // Tron balances
+  const tronBalancesWithFiat = useNonEvmAssetsWithBalances(
+    tronAccount?.id,
+    tronAccount?.type,
   );
 
   // return TokenWithFiat sorted by fiat balance amount
   const assetsWithBalance = useMemo(() => {
-    return [...evmBalancesWithFiatByChainId, ...nonEvmBalancesWithFiatByChainId]
+    // Filter out Tron energy/bandwidth resources before combining
+    const filteredTronBalances = tronBalancesWithFiat.filter(
+      (token) =>
+        !TRON_RESOURCE_SYMBOLS_SET.has(
+          token.symbol.toLowerCase() as TronResourceSymbol,
+        ),
+    );
+
+    return [
+      ...evmBalancesWithFiatByChainId,
+      ...solanaBalancesWithFiat,
+      ...bitcoinBalancesWithFiat,
+      ...filteredTronBalances,
+    ]
       .map((token) => ({
         ...token,
         type: token.isNative ? AssetType.native : AssetType.token,
       }))
       .sort((a, b) => (b.tokenFiatAmount ?? 0) - (a.tokenFiatAmount ?? 0));
-  }, [evmBalancesWithFiatByChainId, nonEvmBalancesWithFiatByChainId]);
+  }, [
+    evmBalancesWithFiatByChainId,
+    solanaBalancesWithFiat,
+    bitcoinBalancesWithFiat,
+    tronBalancesWithFiat,
+  ]);
 
   // return total fiat balances by chainId/caipChainId
   const balanceByChainId = useMemo(() => {
+    // Filter out Tron energy/bandwidth resources
+    const filteredTronBalances = tronBalancesWithFiat.filter(
+      (token) =>
+        !TRON_RESOURCE_SYMBOLS_SET.has(
+          token.symbol.toLowerCase() as TronResourceSymbol,
+        ),
+    );
+
     return [
       ...evmBalancesWithFiatByChainId,
-      ...nonEvmBalancesWithFiatByChainId,
+      ...solanaBalancesWithFiat,
+      ...bitcoinBalancesWithFiat,
+      ...filteredTronBalances,
     ].reduce((acc: Record<Hex | CaipChainId, number>, tokenWithBalanceData) => {
       if (!acc[tokenWithBalanceData.chainId]) {
         acc[tokenWithBalanceData.chainId] = 0;
@@ -141,7 +204,12 @@ export const useMultichainBalances = (accountId?: string) => {
         tokenWithBalanceData.tokenFiatAmount ?? 0;
       return acc;
     }, {});
-  }, [evmBalancesWithFiatByChainId, nonEvmBalancesWithFiatByChainId]);
+  }, [
+    evmBalancesWithFiatByChainId,
+    solanaBalancesWithFiat,
+    bitcoinBalancesWithFiat,
+    tronBalancesWithFiat,
+  ]);
 
   return { assetsWithBalance, balanceByChainId };
 };

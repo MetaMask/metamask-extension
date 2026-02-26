@@ -3,7 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import '@testing-library/jest-dom';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { NftItem } from '.';
 
 const store = configureStore(mockState);

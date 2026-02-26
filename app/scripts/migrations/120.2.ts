@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
 import log from 'loglevel';
+import { captureException } from '../../../shared/lib/sentry';
 
 type VersionedData = {
   meta: { version: number };
@@ -145,6 +146,8 @@ function removeObsoleteNetworkControllerState(
         !validNetworkConfigurationIds.includes(providerConfig.id)
       ) {
         log.warn(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           `Migration ${version}: Removing invalid provider id ${providerConfig.id}`,
         );
         delete providerConfig.id;
@@ -173,7 +176,7 @@ function removeObsoletePhishingControllerState(
   if (!hasProperty(state, 'PhishingController')) {
     return;
   } else if (!isObject(state.PhishingController)) {
-    global.sentry.captureException(
+    captureException(
       new Error(
         `Migration ${version}: Invalid PhishingController state of type '${typeof state.PhishingController}'`,
       ),

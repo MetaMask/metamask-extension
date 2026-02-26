@@ -1,7 +1,7 @@
 import React from 'react';
 
 import mockState from '../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 
 import { ConfirmInfoRowCurrency } from './currency';
@@ -29,5 +29,17 @@ describe('ConfirmInfoRowCurrency', () => {
   it('should display in currency passed', () => {
     const { container } = render({ currency: 'usd' });
     expect(container).toMatchSnapshot();
+  });
+
+  it('should display with chainId prop', () => {
+    const { container, getByText } = render({
+      currency: 'POL',
+      chainId: '0x89',
+    });
+    expect(
+      container.querySelector('.currency-display-component'),
+    ).toBeInTheDocument();
+    expect(getByText(/0.148619/u)).toBeInTheDocument();
+    expect(getByText(/POL/u)).toBeInTheDocument();
   });
 });

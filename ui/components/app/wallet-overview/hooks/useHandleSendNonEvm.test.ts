@@ -1,9 +1,6 @@
 import { SolScope } from '@metamask/keyring-api';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
-import {
-  sendMultichainTransaction,
-  setDefaultHomeActiveTabName,
-} from '../../../../store/actions';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { sendMultichainTransaction } from '../../../../store/actions';
 import { SOLANA_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts/solana-wallet-snap';
 import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes';
 import { mockMultichainNetworkState } from '../../../../../test/stub/networks';
@@ -11,7 +8,6 @@ import { useHandleSendNonEvm } from './useHandleSendNonEvm';
 
 jest.mock('../../../../store/actions', () => ({
   sendMultichainTransaction: jest.fn(),
-  setDefaultHomeActiveTabName: jest.fn(),
 }));
 
 const mockDispatch = jest.fn();
@@ -23,14 +19,13 @@ jest.mock('react-redux', () => {
   };
 });
 
-const mockHistory = {
-  push: jest.fn(),
-};
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => mockHistory,
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const mockState = {
   metamask: {
@@ -70,8 +65,8 @@ const mockState = {
     selectedMultichainNetworkChainId: SolScope.Mainnet,
     isEvmSelected: false,
     remoteFeatureFlags: {
-      addSolanaAccount: true,
-      addBitcoinAccount: true,
+      solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
+      bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
     },
   },
 };
@@ -149,7 +144,7 @@ describe('useHandleSendNonEvm', () => {
 
     await handleSendNonEvm();
 
-    expect(setDefaultHomeActiveTabName).toHaveBeenCalledWith('activity');
+    expect(sendMultichainTransaction).toHaveBeenCalled();
   });
 
   describe('when a caipAssetType is provided', () => {
@@ -176,7 +171,7 @@ describe('useHandleSendNonEvm', () => {
       );
     });
 
-    it('pushes the confirmation page in history', async () => {
+    it('pushes the confirmation page', async () => {
       const { result } = renderHookWithProvider(
         () =>
           useHandleSendNonEvm(
@@ -188,7 +183,7 @@ describe('useHandleSendNonEvm', () => {
 
       await handleSendNonEvm();
 
-      expect(mockHistory.push).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRMATION_V_NEXT_ROUTE}/${mockState.metamask.pendingApprovals[0].id}`,
       );
     });
@@ -215,7 +210,7 @@ describe('useHandleSendNonEvm', () => {
         );
       });
 
-      it('pushes the confirmation page in history', async () => {
+      it('pushes the confirmation page', async () => {
         const { result } = renderHookWithProvider(
           () => useHandleSendNonEvm(),
           mockState,
@@ -224,7 +219,7 @@ describe('useHandleSendNonEvm', () => {
 
         await handleSendNonEvm();
 
-        expect(mockHistory.push).toHaveBeenCalledWith(
+        expect(mockUseNavigate).toHaveBeenCalledWith(
           `${CONFIRMATION_V_NEXT_ROUTE}/${mockState.metamask.pendingApprovals[0].id}`,
         );
       });

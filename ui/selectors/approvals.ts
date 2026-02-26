@@ -6,6 +6,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { createSelector } from 'reselect';
 import { Json } from '@metamask/utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { EMPTY_OBJECT } from './shared';
 
 export type ApprovalsMetaMaskState = {
   metamask: {
@@ -54,13 +55,22 @@ export function getApprovalFlows(state: ApprovalsMetaMaskState) {
   return state.metamask.approvalFlows;
 }
 
-export function getPendingApprovals(state: ApprovalsMetaMaskState) {
-  return Object.values(state.metamask.pendingApprovals ?? {});
+export function selectHasApprovalFlows(state: ApprovalsMetaMaskState) {
+  return (state.metamask.approvalFlows?.length ?? 0) > 0;
 }
 
-export function pendingApprovalsSortedSelector(state: ApprovalsMetaMaskState) {
-  return getPendingApprovals(state).sort((a1, a2) => a1.time - a2.time);
-}
+const getPendingApprovalsObject = (state: ApprovalsMetaMaskState) =>
+  state.metamask.pendingApprovals ?? EMPTY_OBJECT;
+
+export const getPendingApprovals = createSelector(
+  getPendingApprovalsObject,
+  (approvals) => Object.values(approvals),
+);
+
+export const pendingApprovalsSortedSelector = createSelector(
+  getPendingApprovals,
+  (approvals) => [...approvals].sort((a1, a2) => a1.time - a2.time),
+);
 
 /**
  * Returns pending approvals sorted by time for use in confirmation navigation.
@@ -101,7 +111,7 @@ export const selectPendingApproval = createDeepEqualSelector(
 
 export const getApprovalsByOrigin = (
   state: ApprovalsMetaMaskState,
-  origin: string,
+  origin: string | undefined,
 ) => {
   const pendingApprovals = getPendingApprovals(state);
 

@@ -1,10 +1,3 @@
-export {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  AvatarAccountDiameter,
-} from './avatar-account';
-export type { AvatarAccountProps } from './avatar-account';
 export { AvatarFavicon, AvatarFaviconSize } from './avatar-favicon';
 export type { AvatarFaviconProps } from './avatar-favicon';
 export { AvatarIcon, AvatarIconSize } from './avatar-icon';
@@ -65,6 +58,8 @@ export { PickerNetwork } from './picker-network';
 export type { PickerNetworkProps } from './picker-network';
 export { Tag } from './tag';
 export type { TagProps } from './tag';
+export { SuccessPill } from './success-pill';
+export type { SuccessPillProps } from './success-pill';
 export { TagUrl } from './tag-url';
 export type { TagUrlProps } from './tag-url';
 export { Text, ValidTag, TextDirection, InvisibleCharacter } from './text';

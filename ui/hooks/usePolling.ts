@@ -1,56 +1,71 @@
 import { useEffect, useRef } from 'react';
+import type { Json } from '@metamask/utils';
+import { useSyncEqualityCheck } from './useSyncEqualityCheck';
 
-type UsePollingOptions<PollingInput> = {
-  callback?: (pollingToken: string) => (pollingToken: string) => void;
+type UsePollingOptions<PollingInput extends Json> = {
   startPolling: (input: PollingInput) => Promise<string>;
   stopPollingByPollingToken: (pollingToken: string) => void;
   input: PollingInput;
   enabled?: boolean;
 };
 
-const usePolling = <PollingInput>(
+const usePolling = <PollingInput extends Json>(
   usePollingOptions: UsePollingOptions<PollingInput>,
 ) => {
   const pollTokenRef = useRef<null | string>(null);
-  const cleanupRef = useRef<null | ((pollingToken: string) => void)>(null);
-  let isMounted = false;
-  useEffect(() => {
-    if (usePollingOptions.enabled === false) {
-      return () => {
-        // noop
-      };
-    }
+  const pollingInput = useSyncEqualityCheck(usePollingOptions.input);
 
-    isMounted = true;
+  // Track effect call generation to handle race conditions with pending promises
+  const callIdRef = useRef(0);
+
+  const isMounted = useRef(true);
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    callIdRef.current += 1;
+    const currentCallId = callIdRef.current;
 
     const cleanup = () => {
       if (pollTokenRef.current) {
         usePollingOptions.stopPollingByPollingToken(pollTokenRef.current);
-        cleanupRef.current?.(pollTokenRef.current);
+        pollTokenRef.current = null;
       }
     };
 
-    // Start polling when the component mounts
-    usePollingOptions
-      .startPolling(usePollingOptions.input)
-      .then((pollToken) => {
-        pollTokenRef.current = pollToken;
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        cleanupRef.current = usePollingOptions.callback?.(pollToken) || null;
-        if (!isMounted) {
-          cleanup();
-        }
-      });
-
-    // Return a cleanup function to stop polling when the component unmounts
-    return () => {
-      isMounted = false;
+    if (usePollingOptions.enabled === false) {
       cleanup();
-    };
+      return () => {
+        // no-op
+      };
+    }
+
+    // Start polling when the component mounts
+    usePollingOptions.startPolling(pollingInput).then((pollToken) => {
+      // Check if this is still the current call (handles race conditions)
+      if (currentCallId !== callIdRef.current) {
+        // Stale call - stop the poll immediately to prevent orphaned tokens
+        usePollingOptions.stopPollingByPollingToken(pollToken);
+        return;
+      }
+
+      pollTokenRef.current = pollToken;
+      if (!isMounted.current) {
+        cleanup();
+      }
+    });
+
+    // Return a cleanup function to stop polling when the component unmounts or dependencies change
+    return cleanup;
   }, [
-    usePollingOptions.input && JSON.stringify(usePollingOptions.input),
+    pollingInput,
     usePollingOptions.enabled,
+    usePollingOptions.startPolling,
+    usePollingOptions.stopPollingByPollingToken,
   ]);
 };
 

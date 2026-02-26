@@ -1,7 +1,8 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { BtcAccountType } from '@metamask/keyring-api';
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import {
@@ -27,7 +28,10 @@ const mockNonEvmAccount = createMockInternalAccount({
   type: BtcAccountType.P2wpkh,
 });
 
-const mockEvmExplorer = 'http://mock-explorer.com';
+const mockEvmExplorer = (address: string) =>
+  `https://etherscan.io/address/${normalizeSafeAddress(
+    address,
+  )}#asset-multichain`;
 
 const render = (
   {
@@ -56,7 +60,7 @@ const render = (
       },
       ...mockNetworkState({
         chainId: '0x5',
-        blockExplorerUrl: mockEvmExplorer,
+        blockExplorerUrl: mockEvmExplorer(mockAccount.address),
       }),
       completedOnboarding: true,
     },
@@ -72,15 +76,14 @@ describe('NicknamePopover', () => {
   });
 
   it('opens EVM block explorer', () => {
+    // @ts-expect-error mocking platform
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
     // Accounts controlelr addresses are lower cased but it gets converted to checksummed in this util
-    const expectedExplorerUrl = `${mockEvmExplorer}/address/${normalizeSafeAddress(
-      mockAccount.address,
-    )}`;
+    const expectedExplorerUrl = mockEvmExplorer(mockAccount.address);
     const { getByText } = render({ props: { address: mockAccount.address } });
 
-    const viewExplorerButton = getByText('View on block explorer');
+    const viewExplorerButton = getByText(messages.viewOnBlockExplorer.message);
     fireEvent.click(viewExplorerButton);
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: expectedExplorerUrl,
@@ -88,6 +91,7 @@ describe('NicknamePopover', () => {
   });
 
   it('opens non-EVM block explorer', () => {
+    // @ts-expect-error mocking platform
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
     const expectedExplorerUrl = formatBlockExplorerAddressUrl(
       MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
@@ -100,7 +104,7 @@ describe('NicknamePopover', () => {
       props: { address: mockNonEvmAccount.address },
     });
 
-    const viewExplorerButton = getByText('View on block explorer');
+    const viewExplorerButton = getByText(messages.viewOnBlockExplorer.message);
 
     fireEvent.click(viewExplorerButton);
     expect(global.platform.openTab).toHaveBeenCalledWith({

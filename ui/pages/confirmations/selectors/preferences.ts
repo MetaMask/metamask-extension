@@ -1,8 +1,10 @@
-import { getPreferences } from '../../../selectors';
-
 export type RootState = {
   metamask: {
     useTransactionSimulations?: boolean;
+    preferences?: {
+      showConfirmationAdvancedDetails?: boolean;
+      dismissSmartAccountSuggestionEnabled?: boolean;
+    };
   };
 };
 
@@ -10,9 +12,11 @@ export const selectUseTransactionSimulations = (state: RootState) =>
   state.metamask.useTransactionSimulations;
 
 export function selectConfirmationAdvancedDetailsOpen(state: RootState) {
-  return Boolean(getPreferences(state).showConfirmationAdvancedDetails);
+  const { metamask } = state;
+  return Boolean(metamask.preferences?.showConfirmationAdvancedDetails);
 }
 
 export function getDismissSmartAccountSuggestionEnabled(state: RootState) {
-  return Boolean(getPreferences(state).dismissSmartAccountSuggestionEnabled);
+  const { metamask } = state;
+  return Boolean(metamask.preferences?.dismissSmartAccountSuggestionEnabled);
 }

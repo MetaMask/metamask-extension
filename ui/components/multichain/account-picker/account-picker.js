@@ -1,11 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useSelector } from 'react-redux';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
-  AvatarAccount,
-  AvatarAccountVariant,
   Box,
   ButtonBase,
   ButtonBaseSize,
@@ -23,9 +21,11 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { getUseBlockie } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { trace, TraceName } from '../../../../shared/lib/trace';
+import { PreferredAvatar } from '../../app/preferred-avatar';
+
+const AccountMenuStyle = { height: 'auto' };
 
 export const AccountPicker = ({
   address,
@@ -37,16 +37,27 @@ export const AccountPicker = ({
   labelProps = {},
   textProps = {},
   className = '',
+  showAvatarAccount = true,
   ...props
 }) => {
-  const useBlockie = useSelector(getUseBlockie);
-  const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
+  const shortenedAddress = address
+    ? shortenAddress(toChecksumHexAddress(address))
+    : '';
+
+  const accountNameStyling = useMemo(
+    () => ({
+      ...labelProps.style,
+      fontWeight: 500,
+    }),
+    [labelProps.style],
+  );
 
   return (
     <Box
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.center}
+      className="w-full"
     >
       <ButtonBase
         className={classnames('multichain-account-picker', className)}
@@ -73,45 +84,39 @@ export const AccountPicker = ({
         }}
         {...props}
         gap={1}
+        style={AccountMenuStyle}
       >
         <Box
           display={Display.Flex}
           flexDirection={
-            process.env.REMOVE_GNS ? FlexDirection.Column : FlexDirection.Row
+            showAvatarAccount ? FlexDirection.Row : FlexDirection.Column
           }
           alignItems={AlignItems.center}
-          gap={process.env.REMOVE_GNS ? 0 : 2}
+          gap={showAvatarAccount ? 2 : 0}
+          className="min-w-0"
         >
-          {
-            process.env.REMOVE_GNS ? null : (
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-              <AvatarAccount
-                variant={
-                  useBlockie
-                    ? AvatarAccountVariant.Blockies
-                    : AvatarAccountVariant.Jazzicon
-                }
-                address={address}
-                size={showAddress ? Size.MD : Size.XS}
-                borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
-              />
-            )
-            ///: END:ONLY_INCLUDE_IF
-          }
+          {showAvatarAccount ? (
+            <PreferredAvatar
+              address={address}
+              size={showAddress ? AvatarAccountSize.Md : AvatarAccountSize.Xs}
+            />
+          ) : null}
           <Text
             as="span"
             ellipsis
+            variant={TextVariant.bodyMdMedium}
             {...labelProps}
             className={classnames(
-              'multichain-account-picker__label',
+              'multichain-account-picker__label w-full',
               labelProps.className ?? '',
             )}
+            style={accountNameStyling}
           >
             {name}
             {showAddress ? (
               <Text
                 color={TextColor.textAlternative}
-                variant={TextVariant.bodySm}
+                variant={TextVariant.bodySmMedium}
                 ellipsis
                 {...addressProps}
               >
@@ -166,4 +171,8 @@ AccountPicker.propTypes = {
    * Additional className to be added to the AccountPicker
    */
   className: PropTypes.string,
+  /**
+   * Represents if the avatar account should display
+   */
+  showAvatarAccount: PropTypes.bool,
 };

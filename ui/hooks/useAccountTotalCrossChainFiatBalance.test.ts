@@ -6,13 +6,17 @@ import {
 import {
   getCrossChainTokenExchangeRates,
   getCrossChainMetaMaskCachedBalances,
+  getEnabledNetworks,
 } from '../selectors';
 import {
   getCurrentCurrency,
   getCurrencyRates,
   getTokenBalances,
 } from '../ducks/metamask/metamask';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import {
+  getNetworkConfigurationsByChainId,
+  getProviderConfig,
+} from '../../shared/modules/selectors/networks';
 import {
   FormattedTokensWithBalances,
   useAccountTotalCrossChainFiatBalance,
@@ -25,6 +29,7 @@ jest.mock('react-redux', () => ({
 jest.mock('../selectors', () => ({
   getCrossChainTokenExchangeRates: jest.fn(),
   getCrossChainMetaMaskCachedBalances: jest.fn(),
+  getEnabledNetworks: jest.fn(),
 }));
 jest.mock('../ducks/metamask/metamask', () => ({
   getCurrentCurrency: jest.fn(),
@@ -35,6 +40,9 @@ jest.mock('../../shared/modules/selectors/networks', () => ({
   getSelectedNetworkClientId: jest.fn(),
   getNetworkConfigurationsByChainId: jest.fn(),
   getCurrentChainId: jest.fn(),
+  selectDefaultNetworkClientIdsByChainId: jest.fn(),
+  getNetworksMetadata: jest.fn(),
+  getProviderConfig: jest.fn(),
 }));
 
 const mockGetCurrencyRates = jest.mocked(getCurrencyRates);
@@ -43,12 +51,14 @@ const mockGetCurrentCurrency = jest.mocked(getCurrentCurrency);
 const mockGetNetworkConfigurationsByChainId = jest.mocked(
   getNetworkConfigurationsByChainId,
 );
+const mockGetProviderConfig = jest.mocked(getProviderConfig);
 const mockGetCrossChainTokenExchangeRates = jest.mocked(
   getCrossChainTokenExchangeRates,
 );
 const mockGetCrossChainMetaMaskCachedBalances = jest.mocked(
   getCrossChainMetaMaskCachedBalances,
 );
+const mockGetEnabledNetworks = jest.mocked(getEnabledNetworks);
 
 const mockUseTokenBalances = jest.fn().mockReturnValue({
   tokenBalances: {
@@ -84,7 +94,7 @@ const mockNetworkConfigs = () => ({
     chainId: '0x1',
     defaultBlockExplorerUrlIndex: 0,
     defaultRpcEndpointIndex: 0,
-    name: 'Ethereum Mainnet',
+    name: 'Ethereum',
     nativeCurrency: 'ETH',
     rpcEndpoints: [
       {
@@ -192,6 +202,23 @@ describe('useAccountTotalCrossChainFiatBalance', () => {
     mockGetCrossChainMetaMaskCachedBalances.mockReturnValue(
       mockCachedBalances(),
     );
+
+    mockGetEnabledNetworks.mockReturnValue({
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+      },
+      solana: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+      },
+    });
+
+    mockGetProviderConfig.mockReturnValue({
+      chainId: '0x1',
+      ticker: 'ETH',
+      rpcPrefs: {},
+      type: 'mainnet',
+    });
 
     jest.clearAllMocks();
   });

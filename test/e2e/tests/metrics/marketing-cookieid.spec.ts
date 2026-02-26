@@ -4,12 +4,11 @@ import { MockedEndpoint, Mockttp } from 'mockttp';
 import {
   getCleanAppState,
   getEventPayloads,
-  WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
-import FixtureBuilder from '../../fixture-builder';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { MOCK_META_METRICS_ID, WINDOW_TITLES } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -45,8 +44,9 @@ describe('Marketing cookieId', function (this: Suite) {
   it('should be send to segment when preferences are enabled', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        dappOptions: {
+          customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
@@ -75,7 +75,7 @@ describe('Marketing cookieId', function (this: Suite) {
         assert.equal(uiState.metamask.marketingCampaignCookieId, 12345);
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openThreeDotMenu();
         const events = await getEventPayloads(
           driver,
@@ -90,8 +90,9 @@ describe('Marketing cookieId', function (this: Suite) {
   it('should not be send to segment when dataCollectionForMarketing is never toggled on', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        dappOptions: {
+          customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
@@ -120,7 +121,7 @@ describe('Marketing cookieId', function (this: Suite) {
         assert.equal(uiState.metamask.marketingCampaignCookieId, null);
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openThreeDotMenu();
         const events = await getEventPayloads(
           driver,
@@ -135,8 +136,9 @@ describe('Marketing cookieId', function (this: Suite) {
   it('should not be send to segment when participateInMetaMetrics is never toggled on ', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        dappOptions: {
+          customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        },
         fixtures: new FixtureBuilder().withMetaMetricsController().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
@@ -160,7 +162,7 @@ describe('Marketing cookieId', function (this: Suite) {
         assert.equal(uiState.metamask.marketingCampaignCookieId, null);
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openThreeDotMenu();
         const events = await getEventPayloads(
           driver,
@@ -173,8 +175,9 @@ describe('Marketing cookieId', function (this: Suite) {
   it('should updates marketingCampaignCookieId to null when dataCollectionForMarketing is toggled off ', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        dappOptions: {
+          customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
@@ -204,7 +207,7 @@ describe('Marketing cookieId', function (this: Suite) {
         assert.equal(uiState.metamask.marketingCampaignCookieId, 12345);
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openSettingsPage();
 
         const events = await getEventPayloads(
@@ -217,10 +220,10 @@ describe('Marketing cookieId', function (this: Suite) {
 
         // opt out data collection for marketing on privacy settings page
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.checkPageIsLoaded();
         await privacySettings.optOutDataCollectionForMarketing();
 
         // waiting for marketingCampaignCookieId to update in state

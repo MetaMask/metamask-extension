@@ -1,13 +1,15 @@
 import BigNumber from 'bignumber.js';
 import log from 'loglevel';
+import {
+  BRIDGE_DEV_API_BASE_URL,
+  BRIDGE_PROD_API_BASE_URL,
+} from '@metamask/bridge-controller';
 import { CHAIN_IDS } from '../constants/network';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
-  SWAPS_API_V2_BASE_URL,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SWAPS_CLIENT_ID,
-  SWAPS_DEV_API_V2_BASE_URL,
   SWAPS_WRAPPED_TOKENS_ADDRESSES,
   TOKEN_API_BASE_URL,
 } from '../constants/swaps';
@@ -133,8 +135,8 @@ export const QUOTE_VALIDATORS = [
 const getBaseUrlForNewSwapsApi = (type, chainId) => {
   const useDevApis = process.env.SWAPS_USE_DEV_APIS;
   const v2ApiBaseUrl = useDevApis
-    ? SWAPS_DEV_API_V2_BASE_URL
-    : SWAPS_API_V2_BASE_URL;
+    ? BRIDGE_DEV_API_BASE_URL
+    : BRIDGE_PROD_API_BASE_URL;
   const gasApiBaseUrl = useDevApis ? GAS_DEV_API_BASE_URL : GAS_API_BASE_URL;
   const tokenApiBaseUrl = TOKEN_API_BASE_URL;
   const noNetworkSpecificTypes = ['refreshTime']; // These types don't need network info in the URL.
@@ -142,6 +144,9 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
     return v2ApiBaseUrl;
   }
   const chainIdDecimal = chainId && parseInt(chainId, 16);
+  if (isNaN(chainIdDecimal)) {
+    return undefined;
+  }
   const gasApiTypes = ['gasPrices'];
   if (gasApiTypes.includes(type)) {
     return `${gasApiBaseUrl}/networks/${chainIdDecimal}`; // Gas calculations are in its own repo.

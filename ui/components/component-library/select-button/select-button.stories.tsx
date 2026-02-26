@@ -1,24 +1,28 @@
 import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
+import README from "./README.mdx";
 import { Text } from '../text';
 import {
   Display,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import README from './README.mdx';
 
 import { SelectButtonSize } from './select-button.types';
 import { SelectButton } from './select-button';
 import { AvatarBase, AvatarBaseSize } from '../avatar-base';
 import { SelectWrapper } from '../select-wrapper';
 import { Box } from '../box';
-import { AvatarAccount, AvatarAccountSize } from '../avatar-account';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+} from '@metamask/design-system-react';
 import { SelectOption } from '../select-option';
 
 export default {
   title: 'Components/ComponentLibrary/SelectButton',
   component: SelectButton,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,

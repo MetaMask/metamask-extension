@@ -8,7 +8,8 @@ import {
 } from '@open-rpc/meta-schema';
 import paramsToObj from '@open-rpc/test-coverage/build/utils/params-to-obj';
 import { Driver } from '../webdriver/driver';
-import { WINDOW_TITLES, switchToOrOpenDapp } from '../helpers';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE, WINDOW_TITLES } from '../constants';
+import TestDapp from '../page-objects/pages/test-dapp';
 import { addToQueue } from './helpers';
 
 type ConfirmationsRejectRuleOptions = {
@@ -49,8 +50,13 @@ export class ConfirmationsRejectRule implements Rule {
               const requestPermissionsRequest = JSON.stringify({
                 jsonrpc: '2.0',
                 method: 'wallet_requestPermissions',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 params: [{ eth_accounts: {} }],
               });
+
+              const testDapp = new TestDapp(this.driver);
+              await testDapp.checkPageIsLoaded();
 
               await this.driver.executeScript(
                 `window.ethereum.request(${requestPermissionsRequest})`,
@@ -62,7 +68,6 @@ export class ConfirmationsRejectRule implements Rule {
                 data: `data:image/png;base64,${screenshot}`,
               });
 
-              await this.driver.waitUntilXWindowHandles(3);
               await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
               await this.driver.findClickableElements({
@@ -76,12 +81,16 @@ export class ConfirmationsRejectRule implements Rule {
                 data: `data:image/png;base64,${screenshotTwo}`,
               });
 
-              await this.driver.clickElement({
+              await this.driver.clickElementAndWaitForWindowToClose({
                 text: 'Connect',
                 tag: 'button',
               });
 
-              await switchToOrOpenDapp(this.driver);
+              await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+              await testDapp.checkConnectedAccounts(
+                DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+              );
 
               const switchEthereumChainRequest = JSON.stringify({
                 jsonrpc: '2.0',
@@ -96,6 +105,7 @@ export class ConfirmationsRejectRule implements Rule {
               await this.driver.executeScript(
                 `window.ethereum.request(${switchEthereumChainRequest})`,
               );
+              await testDapp.checkNetworkIsConnected('0x539');
             }
           } catch (e) {
             console.log(e);
@@ -128,9 +138,18 @@ export class ConfirmationsRejectRule implements Rule {
               type: 'image',
               data: `data:image/png;base64,${screenshot}`,
             });
-            await this.driver.clickElement({ text, tag: 'button' });
+            await this.driver.clickElementAndWaitForWindowToClose({
+              text,
+              tag: 'button',
+            });
             // make sure to switch back to the dapp or else the next test will fail on the wrong window
-            await switchToOrOpenDapp(this.driver);
+            await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+            const testDapp = new TestDapp(this.driver);
+            await testDapp.checkPageIsLoaded();
+            await testDapp.checkConnectedAccounts(
+              DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+              false,
+            );
           } catch (e) {
             console.log(e);
           }
@@ -191,11 +210,20 @@ export class ConfirmationsRejectRule implements Rule {
               const revokePermissionsRequest = JSON.stringify({
                 jsonrpc: '2.0',
                 method: 'wallet_revokePermissions',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 params: [{ eth_accounts: {} }],
               });
 
               await this.driver.executeScript(
                 `window.ethereum.request(${revokePermissionsRequest})`,
+              );
+
+              const testDapp = new TestDapp(this.driver);
+              await testDapp.checkPageIsLoaded();
+              await testDapp.checkConnectedAccounts(
+                DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+                false,
               );
             }
           } catch (e) {

@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect, Route } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
+import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
+import { COHORT_NAMES } from '@metamask/subscription-controller';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   MetaMetricsContextProp,
@@ -10,23 +12,20 @@ import {
 } from '../../../shared/constants/metametrics';
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
-import WhatsNewModal from '../../components/app/whats-new-modal';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
-import Typography from '../../components/ui/typography/typography';
 import Button from '../../components/ui/button';
 import Popover from '../../components/ui/popover';
 import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
+import { ScrollContainer } from '../../contexts/scroll-container';
 
 import {
   FontWeight,
   Display,
-  TextColor,
-  TextVariant,
   FlexDirection,
   BlockSize,
   AlignItems,
@@ -38,7 +37,6 @@ import {
   ButtonIconSize,
   IconName,
   Box,
-  Text,
   Icon,
   Modal,
   ModalBody,
@@ -48,14 +46,12 @@ import {
   ModalOverlay,
 } from '../../components/component-library';
 import MultiRpcEditModal from '../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal';
+import UpdateModal from '../../components/app/update-modal/update-modal';
 import {
   RESTORE_VAULT_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
-  AWAITING_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { METAMETRICS_SETTINGS_LINK } from '../../helpers/constants/common';
@@ -64,27 +60,32 @@ import {
   SUPPORT_LINK,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/lib/ui-utils';
-import { AccountOverview } from '../../components/multichain/account-overview';
-import { setEditedNetwork } from '../../store/actions';
-import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
-///: BEGIN:ONLY_INCLUDE_IF(build-beta)
-import BetaHomeFooter from './beta/beta-home-footer.component';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import FlaskHomeFooter from './flask/flask-home-footer.component';
-///: END:ONLY_INCLUDE_IF
+import { AccountOverview } from '../../components/multichain';
+import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
+import ShieldEntryModal from '../../components/app/shield-entry-modal';
+import RewardsOnboardingModal from '../../components/app/rewards/onboarding/OnboardingModal';
+import { Pna25Modal } from '../../components/app/modals/pna25-modal';
+import { isBeta, isFlask } from '../../helpers/utils/build-types';
+import BetaAndFlaskHomeFooter from './beta-and-flask-home-footer.component';
+import { HomeDeepLinkActions } from './HomeDeepLinkActions';
 
 function shouldCloseNotificationPopup({
   isNotification,
   totalUnapprovedCount,
   hasApprovalFlows,
   isSigningQRHardwareTransaction,
+  isHardwareWalletErrorModalVisible,
 }) {
-  const shouldClose =
+  const baseCondition =
     isNotification &&
     totalUnapprovedCount === 0 &&
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
+
+  const isHardwareWalletErrorModalBlockingClose =
+    isHardwareWalletErrorModalVisible;
+
+  const shouldClose = baseCondition && !isHardwareWalletErrorModalBlockingClose;
 
   return shouldClose;
 }
@@ -96,7 +97,7 @@ export default class Home extends PureComponent {
   };
 
   static propTypes = {
-    history: PropTypes.object,
+    navigate: PropTypes.func,
     forgottenPassword: PropTypes.bool,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
@@ -104,44 +105,23 @@ export default class Home extends PureComponent {
     connectedStatusPopoverHasBeenShown: PropTypes.bool,
     showRecoveryPhraseReminder: PropTypes.bool.isRequired,
     showTermsOfUsePopup: PropTypes.bool.isRequired,
-    seedPhraseBackedUp: (props) => {
-      if (
-        props.seedPhraseBackedUp !== null &&
-        typeof props.seedPhraseBackedUp !== 'boolean'
-      ) {
-        throw new Error(
-          `seedPhraseBackedUp is required to be null or boolean. Received ${props.seedPhraseBackedUp}`,
-        );
-      }
-    },
     firstTimeFlowType: PropTypes.string,
     completedOnboarding: PropTypes.bool,
-    showWhatsNewPopup: PropTypes.bool.isRequired,
-    hideWhatsNewPopup: PropTypes.func.isRequired,
-    announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
     showMultiRpcModal: PropTypes.bool.isRequired,
+    showUpdateModal: PropTypes.bool.isRequired,
     newNetworkAddedConfigurationId: PropTypes.string,
-    isNotification: PropTypes.bool.isRequired,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
-    defaultHomeActiveTabName: PropTypes.string,
     participateInMetaMetrics: PropTypes.bool.isRequired,
-    onTabClick: PropTypes.func.isRequired,
-    haveSwapsQuotes: PropTypes.bool.isRequired,
-    showAwaitingSwapScreen: PropTypes.bool.isRequired,
-    haveBridgeQuotes: PropTypes.bool.isRequired,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     dataCollectionForMarketing: PropTypes.bool,
-    swapsFetchParams: PropTypes.object,
     location: PropTypes.object,
     shouldShowWeb3ShimUsageNotification: PropTypes.bool.isRequired,
     setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
-    pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
-    hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
@@ -152,7 +132,10 @@ export default class Home extends PureComponent {
     editedNetwork: PropTypes.object,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
-    isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
+    isSigningQRHardwareTransaction: PropTypes.bool,
+    // This prop is used in the `shouldCloseNotificationPopup` function
+    // eslint-disable-next-line react/no-unused-prop-types
+    isHardwareWalletErrorModalVisible: PropTypes.bool,
     newNftAddedMessage: PropTypes.string,
     setNewNftAddedMessage: PropTypes.func.isRequired,
     removeNftMessage: PropTypes.string,
@@ -165,88 +148,76 @@ export default class Home extends PureComponent {
     clearNewNetworkAdded: PropTypes.func,
     clearEditedNetwork: PropTypes.func,
     setActiveNetwork: PropTypes.func,
-    hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
     fetchBuyableChains: PropTypes.func.isRequired,
+    redirectAfterDefaultPage: PropTypes.object,
+    clearRedirectAfterDefaultPage: PropTypes.func,
+    isSeedlessPasswordOutdated: PropTypes.bool,
+    isPrimarySeedPhraseBackedUp: PropTypes.bool,
+    showShieldEntryModal: PropTypes.bool,
+    isSocialLoginFlow: PropTypes.bool,
+    lookupSelectedNetworks: PropTypes.func.isRequired,
+    evaluateCohortEligibility: PropTypes.func,
+    pendingShieldCohort: PropTypes.string,
+    setPendingShieldCohort: PropTypes.func,
+    isSignedIn: PropTypes.bool,
+    rewardsEnabled: PropTypes.bool,
+    rewardsOnboardingEnabled: PropTypes.bool,
+    rewardsOnboardingModalOpen: PropTypes.bool,
+    showPna25Modal: PropTypes.bool.isRequired,
   };
 
   state = {
     canShowBlockageNotification: true,
     notificationClosing: false,
-    redirecting: false,
+    shouldEvaluateCohortEligibility: true,
   };
 
   constructor(props) {
     super(props);
 
-    const {
-      attemptCloseNotificationPopup,
-      haveSwapsQuotes,
-      haveBridgeQuotes,
-      isNotification,
-      pendingApprovals,
-      showAwaitingSwapScreen,
-      swapsFetchParams,
-      location,
-    } = this.props;
-    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
-
+    const { attemptCloseNotificationPopup } = this.props;
     if (shouldCloseNotificationPopup(props)) {
       this.state.notificationClosing = true;
       attemptCloseNotificationPopup();
-    } else if (
-      pendingApprovals.length ||
-      (!isNotification &&
-        !stayOnHomePage &&
-        (showAwaitingSwapScreen ||
-          haveSwapsQuotes ||
-          swapsFetchParams ||
-          haveBridgeQuotes))
-    ) {
-      this.state.redirecting = true;
     }
   }
 
-  checkStatusAndNavigate() {
+  checkRedirectAfterDefaultPage() {
     const {
-      history,
-      isNotification,
-      haveSwapsQuotes,
-      haveBridgeQuotes,
-      showAwaitingSwapScreen,
-      swapsFetchParams,
-      location,
-      pendingApprovals,
-      hasApprovalFlows,
+      redirectAfterDefaultPage,
+      navigate,
+      clearRedirectAfterDefaultPage,
     } = this.props;
-    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
 
-    const canRedirect = !isNotification && !stayOnHomePage;
-    if (canRedirect && showAwaitingSwapScreen) {
-      history.push(AWAITING_SWAP_ROUTE);
-    } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
-      history.push(PREPARE_SWAP_ROUTE);
-    } else if (canRedirect && haveBridgeQuotes) {
-      history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
-    } else if (pendingApprovals.length || hasApprovalFlows) {
-      navigateToConfirmation(
-        pendingApprovals?.[0]?.id,
-        pendingApprovals,
-        hasApprovalFlows,
-        history,
-      );
+    if (
+      redirectAfterDefaultPage?.shouldRedirect &&
+      redirectAfterDefaultPage?.path
+    ) {
+      navigate(redirectAfterDefaultPage.path);
+      clearRedirectAfterDefaultPage();
     }
   }
 
   componentDidMount() {
-    this.checkStatusAndNavigate();
-
     this.props.fetchBuyableChains();
+
+    // Check for redirect after default page
+    this.checkRedirectAfterDefaultPage();
+
+    // Ensure we have up-to-date connectivity statuses for all enabled networks
+    this.props.lookupSelectedNetworks();
+
+    // Set pending Shield cohort for wallet home evaluation if there's no existing pending cohort
+    if (this.props.setPendingShieldCohort && !this.props.pendingShieldCohort) {
+      this.props.setPendingShieldCohort(COHORT_NAMES.WALLET_HOME);
+    }
   }
 
   static getDerivedStateFromProps(props) {
-    if (shouldCloseNotificationPopup(props)) {
+    const shouldClose = shouldCloseNotificationPopup(props);
+    if (shouldClose) {
       return { notificationClosing: true };
     }
     return null;
@@ -255,12 +226,15 @@ export default class Home extends PureComponent {
   componentDidUpdate(_prevProps, prevState) {
     const {
       attemptCloseNotificationPopup,
-      isNotification,
-      hasAllowedPopupRedirectApprovals,
       newNetworkAddedConfigurationId,
       setActiveNetwork,
       clearNewNetworkAdded,
+      pendingShieldCohort,
+      evaluateCohortEligibility,
+      isSignedIn,
     } = this.props;
+
+    const { shouldEvaluateCohortEligibility } = this.state;
 
     const {
       newNetworkAddedConfigurationId: prevNewNetworkAddedConfigurationId,
@@ -277,9 +251,21 @@ export default class Home extends PureComponent {
 
     if (notificationClosing && !prevState.notificationClosing) {
       attemptCloseNotificationPopup();
-    } else if (isNotification || hasAllowedPopupRedirectApprovals) {
-      this.checkStatusAndNavigate();
     }
+
+    // Check for pending Shield cohort evaluation if user is signed in
+    if (
+      shouldEvaluateCohortEligibility &&
+      pendingShieldCohort &&
+      evaluateCohortEligibility &&
+      isSignedIn
+    ) {
+      evaluateCohortEligibility(pendingShieldCohort);
+      this.setState({ shouldEvaluateCohortEligibility: false });
+    }
+
+    // Check for redirect after default page on updates
+    this.checkRedirectAfterDefaultPage();
   }
 
   onRecoveryPhraseReminderClose = () => {
@@ -329,7 +315,7 @@ export default class Home extends PureComponent {
     const { t } = this.context;
 
     const {
-      history,
+      navigate,
       shouldShowSeedPhraseReminder,
       isPopup,
       shouldShowWeb3ShimUsageNotification,
@@ -350,6 +336,7 @@ export default class Home extends PureComponent {
       setNewTokensImportedError,
       clearNewNetworkAdded,
       clearEditedNetwork,
+      isPrimarySeedPhraseBackedUp,
     } = this.props;
 
     const onAutoHide = () => {
@@ -357,7 +344,7 @@ export default class Home extends PureComponent {
       setRemoveNftMessage('');
       setNewTokensImported(''); // Added this so we dnt see the notif if user does not close it
       setNewTokensImportedError('');
-      setEditedNetwork();
+      clearEditedNetwork(); // dispatches setEditedNetwork(), setting editedNetwork to undefined, which clears the editedNetwork state
     };
 
     const autoHideDelay = 5 * SECOND;
@@ -367,7 +354,7 @@ export default class Home extends PureComponent {
         <div>
           <Text>{t('outdatedBrowserNotification')}</Text>
           <br />
-          <Text fontWeight={FontWeight.Bold} color={TextColor.warningDefault}>
+          <Text fontWeight={FontWeight.Bold} color={TextColor.WarningDefault}>
             {t('noHardwareWalletOrSnapsSupport')}
           </Text>
         </div>
@@ -386,8 +373,8 @@ export default class Home extends PureComponent {
           message={
             <Box display={Display.InlineFlex}>
               <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.bodySm} as="h6">
-                {t('newNftAddedMessage')}
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>{t('newNftAddedMessage')}</h6>
               </Text>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -409,8 +396,8 @@ export default class Home extends PureComponent {
           message={
             <Box display={Display.InlineFlex}>
               <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.bodySm} as="h6">
-                {t('removeNftMessage')}
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>{t('removeNftMessage')}</h6>
               </Text>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -432,8 +419,8 @@ export default class Home extends PureComponent {
           message={
             <Box display={Display.InlineFlex}>
               <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.bodySm} as="h6">
-                {t('removeNftErrorMessage')}
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>{t('removeNftErrorMessage')}</h6>
               </Text>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -453,8 +440,8 @@ export default class Home extends PureComponent {
           message={
             <Box display={Display.InlineFlex}>
               <i className="fa fa-check-circle home__new-network-notification-icon" />
-              <Text variant={TextVariant.bodySm} as="h6">
-                {t('newNetworkAdded', [newNetworkAddedName])}
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>{t('newNetworkAdded', [newNetworkAddedName])}</h6>
               </Text>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -477,10 +464,12 @@ export default class Home extends PureComponent {
           message={
             <Box display={Display.InlineFlex}>
               <i className="fa fa-check-circle home__new-network-notification-icon" />
-              <Text variant={TextVariant.bodySm} as="h6">
-                {editedNetwork.newNetwork
-                  ? t('newNetworkAdded', [editedNetwork.nickname])
-                  : t('newNetworkEdited', [editedNetwork.nickname])}
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>
+                  {editedNetwork.newNetwork
+                    ? t('newNetworkAdded', [editedNetwork.nickname])
+                    : t('newNetworkEdited', [editedNetwork.nickname])}
+                </h6>
               </Text>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -506,17 +495,17 @@ export default class Home extends PureComponent {
               <Box>
                 <Text
                   className="home__new-tokens-imported-notification-title"
-                  variant={TextVariant.bodySmBold}
-                  as="h6"
+                  variant={TextVariant.BodySm}
+                  asChild
                 >
-                  {t('newTokensImportedTitle')}
+                  <h6>{t('newTokensImportedTitle')}</h6>
                 </Text>
                 <Text
                   className="home__new-tokens-imported-notification-message"
-                  variant={TextVariant.bodySm}
-                  as="h6"
+                  variant={TextVariant.BodySm}
+                  asChild
                 >
-                  {t('newTokensImportedMessage', [newTokensImported])}
+                  <h6>{t('newTokensImportedMessage', [newTokensImported])}</h6>
                 </Text>
               </Box>
 
@@ -540,9 +529,9 @@ export default class Home extends PureComponent {
           onAutoHide={onAutoHide}
           message={
             <Box display={Display.InlineFlex}>
-              <Icon name={IconName.Danger} />
-              <Text variant={TextVariant.bodySm} as="h6">
-                {t('importTokensError')}
+              <Icon name={IconName.Danger} marginRight={1} />
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>{t('importTokensError')}</h6>
               </Text>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -579,17 +568,17 @@ export default class Home extends PureComponent {
           checkboxTooltipText={t('canToggleInSettings')}
         />
       ) : null,
-      shouldShowSeedPhraseReminder ? (
+      !isPrimarySeedPhraseBackedUp && shouldShowSeedPhraseReminder ? (
         <HomeNotification
           key="show-seed-phrase-reminder"
           descriptionText={t('backupApprovalNotice')}
           acceptText={t('backupNow')}
           onAccept={() => {
-            const backUpSRPRoute = `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`;
+            const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
             if (isPopup) {
               global.platform.openExtensionInBrowser(backUpSRPRoute);
             } else {
-              history.push(backUpSRPRoute);
+              navigate(backUpSRPRoute);
             }
           }}
           infoText={t('backupApprovalInfo')}
@@ -684,7 +673,7 @@ export default class Home extends PureComponent {
               gap={2}
               margin={4}
             >
-              <Typography>
+              <Text>
                 {t('onboardedMetametricsParagraph1', [
                   <a
                     href={METAMETRICS_SETTINGS_LINK}
@@ -695,14 +684,14 @@ export default class Home extends PureComponent {
                     {t('onboardedMetametricsLink')}
                   </a>,
                 ])}
-              </Typography>
-              <Typography>{t('onboardedMetametricsParagraph2')}</Typography>
+              </Text>
+              <Text>{t('onboardedMetametricsParagraph2')}</Text>
               <ul className="home__onboarding_list">
                 <li>{t('onboardedMetametricsKey1')}</li>
                 <li>{t('onboardedMetametricsKey2')}</li>
                 <li>{t('onboardedMetametricsKey3')}</li>
               </ul>
-              <Typography>{t('onboardedMetametricsParagraph3')}</Typography>
+              <Text>{t('onboardedMetametricsParagraph3')}</Text>
             </Box>
           </ModalBody>
           <ModalFooter>
@@ -773,8 +762,6 @@ export default class Home extends PureComponent {
 
   render() {
     const {
-      defaultHomeActiveTabName,
-      onTabClick,
       useExternalServices,
       setBasicFunctionalityModalOpen,
       forgottenPassword,
@@ -782,22 +769,27 @@ export default class Home extends PureComponent {
       dataCollectionForMarketing,
       connectedStatusPopoverHasBeenShown,
       isPopup,
-      seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       showTermsOfUsePopup,
-      showWhatsNewPopup,
-      hideWhatsNewPopup,
       completedOnboarding,
       onboardedInThisUISession,
-      announcementsToShow,
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
       showMultiRpcModal,
+      showUpdateModal,
+      isSeedlessPasswordOutdated,
+      isPrimarySeedPhraseBackedUp,
+      showShieldEntryModal,
+      isSocialLoginFlow,
+      rewardsEnabled,
+      rewardsOnboardingEnabled,
+      rewardsOnboardingModalOpen,
+      showPna25Modal,
     } = this.props;
 
     if (forgottenPassword) {
-      return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />;
-    } else if (this.state.notificationClosing || this.state.redirecting) {
+      return <Navigate to={RESTORE_VAULT_ROUTE} replace />;
+    } else if (this.state.notificationClosing) {
       return null;
     }
 
@@ -805,73 +797,109 @@ export default class Home extends PureComponent {
       completedOnboarding &&
       (!onboardedInThisUISession ||
         firstTimeFlowType === FirstTimeFlowType.import) &&
-      !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
 
-    const showWhatsNew =
-      canSeeModals && announcementsToShow && showWhatsNewPopup;
-
     const showMultiRpcEditModal =
-      canSeeModals && showMultiRpcModal && !showWhatsNew;
+      canSeeModals && showMultiRpcModal && !process.env.IN_TEST;
+
+    const displayUpdateModal =
+      canSeeModals && showUpdateModal && !showMultiRpcEditModal;
 
     const showTermsOfUse =
-      completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
+      completedOnboarding &&
+      !onboardedInThisUISession &&
+      showTermsOfUsePopup &&
+      !isSocialLoginFlow;
 
+    const showRecoveryPhrase =
+      showRecoveryPhraseReminder && !isPrimarySeedPhraseBackedUp;
+
+    const showRewardsModal =
+      rewardsEnabled &&
+      rewardsOnboardingEnabled &&
+      canSeeModals &&
+      !showTermsOfUse &&
+      !showMultiRpcEditModal &&
+      !displayUpdateModal &&
+      !isSeedlessPasswordOutdated &&
+      !showShieldEntryModal &&
+      !showRecoveryPhrase;
+
+    const showPna25ModalComponent =
+      showPna25Modal &&
+      canSeeModals &&
+      !showTermsOfUse &&
+      !showMultiRpcEditModal &&
+      !displayUpdateModal &&
+      !isSeedlessPasswordOutdated &&
+      !showShieldEntryModal &&
+      !showRecoveryPhrase &&
+      !rewardsOnboardingModalOpen;
+
+    const { location } = this.props;
+
+    // Handle connected routes
+    if (location?.pathname === CONNECTED_ROUTE) {
+      return (
+        <ScrollContainer className="main-container main-container--has-shadow">
+          <ConnectedSites navigate={this.props.navigate} />
+        </ScrollContainer>
+      );
+    }
+
+    if (location?.pathname === CONNECTED_ACCOUNTS_ROUTE) {
+      return (
+        <ScrollContainer className="main-container main-container--has-shadow">
+          <ConnectedAccounts navigate={this.props.navigate} />
+        </ScrollContainer>
+      );
+    }
+
+    // Render normal home content
     return (
-      <div className="main-container main-container--has-shadow">
-        <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
-        <Route
-          path={CONNECTED_ACCOUNTS_ROUTE}
-          component={ConnectedAccounts}
-          exact
-        />
+      <ScrollContainer className="main-container main-container--has-shadow">
         <div className="home__container">
           {dataCollectionForMarketing === null &&
           participateInMetaMetrics === true
             ? this.renderOnboardingPopover()
             : null}
+          {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
           {showMultiRpcEditModal && <MultiRpcEditModal />}
-          {showWhatsNew ? <WhatsNewModal onClose={hideWhatsNewPopup} /> : null}
-          {!showWhatsNew && showRecoveryPhraseReminder ? (
+          {displayUpdateModal && <UpdateModal />}
+          {showRecoveryPhrase ? (
             <RecoveryPhraseReminder
-              hasBackedUp={seedPhraseBackedUp}
               onConfirm={this.onRecoveryPhraseReminderClose}
             />
           ) : null}
           {showTermsOfUse ? (
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
+          {showShieldEntryModal && <ShieldEntryModal />}
+          {showRewardsModal && <RewardsOnboardingModal />}
+          {showPna25ModalComponent && <Pna25Modal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}
           <div className="home__main-view">
             <AccountOverview
-              onTabClick={onTabClick}
               ///: BEGIN:ONLY_INCLUDE_IF(build-main)
               onSupportLinkClick={this.onSupportLinkClick}
               ///: END:ONLY_INCLUDE_IF
-              defaultHomeActiveTabName={defaultHomeActiveTabName}
               useExternalServices={useExternalServices}
               setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
-            ></AccountOverview>
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
+            />
+            {(isBeta() || isFlask()) && (
               <div className="home__support">
-                <BetaHomeFooter />
+                <BetaAndFlaskHomeFooter />
               </div>
-              ///: END:ONLY_INCLUDE_IF
-            }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-              <div className="home__support">
-                <FlaskHomeFooter />
-              </div>
-              ///: END:ONLY_INCLUDE_IF
-            }
+            )}
           </div>
           {this.renderNotifications()}
         </div>
-      </div>
+
+        {/* Ghost component that manages the useHomeDeepLinkEffects */}
+        <HomeDeepLinkActions />
+      </ScrollContainer>
     );
   }
 }

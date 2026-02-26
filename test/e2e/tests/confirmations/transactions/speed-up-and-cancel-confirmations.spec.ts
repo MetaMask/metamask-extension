@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Hex } from '@metamask/utils';
 import { decimalToPrefixedHex } from '../../../../../shared/modules/conversion.utils';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
-import { unlockWallet } from '../../../helpers';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
+import { withFixtures } from '../../../helpers';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
-import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { TestSuiteArguments } from './shared';
-
-const { WINDOW_TITLES, withFixtures } = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
 
 const ethInHexWei = (eth: number): Hex => decimalToPrefixedHex(eth * 10 ** 18);
 
@@ -19,8 +18,8 @@ describe('Speed Up and Cancel Transaction Tests', function () {
     it('Successfully speeds up a pending transaction', async function () {
       await withFixtures(
         {
-          dapp: true,
-          fixtures: new FixtureBuilder()
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           localNodeOptions: {
@@ -30,7 +29,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, localNodes }: TestSuiteArguments) => {
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           // Create initial stuck transaction
           await createDappTransaction(driver, {
@@ -55,16 +54,17 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await homePage.goToActivityList();
 
           const activityListPage = new ActivityListPage(driver);
-          await activityListPage.check_completedTxNumberDisplayedInActivity(1);
+          await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
 
-          await activityListPage.click_transactionListItem();
-          await activityListPage.click_speedUpTransaction();
-          await activityListPage.click_confirmTransactionReplacement();
+          await activityListPage.checkSpeedUpInlineButtonIsPresent();
+          await activityListPage.clickTransactionListItem();
+          await activityListPage.clickSpeedUpTransaction();
+          await activityListPage.clickConfirmTransactionReplacement();
           await driver.delay(3000); // Delay needed to ensure the transaction is updated before mining
           (await localNodes?.[0]?.mineBlock()) ??
             console.error('localNodes is undefined or empty');
 
-          await activityListPage.check_waitForTransactionStatus('confirmed');
+          await activityListPage.checkWaitForTransactionStatus('confirmed');
         },
       );
     });
@@ -74,8 +74,8 @@ describe('Speed Up and Cancel Transaction Tests', function () {
     it('Successfully cancels a pending transaction', async function () {
       await withFixtures(
         {
-          dapp: true,
-          fixtures: new FixtureBuilder()
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           localNodeOptions: {
@@ -85,7 +85,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, localNodes }: TestSuiteArguments) => {
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           // Create initial stuck transaction
           await createDappTransaction(driver, {
@@ -107,14 +107,14 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await homePage.goToActivityList();
 
           const activityListPage = new ActivityListPage(driver);
-          await activityListPage.check_completedTxNumberDisplayedInActivity(1);
+          await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
 
-          await activityListPage.click_cancelTransaction();
-          await activityListPage.click_confirmTransactionReplacement();
+          await activityListPage.clickCancelTransaction();
+          await activityListPage.clickConfirmTransactionReplacement();
           await driver.delay(3000); // Delay needed to ensure the transaction updated before mining
           (await localNodes?.[0]?.mineBlock()) ??
             console.error('localNodes is undefined or empty');
-          await activityListPage.check_waitForTransactionStatus('cancelled');
+          await activityListPage.checkWaitForTransactionStatus('cancelled');
         },
       );
     });

@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { Severity } from '../../../../helpers/constants/design-system';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import * as useAlertsModule from '../../../../hooks/useAlerts';
 import {
@@ -23,6 +23,7 @@ describe('MultipleAlertModal', () => {
   const FROM_ALERT_KEY_MOCK = 'from';
   const CONTRACT_ALERT_KEY_MOCK = 'contract';
   const DATA_ALERT_KEY_MOCK = 'data';
+  const HIDDEN_ALERT_KEY_MOCK = 'hidden';
   const onAcknowledgeClickMock = jest.fn();
   const onCloseMock = jest.fn();
 
@@ -158,15 +159,20 @@ describe('MultipleAlertModal', () => {
     expect(onAcknowledgeClickMock).toHaveBeenCalledTimes(1);
   });
 
-  it('renders the next alert when the "Got it" button is clicked', () => {
-    const { getByTestId, getByText } = renderWithProvider(
+  it('does not change the alert when the "Got it" button is clicked', () => {
+    onAcknowledgeClickMock.mockReset();
+    const { getByTestId, getByText, queryByText } = renderWithProvider(
       <MultipleAlertModal {...defaultProps} alertKey={DATA_ALERT_KEY_MOCK} />,
       mockStoreAcknowledgeAlerts,
     );
 
+    expect(getByText(alertsMock[1].message)).toBeInTheDocument();
+
     fireEvent.click(getByTestId('alert-modal-button'));
 
+    expect(onAcknowledgeClickMock).toHaveBeenCalledTimes(1);
     expect(getByText(alertsMock[1].message)).toBeInTheDocument();
+    expect(queryByText(alertsMock[2].message)).not.toBeInTheDocument();
   });
 
   it('closes modal when the "Got it" button is clicked', () => {
@@ -183,20 +189,6 @@ describe('MultipleAlertModal', () => {
     fireEvent.click(getByTestId('alert-modal-button'));
 
     expect(onAcknowledgeClickMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('resets to the first alert if there are unconfirmed alerts and the final alert is acknowledged', () => {
-    const { getByTestId, getByText } = renderWithProvider(
-      <MultipleAlertModal
-        {...defaultProps}
-        alertKey={CONTRACT_ALERT_KEY_MOCK}
-      />,
-      mockStore,
-    );
-
-    fireEvent.click(getByTestId('alert-modal-button'));
-
-    expect(getByText(alertsMock[0].message)).toBeInTheDocument();
   });
 
   describe('FieldAlerts not present', () => {
@@ -279,7 +271,101 @@ describe('MultipleAlertModal', () => {
 
       fireEvent.click(getByTestId('alert-modal-back-button'));
 
-      expect(getByText(alertsMock[1].message)).toBeInTheDocument();
+      expect(getByText(alertsMock[0].message)).toBeInTheDocument();
+    });
+  });
+
+  describe('Alerts hidden from navigation', () => {
+    const alertsWithHiddenNavigationMock = [
+      {
+        key: FROM_ALERT_KEY_MOCK,
+        field: FROM_ALERT_KEY_MOCK,
+        severity: Severity.Warning,
+        message: 'Alert 1',
+        reason: 'Reason 1',
+        alertDetails: ['Detail 1', 'Detail 2'],
+      },
+      {
+        key: HIDDEN_ALERT_KEY_MOCK,
+        field: HIDDEN_ALERT_KEY_MOCK,
+        severity: Severity.Danger,
+        message: 'Hidden Alert',
+        hideFromAlertNavigation: true,
+      },
+      {
+        key: CONTRACT_ALERT_KEY_MOCK,
+        field: CONTRACT_ALERT_KEY_MOCK,
+        severity: Severity.Info,
+        message: 'Alert 3',
+      },
+    ];
+
+    const mockStoreWithHiddenNavigation = configureMockStore([])({
+      ...STATE_MOCK,
+      confirmAlerts: {
+        alerts: { [OWNER_ID_MOCK]: alertsWithHiddenNavigationMock },
+        confirmed: {
+          [OWNER_ID_MOCK]: {
+            [FROM_ALERT_KEY_MOCK]: false,
+            [HIDDEN_ALERT_KEY_MOCK]: false,
+            [CONTRACT_ALERT_KEY_MOCK]: false,
+          },
+        },
+      },
+    });
+
+    const mockStoreWithHiddenNavigationConfirmed = configureMockStore([])({
+      ...STATE_MOCK,
+      confirmAlerts: {
+        alerts: { [OWNER_ID_MOCK]: alertsWithHiddenNavigationMock },
+        confirmed: {
+          [OWNER_ID_MOCK]: {
+            [FROM_ALERT_KEY_MOCK]: true,
+            [HIDDEN_ALERT_KEY_MOCK]: true,
+            [CONTRACT_ALERT_KEY_MOCK]: true,
+          },
+        },
+      },
+    });
+
+    it('does not render navigation controls when the selected alert hides navigation', () => {
+      const { queryByTestId } = renderWithProvider(
+        <MultipleAlertModal
+          {...defaultProps}
+          alertKey={HIDDEN_ALERT_KEY_MOCK}
+        />,
+        mockStoreWithHiddenNavigation,
+      );
+
+      expect(queryByTestId('alert-modal-next-button')).toBeNull();
+      expect(queryByTestId('alert-modal-back-button')).toBeNull();
+    });
+
+    it('skips alerts hidden from navigation when cycling forward', () => {
+      const { getByTestId, getByText, queryByText } = renderWithProvider(
+        <MultipleAlertModal {...defaultProps} />,
+        mockStoreWithHiddenNavigation,
+      );
+
+      fireEvent.click(getByTestId('alert-modal-next-button'));
+
+      expect(queryByText('Hidden Alert')).not.toBeInTheDocument();
+      expect(getByText('Alert 3')).toBeInTheDocument();
+    });
+
+    it('acknowledges an alert that hides navigation without cycling', () => {
+      onAcknowledgeClickMock.mockReset();
+      const { getByTestId } = renderWithProvider(
+        <MultipleAlertModal
+          {...defaultProps}
+          alertKey={HIDDEN_ALERT_KEY_MOCK}
+        />,
+        mockStoreWithHiddenNavigationConfirmed,
+      );
+
+      fireEvent.click(getByTestId('alert-modal-button'));
+
+      expect(onAcknowledgeClickMock).toHaveBeenCalledTimes(1);
     });
   });
 });

@@ -12,11 +12,11 @@ const useFetchNftDetailsFromTokenURI = (
         return;
       }
 
-      const response = await fetch(tokenURI);
-      if (!response.ok) {
-        return;
-      }
       try {
+        const response = await fetch(tokenURI);
+        if (!response.ok) {
+          return;
+        }
         let rawData = await response.text();
         // Remove trailing commas before parsing
         // eslint-disable-next-line require-unicode-regexp
@@ -24,8 +24,12 @@ const useFetchNftDetailsFromTokenURI = (
 
         // Try parsing JSON
         const data = JSON.parse(rawData);
-        setImage(data.image);
-        setName(data.name);
+        if (typeof data.image === 'string') {
+          setImage(data.image);
+        }
+        if (typeof data.name === 'string') {
+          setName(data.name);
+        }
       } catch {
         // ignore
       }

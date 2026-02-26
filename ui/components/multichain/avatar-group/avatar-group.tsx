@@ -1,7 +1,10 @@
 import * as React from 'react';
 import classnames from 'classnames';
-import { useSelector } from 'react-redux';
-import { getUseBlockie } from '../../../selectors';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+} from '@metamask/design-system-react';
 import { Text } from '../../component-library/text';
 import {
   AlignItems,
@@ -17,11 +20,6 @@ import {
   AvatarToken,
 } from '../../component-library/avatar-token';
 import { Box } from '../../component-library/box';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-} from '../../component-library/avatar-account';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -40,11 +38,11 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   avatarType = AvatarType.TOKEN,
   borderColor,
   isTagOverlay = false,
+  variant = AvatarAccountVariant.Maskicon,
 }): JSX.Element => {
   const membersCount = members.length;
   const visibleMembers = members.slice(0, limit).reverse();
   const showTag = membersCount > limit;
-  const useBlockie = useSelector(getUseBlockie);
 
   let marginLeftValue = '';
   if (AvatarTokenSize.Xs) {
@@ -83,12 +81,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
                 <AvatarAccount
                   size={AvatarAccountSize.Xs}
                   address={member.avatarValue}
-                  variant={
-                    useBlockie
-                      ? AvatarAccountVariant.Blockies
-                      : AvatarAccountVariant.Jazzicon
-                  }
-                  borderColor={borderColor}
+                  variant={variant}
                 />
               )}
               {avatarType === AvatarType.NETWORK && (

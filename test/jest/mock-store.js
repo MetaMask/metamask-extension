@@ -4,7 +4,7 @@ import { KeyringType } from '../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../stub/networks';
 
-export const createGetSmartTransactionFeesApiResponse = () => {
+const createGetSmartTransactionFeesApiResponse = () => {
   return {
     tradeTxFees: {
       // Approval tx.
@@ -135,9 +135,21 @@ export const createSwapsMockStore = () => {
       swapsSTXLoading: false,
     },
     metamask: {
+      accountTree: {},
       remoteFeatureFlags: {
         bridgeConfig: {
           support: false,
+        },
+        smartTransactionsNetworks: {
+          default: {
+            extensionActive: false,
+          },
+          [CHAIN_IDS.MAINNET]: {
+            extensionActive: true,
+          },
+          [CHAIN_IDS.BSC]: {
+            extensionActive: true,
+          },
         },
       },
       preferences: {
@@ -146,6 +158,7 @@ export const createSwapsMockStore = () => {
         tokenNetworkFilter: {},
         showMultiRpcModal: false,
       },
+      enabledNetworkMap: {},
       transactions: [
         {
           id: 6571648590592143,
@@ -333,24 +346,12 @@ export const createSwapsMockStore = () => {
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
-      accounts: {
-        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          balance: '0x0',
-        },
-        '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
-          address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
-          balance: '0x0',
-        },
-      },
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc': {
             balance: '0x0',
           },
-          '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
-            address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+          '0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B': {
             balance: '0x0',
           },
         },
@@ -672,6 +673,12 @@ export const createSwapsMockStore = () => {
         userOptIn: true,
         userOptInV2: true,
         liveness: true,
+        livenessByChainId: {
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.BSC]: true,
+          [CHAIN_IDS.SEPOLIA]: true,
+          [CHAIN_IDS.LINEA_MAINNET]: true,
+        },
         fees: createGetSmartTransactionFeesApiResponse(),
         smartTransactions: {
           [CHAIN_IDS.MAINNET]: [
@@ -687,6 +694,7 @@ export const createSwapsMockStore = () => {
                   '0x55ad39634ee10d417b6e190cfd3736098957e958879cffe78f1f00f4fd2654d6',
                 minedTx: 'success',
               },
+              chainId: CHAIN_IDS.MAINNET,
             },
             {
               uuid: 'uuid2',
@@ -700,6 +708,7 @@ export const createSwapsMockStore = () => {
                   '0x55ad39634ee10d417b6e190cfd3736098957e958879cffe78f1f00f4fd2654d6',
                 minedTx: 'success',
               },
+              chainId: CHAIN_IDS.MAINNET,
             },
           ],
         },

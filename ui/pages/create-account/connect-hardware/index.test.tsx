@@ -2,8 +2,10 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { useNavigate } from 'react-router-dom';
 
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   LedgerTransportTypes,
   HardwareDeviceNames,
@@ -47,8 +49,16 @@ jest.mock('../../../ducks/history/history', () => ({
     .mockImplementation(() => MOCK_RECENT_PAGE),
 }));
 
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockUseNavigate,
+  useLocation: () => ({ pathname: '/test' }),
+  useParams: () => ({}),
+}));
+
 const mockTrackEvent = jest.fn();
-const mockHistoryPush = jest.fn();
+
 const mockProps = {
   forgetDevice: () => jest.fn(),
   showAlert: () => jest.fn(),
@@ -56,11 +66,8 @@ const mockProps = {
   unlockHardwareWalletAccount: () => jest.fn(),
   setHardwareWalletDefaultHdPath: () => jest.fn(),
   connectHardware: () => mockConnectHardware,
-  history: {
-    push: mockHistoryPush,
-  },
   defaultHdPath: "m/44'/60'/0'/0",
-  mostRecentOverviewPage: '',
+  mostRecentOverviewPage: MOCK_RECENT_PAGE,
   trackEvent: () => mockTrackEvent,
 };
 
@@ -118,6 +125,10 @@ const mockState = {
 describe('ConnectHardwareForm', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('matchs snapshot', () => {
     const { container } = renderWithProvider(
       <ConnectHardwareForm {...mockProps} />,
@@ -127,15 +138,25 @@ describe('ConnectHardwareForm', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('verifies mocks are working', () => {
+    // Test that our mock is working
+    const navigate = useNavigate();
+    navigate('/test');
+    expect(mockUseNavigate).toHaveBeenCalledWith('/test');
+  });
+
   it('closes the form when close button is clicked', () => {
     const { getByTestId } = renderWithProvider(
       <ConnectHardwareForm {...mockProps} />,
       mockStore,
     );
+
     const closeButton = getByTestId('hardware-connect-close-btn');
+
     fireEvent.click(closeButton);
-    expect(mockHistoryPush).toHaveBeenCalledTimes(1);
-    expect(mockHistoryPush).toHaveBeenCalledWith(MOCK_RECENT_PAGE);
+
+    expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(MOCK_RECENT_PAGE);
   });
 
   describe('U2F Error', () => {
@@ -149,8 +170,8 @@ describe('ConnectHardwareForm', () => {
         mockStoreWithU2F,
       );
 
-      const ledgerButton = getByLabelText('Ledger');
-      const continueButton = getByText('Continue');
+      const ledgerButton = getByLabelText(messages.ledger.message);
+      const continueButton = getByText(messages.continue.message);
 
       fireEvent.click(ledgerButton);
       fireEvent.click(continueButton);
@@ -185,8 +206,8 @@ describe('ConnectHardwareForm', () => {
         mockStoreWithU2F,
       );
 
-      const ledgerButton = getByLabelText('Ledger');
-      const continueButton = getByText('Continue');
+      const ledgerButton = getByLabelText(messages.ledger.message);
+      const continueButton = getByText(messages.continue.message);
 
       fireEvent.click(ledgerButton);
       fireEvent.click(continueButton);
@@ -214,12 +235,14 @@ describe('ConnectHardwareForm', () => {
       fireEvent.click(qrButton);
 
       await waitFor(() => {
-        expect(getByText('Keystone')).toBeInTheDocument();
-        expect(getByText('AirGap Vault')).toBeInTheDocument();
-        expect(getByText('CoolWallet')).toBeInTheDocument();
-        expect(getByText("D'Cent")).toBeInTheDocument();
-        expect(getByText('imToken')).toBeInTheDocument();
-        expect(getByText('Ngrave Zero')).toBeInTheDocument();
+        expect(getByText(messages.keystone.message)).toBeInTheDocument();
+        expect(getByText(messages.airgapVault.message)).toBeInTheDocument();
+        expect(getByText(messages.coolWallet.message)).toBeInTheDocument();
+        expect(getByText(messages.dcent.message)).toBeInTheDocument();
+        expect(getByText(messages.imToken.message)).toBeInTheDocument();
+        expect(
+          getByText(messages.QRHardwareWalletSteps2Description.message),
+        ).toBeInTheDocument();
       });
     });
   });

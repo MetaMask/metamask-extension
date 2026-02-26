@@ -1,6 +1,6 @@
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
@@ -25,7 +25,7 @@ describe('Settings', function () {
   it('Shows nft default image when IPFS toggle is off and restore image once we toggle the ipfs modal', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
         smartContract,
         title: this.test?.fullTitle(),
@@ -36,30 +36,30 @@ describe('Settings', function () {
 
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.checkPageIsLoaded();
         await privacySettings.toggleIpfsGateway();
         await settingsPage.closeSettingsPage();
         const homePage = new Homepage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         await homePage.goToNftTab();
         const nftListPage = new NftListPage(driver);
-        await nftListPage.check_pageIsLoaded();
+        await nftListPage.checkPageIsLoaded();
         await nftListPage.clickNFTIconOnActivityList();
         const nftDetailsPage = new NFTDetailsPage(driver);
-        await nftDetailsPage.check_pageIsLoaded();
+        await nftDetailsPage.checkPageIsLoaded();
 
         // check for default image
-        await nftDetailsPage.check_nftDefaultImageIsDisplayed();
+        await nftDetailsPage.checkNftDefaultImageIsDisplayed();
 
         // toggle on ipfs to show image
         await nftDetailsPage.showNftImage();
 
         // should render image now
-        await nftDetailsPage.check_nftRenderedImageIsDisplayed();
+        await nftDetailsPage.checkNftRenderedImageIsDisplayed();
       },
     );
   });

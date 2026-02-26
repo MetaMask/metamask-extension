@@ -7,7 +7,7 @@ import {
 import {
   SmartTransactionStatuses,
   SmartTransactionMinedTx,
-} from '@metamask/smart-transactions-controller/dist/types';
+} from '@metamask/smart-transactions-controller';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   ETH_4337_METHODS,
@@ -25,10 +25,11 @@ import {
   getApprovedAndSignedTransactions,
   smartTransactionsListSelector,
   getTransactions,
-  getAllNetworkTransactions,
   getUnapprovedTransactions,
+  getTransactionsByChainId,
   incomingTxListSelectorAllChains,
   selectedAddressTxListSelectorAllChain,
+  selectedAddressTxListSelector,
   transactionSubSelectorAllChains,
   transactionsSelectorAllChains,
 } from './transactions';
@@ -816,148 +817,6 @@ describe('Transaction Selectors', () => {
     });
   });
 
-  describe('getAllNetworkTransactions', () => {
-    it('returns an empty array if there are no transactions', () => {
-      const state = {
-        metamask: {
-          transactions: [],
-        },
-      };
-
-      const result = getAllNetworkTransactions(state);
-
-      expect(result).toStrictEqual([]);
-    });
-
-    it('returns all transactions when there are multiple transactions', () => {
-      const transactions = [
-        {
-          id: 1,
-          chainId: CHAIN_IDS.MAINNET,
-          status: TransactionStatus.submitted,
-          txParams: {
-            from: '0xAddress1',
-            to: '0xRecipient1',
-          },
-        },
-        {
-          id: 2,
-          chainId: CHAIN_IDS.MAINNET,
-          status: TransactionStatus.approved,
-          txParams: {
-            from: '0xAddress2',
-            to: '0xRecipient2',
-          },
-        },
-      ];
-
-      const state = {
-        metamask: {
-          transactions,
-        },
-      };
-
-      const result = getAllNetworkTransactions(state);
-
-      expect(result).toStrictEqual(transactions);
-    });
-
-    it('returns all transactions, preserving order when they have different statuses', () => {
-      const transactions = [
-        {
-          id: 1,
-          chainId: CHAIN_IDS.MAINNET,
-          status: TransactionStatus.submitted,
-          txParams: {
-            from: '0xAddress1',
-            to: '0xRecipient1',
-          },
-        },
-        {
-          id: 2,
-          chainId: CHAIN_IDS.MAINNET,
-          status: TransactionStatus.signed,
-          txParams: {
-            from: '0xAddress2',
-            to: '0xRecipient2',
-          },
-        },
-        {
-          id: 3,
-          chainId: CHAIN_IDS.MAINNET,
-          status: TransactionStatus.unapproved,
-          txParams: {
-            from: '0xAddress3',
-            to: '0xRecipient3',
-          },
-        },
-      ];
-
-      const state = {
-        metamask: {
-          transactions,
-        },
-      };
-
-      const result = getAllNetworkTransactions(state);
-
-      expect(result).toStrictEqual(transactions);
-    });
-
-    it('returns the same reference when called multiple times with the same state', () => {
-      const transactions = [
-        {
-          id: 1,
-          chainId: CHAIN_IDS.MAINNET,
-          status: TransactionStatus.submitted,
-          txParams: {
-            from: '0xAddress1',
-            to: '0xRecipient1',
-          },
-        },
-      ];
-      const state = {
-        metamask: { transactions },
-      };
-
-      const firstResult = getAllNetworkTransactions(state);
-      const secondResult = getAllNetworkTransactions(state);
-
-      // Both calls should return the same reference since the input hasn't changed.
-      expect(firstResult).toBe(secondResult);
-    });
-
-    it('returns the same result reference even when a new but deeply equal state is provided', () => {
-      const transactions = [
-        {
-          id: 1,
-          chainId: CHAIN_IDS.MAINNET,
-          status: TransactionStatus.submitted,
-          txParams: {
-            from: '0xAddress1',
-            to: '0xRecipient1',
-          },
-        },
-      ];
-      const state1 = {
-        metamask: { transactions },
-      };
-
-      // Create a new transactions array that is deeply equal to the original.
-      const newTransactions = JSON.parse(JSON.stringify(transactions));
-      const state2 = {
-        metamask: { transactions: newTransactions },
-      };
-
-      const result1 = getAllNetworkTransactions(state1);
-      const result2 = getAllNetworkTransactions(state2);
-
-      // If using deep equality in the selector, the result should be memoized
-      // and both references should be equal.
-      expect(result1).toBe(result2);
-    });
-  });
-
   describe('incomingTxListSelectorAllChains', () => {
     it('returns an empty array if there are no incoming transactions', () => {
       const state = {
@@ -1271,6 +1130,243 @@ describe('Transaction Selectors', () => {
         state.metamask.transactions[1],
         state.metamask.transactions[2],
       ]);
+    });
+
+    it('filters out gasPayment transactions for the selected address', () => {
+      const state = {
+        metamask: {
+          transactions: [
+            {
+              id: 1,
+              chainId: '0x1',
+              type: TransactionType.gasPayment,
+              txParams: { from: '0xSelectedAddress', to: '0xAnotherAddress' },
+            },
+            {
+              id: 2,
+              chainId: '0x1',
+              type: TransactionType.simpleSend,
+              txParams: { from: '0xSelectedAddress', to: '0xAnotherAddress' },
+            },
+          ],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
+          smartTransactionsState: {
+            smartTransactions: [],
+          },
+        },
+      };
+
+      const result = selectedAddressTxListSelectorAllChain(state);
+
+      expect(result).toStrictEqual([state.metamask.transactions[1]]);
+    });
+  });
+
+  describe('selectedAddressTxListSelector', () => {
+    it('returns an empty array if there are no transactions or smart transactions', () => {
+      const state = {
+        metamask: {
+          transactions: [],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          smartTransactionsState: {
+            smartTransactions: [],
+          },
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const result = selectedAddressTxListSelector(state);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('filters out incoming transactions for the selected address', () => {
+      const state = {
+        metamask: {
+          transactions: [
+            {
+              id: 1,
+              chainId: '0x1',
+              type: TransactionType.incoming,
+              txParams: { from: '0xSelectedAddress', to: '0xAnotherAddress' },
+            },
+            {
+              id: 2,
+              chainId: '0x1',
+              type: TransactionType.contractInteraction,
+              txParams: { from: '0xSelectedAddress', to: '0xAnotherAddress' },
+            },
+          ],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
+          smartTransactionsState: {
+            smartTransactions: [],
+          },
+        },
+      };
+
+      const result = selectedAddressTxListSelector(state);
+
+      expect(result).toStrictEqual([state.metamask.transactions[1]]);
+    });
+
+    it('filters out gasPayment transactions for the selected address', () => {
+      const state = {
+        metamask: {
+          transactions: [
+            {
+              id: 1,
+              chainId: '0x1',
+              type: TransactionType.gasPayment,
+              txParams: { from: '0xSelectedAddress', to: '0xAnotherAddress' },
+            },
+            {
+              id: 2,
+              chainId: '0x1',
+              type: TransactionType.simpleSend,
+              txParams: { from: '0xSelectedAddress', to: '0xAnotherAddress' },
+            },
+          ],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
+          smartTransactionsState: {
+            smartTransactions: [],
+          },
+        },
+      };
+
+      const result = selectedAddressTxListSelector(state);
+
+      expect(result).toStrictEqual([state.metamask.transactions[1]]);
     });
   });
 
@@ -1821,6 +1917,145 @@ describe('Transaction Selectors', () => {
         3: state.metamask.transactions[2],
         4: state.metamask.transactions[3],
       });
+    });
+  });
+
+  describe('getTransactionsByChainId', () => {
+    it('returns transactions filtered by chainId', () => {
+      const mainnetTx = {
+        id: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        time: 100,
+        status: TransactionStatus.confirmed,
+      };
+      const goerliTx = {
+        id: 2,
+        chainId: CHAIN_IDS.GOERLI,
+        time: 200,
+        status: TransactionStatus.confirmed,
+      };
+
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [mainnetTx, goerliTx],
+        },
+      };
+
+      const result = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
+
+      expect(result).toStrictEqual([mainnetTx]);
+    });
+
+    it('returns empty array when no transactions match chainId', () => {
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [
+            {
+              id: 1,
+              chainId: CHAIN_IDS.MAINNET,
+              time: 100,
+              status: TransactionStatus.confirmed,
+            },
+          ],
+        },
+      };
+
+      const result = getTransactionsByChainId(state, CHAIN_IDS.GOERLI);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('returns empty array when chainId is not provided', () => {
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [
+            {
+              id: 1,
+              chainId: CHAIN_IDS.MAINNET,
+              time: 100,
+              status: TransactionStatus.confirmed,
+            },
+          ],
+        },
+      };
+
+      const result = getTransactionsByChainId(state, null);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('returns empty array when there are no transactions', () => {
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [],
+        },
+      };
+
+      const result = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('caches results for multiple chainIds via LRU cache', () => {
+      const mainnetTx = {
+        id: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        time: 100,
+        status: TransactionStatus.confirmed,
+      };
+      const goerliTx = {
+        id: 2,
+        chainId: CHAIN_IDS.GOERLI,
+        time: 200,
+        status: TransactionStatus.confirmed,
+      };
+
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [mainnetTx, goerliTx],
+        },
+      };
+
+      // Call with different chainIds
+      const mainnetResult = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
+      const goerliResult = getTransactionsByChainId(state, CHAIN_IDS.GOERLI);
+
+      expect(mainnetResult).toStrictEqual([mainnetTx]);
+      expect(goerliResult).toStrictEqual([goerliTx]);
+
+      // Calling again should return cached results (same reference)
+      const mainnetResult2 = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
+      const goerliResult2 = getTransactionsByChainId(state, CHAIN_IDS.GOERLI);
+
+      expect(mainnetResult2).toBe(mainnetResult);
+      expect(goerliResult2).toBe(goerliResult);
+    });
+
+    it('memoizes results when called with same state and chainId', () => {
+      const tx = {
+        id: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        time: 100,
+        status: TransactionStatus.confirmed,
+      };
+
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [tx],
+        },
+      };
+
+      const result1 = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
+      const result2 = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
+
+      // Should return same reference (memoized)
+      expect(result1).toBe(result2);
     });
   });
 });

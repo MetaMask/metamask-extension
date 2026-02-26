@@ -13,7 +13,7 @@ jobs:
     if: github.event.pull_request.merged == true
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           fetch-depth: 0 # This is needed to checkout all branches
@@ -23,7 +23,8 @@ jobs:
         id: get-next-semver-version
         env:
           FORCE_NEXT_SEMVER_VERSION: ${{ vars.FORCE_NEXT_SEMVER_VERSION }}
-        run: ./development/get-next-semver-version.sh "$FORCE_NEXT_SEMVER_VERSION"
+        run: ./get-next-semver-version.sh "$FORCE_NEXT_SEMVER_VERSION"
+        working-directory: '.github/scripts'
 
       - name: Add release label to PR and linked issues
         id: add-release-label-to-pr-and-linked-issues

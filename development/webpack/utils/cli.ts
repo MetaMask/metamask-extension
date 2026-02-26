@@ -15,6 +15,7 @@ import {
   uniqueSort,
   toOrange,
 } from './helpers';
+import { ENVIRONMENTS, MODES } from './constants';
 
 const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature' as const;
@@ -26,14 +27,20 @@ type OptionsKeys = keyof Omit<Options, typeof addFeat | typeof omitFeat>;
  * Some options affect the default values of other options.
  */
 const prerequisites = {
-  env: {
-    alias: 'e',
+  mode: {
     array: false,
-    default: 'development' as const,
+    default: MODES.DEVELOPMENT,
     description: 'Enables/disables production optimizations/development hints',
-    choices: ['development', 'production'] as const,
+    choices: Object.values(MODES),
     group: toOrange('Build options:'),
     type: 'string',
+  },
+  test: {
+    array: false,
+    default: false,
+    description: 'Enables/disables testing mode',
+    group: toOrange('Developer assistance:'),
+    type: 'boolean',
   },
   // `as const` makes it easier for developers to see the values of the type
   // when hovering over it in their IDE. `satisfies Options` enables type
@@ -45,31 +52,93 @@ const prerequisites = {
  * Parses the given args from `argv` and returns whether or not the requested
  * build is a production build or not.
  *
- * @param argv
- * @param opts
- * @returns `true` if this is a production build, otherwise `false`
+ * @param argv - The command line arguments to parse, typically `process.argv.slice(2)`
+ * @param opts - The options to parse from the command line arguments
+ * @returns An object containing the parsed `mode` and `test` flag
  */
-function preParse(
-  argv: string[],
-  opts: typeof prerequisites,
-): { env: 'production' | 'development' } {
-  const options: { [k: string]: { [k: string]: unknown } } = {
-    configuration: {
-      envPrefix: ENV_PREFIX,
-    },
-  };
-  // convert the `opts` object into a format that `yargs-parser` can understand
-  for (const [arg, val] of Object.entries(opts)) {
-    for (const [key, valEntry] of Object.entries(val)) {
-      if (!options[key]) {
-        options[key] = {};
-      }
-      options[key][arg] = valEntry;
+function preParse(argv: string[], opts: typeof prerequisites) {
+  const defaults: Record<string, unknown> = {};
+  const booleanOptions: string[] = [];
+  const stringOptions: string[] = [];
+
+  for (const [arg, config] of Object.entries(opts)) {
+    defaults[arg] = config.default;
+    if (config.type === 'boolean') {
+      booleanOptions.push(arg);
+    }
+    if (config.type === 'string') {
+      stringOptions.push(arg);
     }
   }
 
-  const { env } = parser(argv, options);
-  return { env };
+  const parsed = parser(argv, {
+    envPrefix: ENV_PREFIX,
+    boolean: booleanOptions,
+    string: stringOptions,
+    default: defaults,
+  });
+  const mode = parsed.mode === 'production' ? 'production' : 'development';
+  const test = parsed.test === true;
+  return { mode, test } as const;
+}
+
+/**
+ * Resolves the MetaMask build environment.
+ *
+ * The environment determines which Sentry project events are sent to,
+ * feature flag detection, and other build-specific behaviors.
+ *
+ * Resolution order:
+ * 1. If `--test` is set, returns 'testing'
+ * 2. If `--mode development`, returns 'development'
+ * 3. Otherwise, auto-detects from git context (release branch, main, PR, or other)
+ *
+ * NOTE: 'production' environment is NEVER returned as a default. It must be
+ * explicitly set via `--env` to prevent accidental pollution of production
+ * Sentry with events from local or CI test builds.
+ *
+ * @param args - The parsed CLI arguments
+ * @param args.test - Whether this is a test build
+ * @param args.mode - The webpack mode ('development' or 'production')
+ * @returns The resolved environment string
+ */
+export function resolveDefaultBuildEnvironment(args: {
+  test: boolean;
+  mode: (typeof MODES)[keyof typeof MODES];
+}): (typeof ENVIRONMENTS)[keyof typeof ENVIRONMENTS] {
+  // Test builds always use 'testing' environment by default.
+  if (args.test) {
+    return ENVIRONMENTS.TESTING;
+  }
+
+  // Development builds use 'development' environment
+  if (args.mode === MODES.DEVELOPMENT) {
+    return ENVIRONMENTS.DEVELOPMENT;
+  }
+
+  // For production-like builds (--mode production), auto-detect from git
+  // context. GITHUB_HEAD_REF is only used in pull_requests, while
+  // `GITHUB_REF_NAME` is the name of the branch that triggered the workflow.
+  const branch =
+    process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME || '';
+
+  // staging builds always come from the `main` branch
+  if (branch === 'main') {
+    return ENVIRONMENTS.STAGING;
+  }
+
+  // release branches are like "release/1.2.0", "release/13.2.1", etc.
+  if (/^release\/\d+\.\d+\.\d+$/u.test(branch)) {
+    return ENVIRONMENTS.RELEASE_CANDIDATE;
+  }
+
+  const eventName = process.env.GITHUB_EVENT_NAME;
+  if (eventName === 'pull_request') {
+    return ENVIRONMENTS.PULL_REQUEST;
+  }
+
+  // Default: local builds or any other source
+  return ENVIRONMENTS.OTHER;
 }
 
 /**
@@ -159,8 +228,8 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
     //   'Enable bash/zsh completions; concat the script generated by running this command to your .bashrc or .bash_profile',
     // )
     .example(
-      '$0 --env development --browser brave --browser chrome --zip',
-      'Builds the extension for development for Chrome & Brave; generate zip files for both',
+      '$0 --mode development --browser firefox --browser chrome --zip',
+      'Builds the extension for development for Chrome & Firefox; generate zip files for both',
     )
     // TODO: enable completion once https://github.com/yargs/yargs/pull/2422 is released.
     // .example(
@@ -178,12 +247,13 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
 type Options = ReturnType<typeof getOptions>;
 
 function getOptions(
-  { env }: ReturnType<typeof preParse>,
+  { mode, test }: ReturnType<typeof preParse>,
   buildTypes: string[],
   allFeatures: string[],
 ) {
-  const isProduction = env === 'production';
-  const prodDefaultDesc = "If `env` is 'production', `true`, otherwise `false`";
+  const isProduction = mode === 'production';
+  const prodDefaultDesc =
+    "If `mode` is 'production', `true`, otherwise `false`";
   return {
     watch: {
       alias: 'w',
@@ -214,7 +284,7 @@ function getOptions(
       array: false,
       default: isProduction ? 'hidden-source-map' : 'source-map',
       defaultDescription:
-        "If `env` is 'production', 'hidden-source-map', otherwise 'source-map'",
+        "If `mode` is 'production', 'hidden-source-map', otherwise 'source-map'",
       description: 'Sourcemap type to generate',
       choices: ['none', 'source-map', 'hidden-source-map'] as const,
       group: toOrange('Developer assistance:'),
@@ -228,12 +298,22 @@ function getOptions(
       group: toOrange('Developer assistance:'),
       type: 'boolean',
     },
-    test: {
+    reactCompilerVerbose: {
       array: false,
       default: false,
-      description: 'Enables/disables testing mode',
+      description:
+        'Enables/disables React Compiler verbose mode and statistics',
       group: toOrange('Developer assistance:'),
       type: 'boolean',
+    },
+    reactCompilerDebug: {
+      array: false,
+      choices: ['all', 'critical', 'none'] as const,
+      default: 'none',
+      description:
+        'Sets React Compiler panic threshold that fails the build for all errors or critical errors only. If `none`, the build will not fail.',
+      group: toOrange('Developer assistance:'),
+      type: 'string',
     },
 
     ...prerequisites,
@@ -249,7 +329,8 @@ function getOptions(
       alias: 'm',
       array: false,
       default: isProduction,
-      defaultDescription: "If `env` is 'production', `true`, otherwise `false`",
+      defaultDescription:
+        "If `mode` is 'production', `true`, otherwise `false`",
       description: 'Minify the output',
       group: toOrange('Build options:'),
       type: 'boolean',
@@ -273,7 +354,7 @@ function getOptions(
       alias: 'v',
       array: false,
       choices: [2, 3] as Manifest['manifest_version'][],
-      default: 2 as Manifest['manifest_version'],
+      default: 3 as Manifest['manifest_version'],
       description: "Changes manifest.json format to the given version's schema",
       group: toOrange('Build options:'),
       type: 'number',
@@ -292,7 +373,7 @@ function getOptions(
       array: false,
       choices: ['none', ...buildTypes],
       default: 'main' as const,
-      description: 'Configure features for the build (main, beta, etc)',
+      description: 'Select the build type (main, beta, etc)',
       group: toOrange('Build options:'),
       type: 'string',
     },
@@ -302,7 +383,7 @@ function getOptions(
       choices: allFeatures,
       coerce: uniqueSort,
       default: [] as typeof allFeatures,
-      description: 'Add features not be included in the selected build `type`',
+      description: 'Add features to be included in the selected build `type`',
       group: toOrange('Build options:'),
       type: 'string',
     },
@@ -312,9 +393,32 @@ function getOptions(
       choices: allFeatures,
       coerce: uniqueSort,
       default: [] as typeof allFeatures,
-      description: 'Omit features included in the selected build `type`',
+      description: 'Omit features from the selected build `type`',
       group: toOrange('Build options:'),
       type: 'string',
+    },
+    env: {
+      alias: 'e',
+      array: false,
+      choices: Object.values(ENVIRONMENTS),
+      default: resolveDefaultBuildEnvironment({ mode, test }),
+      defaultDescription:
+        'Auto-detected from git context (branch name, CI environment), or set to "testing" when --test is used, or "development" when --mode development is used',
+      description:
+        'The build environment (production, development, testing, staging, release-candidate, pull-request, other). ' +
+        'Controls Sentry project targeting and feature flag detection. ' +
+        'If not specified, auto-detected from git context or derived from --test / --mode development.',
+      group: toOrange('Build options:'),
+      type: 'string',
+    },
+    validateEnv: {
+      array: false,
+      default: isProduction,
+      defaultDescription: prodDefaultDesc,
+      description:
+        'Validate environment variables against builds.yml declarations',
+      group: toOrange('Build options:'),
+      type: 'boolean',
     },
 
     lavamoat: {
@@ -326,12 +430,20 @@ function getOptions(
       group: toOrange('Security:'),
       type: 'boolean',
     },
-    lockdown: {
-      alias: 'k',
+    lavamoatDebug: {
+      alias: 'u',
       array: false,
-      default: isProduction,
-      defaultDescription: prodDefaultDesc,
-      description: 'Enable/disable runtime hardening (also see --snow)',
+      default: false,
+      description:
+        'Enables/disables LavaMoat debug mode (ignored if `lavamoat` is not enabled)',
+      group: toOrange('Security:'),
+      type: 'boolean',
+    },
+    generatePolicy: {
+      alias: 'g',
+      array: false,
+      default: false,
+      description: 'Generate the LavaMoat policy',
       group: toOrange('Security:'),
       type: 'boolean',
     },
@@ -348,7 +460,7 @@ function getOptions(
     dryRun: {
       array: false,
       default: false,
-      description: 'Outputs the config without building',
+      description: 'Output the config without building',
       group: toOrange('Options:'),
       type: 'boolean',
     },
@@ -365,22 +477,27 @@ function getOptions(
 /**
  * Returns a string representation of the given arguments and features.
  *
- * @param args
- * @param features
+ * @param args - The parsed CLI arguments
+ * @param features - The active and available features
  */
 export function getDryRunMessage(args: Args, features: Features) {
   return `🦊 Build Config 🦊
 
+Mode: ${args.mode}
 Environment: ${args.env}
 Minify: ${args.minify}
 Watch: ${args.watch}
 Cache: ${args.cache}
 Progress: ${args.progress}
 Zip: ${args.zip}
-Snow: ${args.snow}
 LavaMoat: ${args.lavamoat}
-Lockdown: ${args.lockdown}
+LavaMoat debug: ${args.lavamoatDebug}
+Generate policy: ${args.generatePolicy}
+Snow: ${args.snow}
 Sentry: ${args.sentry}
+React Compiler verbose: ${args.reactCompilerVerbose}
+React Compiler debug: ${args.reactCompilerDebug}
+Validate Env: ${args.validateEnv}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}
 Browsers: ${args.browser.join(', ')}

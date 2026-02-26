@@ -1,9 +1,18 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import TermsOfUsePopup from './terms-of-use-popup';
+
+const mockIntersectionObserver = jest.fn();
+mockIntersectionObserver.mockReturnValue({
+  observe: () => null,
+  unobserve: () => null,
+  disconnect: () => null,
+});
+window.IntersectionObserver = mockIntersectionObserver;
 
 const render = () => {
   const store = configureStore({
@@ -20,19 +29,11 @@ const render = () => {
 };
 
 describe('TermsOfUsePopup', () => {
-  beforeEach(() => {
-    const mockIntersectionObserver = jest.fn();
-    mockIntersectionObserver.mockReturnValue({
-      observe: () => null,
-      unobserve: () => null,
-      disconnect: () => null,
-    });
-    window.IntersectionObserver = mockIntersectionObserver;
-  });
-
   it('renders TermsOfUse component and shows Terms of Use text', () => {
     render();
-    expect(screen.getByText('Review our Terms of Use')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.termsOfUseTitle.message),
+    ).toBeInTheDocument();
 
     const agreeButton = screen.getByTestId('terms-of-use-agree-button');
     expect(agreeButton).toBeInTheDocument();
@@ -47,6 +48,7 @@ describe('TermsOfUsePopup', () => {
     render();
     const button = document.querySelector(
       "[data-testid='terms-of-use-scroll-button']",
+      5000,
     );
 
     fireEvent.click(button);

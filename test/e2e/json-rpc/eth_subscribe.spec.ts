@@ -1,15 +1,16 @@
 import { strict as assert } from 'assert';
 import { withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
+import TestDapp from '../page-objects/pages/test-dapp';
 
 describe('eth_subscribe', function () {
   it('executes a subscription event', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.fullTitle(),
@@ -18,7 +19,9 @@ describe('eth_subscribe', function () {
         await loginWithBalanceValidation(driver);
 
         // eth_subscribe
-        await driver.openNewPage(`http://127.0.0.1:8080`);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
 
         const subscribeRequest: string = JSON.stringify({
           jsonrpc: '2.0',

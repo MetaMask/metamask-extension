@@ -1,4 +1,5 @@
 import React from 'react';
+import README from "./README.mdx";
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   BackgroundColor,
@@ -11,7 +12,6 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Text } from '../text';
-import README from './README.mdx';
 import { Skeleton } from './skeleton';
 import { Box } from '../box';
 import { Button, ButtonVariant } from '../button';
@@ -19,6 +19,7 @@ import { Button, ButtonVariant } from '../button';
 const meta: Meta<typeof Skeleton> = {
   title: 'Components/ComponentLibrary/Skeleton',
   component: Skeleton,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,
@@ -56,48 +57,24 @@ export const WidthHeight: Story = {
   ),
 };
 
-export const Children: Story = {
-  render: () => (
-    <Skeleton
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      gap={4}
-      backgroundColor={BackgroundColor.backgroundAlternative}
-      borderRadius={BorderRadius.LG}
-      padding={4}
-    >
-      <Skeleton height={32} width="100%" />
-      <Skeleton height={16} width="95%" />
-      <Skeleton height={16} width="95%" />
-    </Skeleton>
-  ),
-};
-
-export const HideChildren: Story = {
+export const IsLoading: Story = {
   args: {
     width: 'max-content',
-    hideChildren: true,
   },
-  render: (args) => {
-    const [isLoaded, setIsLoaded] = React.useState(false);
+  render: function IsLoadingStory(args) {
+    const [isLoading, setIsLoading] = React.useState(true);
     return (
       <Box>
         <Button
-          onClick={() => setIsLoaded(!isLoaded)}
+          onClick={() => setIsLoading(!isLoading)}
           variant={ButtonVariant.Secondary}
           marginBottom={4}
         >
           Toggle isLoading
         </Button>
-        {isLoaded ? (
-          <div>
-            <Text variant={TextVariant.headingMd}>Content to load</Text>
-          </div>
-        ) : (
-          <Skeleton {...args}>
-            <Text variant={TextVariant.headingMd}>Hidden placeholder text</Text>
-          </Skeleton>
-        )}
+        <Skeleton {...args} isLoading={isLoading}>
+          <Text variant={TextVariant.headingMd}>Content that loads</Text>
+        </Skeleton>
       </Box>
     );
   },
@@ -139,14 +116,30 @@ BorderRadiusStory.storyName = 'BorderRadius';
 export const TokenListSkeleton: Story = {
   render: () => (
     <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
-      <Skeleton width={32} height={32} borderRadius={BorderRadius.full} style={{
-        minWidth: 32, // add classname with this style attached
-      }} />
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={1} width={BlockSize.Full} paddingRight={12}>
+      <Skeleton
+        width={32}
+        height={32}
+        borderRadius={BorderRadius.full}
+        style={{
+          minWidth: 32, // add classname with this style attached
+        }}
+      />
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={1}
+        width={BlockSize.Full}
+        paddingRight={12}
+      >
         <Skeleton width="100%" height={16} />
         <Skeleton width="70%" height={16} />
       </Box>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={1} width={BlockSize.OneThird}>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={1}
+        width={BlockSize.OneThird}
+      >
         <Skeleton width="100%" height={16} />
         <Skeleton width="100%" height={16} />
       </Box>

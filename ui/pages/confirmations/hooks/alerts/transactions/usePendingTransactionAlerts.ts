@@ -1,3 +1,5 @@
+'use no memo';
+
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -30,10 +32,12 @@ export function usePendingTransactionAlerts(): Alert[] {
       {
         field: RowAlertKey.Speed,
         key: 'pendingTransactions',
-        content: PendingTransactionAlertMessage(),
+        content: PendingTransactionAlertMessage(
+          t as (key: string, ...args: unknown[]) => string,
+        ),
         reason: t('alertReasonPendingTransactions'),
         severity: Severity.Warning,
       },
     ];
-  }, [hasPendingTransactions]);
+  }, [hasPendingTransactions, t]);
 }

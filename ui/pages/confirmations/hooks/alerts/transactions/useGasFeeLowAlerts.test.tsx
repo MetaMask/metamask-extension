@@ -1,4 +1,5 @@
-import React, { ReactChildren } from 'react';
+import React from 'react';
+import { ReactNodeLike } from 'prop-types';
 import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
@@ -57,7 +58,7 @@ function runHook(stateOptions?: Parameters<typeof buildState>[0]) {
     useGasFeeLowAlerts,
     state,
     '/',
-    ({ children }: { children: ReactChildren }) => (
+    ({ children }: { children: NonNullable<ReactNodeLike> }) => (
       <GasFeeContextProvider transaction={transaction}>
         {children}
       </GasFeeContextProvider>

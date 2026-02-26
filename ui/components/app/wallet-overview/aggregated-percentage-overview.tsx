@@ -9,6 +9,7 @@ import {
   getTokensMarketData,
   getPreferences,
   getSelectedInternalAccount,
+  selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
@@ -25,6 +26,9 @@ import { Box, SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/assets';
 import { formatWithThreshold } from '../assets/util/formatWithThreshold';
+import { useFormatters } from '../../../hooks/useFormatters';
+import { isZeroAmount } from '../../../helpers/utils/number-utils';
+import { Skeleton } from '../../component-library/skeleton';
 
 // core already has this exported type but its not yet available in this version
 // todo remove this and use core type once available
@@ -33,10 +37,14 @@ type MarketDataDetails = {
   pricePercentChange1d: number;
 };
 
-export const AggregatedPercentageOverview = () => {
+export const AggregatedPercentageOverview = ({
+  trailingChild,
+}: {
+  trailingChild: () => JSX.Element | null;
+}) => {
   const tokensMarketData: Record<string, MarketDataDetails> =
     useSelector(getTokensMarketData);
-  const locale = useSelector(getIntlLocale);
+  const { formatCurrencyCompact } = useFormatters();
   const fiatCurrency = useSelector(getCurrentCurrency);
   const { privacyMode } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
@@ -48,6 +56,10 @@ export const AggregatedPercentageOverview = () => {
   const { totalFiatBalance, orderedTokenList } = useAccountTotalFiatBalance(
     selectedAccount,
     shouldHideZeroBalanceTokens,
+  );
+
+  const anyEnabledNetworksAreAvailable = useSelector(
+    selectAnyEnabledNetworksAreAvailable,
   );
 
   // Memoize the calculation to avoid recalculating unless orderedTokenList or tokensMarketData changes
@@ -92,27 +104,7 @@ export const AggregatedPercentageOverview = () => {
   if (isValidAmount(amountChange)) {
     formattedAmountChange = (amountChange as number) >= 0 ? '+' : '';
 
-    const options = {
-      notation: 'compact',
-      compactDisplay: 'short',
-      maximumFractionDigits: 2,
-    } as const;
-
-    try {
-      // For currencies compliant with ISO 4217 Standard
-      formattedAmountChange += `${Intl.NumberFormat(locale, {
-        ...options,
-        style: 'currency',
-        currency: fiatCurrency,
-      }).format(amountChange as number)} `;
-    } catch {
-      // Non-standard Currency Codes
-      formattedAmountChange += `${Intl.NumberFormat(locale, {
-        ...options,
-        minimumFractionDigits: 2,
-        style: 'decimal',
-      }).format(amountChange as number)} `;
-    }
+    formattedAmountChange += formatCurrencyCompact(amountChange, fiatCurrency);
   }
 
   let color = TextColor.textAlternative;
@@ -130,35 +122,42 @@ export const AggregatedPercentageOverview = () => {
   }
 
   return (
-    <Box display={Display.Flex}>
-      <SensitiveText
-        variant={TextVariant.bodyMdMedium}
-        color={color}
-        data-testid="aggregated-value-change"
-        style={{ whiteSpace: 'pre' }}
-        isHidden={privacyMode}
-        ellipsis
-        length="10"
-      >
-        {formattedAmountChange}
-      </SensitiveText>
-      <SensitiveText
-        variant={TextVariant.bodyMdMedium}
-        color={color}
-        data-testid="aggregated-percentage-change"
-        isHidden={privacyMode}
-        ellipsis
-        length="10"
-      >
-        {formattedPercentChange}
-      </SensitiveText>
-    </Box>
+    <Skeleton
+      isLoading={!anyEnabledNetworksAreAvailable && isZeroAmount(amountChange)}
+    >
+      <Box display={Display.Flex} className="gap-1">
+        <SensitiveText
+          variant={TextVariant.bodyMdMedium}
+          color={color}
+          data-testid="aggregated-value-change"
+          style={{ whiteSpace: 'pre' }}
+          isHidden={privacyMode}
+          ellipsis
+          length="10"
+        >
+          {formattedAmountChange}
+        </SensitiveText>
+        <SensitiveText
+          variant={TextVariant.bodyMdMedium}
+          color={color}
+          data-testid="aggregated-percentage-change"
+          isHidden={privacyMode}
+          ellipsis
+          length="10"
+        >
+          {formattedPercentChange}
+        </SensitiveText>
+      </Box>
+      {trailingChild()}
+    </Skeleton>
   );
 };
 
 export const AggregatedMultichainPercentageOverview = ({
+  trailingChild,
   privacyMode = false,
 }: {
+  trailingChild: () => JSX.Element | null;
   privacyMode?: boolean;
 }) => {
   const locale = useSelector(getIntlLocale);
@@ -166,6 +165,9 @@ export const AggregatedMultichainPercentageOverview = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const historicalAggregatedBalances = useSelector((state) =>
     getHistoricalMultichainAggregatedBalance(state, selectedAccount),
+  );
+  const anyEnabledNetworksAreAvailable = useSelector(
+    selectAnyEnabledNetworksAreAvailable,
   );
 
   let color = TextColor.textAlternative;
@@ -208,30 +210,37 @@ export const AggregatedMultichainPercentageOverview = ({
   );
 
   return (
-    <Box display={Display.Flex}>
-      <SensitiveText
-        variant={TextVariant.bodyMdMedium}
-        color={color}
-        data-testid="aggregated-value-change"
-        style={{ whiteSpace: 'pre' }}
-        isHidden={privacyMode}
-        ellipsis
-        length="10"
-      >
-        {signPrefix}
-        {localizedAmountChange}{' '}
-      </SensitiveText>
-      <SensitiveText
-        variant={TextVariant.bodyMdMedium}
-        color={color}
-        data-testid="aggregated-percentage-change"
-        isHidden={privacyMode}
-        ellipsis
-        length="10"
-      >
-        ({signPrefix}
-        {localizedPercentChange})
-      </SensitiveText>
-    </Box>
+    <Skeleton
+      isLoading={
+        !anyEnabledNetworksAreAvailable && isZeroAmount(singleDayAmountChange)
+      }
+    >
+      <Box display={Display.Flex}>
+        <SensitiveText
+          variant={TextVariant.bodyMdMedium}
+          color={color}
+          data-testid="aggregated-value-change"
+          style={{ whiteSpace: 'pre' }}
+          isHidden={privacyMode}
+          ellipsis
+          length="10"
+        >
+          {signPrefix}
+          {localizedAmountChange}{' '}
+        </SensitiveText>
+        <SensitiveText
+          variant={TextVariant.bodyMdMedium}
+          color={color}
+          data-testid="aggregated-percentage-change"
+          isHidden={privacyMode}
+          ellipsis
+          length="10"
+        >
+          ({signPrefix}
+          {localizedPercentChange})
+        </SensitiveText>
+      </Box>
+      {trailingChild()}
+    </Skeleton>
   );
 };

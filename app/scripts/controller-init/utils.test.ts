@@ -1,5 +1,9 @@
 import { PPOMController } from '@metamask/ppom-validator';
-import { Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { buildControllerInitRequestMock } from './test/utils';
 import { ControllerApi, ControllerName } from './types';
 import { initControllers } from './utils';
@@ -41,7 +45,9 @@ function buildInitRequestMock() {
 }
 
 function buildControllerMessenger() {
-  return new Messenger();
+  return new Messenger<MockAnyNamespace, never, never>({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
 }
 
 describe('Controller Init Utils', () => {
@@ -56,7 +62,7 @@ describe('Controller Init Utils', () => {
       );
 
       const { controllersByName } = initControllers({
-        baseControllerMessenger: new Messenger(),
+        baseControllerMessenger: buildControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: init1Mock,
           [CONTROLLER_NAME_2_MOCK]: init2Mock,

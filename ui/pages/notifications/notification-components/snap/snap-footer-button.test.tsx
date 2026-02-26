@@ -2,10 +2,20 @@ import React from 'react';
 import { processNotification } from '@metamask/notification-services-controller/notification-services';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { createMockSnapNotification } from '@metamask/notification-services-controller/notification-services/mocks';
-import * as SnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { SnapFooterButton } from './snap-footer-button';
 import { DetailedViewData, SnapNotification } from './types';
+
+const mockUseNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 // Type Util for testing
 
@@ -15,17 +25,11 @@ type MockVar = any;
 
 describe('SnapFooterButton', () => {
   const arrangeMocks = () => {
-    const mockNavigate = jest.fn();
-    const mockUseSnapNavigation = jest
-      .spyOn(SnapNavigation, 'default')
-      .mockReturnValue({ navigate: mockNavigate });
     const notification = processNotification(
       createMockSnapNotification(),
     ) as SnapNotification;
 
     return {
-      mockNavigate,
-      mockUseSnapNavigation,
       notification,
     };
   };
@@ -44,7 +48,7 @@ describe('SnapFooterButton', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('renders the NotificationDetailButton', () => {
+  it('renders the NotificationDetailButton and navigates to home page when clicked', () => {
     const { notification } = arrangeMocks();
     (notification.data as DetailedViewData).detailedView.footerLink = {
       text: 'Go Home',
@@ -56,21 +60,8 @@ describe('SnapFooterButton', () => {
     );
     const button = getByText('Go Home');
     expect(button).toBeInTheDocument();
-  });
-
-  it('navigates when internal link is clicked', () => {
-    const { notification, mockNavigate } = arrangeMocks();
-    (notification.data as DetailedViewData).detailedView.footerLink = {
-      text: 'Go Home',
-      href: 'metamask://client/',
-    };
-
-    const { getByText } = renderWithProvider(
-      <SnapFooterButton notification={notification} />,
-    );
-    const button = getByText('Go Home');
     fireEvent.click(button);
-    expect(mockNavigate).toHaveBeenCalledWith('metamask://client/');
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it('opens SnapLinkWarning when external link is clicked', async () => {
@@ -90,8 +81,8 @@ describe('SnapFooterButton', () => {
 
     // Confirm Leave
     await waitFor(() => {
-      const leaveModalTitle = getByText('[leaveMetaMask]');
-      const leaveModalButton = getByText('[visitSite]');
+      const leaveModalTitle = getByText(messages.leaveMetaMask.message);
+      const leaveModalButton = getByText(messages.visitSite.message);
       expect(leaveModalTitle).toBeInTheDocument();
       expect(leaveModalButton).toBeInTheDocument();
     });

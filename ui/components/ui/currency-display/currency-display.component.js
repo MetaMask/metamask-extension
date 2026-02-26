@@ -22,31 +22,35 @@ export default function CurrencyDisplay({
   style,
   className,
   prefix,
-  prefixComponent,
   hideLabel,
   hideTitle,
   numberOfDecimals,
   denomination,
   currency,
   suffix,
-  prefixComponentWrapperProps = {},
   textProps = {},
   suffixProps = {},
   isAggregatedFiatOverviewBalance = false,
   privacyMode = false,
+  onClick,
+  chainId,
   ...props
 }) {
-  const [title, parts] = useCurrencyDisplay(value, {
-    account,
-    displayValue,
-    prefix,
-    numberOfDecimals,
-    hideLabel,
-    denomination,
-    currency,
-    suffix,
-    isAggregatedFiatOverviewBalance,
-  });
+  const [title, parts] = useCurrencyDisplay(
+    value,
+    {
+      account,
+      displayValue,
+      prefix,
+      numberOfDecimals,
+      hideLabel,
+      denomination,
+      currency,
+      suffix,
+      isAggregatedFiatOverviewBalance,
+    },
+    chainId,
+  );
 
   return (
     <Box
@@ -59,23 +63,14 @@ export default function CurrencyDisplay({
       flexWrap={FlexWrap.Wrap}
       {...props}
     >
-      {prefixComponent ? (
-        <Box
-          className="currency-display-component__prefix"
-          marginInlineEnd={1}
-          variant={TextVariant.inherit}
-          {...prefixComponentWrapperProps}
-        >
-          {prefixComponent}
-        </Box>
-      ) : null}
       <SensitiveText
         as="span"
-        className="currency-display-component__text"
+        className="currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative"
         ellipsis
         variant={TextVariant.inherit}
         isHidden={privacyMode}
         data-testid="account-value-and-suffix"
+        onClick={onClick}
         {...textProps}
       >
         {parts.prefix}
@@ -84,14 +79,15 @@ export default function CurrencyDisplay({
       {parts.suffix ? (
         <SensitiveText
           as="span"
-          className={
+          className={`${
             privacyMode
               ? 'currency-display-component__text'
               : 'currency-display-component__suffix'
-          }
+          } cursor-pointer transition-colors duration-200 hover:text-text-alternative`}
           marginInlineStart={privacyMode ? 0 : 1}
           variant={TextVariant.inherit}
           isHidden={privacyMode}
+          onClick={onClick}
           {...suffixProps}
         >
           {parts.suffix}
@@ -115,15 +111,15 @@ const CurrencyDisplayPropTypes = {
   hideTitle: PropTypes.bool,
   numberOfDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   prefix: PropTypes.string,
-  prefixComponent: PropTypes.node,
   style: PropTypes.object,
   suffix: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   value: PropTypes.string,
-  prefixComponentWrapperProps: PropTypes.object,
   textProps: PropTypes.object,
   suffixProps: PropTypes.object,
   isAggregatedFiatOverviewBalance: PropTypes.bool,
   privacyMode: PropTypes.bool,
+  onClick: PropTypes.func,
+  chainId: PropTypes.string,
 };
 
 CurrencyDisplay.propTypes = CurrencyDisplayPropTypes;

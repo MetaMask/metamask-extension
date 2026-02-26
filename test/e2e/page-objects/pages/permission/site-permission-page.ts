@@ -22,10 +22,8 @@ class SitePermissionPage {
 
   private readonly disconnectButton = '[data-test-id="disconnect-all"]';
 
-  private readonly disconnectConfirmMessage = {
-    text: 'MetaMask isn’t connected to this site',
-    tag: 'p',
-  };
+  private readonly disconnectConfirmMessage =
+    '[data-testid="no-connection-description"]';
 
   private readonly disconnectModalTitle = {
     text: 'Disconnect',
@@ -58,7 +56,7 @@ class SitePermissionPage {
    *
    * @param site - Site to check
    */
-  async check_pageIsLoaded(site: string): Promise<void> {
+  async checkPageIsLoaded(site: string): Promise<void> {
     try {
       await this.driver.waitForSelector(this.connectedAccountsInfo);
       await this.driver.waitForSelector(this.enabledNetworksInfo);
@@ -87,17 +85,36 @@ class SitePermissionPage {
   }
 
   /**
+   * Open the account edit permissions modal
+   */
+  async openAccountPermissionsModal(): Promise<void> {
+    const editButtons = await this.driver.findElements(this.editButton);
+    await editButtons[0].click();
+    await this.driver.waitForSelector(this.editAccountsModalTitle);
+  }
+
+  /**
+   * Open the network edit permissions modal
+   */
+  async openNetworkPermissionsModal(): Promise<void> {
+    const editButtons = await this.driver.findElements(this.editButton);
+    await editButtons[1].click();
+    await this.driver.waitForSelector(this.editNetworksModalTitle);
+  }
+
+  /**
    * Edit permissions for accounts on site permission page
    *
    * @param accountLabels - Account labels to edit
    */
   async editPermissionsForAccount(accountLabels: string[]): Promise<void> {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.log(`Edit permissions for accounts: ${accountLabels}`);
-    const editButtons = await this.driver.findElements(this.editButton);
-    await editButtons[0].click();
-    await this.driver.waitForSelector(this.editAccountsModalTitle);
+    await this.openAccountPermissionsModal();
+
     for (const accountLabel of accountLabels) {
-      await this.driver.clickElement({ text: accountLabel, tag: 'button' });
+      await this.driver.clickElement({ text: accountLabel });
     }
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmEditAccountsButton,
@@ -110,10 +127,11 @@ class SitePermissionPage {
    * @param networkNames - Network names to edit
    */
   async editPermissionsForNetwork(networkNames: string[]): Promise<void> {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.log(`Edit permissions for networks: ${networkNames}`);
-    const editButtons = await this.driver.findElements(this.editButton);
-    await editButtons[1].click();
-    await this.driver.waitForSelector(this.editNetworksModalTitle);
+    await this.openNetworkPermissionsModal();
+
     for (const networkName of networkNames) {
       await this.driver.clickElement({ text: networkName, tag: 'p' });
     }
@@ -127,10 +145,15 @@ class SitePermissionPage {
    *
    * @param number - Expected number of connected accounts
    */
-  async check_connectedAccountsNumber(number: number): Promise<void> {
+  async checkConnectedAccountsNumber(number: number): Promise<void> {
     console.log(`Check that the number of connected accounts is: ${number}`);
+    const text =
+      number === 1
+        ? `Connected with Account 1`
+        : `${number} accounts connected`;
+
     await this.driver.waitForSelector({
-      text: `${number} accounts connected`,
+      text,
       tag: 'span',
     });
   }
@@ -140,7 +163,7 @@ class SitePermissionPage {
    *
    * @param number - Expected number of connected networks
    */
-  async check_connectedNetworksNumber(number: number): Promise<void> {
+  async checkConnectedNetworksNumber(number: number): Promise<void> {
     console.log(`Check that the number of connected networks is: ${number}`);
     await this.driver.waitForSelector({
       text: `${number} networks connected`,

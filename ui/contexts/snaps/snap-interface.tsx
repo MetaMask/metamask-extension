@@ -104,14 +104,24 @@ export const SnapInterfaceContextProvider: FunctionComponent<
         params: {
           event: {
             type: event,
-            // TODO: Allow null in the types and simplify this
-            ...(name !== undefined && name !== null ? { name } : {}),
-            ...(value !== undefined && value !== null ? { value } : {}),
+            ...(name === undefined ? {} : { name }),
+            // Ensure `value` is always stripped for button clicks as buttons do not have a value (null is also disallowed).
+            ...(event === UserInputEventType.ButtonClickEvent ||
+            value === undefined
+              ? {}
+              : { value }),
           },
           id: interfaceId,
         },
       },
-    }).then(() => forceUpdateMetamaskState(dispatch));
+    })
+      .then(() => forceUpdateMetamaskState(dispatch))
+      .catch((error) => {
+        console.error(
+          `Failed to handle Snap request to "${snapId}" for event "${event}" with name "${name}":`,
+          error,
+        );
+      });
   };
 
   const updateState = (state: InterfaceState) =>
@@ -128,7 +138,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   const handleEvent: HandleEvent = ({
     event,
     name,
-    value = name ? internalState.current[name] : undefined,
+    value = name ? internalState.current[name] : null,
   }) => handleSnapRequest(event, name, value);
 
   const submitInputChange = (name: string, value: State | null) =>

@@ -1,17 +1,14 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
-import { SEND_STAGES } from '../../../ducks/send';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import {
-  mockNetworkState,
-  mockMultichainNetworkState,
-} from '../../../../test/stub/networks';
+import { openWindow } from '../../../helpers/utils/window';
+import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import { AppHeader } from '.';
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
@@ -19,17 +16,22 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
   getEnvironmentType: jest.fn(),
 }));
 
-const mockUseHistory = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockUseHistory,
-  }),
+  // eslint-disable-next-line react/prop-types
+  Link: ({ children, ...props }) => <a {...props}>{children}</a>,
+  // eslint-disable-next-line react/prop-types
+  CompatRouter: ({ children }) => <div>{children}</div>,
+  matchPath: jest.fn(),
+  useNavigate: () => jest.fn(),
+}));
+
+jest.mock('../../../helpers/utils/window', () => ({
+  openWindow: jest.fn(),
 }));
 
 const render = ({
   stateChanges = {},
-  network = { chainId: '0x5', nickname: 'Chain 5', ticker: 'ETH' },
   location = {},
   isUnlocked = true,
 } = {}) => {
@@ -37,14 +39,12 @@ const render = ({
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      ...mockNetworkState(network),
-      ...mockMultichainNetworkState(),
       isUnlocked: isUnlocked ?? true,
     },
     activeTab: {
       origin: 'https://remix.ethereum.org',
     },
-    ...(stateChanges ?? {}),
+    ...stateChanges,
   });
   return renderWithProvider(<AppHeader location={location} />, store);
 };
@@ -63,43 +63,9 @@ describe('App Header', () => {
     expect(container).toMatchSnapshot('locked');
   });
 
-  describe('send stage', () => {
-    it('should disable the network picker during a send', () => {
-      const { getByTestId } = render({
-        stateChanges: { send: { stage: SEND_STAGES.DRAFT } },
-      });
-      expect(getByTestId('network-display')).toBeDisabled();
-    });
-
-    it('should allow switching accounts during a send', () => {
-      const { getByTestId } = render({
-        stateChanges: { send: { stage: SEND_STAGES.DRAFT } },
-      });
-      expect(getByTestId('account-menu-icon')).toBeEnabled();
-    });
-
-    it('should show the copy button for multichain', () => {
-      const { getByTestId } = render({
-        stateChanges: { send: { stage: SEND_STAGES.DRAFT } },
-      });
-      expect(getByTestId('app-header-copy-button')).toBeEnabled();
-    });
-  });
-
   describe('unlocked state', () => {
     afterEach(() => {
       jest.clearAllMocks();
-    });
-    it('can open the network picker', () => {
-      const { container } = render();
-      const networkPickerButton = container.querySelector(
-        '.multichain-app-header__contents__network-picker',
-      );
-      expect(networkPickerButton).toBeInTheDocument();
-      fireEvent.click(networkPickerButton);
-
-      const networkPicker = container.querySelector('.mm-picker-network');
-      expect(networkPicker).toBeInTheDocument();
     });
 
     it('can open the account list', () => {
@@ -119,8 +85,8 @@ describe('App Header', () => {
       fireEvent.click(settingsButton);
 
       await waitFor(() => {
-        const settingsMenu = container.querySelector(
-          '[data-testid="global-menu"]',
+        const settingsMenu = document.querySelector(
+          '[data-testid="global-menu-settings"]',
         );
         expect(settingsMenu).toBeInTheDocument();
       });
@@ -133,27 +99,82 @@ describe('App Header', () => {
         '[data-testid="connection-menu"]',
       );
       expect(connectionPickerButton).toBeInTheDocument();
-      fireEvent.click(connectionPickerButton);
+    });
 
-      expect(mockUseHistory).toHaveBeenCalled();
+    describe('Drawer support button', () => {
+      beforeEach(async () => {
+        const { container } = render();
+
+        const settingsButton = container.querySelector(
+          '[data-testid="account-options-menu-button"]',
+        );
+        fireEvent.click(settingsButton);
+
+        // Menu is in portaled drawer; wait for Support button to be in document
+        let globalMenuSupportButton;
+        await waitFor(() => {
+          globalMenuSupportButton = document.querySelector(
+            '[data-testid="global-menu-support"]',
+          );
+          if (!globalMenuSupportButton) {
+            throw new Error('Support button not found');
+          }
+        });
+        fireEvent.click(globalMenuSupportButton);
+        // Wait for consent modal to be open so drawer-close and modal-open updates are flushed (avoids Act warnings)
+        await waitFor(() => {
+          if (
+            !document.querySelector(
+              '[data-testid="visit-support-data-consent-modal"]',
+            )
+          ) {
+            throw new Error('Consent modal not open');
+          }
+        });
+      });
+
+      it('can open the visit support data consent modal', async () => {
+        await waitFor(() => {
+          const supportDataConsentModal = document.querySelector(
+            '[data-testid="visit-support-data-consent-modal"]',
+          );
+          expect(supportDataConsentModal).toBeInTheDocument();
+        });
+      });
+
+      it('opens the support site when "Confirm" button is clicked', async () => {
+        let acceptButton;
+        await waitFor(() => {
+          acceptButton = document.querySelector(
+            '[data-testid="visit-support-data-consent-modal-accept-button"]',
+          );
+          expect(acceptButton).toBeInTheDocument();
+        });
+        fireEvent.click(acceptButton);
+
+        await waitFor(() => {
+          expect(openWindow).toHaveBeenCalled();
+        });
+      });
+
+      it(`opens the support site when "Don't share" button is clicked`, async () => {
+        let rejectButton;
+        await waitFor(() => {
+          rejectButton = document.querySelector(
+            '[data-testid="visit-support-data-consent-modal-reject-button"]',
+          );
+          expect(rejectButton).toBeInTheDocument();
+        });
+        fireEvent.click(rejectButton);
+
+        await waitFor(() => {
+          expect(openWindow).toHaveBeenCalledWith(SUPPORT_LINK);
+        });
+      });
     });
   });
 
   describe('locked state', () => {
-    it('can open the network picker', () => {
-      const { container } = render({
-        isUnlocked: false,
-      });
-      const networkPickerButton = container.querySelector(
-        '.multichain-app-header__contents__network-picker',
-      );
-      expect(networkPickerButton).toBeInTheDocument();
-      fireEvent.click(networkPickerButton);
-
-      const networkPicker = container.querySelector('.mm-picker-network');
-      expect(networkPicker).toBeInTheDocument();
-    });
-
     it('does not show the account picker', () => {
       const { container } = render({
         isUnlocked: false,
@@ -182,36 +203,6 @@ describe('App Header', () => {
         '[data-testid="connection-menu"]',
       );
       expect(connectionPickerButton).not.toBeInTheDocument();
-    });
-  });
-
-  describe('network picker', () => {
-    it('shows custom rpc if it has the same chainId as a default network', () => {
-      const mockProviderConfig = {
-        chainId: '0x1',
-        rpcUrl: 'https://localhost:8545',
-        nickname: 'Localhost',
-      };
-
-      const { getByText } = render({
-        network: mockProviderConfig,
-        isUnlocked: true,
-      });
-      expect(getByText(mockProviderConfig.nickname)).toBeInTheDocument();
-    });
-
-    it("shows rpc url as nickname if there isn't a nickname set", () => {
-      const mockProviderConfig = {
-        chainId: '0x1',
-        rpcUrl: 'https://localhost:8545',
-        nickname: undefined,
-      };
-
-      const { getByText } = render({
-        network: mockProviderConfig,
-        isUnlocked: true,
-      });
-      expect(getByText(mockProviderConfig.rpcUrl)).toBeInTheDocument();
     });
   });
 });

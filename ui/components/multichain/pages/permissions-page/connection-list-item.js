@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
 import { useSelector } from 'react-redux';
@@ -26,6 +26,7 @@ import {
 import { getURLHost } from '../../../../helpers/utils/util';
 import { SnapIcon } from '../../../app/snaps/snap-icon';
 import { getAllPermittedChainsForSelectedTab } from '../../../../selectors';
+import { getAccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
@@ -33,6 +34,30 @@ export const ConnectionListItem = ({ connection, onClick }) => {
   const permittedChains = useSelector((state) =>
     getAllPermittedChainsForSelectedTab(state, connection.origin),
   );
+  const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
+
+  const accountAddressSet = useMemo(() => {
+    const set = new Set();
+    (accountGroups ?? []).forEach((group) => {
+      (group.accounts ?? []).forEach((account) => {
+        set.add(account.address);
+      });
+    });
+    return set;
+  }, [accountGroups]);
+
+  const accountsToShow = useMemo(() => {
+    if (!accountAddressSet || !connection.addresses?.length) {
+      return 0;
+    }
+    let count = 0;
+    for (const address of connection.addresses) {
+      if (accountAddressSet.has(address)) {
+        count += 1;
+      }
+    }
+    return count;
+  }, [accountAddressSet, connection.addresses]);
 
   return (
     <Box
@@ -88,8 +113,23 @@ export const ConnectionListItem = ({ connection, onClick }) => {
               color={TextColor.textAlternative}
               variant={TextVariant.bodyMd}
             >
-              {connection.addresses.length} {t('accountsSmallCase')} •&nbsp;
-              {permittedChains.length} {t('networksSmallCase')}
+              {accountsToShow === 0 && permittedChains.length === 0 ? (
+                <>
+                  {connection.advancedPermissionsCount}{' '}
+                  {connection.advancedPermissionsCount === 1
+                    ? t('advancedPermissionSmallCase')
+                    : t('advancedPermissionsSmallCase')}
+                </>
+              ) : (
+                <>
+                  {accountsToShow}{' '}
+                  {accountsToShow === 1
+                    ? t('accountSmallCase')
+                    : t('accountsSmallCase')}
+                  •&nbsp;
+                  {permittedChains.length} {t('networksSmallCase')}
+                </>
+              )}
             </Text>
           </Box>
         )}

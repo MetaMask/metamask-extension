@@ -4,6 +4,10 @@ import { getMockTokenTransferConfirmState } from '../../../../../../../test/data
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import NFTTokenTransferInfo from './nft-token-transfer';
 
+jest.mock('../../../simulation-details/useBalanceChanges', () => ({
+  useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
+}));
+
 jest.mock(
   '../../../../../../components/app/alert-system/contexts/alertMetricsContext',
   () => ({

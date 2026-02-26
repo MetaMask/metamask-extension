@@ -1,19 +1,16 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import reactRouterDom from 'react-router-dom';
 import { EthAccountType } from '@metamask/keyring-api';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import configureStore from '../../../../../store/store';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../../../store/background-connection';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { ETH_EOA_METHODS } from '../../../../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
+import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import NftsTab from '.';
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(() => []),
-}));
 
 const ETH_BALANCE = '0x16345785d8a0000'; // 0.1 ETH
 
@@ -174,6 +171,11 @@ const render = ({
         [CHAIN_IDS.MAINNET]: {},
         [CHAIN_IDS.GOERLI]: {},
       },
+      enabledNetworkMap: {
+        eip155: {
+          [chainId]: true,
+        },
+      },
       ...mockNetworkState({ chainId }),
       currencyRates: {},
       accounts: {
@@ -188,7 +190,7 @@ const render = ({
       },
       internalAccounts: {
         accounts: {
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': createMockInternalAccount({
             address: selectedAddress,
             id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
             metadata: {
@@ -200,10 +202,14 @@ const render = ({
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
-          },
+          }),
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
+      multichainNetworkConfigurationsByChainId:
+        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      selectedMultichainNetworkChainId: 'eip155:1',
+      isEvmSelected: true,
       currentCurrency: 'usd',
       tokenList: {},
       useNftDetection,
@@ -228,19 +234,6 @@ describe('NFT Items', () => {
     setOpenSeaEnabled: setDisplayNftMediaStub,
     setPreference: setPreferenceStub,
   });
-  const historyPushMock = jest.fn();
-
-  beforeEach(() => {
-    jest
-      .spyOn(reactRouterDom, 'useHistory')
-      .mockImplementation()
-      .mockReturnValue({ push: historyPushMock });
-  });
-
-  afterEach(() => {
-    jest.resetAllMocks();
-    jest.clearAllMocks();
-  });
 
   describe('NFTs Detection Notice', () => {
     it('should render the NFTs Detection Notice when currently selected network is Mainnet and nft detection is set to false and user has nfts', () => {
@@ -248,7 +241,9 @@ describe('NFT Items', () => {
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
       });
-      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).toBeInTheDocument();
     });
 
     it('should render the NFTs Detection Notice when currently selected network is Mainnet and nft detection is set to false and user has no nfts', async () => {
@@ -257,7 +252,9 @@ describe('NFT Items', () => {
         nfts: NFTS,
         useNftDetection: false,
       });
-      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).toBeInTheDocument();
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and nft detection is ON', () => {
       render({
@@ -265,7 +262,9 @@ describe('NFT Items', () => {
         nfts: NFTS,
         useNftDetection: true,
       });
-      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).not.toBeInTheDocument();
     });
     it('should turn on nft detection without going to settings when user clicks "Enable NFT Autodetection" and nft detection is set to false', async () => {
       render({
@@ -273,7 +272,9 @@ describe('NFT Items', () => {
         nfts: NFTS,
         useNftDetection: false,
       });
-      fireEvent.click(screen.queryByText('Enable NFT Autodetection'));
+      fireEvent.click(
+        screen.queryByText(messages.selectNFTPrivacyPreference.message),
+      );
       expect(setUseNftDetectionStub).toHaveBeenCalledTimes(1);
       expect(setDisplayNftMediaStub).toHaveBeenCalledTimes(1);
       expect(setUseNftDetectionStub.mock.calls[0][0]).toStrictEqual(true);
@@ -285,14 +286,18 @@ describe('NFT Items', () => {
         nfts: NFTS,
         useNftDetection: true,
       });
-      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).not.toBeInTheDocument();
     });
     it('should render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but user has dismissed the notice before', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
       });
-      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).toBeInTheDocument();
     });
 
     it('should not render the NFTs Detection Notice when currently selected network is NOT Mainnet', () => {
@@ -302,7 +307,9 @@ describe('NFT Items', () => {
         useNftDetection: false,
         chainId: '0x4',
       });
-      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).not.toBeInTheDocument();
     });
   });
 });

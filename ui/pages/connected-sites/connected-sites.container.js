@@ -80,9 +80,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     // eslint-disable-next-line no-shadow
     requestAccountsAndChainPermissionsWithId,
   } = dispatchProps;
-  const { history } = ownProps;
+  const { navigate } = ownProps;
 
-  const closePopover = () => history.push(mostRecentOverviewPage);
+  const closePopover = () => navigate(mostRecentOverviewPage);
 
   return {
     ...ownProps,
@@ -105,7 +105,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       const id = await requestAccountsAndChainPermissionsWithId(
         tabToConnect.origin,
       );
-      history.push(`${CONNECT_ROUTE}/${id}`);
+      navigate(`${CONNECT_ROUTE}/${id}`);
     },
   };
 };

@@ -1,11 +1,18 @@
 import { useCallback } from 'react';
+import {
+  TransactionEnvelopeType,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import { AlertActionKey } from '../../../components/app/confirm/info/row/constants';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import { useTransactionModalContext } from '../../../contexts/transaction-modal';
+import { useGasFeeModalContext } from '../context/gas-fee-modal';
+import { useConfirmContext } from '../context/confirm';
+import { GasModalType } from '../constants/gas';
 
 const useConfirmationAlertActions = () => {
   const { openBuyCryptoInPdapp } = useRamps();
-  const { openModal } = useTransactionModalContext();
+  const { openGasFeeModal } = useGasFeeModalContext();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const processAction = useCallback(
     (actionKey: string) => {
@@ -14,12 +21,18 @@ const useConfirmationAlertActions = () => {
           openBuyCryptoInPdapp();
           break;
 
-        case AlertActionKey.ShowAdvancedGasFeeModal:
-          openModal('advancedGasFee');
+        case AlertActionKey.ShowAdvancedGasFeeModal: {
+          const advancedModalType =
+            currentConfirmation?.txParams?.type ===
+            TransactionEnvelopeType.legacy
+              ? GasModalType.AdvancedGasPriceModal
+              : GasModalType.AdvancedEIP1559Modal;
+          openGasFeeModal(advancedModalType);
           break;
+        }
 
         case AlertActionKey.ShowGasFeeModal:
-          openModal('editGasFee');
+          openGasFeeModal(GasModalType.EstimatesModal);
           break;
 
         default:
@@ -27,7 +40,7 @@ const useConfirmationAlertActions = () => {
           break;
       }
     },
-    [openBuyCryptoInPdapp],
+    [openBuyCryptoInPdapp, openGasFeeModal, currentConfirmation],
   );
 
   return processAction;

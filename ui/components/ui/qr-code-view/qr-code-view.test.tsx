@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import QRCodeView from './qr-code-view';
@@ -11,7 +11,9 @@ const render = (
   {
     Qr,
     warning,
-  }: { Qr: { message: string; data: string }; warning: null | string } = {
+  }: // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  { Qr: { message: string; data: string }; warning: null | string } = {
     Qr: { data: mockEthAddress, message: '' },
     warning: '',
   },

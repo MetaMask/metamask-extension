@@ -29,6 +29,8 @@ export type Execution = {
 };
 
 export enum ExecutionMode {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   BATCH_DEFAULT_MODE = '0x0100000000000000000000000000000000000000000000000000000000000000',
 }
 
@@ -37,7 +39,7 @@ export const ROOT_AUTHORITY =
 
 export const ANY_BENEFICIARY = '0x0000000000000000000000000000000000000a11';
 
-const PRIMARY_TYPE_DELEGATION = 'Delegation';
+export const PRIMARY_TYPE_DELEGATION = 'Delegation';
 const DOMAIN_NAME = 'DelegationManager';
 
 const ABI_TYPES_CAVEAT = [

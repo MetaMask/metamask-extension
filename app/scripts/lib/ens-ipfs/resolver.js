@@ -36,15 +36,12 @@ export default async function resolveEnsToIpfsContentId({ provider, name }) {
     web3Provider,
   );
 
-  const isEIP1577Compliant = await resolverContract.supportsInterface(
-    '0xbc1c58d1',
-  );
-  const isLegacyResolver = await resolverContract.supportsInterface(
-    '0xd8389dc5',
-  );
+  const isEIP1577Compliant =
+    await resolverContract.supportsInterface('0xbc1c58d1');
+  const isLegacyResolver =
+    await resolverContract.supportsInterface('0xd8389dc5');
   if (isEIP1577Compliant) {
-    const contentLookupResult = await resolverContract.contenthash(hash);
-    const rawContentHash = contentLookupResult[0];
+    const rawContentHash = await resolverContract.contenthash(hash);
     let decodedContentHash = contentHash.decode(rawContentHash);
     const type = contentHash.getCodec(rawContentHash);
 
@@ -57,8 +54,7 @@ export default async function resolveEnsToIpfsContentId({ provider, name }) {
   }
   if (isLegacyResolver) {
     // lookup content id
-    const contentLookupResult = await resolverContract.content(hash);
-    const content = contentLookupResult[0];
+    const content = await resolverContract.content(hash);
     if (hexValueIsEmpty(content)) {
       throw new Error(
         `EnsIpfsResolver - no content ID found for name "${name}"`,

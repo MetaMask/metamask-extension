@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import {
   FontWeight,
   TextColor,
@@ -12,7 +13,7 @@ import { Text } from '../../../../../components/component-library';
 import { BaseFeeTooltip, PriorityFeeTooltip } from './tooltips';
 import StatusSlider from './status-slider';
 
-const NetworkStatistics = () => {
+const NetworkStatistics = ({ useRedesigned }) => {
   const t = useContext(I18nContext);
   const { gasFeeEstimates } = useGasFeeContext();
   const formattedLatestBaseFee = formatGasFeeOrFeeRange(
@@ -29,16 +30,27 @@ const NetworkStatistics = () => {
 
   return (
     <div className="network-statistics">
-      <Text
-        color={TextColor.textAlternative}
-        fontWeight={FontWeight.Bold}
-        marginTop={3}
-        marginBottom={3}
-        variant={TextVariant.bodyXs}
-        as="h6"
-      >
-        {t('networkStatus')}
-      </Text>
+      {useRedesigned ? (
+        <Text
+          variant={TextVariant.bodySm}
+          color={TextColor.textAlternative}
+          marginBottom={3}
+          marginLeft={1}
+        >
+          {t('networkStatus')}
+        </Text>
+      ) : (
+        <Text
+          color={TextColor.textAlternative}
+          fontWeight={FontWeight.Bold}
+          marginTop={3}
+          marginBottom={3}
+          variant={TextVariant.bodyXs}
+          as="h6"
+        >
+          {t('networkStatus')}
+        </Text>
+      )}
       <div className="network-statistics__info">
         {isNullish(formattedLatestBaseFee) ? null : (
           <div
@@ -78,6 +90,10 @@ const NetworkStatistics = () => {
       </div>
     </div>
   );
+};
+
+NetworkStatistics.propTypes = {
+  useRedesigned: PropTypes.bool,
 };
 
 export default NetworkStatistics;

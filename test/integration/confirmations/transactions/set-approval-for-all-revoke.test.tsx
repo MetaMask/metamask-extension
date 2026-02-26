@@ -1,12 +1,9 @@
-import { ApprovalType } from '@metamask/controller-utils';
+import { ApprovalType, ERC721 } from '@metamask/controller-utils';
 import { act, screen, within } from '@testing-library/react';
 import nock from 'nock';
-import { TokenStandard } from '../../../../shared/constants/transaction';
-import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
-import { createTestProviderTools } from '../../../stub/provider';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
 import { getUnapprovedSetApprovalForAllTransaction } from './transactionDataHelpers';
@@ -14,20 +11,9 @@ import { getUnapprovedSetApprovalForAllTransaction } from './transactionDataHelp
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
-}));
-
-jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
-  ...jest.requireActual(
-    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
-  ),
-  useAssetDetails: jest.fn().mockResolvedValue({
-    decimals: '4',
-  }),
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
-const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
@@ -112,6 +98,7 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'FourByte',
   },
+  addKnownMethodData: {},
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -120,34 +107,26 @@ const setupSubmitRequestToBackgroundMocks = (
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
       ...advancedDetailsMockedRequests,
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
-  );
-
-  mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    createMockImplementation({ addKnownMethodData: {} }),
   );
 };
 
 describe('ERC721 setApprovalForAll - Revoke Confirmation', () => {
   beforeAll(() => {
-    const { provider } = createTestProviderTools({
-      networkId: 'sepolia',
-      chainId: '0xaa36a7',
-    });
+    global.ethereumProvider = {
+      request: jest.fn(),
 
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    global.ethereumProvider = provider as any;
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
   });
 
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks({
       getTokenStandardAndDetails: {
-        standard: TokenStandard.ERC721,
+        standard: ERC721,
       },
     });
     const INCREASE_SET_APPROVAL_FOR_ALL_HEX_SIG = '0xa22cb465';
@@ -157,11 +136,6 @@ describe('ERC721 setApprovalForAll - Revoke Confirmation', () => {
       INCREASE_SET_APPROVAL_FOR_ALL_HEX_SIG,
       INCREASE_SET_APPROVAL_FOR_ALL_TEXT_SIG,
     );
-    mockedAssetDetails.mockImplementation(() => ({
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      decimals: '4' as any,
-    }));
   });
 
   afterEach(() => {
@@ -185,9 +159,7 @@ describe('ERC721 setApprovalForAll - Revoke Confirmation', () => {
     });
 
     expect(
-      await screen.findByText(
-        tEn('confirmTitleRevokeApproveTransaction') as string,
-      ),
+      await screen.findByText(tEn('confirmTitleRevokeApproveTransaction')),
     ).toBeInTheDocument();
   });
 
@@ -205,25 +177,20 @@ describe('ERC721 setApprovalForAll - Revoke Confirmation', () => {
       'confirmation__simulation_section',
     );
     expect(simulationSection).toBeInTheDocument();
-    console.log(simulationSection);
 
     const withinSimulationSection = within(simulationSection);
 
     expect(
-      withinSimulationSection.getByText(
-        tEn('simulationDetailsTitle') as string,
-      ),
+      withinSimulationSection.getByText(tEn('simulationDetailsTitle')),
     ).toBeInTheDocument();
     expect(
       withinSimulationSection.getByText(
-        tEn('simulationDetailsRevokeSetApprovalForAllDesc') as string,
+        tEn('simulationDetailsRevokeSetApprovalForAllDesc'),
       ),
     ).toBeInTheDocument();
+    expect(withinSimulationSection.getByText(tEn('nfts'))).toBeInTheDocument();
     expect(
-      withinSimulationSection.getByText(tEn('nfts') as string),
-    ).toBeInTheDocument();
-    expect(
-      withinSimulationSection.getByText(tEn('permissionFrom') as string),
+      withinSimulationSection.getByText(tEn('permissionFrom')),
     ).toBeInTheDocument();
 
     expect(

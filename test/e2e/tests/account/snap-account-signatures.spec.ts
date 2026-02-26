@@ -1,7 +1,9 @@
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -9,6 +11,7 @@ import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import {
   personalSignWithSnapAccount,
   signPermitWithSnapAccount,
@@ -16,10 +19,10 @@ import {
   signTypedDataV4WithSnapAccount,
   signTypedDataWithSnapAccount,
 } from '../../page-objects/flows/sign.flow';
-import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
 describe('Snap Account Signatures', function (this: Suite) {
-  this.timeout(200000); // This test is very long, so we need an unusually high timeout
+  this.timeout(500000); // This test is very long, so we need an unusually high timeout
   // Run sync, async approve, and async reject flows
   // (in Jest we could do this with test.each, but that does not exist here)
 
@@ -30,9 +33,18 @@ describe('Snap Account Signatures', function (this: Suite) {
     it(title, async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: {
+            numberOfTestDapps: 1,
+            customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+          },
           fixtures: new FixtureBuilder().build(),
-          testSpecificMock: mockSimpleKeyringSnap,
+          testSpecificMock: async (mockServer: Mockttp) => {
+            const snapMocks = await mockSnapSimpleKeyringAndSite(
+              mockServer,
+              8081,
+            );
+            return snapMocks;
+          },
           title,
         },
         async ({ driver }: { driver: Driver }) => {
@@ -48,21 +60,24 @@ describe('Snap Account Signatures', function (this: Suite) {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.check_accountLabel('SSK Account');
+          // BUG #37591 - With BIP44 the account mame is not retained.
+          await headerNavbar.checkAccountLabel('Snap Account 1');
 
           // Navigate to experimental settings and disable redesigned signature.
           await headerNavbar.openSettingsPage();
           const settingsPage = new SettingsPage(driver);
-          await settingsPage.check_pageIsLoaded();
+          await settingsPage.checkPageIsLoaded();
           await settingsPage.goToExperimentalSettings();
 
           const experimentalSettings = new ExperimentalSettings(driver);
-          await experimentalSettings.check_pageIsLoaded();
+          await experimentalSettings.checkPageIsLoaded();
 
           // Connect the SSK account
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
-          await testDapp.connectAccount({ publicAddress: newPublicKey });
+          await connectAccountToTestDapp(driver, {
+            publicAddress: newPublicKey,
+          });
 
           // Run all 5 signature types
           await personalSignWithSnapAccount(

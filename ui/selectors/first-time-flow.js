@@ -1,11 +1,32 @@
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
 import {
   DEFAULT_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
+  ONBOARDING_DOWNLOAD_APP_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
 } from '../helpers/constants/routes';
+
+/**
+ * Returns true if the user is on a social login flow
+ *
+ * @param {object} state - MetaMask state tree
+ * @returns {boolean} True if the user is on a social login flow
+ */
+export const getIsSocialLoginFlow = (state) => {
+  if (!getIsSeedlessOnboardingFeatureEnabled()) {
+    return false;
+  }
+
+  const { firstTimeFlowType } = state.metamask;
+  return (
+    firstTimeFlowType === FirstTimeFlowType.socialCreate ||
+    firstTimeFlowType === FirstTimeFlowType.socialImport
+  );
+};
 
 /**
  * When the user unlocks the wallet but onboarding has not fully completed we
@@ -23,6 +44,8 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
     return ONBOARDING_IMPORT_WITH_SRP_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
     return ONBOARDING_METAMETRICS;
+  } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+    return ONBOARDING_DOWNLOAD_APP_ROUTE;
   }
   return DEFAULT_ROUTE;
 }
@@ -41,13 +64,16 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
  */
 export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(state) {
   const { firstTimeFlowType } = state.metamask;
-
   if (firstTimeFlowType === FirstTimeFlowType.create) {
-    return ONBOARDING_CREATE_PASSWORD_ROUTE;
+    return ONBOARDING_COMPLETION_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.import) {
-    return ONBOARDING_IMPORT_WITH_SRP_ROUTE;
+    return ONBOARDING_COMPLETION_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
-    return ONBOARDING_SECURE_YOUR_WALLET_ROUTE;
+    return ONBOARDING_REVIEW_SRP_ROUTE;
+  } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+    return ONBOARDING_COMPLETION_ROUTE;
+  } else if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+    return ONBOARDING_DOWNLOAD_APP_ROUTE;
   }
   return DEFAULT_ROUTE;
 }

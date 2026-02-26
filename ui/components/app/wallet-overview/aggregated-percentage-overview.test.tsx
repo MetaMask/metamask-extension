@@ -36,6 +36,7 @@ jest.mock('../../../selectors', () => ({
   getShouldHideZeroBalanceTokens: jest.fn(),
   getTokensMarketData: jest.fn(),
   getSelectedInternalAccount: jest.fn(),
+  selectAnyEnabledNetworksAreAvailable: jest.fn(),
 }));
 
 jest.mock('../../../../shared/modules/selectors/networks', () => ({
@@ -232,7 +233,9 @@ describe('AggregatedPercentageOverview', () => {
         ],
         totalFiatBalance: 0,
       });
-      const { container } = render(<AggregatedPercentageOverview />);
+      const { container } = render(
+        <AggregatedPercentageOverview trailingChild={() => null} />,
+      );
       expect(container).toMatchSnapshot();
     });
   });
@@ -249,7 +252,7 @@ describe('AggregatedPercentageOverview', () => {
       totalFiatBalance: 0,
     });
 
-    render(<AggregatedPercentageOverview />);
+    render(<AggregatedPercentageOverview trailingChild={() => null} />);
     const percentageElement = screen.getByText('(+0.00%)');
     const numberElement = screen.getByText('+$0.00');
     expect(percentageElement).toBeInTheDocument();
@@ -308,7 +311,7 @@ describe('AggregatedPercentageOverview', () => {
     });
     const expectedAmountChange = '-$0.09';
     const expectedPercentageChange = '(-0.29%)';
-    render(<AggregatedPercentageOverview />);
+    render(<AggregatedPercentageOverview trailingChild={() => null} />);
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();
@@ -368,7 +371,7 @@ describe('AggregatedPercentageOverview', () => {
     mockGetTokensMarketData.mockReturnValue(positiveMarketDataMock);
     const expectedAmountChange = '+$0.09';
     const expectedPercentageChange = '(+0.29%)';
-    render(<AggregatedPercentageOverview />);
+    render(<AggregatedPercentageOverview trailingChild={() => null} />);
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();
@@ -428,7 +431,7 @@ describe('AggregatedPercentageOverview', () => {
     mockGetTokensMarketData.mockReturnValue(mixedMarketDataMock);
     const expectedAmountChange = '-$0.07';
     const expectedPercentageChange = '(-0.23%)';
-    render(<AggregatedPercentageOverview />);
+    render(<AggregatedPercentageOverview trailingChild={() => null} />);
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();
@@ -539,7 +542,7 @@ describe('AggregatedPercentageOverview', () => {
     });
     const expectedAmountChange = '-$0.39';
     const expectedPercentageChange = '(-1.08%)';
-    render(<AggregatedPercentageOverview />);
+    render(<AggregatedPercentageOverview trailingChild={() => null} />);
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();
@@ -637,7 +640,7 @@ describe('AggregatedPercentageOverview', () => {
     });
     const expectedAmountChange = '-$0.01';
     const expectedPercentageChange = '(-0.03%)';
-    render(<AggregatedPercentageOverview />);
+    render(<AggregatedPercentageOverview trailingChild={() => null} />);
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();
@@ -680,7 +683,9 @@ describe('AggregatedMultichainPercentageOverview', () => {
 
   describe('render', () => {
     it('renders correctly with zero values', () => {
-      const { container } = render(<AggregatedMultichainPercentageOverview />);
+      const { container } = render(
+        <AggregatedMultichainPercentageOverview trailingChild={() => null} />,
+      );
       expect(container).toMatchSnapshot();
     });
 
@@ -695,7 +700,9 @@ describe('AggregatedMultichainPercentageOverview', () => {
         P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
       });
 
-      const { container } = render(<AggregatedMultichainPercentageOverview />);
+      const { container } = render(
+        <AggregatedMultichainPercentageOverview trailingChild={() => null} />,
+      );
       expect(container).toMatchSnapshot();
     });
 
@@ -710,13 +717,17 @@ describe('AggregatedMultichainPercentageOverview', () => {
         P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
       });
 
-      const { container } = render(<AggregatedMultichainPercentageOverview />);
+      const { container } = render(
+        <AggregatedMultichainPercentageOverview trailingChild={() => null} />,
+      );
       expect(container).toMatchSnapshot();
     });
   });
 
   it('should display zero percentage and amount when balance is zero', () => {
-    render(<AggregatedMultichainPercentageOverview />);
+    render(
+      <AggregatedMultichainPercentageOverview trailingChild={() => null} />,
+    );
     const percentageElement = screen.getByTestId(
       'aggregated-percentage-change',
     );
@@ -736,7 +747,9 @@ describe('AggregatedMultichainPercentageOverview', () => {
       P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
     });
 
-    render(<AggregatedMultichainPercentageOverview />);
+    render(
+      <AggregatedMultichainPercentageOverview trailingChild={() => null} />,
+    );
     const percentageElement = screen.getByTestId(
       'aggregated-percentage-change',
     );
@@ -756,7 +769,9 @@ describe('AggregatedMultichainPercentageOverview', () => {
       P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
     });
 
-    render(<AggregatedMultichainPercentageOverview />);
+    render(
+      <AggregatedMultichainPercentageOverview trailingChild={() => null} />,
+    );
     const percentageElement = screen.getByTestId(
       'aggregated-percentage-change',
     );
@@ -776,7 +791,12 @@ describe('AggregatedMultichainPercentageOverview', () => {
       P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
     });
 
-    render(<AggregatedMultichainPercentageOverview privacyMode={true} />);
+    render(
+      <AggregatedMultichainPercentageOverview
+        trailingChild={() => null}
+        privacyMode={true}
+      />,
+    );
     const percentageElement = screen.getByTestId(
       'aggregated-percentage-change',
     );
@@ -796,7 +816,9 @@ describe('AggregatedMultichainPercentageOverview', () => {
       P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
     });
 
-    render(<AggregatedMultichainPercentageOverview />);
+    render(
+      <AggregatedMultichainPercentageOverview trailingChild={() => null} />,
+    );
     const percentageElement = screen.getByTestId(
       'aggregated-percentage-change',
     );
@@ -816,7 +838,9 @@ describe('AggregatedMultichainPercentageOverview', () => {
       P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
     });
 
-    render(<AggregatedMultichainPercentageOverview />);
+    render(
+      <AggregatedMultichainPercentageOverview trailingChild={() => null} />,
+    );
     const percentageElement = screen.getByTestId(
       'aggregated-percentage-change',
     );
@@ -826,7 +850,9 @@ describe('AggregatedMultichainPercentageOverview', () => {
   });
 
   it('should use correct color for zero values', () => {
-    render(<AggregatedMultichainPercentageOverview />);
+    render(
+      <AggregatedMultichainPercentageOverview trailingChild={() => null} />,
+    );
     const percentageElement = screen.getByTestId(
       'aggregated-percentage-change',
     );

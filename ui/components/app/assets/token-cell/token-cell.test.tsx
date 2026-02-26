@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
@@ -12,7 +12,8 @@ import {
   getPreferences,
   getCurrencyRates,
   getUseCurrencyRateCheck,
-  useSafeChainsListValidationSelector,
+  getUseSafeChainsListValidation,
+  getEnabledNetworksByNamespace,
 } from '../../../../selectors';
 import {
   getMultichainCurrentChainId,
@@ -46,6 +47,20 @@ jest.mock('../../../../hooks/useIsOriginalTokenSymbol', () => {
     useIsOriginalTokenSymbol: jest.fn(),
   };
 });
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
+
+jest.mock('../../musd', () => ({
+  ClaimBonusBadge: () => null,
+  isEligibleForMerklRewards: jest.fn().mockReturnValue(false),
+  useMerklRewards: jest.fn().mockReturnValue({ hasClaimableReward: false }),
+}));
 
 describe('Token Cell', () => {
   const mockState = {
@@ -114,7 +129,7 @@ describe('Token Cell', () => {
       symbol: 'TEST',
       string: '5.000',
       currentCurrency: 'usd',
-      primary: '5.00',
+      balance: '5',
       image: '',
       chainId: '0x1' as Hex,
       tokenFiatAmount: 5,
@@ -127,6 +142,7 @@ describe('Token Cell', () => {
     token: {
       ...propToken,
     },
+    showMerklBadge: true,
     onClick: jest.fn(),
   };
   const propAnotherToken: Partial<TokenWithFiatAmount> & {
@@ -139,7 +155,7 @@ describe('Token Cell', () => {
     image: '',
     chainId: '0x1' as Hex,
     tokenFiatAmount: 5000000,
-    primary: '5000000',
+    balance: '5000000',
     aggregators: [],
     decimals: 18,
     isNative: false,
@@ -148,6 +164,7 @@ describe('Token Cell', () => {
     token: {
       ...propAnotherToken,
     },
+    showMerklBadge: true,
     onClick: jest.fn(),
   };
   const mockProviderConfig = jest.fn().mockReturnValue({
@@ -184,8 +201,13 @@ describe('Token Cell', () => {
     if (selector === getUseCurrencyRateCheck) {
       return true;
     }
-    if (selector === useSafeChainsListValidationSelector) {
+    if (selector === getUseSafeChainsListValidation) {
       return true;
+    }
+    if (selector === getEnabledNetworksByNamespace) {
+      return {
+        '0x1': true,
+      };
     }
     return undefined;
   });
@@ -235,7 +257,7 @@ describe('Token Cell', () => {
     const amountElement = getByTestId('multichain-token-list-item-value');
 
     expect(amountElement).toBeInTheDocument();
-    expect(amountElement.textContent).toBe('5,000,000 TEST');
+    expect(amountElement.textContent).toBe('5.00M TEST');
   });
 
   it('should show a scam warning if the native ticker does not match the expected ticker', async () => {

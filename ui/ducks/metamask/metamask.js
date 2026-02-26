@@ -24,6 +24,7 @@ import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 
 const initialState = {
   isInitialized: false,
@@ -35,8 +36,6 @@ const initialState = {
   useBlockie: false,
   featureFlags: {},
   currentLocale: '',
-  currentBlockGasLimit: '',
-  currentBlockGasLimitByChainId: {},
   preferences: {
     autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
     showExtensionInFullSizeView: false,
@@ -60,6 +59,7 @@ const initialState = {
     },
   },
   throttledOrigins: {},
+  isSeedlessOnboardingUserAuthenticated: false,
 };
 
 /**
@@ -152,6 +152,14 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
+    case actionConstants.COMPLETE_ONBOARDING_WITH_SIDEPANEL: {
+      return {
+        ...metamaskState,
+        completedOnboarding: true,
+        openedWithSidepanel: true,
+      };
+    }
+
     case actionConstants.RESET_ONBOARDING: {
       return {
         ...metamaskState,
@@ -161,6 +169,9 @@ export default function reduceMetamask(state = initialState, action) {
         isUnlocked: false,
         onboardingTabs: {},
         seedPhraseBackedUp: null,
+        // reset metametrics optin status
+        participateInMetaMetrics: null,
+        metaMetricsId: null,
       };
     }
 
@@ -168,6 +179,20 @@ export default function reduceMetamask(state = initialState, action) {
       return {
         ...metamaskState,
         firstTimeFlowType: action.value,
+      };
+    }
+
+    case actionConstants.RESET_SOCIAL_LOGIN_ONBOARDING: {
+      return {
+        ...metamaskState,
+        userId: undefined,
+        accessToken: undefined,
+        refreshToken: undefined,
+        socialLoginEmail: undefined,
+        authConnection: undefined,
+        nodeAuthTokens: undefined,
+        passwordOutdatedCache: undefined,
+        isSeedlessOnboardingUserAuthenticated: false,
       };
     }
 
@@ -235,6 +260,12 @@ export const getTokens = (state) => {
   return allTokens?.[chainId]?.[selectedAddress] || [];
 };
 
+export const getTokensByChainId = (state, chainId) => {
+  const { allTokens } = state.metamask;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  return allTokens?.[chainId]?.[selectedAddress] || [];
+};
+
 export function getNftsDropdownState(state) {
   return state.metamask.nftsDropdownState;
 }
@@ -277,10 +308,6 @@ export const getNftContracts = (state) => {
   return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
 };
 
-export function getBlockGasLimit(state) {
-  return state.metamask.currentBlockGasLimit;
-}
-
 export function getNativeCurrency(state) {
   return getProviderConfig(state).ticker;
 }
@@ -288,6 +315,10 @@ export function getNativeCurrency(state) {
 export function getConversionRate(state) {
   return state.metamask.currencyRates[getProviderConfig(state).ticker]
     ?.conversionRate;
+}
+
+export function getConversionRateByTicker(state, ticker) {
+  return state.metamask.currencyRates[ticker]?.conversionRate;
 }
 
 export function getCurrencyRates(state) {
@@ -497,12 +528,49 @@ export function getIsInitialized(state) {
   return state.metamask.isInitialized;
 }
 
+/**
+ * This function checks if the wallet is currently being reset.
+ *
+ * @param {object} state
+ * @returns {boolean}
+ */
+export function getIsWalletResetInProgress(state) {
+  return state.metamask.isWalletResetInProgress;
+}
+
 export function getIsUnlocked(state) {
   return state.metamask.isUnlocked;
 }
 
 export function getSeedPhraseBackedUp(state) {
   return state.metamask.seedPhraseBackedUp;
+}
+
+/**
+ * Check whether the first (primary) seed phrase which was created during onboarding, is backed up.
+ *
+ * Returns true if the first (primary) seed phrase is backed up when the user creates a new wallet.
+ *
+ * @param {object} state - the redux state object
+ * @returns {boolean} true if the first (primary) seed phrase is backed up when the user creates a new wallet, or the user has imported/restored a wallet.
+ */
+export function getIsPrimarySeedPhraseBackedUp(state) {
+  // when user imports/restores a seed phrase, we can assume that user has already backed up the seed phrase.
+  if (state.metamask.firstTimeFlowType !== FirstTimeFlowType.create) {
+    return true;
+  }
+
+  return state.metamask.seedPhraseBackedUp;
+}
+
+/**
+ * Retrieves the outdated status of the seedless password.
+ *
+ * @param {object} state - The Redux state object.
+ * @returns {boolean} True if the seedless password is considered outdated, false otherwise.
+ */
+export function getIsSeedlessPasswordOutdated(state) {
+  return Boolean(state.metamask.passwordOutdatedCache?.isExpiredPwd);
 }
 
 /**
@@ -561,6 +629,22 @@ export function doesUserHaveALedgerAccount(state) {
   });
 }
 
+/**
+ * Select the current fiat currency code (ISO 4217 like 'USD').
+ *
+ * @param {object} state - Redux state
+ * @returns {string} The current fiat currency code
+ */
 export function getCurrentCurrency(state) {
   return state.metamask.currentCurrency;
+}
+
+/**
+ * Returns a boolean indicating whether the user opened the extension with the sidepanel.
+ *
+ * @param {object} state - the redux state object
+ * @returns {boolean} true if the user opened the extension with the sidepanel, false otherwise
+ */
+export function getOpenedWithSidepanel(state) {
+  return state.metamask.openedWithSidepanel;
 }

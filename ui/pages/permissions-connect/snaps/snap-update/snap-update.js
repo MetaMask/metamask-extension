@@ -52,12 +52,12 @@ export default function SnapUpdate({
   const snapsMetadata = useSelector(getSnapsMetadata);
 
   const onCancel = useCallback(
-    () => rejectSnapUpdate(request.metadata.id),
+    () => rejectSnapUpdate(request?.metadata?.id),
     [request, rejectSnapUpdate],
   );
 
   const onSubmit = useCallback(
-    () => approveSnapUpdate(request.metadata.id),
+    () => approveSnapUpdate(request?.metadata?.id),
     [request, approveSnapUpdate],
   );
 

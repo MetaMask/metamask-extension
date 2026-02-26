@@ -9,11 +9,15 @@ import {
   permitSignatureMsg,
 } from '../../../../../../../../../test/data/confirmations/typed_sign';
 import { memoizedGetTokenStandardAndDetails } from '../../../../../../utils/token';
+import { enLocale as messages } from '../../../../../../../../../test/lib/i18n-helpers';
 import PermitSimulation from './permit-simulation';
 
 jest.mock('../../../../../../../../store/actions', () => {
   return {
     getTokenStandardAndDetails: jest
+      .fn()
+      .mockResolvedValue({ decimals: 2, standard: 'ERC20' }),
+    getTokenStandardAndDetailsByChain: jest
       .fn()
       .mockResolvedValue({ decimals: 2, standard: 'ERC20' }),
   };
@@ -52,7 +56,9 @@ describe('PermitSimulation', () => {
         mockStore,
       );
 
-      expect(await findByText('Withdraw')).toBeInTheDocument();
+      expect(
+        await findByText(messages.perpsWithdraw.message),
+      ).toBeInTheDocument();
       expect(await findByText('#3606393')).toBeInTheDocument();
       expect(container).toMatchSnapshot();
     });

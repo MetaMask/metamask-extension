@@ -1,4 +1,11 @@
-import { Messenger } from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
+import {
+  ActionConstraint,
+  EventConstraint,
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import AppMetadataController, {
   getDefaultAppMetadataControllerState,
   type AppMetadataControllerOptions,
@@ -12,6 +19,7 @@ describe('AppMetadataController', () => {
         previousAppVersion: '1',
         previousMigrationVersion: 1,
         currentMigrationVersion: 1,
+        firstTimeInfo: undefined,
       };
       withController(
         {
@@ -118,7 +126,126 @@ describe('AppMetadataController', () => {
       );
     });
   });
+
+  describe('maybeRecordFirstTimeInfo', () => {
+    it('records firstTimeInfo when it does not exist', () => {
+      jest.useFakeTimers().setSystemTime(new Date('2024-01-15T12:00:00Z'));
+
+      withController({ state: {} }, ({ controller }) => {
+        controller.maybeRecordFirstTimeInfo('10.0.0');
+
+        expect(controller.state.firstTimeInfo).toStrictEqual({
+          version: '10.0.0',
+          date: Date.now(),
+        });
+      });
+
+      jest.useRealTimers();
+    });
+
+    it('does not overwrite existing firstTimeInfo', () => {
+      const existingFirstTimeInfo = {
+        version: '9.0.0',
+        date: 1600000000000,
+      };
+
+      withController(
+        {
+          state: {
+            firstTimeInfo: existingFirstTimeInfo,
+          },
+        },
+        ({ controller }) => {
+          controller.maybeRecordFirstTimeInfo('10.0.0');
+
+          expect(controller.state.firstTimeInfo).toStrictEqual(
+            existingFirstTimeInfo,
+          );
+        },
+      );
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'includeInDebugSnapshot',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "currentAppVersion": "",
+            "currentMigrationVersion": 0,
+            "firstTimeInfo": undefined,
+            "previousAppVersion": "",
+            "previousMigrationVersion": 0,
+          }
+        `);
+      });
+    });
+
+    it('includes expected state in state logs', () => {
+      withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'includeInStateLogs',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "currentAppVersion": "",
+            "currentMigrationVersion": 0,
+            "firstTimeInfo": undefined,
+            "previousAppVersion": "",
+            "previousMigrationVersion": 0,
+          }
+        `);
+      });
+    });
+
+    it('persists expected state', () => {
+      withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'persist',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "currentAppVersion": "",
+            "currentMigrationVersion": 0,
+            "firstTimeInfo": undefined,
+            "previousAppVersion": "",
+            "previousMigrationVersion": 0,
+          }
+        `);
+      });
+    });
+
+    it('exposes expected state to UI', () => {
+      withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'usedInUi',
+          ),
+        ).toMatchInlineSnapshot(`{}`);
+      });
+    });
+  });
 });
+
+type RootMessenger = Messenger<
+  MockAnyNamespace,
+  ActionConstraint,
+  EventConstraint
+>;
 
 type WithControllerOptions = Partial<AppMetadataControllerOptions>;
 
@@ -137,12 +264,18 @@ function withController<ReturnValue>(
 ): ReturnValue {
   const [options = {}, fn] = args.length === 2 ? args : [{}, args[0]];
 
-  const messenger = new Messenger<never, never>();
+  const messenger: RootMessenger = new Messenger({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
 
-  const appMetadataControllerMessenger = messenger.getRestricted({
-    name: 'AppMetadataController',
-    allowedActions: [],
-    allowedEvents: [],
+  const appMetadataControllerMessenger = new Messenger<
+    'AppMetadataController',
+    never,
+    never,
+    RootMessenger
+  >({
+    namespace: 'AppMetadataController',
+    parent: messenger,
   });
 
   return fn({

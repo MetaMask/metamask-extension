@@ -21,6 +21,10 @@ import {
   SOLANA_WALLET_SNAP_ID,
 } from '../../../shared/lib/accounts/solana-wallet-snap';
 import {
+  TRON_WALLET_NAME,
+  TRON_WALLET_SNAP_ID,
+} from '../../../shared/lib/accounts/tron-wallet-snap';
+import {
   createSnapAccount,
   getNextAvailableAccountName,
   handleSnapRequest,
@@ -29,7 +33,10 @@ import {
 export enum WalletClientType {
   Bitcoin = 'bitcoin-wallet-snap',
   Solana = 'solana-wallet-snap',
+  Tron = 'tron-wallet-snap',
 }
+
+export const EVM_WALLET_TYPE = 'evm' as const;
 
 const WALLET_SNAP_MAP: Record<WalletClientType, { id: SnapId; name: string }> =
   {
@@ -40,6 +47,10 @@ const WALLET_SNAP_MAP: Record<WalletClientType, { id: SnapId; name: string }> =
     [WalletClientType.Solana]: {
       id: SOLANA_WALLET_SNAP_ID,
       name: SOLANA_WALLET_NAME,
+    },
+    [WalletClientType.Tron]: {
+      id: TRON_WALLET_SNAP_ID,
+      name: TRON_WALLET_NAME,
     },
   };
 
@@ -97,19 +108,8 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
     options: CreateAccountSnapOptions,
     internalOptions?: SnapKeyringInternalOptions,
   ): Promise<KeyringAccount> {
-    const snapOptions =
-      this.#snapId === BITCOIN_WALLET_SNAP_ID
-        ? { ...options, synchronize: true }
-        : options;
-
     // This will trigger the Snap account creation flow (+ account renaming)
-    const account = await createSnapAccount(
-      this.#snapId,
-      snapOptions,
-      internalOptions,
-    );
-
-    return account;
+    return await createSnapAccount(this.#snapId, options, internalOptions);
   }
 
   async getNextAvailableAccountName(

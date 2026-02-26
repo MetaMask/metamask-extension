@@ -1,4 +1,5 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import {
   TransactionStatus,
   TransactionType,
@@ -6,7 +7,7 @@ import {
 
 import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { fireEvent } from '../../../../../../test/jest';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
 import { ConfirmNav } from './nav';
@@ -16,13 +17,13 @@ jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
 }));
 
-const mockHistoryReplace = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: mockHistoryReplace,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const render = () => {
   const store = configureStore(
@@ -94,7 +95,7 @@ describe('ConfirmNav', () => {
     const { getAllByRole, getByText } = render();
     const buttons = getAllByRole('button');
     expect(buttons).toHaveLength(3);
-    expect(getByText('Reject all')).toBeInTheDocument();
+    expect(getByText(messages.rejectAll.message)).toBeInTheDocument();
   });
 
   it('renders button to navigate to previous or next confirmation', () => {
@@ -109,7 +110,10 @@ describe('ConfirmNav', () => {
     const { getByLabelText } = render();
     const nextButton = getByLabelText('Next Confirmation');
     fireEvent.click(nextButton);
-    expect(mockHistoryReplace).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      '/confirm-transaction/testApprovalId2/signature-request',
+      { replace: true },
+    );
   });
 
   it('invoke action rejectAllApprovals when "Reject all" button is clicked', () => {
@@ -120,7 +124,7 @@ describe('ConfirmNav', () => {
 
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => ({} as any));
+      .mockImplementation(() => ({}) as any);
     fireEvent.click(rejectAllButton);
     expect(rejectSpy).toHaveBeenCalledTimes(1);
   });

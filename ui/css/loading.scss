@@ -1,3 +1,5 @@
+@use "design-system";
+
 .loading-logo {
   width: 10rem;
   height: 10rem;
@@ -10,4 +12,38 @@
   height: 2rem;
   align-self: center;
   margin-top: 1rem;
+}
+
+.loading-timeout-message {
+  align-self: center;
+  color: var(--color-text-alternative);
+  margin-top: 4rem;
+  max-width: design-system.$screen-sm-max;
+  text-align: center;
+
+  &::before {
+    direction: "__MSG_@@bidi_dir__";
+    content: "";
+    display: block;
+    white-space: pre-line;
+    animation: showTimeoutContent 20s step-end forwards;
+  }
+}
+
+@keyframes showTimeoutContent {
+  to {
+    // `\A` is a newline character.
+    content: "__MSG_CSS_loadingTakingTooLongMessageText__\A__MSG_CSS_loadingTakingTooLongActionText__";
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .loading-timeout-message {
+    // the design system uses dark grey300 for `--color-text-alternative` in
+    // dark mode, but the design system only switches to dark mode once the
+    // `[data-theme='dark']` attribute is set... which is too late for the
+    // loading screen. So we set the color here to ensure it is correct in dark
+    // mode.
+    color: var(--brand-colors-grey-grey300);
+  }
 }

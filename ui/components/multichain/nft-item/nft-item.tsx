@@ -91,6 +91,14 @@ export const NftItem = ({
           alt={alt}
           display={Display.Block}
           justifyContent={JustifyContent.center}
+          onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+            // Keeping failed-src in DOM for production debugging and testing purposes
+            e.currentTarget.setAttribute(
+              'data-failed-src',
+              e.currentTarget.src,
+            );
+            e.currentTarget.removeAttribute('src');
+          }}
         ></Box>
         {privacyMode && (
           <Icon

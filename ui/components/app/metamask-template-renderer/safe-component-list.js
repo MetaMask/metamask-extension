@@ -6,7 +6,7 @@ import {
   FormTextField,
   Text,
 } from '../../component-library';
-import { AccountListItem } from '../../multichain';
+import { AccountListItem } from '../../multichain/account-list-item';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
@@ -28,7 +28,6 @@ import {
   ConfirmInfoRowValueDouble,
 } from '../confirm/info/row';
 import MetaMaskTranslation from '../metamask-translation';
-import NetworkDisplay from '../network-display';
 import { Copyable } from '../snaps/copyable';
 import { SnapDelineator } from '../snaps/snap-delineator';
 import { SnapUIAddress } from '../snaps/snap-ui-address';
@@ -52,7 +51,7 @@ import { SnapUISelector } from '../snaps/snap-ui-selector';
 import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
 import { SnapUIAssetSelector } from '../snaps/snap-ui-asset-selector';
 import { SnapUIAccountSelector } from '../snaps/snap-ui-account-selector';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+import { SnapUIDateTimePicker } from '../snaps/snap-ui-date-time-picker';
 import { SnapAccountErrorMessage } from '../../../pages/confirmations/components/snap-account-error-message';
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
 import { CreateSnapAccount } from '../../../pages/create-snap-account';
@@ -61,10 +60,9 @@ import {
   SnapAccountCard,
 } from '../../../pages/remove-snap-account';
 import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
-import { CreateNamedSnapAccount } from '../../multichain/create-named-snap-account';
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
 import { Skeleton } from '../../component-library/skeleton';
-///: END:ONLY_INCLUDE_IF
+import { DefiReferralConsent } from '../../../pages/core/defi-referral-consent';
 
 export const safeComponentList = {
   a: 'a',
@@ -81,12 +79,12 @@ export const safeComponentList = {
   ConfirmInfoRowAddress,
   ConfirmInfoRowValueDouble,
   Copyable,
+  DefiReferralConsent,
   DefinitionList,
   div: 'div',
   FormTextField,
   i: 'i',
   MetaMaskTranslation,
-  NetworkDisplay,
   OriginPill,
   p: 'p',
   Popover,
@@ -113,6 +111,7 @@ export const safeComponentList = {
   SnapUISelector,
   SnapUITooltip,
   SnapUIAssetSelector,
+  SnapUIDateTimePicker,
   span: 'span',
   Spinner,
   Skeleton,
@@ -124,8 +123,6 @@ export const safeComponentList = {
   Typography,
   SmartTransactionStatusPage,
   UrlIcon,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  CreateNamedSnapAccount,
   CreateSnapAccount,
   RemoveSnapAccount,
   SnapAccountCard,
@@ -133,5 +130,4 @@ export const safeComponentList = {
   SnapAccountRedirect,
   SnapAccountSuccessMessage,
   SnapAuthorshipHeader,
-  ///: END:ONLY_INCLUDE_IF
 };

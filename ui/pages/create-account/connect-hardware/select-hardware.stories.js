@@ -1,7 +1,11 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';
 import { LedgerTransportTypes } from '../../../../shared/constants/hardware-wallets';
 import SelectHardware from './select-hardware';
+
+const mockTrackEvent = (event, properties) => {
+  console.log('Mock track event:', { event, properties });
+  return Promise.resolve();
+};
 
 export default {
   title: 'Pages/CreateAccount/ConnectHardware/SelectHardware',
@@ -12,10 +16,13 @@ export const DefaultStory = () => {
     <SelectHardware
       onCancel={() => null}
       browserSupported
-      connectToHardwareWallet={(selectedDevice) =>
-        action(`Continue connect to ${selectedDevice}`)()
-      }
+      connectToHardwareWallet={() => {
+        /* no-op */
+      }}
       ledgerTransportType={LedgerTransportTypes.live}
+      context={{
+        trackEvent: mockTrackEvent,
+      }}
     />
   );
 };
@@ -29,6 +36,9 @@ export const BrowserNotSupported = () => {
       browserSupported={false}
       connectToHardwareWallet={() => undefined}
       ledgerTransportType={LedgerTransportTypes.live}
+      context={{
+        trackEvent: mockTrackEvent,
+      }}
     />
   );
 };

@@ -4,16 +4,22 @@ import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
+import {
+  TrustSignalDisplayState,
+  useTrustSignals,
+} from '../../../hooks/useTrustSignals';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
+import mockLegacySwapTxGroup from '../../../../test/data/swap/mock-legacy-swap-transaction-group.json';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
+import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
 import { getTokens } from '../../../ducks/metamask/metamask';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import {
@@ -25,10 +31,12 @@ import {
   getShouldShowFiat,
   getTokenExchangeRates,
   getSelectedInternalAccount,
+  getMarketData,
 } from '../../../selectors';
 import { getNftContractsByAddressByChain } from '../../../selectors/nft';
 import { abortTransactionSigning } from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
 import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
@@ -67,19 +75,20 @@ jest.mock('react-redux', () => {
   };
 });
 
-jest.mock('../../../hooks/bridge/useBridgeTxHistoryData', () => {
-  return {
-    ...jest.requireActual('../../../hooks/bridge/useBridgeTxHistoryData'),
-    useBridgeTxHistoryData: jest.fn(() => ({
-      bridgeTxHistoryItem: undefined,
-      isBridgeComplete: false,
-      showBridgeTxDetails: false,
-    })),
-  };
-});
-
 jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
+}));
+
+jest.mock('../../../hooks/useTrustSignals', () => ({
+  useTrustSignals: jest.fn(),
+  TrustSignalDisplayState: {
+    Malicious: 'malicious',
+    Petname: 'petname',
+    Verified: 'verified',
+    Warning: 'warning',
+    Recognized: 'recognized',
+    Unknown: 'unknown',
+  },
 }));
 
 setBackgroundConnection({
@@ -101,6 +110,8 @@ jest.mock('../../../store/actions.ts', () => ({
 
 const mockStore = configureStore();
 
+const useTrustSignalsMock = jest.mocked(useTrustSignals);
+
 const generateUseSelectorRouter = (opts) => (selector) => {
   if (selector === getConversionRate) {
     return 1;
@@ -111,15 +122,17 @@ const generateUseSelectorRouter = (opts) => (selector) => {
   } else if (selector === getTokenExchangeRates) {
     return opts.tokenExchangeRates ?? {};
   } else if (selector === getCurrentNetwork) {
-    return { nickname: 'Ethereum Mainnet' };
+    return { nickname: 'Ethereum' };
   } else if (selector === getPreferences) {
     return opts.preferences ?? {};
   } else if (selector === getShouldShowFiat) {
     return opts.shouldShowFiat ?? false;
   } else if (selector === getTokens) {
     return opts.tokens ?? [];
-  } else if (selector === selectBridgeHistoryForAccount) {
+  } else if (selector === selectBridgeHistoryForAccountGroup) {
     return opts.bridgeHistory ?? {};
+  } else if (selector === getAccountTree) {
+    return opts.accountTree ?? { wallets: {} };
   } else if (selector === getSelectedInternalAccount) {
     return opts.selectedInternalAccount ?? { address: '0xDefaultAddress' };
   } else if (selector === getNames) {
@@ -140,6 +153,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
         },
       },
     };
+  } else if (selector === getMarketData) {
+    return opts.marketData ?? {};
   }
   return undefined;
 };
@@ -148,6 +163,13 @@ describe('TransactionListItem', () => {
   beforeAll(() => {
     useGasFeeEstimates.mockImplementation(
       () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
+    );
+
+    useTrustSignalsMock.mockImplementation((requests) =>
+      requests.map(() => ({
+        state: TrustSignalDisplayState.Unknown,
+        label: null,
+      })),
     );
   });
 
@@ -165,8 +187,14 @@ describe('TransactionListItem', () => {
 
       const store = mockStore(mockState);
       const mockTrackEvent = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: mockTrackEvent,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
       const { queryByTestId } = renderWithProvider(
-        <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
           <TransactionListItem transactionGroup={transactionGroup} />
         </MetaMetricsContext.Provider>,
         store,
@@ -226,11 +254,15 @@ describe('TransactionListItem', () => {
       const { getByText, queryByText } = renderWithProvider(
         <TransactionListItem transactionGroup={transactionGroup} />,
       );
-      expect(queryByText('Cancel transaction')).not.toBeInTheDocument();
+      expect(
+        queryByText(messages.cancelPopoverTitle.message),
+      ).not.toBeInTheDocument();
 
-      const cancelButton = getByText('Cancel');
+      const cancelButton = getByText(messages.cancel.message);
       fireEvent.click(cancelButton);
-      expect(getByText('Cancel transaction')).toBeInTheDocument();
+      expect(
+        getByText(messages.cancelPopoverTitle.message),
+      ).toBeInTheDocument();
     });
   });
 
@@ -285,5 +317,56 @@ describe('TransactionListItem', () => {
     expect(abortTransactionSigning).toHaveBeenCalledWith(
       transactionGroupSigning.primaryTransaction.id,
     );
+  });
+
+  it('should render pending legacy swap tx summary', () => {
+    useSelector.mockImplementation(generateUseSelectorRouter({}));
+    const { queryByTestId, getByText } = renderWithProvider(
+      <TransactionListItem
+        transactionGroup={{
+          ...mockLegacySwapTxGroup,
+          primaryTransaction: {
+            ...mockLegacySwapTxGroup.primaryTransaction,
+            status: TransactionStatus.approved,
+          },
+        }}
+      />,
+    );
+
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Swap USDC to UNISigningCancel',
+    );
+    expect(getByText(messages.signing.message)).toBeInTheDocument();
+  });
+
+  it('should render confirmed legacy swap tx summary', () => {
+    useSelector.mockImplementation(generateUseSelectorRouter({}));
+    const { queryByTestId } = renderWithProvider(
+      <TransactionListItem transactionGroup={mockLegacySwapTxGroup} />,
+    );
+
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Swap USDC to UNIConfirmed-2 USDC',
+    );
+  });
+
+  it('should render failed legacy swap tx summary', () => {
+    useSelector.mockImplementation(generateUseSelectorRouter({}));
+    const { queryByTestId, getByText } = renderWithProvider(
+      <TransactionListItem
+        transactionGroup={{
+          ...mockLegacySwapTxGroup,
+          primaryTransaction: {
+            ...mockLegacySwapTxGroup.primaryTransaction,
+            status: TransactionStatus.failed,
+          },
+        }}
+      />,
+    );
+
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Swap USDC to UNIFailed-2 USDC',
+    );
+    expect(getByText(messages.failed.message)).toBeInTheDocument();
   });
 });

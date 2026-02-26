@@ -22,7 +22,13 @@
     "resolveJsonModule": true,
     // sets output file location for the `incremental` setting
     "tsBuildInfoFile": "node_modules/.cache/typescript/tsconfig.tsbuildinfo",
-    "useUnknownInCatchVariables": true
+    "useUnknownInCatchVariables": true,
+    // baseUrl is required for path mappings
+    "baseUrl": ".",
+    // Path mappings for module resolution
+    "paths": {
+      "@metamask/perps-controller": ["ui/__mocks__/perps/perps-controller"]
+    }
   },
   "exclude": [
     // don't typecheck stories, as they don't yet pass the type checker.
@@ -31,14 +37,5 @@
   ],
   // this should match our node version in .nvmrc
   "extends": "@tsconfig/node22/tsconfig.json",
-  "include": [
-    "app",
-    "development",
-    "offscreen",
-    "shared",
-    "test",
-    "types",
-    "ui",
-    "*.ts"
-  ]
+  "include": ["app", "development", "shared", "test", "types", "ui", "*.ts"]
 }

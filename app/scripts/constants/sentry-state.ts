@@ -1,9 +1,28 @@
 import { AllProperties } from '../../../shared/modules/object.utils';
 
+type SentryMaskValue =
+  | boolean
+  | { [key: string | symbol]: SentryMaskValue }
+  | SentryMaskValue[];
+
+type StrictSentryMaskObject = {
+  [key: string]: SentryMaskValue;
+  [key: symbol]: never;
+};
+
+type SentryBackgroundStateMask = Record<string, StrictSentryMaskObject>;
+
+type SentryUiStateMask = StrictSentryMaskObject & {
+  metamask: StrictSentryMaskObject;
+};
+
 // This describes the subset of background controller state attached to errors
 // sent to Sentry These properties have some potential to be useful for
 // debugging, and they do not contain any identifiable information.
-export const SENTRY_BACKGROUND_STATE = {
+export const SENTRY_BACKGROUND_STATE: SentryBackgroundStateMask = {
+  AccountTreeController: {
+    accountTree: false,
+  },
   AccountsController: {
     internalAccounts: {
       accounts: false,
@@ -11,10 +30,7 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   AccountTracker: {
-    accounts: false,
     accountsByChainId: false,
-    currentBlockGasLimit: true,
-    currentBlockGasLimitByChainId: true,
   },
   AddressBookController: {
     addressBook: false,
@@ -29,13 +45,12 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   AuthenticationController: {
     isSignedIn: false,
-    sessionData: {
-      token: false,
-      profile: true,
-    },
+    srpSessionData: false,
   },
   NetworkOrderController: {
     orderedNetworkList: [],
+  },
+  NetworkEnablementController: {
     enabledNetworkMap: {},
   },
   AccountOrderController: {
@@ -60,30 +75,44 @@ export const SENTRY_BACKGROUND_STATE = {
     onboardingDate: false,
     currentExtensionPopupId: false,
     defaultHomeActiveTabName: true,
+    enableEnforcedSimulations: true,
+    enableEnforcedSimulationsForTransactions: false,
     fullScreenGasPollTokens: true,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     hadAdvancedGasFeesSetPriorToMigration92_3: true,
+    canTrackWalletFundsObtained: true,
     isRampCardClosed: true,
     nftsDetectionNoticeDismissed: true,
     nftsDropdownState: true,
     notificationGasPollTokens: true,
     outdatedBrowserWarningLastShown: true,
     popupGasPollTokens: true,
-    qrHardware: true,
+    activeQrCodeScanRequest: true,
     recoveryPhraseReminderHasBeenShown: true,
     recoveryPhraseReminderLastShown: true,
     showBetaHeader: true,
+    productTour: true,
     showPermissionsTour: true,
     showNetworkBanner: true,
     showAccountBanner: true,
-    switchedNetworkDetails: false,
-    switchedNetworkNeverShowMessage: false,
     showTestnetMessageInDropdown: true,
+    sidePanelGasPollTokens: true,
     surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,
     throttledOrigins: false,
     timeoutMinutes: true,
     trezorModel: true,
+    pendingExtensionVersion: true,
+    updateModalLastDismissedAt: true,
+    lastUpdatedAt: true,
+    shieldSubscriptionError: true,
+    shieldEndingToastLastClickedOrClosed: true,
+    shieldPausedToastLastClickedOrClosed: true,
+    storageWriteErrorType: true,
+    isWalletResetInProgress: false,
+    pna25Acknowledged: false,
   },
   MultichainBalancesController: {
     balances: false,
@@ -91,12 +120,14 @@ export const SENTRY_BACKGROUND_STATE = {
   MultichainAssetsController: {
     accountsAssets: false,
     assetsMetadata: false,
+    allIgnoredAssets: false,
   },
   MultichainAssetsRatesController: {
     assetsRates: false,
   },
   BridgeController: {
     assetExchangeRates: false,
+    minimumBalanceForRentExemptionInLamports: false,
     quoteRequest: {
       walletAddress: false,
       srcTokenAddress: true,
@@ -116,8 +147,11 @@ export const SENTRY_BACKGROUND_STATE = {
   BridgeStatusController: {
     txHistory: false,
   },
+  ConnectivityController: {
+    connectivityStatus: true,
+  },
   CronjobController: {
-    jobs: false,
+    events: false,
   },
   CurrencyController: {
     currentCurrency: true,
@@ -163,6 +197,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
+    tracesBeforeMetricsOptIn: false,
     fragments: false,
     metaMetricsId: true,
     participateInMetaMetrics: true,
@@ -235,12 +270,14 @@ export const SENTRY_BACKGROUND_STATE = {
       showNativeTokenAsMainBalance: true,
       showConfirmationAdvancedDetails: true,
       privacyMode: false,
+      avatarType: true,
     },
     useExternalServices: false,
     selectedAddress: false,
     snapRegistryList: false,
     theme: true,
     signatureSecurityAlertResponses: false,
+    addressSecurityAlertResponses: false,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
     useBlockie: true,
@@ -255,6 +292,15 @@ export const SENTRY_BACKGROUND_STATE = {
   RemoteFeatureFlagController: {
     remoteFeatureFlags: true,
     cacheTimestamp: false,
+  },
+  RewardsController: {
+    rewardsActiveAccount: false,
+    rewardsAccounts: false,
+    rewardsSubscriptions: false,
+    rewardsSeasons: false,
+    rewardsSeasonStatuses: false,
+    rewardsSubscriptionTokens: false,
+    rewardsPointsEstimateHistory: false,
   },
   NotificationServicesPushController: {
     fcmToken: false,
@@ -297,6 +343,7 @@ export const SENTRY_BACKGROUND_STATE = {
     lastUpdated: false,
     databaseUnavailable: false,
   },
+  StaticAssetsController: {},
   SubjectMetadataController: {
     subjectMetadata: false,
   },
@@ -330,11 +377,9 @@ export const SENTRY_BACKGROUND_STATE = {
       tradeTxId: false,
     },
   },
-  TokenDetectionController: {
-    [AllProperties]: false,
-  },
+  // TokenDetectionController has no public controller state.
+  TokenDetectionController: {},
   TokenListController: {
-    preventPollingOnNetworkRestart: true,
     tokensChainsCache: {
       [AllProperties]: false,
     },
@@ -361,6 +406,9 @@ export const SENTRY_BACKGROUND_STATE = {
     lastFetchedBlockNumbers: false,
     methodData: false,
   },
+  TransactionPayController: {
+    transactionData: false,
+  },
   TxController: {
     transactions: false,
   },
@@ -371,29 +419,29 @@ export const SENTRY_BACKGROUND_STATE = {
     isBackupAndSyncEnabled: true,
     isBackupAndSyncUpdateLoading: false,
     isAccountSyncingEnabled: true,
-    hasAccountSyncingSyncedAtLeastOnce: false,
-    isAccountSyncingReadyToBeDispatched: false,
+    isContactSyncingEnabled: true,
   },
 };
 
-const flattenedBackgroundStateMask = Object.values(
-  SENTRY_BACKGROUND_STATE,
-).reduce((partialBackgroundState, controllerState: object) => {
-  return {
-    ...partialBackgroundState,
-    ...controllerState,
-  };
-}, {});
+const flattenedBackgroundStateMask: StrictSentryMaskObject = {};
+
+for (const controllerState of Object.values(SENTRY_BACKGROUND_STATE)) {
+  // Copy only string keys to avoid leaking symbol-only wildcard masks into
+  // flattened UI masks. This isn't allowed by the types, but has happened
+  // before.
+  for (const [key, value] of Object.entries(controllerState)) {
+    flattenedBackgroundStateMask[key] = value;
+  }
+}
 
 // This describes the subset of Redux state attached to errors sent to Sentry
 // These properties have some potential to be useful for debugging, and they do
 // not contain any identifiable information.
-export const SENTRY_UI_STATE = {
+export const SENTRY_UI_STATE: SentryUiStateMask = {
   gas: true,
   history: true,
   appState: {
     customNonceValue: true,
-    isAccountMenuOpen: true,
     isNetworkMenuOpen: true,
     nextNonce: true,
     pendingTokens: false,
@@ -407,12 +455,8 @@ export const SENTRY_UI_STATE = {
     isInitialized: true,
     useSafeChainsListValidation: true,
     watchEthereumAccountEnabled: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
-    ///: END:ONLY_INCLUDE_IF
-    switchedNetworkDetails: false,
-    switchedNetworkNeverShowMessage: false,
     newPrivacyPolicyToastClickedOrClosed: false,
     newPrivacyPolicyToastShownDate: false,
   },

@@ -1,10 +1,11 @@
 import { act } from '@testing-library/react-hooks';
-import { renderHookWithProvider } from '../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import mockState from '../../test/data/mock-state.json';
 import { useShouldShowSpeedUp } from './useShouldShowSpeedUp';
 
 describe('useShouldShowSpeedUp', () => {
-  const currentChainId = '0x1';
+  // mockState uses 'goerli' as selectedNetworkClientId, which has chainId '0x5'
+  const currentChainId = '0x5';
 
   beforeEach(() => {
     jest.useFakeTimers();

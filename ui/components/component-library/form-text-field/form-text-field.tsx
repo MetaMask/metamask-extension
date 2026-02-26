@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import {
   Display,
@@ -21,6 +22,8 @@ import {
 } from './form-text-field.types';
 
 export const FormTextField: FormTextFieldComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       autoComplete,
@@ -77,6 +80,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
         {label && (
           <Label
             htmlFor={id}
+            marginBottom={1}
             {...labelProps}
             className={classnames(
               'mm-form-text-field__label',
@@ -127,7 +131,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
               helpTextProps?.className ?? '',
             )}
           >
-            {helpText}
+            {helpText as PropTypes.ReactNodeLike}
           </HelpText>
         )}
       </Box>

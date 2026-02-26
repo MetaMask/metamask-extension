@@ -1,0 +1,8 @@
+@use "design-system";
+
+.send-asset {
+  &:hover {
+    background-color: var(--color-background-hover) !important;
+    cursor: pointer;
+  }
+}

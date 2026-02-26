@@ -1,8 +1,9 @@
 import React from 'react';
-import { RequestStatus } from '@metamask/bridge-controller';
+import { QuoteResponse, RequestStatus } from '@metamask/bridge-controller';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
@@ -12,7 +13,7 @@ describe('BridgeQuotesModal', () => {
   it('should render the modal', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             '0x1': { isActiveSrc: true, isActiveDest: false },
             '0xa': { isActiveSrc: true, isActiveDest: false },
@@ -21,14 +22,16 @@ describe('BridgeQuotesModal', () => {
         },
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesErc20Erc20,
-        getQuotesLastFetched: Date.now(),
+        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
         quoteRequest: {
           srcChainId: 10,
           destChainId: 137,
           srcTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-          destTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          destTokenAddress: toChecksumHexAddress(
+            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          ),
           srcTokenAmount: '14000000',
         },
       },
@@ -36,13 +39,15 @@ describe('BridgeQuotesModal', () => {
         marketData: {
           '0xa': {
             '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
-              currency: 'usd',
+              currency: 'ETH',
               price: 1,
             },
           },
           '0x89': {
-            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359': {
-              currency: 'usd',
+            [toChecksumHexAddress(
+              '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+            )]: {
+              currency: 'POL',
               price: 0.99,
             },
           },

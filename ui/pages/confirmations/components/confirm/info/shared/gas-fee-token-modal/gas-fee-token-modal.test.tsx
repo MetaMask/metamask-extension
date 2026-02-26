@@ -3,6 +3,8 @@ import React from 'react';
 import { GasFeeToken } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
 import { act } from '@testing-library/react';
+
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 
@@ -13,7 +15,6 @@ import {
   updateSelectedGasFeeToken,
 } from '../../../../../../../store/controller-actions/transaction-controller';
 import { GAS_FEE_TOKEN_MOCK as GAS_FEE_TOKEN_MOCK_BASE } from '../../../../../../../../test/data/confirmations/gas';
-import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
@@ -62,6 +63,32 @@ function getState({
         preferences: {
           showFiatInTestnets: true,
         },
+        internalAccounts: {
+          accounts: {
+            'mock-account-id': {
+              address: '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b',
+              id: 'mock-account-id',
+              metadata: {
+                importTime: 0,
+                name: 'Test Account',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [],
+              type: 'eip155:eoa',
+            },
+          },
+          selectedAccount: 'mock-account-id',
+        },
+        accountsByChainId: {
+          '0x5': {
+            '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b': {
+              balance: '0xde0b6b3a7640000',
+            },
+          },
+        },
       },
     },
   );
@@ -93,6 +120,7 @@ describe('GasFeeTokenModal', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
+      pending: false,
     });
   });
 
@@ -185,6 +213,7 @@ describe('GasFeeTokenModal', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: false,
       isSupported: true,
+      pending: false,
     });
 
     const result = renderWithConfirmContextProvider(

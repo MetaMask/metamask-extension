@@ -1,6 +1,13 @@
 import { ObservableStore } from '@metamask/obs-store';
-import { BaseController, Messenger } from '@metamask/base-controller';
+import { BaseController } from '@metamask/base-controller';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import ComposableObservableStore from './ComposableObservableStore';
+
+const getMessenger = () => {
+  return new Messenger({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
+};
 
 class ExampleController extends BaseController {
   static defaultState = {
@@ -9,8 +16,8 @@ class ExampleController extends BaseController {
   };
 
   static metadata = {
-    bar: { persist: true, anonymous: true },
-    baz: { persist: false, anonymous: true },
+    bar: { persist: true, includeInDebugSnapshot: true },
+    baz: { persist: false, includeInDebugSnapshot: true },
   };
 
   constructor({ messenger }) {
@@ -27,11 +34,27 @@ class ExampleController extends BaseController {
       state.bar = contents;
     });
   }
+
+  updateBaz(contents) {
+    this.update((state) => {
+      state.baz = contents;
+    });
+  }
+
+  replaceState(state) {
+    this.update(() => state);
+  }
+
+  updatePropertyMissingFromMetadata(contents) {
+    this.update((state) => {
+      state.missing = contents;
+    });
+  }
 }
 
 describe('ComposableObservableStore', () => {
   it('should register initial state', () => {
-    const messenger = new Messenger();
+    const messenger = getMessenger();
     const store = new ComposableObservableStore({
       controllerMessenger: messenger,
       state: 'state',
@@ -40,7 +63,7 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should register initial structure', () => {
-    const messenger = new Messenger();
+    const messenger = getMessenger();
     const testStore = new ObservableStore();
     const store = new ComposableObservableStore({
       config: { TestStore: testStore },
@@ -51,7 +74,7 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should update structure with observable store', () => {
-    const messenger = new Messenger();
+    const messenger = getMessenger();
     const testStore = new ObservableStore();
     const store = new ComposableObservableStore({
       controllerMessenger: messenger,
@@ -62,7 +85,7 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should update structure with BaseController-based controller', () => {
-    const messenger = new Messenger();
+    const messenger = getMessenger();
     const exampleController = new ExampleController({
       messenger,
     });
@@ -77,7 +100,7 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should update structure with all three types of stores', () => {
-    const messenger = new Messenger();
+    const messenger = getMessenger();
     const exampleStore = new ObservableStore();
     const exampleController = new ExampleController({
       messenger,
@@ -98,7 +121,7 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should initialize state with all three types of stores', () => {
-    const messenger = new Messenger();
+    const messenger = getMessenger();
     const exampleStore = new ObservableStore();
     const exampleController = new ExampleController({
       messenger,
@@ -121,7 +144,7 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should initialize falsy state', () => {
-    const messenger = new Messenger();
+    const messenger = getMessenger();
     const exampleStore = new ObservableStore();
     exampleStore.putState(false);
     const store = new ComposableObservableStore({
@@ -137,32 +160,213 @@ describe('ComposableObservableStore', () => {
     });
   });
 
-  it('should strip non-persisted state from initial state with all three types of stores', () => {
-    const messenger = new Messenger();
-    const exampleStore = new ObservableStore();
-    const exampleController = new ExampleController({
-      messenger,
-    });
-    exampleStore.putState('state');
-    exampleController.updateBar('state');
-    const store = new ComposableObservableStore({
-      controllerMessenger: messenger,
-      persist: true,
+  describe('not persist', () => {
+    it('should emit state change when any state changes', () => {
+      const messenger = getMessenger();
+      const exampleController = new ExampleController({
+        messenger,
+      });
+      const store = new ComposableObservableStore({
+        controllerMessenger: messenger,
+      });
+      store.updateStructure({
+        Example: exampleController,
+      });
+      const onStateChange = jest.fn();
+      store.subscribe(onStateChange);
+
+      exampleController.updateBar('update');
+      exampleController.updateBaz('update');
+
+      expect(onStateChange).toHaveBeenCalledTimes(2);
+      expect(onStateChange).toHaveBeenNthCalledWith(1, {
+        Example: { bar: 'update', baz: 'baz' },
+      });
+      expect(onStateChange).toHaveBeenNthCalledWith(2, {
+        Example: { bar: 'update', baz: 'update' },
+      });
     });
 
-    store.updateStructure({
-      Example: exampleController,
-      Store: exampleStore,
+    it('includes patches in state change event', () => {
+      const messenger = getMessenger();
+      const exampleController = new ExampleController({
+        messenger,
+      });
+      const store = new ComposableObservableStore({
+        controllerMessenger: messenger,
+      });
+      store.updateStructure({
+        Example: exampleController,
+      });
+      const onStateChange = jest.fn();
+      store.on('stateChange', onStateChange);
+
+      exampleController.updateBar('update');
+
+      expect(onStateChange).toHaveBeenCalledWith({
+        controllerKey: 'Example',
+        newState: { bar: 'update', baz: 'baz' },
+        oldState: { bar: 'bar', baz: 'baz' },
+        patches: [
+          {
+            op: 'replace',
+            path: ['bar'],
+            value: 'update',
+          },
+        ],
+      });
+    });
+  });
+
+  describe('persisted', () => {
+    it('should emit state change with just persisted state', () => {
+      const messenger = getMessenger();
+      const exampleController = new ExampleController({
+        messenger,
+      });
+      const store = new ComposableObservableStore({
+        controllerMessenger: messenger,
+        persist: true,
+      });
+      store.updateStructure({
+        Example: exampleController,
+      });
+      const onStateChange = jest.fn();
+      store.subscribe(onStateChange);
+
+      exampleController.updateBar('update');
+
+      expect(onStateChange).toHaveBeenCalledWith({
+        Example: { bar: 'update' },
+      });
     });
 
-    expect(store.getState()).toStrictEqual({
-      Example: { bar: 'state' },
-      Store: 'state',
+    it('should emit state change when there is a complete state replacement', () => {
+      const messenger = getMessenger();
+      const exampleController = new ExampleController({
+        messenger,
+      });
+      const store = new ComposableObservableStore({
+        controllerMessenger: messenger,
+        persist: true,
+      });
+      store.updateStructure({
+        Example: exampleController,
+      });
+      const onStateChange = jest.fn();
+      store.subscribe(onStateChange);
+
+      exampleController.replaceState({ baz: 'update', bar: 'update' });
+
+      expect(onStateChange).toHaveBeenCalledWith({
+        Example: { bar: 'update' },
+      });
+    });
+
+    it('should emit state change when there is an update to a property missing from metadata', () => {
+      const messenger = getMessenger();
+      const exampleController = new ExampleController({
+        messenger,
+      });
+      const store = new ComposableObservableStore({
+        controllerMessenger: messenger,
+        persist: true,
+      });
+      store.updateStructure({
+        Example: exampleController,
+      });
+      const onStateChange = jest.fn();
+      store.subscribe(onStateChange);
+
+      exampleController.updatePropertyMissingFromMetadata('update');
+
+      expect(onStateChange).toHaveBeenCalledWith({
+        Example: { bar: 'bar' },
+      });
+    });
+
+    it('should not emit state change when only non-persisted state changes', () => {
+      const messenger = getMessenger();
+      const exampleController = new ExampleController({
+        messenger,
+      });
+      const store = new ComposableObservableStore({
+        controllerMessenger: messenger,
+        persist: true,
+      });
+      store.updateStructure({
+        Example: exampleController,
+      });
+      const onStateChange = jest.fn();
+      store.subscribe(onStateChange);
+
+      exampleController.updateBaz('update');
+
+      expect(onStateChange).not.toHaveBeenCalled();
+    });
+
+    it('should strip non-persisted state from initial state with all three types of stores', () => {
+      const messenger = getMessenger();
+      const exampleStore = new ObservableStore();
+      const exampleController = new ExampleController({
+        messenger,
+      });
+      exampleStore.putState('state');
+      exampleController.updateBar('state');
+      const store = new ComposableObservableStore({
+        controllerMessenger: messenger,
+        persist: true,
+      });
+
+      store.updateStructure({
+        Example: exampleController,
+        Store: exampleStore,
+      });
+
+      expect(store.getState()).toStrictEqual({
+        Example: { bar: 'state' },
+        Store: 'state',
+      });
+    });
+
+    it('includes patches in state change event', () => {
+      const messenger = getMessenger();
+
+      const exampleController = new ExampleController({
+        messenger,
+      });
+
+      const store = new ComposableObservableStore({
+        controllerMessenger: messenger,
+        persist: true,
+      });
+
+      store.updateStructure({
+        Example: exampleController,
+      });
+
+      const onStateChange = jest.fn();
+      store.on('stateChange', onStateChange);
+
+      exampleController.updateBar('update');
+
+      expect(onStateChange).toHaveBeenCalledWith({
+        controllerKey: 'Example',
+        newState: { bar: 'update' },
+        oldState: { bar: 'bar' },
+        patches: [
+          {
+            op: 'replace',
+            path: ['bar'],
+            value: 'update',
+          },
+        ],
+      });
     });
   });
 
   it('should return flattened state', () => {
-    const messenger = new Messenger();
+    const messenger = getMessenger();
     const fooStore = new ObservableStore({ foo: 'foo' });
     const barController = new ExampleController({
       messenger,
@@ -186,7 +390,7 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should return empty flattened state when not configured', () => {
-    const messenger = new Messenger();
+    const messenger = getMessenger();
     const store = new ComposableObservableStore({
       controllerMessenger: messenger,
     });
@@ -194,7 +398,7 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should throw if the controller messenger is omitted and the config includes a BaseControllerV2 controller', () => {
-    const messenger = new Messenger();
+    const messenger = getMessenger();
     const exampleController = new ExampleController({
       messenger,
     });
@@ -209,7 +413,7 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should throw if the controller messenger is omitted and updateStructure called with a BaseControllerV2 controller', () => {
-    const messenger = new Messenger();
+    const messenger = getMessenger();
     const exampleController = new ExampleController({
       messenger,
     });
@@ -220,7 +424,7 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should throw if initialized with undefined config entry', () => {
-    const messenger = new Messenger();
+    const messenger = getMessenger();
     expect(
       () =>
         new ComposableObservableStore({

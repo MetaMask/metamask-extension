@@ -21,9 +21,11 @@ export const ConfirmInfoSection = ({
   return (
     <Box
       data-testid={dataTestId}
-      backgroundColor={BackgroundColor.backgroundDefault}
-      borderRadius={BorderRadius.MD}
-      padding={noPadding ? 0 : 2}
+      backgroundColor={BackgroundColor.backgroundSection}
+      borderRadius={BorderRadius.LG}
+      paddingInline={noPadding ? 0 : 2}
+      paddingTop={noPadding ? 0 : 1}
+      paddingBottom={noPadding ? 0 : 1}
       marginBottom={4}
       style={style}
     >

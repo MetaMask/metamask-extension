@@ -1,27 +1,33 @@
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { largeDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../helpers';
-import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { largeDelayMs, veryLargeDelayMs, withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
-  acccount1,
+  account1,
   assertSignedMessageIsValid,
   clickConfirmButton,
   connectSolanaTestDapp,
-  DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
 } from './testHelpers';
 
 describe('Solana Wallet Standard - Sign Message', function () {
   describe('Sign a message', function () {
     it('Should sign a message', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
           const messageToSign = 'Hello, world!';
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await connectSolanaTestDapp(driver, testDapp);
+          await testDapp.checkPageIsLoaded();
 
           const signMessageTest = await testDapp.getSignMessageTest();
           await signMessageTest.setMessage(messageToSign);
@@ -40,7 +46,7 @@ describe('Solana Wallet Standard - Sign Message', function () {
           assertSignedMessageIsValid({
             signedMessageBase64: signedMessage[0],
             originalMessageString: messageToSign,
-            publicKeyBase58: acccount1,
+            publicKeyBase58: account1,
           });
         },
       );

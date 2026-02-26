@@ -1,10 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { type BigNumber } from 'bignumber.js';
 import {
+  Button,
   ButtonLink,
-  ButtonPrimary,
-  ButtonPrimarySize,
+  ButtonSize,
+  ButtonVariant,
   Text,
 } from '../../../components/component-library';
 import {
@@ -27,23 +27,22 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
-import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
-import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
-import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
-import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { Row } from '../layout';
+import {
+  ConnectionStatus,
+  useHardwareWalletActions,
+  useHardwareWalletConfig,
+  useHardwareWalletState,
+} from '../../../contexts/hardware-wallets';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
   needsDestinationAddress = false,
-  nativeAssetBalance,
-  srcTokenBalance,
+  onOpenRecipientModal,
 }: {
-  nativeAssetBalance?: BigNumber;
-  srcTokenBalance?: BigNumber;
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
+  onOpenRecipientModal?: () => void;
 }) => {
   const t = useI18nContext();
 
@@ -58,39 +57,71 @@ export const BridgeCTAButton = ({
   );
   const { submitBridgeTransaction } = useSubmitBridgeTransaction();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   const {
     isNoQuotesAvailable,
-    isInsufficientBalance: isInsufficientBalance_,
-    isInsufficientGasBalance: isInsufficientGasBalance_,
-    isInsufficientGasForQuote: isInsufficientGasForQuote_,
+    isInsufficientBalance,
+    isInsufficientGasBalance,
+    isInsufficientGasForQuote,
+    isTxAlertPresent,
+    isTxAlertLoading,
   } = useSelector(getValidationErrors);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
-  const isTxSubmittable = useIsTxSubmittable(
-    nativeAssetBalance,
-    srcTokenBalance,
+  const isTxSubmittable = useIsTxSubmittable();
+
+  const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
+  const { ensureDeviceReady } = useHardwareWalletActions();
+  const { connectionState } = useHardwareWalletState();
+
+  const hardwareWalletName = useMemo(
+    () => (walletType ? t(walletType) : undefined),
+    [t, walletType],
   );
-  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
-  const { quoteRequestProperties } = useRequestProperties();
-  const requestMetadataProperties = useRequestMetadataProperties();
-  const tradeProperties = useTradeProperties();
 
-  const isInsufficientBalance = isInsufficientBalance_(srcTokenBalance);
-
-  const isInsufficientGasBalance =
-    isInsufficientGasBalance_(nativeAssetBalance);
-  const isInsufficientGasForQuote =
-    isInsufficientGasForQuote_(nativeAssetBalance);
+  const isHardwareWalletReady = useMemo(() => {
+    if (!isHardwareWalletAccount) {
+      return true;
+    }
+    return [ConnectionStatus.Connected, ConnectionStatus.Ready].includes(
+      connectionState.status,
+    );
+  }, [connectionState.status, isHardwareWalletAccount]);
 
   const label = useMemo(() => {
     if (wasTxDeclined) {
-      return 'youDeclinedTheTransaction';
+      return { key: 'youDeclinedTheTransaction' };
     }
 
-    if (isQuoteExpired) {
-      return 'bridgeQuoteExpired';
+    if (!fromAmount) {
+      if (!toToken) {
+        return {
+          key: needsDestinationAddress
+            ? 'bridgeSelectTokenAmountAndAccount'
+            : 'bridgeSelectTokenAndAmount',
+        };
+      }
+      return {
+        key: needsDestinationAddress
+          ? 'bridgeSelectDestinationAccount'
+          : 'bridgeEnterAmount',
+      };
+    }
+
+    if (needsDestinationAddress) {
+      return { key: 'bridgeSelectDestinationAccount' };
+    }
+
+    if (isQuoteExpired && !isLoading) {
+      return { key: 'bridgeQuoteExpired' };
     }
 
     if (isLoading && !isTxSubmittable && !activeQuote) {
@@ -102,31 +133,23 @@ export const BridgeCTAButton = ({
     }
 
     if (isInsufficientBalance || isInsufficientGasForQuote) {
-      return 'alertReasonInsufficientBalance';
+      return { key: 'alertReasonInsufficientBalance' };
     }
 
-    if (!fromAmount) {
-      if (!toToken) {
-        return needsDestinationAddress
-          ? 'bridgeSelectTokenAmountAndAccount'
-          : 'bridgeSelectTokenAndAmount';
+    if (isTxSubmittable || isTxAlertPresent || isTxAlertLoading) {
+      if (isHardwareWalletAccount && !isHardwareWalletReady) {
+        return hardwareWalletName
+          ? { key: 'connectHardwareDevice', args: [hardwareWalletName] }
+          : { key: 'connect' };
       }
-      return needsDestinationAddress
-        ? 'bridgeEnterAmountAndSelectAccount'
-        : 'bridgeEnterAmount';
+      return { key: 'swap' };
     }
 
-    if (needsDestinationAddress) {
-      return 'bridgeSelectDestinationAccount';
-    }
-
-    if (isTxSubmittable) {
-      return 'submit';
-    }
-
-    return 'swapSelectToken';
+    return { key: 'swapSelectToken' };
   }, [
     isLoading,
+    isTxAlertPresent,
+    isTxAlertLoading,
     fromAmount,
     toToken,
     isTxSubmittable,
@@ -138,6 +161,9 @@ export const BridgeCTAButton = ({
     needsDestinationAddress,
     activeQuote,
     isNoQuotesAvailable,
+    isHardwareWalletAccount,
+    isHardwareWalletReady,
+    hardwareWalletName,
   ]);
 
   // Label for the secondary button that re-starts quote fetching
@@ -148,49 +174,52 @@ export const BridgeCTAButton = ({
     return undefined;
   }, [wasTxDeclined, isQuoteExpired]);
 
-  return activeQuote && !secondaryButtonLabel ? (
-    <ButtonPrimary
+  return (activeQuote || needsDestinationAddress) && !secondaryButtonLabel ? (
+    <Button
       width={BlockSize.Full}
-      size={activeQuote ? ButtonPrimarySize.Md : ButtonPrimarySize.Lg}
-      variant={TextVariant.bodyMd}
+      size={ButtonSize.Lg}
+      variant={ButtonVariant.Primary}
       data-testid="bridge-cta-button"
       style={{ boxShadow: 'none' }}
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={async () => {
+        if (needsDestinationAddress && onOpenRecipientModal) {
+          onOpenRecipientModal();
+          return;
+        }
+
         if (activeQuote && isTxSubmittable && !isSubmitting) {
+          // Set submitting state before async checks to prevent duplicate clicks.
+          setIsSubmitting(true);
+
           try {
+            // Verify hardware wallet device is ready before submitting.
+            if (isHardwareWalletAccount) {
+              const isDeviceReady = await ensureDeviceReady();
+              if (!isDeviceReady) {
+                return;
+              }
+            }
+
             // We don't need to worry about setting to false if the tx submission succeeds
             // because we route immediately to Activity list page
-            setIsSubmitting(true);
-
-            quoteRequestProperties &&
-              requestMetadataProperties &&
-              tradeProperties &&
-              trackCrossChainSwapsEvent({
-                event: MetaMetricsEventName.ActionSubmitted,
-                properties: {
-                  ...quoteRequestProperties,
-                  ...requestMetadataProperties,
-                  ...tradeProperties,
-                },
-              });
             await submitBridgeTransaction(activeQuote);
           } finally {
-            setIsSubmitting(false);
+            if (mountedRef.current) {
+              setIsSubmitting(false);
+            }
           }
         }
       }}
       loading={isSubmitting}
       disabled={
-        !isTxSubmittable ||
-        isQuoteExpired ||
-        isSubmitting ||
-        needsDestinationAddress
+        (!needsDestinationAddress && (!isTxSubmittable || isQuoteExpired)) ||
+        isSubmitting
       }
     >
-      {label ? t(label) : ''}
-    </ButtonPrimary>
+      {label?.key ? t(label.key, label.args) : ''}
+    </Button>
   ) : (
     <Row
       alignItems={AlignItems.center}
@@ -200,9 +229,9 @@ export const BridgeCTAButton = ({
       <Text
         variant={TextVariant.bodyMd}
         textAlign={TextAlign.Center}
-        color={TextColor.textAlternativeSoft}
+        color={TextColor.textAlternative}
       >
-        {label ? t(label) : ''}
+        {label?.key ? t(label.key, label.args) : ''}
       </Text>
       {secondaryButtonLabel && (
         <ButtonLink

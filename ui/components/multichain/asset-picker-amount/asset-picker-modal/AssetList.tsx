@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import classnames from 'classnames';
 import {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
-import type { CaipChainId } from '@metamask/utils';
+import { isStrictHexString, type CaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
@@ -16,7 +16,7 @@ import {
   Display,
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
-import { TokenListItem } from '../..';
+import { TokenListItem } from '../../token-list-item';
 import LoadingScreen from '../../../ui/loading-screen';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -28,6 +28,11 @@ import {
   getMultichainSelectedAccountCachedBalance,
 } from '../../../../selectors/multichain';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import {
+  type SafeChain,
+  useSafeChains,
+} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import AssetComponent from './Asset';
 import { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
 
@@ -55,8 +60,11 @@ type AssetListProps = {
     React.ComponentProps<typeof TokenListItem>,
     'isTitleNetworkName' | 'isTitleHidden'
   >;
+  isDestinationToken?: boolean;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AssetList({
   handleAssetChange,
   asset,
@@ -65,6 +73,7 @@ export default function AssetList({
   network,
   isTokenListLoading = false,
   assetItemProps = {},
+  isDestinationToken = false,
 }: AssetListProps) {
   const t = useI18nContext();
 
@@ -91,6 +100,21 @@ export default function AssetList({
   const [secondaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
     currency: nativeCurrency,
   });
+
+  const { safeChains } = useSafeChains();
+  const safeChainDetails: SafeChain | undefined = useMemo(
+    () =>
+      safeChains?.find((chain) => {
+        const decimalChainId =
+          isStrictHexString(chainId) && parseInt(hexToDecimal(chainId), 10);
+        if (typeof decimalChainId === 'number') {
+          return chain.chainId === decimalChainId.toString();
+        }
+        return undefined;
+      }),
+    [safeChains, chainId],
+  );
+  const nativeCurrencySymbol = safeChainDetails?.nativeCurrency?.symbol;
 
   return (
     <Box className="tokens-main-view-modal">
@@ -156,14 +180,15 @@ export default function AssetList({
                   // Only use this component for the native token of the active network
                   <TokenListItem
                     chainId={token.chainId}
-                    title={token.symbol}
+                    title={token.name ?? token.symbol}
                     primary={primaryCurrencyValue}
                     tokenSymbol={token.symbol}
                     secondary={secondaryCurrencyValue}
                     tokenImage={token.image}
-                    isPrimaryTokenSymbolHidden
                     tokenChainImage={getImageForChainId(token.chainId)}
+                    nativeCurrencySymbol={nativeCurrencySymbol}
                     {...assetItemProps}
+                    isTitleNetworkName={false}
                   />
                 ) : (
                   <AssetComponent
@@ -171,7 +196,11 @@ export default function AssetList({
                     tooltipText={
                       isDisabled ? 'swapTokenNotAvailable' : undefined
                     }
-                    assetItemProps={assetItemProps}
+                    assetItemProps={{
+                      ...assetItemProps,
+                      nativeCurrencySymbol,
+                    }}
+                    isDestinationToken={isDestinationToken}
                   />
                 )}
               </Box>

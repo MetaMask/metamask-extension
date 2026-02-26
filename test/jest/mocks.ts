@@ -5,24 +5,20 @@ import {
   BtcAccountType,
   isEvmAccountType,
   EthScope,
-  BtcScope,
   SolAccountType,
-  SolScope,
   SolMethod,
+  TrxAccountType,
+  TrxMethod,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { keyringTypeToName } from '@metamask/accounts-controller';
 import { Json } from '@metamask/utils';
-import {
-  DraftTransaction,
-  draftTransactionInitialState,
-  initialState,
-} from '../../ui/ducks/send';
 import { MetaMaskReduxState } from '../../ui/store/store';
 import mockState from '../data/mock-state.json';
 import { isBtcMainnetAddress } from '../../shared/lib/multichain/accounts';
+import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 
 export type MockState = typeof mockState;
 
@@ -135,58 +131,8 @@ export const createGasFeeEstimatesForFeeMarket = () => {
   };
 };
 
-export const INITIAL_SEND_STATE_FOR_EXISTING_DRAFT = {
-  ...initialState,
-  currentTransactionUUID: 'test-uuid',
-  draftTransactions: {
-    'test-uuid': {
-      ...draftTransactionInitialState,
-    },
-  },
-};
-
-export const getInitialSendStateWithExistingTxState = (
-  draftTxState: DraftTransaction & { test: string },
-) => ({
-  ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-  draftTransactions: {
-    'test-uuid': {
-      ...draftTransactionInitialState,
-      ...draftTxState,
-      amount: {
-        ...draftTransactionInitialState.amount,
-        ...draftTxState.amount,
-      },
-      sendAsset: {
-        ...draftTransactionInitialState.sendAsset,
-        ...draftTxState.sendAsset,
-      },
-      gas: {
-        ...draftTransactionInitialState.gas,
-        ...draftTxState.gas,
-      },
-      isSwapQuoteLoading: false,
-      quotes: draftTxState.quotes ?? null,
-      receiveAsset: {
-        ...draftTransactionInitialState.receiveAsset,
-        ...(draftTxState.receiveAsset ?? draftTxState.sendAsset),
-      },
-      swapQuotesError: null,
-      swapQuotesLatestRequestTimestamp: null,
-      timeToFetchQuotes: null,
-      recipient: {
-        ...draftTransactionInitialState.recipient,
-        ...draftTxState.recipient,
-      },
-      history: draftTxState.history ?? [],
-      userInputHexData: draftTxState.userInputHexData ?? null,
-      // Use this key if you want to console.log inside the send.js file.
-      test: draftTxState.test ?? 'yo',
-    },
-  },
-});
-
 export function createMockInternalAccount({
+  id,
   name = 'Account 1',
   address = MOCK_DEFAULT_ADDRESS,
   type = EthAccountType.Eoa,
@@ -199,6 +145,7 @@ export function createMockInternalAccount({
   },
   options = undefined,
 }: {
+  id?: string;
   name?: string;
   address?: string;
   type?: string;
@@ -239,13 +186,29 @@ export function createMockInternalAccount({
       // If no address is given, we fallback to testnet
       const isMainnet = Boolean(address) && isBtcMainnetAddress(address);
 
-      scopes = [isMainnet ? BtcScope.Mainnet : BtcScope.Testnet];
-      methods = [BtcMethod.SendBitcoin];
+      scopes = [
+        isMainnet
+          ? MultichainNetworks.BITCOIN
+          : MultichainNetworks.BITCOIN_TESTNET,
+      ];
+      methods = Object.values(BtcMethod);
       break;
     }
     case SolAccountType.DataAccount:
-      scopes = [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet];
+      scopes = [
+        MultichainNetworks.SOLANA,
+        MultichainNetworks.SOLANA_TESTNET,
+        MultichainNetworks.SOLANA_DEVNET,
+      ];
       methods = [SolMethod.SendAndConfirmTransaction];
+      break;
+    case TrxAccountType.Eoa:
+      scopes = [
+        MultichainNetworks.TRON,
+        MultichainNetworks.TRON_SHASTA,
+        MultichainNetworks.TRON_NILE,
+      ];
+      methods = [TrxMethod.SignMessageV2];
       break;
     default:
       throw new Error(`Unknown account type: ${type}`);
@@ -253,7 +216,7 @@ export function createMockInternalAccount({
 
   return {
     address,
-    id: uuidv4(),
+    id: id ?? uuidv4(),
     metadata: {
       name: name ?? `${keyringTypeToName(keyringType)} 1`,
       importTime: Date.now(),

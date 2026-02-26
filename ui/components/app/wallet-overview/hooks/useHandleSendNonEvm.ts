@@ -1,12 +1,9 @@
 import { SnapId } from '@metamask/snaps-sdk';
 import { parseCaipAssetType, CaipAssetType } from '@metamask/utils';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import {
-  sendMultichainTransaction,
-  setDefaultHomeActiveTabName,
-} from '../../../../store/actions';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { sendMultichainTransaction } from '../../../../store/actions';
 import {
   getMemoizedUnapprovedTemplatedConfirmations,
   getSelectedInternalAccount,
@@ -30,13 +27,7 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
   );
 
   const account = useSelector(getSelectedInternalAccount);
-  const history = useHistory();
-  const dispatch = useDispatch();
-
-  const currentActivityTabName = useSelector(
-    // @ts-expect-error TODO: fix state type
-    (state) => state.metamask.defaultHomeActiveTabName,
-  );
+  const navigate = useNavigate();
 
   const unapprovedTemplatedConfirmations = useSelector(
     getMemoizedUnapprovedTemplatedConfirmations,
@@ -55,9 +46,9 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
     );
 
     if (templatedSnapApproval) {
-      history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
+      navigate(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
     }
-  }, [unapprovedTemplatedConfirmations, history, account]);
+  }, [unapprovedTemplatedConfirmations, navigate, account]);
 
   return async () => {
     // Non-EVM (Snap) Send flow
@@ -90,17 +81,13 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
     const { chainId } = parseCaipAssetType(assetTypeToUse);
 
     try {
-      // FIXME: We switch the tab before starting the send flow (we
-      // faced some inconsistencies when changing it after).
-      await dispatch(setDefaultHomeActiveTabName('activity'));
       await sendMultichainTransaction(account.metadata.snap.id, {
         account: account.id,
         scope: chainId,
         assetType: assetTypeToUse,
       });
-    } catch (error) {
-      // Restore the previous tab in case of any error (see FIXME comment above).
-      await dispatch(setDefaultHomeActiveTabName(currentActivityTabName));
+    } catch {
+      // Navigation is handled by confirmation.js
     }
   };
 };

@@ -1,6 +1,10 @@
-import FixtureBuilder from '../../../fixture-builder';
-import { WINDOW_TITLES, withFixtures } from '../../../helpers';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
+import { WINDOW_TITLES } from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import TestDapp from '../../../page-objects/pages/test-dapp';
+import { Anvil } from '../../../seeder/anvil';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { Driver } from '../../../webdriver/driver';
@@ -9,59 +13,42 @@ import {
   assertChangedSpendingCap,
   editSpendingCap,
   mocked4BytesIncreaseAllowance,
-  openDAppWithContract,
   TestSuiteArguments,
 } from './shared';
 
 describe('Confirmation Redesign ERC20 Increase Allowance', function () {
   describe('Submit an increase allowance transaction', function () {
-    it('Sends a type 0 transaction (Legacy) with a small spending cap', async function () {
+    it('submits an increase allowance transaction with a small spending cap', async function () {
       await withFixtures(
-        generateFixtureOptionsForLegacyTx(this),
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        generateFixtureOptions(this),
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
             '3',
             contractRegistry,
+            localNodes,
           );
         },
       );
     });
 
-    it('Sends a type 2 transaction (EIP1559) with a small spending cap', async function () {
+    it('submits an increase allowance transaction with a large spending cap', async function () {
       await withFixtures(
-        generateFixtureOptionsForEIP1559Tx(this),
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await createAndAssertIncreaseAllowanceSubmission(
-            driver,
-            '3',
-            contractRegistry,
-          );
-        },
-      );
-    });
-
-    it('Sends a type 0 transaction (Legacy) with a large spending cap', async function () {
-      await withFixtures(
-        generateFixtureOptionsForLegacyTx(this),
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        generateFixtureOptions(this),
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
             '3000',
             contractRegistry,
-          );
-        },
-      );
-    });
-
-    it('Sends a type 2 transaction (EIP1559) with a large spending cap', async function () {
-      await withFixtures(
-        generateFixtureOptionsForEIP1559Tx(this),
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await createAndAssertIncreaseAllowanceSubmission(
-            driver,
-            '3000',
-            contractRegistry,
+            localNodes,
           );
         },
       );
@@ -69,24 +56,9 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
   });
 });
 
-function generateFixtureOptionsForLegacyTx(mochaContext: Mocha.Context) {
+function generateFixtureOptions(mochaContext: Mocha.Context) {
   return {
-    dapp: true,
-    fixtures: new FixtureBuilder()
-      .withPermissionControllerConnectedToTestDapp()
-      .build(),
-    localNodeOptions: {
-      hardfork: 'muirGlacier',
-    },
-    smartContract: SMART_CONTRACTS.HST,
-    testSpecificMock: mocks,
-    title: mochaContext.test?.fullTitle(),
-  };
-}
-
-function generateFixtureOptionsForEIP1559Tx(mochaContext: Mocha.Context) {
-  return {
-    dapp: true,
+    dappOptions: { numberOfTestDapps: 1 },
     fixtures: new FixtureBuilder()
       .withPermissionControllerConnectedToTestDapp()
       .build(),
@@ -100,8 +72,15 @@ async function createAndAssertIncreaseAllowanceSubmission(
   driver: Driver,
   newSpendingCap: string,
   contractRegistry?: ContractAddressRegistry,
+  localNodes?: Anvil[],
 ) {
-  await openDAppWithContract(driver, contractRegistry, SMART_CONTRACTS.HST);
+  const contractAddress = await contractRegistry?.getContractAddress(
+    SMART_CONTRACTS.HST,
+  );
+  await loginWithBalanceValidation(driver, localNodes?.[0]);
+  const testDapp = new TestDapp(driver);
+  await testDapp.openTestDappPage({ contractAddress });
+  await testDapp.checkPageIsLoaded();
 
   await createERC20IncreaseAllowanceTransaction(driver);
 

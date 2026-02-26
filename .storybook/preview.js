@@ -4,24 +4,22 @@
 Instead, use export const parameters = {}; and export const decorators = []; in your .storybook/preview.js. Addon authors similarly should use such an export in a preview entry file (see Preview entries).
   * */
 import React, { useEffect } from 'react';
-import { action } from '@storybook/addon-actions';
 import { Provider } from 'react-redux';
 import configureStore from '../ui/store/store';
 import '../ui/css/index.scss';
 import localeList from '../app/_locales/index.json';
 import * as allLocales from './locales';
 import { I18nProvider, LegacyI18nProvider } from './i18n';
-import MetaMetricsProviderStorybook from './metametrics';
 import testData from './test-data.js';
-import { Router } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { setBackgroundConnection } from '../ui/store/background-connection';
-import { metamaskStorybookTheme } from './metamask-storybook-theme';
-import { DocsContainer } from '@storybook/addon-docs';
-import { themes } from '@storybook/theming';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AlertMetricsProvider } from '../ui/components/app/alert-system/contexts/alertMetricsContext';
 import './index.css';
+
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+});
 
 // eslint-disable-next-line
 /* @ts-expect-error: Avoids error from window property not existing */
@@ -34,31 +32,6 @@ export const parameters = {
       { name: 'default', value: 'var(--color-background-default)' },
       { name: 'alternative', value: 'var(--color-background-alternative)' },
     ],
-  },
-  docs: {
-    container: (context) => {
-      const theme = context?.globals?.theme || 'both';
-      const systemPrefersDark = window.matchMedia(
-        '(prefers-color-scheme: dark)',
-      ).matches;
-
-      const isDark =
-        theme === 'dark' || (theme === 'both' && systemPrefersDark);
-
-      const props = {
-        ...context,
-        theme: isDark
-          ? { ...themes.dark, ...metamaskStorybookTheme }
-          : { ...themes.light, ...metamaskStorybookTheme },
-        'data-theme': isDark ? 'dark' : 'light',
-      };
-
-      return (
-        <div data-theme={isDark ? 'dark' : 'light'}>
-          <DocsContainer {...props} />
-        </div>
-      );
-    },
   },
   options: {
     storySort: {
@@ -109,13 +82,12 @@ export const getNewState = (state, props) => {
 };
 
 export const store = configureStore(testData);
-const history = createBrowserHistory();
 const proxiedBackground = new Proxy(
   {},
   {
     get(_, method) {
       return function () {
-        action(`Background call: ${method}`)();
+        // No-op function for background calls in Storybook
         return new Promise(() => {});
       };
     },
@@ -147,10 +119,17 @@ const metamaskDecorator = (story, context) => {
     }
   }, [isDark]);
 
+  // Get initial entries from story parameters, default to ['/'] if not provided
+  const initialEntries = context.parameters?.initialEntries || ['/'];
+  const path = context.parameters?.path || '*';
+
+  // Wrap story in a component to defer execution until route matches
+  const StoryComponent = () => story();
+
   return (
     <Provider store={store}>
-      <MemoryRouter>
-        <MetaMetricsProviderStorybook>
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={initialEntries}>
           <AlertMetricsProvider
             metrics={{
               trackAlertActionClicked: () => undefined,
@@ -163,11 +142,15 @@ const metamaskDecorator = (story, context) => {
               current={current}
               en={allLocales.en}
             >
-              <LegacyI18nProvider>{story()}</LegacyI18nProvider>
+              <LegacyI18nProvider>
+                <Routes>
+                  <Route path={path} element={<StoryComponent />} />
+                </Routes>
+              </LegacyI18nProvider>
             </I18nProvider>
           </AlertMetricsProvider>
-        </MetaMetricsProviderStorybook>
-      </MemoryRouter>
+        </MemoryRouter>
+      </QueryClientProvider>
     </Provider>
   );
 };

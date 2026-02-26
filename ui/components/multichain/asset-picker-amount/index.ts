@@ -1,1 +1,2 @@
-export { AssetPickerAmount } from './asset-picker-amount';
+export { AssetPickerModal } from './asset-picker-modal';
+export * from './asset-picker-modal/types';

@@ -1,15 +1,19 @@
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockPreferencesSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { DAPP_PATH } from '../constants';
 
 describe('Test Snap get preferences', function () {
   it('validate the results', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder()
           .withPreferencesController({
             preferences: {
@@ -30,7 +34,7 @@ describe('Test Snap get preferences', function () {
           driver,
           'getPreferencesConnectButton',
         );
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'getPreferencesConnectButton',
           'Reconnect to Preferences Snap',
         );
@@ -38,7 +42,7 @@ describe('Test Snap get preferences', function () {
         // Click submit button, delayed needed processing and validate the results
         await testSnaps.scrollAndClickButton('getPreferencesSubmitButton');
         await driver.delay(1000);
-        await testSnaps.check_preferencesResult({
+        await testSnaps.checkPreferencesResult({
           locale: 'en',
           currency: 'usd',
           hideBalances: true,

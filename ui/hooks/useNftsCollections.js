@@ -2,11 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import { getNftContracts, getAllNfts } from '../ducks/metamask/metamask';
-import {
-  getIsTokenNetworkFilterEqualCurrentNetwork,
-  getSelectedInternalAccount,
-} from '../selectors';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import { getSelectedInternalAccount } from '../selectors';
+import { getEnabledNetworksByNamespace } from '../selectors/multichain/networks';
 import { getNftImage } from '../helpers/utils/nfts';
 import { usePrevious } from './usePrevious';
 import { useI18nContext } from './useI18nContext';
@@ -21,29 +18,41 @@ export function useNftsCollections() {
     collectionName: previouslyOwnedText,
     nfts: [],
   });
-  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
-    getIsTokenNetworkFilterEqualCurrentNetwork,
-  );
-
   const allUserNfts = useSelector(getAllNfts);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const enabledChainIds = Object.keys(enabledNetworksByNamespace);
 
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
-  const chainId = useSelector(getCurrentChainId);
+
   const nfts = useMemo(() => {
-    return isTokenNetworkFilterEqualCurrentNetwork
-      ? allUserNfts?.[chainId] ?? []
-      : allUserNfts;
-  }, [isTokenNetworkFilterEqualCurrentNetwork, allUserNfts, chainId]);
-  const [nftsLoading, setNftsLoading] = useState(() => nfts?.length >= 0);
+    // Filter NFTs to only include those from enabled networks
+    const nftsFromEnabledNetworks = {};
+
+    Object.entries(allUserNfts ?? {}).forEach(
+      ([networkChainId, networkNfts]) => {
+        if (
+          enabledNetworksByNamespace?.[networkChainId] &&
+          Array.isArray(networkNfts)
+        ) {
+          nftsFromEnabledNetworks[networkChainId] = networkNfts;
+        }
+      },
+    );
+
+    return nftsFromEnabledNetworks;
+  }, [allUserNfts, enabledNetworksByNamespace]);
+
+  const [nftsLoading, setNftsLoading] = useState(true);
   const nftContracts = useSelector(getNftContracts);
   const prevNfts = usePrevious(nfts);
-  const prevChainId = usePrevious(chainId);
+  const prevEnabledChainIds = usePrevious(enabledChainIds);
   const prevSelectedAddress = usePrevious(selectedAddress);
 
   useEffect(() => {
     const getCollections = () => {
       setNftsLoading(true);
-      if (selectedAddress === undefined || chainId === undefined) {
+      if (selectedAddress === undefined || enabledChainIds.length === 0) {
+        setNftsLoading(false);
         return;
       }
       const newCollections = {};
@@ -78,7 +87,7 @@ export function useNftsCollections() {
     if (
       !isEqual(prevNfts, nfts) ||
       !isEqual(prevSelectedAddress, selectedAddress) ||
-      !isEqual(prevChainId, chainId)
+      !isEqual(prevEnabledChainIds, enabledChainIds)
     ) {
       getCollections();
     }
@@ -87,8 +96,8 @@ export function useNftsCollections() {
     prevNfts,
     nftContracts,
     setNftsLoading,
-    chainId,
-    prevChainId,
+    enabledChainIds,
+    prevEnabledChainIds,
     selectedAddress,
     prevSelectedAddress,
     previouslyOwnedText,

@@ -1,8 +1,11 @@
 import {
+  GetAppNameAndVersionResponse,
   LedgerBridge,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
+  AppConfigurationResponse,
 } from '@metamask/eth-ledger-bridge-keyring';
+import { TransportStatusError } from '@ledgerhq/errors';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
@@ -28,10 +31,8 @@ type IFrameMessage<TAction extends LedgerAction> = {
  * that the keyring can call into for specific functions. The bridge then makes
  * whatever calls or requests it needs to in order to fulfill the request from
  * the keyring. In this case, the bridge is used to communicate with the
- * Offscreen Document. Inside the Offscreen document the ledger script is
- * loaded and registers a listener for these calls and communicate with the
- * ledger device via the ledger keyring iframe. The ledger keyring iframe is
- * added to the offscreen.html file directly.
+ * Offscreen Document. Inside the Offscreen document the ledger script
+ * communicates directly with the Ledger device via WebHID.
  */
 export class LedgerOffscreenBridge
   implements LedgerBridge<LedgerOffscreenBridgeOptions>
@@ -78,6 +79,24 @@ export class LedgerOffscreenBridge
       {
         action: LedgerAction.updateTransport,
         params: { transportType },
+      },
+      { timeout: MESSAGE_TIMEOUT },
+    );
+  }
+
+  getAppNameAndVersion(): Promise<GetAppNameAndVersionResponse> {
+    return this.#sendMessage(
+      {
+        action: LedgerAction.getAppNameAndVersion,
+      },
+      { timeout: MESSAGE_TIMEOUT },
+    );
+  }
+
+  getAppConfiguration(): Promise<AppConfigurationResponse> {
+    return this.#sendMessage(
+      {
+        action: LedgerAction.getAppConfiguration,
       },
       { timeout: MESSAGE_TIMEOUT },
     );
@@ -147,9 +166,31 @@ export class LedgerOffscreenBridge
           if (response?.success) {
             resolve(response.payload || response.success);
           } else {
-            reject(
-              new Error(response?.payload?.error || 'Unknown Ledger error'),
-            );
+            // Need to process the payload to get the error
+            // and then reject with the error
+            const error = response?.payload?.error;
+
+            if (
+              error &&
+              typeof error.statusCode === 'number' &&
+              error.statusCode > 0
+            ) {
+              // This is TransportStatusError, convert the SerializedLedgerError to a TransportStatusError
+              // TransportStatusError will regenerate the error message based on the statusCode
+              const transportStatusError = new TransportStatusError(
+                error.statusCode,
+              );
+              reject(transportStatusError);
+            } else if (error?.message) {
+              // Regenerate the error based on the SerializedLedgerError
+              const newError = new Error(error.message, {
+                cause: error,
+              });
+              reject(newError);
+            } else {
+              // Fallback for unknown Ledger errors when error information is not available
+              reject(new Error('Unknown Ledger error occurred'));
+            }
           }
         },
       );

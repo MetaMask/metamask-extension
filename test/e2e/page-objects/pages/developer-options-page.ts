@@ -13,7 +13,7 @@ class DevelopOptions {
     '[data-testid="developer-options-generate-page-crash-button"]';
 
   private readonly developOptionsPageTitle: object = {
-    text: 'Developer Options',
+    text: 'Developer options',
     css: 'h4',
   };
 
@@ -24,7 +24,7 @@ class DevelopOptions {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.developOptionsPageTitle);
     } catch (e) {

@@ -3,25 +3,21 @@ import { Driver } from '../../../webdriver/driver';
 class BitcoinReviewTxPage {
   private driver: Driver;
 
-  private readonly reviewPageTitle = {
-    text: 'Review',
-    tag: 'h4',
-  };
+  private readonly cancelButton =
+    '[data-testid="confirmation-cancel-snap-footer-button"]';
 
-  private readonly sendButton = {
-    text: 'Send',
-    tag: 'span',
-  };
+  private readonly confirmButton =
+    '[data-testid="confirmation-confirm-snap-footer-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.reviewPageTitle,
-        this.sendButton,
+        this.cancelButton,
+        this.confirmButton,
       ]);
     } catch (e) {
       console.log(
@@ -33,9 +29,39 @@ class BitcoinReviewTxPage {
     console.log('Bitcoin review tx page is loaded');
   }
 
-  async clickSendButton() {
-    console.log('Click send button on bitcoin review tx page');
-    await this.driver.clickElementAndWaitToDisappear(this.sendButton);
+  async clickConfirmButton() {
+    console.log('Click confirm button on bitcoin review tx page');
+    await this.driver.clickElementAndWaitToDisappear(this.confirmButton);
+  }
+
+  async checkNetworkFeeIsDisplayed(fee: string): Promise<void> {
+    console.log(
+      `Check if network fee ${fee} is displayed on bitcoin review tx page`,
+    );
+    await this.driver.waitForSelector({
+      text: `${fee} BTC`,
+      tag: 'p',
+    });
+  }
+
+  async checkSendAmountIsDisplayed(amount: string): Promise<void> {
+    console.log(
+      `Check if send amount ${amount} is displayed on bitcoin review tx page`,
+    );
+    await this.driver.waitForSelector({
+      text: `-${amount} BTC`,
+      tag: 'p',
+    });
+  }
+
+  async checkTotalAmountIsDisplayed(total: string): Promise<void> {
+    console.log(
+      `Check if total amount ${total} is displayed on bitcoin review tx page`,
+    );
+    await this.driver.waitForSelector({
+      text: `${total} USD`,
+      tag: 'p',
+    });
   }
 }
 

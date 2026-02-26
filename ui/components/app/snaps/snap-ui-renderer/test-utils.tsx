@@ -4,7 +4,7 @@ import { RenderResult } from '@testing-library/react';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { JSXElement } from '@metamask/snaps-sdk/jsx';
 import configureStore, { MetaMaskReduxState } from '../../../../store/store';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { SnapUIRenderer } from './snap-ui-renderer';
 
@@ -20,17 +20,8 @@ type RenderInterfaceOptions = {
   metamaskState?: DeepPartial<MetaMaskReduxState>;
 };
 
-// The return type from renderWithProvider includes RenderResult plus a history property
-type RenderWithProviderResult = RenderResult & {
-  history: {
-    location: {
-      pathname: string;
-    };
-  };
-};
-
 // Combine the renderWithProvider result with our custom properties
-type RenderInterfaceResult = RenderWithProviderResult & {
+type RenderInterfaceResult = RenderResult & {
   updateInterface: (
     newContent: JSXElement,
     newState?: Record<string, unknown> | null,

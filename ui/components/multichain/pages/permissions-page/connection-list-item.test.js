@@ -1,21 +1,47 @@
+/* eslint-disable jest/no-if */
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { getURLHost } from '../../../../helpers/utils/util';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { getAccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 import { ConnectionListItem } from './connection-list-item';
+
+const mockUseSelector = jest.fn();
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useSelector: (selector) => mockUseSelector(selector),
+}));
 
 describe('ConnectionListItem', () => {
   const store = configureStore(mockState);
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+    // Default to empty account groups array
+    mockUseSelector.mockReturnValue([]);
+  });
+
   it('renders correctly for Snap connection', () => {
+    // Mock SnapIcon selector
+    mockUseSelector.mockImplementation((selector) => {
+      if (
+        typeof selector === 'function' &&
+        selector.toString().includes('getSnapMetadata')
+      ) {
+        return { name: 'Test Snap 1' };
+      }
+      return [];
+    });
+
     const mockConnection = {
       id: 'npm:@metamask/testSnap1',
       origin: 'npm:@metamask/testSnap1',
       packageName: 'Test Snap 1',
       subjectType: 'snap',
       iconUrl: null,
+      addresses: [], // Add empty addresses array for Snap
     };
     const { getByText, getByTestId } = renderWithProvider(
       <ConnectionListItem connection={mockConnection} onClick={jest.fn()} />,
@@ -30,6 +56,29 @@ describe('ConnectionListItem', () => {
   });
 
   it('renders correctly for non-Snap connection', () => {
+    mockUseSelector.mockImplementation((selector) => {
+      if (
+        typeof selector === 'function' &&
+        selector.toString().includes('getAllPermittedChainsForSelectedTab')
+      ) {
+        return ['eip155:1', 'eip155:137'];
+      }
+      if (selector === getAccountGroupWithInternalAccounts) {
+        return [
+          {
+            id: 'entropy:test/0',
+            type: 'multichain-account',
+            accounts: [
+              { address: '0xaaaF07C80ce267F3132cE7e6048B66E6E669365B' },
+              { address: '0xbbbD671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1' },
+            ],
+            metadata: { name: 'Default' },
+          },
+        ];
+      }
+      return [];
+    });
+
     const mockConnection = {
       id: 'https://metamask.github.io',
       origin: 'https://metamask.github.io',
@@ -55,9 +104,117 @@ describe('ConnectionListItem', () => {
     expect(
       getByTestId('connection-list-item__avatar-favicon'),
     ).toBeInTheDocument();
+    expect(getByText(/2.*accounts.*2.*networks/u)).toBeInTheDocument();
+  });
+
+  it('handles multiple account groups', () => {
+    mockUseSelector.mockImplementation((selector) => {
+      if (
+        typeof selector === 'function' &&
+        selector.toString().includes('getAllPermittedChainsForSelectedTab')
+      ) {
+        return ['eip155:1', 'eip155:137'];
+      }
+      if (selector === getAccountGroupWithInternalAccounts) {
+        return [
+          {
+            id: 'entropy:test/0',
+            type: 'multichain-account',
+            accounts: [
+              { address: '0xaaaF07C80ce267F3132cE7e6048B66E6E669365B' },
+            ],
+            metadata: { name: 'Default' },
+          },
+          {
+            id: 'entropy:test/1',
+            type: 'multichain-account',
+            accounts: [
+              { address: '0xbbbD671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1' },
+            ],
+            metadata: { name: 'Account 2' },
+          },
+        ];
+      }
+      return [];
+    });
+
+    const mockConnection = {
+      id: 'https://metamask.github.io',
+      origin: 'https://metamask.github.io',
+      subjectType: 'website',
+      iconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
+      networkIconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
+      networkName: 'Test Dapp Network',
+      addresses: [
+        '0xaaaF07C80ce267F3132cE7e6048B66E6E669365B',
+        '0xbbbD671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1',
+      ],
+    };
+
+    const { getByText } = renderWithProvider(
+      <ConnectionListItem connection={mockConnection} onClick={jest.fn()} />,
+      store,
+    );
+
+    // Should show 2 account groups
+    expect(getByText(/2.*accounts.*2.*networks/u)).toBeInTheDocument();
+  });
+
+  it('handles addresses not matching any account groups', () => {
+    mockUseSelector.mockImplementation((selector) => {
+      if (
+        typeof selector === 'function' &&
+        selector.toString().includes('getAllPermittedChainsForSelectedTab')
+      ) {
+        return ['eip155:1', 'eip155:137'];
+      }
+      if (selector === getAccountGroupWithInternalAccounts) {
+        return [
+          {
+            id: 'entropy:test/0',
+            type: 'multichain-account',
+            accounts: [{ address: '0xDifferentAddress123' }],
+            metadata: { name: 'Default' },
+          },
+        ];
+      }
+      return [];
+    });
+
+    const mockConnection = {
+      id: 'https://metamask.github.io',
+      origin: 'https://metamask.github.io',
+      subjectType: 'website',
+      iconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
+      networkIconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
+      networkName: 'Test Dapp Network',
+      addresses: [
+        '0xaaaF07C80ce267F3132cE7e6048B66E6E669365B',
+        '0xbbbD671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1',
+      ],
+    };
+
+    const { getByText } = renderWithProvider(
+      <ConnectionListItem connection={mockConnection} onClick={jest.fn()} />,
+      store,
+    );
+
+    // Should show 0 account groups since none match
+    expect(getByText(/0.*accounts.*2.*networks/u)).toBeInTheDocument();
   });
 
   it('calls onClick when clicked', () => {
+    // Mock SnapIcon selector
+    mockUseSelector.mockImplementation((selector) => {
+      if (
+        typeof selector === 'function' &&
+        selector.toString().includes('getSnapMetadata')
+      ) {
+        return { name: 'Test Snap 1' };
+      }
+      return [];
+    });
+
     const onClickMock = jest.fn();
     const mockConnection = {
       id: 'npm:@metamask/testSnap1',
@@ -65,6 +222,7 @@ describe('ConnectionListItem', () => {
       packageName: 'Test Snap 1',
       subjectType: 'snap',
       iconUrl: null,
+      addresses: [], // Add empty addresses array for Snap
     };
     const { getByTestId } = renderWithProvider(
       <ConnectionListItem connection={mockConnection} onClick={onClickMock} />,

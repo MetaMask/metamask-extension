@@ -20,6 +20,8 @@ export function parseBoolean(value: undefined | string): boolean {
     return value;
   }
   if (typeof value !== 'string') {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`Not-a-Boolean: '${value}'`);
   }
   switch (value.toLowerCase().trim()) {

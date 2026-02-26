@@ -37,16 +37,18 @@ export const TransactionFlowSection = () => {
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
         alignItems={AlignItems.center}
+        paddingBottom={1}
       >
         <ConfirmInfoAlertRow
           alertKey={RowAlertKey.SigningInWith}
           label={t('from')}
           ownerId={transactionMeta.id}
           style={{
+            flex: 1,
             flexDirection: FlexDirection.Column,
           }}
         >
-          <Box marginTop={1} data-testid="sender-address">
+          <Box marginTop={2} data-testid="sender-address">
             <ConfirmInfoRowAddress
               address={transactionMeta.txParams.from}
               chainId={chainId}
@@ -57,25 +59,26 @@ export const TransactionFlowSection = () => {
         <Icon
           name={IconName.ArrowRight}
           size={IconSize.Md}
-          color={IconColor.iconMuted}
+          color={IconColor.iconAlternative}
         />
-        {recipientAddress && (
-          <ConfirmInfoAlertRow
-            alertKey={RowAlertKey.InteractingWith}
-            label={t('to')}
-            ownerId={transactionMeta.id}
-            style={{
-              flexDirection: FlexDirection.Column,
-            }}
-          >
-            <Box marginTop={1} data-testid="recipient-address">
-              <ConfirmInfoRowAddress
-                address={recipientAddress}
-                chainId={chainId}
-              />
-            </Box>
-          </ConfirmInfoAlertRow>
-        )}
+
+        <ConfirmInfoAlertRow
+          alertKey={RowAlertKey.InteractingWith}
+          label={t('to')}
+          ownerId={transactionMeta.id}
+          style={{
+            flex: 1,
+            flexDirection: FlexDirection.Column,
+            overflow: 'hidden',
+          }}
+        >
+          <Box marginTop={2} data-testid="recipient-address" className="w-full">
+            <ConfirmInfoRowAddress
+              address={recipientAddress ?? ''}
+              chainId={chainId}
+            />
+          </Box>
+        </ConfirmInfoAlertRow>
       </Box>
     </ConfirmInfoSection>
   );

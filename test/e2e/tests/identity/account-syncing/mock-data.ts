@@ -1,49 +1,32 @@
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { UserStorageResponseData } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { IDENTITY_TEAM_STORAGE_KEY } from '../constants';
 import { createEncryptedResponse } from '../../../helpers/identity/user-storage/generateEncryptedData';
-import { UserStorageAccount } from './helpers';
 
 /**
- * This array represents the accounts mock data before it is encrypted and sent to UserStorage.
- * Each object within the array represents a UserStorageAccount, which includes properties such as:
- * - v: The version of the User Storage.
- * - a: The address of the account.
- * - i: The id of the account.
- * - n: The name of the account.
- * - nlu: The name last updated timestamp of the account.
+ * Mock account data for testing account syncing
  */
-export const accountsToMockForAccountsSync: UserStorageAccount[] = [
+export const accountsToMockForAccountsSync = [
   {
+    i: '5c33c40e-cb3e-4937-9c0f-4b81e8f5a8d7',
+    a: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+    n: 'Account 1',
     v: '1',
-    a: '0xAa4179E7f103701e904D27DF223a39Aa9c27405a'.toLowerCase(),
-    i: '0000-1111',
-    n: 'Hello from account 1',
-    nlu: 1738590287,
   },
   {
+    i: 'f1b8a3b2-4c1d-4e5f-8a9b-1c2d3e4f5a6b',
+    a: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+    n: 'Account 2',
     v: '1',
-    a: '0xd2a4aFe5c2fF0a16Bf81F77ba4201A8107AA874b'.toLowerCase(),
-    i: '1111-1111',
-    n: 'Hello from account 2',
-    nlu: 1738590287,
   },
 ];
 
 /**
- * Generates a mock response for account synchronization.
+ * Generates encrypted mock response for account syncing tests
  *
- * This function asynchronously creates an encrypted mock response for each account
- * in the `accountsToMockForAccountsSync` array. The encrypted responses are created
- * using the `createEncryptedMockResponse` function, which takes a configuration object
- * containing the account data, a storage key, and a feature key.
- *
- * @returns A promise that resolves to an array of encrypted mock responses.
+ * @returns Array of encrypted account data
  */
-export const getAccountsSyncMockResponse = async (): Promise<
-  UserStorageResponseData[]
-> => {
-  const encryptedResponse = await Promise.all(
+export async function getAccountsSyncMockResponse() {
+  return Promise.all(
     accountsToMockForAccountsSync.map((account) =>
       createEncryptedResponse({
         data: account,
@@ -52,6 +35,4 @@ export const getAccountsSyncMockResponse = async (): Promise<
       }),
     ),
   );
-
-  return encryptedResponse;
-};
+}

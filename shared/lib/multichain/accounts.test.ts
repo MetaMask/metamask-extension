@@ -76,10 +76,10 @@ describe('multichain', () => {
     });
   });
 
-  describe('getChainTypeFromAddress', () => {
+  describe('getCaipNamespaceFromAddress', () => {
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([...BTC_MAINNET_ADDRESSES, ...BTC_TESTNET_ADDRESSES])(
-      'returns KnownCaipNamespace.Bitcoin for bitcoin address: %s',
+      'returns KnownCaipNamespace.Bip122 for bitcoin address: %s',
       (address: string) => {
         expect(getCaipNamespaceFromAddress(address)).toBe(
           KnownCaipNamespace.Bip122,
@@ -89,7 +89,7 @@ describe('multichain', () => {
 
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each(ETH_ADDRESSES)(
-      'returns KnownCaipNamespace.Ethereum for ethereum address: %s',
+      'returns KnownCaipNamespace.Eip155 for ethereum address: %s',
       (address: string) => {
         expect(getCaipNamespaceFromAddress(address)).toBe(
           KnownCaipNamespace.Eip155,

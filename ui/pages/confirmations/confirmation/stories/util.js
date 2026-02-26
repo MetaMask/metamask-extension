@@ -8,9 +8,15 @@ import {
   mockMultichainNetworkState,
   mockNetworkState,
 } from '../../../../../test/stub/networks';
+import { getAccountTrackerControllerAccountsByChainId } from '../../../../../shared/modules/selectors/assets-migration';
 
 const STORE_MOCK = {
   ...testData,
+  activeTab: {
+    origin: 'https://metamask.github.io',
+    protocol: 'https:',
+    url: 'https://metamask.github.io/test-dapp/',
+  },
   metamask: {
     approvalFlows: [],
     currentCurrency: 'USD',
@@ -45,6 +51,11 @@ const STORE_MOCK = {
         origin: 'npm:@test/test-snap',
       },
     },
+    enabledNetworkMap: {
+      eip155: {
+        '0x1': true,
+      },
+    },
     selectedNetworkClientId: 'testNetworkClientId',
     subjectMetadata: {
       'npm:@test/test-snap': {
@@ -53,9 +64,10 @@ const STORE_MOCK = {
       },
     },
     tokenList: {},
-    accounts: testData.metamask.accounts,
+    tokenBalances: testData.metamask.tokenBalances,
     internalAccounts: testData.metamask.internalAccounts,
-    accountsByChainId: testData.metamask.accountsByChainId,
+    accountsByChainId: getAccountTrackerControllerAccountsByChainId(testData),
+    accountTree: testData.metamask.accountTree,
     snaps: {
       'npm:@test/test-snap': {
         id: 'npm:@test/test-snap',

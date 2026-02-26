@@ -1,6 +1,6 @@
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -11,8 +11,8 @@ describe('Import ERC1155 NFT', function () {
   it('should be able to import an ERC1155 NFT that user owns', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
@@ -30,8 +30,8 @@ describe('Import ERC1155 NFT', function () {
         await nftList.importNft(contractAddress, '1');
 
         // Check the ERC1155 token is successfully imported and its image is displayed
-        await nftList.check_successImportNftMessageIsDisplayed();
-        await nftList.check_nftImageIsDisplayed();
+        await nftList.checkSuccessImportNftMessageIsDisplayed();
+        await nftList.checkNftImageIsDisplayed();
       },
     );
   });
@@ -39,8 +39,8 @@ describe('Import ERC1155 NFT', function () {
   it('should not be able to import an ERC1155 NFT that does not belong to user', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,

@@ -2,7 +2,8 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { merge } from 'lodash';
-import { renderWithProvider } from '../../../../test/jest';
+import { BtcScope } from '@metamask/keyring-api';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { shortenAddress } from '../../../helpers/utils/util';
@@ -30,6 +31,7 @@ const mockNonEvmAccount = {
   id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
   address: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
   type: 'bip122:p2wpkh',
+  scopes: [BtcScope.Mainnet],
 };
 
 const mockSnap = {
@@ -153,9 +155,7 @@ describe('AccountListItem', () => {
     expect(
       screen.getByText(shortenAddress(mockNonEvmAccount.address)),
     ).toBeInTheDocument();
-    expect(
-      document.querySelector('[title="$100,000.00 USD"]'),
-    ).toBeInTheDocument();
+    expect(document.querySelector('[title="$100,000.00"]')).toBeInTheDocument();
     expect(screen.getByTestId('account-network-indicator')).toBeInTheDocument();
 
     expect(container).toMatchSnapshot('non-EVM-account-list-item');
@@ -226,7 +226,6 @@ describe('AccountListItem', () => {
     expect(container.querySelector('.mm-tag')).not.toBeInTheDocument();
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   it('renders the tag with the snap name for named snap accounts', () => {
     const { container } = render(
       {
@@ -290,7 +289,6 @@ describe('AccountListItem', () => {
     const tag = container.querySelector('.mm-tag');
     expect(tag).not.toBeInTheDocument();
   });
-  ///: END:ONLY_INCLUDE_IF
 
   describe('Multichain Behaviour', () => {
     describe('currency display', () => {
@@ -323,7 +321,6 @@ describe('AccountListItem', () => {
         expect(firstCurrencyDisplay.firstChild.textContent).toContain(
           expectedBalance,
         );
-        expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
       });
 
       it('renders fiat and native balance for non-EVM account', () => {
@@ -353,8 +350,98 @@ describe('AccountListItem', () => {
         expect(firstCurrencyDisplay.firstChild.textContent).toContain(
           expectedBalance,
         );
-        expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
       });
+    });
+  });
+  describe('Account labels', () => {
+    it('renders the SRP pill for account when multi SRP are present in state', () => {
+      const { container } = render(
+        {
+          account: {
+            ...mockAccount,
+            metadata: {
+              ...mockAccount.metadata,
+              snap: {
+                id: mockSnap.id,
+              },
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            balance: '0x0',
+          },
+        },
+        {
+          metamask: {
+            keyrings: [
+              {
+                type: 'HD Key Tree',
+                accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                metadata: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                  name: '',
+                },
+              },
+              {
+                type: 'HD Key Tree',
+                accounts: ['0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b'],
+                metadata: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                  name: '',
+                },
+              },
+            ],
+          },
+        },
+      );
+
+      const tag = container.querySelector('.mm-tag');
+      expect(tag.textContent).toBe('SRP #1');
+    });
+
+    it('does not render the any account label when explicitly disabled', () => {
+      const { container } = render(
+        {
+          showAccountLabels: false,
+          account: {
+            ...mockAccount,
+            metadata: {
+              ...mockAccount.metadata,
+              snap: {
+                id: mockSnap.id,
+              },
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            balance: '0x0',
+          },
+        },
+        {
+          metamask: {
+            keyrings: [
+              {
+                type: 'HD Key Tree',
+                accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                metadata: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                  name: '',
+                },
+              },
+              {
+                type: 'HD Key Tree',
+                accounts: ['0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b'],
+                metadata: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                  name: '',
+                },
+              },
+            ],
+          },
+        },
+      );
+
+      expect(container.querySelector('.mm-tag')).not.toBeInTheDocument();
     });
   });
 });

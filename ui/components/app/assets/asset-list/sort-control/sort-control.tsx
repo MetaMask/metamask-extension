@@ -47,7 +47,7 @@ export const SelectableListItem = ({
           'selectable-list-item--selected': Boolean(isSelected),
         })}
         onClick={onClick}
-        variant={TextVariant.bodyMd}
+        variant={TextVariant.bodySmMedium}
         as="button"
         width={BlockSize.Full}
         backgroundColor={BackgroundColor.backgroundDefault}
@@ -73,14 +73,19 @@ type SortControlProps = {
 
 const SortControl = ({ handleClose }: SortControlProps) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const currentCurrency = useSelector(getCurrentCurrency);
 
   const dispatch = useDispatch();
 
+  type SortKeys = 'title' | 'tokenFiatAmount';
   const handleSort = useCallback(
-    (key: string, sortCallback: keyof SortingCallbacksT, order: SortOrder) => {
+    (
+      key: SortKeys,
+      sortCallback: keyof SortingCallbacksT,
+      order: SortOrder,
+    ) => {
       dispatch(
         setTokenSortConfig({
           key,

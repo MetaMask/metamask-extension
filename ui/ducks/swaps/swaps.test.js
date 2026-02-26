@@ -15,7 +15,6 @@ const middleware = [thunk];
 jest.mock('../../store/actions.ts', () => ({
   setSwapsLiveness: jest.fn(),
   setSwapsFeatureFlags: jest.fn(),
-  fetchSmartTransactionsLiveness: jest.fn(),
   getTransactions: jest.fn(() => {
     return [];
   }),
@@ -29,7 +28,7 @@ describe('Ducks - Swaps', () => {
   describe('fetchSwapsLivenessAndFeatureFlags', () => {
     const cleanFeatureFlagApiCache = () => {
       setStorageItem(
-        'cachedFetch:https://swap.api.cx.metamask.io/featureFlags',
+        'cachedFetch:https://bridge.api.cx.metamask.io/featureFlags',
         null,
       );
     };
@@ -42,7 +41,7 @@ describe('Ducks - Swaps', () => {
       featureFlagsResponse,
       replyWithError = false,
     } = {}) => {
-      const apiNock = nock('https://swap.api.cx.metamask.io').get(
+      const apiNock = nock('https://bridge.api.cx.metamask.io').get(
         '/featureFlags',
       );
       if (replyWithError) {
@@ -85,7 +84,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(5);
+      expect(mockDispatch).toHaveBeenCalledTimes(4);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
@@ -106,7 +105,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(5);
+      expect(mockDispatch).toHaveBeenCalledTimes(4);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
@@ -128,7 +127,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(5);
+      expect(mockDispatch).toHaveBeenCalledTimes(4);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
@@ -174,7 +173,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock2.isDone()).toBe(false); // Second API call wasn't made, cache was used instead.
-      expect(mockDispatch).toHaveBeenCalledTimes(10);
+      expect(mockDispatch).toHaveBeenCalledTimes(8);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);

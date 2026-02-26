@@ -8,13 +8,15 @@ import {
   SnapKeyring,
   SnapKeyringInternalOptions,
 } from '@metamask/eth-snap-keyring';
-import { Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { AccountsControllerActions } from '@metamask/accounts-controller';
 import { SnapControllerActions } from '@metamask/snaps-controllers';
-import { createMockInternalAccount } from '../../../test/jest/mocks';
 import {
   getNextAvailableSnapAccountName,
-  getUniqueAccountName,
   MultichainWalletSnapClient,
   SnapAccountNameOptions,
   CreateAccountSnapOptions,
@@ -25,34 +27,6 @@ import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
 const SOLANA_SCOPES = [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet];
 
 describe('accounts', () => {
-  describe('getUniqueAccountName', () => {
-    it('returns the suggested name if not used', () => {
-      const name = getUniqueAccountName(
-        [
-          createMockInternalAccount({ name: 'Account 1' }),
-          createMockInternalAccount({ name: 'Account 2' }),
-          createMockInternalAccount({ name: 'Account 3' }),
-        ],
-        'Account 4',
-      );
-
-      expect(name).toBe('Account 4');
-    });
-
-    it('computes a unique name in case of conflicts', () => {
-      const name = getUniqueAccountName(
-        [
-          createMockInternalAccount({ name: 'Account 1' }),
-          createMockInternalAccount({ name: 'Account 2' }),
-          createMockInternalAccount({ name: 'Account 3' }),
-        ],
-        'Account 1',
-      );
-
-      expect(name).toBe('Account 1 2');
-    });
-  });
-
   describe('getNextAvailableSnapAccountName', () => {
     const index = 3;
     const getNextAvailableAccountName = async () => `Snap Account ${index}`;
@@ -87,7 +61,6 @@ describe('accounts', () => {
 
   describe('MultichainWalletSnapClient', () => {
     const mockSnapKeyringCreateAccount = jest.fn();
-    const mockAccountsControllerGetNextAvailableAccountName = jest.fn();
     const mockSnapControllerHandleRequest = jest.fn();
 
     const getSnapKeyring = () => {
@@ -98,18 +71,17 @@ describe('accounts', () => {
 
     const getRootMessenger = () => {
       return new Messenger<
+        MockAnyNamespace,
         AccountsControllerActions | SnapControllerActions,
         never
-      >();
+      >({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
     };
 
     const getMessenger = () => {
       const messenger = getRootMessenger();
 
-      messenger.registerActionHandler(
-        'AccountsController:getNextAvailableAccountName',
-        mockAccountsControllerGetNextAvailableAccountName,
-      );
       messenger.registerActionHandler(
         'SnapController:handleRequest',
         mockSnapControllerHandleRequest,
@@ -127,10 +99,6 @@ describe('accounts', () => {
 
     const getSolanaClient = () => {
       return getClient(SOLANA_WALLET_SNAP_ID);
-    };
-
-    const getBitcoinClient = () => {
-      return getClient(BITCOIN_WALLET_SNAP_ID);
     };
 
     beforeEach(() => {
@@ -160,91 +128,6 @@ describe('accounts', () => {
           internalOptions,
         );
       });
-
-      it('auto-injects an account name if not provided', async () => {
-        const client = getSolanaClient();
-
-        // First, get the name that will be auto-injected.
-        mockAccountsControllerGetNextAvailableAccountName.mockResolvedValue(
-          `Account Name 2`,
-        );
-        const autoInjectedAccountNameSuggestion =
-          await client.getNextAvailableAccountName(); // Will be named for Solana account index 2.
-
-        const options: CreateAccountSnapOptions = {
-          derivationPath: 'm/',
-          // No explicit `accountNameSuggestion`.
-        };
-        const internalOptions: SnapKeyringInternalOptions = {
-          displayConfirmation: false,
-          displayAccountNameSuggestion: false,
-          setSelectedAccount: false,
-        };
-        await client.createAccount(options, internalOptions);
-
-        expect(mockSnapKeyringCreateAccount).toHaveBeenCalledWith(
-          client.getSnapId(),
-          {
-            ...options,
-            accountNameSuggestion: autoInjectedAccountNameSuggestion,
-          },
-          internalOptions,
-        );
-      });
-    });
-
-    describe('getNextAvailableAccountName', () => {
-      it('gets the next account name for Solana accounts', async () => {
-        const client = getSolanaClient();
-
-        const index = '1';
-        mockAccountsControllerGetNextAvailableAccountName.mockResolvedValue(
-          `Account Name ${index}`,
-        );
-
-        const name = await client.getNextAvailableAccountName();
-        expect(name).toStrictEqual(`Solana Account ${index}`);
-      });
-
-      it('gets the next account name for Bitcoin mainnet accounts', async () => {
-        const client = getBitcoinClient();
-
-        const index = '2';
-        mockAccountsControllerGetNextAvailableAccountName.mockResolvedValue(
-          `Account Name ${index}`,
-        );
-
-        const name = await client.getNextAvailableAccountName();
-        expect(name).toStrictEqual(`Bitcoin Account ${index}`);
-      });
-
-      it('gets the next account name for Bitcoin testnet accounts', async () => {
-        const client = getBitcoinClient();
-
-        const index = '3';
-        mockAccountsControllerGetNextAvailableAccountName.mockResolvedValue(
-          `Account Name ${index}`,
-        );
-
-        const name = await client.getNextAvailableAccountName({
-          chainId: BtcScope.Testnet,
-        });
-        expect(name).toStrictEqual(`Bitcoin Testnet Account ${index}`);
-      });
-
-      it('gets the next account name for Bitcoin signet accounts', async () => {
-        const client = getBitcoinClient();
-
-        const index = '3';
-        mockAccountsControllerGetNextAvailableAccountName.mockResolvedValue(
-          `Account Name ${index}`,
-        );
-
-        const name = await client.getNextAvailableAccountName({
-          chainId: BtcScope.Signet,
-        });
-        expect(name).toStrictEqual(`Bitcoin Signet Account ${index}`);
-      });
     });
 
     describe('discoverAccounts', () => {
@@ -270,9 +153,6 @@ describe('accounts', () => {
       it('calls the Snap to discover accounts', async () => {
         const client = getSolanaClient();
 
-        mockAccountsControllerGetNextAvailableAccountName.mockResolvedValue(
-          'Account Name 1',
-        ); // Needed to create account.
         mockSnapKeyringCreateAccount.mockResolvedValue({});
 
         // We use the inner request from a Snap request and we assume we receive a proper `DiscoverAccountRequest`.

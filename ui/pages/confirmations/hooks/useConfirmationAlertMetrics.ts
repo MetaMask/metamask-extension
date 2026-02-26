@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+/* eslint-disable @typescript-eslint/naming-convention */
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { validate as isUuid } from 'uuid';
 
 import useAlerts from '../../../hooks/useAlerts';
@@ -39,13 +41,29 @@ function getAlertNames(alerts: Alert[]): string[] {
 function getAlertName(alertKey: string): string {
   return isUuid(alertKey)
     ? ALERTS_NAME_METRICS[AlertsName.Blockaid]
-    : ALERTS_NAME_METRICS[alertKey] ?? alertKey;
+    : (ALERTS_NAME_METRICS[alertKey] ?? alertKey);
 }
 
 export function useConfirmationAlertMetrics() {
   const { currentConfirmation } = useConfirmContext();
   const ownerId = currentConfirmation?.id ?? '';
+
   const { alerts, isAlertConfirmed } = useAlerts(ownerId);
+  const alertsProperties = useMemo(() => {
+    return alerts.length > 0
+      ? {
+          alert_triggered_count: alerts.length,
+          alert_triggered: getAlertNames(alerts),
+          alert_resolved_count: alerts.filter((alert) =>
+            isAlertConfirmed(alert.key),
+          ).length,
+          alert_resolved: getAlertNames(
+            alerts.filter((alert) => isAlertConfirmed(alert.key)),
+          ),
+        }
+      : undefined;
+  }, [alerts, isAlertConfirmed]);
+
   const { updateSignatureEventFragment } = useSignatureEventFragment();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
@@ -57,20 +75,11 @@ export function useConfirmationAlertMetrics() {
       alert_action_clicked: [],
     });
 
-  const properties =
-    alerts.length > 0
-      ? {
-          alert_triggered_count: alerts.length,
-          alert_triggered: getAlertNames(alerts),
-          alert_resolved_count: alerts.filter((alert) =>
-            isAlertConfirmed(alert.key),
-          ).length,
-          alert_resolved: getAlertNames(
-            alerts.filter((alert) => isAlertConfirmed(alert.key)),
-          ),
-          ...metricsProperties,
-        }
+  const properties = useMemo(() => {
+    return alertsProperties
+      ? { ...alertsProperties, ...metricsProperties }
       : undefined;
+  }, [alertsProperties, metricsProperties]);
 
   const trackAlertRender = useCallback((alertKey: string) => {
     setMetricsProperties((prevState) => {
@@ -119,7 +128,13 @@ export function useConfirmationAlertMetrics() {
     } else {
       updateTransactionEventFragment({ properties }, ownerId);
     }
-  }, [JSON.stringify(properties), updateTransactionEventFragment, ownerId]);
+  }, [
+    updateSignatureEventFragment,
+    updateTransactionEventFragment,
+    ownerId,
+    properties,
+    currentConfirmation,
+  ]);
 
   useEffect(() => {
     updateAlertMetrics();

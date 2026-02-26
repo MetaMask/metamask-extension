@@ -3,84 +3,91 @@ import { Suite } from 'mocha';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import TransactionDetailsPage from '../../page-objects/pages/home/transaction-details';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import {
   commonSolanaTxConfirmedDetailsFixture,
   commonSolanaTxFailedDetailsFixture,
-  withSolanaAccountSnap,
+  buildSolanaTestSpecificMock,
 } from './common-solana';
 
 describe('Transaction activity list', function (this: Suite) {
-  // eslint-disable-next-line mocha/no-skipped-tests
   it('user can see activity list and a confirmed transaction details', async function () {
     this.timeout(120000);
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockCalls: true,
-        mockSendTransaction: true,
-        simulateTransaction: true,
-        mockGetTransactionSuccess: true,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockGetTransactionSuccess: true,
+        }),
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         const homePage = new NonEvmHomepage(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
-        await activityList.check_txAction('Receive', 1);
-        await activityList.check_txAmountInActivity('0.00708 SOL', 1);
-        await activityList.check_noFailedTransactions();
+        await activityList.checkTxAction({ action: 'Sent' });
+        await activityList.checkTxAmountInActivity('-0.00708 SOL', 1);
+        await activityList.checkNoFailedTransactions();
         await activityList.clickOnActivity(1);
         const transactionDetails = new TransactionDetailsPage(driver);
-        await transactionDetails.check_transactionStatus(
+        await transactionDetails.checkTransactionStatus(
           commonSolanaTxConfirmedDetailsFixture.status,
         );
-        await transactionDetails.check_transactionAmount(
+        await transactionDetails.checkTransactionAmount(
           commonSolanaTxConfirmedDetailsFixture.amount,
         );
-        await transactionDetails.check_transactionFromToLink(
+        await transactionDetails.checkTransactionFromToLink(
           commonSolanaTxConfirmedDetailsFixture.fromAddress,
         );
-        await transactionDetails.check_transactionFromToLink(
+        await transactionDetails.checkTransactionFromToLink(
           commonSolanaTxConfirmedDetailsFixture.toAddress,
         );
-        await transactionDetails.check_transactionHashLink(
+        await transactionDetails.checkTransactionHashLink(
           commonSolanaTxConfirmedDetailsFixture.txHash,
         );
-        await transactionDetails.check_transactionViewDetailsLink();
+        await transactionDetails.checkTransactionViewDetailsLink();
       },
     );
   });
   it('user can see activity list and a failed transaction details', async function () {
     this.timeout(120000);
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockCalls: true,
-        mockSendTransaction: true,
-        simulateTransaction: true,
-        mockGetTransactionFailed: true,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockGetTransactionFailed: true,
+        }),
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_pageIsLoaded('50');
+        await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
-        await activityList.check_failedTxNumberDisplayedInActivity(1);
-        await activityList.check_txAction('Interaction', 1);
+        await activityList.checkFailedTxNumberDisplayedInActivity(1);
+        await activityList.checkTxAction({
+          action: 'Interaction',
+          confirmedTx: 0,
+        });
         await activityList.clickOnActivity(1);
         const transactionDetails = new TransactionDetailsPage(driver);
 
-        await transactionDetails.check_transactionStatus(
+        await transactionDetails.checkTransactionStatus(
           commonSolanaTxFailedDetailsFixture.status,
         );
-        await transactionDetails.check_transactionHashLink(
+        await transactionDetails.checkTransactionHashLink(
           commonSolanaTxFailedDetailsFixture.txHash,
         );
-        await transactionDetails.check_transactionViewDetailsLink();
-        await transactionDetails.check_networkFeeTransaction(
+        await transactionDetails.checkTransactionViewDetailsLink();
+        await transactionDetails.checkTransactionBaseFee(
           commonSolanaTxFailedDetailsFixture.networkFee,
         );
       },

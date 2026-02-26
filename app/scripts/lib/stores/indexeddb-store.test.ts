@@ -12,6 +12,9 @@ describe('IndexedDBStore', () => {
       const req = indexedDB.deleteDatabase(dbName);
       req.onsuccess = () => resolve();
       req.onerror = () => reject(req.error);
+      req.onblocked = () => {
+        throw new Error("this shouldn't happen. You have an error somewhere");
+      };
     });
   });
   beforeEach(() => {

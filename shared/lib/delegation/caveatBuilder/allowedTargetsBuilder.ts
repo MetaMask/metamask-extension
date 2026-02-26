@@ -1,4 +1,4 @@
-import type { Address } from '../utils';
+import type { Hex as Address } from '@metamask/utils';
 import { concat, isAddress } from '../utils';
 import type { Caveat, DeleGatorEnvironment } from '..';
 

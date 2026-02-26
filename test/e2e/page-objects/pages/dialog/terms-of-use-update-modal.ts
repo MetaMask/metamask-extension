@@ -24,7 +24,7 @@ class TermsOfUseUpdateModal {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.termsOfUseModalTitle);
     } catch (e) {
@@ -39,9 +39,20 @@ class TermsOfUseUpdateModal {
 
   async confirmAcceptTermsOfUseUpdate() {
     console.log('Click to confirm acceptance of terms of use update');
-    await this.driver.clickElementAndWaitToDisappear(this.popoverScrollButton);
+
+    try {
+      await this.driver.clickElementAndWaitToDisappear(
+        this.popoverScrollButton,
+        5000,
+      );
+    } catch (e) {
+      console.log('The scroll button did not disappear, continuing...');
+    }
+
     await this.driver.clickElement(this.termsOfUseCheckbox);
-    await this.driver.clickElementAndWaitToDisappear(this.acceptButton);
+    // complete recovery flow takes time as multiple background requests are triggered
+    // and can temporarily block the UI
+    await this.driver.clickElementAndWaitToDisappear(this.acceptButton, 10000);
   }
 }
 

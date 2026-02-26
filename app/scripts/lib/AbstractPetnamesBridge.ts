@@ -5,10 +5,10 @@ import {
   SetNameRequest,
 } from '@metamask/name-controller';
 import {
+  Messenger,
   ActionConstraint,
   EventConstraint,
-  RestrictedMessenger,
-} from '@metamask/base-controller';
+} from '@metamask/messenger';
 
 // Use the same type for both the source entries and the argument to NameController::setName.
 export type PetnameEntry = SetNameRequest & {
@@ -25,7 +25,11 @@ export enum ChangeType {
 }
 
 enum SyncDirection {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SOURCE_TO_PETNAMES = 'Source->Petnames',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   PETNAMES_TO_SOURCE = 'Petnames->Source',
 }
 
@@ -37,13 +41,7 @@ type PetnamesBridgeAllowedEvents = NameStateChange;
 export type PetnamesBridgeMessenger<
   Event extends EventConstraint = never,
   Action extends ActionConstraint = never,
-> = RestrictedMessenger<
-  'PetnamesBridge',
-  Action,
-  PetnamesBridgeAllowedEvents | Event,
-  Action['type'],
-  (PetnamesBridgeAllowedEvents | Event)['type']
->;
+> = Messenger<'PetnamesBridge', Action, PetnamesBridgeAllowedEvents | Event>;
 
 /**
  * Get a string key for the given entry.

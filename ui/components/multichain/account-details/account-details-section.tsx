@@ -29,17 +29,16 @@ export const AccountDetailsSection = ({
   address: string;
   onExportClick: (str: string) => void;
 }) => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, address),
   );
-  const {
-    metadata: { keyring },
-  } = account;
-  const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
+  const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(
+    account?.metadata.keyring?.type,
+  );
   const keyrings = useSelector(getMetaMaskKeyrings);
   const exportSrpFeatureEnabled = isAbleToRevealSrp(account, keyrings);
 
@@ -58,8 +57,12 @@ export const AccountDetailsSection = ({
               category: MetaMetricsEventCategory.Accounts,
               event: MetaMetricsEventName.KeyExportSelected,
               properties: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 key_type: MetaMetricsEventKeyType.Pkey,
                 location: 'Account Details Modal',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 hd_entropy_index: hdEntropyIndex,
               },
             });

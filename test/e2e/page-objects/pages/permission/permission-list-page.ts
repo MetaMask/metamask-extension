@@ -11,11 +11,13 @@ class PermissionListPage {
 
   private readonly permissionsPage = '[data-testid="permissions-page"]';
 
+  private readonly backButton = '[data-testid="permissions-page-back"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.permissionsPage);
     } catch (e) {
@@ -43,7 +45,7 @@ class PermissionListPage {
    *
    * @param site - Site to check
    */
-  async check_connectedToSite(site: string): Promise<void> {
+  async checkConnectedToSite(site: string): Promise<void> {
     console.log('Check if account is connected to site', site);
     await this.driver.waitForSelector({ text: site, tag: 'p' });
   }
@@ -53,7 +55,7 @@ class PermissionListPage {
    *
    * @param expectedNumberOfConnectedSites - The expected number of connected sites, default to 1
    */
-  async check_numberOfConnectedSites(
+  async checkNumberOfConnectedSites(
     expectedNumberOfConnectedSites: number = 1,
   ): Promise<void> {
     console.log(
@@ -66,6 +68,14 @@ class PermissionListPage {
       );
       return connectedSites.length === expectedNumberOfConnectedSites;
     });
+  }
+
+  /**
+   * Click the back button on the permissions page
+   */
+  async clickBackButton(): Promise<void> {
+    console.log('Click back button on permissions page');
+    await this.driver.clickElement(this.backButton);
   }
 }
 

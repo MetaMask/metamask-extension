@@ -1,3 +1,5 @@
+'use no memo';
+
 import React from 'react';
 import { ButtonLink, Text } from '../../../../../components/component-library';
 import {
@@ -5,11 +7,10 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
-export const PendingTransactionAlertMessage = () => {
-  const t = useI18nContext();
-
+export const PendingTransactionAlertMessage = (
+  t: (key: string, ...args: unknown[]) => string,
+) => {
   return (
     <Text
       variant={TextVariant.bodyMd}

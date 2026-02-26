@@ -89,29 +89,6 @@
       overflow: auto;
     }
 
-    &__main-view &__tab {
-      @include design-system.H6;
-
-      flex-grow: 1;
-      color: var(--color-icon-default);
-      font-weight: 500;
-    }
-
-    &__main-view &__tab--active {
-      color: var(--color-primary-default);
-    }
-
-    &__main-view &__tab button {
-      padding: 8px;
-    }
-
-    &__tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      border-bottom: 0;
-      padding-inline: 16px;
-    }
-
     &__wrapper {
       max-height: 100%;
       overflow-y: scroll;

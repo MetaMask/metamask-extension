@@ -7,7 +7,7 @@ import {
 import { type MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { Hex } from '@metamask/utils';
-import { BtcScope, SolScope } from '@metamask/keyring-api';
+import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import {
   NETWORK_TO_NAME_MAP,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
@@ -90,6 +90,12 @@ export const mockMultichainNetworkState =
           nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
           isEvm: false,
         },
+        [TrxScope.Mainnet]: {
+          chainId: TrxScope.Mainnet,
+          name: 'Tron',
+          nativeCurrency: `${TrxScope.Mainnet}/slip44:195`,
+          isEvm: false,
+        },
       },
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
       isEvmSelected: true,
@@ -122,8 +128,8 @@ export const mockNetworkState = (
   const networkConfigurations = networks.map((network) => {
     const blockExplorer =
       !('blockExplorerUrl' in network) || network.blockExplorerUrl
-        ? network.blockExplorerUrl ??
-          `https://localhost/blockExplorer/${network.chainId}`
+        ? (network.blockExplorerUrl ??
+          `https://localhost/blockExplorer/${network.chainId}`)
         : undefined;
 
     const rpc =
