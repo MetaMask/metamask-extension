@@ -9,6 +9,8 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MINUTE } from '../../../shared/constants/time';
 import type { BridgeToken } from '../../ducks/bridge/types';
 import { useTokensWithFiltering } from './useTokensWithFiltering';
+import { setBackgroundConnection } from '../../store/background-connection';
+import { flushPromises } from '../../../test/lib/timer-helpers';
 
 const NATIVE_TOKEN = getNativeAssetForChainId(CHAIN_IDS.MAINNET);
 
@@ -41,6 +43,10 @@ const mockFetchTopAssetsList = jest.fn().mockResolvedValue([
 jest.mock('../../pages/swaps/swaps.util', () => ({
   fetchTopAssetsList: (c: string) => mockFetchTopAssetsList(c),
 }));
+
+setBackgroundConnection({
+  getBearerToken: jest.fn().mockResolvedValue('mock-bearer-token-for-tests'),
+} as never);
 
 describe('useTokensWithFiltering', () => {
   beforeEach(() => {
@@ -88,6 +94,7 @@ describe('useTokensWithFiltering', () => {
     }, mockStore);
 
     await waitForNextUpdate();
+    await flushPromises();
 
     expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);
     expect(mockFetchTopAssetsList).toHaveBeenCalledWith('0x1');
@@ -135,10 +142,11 @@ describe('useTokensWithFiltering', () => {
     }, mockStore);
 
     await waitForNextUpdate();
+    await flushPromises();
 
     expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);
     expect(mockFetchTopAssetsList).toHaveBeenCalledWith('0x1');
-    expect(mockFetchBridgeTokens).toHaveBeenCalledTimes(1);
+    expect(mockFetchBridgeTokens).toHaveBeenCalledTimes(2);
     expect(mockFetchBridgeTokens).toHaveBeenCalledWith('0x1');
     // The first 10 tokens returned
     const first10Tokens = [...result.current(() => true)].slice(0, 10);
@@ -181,12 +189,13 @@ describe('useTokensWithFiltering', () => {
     }, mockStore);
 
     await waitForNextUpdate();
+    await flushPromises();
 
     expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);
     expect(mockFetchTopAssetsList).toHaveBeenCalledWith(
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
     );
-    expect(mockFetchBridgeTokens).toHaveBeenCalledTimes(1);
+    expect(mockFetchBridgeTokens).toHaveBeenCalledTimes(2);
     expect(mockFetchBridgeTokens).toHaveBeenCalledWith(
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
     );
@@ -224,10 +233,11 @@ describe('useTokensWithFiltering', () => {
       return filteredTokenListGenerator;
     }, mockStore);
     await waitForNextUpdate();
+    await flushPromises();
 
     expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);
     expect(mockFetchTopAssetsList).toHaveBeenCalledWith('0x89');
-    expect(mockFetchBridgeTokens).toHaveBeenCalledTimes(1);
+    expect(mockFetchBridgeTokens).toHaveBeenCalledTimes(2);
     expect(mockFetchBridgeTokens).toHaveBeenCalledWith('0x89');
     // The first 10 tokens returned
     const first10Tokens = [
