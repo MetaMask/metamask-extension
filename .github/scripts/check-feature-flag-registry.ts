@@ -372,9 +372,7 @@ function extractFlagReferences(
   // 3. Strip string literals (may change length) for remaining patterns.
   const sanitized = stripStringLiterals(commentStripped);
 
-  // 4. Run bracket string-literal patterns on commentStripped (needs the
-  //    quoted flag name), but use the same-length mask to reject matches
-  //    that fall inside an outer string literal.
+  // 4. Bracket string-literal patterns (use mask to reject matches inside outer strings).
   for (const pattern of BRACKET_STRING_PATTERNS) {
     pattern.lastIndex = 0;
     let match: RegExpExecArray | null;

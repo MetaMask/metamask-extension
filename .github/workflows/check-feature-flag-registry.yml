@@ -32,7 +32,9 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Fetch base branch for diff
-        run: git fetch origin ${{ github.base_ref }}
+        run: git fetch origin "$BASE_REF"
+        env:
+          BASE_REF: ${{ github.base_ref }}
 
       - name: Check feature flag registry
         env:
