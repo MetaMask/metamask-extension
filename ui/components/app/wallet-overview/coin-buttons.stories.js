@@ -5,16 +5,7 @@ import CoinButtons from './coin-buttons';
 const { accounts, selectedAccount } = testData.metamask.internalAccounts;
 
 export default {
-  title: 'Components/App/WalletOverview/CoinButtons (deprecated)',
-  component: CoinButtons,
-  parameters: {
-    docs: {
-      description: {
-        component:
-          '**Deprecated**: This component is deprecated and will be removed in a future release.',
-      },
-    },
-  },
+  title: 'Components/App/WalletOverview/CoinButtons',
   args: {
     account: accounts[selectedAccount],
     chainId: '1',
@@ -33,6 +24,14 @@ export default {
       string: '0.0031',
     },
     classPrefix: 'coin',
+  },
+  component: CoinButtons,
+  parameters: {
+    docs: {
+      description: {
+        component: 'A component that displays coin buttons',
+      },
+    },
   },
 };
 
