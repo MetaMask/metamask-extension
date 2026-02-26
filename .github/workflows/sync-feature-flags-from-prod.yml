@@ -27,7 +27,7 @@ jobs:
         run: |
           set +e
           yarn feature-flags:sync:check 2>&1 | tee sync-report.txt
-          EXIT=$?
+          EXIT=${PIPESTATUS[0]}
           set -e
           echo "HAS_DRIFT=$( [ $EXIT -eq 1 ] && echo true || echo false )" >> "$GITHUB_OUTPUT"
           echo "HAS_ERROR=$( [ $EXIT -eq 2 ] && echo true || echo false )" >> "$GITHUB_OUTPUT"
