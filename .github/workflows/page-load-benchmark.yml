@@ -17,9 +17,6 @@ on:
         required: true
         type: string
         description: The run ID to get builds from
-    secrets:
-      EXTENSION_BENCHMARK_STATS_TOKEN:
-        required: true
 
 jobs:
   page-load-benchmark-pr:
@@ -35,11 +32,10 @@ jobs:
       BENCHMARK_PAGE_LOADS: ${{ inputs.page-loads }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Download artifact 'build-test-browserify'
         uses: actions/download-artifact@v7
@@ -60,8 +56,3 @@ jobs:
           name: page-load-benchmark-results
           path: test-artifacts/benchmarks/page-load-benchmark-results.json
 
-      - name: Upload benchmark results (historical data)
-        if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
-        run: .github/scripts/benchmark-stats-commit.sh
-        env:
-          EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}

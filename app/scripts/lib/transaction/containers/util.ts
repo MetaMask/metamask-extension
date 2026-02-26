@@ -5,7 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 import { cloneDeep } from 'lodash';
 import { createProjectLogger } from '@metamask/utils';
-import { Hex } from 'viem';
+import type { Hex } from 'viem';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import { enforceSimulations } from './enforced-simulations';
 

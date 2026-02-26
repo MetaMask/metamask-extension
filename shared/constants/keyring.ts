@@ -14,13 +14,11 @@ export enum InternalKeyringType {
   imported = 'Simple Key Pair',
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export enum SnapKeyringType {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   snap = 'Snap Keyring',
 }
-///: END:ONLY_INCLUDE_IF
 
 /**
  * All keyrings supported by MetaMask.
@@ -28,9 +26,7 @@ export enum SnapKeyringType {
 export const KeyringType = {
   ...HardwareKeyringType,
   ...InternalKeyringType,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   ...SnapKeyringType,
-  ///: END:ONLY_INCLUDE_IF
 };
 
 export const KEYRING_TYPES_SUPPORTING_7702 = [

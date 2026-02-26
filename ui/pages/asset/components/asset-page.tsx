@@ -295,7 +295,11 @@ const AssetPage = ({
       >
         {showTronResources && (
           <Box>
-            <TronDailyResources account={selectedAccount} chainId={chainId} />
+            <TronDailyResources
+              account={selectedAccount}
+              chainId={chainId}
+              t={t}
+            />
             <Box
               marginTop={2}
               marginBottom={2}

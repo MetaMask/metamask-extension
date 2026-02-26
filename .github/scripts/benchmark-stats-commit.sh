@@ -1,4 +1,29 @@
 #!/usr/bin/env bash
+#
+# Pushes benchmark results to MetaMask/extension_benchmark_stats.
+#
+# Supports two modes via the BENCHMARK_DATA_TYPE env var:
+#
+#   page-load (default)
+#     Reads a single benchmark JSON file and appends it as-is
+#     to stats/page_load_data.json, keyed by commit hash.
+#
+#   ui-startup
+#     Reads multiple chrome-browserify benchmark JSON files from a directory,
+#     wraps them with a timestamp and preset map, and appends to
+#     stats/ui_startup_data.json, keyed by commit hash.
+#
+# Required env vars:
+#   EXTENSION_BENCHMARK_STATS_TOKEN - GitHub token for pushing to stats repo
+#   HEAD_COMMIT_HASH                - Commit hash to key the data
+#   OWNER                           - GitHub repo owner (e.g. "MetaMask")
+#
+# Optional env vars:
+#   BENCHMARK_DATA_TYPE     - "page-load" (default) or "ui-startup"
+#   BENCHMARK_FILE          - Path to single benchmark JSON (page-load mode)
+#   BENCHMARK_RESULTS_DIR   - Directory with benchmark JSONs (ui-startup mode)
+#   BRANCH_NAME             - Branch to store data under (default "main"); used as
+#                             subdirectory path in the stats repo (release/12.x → release-12.x)
 
 set -e
 set -u
@@ -19,61 +44,196 @@ if [[ -z "${OWNER:-}" ]]; then
     exit 1
 fi
 
-mkdir temp
+DATA_TYPE="${BENCHMARK_DATA_TYPE:-page-load}"
+CLONE_DIR="temp-benchmark-stats"
+
+# Sanitize branch name for use as a directory (e.g. release/12.x → release-12.x)
+RAW_BRANCH="${BRANCH_NAME:-main}"
+SAFE_BRANCH=$(echo "${RAW_BRANCH}" | sed 's|/|-|g')
+
+# Assemble the commit data based on mode
+assemble_page_load_data() {
+    local benchmark_file="${BENCHMARK_FILE:-../test-artifacts/benchmarks/page-load-benchmark-results.json}"
+
+    jq . "${benchmark_file}" > /dev/null || {
+        echo "Error: Benchmark JSON is invalid: ${benchmark_file}"
+        exit 1
+    }
+
+    cat "${benchmark_file}"
+}
+
+assemble_ui_startup_data() {
+    local results_dir="${BENCHMARK_RESULTS_DIR:-benchmark-results}"
+
+    if [[ ! -d "${results_dir}" ]]; then
+        echo "Benchmark results directory not found: ${results_dir}"
+        exit 1
+    fi
+
+    # Page load presets run on ALL browser/buildType combinations (chrome/firefox × browserify/webpack).
+    # They are stored under the "pageLoad" group, keyed as "{browser}-{buildType}-{preset}"
+    # so each combination has its own historical entry (e.g. "chrome-browserify-standardHome").
+    #
+    # User action and performance presets only run on chrome-browserify (the canonical production
+    # target) and are stored under their own preset key (e.g. "userActions", "performanceAssets").
+    local PAGE_LOAD_PRESETS=("standardHome" "powerUserHome")
+
+    local presets_json="{}"
+    local page_load_json="{}"
+    local file_count=0
+
+    for file in "${results_dir}"/benchmark-*.json; do
+        if [[ ! -f "${file}" ]]; then
+            continue
+        fi
+
+        if ! jq . "${file}" > /dev/null 2>&1; then
+            echo "Warning: Skipping invalid JSON file: ${file}"
+            continue
+        fi
+
+        # Filename format: benchmark-{browser}-{buildType}-{preset}.json
+        # browser:   chrome | firefox
+        # buildType: browserify | webpack
+        local base_name browser build_type preset_name
+        base_name=$(basename "${file}" .json | sed 's/^benchmark-//')
+        browser=$(echo "${base_name}" | cut -d'-' -f1)
+        build_type=$(echo "${base_name}" | cut -d'-' -f2)
+        preset_name=$(echo "${base_name}" | cut -d'-' -f3-)
+
+        local is_page_load=false
+        for pl_preset in "${PAGE_LOAD_PRESETS[@]}"; do
+            if [[ "${preset_name}" == "${pl_preset}" ]]; then
+                is_page_load=true
+                break
+            fi
+        done
+
+        if [[ "${is_page_load}" == true ]]; then
+            # Store all browser/buildType combinations for page load presets.
+            # Unwrap the outer key (benchmark JSON wraps result in { "<presetName>": {...} }).
+            local preset_data page_load_key
+            preset_data=$(jq --arg key "${preset_name}" \
+                'if (keys | length) == 1 and has($key) then .[$key] else . end' "${file}")
+            page_load_key="${browser}-${build_type}-${preset_name}"
+            echo "  Adding page load preset '${page_load_key}'"
+            page_load_json=$(echo "${page_load_json}" | jq \
+                --arg key "${page_load_key}" \
+                --argjson data "${preset_data}" \
+                '. + {($key): $data}')
+        elif [[ "${browser}" == "chrome" && "${build_type}" == "browserify" ]]; then
+            # For user action and performance presets, only store chrome-browserify —
+            # that is what the PR comment displays.
+            local preset_data
+            preset_data=$(jq . "${file}")
+            echo "  Adding preset '${preset_name}' (chrome-browserify)"
+            presets_json=$(echo "${presets_json}" | jq \
+                --arg key "${preset_name}" \
+                --argjson data "${preset_data}" \
+                '. + {($key): $data}')
+        else
+            echo "  Skipping ${browser}-${build_type}-${preset_name} (non-page-load, non-canonical)"
+            continue
+        fi
+
+        file_count=$((file_count + 1))
+    done
+
+    if [[ ${file_count} -eq 0 ]]; then
+        echo "No benchmark files found in ${results_dir}, skipping."
+        exit 0
+    fi
+
+    # Merge the pageLoad group into presets (only if any page load files were found)
+    if [[ "${page_load_json}" != "{}" ]]; then
+        presets_json=$(echo "${presets_json}" | jq --argjson pl "${page_load_json}" '. + {"pageLoad": $pl}')
+    fi
+
+    echo "Collected ${file_count} preset(s)"
+
+    jq -n \
+        --argjson timestamp "$(date +%s000)" \
+        --argjson presets "${presets_json}" \
+        '{ timestamp: $timestamp, presets: $presets }'
+}
+
+# Resolve stats file and assemble data
+case "${DATA_TYPE}" in
+    page-load)
+        STATS_FILE="stats/${SAFE_BRANCH}/page_load_data.json"
+        COMMIT_MESSAGE="Adding page load benchmark data for ${RAW_BRANCH} at commit: ${HEAD_COMMIT_HASH}"
+        echo "Mode: page-load (branch: ${RAW_BRANCH})"
+        # Assemble after cloning since the benchmark file path is relative
+        ;;
+    ui-startup)
+        STATS_FILE="stats/${SAFE_BRANCH}/ui_startup_data.json"
+        COMMIT_MESSAGE="Adding UI startup benchmark data for ${RAW_BRANCH} at commit: ${HEAD_COMMIT_HASH}"
+        echo "Mode: ui-startup (branch: ${RAW_BRANCH})"
+        echo "Assembling benchmark data from directory..."
+        COMMIT_DATA=$(assemble_ui_startup_data)
+        ;;
+    *)
+        echo "Unknown BENCHMARK_DATA_TYPE: ${DATA_TYPE}"
+        echo "Must be 'page-load' or 'ui-startup'"
+        exit 1
+        ;;
+esac
+
+# --- Clone the stats repo ---
+
+rm -rf "${CLONE_DIR}"
+mkdir -p "${CLONE_DIR}"
 
 git config --global user.email "metamaskbot@users.noreply.github.com"
-
 git config --global user.name "MetaMask Bot"
 
-git clone --depth 1 https://github.com/MetaMask/extension_benchmark_stats.git temp
-
-cd temp
-
+git clone --depth 1 https://github.com/MetaMask/extension_benchmark_stats.git "${CLONE_DIR}"
+cd "${CLONE_DIR}"
 git fetch origin main:main
-
 git checkout main
 
-BENCHMARK_FILE="../test-artifacts/benchmarks/page-load-benchmark-results.json"
-STATS_FILE="stats/page_load_data.json"
-TEMP_FILE="stats/page_load_data.temp.json"
+# For page-load mode, assemble after cd so relative paths work
+if [[ "${DATA_TYPE}" == "page-load" ]]; then
+    COMMIT_DATA=$(assemble_page_load_data)
+fi
 
-# Ensure the JSON file exists
+# --- Ensure the stats file exists ---
+
+mkdir -p "$(dirname "${STATS_FILE}")"
 if [[ ! -f "${STATS_FILE}" ]]; then
     echo "{}" > "${STATS_FILE}"
 fi
 
-# Validate JSON files before modification
 jq . "${STATS_FILE}" > /dev/null || {
-    echo "Error: Existing stats JSON is invalid"
-    exit 1
-}
-jq . "${BENCHMARK_FILE}" > /dev/null || {
-    echo "Error: New benchmark JSON is invalid"
+    echo "Error: Existing stats JSON is invalid: ${STATS_FILE}"
     exit 1
 }
 
-# Check if the SHA already exists in the stats file
+# --- Check for duplicate ---
+
 if jq -e "has(\"${HEAD_COMMIT_HASH}\")" "${STATS_FILE}" > /dev/null; then
-    echo "SHA ${HEAD_COMMIT_HASH} already exists in stats file. No new commit needed."
+    echo "SHA ${HEAD_COMMIT_HASH} already exists in ${STATS_FILE}. No new commit needed."
+    cd ..
+    rm -rf "${CLONE_DIR}"
     exit 0
 fi
 
-# Append new benchmark data correctly using jq
-jq --arg sha "${HEAD_COMMIT_HASH}" --argjson data "$(cat "${BENCHMARK_FILE}")" \
-    '. + {($sha): $data}' "${STATS_FILE}" > "${TEMP_FILE}"
+# --- Append and push ---
 
-# Overwrite the original JSON file with the corrected version
+TEMP_FILE="${STATS_FILE}.tmp"
+
+jq --arg sha "${HEAD_COMMIT_HASH}" --argjson data "${COMMIT_DATA}" \
+    '. + {($sha): $data}' "${STATS_FILE}" > "${TEMP_FILE}"
 mv "${TEMP_FILE}" "${STATS_FILE}"
 
-# Only add the JSON file
-git add stats/page_load_data.json
-
-git commit --message "Adding page load benchmark data at commit: ${HEAD_COMMIT_HASH}"
+git add "${STATS_FILE}"
+git commit --message "${COMMIT_MESSAGE}"
 
 repo_slug="${OWNER}/extension_benchmark_stats"
-
 git push "https://metamaskbot:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${repo_slug}" main
 
 cd ..
+rm -rf "${CLONE_DIR}"
 
-rm -rf temp
+echo "Successfully committed ${DATA_TYPE} benchmark data for ${HEAD_COMMIT_HASH}"

@@ -41,6 +41,10 @@ import {
   getSelectedNetworkClientId,
   getNetworkConfigurationsByChainId,
 } from '../../shared/modules/selectors/networks';
+import {
+  getAccountTrackerControllerAccountsByChainId,
+  getTokensControllerAllTokens,
+} from '../../shared/modules/selectors/assets-migration';
 import { getEnabledNetworks } from '../../shared/modules/selectors/multichain';
 // TODO: Fix circular dependency
 // To avoid import evaluating as `undefined` due to circular dependency,
@@ -321,11 +325,9 @@ export function getShowDataDeletionErrorModal(state) {
   return state.appState.showDataDeletionErrorModal;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export function getKeyringSnapRemovalResult(state) {
   return state.appState.keyringRemovalSnapModal;
 }
-///: END:ONLY_INCLUDE_IF
 
 export const getPendingTokens = (state) => state.appState.pendingTokens;
 
@@ -481,10 +483,8 @@ export function getAccountTypeForKeyring(keyring) {
       return 'hardware';
     case KeyringType.imported:
       return 'imported';
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case KeyringType.snap:
       return 'snap';
-    ///: END:ONLY_INCLUDE_IF
     default:
       return 'default';
   }
@@ -497,7 +497,7 @@ export function getAccountTypeForKeyring(keyring) {
  * @returns {object} A map of account addresses to account objects (which includes the account balance)
  */
 export const getMetaMaskAccountBalances = createSelector(
-  (state) => state.metamask.accountsByChainId,
+  getAccountTrackerControllerAccountsByChainId,
   getCurrentChainId,
   (accountsByChainId, currentChainId) => {
     const balancesForCurrentChain = accountsByChainId?.[currentChainId] ?? {};
@@ -515,7 +515,7 @@ export const getMetaMaskAccountBalances = createSelector(
 );
 
 export const getMetaMaskCachedBalances = createSelector(
-  (state) => state.metamask.accountsByChainId,
+  getAccountTrackerControllerAccountsByChainId,
   getEnabledNetworks,
   getCurrentChainId,
   (_, networkChainId) => networkChainId,
@@ -630,6 +630,21 @@ export const getMetaMaskAccounts = createChainIdSelector(
   },
 );
 
+export const getMetaMaskAccountsWithoutBalance = createSelector(
+  getInternalAccounts,
+  (accountsArr) => {
+    /** @type {Record<string, import('@metamask/keyring-internal-api').InternalAccount>} */
+    const result = accountsArr.reduce((map, account) => {
+      if (account?.address) {
+        map[account.address] = account;
+      }
+      return map;
+    }, {});
+
+    return result;
+  },
+);
+
 /**
  * Returns the address of the selected InternalAccount from the Metamask state.
  *
@@ -692,14 +707,21 @@ export const getSelectedEvmInternalAccount = createSelector(
  *
  * @param keyrings - The array of keyrings.
  * @param accounts - The object containing the accounts.
- * @returns The array of internal accounts sorted by keyring.
+ * @returns {import('@metamask/keyring-internal-api').InternalAccount[]} The array of internal accounts sorted by keyring.
  */
 export const getInternalAccountsSortedByKeyring = createSelector(
   getMetaMaskKeyrings,
-  getMetaMaskAccounts,
-  (keyrings, accounts) => {
+  getMetaMaskAccountsWithoutBalance,
+  (
+    /** @type {import('@metamask/keyring-controller').KeyringObject[]} */
+    keyrings,
+    /** @type {Record<string, import('@metamask/keyring-internal-api').InternalAccount>} */
+    accounts,
+  ) => {
     const thirdPartySnaps = 'thirdPartySnaps';
+
     // Create a map of entropySource map to accounts for quick lookup
+    /** @type {Record<string, import('@metamask/keyring-internal-api').InternalAccount[]>} */
     const entropySourceToAccountsMap = Object.values(accounts).reduce(
       (map, account) => {
         if (account.metadata?.keyring?.type === KeyringTypes.snap) {
@@ -715,7 +737,10 @@ export const getInternalAccountsSortedByKeyring = createSelector(
     );
 
     // keep existing keyring order
-    return keyrings.reduce((internalAccounts, keyring) => {
+    /**
+     * @type {import('@metamask/keyring-internal-api').InternalAccount[]}
+     */
+    const result = keyrings.reduce((internalAccounts, keyring) => {
       // Get regular accounts for this keyring
       const keyringAccounts = keyring.accounts.map(
         (address) => accounts[address],
@@ -744,6 +769,8 @@ export const getInternalAccountsSortedByKeyring = createSelector(
       internalAccounts.push(...keyringAccounts);
       return internalAccounts;
     }, []);
+
+    return result;
   },
 );
 
@@ -785,7 +812,8 @@ export function getHDEntropyIndex(state) {
 }
 
 export function getCrossChainMetaMaskCachedBalances(state) {
-  const allAccountsByChainId = state.metamask.accountsByChainId;
+  const allAccountsByChainId =
+    getAccountTrackerControllerAccountsByChainId(state);
   return Object.keys(allAccountsByChainId).reduce((acc, chainId) => {
     acc[chainId] = Object.keys(allAccountsByChainId[chainId]).reduce(
       (innerAcc, address) => {
@@ -839,7 +867,7 @@ export function getSelectedAccountTokensAcrossChains(state) {
     return tokensByChain;
   }
 
-  const { allTokens } = state.metamask;
+  const allTokens = getTokensControllerAllTokens(state);
 
   const nativeTokenBalancesByChainId =
     getSelectedAccountNativeTokenCachedBalanceByChainId(state);
@@ -894,7 +922,7 @@ export function getSelectedAccountTokensAcrossChains(state) {
  * @param {string} chainId - The chainId of the account
  */
 export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
-  (state) => state.metamask.accountsByChainId,
+  getAccountTrackerControllerAccountsByChainId,
   (_state, accountAddress) => accountAddress,
   (accountsByChainId, selectedAddress) => {
     const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
@@ -918,7 +946,7 @@ export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
  */
 export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
   [
-    (state) => state.metamask.allTokens,
+    getTokensControllerAllTokens,
     (state) => state.metamask.networkConfigurationsByChainId,
     (state, accountAddress) =>
       getNativeTokenCachedBalanceByChainIdSelector(state, accountAddress),
@@ -1026,6 +1054,24 @@ export const getMetaMaskAccountsOrdered = createSelector(
   },
 );
 
+/**
+ * Get internal accounts in an object format by address
+ *
+ * @returns {Record<string, import('@metamask/keyring-internal-api').InternalAccount>} An object of internal accounts by address
+ */
+export const getMetaMaskAccountsOrderedWithoutBalance = createSelector(
+  getInternalAccountsSortedByKeyring,
+  getMetaMaskAccountsWithoutBalance,
+  (internalAccounts, accounts) => {
+    return internalAccounts.map((internalAccount) => ({
+      ...internalAccount,
+      ...(internalAccount?.address
+        ? accounts[internalAccount.address] || {}
+        : {}),
+    }));
+  },
+);
+
 export const getMetaMaskAccountsConnected = createSelector(
   getMetaMaskAccountsOrdered,
   (connectedAccounts) =>
@@ -1048,9 +1094,7 @@ export function getSelectedAccountCachedBalance(state) {
   return cachedBalances?.[selectedAddress];
 }
 
-export function getAllTokens(state) {
-  return state.metamask.allTokens;
-}
+export { getTokensControllerAllTokens as getAllTokens };
 
 /**
  * Get a flattened list of all ERC-20 tokens owned by the user.
@@ -1059,7 +1103,7 @@ export function getAllTokens(state) {
  * @returns {object[]} All ERC-20 tokens owned by the user in a flat array.
  */
 export const selectAllTokensFlat = createSelector(
-  getAllTokens,
+  getTokensControllerAllTokens,
   (tokensByAccountByChain) => {
     const tokensByAccountArray = Object.values(tokensByAccountByChain);
 
@@ -1097,7 +1141,7 @@ export const getSelectedAccount = createSelector(
 
 export const getWatchedToken = (transactionMeta) =>
   createSelector(
-    [getSelectedAccount, getAllTokens],
+    [getSelectedAccount, getTokensControllerAllTokens],
     (selectedAccount, detectedTokens) => {
       const { chainId } = transactionMeta;
 
@@ -3190,7 +3234,6 @@ export const getTokenScanResultsForAddresses = createDeepEqualSelector(
   },
 );
 
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 /**
  * Get the state of the `addSnapAccountEnabled` flag.
  *
@@ -3200,7 +3243,6 @@ export const getTokenScanResultsForAddresses = createDeepEqualSelector(
 export function getIsAddSnapAccountEnabled(state) {
   return state.metamask.addSnapAccountEnabled;
 }
-///: END:ONLY_INCLUDE_IF
 
 export function getIsWatchEthereumAccountEnabled(state) {
   return state.metamask.watchEthereumAccountEnabled;
@@ -3343,9 +3385,15 @@ export function getUnconnectedAccounts(state, activeTab) {
 export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
   getOriginOfCurrentTab,
   (state) => state.metamask.permissionHistory,
-  getMetaMaskAccountsOrdered,
+  getMetaMaskAccountsOrderedWithoutBalance,
   getAllPermittedAccountsForCurrentTab,
-  (origin, permissionHistory, orderedAccounts, connectedAccounts) => {
+  (
+    origin,
+    permissionHistory,
+    /** @type {import('@metamask/keyring-internal-api').InternalAccount[]} */
+    orderedAccounts,
+    connectedAccounts,
+  ) => {
     const permissionHistoryByAccount =
       permissionHistory[origin]?.eth_accounts?.accounts || {};
 
@@ -3356,7 +3404,14 @@ export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
       },
     );
 
-    return orderedAccounts
+    /**
+     * @type {(
+     *   import('@metamask/keyring-internal-api').InternalAccount & {
+     *   name: string;
+     *   lastActive: number;
+     * })[]}
+     */
+    const result = orderedAccounts
       .filter((account) => connectedAccountsAddresses.includes(account.address))
       .map((account) => ({
         ...account,
@@ -3364,6 +3419,7 @@ export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
           ...account.metadata,
           lastActive: permissionHistoryByAccount?.[account.address],
         },
+        name: account.metadata?.name ?? '',
       }))
       .sort(
         ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
@@ -3378,6 +3434,8 @@ export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
           return lastSelectedB - lastSelectedA;
         },
       );
+
+    return result;
   },
 );
 
@@ -3567,7 +3625,6 @@ export function getSnapsInstallPrivacyWarningShown(state) {
   return snapsInstallPrivacyWarningShown;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export function getsnapsAddSnapAccountModalDismissed(state) {
   const { snapsAddSnapAccountModalDismissed } = state.metamask;
 
@@ -3589,7 +3646,6 @@ export const getKeyringSnapAccounts = createSelector(
     return keyringAccounts;
   },
 );
-///: END:ONLY_INCLUDE_IF
 
 export const getSelectedKeyringByIdOrDefault = createSelector(
   getMetaMaskKeyrings,

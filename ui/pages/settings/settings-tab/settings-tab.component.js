@@ -209,6 +209,18 @@ export default class SettingsTab extends PureComponent {
     );
   }
 
+  trackShowDefaultAddress(value, networkScope) {
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        default_address_network: networkScope,
+        location: 'Settings Page',
+        show_default_address: value,
+      },
+    });
+  }
+
   renderShowDefaultAddressOptIn() {
     const { t } = this.context;
     const {
@@ -250,7 +262,11 @@ export default class SettingsTab extends PureComponent {
           </div>
           <ToggleButton
             value={showDefaultAddress}
-            onToggle={(value) => setShowDefaultAddress(!value)}
+            onToggle={(value) => {
+              const newValue = !value;
+              setShowDefaultAddress(newValue);
+              this.trackShowDefaultAddress(newValue, defaultAddressScope);
+            }}
             dataTestId="show-default-address-toggle"
           />
         </Box>
@@ -269,6 +285,7 @@ export default class SettingsTab extends PureComponent {
             selectedOption={defaultAddressScope}
             onChange={(value) => {
               setDefaultAddressScope(value);
+              this.trackShowDefaultAddress(true, value);
               if (!showDefaultAddress) {
                 setShowDefaultAddress(true);
               }
