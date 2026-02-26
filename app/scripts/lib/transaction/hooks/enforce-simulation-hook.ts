@@ -5,9 +5,9 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { createProjectLogger } from '@metamask/utils';
-import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import { applyTransactionContainers } from '../containers/util';
+import { isEnforcedSimulationsEligible } from '../../../../../shared/lib/transaction/enforced-simulations';
 
 const log = createProjectLogger('enforce-simulation-hook');
 
@@ -39,51 +39,25 @@ export class EnforceSimulationHook {
     const { transactionMeta } = request;
     const { isFinal } = options;
 
-    const {
-      containerTypes,
-      delegationAddress,
-      origin,
-      simulationData,
-      txParamsOriginal,
-    } = transactionMeta;
+    const { containerTypes, txParamsOriginal } = transactionMeta;
 
-    if (!process.env.ENABLE_ENFORCED_SIMULATIONS) {
-      log('Skipping as enforced simulations are disabled');
+    if (!isEnforcedSimulationsEligible(transactionMeta)) {
+      log('Skipping as not eligible for enforced simulations');
       return {
         skipSimulation: false,
       };
     }
 
-    if (
-      containerTypes?.includes(TransactionContainerType.EnforcedSimulations) &&
-      !isFinal
-    ) {
-      log('Skipping as simulation already enforced');
+    if (containerTypes && !isFinal) {
+      if (
+        containerTypes.includes(TransactionContainerType.EnforcedSimulations)
+      ) {
+        log('Skipping as simulation already enforced');
+      } else {
+        log('Skipping as user opted out of enforced simulations');
+      }
+
       return {};
-    }
-
-    if (!origin || origin === ORIGIN_METAMASK) {
-      log('Skipping as internal transaction');
-      return {
-        skipSimulation: false,
-      };
-    }
-
-    if (!delegationAddress) {
-      log('Skipping as not upgraded account');
-      return {
-        skipSimulation: false,
-      };
-    }
-
-    if (
-      !simulationData?.nativeBalanceChange &&
-      !simulationData?.tokenBalanceChanges?.length
-    ) {
-      log('Skipping as no simulation changes');
-      return {
-        skipSimulation: false,
-      };
     }
 
     if (isFinal && !txParamsOriginal) {

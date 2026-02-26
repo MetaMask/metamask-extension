@@ -7,6 +7,7 @@ import {
 import { Hex, createProjectLogger, hexToNumber } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
+import { getEnforcedSimulationsSlippage } from '../../../../../shared/lib/transaction/enforced-simulations';
 import {
   DeleGatorEnvironment,
   Delegation,
@@ -53,7 +54,7 @@ export async function enforceSimulations({
   const chainIdDecimal = hexToNumber(chainId);
   const delegationEnvironment = getDeleGatorEnvironment(chainIdDecimal);
   const delegationManagerAddress = delegationEnvironment.DelegationManager;
-  const slippage = DEFAULT_SLIPPAGE;
+  const slippage = getEnforcedSimulationsSlippage();
 
   const delegation = generateDelegation({
     accountAddress: from,
