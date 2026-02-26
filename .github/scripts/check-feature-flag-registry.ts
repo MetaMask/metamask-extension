@@ -602,7 +602,6 @@ function findRegexClose(line: string, start: number): number {
 }
 
 // Single-pass string processor: strips or masks string literal contents.
-// Template literals with ${} expressions are left intact.
 function processStrings(line: string, mode: 'strip' | 'mask'): string {
   let result = '';
   let i = 0;
@@ -619,22 +618,24 @@ function processStrings(line: string, mode: 'strip' | 'mask'): string {
         j++;
       }
       if (hasExpr) {
-        let depth = 1, k = j + 2;
-        let foundClose = false;
+        let depth = 1, k = j + 2, foundClose = false;
+        result += ch; if (mode === 'mask') result += ' '.repeat(j - i - 1); result += '${';
         while (k < line.length) {
-          if (line[k] === '\\') { k += 2; continue; }
+          if (line[k] === '\\') { if (depth > 0) result += line[k] + (line[k+1]||''); else if (mode === 'mask') result += '  '; k += 2; continue; }
           if (depth === 0) {
-            if (line[k] === '`') { foundClose = true; break; }
-            if (line[k] === '$' && line[k + 1] === '{') { depth = 1; k += 2; continue; }
+            if (line[k] === '`') { foundClose = true; result += '`'; break; }
+            if (line[k] === '$' && line[k + 1] === '{') { depth = 1; result += '${'; k += 2; continue; }
+            if (mode === 'mask') result += ' ';
           } else {
-            if (line[k] === '`' && depth === 1) depth++;
-            else if (line[k] === '`' && depth > 1) depth--;
-            else if (line[k] === '$' && line[k + 1] === '{') { depth++; k++; }
-            else if (line[k] === '}') depth--;
+            if (line[k] === '$' && line[k + 1] === '{') { result += '${'; depth++; k++; }
+            else if (line[k] === '}') { result += '}'; depth--; }
+            else if (line[k] === '`' && depth === 1) { result += '`'; depth++; }
+            else if (line[k] === '`' && depth > 1) { result += '`'; depth--; }
+            else result += line[k];
           }
           k++;
         }
-        result += line.slice(i, foundClose ? k + 1 : line.length);
+        if (!foundClose) result += line.slice(k);
         i = foundClose ? k + 1 : line.length; continue;
       }
     }
