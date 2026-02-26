@@ -2,7 +2,6 @@ import type { UseInfiniteQueryOptions } from '@tanstack/react-query';
 import type { V4MultiAccountTransactionsResponse } from '@metamask/core-backend';
 import { STALE_TIMES } from '@metamask/core-backend';
 import type { NormalizedV4MultiAccountTransactionsResponse } from '../../shared/lib/multichain/types';
-import { selectTransactions } from '../../shared/lib/multichain/transformations';
 import { apiClient } from './api-client';
 
 type QueryOptions = Partial<
@@ -28,7 +27,7 @@ export const queries = {
     unknown,
     NormalizedV4MultiAccountTransactionsResponse
   > => {
-    const { accountAddresses, evmAddress, networks } = params;
+    const { accountAddresses, networks } = params;
     const queryParams = { networks, includeTxMetadata: true as const };
 
     const { queryKey } =
@@ -51,7 +50,6 @@ export const queries = {
           }) => Promise<V4MultiAccountTransactionsResponse>
         )({ signal });
       },
-      select: selectTransactions(evmAddress),
       getNextPageParam: ({ pageInfo }) =>
         pageInfo.hasNextPage ? pageInfo.endCursor : undefined,
       staleTime: STALE_TIMES.TRANSACTIONS,
