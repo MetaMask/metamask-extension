@@ -6,10 +6,10 @@ import {
 } from '../../../../store/actions';
 import { Asset, AssetStandard } from '../../types/send';
 
-const MAX_SAFE_INTEGER_BIGINT = BigInt(Number.MAX_SAFE_INTEGER);
-const MIN_SAFE_INTEGER_BIGINT = BigInt(Number.MIN_SAFE_INTEGER);
+const MAX_SAFE_INTEGER_LIMIT = BigInt(Number.MAX_SAFE_INTEGER);
+const MIN_SAFE_INTEGER_LIMIT = BigInt(Number.MIN_SAFE_INTEGER);
 
-const parseHexLikeStringToBigInt = (balance: string): bigint => {
+const parseHexLikeString = (balance: string): bigint => {
   const normalizedBalance = balance.trim();
 
   if (!normalizedBalance) {
@@ -32,7 +32,7 @@ const getBalanceValue = (balance: unknown): number | string => {
 
   try {
     if (typeof balance === 'string') {
-      parsedBalance = parseHexLikeStringToBigInt(balance);
+      parsedBalance = parseHexLikeString(balance);
     } else if (
       balance &&
       typeof balance === 'object' &&
@@ -52,8 +52,8 @@ const getBalanceValue = (balance: unknown): number | string => {
   }
 
   if (
-    parsedBalance >= MIN_SAFE_INTEGER_BIGINT &&
-    parsedBalance <= MAX_SAFE_INTEGER_BIGINT
+    parsedBalance >= MIN_SAFE_INTEGER_LIMIT &&
+    parsedBalance <= MAX_SAFE_INTEGER_LIMIT
   ) {
     return Number(parsedBalance);
   }
