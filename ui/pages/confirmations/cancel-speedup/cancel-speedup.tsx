@@ -139,8 +139,8 @@ const NetworkFeeRow = ({
 
 type SpeedRowProps = {
   chainId: string;
-  maxFeePerGas: string | undefined;
-  maxPriorityFeePerGas: string | undefined;
+  maxFeePerGas?: string;
+  maxPriorityFeePerGas?: string;
 };
 
 const SpeedRow = ({
@@ -154,8 +154,8 @@ const SpeedRow = ({
       <Box alignItems={BoxAlignItems.Center} className="flex">
         <GasTiming
           chainId={chainId}
-          maxFeePerGas={maxFeePerGas as string}
-          maxPriorityFeePerGas={maxPriorityFeePerGas as string}
+          maxFeePerGas={maxFeePerGas}
+          maxPriorityFeePerGas={maxPriorityFeePerGas}
         />
       </Box>
     </ConfirmInfoRow>
@@ -191,8 +191,7 @@ const GasFeesSection = ({ transaction }: { transaction: TransactionMeta }) => {
     numberOfDecimals: secondaryNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [nativeFee, nativeFeeParts] = useCurrencyDisplay(
+  const [, nativeFeeParts] = useCurrencyDisplay(
     maximumCostInHexWei,
     {
       numberOfDecimals: primaryNumberOfDecimals,
@@ -303,11 +302,9 @@ const CancelSpeedupModal = ({
 
   const {
     cancelTransaction,
-    editGasMode,
     gasFeeEstimates,
     speedUpTransaction,
     transaction,
-    updateTransaction,
     updateTransactionToTenPercentIncreasedGasFee,
     updateTransactionUsingEstimate,
   } = useGasFeeContext() as GasFeeContextType;
@@ -339,10 +336,8 @@ const CancelSpeedupModal = ({
   }, [
     appIsLoading,
     currentModal,
-    editGasMode,
     gasFeeEstimates,
     transaction,
-    updateTransaction,
     updateTransactionToTenPercentIncreasedGasFee,
     updateTransactionUsingEstimate,
   ]);
