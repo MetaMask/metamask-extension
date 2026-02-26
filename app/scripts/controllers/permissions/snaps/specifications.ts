@@ -260,7 +260,6 @@ export function getSnapPermissionSpecifications(
          */
         getClientCryptography: () => ({}),
 
-        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         getSnapKeyring: async () => {
           // TODO: Use `withKeyring` instead.
           const [snapKeyring] = messenger.call(
@@ -279,7 +278,6 @@ export function getSnapPermissionSpecifications(
 
           return snapKeyring;
         },
-        ///: END:ONLY_INCLUDE_IF
       },
     ),
   };

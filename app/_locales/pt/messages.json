@@ -5239,9 +5239,6 @@
   "perpsAddToFavorites": {
     "message": "Adicionar aos favoritos"
   },
-  "perpsAsk": {
-    "message": "Perguntar"
-  },
   "perpsAutoClose": {
     "message": "Encerramento automático"
   },
@@ -5252,14 +5249,8 @@
   "perpsAvailableBalance": {
     "message": "Saldo disponível"
   },
-  "perpsBid": {
-    "message": "Lance"
-  },
   "perpsCancelAllOrders": {
     "message": "Cancelar tudo"
-  },
-  "perpsClose": {
-    "message": "Fechar"
   },
   "perpsCloseAll": {
     "message": "Encerrar tudo"
@@ -5377,9 +5368,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Preço de liquidação"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Est. de preço de liquidação"
   },
   "perpsLong": {
     "message": "Long"
@@ -6223,12 +6211,6 @@
   },
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Tentar novamente"
-  },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Contas de carteira de hardware ainda não são qualificadas para receber recompensas. Mude para uma conta diferente para continuar."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Não há suporte para esta conta"
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Tentar novamente"

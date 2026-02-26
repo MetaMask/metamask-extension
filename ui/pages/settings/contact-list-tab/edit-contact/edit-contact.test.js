@@ -6,6 +6,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import '@testing-library/jest-dom';
 import { MOCK_ADDRESS_BOOK } from '../../../../../test/data/mock-data';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import EditContact from './edit-contact.component';
 
 describe('AddContact component', () => {
@@ -36,8 +37,8 @@ describe('AddContact component', () => {
 
     const { getByText } = renderWithProvider(<EditContact {...props} />, store);
 
-    expect(getByText('Username')).toBeInTheDocument();
-    expect(getByText('Public address')).toBeInTheDocument();
+    expect(getByText(messages.userName.message)).toBeInTheDocument();
+    expect(getByText(messages.publicAddress.message)).toBeInTheDocument();
   });
 
   it('should validate the address correctly', () => {
@@ -47,11 +48,11 @@ describe('AddContact component', () => {
     const addressInput = document.getElementById('address');
     fireEvent.change(addressInput, { target: { value: 'invalid address' } });
 
-    const submitButton = getByText('Save');
+    const submitButton = getByText(messages.save.message);
 
     fireEvent.click(submitButton);
 
-    expect(getByText('Invalid address')).toBeInTheDocument();
+    expect(getByText(messages.invalidAddress.message)).toBeInTheDocument();
   });
 
   it('should get disabled submit button when username field is empty', () => {
@@ -61,7 +62,7 @@ describe('AddContact component', () => {
     const input = document.getElementById('nickname');
     fireEvent.change(input, { target: { value: '' } });
 
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
     expect(saveButton).toBeDisabled();
   });
 
@@ -72,10 +73,10 @@ describe('AddContact component', () => {
     const input = document.getElementById('nickname');
     fireEvent.change(input, { target: { value: MOCK_ADDRESS_BOOK[0].name } });
 
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
 
     expect(saveButton).toBeDisabled();
-    expect(getByText('Name is already in use')).toBeDefined();
+    expect(getByText(messages.nameAlreadyInUse.message)).toBeDefined();
   });
 
   it('should display error when entering a name that is in use by an existing account', () => {
@@ -85,10 +86,10 @@ describe('AddContact component', () => {
     const input = document.getElementById('nickname');
     fireEvent.change(input, { target: { value: mockAccount2.metadata.name } });
 
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
 
     expect(saveButton).toBeDisabled();
-    expect(getByText('Name is already in use')).toBeDefined();
+    expect(getByText(messages.nameAlreadyInUse.message)).toBeDefined();
   });
 
   it('should not display error when entering the current contact name', () => {
@@ -101,9 +102,9 @@ describe('AddContact component', () => {
     const input = document.getElementById('nickname');
     fireEvent.change(input, { target: { value: mockAccount1.metadata.name } });
 
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
 
     expect(saveButton).toBeDisabled();
-    expect(queryByText('Name is already in use')).toBeNull();
+    expect(queryByText(messages.nameAlreadyInUse.message)).toBeNull();
   });
 });

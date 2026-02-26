@@ -202,6 +202,21 @@ async function setupMocking(
       };
     });
 
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'rc',
+    })
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: getProductionRemoteFlagApiResponse(),
+      };
+    });
+
   // Subscriptions Polling Get Subscriptions
   await server
     .forGet('https://subscription.api.cx.metamask.io/v1/subscriptions')

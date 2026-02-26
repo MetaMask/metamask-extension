@@ -5239,9 +5239,6 @@
   "perpsAddToFavorites": {
     "message": "Προσθήκη στα αγαπημένα"
   },
-  "perpsAsk": {
-    "message": "Ζήτηση"
-  },
   "perpsAutoClose": {
     "message": "Αυτόματο κλείσιμο"
   },
@@ -5252,14 +5249,8 @@
   "perpsAvailableBalance": {
     "message": "Διαθέσιμο υπόλοιπο"
   },
-  "perpsBid": {
-    "message": "Προσφορά"
-  },
   "perpsCancelAllOrders": {
     "message": "Ακύρωση όλων"
-  },
-  "perpsClose": {
-    "message": "Κλείσιμο"
   },
   "perpsCloseAll": {
     "message": "Κλείσιμο όλων"
@@ -5377,9 +5368,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Τιμή ρευστοποίησης"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Εκτ. τιμή ρευστοποίησης"
   },
   "perpsLong": {
     "message": "Αγορά (Long)"
@@ -6223,12 +6211,6 @@
   },
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Επανάληψη"
-  },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Οι λογαριασμοί με πορτοφόλι υλικού δεν είναι ακόμη επιλέξιμοι για ανταμοιβές. Παρακαλούμε αλλάξτε λογαριασμό για να συνεχίσετε."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Ο λογαριασμός δεν υποστηρίζεται"
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Επανάληψη"

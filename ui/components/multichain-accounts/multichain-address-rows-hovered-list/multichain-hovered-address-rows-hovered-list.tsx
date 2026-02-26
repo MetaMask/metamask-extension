@@ -134,7 +134,7 @@ export const MultichainHoveredAddressRowsList = ({
 
     const rect = referenceElement.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
-    const popoverEstimatedHeight = 400; // Based on the maxHeight set on the popover
+    const popoverEstimatedHeight = 275; // Based on the maxHeight set on the popover
     const spaceBelow = viewportHeight - rect.bottom;
 
     // If there's not enough space below, use TopStart
@@ -329,7 +329,7 @@ export const MultichainHoveredAddressRowsList = ({
         paddingTop={1}
         style={{
           zIndex: 99999,
-          maxHeight: '400px',
+          maxHeight: '275px',
           minWidth: '340px',
         }}
       >

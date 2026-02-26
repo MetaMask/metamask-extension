@@ -3,6 +3,7 @@ import { screen, act, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
@@ -176,9 +177,11 @@ describe('DefiList', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText('Lend, borrow, and trade, right in your wallet.'),
+        screen.getByText(messages.defiEmptyDescription.message),
       ).toBeInTheDocument();
-      expect(screen.getByText('Explore DeFi')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.exploreDefi.message),
+      ).toBeInTheDocument();
       expect(screen.getByTestId('defi-tab-empty-state')).toBeInTheDocument();
 
       expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
