@@ -53,7 +53,7 @@ export async function generateWalletState(withState, fromTest) {
     .withNotificationServicesController(
       generateNotificationControllerState(accounts[0]),
     )
-    .withPreferencesController(generatePreferencesControllerState(accounts))
+    .withPreferencesController(generatePreferencesControllerState())
     .withTokensController(generateTokensControllerState(accounts[0]))
     .withTransactionController(generateTransactionControllerState(accounts[0]))
     .withEnabledNetworks(ALL_POPULAR_NETWORKS)
