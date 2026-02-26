@@ -12,8 +12,6 @@ const mockUpdateCurrentLocale = jest.fn();
 const mockSetAvatarType = jest.fn();
 const mockSetHideZeroBalanceTokens = jest.fn();
 const mockSetShowNativeTokenAsMainBalance = jest.fn();
-const mockSetShowDefaultAddress = jest.fn();
-const mockSetDefaultAddressScope = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setCurrentCurrency: () => mockSetCurrentCurrency,
@@ -22,8 +20,6 @@ jest.mock('../../../store/actions.ts', () => ({
   setHideZeroBalanceTokens: () => mockSetHideZeroBalanceTokens,
   setShowNativeTokenAsMainBalancePreference: () =>
     mockSetShowNativeTokenAsMainBalance,
-  setShowDefaultAddress: (value) => () => mockSetShowDefaultAddress(value),
-  setDefaultAddressScope: (value) => () => mockSetDefaultAddressScope(value),
 }));
 
 describe('Settings Tab', () => {
