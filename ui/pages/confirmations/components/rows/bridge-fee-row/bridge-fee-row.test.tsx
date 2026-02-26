@@ -12,12 +12,11 @@ import {
   useTransactionPayQuotes,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { BridgeFeeRow, BridgeFeeRowProps } from './bridge-fee-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
-jest.mock('../../../../../hooks/useI18nContext');
 
 const mockStore = configureMockStore([]);
 
@@ -35,20 +34,8 @@ describe('BridgeFeeRow', () => {
   const useIsTransactionPayLoadingMock = jest.mocked(
     useIsTransactionPayLoading,
   );
-  const useI18nContextMock = jest.mocked(useI18nContext);
-
   beforeEach(() => {
     jest.resetAllMocks();
-
-    useI18nContextMock.mockReturnValue(((key: string) => {
-      const translations: Record<string, string> = {
-        transactionFee: 'Transaction fee',
-        metamaskFee: 'MetaMask fee',
-        networkFee: 'Network fee',
-        bridgeFee: 'Bridge fee',
-      };
-      return translations[key] ?? key;
-    }) as ReturnType<typeof useI18nContext>);
 
     useTransactionPayTotalsMock.mockReturnValue({
       fees: {
@@ -72,7 +59,7 @@ describe('BridgeFeeRow', () => {
 
     expect(getByTestId('bridge-fee-row-skeleton')).toBeInTheDocument();
     expect(queryByTestId('metamask-fee-row-skeleton')).not.toBeInTheDocument();
-    expect(getByText('Transaction fee')).toBeInTheDocument();
+    expect(getByText(messages.transactionFee.message)).toBeInTheDocument();
   });
 
   it('renders full skeletons without labels when loading (Small variant)', () => {
@@ -84,8 +71,10 @@ describe('BridgeFeeRow', () => {
 
     expect(getByTestId('bridge-fee-row-skeleton')).toBeInTheDocument();
     expect(getByTestId('metamask-fee-row-skeleton')).toBeInTheDocument();
-    expect(queryByText('Transaction fee')).not.toBeInTheDocument();
-    expect(queryByText('MetaMask fee')).not.toBeInTheDocument();
+    expect(
+      queryByText(messages.transactionFee.message),
+    ).not.toBeInTheDocument();
+    expect(queryByText(messages.metamaskFee.message)).not.toBeInTheDocument();
   });
 
   it('does not render metamask fee with Default variant', () => {

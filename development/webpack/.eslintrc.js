@@ -37,5 +37,8 @@ module.exports = {
     'no-plusplus': 'off',
     // I want to increment a variable outside my loop. This prevents that.
     'no-loop-func': 'off',
+    // This rule is very noisy because we need to deal with extension manifest
+    // keys very often, and these keys often violate the rule
+    '@typescript-eslint/naming-convention': 'off',
   },
 };

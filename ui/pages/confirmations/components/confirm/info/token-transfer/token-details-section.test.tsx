@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { getMockTokenTransferConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import { TokenDetailsSection } from './token-details-section';
 
 jest.mock(
@@ -31,8 +32,8 @@ describe('TokenDetailsSection', () => {
       <TokenDetailsSection />,
       mockStore,
     );
-    expect(getByText('Network')).toBeInTheDocument();
-    expect(getByText('Goerli')).toBeInTheDocument();
-    expect(getByText('Interacting with')).toBeInTheDocument();
+    expect(getByText(messages.network.message)).toBeInTheDocument();
+    expect(getByText(messages.networkNameGoerli.message)).toBeInTheDocument();
+    expect(getByText(messages.interactingWith.message)).toBeInTheDocument();
   });
 });

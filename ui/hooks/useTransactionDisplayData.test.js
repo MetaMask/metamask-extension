@@ -2,9 +2,7 @@ import * as reactRedux from 'react-redux';
 import sinon from 'sinon';
 import mockState from '../../test/data/mock-state.json';
 import transactions from '../../test/data/transaction-data.json';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import messages from '../../app/_locales/en/messages.json';
+import { enLocale as messages } from '../../test/lib/i18n-helpers';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
 import { KeyringType } from '../../shared/constants/keyring';
 import { createMockInternalAccount } from '../../test/jest/mocks';

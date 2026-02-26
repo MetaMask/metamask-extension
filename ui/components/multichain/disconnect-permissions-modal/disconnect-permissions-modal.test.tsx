@@ -1,8 +1,9 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '../../../../test/jest';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 import { DisconnectPermissionsModal, DisconnectPermissionsModalProps } from '.';
 
@@ -78,7 +79,10 @@ describe('DisconnectPermissionsModal', () => {
     },
     networkConfigurations: {
       '0x1': { name: 'Ethereum Mainnet', nativeCurrency: 'ETH' },
-      '0x89': { name: 'Polygon', nativeCurrency: 'MATIC' },
+      '0x89': {
+        name: 'Polygon',
+        nativeCurrency: 'MATIC',
+      },
     },
   });
 
@@ -122,11 +126,11 @@ describe('DisconnectPermissionsModal', () => {
       mockStore,
     );
     // The test helpers provide actual translations
-    expect(getByText('Other permissions on this site')).toBeInTheDocument();
     expect(
-      getByText(
-        'The following permissions were also found on this site. Do you want to remove them?',
-      ),
+      getByText(messages.otherPermissionsOnSiteTitle.message),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.otherPermissionsOnSiteDescription.message),
     ).toBeInTheDocument();
   });
 
@@ -135,7 +139,7 @@ describe('DisconnectPermissionsModal', () => {
       <DisconnectPermissionsModal {...args} />,
       mockStore,
     );
-    expect(getByText('Token stream')).toBeInTheDocument();
+    expect(getByText(messages.tokenStream.message)).toBeInTheDocument();
     expect(getByText('1 ETH per second • 0x12345...67890')).toBeInTheDocument();
   });
 });
