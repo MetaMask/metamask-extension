@@ -6,7 +6,6 @@ import {
   FormTextField,
   Text,
 } from '../../component-library';
-import { AccountListItem } from '../../multichain/account-list-item';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
@@ -66,7 +65,6 @@ import { DefiReferralConsent } from '../../../pages/core/defi-referral-consent';
 
 export const safeComponentList = {
   a: 'a',
-  AccountListItem,
   ActionableMessage,
   AvatarIcon,
   b: 'b',
