@@ -192,15 +192,6 @@ describe('Ducks - Swaps', () => {
     });
   });
 
-  describe('getAggregatorMetadata', () => {
-    it('returns agg metadata', () => {
-      const state = createSwapsMockStore();
-      expect(swaps.getAggregatorMetadata(state)).toBe(
-        state.swaps.aggregatorMetadata,
-      );
-    });
-  });
-
   describe('getBalanceError', () => {
     it('returns a balance error', () => {
       const state = createSwapsMockStore();
@@ -253,13 +244,6 @@ describe('Ducks - Swaps', () => {
     it('returns maxSlippage', () => {
       const state = createSwapsMockStore();
       expect(swaps.getMaxSlippage(state)).toBe(state.swaps.maxSlippage);
-    });
-  });
-
-  describe('getTopAssets', () => {
-    it('returns topAssets', () => {
-      const state = createSwapsMockStore();
-      expect(swaps.getTopAssets(state)).toBe(state.swaps.topAssets);
     });
   });
 
@@ -732,20 +716,6 @@ describe('Ducks - Swaps', () => {
       });
     });
 
-    describe('setAggregatorMetadata', () => {
-      it('calls the "swaps/setAggregatorMetadata" action', () => {
-        const state = store.getState().swaps;
-        const actionPayload = {
-          name: 'agg1',
-        };
-        store.dispatch(swaps.setAggregatorMetadata(actionPayload));
-        const actions = store.getActions();
-        expect(actions[0].type).toBe('swaps/setAggregatorMetadata');
-        const newState = swapsReducer(state, actions[0]);
-        expect(newState.aggregatorMetadata).toBe(actionPayload);
-      });
-    });
-
     describe('setBalanceError', () => {
       it('calls the "swaps/setBalanceError" action', () => {
         const state = store.getState().swaps;
@@ -851,28 +821,6 @@ describe('Ducks - Swaps', () => {
         expect(actions[0].type).toBe('swaps/setReviewSwapClickedTimestamp');
         const newState = swapsReducer(state, actions[0]);
         expect(newState.reviewSwapClickedTimestamp).toBe(actionPayload);
-      });
-    });
-
-    describe('setTopAssets', () => {
-      it('calls the "swaps/setTopAssets" action', () => {
-        const state = store.getState().swaps;
-        const actionPayload = {
-          '0x514910771af9ca656af840dff83e8264ecf986ca': {
-            index: '0',
-          },
-          '0x04fa0d235c4abf4bcf4787af4cf447de572ef828': {
-            index: '1',
-          },
-          '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': {
-            index: '2',
-          },
-        };
-        store.dispatch(swaps.setTopAssets(actionPayload));
-        const actions = store.getActions();
-        expect(actions[0].type).toBe('swaps/setTopAssets');
-        const newState = swapsReducer(state, actions[0]);
-        expect(newState.topAssets).toBe(actionPayload);
       });
     });
 

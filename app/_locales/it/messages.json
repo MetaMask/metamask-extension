@@ -115,10 +115,6 @@
   "addToken": {
     "message": "Aggiungi Token"
   },
-  "addTokenByContractAddress": {
-    "message": "Non trovi un token? Puoi aggiungere qualsiasi token incollando il suo indirizzo. L'indirizzo del contratto del Token può essere trovato su $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "address": {
     "message": "Indirizzo"
   },
@@ -457,9 +453,6 @@
   },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Prima di importare manualmente un token, assicurati sia attendibile. Ulteriori informazioni su $1"
-  },
-  "customerSupport": {
-    "message": "servizio clienti"
   },
   "dappSuggested": {
     "message": "Sito suggerito"
@@ -847,9 +840,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Il bottone di stato della connessione mostra se il sito che stai visitando è connesso all'account corrente"
   },
-  "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swaps è in manutenzione. Prova più tardi."
-  },
   "metamaskVersion": {
     "message": "versione di MetaMask"
   },
@@ -908,9 +898,6 @@
   },
   "ofTextNofM": {
     "message": "di"
-  },
-  "offlineForMaintenance": {
-    "message": "Offline per manutenzione"
   },
   "onlyConnectTrust": {
     "message": "Connettiti solo con siti di cui ti fidi.",
@@ -1162,75 +1149,15 @@
   "swapAggregator": {
     "message": "Aggregatore"
   },
-  "swapAmountReceived": {
-    "message": "Importo garantito"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Questo è l'importo minimo che riceverai. Potresti ricevere di più a seconda dello slippage."
-  },
   "swapApproval": {
     "message": "Approva $1 per gli scambi",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
   },
-  "swapCustom": {
-    "message": "personalizza"
-  },
   "swapDecentralizedExchange": {
     "message": "Sito di scambio decentralizzato"
   },
-  "swapEditLimit": {
-    "message": "Modifica limite"
-  },
-  "swapEnableDescription": {
-    "message": "Questo è richiesto e darà a MetaMask il permesso di scambiare $1.",
-    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "Tasse di rete stimate"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Questa è una stima della tassa di rete che verrà pagata per completare lo scambio. L'importo reale può cambiare a seconda della condizione della rete."
-  },
-  "swapFailedErrorTitle": {
-    "message": "Scambio fallito"
-  },
-  "swapFetchingQuotesErrorDescription": {
-    "message": "Hmmm... qualcosa è andato storto. Prova di nuovo, o se l'errore persiste, contatta il supporto."
-  },
   "swapFetchingQuotesErrorTitle": {
     "message": "Errore recuperando le quotazioni"
-  },
-  "swapMaxSlippage": {
-    "message": "Slippage massimo"
-  },
-  "swapMetaMaskFee": {
-    "message": "Tassa MetaMask"
-  },
-  "swapMetaMaskFeeDescription": {
-    "message": "Troviamo i migliori prezzi dalle sorgenti di liquidità migliori, sempre. Una tassa del $1% è automaticamente aggiunta ad ogni quotazione, ciò serve a supportare lo sviluppo in modo da rendere MetaMask sempre migliore.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapOnceTransactionHasProcess": {
-    "message": "I tuoi $1 saranno aggiunti al tuo account quando la transazione sarà processata.",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "In elaborazione"
-  },
-  "swapQuoteDetails": {
-    "message": "Dettagli quotazione"
-  },
-  "swapQuoteSource": {
-    "message": "Sorgente della quota"
-  },
-  "swapQuotesExpiredErrorDescription": {
-    "message": "Richiedi nuove quotazioni per ottenere le ultime tariffe."
-  },
-  "swapQuotesExpiredErrorTitle": {
-    "message": "Timeout quotazioni"
-  },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "Prova ad aggiustare l'importo o le impostazioni dello slippage e prova di nuovo."
   },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Nessuna quotazione disponibile"
@@ -1238,49 +1165,21 @@
   "swapRate": {
     "message": "Tariffa"
   },
-  "swapReceiving": {
-    "message": "Ricevendo"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Questa è una stima. L'importo esatto dipende dallo slippage."
-  },
   "swapRequestForQuotation": {
     "message": "Richiedi quotazione"
-  },
-  "swapSelect": {
-    "message": "Selezione"
   },
   "swapSelectAQuote": {
     "message": "Seleziona una quotazione"
   },
-  "swapSelectAToken": {
-    "message": "Seleziona un token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Sotto trovi tutte le quotazioni raccolte da multiple sorgenti di liquidità."
-  },
-  "swapSource": {
-    "message": "Sorgente di liquidità"
-  },
-  "swapTokenAvailable": {
-    "message": "I $1 sono stati aggiunti al tuo account.",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
-  },
   "swapTokenToToken": {
     "message": "Scambia da $1 a $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
-  },
-  "swapTransactionComplete": {
-    "message": "Transazione completata"
   },
   "swapUnknown": {
     "message": "Sconosciuto"
   },
   "swapsMaxSlippage": {
     "message": "Tolleranza Slippage"
-  },
-  "swapsViewInActivity": {
-    "message": "Vedi in attività"
   },
   "switchToThisAccount": {
     "message": " Passa a questo account"
@@ -1293,9 +1192,6 @@
   },
   "terms": {
     "message": "Termini di Uso"
-  },
-  "termsOfService": {
-    "message": "Termini di Servizio"
   },
   "to": {
     "message": "A"

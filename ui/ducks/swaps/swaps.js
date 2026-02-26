@@ -111,7 +111,6 @@ export const GAS_PRICES_LOADING_STATES = {
 };
 
 const initialState = {
-  aggregatorMetadata: null,
   approveTxId: null,
   tradeTxId: null,
   balanceError: false,
@@ -123,7 +122,6 @@ const initialState = {
   maxSlippage: Slippage.default,
   quotesFetchStartTime: null,
   reviewSwapClickedTimestamp: null,
-  topAssets: {},
   toToken: null,
   customGas: {
     price: null,
@@ -156,9 +154,6 @@ const slice = createSlice({
       state.balanceError = false;
       state.fetchingQuotes = false;
     },
-    setAggregatorMetadata: (state, action) => {
-      state.aggregatorMetadata = action.payload;
-    },
     setBalanceError: (state, action) => {
       state.balanceError = action.payload;
     },
@@ -188,9 +183,6 @@ const slice = createSlice({
     },
     setReviewSwapClickedTimestamp: (state, action) => {
       state.reviewSwapClickedTimestamp = action.payload;
-    },
-    setTopAssets: (state, action) => {
-      state.topAssets = action.payload;
     },
     setToToken: (state, action) => {
       state.toToken = action.payload;
@@ -242,8 +234,6 @@ export default reducer;
 
 // Selectors
 
-export const getAggregatorMetadata = (state) => state.swaps.aggregatorMetadata;
-
 export const getBalanceError = (state) => state.swaps.balanceError;
 
 export const getFromToken = (state) => state.swaps.fromToken;
@@ -259,8 +249,6 @@ export const getIsFeatureFlagLoaded = (state) =>
 export const getSwapsSTXLoading = (state) => state.swaps.swapsSTXLoading;
 
 export const getMaxSlippage = (state) => state.swaps.maxSlippage;
-
-export const getTopAssets = (state) => state.swaps.topAssets;
 
 export const getToToken = (state) => state.swaps.toToken;
 
@@ -481,7 +469,6 @@ const {
   swapGasPriceEstimatesFetchCompleted,
   swapGasPriceEstimatesFetchStarted,
   swapGasPriceEstimatesFetchFailed,
-  setAggregatorMetadata,
   setBalanceError,
   setFetchingQuotes,
   setLatestAddedTokenTo,
@@ -492,7 +479,6 @@ const {
   setMaxSlippage,
   setQuotesFetchStartTime,
   setReviewSwapClickedTimestamp,
-  setTopAssets,
   setToToken,
   swapCustomGasModalPriceEdited,
   swapCustomGasModalLimitEdited,
@@ -505,7 +491,6 @@ const {
 
 export {
   clearSwapsState,
-  setAggregatorMetadata,
   setBalanceError,
   setFetchingQuotes,
   setLatestAddedTokenTo,
@@ -516,7 +501,6 @@ export {
   setMaxSlippage,
   setQuotesFetchStartTime as setSwapQuotesFetchStartTime,
   setReviewSwapClickedTimestamp,
-  setTopAssets,
   setToToken as setSwapToToken,
   swapCustomGasModalPriceEdited,
   swapCustomGasModalLimitEdited,
