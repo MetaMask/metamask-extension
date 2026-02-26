@@ -125,6 +125,10 @@ class GeneralSettings {
   async checkShowDefaultAddressSectionIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.showDefaultAddressToggle);
   }
+
+  async checkShowDefaultAddressSectionIsNotDisplayed(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.showDefaultAddressToggle);
+  }
 }
 
 export default GeneralSettings;

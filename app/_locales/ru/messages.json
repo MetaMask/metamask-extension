@@ -7351,21 +7351,6 @@
   "simulationErrorMessageV2": {
     "message": "Мы не смогли оценить размер платы за газ. В контракте может быть ошибка, и эта транзакция может завершиться неудачно."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Допуск проскальзывания"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Установите удобную для вас разницу для изменения баланса. Транзакции не пройдут, если разница будет больше."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Внедрить изменения баланса"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Чтобы обезопасить ваши средства, эта транзакция не будет выполнена, если изменится баланс или не будет соблюдён допустимый уровень проскальзывания."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Настройки транзакции"
-  },
   "simulationsSettingDescription": {
     "message": "Включите эту опцию, чтобы оценить изменения баланса транзакций и подписей перед их подтверждением. Это не гарантирует их окончательный результат. $1"
   },

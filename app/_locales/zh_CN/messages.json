@@ -7345,21 +7345,6 @@
   "simulationErrorMessageV2": {
     "message": "我们无法估算燃料。合约中可能存在错误，这笔交易可能会失败。"
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "滑点容差"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "设置一个您能接受的余额变化差额。若差额超过该值，交易将无法完成。"
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "强制执行余额变动"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "为保障您的资金安全，若发生余额变动或未能满足滑点容差范围，这笔交易将无法完成。"
-  },
-  "simulationSettingsModalTitle": {
-    "message": "交易设置"
-  },
   "simulationsSettingDescription": {
     "message": "开启此选项，以便在确认交易和签名之前预估交易余额的变化。这并不能保证交易的最终结果。$1"
   },

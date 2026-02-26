@@ -7351,21 +7351,6 @@
   "simulationErrorMessageV2": {
     "message": "No pudimos estimar el gas. Podría haber un error en el contrato y esta transacción podría fallar."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Tolerancia de deslizamiento"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Establece una diferencia con la que te sientas cómodo para los cambios de saldo. Las transacciones no se procesarán si la diferencia es mayor."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Aplicar los cambios de saldo"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Para mantener tu dinero seguro, esta transacción no se realizará si el saldo cambia o no se cumple la tolerancia de deslizamiento."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Configuración de la transacción"
-  },
   "simulationsSettingDescription": {
     "message": "Active esta opción para calcular los cambios de saldo de las transacciones y firmas antes de confirmarlas. Esto no garantiza su resultado final. $1"
   },

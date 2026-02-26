@@ -7351,21 +7351,6 @@
   "simulationErrorMessageV2": {
     "message": "Hindi namin nagawang tantyahin ang gas. Maaaring may error sa kontrata at maaaring mabigo ang transaksyong ito."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Slippage tolerance"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Itakda ang diperensya na komportable ka para sa mga pagbabago ng balanse. Hindi magpapatuloy ang mga transaksyon kapag mas mataas ang diperensya."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Ipatupad ang mga pagbabago sa balanse"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Para mapanatiling ligtas ang iyong pera, hindi magpapatuloy ang transaksyong ito kapag nagbago ang balanse o hindi natugunan ang slippage tolerance."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Mga setting ng transaksyon"
-  },
   "simulationsSettingDescription": {
     "message": "I-on ito para tantyahin ang mga pagbabago sa balanse ng mga transaksyon at mga pirma bago mo kumpirmahin ang mga ito. Hindi nito ginagarantiyahan ang panghuling resulta ng mga ito. $1"
   },

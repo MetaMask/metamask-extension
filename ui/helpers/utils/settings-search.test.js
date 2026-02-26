@@ -151,7 +151,7 @@ describe('Settings Search Utils', () => {
   describe('getSettingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
       const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 6;
-      const NUM_OF_HIDDEN_SETTINGS = 1;
+      const NUM_OF_HIDDEN_SETTINGS = 2;
 
       expect(getSettingsRoutes()).toHaveLength(
         SETTINGS_CONSTANTS.length -
@@ -163,7 +163,7 @@ describe('Settings Search Utils', () => {
 
   describe('getNumberOfSettingRoutesInTab', () => {
     it('returns "General" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('general'))).toStrictEqual(7);
+      expect(getNumberOfSettingRoutesInTab(t, t('general'))).toStrictEqual(6);
     });
 
     it('returns "Advanced" section count', () => {
