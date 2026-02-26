@@ -72,6 +72,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
       transactionMeta?.txParams?.gas ||
       HEX_ZERO;
 
+
   const getFeesFromHex = useCallback(
     (hexFee: Hex) => {
       const nativeCurrencyFee = `${
