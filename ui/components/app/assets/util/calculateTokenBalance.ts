@@ -40,10 +40,7 @@ export function calculateTokenBalance({
         toChecksumHexAddress(address) as Hex
       ] || selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address];
     if (hexBalance && hexBalance !== '0x0') {
-      balance = stringifyBalance(
-        hexToDecimal(hexBalance),
-        decimals,
-      );
+      balance = stringifyBalance(hexToDecimal(hexBalance), decimals);
     } else {
       balance = '0';
     }

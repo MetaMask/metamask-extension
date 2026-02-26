@@ -78,22 +78,25 @@ export const useTokenTracker = ({
 // Ensures backwards compatibility with display formatting.
 export function stringifyBalance(
   balance: string | number | bigint,
-  decimals: number,
+  decimals?: number,
   balanceDecimals = 5,
 ) {
   const normalizedBalance = balance.toString();
+  const normalizedDecimals = Number.isFinite(Number(decimals))
+    ? Math.max(0, Math.trunc(Number(decimals)))
+    : 0;
 
   if (normalizedBalance === '0') {
     return '0';
   }
 
-  if (decimals === 0) {
+  if (normalizedDecimals === 0) {
     return normalizedBalance;
   }
 
   let bal = normalizedBalance;
   let len = bal.length;
-  let decimalIndex = len - decimals;
+  let decimalIndex = len - normalizedDecimals;
   let prefix = '';
 
   if (decimalIndex <= 0) {
@@ -105,7 +108,7 @@ export function stringifyBalance(
     decimalIndex = 1;
   }
 
-  const whole = bal.substr(0, len - decimals);
+  const whole = bal.substr(0, len - normalizedDecimals);
 
   if (balanceDecimals === 0) {
     return whole;
