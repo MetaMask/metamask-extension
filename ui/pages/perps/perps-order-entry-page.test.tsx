@@ -48,6 +48,23 @@ jest.mock('../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+const mockReplacePerpsToastByKey = jest.fn();
+jest.mock('../../components/app/perps/perps-toast', () => ({
+  PERPS_TOAST_KEYS: {
+    CLOSE_FAILED: 'perpsToastCloseFailed',
+    CLOSE_IN_PROGRESS: 'perpsToastCloseInProgress',
+    ORDER_FAILED: 'perpsToastOrderFailed',
+    ORDER_SUBMITTED: 'perpsToastOrderSubmitted',
+    SUBMIT_IN_PROGRESS: 'perpsToastSubmitInProgress',
+    TRADE_SUCCESS: 'perpsToastTradeSuccess',
+    UPDATE_FAILED: 'perpsToastUpdateFailed',
+    UPDATE_IN_PROGRESS: 'perpsToastUpdateInProgress',
+    UPDATE_SUCCESS: 'perpsToastUpdateSuccess',
+  },
+  usePerpsToast: () => ({
+    replacePerpsToastByKey: mockReplacePerpsToastByKey,
+  }),
+}));
 jest.mock('../../providers/perps', () => {
   return {
     getPerpsStreamManager: () => mockGetPerpsStreamManager(),
@@ -140,6 +157,7 @@ describe('PerpsOrderEntryPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockReplacePerpsToastByKey.mockReset();
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
     mockSearchParams.delete('direction');
     mockSearchParams.delete('mode');
@@ -353,6 +371,9 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastSubmitInProgress',
+      });
     });
 
     it('shows error when order fails', async () => {
@@ -380,6 +401,10 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(screen.getByText('Insufficient margin')).toBeInTheDocument();
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: 'Insufficient margin',
+      });
     });
 
     it('shows error when controller throws', async () => {
@@ -429,6 +454,9 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastCloseInProgress',
+      });
     });
 
     it('calls updatePositionTPSL when in modify mode', async () => {
@@ -453,6 +481,12 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastUpdateInProgress',
+      });
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastUpdateSuccess',
+      });
     });
 
     it('does not submit when currentPrice is 0', async () => {
@@ -771,6 +805,9 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderSubmitted',
+      });
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
   });
@@ -813,6 +850,9 @@ describe('PerpsOrderEntryPage', () => {
         rerender(<PerpsOrderEntryPage />);
       });
 
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastTradeSuccess',
+      });
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
 
