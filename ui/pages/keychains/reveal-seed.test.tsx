@@ -344,8 +344,8 @@ describe('Reveal Seed Page', () => {
 
     mockTrackEvent.mockClear();
 
-    const qrTab = getByRole('tab', { name: 'QR' });
-    const textTab = getByRole('tab', { name: 'Text' });
+    const qrTab = getByRole('tab', { name: messages.revealSeedWordsQR.message });
+    const textTab = getByRole('tab', { name: messages.revealSeedWordsText.message });
 
     fireEvent.click(qrTab);
 
