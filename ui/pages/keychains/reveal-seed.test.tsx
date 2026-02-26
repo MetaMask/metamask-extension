@@ -107,7 +107,9 @@ describe('Reveal Seed Page', () => {
   it('shows quiz introduction first', () => {
     const { getByText } = renderWithProvider(<RevealSeedPage />, mockStore);
 
-    expect(getByText(messages.srpSecurityQuizGetStarted.message)).toBeInTheDocument();
+    expect(
+      getByText(messages.srpSecurityQuizGetStarted.message),
+    ).toBeInTheDocument();
   });
 
   it('navigates to password screen after completing quiz', async () => {
