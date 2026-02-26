@@ -8203,9 +8203,9 @@ export default class MetamaskController extends EventEmitter {
   set isClientOpen(open) {
     this._isClientOpen = open;
 
-      this.controllerMessenger.call('ClientController:setUiOpen', open);
+    this.controllerMessenger.call('ClientController:setUiOpen', open);
 
-      const { isUnlocked } = this.controllerMessenger.call(
+    const { isUnlocked } = this.controllerMessenger.call(
       'KeyringController:getState',
     );
 

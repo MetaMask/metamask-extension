@@ -3,9 +3,7 @@ import {
   type MessengerActions,
   type MessengerEvents,
 } from '@metamask/messenger';
-import {
-  type ClientControllerMessenger,
-} from '@metamask/client-controller';
+import { type ClientControllerMessenger } from '@metamask/client-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 export type { ClientControllerMessenger } from '@metamask/client-controller';
