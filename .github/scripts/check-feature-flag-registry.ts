@@ -235,13 +235,15 @@ function getDiff(baseBranch: string): string {
     ['git', 'diff', `${baseBranch}...HEAD`, '--', ...SCAN_DIRECTORIES],
     ['git', 'diff', `${baseBranch}..HEAD`, '--', ...SCAN_DIRECTORIES],
   ];
+  let lastError: unknown;
   for (const [cmd, ...args] of candidates) {
     try {
       return execFileSync(cmd, args, { encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 });
-    } catch { /* try next */ }
+    } catch (error) { lastError = error; }
   }
   console.error(`Could not compute diff against base branch "${baseBranch}".`);
   console.error('Ensure the base branch is fetched (e.g. git fetch origin <base> --depth=1).');
+  console.error('Last error:', lastError);
   process.exit(1);
 }
 
@@ -274,7 +276,7 @@ function findOrphanedFlags(flagNames: string[]): string[] {
     }
     try {
       const result = execFileSync(
-        'git', ['grep', '-l', '--', flag, ...SCAN_DIRECTORIES],
+        'git', ['grep', '-lw', '--', flag, ...SCAN_DIRECTORIES],
         { encoding: 'utf-8', stdio: 'pipe' },
       ).trim();
       const files = result
