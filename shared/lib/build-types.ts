@@ -20,9 +20,9 @@ export function getFoxMeshJson() {
   // This cannot say `isFlask()` because the swc compiler will not inline that
   if (process.env.METAMASK_BUILD_TYPE === 'flask') {
     // eslint-disable-next-line import/no-restricted-paths,@typescript-eslint/no-require-imports
-    return require('../../../app/build-types/flask/images/flask-mascot.json');
+    return require('../../app/build-types/flask/images/flask-mascot.json');
   }
 
   // eslint-disable-next-line import/no-restricted-paths,@typescript-eslint/no-require-imports
-  return require('../../../app/build-types/main/fox.json');
+  return require('../../app/build-types/main/fox.json');
 }

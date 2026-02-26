@@ -16,7 +16,6 @@ buildTypes:
   main:
     id: 10
     features:
-      - build-main
       - keyring-snaps
       - multi-srp
       - bitcoin
@@ -80,7 +79,6 @@ buildTypes:
     id: 12
     features:
       - build-experimental
-      - build-main
       - keyring-snaps
       - multi-srp
       - bitcoin
@@ -149,7 +147,6 @@ features:
   # Build Type code extensions. Things like different support links, warning pages, banners
   ###
 
-  build-main:
   build-beta:
     assets:
       # Assets that will be copied
