@@ -250,6 +250,22 @@ describe('getReactCompilerLoader', () => {
         'thread-loader',
       );
     });
+
+    it('threadLoaderWorkers and threadLoaderJobs override preset values', () => {
+      const loaders = getReactCompilerLoader({
+        ...baseConfig,
+        threadLoader: 'light',
+        threadLoaderWorkers: 2,
+        threadLoaderJobs: 12,
+      });
+
+      const threadLoader = loaders[0] as {
+        loader: string;
+        options: { workers: number; workerParallelJobs: number };
+      };
+      assert.strictEqual(threadLoader.options.workers, 2);
+      assert.strictEqual(threadLoader.options.workerParallelJobs, 12);
+    });
   });
 
   describe('React Compiler options', () => {

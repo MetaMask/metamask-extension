@@ -328,6 +328,24 @@ function getOptions(
       group: toOrange('Developer assistance:'),
       type: 'string',
     },
+    threadLoaderWorkers: {
+      array: false,
+      default: undefined,
+      defaultDescription: 'Use preset value',
+      description:
+        'Override thread-loader worker count. Ignored when `threadLoader` is `off`.',
+      group: toOrange('Developer assistance:'),
+      type: 'number',
+    },
+    threadLoaderJobs: {
+      array: false,
+      default: undefined,
+      defaultDescription: 'Use preset value',
+      description:
+        'Override thread-loader `workerParallelJobs`. Ignored when `threadLoader` is `off`.',
+      group: toOrange('Developer assistance:'),
+      type: 'number',
+    },
 
     ...prerequisites,
     zip: {
@@ -510,7 +528,7 @@ Snow: ${args.snow}
 Sentry: ${args.sentry}
 React Compiler verbose: ${args.reactCompilerVerbose}
 React Compiler debug: ${args.reactCompilerDebug}
-Thread Loader: ${args.threadLoader}
+Thread Loader: ${args.threadLoader}${args.threadLoaderWorkers !== undefined || args.threadLoaderJobs !== undefined ? ` [workers: ${args.threadLoaderWorkers ?? 'preset'}, jobs: ${args.threadLoaderJobs ?? 'preset'}]` : ''}
 Validate Env: ${args.validateEnv}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}

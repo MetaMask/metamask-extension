@@ -5,10 +5,7 @@ import {
   type ReactCompilerLoaderOption,
   defineReactCompilerLoaderOption,
 } from 'react-compiler-webpack';
-import {
-  THREAD_LOADER_PRESETS,
-  type ThreadLoaderPreset,
-} from '../constants';
+import { THREAD_LOADER_PRESETS, type ThreadLoaderPreset } from '../constants';
 
 /**
  * Resolve the wrapper loader path.
@@ -56,6 +53,10 @@ export type ReactCompilerLoaderConfig = {
    * Note: When verbose is true, the wrapper is still used for logging even without thread-loader.
    */
   threadLoader: ThreadLoaderPreset;
+  /** Override worker count. Takes precedence over preset when thread-loader is enabled. */
+  threadLoaderWorkers?: number;
+  /** Override workerParallelJobs. Takes precedence over preset when thread-loader is enabled. */
+  threadLoaderJobs?: number;
   watch: boolean;
 };
 
@@ -96,7 +97,15 @@ function resolveThreadLoaderPreset(
 export const getReactCompilerLoader = (
   config: ReactCompilerLoaderConfig,
 ): RuleSetUseItem[] => {
-  const { target, verbose, debug, watch, threadLoader: preset } = config;
+  const {
+    target,
+    verbose,
+    debug,
+    watch,
+    threadLoader: preset,
+    threadLoaderWorkers: workersOverride,
+    threadLoaderJobs: jobsOverride,
+  } = config;
 
   const reactCompilerOptions = {
     target,
@@ -107,10 +116,17 @@ export const getReactCompilerLoader = (
   const threadConfig = resolveThreadLoaderPreset(preset);
 
   if (threadConfig) {
+    const workers =
+      workersOverride === undefined ? threadConfig.workers : workersOverride;
+    const workerParallelJobs =
+      jobsOverride === undefined
+        ? threadConfig.workerParallelJobs
+        : jobsOverride;
     loaders.push({
       loader: 'thread-loader',
       options: {
-        ...threadConfig,
+        workers,
+        workerParallelJobs,
         poolTimeout: watch ? Number(Infinity) : 2000,
       },
     });
@@ -120,7 +136,7 @@ export const getReactCompilerLoader = (
   // - thread-loader is enabled (for buildMeta tracking in workers)
   // - verbose mode is enabled (wrapper provides logging via logger callback)
   // Skip wrapper only for policy generation (not resolvable under LavaMoat)
-  const useWrapper = threadConfig !== null || verbose;
+  const useWrapper = threadConfig === null ? verbose : true;
 
   if (useWrapper) {
     loaders.push({
