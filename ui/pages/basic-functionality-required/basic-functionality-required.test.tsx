@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { BasicFunctionalityOff } from './basic-functionality-required';
 
 const mockNavigate = jest.fn();
@@ -93,7 +94,9 @@ describe('BasicFunctionalityOff', () => {
   it('renders title and description', () => {
     renderWithStore(<BasicFunctionalityOff />);
 
-    expect(screen.getByText('Basic functionality is off')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.basicFunctionalityRequired_title.message),
+    ).toBeInTheDocument();
     expect(screen.getByText(DESCRIPTION_TEXT)).toBeInTheDocument();
   });
 
@@ -103,7 +106,9 @@ describe('BasicFunctionalityOff', () => {
     expect(
       screen.getByTestId('basic-functionality-off-toggle-row'),
     ).toBeInTheDocument();
-    expect(screen.getByText('Basic functionality')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.basicConfigurationLabel.message),
+    ).toBeInTheDocument();
   });
 
   it('renders Review in settings link', () => {
