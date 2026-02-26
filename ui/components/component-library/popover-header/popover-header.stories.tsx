@@ -1,6 +1,6 @@
 import React from 'react';
+import README from "./README.mdx";
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-
 import {
   TextVariant,
   TextAlign,
@@ -13,13 +13,13 @@ import {
 import { Text } from '../text';
 
 import { PopoverHeader } from './popover-header';
-import README from './README.mdx';
 import { AvatarAccount } from '@metamask/design-system-react';
 import { Button, ButtonSize } from '../button';
 
 export default {
   title: 'Components/ComponentLibrary/PopoverHeader',
   component: PopoverHeader,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,
