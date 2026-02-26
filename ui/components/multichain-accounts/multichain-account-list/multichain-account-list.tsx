@@ -504,6 +504,7 @@ export const MultichainAccountList = ({
     isHiddenAccountsExpanded,
     collapsedSectionKeys,
     showDefaultAddress,
+    isDefaultAddressEnabled,
     t,
   ]);
 
