@@ -8,6 +8,7 @@ import React, {
 import { useSelector, useStore } from 'react-redux';
 import type { PerpsController } from '@metamask/perps-controller';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { submitRequestToBackground } from '../../store/background-connection';
 import {
   getPerpsStreamingController,
   isPerpsControllerInitializationCancelledError,
@@ -77,8 +78,11 @@ export function PerpsControllerProvider({
 
     let isMounted = true;
 
-    getPerpsStreamingController(selectedAddress, store)
-      .then((ctrl) => {
+    Promise.all([
+      getPerpsStreamingController(selectedAddress, store),
+      submitRequestToBackground('perpsInit'),
+    ])
+      .then(([ctrl]) => {
         if (isMounted) {
           setController(ctrl);
         }

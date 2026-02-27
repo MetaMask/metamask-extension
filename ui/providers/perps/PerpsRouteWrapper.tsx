@@ -1,6 +1,7 @@
 import React, { type ReactNode, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { submitRequestToBackground } from '../../store/background-connection';
 import { getPerpsStreamManager } from './PerpsStreamManager';
 import { isPerpsControllerInitializationCancelledError } from './getPerpsController';
 
@@ -63,14 +64,14 @@ export const PerpsRouteWrapper: React.FC<PerpsRouteWrapperProps> = ({
     const streamManager = getPerpsStreamManager();
 
     // Initialize stream manager for this address
-    streamManager
-      .init(selectedAddress)
+    Promise.all([
+      streamManager.init(selectedAddress),
+      submitRequestToBackground('perpsInit'),
+    ])
       .then(() => {
         setIsInitialized(true);
         setError(null);
 
-        // Start prewarming to keep cache fresh
-        // This keeps WebSocket subscriptions alive while in Perps
         streamManager.prewarm();
       })
       .catch((err: unknown) => {
