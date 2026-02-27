@@ -1082,6 +1082,18 @@
   "bridgeNoMMFee": {
     "message": "No MM fee"
   },
+  "bridgeMarketClosedAction": {
+    "message": "Market is closed"
+  },
+  "bridgeMarketClosedBadge": {
+    "message": "After hours"
+  },
+  "bridgeMarketClosedDescription": {
+    "message": "This stock token is currently outside trading hours. Try again when the market reopens."
+  },
+  "bridgeMarketClosedTitle": {
+    "message": "Market closed"
+  },
   "bridgePoints": {
     "message": "Est. points",
     "description": "Label for estimated points that can be earned from a bridge or swap"
@@ -8629,6 +8641,9 @@
   },
   "tokenSymbol": {
     "message": "Token symbol"
+  },
+  "tokenStock": {
+    "message": "Stock"
   },
   "tokenTransfer": {
     "message": "Token transfer"
