@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import log from 'loglevel';
+import { IconName } from '@metamask/design-system-react';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { Skeleton } from '../../component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -19,11 +21,13 @@ import {
 } from '../../../ducks/rewards/selectors';
 import { useCandidateSubscriptionId } from '../../../hooks/rewards/useCandidateSubscriptionId';
 import { useSeasonStatus } from '../../../hooks/rewards/useSeasonStatus';
+import { useOptIn } from '../../../hooks/rewards/useOptIn';
 import {
   getStorageItem,
   setStorageItem,
 } from '../../../../shared/lib/storage-helpers';
 import { useAppSelector } from '../../../store/store';
+import { CandidateSubscriptionId } from '../../../ducks/rewards/types';
 import { RewardsBadge } from './RewardsBadge';
 import {
   REWARDS_BADGE_HIDDEN,
@@ -44,7 +48,9 @@ export const RewardsPointsBalance = () => {
   const rewardsBadgeHidden = useSelector(selectRewardsBadgeHidden);
   const seasonStatus = useSelector(selectSeasonStatus);
   const seasonStatusError = useSelector(selectSeasonStatusError);
-  const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
+  const candidateSubscriptionId = useSelector(
+    selectCandidateSubscriptionId,
+  ) as CandidateSubscriptionId;
   const onboardingModalRendered = useSelector(selectOnboardingModalRendered);
   const rewardsActiveAccountSubscriptionId = useAppSelector(
     (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
@@ -54,13 +60,29 @@ export const RewardsPointsBalance = () => {
     !rewardsActiveAccountSubscriptionId &&
     (candidateSubscriptionId === 'pending' ||
       candidateSubscriptionId === 'retry');
-  const candidateSubscriptionIdError = candidateSubscriptionId === 'error';
+  const candidateSubscriptionIdError =
+    candidateSubscriptionId === 'error' ||
+    candidateSubscriptionId ===
+      'error-existing-subscription-hardware-wallet-explicit-sign';
+  const candidateSubscriptionIdErrorNeedsSignIn =
+    candidateSubscriptionId ===
+    'error-existing-subscription-hardware-wallet-explicit-sign';
+
+  const { optin, optinLoading, optinError } = useOptIn();
 
   const isTestEnv = Boolean(process.env.IN_TEST);
 
   const openRewardsOnboardingModal = useCallback(() => {
     dispatch(setOnboardingModalOpen(true));
   }, [dispatch]);
+
+  const handleSignIn = useCallback(async () => {
+    try {
+      await optin();
+    } catch (error) {
+      log.error('[RewardsPointsBalance] Error during opt-in:', error);
+    }
+  }, [optin]);
 
   // entry point hooks
   const { fetchCandidateSubscriptionId } = useCandidateSubscriptionId();
@@ -114,9 +136,9 @@ export const RewardsPointsBalance = () => {
     rewardsEnabled,
     isTestEnv,
     candidateSubscriptionId,
-    rewardsActiveAccountSubscriptionId,
     onboardingModalRendered,
     rewardsOnboardingEnabled,
+    rewardsActiveAccountSubscriptionId,
   ]);
 
   const setHasSeenOnboardingInStorage = useCallback(async () => {
@@ -154,6 +176,40 @@ export const RewardsPointsBalance = () => {
         withPointsSuffix={false}
         onClick={openRewardsOnboardingModal}
         allowHideBadge
+      />
+    );
+  }
+
+  // Show sign-in button if hardware wallet needs authentication
+  if (!seasonStatusError && candidateSubscriptionIdErrorNeedsSignIn) {
+    if (optinLoading) {
+      return (
+        <RewardsBadge
+          formattedPoints={t('rewardsSigningIn')}
+          withPointsSuffix={false}
+          boxClassName="gap-1 px-1.5 bg-background-muted rounded"
+        />
+      );
+    }
+
+    if (optinError) {
+      return (
+        <RewardsBadge
+          formattedPoints={t('rewardsSignInFailed')}
+          withPointsSuffix={false}
+          boxClassName="gap-1 px-1.5 bg-background-muted rounded"
+          startIconName={IconName.Refresh}
+          onClick={handleSignIn}
+        />
+      );
+    }
+
+    return (
+      <RewardsBadge
+        formattedPoints={t('rewardsSignInToViewPoints')}
+        withPointsSuffix={false}
+        boxClassName="gap-1 px-1.5 bg-background-muted rounded"
+        onClick={handleSignIn}
       />
     );
   }

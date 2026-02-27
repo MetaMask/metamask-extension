@@ -60,10 +60,6 @@
   },
   "metamask": {
     "allTokens": {},
-    "enableEnforcedSimulations": true,
-    "enableEnforcedSimulationsForTransactions": {},
-    "enforcedSimulationsSlippage": 10,
-    "enforcedSimulationsSlippageForTransactions": {},
     "tokenBalances": {},
     "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",
@@ -73,7 +69,7 @@
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
     "showBetaHeader": false,
-    "isUpdateAvailable": false,
+    "pendingExtensionVersion": null,
     "updateModalLastDismissedAt": null,
     "lastUpdatedAt": null,
     "subscriptions": [],
@@ -418,6 +414,8 @@
       }
     },
     "preferences": {
+      "defaultAddressScope": "eip155",
+      "showDefaultAddress": false,
       "hideZeroBalanceTokens": false,
       "petnamesEnabled": false,
       "showExtensionInFullSizeView": false,
@@ -1664,10 +1662,9 @@
     "accountsAssets": {},
     "assetsMetadata": {},
     "allIgnoredAssets": {},
-    "gatorPermissionsMapSerialized": "{\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"erc20-token-revocation\":{},\"other\":{}}",
-    "isGatorPermissionsEnabled": false,
+    "grantedPermissions": [],
     "isFetchingGatorPermissions": false,
-    "isUpdatingGatorPermissions": false,
+    "lastSyncedTimestamp": -1,
     "networkConnectionBanner": {
       "status": "unknown"
     },

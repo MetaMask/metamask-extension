@@ -3,21 +3,17 @@ import React, {
   useState,
   useCallback,
   Fragment,
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   useContext,
-  ///: END:ONLY_INCLUDE_IF
   useEffect,
 } from 'react';
 import { isCrossChain } from '@metamask/bridge-controller';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import {
   isEvmAccountType,
   TransactionType as KeyringTransactionType,
 } from '@metamask/keyring-api';
-///: END:ONLY_INCLUDE_IF
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
   nonceSortedCompletedTransactionsSelector,
@@ -32,10 +28,8 @@ import {
   getEnabledNetworksByNamespace,
   getSelectedMultichainNetworkChainId,
 } from '../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import MultichainBridgeTransactionListItem from '../multichain-bridge-transaction-list-item/multichain-bridge-transaction-list-item';
 import MultichainBridgeTransactionDetailsModal from '../multichain-bridge-transaction-details-modal/multichain-bridge-transaction-details-modal';
-///: END:ONLY_INCLUDE_IF
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
 import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
@@ -47,49 +41,38 @@ import {
   useEarliestNonceByChain,
   isTransactionEarliestNonce,
 } from '../../../hooks/useEarliestNonceByChain';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getMultichainNetwork,
   getSelectedAccountMultichainTransactions,
 } from '../../../selectors/multichain';
-///: END:ONLY_INCLUDE_IF
 import {
   getIsEvmMultichainNetworkSelected,
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   getSelectedMultichainNetworkConfiguration,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors/multichain/networks';
 
 import {
   Box,
   Button,
   Text,
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   ButtonSize,
   ButtonVariant,
   IconName,
   BadgeWrapper,
   AvatarNetwork,
   AvatarNetworkSize,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import TransactionIcon from '../transaction-icon';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import { MultichainTransactionDetailsModal } from '../multichain-transaction-details-modal';
 import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
-///: END:ONLY_INCLUDE_IF
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   BackgroundColor,
   Display,
-  ///: END:ONLY_INCLUDE_IF
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { ActivityListItem } from '../../multichain/activity-list-item';
@@ -99,12 +82,9 @@ import {
   useMultichainTransactionDisplay,
 } from '../../../hooks/useMultichainTransactionDisplay';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
-///: END:ONLY_INCLUDE_IF
 
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../shared/constants/multichain/networks';
-///: END:ONLY_INCLUDE_IF
 import AssetListControlBar from '../assets/asset-list/asset-list-control-bar';
 import {
   startIncomingTransactionPolling,
@@ -246,7 +226,6 @@ const groupEvmTransactionsByDate = (transactionGroups) =>
     true, // timestamp sorting for EVM
   );
 
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 const groupNonEvmTransactionsByDate = (nonEvmTransactions) =>
   groupTransactionsByDate(
     nonEvmTransactions?.transactions,
@@ -283,7 +262,6 @@ export const filterTransactionsByToken = (
     transactions: transactionForToken,
   };
 };
-///: END:ONLY_INCLUDE_IF
 
 // Remove transaction groups with no transactions
 const removeTxGroupsWithNoTx = (dateGroup) => {
@@ -310,7 +288,6 @@ export default function TransactionList({
   );
   const selectedAccount = useSelector(getSelectedAccount);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   const nonEvmTransactions = useSelector(
@@ -321,7 +298,6 @@ export default function TransactionList({
     () => filterTransactionsByToken(nonEvmTransactions, tokenAddress),
     [nonEvmTransactions, tokenAddress],
   );
-  ///: END:ONLY_INCLUDE_IF
 
   const unfilteredPendingTransactionsCurrentChain = useSelector(
     nonceSortedPendingTransactionsSelector,
@@ -510,7 +486,6 @@ export default function TransactionList({
     endTrace({ name: TraceName.AccountOverviewActivityTab });
   }, []);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const toggleShowDetails = useCallback((transaction = null) => {
     setSelectedTransaction(transaction);
   }, []);
@@ -644,7 +619,6 @@ export default function TransactionList({
       </>
     );
   }
-  ///: END:ONLY_INCLUDE_IF
 
   return (
     <>
@@ -765,8 +739,6 @@ export default function TransactionList({
   );
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
-
 // Regular transaction list item for non-bridge transactions
 const MultichainTransactionListItem = ({
   transaction,
@@ -885,8 +857,6 @@ MultichainTransactionListItem.propTypes = {
   networkConfig: PropTypes.object.isRequired,
   toggleShowDetails: PropTypes.func.isRequired,
 };
-
-///: END:ONLY_INCLUDE_IF
 
 TransactionList.propTypes = {
   hideTokenTransactions: PropTypes.bool,

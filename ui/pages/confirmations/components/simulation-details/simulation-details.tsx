@@ -18,8 +18,6 @@ import { RowAlertKey } from '../../../../components/app/confirm/info/row/constan
 import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/section';
 import {
   Box,
-  ButtonIcon,
-  ButtonIconSize,
   Icon,
   IconName,
   IconSize,
@@ -43,9 +41,6 @@ import {
 import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { selectTransactionMetadata } from '../../../../selectors';
-import { SimulationSettingsModal } from '../modals/simulation-settings-modal/simulation-settings-modal';
-import { selectConfirmationAdvancedDetailsOpen } from '../../selectors/preferences';
-import { useIsEnforcedSimulationsSupported } from '../../hooks/transactions/useIsEnforcedSimulationsSupported';
 import { BalanceChangeList } from './balance-change-list';
 import { BalanceChange } from './types';
 import { useBalanceChanges } from './useBalanceChanges';
@@ -126,11 +121,6 @@ const HeaderWithAlert = ({
   transactionId: string;
 }) => {
   const t = useI18nContext();
-  const isEnforcedSimulationsSupported = useIsEnforcedSimulationsSupported();
-
-  const showAdvancedDetails = useSelector(
-    selectConfirmationAdvancedDetailsOpen,
-  );
 
   const transactionMetadata = useSelector((state) =>
     selectTransactionMetadata(state, transactionId),
@@ -152,12 +142,6 @@ const HeaderWithAlert = ({
       ? t('simulationDetailsTitleTooltipEnforced')
       : t('simulationDetailsTitleTooltip'));
 
-  const [settingsModalVisible, setSettingsModalVisible] =
-    useState<boolean>(false);
-
-  const showSettingsIcon =
-    showAdvancedDetails && isEnforcedSimulationsSupported;
-
   return (
     <Box
       display={Display.Flex}
@@ -178,20 +162,6 @@ const HeaderWithAlert = ({
           paddingRight: 0,
         }}
       />
-      {showSettingsIcon && (
-        <ButtonIcon
-          iconName={IconName.Setting}
-          size={ButtonIconSize.Sm}
-          color={IconColor.iconMuted}
-          ariaLabel="simulation-settings"
-          onClick={() => setSettingsModalVisible(true)}
-        />
-      )}
-      {settingsModalVisible && (
-        <SimulationSettingsModal
-          onClose={() => setSettingsModalVisible(false)}
-        />
-      )}
     </Box>
   );
 };
