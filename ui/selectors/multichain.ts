@@ -348,9 +348,7 @@ export function getMultichainNativeCurrency(
     : getMultichainProviderConfig(state, account).ticker;
 }
 
-export function getMultichainCurrentCurrency(state: MultichainState) {
-  return getCurrentCurrency(state);
-}
+export { getCurrentCurrency as getMultichainCurrentCurrency };
 
 export function getMultichainCurrencyImage(
   state: MultichainState,
