@@ -8,6 +8,36 @@ import type {
   PullRequestCommit,
 } from '../types';
 
+/**
+ * Parses release version from PR title (e.g., "release: 13.21.0" -> "13.21.0").
+ * Returns null if not a release PR.
+ * @param title
+ */
+function parseReleaseVersionFromTitle(title: string): string | null {
+  const match = title.match(/release:\s*(\d+\.\d+\.\d+)/iu);
+  return match ? match[1] : null;
+}
+
+/**
+ * Computes the previous release branch for a given version.
+ * E.g., 13.21.0 -> release/13.20.0, 13.20.1 -> release/13.20.0, 13.20.0 -> release/13.19.0
+ * @param version
+ */
+function getPreviousReleaseBranch(version: string): string {
+  const parts = version.split('.').map(Number);
+  if (parts.length !== 3) {
+    return `release/${version}`;
+  }
+  const [major, minor, patch] = parts;
+  if (patch > 0) {
+    return `release/${major}.${minor}.${patch - 1}`;
+  }
+  if (minor > 0) {
+    return `release/${major}.${minor - 1}.0`;
+  }
+  return `release/${major - 1}.0.0`;
+}
+
 type GitHubFile = {
   filename: string;
   additions: number | null;
@@ -50,6 +80,17 @@ type Octokit = {
         per_page: number;
       }) => Promise<{
         data: { sha: string; commit?: { message?: string } }[];
+      }>;
+    };
+    repos: {
+      compareCommitsWithBasehead: (params: {
+        owner: string;
+        repo: string;
+        basehead: string;
+      }) => Promise<{
+        data: {
+          commits: { sha: string; commit?: { message?: string } }[];
+        };
       }>;
     };
   };
@@ -125,27 +166,57 @@ export class GitHubClient {
         },
       );
 
-      // Get all commits with pagination
-      const allCommits = await octokit.paginate<{
-        sha: string;
-        commit?: { message?: string };
-      }>(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        octokit.rest.pulls.listCommits as any,
-        {
-          owner: this.owner,
-          repo: this.repo,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          pull_number: prNumber,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          per_page: 100,
-        },
-      );
+      // For release PRs (base=stable, head=release/X.Y.Z), fetch only commits NEW to this
+      // release (not inherited from previous release). This ensures cherry-pick scenarios
+      // are for cherry-picks added to THIS release, not from previous releases.
+      let prCommits: PullRequestCommit[] | undefined;
+      const version = parseReleaseVersionFromTitle(pr.title);
+      const isReleasePr =
+        pr.base.ref === 'stable' && pr.head.ref.startsWith('release/');
 
-      const prCommits: PullRequestCommit[] = allCommits.map((c) => ({
-        sha: c.sha,
-        message: c.commit?.message ?? '',
-      }));
+      if (isReleasePr && version) {
+        const previousBranch = getPreviousReleaseBranch(version);
+        try {
+          const { data } = await octokit.rest.repos.compareCommitsWithBasehead({
+            owner: this.owner,
+            repo: this.repo,
+            basehead: `${previousBranch}...${pr.head.ref}`,
+          });
+          prCommits = (data.commits ?? []).map((c) => ({
+            sha: c.sha,
+            message: c.commit?.message ?? '',
+          }));
+          if (prCommits.length > 0) {
+            console.log(
+              `   ✓ Using ${prCommits.length} commits new to ${pr.head.ref} (excluding ${previousBranch})`,
+            );
+          }
+        } catch {
+          // Previous release branch may not exist (e.g. first release); fall back to full PR commits
+        }
+      }
+
+      if (!prCommits) {
+        const allCommits = await octokit.paginate<{
+          sha: string;
+          commit?: { message?: string };
+        }>(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          octokit.rest.pulls.listCommits as any,
+          {
+            owner: this.owner,
+            repo: this.repo,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            pull_number: prNumber,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            per_page: 100,
+          },
+        );
+        prCommits = allCommits.map((c) => ({
+          sha: c.sha,
+          message: c.commit?.message ?? '',
+        }));
+      }
 
       const prFiles: PullRequestFile[] = allFiles.map((file: GitHubFile) => ({
         filename: file.filename,
@@ -163,7 +234,7 @@ export class GitHubClient {
         baseBranch: pr.base.ref,
         headBranch: pr.head.ref,
         files: prFiles,
-        commitCount: allCommits.length,
+        commitCount: prCommits.length,
         commits: prCommits,
       };
     } catch (error: unknown) {

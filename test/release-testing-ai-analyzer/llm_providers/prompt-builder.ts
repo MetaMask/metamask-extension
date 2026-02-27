@@ -14,8 +14,32 @@ import type {
 const CHERRY_PICK_PATTERN =
   /release\s*\(\s*cp\s*\)|cherry-pick|release\s*\(\s*runway\s*\)|cp-\d+\.\d+/iu;
 
+/** Regex to extract target release from cherry-pick (e.g., "cp-13.20.0" -> 13.20.0) */
+const CP_VERSION_PATTERN = /cp-(\d+\.\d+\.\d+)/iu;
+
+/** Regex to parse release version from PR title (e.g., "release: 13.21.0" -> 13.21.0) */
+const RELEASE_VERSION_FROM_TITLE = /release:\s*(\d+\.\d+\.\d+)/iu;
+
 function isCherryPickCommit(commit: PullRequestCommit): boolean {
   return CHERRY_PICK_PATTERN.test(commit.message);
+}
+
+/**
+ * Returns true if the cherry-pick commit targets the given release version.
+ * E.g., for release 13.21.0, only include commits with "cp-13.21.0" in the message.
+ * Exclude "cp-13.20.0" etc. — those were for a previous release.
+ * @param commit
+ * @param releaseVersion
+ */
+function isCherryPickForThisRelease(
+  commit: PullRequestCommit,
+  releaseVersion: string,
+): boolean {
+  const match = commit.message.match(CP_VERSION_PATTERN);
+  if (!match) {
+    return true; // No cp-X.Y.Z in message; include (e.g. "cherry-pick" or "release(cp)")
+  }
+  return match[1] === releaseVersion;
 }
 
 export class PromptBuilder {
@@ -31,14 +55,22 @@ export class PromptBuilder {
   ): string {
     const highRiskAreas = this.identifyHighRiskAreas(fileCategories);
     const fileSummary = this.buildFileSummary(prInfo.files, fileCategories);
-    const cherryPickCommits = (prInfo.commits ?? []).filter(isCherryPickCommit);
+    const releaseVersion =
+      prInfo.title.match(RELEASE_VERSION_FROM_TITLE)?.[1] ?? null;
+    const allCherryPicks = (prInfo.commits ?? []).filter(isCherryPickCommit);
+    const cherryPickCommits =
+      releaseVersion === null
+        ? allCherryPicks
+        : allCherryPicks.filter((c) =>
+            isCherryPickForThisRelease(c, releaseVersion),
+          );
     const hasCherryPicks = cherryPickCommits.length > 0;
 
     const cherryPickSection = hasCherryPicks
       ? `
-## Cherry-Pick Commits (${cherryPickCommits.length} commits)
+## Cherry-Pick Commits (${cherryPickCommits.length} commits) — NEW to THIS release only
 
-This release includes cherry-picked fixes. Generate scenarios in \`cherryPickScenarios\` ONLY for cherry-picks that are HIGH or MEDIUM risk (e.g. fix: security, migration, controller, transaction flow). Skip low-risk cherry-picks (chore, bump, minor config). Prioritize initial release scenarios - they are the main focus.
+These are cherry-picks that were added TO THIS release (not inherited from a previous release). Generate scenarios in \`cherryPickScenarios\` ONLY for these cherry-picks that are HIGH or MEDIUM risk (e.g. fix: security, migration, controller, transaction flow). Skip low-risk cherry-picks (chore, bump, minor config). Prioritize initial release scenarios - they are the main focus.
 
 ${cherryPickCommits.map((c) => `- ${c.message.split('\n')[0]}`).join('\n')}
 `
