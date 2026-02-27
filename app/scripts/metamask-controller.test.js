@@ -40,10 +40,12 @@ import {
   getEthAccounts,
 } from '@metamask/chain-agnostic-permission';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
-
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import { errorCodes } from '@metamask/rpc-errors';
 import { parseCaipAccountId } from '@metamask/utils';
+
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
   HardwareDeviceNames,
@@ -69,14 +71,14 @@ import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
 } from '../../shared/constants/defi-referrals';
+import { getEnabledAdvancedPermissions } from '../../shared/modules/environment';
 import { ReferralStatus } from './controllers/preferences-controller';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import {
   getOriginsWithSessionProperty,
   getPermittedAccountsForScopesByOrigin,
 } from './controllers/permissions';
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
-import { errorCodes } from '@metamask/rpc-errors';
+import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import MetaMaskController from './metamask-controller';
 
 jest.mock('webextension-polyfill', () => ({
@@ -310,6 +312,15 @@ jest.mock('@metamask/chain-agnostic-permission', () => ({
 jest.mock('@metamask/core-backend', () => ({
   ...jest.requireActual('@metamask/core-backend'),
   createApiPlatformClient: jest.fn().mockReturnValue({ mockApiClient: true }),
+}));
+
+jest.mock('../../shared/modules/environment', () => ({
+  ...jest.requireActual('../../shared/modules/environment'),
+  getEnabledAdvancedPermissions: jest.fn(() => []),
+}));
+
+jest.mock('./lib/forwardRequestToSnap', () => ({
+  forwardRequestToSnap: jest.fn().mockResolvedValue({}),
 }));
 
 const TEST_SEED =
@@ -1311,9 +1322,18 @@ describe('MetaMaskController', () => {
     });
 
     describe('wallet_requestExecutionPermissions (processRequestExecutionPermissions)', () => {
+      beforeEach(() => {
+        jest
+          .mocked(getEnabledAdvancedPermissions)
+          .mockReturnValue(['erc20-token-revocation']);
+        jest.mocked(forwardRequestToSnap).mockResolvedValue({});
+      });
+
       /**
        * Run wallet_requestExecutionPermissions through the controller's
        * metamask middleware and return the JSON-RPC response.
+       * @param params - The parameters for the wallet_requestExecutionPermissions request.
+       * @returns The JSON-RPC response.
        */
       async function requestExecutionPermissions(params) {
         const engine = new JsonRpcEngine();
@@ -1414,10 +1434,7 @@ describe('MetaMaskController', () => {
         ]);
         const response = await requestExecutionPermissions(params);
 
-        expect(response.error).toBeDefined();
-        expect(response.error.message).not.toMatch(
-          /wallet_requestExecutionPermissions is not supported on chains/u,
-        );
+        expect(response.error).toBeUndefined();
       });
 
       it('does not reject when chainId matches supported chain (case-insensitive)', async () => {
@@ -1437,10 +1454,7 @@ describe('MetaMaskController', () => {
         ]);
         const response = await requestExecutionPermissions(params);
 
-        expect(response.error).toBeDefined();
-        expect(response.error.message).not.toMatch(
-          /wallet_requestExecutionPermissions is not supported on chains/u,
-        );
+        expect(response.error).toBeUndefined();
       });
     });
 
