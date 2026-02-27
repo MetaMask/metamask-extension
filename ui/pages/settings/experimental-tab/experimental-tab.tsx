@@ -5,11 +5,10 @@ import {
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-
+import { isExperimental, isFlask } from '../../../../shared/lib/build-types';
 import { NotificationsItem } from './notifications-item';
 import { KeyringSnapsItem } from './keyring-snaps-item';
 import { WatchAccountItem } from './watch-account-item';
-import { isExperimental, isFlask } from '../../../../shared/lib/build-types';
 
 const ExperimentalTab = () => {
   const t = useI18nContext();

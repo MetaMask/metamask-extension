@@ -262,7 +262,7 @@ export default function OnboardingFlow() {
     return await dispatch(createNewVaultAndRestore(password, srp));
   };
 
-  let isFullPage =
+  const isFullPage =
     pathname === ONBOARDING_WELCOME_ROUTE ||
     pathname === ONBOARDING_UNLOCK_ROUTE ||
     (isFlask() && pathname === ONBOARDING_EXPERIMENTAL_AREA);

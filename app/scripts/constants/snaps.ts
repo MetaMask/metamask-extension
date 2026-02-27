@@ -1,5 +1,3 @@
-import { isExperimental, isFlask } from '../../../shared/lib/build-types';
-
 // Needed for webpack to analyze the preinstalled snaps
 export const PREINSTALLED_SNAPS_URLS = [
   new URL(
