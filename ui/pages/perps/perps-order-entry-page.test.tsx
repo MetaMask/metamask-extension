@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { screen, fireEvent, act } from '@testing-library/react';
+import { screen, fireEvent, act, waitFor } from '@testing-library/react';
 import type {
   AccountState,
   Position,
@@ -27,10 +27,32 @@ jest.mock('../../providers/perps/getPerpsController', () => ({
     mockGetPerpsStreamingController(...args),
 }));
 
-jest.mock('../../providers/perps', () => ({
-  PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
-    children,
-}));
+// Mock controller for usePerpsController() - delegates to submitRequestToBackground so test assertions pass
+const mockPerpsController = {
+  placeOrder: jest.fn().mockImplementation((...args: unknown[]) =>
+    mockSubmitRequestToBackground('perpsPlaceOrder', args),
+  ),
+  closePosition: jest.fn().mockImplementation((...args: unknown[]) =>
+    mockSubmitRequestToBackground('perpsClosePosition', args),
+  ),
+  updatePositionTPSL: jest.fn().mockImplementation((...args: unknown[]) =>
+    mockSubmitRequestToBackground('perpsUpdatePositionTPSL', args),
+  ),
+  subscribeToPrices: jest.fn(() => jest.fn()),
+  subscribeToOrderBook: jest.fn(() => jest.fn()),
+};
+
+jest.mock('../../providers/perps', () => {
+  const actual = jest.requireActual<
+    typeof import('../../providers/perps')
+  >('../../providers/perps');
+  return {
+    ...actual,
+    PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
+      children,
+    usePerpsController: () => mockPerpsController,
+  };
+});
 
 const mockSubmitRequestToBackground = jest.fn();
 jest.mock('../../store/background-connection', () => ({
@@ -557,8 +579,8 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 10));
+      await waitFor(() => {
+        expect(typeof priceCallback).toBe('function');
       });
 
       act(() => {
@@ -579,8 +601,8 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 10));
+      await waitFor(() => {
+        expect(typeof priceCallback).toBe('function');
       });
 
       act(() => {
@@ -599,8 +621,8 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 10));
+      await waitFor(() => {
+        expect(typeof priceCallback).toBe('function');
       });
 
       act(() => {
@@ -616,8 +638,8 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 10));
+      await waitFor(() => {
+        expect(typeof orderBookCallback).toBe('function');
       });
 
       act(() => {
@@ -635,8 +657,8 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 10));
+      await waitFor(() => {
+        expect(typeof orderBookCallback).toBe('function');
       });
 
       act(() => {

@@ -70,6 +70,10 @@ let initPromise: Promise<PerpsController> | null = null;
 let initializingAddress: string | null = null;
 let initGeneration = 0;
 
+/** Cached facade for the current controller so callers get the same reference. */
+let cachedFacade: PerpsController | null = null;
+let cachedFacadeUnderlying: PerpsController | null = null;
+
 /**
  * Create a minimal messenger for the UI-side streaming controller.
  * Only bridges RemoteFeatureFlagController and AccountTreeController from
@@ -258,6 +262,20 @@ function startControllerInitialization(
   return task;
 }
 
+function getOrCreateFacade(underlying: PerpsController): PerpsController {
+  if (cachedFacade !== null && cachedFacadeUnderlying === underlying) {
+    return cachedFacade;
+  }
+  cachedFacadeUnderlying = underlying;
+  cachedFacade = createPerpsControllerFacade(underlying);
+  return cachedFacade;
+}
+
+function clearFacadeCache(): void {
+  cachedFacade = null;
+  cachedFacadeUnderlying = null;
+}
+
 /**
  * Get the PerpsController facade for the UI. Streaming methods run on the
  * UI-side controller; mutations and data fetches delegate to the background.
@@ -287,18 +305,19 @@ export async function getPerpsStreamingController(
     await controllerInstance.disconnect();
     controllerInstance = null;
     currentAddress = null;
+    clearFacadeCache();
   }
 
   if (controllerInstance && currentAddress === selectedAddress) {
-    return Promise.resolve(createPerpsControllerFacade(controllerInstance));
+    return Promise.resolve(getOrCreateFacade(controllerInstance));
   }
 
   if (initPromise && initializingAddress === selectedAddress) {
-    return initPromise.then((ctrl) => createPerpsControllerFacade(ctrl));
+    return initPromise.then((ctrl) => getOrCreateFacade(ctrl));
   }
 
   return startControllerInitialization(selectedAddress, store).then((ctrl) =>
-    createPerpsControllerFacade(ctrl),
+    getOrCreateFacade(ctrl),
   );
 }
 
@@ -322,6 +341,7 @@ export async function resetPerpsController(): Promise<void> {
   initPromise = null;
   currentAddress = null;
   initializingAddress = null;
+  clearFacadeCache();
 }
 
 export function getPerpsControllerCurrentAddress(): string | null {
@@ -344,9 +364,7 @@ export function getPerpsControllerInstance(): PerpsController | null {
  * Used by the provider to seed context on re-navigation (sync path).
  */
 export function getPerpsControllerFacade(): PerpsController | null {
-  return controllerInstance
-    ? createPerpsControllerFacade(controllerInstance)
-    : null;
+  return controllerInstance ? getOrCreateFacade(controllerInstance) : null;
 }
 
 export type { PerpsControllerState };

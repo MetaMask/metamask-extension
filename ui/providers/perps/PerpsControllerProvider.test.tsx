@@ -260,6 +260,7 @@ describe('PerpsControllerProvider', () => {
     });
 
     it('does not initialize when no address is selected', () => {
+      mockGetPerpsControllerFacade.mockReturnValue(null);
       const store = createMockStore();
 
       const { container } = render(
@@ -271,6 +272,7 @@ describe('PerpsControllerProvider', () => {
       );
 
       expect(mockGetPerpsStreamingController).not.toHaveBeenCalled();
+      expect(screen.queryByTestId('child')).not.toBeInTheDocument();
       expect(container.innerHTML).toBe('');
     });
 

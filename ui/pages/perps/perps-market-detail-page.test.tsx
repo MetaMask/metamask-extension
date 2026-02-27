@@ -77,10 +77,19 @@ jest.mock('loglevel', () => ({
   setDefaultLevel: jest.fn(),
 }));
 
-// Mock the PerpsControllerProvider to render children directly
+// Mock controller for usePerpsController() - page needs getPositions, updatePositionTPSL, etc.
+const mockPerpsController = {
+  getPositions: jest.fn().mockResolvedValue([]),
+  updatePositionTPSL: jest.fn().mockResolvedValue({ success: true }),
+  subscribeToPrices: jest.fn(() => jest.fn()),
+  subscribeToOrderBook: jest.fn(() => jest.fn()),
+};
+
+// Mock the PerpsControllerProvider to render children directly and provide usePerpsController
 jest.mock('../../providers/perps', () => ({
   PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
     children,
+  usePerpsController: () => mockPerpsController,
 }));
 
 jest.mock('../../hooks/perps', () => ({
