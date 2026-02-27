@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.21.0]
 
+### Uncategorized
+
+- Null (#40246)
+- Null (#40189)
+
 ### Added
 
 - Bump assets controller to v2.1.0 (#40439)
