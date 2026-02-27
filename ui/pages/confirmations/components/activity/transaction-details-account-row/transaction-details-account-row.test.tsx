@@ -34,6 +34,11 @@ const mockState = {
       },
       selectedAccount: 'account-1',
     },
+    accountTree: {
+      selectedAccountGroup: 'entropy:test-wallet/0',
+      wallets: {},
+    },
+    remoteFeatureFlags: {},
   },
 };
 
