@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { WeakRefObjectMap } from './WeakRefObjectMap';
 
 type TestRecord = Record<string, object>;
