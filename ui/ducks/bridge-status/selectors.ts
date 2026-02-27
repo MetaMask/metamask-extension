@@ -72,6 +72,24 @@ export const selectBridgeHistoryItemForTxMetaId = createSelector(
 
 // eslint-disable-next-line jsdoc/require-param
 /**
+ * Returns a bridge history item for a given original tx meta id.
+ * Used by intent flows where txHistory key is orderUid and txMeta id is stored separately.
+ */
+export const selectBridgeHistoryForOriginalTxMetaId = createSelector(
+  [selectBridgeHistory, (_, originalTxMetaId?: string) => originalTxMetaId],
+  (bridgeHistory, originalTxMetaId) => {
+    if (!originalTxMetaId) {
+      return undefined;
+    }
+    return Object.values(bridgeHistory).find(
+      (bridgeHistoryItem) =>
+        bridgeHistoryItem.originalTransactionId === originalTxMetaId,
+    );
+  },
+);
+
+// eslint-disable-next-line jsdoc/require-param
+/**
  * Returns a bridge history item for a given approval tx id
  */
 export const selectBridgeHistoryForApprovalTxId = createSelector(

@@ -34,7 +34,10 @@ import { formatAmount } from '../pages/confirmations/components/simulation-detai
 import { getIntlLocale } from '../ducks/locale/locale';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../shared/constants/bridge';
 import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
-import { selectBridgeHistoryItemForTxMetaId } from '../ducks/bridge-status/selectors';
+import {
+  selectBridgeHistoryForOriginalTxMetaId,
+  selectBridgeHistoryItemForTxMetaId,
+} from '../ducks/bridge-status/selectors';
 
 import { PAY_TRANSACTION_TYPES } from '../pages/confirmations/constants/pay';
 import { useI18nContext } from './useI18nContext';
@@ -109,9 +112,14 @@ export function useTransactionDisplayData(transactionGroup) {
 
   // Bridge data
   const srcTxMetaId = transactionGroup.initialTransaction.id;
-  const bridgeHistoryItem = useSelector((state) =>
+  const bridgeHistoryItemByTxMetaId = useSelector((state) =>
     selectBridgeHistoryItemForTxMetaId(state, srcTxMetaId),
   );
+  const bridgeHistoryItemByOriginalTxMetaId = useSelector((state) =>
+    selectBridgeHistoryForOriginalTxMetaId(state, srcTxMetaId),
+  );
+  const bridgeHistoryItem =
+    bridgeHistoryItemByTxMetaId ?? bridgeHistoryItemByOriginalTxMetaId;
   const { destNetwork } = useBridgeChainInfo({
     bridgeHistoryItem,
     srcTxMeta: transactionGroup.initialTransaction,

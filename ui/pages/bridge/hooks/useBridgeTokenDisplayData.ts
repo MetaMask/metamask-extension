@@ -5,6 +5,7 @@ import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryD
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import {
+  selectBridgeHistoryForOriginalTxMetaId,
   selectBridgeHistoryForApprovalTxId,
   selectBridgeHistoryItemForTxMetaId,
 } from '../../../ducks/bridge-status/selectors';
@@ -21,12 +22,17 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
   const bridgeHistoryItemForInitialTxId = useSelector((state) =>
     selectBridgeHistoryItemForTxMetaId(state, initialTransaction.id),
   );
+  const bridgeHistoryItemForOriginalTxId = useSelector((state) =>
+    selectBridgeHistoryForOriginalTxMetaId(state, initialTransaction.id),
+  );
   const bridgeHistoryItemWithApprovalTxId = useSelector((state) =>
     selectBridgeHistoryForApprovalTxId(state, initialTransaction.id),
   );
 
   const bridgeHistoryItem: BridgeHistoryItem | undefined =
-    bridgeHistoryItemForInitialTxId ?? bridgeHistoryItemWithApprovalTxId;
+    bridgeHistoryItemForInitialTxId ??
+    bridgeHistoryItemForOriginalTxId ??
+    bridgeHistoryItemWithApprovalTxId;
 
   // Display currency can be fiat or a token
   const displayCurrencyAmount = useTokenFiatAmount(
