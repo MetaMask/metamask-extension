@@ -126,6 +126,7 @@ const localStore = useFixtureStore
   ? new FixtureExtensionStore({ initialize: true })
   : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
+global.stateHooks._persistenceManager = persistenceManager;
 
 const { safePersist, requestSafeReload, evacuate } =
   getRequestSafeReload(persistenceManager);

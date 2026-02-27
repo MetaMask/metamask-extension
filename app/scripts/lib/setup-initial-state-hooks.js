@@ -19,12 +19,22 @@ const sentryLocalStore = new PersistenceManager({
 });
 
 /**
+ * Returns the active persistence manager: the one registered by the background
+ * when ready, otherwise the local fallback (sentryLocalStore) for pre-init and UI.
+ *
+ * @returns {import('./stores/persistence-manager').PersistenceManager}
+ */
+function getPersistenceManager() {
+  return globalThis.stateHooks._persistenceManager ?? sentryLocalStore;
+}
+
+/**
  * Get the persisted wallet state.
  *
  * @returns The persisted wallet state.
  */
 globalThis.stateHooks.getPersistedState = async function () {
-  return await sentryLocalStore.get({ validateVault: false });
+  return await getPersistenceManager().get({ validateVault: false });
 };
 
 /**
@@ -34,7 +44,7 @@ globalThis.stateHooks.getPersistedState = async function () {
  * @returns The backup state, or null if unavailable.
  */
 globalThis.stateHooks.getBackupState = async function () {
-  return await sentryLocalStore.getBackup();
+  return await getPersistenceManager().getBackup();
 };
 
 const persistedStateMask = {
@@ -65,7 +75,7 @@ globalThis.stateHooks.getSentryState = function () {
   };
   // If `getSentryAppState` is set, it implies that initialization has completed
   if (globalThis.stateHooks.getSentryAppState) {
-    sentryLocalStore.cleanUpMostRecentRetrievedState();
+    getPersistenceManager().cleanUpMostRecentRetrievedState();
     return {
       ...sentryState,
       state: globalThis.stateHooks.getSentryAppState(),
@@ -74,12 +84,12 @@ globalThis.stateHooks.getSentryState = function () {
     // This is truthy if Sentry has retrieved state at least once already. This
     // should always be true when getting context for an error report, but can
     // be unset when Sentry is performing the opt-in check.
-    sentryLocalStore.mostRecentRetrievedState ||
+    getPersistenceManager().mostRecentRetrievedState ||
     // This is only set in the background process.
     globalThis.stateHooks.getMostRecentPersistedState
   ) {
     const persistedState =
-      sentryLocalStore.mostRecentRetrievedState ||
+      getPersistenceManager().mostRecentRetrievedState ||
       globalThis.stateHooks.getMostRecentPersistedState();
     // This can be unset when this method is called in the background for an
     // opt-in check, but the state hasn't been loaded yet.
