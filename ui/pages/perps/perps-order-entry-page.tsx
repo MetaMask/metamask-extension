@@ -477,6 +477,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     orderMode,
     position,
     currentPrice,
+    controller,
     handleBackClick,
     replacePerpsToastByKey,
   ]);
