@@ -28,7 +28,7 @@ export function configureFixtureSession(
     const getFixtures = (): FixtureSessionContext => {
       if (!fixtures) {
         throw new Error(
-          'Fixture session is not ready yet. Call getFixtures() or getDriver() inside test or hook bodies after setup.',
+          'Fixture session is not ready yet; call getDriver()/getFixtures() only inside test or hook bodies after the shared fixture session `before` hook has run.',
         );
       }
 
