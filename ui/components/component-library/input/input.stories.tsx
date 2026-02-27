@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Meta } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
+import { useArgs } from '@storybook/preview-api';
 import README from './README.mdx';
 
 import {

@@ -1,6 +1,6 @@
 import React from 'react';
 import README from "./README.mdx";
-import { useArgs } from '@storybook/client-api';
+import { useArgs } from '@storybook/preview-api';
 import type { Meta } from '@storybook/react';
 
 import {

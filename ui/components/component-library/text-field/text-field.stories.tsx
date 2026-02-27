@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { StoryFn, Meta } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
+import { Meta, StoryObj } from '@storybook/react';
+import { useArgs } from '@storybook/preview-api';
 import README from './README.mdx';
 
 import {

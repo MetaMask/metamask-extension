@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import README from './README.mdx';
 import {
   Display,
@@ -38,14 +38,15 @@ export default {
   args: {
     children: 'Label',
   },
-} as ComponentMeta<typeof Label>;
+} satisfies Meta<typeof Label>;
 
-const Template: ComponentStory<typeof Label> = (args) => <Label {...args} />;
+export const DefaultStory: StoryObj<typeof Label> = {
+  render: (args) => <Label {...args} />,
+  name: 'Default',
+};
 
-export const DefaultStory = Template.bind({});
-DefaultStory.storyName = 'Default';
-
-export const Children: ComponentStory<typeof Label> = (args) => (
+export const Children: StoryObj<typeof Label> = {
+  render: (args) => (
   <Box
     display={Display.InlineFlex}
     flexDirection={FlexDirection.Column}
@@ -70,9 +71,11 @@ export const Children: ComponentStory<typeof Label> = (args) => (
       <TextField placeholder="Click label to focus" />
     </Label>
   </Box>
-);
+  ),
+};
 
-export const HtmlFor: ComponentStory<typeof Label> = (args) => {
+export const HtmlFor: StoryObj<typeof Label> = {
+  render: (args) => {
   const [value, setValue] = useState('');
   const handleOnChange = (e) => {
     setValue(e.target.value);
@@ -88,8 +91,9 @@ export const HtmlFor: ComponentStory<typeof Label> = (args) => {
       />
     </Box>
   );
-};
-HtmlFor.args = {
-  children: 'Network name',
-  htmlFor: 'add-network',
+  },
+  args: {
+    children: 'Network name',
+    htmlFor: 'add-network',
+  },
 };

@@ -5,7 +5,7 @@ import { Meta, StoryFn } from '@storybook/react';
 import configureStore from '../../../../store/store';
 import { Provider } from 'react-redux';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
-import { useArgs } from '@storybook/client-api';
+import { useArgs } from '@storybook/preview-api';
 import { Box, Button } from '../../../component-library';
 
 export const baseAlertsMock: Alert[] = [

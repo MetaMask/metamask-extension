@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
 import {
   BlockSize,
@@ -208,13 +208,11 @@ export default {
       table: { category: 'as (root html element)' },
     },
   },
-} as ComponentMeta<typeof Box>;
+} satisfies Meta<typeof Box>;
 
-export const DefaultStory: ComponentStory<typeof Box> = (args) => (
-  <Box {...args} />
-);
-
-DefaultStory.args = {
+export const DefaultStory: StoryObj<typeof Box> = {
+  render: (args) => <Box {...args} />,
+  args: {
   children: 'Box component',
   display: Display.Flex,
   justifyContent: JustifyContent.center,
@@ -222,13 +220,13 @@ DefaultStory.args = {
   width: BlockSize.Half,
   height: BlockSize.Half,
   borderColor: BorderColor.borderDefault,
-  padding: 4,
+    padding: 4,
+  },
+  name: 'Default',
 };
 
-DefaultStory.storyName = 'Default';
-
-export const Margin: ComponentStory<typeof Box> = (args) => {
-  return (
+export const Margin: StoryObj<typeof Box> = {
+  render: (args) => (
     <Box borderColor={BorderColor.borderMuted}>
       <Box
         {...args}
@@ -249,11 +247,11 @@ export const Margin: ComponentStory<typeof Box> = (args) => {
         Responsive margin changes based on breakpoint
       </Box>
     </Box>
-  );
+  ),
 };
 
-export const Padding: ComponentStory<typeof Box> = (args) => {
-  return (
+export const Padding: StoryObj<typeof Box> = {
+  render: (args) => (
     <Box borderColor={BorderColor.borderMuted}>
       <Box
         {...args}
@@ -272,11 +270,11 @@ export const Padding: ComponentStory<typeof Box> = (args) => {
         Responsive padding changes based on breakpoint
       </Box>
     </Box>
-  );
+  ),
 };
 
-export const ColorStory: ComponentStory<typeof Box> = (args) => {
-  return (
+export const ColorStory: StoryObj<typeof Box> = {
+  render: (args) => (
     <>
       <Box {...args} padding={3} color={TextColor.textDefault}>
         TextColor.textDefault
@@ -362,9 +360,9 @@ export const ColorStory: ComponentStory<typeof Box> = (args) => {
         TextColor.goerliInverse
       </Box>
     </>
-  );
+  ),
+  name: 'Color',
 };
-ColorStory.storyName = 'Color';
 
 export const BackgroundColorStory = () => {
   return (
@@ -664,8 +662,8 @@ export const ResponsiveProps = () => {
   );
 };
 
-export const As: ComponentStory<typeof Box> = (args) => {
-  return (
+export const As: StoryObj<typeof Box> = {
+  render: (args) => (
     <>
       <Text marginBottom={4}>
         You can change the root element of the Box component using the as prop.
@@ -677,10 +675,11 @@ export const As: ComponentStory<typeof Box> = (args) => {
       <Box as="button">button</Box>
       <Box as="header">header</Box>
     </>
-  );
+  ),
 };
 
-export const Width: ComponentStory<typeof Box> = () => {
+export const Width: StoryObj<typeof Box> = {
+  render: () => {
   const getColumns = (): JSX.Element[] => {
     const content: JSX.Element[] = [];
     for (let i = 0; i < 12; i++) {
@@ -925,13 +924,13 @@ export const Width: ComponentStory<typeof Box> = () => {
       </Box>
     </>
   );
-};
-
-Width.args = {
+  },
+  args: {
   width: [
     BlockSize.Half,
     BlockSize.OneFifth,
     BlockSize.ThreeFourths,
     BlockSize.OneFourth,
-  ],
+    ],
+  },
 };
