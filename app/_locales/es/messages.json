@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Aún no hay nada que ver. Canjea tu primer token hoy."
   },
-  "activityLog": {
-    "message": "Registro de actividad"
-  },
   "add": {
     "message": "Añadir"
   },
@@ -7677,9 +7674,6 @@
   "speedUpTooltipText": {
     "message": "Nueva tarifa de gas"
   },
-  "speedUpTransaction": {
-    "message": "Acelerar esta transacción"
-  },
   "spendLimitInsufficient": {
     "message": "Límite de gastos insuficiente"
   },
@@ -8530,18 +8524,6 @@
   "transaction": {
     "message": "transacción"
   },
-  "transactionCancelAttempted": {
-    "message": "Se intentó cancelar la transacción con una tarifa de gas de $1 en $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "La transacción se canceló correctamente en $2"
-  },
-  "transactionConfirmed": {
-    "message": "La transacción se confirmó en $2."
-  },
-  "transactionCreated": {
-    "message": "La transacción se creó con un valor de $1 en $2."
-  },
   "transactionDataFunction": {
     "message": "Función"
   },
@@ -8551,17 +8533,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Monto + cargos"
   },
-  "transactionDropped": {
-    "message": "La transacción se abandonó en $2."
-  },
   "transactionError": {
     "message": "Error de transacción. Excepción generada en el código de contrato."
   },
   "transactionErrorNoContract": {
     "message": "Intentando llamar a una función en una dirección sin contrato."
-  },
-  "transactionErrored": {
-    "message": "La transacción encontró un error."
   },
   "transactionFee": {
     "message": "Tarifa de transacción"
@@ -8597,24 +8573,15 @@
   "transactionIncludesTypes": {
     "message": "Esta transacción incluye: $1."
   },
-  "transactionResubmitted": {
-    "message": "Transacción reenviada con la tarifa de gas aumentada a $1 en $2"
-  },
   "transactionSettings": {
     "message": "Configuración de la transacción"
   },
   "transactionShield": {
     "message": "Protección de transacciones"
   },
-  "transactionSubmitted": {
-    "message": "Transacción enviada con una tarifa de gas de $1 en $2."
-  },
   "transactionTotalGasFee": {
     "message": "Tarifa de gas total",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "La transacción se actualizó en $2."
   },
   "transactions": {
     "message": "Transacciones"

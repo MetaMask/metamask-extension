@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Трябва да изберете акаунт!"
   },
-  "activityLog": {
-    "message": "Дневник на дейността"
-  },
   "addAcquiredTokens": {
     "message": "Добавете жетоните, които сте придобили с помощта на MetaMask"
   },
@@ -590,9 +587,6 @@
   "speedUpCancellation": {
     "message": "Ускорете това анулиране"
   },
-  "speedUpTransaction": {
-    "message": "Ускорете тази транзакция"
-  },
   "stateLogError": {
     "message": "Грешка при извличането на дневници на състоянието."
   },
@@ -638,38 +632,11 @@
   "transaction": {
     "message": "транзакция"
   },
-  "transactionCancelAttempted": {
-    "message": "Опит за отмяна на транзакцията с такса за газ от $1 при $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Транзакцията беше успешно отменена при $2"
-  },
-  "transactionConfirmed": {
-    "message": "Транзакцията беше потвърдена при $2."
-  },
-  "transactionCreated": {
-    "message": "Транзакцията е създадена със стойност от $1 при $2."
-  },
-  "transactionDropped": {
-    "message": "Транзакцията спадна на $2."
-  },
   "transactionError": {
     "message": "Грешка при транзакцията. Беше върнато изключение в кода на договора."
   },
   "transactionErrorNoContract": {
     "message": "Опит за извикване на функция на извъндоговорния адрес."
-  },
-  "transactionErrored": {
-    "message": "Възникна грешка в транзакцията."
-  },
-  "transactionResubmitted": {
-    "message": "Повторната транзакция с такса за газ се увеличи до $1 при $2"
-  },
-  "transactionSubmitted": {
-    "message": "Транзакция, изпратена с такса за газ от $1 при $2."
-  },
-  "transactionUpdated": {
-    "message": "Транзакцията е актуализирана на $2."
   },
   "transfer": {
     "message": "Трансфер"

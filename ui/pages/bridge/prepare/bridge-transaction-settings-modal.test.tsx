@@ -75,7 +75,7 @@ const interactWithCustomInput = async (
   action?: (input: HTMLElement) => void | Promise<void>,
 ) => {
   await act(async () => {
-    userEvent.click(screen.getByTestId(TX_MODAL.customButton));
+    await userEvent.click(screen.getByTestId(TX_MODAL.customButton));
   });
   await waitForElementById(TX_MODAL.customInput);
   const input = getByTestId(TX_MODAL.customInput);
@@ -316,9 +316,6 @@ describe('BridgeTransactionSettingsModal', () => {
             expect(getByTestId(TX_MODAL.customInput)).toHaveDisplayValue(
               expectedDisplayValue,
             );
-          });
-          await act(async () => {
-            userEvent.click(getByTestId(TX_MODAL.submitButton));
           });
 
           await submitUpdate(getByTestId);

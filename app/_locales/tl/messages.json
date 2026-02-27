@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Wala pang bago sa ngayon. I-swap na ang iyong unang token ngayon."
   },
-  "activityLog": {
-    "message": "Log ng aktibidad"
-  },
   "add": {
     "message": "Idagdag"
   },
@@ -7677,9 +7674,6 @@
   "speedUpTooltipText": {
     "message": "Bagong bayad sa gas"
   },
-  "speedUpTransaction": {
-    "message": "Pabilisin ang transaksyong ito"
-  },
   "spendLimitInsufficient": {
     "message": "Hindi sapat ang limitasyon sa paggastos"
   },
@@ -8530,18 +8524,6 @@
   "transaction": {
     "message": "transaksyong"
   },
-  "transactionCancelAttempted": {
-    "message": "Sinubukang kanselahin ang transaksyon na may tinantyang bayad sa gas na $1 sa $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Matagumpay na nakansela ang transaksyon sa $2"
-  },
-  "transactionConfirmed": {
-    "message": "Nakumpirma ang transaksyon sa $2."
-  },
-  "transactionCreated": {
-    "message": "Nagawa ang transaksyon na nagkakahalagang $1 sa $2."
-  },
   "transactionDataFunction": {
     "message": "Tungkulin"
   },
@@ -8551,17 +8533,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Halaga + fees"
   },
-  "transactionDropped": {
-    "message": "Tinanggihan ang transaksyon sa $2."
-  },
   "transactionError": {
     "message": "Error sa transaksyon. Nagkaroon ng exception sa code ng kontrata."
   },
   "transactionErrorNoContract": {
     "message": "Sinusubukang i-call ang isang function sa isang address na hindi kontrata."
-  },
-  "transactionErrored": {
-    "message": "Nagkaroon ng error sa transaksyon."
   },
   "transactionFee": {
     "message": "Bayad sa transaksyon"
@@ -8597,24 +8573,15 @@
   "transactionIncludesTypes": {
     "message": "Kabilang sa transaksyong ito ang: $1."
   },
-  "transactionResubmitted": {
-    "message": "Isinumite ulit ang transaksyon na may tinantyang bayad sa gas na itinaas sa $1 sa $2"
-  },
   "transactionSettings": {
     "message": "Mga setting ng transaksyon"
   },
   "transactionShield": {
     "message": "Transaction Shield"
   },
-  "transactionSubmitted": {
-    "message": "Isinumite ang transaksyon na may tinantyang bayad sa gas na $1 sa $2."
-  },
   "transactionTotalGasFee": {
     "message": "Kabuuang bayad sa gas",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Na-update ang transaksyon sa $2."
   },
   "transactions": {
     "message": "Mga Transaksyon"

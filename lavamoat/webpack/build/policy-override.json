@@ -12,6 +12,19 @@
       },
       "native": true
     },
+    "copy-webpack-plugin": {
+      "packages": {
+        "copy-webpack-plugin>serialize-javascript": true
+      }
+    },
+    "copy-webpack-plugin>serialize-javascript": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "crypto-browserify>randombytes": true
+      }
+    },
     "@swc/core": {
       "packages": {
         "@swc/core>@swc/core-darwin-x64": true,
