@@ -13,6 +13,7 @@ import {
 } from '@metamask/design-system-react';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
+  IconName,
   PolymorphicRef,
   Tag,
 } from '../../../../../components/component-library';
@@ -121,9 +122,13 @@ export const BridgeAsset = React.forwardRef(
               {asset.accountType && ACCOUNT_TYPE_LABELS[asset.accountType] && (
                 <Tag label={ACCOUNT_TYPE_LABELS[asset.accountType]} />
               )}
-              {tokenIsStock && <Tag label={t('tokenStock')} />}
-              {tokenIsStock && !tokenIsTradingOpen && (
-                <Tag label={t('bridgeMarketClosedBadge')} />
+              {tokenIsStock && (
+                <Tag
+                  label={t('tokenStock')}
+                  {...(tokenIsTradingOpen
+                    ? {}
+                    : { startIconName: IconName.Clock })}
+                />
               )}
               {asset.noFee?.[isDestination ? 'isDestination' : 'isSource'] && (
                 <Tag label={t('bridgeNoMMFee')} />

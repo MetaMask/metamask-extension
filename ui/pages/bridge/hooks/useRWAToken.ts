@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 
 type DateLike = string | null | undefined | Date;
+type RWATokenLike = Pick<BridgeToken, 'rwaData'> | undefined;
 
 const toMs = (value: DateLike): number | null => {
   if (!value) {
@@ -13,11 +14,11 @@ const toMs = (value: DateLike): number | null => {
 };
 
 export function useRWAToken() {
-  const isStockToken = useCallback((token?: BridgeToken) => {
+  const isStockToken = useCallback((token?: RWATokenLike) => {
     return token?.rwaData?.instrumentType === 'stock';
   }, []);
 
-  const isTokenTradingOpen = useCallback((token?: BridgeToken) => {
+  const isTokenTradingOpen = useCallback((token?: RWATokenLike) => {
     if (!token?.rwaData) {
       return true;
     }

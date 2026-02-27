@@ -79,6 +79,7 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../select
 import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { isNativeAsset, type Asset } from '../types/asset';
+import { useRWAToken } from '../../bridge/hooks/useRWAToken';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
@@ -199,7 +200,7 @@ const AssetPage = ({
   const bip44Asset = useSelector((state) => getAsset(state, address, chainId));
   const rwaData =
     assetWithBalance?.rwaData ?? bip44Asset?.rwaData ?? asset.rwaData;
-  const updatedAsset = {
+  const updatedAsset: Asset = {
     ...asset,
     rwaData,
     balance: {
@@ -228,11 +229,16 @@ const AssetPage = ({
     rwaData,
   };
   const { safeChains } = useSafeChains();
-  const isStockToken = updatedAsset.rwaData?.instrumentType === 'stock';
+  const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
+  const isStockToken = checkIsStockToken(updatedAsset);
+  const isMarketClosed = isStockToken && !isTokenTradingOpen(updatedAsset);
 
   // Check if we should show Tron resources
   const isTron = useMultichainSelector(getMultichainIsTron, selectedAccount);
   const showTronResources = isTron && type === AssetType.native;
+
+  const isUpdatedAssetNative = isNativeAsset(updatedAsset);
+  const tokenAsset = isUpdatedAssetNative ? null : updatedAsset;
 
   return (
     <Box className="asset__content">
@@ -258,22 +264,33 @@ const AssetPage = ({
         {optionsButton}
       </Box>
       <Box paddingLeft={4}>
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          gap={2}
-          data-testid="asset-name"
-        >
+        {isStockToken ? (
+          <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textAlternative}
+              data-testid="asset-name"
+            >
+              {name && symbol && name !== symbol
+                ? `${name} (${symbol})`
+                : (name ?? symbol)}
+            </Text>
+            <Tag
+              label={t('tokenStock')}
+              {...(isMarketClosed ? { startIconName: IconName.Clock } : {})}
+            />
+          </Box>
+        ) : (
           <Text
             variant={TextVariant.bodyMdMedium}
             color={TextColor.textAlternative}
+            data-testid="asset-name"
           >
             {name && symbol && name !== symbol
               ? `${name} (${symbol})`
               : (name ?? symbol)}
           </Text>
-          {isStockToken && <Tag label={t('tokenStock')} />}
-        </Box>
+        )}
       </Box>
       <AssetChart
         chainId={chainId}
@@ -283,7 +300,7 @@ const AssetPage = ({
         asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
       />
       <Box marginTop={4} paddingLeft={4} paddingRight={4}>
-        {isNativeAsset(updatedAsset) ? (
+        {isUpdatedAssetNative ? (
           <CoinButtons
             {...{
               account: selectedAccount,
@@ -296,9 +313,10 @@ const AssetPage = ({
               disableSendForNonEvm: true,
             }}
           />
-        ) : (
-          <TokenButtons token={updatedAsset} disableSendForNonEvm />
-        )}
+        ) : null}
+        {tokenAsset ? (
+          <TokenButtons token={tokenAsset} disableSendForNonEvm />
+        ) : null}
       </Box>
       <Box
         display={Display.Flex}
@@ -357,15 +375,9 @@ const AssetPage = ({
               paddingLeft={4}
               paddingRight={4}
             >
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                gap={2}
-                paddingBottom={2}
-              >
-                <Text variant={TextVariant.headingSm}>{t('tokenDetails')}</Text>
-                {isStockToken && <Tag label={t('tokenStock')} />}
-              </Box>
+              <Text variant={TextVariant.headingSm} paddingBottom={2}>
+                {t('tokenDetails')}
+              </Text>
               <Box
                 display={Display.Flex}
                 flexDirection={FlexDirection.Column}
