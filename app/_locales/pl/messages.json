@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Należy wybrać konto!"
   },
-  "activityLog": {
-    "message": "dziennik aktywności"
-  },
   "addAcquiredTokens": {
     "message": "Dodaj tokeny pozyskane przy pomocy MetaMask"
   },
@@ -584,9 +581,6 @@
   "speedUpCancellation": {
     "message": "Przyśpiesz anulowanie"
   },
-  "speedUpTransaction": {
-    "message": "Przyśpiesz transakcję"
-  },
   "stateLogError": {
     "message": "Błąd podczas pobierania logów stanów."
   },
@@ -626,38 +620,11 @@
   "transaction": {
     "message": "transakcja"
   },
-  "transactionCancelAttempted": {
-    "message": "Podjęto próbę anulowania transakcji z opłatą za gaz w wysokości $1 – $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transakcja została anulowana pomyślnie – $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transakcja została potwierdzona o $2."
-  },
-  "transactionCreated": {
-    "message": "Transakcja o wartości $1 została utworzona o $2."
-  },
-  "transactionDropped": {
-    "message": "Transakcja odrzucona – $2."
-  },
   "transactionError": {
     "message": "Błąd transakcji. Wyjątek w kodzie kontraktu."
   },
   "transactionErrorNoContract": {
     "message": "Próba wywołania funkcji na adresie, który nie jest adresem kontraktu."
-  },
-  "transactionErrored": {
-    "message": "Wystąpił błąd podczas wykonywania transakcji."
-  },
-  "transactionResubmitted": {
-    "message": "Transakcja wysłana ponownie z opłatą za gaz podwyższoną do $1 – $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transakcja wykonana z opłatą za gaz w wysokości $1 – $2."
-  },
-  "transactionUpdated": {
-    "message": "Transakcja zaktualizowana – $2."
   },
   "transfer": {
     "message": "Przelew"

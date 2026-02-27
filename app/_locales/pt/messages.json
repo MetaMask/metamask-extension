@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Nada para ver ainda. Troque seu primeiro token hoje."
   },
-  "activityLog": {
-    "message": "Registro de atividades"
-  },
   "add": {
     "message": "Adicionar"
   },
@@ -7677,9 +7674,6 @@
   "speedUpTooltipText": {
     "message": "Nova taxa de gás"
   },
-  "speedUpTransaction": {
-    "message": "Acelerar essa transação"
-  },
   "spendLimitInsufficient": {
     "message": "Limite de gastos insuficiente"
   },
@@ -8530,18 +8524,6 @@
   "transaction": {
     "message": "transação"
   },
-  "transactionCancelAttempted": {
-    "message": "Cancelamento da transação tentado com taxa de gás de $1 às $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transação cancelada às $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transação confirmada às $2."
-  },
-  "transactionCreated": {
-    "message": "Transação criada com valor de $1 às $2."
-  },
   "transactionDataFunction": {
     "message": "Função"
   },
@@ -8551,17 +8533,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Valor + taxas"
   },
-  "transactionDropped": {
-    "message": "Transação abandonada às $2."
-  },
   "transactionError": {
     "message": "Erro de transação. Exceção gerada no código do contrato."
   },
   "transactionErrorNoContract": {
     "message": "Tentando chamar uma função em um endereço que não está no contrato."
-  },
-  "transactionErrored": {
-    "message": "A transação encontrou um erro."
   },
   "transactionFee": {
     "message": "Taxa de transação"
@@ -8597,24 +8573,15 @@
   "transactionIncludesTypes": {
     "message": "Esta transação inclui: $1."
   },
-  "transactionResubmitted": {
-    "message": "Transação reenviada com taxa de gás aumentada para $1 às $2"
-  },
   "transactionSettings": {
     "message": "Configurações da transação"
   },
   "transactionShield": {
     "message": "Escudo para transações"
   },
-  "transactionSubmitted": {
-    "message": "Transação enviada com taxa de gás estimada de $1 às $2."
-  },
   "transactionTotalGasFee": {
     "message": "Taxa de gás total",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Transação atualizada às $2."
   },
   "transactions": {
     "message": "Transações"

@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "আপনাকে একটি অ্যাকাউন্ট নির্বাচন করতে হবে!"
   },
-  "activityLog": {
-    "message": "কার্যকলাপের লগ"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask ব্যবহার করে আপনি যে টোকেনগুলি অর্জন করেছেন সেগুলি যোগ করুন"
   },
@@ -584,9 +581,6 @@
   "speedUpCancellation": {
     "message": "এই বাতিলকরণটির গতি বাড়ান"
   },
-  "speedUpTransaction": {
-    "message": "এই লেনদেনটি দ্রুততর করুন "
-  },
   "stateLogError": {
     "message": "স্টেট লগগুলি পুনরুদ্ধার করার ত্রুটি।"
   },
@@ -632,38 +626,11 @@
   "transaction": {
     "message": "লেনদেন"
   },
-  "transactionCancelAttempted": {
-    "message": "$2 এ $1 এর গ্যাস ফী দিয়ে লেনদেন বাতিল করার প্রচেষ্টা করা হয়েছে"
-  },
-  "transactionCancelSuccess": {
-    "message": "$2 এ লেনদেন সফলভাবে বাতিল হয়েছে"
-  },
-  "transactionConfirmed": {
-    "message": " $2 এ লেনদেন নিশ্চিত হয়েছে।"
-  },
-  "transactionCreated": {
-    "message": "$2 এ $1 এর একটি মান দিয়ে লেনদেন তৈরি করা হয়েছে।"
-  },
-  "transactionDropped": {
-    "message": "লেনদেন $2 এ নেমে গেছে।"
-  },
   "transactionError": {
     "message": "লেনদেনের ত্রুটি। কন্ট্র্যাক্ট কোডে ব্যতিক্রম দেখাচ্ছে।"
   },
   "transactionErrorNoContract": {
     "message": "একটি অ-পরিচিতির ঠিকানায় একটি কল করার চেষ্টা করছে।"
-  },
-  "transactionErrored": {
-    "message": "লেনদেনে একটি ত্রুটি হয়েছে।"
-  },
-  "transactionResubmitted": {
-    "message": "$2 এ গ্যাস ফী $1 তে বাড়িয়ে লেনদেন আবার জমা করা হয়েছে"
-  },
-  "transactionSubmitted": {
-    "message": "$2 এ $1 এর গ্যাস ফী সহ লেনদেন জমা করা হয়েছে।"
-  },
-  "transactionUpdated": {
-    "message": "লেনদেন $2 এ আপডেট করা হয়েছে।"
   },
   "transfer": {
     "message": "ট্রান্সফার করুন"
