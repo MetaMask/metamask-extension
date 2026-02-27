@@ -164,8 +164,12 @@ export class CriticalStartupErrorHandler {
         this.#port,
         CriticalErrorType.BackgroundConnectionTimeout,
       );
-    } else if (!this.#uninstalled && !this.#initializationCompleted) {
-      await this.#startInitializationCheck();
+    } else if (!this.#uninstalled) {
+      if (!this.#initializationCompleted) {
+        await this.#startInitializationCheck();
+      } else if (!this.#startUiSyncCompleted) {
+        await this.#startStateSyncCheck();
+      }
     }
   }
 
