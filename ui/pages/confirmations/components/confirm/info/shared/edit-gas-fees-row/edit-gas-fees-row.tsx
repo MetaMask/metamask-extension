@@ -38,12 +38,12 @@ export const EditGasFeesRow = ({
   fiatFee,
   fiatFeeWith18SignificantDigits,
   nativeFee,
-  hideEditIcon,
+  disableUpdate,
 }: {
   fiatFee: string;
   fiatFeeWith18SignificantDigits: string | null;
   nativeFee: string;
-  hideEditIcon?: boolean;
+  disableUpdate?: boolean;
 }) => {
   const t = useI18nContext();
 
@@ -85,7 +85,7 @@ export const EditGasFeesRow = ({
   }
 
   const isGasFeeEditable =
-    !hideEditIcon &&
+    !disableUpdate &&
     !isQuotedSwapDisplayedInInfo &&
     !gasFeeToken &&
     !isGasFeeSponsored;

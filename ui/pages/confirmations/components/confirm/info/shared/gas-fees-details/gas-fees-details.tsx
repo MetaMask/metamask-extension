@@ -69,7 +69,7 @@ export const GasFeesDetails = (): JSX.Element | null => {
         fiatFee={estimatedFeeFiat}
         fiatFeeWith18SignificantDigits={estimatedFeeFiatWith18SignificantDigits}
         nativeFee={estimatedFeeNative}
-        hideEditIcon={isSimpleGasFee}
+        disableUpdate={isSimpleGasFee}
       />
       {showAdvancedDetails &&
         hasLayer1GasFee &&
