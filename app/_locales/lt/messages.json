@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Jums reikia pasirinkti paskyrą!"
   },
-  "activityLog": {
-    "message": "veiklos žurnalas"
-  },
   "addAcquiredTokens": {
     "message": "Pridėkite žetonus, kuriuos gavote naudodamiesi „MetaMask“"
   },
@@ -590,9 +587,6 @@
   "speedUpCancellation": {
     "message": "Pagreitinti šį atšaukimą"
   },
-  "speedUpTransaction": {
-    "message": "Paspartinti šią operaciją"
-  },
   "stateLogError": {
     "message": "Klaida gaunant būsenos žurnalus."
   },
@@ -638,38 +632,11 @@
   "transaction": {
     "message": "operacija"
   },
-  "transactionCancelAttempted": {
-    "message": "Operaciją mėginta atšaukti $2 su $1 dujų mokesčiu"
-  },
-  "transactionCancelSuccess": {
-    "message": "Operacija sėkmingai atšaukta $2"
-  },
-  "transactionConfirmed": {
-    "message": "Operacijos patvirtinimas $2."
-  },
-  "transactionCreated": {
-    "message": "Operacija sukurta $2 su $1 verte."
-  },
-  "transactionDropped": {
-    "message": "Operacija numesta prie$2."
-  },
   "transactionError": {
     "message": "Operacijos klaida. Sutarties kodo numetimo išimtis."
   },
   "transactionErrorNoContract": {
     "message": "Mėginama iškviesti funkciją nekontaktiniu adresu."
-  },
-  "transactionErrored": {
-    "message": "Įvyko operacijos klaida"
-  },
-  "transactionResubmitted": {
-    "message": "Operacija pakartotinai pateikta$2 su iki $1 padidintu dujų mokesčiu"
-  },
-  "transactionSubmitted": {
-    "message": "Operacija pateikta $2 su $1 dujų mokesčiu."
-  },
-  "transactionUpdated": {
-    "message": "Operacija atnaujinta$2."
   },
   "transfer": {
     "message": "Pervesti"
