@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Gösterilecek bir şey yok. İlk token takası işleminizi bugün yapın."
   },
-  "activityLog": {
-    "message": "Etkinlik günlüğü"
-  },
   "add": {
     "message": "Ekle"
   },
@@ -7677,9 +7674,6 @@
   "speedUpTooltipText": {
     "message": "Yeni gaz ücreti"
   },
-  "speedUpTransaction": {
-    "message": "Bu işlemi hızlandır"
-  },
   "spendLimitInsufficient": {
     "message": "Harcama limiti yetersiz"
   },
@@ -8530,18 +8524,6 @@
   "transaction": {
     "message": "i̇şlem"
   },
-  "transactionCancelAttempted": {
-    "message": "$2 itibariyle $1 tahmini gaz ücretiyle işlem iptali denemesinde bulunuldu"
-  },
-  "transactionCancelSuccess": {
-    "message": "İşlem $2 itibariyle başarılı bir şekilde iptal edildi"
-  },
-  "transactionConfirmed": {
-    "message": "İşlem $2 itibariyle onaylandı."
-  },
-  "transactionCreated": {
-    "message": "İşlem $2 itibariyle $1 değeriyle oluşturuldu."
-  },
   "transactionDataFunction": {
     "message": "Fonksiyon"
   },
@@ -8551,17 +8533,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Tutar + ücretler"
   },
-  "transactionDropped": {
-    "message": "İşlem şu saatte bırakıldı: $2."
-  },
   "transactionError": {
     "message": "İşlem Hatası. Sözleşme kodundan istisna atıldı."
   },
   "transactionErrorNoContract": {
     "message": "Sözleşmeli olmayan bir adreste bir fonksiyon çağrılmaya çalışıldı."
-  },
-  "transactionErrored": {
-    "message": "İşlem bir hatayla karşılaştı."
   },
   "transactionFee": {
     "message": "İşlem ücreti"
@@ -8597,24 +8573,15 @@
   "transactionIncludesTypes": {
     "message": "Bu işlem şunu içerir: $1."
   },
-  "transactionResubmitted": {
-    "message": "İşlem, $2 itibariyle $1 olarak artırılan tahmini gaz ücreti ile yeniden gönderildi"
-  },
   "transactionSettings": {
     "message": "İşlem ayarları"
   },
   "transactionShield": {
     "message": "Transaction Shield"
   },
-  "transactionSubmitted": {
-    "message": "İşlem $2 itibariyle tahmini $1 gaz ücreti ile gönderildi."
-  },
   "transactionTotalGasFee": {
     "message": "Toplam gaz ücreti",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "İşlem $2 itibariyle güncellendi."
   },
   "transactions": {
     "message": "İşlemler"

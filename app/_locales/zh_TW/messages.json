@@ -30,9 +30,6 @@
   "activity": {
     "message": "交易紀錄"
   },
-  "activityLog": {
-    "message": "活動紀錄"
-  },
   "addAcquiredTokens": {
     "message": "將您已經擁有的代幣顯示於 MetaMask"
   },
@@ -985,9 +982,6 @@
   "speedUpCancellation": {
     "message": "加速這個取消請求"
   },
-  "speedUpTransaction": {
-    "message": "加速這筆交易"
-  },
   "spendLimitInsufficient": {
     "message": "花費額度上限不足"
   },
@@ -1099,38 +1093,11 @@
   "transaction": {
     "message": "交易"
   },
-  "transactionCancelAttempted": {
-    "message": "交易取消請求，手續費 $1 @ $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "交易成功取消 @ $2"
-  },
-  "transactionConfirmed": {
-    "message": "交易確認 @ $2。"
-  },
-  "transactionCreated": {
-    "message": "交易建立，數量 $1 @ $2。"
-  },
-  "transactionDropped": {
-    "message": "交易被捨棄 @ $2。"
-  },
   "transactionError": {
     "message": "交易失敗。合約程式碼拋出錯誤。"
   },
   "transactionErrorNoContract": {
     "message": "嘗試在非合約位址呼叫合約函式。"
-  },
-  "transactionErrored": {
-    "message": "交易遇到錯誤。"
-  },
-  "transactionResubmitted": {
-    "message": "交易重新送出，手續費提高至 $1 @ $2"
-  },
-  "transactionSubmitted": {
-    "message": "交易送出，手續費 $1 @ $2。"
-  },
-  "transactionUpdated": {
-    "message": "交易狀態更新於 $2。"
   },
   "transfer": {
     "message": "交易"
