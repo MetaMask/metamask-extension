@@ -5,7 +5,7 @@ import useFetchNftDetailsFromTokenURI from './useFetchNftDetailsFromTokenURI';
 
 let queryClient: QueryClient;
 
-function renderHook<T>(callback: () => T) {
+function renderHook<Result>(callback: () => Result) {
   queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
