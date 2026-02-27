@@ -9,8 +9,8 @@ import React, {
   type ReactNode,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { Toast, ToastContainer } from '../../../multichain';
-import { Icon, IconName, IconSize } from '../../../component-library';
+import { Toast } from '../../../multichain';
+import { Box, Icon, IconName, IconSize } from '../../../component-library';
 import { IconColor } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getIsPerpsInAppToastsEnabled } from '../../../../selectors/perps/feature-flags';
@@ -262,7 +262,7 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
     <PerpsToastContext.Provider value={contextValue}>
       {children}
       {isPerpsInAppToastsEnabled && activeToast ? (
-        <ToastContainer className="toasts-container--perps">
+        <Box className="toasts-container toasts-container--perps">
           <Toast
             key={activeToast.id}
             startAdornment={getToastIcon(activeToast.presentation)}
@@ -273,7 +273,7 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
             onAutoHideToast={hidePerpsToast}
             dataTestId={activeToast.dataTestId ?? 'perps-toast'}
           />
-        </ToastContainer>
+        </Box>
       ) : null}
     </PerpsToastContext.Provider>
   );
