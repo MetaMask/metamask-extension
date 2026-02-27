@@ -185,7 +185,6 @@ describe('useSimulationMetrics', () => {
       jest.restoreAllMocks();
     });
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['in progress', undefined, 'simulation_in_progress'],
       [
@@ -198,11 +197,7 @@ describe('useSimulationMetrics', () => {
       ['changes', { tokenBalanceChanges: [{}] }, 'balance_change'],
     ])(
       'with simulation response if %s',
-      (
-        _: string,
-        simulationData: Record<string, unknown>,
-        simulationResponse: string,
-      ) => {
+      (_, simulationData, simulationResponse) => {
         useDisplayNamesMock.mockReset();
         useDisplayNamesMock.mockReturnValue([]);
 
@@ -221,7 +216,6 @@ describe('useSimulationMetrics', () => {
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['receiving', false, 'simulation_receiving_assets_quantity'],
       ['sending', true, 'simulation_sending_assets_quantity'],
@@ -248,7 +242,6 @@ describe('useSimulationMetrics', () => {
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         'receiving ERC-20',
@@ -336,7 +329,6 @@ describe('useSimulationMetrics', () => {
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         'receiving and available',
@@ -396,7 +388,6 @@ describe('useSimulationMetrics', () => {
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         'receiving and native',
@@ -497,7 +488,6 @@ describe('useSimulationMetrics', () => {
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['receiving', false, 'simulation_receiving_assets_total_value'],
       ['sending', true, 'simulation_sending_assets_total_value'],
@@ -786,7 +776,6 @@ describe('useSimulationMetrics', () => {
     });
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     [
       'simulation disabled',

@@ -53,7 +53,6 @@ const NON_STRING_VALUES = [
 describe('TRON Address Validator', () => {
   describe('isTronAddress', () => {
     describe('Valid Base58 addresses', () => {
-      // @ts-expect-error This is missing from the Mocha type definitions
       it.each(VALID_BASE58_ADDRESSES)(
         'returns true for valid Base58 address: %s',
         (address: string) => {
@@ -63,7 +62,6 @@ describe('TRON Address Validator', () => {
     });
 
     describe('Valid hex addresses', () => {
-      // @ts-expect-error This is missing from the Mocha type definitions
       it.each(VALID_HEX_ADDRESSES)(
         'returns true for valid hex address: %s',
         (address: string) => {
@@ -73,7 +71,6 @@ describe('TRON Address Validator', () => {
     });
 
     describe('Invalid format addresses', () => {
-      // @ts-expect-error This is missing from the Mocha type definitions
       it.each(INVALID_FORMAT_ADDRESSES)(
         'returns false for invalid format address: %s',
         (address: string) => {
@@ -83,7 +80,6 @@ describe('TRON Address Validator', () => {
     });
 
     describe('Invalid checksum addresses', () => {
-      // @ts-expect-error This is missing from the Mocha type definitions
       it.each(INVALID_CHECKSUM_ADDRESSES)(
         'returns false for invalid checksum address: %s',
         (address: string) => {
@@ -93,7 +89,6 @@ describe('TRON Address Validator', () => {
     });
 
     describe('Edge cases - non-string types', () => {
-      // @ts-expect-error This is missing from the Mocha type definitions
       it.each(NON_STRING_VALUES)(
         'returns false for non-string value: %p',
         (value: unknown) => {

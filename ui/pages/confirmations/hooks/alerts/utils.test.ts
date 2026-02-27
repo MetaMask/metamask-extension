@@ -5,19 +5,15 @@ import { getProviderAlertSeverity, normalizeProviderAlert } from './utils';
 
 describe('Utils', () => {
   describe('getProviderAlertSeverity', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [BlockaidResultType.Malicious, Severity.Danger],
       [BlockaidResultType.Warning, Severity.Warning],
       ['Other', Severity.Info],
-    ])(
-      'maps %s to %s',
-      (inputSeverity: BlockaidResultType, expectedSeverity: Severity) => {
-        expect(
-          getProviderAlertSeverity(inputSeverity as BlockaidResultType),
-        ).toBe(expectedSeverity);
-      },
-    );
+    ])('maps %s to %s', (inputSeverity, expectedSeverity) => {
+      expect(
+        getProviderAlertSeverity(inputSeverity as BlockaidResultType),
+      ).toBe(expectedSeverity);
+    });
   });
 
   describe('normalizeProviderAlert', () => {

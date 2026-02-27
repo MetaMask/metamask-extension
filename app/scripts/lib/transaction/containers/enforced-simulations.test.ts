@@ -273,7 +273,6 @@ describe('Enforced Simulations Utils', () => {
         );
       });
 
-      // @ts-expect-error Wrong `it` type
       it.each([
         SimulationTokenStandard.erc721,
         SimulationTokenStandard.erc1155,

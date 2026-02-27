@@ -108,7 +108,6 @@ describe('shield coverage selectors', () => {
         expectedLatency: 999999,
       },
     ];
-    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each(metricsTestCases)(
       'returns $description',
       ({

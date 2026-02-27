@@ -194,7 +194,6 @@ describe('useMultichainAssetsRatesPolling', () => {
       { completed: true, unlocked: true, rateCheck: true, expected: true },
     ];
 
-    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each(testCases)(
       'polling enabled: $expected when completed: $completed, unlocked: $unlocked, rateCheck: $rateCheck',
       ({

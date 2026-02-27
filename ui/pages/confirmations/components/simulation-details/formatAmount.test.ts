@@ -13,7 +13,6 @@ describe('formatAmount', () => {
       expect(formatAmount(locale, new BigNumber(0.0000009))).toBe('<0.000001');
     });
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [0.0000456, '0.000046'],
       [0.0004567, '0.000457'],
@@ -22,12 +21,11 @@ describe('formatAmount', () => {
       [0.125456, '0.125'],
     ])(
       'formats amount less than 1 with maximum significant digits (%s => %s)',
-      (amount: number, expected: string) => {
+      (amount, expected) => {
         expect(formatAmount(locale, new BigNumber(amount))).toBe(expected);
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [1.0034, '1.003'],
       [1.034, '1.034'],
@@ -45,7 +43,7 @@ describe('formatAmount', () => {
       ],
     ])(
       'formats amount greater than or equal to 1 with appropriate decimal precision (%s => %s)',
-      (amount: number, expected: string) => {
+      (amount, expected) => {
         expect(formatAmount(locale, new BigNumber(amount))).toBe(expected);
       },
     );
