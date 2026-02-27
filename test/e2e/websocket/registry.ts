@@ -139,6 +139,24 @@ class WebSocketRegistry {
     }
     return entry.server;
   }
+
+  /**
+   * Get a snapshot of open connections across all running servers.
+   *
+   * @returns Array of objects with service name, port, and connection count
+   */
+  static getOpenConnections(): { name: string; port: number; count: number }[] {
+    const connections: { name: string; port: number; count: number }[] = [];
+    for (const [name, entry] of WebSocketRegistry.entries.entries()) {
+      if (entry.server) {
+        const count = entry.server.getWebsocketConnectionCount();
+        if (count > 0) {
+          connections.push({ name, port: entry.port, count });
+        }
+      }
+    }
+    return connections;
+  }
 }
 
 export default WebSocketRegistry;
