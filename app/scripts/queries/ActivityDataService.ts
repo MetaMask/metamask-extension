@@ -49,7 +49,7 @@ export class ActivityDataService extends BaseDataService<
         queryFn: async ({ pageParam }) => {
           const caipAddress = `eip155:0:${address.toLowerCase()}`;
           const url = new URL(
-            `${this.#baseUrl}/v4/multiaccount/transactions?limit=3&accountAddresses=${caipAddress}`,
+            `${this.#baseUrl}/v4/multiaccount/transactions?limit=10&accountAddresses=${caipAddress}`,
           );
 
           if (pageParam?.after) {
