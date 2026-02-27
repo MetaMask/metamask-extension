@@ -620,7 +620,7 @@ function processStrings(line: string, mode: 'strip' | 'mask'): string {
         let depth = 1, k = j + 2, foundClose = false;
         result += ch; if (mode === 'mask') result += ' '.repeat(j - i - 1); result += '${';
         while (k < line.length) {
-          if (line[k] === '\\') { if (depth > 0) result += line[k] + (line[k+1]||''); else if (mode === 'mask') result += '  '; k += 2; continue; }
+          if (line[k] === '\\') { if (depth > 0) result += line[k] + (line[k+1]||' '); else if (mode === 'mask') result += '  '; k += 2; continue; }
           if (depth === 0) {
             if (line[k] === '`') { foundClose = true; result += '`'; break; }
             if (line[k] === '$' && line[k + 1] === '{') { depth = 1; result += '${'; k += 2; continue; }
