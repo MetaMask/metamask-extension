@@ -111,6 +111,7 @@ describe('WeakDomainProxyMap', () => {
       expect(map.get('stale')).toBeUndefined();
       expect(map.delete('stale')).toBe(false);
     },
+    20_000,
   );
 
   it('has removes stale internal entries', () => {
@@ -288,8 +289,7 @@ describe('WeakRefObjectMap with garbage collection', () => {
 
   itIfGc(
     'prunes stale entries from has, size, and iterators after collection',
-    async function () {
-      this.timeout(20000); // Extend timeout for GC retries
+    async () => {
       const gcMap = new WeakRefObjectMap<TestRecord>();
       const liveTarget = {};
       let staleTarget: object | null = {};
@@ -314,5 +314,6 @@ describe('WeakRefObjectMap with garbage collection', () => {
       expect(Array.from(gcMap.keys())).toEqual(['live']);
       expect(Array.from(gcMap.values())).toEqual([{ objKey: liveTarget }]);
     },
+    20_000,
   );
 });
