@@ -1,3 +1,4 @@
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   ASSETS_UNIFY_STATE_FLAG,
@@ -7,6 +8,7 @@ import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
   getTokensControllerAllIgnoredTokens,
+  getTokenBalancesControllerTokenBalances,
 } from './assets-migration';
 
 const mockAccountId = 'mock-account-id-1';
@@ -252,6 +254,80 @@ describe('getTokensControllerAllIgnoredTokens', () => {
       expect(result).toStrictEqual({
         '0x1': {
           [mockAccountAddressLowercase]: [erc20AssetAddressLowercase],
+        },
+      });
+    });
+  });
+});
+
+describe('getTokenBalancesControllerTokenBalances', () => {
+  describe('when assets unify state feature is disabled', () => {
+    it('returns tokenBalances from state unchanged', () => {
+      const legacyTokenBalances = {
+        [mockAccountAddressLowercase]: {
+          '0x1': {
+            [erc20AssetAddressChecksummed]: '0xf4240' as const,
+          },
+        },
+      };
+      const state = {
+        metamask: {
+          tokenBalances: legacyTokenBalances,
+        },
+      };
+      const result = getTokenBalancesControllerTokenBalances(state);
+
+      expect(result).toBe(legacyTokenBalances);
+      expect(result).toStrictEqual(legacyTokenBalances);
+    });
+  });
+
+  describe('when assets unify state feature is enabled (happy path)', () => {
+    it('derives tokenBalances from new state structure', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            [ASSETS_UNIFY_STATE_FLAG]: {
+              enabled: true,
+              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
+              minimumVersion: null,
+            },
+          },
+          tokenBalances: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 18 },
+            [erc20AssetId]: { type: 'erc20', decimals: 6 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1.23456789' },
+              [erc20AssetId]: { amount: '1' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+              [mockAccountId2]: {
+                id: mockAccountId2,
+                type: 'solana:data-account',
+              },
+            },
+          },
+        },
+      };
+      const result = getTokenBalancesControllerTokenBalances(state);
+
+      const nativeAddress = getNativeAssetForChainId('0x1').address;
+      expect(result).toStrictEqual({
+        [mockAccountAddressLowercase]: {
+          '0x1': {
+            [nativeAddress]: '0x112210f4768db400', // 1.23456789 ETH (18 decimals)
+            [erc20AssetAddressChecksummed]: '0xf4240', // 1 USDC (6 decimals)
+          },
         },
       });
     });
