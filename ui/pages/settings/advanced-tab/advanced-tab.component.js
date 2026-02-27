@@ -5,12 +5,9 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
-import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
 import {
   Box,
   Button,
-  ButtonLink,
-  ButtonLinkSize,
   ButtonVariant,
 } from '../../../components/component-library';
 import TextField from '../../../components/ui/text-field';
@@ -20,7 +17,6 @@ import {
   FlexDirection,
   JustifyContent,
   TextVariant,
-  AlignItems,
 } from '../../../helpers/constants/design-system';
 import {
   ExportableContentType,
@@ -59,8 +55,6 @@ export default class AdvancedTab extends PureComponent {
     setShowExtensionInFullSizeView: PropTypes.func.isRequired,
     manageInstitutionalWallets: PropTypes.bool,
     setManageInstitutionalWallets: PropTypes.func.isRequired,
-    dismissSmartAccountSuggestionEnabled: PropTypes.bool.isRequired,
-    setDismissSmartAccountSuggestionEnabled: PropTypes.func.isRequired,
   };
 
   state = {
@@ -205,133 +199,6 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderToggleDismissSmartAccountSuggestion() {
-    const { t } = this.context;
-    const {
-      dismissSmartAccountSuggestionEnabled,
-      setDismissSmartAccountSuggestionEnabled,
-    } = this.props;
-
-    return (
-      <Box
-        ref={this.settingsRefs[3]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-dismiss-smart-account-suggestion-enabled"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={[null, 4]}
-      >
-        <div className="settings-page__content-item">
-          <span> {t('dismissSmartAccountSuggestionEnabledTitle')}</span>
-          <div className="settings-page__content-description">
-            {t('dismissSmartAccountSuggestionEnabledDescription')}
-          </div>
-        </div>
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            value={dismissSmartAccountSuggestionEnabled}
-            onToggle={(oldValue) => {
-              const newValue = !oldValue;
-              setDismissSmartAccountSuggestionEnabled(newValue);
-            }}
-            offLabel={t('off')}
-            onLabel={t('on')}
-            dataTestId="settings-page-dismiss-smart-account-suggestion-enabled-toggle"
-          />
-        </div>
-      </Box>
-    );
-  }
-
-  renderToggleStxOptIn() {
-    const { t } = this.context;
-    const { smartTransactionsEnabled, setSmartTransactionsEnabled } =
-      this.props;
-
-    const learMoreLink = (
-      <ButtonLink
-        size={ButtonLinkSize.Inherit}
-        textProps={{
-          variant: TextVariant.bodyMd,
-          alignItems: AlignItems.flexStart,
-        }}
-        as="a"
-        href={SMART_TRANSACTIONS_LEARN_MORE_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {t('learnMoreUpperCase')}
-      </ButtonLink>
-    );
-
-    return (
-      <Box
-        ref={this.settingsRefs[4]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-enable-smart-transactions"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={[null, 4]}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('smartTransactions')}</span>
-          <div className="settings-page__content-description">
-            {t('stxOptInSupportedNetworksDescription', [learMoreLink])}
-          </div>
-        </div>
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            value={smartTransactionsEnabled}
-            onToggle={(oldValue) => {
-              const newValue = !oldValue;
-              setSmartTransactionsEnabled(newValue);
-            }}
-            offLabel={t('off')}
-            onLabel={t('on')}
-            dataTestId="settings-page-stx-opt-in-toggle"
-          />
-        </div>
-      </Box>
-    );
-  }
-
-  renderHexDataOptIn() {
-    const { t } = this.context;
-    const { sendHexData, setHexDataFeatureFlag } = this.props;
-
-    return (
-      <Box
-        ref={this.settingsRefs[5]}
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={[null, 4]}
-        data-testid="advanced-setting-hex-data"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('showHexData')}</span>
-          <div className="settings-page__content-description">
-            {t('showHexDataDescription')}
-          </div>
-        </div>
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            value={sendHexData}
-            onToggle={(value) => setHexDataFeatureFlag(!value)}
-            offLabel={t('off')}
-            onLabel={t('on')}
-            className="hex-data-toggle"
-          />
-        </div>
-      </Box>
-    );
-  }
-
   renderShowConversionInTestnets() {
     const { t } = this.context;
     const { showFiatInTestnets, setShowFiatConversionOnTestnetsPreference } =
@@ -339,7 +206,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[6]}
+        ref={this.settingsRefs[2]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -375,7 +242,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[5]}
+        ref={this.settingsRefs[3]}
         className="settings-page__content-row"
         data-testid="advanced-setting-show-testnets"
         display={Display.Flex}
@@ -409,7 +276,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[8]}
+        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
         data-testid="advanced-setting-show-extension-in-full-size-view"
         display={Display.Flex}
@@ -457,7 +324,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[7]}
+        ref={this.settingsRefs[6]}
         className="settings-page__content-row"
         data-testid="advanced-setting-auto-lock"
         display={Display.Flex}
@@ -505,7 +372,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[9]}
+        ref={this.settingsRefs[8]}
         className="settings-page__content-row"
         data-testid="advanced-setting-dismiss-reminder"
         display={Display.Flex}
@@ -574,7 +441,7 @@ export default class AdvancedTab extends PureComponent {
     const { t } = this.context;
     return (
       <Box
-        ref={this.settingsRefs[10]}
+        ref={this.settingsRefs[7]}
         className="settings-page__content-row"
         data-testid="advanced-setting-data-backup"
         display={Display.Flex}
@@ -609,9 +476,9 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[9]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
-        data-testid="advanced-setting-dismiss-reminder"
+        data-testid="advanced-setting-manage-institutional-wallets"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
@@ -646,9 +513,6 @@ export default class AdvancedTab extends PureComponent {
         ) : null}
         {this.renderStateLogs()}
         {this.renderResetAccount()}
-        {this.renderToggleDismissSmartAccountSuggestion()}
-        {this.renderToggleStxOptIn()}
-        {this.renderHexDataOptIn()}
         {this.renderShowConversionInTestnets()}
         {this.renderToggleTestNetworks()}
         {this.renderManageInstitutionalWallets()}

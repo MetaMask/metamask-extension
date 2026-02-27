@@ -7339,6 +7339,12 @@
   "showHexDataDescription": {
     "message": "Select this to show the hex data field on the send screen"
   },
+  "customizeTransactionNonce": {
+    "message": "Customize transaction nonce"
+  },
+  "customizeTransactionNonceDescription": {
+    "message": "Set a custom nonce when confirming a transaction. Only change this if you know what you're doing."
+  },
   "showLess": {
     "message": "Show less"
   },

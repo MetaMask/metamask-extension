@@ -45,6 +45,7 @@ import {
   TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
   TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
+  TRANSACTIONS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
@@ -81,6 +82,7 @@ const ROUTES_TO_I18N_KEYS = {
   [TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE]: 'shieldPastPlansTitle',
   [TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE]: 'shieldManagePlan',
   [TRANSACTION_SHIELD_ROUTE]: 'shieldTx',
+  [TRANSACTIONS_ROUTE]: 'transactions',
 };
 
 const mapStateToProps = (state, ownProps) => {

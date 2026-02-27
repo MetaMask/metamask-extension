@@ -26,6 +26,7 @@ import {
   ADD_POPULAR_CUSTOM_NETWORK,
   DEFAULT_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
+  TRANSACTIONS_ROUTE,
   SNAP_SETTINGS_ROUTE,
   REVEAL_SRP_LIST_ROUTE,
   BACKUPANDSYNC_ROUTE,
@@ -81,6 +82,7 @@ import ChangePassword from './security-tab/change-password';
 import ClaimsArea from './transaction-shield-tab/claims-area';
 import TransactionShield from './transaction-shield-tab';
 import ManageShieldPlan from './transaction-shield-tab/manage-shield-plan';
+import TransactionsTab from './transactions-tab/transactions-tab.container';
 
 // Helper component for network routes that need side effects
 const NetworkRouteHandler = ({ onMount }) => {
@@ -189,8 +191,14 @@ class SettingsPage extends PureComponent {
       environmentType === ENVIRONMENT_TYPE_POPUP ||
       environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
     const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+    const isNotificationsSettingsPage = currentPath.startsWith(
+      NOTIFICATIONS_SETTINGS_ROUTE,
+    );
     const isSearchHidden =
-      isRevealSrpListPage || isPasswordChangePage || isTransactionShieldPage;
+      isRevealSrpListPage ||
+      isPasswordChangePage ||
+      isTransactionShieldPage ||
+      ((isPopup || isSidepanel) && isNotificationsSettingsPage);
 
     return (
       <div
@@ -429,6 +437,11 @@ class SettingsPage extends PureComponent {
         key: ADVANCED_ROUTE,
       },
       {
+        content: t('transactions'),
+        icon: <Icon name={IconName.Send} />,
+        key: TRANSACTIONS_ROUTE,
+      },
+      {
         content: t('backupAndSync'),
         icon: <Icon name={IconName.SecurityTime} />,
         key: BACKUPANDSYNC_ROUTE,
@@ -529,6 +542,10 @@ class SettingsPage extends PureComponent {
         <Route
           path={toRelativeRoutePath(ADVANCED_ROUTE, SETTINGS_ROUTE)}
           element={<AdvancedTab />}
+        />
+        <Route
+          path={toRelativeRoutePath(TRANSACTIONS_ROUTE, SETTINGS_ROUTE)}
+          element={<TransactionsTab />}
         />
         <Route
           path={toRelativeRoutePath(BACKUPANDSYNC_ROUTE, SETTINGS_ROUTE)}
