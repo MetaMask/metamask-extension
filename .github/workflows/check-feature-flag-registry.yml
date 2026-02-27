@@ -3,7 +3,7 @@ name: Check feature flag registry drift
 on:
   schedule:
     # Run weekly on Mondays at 08:00 UTC
-    - cron: "0 8 * * 1"
+    - cron: '0 8 * * 1'
   workflow_dispatch:
 
 permissions:
