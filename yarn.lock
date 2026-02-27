@@ -15130,6 +15130,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/babel__code-frame@npm:^7.0.6":
+  version: 7.27.0
+  resolution: "@types/babel__code-frame@npm:7.27.0"
+  checksum: 10/3cc95c6ce9e703d5d88ba6fcafb8d9e002c78cc26eb3214a1759113f2b45a5fb054f1ba89040ccd1541bec1facb35d38453a2d7775faff9f61ddeee485593868
+  languageName: node
+  linkType: hard
+
 "@types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.1.14, @types/babel__core@npm:^7.18.0":
   version: 7.20.5
   resolution: "@types/babel__core@npm:7.20.5"
@@ -33130,6 +33137,7 @@ __metadata:
     "@toruslabs/eccrypto": "npm:^6.1.0"
     "@trezor/connect-web": "npm:~9.6.0"
     "@tsconfig/node22": "npm:^22.0.0"
+    "@types/babel__code-frame": "npm:^7.0.6"
     "@types/babelify": "npm:^7.3.7"
     "@types/browserify": "npm:^12.0.37"
     "@types/chrome": "npm:^0.0.268"

@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Belum ada apa pun. Swap token pertama Anda hari ini."
   },
-  "activityLog": {
-    "message": "Log aktivitas"
-  },
   "add": {
     "message": "Tambah"
   },
@@ -7677,9 +7674,6 @@
   "speedUpTooltipText": {
     "message": "Biaya gas baru"
   },
-  "speedUpTransaction": {
-    "message": "Percepat transaksi ini"
-  },
   "spendLimitInsufficient": {
     "message": "Batas penggunaan tidak mencukupi"
   },
@@ -8530,18 +8524,6 @@
   "transaction": {
     "message": "transaksi"
   },
-  "transactionCancelAttempted": {
-    "message": "Pembatalan transaksi diupayakan dengan biaya gas sebesar $1 pada $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaksi berhasil dibatalkan pada $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transaksi dikonfirmasi pada $2."
-  },
-  "transactionCreated": {
-    "message": "Transaksi dibuat dengan nilai sebesar $1 pada $2."
-  },
   "transactionDataFunction": {
     "message": "Fungsi"
   },
@@ -8551,17 +8533,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Jumlah + biaya"
   },
-  "transactionDropped": {
-    "message": "Transaksi terputus pada $2."
-  },
   "transactionError": {
     "message": "Kesalahan transaksi. Pengecualian diberikan dalam kode kontrak."
   },
   "transactionErrorNoContract": {
     "message": "Mencoba memanggil fungsi pada alamat nonkontrak."
-  },
-  "transactionErrored": {
-    "message": "Transaksi mengalami kesalahan."
   },
   "transactionFee": {
     "message": "Biaya transaksi"
@@ -8597,24 +8573,15 @@
   "transactionIncludesTypes": {
     "message": "Transaksi ini termasuk: $1."
   },
-  "transactionResubmitted": {
-    "message": "Transaksi dikirim kembali dengan estimasi biaya gas naik $1 pada $2"
-  },
   "transactionSettings": {
     "message": "Pengaturan transaksi"
   },
   "transactionShield": {
     "message": "Transaction Shield"
   },
-  "transactionSubmitted": {
-    "message": "Transaksi dikirim dengan estimasi biaya gas sebesar $1 pada $2."
-  },
   "transactionTotalGasFee": {
     "message": "Total biaya gas",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Transaksi diperbarui pada $2."
   },
   "transactions": {
     "message": "Transaksi"

@@ -61,6 +61,7 @@ import {
 import {
   getAccountTrackerControllerAccountsByChainId,
   getCurrencyRateControllerCurrencyRates,
+  getCurrencyRateControllerCurrentCurrency,
   getMultiChainAssetsControllerAccountsAssets,
   getMultiChainAssetsControllerAllIgnoredAssets,
   getMultiChainAssetsControllerAssetsMetadata,
@@ -1412,7 +1413,7 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     tokenBalances: getTokenBalancesControllerTokenBalances({ metamask }),
     marketData: getTokenRatesControllerMarketData({ metamask }),
     currencyRates: getCurrencyRateControllerCurrencyRates({ metamask }),
-    currentCurrency: metamask.currentCurrency,
+    currentCurrency: getCurrencyRateControllerCurrentCurrency({ metamask }),
     networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
     accountsByChainId: getAccountTrackerControllerAccountsByChainId({
       metamask,
