@@ -35,7 +35,7 @@ async function fetchNftDetailsFromTokenURI(
 const useFetchNftDetailsFromTokenURI = (
   tokenURI: string | undefined | null,
 ) => {
-  const { data = EMPTY_RESULT, ...rest } = useQuery({
+  const { data = EMPTY_RESULT } = useQuery({
     queryKey: ['nftTokenURIDetails', tokenURI],
     queryFn: () => fetchNftDetailsFromTokenURI(tokenURI as string),
     enabled: Boolean(tokenURI),
@@ -44,7 +44,7 @@ const useFetchNftDetailsFromTokenURI = (
     retry: false,
   });
 
-  return { ...data, ...rest };
+  return data;
 };
 
 export default useFetchNftDetailsFromTokenURI;

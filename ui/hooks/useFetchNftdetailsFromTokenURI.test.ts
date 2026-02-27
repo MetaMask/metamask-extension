@@ -24,12 +24,10 @@ describe('useFetchNftDetailsFromTokenURI', () => {
       useFetchNftDetailsFromTokenURI(undefined),
     );
 
-    expect(result.result.current).toEqual(
-      expect.objectContaining({
-        image: '',
-        name: '',
-      }),
-    );
+    expect(result.result.current).toEqual({
+      image: '',
+      name: '',
+    });
   });
 
   it('should return when fetch fails', async () => {
@@ -44,12 +42,10 @@ describe('useFetchNftDetailsFromTokenURI', () => {
 
     await waitForNextUpdate();
 
-    expect(result.current).toEqual(
-      expect.objectContaining({
-        image: '',
-        name: '',
-      }),
-    );
+    expect(result.current).toEqual({
+      image: '',
+      name: '',
+    });
   });
 
   it('should return correctly when tokenURI is defined and contains valid JSON', async () => {
@@ -71,13 +67,11 @@ describe('useFetchNftDetailsFromTokenURI', () => {
 
     await waitForNextUpdate();
 
-    expect(result.current).toEqual(
-      expect.objectContaining({
-        image:
-          'https://ipfs.io/ipfs/bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi',
-        name: 'Rocks',
-      }),
-    );
+    expect(result.current).toEqual({
+      image:
+        'https://ipfs.io/ipfs/bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi',
+      name: 'Rocks',
+    });
   });
 
   it('should gracefully fail when providing an invalid token URI', async () => {
@@ -88,12 +82,10 @@ describe('useFetchNftDetailsFromTokenURI', () => {
 
     await waitForNextUpdate();
 
-    expect(result.current).toEqual(
-      expect.objectContaining({
-        image: '',
-        name: '',
-      }),
-    );
+    expect(result.current).toEqual({
+      image: '',
+      name: '',
+    });
   });
 
   it('should not set image or name when they are not strings in the response', async () => {
@@ -114,11 +106,9 @@ describe('useFetchNftDetailsFromTokenURI', () => {
 
     await waitForNextUpdate();
 
-    expect(result.current).toEqual(
-      expect.objectContaining({
-        image: '',
-        name: '',
-      }),
-    );
+    expect(result.current).toEqual({
+      image: '',
+      name: '',
+    });
   });
 });
