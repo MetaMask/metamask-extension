@@ -1974,6 +1974,9 @@
       }
     },
     "@metamask/remote-feature-flag-controller": {
+      "globals": {
+        "TextEncoder": true
+      },
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
