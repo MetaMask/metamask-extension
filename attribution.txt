@@ -26001,7 +26001,7 @@ authors: Fedor Indutny <fedor@indutny.com>
 ******************************
 
 minimatch
-3.1.2 <https://github.com/isaacs/minimatch>
+3.1.4 <https://github.com/isaacs/minimatch>
 The ISC License
 
 Copyright (c) Isaac Z. Schlueter and Contributors
