@@ -82,6 +82,8 @@ class HomePage {
 
   protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
 
+  public readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
+
   protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
 
   private readonly refreshErc20Tokens = {
@@ -201,6 +203,11 @@ class HomePage {
     } catch (e) {
       console.log('Error waiting for network, DOM, and Redux ready', e);
     }
+  }
+
+  async waitForSolanaAccountLoaded(): Promise<void> {
+    console.log('Waiting for Solana account icon to be visible');
+    await this.driver.waitForSelector(this.solanaAccountIcon);
   }
 
   async checkPageIsNotLoaded(): Promise<void> {
