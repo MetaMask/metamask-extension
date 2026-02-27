@@ -145,6 +145,7 @@
     "attributions:generate": "./development/generate-attributions.sh",
     "feature-flags:sync": "tsx test/e2e/feature-flags/sync-production-flags.ts",
     "feature-flags:sync:check": "tsx test/e2e/feature-flags/sync-production-flags.ts --check",
+    "feature-flags:sync:update": "tsx test/e2e/feature-flags/sync-production-flags.ts --update",
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
