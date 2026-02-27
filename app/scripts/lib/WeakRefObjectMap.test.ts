@@ -283,7 +283,7 @@ describe('WeakDomainProxyMap', () => {
   });
 });
 
-describe('WeakDomainProxyMap with garbage collection', () => {
+describe('WeakRefObjectMap with garbage collection', () => {
   const itIfGc = global.gc ? it : it.skip;
 
   itIfGc(
