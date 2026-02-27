@@ -38,6 +38,7 @@ import type {
   CurrencyRateState,
   BalanceChangePeriod,
   BalanceChangeResult,
+  AccountTrackerControllerState,
 } from '@metamask/assets-controllers';
 import { TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
@@ -52,14 +53,18 @@ import { findAssetByAddress } from '../pages/asset/util';
 import { isEvmChainId } from '../../shared/lib/asset-utils';
 import { isEmptyHexString } from '../../shared/modules/hexstring-utils';
 import { isZeroAmount } from '../helpers/utils/number-utils';
-import { getNonTestNetworks } from '../../shared/modules/selectors/networks';
+import {
+  getNonTestNetworks,
+  NetworkState,
+} from '../../shared/modules/selectors/networks';
 import {
   getAccountTrackerControllerAccountsByChainId,
+  getTokenBalancesControllerTokenBalances,
   getTokensControllerAllIgnoredTokens,
   getTokensControllerAllTokens,
 } from '../../shared/modules/selectors/assets-migration';
 import { getSelectedInternalAccount } from './accounts';
-import { getMultichainBalances } from './multichain';
+import { getMultichainBalances, RatesState } from './multichain';
 import { EMPTY_OBJECT } from './shared';
 import {
   getAllTokens,
@@ -76,6 +81,7 @@ import {
 import {
   getAllEnabledNetworksForAllNamespaces,
   getSelectedMultichainNetworkConfiguration,
+  MultichainNetworkControllerState,
 } from './multichain/networks';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 
@@ -93,20 +99,18 @@ export type DefiState = {
 
 // Type for the main Redux state that includes all controller states needed for balance calculations
 export type BalanceCalculationState = {
-  metamask: Partial<AccountTreeControllerState> &
-    Partial<AccountsControllerState> &
-    Partial<TokenBalancesControllerState> &
-    Partial<TokenRatesControllerState> &
-    Partial<MultichainBalancesControllerState> &
-    Partial<TokensControllerState> &
-    Partial<CurrencyRateState> & {
-      conversionRates?: Record<string, unknown>;
-      historicalPrices?: Record<string, unknown>;
-      networkConfigurationsByChainId?: Record<string, unknown>;
-      accountsByChainId?: Record<
-        string,
-        Record<string, { balance: string; address: string }>
-      >;
+  metamask: AccountTreeControllerState &
+    AccountsControllerState &
+    TokenBalancesControllerState &
+    TokenRatesControllerState &
+    MultichainBalancesControllerState &
+    TokensControllerState &
+    CurrencyRateState &
+    MultichainAssetsRatesControllerState &
+    AccountTrackerControllerState &
+    MultichainNetworkControllerState['metamask'] &
+    RatesState['metamask'] & {
+      networkConfigurationsByChainId: NetworkState['metamask']['networkConfigurationsByChainId'];
     };
 };
 
@@ -1425,7 +1429,7 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     internalAccounts: metamask.internalAccounts,
     allTokens: getTokensControllerAllTokens({ metamask }),
     allIgnoredTokens: getTokensControllerAllIgnoredTokens({ metamask }),
-    tokenBalances: metamask.tokenBalances,
+    tokenBalances: getTokenBalancesControllerTokenBalances({ metamask }),
     marketData: metamask.marketData,
     currencyRates: metamask.currencyRates,
     currentCurrency: metamask.currentCurrency,
