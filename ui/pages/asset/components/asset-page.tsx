@@ -35,6 +35,7 @@ import {
   ButtonIconSize,
   ButtonLink,
   IconName,
+  Tag,
   Text,
 } from '../../../components/component-library';
 import { AddressCopyButton } from '../../../components/multichain';
@@ -224,6 +225,7 @@ const AssetPage = ({
     assetId: bip44Asset?.assetId ?? assetId,
   };
   const { safeChains } = useSafeChains();
+  const isStockToken = updatedAsset.rwaData?.instrumentType === 'stock';
 
   // Check if we should show Tron resources
   const isTron = useMultichainSelector(getMultichainIsTron, selectedAccount);
@@ -253,15 +255,22 @@ const AssetPage = ({
         {optionsButton}
       </Box>
       <Box paddingLeft={4}>
-        <Text
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          gap={2}
           data-testid="asset-name"
-          variant={TextVariant.bodyMdMedium}
-          color={TextColor.textAlternative}
         >
-          {name && symbol && name !== symbol
-            ? `${name} (${symbol})`
-            : (name ?? symbol)}
-        </Text>
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            color={TextColor.textAlternative}
+          >
+            {name && symbol && name !== symbol
+              ? `${name} (${symbol})`
+              : (name ?? symbol)}
+          </Text>
+          {isStockToken && <Tag label={t('tokenStock')} />}
+        </Box>
       </Box>
       <AssetChart
         chainId={chainId}
@@ -309,14 +318,17 @@ const AssetPage = ({
             />
           </Box>
         )}
-        <Text
-          variant={TextVariant.headingSm}
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          gap={2}
           paddingBottom={1}
           paddingTop={1}
           paddingLeft={4}
         >
-          {t('yourBalance')}
-        </Text>
+          <Text variant={TextVariant.headingSm}>{t('yourBalance')}</Text>
+          {isStockToken && <Tag label={t('tokenStock')} />}
+        </Box>
         {[AssetType.token, AssetType.native].includes(type) && (
           <TokenCell
             key={`${symbol}-${address}`}
@@ -345,9 +357,15 @@ const AssetPage = ({
               paddingLeft={4}
               paddingRight={4}
             >
-              <Text variant={TextVariant.headingSm} paddingBottom={2}>
-                {t('tokenDetails')}
-              </Text>
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                gap={2}
+                paddingBottom={2}
+              >
+                <Text variant={TextVariant.headingSm}>{t('tokenDetails')}</Text>
+                {isStockToken && <Tag label={t('tokenStock')} />}
+              </Box>
               <Box
                 display={Display.Flex}
                 flexDirection={FlexDirection.Column}
