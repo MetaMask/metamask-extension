@@ -189,10 +189,11 @@
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
+      "musdConversionDismissedCtaKeys": [],
+      "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "nftsDetectionNoticeDismissed": false,
       "outdatedBrowserWarningLastShown": null,
-      "pendingRedirectRoute": null,
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": true,
@@ -212,9 +213,7 @@
       "termsOfUseLastAgreed": 1770282497124,
       "timeoutMinutes": 0,
       "trezorModel": null,
-      "updateModalLastDismissedAt": null,
-      "musdConversionEducationSeen": false,
-      "musdConversionDismissedCtaKeys": []
+      "updateModalLastDismissedAt": null
     },
     "AuthenticationController": {},
     "BridgeStatusController": {
