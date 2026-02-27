@@ -28,10 +28,9 @@ describe('useFetchNftDetailsFromTokenURI', () => {
   });
 
   it('returns defaults when tokenURI is null', () => {
-    const { result } = renderHook(
-      () => useFetchNftDetailsFromTokenURI(null),
-      { wrapper: createWrapper() },
-    );
+    const { result } = renderHook(() => useFetchNftDetailsFromTokenURI(null), {
+      wrapper: createWrapper(),
+    });
 
     expect(result.current.image).toBe('');
     expect(result.current.name).toBe('');
@@ -80,9 +79,7 @@ describe('useFetchNftDetailsFromTokenURI', () => {
   });
 
   it('returns defaults when fetch throws', async () => {
-    jest
-      .spyOn(global, 'fetch')
-      .mockRejectedValue(new Error('MOCK BAD URI'));
+    jest.spyOn(global, 'fetch').mockRejectedValue(new Error('MOCK BAD URI'));
 
     const { result } = renderHook(
       () => useFetchNftDetailsFromTokenURI('BAD_URI'),
@@ -119,7 +116,8 @@ describe('useFetchNftDetailsFromTokenURI', () => {
   });
 
   it('handles JSON with trailing commas', async () => {
-    const invalidJson = '{"name": "Test", "image": "https://example.com/img.png",}';
+    const invalidJson =
+      '{"name": "Test", "image": "https://example.com/img.png",}';
 
     jest.spyOn(global, 'fetch').mockResolvedValue({
       ok: true,
