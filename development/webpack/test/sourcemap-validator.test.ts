@@ -267,11 +267,6 @@ describe('sourcemap-validator', () => {
       mock.method(console, 'error', (...args: unknown[]) => {
         errors.push(args.map((a) => String(a)).join(' '));
       });
-      const ok = await validateBundle({
-        jsPath,
-        mapPath,
-        label: 'no-samples.js',
-      });
       assert.ok(
         errors.some(
           (e) =>
