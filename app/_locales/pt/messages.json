@@ -279,9 +279,6 @@
   "addIPFSGateway": {
     "message": "Adicione seu gateway IPFS preferencial"
   },
-  "addImportAccount": {
-    "message": "Adicionar conta ou carteira de hardware"
-  },
   "addMemo": {
     "message": "Adicionar observação"
   },

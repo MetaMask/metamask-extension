@@ -279,9 +279,6 @@
   "addIPFSGateway": {
     "message": "Ajoutez votre passerelle IPFS préférée"
   },
-  "addImportAccount": {
-    "message": "Ajouter un compte ou un portefeuille matériel"
-  },
   "addMemo": {
     "message": "Ajouter un mémo"
   },

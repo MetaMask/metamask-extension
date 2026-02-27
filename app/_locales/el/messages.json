@@ -279,9 +279,6 @@
   "addIPFSGateway": {
     "message": "Προσθέστε την πύλη IPFS που προτιμάτε"
   },
-  "addImportAccount": {
-    "message": "Προσθήκη λογαριασμού ή πορτοφολιού υλικού"
-  },
   "addMemo": {
     "message": "Προσθήκη σημειώματος"
   },

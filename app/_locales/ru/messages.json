@@ -279,9 +279,6 @@
   "addIPFSGateway": {
     "message": "Добавьте предпочтительный шлюз IPFS"
   },
-  "addImportAccount": {
-    "message": "Добавить счет или аппаратный кошелек"
-  },
   "addMemo": {
     "message": "Добавить примечание"
   },

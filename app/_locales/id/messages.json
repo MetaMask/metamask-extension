@@ -279,9 +279,6 @@
   "addIPFSGateway": {
     "message": "Tambahkan gateway IPFS pilihan Anda"
   },
-  "addImportAccount": {
-    "message": "Tambahkan akun atau dompet perangkat keras"
-  },
   "addMemo": {
     "message": "Tambahkan memo"
   },
