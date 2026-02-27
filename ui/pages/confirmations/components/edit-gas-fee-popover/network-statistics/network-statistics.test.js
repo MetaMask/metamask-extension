@@ -2,6 +2,7 @@ import React from 'react';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import { GasFeeContext } from '../../../../../contexts/gasFee';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { useGasFeeEstimates } from '../../../../../hooks/useGasFeeEstimates';
 import { useGasFeeModalContextOptional } from '../../../context/gas-fee-modal';
 import NetworkStatistics from './network-statistics';
@@ -109,7 +110,7 @@ describe('NetworkStatistics', () => {
         },
       },
     });
-    expect(getByText('Stable')).toBeInTheDocument();
+    expect(getByText(messages.stable.message)).toBeInTheDocument();
   });
 
   it('should not render the network status slider if the network congestion is not available', () => {

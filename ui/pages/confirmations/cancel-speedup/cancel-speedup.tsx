@@ -141,8 +141,8 @@ const NetworkFeeRow = ({
 
 type SpeedRowProps = {
   chainId: string;
-  maxFeePerGas: string | undefined;
-  maxPriorityFeePerGas: string | undefined;
+  maxFeePerGas?: string;
+  maxPriorityFeePerGas?: string;
   userFeeLevelOverride?: string;
 };
 
@@ -158,8 +158,8 @@ const SpeedRow = ({
       <Box alignItems={BoxAlignItems.Center} className="flex">
         <GasTiming
           chainId={chainId}
-          maxFeePerGas={maxFeePerGas as string}
-          maxPriorityFeePerGas={maxPriorityFeePerGas as string}
+          maxFeePerGas={maxFeePerGas}
+          maxPriorityFeePerGas={maxPriorityFeePerGas}
           userFeeLevelOverride={userFeeLevelOverride}
         />
       </Box>

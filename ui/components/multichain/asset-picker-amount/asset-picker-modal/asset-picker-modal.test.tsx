@@ -37,6 +37,7 @@ import {
 } from '../../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { AssetPickerModal } from './asset-picker-modal';
 import { ERC20Asset } from './types';
 
@@ -296,7 +297,7 @@ describe('AssetPickerModal', () => {
     expect(modalTitle).toBeInTheDocument();
 
     expect(getAllByRole('img')).toHaveLength(2);
-    const modalContent = getByText('Ethereum');
+    const modalContent = getByText(messages.networkNameEthereum.message);
     expect(modalContent).toBeInTheDocument();
   });
 
