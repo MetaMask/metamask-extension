@@ -33,6 +33,7 @@ import { ACCOUNT_TYPE_LABELS } from '../../../../../components/app/assets/consta
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Column, Row } from '../../../layout';
 import { formatCurrencyAmount, formatTokenAmount } from '../../../utils/quote';
+import { useRWAToken } from '../../../hooks/useRWAToken';
 
 export const BridgeAsset = React.forwardRef(
   <Element extends React.ElementType = typeof Row>(
@@ -53,6 +54,9 @@ export const BridgeAsset = React.forwardRef(
     const currency = useSelector(getCurrentCurrency);
     const locale = useSelector(getIntlLocale);
     const t = useI18nContext();
+    const { isStockToken, isTokenTradingOpen } = useRWAToken();
+    const tokenIsStock = isStockToken(asset);
+    const tokenIsTradingOpen = isTokenTradingOpen(asset);
 
     return (
       <Row
@@ -116,6 +120,10 @@ export const BridgeAsset = React.forwardRef(
               <Text ellipsis>{asset.symbol}</Text>
               {asset.accountType && ACCOUNT_TYPE_LABELS[asset.accountType] && (
                 <Tag label={ACCOUNT_TYPE_LABELS[asset.accountType]} />
+              )}
+              {tokenIsStock && <Tag label={t('tokenStock')} />}
+              {tokenIsStock && !tokenIsTradingOpen && (
+                <Tag label={t('bridgeMarketClosedBadge')} />
               )}
               {asset.noFee?.[isDestination ? 'isDestination' : 'isSource'] && (
                 <Tag label={t('bridgeNoMMFee')} />
