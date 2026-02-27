@@ -1874,8 +1874,7 @@
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useFeeCalculations.test.ts": {
       "MetaMask: Background connection not initialized": 42,
-      "Reselect: Identity function warnings": 4,
-      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useFourByte.test.ts": {
@@ -2391,6 +2390,10 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/rows/bridge-time-row/bridge-time-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/rows/enforced-simulations-row/enforced-simulations-row.test.tsx": {
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/rows/pay-with-row/pay-with-row.test.tsx": {
@@ -2980,8 +2983,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/confirmations/selectors/confirm.test.ts": {
-      "Reselect: Identity function warnings": 1,
-      "Reselect: Input stability warnings": 1
+      "Reselect: Identity function warnings": 1
     },
     "ui/pages/confirmations/send/send-inner.test.tsx": {
       "MetaMask: Background connection not initialized": 20,
