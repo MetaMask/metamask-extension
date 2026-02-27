@@ -15,7 +15,6 @@ import {
 } from '@metamask/messenger';
 import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { mockNetworkState } from '../../../test/stub/networks';
 import {
   DEFAULT_AUTO_LOCK_TIME_LIMIT,
   ThemeType,
@@ -30,23 +29,6 @@ import {
   PreferencesController,
   ReferralStatus,
 } from './preferences-controller';
-
-const NETWORK_CONFIGURATION_DATA = mockNetworkState(
-  {
-    id: 'test-networkConfigurationId-1',
-    rpcUrl: 'https://testrpc.com',
-    chainId: CHAIN_IDS.GOERLI,
-    blockExplorerUrl: 'https://etherscan.io',
-    nickname: '0X5',
-  },
-  {
-    id: 'test-networkConfigurationId-2',
-    rpcUrl: 'http://localhost:8545',
-    chainId: '0x539',
-    ticker: 'ETH',
-    nickname: 'Localhost 8545',
-  },
-).networkConfigurationsByChainId;
 
 const setupController = ({
   state,
@@ -67,14 +49,12 @@ const setupController = ({
     });
   messenger.delegate({
     messenger: preferencesControllerMessenger,
+    actions: [
+      'AccountsController:getAccountByAddress',
+      'AccountsController:setAccountName',
+    ],
   });
 
-  messenger.registerActionHandler(
-    'NetworkController:getState',
-    jest.fn().mockReturnValue({
-      networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
-    }),
-  );
   const controller = new PreferencesController({
     messenger: preferencesControllerMessenger,
     state,
