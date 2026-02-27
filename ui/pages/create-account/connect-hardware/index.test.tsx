@@ -377,11 +377,15 @@ describe('ConnectHardwareForm', () => {
     function createStoreWithFreshRefs() {
       const store = configureMockStore([thunk])(mockStateWithQrPath);
       const origGetState = store.getState.bind(store);
-      store.getState = () => ({ ...origGetState() });
+      store.getState = () => ({
+        ...(origGetState() as Record<string, unknown>),
+      });
       return store;
     }
 
-    async function renderAndWaitForMount(store: ReturnType<typeof createStoreWithFreshRefs>) {
+    async function renderAndWaitForMount(
+      store: ReturnType<typeof createStoreWithFreshRefs>,
+    ) {
       const result = renderWithProvider(
         <ConnectHardwareForm {...mockProps} />,
         store,
@@ -392,7 +396,9 @@ describe('ConnectHardwareForm', () => {
       return result;
     }
 
-    async function simulateScanCompletion(store: ReturnType<typeof createStoreWithFreshRefs>) {
+    async function simulateScanCompletion(
+      store: ReturnType<typeof createStoreWithFreshRefs>,
+    ) {
       mockGetActiveQrCodeScanRequest.mockReturnValue(null);
       await act(async () => {
         store.dispatch({ type: 'FORCE_UPDATE' });
@@ -408,9 +414,9 @@ describe('ConnectHardwareForm', () => {
       await renderAndWaitForMount(store);
 
       mockCheckHardwareStatus.mockReset().mockResolvedValue(true);
-      mockConnectHardware.mockReset().mockResolvedValue([
-        { address: '0xQR1', balance: null, index: 0 },
-      ]);
+      mockConnectHardware
+        .mockReset()
+        .mockResolvedValue([{ address: '0xQR1', balance: null, index: 0 }]);
 
       await simulateScanCompletion(store);
 
