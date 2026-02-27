@@ -1781,14 +1781,6 @@
         "Buffer": true
       }
     },
-    "eslint-plugin-n>builtins": {
-      "globals": {
-        "process.version": true
-      },
-      "packages": {
-        "semver": true
-      }
-    },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>cache-base": {
       "packages": {
         "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>cache-base>collection-visit": true,
@@ -2526,6 +2518,30 @@
         "@metamask/object-multiplex>once": true
       }
     },
+    "webpack>enhanced-resolve": {
+      "builtin": {
+        "module.findPnpApi": true,
+        "path.basename": true,
+        "path.posix.dirname": true,
+        "path.posix.normalize": true,
+        "path.win32.dirname": true,
+        "path.win32.normalize": true,
+        "process.nextTick": true,
+        "process.versions.pnp": true,
+        "url": true
+      },
+      "globals": {
+        "Buffer.isBuffer": true,
+        "URL": true,
+        "clearTimeout": true,
+        "process.cwd": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "del>graceful-fs": true,
+        "webpack>tapable": true
+      }
+    },
     "gulp-livereload>tiny-lr>body>error": {
       "builtin": {
         "assert": true
@@ -2708,6 +2724,17 @@
         "eslint>natural-compare": true
       }
     },
+    "eslint-plugin-n>eslint-plugin-es-x>eslint-compat-utils": {
+      "builtin": {
+        "fs.existsSync": true,
+        "path.basename": true,
+        "path.dirname": true,
+        "path.extname": true
+      },
+      "globals": {
+        "process.cwd": true
+      }
+    },
     "eslint-config-prettier": {
       "globals": {
         "process.env.ESLINT_CONFIG_PRETTIER_NO_DEPRECATED": true
@@ -2766,13 +2793,14 @@
         "eslint-import-resolver-node": true
       }
     },
-    "eslint-plugin-n>eslint-plugin-es": {
+    "eslint-plugin-n>eslint-plugin-es-x": {
       "globals": {
         "process": true
       },
       "packages": {
-        "eslint-plugin-n>eslint-plugin-es>eslint-utils": true,
-        "eslint-plugin-n>eslint-plugin-es>regexpp": true
+        "eslint>@eslint-community/eslint-utils": true,
+        "eslint>@eslint-community/regexpp": true,
+        "eslint-plugin-n>eslint-plugin-es-x>eslint-compat-utils": true
       }
     },
     "eslint-plugin-import": {
@@ -2839,29 +2867,34 @@
     },
     "eslint-plugin-n": {
       "builtin": {
-        "assert": true,
-        "fs": true,
-        "path": true,
-        "url.URL": true,
-        "url.fileURLToPath": true,
-        "url.pathToFileURL": true,
-        "util.format": true,
-        "util.inspect": true
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "fs.readdirSync": true,
+        "fs.statSync": true,
+        "node:module.isBuiltin": true,
+        "path.basename": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.posix.normalize": true,
+        "path.relative": true,
+        "path.resolve": true,
+        "path.sep": true
       },
       "globals": {
-        "process.cwd": true,
-        "process.emitWarning": true,
-        "process.platform": true
+        "process.cwd": true
       },
       "packages": {
-        "eslint-plugin-n>builtins": true,
-        "eslint-plugin-n>eslint-plugin-es": true,
-        "eslint-plugin-n>eslint-utils": true,
+        "eslint>@eslint-community/eslint-utils": true,
+        "webpack>enhanced-resolve": true,
+        "eslint-plugin-n>eslint-plugin-es-x": true,
+        "tsx>get-tsconfig": true,
+        "eslint-plugin-n>globals": true,
+        "eslint-plugin-n>globrex": true,
         "eslint>ignore": true,
-        "depcheck>is-core-module": true,
-        "eslint>minimatch": true,
-        "depcheck>resolve": true,
-        "semver": true
+        "semver": true,
+        "typescript": true
       }
     },
     "eslint-plugin-prettier": {
@@ -2940,19 +2973,9 @@
         "semver": true
       }
     },
-    "eslint-plugin-n>eslint-plugin-es>eslint-utils": {
-      "packages": {
-        "eslint-plugin-n>eslint-plugin-es>eslint-utils>eslint-visitor-keys": true
-      }
-    },
     "eslint-plugin-mocha>eslint-utils": {
       "packages": {
         "eslint-plugin-mocha>eslint-utils>eslint-visitor-keys": true
-      }
-    },
-    "eslint-plugin-n>eslint-utils": {
-      "packages": {
-        "eslint-plugin-n>eslint-utils>eslint-visitor-keys": true
       }
     },
     "eslint>espree": {
@@ -3495,6 +3518,29 @@
         "pumpify>pump": true
       }
     },
+    "tsx>get-tsconfig": {
+      "builtin": {
+        "fs": true,
+        "node:fs": true,
+        "node:module": true,
+        "node:path.dirname": true,
+        "node:path.isAbsolute": true,
+        "node:path.join": true,
+        "node:path.posix": true,
+        "node:path.relative": true,
+        "node:path.resolve": true,
+        "os.tmpdir": true,
+        "path.join": true
+      },
+      "globals": {
+        "process.cwd": true,
+        "process.pid": true,
+        "process.platform": true
+      },
+      "packages": {
+        "tsx>get-tsconfig>resolve-pkg-maps": true
+      }
+    },
     "gulp-watch>anymatch>micromatch>parse-glob>glob-base": {
       "builtin": {
         "path.dirname": true
@@ -3598,6 +3644,11 @@
         "eslint>ignore": true,
         "globby>merge2": true,
         "del>slash": true
+      }
+    },
+    "eslint-plugin-n>globrex": {
+      "globals": {
+        "process.platform": true
       }
     },
     "del>graceful-fs": {
@@ -7202,6 +7253,11 @@
         "tailwindcss>postcss-nested": true,
         "stylelint>postcss-selector-parser": true,
         "tailwindcss>sucrase": true
+      }
+    },
+    "webpack>tapable": {
+      "builtin": {
+        "util.deprecate": true
       }
     },
     "terser": {

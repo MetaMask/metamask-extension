@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "아직 표시할 내용이 없습니다. 첫 토큰 스왑을 시작해 보세요."
   },
-  "activityLog": {
-    "message": "활동 로그"
-  },
   "add": {
     "message": "추가"
   },
@@ -7677,9 +7674,6 @@
   "speedUpTooltipText": {
     "message": "신규 가스비"
   },
-  "speedUpTransaction": {
-    "message": "이 트랜잭션 가속화"
-  },
   "spendLimitInsufficient": {
     "message": "지출 한도 부족"
   },
@@ -8530,18 +8524,6 @@
   "transaction": {
     "message": "트랜잭션"
   },
-  "transactionCancelAttempted": {
-    "message": "$2에서 가스비가 $1인 트랜잭션의 취소가 시도되었습니다"
-  },
-  "transactionCancelSuccess": {
-    "message": "$2에서 성공적으로 트랜잭션을 취소했습니다"
-  },
-  "transactionConfirmed": {
-    "message": "$2에서 트랜잭션이 컨펌되었습니다."
-  },
-  "transactionCreated": {
-    "message": "$2에서 $1 값으로 생성된 트랜잭션"
-  },
   "transactionDataFunction": {
     "message": "기능"
   },
@@ -8551,17 +8533,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "금액 + 요금"
   },
-  "transactionDropped": {
-    "message": "$2에서의 트랜잭션이 중단되었습니다."
-  },
   "transactionError": {
     "message": "트랜잭션 오류입니다. 계약 코드에 예외가 발생했습니다."
   },
   "transactionErrorNoContract": {
     "message": "비계약 주소에서 함수를 호출하고 있습니다."
-  },
-  "transactionErrored": {
-    "message": "트랜잭션에 오류가 발생했습니다."
   },
   "transactionFee": {
     "message": "트랜잭션 수수료"
@@ -8597,24 +8573,15 @@
   "transactionIncludesTypes": {
     "message": "이 트랜잭션에 포함된 사항: $1."
   },
-  "transactionResubmitted": {
-    "message": "$2에서 가스비를 $1(으)로 올린 트랜잭션이 다시 제출되었습니다."
-  },
   "transactionSettings": {
     "message": "트랜잭션 설정"
   },
   "transactionShield": {
     "message": "트랜잭션 실드"
   },
-  "transactionSubmitted": {
-    "message": "$2에서 가스비가 $1인 트랜잭션이 제출되었습니다."
-  },
   "transactionTotalGasFee": {
     "message": "가스비 합계",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "$2에서 트랜잭션이 업데이트되었습니다."
   },
   "transactions": {
     "message": "트랜잭션"

@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Пока нечего просматривать. Обменяйте свой первый токен сегодня."
   },
-  "activityLog": {
-    "message": "Журнал активности"
-  },
   "add": {
     "message": "Добавить"
   },
@@ -7677,9 +7674,6 @@
   "speedUpTooltipText": {
     "message": "Новая плата за газ"
   },
-  "speedUpTransaction": {
-    "message": "Ускорить эту транзакцию"
-  },
   "spendLimitInsufficient": {
     "message": "Недостаточный лимит расходов"
   },
@@ -8530,18 +8524,6 @@
   "transaction": {
     "message": "транзакция"
   },
-  "transactionCancelAttempted": {
-    "message": "Предпринята попытка отменить транзакцию с примерной платой за газ в размере $1 в $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Транзакция успешно отменена в $2"
-  },
-  "transactionConfirmed": {
-    "message": "Транзакция подтверждена в $2."
-  },
-  "transactionCreated": {
-    "message": "В $2 создана транзакция на сумму $1."
-  },
   "transactionDataFunction": {
     "message": "Функция"
   },
@@ -8551,17 +8533,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Сумма + комиссии"
   },
-  "transactionDropped": {
-    "message": "Транзакция отменена в $2."
-  },
   "transactionError": {
     "message": "Ошибка транзакции. Исключение в коде контракта."
   },
   "transactionErrorNoContract": {
     "message": "Попытка вызвать функцию на неконтрактном адресе."
-  },
-  "transactionErrored": {
-    "message": "Транзакция обнаружила ошибку."
   },
   "transactionFee": {
     "message": "Комиссия за транзакцию"
@@ -8597,24 +8573,15 @@
   "transactionIncludesTypes": {
     "message": "Эта транзакция включает: $1."
   },
-  "transactionResubmitted": {
-    "message": "Транзакция отправлена повторно с платой за газ, увеличенной до $1, в $2"
-  },
   "transactionSettings": {
     "message": "Настройки транзакции"
   },
   "transactionShield": {
     "message": "Защита транзакций"
   },
-  "transactionSubmitted": {
-    "message": "Транзакция отправлена с платой за газ в размере $1 в $2."
-  },
   "transactionTotalGasFee": {
     "message": "Итого платы за газ",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Транзакция обновлена в $2."
   },
   "transactions": {
     "message": "Транзакции"
