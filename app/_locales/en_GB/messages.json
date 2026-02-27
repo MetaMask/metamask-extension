@@ -711,6 +711,10 @@
     "message": "Approve $1 spending cap",
     "description": "The token symbol that is being approved"
   },
+  "approveToken": {
+    "message": "Approve $1",
+    "description": "Used in the transaction details summary to describe an approval transaction. $1 is the symbol of the token being approved."
+  },
   "approved": {
     "message": "Approved"
   },
@@ -874,6 +878,45 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Turn on basic functionality"
+  },
+  "basicFunctionalityRequired_description": {
+    "message": "This feature isn't available while basic functionality is turned off. Use the toggle below to turn it on."
+  },
+  "basicFunctionalityRequired_goToHome": {
+    "message": "Go to the home page"
+  },
+  "basicFunctionalityRequired_openCreateSnapAccountPage": {
+    "message": "Open the Create Account page"
+  },
+  "basicFunctionalityRequired_openDefiPage": {
+    "message": "Open the DeFi page"
+  },
+  "basicFunctionalityRequired_openNotificationsPage": {
+    "message": "Open the Notifications page"
+  },
+  "basicFunctionalityRequired_openPerpsPage": {
+    "message": "Open the Perps page"
+  },
+  "basicFunctionalityRequired_openRewardsPage": {
+    "message": "Open the Rewards page"
+  },
+  "basicFunctionalityRequired_openSnapsPage": {
+    "message": "Open the Snaps page"
+  },
+  "basicFunctionalityRequired_openSwapsPage": {
+    "message": "Open the Swap page"
+  },
+  "basicFunctionalityRequired_openTransactionShieldPage": {
+    "message": "Open the Transaction Shield page"
+  },
+  "basicFunctionalityRequired_reviewInSettings": {
+    "message": "Review in settings"
+  },
+  "basicFunctionalityRequired_title": {
+    "message": "Basic functionality is off"
+  },
+  "basicFunctionalityRequired_toggleLabel": {
+    "message": "Basic functionality"
   },
   "bestQuote": {
     "message": "Best quote"
@@ -4404,8 +4447,14 @@
   "nftAutoDetectionEnabled": {
     "message": "NFT autodetection enabled"
   },
+  "nftBought": {
+    "message": "Bought $1"
+  },
   "nftEmptyDescription": {
     "message": "There's a world of NFTs out there. Start your collection today."
+  },
+  "nftMinted": {
+    "message": "Minted $1"
   },
   "nftOptions": {
     "message": "NFT Options"
@@ -5271,9 +5320,6 @@
   "perpsAddToFavorites": {
     "message": "Add to favorites"
   },
-  "perpsAsk": {
-    "message": "Ask"
-  },
   "perpsAutoClose": {
     "message": "Auto close"
   },
@@ -5284,14 +5330,12 @@
   "perpsAvailableBalance": {
     "message": "Available balance"
   },
-  "perpsBid": {
-    "message": "Bid"
+  "perpsAvailableToTrade": {
+    "message": "Available to trade",
+    "description": "Label for the available balance that can be used for trading"
   },
   "perpsCancelAllOrders": {
     "message": "Cancel all"
-  },
-  "perpsClose": {
-    "message": "Close"
   },
   "perpsCloseAll": {
     "message": "Close all"
@@ -5415,9 +5459,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Liquidation Price Est."
   },
   "perpsLong": {
     "message": "Long"
@@ -6290,12 +6331,6 @@
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Retry"
   },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Hardware wallet accounts are not eligible to receive rewards yet. Please switch to a different account to proceed."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Account not supported"
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Retry"
   },
@@ -6400,8 +6435,16 @@
   "rewardsQRCodeTitle": {
     "message": "Get the mobile app"
   },
+  "rewardsSignInToViewPoints": {
+    "message": "Sign in to view points",
+    "description": "Text shown when user needs to sign in to view their rewards points"
+  },
   "rewardsSignUp": {
     "message": "Sign up for Rewards"
+  },
+  "rewardsSigningIn": {
+    "message": "Signing in...",
+    "description": "Text shown while the user is signing in to view their rewards points"
   },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
@@ -7583,12 +7626,6 @@
   },
   "snapAccountRemovedDescription": {
     "message": "This account will no longer be available to use in MetaMask."
-  },
-  "snapAccounts": {
-    "message": "Account Snaps"
-  },
-  "snapAccountsDescription": {
-    "message": "Accounts controlled by third-party Snaps."
   },
   "snapConnectTo": {
     "message": "Connect to $1",

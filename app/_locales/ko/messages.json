@@ -5235,9 +5235,6 @@
   "perpsAddToFavorites": {
     "message": "즐겨찾기에 추가"
   },
-  "perpsAsk": {
-    "message": "매도호가"
-  },
   "perpsAutoClose": {
     "message": "자동 종료"
   },
@@ -5248,14 +5245,8 @@
   "perpsAvailableBalance": {
     "message": "사용 가능한 잔액"
   },
-  "perpsBid": {
-    "message": "매수호가"
-  },
   "perpsCancelAllOrders": {
     "message": "모두 취소"
-  },
-  "perpsClose": {
-    "message": "닫기"
   },
   "perpsCloseAll": {
     "message": "모두 종료"
@@ -5373,9 +5364,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "청산 가격"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "추정 청산 가격"
   },
   "perpsLong": {
     "message": "롱"
@@ -6205,12 +6193,6 @@
   },
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "다시 시도"
-  },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "아직은 하드웨어 지갑 계정으로 보상을 받을 수 없습니다. 다른 계정으로 변경하여 계속 진행하세요."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "지원되지 않는 계정입니다"
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "다시 시도"
@@ -7493,12 +7475,6 @@
   },
   "snapAccountRemovedDescription": {
     "message": "이 계정은 더 이상 MetaMask에서 사용할 수 없습니다."
-  },
-  "snapAccounts": {
-    "message": "계정 Snap"
-  },
-  "snapAccountsDescription": {
-    "message": "제삼자 Snap이 제어하는 계정입니다."
   },
   "snapConnectTo": {
     "message": "$1에 연결",

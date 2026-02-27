@@ -49,8 +49,6 @@ import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import RecoveryPhraseChips from '../onboarding-flow/recovery-phrase/recovery-phrase-chips';
 import { Toast, ToastContainer } from '../../components/multichain/toast';
-import { useTheme } from '../../hooks/useTheme';
-import { ThemeType } from '../../../shared/constants/preferences';
 
 const QUIZ_INTRODUCTION_SCREEN = 'QUIZ_INTRODUCTION_SCREEN';
 const QUIZ_QUESTIONS_SCREEN = 'QUIZ_QUESTIONS_SCREEN';
@@ -81,8 +79,6 @@ function RevealSeedPage() {
   const [correctAnswer, setCorrectAnswer] = useState(false);
 
   const [showSuccessToast, setShowSuccessToast] = useState(false);
-
-  const theme = useTheme();
 
   const onClickCopy = useCallback(() => {
     if (!phraseRevealed) {
@@ -204,11 +200,7 @@ function RevealSeedPage() {
         data-testid="reveal-seed-quiz-introduction"
       >
         <img
-          src={
-            theme === ThemeType.light
-              ? 'images/reveal_srp_light.png'
-              : 'images/reveal_srp.png'
-          }
+          src="images/reveal_srp_intro.png"
           alt="Reveal SRP"
           className="w-[190px] h-[220px] object-contain"
         />
@@ -310,7 +302,8 @@ function RevealSeedPage() {
       <Box
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.FlexStart}
-        justifyContent={BoxJustifyContent.Center}
+        justifyContent={BoxJustifyContent.FlexStart}
+        className="h-full"
         data-testid="reveal-seed-quiz-question"
       >
         <Text
@@ -379,7 +372,7 @@ function RevealSeedPage() {
             alignItems={BoxAlignItems.Center}
             justifyContent={BoxJustifyContent.Center}
             gap={4}
-            className="w-full"
+            className="w-full mt-auto"
           >
             <Button
               variant={ButtonVariant.Secondary}
@@ -493,7 +486,8 @@ function RevealSeedPage() {
           className="w-full"
           endAccessory={
             <ButtonIcon
-              iconName={showPassword ? IconName.EyeSlash : IconName.Eye}
+              type="button"
+              iconName={showPassword ? IconName.Eye : IconName.EyeSlash}
               onClick={togglePasswordVisibility}
               iconProps={{
                 color: IconColor.IconAlternative,
@@ -677,7 +671,7 @@ function RevealSeedPage() {
 
   return (
     <Box
-      className="page-container"
+      className="page-container h-full md:w-[490px]"
       paddingTop={8}
       paddingBottom={8}
       paddingLeft={4}

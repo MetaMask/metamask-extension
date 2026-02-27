@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import {
@@ -37,8 +38,12 @@ describe('MultichainSrpBackup', () => {
   it('renders with default props', () => {
     renderComponent();
 
-    expect(screen.getByText('Secret Recovery Phrase')).toBeInTheDocument();
-    expect(screen.getByText('Reveal')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.secretRecoveryPhrase.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.srpListStateBackedUp.message),
+    ).toBeInTheDocument();
 
     const buttonElement = screen.getByTestId(srpBackupRowTestId);
     expect(buttonElement).toHaveClass('multichain-srp-backup');
@@ -55,8 +60,12 @@ describe('MultichainSrpBackup', () => {
   it('displays "Reveal" text when shouldShowBackupReminder is false', () => {
     renderComponent({ shouldShowBackupReminder: false });
 
-    expect(screen.getByText('Reveal')).toBeInTheDocument();
-    expect(screen.queryByText('Back up')).not.toBeInTheDocument();
+    expect(
+      screen.getByText(messages.srpListStateBackedUp.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.accountDetailsSrpBackUpMessage.message),
+    ).not.toBeInTheDocument();
   });
 
   it('navigates to SRP review route when shouldShowBackupReminder is true', () => {

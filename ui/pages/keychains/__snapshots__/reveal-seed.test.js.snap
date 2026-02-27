@@ -3,7 +3,7 @@
 exports[`Reveal Seed Page should match snapshot 1`] = `
 <div>
   <div
-    class="gap-4 pt-8 pr-4 pb-8 pl-4 page-container"
+    class="gap-4 pt-8 pr-4 pb-8 pl-4 page-container h-full md:w-[490px]"
     data-testid="reveal-seed-page"
   >
     <div
@@ -42,7 +42,7 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       <img
         alt="Reveal SRP"
         class="w-[190px] h-[220px] object-contain"
-        src="images/reveal_srp_light.png"
+        src="images/reveal_srp_intro.png"
       />
       <p
         class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"

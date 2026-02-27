@@ -5235,9 +5235,6 @@
   "perpsAddToFavorites": {
     "message": "Favorilere ekle"
   },
-  "perpsAsk": {
-    "message": "Satış"
-  },
   "perpsAutoClose": {
     "message": "Otomatik kapat"
   },
@@ -5248,14 +5245,8 @@
   "perpsAvailableBalance": {
     "message": "Kullanılabilir bakiye"
   },
-  "perpsBid": {
-    "message": "Alış"
-  },
   "perpsCancelAllOrders": {
     "message": "Tümünü iptal et"
-  },
-  "perpsClose": {
-    "message": "Kapat"
   },
   "perpsCloseAll": {
     "message": "Tümünü kapat"
@@ -5373,9 +5364,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Likidasyon fiyatı"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Likidasyon Fiyat Tah."
   },
   "perpsLong": {
     "message": "Uzun"
@@ -6205,12 +6193,6 @@
   },
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Tekrar Dene"
-  },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Donanım cüzdanı hesapları henüz ödül almaya uygun değil. Devam etmek için lütfen farklı bir hesaba geçin."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Hesap desteklenmiyor"
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Tekrar Dene"
@@ -7493,12 +7475,6 @@
   },
   "snapAccountRemovedDescription": {
     "message": "Bu hesap artık MetaMask'te kullanılamayacak."
-  },
-  "snapAccounts": {
-    "message": "Snap Hesapları"
-  },
-  "snapAccountsDescription": {
-    "message": "Üçüncü taraf Snapleri tarafından kontrol edilen hesaplar."
   },
   "snapConnectTo": {
     "message": "$1 uygulamasına bağlan",
