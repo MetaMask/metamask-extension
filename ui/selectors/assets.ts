@@ -40,6 +40,7 @@ import type {
   BalanceChangeResult,
   AccountTrackerControllerState,
 } from '@metamask/assets-controllers';
+import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import { TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
@@ -114,7 +115,9 @@ export type BalanceCalculationState = {
     TokensControllerState &
     CurrencyRateState &
     MultichainAssetsRatesControllerState &
+    MultichainAssetsControllerState &
     AccountTrackerControllerState &
+    NetworkEnablementControllerState &
     MultichainNetworkControllerState['metamask'] &
     RatesState['metamask'] & {
       networkConfigurationsByChainId: NetworkState['metamask']['networkConfigurationsByChainId'];
