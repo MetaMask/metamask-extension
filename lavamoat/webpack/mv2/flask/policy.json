@@ -842,7 +842,7 @@
         "@ethersproject/abi": true,
         "@ethersproject/providers": true,
         "@metamask/base-controller": true,
-        "@metamask/assets-controller>@metamask/client-controller": true,
+        "@metamask/client-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/core-backend": true,
         "@metamask/keyring-snap-client": true,
@@ -1032,6 +1032,11 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/utils": true
+      }
+    },
+    "@metamask/client-controller": {
+      "packages": {
+        "@metamask/base-controller": true
       }
     },
     "@metamask/connectivity-controller": {
