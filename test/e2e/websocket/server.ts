@@ -122,24 +122,6 @@ class LocalWebSocketServer {
   }
 
   /**
-   * Get the name of this server instance.
-   *
-   * @returns The service name
-   */
-  public getName(): string {
-    return this.name;
-  }
-
-  /**
-   * Get the port of this server instance.
-   *
-   * @returns The port number
-   */
-  public getPort(): number {
-    return this.port;
-  }
-
-  /**
    * Stop the WebSocket server and close all connections.
    */
   public async stopAndCleanup(): Promise<void> {

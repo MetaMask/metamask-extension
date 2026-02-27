@@ -139,66 +139,6 @@ class WebSocketRegistry {
     }
     return entry.server;
   }
-
-  /**
-   * Get the port for a registered service.
-   * Use in mock-e2e.js to set up WSS forwarding rules.
-   *
-   * @param name - The registered service name
-   * @returns The port number
-   */
-  static getPort(name: string): number {
-    const entry = WebSocketRegistry.entries.get(name);
-    if (!entry) {
-      throw new Error(
-        `WebSocket service '${name}' is not registered. ` +
-          `Available: ${Array.from(WebSocketRegistry.entries.keys()).join(', ')}`,
-      );
-    }
-    return entry.port;
-  }
-
-  /**
-   * Get the total connection count across ALL running servers.
-   * Useful for tests that just need to verify "some" websocket is connected,
-   * without caring which specific service.
-   *
-   * @returns Total number of active websocket connections across all servers
-   */
-  static getTotalConnectionCount(): number {
-    let total = 0;
-    for (const entry of WebSocketRegistry.entries.values()) {
-      if (entry.server) {
-        total += entry.server.getWebsocketConnectionCount();
-      }
-    }
-    return total;
-  }
-
-  /**
-   * Get a snapshot of open connections across all running servers.
-   *
-   * @returns Array of objects with service name, port, and connection count
-   */
-  static getOpenConnections(): { name: string; port: number; count: number }[] {
-    const connections: { name: string; port: number; count: number }[] = [];
-    for (const [name, entry] of WebSocketRegistry.entries.entries()) {
-      if (entry.server) {
-        const count = entry.server.getWebsocketConnectionCount();
-        if (count > 0) {
-          connections.push({ name, port: entry.port, count });
-        }
-      }
-    }
-    return connections;
-  }
-
-  /**
-   * Reset the registry. Only needed for testing the registry itself.
-   */
-  static reset(): void {
-    WebSocketRegistry.entries.clear();
-  }
 }
 
 export default WebSocketRegistry;
