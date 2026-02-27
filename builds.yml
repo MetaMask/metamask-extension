@@ -286,6 +286,7 @@ env:
   - QUICKNODE_BSC_URL: null
   - QUICKNODE_SEI_URL: null
   - QUICKNODE_MONAD_URL: null
+  - QUICKNODE_HYPEREVM_URL: null
 
   ###
   # API keys to 3rd party services
