@@ -134,7 +134,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
    * @param address - The account address to check.
    * @returns True if the account is in a snap wallet.
    */
-  async #isAccountInSnapWallet(address: string): Promise<boolean> {
+  #isAccountInSnapWallet(address: string): boolean {
     const account = this.#messenger.call(
       'AccountsController:getAccountByAddress',
       address,
@@ -439,7 +439,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
   ) {
     assertIsValidSnapId(snapId);
 
-    const isSnapWallet = await this.#isAccountInSnapWallet(address);
+    const isSnapWallet = this.#isAccountInSnapWallet(address);
 
     // If the account is not in a snap wallet, we can safely assume it is part of
     // a multichain wallet and we can perform the account removal directly
