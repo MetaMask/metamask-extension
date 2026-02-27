@@ -1076,12 +1076,6 @@
   "bridgeGasFeesSplit": {
     "message": "Any network fee quoted on the previous screen includes both transactions and will be split."
   },
-  "bridgeNetCost": {
-    "message": "Net cost"
-  },
-  "bridgeNoMMFee": {
-    "message": "No MM fee"
-  },
   "bridgeMarketClosedAction": {
     "message": "Market is closed"
   },
@@ -1093,6 +1087,12 @@
   },
   "bridgeMarketClosedTitle": {
     "message": "Market closed"
+  },
+  "bridgeNetCost": {
+    "message": "Net cost"
+  },
+  "bridgeNoMMFee": {
+    "message": "No MM fee"
   },
   "bridgePoints": {
     "message": "Est. points",
@@ -8633,6 +8633,9 @@
   "tokenStandard": {
     "message": "Token standard"
   },
+  "tokenStock": {
+    "message": "Stock"
+  },
   "tokenStream": {
     "message": "Token stream"
   },
@@ -8641,9 +8644,6 @@
   },
   "tokenSymbol": {
     "message": "Token symbol"
-  },
-  "tokenStock": {
-    "message": "Stock"
   },
   "tokenTransfer": {
     "message": "Token transfer"
