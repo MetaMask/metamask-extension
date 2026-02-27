@@ -8,7 +8,10 @@ import {
   usePerpsController,
 } from './PerpsControllerProvider';
 
-const mockGetPerpsStreamingController = jest.fn<Promise<unknown>, [string, unknown?]>();
+const mockGetPerpsStreamingController = jest.fn<
+  Promise<unknown>,
+  [string, unknown?]
+>();
 const mockGetPerpsControllerFacade = jest.fn<unknown | null, []>(() => null);
 const mockIsPerpsControllerInitializationCancelledError = jest.fn<
   boolean,
@@ -139,7 +142,9 @@ describe('PerpsControllerProvider', () => {
 
   describe('without provided controller', () => {
     it('shows loading fallback while initializing', () => {
-      mockGetPerpsStreamingController.mockReturnValue(new Promise(() => undefined));
+      mockGetPerpsStreamingController.mockReturnValue(
+        new Promise(() => undefined),
+      );
       const store = createMockStore('0xaaa');
 
       render(
@@ -157,7 +162,9 @@ describe('PerpsControllerProvider', () => {
     });
 
     it('renders null as fallback by default', () => {
-      mockGetPerpsStreamingController.mockReturnValue(new Promise(() => undefined));
+      mockGetPerpsStreamingController.mockReturnValue(
+        new Promise(() => undefined),
+      );
       const store = createMockStore('0xaaa');
 
       const { container } = render(
@@ -187,7 +194,10 @@ describe('PerpsControllerProvider', () => {
         );
       });
 
-      expect(mockGetPerpsStreamingController).toHaveBeenCalledWith('0xaaa', store);
+      expect(mockGetPerpsStreamingController).toHaveBeenCalledWith(
+        '0xaaa',
+        store,
+      );
       expect(mockStreamManagerInit).toHaveBeenCalledWith('0xaaa');
       expect(mockStreamManagerPrewarm).toHaveBeenCalled();
       expect(screen.getByTestId('child')).toBeInTheDocument();
@@ -269,7 +279,9 @@ describe('PerpsControllerProvider', () => {
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
 
-      mockGetPerpsStreamingController.mockRejectedValue(new Error('init failed'));
+      mockGetPerpsStreamingController.mockRejectedValue(
+        new Error('init failed'),
+      );
       const store = createMockStore('0xaaa');
 
       await act(async () => {
@@ -352,7 +364,9 @@ describe('usePerpsController', () => {
           <ControllerConsumer />
         </Provider>,
       ),
-    ).toThrow(/usePerpsController must be used within a <PerpsControllerProvider>/u);
+    ).toThrow(
+      /usePerpsController must be used within a <PerpsControllerProvider>/u,
+    );
 
     consoleSpy.mockRestore();
   });

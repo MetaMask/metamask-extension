@@ -31,14 +31,14 @@ import type {
   AccountState,
   PerpsMarketData,
 } from '@metamask/perps-controller';
-import { PerpsDataChannel } from './PerpsDataChannel';
-import { CandleStreamChannel } from './CandleStreamChannel';
 import {
   getPerpsStreamingController,
   getPerpsControllerCurrentAddress,
   isPerpsControllerInitialized,
   isPerpsControllerInitializationCancelledError,
 } from './getPerpsController';
+import { CandleStreamChannel } from './CandleStreamChannel';
+import { PerpsDataChannel } from './PerpsDataChannel';
 
 // Empty array constants for stable references
 const EMPTY_POSITIONS: Position[] = [];

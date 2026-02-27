@@ -77,7 +77,9 @@ function getApi(
     perpsDisconnect: controller.disconnect.bind(controller),
 
     // -- Trading mutations --
-    perpsPlaceOrder: async (...args: Parameters<typeof controller.placeOrder>) => {
+    perpsPlaceOrder: async (
+      ...args: Parameters<typeof controller.placeOrder>
+    ) => {
       await ensureInitialized();
       return controller.placeOrder(...args);
     },
@@ -129,9 +131,7 @@ function getApi(
       await ensureInitialized();
       return controller.flipPosition(...args);
     },
-    perpsWithdraw: async (
-      ...args: Parameters<typeof controller.withdraw>
-    ) => {
+    perpsWithdraw: async (...args: Parameters<typeof controller.withdraw>) => {
       await ensureInitialized();
       return controller.withdraw(...args);
     },
@@ -258,13 +258,14 @@ function getApi(
       controller.clearPendingTransactionRequests.bind(controller),
     perpsSaveOrderBookGrouping:
       controller.saveOrderBookGrouping.bind(controller),
-    perpsGetOrderBookGrouping:
-      controller.getOrderBookGrouping.bind(controller),
+    perpsGetOrderBookGrouping: controller.getOrderBookGrouping.bind(controller),
 
     // -- Provider passthrough (methods that live on the provider, not the controller) --
-    perpsGetUserHistory: async (
-      params: { startTime?: number; endTime?: number; accountId?: string },
-    ) => {
+    perpsGetUserHistory: async (params: {
+      startTime?: number;
+      endTime?: number;
+      accountId?: string;
+    }) => {
       await ensureInitialized();
       return controller.getActiveProvider().getUserHistory(params);
     },
@@ -276,8 +277,7 @@ function getApi(
     perpsGetCurrentNetwork: controller.getCurrentNetwork.bind(controller),
     perpsIsFirstTimeUserOnCurrentNetwork:
       controller.isFirstTimeUserOnCurrentNetwork.bind(controller),
-    perpsGetWatchlistMarkets:
-      controller.getWatchlistMarkets.bind(controller),
+    perpsGetWatchlistMarkets: controller.getWatchlistMarkets.bind(controller),
     perpsToggleWatchlistMarket:
       controller.toggleWatchlistMarket.bind(controller),
     perpsIsWatchlistMarket: controller.isWatchlistMarket.bind(controller),

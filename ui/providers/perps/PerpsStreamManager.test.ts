@@ -24,7 +24,8 @@ const mockIsPerpsControllerInitializationCancelledError = jest.fn<
 >(() => false);
 
 jest.mock('./getPerpsController', () => ({
-  getPerpsStreamingController: (...args: [string]) => mockGetPerpsStreamingController(...args),
+  getPerpsStreamingController: (...args: [string]) =>
+    mockGetPerpsStreamingController(...args),
   getPerpsControllerCurrentAddress: () =>
     mockGetPerpsControllerCurrentAddress(),
   isPerpsControllerInitialized: (...args: [string?]) =>
@@ -40,16 +41,11 @@ jest.mock('./CandleStreamChannel', () => ({
   })),
 }));
 
-const mockSubmitRequestToBackground = jest.fn();
-jest.mock('../../store/background-connection', () => ({
-  submitRequestToBackground: (...args: unknown[]) =>
-    mockSubmitRequestToBackground(...args),
-}));
-
 type MockController = {
   subscribeToPositions: jest.Mock;
   subscribeToOrders: jest.Mock;
   subscribeToAccount: jest.Mock;
+  getMarketDataWithPrices: jest.Mock;
 };
 
 function createMockController(): MockController {
@@ -57,6 +53,7 @@ function createMockController(): MockController {
     subscribeToPositions: jest.fn(() => jest.fn()),
     subscribeToOrders: jest.fn(() => jest.fn()),
     subscribeToAccount: jest.fn(() => jest.fn()),
+    getMarketDataWithPrices: jest.fn().mockResolvedValue([]),
   };
 }
 
@@ -168,8 +165,10 @@ describe('PerpsStreamManager', () => {
       expect(controller.subscribeToAccount).toHaveBeenCalledTimes(1);
     });
 
-    it('wires markets channel to fetch from active provider', async () => {
-      mockSubmitRequestToBackground.mockResolvedValue([{ symbol: 'BTC', price: '50000' }]);
+    it('wires markets channel to fetch via controller.getMarketDataWithPrices', async () => {
+      controller.getMarketDataWithPrices.mockResolvedValue([
+        { symbol: 'BTC', price: '50000' },
+      ]);
 
       await manager.init('0xaaa');
 
@@ -178,7 +177,7 @@ describe('PerpsStreamManager', () => {
 
       await jest.advanceTimersByTimeAsync(0);
 
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsGetMarketDataWithPrices');
+      expect(controller.getMarketDataWithPrices).toHaveBeenCalled();
     });
 
     it('clears caches and prewarm when address changes', async () => {
@@ -223,8 +222,8 @@ describe('PerpsStreamManager', () => {
       consoleSpy.mockRestore();
     });
 
-    it('markets connectFn handles missing provider gracefully', async () => {
-      mockSubmitRequestToBackground.mockResolvedValue([]);
+    it('markets connectFn handles empty result gracefully', async () => {
+      controller.getMarketDataWithPrices.mockResolvedValue([]);
 
       await manager.init('0xaaa');
 
@@ -236,12 +235,12 @@ describe('PerpsStreamManager', () => {
       expect(cb).toHaveBeenCalledWith([]);
     });
 
-    it('markets connectFn handles provider error gracefully', async () => {
+    it('markets connectFn handles controller error gracefully', async () => {
       const consoleSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
 
-      mockSubmitRequestToBackground.mockRejectedValue(new Error('fail'));
+      controller.getMarketDataWithPrices.mockRejectedValue(new Error('fail'));
 
       await manager.init('0xaaa');
 

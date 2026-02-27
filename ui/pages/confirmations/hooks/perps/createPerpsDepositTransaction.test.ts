@@ -48,7 +48,9 @@ describe('createPerpsDepositTransaction', () => {
   });
 
   it('uses controller.depositWithConfirmation when controller is provided', async () => {
-    const mockDepositWithConfirmation = jest.fn().mockResolvedValue('tx-from-controller');
+    const mockDepositWithConfirmation = jest
+      .fn()
+      .mockResolvedValue('tx-from-controller');
     const controller = {
       depositWithConfirmation: mockDepositWithConfirmation,
     };

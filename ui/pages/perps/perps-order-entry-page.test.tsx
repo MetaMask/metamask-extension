@@ -349,11 +349,13 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsPlaceOrder',
-        [expect.objectContaining({
-          symbol: 'ETH',
-          isBuy: true,
-          orderType: 'market',
-        })],
+        [
+          expect.objectContaining({
+            symbol: 'ETH',
+            isBuy: true,
+            orderType: 'market',
+          }),
+        ],
       );
     });
 
@@ -380,7 +382,9 @@ describe('PerpsOrderEntryPage', () => {
     });
 
     it('shows error when controller throws', async () => {
-      mockSubmitRequestToBackground.mockRejectedValueOnce(new Error('Network error'));
+      mockSubmitRequestToBackground.mockRejectedValueOnce(
+        new Error('Network error'),
+      );
 
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
@@ -414,10 +418,12 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsClosePosition',
-        [expect.objectContaining({
-          symbol: 'ETH',
-          orderType: 'market',
-        })],
+        [
+          expect.objectContaining({
+            symbol: 'ETH',
+            orderType: 'market',
+          }),
+        ],
       );
     });
 
@@ -437,9 +443,11 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsUpdatePositionTPSL',
-        [expect.objectContaining({
-          symbol: 'ETH',
-        })],
+        [
+          expect.objectContaining({
+            symbol: 'ETH',
+          }),
+        ],
       );
     });
 
@@ -737,10 +745,12 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsPlaceOrder',
-        [expect.objectContaining({
-          orderType: 'limit',
-          price: '3000',
-        })],
+        [
+          expect.objectContaining({
+            orderType: 'limit',
+            price: '3000',
+          }),
+        ],
       );
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });

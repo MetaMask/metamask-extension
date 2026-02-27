@@ -2,10 +2,10 @@
  * Perps Controller Facade (Option B)
  *
  * Wraps the UI-side streaming PerpsController so that:
- * - Streaming methods (subscribeToPositions, subscribeToPrices, etc.) are forwarded
- *   to the real controller (callbacks stay UI-side).
- * - All other methods (placeOrder, updateMargin, getPositions, etc.) delegate to
- *   the background controller via submitRequestToBackground('perpsX', [args]).
+ * Streaming methods (subscribeToPositions, subscribeToPrices, etc.) are forwarded
+ * to the real controller (callbacks stay UI-side).
+ * All other methods (placeOrder, updateMargin, getPositions, etc.) delegate to
+ * the background controller via submitRequestToBackground('perpsX', [args]).
  *
  * This allows UI code to call controller.placeOrder(...) instead of
  * submitRequestToBackground('perpsPlaceOrder', [...]). State reads should still
@@ -81,9 +81,11 @@ const DELEGATE_ACTIONS: Record<string, string> = {
   isWatchlistMarket: 'perpsIsWatchlistMarket',
 };
 
-function createDelegateMethod<T>(actionName: string): (...args: unknown[]) => Promise<T> {
+function createDelegateMethod<TResult>(
+  actionName: string,
+): (...args: unknown[]) => Promise<TResult> {
   return (...args: unknown[]) =>
-    submitRequestToBackground<T>(actionName as 'perpsInit', args);
+    submitRequestToBackground<TResult>(actionName as 'perpsInit', args);
 }
 
 /**
@@ -103,7 +105,8 @@ export function createPerpsControllerFacade(
     },
 
     get messenger() {
-      return streamingController.messenger;
+      return (streamingController as unknown as { messenger: unknown })
+        .messenger;
     },
 
     init: createDelegateMethod<void>('perpsInit'),
@@ -120,7 +123,9 @@ export function createPerpsControllerFacade(
   } as Record<string, unknown>;
 
   for (const method of STREAMING_METHODS) {
-    const fn = (streamingController as Record<string, unknown>)[method];
+    const fn = (streamingController as unknown as Record<string, unknown>)[
+      method
+    ];
     if (typeof fn === 'function') {
       facade[method] = fn.bind(streamingController);
     }
@@ -136,5 +141,5 @@ export function createPerpsControllerFacade(
     facade[methodName] = createDelegateMethod(actionName);
   }
 
-  return facade as PerpsController;
+  return facade as unknown as PerpsController;
 }

@@ -205,11 +205,12 @@ const PerpsOrderEntryPage: React.FC = () => {
     let cancelled = false;
     const subscribe = async () => {
       try {
-        const controller = await getPerpsStreamingController(selectedAddress);
+        const streamingController =
+          await getPerpsStreamingController(selectedAddress);
         if (cancelled) {
           return;
         }
-        unsubscribe = controller.subscribeToPrices({
+        unsubscribe = streamingController.subscribeToPrices({
           symbols: [decodedSymbol],
           includeMarketData: true,
           callback: (priceUpdates) => {
@@ -250,11 +251,12 @@ const PerpsOrderEntryPage: React.FC = () => {
     let cancelled = false;
     const subscribe = async () => {
       try {
-        const controller = await getPerpsStreamingController(selectedAddress);
+        const streamingController =
+          await getPerpsStreamingController(selectedAddress);
         if (cancelled) {
           return;
         }
-        unsubscribe = controller.subscribeToOrderBook({
+        unsubscribe = streamingController.subscribeToOrderBook({
           symbol: decodedSymbol,
           levels: 1,
           nSigFigs: 5,

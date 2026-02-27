@@ -3,9 +3,9 @@
  *
  * This module provides a PerpsController instance for the UI that is a facade:
  * - Streaming methods (subscribeToPrices, subscribeToPositions, etc.) run on a
- *   lightweight UI-side controller so callbacks stay in the UI process.
+ * lightweight UI-side controller so callbacks stay in the UI process.
  * - All other methods (placeOrder, updateMargin, getPositions, etc.) delegate
- *   to the background controller via submitRequestToBackground under the hood.
+ * to the background controller via submitRequestToBackground under the hood.
  *
  * State reads should use Redux selectors from ui/selectors/perps-controller.ts.
  */

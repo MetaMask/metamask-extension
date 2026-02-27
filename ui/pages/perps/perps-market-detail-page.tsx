@@ -180,11 +180,12 @@ const PerpsMarketDetailPage: React.FC = () => {
 
     const subscribe = async () => {
       try {
-        const controller = await getPerpsStreamingController(selectedAddress);
+        const streamingController =
+          await getPerpsStreamingController(selectedAddress);
         if (cancelled) {
           return;
         }
-        unsubscribe = controller.subscribeToPrices({
+        unsubscribe = streamingController.subscribeToPrices({
           symbols: [decodedSymbol],
           includeMarketData: true,
           callback: (priceUpdates) => {

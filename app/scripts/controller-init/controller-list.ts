@@ -90,6 +90,7 @@ import {
   ProfileMetricsController,
   ProfileMetricsService,
 } from '@metamask/profile-metrics-controller';
+import { PerpsController } from '@metamask/perps-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -110,7 +111,6 @@ import EncryptionPublicKeyController from '../controllers/encryption-public-key'
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
-import { PerpsController } from '@metamask/perps-controller';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
