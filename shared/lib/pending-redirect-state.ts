@@ -1,7 +1,7 @@
 import { EnvironmentType } from '../constants/app';
 
 /**
- * Persisted redirect route for cross-session navigation.
+ * Redirect route for cross-session navigation.
  *
  * ## How it works
  *
