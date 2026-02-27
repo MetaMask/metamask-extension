@@ -18,12 +18,20 @@ jest.mock('../../components/app/terms-of-use-popup', () => () => null);
 jest.mock('../../components/app/recovery-phrase-reminder', () => () => null);
 jest.mock('../../components/app/home-notification', () => () => null);
 jest.mock('../../components/app/multiple-notifications', () => () => null);
-jest.mock('../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal', () => () => null);
+jest.mock(
+  '../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal',
+  () => () => null,
+);
 jest.mock('../../components/app/update-modal/update-modal', () => () => null);
 jest.mock('../../components/app/password-outdated-modal', () => () => null);
 jest.mock('../../components/app/shield-entry-modal', () => () => null);
-jest.mock('../../components/app/rewards/onboarding/OnboardingModal', () => () => null);
-jest.mock('../../components/app/modals/pna25-modal', () => ({ Pna25Modal: () => null }));
+jest.mock(
+  '../../components/app/rewards/onboarding/OnboardingModal',
+  () => () => null,
+);
+jest.mock('../../components/app/modals/pna25-modal', () => ({
+  Pna25Modal: () => null,
+}));
 jest.mock('../connected-sites', () => () => null);
 jest.mock('../connected-accounts', () => () => null);
 jest.mock('./beta-and-flask-home-footer.component', () => () => null);
@@ -37,7 +45,10 @@ jest.mock('../../../shared/lib/build-types', () => ({
   isMain: jest.fn().mockReturnValue(true),
 }));
 
-const t = ((key: string) => key) as unknown as typeof I18nContext extends React.Context<infer V> ? V : never;
+const t = ((key: string) =>
+  key) as unknown as typeof I18nContext extends React.Context<infer V>
+  ? V
+  : never;
 
 const mockMetaMetricsContext = {
   trackEvent: jest.fn().mockResolvedValue(undefined),
@@ -174,8 +185,10 @@ describe('Home — checkPendingRedirectRoute', () => {
       clearPendingRedirectRoute,
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { rerender } = render(wrapWithContext(<Home {...(initialProps as any)} />));
+    const { rerender } = render(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      wrapWithContext(<Home {...(initialProps as any)} />),
+    );
 
     expect(setRedirectAfterDefaultPage).not.toHaveBeenCalled();
     expect(clearPendingRedirectRoute).not.toHaveBeenCalled();

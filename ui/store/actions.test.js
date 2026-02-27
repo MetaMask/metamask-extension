@@ -4719,9 +4719,9 @@ describe('Actions', () => {
       const route = { path: '/shield-plan' };
       await store.dispatch(actions.setPendingRedirectRoute(route));
       expect(background.setPendingRedirectRoute.callCount).toStrictEqual(1);
-      expect(
-        background.setPendingRedirectRoute.getCall(0).args,
-      ).toStrictEqual([route]);
+      expect(background.setPendingRedirectRoute.getCall(0).args).toStrictEqual([
+        route,
+      ]);
     });
 
     it('calls background setPendingRedirectRoute with null', async () => {
@@ -4732,9 +4732,9 @@ describe('Actions', () => {
 
       await store.dispatch(actions.setPendingRedirectRoute(null));
       expect(background.setPendingRedirectRoute.callCount).toStrictEqual(1);
-      expect(
-        background.setPendingRedirectRoute.getCall(0).args,
-      ).toStrictEqual([null]);
+      expect(background.setPendingRedirectRoute.getCall(0).args).toStrictEqual([
+        null,
+      ]);
     });
 
     it('dispatches displayWarning on error', async () => {
@@ -4745,9 +4745,7 @@ describe('Actions', () => {
       background.getStatePatches = sinon.stub().resolves([]);
       setBackgroundConnection(background);
 
-      const expectedActions = [
-        { type: 'DISPLAY_WARNING', payload: 'error' },
-      ];
+      const expectedActions = [{ type: 'DISPLAY_WARNING', payload: 'error' }];
 
       await expect(
         store.dispatch(actions.setPendingRedirectRoute({ path: '/test' })),
