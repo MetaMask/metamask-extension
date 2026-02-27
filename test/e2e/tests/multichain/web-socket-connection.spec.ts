@@ -110,7 +110,7 @@ async function waitForWebsocketConnections(
 
   await driver.wait(async () => {
     const openConnections = WebSocketRegistry.getOpenConnections();
-    const totalCount = WebSocketRegistry.getTotalConnectionCount();
+    const totalCount = openConnections.reduce((sum, c) => sum + c.count, 0);
     const openNames = openConnections.map((c) => c.name).sort();
     return (
       totalCount === expectedCount &&
