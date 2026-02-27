@@ -1,5 +1,7 @@
 import React from 'react';
+import { waitFor } from '@testing-library/react';
 import { renderHook as _renderHook } from '@testing-library/react-hooks';
+import { act } from 'react-dom/test-utils';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import useFetchNftDetailsFromTokenURI from './useFetchNftDetailsFromTokenURI';
 
@@ -20,11 +22,15 @@ describe('useFetchNftDetailsFromTokenURI', () => {
     jest.clearAllMocks();
   });
   it('should return without fetching when tokenURI is undefined', async () => {
-    const result = renderHook(() =>
-      useFetchNftDetailsFromTokenURI(undefined),
-    );
+    let result;
 
-    expect(result.result.current).toEqual({
+    await act(async () => {
+      result = renderHook(() => useFetchNftDetailsFromTokenURI(undefined));
+    });
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect((result as unknown as Record<string, any>).result.current).toEqual({
       image: '',
       name: '',
     });
@@ -42,7 +48,9 @@ describe('useFetchNftDetailsFromTokenURI', () => {
 
     await waitForNextUpdate();
 
-    expect(result.current).toEqual({
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect((result as unknown as Record<string, any>).current).toEqual({
       image: '',
       name: '',
     });
@@ -67,7 +75,9 @@ describe('useFetchNftDetailsFromTokenURI', () => {
 
     await waitForNextUpdate();
 
-    expect(result.current).toEqual({
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect((result as unknown as Record<string, any>).current).toEqual({
       image:
         'https://ipfs.io/ipfs/bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi',
       name: 'Rocks',
@@ -75,13 +85,14 @@ describe('useFetchNftDetailsFromTokenURI', () => {
   });
 
   it('should gracefully fail when providing an invalid token URI', async () => {
-    jest.spyOn(global, 'fetch').mockRejectedValue(new Error('MOCK BAD URI'));
+    const mockFetch = jest
+      .spyOn(global, 'fetch')
+      .mockRejectedValue(new Error('MOCK BAD URI'));
     const { result, waitForNextUpdate } = renderHook(() =>
       useFetchNftDetailsFromTokenURI('BAD_URI'),
     );
-
+    await waitFor(() => expect(mockFetch).toHaveBeenCalled());
     await waitForNextUpdate();
-
     expect(result.current).toEqual({
       image: '',
       name: '',
@@ -95,7 +106,7 @@ describe('useFetchNftDetailsFromTokenURI', () => {
       image: ['array', 'of', 'images'],
     };
 
-    jest.spyOn(global, 'fetch').mockResolvedValue({
+    const mockFetch = jest.spyOn(global, 'fetch').mockResolvedValue({
       ok: true,
       text: () => Promise.resolve(JSON.stringify(mockData)),
     } as Response);
@@ -104,6 +115,7 @@ describe('useFetchNftDetailsFromTokenURI', () => {
       useFetchNftDetailsFromTokenURI('https://test.com'),
     );
 
+    await waitFor(() => expect(mockFetch).toHaveBeenCalled());
     await waitForNextUpdate();
 
     expect(result.current).toEqual({
