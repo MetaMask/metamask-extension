@@ -296,16 +296,57 @@ function serializeValue(value: unknown, indent = 0): string {
 }
 
 /**
+ * Scans forward from an opening `{` or `[`, tracking brace/bracket depth
+ * and skipping string literals, and returns the index just past the
+ * balanced closing delimiter. Returns -1 if unbalanced.
+ *
+ * @param content - The source text
+ * @param openIndex - Index of the opening `{` or `[`
+ */
+function findBalancedEnd(content: string, openIndex: number): number {
+  let depth = 0;
+  let inSingle = false;
+  let inDouble = false;
+  let i = openIndex;
+  while (i < content.length) {
+    const ch = content[i];
+    if (inSingle) {
+      if (ch === '\\') {
+        i += 1;
+      } else if (ch === "'") {
+        inSingle = false;
+      }
+    } else if (inDouble) {
+      if (ch === '\\') {
+        i += 1;
+      } else if (ch === '"') {
+        inDouble = false;
+      }
+    } else if (ch === "'") {
+      inSingle = true;
+    } else if (ch === '"') {
+      inDouble = true;
+    } else if (ch === '{' || ch === '[') {
+      depth += 1;
+    } else if (ch === '}' || ch === ']') {
+      depth -= 1;
+      if (depth === 0) {
+        return i + 1;
+      }
+    }
+    i += 1;
+  }
+  return -1;
+}
+
+/**
  * Updates the feature-flag-registry.ts file with production values.
  * Handles value mismatches, new flags, and removed flags.
+ * Uses brace-depth counting (not regex) to correctly handle nested objects.
  * Formats the file with Prettier before writing.
  * @param result
- * @param _productionApiResponse
  */
-async function updateRegistryFile(
-  result: SyncResult,
-  _productionApiResponse: Record<string, unknown>[],
-): Promise<void> {
+async function updateRegistryFile(result: SyncResult): Promise<void> {
   let content = fs.readFileSync(REGISTRY_FILE_PATH, 'utf-8');
   const today = new Date().toISOString().split('T')[0];
 
@@ -314,21 +355,101 @@ async function updateRegistryFile(
     `Production defaults last synced: ${today}`,
   );
 
+  // Replace mismatched productionDefault values using brace-depth counting
   for (const { name, productionValue } of result.valueMismatches) {
     const serialized = serializeValue(productionValue, 4);
-    const pattern = new RegExp(
-      `(${escapeRegex(name)}:\\s*\\{[\\s\\S]*?productionDefault:)\\s*[\\s\\S]*?(\\n\\s*status:)`,
-      'u',
-    );
-    content = content.replace(pattern, `$1 ${serialized},$2`);
+    const entryPattern = new RegExp(`^  ${escapeRegex(name)}:\\s*\\{`, 'mu');
+    const entryMatch = entryPattern.exec(content);
+    if (!entryMatch) {
+      continue;
+    }
+
+    const entryOpenBrace = content.indexOf('{', entryMatch.index + name.length);
+    const entryEnd = findBalancedEnd(content, entryOpenBrace);
+    if (entryEnd === -1) {
+      continue;
+    }
+
+    const pdNeedle = 'productionDefault:';
+    const pdIndex = content.indexOf(pdNeedle, entryMatch.index);
+    if (pdIndex === -1 || pdIndex >= entryEnd) {
+      continue;
+    }
+
+    let valueStart = pdIndex + pdNeedle.length;
+    while (valueStart < entryEnd && /\s/u.test(content[valueStart])) {
+      valueStart += 1;
+    }
+
+    let valueEnd: number;
+    const firstChar = content[valueStart];
+    if (firstChar === '{' || firstChar === '[') {
+      valueEnd = findBalancedEnd(content, valueStart);
+      if (valueEnd === -1) {
+        continue;
+      }
+    } else {
+      valueEnd = valueStart;
+      while (valueEnd < entryEnd && content[valueEnd] !== ',') {
+        const ch = content[valueEnd];
+        if (ch === "'" || ch === '"') {
+          valueEnd += 1;
+          while (valueEnd < entryEnd && content[valueEnd] !== ch) {
+            if (content[valueEnd] === '\\') {
+              valueEnd += 1;
+            }
+            valueEnd += 1;
+          }
+          if (valueEnd < entryEnd) {
+            valueEnd += 1;
+          }
+        } else {
+          valueEnd += 1;
+        }
+      }
+    }
+
+    content = `${content.slice(0, valueStart)}${serialized}${content.slice(valueEnd)}`;
   }
 
+  // Remove entries no longer in production using brace-depth counting
   for (const { name } of result.removedFromProduction) {
-    const pattern = new RegExp(
-      `\\n(?:\\s*\\/\\/[^\\n]*\\n)?\\s*${escapeRegex(name)}:\\s*\\{[\\s\\S]*?\\},?\\n`,
-      'u',
-    );
-    content = content.replace(pattern, '\n');
+    const entryPattern = new RegExp(`^  ${escapeRegex(name)}:\\s*\\{`, 'mu');
+    const entryMatch = entryPattern.exec(content);
+    if (!entryMatch) {
+      continue;
+    }
+
+    const openBrace = content.indexOf('{', entryMatch.index + name.length);
+    const balancedEnd = findBalancedEnd(content, openBrace);
+    if (balancedEnd === -1) {
+      continue;
+    }
+
+    let removeEnd = balancedEnd;
+    if (removeEnd < content.length && content[removeEnd] === ',') {
+      removeEnd += 1;
+    }
+    if (removeEnd < content.length && content[removeEnd] === '\n') {
+      removeEnd += 1;
+    }
+
+    let removeStart = entryMatch.index;
+    // Include preceding eslint-disable comment if present
+    const beforeEntry = content.lastIndexOf('\n', removeStart - 1);
+    if (beforeEntry >= 0) {
+      const prevLineStart = content.lastIndexOf('\n', beforeEntry - 1) + 1;
+      const prevLine = content.slice(prevLineStart, beforeEntry).trim();
+      if (prevLine.startsWith('// eslint-disable')) {
+        removeStart = prevLineStart;
+      }
+    }
+    // Include leading blank line to avoid double blank lines
+    if (removeStart > 0 && content[removeStart - 1] === '\n') {
+      removeStart -= 1;
+    }
+
+    content = content.slice(0, removeStart) + content.slice(removeEnd);
   }
 
   if (result.newInProduction.length > 0) {
@@ -379,7 +500,7 @@ async function main(): Promise<void> {
     console.log(formatSyncReport(result));
 
     if (updateMode && result.hasDrift) {
-      await updateRegistryFile(result, productionResponse);
+      await updateRegistryFile(result);
       process.exit(0);
     }
 

@@ -3,7 +3,7 @@ name: Check feature flag registry drift
 on:
   schedule:
     # Run weekly on Mondays at 08:00 UTC
-    - cron: '0 8 * * 1'
+    - cron: "0 8 * * 1"
   workflow_dispatch:
 
 permissions:
@@ -23,6 +23,7 @@ jobs:
 
       - name: Check for drift and generate report
         id: check
+        shell: bash
         run: |
           set +e
           yarn feature-flags:sync:check 2>&1 | tee sync-report.txt
@@ -40,5 +41,5 @@ jobs:
           cat sync-report.txt
 
       # TODO:
-        # OR Add notification step (e.g. Slack) when drift is detected
-        # OR Add common create workflow step for creating issues/ creating PRs in github-tools repo
+      # OR Add notification step (e.g. Slack) when drift is detected
+      # OR Add common create workflow step for creating issues/ creating PRs in github-tools repo
