@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import {
   mockPositions,
   mockOrders,
@@ -249,7 +250,7 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/home');
     });
 
     it('displays market price change', () => {
@@ -311,7 +312,7 @@ describe('PerpsMarketDetailPage', () => {
       );
 
       // ETH has a mock position
-      expect(getByText('Position')).toBeInTheDocument();
+      expect(getByText(messages.perpsPosition.message)).toBeInTheDocument();
     });
 
     it('displays position P&L', () => {
@@ -323,7 +324,7 @@ describe('PerpsMarketDetailPage', () => {
       );
 
       // Check for P&L label
-      expect(getByText('P&L')).toBeInTheDocument();
+      expect(getByText(messages.perpsPnl.message)).toBeInTheDocument();
     });
 
     it('displays position details section', () => {
@@ -334,14 +335,14 @@ describe('PerpsMarketDetailPage', () => {
         store,
       );
 
-      expect(getByText('Details')).toBeInTheDocument();
-      expect(getByText('Direction')).toBeInTheDocument();
-      expect(getByText('Entry price')).toBeInTheDocument();
+      expect(getByText(messages.perpsDetails.message)).toBeInTheDocument();
+      expect(getByText(messages.perpsDirection.message)).toBeInTheDocument();
+      expect(getByText(messages.perpsEntryPrice.message)).toBeInTheDocument();
       // 'Liquidation price' appears in both the Details section and the
       // Edit Margin expandable, so use getAllByText
-      expect(getAllByText('Liquidation price').length).toBeGreaterThanOrEqual(
-        1,
-      );
+      expect(
+        getAllByText(messages.perpsLiquidationPrice.message).length,
+      ).toBeGreaterThanOrEqual(1);
     });
 
     it('displays stats section', () => {
@@ -352,8 +353,8 @@ describe('PerpsMarketDetailPage', () => {
         store,
       );
 
-      expect(getByText('Stats')).toBeInTheDocument();
-      expect(getByText('24h Volume')).toBeInTheDocument();
+      expect(getByText(messages.perpsStats.message)).toBeInTheDocument();
+      expect(getByText(messages.perps24hVolume.message)).toBeInTheDocument();
     });
 
     it('displays recent activity section', () => {
@@ -364,7 +365,9 @@ describe('PerpsMarketDetailPage', () => {
         store,
       );
 
-      expect(getByText('Recent Activity')).toBeInTheDocument();
+      expect(
+        getByText(messages.perpsRecentActivity.message),
+      ).toBeInTheDocument();
     });
 
     it('displays learn section', () => {
@@ -375,7 +378,7 @@ describe('PerpsMarketDetailPage', () => {
         store,
       );
 
-      expect(getByText('Learn the basics of perps')).toBeInTheDocument();
+      expect(getByText(messages.perpsLearnBasics.message)).toBeInTheDocument();
     });
 
     it('expands edit margin section when margin card is clicked', () => {
@@ -385,12 +388,16 @@ describe('PerpsMarketDetailPage', () => {
 
       // The Edit Margin expandable is rendered but collapsed (hidden via CSS grid)
       // Before expanding, the 'Add Margin' text exists in the DOM but is not visible
-      fireEvent.click(screen.getByText('Margin'));
+      fireEvent.click(screen.getByText(messages.perpsMargin.message));
 
       // After expanding, both the mode toggle and confirm button show 'Add Margin'
-      const addMarginElements = screen.getAllByText('Add Margin');
+      const addMarginElements = screen.getAllByText(
+        messages.perpsAddMargin.message,
+      );
       expect(addMarginElements.length).toBeGreaterThanOrEqual(2);
-      expect(screen.getByText('Remove Margin')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsRemoveMargin.message),
+      ).toBeInTheDocument();
     });
 
     it('collapses margin section when auto close is opened (mutual exclusion)', () => {
@@ -398,13 +405,81 @@ describe('PerpsMarketDetailPage', () => {
 
       renderWithProvider(<PerpsMarketDetailPage />, store);
 
-      fireEvent.click(screen.getByText('Margin'));
-      const addMarginElements = screen.getAllByText('Add Margin');
+      fireEvent.click(screen.getByText(messages.perpsMargin.message));
+      const addMarginElements = screen.getAllByText(
+        messages.perpsAddMargin.message,
+      );
       expect(addMarginElements.length).toBeGreaterThanOrEqual(1);
 
-      fireEvent.click(screen.getByText('Auto close'));
-      expect(screen.getByText('Take Profit')).toBeInTheDocument();
-      expect(screen.getByText('Stop Loss')).toBeInTheDocument();
+      fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
+      expect(
+        screen.getByText(messages.perpsTakeProfit.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsStopLoss.message),
+      ).toBeInTheDocument();
+    });
+
+    it('populates TP price from preset button for long position', () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
+
+      // After expand, TP input is initialized to position's existing TP (3200.00)
+      expect(screen.getByDisplayValue('3200.00')).toBeInTheDocument();
+
+      // ETH is long, entry = 2850. TP +25% → 2850 * 1.25 = 3,562.50
+      const presetButton = screen.getByText('+25%').closest('[class]');
+      fireEvent.click(presetButton as HTMLElement);
+
+      expect(screen.getByDisplayValue('3,562.50')).toBeInTheDocument();
+    });
+
+    it('populates SL price from preset button for long position', () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
+
+      // After expand, SL input is initialized to position's existing SL (2600.00)
+      expect(screen.getByDisplayValue('2600.00')).toBeInTheDocument();
+
+      // ETH is long, entry = 2850. SL -25% → 2850 * 0.75 = 2,137.50
+      const presetButton = screen.getByText('-25%').closest('[class]');
+      fireEvent.click(presetButton as HTMLElement);
+
+      expect(screen.getByDisplayValue('2,137.50')).toBeInTheDocument();
+    });
+
+    it('populates TP price from preset button for short position', () => {
+      // BTC is short (size=-0.5), entry = 45,000
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
+
+      // Short TP +10% → 45000 * (1 - 10/100) = 45000 * 0.9 = 40,500.00
+      const presetButton = screen.getByText('+10%').closest('[class]');
+      fireEvent.click(presetButton as HTMLElement);
+
+      expect(screen.getByDisplayValue('40,500.00')).toBeInTheDocument();
+    });
+
+    it('populates SL price from preset button for short position', () => {
+      // BTC is short (size=-0.5), entry = 45,000
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
+
+      // Short SL -10% → 45000 * (1 + 10/100) = 45000 * 1.1 = 49,500.00
+      const presetButton = screen.getByText('-10%').closest('[class]');
+      fireEvent.click(presetButton as HTMLElement);
+
+      expect(screen.getByDisplayValue('49,500.00')).toBeInTheDocument();
     });
   });
 
@@ -418,7 +493,9 @@ describe('PerpsMarketDetailPage', () => {
         store,
       );
 
-      expect(getByText('Market not found')).toBeInTheDocument();
+      expect(
+        getByText(messages.perpsMarketNotFound.message),
+      ).toBeInTheDocument();
     });
 
     it('displays the unknown market symbol in error message', () => {

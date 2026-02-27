@@ -30,9 +30,7 @@ import { ProfileMetricsControllerSkipInitialDelayAction } from '@metamask/profil
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { isBeta } from '../../../ui/helpers/utils/build-types';
+import { isBeta } from '../../../shared/lib/build-types';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
@@ -102,10 +100,6 @@ export type AppStateControllerState = {
   currentExtensionPopupId: number;
   currentPopupId?: number;
   defaultHomeActiveTabName: AccountOverviewTabKey | null;
-  enableEnforcedSimulations: boolean;
-  enableEnforcedSimulationsForTransactions: Record<string, boolean>;
-  enforcedSimulationsSlippage: number;
-  enforcedSimulationsSlippageForTransactions: Record<string, number>;
   fullScreenGasPollTokens: string[];
   // This key is only used for checking if the user had set advancedGasFee
   // prior to Migration 92.3 where we split out the setting to support
@@ -153,6 +147,8 @@ export type AppStateControllerState = {
   trezorModel: string | null;
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
+  musdConversionEducationSeen: boolean;
+  musdConversionDismissedCtaKeys: string[];
   showShieldEntryModalOnce: boolean | null;
   pendingShieldCohort: string | null;
   pendingShieldCohortTxType: string | null;
@@ -300,10 +296,6 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   browserEnvironment: {},
   connectedStatusPopoverHasBeenShown: true,
   defaultHomeActiveTabName: null,
-  enableEnforcedSimulations: true,
-  enableEnforcedSimulationsForTransactions: {},
-  enforcedSimulationsSlippage: 10,
-  enforcedSimulationsSlippageForTransactions: {},
   fullScreenGasPollTokens: [],
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -342,6 +334,8 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
+  musdConversionEducationSeen: false,
+  musdConversionDismissedCtaKeys: [],
   showShieldEntryModalOnce: null,
   pendingShieldCohort: null,
   pendingShieldCohortTxType: null,
@@ -416,30 +410,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   defaultHomeActiveTabName: {
     includeInStateLogs: true,
     persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enableEnforcedSimulations: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enableEnforcedSimulationsForTransactions: {
-    includeInStateLogs: true,
-    persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enforcedSimulationsSlippage: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enforcedSimulationsSlippageForTransactions: {
-    includeInStateLogs: true,
-    persist: false,
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
@@ -692,6 +662,18 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   hasShownMultichainAccountsIntroModal: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
+  },
+  musdConversionEducationSeen: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
+  },
+  musdConversionDismissedCtaKeys: {
     persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
@@ -1362,6 +1344,31 @@ export class AppStateController extends BaseController<
   }
 
   /**
+   * Sets whether the mUSD conversion education screen has been seen.
+   *
+   * @param value - Whether the education screen has been seen
+   */
+  setMusdConversionEducationSeen(value: boolean): void {
+    this.update((state) => {
+      state.musdConversionEducationSeen = value;
+    });
+  }
+
+  /**
+   * Adds a dismissed mUSD asset-detail CTA key (chainId-tokenAddress format).
+   * Used to hide the CTA for that token on that chain once dismissed.
+   *
+   * @param key - Key in format "chainId-tokenAddress" (e.g. "0x1-0xa0b86991...")
+   */
+  addMusdConversionDismissedCtaKey(key: string): void {
+    this.update((state) => {
+      if (!state.musdConversionDismissedCtaKeys.includes(key)) {
+        state.musdConversionDismissedCtaKeys.push(key);
+      }
+    });
+  }
+
+  /**
    * Sets the product tour to be shown to the user
    *
    * @param productTour - Tour name to show (e.g., 'accountIcon') or empty string to hide
@@ -1647,36 +1654,6 @@ export class AppStateController extends BaseController<
     });
 
     return deferredPromise.promise;
-  }
-
-  setEnableEnforcedSimulations(enabled: boolean): void {
-    this.update((state) => {
-      state.enableEnforcedSimulations = enabled;
-    });
-  }
-
-  setEnableEnforcedSimulationsForTransaction(
-    transactionId: string,
-    enabled: boolean,
-  ): void {
-    this.update((state) => {
-      state.enableEnforcedSimulationsForTransactions[transactionId] = enabled;
-    });
-  }
-
-  setEnforcedSimulationsSlippage(value: number): void {
-    this.update((state) => {
-      state.enforcedSimulationsSlippage = value;
-    });
-  }
-
-  setEnforcedSimulationsSlippageForTransaction(
-    transactionId: string,
-    value: number,
-  ): void {
-    this.update((state) => {
-      state.enforcedSimulationsSlippageForTransactions[transactionId] = value;
-    });
   }
 
   /**

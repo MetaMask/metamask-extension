@@ -27,6 +27,8 @@ const log = createProjectLogger('enforced-simulations');
 const MOCK_DELEGATION_SIGNATURE =
   '0x2261a7810ed3e9cde160895909e138e2f68adb2da86fcf98ea0840701df107721fb369ab9b52550ea98832c09f8185284aca4c94bd345e867a4f4461868dd7751b';
 
+const DEFAULT_SLIPPAGE = 10;
+
 export async function enforceSimulations({
   messenger,
   transactionMeta,
@@ -51,7 +53,7 @@ export async function enforceSimulations({
   const chainIdDecimal = hexToNumber(chainId);
   const delegationEnvironment = getDeleGatorEnvironment(chainIdDecimal);
   const delegationManagerAddress = delegationEnvironment.DelegationManager;
-  const slippage = getSlippage(messenger, transactionMeta.id);
+  const slippage = DEFAULT_SLIPPAGE;
 
   const delegation = generateDelegation({
     accountAddress: from,
@@ -246,21 +248,6 @@ function generateCaveats(
   }
 
   return caveatBuilder.build();
-}
-
-function getSlippage(
-  messenger: TransactionControllerInitMessenger,
-  transactionId: string,
-): number {
-  const appControllerState = messenger.call('AppStateController:getState');
-  const defaultValue = appControllerState.enforcedSimulationsSlippage;
-
-  const transactionOverride =
-    appControllerState.enforcedSimulationsSlippageForTransactions[
-      transactionId
-    ];
-
-  return transactionOverride ?? defaultValue;
 }
 
 function applySlippage(

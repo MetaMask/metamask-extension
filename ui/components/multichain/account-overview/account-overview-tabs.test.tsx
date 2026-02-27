@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import mockState from '../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -96,7 +97,7 @@ describe('AccountOverviewTabs - event metrics', () => {
     );
 
     // Click a tab to trigger event
-    fireEvent.click(getByText('Tokens'));
+    fireEvent.click(getByText(messages.tokens.message));
 
     // Verify network_filter property is included in correct format
     expect(mockTrackEvent).toHaveBeenCalledWith({

@@ -4899,14 +4899,14 @@
         "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-tmpdir": true
       }
     },
-    "@storybook/test-runner>jest-circus>p-limit": {
+    "@metamask/assets-controller>p-limit": {
       "packages": {
-        "@storybook/test-runner>jest-circus>p-limit>yocto-queue": true
+        "@metamask/assets-controller>p-limit>yocto-queue": true
       }
     },
     "mocha>find-up>locate-path>p-locate": {
       "packages": {
-        "@storybook/test-runner>jest-circus>p-limit": true
+        "@metamask/assets-controller>p-limit": true
       }
     },
     "del>p-map": {

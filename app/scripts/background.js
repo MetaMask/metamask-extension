@@ -189,7 +189,7 @@ function parsePortInfo(port) {
 let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
-let sidePanelIsOpen = false;
+let openSidePanelCount = 0;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
@@ -1302,7 +1302,10 @@ function trackAppOpened(environment) {
   // Check if any UI instances are currently open
   const isFullscreenOpen = Object.values(openMetamaskTabsIDs).some(Boolean);
   const isAlreadyOpen =
-    isFullscreenOpen || notificationIsOpen || openPopupCount > 0;
+    isFullscreenOpen ||
+    notificationIsOpen ||
+    openPopupCount > 0 ||
+    openSidePanelCount > 0;
 
   // Only emit event if no UI is open and environment is valid
   if (!isAlreadyOpen && environmentTypeList.includes(environment)) {
@@ -1564,7 +1567,7 @@ export function setupController(
       openPopupCount > 0 ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
       notificationIsOpen ||
-      sidePanelIsOpen ||
+      openSidePanelCount > 0 ||
       false
     );
   };
@@ -1575,11 +1578,13 @@ export function setupController(
       controller.onClientClosed();
       // otherwise we want to only remove the polling tokens for the environment type that has closed
     } else {
-      // in the case of fullscreen environment a user might have multiple tabs open so we don't want to disconnect all of
-      // its corresponding polling tokens unless all tabs are closed.
+      // In fullscreen and sidepanel environments, users can have multiple instances
+      // open at once, so we only disconnect tokens when the last instance closes.
       if (
-        environmentType === ENVIRONMENT_TYPE_FULLSCREEN &&
-        Boolean(Object.keys(openMetamaskTabsIDs).length)
+        (environmentType === ENVIRONMENT_TYPE_FULLSCREEN &&
+          Boolean(Object.keys(openMetamaskTabsIDs).length)) ||
+        (environmentType === ENVIRONMENT_TYPE_SIDEPANEL &&
+          openSidePanelCount > 0)
       ) {
         return;
       }
@@ -1643,12 +1648,12 @@ export function setupController(
       }
 
       if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
-        sidePanelIsOpen = true;
+        openSidePanelCount += 1;
         // Refresh appActiveTab when sidepanel opens to ensure it has the current tab info
         // This handles the case where user connected to dapp while sidepanel was closed
         refreshAppActiveTab();
         finished(portStream, () => {
-          sidePanelIsOpen = false;
+          openSidePanelCount = Math.max(openSidePanelCount - 1, 0);
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_SIDEPANEL);
@@ -1930,7 +1935,7 @@ async function triggerUi() {
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
     !currentlyActiveMetamaskTab &&
-    !sidePanelIsOpen &&
+    openSidePanelCount === 0 &&
     true
   ) {
     uiIsTriggering = true;
