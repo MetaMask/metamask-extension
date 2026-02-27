@@ -122,7 +122,7 @@ describe('useBridging', () => {
     ])(
       'should open %s with the currently selected token: %p',
       async (...args) => {
-        const [expectedUrl, token, location, isSwap, expectedState] = args;
+        const [expectedUrl, token, location, isSwap, expectedState = {}] = args;
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         const { result } = renderUseBridging(
           createBridgeMockStore({
@@ -269,7 +269,8 @@ describe('useBridging', () => {
     ])(
       'should open swap with correct token pair when pathname is %s',
       async (...args) => {
-        const [pathname, expectedUrl, token, location, expectedState] = args;
+        const [pathname, expectedUrl, token, location, expectedState = {}] =
+          args;
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         jest
           .spyOn(bridgeSelectors, 'getLastSelectedChainId')
