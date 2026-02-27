@@ -9,6 +9,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useIsEnforcedSimulationsSupported } from '../../../hooks/transactions/useIsEnforcedSimulationsSupported';
 import { applyTransactionContainersExisting } from '../../../../../store/actions';
 import { useFeeCalculations } from '../../confirm/info/hooks/useFeeCalculations';
+import * as messages from '../../../../../../app/_locales/en/messages.json';
 import { EnforcedSimulationsRow } from './enforced-simulations-row';
 
 jest.mock('../../../hooks/transactions/useIsEnforcedSimulationsSupported');
@@ -46,10 +47,9 @@ function render({
 
   useI18nContextMock.mockReturnValue(((key: string, args?: string[]) => {
     const translations: Record<string, string> = {
-      addedProtectionOptionalBadge: 'OPTIONAL',
-      addedProtectionTitle: 'Added protection',
-      addedProtectionDescription:
-        "You're interacting with an unknown address. This helps prevent malicious transactions.",
+      addedProtectionOptionalBadge: messages.addedProtectionOptionalBadge.message,
+      addedProtectionTitle: messages.addedProtectionTitle.message,
+      addedProtectionDescription: messages.addedProtectionDescription.message,
       addedProtectionFeeDescription: `Add ${args?.[0] ?? ''} in network fees to lock in your expected balance changes.`,
       learnMore: 'Learn more',
     };
@@ -97,17 +97,15 @@ describe('EnforcedSimulationsRow', () => {
     expect(
       getByTestId('enforced-simulations-optional-badge'),
     ).toBeInTheDocument();
-    expect(getByText('OPTIONAL')).toBeInTheDocument();
+    expect(getByText(messages.addedProtectionOptionalBadge.message)).toBeInTheDocument();
   });
 
   it('renders the title and description', () => {
     const { getByText } = render();
 
-    expect(getByText('Added protection')).toBeInTheDocument();
+    expect(getByText(messages.addedProtectionTitle.message)).toBeInTheDocument();
     expect(
-      getByText(
-        "You're interacting with an unknown address. This helps prevent malicious transactions.",
-      ),
+      getByText(messages.addedProtectionDescription.message),
     ).toBeInTheDocument();
   });
 
