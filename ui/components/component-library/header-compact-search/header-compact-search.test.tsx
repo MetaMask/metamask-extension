@@ -113,7 +113,7 @@ describe('HeaderCompactSearch', () => {
 
       expect(
         container.querySelector('header.mm-header-compact-search.custom-class'),
-      ).toBeDefined();
+      ).toBeInTheDocument();
     });
   });
 });

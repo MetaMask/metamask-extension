@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import {
   Box,
   BoxAlignItems,
@@ -42,7 +42,7 @@ export const HeaderCompactSearch: React.FC<HeaderCompactSearchProps> = (
   props,
 ) => {
   const t = useI18nContext();
-  const { variant, className = '', textFieldSearchProps, ...rest } = props;
+  const { variant, className = '', textFieldSearchProps } = props;
   const searchProps = adaptTextFieldSearchProps(textFieldSearchProps);
 
   const searchBox = (
@@ -55,7 +55,7 @@ export const HeaderCompactSearch: React.FC<HeaderCompactSearchProps> = (
   );
 
   const rootClassName = classnames(
-    'mm-header-compact-search w-full flex flex-row items-center gap-2 px-4',
+    'mm-header-compact-search w-full',
     className,
   );
 
