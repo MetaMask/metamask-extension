@@ -280,7 +280,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
   },
 );
 
-export { getMultiChainAssetsControllerAllIgnoredAssets as getAllIgnoredAssets } from '../../shared/modules/selectors/assets-migration';
+export { getMultiChainAssetsControllerAllIgnoredAssets as getAllIgnoredAssets };
 
 /**
  * Gets non-EVM accounts assets rates.
@@ -288,7 +288,7 @@ export { getMultiChainAssetsControllerAllIgnoredAssets as getAllIgnoredAssets } 
  * @param state - Redux state object.
  * @returns An object containing non-EVM assets per accounts.
  */
-export { getMultichainAssetsRatesControllerConversionRates as getAssetsRates } from '../../shared/modules/selectors/assets-migration';
+export { getMultichainAssetsRatesControllerConversionRates as getAssetsRates };
 
 /**
  * Gets DeFi positions
@@ -428,7 +428,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
   getMultichainBalances,
   getMultiChainAssetsControllerAccountsAssets,
   getMultiChainAssetsControllerAssetsMetadata,
-  getAssetsRates,
+  getMultichainAssetsRatesControllerConversionRates,
   getPreferences,
   (
     selectedAccountAddress,
@@ -553,7 +553,7 @@ export const getMultichainAggregatedBalance = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
   getMultichainBalances,
   getMultiChainAssetsControllerAccountsAssets,
-  getAssetsRates,
+  getMultichainAssetsRatesControllerConversionRates,
   (selectedAccountAddress, multichainBalances, accountAssets, assetRates) => {
     const { id } = selectedAccountAddress ?? {};
     const assetIds = id ? accountAssets?.[id] || [] : [];
@@ -607,7 +607,7 @@ export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
   (_state, selectedAccount: { id: string }) => selectedAccount,
   getMultichainBalances,
   getMultiChainAssetsControllerAccountsAssets,
-  getAssetsRates,
+  getMultichainAssetsRatesControllerConversionRates,
   (
     selectedAccountAddress: { id: string },
     multichainBalances: Record<
@@ -615,7 +615,9 @@ export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
       Record<string, { amount: string; unit: string }>
     >,
     accountAssets: Record<string, string[]>,
-    assetRates: ReturnType<typeof getAssetsRates>,
+    assetRates: ReturnType<
+      typeof getMultichainAssetsRatesControllerConversionRates
+    >,
   ) => {
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
     const balances = multichainBalances?.[selectedAccountAddress.id];
@@ -816,7 +818,7 @@ const selectTokenRatesStateForBalances = createSelector(
  * Provides conversion rates and historical prices with stable fallbacks.
  */
 const selectMultichainRatesStateForBalances = createSelector(
-  [getAssetsRates, getHistoricalPrices],
+  [getMultichainAssetsRatesControllerConversionRates, getHistoricalPrices],
   (conversionRates, historicalPrices) => ({
     conversionRates: conversionRates ?? EMPTY_OBJECT,
     historicalPrices: historicalPrices ?? EMPTY_OBJECT,
