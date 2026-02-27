@@ -27,25 +27,37 @@ jest.mock('../../providers/perps/getPerpsController', () => ({
     mockGetPerpsStreamingController(...args),
 }));
 
+const mockSubmitRequestToBackground = jest.fn();
+jest.mock('../../store/background-connection', () => ({
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
+}));
+
 // Mock controller for usePerpsController() - delegates to submitRequestToBackground so test assertions pass
 const mockPerpsController = {
-  placeOrder: jest.fn().mockImplementation((...args: unknown[]) =>
-    mockSubmitRequestToBackground('perpsPlaceOrder', args),
-  ),
-  closePosition: jest.fn().mockImplementation((...args: unknown[]) =>
-    mockSubmitRequestToBackground('perpsClosePosition', args),
-  ),
-  updatePositionTPSL: jest.fn().mockImplementation((...args: unknown[]) =>
-    mockSubmitRequestToBackground('perpsUpdatePositionTPSL', args),
-  ),
+  placeOrder: jest
+    .fn()
+    .mockImplementation((...args: unknown[]) =>
+      mockSubmitRequestToBackground('perpsPlaceOrder', args),
+    ),
+  closePosition: jest
+    .fn()
+    .mockImplementation((...args: unknown[]) =>
+      mockSubmitRequestToBackground('perpsClosePosition', args),
+    ),
+  updatePositionTPSL: jest
+    .fn()
+    .mockImplementation((...args: unknown[]) =>
+      mockSubmitRequestToBackground('perpsUpdatePositionTPSL', args),
+    ),
   subscribeToPrices: jest.fn(() => jest.fn()),
   subscribeToOrderBook: jest.fn(() => jest.fn()),
 };
 
 jest.mock('../../providers/perps', () => {
-  const actual = jest.requireActual<
-    typeof import('../../providers/perps')
-  >('../../providers/perps');
+  const actual = jest.requireActual<typeof import('../../providers/perps')>(
+    '../../providers/perps',
+  );
   return {
     ...actual,
     PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
@@ -53,12 +65,6 @@ jest.mock('../../providers/perps', () => {
     usePerpsController: () => mockPerpsController,
   };
 });
-
-const mockSubmitRequestToBackground = jest.fn();
-jest.mock('../../store/background-connection', () => ({
-  submitRequestToBackground: (...args: unknown[]) =>
-    mockSubmitRequestToBackground(...args),
-}));
 
 jest.mock('../../providers/perps/PerpsStreamManager', () => ({
   getPerpsStreamManager: () => ({
