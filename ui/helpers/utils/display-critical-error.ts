@@ -169,6 +169,10 @@ async function handleRestartAction(
  * because this function is called when the UI initialization has timed out, meaning the
  * PersistenceManager (which powers stateHooks) may not have been initialized yet.
  *
+ * If the database does not exist yet, opening it creates an empty DB and object store
+ * (same schema as IndexedDBStore) so that PersistenceManager can use it when it later
+ * initializes. IndexedDB has no way to probe for existence without opening.
+ *
  * @returns A promise that resolves to true if a vault backup exists, false otherwise.
  */
 async function checkVaultBackupExists(): Promise<boolean> {
