@@ -6,6 +6,12 @@ import {
   GasEstimateTypes,
   NetworkCongestionThresholds,
 } from '../../../shared/constants/gas';
+import {
+  getTokensControllerAllTokens,
+  getCurrencyRateControllerCurrencyRates,
+  getCurrencyRateControllerCurrentCurrency,
+  getTokenBalancesControllerTokenBalances,
+} from '../../../shared/modules/selectors/assets-migration';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
@@ -25,10 +31,6 @@ import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import {
-  getTokensControllerAllTokens,
-  getCurrencyRateControllerCurrencyRates,
-} from '../../../shared/modules/selectors/assets-migration';
 
 const initialState = {
   isInitialized: false,
@@ -431,7 +433,7 @@ export const getGasEstimateTypeByChainId = createSelector(
  * @param {*} state
  * @returns { import('@metamask/assets-controllers').TokenBalancesControllerState['tokenBalances']}
  */
-export { getTokenBalancesControllerTokenBalances as getTokenBalances } from '../../../shared/modules/selectors/assets-migration';
+export { getTokenBalancesControllerTokenBalances as getTokenBalances };
 
 export const getGasFeeEstimatesByChainId = createSelector(
   getGasFeeControllerEstimatesByChainId,
@@ -630,7 +632,7 @@ export function doesUserHaveALedgerAccount(state) {
   });
 }
 
-export { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../shared/modules/selectors/assets-migration';
+export { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency };
 
 /**
  * Returns a boolean indicating whether the user opened the extension with the sidepanel.
