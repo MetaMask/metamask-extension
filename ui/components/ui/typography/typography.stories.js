@@ -18,7 +18,6 @@ import { BannerAlert } from '../../component-library/banner-alert';
 
 import { ValidColors, ValidTags } from './typography';
 
-import README from './README.mdx';
 import Typography from '.';
 
 const sizeKnobOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -26,12 +25,6 @@ const marginSizeKnobOptions = [...sizeKnobOptions, 'auto'];
 
 export default {
   title: 'Components/UI/Typography',
-
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     variant: {
       control: { type: 'select' },

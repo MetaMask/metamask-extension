@@ -18,6 +18,9 @@ package
 .idea
 .sublime-project
 
+# LLMs
+.claude/*.local.*
+
 *.bak
 
 # VIM

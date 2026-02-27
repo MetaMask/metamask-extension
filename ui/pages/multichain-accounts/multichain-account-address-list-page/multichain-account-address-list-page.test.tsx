@@ -2,6 +2,7 @@ import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { AccountGroupId } from '@metamask/account-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { MultichainAccountAddressListPage } from './multichain-account-address-list-page';
@@ -146,7 +147,9 @@ describe('MultichainAccountAddressListPage', () => {
     renderWithProvider(<MultichainAccountAddressListPage />, store);
 
     // Should show "Receiving address" instead of "Account 1 / Addresses"
-    expect(screen.getByText('Receiving address')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.receivingAddress.message),
+    ).toBeInTheDocument();
     expect(
       screen.queryByText(`${MOCK_GROUP_NAME} / Addresses`),
     ).not.toBeInTheDocument();
@@ -216,7 +219,11 @@ describe('MultichainAccountAddressListPage', () => {
     expect(
       screen.getByText(`${MOCK_GROUP_NAME} / Addresses`),
     ).toBeInTheDocument();
-    expect(screen.queryByText('Receiving address')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        messages.destinationAccountPickerSearchPlaceholderToSolana.message,
+      ),
+    ).not.toBeInTheDocument();
   });
 
   it('displays fallback text when account group ID is null', () => {

@@ -41,7 +41,6 @@ export default class ConnectedAccountsList extends PureComponent {
       PropTypes.shape({
         address: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
-        lastActive: PropTypes.number,
       }),
     ).isRequired,
     connectAccount: PropTypes.func.isRequired,
