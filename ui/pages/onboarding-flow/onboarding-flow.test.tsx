@@ -29,6 +29,12 @@ import { mockNetworkState } from '../../../test/stub/networks';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import OnboardingFlow from './onboarding-flow';
 
+// Run these tests as if we were in a Flask build
+jest.mock('../../../../shared/lib/build-types', () => ({
+  ...jest.requireActual('../../../../shared/lib/build-types'),
+  isFlask: jest.fn().mockReturnValue(true),
+}));
+
 const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
