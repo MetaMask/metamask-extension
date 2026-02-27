@@ -5395,7 +5395,7 @@ describe('Hardware Wallet Support for Rewards', () => {
           });
 
           await expect(controller.optIn([MOCK_LEDGER_ACCOUNT])).rejects.toThrow(
-            'Failed to opt in any account from the account group',
+            'Challenge generation failed',
           );
         },
       );
@@ -5419,7 +5419,7 @@ describe('Hardware Wallet Support for Rewards', () => {
           });
 
           await expect(controller.optIn([MOCK_LEDGER_ACCOUNT])).rejects.toThrow(
-            'Failed to opt in any account from the account group',
+            'User rejected the request',
           );
         },
       );
@@ -5446,7 +5446,7 @@ describe('Hardware Wallet Support for Rewards', () => {
           });
 
           await expect(controller.optIn([MOCK_LEDGER_ACCOUNT])).rejects.toThrow(
-            'Failed to opt in any account from the account group',
+            'SIWE login failed',
           );
         },
       );
@@ -5496,6 +5496,39 @@ describe('Hardware Wallet Support for Rewards', () => {
 
           expect(result).toBe(MOCK_SUBSCRIPTION_ID);
           expect(optInCallCount).toBe(1);
+        },
+      );
+    });
+
+    it('should propagate hardware wallet error without trying remaining accounts', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          let mobileOptinCallCount = 0;
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:generateChallenge') {
+              return Promise.reject(new Error('User rejected the request'));
+            }
+            if (actionType === 'RewardsDataService:mobileOptin') {
+              mobileOptinCallCount += 1;
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_LEDGER_ACCOUNT, MOCK_INTERNAL_ACCOUNT];
+            }
+            return undefined;
+          });
+
+          // Hardware account is first; both are EVM so sortAccounts preserves input order
+          await expect(
+            controller.optIn([MOCK_LEDGER_ACCOUNT, MOCK_INTERNAL_ACCOUNT]),
+          ).rejects.toThrow('User rejected the request');
+
+          // The software account's opt-in must never be attempted
+          expect(mobileOptinCallCount).toBe(0);
         },
       );
     });
