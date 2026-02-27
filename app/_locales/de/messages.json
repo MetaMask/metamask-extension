@@ -7351,21 +7351,6 @@
   "simulationErrorMessageV2": {
     "message": "Wir konnten das Gas nicht schätzen. Es könnte einen Fehler im Contract geben und diese Transaktion könnte fehlschlagen."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Slippage-Toleranz"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Legen Sie für Saldoänderungen eine für Sie akzeptable Differenz fest. Bei einer höheren Differenz werden keine Transaktionen ausgeführt."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Saldoänderungen durchsetzen"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Um Ihr Geld zu schützen, wird diese Transaktion nicht ausgeführt, wenn sich der Kontostand ändert oder die Slippage-Toleranz nicht eingehalten wird."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Transaktionseinstellungen"
-  },
   "simulationsSettingDescription": {
     "message": "Schalten Sie diese Funktion ein, um die Saldoänderungen von Transaktionen und Unterschriften abzuschätzen, bevor Sie sie bestätigen. Dies ist keine Garantie für das endgültige Ergebnis. $1"
   },
