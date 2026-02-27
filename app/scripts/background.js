@@ -132,7 +132,7 @@ const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
-/** Set during repairAndReinitialize so we do not simulate state sync hang on the reconnecting UI. */
+/** Persisted to session during repairAndReinitialize; restored from session at start of handleOnConnect so we do not simulate state sync hang on the reconnecting UI. */
 let inTestRestoreFlow = false;
 /** MetaMask UI ports (full page, side panel, etc.) for broadcasting RELOAD_WINDOW on timeout restore. */
 const metamaskUIPorts = new Set();
@@ -141,9 +141,15 @@ const SESSION_KEY_TEST_RESTORE_FLOW_PENDING =
   'METAMASK_TEST_RESTORE_FLOW_PENDING';
 
 /**
- * Save inTestRestoreFlow to session storage so a restarted service worker can restore it
- * (e.g. after RELOAD_WINDOW when testing state sync hang recovery). No-op when not in test.
+ * The functions below are session storage helpers for E2E tests that simulate init/state-sync timeout
+ * and then restore. The flag is persisted across service worker restart (e.g. after RELOAD_WINDOW).
+ *
+ * Why session storage (and not in-memory or local)?
+ * - In-memory would be lost when the MV3 service worker restarts after we send RELOAD_WINDOW to the UI; the new worker would not know we're in the restore flow and might simulate the hang again.
+ * - We use session (not local) so the flag is scoped to the current browser session and does not persist across restarts or leak into the next test run.
  */
+
+/** Writes the restore-flow flag to session storage. No-op when not in test. */
 async function saveTestRestoreFlowToSession() {
   if (!inTest) {
     return;
@@ -157,10 +163,7 @@ async function saveTestRestoreFlowToSession() {
   }
 }
 
-/**
- * Restore inTestRestoreFlow from session storage (e.g. after service worker restarted).
- * Clears the key after reading. No-op when not in test.
- */
+/** Reads the restore-flow flag from session and sets inTestRestoreFlow; clears the key. No-op when not in test. */
 async function restoreTestRestoreFlowFromSession() {
   if (!inTest) {
     return;
