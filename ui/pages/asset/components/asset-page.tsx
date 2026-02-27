@@ -170,15 +170,6 @@ const AssetPage = ({
   const tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
   const tokenHexBalance = assetWithBalance?.rawBalance as string;
 
-  const updatedAsset = {
-    ...asset,
-    balance: {
-      value: hexToDecimal(tokenHexBalance),
-      display: balance,
-      fiat: String(tokenFiatAmount),
-    },
-  };
-
   const shouldShowSpendingCaps = isEvm;
   const portfolioSpendingCapsUrl = useMemo(
     () =>
@@ -206,6 +197,17 @@ const AssetPage = ({
   const tokenChainImage = getImageForChainId(chainId);
 
   const bip44Asset = useSelector((state) => getAsset(state, address, chainId));
+  const rwaData =
+    assetWithBalance?.rwaData ?? bip44Asset?.rwaData ?? asset.rwaData;
+  const updatedAsset = {
+    ...asset,
+    rwaData,
+    balance: {
+      value: hexToDecimal(tokenHexBalance),
+      display: balance,
+      fiat: String(tokenFiatAmount),
+    },
+  };
 
   const tokenWithFiatAmount = {
     address: isEvm ? address : assetId,
@@ -223,6 +225,7 @@ const AssetPage = ({
     secondary: balance ? Number(balance) : 0,
     accountType: bip44Asset?.accountType,
     assetId: bip44Asset?.assetId ?? assetId,
+    rwaData,
   };
   const { safeChains } = useSafeChains();
   const isStockToken = updatedAsset.rwaData?.instrumentType === 'stock';
@@ -318,17 +321,14 @@ const AssetPage = ({
             />
           </Box>
         )}
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          gap={2}
+        <Text
+          variant={TextVariant.headingSm}
           paddingBottom={1}
           paddingTop={1}
           paddingLeft={4}
         >
-          <Text variant={TextVariant.headingSm}>{t('yourBalance')}</Text>
-          {isStockToken && <Tag label={t('tokenStock')} />}
-        </Box>
+          {t('yourBalance')}
+        </Text>
         {[AssetType.token, AssetType.native].includes(type) && (
           <TokenCell
             key={`${symbol}-${address}`}
