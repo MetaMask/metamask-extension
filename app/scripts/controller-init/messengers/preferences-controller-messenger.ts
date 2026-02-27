@@ -31,13 +31,9 @@ export function getPreferencesControllerMessenger(
   messenger.delegate({
     messenger: preferencesControllerMessenger,
     actions: [
-      'AccountsController:setSelectedAccount',
-      'AccountsController:getSelectedAccount',
       'AccountsController:getAccountByAddress',
       'AccountsController:setAccountName',
-      'NetworkController:getState',
     ],
-    events: ['AccountsController:stateChange'],
   });
   return preferencesControllerMessenger;
 }
