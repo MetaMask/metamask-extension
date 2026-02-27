@@ -700,7 +700,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   },
   pendingRedirectRoute: {
     includeInStateLogs: true,
-    persist: true,
+    persist: false,
     includeInDebugSnapshot: true,
     usedInUi: true,
   },

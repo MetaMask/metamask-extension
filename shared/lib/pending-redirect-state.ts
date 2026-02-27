@@ -5,8 +5,7 @@ import { EnvironmentType } from '../constants/app';
  *
  * ## How it works
  *
- * `pendingRedirectRoute` is persisted in {@link AppStateController} (with
- * `persist: true`), so it survives popup closes and extension restarts.
+ * `pendingRedirectRoute` in {@link AppStateController}, survives popup closes, but not extension restarts.
  *
  * ### Flow
  *
@@ -74,7 +73,7 @@ export type PendingRedirectRoute = {
   /** The route path to redirect to (e.g. `'/shield-plan'`). */
   path: string;
   /** Optional query string to append (e.g. `'?source=checkout'`). */
-  search?: string;
+  search?: `?${string}`;
   /**
    * If set, the redirect only fires when the extension is opened in this
    * environment type. If omitted, the redirect fires in any environment.
