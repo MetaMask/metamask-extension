@@ -277,7 +277,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
   },
 );
 
-export { getMultiChainAssetsControllerAllIgnoredAssets as getAllIgnoredAssets } from '../../shared/modules/selectors/assets-migration';
+export { getMultiChainAssetsControllerAllIgnoredAssets as getAllIgnoredAssets };
 
 /**
  * Gets non-EVM accounts assets rates.
