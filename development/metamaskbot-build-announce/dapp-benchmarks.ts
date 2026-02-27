@@ -155,7 +155,7 @@ async function fetchLatestMainBenchmarkData(
   n: number,
 ): Promise<BenchmarkOutput | null> {
   const url =
-    'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/page_load_data.json';
+    'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/page_load_data.json';
   try {
     console.log(`[Dapp Benchmarks] Fetching: ${url}`);
     const response = await fetch(url);

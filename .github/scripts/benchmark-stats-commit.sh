@@ -5,7 +5,7 @@
 # under stats/{branch}/, both keyed by commit hash.
 #
 # Modes (BENCHMARK_DATA_TYPE):
-#   dapp-page-load (default) - appends a single dapp page-load JSON to dapp_page_load_data.json
+#   dapp-page-load (default) - appends a single dapp page-load JSON to page_load_data.json
 #   performance              - aggregates Selenium-based benchmark JSONs (startup, interaction,
 #                              user-journey) into performance_data.json
 #
@@ -41,7 +41,7 @@ assemble_dapp_page_load_data() {
     local benchmark_file="${BENCHMARK_FILE:-../test-artifacts/benchmarks/dapp-page-load-benchmark-results.json}"
 
     jq . "${benchmark_file}" > /dev/null || {
-        echo "Error: Benchmark JSON is invalid: ${benchmark_file}"
+        echo "Error: Benchmark JSON is invalid: ${benchmark_file}" >&2
         exit 1
     }
 
@@ -52,7 +52,7 @@ assemble_performance_data() {
     local results_dir="${BENCHMARK_RESULTS_DIR:-benchmark-results}"
 
     if [[ ! -d "${results_dir}" ]]; then
-        echo "Benchmark results directory not found: ${results_dir}"
+        echo "Benchmark results directory not found: ${results_dir}" >&2
         exit 1
     fi
 
@@ -62,7 +62,7 @@ assemble_performance_data() {
     #
     # User action and performance presets only run on chrome-browserify (the canonical production
     # target) and are stored under their own preset key (e.g. "userActions", "performanceAssets").
-    local PAGE_LOAD_PRESETS=("standardHome" "powerUserHome")
+    local PAGE_LOAD_PRESETS=("startupStandardHome" "startupPowerUserHome")
 
     local presets_json="{}"
     local page_load_json="{}"
@@ -74,7 +74,7 @@ assemble_performance_data() {
         fi
 
         if ! jq . "${file}" > /dev/null 2>&1; then
-            echo "Warning: Skipping invalid JSON file: ${file}"
+            echo "Warning: Skipping invalid JSON file: ${file}" >&2
             continue
         fi
 
@@ -102,7 +102,7 @@ assemble_performance_data() {
             preset_data=$(jq --arg key "${preset_name}" \
                 'if (keys | length) == 1 and has($key) then .[$key] else . end' "${file}")
             page_load_key="${browser}-${build_type}-${preset_name}"
-            echo "  Adding page load preset '${page_load_key}'"
+            echo "  Adding page load preset '${page_load_key}'" >&2
             page_load_json=$(echo "${page_load_json}" | jq \
                 --arg key "${page_load_key}" \
                 --argjson data "${preset_data}" \
@@ -112,13 +112,13 @@ assemble_performance_data() {
             # that is what the PR comment displays.
             local preset_data
             preset_data=$(jq . "${file}")
-            echo "  Adding preset '${preset_name}' (chrome-browserify)"
+            echo "  Adding preset '${preset_name}' (chrome-browserify)" >&2
             presets_json=$(echo "${presets_json}" | jq \
                 --arg key "${preset_name}" \
                 --argjson data "${preset_data}" \
                 '. + {($key): $data}')
         else
-            echo "  Skipping ${browser}-${build_type}-${preset_name} (non-page-load, non-canonical)"
+            echo "  Skipping ${browser}-${build_type}-${preset_name} (non-page-load, non-canonical)" >&2
             continue
         fi
 
@@ -126,7 +126,7 @@ assemble_performance_data() {
     done
 
     if [[ ${file_count} -eq 0 ]]; then
-        echo "No benchmark files found in ${results_dir}, skipping."
+        echo "No benchmark files found in ${results_dir}, skipping." >&2
         exit 0
     fi
 
@@ -135,7 +135,7 @@ assemble_performance_data() {
         presets_json=$(echo "${presets_json}" | jq --argjson pl "${page_load_json}" '. + {"pageLoad": $pl}')
     fi
 
-    echo "Collected ${file_count} preset(s)"
+    echo "Collected ${file_count} preset(s)" >&2
 
     jq -n \
         --argjson timestamp "$(date +%s000)" \
@@ -146,7 +146,7 @@ assemble_performance_data() {
 # Resolve stats file and assemble data
 case "${DATA_TYPE}" in
     dapp-page-load)
-        STATS_FILE="stats/${SAFE_BRANCH}/dapp_page_load_data.json"
+        STATS_FILE="stats/${SAFE_BRANCH}/page_load_data.json"
         COMMIT_MESSAGE="Adding dapp page-load benchmark data for ${RAW_BRANCH} at commit: ${HEAD_COMMIT_HASH}"
         echo "Mode: dapp-page-load (branch: ${RAW_BRANCH})"
         # Assemble after cloning since the benchmark file path is relative
