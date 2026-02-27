@@ -11,7 +11,7 @@ import { MetaMaskReduxDispatch } from '../../store/store';
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const callBridgeStatusControllerMethod = <T extends unknown[]>(
-  bridgeAction: 'submitTx',
+  bridgeAction: 'submitTx' | 'submitIntent',
   args?: T,
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -46,6 +46,27 @@ export const submitBridgeTx = async (
           RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
         ]
       >('submitTx', [accountAddress, quote, isStxSupportedInClient, context]),
+    );
+  };
+};
+
+/**
+ * Submit an intent quote using the bridge status controller
+ *
+ * @param params
+ * @returns
+ */
+export const submitBridgeIntent = async (params: {
+  quoteResponse: QuoteResponse & QuoteMetadata;
+  accountAddress: string;
+  location?: string;
+  abTests?: Record<string, string>;
+}) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    return await dispatch(
+      callBridgeStatusControllerMethod<[typeof params]>('submitIntent', [
+        params,
+      ]),
     );
   };
 };
