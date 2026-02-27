@@ -795,6 +795,10 @@ export default class MetamaskController extends EventEmitter {
     // This captures the version and date when MetaMask was first installed.
     this.appMetadataController.maybeRecordFirstTimeInfo(version);
 
+    this.gatorPermissionsController.initialize().catch((_error) => {
+      // no need to do anything, sync will retry, either next time the controller is initialized, or the next time the user visits permissions page.
+    });
+
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
     this.blockTracker =
