@@ -58,15 +58,12 @@ import {
   DISPLAY_GENERAL_STARTUP_ERROR,
   RELOAD_WINDOW,
 } from '../../shared/constants/start-up-errors';
-import { METHOD_REPAIR_DATABASE_TIMEOUT } from '../../shared/constants/state-corruption';
+import {
+  CriticalErrorType,
+  METHOD_REPAIR_DATABASE_TIMEOUT,
+} from '../../shared/constants/state-corruption';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
-import { normalizeCriticalErrorType } from './lib/state-corruption/critical-error-params';
-import {
-  getTestValueFromSession,
-  saveTestValueToSession,
-  SESSION_KEY_TEST_RESTORE_FLOW_PENDING,
-} from './lib/state-corruption/critical-error-test-session';
 import {
   CorruptionHandler,
   hasVault,
@@ -135,10 +132,53 @@ const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
-/** Set when getTestValueFromSession returns truthy for the restore-flow key (E2E restore flow after RELOAD_WINDOW). */
+/** Set during repairAndReinitialize so we do not simulate state sync hang on the reconnecting UI. */
 let inTestRestoreFlow = false;
 /** MetaMask UI ports (full page, side panel, etc.) for broadcasting RELOAD_WINDOW on timeout restore. */
 const metamaskUIPorts = new Set();
+/** Session storage key to persist inTestRestoreFlow across service worker restart (e.g. after RELOAD_WINDOW). */
+const SESSION_KEY_TEST_RESTORE_FLOW_PENDING =
+  'METAMASK_TEST_RESTORE_FLOW_PENDING';
+
+/**
+ * Save inTestRestoreFlow to session storage so a restarted service worker can restore it
+ * (e.g. after RELOAD_WINDOW when testing state sync hang recovery). No-op when not in test.
+ */
+async function saveTestRestoreFlowToSession() {
+  if (!inTest) {
+    return;
+  }
+  try {
+    await browser.storage.session.set({
+      [SESSION_KEY_TEST_RESTORE_FLOW_PENDING]: true,
+    });
+  } catch (_) {
+    // Session storage may be unavailable.
+  }
+}
+
+/**
+ * Restore inTestRestoreFlow from session storage (e.g. after service worker restarted).
+ * Clears the key after reading. No-op when not in test.
+ */
+async function restoreTestRestoreFlowFromSession() {
+  if (!inTest) {
+    return;
+  }
+  try {
+    const session = await browser.storage.session.get(
+      SESSION_KEY_TEST_RESTORE_FLOW_PENDING,
+    );
+    if (session[SESSION_KEY_TEST_RESTORE_FLOW_PENDING]) {
+      inTestRestoreFlow = true;
+      await browser.storage.session.remove(
+        SESSION_KEY_TEST_RESTORE_FLOW_PENDING,
+      );
+    }
+  } catch (_) {
+    // Session storage may be unavailable.
+  }
+}
 
 const useFixtureStore =
   inTest && getManifestFlags().testing?.forceExtensionStore !== true;
@@ -288,11 +328,7 @@ async function repairAndReinitialize(backup) {
   setGlobalInitializers();
 
   if (inTest && hasVault(backup)) {
-    await saveTestValueToSession(
-      inTest,
-      SESSION_KEY_TEST_RESTORE_FLOW_PENDING,
-      true, // inTestRestoreFlow
-    );
+    await saveTestRestoreFlowToSession();
   }
   if (hasVault(backup)) {
     await initBackground(backup);
@@ -596,12 +632,7 @@ const corruptionHandler = new CorruptionHandler();
  */
 const handleOnConnect = async (port) => {
   if (inTest) {
-    inTestRestoreFlow = Boolean(
-      await getTestValueFromSession(
-        inTest,
-        SESSION_KEY_TEST_RESTORE_FLOW_PENDING,
-      ),
-    );
+    await restoreTestRestoreFlowFromSession();
     const simulatedDelay =
       getManifestFlags().testing?.simulateDelayedBackgroundResponse;
     if (simulatedDelay === true) {
@@ -644,9 +675,11 @@ const handleOnConnect = async (port) => {
       port.onMessage.removeListener(repairListener);
 
       const params = message?.data?.params ?? {};
-      const criticalErrorType = normalizeCriticalErrorType(
+      const criticalErrorType = Object.values(CriticalErrorType).includes(
         params.criticalErrorType,
-      );
+      )
+        ? params.criticalErrorType
+        : CriticalErrorType.Other;
 
       try {
         const backup = (await persistenceManager.getBackup()) ?? null;
@@ -675,9 +708,11 @@ const handleOnConnect = async (port) => {
     }
     const params = message?.data?.params ?? {};
     const canTriggerRestore = Boolean(params.canTriggerRestore);
-    const criticalErrorType = normalizeCriticalErrorType(
+    const criticalErrorType = Object.values(CriticalErrorType).includes(
       params.criticalErrorType,
-    );
+    )
+      ? params.criticalErrorType
+      : CriticalErrorType.Other;
     const backup =
       (await persistenceManager.getBackup().catch(() => null)) ?? null;
     trackCriticalErrorEvent(
