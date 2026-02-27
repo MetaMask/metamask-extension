@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Chưa có gì để xem. Hãy hoán đổi token đầu tiên của bạn ngay hôm nay."
   },
-  "activityLog": {
-    "message": "Nhật ký hoạt động"
-  },
   "add": {
     "message": "Thêm"
   },
@@ -7677,9 +7674,6 @@
   "speedUpTooltipText": {
     "message": "Phí gas mới"
   },
-  "speedUpTransaction": {
-    "message": "Tăng tốc giao dịch này"
-  },
   "spendLimitInsufficient": {
     "message": "Hạn mức chi tiêu không đủ"
   },
@@ -8530,18 +8524,6 @@
   "transaction": {
     "message": "giao dịch"
   },
-  "transactionCancelAttempted": {
-    "message": "Đã cố gắng hủy giao dịch với mức phí gas ước tính $1 lúc $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Đã hủy thành công giao dịch lúc $2"
-  },
-  "transactionConfirmed": {
-    "message": "Đã xác nhận giao dịch lúc $2."
-  },
-  "transactionCreated": {
-    "message": "Đã tạo giao dịch với giá trị $1 lúc $2."
-  },
   "transactionDataFunction": {
     "message": "Chức năng"
   },
@@ -8551,17 +8533,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Số lượng + phí"
   },
-  "transactionDropped": {
-    "message": "Đã ngừng giao dịch lúc $2."
-  },
   "transactionError": {
     "message": "Lỗi giao dịch. Đã xảy ra ngoại lệ trong mã hợp đồng."
   },
   "transactionErrorNoContract": {
     "message": "Đang cố gắng gọi một hàm trên địa chỉ không có hợp đồng."
-  },
-  "transactionErrored": {
-    "message": "Giao dịch đã gặp lỗi."
   },
   "transactionFee": {
     "message": "Phí giao dịch"
@@ -8597,24 +8573,15 @@
   "transactionIncludesTypes": {
     "message": "Giao dịch này bao gồm: $1."
   },
-  "transactionResubmitted": {
-    "message": "Đã gửi lại giao dịch với mức phí gas ước tính tăng lên $1 lúc $2"
-  },
   "transactionSettings": {
     "message": "Cài đặt giao dịch"
   },
   "transactionShield": {
     "message": "Lá chắn Giao dịch"
   },
-  "transactionSubmitted": {
-    "message": "Đã gửi giao dịch với mức phí gas ước tính $1 lúc $2."
-  },
   "transactionTotalGasFee": {
     "message": "Tổng phí gas",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Đã cập nhật giao dịch lúc $2."
   },
   "transactions": {
     "message": "Giao dịch"
