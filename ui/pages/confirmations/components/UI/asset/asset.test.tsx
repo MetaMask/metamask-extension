@@ -6,6 +6,7 @@ import createMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
 import { AssetStandard } from '../../../types/send';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { Asset } from './asset';
 
 const mockTokenAsset = {
@@ -101,7 +102,9 @@ describe('TokenAsset', () => {
     );
 
     expect(getByTestId('token-asset-undefined-TEST')).toBeInTheDocument();
-    expect(queryByRole('img', { name: 'Ethereum' })).not.toBeInTheDocument();
+    expect(
+      queryByRole('img', { name: messages.networkNameEthereum.message }),
+    ).not.toBeInTheDocument();
   });
 });
 
@@ -171,7 +174,9 @@ describe('NFTAsset', () => {
     );
 
     expect(getByTestId('nft-asset')).toBeInTheDocument();
-    expect(queryByRole('img', { name: 'Ethereum' })).not.toBeInTheDocument();
+    expect(
+      queryByRole('img', { name: messages.networkNameEthereum.message }),
+    ).not.toBeInTheDocument();
   });
 
   it('uses collection imageUrl when asset image is not provided', () => {

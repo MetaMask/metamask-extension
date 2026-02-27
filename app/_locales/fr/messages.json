@@ -5242,9 +5242,6 @@
   "perpsAddToFavorites": {
     "message": "Ajouter aux favoris"
   },
-  "perpsAsk": {
-    "message": "Cours vendeur"
-  },
   "perpsAutoClose": {
     "message": "Fermeture automatique"
   },
@@ -5255,14 +5252,8 @@
   "perpsAvailableBalance": {
     "message": "Solde disponible"
   },
-  "perpsBid": {
-    "message": "Cours acheteur"
-  },
   "perpsCancelAllOrders": {
     "message": "Tout annuler"
-  },
-  "perpsClose": {
-    "message": "Fermer"
   },
   "perpsCloseAll": {
     "message": "Tout fermer"
@@ -5380,9 +5371,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Prix de liquidation"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Prix de liquidation estimé"
   },
   "perpsLong": {
     "message": "Acheter"
@@ -6223,12 +6211,6 @@
   },
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Réessayer"
-  },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Les comptes de portefeuille matériel ne sont pas encore autorisés à recevoir des récompenses. Veuillez passer à un autre compte pour continuer."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Compte non pris en charge"
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Réessayer"
@@ -7366,21 +7348,6 @@
   "simulationErrorMessageV2": {
     "message": "Nous n’avons pas pu estimer le prix de carburant. Par conséquent, il se peut qu’il y ait une erreur dans le contrat et que cette transaction échoue."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Tolérance au slippage"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Fixez la différence qui vous convient pour les changements de solde. Les transactions ne seront pas effectuées si la différence est supérieure."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Appliquer les modifications de solde"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Pour protéger vos fonds, cette transaction ne sera pas effectuée si le solde change ou si la tolérance au slippage n’est pas respectée."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Paramètres de la transaction"
-  },
   "simulationsSettingDescription": {
     "message": "Activez cette option pour estimer les changements de solde des transactions et des signatures avant de les confirmer. Ces estimations sont fournies à titre indicatif et n’engagent en rien les parties à la transaction. $1"
   },
@@ -7511,12 +7478,6 @@
   },
   "snapAccountRemovedDescription": {
     "message": "Ce compte ne pourra plus être utilisé dans MetaMask."
-  },
-  "snapAccounts": {
-    "message": "Snaps de compte"
-  },
-  "snapAccountsDescription": {
-    "message": "Comptes contrôlés par des Snaps tiers."
   },
   "snapConnectTo": {
     "message": "Connectez-vous à $1",

@@ -5242,9 +5242,6 @@
   "perpsAddToFavorites": {
     "message": "Idagdag sa mga paborito"
   },
-  "perpsAsk": {
-    "message": "Ask"
-  },
   "perpsAutoClose": {
     "message": "Awtomatikong nagsasara"
   },
@@ -5255,14 +5252,8 @@
   "perpsAvailableBalance": {
     "message": "Available na balanse"
   },
-  "perpsBid": {
-    "message": "Bid"
-  },
   "perpsCancelAllOrders": {
     "message": "Kanselahin lahat"
-  },
-  "perpsClose": {
-    "message": "Isara"
   },
   "perpsCloseAll": {
     "message": "Isara lahat"
@@ -5380,9 +5371,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Tinatayang Liquidation Price"
   },
   "perpsLong": {
     "message": "Long"
@@ -6226,12 +6214,6 @@
   },
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Subukang muli"
-  },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Ang mga account na hardware wallet ay hindi pa kwalipikadong tumanggap ng mga reward. Lumipat sa ibang account upang magpatuloy."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Hindi sinusuportahan ang account"
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Subukang muli"
@@ -7369,21 +7351,6 @@
   "simulationErrorMessageV2": {
     "message": "Hindi namin nagawang tantyahin ang gas. Maaaring may error sa kontrata at maaaring mabigo ang transaksyong ito."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Slippage tolerance"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Itakda ang diperensya na komportable ka para sa mga pagbabago ng balanse. Hindi magpapatuloy ang mga transaksyon kapag mas mataas ang diperensya."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Ipatupad ang mga pagbabago sa balanse"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Para mapanatiling ligtas ang iyong pera, hindi magpapatuloy ang transaksyong ito kapag nagbago ang balanse o hindi natugunan ang slippage tolerance."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Mga setting ng transaksyon"
-  },
   "simulationsSettingDescription": {
     "message": "I-on ito para tantyahin ang mga pagbabago sa balanse ng mga transaksyon at mga pirma bago mo kumpirmahin ang mga ito. Hindi nito ginagarantiyahan ang panghuling resulta ng mga ito. $1"
   },
@@ -7514,12 +7481,6 @@
   },
   "snapAccountRemovedDescription": {
     "message": "Ang account na ito ay hindi na magiging available para gamitin sa MetaMask."
-  },
-  "snapAccounts": {
-    "message": "Mga Account Snap"
-  },
-  "snapAccountsDescription": {
-    "message": "Mga account na kontrol lang ng mga third-party na Snap."
   },
   "snapConnectTo": {
     "message": "Kumonekta sa $1",

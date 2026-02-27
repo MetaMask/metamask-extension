@@ -20,12 +20,10 @@ import {
   SOLANA_WALLET_NAME,
   SOLANA_WALLET_SNAP_ID,
 } from '../../../shared/lib/accounts/solana-wallet-snap';
-///: BEGIN:ONLY_INCLUDE_IF(tron)
 import {
   TRON_WALLET_NAME,
   TRON_WALLET_SNAP_ID,
 } from '../../../shared/lib/accounts/tron-wallet-snap';
-///: END:ONLY_INCLUDE_IF
 import {
   createSnapAccount,
   getNextAvailableAccountName,
@@ -35,9 +33,7 @@ import {
 export enum WalletClientType {
   Bitcoin = 'bitcoin-wallet-snap',
   Solana = 'solana-wallet-snap',
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   Tron = 'tron-wallet-snap',
-  ///: END:ONLY_INCLUDE_IF
 }
 
 export const EVM_WALLET_TYPE = 'evm' as const;
@@ -52,12 +48,10 @@ const WALLET_SNAP_MAP: Record<WalletClientType, { id: SnapId; name: string }> =
       id: SOLANA_WALLET_SNAP_ID,
       name: SOLANA_WALLET_NAME,
     },
-    ///: BEGIN:ONLY_INCLUDE_IF(tron)
     [WalletClientType.Tron]: {
       id: TRON_WALLET_SNAP_ID,
       name: TRON_WALLET_NAME,
     },
-    ///: END:ONLY_INCLUDE_IF
   };
 
 export class MultichainWalletSnapSender implements Sender {

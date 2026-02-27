@@ -1,31 +1,34 @@
 import { strict as assert } from 'assert';
-import {
-  SOLANA_DEVNET_URL,
-  withSolanaAccountSnap,
-} from '../../tests/solana/common-solana';
+import { SOLANA_DEVNET_URL } from '../../tests/solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { WINDOW_TITLES } from '../../constants';
-import { regularDelayMs } from '../../helpers';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { regularDelayMs, withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { addAccount } from '../../page-objects/flows/add-account.flow';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import {
   account1Short,
   account2Short,
   connectSolanaTestDapp,
-  DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
   switchToAccount,
 } from './testHelpers';
 
 describe('Solana Wallet Standard - e2e tests', function () {
   describe('Solana Wallet Standard - Connect & disconnect', function () {
     it('Should connect and check there is existing Solana accounts in the wallet', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
-          numberOfAccounts: 0,
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -41,13 +44,16 @@ describe('Solana Wallet Standard - e2e tests', function () {
     });
 
     it('Should connect when there is an existing Solana account in the wallet', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
-          numberOfAccounts: 1,
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -65,12 +71,16 @@ describe('Solana Wallet Standard - e2e tests', function () {
     // TODO: Need to check and update the test.
     // eslint-disable-next-line mocha/no-skipped-tests
     it.skip('Should be able to cancel connection and connect again', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -113,12 +123,16 @@ describe('Solana Wallet Standard - e2e tests', function () {
     // TODO: Need to check and update the test.
     // eslint-disable-next-line mocha/no-skipped-tests
     it.skip('Should not create session when Solana permissions are deselected', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -166,12 +180,16 @@ describe('Solana Wallet Standard - e2e tests', function () {
     // TODO: Need to check and update the test.
     // eslint-disable-next-line mocha/no-skipped-tests
     it.skip('Should disconnect', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -194,13 +212,18 @@ describe('Solana Wallet Standard - e2e tests', function () {
     // TODO: Need to check and update the test.
     // eslint-disable-next-line mocha/no-skipped-tests
     it.skip('Switching between 2 accounts should reflect in the dapp', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
-          numberOfAccounts: 2,
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
+          await addAccount({ driver, switchToAccount: 'Account 1' });
+
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -231,13 +254,18 @@ describe('Solana Wallet Standard - e2e tests', function () {
     // TODO: Need to check and update the test.
     // eslint-disable-next-line mocha/no-skipped-tests
     it.skip('Switching between them should NOT reflect in the dapp', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
-          numberOfAccounts: 2, // we create 1 more account
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
+          await addAccount({ driver, switchToAccount: 'Account 1' });
+
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -275,12 +303,16 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
   describe('Page refresh', function () {
     it('Should not disconnect the dapp', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -302,13 +334,18 @@ describe('Solana Wallet Standard - e2e tests', function () {
     // 2. the method assertConnected is buggy, it checks connect status, then it uses status as account address to assert, which is very buggy and messy, so it could not do the correct assertions, need re-implement
     // eslint-disable-next-line mocha/no-skipped-tests
     it.skip('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
-          numberOfAccounts: 2,
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
+          await addAccount({ driver, switchToAccount: 'Account 1' });
+
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -330,12 +367,16 @@ describe('Solana Wallet Standard - e2e tests', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   describe.skip('Given I have connected to Mainnet and Devnet', function () {
     it('Should use the Mainnet scope by default', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();

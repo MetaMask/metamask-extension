@@ -5242,9 +5242,6 @@
   "perpsAddToFavorites": {
     "message": "添加到收藏夹"
   },
-  "perpsAsk": {
-    "message": "卖出价"
-  },
   "perpsAutoClose": {
     "message": "自动平仓"
   },
@@ -5255,14 +5252,8 @@
   "perpsAvailableBalance": {
     "message": "可用余额"
   },
-  "perpsBid": {
-    "message": "买入价"
-  },
   "perpsCancelAllOrders": {
     "message": "全部取消"
-  },
-  "perpsClose": {
-    "message": "关闭"
   },
   "perpsCloseAll": {
     "message": "全部平仓"
@@ -5380,9 +5371,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "清算价格"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "预估清算价格"
   },
   "perpsLong": {
     "message": "做多"
@@ -6220,12 +6208,6 @@
   },
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "重试"
-  },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "硬件钱包账户暂不符合奖励领取资格。请切换至其他账户继续操作。"
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "账户不受支持"
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "重试"
@@ -7363,21 +7345,6 @@
   "simulationErrorMessageV2": {
     "message": "我们无法估算燃料。合约中可能存在错误，这笔交易可能会失败。"
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "滑点容差"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "设置一个您能接受的余额变化差额。若差额超过该值，交易将无法完成。"
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "强制执行余额变动"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "为保障您的资金安全，若发生余额变动或未能满足滑点容差范围，这笔交易将无法完成。"
-  },
-  "simulationSettingsModalTitle": {
-    "message": "交易设置"
-  },
   "simulationsSettingDescription": {
     "message": "开启此选项，以便在确认交易和签名之前预估交易余额的变化。这并不能保证交易的最终结果。$1"
   },
@@ -7508,12 +7475,6 @@
   },
   "snapAccountRemovedDescription": {
     "message": "此账户将在 MetaMask 中不再可用。"
-  },
-  "snapAccounts": {
-    "message": "账户Snap"
-  },
-  "snapAccountsDescription": {
-    "message": "由第三方 Snap 控制的账户。"
   },
   "snapConnectTo": {
     "message": "连接到 $1",
