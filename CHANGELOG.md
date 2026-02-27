@@ -9,21 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.21.0]
 
-### Uncategorized
-
-- Bump assets controller to v2.1.0 (#40439)
-- Null (#40246)
-- Update NFT transaction labels (#40350)
-- Small styling tweaks to default address feature (#40393)
-- Updated Experimental Settings styles and Snaps settings content (#40369)
-- Map staking transaction icon (#40339)
-- Remove fil locale (#40333)
-- Null (#40189)
-- Bump @metamask/core-backend and set up ApiPlatformClient (#40262)
-- chore: update delete button from red to white (#40261)
-
 ### Added
 
+- Bump assets controller to v2.1.0 (#40439)
+- Bump @metamask/core-backend and set up ApiPlatformClient (#40262)
 - Sets Infura RPC for HyperEVM with Quicknode failover (#39635)
 - Implement safe state management for notification hooks (#40401)
 - `@metamask/seedless-onboarding-controller` upgrade to v8.1 (#40425)
@@ -38,6 +27,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adds Chiliz chain logo for network and token (#40144)
 - Added the ability to view and claim mUSD Merkl conversion bonuses from the token list and asset details page (behind (#39901)
   feature flag)
+
+### Changed
+
+- Update NFT transaction labels (#40350)
+- Small styling tweaks to default address feature (#40393)
+- Updated Experimental Settings styles and Snaps settings content (#40369)
+- Map staking transaction icon (#40339)
+- Remove fil locale (#40333)
+- chore: update delete button from red to white (#40261)
 
 ### Fixed
 
