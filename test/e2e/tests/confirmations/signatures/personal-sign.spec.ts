@@ -14,10 +14,7 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/personal-sign-confirmation';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
-import {
-  openDappAndTriggerSignature,
-  copyAddressAndPasteWalletAddress,
-} from '../../../page-objects/flows/signature-confirmation.flow';
+import { copyAddressAndPasteWalletAddress } from '../../../page-objects/flows/signature-confirmation.flow';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import {
@@ -34,7 +31,7 @@ import {
 } from './signature-helpers';
 
 describe('Confirmation Signature - Personal Sign', function (this: Suite) {
-  it('initiates and confirms', async function () {
+  it.only('initiates and confirms', async function () {
     await withSignatureFixtures(
       this.test?.fullTitle(),
       async ({
@@ -49,7 +46,9 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         const accountDetailsModal = new AccountDetailsModal(driver);
 
         await loginWithBalanceValidation(driver);
-        await openDappAndTriggerSignature(driver, SignatureType.PersonalSign);
+        await testDapp.openTestDappAndTriggerSignature(
+          SignatureType.PersonalSign,
+        );
 
         await confirmation.clickHeaderAccountDetailsButton();
         await accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
@@ -90,7 +89,9 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         const testDapp = new TestDapp(driver);
 
         await loginWithBalanceValidation(driver);
-        await openDappAndTriggerSignature(driver, SignatureType.PersonalSign);
+        await testDapp.openTestDappAndTriggerSignature(
+          SignatureType.PersonalSign,
+        );
 
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 

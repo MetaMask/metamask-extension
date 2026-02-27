@@ -15,7 +15,6 @@ import TestDapp from '../../../page-objects/pages/test-dapp';
 import TestDappIndividualRequest from '../../../page-objects/pages/test-dapp-individual-request';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
-import { openDappAndTriggerSignature } from '../../../page-objects/flows/signature-confirmation.flow';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
@@ -88,10 +87,10 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
         const publicAddress = addresses?.[0] as string;
         const confirmation = new Confirmation(driver);
         const accountDetailsModal = new AccountDetailsModal(driver);
+        const testDapp = new TestDapp(driver);
 
         await loginWithBalanceValidation(driver);
-        await openDappAndTriggerSignature(
-          driver,
+        await testDapp.openTestDappAndTriggerSignature(
           SignatureType.SignTypedDataV4,
         );
 
@@ -136,8 +135,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
         const testDapp = new TestDapp(driver);
 
         await loginWithBalanceValidation(driver);
-        await openDappAndTriggerSignature(
-          driver,
+        await testDapp.openTestDappAndTriggerSignature(
           SignatureType.SignTypedDataV4,
         );
 

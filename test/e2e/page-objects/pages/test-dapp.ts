@@ -1109,6 +1109,18 @@ class TestDapp {
   }
 
   /**
+   * Opens test dapp, triggers a signature by type, and switches to confirmation dialog.
+   *
+   * @param type - The signature type (SignatureType enum).
+   */
+  async openTestDappAndTriggerSignature(type: SignatureType): Promise<void> {
+    await this.openTestDappPage({ url: DAPP_URL });
+    await this.checkPageIsLoaded();
+    await this.triggerSignature(type);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  }
+
+  /**
    * Triggers the given signature type on the test dapp.
    *
    * @param type - The signature type (SignatureType enum).

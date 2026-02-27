@@ -16,7 +16,6 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
 import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
-import { openDappAndTriggerSignature } from '../../../page-objects/flows/signature-confirmation.flow';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
@@ -39,9 +38,10 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         const publicAddress = addresses?.[0] as string;
         const confirmation = new Confirmation(driver);
         const accountDetailsModal = new AccountDetailsModal(driver);
+        const testDapp = new TestDapp(driver);
 
         await loginWithBalanceValidation(driver);
-        await openDappAndTriggerSignature(driver, SignatureType.Permit);
+        await testDapp.openTestDappAndTriggerSignature(SignatureType.Permit);
 
         await confirmation.clickHeaderAccountDetailsButton();
         await accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
@@ -116,8 +116,9 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
     await withSignatureFixtures(
       this.test?.fullTitle(),
       async ({ driver }: TestSuiteArguments) => {
+        const testDapp = new TestDapp(driver);
         await loginWithBalanceValidation(driver);
-        await openDappAndTriggerSignature(driver, SignatureType.Permit);
+        await testDapp.openTestDappAndTriggerSignature(SignatureType.Permit);
 
         const simulationSection = driver.findElement({
           text: 'Estimated changes',

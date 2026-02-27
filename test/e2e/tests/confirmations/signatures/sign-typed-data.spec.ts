@@ -13,7 +13,6 @@ import TestDapp from '../../../page-objects/pages/test-dapp';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import { openDappAndTriggerSignature } from '../../../page-objects/flows/signature-confirmation.flow';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
@@ -36,9 +35,12 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         const publicAddress = addresses?.[0] as string;
         const confirmation = new Confirmation(driver);
         const accountDetailsModal = new AccountDetailsModal(driver);
+        const testDapp = new TestDapp(driver);
 
         await loginWithBalanceValidation(driver);
-        await openDappAndTriggerSignature(driver, SignatureType.SignTypedData);
+        await testDapp.openTestDappAndTriggerSignature(
+          SignatureType.SignTypedData,
+        );
 
         await confirmation.clickHeaderAccountDetailsButton();
         await accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
@@ -79,7 +81,9 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         const testDapp = new TestDapp(driver);
 
         await loginWithBalanceValidation(driver);
-        await openDappAndTriggerSignature(driver, SignatureType.SignTypedData);
+        await testDapp.openTestDappAndTriggerSignature(
+          SignatureType.SignTypedData,
+        );
 
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 

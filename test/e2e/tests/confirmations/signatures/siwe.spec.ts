@@ -14,7 +14,6 @@ import Confirmation from '../../../page-objects/pages/confirmations/confirmation
 import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import { openDappAndTriggerSignature } from '../../../page-objects/flows/signature-confirmation.flow';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -41,7 +40,7 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
         const accountDetailsModal = new AccountDetailsModal(driver);
 
         await loginWithBalanceValidation(driver);
-        await openDappAndTriggerSignature(driver, SignatureType.SIWE);
+        await testDapp.openTestDappAndTriggerSignature(SignatureType.SIWE);
 
         await confirmation.clickHeaderAccountDetailsButton();
         await accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
@@ -85,7 +84,7 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
         const testDapp = new TestDapp(driver);
 
         await loginWithBalanceValidation(driver);
-        await openDappAndTriggerSignature(driver, SignatureType.SIWE);
+        await testDapp.openTestDappAndTriggerSignature(SignatureType.SIWE);
 
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
