@@ -16,7 +16,11 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { getSnapName } from '../../../../shared/lib/accounts/snaps';
-import { showAccountCreationDialog, snapKeyringBuilder } from './snap-keyring';
+import {
+  showAccountCreationDialog,
+  snapKeyringBuilder,
+  SnapKeyringImpl,
+} from './snap-keyring';
 import {
   SnapKeyringBuilderAllowActions,
   SnapKeyringBuilderMessenger,
@@ -82,8 +86,7 @@ jest.mock('../../../../shared/lib/accounts/snaps', () => ({
 }));
 
 /**
- * Default account tree state where the given account ID is in a snap wallet.
- * Used so removeAccount triggers the confirmation flow in tests.
+ * Account tree state where the given account ID is in a snap wallet.
  *
  * @param accountId - The account ID to add to the snap wallet.
  */
@@ -113,14 +116,73 @@ function createAccountTreeStateWithSnapWallet(accountId: string) {
   };
 }
 
+/**
+ * Account tree state where the given account ID is in a keyring wallet (not snap).
+ *
+ * @param accountId - The account ID to add to the keyring wallet.
+ */
+function createAccountTreeStateWithKeyringWallet(accountId: string) {
+  return {
+    accountTree: {
+      wallets: {
+        [`${AccountWalletType.Keyring}:ledger`]: {
+          type: AccountWalletType.Keyring,
+          id: `${AccountWalletType.Keyring}:ledger`,
+          status: 'active',
+          groups: {
+            [`${AccountWalletType.Keyring}:ledger:group`]: {
+              id: `${AccountWalletType.Keyring}:ledger:group`,
+              accounts: [accountId],
+              metadata: {},
+            },
+          },
+          metadata: { keyring: { type: 'Ledger Hardware' } },
+        },
+      },
+      selectedAccountGroup: '',
+    },
+    isAccountTreeSyncingInProgress: false,
+    hasAccountTreeSyncingSyncedAtLeastOnce: true,
+    accountGroupsMetadata: {},
+    accountWalletsMetadata: {},
+  };
+}
+
+/**
+ * Account tree state with no wallets (account not in any wallet).
+ */
+function createEmptyAccountTreeState() {
+  return {
+    accountTree: {
+      wallets: {},
+      selectedAccountGroup: '',
+    },
+    isAccountTreeSyncingInProgress: false,
+    hasAccountTreeSyncingSyncedAtLeastOnce: true,
+    accountGroupsMetadata: {},
+    accountWalletsMetadata: {},
+  };
+}
+
+type AccountTreeStateVariant = 'snap' | 'keyring' | 'empty';
+
 const createControllerMessenger = ({
   account = mockInternalAccount,
+  accountTreeState = 'snap',
 }: {
   account?: InternalAccount;
+  accountTreeState?: AccountTreeStateVariant;
 } = {}): SnapKeyringBuilderMessenger => {
-  mockAccountTreeControllerGetState.mockReturnValue(
-    createAccountTreeStateWithSnapWallet(account.id),
-  );
+  const accountId = account?.id ?? mockInternalAccount.id;
+  let treeState;
+  if (accountTreeState === 'snap') {
+    treeState = createAccountTreeStateWithSnapWallet(accountId);
+  } else if (accountTreeState === 'keyring') {
+    treeState = createAccountTreeStateWithKeyringWallet(accountId);
+  } else {
+    treeState = createEmptyAccountTreeState();
+  }
+  mockAccountTreeControllerGetState.mockReturnValue(treeState);
   const rootMessenger = getRootMessenger();
   const messenger = new Messenger<
     'SnapKeyring',
@@ -227,9 +289,11 @@ const createControllerMessenger = ({
 const createSnapKeyringBuilder = ({
   snapName = mockSnapName,
   snapPreinstalled = true,
+  accountTreeState = 'snap',
 }: {
   snapName?: string;
   snapPreinstalled?: boolean;
+  accountTreeState?: AccountTreeStateVariant;
 } = {}) => {
   jest.mocked(isSnapPreinstalled).mockReturnValue(snapPreinstalled);
   jest.mocked(getSnapName).mockReturnValue(snapName);
@@ -239,7 +303,7 @@ const createSnapKeyringBuilder = ({
     remoteFeatureFlags: {},
   } as RemoteFeatureFlagControllerState);
 
-  return snapKeyringBuilder(createControllerMessenger(), {
+  return snapKeyringBuilder(createControllerMessenger({ accountTreeState }), {
     persistKeyringHelper: mockPersistKeyringHelper,
     removeAccountHelper: mockRemoveAccountHelper,
     trackEvent: mockTrackEvent,
@@ -471,6 +535,123 @@ describe('Snap Keyring Methods', () => {
       expect(mockEndFlow).toHaveBeenCalledTimes(2);
       expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
       expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
+    });
+  });
+
+  describe('removeAccount', () => {
+    function createCallbacks(overrides?: {
+      accountTreeState?: AccountTreeStateVariant;
+      account?: InternalAccount | null;
+    }) {
+      const messenger = createControllerMessenger({
+        account: overrides?.account ?? mockInternalAccount,
+        accountTreeState: overrides?.accountTreeState ?? 'snap',
+      });
+      return new SnapKeyringImpl(messenger, {
+        persistKeyringHelper: mockPersistKeyringHelper,
+        removeAccountHelper: mockRemoveAccountHelper,
+        trackEvent: mockTrackEvent,
+      });
+    }
+
+    beforeEach(() => {
+      mockAddRequest.mockResolvedValue(true);
+    });
+
+    it('shows confirmation flow when account is in a snap wallet', async () => {
+      const handleUserInput = jest.fn().mockResolvedValue(undefined);
+      const callbacks = createCallbacks({ accountTreeState: 'snap' });
+      await callbacks.removeAccount(address, mockSnapId, handleUserInput);
+
+      expect(mockStartFlow).toHaveBeenCalledTimes(1);
+      expect(mockAddRequest).toHaveBeenCalledWith([
+        {
+          origin: mockSnapId,
+          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
+          requestData: { publicAddress: address },
+        },
+        true,
+      ]);
+      expect(mockRemoveAccountHelper).toHaveBeenCalledWith(address);
+      expect(handleUserInput).toHaveBeenCalledWith(true);
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.RemoveSnapAccountSuccessViewed,
+        }),
+      );
+      expect(mockShowError).toHaveBeenCalled();
+      expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
+    });
+
+    it('skips confirmation when account is in a keyring wallet (not snap)', async () => {
+      const handleUserInput = jest.fn().mockResolvedValue(undefined);
+      const callbacks = createCallbacks({ accountTreeState: 'keyring' });
+      await callbacks.removeAccount(address, mockSnapId, handleUserInput);
+
+      expect(mockStartFlow).not.toHaveBeenCalled();
+      expect(mockAddRequest).not.toHaveBeenCalled();
+      expect(mockRemoveAccountHelper).toHaveBeenCalledWith(address);
+      expect(handleUserInput).toHaveBeenCalledWith(true);
+      expect(mockEndFlow).not.toHaveBeenCalled();
+    });
+
+    it('skips confirmation when account is not in any wallet (empty tree)', async () => {
+      const handleUserInput = jest.fn().mockResolvedValue(undefined);
+      const callbacks = createCallbacks({ accountTreeState: 'empty' });
+      await callbacks.removeAccount(address, mockSnapId, handleUserInput);
+
+      expect(mockStartFlow).not.toHaveBeenCalled();
+      expect(mockAddRequest).not.toHaveBeenCalled();
+      expect(mockRemoveAccountHelper).toHaveBeenCalledWith(address);
+      expect(handleUserInput).toHaveBeenCalledWith(true);
+      expect(mockEndFlow).not.toHaveBeenCalled();
+    });
+
+    it('skips confirmation when getAccountByAddress returns null', async () => {
+      mockGetAccountByAddress.mockReturnValueOnce(null);
+      const handleUserInput = jest.fn().mockResolvedValue(undefined);
+      const callbacks = createCallbacks({ accountTreeState: 'snap' });
+      await callbacks.removeAccount(address, mockSnapId, handleUserInput);
+
+      expect(mockStartFlow).not.toHaveBeenCalled();
+      expect(mockAddRequest).not.toHaveBeenCalled();
+      expect(mockRemoveAccountHelper).toHaveBeenCalledWith(address);
+      expect(handleUserInput).toHaveBeenCalledWith(true);
+      expect(mockEndFlow).not.toHaveBeenCalled();
+    });
+
+    it('calls handleUserInput(false) and throws when user denies confirmation', async () => {
+      mockAddRequest.mockReset().mockResolvedValue(false);
+      const handleUserInput = jest.fn().mockResolvedValue(undefined);
+      const callbacks = createCallbacks({ accountTreeState: 'snap' });
+
+      await expect(
+        callbacks.removeAccount(address, mockSnapId, handleUserInput),
+      ).rejects.toThrow('User denied account removal');
+
+      expect(mockRemoveAccountHelper).not.toHaveBeenCalled();
+      expect(handleUserInput).toHaveBeenCalledWith(false);
+      expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
+    });
+
+    it('shows error and throws when removeAccountHelper fails after user confirms', async () => {
+      mockRemoveAccountHelper.mockRejectedValueOnce(new Error('remove failed'));
+      const handleUserInput = jest.fn().mockResolvedValue(undefined);
+      const callbacks = createCallbacks({ accountTreeState: 'snap' });
+
+      await expect(
+        callbacks.removeAccount(address, mockSnapId, handleUserInput),
+      ).rejects.toThrow(
+        'Error occurred while removing snap account: remove failed',
+      );
+
+      expect(mockShowError).toHaveBeenCalled();
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.AccountRemoveFailed,
+        }),
+      );
+      expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
     });
   });
 });

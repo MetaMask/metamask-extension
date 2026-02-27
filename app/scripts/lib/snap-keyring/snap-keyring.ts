@@ -81,7 +81,10 @@ export async function showAccountCreationDialog(
   }
 }
 
-class SnapKeyringImpl implements SnapKeyringCallbacks {
+/**
+ * Implementation of SnapKeyring callbacks. Exported for testing removeAccount and related logic.
+ */
+export class SnapKeyringImpl implements SnapKeyringCallbacks {
   readonly #messenger: SnapKeyringBuilderMessenger;
 
   readonly #trackEvent: SnapKeyringHelpers['trackEvent'];
