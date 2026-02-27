@@ -11,6 +11,7 @@
  * Usage:
  * yarn feature-flags:sync - Report differences, exit 0 (manual use)
  * yarn feature-flags:sync:check - Report differences, exit 1 if drift (CI)
+ * yarn feature-flags:sync:update - Report differences, auto-update registry if drift
  *
  * Exit codes (sync:check):
  * 0 - No drift
@@ -20,12 +21,22 @@
  * @see {@link https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod}
  */
 
+import * as fs from 'fs';
+import * as path from 'path';
+
 import { isEqual } from 'lodash';
 import chalk from 'chalk';
 import { getProductionRemoteFlagDefaults } from './feature-flag-registry';
 
 const PRODUCTION_FLAGS_URL =
   'https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod';
+
+/**
+ * Flags excluded from drift comparison (e.g. frequently changing version values).
+ */
+const EXCLUDED_FLAGS: ReadonlySet<string> = new Set([
+  'extensionUpdatePromptMinimumVersion',
+]);
 
 // ============================================================================
 // Types
@@ -93,6 +104,9 @@ export function compareProductionFlagsToRegistry(
   const valueMismatches: SyncResult['valueMismatches'] = [];
 
   for (const name of prodKeys) {
+    if (EXCLUDED_FLAGS.has(name)) {
+      continue;
+    }
     if (!registryKeys.has(name)) {
       newInProduction.push({ name, value: prodMap[name] });
     } else if (!isEqual(prodMap[name], registry[name])) {
@@ -105,6 +119,9 @@ export function compareProductionFlagsToRegistry(
   }
 
   for (const name of registryKeys) {
+    if (EXCLUDED_FLAGS.has(name)) {
+      continue;
+    }
     if (!prodKeys.has(name)) {
       removedFromProduction.push({
         name,
@@ -126,29 +143,49 @@ export function compareProductionFlagsToRegistry(
   };
 }
 
+const MAX_RETRIES = 3;
+const INITIAL_DELAY_MS = 1000;
+
 /**
- * Fetches feature flags from the production API.
+ * Fetches feature flags from the production API with retry on transient failure.
  */
 export async function fetchProductionFlags(): Promise<
   Record<string, unknown>[]
 > {
-  const response = await fetch(PRODUCTION_FLAGS_URL);
+  let lastError: Error | undefined;
 
-  if (!response.ok) {
-    throw new Error(
-      `Failed to fetch production flags: ${response.status} ${response.statusText}`,
-    );
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const response = await fetch(PRODUCTION_FLAGS_URL);
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch production flags: ${response.status} ${response.statusText}`,
+        );
+      }
+
+      const data = await response.json();
+
+      if (!Array.isArray(data)) {
+        throw new Error(
+          `Unexpected API response format: expected array, got ${typeof data}`,
+        );
+      }
+
+      return data as Record<string, unknown>[];
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      if (attempt < MAX_RETRIES) {
+        const delay = INITIAL_DELAY_MS * 2 ** (attempt - 1);
+        console.warn(
+          `[sync] Fetch attempt ${attempt}/${MAX_RETRIES} failed: ${lastError.message}. Retrying in ${delay}ms...`,
+        );
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
   }
 
-  const data = await response.json();
-
-  if (!Array.isArray(data)) {
-    throw new Error(
-      `Unexpected API response format: expected array, got ${typeof data}`,
-    );
-  }
-
-  return data as Record<string, unknown>[];
+  throw lastError ?? new Error('Failed to fetch production flags');
 }
 
 /**
@@ -237,17 +274,114 @@ function formatSyncReport(result: SyncResult): string {
 }
 
 // ============================================================================
+// --update mode: write production values back to registry file
+// ============================================================================
+
+const REGISTRY_FILE_PATH = path.resolve(__dirname, 'feature-flag-registry.ts');
+
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+}
+
+function serializeValue(value: unknown, indent = 0): string {
+  const json = JSON.stringify(value, null, 2);
+  if (indent <= 0) {
+    return json;
+  }
+  const pad = ' '.repeat(indent);
+  return json
+    .split('\n')
+    .map((line, i) => (i === 0 ? line : `${pad}${line}`))
+    .join('\n');
+}
+
+/**
+ * Updates the feature-flag-registry.ts file with production values.
+ * Handles value mismatches, new flags, and removed flags.
+ * Formats the file with Prettier before writing.
+ * @param result
+ * @param _productionApiResponse
+ */
+async function updateRegistryFile(
+  result: SyncResult,
+  _productionApiResponse: Record<string, unknown>[],
+): Promise<void> {
+  let content = fs.readFileSync(REGISTRY_FILE_PATH, 'utf-8');
+  const today = new Date().toISOString().split('T')[0];
+
+  content = content.replace(
+    /Production defaults last synced: \d{4}-\d{2}-\d{2}/u,
+    `Production defaults last synced: ${today}`,
+  );
+
+  for (const { name, productionValue } of result.valueMismatches) {
+    const serialized = serializeValue(productionValue, 4);
+    const pattern = new RegExp(
+      `(${escapeRegex(name)}:\\s*\\{[\\s\\S]*?productionDefault:)\\s*[\\s\\S]*?(\\n\\s*status:)`,
+      'u',
+    );
+    content = content.replace(pattern, `$1 ${serialized},$2`);
+  }
+
+  for (const { name } of result.removedFromProduction) {
+    const pattern = new RegExp(
+      `\\n(?:\\s*\\/\\/[^\\n]*\\n)?\\s*${escapeRegex(name)}:\\s*\\{[\\s\\S]*?\\},?\\n`,
+      'u',
+    );
+    content = content.replace(pattern, '\n');
+  }
+
+  if (result.newInProduction.length > 0) {
+    const newEntries = result.newInProduction
+      .map(({ name, value }) => {
+        const serialized = serializeValue(value, 4);
+        return [
+          `  ${name}: {`,
+          `    name: '${name.replace(/'/gu, "\\'")}',`,
+          '    type: FeatureFlagType.Remote,',
+          '    inProd: true,',
+          `    productionDefault: ${serialized},`,
+          '    status: FeatureFlagStatus.Active,',
+          '  },',
+        ].join('\n');
+      })
+      .join('\n\n');
+
+    content = content.replace(
+      /(\n)(\};[\s\n]*\/\/ =+\s*\n\/\/ Helper Functions)/u,
+      `\n${newEntries}\n$1$2`,
+    );
+  }
+
+  const prettier = (await import('prettier')).default;
+  const prettierOptions = await prettier.resolveConfig(REGISTRY_FILE_PATH);
+  const formatted = await prettier.format(content, {
+    ...prettierOptions,
+    filepath: REGISTRY_FILE_PATH,
+  });
+  fs.writeFileSync(REGISTRY_FILE_PATH, formatted ?? content, 'utf-8');
+  console.log(chalk.green(`\n✓ Registry file updated: ${REGISTRY_FILE_PATH}`));
+  console.log(chalk.yellow('Run `yarn feature-flags:sync` to verify.'));
+}
+
+// ============================================================================
 // CLI
 // ============================================================================
 
 async function main(): Promise<void> {
   const checkMode = process.argv.includes('--check');
+  const updateMode = process.argv.includes('--update');
 
   try {
     const productionResponse = await fetchProductionFlags();
     const result = compareProductionFlagsToRegistry(productionResponse);
 
     console.log(formatSyncReport(result));
+
+    if (updateMode && result.hasDrift) {
+      await updateRegistryFile(result, productionResponse);
+      process.exit(0);
+    }
 
     if (checkMode && result.hasDrift) {
       process.exit(1);
