@@ -67,6 +67,7 @@
       "MetaMask: Chain processing errors": 2,
       "Test errors: Fetch failures": 4,
       "Third-party: Bindings failed, using pure JS": 1,
+      "error: Error initializing gator permissions controller": 2,
       "error: Error: Attempted to synchronize recursively": 19,
       "error: Error: Must specify a non-empty": 7,
       "error: This browser doesn't support cancelAnimationFrame.": 1,
@@ -80,6 +81,7 @@
       "ObjectMultiplex: Malformed chunk warnings": 1,
       "Third-party: Bindings failed, using pure JS": 1,
       "error: AssertionError: The Snaps platform requires": 1,
+      "error: Error initializing gator permissions controller": 5,
       "error: Error: Attempted to synchronize recursively": 123,
       "error: Error: Must specify a non-empty": 61,
       "error: Error: NetworkController state is invalid:": 1,
@@ -670,9 +672,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/transaction-activity-empty-state/transaction-activity-empty-state.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/transaction-activity-log/transaction-activity-log.component.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/transaction-breakdown/transaction-breakdown-row/transaction-breakdown-row.component.test.js": {
@@ -1341,9 +1340,6 @@
     "ui/hooks/gator-permissions/useGatorPermissionTokenInfo.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 10,
       "Reselect: Identity function warnings": 1
-    },
-    "ui/hooks/gator-permissions/useGatorPermissions.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 8
     },
     "ui/hooks/gator-permissions/useRevokeGatorPermissions.test.tsx": {
       "Reselect: Identity function warnings": 1,
@@ -2357,12 +2353,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/modals/pay-with-modal/pay-with-modal.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/modals/simulation-settings-modal/simulation-settings-modal.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
-      "Reselect: Identity function warnings": 4,
-      "Reselect: Input stability warnings": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/multilayer-fee-message/multi-layer-fee-message.test.js": {

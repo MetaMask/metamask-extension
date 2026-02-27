@@ -60,10 +60,6 @@
   },
   "metamask": {
     "allTokens": {},
-    "enableEnforcedSimulations": true,
-    "enableEnforcedSimulationsForTransactions": {},
-    "enforcedSimulationsSlippage": 10,
-    "enforcedSimulationsSlippageForTransactions": {},
     "tokenBalances": {},
     "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",
@@ -1666,10 +1662,9 @@
     "accountsAssets": {},
     "assetsMetadata": {},
     "allIgnoredAssets": {},
-    "gatorPermissionsMapSerialized": "{\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"erc20-token-revocation\":{},\"other\":{}}",
-    "isGatorPermissionsEnabled": false,
+    "grantedPermissions": [],
     "isFetchingGatorPermissions": false,
-    "isUpdatingGatorPermissions": false,
+    "lastSyncedTimestamp": -1,
     "networkConnectionBanner": {
       "status": "unknown"
     },

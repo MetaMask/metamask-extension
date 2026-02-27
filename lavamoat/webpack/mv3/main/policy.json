@@ -996,11 +996,6 @@
         "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
       }
     },
-    "@metamask/gator-permissions-controller": {
-      "packages": {
-        "@metamask/utils": true
-      }
-    },
     "@metamask/jazzicon": {
       "globals": {
         "document.createElement": true,
