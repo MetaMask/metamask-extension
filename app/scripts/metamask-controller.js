@@ -2488,18 +2488,16 @@ export default class MetamaskController extends EventEmitter {
       };
 
       // TODO: Figure out how data actions can be dynamically bound
-      accumulator[`${dataService}:getActivity`] = (options) =>
+      accumulator[`${dataService}:getActivity`] = (...params) =>
         this.controllerMessenger.call(
           `${dataService}:getActivity`,
-          ...options.queryKey.slice(1),
-          options.pageParam,
+          ...params,
         );
 
-      accumulator[`${dataService}:getAssets`] = (options) =>
+      accumulator[`${dataService}:getAssets`] = (...params) =>
         this.controllerMessenger.call(
           `${dataService}:getAssets`,
-          ...options.queryKey.slice(1),
-          options.pageParam,
+          ...params,
         );
 
       accumulator[`${dataService}:subscribe`] = (queryKey) =>

@@ -5300,6 +5300,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-previews/base-data-service@npm:0.0.0-preview-ee1fa5d01":
+  version: 0.0.0-preview-ee1fa5d01
+  resolution: "@metamask-previews/base-data-service@npm:0.0.0-preview-ee1fa5d01"
+  dependencies:
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.9.0"
+    "@tanstack/query-core": "npm:^4.43.0"
+    fast-deep-equal: "npm:^3.1.3"
+  checksum: 10/58cecdd2b2465037801e522b79932a78a555e7fea2b82cfa147db7c8a9c8b4252e0672976d2fecc69139ff5d11cf24d1ab8329e08709ec4a368d7b9ff9d17889
+  languageName: node
+  linkType: hard
+
 "@metamask/7715-permission-types@npm:^0.5.0":
   version: 0.5.0
   resolution: "@metamask/7715-permission-types@npm:0.5.0"
@@ -33062,6 +33074,7 @@ __metadata:
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.12.4"
     "@material-ui/pickers": "npm:^3.3.11"
+    "@metamask-previews/base-data-service": "npm:0.0.0-preview-ee1fa5d01"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^1.0.0"
     "@metamask/account-tree-controller": "npm:^4.1.1"

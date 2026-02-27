@@ -9,7 +9,7 @@ export type BackgroundRpcClient = MetaRpcClientFactory<Api>;
 const NO_BACKGROUND_CONNECTION_MESSAGE =
   'Background connection is not set. Please initialize the background connection before making requests.';
 
-let background: BackgroundRpcClient;
+export let background: BackgroundRpcClient;
 
 export const generateActionId = () => Date.now() + Math.random();
 
