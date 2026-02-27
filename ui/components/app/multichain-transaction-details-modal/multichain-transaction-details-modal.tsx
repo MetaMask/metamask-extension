@@ -43,7 +43,11 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
 import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
-import { getAccountName, getSelectedAccount } from '../../../selectors';
+import {
+  getAccountName,
+  getIsMultichainAccountsState2Enabled,
+  getSelectedAccount,
+} from '../../../selectors';
 import {
   KEYRING_TRANSACTION_STATUS_KEY,
   useMultichainTransactionDisplay,
@@ -53,6 +57,8 @@ import {
   getInternalAccountsObject,
   isNonEvmAccount,
 } from '../../../selectors/accounts';
+import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
+import type { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
 import {
   formatTimestamp,
   getTransactionUrl,
@@ -93,6 +99,33 @@ export function MultichainTransactionDetailsModal({
   const nonEvmSenderAddress = isNonEvmAccount(txInternalAccount)
     ? txInternalAccount?.address
     : undefined;
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+
+  const fromAddress =
+    type === TransactionType.Send
+      ? nonEvmSenderAddress || userAddress
+      : from?.address;
+  const toAddress = to?.address;
+  const relevantAddresses = [fromAddress, toAddress].filter(
+    (addr): addr is string => Boolean(addr),
+  );
+
+  const accountGroups = useSelector((state: MultichainAccountsState) =>
+    isMultichainAccountsState2Enabled && relevantAddresses.length > 0
+      ? getAccountGroupsByAddress(state, relevantAddresses)
+      : [],
+  );
+
+  const getAccountGroupName = (address: string): string | undefined => {
+    const group = accountGroups.find((g) =>
+      g.accounts.some(
+        (a) => a.address?.toLowerCase() === address.toLowerCase(),
+      ),
+    );
+    return group?.metadata?.name ?? undefined;
+  };
 
   const getStatusColor = (txStatus: string) => {
     switch (txStatus?.toLowerCase()) {
@@ -112,7 +145,11 @@ export function MultichainTransactionDetailsModal({
     if (!address) {
       return null;
     }
-    const accountName = getAccountName(internalAccounts, address);
+    const groupName = isMultichainAccountsState2Enabled
+      ? getAccountGroupName(address)
+      : undefined;
+    const accountName =
+      groupName || getAccountName(internalAccounts, address);
     const displayName = accountName || shortenAddress(address);
 
     return (
