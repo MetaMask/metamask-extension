@@ -147,10 +147,7 @@ function createSelectedAccountForAccountsController(
   // impossible to define default accounts in our fixtures as they are getting
   // overwritten here.
   // So we check for existing state before creating a default one.
-  if (
-    !state.AccountsController.internalAccounts.selectedAccount ||
-    !state.PreferencesController?.selectedAddress
-  ) {
+  if (!state.AccountsController.internalAccounts.selectedAccount) {
     let selectedAddress = state.PreferencesController?.selectedAddress;
 
     if (typeof selectedAddress !== 'string') {
