@@ -1432,13 +1432,13 @@ describe('MetaMaskController', () => {
           .mockReturnValue({
             remoteFeatureFlags: {
               confirmations_eip_7702: {
-                supportedChains: ['0x1', '0x539'],
+                supportedChains: ['0xaa'],
               },
             },
             cacheTimestamp: 0,
           });
 
-        const params = createWalletRequestExecutionPermissionsParamsForChains(['0x1', '0x539']);
+        const params = createWalletRequestExecutionPermissionsParamsForChains(['0xAA']);
         const response = await requestExecutionPermissions(params);
 
         expect(response.error).toBeDefined();
