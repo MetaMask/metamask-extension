@@ -69,6 +69,29 @@ The system uses a **decoupled, capability-based architecture**:
 
 ## Quick Start
 
+### Prerequisites
+
+Before configuring your MCP client, make sure your local environment is set up:
+
+1. Install [Node.js](https://nodejs.org) (version 24 is recommended in the root [README](../../../../README.md#building-on-your-local-machine)).
+2. Enable Yarn via Corepack:
+
+```bash
+corepack enable
+```
+
+3. Install project dependencies:
+
+```bash
+yarn install
+```
+
+4. Install the Playwright Chromium browser:
+
+```bash
+yarn playwright install chromium
+```
+
 ### 1. Configure MCP Client
 
 Add to your MCP client configuration (e.g., Claude Desktop, OpenCode):
