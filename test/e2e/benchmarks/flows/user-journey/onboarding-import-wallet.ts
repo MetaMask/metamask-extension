@@ -4,6 +4,7 @@
  */
 
 import { Browser } from 'selenium-webdriver';
+import { Mockttp } from 'mockttp';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { E2E_SRP } from '../../../fixtures/default-fixture';
@@ -25,10 +26,7 @@ import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-on
 import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
-import {
-  getTestSpecificMock,
-  shouldUseMockedRequests,
-} from '../../utils/mock-config';
+import { getCommonMocks } from '../../mocks/performance-mocks';
 import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
 
@@ -41,18 +39,24 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
       {
         title: testTitle,
         manifestFlags: {
+          remoteFeatureFlags: {
+            bitcoinAccounts: { enabled: false, minimumVersion: '0.0.0' },
+            tronAccounts: { enabled: false, minimumVersion: '0.0.0' },
+          },
           testing: {
             disableSync: true,
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
-        useMockingPassThrough: !shouldUseMockedRequests(),
+        useMockingPassThrough: true,
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
         fixtures: new FixtureBuilder({ onboarding: true })
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
-        testSpecificMock: getTestSpecificMock(),
+        testSpecificMock: async (server: Mockttp) => {
+          return Promise.all(getCommonMocks(server));
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         const srp = process.env.E2E_POWER_USER_SRP || E2E_SRP;

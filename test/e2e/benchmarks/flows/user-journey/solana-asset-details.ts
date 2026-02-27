@@ -36,6 +36,10 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
         manifestFlags: {
+          remoteFeatureFlags: {
+            bitcoinAccounts: { enabled: false, minimumVersion: '0.0.0' },
+            tronAccounts: { enabled: false, minimumVersion: '0.0.0' },
+          },
           testing: {
             disableSync: true,
             infuraProjectId: process.env.INFURA_PROJECT_ID,

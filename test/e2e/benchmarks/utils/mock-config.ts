@@ -1,5 +1,8 @@
 import { Mockttp, MockedEndpoint } from 'mockttp';
-import { mockBenchmarkEndpoints } from '../mocks/performance-mocks';
+import {
+  mockBenchmarkEndpoints,
+  getCommonMocks,
+} from '../mocks/performance-mocks';
 
 /**
  * Check if mocked requests should be used for performance benchmarks.
@@ -13,17 +16,15 @@ import { mockBenchmarkEndpoints } from '../mocks/performance-mocks';
 export function shouldUseMockedRequests(): boolean {
   const branch = process.env.GITHUB_REF_NAME || '';
   const isMainOrRelease = branch === 'main' || branch.startsWith('release/');
-  // Use real server (no mocks) only for main/release/* branches
   return !isMainOrRelease;
 }
 
 /**
  * Returns the appropriate mock function based on the current branch.
  *
- * - For PRs and feature branches: returns mockBenchmarkEndpoints function
- * - For main/release/* branches: returns a no-op function (no mocking, use real servers)
- *
- * Always returns a callable function so callers never receive undefined.
+ * - PRs and local dev: full mock suite (mockBenchmarkEndpoints)
+ * - main/release branches: real servers with common mocks for analytics,
+ *   Sentry, and other noisy endpoints that should never hit live servers
  */
 export function getTestSpecificMock(): (
   server: Mockttp,
@@ -31,5 +32,5 @@ export function getTestSpecificMock(): (
   if (shouldUseMockedRequests()) {
     return async (server: Mockttp) => mockBenchmarkEndpoints(server);
   }
-  return async () => [];
+  return async (server: Mockttp) => Promise.all(getCommonMocks(server));
 }

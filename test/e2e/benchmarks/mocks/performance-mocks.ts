@@ -156,6 +156,61 @@ async function mockAuthAPICall(
     });
 }
 
+/**
+ * Common mocks for pass-through mode.
+ * Returns standard mockttp rules for analytics and other noisy endpoints.
+ */
+export function getCommonMocks(
+  server: Mockttp,
+): Promise<MockedEndpoint>[] {
+  return [
+    server.forGet('https://chainid.network/chains.json').thenCallback(() => {
+      return { statusCode: 200, json: chainsList };
+    }),
+    server.forPost(/^https:\/\/sentry\.io\/api/u).thenCallback(() => {
+      return {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+        json: { success: true },
+      };
+    }),
+    server.forPost(/^https:\/\/api\.segment\.io\/v1\//u).thenCallback(() => {
+      return { statusCode: 200 };
+    }),
+    server
+      .forGet(
+        /^https:\/\/subscription\.(dev-)?api\.cx\.metamask\.io\/v1\/subscriptions\/eligibility/u,
+      )
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: [
+            {
+              canSubscribe: true,
+              canViewEntryModal: true,
+              minBalanceUSD: 1000,
+              product: 'shield',
+            },
+          ],
+        };
+      }),
+    server
+      .forGet(
+        /^https:\/\/subscription\.(dev-)?api\.cx\.metamask\.io\/v1\/subscriptions/u,
+      )
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: { subscriptions: [], trialedProducts: [] },
+        };
+      }),
+  ];
+}
+
 const SOLANA_URL_REGEX = /^https:\/\/solana-mainnet\.infura\.io\/v3\/.*/u;
 
 export async function mockBenchmarkEndpoints(
