@@ -1,7 +1,22 @@
 import { strict as assert } from 'assert';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
-import { SignatureType } from '../../tests/confirmations/signatures/signature-helpers';
+
+/**
+ * Signature types for TestDapp.triggerSignature and openTestDappAndTriggerSignature.
+ */
+export enum SignatureType {
+  PersonalSign,
+  Permit,
+  NFTPermit,
+  SignTypedDataV3,
+  SignTypedDataV4,
+  SignTypedData,
+  SIWE,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  SIWE_BadDomain,
+}
 
 class TestDapp {
   private readonly driver: Driver;

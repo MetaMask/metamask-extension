@@ -10,7 +10,7 @@ import {
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
-import TestDapp from '../../../page-objects/pages/test-dapp';
+import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -19,7 +19,6 @@ import {
   assertAccountDetailsMetrics,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
-  SignatureType,
 } from './signature-helpers';
 
 describe('Confirmation Signature - NFT Permit', function (this: Suite) {

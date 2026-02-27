@@ -15,18 +15,6 @@ type EventPayload = {
 
 export const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 export const WALLET_ETH_BALANCE = '25';
-export enum SignatureType {
-  PersonalSign,
-  Permit,
-  NFTPermit,
-  SignTypedDataV3,
-  SignTypedDataV4,
-  SignTypedData,
-  SIWE,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  SIWE_BadDomain,
-}
 
 type AssertSignatureMetricsOptions = {
   driver: Driver;

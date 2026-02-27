@@ -10,7 +10,7 @@ import {
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import SignTypedData from '../../../page-objects/pages/confirmations/sign-typed-data-confirmation';
-import TestDapp from '../../../page-objects/pages/test-dapp';
+import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -20,7 +20,6 @@ import {
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
   WALLET_ETH_BALANCE,
-  SignatureType,
 } from './signature-helpers';
 
 describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {

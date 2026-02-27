@@ -9,17 +9,14 @@ import {
 import { TestSuiteArguments } from '../transactions/shared';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import ConfirmAlertModal from '../../../page-objects/pages/dialog/confirm-alert';
-import TestDapp from '../../../page-objects/pages/test-dapp';
+import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
-import {
-  assertSignatureRejectedMetrics,
-  SignatureType,
-} from './signature-helpers';
+import { assertSignatureRejectedMetrics } from './signature-helpers';
 
 describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite) {
   it('displays alert for domain binding and confirms', async function () {

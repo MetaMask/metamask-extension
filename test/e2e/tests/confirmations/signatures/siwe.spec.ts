@@ -12,7 +12,7 @@ import { TestSuiteArguments } from '../transactions/shared';
 import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/personal-sign-confirmation';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
-import TestDapp from '../../../page-objects/pages/test-dapp';
+import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import {
   BlockaidReason,
@@ -24,7 +24,6 @@ import {
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
   WALLET_ETH_BALANCE,
-  SignatureType,
 } from './signature-helpers';
 
 describe('Confirmation Signature - SIWE', function (this: Suite) {

@@ -9,7 +9,7 @@ import {
   withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
-import TestDapp from '../../../page-objects/pages/test-dapp';
+import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/personal-sign-confirmation';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
@@ -26,7 +26,6 @@ import {
   assertSignatureRejectedMetrics,
   WALLET_ADDRESS,
   WALLET_ETH_BALANCE,
-  SignatureType,
 } from './signature-helpers';
 
 describe('Confirmation Signature - Personal Sign', function (this: Suite) {

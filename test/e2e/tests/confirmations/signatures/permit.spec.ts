@@ -11,7 +11,7 @@ import {
   withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
-import TestDapp from '../../../page-objects/pages/test-dapp';
+import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
@@ -22,7 +22,6 @@ import {
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
   WALLET_ETH_BALANCE,
-  SignatureType,
 } from './signature-helpers';
 
 describe('Confirmation Signature - Permit', function (this: Suite) {
