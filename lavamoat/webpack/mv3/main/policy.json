@@ -996,11 +996,6 @@
         "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
       }
     },
-    "@metamask/gator-permissions-controller": {
-      "packages": {
-        "@metamask/utils": true
-      }
-    },
     "@metamask/jazzicon": {
       "globals": {
         "document.createElement": true,
@@ -2435,12 +2430,6 @@
         "koa>content-disposition>safe-buffer": true,
         "stream-browserify": true,
         "browserify>string_decoder": true
-      }
-    },
-    "classnames": {
-      "globals": {
-        "classNames": "write",
-        "define": true
       }
     },
     "@metamask/jazzicon>color>clone": {

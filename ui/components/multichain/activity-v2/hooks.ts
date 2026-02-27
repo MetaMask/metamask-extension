@@ -13,7 +13,9 @@ import { getUseExternalServices } from '../../../selectors';
 import { parseApprovalTransactionData } from '../../../../shared/modules/transaction.utils';
 import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
+import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { queries } from '../../../helpers/queries';
+import { selectTransactions } from '../../../../shared/lib/multichain/transformations';
 import { calculateFiatFromMarketRates } from './helpers';
 
 function useTransactionParams() {
@@ -43,6 +45,16 @@ function useTransactionParams() {
 export function useTransactionsQuery() {
   const useExternalServices = useSelector(getUseExternalServices);
   const { evmAddress, accountAddresses, networks } = useTransactionParams();
+  const internalTxHashes = useSelector(selectRequiredTransactionHashes);
+
+  const selectFn = useMemo(
+    () =>
+      selectTransactions({
+        address: evmAddress,
+        excludedTxHashes: internalTxHashes,
+      }),
+    [evmAddress, internalTxHashes],
+  );
 
   const queryOptions = useMemo(
     () =>
@@ -53,7 +65,7 @@ export function useTransactionsQuery() {
     [evmAddress, accountAddresses, networks, useExternalServices],
   );
 
-  return useInfiniteQuery(queryOptions);
+  return useInfiniteQuery({ ...queryOptions, select: selectFn });
 }
 
 export function usePrefetchTransactions() {
