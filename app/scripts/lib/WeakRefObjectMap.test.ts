@@ -288,7 +288,8 @@ describe('WeakDomainProxyMap with garbage collection', () => {
 
   itIfGc(
     'prunes stale entries from has, size, and iterators after collection',
-    async () => {
+    async function () {
+      this.timeout(20000); // Extend timeout for GC retries
       const gcMap = new WeakRefObjectMap<TestRecord>();
       const liveTarget = {};
       let staleTarget: object | null = {};
