@@ -470,7 +470,7 @@ async function updateRegistryFile(result: SyncResult): Promise<void> {
 
     content = content.replace(
       /(\n)(\};[\s\n]*\/\/ =+\s*\n\/\/ Helper Functions)/u,
-      `\n${newEntries}\n$1$2`,
+      (_, g1, g2) => `\n${newEntries}\n${g1}${g2}`,
     );
   }
 
