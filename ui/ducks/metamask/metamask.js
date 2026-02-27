@@ -25,7 +25,10 @@ import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import { getTokensControllerAllTokens } from '../../../shared/modules/selectors/assets-migration';
+import {
+  getTokensControllerAllTokens,
+  getCurrencyRateControllerCurrencyRates,
+} from '../../../shared/modules/selectors/assets-migration';
 
 const initialState = {
   isInitialized: false,
@@ -314,17 +317,16 @@ export function getNativeCurrency(state) {
 }
 
 export function getConversionRate(state) {
-  return state.metamask.currencyRates[getProviderConfig(state).ticker]
-    ?.conversionRate;
+  return getCurrencyRateControllerCurrencyRates(state)[
+    getProviderConfig(state).ticker
+  ]?.conversionRate;
 }
 
 export function getConversionRateByTicker(state, ticker) {
-  return state.metamask.currencyRates[ticker]?.conversionRate;
+  return getCurrencyRateControllerCurrencyRates(state)[ticker]?.conversionRate;
 }
 
-export function getCurrencyRates(state) {
-  return state.metamask.currencyRates;
-}
+export { getCurrencyRateControllerCurrencyRates as getCurrencyRates };
 
 export function getSendHexDataFeatureFlagState(state) {
   return state.metamask.featureFlags.sendHexData;

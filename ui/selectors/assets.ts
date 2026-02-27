@@ -59,11 +59,14 @@ import {
 } from '../../shared/modules/selectors/networks';
 import {
   getAccountTrackerControllerAccountsByChainId,
+  getCurrencyRateControllerCurrencyRates,
   getMultiChainAssetsControllerAccountsAssets,
   getMultiChainAssetsControllerAllIgnoredAssets,
   getMultiChainAssetsControllerAssetsMetadata,
+  getMultichainAssetsRatesControllerConversionRates,
   getMultiChainBalancesControllerBalances,
   getTokenBalancesControllerTokenBalances,
+  getTokenRatesControllerMarketData,
   getTokensControllerAllIgnoredTokens,
   getTokensControllerAllTokens,
 } from '../../shared/modules/selectors/assets-migration';
@@ -285,9 +288,7 @@ export { getMultiChainAssetsControllerAllIgnoredAssets as getAllIgnoredAssets } 
  * @param state - Redux state object.
  * @returns An object containing non-EVM assets per accounts.
  */
-export function getAssetsRates(state: AssetsRatesState) {
-  return state.metamask.conversionRates;
-}
+export { getMultichainAssetsRatesControllerConversionRates as getAssetsRates } from '../../shared/modules/selectors/assets-migration';
 
 /**
  * Gets DeFi positions
@@ -1404,8 +1405,8 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     allTokens: getTokensControllerAllTokens({ metamask }),
     allIgnoredTokens: getTokensControllerAllIgnoredTokens({ metamask }),
     tokenBalances: getTokenBalancesControllerTokenBalances({ metamask }),
-    marketData: metamask.marketData,
-    currencyRates: metamask.currencyRates,
+    marketData: getTokenRatesControllerMarketData({ metamask }),
+    currencyRates: getCurrencyRateControllerCurrencyRates({ metamask }),
     currentCurrency: metamask.currentCurrency,
     networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
     accountsByChainId: getAccountTrackerControllerAccountsByChainId({
@@ -1420,7 +1421,9 @@ const getStateForAssetSelector = ({ metamask }: any) => {
       metamask,
     }),
     balances: getMultiChainBalancesControllerBalances({ metamask }),
-    conversionRates: metamask.conversionRates,
+    conversionRates: getMultichainAssetsRatesControllerConversionRates({
+      metamask,
+    }),
   };
 
   return {
