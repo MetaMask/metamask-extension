@@ -79,6 +79,7 @@ const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('showDefaultAddressDescription'),
     route: `${GENERAL_ROUTE}#show-default-address`,
     iconName: IconName.Setting,
+    hidden: true,
   },
   // advanced settingsRefs[0]
   {

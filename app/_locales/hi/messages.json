@@ -7345,21 +7345,6 @@
   "simulationErrorMessageV2": {
     "message": "हम गैस का अनुमान नहीं लगा पाए। कॉन्ट्रैक्ट में कोई गड़बड़ी हो सकती है और यह ट्रांसेक्शन विफल हो सकता है।"
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "स्लिपेज (slippage) टॉलरेंस"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "बैलेंस में बदलाव के लिए अपनी सुविधानुसार एक अंतर निर्धारित करें। यदि अंतर अधिक होगा तो ट्रांसेक्शन नहीं हो पाएगा।"
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "बैलेंस संबंधी बदलाव को प्रभावी करें"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "आपके धन को सुरक्षित रखने के लिए, यदि बैलेंस में परिवर्तन होता है या स्लिपेज (slippage) टॉलरेंस पूरी नहीं होती है तो यह ट्रांसेक्शन पूरा नहीं होगा।"
-  },
-  "simulationSettingsModalTitle": {
-    "message": "ट्रांसेक्शन संबंधी सेटिंग्स"
-  },
   "simulationsSettingDescription": {
     "message": "ट्रांसेक्शन और सिग्नेचर्स को कन्फर्म करने से पहले उनके बैलेंस में बदलाव का अनुमान लगाने के लिए इसे चालू करें। यह उनके अंतिम परिणाम की गारंटी नहीं देता। $1"
   },

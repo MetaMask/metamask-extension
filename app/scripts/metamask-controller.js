@@ -314,6 +314,7 @@ import {
 import {
   AssetsContractControllerInit,
   AssetsControllerInit,
+  ClientControllerInit,
   NetworkOrderControllerInit,
   NftControllerInit,
   NftDetectionControllerInit,
@@ -662,6 +663,8 @@ export default class MetamaskController extends EventEmitter {
       RewardsController: RewardsControllerInit,
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
+      // ClientController must be initialized before AssetsController (AssetsController subscribes to ClientController:stateChange).
+      ClientController: ClientControllerInit,
       ...(shouldInitAssetsController
         ? { AssetsController: AssetsControllerInit }
         : {}),
@@ -2982,18 +2985,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       updateSlides: appStateController.updateSlides.bind(appStateController),
       removeSlide: appStateController.removeSlide.bind(appStateController),
-      setEnableEnforcedSimulations:
-        appStateController.setEnableEnforcedSimulations.bind(
-          appStateController,
-        ),
-      setEnableEnforcedSimulationsForTransaction:
-        appStateController.setEnableEnforcedSimulationsForTransaction.bind(
-          appStateController,
-        ),
-      setEnforcedSimulationsSlippageForTransaction:
-        appStateController.setEnforcedSimulationsSlippageForTransaction.bind(
-          appStateController,
-        ),
       setHasShownMultichainAccountsIntroModal:
         appStateController.setHasShownMultichainAccountsIntroModal.bind(
           appStateController,
@@ -8202,6 +8193,8 @@ export default class MetamaskController extends EventEmitter {
    */
   set isClientOpen(open) {
     this._isClientOpen = open;
+
+    this.controllerMessenger.call('ClientController:setUiOpen', open);
 
     const { isUnlocked } = this.controllerMessenger.call(
       'KeyringController:getState',

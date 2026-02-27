@@ -205,7 +205,7 @@ export const AssetsControllerInit: ControllerInitFunction<
     },
     stakedBalanceDataSourceConfig: {
       pollInterval: 30_000,
-      enabled: true,
+      enabled: false,
     },
     trackMetaMetricsEvent,
   };

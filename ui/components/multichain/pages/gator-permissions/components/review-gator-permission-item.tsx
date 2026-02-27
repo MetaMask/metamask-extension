@@ -23,8 +23,7 @@ import {
   Erc20TokenStreamPermission,
   NativeTokenPeriodicPermission,
   NativeTokenStreamPermission,
-  PermissionTypesWithCustom,
-  StoredGatorPermissionSanitized,
+  PermissionInfoWithMetadata,
 } from '@metamask/gator-permissions-controller';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getURLHost, shortenAddress } from '../../../../../helpers/utils/util';
@@ -118,7 +117,7 @@ type ReviewGatorPermissionItemProps = {
   /**
    * The gator permission to display
    */
-  gatorPermission: StoredGatorPermissionSanitized<PermissionTypesWithCustom>;
+  gatorPermission: PermissionInfoWithMetadata;
 
   /**
    * The function to call when the revoke is clicked
@@ -388,7 +387,9 @@ export const ReviewGatorPermissionItem = ({
       case 'erc20-token-revocation':
         return getTokenRevocationPermissionDetails();
       default:
-        throw new Error(`Invalid permission type: ${permissionType}`);
+        throw new Error(
+          `Invalid permission type: ${permissionType as unknown as string}`,
+        );
     }
   }, [
     permissionType,
