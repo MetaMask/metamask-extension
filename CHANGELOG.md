@@ -25,8 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refresh new state (#40230)
 - Support import/hide tokens for the new controller (#40228)
 - Adds Chiliz chain logo for network and token (#40144)
-- Added the ability to view and claim mUSD Merkl conversion bonuses from the token list and asset details page (behind (#39901)
-  feature flag)
+- Added the ability to view and claim mUSD Merkl conversion bonuses from the token list and asset details page (behind feature flag) (#39901)
 
 ### Changed
 
@@ -40,19 +39,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Nft image `startsWith` error (#40413)
-- When Basic functionality is off, protected routes now redirect to a “Basic functionality is off” page with an inline toggle (#39975)
-  and optional “Open the [feature] page” action instead of showing the
-  feature.
+- When Basic functionality is off, protected routes now redirect to a “Basic functionality is off” page with an inline toggle and optional “Open the [feature] page” action instead of showing the feature. (#39975)
 - Handle non-evm bridge details (#40383)
-- Fixes syncing failure caused by the sidepanel being opened in multiple browser windows, and then one of the sidepanels being (#40305)
-  closed, causing syncing to stop.
+- Fixes syncing failure caused by the sidepanel being opened in multiple browser windows, and then one of the sidepanels being closed, causing syncing to stop. (#40305)
 - Refactors the Perps tutorial modal to align with the mobile implementation pattern (#40174)
 - Only show MUSD claim bonus CTA if there are rewards to claim (#40299)
 - Fixed blurry MMPoly font rendering on mobile devices by preventing browser font synthesis (#40349)
 - Inconsistent decimals between and and selected network (#40341)
 - Bump assets and phishing controllers versions (#40132)
-- Migrates `NetworkEnablementController.nativeAssetIdentifiers['eip155:999']` to (#40206)
-  value `eip155:999/slip44:2457` if applicable.
+- Migrates `NetworkEnablementController.nativeAssetIdentifiers['eip155:999']` to value `eip155:999/slip44:2457` if applicable. (#40206)
 - Adjusts update modal logic to use the pending extension version and only show when a newer version is available. (#39884)
 
 ## [13.20.0]
