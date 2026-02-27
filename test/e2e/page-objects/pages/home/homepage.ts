@@ -82,7 +82,7 @@ class HomePage {
 
   protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
 
-  public readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
+  private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
 
   protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
 
