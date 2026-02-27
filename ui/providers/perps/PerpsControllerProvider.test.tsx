@@ -332,9 +332,7 @@ describe('usePerpsController', () => {
       React.useEffect(() => {
         mockStreamManagerInit('0xaaa').catch((err: unknown) => {
           if (!mockIsPerpsControllerInitializationCancelledError(err)) {
-            setError(
-              err instanceof Error ? err : new Error(String(err)),
-            );
+            setError(err instanceof Error ? err : new Error(String(err)));
           }
         });
       }, []);
