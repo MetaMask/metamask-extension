@@ -1,3 +1,4 @@
+import { AccountWalletType } from '@metamask/account-api';
 import {
   getDefaultInternalOptions,
   SnapKeyring,
@@ -108,6 +109,52 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
       'KeyringController:getAccounts',
     );
     return addresses.includes(address.toLowerCase());
+  }
+
+  /**
+   * Performs the core account removal: helper, user callback, and state persist.
+   *
+   * @param address - The account address to remove.
+   * @param accepted - Value to pass to handleUserInput (e.g. true when no confirmation was shown).
+   */
+  async #performAccountRemoval(
+    address: string,
+    accepted: boolean,
+    handleUserInput: (accepted: boolean) => Promise<void>,
+  ): Promise<void> {
+    await this.#removeAccountHelper(address);
+    await handleUserInput(accepted);
+    await this.saveState();
+  }
+
+  /**
+   * Returns true if the given address belongs to a snap wallet
+   * (AccountWalletType.Snap) in the account tree.
+   *
+   * @param address - The account address to check.
+   * @returns True if the account is in a snap wallet.
+   */
+  async #isAccountInSnapWallet(address: string): Promise<boolean> {
+    const account = this.#messenger.call(
+      'AccountsController:getAccountByAddress',
+      address,
+    );
+    if (!account) {
+      return false;
+    }
+    const state = this.#messenger.call('AccountTreeController:getState');
+    const { wallets } = state.accountTree ?? {};
+    if (!wallets) {
+      return false;
+    }
+    for (const wallet of Object.values(wallets)) {
+      for (const group of Object.values(wallet.groups ?? {})) {
+        if (group.accounts?.includes(account.id)) {
+          return wallet.type === AccountWalletType.Snap;
+        }
+      }
+    }
+    return false;
   }
 
   async redirectUser(snapId: string, url: string, message: string) {
@@ -392,6 +439,12 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
   ) {
     assertIsValidSnapId(snapId);
 
+    const isSnapWallet = await this.#isAccountInSnapWallet(address);
+    if (!isSnapWallet) {
+      await this.#performAccountRemoval(address, true, handleUserInput);
+      return;
+    }
+
     const snapName = getSnapName(snapId, this.#messenger);
     const { id: removeAccountApprovalId } = this.#messenger.call(
       'ApprovalController:startFlow',
@@ -435,9 +488,11 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
 
       if (confirmationResult) {
         try {
-          await this.#removeAccountHelper(address);
-          await handleUserInput(confirmationResult);
-          await this.saveState();
+          await this.#performAccountRemoval(
+            address,
+            confirmationResult,
+            handleUserInput,
+          );
 
           // TODO: Add events tracking to the dialog itself, so that events are more
           // "linked" to UI actions

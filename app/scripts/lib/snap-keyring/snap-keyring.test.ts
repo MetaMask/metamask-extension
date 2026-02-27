@@ -1,3 +1,4 @@
+import { AccountWalletType } from '@metamask/account-api';
 import { Messenger } from '@metamask/messenger';
 import {
   EthAccountType,
@@ -41,6 +42,7 @@ const mockPreferencesControllerGetState = jest.fn();
 const mockSnapControllerGet = jest.fn();
 const mockSnapControllerHandleRequest = jest.fn();
 const mockRemoteFeatureFlagsGetStateRequest = jest.fn();
+const mockAccountTreeControllerGetState = jest.fn();
 
 const mockFlowId = '123';
 const address = '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA';
@@ -79,11 +81,46 @@ jest.mock('../../../../shared/lib/accounts/snaps', () => ({
   getSnapName: jest.fn(),
 }));
 
+/**
+ * Default account tree state where the given account ID is in a snap wallet.
+ * Used so removeAccount triggers the confirmation flow in tests.
+ *
+ * @param accountId - The account ID to add to the snap wallet.
+ */
+function createAccountTreeStateWithSnapWallet(accountId: string) {
+  return {
+    accountTree: {
+      wallets: {
+        [`${AccountWalletType.Snap}:${mockSnapId}`]: {
+          type: AccountWalletType.Snap,
+          id: `${AccountWalletType.Snap}:${mockSnapId}`,
+          groups: {
+            [`${AccountWalletType.Snap}:${mockSnapId}:group`]: {
+              id: `${AccountWalletType.Snap}:${mockSnapId}:group`,
+              accounts: [accountId],
+              metadata: {},
+            },
+          },
+          metadata: {},
+        },
+      },
+      selectedAccountGroup: '',
+    },
+    isAccountTreeSyncingInProgress: false,
+    hasAccountTreeSyncingSyncedAtLeastOnce: true,
+    accountGroupsMetadata: {},
+    accountWalletsMetadata: {},
+  };
+}
+
 const createControllerMessenger = ({
   account = mockInternalAccount,
 }: {
   account?: InternalAccount;
 } = {}): SnapKeyringBuilderMessenger => {
+  mockAccountTreeControllerGetState.mockReturnValue(
+    createAccountTreeStateWithSnapWallet(account.id),
+  );
   const rootMessenger = getRootMessenger();
   const messenger = new Messenger<
     'SnapKeyring',
@@ -109,6 +146,7 @@ const createControllerMessenger = ({
       'AccountsController:setSelectedAccount',
       'AccountsController:getAccountByAddress',
       'AccountsController:listMultichainAccounts',
+      'AccountTreeController:getState',
       'PreferencesController:getState',
       'SnapController:get',
       'SnapController:handleRequest',
@@ -144,6 +182,9 @@ const createControllerMessenger = ({
 
       case 'AccountsController:getAccountByAddress':
         return mockGetAccountByAddress.mockReturnValue(account)(params);
+
+      case 'AccountTreeController:getState':
+        return mockAccountTreeControllerGetState(params);
 
       case 'AccountsController:listMultichainAccounts':
         return mockListMultichainAccounts.mockReturnValue([])();

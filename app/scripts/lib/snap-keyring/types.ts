@@ -24,6 +24,7 @@ import {
 } from '@metamask/snaps-controllers';
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import type { AccountTreeControllerGetStateAction } from '@metamask/account-tree-controller';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
 export type SnapKeyringBuilderAllowActions =
@@ -46,7 +47,8 @@ export type SnapKeyringBuilderAllowActions =
   | GetSnap
   | PreferencesControllerGetStateAction
   | IsMinimumPlatformVersion
-  | RemoteFeatureFlagControllerGetStateAction;
+  | RemoteFeatureFlagControllerGetStateAction
+  | AccountTreeControllerGetStateAction;
 
 export type SnapKeyringBuilderMessenger = Messenger<
   'SnapKeyring',
