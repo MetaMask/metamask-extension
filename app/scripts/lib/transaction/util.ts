@@ -2,6 +2,7 @@ import { MiddlewareContext } from '@metamask/json-rpc-engine/v2';
 import { EthAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
+  RequiredAsset,
   TransactionController,
   TransactionMeta,
   TransactionParams,
@@ -92,6 +93,9 @@ export async function addDappTransaction(
     | SecurityAlertResponse
     | undefined;
   const traceContext = requestContext.get('traceContext');
+  const requiredAssets = requestContext.get('requiredAssets') as
+    | RequiredAsset[]
+    | undefined;
 
   const transactionOptions: Partial<AddTransactionOptions> = {
     actionId,
@@ -101,6 +105,7 @@ export async function addDappTransaction(
     // This is the default behaviour but specified here for clarity
     requireApproval: true,
     securityAlertResponse,
+    ...(requiredAssets ? { requiredAssets } : {}),
   };
 
   endTrace({ name: TraceName.Middleware, id: actionId });

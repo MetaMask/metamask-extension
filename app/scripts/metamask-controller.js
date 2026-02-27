@@ -225,6 +225,7 @@ import { WalletFundsObtainedMonitor } from './lib/WalletFundsObtainedMonitor';
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
 import { createDappSwapMiddleware } from './lib/dapp-swap/dapp-swap-middleware';
 import { createTrustSignalsMiddleware } from './lib/trust-signals/trust-signals-middleware';
+import { createAuxiliaryFundsMiddleware } from './lib/auxiliary-funds/auxiliary-funds-middleware';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -7406,6 +7407,15 @@ export default class MetamaskController extends EventEmitter {
     engine.push(filterMiddleware);
     engine.push(subscriptionManager.middleware);
 
+    engine.push(
+      createAuxiliaryFundsMiddleware({
+        getNetworkConfigurationByNetworkClientId:
+          this.networkController.getNetworkConfigurationByNetworkClientId.bind(
+            this.networkController,
+          ),
+      }),
+    );
+
     engine.push(this.metamaskMiddleware);
 
     engine.push(this.eip5792Middleware);
@@ -7577,6 +7587,15 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createMultichainMethodMiddleware(this.setupCommonMiddlewareHooks(origin)),
+    );
+
+    engine.push(
+      createAuxiliaryFundsMiddleware({
+        getNetworkConfigurationByNetworkClientId:
+          this.networkController.getNetworkConfigurationByNetworkClientId.bind(
+            this.networkController,
+          ),
+      }),
     );
 
     engine.push(this.metamaskMiddleware);
