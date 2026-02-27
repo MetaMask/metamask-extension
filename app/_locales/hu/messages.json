@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Ki kell választania egy fiókot!"
   },
-  "activityLog": {
-    "message": "tevékenységi napló"
-  },
   "addAcquiredTokens": {
     "message": "Adja hozzá MetaMask-kal a kapott érméket"
   },
@@ -587,9 +584,6 @@
   "speedUpCancellation": {
     "message": "Törlés felgyorsítása"
   },
-  "speedUpTransaction": {
-    "message": "Gyorsítsd fel ezt a tranzakciót"
-  },
   "stateLogError": {
     "message": "Hiba történt az állapotnaplók lekérésekor."
   },
@@ -632,38 +626,11 @@
   "transaction": {
     "message": "tranzakció"
   },
-  "transactionCancelAttempted": {
-    "message": "Tranzakció visszavonást próbáltak végrehajtani $1 üzemanyagköltséggel $2-kor"
-  },
-  "transactionCancelSuccess": {
-    "message": "Tranzakció sikeresen törölve $2-nál"
-  },
-  "transactionConfirmed": {
-    "message": "Tranzakció megerősítve $2-on."
-  },
-  "transactionCreated": {
-    "message": "Egy $1 értékű tranzakció létrehozva $2-kor."
-  },
-  "transactionDropped": {
-    "message": "Tranzakció elvetve: $2."
-  },
   "transactionError": {
     "message": "Tranzakciós hiba.  Kivétel van a szerződés kódjában."
   },
   "transactionErrorNoContract": {
     "message": "Nem-szerződéses címen próbál egy funkciót meghívni."
-  },
-  "transactionErrored": {
-    "message": "Hiba történt a tranzakció során."
-  },
-  "transactionResubmitted": {
-    "message": "A tranzakció újra beküldve $1 / $2 emelt gázdíjjal."
-  },
-  "transactionSubmitted": {
-    "message": "Tranzakció jóváhagyva $1 üzemanyag költséggel $2-kor."
-  },
-  "transactionUpdated": {
-    "message": "Tranzakció frissítve $2-nál"
   },
   "transfer": {
     "message": "Átutalás"

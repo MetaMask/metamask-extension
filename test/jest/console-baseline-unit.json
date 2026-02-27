@@ -674,9 +674,6 @@
     "ui/components/app/transaction-activity-empty-state/transaction-activity-empty-state.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/app/transaction-activity-log/transaction-activity-log.component.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/app/transaction-breakdown/transaction-breakdown-row/transaction-breakdown-row.component.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },

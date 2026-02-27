@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Rien à voir pour l’instant. Échangez votre premier jeton dès aujourd’hui."
   },
-  "activityLog": {
-    "message": "Log d’activité"
-  },
   "add": {
     "message": "Ajouter"
   },
@@ -7674,9 +7671,6 @@
   "speedUpTooltipText": {
     "message": "Nouveaux frais de gaz"
   },
-  "speedUpTransaction": {
-    "message": "Accélérez cette transaction"
-  },
   "spendLimitInsufficient": {
     "message": "Limite de dépenses insuffisante"
   },
@@ -8527,18 +8521,6 @@
   "transaction": {
     "message": "transaction"
   },
-  "transactionCancelAttempted": {
-    "message": "Tentative d’annulation de la transaction avec un prix de carburant de $1 à $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaction annulée avec succès à $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transaction confirmée sur $2."
-  },
-  "transactionCreated": {
-    "message": "Transaction créée avec une valeur de $1 sur $2."
-  },
   "transactionDataFunction": {
     "message": "Fonction"
   },
@@ -8548,17 +8530,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Montant + frais"
   },
-  "transactionDropped": {
-    "message": "Transaction abandonnée sur $2."
-  },
   "transactionError": {
     "message": "Erreur de transaction. Une exception a été rencontrée dans l’exécution du code du contrat."
   },
   "transactionErrorNoContract": {
     "message": "Tentative d’appel de fonction sur une adresse qui n’apparaît pas dans le contrat."
-  },
-  "transactionErrored": {
-    "message": "La transaction a rencontré une erreur."
   },
   "transactionFee": {
     "message": "Frais de transaction"
@@ -8594,24 +8570,15 @@
   "transactionIncludesTypes": {
     "message": "Cette transaction comprend : $1."
   },
-  "transactionResubmitted": {
-    "message": "La transaction a été soumise à nouveau avec une augmentation du prix du gaz, désormais de $1 à $2"
-  },
   "transactionSettings": {
     "message": "Paramètres de la transaction"
   },
   "transactionShield": {
     "message": "Protection des transactions"
   },
-  "transactionSubmitted": {
-    "message": "Transaction envoyée sur $2."
-  },
   "transactionTotalGasFee": {
     "message": "Montant total des frais de gaz",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Transaction mise à jour sur $2."
   },
   "transactions": {
     "message": "Transactions"
