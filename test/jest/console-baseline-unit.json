@@ -1104,7 +1104,15 @@
     },
     "ui/pages/confirmations/components/rows/claimable-bonus-row/claimable-bonus-row.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/rows/enforced-simulations-row/enforced-simulations-row.test.tsx": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/rows/pay-with-row/pay-with-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/rows/required-tokens-row/required-tokens-row.test.tsx": {
       "Reselect: Identity function warnings": 3
@@ -1317,8 +1325,8 @@
     "ui/pages/confirmations/hooks/transactions/useEnableShieldCoverageChecks.test.ts": {
       "Reselect: Identity function warnings": 3
     },
-    "ui/pages/confirmations/hooks/transactions/useIsEnforcedSimulationsSupported.test.ts": {
-      "Reselect: Identity function warnings": 3
+    "ui/pages/confirmations/hooks/transactions/useShieldConfirm.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/transactions/useTransactionConfirm.test.ts": {
       "MetaMask: Background connection not initialized": 96,
