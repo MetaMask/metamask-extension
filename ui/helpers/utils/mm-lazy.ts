@@ -2,9 +2,13 @@ import React from 'react';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 
-export type DynamicImportType = () => Promise<ModuleWithDefaultType>;
-export type ModuleWithDefaultType = {
-  default: React.ComponentType;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type DynamicImportType = () => Promise<any>;
+export type ModuleWithDefaultType<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Component extends React.ComponentType<any> = React.ComponentType,
+> = {
+  default: Component;
 };
 
 // This only has to happen once per app load, so do it outside a function
@@ -17,7 +21,10 @@ const lazyLoadSubSampleRate = getManifestFlags().sentry?.lazyLoadSubSampleRate;
  *
  * @param fn - an import of the form `() => import('AAA')`
  */
-export function mmLazy(fn: DynamicImportType) {
+export function mmLazy<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Component extends React.ComponentType<any> = React.ComponentType,
+>(fn: DynamicImportType): React.LazyExoticComponent<Component> {
   return React.lazy(async () => {
     // We can't start the trace here because we don't have the componentName yet, so we just hold the startTime
     const startTime = Date.now();
@@ -36,7 +43,7 @@ export function mmLazy(fn: DynamicImportType) {
       endTrace({ name: TraceName.LazyLoadComponent });
     }
 
-    return component;
+    return component as ModuleWithDefaultType<Component>;
   });
 }
 
