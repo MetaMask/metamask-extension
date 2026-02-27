@@ -1,5 +1,5 @@
 import { Messenger } from '@metamask/messenger';
-import { BaseDataService } from './BaseDataService';
+import { BaseDataService } from '@metamask-previews/base-data-service';
 
 const serviceName = 'AssetDataService';
 
@@ -26,7 +26,7 @@ export class AssetDataService extends BaseDataService<
 
   async getAssets(assets: string[]) {
     return this.fetchQuery({
-      queryKey: [`${this.name}:getAssets`, ...assets],
+      queryKey: [`${this.name}:getAssets`, assets],
       queryFn: async () => {
         const url = new URL(
           `${this.#baseUrl}/v3/assets?assetIds=${assets.join(',')}`,

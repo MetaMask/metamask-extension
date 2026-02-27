@@ -49,7 +49,6 @@ import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 import { getPerpsStreamManager } from './providers/perps';
-import { createUIQueryClient } from './queries/UIQueryClient';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
 export {
@@ -92,7 +91,6 @@ export const connectToBackground = (
       );
     }
   });
-  createUIQueryClient(backgroundConnection);
 };
 
 export async function launchMetamaskUi(opts) {
