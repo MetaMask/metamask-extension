@@ -14359,7 +14359,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-core@npm:4.43.0":
+"@tanstack/query-core@npm:4.43.0, @tanstack/query-core@npm:^4.43.0":
   version: 4.43.0
   resolution: "@tanstack/query-core@npm:4.43.0"
   checksum: 10/c2a5a151c7adaea8311e01a643255f31946ae3164a71567ba80048242821ae14043f13f5516b695baebe5ea7e4b2cf717fd60908a929d18a5c5125fee925ff67
