@@ -111,9 +111,22 @@ export function getErrorHtml(
     <span>${lodashEscape(t('errorLegalTextNoPersonalInfo'))}</span>
 `;
 
-  const restoreAccountsLink = hasBackup
+  const supportPart = supportLink
     ? `
-        <span> ${lodashEscape(t('criticalErrorOr'))} </span>
+        <span>${lodashEscape(t('stillGettingMessage'))}</span>
+        <a
+          href="${lodashEscape(supportLink)}"
+          class="critical-error__link"
+          target="_blank"
+          rel="noopener noreferrer">
+            ${lodashEscape(t('errorPageContactSupport'))}
+        </a>
+      `
+    : '';
+
+  const restorePart = hasBackup
+    ? `
+        ${supportLink ? `<span> ${lodashEscape(t('criticalErrorOr'))} </span>` : ''}
         <a
           id="critical-error-restore-link"
           class="critical-error__link"
@@ -123,20 +136,14 @@ export function getErrorHtml(
       `
     : '';
 
-  const footer = supportLink
-    ? `
+  const footer =
+    supportPart || restorePart
+      ? `
       <p class="critical-error__footer">
-        <span>${lodashEscape(t('stillGettingMessage'))}</span>
-        <a
-          href="${lodashEscape(supportLink)}"
-          class="critical-error__link"
-          target="_blank"
-          rel="noopener noreferrer">
-            ${lodashEscape(t('errorPageContactSupport'))}
-        </a>${restoreAccountsLink}
+        ${supportPart}${restorePart}
       </p>
     `
-    : '';
+      : '';
 
   let detailsRawHtml = '';
   if (error?.message) {
