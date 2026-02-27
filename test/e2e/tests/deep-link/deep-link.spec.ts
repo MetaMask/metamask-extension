@@ -28,6 +28,7 @@ const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 type LocalNode = Ganache | Anvil;
 
 const TEST_PAGE = 'https://doesntexist.test/';
+const TRUSTED_ORIGIN_PAGE = `${BaseUrl.MetaMask}/deeplink-test`;
 
 describe('Deep Link', function () {
   let keyPair: CryptoKeyPair;
@@ -69,6 +70,15 @@ describe('Deep Link', function () {
             };
           });
         await server.forGet(TEST_PAGE).thenCallback(() => {
+          return {
+            statusCode: 200,
+            body: emptyHtmlPage(),
+            headers: {
+              'Content-Type': 'text/html; charset=utf-8',
+            },
+          };
+        });
+        await server.forGet(TRUSTED_ORIGIN_PAGE).thenCallback(() => {
           return {
             statusCode: 200,
             body: emptyHtmlPage(),
@@ -564,6 +574,57 @@ and we'll take you to the right place.`
 
         const finalUrlStr = await driver.getCurrentUrl();
         assert.equal(finalUrlStr, initialUrlStr);
+      },
+    );
+  });
+
+  it('skips the interstitial for signed links opened from a trusted origin', async function () {
+    await withFixtures(
+      await getConfig(this.test?.fullTitle()),
+      async ({ driver }: { driver: Driver }) => {
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        await driver.openNewURL(TRUSTED_ORIGIN_PAGE);
+
+        const dappWindowHandle = await driver.driver.getWindowHandle();
+        const rawUrl = `https://link.metamask.io/home`;
+        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+        const windowOpened = await driver.executeScript(
+          `
+          globalThis.testWindow = window.open(${JSON.stringify(
+            signedUrl,
+          )}, '_blank');
+          return globalThis.testWindow != null;
+          `,
+        );
+        assert.strictEqual(windowOpened, true, 'window.open failed');
+
+        await driver.delay(1000); // give the window a second to open
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        const metamaskWindowHandle = await driver.driver.getWindowHandle();
+        assert.notStrictEqual(
+          metamaskWindowHandle,
+          dappWindowHandle,
+          'should open a new window for the extension',
+        );
+
+        await homePage.checkPageIsLoaded();
+
+        const currentUrl = new URL(await driver.getCurrentUrl());
+        assert.equal(
+          currentUrl.hash.startsWith('#link'),
+          false,
+          'expected to skip the deep link interstitial',
+        );
       },
     );
   });

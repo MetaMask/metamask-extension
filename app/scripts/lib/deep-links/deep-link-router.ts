@@ -17,6 +17,9 @@ import {
   SignatureStatus,
   VALID,
 } from '../../../../shared/lib/deep-links/verify';
+import { BaseUrl } from '../../../../shared/constants/urls';
+
+const trustedOrigins = new Set([new URL(BaseUrl.MetaMask).origin]);
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
@@ -104,8 +107,12 @@ export class DeepLinkRouter extends EventEmitter<{
    * @param details
    * @param details.tabId - The ID of the tab making the request.
    * @param details.url - The URL being requested.
+   * @param details.initiator - The origin of the request, if available (used in Chrome).
+   * @param details.originUrl - The origin URL of the request, if available (used in Firefox).
    */
   private handleBeforeRequest = ({
+    initiator,
+    originUrl,
     tabId,
     url,
   }: browser.WebRequest.OnBeforeRequestDetailsType): browser.WebRequest.BlockingResponseOrPromise => {
@@ -113,7 +120,8 @@ export class DeepLinkRouter extends EventEmitter<{
       return {};
     }
 
-    return this.tryNavigateTo(tabId, url);
+    // chrome uses `initiator` and firefox uses `originUrl`
+    return this.tryNavigateTo(tabId, url, initiator ?? originUrl);
   };
 
   /**
@@ -143,16 +151,40 @@ export class DeepLinkRouter extends EventEmitter<{
   }
 
   /**
+   * Checks if the origin of the request is a trusted URL that can skip the
+   * interstitial page.
+   *
+   * @param originUrl - The origin of the request.
+   */
+  private isTrustedOriginUrl(originUrl?: string) {
+    if (!originUrl) {
+      return false;
+    }
+    try {
+      const { origin } = new URL(originUrl);
+      // compare originUrl to the list of trusted URLs that can skip the
+      // interstitial page.
+      return trustedOrigins.has(origin);
+    } catch (error) {
+      log.error('Error parsing origin URL:', originUrl, error);
+      this.emit('error', error);
+      return false;
+    }
+  }
+
+  /**
    * Attempts to navigate to the specified URL by parsing it and
    * redirecting to the appropriate internal route.
    * If the URL is invalid or too long, it redirects to the 404 error page.
    *
    * @param tabId - The ID of the tab to redirect.
    * @param urlStr - The URL string to navigate to.
+   * @param originUrl - The origin of the request, if available.
    */
   private async tryNavigateTo(
     tabId: number,
     urlStr: string,
+    originUrl?: string,
   ): Promise<browser.WebRequest.BlockingResponse> {
     if (urlStr.length > DEEP_LINK_MAX_LENGTH) {
       log.debug('Url is too long, skipping deep link handling');
@@ -169,7 +201,7 @@ export class DeepLinkRouter extends EventEmitter<{
 
         if ('redirectTo' in parsed.destination) {
           link = parsed.destination.redirectTo.toString();
-        } else if (this.canSkipInterstitial(parsed.signature)) {
+        } else if (this.canSkipInterstitial(parsed.signature, originUrl)) {
           // signed links than can and should skip the interstitial page
           link = this.getExtensionURL(
             parsed.destination.path,
@@ -215,16 +247,23 @@ export class DeepLinkRouter extends EventEmitter<{
 
   /**
    * Checks if the interstitial page can be skipped based on the signature status.
-   * If the signature is valid and the user has opted to skip the interstitial,
+   * If the signature is valid and:
+   * - the origin URL is trusted, or
+   * - the user has opted to skip the interstitial
    * it returns true.
    *
    * @param signatureStatus - The signature status of the deep link.
+   * @param originUrl - The origin of the request, if available.
    */
   canSkipInterstitial(
     signatureStatus: SignatureStatus,
+    originUrl?: string,
   ): signatureStatus is typeof VALID {
     if (signatureStatus !== VALID) {
       return false;
+    }
+    if (this.isTrustedOriginUrl(originUrl)) {
+      return true;
     }
     return Boolean(this.getState().preferences?.skipDeepLinkInterstitial);
   }
