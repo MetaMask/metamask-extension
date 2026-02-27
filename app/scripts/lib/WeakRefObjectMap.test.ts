@@ -33,7 +33,7 @@ async function collectWithRetries(
   return false;
 }
 
-describe('WeakDomainProxyMap', () => {
+describe('WeakRefObjectMap', () => {
   let map: WeakRefObjectMap<TestRecord>;
 
   beforeEach(() => {
@@ -86,9 +86,11 @@ describe('WeakDomainProxyMap', () => {
   });
 
   it('throws when setting non-object values', () => {
-    expect(() =>
-      map.set('bad', { objKey: null } as unknown as TestRecord),
-    ).toThrow(
+    const setInvalidValue = () =>
+      map.set('bad', { objKey: null } as unknown as TestRecord);
+
+    expect(setInvalidValue).toThrow(TypeError);
+    expect(setInvalidValue).toThrow(
       'Property objKey is not an object and cannot be weakly referenced.',
     );
   });
@@ -208,6 +210,23 @@ describe('WeakDomainProxyMap', () => {
       map.forEach(callback, thisArg);
 
       expect(thisArg.calledWithKeys).toEqual(['key1', 'key2']);
+      expect(callback).toHaveBeenCalledTimes(2);
+    });
+
+    it('uses falsy thisArg in forEach callback', () => {
+      const thisArg = 0;
+      const callback = jest.fn(function (
+        this: number,
+        _value: TestRecord,
+        _key: string,
+        sourceMap: Map<string, TestRecord>,
+      ) {
+        expect(this).toBe(0);
+        expect(sourceMap).toBe(map);
+      });
+
+      map.forEach(callback, thisArg);
+
       expect(callback).toHaveBeenCalledTimes(2);
     });
 

@@ -174,6 +174,10 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
     };
   }
 
+  /**
+   * Returns a new iterator object that contains the values for each element in
+   * the map. The values are dereferenced before being returned.
+   */
   values(): IterableIterator<RecordType> {
     const it = this.map[Symbol.iterator]();
     // eslint-disable-next-line @typescript-eslint/no-this-alias
