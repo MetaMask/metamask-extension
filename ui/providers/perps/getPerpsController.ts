@@ -14,6 +14,10 @@ import { getReduxStorePromise } from '../../store/redux-store-promise';
 const REMOTE_FEATURE_FLAG_GET_STATE = 'RemoteFeatureFlagController:getState';
 const REMOTE_FEATURE_FLAG_STATE_CHANGE =
   'RemoteFeatureFlagController:stateChange';
+const ACCOUNT_TREE_GET_ACCOUNTS =
+  'AccountTreeController:getAccountsFromSelectedAccountGroup';
+const ACCOUNT_TREE_SELECTED_GROUP_CHANGE =
+  'AccountTreeController:selectedAccountGroupChange';
 
 /** State shape expected by PerpsController (RemoteFeatureFlagControllerState). */
 type RemoteFeatureFlagState = {
@@ -131,6 +135,38 @@ function createPerpsMessenger(
     unsubscribeRemoteFeatureFlags = storeToUse.subscribe(publishStateChange);
   }
 
+  const accountTreeMessenger = new Messenger({
+    namespace: 'AccountTreeController',
+  });
+
+  const getSelectedAccounts = () => {
+    if (!storeToUse) {
+      return [];
+    }
+    const state = storeToUse.getState();
+    const accountId = state.metamask?.internalAccounts?.selectedAccount;
+    const account =
+      accountId && state.metamask?.internalAccounts?.accounts?.[accountId];
+    return account ? [account] : [];
+  };
+
+  const accountTreeMessengerTyped = accountTreeMessenger as unknown as {
+    registerActionHandler: (
+      action: string,
+      handler: () => unknown[],
+    ) => void;
+    delegate: (opts: {
+      actions: string[];
+      events: string[];
+      messenger: PerpsControllerMessenger;
+    }) => void;
+  };
+
+  accountTreeMessengerTyped.registerActionHandler(
+    ACCOUNT_TREE_GET_ACCOUNTS,
+    getSelectedAccounts,
+  );
+
   const perpsMessenger = new Messenger({
     namespace: 'PerpsController',
   }) as PerpsControllerMessenger;
@@ -138,6 +174,12 @@ function createPerpsMessenger(
   featureFlagMessengerTyped.delegate({
     actions: [REMOTE_FEATURE_FLAG_GET_STATE],
     events: [REMOTE_FEATURE_FLAG_STATE_CHANGE],
+    messenger: perpsMessenger,
+  });
+
+  accountTreeMessengerTyped.delegate({
+    actions: [ACCOUNT_TREE_GET_ACCOUNTS],
+    events: [ACCOUNT_TREE_SELECTED_GROUP_CHANGE],
     messenger: perpsMessenger,
   });
 
