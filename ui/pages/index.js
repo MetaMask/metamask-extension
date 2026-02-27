@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { createUIQueryClient } from '@metamask-previews/base-data-service';
+
 import { captureException } from '../../shared/lib/sentry';
 import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n';
 import {
@@ -13,12 +15,26 @@ import { MetamaskNotificationsProvider } from '../contexts/metamask-notification
 import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
+import { DATA_SERVICES } from '../../shared/constants/data-services';
+import { submitRequestToBackground, background as backgroundConnection } from '../store/background-connection';
 import RiveWasmProvider from '../contexts/rive-wasm';
-import { uiQueryClient } from '../queries/UIQueryClient';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
 import ErrorPage from './error-page/error-page.component';
 
 import Routes from './routes';
+
+const adapter = {
+  call: (method, ...params) => submitRequestToBackground(method, params),
+  subscribe: (method, callback) => {
+    backgroundConnection.onNotification((data) => {
+      if (data.method === method) {
+        callback(data.params);
+      }
+    });
+  },
+};
+
+const uiQueryClient = createUIQueryClient(DATA_SERVICES, adapter);
 
 class Index extends PureComponent {
   state = {};
