@@ -1327,27 +1327,25 @@ describe('MetaMaskController', () => {
         return await engine.handle(request);
       }
 
-      const createWalletRequestExecutionPermissionsParamsForChains = (chainIds) => {
-        return chainIds.map(chainId => ({
+      const createWalletRequestExecutionPermissionsParamsForChains = (
+        chainIds,
+      ) => {
+        return chainIds.map((chainId) => ({
           chainId,
           to: '0x0000000000000000000000000000000000000000',
           permission: {
             type: 'erc20-token-revocation',
             data: {
-              justification: "A test permission request"
+              justification: 'A test permission request',
             },
-            isAdjustmentAllowed: true
-          }
+            isAdjustmentAllowed: true,
+          },
         }));
       };
 
       it('rejects when a requested chain is not in EIP-7702 supportedChains', async () => {
         jest
-          .spyOn(
-            metamaskController.remoteFeatureFlagController,
-            'state',
-            'get',
-          )
+          .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
           .mockReturnValue({
             remoteFeatureFlags: {
               confirmations_eip_7702: {
@@ -1357,7 +1355,9 @@ describe('MetaMaskController', () => {
             cacheTimestamp: 0,
           });
 
-        const params = createWalletRequestExecutionPermissionsParamsForChains(['0x99']);
+        const params = createWalletRequestExecutionPermissionsParamsForChains([
+          '0x99',
+        ]);
         const response = await requestExecutionPermissions(params);
 
         expect(response.error).toBeDefined();
@@ -1371,11 +1371,7 @@ describe('MetaMaskController', () => {
 
       it('rejects when any of multiple requested chains are unsupported', async () => {
         jest
-          .spyOn(
-            metamaskController.remoteFeatureFlagController,
-            'state',
-            'get',
-          )
+          .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
           .mockReturnValue({
             remoteFeatureFlags: {
               confirmations_eip_7702: {
@@ -1385,7 +1381,10 @@ describe('MetaMaskController', () => {
             cacheTimestamp: 0,
           });
 
-        const params = createWalletRequestExecutionPermissionsParamsForChains(['0x1', '0x5']);
+        const params = createWalletRequestExecutionPermissionsParamsForChains([
+          '0x1',
+          '0x5',
+        ]);
         const response = await requestExecutionPermissions(params);
 
         expect(response.error).toBeDefined();
@@ -1399,11 +1398,7 @@ describe('MetaMaskController', () => {
 
       it('does not reject when all requested chains are supported', async () => {
         jest
-          .spyOn(
-            metamaskController.remoteFeatureFlagController,
-            'state',
-            'get',
-          )
+          .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
           .mockReturnValue({
             remoteFeatureFlags: {
               confirmations_eip_7702: {
@@ -1413,7 +1408,10 @@ describe('MetaMaskController', () => {
             cacheTimestamp: 0,
           });
 
-        const params = createWalletRequestExecutionPermissionsParamsForChains(['0x1', '0x539']);
+        const params = createWalletRequestExecutionPermissionsParamsForChains([
+          '0x1',
+          '0x539',
+        ]);
         const response = await requestExecutionPermissions(params);
 
         expect(response.error).toBeDefined();
@@ -1424,11 +1422,7 @@ describe('MetaMaskController', () => {
 
       it('does not reject when chainId matches supported chain (case-insensitive)', async () => {
         jest
-          .spyOn(
-            metamaskController.remoteFeatureFlagController,
-            'state',
-            'get',
-          )
+          .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
           .mockReturnValue({
             remoteFeatureFlags: {
               confirmations_eip_7702: {
@@ -1438,7 +1432,9 @@ describe('MetaMaskController', () => {
             cacheTimestamp: 0,
           });
 
-        const params = createWalletRequestExecutionPermissionsParamsForChains(['0xAA']);
+        const params = createWalletRequestExecutionPermissionsParamsForChains([
+          '0xAA',
+        ]);
         const response = await requestExecutionPermissions(params);
 
         expect(response.error).toBeDefined();
