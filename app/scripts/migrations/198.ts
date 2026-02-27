@@ -56,18 +56,16 @@ function transformState(
   state: Record<string, unknown>,
   changedLocalChangedControllers: Set<string>,
 ) {
-  if (!state.GatorPermissionsController) {
-    return state;
+  if (state.GatorPermissionsController) {
+    const gatorPermissionsController =
+      state.GatorPermissionsController as GatorPermissionsControllerStateV1;
+
+    delete gatorPermissionsController.gatorPermissionsMapSerialized;
+    delete gatorPermissionsController.isGatorPermissionsEnabled;
+    delete gatorPermissionsController.gatorPermissionsProviderSnapId;
+
+    changedLocalChangedControllers.add('GatorPermissionsController');
   }
-
-  const gatorPermissionsController =
-    state.GatorPermissionsController as GatorPermissionsControllerStateV1;
-
-  delete gatorPermissionsController.gatorPermissionsMapSerialized;
-  delete gatorPermissionsController.isGatorPermissionsEnabled;
-  delete gatorPermissionsController.gatorPermissionsProviderSnapId;
-
-  changedLocalChangedControllers.add('GatorPermissionsController');
 
   return state;
 }
