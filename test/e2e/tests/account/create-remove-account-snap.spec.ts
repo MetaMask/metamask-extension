@@ -12,7 +12,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
 describe('Create and remove Snap Account', function (this: Suite) {
-  it('TEST create snap account and remove it by removing snap', async function () {
+  it('create snap account and remove it by removing snap', async function () {
     await withFixtures(
       {
         dappOptions: {

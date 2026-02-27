@@ -18,7 +18,7 @@ const publicKeyGeneratedWithEntropySourceSRP2 =
   '"0xa8fdc184ded6d9a1b16d2d4070470720e4a946c9899ceb5165c05f9a8c4b026e8f630d6bdb60151f9e84b3c415c4b46c11bc2571022c8391b07faedc0d8c258d532d34c33149c5fc29e17c310437dc47e8afb43b2c55bd47b1b09ea295f7dcb3"';
 
 describe('Test Snap bip-44', function () {
-  it('TEST can pop up bip-44 snap and get private key result', async function () {
+  it('can pop up bip-44 snap and get private key result', async function () {
     await withFixtures(
       {
         dappOptions: {
