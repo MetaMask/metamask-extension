@@ -69,10 +69,7 @@ import {
   PERPS_ACTIVITY_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
-import {
-  PerpsControllerProvider,
-  PerpsRouteWrapper,
-} from '../../providers/perps';
+import { PerpsControllerProvider } from '../../providers/perps';
 import {
   getNetworkIdentifier,
   getPreferences,
@@ -351,36 +348,27 @@ const PerpsOrderEntryPage = mmLazy(
     )) as unknown as DynamicImportType,
 );
 
-// Perps pages wrapped with PerpsControllerProvider
+// Perps pages wrapped with PerpsControllerProvider (init, stream manager, prewarm)
 const WrappedPerpsHomePage = () => (
-  <PerpsRouteWrapper>
-    <PerpsControllerProvider>
-      <PerpsHomePage />
-    </PerpsControllerProvider>
-  </PerpsRouteWrapper>
+  <PerpsControllerProvider>
+    <PerpsHomePage />
+  </PerpsControllerProvider>
 );
 const WrappedPerpsMarketDetailPage = () => (
-  <PerpsRouteWrapper>
-    <PerpsControllerProvider>
-      <PerpsMarketDetailPage />
-    </PerpsControllerProvider>
-  </PerpsRouteWrapper>
+  <PerpsControllerProvider>
+    <PerpsMarketDetailPage />
+  </PerpsControllerProvider>
 );
 const WrappedMarketListView = () => (
-  <PerpsRouteWrapper>
-    <PerpsControllerProvider>
-      <MarketListView />
-    </PerpsControllerProvider>
-  </PerpsRouteWrapper>
+  <PerpsControllerProvider>
+    <MarketListView />
+  </PerpsControllerProvider>
 );
 const WrappedPerpsActivityPage = () => (
-  <PerpsRouteWrapper>
-    <PerpsControllerProvider>
-      <PerpsActivityPage />
-    </PerpsControllerProvider>
-  </PerpsRouteWrapper>
+  <PerpsControllerProvider>
+    <PerpsActivityPage />
+  </PerpsControllerProvider>
 );
-
 const WrappedPerpsOrderEntryPage = () => (
   <PerpsControllerProvider>
     <PerpsOrderEntryPage />

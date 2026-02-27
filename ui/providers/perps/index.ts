@@ -41,12 +41,6 @@ export {
   type PerpsControllerProviderProps,
 } from './PerpsControllerProvider';
 
-// Route Wrapper
-export {
-  PerpsRouteWrapper,
-  type PerpsRouteWrapperProps,
-} from './PerpsRouteWrapper';
-
 // Re-export commonly used types from the controller package
 export type {
   AccountState,

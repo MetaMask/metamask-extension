@@ -14,8 +14,12 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
-import { getPerpsController } from './getPerpsController.mock';
+import {
+  getPerpsController,
+  getPerpsControllerInstance,
+} from './getPerpsController.mock';
 import type { getPerpsController as GetPerpsControllerType } from './getPerpsController.mock';
+import { getPerpsStreamManager } from './PerpsStreamManager';
 
 /**
  * Mock PerpsController type
@@ -63,7 +67,7 @@ export function PerpsControllerProvider({
   loadingFallback = null,
 }: PerpsControllerProviderProps): JSX.Element | null {
   const [controller, setController] = useState<MockPerpsController | null>(
-    providedController ?? null,
+    () => providedController ?? getPerpsControllerInstance(),
   );
   const [error, setError] = useState<Error | null>(null);
 
@@ -82,12 +86,20 @@ export function PerpsControllerProvider({
       return;
     }
 
+    const streamManager = getPerpsStreamManager();
     let isMounted = true;
 
     getPerpsController(selectedAddress)
       .then((ctrl) => {
+        if (!isMounted) {
+          return;
+        }
+        setController(ctrl);
+        return streamManager.init(selectedAddress);
+      })
+      .then(() => {
         if (isMounted) {
-          setController(ctrl);
+          streamManager.prewarm();
         }
       })
       .catch((err) => {
@@ -102,6 +114,7 @@ export function PerpsControllerProvider({
 
     return () => {
       isMounted = false;
+      streamManager.cleanupPrewarm();
     };
   }, [providedController, selectedAddress]);
 
@@ -135,11 +148,11 @@ export function PerpsControllerProvider({
 /**
  * Mock hook to access the PerpsController.
  *
- * Returns the mock controller instance which logs operations to console
- * instead of making real API calls.
+ * Must be used within a PerpsControllerProvider. Returns the mock controller
+ * instance which logs operations to console instead of making real API calls.
  *
  * @returns The mock PerpsController instance
- * @throws Error if controller is not available
+ * @throws Error if used outside PerpsControllerProvider
  * @example
  * ```tsx
  * function TradingForm() {
@@ -152,54 +165,12 @@ export function PerpsControllerProvider({
  * ```
  */
 export function usePerpsController(): MockPerpsController {
-  const contextController = useContext(PerpsControllerContext);
-  const [standaloneController, setStandaloneController] =
-    useState<MockPerpsController | null>(null);
-
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const selectedAddress = selectedAccount?.address;
-
-  useEffect(() => {
-    // If we have a context controller, use that
-    if (contextController) {
-      return;
-    }
-
-    // Otherwise, get controller directly
-    if (!selectedAddress) {
-      return;
-    }
-
-    let isMounted = true;
-
-    getPerpsController(selectedAddress)
-      .then((ctrl) => {
-        if (isMounted) {
-          setStandaloneController(ctrl);
-        }
-      })
-      .catch((err) => {
-        if (isMounted) {
-          console.error('[usePerpsController] Init failed:', err);
-        }
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [contextController, selectedAddress]);
-
-  // Prefer context controller, fall back to standalone controller
-  const controller = contextController ?? standaloneController;
-
+  const controller = useContext(PerpsControllerContext);
   if (!controller) {
     throw new Error(
-      'usePerpsController: Mock controller not available. Either:\n' +
-        '1. Wrap your component tree with <PerpsControllerProvider>, or\n' +
-        '2. Wait for the controller to initialize.',
+      'usePerpsController must be used within a <PerpsControllerProvider>',
     );
   }
-
   return controller;
 }
 

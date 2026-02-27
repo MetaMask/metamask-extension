@@ -10,6 +10,7 @@ import type { PerpsController } from '@metamask/perps-controller';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { submitRequestToBackground } from '../../store/background-connection';
 import {
+  getPerpsControllerInstance,
   getPerpsStreamingController,
   isPerpsControllerInitializationCancelledError,
 } from './getPerpsController';
@@ -56,7 +57,7 @@ export function PerpsControllerProvider({
   loadingFallback = null,
 }: PerpsControllerProviderProps): JSX.Element | null {
   const [controller, setController] = useState<PerpsController | null>(
-    providedController ?? null,
+    () => providedController ?? getPerpsControllerInstance(),
   );
   const [error, setError] = useState<Error | null>(null);
 
@@ -76,6 +77,7 @@ export function PerpsControllerProvider({
       return;
     }
 
+    const streamManager = getPerpsStreamManager();
     let isMounted = true;
 
     Promise.all([
@@ -83,8 +85,16 @@ export function PerpsControllerProvider({
       submitRequestToBackground('perpsInit'),
     ])
       .then(([ctrl]) => {
+        if (!isMounted) {
+          return;
+        }
+        setController(ctrl);
+        setError(null);
+        return streamManager.init(selectedAddress);
+      })
+      .then(() => {
         if (isMounted) {
-          setController(ctrl);
+          streamManager.prewarm();
         }
       })
       .catch((err) => {
@@ -103,6 +113,7 @@ export function PerpsControllerProvider({
 
     return () => {
       isMounted = false;
+      streamManager.cleanupPrewarm();
     };
   }, [providedController, selectedAddress, store]);
 
@@ -136,15 +147,12 @@ export function PerpsControllerProvider({
 /**
  * Hook to access the PerpsController directly.
  *
- * Can be used either:
- * - Within a PerpsControllerProvider (traditional pattern)
- * - Standalone with the stream manager (new pattern - requires stream manager to be initialized)
- *
- * For best results with caching and smooth navigation, prefer using the stream hooks
- * (usePerpsLivePositions, usePerpsLiveOrders, etc.) which use the PerpsStreamManager.
+ * Must be used within a PerpsControllerProvider. For best results with caching
+ * and smooth navigation, prefer the stream hooks (usePerpsLivePositions,
+ * usePerpsLiveOrders, etc.) which use the PerpsStreamManager.
  *
  * @returns The PerpsController instance
- * @throws Error if controller is not available
+ * @throws Error if used outside PerpsControllerProvider
  * @example
  * ```tsx
  * function AccountBalance() {
@@ -160,67 +168,12 @@ export function PerpsControllerProvider({
  * ```
  */
 export function usePerpsController(): PerpsController {
-  const contextController = useContext(PerpsControllerContext);
-  const [streamManagerController, setStreamManagerController] =
-    useState<PerpsController | null>(null);
-
-  // Get the selected account address from Redux (for stream manager initialization)
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const selectedAddress = selectedAccount?.address;
-
-  useEffect(() => {
-    // If we have a context controller, use that (backward compatibility)
-    if (contextController) {
-      return;
-    }
-
-    // Otherwise, try to get controller via stream manager
-    if (!selectedAddress) {
-      return;
-    }
-
-    let isMounted = true;
-
-    const streamManager = getPerpsStreamManager();
-
-    // Initialize stream manager if needed
-    streamManager
-      .init(selectedAddress)
-      .then(() => {
-        // Get controller via getPerpsController (stream manager uses same singleton)
-        return getPerpsStreamingController(selectedAddress);
-      })
-      .then((ctrl) => {
-        if (isMounted) {
-          setStreamManagerController(ctrl);
-        }
-      })
-      .catch((err) => {
-        if (isMounted) {
-          if (isPerpsControllerInitializationCancelledError(err)) {
-            return;
-          }
-
-          console.error('[usePerpsController] Init failed:', err);
-        }
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [contextController, selectedAddress]);
-
-  // Prefer context controller, fall back to stream manager controller
-  const controller = contextController ?? streamManagerController;
-
+  const controller = useContext(PerpsControllerContext);
   if (!controller) {
     throw new Error(
-      'usePerpsController: Controller not available. Either:\n' +
-        '1. Wrap your component tree with <PerpsControllerProvider>, or\n' +
-        '2. Ensure the PerpsStreamManager is initialized (call prewarm() first).',
+      'usePerpsController must be used within a <PerpsControllerProvider>',
     );
   }
-
   return controller;
 }
 
