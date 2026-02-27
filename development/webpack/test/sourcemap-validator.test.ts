@@ -254,7 +254,7 @@ describe('sourcemap-validator', () => {
       assert.strictEqual(ok, true);
     });
 
-    it('returns false when bundle has no "new Error" (zero samples, nothing to validate)', async () => {
+    it('prints warning when bundle has no "new Error" (zero samples, nothing to validate)', async () => {
       const bundle = 'const x = 1; export { x };';
       const mapJson = makeSourceMap('const x = 1;', 1, 0, 1, 0);
       const jsPath = join(tmpDir, 'no-samples.js');
@@ -272,7 +272,6 @@ describe('sourcemap-validator', () => {
         mapPath,
         label: 'no-samples.js',
       });
-      assert.strictEqual(ok, false);
       assert.ok(
         errors.some(
           (e) =>
