@@ -187,12 +187,12 @@ async function setupMocking(
   // Mocks below this line can be overridden by test-specific mocks
 
   // remote feature flags — production-accurate defaults from the registry
+  // FF will apply to all environments: rc, prod and dev
   await server
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
     .withQuery({
       client: 'extension',
       distribution: 'main',
-      environment: 'dev',
     })
     .thenCallback(() => {
       return {
@@ -233,38 +233,6 @@ async function setupMocking(
             cohorts: [],
             assignedCohort: null,
             hasAssignedCohortExpired: null,
-          },
-        ],
-      };
-    });
-
-  await server
-    .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          subscriptions: [],
-          trialedProducts: [],
-        },
-      };
-    });
-
-  await server
-    .forGet(
-      'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: [
-          {
-            canSubscribe: false,
-            canViewEntryModal: false,
-            minBalanceUSD: 1000,
-            product: 'shield',
-            modalType: 'A',
-            cohorts: [],
           },
         ],
       };
@@ -951,30 +919,6 @@ async function setupMocking(
     };
   });
 
-  // Mock Rive animation files to prevent loading errors in e2e tests
-  // These animations are loaded during onboarding flow
-  await server
-    .forGet(/.*\/images\/riv_animations\/rive\.wasm/u)
-    .thenCallback(() => {
-      // Return empty ArrayBuffer for WASM file
-      return {
-        statusCode: 200,
-        headers: { 'content-type': 'application/wasm' },
-        body: Buffer.alloc(0),
-      };
-    });
-
-  await server
-    .forGet(/.*\/images\/riv_animations\/.*\.riv/u)
-    .thenCallback(() => {
-      // Return empty binary for .riv animation files
-      return {
-        statusCode: 200,
-        headers: { 'content-type': 'application/octet-stream' },
-        body: Buffer.alloc(0),
-      };
-    });
-
   // Price API: Spot prices for native token (ETH)
   // Uses zero address (0x0000000000000000000000000000000000000000) to represent native token
   // API format: v3/spot-prices?assetIds={assetIds}&vsCurrency=usd&includeMarketData=true
@@ -1160,6 +1104,20 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: JSON.parse(ACCOUNTS_API_TOKENS),
+      };
+    });
+
+  // Accounts API: transactions
+  await server
+    .forGet('https://accounts.api.cx.metamask.io/v4/multiaccount/transactions')
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          data: [],
+          pageInfo: { hasNextPage: false, count: 0 },
+        },
       };
     });
 

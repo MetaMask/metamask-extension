@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { ConnectedSitePopover } from './connected-site-popover';
 
 const props = {
@@ -136,12 +137,12 @@ describe('ConnectedSitePopover', () => {
 
   it('triggers onClick when manage permissions button is clicked', () => {
     const { getByText } = render();
-    fireEvent.click(getByText('Manage permissions'));
+    fireEvent.click(getByText(messages.managePermissions.message));
     expect(props.onClick).toHaveBeenCalled();
   });
 
   it('shows network name when connected', () => {
     const { getByText } = render();
-    expect(getByText('Goerli')).toBeInTheDocument();
+    expect(getByText(messages.networkNameGoerli.message)).toBeInTheDocument();
   });
 });
