@@ -19,6 +19,7 @@ async function start(): Promise<void> {
     HOST_URL,
     LAVAMOAT_POLICY_CHANGED,
     POST_NEW_BUILDS,
+    TEST_PLAN_VERSION,
   } = process.env;
 
   if (!PR_NUMBER) {
@@ -69,6 +70,14 @@ async function start(): Promise<void> {
     () => buildBundleSizeDiffSection(artifacts, MERGE_BASE_COMMIT_HASH),
     'Bundle size diffs',
   );
+
+  // Add AI-generated test plan section when a test plan was generated.
+  if (TEST_PLAN_VERSION) {
+    const testPlanFileName = `test-plan-${TEST_PLAN_VERSION}.json`;
+    const testPlanUrl = `${HOST_URL}/build-test-plan/builds/${testPlanFileName}`;
+    const testPlanLink = `<a href="${testPlanUrl}">${testPlanFileName}</a>`;
+    commentBody += `AI generated test plan: ${testPlanLink}\n\n`;
+  }
 
   await postCommentWithMetamaskBot({
     commentBody,
