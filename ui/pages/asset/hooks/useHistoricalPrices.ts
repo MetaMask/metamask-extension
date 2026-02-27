@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { HistoricalPriceValue } from '@metamask/snaps-sdk';
 import {
@@ -96,6 +97,57 @@ const deriveMetadata = (prices: Point[]) => {
   return { minPricePoint, maxPricePoint, xMin, xMax, yMin, yMax };
 };
 
+async function fetchEvmHistoricalPrices(
+  chainId: string,
+  address: string,
+  currency: string,
+  timePeriod: string,
+): Promise<Point[]> {
+  const startTime = performance.now();
+
+  const traceContext = trace({
+    name: TraceName.GetAssetHistoricalPrices,
+    startTime,
+  });
+
+  trace({
+    name: TraceName.GetAssetHistoricalPrices,
+    startTime,
+    parentContext: traceContext,
+  });
+
+  try {
+    const response = await fetch(
+      `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timePeriod}`,
+      {
+        headers: {
+          'X-Client-Id': 'extension',
+          'Content-Type': 'application/json',
+        },
+        referrerPolicy: 'no-referrer-when-downgrade',
+        method: 'GET',
+        mode: 'cors',
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `GetAssetHistoricalPrices failed with status ${response.status}: ${response.statusText}`,
+      );
+    }
+
+    const resp: { prices?: number[][] } = await response.json();
+    return resp?.prices?.map((p) => ({ x: p?.[0], y: p?.[1] })) ?? [];
+  } catch {
+    return [];
+  } finally {
+    endTrace({
+      name: TraceName.GetAssetHistoricalPrices,
+      timestamp: performance.timeOrigin + startTime,
+    });
+  }
+}
+
 /**
  * Internal hook that fetches the historical prices for EVM chains. Returns default values otherwise.
  *
@@ -118,81 +170,27 @@ const useHistoricalPricesEvm = ({
     getShouldShowFiat(state, hexChainId),
   );
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [prices, setPrices] = useState<Point[]>([]);
-  const [metadata, setMetadata] = useState<HistoricalPrices['metadata']>(
-    DEFAULT_USE_HISTORICAL_PRICES_METADATA,
+  const chainSupported =
+    isEvm && showFiat && chainSupportsPricing(chainId as Hex);
+  const timePeriod = fromIso8601DurationToPriceApiTimePeriod(timeRange);
+
+  const { data: prices = [], isInitialLoading: loading } = useQuery({
+    queryKey: ['evmHistoricalPrices', chainId, address, currency, timePeriod],
+    queryFn: () =>
+      fetchEvmHistoricalPrices(chainId, address, currency, timePeriod),
+    enabled: chainSupported,
+    staleTime: 60 * 1000,
+    cacheTime: 5 * 60 * 1000,
+    retry: false,
+  });
+
+  const metadata = useMemo(
+    () =>
+      prices.length > 0
+        ? deriveMetadata(prices)
+        : DEFAULT_USE_HISTORICAL_PRICES_METADATA,
+    [prices],
   );
-
-  // Fetch the prices, and set them locally as a result of the fetch
-  useEffect(() => {
-    if (!isEvm) {
-      return;
-    }
-
-    const chainSupported = showFiat && chainSupportsPricing(chainId as Hex);
-    if (!chainSupported) {
-      return;
-    }
-
-    const startTime = performance.now();
-
-    const traceContext = trace({
-      name: TraceName.GetAssetHistoricalPrices,
-      startTime,
-    });
-
-    trace({
-      name: TraceName.GetAssetHistoricalPrices,
-      startTime,
-      parentContext: traceContext,
-    });
-
-    setLoading(true);
-    const timePeriod = fromIso8601DurationToPriceApiTimePeriod(timeRange);
-    fetch(
-      `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timePeriod}`,
-      {
-        headers: {
-          'X-Client-Id': 'extension',
-          'Content-Type': 'application/json',
-        },
-        referrerPolicy: 'no-referrer-when-downgrade',
-        method: 'GET',
-        mode: 'cors',
-      },
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(
-            `GetAssetHistoricalPrices failed with status ${response.status}: ${response.statusText}`,
-          );
-        }
-        return response.json();
-      })
-      .catch(() => ({}))
-      .then((resp?: { prices?: number[][] }) => {
-        const pricesToSet =
-          resp?.prices?.map((p) => ({ x: p?.[0], y: p?.[1] })) ?? [];
-        setPrices(pricesToSet);
-      })
-      .finally(() => {
-        endTrace({
-          name: TraceName.GetAssetHistoricalPrices,
-          timestamp: performance.timeOrigin + startTime,
-        });
-        setLoading(false);
-      });
-  }, [isEvm, chainId, address, currency, timeRange, showFiat]);
-
-  // Compute the metadata
-  useEffect(() => {
-    if (!isEvm) {
-      return;
-    }
-    const metadataToSet = deriveMetadata(prices);
-    setMetadata(metadataToSet);
-  }, [isEvm, prices]);
 
   return { loading, data: { prices, metadata } };
 };

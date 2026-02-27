@@ -122,7 +122,7 @@ describe('useHistoricalPrices', () => {
     const currency = 'usd';
     const timeRange = 'P7D';
 
-    it('returns loading true and default data initially', () => {
+    it('returns loading true and default data initially', async () => {
       mockFetch.mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({ prices: [] }),
@@ -139,6 +139,10 @@ describe('useHistoricalPrices', () => {
           prices: [],
           metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,
         },
+      });
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
       });
     });
 
