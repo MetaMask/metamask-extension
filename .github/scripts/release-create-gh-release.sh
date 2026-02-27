@@ -14,22 +14,22 @@
 
 set -euo pipefail
 
-if [[ -z "${GITHUB_TOKEN}" ]]; then
+if [[ -z "${GITHUB_TOKEN:-}" ]]; then
     echo "::error::GITHUB_TOKEN not provided."
     exit 1
 fi
 
-if [[ -z "${GITHUB_REPOSITORY}" ]]; then
+if [[ -z "${GITHUB_REPOSITORY:-}" ]]; then
     echo "::error::GITHUB_REPOSITORY not provided."
     exit 1
 fi
 
-if [[ -z "${RELEASE_TAG}" ]]; then
+if [[ -z "${RELEASE_TAG:-}" ]]; then
     echo "::error::RELEASE_TAG not provided."
     exit 1
 fi
 
-if [[ -z "${RELEASE_SHA}" ]]; then
+if [[ -z "${RELEASE_SHA:-}" ]]; then
     echo "::error::RELEASE_SHA not provided."
     exit 1
 fi
