@@ -9,6 +9,7 @@ const mockServerStop = jest.fn();
 jest.mock('mockttp', () => {
   return {
     generateCACertificate: jest.fn(),
+    generateSPKIFingerprint: jest.fn(),
     getLocal: jest.fn(),
   };
 });
@@ -21,6 +22,9 @@ jest.mock('../../../mock-e2e', () => {
 
 const mockSetupMocking = jest.mocked(setupMocking);
 const mockGenerateCACertificate = jest.mocked(mockttp.generateCACertificate);
+const mockGenerateSPKIFingerprint = jest.mocked(
+  mockttp.generateSPKIFingerprint,
+);
 const mockGetLocal = jest.mocked(mockttp.getLocal);
 
 const mockServerInstance = {
@@ -31,7 +35,8 @@ const mockServerInstance = {
 describe('MetaMaskMockServerCapability', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGenerateCACertificate.mockResolvedValue({} as never);
+    mockGenerateCACertificate.mockResolvedValue({ cert: 'mock-cert' } as never);
+    mockGenerateSPKIFingerprint.mockReturnValue('mock-spki-fingerprint');
     mockGetLocal.mockReturnValue(mockServerInstance);
     mockSetupMocking.mockResolvedValue(
       {} as Awaited<ReturnType<typeof setupMocking>>,
@@ -62,6 +67,7 @@ describe('MetaMaskMockServerCapability', () => {
     await capability.start();
 
     expect(mockGenerateCACertificate).toHaveBeenCalled();
+    expect(mockGenerateSPKIFingerprint).toHaveBeenCalledWith('mock-cert');
     expect(mockGetLocal).toHaveBeenCalledWith({
       https: expect.anything(),
       cors: true,
@@ -83,6 +89,16 @@ describe('MetaMaskMockServerCapability', () => {
     await testSpecificMockAdapter(mockServerInstance);
 
     expect(testSpecificMock).toHaveBeenCalledWith(mockServerInstance);
+    expect(capability.getCertificateSpkiFingerprint()).toBe(
+      'mock-spki-fingerprint',
+    );
+    const proxyPacScript = capability.getProxyPacScript('127.0.0.1:8000');
+    expect(proxyPacScript).toContain('PROXY 127.0.0.1:8000');
+    expect(proxyPacScript).not.toContain('PROXY 127.0.0.1:8000; DIRECT');
+    expect(proxyPacScript).toContain(
+      'host === "api.cx.metamask.io" || dnsDomainIs(host, ".api.cx.metamask.io")',
+    );
+    expect(proxyPacScript).toContain('if (normalizedHost === "localhost"');
   });
 
   it('passes custom chain id to shared setupMocking', async () => {
@@ -122,5 +138,6 @@ describe('MetaMaskMockServerCapability', () => {
     await capability.stop();
 
     expect(mockServerStop).toHaveBeenCalled();
+    expect(capability.getCertificateSpkiFingerprint()).toBeUndefined();
   });
 });

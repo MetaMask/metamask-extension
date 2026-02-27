@@ -40,11 +40,22 @@ type ResolvedOptions = {
   stateMode: 'default' | 'onboarding' | 'custom';
   network: NetworkConfig;
   proxyServer?: string;
+  proxyPacScript?: string;
+  proxyServerCertificateSpkiFingerprint?: string;
 };
+
+function toPacDataUrl(proxyPacScript: string): string {
+  return `data:application/x-ns-proxy-autoconfig;base64,${Buffer.from(
+    proxyPacScript,
+    'utf8',
+  ).toString('base64')}`;
+}
 
 export function buildChromiumLaunchArgs(
   extensionPath: string,
   proxyServer?: string,
+  proxyPacScript?: string,
+  proxyServerCertificateSpkiFingerprint?: string,
 ): string[] {
   const launchArgs = [
     `--disable-extensions-except=${extensionPath}`,
@@ -56,9 +67,17 @@ export function buildChromiumLaunchArgs(
   ];
 
   if (proxyServer) {
-    launchArgs.unshift('--allow-insecure-localhost');
-    launchArgs.unshift('--ignore-certificate-errors');
-    launchArgs.unshift(`--proxy-server=${proxyServer}`);
+    if (proxyPacScript) {
+      launchArgs.unshift(`--proxy-pac-url=${toPacDataUrl(proxyPacScript)}`);
+    } else {
+      launchArgs.unshift(`--proxy-server=${proxyServer}`);
+    }
+
+    if (proxyServerCertificateSpkiFingerprint) {
+      launchArgs.unshift(
+        `--ignore-certificate-errors-spki-list=${proxyServerCertificateSpkiFingerprint}`,
+      );
+    }
   }
 
   return launchArgs;
@@ -94,6 +113,9 @@ export class MetaMaskExtensionLauncher {
         chainId: DEFAULT_CHAIN_ID,
       },
       proxyServer: options.proxyServer,
+      proxyPacScript: options.proxyPacScript,
+      proxyServerCertificateSpkiFingerprint:
+        options.proxyServerCertificateSpkiFingerprint,
     };
     this.userDataDir = '';
 
@@ -170,12 +192,13 @@ export class MetaMaskExtensionLauncher {
       const launchArgs = buildChromiumLaunchArgs(
         this.options.extensionPath,
         this.options.proxyServer,
+        this.options.proxyPacScript,
+        this.options.proxyServerCertificateSpkiFingerprint,
       );
 
       this.context = await chromium.launchPersistentContext(this.userDataDir, {
         headless: false,
         args: launchArgs,
-        ignoreHTTPSErrors: Boolean(this.options.proxyServer),
         viewport: {
           width: this.options.viewportWidth,
           height: this.options.viewportHeight,

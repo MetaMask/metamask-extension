@@ -40,6 +40,8 @@ export type LaunchOptions = {
   network?: NetworkConfig;
   fixture?: FixtureData;
   proxyServer?: string;
+  proxyPacScript?: string;
+  proxyServerCertificateSpkiFingerprint?: string;
 };
 
 export type LauncherLaunchOptions = LaunchOptions;

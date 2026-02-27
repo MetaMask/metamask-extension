@@ -37,6 +37,11 @@ import type { AnvilSeederWrapper } from '../anvil-seeder-wrapper';
 import type { MetaMaskFixtureCapability } from '../capabilities/fixture';
 import type { MetaMaskContractSeedingCapability } from '../capabilities/seeding';
 
+type ExtendedMockServerCapability = MockServerCapability & {
+  getCertificateSpkiFingerprint?: () => string | undefined;
+  getProxyPacScript?: (proxyServer: string) => string;
+};
+
 const DEFAULT_ANVIL_PORT = 8545;
 const DEFAULT_FIXTURE_SERVER_PORT = 12345;
 
@@ -381,11 +386,19 @@ export class MetaMaskSessionManager implements ISessionManager {
 
     const mockServerCapability = this.getMockServerCapability();
     let proxyServer: string | undefined;
+    let proxyPacScript: string | undefined;
+    let proxyServerCertificateSpkiFingerprint: string | undefined;
     if (mockServerCapability) {
       await mockServerCapability.start();
 
       if (mockServerCapability.isRunning()) {
         proxyServer = `127.0.0.1:${mockServerCapability.getPort()}`;
+        const extendedMockServerCapability =
+          mockServerCapability as ExtendedMockServerCapability;
+        proxyPacScript =
+          extendedMockServerCapability.getProxyPacScript?.(proxyServer);
+        proxyServerCertificateSpkiFingerprint =
+          extendedMockServerCapability.getCertificateSpkiFingerprint?.();
       }
     }
 
@@ -407,6 +420,8 @@ export class MetaMaskSessionManager implements ISessionManager {
       slowMo: input.slowMo ?? 0,
       extensionPath,
       proxyServer,
+      proxyPacScript,
+      proxyServerCertificateSpkiFingerprint,
     };
 
     const launcher = await launchMetaMask(launchOptions);

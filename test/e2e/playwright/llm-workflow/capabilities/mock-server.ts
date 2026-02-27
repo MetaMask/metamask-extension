@@ -6,6 +6,73 @@ import { setupMocking } from '../../../mock-e2e';
 
 const DEFAULT_MOCK_PORT = 8000;
 
+const PROXY_INTERCEPT_EXACT_HOSTS = [
+  'api.lens.dev',
+  'api.segment.io',
+  'bsc-dataseed.binance.org',
+  'carrot.megaeth.com',
+  'chainid.network',
+  'cdnjs.cloudflare.com',
+  'customnetwork.test',
+  'etherscan.io',
+  'mainnet.infura.io',
+  'sentry.io',
+  'sourcify.dev',
+  'testnet-rpc.monad.xyz',
+  'www.4byte.directory',
+] as const;
+
+const PROXY_INTERCEPT_DOMAIN_SUFFIXES = [
+  '.api.cx.metamask.io',
+  '.contentful.com',
+  '.infura.io',
+  '.ipfs.dweb.link',
+  '.metamask.io',
+  '.socket.tech',
+] as const;
+
+function escapePacString(value: string): string {
+  return value.replace(/\\/gu, '\\\\').replace(/"/gu, '\\"');
+}
+
+function buildProxyPacScript(proxyServer: string): string {
+  const escapedProxyServer = escapePacString(proxyServer);
+  const exactHosts = PROXY_INTERCEPT_EXACT_HOSTS.map(
+    (host) => `"${escapePacString(host)}": 1`,
+  ).join(',\n    ');
+  const suffixChecks = PROXY_INTERCEPT_DOMAIN_SUFFIXES.map((suffix) => {
+    const escapedSuffix = escapePacString(suffix);
+    const baseHost = escapePacString(suffix.slice(1));
+
+    return `if (host === "${baseHost}" || dnsDomainIs(host, "${escapedSuffix}")) { return true; }`;
+  }).join('\n    ');
+
+  return `function FindProxyForURL(url, host) {
+  if (!host) { return "DIRECT"; }
+
+  var normalizedHost = host.toLowerCase();
+  if (normalizedHost === "localhost" || shExpMatch(normalizedHost, "127.*") || shExpMatch(normalizedHost, "[::1]")) {
+    return "DIRECT";
+  }
+
+  var exactHosts = {
+    ${exactHosts}
+  };
+
+  function shouldProxy(host) {
+    if (exactHosts[host]) { return true; }
+    ${suffixChecks}
+    return false;
+  }
+
+  if (shouldProxy(normalizedHost)) {
+    return "PROXY ${escapedProxyServer}";
+  }
+
+  return "DIRECT";
+}`;
+}
+
 export type MetaMaskMockServerCapabilityOptions = {
   enabled?: boolean;
   port?: number;
@@ -21,6 +88,8 @@ export type MetaMaskMockServerCapabilityOptions = {
 
 export class MetaMaskMockServerCapability implements MockServerCapability {
   private server: Mockttp | undefined;
+
+  private certificateSpkiFingerprint: string | undefined;
 
   private readonly enabled: boolean;
 
@@ -59,6 +128,9 @@ export class MetaMaskMockServerCapability implements MockServerCapability {
     }
 
     const https = await mockttp.generateCACertificate();
+    this.certificateSpkiFingerprint = mockttp.generateSPKIFingerprint(
+      https.cert,
+    );
     this.server = mockttp.getLocal({ https, cors: true });
     await this.server.start(this.port);
     console.log(`MockServer running on port ${this.port}`);
@@ -88,6 +160,7 @@ export class MetaMaskMockServerCapability implements MockServerCapability {
 
     await this.server.stop();
     this.server = undefined;
+    this.certificateSpkiFingerprint = undefined;
   }
 
   isRunning(): boolean {
@@ -108,6 +181,14 @@ export class MetaMaskMockServerCapability implements MockServerCapability {
     }
 
     return this.port;
+  }
+
+  getCertificateSpkiFingerprint(): string | undefined {
+    return this.certificateSpkiFingerprint;
+  }
+
+  getProxyPacScript(proxyServer: string): string {
+    return buildProxyPacScript(proxyServer);
   }
 
   private async waitForReady(maxAttempts = 10): Promise<void> {
