@@ -42,7 +42,6 @@ import {
   getFirstTimeFlowTypeRouteAfterUnlock,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import ExperimentalArea from '../../components/app/flask/experimental-area';
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
 import { Box } from '../../components/component-library';
 import {
@@ -68,6 +67,7 @@ import type { MetaMaskReduxDispatch } from '../../store/store';
 import { useTheme } from '../../hooks/useTheme';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { isFlask } from '../../../shared/lib/build-types';
+import { DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -82,6 +82,18 @@ import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingDownloadApp from './download-app/download-app';
+
+/* eslint-disable jsdoc/check-tag-names */
+/* eslint-disable import/no-useless-path-segments */
+/* eslint-disable import/extensions */
+
+// Lazy-load ExperimentalArea so the flask/ module is only fetched in Flask builds
+const ExperimentalArea = mmLazy(
+  (() =>
+    import(
+      '../../components/app/flask/experimental-area'
+    )) as unknown as DynamicImportType,
+);
 
 // Helper to convert onboarding paths to relative paths for nested route matching
 const toRelativePath = (path: string) =>
@@ -397,10 +409,14 @@ export default function OnboardingFlow() {
             path={toRelativePath(ONBOARDING_DOWNLOAD_APP_ROUTE)}
             element={<OnboardingDownloadApp />}
           />
-          <Route
-            path={toRelativePath(ONBOARDING_EXPERIMENTAL_AREA)}
-            element={<ExperimentalArea redirectTo={ONBOARDING_WELCOME_ROUTE} />}
-          />
+          {isFlask() && (
+            <Route
+              path={toRelativePath(ONBOARDING_EXPERIMENTAL_AREA)}
+              element={
+                <ExperimentalArea redirectTo={ONBOARDING_WELCOME_ROUTE} />
+              }
+            />
+          )}
           <Route path="*" element={<OnboardingFlowSwitch />} />
         </Routes>
       </Box>
