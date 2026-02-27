@@ -124,7 +124,7 @@ describe('AssetsControllerInit', () => {
       priceDataSourceConfig: { pollInterval: 180_000 },
       stakedBalanceDataSourceConfig: {
         pollInterval: 30_000,
-        enabled: true,
+        enabled: false,
       },
       trackMetaMetricsEvent: expect.any(Function),
     });
@@ -159,7 +159,7 @@ describe('AssetsControllerInit', () => {
       priceDataSourceConfig: { pollInterval: 180_000 },
       stakedBalanceDataSourceConfig: {
         pollInterval: 30_000,
-        enabled: true,
+        enabled: false,
       },
       trackMetaMetricsEvent: expect.any(Function),
     });
