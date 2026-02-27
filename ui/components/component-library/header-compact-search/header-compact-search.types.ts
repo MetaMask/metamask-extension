@@ -1,6 +1,5 @@
 import React from 'react';
-import type { BoxProps } from '@metamask/design-system-react';
-import type { ButtonIconProps } from '@metamask/design-system-react';
+import type { BoxProps, ButtonIconProps } from '@metamask/design-system-react';
 import type { TextFieldSearchStyleUtilityProps } from '../text-field-search/text-field-search.types';
 
 export enum HeaderCompactSearchVariant {
@@ -8,16 +7,15 @@ export enum HeaderCompactSearchVariant {
   Inline = 'inline',
 }
 
-export interface HeaderCompactSearchTextFieldSearchProps
-  extends Omit<
-    TextFieldSearchStyleUtilityProps,
-    'onChange' | 'clearButtonOnClick'
-  > {
+export type HeaderCompactSearchTextFieldSearchProps = Omit<
+  TextFieldSearchStyleUtilityProps,
+  'onChange' | 'clearButtonOnClick'
+> & {
   onChangeText?: (text: string) => void;
   onClickClearButton?: () => void;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   clearButtonOnClick?: () => void;
-}
+};
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

@@ -98,7 +98,10 @@ export { Popover, PopoverPosition, PopoverRole } from './popover';
 export type { PopoverProps } from './popover';
 export { ModalHeader } from './modal-header';
 export type { ModalHeaderProps } from './modal-header';
-export { HeaderCompactSearch, HeaderCompactSearchVariant } from './header-compact-search';
+export {
+  HeaderCompactSearch,
+  HeaderCompactSearchVariant,
+} from './header-compact-search';
 export type {
   HeaderCompactSearchProps,
   HeaderCompactSearchTextFieldSearchProps,
