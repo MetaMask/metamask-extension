@@ -122,12 +122,10 @@
       "dismissSeedBackUpReminder": true,
       "featureFlags": {},
       "forgottenPassword": false,
-      "identities": "object",
       "ipfsGateway": "string",
       "isMultiAccountBalancesEnabled": "boolean",
       "knownMethodData": "object",
       "ledgerTransportType": "webhid",
-      "lostIdentities": "object",
       "openSeaEnabled": false,
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
