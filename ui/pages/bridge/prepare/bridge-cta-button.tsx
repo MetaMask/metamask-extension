@@ -39,10 +39,12 @@ export const BridgeCTAButton = ({
   onFetchNewQuotes,
   needsDestinationAddress = false,
   onOpenRecipientModal,
+  isMarketClosed = false,
 }: {
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
   onOpenRecipientModal?: () => void;
+  isMarketClosed?: boolean;
 }) => {
   const t = useI18nContext();
 
@@ -120,6 +122,10 @@ export const BridgeCTAButton = ({
       return { key: 'bridgeSelectDestinationAccount' };
     }
 
+    if (isMarketClosed) {
+      return { key: 'bridgeMarketClosedAction' };
+    }
+
     if (isQuoteExpired && !isLoading) {
       return { key: 'bridgeQuoteExpired' };
     }
@@ -158,6 +164,7 @@ export const BridgeCTAButton = ({
     isInsufficientGasForQuote,
     wasTxDeclined,
     isQuoteExpired,
+    isMarketClosed,
     needsDestinationAddress,
     activeQuote,
     isNoQuotesAvailable,
@@ -214,6 +221,7 @@ export const BridgeCTAButton = ({
       }}
       loading={isSubmitting}
       disabled={
+        isMarketClosed ||
         (!needsDestinationAddress && (!isTxSubmittable || isQuoteExpired)) ||
         isSubmitting
       }
