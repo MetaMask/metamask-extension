@@ -73,7 +73,9 @@ describe('createPerpsControllerFacade', () => {
     it('exposes messenger from the real controller', () => {
       const real = makeStreamingController();
       const facade = createPerpsControllerFacade(real as never);
-      expect(facade.messenger).toBe(real.messenger);
+      expect((facade as unknown as { messenger: unknown }).messenger).toBe(
+        real.messenger,
+      );
     });
   });
 
@@ -82,7 +84,12 @@ describe('createPerpsControllerFacade', () => {
       const real = makeStreamingController();
       const facade = createPerpsControllerFacade(real as never);
       mockSubmitRequestToBackground.mockResolvedValue(undefined);
-      const order = { market: 'ETH', side: 'buy' as const, size: 1 };
+      const order = {
+        symbol: 'ETH',
+        isBuy: true,
+        size: '1',
+        orderType: 'market' as const,
+      };
       await facade.placeOrder(order);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsPlaceOrder',
@@ -94,10 +101,10 @@ describe('createPerpsControllerFacade', () => {
       const real = makeStreamingController();
       const facade = createPerpsControllerFacade(real as never);
       mockSubmitRequestToBackground.mockResolvedValue(undefined);
-      await facade.updateMargin({ positionId: 'p1', marginDelta: '100' });
+      await facade.updateMargin({ symbol: 'ETH', amount: '100' });
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsUpdateMargin',
-        [{ positionId: 'p1', marginDelta: '100' }],
+        [{ symbol: 'ETH', amount: '100' }],
       );
     });
 

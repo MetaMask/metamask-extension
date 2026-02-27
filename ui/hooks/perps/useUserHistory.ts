@@ -55,7 +55,15 @@ export function useUserHistory({
       setIsLoading(true);
       setError(null);
 
-      const history = await controller.getUserHistory({
+      const history = await (
+        controller as unknown as {
+          getUserHistory: (params: {
+            startTime?: number;
+            endTime?: number;
+            accountId?: CaipAccountId;
+          }) => Promise<UserHistoryItem[]>;
+        }
+      ).getUserHistory({
         startTime,
         endTime,
         accountId,

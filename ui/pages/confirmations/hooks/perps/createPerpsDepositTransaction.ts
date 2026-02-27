@@ -18,7 +18,7 @@ export async function createPerpsDepositTransaction({
 }: CreatePerpsDepositTransactionParams): Promise<CreatedPerpsDepositTransaction> {
   const transactionId = controller
     ? await (
-        controller as {
+        controller as unknown as {
           depositWithConfirmation: (p: {
             amount?: string;
           }) => Promise<string | null>;

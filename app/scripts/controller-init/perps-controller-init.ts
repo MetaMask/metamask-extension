@@ -264,7 +264,7 @@ function getApi(
     perpsGetUserHistory: async (params: {
       startTime?: number;
       endTime?: number;
-      accountId?: string;
+      accountId?: `${string}:${string}:${string}`;
     }) => {
       await ensureInitialized();
       return controller.getActiveProvider().getUserHistory(params);
