@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Δεν υπάρχει ακόμη κάτι να δείτε. Ανταλλάξτε το πρώτο σας token σήμερα."
   },
-  "activityLog": {
-    "message": "Αρχείο καταγραφής δραστηριότητας"
-  },
   "add": {
     "message": "Προσθήκη"
   },
@@ -5242,9 +5239,6 @@
   "perpsAddToFavorites": {
     "message": "Προσθήκη στα αγαπημένα"
   },
-  "perpsAsk": {
-    "message": "Ζήτηση"
-  },
   "perpsAutoClose": {
     "message": "Αυτόματο κλείσιμο"
   },
@@ -5255,14 +5249,8 @@
   "perpsAvailableBalance": {
     "message": "Διαθέσιμο υπόλοιπο"
   },
-  "perpsBid": {
-    "message": "Προσφορά"
-  },
   "perpsCancelAllOrders": {
     "message": "Ακύρωση όλων"
-  },
-  "perpsClose": {
-    "message": "Κλείσιμο"
   },
   "perpsCloseAll": {
     "message": "Κλείσιμο όλων"
@@ -5380,9 +5368,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Τιμή ρευστοποίησης"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Εκτ. τιμή ρευστοποίησης"
   },
   "perpsLong": {
     "message": "Αγορά (Long)"
@@ -7363,21 +7348,6 @@
   "simulationErrorMessageV2": {
     "message": "Δεν ήμασταν σε θέση να εκτιμήσουμε το τέλος συναλλαγής. Μπορεί να υπάρχει σφάλμα στο συμβόλαιο και η συναλλαγή αυτή να αποτύχει."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Ανοχή απόκλισης"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Ορίστε μια διαφορά που θα είναι αποδεκτή για αλλαγές στο υπόλοιπο. Οι συναλλαγές δεν θα ολοκληρωθούν αν η διαφορά είναι μεγαλύτερη."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Επιβολή αλλαγών υπολοίπου"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Για την ασφάλεια των χρημάτων σας, η συναλλαγή δεν θα ολοκληρωθεί αν αλλάξει το υπόλοιπο ή αν δεν τηρηθεί η ανοχή ολίσθησης."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Ρυθμίσεις συναλλαγών"
-  },
   "simulationsSettingDescription": {
     "message": "Ενεργοποιήστε το για να κάνετε εκτίμηση των αλλαγών υπολοίπου των συναλλαγών και των υπογραφών πριν τις επιβεβαιώσετε. Αυτό δεν εγγυάται το τελικό τους αποτέλεσμα. $1"
   },
@@ -7703,9 +7673,6 @@
   },
   "speedUpTooltipText": {
     "message": "Νέο τέλος συναλλαγής"
-  },
-  "speedUpTransaction": {
-    "message": "Επιτάχυνση αυτής της συναλλαγής"
   },
   "spendLimitInsufficient": {
     "message": "Ανεπαρκές όριο δαπανών"
@@ -8557,18 +8524,6 @@
   "transaction": {
     "message": "συναλλαγή"
   },
-  "transactionCancelAttempted": {
-    "message": "Προσπάθεια ακύρωσης συναλλαγής με εκτιμώμενο τέλος συναλλαγής $1 στις $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Η συναλλαγή ακυρώθηκε με επιτυχία στις $2"
-  },
-  "transactionConfirmed": {
-    "message": "Η συναλλαγή επιβεβαιώθηκε στις $2."
-  },
-  "transactionCreated": {
-    "message": "Η συναλλαγή δημιουργήθηκε με αξία $1 στις $2."
-  },
   "transactionDataFunction": {
     "message": "Λειτουργία"
   },
@@ -8578,17 +8533,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Ποσά + τέλη"
   },
-  "transactionDropped": {
-    "message": "Η συναλλαγή υποχώρησε στα $2."
-  },
   "transactionError": {
     "message": "Σφάλμα συναλλαγής. Βρέθηκε εξαίρεση στον κωδικό του συμβολαίου."
   },
   "transactionErrorNoContract": {
     "message": "Προσπάθεια κλήσης μιας λειτουργίας σε διεύθυνση μη συμβολαίου."
-  },
-  "transactionErrored": {
-    "message": "Η συναλλαγή αντιμετώπισε ένα σφάλμα."
   },
   "transactionFee": {
     "message": "Χρέωση συναλλαγής"
@@ -8624,24 +8573,15 @@
   "transactionIncludesTypes": {
     "message": "Αυτή η συναλλαγή περιλαμβάνει: $1."
   },
-  "transactionResubmitted": {
-    "message": "Η συναλλαγή υποβλήθηκε ξανά με το εκτιμώμενο τέλος συναλλαγής να έχει αυξηθεί στα $1 στις $2"
-  },
   "transactionSettings": {
     "message": "Ρυθμίσεις συναλλαγών"
   },
   "transactionShield": {
     "message": "Προστασία συναλλαγών"
   },
-  "transactionSubmitted": {
-    "message": "Η συναλλαγή υποβλήθηκε με τέλος συναλλαγής στα $1 στις $2."
-  },
   "transactionTotalGasFee": {
     "message": "Σύνολο τελών συναλλαγών",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Η συναλλαγή ενημερώθηκε στις $2."
   },
   "transactions": {
     "message": "Συναλλαγές"

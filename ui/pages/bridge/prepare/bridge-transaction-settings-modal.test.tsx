@@ -1,8 +1,8 @@
 import React from 'react';
-import { act, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { fireEvent } from '../../../../test/jest';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import * as bridgeSelectors from '../../../ducks/bridge/selectors';
@@ -99,9 +99,12 @@ const expectButtonStates = (
   halfPercentState: string,
   twoPercentState: string,
   customState: string,
-  customLabel = 'Custom',
+  customLabel = messages.customSlippage.message,
 ) => {
-  autoState && expect(screen.getByText('Auto')).toHaveClass(autoState);
+  autoState &&
+    expect(screen.getByText(messages.slippageAuto.message)).toHaveClass(
+      autoState,
+    );
   expect(screen.getByText('0.5%').parentElement).toHaveClass(halfPercentState);
   expect(screen.getByText('2%').parentElement).toHaveClass(twoPercentState);
   expect(screen.getByText(customLabel)).toHaveClass(customState);

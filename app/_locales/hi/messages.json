@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "अभी देखने के लिए कुछ नहीं है। अपना पहला टोकन आज ही स्वैप करें।"
   },
-  "activityLog": {
-    "message": "एक्टिविटी लॉग"
-  },
   "add": {
     "message": "जोड़ें"
   },
@@ -5242,9 +5239,6 @@
   "perpsAddToFavorites": {
     "message": "पसंदीदा में जोड़े"
   },
-  "perpsAsk": {
-    "message": "आस्क"
-  },
   "perpsAutoClose": {
     "message": "ऑटो क्लोज़"
   },
@@ -5255,14 +5249,8 @@
   "perpsAvailableBalance": {
     "message": "उपलब्ध बैलेंस"
   },
-  "perpsBid": {
-    "message": "बिड"
-  },
   "perpsCancelAllOrders": {
     "message": "सब कैंसिल करें"
-  },
-  "perpsClose": {
-    "message": "बंद करें"
   },
   "perpsCloseAll": {
     "message": "सब बंद करें"
@@ -5380,9 +5368,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "लिक्विडेशन प्राइस"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "लिक्विडेशन प्राइस का अनुमान"
   },
   "perpsLong": {
     "message": "लॉन्ग"
@@ -7357,21 +7342,6 @@
   "simulationErrorMessageV2": {
     "message": "हम गैस का अनुमान नहीं लगा पाए। कॉन्ट्रैक्ट में कोई गड़बड़ी हो सकती है और यह ट्रांसेक्शन विफल हो सकता है।"
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "स्लिपेज (slippage) टॉलरेंस"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "बैलेंस में बदलाव के लिए अपनी सुविधानुसार एक अंतर निर्धारित करें। यदि अंतर अधिक होगा तो ट्रांसेक्शन नहीं हो पाएगा।"
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "बैलेंस संबंधी बदलाव को प्रभावी करें"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "आपके धन को सुरक्षित रखने के लिए, यदि बैलेंस में परिवर्तन होता है या स्लिपेज (slippage) टॉलरेंस पूरी नहीं होती है तो यह ट्रांसेक्शन पूरा नहीं होगा।"
-  },
-  "simulationSettingsModalTitle": {
-    "message": "ट्रांसेक्शन संबंधी सेटिंग्स"
-  },
   "simulationsSettingDescription": {
     "message": "ट्रांसेक्शन और सिग्नेचर्स को कन्फर्म करने से पहले उनके बैलेंस में बदलाव का अनुमान लगाने के लिए इसे चालू करें। यह उनके अंतिम परिणाम की गारंटी नहीं देता। $1"
   },
@@ -7697,9 +7667,6 @@
   },
   "speedUpTooltipText": {
     "message": "नया गैस फ़ीस"
-  },
-  "speedUpTransaction": {
-    "message": "इस ट्रांसेक्शन को गति दें"
   },
   "spendLimitInsufficient": {
     "message": "खर्च की लिमिट कम है"
@@ -8551,18 +8518,6 @@
   "transaction": {
     "message": "ट्रांसेक्शन"
   },
-  "transactionCancelAttempted": {
-    "message": "$2 में $1 के गैस फ़ीस के साथ ट्रांसेक्शन कैंसिल करने की कोशिश किया गया"
-  },
-  "transactionCancelSuccess": {
-    "message": "ट्रांसेक्शन सफलतापूर्वक $2 पर कैंसिल कर दिया गया"
-  },
-  "transactionConfirmed": {
-    "message": "ट्रांसेक्शन का कन्फर्मेशन $2 पर हुआ।"
-  },
-  "transactionCreated": {
-    "message": "$2 पर $1 के मूल्य के साथ ट्रांसेक्शन बनाया गया।"
-  },
   "transactionDataFunction": {
     "message": "फंक्शन"
   },
@@ -8572,17 +8527,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "अमाउंट + फ़ीस"
   },
-  "transactionDropped": {
-    "message": "ट्रांसेक्शन $2 पर ड्रॉप किया गया।"
-  },
   "transactionError": {
     "message": "ट्रांसेक्शन में गड़बड़ी। कॉन्ट्रैक्ट कोड में अपवाद डाला गया।"
   },
   "transactionErrorNoContract": {
     "message": "एक गैर-कॉन्ट्रैक्ट वाले एड्रेस पर एक फंक्शन को कॉल करने की कोशिश की जा रही है।"
-  },
-  "transactionErrored": {
-    "message": "ट्रांसेक्शन में गड़बड़ी हुई।"
   },
   "transactionFee": {
     "message": "ट्रांसेक्शन फ़ीस"
@@ -8618,24 +8567,15 @@
   "transactionIncludesTypes": {
     "message": "इस ट्रांसेक्शन में शामिल है: $1."
   },
-  "transactionResubmitted": {
-    "message": "$2 गैस फ़ीस में $1 वृद्धि के साथ ट्रांसेक्शन फिर से सबमिट किया गया"
-  },
   "transactionSettings": {
     "message": "ट्रांसेक्शन संबंधी सेटिंग्स"
   },
   "transactionShield": {
     "message": "ट्रांसेक्शन शील्ड"
   },
-  "transactionSubmitted": {
-    "message": "$2 पर $1 के गैस फ़ीस के साथ ट्रांसेक्शन सबमिट किया गया।"
-  },
   "transactionTotalGasFee": {
     "message": "कुल गैस फीस",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "$2 पर ट्रांसेक्शन अपडेट किया गया।"
   },
   "transactions": {
     "message": "ट्रांसेक्शन्स"

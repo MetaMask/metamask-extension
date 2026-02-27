@@ -5,6 +5,7 @@ import thunk from 'redux-thunk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { FirstTimeFlowType } from '../../../../../shared/constants/onboarding';
 import { SrpList } from './srp-list';
@@ -119,8 +120,12 @@ const render = () => {
 describe('SrpList', () => {
   it('renders list of secret recovery phrases', () => {
     const { getByText } = render();
-    expect(getByText('Secret Recovery Phrase 1')).toBeInTheDocument();
-    expect(getByText('Secret Recovery Phrase 2')).toBeInTheDocument();
+    expect(
+      getByText(messages.srpListName.message.replace('$1', '1')),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.srpListName.message.replace('$1', '2')),
+    ).toBeInTheDocument();
   });
 
   it('calls onActionComplete when clicking a keyring', () => {

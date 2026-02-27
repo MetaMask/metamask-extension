@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
 import {
-  twMerge,
   Box,
   Text,
   TextVariant,
@@ -9,23 +8,17 @@ import {
   BoxJustifyContent,
   BoxAlignItems,
   FontWeight,
-  Button,
-  ButtonVariant,
-  ButtonSize,
 } from '@metamask/design-system-react';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import {
   BorderRadius,
   BackgroundColor,
+  TextVariant as TextVariantLegacy,
 } from '../../../../../../helpers/constants/design-system';
 import ToggleButton from '../../../../../ui/toggle-button';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
-
-// Preset percentage options for quick selection
-const TP_PRESETS = [10, 25, 50, 100];
-const SL_PRESETS = [10, 25, 50, 75];
 
 /**
  * AutoCloseSection - Collapsible section for Take Profit and Stop Loss configuration
@@ -215,24 +208,6 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     [onStopLossPriceChange, percentToPrice],
   );
 
-  // Handle preset button click for TP
-  const handleTpPreset = useCallback(
-    (percent: number) => {
-      const newPrice = percentToPrice(percent, true);
-      onTakeProfitPriceChange(newPrice);
-    },
-    [percentToPrice, onTakeProfitPriceChange],
-  );
-
-  // Handle preset button click for SL
-  const handleSlPreset = useCallback(
-    (percent: number) => {
-      const newPrice = percentToPrice(percent, false);
-      onStopLossPriceChange(newPrice);
-    },
-    [percentToPrice, onStopLossPriceChange],
-  );
-
   // Calculate current percentages for display
   const tpPercent = useMemo(
     () => priceToPercent(takeProfitPrice, true),
@@ -252,7 +227,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
         justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
       >
-        <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
+        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
           {t('perpsAutoClose')}
         </Text>
         <ToggleButton
@@ -268,28 +243,12 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
           {/* Take Profit Section */}
           <Box flexDirection={BoxFlexDirection.Column} gap={2}>
             <Text
-              variant={TextVariant.BodySm}
+              variant={TextVariant.BodyXs}
               color={TextColor.TextAlternative}
-              fontWeight={FontWeight.Medium}
+              fontWeight={FontWeight.Regular}
             >
               {t('perpsTakeProfit')}
             </Text>
-
-            {/* Preset Buttons */}
-            <Box flexDirection={BoxFlexDirection.Row} gap={2}>
-              {TP_PRESETS.map((preset) => (
-                <Button
-                  key={`tp-${preset}`}
-                  variant={ButtonVariant.Secondary}
-                  size={ButtonSize.Sm}
-                  onClick={() => handleTpPreset(preset)}
-                  className={twMerge('flex-1', 'rounded-md')}
-                  data-testid={`tp-preset-${preset}`}
-                >
-                  +{preset}%
-                </Button>
-              ))}
-            </Box>
 
             {/* Input Row: Price ($) left, Percent (%) right */}
             <Box
@@ -300,7 +259,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
               {/* TP Price Input */}
               <Box className="flex-1">
                 <TextField
-                  size={TextFieldSize.Md}
+                  size={TextFieldSize.Sm}
                   value={takeProfitPrice}
                   onChange={handleTpPriceChange}
                   onBlur={handleTpPriceBlur}
@@ -310,9 +269,10 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   backgroundColor={BackgroundColor.backgroundMuted}
                   className="w-full"
                   data-testid="tp-price-input"
+                  inputProps={{ textVariant: TextVariantLegacy.bodySm }}
                   startAccessory={
                     <Text
-                      variant={TextVariant.BodyMd}
+                      variant={TextVariant.BodySm}
                       color={TextColor.TextAlternative}
                     >
                       $
@@ -324,7 +284,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
               {/* TP Percent Input */}
               <Box className="flex-1">
                 <TextField
-                  size={TextFieldSize.Md}
+                  size={TextFieldSize.Sm}
                   value={tpPercent}
                   onChange={handleTpPercentChange}
                   placeholder="0.0"
@@ -333,9 +293,10 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   backgroundColor={BackgroundColor.backgroundMuted}
                   className="w-full"
                   data-testid="tp-percent-input"
+                  inputProps={{ textVariant: TextVariantLegacy.bodySm }}
                   endAccessory={
                     <Text
-                      variant={TextVariant.BodyMd}
+                      variant={TextVariant.BodySm}
                       color={TextColor.TextAlternative}
                     >
                       %
@@ -349,28 +310,12 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
           {/* Stop Loss Section */}
           <Box flexDirection={BoxFlexDirection.Column} gap={2}>
             <Text
-              variant={TextVariant.BodySm}
+              variant={TextVariant.BodyXs}
               color={TextColor.TextAlternative}
-              fontWeight={FontWeight.Medium}
+              fontWeight={FontWeight.Regular}
             >
               {t('perpsStopLoss')}
             </Text>
-
-            {/* Preset Buttons */}
-            <Box flexDirection={BoxFlexDirection.Row} gap={2}>
-              {SL_PRESETS.map((preset) => (
-                <Button
-                  key={`sl-${preset}`}
-                  variant={ButtonVariant.Secondary}
-                  size={ButtonSize.Sm}
-                  onClick={() => handleSlPreset(preset)}
-                  className={twMerge('flex-1', 'rounded-md')}
-                  data-testid={`sl-preset-${preset}`}
-                >
-                  -{preset}%
-                </Button>
-              ))}
-            </Box>
 
             {/* Input Row: Price ($) left, Percent (%) right */}
             <Box
@@ -381,7 +326,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
               {/* SL Price Input */}
               <Box className="flex-1">
                 <TextField
-                  size={TextFieldSize.Md}
+                  size={TextFieldSize.Sm}
                   value={stopLossPrice}
                   onChange={handleSlPriceChange}
                   onBlur={handleSlPriceBlur}
@@ -391,9 +336,10 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   backgroundColor={BackgroundColor.backgroundMuted}
                   className="w-full"
                   data-testid="sl-price-input"
+                  inputProps={{ textVariant: TextVariantLegacy.bodySm }}
                   startAccessory={
                     <Text
-                      variant={TextVariant.BodyMd}
+                      variant={TextVariant.BodySm}
                       color={TextColor.TextAlternative}
                     >
                       $
@@ -405,7 +351,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
               {/* SL Percent Input */}
               <Box className="flex-1">
                 <TextField
-                  size={TextFieldSize.Md}
+                  size={TextFieldSize.Sm}
                   value={slPercent}
                   onChange={handleSlPercentChange}
                   placeholder="0.0"
@@ -414,9 +360,10 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   backgroundColor={BackgroundColor.backgroundMuted}
                   className="w-full"
                   data-testid="sl-percent-input"
+                  inputProps={{ textVariant: TextVariantLegacy.bodySm }}
                   endAccessory={
                     <Text
-                      variant={TextVariant.BodyMd}
+                      variant={TextVariant.BodySm}
                       color={TextColor.TextAlternative}
                     >
                       %
