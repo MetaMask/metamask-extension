@@ -20,7 +20,7 @@ import { Tag } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
-import { isBeta } from '../../../helpers/utils/build-types';
+import { isBeta } from '../../../../shared/lib/build-types';
 import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
