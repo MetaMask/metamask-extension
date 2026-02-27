@@ -11,7 +11,7 @@ Object.defineProperty(globalThis, 'crypto', {
   },
 });
 
-const mockGetPerpsController = jest.fn<Promise<unknown>, [string]>();
+const mockGetPerpsStreamingController = jest.fn<Promise<unknown>, [string]>();
 const mockGetPerpsControllerCurrentAddress = jest.fn<string | null, []>(
   () => null,
 );
@@ -24,7 +24,7 @@ const mockIsPerpsControllerInitializationCancelledError = jest.fn<
 >(() => false);
 
 jest.mock('./getPerpsController', () => ({
-  getPerpsController: (...args: [string]) => mockGetPerpsController(...args),
+  getPerpsStreamingController: (...args: [string]) => mockGetPerpsStreamingController(...args),
   getPerpsControllerCurrentAddress: () =>
     mockGetPerpsControllerCurrentAddress(),
   isPerpsControllerInitialized: (...args: [string?]) =>
@@ -40,11 +40,16 @@ jest.mock('./CandleStreamChannel', () => ({
   })),
 }));
 
+const mockSubmitRequestToBackground = jest.fn();
+jest.mock('../../store/background-connection', () => ({
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
+}));
+
 type MockController = {
   subscribeToPositions: jest.Mock;
   subscribeToOrders: jest.Mock;
   subscribeToAccount: jest.Mock;
-  getActiveProviderOrNull: jest.Mock;
 };
 
 function createMockController(): MockController {
@@ -52,7 +57,6 @@ function createMockController(): MockController {
     subscribeToPositions: jest.fn(() => jest.fn()),
     subscribeToOrders: jest.fn(() => jest.fn()),
     subscribeToAccount: jest.fn(() => jest.fn()),
-    getActiveProviderOrNull: jest.fn(() => null),
   };
 }
 
@@ -86,7 +90,7 @@ describe('PerpsStreamManager', () => {
     jest.clearAllMocks();
 
     controller = createMockController();
-    mockGetPerpsController.mockResolvedValue(controller);
+    mockGetPerpsStreamingController.mockResolvedValue(controller);
     mockGetPerpsControllerCurrentAddress.mockReturnValue(null);
     mockIsPerpsControllerInitialized.mockReturnValue(false);
 
@@ -115,7 +119,7 @@ describe('PerpsStreamManager', () => {
 
       await manager.init('');
 
-      expect(mockGetPerpsController).not.toHaveBeenCalled();
+      expect(mockGetPerpsStreamingController).not.toHaveBeenCalled();
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining('No address provided'),
       );
@@ -128,13 +132,13 @@ describe('PerpsStreamManager', () => {
 
       await manager.init('0xaaa');
 
-      expect(mockGetPerpsController).not.toHaveBeenCalled();
+      expect(mockGetPerpsStreamingController).not.toHaveBeenCalled();
     });
 
     it('calls getPerpsController with the address', async () => {
       await manager.init('0xaaa');
 
-      expect(mockGetPerpsController).toHaveBeenCalledWith('0xaaa');
+      expect(mockGetPerpsStreamingController).toHaveBeenCalledWith('0xaaa');
     });
 
     it('wires positions channel to controller', async () => {
@@ -165,12 +169,7 @@ describe('PerpsStreamManager', () => {
     });
 
     it('wires markets channel to fetch from active provider', async () => {
-      const mockProvider = {
-        getMarketDataWithPrices: jest
-          .fn()
-          .mockResolvedValue([{ symbol: 'BTC', price: '50000' }]),
-      };
-      controller.getActiveProviderOrNull.mockReturnValue(mockProvider);
+      mockSubmitRequestToBackground.mockResolvedValue([{ symbol: 'BTC', price: '50000' }]);
 
       await manager.init('0xaaa');
 
@@ -179,7 +178,7 @@ describe('PerpsStreamManager', () => {
 
       await jest.advanceTimersByTimeAsync(0);
 
-      expect(mockProvider.getMarketDataWithPrices).toHaveBeenCalledTimes(1);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsGetMarketDataWithPrices');
     });
 
     it('clears caches and prewarm when address changes', async () => {
@@ -206,7 +205,7 @@ describe('PerpsStreamManager', () => {
 
     it('rethrows cancellation errors', async () => {
       const cancelError = new Error('cancelled');
-      mockGetPerpsController.mockRejectedValue(cancelError);
+      mockGetPerpsStreamingController.mockRejectedValue(cancelError);
       mockIsPerpsControllerInitializationCancelledError.mockReturnValue(true);
 
       await expect(manager.init('0xaaa')).rejects.toThrow('cancelled');
@@ -217,7 +216,7 @@ describe('PerpsStreamManager', () => {
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
 
-      mockGetPerpsController.mockRejectedValue(new Error('network'));
+      mockGetPerpsStreamingController.mockRejectedValue(new Error('network'));
       mockIsPerpsControllerInitializationCancelledError.mockReturnValue(false);
 
       await expect(manager.init('0xaaa')).rejects.toThrow('network');
@@ -225,7 +224,7 @@ describe('PerpsStreamManager', () => {
     });
 
     it('markets connectFn handles missing provider gracefully', async () => {
-      controller.getActiveProviderOrNull.mockReturnValue(null);
+      mockSubmitRequestToBackground.mockResolvedValue([]);
 
       await manager.init('0xaaa');
 
@@ -234,7 +233,7 @@ describe('PerpsStreamManager', () => {
 
       await jest.advanceTimersByTimeAsync(0);
 
-      expect(cb).not.toHaveBeenCalled();
+      expect(cb).toHaveBeenCalledWith([]);
     });
 
     it('markets connectFn handles provider error gracefully', async () => {
@@ -242,10 +241,7 @@ describe('PerpsStreamManager', () => {
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
 
-      const mockProvider = {
-        getMarketDataWithPrices: jest.fn().mockRejectedValue(new Error('fail')),
-      };
-      controller.getActiveProviderOrNull.mockReturnValue(mockProvider);
+      mockSubmitRequestToBackground.mockRejectedValue(new Error('fail'));
 
       await manager.init('0xaaa');
 

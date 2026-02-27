@@ -44,7 +44,8 @@ import {
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
 import { usePerpsEligibility } from '../../hooks/perps';
-import { getPerpsController } from '../../providers/perps';
+import { getPerpsStreamingController } from '../../providers/perps/getPerpsController';
+import { submitRequestToBackground } from '../../store/background-connection';
 import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
@@ -176,7 +177,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
     const subscribe = async () => {
       try {
-        const controller = await getPerpsController(selectedAddress);
+        const controller = await getPerpsStreamingController(selectedAddress);
         if (cancelled) {
           return;
         }
@@ -715,20 +716,17 @@ const PerpsMarketDetailPage: React.FC = () => {
     setTpslError(null);
 
     try {
-      const controller = await getPerpsController(selectedAddress);
-
       // Clean price strings (remove commas from formatted values)
       const cleanTpPrice = editingTpPrice.replace(/,/gu, '').trim();
       const cleanSlPrice = editingSlPrice.replace(/,/gu, '').trim();
 
       const tpslParams = {
         symbol: currentPosition.symbol,
-        // Send undefined to clear, or the price string if set
         takeProfitPrice: cleanTpPrice || undefined,
         stopLossPrice: cleanSlPrice || undefined,
       };
 
-      const result = await controller.updatePositionTPSL(tpslParams);
+      const result = await submitRequestToBackground<{ success: boolean; error?: string }>('perpsUpdatePositionTPSL', [tpslParams]);
       if (!result.success) {
         throw new Error(result.error || 'Failed to update TP/SL');
       }
@@ -761,10 +759,11 @@ const PerpsMarketDetailPage: React.FC = () => {
       // data while the override is still active
       setTimeout(async () => {
         try {
-          const freshPositions = await controller.getPositions({
-            skipCache: true,
-          });
-          streamManager.pushPositionsWithOverrides(freshPositions);
+          const freshPositions = await submitRequestToBackground<unknown[]>(
+            'perpsGetPositions',
+            [{ skipCache: true }],
+          );
+          streamManager.pushPositionsWithOverrides(freshPositions as import('@metamask/perps-controller').Position[]);
         } catch (e) {
           console.warn('[Perps] Delayed refetch failed:', e);
         }
@@ -787,8 +786,10 @@ const PerpsMarketDetailPage: React.FC = () => {
     const handleVisibility = async () => {
       if (document.visibilityState === 'visible' && selectedAddress) {
         try {
-          const controller = await getPerpsController(selectedAddress);
-          const positions = await controller.getPositions({ skipCache: true });
+          const positions = await submitRequestToBackground<import('@metamask/perps-controller').Position[]>(
+            'perpsGetPositions',
+            [{ skipCache: true }],
+          );
           getPerpsStreamManager().pushPositionsWithOverrides(positions);
         } catch (e) {
           console.warn('[Perps] Visibility refetch failed:', e);

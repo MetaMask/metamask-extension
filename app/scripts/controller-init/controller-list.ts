@@ -110,6 +110,7 @@ import EncryptionPublicKeyController from '../controllers/encryption-public-key'
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
+import { PerpsController } from '@metamask/perps-controller';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -166,6 +167,7 @@ export type Controller =
       CaveatSpecificationConstraint
     >
   | PermissionLogController
+  | PerpsController
   | PhishingController
   | PPOMController
   | PreferencesController
@@ -257,6 +259,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
     CaveatSpecificationConstraint
   >['state'] &
   PermissionLogController['state'] &
+  PerpsController['state'] &
   PhishingController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &

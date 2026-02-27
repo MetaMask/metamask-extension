@@ -8,15 +8,15 @@ import {
   usePerpsController,
 } from './PerpsControllerProvider';
 
-const mockGetPerpsController = jest.fn<Promise<unknown>, [string, unknown?]>();
+const mockGetPerpsStreamingController = jest.fn<Promise<unknown>, [string, unknown?]>();
 const mockIsPerpsControllerInitializationCancelledError = jest.fn<
   boolean,
   [unknown]
 >(() => false);
 
 jest.mock('./getPerpsController', () => ({
-  getPerpsController: (...args: [string, unknown?]) =>
-    mockGetPerpsController(...args),
+  getPerpsStreamingController: (...args: [string, unknown?]) =>
+    mockGetPerpsStreamingController(...args),
   isPerpsControllerInitializationCancelledError: (...args: [unknown]) =>
     mockIsPerpsControllerInitializationCancelledError(...args),
 }));
@@ -105,13 +105,13 @@ describe('PerpsControllerProvider', () => {
         </Provider>,
       );
 
-      expect(mockGetPerpsController).not.toHaveBeenCalled();
+      expect(mockGetPerpsStreamingController).not.toHaveBeenCalled();
     });
   });
 
   describe('without provided controller', () => {
     it('shows loading fallback while initializing', () => {
-      mockGetPerpsController.mockReturnValue(new Promise(() => undefined));
+      mockGetPerpsStreamingController.mockReturnValue(new Promise(() => undefined));
       const store = createMockStore('0xaaa');
 
       render(
@@ -129,7 +129,7 @@ describe('PerpsControllerProvider', () => {
     });
 
     it('renders null as fallback by default', () => {
-      mockGetPerpsController.mockReturnValue(new Promise(() => undefined));
+      mockGetPerpsStreamingController.mockReturnValue(new Promise(() => undefined));
       const store = createMockStore('0xaaa');
 
       const { container } = render(
@@ -146,7 +146,7 @@ describe('PerpsControllerProvider', () => {
 
     it('initializes controller via getPerpsController', async () => {
       const ctrl = makeMockController();
-      mockGetPerpsController.mockResolvedValue(ctrl);
+      mockGetPerpsStreamingController.mockResolvedValue(ctrl);
       const store = createMockStore('0xaaa');
 
       await act(async () => {
@@ -159,7 +159,7 @@ describe('PerpsControllerProvider', () => {
         );
       });
 
-      expect(mockGetPerpsController).toHaveBeenCalledWith('0xaaa', store);
+      expect(mockGetPerpsStreamingController).toHaveBeenCalledWith('0xaaa', store);
       expect(screen.getByTestId('child')).toBeInTheDocument();
     });
 
@@ -174,7 +174,7 @@ describe('PerpsControllerProvider', () => {
         </Provider>,
       );
 
-      expect(mockGetPerpsController).not.toHaveBeenCalled();
+      expect(mockGetPerpsStreamingController).not.toHaveBeenCalled();
       expect(container.innerHTML).toBe('');
     });
 
@@ -183,7 +183,7 @@ describe('PerpsControllerProvider', () => {
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
 
-      mockGetPerpsController.mockRejectedValue(new Error('init failed'));
+      mockGetPerpsStreamingController.mockRejectedValue(new Error('init failed'));
       const store = createMockStore('0xaaa');
 
       await act(async () => {
@@ -206,7 +206,7 @@ describe('PerpsControllerProvider', () => {
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
 
-      mockGetPerpsController.mockRejectedValue('string error');
+      mockGetPerpsStreamingController.mockRejectedValue('string error');
       const store = createMockStore('0xaaa');
 
       await act(async () => {
@@ -228,7 +228,7 @@ describe('PerpsControllerProvider', () => {
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
 
-      mockGetPerpsController.mockRejectedValue(new Error('cancelled'));
+      mockGetPerpsStreamingController.mockRejectedValue(new Error('cancelled'));
       mockIsPerpsControllerInitializationCancelledError.mockReturnValue(true);
       const store = createMockStore('0xaaa');
 
@@ -289,7 +289,7 @@ describe('usePerpsController', () => {
   it('falls back to stream manager when no context controller', async () => {
     const ctrl = makeMockController();
     mockStreamManagerInit.mockResolvedValue(undefined);
-    mockGetPerpsController.mockResolvedValue(ctrl);
+    mockGetPerpsStreamingController.mockResolvedValue(ctrl);
     const store = createMockStore('0xaaa');
 
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -297,7 +297,7 @@ describe('usePerpsController', () => {
       const [ready, setReady] = React.useState(false);
       React.useEffect(() => {
         mockStreamManagerInit('0xaaa')
-          .then(() => mockGetPerpsController('0xaaa'))
+          .then(() => mockGetPerpsStreamingController('0xaaa'))
           .then(() => setReady(true))
           .catch(() => undefined);
       }, []);

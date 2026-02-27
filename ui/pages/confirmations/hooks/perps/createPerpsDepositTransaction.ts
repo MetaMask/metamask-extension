@@ -1,4 +1,4 @@
-import { getPerpsController } from '../../../../providers/perps/getPerpsController';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 
 export type CreatePerpsDepositTransactionParams = {
   fromAddress: string;
@@ -10,14 +10,12 @@ export type CreatedPerpsDepositTransaction = {
 };
 
 export async function createPerpsDepositTransaction({
-  fromAddress,
   amount,
 }: CreatePerpsDepositTransactionParams): Promise<CreatedPerpsDepositTransaction> {
-  const controller = await getPerpsController(fromAddress);
-
-  await controller.depositWithConfirmation({ amount });
-
-  const transactionId = controller.state.lastDepositTransactionId;
+  const transactionId = await submitRequestToBackground<string | null>(
+    'perpsDepositWithConfirmation',
+    [{ amount }],
+  );
 
   if (!transactionId) {
     throw new Error(

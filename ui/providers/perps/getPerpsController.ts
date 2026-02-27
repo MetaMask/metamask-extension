@@ -1,3 +1,17 @@
+/**
+ * UI-side Streaming Controller
+ *
+ * This module provides a lightweight PerpsController instance that lives in the
+ * UI process solely for WebSocket streaming subscriptions (subscribeToPrices,
+ * subscribeToPositions, etc.). Callbacks cannot cross the background/UI process
+ * boundary, so streaming must remain UI-side.
+ *
+ * For all non-streaming operations (mutations, data fetches, state), use
+ * submitRequestToBackground('perps*', [...]) to call the background controller.
+ *
+ * State reads should use Redux selectors from ui/selectors/perps-controller.ts.
+ */
+
 import { Messenger } from '@metamask/messenger';
 import type { Store } from 'redux';
 import {
@@ -19,7 +33,6 @@ const ACCOUNT_TREE_GET_ACCOUNTS =
 const ACCOUNT_TREE_SELECTED_GROUP_CHANGE =
   'AccountTreeController:selectedAccountGroupChange';
 
-/** State shape expected by PerpsController (RemoteFeatureFlagControllerState). */
 type RemoteFeatureFlagState = {
   remoteFeatureFlags: Record<string, unknown>;
   cacheTimestamp: number;
@@ -51,48 +64,23 @@ function getRemoteFeatureFlagState(
   };
 }
 
-/**
- * Unsubscribe from Redux store when controller is reset.
- * Used to stop publishing remote feature flag changes to the PerpsController.
- */
 let unsubscribeRemoteFeatureFlags: (() => void) | null = null;
-
-/**
- * Singleton instance of the PerpsController.
- * Uses the real @metamask/perps-controller package.
- */
 let controllerInstance: PerpsController | null = null;
-
-/**
- * The address the current controller instance was initialized with.
- * Used to detect account switches and reinitialize.
- */
 let currentAddress: string | null = null;
-
-/**
- * Promise to track initialization to prevent race conditions.
- */
 let initPromise: Promise<PerpsController> | null = null;
-
-/**
- * Address currently being initialized by the in-flight initPromise.
- */
 let initializingAddress: string | null = null;
-
-/**
- * Monotonic init generation used to invalidate stale async initializations.
- */
 let initGeneration = 0;
 
 /**
- * Create the RemoteFeatureFlagController-namespaced messenger and (when store is
- * available) register getState and subscribe to Redux to publish stateChange.
- * Then create the PerpsController messenger and delegate getState/stateChange to it.
+ * Create a minimal messenger for the UI-side streaming controller.
+ * Only bridges RemoteFeatureFlagController and AccountTreeController from
+ * Redux -- these are sufficient for init() and streaming subscriptions.
+ * Signing and transaction actions are NOT wired here (handled by background).
  *
  * @param storeToUse - Redux store for feature flags, or null to use empty flags.
- * @returns The PerpsController messenger with delegated RemoteFeatureFlagController actions/events.
+ * @returns The PerpsController messenger with delegated actions/events.
  */
-function createPerpsMessenger(
+function createStreamingMessenger(
   storeToUse: Store<MetaMaskReduxState> | null,
 ): PerpsControllerMessenger {
   const featureFlagMessenger = new Messenger({
@@ -183,11 +171,6 @@ function createPerpsMessenger(
   return perpsMessenger;
 }
 
-/**
- * Parse fallback blocked regions from MM_PERPS_BLOCKED_REGIONS env var.
- * Format: comma-separated region codes (e.g., "US,CA-ON,GB,BE").
- * Exported for unit testing.
- */
 export function getFallbackBlockedRegions(): string[] {
   const raw = process.env.MM_PERPS_BLOCKED_REGIONS;
   if (!raw || typeof raw !== 'string') {
@@ -217,7 +200,7 @@ function startControllerInitialization(
       }
     }
 
-    const messenger = createPerpsMessenger(storeToUse ?? null);
+    const messenger = createStreamingMessenger(storeToUse ?? null);
     const infrastructure = createPerpsInfrastructure();
     const fallbackBlockedRegions = getFallbackBlockedRegions();
 
@@ -227,12 +210,11 @@ function startControllerInitialization(
       infrastructure,
       clientConfig: {
         fallbackHip3Enabled: true,
-        fallbackHip3AllowlistMarkets: [], // Empty = allow all HIP-3 markets
+        fallbackHip3AllowlistMarkets: [],
         fallbackBlockedRegions,
       },
     });
 
-    // Initialize the controller (connects to Hyperliquid)
     await controller.init();
 
     const isStale =
@@ -278,20 +260,15 @@ function startControllerInitialization(
 }
 
 /**
- * Get the PerpsController instance.
- * Returns a singleton PerpsController that is initialized on first access.
+ * Get the UI-side streaming controller instance.
+ * Used ONLY for WebSocket subscription methods (subscribeToPrices, etc.).
+ * For mutations and data fetches, use submitRequestToBackground('perps*').
  *
  * @param selectedAddress - The currently selected account address
- * @param store - Optional Redux store; when provided, remote feature flag state is bridged into the controller for geoblock eligibility
- * @returns Promise resolving to the PerpsController instance
- * @example
- * ```typescript
- * const controller = await getPerpsController(selectedAccount.address, store);
- * const account = await controller.getAccountState();
- * console.log('Balance:', account.totalBalance);
- * ```
+ * @param store - Optional Redux store for feature flag bridging
+ * @returns Promise resolving to the PerpsController instance (streaming only)
  */
-export async function getPerpsController(
+export async function getPerpsStreamingController(
   selectedAddress: string,
   store?: Store<MetaMaskReduxState>,
 ): Promise<PerpsController> {
@@ -301,7 +278,6 @@ export async function getPerpsController(
     );
   }
 
-  // Check if we need to reinitialize due to account switch
   const addressChanged =
     currentAddress !== null && currentAddress !== selectedAddress;
 
@@ -315,24 +291,23 @@ export async function getPerpsController(
     currentAddress = null;
   }
 
-  // Return existing controller if address hasn't changed
   if (controllerInstance && currentAddress === selectedAddress) {
     return controllerInstance;
   }
 
-  // Reuse matching in-flight initialization.
   if (initPromise && initializingAddress === selectedAddress) {
     return initPromise;
   }
 
-  // Start or supersede initialization when there is no in-flight init for the
-  // requested address.
   return startControllerInitialization(selectedAddress, store);
 }
 
 /**
- * Reset the controller instance (useful for testing or account switch).
+ * @deprecated Use getPerpsStreamingController for subscriptions,
+ * submitRequestToBackground for mutations/fetches.
  */
+export const getPerpsController = getPerpsStreamingController;
+
 export async function resetPerpsController(): Promise<void> {
   initGeneration += 1;
   if (unsubscribeRemoteFeatureFlags) {
@@ -349,18 +324,10 @@ export async function resetPerpsController(): Promise<void> {
   initializingAddress = null;
 }
 
-/**
- * Get the current address the controller is initialized for.
- * Returns null if no controller is initialized.
- */
 export function getPerpsControllerCurrentAddress(): string | null {
   return currentAddress;
 }
 
-/**
- * Check if the controller is initialized for a specific address.
- * @param address - Optional address to check. If not provided, returns true if any controller is initialized.
- */
 export function isPerpsControllerInitialized(address?: string): boolean {
   if (address) {
     return controllerInstance !== null && currentAddress === address;
@@ -368,14 +335,8 @@ export function isPerpsControllerInitialized(address?: string): boolean {
   return controllerInstance !== null;
 }
 
-/**
- * Get the current controller instance without initializing it.
- * Returns null if no controller is initialized.
- * Use this when you need to access the controller but don't want to trigger initialization.
- */
 export function getPerpsControllerInstance(): PerpsController | null {
   return controllerInstance;
 }
 
-// Re-export types for convenience
 export type { PerpsControllerState };

@@ -9,7 +9,7 @@ import { useSelector, useStore } from 'react-redux';
 import type { PerpsController } from '@metamask/perps-controller';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import {
-  getPerpsController,
+  getPerpsStreamingController,
   isPerpsControllerInitializationCancelledError,
 } from './getPerpsController';
 import { getPerpsStreamManager } from './PerpsStreamManager';
@@ -77,7 +77,7 @@ export function PerpsControllerProvider({
 
     let isMounted = true;
 
-    getPerpsController(selectedAddress, store)
+    getPerpsStreamingController(selectedAddress, store)
       .then((ctrl) => {
         if (isMounted) {
           setController(ctrl);
@@ -184,7 +184,7 @@ export function usePerpsController(): PerpsController {
       .init(selectedAddress)
       .then(() => {
         // Get controller via getPerpsController (stream manager uses same singleton)
-        return getPerpsController(selectedAddress);
+        return getPerpsStreamingController(selectedAddress);
       })
       .then((ctrl) => {
         if (isMounted) {

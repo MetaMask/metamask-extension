@@ -324,6 +324,7 @@ import {
 } from './controller-init/assets';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { TransactionPayControllerInit } from './controller-init/transaction-pay-controller-init';
+import { PerpsControllerInit } from './controller-init/perps-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './controller-init/smart-transactions/smart-transactions-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -605,6 +606,7 @@ export default class MetamaskController extends EventEmitter {
       WebSocketService: WebSocketServiceInit,
       BackendWebSocketService: BackendWebSocketServiceInit,
       AccountActivityService: AccountActivityServiceInit,
+      PerpsController: PerpsControllerInit,
       PPOMController: PPOMControllerInit,
       PhishingController: PhishingControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,

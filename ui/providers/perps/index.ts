@@ -25,8 +25,9 @@ export {
 // Data Channel (building block for stream manager)
 export { PerpsDataChannel } from './PerpsDataChannel';
 
-// Controller access (lower-level)
+// Controller access (streaming only)
 export {
+  getPerpsStreamingController,
   getPerpsController,
   resetPerpsController,
   type PerpsControllerState,

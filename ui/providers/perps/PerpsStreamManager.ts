@@ -33,8 +33,9 @@ import type {
 } from '@metamask/perps-controller';
 import { PerpsDataChannel } from './PerpsDataChannel';
 import { CandleStreamChannel } from './CandleStreamChannel';
+import { submitRequestToBackground } from '../../store/background-connection';
 import {
-  getPerpsController,
+  getPerpsStreamingController,
   getPerpsControllerCurrentAddress,
   isPerpsControllerInitialized,
   isPerpsControllerInitializationCancelledError,
@@ -275,8 +276,7 @@ class PerpsStreamManager {
    */
   private async doInit(address: string): Promise<void> {
     try {
-      // Get or create controller (getPerpsController owns all lifecycle logic)
-      const controller = await getPerpsController(address);
+      const controller = await getPerpsStreamingController(address);
 
       // Wire up channel connect functions to controller subscriptions
       // Wrap positions callback to apply optimistic TP/SL overrides
@@ -307,8 +307,6 @@ class PerpsStreamManager {
         controller.subscribeToAccount({ callback }),
       );
 
-      // Markets use HTTP fetch, not WebSocket subscription
-      // We wrap it in a polling-like pattern for consistency
       this.markets.setConnectFn((callback) => {
         let isCancelled = false;
 
@@ -317,12 +315,11 @@ class PerpsStreamManager {
             return;
           }
           try {
-            const provider = controller.getActiveProviderOrNull();
-            if (provider) {
-              const data = await provider.getMarketDataWithPrices();
-              if (!isCancelled) {
-                callback(data);
-              }
+            const data = await submitRequestToBackground<PerpsMarketData[]>(
+              'perpsGetMarketDataWithPrices',
+            );
+            if (!isCancelled) {
+              callback(data);
             }
           } catch (error) {
             console.error(
@@ -332,10 +329,8 @@ class PerpsStreamManager {
           }
         };
 
-        // Fetch immediately
         fetchMarkets();
 
-        // Return cleanup function
         return () => {
           isCancelled = true;
         };

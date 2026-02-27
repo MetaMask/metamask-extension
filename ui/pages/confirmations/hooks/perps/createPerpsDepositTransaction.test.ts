@@ -1,42 +1,37 @@
-import { getPerpsController } from '../../../../providers/perps/getPerpsController';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
 
-jest.mock('../../../../providers/perps/getPerpsController', () => ({
-  getPerpsController: jest.fn(),
+jest.mock('../../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn(),
 }));
 
-const mockGetPerpsController = getPerpsController as jest.MockedFunction<
-  typeof getPerpsController
->;
+const mockSubmitRequestToBackground =
+  submitRequestToBackground as jest.MockedFunction<
+    typeof submitRequestToBackground
+  >;
 
 describe('createPerpsDepositTransaction', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('creates a deposit transaction via the controller and returns the id', async () => {
-    const depositWithConfirmation = jest.fn().mockResolvedValue(undefined);
-    mockGetPerpsController.mockResolvedValue({
-      depositWithConfirmation,
-      state: { lastDepositTransactionId: 'tx-123' },
-    } as unknown as Awaited<ReturnType<typeof getPerpsController>>);
+  it('creates a deposit transaction via the background and returns the id', async () => {
+    mockSubmitRequestToBackground.mockResolvedValue('tx-123');
 
     const result = await createPerpsDepositTransaction({
       fromAddress: '0xabc123',
       amount: '0.5',
     });
 
-    expect(mockGetPerpsController).toHaveBeenCalledWith('0xabc123');
-    expect(depositWithConfirmation).toHaveBeenCalledWith({ amount: '0.5' });
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsDepositWithConfirmation',
+      [{ amount: '0.5' }],
+    );
     expect(result).toStrictEqual({ transactionId: 'tx-123' });
   });
 
-  it('throws if the controller does not provide a transaction id', async () => {
-    const depositWithConfirmation = jest.fn().mockResolvedValue(undefined);
-    mockGetPerpsController.mockResolvedValue({
-      depositWithConfirmation,
-      state: { lastDepositTransactionId: null },
-    } as unknown as Awaited<ReturnType<typeof getPerpsController>>);
+  it('throws if the background does not return a transaction id', async () => {
+    mockSubmitRequestToBackground.mockResolvedValue(null);
 
     await expect(
       createPerpsDepositTransaction({
@@ -45,6 +40,10 @@ describe('createPerpsDepositTransaction', () => {
     ).rejects.toThrow(
       'Perps deposit transaction was not created by controller deposit flow',
     );
-    expect(depositWithConfirmation).toHaveBeenCalledWith({ amount: undefined });
+
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsDepositWithConfirmation',
+      [{ amount: undefined }],
+    );
   });
 });
