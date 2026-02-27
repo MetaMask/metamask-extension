@@ -25,7 +25,7 @@ export class PerpsDataChannel<TData> {
 
   private readonly initialValue: TData;
 
-  private subscribers = new Map<string, (data: TData) => void>();
+  private readonly subscribers = new Map<string, (data: TData) => void>();
 
   private unsubscribeFromSource: (() => void) | null = null;
 

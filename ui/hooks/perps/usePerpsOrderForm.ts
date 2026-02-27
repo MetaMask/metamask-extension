@@ -246,10 +246,10 @@ export function usePerpsOrderForm({
     // Fall back to current market price if limit price is empty/invalid.
     let effectivePrice = currentPrice;
     if (formState.type === 'limit' && formState.limitPrice) {
-      const parsedLimitPrice = parseFloat(
-        formState.limitPrice.replace(/,/gu, ''),
+      const parsedLimitPrice = Number.parseFloat(
+        formState.limitPrice.replaceAll(',', ''),
       );
-      if (!isNaN(parsedLimitPrice) && parsedLimitPrice > 0) {
+      if (!Number.isNaN(parsedLimitPrice) && parsedLimitPrice > 0) {
         effectivePrice = parsedLimitPrice;
       }
     }

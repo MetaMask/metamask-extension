@@ -47,9 +47,7 @@ export function usePerpsDepositInsufficientPayTokenBalanceAlert({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const isPerpsDeposit =
     currentConfirmation?.type === TransactionType.perpsDeposit;
-  const selectedAddress = currentConfirmation?.txParams?.from as
-    | Hex
-    | undefined;
+  const selectedAddress = currentConfirmation?.txParams?.from;
 
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,

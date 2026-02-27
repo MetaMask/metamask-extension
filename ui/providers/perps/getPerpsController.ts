@@ -312,7 +312,7 @@ export async function getPerpsStreamingController(
     return Promise.resolve(getOrCreateFacade(controllerInstance));
   }
 
-  if (initPromise && initializingAddress === selectedAddress) {
+  if (initPromise !== null && initializingAddress === selectedAddress) {
     return initPromise.then((ctrl) => getOrCreateFacade(ctrl));
   }
 

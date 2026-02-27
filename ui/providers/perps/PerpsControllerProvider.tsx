@@ -55,7 +55,7 @@ export function PerpsControllerProvider({
   children,
   controller: providedController,
   loadingFallback = null,
-}: PerpsControllerProviderProps): JSX.Element | null {
+}: Readonly<PerpsControllerProviderProps>): JSX.Element | null {
   const [controller, setController] = useState<PerpsController | null>(
     () => providedController ?? getPerpsControllerFacade(),
   );

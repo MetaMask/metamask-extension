@@ -87,7 +87,7 @@ class PerpsStreamManager {
   private prewarmCleanups: (() => void)[] = [];
 
   // Optimistic overrides for TP/SL - preserves user-set values until WebSocket catches up
-  private optimisticTPSLOverrides: Map<string, OptimisticTPSLOverride> =
+  private readonly optimisticTPSLOverrides: Map<string, OptimisticTPSLOverride> =
     new Map();
 
   // When we last set an optimistic update - used to block WebSocket overwrites
@@ -209,12 +209,14 @@ class PerpsStreamManager {
             incomingTp === expectedTp ||
             (incomingTp &&
               expectedTp &&
-              parseFloat(incomingTp) === parseFloat(expectedTp));
+              Number.parseFloat(incomingTp) ===
+                Number.parseFloat(expectedTp));
           const slMatches =
             incomingSl === expectedSl ||
             (incomingSl &&
               expectedSl &&
-              parseFloat(incomingSl) === parseFloat(expectedSl));
+              Number.parseFloat(incomingSl) ===
+                Number.parseFloat(expectedSl));
 
           if (tpMatches && slMatches) {
             this.optimisticTPSLOverrides.delete(position.symbol);
@@ -251,7 +253,7 @@ class PerpsStreamManager {
       currentControllerAddress === address &&
       isPerpsControllerInitialized(address)
     ) {
-      return Promise.resolve();
+      return;
     }
 
     // Address changed - clear caches and reinitialize

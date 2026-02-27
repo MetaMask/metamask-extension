@@ -79,7 +79,7 @@ function parseCacheKey(key: string): {
 }
 
 export class CandleStreamChannel {
-  private channels = new Map<string, ChannelEntry>();
+  private readonly channels = new Map<string, ChannelEntry>();
 
   private controller: PerpsController | null = null;
 
