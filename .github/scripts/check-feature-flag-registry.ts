@@ -353,8 +353,7 @@ function extractFlagReferences(
 
   if (
     trimmed.startsWith('//') ||
-    trimmed.startsWith('*') ||
-    trimmed.startsWith('/*')
+    trimmed.startsWith('*')
   ) {
     return refs;
   }
