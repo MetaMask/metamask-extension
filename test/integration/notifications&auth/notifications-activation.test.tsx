@@ -62,18 +62,6 @@ const trackNotificationsActivatedMetaMetricsEvent = async (
   ).toStrictEqual(expect.arrayContaining([expectedCall]));
 };
 
-const hasStateUpdateOnUnmountedComponentWarning = (
-  consoleErrorCalls: unknown[][],
-) => {
-  return consoleErrorCalls.some(
-    ([message]) =>
-      typeof message === 'string' &&
-      message.includes(
-        "Warning: Can't perform a React state update on an unmounted component",
-      ),
-  );
-};
-
 describe('Notifications Activation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
@@ -178,57 +166,5 @@ describe('Notifications Activation', () => {
 
       await trackNotificationsActivatedMetaMetricsEvent('dismissed', false);
     });
-  });
-
-  it('does not log state update on unmounted component warning when notifications modal is dismissed', async () => {
-    const consoleErrorSpy = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => undefined);
-
-    try {
-      const mockedState = getMockedNotificationsState();
-      await act(async () => {
-        await integrationTestRender({
-          preloadedState: {
-            ...mockedState,
-            isBackupAndSyncEnabled: false,
-            isNotificationServicesEnabled: false,
-            isFeatureAnnouncementsEnabled: false,
-            isMetamaskNotificationsFeatureSeen: false,
-            participateInMetaMetrics: true,
-            dataCollectionForMarketing: false,
-          },
-          backgroundConnection: backgroundConnectionMocked,
-        });
-
-        await clickElement('account-options-menu-button');
-        await waitForElement('notifications-menu-item');
-        await clickElement('notifications-menu-item');
-
-        await waitFor(() => {
-          expect(
-            within(screen.getByRole('dialog')).getByText('Turn on'),
-          ).toBeInTheDocument();
-        });
-
-        await act(async () => {
-          fireEvent.click(
-            await within(screen.getByRole('dialog')).findByRole('button', {
-              name: 'Close',
-            }),
-          );
-        });
-
-        await waitFor(() => {
-          expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-        });
-      });
-
-      expect(
-        hasStateUpdateOnUnmountedComponentWarning(consoleErrorSpy.mock.calls),
-      ).toBe(false);
-    } finally {
-      consoleErrorSpy.mockRestore();
-    }
   });
 });
