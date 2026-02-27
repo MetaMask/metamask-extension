@@ -630,15 +630,7 @@ export function doesUserHaveALedgerAccount(state) {
   });
 }
 
-/**
- * Select the current fiat currency code (ISO 4217 like 'USD').
- *
- * @param {object} state - Redux state
- * @returns {string} The current fiat currency code
- */
-export function getCurrentCurrency(state) {
-  return state.metamask.currentCurrency;
-}
+export { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../shared/modules/selectors/assets-migration';
 
 /**
  * Returns a boolean indicating whether the user opened the extension with the sidepanel.
