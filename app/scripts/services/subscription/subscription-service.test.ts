@@ -326,6 +326,12 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
     expect(mockPlatform.openTab).toHaveBeenCalledWith({
       url: mockCheckoutSessionUrl,
     });
+
+    expect(mockSetPendingRedirectRoute).toHaveBeenCalledTimes(2);
+    expect(mockSetPendingRedirectRoute).toHaveBeenNthCalledWith(1, {
+      path: '/shield-plan',
+    });
+    expect(mockSetPendingRedirectRoute).toHaveBeenNthCalledWith(2, null);
   });
 
   it('should include the reward account id if the primary account is opted in to rewards and the season is active', async () => {
