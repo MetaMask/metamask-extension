@@ -1,7 +1,6 @@
 import React from 'react';
 import type { BoxProps } from '@metamask/design-system-react';
 import type { ButtonIconProps } from '@metamask/design-system-react';
-import type { ButtonProps } from '@metamask/design-system-react';
 import type { TextFieldSearchStyleUtilityProps } from '../text-field-search/text-field-search.types';
 
 export enum HeaderCompactSearchVariant {
@@ -54,9 +53,7 @@ export interface HeaderCompactSearchInlineProps
   extends HeaderCompactSearchBaseProps {
   variant: HeaderCompactSearchVariant.Inline;
   onClickCancelButton: () => void;
-  cancelButtonProps?: Partial<
-    Omit<ButtonProps, 'children' | 'ref' | 'variant'>
-  >;
+  cancelButtonProps?: Partial<Omit<ButtonIconProps, 'ref'>>;
 }
 
 export type HeaderCompactSearchProps =

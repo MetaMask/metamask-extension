@@ -4,12 +4,9 @@ import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
-  Button,
   ButtonIcon,
   ButtonIconSize,
-  ButtonVariant,
   IconName,
-  TextColor,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TextFieldSearch } from '../text-field-search';
@@ -106,14 +103,13 @@ export const HeaderCompactSearch: React.FC<HeaderCompactSearchProps> = (
     <header className={rootClassName}>
       <Box {...baseLayoutProps} {...boxProps} className="w-full">
         {searchBox}
-        <Button
-          variant={ButtonVariant.Tertiary}
+        <ButtonIcon
+          iconName={IconName.Close}
+          ariaLabel={t('close')}
+          size={ButtonIconSize.Md}
           onClick={onClickCancelButton}
-          textProps={{ color: TextColor.TextDefault }}
           {...cancelButtonProps}
-        >
-          {t('cancel')}
-        </Button>
+        />
       </Box>
     </header>
   );

@@ -49,9 +49,9 @@ describe('HeaderCompactSearch', () => {
   });
 
   describe('Inline variant', () => {
-    it('renders search input and cancel button', () => {
+    it('renders search input and close button', () => {
       const onClickCancelButton = jest.fn();
-      const { getByText, getByPlaceholderText } = render(
+      const { getByRole, getByPlaceholderText } = render(
         <HeaderCompactSearch
           variant={HeaderCompactSearchVariant.Inline}
           onClickCancelButton={onClickCancelButton}
@@ -60,12 +60,12 @@ describe('HeaderCompactSearch', () => {
       );
 
       expect(getByPlaceholderText('Search')).toBeDefined();
-      expect(getByText('[cancel]')).toBeDefined();
+      expect(getByRole('button')).toBeDefined();
     });
 
-    it('invokes callback when cancel button is clicked', () => {
+    it('invokes callback when close button is clicked', () => {
       const onClickCancelButton = jest.fn();
-      const { getByText } = render(
+      const { getByRole } = render(
         <HeaderCompactSearch
           variant={HeaderCompactSearchVariant.Inline}
           onClickCancelButton={onClickCancelButton}
@@ -73,7 +73,7 @@ describe('HeaderCompactSearch', () => {
         />,
       );
 
-      fireEvent.click(getByText('[cancel]'));
+      fireEvent.click(getByRole('button'));
 
       expect(onClickCancelButton).toHaveBeenCalledTimes(1);
     });
