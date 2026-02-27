@@ -189,6 +189,8 @@
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
+      "musdConversionDismissedCtaKeys": [],
+      "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "nftsDetectionNoticeDismissed": false,
       "outdatedBrowserWarningLastShown": null,
@@ -211,9 +213,7 @@
       "termsOfUseLastAgreed": 1770282497124,
       "timeoutMinutes": 0,
       "trezorModel": null,
-      "updateModalLastDismissedAt": null,
-      "musdConversionEducationSeen": false,
-      "musdConversionDismissedCtaKeys": []
+      "updateModalLastDismissedAt": null
     },
     "AuthenticationController": {},
     "BridgeStatusController": {
@@ -982,6 +982,578 @@
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 1770282502510,
+      "localOverrides": {},
+      "rawRemoteFeatureFlags": {
+        "addBitcoinAccount": false,
+        "addBitcoinAccountDummyFlag": false,
+        "addSolanaAccount": true,
+        "additionalNetworksBlacklist": [],
+        "assetsAccountApiBalances": [
+          "0x1",
+          "0xe708",
+          "0x38",
+          "0x89",
+          "0x2105",
+          "0xa",
+          "0xa4b1"
+        ],
+        "assetsDefiPositionsEnabled": true,
+        "assetsEnableNotificationsByDefault": false,
+        "assetsEnableNotificationsByDefaultV2": [
+          {
+            "name": "feature is ON",
+            "scope": {
+              "type": "threshold",
+              "value": 1
+            },
+            "value": true
+          },
+          {
+            "name": "feature is OFF",
+            "scope": {
+              "type": "threshold",
+              "value": 0
+            },
+            "value": false
+          }
+        ],
+        "assetsUnifyState": {
+          "enabled": false,
+          "featureVersion": null,
+          "minimumVersion": null
+        },
+        "backendWebSocketConnection": [
+          {
+            "name": "feature is ON",
+            "scope": {
+              "type": "threshold",
+              "value": 1
+            },
+            "value": true
+          },
+          {
+            "name": "feature is OFF",
+            "scope": {
+              "type": "threshold",
+              "value": 0
+            },
+            "value": false
+          }
+        ],
+        "bitcoinAccounts": {
+          "enabled": true,
+          "minimumVersion": "13.9.0"
+        },
+        "bitcoinTestnetsEnabled": false,
+        "bridgeConfig": {
+          "bip44DefaultPairs": {
+            "bip122": {
+              "other": {},
+              "standard": {
+                "bip122:000000000019d6689c085ae165831e93/slip44:0": "eip155:1/slip44:60"
+              }
+            },
+            "eip155": {
+              "other": {},
+              "standard": {
+                "eip155:1/slip44:60": "eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+              }
+            },
+            "solana": {
+              "other": {},
+              "standard": {
+                "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+              }
+            }
+          },
+          "chainRanking": [
+            {
+              "chainId": "eip155:1",
+              "name": "Ethereum"
+            },
+            {
+              "chainId": "eip155:56",
+              "name": "BNB Chain"
+            },
+            {
+              "chainId": "bip122:000000000019d6689c085ae165831e93",
+              "name": "BTC"
+            },
+            {
+              "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "name": "Solana"
+            },
+            {
+              "chainId": "tron:728126428",
+              "name": "Tron"
+            },
+            {
+              "chainId": "eip155:8453",
+              "name": "Base"
+            },
+            {
+              "chainId": "eip155:42161",
+              "name": "Arbitrum"
+            },
+            {
+              "chainId": "eip155:59144",
+              "name": "Linea"
+            },
+            {
+              "chainId": "eip155:137",
+              "name": "Polygon"
+            },
+            {
+              "chainId": "eip155:43114",
+              "name": "Avalanche"
+            },
+            {
+              "chainId": "eip155:10",
+              "name": "Optimism"
+            },
+            {
+              "chainId": "eip155:143",
+              "name": "Monad"
+            },
+            {
+              "chainId": "eip155:1329",
+              "name": "Sei"
+            },
+            {
+              "chainId": "eip155:324",
+              "name": "zkSync Era"
+            }
+          ],
+          "chains": {
+            "1": {
+              "isActiveDest": true,
+              "isActiveSrc": true,
+              "isGaslessSwapEnabled": true,
+              "isSingleSwapBridgeButtonEnabled": true,
+              "noFeeAssets": [],
+              "stablecoins": [
+                "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                "0xdac17f958d2ee523a2206206994597c13d831ec7"
+              ],
+              "topAssets": ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"]
+            },
+            "10": {
+              "isActiveDest": true,
+              "isActiveSrc": true,
+              "isSingleSwapBridgeButtonEnabled": true,
+              "stablecoins": [
+                "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+                "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
+                "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58"
+              ]
+            },
+            "56": {
+              "isActiveDest": true,
+              "isActiveSrc": true,
+              "isGaslessSwapEnabled": true,
+              "isSingleSwapBridgeButtonEnabled": true,
+              "stablecoins": [
+                "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+                "0x55d398326f99059ff775485246999027b3197955"
+              ]
+            },
+            "137": {
+              "isActiveDest": true,
+              "isActiveSrc": true,
+              "isSingleSwapBridgeButtonEnabled": true,
+              "stablecoins": [
+                "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+                "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+                "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
+              ]
+            },
+            "143": {
+              "isActiveDest": true,
+              "isActiveSrc": true,
+              "isSingleSwapBridgeButtonEnabled": true
+            },
+            "324": {
+              "isActiveDest": true,
+              "isActiveSrc": true,
+              "isSingleSwapBridgeButtonEnabled": true,
+              "stablecoins": [
+                "0x1d17CBcF0D6D143135aE902365D2E5e2A16538D4",
+                "0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4",
+                "0x493257fD37EDB34451f62EDf8D2a0C418852bA4C"
+              ]
+            },
+            "1329": {
+              "isActiveDest": true,
+              "isActiveSrc": true,
+              "isSingleSwapBridgeButtonEnabled": true,
+              "stablecoins": ["0x3894085Ef7Ff0f0aeDf52E2A2704928d1Ec074F1"]
+            },
+            "8453": {
+              "isActiveDest": true,
+              "isActiveSrc": true,
+              "isGaslessSwapEnabled": true,
+              "isSingleSwapBridgeButtonEnabled": true,
+              "stablecoins": ["0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"]
+            },
+            "42161": {
+              "isActiveDest": true,
+              "isActiveSrc": true,
+              "isSingleSwapBridgeButtonEnabled": true,
+              "stablecoins": [
+                "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+                "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+                "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"
+              ]
+            },
+            "43114": {
+              "isActiveDest": true,
+              "isActiveSrc": true,
+              "isSingleSwapBridgeButtonEnabled": true,
+              "stablecoins": [
+                "0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e",
+                "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
+                "0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7",
+                "0xc7198437980c041c805a1edcba50c1ce5db95118"
+              ]
+            },
+            "59144": {
+              "isActiveDest": true,
+              "isActiveSrc": true,
+              "isGaslessSwapEnabled": true,
+              "isSingleSwapBridgeButtonEnabled": true,
+              "noFeeAssets": [],
+              "stablecoins": [
+                "0x176211869cA2b568f2A7D4EE941E073a821EE1ff",
+                "0xA219439258ca9da29E9Cc4cE5596924745e12B93"
+              ],
+              "topAssets": ["0x176211869ca2b568f2a7d4ee941e073a821ee1ff"]
+            },
+            "728126428": {
+              "isActiveDest": true,
+              "isActiveSrc": true,
+              "isSingleSwapBridgeButtonEnabled": true
+            },
+            "1151111081099710": {
+              "isActiveDest": true,
+              "isActiveSrc": true,
+              "isSingleSwapBridgeButtonEnabled": true,
+              "isSnapConfirmationEnabled": true,
+              "refreshRate": 10000,
+              "topAssets": [
+                "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN",
+                "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+                "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxsDx8F8k8k3uYw1PDC",
+                "3iQL8BFS2vE7mww4ehAqQHAsbmRNCrPxizWAT2Zfyr9y",
+                "9zNQRsGLjNKwCUU5Gq5LR8beUCPzQMVMqKAi3SSZh54u",
+                "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+                "rndrizKT3MK1iimdxRdWabcF7Zg7AR5T4nud4EkHBof",
+                "21AErpiB8uSb94oQKRcwuHqyHF93njAxBSbdUrpupump",
+                "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn"
+              ]
+            },
+            "20000000000001": {
+              "isActiveDest": true,
+              "isActiveSrc": true,
+              "isSingleSwapBridgeButtonEnabled": true
+            }
+          },
+          "maxRefreshCount": 5,
+          "minimumVersion": "0.0.0",
+          "priceImpactThreshold": {
+            "gasless": 0.2,
+            "normal": 0.05
+          },
+          "refreshRate": 30000,
+          "sse": {
+            "enabled": true,
+            "minimumVersion": "13.9.0"
+          },
+          "stablecoins": [
+            "eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "eip155:1/erc20:0xdac17f958d2ee523a2206206994597c13d831ec7",
+            "eip155:59144/erc20:0x176211869ca2b568f2a7d4ee941e073a821ee1ff",
+            "eip155:59144/erc20:0xa219439258ca9da29e9cc4ce5596924745e12b93",
+            "eip155:137/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+            "eip155:137/erc20:0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+            "eip155:137/erc20:0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+            "eip155:42161/erc20:0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+            "eip155:42161/erc20:0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
+            "eip155:42161/erc20:0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+            "eip155:8453/erc20:0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+            "eip155:10/erc20:0x0b2c639c533813f4aa9d7837caf62653d097ff85",
+            "eip155:10/erc20:0x7f5c764cbc14f9669b88837ca1490cca17c31607",
+            "eip155:10/erc20:0x94b008aa00579c1307b0ef2c499ad98a8ce58e58",
+            "eip155:56/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+            "eip155:56/erc20:0x55d398326f99059ff775485246999027b3197955",
+            "eip155:43114/erc20:0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e",
+            "eip155:43114/erc20:0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
+            "eip155:43114/erc20:0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7",
+            "eip155:43114/erc20:0xc7198437980c041c805a1edcba50c1ce5db95118",
+            "eip155:324/erc20:0x1d17cbcf0d6d143135ae902365d2e5e2a16538d4",
+            "eip155:324/erc20:0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4",
+            "eip155:324/erc20:0x493257fd37edb34451f62edf8d2a0c418852ba4c",
+            "eip155:1329/erc20:0x3894085ef7ff0f0aedf52e2a2704928d1ec074f1"
+          ],
+          "support": true
+        },
+        "carouselBanners": true,
+        "configRegistryApiEnabled": false,
+        "confirmations_eip_7702": {
+          "contracts": {},
+          "supportedChains": []
+        },
+        "confirmations_gas_buffer": {
+          "default": 1,
+          "included": 1.5,
+          "perChainConfig": {
+            "0x18c6": {
+              "base": 1.3,
+              "name": "megaeth"
+            },
+            "0x18c7": {
+              "base": 1.3,
+              "name": "megaeth"
+            },
+            "0x2105": {
+              "eip7702": 1.3,
+              "name": "base"
+            },
+            "0x38": {
+              "eip7702": 1.3,
+              "name": "bnb"
+            },
+            "0xa": {
+              "eip7702": 1.3,
+              "name": "optimism"
+            },
+            "0xa4b1": {
+              "base": 1.2,
+              "name": "arbitrum"
+            }
+          }
+        },
+        "confirmations_incoming_transactions": {},
+        "confirmations_transactions": {
+          "acceleratedPolling": {
+            "defaultCountMax": 10,
+            "defaultIntervalMs": 3000,
+            "perChainConfig": {}
+          },
+          "batchSizeLimit": 10,
+          "gasEstimateFallback": {
+            "perChainConfig": {}
+          },
+          "gasFeeRandomisation": {
+            "randomisedGasFeeDigits": {}
+          }
+        },
+        "contentfulCarouselEnabled": true,
+        "dappSwapMetrics": {
+          "bridge_quote_fees": 250,
+          "enabled": true,
+          "origins": ["https://app.uniswap.org", "https://metamask.github.io"]
+        },
+        "dappSwapQa": {
+          "enabled": false
+        },
+        "dappSwapUi": {
+          "enabled": false
+        },
+        "enableMultichainAccounts": {
+          "enabled": true,
+          "featureVersion": "1",
+          "minimumVersion": "13.0.0"
+        },
+        "enableMultichainAccountsState2": {
+          "enabled": true,
+          "featureVersion": "2",
+          "minimumVersion": "13.5.0"
+        },
+        "extensionPlatformAutoReloadAfterUpdate": true,
+        "extensionSignedDeepLinkWarningEnabled": [
+          {
+            "name": "Warning enabled",
+            "scope": {
+              "type": "threshold",
+              "value": 1
+            },
+            "value": true
+          }
+        ],
+        "extensionUpdatePromptMinimumVersion": "0.0.0",
+        "extensionUxDefiReferral": true,
+        "extensionUxDefiReferralPartners": {
+          "gmx": false,
+          "hyperliquid": true
+        },
+        "extensionUxPna25": true,
+        "extensionUxSidepanel": false,
+        "gasFeesSponsoredNetwork": {
+          "0x38": false,
+          "0x531": false,
+          "0x8f": false
+        },
+        "isSolanaBuyable": false,
+        "neNetworkDiscoverButton": {
+          "0x531": true,
+          "0x8f": true,
+          "0xe708": true,
+          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": true
+        },
+        "nonZeroUnusedApprovals": [
+          "https://aerodrome.finance",
+          "https://app.bio.xyz",
+          "https://app.ethena.fi",
+          "https://app.euler.finance",
+          "https://app.rocketx.exchange",
+          "https://app.seer.pm",
+          "https://app.sky.money",
+          "https://app.spark.fi",
+          "https://app.tea-fi.com",
+          "https://app.uniswap.org",
+          "https://bridge.gravity.xyz",
+          "https://dev-relay-sdk.vercel.app",
+          "https://evm.ekubo.org",
+          "https://flaunch.gg",
+          "https://fluid.io",
+          "https://flyingtulip.com",
+          "https://jumper.exchange",
+          "https://linea.build",
+          "https://pancakeswap.finance",
+          "https://privacypools.com",
+          "https://relay.link",
+          "https://revoke.cash",
+          "https://staging.relay.link",
+          "https://superbridge.app",
+          "https://swap.defillama.com",
+          "https://toros.finance",
+          "https://velodrome.finance",
+          "https://walletstats.io",
+          "https://www.bungee.exchange",
+          "https://www.dev.relay.link",
+          "https://www.fxhash.xyz",
+          "https://www.hydrex.fi",
+          "https://www.relay.link",
+          "https://yearn.fi",
+          "https://app.teller.org",
+          "https://kalshi.com"
+        ],
+        "perpsEnabled": false,
+        "perpsEnabledVersion": {
+          "enabled": false,
+          "minimumVersion": "13.15.0"
+        },
+        "perpsHip3AllowlistMarkets": "xyz:*",
+        "platformSplitStateGradualRollout": [
+          {
+            "name": "feature is ON",
+            "scope": {
+              "type": "threshold",
+              "value": 0
+            },
+            "value": {
+              "enabled": 1,
+              "maxAccounts": 0,
+              "maxNetworks": 0
+            }
+          },
+          {
+            "name": "feature is OFF",
+            "scope": {
+              "type": "threshold",
+              "value": {
+                "enabled": 0,
+                "maxAccounts": 0,
+                "maxNetworks": 0
+              }
+            },
+            "value": {
+              "maxAccounts": 0,
+              "maxNetworks": 0
+            }
+          }
+        ],
+        "rewardsBitcoinEnabledExtension": false,
+        "rewardsEnabled": {
+          "enabled": false,
+          "minimumVersion": "0.0.0"
+        },
+        "rewardsOnboardingEnabled": {
+          "enabled": false,
+          "minimumVersion": "0.0.0"
+        },
+        "rewardsTronEnabledExtension": false,
+        "sendRedesign": {
+          "enabled": true
+        },
+        "settingsRedesign": false,
+        "smartTransactionsNetworks": {
+          "0x1": {
+            "expectedDeadline": 45,
+            "extensionActive": true,
+            "maxDeadline": 160,
+            "sentinelUrl": "https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io"
+          },
+          "0x144": {
+            "extensionActive": false,
+            "sentinelUrl": "https://tx-sentinel-zksync-mainnet.api.cx.metamask.io"
+          },
+          "0x2105": {
+            "extensionActive": true,
+            "sentinelUrl": "https://tx-sentinel-base-mainnet.api.cx.metamask.io"
+          },
+          "0x38": {
+            "extensionActive": true,
+            "sentinelUrl": "https://tx-sentinel-bsc-mainnet.api.cx.metamask.io"
+          },
+          "0x531": {
+            "extensionActive": false,
+            "sentinelUrl": "https://tx-sentinel-sei-mainnet.api.cx.metamask.io"
+          },
+          "0x89": {
+            "extensionActive": false,
+            "sentinelUrl": "https://tx-sentinel-polygon-mainnet.api.cx.metamask.io"
+          },
+          "0x8f": {
+            "extensionActive": false,
+            "sentinelUrl": "https://tx-sentinel-monad-mainnet.api.cx.metamask.io"
+          },
+          "0xa": {
+            "extensionActive": false,
+            "sentinelUrl": "https://tx-sentinel-optimism-mainnet.api.cx.metamask.io"
+          },
+          "0xa4b1": {
+            "extensionActive": true,
+            "sentinelUrl": "https://tx-sentinel-arbitrum-mainnet.api.cx.metamask.io"
+          },
+          "0xa86a": {
+            "extensionActive": false,
+            "sentinelUrl": "https://tx-sentinel-avalanche-mainnet.api.cx.metamask.io"
+          },
+          "0xe708": {
+            "extensionActive": true,
+            "sentinelUrl": "https://tx-sentinel-linea-mainnet.api.cx.metamask.io"
+          },
+          "default": {
+            "batchStatusPollingInterval": 1000,
+            "expectedDeadline": 45,
+            "extensionActive": false,
+            "extensionReturnTxHashAsap": true,
+            "extensionReturnTxHashAsapBatch": true,
+            "extensionSkipSmartTransactionStatusPage": false,
+            "maxDeadline": 150
+          }
+        },
+        "solanaCardEnabled": false,
+        "solanaTestnetsEnabled": false,
+        "staticAssetsPollingOptions": {},
+        "tronAccounts": {
+          "enabled": true,
+          "minimumVersion": "13.13.2"
+        },
+        "walletFrameworkRpcFailoverEnabled": true
+      },
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
@@ -989,6 +1561,12 @@
           "name": "groupC",
           "value": "valueC"
         }
+      },
+      "thresholdCache": {
+        "0x945bb729dccf7f67774d0e9cb5d49b9ec474037d3cf5d9f3a0aa15d4f0c09484:assetsEnableNotificationsByDefaultV2": 0.975514,
+        "0x945bb729dccf7f67774d0e9cb5d49b9ec474037d3cf5d9f3a0aa15d4f0c09484:backendWebSocketConnection": 0.103043,
+        "0x945bb729dccf7f67774d0e9cb5d49b9ec474037d3cf5d9f3a0aa15d4f0c09484:extensionSignedDeepLinkWarningEnabled": 0.069103,
+        "0x945bb729dccf7f67774d0e9cb5d49b9ec474037d3cf5d9f3a0aa15d4f0c09484:platformSplitStateGradualRollout": 0.060267
       }
     },
     "RewardsController": {
