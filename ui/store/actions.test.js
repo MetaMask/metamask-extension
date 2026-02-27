@@ -1196,6 +1196,55 @@ describe('Actions', () => {
     });
   });
 
+  describe('#setWatchEthereumAccountEnabled', () => {
+    it('calls background setWatchEthereumAccountEnabled with value', async () => {
+      const store = mockStore();
+      background.setWatchEthereumAccountEnabled = sinon.stub().resolves();
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.setWatchEthereumAccountEnabled(true));
+      expect(background.setWatchEthereumAccountEnabled.callCount).toStrictEqual(
+        1,
+      );
+      expect(
+        background.setWatchEthereumAccountEnabled.getCall(0).args,
+      ).toStrictEqual([true]);
+
+      await store.dispatch(actions.setWatchEthereumAccountEnabled(false));
+      expect(background.setWatchEthereumAccountEnabled.callCount).toStrictEqual(
+        2,
+      );
+      expect(
+        background.setWatchEthereumAccountEnabled.getCall(1).args,
+      ).toStrictEqual([false]);
+    });
+  });
+
+  describe('#setAddSnapAccountEnabled', () => {
+    if (typeof actions.setAddSnapAccountEnabled !== 'function') {
+      it.todo('setAddSnapAccountEnabled not available in this build');
+      return;
+    }
+
+    it('calls background setAddSnapAccountEnabled with value', async () => {
+      const store = mockStore();
+      background.setAddSnapAccountEnabled = sinon.stub().resolves();
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.setAddSnapAccountEnabled(true));
+      expect(background.setAddSnapAccountEnabled.callCount).toStrictEqual(1);
+      expect(background.setAddSnapAccountEnabled.getCall(0).args).toStrictEqual(
+        [true],
+      );
+
+      await store.dispatch(actions.setAddSnapAccountEnabled(false));
+      expect(background.setAddSnapAccountEnabled.callCount).toStrictEqual(2);
+      expect(background.setAddSnapAccountEnabled.getCall(1).args).toStrictEqual(
+        [false],
+      );
+    });
+  });
+
   describe('#updateTransaction', () => {
     const txParams = {
       from: '0x1',
@@ -1670,6 +1719,286 @@ describe('Actions', () => {
     });
   });
 
+  describe('#hideAsset', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls hideAsset in background with the assetId', async () => {
+      const store = mockStore();
+      // eslint-disable-next-line prettier/prettier
+      const assetId =
+        'eip155:1:erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+      const hideAssetStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        hideAsset: hideAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.hideAsset(assetId));
+
+      expect(hideAssetStub.calledOnceWith(assetId)).toBe(true);
+      const actionTypes = store.getActions().map((action) => action.type);
+      expect(actionTypes).toContain('HIDE_LOADING_INDICATION');
+    });
+
+    it('displays warning when hideAsset in background fails', async () => {
+      const store = mockStore();
+      const assetId =
+        'eip155:1:erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+      const error = new Error('Failed to hide asset');
+
+      background.getApi.returns({
+        hideAsset: sinon.stub().rejects(error),
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.hideAsset(assetId));
+
+      const dispatchedActions = store.getActions();
+      expect(dispatchedActions.map((a) => a.type)).toContain('DISPLAY_WARNING');
+      expect(dispatchedActions.map((a) => a.type)).toContain(
+        'HIDE_LOADING_INDICATION',
+      );
+      const displayWarningAction = dispatchedActions.find(
+        (a) => a.type === 'DISPLAY_WARNING',
+      );
+      expect(displayWarningAction.payload).toBe('Failed to hide asset');
+    });
+  });
+
+  describe('#addCustomAsset', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls addCustomAsset in background with accountId and assetId', async () => {
+      const store = mockStore();
+      const accountId = '11e8977e-3dcd-4751-871f-2b438c839179';
+      const assetId =
+        'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+      const addCustomAssetStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        addCustomAsset: addCustomAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.addCustomAsset(accountId, assetId));
+
+      expect(addCustomAssetStub.calledOnceWith(accountId, assetId)).toBe(true);
+      const actionTypes = store.getActions().map((action) => action.type);
+      expect(actionTypes).toContain('HIDE_LOADING_INDICATION');
+    });
+
+    it('displays warning when addCustomAsset in background fails', async () => {
+      const store = mockStore();
+      const accountId = '11e8977e-3dcd-4751-871f-2b438c839179';
+      const assetId =
+        'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+      const error = new Error('Failed to add custom asset');
+
+      background.getApi.returns({
+        addCustomAsset: sinon.stub().rejects(error),
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.addCustomAsset(accountId, assetId));
+
+      const dispatchedActions = store.getActions();
+      expect(dispatchedActions.map((a) => a.type)).toContain('DISPLAY_WARNING');
+      expect(dispatchedActions.map((a) => a.type)).toContain(
+        'HIDE_LOADING_INDICATION',
+      );
+    });
+  });
+
+  describe('#unhideAsset', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls unhideAsset in background with the assetId', async () => {
+      const store = mockStore();
+      const assetId =
+        'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+      const unhideAssetStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        unhideAsset: unhideAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.unhideAsset(assetId));
+
+      expect(unhideAssetStub.calledOnceWith(assetId)).toBe(true);
+      const actionTypes = store.getActions().map((action) => action.type);
+      expect(actionTypes).toContain('HIDE_LOADING_INDICATION');
+    });
+
+    it('displays warning when unhideAsset in background fails', async () => {
+      const store = mockStore();
+      const assetId =
+        'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+      const error = new Error('Failed to unhide asset');
+
+      background.getApi.returns({
+        unhideAsset: sinon.stub().rejects(error),
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.unhideAsset(assetId));
+
+      const dispatchedActions = store.getActions();
+      expect(dispatchedActions.map((a) => a.type)).toContain('DISPLAY_WARNING');
+      expect(dispatchedActions.map((a) => a.type)).toContain(
+        'HIDE_LOADING_INDICATION',
+      );
+    });
+  });
+
+  describe('#removeCustomAsset', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls removeCustomAsset in background with accountId and assetId', async () => {
+      const store = mockStore();
+      const accountId = '11e8977e-3dcd-4751-871f-2b438c839179';
+      const assetId =
+        'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+      const removeCustomAssetStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        removeCustomAsset: removeCustomAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.removeCustomAsset(accountId, assetId));
+
+      expect(removeCustomAssetStub.calledOnceWith(accountId, assetId)).toBe(
+        true,
+      );
+      const actionTypes = store.getActions().map((action) => action.type);
+      expect(actionTypes).toContain('HIDE_LOADING_INDICATION');
+    });
+
+    it('displays warning when removeCustomAsset in background fails', async () => {
+      const store = mockStore();
+      const accountId = '11e8977e-3dcd-4751-871f-2b438c839179';
+      const assetId =
+        'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+      const error = new Error('Failed to remove custom asset');
+
+      background.getApi.returns({
+        removeCustomAsset: sinon.stub().rejects(error),
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.removeCustomAsset(accountId, assetId));
+
+      const dispatchedActions = store.getActions();
+      expect(dispatchedActions.map((a) => a.type)).toContain('DISPLAY_WARNING');
+      expect(dispatchedActions.map((a) => a.type)).toContain(
+        'HIDE_LOADING_INDICATION',
+      );
+    });
+  });
+
+  describe('#importCustomAssetsBatch', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('sends all background requests then performs a single state refresh', async () => {
+      const store = mockStore();
+      const accountId = '11e8977e-3dcd-4751-871f-2b438c839179';
+      const unhideAssetStub = sinon.stub().resolves();
+      const addCustomAssetStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        unhideAsset: unhideAssetStub,
+        addCustomAsset: addCustomAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.importCustomAssetsBatch(accountId, [
+          {
+            assetId: 'eip155:1/erc20:0xaaa',
+            isHidden: true,
+          },
+          {
+            assetId: 'eip155:1/erc20:0xbbb',
+            isHidden: false,
+          },
+          {
+            assetId: 'eip155:1/erc20:0xccc',
+            isHidden: true,
+          },
+        ]),
+      );
+
+      expect(unhideAssetStub.calledTwice).toBe(true);
+      expect(unhideAssetStub.firstCall.args[0]).toBe('eip155:1/erc20:0xaaa');
+      expect(unhideAssetStub.secondCall.args[0]).toBe('eip155:1/erc20:0xccc');
+      expect(addCustomAssetStub.calledOnce).toBe(true);
+      expect(addCustomAssetStub.firstCall.args).toStrictEqual([
+        accountId,
+        'eip155:1/erc20:0xbbb',
+      ]);
+
+      const actionTypes = store.getActions().map((a) => a.type);
+      const hideCount = actionTypes.filter(
+        (t) => t === 'HIDE_LOADING_INDICATION',
+      ).length;
+      expect(hideCount).toBe(1);
+    });
+
+    it('displays warning when a background call fails but continues processing', async () => {
+      const store = mockStore();
+      const accountId = '11e8977e-3dcd-4751-871f-2b438c839179';
+      const addCustomAssetStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        unhideAsset: sinon.stub().rejects(new Error('unhide failed')),
+        addCustomAsset: addCustomAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.importCustomAssetsBatch(accountId, [
+          {
+            assetId: 'eip155:1/erc20:0xaaa',
+            isHidden: true,
+          },
+          {
+            assetId: 'eip155:1/erc20:0xbbb',
+            isHidden: false,
+          },
+        ]),
+      );
+
+      expect(addCustomAssetStub.calledOnce).toBe(true);
+      const dispatchedActions = store.getActions();
+      expect(dispatchedActions.map((a) => a.type)).toContain('DISPLAY_WARNING');
+      expect(dispatchedActions.map((a) => a.type)).toContain(
+        'HIDE_LOADING_INDICATION',
+      );
+    });
+  });
+
   describe('#setActiveNetwork', () => {
     afterEach(() => {
       sinon.restore();
@@ -1858,6 +2187,101 @@ describe('Actions', () => {
       expect(
         removeNetworkStub.calledOnceWith('testNetworkConfigurationId'),
       ).toBe(true);
+    });
+  });
+
+  describe('refreshAssetsForSelectedAccount', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    const mockAccount = {
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      address: '0xFirstAddress',
+      metadata: {
+        name: 'Test Account',
+        keyring: { type: 'HD Key Tree' },
+      },
+      options: {},
+      methods: [],
+      type: EthAccountType.Eoa,
+    };
+
+    it('calls getAssets in the background with accounts and options', async () => {
+      const store = mockStore();
+      const getAssetsStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        getAssets: getAssetsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const accounts = [mockAccount];
+      const options = {
+        chainIds: ['eip155:5', 'eip155:1'],
+        assetTypes: ['token'],
+      };
+
+      await store.dispatch(
+        actions.refreshAssetsForSelectedAccount(accounts, options),
+      );
+
+      expect(getAssetsStub.calledOnceWith(accounts, options)).toBe(true);
+    });
+
+    it('calls getAssets with default options when options omitted', async () => {
+      const store = mockStore();
+      const getAssetsStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        getAssets: getAssetsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const accounts = [mockAccount];
+
+      await store.dispatch(actions.refreshAssetsForSelectedAccount(accounts));
+
+      expect(getAssetsStub.calledOnce).toBe(true);
+      expect(getAssetsStub.firstCall.args[0]).toStrictEqual(accounts);
+      expect(getAssetsStub.firstCall.args[1]).toStrictEqual({});
+    });
+
+    it('calls getAssets with empty accounts array', async () => {
+      const store = mockStore();
+      const getAssetsStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        getAssets: getAssetsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.refreshAssetsForSelectedAccount([], {
+          chainIds: ['eip155:5'],
+        }),
+      );
+
+      expect(getAssetsStub.calledOnceWith([], { chainIds: ['eip155:5'] })).toBe(
+        true,
+      );
+    });
+
+    it('does not throw when getAssets rejects', async () => {
+      const store = mockStore();
+      const error = new Error('Background getAssets failed');
+      const getAssetsStub = sinon.stub().rejects(error);
+
+      background.getApi.returns({
+        getAssets: getAssetsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await expect(
+        store.dispatch(
+          actions.refreshAssetsForSelectedAccount([mockAccount], {}),
+        ),
+      ).resolves.not.toThrow();
     });
   });
 
@@ -2231,6 +2655,60 @@ describe('Actions', () => {
 
       await store.dispatch(actions.setParticipateInMetaMetrics(true));
       expect(setParticipateInMetaMetricsStub).toHaveBeenCalledWith(true);
+    });
+  });
+
+  describe('#setMusdConversionEducationSeen', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls setMusdConversionEducationSeen in background with value', async () => {
+      const store = mockStore();
+      const setMusdConversionEducationSeenStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        setMusdConversionEducationSeen: setMusdConversionEducationSeenStub,
+      });
+
+      await store.dispatch(actions.setMusdConversionEducationSeen(true));
+      expect(setMusdConversionEducationSeenStub.callCount).toStrictEqual(1);
+      expect(setMusdConversionEducationSeenStub.calledWith(true)).toBe(true);
+    });
+
+    it('calls setMusdConversionEducationSeen in background with false', async () => {
+      const store = mockStore();
+      const setMusdConversionEducationSeenStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        setMusdConversionEducationSeen: setMusdConversionEducationSeenStub,
+      });
+
+      await store.dispatch(actions.setMusdConversionEducationSeen(false));
+      expect(setMusdConversionEducationSeenStub.calledWith(false)).toBe(true);
+    });
+  });
+
+  describe('#addMusdConversionDismissedCtaKey', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls addMusdConversionDismissedCtaKey in background with key', async () => {
+      const store = mockStore();
+      const addMusdConversionDismissedCtaKeyStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        addMusdConversionDismissedCtaKey: addMusdConversionDismissedCtaKeyStub,
+      });
+
+      await store.dispatch(
+        actions.addMusdConversionDismissedCtaKey('0x1-0xabc123'),
+      );
+      expect(addMusdConversionDismissedCtaKeyStub.callCount).toStrictEqual(1);
+      expect(
+        addMusdConversionDismissedCtaKeyStub.calledWith('0x1-0xabc123'),
+      ).toBe(true);
     });
   });
 

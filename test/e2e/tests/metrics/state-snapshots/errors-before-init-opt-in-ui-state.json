@@ -32,14 +32,14 @@
       "canTrackWalletFundsObtained": false,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
-      "enableEnforcedSimulations": true,
-      "enforcedSimulationsSlippage": "number",
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": "boolean",
       "isRampCardClosed": false,
       "isWalletResetInProgress": "boolean",
       "lastUpdatedAt": null,
       "lastViewedUserSurvey": null,
+      "musdConversionDismissedCtaKeys": "object",
+      "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "nftsDetectionNoticeDismissed": false,
@@ -73,6 +73,7 @@
     "BridgeController": {},
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
+    "ClientController": "object",
     "CurrencyController": {
       "currencyRates": {
         "ETH": {
@@ -192,6 +193,7 @@
     "PermissionController": { "subjects": "object" },
     "PermissionLogController": { "permissionHistory": "object" },
     "PhishingController": {
+      "addressScanCache": "object",
       "tokenScanCache": "object",
       "urlScanCache": "object"
     },
@@ -214,12 +216,14 @@
       "openSeaEnabled": false,
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
+        "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
         "hideZeroBalanceTokens": false,
         "petnamesEnabled": "boolean",
         "privacyMode": "boolean",
         "shouldShowAggregatedBalancePopover": "boolean",
+        "showDefaultAddress": "boolean",
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": "boolean",
@@ -317,5 +321,5 @@
     },
     "config": "object"
   },
-  "meta": { "version": 195 }
+  "meta": { "version": 197 }
 }

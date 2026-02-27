@@ -11,10 +11,7 @@ import {
 } from '@metamask/transaction-controller';
 import { decodeDelegations } from '@metamask/delegation-core';
 import { ApprovalRequest } from '@metamask/approval-controller';
-import {
-  PermissionTypesWithCustom,
-  StoredGatorPermissionSanitized,
-} from '@metamask/gator-permissions-controller';
+import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
 import {
   addTransaction,
@@ -139,41 +136,39 @@ describe('useRevokeGatorPermissions', () => {
     '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
   const mockNetworkClientId = 'mock-network-client-id';
 
-  const mockGatorPermission: StoredGatorPermissionSanitized<PermissionTypesWithCustom> =
-    {
-      permissionResponse: {
-        chainId: mockChainId,
-        from: mockSelectedAccountAddress,
-        // expiry: 1750291200,
-        permission: {
-          type: 'native-token-stream',
-          isAdjustmentAllowed: false,
-          data: {
-            maxAmount: '0x22b1c8c1227a0000',
-            initialAmount: '0x6f05b59d3b20000',
-            amountPerSecond: '0x6f05b59d3b20000',
-            startTime: 1747699200,
-            justification:
-              'This is a very important request for streaming allowance for some very important thing',
-          },
+  const mockGatorPermission: PermissionInfoWithMetadata = {
+    permissionResponse: {
+      chainId: mockChainId,
+      from: mockSelectedAccountAddress,
+      // expiry: 1750291200,
+      permission: {
+        type: 'native-token-stream',
+        isAdjustmentAllowed: false,
+        data: {
+          maxAmount: '0x22b1c8c1227a0000',
+          initialAmount: '0x6f05b59d3b20000',
+          amountPerSecond: '0x6f05b59d3b20000',
+          startTime: 1747699200,
+          justification:
+            'This is a very important request for streaming allowance for some very important thing',
         },
-        context: mockPermissionContext,
-        delegationManager: mockDelegationManagerAddress,
       },
-      siteOrigin: 'http://localhost:8000',
-    };
+      context: mockPermissionContext,
+      delegationManager: mockDelegationManagerAddress,
+    },
+    siteOrigin: 'http://localhost:8000',
+  };
 
-  const mockGatorPermissions: StoredGatorPermissionSanitized<PermissionTypesWithCustom>[] =
-    [
-      mockGatorPermission,
-      {
-        ...mockGatorPermission,
-        permissionResponse: {
-          ...mockGatorPermission.permissionResponse,
-          context: mockPermissionContext2,
-        },
+  const mockGatorPermissions: PermissionInfoWithMetadata[] = [
+    mockGatorPermission,
+    {
+      ...mockGatorPermission,
+      permissionResponse: {
+        ...mockGatorPermission.permissionResponse,
+        context: mockPermissionContext2,
       },
-    ];
+    },
+  ];
 
   // Type the mock delegation to match what decodeDelegations returns from @metamask/delegation-core'
   const mockDelegation = {

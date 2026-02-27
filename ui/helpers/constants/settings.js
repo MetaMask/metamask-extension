@@ -73,6 +73,14 @@ const SETTINGS_CONSTANTS = [
     route: `${GENERAL_ROUTE}#zero-balancetokens`,
     iconName: IconName.Setting,
   },
+  {
+    tabMessage: (t) => t('general'),
+    sectionMessage: (t) => t('showDefaultAddress'),
+    descriptionMessage: (t) => t('showDefaultAddressDescription'),
+    route: `${GENERAL_ROUTE}#show-default-address`,
+    iconName: IconName.Setting,
+    hidden: true,
+  },
   // advanced settingsRefs[0]
   {
     tabMessage: (t) => t('advanced'),
@@ -509,8 +517,6 @@ const SETTINGS_CONSTANTS = [
     route: `${EXPERIMENTAL_ROUTE}#notifications`,
     icon: 'fas fa-flask',
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  // since this route is only included with keyring-snaps feature flag, this needs to be the last settingsRef for the experimental tab
   // experimental settingsRefs[4]
   {
     tabMessage: (t) => t('experimental'),
@@ -519,7 +525,6 @@ const SETTINGS_CONSTANTS = [
     route: `${EXPERIMENTAL_ROUTE}#snaps`,
     icon: 'fas fa-flask',
   },
-  ///: END:ONLY_INCLUDE_IF
   // developerOptions settingsRefs[0]
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',

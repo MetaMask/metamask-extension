@@ -86,7 +86,7 @@
                 "type": "Snap Keyring"
               },
               "lastSelected": 0,
-              "name": "Snap Account 1",
+              "name": "",
               "snap": {
                 "enabled": true,
                 "id": "npm:@metamask/solana-wallet-snap",
@@ -126,7 +126,7 @@
                 "type": "HD Key Tree"
               },
               "lastSelected": 1770282498132,
-              "name": "Account 1"
+              "name": ""
             },
             "methods": [
               "personal_sign",
@@ -155,18 +155,7 @@
       }
     },
     "AddressBookController": {
-      "addressBook": {
-        "*": {
-          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-            "address": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
-            "chainId": "*",
-            "isEns": false,
-            "lastUpdatedAt": 1770282498132,
-            "memo": "",
-            "name": "Account 1"
-          }
-        }
-      }
+      "addressBook": {}
     },
     "AlertController": {
       "alertEnabledness": {
@@ -181,7 +170,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 195,
+      "currentMigrationVersion": 197,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -193,8 +182,6 @@
       "canTrackWalletFundsObtained": false,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
-      "enableEnforcedSimulations": true,
-      "enforcedSimulationsSlippage": 10,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": false,
       "isRampCardClosed": false,
@@ -225,7 +212,9 @@
       "termsOfUseLastAgreed": 1770282497124,
       "timeoutMinutes": 0,
       "trezorModel": null,
-      "updateModalLastDismissedAt": null
+      "updateModalLastDismissedAt": null,
+      "musdConversionEducationSeen": false,
+      "musdConversionDismissedCtaKeys": []
     },
     "AuthenticationController": {},
     "BridgeStatusController": {
@@ -317,8 +306,8 @@
       "nonRPCGasFeeApisDisabled": false
     },
     "GatorPermissionsController": {
-      "gatorPermissionsMapSerialized": "{\"erc20-token-revocation\":{},\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
-      "isGatorPermissionsEnabled": true
+      "grantedPermissions": [],
+      "lastSyncedTimestamp": -1
     },
     "KeyringController": {
       "vault": "{\"data\":\"NExj9MOjXXpo3+Vu6YkTqT8gTqlu8OAAUKJQpdWeYXEwDSSRf0itJhwDxECqgm3rE+DEstjsEzsCTH3g1gKp6uzDU4XcE07+XzekuLatveN3R8d95RFh4ECoLDdfbcVfMyOjr3EUrM0dDq1eBJjWQZxbbeCUHh3VnYap0g9uHiIdCmU7PKDL4h8PPmsLS3c2LQ2Boa6q/johhNBxCmiySWgkTv1Pi0iTxhhCO+qwkJxeLf1u8b5TmcpgKGOg+n0phCf3/zrQ7brpEeCA8R3zoFmqMM7xr5xZke3YY4ef6JKoZEU+3lkMCs9IHnvWAUnDaSJmAIzTrfhOe8AmDzXwbooXd24NBXZUyG1G/gZWDlW1Ku4it4GqYj7lF0GH3vXVPHwK+FR3LdjqOtrcPfyJCPdTKyEVzMSttnTyjpIJiWAwY21AQrvKBHMfCfZd2/LzfN0TsxBKDAi/rPsA/On+Ng+ZDcmMlstvALF3LKSWv15OqH7e/xn/IffURGeI2OU73jTjNCbGzW2hqV2VK+6UaQSv93ZH653fmT+1komK3Xitt15+yMYbbSRVubqs5gSwvKs0tiKYn381mmRLHy1dCmj0fjTlM4UDjSCTS9Ce3ioJlKRRw66/FQRxYYA6mQF0vzrbIvVh2x2PHrq8ZgJ4PyWaYdaMUA0bZyzol2hFBNFXcOmfQEzdYul1vGpEHRhwbW2oor2glEh3CAgn9kG3JUHsnHIhyjc7J+jpFd0UBgwS2d8UCABSU0g/YSTwcHHOL+iTRQnr4ytvLBTeJG6lzH2fyhnrBu2/vPWLCQ8XD72fVmhrBz/XGfQtk8trspaTeCM5B8zegUS7sl1IKIw7H5Z7E3eQXH/AwiqmkSt5h9lAo4q5IKJF7uB4q6CFwqfJXoT4lCoqj1uO7bPUwpO7bWUnbbPlUOlU/kpMxHjU1UDMmvN9lG2Qd0KQHKGeFMigjL0t5JYj56r1sEj6bWdjWMrq62edaLGrhzQyXp2UiISwCELlIqy3cz0tollOTPOupkTFK5sHyTKH5PbPJtFYOiAMir4JY39LXYgcorim4hLQwG5ZB1Ew8n9sDA2KfcfI0Bs+tiZOoSGCcycrpfO5J6xP2TsXpAHr8EzRpVCE7OoltaLgP1IZC1zmdfkRXUww9+Gw0Pgwy3cxYljwv5Kg2FCfkb0pKARUck1eNC/4dFIAw0UIC9VzYPNt/t2vJoe+lC4I8UpctCyjYTTq0jfrLVoqFUcHnKAH3ynDmMPhsk+66He966O4OfqhKXJYm3e6weIGZTCGfe8BKmhPNiL5VJ52tsMIwKbXgN+ll8Oi9/a2fzs3wtESKogCJiR7M/nevekDnq/dEL6U6OaArkCK9NiLLevHt5FfDr/Qt3J6lfwdAkzjAhk5oTTWqGhR/4KK4+e0lqgaBPMGVcFs9BAyRlnIPeH24CvvZJ6KAsjMt/FcfnwHqO2mz8N5byAg5bcvc0Zj7w==\",\"iv\":\"dljVsphzXsTe/YGaUn3hGg==\",\"keyMetadata\":{\"algorithm\":\"PBKDF2\",\"params\":{\"iterations\":600000}},\"salt\":\"/zucSs8SpE/7JyE2eklkZ8HvklEWtSGmhBo67Vx5Jfo=\"}"
@@ -492,16 +481,7 @@
     "NameController": {
       "nameSources": {},
       "names": {
-        "ethereumAddress": {
-          "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-            "*": {
-              "name": "Account 1",
-              "origin": "account-identity",
-              "proposedNames": {},
-              "sourceId": null
-            }
-          }
-        }
+        "ethereumAddress": {}
       }
     },
     "NetworkController": {
@@ -859,6 +839,7 @@
       "permissionHistory": {}
     },
     "PhishingController": {
+      "addressScanCache": {},
       "c2DomainBlocklistLastFetched": 1770282505,
       "hotlistLastFetched": 1770282505,
       "phishingLists": [],
@@ -880,22 +861,22 @@
         "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
           "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
           "lastSelected": 1770282498132,
-          "name": "Account 1"
+          "name": ""
         },
         "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
           "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
           "lastSelected": 0,
-          "name": "Snap Account 3"
+          "name": ""
         },
         "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3": {
           "address": "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3",
           "lastSelected": 0,
-          "name": "Snap Account 1"
+          "name": ""
         },
         "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252": {
           "address": "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252",
           "lastSelected": 0,
-          "name": "Snap Account 2"
+          "name": ""
         }
       },
       "ipfsGateway": "dweb.link",
@@ -907,22 +888,22 @@
         "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
           "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
           "lastSelected": 1770282498132,
-          "name": "Account 1"
+          "name": ""
         },
         "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
           "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
           "lastSelected": 0,
-          "name": "Snap Account 3"
+          "name": ""
         },
         "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3": {
           "address": "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3",
           "lastSelected": 0,
-          "name": "Snap Account 1"
+          "name": ""
         },
         "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252": {
           "address": "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252",
           "lastSelected": 0,
-          "name": "Snap Account 2"
+          "name": ""
         }
       },
       "manageInstitutionalWallets": false,
@@ -930,12 +911,14 @@
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
         "avatarType": "maskicon",
+        "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "hideZeroBalanceTokens": false,
         "petnamesEnabled": true,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
+        "showDefaultAddress": false,
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": false,
@@ -1139,6 +1122,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 195
+    "version": 197
   }
 }
