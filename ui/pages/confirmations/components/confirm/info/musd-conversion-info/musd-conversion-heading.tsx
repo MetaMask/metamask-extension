@@ -7,16 +7,16 @@ import {
   Popover,
   PopoverPosition,
   Text,
-} from '../../../../../components/component-library';
+} from '../../../../../../components/component-library';
 import {
   AlignItems,
   Display,
   JustifyContent,
   TextAlign,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { MUSD_CONVERSION_APY } from '../../../../../components/app/musd/constants';
+} from '../../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { MUSD_CONVERSION_APY } from '../../../../../../components/app/musd/constants';
 
 /**
  * MusdConversionHeading Component

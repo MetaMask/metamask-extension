@@ -9,7 +9,7 @@
  */
 
 import React from 'react';
-import { Box, Text } from '../../../../../components/component-library';
+import { Box, Text } from '../../../../../../components/component-library';
 import {
   BackgroundColor,
   BorderRadius,
@@ -17,7 +17,7 @@ import {
   JustifyContent,
   TextColor,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
+} from '../../../../../../helpers/constants/design-system';
 
 export const OUTPUT_AMOUNT_TAG_SELECTOR = 'output-amount-tag';
 

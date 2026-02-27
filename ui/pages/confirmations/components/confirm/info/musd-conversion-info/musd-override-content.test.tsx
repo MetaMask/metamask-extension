@@ -1,21 +1,20 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 
-import { useCustomAmount } from '../../../../../hooks/musd/useCustomAmount';
-import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
+import { useCustomAmount } from '../../../../../../hooks/musd/useCustomAmount';
+import { useTransactionPayAvailableTokens } from '../../../../hooks/pay/useTransactionPayAvailableTokens';
 import { MusdOverrideContent } from './musd-override-content';
 
 // Mock dependencies
-jest.mock('../../../../../hooks/musd/useCustomAmount', () => ({
+jest.mock('../../../../../../hooks/musd/useCustomAmount', () => ({
   useCustomAmount: jest.fn(),
 }));
 
-jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens', () => ({
+jest.mock('../../../../hooks/pay/useTransactionPayAvailableTokens', () => ({
   useTransactionPayAvailableTokens: jest.fn(),
 }));
 
-// Mock PayWithRow component
-jest.mock('../../rows/pay-with-row/pay-with-row', () => ({
+jest.mock('../../../rows/pay-with-row/pay-with-row', () => ({
   PayWithRow: () => <div data-testid="pay-with-row">PayWithRow</div>,
 }));
 
