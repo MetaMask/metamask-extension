@@ -1,13 +1,14 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { HeaderCompactSearch } from './header-compact-search';
 import { HeaderCompactSearchVariant } from './header-compact-search.types';
 
 describe('HeaderCompactSearch', () => {
   const defaultSearchProps = {
     value: '',
-    placeholder: 'Search',
+    placeholder: messages.search.message,
   };
 
   describe('Screen variant', () => {
@@ -26,7 +27,7 @@ describe('HeaderCompactSearch', () => {
 
       const backButton = getByRole('button');
       expect(backButton).toBeDefined();
-      expect(getByPlaceholderText('Search')).toBeDefined();
+      expect(getByPlaceholderText(messages.search.message)).toBeDefined();
       expect(backButton.closest('header')).toHaveClass(
         'mm-header-compact-search',
       );
@@ -59,7 +60,7 @@ describe('HeaderCompactSearch', () => {
         />,
       );
 
-      expect(getByPlaceholderText('Search')).toBeDefined();
+      expect(getByPlaceholderText(messages.search.message)).toBeDefined();
       expect(getByRole('button')).toBeDefined();
     });
 
@@ -93,7 +94,7 @@ describe('HeaderCompactSearch', () => {
         />,
       );
 
-      const input = getByPlaceholderText('Search');
+      const input = getByPlaceholderText(messages.search.message);
       fireEvent.change(input, { target: { value: 'test query' } });
 
       expect(onChangeText).toHaveBeenCalledWith('test query');
