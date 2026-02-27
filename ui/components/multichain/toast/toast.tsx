@@ -23,15 +23,9 @@ import {
 
 export const ToastContainer = ({
   children,
-  className,
 }: {
   children: React.ReactNode | string;
-  className?: string;
-}) => (
-  <Box className={['toasts-container', className].filter(Boolean).join(' ')}>
-    {children}
-  </Box>
-);
+}) => <Box className="toasts-container">{children}</Box>;
 
 export const Toast = ({
   startAdornment,
