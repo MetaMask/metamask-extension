@@ -15,7 +15,14 @@ Object.defineProperty(globalThis, 'crypto', {
 });
 
 function makeCandle(time: number): CandleData['candles'][number] {
-  return { time, open: '1', high: '2', low: '0.5', close: '1.5', volume: '100' };
+  return {
+    time,
+    open: '1',
+    high: '2',
+    low: '0.5',
+    close: '1.5',
+    volume: '100',
+  };
 }
 
 function makeCandleData(times: number[]): CandleData {
