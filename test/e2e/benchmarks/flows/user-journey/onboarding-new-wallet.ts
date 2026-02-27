@@ -38,10 +38,6 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
       {
         title: testTitle,
         manifestFlags: {
-          remoteFeatureFlags: {
-            bitcoinAccounts: { enabled: false, minimumVersion: '0.0.0' },
-            tronAccounts: { enabled: false, minimumVersion: '0.0.0' },
-          },
           testing: {
             disableSync: true,
             infuraProjectId: process.env.INFURA_PROJECT_ID,

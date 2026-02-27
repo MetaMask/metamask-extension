@@ -156,35 +156,191 @@ async function mockAuthAPICall(
     });
 }
 
+const MOCK_JWT =
+  'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0IiwiaWF0IjoxNzA2MTEzMDYyLCJleHAiOjE5NjkxODUwNjN9.dGVzdA';
+const MOCK_ACCESS_TOKEN =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0IiwiaWF0IjoxNTE2MjM5MDIyfQ.dGVzdA';
+
+/**
+ * Hostname/URL patterns that must be intercepted in pass-through mode.
+ * Standard mockttp rules don't reliably catch all proxied requests in MV3
+ * (service worker can bypass --proxy-server), so the benchmarkPassThroughInterceptor
+ * acts as a safety net inside the catch-all thenPassThrough({ beforeRequest }).
+ */
+const INTERCEPTED_PATTERNS: {
+  match: (url: string, method: string) => boolean;
+  response: Record<string, unknown>;
+}[] = [
+  {
+    match: (url) => /^https:\/\/sentry\.io\/api/u.test(url),
+    response: { statusCode: 200, json: { success: true } },
+  },
+  {
+    match: (url) => /^https:\/\/api\.segment\.io\/v1\//u.test(url),
+    response: { statusCode: 200, json: {} },
+  },
+  {
+    match: (url) => url.includes('chainid.network/chains.json'),
+    response: { statusCode: 200, json: chainsList },
+  },
+  {
+    match: (url) => url.includes('subscription') && url.includes('eligibility'),
+    response: {
+      statusCode: 200,
+      json: [
+        {
+          canSubscribe: true,
+          canViewEntryModal: true,
+          minBalanceUSD: 1000,
+          product: 'shield',
+        },
+      ],
+    },
+  },
+  {
+    match: (url) =>
+      /subscription\.(dev-)?api\.cx\.metamask\.io\/v1\/subscriptions$/u.test(
+        url,
+      ),
+    response: {
+      statusCode: 200,
+      json: { subscriptions: [], trialedProducts: [] },
+    },
+  },
+  {
+    match: (url) => url.includes('bitcoin-mainnet.infura.io'),
+    response: { statusCode: 200, json: [] },
+  },
+  {
+    match: (url) => url.includes('tron-mainnet.infura.io'),
+    response: { statusCode: 200, json: {} },
+  },
+  /* eslint-disable @typescript-eslint/naming-convention */
+  {
+    match: (url) =>
+      url.includes('authentication.api.cx.metamask.io') &&
+      url.includes('/nonce'),
+    response: {
+      statusCode: 200,
+      json: {
+        nonce: 'mock-nonce-for-benchmark',
+        identifier: '0x0000000000000000000000000000000000000000',
+        expires_in: 300,
+      },
+    },
+  },
+  {
+    match: (url, method) =>
+      url.includes('authentication.api.cx.metamask.io') &&
+      url.includes('/srp/login') &&
+      method === 'POST',
+    response: {
+      statusCode: 200,
+      json: {
+        token: MOCK_JWT,
+        expires_in: 3600,
+        profile: {
+          profile_id: 'mock-profile-id',
+          metametrics_id: 'mock-metametrics-id',
+          identifier_id: 'mock-identifier-id',
+          identifier_type: 'SRP',
+          encrypted_storage_key: 'mock-storage-key',
+        },
+      },
+    },
+  },
+  {
+    match: (url) => url.includes('oidc.api.cx.metamask.io'),
+    response: {
+      statusCode: 200,
+      json: {
+        access_token: MOCK_ACCESS_TOKEN,
+        expires_in: 3600,
+      },
+    },
+  },
+  /* eslint-enable @typescript-eslint/naming-convention */
+  {
+    match: (url) => url.includes('authentication.api.cx.metamask.io'),
+    response: { statusCode: 200, json: {} },
+  },
+  {
+    match: (url) => url.includes('user-storage.api.cx.metamask.io'),
+    response: { statusCode: 200, json: null },
+  },
+  {
+    match: (url) => url.includes('accounts.api.cx.metamask.io'),
+    response: { statusCode: 200, json: [] },
+  },
+  {
+    match: (url) =>
+      url.includes('acl.execution.metamask.io') &&
+      url.includes('registry.json'),
+    response: { statusCode: 200, json: { registry: {} } },
+  },
+  {
+    match: (url) =>
+      url.includes('acl.execution.metamask.io') &&
+      url.includes('signature.json'),
+    response: { statusCode: 200, json: { signature: 'mock-signature' } },
+  },
+];
+
+/**
+ * Pass-through interceptor safety net. Evaluated inside the catch-all
+ * thenPassThrough({ beforeRequest }) to intercept requests that bypass
+ * standard mockttp rules in MV3 proxy mode.
+ *
+ * @param req - The incoming request with url and method.
+ * @param req.url - The request URL.
+ * @param req.method - The HTTP method.
+ * @returns A mock response object if matched, or null to pass through.
+ */
+export function benchmarkPassThroughInterceptor(req: {
+  url: string;
+  method: string;
+}): { response: Record<string, unknown> } | null {
+  for (const pattern of INTERCEPTED_PATTERNS) {
+    if (pattern.match(req.url, req.method)) {
+      return { response: pattern.response };
+    }
+  }
+  return null;
+}
+
 /**
  * Common mocks for pass-through mode.
  * Returns standard mockttp rules for analytics and other noisy endpoints.
+ * All rules use .always() so they match every request (not just the first).
+ *
+ * @param server - The mockttp server instance.
+ * @returns Array of mocked endpoint promises.
  */
-export function getCommonMocks(
-  server: Mockttp,
-): Promise<MockedEndpoint>[] {
+export function getCommonMocks(server: Mockttp): Promise<MockedEndpoint>[] {
   return [
-    server.forGet('https://chainid.network/chains.json').thenCallback(() => {
-      return { statusCode: 200, json: chainsList };
-    }),
-    server.forPost(/^https:\/\/sentry\.io\/api/u).thenCallback(() => {
-      return {
-        statusCode: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        },
-        json: { success: true },
-      };
-    }),
-    server.forPost(/^https:\/\/api\.segment\.io\/v1\//u).thenCallback(() => {
-      return { statusCode: 200 };
-    }),
+    server
+      .forGet('https://chainid.network/chains.json')
+      .always()
+      .thenCallback(() => {
+        return { statusCode: 200, json: chainsList };
+      }),
+    server
+      .forPost(/^https:\/\/sentry\.io\/api/u)
+      .always()
+      .thenCallback(() => {
+        return { statusCode: 200, json: { success: true } };
+      }),
+    server
+      .forPost(/^https:\/\/api\.segment\.io\/v1\//u)
+      .always()
+      .thenCallback(() => {
+        return { statusCode: 200 };
+      }),
     server
       .forGet(
         /^https:\/\/subscription\.(dev-)?api\.cx\.metamask\.io\/v1\/subscriptions\/eligibility/u,
       )
+      .always()
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -200,13 +356,157 @@ export function getCommonMocks(
       }),
     server
       .forGet(
-        /^https:\/\/subscription\.(dev-)?api\.cx\.metamask\.io\/v1\/subscriptions/u,
+        /^https:\/\/subscription\.(dev-)?api\.cx\.metamask\.io\/v1\/subscriptions$/u,
       )
+      .always()
       .thenCallback(() => {
         return {
           statusCode: 200,
           json: { subscriptions: [], trialedProducts: [] },
         };
+      }),
+    server
+      .forAnyRequest()
+      .forHost('bitcoin-mainnet.infura.io')
+      .always()
+      .thenCallback(() => {
+        return { statusCode: 200, json: [] };
+      }),
+    server
+      .forAnyRequest()
+      .forHost('tron-mainnet.infura.io')
+      .always()
+      .thenCallback(() => {
+        return { statusCode: 200, json: {} };
+      }),
+    /* eslint-disable @typescript-eslint/naming-convention */
+    server
+      .forGet(
+        /^https:\/\/authentication\.api\.cx\.metamask\.io\/api\/v2\/nonce/u,
+      )
+      .always()
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            nonce: 'mock-nonce-for-benchmark',
+            identifier: '0x0000000000000000000000000000000000000000',
+            expires_in: 300,
+          },
+        };
+      }),
+    server
+      .forPost(
+        /^https:\/\/authentication\.api\.cx\.metamask\.io\/api\/v2\/srp\/login/u,
+      )
+      .always()
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            token: MOCK_JWT,
+            expires_in: 3600,
+            profile: {
+              profile_id: 'mock-profile-id',
+              metametrics_id: 'mock-metametrics-id',
+              identifier_id: 'mock-identifier-id',
+              identifier_type: 'SRP',
+              encrypted_storage_key: 'mock-storage-key',
+            },
+          },
+        };
+      }),
+    server
+      .forPost(/^https:\/\/oidc\.api\.cx\.metamask\.io\/oauth2\/token/u)
+      .always()
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            access_token: MOCK_ACCESS_TOKEN,
+            expires_in: 3600,
+          },
+        };
+      }),
+    server
+      .forGet(
+        /^https:\/\/authentication\.api\.cx\.metamask\.io\/api\/v2\/profile\/lineage/u,
+      )
+      .always()
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            lineage: [
+              {
+                agent: 'extension',
+                metametrics_id: 'mock-metametrics-id',
+                created_at: '2024-01-01',
+                updated_at: '2024-01-01',
+              },
+            ],
+          },
+        };
+      }),
+    /* eslint-enable @typescript-eslint/naming-convention */
+    server
+      .forGet(
+        /^https:\/\/authentication\.api\.cx\.metamask\.io\/api\/v2\/profile\/accounts/u,
+      )
+      .always()
+      .thenCallback(() => {
+        return { statusCode: 200, json: [] };
+      }),
+    server
+      .forAnyRequest()
+      .forHost('authentication.api.cx.metamask.io')
+      .always()
+      .thenCallback(() => {
+        return { statusCode: 200, json: {} };
+      }),
+    server
+      .forGet(/^https:\/\/user-storage\.api\.cx\.metamask\.io/u)
+      .always()
+      .thenCallback(() => {
+        return { statusCode: 200, json: null };
+      }),
+    server
+      .forPut(/^https:\/\/user-storage\.api\.cx\.metamask\.io/u)
+      .always()
+      .thenCallback(() => {
+        return { statusCode: 204 };
+      }),
+    server
+      .forDelete(/^https:\/\/user-storage\.api\.cx\.metamask\.io/u)
+      .always()
+      .thenCallback(() => {
+        return { statusCode: 204 };
+      }),
+    server
+      .forAnyRequest()
+      .forHost('user-storage.api.cx.metamask.io')
+      .always()
+      .thenCallback(() => {
+        return { statusCode: 200, json: null };
+      }),
+    server
+      .forAnyRequest()
+      .forHost('accounts.api.cx.metamask.io')
+      .always()
+      .thenCallback(() => {
+        return { statusCode: 200, json: [] };
+      }),
+    server
+      .forGet('https://acl.execution.metamask.io/latest/registry.json')
+      .always()
+      .thenCallback(() => {
+        return { statusCode: 200, json: { registry: {} } };
+      }),
+    server
+      .forGet('https://acl.execution.metamask.io/latest/signature.json')
+      .always()
+      .thenCallback(() => {
+        return { statusCode: 200, json: { signature: 'mock-signature' } };
       }),
   ];
 }

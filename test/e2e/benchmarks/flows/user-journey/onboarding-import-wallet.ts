@@ -26,7 +26,12 @@ import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-on
 import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
-import { getCommonMocks } from '../../mocks/performance-mocks';
+import { setPassThroughInterceptor } from '../../../mock-e2e-pass-through';
+import {
+  getCommonMocks,
+  benchmarkPassThroughInterceptor,
+} from '../../mocks/performance-mocks';
+import { shouldUseMockedRequests } from '../../utils/mock-config';
 import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
 
@@ -48,13 +53,14 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
-        useMockingPassThrough: true,
+        useMockingPassThrough: !shouldUseMockedRequests(),
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
         fixtures: new FixtureBuilder({ onboarding: true })
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
         testSpecificMock: async (server: Mockttp) => {
+          setPassThroughInterceptor(server, benchmarkPassThroughInterceptor);
           return Promise.all(getCommonMocks(server));
         },
       },
