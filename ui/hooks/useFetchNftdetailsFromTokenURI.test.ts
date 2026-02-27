@@ -49,7 +49,7 @@ describe('useFetchNftDetailsFromTokenURI', () => {
       { wrapper: createWrapper() },
     );
 
-    await waitFor(() => expect(result.current.isError).toBe(true));
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(result.current.image).toBe('');
     expect(result.current.name).toBe('');
@@ -89,7 +89,7 @@ describe('useFetchNftDetailsFromTokenURI', () => {
       { wrapper: createWrapper() },
     );
 
-    await waitFor(() => expect(result.current.isError).toBe(true));
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(result.current.image).toBe('');
     expect(result.current.name).toBe('');
