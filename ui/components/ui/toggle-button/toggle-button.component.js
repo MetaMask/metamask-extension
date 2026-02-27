@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactToggleButton from 'react-toggle-button';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { lightTheme, darkTheme } from '@metamask/design-tokens';
 import { useTheme } from '../../../hooks/useTheme';
 
