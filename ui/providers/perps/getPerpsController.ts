@@ -151,10 +151,7 @@ function createPerpsMessenger(
   };
 
   const accountTreeMessengerTyped = accountTreeMessenger as unknown as {
-    registerActionHandler: (
-      action: string,
-      handler: () => unknown[],
-    ) => void;
+    registerActionHandler: (action: string, handler: () => unknown[]) => void;
     delegate: (opts: {
       actions: string[];
       events: string[];
