@@ -236,7 +236,7 @@
         "@babel/core>@babel/template": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
         "nock>debug": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>globals": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
       }
     },
     "@babel/core>@babel/types": {
@@ -1073,7 +1073,6 @@
         "chokidar>normalize-path": true,
         "schema-utils": true,
         "copy-webpack-plugin>serialize-javascript": true,
-        "mocha>serialize-javascript": true,
         "copy-webpack-plugin>tinyglobby": true
       }
     },
@@ -1091,7 +1090,7 @@
       "packages": {
         "postcss-loader>cosmiconfig>env-paths": true,
         "eslint>@eslint/eslintrc>import-fresh": true,
-        "mocha>js-yaml": true,
+        "eslint>js-yaml": true,
         "depcheck>cosmiconfig>parse-json": true,
         "typescript": true
       }
@@ -2797,14 +2796,6 @@
         "crypto-browserify>randombytes": true
       }
     },
-    "mocha>serialize-javascript": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "crypto-browserify>randombytes": true
-      }
-    },
     "webpack-dev-server>serve-index": {
       "builtin": {
         "fs.readFile": true,
@@ -3068,7 +3059,7 @@
         "@storybook/test-runner>@storybook/core-common>esbuild": true,
         "terser-webpack-plugin>jest-worker": true,
         "schema-utils": true,
-        "mocha>serialize-javascript": true,
+        "copy-webpack-plugin>serialize-javascript": true,
         "terser": true,
         "html-bundler-webpack-plugin>handlebars>uglify-js": true
       }

@@ -806,7 +806,7 @@
         "@babel/core>@babel/template": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
         "nock>debug": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>globals": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
       }
     },
     "@babel/core>@babel/types": {
@@ -905,7 +905,7 @@
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
-        "eslint>@eslint/eslintrc>globals": true,
+        "eslint>globals": true,
         "eslint>ignore": true,
         "eslint>minimatch": true,
         "mocha>strip-json-comments": true
@@ -2414,7 +2414,7 @@
         "didYouMean": "write"
       }
     },
-    "ts-node>diff": {
+    "sinon>diff": {
       "globals": {
         "setTimeout": true
       }
@@ -7629,7 +7629,7 @@
         "jsdom>acorn": true,
         "ts-node>arg": true,
         "ts-node>create-require": true,
-        "ts-node>diff": true,
+        "sinon>diff": true,
         "ts-node>make-error": true,
         "ts-node>v8-compile-cache-lib": true,
         "ts-node>yn": true
