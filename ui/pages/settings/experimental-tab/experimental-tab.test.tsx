@@ -34,7 +34,16 @@ describe('ExperimentalTab', () => {
     }).not.toThrow();
   });
 
-  it('renders multiple toggle options', () => {
+  it('renders one toggle option when build type is main', () => {
+    process.env.METAMASK_BUILD_TYPE = 'main';
+    const { getAllByRole } = render();
+    const toggle = getAllByRole('checkbox');
+
+    expect(toggle).toHaveLength(1);
+  });
+
+  it('renders two toggle options when build type is flask', () => {
+    process.env.METAMASK_BUILD_TYPE = 'flask';
     const { getAllByRole } = render();
     const toggle = getAllByRole('checkbox');
 
