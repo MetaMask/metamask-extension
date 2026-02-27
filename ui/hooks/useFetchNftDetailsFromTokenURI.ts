@@ -24,8 +24,12 @@ const useFetchNftDetailsFromTokenURI = (
 
         // Try parsing JSON
         const data = JSON.parse(rawData);
-        setImage(data.image);
-        setName(data.name);
+        if (typeof data.image === 'string') {
+          setImage(data.image);
+        }
+        if (typeof data.name === 'string') {
+          setName(data.name);
+        }
       } catch {
         // ignore
       }

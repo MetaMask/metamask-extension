@@ -52,6 +52,7 @@ import {
   getDefaultHomeActiveTabName,
   getHDEntropyIndex,
   getPreferences,
+  getIsDefaultAddressEnabled,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
@@ -124,6 +125,7 @@ export const MultichainAccountList = ({
   const allBalances = useSelector(selectBalanceForAllWallets);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const { privacyMode } = useSelector(getPreferences);
+  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
 
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
@@ -320,7 +322,7 @@ export const MultichainAccountList = ({
                 | undefined
             }
             privacyMode={privacyMode}
-            showDefaultAddress={showDefaultAddress}
+            showDefaultAddress={isDefaultAddressEnabled && showDefaultAddress}
             walletName={
               showWalletName
                 ? wallets[walletId as AccountWalletId]?.metadata?.name
@@ -340,16 +342,20 @@ export const MultichainAccountList = ({
                 </Box>
               ) : undefined
             }
-            avatarWrapper={(avatar) => (
-              <MultichainHoveredAddressRowsList
-                groupId={groupId as AccountGroupId}
-                showAccountHeaderAndBalance={false}
-                showViewAllButton={false}
-                showDefaultAddressSection={false}
-              >
-                {avatar}
-              </MultichainHoveredAddressRowsList>
-            )}
+            avatarWrapper={
+              isDefaultAddressEnabled
+                ? (avatar) => (
+                    <MultichainHoveredAddressRowsList
+                      groupId={groupId as AccountGroupId}
+                      showAccountHeaderAndBalance={false}
+                      showViewAllButton={false}
+                      showDefaultAddressSection={false}
+                    >
+                      {avatar}
+                    </MultichainHoveredAddressRowsList>
+                  )
+                : undefined
+            }
             endAccessory={
               showAccountMenu ? (
                 <MultichainAccountMenu
@@ -380,6 +386,7 @@ export const MultichainAccountList = ({
       openMenuAccountId,
       handleMenuToggle,
       showDefaultAddress,
+      isDefaultAddressEnabled,
     ],
   );
 
@@ -407,7 +414,7 @@ export const MultichainAccountList = ({
             groupId,
             groupData,
             walletId,
-            showWalletName: !showDefaultAddress,
+            showWalletName: !(showDefaultAddress && isDefaultAddressEnabled),
           });
         });
       }
@@ -497,6 +504,7 @@ export const MultichainAccountList = ({
     isHiddenAccountsExpanded,
     collapsedSectionKeys,
     showDefaultAddress,
+    isDefaultAddressEnabled,
     t,
   ]);
 

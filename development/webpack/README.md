@@ -67,14 +67,14 @@ Note: multiple array options cannot be set this way, due to this bug in yargs: h
 
 ## CLI Arguments
 
-### `--targetEnvironment`
+### `--env` (alias: `-e`)
 
 Explicitly sets the build environment for Sentry reporting and feature flags. If not specified, it is auto-detected from git.
 
 | Value               | When Used                                    |
 | ------------------- | -------------------------------------------- |
 | `production`        | Must be explicitly set (never auto-detected) |
-| `development`       | `--env development`                          |
+| `development`       | `--mode development`                         |
 | `testing`           | `--test` flag                                |
 | `staging`           | `main` branch on CI                          |
 | `release-candidate` | `release/*` branch on CI                     |
@@ -85,13 +85,13 @@ Explicitly sets the build environment for Sentry reporting and feature flags. If
 
 ```bash
 # Local development (auto-detects as 'other')
-yarn webpack --env production
+yarn webpack --mode production
 
 # Explicit production (for actual releases only)
-yarn webpack --env production --targetEnvironment production
+yarn webpack --mode production --env production
 
 # Check what environment will be used
-yarn webpack --env production --dry-run
+yarn webpack --mode production --dry-run
 ```
 
 You can also combine environment variables with `--config` and CLI options:

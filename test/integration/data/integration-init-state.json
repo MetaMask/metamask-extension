@@ -2122,6 +2122,7 @@
   "useBlockie": false,
   "useCurrencyRateCheck": true,
   "useExternalNameSources": true,
+  "useExternalServices": true,
   "useMultiAccountBalanceChecker": false,
   "useNftDetection": false,
   "usePhishDetect": true,
