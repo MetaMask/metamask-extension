@@ -6,6 +6,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { TransactionDetailsProvider } from '../transaction-details-context';
 import { TransactionDetailsSummary } from './transaction-details-summary';
 
@@ -40,6 +42,7 @@ function createMockState(transactions: Partial<TransactionMeta>[] = []) {
 function createMockTransactionMeta(
   type: TransactionType,
   overrides: Partial<TransactionMeta> = {},
+  metamaskPay?: { chainId: string; tokenAddress: string },
 ) {
   return {
     id: 'test-id',
@@ -52,13 +55,17 @@ function createMockTransactionMeta(
       to: '0x456',
     },
     ...overrides,
+    metamaskPay,
   };
 }
 
-function render(type: TransactionType = TransactionType.simpleSend) {
+function render(
+  type: TransactionType = TransactionType.simpleSend,
+  metamaskPay?: { chainId: string; tokenAddress: string },
+) {
   return renderWithProvider(
     <TransactionDetailsProvider
-      transactionMeta={createMockTransactionMeta(type) as never}
+      transactionMeta={createMockTransactionMeta(type, metamaskPay) as never}
     >
       <TransactionDetailsSummary />
     </TransactionDetailsProvider>,
@@ -67,8 +74,11 @@ function render(type: TransactionType = TransactionType.simpleSend) {
 }
 
 describe('TransactionDetailsSummary', () => {
+  const useTokenWithBalanceMock = jest.mocked(useTokenWithBalance);
+
   beforeEach(() => {
     global.platform = { openTab: jest.fn() } as never;
+    useTokenWithBalanceMock.mockReturnValue(undefined);
   });
 
   it('renders with correct test id', () => {
@@ -78,17 +88,63 @@ describe('TransactionDetailsSummary', () => {
 
   it('renders summary label', () => {
     const { getByText } = render();
-    expect(getByText('Summary')).toBeInTheDocument();
+    expect(getByText(messages.summary.message)).toBeInTheDocument();
   });
 
   it('renders bridge title for bridge transactions', () => {
     const { getByText } = render(TransactionType.bridge);
-    expect(getByText('Bridge')).toBeInTheDocument();
+    expect(getByText(messages.bridge.message)).toBeInTheDocument();
   });
 
   it('renders swap title for swap transactions', () => {
     const { getByText } = render(TransactionType.swap);
-    expect(getByText('Swap')).toBeInTheDocument();
+    expect(getByText(messages.swap.message)).toBeInTheDocument();
+  });
+
+  it('uses metamaskPay chain for relayDeposit source token lookup', () => {
+    useTokenWithBalanceMock.mockReturnValue({
+      address: '0xabc123',
+      chainId: '0x89',
+      symbol: 'USDC',
+      decimals: 6,
+      balance: '1',
+      balanceFiat: '$1.00',
+      balanceRaw: '1000000',
+      tokenFiatAmount: 1,
+    });
+
+    render(TransactionType.relayDeposit, {
+      chainId: '0x89',
+      tokenAddress: '0xabc123',
+    });
+
+    expect(useTokenWithBalanceMock).toHaveBeenCalledWith('0xabc123', '0x89');
+  });
+
+  it('renders approve title with token symbol for tokenMethodApprove', () => {
+    useTokenWithBalanceMock.mockReturnValue({
+      address: '0x456',
+      chainId: CHAIN_ID,
+      symbol: 'USDC',
+      decimals: 6,
+      balance: '1',
+      balanceFiat: '$1.00',
+      balanceRaw: '1000000',
+      tokenFiatAmount: 1,
+    });
+
+    const { getByText } = render(TransactionType.tokenMethodApprove);
+    expect(getByText('Approve USDC')).toBeInTheDocument();
+  });
+
+  it('renders approve fallback title when token symbol is not resolved', () => {
+    const { getByText } = render(TransactionType.tokenMethodApprove);
+    expect(getByText(messages.approveButtonText.message)).toBeInTheDocument();
+  });
+
+  it('uses txParams.to as token address for tokenMethodApprove lookup', () => {
+    render(TransactionType.tokenMethodApprove);
+    expect(useTokenWithBalanceMock).toHaveBeenCalledWith('0x456', CHAIN_ID);
   });
 
   describe('mUSD conversion summary', () => {

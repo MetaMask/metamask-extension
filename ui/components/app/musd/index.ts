@@ -1,7 +1,9 @@
+export { useMerklClaim } from './hooks/useMerklClaim';
 export {
-  useMerklClaim,
+  useMerklRewards,
   isEligibleForMerklRewards,
-} from './hooks/useMerklClaim';
+} from './hooks/useMerklRewards';
+export { useOnMerklClaimConfirmed } from './hooks/useOnMerklClaimConfirmed';
 export { ELIGIBLE_TOKENS, MERKL_FEATURE_FLAG_KEY } from './constants';
 export { ClaimBonusBadge } from './claim-bonus-badge';
 export { MerklClaimToast } from './merkl-claim-toast';

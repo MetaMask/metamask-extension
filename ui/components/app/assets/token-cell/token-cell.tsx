@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import { useTokenDisplayInfo } from '../hooks';
@@ -23,16 +23,8 @@ import { type TokenWithFiatAmount } from '../types';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
-import {
-  ClaimBonusBadge,
-  isEligibleForMerklRewards,
-  MusdConvertLink,
-} from '../../musd';
-import { getMerklRewardsEnabled } from '../../musd/selectors';
-import {
-  useMusdCtaVisibility,
-  useMusdBalance,
-} from '../../../../hooks/musd';
+import { ClaimBonusBadge, useMerklRewards, MusdConvertLink } from '../../musd';
+import { useMusdCtaVisibility, useMusdBalance } from '../../../../hooks/musd';
 import {
   TokenCellTitle,
   TokenCellPercentChange,
@@ -70,15 +62,12 @@ export default function TokenCell({
   );
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
-  const merklRewardsEnabled = useSelector(getMerklRewardsEnabled);
-
-  const showClaimBonusBadge = useMemo(
-    () =>
-      showMerklBadge &&
-      merklRewardsEnabled &&
-      isEligibleForMerklRewards(token.chainId, token.address),
-    [showMerklBadge, merklRewardsEnabled, token.chainId, token.address],
-  );
+  // Check whether there are rewards available for the user
+  const { hasClaimableReward, refetch: refetchMerklRewards } = useMerklRewards({
+    tokenAddress: token.address,
+    chainId: token.chainId as Hex,
+    showMerklBadge,
+  });
 
   const { shouldShowTokenListItemCta } = useMusdCtaVisibility();
   const { hasMusdBalance } = useMusdBalance();
@@ -120,6 +109,32 @@ export default function TokenCell({
     setShowScamWarningModal(arg);
   };
 
+  const renderFooterRight = () => {
+    if (showMusdCta) {
+      return (
+        <MusdConvertLink
+          tokenAddress={token.address as Hex}
+          chainId={token.chainId as Hex}
+          tokenSymbol={token.symbol}
+          entryPoint="token_list"
+        />
+      );
+    }
+    if (hasClaimableReward) {
+      return (
+        <ClaimBonusBadge
+          tokenAddress={token.address as string}
+          chainId={token.chainId as Hex}
+          label={t('merklRewardsClaimBonus')}
+          refetchRewards={refetchMerklRewards}
+        />
+      );
+    }
+    return (
+      <TokenCellPrimaryDisplay token={displayToken} privacyMode={privacyMode} />
+    );
+  };
+
   if (!token.chainId) {
     return null;
   }
@@ -145,30 +160,8 @@ export default function TokenCell({
             privacyMode={privacyMode}
           />
         }
-        footerLeftDisplay={
-          <TokenCellPercentChange token={displayToken} />
-        }
-        footerRightDisplay={
-          showMusdCta ? (
-            <MusdConvertLink
-              tokenAddress={token.address as Hex}
-              chainId={token.chainId as Hex}
-              tokenSymbol={token.symbol}
-              entryPoint="token_list"
-            />
-          ) : showClaimBonusBadge ? (
-            <ClaimBonusBadge
-              tokenAddress={token.address as string}
-              chainId={token.chainId as Hex}
-              label={t('merklRewardsClaimBonus')}
-            />
-          ) : (
-            <TokenCellPrimaryDisplay
-              token={displayToken}
-              privacyMode={privacyMode}
-            />
-          )
-        }
+        footerLeftDisplay={<TokenCellPercentChange token={displayToken} />}
+        footerRightDisplay={renderFooterRight()}
       />
       {isEvm && showScamWarningModal && (
         <Modal isOpen onClose={() => setShowScamWarningModal(false)}>

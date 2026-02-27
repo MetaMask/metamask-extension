@@ -16,8 +16,6 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowSize,
 } from '../../../../../components/app/confirm/info/row/row';
-import { ConfirmInfoAlertRow } from '../../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import {
   AlignItems,
   BackgroundColor,
@@ -151,7 +149,7 @@ export function PayWithRow({
       ) : (
         <PayWithRowDefault
           {...contentProps}
-          ownerId={currentConfirmation?.id ?? ''}
+          balanceUsdFormatted={balanceUsdFormatted}
         />
       )}
     </>
@@ -214,58 +212,58 @@ function PayWithRowSmall({
 
 function PayWithRowDefault({
   displayToken,
+  balanceUsdFormatted,
   canEdit,
   from,
   onOpenModal,
-  ownerId,
-}: PayWithRowContentProps & { ownerId: string }) {
+}: PayWithRowContentProps & { balanceUsdFormatted: string }) {
   const t = useI18nContext();
 
   return (
-    <ConfirmInfoAlertRow
-      alertKey={RowAlertKey.PayWith}
-      ownerId={ownerId}
+    <Box
       data-testid="pay-with-row"
-      label={t('payWith')}
-      rowVariant={ConfirmInfoRowSize.Default}
+      onClick={canEdit ? onOpenModal : undefined}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      borderRadius={BorderRadius.pill}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
+      gap={3}
+      paddingTop={2}
+      paddingBottom={2}
+      paddingLeft={2}
+      paddingRight={4}
+      style={{
+        cursor: canEdit ? 'pointer' : 'default',
+      }}
     >
-      <Box
-        data-testid="pay-with-pill"
-        onClick={canEdit ? onOpenModal : undefined}
-        backgroundColor={
-          canEdit
-            ? BackgroundColor.backgroundMuted
-            : BackgroundColor.transparent
-        }
-        borderRadius={BorderRadius.pill}
-        display={Display.InlineFlex}
-        alignItems={AlignItems.center}
-        gap={1}
-        style={{
-          cursor: canEdit ? 'pointer' : 'default',
-          padding: canEdit ? '4px 8px' : '0px',
-        }}
+      <TokenIcon
+        chainId={displayToken.chainId as `0x${string}`}
+        tokenAddress={displayToken.address as `0x${string}`}
+      />
+      <Text
+        variant={TextVariant.bodyMdMedium}
+        color={TextColor.textDefault}
+        data-testid="pay-with-symbol"
       >
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          marginRight={1}
-        >
-          <TokenIcon
-            chainId={displayToken.chainId as `0x${string}`}
-            tokenAddress={displayToken.address as `0x${string}`}
-            size="xs"
-          />
-        </Box>
-        <Text data-testid="pay-with-symbol">{displayToken.symbol}</Text>
-        {canEdit && from && (
-          <Icon
-            data-testid="pay-with-arrow"
-            name={IconName.ArrowDown}
-            size={IconSize.Sm}
-          />
-        )}
-      </Box>
-    </ConfirmInfoAlertRow>
+        {`${t('payWith')} ${displayToken.symbol}`}
+      </Text>
+      <Text
+        variant={TextVariant.bodyMdMedium}
+        color={TextColor.textAlternative}
+        data-testid="pay-with-balance"
+      >
+        {balanceUsdFormatted}
+      </Text>
+      {canEdit && from && (
+        <Icon
+          data-testid="pay-with-arrow"
+          name={IconName.ArrowDown}
+          size={IconSize.Sm}
+          color={IconColor.iconAlternative}
+        />
+      )}
+    </Box>
   );
 }

@@ -65,6 +65,12 @@ jest.mock('react-router-dom', () => {
   };
 });
 
+jest.mock('../../musd', () => ({
+  ClaimBonusBadge: () => null,
+  isEligibleForMerklRewards: jest.fn().mockReturnValue(false),
+  useMerklRewards: jest.fn().mockReturnValue({ hasClaimableReward: false }),
+}));
+
 describe('Token Cell', () => {
   const mockState = {
     metamask: {

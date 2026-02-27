@@ -26,7 +26,10 @@ type WidenDeep<Type> = Type extends string
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const createMockImplementation = <T,>(requests: Record<string, T>) => {
-  return (method: string): Promise<T | undefined> => {
+  return (method: string): Promise<T | undefined | string> => {
+    if (method === 'getBearerToken') {
+      return Promise.resolve('mock-bearer-token-for-tests');
+    }
     if (method in requests) {
       return Promise.resolve(requests[method]);
     }

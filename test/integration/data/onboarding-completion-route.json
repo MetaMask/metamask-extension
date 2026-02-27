@@ -116,16 +116,12 @@
   "detectedTokens": [],
   "dismissSeedBackUpReminder": false,
   "domains": {},
-  "enableEnforcedSimulations": "boolean",
-  "enableEnforcedSimulationsForTransactions": "object",
   "enableMV3TimestampSave": true,
   "enabledNetworkMap": {
     "eip155": {
       "0xaa36a7": true
     }
   },
-  "enforcedSimulationsSlippage": "number",
-  "enforcedSimulationsSlippageForTransactions": "object",
   "ensEntries": {},
   "ensResolutionsByAddress": {},
   "estimatedGasFeeTimeBounds": {},
@@ -277,7 +273,9 @@
   "pinnedAccountList": [],
   "popupGasPollTokens": [],
   "preferences": {
+    "defaultAddressScope": "eip155",
     "hideZeroBalanceTokens": false,
+    "showDefaultAddress": false,
     "showExtensionInFullSizeView": false,
     "showFiatInTestnets": false,
     "showTestNetworks": false,

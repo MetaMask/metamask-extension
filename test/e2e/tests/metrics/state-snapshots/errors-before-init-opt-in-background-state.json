@@ -131,10 +131,12 @@
       "openSeaEnabled": false,
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
+        "defaultAddressScope": "string",
         "hideZeroBalanceTokens": false,
         "petnamesEnabled": "boolean",
         "shouldShowAggregatedBalancePopover": "boolean",
         "showConfirmationAdvancedDetails": false,
+        "showDefaultAddress": "boolean",
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": "boolean",
