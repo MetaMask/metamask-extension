@@ -4,6 +4,7 @@ import { fireEvent, screen, within } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { AccountList } from './account-list';
 
@@ -52,8 +53,8 @@ describe('AccountList', () => {
   it('renders the page with correct components and elements', () => {
     renderComponent();
 
-    expect(screen.getByText('Accounts')).toBeInTheDocument();
-    expect(screen.getByLabelText('Back')).toBeInTheDocument();
+    expect(screen.getByText(messages.accounts.message)).toBeInTheDocument();
+    expect(screen.getByLabelText(messages.back.message)).toBeInTheDocument();
 
     const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
 
@@ -67,7 +68,7 @@ describe('AccountList', () => {
   it('calls navigate when back button is clicked', () => {
     renderComponent();
 
-    const backButton = screen.getByLabelText('Back');
+    const backButton = screen.getByLabelText(messages.back.message);
     fireEvent.click(backButton);
 
     expect(mockUseNavigate).toHaveBeenCalledWith(-1);
@@ -77,15 +78,23 @@ describe('AccountList', () => {
     renderComponent();
 
     // First, let's verify the button is rendered by looking for it with role
-    const addWalletButton = screen.getByRole('button', { name: 'Add wallet' });
+    const addWalletButton = screen.getByRole('button', {
+      name: messages.addWallet.message,
+    });
     expect(addWalletButton).toBeInTheDocument();
 
     fireEvent.click(addWalletButton);
 
     // The modal renders with portal, so we need to look for modal content
-    expect(screen.getByText('Import a wallet')).toBeInTheDocument();
-    expect(screen.getByText('Import an account')).toBeInTheDocument();
-    expect(screen.getByText('Add a hardware wallet')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.importAWallet.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.importAnAccount.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.addAHardwareWallet.message),
+    ).toBeInTheDocument();
   });
 
   it('displays the search field with correct placeholder', () => {
@@ -96,7 +105,7 @@ describe('AccountList', () => {
     expect(searchContainer).toBeInTheDocument();
 
     const searchInput = within(searchContainer).getByPlaceholderText(
-      'Search your accounts',
+      messages.searchYourAccounts.message,
     );
 
     expect(searchInput).toBeInTheDocument();
@@ -138,7 +147,7 @@ describe('AccountList', () => {
     fireEvent.change(searchInput, { target: { value: 'nonexistent account' } });
 
     expect(
-      screen.getByText('No accounts found for the given search query'),
+      screen.getByText(messages.noAccountsFound.message),
     ).toBeInTheDocument();
   });
 
@@ -174,40 +183,42 @@ describe('AccountList', () => {
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
         isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
-        loadingMessage: 'Syncing...',
+        loadingMessage: messages.syncing.message,
       });
 
       const { getAllByText } = renderComponent();
 
-      expect(getAllByText('Syncing...')[0]).toBeInTheDocument();
+      expect(getAllByText(messages.syncing.message)[0]).toBeInTheDocument();
     });
 
     it('prioritizes syncing message over local loading', async () => {
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
         isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
-        loadingMessage: 'Syncing...',
+        loadingMessage: messages.syncing.message,
       });
 
       const { getAllByText } = renderComponent();
 
-      fireEvent.click(getAllByText('Syncing...')[0]);
+      fireEvent.click(getAllByText(messages.syncing.message)[0]);
 
       // Should still show syncing message, not creating account message
-      expect(getAllByText('Syncing...')[0]).toBeInTheDocument();
+      expect(getAllByText(messages.syncing.message)[0]).toBeInTheDocument();
     });
 
     it('shows spinner when any loading state is active', async () => {
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
         isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
-        loadingMessage: 'Syncing...',
+        loadingMessage: messages.syncing.message,
       });
 
       const { getAllByText } = renderComponent();
 
       // When account syncing is in progress, should show spinner
-      expect(getAllByText('Syncing...').length).toBeGreaterThanOrEqual(1);
+      expect(
+        getAllByText(messages.syncing.message).length,
+      ).toBeGreaterThanOrEqual(1);
     });
 
     it('shows default add wallet text when no loading states are active', () => {
@@ -218,7 +229,9 @@ describe('AccountList', () => {
       });
       const { getAllByText } = renderComponent();
 
-      expect(getAllByText('Add wallet').length).toBeGreaterThanOrEqual(1);
+      expect(
+        getAllByText(messages.addWallet.message).length,
+      ).toBeGreaterThanOrEqual(1);
     });
 
     it('handles loading state transitions correctly', () => {
@@ -231,18 +244,22 @@ describe('AccountList', () => {
 
       const { getAllByText, rerender } = renderComponent();
 
-      expect(getAllByText('Add wallet').length).toBeGreaterThanOrEqual(1);
+      expect(
+        getAllByText(messages.addWallet.message).length,
+      ).toBeGreaterThanOrEqual(1);
 
       // Simulate account syncing starting
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
         isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
-        loadingMessage: 'Syncing...',
+        loadingMessage: messages.syncing.message,
       });
 
       rerender(<AccountList />);
 
-      expect(getAllByText('Syncing...').length).toBeGreaterThanOrEqual(1);
+      expect(
+        getAllByText(messages.syncing.message).length,
+      ).toBeGreaterThanOrEqual(1);
 
       // Simulate syncing completing
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
@@ -253,7 +270,9 @@ describe('AccountList', () => {
 
       rerender(<AccountList />);
 
-      expect(getAllByText('Add wallet').length).toBeGreaterThanOrEqual(1);
+      expect(
+        getAllByText(messages.addWallet.message).length,
+      ).toBeGreaterThanOrEqual(1);
     });
   });
 });
