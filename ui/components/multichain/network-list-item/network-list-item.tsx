@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import { CaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';

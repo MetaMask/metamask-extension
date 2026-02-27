@@ -7351,21 +7351,6 @@
   "simulationErrorMessageV2": {
     "message": "Chúng tôi không thể ước tính gas. Có thể đã xảy ra lỗi trong hợp đồng và giao dịch này có thể thất bại."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Giới hạn trượt giá"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Đặt mức chênh lệch mà bạn cảm thấy thoải mái khi số dư thay đổi. Giao dịch sẽ không được thực hiện nếu mức chênh lệch cao hơn."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Buộc số dư thay đổi"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Để đảm bảo an toàn cho khoản tiền của bạn, giao dịch này sẽ không được thực hiện nếu số dư thay đổi hoặc không đáp ứng ngưỡng trượt giá."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Cài đặt giao dịch"
-  },
   "simulationsSettingDescription": {
     "message": "Bật tính năng này để ước tính thay đổi số dư của các giao dịch và chữ ký trước khi bạn xác nhận. Điều này không đảm bảo cho kết quả cuối cùng. $1"
   },

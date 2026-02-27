@@ -187,27 +187,12 @@ async function setupMocking(
   // Mocks below this line can be overridden by test-specific mocks
 
   // remote feature flags — production-accurate defaults from the registry
+  // FF will apply to all environments: rc, prod and dev
   await server
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
     .withQuery({
       client: 'extension',
       distribution: 'main',
-      environment: 'dev',
-    })
-    .thenCallback(() => {
-      return {
-        ok: true,
-        statusCode: 200,
-        json: getProductionRemoteFlagApiResponse(),
-      };
-    });
-
-  await server
-    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-    .withQuery({
-      client: 'extension',
-      distribution: 'main',
-      environment: 'rc',
     })
     .thenCallback(() => {
       return {
@@ -248,38 +233,6 @@ async function setupMocking(
             cohorts: [],
             assignedCohort: null,
             hasAssignedCohortExpired: null,
-          },
-        ],
-      };
-    });
-
-  await server
-    .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          subscriptions: [],
-          trialedProducts: [],
-        },
-      };
-    });
-
-  await server
-    .forGet(
-      'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: [
-          {
-            canSubscribe: false,
-            canViewEntryModal: false,
-            minBalanceUSD: 1000,
-            product: 'shield',
-            modalType: 'A',
-            cohorts: [],
           },
         ],
       };

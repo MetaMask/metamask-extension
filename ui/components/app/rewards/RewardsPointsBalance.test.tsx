@@ -628,6 +628,63 @@ describe('RewardsPointsBalance', () => {
     expect(textElement).toHaveTextContent('Signing in');
   });
 
+  it('should render "Sign in failed" badge when optinError is set', () => {
+    const mockOptin = jest.fn().mockResolvedValue(undefined);
+    mockUseOptIn.mockReturnValue({
+      optin: mockOptin,
+      optinLoading: false,
+      optinError: 'Sign in failed',
+    } as ReturnType<typeof useOptIn>);
+
+    setSelectorValues({
+      candidateSubscriptionId:
+        'error-existing-subscription-hardware-wallet-explicit-sign',
+      seasonStatusError: null,
+    });
+
+    render(<RewardsPointsBalance />);
+
+    const container = screen.getByTestId('rewards-points-balance');
+    const textElement = screen.getByTestId('rewards-points-balance-value');
+
+    expect(container).toBeInTheDocument();
+    expect(container).toHaveClass(
+      'flex',
+      'items-center',
+      'gap-1',
+      'px-1.5',
+      'bg-background-muted',
+      'rounded',
+    );
+    expect(textElement).toHaveTextContent('rewardsSignInFailed');
+  });
+
+  it('should call optin when "Sign in failed" badge is clicked', async () => {
+    const mockOptin = jest.fn().mockResolvedValue(undefined);
+    mockUseOptIn.mockReturnValue({
+      optin: mockOptin,
+      optinLoading: false,
+      optinError: 'Sign in failed',
+    } as ReturnType<typeof useOptIn>);
+
+    setSelectorValues({
+      candidateSubscriptionId:
+        'error-existing-subscription-hardware-wallet-explicit-sign',
+      seasonStatusError: null,
+    });
+
+    render(<RewardsPointsBalance />);
+
+    const textElement = screen.getByTestId('rewards-points-balance-value');
+    expect(textElement).toHaveTextContent('rewardsSignInFailed');
+
+    await act(async () => {
+      textElement.click();
+    });
+
+    expect(mockOptin).toHaveBeenCalledTimes(1);
+  });
+
   it('should not open onboarding modal when hasSeenOnboarding is true', () => {
     const dispatchMock = jest.fn();
     mockUseDispatch.mockReturnValue(dispatchMock);
