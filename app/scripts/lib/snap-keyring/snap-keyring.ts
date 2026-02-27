@@ -116,6 +116,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
    *
    * @param address - The account address to remove.
    * @param accepted - Value to pass to handleUserInput (e.g. true when no confirmation was shown).
+   * @param handleUserInput - The user callback to call after the account removal.
    */
   async #performAccountRemoval(
     address: string,
