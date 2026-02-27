@@ -83,17 +83,17 @@ import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingDownloadApp from './download-app/download-app';
 
-/* eslint-disable jsdoc/check-tag-names */
-/* eslint-disable import/no-useless-path-segments */
-/* eslint-disable import/extensions */
-
-// Lazy-load ExperimentalArea so the flask/ module is only fetched in Flask builds
+// Lazy-load ExperimentalArea so the flask/ module is only fetched in Flask builds.
+// This is not just for performance, it is necessary so non-Flask builds don't try
+// to import Flask-only code and fail.
+// TODO: Fix type casting once `mmLazy` is updated to handle component props.
 const ExperimentalArea = mmLazy(
   (() =>
     import(
-      '../../components/app/flask/experimental-area'
+      // eslint-disable-next-line import/extensions, import/no-useless-path-segments -- these are needed for mmLazy
+      '../../components/app/flask/experimental-area/index.js'
     )) as unknown as DynamicImportType,
-);
+) as unknown as React.ComponentType<{ redirectTo?: string }>;
 
 // Helper to convert onboarding paths to relative paths for nested route matching
 const toRelativePath = (path: string) =>
