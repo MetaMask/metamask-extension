@@ -15,7 +15,10 @@ import {
   DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
-import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
+import {
+  submitBridgeIntent,
+  submitBridgeTx,
+} from '../../../ducks/bridge-status/actions';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -101,6 +104,30 @@ export default function useSubmitBridgeTransaction() {
 
     // Execute transaction(s)
     try {
+      const intentData =
+        (quoteResponse.quote as { intent?: unknown }).intent ??
+        (quoteResponse as { intent?: unknown }).intent;
+
+      // Intent quotes are submitted via the dedicated intent flow.
+      if (intentData) {
+        await dispatch(
+          await submitBridgeIntent({
+            quoteResponse: {
+              ...quoteResponse,
+              quote: {
+                ...quoteResponse.quote,
+                intent: intentData as QuoteResponse['quote']['intent'],
+              },
+            },
+            accountAddress: fromAccount.address,
+          }),
+        );
+        navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+          state: { stayOnHomePage: true },
+        });
+        return;
+      }
+
       // Handle non-EVM source chains (Solana, Bitcoin, Tron)
       const isNonEvmSource = isNonEvmChainId(quoteResponse.quote.srcChainId);
 

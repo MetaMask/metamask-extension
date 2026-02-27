@@ -67,6 +67,8 @@ export function getBridgeStatusControllerMessenger(
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getState',
+      // Cast keeps extension compatible while bridge-status-controller package types catch up.
+      'KeyringController:signTypedMessage' as never,
       'BridgeController:trackUnifiedSwapBridgeEvent',
       'BridgeController:stopPollingForQuotes',
       'GasFeeController:getState',
