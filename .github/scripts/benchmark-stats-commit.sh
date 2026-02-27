@@ -97,10 +97,11 @@ assemble_performance_data() {
 
         if [[ "${is_page_load}" == true ]]; then
             # Store all browser/buildType combinations for page load presets.
-            # Unwrap the outer key (benchmark JSON wraps result in { "<presetName>": {...} }).
+            # Unwrap the outer key: the benchmark runner wraps results as { "<camelCaseFileName>": {...} }.
+            # The inner key is the camelCase filename (e.g. "standardHome"), NOT the preset name
+            # (e.g. "startupStandardHome"), so we unwrap by checking for a single-key object.
             local preset_data page_load_key
-            preset_data=$(jq --arg key "${preset_name}" \
-                'if (keys | length) == 1 and has($key) then .[$key] else . end' "${file}")
+            preset_data=$(jq 'if (keys | length) == 1 then .[keys[0]] else . end' "${file}")
             page_load_key="${browser}-${build_type}-${preset_name}"
             echo "  Adding page load preset '${page_load_key}'" >&2
             page_load_json=$(echo "${page_load_json}" | jq \
