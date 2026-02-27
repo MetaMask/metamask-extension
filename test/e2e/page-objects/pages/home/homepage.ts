@@ -42,6 +42,8 @@ class HomePage {
     css: '.mm-banner-base',
   };
 
+  private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
+
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
@@ -205,9 +207,10 @@ class HomePage {
     }
   }
 
-  async waitForSolanaAccountLoaded(): Promise<void> {
-    console.log('Waiting for Solana account icon to be visible');
+  async waitForNonEvmAccountsLoaded(): Promise<void> {
+    console.log('Waiting for Non EVM account icons to be visible');
     await this.driver.waitForSelector(this.solanaAccountIcon);
+    await this.driver.waitForSelector(this.bitcoinAccountIcon);
   }
 
   async checkPageIsNotLoaded(): Promise<void> {
