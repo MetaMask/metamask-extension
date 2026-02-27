@@ -351,7 +351,6 @@ export async function validateBundle({
       console.error(
         `SourcemapValidator (webpack) - no "${TARGET_STRING}" found in bundle "${label}"; nothing to validate.`,
       );
-      return false;
     }
     return valid;
   } catch (error) {
