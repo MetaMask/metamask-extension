@@ -473,9 +473,9 @@ export function getMultichainIsTestnet(
   ].includes(providerConfig.chainId as MultichainNetworks);
 }
 
-export function getMultichainBalances(
-  state: MultichainState,
-): BalancesState['metamask']['balances'] {
+export function getMultichainBalances(state: {
+  metamask: BalancesState['metamask'];
+}): BalancesState['metamask']['balances'] {
   return state.metamask.balances;
 }
 

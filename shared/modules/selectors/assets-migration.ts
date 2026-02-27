@@ -9,7 +9,9 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { AssetsControllerState } from '@metamask/assets-controller';
 import {
   AccountTrackerControllerState,
+  getNativeTokenAddress,
   Token,
+  TokenBalancesControllerState,
   TokensControllerState,
 } from '@metamask/assets-controllers';
 import { AccountsControllerState } from '@metamask/accounts-controller';
@@ -30,12 +32,12 @@ import { createDeepEqualSelector } from './selector-creators';
 // accountsByChainId: DONE
 //
 // TokensController
-// allTokens: TODO
-// allIgnoredTokens: TODO
+// allTokens: DONE
+// allIgnoredTokens: DONE
 // allDetectedTokens: TODO (This state should be removed)
 //
 // TokenBalancesController
-// tokenBalances: TODO
+// tokenBalances: DONE
 //
 // CurrencyRateController
 // currencyRates: TODO
@@ -146,8 +148,7 @@ export const getAccountTrackerControllerAccountsByChainId =
           result[hexChainId] ??= {};
           result[hexChainId][checksummedAddress] = {
             // TODO: Use raw value from state when available
-            balance:
-              parseBalanceWithDecimals(amount, metadata.decimals) ?? '0x0',
+            balance: parseBalanceWithDecimals(amount, metadata.decimals),
           };
         }
       }
@@ -294,15 +295,75 @@ export const getTokensControllerAllIgnoredTokens = createDeepEqualSelector(
   'allIgnoredTokens'
 >;
 
+// AcountAddress (hex lowercase) -> ChainId (hex) -> TokenAddress (hex checksummed) -> Balance (hex)
+export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: {
+      metamask: Pick<TokenBalancesControllerState, 'tokenBalances'>;
+    }) => state.metamask?.tokenBalances ?? {},
+    (state: { metamask: Pick<AssetsControllerState, 'assetsInfo'> }) =>
+      state.metamask?.assetsInfo ?? {},
+    (state: { metamask: Pick<AssetsControllerState, 'assetsBalance'> }) =>
+      state.metamask?.assetsBalance ?? {},
+    (state: { metamask: Pick<AccountsControllerState, 'internalAccounts'> }) =>
+      state.metamask?.internalAccounts?.accounts ?? {},
+  ],
+  (
+    isAssetsUnifyStateEnabled,
+    tokenBalances,
+    assetsInfo,
+    assetsBalance,
+    internalAccountsById,
+  ) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return tokenBalances;
+    }
+
+    const result: TokenBalancesControllerState['tokenBalances'] = {};
+
+    for (const [accountId, chainIdBalances] of Object.entries(assetsBalance)) {
+      const internalAccount = internalAccountsById[accountId];
+      if (!internalAccount || !isEvmAccountType(internalAccount.type)) {
+        continue;
+      }
+
+      for (const [assetId, assetBalance] of Object.entries(chainIdBalances)) {
+        const metadata = assetsInfo[assetId];
+        if (!metadata) {
+          continue;
+        }
+
+        const assetType = parseCaipAssetType(assetId as CaipAssetType);
+
+        // No need to check if the chain is EVM, we already filtered out non-EVM accounts
+        const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
+        const assetAddress = toChecksumHexAddress(
+          metadata.type === 'native'
+            ? getNativeTokenAddress(hexChainId)
+            : assetType.assetReference,
+        ) as Hex;
+
+        const accountAddress = internalAccount.address as Hex;
+        result[accountAddress] ??= {};
+        result[accountAddress][hexChainId] ??= {};
+        result[accountAddress][hexChainId][assetAddress] =
+          // TODO: Use raw value from state when available
+          parseBalanceWithDecimals(assetBalance.amount, metadata.decimals);
+      }
+    }
+
+    return result;
+  },
+) as unknown as ControllerStateSelector<
+  TokenBalancesControllerState,
+  'tokenBalances'
+>;
+
 function parseBalanceWithDecimals(
   balanceString: string,
   decimals: number,
-): Hex | undefined {
-  // Allows: "123", "123.456", "0.123", but not: "-123", "123.", "abc", "12.34.56"
-  if (!/^\d+(\.\d+)?$/u.test(balanceString)) {
-    return undefined;
-  }
-
+): Hex {
   const [integerPart, fractionalPart = ''] = balanceString.split('.');
 
   if (decimals === 0) {
