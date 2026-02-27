@@ -1,13 +1,11 @@
 /**
- * UI-side Streaming Controller
+ * UI-side Streaming Controller & Facade
  *
- * This module provides a lightweight PerpsController instance that lives in the
- * UI process solely for WebSocket streaming subscriptions (subscribeToPrices,
- * subscribeToPositions, etc.). Callbacks cannot cross the background/UI process
- * boundary, so streaming must remain UI-side.
- *
- * For all non-streaming operations (mutations, data fetches, state), use
- * submitRequestToBackground('perps*', [...]) to call the background controller.
+ * This module provides a PerpsController instance for the UI that is a facade:
+ * - Streaming methods (subscribeToPrices, subscribeToPositions, etc.) run on a
+ *   lightweight UI-side controller so callbacks stay in the UI process.
+ * - All other methods (placeOrder, updateMargin, getPositions, etc.) delegate
+ *   to the background controller via submitRequestToBackground under the hood.
  *
  * State reads should use Redux selectors from ui/selectors/perps-controller.ts.
  */
@@ -24,6 +22,7 @@ import {
 } from '../../../app/scripts/controllers/perps';
 import type { MetaMaskReduxState } from '../../store/store';
 import { getReduxStorePromise } from '../../store/redux-store-promise';
+import { createPerpsControllerFacade } from './createPerpsControllerFacade';
 
 const REMOTE_FEATURE_FLAG_GET_STATE = 'RemoteFeatureFlagController:getState';
 const REMOTE_FEATURE_FLAG_STATE_CHANGE =
@@ -260,13 +259,12 @@ function startControllerInitialization(
 }
 
 /**
- * Get the UI-side streaming controller instance.
- * Used ONLY for WebSocket subscription methods (subscribeToPrices, etc.).
- * For mutations and data fetches, use submitRequestToBackground('perps*').
+ * Get the PerpsController facade for the UI. Streaming methods run on the
+ * UI-side controller; mutations and data fetches delegate to the background.
  *
  * @param selectedAddress - The currently selected account address
  * @param store - Optional Redux store for feature flag bridging
- * @returns Promise resolving to the PerpsController instance (streaming only)
+ * @returns Promise resolving to the PerpsController facade
  */
 export async function getPerpsStreamingController(
   selectedAddress: string,
@@ -292,19 +290,21 @@ export async function getPerpsStreamingController(
   }
 
   if (controllerInstance && currentAddress === selectedAddress) {
-    return controllerInstance;
+    return Promise.resolve(createPerpsControllerFacade(controllerInstance));
   }
 
   if (initPromise && initializingAddress === selectedAddress) {
-    return initPromise;
+    return initPromise.then((ctrl) => createPerpsControllerFacade(ctrl));
   }
 
-  return startControllerInitialization(selectedAddress, store);
+  return startControllerInitialization(selectedAddress, store).then((ctrl) =>
+    createPerpsControllerFacade(ctrl),
+  );
 }
 
 /**
- * @deprecated Use getPerpsStreamingController for subscriptions,
- * submitRequestToBackground for mutations/fetches.
+ * @deprecated Use getPerpsStreamingController. The returned controller is a
+ * facade: use it for both subscriptions and mutations (e.g. controller.placeOrder).
  */
 export const getPerpsController = getPerpsStreamingController;
 
@@ -337,6 +337,16 @@ export function isPerpsControllerInitialized(address?: string): boolean {
 
 export function getPerpsControllerInstance(): PerpsController | null {
   return controllerInstance;
+}
+
+/**
+ * Get the PerpsController facade when a controller is already initialized.
+ * Used by the provider to seed context on re-navigation (sync path).
+ */
+export function getPerpsControllerFacade(): PerpsController | null {
+  return controllerInstance
+    ? createPerpsControllerFacade(controllerInstance)
+    : null;
 }
 
 export type { PerpsControllerState };

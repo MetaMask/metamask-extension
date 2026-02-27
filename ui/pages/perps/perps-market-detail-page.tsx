@@ -44,9 +44,11 @@ import {
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
 import { usePerpsEligibility } from '../../hooks/perps';
-import { getPerpsStreamingController } from '../../providers/perps/getPerpsController';
-import { submitRequestToBackground } from '../../store/background-connection';
-import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
+import {
+  getPerpsStreamingController,
+  getPerpsStreamManager,
+  usePerpsController,
+} from '../../providers/perps';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
@@ -135,6 +137,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { symbol } = useParams<{ symbol: string }>();
+  const controller = usePerpsController();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
@@ -726,7 +729,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         stopLossPrice: cleanSlPrice || undefined,
       };
 
-      const result = await submitRequestToBackground<{ success: boolean; error?: string }>('perpsUpdatePositionTPSL', [tpslParams]);
+      const result = await controller.updatePositionTPSL(tpslParams);
       if (!result.success) {
         throw new Error(result.error || 'Failed to update TP/SL');
       }
@@ -759,11 +762,10 @@ const PerpsMarketDetailPage: React.FC = () => {
       // data while the override is still active
       setTimeout(async () => {
         try {
-          const freshPositions = await submitRequestToBackground<unknown[]>(
-            'perpsGetPositions',
-            [{ skipCache: true }],
-          );
-          streamManager.pushPositionsWithOverrides(freshPositions as import('@metamask/perps-controller').Position[]);
+          const freshPositions = await controller.getPositions({
+            skipCache: true,
+          });
+          streamManager.pushPositionsWithOverrides(freshPositions);
         } catch (e) {
           console.warn('[Perps] Delayed refetch failed:', e);
         }
@@ -779,17 +781,16 @@ const PerpsMarketDetailPage: React.FC = () => {
     } finally {
       setIsSavingTPSL(false);
     }
-  }, [isEligible, selectedAddress, editingTpPrice, editingSlPrice]);
+  }, [controller, isEligible, selectedAddress, editingTpPrice, editingSlPrice]);
 
   // Refetch positions when tab becomes visible (catch changes made elsewhere)
   useEffect(() => {
     const handleVisibility = async () => {
       if (document.visibilityState === 'visible' && selectedAddress) {
         try {
-          const positions = await submitRequestToBackground<import('@metamask/perps-controller').Position[]>(
-            'perpsGetPositions',
-            [{ skipCache: true }],
-          );
+          const positions = await controller.getPositions({
+            skipCache: true,
+          });
           getPerpsStreamManager().pushPositionsWithOverrides(positions);
         } catch (e) {
           console.warn('[Perps] Visibility refetch failed:', e);
@@ -799,7 +800,7 @@ const PerpsMarketDetailPage: React.FC = () => {
     document.addEventListener('visibilitychange', handleVisibility);
     return () =>
       document.removeEventListener('visibilitychange', handleVisibility);
-  }, [selectedAddress]);
+  }, [controller, selectedAddress]);
 
   // No-op handler for order cards - orders on detail page are already
   // filtered to current market, so clicking should not navigate anywhere

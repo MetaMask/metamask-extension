@@ -9,7 +9,7 @@ import {
 } from './PerpsControllerProvider';
 
 const mockGetPerpsStreamingController = jest.fn<Promise<unknown>, [string, unknown?]>();
-const mockGetPerpsControllerInstance = jest.fn<unknown | null, []>(() => null);
+const mockGetPerpsControllerFacade = jest.fn<unknown | null, []>(() => null);
 const mockIsPerpsControllerInitializationCancelledError = jest.fn<
   boolean,
   [unknown]
@@ -18,7 +18,7 @@ const mockIsPerpsControllerInitializationCancelledError = jest.fn<
 jest.mock('./getPerpsController', () => ({
   getPerpsStreamingController: (...args: [string, unknown?]) =>
     mockGetPerpsStreamingController(...args),
-  getPerpsControllerInstance: () => mockGetPerpsControllerInstance(),
+  getPerpsControllerFacade: () => mockGetPerpsControllerFacade(),
   isPerpsControllerInitializationCancelledError: (...args: [unknown]) =>
     mockIsPerpsControllerInitializationCancelledError(...args),
 }));
@@ -235,7 +235,7 @@ describe('PerpsControllerProvider', () => {
 
     it('renders children immediately when singleton controller exists', () => {
       const ctrl = makeMockController();
-      mockGetPerpsControllerInstance.mockReturnValue(ctrl);
+      mockGetPerpsControllerFacade.mockReturnValue(ctrl);
       const store = createMockStore('0xaaa');
 
       render(

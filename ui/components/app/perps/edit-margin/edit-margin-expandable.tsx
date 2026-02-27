@@ -23,8 +23,10 @@ import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import { submitRequestToBackground } from '../../../../store/background-connection';
-import { getPerpsStreamManager } from '../../../../providers/perps/PerpsStreamManager';
+import {
+  getPerpsStreamManager,
+  usePerpsController,
+} from '../../../../providers/perps';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsEligibility } from '../../../../hooks/perps';
 import { usePerpsMarginCalculations } from '../../../../hooks/perps/usePerpsMarginCalculations';
@@ -62,6 +64,7 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
   onToggle,
 }) => {
   const t = useI18nContext();
+  const controller = usePerpsController();
   const { formatNumber } = useFormatters();
   const { isEligible } = usePerpsEligibility();
 
@@ -132,21 +135,20 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
       const signedAmount =
         marginMode === 'add' ? marginAmount : `-${marginAmount}`;
 
-      const result = await submitRequestToBackground<{ success: boolean; error?: string }>(
-        'perpsUpdateMargin',
-        [{ symbol: position.symbol, amount: signedAmount }],
-      );
+      const result = await controller.updateMargin({
+        symbol: position.symbol,
+        amount: signedAmount,
+      });
 
       if (!result.success) {
         throw new Error(result.error || 'Failed to update margin');
       }
 
       const streamManager = getPerpsStreamManager();
-      const freshPositions = await submitRequestToBackground<unknown[]>(
-        'perpsGetPositions',
-        [{ skipCache: true }],
-      );
-      streamManager.pushPositionsWithOverrides(freshPositions as import('@metamask/perps-controller').Position[]);
+      const freshPositions = await controller.getPositions({
+        skipCache: true,
+      });
+      streamManager.pushPositionsWithOverrides(freshPositions);
 
       setMarginAmount('');
       onToggle();
@@ -158,6 +160,7 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
       setIsSaving(false);
     }
   }, [
+    controller,
     isEligible,
     selectedAddress,
     marginMode,

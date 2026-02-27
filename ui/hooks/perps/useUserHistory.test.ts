@@ -3,13 +3,10 @@ import { waitFor } from '@testing-library/react';
 import type { UserHistoryItem } from '@metamask/perps-controller';
 import { useUserHistory } from './useUserHistory';
 
-// Mock the perps provider
+// Mock the perps provider (facade exposes getUserHistory on controller)
 const mockGetUserHistory = jest.fn();
-const mockGetActiveProvider = jest.fn(() => ({
-  getUserHistory: mockGetUserHistory,
-}));
 const mockController = {
-  getActiveProvider: mockGetActiveProvider,
+  getUserHistory: mockGetUserHistory,
 };
 
 jest.mock('../../providers/perps', () => ({

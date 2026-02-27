@@ -43,21 +43,15 @@ const mockFunding: Funding[] = [
   },
 ];
 
-// Mock provider methods
+// Mock controller methods (facade exposes getOrderFills, getOrders, getFunding on controller)
 const mockGetOrderFills = jest.fn();
 const mockGetOrders = jest.fn();
 const mockGetFunding = jest.fn();
-const mockGetUserHistory = jest.fn();
 
-const mockGetActiveProvider = jest.fn(() => ({
+const mockController = {
   getOrderFills: mockGetOrderFills,
   getOrders: mockGetOrders,
   getFunding: mockGetFunding,
-  getUserHistory: mockGetUserHistory,
-}));
-
-const mockController = {
-  getActiveProvider: mockGetActiveProvider,
   subscribeToOrderFills: jest.fn(() => jest.fn()),
 };
 
@@ -89,7 +83,6 @@ describe('usePerpsTransactionHistory', () => {
     mockGetOrderFills.mockResolvedValue(mockFills);
     mockGetOrders.mockResolvedValue(mockOrders);
     mockGetFunding.mockResolvedValue(mockFunding);
-    mockGetUserHistory.mockResolvedValue([]);
   });
 
   it('initializes with empty transactions', () => {
@@ -148,22 +141,6 @@ describe('usePerpsTransactionHistory', () => {
 
     expect(result.current.error).toBe('API error');
     expect(result.current.transactions).toEqual([]);
-  });
-
-  it('handles missing provider gracefully', async () => {
-    mockGetActiveProvider.mockReturnValueOnce(
-      null as unknown as ReturnType<typeof mockGetActiveProvider>,
-    );
-
-    const { result } = renderHook(() =>
-      usePerpsTransactionHistory({ skipInitialFetch: true }),
-    );
-
-    await act(async () => {
-      await result.current.refetch();
-    });
-
-    expect(result.current.error).toBe('No active provider available');
   });
 
   it('passes params to provider methods', async () => {

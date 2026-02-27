@@ -10,7 +10,7 @@ import type { PerpsController } from '@metamask/perps-controller';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { submitRequestToBackground } from '../../store/background-connection';
 import {
-  getPerpsControllerInstance,
+  getPerpsControllerFacade,
   getPerpsStreamingController,
   isPerpsControllerInitializationCancelledError,
 } from './getPerpsController';
@@ -57,7 +57,7 @@ export function PerpsControllerProvider({
   loadingFallback = null,
 }: PerpsControllerProviderProps): JSX.Element | null {
   const [controller, setController] = useState<PerpsController | null>(
-    () => providedController ?? getPerpsControllerInstance(),
+    () => providedController ?? getPerpsControllerFacade(),
   );
   const [error, setError] = useState<Error | null>(null);
 

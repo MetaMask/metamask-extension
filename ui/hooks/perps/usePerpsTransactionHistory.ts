@@ -11,7 +11,7 @@ import type {
   OrderFill,
   PerpsTransaction,
 } from '../../components/app/perps/types';
-import { submitRequestToBackground } from '../../store/background-connection';
+import { usePerpsController } from '../../providers/perps';
 import { useUserHistory } from './useUserHistory';
 import { usePerpsLiveFills } from './stream';
 
@@ -82,6 +82,7 @@ export function usePerpsTransactionHistory({
   accountId,
   skipInitialFetch = false,
 }: UsePerpsTransactionHistoryParams = {}): UsePerpsTransactionHistoryResult {
+  const controller = usePerpsController();
   const [transactions, setTransactions] = useState<PerpsTransaction[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -113,13 +114,16 @@ export function usePerpsTransactionHistory({
       setError(null);
 
       const [fillsResult, ordersResult, funding] = await Promise.all([
-        submitRequestToBackground<OrderFill[]>('perpsGetOrderFills', [
-          { accountId, aggregateByTime: false },
-        ]),
-        submitRequestToBackground<Order[]>('perpsGetOrders', [{ accountId }]),
-        submitRequestToBackground('perpsGetFunding', [
-          { accountId, startTime, endTime },
-        ]),
+        controller.getOrderFills({
+          accountId,
+          aggregateByTime: false,
+        }),
+        controller.getOrders({ accountId }),
+        controller.getFunding({
+          accountId,
+          startTime,
+          endTime,
+        }),
       ]);
 
       const fills: OrderFill[] = Array.isArray(fillsResult) ? fillsResult : [];
@@ -171,7 +175,7 @@ export function usePerpsTransactionHistory({
     } finally {
       setIsLoading(false);
     }
-  }, [startTime, endTime, accountId]);
+  }, [controller, startTime, endTime, accountId]);
 
   const refetch = useCallback(async () => {
     // Fetch user history first, then fetch all transactions

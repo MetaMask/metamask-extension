@@ -41,8 +41,10 @@ import {
   usePerpsLiveMarketData,
 } from '../../hooks/perps/stream';
 import { usePerpsEligibility } from '../../hooks/perps';
-import { getPerpsStreamingController } from '../../providers/perps/getPerpsController';
-import { submitRequestToBackground } from '../../store/background-connection';
+import {
+  getPerpsStreamingController,
+  usePerpsController,
+} from '../../providers/perps';
 import {
   getDisplayName,
   safeDecodeURIComponent,
@@ -118,6 +120,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   const navigate = useNavigate();
   const { symbol } = useParams<{ symbol: string }>();
   const [searchParams] = useSearchParams();
+  const controller = usePerpsController();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
@@ -370,7 +373,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           orderType: 'market' as const,
           currentPrice,
         };
-        const result = await submitRequestToBackground<{ success: boolean; error?: string }>('perpsClosePosition', [closeParams]);
+        const result = await controller.closePosition(closeParams);
         if (!result.success) {
           throw new Error(result.error || 'Failed to close position');
         }
@@ -383,11 +386,11 @@ const PerpsOrderEntryPage: React.FC = () => {
           orderFormState.autoCloseEnabled && orderFormState.stopLossPrice
             ? orderFormState.stopLossPrice.replace(/,/gu, '')
             : undefined;
-        const result = await submitRequestToBackground<{ success: boolean; error?: string }>('perpsUpdatePositionTPSL', [{
+        const result = await controller.updatePositionTPSL({
           symbol: orderFormState.asset,
           takeProfitPrice: cleanTp || undefined,
           stopLossPrice: cleanSl || undefined,
-        }]);
+        });
         if (!result.success) {
           throw new Error(result.error || 'Failed to update TP/SL');
         }
@@ -398,7 +401,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           orderMode,
           position?.size,
         );
-        const result = await submitRequestToBackground<{ success: boolean; error?: string }>('perpsPlaceOrder', [orderParams]);
+        const result = await controller.placeOrder(orderParams);
         if (!result.success) {
           throw new Error(result.error || 'Failed to place order');
         }

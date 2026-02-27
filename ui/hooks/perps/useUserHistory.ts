@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import type { CaipAccountId } from '@metamask/utils';
 import type { UserHistoryItem } from '@metamask/perps-controller';
-import { submitRequestToBackground } from '../../store/background-connection';
+import { usePerpsController } from '../../providers/perps';
 
 /**
  * Parameters for the useUserHistory hook
@@ -45,6 +45,7 @@ export function useUserHistory({
   endTime,
   accountId,
 }: UseUserHistoryParams = {}): UseUserHistoryResult {
+  const controller = usePerpsController();
   const [userHistory, setUserHistory] = useState<UserHistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,10 +55,11 @@ export function useUserHistory({
       setIsLoading(true);
       setError(null);
 
-      const history = await submitRequestToBackground<UserHistoryItem[]>(
-        'perpsGetUserHistory',
-        [{ startTime, endTime, accountId }],
-      );
+      const history = await controller.getUserHistory({
+        startTime,
+        endTime,
+        accountId,
+      });
 
       setUserHistory(history);
       return history;
@@ -70,7 +72,7 @@ export function useUserHistory({
     } finally {
       setIsLoading(false);
     }
-  }, [startTime, endTime, accountId]);
+  }, [controller, startTime, endTime, accountId]);
 
   return {
     userHistory,

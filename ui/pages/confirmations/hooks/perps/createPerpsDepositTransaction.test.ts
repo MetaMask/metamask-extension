@@ -46,4 +46,38 @@ describe('createPerpsDepositTransaction', () => {
       [{ amount: undefined }],
     );
   });
+
+  it('uses controller.depositWithConfirmation when controller is provided', async () => {
+    const mockDepositWithConfirmation = jest.fn().mockResolvedValue('tx-from-controller');
+    const controller = {
+      depositWithConfirmation: mockDepositWithConfirmation,
+    };
+
+    const result = await createPerpsDepositTransaction({
+      fromAddress: '0xabc123',
+      amount: '2',
+      controller: controller as never,
+    });
+
+    expect(mockDepositWithConfirmation).toHaveBeenCalledWith({ amount: '2' });
+    expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    expect(result).toStrictEqual({ transactionId: 'tx-from-controller' });
+  });
+
+  it('throws when controller.depositWithConfirmation returns null', async () => {
+    const mockDepositWithConfirmation = jest.fn().mockResolvedValue(null);
+    const controller = {
+      depositWithConfirmation: mockDepositWithConfirmation,
+    };
+
+    await expect(
+      createPerpsDepositTransaction({
+        fromAddress: '0xabc123',
+        controller: controller as never,
+      }),
+    ).rejects.toThrow(
+      'Perps deposit transaction was not created by controller deposit flow',
+    );
+    expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+  });
 });

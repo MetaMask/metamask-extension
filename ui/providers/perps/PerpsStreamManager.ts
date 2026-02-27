@@ -33,7 +33,6 @@ import type {
 } from '@metamask/perps-controller';
 import { PerpsDataChannel } from './PerpsDataChannel';
 import { CandleStreamChannel } from './CandleStreamChannel';
-import { submitRequestToBackground } from '../../store/background-connection';
 import {
   getPerpsStreamingController,
   getPerpsControllerCurrentAddress,
@@ -315,9 +314,7 @@ class PerpsStreamManager {
             return;
           }
           try {
-            const data = await submitRequestToBackground<PerpsMarketData[]>(
-              'perpsGetMarketDataWithPrices',
-            );
+            const data = await controller.getMarketDataWithPrices();
             if (!isCancelled) {
               callback(data);
             }
