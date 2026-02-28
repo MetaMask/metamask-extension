@@ -79,9 +79,6 @@
   "activity": {
     "message": "Atividade"
   },
-  "activityLog": {
-    "message": "Registro de atividades"
-  },
   "add": {
     "message": "Adicionar"
   },
@@ -1503,9 +1500,6 @@
   "speedUpTooltipText": {
     "message": "Nova taxa de gás"
   },
-  "speedUpTransaction": {
-    "message": "Acelerar essa transação"
-  },
   "spendLimitInsufficient": {
     "message": "Limite de gastos insuficiente"
   },
@@ -1826,35 +1820,17 @@
   "transaction": {
     "message": "transação"
   },
-  "transactionCancelAttempted": {
-    "message": "Cancelamento da transação tentado com taxa de gás de $1 às $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transação cancelada às $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transação confirmada às $2."
-  },
-  "transactionCreated": {
-    "message": "Transação criada com valor de $1 às $2."
-  },
   "transactionDetailGasHeading": {
     "message": "Taxa de gás estimada"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Valor + taxas"
   },
-  "transactionDropped": {
-    "message": "Transação abandonada às $2."
-  },
   "transactionError": {
     "message": "Erro de transação. Exceção gerada no código do contrato."
   },
   "transactionErrorNoContract": {
     "message": "Tentando chamar uma função em um endereço que não está no contrato."
-  },
-  "transactionErrored": {
-    "message": "A transação encontrou um erro."
   },
   "transactionHistoryBaseFee": {
     "message": "Taxa de base (GWEI)"
@@ -1876,15 +1852,6 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Taxa de gás total"
-  },
-  "transactionResubmitted": {
-    "message": "Transação reenviada com taxa de gás aumentada para $1 às $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transação enviada com taxa de gás estimada de $1 às $2."
-  },
-  "transactionUpdated": {
-    "message": "Transação atualizada às $2."
   },
   "transfer": {
     "message": "Transferir"
