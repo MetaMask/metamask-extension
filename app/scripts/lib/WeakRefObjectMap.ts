@@ -237,10 +237,10 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
   }
 
   /**
-   * Executes a provided function once for each key-value pair in the map, in insertion order.
-   * Note that the values passed to the callback function are the `WeakRefObject`s,
-   * not the dereferenced objects. This allows consumers to manage dereferencing according to their needs,
-   * acknowledging that some references may have been garbage collected.
+   * Executes a provided function once for each key-value pair in the map. The
+   * values are dereferenced before being passed to the callback. If a value has
+   * been garbage collected, its entry is pruned and the callback is not called
+   * for that entry.
    *
    * @param callback - Function to execute for each element, taking three arguments:
    * - `value`: The value part of the key-value pair. Note that this is the weakly referenced object,
