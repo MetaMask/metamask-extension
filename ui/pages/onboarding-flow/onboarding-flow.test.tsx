@@ -1,4 +1,4 @@
-import { act, fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -27,14 +27,20 @@ import {
 } from '../../store/actions';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import { isFlask } from '../../../shared/lib/build-types';
 import OnboardingFlow from './onboarding-flow';
 
-jest.mock('../../../shared/lib/build-types', () => ({
-  ...jest.requireActual('../../../shared/lib/build-types'),
-  isFlask: jest.fn().mockReturnValue(true),
+// Mock mmLazy to return a synchronous component instead of React.lazy.
+// React 17's lazy resolution fires a state update after test cleanup unmounts
+// the tree, producing a spurious "state update on unmounted component" warning.
+//
+// NOTE: This mock hardcodes the ExperimentalArea import. If a second mmLazy
+// call is added to onboarding-flow.tsx, this mock must be updated to dispatch
+// on the importFn (or replaced with a generic solution).
+jest.mock('../../helpers/utils/mm-lazy', () => ({
+  mmLazy: () =>
+    jest.requireActual('../../components/app/flask/experimental-area/index.js')
+      .default,
 }));
-const mockIsFlask = jest.mocked(isFlask);
 
 const mockUseNavigate = jest.fn();
 
@@ -360,9 +366,9 @@ describe('Onboarding Flow', () => {
     expect(onboardingMetametrics).toBeInTheDocument();
   });
 
-  it('should render onboarding experimental screen', async () => {
-    // Run this test as if we were in a Flask build
-    mockIsFlask.mockReturnValue(true);
+  it('should render onboarding experimental screen', () => {
+    // Enable Flask mode for this test only
+    process.env.METAMASK_BUILD_TYPE = 'flask';
 
     const { queryByTestId } = renderWithProvider(
       <OnboardingFlowWithRouteContext />,
@@ -370,13 +376,9 @@ describe('Onboarding Flow', () => {
       ONBOARDING_EXPERIMENTAL_AREA,
     );
 
-    // React.lazy needs microtasks to flush for the dynamic import to resolve.
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
+    expect(queryByTestId('experimental-area')).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(queryByTestId('experimental-area')).toBeInTheDocument();
-    });
+    // Restore build type
+    process.env.METAMASK_BUILD_TYPE = 'main';
   });
 });
