@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
@@ -16,6 +16,7 @@ import LegacyTransactionListItemDetails from '../../app/transaction-list-item-de
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
 import { getSelectedAddress } from '../../../selectors/selectors';
 import { formatUnits } from '../../../../shared/lib/unit';
+import { useBridgeTxHistoryData } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { useGetTitle } from './hooks';
 
 // eslint-disable-next-line no-empty-function
@@ -150,6 +151,18 @@ const TransactionDetailsWrapper = ({
   const effectiveType = isIncoming
     ? TransactionType.incoming
     : resolveTransactionType(transaction);
+
+  const { showBridgeTxDetails } = useBridgeTxHistoryData({
+    transactionGroup: syntheticGroup,
+    transaction: { ...transaction, type: effectiveType },
+  });
+  // Navigate to the Unified Swap/Bridge Tx Details page if the selected
+  // EVMtransaction is a bridge or swap
+  useEffect(() => {
+    if (showBridgeTxDetails) {
+      showBridgeTxDetails();
+    }
+  }, [showBridgeTxDetails]);
 
   // Ported from transaction-list-item.component
   if (PAY_TRANSACTION_TYPES.includes(effectiveType)) {
