@@ -317,6 +317,7 @@ import {
 import {
   AssetsContractControllerInit,
   AssetsControllerInit,
+  ClientControllerInit,
   NetworkOrderControllerInit,
   NftControllerInit,
   NftDetectionControllerInit,
@@ -667,6 +668,8 @@ export default class MetamaskController extends EventEmitter {
       RewardsController: RewardsControllerInit,
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
+      // ClientController must be initialized before AssetsController (AssetsController subscribes to ClientController:stateChange).
+      ClientController: ClientControllerInit,
       ...(shouldInitAssetsController
         ? { AssetsController: AssetsControllerInit }
         : {}),
@@ -8212,6 +8215,8 @@ export default class MetamaskController extends EventEmitter {
    */
   set isClientOpen(open) {
     this._isClientOpen = open;
+
+    this.controllerMessenger.call('ClientController:setUiOpen', open);
 
     const { isUnlocked } = this.controllerMessenger.call(
       'KeyringController:getState',

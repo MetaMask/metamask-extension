@@ -56,6 +56,7 @@ import {
   getNetworkEnablementControllerInitMessenger,
   getAssetsControllerMessenger,
   getAssetsControllerInitMessenger,
+  getClientControllerMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -496,6 +497,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   ClaimsService: {
     getMessenger: getClaimsServiceMessenger,
+    getInitMessenger: noop,
+  },
+  ClientController: {
+    getMessenger: getClientControllerMessenger,
     getInitMessenger: noop,
   },
   CronjobController: {

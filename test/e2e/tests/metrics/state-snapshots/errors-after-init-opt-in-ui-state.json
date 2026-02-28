@@ -221,6 +221,7 @@
     "isSeedlessOnboardingUserAuthenticated": "boolean",
     "isSignedIn": "boolean",
     "isTestnet": "boolean",
+    "isUiOpen": "boolean",
     "isUnlocked": true,
     "isUpdatingFCMToken": "boolean",
     "isUpdatingMetamaskNotifications": "boolean",
