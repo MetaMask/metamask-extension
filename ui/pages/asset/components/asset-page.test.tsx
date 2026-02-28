@@ -439,9 +439,9 @@ describe('AssetPage', () => {
       }),
     );
 
-    // Verify we show the loading state
+    // Verify loading finishes and we show the empty state (API returned no prices)
     await waitFor(() => {
-      const chart = queryByTestId('asset-chart-loading');
+      const chart = queryByTestId('asset-chart-empty-state');
       expect(chart).toBeInTheDocument();
     });
 
