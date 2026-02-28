@@ -17,6 +17,8 @@ module.exports = function (api) {
           `^${uiPath}${slash}(?:components|contexts|hooks|layouts|pages)${slash}(?!.*\\.(?:test|stories|container)\\.)(?:.*)\\.(?:m?[jt]s|[jt]sx)$`,
           'u',
         ),
+        // Exclude .storybook directory to avoid React 17/18 compatibility issues
+        exclude: /\.storybook/,
         plugins: [['babel-plugin-react-compiler', { target: '17' }]],
       },
     ],

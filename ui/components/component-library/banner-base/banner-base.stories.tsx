@@ -1,7 +1,7 @@
 import React from 'react';
 import README from './README.mdx';
 import { Meta, StoryFn } from '@storybook/react';
-import { useState } from '@storybook/addons';
+import { useState } from '@storybook/preview-api';
 import { BannerBase } from './banner-base';
 import { Icon, IconName, IconSize } from '../icon';
 import { ButtonLink, ButtonLinkSize } from '../button-link';

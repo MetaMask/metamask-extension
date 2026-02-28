@@ -16,6 +16,7 @@ module.exports = {
     '@storybook/addon-essentials',
     '@storybook/addon-a11y',
     '@storybook/addon-docs',
+    '@storybook/addon-webpack5-compiler-babel',
     './i18n-party-addon/register.js',
   ],
   staticDirs: ['../app', './images'],
@@ -24,14 +25,43 @@ module.exports = {
     INFURA_PROJECT_ID: process.env.INFURA_STORYBOOK_PROJECT_ID || '',
   }),
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
-  babel: async (options) => ({
-    overrides: options.overrides,
-  }),
+  // But excludes React Compiler to avoid React 17/18 compatibility issues
+  babel: async (options) => {
+    // Filter out babel-plugin-react-compiler from all configs
+    const removeReactCompiler = (config) => {
+      if (config.plugins) {
+        config.plugins = config.plugins.filter(plugin => {
+          const pluginName = Array.isArray(plugin) ? plugin[0] : plugin;
+          return !pluginName.includes('babel-plugin-react-compiler');
+        });
+      }
+      if (config.overrides) {
+        config.overrides = config.overrides.map(override => ({
+          ...override,
+          plugins: override.plugins?.filter(plugin => {
+            const pluginName = Array.isArray(plugin) ? plugin[0] : plugin;
+            return !pluginName.includes('babel-plugin-react-compiler');
+          }),
+        }));
+      }
+      return config;
+    };
+
+    return removeReactCompiler({
+      ...options,
+      overrides: options.overrides,
+    });
+  },
   webpackFinal: async (config) => {
     config.context = process.cwd();
     config.node = {
       __filename: true,
     };
+
+    // Force React 17 compatible shim for Storybook 8
+    config.resolve.alias['@storybook/react-dom-shim'] = require.resolve(
+      '@storybook/react-dom-shim/dist/react-16',
+    );
     config.resolve.alias['webextension-polyfill'] = require.resolve(
       '../ui/__mocks__/webextension-polyfill.js',
     );
@@ -123,6 +153,12 @@ module.exports = {
   },
   framework: {
     name: '@storybook/react-webpack5',
-    options: {},
+    options: {
+      legacyRootApi: true,
+    },
+  },
+  typescript: {
+    reactDocgen: false,
+    check: false,
   },
 };
