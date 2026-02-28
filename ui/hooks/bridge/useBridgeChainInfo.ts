@@ -7,6 +7,7 @@ import {
   formatChainIdToCaip,
   formatChainIdToHex,
   getNativeAssetForChainId,
+  isCrossChain,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
@@ -36,6 +37,7 @@ export default function useBridgeChainInfo({
 }: UseBridgeChainInfoProps): {
   srcNetwork?: ChainInfo;
   destNetwork?: ChainInfo;
+  isBridgeTx?: boolean;
 } {
   const isEvmSwapOrBridge =
     srcTxMeta?.type &&
@@ -145,5 +147,8 @@ export default function useBridgeChainInfo({
   return {
     srcNetwork,
     destNetwork,
+    isBridgeTx: Boolean(
+      srcChainId && destChainId && isCrossChain(srcChainId, destChainId),
+    ),
   };
 }

@@ -3,12 +3,18 @@ import { type Hex } from '@metamask/utils';
 import {
   type TransactionMeta,
   TransactionStatus,
+  TransactionType,
 } from '@metamask/transaction-controller';
 import { useNavigate } from 'react-router-dom';
 import { StatusTypes } from '@metamask/bridge-controller';
 import { isBridgeComplete } from '../../../shared/lib/bridge-status/utils';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
-import { selectBridgeHistoryItemForTxMetaId } from '../../ducks/bridge-status/selectors';
+import {
+  selectBridgeHistoryItemForApprovalTxHash,
+  selectBridgeHistoryItemForTxHash,
+} from '../../ducks/bridge-status/selectors';
+import { TransactionViewModel } from '../../../shared/lib/multichain/types';
+import { MetaMaskReduxState } from '../../selectors';
 
 export const FINAL_NON_CONFIRMED_STATUSES = [
   TransactionStatus.failed,
@@ -26,30 +32,46 @@ export type TransactionGroup = {
 };
 
 export type UseBridgeTxHistoryDataProps = {
-  transactionGroup: TransactionGroup;
+  transactionGroup?: TransactionGroup;
+  transaction?: TransactionViewModel;
 };
 
 export function useBridgeTxHistoryData({
   transactionGroup,
+  transaction: transactionViewData,
 }: UseBridgeTxHistoryDataProps) {
   const navigate = useNavigate();
-  const txMeta = transactionGroup.initialTransaction;
-  const srcTxMetaId = txMeta.id;
-  const bridgeHistoryItem = useSelector((state) =>
-    selectBridgeHistoryItemForTxMetaId(state, srcTxMetaId),
+
+  const txMeta = transactionGroup?.initialTransaction ?? transactionViewData;
+
+  const bridgeHistoryItemForInitialTx = useSelector(
+    (state: MetaMaskReduxState) =>
+      selectBridgeHistoryItemForTxHash(state, txMeta?.hash),
   );
+  const bridgeHistoryItemForApprovalTx = useSelector(
+    (state: MetaMaskReduxState) =>
+      selectBridgeHistoryItemForApprovalTxHash(state, txMeta?.hash),
+  );
+  const bridgeHistoryItem =
+    bridgeHistoryItemForInitialTx ?? bridgeHistoryItemForApprovalTx;
 
   const isBridgeFailed = bridgeHistoryItem
     ? bridgeHistoryItem?.status.status === StatusTypes.FAILED
     : null;
 
-  const showBridgeTxDetails = FINAL_NON_CONFIRMED_STATUSES.includes(
-    txMeta.status,
-  )
-    ? undefined
-    : () => {
-        navigate(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`);
-      };
+  const shouldShowBridgeTxDetails =
+    bridgeHistoryItem ||
+    txMeta?.type === TransactionType.bridge ||
+    txMeta?.type === TransactionType.swap;
+  const showBridgeTxDetails = shouldShowBridgeTxDetails
+    ? () => {
+        navigate(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${txMeta?.id}`, {
+          state: {
+            transaction: txMeta,
+          },
+        });
+      }
+    : undefined;
 
   return {
     bridgeTxHistoryItem: bridgeHistoryItem,
