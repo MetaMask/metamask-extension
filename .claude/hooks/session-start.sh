@@ -44,11 +44,9 @@ chmod +x ~/.git-templates/hooks/prepare-commit-msg
 # Configure git to use the global template directory
 git config --global init.templateDir ~/.git-templates
 
-# Enable commit signing with SSH
-git config --global commit.gpgsign true
-git config --global gpg.format ssh
-git config --global gpg.ssh.program /tmp/code-sign
-git config --global user.signingkey "claude@anthropic.com"
+# Disable commit signing (causes "Partially verified" in GitHub)
+# Cloud environment signing keys are not associated with GitHub accounts
+git config --global commit.gpgsign false
 
 # Apply to current repository
 if git rev-parse --git-dir >/dev/null 2>&1; then
