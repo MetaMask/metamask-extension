@@ -106,7 +106,7 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
 
     this.map.delete(key);
     // explicitly return `true` for clarity, as we know at this point the key
-    // existed, was "live", and has now been deleted from.
+    // existed, was "live", and has now been deleted from the map.
     return true;
   }
 
