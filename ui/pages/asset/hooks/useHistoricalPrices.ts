@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { HistoricalPriceValue } from '@metamask/snaps-sdk';
@@ -11,6 +11,7 @@ import {
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
 import { useDispatch, useSelector } from 'react-redux';
+import type { SupportedCurrency } from '@metamask/core-backend';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 import { getShouldShowFiat } from '../../../selectors';
 import { getHistoricalPrices } from '../../../selectors/assets';
@@ -19,9 +20,9 @@ import {
   fromIso8601DurationToPriceApiTimePeriod,
 } from '../util';
 import { fetchHistoricalPricesForAsset } from '../../../store/actions';
-import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
+import { apiClient } from '../../../helpers/api-client';
 
 export type HistoricalPrices = {
   /** The prices data points. Is an empty array if the prices could not be loaded. */
@@ -71,7 +72,7 @@ const toHexChainId = (chainId: Hex | CaipChainId): Hex | null => {
 type UseHistoricalPricesParams = {
   chainId: Hex | CaipChainId;
   address: string;
-  currency: string;
+  currency: SupportedCurrency;
   timeRange: string;
 };
 
@@ -97,56 +98,9 @@ const deriveMetadata = (prices: Point[]) => {
   return { minPricePoint, maxPricePoint, xMin, xMax, yMin, yMax };
 };
 
-async function fetchEvmHistoricalPrices(
-  chainId: string,
-  address: string,
-  currency: string,
-  timePeriod: string,
-): Promise<Point[]> {
-  const startTime = performance.now();
-
-  const traceContext = trace({
-    name: TraceName.GetAssetHistoricalPrices,
-    startTime,
-  });
-
-  trace({
-    name: TraceName.GetAssetHistoricalPrices,
-    startTime,
-    parentContext: traceContext,
-  });
-
-  try {
-    const response = await fetch(
-      `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timePeriod}`,
-      {
-        headers: {
-          'X-Client-Id': 'extension',
-          'Content-Type': 'application/json',
-        },
-        referrerPolicy: 'no-referrer-when-downgrade',
-        method: 'GET',
-        mode: 'cors',
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `GetAssetHistoricalPrices failed with status ${response.status}: ${response.statusText}`,
-      );
-    }
-
-    const resp: { prices?: number[][] } = await response.json();
-    return resp?.prices?.map((p) => ({ x: p?.[0], y: p?.[1] })) ?? [];
-  } catch {
-    return [];
-  } finally {
-    endTrace({
-      name: TraceName.GetAssetHistoricalPrices,
-      timestamp: performance.timeOrigin + startTime,
-    });
-  }
-}
+const transformPricesToPoints = (
+  data: { prices?: number[][] } | undefined,
+): Point[] => data?.prices?.map((p) => ({ x: p?.[0], y: p?.[1] })) ?? [];
 
 /**
  * Internal hook that fetches the historical prices for EVM chains. Returns default values otherwise.
@@ -170,29 +124,34 @@ const useHistoricalPricesEvm = ({
     getShouldShowFiat(state, hexChainId),
   );
 
+  const timePeriod = fromIso8601DurationToPriceApiTimePeriod(timeRange);
   const chainSupported =
     isEvm && showFiat && chainSupportsPricing(chainId as Hex);
-  const timePeriod = fromIso8601DurationToPriceApiTimePeriod(timeRange);
 
-  const { data: prices = [], isInitialLoading: loading } = useQuery({
-    queryKey: ['evmHistoricalPrices', chainId, address, currency, timePeriod],
-    queryFn: () =>
-      fetchEvmHistoricalPrices(chainId, address, currency, timePeriod),
+  const { queryKey, queryFn } =
+    apiClient.prices.getV1HistoricalPricesQueryOptions(chainId, address, {
+      currency,
+      timeRange: timePeriod,
+    });
+
+  // Fetch the prices, and set them locally as a result of the fetch
+  const { data: prices = [], isFetching } = useQuery({
+    // @ts-expect-error - fix once extension in react-query v5
+    queryKey,
+    queryFn,
     enabled: chainSupported,
-    staleTime: 60 * 1000,
-    cacheTime: 5 * 60 * 1000,
+    keepPreviousData: true,
     retry: false,
+    select: transformPricesToPoints,
   });
 
-  const metadata = useMemo(
-    () =>
-      prices.length > 0
-        ? deriveMetadata(prices)
-        : DEFAULT_USE_HISTORICAL_PRICES_METADATA,
-    [prices],
-  );
+  // Compute the metadata
+  const metadata =
+    prices.length > 0
+      ? deriveMetadata(prices)
+      : DEFAULT_USE_HISTORICAL_PRICES_METADATA;
 
-  return { loading, data: { prices, metadata } };
+  return { loading: isFetching, data: { prices, metadata } };
 };
 
 /**

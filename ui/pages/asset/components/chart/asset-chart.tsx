@@ -24,6 +24,7 @@ import {
 } from '@metamask/utils';
 import { trim } from 'lodash';
 import { Duration } from 'luxon';
+import type { SupportedCurrency } from '@metamask/core-backend';
 import { useTheme } from '../../../../hooks/useTheme';
 import {
   BackgroundColor,
@@ -196,7 +197,7 @@ const AssetChart = ({
   } = useHistoricalPrices({
     chainId,
     address,
-    currency,
+    currency: currency as SupportedCurrency,
     timeRange: selectedTimeRange,
   });
 
