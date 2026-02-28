@@ -2786,10 +2786,8 @@
     },
     "copy-webpack-plugin>serialize-javascript": {
       "globals": {
-        "URL": true
-      },
-      "packages": {
-        "crypto-browserify>randombytes": true
+        "URL": true,
+        "crypto.getRandomValues": true
       }
     },
     "mocha>serialize-javascript": {
