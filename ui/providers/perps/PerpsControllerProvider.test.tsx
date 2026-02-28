@@ -227,25 +227,37 @@ describe('PerpsControllerProvider', () => {
       mockGetPerpsStreamingController.mockResolvedValue(ctrl);
       const store = createMockStore('0xaaa');
 
-      const { unmount } = render(
-        <Provider store={store}>
-          <PerpsControllerProvider>
-            <div>child</div>
-          </PerpsControllerProvider>
-        </Provider>,
-      );
-
-      await waitFor(() => {
-        expect(mockStreamManagerPrewarm).toHaveBeenCalled();
+      let unmount: () => void;
+      await act(async () => {
+        const result = render(
+          <Provider store={store}>
+            <PerpsControllerProvider>
+              <div>child</div>
+            </PerpsControllerProvider>
+          </Provider>,
+        );
+        unmount = result.unmount;
       });
 
-      unmount();
+      await act(async () => {
+        await waitFor(() => {
+          expect(mockStreamManagerPrewarm).toHaveBeenCalled();
+        });
+      });
+
+      act(() => {
+        unmount();
+      });
       expect(mockStreamManagerCleanupPrewarm).toHaveBeenCalled();
     });
 
     it('renders children immediately when singleton controller exists', () => {
       const ctrl = makeMockController();
       mockGetPerpsControllerFacade.mockReturnValue(ctrl);
+      // Prevent useEffect from resolving and triggering setState after render
+      mockGetPerpsStreamingController.mockReturnValue(
+        new Promise(() => undefined),
+      );
       const store = createMockStore('0xaaa');
 
       render(
