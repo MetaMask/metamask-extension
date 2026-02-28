@@ -61,6 +61,7 @@ export const selectBridgeHistoryForAccountGroup = createSelector(
   },
 );
 
+// eslint-disable-next-line jsdoc/require-param
 /**
  * @deprecated use selectBridgeHistoryItemForTransactionHash instead
  */
@@ -76,20 +77,28 @@ export const selectBridgeHistoryItemForTxMetaId = createSelector(
 
 /**
  * Returns a pending/local transaction for the given tx hash
+ *
+ * @param state - the metamask state
+ * @param txHash - the tx hash
+ * @returns the pending/local transaction for the given tx hash
  */
 export const selectLocalTxForTxHash = (
-  { metamask: { transactions } }: BridgeStatusAppState,
+  state: BridgeStatusAppState,
   txHash?: string,
 ) =>
   txHash
-    ? transactions.find(
+    ? state.metamask.transactions.find(
         (transaction) =>
           transaction.hash?.toLowerCase() === txHash?.toLowerCase(),
       )
     : undefined;
 
 /**
- * Returns the bridge history item for the given tx hash
+ * Returns the local bridge history details for the given tx hash
+ *
+ * @param state - the metamask state
+ * @param txHash - the tx hash
+ * @returns the bridge history item for the given tx hash
  */
 export const selectBridgeHistoryItemForTxHash = createSelector(
   [selectBridgeHistory, selectLocalTxForTxHash],
@@ -107,13 +116,23 @@ export const selectBridgeHistoryItemForTxHash = createSelector(
 );
 
 /**
- * Returns a bridge history item for a given approval tx id
+ * Returns a local bridge history item that includes the given approval tx hash
+ *
+ * @param state - the metamask state
+ * @param txHash - the tx hash
+ * @returns the bridge history item that includes the given approval tx hash
  */
-export const selectBridgeHistoryForApprovalTxId = createSelector(
-  [selectBridgeHistory, (_, approvalTxId: string) => approvalTxId],
-  (bridgeHistory, approvalTxId) => {
+export const selectBridgeHistoryItemForApprovalTxHash = createSelector(
+  [selectBridgeHistory, selectLocalTxForTxHash],
+  (bridgeHistory, tx) => {
+    const approvalTxId = tx?.id;
+    if (!approvalTxId) {
+      return undefined;
+    }
     return Object.values(bridgeHistory).find(
-      (bridgeHistoryItem) => bridgeHistoryItem.approvalTxId === approvalTxId,
+      (bridgeHistoryItem) =>
+        bridgeHistoryItem.approvalTxId?.toLowerCase() ===
+        approvalTxId.toLowerCase(),
     );
   },
 );
