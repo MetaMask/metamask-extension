@@ -93,7 +93,7 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
    * @returns `true` if the element was successfully removed, otherwise `false`.
    */
   delete(key: string): boolean {
-    return this.map.delete(key);
+    return this.has(key) && this.map.delete(key);
   }
 
   /**
