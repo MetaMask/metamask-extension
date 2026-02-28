@@ -26,8 +26,8 @@ COMMIT_SOURCE=$2
 
 # Only add co-author for regular commits (not merge, squash, amend, etc.)
 if [ -z "$COMMIT_SOURCE" ] || [ "$COMMIT_SOURCE" = "message" ]; then
-    # Define co-author
-    CO_AUTHOR="Co-authored-by: Javier Briones <jvbriones@users.noreply.github.com>"
+    # Define co-author (using GitHub's ID+username format for verified commits)
+    CO_AUTHOR="Co-authored-by: Javier Briones <1674192+jvbriones@users.noreply.github.com>"
 
     # Check if co-author line already exists to avoid duplicates
     if ! grep -q "Co-authored-by: Javier Briones" "$COMMIT_MSG_FILE"; then
@@ -44,9 +44,11 @@ chmod +x ~/.git-templates/hooks/prepare-commit-msg
 # Configure git to use the global template directory
 git config --global init.templateDir ~/.git-templates
 
-# Disable commit signing (causes "Partially verified" in GitHub)
-# Cloud environment signing keys are not associated with GitHub accounts
-git config --global commit.gpgsign false
+# Enable commit signing with SSH (using proper co-author email for full verification)
+git config --global commit.gpgsign true
+git config --global gpg.format ssh
+git config --global gpg.ssh.program /tmp/code-sign
+git config --global user.signingkey "claude@anthropic.com"
 
 # Apply to current repository
 if git rev-parse --git-dir >/dev/null 2>&1; then
