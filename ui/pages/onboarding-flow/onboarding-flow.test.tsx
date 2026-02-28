@@ -1,4 +1,4 @@
-import { fireEvent, waitFor } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -27,13 +27,14 @@ import {
 } from '../../store/actions';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { isFlask } from '../../../shared/lib/build-types';
 import OnboardingFlow from './onboarding-flow';
 
-// Run these tests as if we were in a Flask build
-jest.mock('../../../../shared/lib/build-types', () => ({
-  ...jest.requireActual('../../../../shared/lib/build-types'),
+jest.mock('../../../shared/lib/build-types', () => ({
+  ...jest.requireActual('../../../shared/lib/build-types'),
   isFlask: jest.fn().mockReturnValue(true),
 }));
+const mockIsFlask = jest.mocked(isFlask);
 
 const mockUseNavigate = jest.fn();
 
@@ -359,14 +360,24 @@ describe('Onboarding Flow', () => {
     expect(onboardingMetametrics).toBeInTheDocument();
   });
 
-  it('should render onboarding experimental screen', () => {
+  it('should render onboarding experimental screen', async () => {
+    // Run this test as if we were in a Flask build
+    mockIsFlask.mockReturnValue(true);
+
     const { queryByTestId } = renderWithProvider(
       <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_EXPERIMENTAL_AREA,
     );
 
-    const onboardingMetametrics = queryByTestId('experimental-area');
-    expect(onboardingMetametrics).toBeInTheDocument();
+    // React.lazy needs microtasks to flush for the dynamic import to resolve.
+    // Flush the promise queue and trigger a React re-render.
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    await waitFor(() => {
+      expect(queryByTestId('experimental-area')).toBeInTheDocument();
+    });
   });
 });
