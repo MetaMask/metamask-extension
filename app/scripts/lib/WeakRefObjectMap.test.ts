@@ -19,6 +19,14 @@ function injectInternalEntry(
   ).map.set(key, entry);
 }
 
+function hasInternalEntry(map: WeakRefObjectMap<TestRecord>, key: string) {
+  return (
+    map as unknown as {
+      map: Map<string, InternalWeakEntry>;
+    }
+  ).map.has(key);
+}
+
 async function collectWithRetries(
   weakRef: WeakRef<object>,
   retries = 100,
@@ -125,6 +133,16 @@ describe('WeakRefObjectMap', () => {
 
     expect(map.has('stale')).toBe(false);
     expect(map.delete('stale')).toBe(false);
+  });
+
+  it('delete returns false and removes stale internal entries', () => {
+    injectInternalEntry(map, 'stale', {
+      keys: ['objKey'],
+      refs: [{ deref: () => undefined }],
+    });
+
+    expect(map.delete('stale')).toBe(false);
+    expect(hasInternalEntry(map, 'stale')).toBe(false);
   });
 
   describe('iterators', () => {

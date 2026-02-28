@@ -93,7 +93,21 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
    * @returns `true` if the element was successfully removed, otherwise `false`.
    */
   delete(key: string): boolean {
-    return this.map.delete(key);
+    const entry = this.map.get(key);
+    if (!entry) {
+      return false;
+    }
+
+    // keep delete semantics aligned with has/get: stale entries are treated as
+    // non-existent and are pruned eagerly.
+    if (!this.isLiveOrDelete(key, entry)) {
+      return false;
+    }
+
+    this.map.delete(key);
+    // explicitly return `true` for clarity, as we know at this point the key
+    // existed, was "live", and has now been deleted from.
+    return true;
   }
 
   /**
@@ -241,8 +255,8 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
       key: string,
       map: Map<string, RecordType>,
     ) => void,
-    // this is an unbound method, so the this value is unknown.
-    // Also the `Map` type this is based on uses any for this parameter as well.
+    // This is an unbound method, so the this value is unknown. This matches the
+    // signature of `Map.forEach`, which also uses `any` for this parameter.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     thisArg?: any,
   ): void {
