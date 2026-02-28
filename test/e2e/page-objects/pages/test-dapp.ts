@@ -464,15 +464,22 @@ class TestDapp {
    * @param expectedResult - The expected account address.
    */
   async checkGetAccountsResult(expectedResult: string) {
+    const expectedResultLowercase = expectedResult.toLowerCase();
     console.log(
       'Verify get connected accounts result contains:',
-      expectedResult,
+      expectedResultLowercase,
     );
     await this.driver.clickElement(this.getAccountsButton);
-    await this.driver.waitForSelector({
-      css: this.getAccountsResult,
-      text: expectedResult,
-    });
+    await this.driver.wait(async () => {
+      const getAccountsResultElement = await this.driver.findElement(
+        this.getAccountsResult,
+      );
+      const getAccountsResultText = await getAccountsResultElement.getText();
+
+      return getAccountsResultText
+        .toLowerCase()
+        .includes(expectedResultLowercase);
+    }, 20_000);
   }
 
   /**

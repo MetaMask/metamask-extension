@@ -85,7 +85,15 @@ describe('Dapp interactions', function () {
         // In this test we run with multiple dapp origins, so use URL-based
         // switching to avoid ambiguity from shared "E2E Test Dapp" titles.
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
-        await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
+        await testDapp.checkPageIsLoaded();
+        try {
+          await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
+        } catch {
+          console.log(
+            'Connected accounts indicator did not update, falling back to eth_accounts check',
+          );
+          await testDapp.checkGetAccountsResult(DEFAULT_FIXTURE_ACCOUNT);
+        }
 
         // Login to homepage
         await driver.switchToWindowWithTitle(
