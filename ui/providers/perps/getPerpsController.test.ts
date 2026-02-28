@@ -1,24 +1,4 @@
-import nock from 'nock';
-
 export {};
-
-// Mock PerpsController eligibility geolocation so tests that load the real
-// controller (e.g. getFallbackBlockedRegions loading the module without mock)
-// don't trigger "Disallowed net connect".
-beforeAll(() => {
-  nock('https://on-ramp.uat-api.cx.metamask.io')
-    .get('/geolocation')
-    .reply(200, 'US')
-    .persist();
-  nock('https://on-ramp.api.cx.metamask.io')
-    .get('/geolocation')
-    .reply(200, 'US')
-    .persist();
-});
-
-afterAll(() => {
-  nock.cleanAll();
-});
 
 describe('getFallbackBlockedRegions', () => {
   const originalEnv = process.env;
