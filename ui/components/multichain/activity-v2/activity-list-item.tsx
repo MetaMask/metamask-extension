@@ -6,6 +6,7 @@ import TransactionStatusLabel from '../../app/transaction-status-label/transacti
 import { useFormatters } from '../../../hooks/useFormatters';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { useBridgeTxHistoryData } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';
 import { getPrimaryAmount } from './helpers';
 import { useGetTitle, useFiatAmount } from './hooks';
@@ -24,8 +25,14 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
   const fiatAmount = useFiatAmount(amount, token);
   const { chainId, status } = transaction;
 
+  const { isBridgeFailed, showBridgeTxDetails } = useBridgeTxHistoryData({
+    transaction,
+  });
+
   const transactionStatus =
-    status === TransactionStatus.failed
+    status === TransactionStatus.failed ||
+    // Show local bridge tx status if it's available
+    (showBridgeTxDetails && isBridgeFailed)
       ? TransactionStatus.failed
       : TransactionStatus.confirmed;
 
