@@ -205,7 +205,7 @@ const CrossChainSwapTxDetails = () => {
   );
 
   return (
-    <div className="bridge__container bg-background-default">
+    <Page className="bridge__container bg-background-default">
       <Header
         className="bridge__header"
         startAccessory={
@@ -223,12 +223,8 @@ const CrossChainSwapTxDetails = () => {
             : 'swapDetailsTitle',
         )}
       </Header>
-      <Content className="bridge-transaction-details__content">
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          gap={4}
-        >
+      <Content className="bridge-transaction-details__content" gap={4}>
+        <React.Fragment>
           {/* Delayed banner */}
           {isDelayed && (
             <BannerAlert
@@ -458,9 +454,9 @@ const CrossChainSwapTxDetails = () => {
               }
             />
           </Box>
-        </Box>
+        </React.Fragment>
       </Content>
-    </div>
+    </Page>
   );
 };
 
