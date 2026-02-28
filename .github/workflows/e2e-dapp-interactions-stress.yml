@@ -60,6 +60,7 @@ jobs:
       - name: Run dapp interactions stress test
         env:
           PROPERTIES: JOB_NAME:test-e2e-dapp-interactions-stress,RUN_ID:${{ env.RUN_ID }},PR_NUMBER:${{ env.PR_NUMBER }}
+        shell: bash
         run: |
           set -euo pipefail
 
