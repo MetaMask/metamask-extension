@@ -445,6 +445,14 @@ describe('MetaMaskController', () => {
           },
         ]),
       );
+    nock('https://on-ramp.uat-api.cx.metamask.io')
+      .get('/geolocation')
+      .reply(200, 'US')
+      .persist();
+    nock('https://on-ramp.api.cx.metamask.io')
+      .get('/geolocation')
+      .reply(200, 'US')
+      .persist();
 
     globalThis.sentry = {
       withIsolationScope: jest.fn(),
