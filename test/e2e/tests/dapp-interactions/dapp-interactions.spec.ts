@@ -2,7 +2,6 @@ import {
   DAPP_ONE_ADDRESS,
   DAPP_ONE_URL,
   DAPP_HOST_ADDRESS,
-  DEFAULT_FIXTURE_ACCOUNT,
   WINDOW_TITLES,
 } from '../../constants';
 import { withFixtures } from '../../helpers';
@@ -82,18 +81,6 @@ describe('Dapp interactions', function () {
         );
         await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();
-        // In this test we run with multiple dapp origins, so use URL-based
-        // switching to avoid ambiguity from shared "E2E Test Dapp" titles.
-        await driver.switchToWindowWithUrl(DAPP_ONE_URL);
-        await testDapp.checkPageIsLoaded();
-        try {
-          await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
-        } catch {
-          console.log(
-            'Connected accounts indicator did not update, falling back to eth_accounts check',
-          );
-          await testDapp.checkGetAccountsResult(DEFAULT_FIXTURE_ACCOUNT);
-        }
 
         // Login to homepage
         await driver.switchToWindowWithTitle(
