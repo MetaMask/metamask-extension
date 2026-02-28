@@ -127,6 +127,17 @@ describe('WeakRefObjectMap', () => {
     expect(map.delete('stale')).toBe(false);
   });
 
+  it('delete returns false for a dead entry without a prior has/get call', () => {
+    injectInternalEntry(map, 'stale', {
+      keys: ['objKey'],
+      refs: [{ deref: () => undefined }],
+    });
+
+    // delete must not return true for an entry whose weak ref is dead,
+    // even when has/get have not been called first to prune it.
+    expect(map.delete('stale')).toBe(false);
+  });
+
   describe('iterators', () => {
     beforeEach(() => {
       map = new WeakRefObjectMap();
