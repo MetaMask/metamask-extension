@@ -3,6 +3,7 @@ import type {
   BridgeHistoryItem,
   BridgeStatusControllerState,
 } from '@metamask/bridge-status-controller';
+import { type TransactionControllerState } from '@metamask/transaction-controller';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
@@ -12,7 +13,7 @@ import {
 } from '../../selectors/multichain-accounts/account-tree';
 
 type BridgeStatusAppState = {
-  metamask: BridgeStatusControllerState;
+  metamask: BridgeStatusControllerState & TransactionControllerState;
 };
 
 const selectBridgeHistory = (state: BridgeStatusAppState) =>
@@ -60,6 +61,9 @@ export const selectBridgeHistoryForAccountGroup = createSelector(
   },
 );
 
+/**
+ * @deprecated use selectBridgeHistoryItemForTransactionHash instead
+ */
 export const selectBridgeHistoryItemForTxMetaId = createSelector(
   [selectBridgeHistory, (_, txMetaId?: string) => txMetaId],
   (bridgeHistory, txMetaId) => {
@@ -70,7 +74,38 @@ export const selectBridgeHistoryItemForTxMetaId = createSelector(
   },
 );
 
-// eslint-disable-next-line jsdoc/require-param
+/**
+ * Returns a pending/local transaction for the given tx hash
+ */
+export const selectLocalTxForTxHash = (
+  { metamask: { transactions } }: BridgeStatusAppState,
+  txHash?: string,
+) =>
+  txHash
+    ? transactions.find(
+        (transaction) =>
+          transaction.hash?.toLowerCase() === txHash?.toLowerCase(),
+      )
+    : undefined;
+
+/**
+ * Returns the bridge history item for the given tx hash
+ */
+export const selectBridgeHistoryItemForTxHash = createSelector(
+  [selectBridgeHistory, selectLocalTxForTxHash],
+  (bridgeHistory, tx) => {
+    const txId = tx?.id;
+    const actionId = tx?.actionId;
+    if (txId && bridgeHistory[txId]) {
+      return bridgeHistory[txId];
+    }
+    if (actionId && bridgeHistory[actionId]) {
+      return bridgeHistory[actionId];
+    }
+    return undefined;
+  },
+);
+
 /**
  * Returns a bridge history item for a given approval tx id
  */
