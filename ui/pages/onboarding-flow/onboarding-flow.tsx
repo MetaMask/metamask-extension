@@ -341,8 +341,7 @@ export default function OnboardingFlow() {
               : 'var(--color-background-muted)',
         }}
       >
-        <Suspense fallback={null}>
-          <Routes>
+        <Routes>
             <Route
               path={toRelativePath(ONBOARDING_ACCOUNT_EXIST)}
               element={<AccountExist />}
@@ -421,13 +420,14 @@ export default function OnboardingFlow() {
               <Route
                 path={toRelativePath(ONBOARDING_EXPERIMENTAL_AREA)}
                 element={
-                  <ExperimentalArea redirectTo={ONBOARDING_WELCOME_ROUTE} />
+                  <Suspense fallback={null}>
+                    <ExperimentalArea redirectTo={ONBOARDING_WELCOME_ROUTE} />
+                  </Suspense>
                 }
               />
             )}
             <Route path="*" element={<OnboardingFlowSwitch />} />
           </Routes>
-        </Suspense>
       </Box>
       {isLoading && <LoadingScreen />}
     </Box>

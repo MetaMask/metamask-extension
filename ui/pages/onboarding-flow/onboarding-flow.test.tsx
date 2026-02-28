@@ -371,7 +371,6 @@ describe('Onboarding Flow', () => {
     );
 
     // React.lazy needs microtasks to flush for the dynamic import to resolve.
-    // Flush the promise queue and trigger a React re-render.
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });

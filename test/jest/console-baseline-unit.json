@@ -3126,6 +3126,7 @@
     },
     "ui/pages/onboarding-flow/onboarding-flow.test.tsx": {
       "MetaMask: Background connection not initialized": 13,
+      "React: State updates on unmounted components": 1,
       "error: Error: Actions must be plain": 1,
       "error: Warning: React does not recognize": 1,
       "warn: No routes matched location \"/\"": 1,
