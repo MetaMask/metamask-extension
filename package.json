@@ -639,6 +639,8 @@
     "@storybook/addon-a11y": "^8.6.17",
     "@storybook/addon-docs": "^8.6.17",
     "@storybook/addon-essentials": "^8.6.17",
+    "@storybook/addon-webpack5-compiler-babel": "^4.0.0",
+    "@storybook/addon-webpack5-compiler-swc": "^4.0.2",
     "@storybook/components": "^8.6.17",
     "@storybook/manager-api": "^8.6.17",
     "@storybook/preview-api": "^8.6.17",
@@ -865,7 +867,8 @@
       "ethereumjs-util>ethereum-cryptography>secp256k1#4.0.4": false,
       "sass-loader>sass>@parcel/watcher#2.5.6": false,
       "eslint-plugin-import-x>unrs-resolver#1.12.2": false,
-      "@storybook/test-runner>@swc/core": false
+      "@storybook/test-runner>@swc/core": false,
+      "@storybook/addon-webpack5-compiler-swc>@swc/core": false
     }
   },
   "packageManager": "yarn@4.14.1+sha256.5c7a0c5ea1c5b690df603c8e16b3742f87169b814d56bb5e63881145e8a84033",
