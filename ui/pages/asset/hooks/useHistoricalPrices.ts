@@ -72,7 +72,7 @@ const toHexChainId = (chainId: Hex | CaipChainId): Hex | null => {
 type UseHistoricalPricesParams = {
   chainId: Hex | CaipChainId;
   address: string;
-  currency: SupportedCurrency;
+  currency: string;
   timeRange: string;
 };
 
@@ -130,7 +130,7 @@ const useHistoricalPricesEvm = ({
 
   const { queryKey, queryFn } =
     apiClient.prices.getV1HistoricalPricesQueryOptions(chainId, address, {
-      currency,
+      currency: currency as SupportedCurrency,
       timeRange: timePeriod,
     });
 
