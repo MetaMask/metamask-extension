@@ -2,9 +2,15 @@
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "es2023"],
     "tsBuildInfoFile": "node_modules/.cache/typescript/tsconfig.unit.tsbuildinfo",
-    "types": ["chrome", "w3c-web-usb"]
+    "types": ["jest", "chrome", "w3c-web-usb"]
   },
-  "exclude": ["**/*.stories.tsx", "**/*.stories.ts", "test/e2e"],
-  "extends": "./tsconfig.json",
-  "include": ["app", "development", "shared", "test", "types", "ui", "*.ts"]
+  "exclude": ["storybook-build", "**/*.stories.tsx", "**/*.stories.ts"],
+  "extends": "./tsconfig.base.json",
+  "include": [
+    "**/*.test.js",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "test/jest",
+    "types"
+  ]
 }
