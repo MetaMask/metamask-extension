@@ -69,6 +69,8 @@ export default requestEthereumAccounts;
 // Tracks active eth_requestAccounts requests by origin so concurrent calls
 // share the same in-flight request instead of competing for approvals.
 const pendingRequests = new Map<OriginString, Promise<string[]>>();
+const POST_APPROVAL_ACCOUNT_POLL_INTERVAL_MS = 50;
+const POST_APPROVAL_ACCOUNT_POLL_TIMEOUT_MS = 1000;
 
 /**
  * This method attempts to retrieve the Ethereum accounts available to the
@@ -125,6 +127,19 @@ async function requestEthereumAccountsHandler<
       // We cannot derive ethAccounts directly from the CAIP-25 permission
       // because the accounts will not be in order of lastSelected
       ethAccounts = getAccounts(origin);
+
+      // In some flows, approval resolves before account permissions are
+      // observable via getAccounts(origin). Retry briefly to avoid returning
+      // a transient empty result to the requesting dapp.
+      if (ethAccounts.length === 0) {
+        const timeoutAt = Date.now() + POST_APPROVAL_ACCOUNT_POLL_TIMEOUT_MS;
+        while (ethAccounts.length === 0 && Date.now() < timeoutAt) {
+          await new Promise((resolve) =>
+            setTimeout(resolve, POST_APPROVAL_ACCOUNT_POLL_INTERVAL_MS),
+          );
+          ethAccounts = getAccounts(origin);
+        }
+      }
     }
 
     // first time connection to dapp will lead to no log in the permissionHistory

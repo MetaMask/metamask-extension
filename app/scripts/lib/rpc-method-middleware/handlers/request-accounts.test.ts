@@ -150,6 +150,19 @@ describe('requestEthereumAccountsHandler', () => {
       expect(getAccounts).toHaveBeenCalledTimes(2);
     });
 
+    it('briefly retries account lookup if approval result has not propagated yet', async () => {
+      const { handler, getAccounts, response } = createMockedHandler();
+      getAccounts
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce(['0xdead']);
+
+      await handler(baseRequest);
+
+      expect(response.result).toStrictEqual(['0xdead']);
+      expect(getAccounts).toHaveBeenCalledTimes(3);
+    });
+
     it('shares the same in-flight request for concurrent requests from the same origin', async () => {
       const {
         next,
