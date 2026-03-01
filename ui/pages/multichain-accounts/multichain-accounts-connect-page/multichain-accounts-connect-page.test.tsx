@@ -1002,14 +1002,13 @@ describe('MultichainConnectPage', () => {
         },
       });
 
-      // For EIP-1193 requests, should return all default networks regardless of namespace filtering
+      // For plain EIP-1193 requests, should default to EVM scopes only.
       const { calls } = mockUseAccountGroupsForPermissions.mock;
       expect(calls.length).toBeGreaterThan(0);
       const actualChainIds = calls[0]?.[2] as string[] | undefined;
       expect(actualChainIds).toBeDefined();
-      // Should include both EVM and Solana networks by default for EIP-1193
       expect(actualChainIds).toContain('eip155:1');
-      expect(actualChainIds).toContain(
+      expect(actualChainIds).not.toContain(
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       );
     });

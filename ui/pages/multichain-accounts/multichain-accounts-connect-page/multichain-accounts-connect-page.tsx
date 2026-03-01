@@ -275,12 +275,18 @@ export const MultichainAccountsConnectPage: React.FC<
         )
       : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
 
-    // If the request is an EIP-1193 request (with no specific chains requested), a Solana wallet standard or a tronWallet library request , return the default selected network list
-    if (
-      (requestedCaipChainIds.length === 0 && isEip1193Request) ||
-      isSolanaWalletStandardRequest ||
-      isTronWalletAdapterRequest
-    ) {
+    const defaultSelectedEvmNetworkList = defaultSelectedNetworkList.filter(
+      (caipChainId) =>
+        parseCaipChainId(caipChainId).namespace === KnownCaipNamespace.Eip155,
+    );
+
+    // For plain EIP-1193 requests, default to EVM scopes only.
+    if (requestedCaipChainIds.length === 0 && isEip1193Request) {
+      return defaultSelectedEvmNetworkList;
+    }
+
+    // For explicit Solana/Tron wallet adapter flows, keep default multichain selection.
+    if (isSolanaWalletStandardRequest || isTronWalletAdapterRequest) {
       return defaultSelectedNetworkList;
     }
 
