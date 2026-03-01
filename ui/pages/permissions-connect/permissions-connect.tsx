@@ -336,6 +336,11 @@ function PermissionsConnect() {
   const prevLastConnectedInfoRef = useRef<typeof lastConnectedInfo | null>(
     null,
   );
+  const isApprovingPermissionsRef = useRef(false);
+  const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
+  const permissionsRequestRef = useRef(permissionsRequest);
 
   // Define redirect function before it's used in effects
   const redirect = useCallback(
@@ -347,6 +352,11 @@ function PermissionsConnect() {
 
       shouldRedirect = !isRequestingSnap;
 
+      if (redirectTimeoutRef.current) {
+        clearTimeout(redirectTimeoutRef.current);
+        redirectTimeoutRef.current = undefined;
+      }
+
       setRedirecting(shouldRedirect);
       setPermissionsApproved(approved);
 
@@ -356,7 +366,14 @@ function PermissionsConnect() {
       }
 
       if (approved) {
-        setTimeout(() => navigate(DEFAULT_ROUTE), APPROVE_TIMEOUT);
+        redirectTimeoutRef.current = setTimeout(() => {
+          // If another permissions request appears before the timeout expires,
+          // keep the user on the approval flow instead of navigating home.
+          if (!permissionsRequestRef.current) {
+            navigate(DEFAULT_ROUTE);
+          }
+          redirectTimeoutRef.current = undefined;
+        }, APPROVE_TIMEOUT);
         return;
       }
       navigate(DEFAULT_ROUTE);
@@ -364,34 +381,78 @@ function PermissionsConnect() {
     [permissions, navigate],
   );
 
-  // Handle initial navigation on mount
+  useEffect(() => {
+    permissionsRequestRef.current = permissionsRequest;
+
+    if (permissionsRequest && redirecting) {
+      if (redirectTimeoutRef.current) {
+        clearTimeout(redirectTimeoutRef.current);
+        redirectTimeoutRef.current = undefined;
+      }
+      setRedirecting(false);
+      setPermissionsApproved(null);
+    }
+  }, [permissionsRequest, redirecting]);
+
+  useEffect(
+    () => () => {
+      if (redirectTimeoutRef.current) {
+        clearTimeout(redirectTimeoutRef.current);
+      }
+    },
+    [],
+  );
+
+  // Handle initial setup on mount.
   useEffect(() => {
     dispatch(getRequestAccountTabIdsAction());
+  }, [dispatch]);
 
+  // Keep the approval route aligned with the current request type.
+  useEffect(() => {
     if (!permissionsRequest) {
       navigate(DEFAULT_ROUTE, { replace: true });
       return;
     }
 
-    if (location.pathname === connectPath && !isRequestingAccounts) {
-      switch (requestType) {
-        case 'wallet_installSnap':
-          navigate(snapInstallPath, { replace: true });
-          break;
-        case 'wallet_updateSnap':
-          navigate(snapUpdatePath, { replace: true });
-          break;
-        case 'wallet_installSnapResult':
-          navigate(snapResultPath, { replace: true });
-          break;
-        case 'wallet_connectSnaps':
-          navigate(snapsConnectPath, { replace: true });
-          break;
-        default:
-          navigate(confirmPermissionPath, { replace: true });
-      }
+    if (isRequestingAccounts) {
+      return;
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    let targetPath = confirmPermissionPath;
+    switch (requestType) {
+      case 'wallet_installSnap':
+        targetPath = snapInstallPath;
+        break;
+      case 'wallet_updateSnap':
+        targetPath = snapUpdatePath;
+        break;
+      case 'wallet_installSnapResult':
+        targetPath = snapResultPath;
+        break;
+      case 'wallet_connectSnaps':
+        targetPath = snapsConnectPath;
+        break;
+      default:
+        targetPath = confirmPermissionPath;
+        break;
+    }
+
+    if (location.pathname !== targetPath) {
+      navigate(targetPath, { replace: true });
+    }
+  }, [
+    permissionsRequest,
+    isRequestingAccounts,
+    requestType,
+    location.pathname,
+    confirmPermissionPath,
+    snapInstallPath,
+    snapUpdatePath,
+    snapResultPath,
+    snapsConnectPath,
+    navigate,
+  ]);
 
   // Cache targetSubjectMetadata when it changes
   useEffect(() => {
@@ -412,6 +473,14 @@ function PermissionsConnect() {
       prevPermissionsRequestRef.current &&
       !redirecting
     ) {
+      // While approval submission is in flight, wait for approveConnection
+      // to resolve and call redirect(true/false) explicitly.
+      if (isApprovingPermissionsRef.current) {
+        prevPermissionsRequestRef.current = permissionsRequest;
+        prevLastConnectedInfoRef.current = lastConnectedInfo;
+        return;
+      }
+
       const lastConnectedForOrigin = lastConnectedInfo[origin] as
         | { lastApproved?: number; accounts?: Record<string, number> }
         | undefined;
@@ -479,14 +548,21 @@ function PermissionsConnect() {
   );
 
   const approveConnection = useCallback(
-    (request: Record<string, unknown>) => {
-      // Cast through unknown to satisfy both local and controller types
-      dispatch(
-        approvePermissionsRequestAction(
-          request as unknown as ControllerPermissionsRequest,
-        ),
-      );
-      redirect(true);
+    async (request: Record<string, unknown>) => {
+      isApprovingPermissionsRef.current = true;
+      try {
+        // Cast through unknown to satisfy both local and controller types
+        await dispatch(
+          approvePermissionsRequestAction(
+            request as unknown as ControllerPermissionsRequest,
+          ),
+        );
+        redirect(true);
+      } catch {
+        // Keep the user on the connect page if approval submission fails.
+      } finally {
+        isApprovingPermissionsRef.current = false;
+      }
     },
     [dispatch, redirect],
   );
@@ -661,13 +737,8 @@ function PermissionsConnect() {
             element={
               <PermissionPageContainer
                 request={permissionsRequest || {}}
-                approvePermissionsRequest={(request: unknown) => {
-                  dispatch(
-                    approvePermissionsRequestAction(
-                      request as unknown as ControllerPermissionsRequest,
-                    ),
-                  );
-                  redirect(true);
+                approvePermissionsRequest={async (request: unknown) => {
+                  await approveConnection(request as Record<string, unknown>);
                 }}
                 rejectPermissionsRequest={(requestId: string) =>
                   cancelPermissionsRequest(requestId)
