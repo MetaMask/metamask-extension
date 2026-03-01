@@ -105,7 +105,9 @@ export type MultichainConnectPageProps = {
   request: MultichainAccountsConnectPageRequest;
   permissionsRequestId: string;
   rejectPermissionsRequest: (id: string) => void;
-  approveConnection: (request: MultichainAccountsConnectPageRequest) => void;
+  approveConnection: (
+    request: MultichainAccountsConnectPageRequest,
+  ) => Promise<void> | void;
   targetSubjectMetadata: {
     extensionId: string | null;
     iconUrl: string | null;
@@ -493,7 +495,7 @@ export const MultichainAccountsConnectPage: React.FC<
     rejectPermissionsRequest(permissionsRequestId);
   }, [permissionsRequestId, rejectPermissionsRequest]);
 
-  const onConfirm = useCallback(() => {
+  const onConfirm = useCallback(async () => {
     const _request = {
       ...request,
       permissions: {
@@ -505,7 +507,7 @@ export const MultichainAccountsConnectPage: React.FC<
         ),
       },
     };
-    approveConnection(_request);
+    await approveConnection(_request);
   }, [
     request,
     requestedCaip25CaveatValueWithExistingPermissions,
