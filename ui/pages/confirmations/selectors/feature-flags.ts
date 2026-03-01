@@ -8,6 +8,7 @@ type ConfirmationsPayFeatureFlags = {
 const selectConfirmationsPayFeatureFlags = createSelector(
   getRemoteFeatureFlags,
   (flags) =>
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     (flags as unknown as { confirmations_pay?: ConfirmationsPayFeatureFlags })
       .confirmations_pay,
 );

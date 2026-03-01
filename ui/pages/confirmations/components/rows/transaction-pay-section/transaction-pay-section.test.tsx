@@ -50,7 +50,9 @@ describe('TransactionPaySection', () => {
     useIsTransactionPayLoading,
   );
   const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
-  const selectIsMetaMaskPayDappsEnabledMock = jest.mocked(selectIsMetaMaskPayDappsEnabled);
+  const selectIsMetaMaskPayDappsEnabledMock = jest.mocked(
+    selectIsMetaMaskPayDappsEnabled,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();

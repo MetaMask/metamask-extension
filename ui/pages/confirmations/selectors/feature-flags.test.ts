@@ -1,14 +1,19 @@
+/* eslint-disable @typescript-eslint/naming-convention, camelcase */
 import { selectIsMetaMaskPayDappsEnabled } from './feature-flags';
+
+type ConfirmationsPayFlag = {
+  dappsEnabled?: boolean;
+};
 
 type MockState = {
   metamask: {
-    remoteFeatureFlags: Record<string, unknown>;
+    remoteFeatureFlags: {
+      confirmations_pay?: ConfirmationsPayFlag;
+    };
   };
 };
 
-const getMockState = (
-  confirmations_pay?: Record<string, unknown>,
-): MockState => ({
+const getMockState = (confirmations_pay?: ConfirmationsPayFlag): MockState => ({
   metamask: {
     remoteFeatureFlags: {
       ...(confirmations_pay !== undefined && { confirmations_pay }),
