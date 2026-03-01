@@ -445,9 +445,9 @@ export class SnapKeyringImpl implements SnapKeyringCallbacks {
 
     const isSnapWallet = this.#isAccountInSnapWallet(address);
 
-    // If the account is not in a snap wallet, we can safely assume it is part of
-    // a multichain wallet and we can perform the account removal directly
-    // without showing any confirmation dialog.
+    // If a snap account is not part of a snap wallet, we can safely assume
+    // it is part of a multichain wallet and we can perform the account
+    // removal directly without showing any confirmation dialog.
     if (!isSnapWallet) {
       await this.#performAccountRemoval(address, true, handleUserInput);
       return;
