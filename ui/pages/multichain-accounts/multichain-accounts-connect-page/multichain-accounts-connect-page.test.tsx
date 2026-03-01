@@ -94,7 +94,7 @@ const mockUseAccountGroupsForPermissions = jest.fn((..._args: unknown[]) => ({
       ],
     },
   ],
-  caipAccountIdsOfConnectedAccountGroupWithRequested: ['eip155:1:0x123'],
+  caipAccountIdsOfConnectedAndRequestedAccountGroups: ['eip155:1:0x123'],
   selectedAndRequestedAccountGroups: [
     {
       id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
@@ -170,7 +170,7 @@ jest.mock('../../../hooks/useAccountGroupsForPermissions', () => ({
           ],
         },
       ],
-      caipAccountIdsOfConnectedAccountGroupWithRequested: ['eip155:1:0x123'],
+      caipAccountIdsOfConnectedAndRequestedAccountGroups: ['eip155:1:0x123'],
       selectedAndRequestedAccountGroups: [
         {
           id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
@@ -288,7 +288,9 @@ jest.mock('../../permissions-connect/connect-page/utils', () => ({
 }));
 
 jest.mock('../../../../shared/lib/multichain/scope-utils', () => ({
-  getCaip25AccountFromAccountGroupAndScope: jest.fn(() => ['eip155:1:0x123']),
+  getCaip25AccountIdsFromAccountGroupAndScope: jest.fn(() => [
+    'eip155:1:0x123',
+  ]),
 }));
 
 const mockGetCaip25CaveatValueFromPermissions = jest.requireMock(
