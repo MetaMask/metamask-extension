@@ -252,7 +252,7 @@
     "gridplus-sdk/uuid@npm:^13.0.0": "^8.3.2",
     "gridplus-sdk/@types/uuid@npm:^11.0.0": "^8.3.0",
     "@ledgerhq/hw-transport-webhid@npm:^6.31.0": "patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch",
-    "@metamask/accounts-controller@^35.0.2": "npm:@metamask-previews/accounts-controller@36.0.1-preview-7cbd7910e",
+    "@metamask/accounts-controller@^36.0.0": "npm:@metamask-previews/accounts-controller@36.0.1-preview-7cbd7910e",
     "fast-xml-parser": "^5.3.6",
     "minimatch@npm:^10.1.1": "10.2.4",
     "@metamask/snaps-controllers": "^18.0.1",
