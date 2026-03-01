@@ -6,13 +6,13 @@ import { getMockConfirmStateForTransaction } from '../../../../../../test/data/c
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useIsEnforcedSimulationsSupported } from '../../../hooks/transactions/useIsEnforcedSimulationsSupported';
+import { isEnforcedSimulationsEligible } from '../../../../../../shared/lib/transaction/enforced-simulations';
 import { applyTransactionContainersExisting } from '../../../../../store/actions';
 import { useFeeCalculations } from '../../confirm/info/hooks/useFeeCalculations';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { EnforcedSimulationsRow } from './enforced-simulations-row';
 
-jest.mock('../../../hooks/transactions/useIsEnforcedSimulationsSupported');
+jest.mock('../../../../../../shared/lib/transaction/enforced-simulations');
 jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../store/actions'),
@@ -24,8 +24,8 @@ jest.mock('../../confirm/info/hooks/useFeeCalculations', () => ({
 
 const mockStore = configureMockStore([]);
 
-const useIsEnforcedSimulationsSupportedMock = jest.mocked(
-  useIsEnforcedSimulationsSupported,
+const isEnforcedSimulationsEligibleMock = jest.mocked(
+  isEnforcedSimulationsEligible,
 );
 const useI18nContextMock = jest.mocked(useI18nContext);
 const useFeeCalculationsMock = jest.mocked(useFeeCalculations);
@@ -33,17 +33,17 @@ const useFeeCalculationsMock = jest.mocked(useFeeCalculations);
 function render({
   isSupported = true,
   containerTypes,
-  containerTypeDiffFiat = '',
+  containerDiffFiat = '',
   origin,
   delegationAddress,
 }: {
   isSupported?: boolean;
   containerTypes?: TransactionContainerType[];
-  containerTypeDiffFiat?: string;
+  containerDiffFiat?: string;
   origin?: string;
   delegationAddress?: string;
 } = {}) {
-  useIsEnforcedSimulationsSupportedMock.mockReturnValue(isSupported);
+  isEnforcedSimulationsEligibleMock.mockReturnValue(isSupported);
 
   useI18nContextMock.mockReturnValue(((key: string, args?: string[]) => {
     const translations: Record<string, string> = {
@@ -58,7 +58,7 @@ function render({
   }) as ReturnType<typeof useI18nContext>);
 
   useFeeCalculationsMock.mockReturnValue({
-    containerTypeDiffFiat,
+    containerDiffFiat,
   } as unknown as ReturnType<typeof useFeeCalculations>);
 
   const transaction = genUnapprovedContractInteractionConfirmation({
@@ -182,7 +182,7 @@ describe('EnforcedSimulationsRow', () => {
   it('shows fee description when enabled and fee delta is available', () => {
     const { getByText } = render({
       containerTypes: [TransactionContainerType.EnforcedSimulations],
-      containerTypeDiffFiat: '$6.21',
+      containerDiffFiat: '$6.21',
     });
 
     expect(
