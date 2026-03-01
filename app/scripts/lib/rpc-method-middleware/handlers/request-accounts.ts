@@ -8,6 +8,11 @@ import type {
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
 import type { OriginString } from '@metamask/permission-controller';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+  getEthAccounts,
+} from '@metamask/chain-agnostic-permission';
 
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import type { FlattenedBackgroundStateProxy } from '../../../../../shared/types';
@@ -18,6 +23,7 @@ import {
 import { shouldEmitDappViewedEvent } from '../../util';
 import type {
   GetAccounts,
+  GrantedPermissions,
   HandlerWrapper,
   SendMetrics,
   GetCaip25PermissionFromLegacyPermissionsForOrigin,
@@ -72,6 +78,25 @@ const pendingRequests = new Map<OriginString, Promise<string[]>>();
 const POST_APPROVAL_ACCOUNT_POLL_INTERVAL_MS = 50;
 const POST_APPROVAL_ACCOUNT_POLL_TIMEOUT_MS = 1000;
 
+function getEthAccountsFromGrantedPermissions(
+  grantedPermissions: GrantedPermissions,
+): string[] {
+  const caip25Permission = grantedPermissions[Caip25EndowmentPermissionName];
+  if (!caip25Permission) {
+    return [];
+  }
+
+  const caip25CaveatValue = caip25Permission.caveats?.find(
+    ({ type }) => type === Caip25CaveatType,
+  )?.value;
+
+  if (!caip25CaveatValue) {
+    return [];
+  }
+
+  return getEthAccounts(caip25CaveatValue);
+}
+
 /**
  * This method attempts to retrieve the Ethereum accounts available to the
  * requester, or initiate a request for account access if none are currently
@@ -122,7 +147,8 @@ async function requestEthereumAccountsHandler<
     if (ethAccounts.length === 0) {
       const caip25Permission =
         getCaip25PermissionFromLegacyPermissionsForOrigin();
-      await requestPermissionsForOrigin(caip25Permission);
+      const [grantedPermissions] =
+        await requestPermissionsForOrigin(caip25Permission);
 
       // We cannot derive ethAccounts directly from the CAIP-25 permission
       // because the accounts will not be in order of lastSelected
@@ -139,6 +165,13 @@ async function requestEthereumAccountsHandler<
           );
           ethAccounts = getAccounts(origin);
         }
+      }
+
+      // If state propagation still has not caught up, fall back to the
+      // accounts in the granted CAIP-25 permission so eth_requestAccounts
+      // does not return a transient empty result.
+      if (ethAccounts.length === 0) {
+        ethAccounts = getEthAccountsFromGrantedPermissions(grantedPermissions);
       }
     }
 

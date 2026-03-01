@@ -3,6 +3,10 @@ import type {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/chain-agnostic-permission';
 import * as Util from '../../util';
 import requestEthereumAccounts from './request-accounts';
 
@@ -50,7 +54,7 @@ const createMockedHandler = () => {
   const getCaip25PermissionFromLegacyPermissionsForOrigin = jest
     .fn()
     .mockResolvedValue({});
-  const requestPermissionsForOrigin = jest.fn().mockReturnValue({});
+  const requestPermissionsForOrigin = jest.fn().mockResolvedValue([{}]);
   const response: PendingJsonRpcResponse<string[]> = {
     jsonrpc: '2.0' as const,
     id: 0,
@@ -163,6 +167,38 @@ describe('requestEthereumAccountsHandler', () => {
       expect(getAccounts).toHaveBeenCalledTimes(3);
     });
 
+    it('falls back to granted CAIP-25 accounts when account lookup remains empty', async () => {
+      const { handler, getAccounts, response, requestPermissionsForOrigin } =
+        createMockedHandler();
+
+      getAccounts.mockReturnValue([]);
+      requestPermissionsForOrigin.mockResolvedValue([
+        {
+          [Caip25EndowmentPermissionName]: {
+            caveats: [
+              {
+                type: Caip25CaveatType,
+                value: {
+                  isMultichainOrigin: true,
+                  requiredScopes: {},
+                  optionalScopes: {
+                    'eip155:1': {
+                      accounts: ['eip155:1:0xdead'],
+                    },
+                  },
+                  sessionProperties: {},
+                },
+              },
+            ],
+          },
+        },
+      ]);
+
+      await handler(baseRequest);
+
+      expect(response.result).toStrictEqual(['0xdead']);
+    });
+
     it('shares the same in-flight request for concurrent requests from the same origin', async () => {
       const {
         next,
@@ -177,9 +213,10 @@ describe('requestEthereumAccountsHandler', () => {
       const approvalRequestPromise = new Promise<void>((resolve) => {
         resolveApprovalRequest = resolve;
       });
-      requestPermissionsForOrigin.mockImplementation(
-        async () => await approvalRequestPromise,
-      );
+      requestPermissionsForOrigin.mockImplementation(async () => {
+        await approvalRequestPromise;
+        return [{}];
+      });
       getAccounts.mockReturnValueOnce([]).mockReturnValueOnce(['0xdead']);
 
       const firstResponse: PendingJsonRpcResponse<string[]> = {
