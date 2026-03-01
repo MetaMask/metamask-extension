@@ -1,6 +1,4 @@
-import { getErrorMessage } from '@metamask/utils';
-import { cloneDeep } from 'lodash';
-import { captureException } from '../../../shared/lib/sentry';
+import type { Migrate } from './types';
 
 export type VersionedData = {
   meta: { version: number };
@@ -19,38 +17,18 @@ type GatorPermissionsControllerStateV1 = {
 };
 
 /**
- * Removes legacy state from GatorPermissionsController 1.x.x
+ * This migration removes legacy state from GatorPermissionsController 1.x.x
  * - `gatorPermissionsMapSerialized` was cached data only.
  * - `isGatorPermissionsEnabled` was set on controller initialization, so never needed to be persisted.
  * - `gatorPermissionsProviderSnapId` was set on controller initialization, so never needed to be persisted.
  *
- * @param versionedData - Versioned MetaMask extension state, exactly
- * what we persist to disk.
- * @param localChangedControllers - A set of controller keys that have been changed by the migration.
- * @returns Updated versioned MetaMask extension state.
+ * @param versionedData - The versioned data object to migrate.
+ * @param changedControllers - A set used to record controllers that were modified.
  */
-export async function migrate(
-  versionedData: VersionedData,
-  localChangedControllers: Set<string>,
-): Promise<void> {
+export const migrate = (async (versionedData, changedControllers) => {
   versionedData.meta.version = version;
-  const changedVersionedData = cloneDeep(versionedData);
-  const changedLocalChangedControllers = new Set<string>();
-
-  try {
-    transformState(changedVersionedData.data, changedLocalChangedControllers);
-    versionedData.data = changedVersionedData.data;
-    changedLocalChangedControllers.forEach((controller) =>
-      localChangedControllers.add(controller),
-    );
-  } catch (error) {
-    console.error(error);
-    const newError = new Error(
-      `Migration #${version}: ${getErrorMessage(error)}`,
-    );
-    captureException(newError);
-  }
-}
+  transformState(versionedData.data, changedControllers);
+}) satisfies Migrate;
 
 function transformState(
   state: Record<string, unknown>,
