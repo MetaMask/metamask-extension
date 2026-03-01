@@ -55,4 +55,3 @@ jobs:
         with:
           name: dapp-page-load-benchmark-results
           path: test-artifacts/benchmarks/dapp-page-load-benchmark-results.json
-

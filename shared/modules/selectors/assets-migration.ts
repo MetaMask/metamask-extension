@@ -9,7 +9,11 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { AssetsControllerState } from '@metamask/assets-controller';
 import {
   AccountTrackerControllerState,
+  MultichainAssetsControllerState,
+  MultichainBalancesControllerState,
+  getNativeTokenAddress,
   Token,
+  TokenBalancesControllerState,
   TokensControllerState,
 } from '@metamask/assets-controllers';
 import { AccountsControllerState } from '@metamask/accounts-controller';
@@ -30,12 +34,12 @@ import { createDeepEqualSelector } from './selector-creators';
 // accountsByChainId: DONE
 //
 // TokensController
-// allTokens: TODO
-// allIgnoredTokens: TODO
+// allTokens: DONE
+// allIgnoredTokens: DONE
 // allDetectedTokens: TODO (This state should be removed)
 //
 // TokenBalancesController
-// tokenBalances: TODO
+// tokenBalances: DONE
 //
 // CurrencyRateController
 // currencyRates: TODO
@@ -45,12 +49,12 @@ import { createDeepEqualSelector } from './selector-creators';
 // marketData: TODO
 //
 // MultichainAssetsController
-// accountsAssets: TODO
-// assetsMetadata: TODO
-// allIgnoredAssets: TODO
+// accountsAssets: DONE
+// assetsMetadata: DONE
+// allIgnoredAssets: DONE
 //
 // MultichainBalancesController
-// balances: TODO
+// balances: DONE
 //
 // MultichainAssetsRatesController
 // conversionRates: TODO
@@ -146,8 +150,7 @@ export const getAccountTrackerControllerAccountsByChainId =
           result[hexChainId] ??= {};
           result[hexChainId][checksummedAddress] = {
             // TODO: Use raw value from state when available
-            balance:
-              parseBalanceWithDecimals(amount, metadata.decimals) ?? '0x0',
+            balance: parseBalanceWithDecimals(amount, metadata.decimals),
           };
         }
       }
@@ -198,7 +201,10 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
       ].map((accountId) => {
         const fromBalance = Object.keys(assetsBalance[accountId] ?? {});
         const fromCustom = customAssets[accountId] ?? [];
-        return [accountId, [...new Set([...fromBalance, ...fromCustom])]];
+        return [
+          accountId,
+          [...new Set([...fromBalance, ...fromCustom])] as CaipAssetType[],
+        ];
       }),
     );
 
@@ -214,7 +220,7 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
           continue;
         }
 
-        const assetType = parseCaipAssetType(assetId as CaipAssetType);
+        const assetType = parseCaipAssetType(assetId);
 
         // No need to check if the chain is EVM, we already filtered out non-EVM accounts
         const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
@@ -294,15 +300,309 @@ export const getTokensControllerAllIgnoredTokens = createDeepEqualSelector(
   'allIgnoredTokens'
 >;
 
+// AcountAddress (hex lowercase) -> ChainId (hex) -> TokenAddress (hex checksummed) -> Balance (hex)
+export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: {
+      metamask: Pick<TokenBalancesControllerState, 'tokenBalances'>;
+    }) => state.metamask?.tokenBalances ?? {},
+    (state: { metamask: Pick<AssetsControllerState, 'assetsInfo'> }) =>
+      state.metamask?.assetsInfo ?? {},
+    (state: { metamask: Pick<AssetsControllerState, 'assetsBalance'> }) =>
+      state.metamask?.assetsBalance ?? {},
+    (state: { metamask: Pick<AccountsControllerState, 'internalAccounts'> }) =>
+      state.metamask?.internalAccounts?.accounts ?? {},
+  ],
+  (
+    isAssetsUnifyStateEnabled,
+    tokenBalances,
+    assetsInfo,
+    assetsBalance,
+    internalAccountsById,
+  ) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return tokenBalances;
+    }
+
+    const result: TokenBalancesControllerState['tokenBalances'] = {};
+
+    for (const [accountId, chainIdBalances] of Object.entries(assetsBalance)) {
+      const internalAccount = internalAccountsById[accountId];
+      if (!internalAccount || !isEvmAccountType(internalAccount.type)) {
+        continue;
+      }
+
+      const accountAddress = internalAccount.address as Hex;
+      result[accountAddress] = {};
+
+      for (const [assetId, assetBalance] of Object.entries(chainIdBalances)) {
+        const metadata = assetsInfo[assetId];
+        if (!metadata) {
+          continue;
+        }
+
+        const assetType = parseCaipAssetType(assetId as CaipAssetType);
+
+        // No need to check if the chain is EVM, we already filtered out non-EVM accounts
+        const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
+        const assetAddress = toChecksumHexAddress(
+          metadata.type === 'native'
+            ? getNativeTokenAddress(hexChainId)
+            : assetType.assetReference,
+        ) as Hex;
+
+        result[accountAddress][hexChainId] ??= {};
+        result[accountAddress][hexChainId][assetAddress] =
+          // TODO: Use raw value from state when available
+          parseBalanceWithDecimals(assetBalance.amount, metadata.decimals);
+      }
+    }
+
+    return result;
+  },
+) as unknown as ControllerStateSelector<
+  TokenBalancesControllerState,
+  'tokenBalances'
+>;
+
+// AccountId -> Array of AssetIds
+export const getMultiChainAssetsControllerAccountsAssets =
+  createDeepEqualSelector(
+    [
+      getIsAssetsUnifyStateEnabled,
+      (state: {
+        metamask: Pick<MultichainAssetsControllerState, 'accountsAssets'>;
+      }) => state.metamask?.accountsAssets ?? {},
+      (state: { metamask: Pick<AssetsControllerState, 'assetsBalance'> }) =>
+        state.metamask?.assetsBalance ?? {},
+      (state: { metamask: Pick<AssetsControllerState, 'customAssets'> }) =>
+        state.metamask?.customAssets ?? {},
+      (state: {
+        metamask: Pick<AccountsControllerState, 'internalAccounts'>;
+      }) => state.metamask?.internalAccounts?.accounts ?? {},
+    ],
+    (
+      isAssetsUnifyStateEnabled,
+      accountsAssets,
+      assetsBalance,
+      customAssets,
+      internalAccountsById,
+    ) => {
+      if (!isAssetsUnifyStateEnabled) {
+        return accountsAssets;
+      }
+
+      const result: MultichainAssetsControllerState['accountsAssets'] = {};
+
+      // Merge assetsBalance and customAssets: accountId -> assetId[]
+      const allAssets = Object.fromEntries(
+        [
+          ...new Set([
+            ...Object.keys(assetsBalance),
+            ...Object.keys(customAssets),
+          ]),
+        ].map((accountId) => {
+          const fromBalance = Object.keys(assetsBalance[accountId] ?? {});
+          const fromCustom = customAssets[accountId] ?? [];
+          return [
+            accountId,
+            [...new Set([...fromBalance, ...fromCustom])] as CaipAssetType[],
+          ];
+        }),
+      );
+
+      for (const [accountId, assetIds] of Object.entries(allAssets)) {
+        const internalAccount = internalAccountsById[accountId];
+        if (!internalAccount || isEvmAccountType(internalAccount.type)) {
+          continue;
+        }
+
+        result[accountId] = [];
+
+        for (const assetId of assetIds) {
+          const assetType = parseCaipAssetType(assetId);
+          if (assetType.chain.namespace === KnownCaipNamespace.Eip155) {
+            continue;
+          }
+
+          result[accountId].push(assetId);
+        }
+      }
+
+      return result;
+    },
+  ) as unknown as ControllerStateSelector<
+    MultichainAssetsControllerState,
+    'accountsAssets'
+  >;
+
+// TODO There are issues with the new image url not matching the one in assetsMetadata iconUrl
+// AssetId -> AssetMetadata
+export const getMultiChainAssetsControllerAssetsMetadata =
+  createDeepEqualSelector(
+    [
+      getIsAssetsUnifyStateEnabled,
+      (state: {
+        metamask: Pick<MultichainAssetsControllerState, 'assetsMetadata'>;
+      }) => state.metamask?.assetsMetadata ?? {},
+      (state: { metamask: Pick<AssetsControllerState, 'assetsInfo'> }) =>
+        state.metamask?.assetsInfo ?? {},
+    ],
+    (isAssetsUnifyStateEnabled, assetsMetadata, assetsInfo) => {
+      if (!isAssetsUnifyStateEnabled) {
+        return assetsMetadata;
+      }
+
+      const result: MultichainAssetsControllerState['assetsMetadata'] = {};
+
+      for (const [assetId, metadata] of Object.entries(assetsInfo)) {
+        const assetType = parseCaipAssetType(assetId as CaipAssetType);
+        if (assetType.chain.namespace === KnownCaipNamespace.Eip155) {
+          continue;
+        }
+
+        result[assetId as CaipAssetType] = {
+          fungible: true,
+          iconUrl: metadata.image ?? '',
+          units: [
+            {
+              decimals: metadata.decimals,
+              symbol: metadata.symbol,
+              name: metadata.name,
+            },
+          ],
+          symbol: metadata.symbol,
+          name: metadata.name,
+        };
+      }
+
+      return result;
+    },
+  ) as unknown as ControllerStateSelector<
+    MultichainAssetsControllerState,
+    'assetsMetadata'
+  >;
+
+// AccountId -> Array of AssetIds
+export const getMultiChainAssetsControllerAllIgnoredAssets =
+  createDeepEqualSelector(
+    [
+      getIsAssetsUnifyStateEnabled,
+      (state: {
+        metamask: Pick<MultichainAssetsControllerState, 'allIgnoredAssets'>;
+      }) => state.metamask?.allIgnoredAssets ?? {},
+      (state: { metamask: Pick<AssetsControllerState, 'assetPreferences'> }) =>
+        state.metamask?.assetPreferences ?? {},
+      (state: {
+        metamask: Pick<AccountsControllerState, 'internalAccounts'>;
+      }) => state.metamask?.internalAccounts?.accounts ?? {},
+    ],
+    (
+      isAssetsUnifyStateEnabled,
+      allIgnoredAssets,
+      assetPreferences,
+      internalAccountsById,
+    ) => {
+      if (!isAssetsUnifyStateEnabled) {
+        return allIgnoredAssets;
+      }
+
+      const result: MultichainAssetsControllerState['allIgnoredAssets'] = {};
+
+      for (const accountId of Object.keys(internalAccountsById)) {
+        const internalAccount = internalAccountsById[accountId];
+        if (!internalAccount || isEvmAccountType(internalAccount.type)) {
+          continue;
+        }
+
+        result[accountId] = [];
+
+        for (const [assetId, { hidden }] of Object.entries(assetPreferences)) {
+          if (!hidden) {
+            continue;
+          }
+
+          const assetType = parseCaipAssetType(assetId as CaipAssetType);
+          if (assetType.chain.namespace === KnownCaipNamespace.Eip155) {
+            continue;
+          }
+
+          result[accountId].push(assetId as CaipAssetType);
+        }
+      }
+
+      return result;
+    },
+  ) as unknown as ControllerStateSelector<
+    MultichainAssetsControllerState,
+    'allIgnoredAssets'
+  >;
+
+// AccountId -> AssetId -> Balance (amount + unit)
+export const getMultiChainBalancesControllerBalances = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: {
+      metamask: Pick<MultichainBalancesControllerState, 'balances'>;
+    }) => state.metamask?.balances ?? {},
+    (state: { metamask: Pick<AssetsControllerState, 'assetsBalance'> }) =>
+      state.metamask?.assetsBalance ?? {},
+    (state: { metamask: Pick<AssetsControllerState, 'assetsInfo'> }) =>
+      state.metamask?.assetsInfo ?? {},
+    (state: { metamask: Pick<AccountsControllerState, 'internalAccounts'> }) =>
+      state.metamask?.internalAccounts?.accounts ?? {},
+  ],
+  (
+    isAssetsUnifyStateEnabled,
+    balances,
+    assetsBalance,
+    assetsInfo,
+    internalAccountsById,
+  ) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return balances;
+    }
+
+    const result: MultichainBalancesControllerState['balances'] = {};
+
+    for (const [accountId, chainIdBalances] of Object.entries(assetsBalance)) {
+      const internalAccount = internalAccountsById[accountId];
+      if (!internalAccount || isEvmAccountType(internalAccount.type)) {
+        continue;
+      }
+
+      result[accountId] = {};
+
+      for (const [assetId, balance] of Object.entries(chainIdBalances)) {
+        const assetType = parseCaipAssetType(assetId as CaipAssetType);
+        const metadata = assetsInfo[assetId];
+
+        if (
+          !metadata ||
+          assetType.chain.namespace === KnownCaipNamespace.Eip155
+        ) {
+          continue;
+        }
+
+        result[accountId][assetId] = {
+          amount: balance.amount,
+          unit: metadata.symbol,
+        };
+      }
+    }
+
+    return result;
+  },
+) as unknown as ControllerStateSelector<
+  MultichainBalancesControllerState,
+  'balances'
+>;
+
 function parseBalanceWithDecimals(
   balanceString: string,
   decimals: number,
-): Hex | undefined {
-  // Allows: "123", "123.456", "0.123", but not: "-123", "123.", "abc", "12.34.56"
-  if (!/^\d+(\.\d+)?$/u.test(balanceString)) {
-    return undefined;
-  }
-
+): Hex {
   const [integerPart, fractionalPart = ''] = balanceString.split('.');
 
   if (decimals === 0) {
