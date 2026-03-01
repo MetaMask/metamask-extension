@@ -60,26 +60,14 @@ export async function applyTransactionContainers({
 
   return {
     updateTransaction: (transaction: TransactionMeta) => {
-      const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } =
-        transaction.txParams;
-
       transaction.containerTypes = types;
-      transaction.txParams = cloneDeep(finalMetadata.txParams);
 
-      // Preserve gas fee parameters set by the gas fee poller, since
-      // finalMetadata.txParams is based on txParamsOriginal which may not
-      // have them.
-      if (gasPrice) {
-        transaction.txParams.gasPrice = gasPrice;
-      }
-
-      if (maxFeePerGas) {
-        transaction.txParams.maxFeePerGas = maxFeePerGas;
-      }
-
-      if (maxPriorityFeePerGas) {
-        transaction.txParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
-      }
+      // Only update the fields modified by container wrapping.
+      // Preserves gas fees, nonce, gasLimit, type, chainId,
+      // authorizationList, and other fields set by the approval flow.
+      transaction.txParams.data = finalMetadata.txParams.data;
+      transaction.txParams.to = finalMetadata.txParams.to;
+      transaction.txParams.value = finalMetadata.txParams.value;
 
       if (newGas) {
         transaction.txParams.gas = newGas;
