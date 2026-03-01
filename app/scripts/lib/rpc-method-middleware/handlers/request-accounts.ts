@@ -82,7 +82,7 @@ function hasCaip25Scopes(
   value: unknown,
 ): value is Parameters<typeof getEthAccounts>[0] {
   return (
-    Boolean(value) &&
+    value !== null &&
     typeof value === 'object' &&
     ('requiredScopes' in value || 'optionalScopes' in value)
   );
