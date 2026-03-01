@@ -336,7 +336,6 @@ function PermissionsConnect() {
   const prevLastConnectedInfoRef = useRef<typeof lastConnectedInfo | null>(
     null,
   );
-  const isApprovingPermissionsRef = useRef(false);
 
   // Define redirect function before it's used in effects
   const redirect = useCallback(
@@ -413,15 +412,6 @@ function PermissionsConnect() {
       prevPermissionsRequestRef.current &&
       !redirecting
     ) {
-      // When approval is explicitly in progress, wait for the
-      // approveConnection callback to handle redirect(true) to avoid
-      // classifying the flow as a rejection due to stale selector updates.
-      if (isApprovingPermissionsRef.current) {
-        prevPermissionsRequestRef.current = permissionsRequest;
-        prevLastConnectedInfoRef.current = lastConnectedInfo;
-        return;
-      }
-
       const lastConnectedForOrigin = lastConnectedInfo[origin] as
         | { lastApproved?: number; accounts?: Record<string, number> }
         | undefined;
@@ -489,21 +479,14 @@ function PermissionsConnect() {
   );
 
   const approveConnection = useCallback(
-    async (request: Record<string, unknown>) => {
-      isApprovingPermissionsRef.current = true;
-      try {
-        // Cast through unknown to satisfy both local and controller types
-        await dispatch(
-          approvePermissionsRequestAction(
-            request as unknown as ControllerPermissionsRequest,
-          ),
-        );
-        redirect(true);
-      } catch {
-        // Keep the user on the connect page if approval submission fails.
-      } finally {
-        isApprovingPermissionsRef.current = false;
-      }
+    (request: Record<string, unknown>) => {
+      // Cast through unknown to satisfy both local and controller types
+      dispatch(
+        approvePermissionsRequestAction(
+          request as unknown as ControllerPermissionsRequest,
+        ),
+      );
+      redirect(true);
     },
     [dispatch, redirect],
   );
@@ -678,8 +661,13 @@ function PermissionsConnect() {
             element={
               <PermissionPageContainer
                 request={permissionsRequest || {}}
-                approvePermissionsRequest={async (request: unknown) => {
-                  await approveConnection(request as Record<string, unknown>);
+                approvePermissionsRequest={(request: unknown) => {
+                  dispatch(
+                    approvePermissionsRequestAction(
+                      request as unknown as ControllerPermissionsRequest,
+                    ),
+                  );
+                  redirect(true);
                 }}
                 rejectPermissionsRequest={(requestId: string) =>
                   cancelPermissionsRequest(requestId)

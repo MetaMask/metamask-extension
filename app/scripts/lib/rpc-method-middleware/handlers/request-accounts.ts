@@ -78,6 +78,16 @@ const pendingRequests = new Map<OriginString, Promise<string[]>>();
 const POST_APPROVAL_ACCOUNT_POLL_INTERVAL_MS = 50;
 const POST_APPROVAL_ACCOUNT_POLL_TIMEOUT_MS = 1000;
 
+function hasCaip25Scopes(
+  value: unknown,
+): value is Parameters<typeof getEthAccounts>[0] {
+  return (
+    Boolean(value) &&
+    typeof value === 'object' &&
+    ('requiredScopes' in value || 'optionalScopes' in value)
+  );
+}
+
 function getEthAccountsFromGrantedPermissions(
   grantedPermissions: GrantedPermissions,
 ): string[] {
@@ -91,6 +101,10 @@ function getEthAccountsFromGrantedPermissions(
   )?.value;
 
   if (!caip25CaveatValue) {
+    return [];
+  }
+
+  if (!hasCaip25Scopes(caip25CaveatValue)) {
     return [];
   }
 

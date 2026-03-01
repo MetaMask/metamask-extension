@@ -110,7 +110,7 @@ export type ConnectPageProps = {
   request: ConnectPageRequest;
   permissionsRequestId: string;
   rejectPermissionsRequest: (id: string) => void;
-  approveConnection: (request: ConnectPageRequest) => Promise<void> | void;
+  approveConnection: (request: ConnectPageRequest) => void;
   activeTabOrigin: string;
   targetSubjectMetadata: {
     extensionId: string | null;
@@ -428,7 +428,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     rejectPermissionsRequest(permissionsRequestId);
   }, [permissionsRequestId, rejectPermissionsRequest]);
 
-  const onConfirm = useCallback(async () => {
+  const onConfirm = useCallback(() => {
     const _request = {
       ...request,
       permissions: {
@@ -440,7 +440,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         ),
       },
     };
-    await approveConnection(_request);
+    approveConnection(_request);
   }, [
     request,
     requestedCaip25CaveatValueWithExistingPermissions,
