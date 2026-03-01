@@ -76,7 +76,7 @@ class HeaderNavbar {
   }
 
   async lockMetaMask(): Promise<void> {
-    await this.openThreeDotMenu();
+    await this.mouseClickOnThreeDotMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
     await this.driver.waitForSelector('[data-testid="unlock-password"]');
   }
@@ -88,20 +88,20 @@ class HeaderNavbar {
 
   async openAccountDetailsModalDetailsTab(): Promise<void> {
     console.log('Open account details modal');
-    await this.openThreeDotMenu();
+    await this.mouseClickOnThreeDotMenu();
     await this.driver.clickElement(this.openAccountDetailsButton);
     await this.driver.clickElementSafe(this.accountDetailsTab);
   }
 
   async openAccountDetailsModal(): Promise<void> {
     console.log('Open account details modal');
-    await this.openThreeDotMenu();
+    await this.mouseClickOnThreeDotMenu();
     await this.driver.clickElement(this.openAccountDetailsButton);
   }
 
   async openGlobalNetworksMenu(): Promise<void> {
     console.log('Open global menu');
-    await this.openThreeDotMenu();
+    await this.mouseClickOnThreeDotMenu();
     await this.driver.clickElement(this.globalNetworksMenu);
   }
 
@@ -116,7 +116,7 @@ class HeaderNavbar {
 
   async mouseClickOnThreeDotMenu(): Promise<void> {
     console.log('Clicking three dot menu using mouse move');
-    await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
+    await this.driver.clickElementWithJs(this.threeDotMenuButton);
     await this.driver.waitForElementToStopMoving(this.drawerBackButton);
   }
 
@@ -137,7 +137,7 @@ class HeaderNavbar {
     skipSitesNavigation?: boolean;
   }): Promise<void> {
     console.log('Open permissions page in header navbar');
-    await this.openThreeDotMenu();
+    await this.mouseClickOnThreeDotMenu();
     await this.driver.clickElement(this.allPermissionsButton);
 
     // Check if we landed on Gator Permissions Page (intermediate page for Flask builds)
@@ -157,19 +157,19 @@ class HeaderNavbar {
 
   async openSnapListPage(): Promise<void> {
     console.log('Open account snap page');
-    await this.openThreeDotMenu();
+    await this.mouseClickOnThreeDotMenu();
     await this.driver.clickElement(this.accountSnapButton);
   }
 
   async openSettingsPage(): Promise<void> {
     console.log('Open settings page');
-    await this.openThreeDotMenu();
+    await this.mouseClickOnThreeDotMenu();
     await this.driver.clickElement(this.settingsButton);
   }
 
   async enableNotifications(): Promise<void> {
     console.log('Enabling notifications for the first time');
-    await this.openThreeDotMenu();
+    await this.mouseClickOnThreeDotMenu();
     await this.driver.clickElement(this.notificationsButton);
     await this.driver.clickElement(this.firstTimeTurnOnNotificationsButton);
   }

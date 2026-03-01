@@ -135,7 +135,7 @@ describe('Test Snap revoke permission', function () {
         await driver.delay(1000);
 
         // click on the global action menu
-        await driver.clickElement(
+        await driver.clickElementWithJs(
           '[data-testid="account-options-menu-button"]',
         );
 

@@ -885,6 +885,12 @@ class Driver {
       .perform();
   }
 
+  async clickElementWithJs(rawLocator) {
+    const element = await this.findClickableElement(rawLocator);
+    await this.scrollToElement(element);
+    await this.driver.executeScript('arguments[0].click()', element);
+  }
+
   /**
    * Simulates a click at the given x and y coordinates.
    *

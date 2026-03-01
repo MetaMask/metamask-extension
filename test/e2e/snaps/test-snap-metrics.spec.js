@@ -557,7 +557,7 @@ describe('Test Snap Metrics', function () {
         await driver.waitForSelector(
           '[data-testid="account-options-menu-button"]',
         );
-        await driver.clickElement(
+        await driver.clickElementWithJs(
           '[data-testid="account-options-menu-button"]',
         );
 

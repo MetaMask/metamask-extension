@@ -21,7 +21,7 @@ describe('PPOM Settings', function () {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await driver.clickElement(
+        await driver.clickElementWithJs(
           '[data-testid="account-options-menu-button"]',
         );
 

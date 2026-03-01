@@ -76,7 +76,7 @@ describe('Marketing cookieId', function (this: Suite) {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.headerNavbar.openThreeDotMenu();
+        await homePage.headerNavbar.mouseClickOnThreeDotMenu();
         const events = await getEventPayloads(
           driver,
           mockedEndpoints as MockedEndpoint[],
@@ -122,7 +122,7 @@ describe('Marketing cookieId', function (this: Suite) {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.headerNavbar.openThreeDotMenu();
+        await homePage.headerNavbar.mouseClickOnThreeDotMenu();
         const events = await getEventPayloads(
           driver,
           mockedEndpoints as MockedEndpoint[],
@@ -163,7 +163,7 @@ describe('Marketing cookieId', function (this: Suite) {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.headerNavbar.openThreeDotMenu();
+        await homePage.headerNavbar.mouseClickOnThreeDotMenu();
         const events = await getEventPayloads(
           driver,
           mockedEndpoints as MockedEndpoint[],

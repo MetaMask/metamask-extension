@@ -107,7 +107,7 @@ describe('Test Snap Get Locale', function () {
         );
 
         // click on the global action menu
-        await driver.clickElement(
+        await driver.clickElementWithJs(
           '[data-testid="account-options-menu-button"]',
         );
 
@@ -139,7 +139,7 @@ describe('Test Snap Get Locale', function () {
           '.settings-page__header__title-container__close-button',
         );
         // click on the global action menu
-        await driver.clickElement(
+        await driver.clickElementWithJs(
           '[data-testid="account-options-menu-button"]',
         );
 
