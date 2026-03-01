@@ -31,7 +31,8 @@ export const NotificationsTagCounter = ({
         className="notification-list-item__unread-dot__wrapper"
         style={{
           position: 'absolute',
-          cursor: 'pointer',
+          cursor: 'default',
+          pointerEvents: 'none',
           top: 0,
           left: '50%',
           zIndex: 1,
