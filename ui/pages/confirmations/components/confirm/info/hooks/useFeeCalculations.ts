@@ -234,7 +234,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   // Fee delta when container types add gas overhead (e.g. enforced simulations).
   // Compares the fee using the current container gas limit against the original
   // pre-container gas limit to surface the extra cost to the user.
-  const containerTypeDiffFiat = useMemo(() => {
+  const containerDiffFiat = useMemo(() => {
     if (!hasContainerTypes || hasLayer1GasFee) {
       return EMPTY_FEE;
     }
@@ -344,7 +344,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
 
   return {
     calculateGasEstimate: calculateGasEstimateCallback,
-    containerTypeDiffFiat,
+    containerDiffFiat,
     estimatedFeeFiat: estimatedFees.currentCurrencyFee,
     estimatedFeeFiatWith18SignificantDigits:
       estimatedFees.currentCurrencyFeeWith18SignificantDigits,

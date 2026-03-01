@@ -41,7 +41,9 @@ export class EnforceSimulationHook {
 
     const { containerTypes, txParamsOriginal } = transactionMeta;
 
-    if (!isEnforcedSimulationsEligible(transactionMeta)) {
+    const isEligible = isEnforcedSimulationsEligible(transactionMeta);
+
+    if (!isEligible) {
       log('Skipping as not eligible for enforced simulations');
       return {
         skipSimulation: false,
@@ -49,9 +51,11 @@ export class EnforceSimulationHook {
     }
 
     if (containerTypes && !isFinal) {
-      if (
-        containerTypes.includes(TransactionContainerType.EnforcedSimulations)
-      ) {
+      const hasEnforcedSimulations = containerTypes.includes(
+        TransactionContainerType.EnforcedSimulations,
+      );
+
+      if (hasEnforcedSimulations) {
         log('Skipping as simulation already enforced');
       } else {
         log('Skipping as user opted out of enforced simulations');
