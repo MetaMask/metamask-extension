@@ -8,7 +8,6 @@ import type {
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
 import type { OriginString } from '@metamask/permission-controller';
-import { rpcErrors } from '@metamask/rpc-errors';
 
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import type { FlattenedBackgroundStateProxy } from '../../../../../shared/types';
@@ -67,8 +66,9 @@ const requestEthereumAccounts = {
 } satisfies RequestEthereumAccountsConstraint;
 export default requestEthereumAccounts;
 
-// Used to rate-limit pending requests to one per origin
-const locks = new Set();
+// Tracks active eth_requestAccounts requests by origin so concurrent calls
+// share the same in-flight request instead of competing for approvals.
+const pendingRequests = new Map<OriginString, Promise<string[]>>();
 
 /**
  * This method attempts to retrieve the Ethereum accounts available to the
@@ -104,71 +104,69 @@ async function requestEthereumAccountsHandler<
   }: RequestEthereumAccountsOptions,
 ): Promise<void> {
   const { origin } = req ?? {};
-  if (locks.has(origin)) {
-    res.error = rpcErrors.resourceUnavailable(
-      `Already processing ${MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS}. Please wait.`,
-    );
-    return end();
+
+  const inFlightRequest = pendingRequests.get(origin);
+  if (inFlightRequest) {
+    try {
+      res.result = await inFlightRequest;
+      return end();
+    } catch (error) {
+      return end(error);
+    }
   }
 
-  let ethAccounts = getAccounts(origin);
-  if (ethAccounts.length > 0) {
-    // We wait for the extension to unlock in this case only, because permission
-    // requests are handled when the extension is unlocked, regardless of the
-    // lock state when they were received.
-    try {
-      locks.add(origin);
-      res.result = ethAccounts;
-      end();
-    } catch (error) {
-      end(error);
-    } finally {
-      locks.delete(origin);
+  const requestPromise = (async () => {
+    let ethAccounts = getAccounts(origin);
+    if (ethAccounts.length === 0) {
+      const caip25Permission =
+        getCaip25PermissionFromLegacyPermissionsForOrigin();
+      await requestPermissionsForOrigin(caip25Permission);
+
+      // We cannot derive ethAccounts directly from the CAIP-25 permission
+      // because the accounts will not be in order of lastSelected
+      ethAccounts = getAccounts(origin);
     }
-    return undefined;
-  }
+
+    // first time connection to dapp will lead to no log in the permissionHistory
+    // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
+    // we will leverage that to identify `is_first_visit` for metrics
+    if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId)) {
+      const isFirstVisit = !Object.keys(
+        metamaskState.permissionHistory,
+      ).includes(origin);
+      sendMetrics(
+        {
+          event: MetaMetricsEventName.DappViewed,
+          category: MetaMetricsEventCategory.InpageProvider,
+          referrer: {
+            url: origin,
+          },
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_first_visit: isFirstVisit,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            number_of_accounts: Object.keys(metamaskState.identities).length,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            number_of_accounts_connected: ethAccounts.length,
+          },
+        },
+        {
+          excludeMetaMetricsId: true,
+        },
+      );
+    }
+
+    return ethAccounts;
+  })();
+
+  pendingRequests.set(origin, requestPromise);
 
   try {
-    const caip25Permission =
-      getCaip25PermissionFromLegacyPermissionsForOrigin();
-    await requestPermissionsForOrigin(caip25Permission);
+    res.result = await requestPromise;
+    return end();
   } catch (error) {
     return end(error);
+  } finally {
+    pendingRequests.delete(origin);
   }
-
-  // We cannot derive ethAccounts directly from the CAIP-25 permission
-  // because the accounts will not be in order of lastSelected
-  ethAccounts = getAccounts(origin);
-
-  // first time connection to dapp will lead to no log in the permissionHistory
-  // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
-  // we will leverage that to identify `is_first_visit` for metrics
-  if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId)) {
-    const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
-      origin,
-    );
-    sendMetrics(
-      {
-        event: MetaMetricsEventName.DappViewed,
-        category: MetaMetricsEventCategory.InpageProvider,
-        referrer: {
-          url: origin,
-        },
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_first_visit: isFirstVisit,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          number_of_accounts: Object.keys(metamaskState.identities).length,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          number_of_accounts_connected: ethAccounts.length,
-        },
-      },
-      {
-        excludeMetaMetricsId: true,
-      },
-    );
-  }
-
-  res.result = ethAccounts;
-  return end();
 }

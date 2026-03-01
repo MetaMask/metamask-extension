@@ -82,22 +82,8 @@ describe('Dapp interactions', function () {
         );
         await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();
-        await driver.switchToWindowWithUrl(DAPP_ONE_URL);
-        await testDapp.checkPageIsLoaded();
-        try {
-          await testDapp.checkGetAccountsResult(DEFAULT_FIXTURE_ACCOUNT);
-        } catch {
-          console.log(
-            'Second dapp was not connected after first confirmation, retrying connect flow',
-          );
-          await testDapp.clickConnectAccountButton();
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await connectAccountConfirmation.checkPageIsLoaded();
-          await connectAccountConfirmation.confirmConnect();
-          await driver.switchToWindowWithUrl(DAPP_ONE_URL);
-          await testDapp.checkPageIsLoaded();
-          await testDapp.checkGetAccountsResult(DEFAULT_FIXTURE_ACCOUNT);
-        }
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
 
         // Login to homepage
         await driver.switchToWindowWithTitle(
@@ -112,11 +98,8 @@ describe('Dapp interactions', function () {
         await homepage.headerNavbar.openPermissionsPage();
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.checkPageIsLoaded();
-        await permissionListPage.checkConnectedToSite(
-          DAPP_HOST_ADDRESS,
-          30_000,
-        );
-        await permissionListPage.checkConnectedToSite(DAPP_ONE_ADDRESS, 30_000);
+        await permissionListPage.checkConnectedToSite(DAPP_HOST_ADDRESS);
+        await permissionListPage.checkConnectedToSite(DAPP_ONE_ADDRESS);
       },
     );
   });

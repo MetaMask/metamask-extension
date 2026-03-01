@@ -397,7 +397,7 @@ jobs:
     needs:
       - get-requirements
       - prep-deps
-    if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' && env.BRANCH != 'chore/dapp-interactions-flake-stress' }}
+    if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/prep-e2e.yml
 
   e2e-chrome:
@@ -410,7 +410,7 @@ jobs:
       - build-test-flask-browserify
     uses: ./.github/workflows/e2e-chrome.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
-    if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && env.BRANCH != 'chore/dapp-interactions-flake-stress' && !contains(needs.*.result, 'failure') }}
+    if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
@@ -425,7 +425,7 @@ jobs:
       - build-test-flask-mv2-browserify
     uses: ./.github/workflows/e2e-firefox.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
-    if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && env.BRANCH != 'chore/dapp-interactions-flake-stress' && !contains(needs.*.result, 'failure') }}
+    if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets:

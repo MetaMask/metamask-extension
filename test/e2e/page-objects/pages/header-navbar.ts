@@ -110,22 +110,7 @@ class HeaderNavbar {
     await this.driver.waitForSelector(this.threeDotMenuButton, {
       state: 'enabled',
     });
-    try {
-      await this.driver.clickElement(this.threeDotMenuButton);
-    } catch (error) {
-      const errorName =
-        typeof error === 'object' && error !== null && 'name' in error
-          ? String((error as { name?: string }).name)
-          : '';
-      if (errorName !== 'ElementClickInterceptedError') {
-        throw error;
-      }
-
-      console.log(
-        'Account options menu click intercepted, retrying with mouse move',
-      );
-      await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
-    }
+    await this.driver.clickElement(this.threeDotMenuButton);
     await this.driver.waitForElementToStopMoving(this.drawerBackButton);
   }
 

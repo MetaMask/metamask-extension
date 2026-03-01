@@ -150,6 +150,77 @@ describe('requestEthereumAccountsHandler', () => {
       expect(getAccounts).toHaveBeenCalledTimes(2);
     });
 
+    it('shares the same in-flight request for concurrent requests from the same origin', async () => {
+      const {
+        next,
+        getAccounts,
+        sendMetrics,
+        metamaskState,
+        getCaip25PermissionFromLegacyPermissionsForOrigin,
+        requestPermissionsForOrigin,
+      } = createMockedHandler();
+
+      let resolveApprovalRequest: (() => void) | undefined;
+      const approvalRequestPromise = new Promise<void>((resolve) => {
+        resolveApprovalRequest = resolve;
+      });
+      requestPermissionsForOrigin.mockImplementation(
+        async () => await approvalRequestPromise,
+      );
+      getAccounts.mockReturnValueOnce([]).mockReturnValueOnce(['0xdead']);
+
+      const firstResponse: PendingJsonRpcResponse<string[]> = {
+        jsonrpc: '2.0',
+        id: 1,
+        result: undefined,
+      };
+      const secondResponse: PendingJsonRpcResponse<string[]> = {
+        jsonrpc: '2.0',
+        id: 2,
+        result: undefined,
+      };
+      const firstEnd = jest.fn();
+      const secondEnd = jest.fn();
+
+      const firstRequestPromise = requestEthereumAccounts.implementation(
+        { ...baseRequest, id: 1 },
+        firstResponse,
+        next,
+        firstEnd,
+        {
+          getAccounts,
+          sendMetrics,
+          metamaskState,
+          getCaip25PermissionFromLegacyPermissionsForOrigin,
+          requestPermissionsForOrigin,
+        },
+      );
+      const secondRequestPromise = requestEthereumAccounts.implementation(
+        { ...baseRequest, id: 2 },
+        secondResponse,
+        next,
+        secondEnd,
+        {
+          getAccounts,
+          sendMetrics,
+          metamaskState,
+          getCaip25PermissionFromLegacyPermissionsForOrigin,
+          requestPermissionsForOrigin,
+        },
+      );
+
+      expect(requestPermissionsForOrigin).toHaveBeenCalledTimes(1);
+
+      resolveApprovalRequest?.();
+      await Promise.all([firstRequestPromise, secondRequestPromise]);
+
+      expect(firstResponse.result).toStrictEqual(['0xdead']);
+      expect(secondResponse.result).toStrictEqual(['0xdead']);
+      expect(getAccounts).toHaveBeenCalledTimes(2);
+      expect(firstEnd).toHaveBeenCalled();
+      expect(secondEnd).toHaveBeenCalled();
+    });
+
     it('emits the dapp viewed metrics event when shouldEmitDappViewedEvent returns true', async () => {
       const { handler, getAccounts, sendMetrics } = createMockedHandler();
       getAccounts
