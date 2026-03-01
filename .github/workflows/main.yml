@@ -398,12 +398,14 @@ jobs:
       - get-requirements
       - run-benchmarks
       - dapp-page-load-benchmark
-    if: |
-      ${{ !cancelled() &&
-          github.event_name == 'push' &&
-          (github.ref_name == 'main' || startsWith(github.ref, 'refs/heads/release/')) &&
-          needs.get-requirements.outputs.needs-benchmarks == 'true' &&
-          env.IS_FORK == 'false' }}
+    if: >-
+      ${{
+        !cancelled() &&
+        github.event_name == 'push' &&
+        (github.ref_name == 'main' || startsWith(github.ref, 'refs/heads/release/')) &&
+        needs.get-requirements.outputs.needs-benchmarks == 'true' &&
+        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+      }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:

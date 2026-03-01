@@ -128,7 +128,7 @@ assemble_performance_data() {
 
     if [[ ${file_count} -eq 0 ]]; then
         echo "No benchmark files found in ${results_dir}, skipping." >&2
-        exit 0
+        return
     fi
 
     # Merge the pageLoad group into presets (only if any page load files were found)
@@ -158,6 +158,10 @@ case "${DATA_TYPE}" in
         echo "Mode: performance (branch: ${RAW_BRANCH})"
         echo "Assembling benchmark data from directory..."
         COMMIT_DATA=$(assemble_performance_data)
+        if [[ -z "${COMMIT_DATA}" ]]; then
+            echo "No benchmark data assembled, skipping."
+            exit 0
+        fi
         ;;
     *)
         echo "Unknown BENCHMARK_DATA_TYPE: ${DATA_TYPE}"
