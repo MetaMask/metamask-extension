@@ -542,6 +542,17 @@ export const MultichainAccountsConnectPage: React.FC<
   }, [permissionsRequestId, rejectPermissionsRequest]);
 
   const onConfirm = useCallback(async () => {
+    const requestMetadata = request.metadata;
+    const nextRequestMetadata: NonNullable<
+      MultichainAccountsConnectPageRequest['metadata']
+    > = {
+      id: permissionsRequestId,
+      origin: requestMetadata?.origin ?? targetSubjectMetadata.origin,
+    };
+    if (requestMetadata?.isEip1193Request !== undefined) {
+      nextRequestMetadata.isEip1193Request = requestMetadata.isEip1193Request;
+    }
+
     const selectedGroupIds = new Set(selectedAccountGroupIds);
     const selectedAccountGroups = supportedAccountGroups.filter(
       (group: AccountGroupWithInternalAccounts) =>
@@ -568,12 +579,9 @@ export const MultichainAccountsConnectPage: React.FC<
       return;
     }
 
-    const _request = {
+    const _request: MultichainAccountsConnectPageRequest = {
       ...request,
-      metadata: {
-        ...(request.metadata ?? {}),
-        id: permissionsRequestId,
-      },
+      metadata: nextRequestMetadata,
       permissions: {
         ...request.permissions,
         ...generateCaip25Caveat(
@@ -593,6 +601,7 @@ export const MultichainAccountsConnectPage: React.FC<
     selectedAccountGroupIds,
     supportedAccountGroups,
     approveConnection,
+    targetSubjectMetadata.origin,
   ]);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);

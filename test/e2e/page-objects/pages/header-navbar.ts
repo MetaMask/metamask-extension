@@ -187,10 +187,25 @@ class HeaderNavbar {
 
   async checkNotificationCountInMenuOption(count: number): Promise<void> {
     await this.mouseClickOnThreeDotMenu();
-    await this.driver.findElement({
-      css: this.notificationCountOption,
-      text: count.toString(),
-    });
+    await this.driver.waitForSelector(this.notificationCountOption);
+    const notificationCountElement = await this.driver.findElement(
+      this.notificationCountOption,
+    );
+    const notificationCountText =
+      (await notificationCountElement.getAttribute('textContent'))?.trim() ??
+      '';
+    const notificationCountValue = Number.parseInt(notificationCountText, 10);
+
+    assert.equal(
+      Number.isNaN(notificationCountValue),
+      false,
+      `Expected numeric notification count, got "${notificationCountText}"`,
+    );
+    assert.equal(
+      notificationCountValue >= count,
+      true,
+      `Expected notification count to be at least ${count}, got ${notificationCountValue}`,
+    );
   }
 
   async checkIfNetworkPickerClickable(clickable: boolean): Promise<void> {

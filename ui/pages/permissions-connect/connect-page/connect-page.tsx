@@ -429,12 +429,22 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   }, [permissionsRequestId, rejectPermissionsRequest]);
 
   const onConfirm = useCallback(async () => {
-    const _request = {
+    const requestMetadata = request.metadata;
+    const nextRequestMetadata: NonNullable<ConnectPageRequest['metadata']> = {
+      id: permissionsRequestId,
+      origin: requestMetadata?.origin ?? targetSubjectMetadata.origin,
+    };
+    if (requestMetadata?.isEip1193Request !== undefined) {
+      nextRequestMetadata.isEip1193Request = requestMetadata.isEip1193Request;
+    }
+    if (requestMetadata?.promptToCreateSolanaAccount !== undefined) {
+      nextRequestMetadata.promptToCreateSolanaAccount =
+        requestMetadata.promptToCreateSolanaAccount;
+    }
+
+    const _request: ConnectPageRequest = {
       ...request,
-      metadata: {
-        ...(request.metadata ?? {}),
-        id: permissionsRequestId,
-      },
+      metadata: nextRequestMetadata,
       permissions: {
         ...request.permissions,
         ...generateCaip25Caveat(
@@ -452,6 +462,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     selectedCaipAccountAddresses,
     selectedChainIds,
     approveConnection,
+    targetSubjectMetadata.origin,
   ]);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
