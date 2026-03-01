@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Anda perlu memilih akaun!"
   },
-  "activityLog": {
-    "message": "log aktiviti"
-  },
   "addAcquiredTokens": {
     "message": "Tambah token yang anda peroleh menggunakan MetaMask"
   },
@@ -574,9 +571,6 @@
   "speedUpCancellation": {
     "message": "Cepatkan pembatalan ini"
   },
-  "speedUpTransaction": {
-    "message": "Percepatkan transaksi ini"
-  },
   "stateLogError": {
     "message": "Ralat mendapatkan semula log keadaan."
   },
@@ -619,38 +613,11 @@
   "transaction": {
     "message": "transaksi"
   },
-  "transactionCancelAttempted": {
-    "message": "Pembatalan transaksi dicuba dengan yuran gas sebanyak $1 pada $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaksi berjaya dibatalkan pada $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transaksi disahkan pada $2."
-  },
-  "transactionCreated": {
-    "message": "Transaksi dicipta dengan nilai $1 pada $2."
-  },
-  "transactionDropped": {
-    "message": "Transaksi jatuh pada $2."
-  },
   "transactionError": {
     "message": "Ralat Transaksi. Pengecualian diberi dalam kod kontrak."
   },
   "transactionErrorNoContract": {
     "message": "Cuba memanggil fungsi untuk alamat bukan kontrak."
-  },
-  "transactionErrored": {
-    "message": "Transaksi berdepan ralat."
-  },
-  "transactionResubmitted": {
-    "message": "Transaksi dihantar semula dengan fi gas ditingkatkan kepada $1 pada $2."
-  },
-  "transactionSubmitted": {
-    "message": "Transaksi dihantar dengan fi gas sebanyak $1 pada $2."
-  },
-  "transactionUpdated": {
-    "message": "Transaksi dikemaskini pada $2."
   },
   "transfer": {
     "message": "Pindah"

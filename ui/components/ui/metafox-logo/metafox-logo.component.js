@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { Box } from '../../component-library';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import MetaFoxHorizontalLogo from './horizontal-logo';

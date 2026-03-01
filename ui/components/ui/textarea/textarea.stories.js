@@ -3,8 +3,6 @@ import { useArgs } from '@storybook/client-api';
 
 import {
   BorderStyle,
-  BlockSize,
-  BorderRadius,
   BorderColor,
   Size,
 } from '../../../helpers/constants/design-system';
@@ -12,9 +10,16 @@ import { RESIZE } from './textarea.constants';
 import Textarea from '.';
 
 export default {
-  title: 'Components/UI/Textarea',
-
+  title: 'Components/UI/Textarea (deprecated)',
   component: Textarea,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release.',
+      },
+    },
+  },
   argTypes: {
     className: {
       control: 'text',
@@ -73,41 +78,4 @@ DefaultStory.args = {
     padding: [2, 4],
   },
   height: 'auto',
-};
-
-export const Scrollable = (args) => {
-  const [{ value }, updateArgs] = useArgs();
-
-  const handleOnChange = (e) => {
-    updateArgs({
-      value: e.target.value,
-    });
-  };
-  return (
-    <div style={{ width: 280 }}>
-      <Textarea
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        aria-label="textarea"
-      >
-        {args.children}
-      </Textarea>
-    </div>
-  );
-};
-
-Scrollable.args = {
-  value:
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporld, Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporld, Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporld. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporld, Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporld, Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporld',
-  resize: RESIZE.NONE,
-  scrollable: true,
-  height: 170,
-  boxProps: {
-    borderColor: BorderColor.transparent,
-    borderRadius: BorderRadius.none,
-    borderStyle: BorderStyle.none,
-    padding: [2, 4],
-    width: BlockSize.Full,
-  },
 };
