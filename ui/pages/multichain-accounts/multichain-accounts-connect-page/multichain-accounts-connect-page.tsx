@@ -542,7 +542,29 @@ export const MultichainAccountsConnectPage: React.FC<
   }, [permissionsRequestId, rejectPermissionsRequest]);
 
   const onConfirm = useCallback(async () => {
-    if (selectedCaipAccountIds.length === 0) {
+    const selectedGroupIds = new Set(selectedAccountGroupIds);
+    const selectedAccountGroups = supportedAccountGroups.filter(
+      (group: AccountGroupWithInternalAccounts) =>
+        selectedGroupIds.has(group.id),
+    );
+
+    const selectedCaipAccountIdsForRequest =
+      getCaip25AccountIdsFromAccountGroupAndScope(
+        selectedAccountGroups,
+        selectedChainIds,
+      );
+
+    // Compute submit payload from source selections at confirm time so we do
+    // not depend on asynchronously derived local state.
+    const finalSelectedCaipAccountIds =
+      selectedCaipAccountIdsForRequest.length > 0
+        ? selectedCaipAccountIdsForRequest
+        : selectedCaipAccountIds;
+
+    if (
+      finalSelectedCaipAccountIds.length === 0 ||
+      selectedChainIds.length === 0
+    ) {
       return;
     }
 
@@ -552,7 +574,7 @@ export const MultichainAccountsConnectPage: React.FC<
         ...request.permissions,
         ...generateCaip25Caveat(
           requestedCaip25CaveatValueWithExistingPermissions,
-          selectedCaipAccountIds,
+          finalSelectedCaipAccountIds,
           selectedChainIds,
         ),
       },
@@ -563,6 +585,8 @@ export const MultichainAccountsConnectPage: React.FC<
     requestedCaip25CaveatValueWithExistingPermissions,
     selectedCaipAccountIds,
     selectedChainIds,
+    selectedAccountGroupIds,
+    supportedAccountGroups,
     approveConnection,
   ]);
 
