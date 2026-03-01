@@ -137,18 +137,10 @@ export async function fetchHistoricalPerformanceData(
   // 1. Try the target branch first
   const currentData = await fetchPerformanceFile(safeBranch);
   if (currentData && Object.keys(currentData).length > 0) {
-    console.log(`Using historical data from branch "${baseBranch}"`);
-    console.log(
-      `[DEBUG] Fetched commits: ${Object.keys(currentData).join(', ')}`,
-    );
-    console.log(`[DEBUG] Raw data: ${JSON.stringify(currentData, null, 2)}`);
     return aggregateHistoricalData(currentData);
   }
 
   // 2. No data on this branch yet — find the latest release branch with data
-  console.log(
-    `No historical data for "${baseBranch}", searching for latest release branch...`,
-  );
   const releaseBranches = await listReleaseBranchesByVersion();
 
   for (const branch of releaseBranches) {
@@ -157,14 +149,10 @@ export async function fetchHistoricalPerformanceData(
     }
     const data = await fetchPerformanceFile(branch);
     if (data && Object.keys(data).length > 0) {
-      console.log(`Falling back to historical data from "${branch}"`);
-      console.log(`[DEBUG] Fetched commits: ${Object.keys(data).join(', ')}`);
-      console.log(`[DEBUG] Raw data: ${JSON.stringify(data, null, 2)}`);
       return aggregateHistoricalData(data);
     }
   }
 
-  console.warn('No historical performance data found in any release branch.');
   return null;
 }
 
@@ -202,9 +190,6 @@ function collectMetrics(
       collected[benchmarkName][metricName] = [];
     }
     collected[benchmarkName][metricName].push(numValue);
-    console.log(
-      `[DEBUG] Collected ${benchmarkName}.${metricName} = ${numValue}`,
-    );
   }
 }
 
@@ -228,10 +213,6 @@ export function aggregateHistoricalData(
   // so a single commit's data is statistically sufficient as a baseline.
   const commitHashes = Object.keys(data).reverse();
   const latestCommits = commitHashes.slice(0, 1);
-
-  console.log(
-    `Aggregating performance data from ${latestCommits.length} commits: ${latestCommits.join(', ')}`,
-  );
 
   const collected: Record<string, Record<string, number[]>> = {};
 
