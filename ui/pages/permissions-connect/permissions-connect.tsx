@@ -551,10 +551,34 @@ function PermissionsConnect() {
     async (request: Record<string, unknown>) => {
       isApprovingPermissionsRef.current = true;
       try {
+        const requestMetadata =
+          (request.metadata as Record<string, unknown> | undefined) ?? {};
+        const pendingRequestMetadata =
+          (permissionsRequest?.metadata as
+            | Record<string, unknown>
+            | undefined) ?? {};
+
+        // Normalize approval metadata from the active pending request first to
+        // avoid submitting mixed (id/origin) pairs during lock/unlock races.
+        const normalizedRequest = {
+          ...request,
+          metadata: {
+            ...requestMetadata,
+            id:
+              (pendingRequestMetadata.id as string | undefined) ??
+              (requestMetadata.id as string | undefined) ??
+              permissionsRequestId,
+            origin:
+              (pendingRequestMetadata.origin as string | undefined) ??
+              (requestMetadata.origin as string | undefined) ??
+              originFromRequest,
+          },
+        };
+
         // Cast through unknown to satisfy both local and controller types
         await dispatch(
           approvePermissionsRequestAction(
-            request as unknown as ControllerPermissionsRequest,
+            normalizedRequest as unknown as ControllerPermissionsRequest,
           ),
         );
         redirect(true);
@@ -564,7 +588,13 @@ function PermissionsConnect() {
         isApprovingPermissionsRef.current = false;
       }
     },
-    [dispatch, redirect],
+    [
+      dispatch,
+      permissionsRequest,
+      permissionsRequestId,
+      originFromRequest,
+      redirect,
+    ],
   );
 
   const setSnapsInstallPrivacyWarningShownStatus = useCallback(

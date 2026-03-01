@@ -546,8 +546,8 @@ export const MultichainAccountsConnectPage: React.FC<
     const nextRequestMetadata: NonNullable<
       MultichainAccountsConnectPageRequest['metadata']
     > = {
-      id: permissionsRequestId,
-      origin: requestMetadata?.origin ?? targetSubjectMetadata.origin,
+      id: requestMetadata?.id ?? permissionsRequestId,
+      origin: targetSubjectMetadata.origin ?? requestMetadata?.origin,
     };
     if (requestMetadata?.isEip1193Request !== undefined) {
       nextRequestMetadata.isEip1193Request = requestMetadata.isEip1193Request;

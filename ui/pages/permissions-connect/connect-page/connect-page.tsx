@@ -431,8 +431,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const onConfirm = useCallback(async () => {
     const requestMetadata = request.metadata;
     const nextRequestMetadata: NonNullable<ConnectPageRequest['metadata']> = {
-      id: permissionsRequestId,
-      origin: requestMetadata?.origin ?? targetSubjectMetadata.origin,
+      id: requestMetadata?.id ?? permissionsRequestId,
+      origin: targetSubjectMetadata.origin ?? requestMetadata?.origin,
     };
     if (requestMetadata?.isEip1193Request !== undefined) {
       nextRequestMetadata.isEip1193Request = requestMetadata.isEip1193Request;
