@@ -479,14 +479,18 @@ function PermissionsConnect() {
   );
 
   const approveConnection = useCallback(
-    (request: Record<string, unknown>) => {
-      // Cast through unknown to satisfy both local and controller types
-      dispatch(
-        approvePermissionsRequestAction(
-          request as unknown as ControllerPermissionsRequest,
-        ),
-      );
-      redirect(true);
+    async (request: Record<string, unknown>) => {
+      try {
+        // Cast through unknown to satisfy both local and controller types
+        await dispatch(
+          approvePermissionsRequestAction(
+            request as unknown as ControllerPermissionsRequest,
+          ),
+        );
+        redirect(true);
+      } catch {
+        // Keep the user on the connect page if approval submission fails.
+      }
     },
     [dispatch, redirect],
   );
@@ -661,13 +665,8 @@ function PermissionsConnect() {
             element={
               <PermissionPageContainer
                 request={permissionsRequest || {}}
-                approvePermissionsRequest={(request: unknown) => {
-                  dispatch(
-                    approvePermissionsRequestAction(
-                      request as unknown as ControllerPermissionsRequest,
-                    ),
-                  );
-                  redirect(true);
+                approvePermissionsRequest={async (request: unknown) => {
+                  await approveConnection(request as Record<string, unknown>);
                 }}
                 rejectPermissionsRequest={(requestId: string) =>
                   cancelPermissionsRequest(requestId)

@@ -154,7 +154,7 @@ export default class PermissionPageContainer extends Component {
     rejectPermissionsRequest(request?.metadata?.id);
   };
 
-  onSubmit = () => {
+  onSubmit = async () => {
     const {
       request: _request,
       approvePermissionsRequest,
@@ -221,9 +221,9 @@ export default class PermissionPageContainer extends Component {
     };
 
     if (Object.keys(request.permissions).length > 0) {
-      approvePermissionsRequest(request);
+      await approvePermissionsRequest(request);
     } else {
-      rejectPermissionsRequest(request?.metadata?.id);
+      await rejectPermissionsRequest(request?.metadata?.id);
     }
   };
 
