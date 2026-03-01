@@ -2,6 +2,7 @@ import {
   DAPP_ONE_ADDRESS,
   DAPP_ONE_URL,
   DAPP_HOST_ADDRESS,
+  DEFAULT_FIXTURE_ACCOUNT,
   WINDOW_TITLES,
 } from '../../constants';
 import { withFixtures } from '../../helpers';
@@ -81,6 +82,22 @@ describe('Dapp interactions', function () {
         );
         await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();
+        await driver.switchToWindowWithUrl(DAPP_ONE_URL);
+        await testDapp.checkPageIsLoaded();
+        try {
+          await testDapp.checkGetAccountsResult(DEFAULT_FIXTURE_ACCOUNT);
+        } catch {
+          console.log(
+            'Second dapp was not connected after first confirmation, retrying connect flow',
+          );
+          await testDapp.clickConnectAccountButton();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await connectAccountConfirmation.checkPageIsLoaded();
+          await connectAccountConfirmation.confirmConnect();
+          await driver.switchToWindowWithUrl(DAPP_ONE_URL);
+          await testDapp.checkPageIsLoaded();
+          await testDapp.checkGetAccountsResult(DEFAULT_FIXTURE_ACCOUNT);
+        }
 
         // Login to homepage
         await driver.switchToWindowWithTitle(
