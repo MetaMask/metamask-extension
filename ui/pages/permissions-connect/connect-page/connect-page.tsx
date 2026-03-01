@@ -431,6 +431,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const onConfirm = useCallback(async () => {
     const _request = {
       ...request,
+      metadata: {
+        ...(request.metadata ?? {}),
+        id: permissionsRequestId,
+      },
       permissions: {
         ...request.permissions,
         ...generateCaip25Caveat(
@@ -443,6 +447,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     await approveConnection(_request);
   }, [
     request,
+    permissionsRequestId,
     requestedCaip25CaveatValueWithExistingPermissions,
     selectedCaipAccountAddresses,
     selectedChainIds,

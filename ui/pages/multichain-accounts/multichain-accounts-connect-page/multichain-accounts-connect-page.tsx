@@ -570,6 +570,10 @@ export const MultichainAccountsConnectPage: React.FC<
 
     const _request = {
       ...request,
+      metadata: {
+        ...(request.metadata ?? {}),
+        id: permissionsRequestId,
+      },
       permissions: {
         ...request.permissions,
         ...generateCaip25Caveat(
@@ -582,6 +586,7 @@ export const MultichainAccountsConnectPage: React.FC<
     await approveConnection(_request);
   }, [
     request,
+    permissionsRequestId,
     requestedCaip25CaveatValueWithExistingPermissions,
     selectedCaipAccountIds,
     selectedChainIds,
