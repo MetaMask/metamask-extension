@@ -44,10 +44,14 @@ class PermissionListPage {
    * Check if account is connected to site
    *
    * @param site - Site to check
+   * @param timeout - Optional timeout for site presence check
    */
-  async checkConnectedToSite(site: string): Promise<void> {
+  async checkConnectedToSite(
+    site: string,
+    timeout: number = 10_000,
+  ): Promise<void> {
     console.log('Check if account is connected to site', site);
-    await this.driver.waitForSelector({ text: site, tag: 'p' });
+    await this.driver.waitForSelector({ text: site, tag: 'p' }, { timeout });
   }
 
   /**

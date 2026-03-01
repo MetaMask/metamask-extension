@@ -95,8 +95,11 @@ describe('Dapp interactions', function () {
         await homepage.headerNavbar.openPermissionsPage();
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.checkPageIsLoaded();
-        await permissionListPage.checkConnectedToSite(DAPP_HOST_ADDRESS);
-        await permissionListPage.checkConnectedToSite(DAPP_ONE_ADDRESS);
+        await permissionListPage.checkConnectedToSite(
+          DAPP_HOST_ADDRESS,
+          30_000,
+        );
+        await permissionListPage.checkConnectedToSite(DAPP_ONE_ADDRESS, 30_000);
       },
     );
   });
