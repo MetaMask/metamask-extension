@@ -118,12 +118,12 @@ export const BridgeCTAButton = ({
       };
     }
 
-    if (needsDestinationAddress) {
-      return { key: 'bridgeSelectDestinationAccount' };
-    }
-
     if (isMarketClosed) {
       return { key: 'bridgeMarketClosedAction' };
+    }
+
+    if (needsDestinationAddress) {
+      return { key: 'bridgeSelectDestinationAccount' };
     }
 
     if (isQuoteExpired && !isLoading) {
