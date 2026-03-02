@@ -14,8 +14,7 @@ export const LOCALHOST_NETWORK_CLIENT_ID =
   '3a5eb6f2-cb62-428d-897c-b7ded577d7c2';
 
 /**
- * Network client IDs from default-fixture.json.
- * Each key maps to the `networkClientId` used inside
+ * Network client IDs. Each key maps to the `networkClientId` used inside
  * `NetworkController.networkConfigurationsByChainId`.
  */
 export const NETWORK_CLIENT_ID = Object.freeze({
