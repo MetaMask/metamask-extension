@@ -71,7 +71,7 @@ export function useBridgeTxHistoryData({
         transaction: txMeta,
       },
     });
-  }, [txMeta, shouldShowBridgeTxDetails]);
+  }, [navigate, txMeta]);
 
   return {
     bridgeHistoryItem,
