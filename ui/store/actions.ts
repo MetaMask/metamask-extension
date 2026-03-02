@@ -4759,26 +4759,6 @@ export async function getMarketingConsent() {
   }
 }
 
-/**
- * @deprecated Use setAvatarType instead
- * @param val - Boolean value for blockie preference
- */
-export function setUseBlockie(
-  val: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setUseBlockie`);
-    try {
-      await submitRequestToBackground('setUseBlockie', [val]);
-    } catch (err) {
-      dispatch(displayWarning(err));
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
 export function setAvatarType(value: string) {
   return setPreference('avatarType', value);
 }

@@ -34,7 +34,6 @@ const initialState = {
   transactions: [],
   networkConfigurations: {},
   addressBook: [],
-  useBlockie: false,
   featureFlags: {},
   currentLocale: '',
   preferences: {
