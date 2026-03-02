@@ -250,6 +250,11 @@
     "seedPhraseBackedUp": true
   },
   "PPOMController": { "storageMetadata": {} },
+  "PermissionController": { "subjects": "object" },
+  "PermissionLogController": {
+    "permissionActivityLog": "object",
+    "permissionHistory": "object"
+  },
   "PerpsController": {
     "accountState": null,
     "activeProvider": "string",
@@ -283,11 +288,6 @@
     "withdrawInProgress": "boolean",
     "withdrawalProgress": "object",
     "withdrawalRequests": "object"
-  },
-  "PermissionController": { "subjects": "object" },
-  "PermissionLogController": {
-    "permissionActivityLog": "object",
-    "permissionHistory": "object"
   },
   "PhishingController": {
     "addressScanCache": "object",

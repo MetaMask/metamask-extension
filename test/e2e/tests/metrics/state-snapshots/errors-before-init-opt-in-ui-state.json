@@ -189,6 +189,8 @@
       "seedPhraseBackedUp": true
     },
     "PPOMController": { "storageMetadata": {} },
+    "PermissionController": { "subjects": "object" },
+    "PermissionLogController": { "permissionHistory": "object" },
     "PerpsController": {
       "accountState": null,
       "activeProvider": "string",
@@ -223,8 +225,6 @@
       "withdrawalProgress": "object",
       "withdrawalRequests": "object"
     },
-    "PermissionController": { "subjects": "object" },
-    "PermissionLogController": { "permissionHistory": "object" },
     "PhishingController": {
       "addressScanCache": "object",
       "tokenScanCache": "object",
