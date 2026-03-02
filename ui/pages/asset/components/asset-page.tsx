@@ -433,10 +433,12 @@ const AssetPage = ({
             <Text paddingInline={4} variant={TextVariant.headingSm}>
               {t('yourActivity')}
             </Text>
-            <ActivityList filter={{
-              tokenAddress: type === AssetType.token ? address : undefined,
-              chainId: caipChainId,
-            }} />
+            <ActivityList
+              filter={{
+                tokenAddress: type === AssetType.token ? address : undefined,
+                chainId: caipChainId,
+              }}
+            />
           </Box>
         </Box>
       </Box>
