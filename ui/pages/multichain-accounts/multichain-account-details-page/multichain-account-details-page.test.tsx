@@ -147,6 +147,18 @@ describe('MultichainAccountDetailsPage', () => {
     expect(screen.getByText(/remove account/iu)).toBeInTheDocument();
   });
 
+  it('does not render Setup Smart Account row for hardware wallet (Ledger) account', () => {
+    mockUseParams.mockReturnValue({
+      id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+    });
+
+    renderComponent();
+
+    expect(
+      screen.queryByTestId(accountDetailsRowSmartAccountTestId),
+    ).not.toBeInTheDocument();
+  });
+
   it('opens account rename modal when account name action button is clicked', () => {
     renderComponent();
 
