@@ -176,8 +176,8 @@ export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
 /* Mock customized remote feature flags response*/
 export const MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS = {
   feature3: {
-    name: 'groupA',
-    value: 'valueA',
+    name: 'groupC',
+    value: 'valueC',
   },
 };
 
