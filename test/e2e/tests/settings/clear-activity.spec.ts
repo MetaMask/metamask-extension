@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ActivityList from '../../page-objects/pages/home/activity-list';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -16,7 +16,7 @@ describe('Clear account activity', function (this: Suite) {
   it('User can clear account activity via the advanced setting tab, ', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withTransactionControllerCompletedTransaction()
           .build(),
         title: this.test?.fullTitle(),

@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "暂无内容可查看。立即兑换您的首个代币。"
   },
-  "activityLog": {
-    "message": "活动日志"
-  },
   "add": {
     "message": "添加"
   },
@@ -7671,9 +7668,6 @@
   "speedUpTooltipText": {
     "message": "新燃料费用"
   },
-  "speedUpTransaction": {
-    "message": "加速该交易"
-  },
   "spendLimitInsufficient": {
     "message": "消费限额不足"
   },
@@ -8524,18 +8518,6 @@
   "transaction": {
     "message": "交易"
   },
-  "transactionCancelAttempted": {
-    "message": "已在 $2 尝试取消交易 ，燃料费用预计为 $1"
-  },
-  "transactionCancelSuccess": {
-    "message": "交易已在 $2 成功取消。"
-  },
-  "transactionConfirmed": {
-    "message": "交易已在 $2 确认。"
-  },
-  "transactionCreated": {
-    "message": "在 $2 创建了值为 $1 的交易。"
-  },
   "transactionDataFunction": {
     "message": "功能"
   },
@@ -8545,17 +8527,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "金额 + 费用"
   },
-  "transactionDropped": {
-    "message": "交易已在 $2 失败。"
-  },
   "transactionError": {
     "message": "交易出错。合约代码中抛出异常。"
   },
   "transactionErrorNoContract": {
     "message": "试图在非合约地址上调用函数。"
-  },
-  "transactionErrored": {
-    "message": "交易出现错误。"
   },
   "transactionFee": {
     "message": "交易费用"
@@ -8591,24 +8567,15 @@
   "transactionIncludesTypes": {
     "message": "本交易包含：$1。"
   },
-  "transactionResubmitted": {
-    "message": "已在 $2 重新提交交易，燃料费预计升至 $1"
-  },
   "transactionSettings": {
     "message": "交易设置"
   },
   "transactionShield": {
     "message": "交易防护"
   },
-  "transactionSubmitted": {
-    "message": "已在 $2 提交交易，燃料费预计为 $1。"
-  },
   "transactionTotalGasFee": {
     "message": "燃料费总额",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "交易于 $2 更新。"
   },
   "transactions": {
     "message": "交易"
