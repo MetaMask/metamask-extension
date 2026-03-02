@@ -1151,7 +1151,6 @@
     "urlScanCache": {},
     "use4ByteResolution": "boolean",
     "useAddressBarEnsResolution": "boolean",
-    "useBlockie": "boolean",
     "useCurrencyRateCheck": "boolean",
     "useExternalNameSources": "boolean",
     "useExternalServices": "boolean",

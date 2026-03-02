@@ -149,7 +149,6 @@
       "referrals": "object",
       "selectedAddress": "string",
       "theme": "light",
-      "useBlockie": false,
       "useCurrencyRateCheck": true,
       "useExternalServices": "boolean",
       "useMultiAccountBalanceChecker": true,

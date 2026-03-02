@@ -267,7 +267,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         },
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',
-        useBlockie: false,
         useNftDetection: false,
         usePhishDetect: true,
         useTokenDetection: false,
