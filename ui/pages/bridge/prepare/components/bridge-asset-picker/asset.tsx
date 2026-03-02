@@ -13,10 +13,10 @@ import {
 } from '@metamask/design-system-react';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
-  IconName,
   PolymorphicRef,
   Tag,
 } from '../../../../../components/component-library';
+import { StockBadge } from '../../../../../components/app/assets/stock-badge/stock-badge';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import { type BridgeToken } from '../../../../../ducks/bridge/types';
@@ -58,9 +58,6 @@ export const BridgeAsset = React.forwardRef(
     const { isStockToken, isTokenTradingOpen } = useRWAToken();
     const tokenIsStock = isStockToken(asset);
     const tokenIsTradingOpen = isTokenTradingOpen(asset);
-    const stockBadgeLabel = tokenIsTradingOpen
-      ? t('tokenStock')
-      : t('bridgeMarketClosedBadge');
 
     return (
       <Row
@@ -126,12 +123,7 @@ export const BridgeAsset = React.forwardRef(
                 <Tag label={ACCOUNT_TYPE_LABELS[asset.accountType]} />
               )}
               {tokenIsStock && (
-                <Tag
-                  label={stockBadgeLabel}
-                  {...(tokenIsTradingOpen
-                    ? {}
-                    : { startIconName: IconName.Clock })}
-                />
+                <StockBadge isMarketClosed={!tokenIsTradingOpen} />
               )}
               {asset.noFee?.[isDestination ? 'isDestination' : 'isSource'] && (
                 <Tag label={t('bridgeNoMMFee')} />

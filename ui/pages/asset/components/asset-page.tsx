@@ -35,9 +35,9 @@ import {
   ButtonIconSize,
   ButtonLink,
   IconName,
-  Tag,
   Text,
 } from '../../../components/component-library';
+import { StockBadge } from '../../../components/app/assets/stock-badge/stock-badge';
 import { AddressCopyButton } from '../../../components/multichain';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
@@ -236,9 +236,6 @@ const AssetPage = ({
     name && symbol && name !== symbol
       ? `${name} (${symbol})`
       : (name ?? symbol);
-  const stockBadgeLabel = isMarketClosed
-    ? t('bridgeMarketClosedBadge')
-    : t('tokenStock');
   const assetNameElement = (
     <Text
       variant={TextVariant.bodyMdMedium}
@@ -283,10 +280,7 @@ const AssetPage = ({
         {isStockToken ? (
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
             {assetNameElement}
-            <Tag
-              label={stockBadgeLabel}
-              {...(isMarketClosed ? { startIconName: IconName.Clock } : {})}
-            />
+            <StockBadge isMarketClosed={isMarketClosed} />
           </Box>
         ) : (
           assetNameElement
