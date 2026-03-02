@@ -938,6 +938,7 @@
         "useSidePanelAsDefault": true
       },
       "referrals": {
+        "asterdex": {},
         "gmx": {},
         "hyperliquid": {}
       },

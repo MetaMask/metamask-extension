@@ -4,6 +4,7 @@
 export enum DefiReferralPartner {
   Hyperliquid = 'hyperliquid',
   GMX = 'gmx',
+  AsterDEX = 'asterdex',
 }
 
 /**
@@ -46,6 +47,15 @@ export const DEFI_REFERRAL_PARTNERS: Record<
     referralUrl: 'https://app.gmx.io/#/referrals/?ref=MMREFCSI2',
     learnMoreUrl: 'https://docs.gmx.io/docs/referrals/',
     approvalType: 'gmx_referral_consent',
+  },
+  [DefiReferralPartner.AsterDEX]: {
+    id: DefiReferralPartner.AsterDEX,
+    name: 'AsterDEX',
+    origin: 'https://www.asterdex.com',
+    referralUrl: '',
+    learnMoreUrl:
+      'https://docs.asterdex.com/product/aster-perpetuals/referral-program',
+    approvalType: 'asterdex_referral_consent',
   },
 };
 
