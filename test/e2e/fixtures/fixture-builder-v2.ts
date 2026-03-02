@@ -212,16 +212,6 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withMetaMetricsDisabled(): this {
-    if (this.fixture.data.MetaMetricsController) {
-      merge(this.fixture.data.MetaMetricsController, {
-        participateInMetaMetrics: false,
-        dataCollectionForMarketing: false,
-      });
-    }
-    return this;
-  }
-
   withPermissionControllerConnectedToTestDapp({
     account = '',
     useLocalhostHostname = false,
