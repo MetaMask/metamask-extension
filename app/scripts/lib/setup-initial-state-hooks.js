@@ -16,9 +16,7 @@ const platform = new ExtensionPlatform();
  */
 function isBackgroundContext() {
   try {
-    const href =
-      (globalThis.window?.location?.href ?? '') ||
-      (globalThis.self?.location?.href ?? '');
+    const href = globalThis.self?.location?.href ?? '';
     return (
       href.includes('app-init') || href.includes('background') // MV3 script URL or MV2 background page
     );
