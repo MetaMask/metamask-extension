@@ -107,7 +107,7 @@ export const getBridgeAmountReceivedFormatted = ({
     txMeta.swapMetaData?.token_to_amount ??
     bridgeHistoryItem?.status.destChain?.amount ??
     bridgeHistoryItem?.quote.destTokenAmount ??
-    txMeta.amounts?.to?.amount;
+    txMeta.amounts?.to?.amount?.toString();
   const destAssetDecimals =
     txMeta.swapMetaData?.token_to_decimals ??
     txMeta.destinationTokenDecimals ??

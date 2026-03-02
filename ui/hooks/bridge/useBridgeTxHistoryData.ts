@@ -66,13 +66,11 @@ export function useBridgeTxHistoryData({
     txMeta?.type === TransactionType.swap;
 
   const showBridgeTxDetails = useCallback(() => {
-    {
-      navigate(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${txMeta?.hash}`, {
-        state: {
-          transaction: txMeta,
-        },
-      });
-    }
+    navigate(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${txMeta?.hash}`, {
+      state: {
+        transaction: txMeta,
+      },
+    });
   }, [txMeta, shouldShowBridgeTxDetails]);
 
   return {
