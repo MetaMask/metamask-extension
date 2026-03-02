@@ -81,7 +81,7 @@ function TransactionListItemInner({
   const isBridgeTx =
     transactionGroup.initialTransaction.type === TransactionType.bridge;
   const {
-    bridgeTxHistoryItem,
+    bridgeHistoryItem: bridgeTxHistoryItem,
     isBridgeComplete,
     showBridgeTxDetails,
     isBridgeFailed,

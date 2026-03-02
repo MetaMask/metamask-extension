@@ -15,9 +15,7 @@ import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { queries } from '../../../helpers/queries';
-import { useBridgeTokenDisplayData } from '../../../pages/bridge/hooks/useBridgeTokenDisplayData';
-import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
-import { useBridgeTxHistoryData } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
 import { calculateFiatFromMarketRates } from './helpers';
 
 function useTransactionParams() {
@@ -141,14 +139,8 @@ export function useGetTitle(transaction: TransactionViewModel): string {
   const t = useI18nContext();
   const evmAddress = useSelector(selectEvmAddress)?.toLowerCase();
 
-  const { bridgeTxHistoryItem } = useBridgeTxHistoryData({ transaction });
-  const { sourceTokenSymbol } = useBridgeTokenDisplayData(
-    undefined,
+  const { sourceTokenSymbol, destNetwork, isBridgeTx } = useBridgeActivityData({
     transaction,
-  );
-  const { destNetwork, isBridgeTx } = useBridgeChainInfo({
-    bridgeHistoryItem: bridgeTxHistoryItem,
-    srcTxMeta: transaction,
   });
 
   const { transactionCategory, transactionType, transactionProtocol } =

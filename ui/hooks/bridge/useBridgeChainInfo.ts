@@ -1,7 +1,4 @@
-import {
-  type TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import { type Transaction } from '@metamask/keyring-api';
 import {
   formatChainIdToCaip,
@@ -12,9 +9,11 @@ import {
 } from '@metamask/bridge-controller';
 import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../shared/constants/common';
+import { TransactionViewModel } from '../../../shared/lib/multichain/types';
 import { type ChainInfo } from '../../pages/bridge/utils/tx-details';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP } from '../../../shared/constants/multichain/networks';
+import { useBridgeTxHistoryData } from './useBridgeTxHistoryData';
 
 const getSourceAndDestChainIds = ({ quote }: BridgeHistoryItem) => {
   const { srcChainId, destChainId } = quote;
@@ -24,24 +23,26 @@ const getSourceAndDestChainIds = ({ quote }: BridgeHistoryItem) => {
   };
 };
 
-export type UseBridgeChainInfoProps = {
-  bridgeHistoryItem?: BridgeHistoryItem;
-  srcTxMeta?: TransactionMeta;
+type UseBridgeChainInfoProps = {
+  transaction?: TransactionViewModel & { type: TransactionType };
   nonEvmTransaction?: Transaction;
 };
 
 export default function useBridgeChainInfo({
-  bridgeHistoryItem,
-  srcTxMeta,
+  transaction,
   nonEvmTransaction,
 }: UseBridgeChainInfoProps): {
   srcNetwork?: ChainInfo;
   destNetwork?: ChainInfo;
   isBridgeTx?: boolean;
 } {
+  const { bridgeHistoryItem } = useBridgeTxHistoryData({
+    transaction,
+  });
+
   const isEvmSwapOrBridge =
-    srcTxMeta?.type &&
-    [TransactionType.bridge, TransactionType.swap].includes(srcTxMeta.type);
+    transaction?.type &&
+    [TransactionType.bridge, TransactionType.swap].includes(transaction.type);
 
   if (!isEvmSwapOrBridge && !nonEvmTransaction) {
     return {
@@ -53,8 +54,8 @@ export default function useBridgeChainInfo({
   const { srcChainId, destChainId } = bridgeHistoryItem
     ? getSourceAndDestChainIds(bridgeHistoryItem)
     : {
-        srcChainId: srcTxMeta?.chainId ?? nonEvmTransaction?.chain,
-        destChainId: srcTxMeta?.chainId ?? nonEvmTransaction?.chain,
+        srcChainId: transaction?.chainId ?? nonEvmTransaction?.chain,
+        destChainId: transaction?.chainId ?? nonEvmTransaction?.chain,
       };
 
   if (!srcChainId || !destChainId) {

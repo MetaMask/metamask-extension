@@ -33,7 +33,7 @@ export type TransactionGroup = {
 
 export type UseBridgeTxHistoryDataProps = {
   transactionGroup?: TransactionGroup;
-  transaction?: TransactionViewModel;
+  transaction?: TransactionViewModel & { type: TransactionType };
 };
 
 export function useBridgeTxHistoryData({
@@ -74,7 +74,7 @@ export function useBridgeTxHistoryData({
     : undefined;
 
   return {
-    bridgeTxHistoryItem: bridgeHistoryItem,
+    bridgeHistoryItem,
     // By complete, this means BOTH source and dest tx are confirmed
     isBridgeComplete: bridgeHistoryItem
       ? isBridgeComplete(bridgeHistoryItem)

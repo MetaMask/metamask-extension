@@ -6,7 +6,7 @@ import TransactionStatusLabel from '../../app/transaction-status-label/transacti
 import { useFormatters } from '../../../hooks/useFormatters';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { useBridgeTxHistoryData } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';
 import { getPrimaryAmount } from './helpers';
 import { useGetTitle, useFiatAmount } from './hooks';
@@ -25,7 +25,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
   const fiatAmount = useFiatAmount(amount, token);
   const { chainId, status } = transaction;
 
-  const { isBridgeFailed, showBridgeTxDetails } = useBridgeTxHistoryData({
+  const { isBridgeFailed, showBridgeTxDetails } = useBridgeActivityData({
     transaction,
   });
 

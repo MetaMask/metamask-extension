@@ -16,7 +16,7 @@ import LegacyTransactionListItemDetails from '../../app/transaction-list-item-de
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
 import { getSelectedAddress } from '../../../selectors/selectors';
 import { formatUnits } from '../../../../shared/lib/unit';
-import { useBridgeTxHistoryData } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
 import { useGetTitle } from './hooks';
 import { resolveTransactionType } from './helpers';
 
@@ -107,9 +107,8 @@ const TransactionDetailsWrapper = ({
     ? TransactionType.incoming
     : resolveTransactionType(transaction);
 
-  const { showBridgeTxDetails } = useBridgeTxHistoryData({
-    transactionGroup: syntheticGroup,
-    transaction: { ...transaction, type: effectiveType },
+  const { showBridgeTxDetails } = useBridgeActivityData({
+    transaction,
   });
   // Navigate to the Unified Swap/Bridge Tx Details page if the selected
   // EVMtransaction is a bridge or swap

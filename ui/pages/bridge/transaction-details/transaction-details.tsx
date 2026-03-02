@@ -32,8 +32,6 @@ import {
   selectLocalTxForTxHash,
   selectReceivedSwapsTokenAmountFromTxMeta,
 } from '../../../ducks/bridge-status/selectors';
-import { useBridgeTxHistoryData } from '../../../hooks/bridge/useBridgeTxHistoryData';
-import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
 import { getTransactionBreakdownData } from '../../../components/app/transaction-breakdown/transaction-breakdown-utils';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
@@ -57,6 +55,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
 import { type TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -66,7 +65,6 @@ import {
 } from '../../../../shared/constants/bridge';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { getImageForChainId } from '../../../selectors/multichain';
-import { useBridgeTokenDisplayData } from '../hooks/useBridgeTokenDisplayData';
 import { formatTokenAmount } from '../utils/quote';
 import {
   getBlockExplorerUrl,
@@ -87,7 +85,7 @@ const CrossChainSwapTxDetails = () => {
 
   const { txHash } = useParams<{ txHash: string }>();
   const location = useLocation() as {
-    state: { transaction?: TransactionViewModel };
+    state: { transaction?: TransactionViewModel & { type: TransactionType } };
   };
   const navigate = useNavigate();
   const allTransactions = useSelector(getTransactions) as TransactionMeta[];
@@ -103,16 +101,11 @@ const CrossChainSwapTxDetails = () => {
     sourceTokenSymbol,
     destinationTokenIconUrl,
     destinationTokenSymbol,
-  } = useBridgeTokenDisplayData(undefined, transaction);
-  const { isBridgeComplete, bridgeTxHistoryItem: bridgeHistoryItem } =
-    useBridgeTxHistoryData({
-      transactionGroup: undefined,
-      transaction,
-    });
-  const { srcNetwork, destNetwork } = useBridgeChainInfo({
+    isBridgeComplete,
     bridgeHistoryItem,
-    srcTxMeta: srcChainTxMeta,
-  });
+    srcNetwork,
+    destNetwork,
+  } = useBridgeActivityData({ transaction });
 
   const approvalTxMeta = allTransactions.find(
     (tx) => tx.id === bridgeHistoryItem?.approvalTxId,

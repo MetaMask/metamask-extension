@@ -12,19 +12,23 @@ import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
  * A Bridge transaction group's primaryTransaction contains details of the swap,
  * including the source (from) and destination (to) token type (ETH, DAI, etc..)
  *
- * @param transactionGroup - A Bridge transaction group
- * @param transaction - transaction view data from the Activity List v2 page
+ * @param params
+ * @param params.transactionGroup - A Bridge transaction group
+ * @param params.transaction - transaction view data from the Activity List v2 page
  */
-export function useBridgeTokenDisplayData(
-  transactionGroup?: TransactionGroup,
-  transaction?: TransactionViewModel,
-) {
+export function useBridgeTokenDisplayData({
+  transactionGroup,
+  transaction,
+}: {
+  transactionGroup?: TransactionGroup;
+  transaction?: TransactionViewModel & { type: TransactionType };
+}) {
   const initialTransaction =
     transactionGroup?.initialTransaction || transaction;
 
-  const { bridgeTxHistoryItem: bridgeHistoryItem } = useBridgeTxHistoryData({
+  const { bridgeHistoryItem } = useBridgeTxHistoryData({
     transactionGroup,
-    transaction: transaction as TransactionViewModel,
+    transaction,
   });
 
   // Display currency can be fiat or a token
