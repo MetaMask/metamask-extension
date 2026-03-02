@@ -44,20 +44,17 @@ export const AdvancedEIP1559Modal = ({
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  if (!transactionMeta?.txParams) {
-    return null;
-  }
-
-  const { gas, maxFeePerGas, maxPriorityFeePerGas } = transactionMeta.txParams;
-
   const [gasParams, setGasParams] = useState<{
     gas: Hex;
     maxFeePerGas: Hex;
     maxPriorityFeePerGas: Hex;
   }>({
-    gas: gas as Hex,
-    maxFeePerGas: maxFeePerGas as Hex,
-    maxPriorityFeePerGas: maxPriorityFeePerGas as Hex,
+    gas: (transactionMeta?.txParams?.gas as Hex) ?? ('0x5208' as Hex),
+    maxFeePerGas:
+      (transactionMeta?.txParams?.maxFeePerGas as Hex) ?? ('0x0' as Hex),
+    maxPriorityFeePerGas:
+      (transactionMeta?.txParams?.maxPriorityFeePerGas as Hex) ??
+      ('0x0' as Hex),
   });
 
   const [errors, setErrors] = useState<{
@@ -74,6 +71,9 @@ export const AdvancedEIP1559Modal = ({
   );
 
   const handleSaveClick = useCallback(() => {
+    if (!transactionMeta?.id) {
+      return;
+    }
     dispatch(
       updateTransactionGasFees(transactionMeta.id, {
         userFeeLevel: UserFeeLevel.CUSTOM,
@@ -81,7 +81,7 @@ export const AdvancedEIP1559Modal = ({
       }),
     );
     handleCloseModals();
-  }, [transactionMeta.id, gasParams, handleCloseModals]);
+  }, [transactionMeta?.id, gasParams, handleCloseModals, dispatch]);
 
   const navigateToEstimatesModal = useCallback(() => {
     setActiveModal(GasModalType.EstimatesModal);
@@ -123,6 +123,10 @@ export const AdvancedEIP1559Modal = ({
     () => createErrorHandler('maxPriorityFeePerGas'),
     [createErrorHandler],
   );
+
+  if (!transactionMeta?.txParams) {
+    return null;
+  }
 
   return (
     <Modal isOpen={true} onClose={handleCloseModals}>

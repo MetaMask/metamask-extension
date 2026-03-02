@@ -15,7 +15,6 @@ import {
   selectTransactionMetadata,
 } from '../../../selectors';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
-import { editGasModeIsSpeedUpOrCancel } from '../../../helpers/utils/gas';
 import {
   hexToDecimal,
   hexWEIToDecGWEI,
@@ -71,7 +70,7 @@ export function useCancelSpeedupGasState(
     [transaction?.id, transaction?.txParams, transaction?.previousGas],
   );
 
-  const [retryTxMeta, setRetryTxMeta] =
+  const [, setRetryTxMeta] =
     useState<Partial<TransactionMeta>>(initialRetryTxMeta);
 
   const transactionFromStore = useSelector((state: Record<string, unknown>) =>
@@ -92,8 +91,10 @@ export function useCancelSpeedupGasState(
       ?.defaultRpcEndpointIndex ?? 0
   ]?.networkClientId;
 
-  // Use store as single source of truth for display so SpeedRow and modal stay in sync.
-  // Initial gas rule and modal both update the store (updateTransactionGasFees).
+  // Use store as single source of truth so cancel/speedUp modal use latest txParams.
+  // When user selects Market/Low/etc in the gas modal, the store is updated; we must use
+  // transactionFromStore so effectiveTransaction (and thus cancelTransaction/speedUpTransaction)
+  // get the latest txParams.
   const effectiveTransaction = useMemo(() => {
     const sourceTx = transactionFromStore ?? transaction;
     return {
@@ -114,13 +115,10 @@ export function useCancelSpeedupGasState(
     ),
   );
 
-  const maxPriorityFeePerGasGwei =
-    effectiveTransaction?.txParams?.maxPriorityFeePerGas != null
-      ? hexWEIToDecGWEI(
-          effectiveTransaction.txParams
-            .maxPriorityFeePerGas as unknown as number,
-        )
-      : '0';
+  const maxPriorityFeePerGasGwei = effectiveTransaction?.txParams
+    ?.maxPriorityFeePerGas
+    ? hexWEIToDecGWEI(effectiveTransaction.txParams.maxPriorityFeePerGas)
+    : '0';
 
   const setRetryTxMetaState = useCallback(
     (updated: TransactionMeta) =>

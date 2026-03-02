@@ -147,12 +147,13 @@ export default function GasTiming({
 
   const isPresetEstimate = PRESET_ESTIMATES.includes(estimateToUse);
   const textTKey = estimateToUse === 'low' ? 'gasTimingLow' : estimateToUse;
-  let text =
-    estimateToUse === PriorityLevels.tenPercentIncreased
-      ? t('tenPercentIncreased')
-      : isPresetEstimate
-        ? t(textTKey)
-        : t('custom');
+  let text = t('custom');
+
+  if (estimateToUse === PriorityLevels.tenPercentIncreased) {
+    text = t('tenPercentIncreased');
+  } else if (isPresetEstimate) {
+    text = t(textTKey);
+  }
   let time = '';
   let timeMs = 0;
 

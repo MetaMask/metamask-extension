@@ -11,10 +11,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import configureStore from '../../../store/store';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
 import mockState from '../../../../test/data/mock-state.json';
-import {
-  decGWEIToHexWEI,
-  hexWEIToDecETH,
-} from '../../../../shared/modules/conversion.utils';
+import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
 import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
 import {
   createCancelTransaction,
@@ -64,16 +61,6 @@ const mockSelectedInternalAccount = getSelectedInternalAccountFromMockState(
 );
 
 const MAXFEEPERGAS_ABOVE_MOCK_MEDIUM_HEX = '0x174876e800'; // 100 GWEI in hex WEI
-const MAXGASCOST_ABOVE_MOCK_MEDIUM_BN = new BigNumber(
-  MAXFEEPERGAS_ABOVE_MOCK_MEDIUM_HEX,
-  16,
-).times(21000, 10); // maxFeePerGas * gasLimit
-const MAXGASCOST_ABOVE_MOCK_MEDIUM_BN_PLUS_TEN_PCT_HEX =
-  MAXGASCOST_ABOVE_MOCK_MEDIUM_BN.times(1.1, 10).toString(16); // adding 10%
-
-const EXPECTED_ETH_FEE_1 = hexWEIToDecETH(
-  MAXGASCOST_ABOVE_MOCK_MEDIUM_BN_PLUS_TEN_PCT_HEX,
-); // converting back to ETH for display
 
 const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_DEC_GWEI =
   mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates.medium
@@ -84,10 +71,6 @@ const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI = new BigNumber(
 ); // converting to hex WEI and then to BN for calculations
 const MAXFEEPERGAS_BELOW_MOCK_MEDIUM_HEX =
   MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.div(10, 10).toString(16); // 1 GWEI in hex WEI, which is below the medium estimate
-
-const EXPECTED_ETH_FEE_2 = hexWEIToDecETH(
-  MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.times(21000, 10).toString(16),
-); // expected fee when using the medium estimate (10 GWEI * 21000 gasLimit)
 
 const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI =
   MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.toString(16); // 10 GWEI in hex WEI
@@ -273,7 +256,7 @@ describe('CancelSpeedup Component', () => {
     await waitFor(() => {
       const row = screen.getByTestId('edit-gas-fees-row');
       expect(row).toHaveTextContent('ETH');
-      expect(row.textContent).toMatch(/\d/);
+      expect(row.textContent).toMatch(/\d/u);
     });
   });
 
@@ -288,7 +271,7 @@ describe('CancelSpeedup Component', () => {
     await waitFor(() => {
       const row = screen.getByTestId('edit-gas-fees-row');
       expect(row).toHaveTextContent('ETH');
-      expect(row.textContent).toMatch(/\d/);
+      expect(row.textContent).toMatch(/\d/u);
     });
   });
 });

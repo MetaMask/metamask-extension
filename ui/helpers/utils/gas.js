@@ -105,3 +105,53 @@ export function editGasModeIsSpeedUpOrCancel(editGasMode) {
     editGasMode === EditGasModes.cancel || editGasMode === EditGasModes.speedUp
   );
 }
+
+/**
+ * Returns gas values for a replacement (cancel/speed-up) transaction so it is not underpriced.
+ * Uses the higher of (current txParams) or (previousGas × rate) for maxFeePerGas and maxPriorityFeePerGas.
+ *
+ * @param {object} txParams - Current transaction params (e.g. user-selected gas).
+ * @param {object} [previousGas] - Original gas at modal open; if missing, returns txParams unchanged.
+ * @param {number} rate - Multiplier for minimum replacement gas (e.g. 1.1 for CANCEL_RATE).
+ * @returns {object} Gas values safe for replacement (at least previousGas × rate).
+ */
+export function getGasValuesForReplacement(txParams, previousGas, rate) {
+  if (!previousGas?.maxFeePerGas || !previousGas?.maxPriorityFeePerGas) {
+    return txParams ?? {};
+  }
+  const minMaxFeePerGas = new Numeric(previousGas.maxFeePerGas, 16)
+    .times(new Numeric(rate, 10))
+    .round(0)
+    .toPrefixedHexString();
+  const minMaxPriorityFeePerGas = new Numeric(
+    previousGas.maxPriorityFeePerGas,
+    16,
+  )
+    .times(new Numeric(rate, 10))
+    .round(0)
+    .toPrefixedHexString();
+
+  const maxFeePerGas = new BigNumber(txParams?.maxFeePerGas ?? 0, 16).gte(
+    new BigNumber(minMaxFeePerGas, 16),
+  )
+    ? txParams.maxFeePerGas
+    : minMaxFeePerGas;
+  const maxPriorityFeePerGas = new BigNumber(
+    txParams?.maxPriorityFeePerGas ?? 0,
+    16,
+  ).gte(new BigNumber(minMaxPriorityFeePerGas, 16))
+    ? txParams.maxPriorityFeePerGas
+    : minMaxPriorityFeePerGas;
+
+  return {
+    ...txParams,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    gas: txParams?.gas ?? previousGas.gasLimit ?? previousGas.gas,
+    gasLimit:
+      txParams?.gasLimit ??
+      previousGas.gasLimit ??
+      previousGas.gas ??
+      txParams?.gas,
+  };
+}

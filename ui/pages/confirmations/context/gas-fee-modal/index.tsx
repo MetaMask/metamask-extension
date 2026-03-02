@@ -97,7 +97,6 @@ export const GasFeeModalWrapper = () => {
     initialModalType,
     closeGasFeeModal,
     transactionMeta,
-    editGasMode,
   } = useGasFeeModalContext();
 
   if (!isGasFeeModalVisible) {
@@ -108,8 +107,6 @@ export const GasFeeModalWrapper = () => {
     <GasFeeModal
       setGasModalVisible={() => closeGasFeeModal()}
       initialModalType={initialModalType}
-      transactionMeta={transactionMeta}
-      editGasMode={editGasMode}
     />
   );
 
