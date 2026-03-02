@@ -127,9 +127,11 @@ const makeWrapper =
   };
 
 const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
+const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
 
 setBackgroundConnection({
   submitTx: submitTxSpy,
+  submitIntent: submitIntentSpy,
   getStatePatches: jest.fn(),
   setEnabledAllPopularNetworks: jest.fn(),
 } as never);
@@ -194,6 +196,47 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
           state: { stayOnHomePage: true },
         },
       );
+    });
+
+    it('submits intent quotes via submitBridgeIntent', async () => {
+      const store = makeMockStore();
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+      submitIntentSpy.mockResolvedValueOnce(
+        (async () => undefined) as never,
+      );
+
+      const quoteWithIntent = {
+        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        quote: {
+          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+          intent: {
+            order: {},
+          },
+        },
+      };
+
+      await result.current.submitBridgeTransaction(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        quoteWithIntent as any,
+      );
+
+      expect(submitIntentSpy).toHaveBeenCalledWith({
+        quoteResponse: {
+          ...quoteWithIntent,
+          quote: {
+            ...quoteWithIntent.quote,
+            intent: quoteWithIntent.quote.intent,
+          },
+        },
+        accountAddress: expect.any(String),
+      });
+      expect(submitTxSpy).not.toHaveBeenCalled();
+      expect(mockUseNavigate).toHaveBeenCalledWith(`${DEFAULT_ROUTE}?tab=activity`, {
+        state: { stayOnHomePage: true },
+      });
     });
   });
 });
