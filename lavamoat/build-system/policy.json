@@ -2518,7 +2518,7 @@
         "@metamask/object-multiplex>once": true
       }
     },
-    "webpack>enhanced-resolve": {
+    "eslint-plugin-n>enhanced-resolve": {
       "builtin": {
         "module.findPnpApi": true,
         "path.basename": true,
@@ -2887,7 +2887,7 @@
       },
       "packages": {
         "eslint>@eslint-community/eslint-utils": true,
-        "webpack>enhanced-resolve": true,
+        "eslint-plugin-n>enhanced-resolve": true,
         "eslint-plugin-n>eslint-plugin-es-x": true,
         "tsx>get-tsconfig": true,
         "eslint-plugin-n>globals": true,
