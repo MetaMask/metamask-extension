@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures, isSidePanelEnabled } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AccountList from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
@@ -61,7 +61,7 @@ describe('MetaMask onboarding ', function () {
   it('should prevent network requests to advanced functionality endpoints when the advanced assets functionality toggle is off', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withNetworkControllerOnMainnet()
           .withPreferencesControllerShowNativeTokenAsMainBalanceEnabled()
           .withEnabledNetworks({
@@ -120,7 +120,7 @@ describe('MetaMask onboarding ', function () {
   it('should not prevent network requests to advanced functionality endpoints when the advanced assets functionality toggle is on', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withNetworkControllerOnMainnet()
           .withPreferencesControllerShowNativeTokenAsMainBalanceEnabled()
           .withEnabledNetworks({

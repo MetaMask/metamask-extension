@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures, regularDelayMs } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import {
@@ -84,7 +84,7 @@ describe('MetaMask onboarding', function () {
   it("doesn't make any network requests to infura before create new wallet onboarding is completed", async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withNetworkControllerOnMainnet()
           .build(),
         title: this.test?.fullTitle(),
@@ -143,7 +143,7 @@ describe('MetaMask onboarding', function () {
   it("doesn't make any network requests to infura before onboarding by import is completed", async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withNetworkControllerOnMainnet()
           .build(),
         title: this.test?.fullTitle(),

@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import { Driver } from '../../webdriver/driver';
@@ -23,7 +23,7 @@ describe('Reset Wallet - ', function () {
   it('creates a new wallet with SRP and completes the onboarding process after resetting the wallet', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
           const oAuthMockttpService = new OAuthMockttpService();
@@ -107,7 +107,7 @@ describe('Reset Wallet - ', function () {
   it('imports an SRP and completes the onboarding process after resetting the wallet', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
