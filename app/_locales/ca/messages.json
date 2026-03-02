@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Has de seleccionar un compte!"
   },
-  "activityLog": {
-    "message": "registre d'activitat"
-  },
   "addAcquiredTokens": {
     "message": "Afegeix les fitxes que has adquirit fent servir MetaMask"
   },
@@ -575,9 +572,6 @@
   "speedUpCancellation": {
     "message": "Accelera aquesta cancel·lació"
   },
-  "speedUpTransaction": {
-    "message": "Accelerar aquesta transacció"
-  },
   "stateLogError": {
     "message": "Error al recuperar els registres d'estat."
   },
@@ -617,38 +611,11 @@
   "transaction": {
     "message": "transacció"
   },
-  "transactionCancelAttempted": {
-    "message": "Intent de cancel·lació de transacció amb tarifa del gas d'$1 a $2 "
-  },
-  "transactionCancelSuccess": {
-    "message": "Transacció cancel·lada amb èxit per $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transacció confirmada per $2."
-  },
-  "transactionCreated": {
-    "message": "Transacció creada amb un valor de $1 a $2."
-  },
-  "transactionDropped": {
-    "message": "La transacció ha caigut a $2."
-  },
   "transactionError": {
     "message": "Error de Transacció. Excepció llançada en el codi de contracte."
   },
   "transactionErrorNoContract": {
     "message": "Provant d'invocar una funció o una adreça no contractada"
-  },
-  "transactionErrored": {
-    "message": "La transacció ha tingut un error."
-  },
-  "transactionResubmitted": {
-    "message": "Transacció reenviada amb tarifa del gas incrementada d'$1 a $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transacció enviada amb un preu del gas de $1 a $2."
-  },
-  "transactionUpdated": {
-    "message": "Transacció actualitzada a $2."
   },
   "transfer": {
     "message": "Transferència"

@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Вам потрібно обрати обліковий запис!"
   },
-  "activityLog": {
-    "message": "журнал активності"
-  },
   "addAcquiredTokens": {
     "message": "Додайте токени, отримані за допомогою MetaMask"
   },
@@ -590,9 +587,6 @@
   "speedUpCancellation": {
     "message": "Пришвидшити це скасування"
   },
-  "speedUpTransaction": {
-    "message": "Прискорити цю транзакцію"
-  },
   "stateLogError": {
     "message": "При отриманні логів стану сталася помилка."
   },
@@ -638,38 +632,11 @@
   "transaction": {
     "message": "транзакція"
   },
-  "transactionCancelAttempted": {
-    "message": "Сталась спроба скасувати транзакцію з ціною пального $1 за $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Транзакцію успішно скасовано на $2"
-  },
-  "transactionConfirmed": {
-    "message": "Транзакцію підтверджено о $2."
-  },
-  "transactionCreated": {
-    "message": "Транзакція створена з вартістю $1 о $2."
-  },
-  "transactionDropped": {
-    "message": "Транзакція впала о $2."
-  },
   "transactionError": {
     "message": "Помилка транзакції. В контрактному коді виданий виняток"
   },
   "transactionErrorNoContract": {
     "message": "Ви намагаєтесь викликати функцію за неконтрактною адресою."
-  },
-  "transactionErrored": {
-    "message": "Під час виконання транзакції сталася помилка."
-  },
-  "transactionResubmitted": {
-    "message": "Транзакція повторно подана з підвищеною платою за газ до $1 о $2"
-  },
-  "transactionSubmitted": {
-    "message": "Транзакція надіслана з оплатою за газ $1 о $2."
-  },
-  "transactionUpdated": {
-    "message": "Час оновлення транзакції: $2."
   },
   "transfer": {
     "message": "Передати"

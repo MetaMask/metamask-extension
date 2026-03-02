@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "עליך לבחור חשבון!"
   },
-  "activityLog": {
-    "message": "יומן פעילות"
-  },
   "addAcquiredTokens": {
     "message": "הוספת הטוקנים שהשגת באמצעות MetaMask"
   },
@@ -587,9 +584,6 @@
   "speedUpCancellation": {
     "message": "האצת ביטול זה"
   },
-  "speedUpTransaction": {
-    "message": "האץ עסקה זו"
-  },
   "stateLogError": {
     "message": "שגיאה באחזור יומני המצב."
   },
@@ -635,38 +629,11 @@
   "transaction": {
     "message": "עסקה"
   },
-  "transactionCancelAttempted": {
-    "message": "ניסיון לביטול העסקה נעשה עם עמלת דלק של $1 ב-$2"
-  },
-  "transactionCancelSuccess": {
-    "message": "העסקה בוטלה בהצלחה ב-$2"
-  },
-  "transactionConfirmed": {
-    "message": "עסקה מאושרת ב-$2."
-  },
-  "transactionCreated": {
-    "message": "עסקה נוצרה עם ערך של $1 ב-$2."
-  },
-  "transactionDropped": {
-    "message": "העסקה ירדה ב-$2."
-  },
   "transactionError": {
     "message": "תקלה בעסקה. שגיאה אירעה בקוד החוזה."
   },
   "transactionErrorNoContract": {
     "message": "מנסה לקרוא לפונקציה בכתובת ללא חוזה."
-  },
-  "transactionErrored": {
-    "message": "העסקה נתקלה בשגיאה."
-  },
-  "transactionResubmitted": {
-    "message": "העסקה הוגשה מחדש עם עמלת דלק שעלתה ל-$1 ב-$2"
-  },
-  "transactionSubmitted": {
-    "message": "עסקה הוגשה עם עמלת דלק של $1 ב-$2."
-  },
-  "transactionUpdated": {
-    "message": "העסקה עודכנה ב- $2."
   },
   "transfer": {
     "message": "העברה"

@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Izbrati morate račun!"
   },
-  "activityLog": {
-    "message": "dnevnik dejavnosti"
-  },
   "addAcquiredTokens": {
     "message": "Dodaj žetone pridobljene z MetaMask"
   },
@@ -578,9 +575,6 @@
   "speedUpCancellation": {
     "message": "Pospešite preklic"
   },
-  "speedUpTransaction": {
-    "message": "Pospešite transakcijo"
-  },
   "stateLogError": {
     "message": "Napaka pri pridobivanju state dnevnikov."
   },
@@ -626,38 +620,11 @@
   "transaction": {
     "message": "transakcija"
   },
-  "transactionCancelAttempted": {
-    "message": "Preklic transakcije je bil opravljen z gas fee v višini $1 na $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transakcija je bila uspešno preklicana na $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transakcija potrjena na $2."
-  },
-  "transactionCreated": {
-    "message": "Transakcija z vrednostjo $1 ustvarjena na $2."
-  },
-  "transactionDropped": {
-    "message": "Transakcija na $2 preklicana."
-  },
   "transactionError": {
     "message": "Napaka pri transakciji. Izjema sprožena v kodi pogodbe."
   },
   "transactionErrorNoContract": {
     "message": "Poskus klica funkcije na naslovu, ki ni pogodba."
-  },
-  "transactionErrored": {
-    "message": "Napaka pri transakciji."
-  },
-  "transactionResubmitted": {
-    "message": "Transakcija ponovno oddana s povečanim gas fee $1 na $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transakcija z gas fee $1 oddana na $2."
-  },
-  "transactionUpdated": {
-    "message": "Transakcija na $2 spremenjena."
   },
   "transfer": {
     "message": "Prenesi"

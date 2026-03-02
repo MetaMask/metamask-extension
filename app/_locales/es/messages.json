@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Aún no hay nada que ver. Canjea tu primer token hoy."
   },
-  "activityLog": {
-    "message": "Registro de actividad"
-  },
   "add": {
     "message": "Añadir"
   },
@@ -7330,21 +7327,6 @@
   "simulationErrorMessageV2": {
     "message": "No pudimos estimar el gas. Podría haber un error en el contrato y esta transacción podría fallar."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Tolerancia de deslizamiento"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Establece una diferencia con la que te sientas cómodo para los cambios de saldo. Las transacciones no se procesarán si la diferencia es mayor."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Aplicar los cambios de saldo"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Para mantener tu dinero seguro, esta transacción no se realizará si el saldo cambia o no se cumple la tolerancia de deslizamiento."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Configuración de la transacción"
-  },
   "simulationsSettingDescription": {
     "message": "Active esta opción para calcular los cambios de saldo de las transacciones y firmas antes de confirmarlas. Esto no garantiza su resultado final. $1"
   },
@@ -7670,9 +7652,6 @@
   },
   "speedUpTooltipText": {
     "message": "Nueva tarifa de gas"
-  },
-  "speedUpTransaction": {
-    "message": "Acelerar esta transacción"
   },
   "spendLimitInsufficient": {
     "message": "Límite de gastos insuficiente"
@@ -8524,18 +8503,6 @@
   "transaction": {
     "message": "transacción"
   },
-  "transactionCancelAttempted": {
-    "message": "Se intentó cancelar la transacción con una tarifa de gas de $1 en $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "La transacción se canceló correctamente en $2"
-  },
-  "transactionConfirmed": {
-    "message": "La transacción se confirmó en $2."
-  },
-  "transactionCreated": {
-    "message": "La transacción se creó con un valor de $1 en $2."
-  },
   "transactionDataFunction": {
     "message": "Función"
   },
@@ -8545,17 +8512,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Monto + cargos"
   },
-  "transactionDropped": {
-    "message": "La transacción se abandonó en $2."
-  },
   "transactionError": {
     "message": "Error de transacción. Excepción generada en el código de contrato."
   },
   "transactionErrorNoContract": {
     "message": "Intentando llamar a una función en una dirección sin contrato."
-  },
-  "transactionErrored": {
-    "message": "La transacción encontró un error."
   },
   "transactionFee": {
     "message": "Tarifa de transacción"
@@ -8591,24 +8552,15 @@
   "transactionIncludesTypes": {
     "message": "Esta transacción incluye: $1."
   },
-  "transactionResubmitted": {
-    "message": "Transacción reenviada con la tarifa de gas aumentada a $1 en $2"
-  },
   "transactionSettings": {
     "message": "Configuración de la transacción"
   },
   "transactionShield": {
     "message": "Protección de transacciones"
   },
-  "transactionSubmitted": {
-    "message": "Transacción enviada con una tarifa de gas de $1 en $2."
-  },
   "transactionTotalGasFee": {
     "message": "Tarifa de gas total",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "La transacción se actualizó en $2."
   },
   "transactions": {
     "message": "Transacciones"

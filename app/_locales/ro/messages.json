@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Trebuie să selectați un cont!"
   },
-  "activityLog": {
-    "message": "jurnal activitate"
-  },
   "addAcquiredTokens": {
     "message": "Adăugați token-urile pe care le-ați achiziționat folosind MetaMask"
   },
@@ -581,9 +578,6 @@
   "speedUpCancellation": {
     "message": "Accelerați această anulare"
   },
-  "speedUpTransaction": {
-    "message": "Accelerați această tranzacție"
-  },
   "stateLogError": {
     "message": "Eroare la recuperarea înregistrărilor de stare."
   },
@@ -626,38 +620,11 @@
   "transaction": {
     "message": "tranzacție"
   },
-  "transactionCancelAttempted": {
-    "message": "Tentativă de anulare a tranzacției cu o taxă gas de $1 la $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Tranzacția a fost anulată cu succes la $2"
-  },
-  "transactionConfirmed": {
-    "message": "Tranzacție confirmată la $2."
-  },
-  "transactionCreated": {
-    "message": "Tranzacție creată cu o valoare de $1 la $2."
-  },
-  "transactionDropped": {
-    "message": "Tranzacție abandonată la $2."
-  },
   "transactionError": {
     "message": "Eroare de tranzacție. Excepție lansată în codul contractului."
   },
   "transactionErrorNoContract": {
     "message": "Se încearcă apelarea unei funcții pe o adresă non-contract."
-  },
-  "transactionErrored": {
-    "message": "Tranzacția a întâlnit o eroare."
-  },
-  "transactionResubmitted": {
-    "message": "Tranzacția a fost redepusă cu taxa gaz majorată de la $1 la $2"
-  },
-  "transactionSubmitted": {
-    "message": "Tranzacția a fost trimisă, cu o taxă gas de $1 la $2."
-  },
-  "transactionUpdated": {
-    "message": "Tranzacție actualizată la $2."
   },
   "transferFrom": {
     "message": "Transferați de la"

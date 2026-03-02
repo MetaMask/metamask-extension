@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Jums jāatlasa konts!"
   },
-  "activityLog": {
-    "message": "darbību žurnāls"
-  },
   "addAcquiredTokens": {
     "message": "Pievienojiet marķierus, ko ieguvāt, izmantojot MetaMask"
   },
@@ -590,9 +587,6 @@
   "speedUpCancellation": {
     "message": "Paātrināt šo atcelšanu"
   },
-  "speedUpTransaction": {
-    "message": "Paātrināt šo darījumu"
-  },
   "stateLogError": {
     "message": "Iegūstot statusa žurnālus, radās kļūda."
   },
@@ -638,38 +632,11 @@
   "transaction": {
     "message": "darījums"
   },
-  "transactionCancelAttempted": {
-    "message": "Darījums tika mēģināts atcelt ar maksājumu par Gas $1 pie $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Darījums veiksmīgi atcelts $2"
-  },
-  "transactionConfirmed": {
-    "message": "Darījums apstiprināts $2."
-  },
-  "transactionCreated": {
-    "message": "Darījums $1 vērtībā izveidots $2."
-  },
-  "transactionDropped": {
-    "message": "Darījums atmests $2."
-  },
   "transactionError": {
     "message": "Darījuma kļūda. Līguma kodā uzrādās izņēmums."
   },
   "transactionErrorNoContract": {
     "message": "Mēģināt izsaukt funkciju, izmantojot adresi, kas nav norādīta līgumā."
-  },
-  "transactionErrored": {
-    "message": "Darījumā radusies kļūda."
-  },
-  "transactionResubmitted": {
-    "message": "Darījums atkārtoti iesniegts ar maksu par Gas, palielinātu līdz $1 pie $2"
-  },
-  "transactionSubmitted": {
-    "message": "Darījums iesniegts ar maksu par Gas $1 pie $2."
-  },
-  "transactionUpdated": {
-    "message": "Darījums atjaunināts $2."
   },
   "transfer": {
     "message": "Pārsūtīt"

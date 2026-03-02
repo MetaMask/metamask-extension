@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Potrebno je da izaberete nalog!"
   },
-  "activityLog": {
-    "message": "dnevnik aktivnosti"
-  },
   "addAcquiredTokens": {
     "message": "Dodajte stečene tokene koristeći MetaMask."
   },
@@ -581,9 +578,6 @@
   "speedUpCancellation": {
     "message": "Ubrzajte ovo otkazivanje"
   },
-  "speedUpTransaction": {
-    "message": "Ubrzajte ovu transakciju"
-  },
   "stateLogError": {
     "message": "Greška u preuzimanju evidencija stanja"
   },
@@ -626,38 +620,11 @@
   "transaction": {
     "message": "transakcija"
   },
-  "transactionCancelAttempted": {
-    "message": "Pokušano je otkazivanje transakcije sa naknadom za gas od $1 do $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transakcija je uspešno otkazana sa $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transakcija je potvrđena na $2."
-  },
-  "transactionCreated": {
-    "message": "Transakcija je kreirana sa vrednošću od $1 na $2."
-  },
-  "transactionDropped": {
-    "message": "Transakcija je pala na $2."
-  },
   "transactionError": {
     "message": "Greška prilikom transakcije. Izuzetak ubačen u kod ugovora."
   },
   "transactionErrorNoContract": {
     "message": "Pokušavamo da pozovemo funkciju preko ne-ugovorne adrese."
-  },
-  "transactionErrored": {
-    "message": "Transakcija je naišla na grešku"
-  },
-  "transactionResubmitted": {
-    "message": "Transakcija je ponovo prosleđena sa naknadom za gas povećanom sa $1 na $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transakcija je podnešena sa gas naknadom od $1 na $2."
-  },
-  "transactionUpdated": {
-    "message": "Transakcija je ažurirana na $2."
   },
   "transfer": {
     "message": "Prenos"

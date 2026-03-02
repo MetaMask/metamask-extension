@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Peate valima konto!"
   },
-  "activityLog": {
-    "message": "tegevuste logi"
-  },
   "addAcquiredTokens": {
     "message": "Lisage load, mis olete MetaMaskiga saanud"
   },
@@ -584,9 +581,6 @@
   "speedUpCancellation": {
     "message": "Kiirendage seda tühistamist"
   },
-  "speedUpTransaction": {
-    "message": "Kiirenda seda tehingut"
-  },
   "stateLogError": {
     "message": "Olekulogide saamisel ilmnes tõrge."
   },
@@ -632,38 +626,11 @@
   "transaction": {
     "message": "tehing"
   },
-  "transactionCancelAttempted": {
-    "message": "Tehingu tühistamise katse gaasitasuga $1 asukohas $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Tehing edukalt tühistatud $2"
-  },
-  "transactionConfirmed": {
-    "message": "Tehing kinnitatud $2."
-  },
-  "transactionCreated": {
-    "message": "Tehing loodud väärtusega $1 asukohas $2."
-  },
-  "transactionDropped": {
-    "message": "Tehing vabastatud $2."
-  },
   "transactionError": {
     "message": "Tehingu tõrge. Lepingukoodis ilmnes erand."
   },
   "transactionErrorNoContract": {
     "message": "Mittelepingulisel aadressil asuva funktsiooni kutsumine."
-  },
-  "transactionErrored": {
-    "message": "Tehingul ilmnes tõrge."
-  },
-  "transactionResubmitted": {
-    "message": "Tehing uuesti edastatud, suurendatud gaasihinnaga $1 asukohas $2"
-  },
-  "transactionSubmitted": {
-    "message": "Tehing edastatud gaasihinnaga $1 asukohas $2."
-  },
-  "transactionUpdated": {
-    "message": "Tehing on uuendatud $2."
   },
   "transfer": {
     "message": "Ülekandmine"

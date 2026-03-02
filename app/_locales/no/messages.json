@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du må velge en konto!"
   },
-  "activityLog": {
-    "message": "aktivitetshistorikk"
-  },
   "addAcquiredTokens": {
     "message": "Legg til sjetongene du har kjøpt med MetaMask"
   },
@@ -575,9 +572,6 @@
   "speedUpCancellation": {
     "message": "Fremskynd denne kanselleringen"
   },
-  "speedUpTransaction": {
-    "message": "Utfør denne transaksjonen hurtigere"
-  },
   "stateLogError": {
     "message": "Feil ved henting av tilstandslogger."
   },
@@ -620,38 +614,11 @@
   "transaction": {
     "message": "transaksjon"
   },
-  "transactionCancelAttempted": {
-    "message": "Kansellering av transaksjon forsøkt med en $1 gassavgift på $2."
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaksjon vellykket avbrutt på $2 "
-  },
-  "transactionConfirmed": {
-    "message": "Transaksjon bekreftet på $2."
-  },
-  "transactionCreated": {
-    "message": "Transaksjon opprettet med en verdi på $1 og $2. "
-  },
-  "transactionDropped": {
-    "message": "Transaksjonen falt på $2."
-  },
   "transactionError": {
     "message": "Transaksjonsfeil. Unntak kastet i kontraktskode."
   },
   "transactionErrorNoContract": {
     "message": "Prøver å kontakte en funksjon på en adresse uten kontrakt."
-  },
-  "transactionErrored": {
-    "message": "Det oppsto en feil under transaksjonen."
-  },
-  "transactionResubmitted": {
-    "message": "Transaksjonen som ble sendt inn igjen med bensinavgift økte til $1 på $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transaksjon sendt med datakraftavgift på $1 til $2."
-  },
-  "transactionUpdated": {
-    "message": "Transaksjonen oppdatert på $2."
   },
   "transfer": {
     "message": "Overfør"

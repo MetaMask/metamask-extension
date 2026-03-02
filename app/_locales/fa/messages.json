@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "نیاز به انتخاب یک حساب دارید!"
   },
-  "activityLog": {
-    "message": "دفترچه فعالیت"
-  },
   "addAcquiredTokens": {
     "message": "رمزیاب های را که با استفاده از MetaMask بدست آورده اید، اضافه کنید"
   },
@@ -590,9 +587,6 @@
   "speedUpCancellation": {
     "message": "این لغو را تسریع بخشید"
   },
-  "speedUpTransaction": {
-    "message": "تسریع این معامله"
-  },
   "stateLogError": {
     "message": "خطا در بازیابی دفترچه وضعیت"
   },
@@ -638,38 +632,11 @@
   "transaction": {
     "message": "معامله"
   },
-  "transactionCancelAttempted": {
-    "message": "برای لغو معامله با فیس گاز 1$1 در 2$2 تلاش شده"
-  },
-  "transactionCancelSuccess": {
-    "message": "معامله به 1$2 موفقانه لغو شد"
-  },
-  "transactionConfirmed": {
-    "message": "معامله به 1$2 تأیید شد."
-  },
-  "transactionCreated": {
-    "message": "معامله با ارزش 1$1 در 2$2 ایجاد شد."
-  },
-  "transactionDropped": {
-    "message": "معامله به 1$2 نزول کرد."
-  },
   "transactionError": {
     "message": "خطا معامله. استثناء در کود قرارداد گذاشته شده است."
   },
   "transactionErrorNoContract": {
     "message": "در حال تلاش برای درخواست یک عملکرد مرتبط به آدرس غیر-قرارداد"
-  },
-  "transactionErrored": {
-    "message": "معامله با خطا مواجه شد."
-  },
-  "transactionResubmitted": {
-    "message": "معامله دوباره با فیس افزایش یافته گاز به 1$1 در 2$2 تسلیم داده شد"
-  },
-  "transactionSubmitted": {
-    "message": "معامله با فیس گاز 1$1 در 2$2 ارائه شد."
-  },
-  "transactionUpdated": {
-    "message": "معامله به 1$2 بروزرسانی شد."
   },
   "transfer": {
     "message": "انتقال"

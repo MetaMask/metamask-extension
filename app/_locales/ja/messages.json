@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "まだ表示できるものがありません。さっそく最初のトークンをスワップしましょう。"
   },
-  "activityLog": {
-    "message": "アクティビティのログ"
-  },
   "add": {
     "message": "追加"
   },
@@ -7324,21 +7321,6 @@
   "simulationErrorMessageV2": {
     "message": "ガス代を見積もることができませんでした。コントラクトにエラーがある可能性があり、このトランザクションは失敗するかもしれません。"
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "最大スリッページ"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "残高の変動幅について許容できる値を設定してください。この変動幅を超える場合、トランザクションは実行されません。"
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "残高変更の実施"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "資金を安全に保つため、残高の増減がある場合やスリッページの許容範囲が満たされない場合、このトランザクションは行われません。"
-  },
-  "simulationSettingsModalTitle": {
-    "message": "トランザクション設定"
-  },
   "simulationsSettingDescription": {
     "message": "トランザクションと署名を確定する前に残高の増減を予測するには、この機能をオンにします。これは最終的な結果を保証するものではありません。$1"
   },
@@ -7664,9 +7646,6 @@
   },
   "speedUpTooltipText": {
     "message": "新しいガス代"
-  },
-  "speedUpTransaction": {
-    "message": "このトランザクションを高速化"
   },
   "spendLimitInsufficient": {
     "message": "使用限度額が十分ではありません"
@@ -8518,18 +8497,6 @@
   "transaction": {
     "message": "トランザクション"
   },
-  "transactionCancelAttempted": {
-    "message": "$1のガス代が$2でトランザクションのキャンセルが試みられました"
-  },
-  "transactionCancelSuccess": {
-    "message": "$2でのトランザクションがキャンセルされました"
-  },
-  "transactionConfirmed": {
-    "message": "$2でトランザクションが承認されました。"
-  },
-  "transactionCreated": {
-    "message": "トランザクションは$1の値が$2で作成されました。"
-  },
   "transactionDataFunction": {
     "message": "関数"
   },
@@ -8539,17 +8506,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "金額 + 手数料"
   },
-  "transactionDropped": {
-    "message": "トランザクションは$2で削除されました。"
-  },
   "transactionError": {
     "message": "トランザクションエラー。コントラクトコードで例外がスローされました。"
   },
   "transactionErrorNoContract": {
     "message": "コントラクトではないアドレスに対して関数の呼び出しを試みています。"
-  },
-  "transactionErrored": {
-    "message": "トランザクションでエラーが発生しました。"
   },
   "transactionFee": {
     "message": "トランザクション手数料"
@@ -8585,24 +8546,15 @@
   "transactionIncludesTypes": {
     "message": "このトランザクションには$1が含まれています。"
   },
-  "transactionResubmitted": {
-    "message": "推定のガス代を$2で$1に増加し、トランザクションを再送信しました"
-  },
   "transactionSettings": {
     "message": "トランザクション設定"
   },
   "transactionShield": {
     "message": "Transaction Shield"
   },
-  "transactionSubmitted": {
-    "message": "$1の推定ガス代が$2でトランザクションが送信されました。"
-  },
   "transactionTotalGasFee": {
     "message": "ガス代合計",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "トランザクションが$2で更新されました。"
   },
   "transactions": {
     "message": "トランザクション"

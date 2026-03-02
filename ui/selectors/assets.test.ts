@@ -1081,7 +1081,7 @@ describe('Aggregated balance recomputation behavior', () => {
 
   it('recomputes when a relevant slice reference changes (e.g., tokenBalances)', () => {
     const tokenBalancesA = {};
-    const tokenBalancesB = {}; // new reference
+    const tokenBalancesB = { newProperty: 'newProperty' }; // different references with different values so that selector does not memoize them
 
     const stateA: BalanceCalculationState = {
       metamask: {
@@ -1299,7 +1299,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     state.metamask.accountsByChainId = {
       '0x1': {
         '0x0': {
-          address: '0x0',
           balance: '0x8ac7230489e80000', // 10 ETH
         },
       },
@@ -1335,7 +1334,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     state.metamask.accountsByChainId = {
       '0x1': {
         '0x0': {
-          address: '0x0',
           balance: '0x0',
         },
       },
@@ -1353,7 +1351,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     state.metamask.accountsByChainId = {
       '0x1': {
         '0x0': {
-          address: '0x0',
           balance: '0x2386f26fc10000', // 0.01 ETH
         },
       },
@@ -1384,14 +1381,12 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       '0x1': {
         // Ethereum mainnet
         '0x0': {
-          address: '0x0',
           balance: '0x0', // Zero on mainnet
         },
       },
       '0xaa36a7': {
         // Sepolia testnet (should be ignored)
         '0x0': {
-          address: '0x0',
           balance: '0x8ac7230489e80000', // 10 ETH on testnet
         },
       },
@@ -1436,7 +1431,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
-            address: '0x0',
             balance: '0x8ac7230489e80000', // 10 ETH
           },
         },
@@ -1472,7 +1466,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
-            address: '0x0',
             balance: '0x0',
           },
         },
@@ -1511,7 +1504,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
-            address: '0x0',
             balance: '0x0', // No ETH
           },
         },
