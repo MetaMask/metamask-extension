@@ -148,7 +148,6 @@ const mockTestNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] =
 
 const createMockState = (overrides = {}) => ({
   metamask: {
-    useBlockie: false,
     keyrings: [
       {
         type: 'HD Key Tree',
