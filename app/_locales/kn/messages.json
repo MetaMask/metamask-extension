@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "ನೀವು ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡುವ ಅಗತ್ಯವಿದೆ!"
   },
-  "activityLog": {
-    "message": "ಚಟುವಟಿಕೆ ಲಾಗ್"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask ಬಳಸಿಕೊಂಡು ನೀವು ಸ್ವಾಧೀನಪಡಿಸಿಕೊಂಡಿರುವ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
   },
@@ -590,9 +587,6 @@
   "speedUpCancellation": {
     "message": "ಈ ರದ್ದತಿಯ ವೇಗವನ್ನು ಹೆಚ್ಚಿಸಿ"
   },
-  "speedUpTransaction": {
-    "message": "ಈ ವಹಿವಾಟಿನ ವೇಗವನ್ನು ಹೆಚ್ಚಿಸಿ"
-  },
   "stateLogError": {
     "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳನ್ನು ಹಿಂಪಡೆಯುವಲ್ಲಿ ದೋಷ."
   },
@@ -638,38 +632,11 @@
   "transaction": {
     "message": "ವಹಿವಾಟು"
   },
-  "transactionCancelAttempted": {
-    "message": "$2 ನಲ್ಲಿ $1 ಗ್ಯಾಸ್ ಶುಲ್ಕದೊಂದಿಗೆ ವಹಿವಾಟಿನ ರದ್ದತಿಯನ್ನು ಪ್ರಯತ್ನಿಸಲಾಗಿದೆ"
-  },
-  "transactionCancelSuccess": {
-    "message": "ವಹಿವಾಟನ್ನು $2 ನಲ್ಲಿ ಯಶಸ್ವಿಯಾಗಿ ರದ್ದುಮಾಡಲಾಗಿದೆ"
-  },
-  "transactionConfirmed": {
-    "message": "$2 ಗೆ ವಹಿವಾಟನ್ನು ಖಚಿತಪಡಿಸಲಾಗಿದೆ."
-  },
-  "transactionCreated": {
-    "message": "ವಹಿವಾಟನ್ನು $2 ನಲ್ಲಿ $1 ಮೌಲ್ಯದೊಂದಿಗೆ ರಚಿಸಲಾಗಿದೆ."
-  },
-  "transactionDropped": {
-    "message": "$2 ನಲ್ಲಿ ವಹಿವಾಟು ಕುಸಿದಿದೆ."
-  },
   "transactionError": {
     "message": "ವಹಿವಾಟಿನ ದೋಷ. ಒಪ್ಪಂದದ ಕೋಡ್‌ನಲ್ಲಿ ವಿನಾಯಿತಿಯನ್ನು ನೀಡಲಾಗಿದೆ."
   },
   "transactionErrorNoContract": {
     "message": "ಒಪ್ಪಂದವಲ್ಲದ ವಿಳಾಸದಲ್ಲಿ ಕಾರ್ಯಕ್ಕೆ ಕರೆ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಲಾಗುತ್ತಿದೆ."
-  },
-  "transactionErrored": {
-    "message": "ವಹಿವಾಟಿನಲ್ಲಿ ದೋಷ ಕಂಡುಬಂದಿದೆ."
-  },
-  "transactionResubmitted": {
-    "message": "$2 ನಲ್ಲಿ $1 ಗೆ ಏರಿದ ಗ್ಯಾಸ್ ಶುಲ್ಕದೊಂದಿಗೆ ವಹಿವಾಟನ್ನು ಮರುಸಲ್ಲಿಸಲಾಗಿದೆ"
-  },
-  "transactionSubmitted": {
-    "message": "ವಹಿವಾಟನ್ನು $2 ನಲ್ಲಿ $1 ಗ್ಯಾಸ್ ಶುಲ್ಕದೊಂದಿಗೆ ರಚಿಸಲಾಗಿದೆ."
-  },
-  "transactionUpdated": {
-    "message": "$2 ನಲ್ಲಿ ವಹಿವಾಟನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ."
   },
   "transfer": {
     "message": "ವರ್ಗಾಯಿಸಿ"

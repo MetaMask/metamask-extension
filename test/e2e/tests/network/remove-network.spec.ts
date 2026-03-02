@@ -8,7 +8,7 @@ import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-networ
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { getPermittedChains } from './common';
 
@@ -74,7 +74,8 @@ describe('Remove Network:', function (this: Suite) {
         );
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
@@ -156,7 +157,8 @@ describe('Remove Network:', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();

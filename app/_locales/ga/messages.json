@@ -175,9 +175,6 @@
   "activityEmptyDescription": {
     "message": "Níl aon rud le feiceáil go fóill. Seiceáil an taiscéalaí le haghaidh gníomhaíochta níos déanaí."
   },
-  "activityLog": {
-    "message": "Log gníomhaíochta"
-  },
   "add": {
     "message": "Cuir leis"
   },
@@ -5987,9 +5984,6 @@
   "speedUpTooltipText": {
     "message": "Táille nua gáis"
   },
-  "speedUpTransaction": {
-    "message": "Luasaigh an t-idirbheart seo"
-  },
   "spendLimitInsufficient": {
     "message": "Teorainn caiteachais neamhleor"
   },
@@ -6783,18 +6777,6 @@
   "transaction": {
     "message": "idirbheart"
   },
-  "transactionCancelAttempted": {
-    "message": "Rinneadh iarracht an t-idirbheart a chealú le táille gáis mheasta de $1 ag $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Cealaíodh an t-idirbheart go rathúil ag $2"
-  },
-  "transactionConfirmed": {
-    "message": "Idirbheart deimhnithe ag $2."
-  },
-  "transactionCreated": {
-    "message": "Cruthaíodh idirbheart le luach $1 ag $2."
-  },
   "transactionDataFunction": {
     "message": "Feidhm"
   },
@@ -6804,17 +6786,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Méid + táillí"
   },
-  "transactionDropped": {
-    "message": "Thit an t-idirbheart ag $2."
-  },
   "transactionError": {
     "message": "Earráid idirbhirt. Caitheadh ​​eisceacht i gcód an chonartha."
   },
   "transactionErrorNoContract": {
     "message": "Ag iarraidh glaoch ar fheidhm ar sheoladh neamhchonarthach."
-  },
-  "transactionErrored": {
-    "message": "Tharla earráid san idirbheart."
   },
   "transactionFlowNetwork": {
     "message": "Líonra"
@@ -6847,24 +6823,15 @@
   "transactionIncludesTypes": {
     "message": "Áirítear leis an idirbheart seo: $1."
   },
-  "transactionResubmitted": {
-    "message": "Idirbheart athsheolta agus táille gáis mheasta méadaithe go $1 ag $2"
-  },
   "transactionSettings": {
     "message": "Socruithe idirbhirt"
   },
   "transactionShield": {
     "message": "Sciath Idirbhirt"
   },
-  "transactionSubmitted": {
-    "message": "Idirbheart curtha isteach le táille gáis mheasta de $1 ag $2."
-  },
   "transactionTotalGasFee": {
     "message": "Táille iomlán gáis",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Idirbheart nuashonraithe ag $2."
   },
   "transactions": {
     "message": "Idirbhearta"
