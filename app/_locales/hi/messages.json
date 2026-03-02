@@ -276,9 +276,6 @@
   "addIPFSGateway": {
     "message": "अपना पसंदीदा IPFS गेटवे जोड़ें"
   },
-  "addImportAccount": {
-    "message": "खाता या हार्डवेयर वॉलेट जोड़ें"
-  },
   "addMemo": {
     "message": "मेमो जोड़ें"
   },

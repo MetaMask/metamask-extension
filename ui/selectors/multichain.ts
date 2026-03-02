@@ -30,6 +30,7 @@ import {
   MultichainProviderConfig,
 } from '../../shared/constants/multichain/networks';
 import { Numeric } from '../../shared/modules/Numeric';
+import { getMultiChainBalancesControllerBalances } from '../../shared/modules/selectors/assets-migration';
 import {
   getCompletedOnboarding,
   getConversionRate,
@@ -473,11 +474,7 @@ export function getMultichainIsTestnet(
   ].includes(providerConfig.chainId as MultichainNetworks);
 }
 
-export function getMultichainBalances(state: {
-  metamask: BalancesState['metamask'];
-}): BalancesState['metamask']['balances'] {
-  return state.metamask.balances;
-}
+export { getMultiChainBalancesControllerBalances as getMultichainBalances };
 
 export function getMultichainTransactions(
   state: MultichainState,
@@ -517,7 +514,7 @@ function getNonEvmCachedBalance(
   state: MultichainState,
   account?: InternalAccount,
 ) {
-  const balances = getMultichainBalances(state);
+  const balances = getMultiChainBalancesControllerBalances(state);
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const selectedNetworkConfig =
     getSelectedMultichainNetworkConfiguration(state);
