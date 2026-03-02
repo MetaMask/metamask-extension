@@ -9,17 +9,21 @@ import { PersistenceManager } from './stores/persistence-manager';
 const platform = new ExtensionPlatform();
 
 /**
- * True when running in the extension background context (service worker or
- * background page). Used to create a single PersistenceManager with the
- * correct store config (e.g. FixtureExtensionStore with initialize: true only in background).
+ * True when running in the extension background (MV3 service worker or MV2 background page).
+ * Used so FixtureExtensionStore(initialize: true) only runs in the background.
  *
  * @returns {boolean}
  */
 function isBackgroundContext() {
-  if (typeof window === 'undefined') {
-    return true; // MV3 service worker
-  }
   try {
+    // MV3: service worker (no window, or global is ServiceWorkerGlobalScope in some builds)
+    if (
+      typeof window === 'undefined' ||
+      globalThis.constructor?.name === 'ServiceWorkerGlobalScope'
+    ) {
+      return true;
+    }
+    // MV2: background is a page whose URL contains "background" (e.g. background.html)
     return (
       typeof window.location?.href === 'string' &&
       window.location.href.includes('background')
