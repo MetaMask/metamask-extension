@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { isEqual } from 'lodash';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-} from '@metamask/design-system-react';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import Jazzicon from '../jazzicon';
 
 import { getAssetImageURL } from '../../../helpers/utils/util';
@@ -68,10 +64,6 @@ export default class Identicon extends Component {
      */
     image: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
     /**
-     * Use the blockie type random image generator
-     */
-    useBlockie: PropTypes.bool,
-    /**
      * The alt text of the image
      */
     alt: PropTypes.string,
@@ -104,7 +96,6 @@ export default class Identicon extends Component {
     className: undefined,
     diameter: 46,
     image: undefined,
-    useBlockie: false,
     alt: '',
     tokenList: {},
     watchedNftContracts: {},
@@ -172,27 +163,8 @@ export default class Identicon extends Component {
     );
   }
 
-  renderBlockie() {
-    const { address, className, diameter, alt } = this.props;
-
-    return (
-      <div
-        className={classnames('identicon', className)}
-        style={getStyles(diameter)}
-      >
-        <AvatarAccount
-          variant={AvatarAccountVariant.Blockies}
-          address={address}
-          size={mapDiameterToSize(diameter)}
-          alt={alt}
-        />
-      </div>
-    );
-  }
-
   renderBlockieOrJazzIcon() {
-    const { useBlockie } = this.props;
-    return useBlockie ? this.renderBlockie() : this.renderJazzicon();
+    return this.renderJazzicon();
   }
 
   shouldComponentUpdate(nextProps, nextState) {
