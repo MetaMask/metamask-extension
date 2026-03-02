@@ -24,7 +24,7 @@ export const useSendQueryParams = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
-  const { tokens, nfts } = useSendAssets();
+  const { tokens, nfts } = useSendAssets({ includeNoBalance: true });
   const allAssets = useMemo(() => [...tokens, ...nfts], [tokens, nfts]);
 
   const subPath = useMemo(() => {
