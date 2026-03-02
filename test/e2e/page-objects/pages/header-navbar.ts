@@ -110,7 +110,7 @@ class HeaderNavbar {
     await this.driver.waitForSelector(this.threeDotMenuButton, {
       state: 'enabled',
     });
-    await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
+    await this.driver.clickElement(this.threeDotMenuButton);
     await this.driver.waitForElementToStopMoving(this.drawerBackButton);
   }
 
