@@ -58,6 +58,9 @@ export const BridgeAsset = React.forwardRef(
     const { isStockToken, isTokenTradingOpen } = useRWAToken();
     const tokenIsStock = isStockToken(asset);
     const tokenIsTradingOpen = isTokenTradingOpen(asset);
+    const stockBadgeLabel = tokenIsTradingOpen
+      ? t('tokenStock')
+      : t('bridgeMarketClosedBadge');
 
     return (
       <Row
@@ -124,7 +127,7 @@ export const BridgeAsset = React.forwardRef(
               )}
               {tokenIsStock && (
                 <Tag
-                  label={t('tokenStock')}
+                  label={stockBadgeLabel}
                   {...(tokenIsTradingOpen
                     ? {}
                     : { startIconName: IconName.Clock })}

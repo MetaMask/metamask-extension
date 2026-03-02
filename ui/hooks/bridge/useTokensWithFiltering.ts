@@ -167,39 +167,22 @@ export const useTokensWithFiltering = (
       if (isTokenListCached || !chainId) {
         return {};
       }
-      const fetchBridgeTokensWithCache = async (
-        url: RequestInfo | URL | string,
-        options?: RequestInit,
-      ) => {
-        const { headers, ...requestOptions } = options ?? {};
-        return await fetchWithCache({
-          url: url as string,
-          ...requestOptions,
-          fetchOptions: { method: 'GET', headers },
-          cacheOptions: {
-            cacheRefreshTime: 10 * MINUTE,
-          },
-          functionName: 'fetchBridgeTokens',
-        });
-      };
-      const fetchBridgeTokensFn = fetchBridgeTokens as unknown as (
-        ...args: unknown[]
-      ) => Promise<Record<string, BridgeAsset>>;
       // Otherwise fetch new token data
-      if (fetchBridgeTokens.length >= 6) {
-        return await fetchBridgeTokensFn(
-          chainId,
-          BridgeClientId.EXTENSION,
-          undefined,
-          fetchBridgeTokensWithCache,
-          BRIDGE_API_BASE_URL,
-          process.env.METAMASK_VERSION,
-        );
-      }
-      return await fetchBridgeTokensFn(
+      return await fetchBridgeTokens(
         chainId,
         BridgeClientId.EXTENSION,
-        fetchBridgeTokensWithCache,
+        async (url, options) => {
+          const { headers, ...requestOptions } = options ?? {};
+          return await fetchWithCache({
+            url: url as string,
+            ...requestOptions,
+            fetchOptions: { method: 'GET', headers },
+            cacheOptions: {
+              cacheRefreshTime: 10 * MINUTE,
+            },
+            functionName: 'fetchBridgeTokens',
+          });
+        },
         BRIDGE_API_BASE_URL,
         process.env.METAMASK_VERSION,
       );

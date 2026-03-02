@@ -232,6 +232,13 @@ const AssetPage = ({
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
   const isStockToken = checkIsStockToken(updatedAsset);
   const isMarketClosed = isStockToken && !isTokenTradingOpen(updatedAsset);
+  const assetDisplayName =
+    name && symbol && name !== symbol
+      ? `${name} (${symbol})`
+      : (name ?? symbol);
+  const stockBadgeLabel = isMarketClosed
+    ? t('bridgeMarketClosedBadge')
+    : t('tokenStock');
 
   // Check if we should show Tron resources
   const isTron = useMultichainSelector(getMultichainIsTron, selectedAccount);
@@ -271,12 +278,10 @@ const AssetPage = ({
               color={TextColor.textAlternative}
               data-testid="asset-name"
             >
-              {name && symbol && name !== symbol
-                ? `${name} (${symbol})`
-                : (name ?? symbol)}
+              {assetDisplayName}
             </Text>
             <Tag
-              label={t('tokenStock')}
+              label={stockBadgeLabel}
               {...(isMarketClosed ? { startIconName: IconName.Clock } : {})}
             />
           </Box>
@@ -286,9 +291,7 @@ const AssetPage = ({
             color={TextColor.textAlternative}
             data-testid="asset-name"
           >
-            {name && symbol && name !== symbol
-              ? `${name} (${symbol})`
-              : (name ?? symbol)}
+            {assetDisplayName}
           </Text>
         )}
       </Box>

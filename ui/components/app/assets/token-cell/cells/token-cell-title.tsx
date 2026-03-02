@@ -12,32 +12,33 @@ type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;
 };
 
-export const TokenCellTitle = React.memo(
-  ({ token }: TokenCellTitleProps) => {
-    const t = useI18nContext();
-    const { isTokenTradingOpen } = useRWAToken();
-    const label = token.accountType
-      ? ACCOUNT_TYPE_LABELS[token.accountType]
-      : undefined;
-    const isStockToken = token.rwaData?.instrumentType === 'stock';
-    const isMarketClosed = isStockToken && !isTokenTradingOpen(token);
-    return (
-      <Box flexDirection={BoxFlexDirection.Row} className="min-w-0">
-        <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
-          <AssetCellTitle title={token.title} />
-          {isStockToken && (
-            <Tag
-              label={t('tokenStock')}
-              {...(isMarketClosed ? { startIconName: IconName.Clock } : {})}
-            />
-          )}
-          {label && <Tag label={label} />}
-        </Box>
-        {token.isStakeable && (
-          <StakeableLink chainId={token.chainId} symbol={token.symbol} />
+export const TokenCellTitle = React.memo(({ token }: TokenCellTitleProps) => {
+  const t = useI18nContext();
+  const { isStockToken, isTokenTradingOpen } = useRWAToken();
+  const label = token.accountType
+    ? ACCOUNT_TYPE_LABELS[token.accountType]
+    : undefined;
+  const tokenIsStock = isStockToken(token);
+  const isMarketClosed = tokenIsStock && !isTokenTradingOpen(token);
+  const stockBadgeLabel = isMarketClosed
+    ? t('bridgeMarketClosedBadge')
+    : t('tokenStock');
+
+  return (
+    <Box flexDirection={BoxFlexDirection.Row} className="min-w-0">
+      <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
+        <AssetCellTitle title={token.title} />
+        {tokenIsStock && (
+          <Tag
+            label={stockBadgeLabel}
+            {...(isMarketClosed ? { startIconName: IconName.Clock } : {})}
+          />
         )}
+        {label && <Tag label={label} />}
       </Box>
-    );
-  },
-  (prevProps, nextProps) => prevProps.token.title === nextProps.token.title, // Only rerender if the title changes
-);
+      {token.isStakeable && (
+        <StakeableLink chainId={token.chainId} symbol={token.symbol} />
+      )}
+    </Box>
+  );
+});
