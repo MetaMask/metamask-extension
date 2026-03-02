@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { useCallback } from 'react';
 import { type Hex } from '@metamask/utils';
 import {
   type TransactionMeta,
@@ -63,15 +64,16 @@ export function useBridgeTxHistoryData({
     bridgeHistoryItem ||
     txMeta?.type === TransactionType.bridge ||
     txMeta?.type === TransactionType.swap;
-  const showBridgeTxDetails = shouldShowBridgeTxDetails
-    ? () => {
-        navigate(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${txMeta?.hash}`, {
-          state: {
-            transaction: txMeta,
-          },
-        });
-      }
-    : undefined;
+
+  const showBridgeTxDetails = useCallback(() => {
+    {
+      navigate(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${txMeta?.hash}`, {
+        state: {
+          transaction: txMeta,
+        },
+      });
+    }
+  }, [txMeta, shouldShowBridgeTxDetails]);
 
   return {
     bridgeHistoryItem,
@@ -80,6 +82,8 @@ export function useBridgeTxHistoryData({
       ? isBridgeComplete(bridgeHistoryItem)
       : null,
     isBridgeFailed,
-    showBridgeTxDetails,
+    showBridgeTxDetails: shouldShowBridgeTxDetails
+      ? showBridgeTxDetails
+      : undefined,
   };
 }
