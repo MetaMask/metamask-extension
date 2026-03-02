@@ -225,7 +225,7 @@ describe('AssetPage', () => {
     openTabSpy.mockClear();
 
     nock('https://price.api.cx.metamask.io')
-      .get(/\/v1\/chains\/\d+\/historical-prices/)
+      .get(/\/v1\/chains\/\d+\/historical-prices/u)
       .query(true)
       .reply(200, {})
       .persist();
