@@ -4,6 +4,10 @@
 
 // Disabled to allow setting up initial state hooks first
 
+// Must run first so fixture fetch starts before other background logic (E2E relies on fixture state being ready).
+// eslint-disable-next-line import/order -- intentional first import for fixture timing
+import { persistenceManager } from './lib/setup-initial-state-hooks';
+
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
 
@@ -92,8 +96,6 @@ import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-l
 import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
 import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
-// Sets up Sentry state hooks and exports the single PersistenceManager for this context
-import { persistenceManager } from './lib/setup-initial-state-hooks';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
