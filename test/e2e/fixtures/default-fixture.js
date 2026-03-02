@@ -259,7 +259,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           avatarType: 'maskicon',
         },
         theme: 'light',
-        useBlockie: false,
         useNftDetection: false,
         usePhishDetect: true,
         useTokenDetection: false,
