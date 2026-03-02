@@ -14,7 +14,7 @@ class HeaderNavbar {
   private readonly copyAddressButton = '[aria-label="Copy address"]';
 
   private readonly threeDotMenuButton =
-    '[data-testid="account-options-menu-button"]';
+    'button[data-testid="account-options-menu-button"]';
 
   private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
 
@@ -110,7 +110,7 @@ class HeaderNavbar {
     await this.driver.waitForSelector(this.threeDotMenuButton, {
       state: 'enabled',
     });
-    await this.driver.clickElement(this.threeDotMenuButton);
+    await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
     await this.driver.waitForElementToStopMoving(this.drawerBackButton);
   }
 
