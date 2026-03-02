@@ -150,19 +150,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('useBlockie', () => {
-    it('defaults useBlockie to false', () => {
-      const { controller } = setupController({});
-      expect(controller.state.useBlockie).toStrictEqual(false);
-    });
-
-    it('setUseBlockie to true', () => {
-      const { controller } = setupController({});
-      controller.setUseBlockie(true);
-      expect(controller.state.useBlockie).toStrictEqual(true);
-    });
-  });
-
   describe('setCurrentLocale', () => {
     it('checks the default currentLocale', () => {
       const { controller } = setupController({});
@@ -924,7 +911,6 @@ describe('preferences controller', () => {
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
-          "useBlockie": false,
           "useCurrencyRateCheck": true,
           "useMultiAccountBalanceChecker": true,
           "useNftDetection": true,
@@ -1006,7 +992,6 @@ describe('preferences controller', () => {
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
-          "useBlockie": false,
           "useCurrencyRateCheck": true,
           "useExternalNameSources": true,
           "useExternalServices": true,
@@ -1092,7 +1077,6 @@ describe('preferences controller', () => {
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
-          "useBlockie": false,
           "useCurrencyRateCheck": true,
           "useExternalNameSources": true,
           "useExternalServices": true,
@@ -1178,7 +1162,6 @@ describe('preferences controller', () => {
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
-          "useBlockie": false,
           "useCurrencyRateCheck": true,
           "useExternalNameSources": true,
           "useExternalServices": true,
@@ -1445,7 +1428,6 @@ describe('preferences controller', () => {
       const { controller } = setupController({
         state: {
           currentLocale: 'ja',
-          useBlockie: true,
           theme: ThemeType.dark,
           knownMethodData: { '0x12345678': 'transfer' },
           advancedGasFee: { '0x1': { maxBaseFee: '100', priorityFee: '10' } },
@@ -1482,14 +1464,12 @@ describe('preferences controller', () => {
 
       // Verify state was customized
       expect(controller.state.currentLocale).toBe('ja');
-      expect(controller.state.useBlockie).toBe(true);
       expect(controller.state.theme).toBe(ThemeType.dark);
 
       controller.resetState();
 
       // Verify state was reset to defaults
       expect(controller.state.currentLocale).toBe(FALLBACK_LOCALE);
-      expect(controller.state.useBlockie).toBe(false);
       expect(controller.state.theme).toBe(ThemeType.os);
       expect(controller.state.knownMethodData).toStrictEqual({});
       expect(controller.state.advancedGasFee).toStrictEqual({});

@@ -81,7 +81,6 @@ const createTestProps = (
 
 const createMockState = () => ({
   metamask: {
-    useBlockie: false,
     networkConfigurationsByChainId: {
       '0x1': {
         chainId: '0x1',
