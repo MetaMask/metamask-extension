@@ -82,7 +82,6 @@ ignores:
   - 'nyc' # coverage
   - 'core-js-pure' # polyfills
   - 'react-compiler-webpack' # build tool
-  - 'thread-loader' # build tool
   # babel
   - '@babel/plugin-transform-logical-assignment-operators'
   - 'babel-plugin-react-compiler'
