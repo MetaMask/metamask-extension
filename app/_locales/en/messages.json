@@ -8993,10 +8993,10 @@
   "useNftDetectionDescription": {
     "message": "Displays all NFTs, including fake ones airdropped by scammers."
   },
-  "usePhishingDetection": {
   "useNftDetectionDescriptionText": {
     "message": "Let MetaMask add NFTs you own using third-party services. Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk."
   },
+  "usePhishingDetection": {
     "message": "Use phishing detection"
   },
   "usePhishingDetectionDescription": {
