@@ -684,6 +684,7 @@ describe('ConfirmFooter', () => {
       });
       expect(mockNavigateNext).toHaveBeenCalledWith(expect.any(String));
       expect(showHardwareWalletErrorModalMock).not.toHaveBeenCalled();
+      expect(dismissHardwareWalletErrorModalMock).toHaveBeenCalledTimes(1);
     });
 
     it('navigates to next confirmation on hardware wallet rejection in sidepanel', async () => {
@@ -725,6 +726,7 @@ describe('ConfirmFooter', () => {
         { replace: true },
       );
       expect(showHardwareWalletErrorModalMock).not.toHaveBeenCalled();
+      expect(dismissHardwareWalletErrorModalMock).toHaveBeenCalledTimes(1);
     });
 
     it('shows error modal on retryable error', async () => {

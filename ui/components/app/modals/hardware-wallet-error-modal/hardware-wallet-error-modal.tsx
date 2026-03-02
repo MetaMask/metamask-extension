@@ -31,6 +31,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useModalProps } from '../../../../hooks/useModalProps';
 import {
   HardwareWalletType,
+  isUserRejectedHardwareWalletError,
   isRetryableHardwareWalletError,
   useHardwareWalletActions,
   useHardwareWalletConfig,
@@ -107,9 +108,25 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       };
     }, [handleRecoveredClose, recovered]);
 
+    const isUserRejectedError =
+      error !== undefined && isUserRejectedHardwareWalletError(error);
+
+    useEffect(() => {
+      if (!isUserRejectedError) {
+        return;
+      }
+
+      handleClose();
+    }, [handleClose, isUserRejectedError]);
+
     // If no error, don't render anything
     if (!error) {
       onClose?.();
+      return null;
+    }
+
+    // User intentionally rejected on device; this is a cancel path, not an error state.
+    if (isUserRejectedError) {
       return null;
     }
 

@@ -99,6 +99,23 @@ describe('HardwareWalletErrorModal', () => {
         getByText('[hardwareWalletErrorTitleDeviceLocked]'),
       ).toBeInTheDocument();
     });
+
+    it('renders nothing for user-rejected errors', () => {
+      const error = createTestError(
+        ErrorCode.UserCancelled,
+        'User cancelled',
+        'You cancelled the operation.',
+      );
+      const onCancel = jest.fn();
+      const { container } = render(
+        <HardwareWalletErrorModal error={error} onCancel={onCancel} />,
+      );
+
+      expect(container.firstChild).toBeNull();
+      expect(onCancel).toHaveBeenCalledTimes(1);
+      expect(mockHideModal).toHaveBeenCalledTimes(1);
+      expect(mockClearError).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('Recovery Instructions', () => {
@@ -263,11 +280,11 @@ describe('HardwareWalletErrorModal', () => {
       expect(queryByText('[confirm]')).not.toBeInTheDocument();
     });
 
-    it('displays only Confirm button for non-retryable errors', () => {
+    it('displays only Confirm button for non-retryable non-rejection errors', () => {
       const error = createTestError(
-        ErrorCode.UserCancelled,
-        'User cancelled',
-        'You cancelled the operation.',
+        ErrorCode.Unknown,
+        'Unknown error',
+        'Unknown error.',
       );
       const onCancel = jest.fn();
 
@@ -310,9 +327,9 @@ describe('HardwareWalletErrorModal', () => {
 
     it('handles Confirm button click for non-retryable errors', async () => {
       const error = createTestError(
-        ErrorCode.UserCancelled,
-        'User cancelled',
-        'You cancelled the operation.',
+        ErrorCode.Unknown,
+        'Unknown error',
+        'Unknown error.',
       );
       const onCancel = jest.fn();
 

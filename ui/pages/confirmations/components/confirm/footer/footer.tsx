@@ -235,10 +235,11 @@ const Footer = () => {
     await onCancel({
       location: MetaMetricsEventLocation.Confirmation,
     });
+    dismissErrorModal();
     if (currentConfirmationId) {
       navigateNext(currentConfirmationId);
     }
-  }, [currentConfirmationId, navigateNext, onCancel]);
+  }, [currentConfirmationId, navigateNext, onCancel, dismissErrorModal]);
 
   const {
     walletType,
@@ -267,49 +268,48 @@ const Footer = () => {
       }
     }
 
-    if (isAddEthereumChain) {
-      await onAddEthereumChain();
-      resetTransactionState();
-      navigate(DEFAULT_ROUTE);
-      return;
-    }
-
-    if (isTransactionConfirmation) {
-      const didConfirm = await onTransactionConfirm();
-      if (didConfirm) {
-        resetTransactionState();
-        if (currentConfirmationId) {
-          navigateNext(currentConfirmationId);
-        }
+    try {
+      if (isAddEthereumChain) {
+        await onAddEthereumChain();
+        navigate(DEFAULT_ROUTE);
+        return;
       }
-      return;
-    }
 
-    const resolveApprovalWithHardwareWalletHandling =
-      withHardwareWalletModalHandling(async () => {
-        const resolveApprovalOptions = walletType
-          ? {
-              fromAddress,
-              waitForResult: true,
-              walletType,
-            }
-          : {
-              fromAddress,
-            };
-
-        await dispatch(
-          resolvePendingApproval(currentConfirmation.id, undefined, {
-            ...resolveApprovalOptions,
-          }),
-        );
-
-        resetTransactionState();
-        if (currentConfirmationId) {
+      if (isTransactionConfirmation) {
+        const didConfirm = await onTransactionConfirm();
+        if (didConfirm && currentConfirmationId) {
           navigateNext(currentConfirmationId);
         }
-      });
+        return;
+      }
 
-    await resolveApprovalWithHardwareWalletHandling();
+      const resolveApprovalWithHardwareWalletHandling =
+        withHardwareWalletModalHandling(async () => {
+          const resolveApprovalOptions = walletType
+            ? {
+                fromAddress,
+                waitForResult: true,
+                walletType,
+              }
+            : {
+                fromAddress,
+              };
+
+          await dispatch(
+            resolvePendingApproval(currentConfirmation.id, undefined, {
+              ...resolveApprovalOptions,
+            }),
+          );
+
+          if (currentConfirmationId) {
+            navigateNext(currentConfirmationId);
+          }
+        });
+
+      await resolveApprovalWithHardwareWalletHandling();
+    } finally {
+      resetTransactionState();
+    }
   }, [
     currentConfirmation,
     currentConfirmationId,
