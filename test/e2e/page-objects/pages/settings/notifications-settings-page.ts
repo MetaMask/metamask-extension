@@ -7,7 +7,7 @@ class NotificationsSettingsPage {
 
   private readonly notificationsSettingsPageTitle = {
     text: 'Notifications',
-    tag: 'p',
+    css: '.tab-bar__tab__content__title',
   };
 
   private readonly allowNotificationsToggle =

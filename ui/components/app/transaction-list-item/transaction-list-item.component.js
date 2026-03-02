@@ -1,7 +1,7 @@
 /* eslint-disable import/no-duplicates */
 import React, { useMemo, useState, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -87,7 +87,6 @@ function TransactionListItemInner({
     isBridgeFailed,
   } = useBridgeTxHistoryData({
     transactionGroup,
-    isEarliestNonce,
   });
   const isUnifiedSwapTx =
     (isBridgeTx ||
@@ -374,7 +373,6 @@ function TransactionListItemInner({
             onRetry={retryTransaction}
             // showRetry={showRetry}
             showSpeedUp={isSpeedUpButtonVisible}
-            isEarliestNonce={isEarliestNonce}
             onCancel={cancelTransaction}
             transactionStatus={() => (
               <TransactionStatusLabel
