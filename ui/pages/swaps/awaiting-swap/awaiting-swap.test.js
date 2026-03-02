@@ -1,10 +1,11 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { createSwapsMockStore, fireEvent } from '../../../../test/jest';
+import { createSwapsMockStore } from '../../../../test/jest';
 import {
   Slippage,
   QUOTES_EXPIRED_ERROR,
@@ -14,6 +15,7 @@ import {
   CONTRACT_DATA_DISABLED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
 } from '../../../../shared/constants/swaps';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import AwaitingSwap from '.';
 
 const middleware = [thunk];
@@ -44,13 +46,13 @@ describe('AwaitingSwap', () => {
       <AwaitingSwap {...createProps()} />,
       store,
     );
-    expect(getByText('Processing')).toBeInTheDocument();
+    expect(getByText(messages.swapProcessing.message)).toBeInTheDocument();
     expect(getByText('USDC')).toBeInTheDocument();
-    expect(getByText('View in activity')).toBeInTheDocument();
+    expect(getByText(messages.swapsViewInActivity.message)).toBeInTheDocument();
     expect(
       document.querySelector('.awaiting-swap__main-description'),
     ).toMatchSnapshot();
-    expect(getByText('View in activity')).toBeInTheDocument();
+    expect(getByText(messages.swapsViewInActivity.message)).toBeInTheDocument();
     expect(getByTestId('page-container-footer-next')).toBeInTheDocument();
   });
 
@@ -60,10 +62,18 @@ describe('AwaitingSwap', () => {
       <AwaitingSwap {...createProps({ swapComplete: true })} />,
       store,
     );
-    expect(getByText('Transaction complete')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapTransactionComplete.message),
+    ).toBeInTheDocument();
     expect(getByText('tokens received: USDC')).toBeInTheDocument();
-    expect(getByText('View Swap at etherscan.io')).toBeInTheDocument();
-    expect(getByText('Create a new swap')).toBeInTheDocument();
+    expect(
+      getByText(
+        messages.viewOnCustomBlockExplorer.message
+          .replace('$1', 'Swap')
+          .replace('$2', 'etherscan.io'),
+      ),
+    ).toBeInTheDocument();
+    expect(getByText(messages.makeAnotherSwap.message)).toBeInTheDocument();
   });
 
   it('renders the component with the "OFFLINE_FOR_MAINTENANCE" error', () => {
@@ -75,13 +85,13 @@ describe('AwaitingSwap', () => {
       <AwaitingSwap {...props} />,
       store,
     );
-    expect(getByText('Offline for maintenance')).toBeInTheDocument();
     expect(
-      getByText(
-        'MetaMask Swaps is undergoing maintenance. Please check back later.',
-      ),
+      getByText(messages.offlineForMaintenance.message),
     ).toBeInTheDocument();
-    expect(getByText('Close')).toBeInTheDocument();
+    expect(
+      getByText(messages.metamaskSwapsOfflineDescription.message),
+    ).toBeInTheDocument();
+    expect(getByText(messages.close.message)).toBeInTheDocument();
   });
 
   it('renders the component with the "SWAP_FAILED_ERROR" error', () => {
@@ -93,9 +103,11 @@ describe('AwaitingSwap', () => {
       <AwaitingSwap {...props} />,
       store,
     );
-    expect(getByText('Swap failed')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapFailedErrorTitle.message),
+    ).toBeInTheDocument();
     fireEvent.click(getByText('support.metamask.io'));
-    expect(getByText('Try again')).toBeInTheDocument();
+    expect(getByText(messages.tryAgain.message)).toBeInTheDocument();
   });
 
   it('renders the component with the "QUOTES_EXPIRED_ERROR" error', () => {
@@ -107,11 +119,13 @@ describe('AwaitingSwap', () => {
       <AwaitingSwap {...props} />,
       store,
     );
-    expect(getByText('Quotes timeout')).toBeInTheDocument();
     expect(
-      getByText('Please request new quotes to get the latest rates.'),
+      getByText(messages.swapQuotesExpiredErrorTitle.message),
     ).toBeInTheDocument();
-    expect(getByText('Try again')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapQuotesExpiredErrorDescription.message),
+    ).toBeInTheDocument();
+    expect(getByText(messages.tryAgain.message)).toBeInTheDocument();
   });
 
   it('renders the component with the "ERROR_FETCHING_QUOTES" error', () => {
@@ -123,13 +137,13 @@ describe('AwaitingSwap', () => {
       <AwaitingSwap {...props} />,
       store,
     );
-    expect(getByText('Error fetching quotes')).toBeInTheDocument();
     expect(
-      getByText(
-        'Hmmm... something went wrong. Try again, or if errors persist, contact customer support.',
-      ),
+      getByText(messages.swapFetchingQuotesErrorTitle.message),
     ).toBeInTheDocument();
-    expect(getByText('Back')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapFetchingQuotesErrorDescription.message),
+    ).toBeInTheDocument();
+    expect(getByText(messages.back.message)).toBeInTheDocument();
   });
 
   it('renders the component with the "QUOTES_NOT_AVAILABLE_ERROR" error', () => {
@@ -141,11 +155,13 @@ describe('AwaitingSwap', () => {
       <AwaitingSwap {...props} />,
       store,
     );
-    expect(getByText('No quotes available')).toBeInTheDocument();
     expect(
-      getByText('Try adjusting the amount or slippage settings and try again.'),
+      getByText(messages.swapQuotesNotAvailableErrorTitle.message),
     ).toBeInTheDocument();
-    expect(getByText('Try again')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapQuotesNotAvailableErrorDescription.message),
+    ).toBeInTheDocument();
+    expect(getByText(messages.tryAgain.message)).toBeInTheDocument();
   });
 
   it('renders the component with the "CONTRACT_DATA_DISABLED_ERROR" error', () => {
@@ -158,13 +174,11 @@ describe('AwaitingSwap', () => {
       store,
     );
     expect(
-      getByText('Contract data is not enabled on your Ledger'),
+      getByText(messages.swapContractDataDisabledErrorTitle.message),
     ).toBeInTheDocument();
     expect(
-      getByText(
-        'In the Ethereum app on your Ledger, go to "Settings" and allow contract data. Then, try your swap again.',
-      ),
+      getByText(messages.swapContractDataDisabledErrorDescription.message),
     ).toBeInTheDocument();
-    expect(getByText('Try again')).toBeInTheDocument();
+    expect(getByText(messages.tryAgain.message)).toBeInTheDocument();
   });
 });

@@ -1,5 +1,6 @@
 import {
   TransactionMeta,
+  TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { getShouldShowFiat } from '../../../selectors';
@@ -14,7 +15,6 @@ import {
   calcTokenAmount,
   getSwapsTokensReceivedFromTxMeta,
 } from '../../../../shared/lib/transactions-controller-utils';
-import { CONFIRMED_STATUS } from '../transaction-activity-log/transaction-activity-log.constants';
 import { MetaMaskReduxState } from '../../../store/store';
 import { calcHexGasTotal } from '../../../../shared/lib/transaction-breakdown-utils';
 
@@ -91,7 +91,7 @@ export const getTransactionBreakdownData = ({
       ? `${sourceTokenAmount} ${sourceTokenSymbol}`
       : undefined;
   const destinationAmountFormatted =
-    destinationTokenAmount && status === CONFIRMED_STATUS
+    destinationTokenAmount && status === TransactionStatus.confirmed
       ? `${destinationTokenAmount} ${destinationTokenSymbol}`
       : undefined;
 

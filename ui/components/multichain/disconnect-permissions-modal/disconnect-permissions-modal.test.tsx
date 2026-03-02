@@ -1,11 +1,11 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import { Hex } from '@metamask/utils';
-import { fireEvent } from '../../../../test/jest';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
-import { DisconnectPermissionsModal } from '.';
+import { DisconnectPermissionsModal, DisconnectPermissionsModalProps } from '.';
 
 // Mock the gator permissions utils
 jest.mock('../../../../shared/lib/gator-permissions', () => ({
@@ -39,7 +39,7 @@ describe('DisconnectPermissionsModal', () => {
   const onRemoveAll = jest.fn();
   const onClose = jest.fn();
 
-  const args = {
+  const args: DisconnectPermissionsModalProps = {
     isOpen: true,
     onClose,
     onSkip,
@@ -49,21 +49,20 @@ describe('DisconnectPermissionsModal', () => {
         permission: {
           permissionResponse: {
             permission: {
-              type: 'custom' as const,
+              type: 'native-token-stream',
               data: {
                 amountPerSecond: '0xde0b6b3a7640000', // 1 ETH in hex
               },
               isAdjustmentAllowed: false,
             },
-            chainId: '0x1' as Hex,
-            from: '0x1234567890123456789012345678901234567890' as Hex,
-            context: '0x1234567890123456789012345678901234567890' as Hex,
-            delegationManager:
-              '0x1234567890123456789012345678901234567890' as Hex,
+            chainId: '0x1',
+            from: '0x1234567890123456789012345678901234567890',
+            context: '0x1234567890123456789012345678901234567890',
+            delegationManager: '0x1234567890123456789012345678901234567890',
           },
           siteOrigin: 'portfolio.metamask.io',
         },
-        chainId: '0x1' as Hex,
+        chainId: '0x1',
         permissionType: 'native-token-stream',
       },
     ],
@@ -80,7 +79,10 @@ describe('DisconnectPermissionsModal', () => {
     },
     networkConfigurations: {
       '0x1': { name: 'Ethereum Mainnet', nativeCurrency: 'ETH' },
-      '0x89': { name: 'Polygon', nativeCurrency: 'MATIC' },
+      '0x89': {
+        name: 'Polygon',
+        nativeCurrency: 'MATIC',
+      },
     },
   });
 
@@ -124,11 +126,11 @@ describe('DisconnectPermissionsModal', () => {
       mockStore,
     );
     // The test helpers provide actual translations
-    expect(getByText('Other permissions on this site')).toBeInTheDocument();
     expect(
-      getByText(
-        'The following permissions were also found on this site. Do you want to remove them?',
-      ),
+      getByText(messages.otherPermissionsOnSiteTitle.message),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.otherPermissionsOnSiteDescription.message),
     ).toBeInTheDocument();
   });
 
@@ -137,7 +139,7 @@ describe('DisconnectPermissionsModal', () => {
       <DisconnectPermissionsModal {...args} />,
       mockStore,
     );
-    expect(getByText('Token stream')).toBeInTheDocument();
+    expect(getByText(messages.tokenStream.message)).toBeInTheDocument();
     expect(getByText('1 ETH per second • 0x12345...67890')).toBeInTheDocument();
   });
 });

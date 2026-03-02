@@ -1505,6 +1505,7 @@ export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
   'bsc-mainnet': () => process.env.QUICKNODE_BSC_URL,
   'sei-mainnet': () => process.env.QUICKNODE_SEI_URL,
   'monad-mainnet': () => process.env.QUICKNODE_MONAD_URL,
+  'hyperevm-mainnet': () => process.env.QUICKNODE_HYPEREVM_URL,
 };
 
 export function getFailoverUrlsForInfuraNetwork(
@@ -1659,7 +1660,8 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     nativeCurrency: CURRENCY_SYMBOLS.HYPE,
     rpcEndpoints: [
       {
-        url: 'https://rpc.hyperliquid.xyz/evm',
+        url: `https://hyperevm-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: getFailoverUrlsForInfuraNetwork('hyperevm-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
