@@ -55,6 +55,22 @@ jest.mock('react-redux', () => {
 const mockGetIntlLocale = getIntlLocale;
 
 describe('TokenListItem', () => {
+  const buildRWAMarketWindow = ({
+    isOpen,
+  }: {
+    isOpen: boolean;
+  }): NonNullable<React.ComponentProps<typeof TokenListItem>['rwaData']> => {
+    const now = Date.now();
+
+    return {
+      instrumentType: 'stock',
+      market: {
+        nextOpen: new Date(isOpen ? now - 60_000 : now + 60_000).toISOString(),
+        nextClose: new Date(now + 3_600_000).toISOString(),
+      },
+    };
+  };
+
   beforeAll(() => {
     // @ts-expect-error mocking platform
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
@@ -218,6 +234,44 @@ describe('TokenListItem', () => {
     targetElem && fireEvent.click(targetElem);
 
     expect(props.onClick).toHaveBeenCalled();
+  });
+
+  it('renders the stock badge when rwaData marks the token as a stock', () => {
+    const store = configureMockStore()(state);
+    const { getByText } = renderWithProvider(
+      <TokenListItem
+        {...props}
+        title="Apple"
+        tokenSymbol="AAPLON"
+        rwaData={buildRWAMarketWindow({ isOpen: true })}
+      />,
+      store,
+    );
+
+    expect(getByText('Stock')).toBeInTheDocument();
+  });
+
+  it('opens the market closed modal instead of calling onClick when the market is closed', () => {
+    const store = configureMockStore()(state);
+    const onClick = jest.fn();
+    const { queryByTestId, getByTestId, getByText } = renderWithProvider(
+      <TokenListItem
+        {...props}
+        onClick={onClick}
+        title="Apple"
+        tokenSymbol="AAPLON"
+        rwaData={buildRWAMarketWindow({ isOpen: false })}
+      />,
+      store,
+    );
+
+    const targetElem = queryByTestId('multichain-token-list-button');
+
+    targetElem && fireEvent.click(targetElem);
+
+    expect(onClick).not.toHaveBeenCalled();
+    expect(getByTestId('market-closed-modal')).toBeInTheDocument();
+    expect(getByText('Market is closed')).toBeInTheDocument();
   });
 
   it('handles clicking staking opens tab', async () => {

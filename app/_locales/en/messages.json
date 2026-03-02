@@ -1091,6 +1091,9 @@
   "bridgeMarketClosedModalDescription": {
     "message": "The market that backs this token is currently closed. Tokens can be transferred on-chain at any time."
   },
+  "bridgeMarketClosedModalLearnMore": {
+    "message": "Learn more"
+  },
   "bridgeNetCost": {
     "message": "Net cost"
   },

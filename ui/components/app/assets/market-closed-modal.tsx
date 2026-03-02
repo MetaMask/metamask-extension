@@ -10,7 +10,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-} from '../../../components/component-library';
+} from '../../component-library';
 import {
   BlockSize,
   Display,
@@ -63,7 +63,7 @@ export const MarketClosedModal = ({
               onClick={handleLearnMore}
               data-testid="market-closed-modal-learn-more"
             >
-              {t('learnMore')}
+              {t('bridgeMarketClosedModalLearnMore')}
             </Button>
           </Box>
         </ModalBody>

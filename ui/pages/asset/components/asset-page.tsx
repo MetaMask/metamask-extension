@@ -21,6 +21,7 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import TokenCell from '../../../components/app/assets/token-cell';
+import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import {
   TokenFiatDisplayInfo,
   type TokenWithFiatAmount,
@@ -83,7 +84,6 @@ import { useRWAToken } from '../../bridge/hooks/useRWAToken';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
-import { MarketClosedModal } from './market-closed-modal';
 import TokenButtons from './token-buttons';
 import { TronDailyResources } from './tron-daily-resources';
 
