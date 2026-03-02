@@ -64,26 +64,22 @@ function RevealSeedPage() {
   const [isShowingHoldModal, setIsShowingHoldModal] = useState(false);
   const [srpViewEventTracked, setSrpViewEventTracked] = useState(false);
 
-  // POC: Capture the active tab URL for dapp safety scanning
   const activeTabUrl = useSelector((state) => state.activeTab?.url ?? null);
   const activeTabOrigin = useSelector(
     (state) => state.activeTab?.origin ?? null,
   );
   const [scanResult, setScanResult] = useState(null);
 
-  // POC: Run real-time dapp scanning on the active tab URL
   useEffect(() => {
+    let cancelled = false;
+
     if (activeTabOrigin) {
-      // Call real-time dapp scanning API (phishingController.scanUrl)
-      // Returns { hostname, recommendedAction } where recommendedAction
-      // is "NONE" | "WARN" | "BLOCK" | "VERIFIED"
       scanUrlForPhishing(activeTabOrigin)
         .then((result) => {
-          console.debug('[RevealSeedPage] Real-time dapp scan result:', result);
+          if (cancelled) {
+            return;
+          }
           setScanResult(result);
-
-          // Track the dapp check event
-          // TODO: change this to current event but properties called
 
           trackEvent({
             category: MetaMetricsEventCategory.Keys,
@@ -94,15 +90,18 @@ function RevealSeedPage() {
               recommended_action: result?.recommendedAction ?? 'unknown',
               hostname: result?.hostname ?? 'unknown',
             },
-            referrer: { url: activeTabUrl },
+            referrer: activeTabUrl ? { url: activeTabUrl } : undefined,
           });
         })
-        .catch((err) => {
-          console.error('[RevealSeedPage] Error in real-time dapp scan:', err);
+        .catch(() => {
+          // Scan failed — no action needed
         });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTabOrigin]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeTabOrigin, activeTabUrl, trackEvent]);
 
   const onClickCopy = useCallback(() => {
     trackEvent({
@@ -189,15 +188,18 @@ function RevealSeedPage() {
     if (!isDangerous) {
       return null;
     }
+    const hostname = scanResult?.hostname ?? activeTabOrigin;
     return (
       <BannerAlert severity={Severity.Danger} data-testid="dapp-scan-warning">
         <Text variant={TextVariant.bodyMdBold}>
           {isMalicious
-            ? 'Malicious website detected!'
-            : 'Suspicious website detected'}
+            ? t('dappScanMaliciousTitle')
+            : t('dappScanSuspiciousTitle')}
         </Text>
         <Text variant={TextVariant.bodyMd}>
-          {`The website you are currently visiting (${scanResult?.hostname ?? activeTabOrigin}) has been flagged as ${isMalicious ? 'malicious' : 'suspicious'} by real-time dapp scanning. Revealing your Secret Recovery Phrase on this website could result in loss of funds.`}
+          {isMalicious
+            ? t('dappScanMaliciousWarning', [hostname])
+            : t('dappScanSuspiciousWarning', [hostname])}
         </Text>
       </BannerAlert>
     );
