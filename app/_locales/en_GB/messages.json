@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Nothing to see yet. Swap your first token today."
   },
-  "activityLog": {
-    "message": "Activity log"
-  },
   "add": {
     "message": "Add"
   },
@@ -278,9 +275,6 @@
   },
   "addIPFSGateway": {
     "message": "Add your preferred IPFS gateway"
-  },
-  "addImportAccount": {
-    "message": "Add account or hardware wallet"
   },
   "addMemo": {
     "message": "Add memo"
@@ -711,6 +705,10 @@
     "message": "Approve $1 spending cap",
     "description": "The token symbol that is being approved"
   },
+  "approveToken": {
+    "message": "Approve $1",
+    "description": "Used in the transaction details summary to describe an approval transaction. $1 is the symbol of the token being approved."
+  },
   "approved": {
     "message": "Approved"
   },
@@ -874,6 +872,45 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Turn on basic functionality"
+  },
+  "basicFunctionalityRequired_description": {
+    "message": "This feature isn't available while basic functionality is turned off. Use the toggle below to turn it on."
+  },
+  "basicFunctionalityRequired_goToHome": {
+    "message": "Go to the home page"
+  },
+  "basicFunctionalityRequired_openCreateSnapAccountPage": {
+    "message": "Open the Create Account page"
+  },
+  "basicFunctionalityRequired_openDefiPage": {
+    "message": "Open the DeFi page"
+  },
+  "basicFunctionalityRequired_openNotificationsPage": {
+    "message": "Open the Notifications page"
+  },
+  "basicFunctionalityRequired_openPerpsPage": {
+    "message": "Open the Perps page"
+  },
+  "basicFunctionalityRequired_openRewardsPage": {
+    "message": "Open the Rewards page"
+  },
+  "basicFunctionalityRequired_openSnapsPage": {
+    "message": "Open the Snaps page"
+  },
+  "basicFunctionalityRequired_openSwapsPage": {
+    "message": "Open the Swap page"
+  },
+  "basicFunctionalityRequired_openTransactionShieldPage": {
+    "message": "Open the Transaction Shield page"
+  },
+  "basicFunctionalityRequired_reviewInSettings": {
+    "message": "Review in settings"
+  },
+  "basicFunctionalityRequired_title": {
+    "message": "Basic functionality is off"
+  },
+  "basicFunctionalityRequired_toggleLabel": {
+    "message": "Basic functionality"
   },
   "bestQuote": {
     "message": "Best quote"
@@ -2108,6 +2145,9 @@
   },
   "deepLink_theRewardsPage": {
     "message": "the MetaMask Rewards page"
+  },
+  "deepLink_theSellPage": {
+    "message": "the sell page"
   },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
@@ -4393,8 +4433,14 @@
   "nftAutoDetectionEnabled": {
     "message": "NFT autodetection enabled"
   },
+  "nftBought": {
+    "message": "Bought $1"
+  },
   "nftEmptyDescription": {
     "message": "There's a world of NFTs out there. Start your collection today."
+  },
+  "nftMinted": {
+    "message": "Minted $1"
   },
   "nftOptions": {
     "message": "NFT Options"
@@ -4643,10 +4689,10 @@
     "message": "Something went wrong. Please try again."
   },
   "notificationsSettingsPageAllowNotifications": {
-    "message": "Stay in the loop on what’s happening in your wallet with notifications. To use notifications, we use a profile to sync some settings across your devices. $1"
+    "message": "Stay in the loop on what’s happening in your wallet with notifications. To use notifications, we use a profile to sync some settings across your devices. $1 we protect your privacy while using this feature."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Learn how we protect your privacy while using this feature."
+    "message": "Learn how"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 new tokens found in this account",
@@ -5260,9 +5306,6 @@
   "perpsAddToFavorites": {
     "message": "Add to favorites"
   },
-  "perpsAsk": {
-    "message": "Ask"
-  },
   "perpsAutoClose": {
     "message": "Auto close"
   },
@@ -5273,14 +5316,12 @@
   "perpsAvailableBalance": {
     "message": "Available balance"
   },
-  "perpsBid": {
-    "message": "Bid"
+  "perpsAvailableToTrade": {
+    "message": "Available to trade",
+    "description": "Label for the available balance that can be used for trading"
   },
   "perpsCancelAllOrders": {
     "message": "Cancel all"
-  },
-  "perpsClose": {
-    "message": "Close"
   },
   "perpsCloseAll": {
     "message": "Close all"
@@ -5404,9 +5445,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Liquidation Price Est."
   },
   "perpsLong": {
     "message": "Long"
@@ -6288,12 +6326,6 @@
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Retry"
   },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Hardware wallet accounts are not eligible to receive rewards yet. Please switch to a different account to proceed."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Account not supported"
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Retry"
   },
@@ -6398,8 +6430,20 @@
   "rewardsQRCodeTitle": {
     "message": "Get the mobile app"
   },
+  "rewardsSignInFailed": {
+    "message": "Failed to sign in",
+    "description": "Text shown when the opt-in sign attempt failed, with a retry affordance"
+  },
+  "rewardsSignInToViewPoints": {
+    "message": "Sign in to view points",
+    "description": "Text shown when user needs to sign in to view their rewards points"
+  },
   "rewardsSignUp": {
     "message": "Sign up for Rewards"
+  },
+  "rewardsSigningIn": {
+    "message": "Signing in...",
+    "description": "Text shown while the user is signing in to view their rewards points"
   },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
@@ -7436,21 +7480,6 @@
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Slippage tolerance"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Set a difference you're comfortable with for balance changes. Transactions won't go through if the difference is higher."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Enforce balance changes"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "To keep your money safe, this transaction won't go through if the balance changes or the slippage tolerance isn't met."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Transaction settings"
-  },
   "simulationsSettingDescription": {
     "message": "Turn this on to estimate balance changes of transactions and signatures before you confirm them. This doesn't guarantee their final outcome. $1"
   },
@@ -7581,12 +7610,6 @@
   },
   "snapAccountRemovedDescription": {
     "message": "This account will no longer be available to use in MetaMask."
-  },
-  "snapAccounts": {
-    "message": "Account Snaps"
-  },
-  "snapAccountsDescription": {
-    "message": "Accounts controlled by third-party Snaps."
   },
   "snapConnectTo": {
     "message": "Connect to $1",
@@ -7782,9 +7805,6 @@
   },
   "speedUpTooltipText": {
     "message": "New gas fee"
-  },
-  "speedUpTransaction": {
-    "message": "Speed up this transaction"
   },
   "spendLimitInsufficient": {
     "message": "Spend limit insufficient"
@@ -8636,18 +8656,6 @@
   "transaction": {
     "message": "transaction"
   },
-  "transactionCancelAttempted": {
-    "message": "Transaction cancel attempted with estimated gas fee of $1 at $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaction successfully cancelled at $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transaction confirmed at $2."
-  },
-  "transactionCreated": {
-    "message": "Transaction created with a value of $1 at $2."
-  },
   "transactionDataFunction": {
     "message": "Function"
   },
@@ -8657,17 +8665,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Amount + fees"
   },
-  "transactionDropped": {
-    "message": "Transaction dropped at $2."
-  },
   "transactionError": {
     "message": "Transaction error. Exception thrown in contract code."
   },
   "transactionErrorNoContract": {
     "message": "Trying to call a function on a non-contract address."
-  },
-  "transactionErrored": {
-    "message": "Transaction encountered an error."
   },
   "transactionFee": {
     "message": "Transaction fee"
@@ -8703,24 +8705,15 @@
   "transactionIncludesTypes": {
     "message": "This transaction includes: $1."
   },
-  "transactionResubmitted": {
-    "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
-  },
   "transactionSettings": {
     "message": "Transaction settings"
   },
   "transactionShield": {
     "message": "Transaction Shield"
   },
-  "transactionSubmitted": {
-    "message": "Transaction submitted with estimated gas fee of $1 at $2."
-  },
   "transactionTotalGasFee": {
     "message": "Total gas fee",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Transaction updated at $2."
   },
   "transactions": {
     "message": "Transactions"

@@ -43,7 +43,6 @@ export const lavamoatPlugin = (args: Args) =>
       errorTrapping: 'none',
       reporting: 'none',
     },
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => {
       if (chunk.name && unsafeEntries.has(chunk.name)) {
         // unsafeEntries are running outside of LavaMoat
