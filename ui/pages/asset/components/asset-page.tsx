@@ -239,6 +239,15 @@ const AssetPage = ({
   const stockBadgeLabel = isMarketClosed
     ? t('bridgeMarketClosedBadge')
     : t('tokenStock');
+  const assetNameElement = (
+    <Text
+      variant={TextVariant.bodyMdMedium}
+      color={TextColor.textAlternative}
+      data-testid="asset-name"
+    >
+      {assetDisplayName}
+    </Text>
+  );
 
   // Check if we should show Tron resources
   const isTron = useMultichainSelector(getMultichainIsTron, selectedAccount);
@@ -273,26 +282,14 @@ const AssetPage = ({
       <Box paddingLeft={4}>
         {isStockToken ? (
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.textAlternative}
-              data-testid="asset-name"
-            >
-              {assetDisplayName}
-            </Text>
+            {assetNameElement}
             <Tag
               label={stockBadgeLabel}
               {...(isMarketClosed ? { startIconName: IconName.Clock } : {})}
             />
           </Box>
         ) : (
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textAlternative}
-            data-testid="asset-name"
-          >
-            {assetDisplayName}
-          </Text>
+          assetNameElement
         )}
       </Box>
       <AssetChart
