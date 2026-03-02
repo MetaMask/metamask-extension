@@ -35,6 +35,7 @@ const mockUnsuccessfulSrpReveal = () => {
 const mockRequestRevealSeedWords = jest
   .fn()
   .mockImplementation(mockSuccessfulSrpReveal);
+const mockScanUrlForPhishing = jest.fn().mockResolvedValue(null);
 const mockShowModal = jest.fn();
 const password = 'password';
 
@@ -42,6 +43,7 @@ jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
   requestRevealSeedWords: (userPassword, keyringId) =>
     mockRequestRevealSeedWords(userPassword, keyringId),
+  scanUrlForPhishing: (...args) => mockScanUrlForPhishing(...args),
 }));
 
 const mockStateWithModal = {
@@ -380,6 +382,129 @@ describe('Reveal Seed Page', () => {
           key_type: MetaMetricsEventKeyType.Srp,
           hd_entropy_index: 0,
         },
+      });
+    });
+  });
+
+  describe('dapp scan warning', () => {
+    beforeEach(() => {
+      mockScanUrlForPhishing.mockReset().mockResolvedValue(null);
+    });
+
+    it('does not show dapp scan warning when scan returns no result', async () => {
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(mockScanUrlForPhishing).toHaveBeenCalled();
+      });
+
+      expect(queryByTestId('dapp-scan-warning')).not.toBeInTheDocument();
+      expect(
+        queryByText('MetaMask Support will never request this.'),
+      ).toBeInTheDocument();
+    });
+
+    it('shows dapp scan warning and hides generic warning when site is malicious', async () => {
+      mockScanUrlForPhishing.mockResolvedValue({
+        recommendedAction: 'BLOCK',
+        hostname: 'evil.com',
+      });
+
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(queryByTestId('dapp-scan-warning')).toBeInTheDocument();
+      });
+
+      expect(queryByText('Malicious website detected!')).toBeInTheDocument();
+      expect(
+        queryByText('MetaMask Support will never request this.'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows acknowledgment checkbox when site is malicious', async () => {
+      mockScanUrlForPhishing.mockResolvedValue({
+        recommendedAction: 'BLOCK',
+        hostname: 'evil.com',
+      });
+
+      const { queryByTestId } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(
+          queryByTestId('dapp-scan-acknowledge-checkbox'),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('next button is disabled until checkbox is acknowledged on malicious site', async () => {
+      mockScanUrlForPhishing.mockResolvedValue({
+        recommendedAction: 'BLOCK',
+        hostname: 'evil.com',
+      });
+
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(queryByTestId('dapp-scan-warning')).toBeInTheDocument();
+      });
+
+      fireEvent.change(queryByTestId('input-password'), {
+        target: { value: password },
+      });
+
+      const nextButton = queryByText('Next');
+      expect(nextButton).toBeDisabled();
+
+      fireEvent.click(queryByTestId('dapp-scan-acknowledge-checkbox'));
+
+      expect(nextButton).toBeEnabled();
+    });
+
+    it('fires SrpRevealDappCheck metric event after scan', async () => {
+      mockScanUrlForPhishing.mockResolvedValue({
+        recommendedAction: 'BLOCK',
+        hostname: 'evil.com',
+      });
+
+      const mockTrackEvent = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: mockTrackEvent,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
+
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <RevealSeedPage />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledWith({
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.SrpRevealDappCheck,
+          properties: {
+            key_type: MetaMetricsEventKeyType.Srp,
+            active_tab_origin: 'https://metamask.github.io',
+            recommended_action: 'BLOCK',
+            hostname: 'evil.com',
+          },
+        });
       });
     });
   });

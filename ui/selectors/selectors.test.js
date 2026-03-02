@@ -4175,6 +4175,55 @@ describe('getPermissionsForActiveTab', () => {
   });
 });
 
+describe('getUrlOfCurrentTab', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('returns activeTab.url in popup context', () => {
+    const util = jest.requireMock('../../app/scripts/lib/util');
+    util.getEnvironmentType.mockReturnValue('popup');
+
+    const state = {
+      activeTab: { url: 'https://example.com/page' },
+      metamask: {},
+    };
+
+    const result = selectors.getUrlOfCurrentTab(state);
+    expect(result).toBe('https://example.com/page');
+  });
+
+  it('returns appActiveTab.url in sidepanel context', () => {
+    const util = jest.requireMock('../../app/scripts/lib/util');
+    util.getEnvironmentType.mockReturnValue('sidepanel');
+
+    const state = {
+      activeTab: {},
+      metamask: {
+        appActiveTab: { url: 'https://testdapp.com' },
+      },
+    };
+
+    const result = selectors.getUrlOfCurrentTab(state);
+    expect(result).toBe('https://testdapp.com');
+  });
+
+  it('returns null when appActiveTab is undefined in sidepanel', () => {
+    const util = jest.requireMock('../../app/scripts/lib/util');
+    util.getEnvironmentType.mockReturnValue('sidepanel');
+
+    const state = {
+      activeTab: {},
+      metamask: {
+        appActiveTab: undefined,
+      },
+    };
+
+    const result = selectors.getUrlOfCurrentTab(state);
+    expect(result).toBeNull();
+  });
+});
+
 describe('getIsDefiPositionsEnabled', () => {
   it('returns true when assetsDefiPositionsEnabled flag is true', () => {
     const state = {
