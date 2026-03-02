@@ -698,12 +698,6 @@
       "error: Error: Insufficient number of substitutions": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/app/transaction-list/transaction-list.test.js": {
-      "MetaMask: Background connection not initialized": 36,
-      "Reselect: Identity function warnings": 5,
-      "Reselect: Input stability warnings": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/app/update-modal/update-modal.test.tsx": {
       "MetaMask: Background connection not initialized": 2,
       "React: Act warnings (component updates not wrapped)": 1

@@ -79,8 +79,7 @@ export const ActivityList = ({ filter }: Props) => {
 
   // Merge and flatten for virtualization
   const flattenedItems = useMemo(() => {
-    let evmTransactions =
-      data?.pages?.flatMap((page) => page.data ?? []) ?? [];
+    let evmTransactions = data?.pages?.flatMap((page) => page.data ?? []) ?? [];
 
     // Filter local transactions by converting hex chainId to CAIP-2
     let filteredLocalTransactions = filterLocalNotInApi(
@@ -127,7 +126,14 @@ export const ActivityList = ({ filter }: Props) => {
     );
 
     return groupAndFlattenMergedTransactions(mergedByTime);
-  }, [data, nonEvmTransactions, localTransactions, enabledNetworks, filter?.tokenAddress, filter?.chainId]);
+  }, [
+    data,
+    nonEvmTransactions,
+    localTransactions,
+    enabledNetworks,
+    filter?.tokenAddress,
+    filter?.chainId,
+  ]);
 
   const [scrollMargin, setScrollMargin] = useState(0);
 
