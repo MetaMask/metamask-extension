@@ -10,6 +10,10 @@ import {
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/personal-sign-confirmation';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
+import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -17,17 +21,9 @@ import {
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
-  assertHeaderInfoBalance,
-  assertPastedAddress,
-  assertRejectedSignature,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
-  assertVerifiedSiweMessage,
-  clickHeaderInfoBtn,
-  copyAddressAndPasteWalletAddress,
-  initializePages,
-  openDappAndTriggerSignature,
-  SignatureType,
+  WALLET_ETH_BALANCE,
 } from './signature-helpers';
 
 describe('Confirmation Signature - SIWE', function (this: Suite) {
@@ -38,21 +34,21 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await initializePages(driver);
-        await openDappAndTriggerSignature(driver, SignatureType.SIWE);
+        const testDapp = new TestDapp(driver);
+        const confirmation = new Confirmation(driver);
+        const accountDetailsModal = new AccountDetailsModal(driver);
 
-        await clickHeaderInfoBtn(driver);
-        await assertHeaderInfoBalance();
+        await loginWithBalanceValidation(driver);
+        await testDapp.openTestDappAndTriggerSignature(SignatureType.SIWE);
 
-        await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress();
+        await confirmation.clickHeaderAccountDetailsButton();
+        await accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
+        await accountDetailsModal.clickAccountDetailsModalCloseButton();
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
 
-        await assertVerifiedSiweMessage(
-          driver,
+        await testDapp.assertVerifiedSiweMessage(
           '0xef8674a92d62a1876624547bdccaef6c67014ae821de18fa910fbff56577a65830f68848585b33d1f4b9ea1c3da1c1b11553b6aabe8446717daf7cd1e38a68271c',
         );
 
@@ -83,15 +79,17 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await initializePages(driver);
         const confirmation = new PersonalSignConfirmation(driver);
-        await openDappAndTriggerSignature(driver, SignatureType.SIWE);
+        const testDapp = new TestDapp(driver);
+
+        await loginWithBalanceValidation(driver);
+        await testDapp.openTestDappAndTriggerSignature(SignatureType.SIWE);
 
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await assertRejectedSignature();
+        await testDapp.assertUserRejectedRequest();
         await assertSignatureRejectedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
