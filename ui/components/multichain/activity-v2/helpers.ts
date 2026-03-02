@@ -1,4 +1,5 @@
 import type { Transaction } from '@metamask/keyring-api';
+import type { CaipChainId } from '@metamask/utils';
 import type {
   Token,
   TokenAmount,
@@ -6,6 +7,11 @@ import type {
   TransactionViewModel,
 } from '../../../../shared/lib/multichain/types';
 import { formatUnits } from '../../../../shared/lib/unit';
+
+export type ActivityListFilter = {
+  tokenAddress?: string;
+  chainId?: CaipChainId;
+};
 
 export type FlattenedItem =
   | { type: 'date-header'; date: number }
@@ -158,6 +164,75 @@ export function groupAndFlattenMergedTransactions(
   }
 
   return flattened;
+}
+
+/**
+ * Returns true if the API transaction involves the given token address
+ * (as sender, receiver, or in value transfers).
+ *
+ * @param tx - The API transaction view model.
+ * @param tokenAddress - The token contract address to match against.
+ * @returns Whether the transaction involves the given token.
+ */
+export function matchesApiTransaction(
+  tx: TransactionViewModel,
+  tokenAddress: string,
+): boolean {
+  const addr = tokenAddress.toLowerCase();
+  if (tx.amounts?.from?.token.address?.toLowerCase() === addr) {
+    return true;
+  }
+  if (tx.amounts?.to?.token.address?.toLowerCase() === addr) {
+    return true;
+  }
+  return (
+    tx.valueTransfers?.some(
+      (vt) => vt.contractAddress?.toLowerCase() === addr,
+    ) ?? false
+  );
+}
+
+/**
+ * Returns true if the local transaction group's target contract matches the token address.
+ * For ERC-20 interactions, txParams.to is the token contract.
+ *
+ * @param group - The local transaction group.
+ * @param tokenAddress - The token contract address to match against.
+ * @returns Whether the transaction group targets the given token contract.
+ */
+export function matchesLocalTransaction(
+  group: TransactionGroup,
+  tokenAddress: string,
+): boolean {
+  return (
+    group.initialTransaction.txParams?.to?.toLowerCase() ===
+    tokenAddress.toLowerCase()
+  );
+}
+
+/**
+ * Returns true if the non-EVM transaction involves the given token address
+ * by checking the CAIP asset type in from/to asset entries.
+ *
+ * @param tx - The non-EVM transaction to check.
+ * @param tokenAddress - The CAIP asset type or address to match against.
+ * @returns Whether the transaction involves the given token.
+ */
+export function matchesNonEvmTransaction(
+  tx: Transaction,
+  tokenAddress: string,
+): boolean {
+  const addr = tokenAddress.toLowerCase();
+  const assetEntries = [...(tx.from ?? []), ...(tx.to ?? [])];
+  return assetEntries.some((entry) => {
+    if (!entry.asset) {
+      return false;
+    }
+    if (entry.asset.fungible) {
+      return entry.asset.type.toLowerCase() === addr;
+    }
+    return 'id' in entry.asset && entry.asset.id.toLowerCase().includes(addr);
+  });
 }
 
 export function calculateFiatFromMarketRates(

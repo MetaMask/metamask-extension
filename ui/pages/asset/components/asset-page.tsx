@@ -25,7 +25,7 @@ import {
   TokenFiatDisplayInfo,
   type TokenWithFiatAmount,
 } from '../../../components/app/assets/types';
-import UnifiedTransactionList from '../../../components/app/transaction-list/unified-transaction-list.component';
+import { ActivityList } from '../../../components/multichain/activity-v2/activity-list';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import {
   AvatarNetwork,
@@ -433,11 +433,7 @@ const AssetPage = ({
             <Text paddingInline={4} variant={TextVariant.headingSm}>
               {t('yourActivity')}
             </Text>
-            <UnifiedTransactionList
-              tokenAddress={address}
-              hideNetworkFilter
-              tokenChainIdOverride={chainId}
-            />
+            <ActivityList filter={{ tokenAddress: address, chainId: caipChainId }} />
           </Box>
         </Box>
       </Box>

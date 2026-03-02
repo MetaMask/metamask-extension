@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import type { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type {
   Token,
@@ -17,14 +18,18 @@ import { selectRequiredTransactionHashes } from '../../../selectors/transactionC
 import { queries } from '../../../helpers/queries';
 import { selectTransactions } from '../../../../shared/lib/multichain/transformations';
 import { calculateFiatFromMarketRates } from './helpers';
+import type { ActivityListFilter } from './helpers';
 
-function useTransactionParams() {
+function useTransactionParams(caipChainId?: CaipChainId) {
   const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
   const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
 
   const evmNetworks = useMemo(
-    () => enabledNetworks.filter((id: string) => id.startsWith('eip155:')),
-    [enabledNetworks],
+    () =>
+      caipChainId
+        ? [caipChainId]
+        : enabledNetworks.filter((id: string) => id.startsWith('eip155:')),
+    [enabledNetworks, caipChainId],
   );
 
   const accountAddresses = useMemo(
@@ -42,9 +47,10 @@ function useTransactionParams() {
   );
 }
 
-export function useTransactionsQuery() {
+export function useTransactionsQuery(filter?: ActivityListFilter) {
   const useExternalServices = useSelector(getUseExternalServices);
-  const { evmAddress, accountAddresses, networks } = useTransactionParams();
+  const { evmAddress, accountAddresses, networks } =
+    useTransactionParams(filter?.chainId);
   const internalTxHashes = useSelector(selectRequiredTransactionHashes);
 
   const selectFn = useMemo(
