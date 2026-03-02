@@ -1,205 +1,174 @@
-/* eslint-disable mocha/no-skipped-tests */
-import { Mockttp } from 'mockttp';
+import { strict as assert } from 'assert';
+import { MockedEndpoint, Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../../data/mock-data';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { buildQuote, reviewQuote, checkNotification } from './shared';
+import HomePage from '../../page-objects/pages/home/homepage';
+import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import {
+  getBridgeFixtures,
+  getInsufficientFundsFixtures,
+  getQuoteNegativeCasesFixtures,
+} from '../bridge/bridge-test-utils';
+import {
+  BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+  DEFAULT_BRIDGE_FEATURE_FLAGS,
+} from '../bridge/constants';
+import { checkNotification } from './shared';
 
-async function mockSwapsTransactionQuote(mockServer: Mockttp) {
-  return [
-    await mockServer
-      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: SWAP_TEST_ETH_USDC_TRADES_MOCK,
-      })),
-  ];
-}
+const UNSTABLE_TOKEN_PRICE_TITLE = 'Unstable token price';
+const UNSTABLE_TOKEN_PRICE_DESCRIPTION =
+  'The price of this token in USD is highly volatile, indicating a high risk of losing significant value by interacting with it.';
 
-// Skipped as this will be supported in the new swap flow in the future
-describe.skip('Swaps - notifications', function () {
-  async function mockTradesApiPriceSlippageError(mockServer: Mockttp) {
-    await mockServer
-      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: [
-            {
-              trade: {
-                data: '0x0',
-                from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                value: '2000000000000000000',
-                to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
+const getBridgeFixturesWithTokenAlertWarning = (title?: string) => {
+  const fixtures = getBridgeFixtures(
+    title,
+    BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+    false,
+  );
+
+  return {
+    ...fixtures,
+    testSpecificMock: async (mockServer: Mockttp) => {
+      const baseMocks = fixtures.testSpecificMock
+        ? await fixtures.testSpecificMock(mockServer)
+        : [];
+
+      return [
+        ...baseMocks,
+        await mockServer
+          .forPost('https://security-alerts.api.cx.metamask.io/token/scan')
+          .always()
+          .thenJson(200, {
+            features: [
+              {
+                // This maps to "Unstable token price" in i18n.
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                feature_id: 'UNSTABLE_TOKEN_PRICE',
+                type: 'Warning',
+                description: 'Unstable price warning',
               },
-              hasRoute: false,
-              sourceAmount: '2000000000000000000',
-              destinationAmount: '16521445264052765704984287606833',
-              error: null,
-              sourceToken: '0x0000000000000000000000000000000000000000',
-              destinationToken: '0xc6bdb96e29c38dc43f014eed44de4106a6a8eb5f',
-              maxGas: 1000000,
-              averageGas: 560305,
-              estimatedRefund: 0,
-              approvalNeeded: null,
-              fetchTime: 312,
-              aggregator: 'oneInch',
-              aggType: 'AGG',
-              fee: 0.875,
-              quoteRefreshSeconds: 30,
-              gasMultiplier: 1.06,
-              sourceTokenRate: 1,
-              destinationTokenRate: 3,
-              priceSlippage: {
-                ratio: -1.14736836569258,
-                calculationError: 'error',
-                bucket: 'low',
-                sourceAmountInETH: 2,
-                destinationAmountInETH: 6,
-                sourceAmountInNativeCurrency: 2,
-                destinationAmountInNativeCurrency: 6,
-              },
-            },
-          ],
-        };
-      });
-  }
+            ],
+          }),
+      ];
+    },
+  };
+};
 
-  it('tests notifications for verified token on 1 source and price difference', async function () {
+describe('Swaps - notifications', function () {
+  it('shows token risk warning banner for unstable token price', async function () {
     await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockTradesApiPriceSlippageError,
-        localNodeOptions: 'ganache',
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        await buildQuote(driver, {
-          amount: 2,
-          swapTo: 'INUINU',
-        });
+      getBridgeFixturesWithTokenAlertWarning(this.test?.fullTitle()),
+      async ({ driver, mockedEndpoint }) => {
+        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
+        const homePage = new HomePage(driver);
+        await homePage.startSwapFlow();
 
-        await checkNotification(driver, {
-          title: 'Potentially inauthentic token',
-          text: 'INUINU is only verified on 1 source. Consider verifying it on Etherscan before proceeding.',
+        const bridgeQuotePage = new BridgeQuotePage(driver);
+        await bridgeQuotePage.enterBridgeQuote({
+          amount: '1',
         });
-        await driver.clickElement({ text: 'Continue swapping', tag: 'button' });
-        await driver.waitForSelector({
-          text: 'Swap',
-          tag: 'button',
-        });
-        await checkNotification(driver, {
-          title: 'Check your rate before proceeding',
-          text: 'Price impact could not be determined due to lack of market price data.',
-        });
-        await driver.clickElement({ text: 'Swap anyway', tag: 'button' });
-        await reviewQuote(driver, {
-          amount: 2,
-          swapFrom: 'TESTETH',
-          swapTo: 'INUINU',
-          skipCounter: true,
-        });
-        await driver.findClickableElement({
-          text: 'Swap',
-          tag: 'button',
-        });
-      },
-    );
-  });
-  it('tests a notification for not enough balance', async function () {
-    const localNodeOptions = {
-      mnemonic: 'test test test test test test test test test test test junk',
-    };
+        await bridgeQuotePage.waitForQuote();
 
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        localNodeOptions,
-        testSpecificMock: mockSwapsTransactionQuote,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        await buildQuote(driver, {
-          amount: 0.001,
-          swapTo: 'USDC',
-        });
-        await checkNotification(driver, {
-          title: 'Insufficient balance',
-          text: 'You need 0.001 more TESTETH to complete this swap',
-        });
-        await reviewQuote(driver, {
-          swapFrom: 'TESTETH',
-          swapTo: 'USDC',
-          amount: 0.001,
-          skipCounter: true,
-        });
-        await driver.waitForSelector({
-          text: 'Swap',
-          tag: 'button',
-          css: '[disabled]',
-        });
-      },
-    );
-  });
-  it('tests notifications for token import', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        await buildQuote(driver, {
-          amount: 2,
-          swapToContractAddress: '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf',
-        });
-        await driver.clickElement(
-          '[data-testid="import-tokens-import-button"]',
+        const allSeenRequests = (
+          await Promise.all(
+            mockedEndpoint.map((endpoint: MockedEndpoint) =>
+              endpoint.getSeenRequests(),
+            ),
+          )
+        ).flat();
+        const tokenScanRequests = allSeenRequests.filter((request: Request) =>
+          request.url.includes('security-alerts.api.cx.metamask.io/token/scan'),
         );
-        await checkNotification(driver, {
-          title: 'Token added manually',
-          text: 'Verify this token on Etherscan and make sure it is the token you want to trade.',
-        });
+        assert.ok(
+          tokenScanRequests.length > 0,
+          'Security alerts token/scan endpoint was not called',
+        );
+
+        await bridgeQuotePage.checkTokenRiskWarningIsDisplayed(
+          UNSTABLE_TOKEN_PRICE_TITLE,
+          UNSTABLE_TOKEN_PRICE_DESCRIPTION,
+        );
       },
     );
   });
-  it('tests notifications for slippage', async function () {
+
+  it('shows insufficient funds state', async function () {
+    await withFixtures(
+      getInsufficientFundsFixtures(
+        DEFAULT_BRIDGE_FEATURE_FLAGS,
+        this.test?.fullTitle(),
+      ),
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
+        const homePage = new HomePage(driver);
+        await homePage.startSwapFlow();
+
+        const bridgeQuotePage = new BridgeQuotePage(driver);
+        await bridgeQuotePage.enterBridgeQuote({
+          amount: '24.9950',
+          tokenFrom: 'ETH',
+          tokenTo: 'WETH',
+          fromChain: 'Ethereum',
+          toChain: 'Linea',
+        });
+        await bridgeQuotePage.checkInsufficientFundsButtonIsDisplayed();
+        await bridgeQuotePage.checkMoreETHneededIsDisplayed();
+      },
+    );
+  });
+
+  it('shows no trade route available notification', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSwapsTransactionQuote,
-        title: this.test?.fullTitle(),
+        ...getQuoteNegativeCasesFixtures(
+          {
+            statusCode: 500,
+            json: 'Internal server error',
+          },
+          DEFAULT_BRIDGE_FEATURE_FLAGS,
+          this.test?.fullTitle(),
+        ),
       },
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
+        const homePage = new HomePage(driver);
+        await homePage.startSwapFlow();
+
+        const bridgeQuotePage = new BridgeQuotePage(driver);
+        await bridgeQuotePage.enterBridgeQuote({
+          amount: '1',
+          tokenFrom: 'ETH',
+          tokenTo: 'ETH',
+          fromChain: 'Ethereum',
+          toChain: 'Linea',
+        });
+        await bridgeQuotePage.checkNoTradeRouteMessageIsDisplayed();
+      },
+    );
+  });
+
+  it('shows low slippage warning in transaction settings', async function () {
+    await withFixtures(
+      getBridgeFixtures(
+        this.test?.fullTitle(),
+        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+      ),
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        await buildQuote(driver, {
-          amount: 0.0001,
-          swapTo: 'DAI',
+        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
+        const homePage = new HomePage(driver);
+        await homePage.startSwapFlow();
+
+        const bridgeQuotePage = new BridgeQuotePage(driver);
+        await bridgeQuotePage.enterBridgeQuote({
+          amount: '1',
         });
-        await driver.clickElement('[title="Transaction settings"]');
-        await driver.clickElement({ text: 'custom', tag: 'button' });
-        await driver.fill('input[data-testid*="slippage"]', '0');
-        await checkNotification(driver, {
-          title: 'Sourcing zero-slippage providers',
-          text: 'There are fewer zero-slippage quote providers which will result in a less competitive quote.',
-        });
-        await driver.fill('input[data-testid*="slippage"]', '1');
+        await bridgeQuotePage.waitForQuote();
+
+        await bridgeQuotePage.setCustomSlippage('0.1');
+
         await checkNotification(driver, {
           title: 'Low slippage',
-          text: 'A value this low (1%) may result in a failed swap',
-        });
-        await driver.fill('input[data-testid*="slippage"]', '15');
-        await checkNotification(driver, {
-          title: 'High slippage',
-          text: 'The slippage entered (15%) is considered very high and may result in a bad rate',
-        });
-        await driver.fill('input[data-testid*="slippage"]', '20');
-        await checkNotification(driver, {
-          title: 'Very high slippage',
-          text: 'Slippage tolerance must be 15% or less. Anything higher will result in a bad rate.',
+          text: 'A value this low (0.1%) may result in a failed swap',
         });
       },
     );

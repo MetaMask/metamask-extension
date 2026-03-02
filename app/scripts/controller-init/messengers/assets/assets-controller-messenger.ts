@@ -8,6 +8,7 @@ import {
   NetworkEnablementControllerGetStateAction,
   NetworkEnablementControllerEvents,
 } from '@metamask/network-enablement-controller';
+import type { ClientControllerStateChangeEvent } from '@metamask/client-controller';
 import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
@@ -17,6 +18,7 @@ import type {
   BackendWebSocketServiceActions,
   BackendWebSocketServiceEvents,
 } from '@metamask/core-backend';
+import type { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
 import type {
   GetPermissions,
   PermissionControllerStateChange,
@@ -26,6 +28,7 @@ import type {
   HandleSnapRequest,
 } from '@metamask/snaps-controllers';
 import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
+import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 /**
@@ -47,6 +50,7 @@ type CoreAssetsControllerActions =
  */
 type CoreAssetsControllerEvents =
   | AccountTreeControllerSelectedAccountGroupChangeEvent
+  | ClientControllerStateChangeEvent
   | NetworkEnablementControllerEvents
   | KeyringControllerLockEvent
   | KeyringControllerUnlockEvent;
@@ -178,7 +182,8 @@ type AllowedEvents =
   | CoreAssetsControllerEvents
   | RpcDataSourceEvents
   | BackendWebsocketDataSourceEvents
-  | SnapDataSourceEvents;
+  | SnapDataSourceEvents
+  | PreferencesControllerStateChangeEvent;
 
 /**
  * Messenger type for AssetsController initialization.
@@ -230,6 +235,7 @@ export function getAssetsControllerMessenger(
     ],
     events: [
       'AccountTreeController:selectedAccountGroupChange',
+      'ClientController:stateChange',
       'NetworkEnablementController:stateChange',
       'KeyringController:lock',
       'KeyringController:unlock',
@@ -237,6 +243,7 @@ export function getAssetsControllerMessenger(
       'BackendWebSocketService:connectionStateChanged',
       'AccountsController:accountBalancesUpdated',
       'PermissionController:stateChange',
+      'PreferencesController:stateChange',
     ],
   });
 
@@ -257,6 +264,7 @@ type PreferencesControllerGetStateAction = {
 type AllowedInitializationActions =
   | AuthenticationControllerGetBearerToken
   | HandleSnapRequest
+  | MetaMetricsControllerTrackEventAction
   | PreferencesControllerGetStateAction;
 
 /**
@@ -284,6 +292,7 @@ export function getAssetsControllerInitMessenger(
     actions: [
       'AuthenticationController:getBearerToken',
       'SnapController:handleRequest',
+      'MetaMetricsController:trackEvent',
       'PreferencesController:getState',
     ],
   });

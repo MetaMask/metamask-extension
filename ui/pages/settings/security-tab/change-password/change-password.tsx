@@ -21,7 +21,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { isBeta, isFlask } from '../../../../helpers/utils/build-types';
+import { isBeta, isFlask } from '../../../../../shared/lib/build-types';
 import Mascot from '../../../../components/ui/mascot';
 import Spinner from '../../../../components/ui/spinner';
 import { useI18nContext } from '../../../../hooks/useI18nContext';

@@ -1,3 +1,4 @@
+import { SupportedPermissionType } from '@metamask/gator-permissions-controller';
 import { ENVIRONMENT } from '../../development/build/constants';
 
 export const isProduction = (): boolean => {
@@ -27,10 +28,11 @@ export const getIsSettingsPageDevOptionsEnabled = (): boolean => {
  * @returns An array of enabled permission type strings (e.g., 'native-token-stream',
  * 'erc20-token-periodic'), or an empty array if none are configured.
  */
-export const getEnabledAdvancedPermissions = (): string[] => {
+export const getEnabledAdvancedPermissions = (): SupportedPermissionType[] => {
   const enabled =
     process.env.GATOR_ENABLED_PERMISSION_TYPES?.toString().trim() || '';
-  return enabled.split(',').filter(Boolean);
+
+  return enabled.split(',').filter(Boolean) as SupportedPermissionType[];
 };
 
 export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {

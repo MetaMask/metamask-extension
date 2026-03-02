@@ -6,6 +6,8 @@ alwaysApply: false
 
 Reference: [MetaMask Extension E2E Test Guidelines](https://github.com/MetaMask/contributor-docs/blob/main/docs/testing/e2e/extension-e2e-guidelines.md)
 
+**See also:** [Test i18n Usage Guidelines](../test-i18n-usage/RULE.md) - For i18n patterns in test assertions
+
 # MetaMask Extension E2E Testing Guidelines
 
 ## Core Principles
@@ -71,14 +73,32 @@ Reference: [MetaMask Extension E2E Test Guidelines](https://github.com/MetaMask/
 - Use fixtures to set up test prerequisites instead of UI steps
 - Minimize UI interactions to reduce potential breaking points
 - Improve test stability by reducing timing and synchronization issues
+- Prefer `FixtureBuilderV2` for new or updated specs
+- Use legacy `FixtureBuilder` only when a required method is not yet available in `FixtureBuilderV2`
+
+### Fixture Builder Migration Guidance
+
+For new test code, use `FixtureBuilderV2` by default.
+
+`FixtureBuilderV2` currently supports:
+
+- `withAddressBookController`
+- `withCurrencyController`
+- `withPermissionController`
+- `withPreferencesController`
+- `withConversionRateDisabled`
+- `withEnabledNetworks`
+- `withPermissionControllerConnectedToTestDapp`
+
+If your test only needs these methods (or just `.build()`), prefer `FixtureBuilderV2` instead of the legacy builder.
 
 ### Example:
 
 ```typescript
 // GOOD: Use fixture to set up prerequisites
-new FixtureBuilder()
-  .withAddressBookControllerContactBob()
-  .withTokensControllerERC20()
+new FixtureBuilderV2()
+  .withPreferencesController({ useCurrencyRateCheck: false })
+  .withPermissionControllerConnectedToTestDapp()
   .build();
 
 // Then test only the essential steps:
@@ -87,7 +107,7 @@ new FixtureBuilder()
 // Assertion
 
 // BAD: Building all state through UI
-new FixtureBuilder().build();
+new FixtureBuilderV2().build();
 // Login
 // Add Contact
 // Open test dapp
@@ -417,7 +437,7 @@ async function mockTokenPriceApi(
 
 await withFixtures(
   {
-    fixtures: new FixtureBuilder().build(),
+    fixtures: new FixtureBuilderV2().build(),
     title: this.test?.fullTitle(),
     testSpecificMock: mockTokenPriceApi, // Layered on top of global mocks
   },
@@ -450,6 +470,7 @@ Before submitting E2E tests, ensure:
 - [ ] Proper waiting strategies used (waitForSelector, waitForMultipleSelectors)
 - [ ] Mock responses used for network calls instead of real API dependencies
 - [ ] Use fixtures to set up test state instead of UI interactions
+- [ ] Prefer `FixtureBuilderV2` when the required fixture methods are supported
 - [ ] Error handling for expected failure scenarios
 
 ## Debugging Failed Tests

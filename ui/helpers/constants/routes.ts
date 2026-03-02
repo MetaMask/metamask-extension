@@ -61,7 +61,6 @@ export const SECURITY_PASSWORD_CHANGE_ROUTE =
 export const BACKUPANDSYNC_ROUTE =
   '/settings/security-and-privacy/backup-and-sync';
 export const REVEAL_SEED_ROUTE = '/seed';
-export const SMART_ACCOUNT_UPDATE = '/smart-account-update';
 export const IMPORT_SRP_ROUTE = '/import-srp';
 export const RESTORE_VAULT_ROUTE = '/restore-vault';
 export const IMPORT_TOKEN_ROUTE = '/import-token';
@@ -113,6 +112,7 @@ export const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH =
 export const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
 export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
 export const PREPARE_SWAP_ROUTE = '/swaps/prepare-bridge-page';
+export const SWAP_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
 export const AWAITING_SIGNATURES_ROUTE = '/swaps/awaiting-signatures';
 export const ONBOARDING_ROUTE = '/onboarding';
 export const ONBOARDING_REVEAL_SRP_ROUTE = '/onboarding/reveal-recovery-phrase';
@@ -139,12 +139,17 @@ export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 ///: END:ONLY_INCLUDE_IF
 
 export const DEEP_LINK_ROUTE = '/link';
+
+/** Shown when Basic Functionality is off and user opens a route that requires it (e.g. swap, rewards). */
+export const BASIC_FUNCTIONALITY_OFF_ROUTE = '/basic-functionality-off';
+
 export const DEFI_ROUTE = '/defi';
 
 // Perps routes
 export const PERPS_ROUTE = '/perps';
 export const PERPS_HOME_ROUTE = '/perps/home';
 export const PERPS_MARKET_DETAIL_ROUTE = '/perps/market';
+export const PERPS_ORDER_ENTRY_ROUTE = '/perps/trade';
 export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
 export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 
@@ -167,6 +172,11 @@ export const ROUTES = [
   {
     path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
     label: 'Perps Market Detail',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
+    label: 'Perps Order Entry',
     trackInAnalytics: true,
   },
   {
@@ -304,11 +314,6 @@ export const ROUTES = [
   {
     path: `${REVEAL_SEED_ROUTE}/:keyringId`,
     label: 'Reveal Secret Recovery Phrase Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: SMART_ACCOUNT_UPDATE,
-    label: 'Smart Account Update Page',
     trackInAnalytics: true,
   },
   {
@@ -466,7 +471,7 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
+    path: SWAP_PATH,
     label: 'Prepare Bridge Page',
     trackInAnalytics: true,
   },
