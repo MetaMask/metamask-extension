@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du måste välja ett konto!"
   },
-  "activityLog": {
-    "message": "aktivitetslogg"
-  },
   "addAcquiredTokens": {
     "message": "Lägg till de tokens du har skaffat med MetaMask"
   },
@@ -578,9 +575,6 @@
   "speedUpCancellation": {
     "message": "Snabba upp denna avbokning"
   },
-  "speedUpTransaction": {
-    "message": "Snabba upp den här transaktionen"
-  },
   "stateLogError": {
     "message": "Fel vid inhämtande av statusloggar."
   },
@@ -617,38 +611,11 @@
   "transaction": {
     "message": "överföring"
   },
-  "transactionCancelAttempted": {
-    "message": "Överföringsavbrott har försökt göras med gasavgift på $1 vid $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Överföringen avbröts vid $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transaktionen bekräftad på $2."
-  },
-  "transactionCreated": {
-    "message": "Transaktion skapad med ett värde på $1 på $2."
-  },
-  "transactionDropped": {
-    "message": "Transaktionen avbruten vid $2."
-  },
   "transactionError": {
     "message": "Överföringsfel. Undantag i kontraktskoden."
   },
   "transactionErrorNoContract": {
     "message": "Försöker åberopa en funktion på en icke-kontraktsadress."
-  },
-  "transactionErrored": {
-    "message": "Transaktionen påträffade ett fel."
-  },
-  "transactionResubmitted": {
-    "message": "Transaktion skickad igen med gas-avgift ökad till $1 på $2"
-  },
-  "transactionSubmitted": {
-    "message": "Överföring angedd med gasavgift på $1 vid $2."
-  },
-  "transactionUpdated": {
-    "message": "Transaktionen uppdaterades $2."
   },
   "transfer": {
     "message": "Överföring"

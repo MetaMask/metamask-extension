@@ -138,6 +138,97 @@ describe('DeepLinkRouter', () => {
       },
     );
 
+    describe('trusted origin (metamask.io)', () => {
+      const EXTENSION_HOME = 'chrome-extension://extension-id/home.html';
+
+      const arrangeParsedDeepLinks = (props: Partial<ParsedDeepLink>) =>
+        ({
+          signature: 'valid',
+          destination: {},
+          ...props,
+        }) as ParsedDeepLink;
+
+      const arrangeRequestDetails = (
+        props: Partial<browser.WebRequest.OnBeforeRequestDetailsType>,
+      ) =>
+        ({
+          tabId: 1,
+          url: 'https://example.com/test-route',
+          ...props,
+        }) as browser.WebRequest.OnBeforeRequestDetailsType;
+
+      const signedInternalRoute = arrangeParsedDeepLinks({
+        signature: 'valid',
+        destination: {
+          path: 'internal-route',
+          query: new URLSearchParams([['one', 'two']]),
+        },
+      });
+
+      const unsignedInternalRoute = arrangeParsedDeepLinks({
+        signature: 'missing',
+        destination: {
+          path: 'internal-route',
+          query: new URLSearchParams([['query', 'param']]),
+        },
+      });
+
+      const interstitialTestCases = [
+        {
+          name: 'signed links initiated from metamask.io (Chrome initiator)',
+          parsed: signedInternalRoute,
+          requestDetails: arrangeRequestDetails({
+            initiator: 'https://metamask.io',
+          }),
+          expectedUrl: `${EXTENSION_HOME}#internal-route?one=two`,
+        },
+        {
+          name: 'signed links initiated from app.metamask.io (Chrome initiator)',
+          parsed: signedInternalRoute,
+          requestDetails: arrangeRequestDetails({
+            initiator: 'https://app.metamask.io',
+          }),
+          expectedUrl: `${EXTENSION_HOME}#internal-route?one=two`,
+        },
+        {
+          name: 'signed links initiated from metamask.io (Firefox originUrl)',
+          parsed: signedInternalRoute,
+          requestDetails: arrangeRequestDetails({
+            originUrl: 'https://metamask.io/portfolio/assets',
+          }),
+          expectedUrl: `${EXTENSION_HOME}#internal-route?one=two`,
+        },
+        {
+          name: 'unsigned links from a trusted origin',
+          parsed: unsignedInternalRoute,
+          requestDetails: arrangeRequestDetails({
+            initiator: 'https://metamask.io',
+          }),
+          expectedUrl: `${EXTENSION_HOME}#internal-route?query=param`,
+        },
+        {
+          name: 'signed links from an untrusted origin (shows interstitial)',
+          parsed: signedInternalRoute,
+          requestDetails: arrangeRequestDetails({
+            initiator: 'https://evil.com',
+          }),
+          expectedUrl: `${EXTENSION_HOME}#link?u=%2Ftest-route`, // we are redirecting to #link interstitial page
+        },
+      ];
+
+      it.each(interstitialTestCases)(
+        'handles interstitial for $name',
+        async ({ parsed, requestDetails, expectedUrl }) => {
+          parseMock.mockResolvedValue(parsed);
+          await onBeforeRequest?.(requestDetails);
+          expect(browser.tabs.update).toHaveBeenCalledWith(
+            requestDetails.tabId,
+            { url: expectedUrl },
+          );
+        },
+      );
+    });
+
     describe('skipDeepLinkInterstitial: true', () => {
       it('should redirect signed links to the correct route when skipDeepLinkInterstitial is true', async () => {
         const tabId = 1;
@@ -261,6 +352,38 @@ describe('DeepLinkRouter', () => {
       } as browser.WebRequest.OnBeforeRequestDetailsType);
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
         url: 'https://example.com/internal-route',
+      });
+    });
+
+    describe('resolveRequestOrigin', () => {
+      it('prefers initiator over originUrl', () => {
+        expect(
+          DeepLinkRouter.resolveRequestOrigin(
+            'https://metamask.io',
+            'https://other.io/page',
+          ),
+        ).toBe('https://metamask.io');
+      });
+
+      it('extracts origin from Firefox originUrl', () => {
+        expect(
+          DeepLinkRouter.resolveRequestOrigin(
+            undefined,
+            'https://metamask.io/portfolio/assets?foo=bar',
+          ),
+        ).toBe('https://metamask.io');
+      });
+
+      it('returns undefined when neither is provided', () => {
+        expect(
+          DeepLinkRouter.resolveRequestOrigin(undefined, undefined),
+        ).toBeUndefined();
+      });
+
+      it('returns undefined for invalid originUrl', () => {
+        expect(
+          DeepLinkRouter.resolveRequestOrigin(undefined, 'not a url'),
+        ).toBeUndefined();
       });
     });
 
