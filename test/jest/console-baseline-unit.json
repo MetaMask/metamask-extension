@@ -79,6 +79,7 @@
       "MetaMask: MetaMetrics invalid trait types": 2,
       "MetaMask: Sentry initialization warnings": 1,
       "ObjectMultiplex: Malformed chunk warnings": 1,
+      "Test errors: Fetch failures": 1,
       "Third-party: Bindings failed, using pure JS": 1,
       "error: AssertionError: The Snaps platform requires": 1,
       "error: Error initializing gator permissions controller": 5,
