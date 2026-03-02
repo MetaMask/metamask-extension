@@ -10,9 +10,7 @@ import {
 } from '@metamask/utils';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { InternalAccount } from '@metamask/keyring-internal-api';
-///: END:ONLY_INCLUDE_IF
 import { ChainId } from '../../../../shared/constants/network';
 
 import { I18nContext } from '../../../contexts/i18n';
@@ -58,9 +56,7 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
-///: END:ONLY_INCLUDE_IF
 
 const TabOpenedToast = ({ onClose }: { onClose: () => void }) => {
   const t = useContext(I18nContext);
@@ -131,9 +127,7 @@ const CoinButtons = ({
     throw new Error('defaultSwapsToken is required');
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const handleSendNonEvm = useHandleSendNonEvm();
-  ///: END:ONLY_INCLUDE_IF
 
   const location = useLocation();
 
@@ -277,15 +271,7 @@ const CoinButtons = ({
       params = { chainId: chainId.toString() };
     }
     navigateToSendRoute(navigate, params);
-  }, [
-    chainId,
-    account,
-    setCorrectChain,
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    handleSendNonEvm,
-    ///: END:ONLY_INCLUDE_IF
-    trackingLocation,
-  ]);
+  }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
     setShowTabOpenedToast(true);

@@ -76,9 +76,6 @@
   "activity": {
     "message": "Attività"
   },
-  "activityLog": {
-    "message": "log attività"
-  },
   "add": {
     "message": "Aggiungi"
   },
@@ -1113,9 +1110,6 @@
   "speedUpCancellation": {
     "message": "Accelera questo annullamento"
   },
-  "speedUpTransaction": {
-    "message": "Accelera questa transazione"
-  },
   "spendLimitInsufficient": {
     "message": "Limite di spesa insufficiente"
   },
@@ -1315,38 +1309,11 @@
   "transaction": {
     "message": "transazione"
   },
-  "transactionCancelAttempted": {
-    "message": "Provato l'annullamento della transazione con costo in gas di $1 alle $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transazione cancellata alle $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transazione confermata alle $2."
-  },
-  "transactionCreated": {
-    "message": "Transazione di valore $1 creata alle $2."
-  },
-  "transactionDropped": {
-    "message": "Transazione abbandonata alle $2."
-  },
   "transactionError": {
     "message": "Errore Transazione. Eccceziona generata nel codice del contratto."
   },
   "transactionErrorNoContract": {
     "message": "Stai provando a chiamare una funzione ad un indirizzo che non è un contratto."
-  },
-  "transactionErrored": {
-    "message": "La transazione ha riscontrato un errore."
-  },
-  "transactionResubmitted": {
-    "message": "Transazione reinviata con costo in gas aumentato a $1 alle $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transazione inviata alle $2."
-  },
-  "transactionUpdated": {
-    "message": "Transazione aggiornata alle $2."
   },
   "transfer": {
     "message": "Trasferisci"

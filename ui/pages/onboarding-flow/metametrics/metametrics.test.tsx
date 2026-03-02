@@ -3,14 +3,7 @@ import { fireEvent, waitFor, act } from '@testing-library/react';
 import type { Dispatch, Store } from 'redux';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
-import {
-  onboardingMetametricCheckboxTitleOne,
-  onboardingMetametricCheckboxDescriptionOne,
-  onboardingMetametricCheckboxTitleTwo,
-  onboardingMetametricCheckboxDescriptionTwo,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../app/_locales/en/messages.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   setParticipateInMetaMetrics,
   setDataCollectionForMarketing,
@@ -87,9 +80,11 @@ describe('Onboarding Metametrics Component', () => {
       store,
     );
 
-    const title = queryByText(onboardingMetametricCheckboxTitleOne.message);
+    const title = queryByText(
+      messages.onboardingMetametricCheckboxTitleOne.message,
+    );
     const description = queryByText(
-      onboardingMetametricCheckboxDescriptionOne.message,
+      messages.onboardingMetametricCheckboxDescriptionOne.message,
     );
 
     expect(title).toBeInTheDocument();
@@ -120,15 +115,19 @@ describe('Onboarding Metametrics Component', () => {
       store,
     );
 
-    const title = queryByText(onboardingMetametricCheckboxTitleOne.message);
+    const title = queryByText(
+      messages.onboardingMetametricCheckboxTitleOne.message,
+    );
     const description = queryByText(
-      onboardingMetametricCheckboxDescriptionOne.message,
+      messages.onboardingMetametricCheckboxDescriptionOne.message,
     );
 
     expect(title).toBeInTheDocument();
     expect(description).toBeInTheDocument();
 
-    const checkboxLabel = queryByText('Gather basic usage data');
+    const checkboxLabel = queryByText(
+      messages.onboardingMetametricCheckboxTitleOne.message,
+    );
     expect(checkboxLabel).toBeInTheDocument();
 
     const checkbox = getAllByRole('checkbox')[0];
@@ -163,9 +162,11 @@ describe('Onboarding Metametrics Component', () => {
       store,
     );
 
-    const title = queryByText(onboardingMetametricCheckboxTitleTwo.message);
+    const title = queryByText(
+      messages.onboardingMetametricCheckboxTitleTwo.message,
+    );
     const description = queryByText(
-      onboardingMetametricCheckboxDescriptionTwo.message,
+      messages.onboardingMetametricCheckboxDescriptionTwo.message,
     );
 
     expect(title).toBeInTheDocument();

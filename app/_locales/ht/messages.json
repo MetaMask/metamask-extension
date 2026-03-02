@@ -23,9 +23,6 @@
   "accountSelectionRequired": {
     "message": "Ou bezwen chwazi yon kont!"
   },
-  "activityLog": {
-    "message": "aktivite ki fèt"
-  },
   "addAcquiredTokens": {
     "message": "Ajoute tokens yo ou te achte lè l sèvi avèk MetaMask"
   },
@@ -463,23 +460,8 @@
   "transaction": {
     "message": "tranzaksyon yo"
   },
-  "transactionConfirmed": {
-    "message": "Tranzaksyon ou te konfime pou $2."
-  },
-  "transactionCreated": {
-    "message": "Tranzaksyon ou te kreye avèk on valè de $1 pou $2."
-  },
-  "transactionDropped": {
-    "message": "Tranzaksyon ou te tonbe a $2."
-  },
   "transactionError": {
     "message": "Erè tranzaksyon. Eksepsyon jete nan kòd kontra."
-  },
-  "transactionSubmitted": {
-    "message": "Tranzaksyon ou te soumèt a $2."
-  },
-  "transactionUpdated": {
-    "message": "Tranzaksyon ou te aktyalize a $2."
   },
   "transfer": {
     "message": "Transfè"

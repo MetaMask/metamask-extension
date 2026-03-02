@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect } from 'react';
 import { DatePicker, DateTimePicker, TimePicker } from '@material-ui/pickers';
 import { Box } from '@metamask/design-system-react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { DateTime } from 'luxon';
 import { makeStyles } from '@material-ui/core/styles';
 import { HelpText, HelpTextSeverity, Label } from '../../../component-library';

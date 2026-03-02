@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Noch nichts zu sehen. Swappen Sie heute Ihr erstes Token."
   },
-  "activityLog": {
-    "message": "Aktivitätsprotokoll"
-  },
   "add": {
     "message": "Hinzufügen"
   },
@@ -5242,9 +5239,6 @@
   "perpsAddToFavorites": {
     "message": "Zu Favoriten hinzufügen"
   },
-  "perpsAsk": {
-    "message": "Briefkurs"
-  },
   "perpsAutoClose": {
     "message": "Automatische Schließung"
   },
@@ -5255,14 +5249,8 @@
   "perpsAvailableBalance": {
     "message": "Verfügbares Guthaben"
   },
-  "perpsBid": {
-    "message": "Geldkurs"
-  },
   "perpsCancelAllOrders": {
     "message": "Alle stornieren"
-  },
-  "perpsClose": {
-    "message": "Schließen"
   },
   "perpsCloseAll": {
     "message": "Alle schließen"
@@ -5380,9 +5368,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Liquidationspreis"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Liquidationspreisschätzung"
   },
   "perpsLong": {
     "message": "Long"
@@ -7363,21 +7348,6 @@
   "simulationErrorMessageV2": {
     "message": "Wir konnten das Gas nicht schätzen. Es könnte einen Fehler im Contract geben und diese Transaktion könnte fehlschlagen."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Slippage-Toleranz"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Legen Sie für Saldoänderungen eine für Sie akzeptable Differenz fest. Bei einer höheren Differenz werden keine Transaktionen ausgeführt."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Saldoänderungen durchsetzen"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Um Ihr Geld zu schützen, wird diese Transaktion nicht ausgeführt, wenn sich der Kontostand ändert oder die Slippage-Toleranz nicht eingehalten wird."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Transaktionseinstellungen"
-  },
   "simulationsSettingDescription": {
     "message": "Schalten Sie diese Funktion ein, um die Saldoänderungen von Transaktionen und Unterschriften abzuschätzen, bevor Sie sie bestätigen. Dies ist keine Garantie für das endgültige Ergebnis. $1"
   },
@@ -7703,9 +7673,6 @@
   },
   "speedUpTooltipText": {
     "message": "Neue Gas-Gebühr"
-  },
-  "speedUpTransaction": {
-    "message": "Diese Transaktion beschleunigen"
   },
   "spendLimitInsufficient": {
     "message": "Ausgabenlimit unzureichend"
@@ -8557,18 +8524,6 @@
   "transaction": {
     "message": "transaktion"
   },
-  "transactionCancelAttempted": {
-    "message": "Transaktionsstornierung versucht mit Gas-Gebühr von $1 bei $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaktion bei $2 erfolgreich storniert."
-  },
-  "transactionConfirmed": {
-    "message": "Transaktion bei $2 bestätigt."
-  },
-  "transactionCreated": {
-    "message": "Transaktion mit einem Wert von $1 bei $2 erstellt."
-  },
   "transactionDataFunction": {
     "message": "Funktion"
   },
@@ -8578,17 +8533,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Betrag + Gebühren"
   },
-  "transactionDropped": {
-    "message": "Transaktion bei $2 eingestellt."
-  },
   "transactionError": {
     "message": "Transaktionsfehler. Fehler in Contract-Code eingefügt."
   },
   "transactionErrorNoContract": {
     "message": "Das Abrufen einer Funktion bei einer Nicht-Contract-Adresse wird versucht."
-  },
-  "transactionErrored": {
-    "message": "Bei der Transaktion ist ein Fehler aufgetreten."
   },
   "transactionFee": {
     "message": "Transaktionsgebühr"
@@ -8624,24 +8573,15 @@
   "transactionIncludesTypes": {
     "message": "Diese Transaktion beinhaltet: $1."
   },
-  "transactionResubmitted": {
-    "message": "Erneutes Absenden der Transaktion mit Erhöhung der geschätzten Gas-Gebühr auf $1 zu $2."
-  },
   "transactionSettings": {
     "message": "Transaktionseinstellungen"
   },
   "transactionShield": {
     "message": "Transaktionsschutz"
   },
-  "transactionSubmitted": {
-    "message": "Transaktion mit einer Gas-Gebühr von $1 bei $2 abgesendet."
-  },
   "transactionTotalGasFee": {
     "message": "Gesamte Gasgebühr",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Transaktion für $2 aktualisiert."
   },
   "transactions": {
     "message": "Transaktionen"

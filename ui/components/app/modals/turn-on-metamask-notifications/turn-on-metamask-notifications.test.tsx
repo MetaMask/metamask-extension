@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import mockStore from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { MetamaskNotificationsProvider } from '../../../../contexts/metamask-notifications/metamask-notifications';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
@@ -30,7 +31,9 @@ describe('TurnOnMetamaskNotifications', () => {
         ...mockStore,
       }),
     );
-    expect(getByText('Turn on')).toBeInTheDocument();
+    expect(
+      getByText(messages.turnOnMetamaskNotificationsButton.message),
+    ).toBeInTheDocument();
   });
 
   it('tracks dismissal before hiding the modal', async () => {

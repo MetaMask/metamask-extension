@@ -1,6 +1,5 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipChainId } from '@metamask/utils';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { DiscoveredAccount, KeyringAccount } from '@metamask/keyring-api';
 import {
   KeyringInternalSnapClient,
@@ -13,7 +12,6 @@ import {
 import { Messenger } from '@metamask/messenger';
 import { SnapId } from '@metamask/snaps-sdk';
 import { HandleSnapRequest as SnapControllerHandleRequest } from '@metamask/snaps-controllers';
-///: END:ONLY_INCLUDE_IF
 import { MultichainNetworks } from '../../constants/multichain/networks';
 import { createSentryError } from '../../modules/error';
 import { captureException } from '../sentry';
@@ -90,7 +88,6 @@ export function isHardwareAccount(account: InternalAccount): boolean {
   }
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 export type CreateAccountSnapOptions = {
   scope?: CaipChainId;
   derivationPath?: DiscoveredAccount['derivationPath'];
@@ -234,4 +231,3 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
     return accounts;
   }
 }
-///: END:ONLY_INCLUDE_IF

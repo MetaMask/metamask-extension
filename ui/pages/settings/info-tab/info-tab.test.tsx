@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import InfoTab from '.';
 
 describe('InfoTab', () => {
@@ -21,7 +22,9 @@ describe('InfoTab', () => {
     });
 
     it('should have correct href for "Privacy Policy" link', () => {
-      const privacyPolicyLink = getByRole('link', { name: 'Privacy Policy' });
+      const privacyPolicyLink = getByRole('link', {
+        name: messages.privacyMsg.message,
+      });
       expect(privacyPolicyLink).toHaveAttribute(
         'href',
         'https://metamask.io/privacy.html',
@@ -29,7 +32,9 @@ describe('InfoTab', () => {
     });
 
     it('should have correct href for "Terms of Use" link', () => {
-      const termsOfUseLink = getByRole('link', { name: 'Terms of Use' });
+      const termsOfUseLink = getByRole('link', {
+        name: messages.onboardingLoginFooterTermsOfUse.message,
+      });
       expect(termsOfUseLink).toHaveAttribute(
         'href',
         'https://metamask.io/terms.html',
@@ -37,7 +42,9 @@ describe('InfoTab', () => {
     });
 
     it('should have correct href for "Attributions" link', () => {
-      const attributionsLink = getByRole('link', { name: 'Attributions' });
+      const attributionsLink = getByRole('link', {
+        name: messages.attributions.message,
+      });
       expect(attributionsLink).toHaveAttribute(
         'href',
         `https://raw.githubusercontent.com/MetaMask/metamask-extension/vMOCK_VERSION/attribution.txt`,
@@ -45,7 +52,7 @@ describe('InfoTab', () => {
     });
 
     it('should trigger support modal when click support link', () => {
-      const supportLink = getByText('Visit our support center');
+      const supportLink = getByText(messages.supportCenter.message);
       fireEvent.click(supportLink);
       expect(
         getByTestId('visit-support-data-consent-modal'),
@@ -53,12 +60,16 @@ describe('InfoTab', () => {
     });
 
     it('should have correct href for "Visit our website" link', () => {
-      const websiteLink = getByRole('link', { name: 'Visit our website' });
+      const websiteLink = getByRole('link', {
+        name: messages.visitWebSite.message,
+      });
       expect(websiteLink).toHaveAttribute('href', 'https://metamask.io/');
     });
 
     it('should have correct href for "Contact us" link', () => {
-      const contactUsLink = getByRole('link', { name: 'Contact us' });
+      const contactUsLink = getByRole('link', {
+        name: messages.contactUs.message,
+      });
       expect(contactUsLink).toHaveAttribute(
         'href',
         'https://support.metamask.io',
