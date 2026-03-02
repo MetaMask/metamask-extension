@@ -86,13 +86,17 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       hideModal();
     }, [clearError, hideModal, onCancel]);
 
+    const handleRecoveredClose = useCallback(() => {
+      hideModal();
+    }, [hideModal]);
+
     useEffect(() => {
       if (!recovered) {
         return;
       }
 
       recoveredDismissTimeoutRef.current = setTimeout(() => {
-        handleClose();
+        handleRecoveredClose();
       }, RECOVERY_SUCCESS_AUTO_DISMISS_MS);
 
       return () => {
@@ -101,7 +105,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
           recoveredDismissTimeoutRef.current = null;
         }
       };
-    }, [handleClose, recovered]);
+    }, [handleRecoveredClose, recovered]);
 
     // If no error, don't render anything
     if (!error) {
@@ -164,13 +168,13 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       return (
         <Modal
           isOpen={true}
-          onClose={handleClose}
+          onClose={handleRecoveredClose}
           isClosedOnOutsideClick={false}
           isClosedOnEscapeKey
         >
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader onClose={handleClose}>
+            <ModalHeader onClose={handleRecoveredClose}>
               <Box
                 display={Display.Flex}
                 alignItems={AlignItems.center}

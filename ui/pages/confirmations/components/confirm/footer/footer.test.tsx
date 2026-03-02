@@ -19,11 +19,7 @@ import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import {
-  CONFIRM_TRANSACTION_ROUTE,
-  DEFAULT_ROUTE,
-  SIGNATURE_REQUEST_PATH,
-} from '../../../../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -59,7 +55,6 @@ const mockUseHardwareWalletActions = jest.fn();
 const mockUseHardwareWalletError = jest.fn();
 const mockIsHardwareWalletError = jest.fn();
 const mockIsUserRejectedHardwareWalletError = jest.fn();
-const mockIsRetryableHardwareWalletError = jest.fn();
 const mockGetEnvironmentType = jest.fn();
 const mockNavigateNext = jest.fn();
 const mockNavigateToId = jest.fn();
@@ -118,8 +113,6 @@ jest.mock('../../../../../contexts/hardware-wallets', () => ({
     mockIsHardwareWalletError(...args),
   isUserRejectedHardwareWalletError: (...args: unknown[]) =>
     mockIsUserRejectedHardwareWalletError(...args),
-  isRetryableHardwareWalletError: (...args: unknown[]) =>
-    mockIsRetryableHardwareWalletError(...args),
 }));
 jest.mock('../../../hooks/useAddEthereumChain', () => ({
   useAddEthereumChain: jest.fn(() => ({
@@ -193,7 +186,6 @@ describe('ConfirmFooter', () => {
     mockUseHardwareWalletError.mockReset();
     mockIsHardwareWalletError.mockReset();
     mockIsUserRejectedHardwareWalletError.mockReset();
-    mockIsRetryableHardwareWalletError.mockReset();
 
     mockOnTransactionConfirm.mockResolvedValue(undefined);
     ensureDeviceReadyMock.mockResolvedValue(true);
@@ -214,7 +206,6 @@ describe('ConfirmFooter', () => {
     });
     mockIsHardwareWalletError.mockReturnValue(false);
     mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
-    mockIsRetryableHardwareWalletError.mockReturnValue(false);
 
     mockUseOriginThrottling.mockReturnValue({
       shouldThrottleOrigin: false,
@@ -513,6 +504,25 @@ describe('ConfirmFooter', () => {
   });
 
   describe('hardware wallet handling', () => {
+    it('renders confirm button when hardware wallet is ready', () => {
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Ready },
+      });
+      mockUseHardwareWalletError.mockReturnValue({
+        showErrorModal: showHardwareWalletErrorModalMock,
+        dismissErrorModal: dismissHardwareWalletErrorModalMock,
+        isDeviceConnected: true,
+      });
+
+      const { getByTestId, queryByTestId } = render();
+      expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+      expect(queryByTestId('reconnect-hardware-wallet-button')).toBeNull();
+    });
+
     it('renders reconnect button when hardware wallet is not ready', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
@@ -521,8 +531,14 @@ describe('ConfirmFooter', () => {
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Disconnected },
       });
+      mockUseHardwareWalletError.mockReturnValue({
+        showErrorModal: showHardwareWalletErrorModalMock,
+        dismissErrorModal: dismissHardwareWalletErrorModalMock,
+        isDeviceConnected: false,
+      });
 
-      const { getByTestId, queryByTestId } = render();
+      const { getByTestId, queryByTestId, getByText } = render();
+      expect(getByText('Connect Ledger')).toBeInTheDocument();
       expect(
         getByTestId('reconnect-hardware-wallet-button'),
       ).toBeInTheDocument();
@@ -536,7 +552,7 @@ describe('ConfirmFooter', () => {
         walletType: HardwareWalletType.Ledger,
       });
       mockUseHardwareWalletState.mockReturnValue({
-        connectionState: { status: ConnectionStatus.Connected },
+        connectionState: { status: ConnectionStatus.Ready },
       });
 
       const preflightState = getMockContractInteractionConfirmState();
@@ -556,6 +572,47 @@ describe('ConfirmFooter', () => {
         });
       });
       expect(mockOnTransactionConfirm).not.toHaveBeenCalled();
+    });
+
+    it('shows reconnect CTA instead of confirm when hardware wallet is not ready, even with confirmation alerts', () => {
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Disconnected },
+      });
+      mockUseHardwareWalletError.mockReturnValue({
+        showErrorModal: showHardwareWalletErrorModalMock,
+        dismissErrorModal: dismissHardwareWalletErrorModalMock,
+        isDeviceConnected: false,
+      });
+
+      const stateWithDangerAlert = getMockPersonalSignConfirmStateForRequest(
+        { ...unapprovedPersonalSignMsg, id: '123' } as SignatureRequestType,
+        {
+          confirmAlerts: {
+            alerts: {
+              '123': [
+                {
+                  key: 'Contract',
+                  severity: Severity.Danger,
+                  message: 'Alert Info',
+                },
+              ],
+            },
+            confirmed: { '123': { Contract: false } },
+          },
+          metamask: {},
+        },
+      );
+
+      const { getByTestId, queryByTestId } = render(stateWithDangerAlert);
+
+      expect(
+        getByTestId('reconnect-hardware-wallet-button'),
+      ).toBeInTheDocument();
+      expect(queryByTestId('confirm-footer-button')).not.toBeInTheDocument();
     });
 
     it('bypasses hardware wallet preflight for add chain confirmations', async () => {
@@ -595,7 +652,7 @@ describe('ConfirmFooter', () => {
         walletType: HardwareWalletType.Ledger,
       });
       mockUseHardwareWalletState.mockReturnValue({
-        connectionState: { status: ConnectionStatus.Connected },
+        connectionState: { status: ConnectionStatus.Ready },
       });
       mockIsHardwareWalletError.mockReturnValue(true);
       mockIsUserRejectedHardwareWalletError.mockReturnValue(true);
@@ -637,7 +694,7 @@ describe('ConfirmFooter', () => {
         walletType: HardwareWalletType.Ledger,
       });
       mockUseHardwareWalletState.mockReturnValue({
-        connectionState: { status: ConnectionStatus.Connected },
+        connectionState: { status: ConnectionStatus.Ready },
       });
       mockIsHardwareWalletError.mockReturnValue(true);
       mockIsUserRejectedHardwareWalletError.mockReturnValue(true);
@@ -671,22 +728,15 @@ describe('ConfirmFooter', () => {
     });
 
     it('shows error modal on retryable error', async () => {
-      const hardwareError = {
-        data: {
-          metadata: {
-            recreatedSignatureId: 'recreated-signature-id',
-          },
-        },
-      };
+      const hardwareError = new Error('Hardware wallet error');
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
       });
       mockUseHardwareWalletState.mockReturnValue({
-        connectionState: { status: ConnectionStatus.Connected },
+        connectionState: { status: ConnectionStatus.Ready },
       });
       mockIsHardwareWalletError.mockReturnValue(true);
-      mockIsRetryableHardwareWalletError.mockReturnValue(true);
 
       const resolveSpy = jest
         .spyOn(Actions, 'resolvePendingApproval')
@@ -712,12 +762,7 @@ describe('ConfirmFooter', () => {
       expect(showHardwareWalletErrorModalMock).toHaveBeenCalledWith(
         hardwareError,
       );
-      expect(mockUseNavigate).not.toHaveBeenCalledWith(
-        `${CONFIRM_TRANSACTION_ROUTE}/recreated-signature-id${SIGNATURE_REQUEST_PATH}`,
-        {
-          replace: true,
-        },
-      );
+      expect(mockNavigateNext).not.toHaveBeenCalled();
     });
   });
 

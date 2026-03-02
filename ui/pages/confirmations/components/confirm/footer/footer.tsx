@@ -267,44 +267,49 @@ const Footer = () => {
       }
     }
 
-    try {
-      if (isAddEthereumChain) {
-        await onAddEthereumChain();
-        navigate(DEFAULT_ROUTE);
-      } else if (isTransactionConfirmation) {
-        const didConfirm = await onTransactionConfirm();
-        if (didConfirm && currentConfirmationId) {
+    if (isAddEthereumChain) {
+      await onAddEthereumChain();
+      resetTransactionState();
+      navigate(DEFAULT_ROUTE);
+      return;
+    }
+
+    if (isTransactionConfirmation) {
+      const didConfirm = await onTransactionConfirm();
+      if (didConfirm) {
+        resetTransactionState();
+        if (currentConfirmationId) {
           navigateNext(currentConfirmationId);
         }
-      } else {
-        const resolveApprovalWithHardwareWalletHandling =
-          withHardwareWalletModalHandling(async () => {
-            const resolveApprovalOptions = walletType
-              ? {
-                  fromAddress,
-                  waitForResult: true,
-                  walletType,
-                }
-              : {
-                  fromAddress,
-                };
-
-            await dispatch(
-              resolvePendingApproval(currentConfirmation.id, undefined, {
-                ...resolveApprovalOptions,
-              }),
-            );
-
-            if (currentConfirmationId) {
-              navigateNext(currentConfirmationId);
-            }
-          });
-
-        await resolveApprovalWithHardwareWalletHandling();
       }
-    } finally {
-      resetTransactionState();
+      return;
     }
+
+    const resolveApprovalWithHardwareWalletHandling =
+      withHardwareWalletModalHandling(async () => {
+        const resolveApprovalOptions = walletType
+          ? {
+              fromAddress,
+              waitForResult: true,
+              walletType,
+            }
+          : {
+              fromAddress,
+            };
+
+        await dispatch(
+          resolvePendingApproval(currentConfirmation.id, undefined, {
+            ...resolveApprovalOptions,
+          }),
+        );
+
+        resetTransactionState();
+        if (currentConfirmationId) {
+          navigateNext(currentConfirmationId);
+        }
+      });
+
+    await resolveApprovalWithHardwareWalletHandling();
   }, [
     currentConfirmation,
     currentConfirmationId,
@@ -314,13 +319,13 @@ const Footer = () => {
     isTransactionConfirmation,
     onAddEthereumChain,
     navigate,
-    resetTransactionState,
     onTransactionConfirm,
     navigateNext,
     dispatch,
     fromAddress,
     walletType,
     withHardwareWalletModalHandling,
+    resetTransactionState,
   ]);
 
   const handleFooterCancel = useCallback(async () => {
