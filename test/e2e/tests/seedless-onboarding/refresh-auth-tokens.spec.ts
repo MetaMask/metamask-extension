@@ -8,6 +8,7 @@ import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import { lockAndWaitForLoginPage } from '../../page-objects/flows/login.flow';
 import { AuthServer } from '../../helpers/seedless-onboarding/constants';
 import LoginPage from '../../page-objects/pages/login-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -96,8 +97,8 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
         // close the settings page
         await settingsPage.closeSettingsPage();
 
-        // Lock the wallet
-        await headerNavbar.lockMetaMask();
+        // Lock the wallet and wait for login page
+        await lockAndWaitForLoginPage(driver);
 
         // Unlock the wallet
         const loginPage = new LoginPage(driver);
@@ -169,9 +170,9 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        // Lock the wallet after onboarding is finished
+        // Lock the wallet after onboarding is finished and wait for login page
+        await lockAndWaitForLoginPage(driver);
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.lockMetaMask();
 
         // Unlock the wallet again
         const loginPage = new LoginPage(driver);

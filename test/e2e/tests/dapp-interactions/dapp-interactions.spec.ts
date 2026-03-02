@@ -13,7 +13,11 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  lockAndWaitForLoginPage,
+  loginWithBalanceValidation,
+} from '../../page-objects/flows/login.flow';
+import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
 
 describe('Dapp interactions', function () {
   it('should trigger the add chain confirmation despite MetaMask being locked', async function () {
@@ -95,7 +99,7 @@ describe('Dapp interactions', function () {
         await homepage.checkPageIsLoaded();
 
         // Assert Connection
-        await homepage.headerNavbar.openPermissionsPage();
+        await openPermissionsPageFlow(driver);
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.checkPageIsLoaded();
         await permissionListPage.checkConnectedToSite(DAPP_HOST_ADDRESS);
@@ -129,11 +133,8 @@ describe('Dapp interactions', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        const homepage = new Homepage(driver);
-        await homepage.headerNavbar.lockMetaMask();
-
+        await lockAndWaitForLoginPage(driver);
         const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
 
         // Attempt interaction with DApp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
