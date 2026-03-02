@@ -304,7 +304,7 @@ export const GlobalMenuDrawer = ({
     isExiting || isEntering ? 'translateX(100%)' : 'translateX(0)';
 
   const drawerPanelBaseClass =
-    'overflow-hidden pointer-events-none flex h-full transition-[transform] ease-in-out motion-reduce:transition-none';
+    'overflow-hidden pointer-events-none flex transition-[transform] ease-in-out motion-reduce:transition-none';
   let drawerPanelClass = `${drawerPanelBaseClass} absolute inset-y-0 right-0 pl-10`;
   if (isFullscreen) {
     drawerPanelClass = `${drawerPanelBaseClass} absolute right-0`;
