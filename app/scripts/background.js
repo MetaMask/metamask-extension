@@ -4,10 +4,6 @@
 
 // Disabled to allow setting up initial state hooks first
 
-// Must run first so fixture fetch starts before other background logic (E2E relies on fixture state being ready).
-// eslint-disable-next-line import/order -- intentional first import for fixture timing
-import { persistenceManager } from './lib/setup-initial-state-hooks';
-
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
 
@@ -53,6 +49,7 @@ import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
+import { persistenceManager } from './lib/setup-initial-state-hooks';
 import {
   CorruptionHandler,
   hasVault,
