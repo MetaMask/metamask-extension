@@ -1,16 +1,14 @@
 import React from 'react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Box, Text } from '../../component-library';
-import ToggleButton from '../../ui/toggle-button';
 import {
-  BlockSize,
-  Display,
-  JustifyContent,
-  FlexDirection,
-  AlignItems,
+  Box,
+  Text,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
   TextColor,
-  TextAlign,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import ToggleButton from '../../ui/toggle-button';
 import Preloader from '../../ui/icon/preloader/preloader-icon.component';
 
 export type NotificationsSettingsBoxProps = {
@@ -37,23 +35,21 @@ export function NotificationsSettingsBox({
   const t = useI18nContext();
 
   return (
-    <Box width={BlockSize.Full}>
+    <Box className="w-full">
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.spaceBetween}
-        width={BlockSize.Full}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Between}
+        className="notifications-settings-box w-full"
         gap={4}
-        className="notifications-settings-box"
       >
         {children}
         <Box
           data-testid={`${dataTestId}-toggle-box`}
-          className="notifications-settings-box__toggle"
+          className="w-10 min-w-10 shrink-0"
         >
           {loading ? (
-            <Box textAlign={TextAlign.Right}>
+            <Box className="text-right">
               <Preloader size={24} />
             </Box>
           ) : (
@@ -68,8 +64,8 @@ export function NotificationsSettingsBox({
         </Box>
       </Box>
       {error && (
-        <Box paddingTop={0}>
-          <Text as="p" color={TextColor.errorDefault} paddingTop={2}>
+        <Box paddingTop={2}>
+          <Text color={TextColor.ErrorDefault}>
             {t('notificationsSettingsBoxError')}
           </Text>
         </Box>

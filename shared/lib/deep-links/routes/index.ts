@@ -13,6 +13,7 @@ import type { Route } from './route';
 import { sell } from './sell';
 import { shield } from './shield';
 import { swap } from './swap';
+import { trending } from './trending';
 
 export type { Route } from './route';
 
@@ -56,3 +57,4 @@ addRoute(predict);
 addRoute(rewards);
 addRoute(shield);
 addRoute(asset);
+addRoute(trending);
