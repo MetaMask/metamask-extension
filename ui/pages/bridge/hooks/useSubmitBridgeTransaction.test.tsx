@@ -203,9 +203,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
-      submitIntentSpy.mockResolvedValueOnce(
-        (async () => undefined) as never,
-      );
+      submitIntentSpy.mockResolvedValueOnce((async () => undefined) as never);
 
       const quoteWithIntent = {
         ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
@@ -234,9 +232,12 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         accountAddress: expect.any(String),
       });
       expect(submitTxSpy).not.toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith(`${DEFAULT_ROUTE}?tab=activity`, {
-        state: { stayOnHomePage: true },
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${DEFAULT_ROUTE}?tab=activity`,
+        {
+          state: { stayOnHomePage: true },
+        },
+      );
     });
   });
 });
