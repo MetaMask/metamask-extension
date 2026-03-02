@@ -17,8 +17,6 @@ import {
   LedgerIframeBridge,
   LedgerKeyring,
 } from '@metamask/eth-ledger-bridge-keyring';
-import { p256 } from '@noble/curves/nist';
-import { sha256 } from '@noble/hashes/sha2';
 import { hardwareKeyringBuilderFactory } from '../lib/hardware-keyring-builder-factory';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
@@ -27,7 +25,6 @@ import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-
 import { LedgerOffscreenBridge } from '../lib/offscreen-bridge/ledger-offscreen-bridge';
 import { LatticeKeyringOffscreen } from '../lib/offscreen-bridge/lattice-offscreen-keyring';
 import {
-  getJwtSecretKey,
   getMfaRelayerUrl,
   getMfaCloudSignerUrl,
 } from '../../../shared/modules/environment';
