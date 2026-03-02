@@ -917,7 +917,7 @@ describe('ConfirmFooter', () => {
           mockStateWithContractInteractionConfirmation,
         );
 
-        fireEvent.click(getByText('Cancel'));
+        fireEvent.click(getByText(messages.cancel.message));
 
         await waitFor(() => {
           expect(navigateNextMock).toHaveBeenCalledTimes(1);
@@ -952,7 +952,7 @@ describe('ConfirmFooter', () => {
           mockStateWithContractInteractionConfirmation,
         );
 
-        fireEvent.click(getByText('Confirm'));
+        fireEvent.click(getByText(messages.confirm.message));
 
         await waitFor(() => {
           expect(mockOnTransactionConfirm).toHaveBeenCalledTimes(1);
