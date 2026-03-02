@@ -448,6 +448,30 @@ await withFixtures(
 );
 ```
 
+#### Deterministic Mock Data and Timestamps
+
+- **Cause**: Time-dependent mock values can change behavior based on calendar date/time (for example month boundaries), creating latent flakes.
+- **Rule**: Do not generate mock timestamps using runtime clock operations for behavioral assertions (for example `new Date()`, `Date.now()`, `setMonth()`, `setDate()`), unless time itself is what the test explicitly validates.
+- **Solution**: Use fixed, deterministic timestamps or a fixed base-time constant in test mocks.
+
+```typescript
+// DON'T: Time-dependent mock that changes with wall-clock date
+const createdAt = new Date();
+createdAt.setMonth(createdAt.getMonth() - 1);
+mockResponse.items[0].sys.createdAt = createdAt.toString();
+
+// DO: Deterministic mock timestamp
+const FIXED_CREATED_AT = '2024-01-01T00:00:00.000Z';
+mockResponse.items[0].sys.createdAt = FIXED_CREATED_AT;
+
+// DO: Deterministic relative offset from a fixed base timestamp
+const BASE_TIME_MS = Date.parse('2024-02-01T00:00:00.000Z');
+const THIRTY_ONE_DAYS_MS = 31 * 24 * 60 * 60 * 1000;
+mockResponse.items[0].sys.createdAt = new Date(
+  BASE_TIME_MS - THIRTY_ONE_DAYS_MS,
+).toISOString();
+```
+
 ## Deprecated Patterns
 
 For a complete list of E2E test anti-patterns with regex detection patterns, see [BUGBOT.md](../BUGBOT.md).
@@ -469,6 +493,7 @@ Before submitting E2E tests, ensure:
 - [ ] No usage of `driver.delay()` or `setTimeout()` - use proper waits instead
 - [ ] Proper waiting strategies used (waitForSelector, waitForMultipleSelectors)
 - [ ] Mock responses used for network calls instead of real API dependencies
+- [ ] Mock data is deterministic (no time-dependent timestamps unless the test explicitly validates time behavior)
 - [ ] Use fixtures to set up test state instead of UI interactions
 - [ ] Prefer `FixtureBuilderV2` when the required fixture methods are supported
 - [ ] Error handling for expected failure scenarios
