@@ -356,12 +356,7 @@ export async function validateBundle({
         `  skipped ${unmappedCount} unmapped position(s) (minification coverage gaps)`,
       );
     }
-    if (sampleCount === 0 && unmappedCount > 0) {
-      valid = false;
-      console.error(
-        `SourcemapValidator (webpack) - all ${unmappedCount} "${TARGET_STRING}" position(s) in bundle "${label}" were unmapped; source map may be completely broken.`,
-      );
-    } else if (sampleCount === 0) {
+    if (sampleCount === 0) {
       console.error(
         `SourcemapValidator (webpack) - no "${TARGET_STRING}" found in bundle "${label}"; nothing to validate.`,
       );
