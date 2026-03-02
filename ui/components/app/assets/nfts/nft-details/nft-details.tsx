@@ -148,7 +148,8 @@ export function NftDetailsComponent({
   const nftImageAlt = getNftImageAlt(nft);
   const image = getNftImage(_image);
   const nftSrcUrl = imageOriginal ?? image ?? imageFromTokenURI;
-  const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
+  const isIpfsURL =
+    typeof nftSrcUrl === 'string' && nftSrcUrl.startsWith('ipfs:');
 
   const isImageHosted =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
