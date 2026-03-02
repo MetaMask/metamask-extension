@@ -88,7 +88,7 @@ function TransactionListItemInner({
   const bridgeTxHistoryItem = useSelector((state) =>
     selectBridgeHistoryItemByHash(
       state,
-      transactionGroup.initialTransaction.id,
+      transactionGroup.initialTransaction.hash,
     ),
   );
   const isUnifiedSwapTx =
