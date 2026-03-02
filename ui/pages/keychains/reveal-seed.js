@@ -79,6 +79,8 @@ function RevealSeedPage() {
 
   useEffect(() => {
     let cancelled = false;
+    setScanResult(null);
+    setDangerAcknowledged(false);
 
     if (activeTabOrigin) {
       scanUrlForPhishing(activeTabOrigin)
