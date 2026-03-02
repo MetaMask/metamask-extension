@@ -1082,17 +1082,17 @@
   "bridgeMarketClosedDescription": {
     "message": "This stock token is currently outside trading hours. Try again when the market reopens."
   },
-  "bridgeMarketClosedTitle": {
-    "message": "Market closed"
-  },
-  "bridgeMarketClosedModalTitle": {
-    "message": "Market is closed"
-  },
   "bridgeMarketClosedModalDescription": {
     "message": "The market that backs this token is currently closed. Tokens can be transferred on-chain at any time."
   },
   "bridgeMarketClosedModalLearnMore": {
     "message": "Learn more"
+  },
+  "bridgeMarketClosedModalTitle": {
+    "message": "Market is closed"
+  },
+  "bridgeMarketClosedTitle": {
+    "message": "Market closed"
   },
   "bridgeNetCost": {
     "message": "Net cost"
