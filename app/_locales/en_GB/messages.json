@@ -1073,9 +1073,6 @@
   "bridgeMarketClosedAction": {
     "message": "Market is closed"
   },
-  "bridgeMarketClosedBadge": {
-    "message": "After hours"
-  },
   "bridgeMarketClosedDescription": {
     "message": "This stock token is currently outside trading hours. Try again when the market reopens."
   },
