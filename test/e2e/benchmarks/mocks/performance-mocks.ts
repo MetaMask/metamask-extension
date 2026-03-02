@@ -259,7 +259,31 @@ const INTERCEPTED_PATTERNS: {
       },
     },
   },
+  {
+    match: (url) =>
+      url.includes('authentication.api.cx.metamask.io') &&
+      url.includes('/profile/lineage'),
+    response: {
+      statusCode: 200,
+      json: {
+        lineage: [
+          {
+            agent: 'extension',
+            metametrics_id: 'mock-metametrics-id',
+            created_at: '2024-01-01',
+            updated_at: '2024-01-01',
+          },
+        ],
+      },
+    },
+  },
   /* eslint-enable @typescript-eslint/naming-convention */
+  {
+    match: (url) =>
+      url.includes('authentication.api.cx.metamask.io') &&
+      url.includes('/profile/accounts'),
+    response: { statusCode: 200, json: [] },
+  },
   {
     match: (url) => url.includes('authentication.api.cx.metamask.io'),
     response: { statusCode: 200, json: {} },
