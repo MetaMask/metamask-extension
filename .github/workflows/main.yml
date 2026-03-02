@@ -622,7 +622,7 @@ jobs:
       - build-dist-browserify
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    environment: release-branch
+    environment: release-ci
     steps:
       - name: Trigger regression validation in external repo
         env:
