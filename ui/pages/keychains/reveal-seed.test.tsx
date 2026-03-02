@@ -21,50 +21,65 @@ jest.mock('react-router-dom', () => ({
   useParams: () => mockUseParams(),
 }));
 
-const mockSuccessfulSrpReveal = () => {
-  return (dispatch) => {
+const mockSuccessfulSrpReveal = (): ((
+  dispatch: jest.Mock,
+) => Promise<string>) => {
+  return (dispatch: jest.Mock) => {
     dispatch({ type: 'MOCK_REQUEST_REVEAL_SEED_WORDS' });
     return Promise.resolve('test srp');
   };
 };
-const mockUnsuccessfulSrpReveal = () => {
-  return () => {
-    return Promise.reject(new Error('bad password'));
-  };
+
+const mockUnsuccessfulSrpReveal = (): (() => Promise<never>) => {
+  return () => Promise.reject(new Error('bad password'));
 };
+
 const mockRequestRevealSeedWords = jest
   .fn()
-  .mockImplementation(mockSuccessfulSrpReveal);
+  .mockImplementation(
+    mockSuccessfulSrpReveal as () => (dispatch: jest.Mock) => Promise<string>,
+  );
+
 const password = 'password';
 
 jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
-  requestRevealSeedWords: (userPassword, keyringId) =>
+  requestRevealSeedWords: (userPassword: string, keyringId?: string) =>
     mockRequestRevealSeedWords(userPassword, keyringId),
 }));
 
-// Quiz answers may use curly apostrophe (') in locale output
-const Q1_CORRECT = /Can['\u2019]t help you/u;
-const Q2_CORRECT = /You['\u2019]re being scammed/u;
+type NavigateQuizToPasswordScreenArgs = {
+  getByText: (id: string | RegExp) => HTMLElement;
+  queryByTestId: (id: string) => HTMLElement | null;
+  fireEvent: typeof fireEvent;
+};
 
 async function navigateQuizToPasswordScreen({
   getByText,
   queryByTestId,
   fireEvent: fireEventFn,
-}) {
+}: NavigateQuizToPasswordScreenArgs) {
   fireEventFn.click(getByText(messages.srpSecurityQuizGetStarted.message));
 
+  // Q1: click the correct-answer button (data-testid avoids i18n/apostrophe issues)
   await waitFor(() => {
-    expect(getByText(Q1_CORRECT)).toBeInTheDocument();
+    expect(queryByTestId('srp-quiz-right-answer')).toBeInTheDocument();
   });
-  fireEventFn.click(getByText(Q1_CORRECT));
-  fireEventFn.click(getByText(messages.continue.message));
+  fireEventFn.click(queryByTestId('srp-quiz-right-answer') as HTMLElement);
+  await waitFor(() => {
+    expect(queryByTestId('srp-quiz-continue')).toBeInTheDocument();
+  });
+  fireEventFn.click(queryByTestId('srp-quiz-continue') as HTMLElement);
 
+  // Q2: click the correct-answer button
   await waitFor(() => {
-    expect(getByText(Q2_CORRECT)).toBeInTheDocument();
+    expect(queryByTestId('srp-quiz-right-answer')).toBeInTheDocument();
   });
-  fireEventFn.click(getByText(Q2_CORRECT));
-  fireEventFn.click(getByText(messages.continue.message));
+  fireEventFn.click(queryByTestId('srp-quiz-right-answer') as HTMLElement);
+  await waitFor(() => {
+    expect(queryByTestId('srp-quiz-continue')).toBeInTheDocument();
+  });
+  fireEventFn.click(queryByTestId('srp-quiz-continue') as HTMLElement);
 
   await waitFor(() => {
     expect(queryByTestId('input-password')).toBeInTheDocument();
@@ -72,7 +87,7 @@ async function navigateQuizToPasswordScreen({
 }
 
 describe('Reveal Seed Page', () => {
-  const mockStore = configureMockStore([thunk])(mockState);
+  const mockStore = configureMockStore([thunk])(mockState as object);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -124,7 +139,7 @@ describe('Reveal Seed Page', () => {
       fireEvent,
     });
 
-    fireEvent.change(queryByTestId('input-password'), {
+    fireEvent.change(queryByTestId('input-password') as HTMLElement, {
       target: { value: password },
     });
 
@@ -136,7 +151,11 @@ describe('Reveal Seed Page', () => {
   });
 
   it('shows error when password is wrong', async () => {
-    mockRequestRevealSeedWords.mockImplementation(mockUnsuccessfulSrpReveal);
+    mockRequestRevealSeedWords.mockImplementation(
+      mockUnsuccessfulSrpReveal as () => (
+        dispatch: jest.Mock,
+      ) => Promise<string>,
+    );
 
     const { queryByTestId, getByText, queryByText } = renderWithProvider(
       <RevealSeedPage />,
@@ -149,7 +168,7 @@ describe('Reveal Seed Page', () => {
       fireEvent,
     });
 
-    fireEvent.change(queryByTestId('input-password'), {
+    fireEvent.change(queryByTestId('input-password') as HTMLElement, {
       target: { value: 'bad password' },
     });
 
@@ -161,8 +180,10 @@ describe('Reveal Seed Page', () => {
   });
 
   it('should show srp after completing quiz and entering password', async () => {
-    mockRequestRevealSeedWords.mockImplementationOnce(mockSuccessfulSrpReveal);
-    const store = configureStore(mockState);
+    mockRequestRevealSeedWords.mockImplementationOnce(
+      mockSuccessfulSrpReveal as () => (dispatch: jest.Mock) => Promise<string>,
+    );
+    const store = configureStore(mockState as object);
     const { queryByTestId, getByText } = renderWithProvider(
       <RevealSeedPage />,
       store,
@@ -174,7 +195,7 @@ describe('Reveal Seed Page', () => {
       fireEvent,
     });
 
-    fireEvent.change(queryByTestId('input-password'), {
+    fireEvent.change(queryByTestId('input-password') as HTMLElement, {
       target: { value: password },
     });
 
@@ -188,10 +209,18 @@ describe('Reveal Seed Page', () => {
   });
 
   it('emits events when correct password is entered', async () => {
-    const store = configureStore(mockState);
+    const store = configureStore(mockState as object);
     mockRequestRevealSeedWords
-      .mockImplementationOnce(mockUnsuccessfulSrpReveal)
-      .mockImplementationOnce(mockSuccessfulSrpReveal);
+      .mockImplementationOnce(
+        mockUnsuccessfulSrpReveal as () => (
+          dispatch: jest.Mock,
+        ) => Promise<string>,
+      )
+      .mockImplementationOnce(
+        mockSuccessfulSrpReveal as () => (
+          dispatch: jest.Mock,
+        ) => Promise<string>,
+      );
 
     const mockTrackEvent = jest.fn();
     const mockMetaMetricsContext = {
@@ -200,7 +229,7 @@ describe('Reveal Seed Page', () => {
       bufferedEndTrace: jest.fn(),
       onboardingParentContext: { current: null },
     };
-    const { queryByTestId, getByText } = renderWithProvider(
+    const { queryByTestId, getByText, getByRole } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <RevealSeedPage />
       </MetaMetricsContext.Provider>,
@@ -213,7 +242,7 @@ describe('Reveal Seed Page', () => {
       fireEvent,
     });
 
-    fireEvent.change(queryByTestId('input-password'), {
+    fireEvent.change(queryByTestId('input-password') as HTMLElement, {
       target: { value: 'bad-password' },
     });
 
@@ -225,7 +254,9 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpRevealStarted,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
       });
@@ -233,7 +264,9 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportRequested,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
       });
@@ -241,6 +274,7 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpRevealNextClicked,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
         },
       });
@@ -248,7 +282,9 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportFailed,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
           reason: 'bad password',
         },
@@ -257,7 +293,7 @@ describe('Reveal Seed Page', () => {
 
     mockTrackEvent.mockClear();
 
-    fireEvent.change(queryByTestId('input-password'), {
+    fireEvent.change(queryByTestId('input-password') as HTMLElement, {
       target: { value: password },
     });
 
@@ -268,7 +304,9 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportRequested,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
       });
@@ -276,6 +314,7 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpRevealNextClicked,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
         },
       });
@@ -283,7 +322,9 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportRevealed,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
       });
@@ -295,6 +336,7 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpViewSrpText,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
         },
       });
@@ -302,8 +344,12 @@ describe('Reveal Seed Page', () => {
 
     mockTrackEvent.mockClear();
 
-    const qrTab = getByText(messages.revealSeedWordsQR.message);
-    const textTab = getByText(messages.revealSeedWordsText.message);
+    const qrTab = getByRole('tab', {
+      name: messages.revealSeedWordsQR.message,
+    });
+    const textTab = getByRole('tab', {
+      name: messages.revealSeedWordsText.message,
+    });
 
     fireEvent.click(qrTab);
 
@@ -312,9 +358,15 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpViewsSrpQR,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
         },
       });
+    });
+
+    // Wait for React to commit the tab switch so the Text tab click triggers onTabClick (Tabs only fires when the selected tab changes)
+    await waitFor(() => {
+      expect(qrTab).toHaveAttribute('aria-selected', 'true');
     });
 
     fireEvent.click(textTab);
@@ -324,6 +376,7 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpViewSrpText,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
         },
       });
@@ -332,25 +385,32 @@ describe('Reveal Seed Page', () => {
     mockTrackEvent.mockClear();
 
     const revealPhraseButton = queryByTestId('recovery-phrase-reveal');
-    fireEvent.click(revealPhraseButton);
-
-    const copyButton = getByText(messages.copyToClipboard.message);
-    fireEvent.click(copyButton);
+    fireEvent.click(revealPhraseButton as HTMLElement);
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
       });
+    });
+
+    const copyButton = queryByTestId('reveal-seed-copy-button');
+    fireEvent.click(copyButton as HTMLElement);
+
+    await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportCopied,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           copy_method: 'clipboard',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
       });
@@ -358,8 +418,11 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpCopiedToClipboard,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           copy_method: 'clipboard',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
       });
@@ -389,8 +452,11 @@ describe('Reveal Seed Page', () => {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpRevealBackButtonClicked,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           screen: 'QUIZ_INTRODUCTION_SCREEN',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
       });
@@ -413,7 +479,7 @@ describe('Reveal Seed Page', () => {
         fireEvent,
       });
 
-      fireEvent.change(queryByTestId('input-password'), {
+      fireEvent.change(queryByTestId('input-password') as HTMLElement, {
         target: { value: password },
       });
 
@@ -441,7 +507,7 @@ describe('Reveal Seed Page', () => {
         fireEvent,
       });
 
-      fireEvent.change(queryByTestId('input-password'), {
+      fireEvent.change(queryByTestId('input-password') as HTMLElement, {
         target: { value: password },
       });
 
