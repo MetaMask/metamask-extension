@@ -21,6 +21,15 @@ module.exports = function (api) {
       },
     ],
     plugins: [
+      [
+        'module-resolver',
+        {
+          alias: {
+            '~ui': './ui',
+            '~shared': './shared',
+          },
+        },
+      ],
       // `browserify` is old and busted, and doesn't support `??=` (and other
       // logical assignment operators). This plugin lets us target es2020-level
       // browsers (except we do still end up with transpiled logical assignment

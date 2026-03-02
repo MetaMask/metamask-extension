@@ -294,6 +294,8 @@ const config = {
         context,
         '../ui/__mocks__/perps/perps-controller',
       ),
+      '~ui': join(context, '../ui'),
+      '~shared': join(context, '../shared'),
     },
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in
