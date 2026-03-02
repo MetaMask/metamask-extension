@@ -41,6 +41,7 @@ import {
   getSelectedInternalAccount,
   getOriginOfCurrentTab,
   getShowDefaultAddress,
+  getIsDefaultAddressEnabled,
 } from '../../../selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -97,6 +98,7 @@ export const AppHeaderUnlockedContent = ({
   );
   const accountListStats = useSelector(getAccountListStats);
   const showDefaultAddress = useSelector(getShowDefaultAddress);
+  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
   const { defaultAddress } = useSelector((state) =>
     getDefaultScopeAndAddressByAccountGroupId(
       state,
@@ -236,8 +238,11 @@ export const AppHeaderUnlockedContent = ({
                   op: TraceOperation.AccountUi,
                 });
               }}
+              showDefaultAddressSection={isDefaultAddressEnabled}
             >
-              {showDefaultAddress && defaultAddress ? (
+              {isDefaultAddressEnabled &&
+              showDefaultAddress &&
+              defaultAddress ? (
                 <MultichainAccountNetworkGroupWithDefaultAddress
                   groupId={selectedMultichainAccountId}
                 />
@@ -270,6 +275,7 @@ export const AppHeaderUnlockedContent = ({
     accountName,
     defaultAddress,
     disableAccountPicker,
+    isDefaultAddressEnabled,
     selectedMultichainAccountId,
     showDefaultAddress,
     navigate,

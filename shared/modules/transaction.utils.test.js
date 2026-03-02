@@ -516,6 +516,78 @@ describe('Transaction.utils', function () {
           );
         });
       });
+
+      describe('nested value spoofing protection', () => {
+        it('ignores nested value fields and uses actual message.value (spoofing attack prevention)', () => {
+          const maliciousData = JSON.stringify({
+            message: {
+              evil: { value: 999999999999999 },
+              value: 1,
+            },
+          });
+          const result = parse(maliciousData);
+          expect(result.message.value).toBe('1');
+        });
+
+        it('ignores deeply nested value fields with large numbers', () => {
+          const maliciousData =
+            '{"message": {"nested": {"deeper": {"value": 888888888888888888888888888888}}, "value": 100}}';
+          const result = parse(maliciousData);
+          expect(result.message.value).toBe('100');
+        });
+
+        it('ignores value fields in arrays within message', () => {
+          const maliciousData = JSON.stringify({
+            message: {
+              items: [{ value: 777777777777777 }, { value: 666666666666666 }],
+              value: 50,
+            },
+          });
+          const result = parse(maliciousData);
+          expect(result.message.value).toBe('50');
+        });
+
+        it('extracts large value correctly when it is the actual message.value', () => {
+          const largeValue = '999999999999999999999999999999';
+          const legitimateData = JSON.stringify({
+            message: {
+              otherField: 'some data',
+              value: largeValue,
+            },
+          });
+          const result = parse(legitimateData);
+          expect(result.message.value).toBe(largeValue);
+        });
+
+        it('extracts large value when nested objects come after message.value', () => {
+          const data =
+            '{"message": {"value": 123456789012345678901234567890, "nested": {"value": 1}}}';
+          const result = parse(data);
+          expect(result.message.value).toBe('123456789012345678901234567890');
+        });
+
+        it('handles escaped quotes in string values correctly', () => {
+          const data = JSON.stringify({
+            message: {
+              description: 'A string with "value": 999999999999999 inside',
+              value: 42,
+            },
+          });
+          const result = parse(data);
+          expect(result.message.value).toBe('42');
+        });
+
+        it('handles message.value as string (not numeric) correctly', () => {
+          const data = JSON.stringify({
+            message: {
+              evil: { value: 999999999999999 },
+              value: '123',
+            },
+          });
+          const result = parse(data);
+          expect(result.message.value).toBe('123');
+        });
+      });
     });
   });
 

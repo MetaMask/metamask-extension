@@ -42,6 +42,8 @@ class HomePage {
     css: '.mm-banner-base',
   };
 
+  private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
+
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
@@ -81,6 +83,8 @@ class HomePage {
   };
 
   protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
+
+  private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
 
   protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
 
@@ -201,6 +205,12 @@ class HomePage {
     } catch (e) {
       console.log('Error waiting for network, DOM, and Redux ready', e);
     }
+  }
+
+  async waitForNonEvmAccountsLoaded(): Promise<void> {
+    console.log('Waiting for Non EVM account icons to be visible');
+    await this.driver.waitForSelector(this.solanaAccountIcon);
+    await this.driver.waitForSelector(this.bitcoinAccountIcon);
   }
 
   async checkPageIsNotLoaded(): Promise<void> {

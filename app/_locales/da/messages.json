@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du skal vælge en konto!"
   },
-  "activityLog": {
-    "message": "aktivitetslog"
-  },
   "addAcquiredTokens": {
     "message": "Tilføj de tokens du har erhvervet ved hjælp af MetaMask"
   },
@@ -572,9 +569,6 @@
   "speedUpCancellation": {
     "message": "Gør denne annullering hurtigere"
   },
-  "speedUpTransaction": {
-    "message": "Gør denne transaktion hurtigere"
-  },
   "stateLogError": {
     "message": "Fejl ved hentning af tilstandslogfiler."
   },
@@ -611,38 +605,11 @@
   "transaction": {
     "message": "transaktion"
   },
-  "transactionCancelAttempted": {
-    "message": "Forsøgt annullering af transaktion med brændstofgebyr $1 på $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaktionen blev annulleret ved $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transaktion på $2 bekræftet."
-  },
-  "transactionCreated": {
-    "message": "Transaktion oprettet med en værdi på $1 til $2."
-  },
-  "transactionDropped": {
-    "message": "Transaktionen droppet til $2."
-  },
   "transactionError": {
     "message": "Transaktionsfejl. Undtagelse smidt i kontraktskode."
   },
   "transactionErrorNoContract": {
     "message": "Forsøger at hidkalde en funktion på en ikke-kontrakt adresse."
-  },
-  "transactionErrored": {
-    "message": "Transaktionen stødte på en fejl."
-  },
-  "transactionResubmitted": {
-    "message": "Transaktion genindsendt med brændstofgebyr forøget til $1 på $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transaktion indsendt med brændstofgebyr på $1 til $2."
-  },
-  "transactionUpdated": {
-    "message": "Transaktion opdateret til $2."
   },
   "transfer": {
     "message": "Overfør"

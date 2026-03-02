@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Gösterilecek bir şey yok. İlk token takası işleminizi bugün yapın."
   },
-  "activityLog": {
-    "message": "Etkinlik günlüğü"
-  },
   "add": {
     "message": "Ekle"
   },
@@ -7351,21 +7348,6 @@
   "simulationErrorMessageV2": {
     "message": "Gaz tahmini yapamadık. Sözleşmede bir hata olabilir ve bu işlem başarısız olabilir."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Kayma toleransı"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Bakiye değişiklikleri konusunda rahat hissettiğiniz bir fark belirleyin. Fark daha yüksek olursa işlemler gerçekleşmez."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Bakiye değişikliklerini uygula"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Paranızı güvende tutmak amacıyla bakiye değişirse veya kayma toleransı karşılanmazsa bu işlem gerçekleşmeyecektir."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "İşlem ayarları"
-  },
   "simulationsSettingDescription": {
     "message": "Onaylamadan önce işlemlerdeki ve imzalardaki bakiye değişikliklerini tahmin etmek için bunu açın. Nihai sonucunu garanti etmez. $1"
   },
@@ -7691,9 +7673,6 @@
   },
   "speedUpTooltipText": {
     "message": "Yeni gaz ücreti"
-  },
-  "speedUpTransaction": {
-    "message": "Bu işlemi hızlandır"
   },
   "spendLimitInsufficient": {
     "message": "Harcama limiti yetersiz"
@@ -8545,18 +8524,6 @@
   "transaction": {
     "message": "i̇şlem"
   },
-  "transactionCancelAttempted": {
-    "message": "$2 itibariyle $1 tahmini gaz ücretiyle işlem iptali denemesinde bulunuldu"
-  },
-  "transactionCancelSuccess": {
-    "message": "İşlem $2 itibariyle başarılı bir şekilde iptal edildi"
-  },
-  "transactionConfirmed": {
-    "message": "İşlem $2 itibariyle onaylandı."
-  },
-  "transactionCreated": {
-    "message": "İşlem $2 itibariyle $1 değeriyle oluşturuldu."
-  },
   "transactionDataFunction": {
     "message": "Fonksiyon"
   },
@@ -8566,17 +8533,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Tutar + ücretler"
   },
-  "transactionDropped": {
-    "message": "İşlem şu saatte bırakıldı: $2."
-  },
   "transactionError": {
     "message": "İşlem Hatası. Sözleşme kodundan istisna atıldı."
   },
   "transactionErrorNoContract": {
     "message": "Sözleşmeli olmayan bir adreste bir fonksiyon çağrılmaya çalışıldı."
-  },
-  "transactionErrored": {
-    "message": "İşlem bir hatayla karşılaştı."
   },
   "transactionFee": {
     "message": "İşlem ücreti"
@@ -8612,24 +8573,15 @@
   "transactionIncludesTypes": {
     "message": "Bu işlem şunu içerir: $1."
   },
-  "transactionResubmitted": {
-    "message": "İşlem, $2 itibariyle $1 olarak artırılan tahmini gaz ücreti ile yeniden gönderildi"
-  },
   "transactionSettings": {
     "message": "İşlem ayarları"
   },
   "transactionShield": {
     "message": "Transaction Shield"
   },
-  "transactionSubmitted": {
-    "message": "İşlem $2 itibariyle tahmini $1 gaz ücreti ile gönderildi."
-  },
   "transactionTotalGasFee": {
     "message": "Toplam gaz ücreti",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "İşlem $2 itibariyle güncellendi."
   },
   "transactions": {
     "message": "İşlemler"
