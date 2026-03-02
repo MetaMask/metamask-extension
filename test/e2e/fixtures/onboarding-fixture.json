@@ -1884,6 +1884,59 @@
     "PermissionLogController": {
       "permissionHistory": {}
     },
+    "PerpsController": {
+      "accountState": null,
+      "activeProvider": "hyperliquid",
+      "cachedAccountState": null,
+      "cachedMarketData": null,
+      "cachedMarketDataTimestamp": 0,
+      "cachedOrders": null,
+      "cachedPositions": null,
+      "cachedUserDataAddress": null,
+      "cachedUserDataTimestamp": 0,
+      "depositInProgress": false,
+      "depositRequests": [],
+      "hasPlacedFirstOrder": {
+        "mainnet": false,
+        "testnet": false
+      },
+      "hip3ConfigVersion": 0,
+      "initializationAttempts": 0,
+      "initializationError": null,
+      "initializationState": "uninitialized",
+      "isEligible": false,
+      "isFirstTimeUser": {
+        "mainnet": true,
+        "testnet": true
+      },
+      "isTestnet": false,
+      "lastDepositResult": null,
+      "lastDepositTransactionId": null,
+      "lastError": null,
+      "lastUpdateTimestamp": 0,
+      "lastWithdrawResult": null,
+      "marketFilterPreferences": {
+        "direction": "desc",
+        "optionId": "volume"
+      },
+      "perpsBalances": {},
+      "selectedPaymentToken": null,
+      "tradeConfigurations": {
+        "mainnet": {},
+        "testnet": {}
+      },
+      "watchlistMarkets": {
+        "mainnet": [],
+        "testnet": []
+      },
+      "withdrawInProgress": false,
+      "withdrawalProgress": {
+        "activeWithdrawalId": null,
+        "lastUpdated": 0,
+        "progress": 0
+      },
+      "withdrawalRequests": []
+    },
     "PhishingController": {
       "addressScanCache": {},
       "c2DomainBlocklistLastFetched": 0,
