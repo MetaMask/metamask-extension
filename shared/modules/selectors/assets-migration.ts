@@ -712,7 +712,7 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
 
     for (const [assetId, price] of Object.entries(assetsPrice) as [
       CaipAssetType,
-      FungibleAssetPrice, // TODO: A type discriminator to AssetPrice needs to be added to avoid this cast, but it is safe for now
+      FungibleAssetPrice, // TODO: A type discriminator to AssetPrice is needed to be added to avoid this cast, but it is safe for now
     ][]) {
       const assetType = parseCaipAssetType(assetId as CaipAssetType);
       const metadata = assetsInfo[assetId];
@@ -797,7 +797,7 @@ export const getMultichainAssetsRatesControllerConversionRates =
 
       for (const [assetId, assetPrice] of Object.entries(assetsPrice) as [
         CaipAssetType,
-        FungibleAssetPrice, // TODO: A type discriminator to AssetPrice needs to be added to avoid this cast, but it is safe for now
+        FungibleAssetPrice, // TODO: A type discriminator to AssetPrice is needed to be added to avoid this cast, but it is safe for now
       ][]) {
         const assetType = parseCaipAssetType(assetId as CaipAssetType);
         if (assetType.chain.namespace === KnownCaipNamespace.Eip155) {
