@@ -4,10 +4,6 @@
 
 // Disabled to allow setting up initial state hooks first
 
-// This import sets up global functions required for Sentry to function.
-// It must be run first in case an error is thrown later during initialization.
-import './lib/setup-initial-state-hooks';
-
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
 
@@ -96,6 +92,8 @@ import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-l
 import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
 import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
+// Sets up Sentry state hooks and exports the single PersistenceManager for this context
+import { persistenceManager } from './lib/setup-initial-state-hooks';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
@@ -115,7 +113,6 @@ const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
-const { persistenceManager } = globalThis.stateHooks;
 
 const { safePersist, requestSafeReload, evacuate } =
   getRequestSafeReload(persistenceManager);

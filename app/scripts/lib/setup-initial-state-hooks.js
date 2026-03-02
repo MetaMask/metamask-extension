@@ -38,9 +38,7 @@ const localStore = useFixtureStore
   : new ExtensionStore();
 
 // Single PersistenceManager per context: one in background, one per UI context.
-const persistenceManager = new PersistenceManager({ localStore });
-
-globalThis.stateHooks.persistenceManager = persistenceManager;
+export const persistenceManager = new PersistenceManager({ localStore });
 
 /**
  * Get the persisted wallet state.
