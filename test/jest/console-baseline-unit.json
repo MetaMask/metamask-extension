@@ -3056,6 +3056,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/multichain-accounts/smart-account-page/smart-account-page.test.tsx": {
+      "MetaMask: Background connection not initialized": 2,
       "React: Act warnings (component updates not wrapped)": 2,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
