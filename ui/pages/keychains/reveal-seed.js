@@ -1,13 +1,8 @@
 import qrCode from 'qrcode-generator';
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-} from 'react';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
+import { RecommendedAction } from '@metamask/phishing-controller';
 import { getErrorMessage } from '../../../shared/modules/error';
 import {
   MetaMetricsEventCategory,
@@ -50,7 +45,11 @@ import {
   requestRevealSeedWords,
   scanUrlForPhishing,
 } from '../../store/actions';
-import { getHDEntropyIndex } from '../../selectors';
+import {
+  getHDEntropyIndex,
+  getOriginOfCurrentTab,
+  getUrlOfCurrentTab,
+} from '../../selectors';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 
@@ -73,16 +72,10 @@ function RevealSeedPage() {
   const [isShowingHoldModal, setIsShowingHoldModal] = useState(false);
   const [srpViewEventTracked, setSrpViewEventTracked] = useState(false);
 
-  const activeTabUrl = useSelector((state) => state.activeTab?.url ?? null);
-  const activeTabOrigin = useSelector(
-    (state) => state.activeTab?.origin ?? null,
-  );
+  const activeTabUrl = useSelector(getUrlOfCurrentTab);
+  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const [scanResult, setScanResult] = useState(null);
   const [dangerAcknowledged, setDangerAcknowledged] = useState(false);
-
-  const trackEventRef = useRef(trackEvent);
-  trackEventRef.current = trackEvent;
-
 
   useEffect(() => {
     let cancelled = false;
@@ -95,7 +88,7 @@ function RevealSeedPage() {
           }
           setScanResult(result);
 
-          trackEventRef.current({
+          trackEvent({
             category: MetaMetricsEventCategory.Keys,
             event: MetaMetricsEventName.SrpRevealDappCheck,
             properties: {
@@ -114,7 +107,7 @@ function RevealSeedPage() {
     return () => {
       cancelled = true;
     };
-  }, [activeTabOrigin]);
+  }, [activeTabOrigin, trackEvent]);
 
   const onClickCopy = useCallback(() => {
     trackEvent({
@@ -192,27 +185,21 @@ function RevealSeedPage() {
       });
   };
 
-  const recommendedAction = scanResult?.recommendedAction;
-  const isMalicious = recommendedAction === 'BLOCK';
-  const isWarning = recommendedAction === 'WARN';
-  const isDangerous = isMalicious || isWarning;
+  const isMalicious =
+    scanResult?.recommendedAction === RecommendedAction.Block;
 
   const renderDappScanWarning = () => {
-    if (!isDangerous) {
+    if (!isMalicious) {
       return null;
     }
     return (
       <>
         <BannerAlert severity={Severity.Danger} data-testid="dapp-scan-warning">
           <Text variant={TextVariant.bodyMdBold}>
-            {isMalicious
-              ? t('dappScanMaliciousTitle')
-              : t('dappScanSuspiciousTitle')}
+            {t('dappScanMaliciousTitle')}
           </Text>
           <Text variant={TextVariant.bodyMd}>
-            {isMalicious
-              ? t('dappScanMaliciousWarning')
-              : t('dappScanSuspiciousWarning')}
+            {t('dappScanMaliciousWarning')}
           </Text>
         </BannerAlert>
         <Box
@@ -373,7 +360,7 @@ function RevealSeedPage() {
         <Button
           width={BlockSize.Full}
           size={Size.LG}
-          danger={isDangerous}
+          danger={isMalicious}
           onClick={(event) => {
             trackEvent({
               category: MetaMetricsEventCategory.Keys,
@@ -392,7 +379,7 @@ function RevealSeedPage() {
             });
             handleSubmit(event);
           }}
-          disabled={password === '' || (isDangerous && !dangerAcknowledged)}
+          disabled={password === '' || (isMalicious && !dangerAcknowledged)}
         >
           {t('next')}
         </Button>
@@ -484,7 +471,7 @@ function RevealSeedPage() {
         ])}
       </Text>
       {renderDappScanWarning()}
-      {!isDangerous && renderWarning()}
+      {!isMalicious && renderWarning()}
       {renderContent()}
       {renderFooter()}
       <HoldToRevealModal
