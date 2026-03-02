@@ -18,55 +18,10 @@ import { getSelectedAddress } from '../../../selectors/selectors';
 import { formatUnits } from '../../../../shared/lib/unit';
 import { useBridgeTxHistoryData } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { useGetTitle } from './hooks';
+import { resolveTransactionType } from './helpers';
 
 // eslint-disable-next-line no-empty-function
 const noop = () => {};
-
-// Map API transactionCategory to TransactionType for legacy modal
-function resolveTransactionType(tx: TransactionViewModel): TransactionType {
-  const { transactionCategory, transactionType } = tx;
-
-  if (transactionCategory === 'APPROVE') {
-    return TransactionType.tokenMethodApprove;
-  }
-  if (
-    transactionCategory === 'BRIDGE_OUT' ||
-    transactionCategory === 'BRIDGE_IN'
-  ) {
-    return TransactionType.bridge;
-  }
-
-  if (transactionCategory === 'SWAP' || transactionCategory === 'EXCHANGE') {
-    return TransactionType.swap;
-  }
-
-  // Specifics from transactionType
-  if (transactionType === 'DEPLOY_CONTRACT') {
-    return TransactionType.deployContract;
-  }
-
-  if (transactionType === 'ERC_20_TRANSFER') {
-    return TransactionType.tokenMethodTransfer;
-  }
-
-  if (
-    transactionType === 'ERC_721_TRANSFER' ||
-    transactionType === 'ERC_1155_TRANSFER'
-  ) {
-    return TransactionType.tokenMethodTransferFrom;
-  }
-
-  if (transactionCategory === 'TRANSFER') {
-    if (tx.amounts?.to && !tx.amounts?.from) {
-      return TransactionType.incoming;
-    }
-    if (tx.amounts?.from) {
-      return TransactionType.simpleSend;
-    }
-  }
-
-  return TransactionType.contractInteraction;
-}
 
 // Build synthetic transaction group for legacy modal
 function buildSyntheticTransactionGroup(
