@@ -378,6 +378,33 @@ describe('HardwareWalletErrorModal', () => {
       expect(mockClearError).toHaveBeenCalledTimes(1);
       expect(mockHideModal).toHaveBeenCalledTimes(1);
     });
+
+    it('auto dismisses the success state after 3 seconds', async () => {
+      jest.useFakeTimers();
+      const error = createTestError(
+        ErrorCode.AuthenticationDeviceLocked,
+        'Device is locked',
+        'Your device is locked.',
+      );
+
+      mockEnsureDeviceReady.mockResolvedValueOnce(true);
+
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+
+      await act(async () => {
+        fireEvent.click(getByText('[hardwareWalletErrorReconnectButton]'));
+      });
+
+      expect(getByText('[hardwareWalletTypeConnected]')).toBeInTheDocument();
+
+      act(() => {
+        jest.advanceTimersByTime(3000);
+      });
+
+      expect(mockHideModal).toHaveBeenCalledTimes(1);
+      expect(mockClearError).toHaveBeenCalledTimes(1);
+      jest.useRealTimers();
+    });
   });
 
   describe('Props Merging', () => {

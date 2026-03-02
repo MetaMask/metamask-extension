@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   Text,
@@ -46,6 +46,8 @@ type HardwareWalletErrorModalProps = {
   onRetry?: () => void;
 };
 
+const RECOVERY_SUCCESS_AUTO_DISMISS_MS = 3000;
+
 /**
  * Modal component to display hardware wallet errors with recovery instructions
  *
@@ -57,10 +59,49 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const { hideModal, props: modalProps } = useModalProps();
     const [isLoading, setIsLoading] = useState(false);
     const [recovered, setRecovered] = useState(false);
+    const recoveredDismissTimeoutRef = useRef<ReturnType<
+      typeof setTimeout
+    > | null>(null);
     const { error, onClose, onCancel, onRetry } = { ...modalProps, ...props };
 
     const { walletType: selectedAccountWalletType } = useHardwareWalletConfig();
     const { ensureDeviceReady, clearError } = useHardwareWalletActions();
+
+    const handleRetry = async () => {
+      onRetry?.();
+      setIsLoading(true);
+      try {
+        const result = await ensureDeviceReady();
+        if (result) {
+          setRecovered(true);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const handleClose = useCallback(() => {
+      onCancel?.();
+      clearError();
+      hideModal();
+    }, [clearError, hideModal, onCancel]);
+
+    useEffect(() => {
+      if (!recovered) {
+        return;
+      }
+
+      recoveredDismissTimeoutRef.current = setTimeout(() => {
+        handleClose();
+      }, RECOVERY_SUCCESS_AUTO_DISMISS_MS);
+
+      return () => {
+        if (recoveredDismissTimeoutRef.current) {
+          clearTimeout(recoveredDismissTimeoutRef.current);
+          recoveredDismissTimeoutRef.current = null;
+        }
+      };
+    }, [handleClose, recovered]);
 
     // If no error, don't render anything
     if (!error) {
@@ -105,25 +146,6 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
         {errorContent.title}
       </Text>
     );
-
-    const handleRetry = async () => {
-      onRetry?.();
-      setIsLoading(true);
-      try {
-        const result = await ensureDeviceReady();
-        if (result) {
-          setRecovered(true);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    const handleClose = () => {
-      onCancel?.();
-      clearError();
-      hideModal();
-    };
 
     const retryButtonText =
       error.code === ErrorCode.DeviceDisconnected
