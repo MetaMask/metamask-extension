@@ -8,22 +8,22 @@ import { AutodetectNftsToggleItem } from './autodetect-nfts-item';
 import { AutodetectTokensToggleItem } from './autodetect-tokens-item';
 
 /** Registry of setting items for the Assets page. Add new items here */
-const ASSET_SETTING_ITEMS: { id: string; Component: React.FC }[] = [
-  { id: 'local-currency', Component: LocalCurrencyItem },
-  { id: 'show-network-token', Component: ShowNetworkTokenToggleItem },
+const ASSET_SETTING_ITEMS: { id: string; component: React.FC }[] = [
+  { id: 'local-currency', component: LocalCurrencyItem },
+  { id: 'show-network-token', component: ShowNetworkTokenToggleItem },
   {
     id: 'hide-zero-balance-tokens',
-    Component: HideZeroBalanceTokensToggleItem,
+    component: HideZeroBalanceTokensToggleItem,
   },
-  { id: 'display-nft-media', Component: DisplayNftMediaToggleItem },
-  { id: 'autodetect-nfts', Component: AutodetectNftsToggleItem },
-  { id: 'autodetect-tokens', Component: AutodetectTokensToggleItem },
+  { id: 'display-nft-media', component: DisplayNftMediaToggleItem },
+  { id: 'autodetect-nfts', component: AutodetectNftsToggleItem },
+  { id: 'autodetect-tokens', component: AutodetectTokensToggleItem },
 ];
 
 const Assets = () => {
   return (
     <Box padding={4}>
-      {ASSET_SETTING_ITEMS.map(({ id, Component }) => (
+      {ASSET_SETTING_ITEMS.map(({ id, component: Component }) => (
         <Component key={id} />
       ))}
     </Box>
