@@ -651,7 +651,7 @@ export function getMultichainNetwork(
     // TODO: Adapt this for other non-EVM networks
     nickname: nonEvmNetwork.nickname,
     isEvmNetwork: false,
-    chainId: nonEvmNetwork?.chainId,
+    chainId: nonEvmNetwork.chainId,
     network: nonEvmNetwork,
   };
 }
