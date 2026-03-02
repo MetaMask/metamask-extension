@@ -276,9 +276,6 @@
   "addIPFSGateway": {
     "message": "Thêm cổng IPFS ưa thích của bạn"
   },
-  "addImportAccount": {
-    "message": "Thêm tài khoản hoặc ví cứng"
-  },
   "addMemo": {
     "message": "Thêm bản ghi nhớ"
   },
