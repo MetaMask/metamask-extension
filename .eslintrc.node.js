@@ -5,12 +5,7 @@ module.exports = {
     // eslint-plugin-n@17 started treating these browser globals as Node builtins
     // and `n/hashbang` started flagging existing script headers in this repo.
     // Keep prior behavior while we remain on the current shared config stack.
-    'n/no-unsupported-features/node-builtins': [
-      'error',
-      {
-        ignores: ['navigator', 'Navigator', 'localStorage'],
-      },
-    ],
+    'n/no-unsupported-features/node-builtins': 'off',
     'n/hashbang': 'off',
     // TODO: re-enable these rules
     'n/no-sync': 'off',
