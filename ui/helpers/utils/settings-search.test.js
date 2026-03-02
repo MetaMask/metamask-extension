@@ -193,7 +193,7 @@ describe('Settings Search Utils', () => {
     it('returns "Transactions" section count', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('transactions')),
-      ).toStrictEqual(7);
+      ).toStrictEqual(8);
     });
 
     it('returns "Security & privacy" section count', () => {

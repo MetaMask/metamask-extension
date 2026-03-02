@@ -82,7 +82,7 @@ import ChangePassword from './security-tab/change-password';
 import ClaimsArea from './transaction-shield-tab/claims-area';
 import TransactionShield from './transaction-shield-tab';
 import ManageShieldPlan from './transaction-shield-tab/manage-shield-plan';
-import TransactionsTab from './transactions-tab/transactions-tab.container';
+import Transactions from './transactions-tab/transactions';
 
 // Helper component for network routes that need side effects
 const NetworkRouteHandler = ({ onMount }) => {
@@ -545,7 +545,7 @@ class SettingsPage extends PureComponent {
         />
         <Route
           path={toRelativeRoutePath(TRANSACTIONS_ROUTE, SETTINGS_ROUTE)}
-          element={<TransactionsTab />}
+          element={<Transactions />}
         />
         <Route
           path={toRelativeRoutePath(BACKUPANDSYNC_ROUTE, SETTINGS_ROUTE)}

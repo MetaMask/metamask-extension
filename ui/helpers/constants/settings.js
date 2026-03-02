@@ -124,6 +124,13 @@ const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('transactions'),
+    sectionMessage: (t) => t('smartAccountRequestsFromDapps'),
+    descriptionMessage: (t) => t('smartAccountRequestsFromDappsDescription'),
+    route: `${TRANSACTIONS_ROUTE}#smart-account-requests-from-dapps`,
+    iconName: IconName.Setting,
+  },
+  {
+    tabMessage: (t) => t('transactions'),
     sectionMessage: (t) => t('externalNameSourcesSetting'),
     descriptionMessage: (t) => t('externalNameSourcesSettingDescription'),
     route: `${TRANSACTIONS_ROUTE}#proposed-nicknames`,

@@ -101,6 +101,7 @@ export type Preferences = {
   defaultAddressScope: DefaultAddressScope;
   dismissSmartAccountSuggestionEnabled: boolean;
   featureNotificationsEnabled: boolean;
+  smartAccountRequestsFromDapps: boolean;
   hideZeroBalanceTokens: boolean;
   petnamesEnabled: boolean;
   privacyMode: boolean;
@@ -135,6 +136,7 @@ export type PreferencesControllerState = Omit<
   | 'tokenSortConfig'
   | 'showMultiRpcModal'
   | 'dismissSmartAccountSuggestionEnabled'
+  | 'smartAccountRequestsFromDapps'
   | 'smartAccountOptIn'
   | 'smartAccountOptInForAccounts'
   | 'showIncomingTransactions'
@@ -202,6 +204,7 @@ export const getDefaultPreferencesControllerState =
       avatarType: 'maskicon',
       dismissSmartAccountSuggestionEnabled: false,
       featureNotificationsEnabled: false,
+      smartAccountRequestsFromDapps: false,
       hideZeroBalanceTokens: false,
       petnamesEnabled: true,
       privacyMode: false,
