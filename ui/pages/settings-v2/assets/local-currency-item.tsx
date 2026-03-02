@@ -15,8 +15,8 @@ import {
   TextColor,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SETTINGS_V2_CURRENCY_ROUTE } from '../settings-registry';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { CURRENCY_ROUTE } from '../../../helpers/constants/routes';
 
 export const LocalCurrencyItem = () => {
   const t = useI18nContext();
@@ -24,7 +24,7 @@ export const LocalCurrencyItem = () => {
   const currentCurrency = useSelector(getCurrentCurrency);
 
   const handleCurrencyPress = () => {
-    navigate(SETTINGS_V2_CURRENCY_ROUTE);
+    navigate(CURRENCY_ROUTE);
   };
 
   return (
@@ -37,8 +37,16 @@ export const LocalCurrencyItem = () => {
       <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
         {t('localCurrency')}
       </Text>
-      <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={1}>
-        <Text color={TextColor.TextAlternative} variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={1}
+      >
+        <Text
+          color={TextColor.TextAlternative}
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+        >
           {currentCurrency.toUpperCase()}
         </Text>
         <ButtonIcon
