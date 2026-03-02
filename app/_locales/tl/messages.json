@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Wala pang bago sa ngayon. I-swap na ang iyong unang token ngayon."
   },
-  "activityLog": {
-    "message": "Log ng aktibidad"
-  },
   "add": {
     "message": "Idagdag"
   },
@@ -5242,9 +5239,6 @@
   "perpsAddToFavorites": {
     "message": "Idagdag sa mga paborito"
   },
-  "perpsAsk": {
-    "message": "Ask"
-  },
   "perpsAutoClose": {
     "message": "Awtomatikong nagsasara"
   },
@@ -5255,14 +5249,8 @@
   "perpsAvailableBalance": {
     "message": "Available na balanse"
   },
-  "perpsBid": {
-    "message": "Bid"
-  },
   "perpsCancelAllOrders": {
     "message": "Kanselahin lahat"
-  },
-  "perpsClose": {
-    "message": "Isara"
   },
   "perpsCloseAll": {
     "message": "Isara lahat"
@@ -5380,9 +5368,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Tinatayang Liquidation Price"
   },
   "perpsLong": {
     "message": "Long"
@@ -6226,12 +6211,6 @@
   },
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Subukang muli"
-  },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Ang mga account na hardware wallet ay hindi pa kwalipikadong tumanggap ng mga reward. Lumipat sa ibang account upang magpatuloy."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Hindi sinusuportahan ang account"
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Subukang muli"
@@ -7369,21 +7348,6 @@
   "simulationErrorMessageV2": {
     "message": "Hindi namin nagawang tantyahin ang gas. Maaaring may error sa kontrata at maaaring mabigo ang transaksyong ito."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Slippage tolerance"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Itakda ang diperensya na komportable ka para sa mga pagbabago ng balanse. Hindi magpapatuloy ang mga transaksyon kapag mas mataas ang diperensya."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Ipatupad ang mga pagbabago sa balanse"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Para mapanatiling ligtas ang iyong pera, hindi magpapatuloy ang transaksyong ito kapag nagbago ang balanse o hindi natugunan ang slippage tolerance."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Mga setting ng transaksyon"
-  },
   "simulationsSettingDescription": {
     "message": "I-on ito para tantyahin ang mga pagbabago sa balanse ng mga transaksyon at mga pirma bago mo kumpirmahin ang mga ito. Hindi nito ginagarantiyahan ang panghuling resulta ng mga ito. $1"
   },
@@ -7514,12 +7478,6 @@
   },
   "snapAccountRemovedDescription": {
     "message": "Ang account na ito ay hindi na magiging available para gamitin sa MetaMask."
-  },
-  "snapAccounts": {
-    "message": "Mga Account Snap"
-  },
-  "snapAccountsDescription": {
-    "message": "Mga account na kontrol lang ng mga third-party na Snap."
   },
   "snapConnectTo": {
     "message": "Kumonekta sa $1",
@@ -7715,9 +7673,6 @@
   },
   "speedUpTooltipText": {
     "message": "Bagong bayad sa gas"
-  },
-  "speedUpTransaction": {
-    "message": "Pabilisin ang transaksyong ito"
   },
   "spendLimitInsufficient": {
     "message": "Hindi sapat ang limitasyon sa paggastos"
@@ -8569,18 +8524,6 @@
   "transaction": {
     "message": "transaksyong"
   },
-  "transactionCancelAttempted": {
-    "message": "Sinubukang kanselahin ang transaksyon na may tinantyang bayad sa gas na $1 sa $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Matagumpay na nakansela ang transaksyon sa $2"
-  },
-  "transactionConfirmed": {
-    "message": "Nakumpirma ang transaksyon sa $2."
-  },
-  "transactionCreated": {
-    "message": "Nagawa ang transaksyon na nagkakahalagang $1 sa $2."
-  },
   "transactionDataFunction": {
     "message": "Tungkulin"
   },
@@ -8590,17 +8533,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Halaga + fees"
   },
-  "transactionDropped": {
-    "message": "Tinanggihan ang transaksyon sa $2."
-  },
   "transactionError": {
     "message": "Error sa transaksyon. Nagkaroon ng exception sa code ng kontrata."
   },
   "transactionErrorNoContract": {
     "message": "Sinusubukang i-call ang isang function sa isang address na hindi kontrata."
-  },
-  "transactionErrored": {
-    "message": "Nagkaroon ng error sa transaksyon."
   },
   "transactionFee": {
     "message": "Bayad sa transaksyon"
@@ -8636,24 +8573,15 @@
   "transactionIncludesTypes": {
     "message": "Kabilang sa transaksyong ito ang: $1."
   },
-  "transactionResubmitted": {
-    "message": "Isinumite ulit ang transaksyon na may tinantyang bayad sa gas na itinaas sa $1 sa $2"
-  },
   "transactionSettings": {
     "message": "Mga setting ng transaksyon"
   },
   "transactionShield": {
     "message": "Transaction Shield"
   },
-  "transactionSubmitted": {
-    "message": "Isinumite ang transaksyon na may tinantyang bayad sa gas na $1 sa $2."
-  },
   "transactionTotalGasFee": {
     "message": "Kabuuang bayad sa gas",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Na-update ang transaksyon sa $2."
   },
   "transactions": {
     "message": "Mga Transaksyon"

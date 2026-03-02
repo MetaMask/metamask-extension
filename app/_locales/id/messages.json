@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Belum ada apa pun. Swap token pertama Anda hari ini."
   },
-  "activityLog": {
-    "message": "Log aktivitas"
-  },
   "add": {
     "message": "Tambah"
   },
@@ -5242,9 +5239,6 @@
   "perpsAddToFavorites": {
     "message": "Tambahkan ke favorit"
   },
-  "perpsAsk": {
-    "message": "Permintaan"
-  },
   "perpsAutoClose": {
     "message": "Tutup otomatis"
   },
@@ -5255,14 +5249,8 @@
   "perpsAvailableBalance": {
     "message": "Saldo tersedia"
   },
-  "perpsBid": {
-    "message": "Penawaran"
-  },
   "perpsCancelAllOrders": {
     "message": "Batalkan semua"
-  },
-  "perpsClose": {
-    "message": "Tutup"
   },
   "perpsCloseAll": {
     "message": "Tutup semua"
@@ -5380,9 +5368,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Harga likuidasi"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Estimasi Harga Likuidasi"
   },
   "perpsLong": {
     "message": "Long"
@@ -6226,12 +6211,6 @@
   },
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Coba lagi"
-  },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Akun dompet perangkat keras belum memenuhi syarat untuk menerima reward. Beralih ke akun lain untuk melanjutkan."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Akun tidak didukung"
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Coba lagi"
@@ -7369,21 +7348,6 @@
   "simulationErrorMessageV2": {
     "message": "Kami tidak dapat memperkirakan gas. Tampaknya ada kesalahan dalam kontrak dan transaksi ini berpotensi gagal."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Toleransi selip"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Atur selisih yang paling sesuai untuk perubahan saldo. Transaksi tidak akan diproses jika selisihnya lebih tinggi."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Terapkan perubahan saldo"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Untuk menjaga keamanan uang Anda, transaksi ini tidak akan dilakukan jika saldo berubah atau toleransi selip tidak terpenuhi."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Pengaturan transaksi"
-  },
   "simulationsSettingDescription": {
     "message": "Aktifkan untuk mengestimasikan perubahan saldo transaksi dan tanda tangan sebelum Anda mengonfirmasikannya. Ini tidak menjamin hasil akhirnya. $1"
   },
@@ -7514,12 +7478,6 @@
   },
   "snapAccountRemovedDescription": {
     "message": "Akun ini tidak lagi tersedia untuk digunakan di MetaMask."
-  },
-  "snapAccounts": {
-    "message": "Akun Snap"
-  },
-  "snapAccountsDescription": {
-    "message": "Akun yang dikontrol oleh Snap pihak ketiga."
   },
   "snapConnectTo": {
     "message": "Hubungkan ke $1",
@@ -7715,9 +7673,6 @@
   },
   "speedUpTooltipText": {
     "message": "Biaya gas baru"
-  },
-  "speedUpTransaction": {
-    "message": "Percepat transaksi ini"
   },
   "spendLimitInsufficient": {
     "message": "Batas penggunaan tidak mencukupi"
@@ -8569,18 +8524,6 @@
   "transaction": {
     "message": "transaksi"
   },
-  "transactionCancelAttempted": {
-    "message": "Pembatalan transaksi diupayakan dengan biaya gas sebesar $1 pada $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaksi berhasil dibatalkan pada $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transaksi dikonfirmasi pada $2."
-  },
-  "transactionCreated": {
-    "message": "Transaksi dibuat dengan nilai sebesar $1 pada $2."
-  },
   "transactionDataFunction": {
     "message": "Fungsi"
   },
@@ -8590,17 +8533,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Jumlah + biaya"
   },
-  "transactionDropped": {
-    "message": "Transaksi terputus pada $2."
-  },
   "transactionError": {
     "message": "Kesalahan transaksi. Pengecualian diberikan dalam kode kontrak."
   },
   "transactionErrorNoContract": {
     "message": "Mencoba memanggil fungsi pada alamat nonkontrak."
-  },
-  "transactionErrored": {
-    "message": "Transaksi mengalami kesalahan."
   },
   "transactionFee": {
     "message": "Biaya transaksi"
@@ -8636,24 +8573,15 @@
   "transactionIncludesTypes": {
     "message": "Transaksi ini termasuk: $1."
   },
-  "transactionResubmitted": {
-    "message": "Transaksi dikirim kembali dengan estimasi biaya gas naik $1 pada $2"
-  },
   "transactionSettings": {
     "message": "Pengaturan transaksi"
   },
   "transactionShield": {
     "message": "Transaction Shield"
   },
-  "transactionSubmitted": {
-    "message": "Transaksi dikirim dengan estimasi biaya gas sebesar $1 pada $2."
-  },
   "transactionTotalGasFee": {
     "message": "Total biaya gas",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Transaksi diperbarui pada $2."
   },
   "transactions": {
     "message": "Transaksi"

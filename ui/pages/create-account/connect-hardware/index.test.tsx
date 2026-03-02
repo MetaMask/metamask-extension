@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   LedgerTransportTypes,
   HardwareDeviceNames,
@@ -174,8 +175,8 @@ describe('ConnectHardwareForm', () => {
         mockStoreWithU2F,
       );
 
-      const ledgerButton = getByLabelText('Ledger');
-      const continueButton = getByText('Continue');
+      const ledgerButton = getByLabelText(messages.ledger.message);
+      const continueButton = getByText(messages.continue.message);
 
       fireEvent.click(ledgerButton);
       fireEvent.click(continueButton);
@@ -210,8 +211,8 @@ describe('ConnectHardwareForm', () => {
         mockStoreWithU2F,
       );
 
-      const ledgerButton = getByLabelText('Ledger');
-      const continueButton = getByText('Continue');
+      const ledgerButton = getByLabelText(messages.ledger.message);
+      const continueButton = getByText(messages.continue.message);
 
       fireEvent.click(ledgerButton);
       fireEvent.click(continueButton);
@@ -239,12 +240,14 @@ describe('ConnectHardwareForm', () => {
       fireEvent.click(qrButton);
 
       await waitFor(() => {
-        expect(getByText('Keystone')).toBeInTheDocument();
-        expect(getByText('AirGap Vault')).toBeInTheDocument();
-        expect(getByText('CoolWallet')).toBeInTheDocument();
-        expect(getByText("D'Cent")).toBeInTheDocument();
-        expect(getByText('imToken')).toBeInTheDocument();
-        expect(getByText('Ngrave Zero')).toBeInTheDocument();
+        expect(getByText(messages.keystone.message)).toBeInTheDocument();
+        expect(getByText(messages.airgapVault.message)).toBeInTheDocument();
+        expect(getByText(messages.coolWallet.message)).toBeInTheDocument();
+        expect(getByText(messages.dcent.message)).toBeInTheDocument();
+        expect(getByText(messages.imToken.message)).toBeInTheDocument();
+        expect(
+          getByText(messages.QRHardwareWalletSteps2Description.message),
+        ).toBeInTheDocument();
       });
     });
   });

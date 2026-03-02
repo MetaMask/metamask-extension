@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Nada para ver ainda. Troque seu primeiro token hoje."
   },
-  "activityLog": {
-    "message": "Registro de atividades"
-  },
   "add": {
     "message": "Adicionar"
   },
@@ -5242,9 +5239,6 @@
   "perpsAddToFavorites": {
     "message": "Adicionar aos favoritos"
   },
-  "perpsAsk": {
-    "message": "Perguntar"
-  },
   "perpsAutoClose": {
     "message": "Encerramento automático"
   },
@@ -5255,14 +5249,8 @@
   "perpsAvailableBalance": {
     "message": "Saldo disponível"
   },
-  "perpsBid": {
-    "message": "Lance"
-  },
   "perpsCancelAllOrders": {
     "message": "Cancelar tudo"
-  },
-  "perpsClose": {
-    "message": "Fechar"
   },
   "perpsCloseAll": {
     "message": "Encerrar tudo"
@@ -5380,9 +5368,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Preço de liquidação"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Est. de preço de liquidação"
   },
   "perpsLong": {
     "message": "Long"
@@ -6226,12 +6211,6 @@
   },
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Tentar novamente"
-  },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Contas de carteira de hardware ainda não são qualificadas para receber recompensas. Mude para uma conta diferente para continuar."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Não há suporte para esta conta"
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Tentar novamente"
@@ -7369,21 +7348,6 @@
   "simulationErrorMessageV2": {
     "message": "Não conseguimos estimar o preço do gás. Pode haver um erro no contrato, e essa transação poderá falhar."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Tolerância a slippage"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Defina uma diferença que você considere adequada para alterações de saldo. Transações não serão executas se a diferença for maior."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Aplicar alterações de saldo"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Para manter seu dinheiro seguro, essa transação não será concluída se o saldo mudar ou se a tolerância a slippage não for atingida."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Configurações da transação"
-  },
   "simulationsSettingDescription": {
     "message": "Ative esta opção para estimar alterações de saldo pelas transações e assinaturas antes de confirmá-las. Isso não garante o resultado final de suas transações. $1"
   },
@@ -7514,12 +7478,6 @@
   },
   "snapAccountRemovedDescription": {
     "message": "Essa conta não estará mais disponível para uso na MetaMask."
-  },
-  "snapAccounts": {
-    "message": "Snaps da conta"
-  },
-  "snapAccountsDescription": {
-    "message": "Contas controladas por Snaps de terceiros."
   },
   "snapConnectTo": {
     "message": "Conectar-se a $1",
@@ -7715,9 +7673,6 @@
   },
   "speedUpTooltipText": {
     "message": "Nova taxa de gás"
-  },
-  "speedUpTransaction": {
-    "message": "Acelerar essa transação"
   },
   "spendLimitInsufficient": {
     "message": "Limite de gastos insuficiente"
@@ -8569,18 +8524,6 @@
   "transaction": {
     "message": "transação"
   },
-  "transactionCancelAttempted": {
-    "message": "Cancelamento da transação tentado com taxa de gás de $1 às $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transação cancelada às $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transação confirmada às $2."
-  },
-  "transactionCreated": {
-    "message": "Transação criada com valor de $1 às $2."
-  },
   "transactionDataFunction": {
     "message": "Função"
   },
@@ -8590,17 +8533,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Valor + taxas"
   },
-  "transactionDropped": {
-    "message": "Transação abandonada às $2."
-  },
   "transactionError": {
     "message": "Erro de transação. Exceção gerada no código do contrato."
   },
   "transactionErrorNoContract": {
     "message": "Tentando chamar uma função em um endereço que não está no contrato."
-  },
-  "transactionErrored": {
-    "message": "A transação encontrou um erro."
   },
   "transactionFee": {
     "message": "Taxa de transação"
@@ -8636,24 +8573,15 @@
   "transactionIncludesTypes": {
     "message": "Esta transação inclui: $1."
   },
-  "transactionResubmitted": {
-    "message": "Transação reenviada com taxa de gás aumentada para $1 às $2"
-  },
   "transactionSettings": {
     "message": "Configurações da transação"
   },
   "transactionShield": {
     "message": "Escudo para transações"
   },
-  "transactionSubmitted": {
-    "message": "Transação enviada com taxa de gás estimada de $1 às $2."
-  },
   "transactionTotalGasFee": {
     "message": "Taxa de gás total",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Transação atualizada às $2."
   },
   "transactions": {
     "message": "Transações"

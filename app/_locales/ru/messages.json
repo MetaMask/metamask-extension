@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Пока нечего просматривать. Обменяйте свой первый токен сегодня."
   },
-  "activityLog": {
-    "message": "Журнал активности"
-  },
   "add": {
     "message": "Добавить"
   },
@@ -5242,9 +5239,6 @@
   "perpsAddToFavorites": {
     "message": "Добавить в Избранное"
   },
-  "perpsAsk": {
-    "message": "Аск"
-  },
   "perpsAutoClose": {
     "message": "Автозакрытие"
   },
@@ -5255,14 +5249,8 @@
   "perpsAvailableBalance": {
     "message": "Доступный баланс"
   },
-  "perpsBid": {
-    "message": "Бид"
-  },
   "perpsCancelAllOrders": {
     "message": "Отменить все"
-  },
-  "perpsClose": {
-    "message": "Закрыть"
   },
   "perpsCloseAll": {
     "message": "Закрыть все"
@@ -5380,9 +5368,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Цена ликвидации"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Прим. цена ликвидации"
   },
   "perpsLong": {
     "message": "Длинные"
@@ -6226,12 +6211,6 @@
   },
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Повтор"
-  },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Счета аппаратных кошельков пока не могут быть использованы для получения вознаграждений. Чтобы продолжить, перейдите в другой счет."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Счет не поддерживается"
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Повтор"
@@ -7369,21 +7348,6 @@
   "simulationErrorMessageV2": {
     "message": "Мы не смогли оценить размер платы за газ. В контракте может быть ошибка, и эта транзакция может завершиться неудачно."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Допуск проскальзывания"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Установите удобную для вас разницу для изменения баланса. Транзакции не пройдут, если разница будет больше."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Внедрить изменения баланса"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Чтобы обезопасить ваши средства, эта транзакция не будет выполнена, если изменится баланс или не будет соблюдён допустимый уровень проскальзывания."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Настройки транзакции"
-  },
   "simulationsSettingDescription": {
     "message": "Включите эту опцию, чтобы оценить изменения баланса транзакций и подписей перед их подтверждением. Это не гарантирует их окончательный результат. $1"
   },
@@ -7514,12 +7478,6 @@
   },
   "snapAccountRemovedDescription": {
     "message": "Этот счет больше не будет доступен для использования в MetaMask."
-  },
-  "snapAccounts": {
-    "message": "Snaps счета"
-  },
-  "snapAccountsDescription": {
-    "message": "Счета, контролируемые сторонними Snap."
   },
   "snapConnectTo": {
     "message": "Подключиться к $1",
@@ -7715,9 +7673,6 @@
   },
   "speedUpTooltipText": {
     "message": "Новая плата за газ"
-  },
-  "speedUpTransaction": {
-    "message": "Ускорить эту транзакцию"
   },
   "spendLimitInsufficient": {
     "message": "Недостаточный лимит расходов"
@@ -8569,18 +8524,6 @@
   "transaction": {
     "message": "транзакция"
   },
-  "transactionCancelAttempted": {
-    "message": "Предпринята попытка отменить транзакцию с примерной платой за газ в размере $1 в $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Транзакция успешно отменена в $2"
-  },
-  "transactionConfirmed": {
-    "message": "Транзакция подтверждена в $2."
-  },
-  "transactionCreated": {
-    "message": "В $2 создана транзакция на сумму $1."
-  },
   "transactionDataFunction": {
     "message": "Функция"
   },
@@ -8590,17 +8533,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Сумма + комиссии"
   },
-  "transactionDropped": {
-    "message": "Транзакция отменена в $2."
-  },
   "transactionError": {
     "message": "Ошибка транзакции. Исключение в коде контракта."
   },
   "transactionErrorNoContract": {
     "message": "Попытка вызвать функцию на неконтрактном адресе."
-  },
-  "transactionErrored": {
-    "message": "Транзакция обнаружила ошибку."
   },
   "transactionFee": {
     "message": "Комиссия за транзакцию"
@@ -8636,24 +8573,15 @@
   "transactionIncludesTypes": {
     "message": "Эта транзакция включает: $1."
   },
-  "transactionResubmitted": {
-    "message": "Транзакция отправлена повторно с платой за газ, увеличенной до $1, в $2"
-  },
   "transactionSettings": {
     "message": "Настройки транзакции"
   },
   "transactionShield": {
     "message": "Защита транзакций"
   },
-  "transactionSubmitted": {
-    "message": "Транзакция отправлена с платой за газ в размере $1 в $2."
-  },
   "transactionTotalGasFee": {
     "message": "Итого платы за газ",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Транзакция обновлена в $2."
   },
   "transactions": {
     "message": "Транзакции"
