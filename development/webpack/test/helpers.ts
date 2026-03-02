@@ -12,6 +12,11 @@ import type { EntryDescriptionNormalized } from '../utils/plugins/ManifestPlugin
 const { SourceMapSource, RawSource } = sources;
 
 type Assets = { [k: string]: unknown };
+type ProcessAssetsOptions = { stage?: number };
+type ProcessAssetsHandler = {
+  stage: number;
+  handler: (assets: Assets) => void | Promise<void>;
+};
 
 export type Combination<T> = {
   [P in keyof T]: T[P] extends readonly (infer U)[] ? U : never;
@@ -56,12 +61,14 @@ export function mockWebpack(
   const promise = new Promise<void>((resolve) => {
     done = resolve;
   });
+  const processAssetsHandlers: ProcessAssetsHandler[] = [];
   const compilation = {
     get assets() {
       return Object.fromEntries(
         Object.entries(assets).map(([name, asset]) => [name, asset.source]),
       );
     },
+    getAssets: mock.fn(() => Object.values(assets)),
     emitAsset: mock.fn((name, source, info) => {
       assets[name] = {
         name,
@@ -93,6 +100,9 @@ export function mockWebpack(
     ),
     renameAsset: mock.fn((name: string, newFile: string) => {
       const asset = assets[name];
+      if (!asset) {
+        throw new Error(`Asset not found: ${name}`);
+      }
       delete assets[name];
       assets[newFile] = {
         ...asset,
@@ -100,8 +110,10 @@ export function mockWebpack(
       };
 
       for (const chunk of compilation.chunks) {
-        chunk.files.delete(name);
-        chunk.files.add(newFile);
+        if (chunk.files.has(name)) {
+          chunk.files.delete(name);
+          chunk.files.add(newFile);
+        }
       }
     }),
     deleteAsset: mock.fn((name: string) => {
@@ -111,16 +123,32 @@ export function mockWebpack(
     fileDependencies: new Set<string>(),
     hooks: {
       processAssets: {
-        async tapPromise(_: unknown, fn: (assets: Assets) => Promise<void>) {
-          await fn(compilation.assets);
-          done();
+        tapPromise(
+          options: ProcessAssetsOptions,
+          fn: (assets: Assets) => Promise<void>,
+        ) {
+          processAssetsHandlers.push({
+            stage: options.stage ?? 0,
+            handler: fn,
+          });
         },
-        tap(_: unknown, fn: (assets: Assets) => void) {
-          fn(compilation.assets);
-          done();
+        tap(options: ProcessAssetsOptions, fn: (assets: Assets) => void) {
+          processAssetsHandlers.push({
+            stage: options.stage ?? 0,
+            handler: fn,
+          });
         },
       },
     },
+  };
+  const runProcessAssetsHandlers = async () => {
+    const handlers = [...processAssetsHandlers].sort(
+      (left, right) => left.stage - right.stage,
+    );
+    for (const { handler } of handlers) {
+      await handler(compilation.assets);
+    }
+    done();
   };
   const entries: Record<string, EntryDescriptionNormalized> = {};
   const compiler = {
@@ -142,6 +170,7 @@ export function mockWebpack(
       compilation: {
         tap(_: unknown, fn: (compilation: Compilation) => void) {
           fn(compilation as unknown as Compilation);
+          void runProcessAssetsHandlers();
         },
       },
     },

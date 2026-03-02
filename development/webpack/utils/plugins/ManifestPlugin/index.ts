@@ -3,7 +3,7 @@ import path from 'node:path';
 import {
   sources,
   ProgressPlugin,
-  type Compilation,
+  Compilation,
   type Compiler,
   type Asset,
   type EntryOptions,
@@ -119,40 +119,58 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   /**
-   * Zips the assets for each browser into separate zip files and moves all
-   * assets into browser-specific directories. Source map assets may be moved to
-   * a dedicated `sourcemaps` directory if `devtool` is set to
-   * `hidden-source-map` to avoid exposing them in production builds.
-   *
-   * It uses a single-pass algorithm that iterates through the assets once, adding
-   * them to the appropriate zip builders and moving them to the correct
-   * location in the browser-specific directories.
-   *
-   * Note: This method uses `path.posix.join`, for the same reason
-   * {@link moveAssets} does.
+   * Builds browser zip assets from the final browser-prefixed compilation
+   * assets after relocation has already completed.
    *
    * @param compilation - The active compilation.
-   * @param assets - The current asset map.
    * @param options - The zip-enabled plugin options.
    */
-  private async zipAndMoveAssets(
+  private async zipAssets(
     compilation: Compilation,
-    assets: Assets,
     options: ManifestPluginOptions<true>,
   ): Promise<void> {
     const { browsers, zipOptions } = options;
     const { excludeExtensions, level, outFilePath, mtime } = zipOptions;
     const compressionOptions: ZipCompressionOptions = { level };
-    const moveSourceMapsToDedicatedDirectory =
-      compilation.options.devtool === 'hidden-source-map';
-    const [primaryBrowser, ...additionalBrowsers] = browsers;
-    const assetNames = Object.keys(assets);
-    const zipEligibleAssetCount = assetNames.filter(
-      (assetName) => !excludeExtensions.includes(path.extname(assetName)),
-    ).length;
+    const assetsByBrowser = new Map<
+      Browser,
+      { browserRelativePath: string; source: sources.Source }[]
+    >();
+
+    browsers.forEach((browser) => assetsByBrowser.set(browser, []));
+
+    compilation.getAssets().forEach((asset) => {
+      browsers.forEach((browser) => {
+        const browserPrefix = `${browser}/`;
+        if (!asset.name.startsWith(browserPrefix)) {
+          return;
+        }
+
+        const browserRelativePath = asset.name.slice(browserPrefix.length);
+        if (browserRelativePath === 'manifest.json') {
+          return;
+        }
+
+        assetsByBrowser.get(browser)?.push({
+          browserRelativePath,
+          source: asset.source,
+        });
+      });
+    });
 
     let filesProcessed = 0;
-    const totalWork = browsers.length * (zipEligibleAssetCount + 1);
+    const totalWork =
+      browsers.reduce(
+        (sum, browser) =>
+          sum +
+          (assetsByBrowser
+            .get(browser)
+            ?.filter(
+              ({ browserRelativePath }) =>
+                !excludeExtensions.includes(path.extname(browserRelativePath)),
+            ).length ?? 0),
+        0,
+      ) + browsers.length;
     const reportProgress =
       ProgressPlugin.getReporter(compilation.compiler) ?? noop;
     const zipBuilders = browsers.map((browser) => {
@@ -177,57 +195,13 @@ export class ManifestPlugin<Z extends boolean> {
       };
     });
 
-    for (const assetName of assetNames) {
-      const assetDetails = compilation.getAsset(assetName) as Readonly<Asset>;
-      const extName = path.extname(assetName);
-      const isSourceMapAsset =
-        moveSourceMapsToDedicatedDirectory && assetName.endsWith('.map');
-      const shouldZip = !excludeExtensions.includes(extName);
-      const shouldCache =
-        shouldZip || (additionalBrowsers.length > 0 && !isSourceMapAsset);
-      let { source } = assetDetails;
-
-      if (shouldCache && !(source instanceof CachedSource)) {
-        compilation.updateAsset(assetName, (currentSource) => {
-          source =
-            currentSource instanceof CachedSource
-              ? currentSource
-              : new CachedSource(currentSource);
-          return source;
-        });
-      }
-
-      if (shouldZip) {
-        zipBuilders.forEach(({ builder }) =>
-          builder.addAsset(assetName, source),
-        );
-      }
-
-      if (isSourceMapAsset) {
-        compilation.renameAsset(
-          assetName,
-          path.posix.join(SOURCEMAPS_DIRECTORY, assetName),
-        );
-        continue;
-      }
-
-      const primaryAssetPath = path.posix.join(primaryBrowser, assetName);
-      if (assetName !== primaryAssetPath) {
-        compilation.renameAsset(assetName, primaryAssetPath);
-      }
-
-      additionalBrowsers.forEach((browser) => {
-        compilation.emitAsset(
-          path.posix.join(browser, assetName),
-          source,
-          assetDetails.info,
-        );
-      });
-    }
-
-    this.emitManifestAssets(compilation, browsers);
-
     for (const { browser, builder } of zipBuilders) {
+      for (const { browserRelativePath, source } of assetsByBrowser.get(
+        browser,
+      ) ?? []) {
+        builder.addAsset(browserRelativePath, source);
+      }
+
       const data = await builder.finalize();
       const filePath = outFilePath.replaceAll('[browser]', browser);
       compilation.emitAsset(filePath, data, {
@@ -641,22 +615,28 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   private hookIntoPipelines(compilation: Compilation): void {
-    // hook into the processAssets hook to move/zip assets
-    const tapOptions = { name: NAME, stage: Infinity };
-    if (this.options.zip) {
-      const options = this.options as ManifestPluginOptions<true>;
-      compilation.hooks.processAssets.tapPromise(
-        tapOptions,
-        async (assets: Assets) => {
-          this.resolveEntrypoints(compilation);
-          await this.zipAndMoveAssets(compilation, assets, options);
-        },
-      );
-    } else {
-      const options = this.options as ManifestPluginOptions<false>;
-      compilation.hooks.processAssets.tap(tapOptions, (assets: Assets) => {
+    const moveTapOptions = {
+      name: NAME,
+      stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_HASH - 1,
+    };
+    const zipTapOptions = {
+      name: NAME,
+      stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_TRANSFER,
+    };
+    const moveOptions = this.options as ManifestPluginOptions<false>;
+
+    compilation.hooks.processAssets.tap(
+      moveTapOptions,
+      (assets: Assets) => {
         this.resolveEntrypoints(compilation);
-        this.moveAssets(compilation, assets, options);
+        this.moveAssets(compilation, assets, moveOptions);
+      },
+    );
+
+    if (this.options.zip) {
+      const zipOptions = this.options as ManifestPluginOptions<true>;
+      compilation.hooks.processAssets.tapPromise(zipTapOptions, async () => {
+        await this.zipAssets(compilation, zipOptions);
       });
     }
   }
