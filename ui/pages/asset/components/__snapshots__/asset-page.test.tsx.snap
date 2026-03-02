@@ -385,7 +385,7 @@ exports[`AssetPage should render a native asset 1`] = `
             Your activity
           </h4>
           <div
-            class=""
+            data-testid="mock-activity-list"
           />
         </div>
       </div>
@@ -813,35 +813,8 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             Your activity
           </h4>
           <div
-            class=""
-          >
-            <div
-              class="flex flex-col gap-3 items-center justify-center bg-default max-w-48 mx-auto mt-5 mb-6"
-              data-testid="activity-tab-empty-state"
-            >
-              <img
-                alt="Activity"
-                height="72"
-                src="./images/empty-state-activity-light.png"
-                width="72"
-              />
-              <p
-                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
-              >
-                Nothing to see yet. Swap your first token today.
-              </p>
-              <button
-                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
-                role="button"
-              >
-                <span
-                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-                >
-                  Swap tokens
-                </span>
-              </button>
-            </div>
-          </div>
+            data-testid="mock-activity-list"
+          />
         </div>
       </div>
     </div>
@@ -1295,7 +1268,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             Your activity
           </h4>
           <div
-            class=""
+            data-testid="mock-activity-list"
           />
         </div>
       </div>
