@@ -14,7 +14,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import {
   Modal,
   ModalBody,

@@ -1,5 +1,26 @@
 import type { ThresholdConfig } from './types';
 
+export {
+  BENCHMARK_PLATFORMS,
+  BENCHMARK_BUILD_TYPES,
+} from '../../../../shared/constants/benchmarks';
+export const STARTUP_PRESETS = {
+  STANDARD_HOME: 'startupStandardHome',
+  POWER_USER_HOME: 'startupPowerUserHome',
+} as const;
+
+export const INTERACTION_PRESETS = {
+  USER_ACTIONS: 'interactionUserActions',
+} as const;
+
+export const USER_JOURNEY_PRESETS = {
+  ONBOARDING_IMPORT: 'userJourneyOnboardingImport',
+  ONBOARDING_NEW: 'userJourneyOnboardingNew',
+  ASSETS: 'userJourneyAssets',
+  ACCOUNT_MANAGEMENT: 'userJourneyAccountManagement',
+  TRANSACTIONS: 'userJourneyTransactions',
+} as const;
+
 export const DEFAULT_NUM_BROWSER_LOADS = 10;
 export const DEFAULT_NUM_PAGE_LOADS = 10;
 

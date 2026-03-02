@@ -74,8 +74,6 @@ function addAssetToZip(
  * assets into browser-specific directories and optionally zips them.
  *
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export class ManifestPlugin<Z extends boolean> {
   /**
    * File types that can be compressed well using DEFLATE compression, used when

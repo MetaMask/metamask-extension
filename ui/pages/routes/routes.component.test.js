@@ -154,6 +154,7 @@ describe('Routes Component', () => {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           newPrivacyPolicyToastShownDate: new Date('0'),
           preferences: {
+            defaultAddressScope: 'eip155',
             tokenSortConfig: {
               key: 'token-sort-key',
               order: 'dsc',
@@ -228,6 +229,7 @@ describe('toast display', () => {
       pendingApprovals: {},
       pendingApprovalCount: 0,
       preferences: {
+        defaultAddressScope: 'eip155',
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
@@ -268,6 +270,7 @@ describe('toast display', () => {
       isRampCardClosed: false,
       newPrivacyPolicyToastClickedOrClosed: true,
       preferences: {
+        defaultAddressScope: 'eip155',
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',

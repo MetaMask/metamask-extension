@@ -19,9 +19,7 @@ export const PREINSTALLED_SNAPS = [
   'npm:@metamask/preinstalled-example-snap',
   'npm:@metamask/bitcoin-wallet-snap',
   'npm:@metamask/solana-wallet-snap',
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   'npm:@metamask/tron-wallet-snap',
-  ///: END:ONLY_INCLUDE_IF
   'npm:@metamask/permissions-kernel-snap',
   'npm:@metamask/gator-permissions-snap',
 ];

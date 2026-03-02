@@ -15,7 +15,12 @@ import {
   AssetsRatesState,
   AssetsState,
   getAccountAssets,
+  getAssetsInfo,
   getAssetsMetadata,
+  getAssetsBalance,
+  getAssetsPrice,
+  getAssetPreferences,
+  getCustomAssets,
   getAssetsRates,
   getHistoricalPrices,
   getMultiChainAssets,
@@ -33,7 +38,21 @@ import {
   getAsset,
   getAllIgnoredAssets,
   getAssetsBySelectedAccountGroupWithTronResources,
+  selectAggregatedBalanceForSelectedAccount,
 } from './assets';
+
+/**
+ * State shape for asset selector tests. Cast to this when passing partial state
+ * to selectors that accept a full Redux state type.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AssetSelectorTestState = any;
+
+const mockGetAggregatedBalanceForAccount = jest.fn();
+jest.mock('@metamask/assets-controller', () => ({
+  getAggregatedBalanceForAccount: (...args: unknown[]) =>
+    mockGetAggregatedBalanceForAccount(...args),
+}));
 
 jest.mock('@metamask/assets-controllers', () => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -103,14 +122,214 @@ describe('getAccountAssets', () => {
 });
 
 describe('getAssetsMetadata', () => {
-  it('should return the assets metadata from the state', () => {
+  it('returns the assets metadata from the state', () => {
     const result = getAssetsMetadata(mockAssetsState);
     expect(result).toEqual(mockAssetsState.metamask.assetsMetadata);
   });
 
-  it('should return undefined if state does not have metamask property', () => {
+  it('returns empty object when state has no metamask property', () => {
     const invalidState = {} as AssetsState;
-    expect(() => getAssetsMetadata(invalidState)).toThrow();
+    expect(getAssetsMetadata(invalidState)).toEqual({});
+  });
+
+  it('returns empty object when assetsMetadata is missing', () => {
+    const state = { metamask: {} };
+    expect(getAssetsMetadata(state as AssetsState)).toEqual({});
+  });
+});
+
+describe('getAssetsInfo', () => {
+  it('returns assetsInfo from state.metamask', () => {
+    const state: AssetSelectorTestState = {
+      metamask: { assetsInfo: { 'eip155:0x1/slip44:60': {} } },
+    };
+    expect(getAssetsInfo(state)).toEqual(state.metamask?.assetsInfo);
+  });
+
+  it('returns empty object when metamask is missing', () => {
+    expect(getAssetsInfo({} as AssetSelectorTestState)).toEqual({});
+  });
+
+  it('returns empty object when assetsInfo is missing', () => {
+    expect(getAssetsInfo({ metamask: {} } as AssetSelectorTestState)).toEqual(
+      {},
+    );
+  });
+});
+
+describe('getAssetsBalance', () => {
+  it('returns assetsBalance from state.metamask', () => {
+    const state: AssetSelectorTestState = {
+      metamask: { assetsBalance: { 'eip155:0x1/slip44:60': '100' } },
+    };
+    expect(getAssetsBalance(state)).toEqual(state.metamask?.assetsBalance);
+  });
+
+  it('returns empty object when metamask is missing', () => {
+    expect(getAssetsBalance({} as AssetSelectorTestState)).toEqual({});
+  });
+
+  it('returns empty object when assetsBalance is missing', () => {
+    expect(
+      getAssetsBalance({ metamask: {} } as AssetSelectorTestState),
+    ).toEqual({});
+  });
+});
+
+describe('getAssetsPrice', () => {
+  it('returns assetsPrice from state.metamask', () => {
+    const state: AssetSelectorTestState = {
+      metamask: { assetsPrice: { 'eip155:0x1/slip44:60': 2000 } },
+    };
+    expect(getAssetsPrice(state)).toEqual(state.metamask?.assetsPrice);
+  });
+
+  it('returns empty object when metamask is missing', () => {
+    expect(getAssetsPrice({} as AssetSelectorTestState)).toEqual({});
+  });
+
+  it('returns empty object when assetsPrice is missing', () => {
+    expect(getAssetsPrice({ metamask: {} } as AssetSelectorTestState)).toEqual(
+      {},
+    );
+  });
+});
+
+describe('getAssetPreferences', () => {
+  it('returns assetPreferences from state.metamask', () => {
+    const state: AssetSelectorTestState = {
+      metamask: { assetPreferences: { hideZeroBalanceTokens: true } },
+    };
+    expect(getAssetPreferences(state)).toEqual(
+      state.metamask?.assetPreferences,
+    );
+  });
+
+  it('returns empty object when metamask is missing', () => {
+    expect(getAssetPreferences({} as AssetSelectorTestState)).toEqual({});
+  });
+
+  it('returns empty object when assetPreferences is missing', () => {
+    expect(
+      getAssetPreferences({ metamask: {} } as AssetSelectorTestState),
+    ).toEqual({});
+  });
+});
+
+describe('getCustomAssets', () => {
+  it('returns customAssets from state.metamask', () => {
+    const state: AssetSelectorTestState = {
+      metamask: { customAssets: { 'eip155:0x1/erc20:0xabc': {} } },
+    };
+    expect(getCustomAssets(state)).toEqual(state.metamask?.customAssets);
+  });
+
+  it('returns empty object when metamask is missing', () => {
+    expect(getCustomAssets({} as AssetSelectorTestState)).toEqual({});
+  });
+
+  it('returns empty object when customAssets is missing', () => {
+    expect(getCustomAssets({ metamask: {} } as AssetSelectorTestState)).toEqual(
+      {},
+    );
+  });
+});
+
+describe('selectAggregatedBalanceForSelectedAccount', () => {
+  const mockSelectedAccount = {
+    id: 'account-1',
+    address: '0x123',
+    type: 'eoa',
+    metadata: { name: 'Account 1' },
+    options: {},
+    methods: [],
+  };
+
+  const baseState: AssetSelectorTestState = {
+    metamask: {
+      assetsInfo: {},
+      assetsBalance: {},
+      assetsPrice: {},
+      assetPreferences: {},
+      customAssets: {},
+      internalAccounts: {
+        selectedAccount: 'account-1',
+        accounts: {
+          'account-1': mockSelectedAccount,
+        },
+      },
+      enabledNetworkMap: { eip155: { '0x1': true } },
+      accountTree: [],
+      isAccountTreeSyncingInProgress: false,
+      hasAccountTreeSyncingSyncedAtLeastOnce: true,
+      accountGroupsMetadata: {},
+      accountWalletsMetadata: {},
+    },
+  };
+
+  beforeEach(() => {
+    mockGetAggregatedBalanceForAccount.mockReset();
+  });
+
+  it('returns null when no selected internal account', () => {
+    const stateWithNoAccount: AssetSelectorTestState = {
+      metamask: {
+        ...baseState.metamask,
+        internalAccounts: {
+          selectedAccount: 'missing',
+          accounts: {},
+        },
+      },
+    };
+    const result =
+      selectAggregatedBalanceForSelectedAccount(stateWithNoAccount);
+    expect(result).toBeNull();
+    expect(mockGetAggregatedBalanceForAccount).not.toHaveBeenCalled();
+  });
+
+  it('returns result of getAggregatedBalanceForAccount when selected account exists', () => {
+    const mockAggregated = {
+      entries: [],
+      totalBalanceInFiat: 100,
+    };
+    mockGetAggregatedBalanceForAccount.mockReturnValue(mockAggregated);
+
+    const result = selectAggregatedBalanceForSelectedAccount(baseState);
+    expect(result).toEqual(mockAggregated);
+    expect(mockGetAggregatedBalanceForAccount).toHaveBeenCalledTimes(1);
+  });
+
+  it('passes assets state, selected account, and enabled network map to getAggregatedBalanceForAccount', () => {
+    mockGetAggregatedBalanceForAccount.mockReturnValue(null);
+
+    // Use a distinct state so the selector recomputes (avoids memoization from previous test)
+    const stateWithAssetsInfo = cloneDeep(baseState) as AssetSelectorTestState;
+    (stateWithAssetsInfo.metamask as Record<string, unknown>).assetsInfo = {
+      'eip155:0x1/slip44:60': {},
+    };
+
+    selectAggregatedBalanceForSelectedAccount(
+      stateWithAssetsInfo as AssetSelectorTestState,
+    );
+
+    expect(mockGetAggregatedBalanceForAccount).toHaveBeenCalledWith(
+      expect.objectContaining({
+        assetsInfo: { 'eip155:0x1/slip44:60': {} },
+        assetsBalance: {},
+        assetsPrice: {},
+        assetPreferences: {},
+        customAssets: {},
+      }),
+      mockSelectedAccount,
+      { eip155: { '0x1': true } },
+      expect.objectContaining({
+        accountTree: [],
+        isAccountTreeSyncingInProgress: false,
+        hasAccountTreeSyncingSyncedAtLeastOnce: true,
+      }),
+      undefined,
+      expect.any(Object),
+    );
   });
 });
 
@@ -862,7 +1081,7 @@ describe('Aggregated balance recomputation behavior', () => {
 
   it('recomputes when a relevant slice reference changes (e.g., tokenBalances)', () => {
     const tokenBalancesA = {};
-    const tokenBalancesB = {}; // new reference
+    const tokenBalancesB = { newProperty: 'newProperty' }; // different references with different values so that selector does not memoize them
 
     const stateA: BalanceCalculationState = {
       metamask: {
@@ -1080,7 +1299,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     state.metamask.accountsByChainId = {
       '0x1': {
         '0x0': {
-          address: '0x0',
           balance: '0x8ac7230489e80000', // 10 ETH
         },
       },
@@ -1116,7 +1334,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     state.metamask.accountsByChainId = {
       '0x1': {
         '0x0': {
-          address: '0x0',
           balance: '0x0',
         },
       },
@@ -1134,7 +1351,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     state.metamask.accountsByChainId = {
       '0x1': {
         '0x0': {
-          address: '0x0',
           balance: '0x2386f26fc10000', // 0.01 ETH
         },
       },
@@ -1165,14 +1381,12 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       '0x1': {
         // Ethereum mainnet
         '0x0': {
-          address: '0x0',
           balance: '0x0', // Zero on mainnet
         },
       },
       '0xaa36a7': {
         // Sepolia testnet (should be ignored)
         '0x0': {
-          address: '0x0',
           balance: '0x8ac7230489e80000', // 10 ETH on testnet
         },
       },
@@ -1217,7 +1431,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
-            address: '0x0',
             balance: '0x8ac7230489e80000', // 10 ETH
           },
         },
@@ -1253,7 +1466,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
-            address: '0x0',
             balance: '0x0',
           },
         },
@@ -1292,7 +1504,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
-            address: '0x0',
             balance: '0x0', // No ETH
           },
         },

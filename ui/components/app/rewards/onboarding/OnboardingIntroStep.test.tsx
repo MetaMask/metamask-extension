@@ -266,32 +266,6 @@ describe('OnboardingIntroStep', () => {
     );
   });
 
-  it('on confirm: shows error toast for hardware wallet usage', () => {
-    // Trigger the hardware wallet branch
-    (selectOptinAllowedForGeo as jest.Mock).mockReturnValue(true);
-    (selectOptinAllowedForGeoLoading as jest.Mock).mockReturnValue(false);
-    (selectOptinAllowedForGeoError as jest.Mock).mockReturnValue(false);
-    (selectCandidateSubscriptionId as jest.Mock).mockReturnValue(undefined);
-    (isHardwareWallet as jest.Mock).mockReturnValue(true);
-
-    render(<OnboardingIntroStep />);
-
-    fireEvent.click(
-      screen.getByRole('button', { name: 'rewardsOnboardingIntroStepConfirm' }),
-    );
-
-    expect(setErrorToast).toHaveBeenCalledWith(
-      expect.objectContaining({
-        isOpen: true,
-        title: 'rewardsOnboardingIntroHardwareWalletTitle',
-        description: 'rewardsOnboardingIntroHardwareWalletDescription',
-      }),
-    );
-    expect(dispatchMock).toHaveBeenCalledWith(
-      expect.objectContaining({ type: 'SET_ERROR_TOAST' }),
-    );
-  });
-
   it('on confirm: proceeds to STEP1 when allowed and not hardware wallet', () => {
     (selectOptinAllowedForGeo as jest.Mock).mockReturnValue(true);
     (selectOptinAllowedForGeoLoading as jest.Mock).mockReturnValue(false);

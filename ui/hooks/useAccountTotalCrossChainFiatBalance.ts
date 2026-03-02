@@ -10,12 +10,12 @@ import {
   getCrossChainMetaMaskCachedBalances,
   getEnabledNetworks,
 } from '../selectors';
+import { TokenWithBalance } from '../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import {
   getValueFromWeiHex,
   sumDecimals,
 } from '../../shared/modules/conversion.utils';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
-import { TokenWithBalance } from '../components/app/assets/types';
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 

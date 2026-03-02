@@ -91,14 +91,10 @@ describe('ManifestPlugin', () => {
         compiler.context = context;
         const manifestPlugin = new ManifestPlugin({
           browsers,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           manifest_version: manifestVersion,
           version: '1.0.0.0',
           versionName: '1.0.0',
           description,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           web_accessible_resources: webAccessibleResources,
           ...getZipOptions(zip),
           buildType: 'main',
@@ -226,12 +222,9 @@ describe('ManifestPlugin', () => {
     const keep = ['scripts/contentscript.js', 'scripts/inpage.js'];
     const argsMatrix = {
       test: [true, false],
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       manifest_version: [2, 3] as const,
     };
     const manifestMatrix = {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       content_scripts: [
         undefined,
         [],
@@ -287,13 +280,9 @@ describe('ManifestPlugin', () => {
   describe('manifest flags in development mode', () => {
     const emptyTestManifest = {} as chrome.runtime.Manifest;
     const notEmptyTestManifest = {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       _flags: { remoteFeatureFlags: { testFlag: false, testFlag2: 'value1' } },
     } as unknown as chrome.runtime.Manifest;
     const mockFlags = {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       _flags: { remoteFeatureFlags: { testFlag: true } },
       key: MANIFEST_DEV_KEY,
     };
@@ -311,7 +300,6 @@ describe('ManifestPlugin', () => {
         return fs.readFileSync.original(path, options);
       });
       const transform = transformManifest(
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
@@ -335,7 +323,6 @@ describe('ManifestPlugin', () => {
         return fs.readFileSync.original(path, options);
       });
       const transform = transformManifest(
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
@@ -346,8 +333,6 @@ describe('ManifestPlugin', () => {
       assert.deepStrictEqual(
         transformed,
         {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           _flags: {
             remoteFeatureFlags: {
               testFlag2: 'value1',
@@ -368,7 +353,6 @@ describe('ManifestPlugin', () => {
       });
 
       const transform = transformManifest(
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
@@ -386,7 +370,6 @@ describe('ManifestPlugin', () => {
 
     it('silently ignores non-ENOENT filesystem errors', () => {
       const transform = transformManifest(
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
@@ -420,7 +403,6 @@ describe('ManifestPlugin', () => {
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
@@ -458,7 +440,6 @@ describe('ManifestPlugin', () => {
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
@@ -496,7 +477,6 @@ describe('ManifestPlugin', () => {
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
@@ -535,7 +515,6 @@ describe('ManifestPlugin', () => {
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
@@ -578,7 +557,6 @@ describe('ManifestPlugin', () => {
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
@@ -606,7 +584,6 @@ describe('ManifestPlugin', () => {
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome', 'firefox'],
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
@@ -654,7 +631,6 @@ describe('ManifestPlugin', () => {
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 2,
         version: '1.0.0.0',
         versionName: '1.0.0',
@@ -688,7 +664,6 @@ describe('ManifestPlugin', () => {
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
