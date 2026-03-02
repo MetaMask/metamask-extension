@@ -12,7 +12,7 @@ import {
   isCaipChainId,
   parseCaipAssetType,
 } from '@metamask/utils';
-import React, { ReactNode, useEffect, useMemo } from 'react';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -82,6 +82,8 @@ import { isNativeAsset, type Asset } from '../types/asset';
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
+import { MarketClosedActionButton } from './market-closed-action-button';
+import { MarketClosedModal } from './market-closed-modal';
 import TokenButtons from './token-buttons';
 import { TronDailyResources } from './tron-daily-resources';
 
@@ -252,6 +254,10 @@ const AssetPage = ({
 
   const isUpdatedAssetNative = isNativeAsset(updatedAsset);
   const tokenAsset = isUpdatedAssetNative ? null : updatedAsset;
+  const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
+  const handleOpenMarketClosedModal = () => {
+    setIsMarketClosedModalOpen(true);
+  };
 
   return (
     <Box className="asset__content">
@@ -309,7 +315,18 @@ const AssetPage = ({
           />
         ) : null}
         {tokenAsset ? (
-          <TokenButtons token={tokenAsset} disableSendForNonEvm />
+          <TokenButtons
+            token={tokenAsset}
+            disableSendForNonEvm
+            onSwapClick={
+              isMarketClosed ? handleOpenMarketClosedModal : undefined
+            }
+          />
+        ) : null}
+        {isMarketClosed && tokenAsset ? (
+          <Box marginTop={4}>
+            <MarketClosedActionButton onClick={handleOpenMarketClosedModal} />
+          </Box>
         ) : null}
       </Box>
       <Box
@@ -465,6 +482,10 @@ const AssetPage = ({
           </Box>
         </Box>
       </Box>
+      <MarketClosedModal
+        isOpen={isMarketClosedModalOpen}
+        onClose={() => setIsMarketClosedModalOpen(false)}
+      />
     </Box>
   );
 };
