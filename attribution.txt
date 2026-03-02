@@ -23818,7 +23818,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/json-rpc-engine
-10.2.2 <https://github.com/MetaMask/core>
+10.2.3 <https://github.com/MetaMask/core>
 ISC License
 
 Copyright (c) 2022 MetaMask
