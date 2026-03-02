@@ -29,7 +29,6 @@ import {
   Page,
 } from '../../../components/multichain/pages/page';
 import {
-  selectBridgeHistoryItemForTxHash,
   selectLocalTxForTxHash,
   selectReceivedSwapsTokenAmountFromTxMeta,
 } from '../../../ducks/bridge-status/selectors';
@@ -99,10 +98,6 @@ const CrossChainSwapTxDetails = () => {
   const transaction = location?.state?.transaction;
   const srcChainTxMeta = localTx ?? transaction;
 
-  const approvalTxMeta = allTransactions.find(
-    (tx) => tx.id === bridgeHistoryItem?.approvalTxId,
-  );
-
   const {
     sourceTokenIconUrl,
     sourceTokenSymbol,
@@ -118,6 +113,10 @@ const CrossChainSwapTxDetails = () => {
     bridgeHistoryItem,
     srcTxMeta: srcChainTxMeta,
   });
+
+  const approvalTxMeta = allTransactions.find(
+    (tx) => tx.id === bridgeHistoryItem?.approvalTxId,
+  );
 
   const isBridgeTx = srcChainTxMeta?.type === TransactionType.bridge;
 
