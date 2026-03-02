@@ -276,9 +276,6 @@
   "addIPFSGateway": {
     "message": "Add your preferred IPFS gateway"
   },
-  "addImportAccount": {
-    "message": "Add account or hardware wallet"
-  },
   "addMemo": {
     "message": "Add memo"
   },
@@ -4692,10 +4689,10 @@
     "message": "Something went wrong. Please try again."
   },
   "notificationsSettingsPageAllowNotifications": {
-    "message": "Stay in the loop on what’s happening in your wallet with notifications. To use notifications, we use a profile to sync some settings across your devices. $1"
+    "message": "Stay in the loop on what’s happening in your wallet with notifications. To use notifications, we use a profile to sync some settings across your devices. $1 we protect your privacy while using this feature."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Learn how we protect your privacy while using this feature."
+    "message": "Learn how"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 new tokens found in this account",

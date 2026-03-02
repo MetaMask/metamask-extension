@@ -276,9 +276,6 @@
   "addIPFSGateway": {
     "message": "선호하는 IPFS 게이트웨이를 추가하세요"
   },
-  "addImportAccount": {
-    "message": "계정 또는 하드웨어 지갑 추가"
-  },
   "addMemo": {
     "message": "메모 추가"
   },
