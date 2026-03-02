@@ -1032,7 +1032,7 @@ export default class SecurityTab extends PureComponent {
 
         <div
           className="settings-page__content-item-col"
-          data-testid="useNftDetection"
+          data-testid="use-nft-detection"
         >
           <ToggleButton
             value={useNftDetection}
