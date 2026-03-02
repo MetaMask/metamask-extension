@@ -1,5 +1,11 @@
 import qrCode from 'qrcode-generator';
-import React, { useContext, useEffect, useState, useCallback } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getErrorMessage } from '../../../shared/modules/error';
@@ -70,6 +76,11 @@ function RevealSeedPage() {
   );
   const [scanResult, setScanResult] = useState(null);
 
+  const trackEventRef = useRef(trackEvent);
+  trackEventRef.current = trackEvent;
+  const activeTabUrlRef = useRef(activeTabUrl);
+  activeTabUrlRef.current = activeTabUrl;
+
   useEffect(() => {
     let cancelled = false;
 
@@ -81,7 +92,8 @@ function RevealSeedPage() {
           }
           setScanResult(result);
 
-          trackEvent({
+          const url = activeTabUrlRef.current;
+          trackEventRef.current({
             category: MetaMetricsEventCategory.Keys,
             event: MetaMetricsEventName.SrpRevealDappCheck,
             properties: {
@@ -90,7 +102,7 @@ function RevealSeedPage() {
               recommended_action: result?.recommendedAction ?? 'unknown',
               hostname: result?.hostname ?? 'unknown',
             },
-            referrer: activeTabUrl ? { url: activeTabUrl } : undefined,
+            referrer: url ? { url } : undefined,
           });
         })
         .catch(() => {
@@ -101,7 +113,7 @@ function RevealSeedPage() {
     return () => {
       cancelled = true;
     };
-  }, [activeTabOrigin, activeTabUrl, trackEvent]);
+  }, [activeTabOrigin]);
 
   const onClickCopy = useCallback(() => {
     trackEvent({
