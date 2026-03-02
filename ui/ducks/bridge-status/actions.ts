@@ -51,10 +51,14 @@ export const submitBridgeTx = async (
 };
 
 /**
- * Submit an intent quote using the bridge status controller
+ * Submit an intent quote through the bridge status controller.
  *
- * @param params
- * @returns
+ * @param params - Intent submission payload.
+ * @param params.quoteResponse - Quote response that contains the intent data.
+ * @param params.accountAddress - Account submitting the signed intent.
+ * @param params.location - Optional surface identifier used for analytics.
+ * @param params.abTests - Optional AB test metadata forwarded to metrics.
+ * @returns A thunk that dispatches the `submitIntent` bridge status action.
  */
 export const submitBridgeIntent = async (params: {
   quoteResponse: QuoteResponse & QuoteMetadata;
