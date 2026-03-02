@@ -18,7 +18,6 @@ jest.mock('./multichain-accounts/account-tree', () => {
 });
 
 const SOLANA_MAINNET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
-const SOLANA_DEVNET = 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1';
 const BTC_MAINNET = 'bip122:000000000019d6689c085ae165831e93';
 
 type NonEvmTransactionsMap =
