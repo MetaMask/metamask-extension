@@ -79,7 +79,7 @@ describe('App Header', () => {
     it('can open the settings', async () => {
       const { container } = render();
       const settingsButton = container.querySelector(
-        '[data-testid="account-options-menu-button"]',
+        '[data-testid="account-options-menu-button"] span',
       );
       expect(settingsButton).toBeInTheDocument();
       fireEvent.click(settingsButton);
@@ -106,7 +106,7 @@ describe('App Header', () => {
         const { container } = render();
 
         const settingsButton = container.querySelector(
-          '[data-testid="account-options-menu-button"]',
+          '[data-testid="account-options-menu-button"] span',
         );
         fireEvent.click(settingsButton);
 
@@ -190,7 +190,7 @@ describe('App Header', () => {
         isUnlocked: false,
       });
       const settingsButton = container.querySelector(
-        '[data-testid="account-options-menu-button"]',
+        '[data-testid="account-options-menu-button"] span',
       );
       expect(settingsButton).not.toBeInTheDocument();
     });

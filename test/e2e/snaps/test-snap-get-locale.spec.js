@@ -108,7 +108,7 @@ describe('Test Snap Get Locale', function () {
 
         // click on the global action menu
         await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
+          '[data-testid="account-options-menu-button"] span',
         );
 
         // try to click on the notification item
@@ -140,7 +140,7 @@ describe('Test Snap Get Locale', function () {
         );
         // click on the global action menu
         await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
+          '[data-testid="account-options-menu-button"] span',
         );
 
         // try to click on snaps

@@ -555,10 +555,10 @@ describe('Test Snap Metrics', function () {
 
         // click on the global action menu
         await driver.waitForSelector(
-          '[data-testid="account-options-menu-button"]',
+          '[data-testid="account-options-menu-button"] span',
         );
         await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
+          '[data-testid="account-options-menu-button"] span',
         );
 
         // try to click on the snaps item

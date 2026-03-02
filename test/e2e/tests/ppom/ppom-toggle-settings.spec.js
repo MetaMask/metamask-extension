@@ -22,7 +22,7 @@ describe('PPOM Settings', function () {
         await loginWithBalanceValidation(driver);
 
         await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
+          '[data-testid="account-options-menu-button"] span',
         );
 
         await driver.clickElement({ text: 'Settings', tag: 'div' });

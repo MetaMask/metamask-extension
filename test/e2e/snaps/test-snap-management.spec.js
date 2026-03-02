@@ -69,7 +69,7 @@ describe('Test Snap Management', function () {
 
         // click on the global action menu
         await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
+          '[data-testid="account-options-menu-button"] span',
         );
 
         // try to click on the snaps item
@@ -122,7 +122,7 @@ describe('Test Snap Management', function () {
         // because the notification overlays the icon and this can cause ElementClickInterceptedError
 
         await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
+          '[data-testid="account-options-menu-button"] span',
         );
 
         await driver.findElement({

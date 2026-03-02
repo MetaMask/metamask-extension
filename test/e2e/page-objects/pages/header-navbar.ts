@@ -14,7 +14,7 @@ class HeaderNavbar {
   private readonly copyAddressButton = '[aria-label="Copy address"]';
 
   private readonly threeDotMenuButton =
-    '[data-testid="account-options-menu-button"]';
+    '[data-testid="account-options-menu-button"] span';
 
   private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
 
