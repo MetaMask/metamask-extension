@@ -311,7 +311,7 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
   ): RecordType | undefined {
     const { keys, refs } = entry;
 
-    const out: Partial<RecordType> = {};
+    const out: Partial<RecordType> = Object.create(null);
     for (let i = 0, n = keys.length; i < n; i++) {
       const prop = keys[i];
       const v = refs[i].deref();
