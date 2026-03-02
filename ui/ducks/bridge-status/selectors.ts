@@ -15,6 +15,10 @@ type BridgeStatusAppState = {
   metamask: BridgeStatusControllerState;
 };
 
+type BridgeHistoryItemWithOriginalTransactionId = BridgeHistoryItem & {
+  originalTransactionId?: string;
+};
+
 const selectBridgeHistory = (state: BridgeStatusAppState) =>
   state.metamask.txHistory;
 
@@ -82,7 +86,7 @@ export const selectBridgeHistoryForOriginalTxMetaId = createSelector(
       return undefined;
     }
     return Object.values(bridgeHistory).find(
-      (bridgeHistoryItem) =>
+      (bridgeHistoryItem: BridgeHistoryItemWithOriginalTransactionId) =>
         bridgeHistoryItem.originalTransactionId === originalTxMetaId,
     );
   },
