@@ -96,8 +96,17 @@ export const ActivityList = ({ filter }: Props) => {
       enabledNetworks.includes(tx.chain),
     );
 
-    // Token-specific filtering (for asset page)
-    const { tokenAddress } = filter ?? {};
+    // Asset-page filtering: narrow by chain and/or token
+    const { tokenAddress, chainId: filterChainId } = filter ?? {};
+    if (filterChainId) {
+      filteredNonEvmTransactions = filteredNonEvmTransactions.filter(
+        (tx) => tx.chain === filterChainId,
+      );
+      filteredLocalTransactions = filteredLocalTransactions.filter((group) => {
+        const hexChainId = group.initialTransaction?.chainId;
+        return hexChainId && toEvmCaipChainId(hexChainId) === filterChainId;
+      });
+    }
     if (tokenAddress) {
       evmTransactions = evmTransactions.filter((tx) =>
         matchesApiTransaction(tx, tokenAddress),
