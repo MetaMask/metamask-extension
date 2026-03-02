@@ -33,7 +33,10 @@ import {
   type SafeChain,
   useSafeChains,
 } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
-import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
+import {
+  isStockToken,
+  isTokenTradingOpenAt,
+} from '../../../../pages/bridge/hooks/useRWAToken';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import AssetComponent from './Asset';
 import { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
@@ -105,7 +108,6 @@ export default function AssetList({
 
   const { safeChains } = useSafeChains();
   const [showMarketClosedModal, setShowMarketClosedModal] = useState(false);
-  const { isStockToken, isTokenTradingOpen } = useRWAToken();
   const safeChainDetails: SafeChain | undefined = useMemo(
     () =>
       safeChains?.find((chain) => {
@@ -140,7 +142,7 @@ export default function AssetList({
 
         const isDisabled = isTokenDisabled?.(token) ?? false;
         const isMarketClosed =
-          isStockToken(token) && !isTokenTradingOpen(token);
+          isStockToken(token) && !isTokenTradingOpenAt(token);
 
         return (
           <Box

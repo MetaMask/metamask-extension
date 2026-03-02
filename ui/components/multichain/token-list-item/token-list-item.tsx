@@ -19,7 +19,11 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { TokenInsightsModal } from '../../../pages/bridge/token-insights-modal';
-import { useRWAToken } from '../../../pages/bridge/hooks/useRWAToken';
+import {
+  isStockToken,
+  isTokenTradingOpenAt,
+  useRWAToken,
+} from '../../../pages/bridge/hooks/useRWAToken';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -90,6 +94,14 @@ type TokenListItemProps = {
   rwaData?: TokenWithFiatAmount['rwaData'];
 };
 
+const TokenListItemStockBadge = ({
+  rwaData,
+}: Pick<TokenListItemProps, 'rwaData'>) => {
+  const { isTokenTradingOpen } = useRWAToken();
+
+  return <StockBadge isMarketClosed={!isTokenTradingOpen({ rwaData })} />;
+};
+
 export const TokenListItemComponent = ({
   className,
   onClick,
@@ -134,7 +146,6 @@ export const TokenListItemComponent = ({
   const navigate = useNavigate();
   const [showTokenInsights, setShowTokenInsights] = useState(false);
   const [showMarketClosedModal, setShowMarketClosedModal] = useState(false);
-  const { isStockToken, isTokenTradingOpen } = useRWAToken();
 
   const getTokenTitle = () => {
     if (isTitleNetworkName) {
@@ -173,7 +184,6 @@ export const TokenListItemComponent = ({
     noFeeAssets?.includes(address.toLowerCase());
   const rwaToken = { rwaData };
   const isRWAToken = isStockToken(rwaToken);
-  const isMarketClosed = isRWAToken && !isTokenTradingOpen(rwaToken);
 
   // Used for badge icon
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
@@ -215,7 +225,7 @@ export const TokenListItemComponent = ({
               return;
             }
 
-            if (isMarketClosed) {
+            if (isRWAToken && !isTokenTradingOpenAt(rwaToken)) {
               setShowMarketClosedModal(true);
               return;
             }
@@ -305,7 +315,7 @@ export const TokenListItemComponent = ({
                 <Tag label={ACCOUNT_TYPE_LABELS[accountType]} />
               )}
               {isRWAToken ? (
-                <StockBadge isMarketClosed={isMarketClosed} />
+                <TokenListItemStockBadge rwaData={rwaData} />
               ) : null}
               {isNoFeeAsset && <Tag label={t('bridgeNoMMFee')} />}
             </Box>

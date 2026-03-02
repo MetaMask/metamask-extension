@@ -5,26 +5,33 @@ import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
 import { Tag } from '../../../../component-library';
 import { ACCOUNT_TYPE_LABELS } from '../../constants';
-import { useRWAToken } from '../../../../../pages/bridge/hooks/useRWAToken';
+import {
+  isStockToken,
+  useRWAToken,
+} from '../../../../../pages/bridge/hooks/useRWAToken';
 import { StockBadge } from '../../stock-badge/stock-badge';
 
 type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;
 };
 
+const TokenCellStockBadge = ({ token }: TokenCellTitleProps) => {
+  const { isTokenTradingOpen } = useRWAToken();
+
+  return <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />;
+};
+
 export const TokenCellTitle = React.memo(({ token }: TokenCellTitleProps) => {
-  const { isStockToken, isTokenTradingOpen } = useRWAToken();
   const label = token.accountType
     ? ACCOUNT_TYPE_LABELS[token.accountType]
     : undefined;
   const tokenIsStock = isStockToken(token);
-  const isMarketClosed = tokenIsStock && !isTokenTradingOpen(token);
 
   return (
     <Box flexDirection={BoxFlexDirection.Row} className="min-w-0">
       <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
         <AssetCellTitle title={token.title} />
-        {tokenIsStock && <StockBadge isMarketClosed={isMarketClosed} />}
+        {tokenIsStock && <TokenCellStockBadge token={token} />}
         {label && <Tag label={label} />}
       </Box>
       {token.isStakeable && (
