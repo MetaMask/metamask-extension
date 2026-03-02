@@ -11,7 +11,6 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 
 export type AccountsState = {
   metamask: AccountsControllerState;
