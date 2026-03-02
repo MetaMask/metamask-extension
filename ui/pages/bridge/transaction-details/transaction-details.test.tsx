@@ -46,7 +46,10 @@ const getMockStore = (
           },
           selectedAccount: 'id',
         },
-        transactions: [transactionGroup.primaryTransaction],
+        transactions: [
+          transactionGroup.primaryTransaction,
+          transactionGroup.initialTransaction,
+        ],
         currencyRates: {},
         preferences: {},
         ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
@@ -62,18 +65,20 @@ const getMockStore = (
   );
 };
 
-describe('transaction-details', () => {
+describe.only('transaction-details', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockLocation.mockReturnValue({
-      pathname: '/cross-chain/tx-details/test-id',
+      pathname: `/cross-chain/tx-details/${mockBridgeTxData.transactionGroup.initialTransaction.hash}`,
       search: '',
       hash: '',
-      state: null,
+      state: {
+        transaction: mockBridgeTxData.transactionGroup.initialTransaction,
+      },
       key: 'test-key',
     } as RouterLocation);
     mockParams.mockReturnValue({
-      srcTxMetaId: mockBridgeTxData.srcTxMetaId,
+      txHash: mockBridgeTxData.transactionGroup.primaryTransaction.hash,
     });
   });
 

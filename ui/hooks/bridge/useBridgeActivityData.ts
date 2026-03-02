@@ -20,7 +20,10 @@ export const useBridgeActivityData = ({
   // Add the resolved transaction type
   const transactionWithType = useMemo(() => {
     return transaction
-      ? { ...transaction, type: resolveTransactionType(transaction) }
+      ? {
+          ...transaction,
+          type: resolveTransactionType(transaction) ?? transaction?.type,
+        }
       : undefined;
   }, [transaction]);
 
