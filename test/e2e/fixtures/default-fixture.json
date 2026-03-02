@@ -350,7 +350,7 @@
       "latestNonAnonymousEventTimestamp": 1770282513102,
       "marketingCampaignCookieId": null,
       "metaMetricsId": "0xdcdfa503c38c1c26ed172c5492794aff1bda22e703fb8271c7ff0587762a5304",
-      "participateInMetaMetrics": true,
+      "participateInMetaMetrics": false,
       "segmentApiCalls": {},
       "traits": {
         "storage_kind": "split"

@@ -19,7 +19,6 @@ describe('Ledger Hardware', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
-          .withMetaMetricsDisabled()
           .build(),
         title: this.test?.fullTitle(),
       },

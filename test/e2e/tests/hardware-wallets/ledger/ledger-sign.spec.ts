@@ -14,7 +14,6 @@ describe('Ledger Hardware Signatures', function (this: Suite) {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
-          .withMetaMetricsDisabled()
           .withPermissionControllerConnectedToTestDapp({
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           })

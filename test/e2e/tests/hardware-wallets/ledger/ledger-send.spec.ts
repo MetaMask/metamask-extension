@@ -15,7 +15,6 @@ describe('Ledger Hardware', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
-          .withMetaMetricsDisabled()
           .build(),
         localNodeOptions: {
           hardfork: 'london',
@@ -48,7 +47,6 @@ describe('Ledger Hardware', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
-          .withMetaMetricsDisabled()
           .build(),
         localNodeOptions: {
           hardfork: 'muirGlacier',
