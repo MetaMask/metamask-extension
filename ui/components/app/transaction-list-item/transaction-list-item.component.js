@@ -87,7 +87,6 @@ function TransactionListItemInner({
     isBridgeFailed,
   } = useBridgeTxHistoryData({
     transactionGroup,
-    isEarliestNonce,
   });
   const isUnifiedSwapTx =
     (isBridgeTx ||
@@ -374,7 +373,6 @@ function TransactionListItemInner({
             onRetry={retryTransaction}
             // showRetry={showRetry}
             showSpeedUp={isSpeedUpButtonVisible}
-            isEarliestNonce={isEarliestNonce}
             onCancel={cancelTransaction}
             transactionStatus={() => (
               <TransactionStatusLabel

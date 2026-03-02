@@ -59,6 +59,10 @@ import {
 } from '../../shared/modules/selectors/networks';
 import {
   getAccountTrackerControllerAccountsByChainId,
+  getMultiChainAssetsControllerAccountsAssets,
+  getMultiChainAssetsControllerAllIgnoredAssets,
+  getMultiChainAssetsControllerAssetsMetadata,
+  getMultiChainBalancesControllerBalances,
   getTokenBalancesControllerTokenBalances,
   getTokensControllerAllIgnoredTokens,
   getTokensControllerAllTokens,
@@ -114,25 +118,9 @@ export type BalanceCalculationState = {
     };
 };
 
-/**
- * Gets non-EVM accounts assets.
- *
- * @param state - Redux state object.
- * @returns An object containing non-EVM assets per accounts.
- */
-export function getAccountAssets(state: AssetsState) {
-  return state.metamask.accountsAssets;
-}
+export { getMultiChainAssetsControllerAccountsAssets as getAccountAssets };
 
-/**
- * Gets non-EVM assets metadata.
- *
- * @param state - Redux state object.
- * @returns An object containing non-EVM assets metadata per asset types (CAIP-19).
- */
-export function getAssetsMetadata(state: AssetsState) {
-  return state.metamask?.assetsMetadata ?? {};
-}
+export { getMultiChainAssetsControllerAssetsMetadata as getAssetsMetadata };
 
 /**
  * Returns the assets info (AssetsController state).
@@ -289,15 +277,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
   },
 );
 
-/**
- * Gets non-EVM ignored assets.
- *
- * @param state - Redux state object.
- * @returns An object containing all ignored assets.
- */
-export function getAllIgnoredAssets(state: AssetsState) {
-  return state.metamask.allIgnoredAssets ?? EMPTY_OBJECT;
-}
+export { getMultiChainAssetsControllerAllIgnoredAssets as getAllIgnoredAssets };
 
 /**
  * Gets non-EVM accounts assets rates.
@@ -445,8 +425,8 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
 export const getMultiChainAssets = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
   getMultichainBalances,
-  getAccountAssets,
-  getAssetsMetadata,
+  getMultiChainAssetsControllerAccountsAssets,
+  getMultiChainAssetsControllerAssetsMetadata,
   getAssetsRates,
   getPreferences,
   (
@@ -571,7 +551,7 @@ const zeroBalanceAssetFallback = { amount: 0, unit: '' };
 export const getMultichainAggregatedBalance = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
   getMultichainBalances,
-  getAccountAssets,
+  getMultiChainAssetsControllerAccountsAssets,
   getAssetsRates,
   (selectedAccountAddress, multichainBalances, accountAssets, assetRates) => {
     const { id } = selectedAccountAddress ?? {};
@@ -625,7 +605,7 @@ export type HistoricalBalances = {
 export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
   (_state, selectedAccount: { id: string }) => selectedAccount,
   getMultichainBalances,
-  getAccountAssets,
+  getMultiChainAssetsControllerAccountsAssets,
   getAssetsRates,
   (
     selectedAccountAddress: { id: string },
@@ -719,15 +699,9 @@ export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
  */
 export const getMultichainNativeAssetType = createDeepEqualSelector(
   getSelectedInternalAccount,
-  getAccountAssets,
+  getMultiChainAssetsControllerAccountsAssets,
   getSelectedMultichainNetworkConfiguration,
-  (
-    selectedAccount: ReturnType<typeof getSelectedInternalAccount>,
-    accountAssets: ReturnType<typeof getAccountAssets>,
-    currentNetwork: ReturnType<
-      typeof getSelectedMultichainNetworkConfiguration
-    >,
-  ) => {
+  (selectedAccount, accountAssets, currentNetwork) => {
     const assetTypes = accountAssets?.[selectedAccount.id] || [];
     const nativeAssetType = assetTypes.find((assetType) => {
       const { chainId, assetNamespace } = parseCaipAssetType(assetType);
@@ -750,11 +724,7 @@ export const getMultichainNativeTokenBalance = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
   getMultichainBalances,
   getMultichainNativeAssetType,
-  (
-    selectedAccountAddress,
-    multichainBalances: ReturnType<typeof getMultichainBalances>,
-    nativeAssetType: ReturnType<typeof getMultichainNativeAssetType>,
-  ) => {
+  (selectedAccountAddress, multichainBalances, nativeAssetType) => {
     if (!selectedAccountAddress) {
       return zeroBalanceAssetFallback;
     }
@@ -864,7 +834,11 @@ const selectMultichainBalancesStateForBalances = createSelector(
  * Wraps multichain assets for core balance computations.
  */
 const selectMultichainAssetsStateForBalances = createSelector(
-  [getAccountAssets, getAssetsMetadata, getAllIgnoredAssets],
+  [
+    getMultiChainAssetsControllerAccountsAssets,
+    getMultiChainAssetsControllerAssetsMetadata,
+    getMultiChainAssetsControllerAllIgnoredAssets,
+  ],
   (accountsAssets, assetsMetadata, allIgnoredAssets) => ({
     accountsAssets,
     assetsMetadata,
@@ -1440,10 +1414,12 @@ const getStateForAssetSelector = ({ metamask }: any) => {
   };
 
   const multichainState = {
-    accountsAssets: metamask.accountsAssets,
-    assetsMetadata: metamask.assetsMetadata,
-    allIgnoredAssets: metamask.allIgnoredAssets,
-    balances: metamask.balances,
+    accountsAssets: getMultiChainAssetsControllerAccountsAssets({ metamask }),
+    assetsMetadata: getMultiChainAssetsControllerAssetsMetadata({ metamask }),
+    allIgnoredAssets: getMultiChainAssetsControllerAllIgnoredAssets({
+      metamask,
+    }),
+    balances: getMultiChainBalancesControllerBalances({ metamask }),
     conversionRates: metamask.conversionRates,
   };
 
