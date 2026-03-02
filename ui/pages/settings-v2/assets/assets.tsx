@@ -20,7 +20,7 @@ const ASSET_SETTING_ITEMS: { id: string; Component: React.FC }[] = [
   { id: 'autodetect-tokens', Component: AutodetectTokensToggleItem },
 ];
 
-export const Assets = () => {
+const Assets = () => {
   return (
     <Box padding={4}>
       {ASSET_SETTING_ITEMS.map(({ id, Component }) => (
@@ -29,3 +29,5 @@ export const Assets = () => {
     </Box>
   );
 };
+
+export default Assets;

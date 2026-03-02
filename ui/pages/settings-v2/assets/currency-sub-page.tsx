@@ -18,7 +18,7 @@ import {
 import availableCurrencies from '../../../helpers/constants/available-conversions.json';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { setCurrentCurrency } from '../../../store/actions';
-import { SETTINGS_V2_ASSETS_ROUTE } from '../settings-registry';
+import { ASSETS_ROUTE } from '../../../helpers/constants/routes';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -47,12 +47,13 @@ export const CurrencySubPage = () => {
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.CurrentCurrency,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         current_currency: value,
         location: 'settings-page',
       },
     });
     dispatch(setCurrentCurrency(value));
-    navigate(SETTINGS_V2_ASSETS_ROUTE);
+    navigate(ASSETS_ROUTE);
   };
 
   return (
@@ -65,7 +66,11 @@ export const CurrencySubPage = () => {
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Between}
             alignItems={BoxAlignItems.Center}
-            backgroundColor={isSelected ? BoxBackgroundColor.BackgroundMuted : BoxBackgroundColor.BackgroundDefault}
+            backgroundColor={
+              isSelected
+                ? BoxBackgroundColor.BackgroundMuted
+                : BoxBackgroundColor.BackgroundDefault
+            }
             className="w-full cursor-pointer border-0 p-4"
             onClick={() => handleSelect(value)}
           >
@@ -84,4 +89,6 @@ export const CurrencySubPage = () => {
       })}
     </Box>
   );
-}
+};
+
+export default CurrencySubPage;
