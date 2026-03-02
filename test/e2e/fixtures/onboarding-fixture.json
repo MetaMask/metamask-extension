@@ -1892,7 +1892,7 @@
         "mainnet": false,
         "testnet": false
       },
-      "hip3ConfigVersion": 1,
+      "hip3ConfigVersion": 0,
       "isFirstTimeUser": {
         "mainnet": true,
         "testnet": true
