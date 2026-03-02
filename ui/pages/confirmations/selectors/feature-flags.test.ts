@@ -1,44 +1,48 @@
 /* eslint-disable @typescript-eslint/naming-convention, camelcase */
 import { selectIsMetaMaskPayDappsEnabled } from './feature-flags';
 
-type ConfirmationsPayFlag = {
-  dappsEnabled?: boolean;
+type ConfirmationsPayDappsFlag = {
+  enabled?: boolean;
 };
 
 type MockState = {
   metamask: {
     remoteFeatureFlags: {
-      confirmations_pay?: ConfirmationsPayFlag;
+      confirmations_pay_dapps?: ConfirmationsPayDappsFlag;
     };
   };
 };
 
-const getMockState = (confirmations_pay?: ConfirmationsPayFlag): MockState => ({
+const getMockState = (
+  confirmations_pay_dapps?: ConfirmationsPayDappsFlag,
+): MockState => ({
   metamask: {
     remoteFeatureFlags: {
-      ...(confirmations_pay !== undefined && { confirmations_pay }),
+      ...(confirmations_pay_dapps !== undefined && {
+        confirmations_pay_dapps,
+      }),
     },
   },
 });
 
 describe('Confirmations Pay Feature Flags', () => {
   describe('selectIsMetaMaskPayDappsEnabled', () => {
-    it('returns true when dappsEnabled is true', () => {
-      const state = getMockState({ dappsEnabled: true });
+    it('returns true when enabled is true', () => {
+      const state = getMockState({ enabled: true });
       expect(selectIsMetaMaskPayDappsEnabled(state)).toBe(true);
     });
 
-    it('returns false when dappsEnabled is false', () => {
-      const state = getMockState({ dappsEnabled: false });
+    it('returns false when enabled is false', () => {
+      const state = getMockState({ enabled: false });
       expect(selectIsMetaMaskPayDappsEnabled(state)).toBe(false);
     });
 
-    it('defaults to false when confirmations_pay flag is not set', () => {
+    it('defaults to false when confirmations_pay_dapps is not set', () => {
       const state = getMockState();
       expect(selectIsMetaMaskPayDappsEnabled(state)).toBe(false);
     });
 
-    it('defaults to false when confirmations_pay is an empty object', () => {
+    it('defaults to false when confirmations_pay_dapps is an empty object', () => {
       const state = getMockState({});
       expect(selectIsMetaMaskPayDappsEnabled(state)).toBe(false);
     });

@@ -1,19 +1,23 @@
 import { createSelector } from 'reselect';
 import { getRemoteFeatureFlags } from '../../../selectors/remote-feature-flags';
 
-type ConfirmationsPayFeatureFlags = {
-  dappsEnabled?: boolean;
+type ConfirmationsPayDappsFlag = {
+  enabled?: boolean;
 };
 
-const selectConfirmationsPayFeatureFlags = createSelector(
+const selectConfirmationsPayDappsFlag = createSelector(
   getRemoteFeatureFlags,
   (flags) =>
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    (flags as unknown as { confirmations_pay?: ConfirmationsPayFeatureFlags })
-      .confirmations_pay,
+    /* eslint-disable @typescript-eslint/naming-convention */
+    (
+      flags as unknown as {
+        confirmations_pay_dapps?: ConfirmationsPayDappsFlag;
+      }
+    ).confirmations_pay_dapps,
+  /* eslint-enable @typescript-eslint/naming-convention */
 );
 
 export const selectIsMetaMaskPayDappsEnabled = createSelector(
-  selectConfirmationsPayFeatureFlags,
-  (flags): boolean => flags?.dappsEnabled ?? false,
+  selectConfirmationsPayDappsFlag,
+  (flag): boolean => flag?.enabled ?? false,
 );
