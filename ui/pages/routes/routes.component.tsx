@@ -246,6 +246,7 @@ const PerpsOrderEntryPage = mmLazy(
 
 const NotificationsSettingsRedirect = () => (
   <Navigate to={NOTIFICATIONS_SETTINGS_ROUTE} replace />
+);
 
 // Perps pages wrapped with PerpsControllerProvider
 const WrappedPerpsHomePage = () => (
