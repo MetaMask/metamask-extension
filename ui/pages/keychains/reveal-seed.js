@@ -185,8 +185,7 @@ function RevealSeedPage() {
       });
   };
 
-  const isMalicious =
-    scanResult?.recommendedAction === RecommendedAction.Block;
+  const isMalicious = scanResult?.recommendedAction === RecommendedAction.Block;
 
   const renderDappScanWarning = () => {
     if (!isMalicious) {
