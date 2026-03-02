@@ -608,6 +608,7 @@
     "addons-linter": "^9.5.0",
     "autoprefixer": "^10.4.19",
     "axios": "patch:axios@npm%3A1.13.5#~/.yarn/patches/axios-npm-1.13.5-ed8865f696.patch",
+    "babel-plugin-module-resolver": "^5.0.2",
     "babel-plugin-react-compiler": "^1.0.0",
     "babelify": "^10.0.0",
     "bify-module-groups": "^2.0.0",

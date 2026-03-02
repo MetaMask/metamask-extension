@@ -27,7 +27,9 @@
     "baseUrl": ".",
     // Path mappings for module resolution
     "paths": {
-      "@metamask/perps-controller": ["ui/__mocks__/perps/perps-controller"]
+      "@metamask/perps-controller": ["ui/__mocks__/perps/perps-controller"],
+      "~ui/*": ["ui/*"],
+      "~shared/*": ["shared/*"]
     }
   },
   "exclude": [
