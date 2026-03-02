@@ -40,7 +40,7 @@ describe('useGetTitle', () => {
     jest
       .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
       .mockReturnValue({
-        bridgeHistoryItem: undefined,
+        isBridgeTx: false,
         isBridgeComplete: false,
         isBridgeFailed: false,
         showBridgeTxDetails: undefined,
@@ -255,7 +255,7 @@ describe('useGetTitle', () => {
     jest
       .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
       .mockReturnValue({
-        bridgeHistoryItem: undefined,
+        isBridgeTx: true,
         isBridgeComplete: false,
         isBridgeFailed: false,
         showBridgeTxDetails: jest.fn(),
