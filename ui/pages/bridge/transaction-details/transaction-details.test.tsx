@@ -65,7 +65,7 @@ const getMockStore = (
   );
 };
 
-describe.only('transaction-details', () => {
+describe('transaction-details', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockLocation.mockReturnValue({
@@ -73,7 +73,10 @@ describe.only('transaction-details', () => {
       search: '',
       hash: '',
       state: {
-        transaction: mockBridgeTxData.transactionGroup.initialTransaction,
+        transaction: {
+          ...mockBridgeTxData.transactionGroup.initialTransaction,
+          transactionCategory: 'BRIDGE_OUT',
+        },
       },
       key: 'test-key',
     } as RouterLocation);

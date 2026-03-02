@@ -96,13 +96,22 @@ export const selectLocalTxForTxHash = (
 /**
  * Returns the local bridge history details for the given tx hash
  *
- * @param state - the metamask state
+ * @param _state - the metamask state
  * @param txHash - the tx hash
  * @returns the bridge history item for the given tx hash
  */
 export const selectBridgeHistoryItemForTxHash = createSelector(
-  [selectBridgeHistory, selectLocalTxForTxHash],
-  (bridgeHistory, tx) => {
+  [
+    selectBridgeHistory,
+    selectLocalTxForTxHash,
+    (_state: BridgeStatusAppState, txHash) => txHash,
+  ],
+  (bridgeHistory, tx, txHash) => {
+    // Non-EVM transactions use the tx hash as the key
+    if (txHash && bridgeHistory[txHash]) {
+      return bridgeHistory[txHash];
+    }
+
     const txId = tx?.id;
     const actionId = tx?.actionId;
     if (txId && bridgeHistory[txId]) {

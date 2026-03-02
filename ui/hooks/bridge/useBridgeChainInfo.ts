@@ -1,5 +1,6 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { type Transaction } from '@metamask/keyring-api';
+import { useSelector } from 'react-redux';
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
@@ -13,6 +14,8 @@ import { TransactionViewModel } from '../../../shared/lib/multichain/types';
 import { type ChainInfo } from '../../pages/bridge/utils/tx-details';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP } from '../../../shared/constants/multichain/networks';
+import { selectBridgeHistoryItemForTxHash } from '../../ducks/bridge-status/selectors';
+import { type MetaMaskReduxState } from '../../selectors';
 import { useBridgeTxHistoryData } from './useBridgeTxHistoryData';
 
 const getSourceAndDestChainIds = ({ quote }: BridgeHistoryItem) => {
@@ -36,9 +39,15 @@ export default function useBridgeChainInfo({
   destNetwork?: ChainInfo;
   isBridgeTx?: boolean;
 } {
-  const { bridgeHistoryItem } = useBridgeTxHistoryData({
+  const { bridgeHistoryItem: evmBridgeHistoryItem } = useBridgeTxHistoryData({
     transaction,
   });
+
+  const nonEvmBridgeHistoryItem = useSelector((state: MetaMaskReduxState) =>
+    selectBridgeHistoryItemForTxHash(state, nonEvmTransaction?.id),
+  );
+
+  const bridgeHistoryItem = evmBridgeHistoryItem ?? nonEvmBridgeHistoryItem;
 
   const isEvmSwapOrBridge =
     transaction?.type &&

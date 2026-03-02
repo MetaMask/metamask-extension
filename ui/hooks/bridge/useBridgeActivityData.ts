@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { TransactionType } from '@metamask/transaction-controller';
 import type { TransactionViewModel } from '../../../shared/lib/multichain/types';
 import { useBridgeTokenDisplayData } from '../../pages/bridge/hooks/useBridgeTokenDisplayData';
 import { resolveTransactionType } from '../../components/multichain/activity-v2/helpers';
@@ -22,7 +23,13 @@ export const useBridgeActivityData = ({
     return transaction
       ? {
           ...transaction,
-          type: resolveTransactionType(transaction) ?? transaction?.type,
+          type:
+            transaction.type &&
+            [TransactionType.bridge, TransactionType.swap].includes(
+              transaction.type,
+            )
+              ? transaction.type
+              : resolveTransactionType(transaction),
         }
       : undefined;
   }, [transaction]);
