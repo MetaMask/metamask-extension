@@ -20,6 +20,7 @@ import {
   BUTTON_VARIANT,
   BannerAlert,
   Button,
+  Checkbox,
   HelpText,
   HelpTextSeverity,
   Label,
@@ -34,7 +35,9 @@ import { Tab, Tabs } from '../../components/ui/tabs';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   AlignItems,
+  BackgroundColor,
   BlockSize,
+  BorderRadius,
   Display,
   JustifyContent,
   Severity,
@@ -75,11 +78,11 @@ function RevealSeedPage() {
     (state) => state.activeTab?.origin ?? null,
   );
   const [scanResult, setScanResult] = useState(null);
+  const [dangerAcknowledged, setDangerAcknowledged] = useState(false);
 
   const trackEventRef = useRef(trackEvent);
   trackEventRef.current = trackEvent;
-  const activeTabUrlRef = useRef(activeTabUrl);
-  activeTabUrlRef.current = activeTabUrl;
+
 
   useEffect(() => {
     let cancelled = false;
@@ -92,7 +95,6 @@ function RevealSeedPage() {
           }
           setScanResult(result);
 
-          const url = activeTabUrlRef.current;
           trackEventRef.current({
             category: MetaMetricsEventCategory.Keys,
             event: MetaMetricsEventName.SrpRevealDappCheck,
@@ -102,7 +104,6 @@ function RevealSeedPage() {
               recommended_action: result?.recommendedAction ?? 'unknown',
               hostname: result?.hostname ?? 'unknown',
             },
-            referrer: url ? { url } : undefined,
           });
         })
         .catch(() => {
@@ -200,20 +201,36 @@ function RevealSeedPage() {
     if (!isDangerous) {
       return null;
     }
-    const hostname = scanResult?.hostname ?? activeTabOrigin;
     return (
-      <BannerAlert severity={Severity.Danger} data-testid="dapp-scan-warning">
-        <Text variant={TextVariant.bodyMdBold}>
-          {isMalicious
-            ? t('dappScanMaliciousTitle')
-            : t('dappScanSuspiciousTitle')}
-        </Text>
-        <Text variant={TextVariant.bodyMd}>
-          {isMalicious
-            ? t('dappScanMaliciousWarning', [hostname])
-            : t('dappScanSuspiciousWarning', [hostname])}
-        </Text>
-      </BannerAlert>
+      <>
+        <BannerAlert severity={Severity.Danger} data-testid="dapp-scan-warning">
+          <Text variant={TextVariant.bodyMdBold}>
+            {isMalicious
+              ? t('dappScanMaliciousTitle')
+              : t('dappScanSuspiciousTitle')}
+          </Text>
+          <Text variant={TextVariant.bodyMd}>
+            {isMalicious
+              ? t('dappScanMaliciousWarning')
+              : t('dappScanSuspiciousWarning')}
+          </Text>
+        </BannerAlert>
+        <Box
+          display={Display.Flex}
+          padding={4}
+          width={BlockSize.Full}
+          backgroundColor={BackgroundColor.errorMuted}
+          borderRadius={BorderRadius.LG}
+        >
+          <Checkbox
+            label={t('alertModalAcknowledge')}
+            data-testid="dapp-scan-acknowledge-checkbox"
+            isChecked={dangerAcknowledged}
+            onChange={() => setDangerAcknowledged((prev) => !prev)}
+            alignItems={AlignItems.flexStart}
+          />
+        </Box>
+      </>
     );
   };
 
@@ -356,6 +373,7 @@ function RevealSeedPage() {
         <Button
           width={BlockSize.Full}
           size={Size.LG}
+          danger={isDangerous}
           onClick={(event) => {
             trackEvent({
               category: MetaMetricsEventCategory.Keys,
@@ -374,7 +392,7 @@ function RevealSeedPage() {
             });
             handleSubmit(event);
           }}
-          disabled={password === ''}
+          disabled={password === '' || (isDangerous && !dangerAcknowledged)}
         >
           {t('next')}
         </Button>
@@ -466,7 +484,7 @@ function RevealSeedPage() {
         ])}
       </Text>
       {renderDappScanWarning()}
-      {renderWarning()}
+      {!isDangerous && renderWarning()}
       {renderContent()}
       {renderFooter()}
       <HoldToRevealModal

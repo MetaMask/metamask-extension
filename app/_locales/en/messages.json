@@ -1930,15 +1930,13 @@
     "message": "Malicious website detected!"
   },
   "dappScanMaliciousWarning": {
-    "message": "The website you are currently visiting ($1) has been flagged as malicious by real-time dapp scanning. Revealing your Secret Recovery Phrase on this website could result in loss of funds.",
-    "description": "$1 is the hostname of the website being visited"
+    "message": "The website you are currently visiting has been flagged as malicious by real-time dapp scanning. Revealing your Secret Recovery Phrase on this website could result in loss of funds."
   },
   "dappScanSuspiciousTitle": {
     "message": "Suspicious website detected"
   },
   "dappScanSuspiciousWarning": {
-    "message": "The website you are currently visiting ($1) has been flagged as suspicious by real-time dapp scanning. Revealing your Secret Recovery Phrase on this website could result in loss of funds.",
-    "description": "$1 is the hostname of the website being visited"
+    "message": "The website you are currently visiting has been flagged as suspicious by real-time dapp scanning. Revealing your Secret Recovery Phrase on this website could result in loss of funds."
   },
   "dappSuggested": {
     "message": "Site suggested"
