@@ -5,7 +5,7 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { E2E_SRP } from '../../../fixtures/default-fixture';
-import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { WALLET_PASSWORD } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -56,7 +56,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
     // Phase 1: Add a new account and verify it syncs
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
@@ -111,7 +111,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
     // Phase 2: Login to fresh instance, verify account persists, rename and add more accounts
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
@@ -179,7 +179,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
     // Phase 3: Complete onboarding flow from scratch to verify all changes persist
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },

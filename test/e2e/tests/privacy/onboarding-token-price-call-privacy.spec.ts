@@ -2,6 +2,7 @@ import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures, regularDelayMs } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import {
@@ -30,7 +31,7 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withNetworkControllerOnMainnet()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -94,7 +95,7 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withNetworkControllerOnMainnet()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,

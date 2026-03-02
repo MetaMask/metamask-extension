@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 
 import { E2E_SRP } from '../../../fixtures/default-fixture';
-import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { withFixtures } from '../../../helpers';
 import { WALLET_PASSWORD } from '../../../constants';
@@ -46,7 +46,7 @@ describe('Account syncing - Accounts with Balances', function () {
     // Phase 1: Create and sync accounts
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: phase1MockSetup,
       },

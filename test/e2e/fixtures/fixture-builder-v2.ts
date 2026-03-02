@@ -6,6 +6,7 @@ import type {
   PermissionControllerState,
 } from '@metamask/permission-controller';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
+import type { NetworkState } from '@metamask/network-controller';
 import {
   type TransactionControllerState,
   type TransactionMeta,
@@ -23,6 +24,7 @@ import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_FIXTURE_SOLANA_ACCOUNT,
   LOCALHOST_NETWORK_CLIENT_ID,
+  NETWORK_CLIENT_ID,
   SOLANA_MAINNET_SCOPE,
 } from '../constants';
 import defaultFixtureJson from './default-fixture.json';
@@ -37,6 +39,9 @@ function onboardingFixture() {
 }
 
 type FixtureType = typeof defaultFixtureJson | typeof onboardingFixtureJson;
+
+type NetworkClientIdValue =
+  (typeof NETWORK_CLIENT_ID)[keyof typeof NETWORK_CLIENT_ID];
 
 type TransactionControllerFixtureInput = Partial<
   Omit<TransactionControllerState, 'transactions'>
@@ -76,6 +81,11 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withNetworkController(data: Partial<NetworkState>): this {
+    merge(this.fixture.data.NetworkController, data);
+    return this;
+  }
+
   withPermissionController(
     data: Partial<PermissionControllerState<PermissionConstraint>>,
   ): this {
@@ -108,6 +118,14 @@ class FixtureBuilderV2 {
     this.fixture.data.NetworkEnablementController.enabledNetworkMap =
       data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
     return this;
+  }
+
+  withSelectedNetwork(
+    networkClientId: NetworkClientIdValue = NETWORK_CLIENT_ID.MAINNET,
+  ): this {
+    return this.withNetworkController({
+      selectedNetworkClientId: networkClientId,
+    });
   }
 
   withPermissionControllerConnectedToTestDapp({
@@ -280,6 +298,14 @@ class FixtureBuilderV2 {
     return this.withPreferencesController({
       preferences: {
         showNativeTokenAsMainBalance: false,
+      },
+    });
+  }
+
+  withShowNativeTokenAsMainBalanceEnabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        showNativeTokenAsMainBalance: true,
       },
     });
   }

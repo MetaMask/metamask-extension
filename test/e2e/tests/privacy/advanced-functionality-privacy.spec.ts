@@ -2,6 +2,7 @@ import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures, isSidePanelEnabled } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID } from '../../constants';
 import AccountList from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
@@ -62,8 +63,8 @@ describe('MetaMask onboarding ', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withNetworkControllerOnMainnet()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceEnabled()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withShowNativeTokenAsMainBalanceEnabled()
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -121,8 +122,8 @@ describe('MetaMask onboarding ', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withNetworkControllerOnMainnet()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceEnabled()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withShowNativeTokenAsMainBalanceEnabled()
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
