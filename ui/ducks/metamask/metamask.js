@@ -319,9 +319,11 @@ export function getNativeCurrency(state) {
 }
 
 export function getConversionRate(state) {
-  return getCurrencyRateControllerCurrencyRates(state)[
-    getProviderConfig(state).ticker
-  ]?.conversionRate;
+  return (
+    getCurrencyRateControllerCurrencyRates(state)[
+      getProviderConfig(state).ticker
+    ]?.conversionRate ?? undefined
+  );
 }
 
 export function getConversionRateByTicker(state, ticker) {

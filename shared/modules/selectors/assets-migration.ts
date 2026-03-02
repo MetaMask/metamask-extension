@@ -714,7 +714,7 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
       CaipAssetType,
       FungibleAssetPrice, // TODO: A type discriminator to AssetPrice is needed to be added to avoid this cast, but it is safe for now
     ][]) {
-      const assetType = parseCaipAssetType(assetId as CaipAssetType);
+      const assetType = parseCaipAssetType(assetId);
       const metadata = assetsInfo[assetId];
       if (
         !metadata ||
@@ -744,7 +744,8 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
         return amount === undefined ? undefined : amount / nativeCurrencyRate;
       };
 
-      (result[hexChainId] ??= {})[assetAddress] = {
+      result[hexChainId] ??= {};
+      result[hexChainId][assetAddress] = {
         id: price.id,
         price: convertToNativeCurrency(price.price),
         marketCap: convertToNativeCurrency(price.marketCap),
@@ -799,7 +800,7 @@ export const getMultichainAssetsRatesControllerConversionRates =
         CaipAssetType,
         FungibleAssetPrice, // TODO: A type discriminator to AssetPrice is needed to be added to avoid this cast, but it is safe for now
       ][]) {
-        const assetType = parseCaipAssetType(assetId as CaipAssetType);
+        const assetType = parseCaipAssetType(assetId);
         if (assetType.chain.namespace === KnownCaipNamespace.Eip155) {
           continue;
         }
