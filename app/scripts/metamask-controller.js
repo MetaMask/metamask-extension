@@ -1000,7 +1000,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       wallet_sendCalls: createAsyncMiddleware(async (req, res) => {
         return await walletSendCalls(req, res, {
-          getAccounts,
           getPermittedAccountsForOrigin: async () => {
             return getAccounts({ origin: req.origin });
           },
