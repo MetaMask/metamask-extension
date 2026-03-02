@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { mockNetworkState } from '../../../../test/stub/networks';
@@ -248,7 +249,7 @@ describe('TokenListItem', () => {
       store,
     );
 
-    expect(getByText('Stock')).toBeInTheDocument();
+    expect(getByText(messages.tokenStock.message)).toBeInTheDocument();
   });
 
   it('opens the market closed modal instead of calling onClick when the market is closed', () => {
@@ -271,7 +272,9 @@ describe('TokenListItem', () => {
 
     expect(onClick).not.toHaveBeenCalled();
     expect(getByTestId('market-closed-modal')).toBeInTheDocument();
-    expect(getByText('Market is closed')).toBeInTheDocument();
+    expect(
+      getByText(messages.bridgeMarketClosedAction.message),
+    ).toBeInTheDocument();
   });
 
   it('handles clicking staking opens tab', async () => {
