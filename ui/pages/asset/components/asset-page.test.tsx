@@ -3,7 +3,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
-import nock from 'nock';
 import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
@@ -18,6 +17,7 @@ import {
   mockMultichainNetworkState,
 } from '../../../../test/stub/networks';
 import useMultiPolling from '../../../hooks/useMultiPolling';
+import { DEFAULT_USE_HISTORICAL_PRICES_METADATA } from '../hooks/useHistoricalPrices';
 import AssetPage from './asset-page';
 
 jest.mock('../../../store/actions', () => ({
@@ -28,8 +28,11 @@ jest.mock('../../../store/actions', () => ({
 
 jest.mock('../../../store/controller-actions/transaction-controller');
 
-// Mock the price chart
-jest.mock('react-chartjs-2', () => ({ Line: () => null }));
+// Mock the price chart (forwardRef needed because AssetChart passes a ref to Line)
+jest.mock('react-chartjs-2', () => {
+  const { forwardRef } = require('react');
+  return { Line: forwardRef(() => null) };
+});
 
 // Mock BUYABLE_CHAINS_MAP
 jest.mock('../../../../shared/constants/network', () => ({
@@ -53,6 +56,13 @@ jest.mock('../../../hooks/useMultiPolling', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
+}));
+
+const mockUseHistoricalPrices = jest.fn();
+jest.mock('../hooks/useHistoricalPrices', () => ({
+  ...jest.requireActual('../hooks/useHistoricalPrices'),
+  useHistoricalPrices: (...args: unknown[]) =>
+    mockUseHistoricalPrices(...args),
 }));
 
 const selectedAccountAddress = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
@@ -224,11 +234,13 @@ describe('AssetPage', () => {
   beforeEach(() => {
     openTabSpy.mockClear();
 
-    nock('https://price.api.cx.metamask.io')
-      .get(/\/v1\/chains\/\d+\/historical-prices/u)
-      .query(true)
-      .reply(200, {})
-      .persist();
+    mockUseHistoricalPrices.mockReturnValue({
+      loading: false,
+      data: {
+        prices: [],
+        metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,
+      },
+    });
 
     // Mocking Date.now would not be sufficient, since it would render differently
     // depending on the machine's timezone. Mock the formatter instead.
@@ -263,7 +275,6 @@ describe('AssetPage', () => {
   afterEach(() => {
     store.clearActions();
     jest.restoreAllMocks();
-    nock.cleanAll();
   });
 
   const native = {
@@ -424,12 +435,6 @@ describe('AssetPage', () => {
   it('should render an ERC20 asset without prices', async () => {
     const address = '0x309375769E79382beFDEc5bdab51063AeBDC4936';
 
-    // Mock no price history
-    nock('https://price.api.cx.metamask.io')
-      .get(`/v1/chains/1/historical-prices/${address}`)
-      .query(true)
-      .reply(200, {});
-
     const { container, queryByTestId } = renderWithProvider(
       <AssetPage asset={{ ...token, address }} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -469,11 +474,20 @@ describe('AssetPage', () => {
     const address = '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55';
     const marketCap = 456;
 
-    // Mock price history
-    nock('https://price.api.cx.metamask.io')
-      .get(`/v1/chains/1/historical-prices/${address}`)
-      .query(true)
-      .reply(200, { prices: [[1, 1]] });
+    mockUseHistoricalPrices.mockReturnValue({
+      loading: false,
+      data: {
+        prices: [{ x: 1, y: 1 }],
+        metadata: {
+          minPricePoint: { x: 1, y: 1 },
+          maxPricePoint: { x: 1, y: 1 },
+          xMin: 1,
+          xMax: 1,
+          yMin: 1,
+          yMax: 1,
+        },
+      },
+    });
 
     const { queryByTestId, container } = renderWithProvider(
       <AssetPage asset={{ ...token, address }} optionsButton={null} />,

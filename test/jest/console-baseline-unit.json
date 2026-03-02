@@ -1532,10 +1532,8 @@
     },
     "ui/pages/asset/components/asset-page.test.tsx": {
       "React: DOM nesting violations": 2,
-      "React: State updates on unmounted components": 1,
-      "Reselect: Identity function warnings": 6,
-      "Reselect: Input stability warnings": 1,
-      "warn: useChartTimeRanges - failed, returning default": 18,
+      "Reselect: Identity function warnings": 3,
+      "warn: useChartTimeRanges - failed, returning default": 8,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/asset/hooks/useChartTimeRanges.test.ts": {
