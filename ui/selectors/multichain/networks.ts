@@ -9,20 +9,35 @@ import {
   NetworkStatus,
   type NetworkConfiguration as InternalNetworkConfiguration,
 } from '@metamask/network-controller';
-import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import {
+  BtcScope,
+  SolScope,
+  TrxScope,
+  isEvmAccountType,
+} from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import type { NetworkType } from '@metamask/controller-utils';
 import {
   type CaipChainId,
   type Hex,
   KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
-
 import { createSelector } from 'reselect';
+import {
+  MULTICHAIN_PROVIDER_CONFIGS,
+  type MultichainProviderConfig,
+} from '../../../shared/constants/multichain/networks';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  infuraProjectId,
+} from '../../../shared/constants/network';
 import {
   type ProviderConfigState,
   type SelectedNetworkClientIdState,
   getProviderConfig,
   getNetworkConfigurationsByChainId,
+  getCurrentChainId,
   MultichainNetworkConfigurationsByChainIdState,
   selectDefaultNetworkClientIdsByChainId,
   getNetworksMetadata,
@@ -30,9 +45,13 @@ import {
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getEnabledNetworks } from '../../../shared/modules/selectors/multichain';
 import { getIsMetaMaskInfuraEndpointUrl } from '../../../shared/lib/network-utils';
-import { infuraProjectId } from '../../../shared/constants/network';
 import { type RemoteFeatureFlagsState } from '../remote-feature-flags';
-import { getInternalAccounts, type AccountsState } from '../accounts';
+import {
+  getInternalAccounts,
+  getSelectedInternalAccount,
+  getMaybeSelectedInternalAccount,
+  type AccountsState,
+} from '../accounts';
 import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
@@ -503,3 +522,136 @@ export const selectFirstUnavailableEvmNetwork = createSelector(
     return null;
   },
 );
+
+// TODO: Remove after updating to @metamask/network-controller 20.0.0
+export type ProviderConfigWithImageUrlAndExplorerUrl = {
+  rpcUrl?: string;
+  type: NetworkType;
+  chainId: Hex;
+  ticker: string;
+  nickname?: string;
+  id?: string;
+} & {
+  rpcPrefs?: { blockExplorerUrl?: string; imageUrl?: string };
+};
+
+export type MultichainNetwork = {
+  nickname: string;
+  isEvmNetwork: boolean;
+  chainId: CaipChainId;
+  network: // TODO: Maybe updates ProviderConfig to add rpcPrefs.imageUrl field
+  ProviderConfigWithImageUrlAndExplorerUrl | MultichainProviderConfig;
+};
+
+function getMultichainNetworkProviders(
+  _state: MultichainNetworkConfigState,
+): MultichainProviderConfig[] {
+  // TODO: need state from the ChainController?
+  return Object.values(MULTICHAIN_PROVIDER_CONFIGS);
+}
+
+// FIXME: All the following might have side-effect, like if the current account is a bitcoin one and that
+// a popup (for ethereum related stuffs) is being shown (and uses this function), then the native
+// currency will be BTC..
+
+export function getMultichainIsEvm(
+  state: MultichainNetworkConfigState &
+    AccountsState & { metamask: { completedOnboarding?: boolean } },
+  account?: InternalAccount,
+) {
+  const isOnboarded = state.metamask.completedOnboarding;
+  // Selected account is not available during onboarding (this is used in
+  // the AppHeader)
+  const selectedAccount = account ?? getMaybeSelectedInternalAccount(state);
+
+  // There are no selected account during onboarding. we default to the original EVM behavior.
+  return (
+    !isOnboarded || !selectedAccount || isEvmAccountType(selectedAccount.type)
+  );
+}
+
+export function getMultichainNetwork(
+  state: MultichainNetworkConfigState & AccountsState,
+  account?: InternalAccount,
+): MultichainNetwork {
+  const isEvm = getMultichainIsEvm(state, account);
+
+  if (isEvm) {
+    // EVM networks
+    const evmChainId: Hex = getCurrentChainId(state);
+
+    // TODO: Update to use network configurations when @metamask/network-controller is updated to 20.0.0
+    // ProviderConfig will be deprecated to use NetworkConfigurations
+    // When a user updates a network name its only updated in the NetworkConfigurations.
+    const evmNetwork: ProviderConfigWithImageUrlAndExplorerUrl =
+      getProviderConfig(state) as ProviderConfigWithImageUrlAndExplorerUrl;
+
+    const evmChainIdKey =
+      evmChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
+
+    evmNetwork.rpcPrefs = {
+      ...evmNetwork.rpcPrefs,
+      imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[evmChainIdKey],
+    };
+
+    const networkConfigurations = getNetworkConfigurationsByChainId(state);
+    return {
+      nickname: networkConfigurations[evmChainId]?.name ?? evmNetwork.rpcUrl,
+      isEvmNetwork: true,
+      // We assume the chain ID is `string` or `number`, so we convert it to a
+      // `Number` to be compliant with EIP155 CAIP chain ID
+      chainId: `${KnownCaipNamespace.Eip155}:${Number(
+        evmChainId,
+      )}` as CaipChainId,
+      network: evmNetwork,
+    };
+  }
+
+  // Non-EVM networks:
+  // (Hardcoded for testing)
+  // HACK: For now, we rely on the account type being "sort-of" CAIP compliant, so use
+  // this as a CAIP-2 namespace and apply our filter with it
+  // For non-EVM, we know we have a selected account, since the logic `isEvm` is based
+  // on having a non-EVM account being selected!
+  const selectedAccount = account ?? getSelectedInternalAccount(state);
+  const nonEvmNetworks = getMultichainNetworkProviders(state);
+
+  const selectedChainId = state.metamask.selectedMultichainNetworkChainId;
+
+  let nonEvmNetwork: MultichainProviderConfig | undefined;
+
+  // FIRST: Try to find network by account scopes (most specific)
+  if (selectedAccount.scopes.length > 0) {
+    nonEvmNetwork = nonEvmNetworks.find((provider) => {
+      return selectedAccount.scopes.includes(provider.chainId);
+    });
+  }
+
+  // SECOND: If no network found by scopes, try selectedChainId
+  if (!nonEvmNetwork && selectedChainId) {
+    nonEvmNetwork = nonEvmNetworks.find(
+      (provider) => provider.chainId === selectedChainId,
+    );
+  }
+
+  // THIRD: Final fallback - address compatibility check
+  if (!nonEvmNetwork) {
+    nonEvmNetwork = nonEvmNetworks.find((provider) => {
+      return provider.isAddressCompatible(selectedAccount.address);
+    });
+  }
+
+  if (!nonEvmNetwork) {
+    throw new Error(
+      'Could not find non-EVM provider for the current configuration. This should never happen.',
+    );
+  }
+
+  return {
+    // TODO: Adapt this for other non-EVM networks
+    nickname: nonEvmNetwork.nickname,
+    isEvmNetwork: false,
+    chainId: nonEvmNetwork?.chainId,
+    network: nonEvmNetwork,
+  };
+}
