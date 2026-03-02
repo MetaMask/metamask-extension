@@ -57,12 +57,7 @@ import {
   CorruptionHandler,
   hasVault,
 } from './lib/state-corruption/state-corruption-recovery';
-import {
-  backedUpStateKeys,
-  PersistenceManager,
-} from './lib/stores/persistence-manager';
-import ExtensionStore from './lib/stores/extension-store';
-import { FixtureExtensionStore } from './lib/stores/fixture-extension-store';
+import { backedUpStateKeys } from './lib/stores/persistence-manager';
 import { useSplitStateStorage } from './lib/use-split-state-storage';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
@@ -120,13 +115,7 @@ const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
-const useFixtureStore =
-  inTest && getManifestFlags().testing?.forceExtensionStore !== true;
-const localStore = useFixtureStore
-  ? new FixtureExtensionStore({ initialize: true })
-  : new ExtensionStore();
-const persistenceManager = new PersistenceManager({ localStore });
-global.stateHooks._persistenceManager = persistenceManager;
+const { persistenceManager } = globalThis.stateHooks;
 
 const { safePersist, requestSafeReload, evacuate } =
   getRequestSafeReload(persistenceManager);

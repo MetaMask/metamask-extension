@@ -8,25 +8,39 @@ import { PersistenceManager } from './stores/persistence-manager';
 
 const platform = new ExtensionPlatform();
 
+/**
+ * True when running in the extension background context (service worker or
+ * background page). Used to create a single PersistenceManager with the
+ * correct store config (e.g. FixtureExtensionStore with initialize: true only in background).
+ *
+ * @returns {boolean}
+ */
+function isBackgroundContext() {
+  if (typeof window === 'undefined') {
+    return true; // MV3 service worker
+  }
+  try {
+    return (
+      typeof window.location?.href === 'string' &&
+      window.location.href.includes('background')
+    );
+  } catch {
+    return false;
+  }
+}
+
 const useFixtureStore =
   process.env.IN_TEST &&
   getManifestFlags().testing?.forceExtensionStore !== true;
-// This instance of `localStore` is used by Sentry to get the persisted state
-const sentryLocalStore = new PersistenceManager({
-  localStore: useFixtureStore
-    ? new FixtureExtensionStore()
-    : new ExtensionStore(),
-});
+const isBackground = isBackgroundContext();
+const localStore = useFixtureStore
+  ? new FixtureExtensionStore({ initialize: isBackground })
+  : new ExtensionStore();
 
-/**
- * Returns the active persistence manager: the one registered by the background
- * when ready, otherwise the local fallback (sentryLocalStore) for pre-init and UI.
- *
- * @returns {import('./stores/persistence-manager').PersistenceManager}
- */
-function getPersistenceManager() {
-  return globalThis.stateHooks._persistenceManager ?? sentryLocalStore;
-}
+// Single PersistenceManager per context: one in background, one per UI context.
+const persistenceManager = new PersistenceManager({ localStore });
+
+globalThis.stateHooks.persistenceManager = persistenceManager;
 
 /**
  * Get the persisted wallet state.
@@ -34,7 +48,7 @@ function getPersistenceManager() {
  * @returns The persisted wallet state.
  */
 globalThis.stateHooks.getPersistedState = async function () {
-  return await getPersistenceManager().get({ validateVault: false });
+  return await persistenceManager.get({ validateVault: false });
 };
 
 /**
@@ -44,7 +58,7 @@ globalThis.stateHooks.getPersistedState = async function () {
  * @returns The backup state, or null if unavailable.
  */
 globalThis.stateHooks.getBackupState = async function () {
-  return await getPersistenceManager().getBackup();
+  return await persistenceManager.getBackup();
 };
 
 const persistedStateMask = {
@@ -67,7 +81,7 @@ const persistedStateMask = {
  */
 globalThis.stateHooks.getSentryState = function () {
   const sentryState = {
-    browser: window.navigator.userAgent,
+    browser: globalThis.navigator?.userAgent ?? '',
     // we use the manifest.json version from getVersion and not
     // `process.env.METAMASK_VERSION` as they can be different (see `getVersion`
     // for more info)
@@ -75,7 +89,7 @@ globalThis.stateHooks.getSentryState = function () {
   };
   // If `getSentryAppState` is set, it implies that initialization has completed
   if (globalThis.stateHooks.getSentryAppState) {
-    getPersistenceManager().cleanUpMostRecentRetrievedState();
+    persistenceManager.cleanUpMostRecentRetrievedState();
     return {
       ...sentryState,
       state: globalThis.stateHooks.getSentryAppState(),
@@ -84,12 +98,12 @@ globalThis.stateHooks.getSentryState = function () {
     // This is truthy if Sentry has retrieved state at least once already. This
     // should always be true when getting context for an error report, but can
     // be unset when Sentry is performing the opt-in check.
-    getPersistenceManager().mostRecentRetrievedState ||
+    persistenceManager.mostRecentRetrievedState ||
     // This is only set in the background process.
     globalThis.stateHooks.getMostRecentPersistedState
   ) {
     const persistedState =
-      getPersistenceManager().mostRecentRetrievedState ||
+      persistenceManager.mostRecentRetrievedState ||
       globalThis.stateHooks.getMostRecentPersistedState();
     // This can be unset when this method is called in the background for an
     // opt-in check, but the state hasn't been loaded yet.
