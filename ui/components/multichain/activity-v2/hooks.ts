@@ -242,12 +242,10 @@ export function useGetTitle(transaction: TransactionViewModel): string {
 
   // This should be server-side
   if (transactionCategory === 'BRIDGE_OUT') {
-    if (!destNetwork) {
+    if (!destNetwork?.name || !isBridgeTx) {
       return t('bridged');
     }
-    return destNetwork.name
-      ? t('bridgedToChain', [destNetwork.name])
-      : t('bridged');
+    return t('bridgedToChain', [destNetwork.name]);
   }
 
   if (transactionCategory === 'BRIDGE_IN') {

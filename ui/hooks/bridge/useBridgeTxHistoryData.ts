@@ -10,12 +10,9 @@ import { useNavigate } from 'react-router-dom';
 import { StatusTypes } from '@metamask/bridge-controller';
 import { isBridgeComplete } from '../../../shared/lib/bridge-status/utils';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
-import {
-  selectBridgeHistoryItemForApprovalTxHash,
-  selectBridgeHistoryItemForTxHash,
-} from '../../ducks/bridge-status/selectors';
 import { TransactionViewModel } from '../../../shared/lib/multichain/types';
 import { MetaMaskReduxState } from '../../selectors';
+import { selectBridgeHistoryItemByHash } from '../../ducks/bridge-status/selectors';
 
 export const FINAL_NON_CONFIRMED_STATUSES = [
   TransactionStatus.failed,
@@ -45,16 +42,9 @@ export function useBridgeTxHistoryData({
 
   const txMeta = transactionGroup?.initialTransaction ?? transactionViewData;
 
-  const bridgeHistoryItemForInitialTx = useSelector(
-    (state: MetaMaskReduxState) =>
-      selectBridgeHistoryItemForTxHash(state, txMeta?.hash),
+  const bridgeHistoryItem = useSelector((state: MetaMaskReduxState) =>
+    selectBridgeHistoryItemByHash(state, txMeta?.hash),
   );
-  const bridgeHistoryItemForApprovalTx = useSelector(
-    (state: MetaMaskReduxState) =>
-      selectBridgeHistoryItemForApprovalTxHash(state, txMeta?.hash),
-  );
-  const bridgeHistoryItem =
-    bridgeHistoryItemForInitialTx ?? bridgeHistoryItemForApprovalTx;
 
   const isBridgeFailed = bridgeHistoryItem
     ? bridgeHistoryItem?.status.status === StatusTypes.FAILED
@@ -74,7 +64,6 @@ export function useBridgeTxHistoryData({
   }, [navigate, txMeta]);
 
   return {
-    bridgeHistoryItem,
     // By complete, this means BOTH source and dest tx are confirmed
     isBridgeComplete: bridgeHistoryItem
       ? isBridgeComplete(bridgeHistoryItem)

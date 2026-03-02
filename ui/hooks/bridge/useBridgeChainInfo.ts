@@ -14,9 +14,8 @@ import { TransactionViewModel } from '../../../shared/lib/multichain/types';
 import { type ChainInfo } from '../../pages/bridge/utils/tx-details';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP } from '../../../shared/constants/multichain/networks';
-import { selectBridgeHistoryItemForTxHash } from '../../ducks/bridge-status/selectors';
+import { selectBridgeHistoryItemByHash } from '../../ducks/bridge-status/selectors';
 import { type MetaMaskReduxState } from '../../selectors';
-import { useBridgeTxHistoryData } from './useBridgeTxHistoryData';
 
 const getSourceAndDestChainIds = ({ quote }: BridgeHistoryItem) => {
   const { srcChainId, destChainId } = quote;
@@ -39,15 +38,12 @@ export default function useBridgeChainInfo({
   destNetwork?: ChainInfo;
   isBridgeTx?: boolean;
 } {
-  const { bridgeHistoryItem: evmBridgeHistoryItem } = useBridgeTxHistoryData({
-    transaction,
-  });
-
-  const nonEvmBridgeHistoryItem = useSelector((state: MetaMaskReduxState) =>
-    selectBridgeHistoryItemForTxHash(state, nonEvmTransaction?.id),
+  const bridgeHistoryItem = useSelector((state: MetaMaskReduxState) =>
+    selectBridgeHistoryItemByHash(
+      state,
+      transaction?.hash ?? nonEvmTransaction?.id,
+    ),
   );
-
-  const bridgeHistoryItem = evmBridgeHistoryItem ?? nonEvmBridgeHistoryItem;
 
   const isEvmSwapOrBridge =
     transaction?.type &&
@@ -157,6 +153,7 @@ export default function useBridgeChainInfo({
   return {
     srcNetwork,
     destNetwork,
+    // This is only true if the bridge tx was submitted through the installed client
     isBridgeTx: Boolean(
       srcChainId && destChainId && isCrossChain(srcChainId, destChainId),
     ),

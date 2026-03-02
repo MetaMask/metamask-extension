@@ -100,7 +100,7 @@ export const selectLocalTxForTxHash = (
  * @param txHash - the tx hash
  * @returns the bridge history item for the given tx hash
  */
-export const selectBridgeHistoryItemForTxHash = createSelector(
+const selectBridgeHistoryItemForTxHash = createSelector(
   [
     selectBridgeHistory,
     selectLocalTxForTxHash,
@@ -131,7 +131,7 @@ export const selectBridgeHistoryItemForTxHash = createSelector(
  * @param txHash - the tx hash
  * @returns the bridge history item that includes the given approval tx hash
  */
-export const selectBridgeHistoryItemForApprovalTxHash = createSelector(
+const selectBridgeHistoryItemForApprovalTxHash = createSelector(
   [selectBridgeHistory, selectLocalTxForTxHash],
   (bridgeHistory, tx) => {
     const approvalTxId = tx?.id;
@@ -143,6 +143,20 @@ export const selectBridgeHistoryItemForApprovalTxHash = createSelector(
         bridgeHistoryItem.approvalTxId?.toLowerCase() ===
         approvalTxId.toLowerCase(),
     );
+  },
+);
+
+/**
+ * Returns a local bridge history item that includes the given trade, approval or non-evm tx hash
+ *
+ * @param state - the metamask state
+ * @param txHash - the tx hash
+ * @returns the bridge history item that includes the given approval tx hash
+ */
+export const selectBridgeHistoryItemByHash = createSelector(
+  [selectBridgeHistoryItemForTxHash, selectBridgeHistoryItemForApprovalTxHash],
+  (tradeHistoryItem, approvalHistoryItem) => {
+    return approvalHistoryItem ?? tradeHistoryItem;
   },
 );
 

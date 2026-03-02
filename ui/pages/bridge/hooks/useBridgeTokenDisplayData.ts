@@ -1,11 +1,11 @@
 import { TransactionType } from '@metamask/transaction-controller';
+import { useSelector } from 'react-redux';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
-import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
+import { type TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
-import {
-  useBridgeTxHistoryData,
-  type TransactionGroup,
-} from '../../../hooks/bridge/useBridgeTxHistoryData';
+import { type MetaMaskReduxState } from '../../../selectors';
+import { selectBridgeHistoryItemByHash } from '../../../ducks/bridge-status/selectors';
+import { type TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 
 /**
@@ -26,10 +26,12 @@ export function useBridgeTokenDisplayData({
   const initialTransaction =
     transactionGroup?.initialTransaction || transaction;
 
-  const { bridgeHistoryItem } = useBridgeTxHistoryData({
-    transactionGroup,
-    transaction,
-  });
+  const bridgeHistoryItem = useSelector((state: MetaMaskReduxState) =>
+    selectBridgeHistoryItemByHash(
+      state,
+      transactionGroup?.initialTransaction?.hash ?? transaction?.hash,
+    ),
+  );
 
   // Display currency can be fiat or a token
   const displayCurrencyAmount = useTokenFiatAmount(
