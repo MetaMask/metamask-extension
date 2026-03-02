@@ -276,9 +276,6 @@
   "addIPFSGateway": {
     "message": "Idagdag ang mas gusto mong IPFS gateway"
   },
-  "addImportAccount": {
-    "message": "Magdagdag ng account o wallet na hardware"
-  },
   "addMemo": {
     "message": "Magdagdag ng memo"
   },
