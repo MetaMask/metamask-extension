@@ -11,6 +11,8 @@ import TabBar from '../../components/app/tab-bar';
 
 import {
   ADVANCED_ROUTE,
+  ASSETS_ROUTE,
+  CURRENCY_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
   ABOUT_US_ROUTE,
@@ -65,6 +67,8 @@ import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-p
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import { toRelativeRoutePath } from '../routes/utils';
+import Assets from '../settings-v2/assets/assets';
+import CurrencySubPage from '../settings-v2/assets/currency-sub-page';
 import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
@@ -452,6 +456,12 @@ class SettingsPage extends PureComponent {
         icon: <Icon name={IconName.Info} />,
         key: ABOUT_US_ROUTE,
       },
+      // TODO: move this to settings-v2. Uncomment to test Assets within Settings V1
+      // {
+      //   content: t('assets'),
+      //   icon: <Icon name={IconName.Dollar} />,
+      //   key: ASSETS_ROUTE,
+      // },
     ];
 
     if (useExternalServices) {
@@ -616,6 +626,15 @@ class SettingsPage extends PureComponent {
             SETTINGS_ROUTE,
           )}
           element={<ChangePassword />}
+        />
+        {/* TODO: move this to settings-v2 */}
+        <Route
+          path={toRelativeRoutePath(ASSETS_ROUTE, SETTINGS_ROUTE)}
+          element={<Assets />}
+        />
+        <Route
+          path={toRelativeRoutePath(CURRENCY_ROUTE, SETTINGS_ROUTE)}
+          element={<CurrencySubPage />}
         />
         <Route
           path="*"

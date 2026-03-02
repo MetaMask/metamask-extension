@@ -33,7 +33,7 @@ const currencyOptions = sortedCurrencies.map(({ code, name }) => ({
   label: `${code.toUpperCase()} - ${name}`,
 }));
 
-export const CurrencySubPage = () => {
+const CurrencySubPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { trackEvent } = useContext(MetaMetricsContext);
