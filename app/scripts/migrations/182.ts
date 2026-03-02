@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { v4 as uuidV4 } from 'uuid';
 import { hasProperty, isObject } from '@metamask/utils';
-import { FEATURED_RPCS, CHAIN_IDS } from '../../../shared/constants/network';
+import { FEATURED_RPCS, CHAIN_IDS } from '~shared/constants/network';
 
 type VersionedData = {
   meta: { version: number };

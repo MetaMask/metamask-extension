@@ -3,7 +3,7 @@ import { hasProperty, isObject } from '@metamask/utils';
 import {
   CHAIN_IDS,
   getFailoverUrlsForInfuraNetwork,
-} from '../../../shared/constants/network';
+} from '~shared/constants/network';
 
 type VersionedData = {
   meta: { version: number };

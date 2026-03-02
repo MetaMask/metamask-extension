@@ -8,7 +8,7 @@ import {
   NETWORK_TYPES,
   TEST_NETWORK_TICKER_MAP,
   LINEA_SEPOLIA_DISPLAY_NAME,
-} from '../../../shared/constants/network';
+} from '~shared/constants/network';
 
 type VersionedData = {
   meta: { version: number };

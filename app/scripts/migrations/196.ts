@@ -1,6 +1,6 @@
 import { getErrorMessage, hasProperty } from '@metamask/utils';
 
-import { captureException } from '../../../shared/lib/sentry';
+import { captureException } from '~shared/lib/sentry';
 import { checkNetworkEnablementState } from './196_utils';
 import type { Migrate } from './types';
 

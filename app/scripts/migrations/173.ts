@@ -1,7 +1,7 @@
 import { hasProperty, isObject } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { cloneDeep } from 'lodash';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '~shared/constants/network';
 
 type VersionedData = {
   meta: { version: number };

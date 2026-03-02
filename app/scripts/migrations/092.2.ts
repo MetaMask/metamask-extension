@@ -1,6 +1,6 @@
 import { hasProperty } from '@metamask/utils';
 import { cloneDeep, isObject, pick } from 'lodash';
-import { captureException } from '../../../shared/lib/sentry';
+import { captureException } from '~shared/lib/sentry';
 
 type MetaMaskState = Record<string, unknown>;
 type VersionedState = {

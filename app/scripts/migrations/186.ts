@@ -9,7 +9,7 @@ import {
 import { RpcEndpointType } from '@metamask/network-controller';
 import { cloneDeep } from 'lodash';
 import { v4 } from 'uuid';
-import { captureException } from '../../../shared/lib/sentry';
+import { captureException } from '~shared/lib/sentry';
 
 export type VersionedData = {
   meta: { version: number };

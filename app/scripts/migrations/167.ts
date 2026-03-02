@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
-import { getManifestFlags } from '../../../shared/lib/manifestFlags';
+import { getManifestFlags } from '~shared/lib/manifestFlags';
 
 type VersionedData = {
   meta: { version: number };

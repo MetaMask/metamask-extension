@@ -10,7 +10,7 @@ import {
   MAINNET_DISPLAY_NAME,
   NETWORK_TO_NAME_MAP,
   SEPOLIA_DISPLAY_NAME,
-} from '../../../shared/constants/network';
+} from '~shared/constants/network';
 
 type VersionedData = {
   meta: { version: number };

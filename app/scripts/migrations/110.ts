@@ -8,7 +8,7 @@ import {
   CHAIN_ID_TO_RPC_URL_MAP,
   NETWORK_TYPES,
   TEST_NETWORK_TICKER_MAP,
-} from '../../../shared/constants/network';
+} from '~shared/constants/network';
 
 type VersionedData = {
   meta: { version: number };

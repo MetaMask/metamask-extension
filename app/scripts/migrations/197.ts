@@ -8,8 +8,8 @@ import {
 } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import { v4 } from 'uuid';
-import { captureException } from '../../../shared/lib/sentry';
-import { infuraProjectId } from '../../../shared/constants/network';
+import { captureException } from '~shared/lib/sentry';
+import { infuraProjectId } from '~shared/constants/network';
 
 export type VersionedData = {
   meta: { version: number };

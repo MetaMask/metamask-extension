@@ -6,7 +6,7 @@ import {
   CHAIN_IDS,
   infuraChainIdsTestNets,
   infuraProjectId,
-} from '../../../shared/constants/network';
+} from '~shared/constants/network';
 
 export const version = 170.2;
 const BSC_CHAIN_ID = '0x38';

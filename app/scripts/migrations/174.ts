@@ -2,7 +2,7 @@ import { isSolanaChainId } from '@metamask/bridge-controller';
 import { isObject } from '@metamask/utils';
 import { type BridgeStatusControllerState } from '@metamask/bridge-status-controller';
 import { cloneDeep } from 'lodash';
-import { captureException } from '../../../shared/lib/sentry';
+import { captureException } from '~shared/lib/sentry';
 
 export const version = 174;
 

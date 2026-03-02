@@ -4,7 +4,7 @@ import { sha256 } from '@noble/hashes/sha2';
 import { hexToBytes } from '@metamask/utils';
 import { v4 as uuid } from 'uuid';
 import { cloneDeep } from 'lodash';
-import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import { ETH_EOA_METHODS } from '~shared/constants/eth-methods';
 
 type VersionedData = {
   meta: { version: number };
