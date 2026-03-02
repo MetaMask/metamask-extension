@@ -195,6 +195,7 @@
     "async-done@^1.2.0": "patch:async-done@npm%3A1.3.2#./.yarn/patches/async-done-npm-1.3.2-1f0a4a8997.patch",
     "async-done@^1.2.2": "patch:async-done@npm%3A1.3.2#./.yarn/patches/async-done-npm-1.3.2-1f0a4a8997.patch",
     "fast-json-patch@^3.1.1": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch",
+    "serialize-javascript": "7.0.3",
     "@types/readable-stream-2@^2.3.15": "npm:@types/readable-stream@^2.3.15",
     "@types/readable-stream-3@^4.0.4": "npm:@types/readable-stream@^4.0.4",
     "readable-stream-2@^2.3.3": "npm:readable-stream@^2.3.3",
