@@ -103,6 +103,10 @@ export const BridgeCTAButton = ({
       return { key: 'youDeclinedTheTransaction' };
     }
 
+    if (isMarketClosed) {
+      return { key: 'bridgeMarketClosedAction' };
+    }
+
     if (!fromAmount) {
       if (!toToken) {
         return {
@@ -116,10 +120,6 @@ export const BridgeCTAButton = ({
           ? 'bridgeSelectDestinationAccount'
           : 'bridgeEnterAmount',
       };
-    }
-
-    if (isMarketClosed) {
-      return { key: 'bridgeMarketClosedAction' };
     }
 
     if (needsDestinationAddress) {
