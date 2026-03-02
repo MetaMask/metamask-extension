@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { act, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import mockStore from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
@@ -8,6 +8,7 @@ import { MetamaskNotificationsProvider } from '../../../../contexts/metamask-not
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import * as modalPropsHooks from '../../../../hooks/useModalProps';
+import * as notificationsHooks from '../../../../hooks/metamask-notifications/useNotifications';
 import TurnOnMetamaskNotifications from './turn-on-metamask-notifications';
 
 const mockDispatch = jest.fn();
@@ -83,6 +84,86 @@ describe('TurnOnMetamaskNotifications', () => {
         hideModalSpy.mock.invocationCallOrder[0],
       );
     } finally {
+      useModalPropsSpy.mockRestore();
+    }
+  });
+
+  it('does not track dismissal if activation starts before closing', async () => {
+    const hideModalSpy = jest.fn();
+    const useModalPropsSpy = jest
+      .spyOn(modalPropsHooks, 'useModalProps')
+      .mockReturnValue({ props: {}, hideModal: hideModalSpy });
+
+    const enableNotificationsSpy = jest.fn(
+      () => new Promise<void>(() => undefined),
+    );
+    const useEnableNotificationsSpy = jest
+      .spyOn(notificationsHooks, 'useEnableNotifications')
+      .mockReturnValue({
+        enableNotifications: enableNotificationsSpy,
+        error: null,
+      });
+
+    const trackEventSpy = jest.fn().mockResolvedValue(undefined);
+
+    try {
+      const { findByRole } = renderWithProvider(
+        <MetaMetricsContext.Provider
+          value={{
+            trackEvent: trackEventSpy,
+            bufferedTrace: jest.fn(),
+            bufferedEndTrace: jest.fn(),
+            onboardingParentContext: { current: null },
+          }}
+        >
+          <MetamaskNotificationsProvider>
+            <TurnOnMetamaskNotifications />
+          </MetamaskNotificationsProvider>
+        </MetaMetricsContext.Provider>,
+        configureMockStore()({
+          ...mockStore,
+        }),
+      );
+
+      const turnOnButton = await findByRole('button', {
+        name: messages.turnOnMetamaskNotificationsButton.message,
+      });
+      const closeButton = await findByRole('button', {
+        name: messages.close.message,
+      });
+
+      await act(async () => {
+        fireEvent.click(turnOnButton);
+        fireEvent.click(closeButton);
+      });
+
+      expect(enableNotificationsSpy).toHaveBeenCalled();
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.NotificationsActivated,
+          properties: expect.objectContaining({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            action_type: 'activated',
+          }),
+        }),
+      );
+
+      expect(trackEventSpy).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.NotificationsActivated,
+          properties: expect.objectContaining({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            action_type: 'dismissed',
+          }),
+        }),
+      );
+
+      expect(hideModalSpy).toHaveBeenCalled();
+    } finally {
+      useEnableNotificationsSpy.mockRestore();
       useModalPropsSpy.mockRestore();
     }
   });

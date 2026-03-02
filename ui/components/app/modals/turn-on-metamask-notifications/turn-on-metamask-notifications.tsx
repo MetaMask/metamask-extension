@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { I18nContext } from '../../../../contexts/i18n';
@@ -56,10 +56,12 @@ export default function TurnOnMetamaskNotifications() {
   const [isLoading, setIsLoading] = useState<boolean>(
     isUpdatingMetamaskNotifications,
   );
+  const isLoadingRef = useRef(isUpdatingMetamaskNotifications);
 
   const { enableNotifications, error } = useEnableNotifications();
 
   const handleTurnOnNotifications = async () => {
+    isLoadingRef.current = true;
     setIsLoading(true);
     trackEvent({
       category: MetaMetricsEventCategory.NotificationsActivationFlow,
@@ -76,8 +78,12 @@ export default function TurnOnMetamaskNotifications() {
     await enableNotifications();
   };
 
+  useEffect(() => {
+    isLoadingRef.current = isLoading;
+  }, [isLoading]);
+
   const handleHideModal = () => {
-    if (!isLoading) {
+    if (!isLoadingRef.current) {
       trackEvent({
         category: MetaMetricsEventCategory.NotificationsActivationFlow,
         event: MetaMetricsEventName.NotificationsActivated,
