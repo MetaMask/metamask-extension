@@ -34,7 +34,7 @@ CLONE_DIR="temp-benchmark-stats"
 
 # Sanitize branch name for use as a directory (e.g. release/12.x → release-12.x)
 RAW_BRANCH="${BRANCH_NAME:-main}"
-SAFE_BRANCH=$(echo "${RAW_BRANCH}" | sed 's|/|-|g')
+SAFE_BRANCH="${RAW_BRANCH//\//-}"
 
 # Assemble the commit data based on mode
 assemble_dapp_page_load_data() {
