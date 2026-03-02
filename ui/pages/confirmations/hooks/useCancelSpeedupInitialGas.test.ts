@@ -17,14 +17,15 @@ jest.mock('react-redux', () => ({
 }));
 
 const mockUpdatePreviousGasParams = jest.fn(
-  (_txId: string, _previousGasParams: Record<string, unknown>) =>
-    () =>
-      Promise.resolve(),
+  (_txId: string, _previousGasParams: Record<string, unknown>) => () =>
+    Promise.resolve(),
 );
 
 jest.mock('../../../store/actions', () => ({
-  updatePreviousGasParams: (txId: string, previousGasParams: Record<string, unknown>) =>
-    mockUpdatePreviousGasParams(txId, previousGasParams),
+  updatePreviousGasParams: (
+    txId: string,
+    previousGasParams: Record<string, unknown>,
+  ) => mockUpdatePreviousGasParams(txId, previousGasParams),
 }));
 
 jest.mock('../../../helpers/utils/gas', () => ({

@@ -105,10 +105,12 @@ describe('Gas utils', () => {
         maxPriorityFeePerGas: '0x5',
         gasLimit: '0x5208',
       };
-      expect(getGasValuesForReplacement(txParams, undefined, 1.1)).toEqual(
+      expect(
+        getGasValuesForReplacement(txParams, undefined, 1.1),
+      ).toStrictEqual(txParams);
+      expect(getGasValuesForReplacement(txParams, null, 1.1)).toStrictEqual(
         txParams,
       );
-      expect(getGasValuesForReplacement(txParams, null, 1.1)).toEqual(txParams);
     });
 
     it('returns gas at least previousGas × rate when txParams has lower values', () => {
