@@ -80,15 +80,13 @@ export const PerpsRouteWrapper: React.FC<PerpsRouteWrapperProps> = ({
         }
 
         console.error('[PerpsRouteWrapper] Init failed:', err);
-        setError(
-          err instanceof Error
-            ? err
-            : new Error(
-                typeof err === 'object' && err !== null
-                  ? JSON.stringify(err)
-                  : String(err),
-              ),
-        );
+        if (err instanceof Error) {
+          setError(err);
+        } else if (typeof err === 'object' && err !== null) {
+          setError(new Error(JSON.stringify(err)));
+        } else {
+          setError(new Error(String(err)));
+        }
       });
 
     // Cleanup prewarm on unmount

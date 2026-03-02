@@ -16,7 +16,6 @@ import {
   PerpsController,
   getDefaultPerpsControllerState,
   createPerpsInfrastructure,
-  type PerpsControllerState,
   type PerpsControllerMessenger,
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/perps';
@@ -226,7 +225,7 @@ function startControllerInitialization(
     if (isStale) {
       await controller.disconnect();
 
-      if (initPromise) {
+      if (initPromise !== null) {
         return initPromise;
       }
 
@@ -309,7 +308,7 @@ export async function getPerpsStreamingController(
   }
 
   if (controllerInstance && currentAddress === selectedAddress) {
-    return Promise.resolve(getOrCreateFacade(controllerInstance));
+    return getOrCreateFacade(controllerInstance);
   }
 
   if (initPromise !== null && initializingAddress === selectedAddress) {
@@ -367,4 +366,4 @@ export function getPerpsControllerFacade(): PerpsController | null {
   return controllerInstance ? getOrCreateFacade(controllerInstance) : null;
 }
 
-export type { PerpsControllerState };
+export type { PerpsControllerState } from '@metamask/perps-controller';

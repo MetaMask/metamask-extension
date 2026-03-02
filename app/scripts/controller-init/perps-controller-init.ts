@@ -53,7 +53,7 @@ export const PerpsControllerInit: ControllerInitFunction<
     if (controller.state.initializationState === 'initialized') {
       return;
     }
-    if (!initPromise) {
+    if (initPromise === null) {
       initPromise = controller.init().catch((error) => {
         initPromise = null;
         throw error;
