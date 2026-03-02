@@ -63,7 +63,9 @@ describe('TurnOnMetamaskNotifications', () => {
         }),
       );
 
-      fireEvent.click(await findByRole('button', { name: 'Close' }));
+      fireEvent.click(
+        await findByRole('button', { name: messages.close.message }),
+      );
 
       expect(trackEventSpy).toHaveBeenCalledWith(
         expect.objectContaining({
