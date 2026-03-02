@@ -13,6 +13,9 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
+import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
+import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
 import type {
   Preferences,
   PreferencesControllerState,
@@ -76,13 +79,30 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withAppStateController(data: Partial<AppStateControllerState>): this {
+    merge(this.fixture.data.AppStateController, data);
+    return this;
+  }
+
   withCurrencyController(data: Partial<CurrencyRateState>): this {
     merge(this.fixture.data.CurrencyController, data);
     return this;
   }
 
+  withMetaMetricsController(
+    data: Partial<MetaMetricsControllerState>,
+  ): this {
+    merge(this.fixture.data.MetaMetricsController, data);
+    return this;
+  }
+
   withNetworkController(data: Partial<NetworkState>): this {
     merge(this.fixture.data.NetworkController, data);
+    return this;
+  }
+
+  withOnboardingController(data: Partial<OnboardingControllerState>): this {
+    merge(this.fixture.data.OnboardingController, data);
     return this;
   }
 
