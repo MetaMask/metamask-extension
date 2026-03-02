@@ -114,6 +114,7 @@ const TransactionDetailsWrapper = ({
   // EVMtransaction is a bridge or swap
   useEffect(() => {
     if (showBridgeTxDetails) {
+      onClose();
       showBridgeTxDetails();
     }
   }, [showBridgeTxDetails]);
