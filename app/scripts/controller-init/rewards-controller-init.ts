@@ -41,9 +41,8 @@ export const RewardsControllerInit: ControllerInitFunction<
 > = (request) => {
   const { controllerMessenger, persistedState, initMessenger } = request;
 
-  const rewardsControllerState = {
-    ...(persistedState.RewardsController ?? defaultRewardsControllerState),
-  };
+  const rewardsControllerState =
+    persistedState.RewardsController ?? defaultRewardsControllerState;
 
   const controller = new RewardsController({
     messenger: controllerMessenger,
