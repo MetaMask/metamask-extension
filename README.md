@@ -186,18 +186,53 @@ Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.
 For example, to run the `account-details` tests using Chrome, with debug logging and with the browser set to remain open upon failure, you would use:
 `yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome --leave-running`
 
-#### Running e2e tests against specific feature flag
+#### Running E2E tests with feature flags
 
-While developing new features, we often use feature flags. As we prepare to make these features generally available (GA), we remove the feature flags. Existing feature flags are listed in the `.metamaskrc.dist` file. To execute e2e tests with a particular feature flag enabled, it's necessary to first generate a test build with that feature flag activated. There are two ways to achieve this:
+Feature flags used in tests fall into two categories: remote flags (runtime values fetched from client-config) and build-time flags (compile-time values set during the build). Use the workflow that matches the flag type.
 
-- To enable a feature flag in your local configuration, you should first ensure you have a `.metamaskrc` file copied from `.metamaskrc.dist`. Then, within your local `.metamaskrc` file, you can set the desired feature flag to true. Following this, a test build with the feature flag enabled can be created by executing `yarn build:test`.
+##### Remote feature flags (runtime)
 
-- Alternatively, for enabling a feature flag directly during the test build creation, you can pass the parameter as true via the command line. For instance, activating the MULTICHAIN feature flag can be done by running `MULTICHAIN=1 yarn build:test` or `MULTICHAIN=1 yarn start:test` . This method allows for quick adjustments to feature flags without altering the `.metamaskrc` file.
+Remote flags are provided at runtime and should usually follow production defaults from the [Feature Flag Registry](./test/e2e/feature-flags/feature-flag-registry.ts). You do not need a custom build just to change a remote flag value for a test.
 
-Once you've created a test build with the desired feature flag enabled, proceed to run your tests as usual. Your tests will now run against the version of the extension with the specific feature flag activated. For example:
+Use one of these test-time overrides:
+
+- **Manifest override in `withFixtures`:**
+  ```javascript
+  await withFixtures(
+    {
+      manifestFlags: {
+        remoteFeatureFlags: { myRemoteFlag: true },
+      },
+    },
+    async () => {
+      /* ... */
+    },
+  );
+  ```
+- **Fixture state override via `FixtureBuilder`:**
+  ```javascript
+  new FixtureBuilder().withRemoteFeatureFlags({ myRemoteFlag: true }).build();
+  ```
+
+Then run tests as usual, for example:
 `yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome`
 
-This approach ensures that your e2e tests accurately reflect the user experience for the upcoming GA features.
+##### Build-time feature flags (compile-time)
+
+Build-time flags are set before running tests and require creating a test build with the flag enabled.
+
+- **Via local `.metamaskrc`:**
+  1. Copy `.metamaskrc.dist` to `.metamaskrc` if needed.
+  2. Set your build-time flag in `.metamaskrc`.
+  3. Create a test build with `yarn build:test`.
+
+- **Via command line (single build):**
+  Enable the flag when starting the build command, for example:
+  `MULTICHAIN=1 yarn build:test`
+  or
+  `MULTICHAIN=1 yarn start:test`
+
+After building, run your E2E tests normally. This ensures tests run against the intended build configuration.
 
 #### Feature Flag Registry
 
@@ -239,27 +274,7 @@ myNewFlag: {
 
 ##### Overriding flags in E2E tests
 
-To test behavior with a flag value different from the production default, use one of these approaches:
-
-- **Runtime override via manifest flags:**
-
-  ```javascript
-  await withFixtures(
-    {
-      manifestFlags: {
-        remoteFeatureFlags: { myNewFlag: true },
-      },
-    },
-    async ({ driver }) => {
-      /* ... */
-    },
-  );
-  ```
-
-- **Fixture state override via FixtureBuilder:**
-  ```javascript
-  new FixtureBuilder().withRemoteFeatureFlags({ myNewFlag: true }).build();
-  ```
+To test behavior with a flag value different from the production default, see the override examples in [Remote feature flags (runtime)](#remote-feature-flags-runtime) above.
 
 ##### Helper functions
 
