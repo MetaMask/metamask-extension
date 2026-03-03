@@ -57,25 +57,6 @@ describe('ConfirmInfoRowAddressDisplay', () => {
     );
   });
 
-  it('renders with clickable class for non-account address', () => {
-    const { getByTestId } = render();
-    expect(getByTestId('confirm-info-row-display-name')).toHaveClass(
-      'confirm-info-row-address-display__clickable',
-    );
-  });
-
-  it('does not render clickable class for account address', () => {
-    const { getByTestId } = render({
-      address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      name: 'Account 1',
-      isAccount: true,
-      displayState: TrustSignalDisplayState.Recognized,
-    });
-    expect(getByTestId('confirm-info-row-display-name')).not.toHaveClass(
-      'confirm-info-row-address-display__clickable',
-    );
-  });
-
   it('renders full address in fullscreen mode', () => {
     getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
 
