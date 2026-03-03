@@ -70,7 +70,9 @@ export const AggregatedPercentageOverviewCrossChains = ({
     const totalPerChain1dAgoERC20 = tokensWithBalances.reduce(
       (total1dAgo: number, item: { address: string }, idx: number) => {
         const found =
-          crossChainMarketData?.[chainId]?.[toChecksumAddress(item.address)];
+          crossChainMarketData?.[chainId as Hex]?.[
+            toChecksumAddress(item.address) as Hex
+          ];
 
         const tokenFiat1dAgo = getCalculatedTokenAmount1dAgo(
           tokenFiatBalances[idx],
@@ -101,7 +103,7 @@ export const AggregatedPercentageOverviewCrossChains = ({
           item.tokensWithBalances,
         );
         const nativePricePercentChange1d =
-          crossChainMarketData?.[item.chainId]?.[
+          crossChainMarketData?.[item.chainId as Hex]?.[
             getNativeTokenAddress(item.chainId as Hex)
           ]?.pricePercentChange1d;
 

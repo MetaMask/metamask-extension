@@ -1,7 +1,5 @@
 import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import BN from 'bn.js';
-import { addHexPrefix } from 'ethereumjs-util';
 import { EtherDenomination } from '../constants/common';
 import { Numeric, NumericValue } from './Numeric';
 
@@ -78,16 +76,6 @@ export function getWeiHexFromDecimalValue({
     numeric = numeric.applyConversionRate(conversionRate, invertConversionRate);
   }
   return numeric.toBase(16).toDenomination(EtherDenomination.WEI).toString();
-}
-
-/**
- * Converts a BN object to a hex string with a '0x' prefix
- *
- * @param inputBn - The BN to convert to a hex string
- * @returns A '0x' prefixed hex string
- */
-export function bnToHex(inputBn: BN) {
-  return addHexPrefix(inputBn.toString(16));
 }
 
 export function getEthConversionFromWeiHex({
@@ -174,23 +162,23 @@ export function sumDecimals(first: string, ...args: string[]) {
   return total;
 }
 
-export function hexWEIToDecGWEI(value: number | string | BigNumber | BN) {
+export function hexWEIToDecGWEI(value: number | string | BigNumber) {
   return new Numeric(value, 16, EtherDenomination.WEI)
     .toBase(10)
     .toDenomination(EtherDenomination.GWEI)
     .toString();
 }
 
-export function decimalToHex(decimal: number | string | BigNumber | BN) {
+export function decimalToHex(decimal: number | string | BigNumber) {
   return new Numeric(decimal, 10).toBase(16).toString();
 }
 
 export function decimalToPrefixedHex(
-  decimal: number | string | BigNumber | BN,
+  decimal: number | string | BigNumber,
 ): Hex {
   return new Numeric(decimal, 10).toPrefixedHexString() as Hex;
 }
 
-export function hexToDecimal(hexValue: number | string | BigNumber | BN) {
+export function hexToDecimal(hexValue: number | string | BigNumber) {
   return new Numeric(hexValue, 16).toBase(10).toString();
 }

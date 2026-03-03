@@ -2,6 +2,22 @@ import { strict as assert } from 'assert';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Signature types for TestDapp.triggerSignature and openTestDappAndTriggerSignature.
+ */
+export enum SignatureType {
+  PersonalSign,
+  Permit,
+  NFTPermit,
+  SignTypedDataV3,
+  SignTypedDataV4,
+  SignTypedData,
+  SIWE,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  SIWE_BadDomain,
+}
+
 class TestDapp {
   private readonly driver: Driver;
 
@@ -272,7 +288,7 @@ class TestDapp {
   private readonly transferTokensWithoutGasButton = '#transferTokensWithoutGas';
 
   private readonly userRejectedRequestMessage = {
-    tag: 'span',
+    tag: '*',
     text: 'Error: User rejected the request.',
   };
 
@@ -624,6 +640,18 @@ class TestDapp {
       css: this.signSiweVerifyResult,
       text: result.toLowerCase(),
     });
+  }
+
+  /**
+   * Asserts SIWE success message on test dapp.
+   * Waits for dialog to close, switches to TestDApp window, then verifies the signed message.
+   *
+   * @param message - Expected signed message hex.
+   */
+  async assertVerifiedSiweMessage(message: string): Promise<void> {
+    await this.driver.waitUntilXWindowHandles(2);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+    await this.checkSuccessSiwe(message);
   }
 
   /**
@@ -1084,6 +1112,63 @@ class TestDapp {
       : url;
     console.log(`Open test dapp page: ${dappUrl}`);
     await this.driver.openNewPage(dappUrl);
+  }
+
+  /**
+   * Opens test dapp, clicks deploy NFTs, and switches to confirmation dialog.
+   */
+  async openTestDappAndTriggerDeploy(): Promise<void> {
+    await this.openTestDappPage({ url: DAPP_URL });
+    await this.clickERC721DeployButton();
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  }
+
+  /**
+   * Opens test dapp, triggers a signature by type, and switches to confirmation dialog.
+   *
+   * @param type - The signature type (SignatureType enum).
+   */
+  async openTestDappAndTriggerSignature(type: SignatureType): Promise<void> {
+    await this.openTestDappPage({ url: DAPP_URL });
+    await this.checkPageIsLoaded();
+    await this.triggerSignature(type);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  }
+
+  /**
+   * Triggers the given signature type on the test dapp.
+   *
+   * @param type - The signature type (SignatureType enum).
+   */
+  async triggerSignature(type: SignatureType): Promise<void> {
+    switch (type) {
+      case SignatureType.PersonalSign:
+        await this.clickPersonalSign();
+        break;
+      case SignatureType.Permit:
+        await this.clickPermit();
+        break;
+      case SignatureType.SignTypedData:
+        await this.clickSignTypedData();
+        break;
+      case SignatureType.SignTypedDataV3:
+        await this.clickSignTypedDatav3();
+        break;
+      case SignatureType.SignTypedDataV4:
+        await this.clickSignTypedDatav4();
+        break;
+      case SignatureType.SIWE:
+        await this.clickSiwe();
+        break;
+      case SignatureType.SIWE_BadDomain:
+        await this.clickSwieBadDomain();
+        break;
+      case SignatureType.NFTPermit:
+        await this.clickERC721Permit();
+        break;
+      default:
+        throw new Error('Invalid signature type');
+    }
   }
 
   async pasteIntoEip747ContractAddressInput() {
