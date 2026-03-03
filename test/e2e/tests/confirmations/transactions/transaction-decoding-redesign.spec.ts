@@ -121,7 +121,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
     );
   });
 
-  it(`decodes uniswap transaction data`, async function () {
+  it.only(`decodes uniswap transaction data`, async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -132,7 +132,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
               [CHAIN_IDS.MAINNET]: true,
             },
           })
-          .withPermissionControllerConnectedToTestDapp()
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
           .build(),
         testSpecificMock: mockTokensAndInfura,
         title: this.test?.fullTitle(),

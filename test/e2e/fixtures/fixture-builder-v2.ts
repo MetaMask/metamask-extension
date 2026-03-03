@@ -235,10 +235,12 @@ class FixtureBuilderV2 {
     account = '',
     useLocalhostHostname = false,
     numberOfDapps = 1,
+    chainIds = [1337],
   }: {
     account?: string;
     useLocalhostHostname?: boolean;
     numberOfDapps?: number;
+    chainIds?: number[];
   } = {}): this {
     const selectedAccount = account
       ? account.toLowerCase()
@@ -250,17 +252,19 @@ class FixtureBuilderV2 {
       DAPP_TWO_URL,
     ].slice(0, numberOfDapps);
 
-    // Only localhost (chainId 1337) is connected
-    const optionalScopes: Record<string, { accounts: string[] }> = {
-      'eip155:1337': {
-        accounts: [`eip155:1337:${selectedAccount}`],
-      },
-      'wallet:eip155': {
-        accounts: [`wallet:eip155:${selectedAccount}`],
-      },
-      wallet: {
-        accounts: [],
-      },
+    // Build optionalScopes from the provided chainIds (default: localhost 1337)
+    const optionalScopes: Record<string, { accounts: string[] }> = {};
+    for (const chainId of chainIds) {
+      const scopeKey = `eip155:${chainId}`;
+      optionalScopes[scopeKey] = {
+        accounts: [`${scopeKey}:${selectedAccount}`],
+      };
+    }
+    optionalScopes['wallet:eip155'] = {
+      accounts: [`wallet:eip155:${selectedAccount}`],
+    };
+    optionalScopes.wallet = {
+      accounts: [],
     };
 
     const subjects: PermissionControllerState<PermissionConstraint>['subjects'] =
