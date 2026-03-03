@@ -179,7 +179,16 @@ export function parseArgv(
   const setActive = (f: string) => omit.includes(f) || active.add(f);
   [defaultFeaturesForBuildType, add].forEach((feat) => feat.forEach(setActive));
 
-  const ignore = new Set(['$0', 'conf', 'progress', 'stats', 'watch']);
+  const ignore = new Set([
+    '$0',
+    'conf',
+    'progress',
+    'stats',
+    'watch',
+    'threadLoader',
+    'threadLoaderWorkers',
+    'threadLoaderJobs',
+  ]);
   const cacheKey = Object.entries(args)
     .filter(([key]) => key.length > 1 && !ignore.has(key) && !key.includes('-'))
     .sort(([x], [y]) => x.localeCompare(y));
