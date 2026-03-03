@@ -19,6 +19,8 @@ ignores:
   - '@mui/material'
   # future use for Snaps date pickers; v7 supports React 17 + MUI v5
   - '@mui/x-date-pickers'
+  # injected via build system
+  - '@metamask/kernel-shims'
 
   #
   # dev deps

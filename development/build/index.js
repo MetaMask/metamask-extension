@@ -13,6 +13,7 @@ const lavapack = require('@lavamoat/lavapack');
 const difference = require('lodash/difference');
 const intersection = require('lodash/intersection');
 
+const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 const { getVersion } = require('../lib/get-version');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { BUILD_TARGETS, TASKS } = require('./constants');
@@ -84,6 +85,7 @@ async function defineAndRunBuildTasks() {
     platform,
     policyOnly,
     shouldIncludeLockdown,
+    shouldIncludeOcapKernel,
     shouldIncludeSnow,
     shouldLintFenceFiles,
     skipStats,
@@ -203,6 +205,7 @@ async function defineAndRunBuildTasks() {
     buildType,
     livereload,
     shouldIncludeLockdown,
+    shouldIncludeOcapKernel,
     shouldIncludeSnow,
   });
 
@@ -212,6 +215,7 @@ async function defineAndRunBuildTasks() {
     browserVersionMap,
     buildType,
     entryTask,
+    shouldIncludeOcapKernel,
     shouldIncludeSnow,
   });
 
@@ -226,6 +230,7 @@ async function defineAndRunBuildTasks() {
     livereload,
     policyOnly,
     shouldIncludeSnow,
+    shouldIncludeOcapKernel,
     shouldLintFenceFiles,
     version,
   });
@@ -435,6 +440,16 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     await getConfig(buildType, environment);
   }
 
+  const shouldIncludeOcapKernel = getActiveFeatures().includes('ocap-kernel');
+  if (shouldIncludeOcapKernel) {
+    if (!isManifestV3) {
+      throw new Error('Ocap Kernel is only supported in manifest v3');
+    }
+    if (!lockdown) {
+      throw new Error('Ocap Kernel is not supported without lockdown');
+    }
+  }
+
   return {
     applyLavaMoat,
     buildType,
@@ -443,6 +458,7 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     platform,
     policyOnly,
     shouldIncludeLockdown: lockdown,
+    shouldIncludeOcapKernel,
     shouldIncludeSnow: snow,
     shouldLintFenceFiles,
     skipStats,
