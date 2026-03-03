@@ -12,7 +12,7 @@ import {
 import { Button, ButtonSize } from '@metamask/design-system-react';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import CancelSpeedupPopover from '../cancel-speedup-popover';
+import { CancelSpeedup } from '../../../pages/confirmations/cancel-speedup/cancel-speedup';
 import TransactionListItemDetails from '../transaction-list-item-details';
 import { TransactionDetailsModal } from '../../../pages/confirmations/components/activity';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
@@ -434,10 +434,7 @@ const TransactionListItem = (props) => {
       />
       {supportsEIP1559 && (
         <>
-          <CancelSpeedupPopover
-            transaction={transaction}
-            editGasMode={editGasMode}
-          />
+          <CancelSpeedup transaction={transaction} editGasMode={editGasMode} />
           <EditGasFeePopover
             transaction={transaction}
             editGasMode={editGasMode}
