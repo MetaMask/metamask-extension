@@ -106,6 +106,10 @@ export class ManifestPlugin<Z extends boolean> {
 
   private manifestSources: Map<Browser, sources.RawSource> = new Map();
 
+  private manifestFiles: string[] = [];
+
+  private firstCompilation = true;
+
   private addedScripts: Set<string> = new Set();
 
   private selfContainedScripts: Set<string> = new Set([
@@ -133,6 +137,10 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   apply(compiler: Compiler) {
+    // Collect entrypoints from the manifest files and add them to webpack's entries
+    // This only runs once at the beginning of the compilation, so changes to entrypoints
+    // won't be registered. However, adding/removing entrypoints is a pretty major change
+    // that likely requires a full restart, so this seems acceptable.
     compiler.hooks.entryOption.tap(NAME, (_context, entries) => {
       this.prepareManifests(compiler);
       this.collectEntrypoints(
@@ -140,7 +148,16 @@ export class ManifestPlugin<Z extends boolean> {
         entries as Record<string, EntryDescriptionNormalized>,
       );
     });
+
+    // Hook into the compilation to resolve entrypoints, move/zip assets
     compiler.hooks.compilation.tap(NAME, this.hookIntoPipelines.bind(this));
+
+    // Watch manifest files so that manifest changes trigger a rebuild
+    compiler.hooks.afterCompile.tap(NAME, (compilation) => {
+      for (const manifestFile of this.manifestFiles) {
+        compilation.fileDependencies.add(manifestFile);
+      }
+    });
   }
 
   private async zipAssets(
@@ -280,14 +297,42 @@ export class ManifestPlugin<Z extends boolean> {
     assetDeletions.forEach((assetName) => compilation.deleteAsset(assetName));
   }
 
+  /**
+   * Reads and parses a JSON manifest file, tracking it as a file dependency
+   * so webpack's watcher triggers a rebuild when it changes.
+   *
+   * @param filePath - The path to the manifest JSON file.
+   * @returns The parsed manifest.
+   */
+  private readManifest(filePath: string): Manifest {
+    const manifest = JSON.parse(readFileSync(filePath, 'utf-8'));
+    this.manifestFiles.push(filePath);
+    return manifest;
+  }
+
+  /**
+   * Like {@link readManifest}, but returns an empty object if the file doesn't
+   * exist or is invalid.
+   *
+   * @param filePath - The path to the manifest JSON file.
+   */
+  private tryReadManifest(filePath: string): Partial<Manifest> {
+    try {
+      return this.readManifest(filePath);
+    } catch {
+      return {};
+    }
+  }
+
   private prepareManifests(compiler: Compiler): void {
+    this.manifestFiles = [];
     const manifestPath = path.join(
       compiler.context,
       `manifest/v${this.options.manifest_version}`,
     );
     // Load the base manifest
     const basePath = path.join(manifestPath, `_base.json`);
-    const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
+    const baseManifest: Manifest = this.readManifest(basePath);
 
     const buildTypeManifestPath = path.join(
       compiler.context,
@@ -295,16 +340,10 @@ export class ManifestPlugin<Z extends boolean> {
       this.options.buildType,
       'manifest',
     );
-    // Load the build type base manifest if it exists for the specific build type
-    const buildTypeBasePath = path.join(buildTypeManifestPath, `_base.json`);
-    let buildTypeBaseManifest: Partial<Manifest> = {};
-    try {
-      buildTypeBaseManifest = JSON.parse(
-        readFileSync(buildTypeBasePath, 'utf-8'),
-      );
-    } catch {
-      // File doesn't exist or is invalid, use empty object
-    }
+    // Load the build type base manifest for the specific build type if it exists
+    const buildTypeBaseManifest = this.tryReadManifest(
+      path.join(buildTypeManifestPath, `_base.json`),
+    );
 
     const { transform } = this.options;
     const resources = this.options.web_accessible_resources;
@@ -328,30 +367,15 @@ export class ManifestPlugin<Z extends boolean> {
         manifest.version_name = this.options.versionName;
       }
 
-      const browserManifestPath = path.join(manifestPath, `${browser}.json`);
-      try {
-        // merge browser-specific overrides into the browser manifest
-        manifest = {
-          ...manifest,
-          ...JSON.parse(readFileSync(browserManifestPath, 'utf-8')),
-        };
-      } catch {
-        // File doesn't exist or is invalid, skip merging
-      }
-
-      const buildTypeBrowserManifestPath = path.join(
-        buildTypeManifestPath,
-        `${browser}.json`,
-      );
-      try {
-        // merge browser-specific build type overrides into the browser manifest
-        manifest = {
-          ...manifest,
-          ...JSON.parse(readFileSync(buildTypeBrowserManifestPath, 'utf-8')),
-        };
-      } catch {
-        // File doesn't exist or is invalid, skip merging
-      }
+      manifest = {
+        ...manifest,
+        // merge browser-specific overrides into the browser manifest if they exist
+        ...this.tryReadManifest(path.join(manifestPath, `${browser}.json`)),
+        // merge browser-specific build type overrides into the browser manifest if they exist
+        ...this.tryReadManifest(
+          path.join(buildTypeManifestPath, `${browser}.json`),
+        ),
+      } as Manifest;
 
       // merge provided `web_accessible_resources`
       if (resources && resources.length > 0) {
@@ -506,6 +530,17 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   private resolveEntrypoints(compilation: Compilation): void {
+    if (this.firstCompilation) {
+      // During the first compilation, we can be sure that there won't be any changes to the manifest files
+      // so we can skip re-reading them from disk and just use the cached versions in `this.manifests`.
+      this.firstCompilation = false;
+    } else {
+      // After the first compilation, we need to re-read the manifests from disk so watch-mode picks up non-entrypoint
+      // changes (e.g., description, permissions). Entrypoint changes still
+      // require a restart as they are only collected once in `entryOption`.
+      this.prepareManifests(compilation.compiler);
+    }
+
     for (const [browser, manifest] of this.manifests) {
       // resolve content_scripts (MV2 + MV3)
       for (const contentScript of manifest.content_scripts ?? []) {
