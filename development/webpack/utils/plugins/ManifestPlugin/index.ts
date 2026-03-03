@@ -108,8 +108,6 @@ export class ManifestPlugin<Z extends boolean> {
 
   private manifestFiles: string[] = [];
 
-  private firstCompilation = true;
-
   private addedScripts: Set<string> = new Set();
 
   private selfContainedScripts: Set<string> = new Set([
@@ -530,14 +528,15 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   private resolveEntrypoints(compilation: Compilation): void {
-    if (this.firstCompilation) {
-      // During the first compilation, we can be sure that there won't be any changes to the manifest files
-      // so we can skip re-reading them from disk and just use the cached versions in `this.manifests`.
-      this.firstCompilation = false;
-    } else {
-      // After the first compilation, we need to re-read the manifests from disk so watch-mode picks up non-entrypoint
-      // changes (e.g., description, permissions). Entrypoint changes still
-      // require a restart as they are only collected once in `entryOption`.
+    // Re-read manifests from disk only if a manifest file was modified.
+    // `compiler.modifiedFiles` is undefined on the first compilation, and
+    // populated on subsequent watch-mode rebuilds. Entrypoint changes still
+    // require a restart as they are only collected once in `entryOption`.
+    const { modifiedFiles } = compilation.compiler;
+    if (
+      modifiedFiles &&
+      this.manifestFiles.some((manifestFile) => modifiedFiles.has(manifestFile))
+    ) {
       this.prepareManifests(compilation.compiler);
     }
 

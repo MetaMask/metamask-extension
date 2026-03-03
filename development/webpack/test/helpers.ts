@@ -128,6 +128,8 @@ export function mockWebpack(
       sources: { SourceMapSource, RawSource },
     },
   } as Compiler;
+  // Link compilation back to compiler (used by resolveEntrypoints)
+  (compilation as Record<string, unknown>).compiler = compiler;
   return {
     compiler,
     compilation: compilation as Compilation & typeof compilation,
