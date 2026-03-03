@@ -89,9 +89,7 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withMetaMetricsController(
-    data: Partial<MetaMetricsControllerState>,
-  ): this {
+  withMetaMetricsController(data: Partial<MetaMetricsControllerState>): this {
     merge(this.fixture.data.MetaMetricsController, data);
     return this;
   }

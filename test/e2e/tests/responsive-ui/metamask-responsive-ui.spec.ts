@@ -119,6 +119,9 @@ describe('MetaMask Responsive UI', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
+          .withAppStateController({
+            newPrivacyPolicyToastClickedOrClosed: true,
+          })
           .withPreferencesController({
             preferences: { showTestNetworks: true },
           })

@@ -97,7 +97,7 @@ describe('Account syncing - Accounts with Balances', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: phase2MockSetup,
       },
