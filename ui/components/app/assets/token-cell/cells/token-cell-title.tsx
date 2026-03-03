@@ -44,5 +44,9 @@ export const TokenCellTitle = React.memo(
   (prevProps, nextProps) =>
     prevProps.token.title === nextProps.token.title &&
     prevProps.token.rwaData?.instrumentType ===
-      nextProps.token.rwaData?.instrumentType,
+      nextProps.token.rwaData?.instrumentType &&
+    prevProps.token.rwaData?.market?.nextOpen ===
+      nextProps.token.rwaData?.market?.nextOpen &&
+    prevProps.token.rwaData?.market?.nextClose ===
+      nextProps.token.rwaData?.market?.nextClose,
 );
