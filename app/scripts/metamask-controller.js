@@ -3003,6 +3003,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowShieldEntryModalOnce.bind(appStateController),
       setPendingShieldCohort:
         appStateController.setPendingShieldCohort.bind(appStateController),
+      setPendingRedirectRoute:
+        appStateController.setPendingRedirectRoute.bind(appStateController),
       setShieldPausedToastLastClickedOrClosed:
         appStateController.setShieldPausedToastLastClickedOrClosed.bind(
           appStateController,
