@@ -32,8 +32,6 @@
       "canTrackWalletFundsObtained": false,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
-      "enableEnforcedSimulations": true,
-      "enforcedSimulationsSlippage": "number",
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": "boolean",
       "isRampCardClosed": false,
@@ -74,6 +72,7 @@
     "BridgeController": {},
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
+    "ClientController": "object",
     "CurrencyController": {
       "currencyRates": {
         "ETH": {
@@ -260,11 +259,14 @@
     "ProfileMetricsController": "object",
     "RemoteFeatureFlagController": {
       "cacheTimestamp": "number",
+      "localOverrides": "object",
+      "rawRemoteFeatureFlags": "object",
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
-        "feature3": { "name": "groupC", "value": "valueC" }
-      }
+        "feature3": { "name": "groupA", "value": "valueA" }
+      },
+      "thresholdCache": "object"
     },
     "RewardsController": {
       "rewardsAccounts": "object",
@@ -321,5 +323,5 @@
     },
     "config": "object"
   },
-  "meta": { "version": 196 }
+  "meta": { "version": 197 }
 }

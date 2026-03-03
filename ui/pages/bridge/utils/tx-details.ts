@@ -1,13 +1,13 @@
 import {
   TransactionStatus,
   TransactionType,
-  type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { CaipChainId } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { EvmNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
 import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { MINUTE } from '../../../../shared/constants/time';
 import { TextColor } from '../../../helpers/constants/design-system';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
@@ -52,16 +52,29 @@ export const getBlockExplorerUrl = (chainInfo?: ChainInfo, txHash?: string) => {
 export const getBridgeAmountSentFormatted = ({
   bridgeHistoryItem,
   txMeta,
+  locale,
 }: {
   bridgeHistoryItem?: BridgeHistoryItem;
-  txMeta?: TransactionMeta;
+  txMeta?: TransactionViewModel;
+  locale: string;
 }) => {
   if (!txMeta) {
     return undefined;
   }
 
-  const sentAmount = bridgeHistoryItem?.pricingData?.amountSent;
-  const srcAssetDecimals = bridgeHistoryItem?.quote.srcAsset.decimals;
+  const sentAmount =
+    bridgeHistoryItem?.pricingData?.amountSent ??
+    (txMeta.amounts?.from?.amount &&
+      txMeta.amounts?.from?.token.decimals &&
+      formatAmount(
+        locale,
+        new BigNumber(txMeta.amounts.from.amount.toString()).dividedBy(
+          10 ** txMeta.amounts.from.token.decimals,
+        ),
+      ));
+  const srcAssetDecimals =
+    bridgeHistoryItem?.quote.srcAsset.decimals ??
+    txMeta.amounts?.from?.token.decimals;
   if (!sentAmount || !srcAssetDecimals) {
     return undefined;
   }
@@ -75,7 +88,7 @@ export const getBridgeAmountReceivedFormatted = ({
 }: {
   locale: string;
   bridgeHistoryItem?: BridgeHistoryItem;
-  txMeta?: TransactionMeta;
+  txMeta?: TransactionViewModel;
 }) => {
   if (!txMeta) {
     return undefined;
@@ -93,11 +106,13 @@ export const getBridgeAmountReceivedFormatted = ({
   const destAmount =
     txMeta.swapMetaData?.token_to_amount ??
     bridgeHistoryItem?.status.destChain?.amount ??
-    bridgeHistoryItem?.quote.destTokenAmount;
+    bridgeHistoryItem?.quote.destTokenAmount ??
+    txMeta.amounts?.to?.amount?.toString();
   const destAssetDecimals =
     txMeta.swapMetaData?.token_to_decimals ??
     txMeta.destinationTokenDecimals ??
-    bridgeHistoryItem?.quote.destAsset.decimals;
+    bridgeHistoryItem?.quote.destAsset.decimals ??
+    txMeta.amounts?.to?.token.decimals;
   if (!destAmount || !destAssetDecimals) {
     return undefined;
   }

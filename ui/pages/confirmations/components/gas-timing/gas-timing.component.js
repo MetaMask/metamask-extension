@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import classNames from 'classnames';
+import classNames from 'clsx';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';

@@ -1,18 +1,8 @@
-import { GatorPermissionsMap } from '@metamask/gator-permissions-controller';
 import { Hex } from '@metamask/utils';
 import { submitRequestToBackground } from '../background-connection';
 
-export type FetchAndUpdateGatorPermissionsParams = {
-  isRevoked?: boolean;
-};
-
-export const fetchAndUpdateGatorPermissions = async (
-  params?: FetchAndUpdateGatorPermissionsParams,
-): Promise<GatorPermissionsMap> => {
-  return await submitRequestToBackground(
-    'fetchAndUpdateGatorPermissions',
-    params ? [params] : [],
-  );
+export const fetchAndUpdateGatorPermissions = async (): Promise<void> => {
+  return await submitRequestToBackground('fetchAndUpdateGatorPermissions');
 };
 
 /**

@@ -41,7 +41,11 @@ import {
   getSelectedNetworkClientId,
   getNetworkConfigurationsByChainId,
 } from '../../shared/modules/selectors/networks';
-import { getAccountTrackerControllerAccountsByChainId } from '../../shared/modules/selectors/assets-migration';
+import {
+  getAccountTrackerControllerAccountsByChainId,
+  getTokensControllerAllTokens,
+  getMultiChainBalancesControllerBalances,
+} from '../../shared/modules/selectors/assets-migration';
 import { getEnabledNetworks } from '../../shared/modules/selectors/multichain';
 // TODO: Fix circular dependency
 // To avoid import evaluating as `undefined` due to circular dependency,
@@ -172,8 +176,8 @@ import { getApprovalRequestsByType } from './approvals';
 import {
   getSelectedMultichainNetworkChainId,
   getIsEvmMultichainNetworkSelected,
+  getMultichainNetwork,
 } from './multichain/networks';
-import { getMultichainBalances, getMultichainNetwork } from './multichain';
 import {
   getUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -563,7 +567,7 @@ export const getMetaMaskAccounts = createChainIdSelector(
   getInternalAccounts,
   getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
-  getMultichainBalances,
+  getMultiChainBalancesControllerBalances,
   getCurrentChainId,
   (_, chainId) => chainId,
   (
@@ -650,15 +654,6 @@ export const getMetaMaskAccountsWithoutBalance = createSelector(
  */
 export function getSelectedAddress(state) {
   return getSelectedInternalAccount(state)?.address;
-}
-
-export function getMaybeSelectedInternalAccount(state) {
-  // Same as `getSelectedInternalAccount`, but might potentially be `undefined`:
-  // - This might happen during the onboarding
-  const accountId = state.metamask.internalAccounts?.selectedAccount;
-  return accountId
-    ? state.metamask.internalAccounts?.accounts[accountId]
-    : undefined;
 }
 
 export function checkIfMethodIsEnabled(state, methodName) {
@@ -864,7 +859,7 @@ export function getSelectedAccountTokensAcrossChains(state) {
     return tokensByChain;
   }
 
-  const { allTokens } = state.metamask;
+  const allTokens = getTokensControllerAllTokens(state);
 
   const nativeTokenBalancesByChainId =
     getSelectedAccountNativeTokenCachedBalanceByChainId(state);
@@ -943,7 +938,7 @@ export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
  */
 export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
   [
-    (state) => state.metamask.allTokens,
+    getTokensControllerAllTokens,
     (state) => state.metamask.networkConfigurationsByChainId,
     (state, accountAddress) =>
       getNativeTokenCachedBalanceByChainIdSelector(state, accountAddress),
@@ -1091,9 +1086,7 @@ export function getSelectedAccountCachedBalance(state) {
   return cachedBalances?.[selectedAddress];
 }
 
-export function getAllTokens(state) {
-  return state.metamask.allTokens;
-}
+export { getTokensControllerAllTokens as getAllTokens };
 
 /**
  * Get a flattened list of all ERC-20 tokens owned by the user.
@@ -1102,7 +1095,7 @@ export function getAllTokens(state) {
  * @returns {object[]} All ERC-20 tokens owned by the user in a flat array.
  */
 export const selectAllTokensFlat = createSelector(
-  getAllTokens,
+  getTokensControllerAllTokens,
   (tokensByAccountByChain) => {
     const tokensByAccountArray = Object.values(tokensByAccountByChain);
 
@@ -1140,7 +1133,7 @@ export const getSelectedAccount = createSelector(
 
 export const getWatchedToken = (transactionMeta) =>
   createSelector(
-    [getSelectedAccount, getAllTokens],
+    [getSelectedAccount, getTokensControllerAllTokens],
     (selectedAccount, detectedTokens) => {
       const { chainId } = transactionMeta;
 
@@ -1510,6 +1503,17 @@ export function getShowTestNetworks(state) {
 export function getPrivacyMode(state) {
   const { privacyMode } = getPreferences(state);
   return Boolean(privacyMode);
+}
+
+/**
+ * Default address feature flag (extension-ux-default-address)
+ *
+ * @param state - Redux state
+ * @returns {boolean}
+ */
+export function getIsDefaultAddressEnabled(state) {
+  const remoteFeatureFlags = getRemoteFeatureFlags(state);
+  return Boolean(remoteFeatureFlags?.extensionUxDefaultAddress);
 }
 
 /**

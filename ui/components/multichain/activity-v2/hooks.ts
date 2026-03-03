@@ -6,14 +6,16 @@ import type {
   Token,
   TransactionViewModel,
 } from '../../../../shared/lib/multichain/types';
-import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { selectMarketRates } from '../../../selectors/activity';
 import { selectEvmAddress } from '../../../selectors/accounts';
 import { getUseExternalServices } from '../../../selectors';
 import { parseApprovalTransactionData } from '../../../../shared/modules/transaction.utils';
+import { selectTransactions } from '../../../../shared/lib/multichain/transformations';
 import { SET_APPROVAL_FOR_ALL } from '../../../../shared/constants/transaction';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
+import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { queries } from '../../../helpers/queries';
+import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
 import { calculateFiatFromMarketRates } from './helpers';
 
 function useTransactionParams() {
@@ -43,6 +45,16 @@ function useTransactionParams() {
 export function useTransactionsQuery() {
   const useExternalServices = useSelector(getUseExternalServices);
   const { evmAddress, accountAddresses, networks } = useTransactionParams();
+  const internalTxHashes = useSelector(selectRequiredTransactionHashes);
+
+  const selectFn = useMemo(
+    () =>
+      selectTransactions({
+        address: evmAddress,
+        excludedTxHashes: internalTxHashes,
+      }),
+    [evmAddress, internalTxHashes],
+  );
 
   const queryOptions = useMemo(
     () =>
@@ -53,7 +65,7 @@ export function useTransactionsQuery() {
     [evmAddress, accountAddresses, networks, useExternalServices],
   );
 
-  return useInfiniteQuery(queryOptions);
+  return useInfiniteQuery({ ...queryOptions, select: selectFn });
 }
 
 export function usePrefetchTransactions() {
@@ -126,6 +138,11 @@ function classifyNft(
 export function useGetTitle(transaction: TransactionViewModel): string {
   const t = useI18nContext();
   const evmAddress = useSelector(selectEvmAddress)?.toLowerCase();
+
+  const { sourceTokenSymbol, destNetwork, isBridgeTx } = useBridgeActivityData({
+    transaction,
+  });
+
   const { transactionCategory, transactionType, transactionProtocol } =
     transaction;
 
@@ -166,6 +183,12 @@ export function useGetTitle(transaction: TransactionViewModel): string {
 
   // This should be server-side
   if (transactionCategory === 'APPROVE') {
+    if (sourceTokenSymbol) {
+      return t(isBridgeTx ? 'bridgeApproval' : 'swapApproval', [
+        sourceTokenSymbol,
+      ]);
+    }
+
     const data = transaction.txParams?.data;
     const selectorFromData =
       typeof data === 'string' ? data.slice(0, 10) : undefined;
@@ -219,11 +242,10 @@ export function useGetTitle(transaction: TransactionViewModel): string {
 
   // This should be server-side
   if (transactionCategory === 'BRIDGE_OUT') {
-    const chainName =
-      NETWORK_TO_NAME_MAP[
-        transaction.chainId as keyof typeof NETWORK_TO_NAME_MAP
-      ];
-    return chainName ? t('bridgedToChain', [chainName]) : t('bridged');
+    if (!destNetwork?.name || !isBridgeTx) {
+      return t('bridged');
+    }
+    return t('bridgedToChain', [destNetwork.name]);
   }
 
   if (transactionCategory === 'BRIDGE_IN') {
