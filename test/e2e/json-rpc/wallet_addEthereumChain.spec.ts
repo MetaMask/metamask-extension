@@ -111,7 +111,7 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilderV2()
+          fixtures: new FixtureBuilder()
             .withNetworkControllerDoubleNode()
             .build(),
           localNodeOptions: [
@@ -181,7 +181,7 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilderV2()
+          fixtures: new FixtureBuilder()
             .withNetworkControllerDoubleNode()
             .build(),
           localNodeOptions: [
@@ -255,7 +255,7 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilderV2().build(),
+          fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
@@ -311,7 +311,7 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilderV2()
+          fixtures: new FixtureBuilder()
             .withNetworkControllerDoubleNode()
             .build(),
           title: this.test?.fullTitle(),
