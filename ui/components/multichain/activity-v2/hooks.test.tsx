@@ -3,6 +3,9 @@ import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { renderHook as renderHookBase } from '@testing-library/react-hooks';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
+import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
+import * as useBridgeActivityDataHook from '../../../hooks/bridge/useBridgeActivityData';
+import { ChainInfo } from '../../../pages/bridge/utils/tx-details';
 import { useGetTitle } from './hooks';
 
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -33,6 +36,26 @@ function renderHook<Result>(callback: () => Result) {
 }
 
 describe('useGetTitle', () => {
+  beforeEach(() => {
+    jest
+      .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
+      .mockReturnValue({
+        isBridgeTx: false,
+        isBridgeComplete: false,
+        isBridgeFailed: false,
+        showBridgeTxDetails: undefined,
+        srcNetwork: undefined,
+        destNetwork: undefined,
+        category: TransactionGroupCategory.swap,
+        displayCurrencyAmount: '',
+        sourceTokenSymbol: undefined,
+        sourceTokenAmountSent: undefined,
+        sourceTokenIconUrl: undefined,
+        destinationTokenSymbol: undefined,
+        destinationTokenIconUrl: undefined,
+      });
+  });
+
   it('returns swap title for swap-like CONTRACT_CALL', () => {
     const tx = {
       amounts: {
@@ -216,6 +239,82 @@ describe('useGetTitle', () => {
     expect(result.current).toBe('revokePermissionTitle:token');
   });
 
+  it('returns bridgeApproval title for APPROVE transaction with known sourceTokenSymbol', () => {
+    const tx = {
+      chainId: '0xe708',
+      from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+      methodId: '0x3ce33bff',
+      to: '0xe3d0d2607182af5b24f5c3c2e4990a053add64e3',
+      toAddressName: 'METAMASK_BRIDGE_V2',
+      transactionCategory: 'APPROVE',
+      transactionProtocol: 'METAMASK',
+      transactionType: 'METAMASK_BRIDGE_V2_BRIDGE_OUT',
+      value: '100000000000000',
+    } as unknown as TransactionViewModel;
+
+    jest
+      .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
+      .mockReturnValue({
+        isBridgeTx: true,
+        isBridgeComplete: false,
+        isBridgeFailed: false,
+        showBridgeTxDetails: jest.fn(),
+        srcNetwork: undefined,
+        destNetwork: {
+          name: 'Linea',
+        } as unknown as ChainInfo,
+        category: TransactionGroupCategory.bridge,
+        displayCurrencyAmount: '',
+        sourceTokenSymbol: 'USDT',
+        sourceTokenAmountSent: undefined,
+        sourceTokenIconUrl: undefined,
+        destinationTokenSymbol: undefined,
+        destinationTokenIconUrl: undefined,
+      });
+
+    const { result } = renderHook(() => useGetTitle(tx));
+
+    expect(result.current).toBe('bridgeApproval:USDT');
+  });
+
+  it('returns swapApproval title for APPROVE transaction with known sourceTokenSymbol', () => {
+    const tx = {
+      chainId: '0xe708',
+      from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+      methodId: '0x3ce33bff',
+      to: '0xe3d0d2607182af5b24f5c3c2e4990a053add64e3',
+      toAddressName: 'METAMASK_BRIDGE_V2',
+      transactionCategory: 'APPROVE',
+      transactionProtocol: 'METAMASK',
+      transactionType: 'METAMASK_BRIDGE_V2_BRIDGE_OUT',
+      value: '100000000000000',
+    } as unknown as TransactionViewModel;
+
+    jest
+      .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
+      .mockReturnValue({
+        isBridgeTx: false,
+        isBridgeComplete: false,
+        isBridgeFailed: false,
+        showBridgeTxDetails: jest.fn(),
+        srcNetwork: undefined,
+        destNetwork: {
+          name: 'Linea',
+        } as unknown as ChainInfo,
+        category: TransactionGroupCategory.bridge,
+        displayCurrencyAmount: '',
+        sourceTokenSymbol: 'USDT',
+        sourceTokenAmountSent: undefined,
+        sourceTokenIconUrl: undefined,
+        destinationTokenSymbol: undefined,
+        destinationTokenIconUrl: undefined,
+      });
+
+    const { result } = renderHook(() => useGetTitle(tx));
+
+    expect(result.current).toBe('swapApproval:USDT');
+  });
+
   it('returns bridgedToChain title for BRIDGE_OUT transaction with known chainId', () => {
     const tx = {
       chainId: '0xe708',
@@ -229,9 +328,83 @@ describe('useGetTitle', () => {
       value: '100000000000000',
     } as unknown as TransactionViewModel;
 
+    jest
+      .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
+      .mockReturnValue({
+        isBridgeTx: true,
+        isBridgeComplete: false,
+        isBridgeFailed: false,
+        showBridgeTxDetails: jest.fn(),
+        srcNetwork: undefined,
+        destNetwork: {
+          name: 'Linea',
+        } as unknown as ChainInfo,
+        category: TransactionGroupCategory.bridge,
+        displayCurrencyAmount: '',
+        sourceTokenSymbol: undefined,
+        sourceTokenAmountSent: undefined,
+        sourceTokenIconUrl: undefined,
+        destinationTokenSymbol: undefined,
+        destinationTokenIconUrl: undefined,
+      });
+
     const { result } = renderHook(() => useGetTitle(tx));
 
     expect(result.current).toBe('bridgedToChain:Linea');
+  });
+
+  it('returns bridged title for BRIDGE_OUT transaction with missing destChainId', () => {
+    const tx = {
+      chainId: '0xe708',
+      from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+      methodId: '0x3ce33bff',
+      to: '0xe3d0d2607182af5b24f5c3c2e4990a053add64e3',
+      toAddressName: 'METAMASK_BRIDGE_V2',
+      transactionCategory: 'BRIDGE_OUT',
+      transactionProtocol: 'METAMASK',
+      transactionType: 'METAMASK_BRIDGE_V2_BRIDGE_OUT',
+      value: '100000000000000',
+    } as unknown as TransactionViewModel;
+
+    jest
+      .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
+      .mockReturnValue({
+        isBridgeTx: true,
+        isBridgeComplete: false,
+        isBridgeFailed: false,
+        showBridgeTxDetails: jest.fn(),
+        srcNetwork: undefined,
+        destNetwork: undefined,
+        category: TransactionGroupCategory.bridge,
+        displayCurrencyAmount: '',
+        sourceTokenSymbol: undefined,
+        sourceTokenAmountSent: undefined,
+        sourceTokenIconUrl: undefined,
+        destinationTokenSymbol: undefined,
+        destinationTokenIconUrl: undefined,
+      });
+
+    const { result } = renderHook(() => useGetTitle(tx));
+
+    expect(result.current).toBe('bridged');
+  });
+
+  it('returns bridged title for BRIDGE_IN transaction with known chainId', () => {
+    const tx = {
+      chainId: '0xe708',
+      from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+      methodId: '0x3ce33bff',
+      to: '0xe3d0d2607182af5b24f5c3c2e4990a053add64e3',
+      toAddressName: 'METAMASK_BRIDGE_V2',
+      transactionCategory: 'BRIDGE_IN',
+      transactionProtocol: 'METAMASK',
+      transactionType: 'METAMASK_BRIDGE_V2_BRIDGE_OUT',
+      value: '100000000000000',
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHook(() => useGetTitle(tx));
+
+    expect(result.current).toBe('bridge');
   });
 
   it('returns sent NFT title for ERC_721_TRANSFER with empty valueTransfers', () => {

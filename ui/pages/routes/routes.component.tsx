@@ -663,7 +663,7 @@ export default function Routes() {
         basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
-        path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`,
+        path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
         component: CrossChainSwapTxDetails,
         layout: LegacyLayout,
         authenticated: true,
