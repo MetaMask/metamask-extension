@@ -29,6 +29,7 @@ import { SwapsControllerGetStateAction } from '../../controllers/swaps/swaps.typ
 import {
   AppStateControllerGetStateAction,
   AppStateControllerSetPendingShieldCohortAction,
+  AppStateControllerSetPendingRedirectRouteAction,
   AppStateControllerSetShieldSubscriptionErrorAction,
 } from '../../controllers/app-state-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
@@ -70,6 +71,7 @@ export type SubscriptionServiceAction =
   | AuthenticationControllerGetBearerToken
   | AppStateControllerGetStateAction
   | AppStateControllerSetPendingShieldCohortAction
+  | AppStateControllerSetPendingRedirectRouteAction
   | AppStateControllerSetShieldSubscriptionErrorAction
   | MetaMetricsControllerTrackEventAction
   | KeyringControllerGetStateAction // For metrics, to get the HD Keyrings metadata
