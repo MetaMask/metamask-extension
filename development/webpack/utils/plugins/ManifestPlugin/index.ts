@@ -24,6 +24,7 @@ type Assets = Compilation['assets'];
 
 const NAME = 'ManifestPlugin';
 const BROWSER_TEMPLATE_RE = /\[browser\]/gu;
+const SOURCEMAPS_DIRECTORY = 'sourcemaps';
 const SOURCEMAP_FILENAME_RE = /\.map(?:\..+)?$/u;
 
 /**
@@ -122,8 +123,6 @@ export class ManifestPlugin<Z extends boolean> {
     // browser. Can we share the compression and crc steps to save time?
     const { browsers, zipOptions } = options;
     const { excludeExtensions, level, outFilePath, mtime } = zipOptions;
-    const excludeSourceMapsFromOutput =
-      compilation.options.devtool === 'hidden-source-map';
     const compressionOptions: DeflateOptions = { level };
     const assetsArray = Object.entries(assets);
 
@@ -172,12 +171,6 @@ export class ManifestPlugin<Z extends boolean> {
 
         for (const [assetName, asset] of assetsArray) {
           if (errored) return;
-          if (
-            excludeSourceMapsFromOutput &&
-            SOURCEMAP_FILENAME_RE.test(assetName)
-          ) {
-            continue;
-          }
 
           const extName = extname(assetName);
           if (excludeExtensions.includes(extName)) continue;
@@ -226,7 +219,8 @@ export class ManifestPlugin<Z extends boolean> {
   ): void {
     // we need to wait to delete assets until after we've zipped them all
     const assetDeletions = new Set<string>();
-    const excludeSourceMapsFromOutput =
+    const sourceMapAssets = new Set<string>();
+    const moveSourceMapsToDedicatedDirectory =
       compilation.options.devtool === 'hidden-source-map';
     const { browsers } = options;
     const assetEntries = Object.entries(assets);
@@ -241,9 +235,15 @@ export class ManifestPlugin<Z extends boolean> {
         const assetDetails = compilation.getAsset(name) as Readonly<Asset>;
 
         const isSourceMapAsset =
-          excludeSourceMapsFromOutput && SOURCEMAP_FILENAME_RE.test(name);
+          moveSourceMapsToDedicatedDirectory &&
+          SOURCEMAP_FILENAME_RE.test(name);
 
         if (isSourceMapAsset) {
+          const sourceMapPath = join(SOURCEMAPS_DIRECTORY, name);
+          if (!sourceMapAssets.has(sourceMapPath)) {
+            compilation.emitAsset(sourceMapPath, asset, assetDetails.info);
+            sourceMapAssets.add(sourceMapPath);
+          }
           assetDeletions.add(name);
           continue;
         }

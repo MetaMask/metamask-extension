@@ -217,7 +217,7 @@ describe('ManifestPlugin', () => {
       };
     }
 
-    it('omits source maps from output when devtool is hidden-source-map', async () => {
+    it('emits source maps to the sourcemaps directory when devtool is hidden-source-map', async () => {
       const files = [
         {
           name: 'filename.js',
@@ -257,6 +257,7 @@ describe('ManifestPlugin', () => {
         'chrome/manifest.json',
         'firefox/filename.js',
         'firefox/manifest.json',
+        'sourcemaps/filename.js.map',
       ]);
     });
   });
