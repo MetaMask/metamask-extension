@@ -27,7 +27,9 @@ function useTransactionParams(caipChainId?: CaipChainId) {
   const evmNetworks = useMemo(
     () =>
       caipChainId
-        ? [caipChainId]
+        ? caipChainId.startsWith('eip155:')
+          ? [caipChainId]
+          : []
         : enabledNetworks.filter((id: string) => id.startsWith('eip155:')),
     [enabledNetworks, caipChainId],
   );
