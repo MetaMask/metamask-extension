@@ -5,4 +5,5 @@
 export const WEBSOCKET_SERVICES = Object.freeze({
   solana: 'solana',
   accountActivity: 'accountActivity',
+  perps: 'perps',
 } as const);

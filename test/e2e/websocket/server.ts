@@ -6,7 +6,7 @@ import { WebSocket, WebSocketServer } from 'ws';
  *
  * Each instance manages its own port, connections, and lifecycle.
  * Instances are created by the WebSocketRegistry — one per service
- * (Solana, AccountActivity, etc.).
+ * (Solana, AccountActivity, Perps, etc.).
  */
 class LocalWebSocketServer {
   private readonly name: string;

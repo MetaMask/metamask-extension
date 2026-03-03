@@ -24,11 +24,13 @@ const { solanaWebSocketConfig } = require('./websocket/solana-mocks');
 const {
   accountActivityWebSocketConfig,
 } = require('./websocket/account-activity-mocks');
+const { perpsWebSocketConfig } = require('./websocket/perps-mocks');
 const { WEBSOCKET_SERVICES } = require('./websocket/constants');
 
 // Register each WebSocket service explicitly.
 WebSocketRegistry.register(solanaWebSocketConfig);
 WebSocketRegistry.register(accountActivityWebSocketConfig);
+WebSocketRegistry.register(perpsWebSocketConfig);
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -159,6 +161,7 @@ async function withFixtures(options, testSuite) {
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
     accountActivityWebSocketSpecificMocks = [],
+    perpsWebSocketSpecificMocks = [],
     extendedTimeoutMultiplier = 1,
   } = options;
 
@@ -326,6 +329,7 @@ async function withFixtures(options, testSuite) {
       [WEBSOCKET_SERVICES.accountActivity]: {
         mocks: accountActivityWebSocketSpecificMocks,
       },
+      [WEBSOCKET_SERVICES.perps]: { mocks: perpsWebSocketSpecificMocks },
     });
 
     // Decide between the regular setupMocking and the passThrough version
@@ -352,12 +356,33 @@ async function withFixtures(options, testSuite) {
     }
     await mockServer.start(8000);
 
-    // Log every request hitting the mock server
+    // Log every request hitting the mock server.
+    // In pass-through mode (benchmarks), group duplicates by host to reduce noise.
     const requestLogLabel = useMockingPassThrough
       ? 'Request going to a live server ============'
       : 'Request sent to mock server ============';
+    const hostCounts = useMockingPassThrough ? new Map() : null;
+    const logColor = useMockingPassThrough ? '\x1b[32m' : '\x1b[38;5;216m';
     mockServer.on('request', (req) => {
-      console.log(`\x1b[22m\x1b[38;5;216m${requestLogLabel} ${req.url}\x1b[0m`);
+      if (hostCounts) {
+        let host;
+        try {
+          host = new URL(req.url).host;
+        } catch {
+          host = req.url;
+        }
+        const count = (hostCounts.get(host) || 0) + 1;
+        hostCounts.set(host, count);
+        if (count <= 3) {
+          console.log(`${logColor}${requestLogLabel} ${req.url}\x1b[0m`);
+        } else if (count === 4) {
+          console.log(
+            `\x1b[33m${requestLogLabel} ${host} (repeated, suppressing further logs)\x1b[0m`,
+          );
+        }
+      } else {
+        console.log(`${logColor}${requestLogLabel} ${req.url}\x1b[0m`);
+      }
     });
 
     await setManifestFlags(manifestFlags);

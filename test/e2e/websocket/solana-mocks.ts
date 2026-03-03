@@ -34,13 +34,11 @@ async function setupSolanaWebsocketMocks(
       const message = data.toString();
       console.log('[Solana] Message received from client:', message);
 
-      // Check each mock configuration
       for (const mock of mergedMocks) {
         const includes = Array.isArray(mock.messageIncludes)
           ? mock.messageIncludes
           : [mock.messageIncludes];
 
-        // Check if all required strings are included in the message
         const matches = includes.every((includeStr) =>
           message.includes(includeStr),
         );
@@ -82,7 +80,6 @@ async function setupSolanaWebsocketMocks(
             }
           }, delay);
 
-          // Break after first match to avoid multiple responses
           break;
         }
       }
