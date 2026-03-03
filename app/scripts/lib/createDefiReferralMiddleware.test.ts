@@ -5,6 +5,7 @@ import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
 } from '../../../shared/constants/defi-referrals';
+import { SECOND } from '../../../shared/constants/time';
 import type { ExtendedJSONRPCRequest } from './createDefiReferralMiddleware';
 
 const mockLogError = jest.fn();
@@ -304,6 +305,31 @@ describe('createDefiReferralMiddleware', () => {
       );
 
       expect(mockHandleReferral).not.toHaveBeenCalled();
+    });
+
+    it('does not trigger when eth_signTypedData_v4 is after the wait window', async () => {
+      jest.useFakeTimers();
+
+      await runMiddleware(
+        createMockRequest(
+          TEST_PARTNER_2_STEP_ORIGIN,
+          'wallet_requestPermissions',
+        ),
+        createWalletRequestPermissionsResponse(TEST_PARTNER_2_STEP_ORIGIN),
+      );
+      expect(mockHandleReferral).not.toHaveBeenCalled();
+
+      // Advance past WAIT_AFTER_FIRST_REQUEST_MS so the interval prunes the entry
+      jest.advanceTimersByTime(SECOND * 10 + 1);
+
+      await runMiddleware(
+        createMockRequest(TEST_PARTNER_2_STEP_ORIGIN, 'eth_signTypedData_v4'),
+        signTypedDataV4Response,
+      );
+
+      expect(mockHandleReferral).not.toHaveBeenCalled();
+
+      jest.useRealTimers();
     });
   });
 });
