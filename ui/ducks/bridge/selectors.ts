@@ -52,6 +52,10 @@ import {
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
+  getCurrencyRateControllerCurrencyRates,
+  getTokenRatesControllerMarketData,
+} from '../../../shared/modules/selectors/assets-migration';
+import {
   getMultichainBalances,
   getMultichainCoinRates,
   getMultichainNetworkConfigurationsByChainId,
@@ -492,8 +496,8 @@ export const getFromTokenConversionRate = createSelector(
     (state: BridgeAppState) => state.bridge.fromTokenExchangeRate,
     getAssetsRates, // non-evm conversion rates multichain equivalent of getMarketData
     getMultichainCoinRates,
-    (state: BridgeAppState) => state.metamask.marketData, // rates for non-native evm tokens
-    (state: BridgeAppState) => state.metamask.currencyRates, // EVM only
+    getTokenRatesControllerMarketData, // rates for non-native evm tokens
+    getCurrencyRateControllerCurrencyRates, // EVM only
   ],
   (
     fromToken,
