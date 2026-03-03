@@ -3,6 +3,7 @@ import type { PersistenceManager as PersistenceManagerType } from './stores/pers
 const mockGet = jest.fn();
 const mockGetBackup = jest.fn();
 const mockCleanUpMostRecentRetrievedState = jest.fn();
+let mockMostRecentRetrievedState: unknown = null;
 
 jest.mock('../platforms/extension', () => {
   return jest.fn().mockImplementation(() => ({
@@ -35,7 +36,9 @@ jest.mock('./stores/persistence-manager', () => ({
     get: mockGet,
     getBackup: mockGetBackup,
     cleanUpMostRecentRetrievedState: mockCleanUpMostRecentRetrievedState,
-    mostRecentRetrievedState: null,
+    get mostRecentRetrievedState() {
+      return mockMostRecentRetrievedState;
+    },
   })),
 }));
 
@@ -63,6 +66,8 @@ describe('setup-initial-state-hooks', () => {
 
   beforeEach(() => {
     jest.resetModules();
+    mockMostRecentRetrievedState = null;
+    mockCleanUpMostRecentRetrievedState.mockClear();
     globalThis.stateHooks = {} as typeof stateHooks;
   });
 
@@ -224,6 +229,89 @@ describe('setup-initial-state-hooks', () => {
 
       expect(globalThis.stateHooks.getSentryState).toBeDefined();
       expect(typeof globalThis.stateHooks.getSentryState).toBe('function');
+    });
+
+    describe('getSentryState', () => {
+      it('returns app state when getSentryAppState is set', async () => {
+        setSelfHref('chrome-extension://abc123/home.html');
+        await importFresh();
+
+        const mockAppState = { foo: 'bar' };
+        globalThis.stateHooks.getSentryAppState = () => mockAppState;
+
+        const result = globalThis.stateHooks.getSentryState();
+
+        expect(mockCleanUpMostRecentRetrievedState).toHaveBeenCalled();
+        expect(result).toStrictEqual(
+          expect.objectContaining({
+            version: '1.0.0',
+            state: mockAppState,
+          }),
+        );
+      });
+
+      it('returns persisted state from mostRecentRetrievedState', async () => {
+        setSelfHref('chrome-extension://abc123/home.html');
+        await importFresh();
+
+        const mockPersistedState = { data: { config: {} }, meta: {} };
+        mockMostRecentRetrievedState = mockPersistedState;
+
+        const result = globalThis.stateHooks.getSentryState();
+
+        expect(result).toStrictEqual(
+          expect.objectContaining({
+            version: '1.0.0',
+            persistedState: mockPersistedState,
+          }),
+        );
+      });
+
+      it('returns persisted state from getMostRecentPersistedState', async () => {
+        setSelfHref('chrome-extension://abc123/home.html');
+        await importFresh();
+
+        const mockPersistedState = { data: { config: {} }, meta: {} };
+        globalThis.stateHooks.getMostRecentPersistedState =
+          () => mockPersistedState;
+
+        const result = globalThis.stateHooks.getSentryState();
+
+        expect(result).toStrictEqual(
+          expect.objectContaining({
+            version: '1.0.0',
+            persistedState: mockPersistedState,
+          }),
+        );
+      });
+
+      it('returns base state when getMostRecentPersistedState returns null', async () => {
+        setSelfHref('chrome-extension://abc123/home.html');
+        await importFresh();
+
+        globalThis.stateHooks.getMostRecentPersistedState = () => null;
+
+        const result = globalThis.stateHooks.getSentryState();
+
+        expect(result).toStrictEqual(
+          expect.objectContaining({ version: '1.0.0' }),
+        );
+        expect(result).not.toHaveProperty('state');
+        expect(result).not.toHaveProperty('persistedState');
+      });
+
+      it('returns base state when no app state or persisted state is available', async () => {
+        setSelfHref('chrome-extension://abc123/home.html');
+        await importFresh();
+
+        const result = globalThis.stateHooks.getSentryState();
+
+        expect(result).toStrictEqual(
+          expect.objectContaining({ version: '1.0.0' }),
+        );
+        expect(result).not.toHaveProperty('state');
+        expect(result).not.toHaveProperty('persistedState');
+      });
     });
   });
 });
