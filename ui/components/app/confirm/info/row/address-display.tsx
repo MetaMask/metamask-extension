@@ -12,6 +12,8 @@ import {
   IconName,
   IconSize,
   Text,
+  TextButton,
+  TextButtonSize,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -23,75 +25,6 @@ import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 
 const ELLIPSIS = '\u2026';
-
-/** Truncation config: [prefix chars to show, suffix chars to show] */
-const TRUNCATION_CONFIG = {
-  full: [Infinity, Infinity] as const,
-  truncated: [14, 10] as const,
-} as const;
-
-function getTruncatedAddress(text: string): string {
-  const environmentType = getEnvironmentType();
-  const [prefixLen, suffixLen] =
-    environmentType === ENVIRONMENT_TYPE_FULLSCREEN
-      ? TRUNCATION_CONFIG.full
-      : TRUNCATION_CONFIG.truncated;
-
-  if (text.length <= prefixLen + suffixLen + 1) {
-    return text;
-  }
-
-  return `${text.slice(0, prefixLen)}${ELLIPSIS}${text.slice(-suffixLen)}`;
-}
-
-function useMiddleTruncation(text: string) {
-  const display = useMemo(() => getTruncatedAddress(text), [text]);
-  return { display };
-}
-
-const TrustIcon = ({
-  displayState,
-  image,
-  address,
-}: {
-  displayState: TrustSignalDisplayState;
-  image?: string;
-  address: string;
-}) => {
-  switch (displayState) {
-    case TrustSignalDisplayState.Malicious:
-      return (
-        <Icon
-          name={IconName.Danger}
-          size={IconSize.Sm}
-          color={IconColor.ErrorDefault}
-          style={{ flexShrink: 0 }}
-        />
-      );
-    case TrustSignalDisplayState.Verified:
-      return (
-        <Icon
-          name={IconName.VerifiedFilled}
-          size={IconSize.Sm}
-          color={IconColor.InfoDefault}
-          style={{ flexShrink: 0 }}
-        />
-      );
-    case TrustSignalDisplayState.Unknown:
-      return (
-        <Icon
-          name={IconName.Question}
-          size={IconSize.Sm}
-          style={{ flexShrink: 0 }}
-        />
-      );
-    default:
-      if (image) {
-        return <AvatarToken src={image} size={AvatarTokenSize.Xs} />;
-      }
-      return null;
-  }
-};
 
 export type ConfirmInfoRowAddressDisplayProps = {
   address: string;
@@ -151,69 +84,107 @@ export const ConfirmInfoRowAddressDisplay = memo(
           address={hexAddress}
         />
         {name && isClickable && (
-          <Text
-            variant={TextVariant.BodyMd}
-            color={TextColor.TextDefault}
-            className="confirm-info-row-address-display__clickable"
-            asChild
+          <TextButton
+            size={TextButtonSize.BodyMd}
+            onClick={handleClick}
+            data-testid="confirm-info-row-display-name"
           >
-            <button
-              type="button"
-              style={{ whiteSpace: 'nowrap', flex: 1 }}
-              onClick={handleClick}
-              data-testid="confirm-info-row-display-name"
-            >
-              {name}
-            </button>
-          </Text>
+            {name}
+          </TextButton>
         )}
         {name && !isClickable && (
           <Text
             variant={TextVariant.BodyMd}
             color={TextColor.TextDefault}
             data-testid="confirm-info-row-display-name"
-            style={{ whiteSpace: 'nowrap', flex: 1 }}
           >
             {name}
           </Text>
         )}
         {!name && isClickable && (
-          <Text
-            variant={TextVariant.BodyMd}
-            color={TextColor.TextDefault}
-            className="confirm-info-row-address-display__clickable"
-            asChild
+          <TextButton
+            size={TextButtonSize.BodyMd}
+            onClick={handleClick}
+            data-testid="confirm-info-row-display-name"
           >
-            <button
-              type="button"
-              style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}
-              onClick={handleClick}
-              data-testid="confirm-info-row-display-name"
-            >
-              {display}
-            </button>
-          </Text>
+            {display}
+          </TextButton>
         )}
         {!name && !isClickable && (
           <Text
             variant={TextVariant.BodyMd}
             color={TextColor.TextDefault}
+            ellipsis
             data-testid="confirm-info-row-display-name"
-            asChild
           >
-            <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}>
-              {display}
-            </span>
+            {display}
           </Text>
         )}
         {showAvatar && (
-          <PreferredAvatar
-            address={hexAddress}
-            size={AvatarAccountSize.Sm}
-            style={{ flexShrink: 0 }}
-          />
+          <PreferredAvatar address={hexAddress} size={AvatarAccountSize.Sm} />
         )}
       </Box>
     );
   },
 );
+
+/** Truncation config: [prefix chars to show, suffix chars to show] */
+const TRUNCATION_CONFIG = {
+  full: [Infinity, Infinity] as const,
+  truncated: [14, 10] as const,
+} as const;
+
+function getTruncatedAddress(text: string): string {
+  const environmentType = getEnvironmentType();
+  const [prefixLen, suffixLen] =
+    environmentType === ENVIRONMENT_TYPE_FULLSCREEN
+      ? TRUNCATION_CONFIG.full
+      : TRUNCATION_CONFIG.truncated;
+
+  if (text.length <= prefixLen + suffixLen + 1) {
+    return text;
+  }
+
+  return `${text.slice(0, prefixLen)}${ELLIPSIS}${text.slice(-suffixLen)}`;
+}
+
+function useMiddleTruncation(text: string) {
+  const display = useMemo(() => getTruncatedAddress(text), [text]);
+  return { display };
+}
+
+const TrustIcon = ({
+  displayState,
+  image,
+  address,
+}: {
+  displayState: TrustSignalDisplayState;
+  image?: string;
+  address: string;
+}) => {
+  switch (displayState) {
+    case TrustSignalDisplayState.Malicious:
+      return (
+        <Icon
+          name={IconName.Danger}
+          size={IconSize.Sm}
+          color={IconColor.ErrorDefault}
+        />
+      );
+    case TrustSignalDisplayState.Verified:
+      return (
+        <Icon
+          name={IconName.VerifiedFilled}
+          size={IconSize.Sm}
+          color={IconColor.InfoDefault}
+        />
+      );
+    case TrustSignalDisplayState.Unknown:
+      return <Icon name={IconName.Question} size={IconSize.Sm} />;
+    default:
+      if (image) {
+        return <AvatarToken src={image} size={AvatarTokenSize.Xs} />;
+      }
+      return null;
+  }
+};
