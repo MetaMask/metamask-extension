@@ -1,5 +1,6 @@
 import React from 'react';
 import { LedgerTransportTypes } from '../../../../shared/constants/hardware-wallets';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import SelectHardware from './select-hardware';
 
 const mockMetaMetricsContext = {
@@ -28,10 +29,7 @@ export const DefaultStory = () => {
       connectToHardwareWallet={() => {
         /* no-op */
       }}
-      ledgerTransportType={LedgerTransportTypes.live}
-      context={{
-        trackEvent: mockTrackEvent,
-      }}
+      ledgerTransportType={LedgerTransportTypes.webhid}
     />
   );
 };
