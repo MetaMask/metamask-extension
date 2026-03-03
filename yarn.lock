@@ -5503,7 +5503,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^100.0.2, @metamask/assets-controllers@npm:^100.0.3":
+"@metamask/assets-controllers@npm:^100.0.3":
   version: 100.0.3
   resolution: "@metamask/assets-controllers@npm:100.0.3"
   dependencies:
@@ -5757,9 +5757,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^67.1.1, @metamask/bridge-controller@npm:^67.2.0":
-  version: 67.2.0
-  resolution: "@metamask/bridge-controller@npm:67.2.0"
+"@metamask/bridge-controller@npm:^67.1.1, @metamask/bridge-controller@npm:^67.4.0":
+  version: 67.4.0
+  resolution: "@metamask/bridge-controller@npm:67.4.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5767,7 +5767,7 @@ __metadata:
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/accounts-controller": "npm:^36.0.1"
-    "@metamask/assets-controllers": "npm:^100.0.2"
+    "@metamask/assets-controllers": "npm:^100.0.3"
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.19.0"
     "@metamask/gas-fee-controller": "npm:^26.0.3"
@@ -5778,14 +5778,14 @@ __metadata:
     "@metamask/network-controller": "npm:^30.0.0"
     "@metamask/polling-controller": "npm:^16.0.3"
     "@metamask/profile-sync-controller": "npm:^27.1.0"
-    "@metamask/remote-feature-flag-controller": "npm:^4.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:^4.1.0"
     "@metamask/snaps-controllers": "npm:^17.2.0"
-    "@metamask/transaction-controller": "npm:^62.18.0"
+    "@metamask/transaction-controller": "npm:^62.19.0"
     "@metamask/utils": "npm:^11.9.0"
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.1.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/524ed3663b3e1f87a34171dc0b43b7b5751288d410d90b5d266923e71c974b47f3ec4e87d95baf6aa83ff41120b7625488f563e1c63048657241b24711089a95
+  checksum: 10/a3db92c7a4212e693edb16b081dc24b4108ce7d81a94688e1de3512580b7e1c2ea38147e5b43e98b606a1556692af9f18d81a39669483284dc6c3dabe5f093b6
   languageName: node
   linkType: hard
 
@@ -7582,9 +7582,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/remote-feature-flag-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/remote-feature-flag-controller@npm:3.0.0"
+"@metamask/remote-feature-flag-controller@npm:^4.0.0, @metamask/remote-feature-flag-controller@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@metamask/remote-feature-flag-controller@npm:4.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.19.0"
@@ -32920,7 +32920,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.10.0"
-    "@metamask/bridge-controller": "npm:^67.2.0"
+    "@metamask/bridge-controller": "npm:^67.4.0"
     "@metamask/bridge-status-controller": "npm:^67.0.1"
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/build-utils": "npm:^3.0.0"
