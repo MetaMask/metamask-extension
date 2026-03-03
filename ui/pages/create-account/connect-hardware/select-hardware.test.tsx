@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
+import messages from '../../../../app/_locales/en/messages.json';
 import {
   HardwareAffiliateLinks,
   HardwareAffiliateTutorialLinks,
@@ -42,14 +43,18 @@ describe('SelectHardware', () => {
   it('disables continue button when no device is selected', () => {
     render();
 
-    expect(screen.getByRole('button', { name: 'Continue' })).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: messages.continue.message }),
+    ).toBeDisabled();
   });
 
   it('calls connectToHardwareWallet when ledger is selected and continue is clicked', () => {
     render();
 
-    fireEvent.click(screen.getByLabelText('Ledger'));
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+    fireEvent.click(screen.getByLabelText(messages.ledger.message));
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.continue.message }),
+    );
 
     expect(mockConnectToHardwareWallet).toHaveBeenCalledTimes(1);
     expect(mockConnectToHardwareWallet).toHaveBeenCalledWith(
@@ -68,8 +73,10 @@ describe('SelectHardware', () => {
   it('calls connectToHardwareWallet when trezor is selected and continue is clicked', () => {
     render();
 
-    fireEvent.click(screen.getByLabelText('Trezor'));
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+    fireEvent.click(screen.getByLabelText(messages.trezor.message));
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.continue.message }),
+    );
 
     expect(mockConnectToHardwareWallet).toHaveBeenCalledTimes(1);
     expect(mockConnectToHardwareWallet).toHaveBeenCalledWith(
@@ -81,7 +88,9 @@ describe('SelectHardware', () => {
     render();
 
     fireEvent.click(screen.getByLabelText('QRCode'));
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.continue.message }),
+    );
 
     expect(mockConnectToHardwareWallet).toHaveBeenCalledTimes(1);
     expect(mockConnectToHardwareWallet).toHaveBeenCalledWith(
@@ -92,9 +101,13 @@ describe('SelectHardware', () => {
   it('opens ledger marketing links when ledger is selected', () => {
     render();
 
-    fireEvent.click(screen.getByLabelText('Ledger'));
-    fireEvent.click(screen.getByRole('button', { name: 'Buy now' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Tutorial' }));
+    fireEvent.click(screen.getByLabelText(messages.ledger.message));
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.buyNow.message }),
+    );
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.tutorial.message }),
+    );
 
     expect(openWindow).toHaveBeenNthCalledWith(
       1,
@@ -110,17 +123,23 @@ describe('SelectHardware', () => {
   it('renders Ledger Live setup step for live transport', () => {
     render(true, 'live');
 
-    fireEvent.click(screen.getByLabelText('Ledger'));
+    fireEvent.click(screen.getByLabelText(messages.ledger.message));
 
-    expect(screen.getByText('Download Ledger app')).toBeInTheDocument();
-    expect(screen.getByText('Connect your Ledger')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.step1LedgerWallet.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.step2LedgerWallet.message),
+    ).toBeInTheDocument();
   });
 
   it('renders unsupported browser screen and opens Chrome download link', () => {
     render(false);
 
     fireEvent.click(
-      screen.getByRole('button', { name: 'Download Google Chrome' }),
+      screen.getByRole('button', {
+        name: messages.downloadGoogleChrome.message,
+      }),
     );
 
     expect(global.platform.openTab).toHaveBeenCalledTimes(1);
