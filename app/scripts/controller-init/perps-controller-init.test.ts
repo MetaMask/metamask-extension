@@ -88,6 +88,15 @@ function getInitRequestMock(): InitRequest {
   };
 }
 
+function initWithApi(request?: InitRequest) {
+  const result = PerpsControllerInit(request ?? getInitRequestMock());
+  const { api } = result;
+  if (!api) {
+    throw new Error('Expected api to be defined');
+  }
+  return { ...result, api };
+}
+
 describe('PerpsControllerInit', () => {
   const PerpsControllerMock = jest.mocked(PerpsController);
 
@@ -190,45 +199,45 @@ describe('PerpsControllerInit', () => {
   describe('ensureInitialized (via api)', () => {
     it('calls controller.init() on first api call', async () => {
       const request = getInitRequestMock();
-      const { api, controller } = PerpsControllerInit(request);
+      const { api, controller } = initWithApi(request);
 
-      await api!.perpsInit();
+      await api.perpsInit();
 
       expect(controller.init).toHaveBeenCalledTimes(1);
     });
 
     it('skips init when already initialized', async () => {
       const request = getInitRequestMock();
-      const { api, controller } = PerpsControllerInit(request);
+      const { api, controller } = initWithApi(request);
       (
         controller.state as unknown as Record<string, string>
       ).initializationState = 'initialized';
 
-      await api!.perpsInit();
+      await api.perpsInit();
 
       expect(controller.init).not.toHaveBeenCalled();
     });
 
     it('reuses the same init promise for concurrent calls', async () => {
       const request = getInitRequestMock();
-      const { api, controller } = PerpsControllerInit(request);
+      const { api, controller } = initWithApi(request);
 
-      await Promise.all([api!.perpsInit(), api!.perpsInit()]);
+      await Promise.all([api.perpsInit(), api.perpsInit()]);
 
       expect(controller.init).toHaveBeenCalledTimes(1);
     });
 
     it('resets init promise on failure so retry is possible', async () => {
       const request = getInitRequestMock();
-      const { api, controller } = PerpsControllerInit(request);
+      const { api, controller } = initWithApi(request);
 
       const initMock = jest.mocked(controller.init);
       initMock.mockRejectedValueOnce(new Error('init failed'));
 
-      await expect(api!.perpsInit()).rejects.toThrow('init failed');
+      await expect(api.perpsInit()).rejects.toThrow('init failed');
 
       initMock.mockResolvedValueOnce(undefined);
-      await api!.perpsInit();
+      await api.perpsInit();
 
       expect(controller.init).toHaveBeenCalledTimes(2);
     });
@@ -236,11 +245,11 @@ describe('PerpsControllerInit', () => {
 
   describe('api methods call ensureInitialized before delegating', () => {
     it('perpsPlaceOrder initializes then delegates', async () => {
-      const { api, controller } = PerpsControllerInit(getInitRequestMock());
+      const { api, controller } = initWithApi();
       const args = [{ market: 'ETH', size: 1, side: 'buy' }] as never;
 
-      await api!.perpsPlaceOrder(
-        ...(args as Parameters<NonNullable<typeof api>['perpsPlaceOrder']>),
+      await api.perpsPlaceOrder(
+        ...(args as Parameters<typeof api.perpsPlaceOrder>),
       );
 
       expect(controller.init).toHaveBeenCalled();
@@ -248,39 +257,39 @@ describe('PerpsControllerInit', () => {
     });
 
     it('perpsGetPositions initializes then delegates', async () => {
-      const { api, controller } = PerpsControllerInit(getInitRequestMock());
+      const { api, controller } = initWithApi();
 
-      await api!.perpsGetPositions();
+      await api.perpsGetPositions();
 
       expect(controller.init).toHaveBeenCalled();
       expect(controller.getPositions).toHaveBeenCalled();
     });
 
     it('perpsRefreshEligibility initializes then delegates', async () => {
-      const { api, controller } = PerpsControllerInit(getInitRequestMock());
+      const { api, controller } = initWithApi();
 
-      await api!.perpsRefreshEligibility();
+      await api.perpsRefreshEligibility();
 
       expect(controller.init).toHaveBeenCalled();
       expect(controller.refreshEligibility).toHaveBeenCalled();
     });
 
     it('perpsToggleTestnet initializes then delegates', async () => {
-      const { api, controller } = PerpsControllerInit(getInitRequestMock());
+      const { api, controller } = initWithApi();
 
-      await api!.perpsToggleTestnet();
+      await api.perpsToggleTestnet();
 
       expect(controller.init).toHaveBeenCalled();
       expect(controller.toggleTestnet).toHaveBeenCalled();
     });
 
     it('perpsDepositWithConfirmation returns lastDepositTransactionId', async () => {
-      const { api, controller } = PerpsControllerInit(getInitRequestMock());
+      const { api, controller } = initWithApi();
       (
         controller.state as unknown as Record<string, string>
       ).lastDepositTransactionId = 'tx-123';
 
-      const result = await api!.perpsDepositWithConfirmation(
+      const result = await api.perpsDepositWithConfirmation(
         ...([] as unknown as Parameters<
           typeof controller.depositWithConfirmation
         >),
@@ -291,10 +300,10 @@ describe('PerpsControllerInit', () => {
     });
 
     it('perpsGetUserHistory initializes then calls provider', async () => {
-      const { api, controller } = PerpsControllerInit(getInitRequestMock());
+      const { api, controller } = initWithApi();
       const params = { startTime: 0 };
 
-      await api!.perpsGetUserHistory(params);
+      await api.perpsGetUserHistory(params);
 
       expect(controller.init).toHaveBeenCalled();
       expect(
@@ -305,20 +314,20 @@ describe('PerpsControllerInit', () => {
 
   describe('synchronous api methods (no init needed)', () => {
     it('perpsDisconnect delegates without init', async () => {
-      const { api, controller } = PerpsControllerInit(getInitRequestMock());
+      const { api, controller } = initWithApi();
 
-      await api!.perpsDisconnect();
+      await api.perpsDisconnect();
 
       expect(controller.init).not.toHaveBeenCalled();
       expect(controller.disconnect).toHaveBeenCalled();
     });
 
     it('perpsSaveTradeConfiguration delegates without init', () => {
-      const { api, controller } = PerpsControllerInit(getInitRequestMock());
+      const { api, controller } = initWithApi();
 
-      api!.perpsSaveTradeConfiguration(
+      api.perpsSaveTradeConfiguration(
         ...([] as unknown as Parameters<
-          NonNullable<typeof api>['perpsSaveTradeConfiguration']
+          typeof api.perpsSaveTradeConfiguration
         >),
       );
 
@@ -327,9 +336,9 @@ describe('PerpsControllerInit', () => {
     });
 
     it('perpsClearDepositResult delegates without init', () => {
-      const { api, controller } = PerpsControllerInit(getInitRequestMock());
+      const { api, controller } = initWithApi();
 
-      api!.perpsClearDepositResult();
+      api.perpsClearDepositResult();
 
       expect(controller.init).not.toHaveBeenCalled();
       expect(controller.clearDepositResult).toHaveBeenCalled();

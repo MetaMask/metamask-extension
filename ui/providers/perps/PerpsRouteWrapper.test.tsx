@@ -1,10 +1,10 @@
 import React from 'react';
-import { render, screen, act, waitFor } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import { useSelector } from 'react-redux';
+import { submitRequestToBackground } from '../../store/background-connection';
 import { PerpsRouteWrapper } from './PerpsRouteWrapper';
 import { getPerpsStreamManager } from './PerpsStreamManager';
 import { isPerpsControllerInitializationCancelledError } from './getPerpsController';
-import { submitRequestToBackground } from '../../store/background-connection';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
