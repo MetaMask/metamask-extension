@@ -46,7 +46,7 @@ jest.mock('./stores/persistence-manager', () => ({
 async function importFresh(): Promise<{
   persistenceManager: PersistenceManagerType;
 }> {
-  const mod = await import('./setup-initial-state-hooks');
+  const mod = await import('./setup-initial-state-hooks.js');
   return mod as unknown as { persistenceManager: PersistenceManagerType };
 }
 
@@ -76,9 +76,7 @@ describe('setup-initial-state-hooks', () => {
 
   describe('isBackgroundContext (via module behavior)', () => {
     it('detects browserify MV3 background (app-init.js)', async () => {
-      setSelfHref(
-        'chrome-extension://abc123/scripts/app-init.js',
-      );
+      setSelfHref('chrome-extension://abc123/scripts/app-init.js');
       const { FixtureExtensionStore } = jest.requireMock(
         './stores/fixture-extension-store',
       );
@@ -91,9 +89,7 @@ describe('setup-initial-state-hooks', () => {
     });
 
     it('detects webpack MV3 background (service-worker.js)', async () => {
-      setSelfHref(
-        'chrome-extension://abc123/service-worker.js',
-      );
+      setSelfHref('chrome-extension://abc123/service-worker.js');
       const { FixtureExtensionStore } = jest.requireMock(
         './stores/fixture-extension-store',
       );
@@ -106,9 +102,7 @@ describe('setup-initial-state-hooks', () => {
     });
 
     it('detects Firefox MV2 background (background.html)', async () => {
-      setSelfHref(
-        'moz-extension://abc123/background.html',
-      );
+      setSelfHref('moz-extension://abc123/background.html');
       const { FixtureExtensionStore } = jest.requireMock(
         './stores/fixture-extension-store',
       );
@@ -121,9 +115,7 @@ describe('setup-initial-state-hooks', () => {
     });
 
     it('returns false for UI context (home.html)', async () => {
-      setSelfHref(
-        'chrome-extension://abc123/home.html',
-      );
+      setSelfHref('chrome-extension://abc123/home.html');
       const { FixtureExtensionStore } = jest.requireMock(
         './stores/fixture-extension-store',
       );
@@ -136,9 +128,7 @@ describe('setup-initial-state-hooks', () => {
     });
 
     it('returns false for popup UI (popup.html)', async () => {
-      setSelfHref(
-        'chrome-extension://abc123/popup.html',
-      );
+      setSelfHref('chrome-extension://abc123/popup.html');
       const { FixtureExtensionStore } = jest.requireMock(
         './stores/fixture-extension-store',
       );
@@ -213,15 +203,17 @@ describe('setup-initial-state-hooks', () => {
       setSelfHref('chrome-extension://abc123/home.html');
       await importFresh();
 
-      expect(globalThis.stateHooks.getBackupState).toBeDefined();
-      expect(typeof globalThis.stateHooks.getBackupState).toBe('function');
+      const hooks = globalThis.stateHooks as Record<string, unknown>;
+      expect(hooks.getBackupState).toBeDefined();
+      expect(typeof hooks.getBackupState).toBe('function');
     });
 
     it('getBackupState calls persistenceManager.getBackup', async () => {
       setSelfHref('chrome-extension://abc123/home.html');
       await importFresh();
 
-      await globalThis.stateHooks.getBackupState();
+      const hooks = globalThis.stateHooks as Record<string, unknown>;
+      await (hooks.getBackupState as () => Promise<unknown>)();
 
       expect(mockGetBackup).toHaveBeenCalled();
     });
