@@ -290,9 +290,6 @@
     "message": "Zilizoingizwa",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Muamala wako wa awali ulithibitishwa na mtandao. Bofya SWA ili urudi nyuma."
-  },
   "insufficientBalance": {
     "message": "Salio halitoshi."
   },
@@ -465,12 +462,6 @@
   },
   "rejectAll": {
     "message": "Kataa Zote"
-  },
-  "rejectTxsDescription": {
-    "message": "Unakaribia kukataa miamala $1kwa mafungu."
-  },
-  "rejectTxsN": {
-    "message": "Kataa $1 miamala"
   },
   "rejected": {
     "message": "Imekataliwa"

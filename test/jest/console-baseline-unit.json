@@ -473,13 +473,7 @@
       "Reselect: Identity function warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/app/modals/reject-transactions/reject-transactions.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/app/modals/transaction-already-confirmed/transaction-already-confirmed.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/modals/transaction-confirmed/transaction-confirmed.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/modals/turn-on-metamask-notifications/turn-on-metamask-notifications.test.tsx": {
