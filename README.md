@@ -223,13 +223,13 @@ myNewFlag: {
 },
 ```
 
-| Field | Description |
-| ---- | ---- |
-| `name` | Must match the object key exactly |
-| `type` | `FeatureFlagType.Remote` (fetched at runtime) or `FeatureFlagType.Build` (compile-time) |
-| `inProd` | Whether the flag currently exists in the production client-config API |
-| `productionDefault` | The value returned by the production API (boolean, string, object, or array) |
-| `status` | `FeatureFlagStatus.Active` or `FeatureFlagStatus.Deprecated` |
+| Field               | Description                                                                             |
+| ------------------- | --------------------------------------------------------------------------------------- |
+| `name`              | Must match the object key exactly                                                       |
+| `type`              | `FeatureFlagType.Remote` (fetched at runtime) or `FeatureFlagType.Build` (compile-time) |
+| `inProd`            | Whether the flag currently exists in the production client-config API                   |
+| `productionDefault` | The value returned by the production API (boolean, string, object, or array)            |
+| `status`            | `FeatureFlagStatus.Active` or `FeatureFlagStatus.Deprecated`                            |
 
 ##### Adding a new remote feature flag
 
@@ -242,6 +242,7 @@ myNewFlag: {
 To test behavior with a flag value different from the production default, use one of these approaches:
 
 - **Runtime override via manifest flags:**
+
   ```javascript
   await withFixtures(
     {
@@ -249,7 +250,9 @@ To test behavior with a flag value different from the production default, use on
         remoteFeatureFlags: { myNewFlag: true },
       },
     },
-    async ({ driver }) => { /* ... */ },
+    async ({ driver }) => {
+      /* ... */
+    },
   );
   ```
 
@@ -262,14 +265,14 @@ To test behavior with a flag value different from the production default, use on
 
 The registry module exports several utilities for use in tests and tooling:
 
-| Function | Description |
-| ---- | ---- |
+| Function                               | Description                                                                              |
+| -------------------------------------- | ---------------------------------------------------------------------------------------- |
 | `getProductionRemoteFlagApiResponse()` | Returns flags in the raw API format (array of single-key objects), used by `mock-e2e.js` |
-| `getProductionRemoteFlagDefaults()` | Returns a flat `{ flagName: value }` map, useful for assertions and `FixtureBuilder` |
-| `getRegistryEntry(name)` | Looks up a single flag's metadata |
-| `getRegisteredFlagNames()` | Returns all registered flag names |
-| `getRegistryEntriesByStatus(status)` | Filters entries by `Active` or `Deprecated` status |
-| `getDeprecatedFlags()` | Returns entries marked as `Deprecated` (candidates for removal) |
+| `getProductionRemoteFlagDefaults()`    | Returns a flat `{ flagName: value }` map, useful for assertions and `FixtureBuilder`     |
+| `getRegistryEntry(name)`               | Looks up a single flag's metadata                                                        |
+| `getRegisteredFlagNames()`             | Returns all registered flag names                                                        |
+| `getRegistryEntriesByStatus(status)`   | Filters entries by `Active` or `Deprecated` status                                       |
+| `getDeprecatedFlags()`                 | Returns entries marked as `Deprecated` (candidates for removal)                          |
 
 ##### Removing a flag
 
