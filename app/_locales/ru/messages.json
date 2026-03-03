@@ -648,10 +648,6 @@
   "allowNotifications": {
     "message": "Разрешить уведомления"
   },
-  "allowWithdrawAndSpend": {
-    "message": "Разрешить $1 снять и потратить до следующей суммы:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
   "amount": {
     "message": "Сумма"
   },
@@ -1906,9 +1902,6 @@
   "customSlippage": {
     "message": "Пользовательский"
   },
-  "customSpendLimit": {
-    "message": "Пользовательский лимит расходов"
-  },
   "customToken": {
     "message": "Пользовательский токен"
   },
@@ -2478,9 +2471,6 @@
   "editNonceMessage": {
     "message": "Это продвинутая функция, используйте ее с осторожностью."
   },
-  "editPermission": {
-    "message": "Изменить разрешение"
-  },
   "editPermissions": {
     "message": "Изменить разрешения"
   },
@@ -2564,9 +2554,6 @@
   },
   "enterChainId": {
     "message": "Введите ID блокчейна"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Введите максимальный лимит расходов"
   },
   "enterNetworkName": {
     "message": "Введите имя сети"
@@ -3358,9 +3345,6 @@
   "infuraBlockedNotification": {
     "message": "MetaMask не удалось подключиться к хосту блокчейна. Узнать возможные причины можно $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Ваша первоначальная транзакция подтверждена сетью. Нажмите ОК, чтобы вернуться."
   },
   "insights": {
     "message": "Аналитика"
@@ -5692,9 +5676,6 @@
   "productAnnouncements": {
     "message": "Объявления о продуктах"
   },
-  "proposedApprovalLimit": {
-    "message": "Предлагаемый лимит одобрения"
-  },
   "provide": {
     "message": "Предоставить"
   },
@@ -5914,18 +5895,6 @@
   },
   "rejectAll": {
     "message": "Отклонить все"
-  },
-  "rejectRequestsDescription": {
-    "message": "Вы собираетесь отклонить сразу $1 запроса(-ов)."
-  },
-  "rejectRequestsN": {
-    "message": "Отклонить $1 запроса(-ов)"
-  },
-  "rejectTxsDescription": {
-    "message": "Вы собираетесь отклонить сразу $1 транзакции(-ий)."
-  },
-  "rejectTxsN": {
-    "message": "Отклонить $1 транзакции(-ий)"
   },
   "rejected": {
     "message": "Отклонен"
@@ -7649,22 +7618,6 @@
   },
   "speedUpTooltipText": {
     "message": "Новая плата за газ"
-  },
-  "spendLimitInsufficient": {
-    "message": "Недостаточный лимит расходов"
-  },
-  "spendLimitInvalid": {
-    "message": "Неверный лимит расходов. Должен быть положительным числом"
-  },
-  "spendLimitPermission": {
-    "message": "Разрешение на лимит расходов"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Лимит расходов затребован $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Лимит расходов слишком велик"
   },
   "spender": {
     "message": "Расходующее лицо"
