@@ -5333,9 +5333,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:@metamask-previews/accounts-controller@36.0.1-preview-22ff1f0f2":
-  version: 36.0.1-preview-22ff1f0f2
-  resolution: "@metamask-previews/accounts-controller@npm:36.0.1-preview-22ff1f0f2"
+"@metamask/accounts-controller@npm:@metamask-previews/accounts-controller@36.0.1-preview-0eb28104d":
+  version: 36.0.1-preview-0eb28104d
+  resolution: "@metamask-previews/accounts-controller@npm:36.0.1-preview-0eb28104d"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -5359,7 +5359,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/aa9668b9942a73d942276be053e1da35bb96443bda4261b455f73758b54c86feb3907d2ae0c2aa4c2fec269d57279754463f37391e443d290351d2e52b3e14cd
+  checksum: 10/773213ad1433d5b893a9d0c24dd316f8c5e9395db3d429d15ec8d5c9f8cef4a501ee94cef879db74d0b5c9cc1339b50128298dc64fae4e04ed7d69713c5655f1
   languageName: node
   linkType: hard
 
@@ -32982,7 +32982,7 @@ __metadata:
     "@metamask/account-api": "npm:^1.0.0"
     "@metamask/account-tree-controller": "npm:^4.1.1"
     "@metamask/account-watcher": "npm:^4.1.3"
-    "@metamask/accounts-controller": "npm:@metamask-previews/accounts-controller@36.0.1-preview-22ff1f0f2"
+    "@metamask/accounts-controller": "npm:@metamask-previews/accounts-controller@36.0.1-preview-0eb28104d"
     "@metamask/address-book-controller": "npm:^7.0.1"
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
