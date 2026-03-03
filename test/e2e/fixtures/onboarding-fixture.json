@@ -1969,6 +1969,8 @@
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,
+      "localOverrides": {},
+      "rawRemoteFeatureFlags": {},
       "remoteFeatureFlags": {}
     },
     "RewardsController": {

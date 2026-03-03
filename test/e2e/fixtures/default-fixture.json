@@ -982,6 +982,7 @@
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 1770282502510,
+      "localOverrides": {},
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
