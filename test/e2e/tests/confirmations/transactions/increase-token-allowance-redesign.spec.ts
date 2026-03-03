@@ -1,16 +1,15 @@
+import { WINDOW_TITLES } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
+import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import { scrollAndConfirmAndAssertConfirm } from '../helpers';
-import {
-  assertChangedSpendingCap,
-  editSpendingCap,
-  mocked4BytesIncreaseAllowance,
-  TestSuiteArguments,
-} from './shared';
+import { mocked4BytesIncreaseAllowance, TestSuiteArguments } from './shared';
 
 describe('Confirmation Redesign ERC20 Increase Allowance', function () {
   describe('Submit an increase allowance transaction', function () {
@@ -31,10 +30,24 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           await testDapp.checkPageIsLoaded();
 
           await testDapp.clickERC20IncreaseAllowanceButton();
-          const newSpendingCap = '3';
-          await editSpendingCap(driver, newSpendingCap);
-          await scrollAndConfirmAndAssertConfirm(driver);
-          await assertChangedSpendingCap(driver, newSpendingCap);
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          const txConfirmation = new TransactionConfirmation(driver);
+          await txConfirmation.editSpendingCap('3');
+
+          const confirmation = new Confirmation(driver);
+          await confirmation.clickScrollToBottomButton();
+          await confirmation.clickFooterConfirmButton();
+
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          const homePage = new HomePage(driver);
+          await homePage.goToActivityList();
+          const activityList = new ActivityListPage(driver);
+          await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activityList.clickConfirmedTransaction();
+          await activityList.checkSpendingCapValueInDetails('3 TST');
         },
       );
     });
@@ -56,10 +69,24 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           await testDapp.checkPageIsLoaded();
 
           await testDapp.clickERC20IncreaseAllowanceButton();
-          const newSpendingCap = '3000';
-          await editSpendingCap(driver, newSpendingCap);
-          await scrollAndConfirmAndAssertConfirm(driver);
-          await assertChangedSpendingCap(driver, newSpendingCap);
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          const txConfirmation = new TransactionConfirmation(driver);
+          await txConfirmation.editSpendingCap('3000');
+
+          const confirmation = new Confirmation(driver);
+          await confirmation.clickScrollToBottomButton();
+          await confirmation.clickFooterConfirmButton();
+
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          const homePage = new HomePage(driver);
+          await homePage.goToActivityList();
+          const activityList = new ActivityListPage(driver);
+          await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activityList.clickConfirmedTransaction();
+          await activityList.checkSpendingCapValueInDetails('3000 TST');
         },
       );
     });
