@@ -16,6 +16,10 @@ const trackStyle = {
   justifyContent: 'center',
 };
 
+const containerStyle = {
+  width: 40,
+};
+
 const offTrackStyle = {
   ...trackStyle,
   border: 'none',
@@ -100,6 +104,7 @@ const ToggleButton = (props) => {
       <ReactToggleButton
         value={value}
         onToggle={disabled ? undefined : onToggle}
+        containerStyle={containerStyle}
         activeLabel=""
         inactiveLabel=""
         trackStyle={value ? trackStyle : offTrackStyle}

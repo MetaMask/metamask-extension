@@ -2,14 +2,13 @@
 
 .toggle-button {
   display: flex;
-  width: 40px;
+  gap: 12px;
   cursor: pointer;
   $self: &;
 
   &__status {
     @include design-system.Paragraph;
 
-    display: flex;
     align-items: center;
     text-transform: uppercase;
     display: grid;
