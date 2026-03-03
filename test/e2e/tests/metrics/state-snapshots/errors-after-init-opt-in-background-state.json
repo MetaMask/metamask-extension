@@ -56,6 +56,7 @@
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
     "pendingExtensionVersion": null,
+    "pendingRedirectRoute": null,
     "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": null,
     "pna25Acknowledged": "boolean",
