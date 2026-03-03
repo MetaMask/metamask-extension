@@ -108,8 +108,7 @@ const ZENDESK_URLS = {
     'https://support.metamask.io/manage-crypto/metamask-rewards',
   DECEPTIVE_SITE:
     'https://support.metamask.io/troubleshooting/deceptive-site-ahead-when-trying-to-connect-to-a-site/',
-  SWAPS_USER_GUIDE:
-    'https://support.metamask.io/token-swaps/user-guide-swaps/',
+  SWAPS_USER_GUIDE: 'https://support.metamask.io/token-swaps/user-guide-swaps/',
   UPDATE_VERSION:
     'https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/' as const,
 } as const;
