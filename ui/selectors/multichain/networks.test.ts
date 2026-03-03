@@ -183,6 +183,9 @@ const mockState: TestState = {
         [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
       },
     },
+    accountIdByAddress: {
+      [MOCK_ACCOUNT_EOA.address]: MOCK_ACCOUNT_EOA.id,
+    },
   },
 };
 

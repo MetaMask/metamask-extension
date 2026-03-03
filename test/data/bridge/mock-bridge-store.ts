@@ -238,9 +238,12 @@ export const createBridgeMockStore = ({
       internalAccountsOverrides?.selectedAccount ?? MOCK_EVM_ACCOUNT.id,
     accounts: internalAccountsAccounts,
   };
-  const accountIdByAddress = Object.values(internalAccountsAccounts).reduce<
-    Record<string, string>
-  >((acc, account) => ({ ...acc, [account.address]: account.id }), {});
+  const accountIdByAddress = (
+    Object.values(internalAccountsAccounts) as { address: string; id: string }[]
+  ).reduce<Record<string, string>>(
+    (acc, account) => ({ ...acc, [account.address]: account.id }),
+    {},
+  );
   return {
     activeTab: {
       origin: 'https://github.com',

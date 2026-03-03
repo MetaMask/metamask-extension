@@ -139,6 +139,7 @@ describe('Accounts Selectors', () => {
               accounts: {},
               selectedAccount: '',
             },
+            accountIdByAddress: {},
           },
         }),
       ).toBeUndefined();
@@ -168,6 +169,9 @@ describe('Accounts Selectors', () => {
                 [mockInternalAccount.id]: mockInternalAccount,
               },
               selectedAccount: mockInternalAccount.id,
+            },
+            accountIdByAddress: {
+              [mockInternalAccount.address]: mockInternalAccount.id,
             },
           },
         }),

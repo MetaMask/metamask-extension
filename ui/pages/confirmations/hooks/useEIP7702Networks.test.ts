@@ -120,6 +120,9 @@ function runHook(keyringType = 'HD Key Tree') {
             },
           },
         },
+        accountIdByAddress: {
+          [MOCK_ADDRESS]: MOCK_ADDRESS,
+        },
       },
     },
   );

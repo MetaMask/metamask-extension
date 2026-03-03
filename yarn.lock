@@ -6875,17 +6875,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-internal-api@npm:^9.0.0, @metamask/keyring-internal-api@npm:^9.1.1":
-  version: 9.1.1
-  resolution: "@metamask/keyring-internal-api@npm:9.1.1"
-  dependencies:
-    "@metamask/keyring-api": "npm:^21.2.0"
-    "@metamask/keyring-utils": "npm:^3.1.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-  checksum: 10/ab0fb8e153a02d3d0acf739d77356a1c60e0a7bf998dcbba9468f9f231605beaed472d8bff27dc56323d0a2529167336499e23dcad911fa8c3e37999ed14d2d1
-  languageName: node
-  linkType: hard
-
 "@metamask/keyring-internal-snap-client@npm:^8.0.0, @metamask/keyring-internal-snap-client@npm:^8.0.1":
   version: 8.0.1
   resolution: "@metamask/keyring-internal-snap-client@npm:8.0.1"
