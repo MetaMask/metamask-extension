@@ -1,0 +1,79 @@
+// eslint-disable-next-line @typescript-eslint/no-shadow
+import { WebSocket } from 'ws';
+import LocalWebSocketServer from './websocket-server';
+import {
+  WebSocketMessageMock,
+  DEFAULT_HYPERLIQUID_WS_MOCKS,
+  getResponsePayload,
+} from './tests/perps/mocks/websocketDefaultMocks';
+
+/**
+ * Converts WebSocket message payload (Buffer | ArrayBuffer | Buffer[]) to string.
+ * Avoids calling toString() on plain objects, which would yield '[object Object]'.
+ * @param data
+ */
+function rawDataToString(data: Buffer | ArrayBuffer | Buffer[]): string {
+  if (Buffer.isBuffer(data)) {
+    return data.toString('utf8');
+  }
+  if (Array.isArray(data)) {
+    return Buffer.concat(data).toString('utf8');
+  }
+  return Buffer.from(data).toString('utf8');
+}
+
+/**
+ * Sets up Hyperliquid Perps WebSocket mocks with configurable message handlers.
+ *
+ * Messages from the PerpsController (or UI) to api.hyperliquid.xyz/ws are
+ * forwarded to the local WebSocket server (localhost:8088) via mock-e2e.js.
+ * This function registers a single connection handler (cleared each test in
+ * helpers.js) so we do not accumulate listeners across tests.
+ *
+ * @param mocks - Array of additional message mock configurations
+ */
+export async function setupPerpsWebsocketMocks(
+  mocks: WebSocketMessageMock[] = [],
+): Promise<void> {
+  const localWebSocketServer = LocalWebSocketServer.getServerInstance();
+
+  const mergedMocks: WebSocketMessageMock[] = [
+    ...mocks,
+    ...DEFAULT_HYPERLIQUID_WS_MOCKS,
+  ];
+
+  localWebSocketServer.addMockConnectionHandler((socket: WebSocket) => {
+    socket.on('message', (data: Buffer | ArrayBuffer | Buffer[]) => {
+      const message = rawDataToString(data);
+
+      // Only handle Hyperliquid-style messages (e.g. "method":"subscribe").
+      // Avoid processing Solana messages (which contain "jsonrpc" and "signatureSubscribe" etc.).
+      if (message.includes('jsonrpc') || !message.includes('subscribe')) {
+        return;
+      }
+
+      for (const mock of mergedMocks) {
+        const includes = Array.isArray(mock.messageIncludes)
+          ? mock.messageIncludes
+          : [mock.messageIncludes];
+
+        const matches = includes.every((includeStr) =>
+          message.includes(includeStr),
+        );
+
+        if (matches) {
+          if (mock.logMessage) {
+            console.log(mock.logMessage, false);
+          }
+
+          const delay = mock.delay || 100;
+          setTimeout(() => {
+            const payload = getResponsePayload(mock);
+            socket.send(JSON.stringify(payload));
+          }, delay);
+          break;
+        }
+      }
+    });
+  });
+}

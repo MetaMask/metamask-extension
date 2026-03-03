@@ -22,18 +22,6 @@ const mockBitcoinClientCreateAccount = jest.fn();
 const mockGenerateNewHdKeyring = jest.fn();
 const mockDetectNfts = jest.fn();
 
-// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
-// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
-jest.mock(
-  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
-  () => ({
-    ...jest.requireActual(
-      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
-    ),
-    isMultichainAccountsFeatureEnabled: () => false,
-  }),
-);
-
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => () => mockGetEnvironmentType(),
@@ -145,7 +133,7 @@ describe('AccountMenu', () => {
   it('displays important controls', () => {
     const { getByText } = render();
 
-    expect(getByText(messages.addImportAccount.message)).toBeInTheDocument();
+    expect(getByText(messages.addAccountOrWallet.message)).toBeInTheDocument();
     expect(document.querySelector('[aria-label="Back"]')).toStrictEqual(null);
   });
 
@@ -177,7 +165,7 @@ describe('AccountMenu', () => {
     expect(backButton).toBeInTheDocument();
     backButton.click();
 
-    expect(getByText(messages.selectAnAccount.message)).toBeInTheDocument();
+    expect(getByText(messages.accounts.message)).toBeInTheDocument();
   });
 
   it('shows the account creation UI when Add Account is clicked', () => {
@@ -201,7 +189,7 @@ describe('AccountMenu', () => {
     expect(getByText(messages.cancel.message)).toBeInTheDocument();
 
     fireEvent.click(getByText(messages.cancel.message));
-    expect(getByText(messages.addImportAccount.message)).toBeInTheDocument();
+    expect(getByText(messages.addAccountOrWallet.message)).toBeInTheDocument();
   });
 
   it('shows the account import UI when Import Private Key is clicked', () => {
@@ -215,7 +203,7 @@ describe('AccountMenu', () => {
     expect(getByText(messages.cancel.message)).toBeInTheDocument();
 
     fireEvent.click(getByText(messages.cancel.message));
-    expect(getByText(messages.addImportAccount.message)).toBeInTheDocument();
+    expect(getByText(messages.addAccountOrWallet.message)).toBeInTheDocument();
   });
 
   it('navigates to hardware wallet connection screen when clicked', () => {

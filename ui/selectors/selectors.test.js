@@ -4381,6 +4381,32 @@ describe('getShowUpdateModal', () => {
   });
 });
 
+describe('getPendingRedirectRoute', () => {
+  it('returns the route when set', () => {
+    const route = { path: '/shield-plan' };
+    const state = {
+      metamask: {
+        pendingRedirectRoute: route,
+      },
+    };
+    expect(selectors.getPendingRedirectRoute(state)).toStrictEqual(route);
+  });
+
+  it('returns null when not set', () => {
+    const state = {
+      metamask: {
+        pendingRedirectRoute: null,
+      },
+    };
+    expect(selectors.getPendingRedirectRoute(state)).toBeNull();
+  });
+
+  it('returns null when metamask is undefined', () => {
+    const state = {};
+    expect(selectors.getPendingRedirectRoute(state)).toBeNull();
+  });
+});
+
 describe('getDeferredDeepLink', () => {
   it('returns the deferredDeepLink value when it exists', () => {
     const mockDeepLink = {
