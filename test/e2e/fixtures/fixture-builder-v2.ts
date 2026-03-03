@@ -20,6 +20,7 @@ import type {
   Preferences,
   PreferencesControllerState,
 } from '../../../app/scripts/controllers/preferences-controller';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   DAPP_URL,
@@ -117,6 +118,13 @@ class FixtureBuilderV2 {
     },
   ): this {
     merge(this.fixture.data.PreferencesController, data);
+    return this;
+  }
+
+  withRemoteFeatureFlagController(
+    data: Partial<RemoteFeatureFlagControllerState>,
+  ): this {
+    merge(this.fixture.data.RemoteFeatureFlagController, data);
     return this;
   }
 

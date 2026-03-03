@@ -12,7 +12,16 @@ describe('wallet_requestExecutionPermissions', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withRemoteFeatureFlagController({
+            remoteFeatureFlags: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              confirmations_eip_7702: {
+                supportedChains: ['0x539'],
+              },
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
