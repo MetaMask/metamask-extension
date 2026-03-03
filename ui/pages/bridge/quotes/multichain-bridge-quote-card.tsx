@@ -440,7 +440,7 @@ export const MultichainBridgeQuoteCard = ({
         )}
 
         {/* Price Impact */}
-        {shouldRenderPriceImpactRow && shouldShowPriceImpactWarning && (
+        {shouldRenderPriceImpactRow && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Row gap={2}>
               <Text
