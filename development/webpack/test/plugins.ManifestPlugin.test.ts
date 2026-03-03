@@ -1203,4 +1203,78 @@ describe('ManifestPlugin', () => {
       });
     });
   });
+
+  describe('file dependencies (watch mode)', () => {
+    it('should add manifest files to compilation.fileDependencies', async () => {
+      const context = join(__dirname, 'fixtures/ManifestPlugin/build-types');
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = context;
+
+      const plugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'beta',
+        zip: false,
+      });
+
+      plugin.apply(compiler);
+      await promise;
+
+      const deps = [...compilation.fileDependencies];
+      // Should include base manifest
+      assert.ok(
+        deps.some((d) => d.endsWith('manifest/v3/_base.json')),
+        'should watch the base manifest file',
+      );
+      // Should include browser-specific manifest
+      assert.ok(
+        deps.some((d) => d.endsWith('manifest/v3/chrome.json')),
+        'should watch the browser-specific manifest file',
+      );
+      // Should include build type base manifest
+      assert.ok(
+        deps.some((d) => d.endsWith('beta/manifest/_base.json')),
+        'should watch the build type base manifest file',
+      );
+      // Should include build type browser manifest
+      assert.ok(
+        deps.some((d) => d.endsWith('beta/manifest/chrome.json')),
+        'should watch the build type browser-specific manifest file',
+      );
+    });
+
+    it('should not add non-existent manifest files to fileDependencies', async () => {
+      const context = join(__dirname, 'fixtures/ManifestPlugin/entrypoints');
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = context;
+
+      const plugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'nonexistent',
+        zip: false,
+      });
+
+      plugin.apply(compiler);
+      await promise;
+
+      const deps = [...compilation.fileDependencies];
+      // Should include base manifest (exists)
+      assert.ok(
+        deps.some((d) => d.endsWith('manifest/v3/_base.json')),
+        'should watch the base manifest file',
+      );
+      // Should NOT include non-existent build type files
+      assert.ok(
+        !deps.some((d) => d.includes('nonexistent')),
+        'should not watch non-existent build type manifest files',
+      );
+    });
+  });
 });
