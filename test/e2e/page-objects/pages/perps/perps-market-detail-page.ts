@@ -113,7 +113,6 @@ export class PerpsMarketDetailPage {
    * Clicks the Long button to open the order entry for a new long position.
    */
   async clickLong(): Promise<void> {
-    await this.driver.waitForSelector(this.longCtaButton);
     await this.driver.clickElement(this.longCtaButton);
   }
 
@@ -121,7 +120,6 @@ export class PerpsMarketDetailPage {
    * Clicks the Short button to open the order entry for a new short position.
    */
   async clickShort(): Promise<void> {
-    await this.driver.waitForSelector(this.shortCtaButton);
     await this.driver.clickElement(this.shortCtaButton);
   }
 
@@ -136,7 +134,6 @@ export class PerpsMarketDetailPage {
    * Clicks the 25% balance preset to set order amount.
    */
   async clickPercentPreset25(): Promise<void> {
-    await this.driver.waitForSelector(this.percentPreset25);
     await this.driver.clickElement(this.percentPreset25);
   }
 
@@ -156,10 +153,9 @@ export class PerpsMarketDetailPage {
 
   /**
    * Clicks the Submit order button.
-   * Waits for the button to be enabled first so the form is valid.
+   * clickElement uses findClickableElement and waits for the button to be visible and enabled.
    */
   async clickSubmitOrder(): Promise<void> {
-    await this.waitForSubmitButtonEnabled(10000);
     await this.driver.clickElement(this.submitOrderButton);
   }
 

@@ -1,4 +1,3 @@
-import assert from 'node:assert/strict';
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -29,12 +28,7 @@ describe('Perps', function (this: Suite) {
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.waitForPositionsSection();
-
-        const positionCount = await perpsHomePage.getPositionCardsCount();
-        assert.ok(
-          positionCount >= 1,
-          `Expected at least 1 open position, got ${positionCount}`,
-        );
+        await perpsHomePage.waitForPositionCardsCount(9);
 
         await perpsHomePage.waitForPositionCard('ETH');
       },

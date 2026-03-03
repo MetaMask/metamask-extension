@@ -1,5 +1,3 @@
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-
 /**
  * Perps E2E test helpers
  *
@@ -31,22 +29,9 @@ export const PERPS_MARKET_LIST_ROUTE = '#/perps/market-list';
 
 /**
  * Default withFixtures config for Perps tests (feature flag enabled).
- * Use as base and add title, testSpecificMock, etc. as needed.
+ * Implemented in fixtures/perps-fixture-config.ts; re-exported here for backward compatibility.
  *
  * @param title - The test title (e.g. this.test?.fullTitle()) for debugging.
  * @returns Partial withFixtures config to spread into withFixtures().
  */
-export function getConfig(title?: string) {
-  return {
-    fixtures: new FixtureBuilderV2().build(),
-    title,
-    manifestFlags: {
-      remoteFeatureFlags: {
-        perpsEnabledVersion: {
-          enabled: true,
-          minimumVersion: '0.0.0',
-        },
-      },
-    },
-  };
-}
+export { getPerpsConfig as getConfig } from '../../fixtures/perps-fixture-config';

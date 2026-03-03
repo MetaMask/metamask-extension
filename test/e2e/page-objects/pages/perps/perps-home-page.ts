@@ -27,15 +27,6 @@ export class PerpsHomePage {
 
   private readonly positionCardsSelector = '[data-testid^="position-card-"]';
 
-  /** Step testids shown after each Continue click (steps 2–6). Used to wait for transition. */
-  private readonly tutorialStepTestIdsAfterContinue = [
-    'perps-tutorial-go-long-short',
-    'perps-tutorial-choose-leverage',
-    'perps-tutorial-watch-liquidation',
-    'perps-tutorial-close-anytime',
-    'perps-tutorial-ready-to-trade',
-  ];
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -76,6 +67,27 @@ export class PerpsHomePage {
    */
   async waitForPositionsSection(): Promise<void> {
     await this.driver.waitForSelector(this.perpsPositionsSection);
+  }
+
+  /**
+   * Waits up to `timeout` ms for the number of position cards to equal `expectedCount`,
+   * to avoid flakiness when the UI is still updating.
+   * @param expectedCount - Expected number of position cards.
+   * @param timeout - Max wait time in ms (default 10000).
+   */
+  async waitForPositionCardsCount(
+    expectedCount: number,
+    timeout = 10000,
+  ): Promise<void> {
+    await this.driver.wait(
+      async () => {
+        const elements = await this.driver.findElements(
+          this.positionCardsSelector,
+        );
+        return elements.length === expectedCount;
+      },
+      timeout,
+    );
   }
 
   /**
@@ -127,9 +139,6 @@ export class PerpsHomePage {
    * Clicks the Withdraw button (visible when account has balance).
    */
   async clickWithdraw(): Promise<void> {
-    await this.driver.waitForSelector({
-      testId: 'perps-balance-actions-withdraw',
-    });
     await this.driver.clickElement({
       testId: 'perps-balance-actions-withdraw',
     });
@@ -140,9 +149,6 @@ export class PerpsHomePage {
    * Requires positions so Recent Activity section is visible.
    */
   async clickRecentActivitySeeAll(): Promise<void> {
-    await this.driver.waitForSelector({
-      testId: 'perps-recent-activity-see-all',
-    });
     await this.driver.clickElement({
       testId: 'perps-recent-activity-see-all',
     });
@@ -152,7 +158,6 @@ export class PerpsHomePage {
    * Clicks the search button in the header (navigates to Market List).
    */
   async clickSearchButton(): Promise<void> {
-    await this.driver.waitForSelector(this.perpsHomeSearchButton);
     await this.driver.clickElement(this.perpsHomeSearchButton);
   }
 
@@ -160,30 +165,20 @@ export class PerpsHomePage {
    * Clicks the "Learn the basics of perps" row (opens the tutorial modal).
    */
   async clickLearnBasics(): Promise<void> {
-    await this.driver.waitForSelector({ testId: 'perps-learn-basics' });
     await this.driver.clickElement({ testId: 'perps-learn-basics' });
   }
 
   /**
    * Waits for the tutorial modal and goes through all steps (Continue x5, then Let's go).
-   * Uses waitForSelector for the next step's content instead of fixed delays.
+   * clickElement uses findClickableElement and waits for the button to be visible and enabled.
    */
   async goThroughTutorialModal(): Promise<void> {
     await this.driver.waitForSelector({ testId: 'perps-tutorial-modal' });
     for (let i = 0; i < 5; i++) {
-      await this.driver.waitForSelector({
-        testId: 'perps-tutorial-continue-button',
-      });
       await this.driver.clickElement({
         testId: 'perps-tutorial-continue-button',
       });
-      await this.driver.waitForSelector({
-        testId: this.tutorialStepTestIdsAfterContinue[i],
-      });
     }
-    await this.driver.waitForSelector({
-      testId: 'perps-tutorial-lets-go-button',
-    });
     await this.driver.clickElement({
       testId: 'perps-tutorial-lets-go-button',
     });
