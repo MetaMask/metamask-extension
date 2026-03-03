@@ -24,15 +24,12 @@ function useTransactionParams(caipChainId?: CaipChainId) {
   const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
   const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
 
-  const evmNetworks = useMemo(
-    () =>
-      caipChainId
-        ? caipChainId.startsWith('eip155:')
-          ? [caipChainId]
-          : []
-        : enabledNetworks.filter((id: string) => id.startsWith('eip155:')),
-    [enabledNetworks, caipChainId],
-  );
+  const evmNetworks = useMemo(() => {
+    if (caipChainId) {
+      return caipChainId.startsWith('eip155:') ? [caipChainId] : [];
+    }
+    return enabledNetworks.filter((id: string) => id.startsWith('eip155:'));
+  }, [enabledNetworks, caipChainId]);
 
   const accountAddresses = useMemo(
     () => (evmAddress ? [`eip155:0:${evmAddress}`] : []),
