@@ -46,6 +46,7 @@ import {
   getTokensControllerAllTokens,
   getCurrencyRateControllerCurrencyRates,
   getTokenRatesControllerMarketData,
+  getMultiChainBalancesControllerBalances,
 } from '../../shared/modules/selectors/assets-migration';
 import { getEnabledNetworks } from '../../shared/modules/selectors/multichain';
 // TODO: Fix circular dependency
@@ -177,8 +178,8 @@ import { getApprovalRequestsByType } from './approvals';
 import {
   getSelectedMultichainNetworkChainId,
   getIsEvmMultichainNetworkSelected,
+  getMultichainNetwork,
 } from './multichain/networks';
-import { getMultichainBalances, getMultichainNetwork } from './multichain';
 import {
   getUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -568,7 +569,7 @@ export const getMetaMaskAccounts = createChainIdSelector(
   getInternalAccounts,
   getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
-  getMultichainBalances,
+  getMultiChainBalancesControllerBalances,
   getCurrentChainId,
   (_, chainId) => chainId,
   (
@@ -655,15 +656,6 @@ export const getMetaMaskAccountsWithoutBalance = createSelector(
  */
 export function getSelectedAddress(state) {
   return getSelectedInternalAccount(state)?.address;
-}
-
-export function getMaybeSelectedInternalAccount(state) {
-  // Same as `getSelectedInternalAccount`, but might potentially be `undefined`:
-  // - This might happen during the onboarding
-  const accountId = state.metamask.internalAccounts?.selectedAccount;
-  return accountId
-    ? state.metamask.internalAccounts?.accounts[accountId]
-    : undefined;
 }
 
 export function checkIfMethodIsEnabled(state, methodName) {
