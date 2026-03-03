@@ -2486,7 +2486,7 @@ describe('RewardsController', () => {
       });
     });
 
-    it('should throw AuthorizationFailedError when subscription token is missing', async () => {
+    it('should attempt reauth and throw when subscription token is missing and no signable account exists', async () => {
       const state: Partial<RewardsControllerState> = {
         rewardsSeasons: {
           [MOCK_SEASON_ID]: {
@@ -2505,11 +2505,8 @@ describe('RewardsController', () => {
           await expect(
             controller.getSeasonStatus(MOCK_SUBSCRIPTION_ID, MOCK_SEASON_ID),
           ).rejects.toThrow(
-            `No subscription token found for subscription ID: ${MOCK_SUBSCRIPTION_ID}`,
+            `No signable account found for subscription ID: ${MOCK_SUBSCRIPTION_ID}`,
           );
-          await expect(
-            controller.getSeasonStatus(MOCK_SUBSCRIPTION_ID, MOCK_SEASON_ID),
-          ).rejects.toBeInstanceOf(AuthorizationFailedError);
         },
       );
     });
@@ -3120,8 +3117,12 @@ describe('RewardsController', () => {
     });
   });
 
-  describe('invalidateAccountsAndSubscriptions', () => {
-    it('should invalidate accounts and subscriptions', async () => {
+  describe('invalidateSubscriptionAndAccounts', () => {
+    it('should invalidate the specified subscription and its linked accounts', async () => {
+      const OTHER_SUBSCRIPTION_ID = 'other-sub-id';
+      const OTHER_CAIP_ACCOUNT =
+        `eip155:1:${MOCK_ACCOUNT_ADDRESS_ALT}` as CaipAccountId;
+
       const state: Partial<RewardsControllerState> = {
         rewardsActiveAccount: {
           account: MOCK_CAIP_ACCOUNT,
@@ -3138,21 +3139,93 @@ describe('RewardsController', () => {
             perpsFeeDiscount: null,
             lastPerpsDiscountRateFetched: null,
           },
+          [OTHER_CAIP_ACCOUNT]: {
+            account: OTHER_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: OTHER_SUBSCRIPTION_ID,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+          },
         },
         rewardsSubscriptions: {
           [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
+          [OTHER_SUBSCRIPTION_ID]: {
+            ...MOCK_SUBSCRIPTION,
+            id: OTHER_SUBSCRIPTION_ID,
+          },
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+          [OTHER_SUBSCRIPTION_ID]: 'other-token',
         },
       };
 
       await withController({ state, isDisabled: false }, ({ controller }) => {
-        controller.invalidateAccountsAndSubscriptions();
+        controller.invalidateSubscriptionAndAccounts(MOCK_SUBSCRIPTION_ID);
 
         expect(controller.state.rewardsActiveAccount).toMatchObject({
           hasOptedIn: false,
           subscriptionId: null,
         });
-        expect(controller.state.rewardsAccounts).toEqual({});
-        expect(controller.state.rewardsSubscriptions).toEqual({});
+
+        expect(
+          controller.state.rewardsAccounts[MOCK_CAIP_ACCOUNT],
+        ).toMatchObject({
+          hasOptedIn: false,
+          subscriptionId: null,
+        });
+
+        // Other subscription's account should be untouched
+        expect(
+          controller.state.rewardsAccounts[OTHER_CAIP_ACCOUNT],
+        ).toMatchObject({
+          hasOptedIn: true,
+          subscriptionId: OTHER_SUBSCRIPTION_ID,
+        });
+
+        // Targeted subscription removed, other subscription preserved
+        expect(
+          controller.state.rewardsSubscriptions[MOCK_SUBSCRIPTION_ID],
+        ).toBeUndefined();
+        expect(
+          controller.state.rewardsSubscriptions[OTHER_SUBSCRIPTION_ID],
+        ).toBeDefined();
+
+        // Targeted token removed, other token preserved
+        expect(
+          controller.state.rewardsSubscriptionTokens[MOCK_SUBSCRIPTION_ID],
+        ).toBeUndefined();
+        expect(
+          controller.state.rewardsSubscriptionTokens[OTHER_SUBSCRIPTION_ID],
+        ).toBe('other-token');
+      });
+    });
+
+    it('should not modify activeAccount when it belongs to a different subscription', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsActiveAccount: {
+          account: MOCK_CAIP_ACCOUNT,
+          hasOptedIn: true,
+          subscriptionId: 'different-sub',
+          perpsFeeDiscount: null,
+          lastPerpsDiscountRateFetched: null,
+        },
+        rewardsAccounts: {},
+        rewardsSubscriptions: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+      };
+
+      await withController({ state, isDisabled: false }, ({ controller }) => {
+        controller.invalidateSubscriptionAndAccounts(MOCK_SUBSCRIPTION_ID);
+
+        expect(controller.state.rewardsActiveAccount).toMatchObject({
+          hasOptedIn: true,
+          subscriptionId: 'different-sub',
+        });
       });
     });
   });
@@ -4277,10 +4350,24 @@ describe('Additional RewardsController edge cases', () => {
 
           await expect(
             controller.getSeasonStatus(MOCK_SUBSCRIPTION_ID, MOCK_SEASON_ID),
-          ).rejects.toThrow();
+          ).rejects.toThrow(
+            `Reauth failed for subscription ID: ${MOCK_SUBSCRIPTION_ID}`,
+          );
 
-          expect(controller.state.rewardsAccounts).toEqual({});
-          expect(controller.state.rewardsSubscriptions).toEqual({});
+          expect(
+            controller.state.rewardsAccounts[MOCK_CAIP_ACCOUNT],
+          ).toMatchObject({
+            subscriptionId: null,
+          });
+          expect(
+            controller.state.rewardsAccounts[MOCK_CAIP_ACCOUNT].hasOptedIn,
+          ).toBeFalsy();
+          expect(
+            controller.state.rewardsSubscriptions[MOCK_SUBSCRIPTION_ID],
+          ).toBeUndefined();
+          expect(
+            controller.state.rewardsSubscriptionTokens[MOCK_SUBSCRIPTION_ID],
+          ).toBeUndefined();
         },
       );
     });

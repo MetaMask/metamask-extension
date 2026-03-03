@@ -244,53 +244,28 @@ export class RewardsController extends BaseController<
 
   #isTronDisabled: () => boolean;
 
-  #reauthPromise: Promise<void> | null = null;
+  #reauthPromises: Map<string, Promise<void>> = new Map();
 
   /**
    * Perform silent re-authentication for a given subscription ID.
-   * Tries the active account first, then falls back to any linked account.
+   * Clears the stale token, tries the active account first, then falls back
+   * to iterating all linked software accounts.
    *
    * @param subscriptionId - The subscription ID to re-authenticate for
    */
   async #performReauthForSubscription(subscriptionId: string): Promise<void> {
-    const activeAccount = await this.messenger.call(
-      'AccountsController:getSelectedMultichainAccount',
-    );
+    this.#removeSubscriptionToken(subscriptionId);
 
-    if (
-      this.state.rewardsActiveAccount?.subscriptionId === subscriptionId &&
-      !isHardwareAccount(activeAccount as InternalAccount)
-    ) {
-      log.debug(
-        'RewardsController: Attempting reauth with active account after 403',
+    if (this.state.rewardsActiveAccount?.subscriptionId === subscriptionId) {
+      const activeAccount = await this.messenger.call(
+        'AccountsController:getSelectedMultichainAccount',
       );
-      const result = await this.performSilentAuth(activeAccount, false, false);
-      if (!result) {
-        throw new Error(`Reauth failed for subscription ID: ${subscriptionId}`);
-      }
-      return;
-    }
-
-    const accountForSub = Object.values(this.state.rewardsAccounts).find(
-      (acc) => acc.subscriptionId === subscriptionId,
-    );
-
-    if (accountForSub) {
-      const allAccounts = await this.messenger.call(
-        'AccountsController:listMultichainAccounts',
-      );
-      const { convertInternalAccountToCaipAccountId } = this;
-      const intAccountForSub = allAccounts.find((acc: InternalAccount) => {
-        const accCaipId = convertInternalAccountToCaipAccountId(acc);
-        return accCaipId === accountForSub.account && !isHardwareAccount(acc);
-      });
-
-      if (intAccountForSub) {
+      if (!isHardwareAccount(activeAccount as InternalAccount)) {
         log.debug(
-          'RewardsController: Attempting reauth with linked account after 403',
+          'RewardsController: Attempting reauth with active account after 403',
         );
         const result = await this.performSilentAuth(
-          intAccountForSub as InternalAccount,
+          activeAccount,
           false,
           false,
         );
@@ -303,7 +278,43 @@ export class RewardsController extends BaseController<
       }
     }
 
-    throw new Error(`No account found for subscription ID: ${subscriptionId}`);
+    // Active account can't sign (e.g. hardware wallet) or doesn't match —
+    // find any software account linked to this subscription.
+    const allLinkedAccounts = Object.values(this.state.rewardsAccounts).filter(
+      (acc) => acc.subscriptionId === subscriptionId,
+    );
+
+    if (allLinkedAccounts.length > 0) {
+      const allAccounts = await this.messenger.call(
+        'AccountsController:listMultichainAccounts',
+      );
+      for (const linkedAccount of allLinkedAccounts) {
+        const intAccount = allAccounts.find((acc: InternalAccount) => {
+          const accCaipId = this.convertInternalAccountToCaipAccountId(acc);
+          return accCaipId === linkedAccount.account && !isHardwareAccount(acc);
+        });
+        if (intAccount) {
+          log.debug(
+            'RewardsController: Attempting reauth with linked account after 403',
+          );
+          const result = await this.performSilentAuth(
+            intAccount as InternalAccount,
+            false,
+            false,
+          );
+          if (!result) {
+            throw new Error(
+              `Reauth failed for subscription ID: ${subscriptionId}`,
+            );
+          }
+          return;
+        }
+      }
+    }
+
+    throw new Error(
+      `No signable account found for subscription ID: ${subscriptionId}`,
+    );
   }
 
   /**
@@ -320,34 +331,34 @@ export class RewardsController extends BaseController<
     try {
       return await fn();
     } catch (error) {
-      if (error instanceof AuthorizationFailedError) {
-        // handled below
-      } else {
+      if (!(error instanceof AuthorizationFailedError)) {
         throw error;
       }
 
+      if (this.#reauthPromises.has(subscriptionId)) {
+        log.debug(
+          'RewardsController: 403 detected, reauth already in progress for subscription',
+          subscriptionId,
+        );
+      } else {
+        log.debug(
+          'RewardsController: 403 detected, initiating reauth for subscription',
+          subscriptionId,
+        );
+        const promise = this.#performReauthForSubscription(
+          subscriptionId,
+        ).finally(() => {
+          this.#reauthPromises.delete(subscriptionId);
+        });
+        this.#reauthPromises.set(subscriptionId, promise);
+      }
+
       try {
-        if (this.#reauthPromise === null) {
-          log.debug(
-            'RewardsController: 403 detected, initiating reauth for subscription',
-            subscriptionId,
-          );
-          this.#reauthPromise = this.#performReauthForSubscription(
-            subscriptionId,
-          ).finally(() => {
-            this.#reauthPromise = null;
-          });
-        } else {
-          log.debug(
-            'RewardsController: 403 detected, reauth already in progress for subscription',
-            subscriptionId,
-          );
-        }
-        await this.#reauthPromise;
-      } catch {
+        await this.#reauthPromises.get(subscriptionId);
+      } catch (reauthError) {
         this.invalidateSubscriptionCache(subscriptionId);
-        this.invalidateAccountsAndSubscriptions();
-        throw error;
+        this.invalidateSubscriptionAndAccounts(subscriptionId);
+        throw reauthError;
       }
 
       return await fn();
@@ -907,6 +918,12 @@ export class RewardsController extends BaseController<
   #storeSubscriptionToken(subscriptionId: string, token: string): void {
     this.update((state: RewardsControllerState) => {
       state.rewardsSubscriptionTokens[subscriptionId] = token;
+    });
+  }
+
+  #removeSubscriptionToken(subscriptionId: string): void {
+    this.update((state: RewardsControllerState) => {
+      delete state.rewardsSubscriptionTokens[subscriptionId];
     });
   }
 
@@ -1651,21 +1668,43 @@ export class RewardsController extends BaseController<
     return result;
   }
 
-  invalidateAccountsAndSubscriptions() {
+  invalidateSubscriptionAndAccounts(subscriptionId: string): void {
     this.update((state: RewardsControllerState) => {
-      if (state.rewardsActiveAccount) {
+      delete state.rewardsSubscriptions[subscriptionId];
+
+      Object.entries(state.rewardsAccounts).forEach(
+        ([caipAccount, accountState]) => {
+          if (accountState.subscriptionId === subscriptionId) {
+            state.rewardsAccounts[caipAccount as CaipAccountId] = {
+              ...accountState,
+              hasOptedIn: false,
+              subscriptionId: null,
+              perpsFeeDiscount: null,
+              lastPerpsDiscountRateFetched: null,
+              lastFreshOptInStatusCheck: null,
+            };
+          }
+        },
+      );
+
+      if (state.rewardsActiveAccount?.subscriptionId === subscriptionId) {
         state.rewardsActiveAccount = {
           ...state.rewardsActiveAccount,
           hasOptedIn: false,
           subscriptionId: null,
+          perpsFeeDiscount: null,
+          lastPerpsDiscountRateFetched: null,
           lastFreshOptInStatusCheck: null,
-          account: state.rewardsActiveAccount.account, // Ensure account is always present (never undefined)
         };
       }
-      state.rewardsAccounts = {};
-      state.rewardsSubscriptions = {};
-      state.rewardsSubscriptionTokens = {};
+
+      delete state.rewardsSubscriptionTokens[subscriptionId];
     });
+
+    log.debug(
+      'RewardsController: Invalidated subscription and accounts',
+      subscriptionId,
+    );
   }
 
   /**
