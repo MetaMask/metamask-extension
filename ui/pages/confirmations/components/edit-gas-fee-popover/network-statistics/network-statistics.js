@@ -10,23 +10,22 @@ import { formatGasFeeOrFeeRange } from '../../../../../helpers/utils/gas';
 import { I18nContext } from '../../../../../contexts/i18n';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import { useGasFeeEstimates } from '../../../../../hooks/useGasFeeEstimates';
-import { useGasFeeModalContextOptional } from '../../../context/gas-fee-modal';
 import { Text } from '../../../../../components/component-library';
+import { useConfirmContext } from '../../../context/confirm';
 import { BaseFeeTooltip, PriorityFeeTooltip } from './tooltips';
 import StatusSlider from './status-slider';
 
 const NetworkStatistics = ({ useRedesigned }) => {
   const t = useContext(I18nContext);
-  const context = useGasFeeContext();
-  const gasModalContext = useGasFeeModalContextOptional();
-  const networkClientId = gasModalContext?.transactionMeta?.networkClientId;
-  const hasContextEstimates = Boolean(context?.gasFeeEstimates);
+  const { gasFeeEstimates: gasFeeEstimatesContext } = useGasFeeContext();
+  const { networkClientId } = useConfirmContext()?.currentConfirmation ?? {};
+  const hasContextEstimates = Boolean(gasFeeEstimatesContext);
   const { gasFeeEstimates: fallbackEstimates } = useGasFeeEstimates(
     networkClientId,
     !hasContextEstimates,
   );
   const gasFeeEstimates =
-    context?.gasFeeEstimates ?? fallbackEstimates ?? undefined;
+    gasFeeEstimatesContext ?? fallbackEstimates ?? undefined;
 
   const formattedLatestBaseFee = formatGasFeeOrFeeRange(
     gasFeeEstimates?.estimatedBaseFee,
@@ -106,6 +105,7 @@ const NetworkStatistics = ({ useRedesigned }) => {
 
 NetworkStatistics.propTypes = {
   useRedesigned: PropTypes.bool,
+  networkClientId: PropTypes.string,
 };
 
 export default NetworkStatistics;

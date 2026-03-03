@@ -4,21 +4,19 @@ import configureStore from '../../../../../store/store';
 import { GasFeeContext } from '../../../../../contexts/gasFee';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { useGasFeeEstimates } from '../../../../../hooks/useGasFeeEstimates';
-import { useGasFeeModalContextOptional } from '../../../context/gas-fee-modal';
+import { useConfirmContext } from '../../../context/confirm';
 import NetworkStatistics from './network-statistics';
 
 jest.mock('../../../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
 }));
 
-jest.mock('../../../context/gas-fee-modal', () => ({
-  useGasFeeModalContextOptional: jest.fn(),
+jest.mock('../../../context/confirm', () => ({
+  useConfirmContext: jest.fn(),
 }));
 
 const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
-const mockUseGasFeeModalContextOptional = jest.mocked(
-  useGasFeeModalContextOptional,
-);
+const mockUseConfirmContext = jest.mocked(useConfirmContext);
 
 const renderComponent = ({ gasFeeContext = {}, state = {} } = {}) => {
   const store = configureStore(state);
@@ -32,7 +30,7 @@ const renderComponent = ({ gasFeeContext = {}, state = {} } = {}) => {
 
 describe('NetworkStatistics', () => {
   beforeEach(() => {
-    mockUseGasFeeModalContextOptional.mockReturnValue(undefined);
+    mockUseConfirmContext.mockReturnValue({ currentConfirmation: {} });
     mockUseGasFeeEstimates.mockReturnValue({ gasFeeEstimates: undefined });
   });
 
@@ -133,9 +131,9 @@ describe('NetworkStatistics', () => {
     expect(queryByTestId('status-slider-label')).not.toBeInTheDocument();
   });
 
-  it('uses fallback from useGasFeeEstimates when context has no gasFeeEstimates and useGasFeeModalContextOptional provides transactionMeta', () => {
-    mockUseGasFeeModalContextOptional.mockReturnValue({
-      transactionMeta: { networkClientId: 'mainnet' },
+  it('uses fallback from useGasFeeEstimates when context has no gasFeeEstimates and confirm context provides networkClientId', () => {
+    mockUseConfirmContext.mockReturnValue({
+      currentConfirmation: { networkClientId: 'mainnet' },
     });
     mockUseGasFeeEstimates.mockReturnValue({
       gasFeeEstimates: {
@@ -145,7 +143,13 @@ describe('NetworkStatistics', () => {
       },
     });
 
-    const { getByText } = renderComponent({ gasFeeContext: {} });
+    const store = configureStore({});
+    const { getByText } = renderWithProvider(
+      <GasFeeContext.Provider value={{}}>
+        <NetworkStatistics />
+      </GasFeeContext.Provider>,
+      store,
+    );
 
     expect(getByText('50 GWEI')).toBeInTheDocument();
     expect(getByText('1 - 3 GWEI')).toBeInTheDocument();
