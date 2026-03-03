@@ -88,7 +88,9 @@ export const useHardwareFooter = ({
       return true;
     }
 
-    return [ConnectionStatus.Ready].includes(connectionState.status);
+    return [ConnectionStatus.Ready, ConnectionStatus.Connected].includes(
+      connectionState.status,
+    );
   }, [connectionState.status, hasPreflightSucceeded, isHardwareWalletAccount]);
 
   const onSubmitPreflightCheck = useCallback(async (): Promise<boolean> => {
