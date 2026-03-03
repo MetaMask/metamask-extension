@@ -553,6 +553,48 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setPendingRedirectRoute', () => {
+    it('defaults to null', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.pendingRedirectRoute).toBeNull();
+      });
+    });
+
+    it('sets a route with only path', async () => {
+      await withController(({ controller }) => {
+        controller.setPendingRedirectRoute({ path: '/shield-plan' });
+        expect(controller.state.pendingRedirectRoute).toStrictEqual({
+          path: '/shield-plan',
+        });
+      });
+    });
+
+    it('sets a route with path, search, and environmentType', async () => {
+      await withController(({ controller }) => {
+        controller.setPendingRedirectRoute({
+          path: '/shield-plan',
+          search: '?source=checkout',
+          environmentType: ENVIRONMENT_TYPE_POPUP,
+        });
+        expect(controller.state.pendingRedirectRoute).toStrictEqual({
+          path: '/shield-plan',
+          search: '?source=checkout',
+          environmentType: ENVIRONMENT_TYPE_POPUP,
+        });
+      });
+    });
+
+    it('clears the route when set to null', async () => {
+      await withController(({ controller }) => {
+        controller.setPendingRedirectRoute({ path: '/shield-plan' });
+        expect(controller.state.pendingRedirectRoute).not.toBeNull();
+
+        controller.setPendingRedirectRoute(null);
+        expect(controller.state.pendingRedirectRoute).toBeNull();
+      });
+    });
+  });
+
   describe('pendingExtensionVersion', () => {
     it('defaults to null', async () => {
       await withController(({ controller }) => {
@@ -773,6 +815,7 @@ describe('AppStateController', () => {
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
               "pendingExtensionVersion": null,
+              "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
               "pna25Acknowledged": false,
@@ -866,6 +909,7 @@ describe('AppStateController', () => {
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
               "pendingExtensionVersion": null,
+              "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
               "pna25Acknowledged": false,
@@ -1040,6 +1084,7 @@ describe('AppStateController', () => {
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
               "pendingExtensionVersion": null,
+              "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
               "pna25Acknowledged": false,
