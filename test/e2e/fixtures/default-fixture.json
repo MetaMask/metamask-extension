@@ -189,6 +189,8 @@
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
+      "musdConversionDismissedCtaKeys": [],
+      "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "nftsDetectionNoticeDismissed": false,
       "outdatedBrowserWarningLastShown": null,
@@ -211,9 +213,7 @@
       "termsOfUseLastAgreed": 1770282497124,
       "timeoutMinutes": 0,
       "trezorModel": null,
-      "updateModalLastDismissedAt": null,
-      "musdConversionEducationSeen": false,
-      "musdConversionDismissedCtaKeys": []
+      "updateModalLastDismissedAt": null
     },
     "AuthenticationController": {},
     "BridgeStatusController": {
@@ -982,6 +982,7 @@
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 1770282502510,
+      "localOverrides": {},
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,

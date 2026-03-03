@@ -323,11 +323,14 @@
   "ProfileMetricsController": "object",
   "RemoteFeatureFlagController": {
     "cacheTimestamp": "number",
+    "localOverrides": "object",
+    "rawRemoteFeatureFlags": "object",
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": { "name": "groupC", "value": "valueC" }
-    }
+      "feature3": { "name": "groupA", "value": "valueA" }
+    },
+    "thresholdCache": "object"
   },
   "RewardsController": {
     "rewardsAccounts": "object",
