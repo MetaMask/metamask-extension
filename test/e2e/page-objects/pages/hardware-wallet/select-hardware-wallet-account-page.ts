@@ -16,10 +16,8 @@ class SelectHardwareWalletAccountPage {
 
   protected readonly accountCheckbox = '.hw-account-list__item__checkbox';
 
-  protected readonly forgetDeviceButton = {
-    text: 'Forget this device',
-    tag: 'a',
-  };
+  protected readonly forgetDeviceButton =
+    '[data-testid="hardware-forget-device-button"]';
 
   protected readonly unlockButton = { text: 'Unlock', tag: 'button' };
 
