@@ -1,14 +1,14 @@
 import React from 'react';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../../../shared/constants/app';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 import { ConfirmInfoRowAddressDisplay } from './address-display';
 import { TEST_ADDRESS } from './constants';
-import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-} from '../../../../../../shared/constants/app';
 
 const getEnvironmentType = jest.requireMock(
   '../../../../../../app/scripts/lib/util',

@@ -17,14 +17,74 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
-import { PreferredAvatar } from '../../../preferred-avatar';
-import NameDetails from '../../../name/name-details/name-details';
-import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
+
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
+import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
+import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
+import { PreferredAvatar } from '../../../preferred-avatar';
+import NameDetails from '../../../name/name-details/name-details';
 
 const ELLIPSIS = '\u2026';
+
+/** Truncation config: [prefix chars to show, suffix chars to show] */
+const TRUNCATION_CONFIG = {
+  full: [Infinity, Infinity] as const,
+  truncated: [14, 10] as const,
+} as const;
+
+function getTruncatedAddress(text: string): string {
+  const environmentType = getEnvironmentType();
+  const [prefixLen, suffixLen] =
+    environmentType === ENVIRONMENT_TYPE_FULLSCREEN
+      ? TRUNCATION_CONFIG.full
+      : TRUNCATION_CONFIG.truncated;
+
+  if (text.length <= prefixLen + suffixLen + 1) {
+    return text;
+  }
+
+  return `${text.slice(0, prefixLen)}${ELLIPSIS}${text.slice(-suffixLen)}`;
+}
+
+function useMiddleTruncation(text: string) {
+  const display = useMemo(() => getTruncatedAddress(text), [text]);
+  return { display };
+}
+
+const TrustIcon = ({
+  displayState,
+  image,
+}: {
+  displayState: TrustSignalDisplayState;
+  image?: string;
+}) => {
+  switch (displayState) {
+    case TrustSignalDisplayState.Malicious:
+      return (
+        <Icon
+          name={IconName.Danger}
+          size={IconSize.Sm}
+          color={IconColor.ErrorDefault}
+        />
+      );
+    case TrustSignalDisplayState.Verified:
+      return (
+        <Icon
+          name={IconName.VerifiedFilled}
+          size={IconSize.Sm}
+          color={IconColor.InfoDefault}
+        />
+      );
+    case TrustSignalDisplayState.Unknown:
+      return <Icon name={IconName.Question} size={IconSize.Sm} />;
+    default:
+      if (image) {
+        return <AvatarToken src={image} size={AvatarTokenSize.Xs} />;
+      }
+      return null;
+  }
+};
 
 export type ConfirmInfoRowAddressDisplayProps = {
   address: string;
@@ -123,62 +183,3 @@ export const ConfirmInfoRowAddressDisplay = memo(
     );
   },
 );
-
-/** Truncation config: [prefix chars to show, suffix chars to show] */
-const TRUNCATION_CONFIG = {
-  full: [Infinity, Infinity] as const,
-  truncated: [14, 10] as const,
-} as const;
-
-function getTruncatedAddress(text: string): string {
-  const environmentType = getEnvironmentType();
-  const [prefixLen, suffixLen] =
-    environmentType === ENVIRONMENT_TYPE_FULLSCREEN
-      ? TRUNCATION_CONFIG.full
-      : TRUNCATION_CONFIG.truncated;
-
-  if (text.length <= prefixLen + suffixLen + 1) {
-    return text;
-  }
-
-  return `${text.slice(0, prefixLen)}${ELLIPSIS}${text.slice(-suffixLen)}`;
-}
-
-function useMiddleTruncation(text: string) {
-  const display = useMemo(() => getTruncatedAddress(text), [text]);
-  return { display };
-}
-
-const TrustIcon = ({
-  displayState,
-  image,
-}: {
-  displayState: TrustSignalDisplayState;
-  image?: string;
-}) => {
-  switch (displayState) {
-    case TrustSignalDisplayState.Malicious:
-      return (
-        <Icon
-          name={IconName.Danger}
-          size={IconSize.Sm}
-          color={IconColor.ErrorDefault}
-        />
-      );
-    case TrustSignalDisplayState.Verified:
-      return (
-        <Icon
-          name={IconName.VerifiedFilled}
-          size={IconSize.Sm}
-          color={IconColor.InfoDefault}
-        />
-      );
-    case TrustSignalDisplayState.Unknown:
-      return <Icon name={IconName.Question} size={IconSize.Sm} />;
-    default:
-      if (image) {
-        return <AvatarToken src={image} size={AvatarTokenSize.Xs} />;
-      }
-      return null;
-  }
-};
