@@ -1610,9 +1610,6 @@
   "connectAccount": {
     "message": "계정 연결"
   },
-  "connectAccountOrCreate": {
-    "message": "계정 연결 또는 새 계정 만들기"
-  },
   "connectAccounts": {
     "message": "계정 연결"
   },
@@ -2195,9 +2192,6 @@
   "descriptionFromSnap": {
     "message": "$1 설명",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "모두 선택 해제"
   },
   "destinationAccountPickerNoEligible": {
     "message": "적합한 계정을 찾을 수 없습니다"
@@ -3544,9 +3538,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 가스비"
-  },
-  "lastConnected": {
-    "message": "마지막 연결"
   },
   "lastSold": {
     "message": "최근 매도"
@@ -6484,12 +6475,6 @@
   "selectAccountToConnect": {
     "message": "연결할 계정 선택"
   },
-  "selectAccounts": {
-    "message": "계정 선택"
-  },
-  "selectAccountsForSnap": {
-    "message": "이 스냅을 사용할 계정을 선택하세요"
-  },
   "selectAll": {
     "message": "전체 선택"
   },
@@ -6528,9 +6513,6 @@
   },
   "selectedAccountMismatch": {
     "message": "다른 계정이 선택됨"
-  },
-  "selectingAllWillAllow": {
-    "message": "모두 선택하면 이 사이트에서 회원님의 현재 계정을 모두 볼 수 있습니다. 이 사이트를 신뢰하는지 확인하세요."
   },
   "send": {
     "message": "전송"

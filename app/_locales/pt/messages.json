@@ -1610,9 +1610,6 @@
   "connectAccount": {
     "message": "Conectar conta"
   },
-  "connectAccountOrCreate": {
-    "message": "Conectar conta ou criar nova"
-  },
   "connectAccounts": {
     "message": "Conectar contas"
   },
@@ -2195,9 +2192,6 @@
   "descriptionFromSnap": {
     "message": "Descrição de $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Desmarcar tudo"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Nenhuma conta qualificada encontrada"
@@ -3544,9 +3538,6 @@
   },
   "l2FeeTooltip": {
     "message": "Taxa de gás da L2"
-  },
-  "lastConnected": {
-    "message": "Última conexão"
   },
   "lastSold": {
     "message": "Última venda"
@@ -6484,12 +6475,6 @@
   "selectAccountToConnect": {
     "message": "Selecione uma conta para se conectar"
   },
-  "selectAccounts": {
-    "message": "Selecione a(s) conta(s) para usar nesse site"
-  },
-  "selectAccountsForSnap": {
-    "message": "Selecione a(s) conta(s) para usar com esse snap"
-  },
   "selectAll": {
     "message": "Selecionar tudo"
   },
@@ -6528,9 +6513,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Conta diferente selecionada"
-  },
-  "selectingAllWillAllow": {
-    "message": "Selecionar todos permitirá que esse site visualize todas as suas contas atuais. Certifique-se de confiar nesse site."
   },
   "send": {
     "message": "Enviar"

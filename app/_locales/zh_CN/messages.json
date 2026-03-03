@@ -1610,9 +1610,6 @@
   "connectAccount": {
     "message": "连接账户"
   },
-  "connectAccountOrCreate": {
-    "message": "连接账户或创建新账户"
-  },
   "connectAccounts": {
     "message": "连接账户"
   },
@@ -2195,9 +2192,6 @@
   "descriptionFromSnap": {
     "message": "来自 $1 的描述",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "全部取消选择"
   },
   "destinationAccountPickerNoEligible": {
     "message": "未找到符合条件的账户"
@@ -3544,9 +3538,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 燃料费"
-  },
-  "lastConnected": {
-    "message": "最后连接"
   },
   "lastSold": {
     "message": "最后售出"
@@ -6478,12 +6469,6 @@
   "selectAccountToConnect": {
     "message": "选择要连接的账户"
   },
-  "selectAccounts": {
-    "message": "选择要在此网站上使用的账户"
-  },
-  "selectAccountsForSnap": {
-    "message": "选择使用此 Snap 的账户"
-  },
   "selectAll": {
     "message": "全部选择"
   },
@@ -6522,9 +6507,6 @@
   },
   "selectedAccountMismatch": {
     "message": "已选择不同账户"
-  },
-  "selectingAllWillAllow": {
-    "message": "选择全部将允许本网站查看您当前的所有账户。确保您信任这个网站。"
   },
   "send": {
     "message": "发送"

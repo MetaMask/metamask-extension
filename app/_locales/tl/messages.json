@@ -1610,9 +1610,6 @@
   "connectAccount": {
     "message": "Ikonekta ang account"
   },
-  "connectAccountOrCreate": {
-    "message": "Ikonekta ang account o gumawa ng bago"
-  },
   "connectAccounts": {
     "message": "Ikonekta ang mga account"
   },
@@ -2195,9 +2192,6 @@
   "descriptionFromSnap": {
     "message": "Deskripsyon mula sa $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Alisin ang pagkapili sa lahat"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Walang nahanap na kwalipikadong account"
@@ -3544,9 +3538,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 na bayad sa gas"
-  },
-  "lastConnected": {
-    "message": "Huling Kumonekta"
   },
   "lastSold": {
     "message": "Huling naibenta"
@@ -6484,12 +6475,6 @@
   "selectAccountToConnect": {
     "message": "Piliin ang account na ikokonekta"
   },
-  "selectAccounts": {
-    "message": "Pumili ng (mga) account"
-  },
-  "selectAccountsForSnap": {
-    "message": "Piliin ang (mga) account para gamitin ang snap na ito"
-  },
   "selectAll": {
     "message": "Piliin lahat"
   },
@@ -6528,9 +6513,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Ibang account ang pinili"
-  },
-  "selectingAllWillAllow": {
-    "message": "Kapag pinili lahat, mabibigyang-daan ang site na ito na makita ang lahat ng kasalukuyan mong account. Tiyaking pinagkakatiwalaan mo ang site na ito."
   },
   "send": {
     "message": "Ipadala"
