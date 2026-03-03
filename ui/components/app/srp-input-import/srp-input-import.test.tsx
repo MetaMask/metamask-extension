@@ -18,8 +18,8 @@ jest.mock('webextension-polyfill', () => ({
 
 const mockGetEnvironmentType = jest.fn().mockReturnValue('popup');
 
-jest.mock('../../../../shared/lib/environment-type', () => ({
-  ...jest.requireActual('../../../../shared/lib/environment-type'),
+jest.mock('../../../../app/scripts/lib/util', () => ({
+  ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => mockGetEnvironmentType(),
 }));
 

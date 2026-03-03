@@ -9,8 +9,8 @@ import { openWindow } from '../../../helpers/utils/window';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import { AppHeader } from '.';
 
-jest.mock('../../../../shared/lib/environment-type', () => ({
-  ...jest.requireActual('../../../../shared/lib/environment-type'),
+jest.mock('../../../../app/scripts/lib/util', () => ({
+  ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: jest.fn(),
 }));
 

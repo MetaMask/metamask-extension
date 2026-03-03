@@ -1,4 +1,4 @@
-import React from 'react';
+  import React from 'react';
 import { render, screen } from '@testing-library/react';
 import * as riveReactCanvas from '@rive-app/react-canvas';
 import {
@@ -60,7 +60,7 @@ jest.mock('../../../../hooks/useTheme', () => ({
 
 // Mock environment type utility
 const mockGetEnvironmentType = jest.fn();
-jest.mock('../../../../../shared/lib/environment-type', () => ({
+jest.mock('../../../../../app/scripts/lib/util', () => ({
   getEnvironmentType: () => mockGetEnvironmentType(),
 }));
 

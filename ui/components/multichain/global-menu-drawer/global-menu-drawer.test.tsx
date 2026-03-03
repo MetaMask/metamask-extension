@@ -12,11 +12,11 @@ import { GlobalMenuDrawer } from './global-menu-drawer';
 import { GlobalMenuDrawerWithList } from './global-menu-drawer-with-list';
 
 const getEnvironmentType = jest.requireMock(
-  '../../../../shared/lib/environment-type',
+  '../../../../app/scripts/lib/util',
 ).getEnvironmentType as jest.Mock;
 
-jest.mock('../../../../shared/lib/environment-type', () => ({
-  ...jest.requireActual('../../../../shared/lib/environment-type'),
+jest.mock('../../../../app/scripts/lib/util', () => ({
+  ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: jest.fn(),
 }));
 

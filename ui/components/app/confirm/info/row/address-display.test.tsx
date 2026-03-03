@@ -11,11 +11,11 @@ import { ConfirmInfoRowAddressDisplay } from './address-display';
 import { TEST_ADDRESS } from './constants';
 
 const getEnvironmentType = jest.requireMock(
-  '../../../../../../shared/lib/environment-type',
+  '../../../../../../app/scripts/lib/util',
 ).getEnvironmentType as jest.Mock;
 
-jest.mock('../../../../../../shared/lib/environment-type', () => ({
-  ...jest.requireActual('../../../../../../shared/lib/environment-type'),
+jest.mock('../../../../../../app/scripts/lib/util', () => ({
+  ...jest.requireActual('../../../../../../app/scripts/lib/util'),
   getEnvironmentType: jest.fn(),
 }));
 

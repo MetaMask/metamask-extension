@@ -10,7 +10,7 @@ import {
 import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
 import WebcamUtils from './webcam-utils';
 
-jest.mock('../../../shared/lib/environment-type', () => ({
+jest.mock('../../../app/scripts/lib/util', () => ({
   getEnvironmentType: jest.fn(),
 }));
 

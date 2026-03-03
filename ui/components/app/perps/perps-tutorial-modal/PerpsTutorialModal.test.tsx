@@ -21,7 +21,7 @@ jest.mock('../../../../hooks/useTheme', () => ({
 }));
 
 // Mock environment type
-jest.mock('../../../../../shared/lib/environment-type', () => ({
+jest.mock('../../../../../app/scripts/lib/util', () => ({
   getEnvironmentType: () => 'fullscreen',
 }));
 

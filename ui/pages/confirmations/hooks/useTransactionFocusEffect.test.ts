@@ -30,7 +30,7 @@ jest.mock('../../../store/actions', () => ({
   setTransactionActive: jest.fn(),
 }));
 
-jest.mock('../../../../shared/lib/environment-type', () => ({
+jest.mock('../../../../app/scripts/lib/util', () => ({
   getEnvironmentType: jest.fn(),
 }));
 
