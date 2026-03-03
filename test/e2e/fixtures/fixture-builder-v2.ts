@@ -422,14 +422,18 @@ class FixtureBuilderV2 {
     });
   }
 
-  withPreferencesControllerShowNativeTokenAsMainBalanceDisabled(): this {
-    return this.withShowNativeTokenAsMainBalanceDisabled();
-  }
-
   withShowNativeTokenAsMainBalanceEnabled(): this {
     return this.withPreferencesController({
       preferences: {
         showNativeTokenAsMainBalance: true,
+      },
+    });
+  }
+
+  withSmartTransactionsOptedOut(): this {
+    return this.withPreferencesController({
+      preferences: {
+        smartTransactionsOptInStatus: false,
       },
     });
   }
