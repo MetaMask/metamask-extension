@@ -3,7 +3,6 @@ import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -35,9 +34,8 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           const txConfirmation = new TransactionConfirmation(driver);
           await txConfirmation.editSpendingCap('3');
 
-          const confirmation = new Confirmation(driver);
-          await confirmation.clickScrollToBottomButton();
-          await confirmation.clickFooterConfirmButton();
+          await txConfirmation.clickScrollToBottomButton();
+          await txConfirmation.clickFooterConfirmButton();
 
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
@@ -74,9 +72,8 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           const txConfirmation = new TransactionConfirmation(driver);
           await txConfirmation.editSpendingCap('3000');
 
-          const confirmation = new Confirmation(driver);
-          await confirmation.clickScrollToBottomButton();
-          await confirmation.clickFooterConfirmButton();
+          await txConfirmation.clickScrollToBottomButton();
+          await txConfirmation.clickFooterConfirmButton();
 
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
