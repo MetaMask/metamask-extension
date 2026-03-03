@@ -8896,9 +8896,6 @@
   "viewDetails": {
     "message": "세부 정보 보기"
   },
-  "viewMore": {
-    "message": "더 보기"
-  },
   "viewOnBlockExplorer": {
     "message": "블록 탐색기에서 보기"
   },
