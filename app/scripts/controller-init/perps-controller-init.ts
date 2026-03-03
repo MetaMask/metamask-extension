@@ -46,8 +46,27 @@ export const PerpsControllerInit: ControllerInitFunction<
   let initPromise: Promise<void> | null = null;
 
   /**
-   * Lazy-init the controller on first API call.
-   * Connects to HyperLiquid WebSocket and fetches initial data.
+   * Defensive init guard invoked by every API method.
+   *
+   * The primary init path is the explicit `perpsInit` call issued by the UI
+   * (via `submitRequestToBackground('perpsInit')`) before any streaming or
+   * trading operations begin. Under normal operation, `perpsInit` will have
+   * already resolved by the time any mutation (e.g. `placeOrder`) is called,
+   * so this guard is a no-op.
+   *
+   * This guard exists as a safety net for edge cases where call ordering is
+   * violated (deep links, restored state, race conditions, etc.). It is
+   * idempotent: if init is already complete it returns immediately; if an
+   * init is in flight it awaits the same shared promise rather than starting
+   * a second one.
+   *
+   * Failure semantics: a failed init resets `initPromise` to `null` so that
+   * subsequent calls retry. This handles transient network failures without
+   * leaving the controller permanently stuck.
+   *
+   * Inspired by the mobile pattern where multiple app lifecycle events
+   * (backgrounding, foregrounding, etc.) can trigger API calls before an
+   * explicit init has had a chance to run.
    */
   const ensureInitialized = async (): Promise<void> => {
     if (controller.state.initializationState === 'initialized') {
@@ -73,6 +92,9 @@ function getApi(
 ): ControllerInitResult<PerpsController>['api'] {
   return {
     // -- Lifecycle --
+    // Primary init entrypoint. The UI calls this explicitly before starting
+    // streaming or trading. All other methods also call ensureInitialized()
+    // as a defensive guard, but this is the intended first call.
     perpsInit: async () => ensureInitialized(),
     perpsDisconnect: controller.disconnect.bind(controller),
 
