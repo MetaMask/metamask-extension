@@ -1586,7 +1586,6 @@
     "ui/pages/bridge/prepare/bridge-transaction-settings-modal.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
-      "error: Warning: You seem to have": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/prepare/components/bridge-asset-picker/asset.test.tsx": {
