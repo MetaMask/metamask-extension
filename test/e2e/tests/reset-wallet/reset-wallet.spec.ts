@@ -14,6 +14,7 @@ describe('Reset Wallet - ', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
           'unable to proceed, wallet is locked',
           'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
