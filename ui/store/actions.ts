@@ -1171,7 +1171,7 @@ export async function getSeedPhrase(password: string, keyringId?: string) {
 
 export function requestRevealSeedWords(
   password: string,
-  keyringId: string,
+  keyringId?: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -1754,36 +1754,6 @@ export function removeSlide(
       throw error;
     }
   };
-}
-
-export async function setEnableEnforcedSimulationsForTransaction(
-  transactionId: string,
-  enable: boolean,
-): void {
-  try {
-    await submitRequestToBackground(
-      'setEnableEnforcedSimulationsForTransaction',
-      [transactionId, enable],
-    );
-  } catch (error) {
-    logErrorWithMessage(error);
-    throw error;
-  }
-}
-
-export async function setEnforcedSimulationsSlippageForTransaction(
-  transactionId: string,
-  value: number,
-): void {
-  try {
-    await submitRequestToBackground(
-      'setEnforcedSimulationsSlippageForTransaction',
-      [transactionId, value],
-    );
-  } catch (error) {
-    logErrorWithMessage(error);
-    throw error;
-  }
 }
 
 // TODO: Not a thunk, but rather a wrapper around a background call
