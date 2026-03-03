@@ -2,14 +2,14 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 // eslint-disable-next-line @typescript-eslint/no-shadow
 import { WebSocket } from 'ws';
-import { Driver } from '../../webdriver/driver';
-import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import WebSocketRegistry from '../../websocket/registry';
-import { ACCOUNT_ACTIVITY_WS_PORT } from '../../websocket/account-activity-mocks';
-import { WEBSOCKET_SERVICES } from '../../websocket/constants';
-import { sendAndReceive, waitForNextMessage } from '../../websocket/utils';
+import { Driver } from '../webdriver/driver';
+import { withFixtures } from '../helpers';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
+import WebSocketRegistry from './registry';
+import { ACCOUNT_ACTIVITY_WS_PORT } from './account-activity-mocks';
+import { WEBSOCKET_SERVICES } from './constants';
+import { sendAndReceive, waitForNextMessage } from './utils';
 
 describe('AccountActivity WebSocket Mock Infrastructure', function (this: Suite) {
   it('mock server responds to subscribe with correct requestId correlation', async function () {
