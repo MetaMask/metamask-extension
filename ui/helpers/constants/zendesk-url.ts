@@ -16,6 +16,8 @@ const ZENDESK_URLS = {
     'https://support.metamask.io/token-swaps/user-guide-swaps/#gas-fees',
   HARDWARE_CONNECTION:
     'https://support.metamask.io/privacy-and-security/hardware-wallet-hub/',
+  HARDWARE_CONNECTION_TREZOR_LEDGER:
+    'https://support.metamask.io/more-web3/wallets/how-to-connect-a-trezor-or-ledger-hardware-wallet/',
   IMPORT_ACCOUNTS: 'https://support.metamask.io/start/use-an-existing-wallet/',
   IMPORT_ACCOUNT_MOBILE:
     'https://support.metamask.io/start/use-an-existing-wallet?client=mobile',
@@ -109,7 +111,7 @@ const ZENDESK_URLS = {
   SWAPS_USER_GUIDE:
     'https://support.metamask.io/token-swaps/user-guide-swaps/',
   UPDATE_VERSION:
-    'https://support.metamask.io/configure/wallet/how-to-update-the-version/' as const,
+    'https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/' as const,
 } as const;
 
 export type ZendeskUrl = (typeof ZENDESK_URLS)[keyof typeof ZENDESK_URLS];

@@ -313,7 +313,7 @@ export default class SelectHardware extends Component {
                 {this.context.t('ledgerFirefoxNotSupportedDescription1')}
                 <a
                   className="hw-connect__href-link"
-                  href={ZENDESK_URLS.HARDWARE_CONNECTION}
+                  href={ZENDESK_URLS.HARDWARE_CONNECTION_TREZOR_LEDGER}
                   target="_blank"
                   rel="noreferrer"
                 >
