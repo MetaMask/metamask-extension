@@ -91,7 +91,7 @@ export const useAccountTotalCrossChainFiatBalance = (
           allNetworks[singleChainTokenBalances.chainId as `0x${string}`]
             .nativeCurrency;
         const conversionRate =
-          currencyRates?.[matchedChainSymbol]?.conversionRate;
+          currencyRates?.[matchedChainSymbol]?.conversionRate ?? undefined;
         const tokenFiatBalances = tokensWithBalances.map(
           (token: TokenWithBalance) => {
             const tokenExchangeRate =
