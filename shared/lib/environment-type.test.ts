@@ -22,9 +22,7 @@ describe('getEnvironmentType', () => {
   });
 
   it('returns fullscreen type for home.html', () => {
-    const environmentType = getEnvironmentType(
-      'http://extension-id/home.html',
-    );
+    const environmentType = getEnvironmentType('http://extension-id/home.html');
     expect(environmentType).toStrictEqual(ENVIRONMENT_TYPE_FULLSCREEN);
   });
 
