@@ -43,9 +43,9 @@ import {
   getShowDefaultAddress,
   getIsDefaultAddressEnabled,
 } from '../../../selectors';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import {
   ENVIRONMENT_TYPE_POPUP,
