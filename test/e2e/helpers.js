@@ -21,6 +21,7 @@ const {
 } = require('./background-socket/server-mocha-to-background');
 const LocalWebSocketServer = require('./websocket-server').default;
 const { setupSolanaWebsocketMocks } = require('./websocket-solana-mocks');
+const { setupPerpsWebsocketMocks } = require('./websocket-perps-mocks');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -150,6 +151,7 @@ async function withFixtures(options, testSuite) {
     monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
+    perpsWebSocketSpecificMocks = [],
     extendedTimeoutMultiplier = 1,
   } = options;
 
@@ -313,10 +315,13 @@ async function withFixtures(options, testSuite) {
       }
     }
 
-    // Start WebSocket server and apply Solana mocks (defaults + overrides)
+    // Start WebSocket server and apply Solana + Perps mocks (defaults + overrides).
+    // Clear mock handlers each test so we do not accumulate connection listeners.
     webSocketServer = LocalWebSocketServer.getServerInstance();
     webSocketServer.start();
+    webSocketServer.clearMockConnectionHandlers();
     await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
+    await setupPerpsWebsocketMocks(perpsWebSocketSpecificMocks);
 
     // Decide between the regular setupMocking and the passThrough version
     const mockingSetupFunction = useMockingPassThrough
