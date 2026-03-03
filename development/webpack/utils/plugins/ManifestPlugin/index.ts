@@ -102,7 +102,9 @@ export class ManifestPlugin<Z extends boolean> {
 
   options: ManifestPluginOptions<Z>;
 
-  manifests: Map<Browser, Manifest> = new Map();
+  private manifests: Map<Browser, Manifest> = new Map();
+
+  private manifestSources: Map<Browser, sources.RawSource> = new Map();
 
   private addedScripts: Set<string> = new Set();
 
@@ -128,7 +130,6 @@ export class ManifestPlugin<Z extends boolean> {
   constructor(options: ManifestPluginOptions<Z>) {
     validate(schema, options, { name: NAME });
     this.options = options;
-    this.manifests = new Map();
   }
 
   apply(compiler: Compiler) {
@@ -164,9 +165,7 @@ export class ManifestPlugin<Z extends boolean> {
     // TODO(perf): run this in parallel. If you try without carefully optimizing the
     // process will run out of memory pretty quickly, and crash. Fun!
     for (const browser of browsers) {
-      const manifest = new RawSource(
-        JSON.stringify(this.manifests.get(browser), null, 2),
-      );
+      const manifest = this.manifestSources.get(browser) as sources.RawSource;
       const source = await new Promise<sources.Source>((resolve, reject) => {
         // since Zipping is async, a past chunk could cause an error after we've
         // started processing additional chunks. We'll use this errored flag to
@@ -257,9 +256,7 @@ export class ManifestPlugin<Z extends boolean> {
     const { browsers } = options;
     const assetEntries = Object.entries(assets);
     browsers.forEach((browser) => {
-      const manifest = new RawSource(
-        JSON.stringify(this.manifests.get(browser), null, 2),
-      );
+      const manifest = this.manifestSources.get(browser) as sources.RawSource;
       compilation.emitAsset(
         path.posix.join(browser, 'manifest.json'),
         manifest,
@@ -509,7 +506,7 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   private resolveEntrypoints(compilation: Compilation): void {
-    for (const manifest of this.manifests.values()) {
+    for (const [browser, manifest] of this.manifests) {
       // resolve content_scripts (MV2 + MV3)
       for (const contentScript of manifest.content_scripts ?? []) {
         contentScript.js = contentScript.js?.map((contentScriptPath) => {
@@ -570,6 +567,12 @@ export class ManifestPlugin<Z extends boolean> {
           }
         }
       }
+
+      // cache the resolved manifests as RawSource
+      this.manifestSources.set(
+        browser,
+        new RawSource(JSON.stringify(manifest, null, 2)),
+      );
     }
   }
 
