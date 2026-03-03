@@ -133,6 +133,8 @@ module.exports = createScriptTasks;
  * @param {string} options.version - The current version of the extension.
  * @param options.shouldIncludeSnow - Whether the build should use
  * Snow at runtime or not.
+ * @param options.shouldIncludeOcapKernel - Whether the build includes the
+ * Ocap Kernel.
  * @returns {object} A set of tasks, one for each build target.
  */
 function createScriptTasks({
@@ -145,6 +147,7 @@ function createScriptTasks({
   livereload,
   policyOnly,
   shouldLintFenceFiles,
+  shouldIncludeOcapKernel = false,
   version,
 }) {
   // high level tasks
@@ -217,6 +220,7 @@ function createScriptTasks({
         ignoredFiles,
         policyOnly,
         shouldLintFenceFiles,
+        shouldIncludeOcapKernel,
         version,
       }),
     );
@@ -273,6 +277,19 @@ function createScriptTasks({
       }),
     );
 
+    // task for building devtools and kernel-panel
+    if (shouldIncludeOcapKernel) {
+      const devtoolsSubtask = createTask(
+        `${taskPrefix}:devtools`,
+        createDevtoolsBundle({ buildTarget }),
+      );
+      const kernelPanelSubtask = createTask(
+        `${taskPrefix}:kernel-panel`,
+        createKernelPanelBundle({ buildTarget }),
+      );
+      allSubtasks.push(devtoolsSubtask, kernelPanelSubtask);
+    }
+
     // make a parent task that runs each task in a child thread
     return composeParallel(initiateLiveReload, ...allSubtasks);
   }
@@ -316,6 +333,54 @@ function createScriptTasks({
       buildType,
       destFilepath: `scripts/${label}.js`,
       entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
+      label,
+      policyOnly,
+      shouldLintFenceFiles,
+      version,
+      applyLavaMoat,
+    });
+  }
+
+  /**
+   * Create a bundle for the "devtools" module.
+   *
+   * @param {object} options - The build options.
+   * @param {BUILD_TARGETS} options.buildTarget - The current build target.
+   * @returns {Function} A function that creates the bundle.
+   */
+  function createDevtoolsBundle({ buildTarget }) {
+    const label = 'devtools';
+    return createNormalBundle({
+      browserPlatforms,
+      buildTarget,
+      buildType,
+      destFilepath: `devtools/${label}.js`,
+      entryFilepath: `./app/devtools/${label}.ts`,
+      ignoredFiles,
+      label,
+      policyOnly,
+      shouldLintFenceFiles,
+      version,
+      applyLavaMoat,
+    });
+  }
+
+  /**
+   * Create a bundle for the "kernel-panel" module.
+   *
+   * @param {object} options - The build options.
+   * @param {BUILD_TARGETS} options.buildTarget - The current build target.
+   * @returns {Function} A function that creates the bundle.
+   */
+  function createKernelPanelBundle({ buildTarget }) {
+    const label = 'kernel-panel';
+    return createNormalBundle({
+      browserPlatforms,
+      buildTarget,
+      buildType,
+      destFilepath: `devtools/ocap-kernel/${label}.js`,
+      entryFilepath: `./app/devtools/ocap-kernel/${label}.ts`,
       ignoredFiles,
       label,
       policyOnly,
@@ -512,6 +577,8 @@ async function createManifestV3AppInitializationBundle({
  * @param {string} options.version - The current version of the extension.
  * @param options.shouldIncludeSnow - Whether the build should use
  * Snow at runtime or not.
+ * @param options.shouldIncludeOcapKernel - Whether the build includes the
+ * Ocap Kernel.
  * @returns {Function} A function that creates the set of bundles.
  */
 function createFactoredBuild({
@@ -524,6 +591,7 @@ function createFactoredBuild({
   ignoredFiles,
   policyOnly,
   shouldLintFenceFiles,
+  shouldIncludeOcapKernel = false,
   version,
 }) {
   return async function () {
@@ -664,6 +732,7 @@ function createFactoredBuild({
           applyLavaMoat,
           commonSet,
           groupSet,
+          shouldIncludeOcapKernel,
           shouldIncludeSnow,
         });
         switch (groupLabel) {
@@ -952,6 +1021,9 @@ function setupBundlerDefaults(
             './**/node_modules/ox',
             './**/node_modules/uuid',
             './**/node_modules/isows',
+            // Ocap Kernel
+            './**/node_modules/@endo',
+            './**/node_modules/@agoric',
             // Snaps
             './**/node_modules/@metamask/snaps-controllers',
             './**/node_modules/@metamask/snaps-execution-environments',
@@ -1188,6 +1260,7 @@ function getScriptTags({
   applyLavaMoat,
   commonSet,
   groupSet,
+  shouldIncludeOcapKernel = false,
   shouldIncludeSnow,
 }) {
   if (applyLavaMoat === undefined) {
@@ -1203,11 +1276,17 @@ function getScriptTags({
   const securityScripts = applyLavaMoat
     ? [
         './scripts/runtime-lavamoat.js',
+        ...(shouldIncludeOcapKernel
+          ? ['./scripts/eventual-send-install.js']
+          : []),
         './scripts/lockdown-more.js',
         './scripts/policy-load.js',
       ]
     : [
         './scripts/lockdown-install.js',
+        ...(shouldIncludeOcapKernel
+          ? ['./scripts/eventual-send-install.js']
+          : []),
         './scripts/lockdown-run.js',
         './scripts/lockdown-more.js',
         './scripts/runtime-cjs.js',
