@@ -14,6 +14,9 @@ import {
   mergeAllTransactionsByTime,
   groupAndFlattenMergedTransactions,
   resolveTransactionType,
+  matchesApiTransaction,
+  matchesLocalTransaction,
+  matchesNonEvmTransaction,
 } from './helpers';
 
 const ethToken: Token = {
@@ -189,6 +192,39 @@ describe('groupAndFlattenMergedTransactions', () => {
       'completed',
       'completed',
     ]);
+  });
+});
+
+describe('matchesApiTransaction', () => {
+  it('matches when the from token address equals the given address', () => {
+    const tx = makeApiTx({
+      time: 1000,
+      amounts: { from: { amount: 1n, token: usdcToken } },
+    });
+    expect(matchesApiTransaction(tx, usdcToken.address)).toBe(true);
+    expect(matchesApiTransaction(tx, '0xdeadbeef')).toBe(false);
+  });
+});
+
+describe('matchesLocalTransaction', () => {
+  it('matches when txParams.to equals the token address', () => {
+    const group = makeLocalGroup({
+      time: 1000,
+      txParams: { to: '0xABC', nonce: '0x0' } as TransactionMeta['txParams'],
+    });
+    expect(matchesLocalTransaction(group, '0xabc')).toBe(true);
+    expect(matchesLocalTransaction(group, '0x123')).toBe(false);
+  });
+});
+
+describe('matchesNonEvmTransaction', () => {
+  it('matches when a fungible asset type contains the address', () => {
+    const tx = {
+      from: [{ asset: { fungible: true, type: 'solana:101/token:0xABC' } }],
+      to: [],
+    } as unknown as import('@metamask/keyring-api').Transaction;
+    expect(matchesNonEvmTransaction(tx, 'solana:101/token:0xABC')).toBe(true);
+    expect(matchesNonEvmTransaction(tx, '0xdeadbeef')).toBe(false);
   });
 });
 
