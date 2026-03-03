@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import nacl from 'tweetnacl';
-import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { WINDOW_TITLES } from '../../constants';
 import { largeDelayMs, regularDelayMs } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
@@ -16,15 +16,6 @@ export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 export const account1 = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
 export const account1Short = '4tE7...Uxer';
 export const account2Short = 'ExTE...GNtt';
-
-/**
- * Default options for setting up Solana E2E test environment
- */
-export const DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS = {
-  dappOptions: {
-    customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
-  },
-};
 
 /**
  * Selects the Devnet checkbox in the permissions tab.

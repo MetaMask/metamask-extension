@@ -151,6 +151,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         snapsInstallPrivacyWarningShown: true,
         hasShownMultichainAccountsIntroModal: true,
         showShieldEntryModalOnce: false,
+        pendingRedirectRoute: null,
         pendingShieldCohort: null,
         pendingShieldCohortTxType: null,
         appActiveTab: {
@@ -162,6 +163,8 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           host: '127.0.0.1:8080',
           href: 'http://127.0.0.1:8080',
         },
+        musdConversionEducationSeen: false,
+        musdConversionDismissedCtaKeys: [],
       },
       BridgeController: {},
       CurrencyController: {
@@ -243,6 +246,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         lostIdentities: {},
         openSeaEnabled: false,
         preferences: {
+          defaultAddressScope: 'eip155',
           hideZeroBalanceTokens: false,
           showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
@@ -250,6 +254,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           smartTransactionsOptInStatus: true,
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
+          showDefaultAddress: false,
           showMultiRpcModal: false,
           showConfirmationAdvancedDetails: false,
           tokenSortConfig: {

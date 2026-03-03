@@ -1,16 +1,10 @@
 import React from 'react';
-import README from './README.mdx';
 import Identicon from './identicon.component';
 
 export default {
   title: 'Components/UI/Identicon',
 
   component: Identicon,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     addBorder: { control: 'boolean' },
     address: { control: 'text' },

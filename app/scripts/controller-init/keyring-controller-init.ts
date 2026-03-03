@@ -102,12 +102,10 @@ export const KeyringControllerInit: ControllerInitFunction<
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const snapKeyringBuilder = getController('SnapKeyringBuilder');
 
   // @ts-expect-error: `addAccounts` is missing in `SnapKeyring` type.
   additionalKeyrings.push(snapKeyringBuilder);
-  ///: END:ONLY_INCLUDE_IF
 
   const controller = new KeyringController({
     state: persistedState.KeyringController,

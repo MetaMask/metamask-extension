@@ -22,6 +22,7 @@ import {
   DEFAULT_AUTO_LOCK_TIME_LIMIT,
   ThemeType,
 } from '../../../shared/constants/preferences';
+import { type DefaultAddressScope } from '../../../shared/constants/default-address';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import { FALLBACK_LOCALE } from '../../../shared/modules/i18n';
 
@@ -97,12 +98,14 @@ type PreferencesControllerOptions = {
 export type Preferences = {
   autoLockTimeLimit?: number;
   avatarType?: 'maskicon' | 'jazzicon' | 'blockies';
+  defaultAddressScope: DefaultAddressScope;
   dismissSmartAccountSuggestionEnabled: boolean;
   featureNotificationsEnabled: boolean;
   hideZeroBalanceTokens: boolean;
   petnamesEnabled: boolean;
   privacyMode: boolean;
   showConfirmationAdvancedDetails: boolean;
+  showDefaultAddress: boolean;
   showExtensionInFullSizeView: boolean;
   showFiatInTestnets: boolean;
   showMultiRpcModal: boolean;
@@ -176,9 +179,7 @@ export type PreferencesControllerState = Omit<
  */
 export const getDefaultPreferencesControllerState =
   (): PreferencesControllerState => ({
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
-    ///: END:ONLY_INCLUDE_IF
     advancedGasFee: {},
     currentLocale: '',
     dismissSeedBackUpReminder: false,
@@ -208,6 +209,8 @@ export const getDefaultPreferencesControllerState =
       petnamesEnabled: true,
       privacyMode: false,
       showConfirmationAdvancedDetails: false,
+      showDefaultAddress: false,
+      defaultAddressScope: 'eip155',
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
       showMultiRpcModal: false,
@@ -228,9 +231,7 @@ export const getDefaultPreferencesControllerState =
     securityAlertsEnabled: true,
     selectedAddress: '',
     snapRegistryList: {},
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     snapsAddSnapAccountModalDismissed: false,
-    ///: END:ONLY_INCLUDE_IF
     theme: ThemeType.os,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
@@ -683,7 +684,6 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   /**
    * Setter for the `addSnapAccountEnabled` property.
    *
@@ -695,7 +695,6 @@ export class PreferencesController extends BaseController<
       state.addSnapAccountEnabled = addSnapAccountEnabled;
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   /**
@@ -1026,13 +1025,23 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  setShowDefaultAddress(value: boolean): void {
+    this.update((state) => {
+      state.preferences.showDefaultAddress = value;
+    });
+  }
+
+  setDefaultAddressScope(value: DefaultAddressScope): void {
+    this.update((state) => {
+      state.preferences.defaultAddressScope = value;
+    });
+  }
+
   setSnapsAddSnapAccountModalDismissed(value: boolean): void {
     this.update((state) => {
       state.snapsAddSnapAccountModalDismissed = value;
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Resets the preferences state to the default values.

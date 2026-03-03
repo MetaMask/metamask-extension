@@ -10,19 +10,19 @@ on:
         required: true
       TEST_SRP_2:
         required: false
-        description: Required for performanceAccountManagement (import-srp-home). 12-word seed phrase.
+        description: Required for userJourneyAccountManagement (import-srp-home). 12-word seed phrase.
 
 env:
   COMMANDS: |
     {
-      "standardHome": "yarn test:e2e:benchmark --preset standardHome --out test-artifacts/benchmarks/benchmark-{0}-{1}-standardHome.json --retries 2",
-      "powerUserHome": "yarn test:e2e:benchmark --preset powerUserHome --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-powerUserHome.json --retries 2",
-      "userActions": "yarn test:e2e:benchmark --preset userActions --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2",
-      "performanceOnboardingImport": "yarn test:e2e:benchmark --preset performanceOnboardingImport --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboardingImport.json --retries 2",
-      "performanceOnboardingNew": "yarn test:e2e:benchmark --preset performanceOnboardingNew --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboardingNew.json --retries 2",
-      "performanceAssets": "yarn test:e2e:benchmark --preset performanceAssets --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceAssets.json --retries 2",
-      "performanceTransactions": "yarn test:e2e:benchmark --preset performanceTransactions --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceTransactions.json --retries 2",
-      "performanceAccountManagement": "yarn test:e2e:benchmark --preset performanceAccountManagement --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceAccountManagement.json --retries 2"
+      "startupStandardHome": "yarn test:e2e:benchmark --preset startupStandardHome --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupStandardHome.json --retries 2",
+      "startupPowerUserHome": "yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2",
+      "interactionUserActions": "yarn test:e2e:benchmark --preset interactionUserActions --out test-artifacts/benchmarks/benchmark-{0}-{1}-interactionUserActions.json --retries 2",
+      "userJourneyOnboardingImport": "yarn test:e2e:benchmark --preset userJourneyOnboardingImport --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyOnboardingImport.json --retries 2",
+      "userJourneyOnboardingNew": "yarn test:e2e:benchmark --preset userJourneyOnboardingNew --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyOnboardingNew.json --retries 2",
+      "userJourneyAssets": "yarn test:e2e:benchmark --preset userJourneyAssets --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyAssets.json --retries 2",
+      "userJourneyTransactions": "yarn test:e2e:benchmark --preset userJourneyTransactions --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyTransactions.json --retries 2",
+      "userJourneyAccountManagement": "yarn test:e2e:benchmark --preset userJourneyAccountManagement --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyAccountManagement.json --retries 2"
     }
 
 jobs:
@@ -38,27 +38,31 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Page load + User action benchmarks run on all 4 browser/buildType combinations
+        # Preset names are defined in test/e2e/benchmarks/utils/constants.ts
+        # and must be kept in sync here manually.
+        #
+        # Startup + Interaction benchmarks run on all 4 browser/buildType combinations
         browser: [chrome, firefox]
         buildType: [browserify, webpack]
-        pageType: [standardHome, powerUserHome, userActions]
-        # Performance benchmarks run on Chrome + Browserify (every trigger)
+        pageType:
+          [startupStandardHome, startupPowerUserHome, interactionUserActions]
+        # User journey benchmarks run on Chrome + Browserify (every trigger)
         include:
           - browser: chrome
             buildType: browserify
-            pageType: performanceOnboardingImport
+            pageType: userJourneyOnboardingImport
           - browser: chrome
             buildType: browserify
-            pageType: performanceOnboardingNew
+            pageType: userJourneyOnboardingNew
           - browser: chrome
             buildType: browserify
-            pageType: performanceAssets
+            pageType: userJourneyAssets
           - browser: chrome
             buildType: browserify
-            pageType: performanceTransactions
+            pageType: userJourneyTransactions
           - browser: chrome
             buildType: browserify
-            pageType: performanceAccountManagement
+            pageType: userJourneyAccountManagement
     name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
@@ -76,11 +80,10 @@ jobs:
     continue-on-error: true
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Restore .metamask folder
         id: restore-metamask
@@ -134,7 +137,7 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/${{ env.OUTPUT_NAME }}
           path: test-artifacts/benchmarks/${{ env.OUTPUT_NAME }}
 
-  # Webpack performance benchmarks - only on push to main/release branches.
+  # Webpack user journey benchmarks - only on push to main/release branches.
   # Compares webpack vs browserify performance before releasing webpack to production.
   benchmarks-webpack-perf:
     if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')) }}
@@ -149,11 +152,11 @@ jobs:
       fail-fast: false
       matrix:
         pageType:
-          - performanceOnboardingImport
-          - performanceOnboardingNew
-          - performanceAssets
-          - performanceTransactions
-          - performanceAccountManagement
+          - userJourneyOnboardingImport
+          - userJourneyOnboardingNew
+          - userJourneyAssets
+          - userJourneyTransactions
+          - userJourneyAccountManagement
     name: chrome-webpack-${{ matrix.pageType }}
     env:
       SELENIUM_BROWSER: chrome
@@ -169,11 +172,10 @@ jobs:
     continue-on-error: true
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Restore .metamask folder
         id: restore-metamask

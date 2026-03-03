@@ -1,9 +1,25 @@
 import { AllProperties } from '../../../shared/modules/object.utils';
 
+type SentryMaskValue =
+  | boolean
+  | { [key: string | symbol]: SentryMaskValue }
+  | SentryMaskValue[];
+
+type StrictSentryMaskObject = {
+  [key: string]: SentryMaskValue;
+  [key: symbol]: never;
+};
+
+type SentryBackgroundStateMask = Record<string, StrictSentryMaskObject>;
+
+type SentryUiStateMask = StrictSentryMaskObject & {
+  metamask: StrictSentryMaskObject;
+};
+
 // This describes the subset of background controller state attached to errors
 // sent to Sentry These properties have some potential to be useful for
 // debugging, and they do not contain any identifiable information.
-export const SENTRY_BACKGROUND_STATE = {
+export const SENTRY_BACKGROUND_STATE: SentryBackgroundStateMask = {
   AccountTreeController: {
     accountTree: false,
   },
@@ -59,8 +75,6 @@ export const SENTRY_BACKGROUND_STATE = {
     onboardingDate: false,
     currentExtensionPopupId: false,
     defaultHomeActiveTabName: true,
-    enableEnforcedSimulations: true,
-    enableEnforcedSimulationsForTransactions: false,
     fullScreenGasPollTokens: true,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -88,7 +102,7 @@ export const SENTRY_BACKGROUND_STATE = {
     throttledOrigins: false,
     timeoutMinutes: true,
     trezorModel: true,
-    isUpdateAvailable: true,
+    pendingExtensionVersion: true,
     updateModalLastDismissedAt: true,
     lastUpdatedAt: true,
     shieldSubscriptionError: true,
@@ -361,9 +375,8 @@ export const SENTRY_BACKGROUND_STATE = {
       tradeTxId: false,
     },
   },
-  TokenDetectionController: {
-    [AllProperties]: false,
-  },
+  // TokenDetectionController has no public controller state.
+  TokenDetectionController: {},
   TokenListController: {
     tokensChainsCache: {
       [AllProperties]: false,
@@ -408,16 +421,21 @@ export const SENTRY_BACKGROUND_STATE = {
   },
 };
 
-const flattenedBackgroundStateMask: Record<string, unknown> = {};
+const flattenedBackgroundStateMask: StrictSentryMaskObject = {};
 
 for (const controllerState of Object.values(SENTRY_BACKGROUND_STATE)) {
-  Object.assign(flattenedBackgroundStateMask, controllerState);
+  // Copy only string keys to avoid leaking symbol-only wildcard masks into
+  // flattened UI masks. This isn't allowed by the types, but has happened
+  // before.
+  for (const [key, value] of Object.entries(controllerState)) {
+    flattenedBackgroundStateMask[key] = value;
+  }
 }
 
 // This describes the subset of Redux state attached to errors sent to Sentry
 // These properties have some potential to be useful for debugging, and they do
 // not contain any identifiable information.
-export const SENTRY_UI_STATE = {
+export const SENTRY_UI_STATE: SentryUiStateMask = {
   gas: true,
   history: true,
   appState: {
@@ -435,10 +453,8 @@ export const SENTRY_UI_STATE = {
     isInitialized: true,
     useSafeChainsListValidation: true,
     watchEthereumAccountEnabled: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
-    ///: END:ONLY_INCLUDE_IF
     newPrivacyPolicyToastClickedOrClosed: false,
     newPrivacyPolicyToastShownDate: false,
   },
