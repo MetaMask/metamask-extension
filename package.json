@@ -6,12 +6,6 @@
     "type": "git",
     "url": "https://github.com/MetaMask/metamask-extension.git"
   },
-  "previewBuilds": {
-    "@metamask/perps-controller": {
-      "type": "breaking",
-      "previewVersion": "0.0.0-preview-b0148922a"
-    }
-  },
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
@@ -154,7 +148,6 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/perps-controller@npm:^0.0.0": "npm:@metamask-previews/perps-controller@0.0.0-preview-b0148922a",
     "jest-clean-console-reporter/chalk": "^4.1.2",
     "chokidar": "^3.6.0",
     "@types/react": "^17.0.11",
@@ -369,7 +362,7 @@
     "@metamask/permission-controller": "^12.1.0",
     "@metamask/permission-log-controller": "^5.0.0",
     "@metamask/permissions-kernel-snap": "^1.0.0",
-    "@metamask/perps-controller": "^0.0.0",
+    "@metamask/perps-controller": "^1.0.0",
     "@metamask/phishing-controller": "^16.3.0",
     "@metamask/polling-controller": "^16.0.2",
     "@metamask/post-message-stream": "^10.0.0",
