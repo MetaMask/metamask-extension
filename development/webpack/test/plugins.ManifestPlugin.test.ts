@@ -216,6 +216,49 @@ describe('ManifestPlugin', () => {
         });
       };
     }
+
+    it('omits source maps from output when devtool is hidden-source-map', async () => {
+      const files = [
+        {
+          name: 'filename.js',
+          source: Buffer.from('console.log(1 + 2);', 'utf8'),
+        },
+        {
+          name: 'filename.js.map',
+          source: Buffer.from('{}', 'utf8'),
+        },
+      ];
+      const { compiler, compilation, promise } = mockWebpack(
+        files.map(({ name }) => name),
+        files.map(({ source }) => source),
+        files.map(() => null),
+        'hidden-source-map',
+      );
+      compilation.options.context = join(
+        __dirname,
+        'fixtures/ManifestPlugin/empty',
+      );
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome', 'firefox'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      assert.deepStrictEqual(Object.keys(compilation.assets).sort(), [
+        'chrome/filename.js',
+        'chrome/manifest.json',
+        'firefox/filename.js',
+        'firefox/manifest.json',
+      ]);
+    });
   });
 
   describe('should transform the manifest object', () => {
