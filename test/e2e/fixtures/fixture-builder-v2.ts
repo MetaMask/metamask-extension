@@ -263,9 +263,6 @@ class FixtureBuilderV2 {
     optionalScopes['wallet:eip155'] = {
       accounts: [`wallet:eip155:${selectedAccount}`],
     };
-    optionalScopes.wallet = {
-      accounts: [],
-    };
 
     const subjects: PermissionControllerState<PermissionConstraint>['subjects'] =
       {};
