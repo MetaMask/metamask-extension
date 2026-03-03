@@ -7818,12 +7818,6 @@
   "speedUpTransactionTitle": {
     "message": "Speed up transaction"
   },
-  "speedUpTransactionDescription": {
-    "message": "This network fee will replace the original."
-  },
-  "speedUpTransactionTitle": {
-    "message": "Speed up transaction"
-  },
   "spendLimitInsufficient": {
     "message": "Spend limit insufficient"
   },

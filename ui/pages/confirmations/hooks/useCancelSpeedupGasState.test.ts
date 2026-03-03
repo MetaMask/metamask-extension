@@ -1,6 +1,9 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { EditGasModes } from '../../../../shared/constants/gas';
+import {
+  EditGasModes,
+  GasEstimateTypes,
+} from '../../../../shared/constants/gas';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { useCancelSpeedupGasState } from './useCancelSpeedupGasState';
 
@@ -56,20 +59,29 @@ describe('useCancelSpeedupGasState', () => {
   const mockUpdateTransactionToTenPercentIncreasedGasFee = jest.fn();
   const mockUpdateTransactionUsingEstimate = jest.fn();
 
+  const mockUpdateTransaction = jest.fn();
+  const mockUpdateTransactionUsingDAPPSuggestedValues = jest.fn();
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockSelectNetworkConfigurationByChainId.mockReturnValue(mockNetwork);
     mockSelectTransactionMetadata.mockReturnValue(undefined);
     mockUseGasFeeEstimates.mockReturnValue({
       gasFeeEstimates: { medium: { suggestedMaxFeePerGas: '0x2' } },
-    } as ReturnType<typeof mockUseGasFeeEstimates>);
+      gasEstimateType: GasEstimateTypes.feeMarket,
+      isGasEstimatesLoading: false,
+      isNetworkBusy: false,
+    } as unknown as ReturnType<typeof useGasFeeEstimates>);
     mockUseTransactionFunctions.mockReturnValue({
       cancelTransaction: mockCancelTransaction,
       speedUpTransaction: mockSpeedUpTransaction,
+      updateTransaction: mockUpdateTransaction,
       updateTransactionToTenPercentIncreasedGasFee:
         mockUpdateTransactionToTenPercentIncreasedGasFee,
+      updateTransactionUsingDAPPSuggestedValues:
+        mockUpdateTransactionUsingDAPPSuggestedValues,
       updateTransactionUsingEstimate: mockUpdateTransactionUsingEstimate,
-    } as ReturnType<typeof mockUseTransactionFunctions>);
+    });
   });
 
   it('returns effectiveTransaction, gasFeeEstimates, and transaction action functions', () => {
@@ -124,7 +136,10 @@ describe('useCancelSpeedupGasState', () => {
   it('returns gasFeeEstimates as null when useGasFeeEstimates returns undefined estimates', () => {
     mockUseGasFeeEstimates.mockReturnValue({
       gasFeeEstimates: undefined,
-    } as ReturnType<typeof mockUseGasFeeEstimates>);
+      gasEstimateType: GasEstimateTypes.feeMarket,
+      isGasEstimatesLoading: false,
+      isNetworkBusy: false,
+    } as unknown as ReturnType<typeof useGasFeeEstimates>);
 
     const transaction = createMockTransaction();
     const { result } = renderHook(() =>

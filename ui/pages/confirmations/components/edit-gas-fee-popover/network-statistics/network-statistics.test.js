@@ -149,7 +149,7 @@ describe('NetworkStatistics', () => {
 
     expect(getByText('50 GWEI')).toBeInTheDocument();
     expect(getByText('1 - 3 GWEI')).toBeInTheDocument();
-    expect(getByText('Stable')).toBeInTheDocument();
+    expect(getByText(messages.stable.message)).toBeInTheDocument();
   });
 
   it('uses context gasFeeEstimates when present and ignores fallback', () => {

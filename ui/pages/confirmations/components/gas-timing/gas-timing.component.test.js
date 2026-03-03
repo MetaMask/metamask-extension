@@ -86,7 +86,9 @@ describe('Gas timing', () => {
     );
 
     await waitFor(() => {
-      expect(screen.queryByText('10% increase')).toBeTruthy();
+      expect(
+        screen.queryByText(messages.tenPercentIncreased.message),
+      ).toBeTruthy();
     });
   });
 
@@ -103,7 +105,7 @@ describe('Gas timing', () => {
     );
 
     await waitFor(() => {
-      expect(screen.queryByText('Market')).toBeTruthy();
+      expect(screen.queryByText(messages.medium.message)).toBeTruthy();
     });
   });
 
@@ -120,7 +122,9 @@ describe('Gas timing', () => {
     );
 
     await waitFor(() => {
-      expect(screen.queryByText('10% increase')).toBeTruthy();
+      expect(
+        screen.queryByText(messages.tenPercentIncreased.message),
+      ).toBeTruthy();
     });
   });
 

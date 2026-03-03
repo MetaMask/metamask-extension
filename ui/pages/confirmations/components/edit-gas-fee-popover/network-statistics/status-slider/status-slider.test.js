@@ -96,6 +96,6 @@ describe('StatusSlider', () => {
     const { getByText } = renderComponent({
       gasFeeEstimatesProp: { networkCongestion: 0.9 },
     });
-    expect(getByText('Busy')).toBeInTheDocument();
+    expect(getByText(messages.busy.message)).toBeInTheDocument();
   });
 });
