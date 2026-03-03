@@ -73,7 +73,7 @@ import type { MetaMaskReduxDispatch } from '../../store/store';
 import { useTheme } from '../../hooks/useTheme';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { isFlask } from '../../../shared/lib/build-types';
-import { mmLazy } from '../../helpers/utils/mm-lazy';
+import { DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -92,13 +92,14 @@ import OnboardingDownloadApp from './download-app/download-app';
 // Lazy-load ExperimentalArea so the flask/ module is only fetched in Flask builds.
 // This is not just for performance, it is necessary so non-Flask builds don't try
 // to import Flask-only code and fail.
-const ExperimentalArea = mmLazy<React.ComponentType<{ redirectTo?: string }>>(
-  () =>
+// TODO: Fix type casting once `mmLazy` is updated to handle component props.
+const ExperimentalArea = mmLazy(
+  (() =>
     import(
       // eslint-disable-next-line import/extensions, import/no-useless-path-segments -- these are needed for mmLazy
       '../../components/app/flask/experimental-area/index.js'
-    ),
-);
+    )) as unknown as DynamicImportType,
+) as unknown as React.ComponentType<{ redirectTo?: string }>;
 
 // Helper to convert onboarding paths to relative paths for nested route matching
 const toRelativePath = (path: string) =>
