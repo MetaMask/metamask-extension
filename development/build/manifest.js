@@ -1,7 +1,7 @@
 const { promises: fs } = require('fs');
 const path = require('path');
 const childProcess = require('child_process');
-const { mergeWith, cloneDeep } = require('lodash');
+const { merge, mergeWith, cloneDeep } = require('lodash');
 const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 
 const baseManifest = isManifestV3
@@ -52,6 +52,7 @@ function createManifestTasks({
   browserVersionMap,
   buildType,
   entryTask,
+  shouldIncludeOcapKernel = false,
   shouldIncludeSnow,
 }) {
   const environment = getEnvironment({ buildTarget: entryTask });
@@ -82,6 +83,10 @@ function createManifestTasks({
           manifestFlags,
         );
         modifyNameAndDescForNonProd(result);
+
+        if (shouldIncludeOcapKernel) {
+          applyOcapKernelChanges(result);
+        }
 
         applyLockdownContentScripts(result);
 
@@ -206,6 +211,21 @@ function createManifestTasks({
       return [...new Set([...objValue, ...srcValue])];
     }
     return undefined;
+  }
+
+  function applyOcapKernelChanges(manifest) {
+    if (!Array.isArray(manifest.sandbox?.pages)) {
+      merge(manifest, { sandbox: { pages: [] } });
+    }
+    manifest.sandbox.pages.push('ocap-kernel/vat/iframe.html');
+    manifest.devtools_page = 'devtools/devtools.html';
+    if (manifest.content_security_policy?.extension_pages) {
+      manifest.content_security_policy.extension_pages =
+        manifest.content_security_policy.extension_pages.replace(
+          "frame-ancestors 'none';",
+          "frame-ancestors 'self' devtools://*;",
+        );
+    }
   }
 
   function applyLockdownContentScripts(manifest) {
