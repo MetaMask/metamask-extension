@@ -155,7 +155,7 @@
       "packages": {
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/logger": true,
-        "bn.js": true
+        "ethereumjs-util>bn.js": true
       }
     },
     "@ethersproject/bytes": {
@@ -309,7 +309,7 @@
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/logger": true,
         "ethers>@ethersproject/properties": true,
-        "bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "ethers>@ethersproject/sha2>hash.js": true
       }
     },
@@ -683,7 +683,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/utils": true,
-        "bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "@metamask/assets-controllers>multiformats": true,
         "reselect": true,
         "@metamask/assets-controllers>single-call-balance-checker-abi": true
@@ -744,7 +744,7 @@
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "cockatiel": true,
         "eth-ens-namehash": true,
@@ -936,7 +936,7 @@
         "@ethersproject/providers": true,
         "@metamask/eth-token-tracker>@metamask/eth-block-tracker": true,
         "@metamask/safe-event-emitter": true,
-        "bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "@metamask/eth-token-tracker>deep-equal": true,
         "human-standard-token-abi": true
       }
@@ -988,7 +988,7 @@
     "@metamask/controller-utils>@metamask/ethjs-unit": {
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn": true,
-        "bn.js": true
+        "ethereumjs-util>bn.js": true
       }
     },
     "eth-method-registry>@metamask/ethjs-contract>@metamask/ethjs-util": {
@@ -1195,7 +1195,7 @@
     },
     "@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn": {
       "packages": {
-        "bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
       }
     },
@@ -2274,7 +2274,7 @@
     },
     "crypto-browserify>public-encrypt>parse-asn1>asn1.js": {
       "packages": {
-        "bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "pumpify>inherits": true,
         "@toruslabs/eccrypto>elliptic>minimalistic-assert": true
@@ -2389,7 +2389,7 @@
         "btoa": true
       }
     },
-    "bn.js": {
+    "ethereumjs-util>bn.js": {
       "globals": {
         "Buffer": true
       }
@@ -2438,14 +2438,14 @@
     },
     "crypto-browserify>public-encrypt>browserify-rsa": {
       "packages": {
-        "bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "crypto-browserify>randombytes": true,
         "koa>content-disposition>safe-buffer": true
       }
     },
     "crypto-browserify>browserify-sign": {
       "packages": {
-        "bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "crypto-browserify>public-encrypt>browserify-rsa": true,
         "ethereumjs-util>create-hash": true,
         "crypto-browserify>create-hmac": true,
@@ -2672,7 +2672,7 @@
         "Buffer": true
       },
       "packages": {
-        "bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "@toruslabs/eccrypto>elliptic": true
       }
@@ -2823,7 +2823,7 @@
         "Buffer": true
       },
       "packages": {
-        "bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "crypto-browserify>diffie-hellman>miller-rabin": true,
         "crypto-browserify>randombytes": true
@@ -2842,7 +2842,7 @@
     },
     "@toruslabs/eccrypto>elliptic": {
       "packages": {
-        "bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "@toruslabs/eccrypto>elliptic>brorand": true,
         "ethers>@ethersproject/sha2>hash.js": true,
         "@toruslabs/eccrypto>elliptic>hmac-drbg": true,
@@ -2981,7 +2981,7 @@
       },
       "packages": {
         "@ngraveio/bc-ur>assert": true,
-        "bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
@@ -2994,7 +2994,7 @@
       },
       "packages": {
         "@ngraveio/bc-ur>assert": true,
-        "bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "ethereumjs-util>create-hash": true,
         "@metamask/keyring-controller>ethereumjs-wallet>ethereum-cryptography": true,
@@ -3076,7 +3076,7 @@
         "Buffer": true
       },
       "packages": {
-        "bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash>js-sha3": true,
         "eth-method-registry>@metamask/ethjs-contract>ethjs-abi>number-to-bn": true
@@ -3635,7 +3635,7 @@
     },
     "crypto-browserify>diffie-hellman>miller-rabin": {
       "packages": {
-        "bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "@toruslabs/eccrypto>elliptic>brorand": true
       }
     },
@@ -3653,7 +3653,7 @@
     },
     "eth-method-registry>@metamask/ethjs-contract>ethjs-abi>number-to-bn": {
       "packages": {
-        "bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
       }
     },
@@ -3800,7 +3800,7 @@
     },
     "crypto-browserify>public-encrypt": {
       "packages": {
-        "bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "crypto-browserify>public-encrypt>browserify-rsa": true,
         "ethereumjs-util>create-hash": true,
         "crypto-browserify>public-encrypt>parse-asn1": true,
@@ -4477,7 +4477,7 @@
         "Buffer.isBuffer": true
       },
       "packages": {
-        "bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true
       }
     },

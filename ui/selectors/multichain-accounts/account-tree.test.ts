@@ -36,6 +36,7 @@ import {
   getDefaultScopeAndAddressByAccountGroupId,
   getIconSeedAddressesByAccountGroups,
   getNormalizedGroupsMetadata,
+  selectAccountGroupNameByAddress,
 } from './account-tree';
 import { MultichainAccountsState } from './account-tree.types';
 import {
@@ -1582,6 +1583,29 @@ describe('Multichain Accounts Selectors', () => {
       expect(result).toEqual({
         'keyring:some/0x123': '',
       });
+    });
+  });
+
+  describe('selectAccountGroupNameByAddress', () => {
+    it('returns account group name for a valid address', () => {
+      const result = selectAccountGroupNameByAddress(
+        typedMockState,
+        ACCOUNT_1_ADDRESS,
+      );
+      expect(result).toBe('Account 1');
+    });
+
+    it('returns undefined when address is not provided', () => {
+      const result = selectAccountGroupNameByAddress(typedMockState, undefined);
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when address does not match any account', () => {
+      const result = selectAccountGroupNameByAddress(
+        typedMockState,
+        '0x0000000000000000000000000000000000000000',
+      );
+      expect(result).toBeUndefined();
     });
   });
 });

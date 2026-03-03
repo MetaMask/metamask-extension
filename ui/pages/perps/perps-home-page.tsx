@@ -250,7 +250,12 @@ const PerpsHomePage: React.FC = () => {
 
       {/* Section 1: Your positions */}
       {!isLoading && positions.length > 0 && (
-        <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+        <Box
+          paddingLeft={4}
+          paddingRight={4}
+          paddingBottom={4}
+          data-testid="perps-positions-section"
+        >
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
@@ -288,6 +293,7 @@ const PerpsHomePage: React.FC = () => {
                   className={`${LIST_ITEM_BASE} ${LIST_ITEM_RADIUS}`}
                   role="button"
                   tabIndex={0}
+                  data-testid={`position-card-${position.symbol}`}
                   onClick={() => handlePositionClick(position.symbol)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -792,6 +798,7 @@ const PerpsHomePage: React.FC = () => {
             role="button"
             tabIndex={0}
             onClick={handleLearnPerps}
+            data-testid="perps-learn-basics"
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
