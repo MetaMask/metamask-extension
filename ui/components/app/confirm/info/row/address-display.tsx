@@ -78,11 +78,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
             onClose={handleModalClose}
           />
         )}
-        <TrustIcon
-          displayState={displayState}
-          image={image}
-          address={hexAddress}
-        />
+        <TrustIcon displayState={displayState} image={image} />
         {name && isClickable && (
           <TextButton
             size={TextButtonSize.BodyMd}
@@ -156,11 +152,9 @@ function useMiddleTruncation(text: string) {
 const TrustIcon = ({
   displayState,
   image,
-  address,
 }: {
   displayState: TrustSignalDisplayState;
   image?: string;
-  address: string;
 }) => {
   switch (displayState) {
     case TrustSignalDisplayState.Malicious:
