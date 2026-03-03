@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Button,
@@ -28,6 +28,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { Row } from '../layout';
+import {
+  ConnectionStatus,
+  useHardwareWalletActions,
+  useHardwareWalletConfig,
+  useHardwareWalletState,
+} from '../../../contexts/hardware-wallets';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
@@ -51,6 +57,13 @@ export const BridgeCTAButton = ({
   );
   const { submitBridgeTransaction } = useSubmitBridgeTransaction();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   const {
     isNoQuotesAvailable,
@@ -65,28 +78,50 @@ export const BridgeCTAButton = ({
 
   const isTxSubmittable = useIsTxSubmittable();
 
+  const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
+  const { ensureDeviceReady } = useHardwareWalletActions();
+  const { connectionState } = useHardwareWalletState();
+
+  const hardwareWalletName = useMemo(
+    () => (walletType ? t(walletType) : undefined),
+    [t, walletType],
+  );
+
+  const isHardwareWalletReady = useMemo(() => {
+    if (!isHardwareWalletAccount) {
+      return true;
+    }
+    return [ConnectionStatus.Connected, ConnectionStatus.Ready].includes(
+      connectionState.status,
+    );
+  }, [connectionState.status, isHardwareWalletAccount]);
+
   const label = useMemo(() => {
     if (wasTxDeclined) {
-      return 'youDeclinedTheTransaction';
+      return { key: 'youDeclinedTheTransaction' };
     }
 
     if (!fromAmount) {
       if (!toToken) {
-        return needsDestinationAddress
-          ? 'bridgeSelectTokenAmountAndAccount'
-          : 'bridgeSelectTokenAndAmount';
+        return {
+          key: needsDestinationAddress
+            ? 'bridgeSelectTokenAmountAndAccount'
+            : 'bridgeSelectTokenAndAmount',
+        };
       }
-      return needsDestinationAddress
-        ? 'bridgeSelectDestinationAccount'
-        : 'bridgeEnterAmount';
+      return {
+        key: needsDestinationAddress
+          ? 'bridgeSelectDestinationAccount'
+          : 'bridgeEnterAmount',
+      };
     }
 
     if (needsDestinationAddress) {
-      return 'bridgeSelectDestinationAccount';
+      return { key: 'bridgeSelectDestinationAccount' };
     }
 
     if (isQuoteExpired && !isLoading) {
-      return 'bridgeQuoteExpired';
+      return { key: 'bridgeQuoteExpired' };
     }
 
     if (isLoading && !isTxSubmittable && !activeQuote) {
@@ -98,14 +133,19 @@ export const BridgeCTAButton = ({
     }
 
     if (isInsufficientBalance || isInsufficientGasForQuote) {
-      return 'alertReasonInsufficientBalance';
+      return { key: 'alertReasonInsufficientBalance' };
     }
 
     if (isTxSubmittable || isTxAlertPresent || isTxAlertLoading) {
-      return 'swap';
+      if (isHardwareWalletAccount && !isHardwareWalletReady) {
+        return hardwareWalletName
+          ? { key: 'connectHardwareDevice', args: [hardwareWalletName] }
+          : { key: 'connect' };
+      }
+      return { key: 'swap' };
     }
 
-    return 'swapSelectToken';
+    return { key: 'swapSelectToken' };
   }, [
     isLoading,
     isTxAlertPresent,
@@ -121,6 +161,9 @@ export const BridgeCTAButton = ({
     needsDestinationAddress,
     activeQuote,
     isNoQuotesAvailable,
+    isHardwareWalletAccount,
+    isHardwareWalletReady,
+    hardwareWalletName,
   ]);
 
   // Label for the secondary button that re-starts quote fetching
@@ -147,13 +190,25 @@ export const BridgeCTAButton = ({
         }
 
         if (activeQuote && isTxSubmittable && !isSubmitting) {
+          // Set submitting state before async checks to prevent duplicate clicks.
+          setIsSubmitting(true);
+
           try {
+            // Verify hardware wallet device is ready before submitting.
+            if (isHardwareWalletAccount) {
+              const isDeviceReady = await ensureDeviceReady();
+              if (!isDeviceReady) {
+                return;
+              }
+            }
+
             // We don't need to worry about setting to false if the tx submission succeeds
             // because we route immediately to Activity list page
-            setIsSubmitting(true);
             await submitBridgeTransaction(activeQuote);
           } finally {
-            setIsSubmitting(false);
+            if (mountedRef.current) {
+              setIsSubmitting(false);
+            }
           }
         }
       }}
@@ -163,7 +218,7 @@ export const BridgeCTAButton = ({
         isSubmitting
       }
     >
-      {label ? t(label) : ''}
+      {label?.key ? t(label.key, label.args) : ''}
     </Button>
   ) : (
     <Row
@@ -176,7 +231,7 @@ export const BridgeCTAButton = ({
         textAlign={TextAlign.Center}
         color={TextColor.textAlternative}
       >
-        {label ? t(label) : ''}
+        {label?.key ? t(label.key, label.args) : ''}
       </Text>
       {secondaryButtonLabel && (
         <ButtonLink

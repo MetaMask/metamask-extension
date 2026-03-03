@@ -68,6 +68,7 @@ export class WalletFundsObtainedMonitor {
    * @returns true if an existing balance is found
    */
   #hasExistingFunds(): boolean {
+    // TODO: This should consider the new assets state as well (address it at controller level)
     try {
       const tokenBalancesState = this.#messenger.call(
         'TokenBalancesController:getState',

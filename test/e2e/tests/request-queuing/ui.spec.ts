@@ -15,6 +15,7 @@ import NetworkManager, {
 } from '../../page-objects/pages/network-manager';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, veryLargeDelayMs } from '../../helpers';
 import { Driver, PAGES } from '../../webdriver/driver';
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
@@ -164,6 +165,26 @@ async function openPopupWithActiveTabOrigin(
   await driver.openNewPage(
     `${driver.extensionUrl}/${PAGES.POPUP}.html?activeTabOrigin=${origin}`,
   );
+}
+
+async function validateBalanceAndActivity(
+  driver: Driver,
+  expectedBalance: string,
+  expectedActivityEntries: number = 1,
+): Promise<void> {
+  // Ensure the balance changed if the the transaction was confirmed
+  const homePage = new HomePage(driver);
+  await homePage.checkExpectedBalanceIsDisplayed(expectedBalance);
+
+  // Ensure there's an activity entry of "Sent" and "Confirmed"
+  if (expectedActivityEntries) {
+    const activityList = new ActivityListPage(driver);
+    await activityList.openActivityTab();
+    await activityList.checkTxAction({ action: 'Sent' });
+    await activityList.checkConfirmedTxNumberDisplayedInActivity(
+      expectedActivityEntries,
+    );
+  }
 }
 
 describe('Request-queue UI changes', function () {
@@ -348,37 +369,30 @@ describe('Request-queue UI changes', function () {
         // Wait for transaction to be completed on final confirmation
         await driver.delay(veryLargeDelayMs);
 
-        // Validate Activity tab shows confirmed transactions (from all networks)
-        const activityList = new ActivityListPage(driver);
-        await activityList.openActivityTab();
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(
-          IS_FIREFOX ? 1 : 2,
-        );
-
-        // Now validate balances on each network
-        const homePage = new HomePage(driver);
-        await homePage.goToTokensTab();
         const networkManager = new NetworkManager(driver);
 
         if (!IS_FIREFOX) {
           // Start on the last joined network, whose send transaction was just confirmed
           await networkManager.openNetworkManager();
           await networkManager.selectTab('Custom');
+
           await networkManager.selectNetworkByNameWithWait('Localhost 7777');
-          await homePage.checkExpectedBalanceIsDisplayed('25');
+          await validateBalanceAndActivity(driver, '25');
         }
 
         // Validate second network, where transaction was rejected
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
         await networkManager.selectNetworkByNameWithWait('Localhost 8546');
-        await homePage.checkExpectedBalanceIsDisplayed('25');
+
+        await validateBalanceAndActivity(driver, '25', 0);
 
         // Validate first network, where transaction was confirmed
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
         await networkManager.selectNetworkByNameWithWait('Localhost 8545');
-        await homePage.checkExpectedBalanceIsDisplayed('25');
+
+        await validateBalanceAndActivity(driver, '25');
       },
     );
   });
@@ -458,7 +472,7 @@ describe('Request-queue UI changes', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         driverOptions: { constrainWindowSize: true },
       },

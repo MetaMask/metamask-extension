@@ -16,12 +16,9 @@ buildTypes:
   main:
     id: 10
     features:
-      - build-main
       - keyring-snaps
       - multi-srp
-      - multichain
       - bitcoin
-      - bitcoin-swaps
       - tron
     # Additional env variables that are specific to this build
     env:
@@ -51,9 +48,7 @@ buildTypes:
     features:
       - build-beta
       - keyring-snaps
-      - multichain
       - bitcoin
-      - bitcoin-swaps
       - multi-srp
       - tron
     env:
@@ -62,7 +57,6 @@ buildTypes:
       - INFURA_ENV_KEY_REF: INFURA_BETA_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
       - SUPPORT_LINK: https://intercom.help/internal-beta-testing/
-      - SUPPORT_REQUEST_LINK: https://intercom.help/internal-beta-testing/
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
@@ -85,12 +79,9 @@ buildTypes:
     id: 12
     features:
       - build-experimental
-      - build-main
       - keyring-snaps
       - multi-srp
-      - multichain
       - bitcoin
-      - bitcoin-swaps
       - tron
     env:
       - INFURA_EXPERIMENTAL_PROJECT_ID
@@ -123,7 +114,6 @@ buildTypes:
       - bitcoin
       - tron
       - multi-srp
-      - multichain
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -132,7 +122,6 @@ buildTypes:
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.0.0/index.html
       - SUPPORT_LINK: https://support.metamask.io/
-      - SUPPORT_REQUEST_LINK: https://support.metamask.io/
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
@@ -158,7 +147,6 @@ features:
   # Build Type code extensions. Things like different support links, warning pages, banners
   ###
 
-  build-main:
   build-beta:
     assets:
       # Assets that will be copied
@@ -176,6 +164,7 @@ features:
       - src: ./app/build-types/flask/images/
         dest: images
       - ./{app,shared,ui}/**/flask/**
+  # TODO: remove keyring-snaps section
   keyring-snaps:
     assets:
       - src: ./node_modules/@metamask/message-signing-snap/dist/preinstalled-snap.json
@@ -191,10 +180,12 @@ features:
       - src: ./node_modules/@metamask/gator-permissions-snap/dist/preinstalled-snap.json
         dest: snaps/gator-permissions-snap.json
       - ./{app,shared,ui}/**/keyring-snaps/**
+  # TODO: remove bitcoin section
   bitcoin:
     assets:
       - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json
         dest: snaps/bitcoin-wallet-snap.json
+  # TODO: remove tron section
   tron:
     assets:
       - src: ./node_modules/@metamask/tron-wallet-snap/dist/preinstalled-snap.json
@@ -203,11 +194,6 @@ features:
     assets:
       # srp-list is a special case and is used in the srp recovery flow now.
       - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
-  bitcoin-swaps:
-  multichain:
-  ocap-kernel:
-    assets:
-      - ./{app,shared,ui}/**/ocap-kernel/**
   build-experimental:
     assets:
       - src: ./node_modules/@metamask/account-watcher/dist/preinstalled-snap.json
@@ -233,7 +219,6 @@ env:
   - DEBUG: null
   - METAMASK_REACT_REDUX_DEVTOOLS: null
   - SUPPORT_LINK: https://support.metamask.io
-  - SUPPORT_REQUEST_LINK: https://support.metamask.io
   - SKIP_BACKGROUND_INITIALIZATION: false
   - PPOM_URI: ./ppom_bg.wasm
   # CDN for blockaid files
@@ -301,6 +286,7 @@ env:
   - QUICKNODE_BSC_URL: null
   - QUICKNODE_SEI_URL: null
   - QUICKNODE_MONAD_URL: null
+  - QUICKNODE_HYPEREVM_URL: null
 
   ###
   # API keys to 3rd party services
@@ -410,13 +396,6 @@ env:
   - ENABLE_WHY_DID_YOU_RENDER: false
 
   ###
-  # Unused environment variables referenced in dependencies
-  # Unset environment variables cause a build error. These are set to `null` to tell our build
-  # system that they are intentionally unset.
-  ###
-  - ETHERSCAN_KEY: null # Used by `gridplus-sdk/dist/util.js`
-
-  ###
   # Public key used to verify EIP-7702 contract address signatures set in LaunchDarkly.
   ###
   - EIP_7702_PUBLIC_KEY: '0x3c7a1cCCe462e96D186B8ca9a1BCB2010C3dABa3'
@@ -465,3 +444,6 @@ env:
 
   # Authentication (Backup & Sync, Profile metrics...)
   - FORCE_AUTH_MATCH_BUILD: false
+
+  # Enable MetaMask Pay in dApp transaction confirmations
+  - MM_PAY_DAPPS_ENABLED: false

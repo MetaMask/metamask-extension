@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import classnames from 'clsx';
 import React, { useCallback, useContext, useState } from 'react';
 import { upperFirst } from 'lodash';
 import {

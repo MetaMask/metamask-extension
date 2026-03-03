@@ -9,6 +9,29 @@ export const LOCAL_NODE_PRIVATE_KEY =
 export const LOCAL_NODE_MNEMONIC =
   'spread raise short crane omit tent fringe mandate neglect detail suspect cradle';
 
+/** networkClientId for localhost (0x539); matches default-fixture.json. */
+export const LOCALHOST_NETWORK_CLIENT_ID =
+  '3a5eb6f2-cb62-428d-897c-b7ded577d7c2';
+
+/**
+ * Network client IDs. Each key maps to the `networkClientId` used inside
+ * `NetworkController.networkConfigurationsByChainId`.
+ */
+export const NETWORK_CLIENT_ID = Object.freeze({
+  MAINNET: 'mainnet',
+  ARBITRUM_MAINNET: 'arbitrum-mainnet',
+  BASE_MAINNET: 'base-mainnet',
+  BSC_MAINNET: 'bsc-mainnet',
+  LINEA_MAINNET: 'linea-mainnet',
+  LINEA_SEPOLIA: 'linea-sepolia',
+  LOCALHOST: LOCALHOST_NETWORK_CLIENT_ID,
+  MEGAETH_TESTNET_V2: 'megaeth-testnet-v2',
+  MONAD_TESTNET: 'monad-testnet',
+  OPTIMISM_MAINNET: 'optimism-mainnet',
+  POLYGON_MAINNET: 'polygon-mainnet',
+  SEPOLIA: 'sepolia',
+} as const);
+
 /** Address of the account derived from the default onboarding fixture. */
 export const DEFAULT_FIXTURE_ACCOUNT =
   '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
@@ -125,6 +148,16 @@ export const SATS_IN_1_BTC = 100000000; // sats
 export const DEFAULT_SOLANA_ACCOUNT =
   'E6Aa9DDv7zsePJHosoqiNb3cFuup3fkXTyRH2pZ1nVzP';
 
+/* Default fixture SOLANA address */
+export const DEFAULT_FIXTURE_SOLANA_ACCOUNT =
+  '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
+
+/* Solana Mainnet chain ID (genesis hash) */
+export const SOLANA_MAINNET_CHAIN_ID = '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+
+/* Solana Mainnet scope in CAIP-2 format */
+export const SOLANA_MAINNET_SCOPE = `solana:${SOLANA_MAINNET_CHAIN_ID}`;
+
 /* Default (mocked) SOLANA balance used by the Solana RPC provider */
 export const DEFAULT_SOLANA_BALANCE = 1; // SOL
 
@@ -158,16 +191,16 @@ export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
   feature1: true,
   feature2: false,
   feature3: {
-    name: 'groupC',
-    value: 'valueC',
+    name: 'groupA',
+    value: 'valueA',
   },
 };
 
 /* Mock customized remote feature flags response*/
 export const MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS = {
   feature3: {
-    name: 'groupA',
-    value: 'valueA',
+    name: 'groupC',
+    value: 'valueC',
   },
 };
 

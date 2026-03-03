@@ -23,10 +23,8 @@ const { provider } = createTestProviderTools({
 
 const createTransactionMetricsRequest = (customProps = {}) => {
   return {
-    createEventFragment: jest.fn(),
-    finalizeEventFragment: jest.fn(),
-    getEventFragmentById: jest.fn(),
-    updateEventFragment: jest.fn(),
+    getTransactionUIMetricsFragment: jest.fn(),
+    upsertTransactionUIMetricsFragment: jest.fn(),
     getAccountBalance: jest.fn(),
     getAccountType: jest.fn(),
     getDeviceModel: jest.fn(),

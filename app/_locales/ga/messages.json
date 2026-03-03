@@ -175,9 +175,6 @@
   "activityEmptyDescription": {
     "message": "Níl aon rud le feiceáil go fóill. Seiceáil an taiscéalaí le haghaidh gníomhaíochta níos déanaí."
   },
-  "activityLog": {
-    "message": "Log gníomhaíochta"
-  },
   "add": {
     "message": "Cuir leis"
   },
@@ -260,9 +257,6 @@
   },
   "addIPFSGateway": {
     "message": "Cuir do gheata IPFS is fearr leat leis"
-  },
-  "addImportAccount": {
-    "message": "Cuir cuntas nó sparán crua-earraí leis"
   },
   "addMemo": {
     "message": "Cuir meamram leis"
@@ -3219,9 +3213,6 @@
   "lock": {
     "message": "Glasáil"
   },
-  "lockMetaMask": {
-    "message": "Glasáil"
-  },
   "lockMetaMaskLoadingMessage": {
     "message": "Ag Glasáil MetaMask..."
   },
@@ -3281,10 +3272,6 @@
   },
   "makeAnotherSwap": {
     "message": "Cruthaigh malartú nua"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Bí cinnte nach bhfuil aon duine ag féachaint",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "manageDefaultSettings": {
     "message": "Bainistigh socruithe réamhshocraithe"
@@ -5019,17 +5006,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "Tugann an $1 $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "Is $1 é MetaMask. Ciallaíonn sé sin gur leatsa d’SRP.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "rochtain iomlán ar do sparán agus ar do chistí."
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "sparán neamhchoimeádta"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -5043,10 +5020,6 @@
   "revealSeedWordsWarning": {
     "message": "Cinntigh nach bhfuil aon duine ag féachaint ar do scáileán. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Ní iarrfaidh Tacaíocht MetaMask seo choíche.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Nocht ábhar íogair"
@@ -5667,21 +5640,6 @@
   "simulationErrorMessageV2": {
     "message": "Ní raibh muid in ann gás a mheas. D’fhéadfadh earráid a bheith sa chonradh agus d’fhéadfadh teip a bheith ar an idirbheart seo."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Caoinfhulaingt sleamhnáin"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Socraigh difríocht atá tú sásta léi le haghaidh athruithe ar an iarmhéid. Ní rachaidh idirbhearta tríd má tá an difríocht níos airde."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Athruithe ar an iarmhéid a fhorfheidhmiú"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Chun do chuid airgid a choinneáil slán, ní rachaidh an t-idirbheart seo ar aghaidh mura n-athraíonn an t-iarmhéid nó mura gcomhlíontar an lamháltas sciorrtha."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Socruithe idirbhirt"
-  },
   "simulationsSettingDescription": {
     "message": "Cas air seo chun athruithe ar iarmhéid idirbheart agus sínithe a mheas sula ndeimhníonn tú iad. Ní ráthaíonn sé seo a dtoradh deiridh. $1"
   },
@@ -5730,44 +5688,8 @@
   "smartAccount": {
     "message": "Cuntas cliste"
   },
-  "smartAccountAccept": {
-    "message": "Úsáid cuntas cliste"
-  },
-  "smartAccountBetterTransaction": {
-    "message": "Idirbhearta níos tapúla, táillí níos ísle"
-  },
-  "smartAccountBetterTransactionDescription": {
-    "message": "Sábháil am agus airgead trí idirbhearta a phróiseáil le chéile."
-  },
-  "smartAccountFeaturesDescription": {
-    "message": "Coinnigh an seoladh cuntais céanna, agus is féidir leat aistriú ar ais am ar bith."
-  },
   "smartAccountLabel": {
     "message": "Cuntas Cliste"
-  },
-  "smartAccountPayToken": {
-    "message": "Íoc le haon chomhartha, am ar bith"
-  },
-  "smartAccountPayTokenDescription": {
-    "message": "Bain úsáid as na comharthaí atá agat cheana féin chun táillí líonra a chlúdach."
-  },
-  "smartAccountReject": {
-    "message": "Ná húsáid cuntas cliste"
-  },
-  "smartAccountSameAccount": {
-    "message": "An cuntas céanna, gnéithe níos cliste."
-  },
-  "smartAccountSplashInfo": {
-    "message": "Cuntais chliste"
-  },
-  "smartAccountSplashTitle": {
-    "message": "Úsáid cuntas cliste?"
-  },
-  "smartAccountUpdateSuccessMessage": {
-    "message": "Déanfar do chuntas a nuashonrú go cuntas cliste le do chéad idirbheart eile."
-  },
-  "smartAccountUpdateSuccessTitle": {
-    "message": "Rathúil!"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "An seoladh céanna. Gnéithe níos cliste."
@@ -5845,12 +5767,6 @@
   },
   "snapAccountRemovedDescription": {
     "message": "Ní bheidh an cuntas seo ar fáil lena úsáid i MetaMask a thuilleadh."
-  },
-  "snapAccounts": {
-    "message": "Snapanna Cuntais"
-  },
-  "snapAccountsDescription": {
-    "message": "Cuntais atá faoi rialú Snaps tríú páirtí."
   },
   "snapConnectTo": {
     "message": "Ceangail le $1",
@@ -6046,9 +5962,6 @@
   },
   "speedUpTooltipText": {
     "message": "Táille nua gáis"
-  },
-  "speedUpTransaction": {
-    "message": "Luasaigh an t-idirbheart seo"
   },
   "spendLimitInsufficient": {
     "message": "Teorainn caiteachais neamhleor"
@@ -6843,18 +6756,6 @@
   "transaction": {
     "message": "idirbheart"
   },
-  "transactionCancelAttempted": {
-    "message": "Rinneadh iarracht an t-idirbheart a chealú le táille gáis mheasta de $1 ag $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Cealaíodh an t-idirbheart go rathúil ag $2"
-  },
-  "transactionConfirmed": {
-    "message": "Idirbheart deimhnithe ag $2."
-  },
-  "transactionCreated": {
-    "message": "Cruthaíodh idirbheart le luach $1 ag $2."
-  },
   "transactionDataFunction": {
     "message": "Feidhm"
   },
@@ -6864,17 +6765,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Méid + táillí"
   },
-  "transactionDropped": {
-    "message": "Thit an t-idirbheart ag $2."
-  },
   "transactionError": {
     "message": "Earráid idirbhirt. Caitheadh ​​eisceacht i gcód an chonartha."
   },
   "transactionErrorNoContract": {
     "message": "Ag iarraidh glaoch ar fheidhm ar sheoladh neamhchonarthach."
-  },
-  "transactionErrored": {
-    "message": "Tharla earráid san idirbheart."
   },
   "transactionFlowNetwork": {
     "message": "Líonra"
@@ -6907,24 +6802,15 @@
   "transactionIncludesTypes": {
     "message": "Áirítear leis an idirbheart seo: $1."
   },
-  "transactionResubmitted": {
-    "message": "Idirbheart athsheolta agus táille gáis mheasta méadaithe go $1 ag $2"
-  },
   "transactionSettings": {
     "message": "Socruithe idirbhirt"
   },
   "transactionShield": {
     "message": "Sciath Idirbhirt"
   },
-  "transactionSubmitted": {
-    "message": "Idirbheart curtha isteach le táille gáis mheasta de $1 ag $2."
-  },
   "transactionTotalGasFee": {
     "message": "Táille iomlán gáis",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Idirbheart nuashonraithe ag $2."
   },
   "transactions": {
     "message": "Idirbhearta"
@@ -7167,12 +7053,6 @@
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
-  "useSmartAccountDescription": {
-    "message": "Coinnigh seo ar siúl chun cuntais a cruthaíodh laistigh de MetaMask a athrú go huathoibríoch go cuntais chliste aon uair a bhíonn gnéithe ábhartha ar fáil, amhail idirbhearta níos tapúla, táillí líonra níos ísle agus solúbthacht íocaíochta dóibh sin."
-  },
-  "useSmartAccountTitle": {
-    "message": "Úsáid cuntas cliste"
-  },
   "useTokenDetectionPrivacyDesc": {
     "message": "Baineann cumarsáid le freastalaithe tríú páirtí chun íomhánna na gcomharthaí a aisghabháil le taispeáint uathoibríoch comharthaí a sheoltar chuig do chuntas. Beidh rochtain ag na freastalaithe sin ar do sheoladh IP."
   },
@@ -7366,9 +7246,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "D’fhéadfadh do NFT a bheith i mbaol"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Do Rún Aisghabhála Frása"
   },
   "yourTransactionConfirmed": {
     "message": "Idirbheart deimhnithe cheana féin"

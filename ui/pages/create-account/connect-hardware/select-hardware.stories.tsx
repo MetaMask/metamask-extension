@@ -1,6 +1,5 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { LedgerTransportTypes } from '../../../../shared/constants/hardware-wallets';
 import SelectHardware from './select-hardware';
 
 const mockMetaMetricsContext = {
@@ -26,9 +25,13 @@ export const DefaultStory = () => {
     <SelectHardware
       onCancel={() => null}
       browserSupported
-      connectToHardwareWallet={(selectedDevice: string) =>
-        action(`Continue connect to ${selectedDevice}`)()
-      }
+      connectToHardwareWallet={() => {
+        /* no-op */
+      }}
+      ledgerTransportType={LedgerTransportTypes.live}
+      context={{
+        trackEvent: mockTrackEvent,
+      }}
     />
   );
 };

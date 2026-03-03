@@ -4,6 +4,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   MOCK_ACCOUNT_BIP122_P2WPKH,
   MOCK_ACCOUNT_SOLANA_MAINNET,
@@ -210,6 +211,17 @@ describe('TransactionList', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('renders TransactionList component with props hideNetworkFilter correctly', () => {
+    const store = configureStore(defaultState);
+    const { container } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <TransactionList hideNetworkFilter />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
   it('renders TransactionList component with props hideTokenTransactions correctly', () => {
     const defaultState2 = {
       ...defaultState,
@@ -237,15 +249,15 @@ describe('TransactionList', () => {
     const { getByText, getByRole, getByTestId } = render(btcState);
 
     // The activity list item has a status of "Confirmed" and a type of "Send"
-    expect(getByText('Confirmed')).toBeInTheDocument();
-    expect(getByText('Sent')).toBeInTheDocument();
+    expect(getByText(messages.confirmed.message)).toBeInTheDocument();
+    expect(getByText(messages.sent.message)).toBeInTheDocument();
     expect(getByText('-1.2 BTC')).toBeInTheDocument();
 
     // A BTC activity list item exists
     expect(getByTestId('activity-list-item')).toBeInTheDocument();
 
     const viewOnExplorerBtn = getByRole('button', {
-      name: 'View on block explorer',
+      name: messages.viewOnBlockExplorer.message,
     });
     expect(viewOnExplorerBtn).toBeInTheDocument();
 
@@ -336,7 +348,7 @@ describe('TransactionList', () => {
   it('renders TransactionList component and shows a Solana Swap Tx in the activity list', () => {
     const { getByText, getByRole, getByTestId } = render(solanaSwapState);
 
-    expect(getByText('Confirmed')).toBeInTheDocument();
+    expect(getByText(messages.confirmed.message)).toBeInTheDocument();
     expect(getByText('Swap SOL to BONK')).toBeInTheDocument();
 
     expect(getByTestId('activity-list-item')).toBeInTheDocument();
@@ -344,7 +356,7 @@ describe('TransactionList', () => {
     expect(getByText('-0.01 SOL')).toBeInTheDocument();
 
     const viewOnExplorerBtn = getByRole('button', {
-      name: 'View on block explorer',
+      name: messages.viewOnBlockExplorer.message,
     });
     expect(viewOnExplorerBtn).toBeInTheDocument();
   });

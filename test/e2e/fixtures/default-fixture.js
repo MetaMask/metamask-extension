@@ -140,7 +140,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
         recoveryPhraseReminderHasBeenShown: true,
-        pna25Acknowledged: false,
+        pna25Acknowledged: true,
         recoveryPhraseReminderLastShown:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
@@ -162,6 +162,8 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           host: '127.0.0.1:8080',
           href: 'http://127.0.0.1:8080',
         },
+        musdConversionEducationSeen: false,
+        musdConversionDismissedCtaKeys: [],
       },
       BridgeController: {},
       CurrencyController: {
@@ -243,6 +245,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         lostIdentities: {},
         openSeaEnabled: false,
         preferences: {
+          defaultAddressScope: 'eip155',
           hideZeroBalanceTokens: false,
           showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
@@ -250,6 +253,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           smartTransactionsOptInStatus: true,
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
+          showDefaultAddress: false,
           showMultiRpcModal: false,
           showConfirmationAdvancedDetails: false,
           tokenSortConfig: {

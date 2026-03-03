@@ -393,6 +393,7 @@ export const MSU_DISPLAY_NAME = 'MapleStory Universe';
 export const BOB_DISPLAY_NAME = 'BOB';
 export const ROOTSTOCK_DISPLAY_NAME = 'Rootstock Mainnet';
 export const ROOTSTOCK_TESTNET_DISPLAY_NAME = 'Rootstock Testnet';
+export const CHILIZ_DISPLAY_NAME = 'Chiliz';
 export const TEMPO_TESTNET_DISPLAY_NAME = 'Tempo Testnet Moderato';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
@@ -487,6 +488,7 @@ export const CURRENCY_SYMBOLS = {
   ROOTSTOCK: 'RBTC',
   ROOTSTOCK_TESTNET: 'tRBTC',
   TEMPO_TESTNET: 'USD',
+  CHILIZ: 'CHZ',
 } as const;
 
 // Non-EVM currency symbols
@@ -720,6 +722,7 @@ export const BOB_IMAGE_URL = './images/bob.svg';
 export const ROOTSTOCK_IMAGE_URL = './images/rootstock.svg';
 export const ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL = './images/rootstock-native.svg';
 export const TEMPO_TESTNET_IMAGE_URL = './images/tempo.svg';
+export const CHILIZ_IMAGE_URL = './images/chiliz.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -901,6 +904,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.BOB]: BOB_DISPLAY_NAME,
   [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_DISPLAY_NAME,
   [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_TESTNET_DISPLAY_NAME,
+  [CHAIN_IDS.CHZ]: CHILIZ_DISPLAY_NAME,
   [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_TESTNET_DISPLAY_NAME,
 } as const;
 
@@ -1068,6 +1072,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.BOB]: CURRENCY_SYMBOLS.BOB,
   [CHAIN_IDS.ROOTSTOCK]: CURRENCY_SYMBOLS.ROOTSTOCK,
   [CHAIN_IDS.ROOTSTOCK_TESTNET]: CURRENCY_SYMBOLS.ROOTSTOCK_TESTNET,
+  [CHAIN_IDS.CHZ]: CURRENCY_SYMBOLS.CHILIZ,
   [CHAIN_IDS.TEMPO_TESTNET]: CURRENCY_SYMBOLS.TEMPO_TESTNET,
 } as const;
 
@@ -1255,6 +1260,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.BOB]: BOB_IMAGE_URL,
   [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_IMAGE_URL,
   [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_IMAGE_URL,
+  [CHAIN_IDS.CHZ]: CHILIZ_IMAGE_URL,
   [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_TESTNET_IMAGE_URL,
 } as const;
 
@@ -1348,6 +1354,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.BOB]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.CHZ]: CHILIZ_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
@@ -1500,6 +1507,7 @@ export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
   'bsc-mainnet': () => process.env.QUICKNODE_BSC_URL,
   'sei-mainnet': () => process.env.QUICKNODE_SEI_URL,
   'monad-mainnet': () => process.env.QUICKNODE_MONAD_URL,
+  'hyperevm-mainnet': () => process.env.QUICKNODE_HYPEREVM_URL,
 };
 
 export function getFailoverUrlsForInfuraNetwork(
@@ -1654,7 +1662,8 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     nativeCurrency: CURRENCY_SYMBOLS.HYPE,
     rpcEndpoints: [
       {
-        url: 'https://rpc.hyperliquid.xyz/evm',
+        url: `https://hyperevm-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: getFailoverUrlsForInfuraNetwork('hyperevm-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
