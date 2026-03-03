@@ -3493,8 +3493,8 @@
     },
     "ui/providers/perps/PerpsRouteWrapper.test.tsx": {
       "error: [PerpsRouteWrapper] Init failed: Error: network": 1,
-      "error: [PerpsRouteWrapper] Init failed: { code:": 1,
-      "error: [PerpsRouteWrapper] Init failed: string error": 1
+      "error: [PerpsRouteWrapper] Init failed: string error": 1,
+      "error: [PerpsRouteWrapper] Init failed: { code:": 1
     },
     "ui/selectors/accounts.test.ts": {
       "Reselect: Identity function warnings": 2,
