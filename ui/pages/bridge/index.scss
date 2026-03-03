@@ -17,4 +17,5 @@
 .bridge__container {
   height: 100%;
   overflow-y: scroll;
+  max-width: clamp(var(--width-sm), 85vw, var(--width-max));
 }
