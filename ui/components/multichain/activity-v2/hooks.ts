@@ -49,8 +49,9 @@ function useTransactionParams(caipChainId?: CaipChainId) {
 
 export function useTransactionsQuery(filter?: ActivityListFilter) {
   const useExternalServices = useSelector(getUseExternalServices);
-  const { evmAddress, accountAddresses, networks } =
-    useTransactionParams(filter?.chainId);
+  const { evmAddress, accountAddresses, networks } = useTransactionParams(
+    filter?.chainId,
+  );
   const internalTxHashes = useSelector(selectRequiredTransactionHashes);
 
   const selectFn = useMemo(
