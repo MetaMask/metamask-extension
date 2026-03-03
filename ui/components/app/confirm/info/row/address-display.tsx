@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import {
   AvatarAccountSize,
@@ -19,61 +19,34 @@ import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring
 import { PreferredAvatar } from '../../../preferred-avatar';
 import NameDetails from '../../../name/name-details/name-details';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 
 const ELLIPSIS = '\u2026';
 
+/** Truncation config: [prefix chars to show, suffix chars to show] */
+const TRUNCATION_CONFIG = {
+  full: [Infinity, Infinity] as const,
+  truncated: [14, 10] as const,
+} as const;
+
+function getTruncatedAddress(text: string): string {
+  const environmentType = getEnvironmentType();
+  const [prefixLen, suffixLen] =
+    environmentType === ENVIRONMENT_TYPE_FULLSCREEN
+      ? TRUNCATION_CONFIG.full
+      : TRUNCATION_CONFIG.truncated;
+
+  if (text.length <= prefixLen + suffixLen + 1) {
+    return text;
+  }
+
+  return `${text.slice(0, prefixLen)}${ELLIPSIS}${text.slice(-suffixLen)}`;
+}
+
 function useMiddleTruncation(text: string) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [display, setDisplay] = useState(text);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) {
-      return;
-    }
-
-    const availableWidth = el.clientWidth;
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      return;
-    }
-
-    const style = getComputedStyle(el);
-    ctx.font = `${style.fontSize} ${style.fontFamily}`;
-
-    if (ctx.measureText(text).width <= availableWidth) {
-      setDisplay(text);
-      return;
-    }
-
-    const ellipsisWidth = ctx.measureText(ELLIPSIS).width;
-    const halfWidth = (availableWidth - ellipsisWidth) / 2;
-
-    let startEnd = 0;
-    let w = 0;
-    for (let i = 0; i < text.length; i++) {
-      w += ctx.measureText(text[i]).width;
-      if (w > halfWidth) {
-        break;
-      }
-      startEnd = i + 1;
-    }
-
-    let tailStart = text.length;
-    w = 0;
-    for (let i = text.length - 1; i >= 0; i--) {
-      w += ctx.measureText(text[i]).width;
-      if (w > halfWidth) {
-        break;
-      }
-      tailStart = i;
-    }
-
-    setDisplay(`${text.slice(0, startEnd)}${ELLIPSIS}${text.slice(tailStart)}`);
-  }, [text]);
-
-  return { containerRef, display };
+  const display = useMemo(() => getTruncatedAddress(text), [text]);
+  return { display };
 }
 
 const TrustIcon = ({
@@ -145,7 +118,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
     const [modalOpen, setModalOpen] = useState(false);
 
     const isClickable = !isAccount;
-    const { containerRef, display } = useMiddleTruncation(hexAddress);
+    const { display } = useMiddleTruncation(hexAddress);
 
     const handleClick = useCallback(() => {
       if (!isClickable) {
@@ -213,7 +186,6 @@ export const ConfirmInfoRowAddressDisplay = memo(
           >
             <button
               type="button"
-              ref={containerRef as unknown as React.Ref<HTMLButtonElement>}
               style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}
               onClick={handleClick}
               data-testid="confirm-info-row-display-name"
@@ -229,10 +201,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
             data-testid="confirm-info-row-display-name"
             asChild
           >
-            <span
-              ref={containerRef}
-              style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}
-            >
+            <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}>
               {display}
             </span>
           </Text>

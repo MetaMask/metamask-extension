@@ -5,6 +5,19 @@ import configureStore from '../../../../../store/store';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 import { ConfirmInfoRowAddressDisplay } from './address-display';
 import { TEST_ADDRESS } from './constants';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../../../shared/constants/app';
+
+const getEnvironmentType = jest.requireMock(
+  '../../../../../../app/scripts/lib/util',
+).getEnvironmentType as jest.Mock;
+
+jest.mock('../../../../../../app/scripts/lib/util', () => ({
+  ...jest.requireActual('../../../../../../app/scripts/lib/util'),
+  getEnvironmentType: jest.fn(),
+}));
 
 const defaultProps = {
   address: TEST_ADDRESS,
@@ -63,16 +76,30 @@ describe('ConfirmInfoRowAddressDisplay', () => {
     );
   });
 
-  it('renders full address when container has sufficient width', () => {
-    jest
-      .spyOn(HTMLElement.prototype, 'clientWidth', 'get')
-      .mockReturnValue(500);
+  it('renders full address in fullscreen mode', () => {
+    getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
 
     const { getByTestId } = render();
-    expect(getByTestId('confirm-info-row-display-name').textContent).toContain(
-      '0x5CfE73b6',
+    expect(getByTestId('confirm-info-row-display-name')).toHaveTextContent(
+      TEST_ADDRESS,
     );
+  });
 
-    jest.restoreAllMocks();
+  it('renders partially truncated address in side panel mode', () => {
+    getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+
+    const { getByTestId } = render();
+    const textContent = getByTestId('confirm-info-row-display-name')
+      .textContent as string;
+    expect(textContent).toBe('0x5CfE73b6021E…474086a7e1');
+  });
+
+  it('renders truncated address in popup mode', () => {
+    getEnvironmentType.mockReturnValue('popup');
+
+    const { getByTestId } = render();
+    const textContent = getByTestId('confirm-info-row-display-name')
+      .textContent as string;
+    expect(textContent).toBe('0x5CfE73b6021E…474086a7e1');
   });
 });
