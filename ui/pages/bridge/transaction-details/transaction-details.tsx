@@ -60,8 +60,6 @@ import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityDa
 import { type TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
-import TransactionActivityLog from '../../../components/app/transaction-activity-log';
 import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
   type AllowedBridgeChainIds,
