@@ -30,12 +30,9 @@ import {
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
-  isBeta,
-  isExperimental,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   isFlask,
   ///: END:ONLY_INCLUDE_IF
-  isMain,
 } from '../../../../shared/lib/build-types';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -82,28 +79,22 @@ export default function OnboardingFlowSwitch() {
     (!isInitialized || isWalletResetInProgress) &&
     !isUserAuthenticatedWithSocialLogin
   ) {
-    let redirect;
+    let redirect = (
+      <Navigate
+        to={
+          getBrowserName() === PLATFORM_FIREFOX
+            ? ONBOARDING_METAMETRICS
+            : ONBOARDING_WELCOME_ROUTE
+        }
+        replace
+      />
+    );
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     if (isFlask()) {
       redirect = <Navigate to={ONBOARDING_EXPERIMENTAL_AREA} replace />;
-    } else if (isMain() || isBeta() || isExperimental()) {
-      ///: END:ONLY_INCLUDE_IF
-      redirect = (
-        <Navigate
-          to={
-            getBrowserName() === PLATFORM_FIREFOX
-              ? ONBOARDING_METAMETRICS
-              : ONBOARDING_WELCOME_ROUTE
-          }
-          replace
-        />
-      );
-    } else {
-      throw new Error(
-        'This should be unreachable code, so something is wrong with the build type',
-      );
     }
+    ///: END:ONLY_INCLUDE_IF
 
     return redirect;
   }
