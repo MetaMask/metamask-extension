@@ -106,6 +106,9 @@ export const BridgeControllerInit: ControllerInitFunction<
     config: {
       customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
     },
+    getUseAssetsControllerForRates() {
+      return true;
+    },
   });
 
   return {
