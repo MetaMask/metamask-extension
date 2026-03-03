@@ -4289,8 +4289,10 @@ describe('Additional RewardsController edge cases', () => {
       const otherAccount: InternalAccount = {
         ...MOCK_INTERNAL_ACCOUNT,
         id: 'other-account',
-        address: '0xotheraddress',
+        address: MOCK_ACCOUNT_ADDRESS_ALT,
       };
+      const MOCK_CAIP_ACCOUNT_ALT: CaipAccountId =
+        `eip155:1:${MOCK_ACCOUNT_ADDRESS_ALT}` as CaipAccountId;
 
       const state: Partial<RewardsControllerState> = {
         rewardsSeasons: {
@@ -4313,8 +4315,8 @@ describe('Additional RewardsController edge cases', () => {
           [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
         },
         rewardsAccounts: {
-          ['eip155:1:0xotheraddress' as CaipAccountId]: {
-            account: 'eip155:1:0xotheraddress' as CaipAccountId,
+          [MOCK_CAIP_ACCOUNT_ALT]: {
+            account: MOCK_CAIP_ACCOUNT_ALT,
             hasOptedIn: true,
             subscriptionId: MOCK_SUBSCRIPTION_ID,
             perpsFeeDiscount: null,

@@ -846,13 +846,11 @@ describe('RewardsDataService', () => {
       ).rejects.toThrow('Get season state failed: 404');
     });
 
-    it('should throw AuthorizationFailedError when rewards authorization fails', async () => {
+    it('should throw AuthorizationFailedError when response status is 403', async () => {
       const mockResponse = {
         ok: false,
-        status: 401,
-        json: jest.fn().mockResolvedValue({
-          message: 'Rewards authorization failed',
-        }),
+        status: 403,
+        json: jest.fn().mockResolvedValue({}),
       } as unknown as Response;
       mockFetch.mockResolvedValue(mockResponse);
 
@@ -866,25 +864,7 @@ describe('RewardsDataService', () => {
       expect(caughtError).toBeInstanceOf(AuthorizationFailedError);
       const authError = caughtError as AuthorizationFailedError;
       expect(authError.name).toBe('AuthorizationFailedError');
-      expect(authError.message).toBe(
-        'Rewards authorization failed. Please login and try again.',
-      );
-    });
-
-    it('should detect authorization failure when message contains the phrase', async () => {
-      const mockResponse = {
-        ok: false,
-        status: 403,
-        json: jest.fn().mockResolvedValue({
-          message:
-            'Some other error: Rewards authorization failed due to expiry',
-        }),
-      } as unknown as Response;
-      mockFetch.mockResolvedValue(mockResponse);
-
-      await expect(
-        service.getSeasonStatus(mockSeasonId, mockSubscriptionId),
-      ).rejects.toBeInstanceOf(AuthorizationFailedError);
+      expect(authError.message).toBe('Authorization failed: 403');
     });
 
     it('should throw SeasonNotFoundError when season is not found', async () => {
@@ -2033,7 +2013,7 @@ describe('RewardsDataService', () => {
       ).rejects.toThrow('Network error');
     });
 
-    it('handles empty error message in response', async () => {
+    it('throws AuthorizationFailedError on 403 response', async () => {
       const mockResponse = {
         ok: false,
         status: 403,
@@ -2043,7 +2023,7 @@ describe('RewardsDataService', () => {
 
       await expect(
         service.siweJoin(mockSiweJoinBody, mockSubscriptionToken),
-      ).rejects.toThrow('SIWE join failed: 403');
+      ).rejects.toBeInstanceOf(AuthorizationFailedError);
     });
   });
 
