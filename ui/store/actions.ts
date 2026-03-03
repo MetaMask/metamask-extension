@@ -101,8 +101,7 @@ import {
 } from '../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { addHexPrefix } from '../../app/scripts/lib/util';
-import { getEnvironmentType } from '../../shared/lib/environment-type';
+import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
   hasTransactionPendingApprovals,

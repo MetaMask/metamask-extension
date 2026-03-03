@@ -61,7 +61,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { getEnvironmentType } from '../../../../../../shared/lib/environment-type';
+import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,

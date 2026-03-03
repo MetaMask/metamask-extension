@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-restricted-paths -- Required to mock background utility used by webcam-utils
-import { getEnvironmentType } from '../../../shared/lib/environment-type';
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,

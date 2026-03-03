@@ -4,7 +4,7 @@ import log from 'loglevel';
 import { BrowserQRCodeReader } from '@zxing/browser';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { getURL } from '../../../../helpers/utils/util';
 import WebcamUtils from '../../../../helpers/utils/webcam-utils';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component';

@@ -21,7 +21,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { setShowMultiRpcModal } from '../../../store/actions';
-import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import NetworkListItem from './network-list-item/network-list-item';

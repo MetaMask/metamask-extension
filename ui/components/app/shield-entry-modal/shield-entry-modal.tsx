@@ -58,7 +58,7 @@ import {
   determineSubscriptionMetricsSourceFromMarketingUtmParams,
   getShieldMarketingUtmParamsForMetrics,
 } from '../../../../shared/modules/shield';
-import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import ShieldIllustrationAnimation from './shield-illustration-animation';
 

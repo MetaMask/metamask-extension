@@ -23,7 +23,7 @@ import {
   TUTORIAL_STEPS_ORDER,
 } from '../../../../ducks/perps';
 import { useTheme } from '../../../../hooks/useTheme';
-import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import WhatArePerpsStep from './steps/WhatArePerpsStep';
 import GoLongShortStep from './steps/GoLongShortStep';

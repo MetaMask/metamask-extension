@@ -3,7 +3,7 @@ import browser from 'webextension-polyfill';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { startCase, toLower } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { getEnvironmentType } from '../../../shared/lib/environment-type';
+import { getEnvironmentType } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths

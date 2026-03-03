@@ -1,6 +1,6 @@
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../shared/lib/environment-type';
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import {
   getInternalAccounts,

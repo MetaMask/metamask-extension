@@ -13,7 +13,7 @@ import {
 } from '../../../../contexts/rive-wasm';
 import { useTheme } from '../../../../hooks/useTheme';
 import { ThemeType } from '../../../../../shared/constants/preferences';
-import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,

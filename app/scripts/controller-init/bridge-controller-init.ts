@@ -9,7 +9,7 @@ import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { trace } from '../../../shared/lib/trace';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
-import { getEnvironmentType } from '../../../shared/lib/environment-type';
+import { getEnvironmentType } from '../lib/util';
 import { ControllerInitFunction } from './types';
 import {
   BridgeControllerInitMessenger,

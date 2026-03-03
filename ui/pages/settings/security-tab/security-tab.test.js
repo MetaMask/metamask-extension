@@ -4,7 +4,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { MetamaskNotificationsProvider } from '../../../contexts/metamask-notifications';
-import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import mockState from '../../../../test/data/mock-state.json';
 import { tEn, enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -20,10 +20,8 @@ const mockSetSecurityAlertsEnabled = jest
   .fn()
   .mockImplementation(() => () => undefined);
 
-jest.mock('../../../../shared/lib/environment-type', () => {
-  const originalModule = jest.requireActual(
-    '../../../../shared/lib/environment-type',
-  );
+jest.mock('../../../../app/scripts/lib/util', () => {
+  const originalModule = jest.requireActual('../../../../app/scripts/lib/util');
 
   return {
     ...originalModule,

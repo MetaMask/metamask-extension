@@ -58,7 +58,7 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../helpers/constants/design-system';
-import { getEnvironmentType } from '../../../shared/lib/environment-type';
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,

@@ -67,8 +67,7 @@ import {
   getIsTronTestnetSupportEnabled,
 } from './multichain/feature-flags';
 
-import { addHexPrefix } from '../../app/scripts/lib/util';
-import { getEnvironmentType } from '../../shared/lib/environment-type';
+import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
   MAINNET_DISPLAY_NAME,

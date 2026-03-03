@@ -19,7 +19,7 @@ import {
 } from '@metamask/design-system-react';
 
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/app';
-import { getEnvironmentType } from '../../../../../../shared/lib/environment-type';
+import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 import { PreferredAvatar } from '../../../preferred-avatar';
