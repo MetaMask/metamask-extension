@@ -69,6 +69,7 @@ import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import { toRelativeRoutePath } from '../routes/utils';
 import Assets from '../settings-v2/assets/assets';
 import CurrencySubPage from '../settings-v2/assets/currency-sub-page';
+import { NotificationsSettingsContent } from '../notifications-settings/notifications-settings';
 import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
@@ -615,6 +616,13 @@ class SettingsPage extends PureComponent {
         <Route
           path={`${toRelativeRoutePath(CONTACT_VIEW_ROUTE, SETTINGS_ROUTE)}/:id`}
           element={<ContactListTab />}
+        />
+        <Route
+          path={toRelativeRoutePath(
+            NOTIFICATIONS_SETTINGS_ROUTE,
+            SETTINGS_ROUTE,
+          )}
+          element={<NotificationsSettingsContent />}
         />
         <Route
           path={toRelativeRoutePath(REVEAL_SRP_LIST_ROUTE, SETTINGS_ROUTE)}
