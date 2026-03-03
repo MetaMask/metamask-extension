@@ -326,6 +326,15 @@ function findBalancedEnd(content: string, openIndex: number): number {
       inSingle = true;
     } else if (ch === '"') {
       inDouble = true;
+    } else if (ch === '/' && i + 1 < content.length) {
+      const next = content[i + 1];
+      if (next === '/') {
+        const eol = content.indexOf('\n', i);
+        i = eol === -1 ? content.length : eol;
+      } else if (next === '*') {
+        const close = content.indexOf('*/', i + 2);
+        i = close === -1 ? content.length : close + 1;
+      }
     } else if (ch === '{' || ch === '[') {
       depth += 1;
     } else if (ch === '}' || ch === ']') {
