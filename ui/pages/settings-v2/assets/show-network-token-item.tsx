@@ -29,11 +29,11 @@ export const ShowNetworkTokenToggleItem = () => {
           category: MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.SettingsUpdated,
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             show_native_token_as_main_balance: newValue,
           },
         });
       }}
-      containerDataTestId="show-native-token-as-main-balance"
       dataTestId="show-native-token-as-main-balance"
     />
   );
