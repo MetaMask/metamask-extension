@@ -299,9 +299,6 @@
     "message": "ಆಮದುಮಾಡಲಾಗಿದೆ",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "ನಿಮ್ಮ ಆರಂಭಿಕ ವಹಿವಾಟನ್ನು ನೆಟ್‌ವರ್ಕ್ ಮೂಲಕ ಖಚಿತಪಡಿಸಲಾಗಿದೆ. ಹಿಂತಿರುಗಲು ಸರಿ ಕ್ಲಿಕ್ ಮಾಡಿ."
-  },
   "insufficientBalance": {
     "message": "ಸಾಕಷ್ಟು ಮೊಬಲಗು ಇಲ್ಲ."
   },
@@ -483,12 +480,6 @@
   },
   "rejectAll": {
     "message": "ಎಲ್ಲವನ್ನೂ ತಿರಸ್ಕರಿಸಿ"
-  },
-  "rejectTxsDescription": {
-    "message": "ನೀವು $1 ವಹಿವಾಟುಗಳನ್ನು ಬ್ಯಾಚ್ ತಿರಸ್ಕರಿಸಲಿರುವಿರಿ."
-  },
-  "rejectTxsN": {
-    "message": "$1 ವಹಿವಾಟುಗಳನ್ನು ತಿರಸ್ಕರಿಸಿ"
   },
   "rejected": {
     "message": "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"

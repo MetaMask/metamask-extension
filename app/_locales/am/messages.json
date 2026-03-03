@@ -290,9 +290,6 @@
     "message": "ከውጭ የመጣ",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "የመጀመሪያ ግብይትዎ በአውታረ መረቡ ተረጋግጧል። ወደ ኋላ ለመመለስ እሺ የሚለውን ጠቅ ያድርጉ።"
-  },
   "insufficientBalance": {
     "message": "በቂ ያልሆነ ቀሪ ሂሳብ"
   },
@@ -468,12 +465,6 @@
   },
   "rejectAll": {
     "message": "ሁሉንም አትቀበል"
-  },
-  "rejectTxsDescription": {
-    "message": "$1ግብይቶችን በጅምላ ውድቅ ሊያደርጉ ነው።"
-  },
-  "rejectTxsN": {
-    "message": "$1ግብይቶችን አትቀበል"
   },
   "rejected": {
     "message": "ውድቅ የተደረገ"

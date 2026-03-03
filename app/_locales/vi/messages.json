@@ -651,10 +651,6 @@
   "allowNotifications": {
     "message": "Cho phép thông báo"
   },
-  "allowWithdrawAndSpend": {
-    "message": "Cho phép $1 rút và chi tiêu tối đa số tiền sau đây:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
   "amount": {
     "message": "Số lượng"
   },
@@ -1909,9 +1905,6 @@
   "customSlippage": {
     "message": "Tùy chỉnh"
   },
-  "customSpendLimit": {
-    "message": "Hạn mức chi tiêu tùy chỉnh"
-  },
   "customToken": {
     "message": "Token tùy chỉnh"
   },
@@ -2481,9 +2474,6 @@
   "editNonceMessage": {
     "message": "Đây là tính năng nâng cao, hãy dùng một cách thận trọng."
   },
-  "editPermission": {
-    "message": "Sửa quyền"
-  },
   "editPermissions": {
     "message": "Chỉnh sửa quyền"
   },
@@ -2567,9 +2557,6 @@
   },
   "enterChainId": {
     "message": "Nhập ID chuỗi"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Nhập hạn mức chi tiêu tối đa"
   },
   "enterNetworkName": {
     "message": "Nhập tên mạng"
@@ -3361,9 +3348,6 @@
   "infuraBlockedNotification": {
     "message": "MetaMask không thể kết nối với máy chủ chuỗi khối. Hãy xem xét các lý do tiềm ẩn $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Mạng đã xác nhận giao dịch ban đầu của bạn. Nhấp OK để quay lại."
   },
   "insights": {
     "message": "Thông tin chi tiết"
@@ -5702,9 +5686,6 @@
   "productAnnouncements": {
     "message": "Thông báo về sản phẩm"
   },
-  "proposedApprovalLimit": {
-    "message": "Hạn mức chấp thuận được đề xuất"
-  },
   "provide": {
     "message": "Cung cấp"
   },
@@ -5924,18 +5905,6 @@
   },
   "rejectAll": {
     "message": "Từ chối tất cả"
-  },
-  "rejectRequestsDescription": {
-    "message": "Bạn chuẩn bị từ chối hàng loạt $1 yêu cầu."
-  },
-  "rejectRequestsN": {
-    "message": "Từ chối $1 yêu cầu"
-  },
-  "rejectTxsDescription": {
-    "message": "Bạn chuẩn bị từ chối hàng loạt $1 giao dịch."
-  },
-  "rejectTxsN": {
-    "message": "Từ chối $1 giao dịch"
   },
   "rejected": {
     "message": "Bị từ chối"
@@ -7673,22 +7642,6 @@
   },
   "speedUpTooltipText": {
     "message": "Phí gas mới"
-  },
-  "spendLimitInsufficient": {
-    "message": "Hạn mức chi tiêu không đủ"
-  },
-  "spendLimitInvalid": {
-    "message": "Hạn mức chi tiêu không hợp lệ; giá trị này phải là số dương."
-  },
-  "spendLimitPermission": {
-    "message": "Quyền đối với hạn mức chi tiêu"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Bên yêu cầu hạn mức chi tiêu: $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Hạn mức chi tiêu quá lớn"
   },
   "spender": {
     "message": "Người chi tiêu"

@@ -296,9 +296,6 @@
     "message": "আমদানিকৃত",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "আপনার প্রারম্ভিক লেনদেনটি নেটওয়ার্ক নিশ্চিত করেছিল। ফিরে যেতে ঠিক আছে তে ক্লিক করুন।"
-  },
   "insufficientBalance": {
     "message": "অপর্যাপ্ত ব্যালেন্স৷"
   },
@@ -477,12 +474,6 @@
   },
   "rejectAll": {
     "message": "সব খারিজ করুন"
-  },
-  "rejectTxsDescription": {
-    "message": "আপনি $1টি লেনদেন ব্যাচ খারিজ করতে চলেছেন।"
-  },
-  "rejectTxsN": {
-    "message": "$1 লেনদেনগুলি খারিজ করুন"
   },
   "rejected": {
     "message": "খারিজ করা হয়েছে"

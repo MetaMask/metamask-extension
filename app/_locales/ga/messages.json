@@ -565,10 +565,6 @@
   "allowNotifications": {
     "message": "Ceadaigh fógraí"
   },
-  "allowWithdrawAndSpend": {
-    "message": "Ceadaigh $1 le tarraingt siar agus le caitheamh suas go dtí an méid seo a leanas:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
   "amount": {
     "message": "Méid"
   },
@@ -1668,9 +1664,6 @@
   "customSlippage": {
     "message": "Saincheaptha"
   },
-  "customSpendLimit": {
-    "message": "Teorainn caiteachais saincheaptha"
-  },
   "customToken": {
     "message": "Comhartha saincheaptha"
   },
@@ -2179,9 +2172,6 @@
   "editNonceMessage": {
     "message": "Is gné ardteicneolaíochta í seo, bain úsáid as go cúramach."
   },
-  "editPermission": {
-    "message": "Cead eagarthóireachta"
-  },
   "editPermissions": {
     "message": "Ceadanna a chur in eagar"
   },
@@ -2265,9 +2255,6 @@
   },
   "enterChainId": {
     "message": "Cuir isteach ID Slabhra"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Cuir isteach uasteorainn caiteachais"
   },
   "enterNetworkName": {
     "message": "Cuir isteach uasteorainn caiteachais"
@@ -2880,9 +2867,6 @@
   "infuraBlockedNotification": {
     "message": "Ní féidir le MetaMask ceangal leis an óstach blockchain. Athbhreithnigh cúiseanna féideartha $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Deimhníodh d’idirbheart tosaigh ag an líonra. Cliceáil Ceart go leor chun filleadh ar ais."
   },
   "insightsFromSnap": {
     "message": "Léargais ó $1",
@@ -4669,9 +4653,6 @@
   "productAnnouncements": {
     "message": "Fógraí táirgí"
   },
-  "proposedApprovalLimit": {
-    "message": "Teorainn cheadaithe atá beartaithe"
-  },
   "provide": {
     "message": "Cuir ar fáil"
   },
@@ -4857,18 +4838,6 @@
   },
   "rejectAll": {
     "message": "Diúltaigh do gach rud"
-  },
-  "rejectRequestsDescription": {
-    "message": "Tá tú ar tí $1 iarratas a dhiúltú i mbaisc."
-  },
-  "rejectRequestsN": {
-    "message": "Diúltaigh $1 iarratas"
-  },
-  "rejectTxsDescription": {
-    "message": "Tá tú ar tí idirbhearta $1 a dhiúltú i mbaisc."
-  },
-  "rejectTxsN": {
-    "message": "Diúltaigh idirbhearta $1"
   },
   "rejected": {
     "message": "Diúltaithe"
@@ -5983,22 +5952,6 @@
   },
   "speedUpTooltipText": {
     "message": "Táille nua gáis"
-  },
-  "spendLimitInsufficient": {
-    "message": "Teorainn caiteachais neamhleor"
-  },
-  "spendLimitInvalid": {
-    "message": "Teorainn caiteachais neamhbhailí; ní mór gur uimhir dhearfach í"
-  },
-  "spendLimitPermission": {
-    "message": "Cead teorainn caiteachais"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Teorainn caiteachais iarrtha ag $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Teorainn caiteachais ró-mhór"
   },
   "spender": {
     "message": "Caiteoir"

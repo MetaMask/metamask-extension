@@ -651,10 +651,6 @@
   "allowNotifications": {
     "message": "Izinkan notifikasi"
   },
-  "allowWithdrawAndSpend": {
-    "message": "Izinkan $1 untuk menarik dan menggunakan hingga jumlah berikut:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
   "amount": {
     "message": "Jumlah"
   },
@@ -1909,9 +1905,6 @@
   "customSlippage": {
     "message": "Kustom"
   },
-  "customSpendLimit": {
-    "message": "Batas penggunaan khusus"
-  },
   "customToken": {
     "message": "Token kustom"
   },
@@ -2481,9 +2474,6 @@
   "editNonceMessage": {
     "message": "Ini merupakan fitur lanjutan, gunakan dengan hati-hati."
   },
-  "editPermission": {
-    "message": "Edit izin"
-  },
   "editPermissions": {
     "message": "Edit izin"
   },
@@ -2567,9 +2557,6 @@
   },
   "enterChainId": {
     "message": "Masukkan ID Chain"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Masukkan batas penggunaan maksimum"
   },
   "enterNetworkName": {
     "message": "Masukkan nama jaringan"
@@ -3361,9 +3348,6 @@
   "infuraBlockedNotification": {
     "message": "MetaMask tidak dapat terhubung ke host blockchain. Tinjau alasan yang mungkin $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Transaksi awal Anda dikonfirmasikan oleh jaringan. Klik Oke untuk kembali."
   },
   "insights": {
     "message": "Wawasan"
@@ -5702,9 +5686,6 @@
   "productAnnouncements": {
     "message": "Pengumuman produk"
   },
-  "proposedApprovalLimit": {
-    "message": "Batas persetujuan yang diusulkan"
-  },
   "provide": {
     "message": "Berikan"
   },
@@ -5924,18 +5905,6 @@
   },
   "rejectAll": {
     "message": "Tolak semua"
-  },
-  "rejectRequestsDescription": {
-    "message": "Anda akan menolak permintaan $1 secara bertahap."
-  },
-  "rejectRequestsN": {
-    "message": "Tolak permintaan $1"
-  },
-  "rejectTxsDescription": {
-    "message": "Anda akan menolak $1 transaksi secara bertahap."
-  },
-  "rejectTxsN": {
-    "message": "Tolak $1 transaksi"
   },
   "rejected": {
     "message": "Ditolak"
@@ -7673,22 +7642,6 @@
   },
   "speedUpTooltipText": {
     "message": "Biaya gas baru"
-  },
-  "spendLimitInsufficient": {
-    "message": "Batas penggunaan tidak mencukupi"
-  },
-  "spendLimitInvalid": {
-    "message": "Batas penggunaan tidak valid; harus berupa bilangan positif"
-  },
-  "spendLimitPermission": {
-    "message": "Izin batas penggunaan"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Batas penggunaan diminta oleh $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Batas penggunaan terlalu besar"
   },
   "spender": {
     "message": "Spender"

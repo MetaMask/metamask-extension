@@ -299,9 +299,6 @@
     "message": "Imporditud",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Võrk kinnitas teie algse tehingu. Tagasi minemiseks klõpsake OK-nuppu."
-  },
   "insufficientBalance": {
     "message": "Ebapiisav kontojääk."
   },
@@ -477,12 +474,6 @@
   },
   "rejectAll": {
     "message": "Lükka kõik tagasi"
-  },
-  "rejectTxsDescription": {
-    "message": "Olete korraga tagasi lükkamas $1tehingut."
-  },
-  "rejectTxsN": {
-    "message": "Lükake $1tehingud tagasi"
   },
   "rejected": {
     "message": "Tagasi lükatud"

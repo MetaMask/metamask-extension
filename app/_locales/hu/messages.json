@@ -299,9 +299,6 @@
     "message": "Importált",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Eredeti tranzakciódat jóváhagyta a hálózat. A visszatéréshez kattints az OK-ra."
-  },
   "insufficientBalance": {
     "message": "Fedezethiány."
   },
@@ -480,12 +477,6 @@
   },
   "rejectAll": {
     "message": "Mindet elutasít"
-  },
-  "rejectTxsDescription": {
-    "message": "Ezáltal kötegben utasítja el a(z) $1 tranzakciókat."
-  },
-  "rejectTxsN": {
-    "message": "$1 tranzakciók elutasítása"
   },
   "rejected": {
     "message": "Elutasítva"
