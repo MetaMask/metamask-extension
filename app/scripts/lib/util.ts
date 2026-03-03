@@ -48,6 +48,7 @@ import {
 // Re-export install type utilities from dedicated module to avoid circular dependencies
 // and keep the sentry bundle lightweight
 export { getInstallType, initInstallType } from './install-type';
+export { getEnvironmentType } from '../../../shared/lib/environment-type';
 
 /**
  * Minimal type for User-Agent Client Hints API (NavigatorUAData).
