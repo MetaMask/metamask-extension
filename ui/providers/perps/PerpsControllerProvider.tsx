@@ -80,11 +80,11 @@ export function PerpsControllerProvider({
     const streamManager = getPerpsStreamManager();
     let isMounted = true;
 
-    Promise.all([
-      getPerpsStreamingController(selectedAddress, store),
-      submitRequestToBackground('perpsInit'),
-    ])
-      .then(([ctrl]) => {
+    // Background controller is the single init authority.
+    // UI streaming controller is created only after background init succeeds.
+    submitRequestToBackground('perpsInit')
+      .then(() => getPerpsStreamingController(selectedAddress, store))
+      .then((ctrl) => {
         if (!isMounted) {
           return;
         }

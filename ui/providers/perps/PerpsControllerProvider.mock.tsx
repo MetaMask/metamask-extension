@@ -14,6 +14,7 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { submitRequestToBackground } from '../../store/background-connection';
 import {
   getPerpsController,
   getPerpsControllerInstance,
@@ -89,7 +90,9 @@ export function PerpsControllerProvider({
     const streamManager = getPerpsStreamManager();
     let isMounted = true;
 
-    getPerpsController(selectedAddress)
+    // Background controller is the single init authority.
+    submitRequestToBackground('perpsInit')
+      .then(() => getPerpsController(selectedAddress))
       .then((ctrl) => {
         if (!isMounted) {
           return;

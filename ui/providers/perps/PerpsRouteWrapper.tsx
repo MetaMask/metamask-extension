@@ -63,11 +63,10 @@ export const PerpsRouteWrapper: React.FC<PerpsRouteWrapperProps> = ({
 
     const streamManager = getPerpsStreamManager();
 
-    // Initialize stream manager for this address
-    Promise.all([
-      streamManager.init(selectedAddress),
-      submitRequestToBackground('perpsInit'),
-    ])
+    // Background controller is the single init authority.
+    // UI streaming controller is created only after background init succeeds.
+    submitRequestToBackground('perpsInit')
+      .then(() => streamManager.init(selectedAddress))
       .then(() => {
         setIsInitialized(true);
         setError(null);

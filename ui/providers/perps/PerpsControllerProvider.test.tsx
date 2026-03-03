@@ -3,6 +3,7 @@ import { render, screen, act, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import type { PerpsController } from '@metamask/perps-controller';
+import { submitRequestToBackground } from '../../store/background-connection';
 import {
   PerpsControllerProvider,
   usePerpsController,
@@ -201,6 +202,45 @@ describe('PerpsControllerProvider', () => {
       expect(mockStreamManagerInit).toHaveBeenCalledWith('0xaaa');
       expect(mockStreamManagerPrewarm).toHaveBeenCalled();
       expect(screen.getByTestId('child')).toBeInTheDocument();
+    });
+
+    it('calls perpsInit before getPerpsStreamingController (sequential ordering)', async () => {
+      const callOrder: string[] = [];
+
+      const mockSubmit = jest.mocked(submitRequestToBackground);
+      mockSubmit.mockImplementation(() => {
+        callOrder.push('perpsInit');
+        return Promise.resolve(undefined as never);
+      });
+
+      const ctrl = makeMockController();
+      mockGetPerpsStreamingController.mockImplementation(() => {
+        callOrder.push('getPerpsStreamingController');
+        return Promise.resolve(ctrl);
+      });
+
+      mockStreamManagerInit.mockImplementation(() => {
+        callOrder.push('streamManager.init');
+        return Promise.resolve();
+      });
+
+      const store = createMockStore('0xaaa');
+
+      await act(async () => {
+        render(
+          <Provider store={store}>
+            <PerpsControllerProvider>
+              <div data-testid="child">Hello</div>
+            </PerpsControllerProvider>
+          </Provider>,
+        );
+      });
+
+      expect(callOrder).toEqual([
+        'perpsInit',
+        'getPerpsStreamingController',
+        'streamManager.init',
+      ]);
     });
 
     it('calls streamManager.init and prewarm on mount', async () => {

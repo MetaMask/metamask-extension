@@ -22,6 +22,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { isPerpsControllerInitializationCancelledError } from '../../../providers/perps/getPerpsController';
 import { getPerpsStreamManager } from '../../../providers/perps';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   usePerpsLivePositions,
@@ -67,9 +68,10 @@ export const PerpsTabView: React.FC = () => {
 
     const streamManager = getPerpsStreamManager();
 
-    // Initialize and prewarm
-    streamManager
-      .init(selectedAddress)
+    // Background controller is the single init authority.
+    // UI streaming controller is created only after background init succeeds.
+    submitRequestToBackground('perpsInit')
+      .then(() => streamManager.init(selectedAddress))
       .then(() => {
         streamManager.prewarm();
       })

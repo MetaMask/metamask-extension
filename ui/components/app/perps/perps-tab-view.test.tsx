@@ -6,6 +6,14 @@ import mockState from '../../../../test/data/mock-state.json';
 import * as mocks from './mocks';
 import { PerpsTabView } from './perps-tab-view';
 
+jest.mock('../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
+}));
+
+jest.mock('../../../providers/perps/getPerpsController', () => ({
+  isPerpsControllerInitializationCancelledError: jest.fn(() => false),
+}));
+
 // Mock the PerpsControllerProvider and getPerpsStreamManager
 jest.mock('../../../providers/perps', () => ({
   PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>

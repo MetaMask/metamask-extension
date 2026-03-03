@@ -83,6 +83,33 @@ describe('PerpsRouteWrapper', () => {
     expect(manager.prewarm).toHaveBeenCalled();
   });
 
+  it('calls perpsInit before streamManager.init (sequential ordering)', async () => {
+    mockUseSelector.mockReturnValue({ address: '0xabc' });
+    const callOrder: string[] = [];
+
+    mockSubmitRequestToBackground.mockImplementation(() => {
+      callOrder.push('perpsInit');
+      return Promise.resolve(undefined as never);
+    });
+
+    const manager = buildMockStreamManager();
+    manager.init = jest.fn().mockImplementation(() => {
+      callOrder.push('streamManager.init');
+      return Promise.resolve(undefined);
+    });
+    mockGetPerpsStreamManager.mockReturnValue(manager);
+
+    await act(async () => {
+      render(
+        <PerpsRouteWrapper>
+          <div>child content</div>
+        </PerpsRouteWrapper>,
+      );
+    });
+
+    expect(callOrder).toEqual(['perpsInit', 'streamManager.init']);
+  });
+
   it('renders loadingFallback while initializing without cache', () => {
     mockUseSelector.mockReturnValue({ address: '0xabc' });
     const manager = buildMockStreamManager({ hasCachedData: false });

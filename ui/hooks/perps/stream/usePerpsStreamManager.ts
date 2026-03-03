@@ -12,6 +12,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import {
   getPerpsStreamManager,
   type PerpsStreamManager,
@@ -77,13 +78,14 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
       return;
     }
 
-    // Initialize
+    // Background controller is the single init authority.
+    // UI streaming controller is created only after background init succeeds.
     setIsInitializing(true);
     setError(null);
     setIsReady(false);
 
-    streamManager
-      .init(selectedAddress)
+    submitRequestToBackground('perpsInit')
+      .then(() => streamManager.init(selectedAddress))
       .then(() => {
         setIsInitializing(false);
         setIsReady(true);
