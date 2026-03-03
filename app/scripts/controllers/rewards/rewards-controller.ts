@@ -327,12 +327,7 @@ export class RewardsController extends BaseController<
       }
 
       try {
-        if (this.#reauthPromise) {
-          log.debug(
-            'RewardsController: 403 detected, reauth already in progress for subscription',
-            subscriptionId,
-          );
-        } else {
+        if (this.#reauthPromise === null) {
           log.debug(
             'RewardsController: 403 detected, initiating reauth for subscription',
             subscriptionId,
@@ -342,6 +337,11 @@ export class RewardsController extends BaseController<
           ).finally(() => {
             this.#reauthPromise = null;
           });
+        } else {
+          log.debug(
+            'RewardsController: 403 detected, reauth already in progress for subscription',
+            subscriptionId,
+          );
         }
         await this.#reauthPromise;
       } catch {
