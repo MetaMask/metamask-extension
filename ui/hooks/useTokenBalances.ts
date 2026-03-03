@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-import BN from 'bn.js';
 import { Token } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import {
@@ -58,10 +57,7 @@ export const useTokenTracker = ({
           decimals: token.decimals,
           balance: decimalBalance,
           balanceError: null,
-          string: stringifyBalance(
-            new BN(decimalBalance),
-            new BN(token.decimals),
-          ),
+          string: stringifyBalance(decimalBalance, token.decimals),
         });
       }
       return acc;
@@ -81,20 +77,22 @@ export const useTokenTracker = ({
 // From https://github.com/MetaMask/eth-token-tracker/blob/main/lib/util.js
 // Ensures backwards compatibility with display formatting.
 export function stringifyBalance(
-  balance: BN,
-  bnDecimals: BN,
+  balance: string,
+  tokenDecimals?: number,
   balanceDecimals = 5,
 ) {
-  if (balance.eq(new BN(0))) {
+  if (balance === '0') {
     return '0';
   }
 
-  const decimals = parseInt(bnDecimals.toString(), 10);
+  const parsed = Number(tokenDecimals);
+  const decimals = Number.isInteger(parsed) && parsed >= 0 ? parsed : 0;
+
   if (decimals === 0) {
-    return balance.toString();
+    return balance;
   }
 
-  let bal = balance.toString();
+  let bal = balance;
   let len = bal.length;
   let decimalIndex = len - decimals;
   let prefix = '';

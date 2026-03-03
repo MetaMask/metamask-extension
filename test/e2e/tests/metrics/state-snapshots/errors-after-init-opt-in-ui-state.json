@@ -216,6 +216,7 @@
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
     "ledgerTransportType": "webhid",
+    "localOverrides": "object",
     "logs": "object",
     "lostIdentities": "object",
     "manageInstitutionalWallets": "boolean",
@@ -312,13 +313,14 @@
       "btc": { "conversionDate": 0, "conversionRate": 0 },
       "sol": { "conversionDate": 0, "conversionRate": 0 }
     },
+    "rawRemoteFeatureFlags": "object",
     "recoveryPhraseReminderHasBeenShown": true,
     "recoveryPhraseReminderLastShown": "number",
     "referrals": "object",
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": { "name": "groupC", "value": "valueC" }
+      "feature3": { "name": "groupA", "value": "valueA" }
     },
     "rewardsAccounts": "object",
     "rewardsActiveAccount": null,
@@ -400,6 +402,7 @@
     "syncQueue": "object",
     "termsOfUseLastAgreed": "number",
     "theme": "light",
+    "thresholdCache": "object",
     "throttledOrigins": "object",
     "tokenBalances": "object",
     "tokenScanCache": "object",
