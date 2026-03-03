@@ -22,7 +22,7 @@ const ASSET_SETTING_ITEMS: { id: string; component: React.FC }[] = [
 
 const Assets = () => {
   return (
-    <Box padding={4}>
+    <Box paddingHorizontal={4} paddingBottom={4}>
       {ASSET_SETTING_ITEMS.map(({ id, component: Component }) => (
         <Component key={id} />
       ))}
