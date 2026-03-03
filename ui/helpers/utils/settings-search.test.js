@@ -70,6 +70,10 @@ const t = (key) => {
       return "This option is a workaround for a known issue in Firefox, where a dapp's Content-Security-Policy header may prevent the extension from loading properly. Disabling this option is not recommended unless required for specific web page compatibility.";
     case 'Contacts':
       return 'Contacts';
+    case 'contacts':
+      return 'Contacts';
+    case 'notifications':
+      return 'Notifications';
     case 'securityAndPrivacy':
       return 'Security & privacy';
     case 'revealSeedWords':
