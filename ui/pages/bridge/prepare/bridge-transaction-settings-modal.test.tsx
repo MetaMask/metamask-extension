@@ -41,6 +41,7 @@ setBackgroundConnection({
   addPollingTokenToAppState: jest.fn(),
   trackUnifiedSwapBridgeEvent: jest.fn(),
   updateBridgeQuoteRequestParams: jest.fn(),
+  getBearerToken: jest.fn(),
 });
 
 const TX_MODAL = {
