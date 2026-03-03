@@ -121,7 +121,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
     );
   });
 
-  it.only(`decodes uniswap transaction data`, async function () {
+  it(`decodes uniswap transaction data`, async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
