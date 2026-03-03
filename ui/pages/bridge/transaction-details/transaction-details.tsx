@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import {
   TransactionStatus,
   TransactionType,
@@ -23,12 +23,16 @@ import {
   IconSize,
   Text,
 } from '../../../components/component-library';
-import { Content, Header } from '../../../components/multichain/pages/page';
 import {
-  selectBridgeHistoryItemForTxMetaId,
+  Content,
+  Header,
+  Page,
+} from '../../../components/multichain/pages/page';
+import {
+  selectBridgeHistoryItemByHash,
+  selectLocalTxForTxHash,
   selectReceivedSwapsTokenAmountFromTxMeta,
 } from '../../../ducks/bridge-status/selectors';
-import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
 import { getTransactionBreakdownData } from '../../../components/app/transaction-breakdown/transaction-breakdown-utils';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
@@ -52,10 +56,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
+import { type TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
-import TransactionActivityLog from '../../../components/app/transaction-activity-log';
 import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
   type AllowedBridgeChainIds,
@@ -80,28 +84,37 @@ const CrossChainSwapTxDetails = () => {
   const { trackEvent } = useContext(MetaMetricsContext);
   const rootState = useSelector((state) => state);
 
-  const { srcTxMetaId } = useParams<{ srcTxMetaId: string }>();
-  const location = useLocation();
+  const { txHash } = useParams<{ txHash: string }>();
+  const location = useLocation() as {
+    state: { transaction?: TransactionViewModel & { type: TransactionType } };
+  };
   const navigate = useNavigate();
   const allTransactions = useSelector(getTransactions) as TransactionMeta[];
 
-  const transactionGroup: TransactionGroup | null =
-    location?.state?.transactionGroup || null;
-  const isEarliestNonce: boolean | null =
-    location?.state?.isEarliestNonce || null;
-  const srcChainTxMeta = allTransactions.find((tx) => tx.id === srcTxMetaId);
-  // Even if user is still on /tx-details/txMetaId, we want to be able to show the bridge history item
-  const bridgeHistoryItem = useSelector((state) =>
-    selectBridgeHistoryItemForTxMetaId(state, srcTxMetaId),
+  const localTx = useSelector((state: MetaMaskReduxState) =>
+    selectLocalTxForTxHash(state, txHash),
+  );
+  const transaction = location?.state?.transaction;
+  const srcChainTxMeta = localTx ?? transaction;
+
+  const {
+    sourceTokenIconUrl,
+    sourceTokenSymbol,
+    destinationTokenIconUrl,
+    destinationTokenSymbol,
+    isBridgeComplete,
+    srcNetwork,
+    destNetwork,
+  } = useBridgeActivityData({ transaction });
+
+  const bridgeHistoryItem = useSelector((state: MetaMaskReduxState) =>
+    selectBridgeHistoryItemByHash(state, srcChainTxMeta?.hash),
   );
   const approvalTxMeta = allTransactions.find(
     (tx) => tx.id === bridgeHistoryItem?.approvalTxId,
   );
 
-  const { srcNetwork, destNetwork } = useBridgeChainInfo({
-    bridgeHistoryItem,
-    srcTxMeta: srcChainTxMeta,
-  });
+  const isBridgeTx = srcChainTxMeta?.type === TransactionType.bridge;
 
   const srcTxHash = srcChainTxMeta?.hash;
   const srcBlockExplorerUrl = getBlockExplorerUrl(srcNetwork, srcTxHash);
@@ -113,10 +126,7 @@ const CrossChainSwapTxDetails = () => {
     ? bridgeHistoryItem?.status.status
     : StatusTypes.PENDING;
   // Show src tx status for swaps
-  const status =
-    srcChainTxMeta?.type === TransactionType.bridge
-      ? bridgeStatus
-      : srcChainTxMeta?.status;
+  const status = isBridgeTx ? bridgeStatus : srcChainTxMeta?.status;
 
   const srcChainIconUrl = srcNetwork
     ? getImageForChainId(
@@ -153,7 +163,8 @@ const CrossChainSwapTxDetails = () => {
 
   const bridgeAmountSent = getBridgeAmountSentFormatted({
     bridgeHistoryItem,
-    txMeta: srcChainTxMeta,
+    txMeta: transaction,
+    locale,
   });
 
   const swapAmountReceivedFromTxMeta = useSelector((state) =>
@@ -170,12 +181,10 @@ const CrossChainSwapTxDetails = () => {
     getBridgeAmountReceivedFormatted({
       locale,
       bridgeHistoryItem,
-      txMeta: srcChainTxMeta,
+      txMeta: transaction,
     });
 
-  const isDelayed =
-    srcChainTxMeta?.type === TransactionType.bridge &&
-    getIsDelayed(bridgeStatus, bridgeHistoryItem);
+  const isDelayed = isBridgeTx && getIsDelayed(bridgeStatus, bridgeHistoryItem);
 
   // TODO set for gasless swaps
   const gasCurrency = useSelector((state: MetaMaskReduxState) =>
@@ -212,7 +221,7 @@ const CrossChainSwapTxDetails = () => {
   );
 
   return (
-    <div className="bridge__container bg-background-default">
+    <Page className="bridge__container bg-background-default">
       <Header
         className="bridge__header"
         startAccessory={
@@ -224,18 +233,10 @@ const CrossChainSwapTxDetails = () => {
           />
         }
       >
-        {t(
-          srcChainTxMeta?.type === TransactionType.bridge
-            ? 'bridgeDetailsTitle'
-            : 'swapDetailsTitle',
-        )}
+        {t(isBridgeTx ? 'bridgeDetailsTitle' : 'swapDetailsTitle')}
       </Header>
-      <Content className="bridge-transaction-details__content">
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          gap={4}
-        >
+      <Content className="bridge-transaction-details__content" gap={4}>
+        <React.Fragment>
           {/* Delayed banner */}
           {isDelayed && (
             <BannerAlert
@@ -273,7 +274,7 @@ const CrossChainSwapTxDetails = () => {
           )}
 
           {/* Bridge step list */}
-          {status !== StatusTypes.COMPLETE &&
+          {!isBridgeComplete &&
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             (bridgeHistoryItem || srcChainTxMeta) && (
@@ -310,10 +311,10 @@ const CrossChainSwapTxDetails = () => {
                 </Text>
               }
             />
-            {srcChainTxMeta?.type === TransactionType.bridge && (
+            {isBridgeTx && bridgeHistoryItem && (
               <TransactionDetailRow
                 title={t(
-                  status === StatusTypes.COMPLETE
+                  isBridgeComplete
                     ? 'bridgeTxDetailsBridged'
                     : 'bridgeTxDetailsBridging',
                 )}
@@ -347,28 +348,23 @@ const CrossChainSwapTxDetails = () => {
                     flexWrap={FlexWrap.Wrap}
                     justifyContent={JustifyContent.flexEnd}
                   >
-                    {bridgeHistoryItem && (
+                    {sourceTokenIconUrl && (
                       <AvatarToken
                         size={AvatarTokenSize.Xs}
-                        src={
-                          bridgeHistoryItem?.quote.srcAsset.iconUrl ?? undefined
-                        }
-                        name={bridgeHistoryItem?.quote.srcAsset.symbol}
+                        src={sourceTokenIconUrl}
+                        name={sourceTokenSymbol}
                       />
                     )}
-                    {bridgeHistoryItem?.quote.srcAsset.symbol}
+                    {sourceTokenSymbol}
                     <Icon name={IconName.Arrow2Right} size={IconSize.Sm} />
-                    {bridgeHistoryItem && (
+                    {destinationTokenIconUrl && (
                       <AvatarToken
                         size={AvatarTokenSize.Xs}
-                        src={
-                          bridgeHistoryItem?.quote.destAsset.iconUrl ??
-                          undefined
-                        }
-                        name={bridgeHistoryItem?.quote.destAsset.symbol}
+                        src={destinationTokenIconUrl}
+                        name={destinationTokenSymbol}
                       />
                     )}
-                    {bridgeHistoryItem?.quote.destAsset.symbol}
+                    {destinationTokenSymbol}
                   </Box>
                 }
               />
@@ -402,13 +398,13 @@ const CrossChainSwapTxDetails = () => {
                 >
                   {t('bridgeTxDetailsTokenAmountOnChain', [
                     bridgeAmountSent ?? '',
-                    bridgeHistoryItem?.quote.srcAsset.symbol ?? '',
+                    sourceTokenSymbol ?? '',
                   ])}
                   {srcNetworkIconName}
                 </Box>
               }
             />
-            {amountReceived && bridgeHistoryItem?.quote.destAsset.symbol && (
+            {amountReceived && destinationTokenSymbol && (
               <TransactionDetailRow
                 title={t('bridgeTxDetailsYouReceived')}
                 value={
@@ -421,7 +417,7 @@ const CrossChainSwapTxDetails = () => {
                   >
                     {t('bridgeTxDetailsTokenAmountOnChain', [
                       amountReceived,
-                      bridgeHistoryItem?.quote.destAsset.symbol,
+                      destinationTokenSymbol,
                     ])}
                     {destNetworkIconName}
                   </Box>
@@ -464,17 +460,10 @@ const CrossChainSwapTxDetails = () => {
                   : undefined
               }
             />
-            {transactionGroup && typeof isEarliestNonce !== 'undefined' && (
-              <TransactionActivityLog
-                transactionGroup={transactionGroup}
-                className="transaction-list-item-details__transaction-activity-log"
-                isEarliestNonce={isEarliestNonce}
-              />
-            )}
           </Box>
-        </Box>
+        </React.Fragment>
       </Content>
-    </div>
+    </Page>
   );
 };
 

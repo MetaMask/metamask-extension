@@ -3,6 +3,9 @@ import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { renderHook as renderHookBase } from '@testing-library/react-hooks';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
+import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
+import * as useBridgeActivityDataHook from '../../../hooks/bridge/useBridgeActivityData';
+import { ChainInfo } from '../../../pages/bridge/utils/tx-details';
 import { useGetTitle } from './hooks';
 
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -33,6 +36,26 @@ function renderHook<Result>(callback: () => Result) {
 }
 
 describe('useGetTitle', () => {
+  beforeEach(() => {
+    jest
+      .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
+      .mockReturnValue({
+        isBridgeTx: false,
+        isBridgeComplete: false,
+        isBridgeFailed: false,
+        showBridgeTxDetails: undefined,
+        srcNetwork: undefined,
+        destNetwork: undefined,
+        category: TransactionGroupCategory.swap,
+        displayCurrencyAmount: '',
+        sourceTokenSymbol: undefined,
+        sourceTokenAmountSent: undefined,
+        sourceTokenIconUrl: undefined,
+        destinationTokenSymbol: undefined,
+        destinationTokenIconUrl: undefined,
+      });
+  });
+
   it('returns swap title for swap-like CONTRACT_CALL', () => {
     const tx = {
       amounts: {
@@ -228,6 +251,26 @@ describe('useGetTitle', () => {
       transactionType: 'METAMASK_BRIDGE_V2_BRIDGE_OUT',
       value: '100000000000000',
     } as unknown as TransactionViewModel;
+
+    jest
+      .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
+      .mockReturnValue({
+        isBridgeTx: true,
+        isBridgeComplete: false,
+        isBridgeFailed: false,
+        showBridgeTxDetails: jest.fn(),
+        srcNetwork: undefined,
+        destNetwork: {
+          name: 'Linea',
+        } as unknown as ChainInfo,
+        category: TransactionGroupCategory.bridge,
+        displayCurrencyAmount: '',
+        sourceTokenSymbol: undefined,
+        sourceTokenAmountSent: undefined,
+        sourceTokenIconUrl: undefined,
+        destinationTokenSymbol: undefined,
+        destinationTokenIconUrl: undefined,
+      });
 
     const { result } = renderHook(() => useGetTitle(tx));
 
