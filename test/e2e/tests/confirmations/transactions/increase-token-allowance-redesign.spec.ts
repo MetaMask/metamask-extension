@@ -1,13 +1,9 @@
-import FixtureBuilder from '../../../fixtures/fixture-builder';
-import { WINDOW_TITLES } from '../../../constants';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import { Anvil } from '../../../seeder/anvil';
-import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import {
   assertChangedSpendingCap,
@@ -26,12 +22,19 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           contractRegistry,
           localNodes,
         }: TestSuiteArguments) => {
-          await createAndAssertIncreaseAllowanceSubmission(
-            driver,
-            '3',
-            contractRegistry,
-            localNodes,
+          const contractAddress = await contractRegistry?.getContractAddress(
+            SMART_CONTRACTS.HST,
           );
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
+
+          await testDapp.clickERC20IncreaseAllowanceButton();
+          const newSpendingCap = '3';
+          await editSpendingCap(driver, newSpendingCap);
+          await scrollAndConfirmAndAssertConfirm(driver);
+          await assertChangedSpendingCap(driver, newSpendingCap);
         },
       );
     });
@@ -44,12 +47,19 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           contractRegistry,
           localNodes,
         }: TestSuiteArguments) => {
-          await createAndAssertIncreaseAllowanceSubmission(
-            driver,
-            '3000',
-            contractRegistry,
-            localNodes,
+          const contractAddress = await contractRegistry?.getContractAddress(
+            SMART_CONTRACTS.HST,
           );
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
+
+          await testDapp.clickERC20IncreaseAllowanceButton();
+          const newSpendingCap = '3000';
+          await editSpendingCap(driver, newSpendingCap);
+          await scrollAndConfirmAndAssertConfirm(driver);
+          await assertChangedSpendingCap(driver, newSpendingCap);
         },
       );
     });
@@ -59,7 +69,7 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
 function generateFixtureOptions(mochaContext: Mocha.Context) {
   return {
     dappOptions: { numberOfTestDapps: 1 },
-    fixtures: new FixtureBuilder()
+    fixtures: new FixtureBuilderV2()
       .withPermissionControllerConnectedToTestDapp()
       .build(),
     smartContract: SMART_CONTRACTS.HST,
@@ -68,34 +78,6 @@ function generateFixtureOptions(mochaContext: Mocha.Context) {
   };
 }
 
-async function createAndAssertIncreaseAllowanceSubmission(
-  driver: Driver,
-  newSpendingCap: string,
-  contractRegistry?: ContractAddressRegistry,
-  localNodes?: Anvil[],
-) {
-  const contractAddress = await contractRegistry?.getContractAddress(
-    SMART_CONTRACTS.HST,
-  );
-  await loginWithBalanceValidation(driver, localNodes?.[0]);
-  const testDapp = new TestDapp(driver);
-  await testDapp.openTestDappPage({ contractAddress });
-  await testDapp.checkPageIsLoaded();
-
-  await createERC20IncreaseAllowanceTransaction(driver);
-
-  await editSpendingCap(driver, newSpendingCap);
-
-  await scrollAndConfirmAndAssertConfirm(driver);
-
-  await assertChangedSpendingCap(driver, newSpendingCap);
-}
-
 async function mocks(server: Mockttp) {
   return [await mocked4BytesIncreaseAllowance(server)];
-}
-
-async function createERC20IncreaseAllowanceTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#increaseTokenAllowance');
 }
