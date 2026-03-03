@@ -6667,7 +6667,7 @@ __metadata:
 
 "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz#./metamask-eth-mpc-keyring-0.0.0.tgz::hash=d64e3e&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz#./metamask-eth-mpc-keyring-0.0.0.tgz::hash=6a286a&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
@@ -6676,7 +6676,7 @@ __metadata:
     "@metamask/mfa-wallet-e2ee": "npm:^0.0.0"
     "@metamask/mfa-wallet-network": "npm:^0.0.0"
     "@metamask/mfa-wallet-util": "npm:^0.0.0"
-  checksum: 10/eacbf39413a81ee2a5d502d8fee66e796a0b0823fa5f6466ae095024888fc32dd2077dfa924fadd32a093a859e539b75cbde90f866c36dbce680ed34a8a763a4
+  checksum: 10/2f613e6b5d8ac3b902cc5563b0d33cdb2af1f930cfda33fcf15873580da991b40492f515470734d2cbeec2147fffc28d446567ce8dd4b825593524459cf79855
   languageName: node
   linkType: hard
 
@@ -7416,11 +7416,11 @@ __metadata:
 
 "@metamask/mfa-wallet-dkls19-lib@file:./metamask-mfa-wallet-dkls19-lib-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/mfa-wallet-dkls19-lib@file:./metamask-mfa-wallet-dkls19-lib-0.0.0.tgz#./metamask-mfa-wallet-dkls19-lib-0.0.0.tgz::hash=4b0e4f&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/mfa-wallet-dkls19-lib@file:./metamask-mfa-wallet-dkls19-lib-0.0.0.tgz#./metamask-mfa-wallet-dkls19-lib-0.0.0.tgz::hash=f33924&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/mfa-wallet-util": "npm:^0.0.0"
     "@noble/curves": "npm:^1.9.2"
-  checksum: 10/c6171512e90737102f190c152ae636ad5fade75ea0225eb0d008e19dd108e5b0cc0b2348a7301df6b0ef0df7661f2664662a4b947d2f06d865bf6535d8a60619
+  checksum: 10/ec6c5ef34943e64e89570618d5a714f37e82e9be37d8c1fdaf5a901a46e40322338554437ffefa232972182c8c936c1163604aa49bc1f60a5b492be4efdd5547
   languageName: node
   linkType: hard
 
@@ -7452,6 +7452,13 @@ __metadata:
   version: 0.0.0
   resolution: "@metamask/mfa-wallet-util@file:./metamask-mfa-wallet-util-0.0.0.tgz#./metamask-mfa-wallet-util-0.0.0.tgz::hash=24be98&locator=metamask-crx%40workspace%3A."
   checksum: 10/aef5061019305e5a112753396aad5d05390dc877eb22d8e74df58c5b6180564f49a85e5bac573c91397b54081e4c30cc8c6b6d593b6c2319f4473a19bd243bcd
+  languageName: node
+  linkType: hard
+
+"@metamask/mpc-libs-interface@file:./metamask-mpc-libs-interface-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0
+  resolution: "@metamask/mpc-libs-interface@file:./metamask-mpc-libs-interface-0.0.0.tgz#./metamask-mpc-libs-interface-0.0.0.tgz::hash=95a8c1&locator=metamask-crx%40workspace%3A."
+  checksum: 10/171a8bf0fc792376d7ab9422be94e43a11013f955cba1ed7c833b07b326d6accc947184fd929dfed7e2e3bdf7a0e34cac2bc6e693994c6491f40a1cf7ccc2668
   languageName: node
   linkType: hard
 
@@ -8907,8 +8914,8 @@ __metadata:
 
 "@metamask/tss-dkls19-lib@file:./metamask-tss-dkls19-lib-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/tss-dkls19-lib@file:./metamask-tss-dkls19-lib-0.0.0.tgz#./metamask-tss-dkls19-lib-0.0.0.tgz::hash=01b37b&locator=metamask-crx%40workspace%3A."
-  checksum: 10/ebf6c3db34ddfc75536402d1b3a70ac029db20cc6ebde95678a161b21158673120502a306e8081962d7e0fe358a5d9464d1c21fbd5bd6ad2fe8b7d855cb9de50
+  resolution: "@metamask/tss-dkls19-lib@file:./metamask-tss-dkls19-lib-0.0.0.tgz#./metamask-tss-dkls19-lib-0.0.0.tgz::hash=3646d8&locator=metamask-crx%40workspace%3A."
+  checksum: 10/a3e248f41adf8b6d18683a94c43b869ad34470f9a97f4b63948e10357c16686fa334d9a80d8c8b8e58b01cd6d47c8339e9e6d5cd40a008f5e760f6610070747a
   languageName: node
   linkType: hard
 
@@ -33687,6 +33694,7 @@ __metadata:
     "@metamask/message-signing-snap": "npm:1.1.4"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/mpc-libs-interface": "file:./metamask-mpc-libs-interface-0.0.0.tgz"
     "@metamask/multichain-account-service": "npm:^5.0.0"
     "@metamask/multichain-api-client": "npm:^0.10.1"
     "@metamask/multichain-api-middleware": "npm:^1.2.5"

@@ -269,6 +269,7 @@
     "@metamask/mfa-wallet-interface": "file:./metamask-mfa-wallet-interface-0.0.0.tgz",
     "@metamask/mfa-wallet-network": "file:./metamask-mfa-wallet-network-0.0.0.tgz",
     "@metamask/mfa-wallet-util": "file:./metamask-mfa-wallet-util-0.0.0.tgz",
+    "@metamask/mpc-libs-interface": "file:./metamask-mpc-libs-interface-0.0.0.tgz",
     "@metamask/tss-dkls19-lib": "file:./metamask-tss-dkls19-lib-0.0.0.tgz",
     "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@25.0.0-preview-1137ade3"
   },
@@ -520,6 +521,7 @@
     "@metamask/eth-json-rpc-provider": "^6.0.0",
     "@metamask/forwarder": "^1.1.0",
     "@metamask/foundryup": "^1.0.1",
+    "@metamask/mpc-libs-interface": "file:./metamask-mpc-libs-interface-0.0.0.tgz",
     "@metamask/phishing-warning": "^5.1.0",
     "@metamask/preferences-controller": "^21.0.0",
     "@metamask/snap-account-abstraction-keyring-site": "^1.0.0",
