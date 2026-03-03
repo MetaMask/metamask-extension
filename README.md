@@ -199,6 +199,86 @@ Once you've created a test build with the desired feature flag enabled, proceed 
 
 This approach ensures that your e2e tests accurately reflect the user experience for the upcoming GA features.
 
+#### Feature Flag Registry
+
+The [Feature Flag Registry](./test/e2e/feature-flags/feature-flag-registry.ts) is the central source of truth for all remote feature flags used in MetaMask Extension. It ensures E2E tests run against production-accurate flag configurations by default, and provides CI enforcement so every flag reference in the codebase is tracked.
+
+##### How it works
+
+In production, MetaMask fetches remote feature flags from the [client-config API](https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod) at runtime. During E2E tests, the global mock server (`test/e2e/mock-e2e.js`) reads from the registry instead of calling the real API. Each registry entry stores the flag's production default value, so tests reflect real-world behavior unless a specific test explicitly overrides a flag.
+
+A GitHub Actions CI check ([`.github/workflows/check-feature-flag-registry.yml`](./.github/workflows/check-feature-flag-registry.yml)) runs on every PR. It scans changed files for remote feature flag references (dot access, bracket access, destructuring) and verifies each one exists in the registry. If an unregistered flag is detected, the check fails and posts a comment on the PR explaining what to fix.
+
+##### Registry entry format
+
+Each entry in `test/e2e/feature-flags/feature-flag-registry.ts` has the following shape:
+
+```typescript
+myNewFlag: {
+  name: 'myNewFlag',
+  type: FeatureFlagType.Remote,
+  inProd: true,
+  productionDefault: false,
+  status: FeatureFlagStatus.Active,
+},
+```
+
+| Field | Description |
+| ---- | ---- |
+| `name` | Must match the object key exactly |
+| `type` | `FeatureFlagType.Remote` (fetched at runtime) or `FeatureFlagType.Build` (compile-time) |
+| `inProd` | Whether the flag currently exists in the production client-config API |
+| `productionDefault` | The value returned by the production API (boolean, string, object, or array) |
+| `status` | `FeatureFlagStatus.Active` or `FeatureFlagStatus.Deprecated` |
+
+##### Adding a new remote feature flag
+
+1. Look up the flag's current production value from the [client-config API](https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod). If the flag is not yet in production, set `inProd: false` and `productionDefault` to the intended default.
+2. Add an entry to `test/e2e/feature-flags/feature-flag-registry.ts` in alphabetical order.
+3. If you access the flag via a constant (e.g. `remoteFeatureFlags[MY_CONSTANT]`), also add the constant mapping to [`.github/scripts/known-feature-flag-constants.ts`](./.github/scripts/known-feature-flag-constants.ts) so the CI check can resolve it.
+
+##### Overriding flags in E2E tests
+
+To test behavior with a flag value different from the production default, use one of these approaches:
+
+- **Runtime override via manifest flags:**
+  ```javascript
+  await withFixtures(
+    {
+      manifestFlags: {
+        remoteFeatureFlags: { myNewFlag: true },
+      },
+    },
+    async ({ driver }) => { /* ... */ },
+  );
+  ```
+
+- **Fixture state override via FixtureBuilder:**
+  ```javascript
+  new FixtureBuilder().withRemoteFeatureFlags({ myNewFlag: true }).build();
+  ```
+
+##### Helper functions
+
+The registry module exports several utilities for use in tests and tooling:
+
+| Function | Description |
+| ---- | ---- |
+| `getProductionRemoteFlagApiResponse()` | Returns flags in the raw API format (array of single-key objects), used by `mock-e2e.js` |
+| `getProductionRemoteFlagDefaults()` | Returns a flat `{ flagName: value }` map, useful for assertions and `FixtureBuilder` |
+| `getRegistryEntry(name)` | Looks up a single flag's metadata |
+| `getRegisteredFlagNames()` | Returns all registered flag names |
+| `getRegistryEntriesByStatus(status)` | Filters entries by `Active` or `Deprecated` status |
+| `getDeprecatedFlags()` | Returns entries marked as `Deprecated` (candidates for removal) |
+
+##### Removing a flag
+
+When a remote feature flag is fully rolled out or no longer needed:
+
+1. Remove all references to the flag from application code (`app/`, `ui/`, `shared/`).
+2. Either remove the entry from the registry, or change its `status` to `FeatureFlagStatus.Deprecated` if you want to track it temporarily.
+3. The CI check will post a warning on PRs that remove the last codebase reference to a registered flag, reminding you to clean up the registry.
+
 #### Running E2E performance benchmarks
 
 E2E performance benchmarks measure flow timings (onboarding, send, swap, asset details, etc.) and can be run locally or in CI. Use `yarn test:e2e:benchmark` with `--preset <name>` or a file path. See [test/e2e/benchmarks/flows/README.md](test/e2e/benchmarks/flows/README.md) for presets and options.
