@@ -48,6 +48,8 @@ import { getHardwareWalletType } from '../../selectors/selectors';
 import {
   ALL_ALLOWED_BRIDGE_CHAIN_IDS,
   ALLOWED_BRIDGE_CHAIN_IDS,
+  PRICE_IMPACT_ERROR_THRESHOLD,
+  PRICE_IMPACT_WARNING_THRESHOLD,
 } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
@@ -86,6 +88,7 @@ import {
 } from '../../selectors/multichain-accounts/account-tree';
 import { getAllEnabledNetworksForAllNamespaces } from '../../selectors/multichain/networks';
 import { type MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
+import { formatPriceImpact } from '../../pages/bridge/utils/price-impact';
 import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
@@ -653,6 +656,25 @@ export const getFromAmountInCurrency = createSelector(
 
 export const getTxAlerts = (state: BridgeAppState) => state.bridge.txAlert;
 
+export const getPriceImpact = createSelector(
+  [
+    (state: BridgeAppState) =>
+      getBridgeQuotes(state).activeQuote?.quote?.priceData?.priceImpact,
+  ],
+  (priceImpact) => {
+    const priceImpactNumber = Number(priceImpact);
+    if (isNaN(priceImpactNumber)) {
+      return null;
+    }
+    return priceImpactNumber;
+  },
+);
+
+export const getFormattedPriceImpact = createSelector(
+  [getPriceImpact],
+  (priceImpact) => (priceImpact ? formatPriceImpact(priceImpact) : null),
+);
+
 export const getValidationErrors = createDeepEqualSelector(
   [
     getBridgeQuotes,
@@ -666,6 +688,7 @@ export const getValidationErrors = createDeepEqualSelector(
     _getFromNativeBalance,
     getFromTokenBalance,
     ({ bridge: { txAlertStatus } }: BridgeAppState) => txAlertStatus,
+    getPriceImpact,
   ],
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
@@ -678,6 +701,7 @@ export const getValidationErrors = createDeepEqualSelector(
     nativeBalance,
     fromTokenBalance,
     txAlertStatus,
+    priceImpactNumber,
   ) => {
     const { gasIncluded, gasIncluded7702, gasSponsored } =
       activeQuote?.quote ?? {};
@@ -746,6 +770,13 @@ export const getValidationErrors = createDeepEqualSelector(
               ).times(activeQuote.sentAmount.valueInCurrency),
             )
           : false,
+      isPriceImpactWarning: priceImpactNumber
+        ? priceImpactNumber > PRICE_IMPACT_WARNING_THRESHOLD &&
+          priceImpactNumber <= PRICE_IMPACT_ERROR_THRESHOLD
+        : false,
+      isPriceImpactError: priceImpactNumber
+        ? priceImpactNumber > PRICE_IMPACT_ERROR_THRESHOLD
+        : false,
     };
   },
 );
@@ -758,6 +789,9 @@ export const getWarningLabels = createSelector(
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
     isInsufficientBalance,
+    isPriceImpactWarning,
+    isPriceImpactError,
+    isTxAlertPresent,
   }) => {
     const warnings: QuoteWarning[] = [];
     isEstimatedReturnLow && warnings.push('low_return');
@@ -766,6 +800,9 @@ export const getWarningLabels = createSelector(
     isInsufficientGasForQuote &&
       warnings.push('insufficient_gas_for_selected_quote');
     isInsufficientBalance && warnings.push('insufficient_balance');
+    isPriceImpactWarning && warnings.push('price_impact');
+    isPriceImpactError && warnings.push('price_impact');
+    isTxAlertPresent && warnings.push('tx_alert');
     return warnings;
   },
 );

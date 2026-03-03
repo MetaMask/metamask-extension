@@ -22,11 +22,12 @@ import {
   getFromToken,
   getSlippage,
   getIsSolanaSwap,
-  getPriceImpactThresholds,
   getQuoteRequest,
   getIsToOrFromNonEvm,
   getIsStxEnabled,
   getValidationErrors,
+  getPriceImpact,
+  getFormattedPriceImpact,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatNetworkFee, formatTokenAmount } from '../utils/quote';
@@ -41,7 +42,6 @@ import { Row, Column, Tooltip } from '../layout';
 import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
-import { formatPriceImpact } from '../utils/price-impact';
 import { type DestinationAccount } from '../prepare/types';
 import { useRewards } from '../../../hooks/bridge/useRewards';
 import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
@@ -88,7 +88,8 @@ export const MultichainBridgeQuoteCard = ({
   const slippage = useSelector(getSlippage);
   const isSolanaSwap = useSelector(getIsSolanaSwap);
   const dispatch = useDispatch();
-  const { isEstimatedReturnLow } = useSelector(getValidationErrors);
+  const { isEstimatedReturnLow, isPriceImpactWarning, isPriceImpactError } =
+    useSelector(getValidationErrors);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
   const gasFeesSponsoredNetworkEnabled = useSelector(
@@ -97,12 +98,10 @@ export const MultichainBridgeQuoteCard = ({
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
-  const priceImpactThresholds = useSelector(getPriceImpactThresholds);
-
   // Calculate if price impact warning should show
-  const priceImpact = activeQuote?.quote?.priceData?.priceImpact;
-  const gasIncluded = activeQuote?.quote?.gasIncluded ?? false;
-  const gasIncluded7702 = activeQuote?.quote?.gasIncluded7702 ?? false;
+  const priceImpact = useSelector(getPriceImpact);
+  const formattedPriceImpact = useSelector(getFormattedPriceImpact);
+
   const gasSponsored = activeQuote?.quote?.gasSponsored ?? false;
 
   const isCurrentNetworkGasSponsored = useMemo(() => {
@@ -140,37 +139,9 @@ export const MultichainBridgeQuoteCard = ({
     toToken?.chainId,
   ]);
 
-  const isGasless = gasIncluded7702 || gasIncluded || shouldShowGasSponsored;
-
   const nativeTokenSymbol = fromChain
     ? getNativeAssetForChainId(fromChain.chainId).symbol
     : '';
-
-  const shouldRenderPriceImpactRow = useMemo(() => {
-    const priceImpactThreshold = priceImpactThresholds;
-    return (
-      priceImpactThreshold && priceImpact !== undefined && priceImpact !== null
-    );
-  }, [priceImpactThresholds, priceImpact]);
-
-  // Red state if above threshold
-  const shouldShowPriceImpactWarning = React.useMemo(() => {
-    if (!shouldRenderPriceImpactRow) {
-      return false;
-    }
-    const threshold = isGasless
-      ? priceImpactThresholds?.gasless
-      : priceImpactThresholds?.normal;
-    if (threshold === null || threshold === undefined) {
-      return false;
-    }
-    return Number(priceImpact) >= Number(threshold);
-  }, [
-    isGasless,
-    priceImpact,
-    shouldRenderPriceImpactRow,
-    priceImpactThresholds,
-  ]);
 
   const secondsUntilNextRefresh = useCountdownTimer();
 
@@ -268,9 +239,7 @@ export const MultichainBridgeQuoteCard = ({
                         token_symbol_destination: toToken?.symbol ?? null,
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
-                        price_impact: Number(
-                          activeQuote.quote?.priceData?.priceImpact ?? '0',
-                        ),
+                        price_impact: priceImpact ?? 0,
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         gas_included: Boolean(activeQuote.quote?.gasIncluded),
@@ -440,7 +409,7 @@ export const MultichainBridgeQuoteCard = ({
         )}
 
         {/* Price Impact */}
-        {shouldRenderPriceImpactRow && (
+        {formattedPriceImpact && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Row gap={2}>
               <Text
@@ -451,7 +420,7 @@ export const MultichainBridgeQuoteCard = ({
               </Text>
               <Tooltip
                 title={
-                  shouldShowPriceImpactWarning
+                  isPriceImpactWarning
                     ? t('bridgePriceImpactWarningTitle')
                     : t('bridgePriceImpactTooltipTitle')
                 }
@@ -464,12 +433,15 @@ export const MultichainBridgeQuoteCard = ({
             <Text
               variant={TextVariant.bodySm}
               color={
-                shouldShowPriceImpactWarning
-                  ? TextColor.errorDefault
-                  : TextColor.textAlternative
+                // eslint-disable-next-line no-nested-ternary
+                isPriceImpactWarning
+                  ? TextColor.warningDefault
+                  : isPriceImpactError
+                    ? TextColor.errorDefault
+                    : TextColor.textAlternative
               }
             >
-              {formatPriceImpact(priceImpact)}
+              {formattedPriceImpact}
             </Text>
           </Row>
         )}
