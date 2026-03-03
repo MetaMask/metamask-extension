@@ -227,12 +227,22 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
   sortedOwners.forEach((team, index) => {
     const emoji = teamEmojis[team] || '👨‍🔧';
     const files = teamFiles[team];
+    const changes = calculateTeamChanges(files);
 
-    commentBody += `\n${emoji} **${team}** (${files.length} files)\n`;
+    // Add collapsible section with change statistics
+    commentBody += `\n<details>\n<summary>${emoji} <strong>${team}</strong> (${changes.files} files, +${changes.additions} -${changes.deletions})</summary>\n\n`;
 
     // List files in a simplified, but properly-indented format
     const dirTree = buildSimpleDirectoryTree(files);
+
     commentBody += renderSimpleDirectoryTree(dirTree, '');
+
+    // Close the details tag
+    commentBody += `</details>\n`;
+
+    if(team === '@MetaMask/policy-reviewers') {
+      commentBody += policyReviewInstructions
+    }
 
     // Only add divider if not the last team
     if (index < sortedOwners.length - 1) {
@@ -243,12 +253,11 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
   return commentBody;
 }
 
-// Build a simplified directory tree
-function buildSimpleDirectoryTree(files: string[]): { [key: string]: string[] | { [key: string]: any } } {
-  const tree: { [key: string]: string[] | { [key: string]: any } } = {};
+function buildSimpleDirectoryTree(files: PullRequestFile[]): { [key: string]: PullRequestFile[] | { [key: string]: any } } {
+  const tree: { [key: string]: PullRequestFile[] | { [key: string]: any } } = {};
 
   files.forEach(file => {
-    const parts = file.split('/');
+    const parts = file.filename.split('/');
     let currentPath = '';
     let currentObj = tree;
 
@@ -261,7 +270,11 @@ function buildSimpleDirectoryTree(files: string[]): { [key: string]: string[] | 
         if (!currentObj['__files__']) {
           currentObj['__files__'] = [];
         }
-        (currentObj['__files__'] as string[]).push(part);
+        (currentObj['__files__'] as PullRequestFile[]).push({
+          filename: part,
+          additions: file.additions,
+          deletions: file.deletions
+        });
       } else {
         // This is a directory
         if (!currentObj[part]) {
@@ -284,8 +297,10 @@ function renderSimpleDirectoryTree(node: { [key: string]: any }, prefix: string)
   dirs.sort(); // Sort directories alphabetically
 
   dirs.forEach(dir => {
-    // Add this directory - only italic with dots after slash
-    result += `${prefix}* *${dir}/..*\n`;
+    // Escape underscores in directory names to prevent unwanted formatting
+    const escapedDir = dir.replace(/_/g, '\\_');
+    // Add directory with trailing slash
+    result += `${prefix}- 📁 ${escapedDir}/\n`;
 
     // Recursively process subdirectories with increased indentation
     result += renderSimpleDirectoryTree(node[dir], `${prefix}  `);
@@ -293,11 +308,17 @@ function renderSimpleDirectoryTree(node: { [key: string]: any }, prefix: string)
 
   // Process files if any
   if (node['__files__']) {
-    const files = node['__files__'] as string[];
-    files.sort(); // Sort files alphabetically
+    const files = node['__files__'] as PullRequestFile[];
+    files.sort((a, b) => a.filename.localeCompare(b.filename)); // Sort files alphabetically
 
     files.forEach(file => {
-      result += `${prefix}  * \`${file}\`\n`;
+      let changes = '';
+      if (file.additions > 0 || file.deletions > 0) {
+        changes = ` *+${file.additions} -${file.deletions}*`;
+      }
+
+      // Add files with code formatting and change statistics
+      result += `${prefix}  - 📄 \`${file.filename}\`${changes}\n`;
     });
   }
 
