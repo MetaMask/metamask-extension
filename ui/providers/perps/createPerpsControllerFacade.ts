@@ -13,6 +13,7 @@
  */
 
 import type { PerpsController } from '@metamask/perps-controller';
+import { PERPS_API_METHOD_MAP } from '../../../shared/constants/perps-api';
 import { submitRequestToBackground } from '../../store/background-connection';
 
 const STREAMING_METHODS = [
@@ -26,60 +27,16 @@ const STREAMING_METHODS = [
 ] as const;
 
 /**
- * Map from facade method name (camelCase) to background action name (perpsPascalCase).
- * Methods not listed here are either streaming (forwarded) or use special handling below.
+ * Methods that the facade handles specially rather than auto-delegating.
+ * - init: wired explicitly at facade construction
+ * - disconnect: forwarded to the UI streaming controller, not the background
+ * - depositWithConfirmation: custom return-value handling
  */
-const DELEGATE_ACTIONS: Record<string, string> = {
-  init: 'perpsInit',
-  placeOrder: 'perpsPlaceOrder',
-  closePosition: 'perpsClosePosition',
-  closePositions: 'perpsClosePositions',
-  editOrder: 'perpsEditOrder',
-  cancelOrder: 'perpsCancelOrder',
-  cancelOrders: 'perpsCancelOrders',
-  updatePositionTPSL: 'perpsUpdatePositionTPSL',
-  updateMargin: 'perpsUpdateMargin',
-  flipPosition: 'perpsFlipPosition',
-  withdraw: 'perpsWithdraw',
-  getPositions: 'perpsGetPositions',
-  getMarkets: 'perpsGetMarkets',
-  getMarketDataWithPrices: 'perpsGetMarketDataWithPrices',
-  getOrderFills: 'perpsGetOrderFills',
-  getOrders: 'perpsGetOrders',
-  getOpenOrders: 'perpsGetOpenOrders',
-  getFunding: 'perpsGetFunding',
-  getAccountState: 'perpsGetAccountState',
-  getHistoricalPortfolio: 'perpsGetHistoricalPortfolio',
-  fetchHistoricalCandles: 'perpsFetchHistoricalCandles',
-  calculateFees: 'perpsCalculateFees',
-  getAvailableDexs: 'perpsGetAvailableDexs',
-  refreshEligibility: 'perpsRefreshEligibility',
-  toggleTestnet: 'perpsToggleTestnet',
-  saveTradeConfiguration: 'perpsSaveTradeConfiguration',
-  getTradeConfiguration: 'perpsGetTradeConfiguration',
-  savePendingTradeConfiguration: 'perpsSavePendingTradeConfiguration',
-  getPendingTradeConfiguration: 'perpsGetPendingTradeConfiguration',
-  clearPendingTradeConfiguration: 'perpsClearPendingTradeConfiguration',
-  saveMarketFilterPreferences: 'perpsSaveMarketFilterPreferences',
-  getMarketFilterPreferences: 'perpsGetMarketFilterPreferences',
-  setSelectedPaymentToken: 'perpsSetSelectedPaymentToken',
-  resetSelectedPaymentToken: 'perpsResetSelectedPaymentToken',
-  markTutorialCompleted: 'perpsMarkTutorialCompleted',
-  markFirstOrderCompleted: 'perpsMarkFirstOrderCompleted',
-  resetFirstTimeUserState: 'perpsResetFirstTimeUserState',
-  clearPendingTransactionRequests: 'perpsClearPendingTransactionRequests',
-  saveOrderBookGrouping: 'perpsSaveOrderBookGrouping',
-  getOrderBookGrouping: 'perpsGetOrderBookGrouping',
-  getUserHistory: 'perpsGetUserHistory',
-  clearDepositResult: 'perpsClearDepositResult',
-  clearWithdrawResult: 'perpsClearWithdrawResult',
-  getBlockExplorerUrl: 'perpsGetBlockExplorerUrl',
-  getCurrentNetwork: 'perpsGetCurrentNetwork',
-  isFirstTimeUserOnCurrentNetwork: 'perpsIsFirstTimeUserOnCurrentNetwork',
-  getWatchlistMarkets: 'perpsGetWatchlistMarkets',
-  toggleWatchlistMarket: 'perpsToggleWatchlistMarket',
-  isWatchlistMarket: 'perpsIsWatchlistMarket',
-};
+const FACADE_SPECIAL_METHODS = new Set<string>([
+  'init',
+  'disconnect',
+  'depositWithConfirmation',
+]);
 
 function createDelegateMethod<TResult>(
   actionName: string,
@@ -131,8 +88,8 @@ export function createPerpsControllerFacade(
     }
   }
 
-  for (const [methodName, actionName] of Object.entries(DELEGATE_ACTIONS)) {
-    if (methodName === 'init') {
+  for (const [methodName, actionName] of Object.entries(PERPS_API_METHOD_MAP)) {
+    if (FACADE_SPECIAL_METHODS.has(methodName)) {
       continue;
     }
     if (facade[methodName] !== undefined) {

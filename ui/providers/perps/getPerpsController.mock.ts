@@ -13,8 +13,6 @@
  */
 
 import type { Store } from 'redux';
-import type { MetaMaskReduxState } from '../../store/store';
-import { mockPositions } from '../../components/app/perps/mocks';
 import type { OrderParams } from '@metamask/perps-controller';
 import {
   AccountState,
@@ -23,6 +21,9 @@ import {
   PerpsMarketData,
   Position,
 } from '@metamask/perps-controller';
+import type { MetaMaskReduxState } from '../../store/store';
+import { mockPositions } from '../../components/app/perps/mocks';
+import { getPerpsStreamManager } from './PerpsStreamManager';
 
 export class PerpsControllerInitializationCancelledError extends Error {
   constructor() {
@@ -258,7 +259,7 @@ class MockPerpsController {
     const currentPositions = streamManager.positions.getCachedData();
     const newPosition = this.buildPositionFromOrderParams(params);
     const otherPositions = currentPositions.filter(
-      (p) => p.symbol !== params.symbol,
+      (p: Position) => p.symbol !== params.symbol,
     );
     streamManager.pushPositionsWithOverrides([...otherPositions, newPosition]);
 

@@ -3,8 +3,9 @@ import {
   getDefaultPerpsControllerState,
   type PerpsControllerState,
 } from '@metamask/perps-controller';
+import type { PerpsActionName } from '../../../shared/constants/perps-api';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
-import { ControllerInitFunction, ControllerInitResult } from './types';
+import { ControllerApi, ControllerInitFunction } from './types';
 import { PerpsControllerMessenger } from './messengers/perps-controller-messenger';
 
 /**
@@ -86,10 +87,17 @@ export const PerpsControllerInit: ControllerInitFunction<
   return { controller, api };
 };
 
+/**
+ * Every action name from PERPS_API_METHOD_MAP must be present.
+ * TypeScript will error if a key is added to the shared constant
+ * but not implemented here.
+ */
+type PerpsBackgroundApi = Record<PerpsActionName, ControllerApi>;
+
 function getApi(
   controller: PerpsController,
   ensureInitialized: () => Promise<void>,
-): ControllerInitResult<PerpsController>['api'] {
+): PerpsBackgroundApi {
   return {
     // -- Lifecycle --
     // Primary init entrypoint. The UI calls this explicitly before starting
