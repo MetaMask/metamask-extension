@@ -94,19 +94,82 @@ yarn playwright install chromium
 
 ### 1. Configure MCP Client
 
-Add to your MCP client configuration (e.g., Claude Desktop, OpenCode):
+Use one of the client-specific configurations below.
+
+`mm_build` can take a long time. In OpenCode, set an explicit `timeout` in the MCP server config. Claude Desktop and Cursor do not currently document a client-side MCP timeout field.
+
+#### Claude Desktop
+
+Add this to your Claude Desktop MCP config file (`claude_desktop_config.json`):
 
 ```json
 {
   "mcpServers": {
     "metamask": {
       "command": "yarn",
-      "args": ["tsx", "test/e2e/playwright/llm-workflow/mcp-server/server.ts"],
-      "cwd": "/path/to/metamask-extension"
+      "args": [
+        "tsx",
+        "/path/to/metamask-extension/test/e2e/playwright/llm-workflow/mcp-server/server.ts"
+      ]
     }
   }
 }
 ```
+
+Notes:
+
+- `mcpServers` is the correct top-level key.
+- Prefer an absolute server path in `args` if your client launches from a non-repo working directory.
+
+#### Cursor
+
+Add this to your Cursor MCP config (for example, `.cursor/mcp.json` in your workspace):
+
+```json
+{
+  "mcpServers": {
+    "metamask": {
+      "command": "yarn",
+      "args": [
+        "tsx",
+        "${workspaceFolder}/test/e2e/playwright/llm-workflow/mcp-server/server.ts"
+      ]
+    }
+  }
+}
+```
+
+Notes:
+
+- Use `${workspaceFolder}` so the config is portable across machines.
+- Cursor uses `mcpServers`.
+
+#### OpenCode
+
+Add this to `~/.config/opencode/opencode.json` under `mcp`:
+
+```json
+{
+  "mcp": {
+    "metamask": {
+      "type": "local",
+      "command": [
+        "yarn",
+        "tsx",
+        "/path/to/metamask-extension/test/e2e/playwright/llm-workflow/mcp-server/server.ts"
+      ],
+      "enabled": true,
+      "timeout": 120000
+    }
+  }
+}
+```
+
+Notes:
+
+- `timeout: 120000` (120s) is a practical default for build-heavy workflows in OpenCode.
+- If `mm_build` still times out in your environment, increase `timeout` to `180000` or `300000`.
+- OpenCode uses `mcp` as the top-level key, and `command` is an array.
 
 ### 2. Use the Tools
 

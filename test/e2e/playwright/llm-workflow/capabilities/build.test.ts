@@ -1,10 +1,20 @@
 import { MetaMaskBuildCapability } from './build';
 
-const mockExecSync = jest.fn();
+type ExitSignal = NodeJS.Signals | null;
+
+type MockChildProcess = {
+  on: jest.Mock;
+  kill: jest.Mock;
+  killed: boolean;
+  emitError: (error: Error) => void;
+  emitExit: (code: number | null, signal?: ExitSignal) => void;
+};
+
+const mockSpawn = jest.fn();
 const mockExistsSync = jest.fn();
 
 jest.mock('child_process', () => ({
-  execSync: (...args: unknown[]) => mockExecSync(...args),
+  spawn: (...args: unknown[]) => mockSpawn(...args),
 }));
 
 jest.mock('fs', () => ({
@@ -13,15 +23,75 @@ jest.mock('fs', () => ({
 
 describe('MetaMaskBuildCapability', () => {
   const originalCwd = process.cwd;
+  let activeChild: MockChildProcess;
+  let nextSpawnOutcome: 'success' | 'failure' | 'error' | 'pending';
+
+  const createMockChildProcess = (): MockChildProcess => {
+    const handlers: {
+      error?: (error: Error) => void;
+      exit?: (code: number | null, signal: ExitSignal) => void;
+    } = {};
+
+    const child: MockChildProcess = {
+      on: jest.fn((event: string, handler: unknown) => {
+        if (event === 'error') {
+          handlers.error = handler as (error: Error) => void;
+        }
+
+        if (event === 'exit') {
+          handlers.exit = handler as (
+            code: number | null,
+            signal: ExitSignal,
+          ) => void;
+        }
+
+        return child;
+      }),
+      kill: jest.fn((signal?: NodeJS.Signals) => {
+        child.killed = true;
+        if (signal === 'SIGTERM') {
+          setImmediate(() => handlers.exit?.(null, 'SIGTERM'));
+        }
+        return true;
+      }),
+      killed: false,
+      emitError: (error: Error) => {
+        handlers.error?.(error);
+      },
+      emitExit: (code: number | null, signal: ExitSignal = null) => {
+        handlers.exit?.(code, signal);
+      },
+    };
+
+    return child;
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
     process.cwd = jest.fn().mockReturnValue('/test/metamask-extension');
     mockExistsSync.mockReturnValue(true);
+    nextSpawnOutcome = 'success';
+
+    mockSpawn.mockImplementation(() => {
+      activeChild = createMockChildProcess();
+
+      setImmediate(() => {
+        if (nextSpawnOutcome === 'success') {
+          activeChild.emitExit(0);
+        } else if (nextSpawnOutcome === 'failure') {
+          activeChild.emitExit(1);
+        } else if (nextSpawnOutcome === 'error') {
+          activeChild.emitError(new Error('spawn ENOENT'));
+        }
+      });
+
+      return activeChild;
+    });
   });
 
   afterEach(() => {
     process.cwd = originalCwd;
+    jest.useRealTimers();
   });
 
   describe('constructor', () => {
@@ -41,9 +111,13 @@ describe('MetaMaskBuildCapability', () => {
 
       await capability.build();
 
-      expect(mockExecSync).toHaveBeenCalledWith(
+      expect(mockSpawn).toHaveBeenCalledWith(
         'yarn build:flask',
-        expect.any(Object),
+        expect.objectContaining({
+          cwd: '/test/metamask-extension',
+          stdio: 'inherit',
+          shell: true,
+        }),
       );
     });
 
@@ -65,9 +139,13 @@ describe('MetaMaskBuildCapability', () => {
 
       await capability.build();
 
-      expect(mockExecSync).toHaveBeenCalledWith(
+      expect(mockSpawn).toHaveBeenCalledWith(
         expect.any(String),
-        expect.objectContaining({ timeout: 300000 }),
+        expect.objectContaining({
+          cwd: '/test/metamask-extension',
+          stdio: 'inherit',
+          shell: true,
+        }),
       );
     });
   });
@@ -80,7 +158,7 @@ describe('MetaMaskBuildCapability', () => {
       const result = await capability.build();
 
       expect(result.success).toBe(true);
-      expect(mockExecSync).not.toHaveBeenCalled();
+      expect(mockSpawn).not.toHaveBeenCalled();
     });
 
     it('runs build when manifest does not exist', async () => {
@@ -90,11 +168,12 @@ describe('MetaMaskBuildCapability', () => {
       const result = await capability.build();
 
       expect(result.success).toBe(true);
-      expect(mockExecSync).toHaveBeenCalledWith(
+      expect(mockSpawn).toHaveBeenCalledWith(
         'yarn build:test',
         expect.objectContaining({
           cwd: '/test/metamask-extension',
           stdio: 'inherit',
+          shell: true,
         }),
       );
     });
@@ -106,7 +185,7 @@ describe('MetaMaskBuildCapability', () => {
       const result = await capability.build({ force: true });
 
       expect(result.success).toBe(true);
-      expect(mockExecSync).toHaveBeenCalled();
+      expect(mockSpawn).toHaveBeenCalled();
     });
 
     it('uses buildType option when provided', async () => {
@@ -115,23 +194,47 @@ describe('MetaMaskBuildCapability', () => {
 
       await capability.build({ buildType: 'build:test:flask' });
 
-      expect(mockExecSync).toHaveBeenCalledWith(
+      expect(mockSpawn).toHaveBeenCalledWith(
         'yarn build:test:flask',
-        expect.any(Object),
+        expect.objectContaining({ shell: true }),
       );
     });
 
     it('returns error result on build failure', async () => {
       mockExistsSync.mockReturnValue(false);
-      mockExecSync.mockImplementation(() => {
-        throw new Error('Build process exited with code 1');
-      });
+      nextSpawnOutcome = 'failure';
       const capability = new MetaMaskBuildCapability();
 
       const result = await capability.build();
 
       expect(result.success).toBe(false);
       expect(result.error).toContain('Build process exited with code 1');
+    });
+
+    it('returns error result when build times out', async () => {
+      jest.useFakeTimers();
+      mockExistsSync.mockReturnValue(false);
+      nextSpawnOutcome = 'pending';
+      const capability = new MetaMaskBuildCapability({ timeout: 10 });
+
+      const buildPromise = capability.build();
+      await jest.advanceTimersByTimeAsync(11);
+      const result = await buildPromise;
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('Build command timed out after 10ms');
+      expect(activeChild.kill).toHaveBeenCalledWith('SIGTERM');
+    });
+
+    it('returns error result when spawn emits error', async () => {
+      mockExistsSync.mockReturnValue(false);
+      nextSpawnOutcome = 'error';
+      const capability = new MetaMaskBuildCapability();
+
+      const result = await capability.build();
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('spawn ENOENT');
     });
 
     it('includes duration in result', async () => {
