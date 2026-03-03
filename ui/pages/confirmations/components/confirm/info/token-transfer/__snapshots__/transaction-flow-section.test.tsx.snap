@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<TransactionFlowSection /> renders correctly 1`] = `
 <div>
@@ -45,7 +45,6 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
                 <svg
                   class="inline-block w-4 h-4 text-icon-default"
                   fill="currentColor"
-                  style="flex-shrink: 0;"
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
                 >
@@ -54,12 +53,15 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
                   />
                 </svg>
                 <button
-                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default confirm-info-row-address-display__clickable"
+                  class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:bg-hover hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:bg-pressed active:text-primary-default-pressed active:decoration-primary-default-pressed"
                   data-testid="confirm-info-row-display-name"
-                  style="flex: 1; white-space: nowrap; overflow: hidden;"
-                  type="button"
+                  role="button"
                 >
-                  0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc
+                  <span
+                    class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    0x0DCD5D886577…E70Be3E7bc
+                  </span>
                 </button>
               </div>
             </div>
@@ -149,7 +151,6 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
                   <svg
                     class="inline-block w-4 h-4 text-icon-default"
                     fill="currentColor"
-                    style="flex-shrink: 0;"
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                   >
@@ -158,12 +159,15 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
                     />
                   </svg>
                   <button
-                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default confirm-info-row-address-display__clickable"
+                    class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:bg-hover hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:bg-pressed active:text-primary-default-pressed active:decoration-primary-default-pressed"
                     data-testid="confirm-info-row-display-name"
-                    style="flex: 1; white-space: nowrap; overflow: hidden;"
-                    type="button"
+                    role="button"
                   >
-                    0x6B175474E89094C44Da98b954EedeAC495271d0F
+                    <span
+                      class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                    >
+                      0x6B175474E890…C495271d0F
+                    </span>
                   </button>
                 </div>
               </div>
