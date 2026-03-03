@@ -648,10 +648,6 @@
   "allowNotifications": {
     "message": "Bildirimlere izin ver"
   },
-  "allowWithdrawAndSpend": {
-    "message": "$1 için şu tutara kadar para çekme ve harcama izni ver:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
   "amount": {
     "message": "Tutar"
   },
@@ -1906,9 +1902,6 @@
   "customSlippage": {
     "message": "Özel"
   },
-  "customSpendLimit": {
-    "message": "Kişisel harcama limiti"
-  },
   "customToken": {
     "message": "Özel Token"
   },
@@ -2478,9 +2471,6 @@
   "editNonceMessage": {
     "message": "Bu gelişmiş bir özelliktir, dikkatli kullanın."
   },
-  "editPermission": {
-    "message": "İzni düzenle"
-  },
   "editPermissions": {
     "message": "İzinleri düzenle"
   },
@@ -2564,9 +2554,6 @@
   },
   "enterChainId": {
     "message": "Zincir kimliği girin"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Maks. harcama limiti gir"
   },
   "enterNetworkName": {
     "message": "Ağ adını girin"
@@ -3358,9 +3345,6 @@
   "infuraBlockedNotification": {
     "message": "MetaMask blokzinciri ana bilgisayarına bağlanamıyor. $1 olası nedenleri inceleyin.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
-  },
-  "initialTransactionConfirmed": {
-    "message": "İlk işleminiz ağ tarafından onaylanmıştır. Geri gitmek için Tamam düğmesine tıklayın."
   },
   "insights": {
     "message": "İçgörüler"
@@ -5692,9 +5676,6 @@
   "productAnnouncements": {
     "message": "Ürün duyuruları"
   },
-  "proposedApprovalLimit": {
-    "message": "Önerilen onay limiti"
-  },
   "provide": {
     "message": "Sun"
   },
@@ -5914,18 +5895,6 @@
   },
   "rejectAll": {
     "message": "Tümünü reddet"
-  },
-  "rejectRequestsDescription": {
-    "message": "$1 talebi toplu olarak reddetmek üzeresiniz."
-  },
-  "rejectRequestsN": {
-    "message": "$1 taleplerini reddet"
-  },
-  "rejectTxsDescription": {
-    "message": "$1 işlemi toplu olarak reddetmek üzeresiniz."
-  },
-  "rejectTxsN": {
-    "message": "$1 işlemi reddet"
   },
   "rejected": {
     "message": "Reddedildi"
@@ -7649,22 +7618,6 @@
   },
   "speedUpTooltipText": {
     "message": "Yeni gaz ücreti"
-  },
-  "spendLimitInsufficient": {
-    "message": "Harcama limiti yetersiz"
-  },
-  "spendLimitInvalid": {
-    "message": "Harcama limiti geçersiz; pozitif bir sayı olmalıdır"
-  },
-  "spendLimitPermission": {
-    "message": "Harcama limiti izni"
-  },
-  "spendLimitRequestedBy": {
-    "message": "$1 tarafından talep edilen harcama limiti",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Harcama limiti çok büyük"
   },
   "spender": {
     "message": "Harcayan"
