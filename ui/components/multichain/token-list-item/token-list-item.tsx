@@ -21,7 +21,6 @@ import {
 import { TokenInsightsModal } from '../../../pages/bridge/token-insights-modal';
 import {
   isStockToken,
-  isTokenTradingOpenAt,
   useRWAToken,
 } from '../../../pages/bridge/hooks/useRWAToken';
 import {
@@ -92,14 +91,6 @@ type TokenListItemProps = {
   isDestinationToken?: boolean;
   accountType?: KeyringAccountType;
   rwaData?: TokenWithFiatAmount['rwaData'];
-};
-
-const TokenListItemStockBadge = ({
-  rwaData,
-}: Pick<TokenListItemProps, 'rwaData'>) => {
-  const { isTokenTradingOpen } = useRWAToken();
-
-  return <StockBadge isMarketClosed={!isTokenTradingOpen({ rwaData })} />;
 };
 
 export const TokenListItemComponent = ({
@@ -183,6 +174,7 @@ export const TokenListItemComponent = ({
     isDestinationToken &&
     address &&
     noFeeAssets?.includes(address.toLowerCase());
+  const { isTokenTradingOpen } = useRWAToken();
   const rwaToken = { rwaData };
   const isRWAToken = isStockToken(rwaToken);
 
@@ -226,7 +218,7 @@ export const TokenListItemComponent = ({
               return;
             }
 
-            if (isRWAToken && !isTokenTradingOpenAt(rwaToken)) {
+            if (isRWAToken && !isTokenTradingOpen(rwaToken)) {
               setShowMarketClosedModal(true);
               return;
             }
@@ -316,7 +308,7 @@ export const TokenListItemComponent = ({
                 <Tag label={ACCOUNT_TYPE_LABELS[accountType]} />
               )}
               {isRWAToken ? (
-                <TokenListItemStockBadge rwaData={rwaData} />
+                <StockBadge isMarketClosed={!isTokenTradingOpen(rwaToken)} />
               ) : null}
               {isNoFeeAsset && <Tag label={t('bridgeNoMMFee')} />}
             </Box>
