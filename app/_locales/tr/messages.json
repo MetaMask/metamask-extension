@@ -276,9 +276,6 @@
   "addIPFSGateway": {
     "message": "Tercih ettiğiniz IPFS ağ geçidini ekleyin"
   },
-  "addImportAccount": {
-    "message": "Hesap veya donanım cüzdanı ekleyin"
-  },
   "addMemo": {
     "message": "Not ekleyin"
   },

@@ -276,9 +276,6 @@
   "addIPFSGateway": {
     "message": "添加您首选的IPFS网关"
   },
-  "addImportAccount": {
-    "message": "添加账户或硬件钱包"
-  },
   "addMemo": {
     "message": "添加备忘录"
   },

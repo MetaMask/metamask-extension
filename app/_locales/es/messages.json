@@ -276,9 +276,6 @@
   "addIPFSGateway": {
     "message": "Agregue su puerta de enlace de IPFS preferida"
   },
-  "addImportAccount": {
-    "message": "Añadir una cuenta o un monedero físico"
-  },
   "addMemo": {
     "message": "Añadir memo"
   },
