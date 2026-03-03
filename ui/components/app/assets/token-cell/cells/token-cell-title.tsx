@@ -21,22 +21,28 @@ const TokenCellStockBadge = ({ token }: TokenCellTitleProps) => {
   return <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />;
 };
 
-export const TokenCellTitle = React.memo(({ token }: TokenCellTitleProps) => {
-  const label = token.accountType
-    ? ACCOUNT_TYPE_LABELS[token.accountType]
-    : undefined;
-  const tokenIsStock = isStockToken(token);
+export const TokenCellTitle = React.memo(
+  ({ token }: TokenCellTitleProps) => {
+    const label = token.accountType
+      ? ACCOUNT_TYPE_LABELS[token.accountType]
+      : undefined;
+    const tokenIsStock = isStockToken(token);
 
-  return (
-    <Box flexDirection={BoxFlexDirection.Row} className="min-w-0">
-      <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
-        <AssetCellTitle title={token.title} />
-        {tokenIsStock && <TokenCellStockBadge token={token} />}
-        {label && <Tag label={label} />}
+    return (
+      <Box flexDirection={BoxFlexDirection.Row} className="min-w-0">
+        <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
+          <AssetCellTitle title={token.title} />
+          {tokenIsStock && <TokenCellStockBadge token={token} />}
+          {label && <Tag label={label} />}
+        </Box>
+        {token.isStakeable && (
+          <StakeableLink chainId={token.chainId} symbol={token.symbol} />
+        )}
       </Box>
-      {token.isStakeable && (
-        <StakeableLink chainId={token.chainId} symbol={token.symbol} />
-      )}
-    </Box>
-  );
-});
+    );
+  },
+  (prevProps, nextProps) =>
+    prevProps.token.title === nextProps.token.title &&
+    prevProps.token.rwaData?.instrumentType ===
+      nextProps.token.rwaData?.instrumentType,
+);
