@@ -29,6 +29,19 @@ import { mockNetworkState } from '../../../test/stub/networks';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import OnboardingFlow from './onboarding-flow';
 
+// Mock mmLazy to return a synchronous component instead of React.lazy.
+// React 17's lazy resolution fires a state update after test cleanup unmounts
+// the tree, producing a spurious "state update on unmounted component" warning.
+//
+// NOTE: This mock hardcodes the ExperimentalArea import. If a second mmLazy
+// call is added to onboarding-flow.tsx, this mock must be updated to dispatch
+// on the importFn (or replaced with a generic solution).
+jest.mock('../../helpers/utils/mm-lazy', () => ({
+  mmLazy: () =>
+    jest.requireActual('../../components/app/flask/experimental-area/index.js')
+      .default,
+}));
+
 const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
@@ -354,13 +367,18 @@ describe('Onboarding Flow', () => {
   });
 
   it('should render onboarding experimental screen', () => {
+    // Enable Flask mode for this test only
+    process.env.METAMASK_BUILD_TYPE = 'flask';
+
     const { queryByTestId } = renderWithProvider(
       <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_EXPERIMENTAL_AREA,
     );
 
-    const onboardingMetametrics = queryByTestId('experimental-area');
-    expect(onboardingMetametrics).toBeInTheDocument();
+    expect(queryByTestId('experimental-area')).toBeInTheDocument();
+
+    // Restore build type
+    process.env.METAMASK_BUILD_TYPE = 'main';
   });
 });

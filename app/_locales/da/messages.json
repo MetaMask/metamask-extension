@@ -296,9 +296,6 @@
     "message": "Importeret",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Din indledende transaktion blev bekræftet af netværket. Klik OK for at gå tilbage."
-  },
   "insufficientBalance": {
     "message": "Utilstrækkelig balance."
   },
@@ -468,12 +465,6 @@
   },
   "rejectAll": {
     "message": "Afvis Alle"
-  },
-  "rejectTxsDescription": {
-    "message": "Du er ved at batchafvise $1-transaktioner."
-  },
-  "rejectTxsN": {
-    "message": "Afvis $1 transaktioner"
   },
   "rejected": {
     "message": "Afvist"
@@ -655,8 +646,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du skal tillade kameraadgang for at bruge denne funktion."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Din private seed-sætning"
   }
 }

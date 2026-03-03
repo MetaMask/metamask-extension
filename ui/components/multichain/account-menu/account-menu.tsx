@@ -34,9 +34,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getIsAddSnapAccountEnabled,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   getIsWatchEthereumAccountEnabled,
-  ///: END:ONLY_INCLUDE_IF
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
   getIsTronSupportEnabled,
@@ -44,7 +42,6 @@ import {
   getMetaMaskHdKeyrings,
   getManageInstitutionalWallets,
   getHDEntropyIndex,
-  getIsMultichainAccountsState1Enabled,
 } from '../../../selectors';
 import {
   MetaMetricsEventAccountType,
@@ -59,14 +56,12 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
 import {
   ACCOUNT_WATCHER_NAME,
   ACCOUNT_WATCHER_SNAP_ID,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
-///: END:ONLY_INCLUDE_IF
 import {
   MultichainWalletSnapClient,
   useMultichainWalletSnapClient,
@@ -90,10 +85,8 @@ export const ACTION_MODES = {
   MENU: 'menu',
   // Displays the add account form controls
   ADD: 'add',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   // Displays the add account form controls (for watch-only account)
   ADD_WATCH_ONLY: 'add-watch-only',
-  ///: END:ONLY_INCLUDE_IF
   // Displays the add account form controls (for bitcoin account)
   ADD_BITCOIN: 'add-bitcoin',
   // Displays the add account form controls (for solana account)
@@ -132,23 +125,19 @@ export const SNAP_CLIENT_CONFIG_MAP: Record<
  *
  * @param t - Function to translate text.
  * @param actionMode - An action mode.
- * @param isMultichainAccountsState1Enabled - Whether the multichain accounts state 1 is enabled.
  * @returns The title for this action mode.
  */
 export const getActionTitle = (
   t: (text: string, args?: string[]) => string,
   actionMode: ActionMode,
-  isMultichainAccountsState1Enabled: boolean,
 ) => {
   switch (actionMode) {
     case ACTION_MODES.ADD:
       return t('addAccountFromNetwork', [t('networkNameEthereum')]);
     case ACTION_MODES.MENU:
       return t('addAccount');
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
     case ACTION_MODES.ADD_WATCH_ONLY:
       return t('addAccountFromNetwork', [t('networkNameEthereum')]);
-    ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.ADD_BITCOIN:
       return t('addAccountFromNetwork', [t('networkNameBitcoin')]);
     case ACTION_MODES.ADD_SOLANA:
@@ -164,9 +153,7 @@ export const getActionTitle = (
     case ACTION_MODES.SELECT_SRP:
       return t('selectSecretRecoveryPhrase');
     default:
-      return isMultichainAccountsState1Enabled
-        ? t('accounts')
-        : t('selectAnAccount');
+      return t('accounts');
   }
 };
 
@@ -188,9 +175,6 @@ export const AccountMenu = ({
     endTrace({ name: TraceName.AccountList });
   }, []);
   const navigate = useNavigate();
-  const isMultichainAccountsState1Enabled = useSelector(
-    getIsMultichainAccountsState1Enabled,
-  );
 
   // sync SRPs list when menu opens
   useSyncSRPs();
@@ -200,7 +184,6 @@ export const AccountMenu = ({
     ACTION_MODES.LIST,
   );
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   const isAddWatchEthereumAccountEnabled = useSelector(
     getIsWatchEthereumAccountEnabled,
   );
@@ -228,7 +211,6 @@ export const AccountMenu = ({
     onClose();
     navigate(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
   }, [trackEvent, hdEntropyIndex, onClose, navigate]);
-  ///: END:ONLY_INCLUDE_IF
 
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
   const bitcoinWalletSnapClient = useMultichainWalletSnapClient(
@@ -288,13 +270,8 @@ export const AccountMenu = ({
   );
 
   const title = useMemo(
-    () =>
-      getActionTitle(
-        t as (text: string) => string,
-        actionMode,
-        Boolean(isMultichainAccountsState1Enabled),
-      ),
-    [actionMode, t, isMultichainAccountsState1Enabled],
+    () => getActionTitle(t as (text: string) => string, actionMode),
+    [actionMode, t],
   );
 
   // eslint-disable-next-line no-empty-function
@@ -632,26 +609,22 @@ export const AccountMenu = ({
                 </ButtonLink>
               </Box>
             ) : null}
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
-              isAddWatchEthereumAccountEnabled && (
-                <Box marginTop={4}>
-                  <ButtonLink
-                    disabled={!isAddWatchEthereumAccountEnabled}
-                    size={ButtonLinkSize.Sm}
-                    startIconName={IconName.Eye}
-                    startIconProps={{ size: IconSize.Md }}
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                    onClick={handleAddWatchAccount}
-                    data-testid="multichain-account-menu-popover-add-watch-only-account"
-                  >
-                    {t('addEthereumWatchOnlyAccount')}
-                  </ButtonLink>
-                </Box>
-              )
-              ///: END:ONLY_INCLUDE_IF
-            }
+            {isAddWatchEthereumAccountEnabled && (
+              <Box marginTop={4}>
+                <ButtonLink
+                  disabled={!isAddWatchEthereumAccountEnabled}
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Eye}
+                  startIconProps={{ size: IconSize.Md }}
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                  onClick={handleAddWatchAccount}
+                  data-testid="multichain-account-menu-popover-add-watch-only-account"
+                >
+                  {t('addEthereumWatchOnlyAccount')}
+                </ButtonLink>
+              </Box>
+            )}
             {manageInstitutionalWallets && (
               <Box marginTop={4}>
                 <ButtonLink
@@ -687,17 +660,12 @@ export const AccountMenu = ({
                 display={Display.Flex}
               >
                 <ButtonSecondary
-                  startIconName={
-                    isMultichainAccountsState1Enabled ? undefined : IconName.Add
-                  }
                   size={ButtonSecondarySize.Lg}
                   block
                   onClick={() => setActionMode(ACTION_MODES.MENU)}
                   data-testid="multichain-account-menu-popover-action-button"
                 >
-                  {isMultichainAccountsState1Enabled
-                    ? t('addAccountOrWallet')
-                    : t('addImportAccount')}
+                  {t('addAccountOrWallet')}
                 </ButtonSecondary>
               </Box>
             ) : null}

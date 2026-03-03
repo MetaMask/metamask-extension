@@ -299,9 +299,6 @@
     "message": "وارد شده",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "معامله آغازین تان توسط شبکه تأیید شد. برای رفتن به عقب بالای OK کلیک کنید."
-  },
   "insufficientBalance": {
     "message": "بیلانس ناکافی."
   },
@@ -483,12 +480,6 @@
   },
   "rejectAll": {
     "message": "رد همه"
-  },
-  "rejectTxsDescription": {
-    "message": "شما در حال رد دسته از معاملات 1$1 هستید."
-  },
-  "rejectTxsN": {
-    "message": "رد معاملات 1$1"
   },
   "rejected": {
     "message": "رد شد"
@@ -682,8 +673,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "لازم است تا شما جهت استفاده از این مشخصه، به کمره اجازه دسترسی بدهید."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "عبارت بازیاب شخصی شما"
   }
 }

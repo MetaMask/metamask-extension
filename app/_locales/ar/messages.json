@@ -303,9 +303,6 @@
     "message": "المستوردة",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "تم تأكيد المعاملة الأولية الخاصة بك بواسطة الشبكة. انقر فوق موافق للعودة."
-  },
   "insufficientBalance": {
     "message": "الرصيد غير كافٍ"
   },
@@ -484,12 +481,6 @@
   },
   "rejectAll": {
     "message": "رفض الكل"
-  },
-  "rejectTxsDescription": {
-    "message": "أنت بصدد رفض المعاملات بقيمة $1 بدفعة واحدة."
-  },
-  "rejectTxsN": {
-    "message": "رفض معاملات $1"
   },
   "rejected": {
     "message": "مرفوض"
@@ -683,8 +674,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "أنت بحاجة إلى السماح بالوصول إلى الكاميرا لاستخدام هذه الميزة."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "عبارة الأمان الشخصية الخاصة بك"
   }
 }

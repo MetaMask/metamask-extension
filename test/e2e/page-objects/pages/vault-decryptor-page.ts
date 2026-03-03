@@ -82,12 +82,17 @@ class VaultDecryptorPage {
   /**
    * Checks if the vault is decrypted and the seed phrase is correct.
    *
-   * @param seedPhrase - The expected seed phrase.
+   * @param seedPhrase - The expected seed phrase (may include numbered lines from MetaMask UI, e.g. "1.\nvehicle").
    */
   async checkVaultIsDecrypted(seedPhrase: string) {
+    // Normalize MetaMask UI format ("1.\nvehicle") to vault-decryptor format ("vehicle") in one pass
+    const normalizedPhrase = seedPhrase
+      .replace(/\d+\.\s*|\r?\n/gu, ' ')
+      .replace(/\s+/gu, ' ')
+      .trim();
     console.log('check vault is decrypted on vault decryptor page');
     await this.driver.waitForSelector({
-      text: seedPhrase,
+      text: normalizedPhrase,
       tag: 'div',
     });
   }
