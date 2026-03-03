@@ -1,4 +1,7 @@
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 import type {
   Token,
@@ -10,6 +13,7 @@ import {
   calculateFiatFromMarketRates,
   mergeAllTransactionsByTime,
   groupAndFlattenMergedTransactions,
+  resolveTransactionType,
 } from './helpers';
 
 const ethToken: Token = {
@@ -185,5 +189,100 @@ describe('groupAndFlattenMergedTransactions', () => {
       'completed',
       'completed',
     ]);
+  });
+});
+
+describe('resolveTransactionType', () => {
+  it('returns the correct transaction type for a valid transaction', () => {
+    const result = resolveTransactionType(
+      makeApiTx({ time: Date.now(), transactionCategory: 'APPROVE' }),
+    );
+    expect(result).toBe(TransactionType.tokenMethodApprove);
+  });
+
+  it('returns the correct transaction type for a bridge transaction', () => {
+    const result = resolveTransactionType(
+      makeApiTx({ time: Date.now(), transactionCategory: 'BRIDGE_OUT' }),
+    );
+    expect(result).toBe(TransactionType.bridge);
+    expect(
+      resolveTransactionType(
+        makeApiTx({ time: Date.now(), transactionCategory: 'BRIDGE_IN' }),
+      ),
+    ).toBe(TransactionType.bridge);
+  });
+
+  it('returns the correct transaction type for a swap transaction', () => {
+    const result = resolveTransactionType(
+      makeApiTx({ time: Date.now(), transactionCategory: 'SWAP' }),
+    );
+    expect(result).toBe(TransactionType.swap);
+
+    expect(
+      resolveTransactionType(
+        makeApiTx({ time: Date.now(), transactionCategory: 'EXCHANGE' }),
+      ),
+    ).toBe(TransactionType.swap);
+  });
+
+  it('returns the correct transaction type for a contract interaction transaction', () => {
+    const result = resolveTransactionType(
+      makeApiTx({
+        time: Date.now(),
+        transactionCategory: 'CONTRACT_INTERACTION',
+      }),
+    );
+    expect(result).toBe(TransactionType.contractInteraction);
+  });
+
+  it('returns the correct transaction type for a transfer transaction', () => {
+    const result = resolveTransactionType(
+      makeApiTx({
+        time: Date.now(),
+        transactionCategory: 'TRANSFER',
+        amounts: { to: { amount: 1 as unknown as bigint, token: ethToken } },
+      }),
+    );
+    expect(result).toBe(TransactionType.incoming);
+
+    expect(
+      resolveTransactionType(
+        makeApiTx({
+          time: Date.now(),
+          transactionCategory: 'TRANSFER',
+          amounts: {
+            from: { amount: 1 as unknown as bigint, token: ethToken },
+          },
+        }),
+      ),
+    ).toBe(TransactionType.simpleSend);
+  });
+
+  it('returns the correct transaction type for a deploy contract transaction', () => {
+    const result = resolveTransactionType(
+      makeApiTx({ time: Date.now(), transactionType: 'DEPLOY_CONTRACT' }),
+    );
+    expect(result).toBe(TransactionType.deployContract);
+  });
+
+  it('returns the correct transaction type for a token method transfer transaction', () => {
+    const result = resolveTransactionType(
+      makeApiTx({ time: Date.now(), transactionType: 'ERC_20_TRANSFER' }),
+    );
+    expect(result).toBe(TransactionType.tokenMethodTransfer);
+  });
+
+  it('returns the correct transaction type for a token method transfer from transaction', () => {
+    const result = resolveTransactionType(
+      makeApiTx({ time: Date.now(), transactionType: 'ERC_721_TRANSFER' }),
+    );
+    expect(result).toBe(TransactionType.tokenMethodTransferFrom);
+  });
+
+  it('returns the correct transaction type for a token method transfer from transaction', () => {
+    const result = resolveTransactionType(
+      makeApiTx({ time: Date.now(), transactionType: 'ERC_1155_TRANSFER' }),
+    );
+    expect(result).toBe(TransactionType.tokenMethodTransferFrom);
   });
 });

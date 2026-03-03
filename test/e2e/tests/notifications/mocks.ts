@@ -87,11 +87,11 @@ const mockFeatureAnnouncementResponse = {
   ...getMockFeatureAnnouncementResponse(),
   url: /^https:\/\/cdn\.contentful\.com\/.*$/u,
 };
-const date = new Date();
-date.setMonth(date.getMonth() - 1);
+const FEATURE_ANNOUNCEMENT_EXPIRED_MS = 31 * 24 * 60 * 60 * 1000;
+const date = new Date(Date.now() - FEATURE_ANNOUNCEMENT_EXPIRED_MS);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (mockFeatureAnnouncementResponse.response as any).items[0].sys.createdAt =
-  date.toString();
+  date.toISOString();
 
 export function getMockWalletNotificationItemId(trigger: TRIGGER_TYPES) {
   return (

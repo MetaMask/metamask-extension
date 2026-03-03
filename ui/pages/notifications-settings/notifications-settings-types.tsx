@@ -1,5 +1,16 @@
 import React, { useState, useContext } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  Box,
+  IconName,
+  Text,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+  TextVariant,
+  TextColor,
+  FontWeight,
+} from '@metamask/design-system-react';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -8,17 +19,6 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { useSwitchFeatureAnnouncementsChange } from '../../hooks/metamask-notifications/useSwitchNotifications';
-import { Box, IconName, Text } from '../../components/component-library';
-import {
-  BlockSize,
-  BorderColor,
-  Display,
-  JustifyContent,
-  FlexDirection,
-  AlignItems,
-  TextVariant,
-  TextColor,
-} from '../../helpers/constants/design-system';
 import {
   NotificationsSettingsBox,
   NotificationsSettingsType,
@@ -78,30 +78,38 @@ export function NotificationsSettingsTypes({
   };
 
   return (
-    <>
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Stretch}
+      gap={0}
+      data-testid="notifications-settings-per-types"
+    >
       <Box
-        paddingLeft={8}
-        paddingRight={8}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Start}
+        gap={2}
         paddingBottom={4}
-        paddingTop={4}
-        data-testid="notifications-settings-per-types"
       >
-        <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextDefault}
+        >
           {t('customizeYourNotifications')}
         </Text>
-        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Regular}
+          color={TextColor.TextAlternative}
+        >
           {t('customizeYourNotificationsText')}
         </Text>
       </Box>
       <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.flexStart}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexStart}
+        flexDirection={BoxFlexDirection.Column}
+        justifyContent={BoxJustifyContent.Start}
+        alignItems={BoxAlignItems.Stretch}
         gap={6}
-        paddingLeft={8}
-        paddingRight={8}
-        paddingBottom={4}
       >
         {/* Product announcements */}
         <NotificationsSettingsBox
@@ -119,11 +127,6 @@ export function NotificationsSettingsTypes({
           />
         </NotificationsSettingsBox>
       </Box>
-      <Box
-        borderColor={BorderColor.borderMuted}
-        width={BlockSize.Full}
-        style={{ height: '1px', borderBottomWidth: 0 }}
-      ></Box>
-    </>
+    </Box>
   );
 }

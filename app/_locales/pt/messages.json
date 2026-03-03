@@ -276,9 +276,6 @@
   "addIPFSGateway": {
     "message": "Adicione seu gateway IPFS preferencial"
   },
-  "addImportAccount": {
-    "message": "Adicionar conta ou carteira de hardware"
-  },
   "addMemo": {
     "message": "Adicionar observação"
   },
@@ -650,10 +647,6 @@
   },
   "allowNotifications": {
     "message": "Permitir notificações"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "Permitir que $1 saque e gaste até o seguinte valor:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Valor"
@@ -1909,9 +1902,6 @@
   "customSlippage": {
     "message": "Personalizado"
   },
-  "customSpendLimit": {
-    "message": "Limite de gasto personalizado"
-  },
   "customToken": {
     "message": "Token personalizado"
   },
@@ -2481,9 +2471,6 @@
   "editNonceMessage": {
     "message": "Esse é um recurso avançado; use com cautela."
   },
-  "editPermission": {
-    "message": "Editar permissão"
-  },
   "editPermissions": {
     "message": "Editar permissões"
   },
@@ -2567,9 +2554,6 @@
   },
   "enterChainId": {
     "message": "Insira a ID da cadeia"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Digite um limite máximo de gastos"
   },
   "enterNetworkName": {
     "message": "Insira o nome da rede"
@@ -3362,9 +3346,6 @@
     "message": "Não foi possível conectar a MetaMask ao servidor da blockchain. Revise possíveis motivos $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "Sua transação inicial foi confirmada pela rede. Clique em OK para voltar."
-  },
   "insights": {
     "message": "Informações"
   },
@@ -3783,13 +3764,6 @@
   },
   "makeAnotherSwap": {
     "message": "Criar nova troca"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Certifique-se de que ninguém está olhando",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "Gerenciar"
   },
   "manageDefaultSettings": {
     "message": "Gerenciar configurações de privacidade padrão"
@@ -5702,9 +5676,6 @@
   "productAnnouncements": {
     "message": "Comunicados sobre produtos"
   },
-  "proposedApprovalLimit": {
-    "message": "Limite de aprovação proposto"
-  },
   "provide": {
     "message": "Fornecer"
   },
@@ -5925,18 +5896,6 @@
   "rejectAll": {
     "message": "Recusar todas"
   },
-  "rejectRequestsDescription": {
-    "message": "Você está prestes a recusar em lote $1 solicitações."
-  },
-  "rejectRequestsN": {
-    "message": "Recusar $1 solicitações"
-  },
-  "rejectTxsDescription": {
-    "message": "Você está prestes a recusar $1 transações em massa."
-  },
-  "rejectTxsN": {
-    "message": "Recusar $1 transações"
-  },
   "rejected": {
     "message": "Rejeitada"
   },
@@ -6110,17 +6069,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "A $1 concede $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "A MetaMask é uma $1. Isso significa que você é o proprietário da sua FRS.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "acesso total à sua carteira e fundos.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "carteira sem custódia"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6134,10 +6083,6 @@
   "revealSeedWordsWarning": {
     "message": "Certifique-se de que ninguém está olhando a sua tela. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "O suporte da MetaMask nunca solicitará essa informação.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Mostrar conteúdo sensível"
@@ -7674,22 +7619,6 @@
   "speedUpTooltipText": {
     "message": "Nova taxa de gás"
   },
-  "spendLimitInsufficient": {
-    "message": "Limite de gastos insuficiente"
-  },
-  "spendLimitInvalid": {
-    "message": "Limite de gastos inválido; o número precisa ser positivo"
-  },
-  "spendLimitPermission": {
-    "message": "Permissão do limite de gastos"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Limite de gastos solicitado por $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "O limite de gastos está alto demais"
-  },
   "spender": {
     "message": "Gastador"
   },
@@ -9067,9 +8996,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Seu NFT pode estar em risco"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Sua Frase de Recuperação Secreta"
   },
   "yourTransactionConfirmed": {
     "message": "Transação já confirmada"

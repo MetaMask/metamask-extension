@@ -258,9 +258,6 @@
   "addIPFSGateway": {
     "message": "Cuir do gheata IPFS is fearr leat leis"
   },
-  "addImportAccount": {
-    "message": "Cuir cuntas nó sparán crua-earraí leis"
-  },
   "addMemo": {
     "message": "Cuir meamram leis"
   },
@@ -564,10 +561,6 @@
   },
   "allowNotifications": {
     "message": "Ceadaigh fógraí"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "Ceadaigh $1 le tarraingt siar agus le caitheamh suas go dtí an méid seo a leanas:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Méid"
@@ -1668,9 +1661,6 @@
   "customSlippage": {
     "message": "Saincheaptha"
   },
-  "customSpendLimit": {
-    "message": "Teorainn caiteachais saincheaptha"
-  },
   "customToken": {
     "message": "Comhartha saincheaptha"
   },
@@ -2179,9 +2169,6 @@
   "editNonceMessage": {
     "message": "Is gné ardteicneolaíochta í seo, bain úsáid as go cúramach."
   },
-  "editPermission": {
-    "message": "Cead eagarthóireachta"
-  },
   "editPermissions": {
     "message": "Ceadanna a chur in eagar"
   },
@@ -2265,9 +2252,6 @@
   },
   "enterChainId": {
     "message": "Cuir isteach ID Slabhra"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Cuir isteach uasteorainn caiteachais"
   },
   "enterNetworkName": {
     "message": "Cuir isteach uasteorainn caiteachais"
@@ -2881,9 +2865,6 @@
     "message": "Ní féidir le MetaMask ceangal leis an óstach blockchain. Athbhreithnigh cúiseanna féideartha $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "Deimhníodh d’idirbheart tosaigh ag an líonra. Cliceáil Ceart go leor chun filleadh ar ais."
-  },
   "insightsFromSnap": {
     "message": "Léargais ó $1",
     "description": "$1 represents the name of the snap"
@@ -3275,10 +3256,6 @@
   },
   "makeAnotherSwap": {
     "message": "Cruthaigh malartú nua"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Bí cinnte nach bhfuil aon duine ag féachaint",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "manageDefaultSettings": {
     "message": "Bainistigh socruithe réamhshocraithe"
@@ -4669,9 +4646,6 @@
   "productAnnouncements": {
     "message": "Fógraí táirgí"
   },
-  "proposedApprovalLimit": {
-    "message": "Teorainn cheadaithe atá beartaithe"
-  },
   "provide": {
     "message": "Cuir ar fáil"
   },
@@ -4858,18 +4832,6 @@
   "rejectAll": {
     "message": "Diúltaigh do gach rud"
   },
-  "rejectRequestsDescription": {
-    "message": "Tá tú ar tí $1 iarratas a dhiúltú i mbaisc."
-  },
-  "rejectRequestsN": {
-    "message": "Diúltaigh $1 iarratas"
-  },
-  "rejectTxsDescription": {
-    "message": "Tá tú ar tí idirbhearta $1 a dhiúltú i mbaisc."
-  },
-  "rejectTxsN": {
-    "message": "Diúltaigh idirbhearta $1"
-  },
   "rejected": {
     "message": "Diúltaithe"
   },
@@ -5013,17 +4975,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "Tugann an $1 $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "Is $1 é MetaMask. Ciallaíonn sé sin gur leatsa d’SRP.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "rochtain iomlán ar do sparán agus ar do chistí."
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "sparán neamhchoimeádta"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -5037,10 +4989,6 @@
   "revealSeedWordsWarning": {
     "message": "Cinntigh nach bhfuil aon duine ag féachaint ar do scáileán. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Ní iarrfaidh Tacaíocht MetaMask seo choíche.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Nocht ábhar íogair"
@@ -5983,22 +5931,6 @@
   },
   "speedUpTooltipText": {
     "message": "Táille nua gáis"
-  },
-  "spendLimitInsufficient": {
-    "message": "Teorainn caiteachais neamhleor"
-  },
-  "spendLimitInvalid": {
-    "message": "Teorainn caiteachais neamhbhailí; ní mór gur uimhir dhearfach í"
-  },
-  "spendLimitPermission": {
-    "message": "Cead teorainn caiteachais"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Teorainn caiteachais iarrtha ag $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Teorainn caiteachais ró-mhór"
   },
   "spender": {
     "message": "Caiteoir"
@@ -7267,9 +7199,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "D’fhéadfadh do NFT a bheith i mbaol"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Do Rún Aisghabhála Frása"
   },
   "yourTransactionConfirmed": {
     "message": "Idirbheart deimhnithe cheana féin"
