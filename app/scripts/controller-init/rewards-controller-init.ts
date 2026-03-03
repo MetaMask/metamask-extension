@@ -43,10 +43,6 @@ export const RewardsControllerInit: ControllerInitFunction<
 
   const rewardsControllerState = {
     ...(persistedState.RewardsController ?? defaultRewardsControllerState),
-    // Always start with empty tokens — this field is not persisted, and any
-    // previously-stored tokens (written before the persist:false migration)
-    // must not be rehydrated.
-    rewardsSubscriptionTokens: {},
   };
 
   const controller = new RewardsController({
