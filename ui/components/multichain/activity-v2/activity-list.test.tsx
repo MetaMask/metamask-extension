@@ -121,6 +121,21 @@ function createStore({
 }
 
 describe('ActivityList', () => {
+  const enableVisibleVirtualItems = () => {
+    mockUseVirtualizer.mockImplementation(({ count }: { count: number }) => ({
+      getVirtualItems: () =>
+        Array.from({ length: count }, (_, index) => ({
+          index,
+          key: index,
+          start: index * 70,
+        })),
+      getTotalSize: () => count * 70,
+      options: { scrollMargin: 0 },
+      measure: jest.fn(),
+      measureElement: jest.fn(),
+    }));
+  };
+
   beforeEach(() => {
     mockSelectLocalTransactions.mockReturnValue([]);
     mockUseTransactionsQuery.mockReturnValue({
@@ -172,18 +187,7 @@ describe('ActivityList', () => {
       isFetchingNextPage: false,
     });
 
-    mockUseVirtualizer.mockImplementation(({ count }: { count: number }) => ({
-      getVirtualItems: () =>
-        Array.from({ length: count }, (_, index) => ({
-          index,
-          key: index,
-          start: index * 70,
-        })),
-      getTotalSize: () => count * 70,
-      options: { scrollMargin: 0 },
-      measure: jest.fn(),
-      measureElement: jest.fn(),
-    }));
+    enableVisibleVirtualItems();
 
     const store = createStore({
       nonEvmTransactions: {
@@ -203,5 +207,117 @@ describe('ActivityList', () => {
 
     expect(screen.getByTestId('evm-item')).toBeInTheDocument();
     expect(screen.getByTestId('non-evm-item')).toBeInTheDocument();
+  });
+
+  it('applies tokenAddress filter and shows empty state when no transaction matches', () => {
+    const evmTx = {
+      amounts: {
+        from: {
+          amount: '1',
+          token: {
+            address: '0x111',
+            chainId: '0x1',
+            decimals: 18,
+            symbol: 'A',
+          },
+        },
+      },
+      chainId: 'eip155:1',
+      id: 'evm-token-miss',
+      timestamp: 1735689600000,
+      transactionCategory: 'STANDARD',
+      transactionType: 'STANDARD',
+      txParams: { from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424' },
+    };
+
+    mockUseTransactionsQuery.mockReturnValue({
+      data: { pages: [{ data: [evmTx] }] },
+      isInitialLoading: false,
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isFetchingNextPage: false,
+    });
+
+    const store = createStore();
+
+    render(
+      <Provider store={store}>
+        <ActivityList filter={{ tokenAddress: '0x222' }} />
+      </Provider>,
+    );
+
+    expect(screen.getByTestId('activity-empty-state')).toBeInTheDocument();
+  });
+
+  it('applies chainId filter and excludes non-evm rows for eip155 chain', () => {
+    const evmTx = {
+      chainId: 'eip155:1',
+      id: 'evm-only',
+      timestamp: 1735689600000,
+      transactionCategory: 'STANDARD',
+      transactionType: 'STANDARD',
+      txParams: { from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424' },
+    };
+    const nonEvmTx = {
+      chain: 'solana:mainnet',
+      id: 'non-evm-filtered-out',
+      timestamp: 1735689601000,
+    };
+
+    mockUseTransactionsQuery.mockReturnValue({
+      data: { pages: [{ data: [evmTx] }] },
+      isInitialLoading: false,
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isFetchingNextPage: false,
+    });
+    enableVisibleVirtualItems();
+
+    const store = createStore({
+      nonEvmTransactions: {
+        '1': {
+          'solana:mainnet': {
+            transactions: [nonEvmTx],
+          },
+        },
+      },
+    });
+
+    render(
+      <Provider store={store}>
+        <ActivityList filter={{ chainId: 'eip155:1' }} />
+      </Provider>,
+    );
+
+    expect(screen.getByTestId('evm-item')).toBeInTheDocument();
+    expect(screen.queryByTestId('non-evm-item')).not.toBeInTheDocument();
+  });
+
+  it('renders local item type when local transaction groups are present', () => {
+    mockSelectLocalTransactions.mockReturnValue([
+      {
+        initialTransaction: {
+          chainId: '0x1',
+          txParams: { to: '0xabc' },
+        },
+        primaryTransaction: {
+          id: 'local-1',
+          status: 'submitted',
+          time: 1735689600000,
+          txParams: { nonce: '0x1' },
+        },
+      },
+    ]);
+
+    enableVisibleVirtualItems();
+    const store = createStore();
+
+    render(
+      <Provider store={store}>
+        <ActivityList />
+      </Provider>,
+    );
+
+    expect(screen.getByTestId('local-item')).toBeInTheDocument();
   });
 });
