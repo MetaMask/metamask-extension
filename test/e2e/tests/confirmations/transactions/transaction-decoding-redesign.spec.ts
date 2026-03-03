@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
+import { DAPP_URL, NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import TestDapp from '../../../page-objects/pages/test-dapp';
@@ -126,8 +125,8 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               [CHAIN_IDS.MAINNET]: true,

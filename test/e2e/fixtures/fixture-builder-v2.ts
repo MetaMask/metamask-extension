@@ -6,7 +6,11 @@ import type {
   PermissionControllerState,
 } from '@metamask/permission-controller';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
-import type { NetworkState } from '@metamask/network-controller';
+import {
+  type NetworkState,
+  NetworkStatus,
+  RpcEndpointType,
+} from '@metamask/network-controller';
 import {
   type TransactionControllerState,
   type TransactionMeta,
@@ -120,6 +124,27 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withTransactionController(data: TransactionControllerFixtureInput): this {
+    const transactionController = this.fixture.data.TransactionController ?? {};
+    merge(this.fixture.data, { TransactionController: transactionController });
+    const target = this.fixture.data
+      .TransactionController as Partial<TransactionControllerState>;
+
+    const { transactions, ...rest } = data;
+    // Always merge non-transaction state first (lastFetchedBlockNumbers, methodData, etc.)
+    merge(target, rest);
+    if (transactions !== undefined) {
+      const existing = Array.isArray(target.transactions)
+        ? target.transactions
+        : [];
+      const combined: TransactionMeta[] = [...existing, ...transactions].sort(
+        (a, b) => (b.time ?? 0) - (a.time ?? 0),
+      );
+      target.transactions = combined;
+    }
+    return this;
+  }
+
   /* ==================================================================
                               CUSTOM METHODS
      ==================================================================
@@ -127,6 +152,36 @@ class FixtureBuilderV2 {
   withConversionRateDisabled(): this {
     return this.withPreferencesController({
       useCurrencyRateCheck: false,
+    });
+  }
+
+  withNetworkControllerDoubleNode(): this {
+    const secondNodeChainId = '0x53a';
+    const secondNodeClientId = '76e9cd59-d8e2-47e7-b369-9c205ccb602c';
+
+    return this.withNetworkController({
+      networkConfigurationsByChainId: {
+        [secondNodeChainId]: {
+          blockExplorerUrls: [],
+          chainId: secondNodeChainId,
+          defaultRpcEndpointIndex: 0,
+          name: 'Localhost 8546',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              networkClientId: secondNodeClientId,
+              type: RpcEndpointType.Custom,
+              url: 'http://127.0.0.1:8546',
+            },
+          ],
+        },
+      },
+      networksMetadata: {
+        [secondNodeClientId]: {
+          EIPS: {},
+          status: NetworkStatus.Available,
+        },
+      },
     });
   }
 
@@ -208,27 +263,6 @@ class FixtureBuilderV2 {
         },
       },
     });
-  }
-
-  withTransactionController(data: TransactionControllerFixtureInput): this {
-    const transactionController = this.fixture.data.TransactionController ?? {};
-    merge(this.fixture.data, { TransactionController: transactionController });
-    const target = this.fixture.data
-      .TransactionController as Partial<TransactionControllerState>;
-
-    const { transactions, ...rest } = data;
-    // Always merge non-transaction state first (lastFetchedBlockNumbers, methodData, etc.)
-    merge(target, rest);
-    if (transactions !== undefined) {
-      const existing = Array.isArray(target.transactions)
-        ? target.transactions
-        : [];
-      const combined: TransactionMeta[] = [...existing, ...transactions].sort(
-        (a, b) => (b.time ?? 0) - (a.time ?? 0),
-      );
-      target.transactions = combined;
-    }
-    return this;
   }
 
   withTransactionControllerApprovedTransaction(): this {
