@@ -30,6 +30,7 @@ import { setPassThroughInterceptor } from '../../../mock-e2e-pass-through';
 import {
   getCommonMocks,
   benchmarkPassThroughInterceptor,
+  mockBenchmarkEndpoints,
 } from '../../mocks/performance-mocks';
 import { shouldUseMockedRequests } from '../../utils/mock-config';
 import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
@@ -44,10 +45,6 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
       {
         title: testTitle,
         manifestFlags: {
-          remoteFeatureFlags: {
-            bitcoinAccounts: { enabled: false, minimumVersion: '0.0.0' },
-            tronAccounts: { enabled: false, minimumVersion: '0.0.0' },
-          },
           testing: {
             disableSync: true,
             infuraProjectId: process.env.INFURA_PROJECT_ID,
@@ -60,6 +57,9 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
         testSpecificMock: async (server: Mockttp) => {
+          if (shouldUseMockedRequests()) {
+            return mockBenchmarkEndpoints(server);
+          }
           setPassThroughInterceptor(server, benchmarkPassThroughInterceptor);
           return Promise.all(getCommonMocks(server));
         },

@@ -289,6 +289,12 @@ const INTERCEPTED_PATTERNS: {
     response: { statusCode: 200, json: {} },
   },
   {
+    match: (url, method) =>
+      url.includes('user-storage.api.cx.metamask.io') &&
+      (method === 'PUT' || method === 'DELETE'),
+    response: { statusCode: 204 },
+  },
+  {
     match: (url) => url.includes('user-storage.api.cx.metamask.io'),
     response: { statusCode: 200, json: null },
   },
@@ -565,7 +571,7 @@ export async function mockBenchmarkEndpoints(
       .forGet(/token\.api\.cx\.metamask\.io\/tokens/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(800, { statusCode: 200, json: [] })),
+      .thenCallback(delayedResponse(250, { statusCode: 200, json: [] })),
   );
 
   endpoints.push(
@@ -573,7 +579,7 @@ export async function mockBenchmarkEndpoints(
       .forGet(/defiadapters\.api\.cx\.metamask\.io\/positions/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(1000, { statusCode: 200, json: [] })),
+      .thenCallback(delayedResponse(50, { statusCode: 200, json: [] })),
   );
 
   endpoints.push(
@@ -582,7 +588,7 @@ export async function mockBenchmarkEndpoints(
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
       .thenCallback(
-        delayedResponse(1200, { statusCode: 200, json: { networks: [] } }),
+        delayedResponse(100, { statusCode: 200, json: { networks: [] } }),
       ),
   );
 
@@ -591,7 +597,7 @@ export async function mockBenchmarkEndpoints(
       .forGet(/accounts\.api\.cx\.metamask\.io\/v1\/users\/.*\/surveys/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(7000, { statusCode: 200, json: [] })),
+      .thenCallback(delayedResponse(50, { statusCode: 200, json: [] })),
   );
 
   endpoints.push(
@@ -600,7 +606,7 @@ export async function mockBenchmarkEndpoints(
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
       .thenCallback(
-        delayedResponse(1200, { statusCode: 200, json: chainsList }),
+        delayedResponse(500, { statusCode: 200, json: chainsList }),
       ),
   );
 
@@ -609,7 +615,7 @@ export async function mockBenchmarkEndpoints(
       .forGet(/phishing-detection\.api\.cx\.metamask\.io/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(5000, PHISHING_DETECTION)),
+      .thenCallback(delayedResponse(300, PHISHING_DETECTION)),
   );
 
   endpoints.push(
@@ -617,20 +623,20 @@ export async function mockBenchmarkEndpoints(
       .forGet(/client-side-detection\.api\.cx\.metamask\.io/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(6000, { statusCode: 200, json: [] })),
+      .thenCallback(delayedResponse(250, { statusCode: 200, json: [] })),
   );
 
   endpoints.push(
-    await mockAuthAPICall(server, AuthMocks.getMockAuthNonceResponse(), 1200),
+    await mockAuthAPICall(server, AuthMocks.getMockAuthNonceResponse(), 250),
   );
   endpoints.push(
-    await mockAuthAPICall(server, AuthMocks.getMockAuthLoginResponse(), 1200),
+    await mockAuthAPICall(server, AuthMocks.getMockAuthLoginResponse(), 250),
   );
   endpoints.push(
     await mockAuthAPICall(
       server,
       AuthMocks.getMockAuthAccessTokenResponse(),
-      3400,
+      300,
     ),
   );
 
@@ -658,7 +664,7 @@ export async function mockBenchmarkEndpoints(
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
       .thenCallback(
-        delayedResponse(3000, {
+        delayedResponse(400, {
           statusCode: 200,
           json: { subscriptions: [], trialedProducts: [] },
         }),
@@ -672,7 +678,7 @@ export async function mockBenchmarkEndpoints(
       )
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(3000, SUBSCRIPTION_ELIGIBILITY)),
+      .thenCallback(delayedResponse(400, SUBSCRIPTION_ELIGIBILITY)),
   );
 
   endpoints.push(
@@ -680,7 +686,7 @@ export async function mockBenchmarkEndpoints(
       .forPost(/^https:\/\/mainnet\.infura\.io/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(1800, jsonRpcResponse('0x0'))),
+      .thenCallback(delayedResponse(650, jsonRpcResponse('0x0'))),
   );
 
   endpoints.push(
@@ -688,7 +694,7 @@ export async function mockBenchmarkEndpoints(
       .forPost(/polygon-mainnet\.infura\.io/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(1400, jsonRpcResponse('0x0'))),
+      .thenCallback(delayedResponse(650, jsonRpcResponse('0x0'))),
   );
 
   endpoints.push(
@@ -696,7 +702,7 @@ export async function mockBenchmarkEndpoints(
       .forPost(/bsc-mainnet\.infura\.io/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(1500, jsonRpcResponse('0x0'))),
+      .thenCallback(delayedResponse(650, jsonRpcResponse('0x0'))),
   );
 
   endpoints.push(
@@ -704,7 +710,7 @@ export async function mockBenchmarkEndpoints(
       .forPost(/optimism-mainnet\.infura\.io/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(1500, jsonRpcResponse('0x0'))),
+      .thenCallback(delayedResponse(650, jsonRpcResponse('0x0'))),
   );
 
   endpoints.push(
@@ -712,7 +718,7 @@ export async function mockBenchmarkEndpoints(
       .forPost(/arbitrum-mainnet\.infura\.io/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(1500, jsonRpcResponse('0x0'))),
+      .thenCallback(delayedResponse(650, jsonRpcResponse('0x0'))),
   );
 
   endpoints.push(
@@ -720,7 +726,7 @@ export async function mockBenchmarkEndpoints(
       .forPost(/base-mainnet\.infura\.io/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(1300, jsonRpcResponse('0x0'))),
+      .thenCallback(delayedResponse(400, jsonRpcResponse('0x0'))),
   );
 
   endpoints.push(
@@ -728,7 +734,7 @@ export async function mockBenchmarkEndpoints(
       .forPost(/linea-mainnet\.infura\.io/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(1300, jsonRpcResponse('0x0'))),
+      .thenCallback(delayedResponse(350, jsonRpcResponse('0x0'))),
   );
 
   endpoints.push(
@@ -760,7 +766,7 @@ export async function mockBenchmarkEndpoints(
       .forPost(/https:\/\/celo-mainnet\.infura\.io\/v3\/.*/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(1500, jsonRpcResponse('0x0'))),
+      .thenCallback(delayedResponse(300, jsonRpcResponse('0x0'))),
   );
 
   endpoints.push(
@@ -768,7 +774,7 @@ export async function mockBenchmarkEndpoints(
       .forPost('https://rpc.gnosischain.com/')
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(1500, jsonRpcResponse('0x0'))),
+      .thenCallback(delayedResponse(300, jsonRpcResponse('0x0'))),
   );
 
   endpoints.push(
@@ -949,7 +955,7 @@ export async function mockBenchmarkEndpoints(
       .forGet(/price\.api\.cx\.metamask\.io\/v\d+\/spot-prices\/bitcoin/u)
       .asPriority(102)
       .always()
-      .thenCallback(delayedResponse(2000, BITCOIN_SPOT_PRICES)),
+      .thenCallback(delayedResponse(200, BITCOIN_SPOT_PRICES)),
   );
 
   endpoints.push(
@@ -957,7 +963,7 @@ export async function mockBenchmarkEndpoints(
       .forGet(/price\.api\.cx\.metamask\.io\/v\d+\/spot-prices\/solana/u)
       .asPriority(102)
       .always()
-      .thenCallback(delayedResponse(2000, SOLANA_SPOT_PRICES)),
+      .thenCallback(delayedResponse(200, SOLANA_SPOT_PRICES)),
   );
 
   endpoints.push(
@@ -966,7 +972,7 @@ export async function mockBenchmarkEndpoints(
       .asPriority(103)
       .always()
       .thenCallback(
-        delayedCallback(2000, (req) =>
+        delayedCallback(200, (req) =>
           buildSpotPricesResponse(req.url, POWER_USER_PRICES),
         ),
       ),
@@ -978,7 +984,7 @@ export async function mockBenchmarkEndpoints(
       .asPriority(101)
       .always()
       .thenCallback(
-        delayedCallback(2000, (req) =>
+        delayedCallback(200, (req) =>
           buildSpotPricesResponse(req.url, POWER_USER_PRICES),
         ),
       ),
@@ -1009,7 +1015,7 @@ export async function mockBenchmarkEndpoints(
       .forGet(/^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(1300, CRYPTOCOMPARE_MULTI_PRICES)),
+      .thenCallback(delayedResponse(500, CRYPTOCOMPARE_MULTI_PRICES)),
   );
 
   endpoints.push(
@@ -1018,7 +1024,7 @@ export async function mockBenchmarkEndpoints(
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
       .thenCallback(
-        delayedCallback(1300, (req) => buildCryptocomparePrice(req.url)),
+        delayedCallback(500, (req) => buildCryptocomparePrice(req.url)),
       ),
   );
 
@@ -1029,7 +1035,7 @@ export async function mockBenchmarkEndpoints(
       )
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(5000, ACCOUNTS_TRANSACTIONS)),
+      .thenCallback(delayedResponse(500, ACCOUNTS_TRANSACTIONS)),
   );
 
   endpoints.push(
@@ -1037,7 +1043,7 @@ export async function mockBenchmarkEndpoints(
       .forGet(/accounts\.api\.cx\.metamask\.io\/v1\/accounts\/.*\/balances/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(5000, ACCOUNTS_BALANCES)),
+      .thenCallback(delayedResponse(550, ACCOUNTS_BALANCES)),
   );
 
   endpoints.push(
@@ -1209,7 +1215,7 @@ export async function mockBenchmarkEndpoints(
       .forGet(/bridge\.api\.cx\.metamask\.io\/featureFlags/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(1500, BRIDGE_FEATURE_FLAGS)),
+      .thenCallback(delayedResponse(450, BRIDGE_FEATURE_FLAGS)),
   );
 
   endpoints.push(
@@ -1217,7 +1223,7 @@ export async function mockBenchmarkEndpoints(
       .forGet(/client-config\.api\.cx\.metamask\.io\/v1\/flags/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(1000, CLIENT_CONFIG_FLAGS)),
+      .thenCallback(delayedResponse(350, CLIENT_CONFIG_FLAGS)),
   );
 
   endpoints.push(
@@ -1225,7 +1231,7 @@ export async function mockBenchmarkEndpoints(
       .forPost(/https:\/\/security-alerts\.api\.cx\.metamask\.io/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(1000, SECURITY_ALERTS)),
+      .thenCallback(delayedResponse(400, SECURITY_ALERTS)),
   );
 
   endpoints.push(

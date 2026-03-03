@@ -348,6 +348,7 @@ async function withFixtures(options, testSuite) {
       ? 'Request going to a live server ============'
       : 'Request sent to mock server ============';
     const hostCounts = useMockingPassThrough ? new Map() : null;
+    const logColor = useMockingPassThrough ? '\x1b[32m' : '\x1b[38;5;216m';
     mockServer.on('request', (req) => {
       if (hostCounts) {
         let host;
@@ -360,7 +361,7 @@ async function withFixtures(options, testSuite) {
         hostCounts.set(host, count);
         if (count <= 3) {
           console.log(
-            `\x1b[22m\x1b[38;5;216m${requestLogLabel} ${req.url}\x1b[0m`,
+            `${logColor}${requestLogLabel} ${req.url}\x1b[0m`,
           );
         } else if (count === 4) {
           console.log(
@@ -369,7 +370,7 @@ async function withFixtures(options, testSuite) {
         }
       } else {
         console.log(
-          `\x1b[22m\x1b[38;5;216m${requestLogLabel} ${req.url}\x1b[0m`,
+          `${logColor}${requestLogLabel} ${req.url}\x1b[0m`,
         );
       }
     });
