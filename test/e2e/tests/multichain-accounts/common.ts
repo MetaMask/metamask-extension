@@ -41,7 +41,7 @@ export async function withMultichainAccountsDesignEnabled(
     case AccountType.HardwareWallet:
       fixture = new FixtureBuilderV2()
         .withLedgerAccount()
-        .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+        .withShowNativeTokenAsMainBalanceDisabled()
         .withEnabledNetworks({ eip155: { '0x1': true } })
         .build();
       break;
