@@ -50,6 +50,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Migrates `NetworkEnablementController.nativeAssetIdentifiers['eip155:999']` to value `eip155:999/slip44:2457` if applicable. (#40206)
 - Adjusts update modal logic to use the pending extension version and only show when a newer version is available. (#39884)
 
+## [13.20.1]
+
+### Fixed
+
+- Prevent re-sync account removal dialogs (#40572)
+
 ## [13.20.0]
 
 ### Added
@@ -1881,7 +1887,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.21.0...HEAD
-[13.21.0]: https://github.com/MetaMask/metamask-extension/compare/v13.20.0...v13.21.0
+[13.21.0]: https://github.com/MetaMask/metamask-extension/compare/v13.20.1...v13.21.0
+[13.20.1]: https://github.com/MetaMask/metamask-extension/compare/v13.20.0...v13.20.1
 [13.20.0]: https://github.com/MetaMask/metamask-extension/compare/v13.19.0...v13.20.0
 [13.19.0]: https://github.com/MetaMask/metamask-extension/compare/v13.18.1...v13.19.0
 [13.18.1]: https://github.com/MetaMask/metamask-extension/compare/v13.18.0...v13.18.1
