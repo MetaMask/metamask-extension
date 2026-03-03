@@ -277,7 +277,7 @@ export class RewardsDataService {
 
       clearTimeout(timeoutId);
 
-      if (response.status === 403) {
+      if (response.status === 403 && subscriptionToken) {
         throw new AuthorizationFailedError(
           `Authorization failed: ${response.status}`,
         );

@@ -565,6 +565,23 @@ describe('RewardsDataService', () => {
       );
     });
 
+    it('should not throw AuthorizationFailedError on 403 without a subscription token', async () => {
+      service = createService();
+      const mockResponse = {
+        ok: false,
+        status: 403,
+        json: jest.fn().mockResolvedValue({ message: 'Forbidden' }),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      await expect(service.login(mockLoginRequest)).rejects.toThrow(
+        'Login failed: 403',
+      );
+      await expect(service.login(mockLoginRequest)).rejects.not.toThrow(
+        AuthorizationFailedError,
+      );
+    });
+
     it('should throw AccountAlreadyRegisteredError when account is already registered (409)', async () => {
       service = createService();
       const mockResponse = {
