@@ -18,7 +18,9 @@ function isBackgroundContext() {
   try {
     const href = globalThis.self?.location?.href ?? '';
     return (
-      href.includes('app-init') || href.includes('background') // MV3 script URL or MV2 background page
+      href.includes('app-init') || // browserify MV3 (app-init.js)
+      href.includes('service-worker') || // webpack MV3 (service-worker.js)
+      href.includes('background') // MV2 (background.html)
     );
   } catch {
     return false;
