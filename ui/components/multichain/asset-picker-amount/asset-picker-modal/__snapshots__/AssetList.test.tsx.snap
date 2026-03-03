@@ -13,12 +13,12 @@ exports[`AssetList should pass an undefined nativeCurrencySymbol if the safe cha
       "decimals": 18,
       "image": "image1.png",
       "isDestinationToken": false,
-      "onClick": [Function],
       "string": "10",
       "symbol": "TOKEN1",
       "tooltipText": undefined,
       "type": "TOKEN",
     },
+    {},
   ],
   [
     {
@@ -31,12 +31,12 @@ exports[`AssetList should pass an undefined nativeCurrencySymbol if the safe cha
       "decimals": 6,
       "image": "image2.png",
       "isDestinationToken": false,
-      "onClick": [Function],
       "string": "20",
       "symbol": "TOKEN2",
       "tooltipText": undefined,
       "type": "TOKEN",
     },
+    {},
   ],
 ]
 `;
@@ -54,12 +54,12 @@ exports[`AssetList should show the scam warning modal 1`] = `
       "decimals": 18,
       "image": "image1.png",
       "isDestinationToken": false,
-      "onClick": [Function],
       "string": "10",
       "symbol": "TOKEN1",
       "tooltipText": undefined,
       "type": "TOKEN",
     },
+    {},
   ],
   [
     {
@@ -72,12 +72,12 @@ exports[`AssetList should show the scam warning modal 1`] = `
       "decimals": 6,
       "image": "image2.png",
       "isDestinationToken": false,
-      "onClick": [Function],
       "string": "20",
       "symbol": "TOKEN2",
       "tooltipText": undefined,
       "type": "TOKEN",
     },
+    {},
   ],
 ]
 `;
