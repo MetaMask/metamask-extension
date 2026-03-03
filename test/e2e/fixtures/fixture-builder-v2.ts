@@ -26,6 +26,8 @@ import type {
 } from '../../../app/scripts/controllers/preferences-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
+  DAPP_ONE_URL,
+  DAPP_TWO_URL,
   DAPP_URL,
   DAPP_URL_LOCALHOST,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
@@ -204,14 +206,21 @@ class FixtureBuilderV2 {
   withPermissionControllerConnectedToTestDapp({
     account = '',
     useLocalhostHostname = false,
+    numberOfDapps = 1,
   }: {
     account?: string;
     useLocalhostHostname?: boolean;
+    numberOfDapps?: number;
   } = {}): this {
     const selectedAccount = account
       ? account.toLowerCase()
       : DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
-    const dappUrl = useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL;
+
+    const dappUrls = [
+      useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
+      DAPP_ONE_URL,
+      DAPP_TWO_URL,
+    ].slice(0, numberOfDapps);
 
     // Derive optionalScopes from the EVM networks in state
     const optionalScopes: Record<string, { accounts: string[] }> = {};
@@ -237,32 +246,34 @@ class FixtureBuilderV2 {
       accounts: [],
     };
 
-    return this.withPermissionController({
-      subjects: {
-        [dappUrl]: {
-          origin: dappUrl,
-          permissions: {
-            'endowment:caip25': {
-              caveats: [
-                {
-                  type: 'authorizedScopes',
-                  value: {
-                    isMultichainOrigin: true,
-                    optionalScopes,
-                    requiredScopes: {},
-                    sessionProperties: {},
-                  },
+    const subjects: PermissionControllerState<PermissionConstraint>['subjects'] =
+      {};
+    for (const dappUrl of dappUrls) {
+      subjects[dappUrl] = {
+        origin: dappUrl,
+        permissions: {
+          'endowment:caip25': {
+            caveats: [
+              {
+                type: 'authorizedScopes',
+                value: {
+                  isMultichainOrigin: true,
+                  optionalScopes,
+                  requiredScopes: {},
+                  sessionProperties: {},
                 },
-              ],
-              date: 1770296204693,
-              id: 'SFqk8nFLekiqC5O1cYCjT',
-              invoker: dappUrl,
-              parentCapability: 'endowment:caip25',
-            },
+              },
+            ],
+            date: 1770296204693,
+            id: 'SFqk8nFLekiqC5O1cYCjT',
+            invoker: dappUrl,
+            parentCapability: 'endowment:caip25',
           },
         },
-      },
-    });
+      };
+    }
+
+    return this.withPermissionController({ subjects });
   }
 
   withTransactionControllerApprovedTransaction(): this {
