@@ -31,10 +31,8 @@ import {
   DAPP_URL,
   DAPP_URL_LOCALHOST,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-  DEFAULT_FIXTURE_SOLANA_ACCOUNT,
   LOCALHOST_NETWORK_CLIENT_ID,
   NETWORK_CLIENT_ID,
-  SOLANA_MAINNET_SCOPE,
 } from '../constants';
 import defaultFixtureJson from './default-fixture.json';
 import onboardingFixtureJson from './onboarding-fixture.json';
@@ -187,6 +185,36 @@ class FixtureBuilderV2 {
     });
   }
 
+  withNetworkControllerTripleNode(): this {
+    const thirdNodeChainId = '0x3e8';
+    const thirdNodeClientId = 'a3460c52-12ee-4267-9be6-1503095a587e';
+
+    return this.withNetworkControllerDoubleNode().withNetworkController({
+      networkConfigurationsByChainId: {
+        [thirdNodeChainId]: {
+          blockExplorerUrls: [],
+          chainId: thirdNodeChainId,
+          defaultRpcEndpointIndex: 0,
+          name: 'Localhost 7777',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              networkClientId: thirdNodeClientId,
+              type: RpcEndpointType.Custom,
+              url: 'http://localhost:7777',
+            },
+          ],
+        },
+      },
+      networksMetadata: {
+        [thirdNodeClientId]: {
+          EIPS: {},
+          status: NetworkStatus.Available,
+        },
+      },
+    });
+  }
+
   withEnabledNetworks(
     data: NetworkEnablementControllerState['enabledNetworkMap'],
   ): this {
@@ -222,28 +250,17 @@ class FixtureBuilderV2 {
       DAPP_TWO_URL,
     ].slice(0, numberOfDapps);
 
-    // Derive optionalScopes from the EVM networks in state
-    const optionalScopes: Record<string, { accounts: string[] }> = {};
-
-    const networkConfigs =
-      this.fixture.data.NetworkController?.networkConfigurationsByChainId || {};
-    Object.entries(networkConfigs).forEach(([chainIdHex]) => {
-      // Convert hex chainId (0x1) to decimal for CAIP-2 format (eip155:1)
-      const chainId = parseInt(chainIdHex, 16);
-      const scopeKey = `eip155:${chainId}`;
-      optionalScopes[scopeKey] = {
-        accounts: [`${scopeKey}:${selectedAccount}`],
-      };
-    });
-
-    // Add Solana Mainnet scope
-    optionalScopes[SOLANA_MAINNET_SCOPE] = {
-      accounts: [`${SOLANA_MAINNET_SCOPE}:${DEFAULT_FIXTURE_SOLANA_ACCOUNT}`],
-    };
-
-    // Add wallet:eip155 scope
-    optionalScopes['wallet:eip155'] = {
-      accounts: [],
+    // Only localhost (chainId 1337) is connected
+    const optionalScopes: Record<string, { accounts: string[] }> = {
+      'eip155:1337': {
+        accounts: [`eip155:1337:${selectedAccount}`],
+      },
+      'wallet:eip155': {
+        accounts: [`wallet:eip155:${selectedAccount}`],
+      },
+      wallet: {
+        accounts: [],
+      },
     };
 
     const subjects: PermissionControllerState<PermissionConstraint>['subjects'] =

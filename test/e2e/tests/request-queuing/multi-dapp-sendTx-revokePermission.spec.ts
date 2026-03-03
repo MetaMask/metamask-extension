@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import { DAPP_URL, DAPP_ONE_URL, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -17,7 +17,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
