@@ -102,7 +102,7 @@ export class ManifestPlugin<Z extends boolean> {
 
   options: ManifestPluginOptions<Z>;
 
-  private manifests: Map<Browser, Manifest> = new Map();
+  manifests: Map<Browser, Manifest> = new Map();
 
   private manifestSources: Map<Browser, sources.RawSource> = new Map();
 
