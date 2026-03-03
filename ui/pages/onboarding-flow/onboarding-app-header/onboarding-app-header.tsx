@@ -33,9 +33,7 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 
 type OnboardingAppHeaderProps = {

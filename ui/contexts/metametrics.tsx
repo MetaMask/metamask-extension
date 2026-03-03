@@ -22,7 +22,7 @@ import { omit } from 'lodash';
 import { captureException, captureMessage } from '../../shared/lib/sentry';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 import {
   PATH_NAME_MAP,
   getPaths,

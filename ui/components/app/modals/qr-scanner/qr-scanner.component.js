@@ -6,7 +6,7 @@ import { usePrevious } from '../../../../hooks/usePrevious';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import { getURL } from '../../../../helpers/utils/util';
 import WebcamUtils from '../../../../helpers/utils/webcam-utils';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component';

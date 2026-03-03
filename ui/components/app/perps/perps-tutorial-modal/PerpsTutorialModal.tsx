@@ -24,7 +24,7 @@ import {
 } from '../../../../ducks/perps';
 import { useTheme } from '../../../../hooks/useTheme';
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import WhatArePerpsStep from './steps/WhatArePerpsStep';
 import GoLongShortStep from './steps/GoLongShortStep';

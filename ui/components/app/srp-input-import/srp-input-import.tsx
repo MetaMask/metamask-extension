@@ -33,7 +33,7 @@ import {
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
 const SRP_LENGTHS = [12, 15, 18, 21, 24];

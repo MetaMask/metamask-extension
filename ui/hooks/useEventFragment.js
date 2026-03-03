@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 import { selectMatchingFragment } from '../selectors';
 import {
   finalizeEventFragment,

@@ -4,7 +4,7 @@ import { URDecoder } from '@ngraveio/bc-ur';
 import PropTypes from 'prop-types';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import WebcamUtils from '../../../helpers/utils/webcam-utils';
 import PageContainerFooter from '../../ui/page-container/page-container-footer/page-container-footer.component';

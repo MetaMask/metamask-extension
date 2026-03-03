@@ -1,12 +1,12 @@
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../shared/constants/app';
 import { MetaMaskReduxState } from '../../store/store';
 import { getStartupTraceTags } from './tags';
 
-jest.mock('../../../app/scripts/lib/util', () => ({
-  ...jest.requireActual('../../../app/scripts/lib/util'),
+jest.mock('../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../shared/lib/environment-type'),
   getEnvironmentType: jest.fn(),
 }));
 

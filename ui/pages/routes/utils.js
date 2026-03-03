@@ -1,6 +1,6 @@
 import { matchPath } from 'react-router-dom';
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,

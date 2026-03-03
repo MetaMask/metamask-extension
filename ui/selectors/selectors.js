@@ -69,7 +69,8 @@ import {
 
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
+import { addHexPrefix } from '../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 import {
   TEST_CHAINS,
   MAINNET_DISPLAY_NAME,

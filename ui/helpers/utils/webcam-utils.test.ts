@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-restricted-paths -- Required to mock background utility used by webcam-utils
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -10,7 +10,7 @@ import {
 import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
 import WebcamUtils from './webcam-utils';
 
-jest.mock('../../../app/scripts/lib/util', () => ({
+jest.mock('../../../shared/lib/environment-type', () => ({
   getEnvironmentType: jest.fn(),
 }));
 
