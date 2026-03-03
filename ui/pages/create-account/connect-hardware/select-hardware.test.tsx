@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import messages from '../../../../app/_locales/en/messages.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   HardwareAffiliateLinks,
   HardwareAffiliateTutorialLinks,
