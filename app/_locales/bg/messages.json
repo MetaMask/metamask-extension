@@ -299,9 +299,6 @@
     "message": "Импортирани",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Първоначалната транзакция беше потвърдена от мрежата. Кликнете върху OK, за да се върнете обратно."
-  },
   "insufficientBalance": {
     "message": "Недостатъчно салдо."
   },
@@ -483,12 +480,6 @@
   },
   "rejectAll": {
     "message": "Отхвърлете всички"
-  },
-  "rejectTxsDescription": {
-    "message": "На път сте да отхвърлите партида от $1 транзакции."
-  },
-  "rejectTxsN": {
-    "message": "Отхвърлете $1 транзакции"
   },
   "rejected": {
     "message": "Отказан"
@@ -682,8 +673,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Трябва да разрешите достъпа на камерата, за да използвате тази функция."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Вашата лична фраза зародиш"
   }
 }

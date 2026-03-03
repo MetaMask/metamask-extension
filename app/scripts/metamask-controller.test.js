@@ -3660,6 +3660,8 @@ describe('MetaMaskController', () => {
         expect(preferencesController.state.useExternalServices).toBe(false);
         expect(remoteFeatureFlagController.state).toStrictEqual({
           remoteFeatureFlags: {},
+          localOverrides: {},
+          rawRemoteFeatureFlags: {},
           cacheTimestamp: 0,
         });
       });
@@ -3679,6 +3681,8 @@ describe('MetaMaskController', () => {
 
         expect(remoteFeatureFlagController.state).toStrictEqual({
           remoteFeatureFlags: {},
+          localOverrides: {},
+          rawRemoteFeatureFlags: {},
           cacheTimestamp: 0,
         });
       });
@@ -3703,6 +3707,8 @@ describe('MetaMaskController', () => {
         // Verify the controller state remains unchanged after error
         expect(remoteFeatureFlagController.state).toStrictEqual({
           remoteFeatureFlags: {},
+          localOverrides: {},
+          rawRemoteFeatureFlags: {},
           cacheTimestamp: 0,
         });
       });
@@ -3728,6 +3734,8 @@ describe('MetaMaskController', () => {
         // Verify state is cleared
         expect(remoteFeatureFlagController.state).toStrictEqual({
           remoteFeatureFlags: {},
+          localOverrides: {},
+          rawRemoteFeatureFlags: {},
           cacheTimestamp: 0,
         });
       });

@@ -299,9 +299,6 @@
     "message": "Importēts",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Jūsu sākotnējais darījums apstiprināts tīklā. Spiediet OK, lai atgrieztos."
-  },
   "insufficientBalance": {
     "message": "Nepietiekama bilance."
   },
@@ -483,12 +480,6 @@
   },
   "rejectAll": {
     "message": "Noraidīt visus"
-  },
-  "rejectTxsDescription": {
-    "message": "Jūs gatavojaties noraidīt $1 darījumus."
-  },
-  "rejectTxsN": {
-    "message": "Noraidīt $1 darījumus"
   },
   "rejected": {
     "message": "Noraidīts"
@@ -682,8 +673,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Lai lietotu šo funkciju, jādod piekļuve kamerai."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Jūsu privātā atkopšanas frāze"
   }
 }

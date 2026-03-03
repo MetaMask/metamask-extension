@@ -110,8 +110,7 @@ export default function TokenCell({
             privacyMode={privacyMode}
           />
         }
-        footerLeftDisplay={<TokenCellPercentChange token={displayToken} />}
-        footerRightDisplay={
+        footerLeftDisplay={
           hasClaimableReward ? (
             <ClaimBonusBadge
               tokenAddress={token.address as string}
@@ -120,11 +119,14 @@ export default function TokenCell({
               refetchRewards={refetchMerklRewards}
             />
           ) : (
-            <TokenCellPrimaryDisplay
-              token={displayToken}
-              privacyMode={privacyMode}
-            />
+            <TokenCellPercentChange token={displayToken} />
           )
+        }
+        footerRightDisplay={
+          <TokenCellPrimaryDisplay
+            token={displayToken}
+            privacyMode={privacyMode}
+          />
         }
       />
       {isEvm && showScamWarningModal && (

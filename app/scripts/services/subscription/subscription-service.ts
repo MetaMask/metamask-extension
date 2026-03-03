@@ -198,11 +198,22 @@ export class SubscriptionService {
 
       // skipping redirect and open new tab in test environment
       if (!process.env.IN_TEST) {
+        // Set pending redirect so the UI navigates back to shield plan page if user abandons checkout
+        this.#messenger.call('AppStateController:setPendingRedirectRoute', {
+          path: '/shield-plan',
+        });
+
         await this.#openAndWaitForTabToClose({
           url: checkoutSessionUrl,
           successUrl: redirectUrl,
           cancelUrl,
         });
+
+        // Clear pending redirect on successful checkout
+        this.#messenger.call(
+          'AppStateController:setPendingRedirectRoute',
+          null,
+        );
 
         if (!currentTabId) {
           // open extension browser shield settings if open from pop up (no current tab)
