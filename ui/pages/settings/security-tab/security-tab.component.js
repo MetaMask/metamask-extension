@@ -4,9 +4,9 @@ import React, { PureComponent } from 'react';
 import log from 'loglevel';
 import {
   addUrlProtocolPrefix,
+  getEnvironmentType,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
-  getEnvironmentType,
 } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
