@@ -129,7 +129,7 @@ describe('AccountListMenu', () => {
     expect(
       getByPlaceholderText(messages.searchAccounts.message),
     ).toBeInTheDocument();
-    expect(getByText(messages.addImportAccount.message)).toBeInTheDocument();
+    expect(getByText(messages.addAccountOrWallet.message)).toBeInTheDocument();
     expect(document.querySelector('[aria-label="Back"]')).toStrictEqual(null);
   });
 
