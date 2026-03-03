@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Conditionally display delete account confirmation (#40502)
+- Prevent re-sync account removal dialogs (#40572)
 
 ## [13.20.0]
 
