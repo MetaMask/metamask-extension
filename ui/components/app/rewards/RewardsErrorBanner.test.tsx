@@ -1,6 +1,8 @@
 import React, { Ref } from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { ButtonProps } from '@metamask/design-system-react';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { renderWithLocalization } from '../../../../test/lib/render-helpers';
 import RewardsErrorBanner from './RewardsErrorBanner';
 
 // Partially mock the design-system Button to expose `isLoading` for assertions,
@@ -38,31 +40,35 @@ describe('RewardsErrorBanner', () => {
   });
 
   it('renders title and description', () => {
-    render(
+    renderWithLocalization(
       <RewardsErrorBanner
         title="Error Title"
-        description="Something went wrong"
+        description={messages.loginErrorGenericTitle.message}
       />,
     );
 
     expect(screen.getByTestId('rewards-error-banner')).toBeInTheDocument();
     expect(screen.getByText('Error Title')).toBeInTheDocument();
-    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.loginErrorGenericTitle.message),
+    ).toBeInTheDocument();
   });
 
   it('does not render action buttons when no handlers provided', () => {
-    render(<RewardsErrorBanner title="T" description="D" />);
+    renderWithLocalization(<RewardsErrorBanner title="T" description="D" />);
     // No buttons should be present if both onDismiss and onConfirm are undefined
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
   it('renders Dismiss button and calls onDismiss when clicked', () => {
     const onDismiss = jest.fn();
-    render(
+    renderWithLocalization(
       <RewardsErrorBanner title="T" description="D" onDismiss={onDismiss} />,
     );
 
-    const dismissButton = screen.getByRole('button', { name: 'Dismiss' });
+    const dismissButton = screen.getByRole('button', {
+      name: messages.dismiss.message,
+    });
     expect(dismissButton).toBeInTheDocument();
 
     fireEvent.click(dismissButton);
@@ -71,11 +77,13 @@ describe('RewardsErrorBanner', () => {
 
   it('renders Confirm button with default label and calls onConfirm', () => {
     const onConfirm = jest.fn();
-    render(
+    renderWithLocalization(
       <RewardsErrorBanner title="T" description="D" onConfirm={onConfirm} />,
     );
 
-    const confirmButton = screen.getByRole('button', { name: 'Confirm' });
+    const confirmButton = screen.getByRole('button', {
+      name: messages.confirm.message,
+    });
     expect(confirmButton).toBeInTheDocument();
 
     fireEvent.click(confirmButton);
@@ -84,7 +92,7 @@ describe('RewardsErrorBanner', () => {
 
   it('renders Confirm button with custom label when provided', () => {
     const onConfirm = jest.fn();
-    render(
+    renderWithLocalization(
       <RewardsErrorBanner
         title="T"
         description="D"
@@ -99,7 +107,7 @@ describe('RewardsErrorBanner', () => {
 
   it('sets loading state on Confirm button when onConfirmLoading is true', () => {
     const onConfirm = jest.fn();
-    render(
+    renderWithLocalization(
       <RewardsErrorBanner
         title="T"
         description="D"
@@ -108,7 +116,9 @@ describe('RewardsErrorBanner', () => {
       />,
     );
 
-    const confirmButton = screen.getByRole('button', { name: 'Confirm' });
+    const confirmButton = screen.getByRole('button', {
+      name: messages.confirm.message,
+    });
     expect(confirmButton).toBeInTheDocument();
     // Assert the mocked Button exposes loading state via data-loading
     expect(confirmButton).toHaveAttribute('data-loading', 'true');

@@ -26,7 +26,7 @@ import {
   RECURRING_INTERVALS,
   RecurringInterval,
 } from '@metamask/subscription-controller';
-import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
+import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 import {
   RewardsControllerActions,
   RewardsControllerEvents,
@@ -52,6 +52,7 @@ import type {
   SeasonMetadataDto,
   SeasonStateDto,
   SubscriptionDto,
+  ChallengeDto,
 } from './rewards-controller.types';
 import {
   InvalidTimestampError,
@@ -70,6 +71,9 @@ import {
   RewardsDataServiceMobileJoinAction,
   RewardsDataServiceMobileOptinAction,
   RewardsDataServiceValidateReferralCodeAction,
+  RewardsDataServiceGenerateChallengeAction,
+  RewardsDataServiceSiweLoginAction,
+  RewardsDataServiceSiweJoinAction,
 } from './rewards-data-service-types';
 
 type AllActions = MessengerActions<RewardsControllerMessenger>;
@@ -222,6 +226,9 @@ async function withController<ReturnValue>(
     | RewardsDataServiceGetOptInStatusAction
     | RewardsDataServiceGetSeasonMetadataAction
     | RewardsDataServiceGetDiscoverSeasonsAction
+    | RewardsDataServiceGenerateChallengeAction
+    | RewardsDataServiceSiweLoginAction
+    | RewardsDataServiceSiweJoinAction
     | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
     | HandleSnapRequest;
 
@@ -251,6 +258,9 @@ async function withController<ReturnValue>(
       'RewardsDataService:getOptInStatus',
       'RewardsDataService:mobileOptin',
       'RewardsDataService:mobileJoin',
+      'RewardsDataService:siweLogin',
+      'RewardsDataService:siweJoin',
+      'RewardsDataService:generateChallenge',
       'RewardsDataService:getSeasonStatus',
       'RewardsDataService:fetchGeoLocation',
       'RewardsDataService:validateReferralCode',
@@ -539,21 +549,22 @@ describe('RewardsController', () => {
       });
     });
 
-    it('should return false for hardware wallet accounts', async () => {
+    it('should return true for hardware wallet accounts (EVM)', async () => {
       await withController({ isDisabled: false }, ({ controller }) => {
         const hardwareAccount: InternalAccount = {
           ...MOCK_INTERNAL_ACCOUNT,
           metadata: {
             ...MOCK_INTERNAL_ACCOUNT.metadata,
             keyring: {
-              type: HardwareDeviceNames.ledger,
+              type: HardwareKeyringType.ledger,
             },
           },
         };
 
+        // Hardware wallets are now supported for opt-in via SIWE flow
         const result = controller.isOptInSupported(hardwareAccount);
 
-        expect(result).toBe(false);
+        expect(result).toBe(true);
       });
     });
 
@@ -1142,6 +1153,9 @@ describe('RewardsController', () => {
                 sids: [MOCK_SUBSCRIPTION_ID],
               });
             }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_INTERNAL_ACCOUNT];
+            }
             return undefined;
           });
 
@@ -1468,6 +1482,219 @@ describe('RewardsController', () => {
             ois: [true],
             sids: [MOCK_SUBSCRIPTION_ID],
           });
+        },
+      );
+    });
+
+    it('should store subscriptionId in state for non-hardware accounts', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_INTERNAL_ACCOUNT];
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          await controller.getOptInStatus({
+            addresses: [MOCK_ACCOUNT_ADDRESS],
+          });
+
+          // Non-hardware accounts should have subscriptionId stored in state
+          expect(
+            controller.state.rewardsAccounts[MOCK_CAIP_ACCOUNT]?.subscriptionId,
+          ).toBe(MOCK_SUBSCRIPTION_ID);
+        },
+      );
+    });
+
+    it('should NOT store subscriptionId in state for hardware accounts without subscription token', async () => {
+      const hardwareAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        metadata: {
+          ...MOCK_INTERNAL_ACCOUNT.metadata,
+          keyring: {
+            type: HardwareKeyringType.ledger,
+          },
+        },
+      };
+
+      const hardwareCaipAccount =
+        `eip155:1:${hardwareAccount.address}` as CaipAccountId;
+
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [hardwareAccount];
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          await controller.getOptInStatus({
+            addresses: [hardwareAccount.address],
+          });
+
+          // Hardware accounts without subscription token should NOT have subscriptionId stored
+          expect(
+            controller.state.rewardsAccounts[hardwareCaipAccount]
+              ?.subscriptionId,
+          ).toBeNull();
+        },
+      );
+    });
+
+    it('should store subscriptionId in state for hardware accounts WITH subscription token', async () => {
+      const hardwareAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        metadata: {
+          ...MOCK_INTERNAL_ACCOUNT.metadata,
+          keyring: {
+            type: HardwareKeyringType.ledger,
+          },
+        },
+      };
+
+      const hardwareCaipAccount =
+        `eip155:1:${hardwareAccount.address}` as CaipAccountId;
+
+      // Pre-populate state with subscription token for the subscription ID
+      const state: Partial<RewardsControllerState> = {
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [hardwareAccount];
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          await controller.getOptInStatus({
+            addresses: [hardwareAccount.address],
+          });
+
+          // Hardware accounts WITH subscription token SHOULD have subscriptionId stored
+          expect(
+            controller.state.rewardsAccounts[hardwareCaipAccount]
+              ?.subscriptionId,
+          ).toBe(MOCK_SUBSCRIPTION_ID);
+        },
+      );
+    });
+
+    it('should update existing rewardsActiveAccount subscriptionId based on canUseSubscriptionId', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsActiveAccount: {
+          account: MOCK_CAIP_ACCOUNT,
+          hasOptedIn: false,
+          subscriptionId: null,
+          perpsFeeDiscount: null,
+          lastPerpsDiscountRateFetched: null,
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_INTERNAL_ACCOUNT];
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          await controller.getOptInStatus({
+            addresses: [MOCK_ACCOUNT_ADDRESS],
+          });
+
+          // rewardsActiveAccount should also be updated with subscriptionId
+          expect(controller.state.rewardsActiveAccount?.subscriptionId).toBe(
+            MOCK_SUBSCRIPTION_ID,
+          );
+        },
+      );
+    });
+
+    it('should NOT update rewardsActiveAccount subscriptionId for hardware account without token', async () => {
+      const hardwareAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        metadata: {
+          ...MOCK_INTERNAL_ACCOUNT.metadata,
+          keyring: {
+            type: HardwareKeyringType.ledger,
+          },
+        },
+      };
+
+      const hardwareCaipAccount =
+        `eip155:1:${hardwareAccount.address}` as CaipAccountId;
+
+      const state: Partial<RewardsControllerState> = {
+        rewardsActiveAccount: {
+          account: hardwareCaipAccount,
+          hasOptedIn: false,
+          subscriptionId: null,
+          perpsFeeDiscount: null,
+          lastPerpsDiscountRateFetched: null,
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [hardwareAccount];
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          await controller.getOptInStatus({
+            addresses: [hardwareAccount.address],
+          });
+
+          // Hardware account active account should NOT have subscriptionId updated without token
+          expect(controller.state.rewardsActiveAccount?.subscriptionId).toBe(
+            null,
+          );
         },
       );
     });
@@ -2146,6 +2373,7 @@ describe('RewardsController', () => {
               endDate: new Date('2024-12-31'),
             },
             next: null,
+            previous: null,
           };
 
           mockMessengerCall.mockImplementation((actionType) => {
@@ -3339,27 +3567,161 @@ describe('RewardsController', () => {
         expect(result.addressesNeedingFresh).toEqual([MOCK_ACCOUNT_ADDRESS]);
       });
     });
+
+    it('should force fresh check for opted-in accounts WITHOUT subscriptionId checked more than 60 minutes ago', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: null, // Opted in but missing subscriptionId
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+            lastFreshOptInStatusCheck: Date.now() - 1000 * 60 * 61, // 61 minutes ago (exceeds 60 minute threshold)
+          },
+        },
+      };
+
+      await withController({ state, isDisabled: false }, ({ controller }) => {
+        const addressToAccountMap = new Map<string, InternalAccount>();
+        addressToAccountMap.set(
+          MOCK_ACCOUNT_ADDRESS.toLowerCase(),
+          MOCK_INTERNAL_ACCOUNT,
+        );
+
+        const result = controller.checkOptInStatusAgainstCache(
+          [MOCK_ACCOUNT_ADDRESS],
+          addressToAccountMap,
+        );
+
+        // Should force fresh check because opted-in but no subscriptionId and stale cache
+        expect(result.cachedOptInResults).toEqual([null]);
+        expect(result.cachedSubscriptionIds).toEqual([null]);
+        expect(result.addressesNeedingFresh).toEqual([MOCK_ACCOUNT_ADDRESS]);
+      });
+    });
+
+    it('should use cached data for opted-in accounts WITHOUT subscriptionId checked within 60 minutes', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: null, // Opted in but missing subscriptionId
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+            lastFreshOptInStatusCheck: Date.now() - 1000 * 60 * 30, // 30 minutes ago (within 60 minute threshold)
+          },
+        },
+      };
+
+      await withController({ state, isDisabled: false }, ({ controller }) => {
+        const addressToAccountMap = new Map<string, InternalAccount>();
+        addressToAccountMap.set(
+          MOCK_ACCOUNT_ADDRESS.toLowerCase(),
+          MOCK_INTERNAL_ACCOUNT,
+        );
+
+        const result = controller.checkOptInStatusAgainstCache(
+          [MOCK_ACCOUNT_ADDRESS],
+          addressToAccountMap,
+        );
+
+        // Should use cached data because recently checked (within threshold)
+        expect(result.cachedOptInResults).toEqual([true]);
+        expect(result.cachedSubscriptionIds).toEqual([null]);
+        expect(result.addressesNeedingFresh).toEqual([]);
+      });
+    });
+
+    it('should use cached data for opted-in accounts WITH subscriptionId regardless of lastFreshOptInStatusCheck', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: MOCK_SUBSCRIPTION_ID, // Has subscriptionId
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+            lastFreshOptInStatusCheck: Date.now() - 1000 * 60 * 120, // 2 hours ago (very stale)
+          },
+        },
+      };
+
+      await withController({ state, isDisabled: false }, ({ controller }) => {
+        const addressToAccountMap = new Map<string, InternalAccount>();
+        addressToAccountMap.set(
+          MOCK_ACCOUNT_ADDRESS.toLowerCase(),
+          MOCK_INTERNAL_ACCOUNT,
+        );
+
+        const result = controller.checkOptInStatusAgainstCache(
+          [MOCK_ACCOUNT_ADDRESS],
+          addressToAccountMap,
+        );
+
+        // Should use cached data because opted-in WITH subscriptionId (no need for fresh check)
+        expect(result.cachedOptInResults).toEqual([true]);
+        expect(result.cachedSubscriptionIds).toEqual([MOCK_SUBSCRIPTION_ID]);
+        expect(result.addressesNeedingFresh).toEqual([]);
+      });
+    });
+
+    it('should force fresh check for opted-in accounts WITHOUT subscriptionId and no lastFreshOptInStatusCheck', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: null, // Opted in but missing subscriptionId
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+            lastFreshOptInStatusCheck: undefined, // Never checked fresh
+          },
+        },
+      };
+
+      await withController({ state, isDisabled: false }, ({ controller }) => {
+        const addressToAccountMap = new Map<string, InternalAccount>();
+        addressToAccountMap.set(
+          MOCK_ACCOUNT_ADDRESS.toLowerCase(),
+          MOCK_INTERNAL_ACCOUNT,
+        );
+
+        const result = controller.checkOptInStatusAgainstCache(
+          [MOCK_ACCOUNT_ADDRESS],
+          addressToAccountMap,
+        );
+
+        // Should force fresh check because opted-in without subscriptionId and never checked fresh
+        expect(result.cachedOptInResults).toEqual([null]);
+        expect(result.cachedSubscriptionIds).toEqual([null]);
+        expect(result.addressesNeedingFresh).toEqual([MOCK_ACCOUNT_ADDRESS]);
+      });
+    });
   });
 
   describe('shouldSkipSilentAuth', () => {
-    it('should skip for hardware accounts', async () => {
+    it('should not skip for hardware accounts (they are now supported via SIWE)', async () => {
       await withController({ isDisabled: false }, ({ controller }) => {
         const hardwareAccount: InternalAccount = {
           ...MOCK_INTERNAL_ACCOUNT,
           metadata: {
             ...MOCK_INTERNAL_ACCOUNT.metadata,
             keyring: {
-              type: HardwareDeviceNames.ledger,
+              type: HardwareKeyringType.ledger,
             },
           },
         };
 
+        // Hardware wallets are now supported via SIWE, so shouldSkipSilentAuth returns false
+        // (meaning silent auth should NOT be skipped, though it will require interactive signing)
         const result = controller.shouldSkipSilentAuth(
           MOCK_CAIP_ACCOUNT,
           hardwareAccount,
         );
 
-        expect(result).toBe(true);
+        expect(result).toBe(false);
       });
     });
 
@@ -4599,6 +4961,7 @@ describe('Additional RewardsController edge cases', () => {
           const mockDiscoverSeasons: DiscoverSeasonsDto = {
             current: null,
             next: null,
+            previous: null,
           };
 
           mockMessengerCall.mockImplementation((actionType) => {
@@ -4834,6 +5197,1229 @@ describe('Additional RewardsController edge cases', () => {
 
         expect(result).toBe(false);
       });
+    });
+  });
+});
+
+// Hardware wallet test constants
+const MOCK_LEDGER_ACCOUNT: InternalAccount = {
+  id: 'ledger-account-1',
+  address: MOCK_ACCOUNT_ADDRESS,
+  type: EthAccountType.Eoa,
+  scopes: ['eip155:1'],
+  options: {},
+  methods: [],
+  metadata: {
+    name: 'Ledger Account',
+    keyring: {
+      type: HardwareKeyringType.ledger,
+    },
+    importTime: Date.now(),
+  },
+};
+
+const MOCK_QR_ACCOUNT: InternalAccount = {
+  id: 'qr-account-1',
+  address: MOCK_ACCOUNT_ADDRESS,
+  type: EthAccountType.Eoa,
+  scopes: ['eip155:1'],
+  options: {},
+  methods: [],
+  metadata: {
+    name: 'QR Wallet Account',
+    keyring: {
+      type: HardwareKeyringType.qr,
+    },
+    importTime: Date.now(),
+  },
+};
+
+const MOCK_CHALLENGE: ChallengeDto = {
+  id: 'challenge-123',
+  address: MOCK_ACCOUNT_ADDRESS,
+  domain: 'rewards.metamask.io',
+  nonce: BigInt(123456789),
+  issuedAt: new Date().toISOString(),
+  expirationTime: new Date(Date.now() + 3600000).toISOString(),
+  message: `rewards.metamask.io wants you to sign in with your Ethereum account:\n${MOCK_ACCOUNT_ADDRESS}\n\nSign in to MetaMask Rewards\n\nURI: https://rewards.metamask.io\nVersion: 1\nChain ID: 1\nNonce: 123456789\nIssued At: ${new Date().toISOString()}`,
+};
+
+describe('Hardware Wallet Support for Rewards', () => {
+  describe('optIn with hardware wallets', () => {
+    it('should opt in with Ledger account using SIWE flow', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:generateChallenge') {
+              return Promise.resolve(MOCK_CHALLENGE);
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmockhardwaresignature');
+            }
+            if (actionType === 'RewardsDataService:siweLogin') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [false],
+                sids: [null],
+              });
+            }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_LEDGER_ACCOUNT];
+            }
+            return undefined;
+          });
+
+          const result = await controller.optIn([MOCK_LEDGER_ACCOUNT]);
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'RewardsDataService:generateChallenge',
+            { address: MOCK_ACCOUNT_ADDRESS },
+          );
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'RewardsDataService:siweLogin',
+            expect.objectContaining({
+              challengeId: MOCK_CHALLENGE.id,
+              signature: '0xmockhardwaresignature',
+            }),
+          );
+        },
+      );
+    });
+
+    it('should opt in with QR hardware wallet using SIWE flow', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:generateChallenge') {
+              return Promise.resolve(MOCK_CHALLENGE);
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmockqrsignature');
+            }
+            if (actionType === 'RewardsDataService:siweLogin') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [false],
+                sids: [null],
+              });
+            }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_QR_ACCOUNT];
+            }
+            return undefined;
+          });
+
+          const result = await controller.optIn([MOCK_QR_ACCOUNT]);
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'RewardsDataService:generateChallenge',
+            { address: MOCK_ACCOUNT_ADDRESS },
+          );
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'RewardsDataService:siweLogin',
+            expect.objectContaining({
+              challengeId: MOCK_CHALLENGE.id,
+              signature: '0xmockqrsignature',
+            }),
+          );
+        },
+      );
+    });
+
+    it('should pass referral code to siweLogin for hardware wallet opt-in', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          const referralCode = 'REF456';
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:generateChallenge') {
+              return Promise.resolve(MOCK_CHALLENGE);
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:siweLogin') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({ ois: [false], sids: [null] });
+            }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_LEDGER_ACCOUNT];
+            }
+            return undefined;
+          });
+
+          await controller.optIn([MOCK_LEDGER_ACCOUNT], referralCode);
+
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'RewardsDataService:siweLogin',
+            expect.objectContaining({
+              challengeId: MOCK_CHALLENGE.id,
+              referralCode,
+            }),
+          );
+        },
+      );
+    });
+
+    it('should handle challenge generation failure for hardware wallet', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:generateChallenge') {
+              return Promise.reject(new Error('Challenge generation failed'));
+            }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_LEDGER_ACCOUNT];
+            }
+            return undefined;
+          });
+
+          await expect(controller.optIn([MOCK_LEDGER_ACCOUNT])).rejects.toThrow(
+            'Challenge generation failed',
+          );
+        },
+      );
+    });
+
+    it('should handle hardware wallet signing failure', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:generateChallenge') {
+              return Promise.resolve(MOCK_CHALLENGE);
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.reject(new Error('User rejected the request'));
+            }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_LEDGER_ACCOUNT];
+            }
+            return undefined;
+          });
+
+          await expect(controller.optIn([MOCK_LEDGER_ACCOUNT])).rejects.toThrow(
+            'User rejected the request',
+          );
+        },
+      );
+    });
+
+    it('should handle SIWE login failure for hardware wallet', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:generateChallenge') {
+              return Promise.resolve(MOCK_CHALLENGE);
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:siweLogin') {
+              return Promise.reject(new Error('SIWE login failed'));
+            }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_LEDGER_ACCOUNT];
+            }
+            return undefined;
+          });
+
+          await expect(controller.optIn([MOCK_LEDGER_ACCOUNT])).rejects.toThrow(
+            'SIWE login failed',
+          );
+        },
+      );
+    });
+
+    it('should opt in with mixed account group (software + hardware)', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          let optInCallCount = 0;
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:generateChallenge') {
+              return Promise.resolve(MOCK_CHALLENGE);
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:mobileOptin') {
+              optInCallCount += 1;
+              // Software wallet succeeds
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:siweJoin') {
+              // Ledger links via siweJoin
+              return Promise.resolve(MOCK_SUBSCRIPTION);
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [false, false],
+                sids: [null, null],
+              });
+            }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_INTERNAL_ACCOUNT, MOCK_LEDGER_ACCOUNT];
+            }
+            return undefined;
+          });
+
+          // Software wallet should be tried first and succeed
+          const result = await controller.optIn([
+            MOCK_INTERNAL_ACCOUNT,
+            MOCK_LEDGER_ACCOUNT,
+          ]);
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          expect(optInCallCount).toBe(1);
+        },
+      );
+    });
+
+    it('should propagate hardware wallet error without trying remaining accounts', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          let mobileOptinCallCount = 0;
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:generateChallenge') {
+              return Promise.reject(new Error('User rejected the request'));
+            }
+            if (actionType === 'RewardsDataService:mobileOptin') {
+              mobileOptinCallCount += 1;
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_LEDGER_ACCOUNT, MOCK_INTERNAL_ACCOUNT];
+            }
+            return undefined;
+          });
+
+          // Hardware account is first; both are EVM so sortAccounts preserves input order
+          await expect(
+            controller.optIn([MOCK_LEDGER_ACCOUNT, MOCK_INTERNAL_ACCOUNT]),
+          ).rejects.toThrow('User rejected the request');
+
+          // The software account's opt-in must never be attempted
+          expect(mobileOptinCallCount).toBe(0);
+        },
+      );
+    });
+  });
+
+  describe('linkAccountToSubscriptionCandidate with hardware wallets', () => {
+    it('should link Ledger account using SIWE join flow', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsActiveAccount: {
+          account: MOCK_CAIP_ACCOUNT,
+          hasOptedIn: true,
+          subscriptionId: MOCK_SUBSCRIPTION_ID,
+          perpsFeeDiscount: null,
+          lastPerpsDiscountRateFetched: null,
+        },
+        rewardsSubscriptions: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          const ledgerAccountAlt: InternalAccount = {
+            ...MOCK_LEDGER_ACCOUNT,
+            id: 'ledger-account-2',
+            address: MOCK_ACCOUNT_ADDRESS_ALT,
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:generateChallenge') {
+              return Promise.resolve({
+                ...MOCK_CHALLENGE,
+                address: MOCK_ACCOUNT_ADDRESS_ALT,
+              });
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmockhardwaresignature');
+            }
+            if (actionType === 'RewardsDataService:siweJoin') {
+              return Promise.resolve({
+                ...MOCK_SUBSCRIPTION,
+                accounts: [
+                  ...MOCK_SUBSCRIPTION.accounts,
+                  { address: MOCK_ACCOUNT_ADDRESS_ALT, chainId: 1 },
+                ],
+              });
+            }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_INTERNAL_ACCOUNT, ledgerAccountAlt];
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true, false],
+                sids: [MOCK_SUBSCRIPTION_ID, null],
+              });
+            }
+            return undefined;
+          });
+
+          const result =
+            await controller.linkAccountToSubscriptionCandidate(
+              ledgerAccountAlt,
+            );
+
+          expect(result).toBe(true);
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'RewardsDataService:generateChallenge',
+            { address: MOCK_ACCOUNT_ADDRESS_ALT },
+          );
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'RewardsDataService:siweJoin',
+            expect.objectContaining({
+              challengeId: expect.any(String),
+              signature: '0xmockhardwaresignature',
+            }),
+            MOCK_SESSION_TOKEN,
+          );
+        },
+      );
+    });
+
+    it('should link QR wallet account using SIWE join flow', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsActiveAccount: {
+          account: MOCK_CAIP_ACCOUNT,
+          hasOptedIn: true,
+          subscriptionId: MOCK_SUBSCRIPTION_ID,
+          perpsFeeDiscount: null,
+          lastPerpsDiscountRateFetched: null,
+        },
+        rewardsSubscriptions: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          const qrAccountAlt: InternalAccount = {
+            ...MOCK_QR_ACCOUNT,
+            id: 'qr-account-2',
+            address: MOCK_ACCOUNT_ADDRESS_ALT,
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:generateChallenge') {
+              return Promise.resolve({
+                ...MOCK_CHALLENGE,
+                address: MOCK_ACCOUNT_ADDRESS_ALT,
+              });
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmockqrsignature');
+            }
+            if (actionType === 'RewardsDataService:siweJoin') {
+              return Promise.resolve({
+                ...MOCK_SUBSCRIPTION,
+                accounts: [
+                  ...MOCK_SUBSCRIPTION.accounts,
+                  { address: MOCK_ACCOUNT_ADDRESS_ALT, chainId: 1 },
+                ],
+              });
+            }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_INTERNAL_ACCOUNT, qrAccountAlt];
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true, false],
+                sids: [MOCK_SUBSCRIPTION_ID, null],
+              });
+            }
+            return undefined;
+          });
+
+          const result =
+            await controller.linkAccountToSubscriptionCandidate(qrAccountAlt);
+
+          expect(result).toBe(true);
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'RewardsDataService:siweJoin',
+            expect.objectContaining({
+              challengeId: expect.any(String),
+              signature: '0xmockqrsignature',
+            }),
+            MOCK_SESSION_TOKEN,
+          );
+        },
+      );
+    });
+
+    it('should handle hardware wallet link failure gracefully', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsActiveAccount: {
+          account: MOCK_CAIP_ACCOUNT,
+          hasOptedIn: true,
+          subscriptionId: MOCK_SUBSCRIPTION_ID,
+          perpsFeeDiscount: null,
+          lastPerpsDiscountRateFetched: null,
+        },
+        rewardsSubscriptions: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          const ledgerAccountAlt: InternalAccount = {
+            ...MOCK_LEDGER_ACCOUNT,
+            id: 'ledger-account-2',
+            address: MOCK_ACCOUNT_ADDRESS_ALT,
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:generateChallenge') {
+              return Promise.resolve({
+                ...MOCK_CHALLENGE,
+                address: MOCK_ACCOUNT_ADDRESS_ALT,
+              });
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.reject(new Error('Ledger device disconnected'));
+            }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_INTERNAL_ACCOUNT, ledgerAccountAlt];
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true, false],
+                sids: [MOCK_SUBSCRIPTION_ID, null],
+              });
+            }
+            return undefined;
+          });
+
+          const result =
+            await controller.linkAccountToSubscriptionCandidate(
+              ledgerAccountAlt,
+            );
+
+          expect(result).toBe(false);
+        },
+      );
+    });
+
+    it('should handle AccountAlreadyRegisteredError during hardware wallet link', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsActiveAccount: {
+          account: MOCK_CAIP_ACCOUNT,
+          hasOptedIn: true,
+          subscriptionId: MOCK_SUBSCRIPTION_ID,
+          perpsFeeDiscount: null,
+          lastPerpsDiscountRateFetched: null,
+        },
+        rewardsSubscriptions: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          const ledgerAccountAlt: InternalAccount = {
+            ...MOCK_LEDGER_ACCOUNT,
+            id: 'ledger-account-2',
+            address: MOCK_ACCOUNT_ADDRESS_ALT,
+          };
+          let siweJoinCallCount = 0;
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:generateChallenge') {
+              return Promise.resolve({
+                ...MOCK_CHALLENGE,
+                address: MOCK_ACCOUNT_ADDRESS_ALT,
+              });
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmockhardwaresignature');
+            }
+            if (actionType === 'RewardsDataService:siweJoin') {
+              siweJoinCallCount += 1;
+              if (siweJoinCallCount === 1) {
+                throw new AccountAlreadyRegisteredError(
+                  'Account already registered',
+                );
+              }
+              return Promise.resolve(MOCK_SUBSCRIPTION);
+            }
+            if (actionType === 'RewardsDataService:siweLogin') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: MOCK_SUBSCRIPTION,
+              });
+            }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_INTERNAL_ACCOUNT, ledgerAccountAlt];
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true, true],
+                sids: [MOCK_SUBSCRIPTION_ID, MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result =
+            await controller.linkAccountToSubscriptionCandidate(
+              ledgerAccountAlt,
+            );
+
+          expect(result).toBe(true);
+        },
+      );
+    });
+  });
+
+  describe('performSilentAuth with hardware wallet sign result', () => {
+    it('should authenticate hardware wallet with pre-signed SIWE result', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          const hardwareWalletSignResult = {
+            signature: '0xpresignedhardwaresignature',
+            challenge: MOCK_CHALLENGE,
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:siweLogin') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            MOCK_LEDGER_ACCOUNT,
+            true,
+            false,
+            hardwareWalletSignResult,
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'RewardsDataService:siweLogin',
+            expect.objectContaining({
+              challengeId: MOCK_CHALLENGE.id,
+              signature: '0xpresignedhardwaresignature',
+            }),
+          );
+        },
+      );
+    });
+
+    it('should skip silent auth for hardware wallet without pre-signed result', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const result = await controller.performSilentAuth(
+          MOCK_LEDGER_ACCOUNT,
+          true,
+          true,
+          null, // No pre-signed result
+        );
+
+        expect(result).toBeNull();
+      });
+    });
+
+    it('should update state correctly after hardware wallet authentication', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          const hardwareWalletSignResult = {
+            signature: '0xpresignedhardwaresignature',
+            challenge: MOCK_CHALLENGE,
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:siweLogin') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          await controller.performSilentAuth(
+            MOCK_LEDGER_ACCOUNT,
+            true,
+            false,
+            hardwareWalletSignResult,
+          );
+
+          expect(controller.state.rewardsActiveAccount).toMatchObject({
+            hasOptedIn: true,
+            subscriptionId: MOCK_SUBSCRIPTION_ID,
+          });
+          expect(
+            controller.state.rewardsSubscriptions[MOCK_SUBSCRIPTION_ID],
+          ).toBeDefined();
+        },
+      );
+    });
+  });
+
+  describe('signSiweEvmMessage', () => {
+    it('should sign SIWE message for hardware wallet', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xsiwe_signature');
+            }
+            return undefined;
+          });
+
+          const result = await controller.signSiweEvmMessage(
+            MOCK_LEDGER_ACCOUNT,
+            MOCK_CHALLENGE,
+          );
+
+          expect(result).toBe('0xsiwe_signature');
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'KeyringController:signPersonalMessage',
+            expect.objectContaining({
+              from: MOCK_ACCOUNT_ADDRESS,
+              siwe: expect.any(Object),
+            }),
+          );
+        },
+      );
+    });
+
+    it('should include SIWE detection in signature request', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          let capturedRequest: unknown;
+          mockMessengerCall.mockImplementation((actionType, request) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              capturedRequest = request;
+              return Promise.resolve('0xsiwe_signature');
+            }
+            return undefined;
+          });
+
+          await controller.signSiweEvmMessage(
+            MOCK_LEDGER_ACCOUNT,
+            MOCK_CHALLENGE,
+          );
+
+          expect(capturedRequest).toMatchObject({
+            from: MOCK_ACCOUNT_ADDRESS,
+            data: expect.stringMatching(/^0x[0-9a-f]+$/u),
+            siwe: expect.objectContaining({
+              isSIWEMessage: expect.any(Boolean),
+            }),
+          });
+        },
+      );
+    });
+  });
+
+  describe('handleAuthenticationTrigger with hardware wallets', () => {
+    it('should skip silent auth for hardware wallet accounts in account group', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (
+              actionType ===
+              'AccountTreeController:getAccountsFromSelectedAccountGroup'
+            ) {
+              return [MOCK_LEDGER_ACCOUNT];
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [false],
+                sids: [null],
+              });
+            }
+            return undefined;
+          });
+
+          await controller.handleAuthenticationTrigger('Test trigger');
+
+          // Silent auth should not be attempted for hardware wallets
+          expect(mockMessengerCall).not.toHaveBeenCalledWith(
+            'RewardsDataService:login',
+            expect.any(Object),
+          );
+        },
+      );
+    });
+
+    it('should handle mixed group with hardware and software wallets', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (
+              actionType ===
+              'AccountTreeController:getAccountsFromSelectedAccountGroup'
+            ) {
+              return [MOCK_INTERNAL_ACCOUNT, MOCK_LEDGER_ACCOUNT];
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true, false],
+                sids: [MOCK_SUBSCRIPTION_ID, null],
+              });
+            }
+            return undefined;
+          });
+
+          await controller.handleAuthenticationTrigger('Test trigger');
+
+          // Should attempt silent auth only for software wallet
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'RewardsDataService:login',
+            expect.objectContaining({
+              account: MOCK_ACCOUNT_ADDRESS,
+            }),
+          );
+        },
+      );
+    });
+  });
+
+  describe('getCandidateSubscriptionId with hardware wallets', () => {
+    it('should skip hardware wallets during silent auth attempts', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_LEDGER_ACCOUNT, MOCK_QR_ACCOUNT];
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true, true],
+                sids: [MOCK_SUBSCRIPTION_ID, MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.getCandidateSubscriptionId();
+
+          // Should return null because only hardware wallets are available
+          // and they require interactive signing
+          expect(result).toBeNull();
+        },
+      );
+    });
+
+    it('should return subscription from mixed group if software wallet is opted in', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_INTERNAL_ACCOUNT, MOCK_LEDGER_ACCOUNT];
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true, true],
+                sids: [MOCK_SUBSCRIPTION_ID, MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.getCandidateSubscriptionId();
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+        },
+      );
+    });
+  });
+
+  describe('getPrimaryWalletSubscriptionId with hardware wallets', () => {
+    it('should throw error if hardware wallet is opted in but not authenticated', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: null, // Not authenticated
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+          },
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [null],
+              });
+            }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_LEDGER_ACCOUNT];
+            }
+            return undefined;
+          });
+
+          await expect(
+            controller.getPrimaryWalletSubscriptionId([MOCK_LEDGER_ACCOUNT]),
+          ).rejects.toThrow(
+            'Primary wallet account group has opted in but is not authenticated yet',
+          );
+        },
+      );
+    });
+
+    it('should return subscription ID if hardware wallet is authenticated', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: MOCK_SUBSCRIPTION_ID,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+          },
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_LEDGER_ACCOUNT];
+            }
+            return undefined;
+          });
+
+          const result = await controller.getPrimaryWalletSubscriptionId([
+            MOCK_LEDGER_ACCOUNT,
+          ]);
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+        },
+      );
+    });
+  });
+
+  describe('getSeasonStatus with hardware wallets', () => {
+    it('should fetch season status and balance for authenticated hardware wallet', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsSeasons: {
+          [MOCK_SEASON_ID]: {
+            id: MOCK_SEASON_ID,
+            name: 'Season 1',
+            startDate: new Date('2024-01-01').getTime(),
+            endDate: new Date('2024-12-31').getTime(),
+            tiers: MOCK_SEASON_TIERS,
+          },
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: MOCK_SUBSCRIPTION_ID,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+          },
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:getSeasonStatus') {
+              return Promise.resolve(MOCK_SEASON_STATE);
+            }
+            return undefined;
+          });
+
+          const result = await controller.getSeasonStatus(
+            MOCK_SUBSCRIPTION_ID,
+            MOCK_SEASON_ID,
+          );
+
+          expect(result).toBeDefined();
+          expect(result?.balance.total).toBe(250);
+          expect(result?.balance.updatedAt).toBeDefined();
+          expect(result?.tier.currentTier.id).toBe('tier-2');
+          expect(result?.tier.nextTier?.id).toBe('tier-3');
+          expect(result?.tier.nextTierPointsNeeded).toBe(250);
+        },
+      );
+    });
+
+    it('should handle authorization failure and reauth for hardware wallet', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsSeasons: {
+          [MOCK_SEASON_ID]: {
+            id: MOCK_SEASON_ID,
+            name: 'Season 1',
+            startDate: new Date('2024-01-01').getTime(),
+            endDate: new Date('2024-12-31').getTime(),
+            tiers: MOCK_SEASON_TIERS,
+          },
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+        rewardsActiveAccount: {
+          account: MOCK_CAIP_ACCOUNT,
+          hasOptedIn: true,
+          subscriptionId: MOCK_SUBSCRIPTION_ID,
+          perpsFeeDiscount: null,
+          lastPerpsDiscountRateFetched: null,
+        },
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: MOCK_SUBSCRIPTION_ID,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+          },
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          let getSeasonStatusCallCount = 0;
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:getSeasonStatus') {
+              getSeasonStatusCallCount += 1;
+              if (getSeasonStatusCallCount === 1) {
+                throw new AuthorizationFailedError('Token expired');
+              }
+              return Promise.resolve(MOCK_SEASON_STATE);
+            }
+            if (
+              actionType === 'AccountsController:getSelectedMultichainAccount'
+            ) {
+              return MOCK_INTERNAL_ACCOUNT; // Return software wallet for reauth
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.getSeasonStatus(
+            MOCK_SUBSCRIPTION_ID,
+            MOCK_SEASON_ID,
+          );
+
+          expect(result).toBeDefined();
+          expect(result?.balance.total).toBe(250);
+          expect(getSeasonStatusCallCount).toBe(2);
+        },
+      );
+    });
+
+    it('should return cached balance for hardware wallet when cache is fresh', async () => {
+      const compositeKey = `${MOCK_SEASON_ID}:${MOCK_SUBSCRIPTION_ID}`;
+      const cachedBalance = 500;
+      const state: Partial<RewardsControllerState> = {
+        rewardsSeasons: {
+          [MOCK_SEASON_ID]: {
+            id: MOCK_SEASON_ID,
+            name: 'Season 1',
+            startDate: new Date('2024-01-01').getTime(),
+            endDate: new Date('2024-12-31').getTime(),
+            tiers: MOCK_SEASON_TIERS,
+          },
+        },
+        rewardsSeasonStatuses: {
+          [compositeKey]: {
+            season: {
+              id: MOCK_SEASON_ID,
+              name: 'Season 1',
+              startDate: new Date('2024-01-01').getTime(),
+              endDate: new Date('2024-12-31').getTime(),
+              tiers: MOCK_SEASON_TIERS,
+            },
+            balance: { total: cachedBalance, updatedAt: Date.now() },
+            tier: {
+              currentTier: MOCK_SEASON_TIERS[2],
+              nextTier: null,
+              nextTierPointsNeeded: null,
+            },
+            lastFetched: Date.now(), // Fresh cache
+          },
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          const result = await controller.getSeasonStatus(
+            MOCK_SUBSCRIPTION_ID,
+            MOCK_SEASON_ID,
+          );
+
+          expect(result).toBeDefined();
+          expect(result?.balance.total).toBe(cachedBalance);
+          // Should not call the API when cache is fresh
+          expect(mockMessengerCall).not.toHaveBeenCalledWith(
+            'RewardsDataService:getSeasonStatus',
+            expect.any(String),
+            expect.any(String),
+          );
+        },
+      );
+    });
+
+    it('should calculate tier status correctly for hardware wallet balance', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsSeasons: {
+          [MOCK_SEASON_ID]: {
+            id: MOCK_SEASON_ID,
+            name: 'Season 1',
+            startDate: new Date('2024-01-01').getTime(),
+            endDate: new Date('2024-12-31').getTime(),
+            tiers: MOCK_SEASON_TIERS,
+          },
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          // Test with balance of 50 (tier 0, needs 50 for tier 1)
+          const seasonStateWithLowBalance: SeasonStateDto = {
+            balance: 50,
+            currentTierId: 'tier-1',
+            updatedAt: new Date('2024-06-01T00:00:00.000Z'),
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:getSeasonStatus') {
+              return Promise.resolve(seasonStateWithLowBalance);
+            }
+            return undefined;
+          });
+
+          const result = await controller.getSeasonStatus(
+            MOCK_SUBSCRIPTION_ID,
+            MOCK_SEASON_ID,
+          );
+
+          expect(result).toBeDefined();
+          expect(result?.balance.total).toBe(50);
+          expect(result?.tier.currentTier.id).toBe('tier-1');
+          expect(result?.tier.nextTier?.id).toBe('tier-2');
+          expect(result?.tier.nextTierPointsNeeded).toBe(50); // 100 - 50
+        },
+      );
     });
   });
 });

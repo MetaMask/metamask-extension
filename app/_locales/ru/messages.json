@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Пока нечего просматривать. Обменяйте свой первый токен сегодня."
   },
-  "activityLog": {
-    "message": "Журнал активности"
-  },
   "add": {
     "message": "Добавить"
   },
@@ -278,9 +275,6 @@
   },
   "addIPFSGateway": {
     "message": "Добавьте предпочтительный шлюз IPFS"
-  },
-  "addImportAccount": {
-    "message": "Добавить счет или аппаратный кошелек"
   },
   "addMemo": {
     "message": "Добавить примечание"
@@ -3787,13 +3781,6 @@
   "makeAnotherSwap": {
     "message": "Создать новый своп"
   },
-  "makeSureNoOneWatching": {
-    "message": "Убедитесь, что никто не смотрит",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "Управление"
-  },
   "manageDefaultSettings": {
     "message": "Управление настройками конфиденциальности по умолчанию"
   },
@@ -5242,9 +5229,6 @@
   "perpsAddToFavorites": {
     "message": "Добавить в Избранное"
   },
-  "perpsAsk": {
-    "message": "Аск"
-  },
   "perpsAutoClose": {
     "message": "Автозакрытие"
   },
@@ -5255,14 +5239,8 @@
   "perpsAvailableBalance": {
     "message": "Доступный баланс"
   },
-  "perpsBid": {
-    "message": "Бид"
-  },
   "perpsCancelAllOrders": {
     "message": "Отменить все"
-  },
-  "perpsClose": {
-    "message": "Закрыть"
   },
   "perpsCloseAll": {
     "message": "Закрыть все"
@@ -5380,9 +5358,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Цена ликвидации"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Прим. цена ликвидации"
   },
   "perpsLong": {
     "message": "Длинные"
@@ -6125,17 +6100,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "$1 дает $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask — $1. Это означает, что вы являетесь владельцем своей СВФ.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "полный доступ к вашему кошельку и средствам.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "некастодиальный кошелек."
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6149,10 +6114,6 @@
   "revealSeedWordsWarning": {
     "message": "Убедитесь, что никто не смотрит на ваш экран. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Поддержка MetaMask никогда не будет запрашивать этот ключ.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Показать чувствительный контент"
@@ -6226,12 +6187,6 @@
   },
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Повтор"
-  },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Счета аппаратных кошельков пока не могут быть использованы для получения вознаграждений. Чтобы продолжить, перейдите в другой счет."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Счет не поддерживается"
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Повтор"
@@ -7369,21 +7324,6 @@
   "simulationErrorMessageV2": {
     "message": "Мы не смогли оценить размер платы за газ. В контракте может быть ошибка, и эта транзакция может завершиться неудачно."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Допуск проскальзывания"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Установите удобную для вас разницу для изменения баланса. Транзакции не пройдут, если разница будет больше."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Внедрить изменения баланса"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Чтобы обезопасить ваши средства, эта транзакция не будет выполнена, если изменится баланс или не будет соблюдён допустимый уровень проскальзывания."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Настройки транзакции"
-  },
   "simulationsSettingDescription": {
     "message": "Включите эту опцию, чтобы оценить изменения баланса транзакций и подписей перед их подтверждением. Это не гарантирует их окончательный результат. $1"
   },
@@ -7709,9 +7649,6 @@
   },
   "speedUpTooltipText": {
     "message": "Новая плата за газ"
-  },
-  "speedUpTransaction": {
-    "message": "Ускорить эту транзакцию"
   },
   "spendLimitInsufficient": {
     "message": "Недостаточный лимит расходов"
@@ -8563,18 +8500,6 @@
   "transaction": {
     "message": "транзакция"
   },
-  "transactionCancelAttempted": {
-    "message": "Предпринята попытка отменить транзакцию с примерной платой за газ в размере $1 в $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Транзакция успешно отменена в $2"
-  },
-  "transactionConfirmed": {
-    "message": "Транзакция подтверждена в $2."
-  },
-  "transactionCreated": {
-    "message": "В $2 создана транзакция на сумму $1."
-  },
   "transactionDataFunction": {
     "message": "Функция"
   },
@@ -8584,17 +8509,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Сумма + комиссии"
   },
-  "transactionDropped": {
-    "message": "Транзакция отменена в $2."
-  },
   "transactionError": {
     "message": "Ошибка транзакции. Исключение в коде контракта."
   },
   "transactionErrorNoContract": {
     "message": "Попытка вызвать функцию на неконтрактном адресе."
-  },
-  "transactionErrored": {
-    "message": "Транзакция обнаружила ошибку."
   },
   "transactionFee": {
     "message": "Комиссия за транзакцию"
@@ -8630,24 +8549,15 @@
   "transactionIncludesTypes": {
     "message": "Эта транзакция включает: $1."
   },
-  "transactionResubmitted": {
-    "message": "Транзакция отправлена повторно с платой за газ, увеличенной до $1, в $2"
-  },
   "transactionSettings": {
     "message": "Настройки транзакции"
   },
   "transactionShield": {
     "message": "Защита транзакций"
   },
-  "transactionSubmitted": {
-    "message": "Транзакция отправлена с платой за газ в размере $1 в $2."
-  },
   "transactionTotalGasFee": {
     "message": "Итого платы за газ",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Транзакция обновлена в $2."
   },
   "transactions": {
     "message": "Транзакции"
@@ -9133,9 +9043,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Ваш NFT могут быть в опасности"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Ваша секретная фраза для восстановления"
   },
   "yourTransactionConfirmed": {
     "message": "Транзакция уже подтверждена"

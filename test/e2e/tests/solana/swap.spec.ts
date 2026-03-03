@@ -44,7 +44,7 @@ async function mockSwapUSDCtoSOL(
     await mockGetTokenAccountsUSDCOnly(mockServer),
     await mockGetTokenAccountBalance(mockServer),
     await simulateSolanaTransaction(mockServer),
-    await mockSolanaBalanceQuote(mockServer, false),
+    await mockSolanaBalanceQuote({ mockServer }),
     await mockGetFeeForMessage(mockServer),
     await mockGetLatestBlockhash(mockServer),
     await mockGetMinimumBalanceForRentExemption(mockServer),
@@ -70,7 +70,7 @@ async function mockSwapNoQuotes(
   return [
     await mockGetTokenAccountsUSDCOnly(mockServer),
     await simulateSolanaTransaction(mockServer),
-    await mockSolanaBalanceQuote(mockServer, false),
+    await mockSolanaBalanceQuote({ mockServer }),
     await mockGetFeeForMessage(mockServer),
     await mockGetLatestBlockhash(mockServer),
     await mockGetMinimumBalanceForRentExemption(mockServer),
@@ -93,7 +93,7 @@ async function mockSwapSOLtoUSDCFailed(
   return [
     await mockGetTokenAccountsUSDCOnly(mockServer, signatureHolder),
     await simulateSolanaTransaction(mockServer),
-    await mockSolanaBalanceQuote(mockServer, false),
+    await mockSolanaBalanceQuote({ mockServer }),
     await mockGetFeeForMessage(mockServer),
     await mockGetLatestBlockhash(mockServer),
     await mockGetMinimumBalanceForRentExemption(mockServer),
@@ -120,7 +120,7 @@ async function mockSwapSOLtoUSDC(
   return [
     await mockGetTokenAccountsUSDCOnly(mockServer, signatureHolder),
     await simulateSolanaTransaction(mockServer),
-    await mockSolanaBalanceQuote(mockServer, false),
+    await mockSolanaBalanceQuote({ mockServer }),
     await mockGetFeeForMessage(mockServer),
     await mockGetLatestBlockhash(mockServer),
     await mockGetMinimumBalanceForRentExemption(mockServer),

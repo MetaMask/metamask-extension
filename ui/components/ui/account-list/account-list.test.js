@@ -2,6 +2,7 @@ import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { BtcAccountType, BtcMethod, BtcScope } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
@@ -83,7 +84,7 @@ const render = (args = defaultArgs) => {
 describe('AccountList', () => {
   it('renders AccountList component and shows New account text', () => {
     render();
-    expect(screen.getByText('New account')).toBeInTheDocument();
+    expect(screen.getByText(messages.newAccount.message)).toBeInTheDocument();
   });
 
   it('renders AccountList component and shows Account 1 text', () => {
