@@ -570,6 +570,12 @@ export function isUserRejectedHardwareWalletError(error: unknown): boolean {
     return true;
   }
 
+  // If the error was recognised as a HW error with a different code
+  // (e.g. ConnectionClosed = 4001), don't fall through to the EIP-1193
+  if (errorCode !== null) {
+    return false;
+  }
+
   // Some provider errors are transported as EIP-1193 userRejectedRequest (4001)
   // without preserving the full HardwareWalletError shape.
   const errorAsAny = error as { code?: unknown; data?: { code?: unknown } };
