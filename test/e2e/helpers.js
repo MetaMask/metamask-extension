@@ -360,18 +360,14 @@ async function withFixtures(options, testSuite) {
         const count = (hostCounts.get(host) || 0) + 1;
         hostCounts.set(host, count);
         if (count <= 3) {
-          console.log(
-            `${logColor}${requestLogLabel} ${req.url}\x1b[0m`,
-          );
+          console.log(`${logColor}${requestLogLabel} ${req.url}\x1b[0m`);
         } else if (count === 4) {
           console.log(
             `\x1b[33m${requestLogLabel} ${host} (repeated, suppressing further logs)\x1b[0m`,
           );
         }
       } else {
-        console.log(
-          `${logColor}${requestLogLabel} ${req.url}\x1b[0m`,
-        );
+        console.log(`${logColor}${requestLogLabel} ${req.url}\x1b[0m`);
       }
     });
 
