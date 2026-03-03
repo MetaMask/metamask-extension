@@ -283,6 +283,7 @@ jobs:
       build-name: build-test-mv2-webpack
       build-command: yarn build:test:webpack:mv2
       validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
+      enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
