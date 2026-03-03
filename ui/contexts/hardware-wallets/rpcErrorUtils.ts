@@ -1,7 +1,7 @@
 /**
  * Utilities for handling hardware wallet errors across the RPC boundary
  */
-import { JsonRpcError } from '@metamask/rpc-errors';
+import { errorCodes, JsonRpcError } from '@metamask/rpc-errors';
 import {
   HardwareWalletError,
   ErrorCode,
@@ -209,6 +209,33 @@ function isPlainObjectWithErrorCode(
 }
 
 /**
+ * Check if an error is a serialized HardwareWalletError represented as a plain object.
+ * This can happen when the class instance crosses boundaries and is de/serialized.
+ *
+ * @param error - The error to check
+ * @returns True if the error has HardwareWalletError-like top-level shape
+ */
+function isSerializedTopLevelHardwareWalletError(error: unknown): error is {
+  name?: string;
+  message?: string;
+  stack?: string;
+  code: string | number;
+  severity?: string;
+  category?: string;
+  userMessage?: string;
+  metadata?: Record<string, unknown>;
+} {
+  if (!isPlainObjectWithErrorCode(error)) {
+    return false;
+  }
+
+  const errorAsAny = error as { name?: unknown };
+  return (
+    errorAsAny?.name === undefined || errorAsAny?.name === 'HardwareWalletError'
+  );
+}
+
+/**
  * Type guard to check if error is a JsonRpcError with HardwareWalletError data
  * Handles both actual JsonRpcError instances AND plain objects that were
  * deserialized from JsonRpcError (which lose their class type across RPC boundary)
@@ -326,6 +353,10 @@ function convertDataToHardwareWalletError(
  * @returns The corresponding ErrorCode enum value
  */
 function mapNumericCodeToErrorCode(numericCode: number): ErrorCode {
+  if (numericCode === errorCodes.provider.userRejectedRequest) {
+    return ErrorCode.UserRejected;
+  }
+
   const errorCodeValues = Object.values(ErrorCode).filter(
     (v): v is number => typeof v === 'number',
   );
@@ -399,6 +430,71 @@ function mapCodeToErrorCode(code: string | number): ErrorCode {
 }
 
 /**
+ * Infer user action error codes from free-form error text.
+ * This is a fallback for cases where serialized causes lose their code field.
+ *
+ * @param text - The error text to inspect
+ * @returns User rejection/cancellation code when detectable, null otherwise
+ */
+function inferUserActionErrorCodeFromText(text: string): ErrorCode | null {
+  const normalizedText = text.toLowerCase();
+
+  if (normalizedText.includes('user rejected')) {
+    return ErrorCode.UserRejected;
+  }
+
+  if (
+    normalizedText.includes('user cancelled') ||
+    normalizedText.includes('user canceled')
+  ) {
+    return ErrorCode.UserCancelled;
+  }
+
+  return null;
+}
+
+/**
+ * Infer a hardware wallet error code from a serialized HardwareWalletError-like cause.
+ * Some transport paths preserve name/message/stack but drop explicit code.
+ *
+ * @param cause - The cause object to inspect
+ * @returns The inferred ErrorCode if detected, null otherwise
+ */
+function inferErrorCodeFromSerializedHardwareWalletCause(
+  cause: unknown,
+): ErrorCode | null {
+  const causeAsAny = cause as {
+    name?: unknown;
+    message?: unknown;
+    stack?: unknown;
+  };
+
+  if (causeAsAny?.name !== 'HardwareWalletError') {
+    return null;
+  }
+
+  const causeMessage =
+    typeof causeAsAny.message === 'string' ? causeAsAny.message : '';
+  const causeStack =
+    typeof causeAsAny.stack === 'string' ? causeAsAny.stack : '';
+
+  // Parse enum key in stack traces like:
+  // HardwareWalletError [UserRejected:2000]: Ledger: User rejected action on device
+  const stackEnumMatch = causeStack.match(/\[([A-Za-z]+):\d+\]/u);
+  if (stackEnumMatch?.[1]) {
+    const parsedCode = mapStringCodeToErrorCode(stackEnumMatch[1]);
+    if (parsedCode !== ErrorCode.Unknown) {
+      return parsedCode;
+    }
+  }
+
+  return (
+    inferUserActionErrorCodeFromText(causeMessage) ??
+    inferUserActionErrorCodeFromText(causeStack)
+  );
+}
+
+/**
  * Get HardwareWalletError code from a JsonRpcError
  *
  * @param error - The error to extract from
@@ -466,14 +562,20 @@ export function isHardwareWalletError(error: unknown): boolean {
  * @returns True if the error is a user rejection/cancellation
  */
 export function isUserRejectedHardwareWalletError(error: unknown): boolean {
-  if (!isHardwareWalletError(error)) {
-    return false;
-  }
-
   const errorCode = getHardwareWalletErrorCode(error);
-  return (
+  if (
     errorCode === ErrorCode.UserRejected ||
     errorCode === ErrorCode.UserCancelled
+  ) {
+    return true;
+  }
+
+  // Some provider errors are transported as EIP-1193 userRejectedRequest (4001)
+  // without preserving the full HardwareWalletError shape.
+  const errorAsAny = error as { code?: unknown; data?: { code?: unknown } };
+  return (
+    errorAsAny?.code === errorCodes.provider.userRejectedRequest ||
+    errorAsAny?.data?.code === errorCodes.provider.userRejectedRequest
   );
 }
 
@@ -509,9 +611,39 @@ export function toHardwareWalletError(
   }
 
   if (error instanceof KeyringControllerError) {
-    const errorCode = error?.code
+    const causeCode = getHardwareWalletErrorCode(error.cause);
+    if (causeCode !== null) {
+      return createHardwareWalletError(
+        causeCode,
+        walletType,
+        getErrorMessage(error.cause),
+        {
+          cause: error?.cause instanceof Error ? error.cause : undefined,
+        },
+      );
+    }
+
+    const inferredCauseCode = inferErrorCodeFromSerializedHardwareWalletCause(
+      error.cause,
+    );
+    if (inferredCauseCode !== null) {
+      return createHardwareWalletError(
+        inferredCauseCode,
+        walletType,
+        getErrorMessage(error.cause),
+        {
+          cause: error?.cause instanceof Error ? error.cause : undefined,
+        },
+      );
+    }
+
+    const keyringErrorCode = error?.code
       ? mapStringCodeToErrorCode(error.code)
-      : ErrorCode.Unknown;
+      : null;
+    const errorCode =
+      keyringErrorCode ??
+      inferUserActionErrorCodeFromText(error.message) ??
+      ErrorCode.Unknown;
     return createHardwareWalletError(errorCode, walletType, error.message, {
       cause: error?.cause,
     });
@@ -540,6 +672,23 @@ export function toHardwareWalletError(
     );
 
     return hwError;
+  }
+
+  // Plain serialized HardwareWalletError shape at the top level:
+  // { name, message, code, severity, category, userMessage, metadata, ... }
+  if (isSerializedTopLevelHardwareWalletError(error)) {
+    return convertDataToHardwareWalletError(
+      {
+        code: error.code,
+        severity: error.severity as Severity | undefined,
+        category: error.category as Category | undefined,
+        userMessage: error.userMessage,
+        metadata: error.metadata,
+      },
+      error.message ?? '',
+      walletType,
+      error.stack,
+    );
   }
 
   // For Ledger errors, the status code might be in the error message

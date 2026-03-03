@@ -5,6 +5,7 @@ import {
   Severity,
   Category,
 } from '@metamask/hw-wallet-sdk';
+import { KeyringControllerError } from '@metamask/keyring-controller';
 import { HardwareWalletType } from './types';
 import {
   isJsonRpcHardwareWalletError,
@@ -153,6 +154,17 @@ describe('rpcErrorUtils', () => {
       expect(getHardwareWalletErrorCode(null)).toBe(null);
       expect(getHardwareWalletErrorCode(undefined)).toBe(null);
     });
+
+    it('maps EIP-1193 userRejectedRequest code to UserRejected', () => {
+      const error = {
+        code: 4001,
+        message: 'User rejected the request.',
+      };
+
+      const result = getHardwareWalletErrorCode(error);
+
+      expect(result).toBe(ErrorCode.UserRejected);
+    });
   });
 
   describe('toHardwareWalletError', () => {
@@ -270,6 +282,61 @@ describe('rpcErrorUtils', () => {
       expect(result).toBeInstanceOf(HardwareWalletError);
       expect(result.code).toBe(ErrorCode.Unknown);
       expect(result.message).toBe('42');
+    });
+
+    it('reconstructs from top-level serialized HardwareWalletError shape', () => {
+      const serializedError = {
+        id: 'err_abc',
+        name: 'HardwareWalletError',
+        message: 'Ledger: User rejected action on device',
+        code: ErrorCode.UserRejected,
+        severity: Severity.Warning,
+        category: Category.UserAction,
+        userMessage:
+          'Transaction was rejected. Please approve on your device to continue.',
+        timestamp: '2026-03-03T09:56:15.151Z',
+      };
+
+      const result = toHardwareWalletError(
+        serializedError,
+        HardwareWalletType.Ledger,
+      );
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.UserRejected);
+      expect(result.message).toBe('Ledger: User rejected action on device');
+      expect(result.userMessage).toBe(
+        'Transaction was rejected. Please approve on your device to continue.',
+      );
+      expect(result.metadata).toEqual({
+        walletType: HardwareWalletType.Ledger,
+      });
+    });
+
+    it('reconstructs UserRejected from KeyringControllerError serialized cause', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message:
+            'Keyring Controller signTypedMessage: HardwareWalletError: Ledger: User rejected action on device',
+          cause: {
+            name: 'HardwareWalletError',
+            message: 'Ledger: User rejected action on device',
+            stack:
+              'HardwareWalletError [UserRejected:2000]: Ledger: User rejected action on device',
+          },
+        },
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.UserRejected);
+      expect(result.message).toBe('Ledger: User rejected action on device');
+      expect(result.metadata).toEqual({
+        walletType: HardwareWalletType.Ledger,
+      });
     });
   });
 
@@ -405,6 +472,15 @@ describe('rpcErrorUtils', () => {
         category: Category.UserAction,
         userMessage: 'User rejected',
       });
+
+      expect(isUserRejectedHardwareWalletError(error)).toBe(true);
+    });
+
+    it('returns true for EIP-1193 userRejectedRequest code', () => {
+      const error = {
+        code: 4001,
+        message: 'User rejected the request.',
+      };
 
       expect(isUserRejectedHardwareWalletError(error)).toBe(true);
     });
