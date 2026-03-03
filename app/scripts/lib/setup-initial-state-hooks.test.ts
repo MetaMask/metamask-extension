@@ -49,6 +49,7 @@ jest.mock('./stores/persistence-manager', () => ({
 async function importFresh(): Promise<{
   persistenceManager: PersistenceManagerType;
 }> {
+  // eslint-disable-next-line import/extensions -- jest.resetModules requires extension for re-import
   const mod = await import('./setup-initial-state-hooks.js');
   return mod as unknown as { persistenceManager: PersistenceManagerType };
 }
@@ -272,8 +273,8 @@ describe('setup-initial-state-hooks', () => {
         await importFresh();
 
         const mockPersistedState = { data: { config: {} }, meta: {} };
-        globalThis.stateHooks.getMostRecentPersistedState =
-          () => mockPersistedState;
+        globalThis.stateHooks.getMostRecentPersistedState = () =>
+          mockPersistedState;
 
         const result = globalThis.stateHooks.getSentryState();
 
