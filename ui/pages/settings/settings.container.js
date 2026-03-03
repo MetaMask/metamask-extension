@@ -141,6 +141,7 @@ const mapStateToProps = (state, ownProps) => {
   const isShieldManagePastPlanPage = Boolean(
     pathname.startsWith(TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE),
   );
+  const isCurrencyPage = Boolean(pathname.match(CURRENCY_ROUTE));
 
   const environmentType = getEnvironmentType();
   const isPopup =
@@ -187,6 +188,8 @@ const mapStateToProps = (state, ownProps) => {
     isShieldManagePastPlanPage
   ) {
     backRoute = TRANSACTION_SHIELD_ROUTE;
+  } else if (isCurrencyPage) {
+    backRoute = ASSETS_ROUTE;
   }
 
   const addressName = getAddressBookEntryOrAccountName(
