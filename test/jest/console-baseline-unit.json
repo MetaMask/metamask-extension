@@ -1194,11 +1194,6 @@
     "ui/components/multichain/token-list-item/token-list-item.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/ui/account-list/account-list.test.js": {
-      "Reselect: Identity function warnings": 2,
-      "Reselect: Input stability warnings": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/ui/account-mismatch-warning/acccount-mismatch-warning.component.test.js": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
