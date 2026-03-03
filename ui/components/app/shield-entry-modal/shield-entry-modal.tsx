@@ -58,8 +58,6 @@ import {
   determineSubscriptionMetricsSourceFromMarketingUtmParams,
   getShieldMarketingUtmParamsForMetrics,
 } from '../../../../shared/modules/shield';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import ShieldIllustrationAnimation from './shield-illustration-animation';

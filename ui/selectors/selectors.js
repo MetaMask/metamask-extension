@@ -67,8 +67,6 @@ import {
   getIsTronTestnetSupportEnabled,
 } from './multichain/feature-flags';
 
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import { getEnvironmentType } from '../../shared/lib/environment-type';
 import {

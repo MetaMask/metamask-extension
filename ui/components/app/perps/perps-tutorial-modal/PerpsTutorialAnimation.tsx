@@ -13,7 +13,6 @@ import {
 } from '../../../../contexts/rive-wasm';
 import { useTheme } from '../../../../hooks/useTheme';
 import { ThemeType } from '../../../../../shared/constants/preferences';
-// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,

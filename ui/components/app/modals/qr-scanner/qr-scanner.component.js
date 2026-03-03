@@ -4,8 +4,6 @@ import log from 'loglevel';
 import { BrowserQRCodeReader } from '@zxing/browser';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import { getURL } from '../../../../helpers/utils/util';
 import WebcamUtils from '../../../../helpers/utils/webcam-utils';
