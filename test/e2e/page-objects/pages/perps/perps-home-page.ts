@@ -79,15 +79,12 @@ export class PerpsHomePage {
     expectedCount: number,
     timeout = 10000,
   ): Promise<void> {
-    await this.driver.wait(
-      async () => {
-        const elements = await this.driver.findElements(
-          this.positionCardsSelector,
-        );
-        return elements.length === expectedCount;
-      },
-      timeout,
-    );
+    await this.driver.wait(async () => {
+      const elements = await this.driver.findElements(
+        this.positionCardsSelector,
+      );
+      return elements.length === expectedCount;
+    }, timeout);
   }
 
   /**
