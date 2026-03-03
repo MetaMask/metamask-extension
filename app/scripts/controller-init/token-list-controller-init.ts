@@ -19,15 +19,21 @@ export const TokenListControllerInit: ControllerInitFunction<
     chainId: getGlobalChainId(initMessenger),
   });
 
-  // Initialize the controller to load cached token lists from storage.
-  // This is a fire-and-forget operation - if it fails, the controller will
-  // self-heal by fetching token lists on demand when needed.
-  controller.initialize().catch((error: Error) => {
+  // Load cached token lists from storage before the first poll executes.
+  // Polling can begin before `initialize` resolves during app bootstrap, so
+  // we gate `_executePoll` to avoid redundant token API requests.
+  const initializePromise = controller.initialize().catch((error: Error) => {
     console.error(
       'TokenListController: Failed to initialize from storage:',
       error,
     );
   });
+
+  const executePoll = controller._executePoll.bind(controller);
+  controller._executePoll = async (input) => {
+    await initializePromise;
+    return executePoll(input);
+  };
 
   return {
     controller,

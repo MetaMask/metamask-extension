@@ -24,8 +24,10 @@ jest.mock('@metamask/assets-controllers', () => {
   return {
     TokenListController: jest.fn().mockImplementation(function (this: {
       initialize: jest.Mock;
+      _executePoll: jest.Mock;
     }) {
       this.initialize = jest.fn().mockResolvedValue(undefined);
+      this._executePoll = jest.fn().mockResolvedValue(undefined);
     }),
   };
 });
@@ -85,6 +87,10 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('TokenListControllerInit', () => {
+  beforeEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('initializes the controller', () => {
     const { controller } = TokenListControllerInit(getInitRequestMock());
     expect(controller).toBeInstanceOf(TokenListController);
@@ -99,5 +105,60 @@ describe('TokenListControllerInit', () => {
       state: undefined,
       chainId: '0x1',
     });
+  });
+
+  it('waits for initialize to finish before executing poll', async () => {
+    let resolveInitialize: (() => void) | undefined;
+    const initializePromise = new Promise<void>((resolve) => {
+      resolveInitialize = resolve;
+    });
+    const executePollMock = jest.fn().mockResolvedValue(undefined);
+
+    const controllerMock = jest.mocked(TokenListController);
+    controllerMock.mockImplementationOnce(function (this: {
+      initialize: jest.Mock;
+      _executePoll: jest.Mock;
+    }) {
+      this.initialize = jest.fn().mockReturnValue(initializePromise);
+      this._executePoll = executePollMock;
+      return this as unknown as TokenListController;
+    });
+
+    const { controller } = TokenListControllerInit(getInitRequestMock());
+    const pollPromise = controller._executePoll({ chainId: '0x1' });
+
+    expect(executePollMock).not.toHaveBeenCalled();
+
+    resolveInitialize?.();
+    await pollPromise;
+
+    expect(executePollMock).toHaveBeenCalledWith({ chainId: '0x1' });
+  });
+
+  it('continues polling even if initialize fails', async () => {
+    const initializeError = new Error('initialize failed');
+    const executePollMock = jest.fn().mockResolvedValue(undefined);
+    const consoleErrorMock = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    const controllerMock = jest.mocked(TokenListController);
+    controllerMock.mockImplementationOnce(function (this: {
+      initialize: jest.Mock;
+      _executePoll: jest.Mock;
+    }) {
+      this.initialize = jest.fn().mockRejectedValue(initializeError);
+      this._executePoll = executePollMock;
+      return this as unknown as TokenListController;
+    });
+
+    const { controller } = TokenListControllerInit(getInitRequestMock());
+    await controller._executePoll({ chainId: '0x1' });
+
+    expect(consoleErrorMock).toHaveBeenCalledWith(
+      'TokenListController: Failed to initialize from storage:',
+      initializeError,
+    );
+    expect(executePollMock).toHaveBeenCalledWith({ chainId: '0x1' });
   });
 });
