@@ -1,5 +1,6 @@
 import type { Transaction } from '@metamask/keyring-api';
 import type { CaipChainId } from '@metamask/utils';
+import { TransactionType } from '@metamask/transaction-controller';
 import type {
   Token,
   TokenAmount,
@@ -247,4 +248,52 @@ export function calculateFiatFromMarketRates(
   const parsed = parseFloat(amount);
   const rate = marketRates[parseInt(token.chainId, 16)]?.[token.address];
   return rate === undefined ? undefined : parsed * rate;
+}
+
+// Map API transactionCategory to TransactionType for legacy modal
+export function resolveTransactionType(
+  tx: TransactionViewModel,
+): TransactionType {
+  const { transactionCategory, transactionType } = tx;
+
+  if (transactionCategory === 'APPROVE') {
+    return TransactionType.tokenMethodApprove;
+  }
+  if (
+    transactionCategory === 'BRIDGE_OUT' ||
+    transactionCategory === 'BRIDGE_IN'
+  ) {
+    return TransactionType.bridge;
+  }
+
+  if (transactionCategory === 'SWAP' || transactionCategory === 'EXCHANGE') {
+    return TransactionType.swap;
+  }
+
+  // Specifics from transactionType
+  if (transactionType === 'DEPLOY_CONTRACT') {
+    return TransactionType.deployContract;
+  }
+
+  if (transactionType === 'ERC_20_TRANSFER') {
+    return TransactionType.tokenMethodTransfer;
+  }
+
+  if (
+    transactionType === 'ERC_721_TRANSFER' ||
+    transactionType === 'ERC_1155_TRANSFER'
+  ) {
+    return TransactionType.tokenMethodTransferFrom;
+  }
+
+  if (transactionCategory === 'TRANSFER') {
+    if (tx.amounts?.to && !tx.amounts?.from) {
+      return TransactionType.incoming;
+    }
+    if (tx.amounts?.from) {
+      return TransactionType.simpleSend;
+    }
+  }
+
+  return TransactionType.contractInteraction;
 }
