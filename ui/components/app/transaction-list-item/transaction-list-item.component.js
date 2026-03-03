@@ -51,6 +51,7 @@ import EditGasPopover from '../../../pages/confirmations/components/edit-gas-pop
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain/activity-list-item';
 import { abortTransactionSigning } from '../../../store/actions';
+import { selectBridgeHistoryItemByHash } from '../../../ducks/bridge-status/selectors';
 import {
   useBridgeTxHistoryData,
   FINAL_NON_CONFIRMED_STATUSES,
@@ -80,15 +81,16 @@ function TransactionListItemInner({
   // Bridge transactions
   const isBridgeTx =
     transactionGroup.initialTransaction.type === TransactionType.bridge;
-  const {
-    bridgeTxHistoryItem,
-    isBridgeComplete,
-    showBridgeTxDetails,
-    isBridgeFailed,
-  } = useBridgeTxHistoryData({
-    transactionGroup,
-    isEarliestNonce,
-  });
+  const { isBridgeComplete, showBridgeTxDetails, isBridgeFailed } =
+    useBridgeTxHistoryData({
+      transactionGroup,
+    });
+  const bridgeTxHistoryItem = useSelector((state) =>
+    selectBridgeHistoryItemByHash(
+      state,
+      transactionGroup.initialTransaction.hash,
+    ),
+  );
   const isUnifiedSwapTx =
     (isBridgeTx ||
       transactionGroup.initialTransaction.type === TransactionType.swap) &&
