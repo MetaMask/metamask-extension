@@ -276,9 +276,6 @@
   "addIPFSGateway": {
     "message": "Add your preferred IPFS gateway"
   },
-  "addImportAccount": {
-    "message": "Add account or hardware wallet"
-  },
   "addMemo": {
     "message": "Add memo"
   },
@@ -1303,6 +1300,12 @@
     "message": "To $1 a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
+  "cancelTransactionDescription": {
+    "message": "This transaction will be canceled and this network fee will replace the original."
+  },
+  "cancelTransactionTitle": {
+    "message": "Cancel transaction"
+  },
   "cancelled": {
     "message": "Cancelled"
   },
@@ -1817,6 +1820,9 @@
   "copiedExclamation": {
     "message": "Copied."
   },
+  "copiedToClipboard": {
+    "message": "Copied to clipboard"
+  },
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
@@ -1831,6 +1837,9 @@
   },
   "copyTransactionId": {
     "message": "Copy transaction ID"
+  },
+  "correct": {
+    "message": "Correct"
   },
   "create": {
     "message": "Create"
@@ -1922,6 +1931,9 @@
   "currentNetwork": {
     "message": "Current network",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
+  },
+  "currentQuestion": {
+    "message": "Question $1 of 2"
   },
   "currentTitle": {
     "message": "Current:"
@@ -3397,6 +3409,9 @@
   "includesXTransactions": {
     "message": "Includes $1 transactions"
   },
+  "incorrect": {
+    "message": "Incorrect"
+  },
   "infuraBlockedNotification": {
     "message": "MetaMask is unable to connect to the blockchain host. Review possible reasons $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
@@ -3819,10 +3834,6 @@
   },
   "makeAnotherSwap": {
     "message": "Create a new swap"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Make sure nobody is looking",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "manage": {
     "message": "Manage"
@@ -4676,10 +4687,10 @@
     "message": "Something went wrong. Please try again."
   },
   "notificationsSettingsPageAllowNotifications": {
-    "message": "Stay in the loop on what’s happening in your wallet with notifications. To use notifications, we use a profile to sync some settings across your devices. $1"
+    "message": "Stay in the loop on what’s happening in your wallet with notifications. To use notifications, we use a profile to sync some settings across your devices. $1 we protect your privacy while using this feature."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Learn how we protect your privacy while using this feature."
+    "message": "Learn how"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 new tokens found in this account",
@@ -5959,6 +5970,9 @@
   "queued": {
     "message": "Queued"
   },
+  "quizIntroduction": {
+    "message": "To reveal your Secret Recovery Phrase, you need to correctly answer two questions."
+  },
   "quotedReceiveAmount": {
     "message": "$1 receive amount"
   },
@@ -6191,39 +6205,27 @@
   "revealSecretRecoveryPhrase": {
     "message": "Back up Secret Recovery Phrase"
   },
+  "revealSecretRecoveryPhraseSettings": {
+    "message": "Reveal Secret Recovery Phrase"
+  },
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
   },
   "revealSeedWordsDescription1": {
-    "message": "The $1 provides $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask is a $1. That means you're the owner of your SRP.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "full access to your wallet and funds.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "non-custodial wallet"
+    "message": "Your $1 gives full access to your wallet, funds, and accounts.",
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
   },
   "revealSeedWordsSRPName": {
-    "message": "Secret Recovery Phrase (SRP)"
+    "message": "Secret Recovery Phrase"
   },
   "revealSeedWordsText": {
     "message": "Text"
   },
   "revealSeedWordsWarning": {
-    "message": "Make sure no one is looking at your screen. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "MetaMask Support will never request this.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
+    "message": "Make sure nobody is looking at your screen. MetaMask Support will never ask for this."
   },
   "revealSensitiveContent": {
     "message": "Reveal sensitive content"
@@ -7778,6 +7780,28 @@
   "speedUpTooltipText": {
     "message": "New gas fee"
   },
+  "speedUpTransactionDescription": {
+    "message": "This network fee will replace the original."
+  },
+  "speedUpTransactionTitle": {
+    "message": "Speed up transaction"
+  },
+  "spendLimitInsufficient": {
+    "message": "Spend limit insufficient"
+  },
+  "spendLimitInvalid": {
+    "message": "Spend limit invalid; must be a positive number"
+  },
+  "spendLimitPermission": {
+    "message": "Spend limit permission"
+  },
+  "spendLimitRequestedBy": {
+    "message": "Spend limit requested by $1",
+    "description": "Origin of the site requesting the spend limit"
+  },
+  "spendLimitTooLarge": {
+    "message": "Spend limit too large"
+  },
   "spender": {
     "message": "Spender"
   },
@@ -9155,9 +9179,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Your Secret Recovery Phrase"
   },
   "yourTransactionConfirmed": {
     "message": "Transaction already confirmed"

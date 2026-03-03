@@ -9,30 +9,28 @@ import {
 import { TestSuiteArguments } from '../transactions/shared';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import ConfirmAlertModal from '../../../page-objects/pages/dialog/confirm-alert';
+import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
-import {
-  assertRejectedSignature,
-  assertSignatureRejectedMetrics,
-  assertVerifiedSiweMessage,
-  initializePages,
-  openDappAndTriggerSignature,
-  SignatureType,
-} from './signature-helpers';
+import { assertSignatureRejectedMetrics } from './signature-helpers';
 
 describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite) {
   it('displays alert for domain binding and confirms', async function () {
     await withSignatureFixtures(
       this.test?.fullTitle(),
       async ({ driver }: TestSuiteArguments) => {
-        await initializePages(driver);
         const confirmation = new Confirmation(driver);
         const alertModal = new ConfirmAlertModal(driver);
+        const testDapp = new TestDapp(driver);
 
-        await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
+        await loginWithBalanceValidation(driver);
+        await testDapp.openTestDappAndTriggerSignature(
+          SignatureType.SIWE_BadDomain,
+        );
 
         await confirmation.clickScrollToBottomButton();
         await confirmation.clickInlineAlert();
@@ -43,8 +41,7 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
 
         await alertModal.confirmFromAlertModal();
 
-        await assertVerifiedSiweMessage(
-          driver,
+        await testDapp.assertVerifiedSiweMessage(
           '0x24e559452c37827008633f9ae50c68cdb28e33f547f795af687839b520b022e4093c38bf1dfebda875ded715f2754d458ed62a19248e5a9bd2205bd1cb66f9b51b',
         );
       },
@@ -58,15 +55,18 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await initializePages(driver);
         const confirmation = new Confirmation(driver);
+        const testDapp = new TestDapp(driver);
 
-        await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
+        await loginWithBalanceValidation(driver);
+        await testDapp.openTestDappAndTriggerSignature(
+          SignatureType.SIWE_BadDomain,
+        );
 
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await assertRejectedSignature();
+        await testDapp.assertUserRejectedRequest();
 
         await assertSignatureRejectedMetrics({
           driver,
@@ -116,10 +116,13 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await initializePages(driver);
         const alertModal = new ConfirmAlertModal(driver);
+        const testDapp = new TestDapp(driver);
 
-        await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
+        await loginWithBalanceValidation(driver);
+        await testDapp.openTestDappAndTriggerSignature(
+          SignatureType.SIWE_BadDomain,
+        );
 
         await scrollAndConfirmAndAssertConfirm(driver);
 
@@ -130,7 +133,7 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await assertRejectedSignature();
+        await testDapp.assertUserRejectedRequest();
         await assertSignatureRejectedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
