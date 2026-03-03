@@ -23,6 +23,7 @@ import {
   TUTORIAL_STEPS_ORDER,
 } from '../../../../ducks/perps';
 import { useTheme } from '../../../../hooks/useTheme';
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import WhatArePerpsStep from './steps/WhatArePerpsStep';
