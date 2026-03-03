@@ -1043,7 +1043,6 @@ export default class SwapsController extends BaseController<
       }
     >;
   } {
-    // TODO: This should consider the new assets state as well (address it at controller level)
     const { marketData } = this.messenger.call('TokenRatesController:getState');
     return { marketData };
   }
