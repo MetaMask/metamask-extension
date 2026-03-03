@@ -7786,22 +7786,6 @@
   "speedUpTransactionTitle": {
     "message": "Speed up transaction"
   },
-  "spendLimitInsufficient": {
-    "message": "Spend limit insufficient"
-  },
-  "spendLimitInvalid": {
-    "message": "Spend limit invalid; must be a positive number"
-  },
-  "spendLimitPermission": {
-    "message": "Spend limit permission"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Spend limit requested by $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Spend limit too large"
-  },
   "spender": {
     "message": "Spender"
   },
