@@ -3126,8 +3126,6 @@
     },
     "ui/pages/onboarding-flow/onboarding-flow.test.tsx": {
       "MetaMask: Background connection not initialized": 13,
-      "error: Error: Actions must be plain": 1,
-      "error: Warning: React does not recognize": 1,
       "warn: No routes matched location \"/\"": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
