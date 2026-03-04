@@ -9,6 +9,7 @@ import { EditMarginExpandable } from './edit-margin-expandable';
 
 const mockGetPerpsStreamManager = jest.fn();
 const mockSubmitRequestToBackground = jest.fn();
+const mockReplacePerpsToastByKey = jest.fn();
 
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
@@ -17,6 +18,16 @@ jest.mock('../../../../store/background-connection', () => ({
 
 jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
+}));
+
+jest.mock('../perps-toast', () => ({
+  PERPS_TOAST_KEYS: {
+    MARGIN_ADD_SUCCESS: 'perpsToastMarginAddSuccess',
+    MARGIN_REMOVE_SUCCESS: 'perpsToastMarginRemoveSuccess',
+  },
+  usePerpsToast: () => ({
+    replacePerpsToastByKey: mockReplacePerpsToastByKey,
+  }),
 }));
 
 jest.mock('../../../../providers/perps', () => ({
@@ -40,6 +51,7 @@ const defaultProps = {
 describe('EditMarginExpandable', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockReplacePerpsToastByKey.mockReset();
     mockSubmitRequestToBackground.mockImplementation((method: string) => {
       if (method === 'perpsUpdateMargin') {
         return Promise.resolve({ success: true });
@@ -192,6 +204,10 @@ describe('EditMarginExpandable', () => {
       await waitFor(() => {
         expect(onToggle).toHaveBeenCalled();
       });
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastMarginAddSuccess',
+        messageParams: ['100', 'ETH'],
+      });
     });
 
     it('does not call updateMargin when amount is empty', () => {
@@ -210,6 +226,42 @@ describe('EditMarginExpandable', () => {
         'perpsUpdateMargin',
         expect.any(Array),
       );
+    });
+
+    it('shows remove margin success toast on successful remove', async () => {
+      renderWithProvider(
+        <EditMarginExpandable
+          {...defaultProps}
+          isExpanded
+          position={{
+            ...mockPositions[0],
+            marginUsed: '3000.00',
+          }}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByText(messages.perpsRemoveMargin.message));
+
+      const input = screen.getByPlaceholderText('0.00');
+      fireEvent.change(input, { target: { value: '50' } });
+
+      const confirmButton = screen.getByRole('button', {
+        name: /Remove Margin/iu,
+      });
+      fireEvent.click(confirmButton);
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsUpdateMargin',
+          [{ symbol: mockPositions[0].symbol, amount: '-50' }],
+        );
+      });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastMarginRemoveSuccess',
+        messageParams: ['50', 'ETH'],
+      });
     });
   });
 

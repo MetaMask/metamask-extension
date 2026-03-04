@@ -74,6 +74,28 @@ const ToastHarness = () => {
       <button
         type="button"
         onClick={() => {
+          showPerpsToastByKey({
+            key: PERPS_TOAST_KEYS.MARGIN_ADD_SUCCESS,
+            messageParams: ['100', 'ETH'],
+          });
+        }}
+      >
+        Show Key Margin Add Success
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          showPerpsToastByKey({
+            key: PERPS_TOAST_KEYS.MARGIN_REMOVE_SUCCESS,
+            messageParams: ['50', 'ETH'],
+          });
+        }}
+      >
+        Show Key Margin Remove Success
+      </button>
+      <button
+        type="button"
+        onClick={() => {
           replacePerpsToast({
             message: 'Successful trade!',
             variant: 'success',
@@ -309,6 +331,52 @@ describe('PerpsToastProvider', () => {
     });
 
     expect(screen.queryByText('Failed to place order')).not.toBeInTheDocument();
+  });
+
+  it('maps margin add success key to success variant with auto-hide', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <PerpsToastProvider>
+        <ToastHarness />
+      </PerpsToastProvider>,
+      getStore(),
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Show Key Margin Add Success' }),
+    );
+    expect(screen.getByText('Added 100 ETH margin')).toBeInTheDocument();
+    expectSuccessToastIcon();
+
+    act(() => {
+      jest.advanceTimersByTime(3000);
+    });
+
+    expect(screen.queryByText('Added 100 ETH margin')).not.toBeInTheDocument();
+  });
+
+  it('maps margin remove success key to success variant with auto-hide', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <PerpsToastProvider>
+        <ToastHarness />
+      </PerpsToastProvider>,
+      getStore(),
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Show Key Margin Remove Success' }),
+    );
+    expect(screen.getByText('Removed 50 ETH margin')).toBeInTheDocument();
+    expectSuccessToastIcon();
+
+    act(() => {
+      jest.advanceTimersByTime(3000);
+    });
+
+    expect(screen.queryByText('Removed 50 ETH margin')).not.toBeInTheDocument();
   });
 
   it('does not show toasts when perps toast flag is disabled', () => {

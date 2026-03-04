@@ -5702,6 +5702,14 @@
     "message": "Closing position",
     "description": "In-progress toast text shown while closing a perps position"
   },
+  "perpsToastMarginAddSuccess": {
+    "message": "Added $1 $2 margin",
+    "description": "$1 is the amount and $2 is the asset symbol for successful margin addition"
+  },
+  "perpsToastMarginRemoveSuccess": {
+    "message": "Removed $1 $2 margin",
+    "description": "$1 is the amount and $2 is the asset symbol for successful margin removal"
+  },
   "perpsToastOrderFailed": {
     "message": "Failed to place order",
     "description": "Error toast text shown when placing a perps order fails"
@@ -5723,8 +5731,8 @@
     "description": "In-progress toast text shown while a perps order is being submitted"
   },
   "perpsToastSubmitInProgress": {
-    "message": "Initializing order...",
-    "description": "In-progress toast text shown while submitting a perps order"
+    "message": "Submitting your trade",
+    "description": "In-progress toast text shown while a perps trade is being submitted"
   },
   "perpsToastTradeSuccess": {
     "message": "Position closed",
