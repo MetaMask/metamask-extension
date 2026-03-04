@@ -45,18 +45,16 @@ export const BridgePriceImpactWarningModal = ({
   const formattedPriceImpact = useSelector(getFormattedPriceImpact);
 
   const shouldShowModal = useMemo(() => {
-    if (variant === null) {
+    // Hide the modal if the user closes it, if it has not been opened,
+    // or if the price impact is not available
+    if (variant === null || !formattedPriceImpact) {
       return false;
     }
-
-    if (!formattedPriceImpact) {
-      return false;
-    }
-
+    // Only show the modal during submission if there is a price impact error
     if (variant === 'submit-cta' && !isPriceImpactError) {
       return false;
     }
-
+    // Only show the modal on the quote card if there is a price impact warning or error
     if (
       variant === 'quote-card' &&
       !isPriceImpactError &&
@@ -64,7 +62,7 @@ export const BridgePriceImpactWarningModal = ({
     ) {
       return false;
     }
-
+    // Otherwise, keep the modal open
     return true;
   }, [variant, isPriceImpactError, isPriceImpactWarning, formattedPriceImpact]);
 
