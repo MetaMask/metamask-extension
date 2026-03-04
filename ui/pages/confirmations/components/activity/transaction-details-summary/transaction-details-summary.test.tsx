@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import {
+  MetamaskPayMetadata,
   TransactionMeta,
   TransactionStatus,
   TransactionType,
@@ -10,6 +11,8 @@ import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { TransactionDetailsProvider } from '../transaction-details-context';
 import { TransactionDetailsSummary } from './transaction-details-summary';
+
+jest.mock('../../../hooks/tokens/useTokenWithBalance');
 
 const CHAIN_ID = '0x1';
 
@@ -42,7 +45,6 @@ function createMockState(transactions: Partial<TransactionMeta>[] = []) {
 function createMockTransactionMeta(
   type: TransactionType,
   overrides: Partial<TransactionMeta> = {},
-  metamaskPay?: { chainId: string; tokenAddress: string },
 ) {
   return {
     id: 'test-id',
@@ -55,17 +57,20 @@ function createMockTransactionMeta(
       to: '0x456',
     },
     ...overrides,
-    metamaskPay,
   };
 }
 
 function render(
   type: TransactionType = TransactionType.simpleSend,
-  metamaskPay?: { chainId: string; tokenAddress: string },
+  metamaskPay?: MetamaskPayMetadata,
 ) {
   return renderWithProvider(
     <TransactionDetailsProvider
-      transactionMeta={createMockTransactionMeta(type, metamaskPay) as never}
+      transactionMeta={
+        createMockTransactionMeta(type, {
+          ...(metamaskPay && { metamaskPay }),
+        }) as never
+      }
     >
       <TransactionDetailsSummary />
     </TransactionDetailsProvider>,

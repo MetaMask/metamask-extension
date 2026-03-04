@@ -6,6 +6,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { BuyGetMusdCtaVariant } from '../../../hooks/musd/useMusdCtaVisibility';
+import messages from '../../../../app/_locales/en/messages.json';
 import { MusdBuyGetCta } from './musd-buy-get-cta';
 
 // Mock useI18nContext
@@ -135,7 +136,7 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      const elements = screen.getAllByText('Get mUSD');
+      const elements = screen.getAllByText(messages.musdGetMusd.message);
       expect(elements.length).toBeGreaterThanOrEqual(1);
     });
 
@@ -197,7 +198,7 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      const elements = screen.getAllByText('Buy mUSD');
+      const elements = screen.getAllByText(messages.musdBuyMusd.message);
       expect(elements.length).toBeGreaterThanOrEqual(1);
     });
 
@@ -233,9 +234,7 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      expect(
-        screen.getByTestId('musd-buy-get-cta-icon'),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('musd-buy-get-cta-icon')).toBeInTheDocument();
       expect(screen.getByAltText('mUSD logo')).toBeInTheDocument();
     });
 
@@ -249,9 +248,7 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      expect(
-        screen.getByAltText('Ethereum Mainnet logo'),
-      ).toBeInTheDocument();
+      expect(screen.getByAltText('Ethereum Mainnet logo')).toBeInTheDocument();
     });
 
     it('does not render network badge when selectedChainId is null', () => {
@@ -264,9 +261,7 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      expect(
-        screen.getByTestId('musd-buy-get-cta-icon'),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('musd-buy-get-cta-icon')).toBeInTheDocument();
       expect(
         screen.queryByAltText('Ethereum Mainnet logo'),
       ).not.toBeInTheDocument();

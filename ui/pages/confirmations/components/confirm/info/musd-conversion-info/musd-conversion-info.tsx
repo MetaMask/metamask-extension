@@ -66,7 +66,7 @@ export const MusdConversionInfo = () => {
   );
 };
 
-function MusdBottomContent() {
+const MusdBottomContent = () => {
   const quotes = useTransactionPayQuotes();
   const isQuotesLoading = useIsTransactionPayLoading();
   const { hideResults } = useTransactionCustomAmountAlerts();
@@ -89,4 +89,4 @@ function MusdBottomContent() {
       <TotalRow variant={ConfirmInfoRowSize.Small} />
     </Box>
   );
-}
+};

@@ -23,24 +23,34 @@ jest.mock('../../../hooks/useI18nContext', () => ({
 // Mock MetaMetricsContext with a real React context so useContext works,
 // but replace Provider with Fragment so the createContext default value is used
 jest.mock('../../../contexts/metametrics', () => {
-  const React = require('react');
+  const ReactActual = jest.requireActual<typeof import('react')>('react');
   const _trackEvent = jest.fn();
-  const MetaMetricsContext = React.createContext({
+  const MetaMetricsContext = ReactActual.createContext({
     trackEvent: _trackEvent,
     bufferedTrace: jest.fn().mockResolvedValue(undefined),
     bufferedEndTrace: jest.fn().mockResolvedValue(undefined),
     onboardingParentContext: { current: null },
   });
-  MetaMetricsContext.Provider = ({ children }: { children: React.ReactNode }) =>
-    React.createElement(React.Fragment, null, children);
+  MetaMetricsContext.Provider = (({
+    children,
+  }: {
+    children: React.ReactNode;
+  }) =>
+    ReactActual.createElement(
+      ReactActual.Fragment,
+      null,
+      children,
+    )) as unknown as typeof MetaMetricsContext.Provider;
   return {
     MetaMetricsContext,
     LegacyMetaMetricsProvider: ({ children }: { children: React.ReactNode }) =>
-      React.createElement(React.Fragment, null, children),
+      ReactActual.createElement(ReactActual.Fragment, null, children),
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     __mockTrackEvent: _trackEvent,
   };
 });
 const { __mockTrackEvent: mockTrackEvent } = jest.requireMock<{
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __mockTrackEvent: jest.Mock;
 }>('../../../contexts/metametrics');
 
@@ -165,8 +175,11 @@ describe('MusdAssetCta', () => {
         expect.objectContaining({
           properties: expect.objectContaining({
             location: 'asset_overview',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             cta_type: 'musd_conversion_tertiary_cta',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id: '0x1',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol: 'USDC',
           }),
         }),

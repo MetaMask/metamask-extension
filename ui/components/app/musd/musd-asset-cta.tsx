@@ -111,11 +111,13 @@ export const MusdAssetCta: React.FC<MusdAssetCtaProps> = ({
       category: MetaMetricsEventCategory.Tokens,
       properties: {
         location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.ASSET_OVERVIEW,
+        /* eslint-disable @typescript-eslint/naming-convention */
         cta_type: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.TERTIARY,
         cta_text: t('musdBoostTitle', [String(MUSD_CONVERSION_APY)]),
         cta_click_target: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_BUTTON,
         chain_id: token.chainId,
         token_symbol: token.symbol,
+        /* eslint-enable @typescript-eslint/naming-convention */
       },
     });
 

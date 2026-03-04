@@ -80,7 +80,11 @@ function useMusdConversionButtonState(isGaslessLoading: boolean) {
       };
     }
 
-    return { buttonText: t('musdConvert'), isDisabled: false, isLoading: false };
+    return {
+      buttonText: t('musdConvert'),
+      isDisabled: false,
+      isLoading: false,
+    };
   }, [blockingAlerts, hasAmount, isGaslessLoading, isLoading, t]);
 }
 
@@ -88,8 +92,11 @@ const MusdConversionFooter = ({
   onSubmit,
   isGaslessLoading,
 }: MusdConversionFooterProps) => {
-  const { buttonText, isDisabled, isLoading: isButtonLoading } =
-    useMusdConversionButtonState(isGaslessLoading);
+  const {
+    buttonText,
+    isDisabled,
+    isLoading: isButtonLoading,
+  } = useMusdConversionButtonState(isGaslessLoading);
 
   return (
     <PageFooter className="confirm-footer_page-footer">

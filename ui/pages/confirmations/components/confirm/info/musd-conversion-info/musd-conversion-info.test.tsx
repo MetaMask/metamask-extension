@@ -37,9 +37,7 @@ jest.mock('../../../pay-token-amount/pay-token-amount', () => ({
   PayTokenAmount: ({ amountHuman }: { amountHuman: string }) => (
     <div data-testid="pay-token-amount">{amountHuman}</div>
   ),
-  PayTokenAmountSkeleton: () => (
-    <div data-testid="pay-token-amount-skeleton" />
-  ),
+  PayTokenAmountSkeleton: () => <div data-testid="pay-token-amount-skeleton" />,
 }));
 jest.mock('../../../rows/pay-with-row/pay-with-row', () => ({
   PayWithRow: () => <div data-testid="pay-with-row" />,
@@ -54,12 +52,9 @@ jest.mock('../../../rows/bridge-time-row/bridge-time-row', () => ({
 jest.mock('../../../rows/total-row/total-row', () => ({
   TotalRow: () => <div data-testid="total-row" />,
 }));
-jest.mock(
-  '../../../rows/claimable-bonus-row/claimable-bonus-row',
-  () => ({
-    ClaimableBonusRow: () => <div data-testid="claimable-bonus-row" />,
-  }),
-);
+jest.mock('../../../rows/claimable-bonus-row/claimable-bonus-row', () => ({
+  ClaimableBonusRow: () => <div data-testid="claimable-bonus-row" />,
+}));
 
 const MOCK_TRANSACTION_META =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
@@ -118,11 +113,9 @@ function setupDefaultMocks({
     .mocked(
       useTransactionPayAvailableTokensModule.useTransactionPayAvailableTokens,
     )
-    .mockReturnValue(
-      [MOCK_AVAILABLE_TOKEN] as ReturnType<
-        typeof useTransactionPayAvailableTokensModule.useTransactionPayAvailableTokens
-      >,
-    );
+    .mockReturnValue([MOCK_AVAILABLE_TOKEN] as ReturnType<
+      typeof useTransactionPayAvailableTokensModule.useTransactionPayAvailableTokens
+    >);
   jest
     .mocked(useTransactionPayDataModule.useTransactionPayQuotes)
     .mockReturnValue(hasQuotes ? [{} as never] : undefined);

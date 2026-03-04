@@ -48,6 +48,16 @@ jest.mock('../../../../shared/constants/network', () => ({
   },
 }));
 
+jest.mock('../../../hooks/musd', () => ({
+  useMusdCtaVisibility: () => ({
+    shouldShowTokenListItemCta: jest.fn().mockReturnValue(false),
+    shouldShowAssetOverviewCta: jest.fn().mockReturnValue(false),
+  }),
+  useMusdBalance: () => ({
+    hasMusdBalance: false,
+  }),
+}));
+
 jest.mock('../../../hooks/useMultiPolling', () => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention

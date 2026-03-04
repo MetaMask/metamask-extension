@@ -53,18 +53,14 @@ describe('ClaimableBonusRow', () => {
 
     fireEvent.click(getByTestId('claimable-bonus-row-tooltip'));
 
-    expect(
-      getByTestId('claimable-bonus-tooltip-popover'),
-    ).toBeInTheDocument();
+    expect(getByTestId('claimable-bonus-tooltip-popover')).toBeInTheDocument();
   });
 
   it('closes tooltip popover when clicking outside', () => {
     const { getByTestId } = render();
 
     fireEvent.click(getByTestId('claimable-bonus-row-tooltip'));
-    expect(
-      getByTestId('claimable-bonus-tooltip-popover'),
-    ).toBeInTheDocument();
+    expect(getByTestId('claimable-bonus-tooltip-popover')).toBeInTheDocument();
 
     fireEvent.click(document.body);
   });

@@ -60,11 +60,13 @@ describe('MusdConversionFooter', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.mocked(useIsTransactionPayLoading).mockReturnValue(false);
-    jest.mocked(useTransactionPayRequiredTokens).mockReturnValue([
-      { amountUsd: '10.00', skipIfBalance: false } as ReturnType<
-        typeof useTransactionPayRequiredTokens
-      >[number],
-    ]);
+    jest
+      .mocked(useTransactionPayRequiredTokens)
+      .mockReturnValue([
+        { amountUsd: '10.00', skipIfBalance: false } as ReturnType<
+          typeof useTransactionPayRequiredTokens
+        >[number],
+      ]);
   });
 
   it('renders the convert button', () => {
@@ -126,11 +128,13 @@ describe('MusdConversionFooter', () => {
   });
 
   it('disables button when amount is zero', () => {
-    jest.mocked(useTransactionPayRequiredTokens).mockReturnValue([
-      { amountUsd: '0', skipIfBalance: false } as ReturnType<
-        typeof useTransactionPayRequiredTokens
-      >[number],
-    ]);
+    jest
+      .mocked(useTransactionPayRequiredTokens)
+      .mockReturnValue([
+        { amountUsd: '0', skipIfBalance: false } as ReturnType<
+          typeof useTransactionPayRequiredTokens
+        >[number],
+      ]);
 
     const { getByTestId } = render();
 
@@ -144,5 +148,4 @@ describe('MusdConversionFooter', () => {
 
     expect(getByTestId('confirm-footer-button')).toBeDisabled();
   });
-
 });

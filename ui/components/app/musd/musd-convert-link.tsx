@@ -76,15 +76,17 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
       trackEvent({
         event: MetaMetricsEventName.MusdConversionCtaClicked,
         category: MetaMetricsEventCategory.Tokens,
-        properties: {
-          location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.TOKEN_LIST_ITEM,
-          cta_type: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.SECONDARY,
-          cta_text: displayText,
-          cta_click_target:
-            MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_TEXT_LINK,
-          chain_id: chainId,
-          token_symbol: tokenSymbol,
-        },
+      properties: {
+        location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.TOKEN_LIST_ITEM,
+        /* eslint-disable @typescript-eslint/naming-convention */
+        cta_type: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.SECONDARY,
+        cta_text: displayText,
+        cta_click_target:
+          MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_TEXT_LINK,
+        chain_id: chainId,
+        token_symbol: tokenSymbol,
+        /* eslint-enable @typescript-eslint/naming-convention */
+      },
       });
 
       await startConversionFlow({
