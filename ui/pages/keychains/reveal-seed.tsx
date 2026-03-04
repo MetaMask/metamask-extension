@@ -7,6 +7,7 @@ import {
   Text,
   Box,
   Checkbox,
+  type CheckboxProps,
   TextVariant,
   TextColor,
   BoxBackgroundColor,
@@ -434,11 +435,7 @@ function RevealSeedPage() {
             label={t('alertModalAcknowledge')}
             isSelected={dangerAcknowledged}
             onChange={
-              ((selected: boolean) =>
-                setDangerAcknowledged(
-                  selected,
-                )) as React.FormEventHandler<HTMLLabelElement> &
-                ((isSelected: boolean) => void)
+              setDangerAcknowledged as unknown as CheckboxProps['onChange']
             }
             inputProps={{
               'data-testid': 'dapp-scan-acknowledge-checkbox',
