@@ -223,6 +223,9 @@ export function aggregateHistoricalData(
     }
 
     for (const presetEntry of Object.values(commitData.presets)) {
+      if (!presetEntry || typeof presetEntry !== 'object') {
+        continue;
+      }
       for (const [benchmarkName, result] of Object.entries(presetEntry)) {
         collectMetrics(benchmarkName, result, collected);
       }
