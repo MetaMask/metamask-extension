@@ -53,6 +53,16 @@ class SnapTransactionConfirmation {
     console.log('Snap transaction confirmation page is loaded');
   }
 
+  async checkNetworkIsDisplayed(networkName: string): Promise<void> {
+    console.log(
+      `Checking network ${networkName} is displayed on snap transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector({
+      text: networkName,
+      tag: 'p',
+    });
+  }
+
   async checkSecurityAlertsErrorIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.securityAlertsError);
   }
