@@ -59,7 +59,7 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     id: 'assets',
     path: ASSETS_ROUTE,
     labelKey: 'assets',
-    iconName: IconName.Setting,
+    iconName: IconName.Dollar,
     component: mmLazy(
       (() => import('./assets-tab/index.ts')) as unknown as DynamicImportType,
     ),
