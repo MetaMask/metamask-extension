@@ -119,6 +119,29 @@ const getStore = (perpsInAppToastsEnabled = true) =>
     },
   });
 
+const expectSuccessToastIcon = () => {
+  const successIcon = screen.getByTestId('perps-toast-icon-check-bold');
+  expect(successIcon).toHaveClass('mm-avatar-icon');
+  expect(successIcon).toHaveClass('mm-avatar-base--size-md');
+  expect(successIcon).toHaveClass('perps-toast__success-icon');
+  expect(successIcon.querySelector('.mm-icon')).toBeInTheDocument();
+};
+
+const expectPerpsToastLayout = () => {
+  expect(screen.getByTestId('perps-toast-banner-base')).toHaveClass(
+    'perps-toast',
+  );
+  expect(screen.getByTestId('perps-toast')).toHaveClass(
+    'mm-box--align-items-center',
+  );
+};
+
+const expectLoadingToastIcon = () => {
+  const loadingIcon = screen.getByTestId('perps-toast-icon-loading');
+  expect(loadingIcon).toHaveClass('perps-toast__loading-spinner-container');
+  expect(loadingIcon.querySelector('.mm-icon')).toBeInTheDocument();
+};
+
 describe('PerpsToastProvider', () => {
   afterEach(() => {
     jest.useRealTimers();
@@ -187,7 +210,8 @@ describe('PerpsToastProvider', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Show Key Info' }));
     expect(screen.getByText('Order submitted')).toBeInTheDocument();
-    expect(screen.getByTestId('perps-toast-icon-loading')).toBeInTheDocument();
+    expectLoadingToastIcon();
+    expectPerpsToastLayout();
 
     act(() => {
       jest.advanceTimersByTime(10000);
@@ -208,9 +232,8 @@ describe('PerpsToastProvider', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Show Key Success' }));
     expect(screen.getByText('Position closed')).toBeInTheDocument();
-    expect(
-      screen.getByTestId('perps-toast-icon-check-bold'),
-    ).toBeInTheDocument();
+    expectSuccessToastIcon();
+    expectPerpsToastLayout();
 
     act(() => {
       jest.advanceTimersByTime(3000);
@@ -233,9 +256,7 @@ describe('PerpsToastProvider', () => {
       screen.getByRole('button', { name: 'Show Key Order Placed' }),
     );
     expect(screen.getByText('Order placed')).toBeInTheDocument();
-    expect(
-      screen.getByTestId('perps-toast-icon-check-bold'),
-    ).toBeInTheDocument();
+    expectSuccessToastIcon();
 
     act(() => {
       jest.advanceTimersByTime(3000);
@@ -258,9 +279,7 @@ describe('PerpsToastProvider', () => {
       screen.getByRole('button', { name: 'Show Key Order Filled' }),
     );
     expect(screen.getByText('Order filled')).toBeInTheDocument();
-    expect(
-      screen.getByTestId('perps-toast-icon-check-bold'),
-    ).toBeInTheDocument();
+    expectSuccessToastIcon();
 
     act(() => {
       jest.advanceTimersByTime(3000);
