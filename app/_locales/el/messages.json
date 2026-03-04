@@ -8810,9 +8810,6 @@
   "viewDetails": {
     "message": "Προβολή λεπτομερειών"
   },
-  "viewMore": {
-    "message": "Δείτε περισσότερα"
-  },
   "viewOnBlockExplorer": {
     "message": "Προβολή στο block explorer"
   },
