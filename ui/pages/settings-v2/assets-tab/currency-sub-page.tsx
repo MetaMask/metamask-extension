@@ -19,6 +19,7 @@ import availableCurrencies from '../../../helpers/constants/available-conversion
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { setCurrentCurrency } from '../../../store/actions';
 import { ASSETS_ROUTE } from '../../../helpers/constants/routes';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -37,10 +38,7 @@ const CurrencySubPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const currentCurrency = useSelector(
-    (state: { metamask: { currentCurrency?: string } }) =>
-      state.metamask.currentCurrency?.toLowerCase() ?? 'usd',
-  );
+  const currentCurrency = useSelector(getCurrentCurrency).toLowerCase();
 
   const handleSelect = (value: string) => {
     trackEvent({
