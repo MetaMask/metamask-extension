@@ -648,10 +648,6 @@
   "allowNotifications": {
     "message": "Permitir notificações"
   },
-  "allowWithdrawAndSpend": {
-    "message": "Permitir que $1 saque e gaste até o seguinte valor:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
   "amount": {
     "message": "Valor"
   },
@@ -1610,9 +1606,6 @@
   "connectAccount": {
     "message": "Conectar conta"
   },
-  "connectAccountOrCreate": {
-    "message": "Conectar conta ou criar nova"
-  },
   "connectAccounts": {
     "message": "Conectar contas"
   },
@@ -1906,9 +1899,6 @@
   "customSlippage": {
     "message": "Personalizado"
   },
-  "customSpendLimit": {
-    "message": "Limite de gasto personalizado"
-  },
   "customToken": {
     "message": "Token personalizado"
   },
@@ -2196,9 +2186,6 @@
     "message": "Descrição de $1",
     "description": "$1 represents the name of the snap"
   },
-  "deselectAll": {
-    "message": "Desmarcar tudo"
-  },
   "destinationAccountPickerNoEligible": {
     "message": "Nenhuma conta qualificada encontrada"
   },
@@ -2478,9 +2465,6 @@
   "editNonceMessage": {
     "message": "Esse é um recurso avançado; use com cautela."
   },
-  "editPermission": {
-    "message": "Editar permissão"
-  },
   "editPermissions": {
     "message": "Editar permissões"
   },
@@ -2564,9 +2548,6 @@
   },
   "enterChainId": {
     "message": "Insira a ID da cadeia"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Digite um limite máximo de gastos"
   },
   "enterNetworkName": {
     "message": "Insira o nome da rede"
@@ -3359,9 +3340,6 @@
     "message": "Não foi possível conectar a MetaMask ao servidor da blockchain. Revise possíveis motivos $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "Sua transação inicial foi confirmada pela rede. Clique em OK para voltar."
-  },
   "insights": {
     "message": "Informações"
   },
@@ -3544,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "Taxa de gás da L2"
-  },
-  "lastConnected": {
-    "message": "Última conexão"
   },
   "lastSold": {
     "message": "Última venda"
@@ -5692,9 +5667,6 @@
   "productAnnouncements": {
     "message": "Comunicados sobre produtos"
   },
-  "proposedApprovalLimit": {
-    "message": "Limite de aprovação proposto"
-  },
   "provide": {
     "message": "Fornecer"
   },
@@ -5914,18 +5886,6 @@
   },
   "rejectAll": {
     "message": "Recusar todas"
-  },
-  "rejectRequestsDescription": {
-    "message": "Você está prestes a recusar em lote $1 solicitações."
-  },
-  "rejectRequestsN": {
-    "message": "Recusar $1 solicitações"
-  },
-  "rejectTxsDescription": {
-    "message": "Você está prestes a recusar $1 transações em massa."
-  },
-  "rejectTxsN": {
-    "message": "Recusar $1 transações"
   },
   "rejected": {
     "message": "Rejeitada"
@@ -6463,12 +6423,6 @@
   "selectAccountToConnect": {
     "message": "Selecione uma conta para se conectar"
   },
-  "selectAccounts": {
-    "message": "Selecione a(s) conta(s) para usar nesse site"
-  },
-  "selectAccountsForSnap": {
-    "message": "Selecione a(s) conta(s) para usar com esse snap"
-  },
   "selectAll": {
     "message": "Selecionar tudo"
   },
@@ -6507,9 +6461,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Conta diferente selecionada"
-  },
-  "selectingAllWillAllow": {
-    "message": "Selecionar todos permitirá que esse site visualize todas as suas contas atuais. Certifique-se de confiar nesse site."
   },
   "send": {
     "message": "Enviar"
@@ -7649,22 +7600,6 @@
   },
   "speedUpTooltipText": {
     "message": "Nova taxa de gás"
-  },
-  "spendLimitInsufficient": {
-    "message": "Limite de gastos insuficiente"
-  },
-  "spendLimitInvalid": {
-    "message": "Limite de gastos inválido; o número precisa ser positivo"
-  },
-  "spendLimitPermission": {
-    "message": "Permissão do limite de gastos"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Limite de gastos solicitado por $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "O limite de gastos está alto demais"
   },
   "spender": {
     "message": "Gastador"

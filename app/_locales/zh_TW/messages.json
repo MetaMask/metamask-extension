@@ -60,10 +60,6 @@
   "alerts": {
     "message": "提醒"
   },
-  "allowWithdrawAndSpend": {
-    "message": "允許 $1 提款或最多花費以下額度：",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
   "amount": {
     "message": "數量"
   },
@@ -192,9 +188,6 @@
   "connect": {
     "message": "連線"
   },
-  "connectAccountOrCreate": {
-    "message": "連結帳戶或建立新的"
-  },
   "connectManually": {
     "message": "手動連結到目前的網站"
   },
@@ -294,9 +287,6 @@
   "currentLanguage": {
     "message": "目前語言"
   },
-  "customSpendLimit": {
-    "message": "自訂花費限制"
-  },
   "customToken": {
     "message": "自訂代幣"
   },
@@ -386,9 +376,6 @@
   "editNonceMessage": {
     "message": "這是一個進階功能，請小心使用。"
   },
-  "editPermission": {
-    "message": "編輯權限"
-  },
   "enableAutoDetect": {
     "message": " Enable Autodetect"
   },
@@ -405,9 +392,6 @@
   },
   "ensUnknownError": {
     "message": "ENS Lookup failed."
-  },
-  "enterMaxSpendLimit": {
-    "message": "輸入最大花費限制"
   },
   "enterPasswordContinue": {
     "message": "請輸入密碼"
@@ -547,9 +531,6 @@
     "message": "MetaMask 無法連線到區塊鏈主機。在$1查看可能的原因。",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "交易已確認"
-  },
   "insufficientBalance": {
     "message": "餘額不足。"
   },
@@ -612,9 +593,6 @@
   },
   "knownTokenWarning": {
     "message": "This action will edit tokens that are already listed in your wallet, which can be used to phish you. Only approve if you are certain that you mean to change what these tokens represent."
-  },
-  "lastConnected": {
-    "message": "最近連結"
   },
   "learnMore": {
     "message": "了解更多"
@@ -825,9 +803,6 @@
   "privateNetwork": {
     "message": "私有網路"
   },
-  "proposedApprovalLimit": {
-    "message": "提議的允許量限制"
-  },
   "provide": {
     "message": "提供"
   },
@@ -848,12 +823,6 @@
   },
   "rejectAll": {
     "message": "全部拒絕"
-  },
-  "rejectTxsDescription": {
-    "message": "您將批次拒絕 $1 筆交易。"
-  },
-  "rejectTxsN": {
-    "message": "拒絕 $1 筆交易"
   },
   "rejected": {
     "message": "拒絕"
@@ -919,9 +888,6 @@
   "seedPhraseReq": {
     "message": "助憶詞為 12, 15, 18, 21 或 24 個單字"
   },
-  "selectAccounts": {
-    "message": "選擇一個或多個帳戶"
-  },
   "selectAll": {
     "message": "選擇全部"
   },
@@ -939,9 +905,6 @@
   },
   "selectType": {
     "message": "選擇類型"
-  },
-  "selectingAllWillAllow": {
-    "message": "選擇全部會讓這個網站能瀏覽您目前的全部帳戶。請再次確認您信任這個網站。"
   },
   "send": {
     "message": "發送"
@@ -981,22 +944,6 @@
   },
   "speedUpCancellation": {
     "message": "加速這個取消請求"
-  },
-  "spendLimitInsufficient": {
-    "message": "花費額度上限不足"
-  },
-  "spendLimitInvalid": {
-    "message": "花費額度上限無效；必須是正值"
-  },
-  "spendLimitPermission": {
-    "message": "花費額度上限的權限"
-  },
-  "spendLimitRequestedBy": {
-    "message": "$1 請求的花費額度上限",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "花費額度上限太大"
   },
   "stateLogError": {
     "message": "在取得狀態紀錄時發生錯誤。"

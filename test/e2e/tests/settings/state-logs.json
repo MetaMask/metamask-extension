@@ -822,6 +822,7 @@
     "outdatedBrowserWarningLastShown": "null",
     "overrideContentSecurityPolicyHeader": "boolean",
     "participateInMetaMetrics": "boolean",
+    "pendingRedirectRoute": "null",
     "pendingApprovalCount": "number",
     "pendingApprovals": {},
     "pendingRevocations": [],
@@ -896,6 +897,7 @@
     "recoveryPhraseReminderHasBeenShown": "boolean",
     "recoveryPhraseReminderLastShown": "number",
     "referrals": {
+      "asterdex": {},
       "gmx": {},
       "hyperliquid": {}
     },

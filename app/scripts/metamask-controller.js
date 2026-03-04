@@ -2516,12 +2516,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setAddSnapAccountEnabled.bind(
           preferencesController,
         ),
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
       setWatchEthereumAccountEnabled:
         preferencesController.setWatchEthereumAccountEnabled.bind(
           preferencesController,
         ),
-      ///: END:ONLY_INCLUDE_IF
       setUseExternalNameSources:
         preferencesController.setUseExternalNameSources.bind(
           preferencesController,
@@ -3005,6 +3003,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowShieldEntryModalOnce.bind(appStateController),
       setPendingShieldCohort:
         appStateController.setPendingShieldCohort.bind(appStateController),
+      setPendingRedirectRoute:
+        appStateController.setPendingRedirectRoute.bind(appStateController),
       setShieldPausedToastLastClickedOrClosed:
         appStateController.setShieldPausedToastLastClickedOrClosed.bind(
           appStateController,
@@ -5877,9 +5877,18 @@ export default class MetamaskController extends EventEmitter {
   async _updateDefiReferralUrl(partner, tabId) {
     try {
       const { url } = await browser.tabs.get(tabId);
-      const { search } = new URL(url || '');
-      const newUrl = `${partner.referralUrl}${search}`;
-      await browser.tabs.update(tabId, { url: newUrl });
+      const currentUrl = new URL(url || '');
+      const referralUrl = new URL(partner.referralUrl);
+
+      // Preserve (or update) existing params and add referral params
+      const mergedParams = new URLSearchParams(currentUrl.search);
+      for (const [key, value] of referralUrl.searchParams) {
+        mergedParams.set(key, value);
+      }
+
+      // Apply merged params to the referral URL
+      referralUrl.search = mergedParams.toString();
+      await browser.tabs.update(tabId, { url: referralUrl.toString() });
     } catch (error) {
       log.error(
         `Failed to update URL to ${partner.name} referral page: `,
