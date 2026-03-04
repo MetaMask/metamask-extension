@@ -6,20 +6,17 @@ import {
   AppConfigurationResponse,
 } from '@metamask/eth-ledger-bridge-keyring';
 import { TransportStatusError } from '@ledgerhq/errors';
-import { LEDGER_ERROR_MAPPINGS } from '@metamask/hw-wallet-sdk';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
-
-/**
- * Convert a Ledger status code (number) to the hex key used in LEDGER_ERROR_MAPPINGS (e.g. 27267 -> "0x6a83").
- * @param statusCode - Error status code.
- */
-function statusCodeToHexKey(statusCode: number): string {
-  return `0x${statusCode.toString(16).padStart(4, '0')}`.toLowerCase();
-}
+import {
+  toHardwareWalletError,
+  HardwareWalletType,
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../../ui/contexts/hardware-wallets';
 
 const MESSAGE_TIMEOUT = 4000;
 
@@ -184,19 +181,15 @@ export class LedgerOffscreenBridge
               typeof error.statusCode === 'number' &&
               error.statusCode > 0
             ) {
-              const hexKey = statusCodeToHexKey(error.statusCode);
-              const mapping = LEDGER_ERROR_MAPPINGS[
-                hexKey as keyof typeof LEDGER_ERROR_MAPPINGS
-              ] as { userMessage?: string } | undefined;
-              if (mapping?.userMessage) {
-                reject(new Error(mapping.userMessage));
+              const transportError = new TransportStatusError(error.statusCode);
+              const hwError = toHardwareWalletError(
+                transportError,
+                HardwareWalletType.Ledger,
+              );
+              if (hwError.code === ErrorCode.Unknown) {
+                reject(transportError);
               } else {
-                // This is TransportStatusError, convert the SerializedLedgerError to a TransportStatusError
-                // TransportStatusError will regenerate the error message based on the statusCode
-                const transportStatusError = new TransportStatusError(
-                  error.statusCode,
-                );
-                reject(transportStatusError);
+                reject(new Error(hwError.userMessage));
               }
             } else if (error?.message) {
               // Regenerate the error based on the SerializedLedgerError
