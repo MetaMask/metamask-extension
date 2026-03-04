@@ -292,7 +292,7 @@ describe('TokenListItem', () => {
     expect(onClick).not.toHaveBeenCalled();
     expect(getByTestId('market-closed-modal')).toBeInTheDocument();
     expect(
-      getByText(messages.bridgeMarketClosedAction.message),
+      getByText(messages.bridgeMarketClosedModalTitle.message),
     ).toBeInTheDocument();
   });
 
