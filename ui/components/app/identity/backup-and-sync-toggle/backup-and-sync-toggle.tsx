@@ -8,6 +8,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import {
   selectIsBackupAndSyncEnabled,
   selectIsBackupAndSyncUpdateLoading,
@@ -232,7 +233,7 @@ export const BackupAndSyncToggle = () => {
             <Text
               as="a"
               variant={TextVariant.bodySm}
-              href="https://support.metamask.io/privacy-and-security/profile-privacy"
+              href={ZENDESK_URLS.PROFILE_PRIVACY}
               target="_blank"
               rel="noopener noreferrer"
               key="privacy-link"
