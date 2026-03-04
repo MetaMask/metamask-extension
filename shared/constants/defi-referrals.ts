@@ -64,7 +64,7 @@ export const DEFI_REFERRAL_PARTNERS: Record<
     name: 'AsterDEX',
     origin: 'https://www.asterdex.com',
     referralUrl:
-      'https://www.asterdex.com/en/trade/pro/futures/BTCUSDT?ref=Ff4dF9', // TODO
+      'https://www.asterdex.com/en/trade/pro/futures/BTCUSDT?ref=82636D',
     learnMoreUrl:
       'https://docs.asterdex.com/product/aster-perpetuals/referral-program',
     approvalType: 'asterdex_referral_consent',
