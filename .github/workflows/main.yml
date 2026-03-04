@@ -431,6 +431,7 @@ jobs:
           BENCHMARK_RESULTS_DIR: benchmark-results
 
       - name: Download dapp page-load benchmark artifact
+        id: download-dapp-benchmark
         uses: actions/download-artifact@v4
         continue-on-error: true
         with:
@@ -438,6 +439,7 @@ jobs:
           path: test-artifacts/benchmarks/
 
       - name: Commit dapp page-load stats to extension_benchmark_stats
+        if: steps.download-dapp-benchmark.outcome == 'success'
         run: .github/scripts/benchmark-stats-commit.sh
         env:
           BENCHMARK_DATA_TYPE: dapp-page-load
