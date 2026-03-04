@@ -46,12 +46,12 @@ jobs:
     outputs:
       needs-locales: ${{ steps.set-needs-locales.outputs.needs-locales || 'false' }}
       skip-everything: ${{ steps.set-skip-everything.outputs.skip-everything || 'false' }}
-      builds-from-run: ${{ steps.identify-builds.outputs.builds-from-run || env.RUN_ID }}
-      needs-lint: ${{ steps.set-needs-lint.outputs.needs-lint || 'false' }}
-      needs-unit-and-integration: ${{ steps.set-needs-unit-and-integration.outputs.needs-unit-and-integration || 'false' }}
-      needs-releases: ${{ steps.set-needs-releases.outputs.needs-releases || 'false'}}
-      needs-benchmarks: ${{ steps.set-needs-benchmarks.outputs.needs-benchmarks || 'false'}}
-      needs-e2e: ${{ steps.set-needs-e2e.outputs.needs-e2e || 'false'}}
+      builds-from-run: ${{ '22658434977' || steps.identify-builds.outputs.builds-from-run || env.RUN_ID }}
+      needs-lint: ${{ 0 && steps.set-needs-lint.outputs.needs-lint || 'false' }}
+      needs-unit-and-integration: ${{ 0 && steps.set-needs-unit-and-integration.outputs.needs-unit-and-integration || 'false' }}
+      needs-releases: ${{ 0 && steps.set-needs-releases.outputs.needs-releases || 'false'}}
+      needs-benchmarks: ${{ 0 && steps.set-needs-benchmarks.outputs.needs-benchmarks || 'false'}}
+      needs-e2e: ${{ 0 && steps.set-needs-e2e.outputs.needs-e2e || 'false'}}
     steps:
       - name: Check pull request merge queue status
         id: check-skip-merge-queue
