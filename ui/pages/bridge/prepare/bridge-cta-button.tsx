@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
   ButtonLink,
@@ -34,6 +34,7 @@ import {
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
+import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
@@ -45,6 +46,7 @@ export const BridgeCTAButton = ({
   onOpenRecipientModal?: () => void;
 }) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
 
   const toToken = useSelector(getToToken);
 
@@ -238,7 +240,12 @@ export const BridgeCTAButton = ({
           as="a"
           variant={TextVariant.bodyMd}
           style={{ whiteSpace: 'nowrap' }}
-          onClick={onFetchNewQuotes}
+          onClick={() => {
+            if (wasTxDeclined) {
+              dispatch(setWasTxDeclined(false));
+            }
+            onFetchNewQuotes();
+          }}
         >
           {t(secondaryButtonLabel)}
         </ButtonLink>

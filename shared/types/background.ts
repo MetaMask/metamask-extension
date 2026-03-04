@@ -145,6 +145,7 @@ export type ControllerStatePropertiesEnumerated = {
   lastUpdatedAt: AppStateControllerState['lastUpdatedAt'];
   lastUpdatedFromVersion: AppStateControllerState['lastUpdatedFromVersion'];
   showShieldEntryModalOnce: AppStateControllerState['showShieldEntryModalOnce'];
+  pendingRedirectRoute: AppStateControllerState['pendingRedirectRoute'];
   pendingShieldCohort: AppStateControllerState['pendingShieldCohort'];
   pendingShieldCohortTxType: AppStateControllerState['pendingShieldCohortTxType'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
@@ -260,9 +261,7 @@ export type ControllerStatePropertiesEnumerated = {
   useMultiAccountBalanceChecker: PreferencesControllerState['useMultiAccountBalanceChecker'];
   use4ByteResolution: PreferencesControllerState['use4ByteResolution'];
   useCurrencyRateCheck: PreferencesControllerState['useCurrencyRateCheck'];
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   watchEthereumAccountEnabled: PreferencesControllerState['watchEthereumAccountEnabled'];
-  ///: END:ONLY_INCLUDE_IF
   addSnapAccountEnabled?: PreferencesControllerState['addSnapAccountEnabled'];
   advancedGasFee: PreferencesControllerState['advancedGasFee'];
   knownMethodData: PreferencesControllerState['knownMethodData'];
