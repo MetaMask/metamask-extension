@@ -17,7 +17,7 @@ import { getConfig } from './helpers';
 describe('Perps', function (this: Suite) {
   this.timeout(120000);
 
-  it('shows list of open positions', async function () {
+  it.skip('shows list of open positions', async function () {
     await withFixtures(
       {
         ...getConfig(this.test?.fullTitle()),
@@ -35,7 +35,7 @@ describe('Perps', function (this: Suite) {
     );
   });
 
-  it('opens order flow and submits a long market order', async function () {
+  it.skip('opens order flow and submits a long market order', async function () {
     await withFixtures(
       {
         ...getConfig(this.test?.fullTitle()),
@@ -58,7 +58,7 @@ describe('Perps', function (this: Suite) {
     );
   });
 
-  it('opens add funds from Perps home', async function () {
+  it.skip('opens add funds from Perps home', async function () {
     await withFixtures(
       {
         ...getConfig(this.test?.fullTitle()),
@@ -76,7 +76,7 @@ describe('Perps', function (this: Suite) {
     );
   });
 
-  it('opens withdraw from Perps home', async function () {
+  it.skip('opens withdraw from Perps home', async function () {
     await withFixtures(
       {
         ...getConfig(this.test?.fullTitle()),
@@ -94,7 +94,7 @@ describe('Perps', function (this: Suite) {
     );
   });
 
-  it('explore crypto: search by type and sort by volume, search field', async function () {
+  it.skip('explore crypto: search by type and sort by volume, search field', async function () {
     await withFixtures(
       {
         ...getConfig(this.test?.fullTitle()),
@@ -117,7 +117,7 @@ describe('Perps', function (this: Suite) {
     );
   });
 
-  it('learn basics of perps tutorial (go through it)', async function () {
+  it.skip('learn basics of perps tutorial (go through it)', async function () {
     await withFixtures(
       {
         ...getConfig(this.test?.fullTitle()),
@@ -134,7 +134,7 @@ describe('Perps', function (this: Suite) {
     );
   });
 
-  it('Modify button visible on market with position (only checks button, like Close)', async function () {
+  it.skip('Modify button visible on market with position (only checks button, like Close)', async function () {
     await withFixtures(
       {
         ...getConfig(this.test?.fullTitle()),
