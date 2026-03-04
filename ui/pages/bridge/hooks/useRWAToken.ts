@@ -17,9 +17,6 @@ const toMs = (value: DateLike): number | null => {
 
 const RWA_TIME_TICK_MS = 60_000;
 
-const isStockToken = (token?: RWATokenLike) =>
-  token?.rwaData?.instrumentType === 'stock';
-
 const isTokenTradingOpenAt = (
   token?: RWATokenLike,
   nowMs: number = Date.now(),
@@ -65,7 +62,8 @@ export function useRWAToken() {
   }, [isRWAEnabled]);
 
   const isStockTokenFlagGated = useCallback(
-    (token?: RWATokenLike) => isRWAEnabled && isStockToken(token),
+    (token?: RWATokenLike) =>
+      isRWAEnabled && token?.rwaData?.instrumentType === 'stock',
     [isRWAEnabled],
   );
 
