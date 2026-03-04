@@ -47,8 +47,12 @@ export function resolveThreadLoaderPreset(
 export function getThreadLoader(
   config: ThreadLoaderConfig,
 ): RuleSetUseItem | null {
-  const { preset, workers: workersOverride, jobs: jobsOverride, watch } =
-    config;
+  const {
+    preset,
+    workers: workersOverride,
+    jobs: jobsOverride,
+    watch,
+  } = config;
   const resolved = resolveThreadLoaderPreset(preset);
 
   if (!resolved) {
@@ -61,9 +65,7 @@ export function getThreadLoader(
       workers:
         workersOverride === undefined ? resolved.workers : workersOverride,
       workerParallelJobs:
-        jobsOverride === undefined
-          ? resolved.workerParallelJobs
-          : jobsOverride,
+        jobsOverride === undefined ? resolved.workerParallelJobs : jobsOverride,
       poolTimeout: watch ? Number(Infinity) : 2000,
     },
   };

@@ -44,10 +44,7 @@ describe('getThreadLoader', () => {
   });
 
   it('returns null when preset is "off"', () => {
-    assert.strictEqual(
-      getThreadLoader({ preset: 'off', watch: false }),
-      null,
-    );
+    assert.strictEqual(getThreadLoader({ preset: 'off', watch: false }), null);
   });
 
   it('sets poolTimeout to Infinity when watch is true', () => {
@@ -82,9 +79,8 @@ describe('getThreadLoader', () => {
       watch: false,
     });
     assert.ok(result);
-    const opts = (
-      result as { options: { workerParallelJobs: number } }
-    ).options;
+    const opts = (result as { options: { workerParallelJobs: number } })
+      .options;
     assert.strictEqual(opts.workerParallelJobs, 20);
   });
 
