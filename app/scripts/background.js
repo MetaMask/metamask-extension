@@ -158,8 +158,12 @@ async function saveTestRestoreFlowToSession() {
     await browser.storage.session.set({
       [SESSION_KEY_TEST_RESTORE_FLOW_PENDING]: true,
     });
-  } catch (_) {
-    // Session storage may be unavailable.
+  } catch (err) {
+    // Not expected to happen.
+    console.warn(
+      '[MetaMask] Could not save test restore-flow flag to session storage',
+      err,
+    );
   }
 }
 
@@ -178,8 +182,12 @@ async function restoreTestRestoreFlowFromSession() {
         SESSION_KEY_TEST_RESTORE_FLOW_PENDING,
       );
     }
-  } catch (_) {
-    // Session storage may be unavailable.
+  } catch (err) {
+    // Not expected to happen.
+    console.warn(
+      '[MetaMask] Could not read test restore-flow flag from session storage',
+      err,
+    );
   }
 }
 
