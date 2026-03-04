@@ -276,9 +276,6 @@
   "addIPFSGateway": {
     "message": "Idagdag ang mas gusto mong IPFS gateway"
   },
-  "addImportAccount": {
-    "message": "Magdagdag ng account o wallet na hardware"
-  },
   "addMemo": {
     "message": "Magdagdag ng memo"
   },
@@ -650,10 +647,6 @@
   },
   "allowNotifications": {
     "message": "Payagan ang mga notipikasyon"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "Payagan ang $1 na mag-withdraw at gastusin ang sumusunod na halaga:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Halaga"
@@ -1909,9 +1902,6 @@
   "customSlippage": {
     "message": "Custom"
   },
-  "customSpendLimit": {
-    "message": "Custom na limitasyon sa paggastos"
-  },
   "customToken": {
     "message": "Custom na Token"
   },
@@ -2481,9 +2471,6 @@
   "editNonceMessage": {
     "message": "Ito ay isang advanced feature, maingat na gamitin."
   },
-  "editPermission": {
-    "message": "Pahintulot sa pag-edit"
-  },
   "editPermissions": {
     "message": "Mag-edit ng mga pahintulot"
   },
@@ -2567,9 +2554,6 @@
   },
   "enterChainId": {
     "message": "Ilagay ang ID ng Chain"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Ilagay ang max na limitasyon sa paggastos"
   },
   "enterNetworkName": {
     "message": "Ilagay ang pangalan ng network"
@@ -3362,9 +3346,6 @@
     "message": "Hindi makakonekta ang MetaMask sa blockchain host. I-review ang posibleng mga dahilan $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "Nakumpirma na ng network ang iyong inisyal na transaksyon. I-click ang OK para bumalik."
-  },
   "insights": {
     "message": "Mga pananaw"
   },
@@ -3783,13 +3764,6 @@
   },
   "makeAnotherSwap": {
     "message": "Gumawa ng bagong pag-swap"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Siguraduhing walang tumitingin",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "Pamahalaan"
   },
   "manageDefaultSettings": {
     "message": "Pamahalaan ang mga default na setting sa pagkapribado"
@@ -5702,9 +5676,6 @@
   "productAnnouncements": {
     "message": "Mga anunsiyo ng produkto"
   },
-  "proposedApprovalLimit": {
-    "message": "Iminumungkahing limitasyon sa pag-apruba"
-  },
   "provide": {
     "message": "Ibigay"
   },
@@ -5925,18 +5896,6 @@
   "rejectAll": {
     "message": "Tanggihan Lahat"
   },
-  "rejectRequestsDescription": {
-    "message": "Maramihan mong tatanggihan ang $1 na kahilingan."
-  },
-  "rejectRequestsN": {
-    "message": "Tanggihan ang $1 na kahilingan"
-  },
-  "rejectTxsDescription": {
-    "message": "Maramihan mong tatanggihan ang $1 transaksyon."
-  },
-  "rejectTxsN": {
-    "message": "Tanggihan ang $1 transaksyon"
-  },
   "rejected": {
     "message": "Tinanggihan"
   },
@@ -6110,17 +6069,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "Ang $1 ay nagbibigay ng $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "Ang MetaMask ay isang $1. Nangangahulugan iyon na ikaw ang may-ari ng iyong SRP.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "buong access sa iyong wallet at pondo.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "non-custodial na wallet"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6134,10 +6083,6 @@
   "revealSeedWordsWarning": {
     "message": "Tiyaking walang tumitingin sa iyong screen. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Hindi ito kailanman hihilingin ng Suporta sa MetaMask.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Ipakita ang sensitibong nilalaman"
@@ -7674,22 +7619,6 @@
   "speedUpTooltipText": {
     "message": "Bagong bayad sa gas"
   },
-  "spendLimitInsufficient": {
-    "message": "Hindi sapat ang limitasyon sa paggastos"
-  },
-  "spendLimitInvalid": {
-    "message": "Di-wastong limitasyon sa paggastos; dapat ay positibong numero"
-  },
-  "spendLimitPermission": {
-    "message": "Pahintulot sa limitasyon sa paggastos"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Limitasyon sa paggastos na hiniling ng $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Masyadong malaki ang limitasyon sa paggastos"
-  },
   "spender": {
     "message": "Gumagastos"
   },
@@ -9067,9 +8996,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Maaaring nasa panganib ang iyong NFT"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Ang Iyong Lihim na Parirala sa Pagbawi"
   },
   "yourTransactionConfirmed": {
     "message": "Nakumpirma na ang transaksyon"

@@ -33,7 +33,7 @@ export const TokenCellPercentChange = React.memo(
       tokenPercentageChange = ((price - comparePrice) / comparePrice) * 100;
     } else {
       tokenPercentageChange = isEvm
-        ? multiChainMarketData?.[token.chainId]?.[tokenAddress]
+        ? multiChainMarketData?.[token.chainId as Hex]?.[tokenAddress as Hex]
             ?.pricePercentChange1d
         : nonEvmConversionRates?.[tokenAddress as CaipAssetType]?.marketData
             ?.pricePercentChange?.P1D;

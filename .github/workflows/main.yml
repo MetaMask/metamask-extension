@@ -465,6 +465,7 @@ jobs:
     if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      use-matrix: ${{ needs.prep-e2e.outputs.use-matrix }}
     secrets: inherit
 
   e2e-firefox:
@@ -480,6 +481,7 @@ jobs:
     if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      use-matrix: ${{ needs.prep-e2e.outputs.use-matrix }}
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
@@ -674,7 +676,7 @@ jobs:
       - build-dist-browserify
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    environment: release-branch
+    environment: release-ci
     steps:
       - name: Trigger regression validation in external repo
         env:
