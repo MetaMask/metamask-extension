@@ -459,9 +459,18 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastCloseInProgress',
-      });
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastCloseInProgress',
+          description: expect.stringMatching(/^Long [^ ]+ ETH$/u),
+        }),
+      );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastTradeSuccess',
+          description: expect.stringMatching(/^Long [^ ]+ ETH$/u),
+        }),
+      );
     });
 
     it('calls updatePositionTPSL when in modify mode', async () => {
