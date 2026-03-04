@@ -66,21 +66,21 @@ describe('ConfirmInfoRowAddressDisplay', () => {
     );
   });
 
-  // it('renders partially truncated address in side panel mode', () => {
-  //   getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+  it('renders partially truncated address in side panel mode', () => {
+    getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
 
-  //   const { getByTestId } = render();
-  //   const textContent = getByTestId('confirm-info-row-display-name')
-  //     .textContent as string;
-  //   expect(textContent).toBe('0x5CfE73b6021E…474086a7e1');
-  // });
+    const { getByTestId } = render();
+    const textContent = getByTestId('confirm-info-row-display-name')
+      .textContent as string;
+    expect(textContent).toBe('0x5CfE73b6021E…474086a7e1');
+  });
 
-  // it('renders truncated address in popup mode', () => {
-  //   getEnvironmentType.mockReturnValue('popup');
+  it('renders truncated address in popup mode', () => {
+    getEnvironmentType.mockReturnValue('popup');
 
-  //   const { getByTestId } = render();
-  //   const textContent = getByTestId('confirm-info-row-display-name')
-  //     .textContent as string;
-  //   expect(textContent).toBe('0x5CfE73b6021E…474086a7e1');
-  // });
+    const { getByTestId } = render();
+    const textContent = getByTestId('confirm-info-row-display-name')
+      .textContent as string;
+    expect(textContent).toBe('0x5CfE73b6021E…474086a7e1');
+  });
 });
