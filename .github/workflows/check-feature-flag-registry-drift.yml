@@ -34,12 +34,29 @@ jobs:
           # Succeed for 0 (no drift) and 1 (drift); fail for 2 (API/script error)
           [ "$EXIT" -eq 0 ] || [ "$EXIT" -eq 1 ] || exit "$EXIT"
 
-      - name: Report drift result
+      - name: Upload drift report
         if: steps.check.outputs.HAS_DRIFT == 'true'
-        run: |
-          echo "=== Drift detected — sync report ==="
-          cat sync-report.txt
+        uses: actions/upload-artifact@v4
+        with:
+          name: drift-report
+          path: sync-report.json
 
-      # TODO:
-      # OR Add notification step (e.g. Slack) when drift is detected
-      # OR Add common create workflow step for creating issues/ creating PRs in github-tools repo
+      - name: Notify Slack on drift
+        if: ${{ always() && steps.check.outputs.HAS_DRIFT == 'true' }}
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_FEATURE_FLAG_DRIFT }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "Feature flag registry drift detected in metamask-extension. Check the workflow run for details.",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Feature Flag Registry Drift Detected* :warning:\n\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View workflow run>"
+                  }
+                }
+              ]
+            }

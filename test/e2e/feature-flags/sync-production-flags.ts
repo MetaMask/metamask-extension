@@ -26,7 +26,10 @@ import * as path from 'path';
 
 import { isEqual } from 'lodash';
 import chalk from 'chalk';
-import { getProductionRemoteFlagDefaults } from './feature-flag-registry';
+import {
+  FEATURE_FLAG_REGISTRY,
+  getProductionRemoteFlagDefaults,
+} from './feature-flag-registry';
 
 const PRODUCTION_FLAGS_URL =
   'https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod';
@@ -49,6 +52,10 @@ export type SyncResult = {
     name: string;
     productionValue: unknown;
     registryValue: unknown;
+  }[];
+  inProdMismatches: {
+    name: string;
+    productionValue: unknown;
   }[];
   hasDrift: boolean;
 };
@@ -80,15 +87,23 @@ function parseProductionResponse(
 }
 
 /**
+ * Minimal registry entry shape for inProd check.
+ * Used by fullRegistryOverride in tests.
+ */
+type FullRegistryEntry = { inProd?: boolean };
+
+/**
  * Compares production flags to the registry and returns drift information.
  *
  * @param productionApiResponse - Raw API response (array of { flagName: value })
  * @param registryMap - Optional. Override for testing; defaults to getProductionRemoteFlagDefaults()
+ * @param fullRegistryOverride - Optional. Override for FEATURE_FLAG_REGISTRY when checking inProd; for tests only
  * @returns SyncResult with new, removed, and mismatched flags
  */
 export function compareProductionFlagsToRegistry(
   productionApiResponse: Record<string, unknown>[],
   registryMap?: Record<string, unknown>,
+  fullRegistryOverride?: Record<string, FullRegistryEntry>,
 ): SyncResult {
   const prodMap = parseProductionResponse(productionApiResponse);
   const registry = (registryMap ?? getProductionRemoteFlagDefaults()) as Record<
@@ -102,13 +117,25 @@ export function compareProductionFlagsToRegistry(
   const newInProduction: SyncResult['newInProduction'] = [];
   const removedFromProduction: SyncResult['removedFromProduction'] = [];
   const valueMismatches: SyncResult['valueMismatches'] = [];
+  const inProdMismatches: SyncResult['inProdMismatches'] = [];
 
   for (const name of prodKeys) {
     if (EXCLUDED_FLAGS.has(name)) {
       continue;
     }
     if (!registryKeys.has(name)) {
-      newInProduction.push({ name, value: prodMap[name] });
+      // Flag is in production but not in the filtered registry (inProd: true only).
+      // Check if it exists in the full registry with inProd: false (stale metadata).
+      const fullRegistry = fullRegistryOverride ?? FEATURE_FLAG_REGISTRY;
+      const fullEntry = fullRegistry[name] as FullRegistryEntry | undefined;
+      if (fullEntry && fullEntry.inProd === false) {
+        inProdMismatches.push({
+          name,
+          productionValue: prodMap[name],
+        });
+      } else {
+        newInProduction.push({ name, value: prodMap[name] });
+      }
     } else if (!isEqual(prodMap[name], registry[name])) {
       valueMismatches.push({
         name,
@@ -133,12 +160,14 @@ export function compareProductionFlagsToRegistry(
   const hasDrift =
     newInProduction.length > 0 ||
     removedFromProduction.length > 0 ||
-    valueMismatches.length > 0;
+    valueMismatches.length > 0 ||
+    inProdMismatches.length > 0;
 
   return {
     newInProduction,
     removedFromProduction,
     valueMismatches,
+    inProdMismatches,
     hasDrift,
   };
 }
@@ -242,6 +271,23 @@ function formatSyncReport(result: SyncResult): string {
       lines.push(`      registry:   ${JSON.stringify(registryValue)}`);
       lines.push(`      production: ${JSON.stringify(productionValue)}`);
     }
+    lines.push('');
+  }
+
+  if (result.inProdMismatches.length > 0) {
+    lines.push(
+      sectionTitle(
+        `inProd mismatch: flags in registry with inProd: false but present in production [${result.inProdMismatches.length}]:`,
+      ),
+    );
+    for (const { name, productionValue } of result.inProdMismatches) {
+      lines.push(
+        chalk.magenta(
+          `  - ${name}: production value ${JSON.stringify(productionValue)} — update inProd to true in registry`,
+        ),
+      );
+    }
+    lines.push('');
   }
 
   lines.push('');
@@ -260,7 +306,10 @@ function formatSyncReport(result: SyncResult): string {
       `  ${green('Value mismatches')}: ${result.valueMismatches.length}`,
     );
     lines.push(
-      `  ${green('Total drift')}: ${result.newInProduction.length + result.removedFromProduction.length + result.valueMismatches.length}`,
+      `  ${green('inProd mismatches')}: ${result.inProdMismatches.length}`,
+    );
+    lines.push(
+      `  ${green('Total drift')}: ${result.newInProduction.length + result.removedFromProduction.length + result.valueMismatches.length + result.inProdMismatches.length}`,
     );
     lines.push('');
   }
@@ -421,6 +470,82 @@ async function updateRegistryFile(result: SyncResult): Promise<void> {
     content = `${content.slice(0, valueStart)}${serialized}${content.slice(valueEnd)}`;
   }
 
+  // Flip inProd: false → true and update productionDefault for inProdMismatches
+  for (const { name, productionValue } of result.inProdMismatches) {
+    const entryPattern = new RegExp(`^  ${escapeRegex(name)}:\\s*\\{`, 'mu');
+    const entryMatch = entryPattern.exec(content);
+    if (!entryMatch) {
+      continue;
+    }
+
+    const entryOpenBrace = content.indexOf('{', entryMatch.index + name.length);
+    const entryEnd = findBalancedEnd(content, entryOpenBrace);
+    if (entryEnd === -1) {
+      continue;
+    }
+
+    // 1. Replace inProd: false with inProd: true within this entry
+    const inProdNeedle = 'inProd:';
+    const inProdIdx = content.indexOf(inProdNeedle, entryMatch.index);
+    if (inProdIdx !== -1 && inProdIdx < entryEnd) {
+      let tokenStart = inProdIdx + inProdNeedle.length;
+      while (tokenStart < entryEnd && /\s/u.test(content[tokenStart])) {
+        tokenStart += 1;
+      }
+      if (content.slice(tokenStart, tokenStart + 5) === 'false') {
+        content = `${content.slice(0, tokenStart)}true${content.slice(tokenStart + 5)}`;
+      }
+    }
+
+    // 2. Update productionDefault (re-find entryEnd after possible content change)
+    const entryEnd2 = findBalancedEnd(
+      content,
+      content.indexOf('{', entryMatch.index + name.length),
+    );
+    if (entryEnd2 === -1) {
+      continue;
+    }
+    const pdNeedle = 'productionDefault:';
+    const pdIndex = content.indexOf(pdNeedle, entryMatch.index);
+    if (pdIndex === -1 || pdIndex >= entryEnd2) {
+      continue;
+    }
+    const serialized = serializeValue(productionValue, 4);
+    let valueStart = pdIndex + pdNeedle.length;
+    while (valueStart < entryEnd2 && /\s/u.test(content[valueStart])) {
+      valueStart += 1;
+    }
+    let valueEnd: number;
+    const firstChar = content[valueStart];
+    if (firstChar === '{' || firstChar === '[') {
+      valueEnd = findBalancedEnd(content, valueStart);
+      if (valueEnd === -1) {
+        continue;
+      }
+    } else {
+      valueEnd = valueStart;
+      while (valueEnd < entryEnd2 && content[valueEnd] !== ',') {
+        const ch = content[valueEnd];
+        if (ch === "'" || ch === '"') {
+          valueEnd += 1;
+          while (valueEnd < entryEnd2 && content[valueEnd] !== ch) {
+            if (content[valueEnd] === '\\') {
+              valueEnd += 1;
+            }
+            valueEnd += 1;
+          }
+          if (valueEnd < entryEnd2) {
+            valueEnd += 1;
+          }
+        } else {
+          valueEnd += 1;
+        }
+      }
+    }
+    content =
+      content.slice(0, valueStart) + serialized + content.slice(valueEnd);
+  }
+
   // Remove entries no longer in production using brace-depth counting
   for (const { name } of result.removedFromProduction) {
     const entryPattern = new RegExp(`^  ${escapeRegex(name)}:\\s*\\{`, 'mu');
@@ -505,6 +630,12 @@ async function main(): Promise<void> {
   try {
     const productionResponse = await fetchProductionFlags();
     const result = compareProductionFlagsToRegistry(productionResponse);
+
+    fs.writeFileSync(
+      'sync-report.json',
+      JSON.stringify(result, null, 2),
+      'utf-8',
+    );
 
     console.log(formatSyncReport(result));
 

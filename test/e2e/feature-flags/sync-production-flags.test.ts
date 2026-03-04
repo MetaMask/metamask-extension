@@ -64,7 +64,27 @@ describe('compareProductionFlagsToRegistry', () => {
     expect(result.newInProduction).toHaveLength(0);
     expect(result.removedFromProduction).toHaveLength(0);
     expect(result.valueMismatches).toHaveLength(0);
+    expect(result.inProdMismatches).toHaveLength(0);
     expect(result.hasDrift).toBe(false);
+  });
+
+  it('detects inProd mismatch when flag exists with inProd false but is in production', () => {
+    const registryMap = {}; // Filtered registry excludes inProd: false
+    const prodResponse = [{ staleInProdFlag: true }];
+    const fullRegistryOverride = { staleInProdFlag: { inProd: false } };
+
+    const result = compareProductionFlagsToRegistry(
+      prodResponse,
+      registryMap,
+      fullRegistryOverride,
+    );
+
+    expect(result.inProdMismatches).toContainEqual({
+      name: 'staleInProdFlag',
+      productionValue: true,
+    });
+    expect(result.newInProduction).toHaveLength(0);
+    expect(result.hasDrift).toBe(true);
   });
 
   it('skips excluded flags (e.g. extensionUpdatePromptMinimumVersion)', () => {
@@ -75,6 +95,7 @@ describe('compareProductionFlagsToRegistry', () => {
     expect(result.valueMismatches).toHaveLength(0);
     expect(result.newInProduction).toHaveLength(0);
     expect(result.removedFromProduction).toHaveLength(0);
+    expect(result.inProdMismatches).toHaveLength(0);
     expect(result.hasDrift).toBe(false);
   });
 
