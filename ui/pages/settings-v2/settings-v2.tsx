@@ -3,7 +3,6 @@ import React, { Suspense } from 'react';
 import {
   Routes as RouterRoutes,
   Route,
-  matchPath,
   useNavigate,
   useLocation,
 } from 'react-router-dom';
@@ -160,7 +159,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
               if (key === FIRST_TAB_PATH && pathname === SETTINGS_V2_ROUTE) {
                 return true;
               }
-              return Boolean(matchPath(key, pathname));
+              return pathname.startsWith(`${key}/`);
             }}
             onSelect={(key) => navigate(key)}
           />
