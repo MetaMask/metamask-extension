@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
+import { RecommendedAction } from '@metamask/phishing-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -12,7 +13,6 @@ import {
 } from '../../../shared/constants/metametrics';
 import configureStore from '../../store/store';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
-import { RecommendedAction } from '@metamask/phishing-controller';
 import RevealSeedPage from './reveal-seed';
 
 const mockUseParams = jest.fn().mockReturnValue({});
