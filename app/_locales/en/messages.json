@@ -5715,8 +5715,12 @@
     "description": "$1 is the amount and $2 is the asset symbol for successful margin removal"
   },
   "perpsToastOrderFailed": {
-    "message": "Failed to place order",
+    "message": "Order failed",
     "description": "Error toast text shown when placing a perps order fails"
+  },
+  "perpsToastOrderFailedDescriptionFallback": {
+    "message": "Your funds have been returned to you",
+    "description": "Fallback order failure subtitle shown when no specific order error is available"
   },
   "perpsToastOrderFilled": {
     "message": "Order filled",

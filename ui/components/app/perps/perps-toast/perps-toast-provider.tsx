@@ -180,6 +180,18 @@ const PERPS_TOAST_PRESENTATION_BY_VARIANT: Record<
   },
 };
 
+const PERPS_ORDER_FAILED_PRESENTATION: PerpsToastPresentation = {
+  variant: 'error',
+  icon: {
+    type: 'avatar-icon',
+    name: IconName.Warning,
+    color: TextColor.errorDefault,
+    backgroundColor: BackgroundColor.errorMuted,
+    size: AvatarIconSize.Md,
+    dataTestId: 'perps-toast-icon-warning',
+  },
+};
+
 const PERPS_TOAST_PRESENTATION_BY_KEY: Record<
   PerpsToastKey,
   PerpsToastPresentation
@@ -191,7 +203,7 @@ const PERPS_TOAST_PRESENTATION_BY_KEY: Record<
     PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
   [PERPS_TOAST_KEYS.MARGIN_REMOVE_SUCCESS]:
     PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
-  [PERPS_TOAST_KEYS.ORDER_FAILED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.error,
+  [PERPS_TOAST_KEYS.ORDER_FAILED]: PERPS_ORDER_FAILED_PRESENTATION,
   [PERPS_TOAST_KEYS.ORDER_FILLED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
   [PERPS_TOAST_KEYS.ORDER_PLACED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
   [PERPS_TOAST_KEYS.ORDER_SUBMITTED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.info,

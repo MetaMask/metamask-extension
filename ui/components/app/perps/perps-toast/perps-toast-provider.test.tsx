@@ -324,14 +324,16 @@ describe('PerpsToastProvider', () => {
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Order Failed' }),
     );
-    expect(screen.getByText('Failed to place order')).toBeInTheDocument();
-    expect(screen.getByTestId('perps-toast-icon-warning')).toBeInTheDocument();
+    expect(screen.getByText('Order failed')).toBeInTheDocument();
+    const warningIcon = screen.getByTestId('perps-toast-icon-warning');
+    expect(warningIcon).toHaveClass('mm-avatar-icon');
+    expect(warningIcon).toHaveClass('mm-avatar-base--size-md');
 
     act(() => {
       jest.advanceTimersByTime(5000);
     });
 
-    expect(screen.queryByText('Failed to place order')).not.toBeInTheDocument();
+    expect(screen.queryByText('Order failed')).not.toBeInTheDocument();
   });
 
   it('maps margin add success key to success variant with auto-hide', () => {
