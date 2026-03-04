@@ -58,8 +58,6 @@ const isUSBSupported = !process.env.IN_TEST && window.navigator.usb;
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
-const LEDGER_FIREFOX_NOT_SUPPORTED_URL =
-  'https://support.metamask.io/more-web3/wallets/how-to-connect-a-trezor-or-ledger-hardware-wallet/';
 const LEDGER_LIVE_APP_URL = 'https://www.ledger.com/ledger-live';
 
 type DeviceButtonConfig = {
@@ -491,7 +489,7 @@ const SelectHardware = ({
             {t('ledgerFirefoxNotSupportedDescription1')}
             <ButtonLink
               className="hw-connect__href-link"
-              href={LEDGER_FIREFOX_NOT_SUPPORTED_URL}
+              href={ZENDESK_URLS.HARDWARE_CONNECTION_TREZOR_LEDGER}
               externalLink
             >
               {t('ledgerFirefoxNotSupportedLink')}
