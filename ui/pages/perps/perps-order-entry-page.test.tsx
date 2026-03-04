@@ -468,6 +468,35 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastTradeSuccess',
+          description: expect.stringMatching(/^Your PnL is -?\d+\.\d{2}%$/u),
+        }),
+      );
+    });
+
+    it('falls back to close subtitle when close PnL cannot be calculated', async () => {
+      mockSearchParams.set('mode', 'close');
+      mockLivePositions.mockReturnValue({
+        positions: [
+          {
+            ...mockPositions[0],
+            marginUsed: '0',
+            unrealizedPnl: 'not-a-number',
+            returnOnEquity: 'not-a-number',
+          },
+        ],
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastTradeSuccess',
           description: expect.stringMatching(/^Long [^ ]+ ETH$/u),
         }),
       );

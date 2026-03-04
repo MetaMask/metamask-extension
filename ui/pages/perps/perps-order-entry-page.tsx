@@ -50,6 +50,7 @@ import {
   safeDecodeURIComponent,
 } from '../../components/app/perps/utils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
+import { useFormatters } from '../../hooks/useFormatters';
 import {
   OrderEntry,
   DirectionTabs,
@@ -152,6 +153,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
+  const { formatPercentWithMinThreshold } = useFormatters();
   const { replacePerpsToastByKey } = usePerpsToast();
 
   const { positions: allPositions } = usePerpsLivePositions();
@@ -425,6 +427,41 @@ const PerpsOrderEntryPage: React.FC = () => {
     ]);
   }, [orderCalculations, orderFormState, orderMode, position, t]);
 
+  const getCloseSuccessToastDescription = useCallback(() => {
+    if (orderMode !== 'close' || !position) {
+      return undefined;
+    }
+
+    const unrealizedPnl = parseFloat(position.unrealizedPnl);
+    const marginUsed = parseFloat(position.marginUsed);
+    let pnlRatio: number | undefined;
+
+    if (
+      !Number.isNaN(unrealizedPnl) &&
+      !Number.isNaN(marginUsed) &&
+      marginUsed !== 0
+    ) {
+      pnlRatio = unrealizedPnl / marginUsed;
+    } else {
+      const returnOnEquity = parseFloat(position.returnOnEquity);
+      if (!Number.isNaN(returnOnEquity)) {
+        pnlRatio =
+          Math.abs(returnOnEquity) > 1 ? returnOnEquity / 100 : returnOnEquity;
+      }
+    }
+
+    if (pnlRatio === undefined || Number.isNaN(pnlRatio)) {
+      return undefined;
+    }
+
+    const formattedPnl = formatPercentWithMinThreshold(pnlRatio);
+    if (!formattedPnl) {
+      return undefined;
+    }
+
+    return t('perpsToastClosePnlSubtitle', [formattedPnl]);
+  }, [formatPercentWithMinThreshold, orderMode, position, t]);
+
   const handleFormStateChange = useCallback((formState: OrderFormState) => {
     setOrderFormState(formState);
   }, []);
@@ -451,6 +488,8 @@ const PerpsOrderEntryPage: React.FC = () => {
     setPendingOrderToastDescription(null);
 
     const tradeActionToastDescription = getTradeActionToastDescription();
+    const closeSuccessToastDescription =
+      getCloseSuccessToastDescription() ?? tradeActionToastDescription;
 
     replacePerpsToastByKey({
       key: ORDER_MODE_TOAST_KEYS[orderMode].inProgress,
@@ -475,8 +514,8 @@ const PerpsOrderEntryPage: React.FC = () => {
         }
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.TRADE_SUCCESS,
-          ...(tradeActionToastDescription
-            ? { description: tradeActionToastDescription }
+          ...(closeSuccessToastDescription
+            ? { description: closeSuccessToastDescription }
             : {}),
         });
       } else if (orderMode === 'modify' && position) {
@@ -550,7 +589,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     position,
     currentPrice,
     getTradeActionToastDescription,
-    controller,
+    getCloseSuccessToastDescription,
     handleBackClick,
     replacePerpsToastByKey,
   ]);

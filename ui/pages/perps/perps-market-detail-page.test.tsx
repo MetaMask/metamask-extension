@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
@@ -704,6 +704,35 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(presetButton as HTMLElement);
 
       expect(screen.getByDisplayValue('49,500.00')).toBeInTheDocument();
+    });
+
+    it('shows TP/SL success toast without in-progress toast when saving', async () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
+
+      await act(async () => {
+        fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+      });
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsUpdatePositionTPSL',
+          [
+            expect.objectContaining({
+              symbol: 'ETH',
+            }),
+          ],
+        );
+      });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastUpdateSuccess',
+      });
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith({
+        key: 'perpsToastUpdateInProgress',
+      });
     });
   });
 

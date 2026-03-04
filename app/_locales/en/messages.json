@@ -5702,6 +5702,10 @@
     "message": "Closing position",
     "description": "In-progress toast text shown while closing a perps position"
   },
+  "perpsToastClosePnlSubtitle": {
+    "message": "Your PnL is $1",
+    "description": "$1 is the formatted PnL percentage for a closed position"
+  },
   "perpsToastMarginAddSuccess": {
     "message": "Added $1 $2 margin",
     "description": "$1 is the amount and $2 is the asset symbol for successful margin addition"
