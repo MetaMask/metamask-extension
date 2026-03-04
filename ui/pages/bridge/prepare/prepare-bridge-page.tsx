@@ -95,11 +95,7 @@ import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
-import {
-  isStockToken as checkIsStockToken,
-  isTokenTradingOpenAt,
-} from '../hooks/useRWAToken';
-import { getIsRWATokensEnabled } from '../../../selectors/rwa/feature-flags';
+import { useRWAToken } from '../hooks/useRWAToken';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -122,17 +118,16 @@ const PrepareBridgePage = ({
 
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
-  const isRWAEnabled = useSelector(getIsRWATokensEnabled);
 
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
   const toChain = useSelector(getToChain);
 
-  const isFromStockToken = isRWAEnabled && checkIsStockToken(fromToken);
-  const isToStockToken = isRWAEnabled && checkIsStockToken(toToken);
-  const isFromMarketClosed =
-    isFromStockToken && !isTokenTradingOpenAt(fromToken);
-  const isToMarketClosed = isToStockToken && !isTokenTradingOpenAt(toToken);
+  const { isStockToken, isTokenTradingOpen } = useRWAToken();
+  const isFromStockToken = isStockToken(fromToken);
+  const isToStockToken = isStockToken(toToken);
+  const isFromMarketClosed = isFromStockToken && !isTokenTradingOpen(fromToken);
+  const isToMarketClosed = isToStockToken && !isTokenTradingOpen(toToken);
   const isStockMarketClosed = isFromMarketClosed || isToMarketClosed;
 
   const isSwap = fromToken.chainId === toToken.chainId;
