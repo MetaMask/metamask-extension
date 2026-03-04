@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import type { BridgeToken } from '../../../ducks/bridge/types';
+import { getIsRWATokensEnabled } from '../../../selectors/rwa/feature-flags';
 
 type DateLike = string | null | undefined | Date;
 type RWATokenLike = Pick<BridgeToken, 'rwaData'> | undefined;
@@ -80,6 +82,7 @@ export const isTokenTradingOpenAt = (
 };
 
 export function useRWAToken() {
+  const isRWAEnabled = useSelector(getIsRWATokensEnabled);
   const [nowMs, setNowMs] = useState(() => Date.now());
 
   useEffect(() => {
@@ -88,13 +91,23 @@ export function useRWAToken() {
     });
   }, []);
 
+  const isStockTokenFlagGated = useCallback(
+    (token?: RWATokenLike) => isRWAEnabled && isStockToken(token),
+    [isRWAEnabled],
+  );
+
   const isTokenTradingOpen = useCallback(
-    (token?: RWATokenLike) => isTokenTradingOpenAt(token, nowMs),
-    [nowMs],
+    (token?: RWATokenLike) => {
+      if (!isRWAEnabled) {
+        return true;
+      }
+      return isTokenTradingOpenAt(token, nowMs);
+    },
+    [isRWAEnabled, nowMs],
   );
 
   return {
-    isStockToken,
+    isStockToken: isStockTokenFlagGated,
     isTokenTradingOpen,
   };
 }

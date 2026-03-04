@@ -19,6 +19,14 @@ const buildToken = (
   },
 });
 
+const buildState = (rwaTokensEnabled: boolean) => ({
+  metamask: {
+    remoteFeatureFlags: { rwaTokensEnabled },
+  },
+});
+
+const enabledState = buildState(true);
+
 describe('useRWAToken', () => {
   beforeEach(() => {
     jest.useFakeTimers();
@@ -30,7 +38,10 @@ describe('useRWAToken', () => {
   });
 
   it('returns false for non-stock tokens', () => {
-    const { result } = renderHookWithProvider(() => useRWAToken());
+    const { result } = renderHookWithProvider(
+      () => useRWAToken(),
+      enabledState,
+    );
 
     expect(
       result.current.isStockToken(buildToken({ instrumentType: 'currency' })),
@@ -38,19 +49,28 @@ describe('useRWAToken', () => {
   });
 
   it('returns true for stock tokens', () => {
-    const { result } = renderHookWithProvider(() => useRWAToken());
+    const { result } = renderHookWithProvider(
+      () => useRWAToken(),
+      enabledState,
+    );
 
     expect(result.current.isStockToken(buildToken())).toBe(true);
   });
 
   it('returns true while the market is open', () => {
-    const { result } = renderHookWithProvider(() => useRWAToken());
+    const { result } = renderHookWithProvider(
+      () => useRWAToken(),
+      enabledState,
+    );
 
     expect(result.current.isTokenTradingOpen(buildToken())).toBe(true);
   });
 
   it('returns false when market timestamps are invalid', () => {
-    const { result } = renderHookWithProvider(() => useRWAToken());
+    const { result } = renderHookWithProvider(
+      () => useRWAToken(),
+      enabledState,
+    );
 
     expect(
       result.current.isTokenTradingOpen(
@@ -66,7 +86,10 @@ describe('useRWAToken', () => {
 
   it('supports overnight market windows', () => {
     jest.setSystemTime(new Date('2026-03-02T23:30:00.000Z'));
-    const { result } = renderHookWithProvider(() => useRWAToken());
+    const { result } = renderHookWithProvider(
+      () => useRWAToken(),
+      enabledState,
+    );
 
     expect(
       result.current.isTokenTradingOpen(
@@ -81,7 +104,10 @@ describe('useRWAToken', () => {
   });
 
   it('returns false while inside a pause window', () => {
-    const { result } = renderHookWithProvider(() => useRWAToken());
+    const { result } = renderHookWithProvider(
+      () => useRWAToken(),
+      enabledState,
+    );
 
     expect(
       result.current.isTokenTradingOpen(
@@ -96,7 +122,10 @@ describe('useRWAToken', () => {
   });
 
   it('treats a pause with only an end time as active until that end', () => {
-    const { result } = renderHookWithProvider(() => useRWAToken());
+    const { result } = renderHookWithProvider(
+      () => useRWAToken(),
+      enabledState,
+    );
 
     expect(
       result.current.isTokenTradingOpen(
@@ -112,7 +141,10 @@ describe('useRWAToken', () => {
 
   it('updates market status when the internal clock ticks', () => {
     jest.setSystemTime(new Date('2026-03-02T12:00:00.000Z'));
-    const { result } = renderHookWithProvider(() => useRWAToken());
+    const { result } = renderHookWithProvider(
+      () => useRWAToken(),
+      enabledState,
+    );
     const token = buildToken({
       market: {
         nextOpen: '2026-03-02T11:00:00.000Z',
@@ -128,5 +160,28 @@ describe('useRWAToken', () => {
     });
 
     expect(result.current.isTokenTradingOpen(token)).toBe(false);
+  });
+
+  describe('when rwaTokensEnabled is false', () => {
+    const disabledState = buildState(false);
+
+    it('isStockToken returns false even for stock tokens', () => {
+      const { result } = renderHookWithProvider(
+        () => useRWAToken(),
+        disabledState,
+      );
+
+      expect(result.current.isStockToken(buildToken())).toBe(false);
+    });
+
+    it('isTokenTradingOpen returns true regardless of market hours', () => {
+      jest.setSystemTime(new Date('2026-03-02T03:00:00.000Z'));
+      const { result } = renderHookWithProvider(
+        () => useRWAToken(),
+        disabledState,
+      );
+
+      expect(result.current.isTokenTradingOpen(buildToken())).toBe(true);
+    });
   });
 });
