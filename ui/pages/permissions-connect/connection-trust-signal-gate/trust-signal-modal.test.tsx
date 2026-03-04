@@ -1,12 +1,12 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import messages from '../../../../app/_locales/en/messages.json';
 import { TrustSignalModal } from './trust-signal-modal';
 
 const MOCK_I18N: Record<string, string> = {
-  trustSignalBlockTitle: 'Malicious site detected',
-  trustSignalBlockDescription:
-    'If you connect to this site, you could lose all your assets.',
-  trustSignalContinueAnyway: 'Connect Anyway',
+  trustSignalBlockTitle: messages.trustSignalBlockTitle.message,
+  trustSignalBlockDescription: messages.trustSignalBlockDescription.message,
+  trustSignalContinueAnyway: messages.trustSignalContinueAnyway.message,
 };
 
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -35,7 +35,9 @@ describe('TrustSignalModal', () => {
   it('shows "Malicious site detected" title', () => {
     const { getByText } = render(<TrustSignalModal {...defaultProps} />);
 
-    expect(getByText('Malicious site detected')).toBeInTheDocument();
+    expect(
+      getByText(messages.trustSignalBlockTitle.message),
+    ).toBeInTheDocument();
   });
 
   it('calls onContinue when "Connect Anyway" is clicked', () => {
