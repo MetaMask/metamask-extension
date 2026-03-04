@@ -863,7 +863,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   rwaTokensEnabled: {
     name: 'rwaTokensEnabled',
     type: FeatureFlagType.Remote,
-    inProd: true,
+    inProd: false,
     productionDefault: false,
     status: FeatureFlagStatus.Active,
   },
