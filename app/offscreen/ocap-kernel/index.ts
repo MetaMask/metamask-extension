@@ -1,7 +1,7 @@
 import type { JsonRpcCall } from '@metamask/kernel-utils';
 import {
   makeIframeVatWorker,
-  VatWorkerServer,
+  PlatformServicesServer,
 } from '@metamask/kernel-browser-runtime';
 import { Logger } from '@metamask/logger';
 import type { DuplexStream } from '@metamask/streams';
@@ -31,11 +31,10 @@ export async function runKernel(): Promise<void> {
 
   console.log('~~~ Initializing kernel... ~~~');
 
-  const { vatWorkerService, kernelStream } = await makeKernelWorker();
+  const kernelStream = await makeKernelWorker();
 
   // Handle messages from the background script / kernel
   await Promise.all([
-    vatWorkerService.start(),
     kernelStream.write({
       jsonrpc: '2.0',
       id: '1',
@@ -55,10 +54,9 @@ export async function runKernel(): Promise<void> {
  *
  * @returns The message port stream for worker communication
  */
-async function makeKernelWorker(): Promise<{
-  kernelStream: DuplexStream<JsonRpcResponse, JsonRpcCall>;
-  vatWorkerService: VatWorkerServer;
-}> {
+async function makeKernelWorker(): Promise<
+  DuplexStream<JsonRpcResponse, JsonRpcCall>
+> {
   const worker = new Worker('ocap-kernel/kernel-worker/index.js', {
     type: 'module',
   });
@@ -72,21 +70,16 @@ async function makeKernelWorker(): Promise<{
     JsonRpcCall
   >(port, isJsonRpcResponse);
 
-  const vatWorkerService = VatWorkerServer.make(
-    worker as PostMessageTarget,
-    (vatId) =>
-      makeIframeVatWorker({
-        id: vatId,
-        iframeUri: 'ocap-kernel/vat/iframe.html',
-        getPort: initializeMessageChannel,
-        logger: logger.subLogger({
-          tags: ['iframe-vat-worker', vatId],
-        }),
+  await PlatformServicesServer.make(worker as PostMessageTarget, (vatId) =>
+    makeIframeVatWorker({
+      id: vatId,
+      iframeUri: 'ocap-kernel/vat/iframe.html',
+      getPort: initializeMessageChannel,
+      logger: logger.subLogger({
+        tags: ['iframe-vat-worker', vatId],
       }),
+    }),
   );
 
-  return {
-    kernelStream,
-    vatWorkerService,
-  };
+  return kernelStream;
 }
