@@ -45,6 +45,8 @@ import {
 import {
   getExternalServicesOnboardingToggleState,
   getFirstTimeFlowType,
+  getIsSocialLoginFlow,
+  getSocialLoginType,
   getParticipateInMetaMetrics,
   getPreferences,
   getDeferredDeepLink,
@@ -53,6 +55,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsEventAccountType,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
@@ -95,6 +98,8 @@ export default function CreationSuccessful() {
   );
   const { trackEvent } = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const socialLoginType = useSelector(getSocialLoginType);
   const isSidePanelEnabled = useSidePanelEnabled();
   const preferences = useSelector(getPreferences);
   const isSidePanelSetAsDefault = preferences?.useSidePanelAsDefault ?? false;
@@ -297,13 +302,27 @@ export default function CreationSuccessful() {
     if (!isOnboardingCompleted) {
       // before onboarding completion, we track the MetricsOptIn/Out event
 
+      const isNewWallet =
+        firstTimeFlowType === FirstTimeFlowType.create ||
+        firstTimeFlowType === FirstTimeFlowType.socialCreate;
+      const baseAccountType = isNewWallet
+        ? MetaMetricsEventAccountType.Default
+        : MetaMetricsEventAccountType.Imported;
+      const accountType =
+        isSocialLoginFlow && socialLoginType
+          ? `${baseAccountType}_${String(socialLoginType).toLowerCase()}`
+          : baseAccountType;
+
       trackEvent(
         {
           category: MetaMetricsEventCategory.Onboarding,
           event: participateInMetaMetrics
             ? MetaMetricsEventName.MetricsOptIn
             : MetaMetricsEventName.MetricsOptOut,
-          properties: {},
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: accountType,
+          },
         },
         {
           isOptIn: !participateInMetaMetrics, // Force the event to be tracked even if participateInMetaMetrics is false
@@ -371,6 +390,8 @@ export default function CreationSuccessful() {
     dispatch,
     externalServicesOnboardingToggleState,
     isSidePanelEnabled,
+    isSocialLoginFlow,
+    socialLoginType,
     navigate,
     isFromSettingsSecurity,
     firstTimeFlowType,
