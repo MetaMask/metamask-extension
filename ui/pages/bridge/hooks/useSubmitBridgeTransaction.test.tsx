@@ -38,13 +38,14 @@ jest.mock('../../../ducks/bridge/utils', () => ({
     maxPriorityFeePerGas: '0x0',
   })),
 }));
+const mockEnsureDeviceReady = jest.fn().mockResolvedValue(true);
 jest.mock('../../../contexts/hardware-wallets/HardwareWalletContext', () => {
   return {
     ...jest.requireActual(
       '../../../contexts/hardware-wallets/HardwareWalletContext',
     ),
     useHardwareWalletActions: () => ({
-      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+      ensureDeviceReady: () => mockEnsureDeviceReady(),
     }),
   };
 });
@@ -165,7 +166,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       jest.clearAllMocks();
     });
 
-    it('executes bridge transaction', async () => {
+    it('executes EVM bridge transaction', async () => {
       const store = makeMockStore();
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
@@ -182,9 +183,10 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
       // Assert
       expect(submitTxSpy.mock.calls).toMatchSnapshot();
+      expect(result.current.isSubmitting).toBe(false);
     });
 
-    it('executes bridge transaction with no approval', async () => {
+    it('executes EVM bridge transaction with no approval', async () => {
       const store = makeMockStore();
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
@@ -201,9 +203,10 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
       // Assert
       expect(submitTxSpy.mock.calls).toMatchSnapshot();
+      expect(result.current.isSubmitting).toBe(false);
     });
 
-    it('routes to activity tab', async () => {
+    it('routes to activity tab after EVM bridge transaction', async () => {
       const store = makeMockStore();
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
@@ -226,6 +229,8 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
           state: { stayOnHomePage: true },
         },
       );
+      expect(result.current.isSubmitting).toBe(false);
+      expect(submitTxSpy).toHaveBeenCalled();
     });
 
     it('routes to awaiting signatures with requestId for hardware wallets', async () => {
@@ -261,6 +266,39 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
           requestId,
         )}`,
       );
+      expect(result.current.isSubmitting).toBe(false);
+      expect(submitTxSpy).not.toHaveBeenCalled();
+    });
+
+    it('returns early if hardware device is not ready', async () => {
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      });
+      mockEnsureDeviceReady.mockResolvedValue(false);
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      // Execute
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+        );
+      });
+
+      expect(result.current.isSubmitting).toBe(false);
+      expect(submitTxSpy).not.toHaveBeenCalled();
+      expect(mockUseNavigate).not.toHaveBeenCalled();
     });
   });
 });

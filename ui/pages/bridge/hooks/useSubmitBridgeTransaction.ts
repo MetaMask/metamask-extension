@@ -117,8 +117,9 @@ export default function useSubmitBridgeTransaction() {
       }
     } catch (e) {
       captureException(e);
-      setIsSubmitting(false);
       return;
+    } finally {
+      setIsSubmitting(false);
     }
 
     if (hardwareWalletUsed) {
@@ -132,6 +133,7 @@ export default function useSubmitBridgeTransaction() {
           )}`
         : `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`;
       navigate(awaitingUrl);
+      return;
     }
 
     // Execute transaction(s)
@@ -155,27 +157,22 @@ export default function useSubmitBridgeTransaction() {
             ),
           ),
         );
-        navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-          replace: true,
-          state: { stayOnHomePage: true },
-        });
-        return;
-      }
-
-      await dispatch(
-        await submitBridgeTx(
-          fromAccount.address,
-          quoteResponse,
-          smartTransactionsEnabled,
-          getQuotesReceivedProperties(
+      } else {
+        await dispatch(
+          await submitBridgeTx(
+            fromAccount.address,
             quoteResponse,
-            warnings,
-            true,
-            recommendedQuote,
-            fromTokenBalanceInUsd,
+            smartTransactionsEnabled,
+            getQuotesReceivedProperties(
+              quoteResponse,
+              warnings,
+              true,
+              recommendedQuote,
+              fromTokenBalanceInUsd,
+            ),
           ),
-        ),
-      );
+        );
+      }
     } catch (e) {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
