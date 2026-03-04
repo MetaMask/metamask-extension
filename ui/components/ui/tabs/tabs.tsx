@@ -14,7 +14,12 @@ function startTransition(
 ) {
   if (document.startViewTransition) {
     document.documentElement.dataset.tabTransitionDirection = direction;
-    document.startViewTransition(update);
+
+    const transition = document.startViewTransition(update);
+
+    transition.finished.then(() => {
+      delete document.documentElement.dataset.tabTransitionDirection;
+    });
   } else {
     update();
   }
@@ -133,8 +138,11 @@ export const Tabs = <TKey extends string = string>({
       {subHeader}
       <Box
         role="tabpanel"
-        style={animated ? { viewTransitionName: 'tab-content' } : undefined}
         {...tabContentProps}
+        style={{
+          ...tabContentProps?.style,
+          ...(animated ? { viewTransitionName: 'tab-content' } : undefined),
+        }}
       >
         {renderActiveTabContent()}
       </Box>
