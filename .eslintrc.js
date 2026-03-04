@@ -187,6 +187,11 @@ module.exports = {
           },
           { selector: 'enumMember', format: ['PascalCase'] },
           {
+            selector: 'function',
+            modifiers: ['exported'],
+            format: ['camelCase', 'PascalCase'],
+          },
+          {
             selector: 'import',
             format: ['camelCase', 'PascalCase', 'snake_case', 'UPPER_CASE'],
           },
@@ -583,7 +588,7 @@ module.exports = {
       files: ['development/**/*.js', 'test/helpers/setup-helper.js'],
       rules: {
         'n/no-process-exit': 'off',
-        'n/shebang': 'off',
+        'n/hashbang': 'off',
       },
     },
     /**

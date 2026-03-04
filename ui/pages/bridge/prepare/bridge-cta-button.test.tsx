@@ -5,11 +5,13 @@ import {
   getNativeAssetForChainId,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
+import { userEvent } from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import * as bridgeSelectors from '../../../ducks/bridge/selectors';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import {
@@ -68,7 +70,7 @@ describe('BridgeCTAButton', () => {
 
     expect(container).toMatchSnapshot();
 
-    expect(getByText('Select token')).toBeInTheDocument();
+    expect(getByText(messages.swapSelectToken.message)).toBeInTheDocument();
   });
 
   it('should render the component when amount is missing', () => {
@@ -94,7 +96,7 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Select amount')).toBeInTheDocument();
+    expect(getByText(messages.bridgeEnterAmount.message)).toBeInTheDocument();
   });
 
   it('should render the component when amount and dest token is missing', () => {
@@ -125,7 +127,7 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Select amount')).toBeInTheDocument();
+    expect(getByText(messages.bridgeEnterAmount.message)).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -155,7 +157,7 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Select amount')).toBeInTheDocument();
+    expect(getByText(messages.bridgeEnterAmount.message)).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -188,8 +190,27 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Swap')).toBeInTheDocument();
+    expect(getByText(messages.swap.message)).toBeInTheDocument();
     expect(getByRole('button')).not.toBeDisabled();
+  });
+
+  it('clears declined state when fetching new quotes', async () => {
+    const onFetchNewQuotes = jest.fn();
+    const mockStore = createBridgeMockStore({
+      bridgeSliceOverrides: {
+        wasTxDeclined: true,
+      },
+    });
+    const store = configureStore(mockStore);
+    const { getByText } = renderWithProvider(
+      <BridgeCTAButton onFetchNewQuotes={onFetchNewQuotes} />,
+      store,
+    );
+
+    await userEvent.click(getByText(messages.bridgeFetchNewQuotes.message));
+
+    expect(onFetchNewQuotes).toHaveBeenCalledTimes(1);
+    expect(store.getState().bridge.wasTxDeclined).toBe(false);
   });
 
   it('should render hardware wallet connect label with wallet name', () => {
@@ -271,17 +292,17 @@ describe('BridgeCTAButton', () => {
       'disable',
       'there is insufficient gas for quote',
       { isInsufficientGasForQuote: true },
-      'Insufficient funds',
+      messages.insufficientFundsSend.message,
     ],
     ['enable', 'the estimated return is low', { isEstimatedReturnLow: true }],
-    ['enable', 'there are no validation errors', {}, 'Swap'],
+    ['enable', 'there are no validation errors', {}, messages.swap.message],
   ])(
     'should %s the component when quotes are loading and %s',
     async (
       status: 'disable' | 'enable',
       _: string,
       validationErrors: Record<string, boolean>,
-      buttonLabel: string = 'Swap',
+      buttonLabel: string = messages.swap.message,
     ) => {
       const mockStore = createBridgeMockStore({
         featureFlagOverrides: {
@@ -359,7 +380,7 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Swap')).toBeInTheDocument();
+    expect(getByText(messages.swap.message)).toBeInTheDocument();
     expect(getByRole('button')).not.toBeDisabled();
     expect(getByRole('button')).toMatchInlineSnapshot(`
       <button

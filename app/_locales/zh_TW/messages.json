@@ -30,9 +30,6 @@
   "activity": {
     "message": "交易紀錄"
   },
-  "activityLog": {
-    "message": "活動紀錄"
-  },
   "addAcquiredTokens": {
     "message": "將您已經擁有的代幣顯示於 MetaMask"
   },
@@ -62,10 +59,6 @@
   },
   "alerts": {
     "message": "提醒"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "允許 $1 提款或最多花費以下額度：",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "數量"
@@ -297,9 +290,6 @@
   "currentLanguage": {
     "message": "目前語言"
   },
-  "customSpendLimit": {
-    "message": "自訂花費限制"
-  },
   "customToken": {
     "message": "自訂代幣"
   },
@@ -389,9 +379,6 @@
   "editNonceMessage": {
     "message": "這是一個進階功能，請小心使用。"
   },
-  "editPermission": {
-    "message": "編輯權限"
-  },
   "enableAutoDetect": {
     "message": " Enable Autodetect"
   },
@@ -408,9 +395,6 @@
   },
   "ensUnknownError": {
     "message": "ENS Lookup failed."
-  },
-  "enterMaxSpendLimit": {
-    "message": "輸入最大花費限制"
   },
   "enterPasswordContinue": {
     "message": "請輸入密碼"
@@ -549,9 +533,6 @@
   "infuraBlockedNotification": {
     "message": "MetaMask 無法連線到區塊鏈主機。在$1查看可能的原因。",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
-  },
-  "initialTransactionConfirmed": {
-    "message": "交易已確認"
   },
   "insufficientBalance": {
     "message": "餘額不足。"
@@ -828,9 +809,6 @@
   "privateNetwork": {
     "message": "私有網路"
   },
-  "proposedApprovalLimit": {
-    "message": "提議的允許量限制"
-  },
   "provide": {
     "message": "提供"
   },
@@ -851,12 +829,6 @@
   },
   "rejectAll": {
     "message": "全部拒絕"
-  },
-  "rejectTxsDescription": {
-    "message": "您將批次拒絕 $1 筆交易。"
-  },
-  "rejectTxsN": {
-    "message": "拒絕 $1 筆交易"
   },
   "rejected": {
     "message": "拒絕"
@@ -985,25 +957,6 @@
   "speedUpCancellation": {
     "message": "加速這個取消請求"
   },
-  "speedUpTransaction": {
-    "message": "加速這筆交易"
-  },
-  "spendLimitInsufficient": {
-    "message": "花費額度上限不足"
-  },
-  "spendLimitInvalid": {
-    "message": "花費額度上限無效；必須是正值"
-  },
-  "spendLimitPermission": {
-    "message": "花費額度上限的權限"
-  },
-  "spendLimitRequestedBy": {
-    "message": "$1 請求的花費額度上限",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "花費額度上限太大"
-  },
   "stateLogError": {
     "message": "在取得狀態紀錄時發生錯誤。"
   },
@@ -1099,38 +1052,11 @@
   "transaction": {
     "message": "交易"
   },
-  "transactionCancelAttempted": {
-    "message": "交易取消請求，手續費 $1 @ $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "交易成功取消 @ $2"
-  },
-  "transactionConfirmed": {
-    "message": "交易確認 @ $2。"
-  },
-  "transactionCreated": {
-    "message": "交易建立，數量 $1 @ $2。"
-  },
-  "transactionDropped": {
-    "message": "交易被捨棄 @ $2。"
-  },
   "transactionError": {
     "message": "交易失敗。合約程式碼拋出錯誤。"
   },
   "transactionErrorNoContract": {
     "message": "嘗試在非合約位址呼叫合約函式。"
-  },
-  "transactionErrored": {
-    "message": "交易遇到錯誤。"
-  },
-  "transactionResubmitted": {
-    "message": "交易重新送出，手續費提高至 $1 @ $2"
-  },
-  "transactionSubmitted": {
-    "message": "交易送出，手續費 $1 @ $2。"
-  },
-  "transactionUpdated": {
-    "message": "交易狀態更新於 $2。"
   },
   "transfer": {
     "message": "交易"
@@ -1218,8 +1144,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "需要准許存取攝影鏡頭才能啟用此功能"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "您的助憶詞"
   }
 }

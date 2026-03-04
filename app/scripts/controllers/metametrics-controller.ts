@@ -62,7 +62,9 @@ import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/const
 import {
   checkAlarmExists,
   generateRandomId,
+  getDeviceType,
   getInstallType,
+  getOs,
   getPlatform,
   isValidDate,
 } from '../lib/util';
@@ -78,14 +80,12 @@ import {
   type EndTraceRequest,
   type TraceCallback,
 } from '../../../shared/lib/trace';
-
-///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { ENVIRONMENT } from '../../../development/build/constants';
-///: END:ONLY_INCLUDE_IF
-
 import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
 import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
+import { getTokensControllerAllTokens } from '../../../shared/modules/selectors/assets-migration';
+import { isMain } from '../../../shared/lib/build-types';
 import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -943,15 +943,14 @@ export default class MetaMetricsController extends BaseController<
       this.setMarketingCampaignCookieId(null);
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
     if (
+      isMain() &&
       this.#environment !== ENVIRONMENT.DEVELOPMENT &&
       metaMetricsId !== null &&
       participateInMetaMetrics !== null
     ) {
       this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
     }
-    ///: END:ONLY_INCLUDE_IF
 
     return metaMetricsId;
   }
@@ -1428,7 +1427,7 @@ export default class MetaMetricsController extends BaseController<
         metamaskState.allNfts,
       ).length,
       [MetaMetricsUserTrait.NumberOfTokens]: this.#getNumberOfTokens(
-        metamaskState.allTokens,
+        getTokensControllerAllTokens({ metamask: metamaskState }),
       ),
       [MetaMetricsUserTrait.NumberOfHDEntropies]:
         this.#getNumberOfHDEntropies(metamaskState) ??
@@ -1461,6 +1460,8 @@ export default class MetaMetricsController extends BaseController<
       )?.[0]?.[1]?.profile?.profileId,
       [MetaMetricsUserTrait.Platform]: getPlatform(),
       [MetaMetricsUserTrait.InstallType]: getInstallType(),
+      [MetaMetricsUserTrait.DeviceType]: getDeviceType(),
+      [MetaMetricsUserTrait.Os]: getOs(),
     };
 
     if (!this.previousUserTraits && metamaskState.participateInMetaMetrics) {

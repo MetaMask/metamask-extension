@@ -59,6 +59,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.CurrencyController.currencyRates.ETH.conversionDate',
   'data.CurrencyController.currencyRates.ETH.conversionRate',
   'data.NetworkController.networkConfigurationsByChainId.0x539.lastUpdatedAt',
+  'data.NotificationServicesController.metamaskNotificationsList',
   'data.PhishingController.c2DomainBlocklistLastFetched',
   'data.PhishingController.hotlistLastFetched',
   'data.PhishingController.stalelistLastFetched',
@@ -68,6 +69,8 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.ProfileMetricsController.initialDelayEndTimestamp',
   'data.RemoteFeatureFlagController.cacheTimestamp',
   'data.RemoteFeatureFlagController.remoteFeatureFlags',
+  'data.RemoteFeatureFlagController.thresholdCache',
+  'data.RemoteFeatureFlagController.rawRemoteFeatureFlags',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountsController.internalAccounts.accounts',
   'data.AuthenticationController',

@@ -96,6 +96,7 @@ const mockGetHasAccountOptedIn = jest.fn();
 const mockLinkRewards = jest.fn();
 const mockSubmitShieldSubscriptionCryptoApproval = jest.fn();
 const mockClearLastSelectedPaymentMethod = jest.fn();
+const mockSetPendingRedirectRoute = jest.fn();
 const mockSetShieldSubscriptionError = jest.fn();
 
 const rootMessenger: RootMessenger = new Messenger({
@@ -178,6 +179,10 @@ rootMessenger.registerActionHandler(
   mockClearLastSelectedPaymentMethod,
 );
 rootMessenger.registerActionHandler(
+  'AppStateController:setPendingRedirectRoute',
+  mockSetPendingRedirectRoute,
+);
+rootMessenger.registerActionHandler(
   'AppStateController:setShieldSubscriptionError',
   mockSetShieldSubscriptionError,
 );
@@ -203,6 +208,7 @@ rootMessenger.delegate({
     'NetworkController:getState',
     'RemoteFeatureFlagController:getState',
     'AppStateController:getState',
+    'AppStateController:setPendingRedirectRoute',
     'AppStateController:setShieldSubscriptionError',
     'MetaMetricsController:trackEvent',
     'SubscriptionController:getState',
@@ -320,6 +326,12 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
     expect(mockPlatform.openTab).toHaveBeenCalledWith({
       url: mockCheckoutSessionUrl,
     });
+
+    expect(mockSetPendingRedirectRoute).toHaveBeenCalledTimes(2);
+    expect(mockSetPendingRedirectRoute).toHaveBeenNthCalledWith(1, {
+      path: '/shield-plan',
+    });
+    expect(mockSetPendingRedirectRoute).toHaveBeenNthCalledWith(2, null);
   });
 
   it('should include the reward account id if the primary account is opted in to rewards and the season is active', async () => {

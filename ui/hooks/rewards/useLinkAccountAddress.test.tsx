@@ -11,6 +11,23 @@ import {
 import { OptInStatusDto } from '../../../shared/types/rewards';
 import { useLinkAccountAddress } from './useLinkAccountAddress';
 
+// Mock useMultichainSelector hook
+jest.mock('../useMultichainSelector', () => ({
+  useMultichainSelector: jest.fn(() => '0x1'), // Return mainnet chain ID
+}));
+
+// Mock usePrimaryWalletGroupAccounts hook
+const mockPrimaryWalletGroupAccounts = {
+  current: {
+    accounts: [] as InternalAccount[],
+    accountGroupId: undefined as string | undefined,
+  },
+};
+
+jest.mock('./usePrimaryWalletGroupAccounts', () => ({
+  usePrimaryWalletGroupAccounts: () => mockPrimaryWalletGroupAccounts.current,
+}));
+
 // Mock store actions used by the hook
 jest.mock('../../store/actions', () => ({
   rewardsIsOptInSupported: jest.fn(() => () => true),
@@ -24,6 +41,7 @@ jest.mock('../../store/actions', () => ({
         success: boolean;
       }[],
   ),
+  getRewardsHasAccountOptedIn: jest.fn(() => async () => false),
 }));
 
 jest.mock('../../ducks/rewards', () => ({
@@ -40,20 +58,34 @@ jest.mock(
   }),
 );
 
+jest.mock('../../helpers/utils/rewards-utils', () => ({
+  formatAccountToCaipAccountId: jest.fn(
+    (address: string, chainId: string) => `eip155:${chainId}:${address}`,
+  ),
+}));
+
 const {
   rewardsIsOptInSupported,
   rewardsGetOptInStatus,
   rewardsLinkAccountsToSubscriptionCandidate,
+  getRewardsHasAccountOptedIn,
 } = jest.requireMock('../../store/actions') as {
   rewardsIsOptInSupported: jest.Mock;
   rewardsGetOptInStatus: jest.Mock;
   rewardsLinkAccountsToSubscriptionCandidate: jest.Mock;
+  getRewardsHasAccountOptedIn: jest.Mock;
 };
 
 const { setRewardsAccountLinkedTimestamp } = jest.requireMock(
   '../../ducks/rewards',
 ) as {
   setRewardsAccountLinkedTimestamp: jest.Mock;
+};
+
+const { getAccountTypeCategory } = jest.requireMock(
+  '../../pages/multichain-accounts/account-details/account-type-utils',
+) as {
+  getAccountTypeCategory: jest.Mock;
 };
 
 // MetaMetrics provider container
@@ -70,6 +102,22 @@ const Container = ({ children }: { children: React.ReactNode }) => (
   </MetaMetricsContext.Provider>
 );
 
+const mockSoftwareAccounts: InternalAccount[] = [
+  {
+    id: 'acc-1',
+    address: '0x111',
+    metadata: {
+      name: 'Account 1',
+      keyring: { type: 'HD Key Tree' },
+      importTime: Date.now(),
+    },
+    options: {},
+    methods: [],
+    type: 'eip155:eoa',
+    scopes: ['eip155:1'],
+  },
+];
+
 describe('useLinkAccountAddress', () => {
   let mockAccount: InternalAccount;
 
@@ -81,9 +129,18 @@ describe('useLinkAccountAddress', () => {
       name: 'Test Account',
     });
 
+    // Reset mutable mock values
+    mockPrimaryWalletGroupAccounts.current = {
+      accounts: mockSoftwareAccounts,
+      accountGroupId: 'entropy:test/0',
+    };
+
     (rewardsIsOptInSupported as jest.Mock).mockImplementation(() => () => true);
     (rewardsGetOptInStatus as jest.Mock).mockImplementation(
       () => async () => ({ ois: [false], sids: [null] }) as OptInStatusDto,
+    );
+    (getRewardsHasAccountOptedIn as jest.Mock).mockImplementation(
+      () => async () => false,
     );
     (
       rewardsLinkAccountsToSubscriptionCandidate as jest.Mock
@@ -94,6 +151,7 @@ describe('useLinkAccountAddress', () => {
           success: boolean;
         }[],
     );
+    (getAccountTypeCategory as jest.Mock).mockReturnValue('evm');
   });
 
   describe('Initial State', () => {
@@ -136,9 +194,10 @@ describe('useLinkAccountAddress', () => {
       expect(rewardsGetOptInStatus).toHaveBeenCalledWith({
         addresses: [mockAccount.address],
       });
-      expect(rewardsLinkAccountsToSubscriptionCandidate).toHaveBeenCalledWith([
-        mockAccount,
-      ]);
+      expect(rewardsLinkAccountsToSubscriptionCandidate).toHaveBeenCalledWith(
+        [mockAccount],
+        mockSoftwareAccounts,
+      );
 
       // Verify events were tracked
       const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
@@ -214,9 +273,8 @@ describe('useLinkAccountAddress', () => {
 
   describe('Account already opted in', () => {
     it('returns success immediately when account is already opted in', async () => {
-      (rewardsGetOptInStatus as jest.Mock).mockImplementation(
-        () => async () =>
-          ({ ois: [true], sids: ['sub-123'] }) as OptInStatusDto,
+      (getRewardsHasAccountOptedIn as jest.Mock).mockImplementation(
+        () => async () => true,
       );
 
       const { result } = renderHookWithProvider(
@@ -238,6 +296,7 @@ describe('useLinkAccountAddress', () => {
       // Should check opt-in status but not link
       expect(rewardsIsOptInSupported).toHaveBeenCalled();
       expect(rewardsGetOptInStatus).toHaveBeenCalled();
+      expect(getRewardsHasAccountOptedIn).toHaveBeenCalled();
       expect(rewardsLinkAccountsToSubscriptionCandidate).not.toHaveBeenCalled();
 
       // Should not track linking events
@@ -492,6 +551,96 @@ describe('useLinkAccountAddress', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: 'evm',
       });
+    });
+  });
+
+  describe('Invalid CAIP account ID handling', () => {
+    it('returns false and sets error when caipAccountId is invalid', async () => {
+      const { formatAccountToCaipAccountId } = jest.requireMock(
+        '../../helpers/utils/rewards-utils',
+      ) as { formatAccountToCaipAccountId: jest.Mock };
+
+      formatAccountToCaipAccountId.mockReturnValueOnce(null);
+
+      const { result } = renderHookWithProvider(
+        () => useLinkAccountAddress(),
+        {},
+        undefined,
+        Container,
+      );
+
+      let linkResult: boolean | undefined;
+      await act(async () => {
+        linkResult = await result.current.linkAccountAddress(mockAccount);
+      });
+
+      expect(linkResult).toBe(false);
+      expect(result.current.isError).toBe(true);
+      expect(rewardsLinkAccountsToSubscriptionCandidate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Primary wallet group accounts', () => {
+    it('passes primary wallet group accounts to linking function', async () => {
+      const primaryAccounts: InternalAccount[] = [
+        {
+          id: 'primary-acc-1',
+          address: '0xPrimary111',
+          metadata: {
+            name: 'Primary Account 1',
+            keyring: { type: 'HD Key Tree' },
+            importTime: Date.now(),
+          },
+          options: {},
+          methods: [],
+          type: 'eip155:eoa',
+          scopes: ['eip155:1'],
+        },
+      ];
+
+      mockPrimaryWalletGroupAccounts.current = {
+        accounts: primaryAccounts,
+        accountGroupId: 'entropy:primary/0',
+      };
+
+      const { result } = renderHookWithProvider(
+        () => useLinkAccountAddress(),
+        {},
+        undefined,
+        Container,
+      );
+
+      await act(async () => {
+        await result.current.linkAccountAddress(mockAccount);
+      });
+
+      expect(rewardsLinkAccountsToSubscriptionCandidate).toHaveBeenCalledWith(
+        [mockAccount],
+        primaryAccounts,
+      );
+    });
+
+    it('handles empty primary wallet group accounts', async () => {
+      mockPrimaryWalletGroupAccounts.current = {
+        accounts: [],
+        accountGroupId: undefined,
+      };
+
+      const { result } = renderHookWithProvider(
+        () => useLinkAccountAddress(),
+        {},
+        undefined,
+        Container,
+      );
+
+      await act(async () => {
+        await result.current.linkAccountAddress(mockAccount);
+      });
+
+      expect(rewardsLinkAccountsToSubscriptionCandidate).toHaveBeenCalledWith(
+        [mockAccount],
+        [],
+      );
     });
   });
 });

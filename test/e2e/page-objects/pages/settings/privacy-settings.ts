@@ -10,6 +10,9 @@ class PrivacySettings {
   private readonly autoDetectToken =
     '[data-testid="autoDetectTokens"] .toggle-button';
 
+  private readonly blockaidAlertsToggle =
+    '[data-testid="securityAlert"] .toggle-button';
+
   private readonly closeRevealSrpDialogButton = {
     text: tEn('close'),
     tag: 'button',
@@ -18,15 +21,10 @@ class PrivacySettings {
   private readonly confirmDeleteMetaMetricsDataButton =
     '[data-testid="clear-metametrics-data"]';
 
-  private readonly copiedSrpExclamation = {
-    text: tEn('copiedExclamation'),
-    tag: 'button',
-  };
+  private readonly copiedSrpExclamation =
+    '[data-testid="reveal-seed-copy-success-toast-banner-base"]';
 
-  private readonly copySrpButton = {
-    text: tEn('copyToClipboard'),
-    tag: 'button',
-  };
+  private readonly copySrpButton = '[data-testid="reveal-seed-copy-button"]';
 
   private readonly dataCollectionForMarketingToggle =
     '[data-testid="data-collection-for-marketing-toggle"] .toggle-button';
@@ -61,7 +59,7 @@ class PrivacySettings {
   };
 
   // reveal SRP related locators
-  private readonly displayedSrpText = '[data-testid="srp_text"]';
+  private readonly displayedSrpText = '[data-testid="recovery-phrase-chip-0"]';
 
   private readonly holdToRevealSRPButton = {
     text: tEn('holdToRevealSRP'),
@@ -82,10 +80,10 @@ class PrivacySettings {
   private readonly passwordChangeErrorToast =
     '[data-testid="password-change-toast-error"]';
 
-  private readonly revealSrpNextButton = {
-    text: 'Next',
-    tag: 'button',
-  };
+  private readonly revealSrpContinueButton =
+    '[data-testid="reveal-seed-password-continue"]';
+
+  private readonly tapToRevealButton = '[data-testid="recovery-phrase-reveal"]';
 
   private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
 
@@ -95,11 +93,11 @@ class PrivacySettings {
     '[data-testid="srp-quiz-continue"]';
 
   private readonly revealSrpQuizGetStartedButton =
-    '[data-testid="srp-quiz-get-started"]';
+    '[data-testid="reveal-seed-quiz-get-started"]';
 
   private readonly revealSrpQuizModalTitle = {
-    text: 'Security quiz',
-    tag: 'header',
+    text: 'Reveal Secret Recovery Phrase',
+    tag: 'h4',
   };
 
   private readonly revealSrpQuizQuestionOne =
@@ -119,18 +117,21 @@ class PrivacySettings {
 
   private readonly revealSrpQuizWrongAnswerMessageOne = {
     text: 'Wrong! No one can help get your Secret Recovery Phrase back',
-    tag: 'p',
+    tag: 'h2',
   };
 
   private readonly revealSrpQuizWrongAnswerMessageTwo = {
     text: 'Nope! Never share your Secret Recovery Phrase with anyone, ever',
-    tag: 'p',
+    tag: 'h2',
   };
 
   private readonly revealSrpWrongPasswordMessage = '.mm-help-text';
 
   private readonly participateInMetaMetricsToggle =
     '[data-testid="participate-in-meta-metrics-toggle"] .toggle-button';
+
+  private readonly backToSrpListButton =
+    '[data-testid="reveal-recovery-phrase-back-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -170,9 +171,9 @@ class PrivacySettings {
     );
   }
 
-  async closeRevealSrpDialog(): Promise<void> {
-    console.log('Close reveal SRP dialog on privacy settings page');
-    await this.driver.clickElement(this.closeRevealSrpDialogButton);
+  async backToSrpList(): Promise<void> {
+    console.log('Back to SRP list on privacy settings page');
+    await this.driver.clickElement(this.backToSrpListButton);
   }
 
   /**
@@ -225,17 +226,15 @@ class PrivacySettings {
   ): Promise<void> {
     console.log('Fill password to reveal SRP on privacy settings page');
     await this.driver.fill(this.revealSrpPasswordInput, password);
-    await this.driver.clickElement(this.revealSrpNextButton);
+    await this.driver.clickElement(this.revealSrpContinueButton);
     if (expectedErrorMessage) {
       await this.driver.waitForSelector({
         css: this.revealSrpWrongPasswordMessage,
         text: expectedErrorMessage,
       });
     } else {
-      await this.driver.holdMouseDownOnElement(
-        this.holdToRevealSRPButton,
-        3000,
-      );
+      await this.driver.waitForSelector(this.tapToRevealButton);
+      await this.driver.clickElement(this.tapToRevealButton);
     }
   }
 
@@ -289,6 +288,11 @@ class PrivacySettings {
   async toggleAutodetectNft(): Promise<void> {
     console.log('Toggle autodetect NFT on privacy settings page');
     await this.driver.clickElement(this.autodetectNftToggleButton);
+  }
+
+  async toggleBlockaidAlerts(): Promise<void> {
+    console.log('Toggle blockaid alerts on privacy settings page');
+    await this.driver.clickElement(this.blockaidAlertsToggle);
   }
 
   async toggleEnsDomainResolution(): Promise<void> {
@@ -345,7 +349,7 @@ class PrivacySettings {
     console.log('Check SRP text is displayed on privacy settings page');
     await this.driver.waitForSelector({
       css: this.displayedSrpText,
-      text: expectedSrpText,
+      text: expectedSrpText.split(' ')[0],
     });
   }
 

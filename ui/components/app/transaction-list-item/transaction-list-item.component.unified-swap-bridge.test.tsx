@@ -6,6 +6,7 @@ import configureStore from 'redux-mock-store';
 import mockUnifiedSwapTxGroup from '../../../../test/data/swap/mock-unified-swap-transaction-group.json';
 import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-details.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import TransactionListItem from '.';
@@ -75,6 +76,9 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
       />,
       configureStore()(
         createBridgeMockStore({
+          metamaskStateOverrides: {
+            transactions: [mockUnifiedSwapTxGroup.primaryTransaction],
+          },
           bridgeStatusStateOverrides: {
             txHistory: {
               [mockUnifiedSwapTxGroup.primaryTransaction.id]: {
@@ -89,7 +93,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
       '?Swap USDC to USDCFailed-2 USDC-USD 0.00',
     );
-    expect(getByText('Failed')).toBeInTheDocument();
+    expect(getByText(messages.failed.message)).toBeInTheDocument();
   });
 
   it('should render pending confirmed bridge tx summary', () => {
@@ -106,6 +110,11 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
       />,
       configureStore()(
         createBridgeMockStore({
+          metamaskStateOverrides: {
+            transactions: [
+              mockBridgeTxData.transactionGroup.primaryTransaction,
+            ],
+          },
           bridgeStatusStateOverrides: {
             txHistory: {
               [srcTxMetaId]: {
@@ -140,6 +149,11 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
       />,
       configureStore()(
         createBridgeMockStore({
+          metamaskStateOverrides: {
+            transactions: [
+              mockBridgeTxData.transactionGroup.primaryTransaction,
+            ],
+          },
           bridgeStatusStateOverrides: {
             txHistory: {
               [srcTxMetaId]: {
@@ -174,6 +188,11 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
               [srcTxMetaId]: bridgeHistoryItem,
             },
           },
+          metamaskStateOverrides: {
+            transactions: [
+              mockBridgeTxData.transactionGroup.primaryTransaction,
+            ],
+          },
         }),
       ),
     );
@@ -184,13 +203,8 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
 
     fireEvent.click(getByTestId('activity-list-item'));
     expect(mockUseNavigate).toHaveBeenCalledWith(
-      '/cross-chain/tx-details/ba5f53b0-4e38-11f0-88dc-53f7e315d450',
-      {
-        state: {
-          transactionGroup: mockBridgeTxData.transactionGroup,
-          isEarliestNonce: false,
-        },
-      },
+      '/cross-chain/tx-details/0x1e9c69458ea78bb5b3a815763c8d505d09d8017cdf955f7c7ae3c2f7ba7243b0',
+      expect.any(Object),
     );
   });
 
@@ -212,6 +226,11 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
               [srcTxMetaId]: bridgeHistoryItem,
             },
           },
+          metamaskStateOverrides: {
+            transactions: [
+              mockBridgeTxData.transactionGroup.primaryTransaction,
+            ],
+          },
         }),
       ),
     );
@@ -219,17 +238,12 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
       '?Bridged to OPFailed-2 USDC-USD 0.00',
     );
-    expect(getByText('Failed')).toBeInTheDocument();
+    expect(getByText(messages.failed.message)).toBeInTheDocument();
 
     fireEvent.click(getByTestId('activity-list-item'));
     expect(mockUseNavigate).toHaveBeenCalledWith(
-      '/cross-chain/tx-details/ba5f53b0-4e38-11f0-88dc-53f7e315d450',
-      {
-        state: {
-          transactionGroup: failedTransactionGroup,
-          isEarliestNonce: false,
-        },
-      },
+      '/cross-chain/tx-details/0x1e9c69458ea78bb5b3a815763c8d505d09d8017cdf955f7c7ae3c2f7ba7243b0',
+      expect.any(Object),
     );
   });
 });
