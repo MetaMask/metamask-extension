@@ -103,7 +103,7 @@
     "lint:baseline": "node development/lint-baseline.mts",
     "lint:baseline:fix": "node development/lint-baseline.mts --fix",
     "validate-source-maps": "node ./development/sourcemap-validator.js",
-    "validate-source-maps:webpack": "tsx ./development/webpack/sourcemap-validator.cli.ts",
+    "validate-source-maps:webpack": "tsx ./development/webpack/sourcemap-validator.ts",
     "verify-locales": "node ./development/verify-locale-strings.js",
     "verify-locales:fix": "node ./development/verify-locale-strings.js --fix",
     "mozilla-lint": "addons-linter dist/firefox",
