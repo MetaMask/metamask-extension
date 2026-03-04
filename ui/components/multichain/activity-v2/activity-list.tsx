@@ -272,7 +272,7 @@ export const ActivityList = ({ filter }: Props) => {
         </>
       )}
 
-      {!isLoading && flattenedItems.length === 0 && (
+      {flattenedItems.length === 0 && (
         <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
       )}
 
