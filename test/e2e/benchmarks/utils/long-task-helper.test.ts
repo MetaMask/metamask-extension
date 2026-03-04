@@ -6,6 +6,7 @@ import type { LongTaskStepResult } from './types';
 
 jest.mock('./timer-helper', () => {
   return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     __esModule: true,
     default: jest.fn().mockImplementation((id: string) => ({
       id,

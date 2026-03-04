@@ -173,10 +173,8 @@ describe('performance-observers', () => {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).PerformanceObserver = class {
-        constructor(
-          callback: (list: { getEntries: () => object[] }) => void,
-        ) {
-          capturedCallback = callback;
+        constructor(cb: (list: { getEntries: () => object[] }) => void) {
+          capturedCallback = cb;
         }
 
         observe = mockObserve;
@@ -186,6 +184,7 @@ describe('performance-observers', () => {
 
       setupLongTaskObserver(1);
 
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       capturedCallback!({
         getEntries: () => [
           { name: 'self', duration: 120, startTime: 100 },
@@ -252,10 +251,8 @@ describe('performance-observers', () => {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).PerformanceObserver = class {
-        constructor(
-          callback: (list: { getEntries: () => object[] }) => void,
-        ) {
-          capturedCallback = callback;
+        constructor(cb: (list: { getEntries: () => object[] }) => void) {
+          capturedCallback = cb;
         }
 
         observe = jest.fn();
@@ -271,6 +268,7 @@ describe('performance-observers', () => {
         startTime: i * 100,
       }));
 
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       capturedCallback!({ getEntries: () => entries });
 
       const metrics = getLongTaskMetrics();
