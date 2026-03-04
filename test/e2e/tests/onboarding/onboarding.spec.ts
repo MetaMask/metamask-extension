@@ -7,7 +7,7 @@ import {
   isSidePanelEnabled,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
@@ -49,7 +49,7 @@ describe('MetaMask onboarding', function () {
   it("Creates a new wallet, sets up a secure password, and doesn't complete the onboarding process and refreshes the page", async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -86,7 +86,7 @@ describe('MetaMask onboarding', function () {
   it('Creates a new wallet, sets up a secure password, and completes the onboarding process', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -103,7 +103,7 @@ describe('MetaMask onboarding', function () {
   it('Imports an existing wallet, sets up a secure password, and completes the onboarding process', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withPreferencesController({
             preferences: {
               showNativeTokenAsMainBalance: true,
@@ -130,7 +130,7 @@ describe('MetaMask onboarding', function () {
   it('Attempts to import a wallet with an incorrect Secret Recovery Phrase and verifies the error message', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -161,7 +161,7 @@ describe('MetaMask onboarding', function () {
   it('Verifies error handling when entering an incorrect password during wallet creation', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -200,7 +200,7 @@ describe('MetaMask onboarding', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withPreferencesController({
             preferences: {
               showNativeTokenAsMainBalance: true,
@@ -278,7 +278,7 @@ describe('MetaMask onboarding', function () {
   it('User can turn off basic functionality in default settings', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -316,7 +316,7 @@ describe('MetaMask onboarding', function () {
     // state similar to a new state tree.
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withOnboardingController({
             completedOnboarding: false,
             firstTimeFlowType: FirstTimeFlowType.restore,
@@ -353,7 +353,7 @@ describe('MetaMask onboarding', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withAppStateController({
             deferredDeepLink: {
               createdAt: Date.now(),
@@ -403,7 +403,7 @@ describe('MetaMask onboarding', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withAppStateController({
             deferredDeepLink: {
               createdAt: Date.now(),
@@ -493,7 +493,7 @@ describe('MetaMask onboarding', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withAppStateController({
             deferredDeepLink: {
               createdAt: Date.now(),
@@ -550,7 +550,7 @@ describe('MetaMask onboarding', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withAppStateController({
             deferredDeepLink: {
               createdAt: Date.now(),

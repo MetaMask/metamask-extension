@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "अभी देखने के लिए कुछ नहीं है। अपना पहला टोकन आज ही स्वैप करें।"
   },
-  "activityLog": {
-    "message": "एक्टिविटी लॉग"
-  },
   "add": {
     "message": "जोड़ें"
   },
@@ -278,9 +275,6 @@
   },
   "addIPFSGateway": {
     "message": "अपना पसंदीदा IPFS गेटवे जोड़ें"
-  },
-  "addImportAccount": {
-    "message": "खाता या हार्डवेयर वॉलेट जोड़ें"
   },
   "addMemo": {
     "message": "मेमो जोड़ें"
@@ -653,10 +647,6 @@
   },
   "allowNotifications": {
     "message": "नोटिफिकेशंस की अनुमति दें"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "$1 को निम्नलिखित तक अमाउंट निकालने और खर्च करने की अनुमति दें:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "अमाउंट"
@@ -1616,9 +1606,6 @@
   "connectAccount": {
     "message": "खाता कनेक्ट करें"
   },
-  "connectAccountOrCreate": {
-    "message": "अकाउंट कनेक्ट करें या नया बनाएं"
-  },
   "connectAccounts": {
     "message": "खातों को कनेक्ट करें"
   },
@@ -1912,9 +1899,6 @@
   "customSlippage": {
     "message": "कस्टम"
   },
-  "customSpendLimit": {
-    "message": "खर्च की कस्टम लिमिट"
-  },
   "customToken": {
     "message": "कस्टम टोकन"
   },
@@ -2202,9 +2186,6 @@
     "message": "$1 से जानकारी",
     "description": "$1 represents the name of the snap"
   },
-  "deselectAll": {
-    "message": "सभी को अचयनित करें"
-  },
   "destinationAccountPickerNoEligible": {
     "message": "कोई योग्य अकाउंट नहीं मिला"
   },
@@ -2484,9 +2465,6 @@
   "editNonceMessage": {
     "message": "यह एक एडवांस्ड सुविधा है, सावधानी से इस्तेमाल करें।"
   },
-  "editPermission": {
-    "message": "मंजूरी संपादित करें"
-  },
   "editPermissions": {
     "message": "अनुमतियाँ बदलें"
   },
@@ -2570,9 +2548,6 @@
   },
   "enterChainId": {
     "message": "चेन ID डालें"
-  },
-  "enterMaxSpendLimit": {
-    "message": "अधिकतम खर्च की लिमिट डालें"
   },
   "enterNetworkName": {
     "message": "नेटवर्क का नाम डालें"
@@ -3365,9 +3340,6 @@
     "message": "MetaMask ब्लॉकचेन होस्ट से कनेक्ट करने में असमर्थ है। संभावित कारणों की समीक्षा करें $1।",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "नेटवर्क द्वारा आपके प्रारंभिक ट्रांसेक्शन को कन्फर्म किया गया था। वापस जाने के लिए ठीक पर क्लिक करें।"
-  },
   "insights": {
     "message": "इनसाइट्स"
   },
@@ -3550,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 गैस फीस"
-  },
-  "lastConnected": {
-    "message": "अंतिम बार जुड़ा"
   },
   "lastSold": {
     "message": "पिछली बार बेचा गया"
@@ -3786,13 +3755,6 @@
   },
   "makeAnotherSwap": {
     "message": "एक नया स्वैप बनाएं"
-  },
-  "makeSureNoOneWatching": {
-    "message": "पक्का करें कि इसे कोई भी नहीं देख रहा है",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "मैनेज करें"
   },
   "manageDefaultSettings": {
     "message": "डिफॉल्ट सेटिंग्स मैनेज करें"
@@ -5699,9 +5661,6 @@
   "productAnnouncements": {
     "message": "प्रॉडक्ट घोषणाएं"
   },
-  "proposedApprovalLimit": {
-    "message": "प्रस्तावित स्वीकृति की सीमा"
-  },
   "provide": {
     "message": "प्रदान करें"
   },
@@ -5922,18 +5881,6 @@
   "rejectAll": {
     "message": "सभी को अस्वीकार करें"
   },
-  "rejectRequestsDescription": {
-    "message": "आप $1 रिक्वेस्ट्स को बैच रूप से अस्वीकार करने वाले हैं।"
-  },
-  "rejectRequestsN": {
-    "message": "$1 रिक्वेस्ट्स को अस्वीकार करें"
-  },
-  "rejectTxsDescription": {
-    "message": "आप $1 ट्रांसेक्शनों को बैच में अस्वीकार करने वाले हैं।"
-  },
-  "rejectTxsN": {
-    "message": "$1 ट्रांसेक्शनों को अस्वीकार करें"
-  },
   "rejected": {
     "message": "अस्वीकार किया गया"
   },
@@ -6107,17 +6054,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "$1 प्रदान करता है $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask एक $1 है। इसका मतलब आप आपने SRP के मालिक हैं।",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "आपके वॉलेट और फंड तक पूरी एक्सेस।\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "गैर-अभिरक्षण वॉलेट"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6131,10 +6068,6 @@
   "revealSeedWordsWarning": {
     "message": "यह पक्का करें कि कोई भी आपकी स्क्रीन ना देख रहा हो। $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "MetaMask सपोर्ट कभी इसका रिक्वेस्ट नहीं करेगा।",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "संवेदनशील कंटेंट दिखाएं"
@@ -6484,12 +6417,6 @@
   "selectAccountToConnect": {
     "message": "कनेक्ट करने के लिए एक अकाउंट चुनें"
   },
-  "selectAccounts": {
-    "message": "इस साइट पर इस्तेमाल करने के लिए अकाउंट (एकाउंट्स) को चुनें"
-  },
-  "selectAccountsForSnap": {
-    "message": "इस Snap के साथ इस्तेमाल करने के लिए अकाउंट(एकाउंट्स) को चुनने की"
-  },
   "selectAll": {
     "message": "सभी को चुनें"
   },
@@ -6528,9 +6455,6 @@
   },
   "selectedAccountMismatch": {
     "message": "अलग खाता चुना गया"
-  },
-  "selectingAllWillAllow": {
-    "message": "सभी को चुनने से यह साइट आपके सभी चालू एकाउंट्स को देखने की अनुमति देगी। पक्का करें कि आप इस साइट पर भरोसा करते हैं।"
   },
   "send": {
     "message": "भेजें"
@@ -7671,25 +7595,6 @@
   "speedUpTooltipText": {
     "message": "नया गैस फ़ीस"
   },
-  "speedUpTransaction": {
-    "message": "इस ट्रांसेक्शन को गति दें"
-  },
-  "spendLimitInsufficient": {
-    "message": "खर्च की लिमिट कम है"
-  },
-  "spendLimitInvalid": {
-    "message": "खर्च की लिमिट ग़लत है; एक सकारात्मक संख्या होनी चाहिए"
-  },
-  "spendLimitPermission": {
-    "message": "सीमा मंजूरी को खर्च करें"
-  },
-  "spendLimitRequestedBy": {
-    "message": "$1 द्वारा अनुरोधित खर्च की लिमिट",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "खर्च की लिमिट बहुत अधिक है"
-  },
   "spender": {
     "message": "खर्च करने वाला"
   },
@@ -8524,18 +8429,6 @@
   "transaction": {
     "message": "ट्रांसेक्शन"
   },
-  "transactionCancelAttempted": {
-    "message": "$2 में $1 के गैस फ़ीस के साथ ट्रांसेक्शन कैंसिल करने की कोशिश किया गया"
-  },
-  "transactionCancelSuccess": {
-    "message": "ट्रांसेक्शन सफलतापूर्वक $2 पर कैंसिल कर दिया गया"
-  },
-  "transactionConfirmed": {
-    "message": "ट्रांसेक्शन का कन्फर्मेशन $2 पर हुआ।"
-  },
-  "transactionCreated": {
-    "message": "$2 पर $1 के मूल्य के साथ ट्रांसेक्शन बनाया गया।"
-  },
   "transactionDataFunction": {
     "message": "फंक्शन"
   },
@@ -8545,17 +8438,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "अमाउंट + फ़ीस"
   },
-  "transactionDropped": {
-    "message": "ट्रांसेक्शन $2 पर ड्रॉप किया गया।"
-  },
   "transactionError": {
     "message": "ट्रांसेक्शन में गड़बड़ी। कॉन्ट्रैक्ट कोड में अपवाद डाला गया।"
   },
   "transactionErrorNoContract": {
     "message": "एक गैर-कॉन्ट्रैक्ट वाले एड्रेस पर एक फंक्शन को कॉल करने की कोशिश की जा रही है।"
-  },
-  "transactionErrored": {
-    "message": "ट्रांसेक्शन में गड़बड़ी हुई।"
   },
   "transactionFee": {
     "message": "ट्रांसेक्शन फ़ीस"
@@ -8591,24 +8478,15 @@
   "transactionIncludesTypes": {
     "message": "इस ट्रांसेक्शन में शामिल है: $1."
   },
-  "transactionResubmitted": {
-    "message": "$2 गैस फ़ीस में $1 वृद्धि के साथ ट्रांसेक्शन फिर से सबमिट किया गया"
-  },
   "transactionSettings": {
     "message": "ट्रांसेक्शन संबंधी सेटिंग्स"
   },
   "transactionShield": {
     "message": "ट्रांसेक्शन शील्ड"
   },
-  "transactionSubmitted": {
-    "message": "$2 पर $1 के गैस फ़ीस के साथ ट्रांसेक्शन सबमिट किया गया।"
-  },
   "transactionTotalGasFee": {
     "message": "कुल गैस फीस",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "$2 पर ट्रांसेक्शन अपडेट किया गया।"
   },
   "transactions": {
     "message": "ट्रांसेक्शन्स"
@@ -9094,9 +8972,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "आपका NFT खतरे में हो सकता है"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "आपका सीक्रेट रिकवरी फ्रेज"
   },
   "yourTransactionConfirmed": {
     "message": "ट्रांसेक्शन पहले ही कन्फर्म हो चुका है"

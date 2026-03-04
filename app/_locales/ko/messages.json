@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "아직 표시할 내용이 없습니다. 첫 토큰 스왑을 시작해 보세요."
   },
-  "activityLog": {
-    "message": "활동 로그"
-  },
   "add": {
     "message": "추가"
   },
@@ -278,9 +275,6 @@
   },
   "addIPFSGateway": {
     "message": "선호하는 IPFS 게이트웨이를 추가하세요"
-  },
-  "addImportAccount": {
-    "message": "계정 또는 하드웨어 지갑 추가"
   },
   "addMemo": {
     "message": "메모 추가"
@@ -653,10 +647,6 @@
   },
   "allowNotifications": {
     "message": "알림 허용"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "$1에서 다음 금액까지 인출 및 지출하도록 허용:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "수량"
@@ -1616,9 +1606,6 @@
   "connectAccount": {
     "message": "계정 연결"
   },
-  "connectAccountOrCreate": {
-    "message": "계정 연결 또는 새 계정 만들기"
-  },
   "connectAccounts": {
     "message": "계정 연결"
   },
@@ -1912,9 +1899,6 @@
   "customSlippage": {
     "message": "사용자 지정"
   },
-  "customSpendLimit": {
-    "message": "맞춤 지출 한도"
-  },
   "customToken": {
     "message": "맞춤 토큰"
   },
@@ -2202,9 +2186,6 @@
     "message": "$1 설명",
     "description": "$1 represents the name of the snap"
   },
-  "deselectAll": {
-    "message": "모두 선택 해제"
-  },
   "destinationAccountPickerNoEligible": {
     "message": "적합한 계정을 찾을 수 없습니다"
   },
@@ -2484,9 +2465,6 @@
   "editNonceMessage": {
     "message": "이는 고급 기능으로, 주의해서 사용해야 합니다."
   },
-  "editPermission": {
-    "message": "권한 편집"
-  },
   "editPermissions": {
     "message": "권한 수정"
   },
@@ -2570,9 +2548,6 @@
   },
   "enterChainId": {
     "message": "체인 ID 입력"
-  },
-  "enterMaxSpendLimit": {
-    "message": "최대 지출 한도 입력"
   },
   "enterNetworkName": {
     "message": "네트워크 이름 입력"
@@ -3365,9 +3340,6 @@
     "message": "MetaMask이 블록체인 호스트에 연결할 수 없습니다. $1 오류 가능성을 검토하세요.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "최초 트랜잭션을 네트워크에서 컨펌했습니다. 돌아가려면 컨펌을 클릭하세요."
-  },
   "insights": {
     "message": "인사이트"
   },
@@ -3550,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 가스비"
-  },
-  "lastConnected": {
-    "message": "마지막 연결"
   },
   "lastSold": {
     "message": "최근 매도"
@@ -3786,13 +3755,6 @@
   },
   "makeAnotherSwap": {
     "message": "새 스왑 생성"
-  },
-  "makeSureNoOneWatching": {
-    "message": "다른 사람이 이 화면을 보고 있지는 않은지 확인하세요.",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "관리"
   },
   "manageDefaultSettings": {
     "message": "기본 개인정보 보호 설정 관리"
@@ -5705,9 +5667,6 @@
   "productAnnouncements": {
     "message": "제품 공지"
   },
-  "proposedApprovalLimit": {
-    "message": "제안된 승인 한도"
-  },
   "provide": {
     "message": "제공"
   },
@@ -5928,18 +5887,6 @@
   "rejectAll": {
     "message": "모두 거부"
   },
-  "rejectRequestsDescription": {
-    "message": "$1 요청 전부를 거절하려고 합니다."
-  },
-  "rejectRequestsN": {
-    "message": "$1 요청 거절"
-  },
-  "rejectTxsDescription": {
-    "message": "트랜잭션 $1개를 모두 거부합니다."
-  },
-  "rejectTxsN": {
-    "message": "트랜잭션 $1개 거부"
-  },
   "rejected": {
     "message": "거부됨"
   },
@@ -6113,17 +6060,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "$1 활용으로 $2 기능을 사용할 수 있습니다",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask는 $1입니다. 이는 회원님이 SRP의 소유자라는 의미입니다.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "지갑과 자금에 모두 액세스하세요.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "비수탁형 지갑입니다"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6137,10 +6074,6 @@
   "revealSeedWordsWarning": {
     "message": "다른 사람이 보고 있지 않은지 확인하세요. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "MetaMask 지원팀은 절대 개인 키를 알려달라고 요청하지 않습니다.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "민감한 내용 표시"
@@ -6490,12 +6423,6 @@
   "selectAccountToConnect": {
     "message": "연결할 계정 선택"
   },
-  "selectAccounts": {
-    "message": "계정 선택"
-  },
-  "selectAccountsForSnap": {
-    "message": "이 스냅을 사용할 계정을 선택하세요"
-  },
   "selectAll": {
     "message": "전체 선택"
   },
@@ -6534,9 +6461,6 @@
   },
   "selectedAccountMismatch": {
     "message": "다른 계정이 선택됨"
-  },
-  "selectingAllWillAllow": {
-    "message": "모두 선택하면 이 사이트에서 회원님의 현재 계정을 모두 볼 수 있습니다. 이 사이트를 신뢰하는지 확인하세요."
   },
   "send": {
     "message": "전송"
@@ -7677,25 +7601,6 @@
   "speedUpTooltipText": {
     "message": "신규 가스비"
   },
-  "speedUpTransaction": {
-    "message": "이 트랜잭션 가속화"
-  },
-  "spendLimitInsufficient": {
-    "message": "지출 한도 부족"
-  },
-  "spendLimitInvalid": {
-    "message": "지출 한도가 올바르지 않습니다. 지출 한도는 양수여야 합니다."
-  },
-  "spendLimitPermission": {
-    "message": "지출 한도 권한"
-  },
-  "spendLimitRequestedBy": {
-    "message": "$1에서 요청한 지출 한도",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "지출 한도가 너무 큼"
-  },
   "spender": {
     "message": "지출자"
   },
@@ -8530,18 +8435,6 @@
   "transaction": {
     "message": "트랜잭션"
   },
-  "transactionCancelAttempted": {
-    "message": "$2에서 가스비가 $1인 트랜잭션의 취소가 시도되었습니다"
-  },
-  "transactionCancelSuccess": {
-    "message": "$2에서 성공적으로 트랜잭션을 취소했습니다"
-  },
-  "transactionConfirmed": {
-    "message": "$2에서 트랜잭션이 컨펌되었습니다."
-  },
-  "transactionCreated": {
-    "message": "$2에서 $1 값으로 생성된 트랜잭션"
-  },
   "transactionDataFunction": {
     "message": "기능"
   },
@@ -8551,17 +8444,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "금액 + 요금"
   },
-  "transactionDropped": {
-    "message": "$2에서의 트랜잭션이 중단되었습니다."
-  },
   "transactionError": {
     "message": "트랜잭션 오류입니다. 계약 코드에 예외가 발생했습니다."
   },
   "transactionErrorNoContract": {
     "message": "비계약 주소에서 함수를 호출하고 있습니다."
-  },
-  "transactionErrored": {
-    "message": "트랜잭션에 오류가 발생했습니다."
   },
   "transactionFee": {
     "message": "트랜잭션 수수료"
@@ -8597,24 +8484,15 @@
   "transactionIncludesTypes": {
     "message": "이 트랜잭션에 포함된 사항: $1."
   },
-  "transactionResubmitted": {
-    "message": "$2에서 가스비를 $1(으)로 올린 트랜잭션이 다시 제출되었습니다."
-  },
   "transactionSettings": {
     "message": "트랜잭션 설정"
   },
   "transactionShield": {
     "message": "트랜잭션 실드"
   },
-  "transactionSubmitted": {
-    "message": "$2에서 가스비가 $1인 트랜잭션이 제출되었습니다."
-  },
   "transactionTotalGasFee": {
     "message": "가스비 합계",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "$2에서 트랜잭션이 업데이트되었습니다."
   },
   "transactions": {
     "message": "트랜잭션"
@@ -9100,9 +8978,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT가 위험할 수 있습니다"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "비밀복구구문"
   },
   "yourTransactionConfirmed": {
     "message": "트랜잭션이 이미 확인되었습니다"

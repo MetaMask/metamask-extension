@@ -43,6 +43,11 @@ export const WalletInitiatedHeader = () => {
       return;
     }
 
+    if (currentConfirmation.type === TransactionType.musdClaim) {
+      onCancel({ location: MetaMetricsEventLocation.Confirmation });
+      return;
+    }
+
     const isNativeSend =
       currentConfirmation.type === TransactionType.simpleSend;
     const isERC20TokenSend =

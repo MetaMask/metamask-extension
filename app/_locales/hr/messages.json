@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Trebate odabrati račun!"
   },
-  "activityLog": {
-    "message": "zapisnik aktivnosti"
-  },
   "addAcquiredTokens": {
     "message": "Dodajte tokene koje ste kupili uslugom MetaMask"
   },
@@ -302,9 +299,6 @@
     "message": "Uvezeno",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Vašu je početnu transakciju potvrdila mreža. Kliknite na U REDU za natrag."
-  },
   "insufficientBalance": {
     "message": "Nedovoljno raspoloživo stanje."
   },
@@ -484,12 +478,6 @@
   "rejectAll": {
     "message": "Odbaci sve"
   },
-  "rejectTxsDescription": {
-    "message": "Upravo ćete odbaciti skup transakcija $1."
-  },
-  "rejectTxsN": {
-    "message": "Odbaci transakcije: $1"
-  },
   "rejected": {
     "message": "Odbačeno"
   },
@@ -587,9 +575,6 @@
   "speedUpCancellation": {
     "message": "Ubrzaj ovo otkazivanje"
   },
-  "speedUpTransaction": {
-    "message": "Ubrzaj ovu transakciju"
-  },
   "stateLogError": {
     "message": "Greška u dohvaćanju zapisnika stanja."
   },
@@ -632,38 +617,11 @@
   "transaction": {
     "message": "transakcija"
   },
-  "transactionCancelAttempted": {
-    "message": "Pokušano je otkazivanje transakcije s naknadom za gorivo od $1 u $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transakcija je uspješno otkazana u $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transakcija je potvrđena u $2."
-  },
-  "transactionCreated": {
-    "message": "Stvorena je transakcija u vrijednosti od $1 u $2."
-  },
-  "transactionDropped": {
-    "message": "Transakcija je bila neuspješna u $2."
-  },
   "transactionError": {
     "message": "Greška transakcije. Iznimka u kôdu ugovora."
   },
   "transactionErrorNoContract": {
     "message": "Pokušava se pozvati funkcija na neugovornoj adresi."
-  },
-  "transactionErrored": {
-    "message": "Došlo je do greške prilikom transakcije."
-  },
-  "transactionResubmitted": {
-    "message": "Transakcija je ponovno poslana s naknadom za gorivo povećanom do vrijednosti od $1 u $2."
-  },
-  "transactionSubmitted": {
-    "message": "Transakcija je poslana s naknadom za gorivo od $1 u $2."
-  },
-  "transactionUpdated": {
-    "message": "Transakcija je ažurirana u $2."
   },
   "transfer": {
     "message": "Prenesi"
@@ -709,8 +667,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Trebate dopustiti pristupanje kameri za korištenje ovom funkcijom."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Vaša privatna početna rečenica"
   }
 }

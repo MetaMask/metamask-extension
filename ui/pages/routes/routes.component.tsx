@@ -4,7 +4,12 @@
 import classnames from 'clsx';
 import React, { Suspense, useEffect, useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { useRoutes, useLocation, useNavigationType } from 'react-router-dom';
+import {
+  useRoutes,
+  useLocation,
+  useNavigationType,
+  Navigate,
+} from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
@@ -135,6 +140,7 @@ import { MultichainReviewPermissions } from '../../components/multichain-account
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { createRouteWithLayout } from '../../layouts/route-with-layout';
+import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/modules/selectors/assets-migration';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -155,7 +161,7 @@ const UnlockPage = mmLazy(
 );
 const RestoreVaultPage = mmLazy(
   (() =>
-    import('../keychains/restore-vault.js')) as unknown as DynamicImportType,
+    import('../keychains/restore-vault.tsx')) as unknown as DynamicImportType,
 );
 const ImportSrpPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
@@ -163,17 +169,17 @@ const ImportSrpPage = mmLazy(
     import('../multi-srp/import-srp/index.ts')) as unknown as DynamicImportType,
 );
 const RevealSeedConfirmation = mmLazy(
-  (() => import('../keychains/reveal-seed.js')) as unknown as DynamicImportType,
+  (() =>
+    import('../keychains/reveal-seed.tsx')) as unknown as DynamicImportType,
 );
 const Settings = mmLazy(
   (() => import('../settings/index.js')) as unknown as DynamicImportType,
 );
-const NotificationsSettings = mmLazy(
-  (() =>
-    import(
-      '../notifications-settings/index.js'
-    )) as unknown as DynamicImportType,
+
+const NotificationsSettingsRedirect = () => (
+  <Navigate to={NOTIFICATIONS_SETTINGS_ROUTE} replace />
 );
+
 const NotificationDetails = mmLazy(
   (() =>
     import('../notification-details/index.js')) as unknown as DynamicImportType,
@@ -411,7 +417,7 @@ export default function Routes() {
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
   const currentCurrency = useAppSelector(
-    (state) => state.metamask.currentCurrency,
+    getCurrencyRateControllerCurrentCurrency,
   );
   const os = useAppSelector((state) => state.metamask.browserEnvironment?.os);
   const browser = useAppSelector(
@@ -595,8 +601,8 @@ export default function Routes() {
         basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
-        path: NOTIFICATIONS_SETTINGS_ROUTE,
-        component: NotificationsSettings,
+        path: '/notifications/settings',
+        component: NotificationsSettingsRedirect,
         layout: RootLayout,
         authenticated: true,
         basicFunctionalityOpenPageCtaKey:
@@ -663,7 +669,7 @@ export default function Routes() {
         basicFunctionalityRequired: false,
       }),
       createRouteWithLayout({
-        path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`,
+        path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
         component: CrossChainSwapTxDetails,
         layout: LegacyLayout,
         authenticated: true,
