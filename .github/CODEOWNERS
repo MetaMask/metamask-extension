@@ -147,7 +147,7 @@ ui/pages/settings/transaction-shield-tab        @MetaMask/web3auth
 app/scripts/controller-init/confirmations                                           @MetaMask/confirmations
 app/scripts/lib/ppom                                                                @MetaMask/confirmations
 app/scripts/lib/signature                                                           @MetaMask/confirmations
-app/scripts/lib/transaction/                                                        @MetaMask/confirmations
+app/scripts/lib/transaction                                                         @MetaMask/confirmations
 ui/pages/confirmations                                                              @MetaMask/confirmations
 ui/components/multichain/pages/send                                                 @MetaMask/confirmations
 ui/pages/confirmations/components/confirm/footer                                    @MetaMask/confirmations
