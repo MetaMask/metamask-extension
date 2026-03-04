@@ -110,8 +110,13 @@ export class OutputValidator {
     // Ensure score doesn't go below 0
     score = Math.max(0, score);
 
+    // Floor at 3 so small releases (e.g. hotfixes with 1-2 scenarios) aren't
+    // invalidated by a few structural issues (missing critical area, risk
+    // distribution, etc.) that don't reflect actual scenario quality.
+    const maxAcceptableIssues = Math.max(allScenarios.length, 3);
+
     return {
-      isValid: score >= 70 && issues.length < allScenarios.length,
+      isValid: score >= 70 && issues.length < maxAcceptableIssues,
       score,
       issues,
       strengths,

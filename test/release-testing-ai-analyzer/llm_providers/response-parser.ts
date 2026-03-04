@@ -27,6 +27,14 @@ const EXCLUDE_PHRASES = [
   'tsconfig',
   'linting',
   'code formatting',
+  'test runner',
+  'test fixture',
+  'test setup',
+  'test configuration',
+  'unit test',
+  'e2e test',
+  'jest',
+  'playwright',
 ] as const;
 
 /**

@@ -14,8 +14,8 @@ import type {
 const CHERRY_PICK_PATTERN =
   /release\s*\(\s*cp\s*\)|cherry-pick|release\s*\(\s*runway\s*\)|cp-\d+\.\d+/iu;
 
-/** Regex to extract target release from cherry-pick (e.g., "cp-13.20.0" -> 13.20.0) */
-const CP_VERSION_PATTERN = /cp-(\d+\.\d+\.\d+)/iu;
+/** Regex to extract target release(s) from cherry-pick (e.g., "cp-13.20.0" -> 13.20.0) */
+const CP_VERSION_PATTERN = /cp-(\d+\.\d+\.\d+)/giu;
 
 /** Regex to parse release version from PR title (e.g., "release: 13.21.0" -> 13.21.0) */
 const RELEASE_VERSION_FROM_TITLE = /release:\s*(\d+\.\d+\.\d+)/iu;
@@ -26,8 +26,8 @@ function isCherryPickCommit(commit: PullRequestCommit): boolean {
 
 /**
  * Returns true if the cherry-pick commit targets the given release version.
- * E.g., for release 13.21.0, only include commits with "cp-13.21.0" in the message.
- * Exclude "cp-13.20.0" etc. — those were for a previous release.
+ * A commit may be tagged for multiple releases (e.g., "cp-13.20.0 cp-13.20.1"),
+ * so we check all matches rather than just the first one.
  * @param commit
  * @param releaseVersion
  */
@@ -35,11 +35,11 @@ function isCherryPickForThisRelease(
   commit: PullRequestCommit,
   releaseVersion: string,
 ): boolean {
-  const match = commit.message.match(CP_VERSION_PATTERN);
-  if (!match) {
+  const matches = [...commit.message.matchAll(CP_VERSION_PATTERN)];
+  if (matches.length === 0) {
     return true; // No cp-X.Y.Z in message; include (e.g. "cherry-pick" or "release(cp)")
   }
-  return match[1] === releaseVersion;
+  return matches.some((m) => m[1] === releaseVersion);
 }
 
 export class PromptBuilder {
