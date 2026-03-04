@@ -41,12 +41,10 @@ export async function measureStepWithLongTasks(
 }
 
 /**
- * Convert step results into TimerResult[] with per-step longTaskCount
- * entries and run-level long task totals.
+ * Convert step results into TimerResult[] with run-level long task totals.
  *
- * Per-step: emits `{stepId}.longTaskCount` for each step.
- * Run-level: emits `longTaskCount`, `longTaskTotalDuration`,
- * `longTaskMaxDuration`, `tbt` aggregated across all steps.
+ * Emits `longTaskCount`, `longTaskTotalDuration`, `longTaskMaxDuration`,
+ * `tbt` aggregated across all steps.
  *
  * @param steps - Array of step results from measureStepWithLongTasks
  * @returns TimerResult array to merge into benchmark run results
@@ -54,31 +52,22 @@ export async function measureStepWithLongTasks(
 export function buildLongTaskTimerResults(
   steps: LongTaskStepResult[],
 ): TimerResult[] {
-  const results: TimerResult[] = [];
-
   let totalCount = 0;
   let totalDuration = 0;
   let maxDuration = 0;
   let totalTbt = 0;
 
   for (const step of steps) {
-    results.push({
-      id: `${step.id}.longTaskCount`,
-      duration: step.longTaskCount,
-    });
-
     totalCount += step.longTaskCount;
     totalDuration += step.longTaskTotalDuration;
     maxDuration = Math.max(maxDuration, step.longTaskMaxDuration);
     totalTbt += step.tbt;
   }
 
-  results.push(
+  return [
     { id: 'longTaskCount', duration: totalCount },
     { id: 'longTaskTotalDuration', duration: totalDuration },
     { id: 'longTaskMaxDuration', duration: maxDuration },
     { id: 'tbt', duration: totalTbt },
-  );
-
-  return results;
+  ];
 }

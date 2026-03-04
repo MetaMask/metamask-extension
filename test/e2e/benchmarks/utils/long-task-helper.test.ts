@@ -88,7 +88,7 @@ describe('long-task-helper', () => {
       ]);
     });
 
-    it('produces per-step longTaskCount and run-level aggregates for a single step', () => {
+    it('produces run-level aggregates for a single step', () => {
       const steps: LongTaskStepResult[] = [
         {
           id: 'loginStep',
@@ -103,7 +103,6 @@ describe('long-task-helper', () => {
       const results = buildLongTaskTimerResults(steps);
 
       expect(results).toEqual([
-        { id: 'loginStep.longTaskCount', duration: 3 },
         { id: 'longTaskCount', duration: 3 },
         { id: 'longTaskTotalDuration', duration: 250 },
         { id: 'longTaskMaxDuration', duration: 120 },
@@ -142,9 +141,6 @@ describe('long-task-helper', () => {
       const results = buildLongTaskTimerResults(steps);
 
       expect(results).toEqual([
-        { id: 'step_a.longTaskCount', duration: 2 },
-        { id: 'step_b.longTaskCount', duration: 5 },
-        { id: 'step_c.longTaskCount', duration: 1 },
         { id: 'longTaskCount', duration: 8 },
         { id: 'longTaskTotalDuration', duration: 660 },
         { id: 'longTaskMaxDuration', duration: 150 },
@@ -200,10 +196,7 @@ describe('long-task-helper', () => {
 
       const results = buildLongTaskTimerResults(steps);
 
-      expect(results).toContainEqual({
-        id: 'fast_step.longTaskCount',
-        duration: 0,
-      });
+      expect(results).toHaveLength(4);
       expect(results).toContainEqual({
         id: 'longTaskCount',
         duration: 2,
