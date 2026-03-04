@@ -935,7 +935,7 @@ export default function Routes() {
   const renderRoutes = () => {
     const routes = (
       <Suspense fallback={null}>
-        <AnimatePresence>
+        <AnimatePresence custom={location.pathname}>
           <div style={{ display: 'contents' }} key={location.pathname}>
             {routeElements}
           </div>

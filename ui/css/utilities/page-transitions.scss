@@ -14,7 +14,7 @@
 
 @keyframes page-enter {
   from {
-    opacity: 0;
+    opacity: 0.5;
     transform: scale(0.98);
   }
 
@@ -31,7 +31,7 @@
   }
 
   to {
-    opacity: 0;
+    opacity: 0.5;
     transform: scale(0.98);
   }
 }
