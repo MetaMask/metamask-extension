@@ -242,6 +242,13 @@ class FixtureBuilderV2 {
     numberOfDapps?: number;
     chainIds?: number[];
   } = {}): this {
+    const MAX_DAPPS = 3;
+    if (numberOfDapps < 1 || numberOfDapps > MAX_DAPPS) {
+      throw new Error(
+        `numberOfDapps must be between 1 and ${MAX_DAPPS}, got ${numberOfDapps}`,
+      );
+    }
+
     const selectedAccount = account
       ? account.toLowerCase()
       : DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
