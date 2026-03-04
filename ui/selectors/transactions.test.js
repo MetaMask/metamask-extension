@@ -30,7 +30,6 @@ import {
   incomingTxListSelectorAllChains,
   selectedAddressTxListSelectorAllChain,
   selectedAddressTxListSelector,
-  musdConversionRequiredTransactionIdsSetSelector,
   transactionSubSelectorAllChains,
   transactionsSelectorAllChains,
 } from './transactions';
@@ -947,81 +946,6 @@ describe('Transaction Selectors', () => {
       const result = incomingTxListSelectorAllChains(state);
 
       expect(result).toStrictEqual([]);
-    });
-  });
-
-  describe('musdConversionRequiredTransactionIdsSetSelector', () => {
-    it('returns empty ids and hashes when no musdConversion transactions have requiredTransactionIds', () => {
-      const state = {
-        metamask: {
-          transactions: [
-            {
-              id: 'tx1',
-              type: TransactionType.simpleSend,
-              txParams: { from: '0xSelectedAddress' },
-            },
-            {
-              id: 'tx2',
-              type: TransactionType.musdConversion,
-              txParams: { from: '0xSelectedAddress' },
-            },
-          ],
-        },
-      };
-
-      const result = musdConversionRequiredTransactionIdsSetSelector(state);
-
-      expect(result).toHaveProperty('ids');
-      expect(result).toHaveProperty('hashes');
-      expect(result.ids).toBeInstanceOf(Set);
-      expect(result.hashes).toBeInstanceOf(Set);
-      expect(result.ids.size).toBe(0);
-      expect(result.hashes.size).toBe(0);
-    });
-
-    it('returns ids and hashes from musdConversion requiredTransactionIds only', () => {
-      const state = {
-        metamask: {
-          transactions: [
-            {
-              id: 'parent',
-              type: TransactionType.musdConversion,
-              requiredTransactionIds: ['required-1', 'required-2'],
-              txParams: { from: '0xSelectedAddress' },
-            },
-            {
-              id: 'required-1',
-              hash: '0xabc',
-              type: TransactionType.contractInteraction,
-              txParams: { from: '0xSelectedAddress' },
-            },
-            {
-              id: 'required-2',
-              hash: '0xdef',
-              type: TransactionType.contractInteraction,
-              txParams: { from: '0xSelectedAddress' },
-            },
-            {
-              id: 'other',
-              type: TransactionType.relayDeposit,
-              requiredTransactionIds: ['relay-required'],
-              txParams: { from: '0xSelectedAddress' },
-            },
-          ],
-        },
-      };
-
-      const result = musdConversionRequiredTransactionIdsSetSelector(state);
-
-      expect(result.ids).toBeInstanceOf(Set);
-      expect(result.hashes).toBeInstanceOf(Set);
-      expect(result.ids.size).toBe(2);
-      expect(result.ids.has('required-1')).toBe(true);
-      expect(result.ids.has('required-2')).toBe(true);
-      expect(result.ids.has('relay-required')).toBe(false);
-      expect(result.hashes.size).toBe(2);
-      expect(result.hashes.has('0xabc')).toBe(true);
-      expect(result.hashes.has('0xdef')).toBe(true);
     });
   });
 

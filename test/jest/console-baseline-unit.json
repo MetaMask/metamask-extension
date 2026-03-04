@@ -2339,10 +2339,6 @@
       "Reselect: Input stability warnings": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/confirmations/components/info/musd-claim-info/musd-claim-info.test.tsx": {
-      "Reselect: Identity function warnings": 5,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/confirmations/components/max-base-fee-input/max-base-fee-input.test.tsx": {
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 2,

@@ -55,12 +55,12 @@ jest.mock('../../../../../../store/actions', () => ({
   }),
 }));
 
-jest.mock('../../../../../store/background-connection', () => ({
-  ...jest.requireActual('../../../../../store/background-connection'),
+jest.mock('../../../../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../../../../store/background-connection'),
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
-jest.mock('../../../../../components/app/musd/merkl-client', () => ({
+jest.mock('../../../../../../components/app/musd/merkl-client', () => ({
   getClaimedAmountFromContract: jest.fn().mockResolvedValue(null),
 }));
 
