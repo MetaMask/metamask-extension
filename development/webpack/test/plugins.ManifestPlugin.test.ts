@@ -252,11 +252,11 @@ describe('ManifestPlugin', () => {
       manifestPlugin.apply(compiler);
       await promise;
 
-      assert.deepStrictEqual(Object.keys(compilation.assets).sort(), [
-        'chrome/filename.js',
+      assert.deepStrictEqual(Object.keys(compilation.assets), [
         'chrome/manifest.json',
-        'firefox/filename.js',
+        'chrome/filename.js',
         'firefox/manifest.json',
+        'firefox/filename.js',
         'sourcemaps/filename.js.map',
       ]);
     });

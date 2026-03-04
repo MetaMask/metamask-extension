@@ -25,7 +25,7 @@ type Assets = Compilation['assets'];
 const NAME = 'ManifestPlugin';
 const BROWSER_TEMPLATE_RE = /\[browser\]/gu;
 const SOURCEMAPS_DIRECTORY = 'sourcemaps';
-const SOURCEMAP_FILENAME_RE = /\.map(?:\..+)?$/u;
+const SOURCEMAP_FILENAME_RE = /\.map$/u;
 
 /**
  * Adds the given asset to the zip file
@@ -219,39 +219,41 @@ export class ManifestPlugin<Z extends boolean> {
   ): void {
     // we need to wait to delete assets until after we've zipped them all
     const assetDeletions = new Set<string>();
-    const sourceMapAssets = new Set<string>();
     const moveSourceMapsToDedicatedDirectory =
       compilation.options.devtool === 'hidden-source-map';
     const { browsers } = options;
     const assetEntries = Object.entries(assets);
+
     browsers.forEach((browser) => {
       const manifest = this.manifests.get(browser) as sources.Source;
       compilation.emitAsset(join(browser, 'manifest.json'), manifest, {
         javascriptModule: false,
         contentType: 'application/json',
       });
-      for (const [name, asset] of assetEntries) {
-        // move the assets to their final browser-relative locations
-        const assetDetails = compilation.getAsset(name) as Readonly<Asset>;
-
-        const isSourceMapAsset =
-          moveSourceMapsToDedicatedDirectory &&
-          SOURCEMAP_FILENAME_RE.test(name);
-
-        if (isSourceMapAsset) {
-          const sourceMapPath = join(SOURCEMAPS_DIRECTORY, name);
-          if (!sourceMapAssets.has(sourceMapPath)) {
-            compilation.emitAsset(sourceMapPath, asset, assetDetails.info);
-            sourceMapAssets.add(sourceMapPath);
-          }
-          assetDeletions.add(name);
-          continue;
-        }
-
-        compilation.emitAsset(join(browser, name), asset, assetDetails.info);
-        assetDeletions.add(name);
-      }
     });
+
+    for (const [name, asset] of assetEntries) {
+      // move the assets to their final browser-relative locations
+      const assetDetails = compilation.getAsset(name) as Readonly<Asset>;
+      const isSourceMapAsset =
+        moveSourceMapsToDedicatedDirectory && SOURCEMAP_FILENAME_RE.test(name);
+
+      if (isSourceMapAsset) {
+        compilation.emitAsset(
+          join(SOURCEMAPS_DIRECTORY, name),
+          asset,
+          assetDetails.info,
+        );
+        assetDeletions.add(name);
+        continue;
+      }
+
+      browsers.forEach((browser) => {
+        compilation.emitAsset(join(browser, name), asset, assetDetails.info);
+      });
+      assetDeletions.add(name);
+    }
+
     // delete the assets after we've zipped them all
     assetDeletions.forEach((assetName) => compilation.deleteAsset(assetName));
   }

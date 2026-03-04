@@ -1,8 +1,9 @@
 /**
  * @file Validates source maps for the webpack-built extension.
  *
- * Discovers all .js bundles in dist/chrome that have a .map file, then for each
- * bundle finds "new Error" in the built code and verifies the source map
+ * Discovers all .js bundles in dist/chrome that have a .map file in the
+ * configured location (sibling or dist/sourcemaps), then for each bundle finds "new Error"
+ * in the built code and verifies the source map
  * correctly maps those positions back to the original source containing "new Error".
  * If it's not working, it may error or print minified garbage.
  *
@@ -21,8 +22,17 @@ import { SourceMapConsumer } from 'source-map';
 import { codeFrameColumns } from '@babel/code-frame';
 
 const PLATFORM = 'chrome';
+const SOURCEMAPS_DIRNAME = 'sourcemaps';
+const DEFAULT_MAP_LOCATION = 'sibling';
 
 const TARGET_STRING = 'new Error';
+
+export const MAP_LOCATIONS = ['sibling', 'sourcemaps'] as const;
+export type MapLocation = (typeof MAP_LOCATIONS)[number];
+
+export type SourceMapValidatorOptions = {
+  mapLocation: MapLocation;
+};
 
 /**
  * Returns true if the bundle line at the given position is likely a comment
@@ -97,8 +107,16 @@ export type FilePair = {
 /**
  * Entry point: discovers all webpack bundles in dist/chrome, validates each
  * bundle's source map, and exits with code 1 if any validation fails.
+ *
+ * @param options - Source map validation options.
+ * @param options.mapLocation - Where map files are expected for each bundle.
  */
-export async function main(): Promise<void> {
+export async function main(
+  options: SourceMapValidatorOptions = {
+    mapLocation: DEFAULT_MAP_LOCATION,
+  },
+): Promise<void> {
+  const { mapLocation } = options;
   const chromeDir = join(process.cwd(), 'dist', PLATFORM);
   let chromeDirExists = false;
   try {
@@ -115,10 +133,12 @@ export async function main(): Promise<void> {
     process.exit(1);
   }
 
-  const pairs = await discoverWebpackBundles();
+  const pairs = await discoverWebpackBundles({ mapLocation });
   if (pairs.length === 0) {
+    const searchedLocation =
+      mapLocation === 'sibling' ? 'dist/chrome/' : 'dist/sourcemaps/';
     console.error(
-      'SourcemapValidator (webpack) - no .js+.map pairs found in dist/chrome/. Run a webpack build first and ensure bundles and their .map files are present. Exiting with code 1.',
+      `SourcemapValidator (webpack) - no .js+.map pairs found using map location "${mapLocation}" (${searchedLocation}). Run a webpack build first and ensure bundles and their .map files are present. Exiting with code 1.`,
     );
     process.exit(1);
   }
@@ -146,13 +166,23 @@ export async function main(): Promise<void> {
 }
 
 /**
- * Recursively finds all .js files in dist/chrome that have a sibling .map file.
+ * Recursively finds all .js files in dist/chrome that have a .map file in the
+ * configured location.
  * Skips directories whose names start with '_' or equal 'vendor'.
  *
+ * @param options - Source map discovery options.
+ * @param options.mapLocation - Where map files are expected for each bundle.
  * @returns Sorted array of { jsPath, mapPath, label } for each bundle (label is path relative to dist/chrome).
  */
-export async function discoverWebpackBundles(): Promise<FilePair[]> {
-  const chromeDir = join(process.cwd(), 'dist', PLATFORM);
+export async function discoverWebpackBundles(
+  options: SourceMapValidatorOptions = {
+    mapLocation: DEFAULT_MAP_LOCATION,
+  },
+): Promise<FilePair[]> {
+  const { mapLocation } = options;
+  const distDir = join(process.cwd(), 'dist');
+  const chromeDir = join(distDir, PLATFORM);
+  const sourcemapsDir = join(distDir, SOURCEMAPS_DIRNAME);
   const pairs: FilePair[] = [];
 
   /**
@@ -172,16 +202,21 @@ export async function discoverWebpackBundles(): Promise<FilePair[]> {
     for (const e of entries) {
       const full = join(dir, e.name);
       if (e.isFile() && e.name.endsWith('.js') && !e.name.endsWith('.min.js')) {
-        const mapPath = `${full}.map`;
+        const relativeBundlePath = relative(chromeDir, full);
+        const mapPath =
+          mapLocation === 'sourcemaps'
+            ? join(sourcemapsDir, `${relativeBundlePath}.map`)
+            : `${full}.map`;
+
         try {
           await access(mapPath);
           pairs.push({
             jsPath: full,
             mapPath,
-            label: relative(chromeDir, full),
+            label: relativeBundlePath,
           });
         } catch {
-          // no .map, skip
+          // no map for this bundle at the configured location
         }
       } else if (
         e.isDirectory() &&
