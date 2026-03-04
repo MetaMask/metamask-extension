@@ -8,6 +8,18 @@ import {
 } from '@metamask/design-system-react';
 import { TabsProps, TabChild } from './tabs.types';
 
+function startTransition(
+  direction: 'forward' | 'backward',
+  update: () => void,
+) {
+  if (document.startViewTransition) {
+    document.documentElement.dataset.tabTransitionDirection = direction;
+    document.startViewTransition(update);
+  } else {
+    update();
+  }
+}
+
 export const Tabs = <TKey extends string = string>({
   activeTab,
   onTabClick,
@@ -16,6 +28,7 @@ export const Tabs = <TKey extends string = string>({
   tabListProps = {},
   tabContentProps = {},
   className = '',
+  animated,
   ...props
 }: TabsProps<TKey>) => {
   // Helper function to get valid children, filtering out null/undefined/false values
@@ -58,8 +71,18 @@ export const Tabs = <TKey extends string = string>({
 
   const handleTabClick = (tabIndex: number, tabKey: TKey): void => {
     if (tabIndex !== activeTabIndex) {
-      setActiveTabIndex(tabIndex);
-      onTabClick?.(tabKey);
+      const direction = tabIndex > activeTabIndex ? 'forward' : 'backward';
+
+      const applyUpdate = () => {
+        setActiveTabIndex(tabIndex);
+        onTabClick?.(tabKey);
+      };
+
+      if (animated) {
+        startTransition(direction, applyUpdate);
+      } else {
+        applyUpdate();
+      }
     }
   };
 
@@ -108,7 +131,11 @@ export const Tabs = <TKey extends string = string>({
         {renderTabs()}
       </Box>
       {subHeader}
-      <Box role="tabpanel" {...tabContentProps}>
+      <Box
+        role="tabpanel"
+        style={animated ? { viewTransitionName: 'tab-content' } : undefined}
+        {...tabContentProps}
+      >
         {renderActiveTabContent()}
       </Box>
     </Box>
