@@ -48,8 +48,6 @@ import { getHardwareWalletType } from '../../selectors/selectors';
 import {
   ALL_ALLOWED_BRIDGE_CHAIN_IDS,
   ALLOWED_BRIDGE_CHAIN_IDS,
-  PRICE_IMPACT_ERROR_THRESHOLD,
-  PRICE_IMPACT_WARNING_THRESHOLD,
 } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
@@ -173,7 +171,13 @@ export const getPriceImpactThresholds = createDeepEqualSelector(
     (state: BridgeAppState) =>
       getBridgeFeatureFlags(state).priceImpactThreshold,
   ],
-  (priceImpactThreshold) => priceImpactThreshold,
+  (priceImpactThreshold) => ({
+    ...(priceImpactThreshold ?? {}),
+    // @ts-expect-error - priceImpactThreshold type has not been updated yet
+    warning: priceImpactThreshold?.warning ?? 0.05,
+    // @ts-expect-error - priceImpactThreshold type has not been updated yet
+    error: priceImpactThreshold?.error ?? 0.25,
+  }),
 );
 
 export const getFromChains = createDeepEqualSelector(
@@ -689,6 +693,7 @@ export const getValidationErrors = createDeepEqualSelector(
     getFromTokenBalance,
     ({ bridge: { txAlertStatus } }: BridgeAppState) => txAlertStatus,
     getPriceImpact,
+    getPriceImpactThresholds,
   ],
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
@@ -702,6 +707,7 @@ export const getValidationErrors = createDeepEqualSelector(
     fromTokenBalance,
     txAlertStatus,
     priceImpactNumber,
+    { warning, error },
   ) => {
     const { gasIncluded, gasIncluded7702, gasSponsored } =
       activeQuote?.quote ?? {};
@@ -772,10 +778,9 @@ export const getValidationErrors = createDeepEqualSelector(
           : false,
       isPriceImpactWarning:
         priceImpactNumber &&
-        priceImpactNumber > PRICE_IMPACT_WARNING_THRESHOLD &&
-        priceImpactNumber <= PRICE_IMPACT_ERROR_THRESHOLD,
-      isPriceImpactError:
-        priceImpactNumber && priceImpactNumber > PRICE_IMPACT_ERROR_THRESHOLD,
+        priceImpactNumber > warning &&
+        priceImpactNumber <= error,
+      isPriceImpactError: priceImpactNumber && priceImpactNumber > error,
     };
   },
 );

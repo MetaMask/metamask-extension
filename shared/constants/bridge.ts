@@ -260,6 +260,3 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     assetId: `${MultichainNetworks.TRON}/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`,
   },
 } as const;
-
-export const PRICE_IMPACT_WARNING_THRESHOLD = 0.05;
-export const PRICE_IMPACT_ERROR_THRESHOLD = 0.25;
