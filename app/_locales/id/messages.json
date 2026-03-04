@@ -1606,9 +1606,6 @@
   "connectAccount": {
     "message": "Hubungkan akun"
   },
-  "connectAccountOrCreate": {
-    "message": "Hubungkan akun atau buat baru"
-  },
   "connectAccounts": {
     "message": "Hubungkan akun"
   },
@@ -2188,9 +2185,6 @@
   "descriptionFromSnap": {
     "message": "Deskripsi dari $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Batal pilih semua"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Tidak ditemukan akun yang memenuhi syarat"
@@ -3528,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "Biaya gas L2"
-  },
-  "lastConnected": {
-    "message": "Terakhir terhubung"
   },
   "lastSold": {
     "message": "Terakhir terjual"
@@ -6432,12 +6423,6 @@
   "selectAccountToConnect": {
     "message": "Pilih akun yang akan dihubungkan"
   },
-  "selectAccounts": {
-    "message": "Pilih akun untuk menggunakan situs ini"
-  },
-  "selectAccountsForSnap": {
-    "message": "Pilih akun yang akan digunakan bersama snap ini"
-  },
   "selectAll": {
     "message": "Pilih semua"
   },
@@ -6476,9 +6461,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Akun yang berbeda dipilih"
-  },
-  "selectingAllWillAllow": {
-    "message": "Memiih semua akan mengizinkan situs ini untuk melihat semua akun Anda saat ini. Pastikan Anda memercayai situs ini."
   },
   "send": {
     "message": "Kirim"
