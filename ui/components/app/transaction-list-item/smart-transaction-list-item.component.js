@@ -111,7 +111,6 @@ export default function SmartTransactionListItem({
           senderAddress={senderAddress}
           recipientAddress={recipientAddress}
           primaryCurrency={primaryCurrency}
-          isEarliestNonce={isEarliestNonce}
           transactionGroup={transactionGroup}
           transactionStatus={() => (
             <TransactionStatusLabel

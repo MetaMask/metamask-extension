@@ -2,6 +2,10 @@ name: Prep E2E
 
 on:
   workflow_call:
+    outputs:
+      use-matrix:
+        description: The matrix for the E2E jobs
+        value: ${{ jobs.prep-e2e.outputs.use-matrix }}
 
 jobs:
   prep-e2e:
@@ -13,6 +17,8 @@ jobs:
       REPOSITORY: ${{ github.event.repository.name }}
       WORKFLOW_ID: main.yml
       DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+    outputs:
+      use-matrix: ${{ steps.set-use-matrix.outputs.use-matrix }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -66,3 +72,24 @@ jobs:
         with:
           name: test-runs-for-splitting
           path: test/test-results/test-runs-*.json
+
+      - name: Set use matrix
+        id: set-use-matrix
+        run: |
+          # Configure suite shard counts here (suite name -> shard count)
+          SUITE_SHARD_COUNTS=$(jq -cn '{
+            "test-e2e-chrome-browserify": 20,
+            "test-e2e-chrome-webpack": 20,
+            "test-e2e-chrome-flask": 5,
+            "test-e2e-firefox-browserify": 20,
+            "test-e2e-firefox-webpack": 20,
+            "test-e2e-firefox-flask": 5
+          }')
+
+          # Expand counts into the job matrix shape expected by downstream workflows
+          MATRIX_JSON=$(jq -cn --argjson counts "$SUITE_SHARD_COUNTS" '
+            reduce ($counts | to_entries[]) as $entry
+              ({}; . + { ($entry.key): { index: [range(0; $entry.value)] } })
+          ')
+
+          echo "use-matrix=${MATRIX_JSON}" >> "$GITHUB_OUTPUT"

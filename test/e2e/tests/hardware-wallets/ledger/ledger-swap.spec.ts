@@ -1,5 +1,5 @@
 import { Browser } from 'selenium-webdriver';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -17,8 +17,8 @@ describe.skip('Ledger Swap', function () {
   it('swaps ETH to DAI', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerSmartTransactionsOptedOut()
+        fixtures: new FixtureBuilderV2()
+          .withSmartTransactionsOptedOut()
           .withLedgerAccount()
           .build(),
         localNodeOptions: {

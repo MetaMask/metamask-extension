@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Wala pang bago sa ngayon. I-swap na ang iyong unang token ngayon."
   },
-  "activityLog": {
-    "message": "Log ng aktibidad"
-  },
   "add": {
     "message": "Idagdag"
   },
@@ -278,9 +275,6 @@
   },
   "addIPFSGateway": {
     "message": "Idagdag ang mas gusto mong IPFS gateway"
-  },
-  "addImportAccount": {
-    "message": "Magdagdag ng account o wallet na hardware"
   },
   "addMemo": {
     "message": "Magdagdag ng memo"
@@ -653,10 +647,6 @@
   },
   "allowNotifications": {
     "message": "Payagan ang mga notipikasyon"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "Payagan ang $1 na mag-withdraw at gastusin ang sumusunod na halaga:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Halaga"
@@ -1616,9 +1606,6 @@
   "connectAccount": {
     "message": "Ikonekta ang account"
   },
-  "connectAccountOrCreate": {
-    "message": "Ikonekta ang account o gumawa ng bago"
-  },
   "connectAccounts": {
     "message": "Ikonekta ang mga account"
   },
@@ -1912,9 +1899,6 @@
   "customSlippage": {
     "message": "Custom"
   },
-  "customSpendLimit": {
-    "message": "Custom na limitasyon sa paggastos"
-  },
   "customToken": {
     "message": "Custom na Token"
   },
@@ -2202,9 +2186,6 @@
     "message": "Deskripsyon mula sa $1",
     "description": "$1 represents the name of the snap"
   },
-  "deselectAll": {
-    "message": "Alisin ang pagkapili sa lahat"
-  },
   "destinationAccountPickerNoEligible": {
     "message": "Walang nahanap na kwalipikadong account"
   },
@@ -2484,9 +2465,6 @@
   "editNonceMessage": {
     "message": "Ito ay isang advanced feature, maingat na gamitin."
   },
-  "editPermission": {
-    "message": "Pahintulot sa pag-edit"
-  },
   "editPermissions": {
     "message": "Mag-edit ng mga pahintulot"
   },
@@ -2570,9 +2548,6 @@
   },
   "enterChainId": {
     "message": "Ilagay ang ID ng Chain"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Ilagay ang max na limitasyon sa paggastos"
   },
   "enterNetworkName": {
     "message": "Ilagay ang pangalan ng network"
@@ -3365,9 +3340,6 @@
     "message": "Hindi makakonekta ang MetaMask sa blockchain host. I-review ang posibleng mga dahilan $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "Nakumpirma na ng network ang iyong inisyal na transaksyon. I-click ang OK para bumalik."
-  },
   "insights": {
     "message": "Mga pananaw"
   },
@@ -3550,9 +3522,6 @@
   },
   "l2FeeTooltip": {
     "message": "L2 na bayad sa gas"
-  },
-  "lastConnected": {
-    "message": "Huling Kumonekta"
   },
   "lastSold": {
     "message": "Huling naibenta"
@@ -3786,13 +3755,6 @@
   },
   "makeAnotherSwap": {
     "message": "Gumawa ng bagong pag-swap"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Siguraduhing walang tumitingin",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "Pamahalaan"
   },
   "manageDefaultSettings": {
     "message": "Pamahalaan ang mga default na setting sa pagkapribado"
@@ -5705,9 +5667,6 @@
   "productAnnouncements": {
     "message": "Mga anunsiyo ng produkto"
   },
-  "proposedApprovalLimit": {
-    "message": "Iminumungkahing limitasyon sa pag-apruba"
-  },
   "provide": {
     "message": "Ibigay"
   },
@@ -5928,18 +5887,6 @@
   "rejectAll": {
     "message": "Tanggihan Lahat"
   },
-  "rejectRequestsDescription": {
-    "message": "Maramihan mong tatanggihan ang $1 na kahilingan."
-  },
-  "rejectRequestsN": {
-    "message": "Tanggihan ang $1 na kahilingan"
-  },
-  "rejectTxsDescription": {
-    "message": "Maramihan mong tatanggihan ang $1 transaksyon."
-  },
-  "rejectTxsN": {
-    "message": "Tanggihan ang $1 transaksyon"
-  },
   "rejected": {
     "message": "Tinanggihan"
   },
@@ -6113,17 +6060,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "Ang $1 ay nagbibigay ng $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "Ang MetaMask ay isang $1. Nangangahulugan iyon na ikaw ang may-ari ng iyong SRP.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "buong access sa iyong wallet at pondo.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "non-custodial na wallet"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6137,10 +6074,6 @@
   "revealSeedWordsWarning": {
     "message": "Tiyaking walang tumitingin sa iyong screen. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Hindi ito kailanman hihilingin ng Suporta sa MetaMask.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Ipakita ang sensitibong nilalaman"
@@ -6490,12 +6423,6 @@
   "selectAccountToConnect": {
     "message": "Piliin ang account na ikokonekta"
   },
-  "selectAccounts": {
-    "message": "Pumili ng (mga) account"
-  },
-  "selectAccountsForSnap": {
-    "message": "Piliin ang (mga) account para gamitin ang snap na ito"
-  },
   "selectAll": {
     "message": "Piliin lahat"
   },
@@ -6534,9 +6461,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Ibang account ang pinili"
-  },
-  "selectingAllWillAllow": {
-    "message": "Kapag pinili lahat, mabibigyang-daan ang site na ito na makita ang lahat ng kasalukuyan mong account. Tiyaking pinagkakatiwalaan mo ang site na ito."
   },
   "send": {
     "message": "Ipadala"
@@ -7677,25 +7601,6 @@
   "speedUpTooltipText": {
     "message": "Bagong bayad sa gas"
   },
-  "speedUpTransaction": {
-    "message": "Pabilisin ang transaksyong ito"
-  },
-  "spendLimitInsufficient": {
-    "message": "Hindi sapat ang limitasyon sa paggastos"
-  },
-  "spendLimitInvalid": {
-    "message": "Di-wastong limitasyon sa paggastos; dapat ay positibong numero"
-  },
-  "spendLimitPermission": {
-    "message": "Pahintulot sa limitasyon sa paggastos"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Limitasyon sa paggastos na hiniling ng $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Masyadong malaki ang limitasyon sa paggastos"
-  },
   "spender": {
     "message": "Gumagastos"
   },
@@ -8530,18 +8435,6 @@
   "transaction": {
     "message": "transaksyong"
   },
-  "transactionCancelAttempted": {
-    "message": "Sinubukang kanselahin ang transaksyon na may tinantyang bayad sa gas na $1 sa $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Matagumpay na nakansela ang transaksyon sa $2"
-  },
-  "transactionConfirmed": {
-    "message": "Nakumpirma ang transaksyon sa $2."
-  },
-  "transactionCreated": {
-    "message": "Nagawa ang transaksyon na nagkakahalagang $1 sa $2."
-  },
   "transactionDataFunction": {
     "message": "Tungkulin"
   },
@@ -8551,17 +8444,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Halaga + fees"
   },
-  "transactionDropped": {
-    "message": "Tinanggihan ang transaksyon sa $2."
-  },
   "transactionError": {
     "message": "Error sa transaksyon. Nagkaroon ng exception sa code ng kontrata."
   },
   "transactionErrorNoContract": {
     "message": "Sinusubukang i-call ang isang function sa isang address na hindi kontrata."
-  },
-  "transactionErrored": {
-    "message": "Nagkaroon ng error sa transaksyon."
   },
   "transactionFee": {
     "message": "Bayad sa transaksyon"
@@ -8597,24 +8484,15 @@
   "transactionIncludesTypes": {
     "message": "Kabilang sa transaksyong ito ang: $1."
   },
-  "transactionResubmitted": {
-    "message": "Isinumite ulit ang transaksyon na may tinantyang bayad sa gas na itinaas sa $1 sa $2"
-  },
   "transactionSettings": {
     "message": "Mga setting ng transaksyon"
   },
   "transactionShield": {
     "message": "Transaction Shield"
   },
-  "transactionSubmitted": {
-    "message": "Isinumite ang transaksyon na may tinantyang bayad sa gas na $1 sa $2."
-  },
   "transactionTotalGasFee": {
     "message": "Kabuuang bayad sa gas",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Na-update ang transaksyon sa $2."
   },
   "transactions": {
     "message": "Mga Transaksyon"
@@ -8932,9 +8810,6 @@
   "viewDetails": {
     "message": "Tingnan ang mga detalye"
   },
-  "viewMore": {
-    "message": "Tingnan Pa"
-  },
   "viewOnBlockExplorer": {
     "message": "Tingnan sa block explorer"
   },
@@ -9100,9 +8975,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Maaaring nasa panganib ang iyong NFT"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Ang Iyong Lihim na Parirala sa Pagbawi"
   },
   "yourTransactionConfirmed": {
     "message": "Nakumpirma na ang transaksyon"

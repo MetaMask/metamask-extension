@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Sinun on valittava tili!"
   },
-  "activityLog": {
-    "message": "toimintaloki"
-  },
   "addAcquiredTokens": {
     "message": "Lisää MetaMaskia käyttämällä hankkimasi tietueet"
   },
@@ -302,9 +299,6 @@
     "message": "Tuotu",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Verkko hyväksyi alkuperäisen tapahtumasi. Siirry takaisin napsauttamalla OK-painiketta."
-  },
   "insufficientBalance": {
     "message": "Liian pieni saldo."
   },
@@ -484,12 +478,6 @@
   "rejectAll": {
     "message": "Hylkää kaikki"
   },
-  "rejectTxsDescription": {
-    "message": "Olet kieltäytymässä yhteensä $1 maksusiirrosta samalla kertaa."
-  },
-  "rejectTxsN": {
-    "message": "Hylkää $1 maksusiirtoa"
-  },
   "rejected": {
     "message": "Hylätty"
   },
@@ -587,9 +575,6 @@
   "speedUpCancellation": {
     "message": "Nopeuta tätä peruutusta"
   },
-  "speedUpTransaction": {
-    "message": "Nopeuta tätä maksusiirtoa"
-  },
   "stateLogError": {
     "message": "Virhe tilalokien noutamisessa."
   },
@@ -635,38 +620,11 @@
   "transaction": {
     "message": "maksusiirto"
   },
-  "transactionCancelAttempted": {
-    "message": "Tapahtuman peruutusta yritetty $1 bensataksalla kohdassa $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Tapahtuman peruutus onnistui – $2"
-  },
-  "transactionConfirmed": {
-    "message": "Tapahtuma vahvistettu kohdassa $2."
-  },
-  "transactionCreated": {
-    "message": "Tapahtuma luotu $1 arvolla kohdassa $2."
-  },
-  "transactionDropped": {
-    "message": "Tapahtumasta luovuttu kohdassa $2."
-  },
   "transactionError": {
     "message": "Tapahtumavirhe. Poikkeus havaittu sopimuskoodissa."
   },
   "transactionErrorNoContract": {
     "message": "Yritetään kutsua funktiota ei-sopimusosoitteesta."
-  },
-  "transactionErrored": {
-    "message": "Tapahtumissa tapahtui virhe."
-  },
-  "transactionResubmitted": {
-    "message": "Tapahtuma toimitettiin uudelleen bensataksan noustessa summaan $1 kohdassa $2."
-  },
-  "transactionSubmitted": {
-    "message": "Tapahtuma toimitettu $1 bensataksalla kohdassa $2."
-  },
-  "transactionUpdated": {
-    "message": "Tapahtuma päivitetty – $2."
   },
   "transfer": {
     "message": "Siirrä"
@@ -712,8 +670,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Käyttääksesi tätä ominaisuutta sinun tarvitsee antaa kameralle käyttöoikeudet."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Sinun yksityinen siemenlauseesi"
   }
 }

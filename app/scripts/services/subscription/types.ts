@@ -25,10 +25,10 @@ import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feat
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
-import { SwapsControllerGetStateAction } from '../../controllers/swaps/swaps.types';
 import {
   AppStateControllerGetStateAction,
   AppStateControllerSetPendingShieldCohortAction,
+  AppStateControllerSetPendingRedirectRouteAction,
   AppStateControllerSetShieldSubscriptionErrorAction,
 } from '../../controllers/app-state-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
@@ -64,12 +64,12 @@ export type SubscriptionServiceAction =
   | PreferencesControllerGetStateAction
   | AccountsControllerGetStateAction
   | SmartTransactionsControllerGetStateAction
-  | SwapsControllerGetStateAction
   | NetworkControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
   | AuthenticationControllerGetBearerToken
   | AppStateControllerGetStateAction
   | AppStateControllerSetPendingShieldCohortAction
+  | AppStateControllerSetPendingRedirectRouteAction
   | AppStateControllerSetShieldSubscriptionErrorAction
   | MetaMetricsControllerTrackEventAction
   | KeyringControllerGetStateAction // For metrics, to get the HD Keyrings metadata

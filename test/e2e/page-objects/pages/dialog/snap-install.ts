@@ -14,6 +14,11 @@ class SnapInstall {
     text: 'Confirm',
   };
 
+  private readonly connectionRequestHeader = {
+    tag: 'h3',
+    text: 'Connection request',
+  };
+
   private readonly connectButton = {
     tag: 'button',
     text: 'Connect',
@@ -92,6 +97,7 @@ class SnapInstall {
 
   async clickConnectButton() {
     console.log('Clicking the connect button');
+    await this.driver.waitForSelector(this.connectionRequestHeader);
     await this.driver.clickElement(this.connectButton);
   }
 

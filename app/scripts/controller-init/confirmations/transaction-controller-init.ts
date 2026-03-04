@@ -329,22 +329,6 @@ function addTransactionControllerListeners(
   );
 
   initMessenger.subscribe(
-    'TransactionController:transactionNewSwap',
-    ({ transactionMeta }) =>
-      // TODO: This can be called internally by the TransactionController
-      // since Swaps Controller registers this action handler
-      initMessenger.call('SwapsController:setTradeTxId', transactionMeta.id),
-  );
-
-  initMessenger.subscribe(
-    'TransactionController:transactionNewSwapApproval',
-    ({ transactionMeta }) =>
-      // TODO: This can be called internally by the TransactionController
-      // since Swaps Controller registers this action handler
-      initMessenger.call('SwapsController:setApproveTxId', transactionMeta.id),
-  );
-
-  initMessenger.subscribe(
     'TransactionController:transactionRejected',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises

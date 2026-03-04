@@ -96,7 +96,16 @@ export default function useSubmitBridgeTransaction() {
     }
 
     if (hardwareWalletUsed) {
-      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
+      const {
+        quote: { requestId },
+      } = quoteResponse;
+      // Preserve requestId across popup -> fullscreen transitions (QR flow).
+      const awaitingUrl = requestId
+        ? `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(
+            requestId,
+          )}`
+        : `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`;
+      navigate(awaitingUrl);
     }
 
     // Execute transaction(s)
@@ -121,6 +130,7 @@ export default function useSubmitBridgeTransaction() {
           ),
         );
         navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+          replace: true,
           state: { stayOnHomePage: true },
         });
         return;
@@ -144,9 +154,12 @@ export default function useSubmitBridgeTransaction() {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
-        navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
+        navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`, {
+          replace: true,
+        });
       } else {
         navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+          replace: true,
           state: { stayOnHomePage: true },
         });
       }
@@ -154,6 +167,7 @@ export default function useSubmitBridgeTransaction() {
     }
 
     navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+      replace: true,
       state: { stayOnHomePage: true },
     });
   };
