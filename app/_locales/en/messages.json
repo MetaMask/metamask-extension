@@ -4084,10 +4084,6 @@
     "message": "Claiming to",
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
-  "musdClaimDescription": {
-    "message": "Bonus payout will be on Linea network.",
-    "description": "Subtitle shown on the mUSD claim confirmation screen explaining rewards are on Linea"
-  },
   "musdClaimTitle": {
     "message": "Claim bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"
