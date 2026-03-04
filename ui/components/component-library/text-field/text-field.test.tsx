@@ -258,14 +258,14 @@ describe('TextField', () => {
     fireEvent.change(textField, { target: { value: '' } }); // reset value
     expect(textField.value).toBe(''); // value is empty string after reset
   });
-  it('should render the child Input with disableStateStyles to prevent multiple focus outlines', async () => {
+  it('should show wrapper focus state when input is focused (DS Input by default)', async () => {
     const { getByTestId, user } = renderWithUserEvent(
-      <TextField inputProps={{ 'data-testid': 'input' }} />,
+      <TextField data-testid="text-field" inputProps={{ 'data-testid': 'input' }} />,
     );
     const inputComponent = getByTestId('input');
 
     await user.click(inputComponent);
     expect(getByTestId('input')).toHaveFocus();
-    expect(getByTestId('input')).toHaveClass('mm-input--disable-state-styles');
+    expect(getByTestId('text-field')).toHaveClass('mm-text-field--focused');
   });
 });

@@ -34,7 +34,7 @@ export interface FormTextFieldStyleUtilityProps
    */
   helpText?: string | React.ReactNode;
   /*
-   * props to be passed to the HelpText component
+   * props to be passed to the help text wrapper (DS Text used for content)
    */
   helpTextProps?: Partial<HelpTextProps<'div'>>;
 }
@@ -49,7 +49,7 @@ export interface FormTextFieldWithLabelProps
    */
   label: string | React.ReactNode;
   /*
-   * props to be passed to the Label component
+   * props to be passed to the label wrapper (DS Text used for content)
    */
   labelProps?: Partial<LabelProps<'label'>>;
   id: string; // id is required when label is provided

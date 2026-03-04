@@ -1,11 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
-import {
-  Display,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
-import { Box, PolymorphicRef } from '../box';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import type { BoxProps } from '../box';
 import {
   TextFieldProps,
@@ -21,6 +17,10 @@ import {
   FormTextFieldComponent,
 } from './form-text-field.types';
 
+/**
+ * Form-oriented field: Label + TextField (DS Input) + optional HelpText.
+ * Uses @metamask/design-system-react for Box and, via TextField, Input.
+ */
 export const FormTextField: FormTextFieldComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -58,7 +58,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
       value,
       ...props
     }: FormTextFieldProps<C>,
-    ref?: PolymorphicRef<C>,
+    ref?: React.ForwardedRef<HTMLDivElement>,
   ) => {
     return (
       <Box
@@ -70,12 +70,11 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
           },
           className,
         )}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        flexDirection={BoxFlexDirection.Column}
         ref={ref}
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        {...(props as BoxProps<any>)}
+        {...(props as Omit<BoxProps<any>, 'flexDirection'>)}
       >
         {label && (
           <Label
@@ -111,6 +110,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
             onBlur,
             onChange,
             onFocus,
+            onKeyPress,
             placeholder,
             readOnly,
             required,

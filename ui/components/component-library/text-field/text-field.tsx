@@ -2,14 +2,16 @@ import React, { useState, useRef, useEffect } from 'react';
 import classnames from 'clsx';
 
 import {
-  Display,
-  AlignItems,
-  BorderRadius,
-  BackgroundColor,
-} from '../../../helpers/constants/design-system';
+  Input as DsInput,
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxBorderColor,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 
-import { Box, BoxProps, PolymorphicRef } from '../box';
-import { Input, InputProps } from '../input';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
+import type { PolymorphicRef } from '../box';
 import {
   TextFieldComponent,
   TextFieldProps,
@@ -39,6 +41,7 @@ export const TextField: TextFieldComponent = React.forwardRef(
       onChange,
       onClick,
       onFocus,
+      onKeyPress,
       placeholder,
       readOnly,
       required,
@@ -47,7 +50,7 @@ export const TextField: TextFieldComponent = React.forwardRef(
       type = TextFieldType.Text,
       truncate = true,
       value,
-      InputComponent = Input,
+      InputComponent = DsInput as TextFieldProps<C>['InputComponent'],
       ...props
     }: TextFieldProps<C>,
     ref?: PolymorphicRef<C>,
@@ -104,11 +107,53 @@ export const TextField: TextFieldComponent = React.forwardRef(
       }
     };
 
+    const isDsInput = InputComponent === DsInput;
+    const inputClassName = classnames(
+      'mm-text-field__input',
+      inputProps?.className ?? '',
+    );
+
+    const inputPropsToPass = {
+      ...(error && { 'aria-invalid': error }),
+      autoComplete: autoComplete === true ? 'on' : autoComplete === false ? 'off' : autoComplete,
+      autoFocus,
+      'data-testid': testId,
+      defaultValue,
+      id,
+      maxLength,
+      name,
+      onBlur: handleBlur,
+      onChange,
+      onFocus: handleFocus,
+      placeholder,
+      ref: handleInputRef,
+      required,
+      value,
+      type,
+      className: inputClassName,
+      ...inputProps,
+      ...(onKeyPress && { onKeyPress }),
+      ...(isDsInput
+        ? { isDisabled: disabled, isReadonly: readOnly }
+        : {
+            disabled,
+            readOnly,
+            backgroundColor: BackgroundColor.transparent,
+            margin: 0,
+            padding: 0,
+            paddingLeft: startAccessory ? 2 : 4,
+            paddingRight: endAccessory ? 2 : 4,
+            focused: focused.toString(),
+            disableStateStyles: true,
+          }),
+    };
+
     return (
       <Box
         ref={ref}
         className={classnames(
           'mm-text-field',
+          'inline-flex rounded-lg',
           `mm-text-field--size-${size}`,
           {
             'mm-text-field--focused': focused && !disabled,
@@ -118,49 +163,18 @@ export const TextField: TextFieldComponent = React.forwardRef(
           },
           className,
         )}
-        display={Display.InlineFlex}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Row}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
+        alignItems={BoxAlignItems.Center}
         borderWidth={1}
-        borderRadius={BorderRadius.LG}
+        borderColor={BoxBorderColor.BorderDefault}
         paddingLeft={startAccessory ? 4 : 0}
         paddingRight={endAccessory ? 4 : 0}
         onClick={handleClick}
-        {...(props as BoxProps<C>)}
+        {...(props as React.ComponentProps<typeof Box>)}
       >
         {startAccessory}
-        <InputComponent
-          {...(error && { 'aria-invalid': error })}
-          autoComplete={autoComplete}
-          autoFocus={autoFocus}
-          backgroundColor={BackgroundColor.transparent}
-          data-testid={testId}
-          defaultValue={defaultValue}
-          disabled={disabled}
-          focused={focused.toString()}
-          id={id}
-          margin={0}
-          maxLength={maxLength}
-          name={name}
-          onBlur={handleBlur}
-          onChange={onChange}
-          onFocus={handleFocus}
-          padding={0}
-          paddingLeft={startAccessory ? 2 : 4}
-          paddingRight={endAccessory ? 2 : 4}
-          placeholder={placeholder}
-          readOnly={readOnly}
-          ref={handleInputRef}
-          required={required}
-          value={value}
-          type={type}
-          disableStateStyles
-          {...(inputProps as InputProps<C>)} // before className so input className isn't overridden
-          className={classnames(
-            'mm-text-field__input',
-            inputProps?.className ?? '',
-          )}
-        />
+        <InputComponent {...(inputPropsToPass as unknown as React.ComponentProps<typeof InputComponent>)} />
         {endAccessory}
       </Box>
     );
