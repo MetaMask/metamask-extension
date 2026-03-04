@@ -373,34 +373,57 @@ const PerpsOrderEntryPage: React.FC = () => {
     [navigate, decodedSymbol],
   );
 
-  const getOrderPlacementToastDescription = useCallback(() => {
-    if (orderMode !== 'new' || !orderFormState || !orderCalculations) {
+  const getTradeActionToastDescription = useCallback(() => {
+    if (orderMode === 'modify' || !orderFormState) {
       return undefined;
     }
 
-    const formattedPositionSize = orderCalculations.positionSize?.trim();
-    if (!formattedPositionSize) {
-      return undefined;
-    }
+    const directionLabel = (() => {
+      if (orderMode === 'close' && position?.size) {
+        return parseFloat(position.size) >= 0
+          ? t('perpsLong')
+          : t('perpsShort');
+      }
+      return orderFormState.direction === 'long'
+        ? t('perpsLong')
+        : t('perpsShort');
+    })();
 
-    const directionLabel =
-      orderFormState.direction === 'long' ? t('perpsLong') : t('perpsShort');
     const rawAssetSymbol = orderFormState.asset;
     const displayAssetSymbol = getDisplayName(rawAssetSymbol);
-    const rawAmount = formattedPositionSize.endsWith(` ${rawAssetSymbol}`)
-      ? formattedPositionSize.slice(0, -` ${rawAssetSymbol}`.length).trimEnd()
-      : formattedPositionSize;
 
-    if (!rawAmount) {
+    const formattedPositionSize = orderCalculations?.positionSize?.trim();
+    if (formattedPositionSize) {
+      const rawAmount = formattedPositionSize.endsWith(` ${rawAssetSymbol}`)
+        ? formattedPositionSize.slice(0, -` ${rawAssetSymbol}`.length).trimEnd()
+        : formattedPositionSize;
+
+      if (rawAmount) {
+        return t('perpsToastOrderPlacementSubtitle', [
+          directionLabel,
+          rawAmount,
+          displayAssetSymbol,
+        ]);
+      }
+    }
+
+    if (orderMode !== 'close' || !position?.size) {
       return undefined;
     }
+
+    const absoluteSize = Math.abs(parseFloat(position.size));
+    if (Number.isNaN(absoluteSize)) {
+      return undefined;
+    }
+
+    const rawAmount = absoluteSize.toString();
 
     return t('perpsToastOrderPlacementSubtitle', [
       directionLabel,
       rawAmount,
       displayAssetSymbol,
     ]);
-  }, [orderCalculations, orderFormState, orderMode, t]);
+  }, [orderCalculations, orderFormState, orderMode, position, t]);
 
   const handleFormStateChange = useCallback((formState: OrderFormState) => {
     setOrderFormState(formState);
@@ -427,12 +450,12 @@ const PerpsOrderEntryPage: React.FC = () => {
     setSubmitError(null);
     setPendingOrderToastDescription(null);
 
-    const orderPlacementToastDescription = getOrderPlacementToastDescription();
+    const tradeActionToastDescription = getTradeActionToastDescription();
 
     replacePerpsToastByKey({
       key: ORDER_MODE_TOAST_KEYS[orderMode].inProgress,
-      ...(orderPlacementToastDescription
-        ? { description: orderPlacementToastDescription }
+      ...(tradeActionToastDescription
+        ? { description: tradeActionToastDescription }
         : {}),
     });
 
@@ -452,6 +475,9 @@ const PerpsOrderEntryPage: React.FC = () => {
         }
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.TRADE_SUCCESS,
+          ...(tradeActionToastDescription
+            ? { description: tradeActionToastDescription }
+            : {}),
         });
       } else if (orderMode === 'modify' && position) {
         const { takeProfitPrice, stopLossPrice } = normalizeTpslPrices({
@@ -496,11 +522,11 @@ const PerpsOrderEntryPage: React.FC = () => {
         if (orderFormState.type === 'limit') {
           handleBackClick(
             PERPS_TOAST_KEYS.ORDER_PLACED,
-            orderPlacementToastDescription,
+            tradeActionToastDescription,
           );
           return;
         }
-        setPendingOrderToastDescription(orderPlacementToastDescription ?? null);
+        setPendingOrderToastDescription(tradeActionToastDescription ?? null);
         setPendingOrderSymbol(orderFormState.asset);
         return;
       }
@@ -523,7 +549,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     orderMode,
     position,
     currentPrice,
-    getOrderPlacementToastDescription,
+    getTradeActionToastDescription,
     controller,
     handleBackClick,
     replacePerpsToastByKey,
