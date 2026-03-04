@@ -770,13 +770,12 @@ export const getValidationErrors = createDeepEqualSelector(
               ).times(activeQuote.sentAmount.valueInCurrency),
             )
           : false,
-      isPriceImpactWarning: priceImpactNumber
-        ? priceImpactNumber > PRICE_IMPACT_WARNING_THRESHOLD &&
-          priceImpactNumber <= PRICE_IMPACT_ERROR_THRESHOLD
-        : false,
-      isPriceImpactError: priceImpactNumber
-        ? priceImpactNumber > PRICE_IMPACT_ERROR_THRESHOLD
-        : false,
+      isPriceImpactWarning:
+        priceImpactNumber &&
+        priceImpactNumber > PRICE_IMPACT_WARNING_THRESHOLD &&
+        priceImpactNumber <= PRICE_IMPACT_ERROR_THRESHOLD,
+      isPriceImpactError:
+        priceImpactNumber && priceImpactNumber > PRICE_IMPACT_ERROR_THRESHOLD,
     };
   },
 );

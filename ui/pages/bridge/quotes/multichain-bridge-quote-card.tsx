@@ -65,11 +65,13 @@ const getTimerColor = (timeInSeconds: number) => {
 export const MultichainBridgeQuoteCard = ({
   onOpenSlippageModal,
   onOpenRecipientModal,
+  onOpenPriceImpactWarningModal,
   selectedDestinationAccount,
 }: {
   onOpenSlippageModal: () => void;
-  selectedDestinationAccount: DestinationAccount | null;
   onOpenRecipientModal: () => void;
+  onOpenPriceImpactWarningModal: () => void;
+  selectedDestinationAccount: DestinationAccount | null;
 }) => {
   const t = useI18nContext();
   const {
@@ -96,12 +98,10 @@ export const MultichainBridgeQuoteCard = ({
     getGasFeesSponsoredNetworkEnabled,
   );
 
-  const [showAllQuotes, setShowAllQuotes] = useState(false);
-
-  // Calculate if price impact warning should show
   const priceImpact = useSelector(getPriceImpact);
   const formattedPriceImpact = useSelector(getFormattedPriceImpact);
 
+  const [showAllQuotes, setShowAllQuotes] = useState(false);
   const gasSponsored = activeQuote?.quote?.gasSponsored ?? false;
 
   const isCurrentNetworkGasSponsored = useMemo(() => {
@@ -430,19 +430,37 @@ export const MultichainBridgeQuoteCard = ({
                 {t('bridgePriceImpactNormalWarning')}
               </Tooltip>
             </Row>
-            <Text
-              variant={TextVariant.bodySm}
-              color={
-                // eslint-disable-next-line no-nested-ternary
-                isPriceImpactWarning
-                  ? TextColor.warningDefault
-                  : isPriceImpactError
-                    ? TextColor.errorDefault
-                    : TextColor.textAlternative
-              }
-            >
-              {formattedPriceImpact}
-            </Text>
+            <Row gap={1}>
+              {(isPriceImpactWarning || isPriceImpactError) && (
+                <ButtonIcon
+                  iconName={
+                    isPriceImpactWarning ? IconName.Warning : IconName.Danger
+                  }
+                  size={ButtonIconSize.Sm}
+                  color={
+                    isPriceImpactWarning
+                      ? IconColor.warningDefault
+                      : IconColor.errorDefault
+                  }
+                  onClick={onOpenPriceImpactWarningModal}
+                  ariaLabel={t('priceImpactWarningAriaLabel')}
+                  data-testid="price-impact-warning-button"
+                />
+              )}
+              <Text
+                variant={TextVariant.bodySm}
+                color={
+                  // eslint-disable-next-line no-nested-ternary
+                  isPriceImpactWarning
+                    ? TextColor.warningDefault
+                    : isPriceImpactError
+                      ? TextColor.errorDefault
+                      : TextColor.textAlternative
+                }
+              >
+                {formattedPriceImpact}
+              </Text>
+            </Row>
           </Row>
         )}
 

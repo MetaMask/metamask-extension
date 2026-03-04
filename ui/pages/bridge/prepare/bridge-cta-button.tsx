@@ -39,10 +39,12 @@ export const BridgeCTAButton = ({
   onFetchNewQuotes,
   needsDestinationAddress = false,
   onOpenRecipientModal,
+  onOpenPriceImpactWarningModal,
 }: {
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
   onOpenRecipientModal?: () => void;
+  onOpenPriceImpactWarningModal: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -66,6 +68,7 @@ export const BridgeCTAButton = ({
     isInsufficientGasForQuote,
     isTxAlertPresent,
     isTxAlertLoading,
+    isPriceImpactError,
   } = useSelector(getValidationErrors);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
@@ -183,6 +186,11 @@ export const BridgeCTAButton = ({
         }
 
         if (activeQuote && isTxSubmittable && !isSubmitting) {
+          // If price impact is too high, open the price impact warning modal and submit
+          // the transaction through the modal.
+          if (isPriceImpactError) {
+            onOpenPriceImpactWarningModal();
+          } else {
             await submitBridgeTransaction(activeQuote);
           }
         }
