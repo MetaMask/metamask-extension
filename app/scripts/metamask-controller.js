@@ -6614,9 +6614,11 @@ export default class MetamaskController extends EventEmitter {
 
     // Per-connection Perps streaming bridge — manages subscription lifecycle
     // for a single UI connection. See PerpsStreamBridge for details.
+    // Static subscriptions (positions/orders/account) are NOT registered here;
+    // they are registered in perpsInit after the controller provider is ready.
     const perpsController = this.controllersByName.PerpsController;
     const perpsStream = perpsController
-      ? new PerpsStreamBridge(perpsController, (channel, data, extra) => {
+      ? new PerpsStreamBridge((channel, data, extra) => {
           if (!perpsStream.isActive || !isStreamWritable(outStream)) {
             return;
           }
@@ -6631,6 +6633,11 @@ export default class MetamaskController extends EventEmitter {
     const api = {
       ...this.getApi(),
       ...this.controllerApi,
+      perpsInit: async (...args) => {
+        const result = await this.controllerApi.perpsInit(...args);
+        perpsStream?.activate(perpsController);
+        return result;
+      },
       perpsSubscriberChange: (delta) => {
         perpsStream?.subscriberChange(delta);
       },

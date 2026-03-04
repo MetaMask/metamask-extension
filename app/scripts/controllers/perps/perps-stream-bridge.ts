@@ -21,10 +21,14 @@ type ActivateStreamingParams = {
  * subscriptions and a single UI outStream.
  *
  * Manages two categories of subscriptions:
- * - Static (positions/orders/account): set once at construction, live for
- *   the lifetime of the connection.
+ * - Static (positions/orders/account): registered once via activate() after
+ *   the controller is initialized, live for the lifetime of the connection.
  * - Dynamic (prices/orderBook/candles): replaced on each activateStreaming()
  *   call so navigating between markets doesn't leak subscriptions.
+ *
+ * Static subscriptions are NOT registered in the constructor because
+ * PerpsController.subscribeToPositions() returns a no-op if the provider
+ * hasn't been initialized yet. activate() must be called after perpsInit.
  */
 export class PerpsStreamBridge {
   #subscriberCount = 0;
@@ -35,8 +39,28 @@ export class PerpsStreamBridge {
 
   readonly #dynamicUnsubs: Record<string, () => void> = {};
 
-  constructor(controller: PerpsController, emit: EmitFn) {
+  #activated = false;
+
+  constructor(emit: EmitFn) {
     this.#emit = emit;
+  }
+
+  /**
+   * Register static subscriptions (positions, orders, account) after the
+   * controller provider is guaranteed to be ready. Idempotent — subsequent
+   * calls tear down existing statics and re-subscribe so an address change
+   * is handled cleanly.
+   */
+  activate(controller: PerpsController): void {
+    // Tear down any previous static subscriptions (handles re-activation)
+    for (const unsub of this.#staticUnsubs) {
+      try {
+        unsub();
+      } catch (error) {
+        console.debug('[PerpsStreamBridge] cleanup error', error);
+      }
+    }
+    this.#staticUnsubs.length = 0;
 
     this.#staticUnsubs.push(
       controller.subscribeToPositions({
@@ -49,6 +73,7 @@ export class PerpsStreamBridge {
         callback: (data: unknown) => this.#emit('account', data),
       }),
     );
+    this.#activated = true;
   }
 
   #replaceSubscription(key: string, subscribe: () => () => void): void {
@@ -101,7 +126,7 @@ export class PerpsStreamBridge {
   }
 
   get isActive(): boolean {
-    return this.#subscriberCount > 0;
+    return this.#activated && this.#subscriberCount > 0;
   }
 
   destroy(): void {
