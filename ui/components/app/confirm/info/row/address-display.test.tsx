@@ -10,6 +10,8 @@ import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 import { ConfirmInfoRowAddressDisplay } from './address-display';
 import { TEST_ADDRESS } from './constants';
 
+const TEST_ADDRESS_SHORT = '0x5CfE73b6021E…474086a7e1';
+
 const getEnvironmentType = jest.requireMock(
   '../../../../../../app/scripts/lib/util',
 ).getEnvironmentType as jest.Mock;
@@ -62,7 +64,7 @@ describe('ConfirmInfoRowAddressDisplay', () => {
 
     const { getByTestId } = render();
     expect(getByTestId('confirm-info-row-display-name')).toHaveTextContent(
-      TEST_ADDRESS,
+      TEST_ADDRESS_SHORT,
     );
   });
 
