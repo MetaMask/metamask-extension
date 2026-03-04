@@ -393,7 +393,7 @@ describe('HardwareWalletErrorModal', () => {
       });
 
       expect(mockHideModal).toHaveBeenCalledTimes(1);
-      expect(mockClearError).not.toHaveBeenCalled();
+      expect(mockClearError).toHaveBeenCalledTimes(1);
     });
 
     it('auto dismisses the success state after 3 seconds', async () => {
@@ -419,7 +419,7 @@ describe('HardwareWalletErrorModal', () => {
       });
 
       expect(mockHideModal).toHaveBeenCalledTimes(1);
-      expect(mockClearError).not.toHaveBeenCalled();
+      expect(mockClearError).toHaveBeenCalledTimes(1);
       jest.useRealTimers();
     });
   });

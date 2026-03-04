@@ -68,6 +68,7 @@ mockCloseCurrentNotificationWindow.mockImplementation(() => ({
 const createMockState = (
   keyringType: string | null = KeyringTypes.ledger,
   address = '0x123',
+  isHardwareWalletModalVisible = false,
 ) => ({
   metamask: {
     internalAccounts: {
@@ -88,7 +89,9 @@ const createMockState = (
   appState: {
     modal: {
       modalState: {
-        name: null,
+        name: isHardwareWalletModalVisible
+          ? HARDWARE_WALLET_ERROR_MODAL_NAME
+          : null,
       },
     },
   },
@@ -202,6 +205,17 @@ describe('HardwareWalletErrorProvider', () => {
       });
 
       expect(mockShowModal).toHaveBeenCalled();
+
+      act(() => {
+        result.current.setErrorModalSuppressed(true);
+      });
+
+      expect(mockHideModal).toHaveBeenCalled();
+    });
+
+    it('hides redux-visible hardware wallet modal when suppression is enabled', () => {
+      const store = mockStore(createMockState(undefined, undefined, true));
+      const { result } = renderHardwareWalletErrorHook(store);
 
       act(() => {
         result.current.setErrorModalSuppressed(true);

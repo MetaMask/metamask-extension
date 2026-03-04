@@ -251,10 +251,17 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   ]);
 
   useEffect(() => {
-    if (isErrorModalSuppressed && isModalOpenRef.current) {
+    if (
+      isErrorModalSuppressed &&
+      (isModalOpenRef.current || isHardwareWalletErrorModalVisible)
+    ) {
       resetModalState();
     }
-  }, [isErrorModalSuppressed, resetModalState]);
+  }, [
+    isErrorModalSuppressed,
+    isHardwareWalletErrorModalVisible,
+    resetModalState,
+  ]);
 
   useEffect(() => {
     // Don't dismiss manually shown modals based on selected account.

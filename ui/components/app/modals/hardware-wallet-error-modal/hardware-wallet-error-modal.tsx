@@ -88,8 +88,9 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     }, [clearError, hideModal, onCancel]);
 
     const handleRecoveredClose = useCallback(() => {
+      clearError();
       hideModal();
-    }, [hideModal]);
+    }, [clearError, hideModal]);
 
     useEffect(() => {
       if (!recovered) {
