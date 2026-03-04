@@ -6,6 +6,7 @@ import {
   TextButton,
   Text,
   Box,
+  Checkbox,
   TextVariant,
   TextColor,
   BoxBackgroundColor,
@@ -14,8 +15,6 @@ import {
   RecommendedAction,
   type PhishingDetectionScanResult,
 } from '@metamask/phishing-controller';
-import { Checkbox } from '../../components/component-library';
-import { AlignItems } from '../../helpers/constants/design-system';
 import { getErrorMessage } from '../../../shared/modules/error';
 import {
   MetaMetricsEventCategory,
@@ -429,11 +428,17 @@ function RevealSeedPage() {
           backgroundColor={BoxBackgroundColor.ErrorMuted}
         >
           <Checkbox
+            id="dapp-scan-acknowledge-checkbox"
             label={t('alertModalAcknowledge')}
-            data-testid="dapp-scan-acknowledge-checkbox"
-            isChecked={dangerAcknowledged}
-            onChange={() => setDangerAcknowledged((prev) => !prev)}
-            alignItems={AlignItems.flexStart}
+            isSelected={dangerAcknowledged}
+            onChange={
+              ((selected: boolean) =>
+                setDangerAcknowledged(selected)) as React.FormEventHandler<HTMLLabelElement> &
+                ((isSelected: boolean) => void)
+            }
+            inputProps={{
+              'data-testid': 'dapp-scan-acknowledge-checkbox',
+            }}
           />
         </Box>
       )}
