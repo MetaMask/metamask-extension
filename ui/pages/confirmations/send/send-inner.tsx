@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion'; // eslint-disable-line import/no-extraneous-dependencies
 
 import {
   BackgroundColor,
@@ -10,6 +12,7 @@ import {
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../../components/component-library';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import { AmountRecipient } from '../components/send/amount-recipient';
 import { Header } from '../components/send/header';
@@ -19,7 +22,13 @@ import { SendPages } from '../constants/send';
 import { useSendContext } from '../context/send';
 import { useSendQueryParams } from '../hooks/send/useSendQueryParams';
 
-const SendContainer = ({ children }: { children: React.ReactNode }) => {
+const SendContainer = ({
+  children,
+  onExitBack,
+}: {
+  children: React.ReactNode;
+  onExitBack?: () => void;
+}) => {
   return (
     <Box
       alignItems={AlignItems.center}
@@ -49,7 +58,7 @@ const SendContainer = ({ children }: { children: React.ReactNode }) => {
           width={BlockSize.Full}
         >
           <Box className="redesigned__send__sticky-header">
-            <Header />
+            <Header onExitBack={onExitBack} />
           </Box>
           <ScrollContainer className="redesigned__send__content-wrapper">
             {children}
@@ -62,25 +71,37 @@ const SendContainer = ({ children }: { children: React.ReactNode }) => {
 
 export const SendInner = () => {
   useSendQueryParams();
+  const navigate = useNavigate();
   const { currentPage } = useSendContext();
+  const [show, setShow] = useState(true);
+  const handleExitBack = useCallback(() => setShow(false), []);
 
   if (currentPage === SendPages.LOADER) {
     return <Loader />;
   }
-  if (currentPage === SendPages.ASSET) {
-    return (
-      <SendContainer>
-        <Asset />
-      </SendContainer>
-    );
-  }
-  if (currentPage === SendPages.AMOUNTRECIPIENT) {
-    return (
-      <SendContainer>
-        <AmountRecipient />
-      </SendContainer>
-    );
-  }
 
-  return null;
+  return (
+    <AnimatePresence onExitComplete={() => navigate(PREVIOUS_ROUTE)}>
+      {show && (
+        <motion.div
+          key="send"
+          className="page-enter-animation"
+          exit={{ opacity: 0, scale: 0.97 }}
+          transition={{ duration: 0.15 }}
+          style={{ height: '100%' }}
+        >
+          {currentPage === SendPages.ASSET && (
+            <SendContainer onExitBack={handleExitBack}>
+              <Asset />
+            </SendContainer>
+          )}
+          {currentPage === SendPages.AMOUNTRECIPIENT && (
+            <SendContainer>
+              <AmountRecipient />
+            </SendContainer>
+          )}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 };

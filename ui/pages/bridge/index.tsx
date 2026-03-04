@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion'; // eslint-disable-line import/no-extraneous-dependencies
 import {
   UnifiedSwapBridgeEventName,
   isNonEvmChainId,
@@ -108,7 +109,10 @@ const CrossChainSwap = () => {
   // Sets tx alerts for the active quote
   useTxAlerts();
 
-  const redirectToDefaultRoute = async () => {
+  const [show, setShow] = useState(true);
+  const handleBack = useCallback(() => setShow(false), []);
+
+  const redirectToDefaultRoute = useCallback(async () => {
     await resetControllerAndInputStates();
     if (isFromTransactionShield) {
       navigate(TRANSACTION_SHIELD_ROUTE);
@@ -117,72 +121,82 @@ const CrossChainSwap = () => {
     }
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
-  };
+  }, [isFromTransactionShield, navigate, dispatch]);
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
   return (
-    <Page className="bridge__container">
-      <Header
-        textProps={{ variant: TextVariant.headingSm }}
-        startAccessory={
-          <ButtonIcon
-            iconName={IconName.ArrowLeft}
-            size={ButtonIconSize.Sm}
-            ariaLabel={t('back')}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={redirectToDefaultRoute}
-          />
-        }
-        endAccessory={
-          <ButtonIcon
-            iconName={IconName.Setting}
-            size={ButtonIconSize.Sm}
-            ariaLabel={t('settings')}
-            data-testid="bridge__header-settings-button"
-            onClick={() => {
-              setIsSettingsModalOpen(true);
-            }}
-          />
-        }
-      >
-        {t('swap')}
-      </Header>
-      <Content padding={0}>
-        <Routes>
-          <Route
-            path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
-            element={
-              <>
-                <BridgeTransactionSettingsModal
-                  isOpen={isSettingsModalOpen}
-                  onClose={() => {
-                    setIsSettingsModalOpen(false);
+    <AnimatePresence onExitComplete={redirectToDefaultRoute}>
+      {show && (
+        <motion.div
+          key="swap"
+          className="page-enter-animation"
+          exit={{ opacity: 0, scale: 0.97 }}
+          transition={{ duration: 0.15 }}
+          style={{ height: '100%' }}
+        >
+          <Page className="bridge__container">
+            <Header
+              textProps={{ variant: TextVariant.headingSm }}
+              startAccessory={
+                <ButtonIcon
+                  iconName={IconName.ArrowLeft}
+                  size={ButtonIconSize.Sm}
+                  ariaLabel={t('back')}
+                  onClick={handleBack}
+                />
+              }
+              endAccessory={
+                <ButtonIcon
+                  iconName={IconName.Setting}
+                  size={ButtonIconSize.Sm}
+                  ariaLabel={t('settings')}
+                  data-testid="bridge__header-settings-button"
+                  onClick={() => {
+                    setIsSettingsModalOpen(true);
                   }}
                 />
-                <PrepareBridgePage
-                  onOpenSettings={() => setIsSettingsModalOpen(true)}
+              }
+            >
+              {t('swap')}
+            </Header>
+            <Content padding={0}>
+              <Routes>
+                <Route
+                  path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
+                  element={
+                    <>
+                      <BridgeTransactionSettingsModal
+                        isOpen={isSettingsModalOpen}
+                        onClose={() => {
+                          setIsSettingsModalOpen(false);
+                        }}
+                      />
+                      <PrepareBridgePage
+                        onOpenSettings={() => setIsSettingsModalOpen(true)}
+                      />
+                    </>
+                  }
                 />
-              </>
-            }
-          />
-          <Route
-            path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
-            element={
-              <>
-                <Content>
-                  <AwaitingSignatures />
-                </Content>
-                <Footer>
-                  <AwaitingSignaturesCancelButton />
-                </Footer>
-              </>
-            }
-          />
-        </Routes>
-      </Content>
-    </Page>
+                <Route
+                  path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
+                  element={
+                    <>
+                      <Content>
+                        <AwaitingSignatures />
+                      </Content>
+                      <Footer>
+                        <AwaitingSignaturesCancelButton />
+                      </Footer>
+                    </>
+                  }
+                />
+              </Routes>
+            </Content>
+          </Page>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

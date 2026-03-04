@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion'; // eslint-disable-line import/no-extraneous-dependencies
 
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -102,47 +103,61 @@ export const MultichainAccountAddressListPage = ({
     endTrace({ name: TraceName.ShowAccountAddressList });
   }, []);
 
-  return (
-    <Page>
-      <Header
-        textProps={{
-          variant: TextVariant.headingSm,
-        }}
-        startAccessory={
-          <ButtonIcon
-            size={ButtonIconSize.Md}
-            ariaLabel={t('back')}
-            iconName={IconName.ArrowLeft}
-            onClick={() => navigate(PREVIOUS_ROUTE)}
-            data-testid="multichain-account-address-list-page-back-button"
-          />
-        }
-      >
-        {pageTitle}
-      </Header>
-      <Content padding={0}>
-        <Box flexDirection={BoxFlexDirection.Column}>
-          {decodedAccountGroupId ? (
-            <MultichainAddressRowsList
-              groupId={decodedAccountGroupId}
-              onQrClick={handleShowQR}
-            />
-          ) : null}
-        </Box>
-      </Content>
+  const [show, setShow] = useState(true);
+  const handleBack = useCallback(() => setShow(false), []);
 
-      {/* QR Code Modal */}
-      {selectedQRData && (
-        <AddressQRCodeModal
-          isOpen={isQRModalOpen}
-          onClose={handleCloseQR}
-          address={selectedQRData.address}
-          accountName={accountGroup?.metadata?.name || t('account')}
-          networkName={selectedQRData.networkName}
-          chainId={selectedQRData.chainId}
-          networkImageSrc={selectedQRData.networkImageSrc}
-        />
+  return (
+    <AnimatePresence onExitComplete={() => navigate(PREVIOUS_ROUTE)}>
+      {show && (
+        <motion.div
+          key="address-list"
+          className="page-enter-animation"
+          exit={{ opacity: 0, scale: 0.97 }}
+          transition={{ duration: 0.15 }}
+          style={{ height: '100%' }}
+        >
+          <Page>
+            <Header
+              textProps={{
+                variant: TextVariant.headingSm,
+              }}
+              startAccessory={
+                <ButtonIcon
+                  size={ButtonIconSize.Md}
+                  ariaLabel={t('back')}
+                  iconName={IconName.ArrowLeft}
+                  onClick={handleBack}
+                  data-testid="multichain-account-address-list-page-back-button"
+                />
+              }
+            >
+              {pageTitle}
+            </Header>
+            <Content padding={0}>
+              <Box flexDirection={BoxFlexDirection.Column}>
+                {decodedAccountGroupId ? (
+                  <MultichainAddressRowsList
+                    groupId={decodedAccountGroupId}
+                    onQrClick={handleShowQR}
+                  />
+                ) : null}
+              </Box>
+            </Content>
+
+            {selectedQRData && (
+              <AddressQRCodeModal
+                isOpen={isQRModalOpen}
+                onClose={handleCloseQR}
+                address={selectedQRData.address}
+                accountName={accountGroup?.metadata?.name || t('account')}
+                networkName={selectedQRData.networkName}
+                chainId={selectedQRData.chainId}
+                networkImageSrc={selectedQRData.networkImageSrc}
+              />
+            )}
+          </Page>
+        </motion.div>
       )}
-    </Page>
+    </AnimatePresence>
   );
 };

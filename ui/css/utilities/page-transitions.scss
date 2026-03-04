@@ -1,0 +1,54 @@
+/**
+ * CSS animations for page navigation
+ * Uses simple mount animations - completely independent of View Transitions API.
+ * This ensures no interference with tab view transitions.
+ */
+
+:root {
+  /* Page transition timing functions */
+  --page-transition-duration: 200ms;
+  --page-transition-ease-out: cubic-bezier(0.4, 0, 0.2, 1); /* Enter: decelerates into place */
+  --page-transition-ease-in: cubic-bezier(0.4, 0, 1, 1); /* Exit: accelerates out */
+}
+
+/* Enter animation - apply to page containers on mount */
+.page-enter-animation {
+  animation: page-enter var(--page-transition-duration) var(--page-transition-ease-out);
+}
+
+/* Exit animation - added via JS before navigating back */
+.page-exit-animation {
+  animation: page-exit var(--page-transition-duration) var(--page-transition-ease-in) forwards;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes page-exit {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .page-enter-animation,
+  .page-exit-animation {
+    animation: none;
+  }
+}
