@@ -23,12 +23,10 @@ import {
 import {
   ABOUT_US_ROUTE,
   ADVANCED_ROUTE,
-  ASSETS_ROUTE,
   CONTACT_LIST_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
-  CURRENCY_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
   GENERAL_ROUTE,
   NETWORKS_FORM_ROUTE,
@@ -64,13 +62,11 @@ const ROUTES_TO_I18N_KEYS = {
   [ADD_NETWORK_ROUTE]: 'networks',
   [ADD_POPULAR_CUSTOM_NETWORK]: 'addNetwork',
   [ADVANCED_ROUTE]: 'advanced',
-  [ASSETS_ROUTE]: 'assets',
   [BACKUPANDSYNC_ROUTE]: 'backupAndSync',
   [CONTACT_ADD_ROUTE]: 'newContact',
   [CONTACT_EDIT_ROUTE]: 'editContact',
   [CONTACT_LIST_ROUTE]: 'contacts',
   [CONTACT_VIEW_ROUTE]: 'viewContact',
-  [CURRENCY_ROUTE]: 'localCurrency',
   [DEVELOPER_OPTIONS_ROUTE]: 'developerOptions',
   [EXPERIMENTAL_ROUTE]: 'experimental',
   [GENERAL_ROUTE]: 'general',
@@ -143,7 +139,6 @@ const mapStateToProps = (state, ownProps) => {
   const isShieldManagePastPlanPage = Boolean(
     pathname.startsWith(TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE),
   );
-  const isCurrencyPage = Boolean(pathname.match(CURRENCY_ROUTE));
 
   const environmentType = getEnvironmentType();
   const isPopup =
@@ -190,8 +185,6 @@ const mapStateToProps = (state, ownProps) => {
     isShieldManagePastPlanPage
   ) {
     backRoute = TRANSACTION_SHIELD_ROUTE;
-  } else if (isCurrencyPage) {
-    backRoute = ASSETS_ROUTE;
   }
 
   const addressName = getAddressBookEntryOrAccountName(
