@@ -1,16 +1,8 @@
 /**
- * Platform Infrastructure for PerpsController (Extension PoC)
+ * Platform Infrastructure for PerpsController
  *
- * This module provides the PerpsPlatformDependencies required by
- * the real @metamask/perps-controller package.
- *
- * Note: This file lives in app/scripts/controllers/ but currently runs in the
- * UI process (the PerpsController is instantiated in the UI via getPerpsController.ts).
- * It's kept here intentionally so it's co-located with the controller re-exports and
- * will already be in the right place when the controller moves to the background.
- *
- * For the PoC, most dependencies are stubbed. As integration matures,
- * these should be wired up to real extension services.
+ * Provides the PerpsPlatformDependencies required by @metamask/perps-controller.
+ * Several dependencies are stubbed pending integration with extension services.
  */
 
 import type {

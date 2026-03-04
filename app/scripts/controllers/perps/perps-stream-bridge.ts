@@ -22,13 +22,10 @@ type ActivateStreamingParams = {
  *
  * Manages two categories of subscriptions:
  * - Static (positions/orders/account): registered once via activate() after
- *   the controller is initialized, live for the lifetime of the connection.
+ *   perpsInit resolves and the provider is ready. Calling activate() again
+ *   tears down and re-registers statics (handles address changes).
  * - Dynamic (prices/orderBook/candles): replaced on each activateStreaming()
  *   call so navigating between markets doesn't leak subscriptions.
- *
- * Static subscriptions are NOT registered in the constructor because
- * PerpsController.subscribeToPositions() returns a no-op if the provider
- * hasn't been initialized yet. activate() must be called after perpsInit.
  */
 export class PerpsStreamBridge {
   #subscriberCount = 0;
