@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { OrderType } from '@metamask/perps-controller';
+import type { OrderType } from '@metamask/perps-controller';
 import { useFormatters } from '../useFormatters';
 import type {
   OrderFormState,
