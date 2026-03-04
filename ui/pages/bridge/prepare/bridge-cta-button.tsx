@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
@@ -30,7 +30,6 @@ import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { Row } from '../layout';
 import {
   ConnectionStatus,
-  useHardwareWalletActions,
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
@@ -57,15 +56,8 @@ export const BridgeCTAButton = ({
   const isQuoteExpired = useSelector((state) =>
     getIsQuoteExpired(state as BridgeAppState, Date.now()),
   );
-  const { submitBridgeTransaction } = useSubmitBridgeTransaction();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const mountedRef = useRef(true);
-
-  useEffect(() => {
-    return () => {
-      mountedRef.current = false;
-    };
-  }, []);
+  const { submitBridgeTransaction, isSubmitting } =
+    useSubmitBridgeTransaction();
 
   const {
     isNoQuotesAvailable,
@@ -81,7 +73,6 @@ export const BridgeCTAButton = ({
   const isTxSubmittable = useIsTxSubmittable();
 
   const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
-  const { ensureDeviceReady } = useHardwareWalletActions();
   const { connectionState } = useHardwareWalletState();
 
   const hardwareWalletName = useMemo(
@@ -192,25 +183,7 @@ export const BridgeCTAButton = ({
         }
 
         if (activeQuote && isTxSubmittable && !isSubmitting) {
-          // Set submitting state before async checks to prevent duplicate clicks.
-          setIsSubmitting(true);
-
-          try {
-            // Verify hardware wallet device is ready before submitting.
-            if (isHardwareWalletAccount) {
-              const isDeviceReady = await ensureDeviceReady();
-              if (!isDeviceReady) {
-                return;
-              }
-            }
-
-            // We don't need to worry about setting to false if the tx submission succeeds
-            // because we route immediately to Activity list page
             await submitBridgeTransaction(activeQuote);
-          } finally {
-            if (mountedRef.current) {
-              setIsSubmitting(false);
-            }
           }
         }
       }}

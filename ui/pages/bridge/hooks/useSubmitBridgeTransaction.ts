@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -24,6 +25,10 @@ import {
   getIsStxEnabled,
   getWarningLabels,
 } from '../../../ducks/bridge/selectors';
+import {
+  useHardwareWalletActions,
+  useHardwareWalletConfig,
+} from '../../../contexts/hardware-wallets/HardwareWalletContext';
 import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
@@ -73,26 +78,47 @@ export default function useSubmitBridgeTransaction() {
   const warnings = useSelector(getWarningLabels);
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
   const enableMissingNetwork = useEnableMissingNetwork();
+  const { isHardwareWalletAccount } = useHardwareWalletConfig();
+  const { ensureDeviceReady } = useHardwareWalletActions();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {
-    if (!fromAccount) {
-      throw new Error(
-        'Failed to submit bridge transaction: No selected account',
-      );
-    }
+    // Set submitting state before async checks to prevent duplicate submissions.
+    setIsSubmitting(true);
 
-    // If bridging, enable All Networks view so the user can see their bridging activity
-    if (
-      isCrossChain(
-        quoteResponse.quote.srcChainId,
-        quoteResponse.quote.destChainId,
-      )
-    ) {
-      enableMissingNetwork(
-        formatChainIdToCaip(quoteResponse.quote.destChainId),
-      );
+    // Verify wallet and network before submitting
+    try {
+      // Verify hardware wallet device is ready before submitting.
+      if (isHardwareWalletAccount) {
+        const isDeviceReady = await ensureDeviceReady();
+        if (!isDeviceReady) {
+          return;
+        }
+      }
+
+      if (!fromAccount) {
+        throw new Error(
+          'Failed to submit bridge transaction: No selected account',
+        );
+      }
+
+      // If bridging, enable All Networks view so the user can see their bridging activity
+      if (
+        isCrossChain(
+          quoteResponse.quote.srcChainId,
+          quoteResponse.quote.destChainId,
+        )
+      ) {
+        enableMissingNetwork(
+          formatChainIdToCaip(quoteResponse.quote.destChainId),
+        );
+      }
+    } catch (e) {
+      captureException(e);
+      setIsSubmitting(false);
+      return;
     }
 
     if (hardwareWalletUsed) {
@@ -164,6 +190,8 @@ export default function useSubmitBridgeTransaction() {
         });
       }
       return;
+    } finally {
+      setIsSubmitting(false);
     }
 
     navigate(`${DEFAULT_ROUTE}?tab=activity`, {
@@ -174,5 +202,6 @@ export default function useSubmitBridgeTransaction() {
 
   return {
     submitBridgeTransaction,
+    isSubmitting,
   };
 }
