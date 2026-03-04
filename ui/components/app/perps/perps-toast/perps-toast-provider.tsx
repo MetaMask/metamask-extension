@@ -48,6 +48,7 @@ export type PerpsToastKey =
 
 export type PerpsToastRouteState = {
   perpsToastKey?: PerpsToastKey;
+  perpsToastDescription?: string;
 };
 
 export type PerpsToastConfig = {

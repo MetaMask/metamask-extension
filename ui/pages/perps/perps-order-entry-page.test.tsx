@@ -373,9 +373,12 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastOrderSubmitted',
-      });
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastOrderSubmitted',
+          description: expect.stringMatching(/^Long [^ ]+ ETH$/u),
+        }),
+      );
     });
 
     it('shows error when order fails', async () => {
@@ -807,11 +810,17 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastOrderSubmitted',
-      });
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastOrderSubmitted',
+          description: expect.stringMatching(/^Long [^ ]+ ETH$/u),
+        }),
+      );
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        state: { perpsToastKey: 'perpsToastOrderPlaced' },
+        state: expect.objectContaining({
+          perpsToastKey: 'perpsToastOrderPlaced',
+          perpsToastDescription: expect.stringMatching(/^Long [^ ]+ ETH$/u),
+        }),
       });
     });
   });
@@ -855,7 +864,10 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        state: { perpsToastKey: 'perpsToastOrderFilled' },
+        state: expect.objectContaining({
+          perpsToastKey: 'perpsToastOrderFilled',
+          perpsToastDescription: expect.stringMatching(/^Long [^ ]+ ETH$/u),
+        }),
       });
     });
 
