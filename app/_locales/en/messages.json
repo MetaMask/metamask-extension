@@ -4101,13 +4101,8 @@
   "musdBuyMusd": {
     "message": "Buy mUSD"
   },
-  "musdClaimableBonus": {
-    "message": "Claimable bonus",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "The bonus you've earned for holding mUSD. Your bonus is claimable on Linea. $1",
-    "description": "$1 is the 'Terms apply' link"
+  "musdClaimActivityTitle": {
+    "message": "Claim mUSD bonus"
   },
   "musdClaimClaimingTo": {
     "message": "Claiming to",
@@ -4117,12 +4112,17 @@
     "message": "Bonus payout will be on Linea network.",
     "description": "Subtitle shown on the mUSD claim confirmation screen explaining rewards are on Linea"
   },
-  "musdClaimActivityTitle": {
-    "message": "Claim mUSD bonus"
-  },
   "musdClaimTitle": {
     "message": "Claim bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"
+  },
+  "musdClaimableBonus": {
+    "message": "Claimable bonus",
+    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
+  },
+  "musdClaimableBonusTooltip": {
+    "message": "The bonus you've earned for holding mUSD. Your bonus is claimable on Linea. $1",
+    "description": "$1 is the 'Terms apply' link"
   },
   "musdConversionActivityTitle": {
     "message": "Convert $1 to mUSD",
@@ -4144,13 +4144,13 @@
   "musdConvert": {
     "message": "Convert"
   },
-  "musdConvertEnterMinimum": {
-    "message": "Enter a minimum of $1",
-    "description": "$1 is the minimum amount (e.g. $10)"
-  },
   "musdConvertAndGetBonus": {
     "message": "Convert and get $1%",
     "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdConvertEnterMinimum": {
+    "message": "Enter a minimum of $1",
+    "description": "$1 is the minimum amount (e.g. $10)"
   },
   "musdEarnBonusPercentage": {
     "message": "Earn a $1% bonus",
