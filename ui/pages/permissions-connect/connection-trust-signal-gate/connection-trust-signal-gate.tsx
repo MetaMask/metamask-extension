@@ -17,10 +17,7 @@ export function ConnectionTrustSignalGate({
 
   if (!dismissed && state === TrustSignalDisplayState.Malicious) {
     return (
-      <TrustSignalModal
-        origin={origin}
-        onContinue={() => setDismissed(true)}
-      />
+      <TrustSignalModal origin={origin} onContinue={() => setDismissed(true)} />
     );
   }
 

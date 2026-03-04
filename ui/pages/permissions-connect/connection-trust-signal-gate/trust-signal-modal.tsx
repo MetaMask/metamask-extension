@@ -24,7 +24,10 @@ type TrustSignalModalProps = {
   onContinue: () => void;
 };
 
-export function TrustSignalModal({ origin, onContinue }: TrustSignalModalProps) {
+export function TrustSignalModal({
+  origin,
+  onContinue,
+}: TrustSignalModalProps) {
   const t = useI18nContext();
 
   let hostname: string;
@@ -75,7 +78,9 @@ export function TrustSignalModal({ origin, onContinue }: TrustSignalModalProps) 
         className="rounded-lg"
         padding={4}
       >
-        <Text variant={TextVariant.BodyMd}>{t('trustSignalBlockDescription')}</Text>
+        <Text variant={TextVariant.BodyMd}>
+          {t('trustSignalBlockDescription')}
+        </Text>
       </Box>
       <Button
         variant={ButtonVariant.Primary}
