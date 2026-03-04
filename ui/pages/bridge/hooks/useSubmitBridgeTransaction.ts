@@ -111,7 +111,7 @@ export default function useSubmitBridgeTransaction() {
       // Intent quotes are submitted via the dedicated intent flow.
       if (intentData) {
         await dispatch(
-          await submitBridgeIntent({
+          submitBridgeIntent({
             quoteResponse: {
               ...quoteResponse,
               quote: {
@@ -134,7 +134,7 @@ export default function useSubmitBridgeTransaction() {
       if (isNonEvmSource) {
         // Submit the transaction first, THEN navigate
         await dispatch(
-          await submitBridgeTx(
+          submitBridgeTx(
             fromAccount.address,
             quoteResponse,
             false,
@@ -154,7 +154,7 @@ export default function useSubmitBridgeTransaction() {
       }
 
       await dispatch(
-        await submitBridgeTx(
+        submitBridgeTx(
           fromAccount.address,
           quoteResponse,
           smartTransactionsEnabled,

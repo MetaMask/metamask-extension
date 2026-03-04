@@ -30,7 +30,7 @@ const callBridgeStatusControllerMethod = <T extends unknown[]>(
  * @param context
  * @returns
  */
-export const submitBridgeTx = async (
+export const submitBridgeTx = (
   accountAddress: string,
   quote: QuoteResponse & QuoteMetadata,
   isStxSupportedInClient: boolean,
@@ -60,7 +60,7 @@ export const submitBridgeTx = async (
  * @param params.abTests - Optional AB test metadata forwarded to metrics.
  * @returns A thunk that dispatches the `submitIntent` bridge status action.
  */
-export const submitBridgeIntent = async (params: {
+export const submitBridgeIntent = (params: {
   quoteResponse: QuoteResponse & QuoteMetadata;
   accountAddress: string;
   location?: string;
