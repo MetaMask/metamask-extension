@@ -51,7 +51,7 @@ const isTokenTradingOpenAt = (
 
 export function useRWAToken() {
   const isRWAEnabled = useSelector(getIsRWATokensEnabled);
-  const [nowMs, setNowMs] = useState(Date.now);
+  const [nowMs, setNowMs] = useState(() => Date.now());
 
   useEffect(() => {
     if (!isRWAEnabled) {
