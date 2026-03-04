@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { Browser } from 'selenium-webdriver';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { Driver } from '../../../webdriver/driver';
@@ -17,7 +17,7 @@ describe('Ledger Hardware', function (this: Suite) {
   it('forgets device and checks if it is removed from the list', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withLedgerAccount().build(),
+        fixtures: new FixtureBuilderV2().withLedgerAccount().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
