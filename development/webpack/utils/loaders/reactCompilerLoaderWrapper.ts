@@ -17,9 +17,11 @@
 import { createRequire } from 'node:module';
 import type { LoaderDefinitionFunction } from 'webpack';
 
-// @ts-expect-error ESM resolution issues
+// Thread-loader workers may load this file as either CJS or ESM depending on
+// Node.js version and registered loaders. createRequire(import.meta.url) works
+// in both: tsx shims import.meta.url in CJS, and it's native in ESM.
+// @ts-expect-error import.meta.url is valid at runtime in both CJS (tsx shim) and ESM contexts
 const esmRequire = createRequire(import.meta.url);
-
 const reactCompilerModule = esmRequire(
   'react-compiler-webpack/dist/react-compiler-loader.js',
 ) as { default: LoaderDefinitionFunction } | LoaderDefinitionFunction;
