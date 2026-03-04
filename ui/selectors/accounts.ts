@@ -61,7 +61,7 @@ export const getInternalAccountByAddress = createSelector(
   ],
   (accounts, accountIdByAddress, address) => {
     const accountId =
-      accountIdByAddress[address] ?? accountIdByAddress[address.toLowerCase()];
+      accountIdByAddress[address] ?? accountIdByAddress[address?.toLowerCase()];
     return accountId ? accounts[accountId] : undefined;
   },
 );
