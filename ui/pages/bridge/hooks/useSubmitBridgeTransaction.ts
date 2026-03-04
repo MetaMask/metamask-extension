@@ -86,9 +86,7 @@ export default function useSubmitBridgeTransaction() {
       );
     }
 
-    const intentData =
-      (quoteResponse.quote as { intent?: unknown }).intent ??
-      (quoteResponse as { intent?: unknown }).intent;
+    const intentData = quoteResponse.quote.intent;
 
     // If bridging, enable All Networks view so the user can see their bridging activity
     if (
