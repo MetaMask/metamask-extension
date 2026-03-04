@@ -237,7 +237,7 @@ const reactCompilerLoader = getReactCompilerLoader({
 const envValidationLoader = args.validateEnv
   ? {
       loader: require.resolve('./utils/loaders/envValidationLoader'),
-      options: { declarations: buildEnvVarDeclarations },
+      options: { declarations: Array.from(buildEnvVarDeclarations) },
     }
   : null;
 
@@ -347,8 +347,8 @@ const config = {
         dependency: 'url',
         type: 'asset/resource',
       },
-      // Source preprocessing (enforce: 'pre' runs in the main thread before
-      // thread-loader, avoiding serialization of non-JSON-safe options like Sets)
+      // Source preprocessing (enforce: 'pre' ensures these run before normal
+      // loaders; options must be JSON-serializable for thread-loader compatibility)
       {
         test: /\.(?:ts|mts|tsx)$/u,
         exclude: NODE_MODULES_RE,
