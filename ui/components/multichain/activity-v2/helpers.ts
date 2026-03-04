@@ -7,11 +7,16 @@ import type {
   TransactionGroup,
   TransactionViewModel,
 } from '../../../../shared/lib/multichain/types';
+import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 import { formatUnits } from '../../../../shared/lib/unit';
 
+export type AssetScope =
+  | { kind: 'native' }
+  | { kind: 'token'; tokenAddress: string };
+
 export type ActivityListFilter = {
-  tokenAddress?: string;
-  chainId?: CaipChainId;
+  chainId: CaipChainId;
+  assetScope: AssetScope;
 };
 
 export type FlattenedItem =
@@ -168,18 +173,21 @@ export function groupAndFlattenMergedTransactions(
 }
 
 /**
- * Returns true if the API transaction involves the given token address
- * (as sender, receiver, or in value transfers).
+ * Returns true if the API transaction matches the given asset scope.
  *
  * @param tx - The API transaction view model.
- * @param tokenAddress - The token contract address to match against.
- * @returns Whether the transaction involves the given token.
+ * @param scope - The asset scope to filter by.
+ * @returns Whether the transaction involves the scoped asset.
  */
 export function matchesApiTransaction(
   tx: TransactionViewModel,
-  tokenAddress: string,
+  scope: AssetScope,
 ): boolean {
-  const addr = tokenAddress.toLowerCase();
+  const addr =
+    scope.kind === 'native'
+      ? NATIVE_TOKEN_ADDRESS
+      : scope.tokenAddress.toLowerCase();
+
   if (tx.amounts?.from?.token.address?.toLowerCase() === addr) {
     return true;
   }
@@ -194,43 +202,54 @@ export function matchesApiTransaction(
 }
 
 /**
- * Returns true if the local transaction group's target contract matches the token address.
- * For ERC-20 interactions, txParams.to is the token contract.
+ * Returns true if the local transaction group matches the given asset scope.
+ * For native assets, matches by transaction type (simpleSend/incoming).
+ * For tokens, matches by txParams.to (the token contract address).
  *
  * @param group - The local transaction group.
- * @param tokenAddress - The token contract address to match against.
- * @returns Whether the transaction group targets the given token contract.
+ * @param scope - The asset scope to filter by.
+ * @returns Whether the transaction group matches the scoped asset.
  */
 export function matchesLocalTransaction(
   group: TransactionGroup,
-  tokenAddress: string,
+  scope: AssetScope,
 ): boolean {
+  if (scope.kind === 'native') {
+    const txType = group.primaryTransaction.type;
+    return (
+      txType === TransactionType.simpleSend ||
+      txType === TransactionType.incoming
+    );
+  }
   return (
     group.initialTransaction.txParams?.to?.toLowerCase() ===
-    tokenAddress.toLowerCase()
+    scope.tokenAddress.toLowerCase()
   );
 }
 
 /**
- * Returns true if the non-EVM transaction involves the given token address
+ * Returns true if the non-EVM transaction involves the given asset scope
  * by checking the CAIP asset type in from/to asset entries.
  *
  * @param tx - The non-EVM transaction to check.
- * @param tokenAddress - The CAIP asset type or address to match against.
- * @returns Whether the transaction involves the given token.
+ * @param scope - The asset scope to filter by.
+ * @returns Whether the transaction involves the scoped asset.
  */
 export function matchesNonEvmTransaction(
   tx: Transaction,
-  tokenAddress: string,
+  scope: AssetScope,
 ): boolean {
-  const addr = tokenAddress.toLowerCase();
+  if (scope.kind === 'native') {
+    return false;
+  }
+  const addr = scope.tokenAddress.toLowerCase();
   const assetEntries = [...(tx.from ?? []), ...(tx.to ?? [])];
   return assetEntries.some((entry) => {
     if (!entry.asset) {
       return false;
     }
     if (entry.asset.fungible) {
-      return entry.asset.type.toLowerCase() === addr;
+      return entry.asset.type?.toLowerCase() === addr;
     }
     return 'id' in entry.asset && entry.asset.id.toLowerCase().includes(addr);
   });

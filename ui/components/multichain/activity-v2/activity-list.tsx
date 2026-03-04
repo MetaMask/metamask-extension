@@ -95,9 +95,9 @@ export const ActivityList = ({ filter }: Props) => {
       enabledNetworks.includes(tx.chain),
     );
 
-    // Asset-page filtering: narrow by chain and/or token
-    const { tokenAddress, chainId: filterChainId } = filter ?? {};
-    if (filterChainId) {
+    // Asset-page filtering: narrow by chain and asset scope
+    if (filter) {
+      const { chainId: filterChainId, assetScope } = filter;
       filteredNonEvmTransactions = filteredNonEvmTransactions.filter(
         (tx) => tx.chain === filterChainId,
       );
@@ -105,16 +105,14 @@ export const ActivityList = ({ filter }: Props) => {
         const hexChainId = group.initialTransaction?.chainId;
         return hexChainId && toEvmCaipChainId(hexChainId) === filterChainId;
       });
-    }
-    if (tokenAddress) {
       evmTransactions = evmTransactions.filter((tx) =>
-        matchesApiTransaction(tx, tokenAddress),
+        matchesApiTransaction(tx, assetScope),
       );
       filteredLocalTransactions = filteredLocalTransactions.filter((group) =>
-        matchesLocalTransaction(group, tokenAddress),
+        matchesLocalTransaction(group, assetScope),
       );
       filteredNonEvmTransactions = filteredNonEvmTransactions.filter((tx) =>
-        matchesNonEvmTransaction(tx, tokenAddress),
+        matchesNonEvmTransaction(tx, assetScope),
       );
     }
 
@@ -131,8 +129,7 @@ export const ActivityList = ({ filter }: Props) => {
     nonEvmTransactions,
     localTransactions,
     enabledNetworks,
-    filter?.tokenAddress,
-    filter?.chainId,
+    filter,
   ]);
 
   const [scrollMargin, setScrollMargin] = useState(0);

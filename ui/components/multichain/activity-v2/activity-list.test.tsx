@@ -242,19 +242,106 @@ describe('ActivityList', () => {
 
     render(
       <Provider store={store}>
-        <ActivityList filter={{ tokenAddress: '0x222' }} />
+        <ActivityList
+          filter={{
+            chainId: 'eip155:1',
+            assetScope: { kind: 'token', tokenAddress: '0x222' },
+          }}
+        />
       </Provider>,
     );
 
     expect(screen.getByTestId('activity-empty-state')).toBeInTheDocument();
   });
 
+  it('token asset filter includes matching token and excludes others', () => {
+    const tokenTx = {
+      amounts: {
+        from: {
+          amount: '-1000000',
+          token: {
+            address: '0xusdc',
+            chainId: '0x1',
+            decimals: 6,
+            symbol: 'USDC',
+          },
+        },
+      },
+      chainId: 'eip155:1',
+      id: 'usdc-send',
+      time: 1735689600000,
+      transactionCategory: 'TRANSFER',
+      transactionType: 'ERC_20_TRANSFER',
+      txParams: {
+        from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+      },
+    };
+
+    const nativeReceiveTx = {
+      amounts: {
+        to: {
+          amount: '870200000000000',
+          token: {
+            address: '0x0000000000000000000000000000000000000000',
+            chainId: '0x1',
+            decimals: 18,
+            symbol: 'ETH',
+          },
+        },
+      },
+      chainId: 'eip155:1',
+      id: 'eth-receive',
+      time: 1735689601000,
+      transactionCategory: 'TRANSFER',
+      transactionType: 'STANDARD',
+      txParams: {
+        from: '0xsomeone',
+        to: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+      },
+    };
+
+    mockUseTransactionsQuery.mockReturnValue({
+      data: { pages: [{ data: [tokenTx, nativeReceiveTx] }] },
+      isInitialLoading: false,
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isFetchingNextPage: false,
+    });
+
+    enableVisibleVirtualItems();
+    const store = createStore();
+
+    render(
+      <Provider store={store}>
+        <ActivityList
+          filter={{
+            chainId: 'eip155:1',
+            assetScope: { kind: 'token', tokenAddress: '0xusdc' },
+          }}
+        />
+      </Provider>,
+    );
+
+    expect(screen.getAllByTestId('evm-item')).toHaveLength(1);
+  });
+
   it('applies chainId filter and excludes non-evm rows for eip155 chain', () => {
     const evmTx = {
+      amounts: {
+        to: {
+          amount: '1000000000000000',
+          token: {
+            address: '0x0000000000000000000000000000000000000000',
+            chainId: '0x1',
+            decimals: 18,
+            symbol: 'ETH',
+          },
+        },
+      },
       chainId: 'eip155:1',
       id: 'evm-only',
-      timestamp: 1735689600000,
-      transactionCategory: 'STANDARD',
+      time: 1735689600000,
+      transactionCategory: 'TRANSFER',
       transactionType: 'STANDARD',
       txParams: { from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424' },
     };
@@ -285,12 +372,97 @@ describe('ActivityList', () => {
 
     render(
       <Provider store={store}>
-        <ActivityList filter={{ chainId: 'eip155:1' }} />
+        <ActivityList
+          filter={{
+            chainId: 'eip155:1',
+            assetScope: { kind: 'native' },
+          }}
+        />
       </Provider>,
     );
 
     expect(screen.getByTestId('evm-item')).toBeInTheDocument();
     expect(screen.queryByTestId('non-evm-item')).not.toBeInTheDocument();
+  });
+
+  it('native asset filter excludes non-native transactions', () => {
+    const nativeReceiveTx = {
+      amounts: {
+        to: {
+          amount: '870200000000000',
+          token: {
+            address: '0x0000000000000000000000000000000000000000',
+            chainId: '0x1',
+            decimals: 18,
+            symbol: 'ETH',
+          },
+        },
+      },
+      chainId: 'eip155:1',
+      id: 'eth-receive',
+      time: 1735689600000,
+      transactionCategory: 'TRANSFER',
+      transactionType: 'STANDARD',
+      txParams: {
+        from: '0xsomeone',
+        to: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+      },
+    };
+
+    const swapTx = {
+      amounts: {
+        from: {
+          amount: '-3000000',
+          token: {
+            address: '0xmusd',
+            chainId: '0x1',
+            decimals: 6,
+            symbol: 'mUSD',
+          },
+        },
+        to: {
+          amount: '3000000',
+          token: {
+            address: '0xusdc',
+            chainId: '0x1',
+            decimals: 6,
+            symbol: 'USDC',
+          },
+        },
+      },
+      chainId: 'eip155:1',
+      id: 'swap-tx',
+      time: 1735689601000,
+      transactionCategory: 'SWAP',
+      transactionType: 'SWAP',
+      txParams: {
+        from: '0x4f5243ceea96cee1da0fdb89c756d0e999439424',
+      },
+    };
+
+    mockUseTransactionsQuery.mockReturnValue({
+      data: { pages: [{ data: [nativeReceiveTx, swapTx] }] },
+      isInitialLoading: false,
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isFetchingNextPage: false,
+    });
+
+    enableVisibleVirtualItems();
+    const store = createStore();
+
+    render(
+      <Provider store={store}>
+        <ActivityList
+          filter={{
+            chainId: 'eip155:1',
+            assetScope: { kind: 'native' },
+          }}
+        />
+      </Provider>,
+    );
+
+    expect(screen.getAllByTestId('evm-item')).toHaveLength(1);
   });
 
   it('renders local item type when local transaction groups are present', () => {

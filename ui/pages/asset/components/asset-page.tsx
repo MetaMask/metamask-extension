@@ -435,8 +435,11 @@ const AssetPage = ({
             </Text>
             <ActivityList
               filter={{
-                tokenAddress: type === AssetType.token ? address : undefined,
                 chainId: caipChainId,
+                assetScope:
+                  type === AssetType.native
+                    ? { kind: 'native' }
+                    : { kind: 'token', tokenAddress: address },
               }}
             />
           </Box>
