@@ -84,34 +84,36 @@ export const selectBridgeHistoryItemForTxMetaId = createSelector(
  * Returns a bridge history item for a given original tx meta id.
  * Used by intent flows where txHistory key is orderUid and tx meta id is stored separately.
  */
-export const selectBridgeHistoryForOriginalTxMetaId = createSelector(
-  [selectBridgeHistory, (_, originalTxMetaId?: string) => originalTxMetaId],
-  (bridgeHistory, originalTxMetaId) => {
-    if (!originalTxMetaId) {
-      return undefined;
-    }
-    return Object.values(bridgeHistory).find(
-      (bridgeHistoryItem: BridgeHistoryItemWithOriginalTransactionId) =>
-        bridgeHistoryItem.originalTransactionId === originalTxMetaId,
-    );
-  },
-);
+export const selectBridgeHistoryForOriginalTxMetaId = (
+  state: BridgeStatusAppState,
+  originalTxMetaId?: string,
+) => {
+  if (!originalTxMetaId) {
+    return undefined;
+  }
+
+  return Object.values(selectBridgeHistory(state)).find(
+    (bridgeHistoryItem: BridgeHistoryItemWithOriginalTransactionId) =>
+      bridgeHistoryItem.originalTransactionId === originalTxMetaId,
+  );
+};
 
 // eslint-disable-next-line jsdoc/require-param
 /**
  * Returns a bridge history item for a given approval tx id
  */
-export const selectBridgeHistoryForApprovalTxId = createSelector(
-  [selectBridgeHistory, (_, approvalTxId?: string) => approvalTxId],
-  (bridgeHistory, approvalTxId) => {
-    if (!approvalTxId) {
-      return undefined;
-    }
-    return Object.values(bridgeHistory).find(
-      (bridgeHistoryItem) => bridgeHistoryItem.approvalTxId === approvalTxId,
-    );
-  },
-);
+export const selectBridgeHistoryForApprovalTxId = (
+  state: BridgeStatusAppState,
+  approvalTxId?: string,
+) => {
+  if (!approvalTxId) {
+    return undefined;
+  }
+
+  return Object.values(selectBridgeHistory(state)).find(
+    (bridgeHistoryItem) => bridgeHistoryItem.approvalTxId === approvalTxId,
+  );
+};
 
 /**
  * Returns a pending/local transaction for the given tx hash
