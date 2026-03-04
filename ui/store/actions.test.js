@@ -86,6 +86,9 @@ const defaultState = {
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
+    accountIdByAddress: {
+      '0xFirstAddress': 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    },
   },
 };
 const mockStore = (state = defaultState) => configureStore(middleware)(state);
@@ -1396,6 +1399,7 @@ describe('Actions', () => {
             },
             selectedAccount: 'mock-id',
           },
+          accountIdByAddress: { '0x123': 'mock-id' },
         },
       });
 
@@ -1442,6 +1446,7 @@ describe('Actions', () => {
             },
             selectedAccount: 'mock-id',
           },
+          accountIdByAddress: { '0x123': 'mock-id' },
         },
       });
 

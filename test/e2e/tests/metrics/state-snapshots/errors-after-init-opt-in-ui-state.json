@@ -179,6 +179,7 @@
     "initialEnqueueCompleted": "boolean",
     "insights": "object",
     "interfaces": "object",
+    "accountIdByAddress": "object",
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "ipfsGateway": "string",
     "isAccountSyncingEnabled": true,

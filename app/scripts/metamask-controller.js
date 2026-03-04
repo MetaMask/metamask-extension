@@ -2763,7 +2763,9 @@ export default class MetamaskController extends EventEmitter {
         ),
       // PreferencesController
       setSelectedAddress: (address) => {
-        const account = this.accountsController.getAccountByAddress(address);
+        const account = this.accountsController.getAccountByAddress(
+          address.toLowerCase(),
+        );
         if (account) {
           this.accountsController.setSelectedAccount(account.id);
         } else {
@@ -2817,7 +2819,9 @@ export default class MetamaskController extends EventEmitter {
         accountsController.setAccountName.bind(accountsController),
 
       setAccountLabel: (address, label) => {
-        const account = this.accountsController.getAccountByAddress(address);
+        const account = this.accountsController.getAccountByAddress(
+          address.toLowerCase(),
+        );
         if (account === undefined) {
           throw new Error(`No account found for address: ${address}`);
         }
@@ -6197,7 +6201,7 @@ export default class MetamaskController extends EventEmitter {
       requestContext,
       networkClientId,
       selectedAccount: this.accountsController.getAccountByAddress(
-        transactionParams.from,
+        transactionParams.from.toLowerCase(),
       ),
       transactionController: this.txController,
       transactionOptions,
