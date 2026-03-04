@@ -35,8 +35,8 @@ jobs:
 
           # If the PR still has a retry-ci label, do not retry to avoid a possible infinite loop.
           # The label should have been removed by the workflow that triggered this one.
-          labels=$(gh pr view "$PR_NUMBER" --json labels --jq ".labels[].name")
-          if echo "$labels" | grep -q "retry-ci"; then
+          CURRENT_LABELS=$(gh pr view "$PR_NUMBER" --json labels --jq '.labels[].name' | tr '\n' ',')
+          if [[ "${CURRENT_LABELS}" == *"retry-ci"* ]]; then
             echo "PR still has a 'retry-ci' label. Exiting to avoid a possible infinite loop."
             exit 1
           fi

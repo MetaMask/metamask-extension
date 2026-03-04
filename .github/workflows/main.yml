@@ -768,7 +768,6 @@ jobs:
     needs:
       - all-jobs-pass
     env:
-      LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
       GH_TOKEN: ${{ github.token }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
     permissions:
@@ -781,7 +780,10 @@ jobs:
 
       - name: Check if this PR has a retry-ci label
         run: |
-          if [[ "${LABELS}" == *"retry-ci"* ]]; then
+          # We cannot use github.event.pull_request.labels here, because it will be stale on a re-run
+          CURRENT_LABELS=$(gh pr view "$PR_NUMBER" --json labels --jq '.labels[].name' | tr '\n' ',')
+
+          if [[ "${CURRENT_LABELS}" == *"retry-ci"* ]]; then
             echo "This PR has a retry-ci label, removing the label..."
             gh pr edit "$PR_NUMBER" --remove-label "retry-ci"
 
