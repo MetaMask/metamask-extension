@@ -488,11 +488,15 @@ const PerpsOrderEntryPage: React.FC = () => {
       getCloseSuccessToastDescription() ?? tradeActionToastDescription;
 
     const inProgressToastKey = ORDER_MODE_TOAST_KEYS[orderMode].inProgress;
+    const inProgressToastDescription =
+      inProgressToastKey === PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS
+        ? undefined
+        : tradeActionToastDescription;
     if (inProgressToastKey) {
       replacePerpsToastByKey({
         key: inProgressToastKey,
-        ...(tradeActionToastDescription
-          ? { description: tradeActionToastDescription }
+        ...(inProgressToastDescription
+          ? { description: inProgressToastDescription }
           : {}),
       });
     }
@@ -573,9 +577,16 @@ const PerpsOrderEntryPage: React.FC = () => {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
       setSubmitError(errorMessage);
+      const failedToastKey = ORDER_MODE_TOAST_KEYS[orderMode].failed;
+      const failedToastDescription =
+        failedToastKey === PERPS_TOAST_KEYS.ORDER_FAILED &&
+        (errorMessage === 'An unknown error occurred' ||
+          errorMessage === 'Failed to place order')
+          ? t('perpsToastOrderFailedDescriptionFallback')
+          : errorMessage;
       replacePerpsToastByKey({
-        key: ORDER_MODE_TOAST_KEYS[orderMode].failed,
-        description: errorMessage,
+        key: failedToastKey,
+        description: failedToastDescription,
       });
     } finally {
       setIsSubmitting(false);
@@ -592,6 +603,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     controller,
     handleBackClick,
     replacePerpsToastByKey,
+    t,
   ]);
 
   useEffect(() => {
