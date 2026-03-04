@@ -271,9 +271,16 @@ class FixtureBuilderV2 {
       accounts: [`wallet:eip155:${selectedAccount}`],
     };
 
+    // Unique random IDs for each dapp subject's permission
+    const permissionIds = [
+      'SFqk8nFLekiqC5O1cYCjT',
+      'Aqk7nGLdkiqC5O1cYCjU',
+      'Brl8oHMeliqC5O1cYCjV',
+    ];
     const subjects: PermissionControllerState<PermissionConstraint>['subjects'] =
       {};
-    for (const dappUrl of dappUrls) {
+    for (let i = 0; i < dappUrls.length; i++) {
+      const dappUrl = dappUrls[i];
       subjects[dappUrl] = {
         origin: dappUrl,
         permissions: {
@@ -290,7 +297,7 @@ class FixtureBuilderV2 {
               },
             ],
             date: 1770296204693,
-            id: 'SFqk8nFLekiqC5O1cYCjT',
+            id: permissionIds[i],
             invoker: dappUrl,
             parentCapability: 'endowment:caip25',
           },
