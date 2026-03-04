@@ -8,7 +8,6 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import {
-  Checkbox,
   Label,
   TextField,
   TextFieldSize,
@@ -16,13 +15,7 @@ import {
   HelpText,
   HelpTextSeverity,
 } from '../../components/component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  Display,
-} from '../../helpers/constants/design-system';
+import { BlockSize } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
 type PasswordPromptProps = {
@@ -35,7 +28,6 @@ type PasswordPromptProps = {
   onContinueClick: (event: React.MouseEvent) => void;
   isMalicious?: boolean;
   dangerAcknowledged?: boolean;
-  onDangerAcknowledge?: () => void;
 };
 
 export function PasswordPrompt({
@@ -48,7 +40,6 @@ export function PasswordPrompt({
   onContinueClick,
   isMalicious = false,
   dangerAcknowledged = false,
-  onDangerAcknowledge,
 }: Readonly<PasswordPromptProps>) {
   const t = useI18nContext();
   return (
@@ -89,23 +80,6 @@ export function PasswordPrompt({
           </HelpText>
         )}
       </form>
-      {isMalicious && (
-        <Box
-          display={Display.Flex}
-          padding={4}
-          width={BlockSize.Full}
-          backgroundColor={BackgroundColor.errorMuted}
-          borderRadius={BorderRadius.LG}
-        >
-          <Checkbox
-            label={t('alertModalAcknowledge')}
-            data-testid="dapp-scan-acknowledge-checkbox"
-            isChecked={dangerAcknowledged}
-            onChange={onDangerAcknowledge}
-            alignItems={AlignItems.flexStart}
-          />
-        </Box>
-      )}
       <Box
         gap={4}
         data-testid="reveal-seed-password-footer"

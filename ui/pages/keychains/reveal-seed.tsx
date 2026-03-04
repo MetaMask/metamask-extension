@@ -8,8 +8,14 @@ import {
   Box,
   TextVariant,
   TextColor,
+  BoxBackgroundColor,
 } from '@metamask/design-system-react';
-import { RecommendedAction } from '@metamask/phishing-controller';
+import {
+  RecommendedAction,
+  type PhishingDetectionScanResult,
+} from '@metamask/phishing-controller';
+import { Checkbox } from '../../components/component-library';
+import { AlignItems } from '../../helpers/constants/design-system';
 import { getErrorMessage } from '../../../shared/modules/error';
 import {
   MetaMetricsEventCategory,
@@ -64,10 +70,8 @@ function RevealSeedPage() {
   const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-  const [scanResult, setScanResult] = useState<{
-    recommendedAction?: string;
-    hostname?: string;
-  } | null>(null);
+  const [scanResult, setScanResult] =
+    useState<PhishingDetectionScanResult | null>(null);
   const [dangerAcknowledged, setDangerAcknowledged] = useState(false);
 
   useEffect(() => {
@@ -78,28 +82,10 @@ function RevealSeedPage() {
     if (activeTabOrigin) {
       scanUrlForPhishing(activeTabOrigin)
         .then((result: unknown) => {
-          const scanResponse = result as {
-            recommendedAction?: string;
-            hostname?: string;
-          };
           if (cancelled) {
             return;
           }
-          setScanResult(scanResponse);
-
-          if (scanResponse?.recommendedAction === RecommendedAction.Block) {
-            trackEvent({
-              category: MetaMetricsEventCategory.Keys,
-              event: MetaMetricsEventName.SrpRevealMaliciousSiteDetected,
-              properties: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                key_type: MetaMetricsEventKeyType.Srp,
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                active_tab_origin: activeTabOrigin,
-                hostname: scanResponse.hostname ?? 'unknown',
-              },
-            });
-          }
+          setScanResult(result as PhishingDetectionScanResult);
         })
         .catch(() => {
           // Scan failed — no action needed
@@ -109,7 +95,23 @@ function RevealSeedPage() {
     return () => {
       cancelled = true;
     };
-  }, [activeTabOrigin, trackEvent]);
+  }, [activeTabOrigin]);
+
+  useEffect(() => {
+    if (scanResult?.recommendedAction === RecommendedAction.Block) {
+      trackEvent({
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.SrpRevealMaliciousSiteDetected,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          active_tab_origin: activeTabOrigin,
+          hostname: scanResult.hostname ?? 'unknown',
+        },
+      });
+    }
+  }, [scanResult, activeTabOrigin, trackEvent]);
 
   const isMalicious = scanResult?.recommendedAction === RecommendedAction.Block;
 
@@ -356,7 +358,6 @@ function RevealSeedPage() {
           onContinueClick={handlePasswordContinueClick}
           isMalicious={isMalicious}
           dangerAcknowledged={dangerAcknowledged}
-          onDangerAcknowledge={() => setDangerAcknowledged((prev) => !prev)}
         />
       );
     }
@@ -417,6 +418,21 @@ function RevealSeedPage() {
       )}
       {screen === PASSWORD_PROMPT_SCREEN && !isMalicious && (
         <RevealSeedWarning message={t('revealSeedWordsWarning')} />
+      )}
+      {screen === PASSWORD_PROMPT_SCREEN && isMalicious && (
+        <Box
+          className="flex w-full p-4 rounded-lg"
+          style={{ borderLeft: '4px solid var(--color-error-default)' }}
+          backgroundColor={BoxBackgroundColor.ErrorMuted}
+        >
+          <Checkbox
+            label={t('alertModalAcknowledge')}
+            data-testid="dapp-scan-acknowledge-checkbox"
+            isChecked={dangerAcknowledged}
+            onChange={() => setDangerAcknowledged((prev) => !prev)}
+            alignItems={AlignItems.flexStart}
+          />
+        </Box>
       )}
       {renderContent()}
       {showSuccessToast && (
