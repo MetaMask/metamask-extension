@@ -15,6 +15,27 @@
 
   &__banner-base {
     box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+
+    &.perps-toast {
+      align-items: center;
+
+      .mm-banner-base__close-button {
+        align-self: center;
+      }
+
+      .perps-toast__success-icon {
+        color: var(--color-accent03-dark);
+        background-color: var(--color-accent03-normal);
+      }
+
+      .perps-toast__loading-spinner-container {
+        display: flex;
+        width: 32px;
+        height: 32px;
+        align-items: center;
+        justify-content: center;
+      }
+    }
   }
 
   &--perps {

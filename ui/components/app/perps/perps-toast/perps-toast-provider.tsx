@@ -10,8 +10,20 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { Toast } from '../../../multichain';
-import { Box, Icon, IconName, IconSize } from '../../../component-library';
-import { IconColor } from '../../../../helpers/constants/design-system';
+import {
+  AvatarIcon,
+  AvatarIconSize,
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+} from '../../../component-library';
+import {
+  AlignItems,
+  BackgroundColor,
+  IconColor,
+  TextColor,
+} from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getIsPerpsInAppToastsEnabled } from '../../../../selectors/perps/feature-flags';
 
@@ -100,12 +112,29 @@ const getDefaultAutoHideTime = (
   return undefined;
 };
 
-type PerpsToastIconConfig = {
-  className?: string;
-  color: IconColor;
-  dataTestId: string;
-  name: IconName;
-};
+type PerpsToastIconConfig =
+  | {
+      className?: string;
+      color: IconColor;
+      dataTestId: string;
+      name: IconName;
+      type: 'icon';
+    }
+  | {
+      color: IconColor;
+      dataTestId: string;
+      name: IconName;
+      type: 'spinner';
+    }
+  | {
+      backgroundColor: BackgroundColor;
+      className?: string;
+      color: TextColor;
+      dataTestId: string;
+      name: IconName;
+      size: AvatarIconSize;
+      type: 'avatar-icon';
+    };
 
 type PerpsToastPresentation = {
   icon: PerpsToastIconConfig;
@@ -119,6 +148,7 @@ const PERPS_TOAST_PRESENTATION_BY_VARIANT: Record<
   error: {
     variant: 'error',
     icon: {
+      type: 'icon',
       name: IconName.Warning,
       color: IconColor.errorDefault,
       dataTestId: 'perps-toast-icon-warning',
@@ -127,17 +157,21 @@ const PERPS_TOAST_PRESENTATION_BY_VARIANT: Record<
   info: {
     variant: 'info',
     icon: {
+      type: 'spinner',
       name: IconName.Loading,
       color: IconColor.primaryDefault,
-      className: 'animate-spin',
       dataTestId: 'perps-toast-icon-loading',
     },
   },
   success: {
     variant: 'success',
     icon: {
+      type: 'avatar-icon',
       name: IconName.CheckBold,
-      color: IconColor.successDefault,
+      color: TextColor.successDefault,
+      backgroundColor: BackgroundColor.successMuted,
+      className: 'perps-toast__success-icon',
+      size: AvatarIconSize.Md,
       dataTestId: 'perps-toast-icon-check-bold',
     },
   },
@@ -165,6 +199,35 @@ const PERPS_TOAST_PRESENTATION_BY_KEY: Record<
 };
 
 const getToastIcon = ({ icon }: PerpsToastPresentation): ReactNode => {
+  if (icon.type === 'spinner') {
+    return (
+      <Box
+        className="perps-toast__loading-spinner-container"
+        data-testid={icon.dataTestId}
+      >
+        <Icon
+          name={icon.name}
+          size={IconSize.Xl}
+          color={icon.color}
+          className="animate-spin"
+        />
+      </Box>
+    );
+  }
+
+  if (icon.type === 'avatar-icon') {
+    return (
+      <AvatarIcon
+        iconName={icon.name}
+        size={icon.size}
+        color={icon.color}
+        backgroundColor={icon.backgroundColor}
+        className={icon.className}
+        data-testid={icon.dataTestId}
+      />
+    );
+  }
+
   return (
     <Icon
       name={icon.name}
@@ -268,6 +331,8 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
             startAdornment={getToastIcon(activeToast.presentation)}
             text={activeToast.message}
             description={activeToast.description}
+            className="perps-toast"
+            contentProps={{ alignItems: AlignItems.center }}
             autoHideTime={activeToast.autoHideTime}
             onClose={hidePerpsToast}
             onAutoHideToast={hidePerpsToast}
