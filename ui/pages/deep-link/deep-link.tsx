@@ -32,6 +32,7 @@ import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../selectors/selectors';
 import { MetaMaskReduxState } from '../../store/store';
 import { VALID, verify } from '../../../shared/lib/deep-links/verify';
+import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 
 type TranslateFunction = (
   key: string,
@@ -139,7 +140,7 @@ async function updateStateFromUrl(
             <ButtonLink
               key="update-metamask-link"
               as="a"
-              href="https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+              href={ZENDESK_URLS.UPDATE_VERSION}
             >
               {t('deepLink_Error404_CTA_LinkText')}
             </ButtonLink>,
@@ -222,7 +223,7 @@ export const DeepLink = () => {
                     <ButtonLink
                       key="update-metamask-link"
                       as="a"
-                      href="https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+                      href={ZENDESK_URLS.UPDATE_VERSION}
                     >
                       {t('deepLink_Error404_CTA_LinkText')}
                     </ButtonLink>,

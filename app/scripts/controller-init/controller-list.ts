@@ -94,7 +94,6 @@ import {
 import { PerpsController } from '@metamask/perps-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
-import SwapsController from '../controllers/swaps';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
 import { NetworkOrderController } from '../controllers/network-order';
 import OAuthService from '../services/oauth/oauth-service';
@@ -190,7 +189,6 @@ export type Controller =
   | SnapsNameProvider
   | SubjectMetadataController
   | SubscriptionService
-  | SwapsController
   | TokenBalancesController
   | TokenDetectionController
   | TokenListController
@@ -278,7 +276,6 @@ export type ControllerFlatState = AccountOrderController['state'] &
   SnapInsightsController['state'] &
   SnapInterfaceController['state'] &
   SubscriptionController['state'] &
-  SwapsController['state'] &
   TokenBalancesController['state'] &
   TokenDetectionController['state'] &
   TokenListController['state'] &
