@@ -190,6 +190,8 @@ const PerpsOrderEntryPage: React.FC = () => {
   const [pendingOrderSymbol, setPendingOrderSymbol] = useState<string | null>(
     null,
   );
+  const [pendingOrderToastDescription, setPendingOrderToastDescription] =
+    useState<string | null>(null);
 
   const isOrderPending = isSubmitting || pendingOrderSymbol !== null;
 
@@ -345,7 +347,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   }, [position]);
 
   const handleBackClick = useCallback(
-    (perpsToastKey?: PerpsToastKey) => {
+    (perpsToastKey?: PerpsToastKey, perpsToastDescription?: string) => {
       if (!decodedSymbol) {
         return;
       }
@@ -361,11 +363,41 @@ const PerpsOrderEntryPage: React.FC = () => {
 
       const toastRouteState: PerpsToastRouteState = {
         perpsToastKey,
+        ...(perpsToastDescription ? { perpsToastDescription } : {}),
       };
       navigate(marketDetailPath, { state: toastRouteState });
     },
     [navigate, decodedSymbol],
   );
+
+  const getOrderPlacementToastDescription = useCallback(() => {
+    if (orderMode !== 'new' || !orderFormState || !orderCalculations) {
+      return undefined;
+    }
+
+    const formattedPositionSize = orderCalculations.positionSize?.trim();
+    if (!formattedPositionSize) {
+      return undefined;
+    }
+
+    const directionLabel =
+      orderFormState.direction === 'long' ? t('perpsLong') : t('perpsShort');
+    const rawAssetSymbol = orderFormState.asset;
+    const displayAssetSymbol = getDisplayName(rawAssetSymbol);
+    const rawAmount = formattedPositionSize.endsWith(` ${rawAssetSymbol}`)
+      ? formattedPositionSize.slice(0, -` ${rawAssetSymbol}`.length).trimEnd()
+      : formattedPositionSize;
+
+    if (!rawAmount) {
+      return undefined;
+    }
+
+    return t('perpsToastOrderPlacementSubtitle', [
+      directionLabel,
+      rawAmount,
+      displayAssetSymbol,
+    ]);
+  }, [orderCalculations, orderFormState, orderMode, t]);
 
   const handleFormStateChange = useCallback((formState: OrderFormState) => {
     setOrderFormState(formState);
@@ -390,8 +422,15 @@ const PerpsOrderEntryPage: React.FC = () => {
 
     setIsSubmitting(true);
     setSubmitError(null);
+    setPendingOrderToastDescription(null);
+
+    const orderPlacementToastDescription = getOrderPlacementToastDescription();
+
     replacePerpsToastByKey({
       key: ORDER_MODE_TOAST_KEYS[orderMode].inProgress,
+      ...(orderPlacementToastDescription
+        ? { description: orderPlacementToastDescription }
+        : {}),
     });
 
     try {
@@ -452,9 +491,13 @@ const PerpsOrderEntryPage: React.FC = () => {
         }
 
         if (orderFormState.type === 'limit') {
-          handleBackClick(PERPS_TOAST_KEYS.ORDER_PLACED);
+          handleBackClick(
+            PERPS_TOAST_KEYS.ORDER_PLACED,
+            orderPlacementToastDescription,
+          );
           return;
         }
+        setPendingOrderToastDescription(orderPlacementToastDescription ?? null);
         setPendingOrderSymbol(orderFormState.asset);
         return;
       }
@@ -477,6 +520,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     orderMode,
     position,
     currentPrice,
+    getOrderPlacementToastDescription,
     controller,
     handleBackClick,
     replacePerpsToastByKey,
@@ -491,10 +535,17 @@ const PerpsOrderEntryPage: React.FC = () => {
     );
     if (hasPosition) {
       setPendingOrderSymbol(null);
+      const toastDescription = pendingOrderToastDescription ?? undefined;
+      setPendingOrderToastDescription(null);
       setIsSubmitting(false);
-      handleBackClick(PERPS_TOAST_KEYS.ORDER_FILLED);
+      handleBackClick(PERPS_TOAST_KEYS.ORDER_FILLED, toastDescription);
     }
-  }, [pendingOrderSymbol, allPositions, handleBackClick]);
+  }, [
+    pendingOrderSymbol,
+    allPositions,
+    handleBackClick,
+    pendingOrderToastDescription,
+  ]);
 
   useEffect(() => {
     if (!pendingOrderSymbol) {
@@ -502,6 +553,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
     const timeout = setTimeout(() => {
       setPendingOrderSymbol(null);
+      setPendingOrderToastDescription(null);
       setIsSubmitting(false);
       handleBackClick();
     }, 15000);

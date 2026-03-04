@@ -217,11 +217,22 @@ const PerpsMarketDetailPage: React.FC = () => {
       return;
     }
 
+    const routeToastDescription =
+      typeof routeState.perpsToastDescription === 'string' &&
+      routeState.perpsToastDescription
+        ? routeState.perpsToastDescription
+        : undefined;
+
     replacePerpsToastByKey({
       key: routeState.perpsToastKey,
+      ...(routeToastDescription ? { description: routeToastDescription } : {}),
     });
 
-    const { perpsToastKey: _consumedToastKey, ...remainingState } = routeState;
+    const {
+      perpsToastKey: _consumedToastKey,
+      perpsToastDescription: _consumedToastDescription,
+      ...remainingState
+    } = routeState;
     navigate(`${location.pathname}${location.search}`, {
       replace: true,
       state:

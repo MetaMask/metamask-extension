@@ -252,7 +252,10 @@ describe('PerpsMarketDetailPage', () => {
       mockUseLocation.mockReturnValue({
         pathname: '/perps/market/ETH',
         search: '',
-        state: { perpsToastKey: 'perpsToastOrderPlaced' },
+        state: {
+          perpsToastKey: 'perpsToastOrderPlaced',
+          perpsToastDescription: 'Long 0.5 ETH',
+        },
       });
       const store = mockStore(createMockState(true));
 
@@ -260,6 +263,7 @@ describe('PerpsMarketDetailPage', () => {
 
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
         key: 'perpsToastOrderPlaced',
+        description: 'Long 0.5 ETH',
       });
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         replace: true,

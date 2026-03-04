@@ -5690,6 +5690,10 @@
     "message": "Order placed",
     "description": "Success toast text shown when a perps limit order is accepted"
   },
+  "perpsToastOrderPlacementSubtitle": {
+    "message": "$1 $2 $3",
+    "description": "$1 is the order direction, $2 is the position size amount, and $3 is the asset symbol"
+  },
   "perpsToastOrderSubmitted": {
     "message": "Order submitted",
     "description": "In-progress toast text shown while a perps order is being submitted"
