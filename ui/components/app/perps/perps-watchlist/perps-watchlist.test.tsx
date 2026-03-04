@@ -3,7 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import messages from '../../../../../app/_locales/en/messages.json';
+import { tEn } from '../../../../../test/lib/i18n-helpers';
 import { mockCryptoMarkets } from '../mocks';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
 import { PerpsWatchlist } from './perps-watchlist';
@@ -57,10 +57,10 @@ describe('PerpsWatchlist', () => {
     renderWithProvider(<PerpsWatchlist />, mockStore);
 
     expect(
-      screen.getByText(messages.networkNameBitcoin.message),
+      screen.getByText(tEn('networkNameBitcoin')),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(messages.networkNameEthereum.message),
+      screen.getByText(tEn('networkNameEthereum')),
     ).toBeInTheDocument();
     expect(screen.getByText('$45,250.00')).toBeInTheDocument();
     expect(screen.getByText('$3,025.50')).toBeInTheDocument();

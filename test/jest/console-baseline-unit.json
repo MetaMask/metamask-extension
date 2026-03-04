@@ -554,6 +554,9 @@
     "ui/components/app/perps/perps-recent-activity/perps-recent-activity.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/perps/perps-balance-dropdown/perps-balance-dropdown.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/perps/perps-tab-control-bar/perps-tab-control-bar.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
