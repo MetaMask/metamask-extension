@@ -86,10 +86,13 @@ export function useRWAToken() {
   const [nowMs, setNowMs] = useState(() => Date.now());
 
   useEffect(() => {
+    if (!isRWAEnabled) {
+      return undefined;
+    }
     return subscribeToNowMs(() => {
       setNowMs(getNowMsSnapshot());
     });
-  }, []);
+  }, [isRWAEnabled]);
 
   const isStockTokenFlagGated = useCallback(
     (token?: RWATokenLike) => isRWAEnabled && isStockToken(token),
