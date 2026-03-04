@@ -25,7 +25,6 @@ type HoldToRevealModalProps = {
   onClose: () => void;
   onLongPressed: () => void;
   holdToRevealType: 'SRP' | 'PrivateKey';
-  activeTabUrl?: string;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -35,7 +34,6 @@ export default function HoldToRevealModal({
   onClose,
   onLongPressed,
   holdToRevealType,
-  activeTabUrl,
 }: HoldToRevealModalProps) {
   const t = useI18nContext();
   const holdToRevealTitle =
@@ -116,7 +114,6 @@ export default function HoldToRevealModal({
           <HoldToRevealButton
             buttonText={t(holdToRevealButton)}
             onLongPressed={onLongPressed}
-            activeTabUrl={activeTabUrl}
           />
         </Container>
       </ModalContent>

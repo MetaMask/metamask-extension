@@ -1983,13 +1983,6 @@ export function getOriginOfCurrentTab(state) {
   return state.activeTab.origin;
 }
 
-export function getUrlOfCurrentTab(state) {
-  if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
-    return getAppActiveTab(state)?.url ?? null;
-  }
-  return state.activeTab?.url ?? null;
-}
-
 export function getDefaultHomeActiveTabName(state) {
   return state.metamask.defaultHomeActiveTabName;
 }
