@@ -5296,12 +5296,6 @@
   "perpsEntryPrice": {
     "message": "Giriş fiyatı"
   },
-  "perpsExploreCrypto": {
-    "message": "Kriptoyu keşfet"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Hisse senetlerini ve emtiaları keşfet"
-  },
   "perpsFees": {
     "message": "Ücretler"
   },
@@ -5571,12 +5565,6 @@
   },
   "perpsWithdraw": {
     "message": "Çek"
-  },
-  "perpsYourOrders": {
-    "message": "Emirleriniz"
-  },
-  "perpsYourPositions": {
-    "message": "Pozisyonlarınız"
   },
   "personalAddressDetected": {
     "message": "Kişisel adres algılandı. Token sözleşme adresini girin."

@@ -5296,12 +5296,6 @@
   "perpsEntryPrice": {
     "message": "Preço de entrada"
   },
-  "perpsExploreCrypto": {
-    "message": "Explorar criptomoedas"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Explorar ações e commodities"
-  },
   "perpsFees": {
     "message": "Taxas"
   },
@@ -5571,12 +5565,6 @@
   },
   "perpsWithdraw": {
     "message": "Sacar"
-  },
-  "perpsYourOrders": {
-    "message": "Suas ordens"
-  },
-  "perpsYourPositions": {
-    "message": "Suas posições"
   },
   "personalAddressDetected": {
     "message": "Endereço pessoal detectado. Insira o endereço de contrato do token."

@@ -5296,12 +5296,6 @@
   "perpsEntryPrice": {
     "message": "Τιμή εισόδου"
   },
-  "perpsExploreCrypto": {
-    "message": "Εξερευνήστε τα κρυπτονομίσματα"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Εξερευνήστε μετοχές και εμπορεύματα"
-  },
   "perpsFees": {
     "message": "Τέλη"
   },
@@ -5571,12 +5565,6 @@
   },
   "perpsWithdraw": {
     "message": "Ανάληψη"
-  },
-  "perpsYourOrders": {
-    "message": "Οι εντολές σας"
-  },
-  "perpsYourPositions": {
-    "message": "Οι θέσεις σας"
   },
   "personalAddressDetected": {
     "message": "Η προσωπική διεύθυνση εντοπίστηκε. Καταχωρίστε τη διεύθυνση συμβολαίου του token."

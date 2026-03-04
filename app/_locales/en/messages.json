@@ -5391,14 +5391,8 @@
   "perpsEntryPrice": {
     "message": "Entry price"
   },
-  "perpsExploreCrypto": {
-    "message": "Explore crypto"
-  },
   "perpsExploreMarkets": {
     "message": "Explore markets"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Explore stocks and commodities"
   },
   "perpsFees": {
     "message": "Fees"
@@ -5572,9 +5566,6 @@
   "perpsSeeAll": {
     "message": "See All"
   },
-  "perpsSeeAllPerps": {
-    "message": "See all Perps"
-  },
   "perpsShort": {
     "message": "Short"
   },
@@ -5715,12 +5706,6 @@
   },
   "perpsWithdraw": {
     "message": "Withdraw"
-  },
-  "perpsYourOrders": {
-    "message": "Your orders"
-  },
-  "perpsYourPositions": {
-    "message": "Your positions"
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."

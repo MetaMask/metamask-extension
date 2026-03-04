@@ -5296,12 +5296,6 @@
   "perpsEntryPrice": {
     "message": "Entry price"
   },
-  "perpsExploreCrypto": {
-    "message": "Tuklasin ang crypto"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Tuklasin ang mga stock at commodity"
-  },
   "perpsFees": {
     "message": "Mga Bayarin"
   },
@@ -5571,12 +5565,6 @@
   },
   "perpsWithdraw": {
     "message": "Mag-withdraw"
-  },
-  "perpsYourOrders": {
-    "message": "Ang mga order mo"
-  },
-  "perpsYourPositions": {
-    "message": "Mga position mo"
   },
   "personalAddressDetected": {
     "message": "Natukoy ang personal na address. Ilagay ang address ng kontrata ng token."

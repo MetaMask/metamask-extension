@@ -5296,12 +5296,6 @@
   "perpsEntryPrice": {
     "message": "入场价格"
   },
-  "perpsExploreCrypto": {
-    "message": "探索加密货币"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "探索股票与大宗商品"
-  },
   "perpsFees": {
     "message": "费用"
   },
@@ -5565,12 +5559,6 @@
   },
   "perpsWithdraw": {
     "message": "提取"
-  },
-  "perpsYourOrders": {
-    "message": "您的订单"
-  },
-  "perpsYourPositions": {
-    "message": "您的仓位"
   },
   "personalAddressDetected": {
     "message": "检测到个人地址。请输入代币合约地址。"

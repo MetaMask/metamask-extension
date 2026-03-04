@@ -5296,12 +5296,6 @@
   "perpsEntryPrice": {
     "message": "Harga masuk"
   },
-  "perpsExploreCrypto": {
-    "message": "Jelajahi kripto"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Jelajahi saham dan komoditas"
-  },
   "perpsFees": {
     "message": "Biaya"
   },
@@ -5571,12 +5565,6 @@
   },
   "perpsWithdraw": {
     "message": "Tarik"
-  },
-  "perpsYourOrders": {
-    "message": "Order Anda"
-  },
-  "perpsYourPositions": {
-    "message": "Posisi Anda"
   },
   "personalAddressDetected": {
     "message": "Alamat pribadi terdeteksi. Masukkan alamat kontrak token."

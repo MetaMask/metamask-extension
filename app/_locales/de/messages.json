@@ -5296,12 +5296,6 @@
   "perpsEntryPrice": {
     "message": "Einstiegspreis"
   },
-  "perpsExploreCrypto": {
-    "message": "Krypto entdecken"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Aktien und Rohstoffe entdecken"
-  },
   "perpsFees": {
     "message": "Gebühren"
   },
@@ -5571,12 +5565,6 @@
   },
   "perpsWithdraw": {
     "message": "Auszahlen"
-  },
-  "perpsYourOrders": {
-    "message": "Ihre Orders"
-  },
-  "perpsYourPositions": {
-    "message": "Ihre Positionen"
   },
   "personalAddressDetected": {
     "message": "Personalisierte Adresse identifiziert. Bitte fügen Sie die Token Contract-Adresse ein."

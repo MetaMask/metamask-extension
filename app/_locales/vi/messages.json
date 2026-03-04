@@ -5296,12 +5296,6 @@
   "perpsEntryPrice": {
     "message": "Giá vào lệnh"
   },
-  "perpsExploreCrypto": {
-    "message": "Khám phá tiền mã hóa"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Khám phá cổ phiếu và hàng hóa"
-  },
   "perpsFees": {
     "message": "Phí"
   },
@@ -5571,12 +5565,6 @@
   },
   "perpsWithdraw": {
     "message": "Rút tiền"
-  },
-  "perpsYourOrders": {
-    "message": "Lệnh của bạn"
-  },
-  "perpsYourPositions": {
-    "message": "Vị thế của bạn"
   },
   "personalAddressDetected": {
     "message": "Đã tìm thấy địa chỉ cá nhân. Nhập địa chỉ hợp đồng token."

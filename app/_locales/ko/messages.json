@@ -5296,12 +5296,6 @@
   "perpsEntryPrice": {
     "message": "진입 가격"
   },
-  "perpsExploreCrypto": {
-    "message": "암호화폐 살펴보기"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "주식 및 원자재 살펴보기"
-  },
   "perpsFees": {
     "message": "수수료"
   },
@@ -5571,12 +5565,6 @@
   },
   "perpsWithdraw": {
     "message": "출금"
-  },
-  "perpsYourOrders": {
-    "message": "내 주문"
-  },
-  "perpsYourPositions": {
-    "message": "내 포지션"
   },
   "personalAddressDetected": {
     "message": "개인 주소가 발견되었습니다. 토큰 계약 주소를 입력하세요."
