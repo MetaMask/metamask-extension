@@ -5745,6 +5745,19 @@
   "price": {
     "message": "Price"
   },
+  "priceImpactError": {
+    "message": "High price impact"
+  },
+  "priceImpactErrorDescription": {
+    "message": "You'll lose approximately $1 of your token's value on this swap. Try lowering the amount or choosing a more liquid route."
+  },
+
+  "priceImpactWarningAriaLabel": {
+    "message": "Read price impact warning details"
+  },
+  "priceImpactWarningDescription": {
+    "message": "The trade has an estimated $1 price impact, which reflects how much your trade changes the market price. The quote already reflects this."
+  },
   "priceUnavailable": {
     "message": "price unavailable"
   },
