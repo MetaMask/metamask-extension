@@ -139,6 +139,8 @@ describe('displayCriticalError', () => {
     jest.spyOn(errorUtils, 'maybeGetLocaleContext').mockResolvedValue({
       preferredLocale: 'en',
       t: (key: string) => key,
+      localeMessages: {},
+      enLocaleMessages: {},
     });
 
     jest
@@ -383,6 +385,8 @@ describe('restore accounts link', () => {
     jest.spyOn(errorUtils, 'maybeGetLocaleContext').mockResolvedValue({
       preferredLocale: 'en',
       t: (key: string) => key,
+      localeMessages: {},
+      enLocaleMessages: {},
     });
   });
 

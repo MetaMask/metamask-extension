@@ -2,10 +2,14 @@ import { fetchLocale } from '../modules/i18n';
 import { SUPPORT_LINK } from './ui-utils';
 import { maybeGetLocaleContext, getErrorHtml } from './error-utils';
 
-jest.mock('../modules/i18n', () => ({
-  fetchLocale: jest.fn(),
-  loadRelativeTimeFormatLocaleData: jest.fn(),
-}));
+jest.mock('../modules/i18n', () => {
+  const actual = jest.requireActual('../modules/i18n');
+  return {
+    ...actual,
+    fetchLocale: jest.fn(),
+    loadRelativeTimeFormatLocaleData: jest.fn(),
+  };
+});
 jest.mock('./deep-linking', () => ({
   openCustomProtocol: jest.fn(),
 }));
@@ -53,8 +57,8 @@ describe('Error utils Tests', function () {
           errorPageContactSupport: {
             message: 'Contact support',
           },
-          criticalErrorOr: {
-            message: 'or',
+          criticalErrorFooter: {
+            message: '$1 or $2',
           },
           stateCorruptionRestoreAccountsFromBackup: {
             message: 'Restore accounts from backup',
@@ -104,7 +108,7 @@ describe('Error utils Tests', function () {
           restartMetamask: { message: 'Restart MetaMask' },
           stillGettingMessage: { message: 'Still getting this message?' },
           errorPageContactSupport: { message: 'Contact support' },
-          criticalErrorOr: { message: 'or' },
+          criticalErrorFooter: { message: '$1 or $2' },
           stateCorruptionRestoreAccountsFromBackup: {
             message: 'Restore accounts from backup',
           },

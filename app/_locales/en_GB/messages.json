@@ -1883,9 +1883,9 @@
   "creatorAddress": {
     "message": "Creator address"
   },
-  "criticalErrorOr": {
-    "message": "or",
-    "description": "Conjunction between 'Contact support' and 'restore accounts' links on the critical error screen"
+  "criticalErrorFooter": {
+    "message": "$1 or $2",
+    "description": "Conjunction between the two footer links on the critical error screen. $1 is the 'Contact support' link, $2 is the 'Restore accounts' link. Translators may reorder (e.g. '$2 or $1')."
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
