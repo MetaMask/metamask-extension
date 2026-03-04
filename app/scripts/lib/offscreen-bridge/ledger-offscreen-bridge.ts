@@ -6,17 +6,11 @@ import {
   AppConfigurationResponse,
 } from '@metamask/eth-ledger-bridge-keyring';
 import { TransportStatusError } from '@ledgerhq/errors';
-import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
-import {
-  toHardwareWalletError,
-  HardwareWalletType,
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../ui/contexts/hardware-wallets';
 
 const MESSAGE_TIMEOUT = 4000;
 
@@ -181,16 +175,12 @@ export class LedgerOffscreenBridge
               typeof error.statusCode === 'number' &&
               error.statusCode > 0
             ) {
-              const transportError = new TransportStatusError(error.statusCode);
-              const hwError = toHardwareWalletError(
-                transportError,
-                HardwareWalletType.Ledger,
+              // This is TransportStatusError, convert the SerializedLedgerError to a TransportStatusError
+              // TransportStatusError will regenerate the error message based on the statusCode
+              const transportStatusError = new TransportStatusError(
+                error.statusCode,
               );
-              if (hwError.code === ErrorCode.Unknown) {
-                reject(transportError);
-              } else {
-                reject(new Error(hwError.userMessage));
-              }
+              reject(transportStatusError);
             } else if (error?.message) {
               // Regenerate the error based on the SerializedLedgerError
               const newError = new Error(error.message, {
