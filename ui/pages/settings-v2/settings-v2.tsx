@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
+import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   CURRENCY_ROUTE,
@@ -15,7 +16,7 @@ import {
   SETTINGS_V2_ROUTE,
 } from '../../helpers/constants/routes';
 import {
-  Box,
+  Box as LegacyBox,
   ButtonIcon,
   ButtonIconSize,
   Icon,
@@ -111,7 +112,11 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
         },
       )}
     >
-      <Box className="settings-page__header" padding={4} paddingBottom={2}>
+      <LegacyBox
+        className="settings-page__header"
+        padding={4}
+        paddingBottom={2}
+      >
         <div className="settings-page__header__title-container">
           {isPopup && (
             <>
@@ -148,7 +153,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
             marginLeft="auto"
           />
         </div>
-      </Box>
+      </LegacyBox>
 
       <div className="settings-page__content">
         <div className="settings-page__content__tabs">
@@ -166,7 +171,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
         </div>
         <div className="settings-page__content__modules">
           {showSubheader && (
-            <Box
+            <LegacyBox
               className="settings-page__subheader"
               padding={4}
               paddingLeft={6}
@@ -177,9 +182,13 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
               <Text variant={TextVariant.headingSm}>
                 {t(subheaderLabelKey)}
               </Text>
-            </Box>
+            </LegacyBox>
           )}
-          <Suspense fallback={null}>{children}</Suspense>
+          <Suspense fallback={null}>
+            <Box paddingHorizontal={4} paddingBottom={4}>
+              {children}
+            </Box>
+          </Suspense>
         </div>
       </div>
     </div>
