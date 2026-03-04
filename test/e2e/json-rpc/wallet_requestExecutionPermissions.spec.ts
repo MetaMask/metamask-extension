@@ -7,14 +7,15 @@ import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { WINDOW_TITLES } from '../constants';
 import TestDapp from '../page-objects/pages/test-dapp';
 import AdvancedPermissionsIntroduction from '../page-objects/pages/confirmations/advanced-permissions-introduction';
-import {
-  getProductionRemoteFlagApiResponse,
-} from '../feature-flags/feature-flag-registry';
+import { getProductionRemoteFlagApiResponse } from '../feature-flags/feature-flag-registry';
 
 /**
  * Mocks the client-config flags API so that confirmations_eip_7702 has
  * supportedChains: ['0x539']. This is more reliable than fixture state because
  * the extension fetches flags when the UI opens and overwrites fixture-loaded state.
+ *
+ * @param server - The mockttp server to mock the flags API on.
+ * @returns An array of mockttp requests to mock the flags API.
  */
 async function mockEip7702SupportedChains(server: Mockttp) {
   const flags = getProductionRemoteFlagApiResponse();
@@ -40,7 +41,6 @@ async function mockEip7702SupportedChains(server: Mockttp) {
       })),
   ];
 }
-
 
 describe('wallet_requestExecutionPermissions', function () {
   it('blocks other requests, until the dialog is closed', async function () {
