@@ -5,10 +5,7 @@ import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
 import { Tag } from '../../../../component-library';
 import { ACCOUNT_TYPE_LABELS } from '../../constants';
-import {
-  isStockToken,
-  useRWAToken,
-} from '../../../../../pages/bridge/hooks/useRWAToken';
+import { useRWAToken } from '../../../../../pages/bridge/hooks/useRWAToken';
 import { StockBadge } from '../../stock-badge/stock-badge';
 
 type TokenCellTitleProps = {
@@ -26,6 +23,7 @@ export const TokenCellTitle = React.memo(
     const label = token.accountType
       ? ACCOUNT_TYPE_LABELS[token.accountType]
       : undefined;
+    const { isStockToken } = useRWAToken();
     const tokenIsStock = isStockToken(token);
 
     return (

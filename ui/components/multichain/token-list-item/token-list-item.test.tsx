@@ -12,6 +12,7 @@ import {
   getNetworkConfigurationIdByChainId,
 } from '../../../selectors';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
+import { getIsRWATokensEnabled } from '../../../selectors/rwa/feature-flags';
 import { TokenListItem } from '.';
 
 const state = {
@@ -238,6 +239,15 @@ describe('TokenListItem', () => {
   });
 
   it('renders the stock badge when rwaData marks the token as a stock', () => {
+    (useSelector as jest.Mock).mockImplementation((selector) => {
+      if (selector === getIsRWATokensEnabled) {
+        return true;
+      }
+      if (selector === getCurrencyRates) {
+        return {};
+      }
+      return undefined;
+    });
     const store = configureMockStore()(state);
     const { getByText } = renderWithProvider(
       <TokenListItem
@@ -253,6 +263,15 @@ describe('TokenListItem', () => {
   });
 
   it('opens the market closed modal instead of calling onClick when the market is closed', () => {
+    (useSelector as jest.Mock).mockImplementation((selector) => {
+      if (selector === getIsRWATokensEnabled) {
+        return true;
+      }
+      if (selector === getCurrencyRates) {
+        return {};
+      }
+      return undefined;
+    });
     const store = configureMockStore()(state);
     const onClick = jest.fn();
     const { queryByTestId, getByTestId, getByText } = renderWithProvider(

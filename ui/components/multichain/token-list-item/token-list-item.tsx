@@ -19,10 +19,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { TokenInsightsModal } from '../../../pages/bridge/token-insights-modal';
-import {
-  isStockToken,
-  useRWAToken,
-} from '../../../pages/bridge/hooks/useRWAToken';
+import { useRWAToken } from '../../../pages/bridge/hooks/useRWAToken';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -174,7 +171,7 @@ export const TokenListItemComponent = ({
     isDestinationToken &&
     address &&
     noFeeAssets?.includes(address.toLowerCase());
-  const { isTokenTradingOpen } = useRWAToken();
+  const { isStockToken, isTokenTradingOpen } = useRWAToken();
   const rwaToken = { rwaData };
   const isRWAToken = isStockToken(rwaToken);
 
