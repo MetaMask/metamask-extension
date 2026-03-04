@@ -12,8 +12,8 @@ import {
 } from '../../../shared/constants/metametrics';
 import configureStore from '../../store/store';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
-import RevealSeedPage from './reveal-seed';
 import { RecommendedAction } from '@metamask/phishing-controller';
+import RevealSeedPage from './reveal-seed';
 
 const mockUseParams = jest.fn().mockReturnValue({});
 

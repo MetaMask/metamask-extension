@@ -435,7 +435,9 @@ function RevealSeedPage() {
             isSelected={dangerAcknowledged}
             onChange={
               ((selected: boolean) =>
-                setDangerAcknowledged(selected)) as React.FormEventHandler<HTMLLabelElement> &
+                setDangerAcknowledged(
+                  selected,
+                )) as React.FormEventHandler<HTMLLabelElement> &
                 ((isSelected: boolean) => void)
             }
             inputProps={{
