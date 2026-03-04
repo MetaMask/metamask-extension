@@ -94,7 +94,7 @@ export const BridgePriceImpactWarningModal = ({
               isPriceImpactError
                 ? 'priceImpactErrorDescription'
                 : 'priceImpactWarningDescription',
-              [formattedPriceImpact],
+              [formattedPriceImpact ?? ''],
             )}
           </Text>
         </Column>

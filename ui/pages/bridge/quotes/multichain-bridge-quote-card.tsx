@@ -217,8 +217,7 @@ export const MultichainBridgeQuoteCard = ({
               size={ButtonIconSize.Sm}
               color={IconColor.iconAlternative}
               onClick={() => {
-                fromChain?.chainId &&
-                  activeQuote &&
+                activeQuote &&
                   dispatch(
                     trackUnifiedSwapBridgeEvent(
                       UnifiedSwapBridgeEventName.AllQuotesOpened,

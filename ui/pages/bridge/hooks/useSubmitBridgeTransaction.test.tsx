@@ -5,18 +5,19 @@ import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
-import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
 import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
+import * as sharedSelectors from '../../../../shared/modules/selectors';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
+import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import * as sharedSelectors from '../../../../shared/modules/selectors';
+import { HardwareWalletProvider } from '../../../contexts/hardware-wallets';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
 const mockUseNavigate = jest.fn();
@@ -134,7 +135,9 @@ const makeWrapper =
   ({ children }: { children: React.ReactNode }) => {
     return (
       <Provider store={store}>
-        <MemoryRouter>{children}</MemoryRouter>
+        <MemoryRouter>
+          <HardwareWalletProvider>{children}</HardwareWalletProvider>
+        </MemoryRouter>
       </Provider>
     );
   };

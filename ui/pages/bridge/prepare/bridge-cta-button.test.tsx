@@ -17,6 +17,7 @@ import { toBridgeToken } from '../../../ducks/bridge/utils';
 import {
   ConnectionStatus,
   HardwareConnectionPermissionState,
+  HardwareWalletProvider,
   HardwareWalletType,
 } from '../../../contexts/hardware-wallets';
 import { BridgeCTAButton } from './bridge-cta-button';
@@ -24,6 +25,7 @@ import { BridgeCTAButton } from './bridge-cta-button';
 const mockUseHardwareWalletConfig = jest.fn();
 const mockUseHardwareWalletActions = jest.fn();
 const mockUseHardwareWalletState = jest.fn();
+const mockOnOpenPriceImpactWarningModal = jest.fn();
 
 jest.mock('../../../contexts/hardware-wallets', () => ({
   ...jest.requireActual('../../../contexts/hardware-wallets'),
@@ -64,7 +66,12 @@ describe('BridgeCTAButton', () => {
       bridgeSliceOverrides: { fromTokenInputValue: '1' },
     });
     const { container, getByText } = renderWithProvider(
-      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
+      <HardwareWalletProvider>
+        <BridgeCTAButton
+          onFetchNewQuotes={jest.fn()}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        />
+      </HardwareWalletProvider>,
       configureStore(mockStore),
     );
 
@@ -92,7 +99,12 @@ describe('BridgeCTAButton', () => {
       },
     });
     const { getByText } = renderWithProvider(
-      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
+      <HardwareWalletProvider>
+        <BridgeCTAButton
+          onFetchNewQuotes={jest.fn()}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        />
+      </HardwareWalletProvider>,
       configureStore(mockStore),
     );
 
@@ -123,7 +135,12 @@ describe('BridgeCTAButton', () => {
       },
     });
     const { getByText, container } = renderWithProvider(
-      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
+      <HardwareWalletProvider>
+        <BridgeCTAButton
+          onFetchNewQuotes={jest.fn()}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        />
+      </HardwareWalletProvider>,
       configureStore(mockStore),
     );
 
@@ -153,7 +170,12 @@ describe('BridgeCTAButton', () => {
       },
     });
     const { getByText, container } = renderWithProvider(
-      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
+      <HardwareWalletProvider>
+        <BridgeCTAButton
+          onFetchNewQuotes={jest.fn()}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        />
+      </HardwareWalletProvider>,
       configureStore(mockStore),
     );
 
@@ -186,7 +208,12 @@ describe('BridgeCTAButton', () => {
       },
     });
     const { getByText, getByRole } = renderWithProvider(
-      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
+      <HardwareWalletProvider>
+        <BridgeCTAButton
+          onFetchNewQuotes={jest.fn()}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        />
+      </HardwareWalletProvider>,
       configureStore(mockStore),
     );
 
@@ -203,7 +230,12 @@ describe('BridgeCTAButton', () => {
     });
     const store = configureStore(mockStore);
     const { getByText } = renderWithProvider(
-      <BridgeCTAButton onFetchNewQuotes={onFetchNewQuotes} />,
+      <HardwareWalletProvider>
+        <BridgeCTAButton
+          onFetchNewQuotes={onFetchNewQuotes}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        />
+      </HardwareWalletProvider>,
       store,
     );
 
@@ -245,7 +277,12 @@ describe('BridgeCTAButton', () => {
     });
 
     const { getByText, getByRole } = renderWithProvider(
-      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
+      <HardwareWalletProvider>
+        <BridgeCTAButton
+          onFetchNewQuotes={jest.fn()}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        />
+      </HardwareWalletProvider>,
       configureStore(mockStore),
     );
 
@@ -278,7 +315,12 @@ describe('BridgeCTAButton', () => {
       },
     });
     const { container } = renderWithProvider(
-      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
+      <HardwareWalletProvider>
+        <BridgeCTAButton
+          onFetchNewQuotes={jest.fn()}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        />
+      </HardwareWalletProvider>,
       configureStore(mockStore),
     );
 
@@ -335,10 +377,17 @@ describe('BridgeCTAButton', () => {
         isInsufficientBalance: false,
         isEstimatedReturnLow: false,
         isTxAlertLoading: false,
+        isPriceImpactWarning: false,
+        isPriceImpactError: false,
         ...validationErrors,
       });
       const { findByRole } = renderWithProvider(
-        <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
+        <HardwareWalletProvider>
+          <BridgeCTAButton
+            onFetchNewQuotes={jest.fn()}
+            onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          />
+        </HardwareWalletProvider>,
         configureStore(mockStore),
       );
 
@@ -376,7 +425,12 @@ describe('BridgeCTAButton', () => {
       },
     });
     const { getByText, getByRole } = renderWithProvider(
-      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
+      <HardwareWalletProvider>
+        <BridgeCTAButton
+          onFetchNewQuotes={jest.fn()}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        />
+      </HardwareWalletProvider>,
       configureStore(mockStore),
     );
 
