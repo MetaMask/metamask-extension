@@ -5,6 +5,7 @@ import { NonEmptyArray } from '@metamask/utils';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import {
   AvatarFavicon,
+  AvatarFaviconSize,
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
@@ -19,7 +20,6 @@ import {
   Display,
   FlexDirection,
   IconColor,
-  Size,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -43,7 +43,7 @@ import {
 } from '../../../store/actions';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import { getURLHost, shortenAddress } from '../../../helpers/utils/util';
+import { getURLHost } from '../../../helpers/utils/util';
 import {
   DisconnectAllModal,
   DisconnectType,
@@ -104,7 +104,8 @@ export const DappConnectionControlBar: React.FC<
       return '';
     }
     if (selectedAccountAddress) {
-      return `${selectedAccountName} (${shortenAddress(selectedAccountAddress)})`;
+      const truncated = `${selectedAccountAddress.slice(0, 6)}...${selectedAccountAddress.slice(-4)}`;
+      return `${selectedAccountName} (${truncated})`;
     }
     return selectedAccountName;
   }, [selectedAccountName, selectedAccountAddress]);
@@ -213,7 +214,7 @@ export const DappConnectionControlBar: React.FC<
           <Box className="dapp-connection-control-bar__favicon-wrapper">
             <AvatarFavicon
               name={connectedSubjectsMetadata?.name}
-              size={Size.MD}
+              size={AvatarFaviconSize.Md}
               src={connectedSubjectsMetadata?.iconUrl}
               data-testid="dapp-connection-control-bar__favicon"
             />
@@ -268,7 +269,7 @@ export const DappConnectionControlBar: React.FC<
               data-testid="dapp-connection-control-bar__network-button"
             >
               <AvatarNetwork
-                size={AvatarNetworkSize.Xs}
+                size={AvatarNetworkSize.Sm}
                 name={
                   (dappActiveNetwork as { name?: string })?.name ??
                   (dappActiveNetwork as { nickname?: string })?.nickname ??

@@ -31,13 +31,13 @@
 
   &__connection-dot {
     position: absolute;
-    bottom: -1px;
-    right: -1px;
-    width: 8px;
-    height: 8px;
+    bottom: 0;
+    right: 0;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background-color: var(--color-success-default);
-    border: 1.5px solid #242728; // match bar background for cutout effect
+    border: 2px solid #25272a;
   }
 
   &__network-button {
@@ -53,6 +53,11 @@
 
     &:hover {
       background-color: #33363a;
+    }
+
+    .mm-avatar-network {
+      border: none;
+      box-shadow: none;
     }
   }
 
