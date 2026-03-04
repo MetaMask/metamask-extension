@@ -1,4 +1,9 @@
 import { rpcErrors, serializeError } from '@metamask/rpc-errors';
+import {
+  extractTraceContext,
+  trace,
+  TraceName,
+} from '../../../shared/lib/trace';
 import { isStreamWritable } from './stream-utils';
 
 const createMetaRPCHandler = (api, outStream) => {
@@ -17,10 +22,24 @@ const createMetaRPCHandler = (api, outStream) => {
       return;
     }
 
+    const { cleanParams, traceContext } = extractTraceContext(data.params);
+
     let result;
     let error;
     try {
-      result = await api[data.method](...data.params);
+      if (traceContext) {
+        result = await trace(
+          {
+            name: TraceName.BackgroundRpc,
+            parentContext: traceContext,
+            op: 'rpc.handler',
+            data: { method: data.method },
+          },
+          () => api[data.method](...cleanParams),
+        );
+      } else {
+        result = await api[data.method](...cleanParams);
+      }
     } catch (err) {
       error = err;
     }

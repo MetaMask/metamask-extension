@@ -326,6 +326,39 @@ export function getSerializedTraceContext():
 }
 
 /**
+ * Extract trace context appended by submitRequestToBackground from RPC params.
+ * Returns the clean params (without trace context) and the trace context if present.
+ *
+ * @param {Array} params - RPC call parameters.
+ * @returns {{ cleanParams: Array, traceContext: object | undefined }}
+ */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export function extractTraceContext(params: unknown): {
+  cleanParams: unknown;
+  traceContext: SerializedTraceContext | undefined;
+} {
+  if (!Array.isArray(params) || params.length === 0) {
+    return { cleanParams: params ?? [], traceContext: undefined };
+  }
+
+  const lastParam = params[params.length - 1];
+  if (
+    lastParam &&
+    typeof lastParam === 'object' &&
+    lastParam._traceContext &&
+    typeof lastParam._traceContext === 'object'
+  ) {
+    return {
+      cleanParams: params.slice(0, -1),
+      traceContext: lastParam._traceContext,
+    };
+  }
+
+  return { cleanParams: params, traceContext: undefined };
+}
+
+/**
  * Serialize a trace context from a specific span and request metadata.
  * Includes both name/id (for same-process map lookup) and traceId/spanId
  * (for cross-process distributed tracing).

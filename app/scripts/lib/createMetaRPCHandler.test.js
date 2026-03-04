@@ -1,5 +1,11 @@
 import { obj as createThoughStream } from 'through2';
+import { trace } from '../../../shared/lib/trace';
 import createMetaRPCHandler from './createMetaRPCHandler';
+
+jest.mock('../../../shared/lib/trace', () => ({
+  trace: jest.fn((_request, fn) => fn()),
+  TraceName: { BackgroundRpc: 'Background RPC' },
+}));
 
 describe('createMetaRPCHandler', () => {
   it('can call the api when handler receives a JSON-RPC request', () => {
@@ -112,5 +118,72 @@ describe('createMetaRPCHandler', () => {
         params: ['bar'],
       });
     }).not.toThrow();
+  });
+
+  describe('trace context extraction', () => {
+    beforeEach(() => {
+      jest.mocked(trace).mockClear();
+    });
+
+    it('strips trace context from params and wraps call in trace', async () => {
+      const api = {
+        foo: jest.fn().mockReturnValue('result'),
+      };
+      const streamTest = createThoughStream();
+      const handler = createMetaRPCHandler(api, streamTest);
+
+      await handler({
+        id: 1,
+        method: 'foo',
+        params: [
+          'bar',
+          { _traceContext: { _traceId: 'trace123', _spanId: 'span456' } },
+        ],
+      });
+
+      expect(trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parentContext: { _traceId: 'trace123', _spanId: 'span456' },
+          op: 'rpc.handler',
+          data: { method: 'foo' },
+        }),
+        expect.any(Function),
+      );
+      expect(api.foo).toHaveBeenCalledWith('bar');
+    });
+
+    it('does not wrap in trace when no trace context present', async () => {
+      const api = {
+        foo: jest.fn().mockReturnValue('result'),
+      };
+      const streamTest = createThoughStream();
+      const handler = createMetaRPCHandler(api, streamTest);
+
+      await handler({
+        id: 1,
+        method: 'foo',
+        params: ['bar'],
+      });
+
+      expect(trace).not.toHaveBeenCalled();
+      expect(api.foo).toHaveBeenCalledWith('bar');
+    });
+
+    it('handles empty params with no trace context', async () => {
+      const api = {
+        foo: jest.fn().mockReturnValue('result'),
+      };
+      const streamTest = createThoughStream();
+      const handler = createMetaRPCHandler(api, streamTest);
+
+      await handler({
+        id: 1,
+        method: 'foo',
+        params: [],
+      });
+
+      expect(trace).not.toHaveBeenCalled();
+      expect(api.foo).toHaveBeenCalledWith();
+    });
   });
 });
