@@ -1,11 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import React from 'react';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 
-export type DynamicImportType = () => Promise<ModuleWithDefaultType>;
-export type ModuleWithDefaultType = {
-  default: React.ComponentType;
+type DynamicImportType = () => Promise<any>;
+export type ModuleWithDefaultType<
+  Component extends React.ComponentType<any> = React.ComponentType,
+> = {
+  default: Component;
 };
+
+/**
+ * Infers the component type from a dynamic import function.
+ * If the import returns a module with a `default` export that is a ComponentType,
+ * the component type (including its props) is preserved.
+ */
+type InferComponent<ImportFn extends DynamicImportType> =
+  Awaited<ReturnType<ImportFn>> extends {
+    default: infer Comp extends React.ComponentType<any>;
+  }
+    ? Comp
+    : React.ComponentType;
 
 // This only has to happen once per app load, so do it outside a function
 const lazyLoadSubSampleRate = getManifestFlags().sentry?.lazyLoadSubSampleRate;
@@ -17,7 +33,10 @@ const lazyLoadSubSampleRate = getManifestFlags().sentry?.lazyLoadSubSampleRate;
  *
  * @param fn - an import of the form `() => import('AAA')`
  */
-export function mmLazy(fn: DynamicImportType) {
+export function mmLazy<ImportFn extends DynamicImportType>(
+  fn: ImportFn,
+): React.LazyExoticComponent<InferComponent<ImportFn>> {
+  type Component = InferComponent<ImportFn>;
   return React.lazy(async () => {
     // We can't start the trace here because we don't have the componentName yet, so we just hold the startTime
     const startTime = Date.now();
@@ -36,7 +55,7 @@ export function mmLazy(fn: DynamicImportType) {
       endTrace({ name: TraceName.LazyLoadComponent });
     }
 
-    return component;
+    return component as ModuleWithDefaultType<Component>;
   });
 }
 
