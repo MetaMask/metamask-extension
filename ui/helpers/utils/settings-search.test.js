@@ -155,7 +155,7 @@ describe('Settings Search Utils', () => {
   describe('getSettingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
       const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 6;
-      const NUM_OF_HIDDEN_SETTINGS = 3;
+      const NUM_OF_HIDDEN_SETTINGS = 2;
 
       expect(getSettingsRoutes()).toHaveLength(
         SETTINGS_CONSTANTS.length -

@@ -4,7 +4,6 @@ import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
 import { IconName } from '../../components/component-library';
 import {
   ADVANCED_ROUTE,
-  ASSETS_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
   ABOUT_US_ROUTE,
@@ -582,14 +581,6 @@ const SETTINGS_CONSTANTS = [
     icon: 'fas fa-flask',
   },
   ///: END:ONLY_INCLUDE_IF
-  {
-    tabMessage: (t) => t('assets'),
-    sectionMessage: (t) => t('assets'),
-    descriptionMessage: (t) => t('assets'),
-    route: `${ASSETS_ROUTE}`,
-    iconName: IconName.Dollar,
-    hidden: true, // TODO: remove hidden: true when moving to settings-v2
-  },
 ];
 
 export default SETTINGS_CONSTANTS;
