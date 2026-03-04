@@ -239,7 +239,7 @@ For the full process of creating a remote feature flag (LaunchDarkly setup, code
 2. Add an entry to `test/e2e/feature-flags/feature-flag-registry.ts` in alphabetical order.
 3. If you access the flag via a constant (e.g. `remoteFeatureFlags[MY_CONSTANT]`), also add the constant mapping to [`.github/scripts/known-feature-flag-constants.ts`](./.github/scripts/known-feature-flag-constants.ts) so the CI check can resolve it.
 
-##### Overriding flags in E2E tests
+##### Override flags in E2E tests
 
 To test behavior with a flag value different from the production default, see the override examples in [Remote feature flags (runtime)](#remote-feature-flags-runtime) above.
 
