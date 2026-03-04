@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { AnimatePresence, motion } from 'framer-motion'; // eslint-disable-line import/no-extraneous-dependencies
 
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -24,6 +23,7 @@ import { getMultichainAccountGroupById } from '../../../selectors/multichain-acc
 import { AddressQRCodeModal } from '../../../components/multichain-accounts/address-qr-code-modal/address-qr-code-modal';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+import { Animated } from '../../../components/ui/animated';
 import {
   AddressListQueryParams,
   AddressListSource,
@@ -103,61 +103,48 @@ export const MultichainAccountAddressListPage = ({
     endTrace({ name: TraceName.ShowAccountAddressList });
   }, []);
 
-  const [show, setShow] = useState(true);
-  const handleBack = useCallback(() => setShow(false), []);
-
   return (
-    <AnimatePresence onExitComplete={() => navigate(PREVIOUS_ROUTE)}>
-      {show && (
-        <motion.div
-          key="address-list"
-          className="page-enter-animation"
-          exit={{ opacity: 0, scale: 0.97 }}
-          transition={{ duration: 0.15 }}
-          style={{ height: '100%' }}
+    <Animated>
+      <Page>
+        <Header
+          textProps={{
+            variant: TextVariant.headingSm,
+          }}
+          startAccessory={
+            <ButtonIcon
+              size={ButtonIconSize.Md}
+              ariaLabel={t('back')}
+              iconName={IconName.ArrowLeft}
+              onClick={() => navigate(PREVIOUS_ROUTE)}
+              data-testid="multichain-account-address-list-page-back-button"
+            />
+          }
         >
-          <Page>
-            <Header
-              textProps={{
-                variant: TextVariant.headingSm,
-              }}
-              startAccessory={
-                <ButtonIcon
-                  size={ButtonIconSize.Md}
-                  ariaLabel={t('back')}
-                  iconName={IconName.ArrowLeft}
-                  onClick={handleBack}
-                  data-testid="multichain-account-address-list-page-back-button"
-                />
-              }
-            >
-              {pageTitle}
-            </Header>
-            <Content padding={0}>
-              <Box flexDirection={BoxFlexDirection.Column}>
-                {decodedAccountGroupId ? (
-                  <MultichainAddressRowsList
-                    groupId={decodedAccountGroupId}
-                    onQrClick={handleShowQR}
-                  />
-                ) : null}
-              </Box>
-            </Content>
-
-            {selectedQRData && (
-              <AddressQRCodeModal
-                isOpen={isQRModalOpen}
-                onClose={handleCloseQR}
-                address={selectedQRData.address}
-                accountName={accountGroup?.metadata?.name || t('account')}
-                networkName={selectedQRData.networkName}
-                chainId={selectedQRData.chainId}
-                networkImageSrc={selectedQRData.networkImageSrc}
+          {pageTitle}
+        </Header>
+        <Content padding={0}>
+          <Box flexDirection={BoxFlexDirection.Column}>
+            {decodedAccountGroupId ? (
+              <MultichainAddressRowsList
+                groupId={decodedAccountGroupId}
+                onQrClick={handleShowQR}
               />
-            )}
-          </Page>
-        </motion.div>
-      )}
-    </AnimatePresence>
+            ) : null}
+          </Box>
+        </Content>
+
+        {selectedQRData && (
+          <AddressQRCodeModal
+            isOpen={isQRModalOpen}
+            onClose={handleCloseQR}
+            address={selectedQRData.address}
+            accountName={accountGroup?.metadata?.name || t('account')}
+            networkName={selectedQRData.networkName}
+            chainId={selectedQRData.chainId}
+            networkImageSrc={selectedQRData.networkImageSrc}
+          />
+        )}
+      </Page>
+    </Animated>
   );
 };
