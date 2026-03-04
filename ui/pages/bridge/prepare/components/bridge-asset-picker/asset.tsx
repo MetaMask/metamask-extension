@@ -55,7 +55,7 @@ export const BridgeAsset = React.forwardRef(
     const currency = useSelector(getCurrentCurrency);
     const locale = useSelector(getIntlLocale);
     const t = useI18nContext();
-    const { isStockToken } = useRWAToken();
+    const { isStockToken, isTokenTradingOpen } = useRWAToken();
     const tokenIsStock = isStockToken(asset);
 
     return (
@@ -121,7 +121,9 @@ export const BridgeAsset = React.forwardRef(
               {asset.accountType && ACCOUNT_TYPE_LABELS[asset.accountType] && (
                 <Tag label={ACCOUNT_TYPE_LABELS[asset.accountType]} />
               )}
-              {tokenIsStock && <StockBadge rwaData={asset.rwaData} />}
+              {tokenIsStock && (
+                <StockBadge isMarketClosed={!isTokenTradingOpen(asset)} />
+              )}
               {asset.noFee?.[isDestination ? 'isDestination' : 'isSource'] && (
                 <Tag label={t('bridgeNoMMFee')} />
               )}

@@ -17,14 +17,16 @@ export const TokenCellTitle = React.memo(
     const label = token.accountType
       ? ACCOUNT_TYPE_LABELS[token.accountType]
       : undefined;
-    const { isStockToken } = useRWAToken();
+    const { isStockToken, isTokenTradingOpen } = useRWAToken();
     const tokenIsStock = isStockToken(token);
 
     return (
       <Box flexDirection={BoxFlexDirection.Row} className="min-w-0">
         <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
           <AssetCellTitle title={token.title} />
-          {tokenIsStock && <StockBadge rwaData={token.rwaData} />}
+          {tokenIsStock && (
+            <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />
+          )}
           {label && <Tag label={label} />}
         </Box>
         {token.isStakeable && (

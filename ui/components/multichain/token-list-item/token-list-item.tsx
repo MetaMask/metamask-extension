@@ -305,7 +305,9 @@ export const TokenListItemComponent = ({
               {accountType && ACCOUNT_TYPE_LABELS[accountType] && (
                 <Tag label={ACCOUNT_TYPE_LABELS[accountType]} />
               )}
-              {isRWAToken ? <StockBadge rwaData={rwaData} /> : null}
+              {isRWAToken ? (
+                <StockBadge isMarketClosed={!isTokenTradingOpen(rwaToken)} />
+              ) : null}
               {isNoFeeAsset && <Tag label={t('bridgeNoMMFee')} />}
             </Box>
 

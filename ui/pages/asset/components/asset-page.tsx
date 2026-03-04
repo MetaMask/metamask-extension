@@ -286,7 +286,7 @@ const AssetPage = ({
         {isStockToken ? (
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
             {assetNameElement}
-            <StockBadge rwaData={rwaData} />
+            <StockBadge isMarketClosed={isMarketClosed} />
           </Box>
         ) : (
           assetNameElement
