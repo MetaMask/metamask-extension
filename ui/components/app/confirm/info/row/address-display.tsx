@@ -47,11 +47,6 @@ function getTruncatedAddress(text: string): string {
   return `${text.slice(0, prefixLen)}${ELLIPSIS}${text.slice(-suffixLen)}`;
 }
 
-function useMiddleTruncation(text: string) {
-  const display = useMemo(() => getTruncatedAddress(text), [text]);
-  return { display };
-}
-
 const TrustIcon = ({
   displayState,
   image,
@@ -111,7 +106,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
     const [modalOpen, setModalOpen] = useState(false);
 
     const isClickable = !isAccount;
-    const { display } = useMiddleTruncation(hexAddress);
+    const display = useMemo(() => getTruncatedAddress(hexAddress), [hexAddress]);
 
     const handleClick = useCallback(() => {
       if (!isClickable) {
