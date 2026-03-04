@@ -87,6 +87,25 @@ const ORDER_MODE_TOAST_KEYS: Record<
   },
 };
 
+const ORDER_FAILED_FALLBACK_ERROR_PATTERNS = [
+  /^an unknown error occurred$/iu,
+  /^failed to place order$/iu,
+  /^unknown error$/iu,
+  /^error$/iu,
+];
+
+const ORDER_FAILED_USER_FACING_ERROR_PATTERNS = [
+  /insufficient margin/iu,
+  /insufficient balance/iu,
+  /insufficient liquidity/iu,
+  /\bno liquidity\b/iu,
+  /rate limit/iu,
+  /timeout/iu,
+  /network error/iu,
+  /slippage/iu,
+  /order rejected/iu,
+];
+
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
  *
@@ -581,12 +600,19 @@ const PerpsOrderEntryPage: React.FC = () => {
         error instanceof Error ? error.message : 'An unknown error occurred';
       setSubmitError(errorMessage);
       const failedToastKey = ORDER_MODE_TOAST_KEYS[orderMode].failed;
-      const failedToastDescription =
+      const normalizedErrorMessage = errorMessage.trim();
+      const shouldUseOrderFailedFallback =
         failedToastKey === PERPS_TOAST_KEYS.ORDER_FAILED &&
-        (errorMessage === 'An unknown error occurred' ||
-          errorMessage === 'Failed to place order')
-          ? t('perpsToastOrderFailedDescriptionFallback')
-          : errorMessage;
+        (normalizedErrorMessage.length === 0 ||
+          ORDER_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
+            pattern.test(normalizedErrorMessage),
+          ) ||
+          !ORDER_FAILED_USER_FACING_ERROR_PATTERNS.some((pattern) =>
+            pattern.test(normalizedErrorMessage),
+          ));
+      const failedToastDescription = shouldUseOrderFailedFallback
+        ? t('perpsToastOrderFailedDescriptionFallback')
+        : normalizedErrorMessage;
       replacePerpsToastByKey({
         key: failedToastKey,
         description: failedToastDescription,
