@@ -56,12 +56,8 @@ describe('PerpsWatchlist', () => {
   it('displays market name and price for each watchlist item', () => {
     renderWithProvider(<PerpsWatchlist />, mockStore);
 
-    expect(
-      screen.getByText(tEn('networkNameBitcoin')),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(tEn('networkNameEthereum')),
-    ).toBeInTheDocument();
+    expect(screen.getByText(tEn('networkNameBitcoin'))).toBeInTheDocument();
+    expect(screen.getByText(tEn('networkNameEthereum'))).toBeInTheDocument();
     expect(screen.getByText('$45,250.00')).toBeInTheDocument();
     expect(screen.getByText('$3,025.50')).toBeInTheDocument();
   });
