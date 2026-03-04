@@ -62,7 +62,10 @@ export function buildLongTaskTimerResults(
   let totalTbt = 0;
 
   for (const step of steps) {
-    results.push({ id: `${step.id}.longTaskCount`, duration: step.longTaskCount });
+    results.push({
+      id: `${step.id}.longTaskCount`,
+      duration: step.longTaskCount,
+    });
 
     totalCount += step.longTaskCount;
     totalDuration += step.longTaskTotalDuration;
