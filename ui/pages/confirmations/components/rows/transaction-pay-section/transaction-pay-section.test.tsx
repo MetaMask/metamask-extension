@@ -7,10 +7,12 @@ import {
   useTransactionPayRequiredTokens,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
+import { selectIsMetaMaskPayDappsEnabled } from '../../../selectors/feature-flags';
 import { TransactionPaySection } from './transaction-pay-section';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/pay/useTransactionPayToken');
+jest.mock('../../../selectors/feature-flags');
 
 jest.mock('../pay-with-row/pay-with-row', () => ({
   PayWithRow: () => <div data-testid="pay-with-row">PayWithRow</div>,
@@ -48,12 +50,13 @@ describe('TransactionPaySection', () => {
     useIsTransactionPayLoading,
   );
   const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
-
-  const originalEnv = process.env;
+  const selectIsMetaMaskPayDappsEnabledMock = jest.mocked(
+    selectIsMetaMaskPayDappsEnabled,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
-    process.env = { ...originalEnv, MM_PAY_DAPPS_ENABLED: 'true' };
+    selectIsMetaMaskPayDappsEnabledMock.mockReturnValue(true);
 
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
     useIsTransactionPayLoadingMock.mockReturnValue(false);
@@ -64,21 +67,8 @@ describe('TransactionPaySection', () => {
     });
   });
 
-  afterEach(() => {
-    process.env = originalEnv;
-  });
-
-  it('returns null when MM_PAY_DAPPS_ENABLED is not set', () => {
-    process.env = { ...originalEnv };
-    delete process.env.MM_PAY_DAPPS_ENABLED;
-
-    const { container } = render();
-
-    expect(container).toBeEmptyDOMElement();
-  });
-
-  it('returns null when MM_PAY_DAPPS_ENABLED is false', () => {
-    process.env = { ...originalEnv, MM_PAY_DAPPS_ENABLED: 'false' };
+  it('returns null when dappsEnabled feature flag is disabled', () => {
+    selectIsMetaMaskPayDappsEnabledMock.mockReturnValue(false);
 
     const { container } = render();
 

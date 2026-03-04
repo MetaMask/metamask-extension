@@ -6044,17 +6044,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eip-5792-middleware@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@metamask/eip-5792-middleware@npm:2.1.0"
+"@metamask/eip-5792-middleware@npm:3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/eip-5792-middleware@npm:3.0.0"
   dependencies:
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/transaction-controller": "npm:^62.7.0"
-    "@metamask/utils": "npm:^11.8.1"
+    "@metamask/transaction-controller": "npm:^62.19.0"
+    "@metamask/utils": "npm:^11.9.0"
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
-  checksum: 10/18080c435b920302146df7694a1ab1f9b1a95ae92737d4601aceb5897b94cf481cc8e13946b54c4a9dd2bc2a67b7139d566f55647a4627b8b64edb732691893e
+  checksum: 10/4f78454c4346434d597d58e66813b2d0a066d71f01346c5fc85490b3d9e1fe0823b009f1f394b0037781deaccbc8203042b698d76fd91e306159f5ae0efbb039
   languageName: node
   linkType: hard
 
@@ -32968,7 +32968,7 @@ __metadata:
     "@metamask/design-system-react": "npm:^0.9.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.2.2"
-    "@metamask/eip-5792-middleware": "npm:^2.1.0"
+    "@metamask/eip-5792-middleware": "npm:3.0.0"
     "@metamask/eip-7702-internal-rpc-middleware": "npm:^0.1.0"
     "@metamask/ens-controller": "npm:^18.0.0"
     "@metamask/ens-resolver-snap": "npm:^1.1.0"
