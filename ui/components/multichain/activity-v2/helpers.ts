@@ -215,7 +215,10 @@ export function matchesLocalTransaction(
   scope: AssetScope,
 ): boolean {
   if (scope.kind === 'native') {
-    const txType = group.primaryTransaction.type;
+    const txType = group.primaryTransaction?.type;
+    if (!txType) {
+      return true;
+    }
     return (
       txType === TransactionType.simpleSend ||
       txType === TransactionType.incoming
