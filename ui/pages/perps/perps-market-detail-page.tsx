@@ -32,7 +32,6 @@ import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   DEFAULT_ROUTE,
-  PERPS_HOME_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
 } from '../../helpers/constants/routes';
 import {
@@ -625,7 +624,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, []);
 
   const handleBackClick = useCallback(() => {
-    navigate(PERPS_HOME_ROUTE);
+    navigate(DEFAULT_ROUTE);
   }, [navigate]);
 
   const buildOrderEntryUrl = useCallback(

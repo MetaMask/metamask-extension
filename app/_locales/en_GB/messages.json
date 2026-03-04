@@ -5391,6 +5391,9 @@
   "perpsEntryPrice": {
     "message": "Entry price"
   },
+  "perpsExploreMarkets": {
+    "message": "Explore markets"
+  },
   "perpsExploreCrypto": {
     "message": "Explore crypto"
   },
@@ -5706,6 +5709,9 @@
   },
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
+  },
+  "perpsWatchlist": {
+    "message": "Watchlist"
   },
   "perpsWithdraw": {
     "message": "Withdraw"
