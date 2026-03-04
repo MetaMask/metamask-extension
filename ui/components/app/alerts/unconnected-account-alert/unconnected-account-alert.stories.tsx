@@ -40,7 +40,8 @@ const meta = {
   parameters: {
     docs: {
       description: {
-        component: 'Alert shown when the selected account is not connected to the current dapp',
+        component:
+          'Alert shown when the selected account is not connected to the current dapp',
       },
     },
   },

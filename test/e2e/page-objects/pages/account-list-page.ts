@@ -1,5 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 import { largeDelayMs } from '../../helpers';
+import { quoteXPathText } from '../../../helpers/quoteXPathText';
 import messages from '../../../../app/_locales/en/messages.json';
 import { ACCOUNT_TYPE } from '../../constants';
 import PrivacySettings from './settings/privacy-settings';
@@ -257,7 +258,7 @@ class AccountListPage {
             css: this.addMultichainAccountButton,
             text: 'Add account',
           },
-          this.multichainAccountOptionsMenuButton,
+          this.addMultichainWalletButton,
         ],
         { timeout },
       );
@@ -1124,6 +1125,26 @@ class AccountListPage {
     await this.driver.waitForSelector({
       text: accountName,
       tag: 'p',
+    });
+  }
+
+  async checkAccountNameIsDisplayedUnderWallet(
+    accountName: string,
+    walletName: string,
+  ): Promise<void> {
+    console.log(
+      `Check that account name ${accountName} is displayed under wallet ${walletName}`,
+    );
+    const walletHeader = await this.driver.waitForSelector({
+      css: this.walletHeader,
+      text: walletName,
+    });
+    // VirtualizedList wraps each item in a div, so the header and account rows are not direct
+    // siblings—each is the only child of its wrapper div. Go to the header's parent (the wrapper),
+    // then to that parent's first following sibling (the next item's wrapper), and find the account name inside it.
+    // Use . (string value) instead of text() so we match the element that contains the text in any descendant.
+    await this.driver.findNestedElement(walletHeader, {
+      xpath: `../following-sibling::*[1]//*[contains(., ${quoteXPathText(accountName)})]`,
     });
   }
 }

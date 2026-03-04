@@ -16,6 +16,7 @@ import { useAssetDetails } from '../../../hooks/useAssetDetails';
 import { getEnabledAdvancedPermissions } from '../../../../../../shared/modules/environment';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../hooks/useConfirmationNavigation';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import Info from './info';
 
 jest.mock('../../simulation-details/useBalanceChanges', () => ({
@@ -127,12 +128,26 @@ describe('Info', () => {
   });
 
   it('throws an error if gator permissions feature is not enabled', () => {
+    // the requested permission type is `native-token-stream`
     jest.mocked(getEnabledAdvancedPermissions).mockReturnValue([]);
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
     expect(() => renderWithConfirmContextProvider(<Info />, mockStore)).toThrow(
-      'Gator permissions feature is not enabled',
+      'Invalid eth_signTypedData_v4 request - Advanced Permission type: native-token-stream not enabled',
+    );
+  });
+
+  it('throws an error if the specific permission type is not enabled', () => {
+    // the requested permission type is `native-token-stream`
+    jest
+      .mocked(getEnabledAdvancedPermissions)
+      .mockReturnValue(['erc20-token-stream']);
+
+    const state = getMockTypedSignPermissionConfirmState();
+    const mockStore = configureMockStore([])(state);
+    expect(() => renderWithConfirmContextProvider(<Info />, mockStore)).toThrow(
+      'Invalid eth_signTypedData_v4 request - Advanced Permission type: native-token-stream not enabled',
     );
   });
 
@@ -149,7 +164,7 @@ describe('Info', () => {
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
 
     await waitFor(() => {
-      expect(screen.getByText('Speed')).toBeInTheDocument();
+      expect(screen.getByText(messages.speed.message)).toBeInTheDocument();
     });
 
     expect(container).toMatchSnapshot();
@@ -161,7 +176,7 @@ describe('Info', () => {
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
 
     await waitFor(() => {
-      expect(screen.getByText('Speed')).toBeInTheDocument();
+      expect(screen.getByText(messages.speed.message)).toBeInTheDocument();
     });
 
     expect(container).toMatchSnapshot();

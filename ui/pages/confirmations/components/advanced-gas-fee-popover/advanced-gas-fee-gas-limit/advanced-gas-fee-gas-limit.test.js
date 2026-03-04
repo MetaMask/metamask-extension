@@ -11,6 +11,7 @@ import configureStore from '../../../../../store/store';
 
 import { AdvancedGasFeePopoverContextProvider } from '../context';
 import { getSelectedInternalAccountFromMockState } from '../../../../../../test/jest/mocks';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import AdvancedGasFeeGasLimit from './advanced-gas-fee-gas-limit';
 
 jest.mock('../../../../../store/actions', () => ({
@@ -85,13 +86,13 @@ describe('AdvancedGasFeeGasLimit', () => {
   it('should show input when edit link is clicked', async () => {
     await render();
     expect(document.getElementsByTagName('input')).toHaveLength(0);
-    fireEvent.click(screen.queryByText('Edit'));
+    fireEvent.click(screen.queryByText(messages.edit.message));
     expect(document.getElementsByTagName('input')[0]).toHaveValue(21000);
   });
 
   it('should show error if gas limit is not in range', async () => {
     await render();
-    fireEvent.click(screen.queryByText('Edit'));
+    fireEvent.click(screen.queryByText(messages.edit.message));
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 20000 },
     });
@@ -120,7 +121,7 @@ describe('AdvancedGasFeeGasLimit', () => {
 
   it('should validate gas limit against minimumGasLimit it is passed to context', async () => {
     await render({ minimumGasLimit: '0x5208' });
-    fireEvent.click(screen.queryByText('Edit'));
+    fireEvent.click(screen.queryByText(messages.edit.message));
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 2500 },
     });

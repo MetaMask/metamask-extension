@@ -1,4 +1,4 @@
-import type { OrderType } from '../types';
+import { OrderType } from '../types';
 
 /**
  * Order direction for perps trading
@@ -27,6 +27,8 @@ export type OrderMode = 'new' | 'modify' | 'close';
  * Used in 'modify' and 'close' modes
  */
 export type ExistingPositionData = {
+  /** Asset symbol (e.g., 'ETH', 'BTC') - used for tracking position identity */
+  symbol?: string;
   /** Position size (signed: positive = long, negative = short) */
   size: string;
   /** Current leverage multiplier */
@@ -101,14 +103,22 @@ export type OrderEntryProps = {
   onSubmit?: (formState: OrderFormState) => void;
   /** Callback when form state changes (used when showSubmitButton is false) */
   onFormStateChange?: (formState: OrderFormState) => void;
+  /** Callback when calculated values change (liquidation price, margin, fees) */
+  onCalculationsChange?: (calculations: OrderCalculations) => void;
   /** Whether to show the internal submit button (defaults to true) */
   showSubmitButton?: boolean;
+  /** Whether to show the order summary inside the form (defaults to true) */
+  showOrderSummary?: boolean;
   /** Order mode: 'new' for opening, 'modify' for adjusting, 'close' for closing (defaults to 'new') */
   mode?: OrderMode;
   /** Existing position data for pre-populating form in modify/close modes */
   existingPosition?: ExistingPositionData;
   /** Order type: 'market' or 'limit' (defaults to 'market') */
   orderType?: OrderType;
+  /** Mid price from top-of-book for limit order Mid button */
+  midPrice?: number;
+  /** Callback when user changes order type (Market/Limit) */
+  onOrderTypeChange?: (orderType: OrderType) => void;
 };
 
 /**
@@ -125,7 +135,7 @@ export type DirectionTabsProps = {
  * Props for AmountInput component
  */
 export type AmountInputProps = {
-  /** Current amount value */
+  /** Current amount value (USD) */
   amount: string;
   /** Callback when amount changes */
   onAmountChange: (amount: string) => void;
@@ -187,8 +197,10 @@ export type AutoCloseSectionProps = {
   onStopLossPriceChange: (price: string) => void;
   /** Current order direction (affects TP/SL validation) */
   direction: OrderDirection;
-  /** Current asset price (for TP/SL calculations) */
+  /** Current asset price (for TP/SL calculations and new orders) */
   currentPrice: number;
+  /** Position entry price (for modify mode - use instead of currentPrice for accurate % calc) */
+  entryPrice?: number;
 };
 
 /**

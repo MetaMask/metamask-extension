@@ -32,7 +32,7 @@ Read these files for detailed coding standards:
 
 - Controller patterns: `.cursor/rules/controller-guidelines/RULE.md`
 - Unit testing standards: `.cursor/rules/unit-testing-guidelines/RULE.md`
-- E2E testing standards: `.cursor/rules/e2e-testing-guidelines/RULE.md`
+- E2E testing standards: `./test/e2e/AGENTS.md`
 - Front-end performance:
   - `.cursor/rules/front-end-performance-rendering/RULE.md` (rendering performance - start here)
   - `.cursor/rules/front-end-performance-hooks-effects/RULE.md` (hooks & effects)
@@ -986,16 +986,7 @@ yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js \
 
 **E2E Best Practices:**
 
-- Always use test builds (not dev builds)
-- Tests should be independent and isolated
-- Use page objects for reusable UI interactions
-- Clean up state between tests
-- Use fixtures to set up state programmatically
-- Use `data-testid` for element locators
-
-**Detailed Guidelines:** See `.cursor/rules/e2e-testing-guidelines/RULE.md`
-
-**Deprecated Patterns:** See `.cursor/BUGBOT.md` for a list of deprecated E2E testing patterns to avoid.
+Find them in [](./test/e2e/AGENTS.md)
 
 ### Integration Tests
 
@@ -1616,8 +1607,8 @@ Performance Checks (React Components):
 
 - **Controller Patterns:** [.cursor/rules/controller-guidelines/RULE.md](./.cursor/rules/controller-guidelines/RULE.md)
 - **Unit Testing:** [.cursor/rules/unit-testing-guidelines/RULE.md](./.cursor/rules/unit-testing-guidelines/RULE.md)
-- **E2E Testing:** [.cursor/rules/e2e-testing-guidelines/RULE.md](./.cursor/rules/e2e-testing-guidelines/RULE.md)
-- **E2E Deprecated Patterns:** [.cursor/BUGBOT.md](./.cursor/BUGBOT.md)
+- **E2E Testing:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
+- **E2E Deprecated Patterns:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
 - **Front-End Performance:**
   - [Rendering Performance](.cursor/rules/front-end-performance-rendering/RULE.md) - Start here (keys, memoization, virtualization)
   - [Hooks & Effects](.cursor/rules/front-end-performance-hooks-effects/RULE.md) - useEffect best practices
@@ -1626,6 +1617,10 @@ Performance Checks (React Components):
 - **Pull Requests:** [.cursor/rules/pull-request-guidelines/RULE.md](./.cursor/rules/pull-request-guidelines/RULE.md)
 - **General Coding:** [.cursor/rules/coding-guidelines/RULE.md](./.cursor/rules/coding-guidelines/RULE.md)
 - **Official Guidelines:** [.github/guidelines/CODING_GUIDELINES.md](./.github/guidelines/CODING_GUIDELINES.md)
+
+### Cursor Skills
+
+- **Add Non-EVM Swaps/Bridge Network:** [`.cursor/skills/add-non-evm-swaps-bridge-network/SKILL.md`](./.cursor/skills/add-non-evm-swaps-bridge-network/SKILL.md) - Checklist for adding non-EVM network support to Swaps/Bridge, including code-gated constants, UI updates, and LaunchDarkly rollout controls.
 
 ### External Resources
 

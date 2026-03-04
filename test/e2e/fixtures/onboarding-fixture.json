@@ -36,7 +36,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 192,
+      "currentMigrationVersion": 197,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -52,8 +52,6 @@
       "canTrackWalletFundsObtained": true,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
-      "enableEnforcedSimulations": true,
-      "enforcedSimulationsSlippage": 10,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": false,
       "isRampCardClosed": false,
@@ -61,11 +59,14 @@
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
+      "musdConversionDismissedCtaKeys": [],
+      "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "nftsDetectionNoticeDismissed": false,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
+      "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": false,
       "productTour": "accountIcon",
@@ -168,8 +169,8 @@
       "nonRPCGasFeeApisDisabled": false
     },
     "GatorPermissionsController": {
-      "gatorPermissionsMapSerialized": "{\"erc20-token-revocation\":{},\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
-      "isGatorPermissionsEnabled": true
+      "grantedPermissions": [],
+      "lastSyncedTimestamp": -1
     },
     "KeyringController": {},
     "LoggingController": {
@@ -1884,6 +1885,7 @@
       "permissionHistory": {}
     },
     "PhishingController": {
+      "addressScanCache": {},
       "c2DomainBlocklistLastFetched": 0,
       "hotlistLastFetched": 0,
       "phishingLists": [],
@@ -1913,19 +1915,20 @@
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
         "avatarType": "maskicon",
+        "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "hideZeroBalanceTokens": false,
         "petnamesEnabled": true,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
+        "showDefaultAddress": false,
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": false,
         "showNativeTokenAsMainBalance": false,
         "showTestNetworks": false,
         "skipDeepLinkInterstitial": false,
-        "smartAccountOptIn": true,
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
         "tokenNetworkFilter": {},
@@ -1938,6 +1941,8 @@
         "useSidePanelAsDefault": false
       },
       "referrals": {
+        "asterdex": {},
+        "gmx": {},
         "hyperliquid": {}
       },
       "securityAlertsEnabled": true,
@@ -1965,16 +1970,18 @@
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,
+      "localOverrides": {},
+      "rawRemoteFeatureFlags": {},
       "remoteFeatureFlags": {}
     },
     "RewardsController": {
       "rewardsAccounts": {},
       "rewardsActiveAccount": null,
+      "rewardsPointsEstimateHistory": [],
       "rewardsSeasonStatuses": {},
       "rewardsSeasons": {},
       "rewardsSubscriptionTokens": {},
-      "rewardsSubscriptions": {},
-      "rewardsPointsEstimateHistory": []
+      "rewardsSubscriptions": {}
     },
     "SeedlessOnboardingController": {
       "isSeedlessOnboardingUserAuthenticated": false,
@@ -2149,6 +2156,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 192
+    "version": 197
   }
 }

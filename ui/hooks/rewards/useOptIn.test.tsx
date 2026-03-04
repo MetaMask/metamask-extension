@@ -9,6 +9,18 @@ import {
 } from '../../../shared/constants/metametrics';
 import { useOptIn } from './useOptIn';
 
+// Mock usePrimaryWalletGroupAccounts hook
+const mockPrimaryWalletGroupAccounts = {
+  current: {
+    accounts: [] as InternalAccount[],
+    accountGroupId: undefined as string | undefined,
+  },
+};
+
+jest.mock('./usePrimaryWalletGroupAccounts', () => ({
+  usePrimaryWalletGroupAccounts: () => mockPrimaryWalletGroupAccounts.current,
+}));
+
 // Mocks
 jest.mock('../../store/actions', () => ({
   rewardsOptIn: jest.fn(() => async () => 'sub-123'),
@@ -16,6 +28,9 @@ jest.mock('../../store/actions', () => ({
     { account: {} as InternalAccount, success: true },
   ]),
   updateMetaMetricsTraits: jest.fn(() => async () => {
+    // noop
+  }),
+  linkRewardToShieldSubscription: jest.fn(() => async () => {
     // noop
   }),
 }));
@@ -121,6 +136,12 @@ jest.mock(
   }),
 );
 
+const mockIsHardwareAccount = jest.fn((_account: InternalAccount) => false);
+jest.mock('../../components/app/rewards/utils/isHardwareAccount', () => ({
+  isHardwareAccount: (account: InternalAccount) =>
+    mockIsHardwareAccount(account),
+}));
+
 const { rewardsOptIn } = jest.requireMock('../../store/actions') as {
   rewardsOptIn: jest.Mock;
 };
@@ -130,6 +151,9 @@ const { rewardsLinkAccountsToSubscriptionCandidate } = jest.requireMock(
 const { updateMetaMetricsTraits } = jest.requireMock('../../store/actions') as {
   updateMetaMetricsTraits: jest.Mock;
 };
+const { linkRewardToShieldSubscription } = jest.requireMock(
+  '../../store/actions',
+) as { linkRewardToShieldSubscription: jest.Mock };
 const { setCandidateSubscriptionId } = jest.requireMock(
   '../../ducks/rewards',
 ) as { setCandidateSubscriptionId: jest.Mock };
@@ -157,6 +181,13 @@ const Container = ({ children }: { children: React.ReactNode }) => (
 describe('useOptIn', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Reset mutable mock values
+    mockPrimaryWalletGroupAccounts.current = {
+      accounts: mockSideEffectAccounts,
+      accountGroupId: 'entropy:test/1',
+    };
+
+    mockIsHardwareAccount.mockReturnValue(false);
     (rewardsOptIn as jest.Mock).mockImplementation(() => async () => 'sub-123');
     (
       rewardsLinkAccountsToSubscriptionCandidate as jest.Mock
@@ -164,6 +195,11 @@ describe('useOptIn', () => {
       { account: {} as InternalAccount, success: true },
     ]);
     (updateMetaMetricsTraits as jest.Mock).mockImplementation(
+      () => async () => {
+        // noop
+      },
+    );
+    (linkRewardToShieldSubscription as jest.Mock).mockImplementation(
       () => async () => {
         // noop
       },
@@ -259,7 +295,7 @@ describe('useOptIn', () => {
       });
     });
 
-    it('uses side effect accounts for opt-in when available and links active group accounts', async () => {
+    it('uses primary wallet group accounts for opt-in when available and links active group accounts', async () => {
       (rewardsOptIn as jest.Mock).mockImplementation(
         () => async () => 'sub-side-effect',
       );
@@ -275,7 +311,7 @@ describe('useOptIn', () => {
         await result.current.optin();
       });
 
-      // Should opt-in with side effect accounts (entropy:test/1)
+      // Should opt-in with primary wallet group accounts
       expect(rewardsOptIn).toHaveBeenCalledWith({
         accounts: mockSideEffectAccounts,
         referralCode: undefined,
@@ -284,22 +320,16 @@ describe('useOptIn', () => {
       // Should link active group accounts after opt-in
       expect(rewardsLinkAccountsToSubscriptionCandidate).toHaveBeenCalledWith(
         mockActiveGroupAccounts,
+        mockSideEffectAccounts,
       );
     });
 
-    it('uses active group accounts for opt-in when no side effect accounts available', async () => {
-      // Mock to return empty array for side effect accounts
-      (getInternalAccountsFromGroupById as jest.Mock).mockImplementation(
-        (_state, groupId: string) => {
-          if (groupId === 'entropy:test/1') {
-            return [];
-          }
-          if (groupId === 'entropy:test/0') {
-            return mockActiveGroupAccounts;
-          }
-          return [];
-        },
-      );
+    it('uses active group accounts for opt-in when no primary wallet group accounts available', async () => {
+      // Mock to return empty array for primary wallet group accounts
+      mockPrimaryWalletGroupAccounts.current = {
+        accounts: [],
+        accountGroupId: undefined,
+      };
 
       (rewardsOptIn as jest.Mock).mockImplementation(
         () => async () => 'sub-active',
@@ -322,7 +352,7 @@ describe('useOptIn', () => {
         referralCode: undefined,
       });
 
-      // Should not link accounts when there are no accounts to link
+      // Should link primary wallet group accounts (empty in this case)
       expect(rewardsLinkAccountsToSubscriptionCandidate).not.toHaveBeenCalled();
     });
 
@@ -357,6 +387,41 @@ describe('useOptIn', () => {
 
       // Should not link accounts when there are no accounts to link
       expect(rewardsLinkAccountsToSubscriptionCandidate).not.toHaveBeenCalled();
+    });
+
+    it('does not link accounts when first account to link is a hardware account', async () => {
+      // Mock isHardwareAccount to return true for the first account to link
+      mockIsHardwareAccount.mockReturnValue(true);
+
+      (rewardsOptIn as jest.Mock).mockImplementation(
+        () => async () => 'sub-hw-skip-link',
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useOptIn(),
+        {},
+        undefined,
+        Container,
+      );
+
+      await act(async () => {
+        await result.current.optin();
+      });
+
+      // Should check if first account to link is hardware
+      expect(mockIsHardwareAccount).toHaveBeenCalledWith(
+        mockActiveGroupAccounts[0],
+      );
+
+      // Should not link accounts when first account is a hardware account
+      expect(rewardsLinkAccountsToSubscriptionCandidate).not.toHaveBeenCalled();
+
+      // Opt-in should still succeed
+      expect(setCandidateSubscriptionId).toHaveBeenCalledWith(
+        'sub-hw-skip-link',
+      );
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      expect(events).toContain(MetaMetricsEventName.RewardsOptInCompleted);
     });
 
     it('swallows link errors without affecting final state', async () => {
@@ -461,6 +526,146 @@ describe('useOptIn', () => {
       expect(updateMetaMetricsTraits).not.toHaveBeenCalled();
       const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
       expect(events).not.toContain(MetaMetricsEventName.RewardsOptInCompleted);
+    });
+  });
+
+  describe('Shield subscription linking', () => {
+    it('links reward to shield subscription when options are provided', async () => {
+      (rewardsOptIn as jest.Mock).mockImplementation(
+        () => async () => 'sub-shield',
+      );
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useOptIn({
+            rewardPoints: 100,
+            shieldSubscriptionId: 'shield-sub-123',
+          }),
+        {},
+        undefined,
+        Container,
+      );
+
+      await act(async () => {
+        await result.current.optin();
+      });
+
+      expect(linkRewardToShieldSubscription).toHaveBeenCalledWith(
+        'shield-sub-123',
+        100,
+      );
+    });
+
+    it('does not link to shield subscription when options are not provided', async () => {
+      (rewardsOptIn as jest.Mock).mockImplementation(
+        () => async () => 'sub-no-shield',
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useOptIn(),
+        {},
+        undefined,
+        Container,
+      );
+
+      await act(async () => {
+        await result.current.optin();
+      });
+
+      expect(linkRewardToShieldSubscription).not.toHaveBeenCalled();
+    });
+
+    it('does not link when only rewardPoints is provided', async () => {
+      (rewardsOptIn as jest.Mock).mockImplementation(
+        () => async () => 'sub-partial-shield',
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useOptIn({ rewardPoints: 100 }),
+        {},
+        undefined,
+        Container,
+      );
+
+      await act(async () => {
+        await result.current.optin();
+      });
+
+      expect(linkRewardToShieldSubscription).not.toHaveBeenCalled();
+    });
+
+    it('does not link when only shieldSubscriptionId is provided', async () => {
+      (rewardsOptIn as jest.Mock).mockImplementation(
+        () => async () => 'sub-partial-shield-2',
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useOptIn({ shieldSubscriptionId: 'shield-sub-456' }),
+        {},
+        undefined,
+        Container,
+      );
+
+      await act(async () => {
+        await result.current.optin();
+      });
+
+      expect(linkRewardToShieldSubscription).not.toHaveBeenCalled();
+    });
+
+    it('swallows shield subscription linking errors without affecting opt-in success', async () => {
+      (rewardsOptIn as jest.Mock).mockImplementation(
+        () => async () => 'sub-shield-error',
+      );
+      (linkRewardToShieldSubscription as jest.Mock).mockImplementation(
+        () => async () => {
+          throw new Error('Shield linking failed');
+        },
+      );
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useOptIn({
+            rewardPoints: 100,
+            shieldSubscriptionId: 'shield-sub-error',
+          }),
+        {},
+        undefined,
+        Container,
+      );
+
+      await act(async () => {
+        await result.current.optin();
+      });
+
+      // Opt-in should still succeed despite shield linking failure
+      expect(result.current.optinError).toBeNull();
+      expect(setCandidateSubscriptionId).toHaveBeenCalledWith(
+        'sub-shield-error',
+      );
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      expect(events).toContain(MetaMetricsEventName.RewardsOptInCompleted);
+    });
+
+    it('does not link to shield subscription when subscriptionId is null', async () => {
+      (rewardsOptIn as jest.Mock).mockImplementation(() => async () => null);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useOptIn({
+            rewardPoints: 100,
+            shieldSubscriptionId: 'shield-sub-null',
+          }),
+        {},
+        undefined,
+        Container,
+      );
+
+      await act(async () => {
+        await result.current.optin();
+      });
+
+      expect(linkRewardToShieldSubscription).not.toHaveBeenCalled();
     });
   });
 });

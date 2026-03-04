@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { type Hex } from '@metamask/utils';
 import { type KeyringAccountType } from '@metamask/keyring-api';
@@ -152,7 +152,8 @@ export const TokenListItemComponent = ({
   const multiChainMarketData = useSelector(getMarketData);
 
   const tokenPercentageChange = address
-    ? multiChainMarketData?.[chainId]?.[address]?.pricePercentChange1d
+    ? multiChainMarketData?.[chainId as Hex]?.[address as Hex]
+        ?.pricePercentChange1d
     : null;
 
   const tokenTitle = getTokenTitle();
@@ -331,7 +332,7 @@ export const TokenListItemComponent = ({
               <PercentageChange
                 value={
                   isNativeCurrency
-                    ? multiChainMarketData?.[chainId]?.[
+                    ? multiChainMarketData?.[chainId as Hex]?.[
                         getNativeTokenAddress(chainId as Hex)
                       ]?.pricePercentChange1d
                     : tokenPercentageChange

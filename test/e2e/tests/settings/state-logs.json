@@ -67,7 +67,6 @@
     "nextNonce": "null",
     "onboardedInThisUISession": "boolean",
     "openMetaMaskTabs": {},
-    "pendingHardwareWalletSigning": "boolean",
     "pendingTokens": {},
     "qrCodeData": "null",
     "removeNftMessage": "string",
@@ -274,6 +273,7 @@
     "accountWalletsMetadata": {},
     "activeQrCodeScanRequest": "null",
     "addressBook": {},
+    "addressScanCache": {},
     "addressSecurityAlertResponses": {},
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
@@ -433,11 +433,7 @@
       "eip155:1329": "string",
       "eip155:6343": "string"
     },
-    "enableEnforcedSimulations": "boolean",
-    "enableEnforcedSimulationsForTransactions": {},
     "enableMV3TimestampSave": "boolean",
-    "enforcedSimulationsSlippage": "number",
-    "enforcedSimulationsSlippageForTransactions": {},
     "ensEntries": {
       "0x1": {
         ".": {
@@ -551,8 +547,8 @@
     "gasEstimateType": "string",
     "gasFeeEstimates": {},
     "gasFeeEstimatesByChainId": {},
-    "gatorPermissionsMapSerialized": "string",
-    "gatorPermissionsProviderSnapId": "string",
+    "grantedPermissions": [],
+    "lastSyncedTimestamp": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": "boolean",
     "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
     "hasShownMultichainAccountsIntroModal": "boolean",
@@ -648,7 +644,6 @@
     "isFeatureAnnouncementsEnabled": "boolean",
     "isFetchingGatorPermissions": "boolean",
     "isFetchingMetamaskNotifications": "boolean",
-    "isGatorPermissionsEnabled": "boolean",
     "isInitialized": "boolean",
     "isIpfsGatewayEnabled": "boolean",
     "isMetamaskNotificationsFeatureSeen": "boolean",
@@ -659,8 +654,9 @@
     "isReady": "boolean",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
     "isSignedIn": "boolean",
+    "isUiOpen": "boolean",
     "isUnlocked": "boolean",
-    "isUpdateAvailable": "boolean",
+    "pendingExtensionVersion": "null",
     "isUpdatingFCMToken": "boolean",
     "isUpdatingMetamaskNotifications": "boolean",
     "isUpdatingMetamaskNotificationsAccount": [],
@@ -776,6 +772,8 @@
         "nativeCurrency": "string"
       }
     },
+    "musdConversionEducationSeen": "boolean",
+    "musdConversionDismissedCtaKeys": [],
     "names": {
       "ethereumAddress": {
         "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
@@ -824,10 +822,11 @@
     "outdatedBrowserWarningLastShown": "null",
     "overrideContentSecurityPolicyHeader": "boolean",
     "participateInMetaMetrics": "boolean",
+    "pendingRedirectRoute": "null",
     "pendingApprovalCount": "number",
     "pendingApprovals": {},
     "pendingRevocations": [],
-    "pendingShieldCohort": "null",
+    "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": "null",
     "pna25Acknowledged": "boolean",
     "permissionActivityLog": [
@@ -846,11 +845,13 @@
     "popupGasPollTokens": [],
     "preferences": {
       "avatarType": "string",
+      "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": "boolean",
       "petnamesEnabled": "boolean",
       "privacyMode": "boolean",
+      "showDefaultAddress": "boolean",
       "shouldShowAggregatedBalancePopover": "boolean",
       "showExtensionInFullSizeView": "boolean",
       "showFiatInTestnets": "boolean",
@@ -858,7 +859,6 @@
       "showNativeTokenAsMainBalance": "boolean",
       "showTestNetworks": "boolean",
       "skipDeepLinkInterstitial": "boolean",
-      "smartAccountOptIn": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": "boolean",
       "tokenNetworkFilter": {
@@ -897,6 +897,8 @@
     "recoveryPhraseReminderHasBeenShown": "boolean",
     "recoveryPhraseReminderLastShown": "number",
     "referrals": {
+      "asterdex": {},
+      "gmx": {},
       "hyperliquid": {}
     },
     "remoteFeatureFlags": {
@@ -907,6 +909,24 @@
         "value": "string"
       }
     },
+    "rawRemoteFeatureFlags": {
+      "feature1": "boolean",
+      "feature2": "boolean",
+      "feature3": [
+        {
+          "name": "string",
+          "value": "string",
+          "scope": {
+            "type": "string",
+            "value": "number"
+          }
+        }
+      ]
+    },
+    "thresholdCache": {
+      "*": "number"
+    },
+    "localOverrides": {},
     "rewardsAccounts": {},
     "rewardsActiveAccount": "null",
     "rewardsPointsEstimateHistory": [],
@@ -920,6 +940,7 @@
     "selectedAddress": "string",
     "selectedMultichainNetworkChainId": "string",
     "selectedNetworkClientId": "string",
+    "shieldSubscriptionError": "null",
     "shieldEndingToastLastClickedOrClosed": "null",
     "shieldPausedToastLastClickedOrClosed": "null",
     "showAccountBanner": "boolean",
@@ -1165,6 +1186,11 @@
     "watchEthereumAccountEnabled": "boolean",
     "web3ShimUsageOrigins": {},
     "verifiedSnaps": {}
+  },
+  "perpsTutorial": {
+    "tutorialModalOpen": "boolean",
+    "activeStep": "string",
+    "tutorialCompleted": "boolean"
   },
   "platform": {
     "arch": "string",

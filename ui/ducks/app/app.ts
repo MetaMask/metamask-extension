@@ -144,7 +144,6 @@ type AppState = {
      */
     hasUserInteractedWithModal?: boolean;
   };
-  pendingHardwareWalletSigning: boolean;
 };
 
 export type AppSliceState = {
@@ -246,7 +245,6 @@ const initialState: AppState = {
   showClaimSubmitToast: null,
   showInfuraSwitchToast: false,
   showSupportDataConsentModal: false,
-  pendingHardwareWalletSigning: false,
 };
 
 export default function reduceApp(
@@ -739,7 +737,6 @@ export default function reduceApp(
         ...appState,
         errorInSettings: null,
       };
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
       return {
         ...appState,
@@ -757,7 +754,6 @@ export default function reduceApp(
           result: 'none',
         },
       };
-    ///: END:ONLY_INCLUDE_IF
     case actionConstants.SET_SHOW_NEW_SRP_ADDED_TOAST:
       return {
         ...appState,
@@ -800,12 +796,6 @@ export default function reduceApp(
         shieldEntryModal: {
           ...action.payload,
         },
-      };
-
-    case actionConstants.SET_PENDING_HARDWARE_WALLET_SIGNING:
-      return {
-        ...appState,
-        pendingHardwareWalletSigning: action.payload,
       };
 
     default:

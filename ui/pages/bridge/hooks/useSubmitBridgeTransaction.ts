@@ -24,6 +24,7 @@ import {
   getIsStxEnabled,
   getWarningLabels,
 } from '../../../ducks/bridge/selectors';
+import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
@@ -40,13 +41,14 @@ export const isApprovalTxError = (error: unknown): boolean => {
 };
 
 const isHardwareWalletUserRejection = (error: unknown): boolean => {
+  if (isUserRejectedHardwareWalletError(error)) {
+    return true;
+  }
+
   const errorMessage = (error as Error).message?.toLowerCase() ?? '';
+
   return (
-    // Ledger rejection
-    (errorMessage.includes('ledger') &&
-      (errorMessage.includes('rejected') ||
-        errorMessage.includes('denied') ||
-        errorMessage.includes('error while signing'))) ||
+    // These will be removed when adapters are made for the hardware wallets error management.
     // Trezor rejection
     (errorMessage.includes('trezor') &&
       (errorMessage.includes('cancelled') ||
@@ -94,7 +96,16 @@ export default function useSubmitBridgeTransaction() {
     }
 
     if (hardwareWalletUsed) {
-      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
+      const {
+        quote: { requestId },
+      } = quoteResponse;
+      // Preserve requestId across popup -> fullscreen transitions (QR flow).
+      const awaitingUrl = requestId
+        ? `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(
+            requestId,
+          )}`
+        : `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`;
+      navigate(awaitingUrl);
     }
 
     // Execute transaction(s)
@@ -105,7 +116,7 @@ export default function useSubmitBridgeTransaction() {
       if (isNonEvmSource) {
         // Submit the transaction first, THEN navigate
         await dispatch(
-          submitBridgeTx(
+          await submitBridgeTx(
             fromAccount.address,
             quoteResponse,
             false,
@@ -119,13 +130,14 @@ export default function useSubmitBridgeTransaction() {
           ),
         );
         navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+          replace: true,
           state: { stayOnHomePage: true },
         });
         return;
       }
 
       await dispatch(
-        submitBridgeTx(
+        await submitBridgeTx(
           fromAccount.address,
           quoteResponse,
           smartTransactionsEnabled,
@@ -142,14 +154,20 @@ export default function useSubmitBridgeTransaction() {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
-        navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
+        navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`, {
+          replace: true,
+        });
       } else {
-        navigate(`${DEFAULT_ROUTE}?tab=activity`);
+        navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+          replace: true,
+          state: { stayOnHomePage: true },
+        });
       }
       return;
     }
 
     navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+      replace: true,
       state: { stayOnHomePage: true },
     });
   };

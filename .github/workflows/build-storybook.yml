@@ -4,25 +4,24 @@ on:
   workflow_call:
     secrets:
       STORYBOOK_TOKEN:
-        required: true
+        required: false
 
 jobs:
   build-storybook:
     name: Build storybook
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    environment: ${{ github.ref_name == 'main' && 'default_branch' || null }}
+    environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
     env:
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
     steps:
       - name: Checkout and setup high risk environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: true
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Build storybook
         run: yarn storybook:build
@@ -41,5 +40,5 @@ jobs:
         env:
           STORYBOOK_TOKEN: ${{ secrets.STORYBOOK_TOKEN }}
         run: |
-          git remote add storybook "https://${STORYBOOK_TOKEN}@github.com/MetaMask/metamask-storybook.git"
+          git remote add storybook "https://x-access-token:${STORYBOOK_TOKEN}@github.com/MetaMask/metamask-storybook.git"
           yarn storybook:deploy

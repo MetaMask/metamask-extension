@@ -18,8 +18,13 @@ import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import { type PreferencesState } from '@metamask/preferences-controller';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
-import { ThemeType } from '../../../shared/constants/preferences';
+import {
+  DEFAULT_AUTO_LOCK_TIME_LIMIT,
+  ThemeType,
+} from '../../../shared/constants/preferences';
+import { type DefaultAddressScope } from '../../../shared/constants/default-address';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
+import { FALLBACK_LOCALE } from '../../../shared/modules/i18n';
 
 /**
  * Referral status for an account
@@ -93,19 +98,20 @@ type PreferencesControllerOptions = {
 export type Preferences = {
   autoLockTimeLimit?: number;
   avatarType?: 'maskicon' | 'jazzicon' | 'blockies';
+  defaultAddressScope: DefaultAddressScope;
   dismissSmartAccountSuggestionEnabled: boolean;
   featureNotificationsEnabled: boolean;
   hideZeroBalanceTokens: boolean;
   petnamesEnabled: boolean;
   privacyMode: boolean;
   showConfirmationAdvancedDetails: boolean;
+  showDefaultAddress: boolean;
   showExtensionInFullSizeView: boolean;
   showFiatInTestnets: boolean;
   showMultiRpcModal: boolean;
   showNativeTokenAsMainBalance: boolean;
   showTestNetworks: boolean;
   skipDeepLinkInterstitial: boolean;
-  smartAccountOptIn: boolean;
   smartTransactionsOptInStatus: boolean;
   smartTransactionsMigrationApplied: boolean;
   tokenNetworkFilter: Record<string, boolean>;
@@ -162,10 +168,7 @@ export type PreferencesControllerState = Omit<
   useMultiAccountBalanceChecker: boolean;
   usePhishDetect: boolean;
   referrals: Record<DefiReferralPartner, Record<Hex, ReferralStatus>>;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   watchEthereumAccountEnabled: boolean;
-  ///: END:ONLY_INCLUDE_IF
 };
 
 /**
@@ -173,9 +176,7 @@ export type PreferencesControllerState = Omit<
  */
 export const getDefaultPreferencesControllerState =
   (): PreferencesControllerState => ({
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
-    ///: END:ONLY_INCLUDE_IF
     advancedGasFee: {},
     currentLocale: '',
     dismissSeedBackUpReminder: false,
@@ -205,13 +206,14 @@ export const getDefaultPreferencesControllerState =
       petnamesEnabled: true,
       privacyMode: false,
       showConfirmationAdvancedDetails: false,
+      showDefaultAddress: false,
+      defaultAddressScope: 'eip155',
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
       showMultiRpcModal: false,
       showNativeTokenAsMainBalance: false,
       showTestNetworks: false,
       skipDeepLinkInterstitial: false,
-      smartAccountOptIn: true,
       smartTransactionsOptInStatus: true,
       smartTransactionsMigrationApplied: false,
       tokenNetworkFilter: {},
@@ -226,9 +228,7 @@ export const getDefaultPreferencesControllerState =
     securityAlertsEnabled: true,
     selectedAddress: '',
     snapRegistryList: {},
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     snapsAddSnapAccountModalDismissed: false,
-    ///: END:ONLY_INCLUDE_IF
     theme: ThemeType.os,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
@@ -251,6 +251,8 @@ export const getDefaultPreferencesControllerState =
     useTransactionSimulations: true,
     watchEthereumAccountEnabled: false,
     referrals: {
+      [DefiReferralPartner.AsterDEX]: {},
+      [DefiReferralPartner.GMX]: {},
       [DefiReferralPartner.Hyperliquid]: {},
     },
   });
@@ -680,7 +682,6 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   /**
    * Setter for the `addSnapAccountEnabled` property.
    *
@@ -692,9 +693,7 @@ export class PreferencesController extends BaseController<
       state.addSnapAccountEnabled = addSnapAccountEnabled;
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   /**
    * Setter for the `watchEthereumAccountEnabled` property.
    *
@@ -706,7 +705,6 @@ export class PreferencesController extends BaseController<
       state.watchEthereumAccountEnabled = watchEthereumAccountEnabled;
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `useExternalNameSources` property
@@ -1023,13 +1021,41 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  setShowDefaultAddress(value: boolean): void {
+    this.update((state) => {
+      state.preferences.showDefaultAddress = value;
+    });
+  }
+
+  setDefaultAddressScope(value: DefaultAddressScope): void {
+    this.update((state) => {
+      state.preferences.defaultAddressScope = value;
+    });
+  }
+
   setSnapsAddSnapAccountModalDismissed(value: boolean): void {
     this.update((state) => {
       state.snapsAddSnapAccountModalDismissed = value;
     });
   }
-  ///: END:ONLY_INCLUDE_IF
+
+  /**
+   * Resets the preferences state to the default values.
+   * This is used when the wallet is reset during the "Forgot Password" flow.
+   */
+  resetState(): void {
+    const defaultState = getDefaultPreferencesControllerState();
+    const resetState = {
+      ...defaultState,
+      currentLocale: FALLBACK_LOCALE,
+      preferences: {
+        ...defaultState.preferences,
+        autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
+        showNativeTokenAsMainBalance: true,
+      },
+    };
+    this.update(() => resetState);
+  }
 
   #handleAccountsControllerSync(
     newAccountsControllerState: AccountsControllerState,

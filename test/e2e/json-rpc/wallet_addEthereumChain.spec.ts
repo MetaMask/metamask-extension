@@ -4,12 +4,13 @@ import {
   PermissionConstraint,
 } from '@metamask/permission-controller';
 import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
 import { WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import { CaveatTypes } from '../../../shared/constants/permissions';
-import { switchToEditRPCViaGlobalMenuNetworks } from '../page-objects/flows/network.flow';
+import HeaderNavbar from '../page-objects/pages/header-navbar';
 import AddNetworkConfirmation from '../page-objects/pages/confirmations/add-network-confirmations';
 import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/review-permissions-confirmation';
@@ -45,7 +46,7 @@ describe('Add Ethereum Chain', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           localNodeOptions: [
             {
               type: 'anvil',
@@ -573,7 +574,8 @@ describe('Add Ethereum Chain', function () {
           );
 
           // go to network selector
-          await switchToEditRPCViaGlobalMenuNetworks(driver);
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.openGlobalNetworksMenu();
           await driver.findElement({ text: 'Localhost 8545' });
         },
       );

@@ -3,8 +3,16 @@
  */
 export enum DefiReferralPartner {
   Hyperliquid = 'hyperliquid',
-  // AsterDex = 'asterdex',
+  GMX = 'gmx',
+  AsterDEX = 'asterdex',
 }
+
+/**
+ * The type of connection flow prior to showing the referral screen
+ * - permissions: show referral when permissions succeed (e.g. wallet_requestPermissions).
+ * - permissions_then_signature: show referral after permissions and signature succeed.
+ */
+export type ConnectionFlow = 'permissions' | 'permissions_then_signature';
 
 /**
  * Configuration for a Defi referral partner
@@ -22,6 +30,8 @@ export type DefiReferralPartnerConfig = {
   learnMoreUrl: string;
   /** Approval type string for ApprovalController */
   approvalType: string;
+  /** Connection flow prior to showing the referral screen */
+  connectionFlow: ConnectionFlow;
 };
 
 /**
@@ -38,15 +48,28 @@ export const DEFI_REFERRAL_PARTNERS: Record<
     referralUrl: 'https://app.hyperliquid.xyz/join/MMREFCSI',
     learnMoreUrl: 'https://hyperliquid.gitbook.io/hyperliquid-docs/referrals',
     approvalType: 'hyperliquid_referral_consent',
+    connectionFlow: 'permissions',
   },
-  // [DefiReferralPartner.AsterDex]: {
-  //   id: DefiReferralPartner.AsterDex,
-  //   name: 'AsterDex',
-  //   origin: 'https://www.asterdex.com',
-  //   referralUrl: 'https://www.asterdex.com/en/referral/wsuZBc',
-  //   learnMoreUrl: 'https://docs.asterdex.com/product/aster-perpetuals/referral-program',
-  //   approvalType: 'asterdex_referral_consent',
-  // },
+  [DefiReferralPartner.GMX]: {
+    id: DefiReferralPartner.GMX,
+    name: 'GMX',
+    origin: 'https://app.gmx.io',
+    referralUrl: 'https://app.gmx.io/#/referrals/?ref=MMREFCSI2',
+    learnMoreUrl: 'https://docs.gmx.io/docs/referrals/',
+    approvalType: 'gmx_referral_consent',
+    connectionFlow: 'permissions',
+  },
+  [DefiReferralPartner.AsterDEX]: {
+    id: DefiReferralPartner.AsterDEX,
+    name: 'AsterDEX',
+    origin: 'https://www.asterdex.com',
+    referralUrl:
+      'https://www.asterdex.com/en/trade/pro/futures/BTCUSDT?ref=82636D',
+    learnMoreUrl:
+      'https://docs.asterdex.com/product/aster-perpetuals/referral-program',
+    approvalType: 'asterdex_referral_consent',
+    connectionFlow: 'permissions_then_signature',
+  },
 };
 
 /**
