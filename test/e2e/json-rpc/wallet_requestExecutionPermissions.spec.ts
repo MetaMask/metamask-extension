@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import type { Mockttp } from 'mockttp';
 import { withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
@@ -6,22 +7,48 @@ import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { WINDOW_TITLES } from '../constants';
 import TestDapp from '../page-objects/pages/test-dapp';
 import AdvancedPermissionsIntroduction from '../page-objects/pages/confirmations/advanced-permissions-introduction';
+import {
+  getProductionRemoteFlagApiResponse,
+} from '../feature-flags/feature-flag-registry';
+
+/**
+ * Mocks the client-config flags API so that confirmations_eip_7702 has
+ * supportedChains: ['0x539']. This is more reliable than fixture state because
+ * the extension fetches flags when the UI opens and overwrites fixture-loaded state.
+ */
+async function mockEip7702SupportedChains(server: Mockttp) {
+  const flags = getProductionRemoteFlagApiResponse();
+
+  const flagsWithEip7702 = [
+    ...flags,
+    {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      confirmations_eip_7702: {
+        supportedChains: ['0x539'],
+        contracts: {},
+      },
+    },
+  ];
+  return [
+    await server
+      .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+      .withQuery({ client: 'extension', distribution: 'main' })
+      .thenCallback(() => ({
+        ok: true,
+        statusCode: 200,
+        json: flagsWithEip7702,
+      })),
+  ];
+}
+
 
 describe('wallet_requestExecutionPermissions', function () {
   it('blocks other requests, until the dialog is closed', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilderV2()
-          .withRemoteFeatureFlagController({
-            remoteFeatureFlags: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              confirmations_eip_7702: {
-                supportedChains: ['0x539'],
-              },
-            },
-          })
-          .build(),
+        fixtures: new FixtureBuilderV2().build(),
+        testSpecificMock: mockEip7702SupportedChains,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
