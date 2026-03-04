@@ -221,7 +221,7 @@ export class InstitutionalSnapController extends BaseController<
   async #shouldDeferPublication(transactionMeta: TransactionMeta) {
     const account = (await this.messenger.call(
       'AccountsController:getAccountByAddress',
-      (transactionMeta.txParams.from as string).toLowerCase(),
+      transactionMeta.txParams.from as string,
     )) as unknown as DeferrableTransactionAccount;
 
     return account?.options.custodian?.deferPublication;

@@ -1982,7 +1982,7 @@ export function updateAndApproveTx(
   return async (dispatch: MetaMaskReduxDispatch, getState) => {
     const fromAccount = getInternalAccountByAddress(
       getState(),
-      txMeta.txParams.from.toLowerCase(),
+      txMeta.txParams.from,
     );
 
     if (isHardwareAccount(fromAccount)) {
@@ -5619,10 +5619,7 @@ export function resolvePendingApproval(
     // Check if this is a hardware wallet account
     const fromAddress = options?.fromAddress;
     if (fromAddress) {
-      const fromAccount = getInternalAccountByAddress(
-        getState(),
-        fromAddress.toLowerCase(),
-      );
+      const fromAccount = getInternalAccountByAddress(getState(), fromAddress);
 
       if (isHardwareAccount(fromAccount)) {
         const keyringType = fromAccount?.metadata?.keyring?.type;

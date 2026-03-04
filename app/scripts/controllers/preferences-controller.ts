@@ -803,7 +803,7 @@ export class PreferencesController extends BaseController<
   setSelectedAddress(address: string): void {
     const account = this.messenger.call(
       'AccountsController:getAccountByAddress',
-      address.toLowerCase(),
+      address,
     );
     if (!account) {
       throw new Error(`Identity for '${address} not found`);
@@ -843,7 +843,7 @@ export class PreferencesController extends BaseController<
 
     const account = this.messenger.call(
       'AccountsController:getAccountByAddress',
-      address.toLowerCase(),
+      address,
     );
     if (account) {
       this.messenger.call(
