@@ -19,12 +19,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { TokenInsightsModal } from '../../../pages/bridge/token-insights-modal';
-import {
-  isStockToken as checkIsStockToken,
-  isTokenTradingOpenAt,
-  useRWAToken,
-} from '../../../pages/bridge/hooks/useRWAToken';
-import { getIsRWATokensEnabled } from '../../../selectors/rwa/feature-flags';
+import { useRWAToken } from '../../../pages/bridge/hooks/useRWAToken';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -185,9 +180,9 @@ export const TokenListItemComponent = ({
     isDestinationToken &&
     address &&
     noFeeAssets?.includes(address.toLowerCase());
-  const isRWAEnabled = useSelector(getIsRWATokensEnabled);
+  const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
   const rwaToken = { rwaData };
-  const isRWAToken = isRWAEnabled && checkIsStockToken(rwaToken);
+  const isRWAToken = checkIsStockToken(rwaToken);
 
   // Used for badge icon
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
@@ -229,7 +224,7 @@ export const TokenListItemComponent = ({
               return;
             }
 
-            if (isRWAToken && !isTokenTradingOpenAt(rwaToken)) {
+            if (isRWAToken && !isTokenTradingOpen(rwaToken)) {
               setShowMarketClosedModal(true);
               return;
             }

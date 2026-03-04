@@ -17,10 +17,10 @@ const toMs = (value: DateLike): number | null => {
 
 const RWA_TIME_TICK_MS = 60_000;
 
-export const isStockToken = (token?: RWATokenLike) =>
+const isStockToken = (token?: RWATokenLike) =>
   token?.rwaData?.instrumentType === 'stock';
 
-export const isTokenTradingOpenAt = (
+const isTokenTradingOpenAt = (
   token?: RWATokenLike,
   nowMs: number = Date.now(),
 ) => {
