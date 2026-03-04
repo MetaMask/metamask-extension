@@ -6,6 +6,7 @@ import { getImageForChainId } from '../../../utils/network';
 import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNameAndImage';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
 import { AssetFilterMethod } from '../../../context/send-metrics';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { NetworkFilter } from './network-filter';
 
 jest.mock('../../../../../hooks/useI18nContext');
@@ -165,7 +166,7 @@ describe('NetworkFilter', () => {
     );
 
     expect(getByTestId('send-network-filter-toggle')).toBeInTheDocument();
-    expect(getByText('All networks')).toBeInTheDocument();
+    expect(getByText(messages.allNetworks.message)).toBeInTheDocument();
     expect(getByTestId('icon-global')).toBeInTheDocument();
   });
 
@@ -180,7 +181,7 @@ describe('NetworkFilter', () => {
     );
 
     expect(getByTestId('send-network-filter-toggle')).toBeInTheDocument();
-    expect(getByText('Ethereum')).toBeInTheDocument();
+    expect(getByText(messages.networkNameEthereum.message)).toBeInTheDocument();
     expect(getByTestId('avatar-network')).toBeInTheDocument();
   });
 

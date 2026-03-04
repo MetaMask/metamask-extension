@@ -86,6 +86,39 @@ const Divider = () => (
   <div className="my-3 mx-4 border-t border-border-muted" />
 );
 
+const ViewAllButton = ({
+  handleViewAllClick,
+  showDefaultAddressStyles,
+  text,
+}: {
+  handleViewAllClick: React.MouseEventHandler<HTMLButtonElement>;
+  showDefaultAddressStyles: boolean;
+  text: string;
+}) =>
+  showDefaultAddressStyles ? (
+    <Button
+      size={ButtonSize.Sm}
+      variant={ButtonVariant.Secondary}
+      onClick={handleViewAllClick}
+      className="mt-2 ml-3 mr-3"
+      data-testid="multichain-address-rows-view-all-button"
+    >
+      {text}
+    </Button>
+  ) : (
+    <>
+      <div className="my-1 -mx-1 border-t border-border-muted" />
+      <Button
+        size={ButtonSize.Sm}
+        variant={ButtonVariant.Tertiary}
+        onClick={handleViewAllClick}
+        data-testid="multichain-address-rows-view-all-button"
+      >
+        {text}
+      </Button>
+    </>
+  );
+
 export const MultichainHoveredAddressRowsList = ({
   children,
   groupId,
@@ -134,7 +167,7 @@ export const MultichainHoveredAddressRowsList = ({
 
     const rect = referenceElement.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
-    const popoverEstimatedHeight = 400; // Based on the maxHeight set on the popover
+    const popoverEstimatedHeight = 275; // Based on the maxHeight set on the popover
     const spaceBelow = viewportHeight - rect.bottom;
 
     // If there's not enough space below, use TopStart
@@ -329,7 +362,7 @@ export const MultichainHoveredAddressRowsList = ({
         paddingTop={1}
         style={{
           zIndex: 99999,
-          maxHeight: '400px',
+          maxHeight: '275px',
           minWidth: '340px',
         }}
       >
@@ -357,15 +390,11 @@ export const MultichainHoveredAddressRowsList = ({
           )}
           <Box>{renderedRows}</Box>
           {showViewAllButton && (
-            <Button
-              size={ButtonSize.Sm}
-              variant={ButtonVariant.Secondary}
-              onClick={handleViewAllClick}
-              className="mt-2 ml-3 mr-3"
-              data-testid="multichain-address-rows-view-all-button"
-            >
-              {t('multichainAddressViewAll')}
-            </Button>
+            <ViewAllButton
+              handleViewAllClick={handleViewAllClick}
+              text={t('multichainAddressViewAll')}
+              showDefaultAddressStyles={showDefaultAddressSection}
+            />
           )}
           {showDefaultAddressSection && (
             <>

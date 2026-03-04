@@ -85,4 +85,28 @@ describe('useFetchNftDetailsFromTokenURI', () => {
       name: '',
     });
   });
+
+  it('should not set image or name when they are not strings in the response', async () => {
+    const mockData = {
+      name: { nested: 'object' },
+      description: 'This is a collection of Rock NFTs.',
+      image: ['array', 'of', 'images'],
+    };
+
+    const mockFetch = jest.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve(JSON.stringify(mockData)),
+    } as Response);
+
+    const result = renderHook(() =>
+      useFetchNftDetailsFromTokenURI('https://test.com'),
+    );
+
+    await waitFor(() => expect(mockFetch).toHaveBeenCalled());
+
+    expect(result.result.current).toEqual({
+      image: '',
+      name: '',
+    });
+  });
 });

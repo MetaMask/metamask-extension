@@ -151,6 +151,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         snapsInstallPrivacyWarningShown: true,
         hasShownMultichainAccountsIntroModal: true,
         showShieldEntryModalOnce: false,
+        pendingRedirectRoute: null,
         pendingShieldCohort: null,
         pendingShieldCohortTxType: null,
         appActiveTab: {
@@ -162,6 +163,8 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           host: '127.0.0.1:8080',
           href: 'http://127.0.0.1:8080',
         },
+        musdConversionEducationSeen: false,
+        musdConversionDismissedCtaKeys: [],
       },
       BridgeController: {},
       CurrencyController: {

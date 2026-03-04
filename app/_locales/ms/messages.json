@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Anda perlu memilih akaun!"
   },
-  "activityLog": {
-    "message": "log aktiviti"
-  },
   "addAcquiredTokens": {
     "message": "Tambah token yang anda peroleh menggunakan MetaMask"
   },
@@ -295,9 +292,6 @@
     "message": "Diimport",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Transaksi awal anda telah disahkan oleh rangkaian. Klik OK untuk kembali."
-  },
   "insufficientBalance": {
     "message": "Baki tidak mencukupi."
   },
@@ -471,12 +465,6 @@
   "rejectAll": {
     "message": "Tolak Semua"
   },
-  "rejectTxsDescription": {
-    "message": "Anda akan menolak secara kelompok $1 transaksi."
-  },
-  "rejectTxsN": {
-    "message": "Tolak transaksi $1"
-  },
   "rejected": {
     "message": "Ditolak"
   },
@@ -574,9 +562,6 @@
   "speedUpCancellation": {
     "message": "Cepatkan pembatalan ini"
   },
-  "speedUpTransaction": {
-    "message": "Percepatkan transaksi ini"
-  },
   "stateLogError": {
     "message": "Ralat mendapatkan semula log keadaan."
   },
@@ -619,38 +604,11 @@
   "transaction": {
     "message": "transaksi"
   },
-  "transactionCancelAttempted": {
-    "message": "Pembatalan transaksi dicuba dengan yuran gas sebanyak $1 pada $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaksi berjaya dibatalkan pada $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transaksi disahkan pada $2."
-  },
-  "transactionCreated": {
-    "message": "Transaksi dicipta dengan nilai $1 pada $2."
-  },
-  "transactionDropped": {
-    "message": "Transaksi jatuh pada $2."
-  },
   "transactionError": {
     "message": "Ralat Transaksi. Pengecualian diberi dalam kod kontrak."
   },
   "transactionErrorNoContract": {
     "message": "Cuba memanggil fungsi untuk alamat bukan kontrak."
-  },
-  "transactionErrored": {
-    "message": "Transaksi berdepan ralat."
-  },
-  "transactionResubmitted": {
-    "message": "Transaksi dihantar semula dengan fi gas ditingkatkan kepada $1 pada $2."
-  },
-  "transactionSubmitted": {
-    "message": "Transaksi dihantar dengan fi gas sebanyak $1 pada $2."
-  },
-  "transactionUpdated": {
-    "message": "Transaksi dikemaskini pada $2."
   },
   "transfer": {
     "message": "Pindah"
@@ -696,8 +654,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Anda perlu membenarkan akses kamera untuk menggunakan ciri ini."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Ungkapan benih peribadi anda"
   }
 }

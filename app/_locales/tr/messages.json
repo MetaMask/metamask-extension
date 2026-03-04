@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Gösterilecek bir şey yok. İlk token takası işleminizi bugün yapın."
   },
-  "activityLog": {
-    "message": "Etkinlik günlüğü"
-  },
   "add": {
     "message": "Ekle"
   },
@@ -278,9 +275,6 @@
   },
   "addIPFSGateway": {
     "message": "Tercih ettiğiniz IPFS ağ geçidini ekleyin"
-  },
-  "addImportAccount": {
-    "message": "Hesap veya donanım cüzdanı ekleyin"
   },
   "addMemo": {
     "message": "Not ekleyin"
@@ -653,10 +647,6 @@
   },
   "allowNotifications": {
     "message": "Bildirimlere izin ver"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "$1 için şu tutara kadar para çekme ve harcama izni ver:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Tutar"
@@ -1912,9 +1902,6 @@
   "customSlippage": {
     "message": "Özel"
   },
-  "customSpendLimit": {
-    "message": "Kişisel harcama limiti"
-  },
   "customToken": {
     "message": "Özel Token"
   },
@@ -2484,9 +2471,6 @@
   "editNonceMessage": {
     "message": "Bu gelişmiş bir özelliktir, dikkatli kullanın."
   },
-  "editPermission": {
-    "message": "İzni düzenle"
-  },
   "editPermissions": {
     "message": "İzinleri düzenle"
   },
@@ -2570,9 +2554,6 @@
   },
   "enterChainId": {
     "message": "Zincir kimliği girin"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Maks. harcama limiti gir"
   },
   "enterNetworkName": {
     "message": "Ağ adını girin"
@@ -3365,9 +3346,6 @@
     "message": "MetaMask blokzinciri ana bilgisayarına bağlanamıyor. $1 olası nedenleri inceleyin.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "İlk işleminiz ağ tarafından onaylanmıştır. Geri gitmek için Tamam düğmesine tıklayın."
-  },
   "insights": {
     "message": "İçgörüler"
   },
@@ -3786,13 +3764,6 @@
   },
   "makeAnotherSwap": {
     "message": "Yeni bir swap oluştur"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Hiç kimsenin bakmadığından emin olun",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "Yönet"
   },
   "manageDefaultSettings": {
     "message": "Varsayılan ayarları yönet"
@@ -5242,9 +5213,6 @@
   "perpsAddToFavorites": {
     "message": "Favorilere ekle"
   },
-  "perpsAsk": {
-    "message": "Satış"
-  },
   "perpsAutoClose": {
     "message": "Otomatik kapat"
   },
@@ -5255,14 +5223,8 @@
   "perpsAvailableBalance": {
     "message": "Kullanılabilir bakiye"
   },
-  "perpsBid": {
-    "message": "Alış"
-  },
   "perpsCancelAllOrders": {
     "message": "Tümünü iptal et"
-  },
-  "perpsClose": {
-    "message": "Kapat"
   },
   "perpsCloseAll": {
     "message": "Tümünü kapat"
@@ -5380,9 +5342,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Likidasyon fiyatı"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Likidasyon Fiyat Tah."
   },
   "perpsLong": {
     "message": "Uzun"
@@ -5717,9 +5676,6 @@
   "productAnnouncements": {
     "message": "Ürün duyuruları"
   },
-  "proposedApprovalLimit": {
-    "message": "Önerilen onay limiti"
-  },
   "provide": {
     "message": "Sun"
   },
@@ -5940,18 +5896,6 @@
   "rejectAll": {
     "message": "Tümünü reddet"
   },
-  "rejectRequestsDescription": {
-    "message": "$1 talebi toplu olarak reddetmek üzeresiniz."
-  },
-  "rejectRequestsN": {
-    "message": "$1 taleplerini reddet"
-  },
-  "rejectTxsDescription": {
-    "message": "$1 işlemi toplu olarak reddetmek üzeresiniz."
-  },
-  "rejectTxsN": {
-    "message": "$1 işlemi reddet"
-  },
   "rejected": {
     "message": "Reddedildi"
   },
@@ -6125,17 +6069,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "$1 $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask $1. Yani GKİ'niz size aittir.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "cüzdanınıza ve paranıza tam erişim sağlar.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "emanete dayalı olmayan bir cüzdandır"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6149,10 +6083,6 @@
   "revealSeedWordsWarning": {
     "message": "Ekranınıza hiç kimsenin bakmadığından emin olun. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "MetaMask Destek bölümü bunu asla talep etmez.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Hassas içeriği göster"
@@ -6226,12 +6156,6 @@
   },
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Tekrar Dene"
-  },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Donanım cüzdanı hesapları henüz ödül almaya uygun değil. Devam etmek için lütfen farklı bir hesaba geçin."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Hesap desteklenmiyor"
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Tekrar Dene"
@@ -7369,21 +7293,6 @@
   "simulationErrorMessageV2": {
     "message": "Gaz tahmini yapamadık. Sözleşmede bir hata olabilir ve bu işlem başarısız olabilir."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Kayma toleransı"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Bakiye değişiklikleri konusunda rahat hissettiğiniz bir fark belirleyin. Fark daha yüksek olursa işlemler gerçekleşmez."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Bakiye değişikliklerini uygula"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Paranızı güvende tutmak amacıyla bakiye değişirse veya kayma toleransı karşılanmazsa bu işlem gerçekleşmeyecektir."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "İşlem ayarları"
-  },
   "simulationsSettingDescription": {
     "message": "Onaylamadan önce işlemlerdeki ve imzalardaki bakiye değişikliklerini tahmin etmek için bunu açın. Nihai sonucunu garanti etmez. $1"
   },
@@ -7709,25 +7618,6 @@
   },
   "speedUpTooltipText": {
     "message": "Yeni gaz ücreti"
-  },
-  "speedUpTransaction": {
-    "message": "Bu işlemi hızlandır"
-  },
-  "spendLimitInsufficient": {
-    "message": "Harcama limiti yetersiz"
-  },
-  "spendLimitInvalid": {
-    "message": "Harcama limiti geçersiz; pozitif bir sayı olmalıdır"
-  },
-  "spendLimitPermission": {
-    "message": "Harcama limiti izni"
-  },
-  "spendLimitRequestedBy": {
-    "message": "$1 tarafından talep edilen harcama limiti",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Harcama limiti çok büyük"
   },
   "spender": {
     "message": "Harcayan"
@@ -8563,18 +8453,6 @@
   "transaction": {
     "message": "i̇şlem"
   },
-  "transactionCancelAttempted": {
-    "message": "$2 itibariyle $1 tahmini gaz ücretiyle işlem iptali denemesinde bulunuldu"
-  },
-  "transactionCancelSuccess": {
-    "message": "İşlem $2 itibariyle başarılı bir şekilde iptal edildi"
-  },
-  "transactionConfirmed": {
-    "message": "İşlem $2 itibariyle onaylandı."
-  },
-  "transactionCreated": {
-    "message": "İşlem $2 itibariyle $1 değeriyle oluşturuldu."
-  },
   "transactionDataFunction": {
     "message": "Fonksiyon"
   },
@@ -8584,17 +8462,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Tutar + ücretler"
   },
-  "transactionDropped": {
-    "message": "İşlem şu saatte bırakıldı: $2."
-  },
   "transactionError": {
     "message": "İşlem Hatası. Sözleşme kodundan istisna atıldı."
   },
   "transactionErrorNoContract": {
     "message": "Sözleşmeli olmayan bir adreste bir fonksiyon çağrılmaya çalışıldı."
-  },
-  "transactionErrored": {
-    "message": "İşlem bir hatayla karşılaştı."
   },
   "transactionFee": {
     "message": "İşlem ücreti"
@@ -8630,24 +8502,15 @@
   "transactionIncludesTypes": {
     "message": "Bu işlem şunu içerir: $1."
   },
-  "transactionResubmitted": {
-    "message": "İşlem, $2 itibariyle $1 olarak artırılan tahmini gaz ücreti ile yeniden gönderildi"
-  },
   "transactionSettings": {
     "message": "İşlem ayarları"
   },
   "transactionShield": {
     "message": "Transaction Shield"
   },
-  "transactionSubmitted": {
-    "message": "İşlem $2 itibariyle tahmini $1 gaz ücreti ile gönderildi."
-  },
   "transactionTotalGasFee": {
     "message": "Toplam gaz ücreti",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "İşlem $2 itibariyle güncellendi."
   },
   "transactions": {
     "message": "İşlemler"
@@ -9133,9 +8996,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT'niz tehlikede olabilir"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Gizli Kurtarma İfadeniz"
   },
   "yourTransactionConfirmed": {
     "message": "İşlem zaten onaylandı"

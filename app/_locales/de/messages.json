@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Noch nichts zu sehen. Swappen Sie heute Ihr erstes Token."
   },
-  "activityLog": {
-    "message": "Aktivitätsprotokoll"
-  },
   "add": {
     "message": "Hinzufügen"
   },
@@ -278,9 +275,6 @@
   },
   "addIPFSGateway": {
     "message": "Fügen Sie Ihr bevorzugtes IPFS-Gateway hinzu."
-  },
-  "addImportAccount": {
-    "message": "Konto oder Hardware-Wallet hinzufügen"
   },
   "addMemo": {
     "message": "Notiz hinzufügen"
@@ -653,10 +647,6 @@
   },
   "allowNotifications": {
     "message": "Benachrichtigungen erlauben"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "$1 erlauben, bis zu dem folgenden Betrag abzuheben und auszugeben:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Betrag"
@@ -1912,9 +1902,6 @@
   "customSlippage": {
     "message": "Benutzerdefiniert"
   },
-  "customSpendLimit": {
-    "message": "Benutzerdefiniertes Ausgabenlimit"
-  },
   "customToken": {
     "message": "Benutzerdefiniertes Token"
   },
@@ -2484,9 +2471,6 @@
   "editNonceMessage": {
     "message": "Dies ist eine erweiterte Funktion, verwenden Sie diese vorsichtig."
   },
-  "editPermission": {
-    "message": "Genehmigung bearbeiten"
-  },
   "editPermissions": {
     "message": "Genehmigungen bearbeiten"
   },
@@ -2570,9 +2554,6 @@
   },
   "enterChainId": {
     "message": "Chain-ID eingeben"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Max. Ausgabenlimit eingeben"
   },
   "enterNetworkName": {
     "message": "Netzwerkname eingeben"
@@ -3365,9 +3346,6 @@
     "message": "MetaMask kann sich nicht mit dem Blockchain Host verbinden. Überprüfen Sie mögliche Gründe $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "Ihre erste Transaktion wurde vom Netzwerk bestätigt. Klicken Sie auf „OK“, um zurückzukehren."
-  },
   "insights": {
     "message": "Einblicke"
   },
@@ -3786,13 +3764,6 @@
   },
   "makeAnotherSwap": {
     "message": "Ein neues Wallet erstellen"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Stellen Sie sicher, dass niemand zuschaut.",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "Verwalten"
   },
   "manageDefaultSettings": {
     "message": "Standardeinstellungen verwalten"
@@ -5242,9 +5213,6 @@
   "perpsAddToFavorites": {
     "message": "Zu Favoriten hinzufügen"
   },
-  "perpsAsk": {
-    "message": "Briefkurs"
-  },
   "perpsAutoClose": {
     "message": "Automatische Schließung"
   },
@@ -5255,14 +5223,8 @@
   "perpsAvailableBalance": {
     "message": "Verfügbares Guthaben"
   },
-  "perpsBid": {
-    "message": "Geldkurs"
-  },
   "perpsCancelAllOrders": {
     "message": "Alle stornieren"
-  },
-  "perpsClose": {
-    "message": "Schließen"
   },
   "perpsCloseAll": {
     "message": "Alle schließen"
@@ -5380,9 +5342,6 @@
   },
   "perpsLiquidationPrice": {
     "message": "Liquidationspreis"
-  },
-  "perpsLiquidationPriceEst": {
-    "message": "Liquidationspreisschätzung"
   },
   "perpsLong": {
     "message": "Long"
@@ -5717,9 +5676,6 @@
   "productAnnouncements": {
     "message": "Produktankündigungen"
   },
-  "proposedApprovalLimit": {
-    "message": "Vorgeschlagene Genehmigungslimit"
-  },
   "provide": {
     "message": "Bereitstellen"
   },
@@ -5940,18 +5896,6 @@
   "rejectAll": {
     "message": "Alle ablehnen"
   },
-  "rejectRequestsDescription": {
-    "message": "Sie sind im Begriff, $1 Anfragen geschlossen abzulehnen."
-  },
-  "rejectRequestsN": {
-    "message": "$1 Anfragen ablehnen"
-  },
-  "rejectTxsDescription": {
-    "message": "Sie sind im Begriff, $1 Transaktionen geschlossen abzulehnen."
-  },
-  "rejectTxsN": {
-    "message": "$1 Transaktionen ablehnen"
-  },
   "rejected": {
     "message": "Abgelehnt"
   },
@@ -6125,17 +6069,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "Die $1 bietet $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask ist ein $1. Das bedeutet, dass Sie der Besitzer Ihrer GWP sind.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "vollen Zugriff auf Ihre Wallet und Ihr Guthaben.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "Wallet ohne Vewahrung"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6149,10 +6083,6 @@
   "revealSeedWordsWarning": {
     "message": "Stellen Sie sicher, dass niemand auf Ihren Bildschirm schaut. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Der MetaMask-Support wird Sie nie danach fragen.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Sensible Inhalte anzeigen"
@@ -6226,12 +6156,6 @@
   },
   "rewardsOnboardingIntroGeoCheckRetry": {
     "message": "Erneut versuchen"
-  },
-  "rewardsOnboardingIntroHardwareWalletDescription": {
-    "message": "Hardware-Wallet-Konten sind noch nicht zum Empfang von Belohnungen berechtigt. Bitte wechseln Sie zu einem anderen Konto, um fortzufahren."
-  },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Konto wird nicht unterstützt"
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Erneut versuchen"
@@ -7369,21 +7293,6 @@
   "simulationErrorMessageV2": {
     "message": "Wir konnten das Gas nicht schätzen. Es könnte einen Fehler im Contract geben und diese Transaktion könnte fehlschlagen."
   },
-  "simulationSettingsModalEnforceSlippage": {
-    "message": "Slippage-Toleranz"
-  },
-  "simulationSettingsModalEnforceSlippageDescription": {
-    "message": "Legen Sie für Saldoänderungen eine für Sie akzeptable Differenz fest. Bei einer höheren Differenz werden keine Transaktionen ausgeführt."
-  },
-  "simulationSettingsModalEnforceToggle": {
-    "message": "Saldoänderungen durchsetzen"
-  },
-  "simulationSettingsModalEnforceToggleDescription": {
-    "message": "Um Ihr Geld zu schützen, wird diese Transaktion nicht ausgeführt, wenn sich der Kontostand ändert oder die Slippage-Toleranz nicht eingehalten wird."
-  },
-  "simulationSettingsModalTitle": {
-    "message": "Transaktionseinstellungen"
-  },
   "simulationsSettingDescription": {
     "message": "Schalten Sie diese Funktion ein, um die Saldoänderungen von Transaktionen und Unterschriften abzuschätzen, bevor Sie sie bestätigen. Dies ist keine Garantie für das endgültige Ergebnis. $1"
   },
@@ -7709,25 +7618,6 @@
   },
   "speedUpTooltipText": {
     "message": "Neue Gas-Gebühr"
-  },
-  "speedUpTransaction": {
-    "message": "Diese Transaktion beschleunigen"
-  },
-  "spendLimitInsufficient": {
-    "message": "Ausgabenlimit unzureichend"
-  },
-  "spendLimitInvalid": {
-    "message": "Ausgabenlimit ungültig; muss eine positive Zahl sein"
-  },
-  "spendLimitPermission": {
-    "message": "Limit der Ausgabenberechtigung"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Ausgabenlimit von $1 angefordert",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Ausgabenlimit zu groß"
   },
   "spender": {
     "message": "Spender"
@@ -8563,18 +8453,6 @@
   "transaction": {
     "message": "transaktion"
   },
-  "transactionCancelAttempted": {
-    "message": "Transaktionsstornierung versucht mit Gas-Gebühr von $1 bei $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaktion bei $2 erfolgreich storniert."
-  },
-  "transactionConfirmed": {
-    "message": "Transaktion bei $2 bestätigt."
-  },
-  "transactionCreated": {
-    "message": "Transaktion mit einem Wert von $1 bei $2 erstellt."
-  },
   "transactionDataFunction": {
     "message": "Funktion"
   },
@@ -8584,17 +8462,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Betrag + Gebühren"
   },
-  "transactionDropped": {
-    "message": "Transaktion bei $2 eingestellt."
-  },
   "transactionError": {
     "message": "Transaktionsfehler. Fehler in Contract-Code eingefügt."
   },
   "transactionErrorNoContract": {
     "message": "Das Abrufen einer Funktion bei einer Nicht-Contract-Adresse wird versucht."
-  },
-  "transactionErrored": {
-    "message": "Bei der Transaktion ist ein Fehler aufgetreten."
   },
   "transactionFee": {
     "message": "Transaktionsgebühr"
@@ -8630,24 +8502,15 @@
   "transactionIncludesTypes": {
     "message": "Diese Transaktion beinhaltet: $1."
   },
-  "transactionResubmitted": {
-    "message": "Erneutes Absenden der Transaktion mit Erhöhung der geschätzten Gas-Gebühr auf $1 zu $2."
-  },
   "transactionSettings": {
     "message": "Transaktionseinstellungen"
   },
   "transactionShield": {
     "message": "Transaktionsschutz"
   },
-  "transactionSubmitted": {
-    "message": "Transaktion mit einer Gas-Gebühr von $1 bei $2 abgesendet."
-  },
   "transactionTotalGasFee": {
     "message": "Gesamte Gasgebühr",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Transaktion für $2 aktualisiert."
   },
   "transactions": {
     "message": "Transaktionen"
@@ -9133,9 +8996,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Ihr NFT könnte gefährdet sein"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Ihre geheime Wiederherstellungsphrase"
   },
   "yourTransactionConfirmed": {
     "message": "Transaktion bereits bestätigt"
