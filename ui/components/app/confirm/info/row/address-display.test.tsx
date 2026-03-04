@@ -13,11 +13,11 @@ import { TEST_ADDRESS } from './constants';
 const TEST_ADDRESS_SHORT = '0x5CfE73b6021E…474086a7e1';
 
 const getEnvironmentType = jest.requireMock(
-  '../../../../../../app/scripts/lib/util',
+  '../../../../../../shared/lib/environment-type',
 ).getEnvironmentType as jest.Mock;
 
-jest.mock('../../../../../../app/scripts/lib/util', () => ({
-  ...jest.requireActual('../../../../../../app/scripts/lib/util'),
+jest.mock('../../../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../../../shared/lib/environment-type'),
   getEnvironmentType: jest.fn(),
 }));
 

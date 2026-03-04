@@ -106,7 +106,10 @@ export const ConfirmInfoRowAddressDisplay = memo(
     const [modalOpen, setModalOpen] = useState(false);
 
     const isClickable = !isAccount;
-    const display = useMemo(() => getTruncatedAddress(hexAddress), [hexAddress]);
+    const display = useMemo(
+      () => getTruncatedAddress(hexAddress),
+      [hexAddress],
+    );
 
     const handleClick = useCallback(() => {
       if (!isClickable) {
