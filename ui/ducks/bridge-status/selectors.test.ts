@@ -73,5 +73,30 @@ describe('bridge-status selectors', () => {
         ),
       ).toBe(matchingBridgeHistoryItem);
     });
+
+    it('returns the history item when the approval tx id is not a string', () => {
+      const matchingBridgeHistoryItem = {
+        approvalTxId: 42,
+        status: { srcChain: 'PENDING' },
+      };
+      const state = {
+        metamask: {
+          txHistory: {
+            orderUid: matchingBridgeHistoryItem,
+          },
+        },
+      };
+
+      expect(
+        selectBridgeHistoryForApprovalTxId(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          state as any,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          42 as any,
+        ),
+      ).toBe(matchingBridgeHistoryItem);
+    });
   });
 });

@@ -20,6 +20,9 @@ type BridgeHistoryItemWithOriginalTransactionId = BridgeHistoryItem & {
   originalTransactionId?: string;
 };
 
+const normalizeBridgeHistoryLookupKey = (value: unknown) =>
+  typeof value === 'string' ? value.toLowerCase() : String(value);
+
 const selectBridgeHistory = (state: BridgeStatusAppState) =>
   state.metamask.txHistory;
 
@@ -98,7 +101,8 @@ const selectBridgeHistoryByApprovalTxId = createSelector(
     Object.values(bridgeHistory).reduce<Record<string, BridgeHistoryItem>>(
       (acc, bridgeHistoryItem) => {
         if (bridgeHistoryItem.approvalTxId) {
-          acc[bridgeHistoryItem.approvalTxId.toLowerCase()] = bridgeHistoryItem;
+          acc[normalizeBridgeHistoryLookupKey(bridgeHistoryItem.approvalTxId)] =
+            bridgeHistoryItem;
         }
         return acc;
       },
@@ -134,7 +138,9 @@ export const selectBridgeHistoryForApprovalTxId = (
     return undefined;
   }
 
-  return selectBridgeHistoryByApprovalTxId(state)[approvalTxId.toLowerCase()];
+  return selectBridgeHistoryByApprovalTxId(state)[
+    normalizeBridgeHistoryLookupKey(approvalTxId)
+  ];
 };
 
 /**
