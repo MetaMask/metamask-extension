@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import ChangePasswordPage from '../../page-objects/pages/settings/change-password-page';
@@ -61,7 +61,7 @@ describe('Change wallet password', function () {
   it('should change wallet password and able to unlock with new password', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
       },
@@ -92,7 +92,7 @@ describe('Change wallet password', function () {
   it('should change wallet password and able to unlock with new password for social login user', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {

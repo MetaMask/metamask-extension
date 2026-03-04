@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import { decode, JwtPayload } from 'jsonwebtoken';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { importWalletWithSocialLoginOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
@@ -46,7 +46,7 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
   it('should refresh Auth Token when tokens are expired', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         // to avoid a race condition where some authentication requests are triggered once the wallet is locked
         ignoredConsoleErrors: [
           'unable to proceed, wallet is locked',
@@ -141,7 +141,7 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
   it('should use valid Access Token after lock/unlock cycle', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         // to avoid a race condition where some authentication requests are triggered once the wallet is locked
         ignoredConsoleErrors: [
           'unable to proceed, wallet is locked',

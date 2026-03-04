@@ -293,9 +293,6 @@
     "message": "Importate",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Tranzacția inițială a fost confirmată de rețea. Clic pe OK pentru a reveni."
-  },
   "insufficientBalance": {
     "message": "Sold insuficient."
   },
@@ -474,12 +471,6 @@
   },
   "rejectAll": {
     "message": "Respingere toate"
-  },
-  "rejectTxsDescription": {
-    "message": "Sunteți pe cale să respingeți în grup $1 (de) tranzacții."
-  },
-  "rejectTxsN": {
-    "message": "Respingeți $1 (de) tranzacții"
   },
   "rejected": {
     "message": "Respins"

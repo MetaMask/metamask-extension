@@ -6,12 +6,16 @@ import type {
   PermissionControllerState,
 } from '@metamask/permission-controller';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
+import type { NetworkState } from '@metamask/network-controller';
 import {
   type TransactionControllerState,
   type TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
+import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
+import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
 import type {
   Preferences,
   PreferencesControllerState,
@@ -23,6 +27,7 @@ import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_FIXTURE_SOLANA_ACCOUNT,
   LOCALHOST_NETWORK_CLIENT_ID,
+  NETWORK_CLIENT_ID,
   SOLANA_MAINNET_SCOPE,
 } from '../constants';
 import defaultFixtureJson from './default-fixture.json';
@@ -37,6 +42,9 @@ function onboardingFixture() {
 }
 
 type FixtureType = typeof defaultFixtureJson | typeof onboardingFixtureJson;
+
+type NetworkClientIdValue =
+  (typeof NETWORK_CLIENT_ID)[keyof typeof NETWORK_CLIENT_ID];
 
 type TransactionControllerFixtureInput = Partial<
   Omit<TransactionControllerState, 'transactions'>
@@ -71,8 +79,28 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withAppStateController(data: Partial<AppStateControllerState>): this {
+    merge(this.fixture.data.AppStateController, data);
+    return this;
+  }
+
   withCurrencyController(data: Partial<CurrencyRateState>): this {
     merge(this.fixture.data.CurrencyController, data);
+    return this;
+  }
+
+  withMetaMetricsController(data: Partial<MetaMetricsControllerState>): this {
+    merge(this.fixture.data.MetaMetricsController, data);
+    return this;
+  }
+
+  withNetworkController(data: Partial<NetworkState>): this {
+    merge(this.fixture.data.NetworkController, data);
+    return this;
+  }
+
+  withOnboardingController(data: Partial<OnboardingControllerState>): this {
+    merge(this.fixture.data.OnboardingController, data);
     return this;
   }
 
@@ -108,6 +136,14 @@ class FixtureBuilderV2 {
     this.fixture.data.NetworkEnablementController.enabledNetworkMap =
       data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
     return this;
+  }
+
+  withSelectedNetwork(
+    networkClientId: NetworkClientIdValue = NETWORK_CLIENT_ID.MAINNET,
+  ): this {
+    return this.withNetworkController({
+      selectedNetworkClientId: networkClientId,
+    });
   }
 
   withPermissionControllerConnectedToTestDapp({
@@ -280,6 +316,14 @@ class FixtureBuilderV2 {
     return this.withPreferencesController({
       preferences: {
         showNativeTokenAsMainBalance: false,
+      },
+    });
+  }
+
+  withShowNativeTokenAsMainBalanceEnabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        showNativeTokenAsMainBalance: true,
       },
     });
   }
