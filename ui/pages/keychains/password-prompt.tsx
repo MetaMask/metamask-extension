@@ -88,7 +88,7 @@ export function PasswordPrompt({
         <Button
           size={ButtonSize.Lg}
           onClick={onContinueClick}
-          danger={isMalicious}
+          isDanger={isMalicious}
           disabled={password === '' || (isMalicious && !dangerAcknowledged)}
           data-testid="reveal-seed-password-continue"
           className="w-full"

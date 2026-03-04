@@ -17,12 +17,9 @@ export function RevealSeedWarning({
   'data-testid': dataTestId = 'reveal-seed-warning',
 }: Readonly<RevealSeedWarningProps>) {
   return (
-    <BannerAlert
-      severity={BannerAlertSeverity.Danger}
-      data-testid={dataTestId}
-    >
+    <BannerAlert severity={BannerAlertSeverity.Danger} data-testid={dataTestId}>
       {title && (
-        <Text variant={TextVariant.BodySmBold} color={TextColor.TextDefault}>
+        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
           {title}
         </Text>
       )}
