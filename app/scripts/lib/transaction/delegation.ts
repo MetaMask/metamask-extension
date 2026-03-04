@@ -90,6 +90,19 @@ type ConvertTransactionToRedeemDelegationsRequest = {
   additionalExecutions?: ExecutionStruct[];
 
   /**
+   * The delegation target address.
+   * Defaults to ANY_BENEFICIARY.
+   */
+  delegatee?: Hex;
+
+  /**
+   * Pre-computed delegation signature. When provided, the messenger
+   * is not called to sign the delegation. Useful for simulations
+   * that use a mock signature.
+   */
+  delegationSignature?: Hex;
+
+  /**
    * When provided, builds an EIP-7702 authorization list for the transaction.
    * Omit to skip authorization list building entirely.
    */
@@ -148,11 +161,13 @@ export async function convertTransactionToRedeemDelegations(
     executions[0].length > 1 ? BATCH_DEFAULT_MODE : SINGLE_DEFAULT_MODE,
   ];
 
-  const delegations = await signAndWrapDelegation(
+  const delegations = await signAndWrapDelegation({
     transaction,
     caveats,
     messenger,
-  );
+    delegatee: request.delegatee,
+    delegationSignature: request.delegationSignature,
+  });
 
   log('Built delegations', { delegations, modes, executions });
 
@@ -299,23 +314,33 @@ function buildDefaultCaveats(
   return caveatBuilder.build();
 }
 
-async function signAndWrapDelegation(
-  transaction: TransactionMeta,
-  caveats: Caveat[],
-  messenger: DelegationMessenger,
-): Promise<Delegation[][]> {
+async function signAndWrapDelegation({
+  transaction,
+  caveats,
+  messenger,
+  delegatee,
+  delegationSignature,
+}: {
+  transaction: TransactionMeta;
+  caveats: Caveat[];
+  messenger: DelegationMessenger;
+  delegatee?: Hex;
+  delegationSignature?: Hex;
+}): Promise<Delegation[][]> {
   const unsignedDelegation: UnsignedDelegation = createDelegation({
     from: transaction.txParams.from as Hex,
-    to: ANY_BENEFICIARY,
+    to: delegatee ?? ANY_BENEFICIARY,
     caveats,
   });
 
   log('Signing delegation', unsignedDelegation);
 
-  const signature = (await messenger.call(
-    'DelegationController:signDelegation',
-    { chainId: transaction.chainId, delegation: unsignedDelegation },
-  )) as Hex;
+  const signature =
+    delegationSignature ??
+    ((await messenger.call('DelegationController:signDelegation', {
+      chainId: transaction.chainId,
+      delegation: unsignedDelegation,
+    })) as Hex);
 
   log('Delegation signature', signature);
 
