@@ -73,7 +73,7 @@ const ORDER_MODE_TOAST_KEYS: Record<
   }
 > = {
   new: {
-    inProgress: PERPS_TOAST_KEYS.ORDER_SUBMITTED,
+    inProgress: PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
     failed: PERPS_TOAST_KEYS.ORDER_FAILED,
   },
   modify: {

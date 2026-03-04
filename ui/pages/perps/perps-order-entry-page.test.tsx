@@ -375,7 +375,7 @@ describe('PerpsOrderEntryPage', () => {
       );
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
-          key: 'perpsToastOrderSubmitted',
+          key: 'perpsToastSubmitInProgress',
           description: expect.stringMatching(/^Long [^ ]+ ETH$/u),
         }),
       );
@@ -821,7 +821,7 @@ describe('PerpsOrderEntryPage', () => {
       );
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
-          key: 'perpsToastOrderSubmitted',
+          key: 'perpsToastSubmitInProgress',
           description: expect.stringMatching(/^Long [^ ]+ ETH$/u),
         }),
       );
