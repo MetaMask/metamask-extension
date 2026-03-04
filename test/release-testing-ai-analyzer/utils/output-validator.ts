@@ -80,7 +80,8 @@ export class OutputValidator {
       issues.push(
         `Missing coverage for critical areas: ${criticalAreas.missing.join(', ')}`,
       );
-      score -= 5 * criticalAreas.missing.length;
+      // Cap at -15 so releases that don't touch many areas aren't over-penalized
+      score -= Math.min(5 * criticalAreas.missing.length, 15);
     } else {
       strengths.push('Good coverage of critical areas');
     }
@@ -172,11 +173,16 @@ export class OutputValidator {
     missing: string[];
   } {
     const criticalAreas = [
-      'state migration',
-      'controller',
       'transaction',
       'security',
       'migration',
+      'swaps',
+      'onboarding',
+      'login',
+      'accounts',
+      'network',
+      'signing',
+      'token',
     ];
 
     const coveredAreas = new Set<string>();
