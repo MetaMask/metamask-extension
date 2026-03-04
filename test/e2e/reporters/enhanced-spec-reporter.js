@@ -1,3 +1,5 @@
+import { getBooleanFlag } from '../../../shared/lib/common-utils';
+
 // test/e2e/reporters/enhanced-spec-reporter.js
 const { inherits } = require('util');
 const Spec = require('mocha/lib/reporters/spec');
@@ -129,12 +131,12 @@ function printSummary(stats, failures, allTests) {
   };
 
   const isCI =
-    process.env.CI?.toString() === 'true' ||
-    process.env.GITHUB_ACTIONS?.toString() === 'true';
+    getBooleanFlag(process.env.CI) ||
+    getBooleanFlag(process.env.GITHUB_ACTIONS);
   const useColors =
     !isCI ||
     process.env.FORCE_COLOR === '1' ||
-    process.env.FORCE_COLOR?.toString() === 'true';
+    getBooleanFlag(process.env.FORCE_COLOR);
 
   const colorize = (text, color) => {
     return useColors && colors[color]

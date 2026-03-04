@@ -1,3 +1,5 @@
+import { getBooleanFlag } from '../../shared/lib/common-utils';
+
 const { promises: fs } = require('fs');
 const path = require('path');
 const yargs = require('yargs/yargs');
@@ -134,8 +136,8 @@ async function main() {
     // Use enhanced spec reporter for readable console output with colors and summary
     // Only add junit reporter in CI environments
     const isCI =
-      process.env.CI?.toString() === 'true' ||
-      process.env.GITHUB_ACTIONS?.toString() === 'true';
+      getBooleanFlag(process.env.CI) ||
+      getBooleanFlag(process.env.GITHUB_ACTIONS);
     // Use enhanced reporter by default, allow override via E2E_REPORTER env var
     const consoleReporter =
       process.env.E2E_REPORTER ||

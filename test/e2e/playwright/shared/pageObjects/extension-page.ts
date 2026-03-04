@@ -1,5 +1,6 @@
 import path from 'path';
 import { chromium } from '@playwright/test';
+import { getBooleanFlag } from '../../../../../shared/lib/common-utils';
 
 const extensionPath = path.join(__dirname, '../../../../../dist/chrome');
 
@@ -9,7 +10,7 @@ export class ChromeExtensionPage {
       headless: false,
       args: [`--disable-extensions-except=${extensionPath}`],
     };
-    if (process.env.HEADLESS?.toString() === 'true') {
+    if (getBooleanFlag(process.env.HEADLESS)) {
       launchOptions.args.push('--headless=new');
     }
     const context = await chromium.launchPersistentContext('', launchOptions);

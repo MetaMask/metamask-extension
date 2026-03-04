@@ -12,6 +12,7 @@ import {
 } from '../../page-objects/flows/notifications.flow';
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
+import { getBooleanFlag } from '../../../../shared/lib/common-utils';
 import {
   getMockFeatureAnnouncementItemId,
   getMockWalletNotificationItemId,
@@ -41,7 +42,7 @@ async function mockFeatureFlagsWithoutAutoEnableNotifications(server: Mockttp) {
 
 describe('Notification List - View Items and Details', function () {
   it('find each notification type we support, and navigates to their details page', async function () {
-    if (process.env.IS_FORK?.toString() === 'true') {
+    if (getBooleanFlag(process.env.IS_FORK)) {
       this.skip();
     }
     await withFixtures(

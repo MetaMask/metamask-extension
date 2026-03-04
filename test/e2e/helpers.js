@@ -1,3 +1,5 @@
+import { getBooleanFlag } from '../../shared/lib/common-utils';
+
 const path = require('path');
 const { promises: fs, writeFileSync, readFileSync } = require('fs');
 const BigNumber = require('bignumber.js');
@@ -458,7 +460,7 @@ async function withFixtures(options, testSuite) {
     const newHosts = difference(mergedReport, privacySnapshot);
 
     if (newHosts.length > 0) {
-      if (process.env.UPDATE_PRIVACY_SNAPSHOT?.toString() === 'true') {
+      if (getBooleanFlag(process.env.UPDATE_PRIVACY_SNAPSHOT)) {
         writeFileSync(
           './privacy-snapshot.json',
           `${JSON.stringify(mergedReport, null, 2)}\n`, // must add trailing newline to satisfy prettier
