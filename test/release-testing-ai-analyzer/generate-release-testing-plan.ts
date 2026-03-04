@@ -21,7 +21,11 @@ import { OpenAIAnalyzer } from './llm_providers/openai-analyzer';
 import { GeminiAnalyzer } from './llm_providers/gemini-analyzer';
 import { FileCategorizer } from './utils/file-categorizer';
 import { OutputValidator } from './utils/output-validator';
-import { getApiKeyForProvider, LLM_CONFIG } from './llm_providers/config';
+import {
+  getApiKeyForProvider,
+  getDefaultModelForProvider,
+  LLM_CONFIG,
+} from './llm_providers/config';
 import type {
   TestingPlan,
   TestingScenario,
