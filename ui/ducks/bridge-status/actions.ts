@@ -35,20 +35,15 @@ export const submitBridgeTx = (
   quote: QuoteResponse & QuoteMetadata,
   isStxSupportedInClient: boolean,
   context: RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
-) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    return await dispatch(
-      callBridgeStatusControllerMethod<
-        [
-          string,
-          QuoteResponse & QuoteMetadata,
-          boolean,
-          RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
-        ]
-      >('submitTx', [accountAddress, quote, isStxSupportedInClient, context]),
-    );
-  };
-};
+) =>
+  callBridgeStatusControllerMethod<
+    [
+      string,
+      QuoteResponse & QuoteMetadata,
+      boolean,
+      RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
+    ]
+  >('submitTx', [accountAddress, quote, isStxSupportedInClient, context]);
 
 /**
  * Submit an intent quote through the bridge status controller.
@@ -65,12 +60,5 @@ export const submitBridgeIntent = (params: {
   accountAddress: string;
   location?: string;
   abTests?: Record<string, string>;
-}) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    return await dispatch(
-      callBridgeStatusControllerMethod<[typeof params]>('submitIntent', [
-        params,
-      ]),
-    );
-  };
-};
+}) =>
+  callBridgeStatusControllerMethod<[typeof params]>('submitIntent', [params]);
