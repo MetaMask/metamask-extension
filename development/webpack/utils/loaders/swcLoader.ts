@@ -186,7 +186,12 @@ export default function swcLoader(this: Context, src: string, srcMap?: string) {
       // for debugging.
       // [0]: https://github.com/trezor/trezor-suite/issues/20298
       // [1]: https://github.com/swc-project/swc/issues/9416
-      this.resourcePath.includes(`${sep}node_modules${sep}`) ? false : srcMap,
+      // eslint-disable-next-line no-nested-ternary
+      this.resourcePath.includes(`${sep}node_modules${sep}`)
+        ? false
+        : typeof srcMap === 'object' && srcMap !== null
+          ? JSON.stringify(srcMap)
+          : srcMap,
     sourceFileName: this.resourcePath,
     sourceMaps: this.sourceMap,
     swcrc: false,
