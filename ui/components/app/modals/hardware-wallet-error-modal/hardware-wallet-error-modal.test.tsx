@@ -149,7 +149,7 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('[hardwareWalletErrorTitleConnectYourDevice]'),
+        getByText('[hardwareWalletErrorTitleBlindSignNotSupported]'),
       ).toBeInTheDocument();
       expect(
         getByText(
@@ -173,7 +173,7 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('[hardwareWalletErrorTitleConnectYourDevice]'),
+        getByText('[hardwareWalletTitleEthAppNotOpen]'),
       ).toBeInTheDocument();
       expect(
         getByText('[hardwareWalletEthAppNotOpenDescription]'),
