@@ -761,7 +761,13 @@ jobs:
 
   check-retry-ci:
     name: Check for retry-ci label and retry
-    if: ${{ !cancelled() && needs.all-jobs-pass.result == 'failure' && github.event_name == 'pull_request' && !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
+    if: >-
+      ${{
+        !cancelled() &&
+        needs.all-jobs-pass.result == 'failure' &&
+        github.event_name == 'pull_request' &&
+        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+      }}
     runs-on: ubuntu-latest
     timeout-minutes: 2
     needs:
@@ -770,28 +776,25 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
+      REPO: ${{ github.repository }}
     permissions:
       actions: write
       pull-requests: write
     steps:
-      # Must checkout in order to use `gh` commands
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
       - name: Check if this PR has a retry-ci label
         run: |
           # We cannot use github.event.pull_request.labels here, because it will be stale on a re-run
-          CURRENT_LABELS=$(gh pr view "$PR_NUMBER" --json labels --jq '.labels[].name' | tr '\n' ',')
+          CURRENT_LABELS=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name' | tr '\n' ',')
 
           if [[ "${CURRENT_LABELS}" == *"retry-ci"* ]]; then
             echo "This PR has a retry-ci label, removing the label..."
-            gh pr edit "$PR_NUMBER" --remove-label "retry-ci"
+            gh pr edit "$PR_NUMBER" --repo "$REPO" --remove-label "retry-ci"
 
             echo "Retrying failed jobs..."
 
             # We cannot use `gh run rerun` here, because this workflow is still running,
             # so we must run main-retry.yml, which in turn runs `gh run rerun`
-            gh workflow run main-retry.yml -f run-id="$RUN_ID" -f pr-number="$PR_NUMBER"
+            gh workflow run main-retry.yml --repo "$REPO" -f run-id="$RUN_ID" -f pr-number="$PR_NUMBER"
           else
             echo "This PR does not have a retry-ci label, not retrying."
           fi

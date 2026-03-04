@@ -21,14 +21,11 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       RUN_ID: ${{ inputs.run-id }}
       PR_NUMBER: ${{ inputs.pr-number }}
+      REPO: ${{ github.repository }}
     permissions:
       actions: write
       pull-requests: read
     steps:
-      # Must checkout in order to use `gh` commands
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
       - name: Retry
         run: |
           # Wait 10 seconds to ensure that the workflow run has fully completed and is in a state where it can be rerun
@@ -36,10 +33,10 @@ jobs:
 
           # If the PR still has a retry-ci label, do not retry to avoid a possible infinite loop.
           # The label should have been removed by the workflow that triggered this one.
-          CURRENT_LABELS=$(gh pr view "$PR_NUMBER" --json labels --jq '.labels[].name' | tr '\n' ',')
+          CURRENT_LABELS=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name' | tr '\n' ',')
           if [[ "${CURRENT_LABELS}" == *"retry-ci"* ]]; then
             echo "PR still has a 'retry-ci' label. Exiting to avoid a possible infinite loop."
             exit 1
           fi
 
-          gh run rerun "$RUN_ID" --failed
+          gh run rerun "$RUN_ID" --failed --repo "$REPO"
