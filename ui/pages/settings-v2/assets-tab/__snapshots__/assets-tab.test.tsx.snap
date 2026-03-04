@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Assets Tab matches snapshot 1`] = `
+exports[`Assets Tab snapshot matches snapshot 1`] = `
 <div>
   <div
     class="pb-4 px-4"
