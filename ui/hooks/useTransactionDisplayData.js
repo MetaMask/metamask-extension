@@ -121,8 +121,7 @@ export function useTransactionDisplayData(transactionGroup) {
   const bridgeHistoryItem =
     bridgeHistoryItemByTxMetaId ?? bridgeHistoryItemByOriginalTxMetaId;
   const { destNetwork } = useBridgeChainInfo({
-    bridgeHistoryItem,
-    srcTxMeta: transactionGroup.initialTransaction,
+    transaction: transactionGroup.initialTransaction,
   });
 
   const destChainName = NETWORK_TO_SHORT_NETWORK_NAME_MAP[destNetwork?.chainId];
@@ -281,7 +280,9 @@ export function useTransactionDisplayData(transactionGroup) {
     isViewingReceivedTokenFromSwap,
   } = useSwappedTokenValue(transactionGroup, currentAsset);
 
-  const bridgeTokenDisplayData = useBridgeTokenDisplayData(transactionGroup);
+  const bridgeTokenDisplayData = useBridgeTokenDisplayData({
+    transactionGroup,
+  });
 
   if (signatureTypes.includes(type)) {
     title = t('signatureRequest');

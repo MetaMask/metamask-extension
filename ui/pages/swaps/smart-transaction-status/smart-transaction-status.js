@@ -54,6 +54,7 @@ import CreateNewSwap from '../create-new-swap';
 import ViewOnBlockExplorer from '../view-on-block-explorer';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
 import CanceledIcon from './canceled-icon';
@@ -246,7 +247,7 @@ export default function SmartTransactionStatusPage() {
       <a
         className="smart-transaction-status__support-link"
         key="smart-transaction-status-support-link"
-        href="https://support.metamask.io"
+        href={ZENDESK_URLS.SUPPORT_URL}
         target="_blank"
         rel="noopener noreferrer"
       >

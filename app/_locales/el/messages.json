@@ -648,10 +648,6 @@
   "allowNotifications": {
     "message": "Επιτρέψτε τις ειδοποιήσεις"
   },
-  "allowWithdrawAndSpend": {
-    "message": "Επιτρέψτε στο $1 να κάνει ανάληψη και να ξοδέψει μέχρι το ακόλουθο ποσό:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
   "amount": {
     "message": "Ποσό"
   },
@@ -1906,9 +1902,6 @@
   "customSlippage": {
     "message": "Προσαρμοσμένο"
   },
-  "customSpendLimit": {
-    "message": "Προσαρμοσμένο όριο δαπανών"
-  },
   "customToken": {
     "message": "Προσαρμοσμένο token"
   },
@@ -2478,9 +2471,6 @@
   "editNonceMessage": {
     "message": "Αυτή είναι μια προηγμένη λειτουργία, χρησιμοποιήστε την με προσοχή."
   },
-  "editPermission": {
-    "message": "Επεξεργασία άδειας"
-  },
   "editPermissions": {
     "message": "Επεξεργασία αδειών"
   },
@@ -2564,9 +2554,6 @@
   },
   "enterChainId": {
     "message": "Εισαγάγετε το αναγνωριστικό αλυσίδας"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Εισάγετε το μέγιστο όριο δαπανών"
   },
   "enterNetworkName": {
     "message": "Εισαγάγετε το όνομα δικτύου"
@@ -3359,9 +3346,6 @@
     "message": "Το MetaMask δεν μπορεί να συνδεθεί με τον διακομιστή του blockchain. Εξετάστε τους πιθανούς λόγους $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "Η αρχική σας συναλλαγή επιβεβαιώθηκε από το δίκτυο. Κάντε κλικ στο OK για να επιστρέψετε."
-  },
   "insights": {
     "message": "Αναλύσεις"
   },
@@ -3780,13 +3764,6 @@
   },
   "makeAnotherSwap": {
     "message": "Δημιουργία νέας ανταλλαγής"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Βεβαιωθείτε ότι κανείς δεν κοιτάει",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "Διαχείριση"
   },
   "manageDefaultSettings": {
     "message": "Διαχείριση προεπιλεγμένων ρυθμίσεων"
@@ -5699,9 +5676,6 @@
   "productAnnouncements": {
     "message": "Ανακοινώσεις προϊόντων"
   },
-  "proposedApprovalLimit": {
-    "message": "Προτεινόμενο αποδεκτό όριο"
-  },
   "provide": {
     "message": "Παροχή"
   },
@@ -5922,18 +5896,6 @@
   "rejectAll": {
     "message": "Απόρριψη όλων"
   },
-  "rejectRequestsDescription": {
-    "message": "Πρόκειται να απορρίψετε μαζικά $1 αιτήματα."
-  },
-  "rejectRequestsN": {
-    "message": "Απόρριψη $1 αιτημάτων"
-  },
-  "rejectTxsDescription": {
-    "message": "Πρόκειται να απορρίψετε μαζικά $1 συναλλαγές."
-  },
-  "rejectTxsN": {
-    "message": "Απόρριψη $1 συναλλαγών"
-  },
   "rejected": {
     "message": "Απορρίφθηκε"
   },
@@ -6107,17 +6069,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "Το $1 παρέχει $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "Το MetaMask είναι ένα $1. Αυτό σημαίνει ότι είστε ο κάτοχος της ΜΦΑ σας.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "πλήρη πρόσβαση στο πορτοφόλι και τα κεφάλαιά σας."
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "non-custodial πορτοφόλι"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6131,10 +6083,6 @@
   "revealSeedWordsWarning": {
     "message": "Σιγουρευτείτε ότι δεν κοιτάζει κανείς την οθόνη σας.$1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Η Υποστήριξη του MetaMask δεν θα σας τη ζητήσει ποτέ.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Αποκάλυψη ευαίσθητου περιεχομένου"
@@ -7671,22 +7619,6 @@
   "speedUpTooltipText": {
     "message": "Νέο τέλος συναλλαγής"
   },
-  "spendLimitInsufficient": {
-    "message": "Ανεπαρκές όριο δαπανών"
-  },
-  "spendLimitInvalid": {
-    "message": "Μη έγκυρο όριο δαπανών. Πρέπει να είναι θετικός αριθμός"
-  },
-  "spendLimitPermission": {
-    "message": "Άδεια ορίου δαπανών"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Το όριο δαπανών ζητήθηκε από το $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Πολύ μεγάλο όριο δαπανών"
-  },
   "spender": {
     "message": "Επενδυτής"
   },
@@ -9064,9 +8996,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Τα NFT μπορεί να κινδυνεύουν"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Η Μυστική σας Φράση Ανάκτησης"
   },
   "yourTransactionConfirmed": {
     "message": "Η συναλλαγή έχει ήδη επιβεβαιωθεί"

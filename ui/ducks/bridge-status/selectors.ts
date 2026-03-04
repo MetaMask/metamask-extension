@@ -3,6 +3,7 @@ import type {
   BridgeHistoryItem,
   BridgeStatusControllerState,
 } from '@metamask/bridge-status-controller';
+import { type TransactionControllerState } from '@metamask/transaction-controller';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
@@ -12,7 +13,7 @@ import {
 } from '../../selectors/multichain-accounts/account-tree';
 
 type BridgeStatusAppState = {
-  metamask: BridgeStatusControllerState;
+  metamask: BridgeStatusControllerState & TransactionControllerState;
 };
 
 type BridgeHistoryItemWithOriginalTransactionId = BridgeHistoryItem & {
@@ -64,6 +65,10 @@ export const selectBridgeHistoryForAccountGroup = createSelector(
   },
 );
 
+// eslint-disable-next-line jsdoc/require-param
+/**
+ * @deprecated use selectBridgeHistoryItemForTransactionHash instead
+ */
 export const selectBridgeHistoryItemForTxMetaId = createSelector(
   [selectBridgeHistory, (_, txMetaId?: string) => txMetaId],
   (bridgeHistory, txMetaId) => {
@@ -77,7 +82,7 @@ export const selectBridgeHistoryItemForTxMetaId = createSelector(
 // eslint-disable-next-line jsdoc/require-param
 /**
  * Returns a bridge history item for a given original tx meta id.
- * Used by intent flows where txHistory key is orderUid and txMeta id is stored separately.
+ * Used by intent flows where txHistory key is orderUid and tx meta id is stored separately.
  */
 export const selectBridgeHistoryForOriginalTxMetaId = createSelector(
   [selectBridgeHistory, (_, originalTxMetaId?: string) => originalTxMetaId],
@@ -97,11 +102,99 @@ export const selectBridgeHistoryForOriginalTxMetaId = createSelector(
  * Returns a bridge history item for a given approval tx id
  */
 export const selectBridgeHistoryForApprovalTxId = createSelector(
-  [selectBridgeHistory, (_, approvalTxId: string) => approvalTxId],
+  [selectBridgeHistory, (_, approvalTxId?: string) => approvalTxId],
   (bridgeHistory, approvalTxId) => {
+    if (!approvalTxId) {
+      return undefined;
+    }
     return Object.values(bridgeHistory).find(
       (bridgeHistoryItem) => bridgeHistoryItem.approvalTxId === approvalTxId,
     );
+  },
+);
+
+/**
+ * Returns a pending/local transaction for the given tx hash
+ *
+ * @param state - the metamask state
+ * @param txHash - the tx hash
+ * @returns the pending/local transaction for the given tx hash
+ */
+export const selectLocalTxForTxHash = (
+  state: BridgeStatusAppState,
+  txHash?: string,
+) =>
+  txHash
+    ? state.metamask.transactions.find(
+        (transaction) =>
+          transaction.hash?.toLowerCase() === txHash?.toLowerCase(),
+      )
+    : undefined;
+
+/**
+ * Returns the local bridge history details for the given tx hash
+ *
+ * @param _state - the metamask state
+ * @param txHash - the tx hash
+ * @returns the bridge history item for the given tx hash
+ */
+const selectBridgeHistoryItemForTxHash = createSelector(
+  [
+    selectBridgeHistory,
+    selectLocalTxForTxHash,
+    (_state: BridgeStatusAppState, txHash) => txHash,
+  ],
+  (bridgeHistory, tx, txHash) => {
+    // Non-EVM transactions use the tx hash as the key
+    if (txHash && bridgeHistory[txHash]) {
+      return bridgeHistory[txHash];
+    }
+
+    const txId = tx?.id;
+    const actionId = tx?.actionId;
+    if (txId && bridgeHistory[txId]) {
+      return bridgeHistory[txId];
+    }
+    if (actionId && bridgeHistory[actionId]) {
+      return bridgeHistory[actionId];
+    }
+    return undefined;
+  },
+);
+
+/**
+ * Returns a local bridge history item that includes the given approval tx hash
+ *
+ * @param state - the metamask state
+ * @param txHash - the tx hash
+ * @returns the bridge history item that includes the given approval tx hash
+ */
+const selectBridgeHistoryItemForApprovalTxHash = createSelector(
+  [selectBridgeHistory, selectLocalTxForTxHash],
+  (bridgeHistory, tx) => {
+    const approvalTxId = tx?.id;
+    if (!approvalTxId) {
+      return undefined;
+    }
+    return Object.values(bridgeHistory).find(
+      (bridgeHistoryItem) =>
+        bridgeHistoryItem.approvalTxId?.toLowerCase() ===
+        approvalTxId.toLowerCase(),
+    );
+  },
+);
+
+/**
+ * Returns a local bridge history item that includes the given trade, approval or non-evm tx hash
+ *
+ * @param state - the metamask state
+ * @param txHash - the tx hash
+ * @returns the bridge history item that includes the given approval tx hash
+ */
+export const selectBridgeHistoryItemByHash = createSelector(
+  [selectBridgeHistoryItemForTxHash, selectBridgeHistoryItemForApprovalTxHash],
+  (tradeHistoryItem, approvalHistoryItem) => {
+    return approvalHistoryItem ?? tradeHistoryItem;
   },
 );
 

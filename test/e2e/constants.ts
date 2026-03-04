@@ -13,6 +13,25 @@ export const LOCAL_NODE_MNEMONIC =
 export const LOCALHOST_NETWORK_CLIENT_ID =
   '3a5eb6f2-cb62-428d-897c-b7ded577d7c2';
 
+/**
+ * Network client IDs. Each key maps to the `networkClientId` used inside
+ * `NetworkController.networkConfigurationsByChainId`.
+ */
+export const NETWORK_CLIENT_ID = Object.freeze({
+  MAINNET: 'mainnet',
+  ARBITRUM_MAINNET: 'arbitrum-mainnet',
+  BASE_MAINNET: 'base-mainnet',
+  BSC_MAINNET: 'bsc-mainnet',
+  LINEA_MAINNET: 'linea-mainnet',
+  LINEA_SEPOLIA: 'linea-sepolia',
+  LOCALHOST: LOCALHOST_NETWORK_CLIENT_ID,
+  MEGAETH_TESTNET_V2: 'megaeth-testnet-v2',
+  MONAD_TESTNET: 'monad-testnet',
+  OPTIMISM_MAINNET: 'optimism-mainnet',
+  POLYGON_MAINNET: 'polygon-mainnet',
+  SEPOLIA: 'sepolia',
+} as const);
+
 /** Address of the account derived from the default onboarding fixture. */
 export const DEFAULT_FIXTURE_ACCOUNT =
   '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
@@ -172,16 +191,16 @@ export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
   feature1: true,
   feature2: false,
   feature3: {
-    name: 'groupC',
-    value: 'valueC',
+    name: 'groupA',
+    value: 'valueA',
   },
 };
 
 /* Mock customized remote feature flags response*/
 export const MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS = {
   feature3: {
-    name: 'groupA',
-    value: 'valueA',
+    name: 'groupC',
+    value: 'valueC',
   },
 };
 
