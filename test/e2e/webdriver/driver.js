@@ -1154,6 +1154,18 @@ class Driver {
     return await this.driver.executeScript(collectMetrics);
   }
 
+  async resetLongTaskMetrics() {
+    return await this.driver.executeScript(function () {
+      window.stateHooks?.resetLongTaskMetrics?.();
+    });
+  }
+
+  async collectLongTaskMetrics() {
+    return await this.driver.executeScript(function () {
+      return window.stateHooks?.getLongTaskMetricsWithTBT?.(true) ?? null;
+    });
+  }
+
   // Window management
 
   /**

@@ -3,6 +3,15 @@ export type TimerResult = {
   duration: number;
 };
 
+export type LongTaskStepResult = {
+  id: string;
+  duration: number;
+  longTaskCount: number;
+  longTaskTotalDuration: number;
+  longTaskMaxDuration: number;
+  tbt: number;
+};
+
 export type PageLoadBenchmarkOptions = {
   browserLoads?: number;
   pageLoads?: number;

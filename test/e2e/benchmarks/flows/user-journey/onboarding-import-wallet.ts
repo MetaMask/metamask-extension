@@ -24,8 +24,11 @@ import OnboardingPasswordPage from '../../../page-objects/pages/onboarding/onboa
 import OnboardingSrpPage from '../../../page-objects/pages/onboarding/onboarding-srp-page';
 import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-onboarding-page';
 import { Driver } from '../../../webdriver/driver';
-import { performanceTracker } from '../../utils/performance-tracker';
-import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import { collectTimerResults } from '../../utils/timer-helper';
+import {
+  measureStepWithLongTasks,
+  buildLongTaskTimerResults,
+} from '../../utils/long-task-helper';
 import { setPassThroughInterceptor } from '../../../mock-e2e-pass-through';
 import {
   getCommonMocks,
@@ -34,12 +37,13 @@ import {
 } from '../../mocks/performance-mocks';
 import { shouldUseMockedRequests } from '../../utils/mock-config';
 import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
-import type { BenchmarkRunResult } from '../../utils/types';
+import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 
 export const testTitle = 'benchmark-onboarding-import-wallet';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRunResult> {
+  const steps: LongTaskStepResult[] = [];
   try {
     await withFixtures(
       {
@@ -67,20 +71,6 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
       async ({ driver }: { driver: Driver }) => {
         const srp = process.env.E2E_POWER_USER_SRP || E2E_SRP;
 
-        const timerImportWalletToSocial = new TimerHelper(
-          'importWalletToSocialScreen',
-        );
-        const timerSrpButtonToForm = new TimerHelper('srpButtonToSrpForm');
-        const timerConfirmToPassword = new TimerHelper('confirmSrpToPwForm');
-        const timerPasswordToMetrics = new TimerHelper('pwFormToMetricsScreen');
-        const timerMetricsToComplete = new TimerHelper(
-          'metricsToWalletReadyScreen',
-        );
-        const timerDoneToHome = new TimerHelper('doneButtonToHomeScreen');
-        const timerAccountListLoad = new TimerHelper(
-          'openAccountMenuToAccountListLoaded',
-        );
-
         await driver.navigate();
         const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
         if (isFirefox) {
@@ -94,28 +84,43 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.importWallet(false);
-        await timerImportWalletToSocial.measure(async () => {
-          await startOnboardingPage.checkUserSrpButtonIsVisible();
-        });
-        performanceTracker.addTimer(timerImportWalletToSocial);
+        steps.push(
+          await measureStepWithLongTasks(
+            driver,
+            'importWalletToSocialScreen',
+            async () => {
+              await startOnboardingPage.checkUserSrpButtonIsVisible();
+            },
+          ),
+        );
 
         // Measure: SRP button to form
         await startOnboardingPage.clickImportWithSrpButton();
-        await timerSrpButtonToForm.measure(async () => {
-          const onboardingSrpPage = new OnboardingSrpPage(driver);
-          await onboardingSrpPage.checkPageIsLoaded();
-        });
-        performanceTracker.addTimer(timerSrpButtonToForm);
+        steps.push(
+          await measureStepWithLongTasks(
+            driver,
+            'srpButtonToSrpForm',
+            async () => {
+              const onboardingSrpPage = new OnboardingSrpPage(driver);
+              await onboardingSrpPage.checkPageIsLoaded();
+            },
+          ),
+        );
 
         // Measure: Confirm to Password form
         const onboardingSrpPage = new OnboardingSrpPage(driver);
         await onboardingSrpPage.fillSrp(srp);
         await onboardingSrpPage.clickConfirmButton();
-        await timerConfirmToPassword.measure(async () => {
-          const onboardingPasswordPage = new OnboardingPasswordPage(driver);
-          await onboardingPasswordPage.checkPageIsLoaded();
-        });
-        performanceTracker.addTimer(timerConfirmToPassword);
+        steps.push(
+          await measureStepWithLongTasks(
+            driver,
+            'confirmSrpToPwForm',
+            async () => {
+              const onboardingPasswordPage = new OnboardingPasswordPage(driver);
+              await onboardingPasswordPage.checkPageIsLoaded();
+            },
+          ),
+        );
 
         // Create password
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
@@ -123,55 +128,75 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
 
         // Measure: Password to Metrics (Chrome only)
         if (!isFirefox) {
-          await timerPasswordToMetrics.measure(async () => {
-            const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-            await onboardingMetricsPage.checkPageIsLoaded();
-          });
-          performanceTracker.addTimer(timerPasswordToMetrics);
+          steps.push(
+            await measureStepWithLongTasks(
+              driver,
+              'pwFormToMetricsScreen',
+              async () => {
+                const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+                await onboardingMetricsPage.checkPageIsLoaded();
+              },
+            ),
+          );
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
           await onboardingMetricsPage.clickOnContinueButton();
         }
 
         // Measure: Metrics to Complete
-        await timerMetricsToComplete.measure(async () => {
-          const onboardingCompletePage = new OnboardingCompletePage(driver);
-          await onboardingCompletePage.checkPageIsLoaded();
-        });
-        performanceTracker.addTimer(timerMetricsToComplete);
+        steps.push(
+          await measureStepWithLongTasks(
+            driver,
+            'metricsToWalletReadyScreen',
+            async () => {
+              const onboardingCompletePage = new OnboardingCompletePage(driver);
+              await onboardingCompletePage.checkPageIsLoaded();
+            },
+          ),
+        );
 
         // Measure: Done to Home
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.completeOnboarding();
         await handleSidepanelPostOnboarding(driver);
-        await timerDoneToHome.measure(async () => {
-          const homePage = new HomePage(driver);
-          await homePage.checkPageIsLoaded();
-          const assetListPage = new AssetListPage(driver);
-          await assetListPage.checkTokenListIsDisplayed();
-          await assetListPage.checkTokenExistsInList('Ethereum');
-          await assetListPage.waitForTokenToBeDisplayed('Solana', 120000);
-        });
-        performanceTracker.addTimer(timerDoneToHome);
+        steps.push(
+          await measureStepWithLongTasks(
+            driver,
+            'doneButtonToHomeScreen',
+            async () => {
+              const homePage = new HomePage(driver);
+              await homePage.checkPageIsLoaded();
+              const assetListPage = new AssetListPage(driver);
+              await assetListPage.checkTokenListIsDisplayed();
+              await assetListPage.checkTokenExistsInList('Ethereum');
+              await assetListPage.waitForTokenToBeDisplayed('Solana', 120000);
+            },
+          ),
+        );
 
         // Measure: Account list load
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
-        await timerAccountListLoad.measure(async () => {
-          const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded(120000);
-        });
-        performanceTracker.addTimer(timerAccountListLoad);
+        steps.push(
+          await measureStepWithLongTasks(
+            driver,
+            'openAccountMenuToAccountListLoaded',
+            async () => {
+              const accountListPage = new AccountListPage(driver);
+              await accountListPage.checkPageIsLoaded(120000);
+            },
+          ),
+        );
       },
     );
 
     return {
-      timers: collectTimerResults(),
+      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
       success: true,
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   } catch (error) {
     return {
-      timers: collectTimerResults(),
+      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
       success: false,
       error: error instanceof Error ? error.message : String(error),
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
