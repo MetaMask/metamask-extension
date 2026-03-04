@@ -346,12 +346,7 @@ function parseArguments(): CliOptions {
 
   // Set default model if not provided (only if provider is specified)
   if (!model && provider) {
-    const defaultModels: Record<LLMProvider, string> = {
-      claude: 'claude-opus-4-5-20251101',
-      openai: 'gpt-5',
-      gemini: 'gemini-3-pro-preview',
-    };
-    model = defaultModels[provider];
+    model = getDefaultModelForProvider(provider);
   }
 
   return {
