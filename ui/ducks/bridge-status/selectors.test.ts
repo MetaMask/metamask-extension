@@ -1,4 +1,7 @@
-import { selectBridgeHistoryForOriginalTxMetaId } from './selectors';
+import {
+  selectBridgeHistoryForApprovalTxId,
+  selectBridgeHistoryForOriginalTxMetaId,
+} from './selectors';
 
 describe('bridge-status selectors', () => {
   describe('selectBridgeHistoryForOriginalTxMetaId', () => {
@@ -44,6 +47,31 @@ describe('bridge-status selectors', () => {
           'tx-meta-id',
         ),
       ).toBeUndefined();
+    });
+  });
+
+  describe('selectBridgeHistoryForApprovalTxId', () => {
+    it('returns the history item when the approval tx id casing differs', () => {
+      const matchingBridgeHistoryItem = {
+        approvalTxId: '0xAbC123',
+        status: { srcChain: 'PENDING' },
+      };
+      const state = {
+        metamask: {
+          txHistory: {
+            orderUid: matchingBridgeHistoryItem,
+          },
+        },
+      };
+
+      expect(
+        selectBridgeHistoryForApprovalTxId(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          state as any,
+          '0xabc123',
+        ),
+      ).toBe(matchingBridgeHistoryItem);
     });
   });
 });

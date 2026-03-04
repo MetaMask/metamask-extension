@@ -98,7 +98,7 @@ const selectBridgeHistoryByApprovalTxId = createSelector(
     Object.values(bridgeHistory).reduce<Record<string, BridgeHistoryItem>>(
       (acc, bridgeHistoryItem) => {
         if (bridgeHistoryItem.approvalTxId) {
-          acc[bridgeHistoryItem.approvalTxId] = bridgeHistoryItem;
+          acc[bridgeHistoryItem.approvalTxId.toLowerCase()] = bridgeHistoryItem;
         }
         return acc;
       },
@@ -134,7 +134,7 @@ export const selectBridgeHistoryForApprovalTxId = (
     return undefined;
   }
 
-  return selectBridgeHistoryByApprovalTxId(state)[approvalTxId];
+  return selectBridgeHistoryByApprovalTxId(state)[approvalTxId.toLowerCase()];
 };
 
 /**
