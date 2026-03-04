@@ -4,7 +4,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getOpenSeaEnabled, getUseNftDetection } from '../../../selectors';
 import { setOpenSeaEnabled, setUseNftDetection } from '../../../store/actions';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { SettingsToggleItem } from '../../settings/settings-toggle-item';
 
 export const AutodetectNftsToggleItem = () => {
@@ -22,9 +25,9 @@ export const AutodetectNftsToggleItem = () => {
       onToggle={(value) => {
         trackEvent({
           category: MetaMetricsEventCategory.Settings,
-          event: 'NFT Detected',
+          event: MetaMetricsEventName.NftDetected,
           properties: {
-            action: 'NFT Detected',
+            action: MetaMetricsEventName.NftDetected,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             legacy_event: true,
           },
