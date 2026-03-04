@@ -168,10 +168,7 @@ export type PreferencesControllerState = Omit<
   useMultiAccountBalanceChecker: boolean;
   usePhishDetect: boolean;
   referrals: Record<DefiReferralPartner, Record<Hex, ReferralStatus>>;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   watchEthereumAccountEnabled: boolean;
-  ///: END:ONLY_INCLUDE_IF
 };
 
 /**
@@ -696,7 +693,6 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   /**
    * Setter for the `watchEthereumAccountEnabled` property.
    *
@@ -708,7 +704,6 @@ export class PreferencesController extends BaseController<
       state.watchEthereumAccountEnabled = watchEthereumAccountEnabled;
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `useExternalNameSources` property
