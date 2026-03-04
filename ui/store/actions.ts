@@ -203,6 +203,7 @@ import {
 import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
 import { isHardwareAccount } from '../../shared/lib/accounts';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
+import { PendingRedirectRoute } from '../../shared/lib/pending-redirect-state';
 import { keyringTypeToHardwareWalletType } from '../contexts/hardware-wallets/utils';
 import * as actionConstants from './actionConstants';
 
@@ -731,6 +732,21 @@ export function setShowShieldEntryModalOnceAction(payload: {
   };
 }
 
+export function setPendingRedirectRoute(
+  route: PendingRedirectRoute | null,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setPendingRedirectRoute', [route]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      log.error('[setPendingRedirectRoute] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
 export function setPendingShieldCohort(
   cohort: string | null,
   txType?: string | null,
@@ -1171,7 +1187,7 @@ export async function getSeedPhrase(password: string, keyringId?: string) {
 
 export function requestRevealSeedWords(
   password: string,
-  keyringId: string,
+  keyringId?: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -1754,36 +1770,6 @@ export function removeSlide(
       throw error;
     }
   };
-}
-
-export async function setEnableEnforcedSimulationsForTransaction(
-  transactionId: string,
-  enable: boolean,
-): void {
-  try {
-    await submitRequestToBackground(
-      'setEnableEnforcedSimulationsForTransaction',
-      [transactionId, enable],
-    );
-  } catch (error) {
-    logErrorWithMessage(error);
-    throw error;
-  }
-}
-
-export async function setEnforcedSimulationsSlippageForTransaction(
-  transactionId: string,
-  value: number,
-): void {
-  try {
-    await submitRequestToBackground(
-      'setEnforcedSimulationsSlippageForTransaction',
-      [transactionId, value],
-    );
-  } catch (error) {
-    logErrorWithMessage(error);
-    throw error;
-  }
 }
 
 // TODO: Not a thunk, but rather a wrapper around a background call
@@ -7508,6 +7494,21 @@ export async function getUserProfileLineage(): Promise<
       'getUserProfileLineage',
     );
     return userProfileLineage;
+  } catch (error) {
+    logErrorWithMessage(error);
+    return undefined;
+  }
+}
+
+/**
+ * Fetches the user's bearer token from the authentication API.
+ *
+ * @returns A thunk action that, when dispatched, attempts to fetch the user's bearer token.
+ */
+export async function getBearerToken(): Promise<string | undefined> {
+  try {
+    const bearerToken = await submitRequestToBackground('getBearerToken');
+    return bearerToken;
   } catch (error) {
     logErrorWithMessage(error);
     return undefined;

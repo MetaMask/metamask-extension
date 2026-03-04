@@ -1073,6 +1073,7 @@
         "chokidar>normalize-path": true,
         "schema-utils": true,
         "copy-webpack-plugin>serialize-javascript": true,
+        "mocha>serialize-javascript": true,
         "copy-webpack-plugin>tinyglobby": true
       }
     },
@@ -1336,7 +1337,9 @@
       "builtin": {
         "module.findPnpApi": true,
         "path.basename": true,
+        "path.posix.dirname": true,
         "path.posix.normalize": true,
+        "path.win32.dirname": true,
         "path.win32.normalize": true,
         "process.nextTick": true,
         "process.versions.pnp": true,
@@ -1346,6 +1349,7 @@
         "Buffer.isBuffer": true,
         "URL": true,
         "clearTimeout": true,
+        "process.cwd": true,
         "setTimeout": true
       },
       "packages": {
@@ -2496,11 +2500,6 @@
         "string.prototype.matchall>side-channel": true
       }
     },
-    "crypto-browserify>randombytes": {
-      "builtin": {
-        "crypto.randomBytes": true
-      }
-    },
     "mockttp>body-parser>raw-body": {
       "builtin": {
         "async_hooks": true
@@ -2787,10 +2786,14 @@
     },
     "copy-webpack-plugin>serialize-javascript": {
       "globals": {
-        "URL": true
-      },
-      "packages": {
-        "crypto-browserify>randombytes": true
+        "URL": true,
+        "crypto.getRandomValues": true
+      }
+    },
+    "mocha>serialize-javascript": {
+      "globals": {
+        "URL": true,
+        "crypto.getRandomValues": true
       }
     },
     "webpack-dev-server>serve-index": {
@@ -3056,7 +3059,7 @@
         "@storybook/test-runner>@storybook/core-common>esbuild": true,
         "terser-webpack-plugin>jest-worker": true,
         "schema-utils": true,
-        "copy-webpack-plugin>serialize-javascript": true,
+        "mocha>serialize-javascript": true,
         "terser": true,
         "html-bundler-webpack-plugin>handlebars>uglify-js": true
       }

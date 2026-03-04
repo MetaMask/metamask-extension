@@ -56,6 +56,7 @@ import {
   getNetworkEnablementControllerInitMessenger,
   getAssetsControllerMessenger,
   getAssetsControllerInitMessenger,
+  getClientControllerMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -148,10 +149,6 @@ import {
   getRewardsControllerInitMessenger,
   getRewardsControllerMessenger,
 } from './rewards-controller-messenger';
-import {
-  getSwapsControllerInitMessenger,
-  getSwapsControllerMessenger,
-} from './swaps-controller-messenger';
 import {
   getBridgeControllerInitMessenger,
   getBridgeControllerMessenger,
@@ -364,14 +361,6 @@ export type {
 } from './rewards-controller-messenger';
 export { getRewardsControllerMessenger } from './rewards-controller-messenger';
 export type {
-  SwapsControllerMessenger,
-  SwapsControllerInitMessenger,
-} from './swaps-controller-messenger';
-export {
-  getSwapsControllerMessenger,
-  getSwapsControllerInitMessenger,
-} from './swaps-controller-messenger';
-export type {
   TokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger,
 } from './token-balances-controller-messenger';
@@ -490,6 +479,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   ClaimsService: {
     getMessenger: getClaimsServiceMessenger,
+    getInitMessenger: noop,
+  },
+  ClientController: {
+    getMessenger: getClientControllerMessenger,
     getInitMessenger: noop,
   },
   CronjobController: {
@@ -703,10 +696,6 @@ export const CONTROLLER_MESSENGERS = {
   RewardsController: {
     getMessenger: getRewardsControllerMessenger,
     getInitMessenger: getRewardsControllerInitMessenger,
-  },
-  SwapsController: {
-    getMessenger: getSwapsControllerMessenger,
-    getInitMessenger: getSwapsControllerInitMessenger,
   },
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,

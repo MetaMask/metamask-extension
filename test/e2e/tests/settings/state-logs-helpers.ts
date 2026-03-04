@@ -147,6 +147,36 @@ export const createTypeMap = (
   return typeMap;
 };
 
+/** Path segment used in type map for wildcard (any key at this level). */
+const WILDCARD_SEGMENT = '*';
+
+const isWildcardKey = (key: string): boolean =>
+  key.split('.').some((segment) => segment === WILDCARD_SEGMENT);
+
+/**
+ * Returns true if a current (actual) key matches an expected key that may contain
+ * wildcard segments ("*" = any single path segment). Supports any number of
+ * wildcards at any level, e.g. metamask.foo.* or metamask.foo.*.bar.*.baz.
+ *
+ * @param currentKey - Flattened path from actual state (e.g. metamask.foo.0x1.bar.0x2.baz)
+ * @param expectedKey - Flattened path from definition (e.g. metamask.foo.*.bar.*.baz)
+ * @returns true when path lengths match and each segment equals or is wildcard
+ */
+const currentKeyMatchesExpectedWildcard = (
+  currentKey: string,
+  expectedKey: string,
+): boolean => {
+  const currentParts = currentKey.split('.');
+  const expectedParts = expectedKey.split('.');
+  if (currentParts.length !== expectedParts.length) {
+    return false;
+  }
+  return expectedParts.every(
+    (expectedPart, i) =>
+      expectedPart === WILDCARD_SEGMENT || expectedPart === currentParts[i],
+  );
+};
+
 const flattenTypeDescriptor = (
   descriptor: StateLogsTypeDescriptor,
   path: string,
@@ -214,6 +244,10 @@ const findMissingKeys = (
       if (shouldIgnore(key) || key.startsWith('metamask.srpSessionData.')) {
         continue;
       }
+      // Wildcard keys (e.g. metamask.thresholdCache.*) define "any key here"; no literal key is required
+      if (isWildcardKey(key)) {
+        continue;
+      }
 
       if (!(key in current)) {
         differences.push(createDifferenceMessage('missing', key));
@@ -238,7 +272,11 @@ const findNewKeys = (
         continue;
       }
 
-      if (!(key in expected)) {
+      const inExpectedLiteral = key in expected;
+      const matchedByWildcard = Object.keys(expected).some((expectedKey) =>
+        currentKeyMatchesExpectedWildcard(key, expectedKey),
+      );
+      if (!inExpectedLiteral && !matchedByWildcard) {
         differences.push(createDifferenceMessage('new', key));
       }
     }
@@ -261,9 +299,22 @@ const findTypeMismatches = (
         continue;
       }
 
-      if (key in current && current[key] !== expected[key]) {
+      let wildcardCurrentKey: string | undefined;
+      if (isWildcardKey(key)) {
+        wildcardCurrentKey = Object.keys(current).find((currentKey) =>
+          currentKeyMatchesExpectedWildcard(currentKey, key),
+        );
+      }
+
+      const currentKey = wildcardCurrentKey ?? key;
+      if (currentKey in current && current[currentKey] !== expected[key]) {
         differences.push(
-          createDifferenceMessage('mismatch', key, expected[key], current[key]),
+          createDifferenceMessage(
+            'mismatch',
+            key,
+            expected[key],
+            current[currentKey],
+          ),
         );
       }
     }
