@@ -44,7 +44,16 @@ export function PasswordPrompt({
   const t = useI18nContext();
   return (
     <>
-      <form onSubmit={onSubmit} data-testid="reveal-seed-password-form">
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (password === '' || (isMalicious && !dangerAcknowledged)) {
+            return;
+          }
+          onSubmit(event);
+        }}
+        data-testid="reveal-seed-password-form"
+      >
         <Label htmlFor="password-box">{t('enterPasswordContinue')}</Label>
         <TextField
           inputProps={{

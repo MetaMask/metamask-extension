@@ -97,9 +97,12 @@ function RevealSeedPage() {
     };
   }, [activeTabOrigin]);
 
+  const trackEventRef = React.useRef(trackEvent);
+  trackEventRef.current = trackEvent;
+
   useEffect(() => {
     if (scanResult?.recommendedAction === RecommendedAction.Block) {
-      trackEvent({
+      trackEventRef.current({
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpRevealMaliciousSiteDetected,
         properties: {
@@ -111,7 +114,7 @@ function RevealSeedPage() {
         },
       });
     }
-  }, [scanResult, activeTabOrigin, trackEvent]);
+  }, [scanResult, activeTabOrigin]);
 
   const isMalicious = scanResult?.recommendedAction === RecommendedAction.Block;
 
