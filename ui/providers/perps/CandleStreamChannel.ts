@@ -1,7 +1,8 @@
 /**
  * CandleStreamChannel - Multiplexer/cache for candlestick data streams
  *
- * Sits between the PerpsController and React hooks. Provides:
+ * Sits between PerpsStreamManager (which receives background notifications)
+ * and React hooks. Provides:
  * - Subscription deduplication per symbol+interval key
  * - Per-key caching with immediate delivery to new subscribers
  * - Per-subscriber throttling (first update always immediate)
