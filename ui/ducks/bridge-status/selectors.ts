@@ -79,6 +79,33 @@ export const selectBridgeHistoryItemForTxMetaId = createSelector(
   },
 );
 
+const selectBridgeHistoryByOriginalTransactionId = createSelector(
+  [selectBridgeHistory],
+  (bridgeHistory) =>
+    Object.values(bridgeHistory).reduce<
+      Record<string, BridgeHistoryItemWithOriginalTransactionId>
+    >((acc, bridgeHistoryItem: BridgeHistoryItemWithOriginalTransactionId) => {
+      if (bridgeHistoryItem.originalTransactionId) {
+        acc[bridgeHistoryItem.originalTransactionId] = bridgeHistoryItem;
+      }
+      return acc;
+    }, {}),
+);
+
+const selectBridgeHistoryByApprovalTxId = createSelector(
+  [selectBridgeHistory],
+  (bridgeHistory) =>
+    Object.values(bridgeHistory).reduce<Record<string, BridgeHistoryItem>>(
+      (acc, bridgeHistoryItem) => {
+        if (bridgeHistoryItem.approvalTxId) {
+          acc[bridgeHistoryItem.approvalTxId] = bridgeHistoryItem;
+        }
+        return acc;
+      },
+      {},
+    ),
+);
+
 // eslint-disable-next-line jsdoc/require-param
 /**
  * Returns a bridge history item for a given original tx meta id.
@@ -92,10 +119,7 @@ export const selectBridgeHistoryForOriginalTxMetaId = (
     return undefined;
   }
 
-  return Object.values(selectBridgeHistory(state)).find(
-    (bridgeHistoryItem: BridgeHistoryItemWithOriginalTransactionId) =>
-      bridgeHistoryItem.originalTransactionId === originalTxMetaId,
-  );
+  return selectBridgeHistoryByOriginalTransactionId(state)[originalTxMetaId];
 };
 
 // eslint-disable-next-line jsdoc/require-param
@@ -110,9 +134,7 @@ export const selectBridgeHistoryForApprovalTxId = (
     return undefined;
   }
 
-  return Object.values(selectBridgeHistory(state)).find(
-    (bridgeHistoryItem) => bridgeHistoryItem.approvalTxId === approvalTxId,
-  );
+  return selectBridgeHistoryByApprovalTxId(state)[approvalTxId];
 };
 
 /**
