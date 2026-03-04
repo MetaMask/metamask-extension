@@ -130,7 +130,7 @@ async function listReleaseBranchesByVersion(): Promise<string[]> {
  * @returns Reference map (benchmarkName → metric → mean), or null if unavailable.
  */
 export async function fetchHistoricalPerformanceData(
-  baseBranch: string = process.env.GITHUB_BASE_REF ?? 'main',
+  baseBranch: string = process.env.GITHUB_BASE_REF || 'main',
 ): Promise<HistoricalMeanReference | null> {
   const safeBranch = sanitizeBranch(baseBranch);
 
