@@ -61,7 +61,7 @@ export const ActivityList = ({ filter }: Props) => {
   }, [evmAddress]);
 
   // EVM transactions - from API
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useTransactionsQuery(filter);
 
   // Local transactions - may not be in API yet
@@ -119,13 +119,7 @@ export const ActivityList = ({ filter }: Props) => {
     );
 
     return groupAndFlattenMergedTransactions(mergedByTime);
-  }, [
-    data,
-    nonEvmTransactions,
-    localTransactions,
-    enabledNetworks,
-    filter,
-  ]);
+  }, [data, nonEvmTransactions, localTransactions, enabledNetworks, filter]);
 
   const [scrollMargin, setScrollMargin] = useState(0);
 

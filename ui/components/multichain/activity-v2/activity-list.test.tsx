@@ -140,7 +140,6 @@ describe('ActivityList', () => {
     mockSelectLocalTransactions.mockReturnValue([]);
     mockUseTransactionsQuery.mockReturnValue({
       data: { pages: [] },
-      isInitialLoading: false,
       fetchNextPage: jest.fn(),
       hasNextPage: false,
       isFetchingNextPage: false,
@@ -181,7 +180,6 @@ describe('ActivityList', () => {
 
     mockUseTransactionsQuery.mockReturnValue({
       data: { pages: [{ data: [evmTx] }] },
-      isInitialLoading: false,
       fetchNextPage: jest.fn(),
       hasNextPage: false,
       isFetchingNextPage: false,
@@ -232,7 +230,6 @@ describe('ActivityList', () => {
 
     mockUseTransactionsQuery.mockReturnValue({
       data: { pages: [{ data: [evmTx] }] },
-      isInitialLoading: false,
       fetchNextPage: jest.fn(),
       hasNextPage: false,
       isFetchingNextPage: false,
@@ -302,7 +299,6 @@ describe('ActivityList', () => {
 
     mockUseTransactionsQuery.mockReturnValue({
       data: { pages: [{ data: [tokenTx, nativeReceiveTx] }] },
-      isInitialLoading: false,
       fetchNextPage: jest.fn(),
       hasNextPage: false,
       isFetchingNextPage: false,
@@ -353,7 +349,6 @@ describe('ActivityList', () => {
 
     mockUseTransactionsQuery.mockReturnValue({
       data: { pages: [{ data: [evmTx] }] },
-      isInitialLoading: false,
       fetchNextPage: jest.fn(),
       hasNextPage: false,
       isFetchingNextPage: false,
@@ -442,7 +437,6 @@ describe('ActivityList', () => {
 
     mockUseTransactionsQuery.mockReturnValue({
       data: { pages: [{ data: [nativeReceiveTx, swapTx] }] },
-      isInitialLoading: false,
       fetchNextPage: jest.fn(),
       hasNextPage: false,
       isFetchingNextPage: false,
@@ -496,7 +490,6 @@ describe('ActivityList', () => {
 
     mockUseTransactionsQuery.mockReturnValue({
       data: { pages: [] },
-      isInitialLoading: false,
       fetchNextPage: jest.fn(),
       hasNextPage: false,
       isFetchingNextPage: false,
@@ -552,7 +545,6 @@ describe('ActivityList', () => {
 
     mockUseTransactionsQuery.mockReturnValue({
       data: { pages: [] },
-      isInitialLoading: false,
       fetchNextPage: jest.fn(),
       hasNextPage: false,
       isFetchingNextPage: false,
