@@ -36,12 +36,6 @@ import { Column, Row } from '../../../layout';
 import { formatCurrencyAmount, formatTokenAmount } from '../../../utils/quote';
 import { useRWAToken } from '../../../hooks/useRWAToken';
 
-const BridgeAssetStockBadge = ({ asset }: { asset: BridgeToken }) => {
-  const { isTokenTradingOpen } = useRWAToken();
-
-  return <StockBadge isMarketClosed={!isTokenTradingOpen(asset)} />;
-};
-
 export const BridgeAsset = React.forwardRef(
   <Element extends React.ElementType = typeof Row>(
     {
@@ -127,7 +121,7 @@ export const BridgeAsset = React.forwardRef(
               {asset.accountType && ACCOUNT_TYPE_LABELS[asset.accountType] && (
                 <Tag label={ACCOUNT_TYPE_LABELS[asset.accountType]} />
               )}
-              {tokenIsStock && <BridgeAssetStockBadge asset={asset} />}
+              {tokenIsStock && <StockBadge rwaData={asset.rwaData} />}
               {asset.noFee?.[isDestination ? 'isDestination' : 'isSource'] && (
                 <Tag label={t('bridgeNoMMFee')} />
               )}

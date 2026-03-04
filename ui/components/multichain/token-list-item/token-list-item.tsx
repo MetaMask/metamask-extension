@@ -44,6 +44,7 @@ import {
 import { MarketClosedModal } from '../../app/assets/market-closed-modal';
 import { StockBadge } from '../../app/assets/stock-badge/stock-badge';
 import { getMarketData, getCurrencyRates } from '../../../selectors';
+
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -65,15 +66,6 @@ import { ACCOUNT_TYPE_LABELS } from '../../app/assets/constants';
 import { TokenWithFiatAmount } from '../../app/assets/types';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
-
-const TokenListItemStockBadge = ({
-  rwaData,
-}: {
-  rwaData: TokenWithFiatAmount['rwaData'];
-}) => {
-  const { isTokenTradingOpen } = useRWAToken();
-  return <StockBadge isMarketClosed={!isTokenTradingOpen({ rwaData })} />;
-};
 
 type TokenListItemProps = {
   className?: string;
@@ -313,9 +305,7 @@ export const TokenListItemComponent = ({
               {accountType && ACCOUNT_TYPE_LABELS[accountType] && (
                 <Tag label={ACCOUNT_TYPE_LABELS[accountType]} />
               )}
-              {isRWAToken ? (
-                <TokenListItemStockBadge rwaData={rwaData} />
-              ) : null}
+              {isRWAToken ? <StockBadge rwaData={rwaData} /> : null}
               {isNoFeeAsset && <Tag label={t('bridgeNoMMFee')} />}
             </Box>
 

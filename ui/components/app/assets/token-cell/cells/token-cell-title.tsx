@@ -12,12 +12,6 @@ type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;
 };
 
-const TokenCellStockBadge = ({ token }: TokenCellTitleProps) => {
-  const { isTokenTradingOpen } = useRWAToken();
-
-  return <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />;
-};
-
 export const TokenCellTitle = React.memo(
   ({ token }: TokenCellTitleProps) => {
     const label = token.accountType
@@ -30,7 +24,7 @@ export const TokenCellTitle = React.memo(
       <Box flexDirection={BoxFlexDirection.Row} className="min-w-0">
         <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
           <AssetCellTitle title={token.title} />
-          {tokenIsStock && <TokenCellStockBadge token={token} />}
+          {tokenIsStock && <StockBadge rwaData={token.rwaData} />}
           {label && <Tag label={label} />}
         </Box>
         {token.isStakeable && (
