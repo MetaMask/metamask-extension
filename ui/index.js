@@ -6,6 +6,7 @@ import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
 import { captureException } from '../shared/lib/sentry';
+import { withResolvers } from '../shared/lib/promise-with-resolvers';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../app/scripts/lib/util';
@@ -46,10 +47,6 @@ import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
-import {
-  getReduxStorePromise,
-  resolveReduxStore,
-} from './store/redux-store-promise';
 import { getPerpsStreamManager } from './providers/perps';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
@@ -60,8 +57,10 @@ export {
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
-// Re-export so existing consumers that import from 'ui' still work.
-export { getReduxStorePromise } from './store/redux-store-promise';
+/**
+ * @type {PromiseWithResolvers<ReturnType<typeof configureStore>>}
+ */
+const reduxStore = withResolvers();
 
 /**
  * Method to update backgroundConnection object use by UI
@@ -77,7 +76,7 @@ export const connectToBackground = (
   backgroundConnection.onNotification(async (data) => {
     const { method } = data;
     if (method === 'sendUpdate') {
-      const store = await getReduxStorePromise();
+      const store = await reduxStore.promise;
       store.dispatch(actions.updateMetamaskState(data.params[0]));
     } else if (method === START_UI_SYNC) {
       await handleStartUISync(data.params[0]);
@@ -178,7 +177,7 @@ export async function setupInitialStore(metamaskState, activeTab) {
   }
 
   const store = configureStore(draftInitialState);
-  resolveReduxStore(store);
+  reduxStore.resolve(store);
 
   const unapprovedTxs = getUnapprovedTransactions(metamaskState);
 
