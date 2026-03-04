@@ -23,10 +23,7 @@ import {
   requestRevealSeedWords,
   scanUrlForPhishing,
 } from '../../store/actions';
-import {
-  getHDEntropyIndex,
-  getOriginOfCurrentTab,
-} from '../../selectors';
+import { getHDEntropyIndex, getOriginOfCurrentTab } from '../../selectors';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import { Toast, ToastContainer } from '../../components/multichain/toast';
@@ -90,20 +87,19 @@ function RevealSeedPage() {
           }
           setScanResult(scanResponse);
 
-          trackEvent({
-            category: MetaMetricsEventCategory.Keys,
-            event: MetaMetricsEventName.SrpRevealDappCheck,
-            properties: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              key_type: MetaMetricsEventKeyType.Srp,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              active_tab_origin: activeTabOrigin,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              recommended_action:
-                scanResponse?.recommendedAction ?? 'unknown',
-              hostname: scanResponse?.hostname ?? 'unknown',
-            },
-          });
+          if (scanResponse?.recommendedAction === RecommendedAction.Block) {
+            trackEvent({
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.SrpRevealMaliciousSiteDetected,
+              properties: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                key_type: MetaMetricsEventKeyType.Srp,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                active_tab_origin: activeTabOrigin,
+                hostname: scanResponse.hostname ?? 'unknown',
+              },
+            });
+          }
         })
         .catch(() => {
           // Scan failed — no action needed

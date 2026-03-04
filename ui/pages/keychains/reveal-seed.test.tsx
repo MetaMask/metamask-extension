@@ -575,7 +575,7 @@ describe('Reveal Seed Page', () => {
       expect(continueButton).toBeEnabled();
     });
 
-    it('fires SrpRevealDappCheck metric event after scan', async () => {
+    it('fires SrpRevealMaliciousSiteDetected metric only when site is malicious', async () => {
       mockScanUrlForPhishing.mockResolvedValue({
         recommendedAction: 'BLOCK',
         hostname: 'evil.com',
@@ -599,18 +599,48 @@ describe('Reveal Seed Page', () => {
       await waitFor(() => {
         expect(mockTrackEvent).toHaveBeenCalledWith({
           category: MetaMetricsEventCategory.Keys,
-          event: MetaMetricsEventName.SrpRevealDappCheck,
+          event: MetaMetricsEventName.SrpRevealMaliciousSiteDetected,
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             key_type: MetaMetricsEventKeyType.Srp,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             active_tab_origin: 'https://metamask.github.io',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            recommended_action: 'BLOCK',
             hostname: 'evil.com',
           },
         });
       });
+    });
+
+    it('does not fire metric event when site is not malicious', async () => {
+      mockScanUrlForPhishing.mockResolvedValue({
+        recommendedAction: 'ALLOW',
+        hostname: 'safe-site.com',
+      });
+
+      const mockTrackEvent = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: mockTrackEvent,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
+
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <RevealSeedPage />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(mockScanUrlForPhishing).toHaveBeenCalled();
+      });
+
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.SrpRevealMaliciousSiteDetected,
+        }),
+      );
     });
   });
 
