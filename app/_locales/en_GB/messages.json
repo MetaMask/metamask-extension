@@ -5391,11 +5391,11 @@
   "perpsEntryPrice": {
     "message": "Entry price"
   },
-  "perpsExploreMarkets": {
-    "message": "Explore markets"
-  },
   "perpsExploreCrypto": {
     "message": "Explore crypto"
+  },
+  "perpsExploreMarkets": {
+    "message": "Explore markets"
   },
   "perpsExploreStocksAndCommodities": {
     "message": "Explore stocks and commodities"
