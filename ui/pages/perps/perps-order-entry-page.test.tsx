@@ -76,8 +76,7 @@ jest.mock('../../providers/perps', () => {
     PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
       children,
     usePerpsController: () => mockPerpsController,
-    getPerpsStreamManager: (...args: unknown[]) =>
-      mockGetPerpsStreamManager(...args),
+    getPerpsStreamManager: () => mockGetPerpsStreamManager(),
   };
 });
 
@@ -575,17 +574,21 @@ describe('PerpsOrderEntryPage', () => {
       mockGetPerpsStreamManager.mockReturnValue({
         ...mockStreamManagerBase,
         prices: {
-          subscribe: jest.fn((cb: (updates: unknown[]) => void) => {
-            priceCallback = cb;
-            return jest.fn();
-          }),
+          subscribe: jest.fn(
+            (cb: (updates: unknown[]) => void) => {
+              priceCallback = cb;
+              return jest.fn();
+            },
+          ) as jest.Mock,
           getCachedData: () => [],
         },
         orderBook: {
-          subscribe: jest.fn((cb: (book: unknown) => void) => {
-            orderBookCallback = cb;
-            return jest.fn();
-          }),
+          subscribe: jest.fn(
+            (cb: (book: unknown) => void) => {
+              orderBookCallback = cb;
+              return jest.fn();
+            },
+          ) as jest.Mock,
           getCachedData: () => null,
         },
       });
