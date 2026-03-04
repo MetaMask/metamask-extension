@@ -776,11 +776,14 @@ export const getValidationErrors = createDeepEqualSelector(
               ).times(activeQuote.sentAmount.valueInCurrency),
             )
           : false,
-      isPriceImpactWarning:
+      isPriceImpactWarning: Boolean(
         priceImpactNumber &&
-        priceImpactNumber > warning &&
-        priceImpactNumber <= error,
-      isPriceImpactError: priceImpactNumber && priceImpactNumber > error,
+          priceImpactNumber > warning &&
+          priceImpactNumber <= error,
+      ),
+      isPriceImpactError: Boolean(
+        priceImpactNumber && priceImpactNumber > error,
+      ),
     };
   },
 );
