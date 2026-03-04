@@ -19,7 +19,12 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { TokenInsightsModal } from '../../../pages/bridge/token-insights-modal';
-import { useRWAToken } from '../../../pages/bridge/hooks/useRWAToken';
+import {
+  isStockToken as checkIsStockToken,
+  isTokenTradingOpenAt,
+  useRWAToken,
+} from '../../../pages/bridge/hooks/useRWAToken';
+import { getIsRWATokensEnabled } from '../../../selectors/rwa/feature-flags';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -65,6 +70,15 @@ import { ACCOUNT_TYPE_LABELS } from '../../app/assets/constants';
 import { TokenWithFiatAmount } from '../../app/assets/types';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
+
+const TokenListItemStockBadge = ({
+  rwaData,
+}: {
+  rwaData: TokenWithFiatAmount['rwaData'];
+}) => {
+  const { isTokenTradingOpen } = useRWAToken();
+  return <StockBadge isMarketClosed={!isTokenTradingOpen({ rwaData })} />;
+};
 
 type TokenListItemProps = {
   className?: string;
@@ -171,9 +185,9 @@ export const TokenListItemComponent = ({
     isDestinationToken &&
     address &&
     noFeeAssets?.includes(address.toLowerCase());
-  const { isStockToken, isTokenTradingOpen } = useRWAToken();
+  const isRWAEnabled = useSelector(getIsRWATokensEnabled);
   const rwaToken = { rwaData };
-  const isRWAToken = isStockToken(rwaToken);
+  const isRWAToken = isRWAEnabled && checkIsStockToken(rwaToken);
 
   // Used for badge icon
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
@@ -215,7 +229,7 @@ export const TokenListItemComponent = ({
               return;
             }
 
-            if (isRWAToken && !isTokenTradingOpen(rwaToken)) {
+            if (isRWAToken && !isTokenTradingOpenAt(rwaToken)) {
               setShowMarketClosedModal(true);
               return;
             }
@@ -305,7 +319,7 @@ export const TokenListItemComponent = ({
                 <Tag label={ACCOUNT_TYPE_LABELS[accountType]} />
               )}
               {isRWAToken ? (
-                <StockBadge isMarketClosed={!isTokenTradingOpen(rwaToken)} />
+                <TokenListItemStockBadge rwaData={rwaData} />
               ) : null}
               {isNoFeeAsset && <Tag label={t('bridgeNoMMFee')} />}
             </Box>
