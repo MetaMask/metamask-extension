@@ -473,13 +473,7 @@
       "Reselect: Identity function warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/app/modals/reject-transactions/reject-transactions.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/app/modals/transaction-already-confirmed/transaction-already-confirmed.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/modals/transaction-confirmed/transaction-confirmed.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/modals/turn-on-metamask-notifications/turn-on-metamask-notifications.test.tsx": {
@@ -2335,7 +2329,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/info/musd-claim-info/musd-claim-info.test.tsx": {
-      "MetaMask: Background connection not initialized": 16,
       "Reselect: Identity function warnings": 5,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -3129,8 +3122,6 @@
     },
     "ui/pages/onboarding-flow/onboarding-flow.test.tsx": {
       "MetaMask: Background connection not initialized": 13,
-      "error: Error: Actions must be plain": 1,
-      "error: Warning: React does not recognize": 1,
       "warn: No routes matched location \"/\"": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },

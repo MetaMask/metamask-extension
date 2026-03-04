@@ -299,9 +299,6 @@
     "message": "מיובאות",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "העסקה הראשונית שלך אושרה על ידי הרשת. לחצ/י על אישור כדי לחזור."
-  },
   "insufficientBalance": {
     "message": "יתרה לא מספיקה."
   },
@@ -480,12 +477,6 @@
   },
   "rejectAll": {
     "message": "דחה הכל"
-  },
-  "rejectTxsDescription": {
-    "message": "הנך עומד/ת לדחות קבוצת עסקאות $1."
-  },
-  "rejectTxsN": {
-    "message": "דחה $1 עסקאות "
   },
   "rejected": {
     "message": "נדחה"
