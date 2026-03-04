@@ -438,7 +438,10 @@ const AssetPage = ({
                 chainId: caipChainId,
                 assetScope:
                   type === AssetType.native
-                    ? { kind: 'native' }
+                    ? {
+                        kind: 'native',
+                        ...(!isEvm && { caipAssetType: address }),
+                      }
                     : { kind: 'token', tokenAddress: address },
               }}
             />

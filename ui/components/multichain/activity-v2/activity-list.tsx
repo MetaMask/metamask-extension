@@ -61,13 +61,8 @@ export const ActivityList = ({ filter }: Props) => {
   }, [evmAddress]);
 
   // EVM transactions - from API
-  const {
-    data,
-    isInitialLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useTransactionsQuery(filter);
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useTransactionsQuery(filter);
 
   // Local transactions - may not be in API yet
   const localTransactions = useSelector(selectLocalTransactions);
@@ -241,7 +236,7 @@ export const ActivityList = ({ filter }: Props) => {
         />
       )}
 
-      {!isInitialLoading && flattenedItems.length > 0 && (
+      {flattenedItems.length > 0 && (
         <>
           <div
             ref={listRef}
@@ -277,7 +272,7 @@ export const ActivityList = ({ filter }: Props) => {
         </>
       )}
 
-      {!isInitialLoading && flattenedItems.length === 0 && (
+      {!isLoading && flattenedItems.length === 0 && (
         <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
       )}
 

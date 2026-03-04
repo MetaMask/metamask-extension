@@ -11,7 +11,7 @@ import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 import { formatUnits } from '../../../../shared/lib/unit';
 
 export type AssetScope =
-  | { kind: 'native' }
+  | { kind: 'native'; caipAssetType?: string }
   | { kind: 'token'; tokenAddress: string };
 
 export type ActivityListFilter = {
@@ -239,10 +239,15 @@ export function matchesNonEvmTransaction(
   tx: Transaction,
   scope: AssetScope,
 ): boolean {
-  if (scope.kind === 'native') {
+  const addr =
+    scope.kind === 'native'
+      ? scope.caipAssetType?.toLowerCase()
+      : scope.tokenAddress.toLowerCase();
+
+  if (!addr) {
     return false;
   }
-  const addr = scope.tokenAddress.toLowerCase();
+
   const assetEntries = [...(tx.from ?? []), ...(tx.to ?? [])];
   return assetEntries.some((entry) => {
     if (!entry.asset) {

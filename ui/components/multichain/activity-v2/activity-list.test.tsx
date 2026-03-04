@@ -465,6 +465,125 @@ describe('ActivityList', () => {
     expect(screen.getAllByTestId('evm-item')).toHaveLength(1);
   });
 
+  it('non-evm native filter includes matching SOL transactions', () => {
+    const solTx = {
+      chain: 'solana:mainnet',
+      id: 'sol-send-1',
+      timestamp: 1735689600,
+      from: [
+        {
+          address: 'SoLaddr1',
+          asset: {
+            fungible: true,
+            type: 'solana:mainnet/slip44:501',
+            unit: 'SOL',
+            amount: '0.5',
+          },
+        },
+      ],
+      to: [
+        {
+          address: 'SoLaddr2',
+          asset: {
+            fungible: true,
+            type: 'solana:mainnet/slip44:501',
+            unit: 'SOL',
+            amount: '0.5',
+          },
+        },
+      ],
+    };
+
+    mockUseTransactionsQuery.mockReturnValue({
+      data: { pages: [] },
+      isInitialLoading: false,
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isFetchingNextPage: false,
+    });
+
+    enableVisibleVirtualItems();
+
+    const store = createStore({
+      nonEvmTransactions: {
+        '1': {
+          'solana:mainnet': {
+            transactions: [solTx],
+          },
+        },
+      },
+    });
+
+    render(
+      <Provider store={store}>
+        <ActivityList
+          filter={{
+            chainId: 'solana:mainnet',
+            assetScope: {
+              kind: 'native',
+              caipAssetType: 'solana:mainnet/slip44:501',
+            },
+          }}
+        />
+      </Provider>,
+    );
+
+    expect(screen.getByTestId('non-evm-item')).toBeInTheDocument();
+  });
+
+  it('non-evm native filter without caipAssetType excludes all non-evm transactions', () => {
+    const solTx = {
+      chain: 'solana:mainnet',
+      id: 'sol-send-no-caip',
+      timestamp: 1735689600,
+      from: [
+        {
+          address: 'SoLaddr1',
+          asset: {
+            fungible: true,
+            type: 'solana:mainnet/slip44:501',
+            unit: 'SOL',
+            amount: '0.5',
+          },
+        },
+      ],
+      to: [],
+    };
+
+    mockUseTransactionsQuery.mockReturnValue({
+      data: { pages: [] },
+      isInitialLoading: false,
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isFetchingNextPage: false,
+    });
+
+    enableVisibleVirtualItems();
+
+    const store = createStore({
+      nonEvmTransactions: {
+        '1': {
+          'solana:mainnet': {
+            transactions: [solTx],
+          },
+        },
+      },
+    });
+
+    render(
+      <Provider store={store}>
+        <ActivityList
+          filter={{
+            chainId: 'solana:mainnet',
+            assetScope: { kind: 'native' },
+          }}
+        />
+      </Provider>,
+    );
+
+    expect(screen.queryByTestId('non-evm-item')).not.toBeInTheDocument();
+  });
+
   it('renders local item type when local transaction groups are present', () => {
     mockSelectLocalTransactions.mockReturnValue([
       {
