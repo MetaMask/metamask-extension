@@ -41,10 +41,18 @@ type ExperimentalTabProps = {
   setFeatureNotificationsEnabled: (value: boolean) => void;
 };
 
-export default class ExperimentalTab extends PureComponent<ExperimentalTabProps> {
+type ExperimentalTabState = {
+  passkeysEnabled: boolean;
+};
+
+export default class ExperimentalTab extends PureComponent<ExperimentalTabProps, ExperimentalTabState> {
   static contextTypes = {
     t: PropTypes.func,
     trackEvent: PropTypes.func,
+  };
+
+  state: ExperimentalTabState = {
+    passkeysEnabled: false,
   };
 
   settingsRefs = Array(
@@ -66,6 +74,12 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
   componentDidMount() {
     const { t } = this.context;
     handleSettingsRefs(t, t('experimental'), this.settingsRefs);
+
+    chrome.storage.local
+      .get('mpcPasskeysEnabled')
+      .then(({ mpcPasskeysEnabled }) => {
+        this.setState({ passkeysEnabled: mpcPasskeysEnabled === true });
+      });
   }
 
   renderToggleSection({
@@ -219,6 +233,28 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
   }
   ///: END:ONLY_INCLUDE_IF
 
+  renderPasskeysToggle() {
+    const { t } = this.context;
+    const { passkeysEnabled } = this.state;
+
+    return this.renderToggleSection({
+      title: t('passkeys'),
+      description: passkeysEnabled
+        ? t('passkeysEnabledDescription')
+        : t('passkeysDisabledDescription'),
+      toggleValue: passkeysEnabled,
+      toggleCallback: (value) => {
+        const next = !value;
+        this.setState({ passkeysEnabled: next });
+        chrome.storage.local.set({ mpcPasskeysEnabled: next });
+      },
+      toggleDataTestId: 'toggle-passkeys',
+      toggleContainerDataTestId: 'toggle-passkeys-container',
+      toggleOffLabel: t('off'),
+      toggleOnLabel: t('on'),
+    });
+  }
+
   render() {
     return (
       <div className="settings-page__body">
@@ -234,6 +270,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
           this.renderWatchAccountToggle()
           ///: END:ONLY_INCLUDE_IF
         }
+        {this.renderPasskeysToggle()}
       </div>
     );
   }

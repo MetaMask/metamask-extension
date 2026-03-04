@@ -34,13 +34,16 @@ export const AddMpcWalletPage = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
 
   const handleCreate = useCallback(async () => {
-    // Create a new passkey via the offscreen document. The offscreen handler
-    // calls navigator.credentials.create() (which works regardless of
-    // whether the UI is in a popup, tab, or side panel) and persists the
-    // credential ID in localStorage for later sign operations.
-    const { publicKey } = await PasskeyOffscreenBridge.create();
+    const { mpcPasskeysEnabled } =
+      await chrome.storage.local.get('mpcPasskeysEnabled');
 
-    await dispatch(createMpcKeyring(publicKey));
+    let verifierId = 'default-verifier-id';
+    if (mpcPasskeysEnabled === true) {
+      const result = await PasskeyOffscreenBridge.create();
+      verifierId = result.publicKey;
+    }
+
+    await dispatch(createMpcKeyring(verifierId));
     navigate(DEFAULT_ROUTE);
   }, [dispatch, navigate]);
 
