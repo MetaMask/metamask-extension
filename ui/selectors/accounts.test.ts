@@ -100,6 +100,18 @@ describe('Accounts Selectors', () => {
         type: 'eip155:eoa',
       });
     });
+
+    it('handles checksummed addresses', () => {
+      expect(
+        getInternalAccountByAddress(
+          mockState as AccountsState,
+          '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
+        ),
+      ).toStrictEqual({
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      });
+    });
   });
 
   describe('#getSelectedInternalAccount', () => {
