@@ -75,7 +75,8 @@ let observer: PerformanceObserver | null = null;
  * @returns Cleanup function to disconnect the observer
  */
 export function setupLongTaskObserver(sampleRate: number = 0.1): () => void {
-  // Sample to reduce overhead
+  // NOSONAR: Math.random is intentional — this controls performance
+  // sampling rate, not a security-sensitive decision.
   if (Math.random() > sampleRate) {
     return () => {
       // No-op cleanup for non-sampled sessions

@@ -81,6 +81,20 @@ describe('performance-observers', () => {
       expect(metrics1).not.toBe(metrics2);
       expect(metrics1.tasks).not.toBe(metrics2.tasks);
     });
+
+    it('resets metrics when reset=true is passed', () => {
+      const metrics = getLongTaskMetrics(true);
+
+      expect(metrics).toEqual({
+        count: 0,
+        totalDuration: 0,
+        maxDuration: 0,
+        tasks: [],
+      });
+
+      const afterReset = getLongTaskMetrics();
+      expect(afterReset.count).toBe(0);
+    });
   });
 
   describe('getLongTaskMetricsWithTBT', () => {
@@ -91,6 +105,15 @@ describe('performance-observers', () => {
       expect(metrics).toHaveProperty('tbtRating');
       expect(metrics.tbt).toBe(0);
       expect(metrics.tbtRating).toBe('good');
+    });
+
+    it('resets metrics when reset=true is passed', () => {
+      const metrics = getLongTaskMetricsWithTBT(true);
+
+      expect(metrics.tbt).toBe(0);
+
+      const afterReset = getLongTaskMetrics();
+      expect(afterReset.count).toBe(0);
     });
   });
 
@@ -139,6 +162,137 @@ describe('performance-observers', () => {
 
       // Should return no-op cleanup without throwing
       expect(typeof cleanup).toBe('function');
+    });
+
+    it('accumulates metrics when observer callback fires', () => {
+      Math.random = () => 0;
+      let capturedCallback: (list: { getEntries: () => object[] }) => void;
+
+      const mockObserve = jest.fn();
+      const mockDisconnect = jest.fn();
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).PerformanceObserver = class {
+        constructor(
+          callback: (list: { getEntries: () => object[] }) => void,
+        ) {
+          capturedCallback = callback;
+        }
+
+        observe = mockObserve;
+
+        disconnect = mockDisconnect;
+      };
+
+      setupLongTaskObserver(1);
+
+      capturedCallback!({
+        getEntries: () => [
+          { name: 'self', duration: 120, startTime: 100 },
+          { name: 'self', duration: 80, startTime: 300 },
+        ],
+      });
+
+      const metrics = getLongTaskMetrics();
+      expect(metrics.count).toBe(2);
+      expect(metrics.totalDuration).toBe(200);
+      expect(metrics.maxDuration).toBe(120);
+      expect(metrics.tasks).toHaveLength(2);
+    });
+
+    it('returns disconnect cleanup for duplicate observer calls', () => {
+      Math.random = () => 0;
+      const mockObserve = jest.fn();
+      const mockDisconnect = jest.fn();
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).PerformanceObserver = class {
+        observe = mockObserve;
+
+        disconnect = mockDisconnect;
+      };
+
+      setupLongTaskObserver(1);
+      const cleanup2 = setupLongTaskObserver(1);
+
+      // Second call should still return a valid cleanup
+      expect(typeof cleanup2).toBe('function');
+      // observe should only have been called once (first setup)
+      expect(mockObserve).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles observer.observe throwing an error', () => {
+      Math.random = () => 0;
+      const consoleWarnSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => undefined);
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).PerformanceObserver = class {
+        observe() {
+          throw new Error('longtask not supported');
+        }
+
+        disconnect = jest.fn();
+      };
+
+      const cleanup = setupLongTaskObserver(1);
+      expect(typeof cleanup).toBe('function');
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        '[Performance] Failed to setup Long Task observer:',
+        expect.any(Error),
+      );
+
+      consoleWarnSpy.mockRestore();
+    });
+
+    it('caps stored tasks at MAX_TASKS_STORED (50)', () => {
+      Math.random = () => 0;
+      let capturedCallback: (list: { getEntries: () => object[] }) => void;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).PerformanceObserver = class {
+        constructor(
+          callback: (list: { getEntries: () => object[] }) => void,
+        ) {
+          capturedCallback = callback;
+        }
+
+        observe = jest.fn();
+
+        disconnect = jest.fn();
+      };
+
+      setupLongTaskObserver(1);
+
+      const entries = Array.from({ length: 60 }, (_, i) => ({
+        name: 'self',
+        duration: 60 + i,
+        startTime: i * 100,
+      }));
+
+      capturedCallback!({ getEntries: () => entries });
+
+      const metrics = getLongTaskMetrics();
+      expect(metrics.count).toBe(60);
+      expect(metrics.tasks).toHaveLength(50);
+    });
+
+    it('disconnects observer on cleanup', () => {
+      Math.random = () => 0;
+      const mockDisconnect = jest.fn();
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).PerformanceObserver = class {
+        observe = jest.fn();
+
+        disconnect = mockDisconnect;
+      };
+
+      const cleanup = setupLongTaskObserver(1);
+      cleanup();
+
+      expect(mockDisconnect).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -218,6 +372,42 @@ describe('performance-observers', () => {
         'millisecond',
       );
     });
+
+    function expectBucket(count: number, expected: string) {
+      const mockSentry = {
+        setMeasurement: jest.fn(),
+        setTag: jest.fn(),
+        addBreadcrumb: jest.fn(),
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).sentry = mockSentry;
+
+      reportLongTaskMetricsToSentry({
+        count,
+        totalDuration: 0,
+        maxDuration: 0,
+        tasks: [],
+        tbt: 0,
+        tbtRating: 'good',
+      });
+
+      expect(mockSentry.setTag).toHaveBeenCalledWith(
+        'long_task.count_bucket',
+        expected,
+      );
+    }
+
+    it('bucketizes count 0 as "0"', () => expectBucket(0, '0'));
+    it('bucketizes count 1 as "1-5"', () => expectBucket(1, '1-5'));
+    it('bucketizes count 5 as "1-5"', () => expectBucket(5, '1-5'));
+    it('bucketizes count 6 as "6-10"', () => expectBucket(6, '6-10'));
+    it('bucketizes count 10 as "6-10"', () => expectBucket(10, '6-10'));
+    it('bucketizes count 11 as "11-25"', () => expectBucket(11, '11-25'));
+    it('bucketizes count 25 as "11-25"', () => expectBucket(25, '11-25'));
+    it('bucketizes count 26 as "26-50"', () => expectBucket(26, '26-50'));
+    it('bucketizes count 50 as "26-50"', () => expectBucket(50, '26-50'));
+    it('bucketizes count 51 as "50+"', () => expectBucket(51, '50+'));
+    it('bucketizes count 100 as "50+"', () => expectBucket(100, '50+'));
   });
 
   describe('exposeLongTaskMetricsForTesting', () => {
