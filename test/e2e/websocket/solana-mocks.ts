@@ -1,34 +1,38 @@
 // eslint-disable-next-line @typescript-eslint/no-shadow
 import { WebSocket } from 'ws';
-import LocalWebSocketServer from './websocket-server';
 import {
   WebSocketMessageMock,
   DEFAULT_SOLANA_WS_MOCKS,
-} from './tests/solana/mocks/websocketDefaultMocks';
+} from '../tests/solana/mocks/websocketDefaultMocks';
+import type { WebSocketServiceConfig } from './registry';
+import type LocalWebSocketServer from './server';
+import { WEBSOCKET_SERVICES } from './constants';
+
+export const SOLANA_WS_PORT = 8088;
 
 /**
  * Sets up Solana WebSocket mocks with configurable message handlers.
- * Registers a single connection handler (cleared each test in helpers.js)
- * so we do not accumulate listeners across tests.
  *
- * @param mocks - Array of message mock configurations
+ * @param server - The LocalWebSocketServer instance (injected by registry)
+ * @param mocks - Per-test mock overrides (merged before defaults)
  */
-export async function setupSolanaWebsocketMocks(
+async function setupSolanaWebsocketMocks(
+  server: LocalWebSocketServer,
   mocks: WebSocketMessageMock[] = [],
 ): Promise<void> {
-  const localWebSocketServer = LocalWebSocketServer.getServerInstance();
+  const wsServer = server.getServer();
 
   const mergedMocks: WebSocketMessageMock[] = [
     ...mocks,
     ...DEFAULT_SOLANA_WS_MOCKS,
   ];
 
-  localWebSocketServer.addMockConnectionHandler((socket: WebSocket) => {
-    console.log('Client connected to the local WebSocket server');
+  wsServer.on('connection', (socket: WebSocket) => {
+    console.log('[Solana] Client connected to Solana WebSocket server');
 
     socket.on('message', (data) => {
       const message = data.toString();
-      console.log('Message received from client:', message, false);
+      console.log('[Solana] Message received from client:', message);
 
       for (const mock of mergedMocks) {
         const includes = Array.isArray(mock.messageIncludes)
@@ -41,11 +45,10 @@ export async function setupSolanaWebsocketMocks(
 
         if (matches) {
           if (mock.logMessage) {
-            console.log(mock.logMessage, false);
+            console.log(`[Solana] ${mock.logMessage}`);
           }
 
-          // Extract the JSON-RPC id from the incoming message so the
-          // response id matches (clients ignore mismatched ids).
+          // Extract JSON-RPC id so the response id matches
           let requestId: string | number | null = null;
           try {
             const parsed = JSON.parse(message);
@@ -62,8 +65,7 @@ export async function setupSolanaWebsocketMocks(
                 : { ...mock.response, id: requestId };
             socket.send(JSON.stringify(response));
             console.log(
-              `Simulated message sent to the client for: ${includes.join(' + ')}`,
-              false,
+              `[Solana] Simulated message sent to the client for: ${includes.join(' + ')}`,
             );
 
             // Send follow-up response if configured (e.g. signatureNotification)
@@ -72,8 +74,7 @@ export async function setupSolanaWebsocketMocks(
               setTimeout(() => {
                 socket.send(JSON.stringify(mock.followUpResponse));
                 console.log(
-                  `Follow-up message sent to the client for: ${includes.join(' + ')}`,
-                  false,
+                  `[Solana] Follow-up message sent to the client for: ${includes.join(' + ')}`,
                 );
               }, followUpDelay);
             }
@@ -85,3 +86,9 @@ export async function setupSolanaWebsocketMocks(
     });
   });
 }
+
+export const solanaWebSocketConfig: WebSocketServiceConfig = {
+  name: WEBSOCKET_SERVICES.solana,
+  port: SOLANA_WS_PORT,
+  setup: setupSolanaWebsocketMocks,
+};
