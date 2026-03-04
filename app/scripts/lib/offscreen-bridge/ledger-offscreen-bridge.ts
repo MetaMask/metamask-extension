@@ -6,11 +6,20 @@ import {
   AppConfigurationResponse,
 } from '@metamask/eth-ledger-bridge-keyring';
 import { TransportStatusError } from '@ledgerhq/errors';
+import { LEDGER_ERROR_MAPPINGS } from '@metamask/hw-wallet-sdk';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
+
+/**
+ * Convert a Ledger status code (number) to the hex key used in LEDGER_ERROR_MAPPINGS (e.g. 27267 -> "0x6a83").
+ * @param statusCode - Error status code.
+ */
+function statusCodeToHexKey(statusCode: number): string {
+  return `0x${statusCode.toString(16).padStart(4, '0')}`.toLowerCase();
+}
 
 const MESSAGE_TIMEOUT = 4000;
 
@@ -175,12 +184,20 @@ export class LedgerOffscreenBridge
               typeof error.statusCode === 'number' &&
               error.statusCode > 0
             ) {
-              // This is TransportStatusError, convert the SerializedLedgerError to a TransportStatusError
-              // TransportStatusError will regenerate the error message based on the statusCode
-              const transportStatusError = new TransportStatusError(
-                error.statusCode,
-              );
-              reject(transportStatusError);
+              const hexKey = statusCodeToHexKey(error.statusCode);
+              const mapping = LEDGER_ERROR_MAPPINGS[
+                hexKey as keyof typeof LEDGER_ERROR_MAPPINGS
+              ] as { userMessage?: string } | undefined;
+              if (mapping?.userMessage) {
+                reject(new Error(mapping.userMessage));
+              } else {
+                // This is TransportStatusError, convert the SerializedLedgerError to a TransportStatusError
+                // TransportStatusError will regenerate the error message based on the statusCode
+                const transportStatusError = new TransportStatusError(
+                  error.statusCode,
+                );
+                reject(transportStatusError);
+              }
             } else if (error?.message) {
               // Regenerate the error based on the SerializedLedgerError
               const newError = new Error(error.message, {

@@ -266,7 +266,10 @@ class ConnectHardwareForm extends Component {
           });
         } else if (ledgerErrorCode) {
           this.setState({
-            error: `${errorMessage} - ${getErrorMessage(ledgerErrorCode)}`,
+            error: `${errorMessage} - ${getErrorMessage(
+              ledgerErrorCode,
+              this.context.t,
+            )}`,
           });
         } else if (
           errorMessage
