@@ -897,6 +897,7 @@
     "recoveryPhraseReminderHasBeenShown": "boolean",
     "recoveryPhraseReminderLastShown": "number",
     "referrals": {
+      "asterdex": {},
       "gmx": {},
       "hyperliquid": {}
     },
