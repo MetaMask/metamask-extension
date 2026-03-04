@@ -5,6 +5,7 @@ import {
   getNativeAssetForChainId,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
+import { userEvent } from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
@@ -191,6 +192,25 @@ describe('BridgeCTAButton', () => {
 
     expect(getByText(messages.swap.message)).toBeInTheDocument();
     expect(getByRole('button')).not.toBeDisabled();
+  });
+
+  it('clears declined state when fetching new quotes', async () => {
+    const onFetchNewQuotes = jest.fn();
+    const mockStore = createBridgeMockStore({
+      bridgeSliceOverrides: {
+        wasTxDeclined: true,
+      },
+    });
+    const store = configureStore(mockStore);
+    const { getByText } = renderWithProvider(
+      <BridgeCTAButton onFetchNewQuotes={onFetchNewQuotes} />,
+      store,
+    );
+
+    await userEvent.click(getByText(messages.bridgeFetchNewQuotes.message));
+
+    expect(onFetchNewQuotes).toHaveBeenCalledTimes(1);
+    expect(store.getState().bridge.wasTxDeclined).toBe(false);
   });
 
   it('should render hardware wallet connect label with wallet name', () => {

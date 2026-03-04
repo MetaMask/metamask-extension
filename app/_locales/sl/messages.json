@@ -293,9 +293,6 @@
     "message": "Uvoženo",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "initialTransactionConfirmed": {
-    "message": "Vaša prvotna transakcija je bila potrjena. Pritisnite V redu in se vrnite nazaj."
-  },
   "insufficientBalance": {
     "message": "Nezadostno ravnovesje."
   },
@@ -471,12 +468,6 @@
   },
   "rejectAll": {
     "message": "Zavrni vse"
-  },
-  "rejectTxsDescription": {
-    "message": "Zavrnili boste $1 transakcij."
-  },
-  "rejectTxsN": {
-    "message": "Zavrni $1 transakcij"
   },
   "rejected": {
     "message": "Zavrnjeno"

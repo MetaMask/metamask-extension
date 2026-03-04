@@ -7,7 +7,9 @@ import {
 } from './tests/solana/mocks/websocketDefaultMocks';
 
 /**
- * Sets up Solana WebSocket mocks with configurable message handlers
+ * Sets up Solana WebSocket mocks with configurable message handlers.
+ * Registers a single connection handler (cleared each test in helpers.js)
+ * so we do not accumulate listeners across tests.
  *
  * @param mocks - Array of message mock configurations
  */
@@ -15,29 +17,24 @@ export async function setupSolanaWebsocketMocks(
   mocks: WebSocketMessageMock[] = [],
 ): Promise<void> {
   const localWebSocketServer = LocalWebSocketServer.getServerInstance();
-  const wsServer = localWebSocketServer.getServer();
 
   const mergedMocks: WebSocketMessageMock[] = [
     ...mocks,
     ...DEFAULT_SOLANA_WS_MOCKS,
   ];
 
-  // Add Solana-specific message handlers to the existing server
-  wsServer.on('connection', (socket: WebSocket) => {
+  localWebSocketServer.addMockConnectionHandler((socket: WebSocket) => {
     console.log('Client connected to the local WebSocket server');
 
-    // Handle messages from the client
     socket.on('message', (data) => {
       const message = data.toString();
       console.log('Message received from client:', message, false);
 
-      // Check each mock configuration
       for (const mock of mergedMocks) {
         const includes = Array.isArray(mock.messageIncludes)
           ? mock.messageIncludes
           : [mock.messageIncludes];
 
-        // Check if all required strings are included in the message
         const matches = includes.every((includeStr) =>
           message.includes(includeStr),
         );
@@ -82,7 +79,6 @@ export async function setupSolanaWebsocketMocks(
             }
           }, delay);
 
-          // Break after first match to avoid multiple responses
           break;
         }
       }

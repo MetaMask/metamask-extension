@@ -24,7 +24,10 @@ import {
   MultichainProviderConfig,
 } from '../../shared/constants/multichain/networks';
 import { Numeric } from '../../shared/modules/Numeric';
-import { getMultiChainBalancesControllerBalances } from '../../shared/modules/selectors/assets-migration';
+import {
+  getMultichainAssetsRatesControllerConversionRates,
+  getMultiChainBalancesControllerBalances,
+} from '../../shared/modules/selectors/assets-migration';
 import {
   getConversionRate,
   getCurrentCurrency,
@@ -209,9 +212,7 @@ export function getMultichainNativeCurrency(
     : getMultichainProviderConfig(state, account).ticker;
 }
 
-export function getMultichainCurrentCurrency(state: MultichainState) {
-  return getCurrentCurrency(state);
-}
+export { getCurrentCurrency as getMultichainCurrentCurrency };
 
 export function getMultichainCurrencyImage(
   state: MultichainState,
@@ -441,16 +442,22 @@ export function getMultichainConversionRate(
   state: MultichainState,
   account?: InternalAccount,
 ) {
-  const { conversionRates } = state.metamask;
   const { chainId } = getMultichainNetwork(state, account);
-  const conversionRate = getConversionRatesForNativeAsset({
-    conversionRates,
-    chainId,
-  })?.rate;
 
-  return getMultichainIsEvm(state, account)
+  const conversionRate = getMultichainIsEvm(state, account)
     ? getConversionRate(state)
-    : conversionRate;
+    : getConversionRatesForNativeAsset({
+        conversionRates:
+          getMultichainAssetsRatesControllerConversionRates(state),
+        chainId,
+      })?.rate;
+
+  const parsedConversionRate =
+    conversionRate === null || conversionRate === undefined
+      ? undefined
+      : Number(conversionRate);
+
+  return parsedConversionRate;
 }
 
 // TODO get this from the multichain network controller
