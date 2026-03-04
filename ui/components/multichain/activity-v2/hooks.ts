@@ -66,7 +66,10 @@ export function useTransactionsQuery(filter?: ActivityListFilter) {
     () =>
       queries.transactions(
         { accountAddresses, evmAddress, networks },
-        { enabled: Boolean(useExternalServices), keepPreviousData: true },
+        {
+          enabled: Boolean(useExternalServices) && networks.length > 0,
+          keepPreviousData: true,
+        },
       ),
     [evmAddress, accountAddresses, networks, useExternalServices],
   );
