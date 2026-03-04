@@ -57,6 +57,9 @@ jest.mock('../../../hooks/musd', () => ({
     hasMusdBalance: false,
   }),
 }));
+jest.mock('../../../components/multichain/activity-v2/activity-list', () => ({
+  ActivityList: () => <div data-testid="mock-activity-list" />,
+}));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

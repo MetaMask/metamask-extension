@@ -196,7 +196,9 @@ function CenterContainer({
             <PayTokenAmount amountHuman={amountHuman} disabled={!hasTokens} />
           )}
           {children}
-          {disablePay !== true && hasTokens && <PayWithRow />}
+          {disablePay !== true && hasTokens && (
+            <PayWithRow variant={ConfirmInfoRowSize.Small} />
+          )}
         </Box>
       )}
 
