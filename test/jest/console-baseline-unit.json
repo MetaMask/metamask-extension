@@ -473,13 +473,7 @@
       "Reselect: Identity function warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/app/modals/reject-transactions/reject-transactions.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/app/modals/transaction-already-confirmed/transaction-already-confirmed.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/modals/transaction-confirmed/transaction-confirmed.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/modals/turn-on-metamask-notifications/turn-on-metamask-notifications.test.tsx": {
@@ -672,9 +666,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/transaction-activity-empty-state/transaction-activity-empty-state.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/transaction-activity-log/transaction-activity-log.component.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/transaction-breakdown/transaction-breakdown-row/transaction-breakdown-row.component.test.js": {
@@ -1642,6 +1633,10 @@
     "ui/pages/confirm-encryption-public-key/confirm-encryption-public-key.component.test.js": {
       "Reselect: Identity function warnings": 2,
       "Reselect: Input stability warnings": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/cancel-speedup/cancel-speedup.test.tsx": {
+      "React: PropTypes validation failures": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/UI/asset/asset.test.tsx": {
@@ -3014,11 +3009,10 @@
       "React: Act warnings (component updates not wrapped)": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/keychains/restore-vault.test.js": {
+    "ui/pages/keychains/restore-vault.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/keychains/reveal-seed.test.js": {
-      "error: Warning: React does not recognize": 1,
+    "ui/pages/keychains/reveal-seed.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/lock/lock.test.tsx": {
@@ -3059,6 +3053,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/multichain-accounts/smart-account-page/smart-account-page.test.tsx": {
+      "MetaMask: Background connection not initialized": 2,
       "React: Act warnings (component updates not wrapped)": 2,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
@@ -3128,8 +3123,6 @@
     },
     "ui/pages/onboarding-flow/onboarding-flow.test.tsx": {
       "MetaMask: Background connection not initialized": 13,
-      "error: Error: Actions must be plain": 1,
-      "error: Warning: React does not recognize": 1,
       "warn: No routes matched location \"/\"": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },

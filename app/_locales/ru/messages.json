@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Пока нечего просматривать. Обменяйте свой первый токен сегодня."
   },
-  "activityLog": {
-    "message": "Журнал активности"
-  },
   "add": {
     "message": "Добавить"
   },
@@ -278,9 +275,6 @@
   },
   "addIPFSGateway": {
     "message": "Добавьте предпочтительный шлюз IPFS"
-  },
-  "addImportAccount": {
-    "message": "Добавить счет или аппаратный кошелек"
   },
   "addMemo": {
     "message": "Добавить примечание"
@@ -653,10 +647,6 @@
   },
   "allowNotifications": {
     "message": "Разрешить уведомления"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "Разрешить $1 снять и потратить до следующей суммы:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Сумма"
@@ -1912,9 +1902,6 @@
   "customSlippage": {
     "message": "Пользовательский"
   },
-  "customSpendLimit": {
-    "message": "Пользовательский лимит расходов"
-  },
   "customToken": {
     "message": "Пользовательский токен"
   },
@@ -2484,9 +2471,6 @@
   "editNonceMessage": {
     "message": "Это продвинутая функция, используйте ее с осторожностью."
   },
-  "editPermission": {
-    "message": "Изменить разрешение"
-  },
   "editPermissions": {
     "message": "Изменить разрешения"
   },
@@ -2570,9 +2554,6 @@
   },
   "enterChainId": {
     "message": "Введите ID блокчейна"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Введите максимальный лимит расходов"
   },
   "enterNetworkName": {
     "message": "Введите имя сети"
@@ -3365,9 +3346,6 @@
     "message": "MetaMask не удалось подключиться к хосту блокчейна. Узнать возможные причины можно $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "Ваша первоначальная транзакция подтверждена сетью. Нажмите ОК, чтобы вернуться."
-  },
   "insights": {
     "message": "Аналитика"
   },
@@ -3786,13 +3764,6 @@
   },
   "makeAnotherSwap": {
     "message": "Создать новый своп"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Убедитесь, что никто не смотрит",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "Управление"
   },
   "manageDefaultSettings": {
     "message": "Управление настройками конфиденциальности по умолчанию"
@@ -5705,9 +5676,6 @@
   "productAnnouncements": {
     "message": "Объявления о продуктах"
   },
-  "proposedApprovalLimit": {
-    "message": "Предлагаемый лимит одобрения"
-  },
   "provide": {
     "message": "Предоставить"
   },
@@ -5928,18 +5896,6 @@
   "rejectAll": {
     "message": "Отклонить все"
   },
-  "rejectRequestsDescription": {
-    "message": "Вы собираетесь отклонить сразу $1 запроса(-ов)."
-  },
-  "rejectRequestsN": {
-    "message": "Отклонить $1 запроса(-ов)"
-  },
-  "rejectTxsDescription": {
-    "message": "Вы собираетесь отклонить сразу $1 транзакции(-ий)."
-  },
-  "rejectTxsN": {
-    "message": "Отклонить $1 транзакции(-ий)"
-  },
   "rejected": {
     "message": "Отклонен"
   },
@@ -6113,17 +6069,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "$1 дает $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask — $1. Это означает, что вы являетесь владельцем своей СВФ.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "полный доступ к вашему кошельку и средствам.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "некастодиальный кошелек."
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6137,10 +6083,6 @@
   "revealSeedWordsWarning": {
     "message": "Убедитесь, что никто не смотрит на ваш экран. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Поддержка MetaMask никогда не будет запрашивать этот ключ.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Показать чувствительный контент"
@@ -7677,25 +7619,6 @@
   "speedUpTooltipText": {
     "message": "Новая плата за газ"
   },
-  "speedUpTransaction": {
-    "message": "Ускорить эту транзакцию"
-  },
-  "spendLimitInsufficient": {
-    "message": "Недостаточный лимит расходов"
-  },
-  "spendLimitInvalid": {
-    "message": "Неверный лимит расходов. Должен быть положительным числом"
-  },
-  "spendLimitPermission": {
-    "message": "Разрешение на лимит расходов"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Лимит расходов затребован $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Лимит расходов слишком велик"
-  },
   "spender": {
     "message": "Расходующее лицо"
   },
@@ -8530,18 +8453,6 @@
   "transaction": {
     "message": "транзакция"
   },
-  "transactionCancelAttempted": {
-    "message": "Предпринята попытка отменить транзакцию с примерной платой за газ в размере $1 в $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Транзакция успешно отменена в $2"
-  },
-  "transactionConfirmed": {
-    "message": "Транзакция подтверждена в $2."
-  },
-  "transactionCreated": {
-    "message": "В $2 создана транзакция на сумму $1."
-  },
   "transactionDataFunction": {
     "message": "Функция"
   },
@@ -8551,17 +8462,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Сумма + комиссии"
   },
-  "transactionDropped": {
-    "message": "Транзакция отменена в $2."
-  },
   "transactionError": {
     "message": "Ошибка транзакции. Исключение в коде контракта."
   },
   "transactionErrorNoContract": {
     "message": "Попытка вызвать функцию на неконтрактном адресе."
-  },
-  "transactionErrored": {
-    "message": "Транзакция обнаружила ошибку."
   },
   "transactionFee": {
     "message": "Комиссия за транзакцию"
@@ -8597,24 +8502,15 @@
   "transactionIncludesTypes": {
     "message": "Эта транзакция включает: $1."
   },
-  "transactionResubmitted": {
-    "message": "Транзакция отправлена повторно с платой за газ, увеличенной до $1, в $2"
-  },
   "transactionSettings": {
     "message": "Настройки транзакции"
   },
   "transactionShield": {
     "message": "Защита транзакций"
   },
-  "transactionSubmitted": {
-    "message": "Транзакция отправлена с платой за газ в размере $1 в $2."
-  },
   "transactionTotalGasFee": {
     "message": "Итого платы за газ",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Транзакция обновлена в $2."
   },
   "transactions": {
     "message": "Транзакции"
@@ -9100,9 +8996,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Ваш NFT могут быть в опасности"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Ваша секретная фраза для восстановления"
   },
   "yourTransactionConfirmed": {
     "message": "Транзакция уже подтверждена"

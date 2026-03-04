@@ -109,7 +109,7 @@ export default function TokenCell({
     setShowScamWarningModal(arg);
   };
 
-  const renderFooterRight = () => {
+  const renderFooterLeft = () => {
     if (showMusdCta) {
       return (
         <MusdConvertLink
@@ -130,9 +130,7 @@ export default function TokenCell({
         />
       );
     }
-    return (
-      <TokenCellPrimaryDisplay token={displayToken} privacyMode={privacyMode} />
-    );
+    return <TokenCellPercentChange token={displayToken} />;
   };
 
   if (!token.chainId) {
@@ -160,8 +158,13 @@ export default function TokenCell({
             privacyMode={privacyMode}
           />
         }
-        footerLeftDisplay={<TokenCellPercentChange token={displayToken} />}
-        footerRightDisplay={renderFooterRight()}
+        footerLeftDisplay={renderFooterLeft()}
+        footerRightDisplay={
+          <TokenCellPrimaryDisplay
+            token={displayToken}
+            privacyMode={privacyMode}
+          />
+        }
       />
       {isEvm && showScamWarningModal && (
         <Modal isOpen onClose={() => setShowScamWarningModal(false)}>

@@ -107,7 +107,7 @@ const ViewAllButton = ({
     </Button>
   ) : (
     <>
-      <div className="my-1 -mx-4 border-t border-border-muted" />
+      <div className="my-1 -mx-1 border-t border-border-muted" />
       <Button
         size={ButtonSize.Sm}
         variant={ButtonVariant.Tertiary}
