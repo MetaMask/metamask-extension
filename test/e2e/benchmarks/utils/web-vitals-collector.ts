@@ -3,27 +3,18 @@
  *
  * Measurement strategy per metric:
  *
- * **INP** — Two-tier collection:
- * 1. `stateHooks.getWebVitalsMetrics()` — the `onINP` observer from
- *    `web-vitals/attribution` runs since page startup with
- *    `{ reportAllChanges: true }`, capturing INP from real WebDriver
- *    interactions throughout the benchmark. This is the primary source.
- * 2. PerformanceObserver (`event` type, `buffered: true`) + Selenium
- *    Actions probe — a W3C Actions click generates a trusted pointer
- *    interaction with a 16 ms busy-wait handler ensuring non-zero
- *    `duration`. Falls back to CDP `Input.dispatchMouseEvent` if
- *    Actions API is unavailable.
+ * **INP** — Two-tier: (1) `stateHooks.getWebVitalsMetrics()` from the
+ * `onINP` observer with `{ reportAllChanges: true }`, capturing INP from
+ * real WebDriver interactions. (2) PerformanceObserver (`event` type,
+ * `buffered: true`) + Selenium Actions probe generating a trusted pointer
+ * interaction with a 16ms busy-wait handler. Falls back to CDP
+ * `Input.dispatchMouseEvent` if Actions API is unavailable.
  *
- * **FCP** — Read directly from `performance.getEntriesByType('paint')`.
- * Always available on `chrome-extension://` pages.
+ * **FCP** — Read from `performance.getEntriesByType('paint')`.
  *
- * **LCP** — Two sources, then null:
- * 1. PerformanceObserver (`largest-contentful-paint`) — not emitted
- *    on `chrome-extension://` pages.
- * 2. `performance.mark('mm-hero-painted')` — set by the app's
- *    `AccountOverviewLayout` component after hero content renders.
- *    Most reliable on extension pages; fires consistently on the
- *    standard benchmark navigation path.
+ * **LCP** — (1) PerformanceObserver (`largest-contentful-paint`), then
+ * (2) `performance.mark('mm-hero-painted')` set by `AccountOverviewLayout`
+ * after hero content renders, then null.
  *
  * **CLS** — PerformanceObserver (`layout-shift` type).
  * Falls back to 0 on extension pages where the observer is unsupported.
@@ -196,7 +187,7 @@ for (var k = 0; k < cwv.observers.length; k++) cwv.observers[k].disconnect();
 
 // Diagnostic fields — logged by the runner, not included in benchmark output.
 // Remove once INP collection is confirmed working.
-result.__diagnostic = {
+result.cwvDiagnostic = {
   eventEntryCount: cwv.event.length,
   eventObserverSupported: cwv.eventObserverSupported,
   probeReceived: cwv.probeReceived,
@@ -219,15 +210,10 @@ const CDP_MOUSE_BASE = {
 /**
  * Dispatch a trusted pointer interaction to generate PerformanceEventTiming.
  *
- * Tries two approaches in order:
- * 1. **Selenium Actions API** (W3C WebDriver protocol) — the same
- *    mechanism used for all other clicks in the test suite. Goes through
- *    ChromeDriver → Chrome input pipeline → trusted events.
- * 2. **CDP `Input.dispatchMouseEvent`** — direct DevTools Protocol
- *    fallback if Actions is unavailable.
- *
- * Clicks at (100,100) in the viewport, away from interactive elements.
- * The `pointerdown` busy-wait handler in the setup script ensures
+ * Tries Selenium Actions API first (W3C WebDriver protocol, same mechanism
+ * used for all other clicks in the test suite), then falls back to CDP
+ * `Input.dispatchMouseEvent`. Clicks at (100,100) away from interactive
+ * elements. The `pointerdown` busy-wait handler in the setup script ensures
  * non-zero `duration` on the resulting PerformanceEventTiming entry.
  *
  * @param driver - MetaMask Driver wrapper with Selenium driver at `.driver`
@@ -284,7 +270,7 @@ async function dispatchINPProbe(driver: Driver): Promise<void> {
  * CLS: stateHooks → `layout-shift` observer → 0 fallback.
  *
  * @param driver - Selenium WebDriver instance with access to the extension page
- * @returns Per-run web vitals snapshot (with `__diagnostic` for debugging)
+ * @returns Per-run web vitals snapshot (with `cwvDiagnostic` for debugging)
  */
 export async function collectWebVitals(
   driver: Driver,
@@ -298,12 +284,12 @@ export async function collectWebVitals(
   await driver.delay(500);
 
   const raw = (await driver.executeScript(READ_SCRIPT)) as WebVitalsMetrics & {
-    __diagnostic?: Record<string, unknown>;
+    cwvDiagnostic?: Record<string, unknown>;
   };
 
-  if (raw.__diagnostic) {
-    console.info('[web-vitals-collector] diagnostic:', raw.__diagnostic);
-    delete raw.__diagnostic;
+  if (raw.cwvDiagnostic) {
+    console.info('[web-vitals-collector] diagnostic:', raw.cwvDiagnostic);
+    delete raw.cwvDiagnostic;
   }
 
   return raw;

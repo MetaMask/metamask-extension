@@ -343,7 +343,7 @@ describe('collectWebVitals', () => {
       await collectWebVitals(driver);
 
       const readScript = execScript.mock.calls[1][0] as string;
-      expect(readScript).toContain('__diagnostic');
+      expect(readScript).toContain('cwvDiagnostic');
       expect(readScript).toContain('eventEntryCount');
       expect(readScript).toContain('eventObserverSupported');
       expect(readScript).toContain('probeReceived');
@@ -353,10 +353,10 @@ describe('collectWebVitals', () => {
   });
 
   describe('diagnostic stripping', () => {
-    it('strips __diagnostic from returned metrics', async () => {
+    it('strips cwvDiagnostic from returned metrics', async () => {
       const metricsWithDiag = {
         ...fullMetrics,
-        __diagnostic: {
+        cwvDiagnostic: {
           eventEntryCount: 3,
           eventObserverSupported: true,
           probeReceived: true,
@@ -373,7 +373,7 @@ describe('collectWebVitals', () => {
       });
 
       const result = await collectWebVitals(driver);
-      expect(result).not.toHaveProperty('__diagnostic');
+      expect(result).not.toHaveProperty('cwvDiagnostic');
       expect(result.inp).toBe(120);
     });
 
@@ -392,7 +392,7 @@ describe('collectWebVitals', () => {
           .mockResolvedValueOnce(undefined)
           .mockResolvedValueOnce({
             ...makeReadResult(),
-            __diagnostic: diagnostic,
+            cwvDiagnostic: diagnostic,
           }),
       });
 
