@@ -93,6 +93,11 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withAccountTracker(data: Record<string, unknown>): this {
+    merge(this.fixture.data.AccountTracker, data);
+    return this;
+  }
+
   withAppStateController(data: Partial<AppStateControllerState>): this {
     merge(this.fixture.data.AppStateController, data);
     return this;
@@ -110,6 +115,11 @@ class FixtureBuilderV2 {
 
   withMetaMetricsController(data: Partial<MetaMetricsControllerState>): this {
     merge(this.fixture.data.MetaMetricsController, data);
+    return this;
+  }
+
+  withNameController(data: Record<string, unknown>): this {
+    merge(this.fixture.data.NameController, data);
     return this;
   }
 
@@ -139,16 +149,6 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withAccountTracker(data: Record<string, unknown>): this {
-    merge(this.fixture.data.AccountTracker, data);
-    return this;
-  }
-
-  withNameController(data: Record<string, unknown>): this {
-    merge(this.fixture.data.NameController, data);
-    return this;
-  }
-
   /* ==================================================================
                               CUSTOM METHODS
      ==================================================================
@@ -165,137 +165,6 @@ class FixtureBuilderV2 {
     this.fixture.data.NetworkEnablementController.enabledNetworkMap =
       data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
     return this;
-  }
-
-  withTrezorAccount(): this {
-    return this.withAccountTracker({
-      accountsByChainId: {
-        '0x539': {
-          [DEFAULT_FIXTURE_ACCOUNT]: {
-            balance: '0x15af1d78b58c40000',
-          },
-          [TREZOR_ADDRESS_CHECKSUM]: {
-            balance: '0x100000000000000000000',
-          },
-        },
-      },
-    })
-      .withAccountsController({
-        internalAccounts: {
-          accounts: {
-            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-              address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-              options: {
-                entropySource: '01KGHAX3WXGMX9H76THHSSV553',
-                derivationPath: "m/44'/60'/0'/0/0",
-                groupIndex: 0,
-                entropy: {
-                  type: 'mnemonic',
-                  id: '01KGHAX3WXGMX9H76THHSSV553',
-                  derivationPath: "m/44'/60'/0'/0/0",
-                  groupIndex: 0,
-                },
-              },
-              methods: [
-                'personal_sign',
-                'eth_sign',
-                'eth_signTransaction',
-                'eth_signTypedData_v1',
-                'eth_signTypedData_v3',
-                'eth_signTypedData_v4',
-              ],
-              type: 'eip155:eoa',
-              scopes: ['eip155:0'],
-              metadata: {
-                name: 'Account 1',
-                importTime: 1724486724986,
-                lastSelected: 1665507600000,
-                keyring: {
-                  type: 'HD Key Tree',
-                },
-              },
-            },
-            [TREZOR_ACCOUNT_ID]: {
-              id: TREZOR_ACCOUNT_ID,
-              address: TREZOR_ADDRESS,
-              options: {},
-              methods: [
-                'personal_sign',
-                'eth_sign',
-                'eth_signTransaction',
-                'eth_signTypedData_v1',
-                'eth_signTypedData_v3',
-                'eth_signTypedData_v4',
-              ],
-              type: 'eip155:eoa',
-              scopes: ['eip155:0'],
-              metadata: {
-                name: 'Trezor 1',
-                importTime: 1724486729079,
-                keyring: {
-                  type: 'Trezor Hardware',
-                },
-                lastSelected: 1724486729083,
-              },
-            },
-          },
-          selectedAccount: TREZOR_ACCOUNT_ID,
-        },
-      })
-      .withKeyringController({ vault: TREZOR_VAULT })
-      .withNameController({
-        names: {
-          ethereumAddress: {
-            [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
-              '*': {
-                name: 'Account 1',
-                sourceId: null,
-                proposedNames: {},
-                origin: 'account-identity',
-              },
-            },
-            [TREZOR_ADDRESS]: {
-              '*': {
-                proposedNames: {},
-                name: 'Trezor 1',
-                sourceId: null,
-                origin: 'account-identity',
-              },
-            },
-          },
-        },
-      })
-      .withPreferencesController({
-        identities: {
-          [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
-            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-            lastSelected: 1665507600000,
-            name: 'Account 1',
-          },
-          [TREZOR_ADDRESS]: {
-            address: TREZOR_ADDRESS,
-            lastSelected: 1665507800000,
-            name: 'Trezor 1',
-          },
-        },
-        lostIdentities: {
-          [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
-            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-            name: 'Account 1',
-            lastSelected: 1665507600000,
-          },
-          [TREZOR_ADDRESS]: {
-            address: TREZOR_ADDRESS,
-            name: 'Trezor 1',
-            lastSelected: 1665507800000,
-          },
-        },
-        selectedAddress: TREZOR_ADDRESS,
-      } as unknown as Parameters<
-        FixtureBuilderV2['withPreferencesController']
-      >[0])
-      .withMetaMetricsDisabled();
   }
 
   withLedgerAccount(): this {
@@ -384,24 +253,6 @@ class FixtureBuilderV2 {
         selectedAddress: ledgerAddressLower,
       });
     return this;
-  }
-
-  withMetaMetricsDisabled(): this {
-    if (this.fixture.data.MetaMetricsController) {
-      merge(this.fixture.data.MetaMetricsController, {
-        participateInMetaMetrics: false,
-        dataCollectionForMarketing: false,
-      });
-    }
-    return this;
-  }
-
-  withSelectedNetwork(
-    networkClientId: NetworkClientIdValue = NETWORK_CLIENT_ID.MAINNET,
-  ): this {
-    return this.withNetworkController({
-      selectedNetworkClientId: networkClientId,
-    });
   }
 
   withPermissionControllerConnectedToTestDapp({
@@ -568,6 +419,130 @@ class FixtureBuilderV2 {
       type: TransactionType.incoming,
     };
     return this.withTransactionController({ transactions: [incomingTx] });
+  }
+
+  withTrezorAccount(): this {
+    return this.withAccountTracker({
+      accountsByChainId: {
+        '0x539': {
+          [DEFAULT_FIXTURE_ACCOUNT]: {
+            balance: '0x15af1d78b58c40000',
+          },
+          [TREZOR_ADDRESS_CHECKSUM]: {
+            balance: '0x100000000000000000000',
+          },
+        },
+      },
+    })
+      .withAccountsController({
+        internalAccounts: {
+          accounts: {
+            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+              address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+              options: {
+                entropySource: '01KGHAX3WXGMX9H76THHSSV553',
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+                entropy: {
+                  type: 'mnemonic',
+                  id: '01KGHAX3WXGMX9H76THHSSV553',
+                  derivationPath: "m/44'/60'/0'/0/0",
+                  groupIndex: 0,
+                },
+              },
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Account 1',
+                importTime: 1724486724986,
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+            [TREZOR_ACCOUNT_ID]: {
+              id: TREZOR_ACCOUNT_ID,
+              address: TREZOR_ADDRESS,
+              options: {},
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Trezor 1',
+                importTime: 1724486729079,
+                keyring: {
+                  type: 'Trezor Hardware',
+                },
+                lastSelected: 1724486729083,
+              },
+            },
+          },
+          selectedAccount: TREZOR_ACCOUNT_ID,
+        },
+      })
+      .withKeyringController({ vault: TREZOR_VAULT })
+      .withNameController({
+        names: {
+          ethereumAddress: {
+            [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+              '*': {
+                name: 'Account 1',
+                sourceId: null,
+                proposedNames: {},
+                origin: 'account-identity',
+              },
+            },
+            [TREZOR_ADDRESS]: {
+              '*': {
+                proposedNames: {},
+                name: 'Trezor 1',
+                sourceId: null,
+                origin: 'account-identity',
+              },
+            },
+          },
+        },
+      })
+      .withPreferencesController({
+        identities: {
+          [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            lastSelected: 1665507600000,
+            name: 'Account 1',
+          },
+          [TREZOR_ADDRESS]: {
+            address: TREZOR_ADDRESS,
+            lastSelected: 1665507800000,
+            name: 'Trezor 1',
+          },
+        } as unknown as PreferencesControllerState['identities'],
+        selectedAddress: TREZOR_ADDRESS,
+      });
+  }
+
+  withSelectedNetwork(
+    networkClientId: NetworkClientIdValue = NETWORK_CLIENT_ID.MAINNET,
+  ): this {
+    return this.withNetworkController({
+      selectedNetworkClientId: networkClientId,
+    });
   }
 
   withShowNativeTokenAsMainBalanceDisabled(): this {
