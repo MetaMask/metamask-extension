@@ -1,12 +1,26 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { Box } from '../../../../../../components/component-library';
+import {
+  Display,
+  FlexDirection,
+} from '../../../../../../helpers/constants/design-system';
+import { ConfirmInfoRowSize } from '../../../../../../components/app/confirm/info/row/row';
 import {
   selectTransactionPaymentTokenByTransactionId,
   type TransactionPayState,
 } from '../../../../../../selectors/transactionPayController';
 import { useConfirmContext } from '../../../../context/confirm';
 import { CustomAmountInfo } from '../../../info/custom-amount-info';
+import { useTransactionCustomAmountAlerts } from '../../../../hooks/transactions/useTransactionCustomAmountAlerts';
+import {
+  useIsTransactionPayLoading,
+  useTransactionPayQuotes,
+} from '../../../../hooks/pay/useTransactionPayData';
+import { BridgeFeeRow } from '../../../rows/bridge-fee-row/bridge-fee-row';
+import { ClaimableBonusRow } from '../../../rows/claimable-bonus-row/claimable-bonus-row';
+import { TotalRow } from '../../../rows/total-row/total-row';
 import { MusdOverrideContent } from './musd-override-content';
 
 /**
@@ -46,7 +60,33 @@ export const MusdConversionInfo = () => {
     <CustomAmountInfo
       disablePay={Boolean(existingPayToken)}
       preferredToken={preferredToken}
-      overrideContent={renderOverrideContent}
+      overrideCenterContent={renderOverrideContent}
+      overrideBottomContent={<MusdBottomContent />}
     />
   );
 };
+
+function MusdBottomContent() {
+  const quotes = useTransactionPayQuotes();
+  const isQuotesLoading = useIsTransactionPayLoading();
+  const { hideResults } = useTransactionCustomAmountAlerts();
+
+  const isResultReady = isQuotesLoading || Boolean(quotes?.length);
+
+  if (!isResultReady || hideResults) {
+    return null;
+  }
+
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      gap={2}
+      paddingBottom={4}
+    >
+      <BridgeFeeRow variant={ConfirmInfoRowSize.Small} />
+      <ClaimableBonusRow rowVariant={ConfirmInfoRowSize.Small} />
+      <TotalRow variant={ConfirmInfoRowSize.Small} />
+    </Box>
+  );
+}

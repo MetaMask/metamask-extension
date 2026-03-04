@@ -115,7 +115,6 @@ const AssetList = ({
         <MusdBuyGetCta
           variant={buyGetCtaState.variant}
           selectedChainId={buyGetCtaState.selectedChainId}
-          showNetworkIcon={buyGetCtaState.showNetworkIcon}
         />
       )}
       <TokenListContainer onClickAsset={onClickAsset} safeChains={safeChains} />

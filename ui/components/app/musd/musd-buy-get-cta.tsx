@@ -23,6 +23,8 @@ import {
 import {
   AvatarNetwork,
   AvatarNetworkSize,
+  AvatarToken,
+  BadgeWrapper,
   Box,
   ButtonPrimary,
   ButtonPrimarySize,
@@ -48,6 +50,8 @@ import {
   type MusdCtaClickedEventProperties,
 } from './musd-events';
 
+const MUSD_ICON_IMAGE = './images/musd-icon-no-background-2x.png';
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -57,8 +61,6 @@ export type MusdBuyGetCtaProps = {
   variant: BuyGetMusdCtaVariant | null;
   /** Selected chain ID (hex) */
   selectedChainId: Hex | null;
-  /** Whether to show the network icon */
-  showNetworkIcon?: boolean;
   /** Custom className */
   className?: string;
 };
@@ -77,13 +79,11 @@ export type MusdBuyGetCtaProps = {
  * @param options0
  * @param options0.variant
  * @param options0.selectedChainId
- * @param options0.showNetworkIcon
  * @param options0.className
  */
 export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
   variant,
   selectedChainId,
-  showNetworkIcon = false,
   className,
 }) => {
   const t = useI18nContext();
@@ -201,38 +201,23 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
         alignItems={AlignItems.center}
         gap={3}
       >
-        {/* Network icon (conditional) */}
-        {showNetworkIcon && selectedChainId && networkIcon && (
-          <Box data-testid="musd-buy-get-cta-network-icon">
-            <AvatarNetwork
-              src={networkIcon}
-              name={networkName}
-              size={AvatarNetworkSize.Md}
-            />
-          </Box>
-        )}
-
-        {/* mUSD icon (when no network icon) */}
-        {!showNetworkIcon && (
-          <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-            backgroundColor={BackgroundColor.primaryMuted}
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-            }}
-          >
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.primaryDefault}
-            >
-              M
-            </Text>
-          </Box>
-        )}
+        {/* mUSD token icon with optional network badge */}
+        <BadgeWrapper
+          badge={
+            selectedChainId && networkIcon ? (
+              <AvatarNetwork
+                size={AvatarNetworkSize.Xs}
+                name={networkName}
+                src={networkIcon}
+                backgroundColor={BackgroundColor.backgroundDefault}
+                borderWidth={2}
+              />
+            ) : undefined
+          }
+          data-testid="musd-buy-get-cta-icon"
+        >
+          <AvatarToken name="mUSD" src={MUSD_ICON_IMAGE} />
+        </BadgeWrapper>
 
         {/* Text content */}
         <Box display={Display.Flex} flexDirection={FlexDirection.Column}>

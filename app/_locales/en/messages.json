@@ -4095,8 +4095,8 @@
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
   "musdBonusExplanation": {
-    "message": "Convert your stablecoins to mUSD, MetaMask's US dollar-backed stablecoin, and receive up to a $1% bonus. Terms apply.",
-    "description": "$1 is the bonus APY percentage"
+    "message": "Convert your stablecoins to mUSD, MetaMask's US dollar-backed stablecoin, and receive up to a $1% bonus. $2",
+    "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
   "musdBoostDescription": {
     "message": "Convert your stablecoins to mUSD and receive up to a $1% bonus.",
@@ -4109,6 +4109,14 @@
   "musdBuyMusd": {
     "message": "Buy mUSD"
   },
+  "musdClaimableBonus": {
+    "message": "Claimable bonus",
+    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
+  },
+  "musdClaimableBonusTooltip": {
+    "message": "The bonus you've earned for holding mUSD. Your bonus is claimable on Linea. $1",
+    "description": "$1 is the 'Terms apply' link"
+  },
   "musdClaimClaimingTo": {
     "message": "Claiming to",
     "description": "Label for the account row in the mUSD claim confirmation screen"
@@ -4117,12 +4125,16 @@
     "message": "Bonus payout will be on Linea network.",
     "description": "Subtitle shown on the mUSD claim confirmation screen explaining rewards are on Linea"
   },
+  "musdClaimActivityTitle": {
+    "message": "Claim mUSD bonus"
+  },
   "musdClaimTitle": {
     "message": "Claim bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "mUSD Conversion"
+    "message": "Convert $1 to mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
     "message": "mUSD Conversion"
@@ -4139,6 +4151,10 @@
   },
   "musdConvert": {
     "message": "Convert"
+  },
+  "musdConvertEnterMinimum": {
+    "message": "Enter a minimum of $1",
+    "description": "$1 is the minimum amount (e.g. $10)"
   },
   "musdConvertAndGetBonus": {
     "message": "Convert and get $1%",
@@ -4164,6 +4180,9 @@
   },
   "musdGetMusd": {
     "message": "Get mUSD"
+  },
+  "musdTermsApply": {
+    "message": "Terms apply."
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."

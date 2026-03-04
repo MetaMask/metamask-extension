@@ -222,36 +222,53 @@ describe('MusdBuyGetCta', () => {
     });
   });
 
-  describe('network icon', () => {
-    it('shows network icon when showNetworkIcon is true', () => {
+  describe('icon', () => {
+    it('always renders the mUSD token icon', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdBuyGetCta
           variant={BuyGetMusdCtaVariant.GET}
           selectedChainId="0x1"
-          showNetworkIcon
         />,
         store,
       );
 
       expect(
-        screen.getByTestId('musd-buy-get-cta-network-icon'),
+        screen.getByTestId('musd-buy-get-cta-icon'),
+      ).toBeInTheDocument();
+      expect(screen.getByAltText('mUSD logo')).toBeInTheDocument();
+    });
+
+    it('renders network badge when selectedChainId is provided', () => {
+      const store = createMockStore();
+      renderWithProvider(
+        <MusdBuyGetCta
+          variant={BuyGetMusdCtaVariant.GET}
+          selectedChainId="0x1"
+        />,
+        store,
+      );
+
+      expect(
+        screen.getByAltText('Ethereum Mainnet logo'),
       ).toBeInTheDocument();
     });
 
-    it('hides network icon when showNetworkIcon is false', () => {
+    it('does not render network badge when selectedChainId is null', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdBuyGetCta
           variant={BuyGetMusdCtaVariant.GET}
-          selectedChainId="0x1"
-          showNetworkIcon={false}
+          selectedChainId={null}
         />,
         store,
       );
 
       expect(
-        screen.queryByTestId('musd-buy-get-cta-network-icon'),
+        screen.getByTestId('musd-buy-get-cta-icon'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByAltText('Ethereum Mainnet logo'),
       ).not.toBeInTheDocument();
     });
   });
