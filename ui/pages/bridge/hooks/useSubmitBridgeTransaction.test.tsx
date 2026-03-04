@@ -4,12 +4,15 @@ import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
-import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+import { act } from '@testing-library/react';
+import {
+  createBridgeMockStore,
+  MOCK_LEDGER_ACCOUNT,
+} from '../../../../test/data/bridge/mock-bridge-store';
 import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
-import * as sharedSelectors from '../../../../shared/modules/selectors';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -35,6 +38,16 @@ jest.mock('../../../ducks/bridge/utils', () => ({
     maxPriorityFeePerGas: '0x0',
   })),
 }));
+jest.mock('../../../contexts/hardware-wallets/HardwareWalletContext', () => {
+  return {
+    ...jest.requireActual(
+      '../../../contexts/hardware-wallets/HardwareWalletContext',
+    ),
+    useHardwareWalletActions: () => ({
+      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+    }),
+  };
+});
 
 jest.mock('../../../store/actions', () => {
   const original = jest.requireActual('../../../store/actions');
@@ -89,14 +102,6 @@ jest.mock('../../../../shared/modules/selectors/networks', () => {
   };
 });
 
-jest.mock('../../../../shared/modules/selectors', () => {
-  const original = jest.requireActual('../../../../shared/modules/selectors');
-  return {
-    ...original,
-    isHardwareWallet: jest.fn(),
-  };
-});
-
 jest.mock('../../../selectors', () => {
   const original = jest.requireActual('../../../selectors');
   return {
@@ -109,7 +114,9 @@ jest.mock('../../../selectors', () => {
 
 const middleware = [thunk];
 
-const makeMockStore = () => {
+const makeMockStore = (
+  stateOverrides?: Partial<Parameters<typeof createBridgeMockStore>[0]>,
+) => {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const store = configureMockStore<any>(middleware)(
@@ -124,7 +131,9 @@ const makeMockStore = () => {
           },
         },
         useExternalServices: true,
+        ...(stateOverrides?.metamaskStateOverrides ?? {}),
       },
+      ...(stateOverrides ?? {}),
     }),
   );
   return store;
@@ -163,11 +172,13 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       });
 
       // Execute
-      await result.current.submitBridgeTransaction(
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
-      );
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+        );
+      });
 
       // Assert
       expect(submitTxSpy.mock.calls).toMatchSnapshot();
@@ -180,11 +191,13 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       });
 
       // Execute
-      await result.current.submitBridgeTransaction(
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0] as any,
-      );
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0] as any,
+        );
+      });
 
       // Assert
       expect(submitTxSpy.mock.calls).toMatchSnapshot();
@@ -197,11 +210,13 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       });
 
       // Execute
-      await result.current.submitBridgeTransaction(
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
-      );
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+        );
+      });
 
       // Assert
       expect(mockUseNavigate).toHaveBeenCalledWith(
@@ -214,18 +229,29 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
     });
 
     it('routes to awaiting signatures with requestId for hardware wallets', async () => {
-      (sharedSelectors.isHardwareWallet as jest.Mock).mockReturnValue(true);
-      const store = makeMockStore();
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      });
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
 
       // Execute
-      await result.current.submitBridgeTransaction(
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
-      );
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+        );
+      });
 
       const {
         quote: { requestId },
