@@ -147,12 +147,10 @@ ui/pages/settings/transaction-shield-tab        @MetaMask/web3auth
 app/scripts/controller-init/confirmations                                           @MetaMask/confirmations
 app/scripts/lib/ppom                                                                @MetaMask/confirmations
 app/scripts/lib/signature                                                           @MetaMask/confirmations
-app/scripts/lib/transaction/decode                                                  @MetaMask/confirmations
-app/scripts/lib/transaction/metrics.*                                               @MetaMask/confirmations
-app/scripts/lib/transaction/util.*                                                  @MetaMask/confirmations
+app/scripts/lib/transaction/                                                        @MetaMask/confirmations
 ui/pages/confirmations                                                              @MetaMask/confirmations
 ui/components/multichain/pages/send                                                 @MetaMask/confirmations
-ui/pages/confirmations/components/confirm/footer                                    @MetaMask/confirmations @MetaMask/web3auth
+ui/pages/confirmations/components/confirm/footer                                    @MetaMask/confirmations
 ui/pages/confirmations/components/confirm/info/shield-subscription-approve          @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/hooks/alerts/useShieldCoverageAlert.test.ts                  @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/hooks/alerts/useShieldCoverageAlert.ts                       @MetaMask/confirmations @MetaMask/web3auth
