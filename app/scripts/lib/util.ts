@@ -1,6 +1,8 @@
 import urlLib from 'url';
 import ipRegex from 'ip-regex';
 import { AccessList } from '@ethereumjs/tx';
+import BN from 'bn.js';
+import { memoize } from 'lodash';
 import {
   TransactionEnvelopeType,
   TransactionMeta,
@@ -9,14 +11,13 @@ import type { Provider } from '@metamask/network-controller';
 import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
 import { AssetConversion, FungibleAssetMarketData } from '@metamask/snaps-sdk';
-import { memoize } from 'lodash';
 import {
   DEVICE_TYPE,
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
+  ENVIRONMENT_TYPE_POPUP,
   OS,
   PLATFORM_BRAVE,
   PLATFORM_CHROME,
@@ -44,6 +45,7 @@ import {
   type Platform,
 } from '../../../shared/constants/app';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { getMethodDataAsync } from '../../../shared/lib/four-byte';
 import {
   getSafeChainsListFromCacheOnly,
@@ -58,7 +60,7 @@ export { getInstallType, initInstallType } from './install-type';
 /**
  * @see {@link getEnvironmentType}
  */
-const getEnvironmentTypeMemo = memoize((url: string) => {
+const getEnvironmentTypeMemo = memoize((url) => {
   const parsedUrl = new URL(url);
   if (parsedUrl.pathname === '/popup.html') {
     return ENVIRONMENT_TYPE_POPUP;
@@ -85,7 +87,7 @@ const getEnvironmentTypeMemo = memoize((url: string) => {
  * @param [url] - the URL of the window
  * @returns the environment ENUM
  */
-export const getEnvironmentType = (url = window.location.href) =>
+const getEnvironmentType = (url = window.location.href) =>
   getEnvironmentTypeMemo(url);
 
 /**
@@ -371,6 +373,36 @@ export const getOs = (): Os => {
 };
 
 /**
+ * Converts a hex string to a BN object
+ *
+ * @param inputHex - A number represented as a hex string
+ * @returns A BN object
+ */
+function hexToBn(inputHex: string) {
+  return new BN(stripHexPrefix(inputHex), 16);
+}
+
+/**
+ * Used to multiply a BN by a fraction
+ *
+ * @param targetBN - The number to multiply by a fraction
+ * @param numerator - The numerator of the fraction multiplier
+ * @param denominator - The denominator of the fraction multiplier
+ * @returns The product of the multiplication
+ */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function BnMultiplyByFraction(
+  targetBN: BN,
+  numerator: number,
+  denominator: number,
+) {
+  const numBN = new BN(numerator);
+  const denomBN = new BN(denominator);
+  return targetBN.mul(numBN).div(denomBN);
+}
+
+/**
  * Prefixes a hex string with '0x' or '-0x' and returns it. Idempotent.
  *
  * @param str - The string to prefix.
@@ -412,7 +444,15 @@ function checkAlarmExists(alarmList: { name: string }[], alarmName: string) {
   return alarmList.some((alarm) => alarm.name === alarmName);
 }
 
-export { addHexPrefix, checkAlarmExists, getChainType, getPlatform };
+export {
+  BnMultiplyByFraction,
+  addHexPrefix,
+  checkAlarmExists,
+  getChainType,
+  getEnvironmentType,
+  getPlatform,
+  hexToBn,
+};
 
 // Taken from https://stackoverflow.com/a/1349426/3696652
 const characters =
