@@ -17,35 +17,6 @@ const toMs = (value: DateLike): number | null => {
 
 const RWA_TIME_TICK_MS = 60_000;
 
-let currentNowMs = Date.now();
-let nowMsInterval: ReturnType<typeof setInterval> | null = null;
-const listeners = new Set<() => void>();
-
-const emitNowMs = () => {
-  currentNowMs = Date.now();
-  listeners.forEach((listener) => listener());
-};
-
-const subscribeToNowMs = (listener: () => void) => {
-  listeners.add(listener);
-
-  if (listeners.size === 1) {
-    currentNowMs = Date.now();
-    nowMsInterval = setInterval(emitNowMs, RWA_TIME_TICK_MS);
-  }
-
-  return () => {
-    listeners.delete(listener);
-
-    if (listeners.size === 0 && nowMsInterval) {
-      clearInterval(nowMsInterval);
-      nowMsInterval = null;
-    }
-  };
-};
-
-const getNowMsSnapshot = () => currentNowMs;
-
 export const isStockToken = (token?: RWATokenLike) =>
   token?.rwaData?.instrumentType === 'stock';
 
@@ -83,15 +54,14 @@ export const isTokenTradingOpenAt = (
 
 export function useRWAToken() {
   const isRWAEnabled = useSelector(getIsRWATokensEnabled);
-  const [nowMs, setNowMs] = useState(() => Date.now());
+  const [nowMs, setNowMs] = useState(Date.now);
 
   useEffect(() => {
     if (!isRWAEnabled) {
       return undefined;
     }
-    return subscribeToNowMs(() => {
-      setNowMs(getNowMsSnapshot());
-    });
+    const id = setInterval(() => setNowMs(Date.now()), RWA_TIME_TICK_MS);
+    return () => clearInterval(id);
   }, [isRWAEnabled]);
 
   const isStockTokenFlagGated = useCallback(
