@@ -394,10 +394,8 @@ const config = {
         enforce: 'pre',
         use: [envValidationLoader, codeFenceLoader].filter(Boolean),
       },
-      // thread-loader pool for UI component files
+      // thread-loader pool for UI component files (must appear before SWC rules)
       ...threadLoaderRule,
-      // React Compiler for UI component files
-      ...reactCompilerRule,
       // own typescript, and own typescript with jsx
       {
         test: /\.(?:ts|mts|tsx)$/u,
@@ -410,6 +408,8 @@ const config = {
         exclude: NODE_MODULES_RE,
         use: jsxLoader,
       },
+      // React Compiler for UI component files (must appear after SWC rules)
+      ...reactCompilerRule,
       // vendor javascript. We must transform all npm modules to ensure browser
       // compatibility.
       {
