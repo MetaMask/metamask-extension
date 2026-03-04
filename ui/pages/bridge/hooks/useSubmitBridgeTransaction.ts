@@ -86,6 +86,10 @@ export default function useSubmitBridgeTransaction() {
       );
     }
 
+    const intentData =
+      (quoteResponse.quote as { intent?: unknown }).intent ??
+      (quoteResponse as { intent?: unknown }).intent;
+
     // If bridging, enable All Networks view so the user can see their bridging activity
     if (
       isCrossChain(
@@ -98,16 +102,12 @@ export default function useSubmitBridgeTransaction() {
       );
     }
 
-    if (hardwareWalletUsed) {
+    if (hardwareWalletUsed && !intentData) {
       navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
     }
 
     // Execute transaction(s)
     try {
-      const intentData =
-        (quoteResponse.quote as { intent?: unknown }).intent ??
-        (quoteResponse as { intent?: unknown }).intent;
-
       // Intent quotes are submitted via the dedicated intent flow.
       if (intentData) {
         await dispatch(
