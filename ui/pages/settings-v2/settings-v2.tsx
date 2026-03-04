@@ -159,7 +159,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
               if (key === FIRST_TAB_PATH && pathname === SETTINGS_V2_ROUTE) {
                 return true;
               }
-              return pathname.startsWith(`${key}/`);
+              return pathname === key || pathname.startsWith(`${key}/`);
             }}
             onSelect={(key) => navigate(key)}
           />
