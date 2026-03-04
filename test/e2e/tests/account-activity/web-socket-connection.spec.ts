@@ -6,20 +6,20 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { WEBSOCKET_SERVICES } from '../../websocket/constants';
 
-async function waitForWebsocketConnections(
+async function waitForAccountActivityWebsocketConnections(
   driver: Driver,
   expectedCount: number,
 ) {
   let connectionCount;
   await driver.wait(async () => {
     connectionCount = WebSocketRegistry.getServer(
-      WEBSOCKET_SERVICES.solana,
+      WEBSOCKET_SERVICES.accountActivity,
     ).getWebsocketConnectionCount();
     return connectionCount === expectedCount;
   }, 10000);
 }
 
-describe('Solana Web Socket', function (this: Suite) {
+describe('Account Activity Web Socket', function (this: Suite) {
   it('a websocket connection is open when MetaMask full view is open', async function () {
     await withFixtures(
       {
@@ -29,12 +29,12 @@ describe('Solana Web Socket', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await waitForWebsocketConnections(driver, 1);
+        await waitForAccountActivityWebsocketConnections(driver, 1);
       },
     );
   });
 
-  it('the websocket connection is maintained for a grace period when MetaMask window is closed', async function () {
+  it('the websocket connection is closed when MetaMask window is closed', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -42,14 +42,14 @@ describe('Solana Web Socket', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
-        await waitForWebsocketConnections(driver, 1);
+        await waitForAccountActivityWebsocketConnections(driver, 1);
 
         await driver.openNewPage('about:blank');
 
         await driver.switchToWindowWithTitle('MetaMask');
         await driver.closeWindow();
 
-        await waitForWebsocketConnections(driver, 1);
+        await waitForAccountActivityWebsocketConnections(driver, 0);
       },
     );
   });
@@ -63,25 +63,23 @@ describe('Solana Web Socket', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await waitForWebsocketConnections(driver, 1);
+        await waitForAccountActivityWebsocketConnections(driver, 1);
 
         await driver.openNewPage('about:blank');
 
         await driver.openNewPage(`${driver.extensionUrl}/home.html`);
 
-        await waitForWebsocketConnections(driver, 1);
+        await waitForAccountActivityWebsocketConnections(driver, 1);
 
         await driver.switchToWindowWithTitle('MetaMask');
         await driver.closeWindow();
 
-        await waitForWebsocketConnections(driver, 1);
-        // Verify that websocket connection is NOT closed - second MM window still open (give it some time)
+        await waitForAccountActivityWebsocketConnections(driver, 1);
 
         await driver.switchToWindowWithTitle('MetaMask');
         await driver.closeWindow();
 
-        await waitForWebsocketConnections(driver, 1);
-        // The websocket close grace period is 5 minutes, we can't wait for this long to check if it's closed
+        await waitForAccountActivityWebsocketConnections(driver, 0);
       },
     );
   });
