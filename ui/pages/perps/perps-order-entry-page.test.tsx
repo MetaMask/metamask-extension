@@ -525,10 +525,10 @@ describe('PerpsOrderEntryPage', () => {
         ],
       );
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastUpdateInProgress',
-      });
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
         key: 'perpsToastUpdateSuccess',
+      });
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith({
+        key: 'perpsToastUpdateInProgress',
       });
     });
 

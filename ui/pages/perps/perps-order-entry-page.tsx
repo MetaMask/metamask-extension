@@ -69,7 +69,7 @@ import {
 const ORDER_MODE_TOAST_KEYS: Record<
   OrderMode,
   {
-    inProgress: PerpsToastKey;
+    inProgress?: PerpsToastKey;
     failed: PerpsToastKey;
   }
 > = {
@@ -78,7 +78,6 @@ const ORDER_MODE_TOAST_KEYS: Record<
     failed: PERPS_TOAST_KEYS.ORDER_FAILED,
   },
   modify: {
-    inProgress: PERPS_TOAST_KEYS.UPDATE_IN_PROGRESS,
     failed: PERPS_TOAST_KEYS.UPDATE_FAILED,
   },
   close: {
@@ -488,12 +487,15 @@ const PerpsOrderEntryPage: React.FC = () => {
     const closeSuccessToastDescription =
       getCloseSuccessToastDescription() ?? tradeActionToastDescription;
 
-    replacePerpsToastByKey({
-      key: ORDER_MODE_TOAST_KEYS[orderMode].inProgress,
-      ...(tradeActionToastDescription
-        ? { description: tradeActionToastDescription }
-        : {}),
-    });
+    const inProgressToastKey = ORDER_MODE_TOAST_KEYS[orderMode].inProgress;
+    if (inProgressToastKey) {
+      replacePerpsToastByKey({
+        key: inProgressToastKey,
+        ...(tradeActionToastDescription
+          ? { description: tradeActionToastDescription }
+          : {}),
+      });
+    }
 
     try {
       if (orderMode === 'close' && position) {
