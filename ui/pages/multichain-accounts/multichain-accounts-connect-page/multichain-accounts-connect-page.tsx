@@ -597,7 +597,7 @@ export const MultichainAccountsConnectPage: React.FC<
             <Tooltip
               title={t('alertReasonOriginTrustSignalVerified')}
               position="bottom"
-              style={{ display: 'flex' }}
+              style={{ display: 'flex', paddingTop: '2px' }}
             >
               <Icon
                 name={IconName.VerifiedFilled}
@@ -610,7 +610,7 @@ export const MultichainAccountsConnectPage: React.FC<
             <Tooltip
               title={t('trustSignalBlockTitle')}
               position="bottom"
-              style={{ display: 'flex' }}
+              style={{ display: 'flex', paddingTop: '2px' }}
             >
               <Icon
                 name={IconName.Danger}
@@ -740,6 +740,11 @@ export const MultichainAccountsConnectPage: React.FC<
               size={ButtonSize.Lg}
               onClick={onConfirm}
               danger={trustSignalState === TrustSignalDisplayState.Malicious}
+              startIconName={
+                trustSignalState === TrustSignalDisplayState.Malicious
+                  ? IconName.Danger
+                  : undefined
+              }
               disabled={
                 selectedAccountGroupIds.length === 0 ||
                 selectedChainIds.length === 0
