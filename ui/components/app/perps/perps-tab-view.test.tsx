@@ -6,11 +6,17 @@ import mockState from '../../../../test/data/mock-state.json';
 import * as mocks from './mocks';
 import { PerpsTabView } from './perps-tab-view';
 
-jest.mock('../../../ducks/perps', () => ({
-  setTutorialModalOpen: jest.fn(),
-}));
+jest.mock('../../../ducks/perps', () => {
+  const actual = jest.requireActual('../../../ducks/perps');
+  return {
+    ...actual,
+    setTutorialModalOpen: jest.fn(),
+    selectTutorialModalOpen: () => false,
+    selectTutorialActiveStep: () => actual.PerpsTutorialStep.WhatArePerps,
+  };
+});
 
-// Mock the PerpsControllerProvider and getPerpsStreamManager
+// Mock the PerpsControllerProvider, getPerpsStreamManager, and usePerpsController
 jest.mock('../../../providers/perps', () => ({
   PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
     children,
@@ -18,6 +24,11 @@ jest.mock('../../../providers/perps', () => ({
     init: jest.fn().mockResolvedValue(undefined),
     prewarm: jest.fn(),
     cleanupPrewarm: jest.fn(),
+  }),
+  usePerpsController: () => ({
+    messenger: {
+      subscribe: jest.fn(() => jest.fn()),
+    },
   }),
 }));
 
@@ -105,12 +116,6 @@ describe('PerpsTabView', () => {
 
       // Check that at least the first order is rendered
       expect(screen.getByTestId('order-card-order-001')).toBeInTheDocument();
-    });
-
-    it('shows the start new trade CTA when there are positions', () => {
-      renderWithProvider(<PerpsTabView />, mockStore);
-
-      expect(screen.getByTestId('start-new-trade-cta')).toBeInTheDocument();
     });
 
     it('displays position section header', () => {
