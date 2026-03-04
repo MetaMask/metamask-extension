@@ -3,6 +3,7 @@ import React from 'react';
 
 import {
   SimulationError,
+  TransactionType,
   UserFeeLevel,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
@@ -169,5 +170,33 @@ describe('<GasFeesDetails />', () => {
 
       expect(getByTestId('gas-fee-details-speed')).toBeInTheDocument();
     });
+  });
+
+  it('does not render speed row for musdClaim transactions', async () => {
+    const confirmation = {
+      ...genUnapprovedContractInteractionConfirmation({}),
+      type: TransactionType.musdClaim,
+    };
+    const store = configureStore(
+      getMockConfirmStateForTransaction(confirmation, {
+        metamask: {
+          preferences: {
+            showFiatInTestnets: true,
+            showConfirmationAdvancedDetails: false,
+          },
+        },
+      }),
+    );
+
+    const { queryByTestId } = renderWithConfirmContextProvider(
+      <GasFeesDetails />,
+      store,
+    );
+
+    await act(async () => {
+      // Intentionally empty
+    });
+
+    expect(queryByTestId('gas-fee-details-speed')).toBeNull();
   });
 });
