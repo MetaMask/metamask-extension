@@ -167,7 +167,12 @@ describe('displayCriticalError', () => {
     expect(errorUtils.getErrorHtml).toHaveBeenCalledWith(
       CriticalErrorTranslationKey.TroubleStarting,
       error,
-      { preferredLocale: 'en', t: expect.any(Function) },
+      {
+        preferredLocale: 'en',
+        t: expect.any(Function),
+        localeMessages: {},
+        enLocaleMessages: {},
+      },
       expect.any(String),
       false,
     );
