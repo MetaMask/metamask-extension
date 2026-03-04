@@ -10,12 +10,11 @@ import {
 } from '@metamask/keyring-controller';
 import {
   TransactionController,
+  TransactionControllerGetNonceLockAction,
   TransactionControllerUpdateTransactionAction,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { NetworkClientId } from '@metamask/network-controller';
-import { Hex } from '@metamask/utils';
 import { getDeleGatorEnvironment } from '../../../../../shared/lib/delegation';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
@@ -80,8 +79,8 @@ describe('Delegation 7702 Publish Hook', () => {
     TransactionController['isAtomicBatchSupported']
   > = jest.fn();
 
-  const getNextNonceMock: jest.MockedFn<
-    (address: string, networkClientId: NetworkClientId) => Promise<Hex>
+  const getNonceLockMock: jest.MockedFn<
+    TransactionControllerGetNonceLockAction['handler']
   > = jest.fn();
 
   const signDelegationControllerMock: jest.MockedFn<
@@ -103,6 +102,7 @@ describe('Delegation 7702 Publish Hook', () => {
       | DelegationControllerSignDelegationAction
       | KeyringControllerSignEip7702AuthorizationAction
       | KeyringControllerSignTypedMessageAction
+      | TransactionControllerGetNonceLockAction
       | TransactionControllerUpdateTransactionAction,
       never
     >({
@@ -114,6 +114,7 @@ describe('Delegation 7702 Publish Hook', () => {
       | DelegationControllerSignDelegationAction
       | KeyringControllerSignEip7702AuthorizationAction
       | KeyringControllerSignTypedMessageAction
+      | TransactionControllerGetNonceLockAction
       | TransactionControllerUpdateTransactionAction,
       never,
       typeof baseMessenger
@@ -127,8 +128,9 @@ describe('Delegation 7702 Publish Hook', () => {
         'KeyringController:signEip7702Authorization',
         'KeyringController:signTypedMessage',
         'DelegationController:signDelegation',
+        'TransactionController:getNonceLock',
         'TransactionController:updateTransaction',
-      ],
+      ] as never,
     });
 
     baseMessenger.registerActionHandler(
@@ -151,10 +153,14 @@ describe('Delegation 7702 Publish Hook', () => {
       updateTransactionMock,
     );
 
+    baseMessenger.registerActionHandler(
+      'TransactionController:getNonceLock',
+      getNonceLockMock,
+    );
+
     hookClass = new Delegation7702PublishHook({
       isAtomicBatchSupported: isAtomicBatchSupportedMock,
       messenger,
-      getNextNonce: getNextNonceMock,
     });
 
     isAtomicBatchSupportedMock.mockResolvedValue([]);
@@ -297,10 +303,10 @@ describe('Delegation 7702 Publish Hook', () => {
       },
     ]);
 
-    // Mock getNextNonce to return the expected nonce since we removed it from txParams
-    getNextNonceMock.mockResolvedValueOnce(
-      TRANSACTION_META_MOCK.txParams.nonce as Hex,
-    );
+    getNonceLockMock.mockResolvedValueOnce({
+      nextNonce: parseInt(TRANSACTION_META_MOCK.txParams.nonce as string, 16),
+      releaseLock: jest.fn(),
+    } as never);
 
     await hookClass.getHook()(
       {
