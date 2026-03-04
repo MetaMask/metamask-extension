@@ -1888,6 +1888,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.21.0...HEAD
 [13.21.0]: https://github.com/MetaMask/metamask-extension/compare/v13.20.1...v13.21.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.20.1...HEAD
 [13.20.1]: https://github.com/MetaMask/metamask-extension/compare/v13.20.0...v13.20.1
 [13.20.0]: https://github.com/MetaMask/metamask-extension/compare/v13.19.0...v13.20.0
 [13.19.0]: https://github.com/MetaMask/metamask-extension/compare/v13.18.1...v13.19.0
