@@ -194,9 +194,9 @@ Feature flags used in tests fall into two categories: remote flags (runtime valu
 
 Remote flags are provided at runtime and should usually follow production defaults from the [Feature Flag Registry](./test/e2e/feature-flags/feature-flag-registry.ts). You do not need a custom build just to change a remote flag value for a test.
 
-Use one of these test-time overrides:
+Use one of these test-time overrides (choose whichever fits your scenario):
 
-- **Manifest override in `withFixtures`:**
+- **Manifest override in `withFixtures`** — applies the override at the extension manifest level. Best for simple, test-wide flag overrides that don't depend on other fixture state:
   ```javascript
   await withFixtures(
     {
@@ -209,7 +209,7 @@ Use one of these test-time overrides:
     },
   );
   ```
-- **Fixture state override via `FixtureBuilder`:**
+- **Fixture state override via `FixtureBuilder`** — merges values directly into `RemoteFeatureFlagController` state. Best when you need the flag change to interact with other fixture state or when you're already customizing fixtures. Note: `withRemoteFeatureFlags` is only available on the legacy `FixtureBuilder`; use this builder when you need this method, even for new tests:
   ```javascript
   new FixtureBuilder().withRemoteFeatureFlags({ myRemoteFlag: true }).build();
   ```
@@ -263,7 +263,7 @@ myNewFlag: {
 | `name`              | Must match the object key exactly                                                       |
 | `type`              | `FeatureFlagType.Remote` (fetched at runtime) or `FeatureFlagType.Build` (compile-time) |
 | `inProd`            | Whether the flag currently exists in the production client-config API                   |
-| `productionDefault` | The value returned by the production API (boolean, string, object, or array)            |
+| `productionDefault` | Any valid JSON value (`Json` type — boolean, number, string, null, object, or array)    |
 | `status`            | `FeatureFlagStatus.Active` or `FeatureFlagStatus.Deprecated`                            |
 
 ##### Adding a new remote feature flag
