@@ -136,10 +136,7 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
               alignItems={BoxAlignItems.Center}
               gap={2}
             >
-              <Text
-                variant={TextVariant.BodySm}
-                fontWeight={FontWeight.Medium}
-              >
+              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
                 {formatCurrencyWithMinThreshold(accountValue, 'USD')}
               </Text>
               <Icon
