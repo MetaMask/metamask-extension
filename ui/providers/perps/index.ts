@@ -5,11 +5,10 @@
  *
  * Key components:
  * - `PerpsStreamManager` - Module-level singleton for cached data streams
- * - `PerpsControllerProvider` - React provider for direct controller access (legacy)
  * - Types from `@metamask/perps-controller`
  *
  * The PerpsStreamManager provides:
- * - Cached data channels for positions, orders, account, markets
+ * - Cached data channels for positions, orders, account, fills, markets
  * - BehaviorSubject-like subscription (immediate callback with cached data)
  * - Prewarm functionality to keep cache fresh
  * - Account-aware initialization (reinitializes on account switch)
@@ -24,22 +23,6 @@ export {
 
 // Data Channel (building block for stream manager)
 export { PerpsDataChannel } from './PerpsDataChannel';
-
-// Controller access (streaming only)
-export {
-  getPerpsStreamingController,
-  getPerpsController,
-  resetPerpsController,
-  type PerpsControllerState,
-} from './getPerpsController';
-
-// React Provider & Hook for direct controller access (legacy - prefer stream hooks)
-export {
-  PerpsControllerProvider,
-  usePerpsController,
-  PerpsControllerContext,
-  type PerpsControllerProviderProps,
-} from './PerpsControllerProvider';
 
 // Re-export commonly used types from the controller package
 export type {

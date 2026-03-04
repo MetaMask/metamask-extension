@@ -29,6 +29,7 @@ import type {
   Position,
   Order,
   AccountState,
+  OrderFill,
   PerpsMarketData,
   PriceUpdate,
   OrderBookData,
@@ -36,17 +37,13 @@ import type {
   CandlePeriod,
 } from '@metamask/perps-controller';
 import { submitRequestToBackground } from '../../store/background-connection';
-import {
-  getPerpsControllerCurrentAddress,
-  isPerpsControllerInitialized,
-  markPerpsControllerInitialized,
-} from './getPerpsController';
 import { CandleStreamChannel } from './CandleStreamChannel';
 import { PerpsDataChannel } from './PerpsDataChannel';
 
 // Empty array constants for stable references
 const EMPTY_POSITIONS: Position[] = [];
 const EMPTY_ORDERS: Order[] = [];
+const EMPTY_FILLS: OrderFill[] = [];
 const EMPTY_MARKETS: PerpsMarketData[] = [];
 const EMPTY_PRICES: PriceUpdate[] = [];
 
@@ -83,6 +80,9 @@ class PerpsStreamManager {
 
   account: PerpsDataChannel<AccountState | null>;
 
+  /** Live order fills — pushed from background via subscribeToOrderFills */
+  fills: PerpsDataChannel<OrderFill[]>;
+
   markets: PerpsDataChannel<PerpsMarketData[]>;
 
   prices: PerpsDataChannel<PriceUpdate[]>;
@@ -94,6 +94,9 @@ class PerpsStreamManager {
 
   // Internal state
   private prewarmCleanups: (() => void)[] = [];
+
+  // Tracks which address this manager is initialized for
+  private initializedAddress: string | null = null;
 
   // Optimistic overrides for TP/SL - preserves user-set values until WebSocket catches up
   private readonly optimisticTPSLOverrides: Map<
@@ -188,6 +191,12 @@ class PerpsStreamManager {
       connectFn: placeholderConnectFn,
       initialValue: null,
       name: 'orderBook',
+    });
+
+    this.fills = new PerpsDataChannel<OrderFill[]>({
+      connectFn: placeholderConnectFn,
+      initialValue: EMPTY_FILLS,
+      name: 'fills',
     });
 
     this.candles = new CandleStreamChannel();
@@ -319,12 +328,12 @@ class PerpsStreamManager {
       return;
     }
 
-    const currentControllerAddress = getPerpsControllerCurrentAddress();
+    const currentControllerAddress = this.initializedAddress;
 
     // If same address and already initialized, nothing to do
     if (
       currentControllerAddress === address &&
-      isPerpsControllerInitialized(address)
+      this.initializedAddress === address
     ) {
       return;
     }
@@ -338,7 +347,7 @@ class PerpsStreamManager {
       this.cleanupPrewarm();
     }
 
-    markPerpsControllerInitialized(address);
+    this.initializedAddress = address;
   }
 
   /**
@@ -379,6 +388,9 @@ class PerpsStreamManager {
         this.account.pushData(acc);
         break;
       }
+      case 'fills':
+        this.fills.pushData(data as OrderFill[]);
+        break;
       case 'prices':
         this.prices.pushData(data as PriceUpdate[]);
         break;
@@ -403,19 +415,21 @@ class PerpsStreamManager {
 
   /**
    * Check if the stream manager has been initialized for a specific address.
-   * In Phase 2, initialized means markPerpsControllerInitialized has been called.
    *
    * @param address - Optional address to check
    */
   isInitialized(address?: string): boolean {
-    return isPerpsControllerInitialized(address);
+    if (address) {
+      return this.initializedAddress === address;
+    }
+    return this.initializedAddress !== null;
   }
 
   /**
    * Get the current address the manager is initialized for
    */
   getCurrentAddress(): string | null {
-    return getPerpsControllerCurrentAddress();
+    return this.initializedAddress;
   }
 
   /**
@@ -467,6 +481,7 @@ class PerpsStreamManager {
     this.positions.clearCache();
     this.orders.clearCache();
     this.account.clearCache();
+    this.fills.clearCache();
     this.markets.clearCache();
     this.prices.clearCache();
     this.orderBook.clearCache();
@@ -476,18 +491,20 @@ class PerpsStreamManager {
   /**
    * Full reset - clear caches and reset channel state.
    * Called on account switch or when leaving Perps entirely.
-   * Note: Does not reset the controller itself - that's managed by getPerpsController.
+   * Note: Does not reset address tracking (handled by this.initializedAddress).
    */
   reset(): void {
     this.cleanupPrewarm();
     this.positions.reset();
     this.orders.reset();
     this.account.reset();
+    this.fills.reset();
     this.markets.reset();
     this.prices.reset();
     this.orderBook.reset();
     this.candles.clearAll();
     this.optimisticTPSLOverrides.clear();
+    this.initializedAddress = null;
   }
 }
 

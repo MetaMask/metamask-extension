@@ -17,16 +17,15 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
+import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../component-library';
 import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import {
-  getPerpsStreamManager,
-  usePerpsController,
-} from '../../../../providers/perps';
+import { getPerpsStreamManager } from '../../../../providers/perps';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsEligibility } from '../../../../hooks/perps';
 import { usePerpsMarginCalculations } from '../../../../hooks/perps/usePerpsMarginCalculations';
@@ -64,7 +63,6 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
   onToggle,
 }) => {
   const t = useI18nContext();
-  const controller = usePerpsController();
   const { formatNumber } = useFormatters();
   const { isEligible } = usePerpsEligibility();
 
@@ -135,19 +133,25 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
       const signedAmount =
         marginMode === 'add' ? marginAmount : `-${marginAmount}`;
 
-      const result = await controller.updateMargin({
-        symbol: position.symbol,
-        amount: signedAmount,
-      });
+      const result = await submitRequestToBackground<{
+        success: boolean;
+        error?: string;
+      }>('perpsUpdateMargin', [
+        {
+          symbol: position.symbol,
+          amount: signedAmount,
+        },
+      ]);
 
       if (!result.success) {
         throw new Error(result.error || 'Failed to update margin');
       }
 
       const streamManager = getPerpsStreamManager();
-      const freshPositions = await controller.getPositions({
-        skipCache: true,
-      });
+      const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
+        'perpsGetPositions',
+        [{ skipCache: true }],
+      );
       streamManager.pushPositionsWithOverrides(freshPositions);
 
       setMarginAmount('');
@@ -160,7 +164,6 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
       setIsSaving(false);
     }
   }, [
-    controller,
     isEligible,
     selectedAddress,
     marginMode,

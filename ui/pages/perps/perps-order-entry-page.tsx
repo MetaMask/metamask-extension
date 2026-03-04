@@ -41,10 +41,7 @@ import {
   usePerpsLiveMarketData,
 } from '../../hooks/perps/stream';
 import { usePerpsEligibility } from '../../hooks/perps';
-import {
-  usePerpsController,
-  getPerpsStreamManager,
-} from '../../providers/perps';
+import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import {
   getDisplayName,
@@ -121,7 +118,6 @@ const PerpsOrderEntryPage: React.FC = () => {
   const navigate = useNavigate();
   const { symbol } = useParams<{ symbol: string }>();
   const [searchParams] = useSearchParams();
-  const controller = usePerpsController();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
@@ -358,7 +354,10 @@ const PerpsOrderEntryPage: React.FC = () => {
           orderType: 'market' as const,
           currentPrice,
         };
-        const result = await controller.closePosition(closeParams);
+        const result = await submitRequestToBackground<{
+          success: boolean;
+          error?: string;
+        }>('perpsClosePosition', [closeParams]);
         if (!result.success) {
           throw new Error(result.error || 'Failed to close position');
         }
@@ -371,11 +370,16 @@ const PerpsOrderEntryPage: React.FC = () => {
           orderFormState.autoCloseEnabled && orderFormState.stopLossPrice
             ? orderFormState.stopLossPrice.replace(/,/gu, '')
             : undefined;
-        const result = await controller.updatePositionTPSL({
-          symbol: orderFormState.asset,
-          takeProfitPrice: cleanTp || undefined,
-          stopLossPrice: cleanSl || undefined,
-        });
+        const result = await submitRequestToBackground<{
+          success: boolean;
+          error?: string;
+        }>('perpsUpdatePositionTPSL', [
+          {
+            symbol: orderFormState.asset,
+            takeProfitPrice: cleanTp || undefined,
+            stopLossPrice: cleanSl || undefined,
+          },
+        ]);
         if (!result.success) {
           throw new Error(result.error || 'Failed to update TP/SL');
         }
@@ -386,7 +390,10 @@ const PerpsOrderEntryPage: React.FC = () => {
           orderMode,
           position?.size,
         );
-        const result = await controller.placeOrder(orderParams);
+        const result = await submitRequestToBackground<{
+          success: boolean;
+          error?: string;
+        }>('perpsPlaceOrder', [orderParams]);
         if (!result.success) {
           throw new Error(result.error || 'Failed to place order');
         }

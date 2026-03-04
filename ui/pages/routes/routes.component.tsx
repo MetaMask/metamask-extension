@@ -328,9 +328,9 @@ const NonEvmBalanceCheck = mmLazy(
 const ShieldPlan = mmLazy(
   (() => import('../shield-plan/index.ts')) as unknown as DynamicImportType,
 );
-// Perps: all components are lazy so that PerpsControllerProvider and the
-// entire provider chain (PerpsStreamManager, facade, etc.) stay out of the
-// common bundle and are only loaded when a user navigates to a Perps route.
+// Perps: all components are lazy so that the entire Perps provider chain
+// (PerpsStreamManager, etc.) stays out of the common bundle and is only loaded
+// when a user navigates to a Perps route.
 const PerpsLayout = mmLazy(
   (() => import('../perps/perps-layout.tsx')) as unknown as DynamicImportType,
 );

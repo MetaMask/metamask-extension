@@ -9,12 +9,8 @@ const reduxStore = withResolvers<ReduxStore>();
 /**
  * Returns a promise that resolves to the Redux store once the UI has started.
  *
- * Needed by the UI-side streaming PerpsController (getPerpsController.ts)
- * which bridges RemoteFeatureFlagController and AccountTreeController state
- * from Redux into its stub messenger for WebSocket subscriptions. The main
- * PerpsController now runs in the background and doesn't need this, but the
- * lightweight streaming instance may be initialized before the store is
- * available (e.g. via PerpsStreamManager.init without an explicit store arg).
+ * Used by any module that needs the Redux store before the main UI initialization
+ * sequence has completed (e.g. modules initialized before `configureStore` returns).
  */
 export function getReduxStorePromise(): Promise<ReduxStore> {
   return reduxStore.promise;

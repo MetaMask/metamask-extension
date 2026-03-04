@@ -1,5 +1,4 @@
 import React, { useEffect, type ReactNode } from 'react';
-import { PerpsControllerProvider } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 
 type PerpsLayoutProps = {
@@ -10,11 +9,10 @@ type PerpsLayoutProps = {
  * Layout wrapper for all Perps pages.
  *
  * This component is lazy-loaded via mmLazy in routes so that
- * PerpsControllerProvider and its dependency chain (PerpsStreamManager,
- * createPerpsControllerFacade, etc.) are excluded from the common bundle and
- * only loaded when a user first navigates to a Perps route.
+ * the Perps dependency chain (PerpsStreamManager, etc.) is excluded from
+ * the common bundle and only loaded when a user first navigates to a Perps route.
  *
- * It is also the single point that gates background stream emission: mounting
+ * It is the single point that gates background stream emission: mounting
  * signals the background to start forwarding WebSocket data to this connection,
  * and unmounting signals it to stop.
  *
@@ -35,5 +33,5 @@ export default function PerpsLayout({ children }: PerpsLayoutProps) {
     };
   }, []);
 
-  return <PerpsControllerProvider>{children}</PerpsControllerProvider>;
+  return <>{children}</>;
 }

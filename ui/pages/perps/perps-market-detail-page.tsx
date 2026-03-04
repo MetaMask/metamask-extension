@@ -27,7 +27,11 @@ import {
   ButtonSize,
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
-import type { CandleStick, PriceUpdate } from '@metamask/perps-controller';
+import type {
+  CandleStick,
+  Position,
+  PriceUpdate,
+} from '@metamask/perps-controller';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -44,10 +48,7 @@ import {
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
 import { usePerpsEligibility } from '../../hooks/perps';
-import {
-  getPerpsStreamManager,
-  usePerpsController,
-} from '../../providers/perps';
+import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
@@ -137,7 +138,6 @@ const PerpsMarketDetailPage: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { symbol } = useParams<{ symbol: string }>();
-  const controller = usePerpsController();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
@@ -357,8 +357,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [chartCurrentPrice, market, formatNumber]);
 
   // 24h change from market data.
-  // TODO: When PerpsControllerProvider is available in the route tree,
-  // subscribe to usePerpsLivePrices for live 24h change updates.
+  // TODO: Subscribe to usePerpsLivePrices for live 24h change updates.
   const displayChange = market?.change24hPercent ?? '';
 
   // Get position direction for TP/SL calculations (default to long if no position)
@@ -717,7 +716,10 @@ const PerpsMarketDetailPage: React.FC = () => {
         stopLossPrice: cleanSlPrice || undefined,
       };
 
-      const result = await controller.updatePositionTPSL(tpslParams);
+      const result = await submitRequestToBackground<{
+        success: boolean;
+        error?: string;
+      }>('perpsUpdatePositionTPSL', [tpslParams]);
       if (!result.success) {
         throw new Error(result.error || 'Failed to update TP/SL');
       }
@@ -750,9 +752,10 @@ const PerpsMarketDetailPage: React.FC = () => {
       // data while the override is still active
       setTimeout(async () => {
         try {
-          const freshPositions = await controller.getPositions({
-            skipCache: true,
-          });
+          const freshPositions = await submitRequestToBackground<Position[]>(
+            'perpsGetPositions',
+            [{ skipCache: true }],
+          );
           streamManager.pushPositionsWithOverrides(freshPositions);
         } catch (e) {
           console.warn('[Perps] Delayed refetch failed:', e);
@@ -769,16 +772,17 @@ const PerpsMarketDetailPage: React.FC = () => {
     } finally {
       setIsSavingTPSL(false);
     }
-  }, [controller, isEligible, selectedAddress, editingTpPrice, editingSlPrice]);
+  }, [isEligible, selectedAddress, editingTpPrice, editingSlPrice]);
 
   // Refetch positions when tab becomes visible (catch changes made elsewhere)
   useEffect(() => {
     const handleVisibility = async () => {
       if (document.visibilityState === 'visible' && selectedAddress) {
         try {
-          const positions = await controller.getPositions({
-            skipCache: true,
-          });
+          const positions = await submitRequestToBackground<Position[]>(
+            'perpsGetPositions',
+            [{ skipCache: true }],
+          );
           getPerpsStreamManager().pushPositionsWithOverrides(positions);
         } catch (e) {
           console.warn('[Perps] Visibility refetch failed:', e);
@@ -788,7 +792,7 @@ const PerpsMarketDetailPage: React.FC = () => {
     document.addEventListener('visibilitychange', handleVisibility);
     return () =>
       document.removeEventListener('visibilitychange', handleVisibility);
-  }, [controller, selectedAddress]);
+  }, [selectedAddress]);
 
   // No-op handler for order cards - orders on detail page are already
   // filtered to current market, so clicking should not navigate anywhere

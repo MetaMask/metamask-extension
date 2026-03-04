@@ -3,20 +3,17 @@ import { waitFor } from '@testing-library/react';
 import type { UserHistoryItem } from '@metamask/perps-controller';
 import { useUserHistory } from './useUserHistory';
 
-// Mock the perps provider (facade exposes getUserHistory on controller)
-const mockGetUserHistory = jest.fn();
-const mockController = {
-  getUserHistory: mockGetUserHistory,
-};
+const mockSubmitRequestToBackground = jest.fn();
 
-jest.mock('../../providers/perps', () => ({
-  usePerpsController: () => mockController,
+jest.mock('../../store/background-connection', () => ({
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
 }));
 
 describe('useUserHistory', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetUserHistory.mockResolvedValue([]);
+    mockSubmitRequestToBackground.mockResolvedValue([]);
   });
 
   it('initializes with empty state', () => {
@@ -41,7 +38,7 @@ describe('useUserHistory', () => {
         details: { source: '0xabc' },
       },
     ];
-    mockGetUserHistory.mockResolvedValue(mockHistory);
+    mockSubmitRequestToBackground.mockResolvedValue(mockHistory);
 
     const { result } = renderHook(() => useUserHistory());
 
@@ -67,15 +64,14 @@ describe('useUserHistory', () => {
       await result.current.refetch();
     });
 
-    expect(mockGetUserHistory).toHaveBeenCalledWith({
-      startTime: 1000,
-      endTime: 2000,
-      accountId: 'eip155:1:0xabc',
-    });
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsGetUserHistory',
+      [{ startTime: 1000, endTime: 2000, accountId: 'eip155:1:0xabc' }],
+    );
   });
 
   it('sets loading state during fetch', async () => {
-    mockGetUserHistory.mockImplementation(
+    mockSubmitRequestToBackground.mockImplementation(
       () =>
         new Promise((resolve) => {
           setTimeout(() => resolve([]), 100);
@@ -96,7 +92,7 @@ describe('useUserHistory', () => {
   });
 
   it('handles errors gracefully', async () => {
-    mockGetUserHistory.mockRejectedValue(new Error('Network error'));
+    mockSubmitRequestToBackground.mockRejectedValue(new Error('Network error'));
 
     const { result } = renderHook(() => useUserHistory());
 
@@ -110,7 +106,7 @@ describe('useUserHistory', () => {
   });
 
   it('handles non-Error rejections', async () => {
-    mockGetUserHistory.mockRejectedValue('String error');
+    mockSubmitRequestToBackground.mockRejectedValue('String error');
 
     const { result } = renderHook(() => useUserHistory());
 
@@ -134,7 +130,7 @@ describe('useUserHistory', () => {
         details: { source: '0xdef' },
       },
     ];
-    mockGetUserHistory.mockResolvedValue(mockHistory);
+    mockSubmitRequestToBackground.mockResolvedValue(mockHistory);
 
     const { result } = renderHook(() => useUserHistory());
 

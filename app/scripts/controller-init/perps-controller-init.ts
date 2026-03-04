@@ -3,7 +3,6 @@ import {
   getDefaultPerpsControllerState,
   type PerpsControllerState,
 } from '@metamask/perps-controller';
-import type { PerpsActionName } from '../../../shared/constants/perps-api';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
 import { ControllerApi, ControllerInitFunction } from './types';
 import { PerpsControllerMessenger } from './messengers/perps-controller-messenger';
@@ -88,10 +87,62 @@ export const PerpsControllerInit: ControllerInitFunction<
 };
 
 /**
- * Every action name from PERPS_API_METHOD_MAP must be present.
- * TypeScript will error if a key is added to the shared constant
- * but not implemented here.
+ * All background action names exposed by the Perps API.
+ * TypeScript will error at the Record type below if any are missing from getApi().
  */
+type PerpsActionName =
+  | 'perpsInit'
+  | 'perpsDisconnect'
+  | 'perpsPlaceOrder'
+  | 'perpsClosePosition'
+  | 'perpsClosePositions'
+  | 'perpsEditOrder'
+  | 'perpsCancelOrder'
+  | 'perpsCancelOrders'
+  | 'perpsUpdatePositionTPSL'
+  | 'perpsUpdateMargin'
+  | 'perpsFlipPosition'
+  | 'perpsWithdraw'
+  | 'perpsDepositWithConfirmation'
+  | 'perpsGetPositions'
+  | 'perpsGetMarkets'
+  | 'perpsGetMarketDataWithPrices'
+  | 'perpsGetOrderFills'
+  | 'perpsGetOrders'
+  | 'perpsGetOpenOrders'
+  | 'perpsGetFunding'
+  | 'perpsGetAccountState'
+  | 'perpsGetHistoricalPortfolio'
+  | 'perpsFetchHistoricalCandles'
+  | 'perpsCalculateFees'
+  | 'perpsGetAvailableDexs'
+  | 'perpsRefreshEligibility'
+  | 'perpsToggleTestnet'
+  | 'perpsSaveTradeConfiguration'
+  | 'perpsGetTradeConfiguration'
+  | 'perpsSavePendingTradeConfiguration'
+  | 'perpsGetPendingTradeConfiguration'
+  | 'perpsClearPendingTradeConfiguration'
+  | 'perpsSaveMarketFilterPreferences'
+  | 'perpsGetMarketFilterPreferences'
+  | 'perpsSetSelectedPaymentToken'
+  | 'perpsResetSelectedPaymentToken'
+  | 'perpsMarkTutorialCompleted'
+  | 'perpsMarkFirstOrderCompleted'
+  | 'perpsResetFirstTimeUserState'
+  | 'perpsClearPendingTransactionRequests'
+  | 'perpsSaveOrderBookGrouping'
+  | 'perpsGetOrderBookGrouping'
+  | 'perpsGetUserHistory'
+  | 'perpsClearDepositResult'
+  | 'perpsClearWithdrawResult'
+  | 'perpsGetBlockExplorerUrl'
+  | 'perpsGetCurrentNetwork'
+  | 'perpsIsFirstTimeUserOnCurrentNetwork'
+  | 'perpsGetWatchlistMarkets'
+  | 'perpsToggleWatchlistMarket'
+  | 'perpsIsWatchlistMarket';
+
 type PerpsBackgroundApi = Record<PerpsActionName, ControllerApi>;
 
 function getApi(

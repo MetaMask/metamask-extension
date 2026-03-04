@@ -20,16 +20,6 @@ jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
 }));
 
 jest.mock('../../../../providers/perps', () => ({
-  PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
-    children,
-  usePerpsController: () => ({
-    updateMargin: jest.fn((...args: unknown[]) =>
-      mockSubmitRequestToBackground('perpsUpdateMargin', args),
-    ),
-    getPositions: jest.fn((...args: unknown[]) =>
-      mockSubmitRequestToBackground('perpsGetPositions', args),
-    ),
-  }),
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
 

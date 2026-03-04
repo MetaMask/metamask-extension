@@ -11,23 +11,6 @@ Object.defineProperty(globalThis, 'crypto', {
   },
 });
 
-const mockGetPerpsControllerCurrentAddress = jest.fn<string | null, []>(
-  () => null,
-);
-const mockIsPerpsControllerInitialized = jest.fn<boolean, [string?]>(
-  () => false,
-);
-const mockMarkPerpsControllerInitialized = jest.fn<void, [string]>();
-
-jest.mock('./getPerpsController', () => ({
-  getPerpsControllerCurrentAddress: () =>
-    mockGetPerpsControllerCurrentAddress(),
-  isPerpsControllerInitialized: (...args: [string?]) =>
-    mockIsPerpsControllerInitialized(...args),
-  markPerpsControllerInitialized: (...args: [string]) =>
-    mockMarkPerpsControllerInitialized(...args),
-}));
-
 const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
 
 jest.mock('../../store/background-connection', () => ({
@@ -69,9 +52,6 @@ describe('PerpsStreamManager', () => {
     jest.useFakeTimers();
     jest.clearAllMocks();
 
-    mockGetPerpsControllerCurrentAddress.mockReturnValue(null);
-    mockIsPerpsControllerInitialized.mockReturnValue(false);
-
     manager = new PerpsStreamManager();
   });
 
@@ -88,6 +68,7 @@ describe('PerpsStreamManager', () => {
       expect(manager.markets.getCachedData()).toEqual([]);
       expect(manager.prices.getCachedData()).toEqual([]);
       expect(manager.orderBook.getCachedData()).toBeNull();
+      expect(manager.fills.getCachedData()).toEqual([]);
     });
   });
 
@@ -99,42 +80,42 @@ describe('PerpsStreamManager', () => {
 
       manager.init('');
 
-      expect(mockMarkPerpsControllerInitialized).not.toHaveBeenCalled();
+      expect(manager.isInitialized()).toBe(false);
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining('No address provided'),
       );
       consoleSpy.mockRestore();
     });
 
-    it('returns early when same address is already initialized', () => {
-      mockGetPerpsControllerCurrentAddress.mockReturnValue('0xaaa');
-      mockIsPerpsControllerInitialized.mockReturnValue(true);
-
+    it('marks the manager as initialized for the given address', () => {
       manager.init('0xaaa');
 
-      expect(mockMarkPerpsControllerInitialized).not.toHaveBeenCalled();
+      expect(manager.isInitialized('0xaaa')).toBe(true);
+      expect(manager.getCurrentAddress()).toBe('0xaaa');
     });
 
-    it('calls markPerpsControllerInitialized with the address', () => {
+    it('returns early when same address is already initialized', () => {
       manager.init('0xaaa');
 
-      expect(mockMarkPerpsControllerInitialized).toHaveBeenCalledWith('0xaaa');
+      const clearSpy = jest.spyOn(manager, 'clearAllCaches');
+      manager.init('0xaaa');
+
+      expect(clearSpy).not.toHaveBeenCalled();
+      clearSpy.mockRestore();
     });
 
     it('clears caches when address changes', () => {
-      mockGetPerpsControllerCurrentAddress.mockReturnValue('0xold');
+      manager.init('0xold');
 
       const clearSpy = jest.spyOn(manager, 'clearAllCaches');
-
       manager.init('0xnew');
 
       expect(clearSpy).toHaveBeenCalledTimes(1);
+      expect(manager.getCurrentAddress()).toBe('0xnew');
       clearSpy.mockRestore();
     });
 
     it('does not clear caches when initializing from null address', () => {
-      mockGetPerpsControllerCurrentAddress.mockReturnValue(null);
-
       const clearSpy = jest.spyOn(manager, 'clearAllCaches');
 
       manager.init('0xaaa');
@@ -173,6 +154,16 @@ describe('PerpsStreamManager', () => {
       manager.handleBackgroundUpdate({ channel: 'account', data: account });
 
       expect(cb).toHaveBeenCalledWith(account);
+    });
+
+    it('routes fills channel to fills.pushData', () => {
+      const cb = jest.fn();
+      manager.fills.subscribe(cb);
+
+      const fills = [{ orderId: '1', symbol: 'BTC' }];
+      manager.handleBackgroundUpdate({ channel: 'fills', data: fills });
+
+      expect(cb).toHaveBeenCalledWith(fills);
     });
 
     it('routes prices channel to prices.pushData', () => {
@@ -439,21 +430,30 @@ describe('PerpsStreamManager', () => {
   });
 
   describe('isInitialized', () => {
-    it('delegates to isPerpsControllerInitialized', () => {
-      mockIsPerpsControllerInitialized.mockReturnValue(true);
+    it('returns true for the initialized address', () => {
+      manager.init('0xaaa');
       expect(manager.isInitialized('0xaaa')).toBe(true);
-      expect(mockIsPerpsControllerInitialized).toHaveBeenCalledWith('0xaaa');
+    });
+
+    it('returns false for a different address', () => {
+      manager.init('0xaaa');
+      expect(manager.isInitialized('0xbbb')).toBe(false);
     });
 
     it('works without an address argument', () => {
-      mockIsPerpsControllerInitialized.mockReturnValue(false);
       expect(manager.isInitialized()).toBe(false);
+      manager.init('0xaaa');
+      expect(manager.isInitialized()).toBe(true);
     });
   });
 
   describe('getCurrentAddress', () => {
-    it('delegates to getPerpsControllerCurrentAddress', () => {
-      mockGetPerpsControllerCurrentAddress.mockReturnValue('0xabc');
+    it('returns null before initialization', () => {
+      expect(manager.getCurrentAddress()).toBeNull();
+    });
+
+    it('returns the initialized address', () => {
+      manager.init('0xabc');
       expect(manager.getCurrentAddress()).toBe('0xabc');
     });
   });
@@ -510,11 +510,13 @@ describe('PerpsStreamManager', () => {
       expect(manager.markets.getCachedData()).toEqual([]);
       expect(manager.prices.getCachedData()).toEqual([]);
       expect(manager.orderBook.getCachedData()).toBeNull();
+      expect(manager.fills.getCachedData()).toEqual([]);
     });
   });
 
   describe('reset', () => {
-    it('clears caches, prewarm, and overrides', () => {
+    it('clears caches, prewarm, overrides, and address', () => {
+      manager.init('0xaaa');
       manager.prewarm();
       manager.setOptimisticTPSL('BTC', '120', '80');
       manager.positions.pushData([makePosition('BTC')]);
@@ -523,6 +525,8 @@ describe('PerpsStreamManager', () => {
 
       expect(manager.isPrewarming()).toBe(false);
       expect(manager.positions.getCachedData()).toEqual([]);
+      expect(manager.isInitialized()).toBe(false);
+      expect(manager.getCurrentAddress()).toBeNull();
     });
   });
 });

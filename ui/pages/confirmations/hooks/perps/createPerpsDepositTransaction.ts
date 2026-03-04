@@ -1,33 +1,28 @@
-import type { PerpsController } from '@metamask/perps-controller';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 
 export type CreatePerpsDepositTransactionParams = {
   fromAddress: string;
   amount?: string;
-  /** When provided (e.g. from usePerpsController), uses controller instead of RPC */
-  controller?: PerpsController;
 };
 
 export type CreatedPerpsDepositTransaction = {
   transactionId: string;
 };
 
+/**
+ * Creates a perps deposit transaction via the background controller.
+ *
+ * @param params - Parameters for the deposit transaction
+ * @param params.amount - Optional deposit amount
+ * @returns The created transaction ID
+ */
 export async function createPerpsDepositTransaction({
   amount,
-  controller,
 }: CreatePerpsDepositTransactionParams): Promise<CreatedPerpsDepositTransaction> {
-  const transactionId = controller
-    ? await (
-        controller as unknown as {
-          depositWithConfirmation: (p: {
-            amount?: string;
-          }) => Promise<string | null>;
-        }
-      ).depositWithConfirmation({ amount })
-    : await submitRequestToBackground<string | null>(
-        'perpsDepositWithConfirmation',
-        [{ amount }],
-      );
+  const transactionId = await submitRequestToBackground<string | null>(
+    'perpsDepositWithConfirmation',
+    [{ amount }],
+  );
 
   if (!transactionId) {
     throw new Error(

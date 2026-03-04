@@ -22,10 +22,10 @@ type ActivateStreamingParams = {
  *
  * Manages two categories of subscriptions:
  * - Static (positions/orders/account): registered once via activate() after
- *   perpsInit resolves and the provider is ready. Calling activate() again
- *   tears down and re-registers statics (handles address changes).
+ * perpsInit resolves and the provider is ready. Calling activate() again
+ * tears down and re-registers statics (handles address changes).
  * - Dynamic (prices/orderBook/candles): replaced on each activateStreaming()
- *   call so navigating between markets doesn't leak subscriptions.
+ * call so navigating between markets doesn't leak subscriptions.
  *
  * Emission is gated by isActive, which requires both activate() to have been
  * called and setViewActive(true) to be set. The UI calls setViewActive(true)
@@ -75,6 +75,9 @@ export class PerpsStreamBridge {
       }),
       controller.subscribeToAccount({
         callback: (data: unknown) => this.#emit('account', data),
+      }),
+      controller.subscribeToOrderFills({
+        callback: (data: unknown) => this.#emit('fills', data),
       }),
     );
     this.#activated = true;

@@ -77,21 +77,21 @@ jest.mock('loglevel', () => ({
   setDefaultLevel: jest.fn(),
 }));
 
-// Mock controller for usePerpsController() - page needs getPositions, updatePositionTPSL, etc.
-const mockPerpsController = {
-  getPositions: jest.fn().mockResolvedValue([]),
-  updatePositionTPSL: jest.fn().mockResolvedValue({ success: true }),
-  subscribeToPrices: jest.fn(() => jest.fn()),
-  subscribeToOrderBook: jest.fn(() => jest.fn()),
-};
+const mockSubmitRequestToBackground = jest
+  .fn()
+  .mockResolvedValue({ success: true });
+jest.mock('../../store/background-connection', () => ({
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
+}));
 
-// Mock the PerpsControllerProvider to render children directly and provide usePerpsController
 jest.mock('../../providers/perps', () => ({
-  PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
-    children,
-  usePerpsController: () => mockPerpsController,
   getPerpsStreamManager: () => ({
-    positions: { getCachedData: () => [], pushData: jest.fn(), subscribe: jest.fn(() => jest.fn()) },
+    positions: {
+      getCachedData: () => [],
+      pushData: jest.fn(),
+      subscribe: jest.fn(() => jest.fn()),
+    },
     orders: { getCachedData: () => [], pushData: jest.fn() },
     account: { getCachedData: () => null, pushData: jest.fn() },
     markets: { getCachedData: () => [], pushData: jest.fn() },
