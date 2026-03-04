@@ -171,6 +171,7 @@ export const useTokensWithFiltering = (
       return await fetchBridgeTokens(
         chainId,
         BridgeClientId.EXTENSION,
+        undefined,
         async (url, options) => {
           const { headers, ...requestOptions } = options ?? {};
           return await fetchWithCache({
